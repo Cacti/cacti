@@ -771,7 +771,11 @@ function user_group_members_edit(string $header_label) : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Matching Group Members Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Matching Group Members Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -984,7 +988,11 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' .
+					(cacti_sizeof($display_text) + 1) .
+					'"><em>' .
+					__('No Matching Graphs Found') .
+					'</em></td></tr>';
 			}
 
 			html_end_box(false);
@@ -1073,7 +1081,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 			// form the 'where' clause for our main sql query
 			// form the 'where' clause for our main sql query
 			if (grv('filter') != '') {
-				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'h.deleted = "" AND (h.hostname LIKE ? OR h.description LIKE ?)';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
+					'h.deleted = "" AND (h.hostname LIKE ? OR h.description LIKE ?)';
 				$sql_params[] = '%' . grv('filter') . '%';
 				$sql_params[] = '%' . grv('filter') . '%';
 			} else {
@@ -1187,7 +1196,11 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Matching Devices Found') . '</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' .
+					(cacti_sizeof($display_text) + 1) .
+					'"><em>' .
+					__('No Matching Devices Found') .
+					'</em></td></tr>';
 			}
 
 			html_end_box(false);
@@ -1263,8 +1276,10 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 			}
 
 			if (grv('associated') != 'false') {
-				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . grv('id',
-					0) . ')';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
+					' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' .
+					grv('id',
+						0) . ')';
 			}
 
 			$total_rows = db_fetch_cell_prepared("SELECT
@@ -1341,7 +1356,11 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' .
+					(cacti_sizeof($display_text) + 1) .
+					'"><em>' .
+					__('No Matching Graph Templates Found') .
+					'</em></td></tr>';
 			}
 
 			html_end_box(false);
@@ -1416,21 +1435,27 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 			}
 
 			if (grv('associated') != 'false') {
-				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . grv('id',
-					0) . ')';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
+					' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' .
+					grv('id',
+						0) . ')';
 			}
 
 			$total_rows = db_fetch_cell('SELECT
 				COUNT(DISTINCT gt.id)
 				FROM graph_tree AS gt
 				LEFT JOIN user_auth_group_perms
-				ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id = ' . grv('id') . ")
+				ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id = ' .
+					grv('id') .
+					")
 				$sql_where");
 
 			$sql_query = 'SELECT gt.id, gt.name, user_auth_group_perms.group_id
 				FROM graph_tree AS gt
 				LEFT JOIN user_auth_group_perms
-				ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id = ' . grv('id') . ")
+				ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id = ' .
+					grv('id') .
+					")
 				$sql_where
 				ORDER BY name
 				LIMIT " . ($rows * (grv('page') - 1)) . ',' . $rows;
@@ -1483,7 +1508,11 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Matching Trees Found') . '</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' .
+					(cacti_sizeof($display_text) + 1) .
+					'"><em>' .
+					__('No Matching Trees Found') .
+					'</em></td></tr>';
 			}
 			html_end_box(false);
 
@@ -1533,8 +1562,14 @@ function user_group_realms_edit(string $header_label) : void {
 
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div class='cactiTableTitleRow'>
-			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . ' ' . htmle($header_label) . "</span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . ("' onClick='selectAllRealms(this.checked)'><label " .
+			<div class='cactiTableTitle'><span style='padding:3px;'>" .
+				__('User Permissions') .
+				' ' .
+				htmle($header_label) .
+				"</span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" .
+				__esc('Select All') .
+				("' onClick='selectAllRealms(this.checked)'><label " .
 				"class='formCheckboxLabel' title='") . __esc('Select All') . "' for='all'></label></a></span></div>
 		</div>
 	</div>";
@@ -1615,7 +1650,11 @@ function user_group_realms_edit(string $header_label) : void {
 
 			switch($r['style']) {
 				case 'CONSOLE':
-					$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) . '/' . $r['title'];
+					$description = $style_translate[$r['style']] .
+						': ' .
+						($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) .
+						'/' .
+						$r['title'];
 
 					break;
 				default:
@@ -1765,7 +1804,9 @@ function user_group_settings_edit(string $header_label) : void {
 	html_start_box(__esc('User Settings %s', $header_label), '100%', true, 3, 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
-		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ("<div style='float:right;padding-right:4px;'><i class='ti " .
+		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" .
+			$tabs_graphs[$tab_short_name] .
+			("<div style='float:right;padding-right:4px;'><i class='ti " .
 			"ti-chevrons-up'></i></div></div></div>");
 
 		$form_array = [];
@@ -2184,7 +2225,11 @@ function user_group() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No User Groups Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No User Groups Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

@@ -266,9 +266,10 @@ function form_actions() : void {
 
 			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
 				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
-				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Delete Package Repository',
-					'Delete Package Repositories',
-					cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
+				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" .
+					__n('Delete Package Repository',
+						'Delete Package Repositories',
+						cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
 		} elseif (gnrv('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
@@ -281,9 +282,10 @@ function form_actions() : void {
 
 			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
 				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
-				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Disable Package Repository',
-					'Disable Package Repositories',
-					cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
+				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" .
+					__n('Disable Package Repository',
+						'Disable Package Repositories',
+						cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
 		} elseif (gnrv('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
@@ -296,9 +298,10 @@ function form_actions() : void {
 
 			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
 				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
-				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Enabled Package Repository',
-					'Enable Package Repositories',
-					cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
+				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" .
+					__n('Enabled Package Repository',
+						'Enable Package Repositories',
+						cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
 		} elseif (gnrv('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
@@ -309,7 +312,11 @@ function form_actions() : void {
 
 			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
 				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
-				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __esc('Make Selected Repository Default') . "'>" . __esc('Continue') . '</button>';
+				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" .
+					__esc('Make Selected Repository Default') .
+					"'>" .
+					__esc('Continue') .
+					'</button>';
 		}
 	} else {
 		raise_message(40);
@@ -594,7 +601,11 @@ function repos() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Package Repositories Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Package Repositories Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

@@ -1274,7 +1274,9 @@ function item_edit() : void {
 		// Make sure we don't limit the list so that the selected DS isn't in the list in edit mode
 		if ($sql_where != '') {
 			if (!ierv('id')) {
-				$struct_graph_item['task_item_id']['sql'] .= " WHERE ($sql_where) OR (dtr.id=" . $template_item['task_item_id'] . ')';
+				$struct_graph_item['task_item_id']['sql'] .= " WHERE ($sql_where) OR (dtr.id=" .
+					$template_item['task_item_id'] .
+					')';
 			} else {
 				$struct_graph_item['task_item_id']['sql'] .= " WHERE $sql_where";
 			}
@@ -2513,7 +2515,11 @@ function item() : void {
 			[grv('id')]);
 
 		$header_label = __esc('Graph Items [edit: %s]', get_graph_title(grv('id')));
-		$add_text     = 'graphs.php?action=item_edit' . (!empty($host_id) ? '&host_id=' . $host_id : '') . '&local_graph_id=' . grv('id');
+		$add_text     = 'graphs.php?action=item_edit' .
+			(!empty($host_id) ? '&host_id=' .
+			$host_id : '') .
+			'&local_graph_id=' .
+			grv('id');
 		$anchor_link  = 'host_id=' . $host_id . '&local_graph_id=' . grv('id');
 	}
 
@@ -2777,12 +2783,16 @@ function graph_edit() : void {
 		'links' => [
 			[
 				'display' => $message,
-				'url'     => 'graphs.php?action=graph_edit&id=' . (isrv('id') ? grv('id') : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'),
+				'url'     => 'graphs.php?action=graph_edit&id=' .
+					(isrv('id') ? grv('id') : '0') .
+					'&debug=' .
+					(isset($_SESSION['graph_debug_mode']) ? '0' : '1'),
 				'class'   => ($debug ? 'ti ti-bug disableDebug' : 'ti ti-bug enableDebug')
 			],
 			[
 				'display' => __('Edit Graph Template'),
-				'url'     => 'graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'),
+				'url'     => 'graph_templates.php?action=template_edit&id=' .
+					(isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'),
 				'class'   => 'ti ti-edit editTemplate'
 			],
 		]
@@ -2858,7 +2868,15 @@ function graph_edit() : void {
 	$graph_start = -14400;
 	$graph_end   = '-' . read_config_option('poller_interval');
 
-	$graph['src'] = CACTI_PATH_URL . 'graph_json.php?local_graph_id=' . grv('id') . '&rra_id=0&graph_start=' . $graph_start . '&graph_end=' . $graph_end . '&v=' . mt_rand();
+	$graph['src'] = CACTI_PATH_URL .
+		'graph_json.php?local_graph_id=' .
+		grv('id') .
+		'&rra_id=0&graph_start=' .
+		$graph_start .
+		'&graph_end=' .
+		$graph_end .
+		'&v=' .
+		mt_rand();
 
 	if (!ierv('id')) {
 		?>
@@ -3361,7 +3379,11 @@ function graphs() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Graphs Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Graphs Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

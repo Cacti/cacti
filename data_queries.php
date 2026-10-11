@@ -50,37 +50,55 @@ switch (grv('action')) {
 	case 'item_moveup_dssv':
 		data_query_item_moveup_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') .
+			'&snmp_query_id=' .
+			gfrv('snmp_query_id'));
 
 		break;
 	case 'item_movedown_dssv':
 		data_query_item_movedown_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') .
+			'&snmp_query_id=' .
+			gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_dssv':
 		data_query_item_remove_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') .
+			'&snmp_query_id=' .
+			gfrv('snmp_query_id'));
 
 		break;
 	case 'item_moveup_gsv':
 		data_query_item_moveup_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') .
+			'&snmp_query_id=' .
+			gfrv('snmp_query_id'));
 
 		break;
 	case 'item_movedown_gsv':
 		data_query_item_movedown_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') .
+			'&snmp_query_id=' .
+			gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_gsv':
 		data_query_item_remove_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') .
+			'&snmp_query_id=' .
+			gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_confirm':
@@ -229,7 +247,10 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: data_queries.php?action=item_edit&id=' . (empty($snmp_query_graph_id) ? grv('id') : $snmp_query_graph_id) . '&snmp_query_id=' . grv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			(empty($snmp_query_graph_id) ? grv('id') : $snmp_query_graph_id) .
+			'&snmp_query_id=' .
+			grv('snmp_query_id'));
 	} elseif (isrv('save_component_svg')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -307,7 +328,12 @@ function form_save() : void {
 			$sequence = get_sequence(0,
 				'sequence',
 				'snmp_query_graph_rrd_sv',
-				'snmp_query_graph_id = ' . grv('id') . ' AND data_template_id = ' . $svds_id . ' AND field_name = ' . db_qstr(gnrv('svds_field')));
+				'snmp_query_graph_id = ' .
+					grv('id') .
+					' AND data_template_id = ' .
+					$svds_id .
+					' AND field_name = ' .
+					db_qstr(gnrv('svds_field')));
 
 			$hash = get_hash_data_query(0, 'data_query_sv_data_source');
 
@@ -765,7 +791,11 @@ function data_query_item_edit() : void {
 							}
 						}
 
-						form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',empty($data_template_rrd['snmp_field_name']) ? $data_template_rrd['data_source_name'] : $data_template_rrd['snmp_field_name'],'',''); ?>
+						form_dropdown('dsdt_' .
+							$data_template['id'] .
+							'_' .
+							$data_template_rrd['id'] .
+							'_snmp_field_output',$xml_outputs,'','',empty($data_template_rrd['snmp_field_name']) ? $data_template_rrd['data_source_name'] : $data_template_rrd['snmp_field_name'],'',''); ?>
 									</td>
 									<td class='right'>
 										<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check',
@@ -836,12 +866,26 @@ function data_query_item_edit() : void {
 				</td>
 				<td class='center'>
 					<?php if ($show_down) {?>
-					<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+					<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' .
+						grv('id') .
+						'&id=' .
+						$suggested_value['id'] .
+						'&snmp_query_id=' .
+						grv('snmp_query_id') .
+						'&field_name=' .
+						$suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
-					<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+					<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' .
+						grv('id') .
+						'&id=' .
+						$suggested_value['id'] .
+						'&snmp_query_id=' .
+						grv('snmp_query_id') .
+						'&field_name=' .
+						$suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
@@ -850,7 +894,12 @@ function data_query_item_edit() : void {
 					<?php print htmle($suggested_value['text']); ?>
 				</td>
 				<td class='right'>
-					<a class='remover deleteMarker ti ti-x' title='<?php print htmle(__('Delete')); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id')); ?>'></a>
+					<a class='remover deleteMarker ti ti-x' title='<?php print htmle(__('Delete')); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' .
+						grv('id') .
+						'&id=' .
+						$suggested_value['id'] .
+						'&snmp_query_id=' .
+						grv('snmp_query_id')); ?>'></a>
 				</td>
 				<?php
 
@@ -944,12 +993,30 @@ function data_query_item_edit() : void {
 						</td>
 						<td class='center'>
 							<?php if ($show_down) {?>
-							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' .
+								grv('id') .
+								'&id=' .
+								$suggested_value['id'] .
+								'&snmp_query_id=' .
+								grv('snmp_query_id') .
+								'&data_template_id=' .
+								$data_template['id'] .
+								'&field_name=' .
+								$suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 							<?php if ($show_up) {?>
-							<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+							<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' .
+								grv('id') .
+								'&id=' .
+								$suggested_value['id'] .
+								'&snmp_query_id=' .
+								grv('snmp_query_id') .
+								'&data_template_id=' .
+								$data_template['id'] .
+								'&field_name=' .
+								$suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
@@ -958,7 +1025,14 @@ function data_query_item_edit() : void {
 							<?php print htmle($suggested_value['text']); ?>
 						</td>
 						<td class='right'>
-							<a class='remover deleteMarker ti ti-x' title='<?php print __('Delete'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id']); ?>'></a>
+							<a class='remover deleteMarker ti ti-x' title='<?php print __('Delete'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' .
+								grv('id') .
+								'&id=' .
+								$suggested_value['id'] .
+								'&snmp_query_id=' .
+								grv('snmp_query_id') .
+								'&data_template_id=' .
+								$data_template['id']); ?>'></a>
 						</td>
 						<?php
 
@@ -1259,14 +1333,19 @@ function data_query_edit() : void {
 				form_selectable_cell($snmp_query_graph['id'], $i, '', 'right');
 
 				if ($snmp_query_graph['graphs'] == 0) {
-					$url = htmle('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);
+					$url = htmle('data_queries.php?action=item_remove_confirm&id=' .
+						$snmp_query_graph['id'] .
+						'&snmp_query_id=' .
+						$snmp_query['id']);
 
 					form_selectable_cell("<a class='delete deleteMarker ti ti-x' title='" . __('Delete') . "' href='" . $url . "'</a>",
 						$i,
 						'',
 						'right');
 				} else {
-					form_selectable_cell("<a class='deleteMarkerDisabled ti ti-x' title='" . __esc('Mapped Graph Templates with Graphs are read only') . "' href='#'></a>",
+					form_selectable_cell("<a class='deleteMarkerDisabled ti ti-x' title='" .
+						__esc('Mapped Graph Templates with Graphs are read only') .
+						"' href='#'></a>",
 						$i,
 						'',
 						'right');
@@ -1277,7 +1356,11 @@ function data_query_edit() : void {
 				$i++;
 			}
 		} else {
-			print "<tr class='tableRow odd'><td colspan='" . cacti_sizeof($display_text) . "'><em>" . __('No Graph Templates Defined.') . '</em></td></tr>';
+			print "<tr class='tableRow odd'><td colspan='" .
+				cacti_sizeof($display_text) .
+				"'><em>" .
+				__('No Graph Templates Defined.') .
+				'</em></td></tr>';
 		}
 
 		html_end_box();
@@ -1356,7 +1439,15 @@ function data_query() : void {
 
 	// form the 'where' clause for our main sql query
 	if (grv('filter') != '') {
-		$sql_where = 'WHERE (sq.name LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR di.name LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
+		$sql_where = 'WHERE (sq.name LIKE ' .
+			db_qstr('%' .
+			grv('filter') .
+			'%') .
+			' OR di.name LIKE ' .
+			db_qstr('%' .
+			grv('filter') .
+			'%') .
+			')';
 	} else {
 		$sql_where = '';
 	}
@@ -1467,7 +1558,11 @@ function data_query() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Queries Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Data Queries Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

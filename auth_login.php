@@ -69,7 +69,12 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		$realm = $frv_realm;
 	}
 
-	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm " . $frv_realm . ', using method ' . $auth_method,
+	cacti_log("DEBUG: User '" .
+		$username .
+		"' attempting to login with realm " .
+		$frv_realm .
+		', using method ' .
+		$auth_method,
 		false,
 		'AUTH',
 		POLLER_VERBOSITY_DEBUG);
@@ -285,7 +290,13 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			[$username, !empty($id) ? $id : 0, get_client_addr()]
 		);
 
-		cacti_log('LOGIN FAILED: ' . $realm_name . " login failed for user '" . $username . "' from IP address '" . get_client_addr() . "'.",
+		cacti_log('LOGIN FAILED: ' .
+			$realm_name .
+			" login failed for user '" .
+			$username .
+			"' from IP address '" .
+			get_client_addr() .
+			"'.",
 			false,
 			'AUTH');
 
@@ -354,7 +365,13 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP ||
 				<?php
 						if (cacti_sizeof($realms)) {
 							foreach ($realms as $index => $realm) {
-								print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"' : '') . '>' . htmle($realm['name']) . "</option>\n";
+								print "\t\t\t\t\t<option value='" .
+									$index .
+									"'" .
+									($realm['selected'] ? ' selected="selected"' : '') .
+									'>' .
+									htmle($realm['name']) .
+									"</option>\n";
 							}
 						}
 	?>

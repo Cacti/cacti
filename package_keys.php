@@ -99,7 +99,9 @@ function form_actions() : void {
 			</tr>";
 
 			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
-				"value='cancel' onClick='cactiReturnTo()'>") . __esc('Cancel') . ("</button><button type='submit' class='ui-button ui-corner-all " .
+				"value='cancel' onClick='cactiReturnTo()'>") .
+					__esc('Cancel') .
+					("</button><button type='submit' class='ui-button ui-corner-all " .
 				"ui-widget ui-state-active' title='") . __n('Delete Public Key',
 					'Delete Public Keys',
 					cacti_sizeof($p_array)) . "' value='continue'>" . __esc('Continue') . '</button>';
@@ -231,7 +233,11 @@ function public_keys() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Package Public Keys Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Package Public Keys Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

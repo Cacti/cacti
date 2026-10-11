@@ -85,37 +85,40 @@ if (read_config_option('hide_console') != 'on') {
 	</tr>
 	<?php if (POLLER_ID > 1) {?>
 	<tr class='tableRow'><td colspan='2'><hr></td></tr>
-	<tr class='tableRow'><td colspan='2'><strong><?php print __('Remote Data Collector Status:'); ?></strong>  <?php print '<i>' . (CACTI_CONNECTION == 'online' ? __('Online') : (CACTI_CONNECTION == 'recovery' ? __('Recovery') : __('Offline'))) . '</i>'; ?></td></tr>
+	<tr class='tableRow'><td colspan='2'><strong><?php print __('Remote Data Collector Status:'); ?></strong>  <?php print '<i>' .
+		(CACTI_CONNECTION == 'online' ? __('Online') : (CACTI_CONNECTION == 'recovery' ? __('Recovery') : __('Offline'))) .
+		'</i>'; ?></td></tr>
 	<?php if (CACTI_CONNECTION != 'online') {?>
-	<tr class='tableRow'><td colspan='2'><strong><?php print __('Number of Offline Records:'); ?></strong>  <?php print '<i>' . number_format_i18n(db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost',
-		'',
-		true,
-		$local_db_cnn_id)) . '</i>'; ?></td></tr>
+	<tr class='tableRow'><td colspan='2'><strong><?php print __('Number of Offline Records:'); ?></strong>  <?php print '<i>' .
+		number_format_i18n(db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost',
+			'',
+			true,
+			$local_db_cnn_id)) . '</i>'; ?></td></tr>
 	<?php }?>
 	<tr class='tableRow'><td colspan='2'><hr></td></tr>
 	<tr class='tableRow'>
 		<td class='textAreaNotes top left' colspan='2'>
 			<?php print __('<strong>NOTE:</strong> You are logged into a Remote Data Collector.  ' .
-				'When <b>\'online\'</b>, you will be able to view and control much of ' .
-				'the Main Cacti Web Site just as if you were logged into it.  Also, ' .
-				'it\'s important to note that Remote Data Collectors are required to ' .
-				'use the Cacti\'s Performance Boosting Services <b>\'On Demand ' .
-				'Updating\'</b> feature, and we always recommend using Spine.  When ' .
-				'the Remote Data Collector is <b>\'offline\'</b>, the Remote Data ' .
-				'Collectors Web Site will contain much less information.  However, it ' .
-				'will cache all updates until the Main Cacti Database and Web Server ' .
-				'are reachable.  Then it will dump it\'s Boost table output back to ' .
-				'the Main Cacti Database for updating.'); ?>
+					'When <b>\'online\'</b>, you will be able to view and control much of ' .
+					'the Main Cacti Web Site just as if you were logged into it.  Also, ' .
+					'it\'s important to note that Remote Data Collectors are required to ' .
+					'use the Cacti\'s Performance Boosting Services <b>\'On Demand ' .
+					'Updating\'</b> feature, and we always recommend using Spine.  When ' .
+					'the Remote Data Collector is <b>\'offline\'</b>, the Remote Data ' .
+					'Collectors Web Site will contain much less information.  However, it ' .
+					'will cache all updates until the Main Cacti Database and Web Server ' .
+					'are reachable.  Then it will dump it\'s Boost table output back to ' .
+					'the Main Cacti Database for updating.'); ?>
 		</td>
 	</tr>
 	<tr class='tableRow'>
 		<td class='textAreaNotes top left' colspan='2'>
 			<?php print __('<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have ' .
-				'been re-designed to work with Remote Data Collectors.  Therefore, ' .
-				'Plugins such as MacTrack, and HMIB, which require direct access to ' .
-				'devices will not work with Remote Data Collectors at this time.  ' .
-				'However, plugins such as Thold will work so long as the Remote Data ' .
-				'Collector is in <b>\'online\'</b> mode.'); ?>
+					'been re-designed to work with Remote Data Collectors.  Therefore, ' .
+					'Plugins such as MacTrack, and HMIB, which require direct access to ' .
+					'devices will not work with Remote Data Collectors at this time.  ' .
+					'However, plugins such as Thold will work so long as the Remote Data ' .
+					'Collector is in <b>\'online\'</b> mode.'); ?>
 		</td>
 	</tr>
 	<?php } ?>

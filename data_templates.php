@@ -424,7 +424,10 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? grv('data_template_id') : $data_template_id) . (ierv('current_rrd') ? '' : '&view_rrd=' . (gnrv('current_rrd') ? gnrv('current_rrd') : $data_template_rrd_id)));
+		header('Location: data_templates.php?action=template_edit&id=' .
+			(empty($data_template_id) ? grv('data_template_id') : $data_template_id) .
+			(ierv('current_rrd') ? '' : '&view_rrd=' .
+			(gnrv('current_rrd') ? gnrv('current_rrd') : $data_template_rrd_id)));
 	}
 }
 
@@ -772,7 +775,8 @@ function template_edit() : void {
 		}
 
 		if ($data_input_id > 0) {
-			?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_input.php?action=edit&id=' . $data_input_id); ?>'><?php print __('Edit Data Input Method.'); ?></a><br><?php
+			?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_input.php?action=edit&id=' .
+				$data_input_id); ?>'><?php print __('Edit Data Input Method.'); ?></a><br><?php
 		}
 		?>
 				</td>
@@ -872,7 +876,29 @@ function template_edit() : void {
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li class='subTab'><a " . (($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . htmle('data_templates.php?action=template_edit&id=' . grv('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i + 1) . ': ' . htmle($template_data_rrd['data_source_name']) . '</a>' . ($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker ti ti-x cactiPostAction' title='" . __esc('Delete') . "' href='#' data-url='" . html_escape_url('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . grv('id')) . "'></a>" : "<a class='deleteMarkerDisabled ti ti-x' href='#' title='" . __esc('Data Templates in use can not be modified') . "'></a>") . '</li>';
+				print "<li class='subTab'><a " .
+					(($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") .
+					" href='" .
+					htmle('data_templates.php?action=template_edit&id=' .
+					grv('id') .
+					'&view_rrd=' .
+					$template_data_rrd['id']) .
+					"'>" .
+					($i + 1) .
+					': ' .
+					htmle($template_data_rrd['data_source_name']) .
+					'</a>' .
+					($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker ti ti-x cactiPostAction' title='" .
+					__esc('Delete') .
+					"' href='#' data-url='" .
+					html_escape_url('data_templates.php?action=rrd_remove&id=' .
+					$template_data_rrd['id'] .
+					'&data_template_id=' .
+					grv('id')) .
+					"'></a>" : "<a class='deleteMarkerDisabled ti ti-x' href='#' title='" .
+					__esc('Data Templates in use can not be modified') .
+					"'></a>") .
+					'</li>';
 
 				$i++;
 			}
@@ -1057,7 +1083,15 @@ function template_edit() : void {
 
 				?>
 				<div class='formColumnLeft'>
-					<div class='formFieldName customDataCheckbox <?php print $disable; ?>'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, '', '', '', grv('id'), '', $message); ?><?php print htmle($field['name']); ?><div class='formTooltip'><?php print display_tooltip($help); ?></div>
+					<div class='formFieldName customDataCheckbox <?php print $disable; ?>'><?php form_checkbox('t_value_' .
+						$field['data_name'],
+						$old_tvalue,
+						'',
+						'',
+						'',
+						grv('id'),
+						'',
+						$message); ?><?php print htmle($field['name']); ?><div class='formTooltip'><?php print display_tooltip($help); ?></div>
 					</div>
 				</div>
 				<div class='formColumnRight <?php print $disable; ?>'>
@@ -1069,7 +1103,9 @@ function template_edit() : void {
 				$i++;
 			}
 		} else {
-			print '<div style="width:100%;float:left;"><em>' . __('No Input Fields for the Selected Data Input Source') . '</em></div>';
+			print '<div style="width:100%;float:left;"><em>' .
+				__('No Input Fields for the Selected Data Input Source') .
+				'</em></div>';
 		}
 
 		html_end_box(true, true);
@@ -1299,7 +1335,9 @@ function data_templates() : void {
 				'',
 				'right');
 
-			form_selectable_cell((empty($template['data_input_method']) ? '<em>' . __('None') . '</em>' : htmle($template['data_input_method'])),
+			form_selectable_cell((empty($template['data_input_method']) ? '<em>' .
+				__('None') .
+				'</em>' : htmle($template['data_input_method'])),
 				$template['id']);
 			form_selectable_cell((empty($template['profile_name']) ? __('External') : htmle($template['profile_name'])),
 				$template['id']);
@@ -1311,7 +1349,11 @@ function data_templates() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Templates Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Data Templates Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

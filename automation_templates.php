@@ -262,7 +262,11 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" . __esc('Import Network Discovery Rule') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
+			<button type='submit' value='import' title='" .
+				__esc('Import Network Discovery Rule') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
+				__esc('Import') .
+				"</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -1223,20 +1227,43 @@ function template_edit() : void {
 				if (!$dnd) {
 					if ($i != cacti_sizeof($graph_rules) - 1) {
 						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_movedown&template_id=' .
+								grv('id') .
+								'&id=' .
+								$rule['id'] .
+								'&rule_type=1') .
+								'" title="' .
+								__esc('Move Down') .
+								'"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
 						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_moveup&template_id=' .
+								grv('id') .
+								'&id=' .
+								$rule['id'] .
+								'&rule_type=1') .
+								'" title="' .
+								__esc('Move Up') .
+								'"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
-				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle('automation_templates.php?action=item_remove_agr_confirm&template_id=' . grv('id') . '&rule_id=' . $rule['id']) . "'></a>",
+				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" .
+					__esc('Delete') .
+					"' href='" .
+					htmle('automation_templates.php?action=item_remove_agr_confirm&template_id=' .
+					grv('id') .
+					'&rule_id=' .
+					$rule['id']) .
+					"'></a>",
 					$id,
 					'40',
 					'right');
@@ -1339,20 +1366,43 @@ function template_edit() : void {
 				if (!$dnd) {
 					if ($i != cacti_sizeof($tree_rules) - 1) {
 						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_movedown&template_id=' .
+								grv('id') .
+								'&id=' .
+								$rule['id'] .
+								'&rule_type=2') .
+								'" title="' .
+								__esc('Move Down') .
+								'"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
 						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_moveup&template_id=' .
+								grv('id') .
+								'&id=' .
+								$rule['id'] .
+								'&rule_type=2') .
+								'" title="' .
+								__esc('Move Up') .
+								'"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
-				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle('automation_templates.php?action=item_remove_atr_confirm&template_id=' . grv('id') . '&rule_id=' . $rule['id']) . "'></a>",
+				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" .
+					__esc('Delete') .
+					"' href='" .
+					htmle('automation_templates.php?action=item_remove_atr_confirm&template_id=' .
+					grv('id') .
+					'&rule_id=' .
+					$rule['id']) .
+					"'></a>",
 					$id,
 					'40',
 					'right');
@@ -1430,7 +1480,16 @@ function template_edit() : void {
 
 					form_selectable_ecell($rule['name'], $id);
 
-					form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle('automation_templates.php?action=item_remove_ttr_confirm&id=' . grv('id') . '&template_id=' . $template['host_template'] . '&rule_id=' . $rule['rule_id']) . "'></a>",
+					form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" .
+						__esc('Delete') .
+						"' href='" .
+						htmle('automation_templates.php?action=item_remove_ttr_confirm&id=' .
+						grv('id') .
+						'&template_id=' .
+						$template['host_template'] .
+						'&rule_id=' .
+						$rule['rule_id']) .
+						"'></a>",
 						$id,
 						'40',
 						'right');
@@ -1438,7 +1497,9 @@ function template_edit() : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="2"><em>' . __('No Associated Threshold Template Rules') . '</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="2"><em>' .
+					__('No Associated Threshold Template Rules') .
+					'</em></td></tr>';
 			}
 
 			$host_template_id = db_fetch_cell_prepared('SELECT host_template
@@ -1731,14 +1792,24 @@ function template() : void {
 
 				if ($i < $total_items && $total_items > 1) {
 					$add_text .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') . html_escape_url('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+						'href="#" data-url="') .
+							html_escape_url('automation_templates.php?action=movedown&id=' .
+							$dt['id']) .
+							'" title="' .
+							__esc('Move Down') .
+							'"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
 					$add_text .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') . html_escape_url('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+						'href="#" data-url="') .
+							html_escape_url('automation_templates.php?action=moveup&id=' .
+							$dt['id']) .
+							'" title="' .
+							__esc('Move Up') .
+							'"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
@@ -1753,7 +1824,11 @@ function template() : void {
 			$i++;
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Automation Device Templates Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Automation Device Templates Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

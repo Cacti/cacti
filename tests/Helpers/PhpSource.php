@@ -5,6 +5,25 @@ namespace Cacti\Tests\Helpers;
 
 /** Source contracts ignore formatting, while retaining token kinds and literals. */
 final class PhpSource {
+	public static function normalizeWhitespace(string $source) : string {
+		$output = '';
+
+		foreach (token_get_all($source) as $token) {
+			$id   = is_array($token) ? $token[0] : 0;
+			$text = is_array($token) ? $token[1] : $token;
+
+			if (in_array($id, [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
+				if (!str_ends_with($output, ' ')) {
+					$output .= ' ';
+				}
+			} else {
+				$output .= $text;
+			}
+		}
+
+		return $output;
+	}
+
 	private static function encode(string $source, bool $fragment = false) : array {
 		if ($fragment) {
 			$source = '<?php ' . $source;

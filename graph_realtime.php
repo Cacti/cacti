@@ -257,10 +257,20 @@ switch (grv('action')) {
 		// call poller
 		$local_graph_id = (int) gfrv('local_graph_id');
 		$poller_id      = hash('sha256', session_id());
-		$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_lgi_' . $local_graph_id . '.png';
+		$graph_rrd      = read_config_option('realtime_cache_path') .
+			'/user_' .
+			$poller_id .
+			'_lgi_' .
+			$local_graph_id .
+			'.png';
 		$php_binary     = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 		$script_path    = cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_realtime.php');
-		$args           = '--graph=' . $local_graph_id . ' --interval=' . ((int) $graph_data_array['ds_step']) . ' --poller_id=' . cacti_escapeshellarg($poller_id);
+		$args           = '--graph=' .
+			$local_graph_id .
+			' --interval=' .
+			((int) $graph_data_array['ds_step']) .
+			' --poller_id=' .
+			cacti_escapeshellarg($poller_id);
 
 		shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 
@@ -365,7 +375,12 @@ switch (grv('action')) {
 
 		exit;
 	case 'view':
-		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . grv('local_graph_id') . '.png';
+		$graph_rrd = read_config_option('realtime_cache_path') .
+			'/user_' .
+			hash('sha256',session_id()) .
+			'_lgi_' .
+			grv('local_graph_id') .
+			'.png';
 
 		if (file_exists($graph_rrd)) {
 			print base64_encode((string) file_get_contents($graph_rrd));

@@ -166,7 +166,11 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" . __esc('Import Network Discovery Rule') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
+			<button type='submit' value='import' title='" .
+				__esc('Import Network Discovery Rule') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
+				__esc('Import') .
+				"</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -1127,7 +1131,12 @@ function networks() : void {
 
 			form_alternate_row('line' . $network['id'], true);
 
-			form_selectable_cell('<a class="linkEditMain" href="' . htmle('automation_networks.php?action=edit&id=' . $network['id']) . '">' . htmle($network['name']) . '</a>',
+			form_selectable_cell('<a class="linkEditMain" href="' .
+				htmle('automation_networks.php?action=edit&id=' .
+				$network['id']) .
+				'">' .
+				htmle($network['name']) .
+				'</a>',
 				$network['id']);
 			form_selectable_ecell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
@@ -1160,7 +1169,11 @@ function networks() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Networks Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Networks Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

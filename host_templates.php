@@ -631,7 +631,10 @@ function template_edit() : void {
 					<strong><?php print $i; ?>)</strong> <?php print htmle($item['name']); ?>
 				</td>
 				<td class='right'>
-					<a class='delete deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('host_templates.php?action=item_remove_gt_confirm&id=' . $item['id'] . '&host_template_id=' . grv('id')); ?>'></a>
+					<a class='delete deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('host_templates.php?action=item_remove_gt_confirm&id=' .
+						$item['id'] .
+						'&host_template_id=' .
+						grv('id')); ?>'></a>
 				</td>
 				<?php
 				form_end_row();
@@ -689,7 +692,10 @@ function template_edit() : void {
 					<strong><?php print $i; ?>)</strong> <?php print htmle($item['name']); ?>
 				</td>
 				<td class='right'>
-					<a class='delete deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('host_templates.php?action=item_remove_dq_confirm&id=' . $item['id'] . '&host_template_id=' . grv('id')); ?>'></a>
+					<a class='delete deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('host_templates.php?action=item_remove_dq_confirm&id=' .
+						$item['id'] .
+						'&host_template_id=' .
+						grv('id')); ?>'></a>
 				</td>
 				<?php
 				form_end_row();
@@ -1177,7 +1183,11 @@ function device_templates() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Device Templates Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Device Templates Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1586,7 +1596,11 @@ function device_archives() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Device Template Archives Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Device Template Archives Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

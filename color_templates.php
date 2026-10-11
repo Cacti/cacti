@@ -139,7 +139,12 @@ function draw_color_template_items_list(array $item_list,
 			print '<td>';
 
 			if ($disable_controls == false) {
-				print "<a class='linkEditMain' href='" . htmle($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>";
+				print "<a class='linkEditMain' href='" .
+					htmle($filename .
+					'?action=item_edit&color_template_item_id=' .
+					$item['color_template_item_id'] .
+					"&$url_data") .
+					"'>";
 			}
 
 			print __('Item # %d', $i);
@@ -160,20 +165,40 @@ function draw_color_template_items_list(array $item_list,
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
 						print ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('color_templates.php?action=item_movedown&color_template_item_id=' .
+								$item['color_template_item_id'] .
+								'&color_template_id=' .
+								$item['color_template_id']) .
+								'" title="' .
+								__esc('Move Down') .
+								'"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
 						print ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('color_templates.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('color_templates.php?action=item_moveup&color_template_item_id=' .
+								$item['color_template_item_id'] .
+								'&color_template_id=' .
+								$item['color_template_id']) .
+								'" title="' .
+								__esc('Move Up') .
+								'"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				print "<a class='delete deleteMarker ti ti-x' id='" . $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
+				print "<a class='delete deleteMarker ti ti-x' id='" .
+					$item['color_template_id'] .
+					'_' .
+					$item['color_template_item_id'] .
+					"' title='" .
+					__esc('Delete') .
+					"'></a>";
 
 				print "</td>\n";
 			}
@@ -223,7 +248,8 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . ($color_template_id === null ? gfrv('color_template_id') : $color_template_id));
+		header('Location: color_templates.php?action=template_edit&color_template_id=' .
+			($color_template_id === null ? gfrv('color_template_id') : $color_template_id));
 	} elseif (isrv('save_component_item')) {
 		// ================= input validation =================
 		gfrv('color_template_id');
@@ -268,7 +294,10 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: color_templates.php?action=item_edit&color_template_item_id=' . ($color_template_item_id === null ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
+			header('Location: color_templates.php?action=item_edit&color_template_item_id=' .
+				($color_template_item_id === null ? gnrv('color_template_item_id') : $color_template_item_id) .
+				'&color_template_id=' .
+				gnrv('color_template_id'));
 
 			exit;
 		} else {
@@ -938,7 +967,11 @@ function color_template() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Color Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Color Templates Found') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);

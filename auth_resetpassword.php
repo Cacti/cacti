@@ -104,7 +104,9 @@ switch ($action) {
 				'SYSTEM');
 		}
 
-		$errorMessage = "<span class='badpassword_message'>" . __('Reset password token was sent. Check your mailbox') . '</span>';
+		$errorMessage = "<span class='badpassword_message'>" .
+			__('Reset password token was sent. Check your mailbox') .
+			'</span>';
 		$action       = 'formidentity';
 
 		break;
@@ -133,7 +135,9 @@ switch ($action) {
 			[$hash['user_id']]);
 
 		if (!cacti_sizeof($user)) {
-			$errorMessage = "<span class='badpassword_message'>" . __('Password reset is not available for this account.') . '</span>';
+			$errorMessage = "<span class='badpassword_message'>" .
+				__('Password reset is not available for this account.') .
+				'</span>';
 			$action       = 'formidentity';
 
 			break;
@@ -163,7 +167,9 @@ switch ($action) {
 
 		// Password and Confirmed password checks
 		if ($password !== $password_confirm) {
-			$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . '</span>';
+			$errorMessage = "<span class='badpassword_message'>" .
+				__('Your new passwords do not match, please retype.') .
+				'</span>';
 			$action       = 'formreset';
 
 			break;
@@ -171,7 +177,8 @@ switch ($action) {
 
 		// Check new password does not match stored password
 		if (compat_password_verify($password, $user['password'])) {
-			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try ' .
+			$errorMessage = "<span class='badpassword_message'>" .
+				__('Your new password cannot be the same as the old password. Please try ' .
 				'again.') . '</span>';
 			$action       = 'formreset';
 
@@ -183,7 +190,9 @@ switch ($action) {
 			db_check_password_length();
 
 			if (!db_begin_transaction()) {
-				$errorMessage = "<span class='badpassword_message'>" . __('Unable to securely consume the password reset link.') . '</span>';
+				$errorMessage = "<span class='badpassword_message'>" .
+					__('Unable to securely consume the password reset link.') .
+					'</span>';
 				$action       = 'formidentity';
 
 				break;
@@ -272,7 +281,9 @@ switch ($action) {
 
 			if (!$reset_ok || !db_commit_transaction()) {
 				db_rollback_transaction();
-				$errorMessage = "<span class='badpassword_message'>" . __('Unable to securely consume the password reset link.') . '</span>';
+				$errorMessage = "<span class='badpassword_message'>" .
+					__('Unable to securely consume the password reset link.') .
+					'</span>';
 				$action       = 'formidentity';
 
 				break;

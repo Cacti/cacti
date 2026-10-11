@@ -123,7 +123,14 @@ function display_settings() : void {
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name,
 				$system_tabs,
-				true) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmle("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . '</a></li>';
+				true) ? ' pluginTab' : '') .
+					"'><a " .
+					(($tab_short_name == $current_tab) ? "class='selected'" : "class=''") .
+					" href='" .
+					htmle("settings.php?tab=$tab_short_name") .
+					"'>" .
+					$tabs[$tab_short_name] .
+					'</a></li>';
 		}
 	}
 

@@ -849,7 +849,9 @@ function tree_edit(bool $partial = false) : void {
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
 		$lockdiv  = "<div style='padding:5px 5px 5px 0px'><table><tr>
-			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='lock'>" . __esc('Edit Tree') . "</button></td>
+			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='lock'>" .
+				__esc('Edit Tree') .
+				"</button></td>
 			<td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree ' .
 				'button.') . '</td>
 		</tr></table></div>';
@@ -857,11 +859,15 @@ function tree_edit(bool $partial = false) : void {
 		$editable = false;
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
 		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr>
-			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='unlock'>" . __esc('Finish Editing Tree') . "</button></td>
-			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' onClick='createNode()'>" . __esc('Add Root Branch') . "</button></td>
+			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='unlock'>" .
+				__esc('Finish Editing Tree') .
+				"</button></td>
+			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' onClick='createNode()'>" .
+				__esc('Add Root Branch') .
+				"</button></td>
 			<td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %s by %s.',
-			$tree['locked_date'],
-			get_username($tree['modified_by']));
+					$tree['locked_date'],
+					get_username($tree['modified_by']));
 
 		if ($tree['modified_by'] == $_SESSION[SESS_USER_ID]) {
 			$lockdiv .= '</td></tr></table></div>';
@@ -1996,7 +2002,11 @@ function display_sites() : void {
 
 	if (cacti_sizeof($sites)) {
 		foreach ($sites as $s) {
-			print "<ul><li id='tsite:" . $s['id'] . "' data-jstree='{ \"type\" : \"site\"}'>" . htmle($s['name']) . "</li></ul>\n";
+			print "<ul><li id='tsite:" .
+				$s['id'] .
+				"' data-jstree='{ \"type\" : \"site\"}'>" .
+				htmle($s['name']) .
+				"</li></ul>\n";
 		}
 	}
 }
@@ -2019,7 +2029,14 @@ function display_hosts() : void {
 
 	if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $h) {
-			print "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . htmle($h['description']) . ' (' . htmle($h['hostname']) . ')' . "</li></ul>\n";
+			print "<ul><li id='thost:" .
+				$h['id'] .
+				"' data-jstree='{ \"type\" : \"device\"}'>" .
+				htmle($h['description']) .
+				' (' .
+				htmle($h['hostname']) .
+				')' .
+				"</li></ul>\n";
 		}
 	}
 }
@@ -2088,7 +2105,11 @@ function display_graphs() : void {
 			}
 
 			if (is_graph_allowed($g['id'])) {
-				print "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . htmle($g['title']) . '</li></ul>';
+				print "<ul><li id='tgraph:" .
+					$g['id'] .
+					"' data-jstree='{ \"type\": \"graph\" }'>" .
+					htmle($g['title']) .
+					'</li></ul>';
 			}
 		}
 	}
@@ -2275,17 +2296,37 @@ function tree() : void {
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == 1) {
 					$sequence .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') . html_escape_url('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
+						'href="#" data-url="') .
+							html_escape_url('tree.php?action=tree_down&id=' .
+							$tree['id']) .
+							'" title="' .
+							__esc('Move Down') .
+							'"></a>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == cacti_sizeof($trees)) {
 					$sequence .= '<span class="moveArrowNone"></span>';
 					$sequence .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') . html_escape_url('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
+						'href="#" data-url="') .
+							html_escape_url('tree.php?action=tree_up&id=' .
+							$tree['id']) .
+							'" title="' .
+							__esc('Move Up') .
+							'"></a>';
 				} else {
 					$sequence .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') . html_escape_url('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
+						'href="#" data-url="') .
+							html_escape_url('tree.php?action=tree_down&id=' .
+							$tree['id']) .
+							'" title="' .
+							__esc('Move Down') .
+							'"></a>';
 					$sequence .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') . html_escape_url('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
+						'href="#" data-url="') .
+							html_escape_url('tree.php?action=tree_up&id=' .
+							$tree['id']) .
+							'" title="' .
+							__esc('Move Up') .
+							'"></a>';
 				}
 			}
 
@@ -2318,7 +2359,11 @@ function tree() : void {
 			$i++;
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Trees Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Trees Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

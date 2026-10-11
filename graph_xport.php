@@ -97,7 +97,9 @@ $xport_array = rrdtool_function_xport(grv('local_graph_id'),
 
 // Bail out early if xport returned no data
 if (!is_array($xport_array) || !isset($xport_array['meta']['start'])) {
-	cacti_log('WARNING: Graph export for Local Graph ID ' . grv('local_graph_id') . ' returned no data.  Check RRDtool errors in the Cacti log.',
+	cacti_log('WARNING: Graph export for Local Graph ID ' .
+		grv('local_graph_id') .
+		' returned no data.  Check RRDtool errors in the Cacti log.',
 		false,
 		'EXPORT');
 
@@ -163,7 +165,8 @@ if (isset($xport_array['meta']['start'])) {
 		$output .= cacti_csv_cell(__('Start Date')) . ',' . cacti_csv_cell(date('Y-m-d H:i:s',
 			$xport_array['meta']['start'])) . "\n";
 		$output .= cacti_csv_cell(__('End Date')) . ',' . cacti_csv_cell(date('Y-m-d H:i:s',
-			($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end'])) . "\n";
+			($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end'])) .
+				"\n";
 		$output .= cacti_csv_cell(__('Step')) . ',' . cacti_csv_cell($xport_array['meta']['step']) . "\n";
 		$output .= cacti_csv_cell(__('Total Rows')) . ',' . cacti_csv_cell($xport_array['meta']['rows']) . "\n";
 		$output .= cacti_csv_cell(__('Expected Rows')) . ',' . cacti_csv_cell($xport_array['meta']['expected_rows']) . "\n";
@@ -173,13 +176,23 @@ if (isset($xport_array['meta']['start'])) {
 
 		if (isset($xport_meta['NthPercentile'])) {
 			foreach ($xport_meta['NthPercentile'] as $item) {
-				$output .= cacti_csv_cell(__('Nth Percentile')) . ',' . cacti_csv_cell($item['value']) . ',' . cacti_csv_cell($item['format']) . "\n";
+				$output .= cacti_csv_cell(__('Nth Percentile')) .
+					',' .
+					cacti_csv_cell($item['value']) .
+					',' .
+					cacti_csv_cell($item['format']) .
+					"\n";
 			}
 		}
 
 		if (isset($xport_meta['Summation'])) {
 			foreach ($xport_meta['Summation'] as $item) {
-				$output .= cacti_csv_cell(__('Summation')) . ',' . cacti_csv_cell($item['value']) . ',' . cacti_csv_cell($item['format']) . "\n";
+				$output .= cacti_csv_cell(__('Summation')) .
+					',' .
+					cacti_csv_cell($item['value']) .
+					',' .
+					cacti_csv_cell($item['format']) .
+					"\n";
 			}
 		}
 
@@ -218,7 +231,11 @@ if (isset($xport_array['meta']['start'])) {
 		print "<div class='cactiTableTitleRow'>
 			<div class='cactiTableTitle'>" . __('Summary Details') . "</div>
 			<div class='cactiTableButton'>
-				<span><a href='#' role='link' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>" . __('Download as CSV') . '</a></span>
+				<span><a href='#' role='link' class='download linkOverDark' id='graph_" .
+					$xport_array['meta']['local_graph_id'] .
+					"'>" .
+					__('Download as CSV') .
+					'</a></span>
 			</div>
 		</div>';
 
@@ -237,7 +254,8 @@ if (isset($xport_array['meta']['start'])) {
 		print '<td style="width:25%">' . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '</td>';
 		print '<td style="width:25%">' . __('End Date') . '</td>';
 		print '<td style="width:25%">' . date('Y-m-d H:i:s',
-			($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end']) . '</td>';
+			($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end']) .
+				'</td>';
 		print '</tr>';
 
 		print "<tr class='even'>";
@@ -341,7 +359,8 @@ if (isset($xport_array['meta']['start'])) {
 
 			foreach ($xport_array['data'] as $row) {
 				print "<tr><td class='left'>" . date('Y-m-d H:i:s',
-					(isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) . '</td>';
+					(isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) .
+						'</td>';
 
 				for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 					$row_data = floatval($row['col' . $i]);

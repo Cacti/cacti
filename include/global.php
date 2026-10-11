@@ -833,7 +833,12 @@ if ($config['is_web']) {
 			$previous_mode = $_SESSION['connection_mode'];
 			$reload        = false;
 
-			cacti_log('Connection: ' . CACTI_CONNECTION . ', Previous Mode: ' . $previous_mode . ', Page: ' . $_SERVER['SCRIPT_NAME'],
+			cacti_log('Connection: ' .
+				CACTI_CONNECTION .
+				', Previous Mode: ' .
+				$previous_mode .
+				', Page: ' .
+				$_SERVER['SCRIPT_NAME'],
 				false,
 				'WEBUI',
 				POLLER_VERBOSITY_DEBUG);

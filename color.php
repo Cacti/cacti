@@ -158,7 +158,13 @@ function form_actions() : void {
 
 				$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', [$matches[1]]);
 
-				$ilist .= '<li>' . ($color['name'] != '' ? htmle($color['name']) : __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+				$ilist .= '<li>' .
+					($color['name'] != '' ? htmle($color['name']) : __('Unnamed Color')) .
+					' (<span style="background-color:#' .
+					$color['hex'] .
+					'">' .
+					$color['hex'] .
+					'</span>)</li>';
 
 				$iarray[] = $matches[1];
 			}

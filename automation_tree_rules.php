@@ -215,7 +215,11 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" . __esc('Import Tree Rules') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</butotn>
+			<button type='submit' value='import' title='" .
+				__esc('Import Tree Rules') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
+				__esc('Import') .
+				"</butotn>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -376,7 +380,12 @@ function form_save() : void {
 				false,
 				'SECURITY');
 
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' .
+				grv('id') .
+				'&item_id=' .
+				grv('item_id') .
+				'&rule_type=' .
+				AUTOMATION_RULE_TYPE_TREE_MATCH);
 
 			exit;
 		}
@@ -392,9 +401,17 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' .
+				grv('id') .
+				'&item_id=' .
+				grv('item_id') .
+				'&rule_type=' .
+				AUTOMATION_RULE_TYPE_TREE_MATCH);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=edit&id=' .
+				grv('id') .
+				'&rule_type=' .
+				AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	} elseif (isrv('save_component_automation_tree_rule_item')) {
 		// ================= input validation =================
@@ -485,9 +502,17 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' .
+				grv('id') .
+				'&item_id=' .
+				($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) .
+				'&rule_type=' .
+				AUTOMATION_RULE_TYPE_TREE_ACTION);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?action=edit&id=' .
+				grv('id') .
+				'&rule_type=' .
+				AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
 		raise_message(2);
@@ -740,7 +765,12 @@ function automation_tree_rules_item_edit() : void {
 			display_matching_trees(grv('id'),
 				AUTOMATION_RULE_TYPE_TREE_ACTION,
 				$item,
-				'automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . grv('rule_type'));
+				'automation_tree_rules.php?action=item_edit&id=' .
+					grv('id') .
+					'&item_id=' .
+					grv('item_id') .
+					'&rule_type=' .
+					grv('rule_type'));
 		}
 	}
 
@@ -1279,8 +1309,12 @@ function automation_tree_rules() : void {
 
 	if (cacti_sizeof($automation_tree_rules)) {
 		foreach ($automation_tree_rules as $automation_tree_rule) {
-			$tree_item_type_name     = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') . '</em>' : $automation_tree_item_types[$automation_tree_rule['leaf_type']]);
-			$subtree_name            = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : htmle($automation_tree_rule['subtree_name']));
+			$tree_item_type_name     = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' .
+				__('None') .
+				'</em>' : $automation_tree_item_types[$automation_tree_rule['leaf_type']]);
+			$subtree_name            = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' .
+				__('ROOT') .
+				'</em>' : htmle($automation_tree_rule['subtree_name']));
 			$tree_host_grouping_type = ((empty($host_group_types[$automation_tree_rule['host_grouping_type']])) ? '' : $host_group_types[$automation_tree_rule['host_grouping_type']]);
 
 			form_alternate_row('line' . $automation_tree_rule['id'], true);
@@ -1303,7 +1337,11 @@ function automation_tree_rules() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Tree Rules Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Tree Rules Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

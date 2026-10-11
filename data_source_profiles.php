@@ -206,7 +206,11 @@ function profile_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<input type='submit' value='" . __esc('Import') . "' title='" . __esc('Import Data Source Profiles') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>
+			<input type='submit' value='" .
+				__esc('Import') .
+				"' title='" .
+				__esc('Import Data Source Profiles') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -702,7 +706,10 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . ($profile_rra_id === null ? grv('id') : $profile_rra_id));
+			header('Location: data_source_profiles.php?action=item_edit&profile_id=' .
+				grv('profile_id') .
+				'&id=' .
+				($profile_rra_id === null ? grv('id') : $profile_rra_id));
 		} else {
 			header('Location: data_source_profiles.php?action=edit&id=' . grv('profile_id'));
 		}
@@ -1169,7 +1176,10 @@ function profile_edit() : void {
 			foreach ($profile_rras as $rra) {
 				form_alternate_row('line' . $rra['id']);
 
-				$url = 'data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id'];
+				$url = 'data_source_profiles.php?action=item_edit&id=' .
+					$rra['id'] .
+					'&profile_id=' .
+					$rra['data_source_profile_id'];
 
 				form_selectable_cell(filter_value($rra['name'], '', $url), $i);
 
@@ -1179,7 +1189,13 @@ function profile_edit() : void {
 				form_selectable_cell('<em>' . $rra['rows'] . '</em>', $i);
 
 				if (!$readonly) {
-					form_selectable_cell("<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='#'></a>",
+					form_selectable_cell("<a id='" .
+						$profile['id'] .
+						'_' .
+						$rra['id'] .
+						"' class='delete deleteMarker ti ti-x' title='" .
+						__esc('Delete') .
+						"' href='#'></a>",
 						$i,
 						'',
 						'right');
@@ -1507,15 +1523,25 @@ function profile() : void {
 			}
 
 			if ($profile['data_sources'] > 0) {
-				$ds = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_sources.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['data_sources'],
-					-1) . '</a>';
+				$ds = '<a class="linkEditMain" href="' .
+					CACTI_PATH_URL .
+					'data_sources.php?reset=true&profile=' .
+					$profile['id'] .
+					'">' .
+					number_format_i18n($profile['data_sources'],
+						-1) . '</a>';
 			} else {
 				$ds = number_format_i18n($profile['data_sources'], -1);
 			}
 
 			if ($profile['templates'] > 0) {
-				$dt = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_templates.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['templates'],
-					-1) . '</a>';
+				$dt = '<a class="linkEditMain" href="' .
+					CACTI_PATH_URL .
+					'data_templates.php?reset=true&profile=' .
+					$profile['id'] .
+					'">' .
+					number_format_i18n($profile['templates'],
+						-1) . '</a>';
 			} else {
 				$dt = number_format_i18n($profile['templates'], -1);
 			}
@@ -1539,7 +1565,11 @@ function profile() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Source Profiles Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Data Source Profiles Found') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);

@@ -1765,10 +1765,17 @@ function item() : void {
 			form_alternate_row('', true);
 			?>
 			<td>
-				<a class='linkEditMain' href='<?php print htmle('graph_templates.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . grv('id')); ?>'><?php print htmle($item['name']); ?></a>
+				<a class='linkEditMain' href='<?php print htmle('graph_templates.php?action=input_edit&id=' .
+					$item['id'] .
+					'&graph_template_id=' .
+					grv('id')); ?>'><?php print htmle($item['name']); ?></a>
 			</td>
 			<td class='right'>
-				<a class='deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('graph_templates.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . grv('id') . '&nostate=true'); ?>'></a>
+				<a class='deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('graph_templates.php?action=input_remove&id=' .
+					$item['id'] .
+					'&graph_template_id=' .
+					grv('id') .
+					'&nostate=true'); ?>'></a>
 			</td>
 		</tr>
 		<?php
@@ -2106,7 +2113,11 @@ function graph_templates() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Graph Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Graph Templates Found') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -2242,7 +2253,13 @@ function input_edit() : void {
 			print '<td>';
 
 			$name = $start_bold . __esc('Item #%s',
-				$i + 1) . ': ' . htmle($graph_item_types[$item['graph_type_id']]) . ' (' . htmle($consolidation_functions[$item['consolidation_function_id']]) . ')' . $end_bold;
+				$i + 1) .
+					': ' .
+					htmle($graph_item_types[$item['graph_type_id']]) .
+					' (' .
+					htmle($consolidation_functions[$item['consolidation_function_id']]) .
+					')' .
+					$end_bold;
 
 			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, '', '', '', grv('graph_template_id'));
 			print "<label for='i_" . (int) $item['graph_templates_item_id'] . "'>" . $name . '</label>';

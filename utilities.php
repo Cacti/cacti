@@ -1322,7 +1322,12 @@ function boost_display_run_status() : void {
 
 		if (CACTI_CONNECTION == 'online') {
 			form_alternate_row();
-			print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds) . " ($premaining %)" : __('TBD')) . '</td>';
+			print '<td>' .
+				__('Remaining Data Sources:') .
+				'</td><td>' .
+				($pending_ds > 0 ? number_format_i18n($pending_ds) .
+				" ($premaining %)" : __('TBD')) .
+				'</td>';
 		}
 
 		form_alternate_row();
@@ -1440,11 +1445,21 @@ function boost_display_run_status() : void {
 		print '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated) : '-') . '</td>';
+		print '<td class="utilityPick">' .
+			__('RRD Updates:') .
+			'</td><td>' .
+			($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated) : '-') .
+			'</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' &&
-			is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory') / 1024 / 1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
+		print '<td class="utilityPick">' .
+			__('Peak Poller Memory:') .
+			'</td><td>' .
+			((read_config_option('boost_peak_memory') != '' &&
+			is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory') / 1024 / 1024,2)) .
+				' ' .
+				__('MBytes') : __('N/A')) .
+				'</td>';
 
 		form_alternate_row();
 
@@ -1491,7 +1506,11 @@ function boost_display_run_status() : void {
 				number_format_i18n($delete));
 		}
 
-		print '<td class="utilityPick">' . __('Previous Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats : __('N/A')) . '</td>';
+		print '<td class="utilityPick">' .
+			__('Previous Runtime Timers:') .
+			'</td><td>' .
+			(($detail_stats != '') ? $detail_stats : __('N/A')) .
+			'</td>';
 
 		$runtimes = db_fetch_assoc('SELECT name, value, CAST(replace(name, "stats_boost_", "") AS signed) AS ome
 			FROM settings
@@ -1548,26 +1567,51 @@ function boost_display_run_status() : void {
 		html_section_header(__('Run Time Configuration'), 2);
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Update Frequency:') . '</td><td>' . ($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) . '</td>';
+		print '<td class="utilityPick">' .
+			__('Update Frequency:') .
+			'</td><td>' .
+			($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) .
+			'</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Concurrent Processes:') . '</td><td>' . read_config_option('boost_parallel') . '</td>';
+		print '<td class="utilityPick">' .
+			__('Concurrent Processes:') .
+			'</td><td>' .
+			read_config_option('boost_parallel') .
+			'</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s',
-			(int) $next_run_time) : $next_run_time) . '</td>';
+		print '<td class="utilityPick">' .
+			__('Next Start Time:') .
+			'</td><td>' .
+			(is_numeric($next_run_time) ? date('Y-m-d H:i:s',
+				(int) $next_run_time) : $next_run_time) . '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records) . ' ' . __('Records') . '</td>';
+		print '<td class="utilityPick">' .
+			__('Maximum Records:') .
+			'</td><td>' .
+			number_format_i18n($max_records) .
+			' ' .
+			__('Records') .
+			'</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Maximum Allowed Runtime:') . '</td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
+		print '<td class="utilityPick">' .
+			__('Maximum Allowed Runtime:') .
+			'</td><td>' .
+			$boost_max_runtime[$max_runtime] .
+			'</td>';
 
 		// boost caching
 		html_section_header(__('Image Caching'), 2);
 
 		form_alternate_row();
-		print '<td>' . __('Image Caching Status:') . '</td><td>' . ($boost_cache == '' ? __('Disabled') : __('Enabled')) . '</td>';
+		print '<td>' .
+			__('Image Caching Status:') .
+			'</td><td>' .
+			($boost_cache == '' ? __('Disabled') : __('Enabled')) .
+			'</td>';
 
 		form_alternate_row();
 		print '<td>' . __('Cache Directory:') . '</td><td>' . $cache_directory . '</td>';
@@ -1586,7 +1630,9 @@ function create_snmp_agent_cache_filter() : array {
 	global $item_rows;
 
 	$mibs = array_rekey(
-		db_fetch_assoc("SELECT 'any' AS id, '" . __esc('Any') . ("' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM " .
+		db_fetch_assoc("SELECT 'any' AS id, '" .
+			__esc('Any') .
+			("' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM " .
 			'snmpagent_cache')),
 		'id', 'name'
 	);
@@ -1959,7 +2005,12 @@ function snmpagent_utilities_run_eventlog() : void {
 
 	$logs = db_fetch_assoc_prepared($sql_query, $sql_params);
 
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity=' . grv('severity') . '&receiver=' . grv('receiver') . '&filter=' . grv('filter'),
+	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity=' .
+		grv('severity') .
+		'&receiver=' .
+		grv('receiver') .
+		'&filter=' .
+		grv('filter'),
 		MAX_DISPLAY_PAGES,
 		grv('page'),
 		$rows,

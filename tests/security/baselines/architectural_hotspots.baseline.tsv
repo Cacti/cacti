@@ -18,7 +18,7 @@ cmd_exec	./cli/update_heartbeat.php				$result = exec($command, $output, $return
 cmd_exec	./cmd.php			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
-cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) .
 cmd_exec	./install/functions.php				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
@@ -108,7 +108,7 @@ cmd_exec	./snmpagent_persist.php		pclose(popen('start "CactiSNMPCache" /I /B ' .
 cmd_exec	./support.php					$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
 cmd_exec	./support.php					print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
 cmd_exec	./support.php				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-cmd_exec	./support.php			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
+cmd_exec	./support.php			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) .
 cmd_exec	./support.php			$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
 cmd_exec	./support.php			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 dynamic_include	./cli/audit_database.php								require_once($plugin . '/includes/database.php');

@@ -620,7 +620,11 @@ function sites() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Sites Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Sites Found') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);

@@ -98,7 +98,12 @@ if (isrv('error')) {
 			[
 				'status'   => 'Not Found',
 				'location' => __esc('The Help File %s was not located on the Cacti Documentation Website.',
-					$page) . '<br><br>' . __esc('Open a ticket at ') . '<a target="_blank" href="https://github.com/cacti/cacti/issues">' . __esc('Cacti GitHub Site') . '</a>.'
+					$page) .
+						'<br><br>' .
+						__esc('Open a ticket at ') .
+						'<a target="_blank" href="https://github.com/cacti/cacti/issues">' .
+						__esc('Cacti GitHub Site') .
+						'</a>.'
 			]
 		);
 	} elseif (file_exists(CACTI_PATH_DOCS . '/' . $page)) {

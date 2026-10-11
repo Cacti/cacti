@@ -1514,7 +1514,11 @@ $settings['visual'] = [
 	],
 	'num_rows_table' => [
 		'friendly_name' => __('Rows Per Page'),
-		'description'   => __('The default number of rows to display on for a table.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
+		'description'   => __('The default number of rows to display on for a table.') .
+			' ' .
+			__('.  This is limited by the php setting \'max_input_vars\', currently:') .
+			' ' .
+			ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows
@@ -1538,7 +1542,11 @@ $settings['visual'] = [
 	'autocomplete_rows' => [
 		'friendly_name' => __('Autocomplete Rows'),
 		'description'   => __('The default number of rows to return from an autocomplete based ' .
-			'select pattern match.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
+			'select pattern match.') .
+				' ' .
+				__('.  This is limited by the php setting \'max_input_vars\', currently:') .
+				' ' .
+				ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows

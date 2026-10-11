@@ -229,7 +229,11 @@ function purge_user_log() : void {
 		<tr class='saveRow'>
 			<td colspan='2' class='right'>
 				<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __esc('Cancel') . "</button>
-				<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='" . __esc('Purge Log') . "'>" . __esc('Continue') . "</button>
+				<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='" .
+					__esc('Purge Log') .
+					"'>" .
+					__esc('Continue') .
+					"</button>
 				<script type='text/javascript'>
 				$(function() {
 					$('#pc').click(function() {

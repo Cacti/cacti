@@ -568,7 +568,15 @@ function aggregate_template() : void {
 	$sql_where = '';
 
 	if (grv('filter') != '') {
-		$sql_where = 'WHERE (pgt.name LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR gt.name LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
+		$sql_where = 'WHERE (pgt.name LIKE ' .
+			db_qstr('%' .
+			grv('filter') .
+			'%') .
+			' OR gt.name LIKE ' .
+			db_qstr('%' .
+			grv('filter') .
+			'%') .
+			')';
 	}
 
 	if (grv('has_graphs') == 'true') {
@@ -667,7 +675,11 @@ function aggregate_template() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Aggregate Templates Found') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);

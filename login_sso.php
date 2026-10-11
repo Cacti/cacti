@@ -179,7 +179,9 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 	}
 
 	if (!cacti_sizeof($user)) {
-		cacti_log("LOGIN FAILED: user '" . $result->username . ("' authenticated but the provider has no template and no existing " .
+		cacti_log("LOGIN FAILED: user '" .
+			$result->username .
+			("' authenticated but the provider has no template and no existing " .
 			'account.'),
 			false,
 			'AUTH');

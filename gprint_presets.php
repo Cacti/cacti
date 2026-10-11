@@ -82,7 +82,8 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?action=edit&id=' . ($gprint_preset_id === null ? gnrv('id') : $gprint_preset_id));
+			header('Location: gprint_presets.php?action=edit&id=' .
+				($gprint_preset_id === null ? gnrv('id') : $gprint_preset_id));
 
 			exit;
 		} else {
@@ -303,7 +304,11 @@ function gprint_presets() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No GPRINT Presets') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);

@@ -599,7 +599,11 @@ function show_database_processes() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Database Queries Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Database Queries Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1033,7 +1037,11 @@ function show_cacti_processes() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text)) . "'><em>" . __('No Cacti or Plugin Background Processes Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text)) .
+			"'><em>" .
+			__('No Cacti or Plugin Background Processes Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1375,7 +1383,8 @@ function show_tech_summary() : void {
 		$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
 		$snmp_installed = true;
 	} else {
-		$snmp_version   = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if ' .
+		$snmp_version   = "<span class='deviceDown'>" .
+			__('NET-SNMP Not Installed or its paths are not set.  Please install if ' .
 			'you wish to monitor SNMP enabled devices.') . '</span>';
 		$snmp_installed = false;
 	}
@@ -1393,9 +1402,10 @@ function show_tech_summary() : void {
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 
 	if ($graph_gif_count > 0) {
-		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" ' .
+		$rrdtool_errors[] = "<span class='deviceDown'>" .
+			__('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" ' .
 			'graph(s) and/or templates have GIF set as the image format.',
-			$graph_gif_count) . '</span>';
+				$graph_gif_count) . '</span>';
 	}
 
 	// Get spine version
@@ -1416,8 +1426,12 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>' . __('Diagnostics Export') . '</td>';
-	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a diagnostics report to the clipboard.  Enable the redact toggle ' .
-		'to mask identifying details before sharing.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" aria-live="polite"></span>' .
+	print '<td><button type="button" id="copy_diag" title="' .
+		__esc('Copy a diagnostics report to the clipboard.  Enable the redact toggle ' .
+		'to mask identifying details before sharing.') .
+			'">' .
+			__('Copy Diagnostics') .
+			'</button> <span id="copy_diag_status" aria-live="polite"></span>' .
 		('<label style="margin-left:12px"><input type="checkbox" ' .
 			'id="redact_toggle"') . ($redact ? ' checked="checked"' : '') . '> ' . __('Redact for sharing') . '</label></td>';
 	form_end_row();
@@ -1437,15 +1451,26 @@ function show_tech_summary() : void {
 			$unlock_hms  = date('H:i', $unlock_time);
 
 			print ('<td><button class="deviceDown" type="button" id="lockout" ' .
-				'data-expected="locked" title="') . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!',
-					$unlock_hms) . '</button></td>';
+				'data-expected="locked" title="') .
+					__('To Unlock, press this button again.') .
+					'">' .
+					__('Cacti in Maintenance Mode until approximately %s!',
+						$unlock_hms) . '</button></td>';
 		} else {
 			print ('<td><button type="button" id="lockout" data-expected="unlocked" ' .
-				'title="') . __('Press this button to Lockout Cacti for 30 minutes for maintenance.') . '">' . __('Lockout Cacti for Maintenance') . '</button></td>';
+				'title="') .
+					__('Press this button to Lockout Cacti for 30 minutes for maintenance.') .
+					'">' .
+					__('Lockout Cacti for Maintenance') .
+					'</button></td>';
 		}
 	} else {
 		print ('<td><button class="deviceDisabled" type="button" id="lockout" ' .
-			'disabled="disabled" title="') . __('To enable this feature, goto Settings > Authentication.') . '">' . __('Cacti Maintenance Mode feature is disabled') . '</button></td>';
+			'disabled="disabled" title="') .
+				__('To enable this feature, goto Settings > Authentication.') .
+				'">' .
+				__('Cacti Maintenance Mode feature is disabled') .
+				'</button></td>';
 	}
 	form_end_row();
 
@@ -2115,7 +2140,11 @@ function show_tech_environment() : void {
 	$php_binary = read_config_option('path_php_binary');
 
 	if ($php_binary != '' && file_exists($php_binary) && is_executable($php_binary)) {
-		$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
+		$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) .
+			' -q ' .
+			cacti_escapeshellarg(CACTI_PATH_INSTALL .
+			'/cli_check.php') .
+			' extensions');
 		$cli_ext  = @json_decode((string) $cli_json, true);
 
 		if (is_array($cli_ext)) {

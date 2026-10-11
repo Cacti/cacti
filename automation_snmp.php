@@ -209,7 +209,11 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" . __esc('Import SNMP Options') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
+			<button type='submit' value='import' title='" .
+				__esc('Import SNMP Options') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
+				__esc('Import') .
+				"</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -372,7 +376,10 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?action=item_edit&id=' . gnrv('id') . '&item_id=' . ($item_id === null ? gfrv('id') : $item_id));
+			header('Location: automation_snmp.php?action=item_edit&id=' .
+				gnrv('id') .
+				'&item_id=' .
+				($item_id === null ? gfrv('id') : $item_id));
 		} else {
 			header('Location: automation_snmp.php?action=edit&id=' . gnrv('id'));
 		}
@@ -589,7 +596,8 @@ function automation_snmp_item_remove_confirm() : void {
 			<p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
 			<p><?php print __('SNMP Option:'); ?> <?php print htmle($snmp['name']); ?><br>
 			<?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']); ?><br>
-			<?php print __esc('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community'] : $item['snmp_username'])); ?></p>
+			<?php print __esc('SNMP Community/Username: <b>%s</b>',
+				($item['snmp_version'] != 3 ? $item['snmp_community'] : $item['snmp_username'])); ?></p>
 		</td>
 	</tr>
 	<tr>
@@ -858,10 +866,18 @@ function automation_snmp_edit() : void {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true);
 
-				$form_data = "<td><a class='linkEditMain' href='" . htmle('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item # %d',
-					$i) . '</a></td>';
+				$form_data = "<td><a class='linkEditMain' href='" .
+					htmle('automation_snmp.php?action=item_edit&item_id=' .
+					$item['id'] .
+					'&id=' .
+					$item['snmp_id']) .
+					"'>" .
+					__('Item # %d',
+						$i) . '</a></td>';
 				$form_data .= '<td>' . $item['snmp_version'] . '</td>';
-				$form_data .= '<td class="left">' . ($item['snmp_version'] == 3 ? __('none') : htmle($item['snmp_community'])) . '</td>';
+				$form_data .= '<td class="left">' .
+					($item['snmp_version'] == 3 ? __('none') : htmle($item['snmp_community'])) .
+					'</td>';
 				$form_data .= '<td class="right">' . $item['snmp_port'] . '</td>';
 				$form_data .= '<td class="right">' . $item['snmp_timeout'] . '</td>';
 				$form_data .= '<td class="right">' . $item['snmp_retries'] . '</td>';
@@ -878,20 +894,40 @@ function automation_snmp_edit() : void {
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
 						$form_data .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('automation_snmp.php?action=item_movedown&item_id=' .
+								$item['id'] .
+								'&id=' .
+								$item['snmp_id']) .
+								'" title="' .
+								__esc('Move Down') .
+								'"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
 						$form_data .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') . html_escape_url('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
+							'href="#" data-url="') .
+								html_escape_url('automation_snmp.php?action=item_moveup&item_id=' .
+								$item['id'] .
+								'&id=' .
+								$item['snmp_id']) .
+								'" title="' .
+								__esc('Move Up') .
+								'"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				$form_data .= '<a class="delete deleteMarker ti ti-x" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
+				$form_data .= '<a class="delete deleteMarker ti ti-x" id="' .
+					$item['id'] .
+					'_' .
+					$item['snmp_id'] .
+					'" title="' .
+					__esc('Delete') .
+					'"></a>';
 				$form_data .= '</td>';
 
 				print $form_data;
@@ -901,7 +937,11 @@ function automation_snmp_edit() : void {
 				$i++;
 			}
 		} else {
-			print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No SNMP Items') . '</em></td></tr>';
+			print '<tr class="tableRow odd"><td colspan="' .
+				(cacti_sizeof($display_text) + 1) .
+				'"><em>' .
+				__('No SNMP Items') .
+				'</em></td></tr>';
 		}
 
 		html_end_box();
@@ -1079,7 +1119,11 @@ function automation_snmp() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No SNMP Option Sets Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No SNMP Option Sets Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

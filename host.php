@@ -200,7 +200,12 @@ function host_reindex() : void {
 	$start = microtime(true);
 
 	$host_id = gfrv('host_id');
-	shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+	shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) .
+		' -q ' .
+		cacti_escapeshellarg(CACTI_PATH_CLI .
+		'/poller_reindex_hosts.php') .
+		' --qid=all --id=' .
+		$host_id);
 
 	$end = microtime(true);
 
@@ -797,12 +802,16 @@ function create_host_edit_filter(array $host, string $content = '') : array {
 			],
 			[
 				'display' => __('View Poller Cache'),
-				'url'     => 'utilities.php?poller_action=-1&action=view_poller_cache&host_id=' . $host['id'] . '&template_id=-1&filter=&rows=-1',
+				'url'     => 'utilities.php?poller_action=-1&action=view_poller_cache&host_id=' .
+					$host['id'] .
+					'&template_id=-1&filter=&rows=-1',
 				'class'   => 'fa-solid fa-list-ul viewCache'
 			],
 			[
 				'display' => __('View Data Source List'),
-				'url'     => 'data_sources.php?reset=true&host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1',
+				'url'     => 'data_sources.php?reset=true&host_id=' .
+					$host['id'] .
+					'&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1',
 				'class'   => 'ti ti-brand-databricks viewSources'
 			],
 			[
@@ -886,7 +895,9 @@ function host_edit() : void {
 
 	if (cacti_sizeof($host)) {
 		$content  = "<div class='pingRow'>";
-		$content .= "<div id='ping_results'>" . __('Contacting Device') . ("&nbsp;<i style='font-size:12px;' class='ti fa-spin " .
+		$content .= "<div id='ping_results'>" .
+			__('Contacting Device') .
+			("&nbsp;<i style='font-size:12px;' class='ti fa-spin " .
 			"ti-loader'></i></div>");
 		$content .= '</div>';
 
@@ -1009,7 +1020,16 @@ function host_edit() : void {
 					<strong><?php print $i; ?>)</strong> <?php print htmle($item['name']); ?>
 				</td>
 				<td class='nowrap'>
-					<?php print(($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . htmle('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . '</a>)' : "<span class='notBeingGraphed'>" . __('Not Being Graphed') . '</span>'); ?>
+					<?php print(($is_being_graphed == true) ? "<span class='beingGraphed'>" .
+						__('Is Being Graphed') .
+						"</span> (<a class='linkEditMain' href='" .
+						htmle('graphs.php?action=graph_edit&id=' .
+						$item['graph_local_id']) .
+						"'>" .
+						__('Edit') .
+						'</a>)' : "<span class='notBeingGraphed'>" .
+						__('Not Being Graphed') .
+						'</span>'); ?>
 				</td>
 				<td class='nowrap right'>
 					<span title='<?php print __esc('Delete Graph Template Association'); ?>' class='deletequery ti ti-x' id='gtremove<?php print $item['id']; ?>' data-id='<?php print $item['id']; ?>'></span>
@@ -1152,7 +1172,14 @@ function host_edit() : void {
 					<?php print($item['reindex_last_duration'] == 0 ? '-' : __('%0.2f secs', $item['reindex_last_duration'])); ?>
 				</td>
 				<td>
-					<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . '</span>' : "<span class='failed'>" . __('Fail')) . '</span>' . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']); ?>
+					<?php print (($status == 'success') ? "<span class='success'>" .
+						__('Success') .
+						'</span>' : "<span class='failed'>" .
+						__('Fail')) .
+						'</span>' .
+						__(' [%d Items, %d Rows]',
+							$item['itemCount'],
+							$item['rowCount']); ?>
 				</td>
 				<td class='nowrap right' style='vertical-align:middle;'>
 					<span class='reloadquery ti ti-refresh' id='reload<?php print $item['id']; ?>' title='<?php print __esc('Reload Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
@@ -1221,8 +1248,30 @@ function device_reindex_methods(array $item, array $host) : void {
 		if ($i == 0) {
 			print "<fieldset class='reindex_methods'>";
 		}
-		print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . '_' . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"' : '') . ' />';
-		print "<label title='" . htmle($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . '_' . $key . "'>" . $type . '</label>';
+		print "<input name='reindex_radio_" .
+			$item['id'] .
+			"' type='radio' data-device-id='" .
+			$host['id'] .
+			"' data-query-id='" .
+			$item['id'] .
+			"' data-reindex-method='" .
+			$key .
+			"' id='reindex_" .
+			$item['id'] .
+			'_' .
+			$key .
+			"'" .
+			($item['reindex_method'] == $key ? ' checked="checked"' : '') .
+			' />';
+		print "<label title='" .
+			htmle($reindex_types_tips[$key]) .
+			"' for='reindex_" .
+			$item['id'] .
+			'_' .
+			$key .
+			"'>" .
+			$type .
+			'</label>';
 
 		$i++;
 	}
@@ -1910,7 +1959,11 @@ function host() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Devices Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Devices Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -2190,8 +2243,10 @@ function get_maint_hosts() : array {
 				if ($sch['etime'] < $t) {
 					/* convert start and end to local so that hour stays same for
 					add days across daylight saving time change */
-					$starttimelocal = (new DateTime('@' . strval($sch['stime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
-					$endtimelocal   = (new DateTime('@' . strval($sch['etime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
+					$starttimelocal = (new DateTime('@' .
+						strval($sch['stime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
+					$endtimelocal   = (new DateTime('@' .
+						strval($sch['etime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
 					$nowtime        = new DateTime();
 					// add interval days
 					$addday = new DateInterval('P' . strval($sch['minterval'] / 86400) . 'D');

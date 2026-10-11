@@ -146,7 +146,9 @@ switch ($action) {
 		// Check user password history
 		if (!secpass_check_history($user_id, $password)) {
 			$bad_password = true;
-			$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . '</span>';
+			$errorMessage = "<span class='badpassword_message'>" .
+				__('You cannot use a previously entered password!') .
+				'</span>';
 
 			break;
 		}
@@ -154,7 +156,9 @@ switch ($action) {
 		// Password and Confirmed password checks
 		if ($password !== $password_confirm) {
 			$bad_password = true;
-			$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . '</span>';
+			$errorMessage = "<span class='badpassword_message'>" .
+				__('Your new passwords do not match, please retype.') .
+				'</span>';
 
 			break;
 		}
@@ -165,7 +169,9 @@ switch ($action) {
 			!compat_password_verify($current_password,
 				$user['password'])) {
 			$bad_password = true;
-			$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . '</span>';
+			$errorMessage = "<span class='badpassword_message'>" .
+				__('Your current password is not correct. Please try again.') .
+				'</span>';
 
 			break;
 		}
@@ -173,7 +179,8 @@ switch ($action) {
 		// Check new password does not match stored password
 		if (compat_password_verify($password, $user['password'])) {
 			$bad_password = true;
-			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try ' .
+			$errorMessage = "<span class='badpassword_message'>" .
+				__('Your new password cannot be the same as the old password. Please try ' .
 				'again.') . '</span>';
 
 			break;

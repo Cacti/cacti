@@ -179,7 +179,12 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . ($data_input_field_id === null ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
+			header('Location: data_input.php?action=field_edit&data_input_id=' .
+				grv('data_input_id') .
+				'&id=' .
+				($data_input_field_id === null ? grv('id') : $data_input_field_id) .
+				(!ierv('input_output') ? '&type=' .
+				grv('input_output') : ''));
 		} else {
 			header('Location: data_input.php?action=edit&id=' . grv('data_input_id'));
 		}
@@ -666,7 +671,14 @@ function data_input_edit() : void {
 
 				form_selectable_cell($field['sequence'], $i);
 
-				form_selectable_cell("<a class='delete deleteMarker ti ti-x' href='" . htmle('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . grv('id')) . "' title='" . __esc('Delete') . "'></a>",
+				form_selectable_cell("<a class='delete deleteMarker ti ti-x' href='" .
+					htmle('data_input.php?action=field_remove_confirm&id=' .
+					$field['id'] .
+					'&data_input_id=' .
+					grv('id')) .
+					"' title='" .
+					__esc('Delete') .
+					"'></a>",
 					$i,
 					'',
 					'right');
@@ -718,7 +730,9 @@ function data_input_edit() : void {
 				form_selectable_cell(html_boolean_friendly($field['update_rra']), $i);
 
 				if ($output_disabled) {
-					form_selectable_cell("<a class='deleteMarkerDisabled ti ti-x' href='#' title='" . __esc('Output Fields can not be removed when Data Sources are present') . "'></a>",
+					form_selectable_cell("<a class='deleteMarkerDisabled ti ti-x' href='#' title='" .
+						__esc('Output Fields can not be removed when Data Sources are present') .
+						"'></a>",
 						$i);
 				} else {
 					$url = htmle('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . grv('id'));
@@ -905,7 +919,11 @@ function data() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Data Input Methods Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

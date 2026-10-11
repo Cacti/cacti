@@ -18,7 +18,7 @@ cmd_exec	./cli/update_heartbeat.php				$result = exec($command, $output, $return
 cmd_exec	./cmd.php			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
-cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) .
 cmd_exec	./install/functions.php				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
@@ -108,7 +108,7 @@ cmd_exec	./snmpagent_persist.php		pclose(popen('start "CactiSNMPCache" /I /B ' .
 cmd_exec	./support.php					$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
 cmd_exec	./support.php					print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
 cmd_exec	./support.php				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-cmd_exec	./support.php			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
+cmd_exec	./support.php			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) .
 cmd_exec	./support.php			$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
 cmd_exec	./support.php			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 deserialize	./lib/cache.php			$data = @unserialize($wire, ['allowed_classes' => false]);
@@ -227,8 +227,8 @@ header_redirect	./aggregate_graphs.php						header('Location: aggregate_graphs.p
 header_redirect	./aggregate_graphs.php					header('Location: aggregate_graphs.php');
 header_redirect	./aggregate_graphs.php					header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php					header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
+header_redirect	./aggregate_graphs.php				header('Location: ' .
 header_redirect	./aggregate_graphs.php				header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
-header_redirect	./aggregate_graphs.php				header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . ($graph_template_item_id === null ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
 header_redirect	./aggregate_graphs.php				header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php				header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php			header('Location: ' . $referer);
@@ -257,11 +257,11 @@ header_redirect	./auth_resetpassword.php				header('Location: index.php');
 header_redirect	./automation_devices.php			header('Location: automation_devices.php');
 header_redirect	./automation_devices.php		header('Location: automation_devices.php');
 header_redirect	./automation_graph_rules.php						header('Location: automation_graph_rules.php?header=false&action=edit&id=' . grv('id'));
-header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
-header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
-header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
-header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
-header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?header=false&action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=edit&id=' .
+header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=edit&id=' .
+header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=item_edit&id=' .
+header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?action=item_edit&id=' .
+header_redirect	./automation_graph_rules.php				header('Location: automation_graph_rules.php?header=false&action=edit&id=' .
 header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php');
 header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php');
 header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php');
@@ -270,13 +270,13 @@ header_redirect	./automation_graph_rules.php			header('Location: automation_grap
 header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php?action=edit&id=' . gfrv('id'));
 header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php?action=edit&id=' . gfrv('id'));
 header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php?action=edit&id=' . gfrv('id'));
-header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php?action=edit&name=' . grv('name') . '&id=' . gfrv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
+header_redirect	./automation_graph_rules.php			header('Location: automation_graph_rules.php?action=edit&name=' .
 header_redirect	./automation_graph_rules.php		header('Location: automation_graph_rules.php?action=import');
 header_redirect	./automation_networks.php			header('Location: automation_networks.php');
 header_redirect	./automation_networks.php			header('Location: automation_networks.php?action=edit&id=' . (empty($network_id) ? gnrv('id') : $network_id));
 header_redirect	./automation_networks.php		header('Location: automation_networks.php?action=import');
 header_redirect	./automation_snmp.php				header('Location: automation_snmp.php?action=edit&id=' . gnrv('id'));
-header_redirect	./automation_snmp.php				header('Location: automation_snmp.php?action=item_edit&id=' . gnrv('id') . '&item_id=' . ($item_id === null ? gfrv('id') : $item_id));
+header_redirect	./automation_snmp.php				header('Location: automation_snmp.php?action=item_edit&id=' .
 header_redirect	./automation_snmp.php			header('Location: automation_snmp.php');
 header_redirect	./automation_snmp.php			header('Location: automation_snmp.php');
 header_redirect	./automation_snmp.php			header('Location: automation_snmp.php?action=edit&id=' . (empty($id) ? gnrv('id') : $id));
@@ -305,11 +305,11 @@ header_redirect	./automation_templates.php		header('Location: automation_templat
 header_redirect	./automation_templates.php		header('Location: automation_templates.php?action=edit&id=' . grv('id'));
 header_redirect	./automation_templates.php		header('Location: automation_templates.php?action=import');
 header_redirect	./automation_tree_rules.php						header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id'));
-header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
-header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
-header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
-header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
-header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=edit&id=' .
+header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=edit&id=' .
+header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=item_edit&id=' .
+header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?action=item_edit&id=' .
+header_redirect	./automation_tree_rules.php				header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' .
 header_redirect	./automation_tree_rules.php			header('Location: automation_tree_rules.php');
 header_redirect	./automation_tree_rules.php			header('Location: automation_tree_rules.php');
 header_redirect	./automation_tree_rules.php			header('Location: automation_tree_rules.php');
@@ -326,7 +326,7 @@ header_redirect	./cache/mibcache/index.php	header('Location:../../index.php');
 header_redirect	./cache/realtime/index.php	header('Location:../index.php');
 header_redirect	./cache/spikekill/index.php	header('Location:../index.php');
 header_redirect	./cdef.php				header('Location: cdef.php?action=edit&id=' . gnrv('cdef_id'));
-header_redirect	./cdef.php				header('Location: cdef.php?action=item_edit&cdef_id=' . gnrv('cdef_id') . '&id=' . ($cdef_item_id === null ? gnrv('id') : $cdef_item_id));
+header_redirect	./cdef.php				header('Location: cdef.php?action=item_edit&cdef_id=' .
 header_redirect	./cdef.php			header('Location: cdef.php');
 header_redirect	./cdef.php			header('Location: cdef.php?action=edit&id=' . (empty($cdef_id) ? gnrv('id') : $cdef_id));
 header_redirect	./cdef.php			header('Location: cdef.php?action=edit&id=' . grv('cdef_id'));
@@ -343,10 +343,10 @@ header_redirect	./color.php				header('Location: color.php');
 header_redirect	./color.php				header('Location: color.php?action=edit&id=' . (empty($color_id) ? gnrv('id') : $color_id));
 header_redirect	./color.php				header('Location: color.php?action=import');
 header_redirect	./color.php			header('Location: color.php');
-header_redirect	./color_templates.php				header('Location: color_templates.php?action=item_edit&color_template_item_id=' . ($color_template_item_id === null ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
+header_redirect	./color_templates.php				header('Location: color_templates.php?action=item_edit&color_template_item_id=' .
 header_redirect	./color_templates.php				header('Location: color_templates.php?action=template_edit&color_template_id=' . gnrv('color_template_id'));
 header_redirect	./color_templates.php			header('Location: color_templates.php');
-header_redirect	./color_templates.php			header('Location: color_templates.php?action=template_edit&color_template_id=' . ($color_template_id === null ? gfrv('color_template_id') : $color_template_id));
+header_redirect	./color_templates.php			header('Location: color_templates.php?action=template_edit&color_template_id=' .
 header_redirect	./color_templates.php			header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
 header_redirect	./color_templates.php			header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
 header_redirect	./color_templates.php			header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('id'));
@@ -358,7 +358,7 @@ header_redirect	./data_debug.php				header('Location: data_debug.php?action=view
 header_redirect	./data_debug.php				header('Location: data_debug.php?action=view&id=' . gfrv('id'));
 header_redirect	./data_input.php				header('Location: data_input.php');
 header_redirect	./data_input.php				header('Location: data_input.php?action=edit&id=' . grv('data_input_id'));
-header_redirect	./data_input.php				header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . ($data_input_field_id === null ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
+header_redirect	./data_input.php				header('Location: data_input.php?action=field_edit&data_input_id=' .
 header_redirect	./data_input.php			header('Location: data_input.php');
 header_redirect	./data_input.php			header('Location: data_input.php?action=edit&id=' . (empty($data_input_id) ? gnrv('id') : $data_input_id));
 header_redirect	./data_input.php			header('Location: data_input.php?action=edit&id=' . gfrv('data_input_id'));
@@ -372,40 +372,40 @@ header_redirect	./data_queries.php				header('Location: data_queries.php?action=
 header_redirect	./data_queries.php			header('Location: data_queries.php');
 header_redirect	./data_queries.php			header('Location: data_queries.php?action=edit&id=' . (empty($snmp_query_id) ? grv('id') : $snmp_query_id));
 header_redirect	./data_queries.php			header('Location: data_queries.php?action=edit&id=' . gfrv('snmp_query_id'));
-header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . (empty($snmp_query_graph_id) ? grv('id') : $snmp_query_graph_id) . '&snmp_query_id=' . grv('snmp_query_id'));
-header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
-header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
-header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
-header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
-header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
-header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' .
+header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' .
+header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' .
+header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' .
+header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' .
+header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' .
+header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' .
 header_redirect	./data_queries.php			header('Location: data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 header_redirect	./data_source_profiles.php				header('Location: data_source_profiles.php?action=edit&id=' . grv('profile_id'));
-header_redirect	./data_source_profiles.php				header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . ($profile_rra_id === null ? grv('id') : $profile_rra_id));
+header_redirect	./data_source_profiles.php				header('Location: data_source_profiles.php?action=item_edit&profile_id=' .
 header_redirect	./data_source_profiles.php			header('Location: data_source_profiles.php');
 header_redirect	./data_source_profiles.php			header('Location: data_source_profiles.php?action=edit&id=' . (empty($profile_id) ? grv('id') : $profile_id));
 header_redirect	./data_source_profiles.php		header('Location: data_source_profiles.php?action=import');
-header_redirect	./data_sources.php									header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
+header_redirect	./data_sources.php									header('Location: data_sources.php?action=ds_edit&id=' .
 header_redirect	./data_sources.php				header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php?action=ds_edit&host_id=' . grv('host_id') . '&new=1');
-header_redirect	./data_sources.php			header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
+header_redirect	./data_sources.php			header('Location: data_sources.php?action=ds_edit&id=' .
 header_redirect	./data_sources.php		header('Location: data_sources.php?action=ds_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
 header_redirect	./data_sources.php		header('Location: data_sources.php?action=ds_edit&id=' . grv('id'));
 header_redirect	./data_sources.php		header('Location: data_sources.php?action=ds_edit&id=' . grv('id'));
 header_redirect	./data_sources.php		header('Location: data_sources.php?action=ds_edit&id=' . grv('local_data_id'));
 header_redirect	./data_templates.php					header('Location: ' . $location);
 header_redirect	./data_templates.php			header('Location: data_templates.php');
-header_redirect	./data_templates.php			header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? grv('data_template_id') : $data_template_id) . (ierv('current_rrd') ? '' : '&view_rrd=' . (gnrv('current_rrd') ? gnrv('current_rrd') : $data_template_rrd_id)));
+header_redirect	./data_templates.php			header('Location: data_templates.php?action=template_edit&id=' .
 header_redirect	./data_templates.php		header('Location: data_templates.php?action=template_edit&id=' . grv('data_template_id'));
 header_redirect	./data_templates.php		header('Location: data_templates.php?action=template_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
 header_redirect	./docs/index.php		header('Location: https://github.com/Cacti/documentation/blob/develop/README.md');
 header_redirect	./formats/index.php	header('Location:../index.php');
 header_redirect	./gprint_presets.php				header('Location: gprint_presets.php');
-header_redirect	./gprint_presets.php				header('Location: gprint_presets.php?action=edit&id=' . ($gprint_preset_id === null ? gnrv('id') : $gprint_preset_id));
+header_redirect	./gprint_presets.php				header('Location: gprint_presets.php?action=edit&id=' .
 header_redirect	./gprint_presets.php			header('Location: gprint_presets.php');
 header_redirect	./graph_templates.php			header('Location: graph_templates.php');
 header_redirect	./graph_templates.php			header('Location: graph_templates.php?action=template_edit&id=' . gfrv('id'));
@@ -449,7 +449,7 @@ header_redirect	./host_templates.php			header('Location: host_templates.php?acti
 header_redirect	./host_templates.php			header('Location: host_templates.php?action=edit&id=' . gfrv('host_template_id'));
 header_redirect	./images/index.php	header('Location:../index.php');
 header_redirect	./include/auth.php					header('Location: ' . CACTI_PATH_URL . 'auth_2fa.php');
-header_redirect	./include/auth.php			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '',
+header_redirect	./include/auth.php			header('Location: ' .
 header_redirect	./include/auth.php		header('Location: ' . CACTI_PATH_URL . 'install/');
 header_redirect	./include/content/index.php	header('Location:../index.php');
 header_redirect	./include/csrf.php		header('Location: ' . $redirect_target);

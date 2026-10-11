@@ -603,7 +603,11 @@ function debug_wizard() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Source Checks Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Data Source Checks Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -798,7 +802,11 @@ function debug_view() : void {
 			'');
 	} else {
 		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]',
-			'<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'),
+			'<a href="#" class="rerun linkEditMain" data-id="' .
+				$id .
+				'" style="cursor:pointer;">' .
+				__('Rerun Analysis') .
+				'</a>'),
 			'100%',
 			false,
 			3,
@@ -894,7 +902,11 @@ function debug_view() : void {
 
 			if (is_writeable($path)) {
 				html_start_box(__('Repair Steps [ %s ]',
-					'<a href="#" class="repairme linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'),
+					'<a href="#" class="repairme linkEditMain" data-id="' .
+						$id .
+						'" style="cursor:pointer;">' .
+						__('Apply Suggested Fixes') .
+						'</a>'),
 					'100%',
 					false,
 					3,

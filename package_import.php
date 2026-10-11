@@ -412,7 +412,9 @@ function form_actions() : void {
 				}
 
 				$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
-					"onClick='cactiReturnTo()'>") . __esc('Cancel') . ("</button><button type='submit' class='ui-button ui-corner-all " .
+					"onClick='cactiReturnTo()'>") .
+						__esc('Cancel') .
+						("</button><button type='submit' class='ui-button ui-corner-all " .
 					"ui-widget ui-state-active' title='") . __n('Import Package',
 						'Import Packages',
 						cacti_sizeof($pkg_array)) . "'>" . __esc('Continue') . '</button>';
@@ -1803,7 +1805,11 @@ function package_import() : void {
 				$i++;
 			}
 		} else {
-			print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Packages Found') . '</em></td></tr>';
+			print "<tr class='tableRow odd'><td colspan='" .
+				(cacti_sizeof($display_text) + 1) .
+				"'><em>" .
+				__('No Packages Found') .
+				'</em></td></tr>';
 		}
 
 		html_end_box(true);

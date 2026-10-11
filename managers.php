@@ -166,7 +166,11 @@ function manager() : void {
 			form_selectable_cell(filter_value($description, '', $url), $item['id']);
 			form_selectable_cell($item['id'], $item['id']);
 
-			form_selectable_cell($item['disabled'] ? '<span class="deviceDown">' . __('Disabled') . '</span>' : '<span class="deviceUp">' . __('Enabled') . '</span>',
+			form_selectable_cell($item['disabled'] ? '<span class="deviceDown">' .
+				__('Disabled') .
+				'</span>' : '<span class="deviceUp">' .
+				__('Enabled') .
+				'</span>',
 				$item['id']);
 
 			form_selectable_ecell($hostname, $item['id']);
@@ -223,7 +227,11 @@ function manager_edit() : void {
 
 		foreach (array_keys($tabs_manager_edit) as $tab_short_name) {
 			if (($id == 0 && $tab_short_name != 'general')) {
-				print "<li class='subTab'><a href='#' " . (($tab_short_name == grv('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . '</a></li>';
+				print "<li class='subTab'><a href='#' " .
+					(($tab_short_name == grv('tab')) ? "class='selected'" : '') .
+					"'>" .
+					$tabs_manager_edit[$tab_short_name] .
+					'</a></li>';
 			} else {
 				print "<li class='subTab'><a " . (($tab_short_name == grv('tab')) ? "class='selected'" : '') .
 					" href='" . htmle(CACTI_PATH_URL .
@@ -306,7 +314,9 @@ function create_manager_notification_filter() : array {
 	global $item_rows;
 
 	$mibs = array_rekey(
-		db_fetch_assoc("SELECT 'any' AS id, '" . __esc('Any') . ("' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM " .
+		db_fetch_assoc("SELECT 'any' AS id, '" .
+			__esc('Any') .
+			("' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM " .
 			'snmpagent_cache')),
 		'id', 'name'
 	);
@@ -451,7 +461,12 @@ function manager_notifications(int $id, string $header_label) : void {
 	];
 
 	// generate page list
-	$nav = html_nav_bar('managers.php?action=edit&id=' . $id . '&tab=notifications&mib=' . grv('mib') . '&filter=' . grv('filter'),
+	$nav = html_nav_bar('managers.php?action=edit&id=' .
+		$id .
+		'&tab=notifications&mib=' .
+		grv('mib') .
+		'&filter=' .
+		grv('filter'),
 		MAX_DISPLAY_PAGES,
 		grv('page'),
 		$rows,
@@ -487,7 +502,10 @@ function manager_notifications(int $id, string $header_label) : void {
 			form_selectable_ecell($item['kind'], $row_id);
 			form_selectable_cell($item['max-access'],$row_id);
 			form_selectable_cell(((isset($notifications[$item['mib']]) &&
-				isset($notifications[$item['mib']][$item['name']])) ? '<span class="deviceUp">' . __('Enabled') : '<span class="deviceDown">' . __('Disabled')) . '</span>',
+				isset($notifications[$item['mib']][$item['name']])) ? '<span class="deviceUp">' .
+					__('Enabled') : '<span class="deviceDown">' .
+					__('Disabled')) .
+					'</span>',
 				$row_id);
 			form_checkbox_cell($item['oid'], $row_id);
 
@@ -690,7 +708,9 @@ function manager_logs(int $id, string $header_label) : void {
 				__esc('Severity Level') . ': ' . $severity_levels[$item['severity']]),
 				$item['id'],
 				'',
-				'width:10px;background-color:' . $severity_colors[$item['severity']] . ';border-top:1px solid white;border-bottom:1px solid white;');
+				'width:10px;background-color:' .
+					$severity_colors[$item['severity']] .
+					';border-top:1px solid white;border-bottom:1px solid white;');
 			form_selectable_cell(date('Y/m/d H:i:s', $item['time']), $item['id']);
 
 			if ($item['description']) {

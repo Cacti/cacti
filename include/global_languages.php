@@ -370,7 +370,17 @@ function get_language_file(string $extension, string $prefix, array $names, stri
 		$file   = $base_path . $prefix . $name . $extension;
 		$exists = file_exists($file);
 
-		i18n_debug('get_language_file("' . $extension . '", "' . $prefix . '", "' . $base_path . '"): ' . ($exists ? 'Yes' : 'No') . ' - "' . $file . '"');
+		i18n_debug('get_language_file("' .
+			$extension .
+			'", "' .
+			$prefix .
+			'", "' .
+			$base_path .
+			'"): ' .
+			($exists ? 'Yes' : 'No') .
+			' - "' .
+			$file .
+			'"');
 
 		if ($exists) {
 			return $file;
@@ -459,7 +469,9 @@ function get_src_language_files(string|null $i18n_handler) : array|null {
 					$i18n_return['paths'] = [ $path ];
 				}
 
-				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - Selecting with " . count($i18n_return['paths']) . ' paths');
+				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - Selecting with " .
+					count($i18n_return['paths']) .
+					' paths');
 
 				return $i18n_return;
 			}

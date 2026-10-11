@@ -665,7 +665,9 @@ $struct_data_source = [
 		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls ' .
 			'polling interval, the data aggregation, and retention policy for the ' .
 			'resulting Data Sources.'),
-		'sql'           => 'SELECT "0" AS id, "' . __('External') . ('" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY ' .
+		'sql'           => 'SELECT "0" AS id, "' .
+			__('External') .
+			('" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY ' .
 			'name'),
 		'default'       => $def_profile,
 		'flags'         => ''
@@ -1475,7 +1477,9 @@ $fields_host_edit = [
 		'value'         => '|arg1:snmp_options|',
 		'method'        => 'drop_sql',
 		'default'       => read_config_option('snmp_options'),
-		'sql'           => 'SELECT "0" AS id, "' . __esc('Disabled') . '" AS name UNION SELECT id, name FROM automation_snmp ORDER BY id'
+		'sql'           => 'SELECT "0" AS id, "' .
+			__esc('Disabled') .
+			'" AS name UNION SELECT id, name FROM automation_snmp ORDER BY id'
 	],
 	'ping_method' => [
 		'friendly_name' => __('Ping Method'),

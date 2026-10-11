@@ -587,7 +587,9 @@ function graphs() : void {
 
 		print '</td>
 			<td class="left">
-				<button type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" role="button">' . __('Create') . '</button>
+				<button type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" role="button">' .
+					__('Create') .
+					'</button>
 			</td>
 		</tr>';
 
@@ -597,7 +599,9 @@ function graphs() : void {
 
 		print "<tr class='tableHeader'>
 			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . ("' onClick='selectAll(\"sg\",this.checked)'><label " .
+			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" .
+				__esc('Select All') .
+				("' onClick='selectAll(\"sg\",this.checked)'><label " .
 				"class='formCheckboxLabel' title='") . __esc('Select All Rows') . "' for='all_cg'></label></th>
 		</tr>";
 
@@ -653,7 +657,9 @@ function graphs() : void {
 			foreach ($graph_templates as $graph_template) {
 				$query_row = $graph_template['graph_template_id'];
 
-				print "<tr id='gt_line$query_row' style='display:table-row' class='selectable " . (($i % 2 == 0) ? 'odd' : 'even') . "'>";
+				print "<tr id='gt_line$query_row' style='display:table-row' class='selectable " .
+					(($i % 2 == 0) ? 'odd' : 'even') .
+					"'>";
 
 				$i++;
 
@@ -792,7 +798,13 @@ function graphs() : void {
 							<span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span>
 						</div>
 						<div class='cactiTableButton'>
-							<span class='reloadquery ti ti-refresh' id='reload" . $snmp_query['id'] . "' title='" . __esc('Reload Query') . "' data-id='" . $snmp_query['id'] . "'></span>
+							<span class='reloadquery ti ti-refresh' id='reload" .
+								$snmp_query['id'] .
+								"' title='" .
+								__esc('Reload Query') .
+								"' data-id='" .
+								$snmp_query['id'] .
+								"'></span>
 						</div>
 					</div>
 				</div>";
@@ -930,11 +942,33 @@ function graphs() : void {
 
 						if (!cacti_sizeof($snmp_query_indexes)) {
 							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem ' .
-								'executing this Data Query.') . "<a href='" . htmle('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . '</a> ' . __('From there you can get more information.') . '</td></tr>';
+								'executing this Data Query.') .
+									"<a href='" .
+									htmle('host.php?action=query_verbose&id=' .
+									$snmp_query['id'] .
+									'&host_id=' .
+									$host['id']) .
+									"'>" .
+									__('You can run this Data Query in debug mode') .
+									'</a> ' .
+									__('From there you can get more information.') .
+									'</td></tr>';
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='selectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='all_" . $snmp_query['id'] . "'></label></th>
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" .
+										$snmp_query['id'] .
+										"' type='checkbox' name='all_" .
+										$snmp_query['id'] .
+										"' title='" .
+										__esc('Select All') .
+										"' onClick='selectAll(\"sg_" .
+										$snmp_query['id'] .
+										"\",this.checked)'><label class='formCheckboxLabel' title='" .
+										__esc('Select All Rows') .
+										"' for='all_" .
+										$snmp_query['id'] .
+										"'></label></th>
 								</tr>";
 						}
 
@@ -962,7 +996,9 @@ function graphs() : void {
 									print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>";
 									$i++;
 								} else {
-									print "<tr id='nodqline$query_row' title='$disabled_text' class='selectable notemplate " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>";
+									print "<tr id='nodqline$query_row' title='$disabled_text' class='selectable notemplate " .
+										(($row_counter % 2 == 0) ? 'odd' : 'even') .
+										"'>";
 									$i++;
 								}
 
@@ -972,7 +1008,13 @@ function graphs() : void {
 									if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 										if (in_array($field_name, $fields, true)) {
 											if (isset($row[$field_name])) {
-												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], grv('filter')) . '</span></td>';
+												print "<td><span class='textOverflow' id='text$query_row" .
+													'_' .
+													$column_counter .
+													"'>" .
+													filter_value($row[$field_name],
+														grv('filter')) .
+													'</span></td>';
 											} else {
 												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}
@@ -1003,7 +1045,8 @@ function graphs() : void {
 				} else {
 					html_start_box('', '100%', false, 3, 'center', '');
 
-					print "<tr class='odd'><td class='textError'>" . __('Error in Data Query.  This could be due to the following: File ' .
+					print "<tr class='odd'><td class='textError'>" .
+						__('Error in Data Query.  This could be due to the following: File ' .
 						'Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
 				}
 
@@ -1017,7 +1060,13 @@ function graphs() : void {
 					[$snmp_query['id']]);
 
 				if (cacti_sizeof($data_query_graphs) == 1) {
-					print "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>";
+					print "<input type='hidden' id='sgg_" .
+						$snmp_query['id'] .
+						"' name='sgg_" .
+						$snmp_query['id'] .
+						"' value='" .
+						$data_query_graphs[0]['id'] .
+						"'>";
 				} elseif (cacti_sizeof($data_query_graphs) > 1) {
 					print "<div class='break'></div>";
 
@@ -1033,10 +1082,24 @@ function graphs() : void {
 							" . __('Select a Graph Type to Create') . "
 						</td>
 						<td class='right'>
-							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" . $snmp_query['id'] . "' title='" . __esc('Make selection default') . "'>" . __esc('Set Default') . "</button>
+							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .
+								$snmp_query['id'] .
+								"' title='" .
+								__esc('Make selection default') .
+								"'>" .
+								__esc('Set Default') .
+								"</button>
 						</td>
 						<td class='right'>
-							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter : '') . ");'>
+							<select class='dqselect' name='sgg_" .
+								$snmp_query['id'] .
+								"' id='sgg_" .
+								$snmp_query['id'] .
+								"' onChange='dqUpdateDeps(" .
+								$snmp_query['id'] .
+								',' .
+								(isset($column_counter) ? $column_counter : '') .
+								");'>
 								";
 					html_create_list($data_query_graphs, 'name', 'id', $selected);
 					print '
@@ -1061,7 +1124,9 @@ function graphs() : void {
 		});";
 
 		$script .= ("$('.default').click(function() { " .
-			"$.get('graphs_new.php?action=ajax_save&query=") . (isset($snmp_query['id']) ? $snmp_query['id'] : '') . ("'+'&item='+$(\".dqselect\").val()).fail(function(data) { " .
+			"$.get('graphs_new.php?action=ajax_save&query=") .
+				(isset($snmp_query['id']) ? $snmp_query['id'] : '') .
+				("'+'&item='+$(\".dqselect\").val()).fail(function(data) { " .
 			'getPresentHTTPError(data); });}); ' .
 			"$('tr.notemplate').tooltip();</script>");
 

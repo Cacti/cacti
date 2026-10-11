@@ -159,9 +159,10 @@ function form_actions() : void {
 				input_validate_input_number($matches[1], 'chk[1]');
 				// ====================================================
 
-				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") ' .
+				$ilist .= '<li>' .
+					htmle(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") ' .
 					'FROM automation_devices WHERE id = ?',
-					[$matches[1]])) . '</li>';
+						[$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -424,7 +425,11 @@ function display_discovery_page() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Devices Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' .
+			(cacti_sizeof($display_text) + 1) .
+			'"><em>' .
+			__('No Devices Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);

@@ -75,7 +75,9 @@ if (!cacti_sizeof($page)) {
 
 		if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
 			if (filter_var($page['contentfile'], FILTER_VALIDATE_URL)) {
-				print '<iframe id="content" src="' . htmle($page['contentfile']) . ('" sandbox="allow-scripts allow-popups allow-forms" ' .
+				print '<iframe id="content" src="' .
+					htmle($page['contentfile']) .
+					('" sandbox="allow-scripts allow-popups allow-forms" ' .
 					'frameborder="0"></iframe>');
 			} else {
 				$message = __esc("External Link ID '%s' with Title '%s' attempted to inject an invalid URL and was blocked!",

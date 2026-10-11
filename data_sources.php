@@ -357,7 +357,12 @@ function form_save() : void {
 
 								$_SESSION[SESS_ERROR_FIELDS]['rrd_maximum'] = 'rrd_maximum';
 
-								header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
+								header('Location: data_sources.php?action=ds_edit&id=' .
+									(empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) .
+									'&host_id=' .
+									grv('host_id') .
+									'&view_rrd=' .
+									(isrv('current_rrd') ? gnrv('current_rrd') : '0'));
 
 								exit;
 							}
@@ -412,7 +417,12 @@ function form_save() : void {
 		(gfrv('data_template_id') != gfrv('_data_template_id')) ||
 		(gfrv('data_input_id') != gfrv('_data_input_id')) ||
 		(gfrv('host_id') != gfrv('_host_id'))) {
-		header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
+		header('Location: data_sources.php?action=ds_edit&id=' .
+			(empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) .
+			'&host_id=' .
+			grv('host_id') .
+			'&view_rrd=' .
+			(isrv('current_rrd') ? gnrv('current_rrd') : '0'));
 	} else {
 		header('Location: data_sources.php');
 	}
@@ -888,7 +898,11 @@ function data_edit(bool $incform = true) : void {
 						htmle($host['hostname'])) . '</td>';
 					print '<td><em>' . htmle($old_value) . '</em></td>';
 				} elseif (empty($can_template)) {
-					print "<td style='width:50%;'><strong>" . htmle($field['name']) . '</strong> ' . __('(From Data Template)') . '</td>';
+					print "<td style='width:50%;'><strong>" .
+						htmle($field['name']) .
+						'</strong> ' .
+						__('(From Data Template)') .
+						'</td>';
 					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : htmle($old_value)) . '</em></td>';
 				} else {
 					print "<td style='width:50%;'><strong>" . htmle($field['name']) . '</strong></td>';
@@ -904,7 +918,9 @@ function data_edit(bool $incform = true) : void {
 				$i++;
 			}
 		} else {
-			print '<tr class="tableRow odd"><td><em>' . __('No Input Fields for the Selected Data Input Source') . '</em></td></tr>';
+			print '<tr class="tableRow odd"><td><em>' .
+				__('No Input Fields for the Selected Data Input Source') .
+				'</em></td></tr>';
 		}
 
 		html_end_box();
@@ -1119,7 +1135,10 @@ function ds_edit() : void {
 			$debug         = false;
 		}
 
-		$debug_url = 'data_sources.php?action=ds_edit&id=' . (isrv('id') ? grv('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1');
+		$debug_url = 'data_sources.php?action=ds_edit&id=' .
+			(isrv('id') ? grv('id') : '0') .
+			'&debug=' .
+			(isset($_SESSION['ds_debug_mode']) ? '0' : '1');
 
 		if (isset($_SESSION['ds_info_mode'])) {
 			$info_message = __('Turn Off Data Source Info Mode');
@@ -1129,7 +1148,10 @@ function ds_edit() : void {
 			$info_on      = false;
 		}
 
-		$info_url = 'data_sources.php?action=ds_edit&id=' . (isrv('id') ? grv('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1');
+		$info_url = 'data_sources.php?action=ds_edit&id=' .
+			(isrv('id') ? grv('id') : '0') .
+			'&info=' .
+			(isset($_SESSION['ds_info_mode']) ? '0' : '1');
 
 		$filters = [
 			'links' => [
@@ -1383,8 +1405,26 @@ function ds_edit() : void {
 				print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
 
 				foreach ($template_data_rrds as $template_data_rrd) {
-					print "<li class='subTab'><a " . (($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . htmle('data_sources.php?action=ds_edit&id=' . grv('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmle($template_data_rrd['data_source_name']) . '</a>' . ($use_data_template == false ? (" <a class='pic deleteMarker ti ti-x cactiPostAction' href='#' " .
-						"data-url='") . html_escape_url('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . grv('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
+					print "<li class='subTab'><a " .
+						(($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") .
+						" href='" .
+						htmle('data_sources.php?action=ds_edit&id=' .
+						grv('id') .
+						'&view_rrd=' .
+						$template_data_rrd['id']) .
+						"'>$i: " .
+						htmle($template_data_rrd['data_source_name']) .
+						'</a>' .
+						($use_data_template == false ? (" <a class='pic deleteMarker ti ti-x cactiPostAction' href='#' " .
+						"data-url='") .
+							html_escape_url('data_sources.php?action=rrd_remove&id=' .
+							$template_data_rrd['id'] .
+							'&local_data_id=' .
+							grv('id')) .
+							"' title='" .
+							__esc('Delete') .
+							"'></a>" : '') .
+							'</li>';
 
 					$i++;
 				}
@@ -1403,7 +1443,13 @@ function ds_edit() : void {
 			</div>
 			<div class='tableSubHeaderColumn right'>
 				" . ((!ierv('id') &&
-					(empty($data_template['id']))) ? "<a class='linkOverDark cactiPostAction' href='#' data-url='" . html_escape_url('data_sources.php?action=rrd_add&id=' . grv('id')) . "'>" . __('New') . '</a>&nbsp;' : '') . '
+					(empty($data_template['id']))) ? "<a class='linkOverDark cactiPostAction' href='#' data-url='" .
+						html_escape_url('data_sources.php?action=rrd_add&id=' .
+						grv('id')) .
+						"'>" .
+						__('New') .
+						'</a>&nbsp;' : '') .
+						'
 			</div>
 		</div>';
 
@@ -1414,7 +1460,9 @@ function ds_edit() : void {
 			unset($struct_data_source_item['data_input_field_id']);
 		} else {
 			$struct_data_source_item['data_input_field_id']['sql'] = ("SELECT id,CONCAT(data_name,' - ',name) as name FROM data_input_fields " .
-				'WHERE data_input_id=') . $data['data_input_id'] . " and input_output='out' and update_rra='on' order by data_name,name";
+				'WHERE data_input_id=') .
+					$data['data_input_id'] .
+					" and input_output='out' and update_rra='on' order by data_name,name";
 		}
 
 		$form_array = [];
@@ -1615,7 +1663,8 @@ function data_sources() : void {
 	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	if (grv('orphans') == 'true') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND ' : 'WHERE ') . ('((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS ' .
+		$sql_where1 .= ($sql_where1 != '' ? ' AND ' : 'WHERE ') .
+			('((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS ' .
 			'NULL OR dl.orphan = 1)');
 
 		$orphan_join = "LEFT JOIN (
@@ -1817,7 +1866,11 @@ function data_sources() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Sources Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Data Sources Found') .
+			'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1863,13 +1916,25 @@ function get_graphs_aggregates_url(int $local_data_id) : string {
 	$url = '';
 
 	if (cacti_sizeof($graphs) && $graphs['total'] > 0) {
-		$url .= '<a class="linkEditMain" title="' . __('Graphs') . '" href="graphs.php?reset=1&custom=true&local_graph_ids=' . $graphs['graphs'] . '">' . $graphs['total'] . '</a>';
+		$url .= '<a class="linkEditMain" title="' .
+			__('Graphs') .
+			'" href="graphs.php?reset=1&custom=true&local_graph_ids=' .
+			$graphs['graphs'] .
+			'">' .
+			$graphs['total'] .
+			'</a>';
 	} else {
 		$url .= '<span title="' . __('No Graphs') . '">0</span>';
 	}
 
 	if (cacti_sizeof($aggregates) && $aggregates['total'] > 0) {
-		$url .= ' / <a class="linkEditMain" title="' . __('Aggregates') . '" href="aggregate_graphs.php?reset=1&custom=true&local_graph_ids=' . $aggregates['graphs'] . '">' . $aggregates['total'] . '</a>';
+		$url .= ' / <a class="linkEditMain" title="' .
+			__('Aggregates') .
+			'" href="aggregate_graphs.php?reset=1&custom=true&local_graph_ids=' .
+			$aggregates['graphs'] .
+			'">' .
+			$aggregates['total'] .
+			'</a>';
 	} else {
 		$url .= ' / <span title="' . __('No Aggregates') . '">0</span>';
 	}
