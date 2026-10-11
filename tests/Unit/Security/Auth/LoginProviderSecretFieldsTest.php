@@ -128,7 +128,7 @@ test('form_cert_box() shows the expiration date of a pasted valid certificate', 
 	$html = ob_get_clean();
 
 	$certificate = openssl_x509_parse($pem);
-	expect($certificate)->toBeArray();
+	expect($certificate)->not->toBeFalse();
 	$expected = date('Y-m-d', $certificate['validTo_time_t']);
 
 	expect($html)->toContain('<textarea');
