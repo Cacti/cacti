@@ -465,7 +465,6 @@ input, select {
 label {
     cursor: pointer;
     white-space: nowrap;
-    white-space: nowrap;
 }
 
 label > span {
