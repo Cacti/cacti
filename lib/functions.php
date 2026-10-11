@@ -3246,9 +3246,9 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 				} else {
 					// token sits inside a larger quoted word: close the template's
 					// quoting around the value so it cannot be re-interpreted. A
-					// dangling backslash would escape that closing quote and leave the
-					// value inside the template's quote, so shed one if the run is odd
-					if ((strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+					// dangling backslash inside double quotes would escape that closing
+					// quote. Inside single quotes every backslash is literal and must stay.
+					if ($quote === '"' && (strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
 						$out = substr($out, 0, -1);
 					}
 
