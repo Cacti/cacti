@@ -265,13 +265,13 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			?>
 			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
-				<table role='presentation' style='text-align:center;margin:auto;'>
+				<table role='presentation' class='graphDrillTable' style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown graphDrillDownToggle'>
 							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -403,13 +403,13 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			?>
 			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
-				<table role='presentation' style='text-align:center;margin:auto;'>
+				<table role='presentation' class='graphDrillTable' style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown graphDrillDownToggle'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -470,6 +470,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		WHERE id = ?',
 		array($local_graph_id));
 
+	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "' title='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
@@ -611,6 +612,67 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 }
 
 /**
+ * Retrieve the sort history for this renderer instance, action and tab.
+ */
+function html_header_sort_order(int $page_count) : array {
+	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
+	if (isset_request_var('action')) {
+		$page .= '_' . get_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$page .= '_' . get_request_var('tab');
+	}
+
+	if (isset($_SESSION['sort_data'][$page])) {
+		$order_data = $_SESSION['sort_data'][$page];
+	} else {
+		$order_data = [get_request_var('sort_column') => get_request_var('sort_direction')];
+	}
+
+	return $order_data;
+}
+
+/**
+ * Resolve one sortable header column without changing the public renderer contracts.
+ *
+ * @return array{mixed, string, mixed, mixed, mixed, string, string}
+ */
+function html_header_sort_column(array $display_array, string $db_column, string $sort_column,
+	string $sort_direction, array $order_data, string $primarySort, string $default_icon) : array {
+	$named        = array_key_exists('display', $display_array);
+	$display_text = $named ? $display_array['display'] : $display_array[0];
+	$align        = $named ? ($display_array['align'] ?? 'left') : 'left';
+	$tip          = $named ? ($display_array['tip'] ?? '') : '';
+	$nohide       = isset($display_array['nohide']) ? 'nohide' : '';
+	$isSort       = '';
+	$icon         = '';
+
+	if ($sort_column == $db_column) {
+		$icon      = $sort_direction;
+		$direction = $sort_direction == 'ASC' ? 'DESC' : 'ASC';
+		$isSort    = $db_column == $primarySort ? 'primarySort' : 'secondarySort';
+	} elseif (isset($order_data[$db_column])) {
+		$icon      = $order_data[$db_column];
+		$direction = $order_data[$db_column] == 'DESC' ? 'ASC' : 'DESC';
+		$isSort    = $db_column == $primarySort ? 'primarySort' : 'secondarySort';
+	} else {
+		$direction = $named ? ($display_array['sort'] ?? 'ASC') : $display_array[1];
+	}
+
+	if (strtolower($icon) == 'asc') {
+		$icon = 'fa fa-sort-up';
+	} elseif (strtolower($icon) == 'desc') {
+		$icon = 'fa fa-sort-down';
+	} else {
+		$icon = $default_icon;
+	}
+
+	return [$display_text, $icon, $direction, $align, $tip, $nohide, $isSort];
+}
+
+/**
  * Draws a header row suitable for display inside of a box element. When a user selects a column
  * header, the callback function "filename" will be called to handle the sort the column and
  * display the altered results. Used as part of Cacti's lib functionality.
@@ -650,28 +712,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	}
 	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
 
-	/* reverse the sort direction */
-	if ($sort_direction == 'ASC') {
-		$new_sort_direction = 'DESC';
-	} else {
-		$new_sort_direction = 'ASC';
-	}
-
-	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
-
-	if (isset_request_var('action')) {
-		$page .= '_' . get_request_var('action');
-	}
-
-	if (isset_request_var('tab')) {
-		$page .= '_' . get_request_var('tab');
-	}
-
-	if (isset($_SESSION['sort_data'][$page])) {
-		$order_data = $_SESSION['sort_data'][$page];
-	} else {
-		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
-	}
+	$order_data = html_header_sort_order($page_count);
+	$primarySort = '';
 
 	foreach($order_data as $key => $direction) {
 		$primarySort = $key;
@@ -682,104 +724,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 	$i = 1;
 	foreach ($header_items as $db_column => $display_array) {
-		$isSort = '';
-		if (isset($display_array['nohide'])) {
-			$nohide = 'nohide';
-		} else {
-			$nohide = '';
-		}
-
-		if (array_key_exists('display', $display_array)) {
-			$display_text = $display_array['display'];
-			if ($sort_column == $db_column) {
-				$icon      = $sort_direction;
-				$direction = $new_sort_direction;
-
-				if ($db_column == $primarySort) {
-					$isSort = 'primarySort';
-				} else {
-					$isSort = 'secondarySort';
-				}
-			} else {
-				if (isset($order_data[$db_column])) {
-					$icon = $order_data[$db_column];
-					if ($order_data[$db_column] == 'DESC') {
-						$direction = 'ASC';
-					} else {
-						$direction = 'DESC';
-					}
-
-					if ($db_column == $primarySort) {
-						$isSort = 'primarySort';
-					} else {
-						$isSort = 'secondarySort';
-					}
-				} else {
-					$icon = '';
-					if (isset($display_array['sort'])) {
-						$direction = $display_array['sort'];
-					} else {
-						$direction = 'ASC';
-					}
-				}
-			}
-
-			if (isset($display_array['align'])) {
-				$align = $display_array['align'];
-			} else {
-				$align = 'left';
-			}
-
-			if (isset($display_array['tip'])) {
-				$tip = $display_array['tip'];
-			} else {
-				$tip = '';
-			}
-		} else {
-			/* by default, you will always sort ascending, with the exception of an already sorted column */
-			if ($sort_column == $db_column) {
-				$icon         = $sort_direction;
-				$direction    = $new_sort_direction;
-				$display_text = $display_array[0];
-
-				if ($db_column == $primarySort) {
-					$isSort = 'primarySort';
-				} else {
-					$isSort = 'secondarySort';
-				}
-			} else {
-				if (isset($order_data[$db_column])) {
-					$icon = $order_data[$db_column];
-					if ($order_data[$db_column] == 'DESC') {
-						$direction = 'ASC';
-					} else {
-						$direction = 'DESC';
-					}
-
-					if ($db_column == $primarySort) {
-						$isSort = 'primarySort';
-					} else {
-						$isSort = 'secondarySort';
-					}
-				} else {
-					$icon = '';
-					$direction = $display_array[1];
-				}
-
-				$display_text = $display_array[0];
-			}
-
-			$align = 'left';
-			$tip   = '';
-		}
-
-		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-up';
-		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-down';
-		} else {
-			$icon = 'fa fa-sort';
-		}
+		[$display_text, $icon, $direction, $align, $tip, $nohide, $isSort] = html_header_sort_column(
+			$display_array, $db_column, $sort_column, $sort_direction, $order_data, $primarySort, 'fa fa-sort');
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
@@ -838,28 +784,8 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
 
-	/* reverse the sort direction */
-	if ($sort_direction == 'ASC') {
-		$new_sort_direction = 'DESC';
-	} else {
-		$new_sort_direction = 'ASC';
-	}
-
-	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
-
-	if (isset_request_var('action')) {
-		$page .= '_' . get_request_var('action');
-	}
-
-	if (isset_request_var('tab')) {
-		$page .= '_' . get_request_var('tab');
-	}
-
-	if (isset($_SESSION['sort_data'][$page])) {
-		$order_data = $_SESSION['sort_data'][$page];
-	} else {
-		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
-	}
+	$order_data = html_header_sort_order($page_count);
+	$primarySort = '';
 
 	foreach($order_data as $key => $direction) {
 		$primarySort = $key;
@@ -872,105 +798,8 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "<tr class='tableHeader'>";
 
 	foreach($header_items as $db_column => $display_array) {
-		$isSort = '';
-		if (isset($display_array['nohide'])) {
-			$nohide = 'nohide';
-		} else {
-			$nohide = '';
-		}
-
-		$icon   = '';
-		if (array_key_exists('display', $display_array)) {
-			$display_text = $display_array['display'];
-			if ($sort_column == $db_column) {
-				$icon      = $sort_direction;
-				$direction = $new_sort_direction;
-
-				if ($db_column == $primarySort) {
-					$isSort = 'primarySort';
-				} else {
-					$isSort = 'secondarySort';
-				}
-			} else {
-				if (isset($order_data[$db_column])) {
-					$icon = $order_data[$db_column];
-					if ($order_data[$db_column] == 'DESC') {
-						$direction = 'ASC';
-					} else {
-						$direction = 'DESC';
-					}
-
-					if ($db_column == $primarySort) {
-						$isSort = 'primarySort';
-					} else {
-						$isSort = 'secondarySort';
-					}
-				} else {
-					$icon = '';
-					if (isset($display_array['sort'])) {
-						$direction = $display_array['sort'];
-					} else {
-						$direction = 'ASC';
-					}
-				}
-			}
-
-			if (isset($display_array['align'])) {
-				$align = $display_array['align'];
-			} else {
-				$align = 'left';
-			}
-
-			if (isset($display_array['tip'])) {
-				$tip = $display_array['tip'];
-			} else {
-				$tip = '';
-			}
-		} else {
-			/* by default, you will always sort ascending, with the exception of an already sorted column */
-			if ($sort_column == $db_column) {
-				$icon         = $sort_direction;
-				$direction    = $new_sort_direction;
-				$display_text = $display_array[0];
-
-				if ($db_column == $primarySort) {
-					$isSort = 'primarySort';
-				} else {
-					$isSort = 'secondarySort';
-				}
-			} else {
-				if (isset($order_data[$db_column])) {
-					$icon = $order_data[$db_column];
-					if ($order_data[$db_column] == 'DESC') {
-						$direction = 'ASC';
-					} else {
-						$direction = 'DESC';
-					}
-
-					if ($db_column == $primarySort) {
-						$isSort = 'primarySort';
-					} else {
-						$isSort = 'secondarySort';
-					}
-				} else {
-					$icon = '';
-					$direction = $display_array[1];
-				}
-
-				$display_text = $display_array[0];
-			}
-
-			$align = 'left';
-			$tip   = '';
-		}
-
-		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-up';
-		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-down';
-		} else {
-			$icon = 'fa fa-sort';
-		}
+		[$display_text, $icon, $direction, $align, $tip, $nohide, $isSort] = html_header_sort_column(
+			$display_array, $db_column, $sort_column, $sort_direction, $order_data, $primarySort, 'fa fa-sort');
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$align $nohide'>" . $display_text . '</th>';
@@ -2891,6 +2720,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/vendor/flag-icons/css/flag-icons.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_css('include/themes/print.css');
+	print get_md5_include_css('include/css/graph_drilldown.css');
 	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');

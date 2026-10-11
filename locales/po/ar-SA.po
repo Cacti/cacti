@@ -4237,6 +4237,12 @@ msgstr "عرض الرسم البياني"
 msgid "The Graph you requested does not exist."
 msgstr "مصدر البيانات غير موجود."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "خيارات الرسم البياني"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "تفاصيل الرسم البياني ، وتصغير المرافق وتصحيح الأخطاء"
@@ -20526,6 +20532,11 @@ msgstr ""
 #| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "إذا كان لديك أقراص SSD ، استخدم هذا الاقتراح. خلاف ذلك ، لا تقم بتعيين هذا الإعداد."
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "المثبتة. <span class=\"deviceDown\">ملاحظة: إذا كنت تخطط لاستخدام SNMPv3 ، فيجب عليك إزالة php-snmp واستخدام مجموعة أدوات Net-SNMP.</span>"

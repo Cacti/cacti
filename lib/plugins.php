@@ -584,6 +584,8 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 	include_once($config['library_path'] . '/database.php');
 
 	if (!db_is_safe_identifier($table)) {
+		cacti_log('ERROR: Plugin table creation rejected an invalid table identifier.', false, 'PLUGIN');
+
 		return;
 	}
 
@@ -593,6 +595,8 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 				(plugin, `table`, `column`, `method`)
 				VALUES (?, ?, '', 'create')",
 				[$plugin, $table]);
+		} else {
+			cacti_log(sprintf("ERROR: Plugin '%s' could not create table '%s'. Review the table definition and database errors.", $plugin, $table), false, 'PLUGIN');
 		}
 	} else {
 		// Table already exists: refresh its schema to match the definition.
@@ -600,7 +604,9 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 		// unique key, so a REPLACE here would duplicate the ownership record
 		// on every call and could mark a pre-existing/shared table as
 		// plugin-created, causing it to be dropped on uninstall.
-		db_update_table($table, $data, true);
+		if (!db_update_table($table, $data, true)) {
+			cacti_log(sprintf("ERROR: Plugin '%s' could not update table '%s'. Review the table definition and database errors.", $plugin, $table), false, 'PLUGIN');
+		}
 	}
 }
 
@@ -815,7 +821,28 @@ function api_plugin_install($plugin) {
 
 	$function = 'plugin_' . $plugin . '_install';
 	if (function_exists($function)){
-		$function();
+		try {
+			$installed = $function();
+		} catch (Throwable $e) {
+			cacti_log(sprintf("ERROR: Plugin '%s' install hook threw %s.", $plugin, get_class($e)), false, 'PLUGIN');
+			$installed = false;
+		}
+
+		// Legacy install hooks return null on success. Only strict false or
+		// an exception signals failure; retain tables for diagnosis/recovery.
+		if ($installed === false) {
+			db_execute_prepared('UPDATE plugin_config
+				SET status = 2
+				WHERE directory = ?',
+				array($plugin));
+
+			api_plugin_disable_hooks_all($plugin);
+			cacti_log(sprintf("ERROR: Plugin '%s' installation failed. Its hooks are disabled and it needs configuration.", $plugin), false, 'PLUGIN');
+			raise_message('install_error', __esc('Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it.', $plugin), MESSAGE_LEVEL_ERROR);
+
+			return false;
+		}
+
 		$ready = api_plugin_check_config ($plugin);
 		if ($ready) {
 			// Set the plugin as "disabled" so it can go live
@@ -836,6 +863,8 @@ function api_plugin_install($plugin) {
 	}
 
 	api_plugin_replicate_config();
+
+	return true;
 }
 
 /**
@@ -1315,13 +1344,14 @@ function api_plugin_disable_hooks_all($plugin) {
  * @return bool True on success, false otherwise.
  */
 function api_plugin_valid_entrypoint($plugin, $function) {
-	// Check for invalid entrypoint install/upgrade
-	$backtrace = debug_backtrace();
-	if (cacti_sizeof($backtrace)) {
-		if (!preg_match('/(install|upgrade|setup)/i', $backtrace[2]['function'])) {
-			cacti_log(sprintf('WARNING: Plugin \'%s\' is attempting to call \'%s\' improperly in function \'%s\'', $plugin, $function, $backtrace[2]['function']), false, 'PLUGIN');
-			return false;
-		}
+	// File-scope calls have no third frame and are not install entrypoints.
+	$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+	$caller    = $backtrace[2]['function'] ?? '';
+
+	if (!preg_match('/(install|upgrade|setup)/i', $caller)) {
+		cacti_log(sprintf('WARNING: Plugin \'%s\' is attempting to call \'%s\' improperly in function \'%s\'', $plugin, $function, $caller !== '' ? $caller : 'file scope'), false, 'PLUGIN');
+
+		return false;
 	}
 
 	return true;
@@ -1344,11 +1374,13 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 		return false;
 	}
 
-	$i = 0;
+	$params = array($plugin);
 	$sql_where = '(';
 	foreach($files as $tfile) {
 		$sql_where .= ($sql_where != '(' ? ' OR ':'') .
-			' (file = "' . $tfile . '" OR file LIKE "' . $tfile . ',%" OR file LIKE "%,' . $tfile . ',%" OR file LIKE "%,' . $tfile . '")';
+			' (file = ? OR file LIKE ? ESCAPE \'!\' OR file LIKE ? ESCAPE \'!\' OR file LIKE ? ESCAPE \'!\')';
+		$literal = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $tfile);
+		array_push($params, $tfile, $literal . ',%', '%,' . $literal . ',%', '%,' . $literal);
 	}
 	$sql_where .= ')';
 
@@ -1356,7 +1388,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 		FROM plugin_realms
 		WHERE plugin = ?
 		AND $sql_where",
-		array($plugin));
+		$params);
 
 	if (cacti_sizeof($realm_ids) == 1) {
 		$realm_id = $realm_ids[0]['id'];

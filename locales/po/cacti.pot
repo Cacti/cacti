@@ -19993,3 +19993,28 @@ msgstr ""
 #: vdef.php
 msgid "No VDEFs"
 msgstr ""
+
+#: lib/html.php
+msgid "Graph Actions"
+msgstr ""
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: links.php
+msgid "Links"
+msgstr ""
+
+#: pollers.php
+msgid "Collectors"
+msgstr ""
+
+#: rrdcleaner.php
+msgid "RRDfiles"
+msgstr ""
+
+#: user_domains.php
+msgid "Domains"
+msgstr ""

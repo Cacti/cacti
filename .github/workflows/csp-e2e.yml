@@ -25,8 +25,25 @@ on:
       - include/themes/sunrise/main.js
       - auth_login.php
       - auth_changepassword.php
+      - install/install.php
+      - graph_realtime.php
+      - about.php
+      - include/content/iframe-example.html
+      - cdef.php
+      - color.php
+      - data_input.php
+      - data_queries.php
+      - data_source_profiles.php
+      - data_templates.php
+      - gprint_presets.php
+      - graph_templates.php
+      - vdef.php
+      - host_templates.php
       - tests/integration/**
       - tests/e2e/**
+      - lib/functions.php
+      - user_admin.php
+      - tests/fixtures/Core/UserActionLogProbe.php
       - .github/workflows/csp-e2e.yml
       - install/install.php
       - graph_realtime.php
@@ -113,7 +130,7 @@ jobs:
           ./vendor/bin/pest \
             --bootstrap=./bootstrap-unit.php \
             --log-junit="$RUNNER_TEMP/csp-unit.xml" \
-            Unit/Security/Csp/
+            Unit/Security/Csp/ Unit/Security/DockerConfigTest.php
           # PHP variables must not expand in the shell.
           # shellcheck disable=SC2016
           php -r '$xml = is_file($argv[1]) ? @simplexml_load_file($argv[1]) : false; $tests = $xml === false ? false : $xml->xpath("//testcase"); if (!is_array($tests) || count($tests) < 1) { fwrite(STDERR, "Missing, invalid, or empty CSP unit test report\n"); exit(1); }' "$RUNNER_TEMP/csp-unit.xml"
@@ -219,6 +236,18 @@ jobs:
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
 
+      - name: Prepare real-time popup for document tests
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php mkdir -p /var/www/html/cacti/cache/realtime
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "REPLACE INTO settings (name,value) VALUES ('realtime_enabled','on'),('realtime_cache_path','/var/www/html/cacti/cache/realtime');"
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
+
+      - name: Run document semantics browser regressions
+        working-directory: tests/e2e
+        run: node ./node_modules/@playwright/test/cli.js test tests/document-semantics.spec.ts
       - name: Run authentication form semantics regressions
         working-directory: tests/e2e
         run: |
@@ -233,6 +262,14 @@ jobs:
         # monitor sources baked into the image at build time; the
         # docker compose up --build above runs the clone.
         run: node node_modules/@playwright/test/cli.js test tests/csp-plugins.spec.ts
+
+      - name: Run native account audit regressions
+        working-directory: tests/e2e
+        env:
+          CACTI_USER_AUDIT_LOG: ../../log/cacti.log
+        run: |
+          bash test-user-action-log.sh
+          node node_modules/@playwright/test/cli.js test tests/user-action-audit.spec.ts
 
       - name: Enable real-time popup in disposable fixture
         working-directory: tests/e2e
