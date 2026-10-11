@@ -942,7 +942,17 @@ function api_plugin_check_config(string $plugin) : ?bool {
 		$function = "plugin_{$plugin}_check_config";
 
 		if (function_exists($function)) {
-			return $function();
+			$result = $function();
+
+			if ($result === null) {
+				raise_message('plugin_config', __esc('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
+				cacti_log(sprintf('WARNING: Cacti Plugin %s configuration check returned null', $plugin), false, 'PLUGIN');
+			} elseif (!$result) {
+				raise_message('plugin_config', __esc('Plugin \'%s\' failed its configuration check. Review the plugin settings before enabling it.', $plugin), MESSAGE_LEVEL_ERROR);
+				cacti_log(sprintf('WARNING: Cacti Plugin %s configuration check failed', $plugin), false, 'PLUGIN');
+			}
+
+			return $result;
 		}
 
 		return true;

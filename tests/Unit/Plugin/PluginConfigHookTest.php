@@ -7,11 +7,22 @@ test('plugin configuration hook preserves the legacy null diagnostic response (#
 	$name      = 'config_fixture_' . bin2hex(random_bytes(6));
 	$directory = CACTI_PATH_PLUGINS . '/' . $name;
 	mkdir($directory);
+	$saved_session = $_SESSION;
+	unset($_SESSION[SESS_MESSAGES]['plugin_config']);
 
 	try {
 		file_put_contents($directory . '/setup.php', '<?php ' . ($body === null ? '' : 'function plugin_' . $name . '_check_config() {' . $body . '}'));
 		expect(api_plugin_check_config($name))->toBe($expected);
+
+		if ($expected !== true) {
+			$message = $_SESSION[SESS_MESSAGES]['plugin_config'];
+			expect($message['message'])->toContain($name);
+			expect($message['level'])->toBe($expected === null ? MESSAGE_LEVEL_WARN : MESSAGE_LEVEL_ERROR);
+		} else {
+			expect(isset($_SESSION[SESS_MESSAGES]['plugin_config']))->toBeFalse();
+		}
 	} finally {
+		$_SESSION = $saved_session;
 		unlink($directory . '/setup.php');
 		rmdir($directory);
 	}
