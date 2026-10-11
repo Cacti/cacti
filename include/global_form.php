@@ -132,7 +132,9 @@ $fields_snmp_item = [
 	'snmp_engine_id' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('SNMP Engine ID (v3)'),
-		'description'   => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+		'description'   => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field ' .
+			'empty to use the SNMP Engine ID being defined per SNMPv3 Notification ' .
+			'receiver.'),
 		'value'         => '|arg1:snmp_engine_id|',
 		'default'       => '',
 		'max_length'    => '64',
@@ -150,7 +152,8 @@ $fields_snmp_item = [
 	'snmp_timeout' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('SNMP Timeout'),
-		'description'   => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
+		'description'   => __('The maximum number of milliseconds Cacti will wait for an SNMP ' .
+			'response (does not work with php-snmp support).'),
 		'value'         => '|arg1:snmp_timeout|',
 		'max_length'    => '8',
 		'default'       => read_config_option('snmp_timeout'),
@@ -196,7 +199,17 @@ $fields_snmp_item_with_oids = $fields_snmp_item + [
 	'bulk_walk_size' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Bulk Walk Maximum Repetitions'),
-		'description'   => __('For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to \'Auto Detect on Re-Index\'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation.'),
+		'description'   => __('For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions ' .
+			'size. The default is to \'Auto Detect on Re-Index\'. For very large ' .
+			'switches, high performance servers, Jumbo Frame Networks or for high ' .
+			'latency WAN connections, increasing this value may increase poller ' .
+			'performance. More data is packed into a single SNMP packet which can ' .
+			'reduce data query run time. However, some devices may completely ' .
+			'refuse to respond to packets with a max-repetition size which is set ' .
+			'too large. This can be especially true for lower-powered IoT type ' .
+			'devices or smaller embedded IT appliances. Special attention to the ' .
+			'overall network path MTU should also be considered since setting a ' .
+			'value which is too high could lead to packet fragmentation.'),
 		'value'         => '|arg1:bulk_walk_size|',
 		'default'       => '0',
 		'array'         => [
@@ -256,7 +269,11 @@ $fields_profile_edit = [
 	'heartbeat' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Heartbeat'),
-		'description'   => __('How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time.'),
+		'description'   => __('How long can data be missing before RRDtool records unknown data.  ' .
+			'Increase this value if your Data Source is unstable and you wish to ' .
+			'carry forward old data rather than show gaps in your graphs.  This ' .
+			'value is multiplied by the X-Files Factor to determine the actual ' .
+			'amount of time.'),
 		'array'         => $heartbeats,
 		'value'         => '|arg1:heartbeat|',
 		'default'       => (read_config_option('poller_interval') * 2),
@@ -275,7 +292,8 @@ $fields_profile_edit = [
 		'friendly_name' => __('Consolidation Functions'),
 		'description'   => __('How data is to be entered in RRAs.'),
 		'array'         => $consolidation_functions,
-		'sql'           => 'SELECT consolidation_function_id AS id, data_source_profile_id FROM data_source_profiles_cf WHERE data_source_profile_id="|arg1:id|"',
+		'sql'           => ('SELECT consolidation_function_id AS id, data_source_profile_id FROM ' .
+			'data_source_profiles_cf WHERE data_source_profile_id="|arg1:id|"'),
 		'class'         => 'multiselect',
 	],
 	'default' => [
@@ -288,7 +306,9 @@ $fields_profile_edit = [
 	'size' => [
 		'method'        => 'other',
 		'friendly_name' => __('RRDfile Size (in Bytes)'),
-		'description'   => __('Based upon the number of Rows in all RRAs and the number of Consolidation Functions selected, the size of this entire in the RRDfile.'),
+		'description'   => __('Based upon the number of Rows in all RRAs and the number of ' .
+			'Consolidation Functions selected, the size of this entire in the ' .
+			'RRDfile.'),
 		'value'         => ''
 	],
 	'id' => [
@@ -315,7 +335,8 @@ $fields_profile_rra_edit = [
 	'steps' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Aggregation Level'),
-		'description'   => __('The number of samples required prior to filling a row in the RRA specification.  The first RRA should always have a value of 1.'),
+		'description'   => __('The number of samples required prior to filling a row in the RRA ' .
+			'specification.  The first RRA should always have a value of 1.'),
 		'array'         => $aggregation_levels,
 		'value'         => '|arg1:steps|',
 		'default'       => read_config_option('poller_interval'),
@@ -332,20 +353,23 @@ $fields_profile_rra_edit = [
 	'timespan' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Default Timespan'),
-		'description'   => __('When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph.'),
+		'description'   => __('When viewing a Graph based upon the RRA in question, the default ' .
+			'Timespan to show for that Graph.'),
 		'value'         => '|arg1:timespan|',
 		'array'         => $timespans
 	],
 	'retention' => [
 		'method'        => 'other',
 		'friendly_name' => __('Data Retention'),
-		'description'   => __('Based upon the Aggregation Level, the Rows, and the Polling Interval the amount of data that will be retained in the RRA'),
+		'description'   => __('Based upon the Aggregation Level, the Rows, and the Polling Interval ' .
+			'the amount of data that will be retained in the RRA'),
 		'value'         => ''
 	],
 	'size' => [
 		'method'        => 'other',
 		'friendly_name' => __('RRA Size (in Bytes)'),
-		'description'   => __('Based upon the number of Rows and the number of Consolidation Functions selected, the size of this RRA in the RRDfile.'),
+		'description'   => __('Based upon the number of Rows and the number of Consolidation ' .
+			'Functions selected, the size of this RRA in the RRDfile.'),
 		'value'         => ''
 	],
 	'id' => [
@@ -439,7 +463,8 @@ $fields_data_input_edit = [
 	'input_string' => [
 		'method'        => 'textarea',
 		'friendly_name' => __('Input String'),
-		'description'   => __('The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.'),
+		'description'   => __('The data that is sent to the script, which includes the complete path ' .
+			'to the script and input sources in &lt;&gt; brackets.'),
 		'value'         => '|arg1:input_string|',
 		'textarea_rows' => '4',
 		'textarea_cols' => '60',
@@ -450,7 +475,9 @@ $fields_data_input_edit = [
 		'method'        => 'other',
 		'value'         => '',
 		'friendly_name' => __('White List Check'),
-		'description'   => __('The result of the Whitespace verification check for the specific Input Method.  If the Input String changes, and the Whitelist file is not updated, Graphs will not be allowed to be created.')
+		'description'   => __('The result of the Whitespace verification check for the specific ' .
+			'Input Method.  If the Input String changes, and the Whitelist file is ' .
+			'not updated, Graphs will not be allowed to be created.')
 	],
 	'id' => [
 		'method' => 'hidden_zero',
@@ -478,7 +505,10 @@ $fields_data_input_field_edit_2 = [
 	'data_name' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Field [%s]', '|arg1:|'),
-		'description'   => __('Enter a name for this %s field.  Note: If using name value pairs in your script, for example: NAME:VALUE, it is important that the name matches your output field name identically to the script output name or names.',
+		'description'   => __('Enter a name for this %s field.  Note: If using name value pairs in ' .
+			'your script, for example: NAME:VALUE, it is important that the name ' .
+			'matches your output field name identically to the script output name ' .
+			'or names.',
 			'|arg1:|'),
 		'value'         => '|arg2:data_name|',
 		'max_length'    => '50',
@@ -507,7 +537,8 @@ $fields_data_input_field_edit = [
 	'regexp_match' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Regular Expression Match'),
-		'description'   => __('If you want to require a certain regular expression to be matched against input data, enter it here (preg_match format).'),
+		'description'   => __('If you want to require a certain regular expression to be matched ' .
+			'against input data, enter it here (preg_match format).'),
 		'value'         => '|arg1:regexp_match|',
 		'max_length'    => '200',
 		'size'          => '80'
@@ -523,7 +554,8 @@ $fields_data_input_field_edit = [
 	'type_code' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Special Type Code'),
-		'description'   => __('If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are %s',
+		'description'   => __('If this field should be treated specially by host templates, indicate ' .
+			'so here. Valid keywords for this field are %s',
 			str_replace(')',
 				"'",
 				str_replace('(',
@@ -603,7 +635,10 @@ $struct_data_source = [
 		'max_length'    => '250',
 		'size'          => '80',
 		'default'       => '',
-		'description'   => __('Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation.'),
+		'description'   => __('Choose a name for this data source.  It can include replacement ' .
+			'variables such as |host_description| or |query_fieldName|.  For a ' .
+			'complete list of supported replacement tags, please see the Cacti ' .
+			'documentation.'),
 		'flags'         => ''
 	],
 	'data_source_path' => [
@@ -627,8 +662,11 @@ $struct_data_source = [
 	'data_source_profile_id' => [
 		'friendly_name' => __('Data Source Profile'),
 		'method'        => 'drop_sql',
-		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql'           => 'SELECT "0" AS id, "' . __('External') . '" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name',
+		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls ' .
+			'polling interval, the data aggregation, and retention policy for the ' .
+			'resulting Data Sources.'),
+		'sql'           => 'SELECT "0" AS id, "' . __('External') . ('" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY ' .
+			'name'),
 		'default'       => $def_profile,
 		'flags'         => ''
 	],
@@ -689,7 +727,8 @@ $struct_data_source_item = [
 		'max_length'    => '20',
 		'size'          => '10',
 		'default'       => '600',
-		'description'   => __('The maximum amount of time that can pass before data is entered as \'unknown\'. (Usually 2x300=600)')
+		'description'   => __('The maximum amount of time that can pass before data is entered as ' .
+			'\'unknown\'. (Usually 2x300=600)')
 	],
 	'data_input_field_id' => [
 		'friendly_name' => __('Output Field'),
@@ -740,7 +779,10 @@ $struct_graph = [
 		'method'        => 'textbox',
 		'max_length'    => '255',
 		'default'       => '',
-		'description'   => __('The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation.'),
+		'description'   => __('The name that is printed on the graph.  It can include replacement ' .
+			'variables such as |host_description| or |query_fieldName|.  For a ' .
+			'complete list of supported replacement tags, please see the Cacti ' .
+			'documentation.'),
 		'size'          => '80'
 	],
 	'vertical_label' => [
@@ -756,14 +798,16 @@ $struct_graph = [
 		'method'        => 'drop_array',
 		'array'         => $image_types,
 		'default'       => read_config_option('default_image_format'),
-		'description'   => __('The type of graph that is generated; PNG, GIF or SVG.  The selection of graph image type is very RRDtool dependent.')
+		'description'   => __('The type of graph that is generated; PNG, GIF or SVG.  The selection ' .
+			'of graph image type is very RRDtool dependent.')
 	],
 	'height' => [
 		'friendly_name' => __('Height (--height)'),
 		'method'        => 'textbox',
 		'max_length'    => '50',
 		'default'       => read_config_option('default_graph_height'),
-		'description'   => __('The height (in pixels) of the graph area within the graph. This area does not include the legend, axis legends, or title.'),
+		'description'   => __('The height (in pixels) of the graph area within the graph. This area ' .
+			'does not include the legend, axis legends, or title.'),
 		'size'          => '7'
 	],
 	'width' => [
@@ -771,7 +815,8 @@ $struct_graph = [
 		'method'        => 'textbox',
 		'max_length'    => '50',
 		'default'       => read_config_option('default_graph_width'),
-		'description'   => __('The width (in pixels) of the graph area within the graph. This area does not include the legend, axis legends, or title.'),
+		'description'   => __('The width (in pixels) of the graph area within the graph. This area ' .
+			'does not include the legend, axis legends, or title.'),
 		'size'          => '7'
 	],
 	'base_value' => [
@@ -786,7 +831,8 @@ $struct_graph = [
 		'friendly_name' => __('Slope Mode (--slope-mode)'),
 		'method'        => 'checkbox',
 		'default'       => 'on',
-		'description'   => __('Using Slope Mode evens out the shape of the graphs at the expense of some on screen resolution.')
+		'description'   => __('Using Slope Mode evens out the shape of the graphs at the expense of ' .
+			'some on screen resolution.')
 	],
 	'scaling_header' => [
 		'friendly_name' => __('Scaling Options'),
@@ -797,14 +843,19 @@ $struct_graph = [
 		'friendly_name' => __('Auto Scale'),
 		'method'        => 'checkbox',
 		'default'       => 'on',
-		'description'   => __('Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the Upper and Lower limit will be ignored.'),
+		'description'   => __('Auto scale the y-axis instead of defining an upper and lower limit. ' .
+			'Note: if this is check both the Upper and Lower limit will be ignored.'),
 		'size'          => '7'
 	],
 	'auto_scale_opts' => [
 		'friendly_name' => __('Auto Scale Options'),
 		'method'        => 'radio',
 		'default'       => '2',
-		'description'   => __('Use <br> --alt-autoscale to scale to the absolute minimum and maximum <br> --alt-autoscale-max to scale to the maximum value, using a given lower limit <br> --alt-autoscale-min to scale to the minimum value, using a given upper limit <br> --alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>'),
+		'description'   => __('Use <br> --alt-autoscale to scale to the absolute minimum and maximum ' .
+			'<br> --alt-autoscale-max to scale to the maximum value, using a given ' .
+			'lower limit <br> --alt-autoscale-min to scale to the minimum value, ' .
+			'using a given upper limit <br> --alt-autoscale (with limits) to scale ' .
+			'using both lower and upper limits (RRDtool default) <br>'),
 		'items'         => [
 			0 => [
 				'radio_value'   => '1',
@@ -835,13 +886,15 @@ $struct_graph = [
 		'friendly_name' => __('SI Units for Logarithmic Scaling (--units=si)'),
 		'method'        => 'checkbox',
 		'default'       => '',
-		'description'   => __('Use SI Units for Logarithmic Scaling instead of using exponential notation.<br> Note: Linear graphs use SI notation by default.')
+		'description'   => __('Use SI Units for Logarithmic Scaling instead of using exponential ' .
+			'notation.<br> Note: Linear graphs use SI notation by default.')
 	],
 	'auto_scale_rigid' => [
 		'friendly_name' => __('Rigid Boundaries Mode (--rigid)'),
 		'method'        => 'checkbox',
 		'default'       => '',
-		'description'   => __('Do not expand the lower and upper limit if the graph contains a value outside the valid range.')
+		'description'   => __('Do not expand the lower and upper limit if the graph contains a value ' .
+			'outside the valid range.')
 	],
 	'upper_limit' => [
 		'friendly_name' => __('Upper Limit (--upper-limit)'),
@@ -869,7 +922,10 @@ $struct_graph = [
 		'method'        => 'textbox',
 		'max_length'    => '50',
 		'default'       => '',
-		'description'   => __('Sets the exponent value on the Y-axis for numbers. Note: This option is deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines.'),
+		'description'   => __('Sets the exponent value on the Y-axis for numbers. Note: This option ' .
+			'is deprecated and replaced by the --y-grid option.  In this option, ' .
+			'Y-axis grid lines appear at each grid step interval.  Labels are ' .
+			'placed every label factor lines.'),
 		'size'          => '12'
 	],
 	'unit_exponent_value' => [
@@ -877,7 +933,8 @@ $struct_graph = [
 		'method'        => 'textbox',
 		'max_length'    => '50',
 		'default'       => '',
-		'description'   => __('What unit Cacti should use on the Y-axis. Use 3 to display everything in "k" or -6 to display everything in "u" (micro).'),
+		'description'   => __('What unit Cacti should use on the Y-axis. Use 3 to display everything ' .
+			'in "k" or -6 to display everything in "u" (micro).'),
 		'size'          => '12'
 	],
 	'unit_length' => [
@@ -886,19 +943,29 @@ $struct_graph = [
 		'max_length'    => '50',
 		'default'       => '',
 		'size'          => '30',
-		'description'   => __('How many digits should RRDtool assume the y-axis labels to be? You may have to use this option to make enough space once you start fiddling with the y-axis labeling.'),
+		'description'   => __('How many digits should RRDtool assume the y-axis labels to be? You ' .
+			'may have to use this option to make enough space once you start ' .
+			'fiddling with the y-axis labeling.'),
 	],
 	'no_gridfit' => [
 		'friendly_name' => __('No Gridfit (--no-gridfit)'),
 		'method'        => 'checkbox',
 		'default'       => '',
-		'description'   => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points to device resolution pixels, this results in a crisper appearance. If this is not to your liking, you can use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.'),
+		'description'   => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points ' .
+			'to device resolution pixels, this results in a crisper appearance. If ' .
+			'this is not to your liking, you can use this switch to turn this ' .
+			'behavior off.<br><strong>Note: </strong>Gridfitting is turned off for ' .
+			'PDF, EPS, SVG output by default.'),
 	],
 	'alt_y_grid' => [
 		'friendly_name' => __('Alternative Y Grid (--alt-y-grid)'),
 		'method'        => 'checkbox',
 		'default'       => '',
-		'description'   => __('The algorithm ensures that you always have a grid, that there are enough but not too many grid lines, and that the grid is metric. This parameter will also ensure that you get enough decimals displayed even if your graph goes from 69.998 to 70.001.<br><strong>Note: </strong>This parameter may interfere with --alt-autoscale options.'),
+		'description'   => __('The algorithm ensures that you always have a grid, that there are ' .
+			'enough but not too many grid lines, and that the grid is metric. This ' .
+			'parameter will also ensure that you get enough decimals displayed ' .
+			'even if your graph goes from 69.998 to 70.001.<br><strong>Note: ' .
+			'</strong>This parameter may interfere with --alt-autoscale options.'),
 	],
 	'axis_header' => [
 		'friendly_name' => __('Axis Options'),
@@ -911,7 +978,8 @@ $struct_graph = [
 		'max_length'    => '20',
 		'default'       => '',
 		'size'          => '20',
-		'description'   => __('A second axis will be drawn to the right of the graph. It is tied to the left axis via the scale and shift parameters.'),
+		'description'   => __('A second axis will be drawn to the right of the graph. It is tied to ' .
+			'the left axis via the scale and shift parameters.'),
 	],
 	'right_axis_label' => [
 		'friendly_name' => __('Right Axis Label (--right-axis-label &lt;string&gt;)'),
@@ -927,7 +995,9 @@ $struct_graph = [
 		'sql'           => 'SELECT id, name FROM graph_templates_gprint WHERE gprint_text NOT LIKE "%\%s%" ORDER BY name',
 		'default'       => '',
 		'none_value'    => __('None'),
-		'description'   => __('By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
+		'description'   => __('By default, the format of the axis labels gets determined ' .
+			'automatically.  If you want to do this yourself, use this option with ' .
+			'the same %lf arguments you know from the PRINT and GPRINT commands.'),
 	],
 	'right_axis_formatter' => [
 		'friendly_name' => __('Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)'),
@@ -935,7 +1005,14 @@ $struct_graph = [
 		'array'         => $rrd_axis_formatters,
 		'default'       => '0',
 		'none_value'    => __('None'),
-		'description'   => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --right-axis-format.  Finally "duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
+		'description'   => __('When you setup the right axis labeling, apply a rule to the data ' .
+			'format.  Supported formats include "numeric" where data is treated as ' .
+			'numeric, "timestamp" where values are interpreted as UNIX timestamps ' .
+			'(number of seconds since January 1970) and expressed using strftime ' .
+			'format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and ' .
+			'--right-axis-format.  Finally "duration" where values are interpreted ' .
+			'as duration in milliseconds.  Formatting follows the rules of ' .
+			'valstrfduration qualified PRINT/GPRINT.'),
 	],
 	'left_axis_format'  => [
 		'friendly_name' => __('Left Axis Format (--left-axis-format &lt;format&gt;)'),
@@ -943,7 +1020,9 @@ $struct_graph = [
 		'sql'           => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
 		'default'       => '',
 		'none_value'    => __('None'),
-		'description'   => __('By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
+		'description'   => __('By default, the format of the axis labels gets determined ' .
+			'automatically.  If you want to do this yourself, use this option with ' .
+			'the same %lf arguments you know from the PRINT and GPRINT commands.'),
 	],
 	'left_axis_formatter' => [
 		'friendly_name' => __('Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)'),
@@ -951,7 +1030,14 @@ $struct_graph = [
 		'array'         => $rrd_axis_formatters,
 		'default'       => '0',
 		'none_value'    => __('None'),
-		'description'   => __('When you setup the left axis labeling, apply a rule to the data format.  Supported formats include "numeric" where data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length.  Finally "duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
+		'description'   => __('When you setup the left axis labeling, apply a rule to the data ' .
+			'format.  Supported formats include "numeric" where data is treated as ' .
+			'numeric, "timestamp" where values are interpreted as UNIX timestamps ' .
+			'(number of seconds since January 1970) and expressed using strftime ' .
+			'format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length.  ' .
+			'Finally "duration" where values are interpreted as duration in ' .
+			'milliseconds.  Formatting follows the rules of valstrfduration ' .
+			'qualified PRINT/GPRINT.'),
 	],
 	'legend_header' => [
 		'friendly_name' => __('Legend Options'),
@@ -962,7 +1048,10 @@ $struct_graph = [
 		'friendly_name' => __('Auto Padding'),
 		'method'        => 'checkbox',
 		'default'       => 'on',
-		'description'   => __('Pad text so that legend and graph data always line up. Note: this could cause graphs to take longer to render because of the larger overhead. Also Auto Padding may not be accurate on all types of graphs, consistent labeling usually helps.')
+		'description'   => __('Pad text so that legend and graph data always line up. Note: this ' .
+			'could cause graphs to take longer to render because of the larger ' .
+			'overhead. Also Auto Padding may not be accurate on all types of ' .
+			'graphs, consistent labeling usually helps.')
 	],
 	'dynamic_labels' => [
 		'friendly_name' => __('Dynamic Labels (--dynamic-labels)'),
@@ -1058,7 +1147,11 @@ $struct_graph_item = [
 		'max_length'    => '5',
 		'size'          => '5',
 		'default'       => '',
-		'description'   => __('The Gradient Height parameter can create three different behaviors. If it is > 0, then the gradient is a fixed height, starting at the line going down. If it is < 0, then the gradient starts at a fixed height above the x-axis, going down to the x-axis. If it is == 0, then the gradient goes from the top of the area fill to x-axis.')
+		'description'   => __('The Gradient Height parameter can create three different behaviors. ' .
+			'If it is > 0, then the gradient is a fixed height, starting at the ' .
+			'line going down. If it is < 0, then the gradient starts at a fixed ' .
+			'height above the x-axis, going down to the x-axis. If it is == 0, ' .
+			'then the gradient goes from the top of the area fill to x-axis.')
 	],
 	'consolidation_function_id' => [
 		'friendly_name' => __('Consolidation Function'),
@@ -1095,14 +1188,16 @@ $struct_graph_item = [
 		'max_length'    => '255',
 		'size'          => '80',
 		'default'       => '',
-		'description'   => __('[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds.')
+		'description'   => __('[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction ' .
+			'for the tick line.<br/> [SHIFT]: The time offset in seconds.')
 	],
 	'gprint_id' => [
 		'friendly_name' => __('GPRINT Type'),
 		'method'        => 'drop_sql',
 		'sql'           => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
 		'default'       => '2',
-		'description'   => __('If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under "GPRINT Presets".')
+		'description'   => __('If this graph item is a GPRINT, you can optionally choose another ' .
+			'format here. You can define additional types under "GPRINT Presets".')
 	],
 	'textalign' => [
 		'friendly_name' => __('Text Alignment' . ' (TEXTALIGN)'),
@@ -1110,7 +1205,12 @@ $struct_graph_item = [
 		'value'         => '|arg1:textalign|',
 		'array'         => $rrd_textalign,
 		'default'       => '',
-		'description'   => __('All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!'),
+		'description'   => __('All subsequent legend line(s) will be aligned as given here.  You may ' .
+			'use this command multiple times in a single graph.  This command does ' .
+			'not produce tabular layout.<br/><strong>Note: </strong>You may want ' .
+			'to insert a &lt;HR&gt; on the preceding graph item.<br/> ' .
+			'<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete ' .
+			'this setting!'),
 	],
 	'text_format' => [
 		'friendly_name' => __('Text Format'),
@@ -1126,7 +1226,9 @@ $struct_graph_item = [
 		'max_length'    => '30',
 		'size'          => '25',
 		'default'       => '',
-		'description'   => __('A Legend to be displayed when Hovering over the Graph and also used for Graph Export.  Hover requires RRDtool 1.9.1 and above.  It may work for RRDtool 1.8+, but not for Thold Legends.')
+		'description'   => __('A Legend to be displayed when Hovering over the Graph and also used ' .
+			'for Graph Export.  Hover requires RRDtool 1.9.1 and above.  It may ' .
+			'work for RRDtool 1.8+, but not for Thold Legends.')
 	],
 	'hard_return' => [
 		'friendly_name' => __('Insert Hard Return'),
@@ -1140,7 +1242,8 @@ $struct_graph_item = [
 		'max_length'    => '5',
 		'default'       => '1.00',
 		'size'          => '5',
-		'description'   => __('In case LINE was chosen, specify width of line here.  You must include a decimal precision, for example 2.00'),
+		'description'   => __('In case LINE was chosen, specify width of line here.  You must ' .
+			'include a decimal precision, for example 2.00'),
 	],
 	'dashes' => [
 		'friendly_name' => __('Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])'),
@@ -1205,7 +1308,14 @@ $fields_graph_template_template_edit = [
 	'test_source' => [
 		'method'        => 'checkbox',
 		'friendly_name' => __('Test Data Sources'),
-		'description'   => __('Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased.'),
+		'description'   => __('Check this checkbox if you wish to test the Data Sources prior to ' .
+			'their creation.  With Test Data Sources enabled, if the Data Source ' .
+			'does not return valid data, the Graph will not be created.  This ' .
+			'setting is important if you wish to have a more generic Device ' .
+			'Template that can include more Graph Templates that can be ' .
+			'selectively applied depending on the characteristics of the Device ' .
+			'itself.  Note: If you have a long running script as a Data Source, ' .
+			'the time to create Graphs will be increased.'),
 		'value'         => '|arg1:test_source|',
 		'default'       => '',
 		'form_id'       => false
@@ -1280,7 +1390,8 @@ $fields_host_edit = [
 	'hostname' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Hostname'),
-		'description'   => __('Fully qualified hostname or IP address for this device. IPv6 address insert into brackets (example: [2001:abcd:1234::1])'),
+		'description'   => __('Fully qualified hostname or IP address for this device. IPv6 address ' .
+			'insert into brackets (example: [2001:abcd:1234::1])'),
 		'value'         => '|arg1:hostname|',
 		'max_length'    => '100',
 		'size'          => '60',
@@ -1315,7 +1426,8 @@ $fields_host_edit = [
 	'host_template_id' => [
 		'method'        => 'drop_sql',
 		'friendly_name' => __('Device Template'),
-		'description'   => __('Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device.'),
+		'description'   => __('Choose the Device Template to use to define the default Graph ' .
+			'Templates and Data Queries associated with this Device.'),
 		'value'         => '|arg1:host_template_id|',
 		'none_value'    => __('None'),
 		'default'       => read_config_option('default_template'),
@@ -1324,7 +1436,8 @@ $fields_host_edit = [
 	'device_threads' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Number of Collection Threads'),
-		'description'   => __('The number of concurrent threads to use for polling this device.  This applies to the Spine poller only.'),
+		'description'   => __('The number of concurrent threads to use for polling this device.  ' .
+			'This applies to the Spine poller only.'),
 		'value'         => '|arg1:device_threads|',
 		'default'       => read_config_option('device_threads'),
 		'array'         => $device_threads
@@ -1344,7 +1457,9 @@ $fields_host_edit = [
 	],
 	'availability_method' => [
 		'friendly_name' => __('Downed Device Detection'),
-		'description'   => __('The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>'),
+		'description'   => __('The method Cacti will use to determine if a host is available for ' .
+			'polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP ' .
+			'always be selected.</i>'),
 		'on_change'     => 'changeHostForm()',
 		'value'         => '|arg1:availability_method|',
 		'method'        => 'drop_array',
@@ -1353,7 +1468,9 @@ $fields_host_edit = [
 	],
 	'snmp_options' => [
 		'friendly_name' => __('Downed Device SNMP Recovery Options Set'),
-		'description'   => __('If a Device goes down, use this SNMP Option Set to attempt to re-establish communication with the device and update the devices settings based upon the first matching SNMP Options Set.'),
+		'description'   => __('If a Device goes down, use this SNMP Option Set to attempt to ' .
+			're-establish communication with the device and update the devices ' .
+			'settings based upon the first matching SNMP Options Set.'),
 		'on_change'     => 'changeHostForm()',
 		'value'         => '|arg1:snmp_options|',
 		'method'        => 'drop_sql',
@@ -1362,7 +1479,9 @@ $fields_host_edit = [
 	],
 	'ping_method' => [
 		'friendly_name' => __('Ping Method'),
-		'description'   => __('The type of ping packet to send.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>'),
+		'description'   => __('The type of ping packet to send.  <br><i>NOTE: ICMP on Linux/UNIX ' .
+			'requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if ' .
+			'the tcp ping is not successful, the device can be considered UP.</i>'),
 		'on_change'     => 'changeHostForm()',
 		'value'         => '|arg1:ping_method|',
 		'method'        => 'drop_array',
@@ -1380,7 +1499,8 @@ $fields_host_edit = [
 	],
 	'ping_timeout' => [
 		'friendly_name' => __('Ping Timeout Value'),
-		'description'   => __('The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.'),
+		'description'   => __('The timeout value to use for host ICMP and UDP pinging.  This host ' .
+			'SNMP timeout value applies for SNMP pings.'),
 		'method'        => 'textbox',
 		'value'         => '|arg1:ping_timeout|',
 		'default'       => read_config_option('ping_timeout'),
@@ -1559,7 +1679,9 @@ $fields_data_query_edit = [
 	'data_input_id' => [
 		'method'        => 'drop_sql',
 		'friendly_name' => __('Data Input Method'),
-		'description'   => __('Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query.'),
+		'description'   => __('Choose the input method for this Data Query.  This input method ' .
+			'defines how data is collected for each Device associated with the ' .
+			'Data Query.'),
 		'value'         => '|arg1:data_input_id|',
 		'sql'           => 'SELECT id, name FROM data_input WHERE type_id IN(3,4,6) ORDER BY name',
 	],
@@ -1791,7 +1913,9 @@ $fields_user_edit = [
 	'realm' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Authentication Realm'),
-		'description'   => __('Only used if you have LDAP or Web Basic Authentication enabled.  Changing this to a non-enabled realm will effectively disable the user.'),
+		'description'   => __('Only used if you have LDAP or Web Basic Authentication enabled.  ' .
+			'Changing this to a non-enabled realm will effectively disable the ' .
+			'user.'),
 		'value'         => '|arg1:realm|',
 		'default'       => 0,
 		'array'         => $auth_realms,
@@ -1859,7 +1983,9 @@ $fields_template_import = [
 	'import_data_source_profile' => [
 		'friendly_name' => __('Data Source Profile'),
 		'method'        => 'drop_sql',
-		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
+		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls ' .
+			'polling interval, the data aggregation, and retention policy for the ' .
+			'resulting Data Sources.'),
 		'sql'           => 'SELECT id, name FROM data_source_profiles ORDER BY name',
 		'none_value'    => __('Create New from Template'),
 		'value'         => '',
@@ -1873,14 +1999,19 @@ $fields_template_import = [
 	'remove_orphans' => [
 		'friendly_name' => __('Remove Orphaned Graph Items'),
 		'method'        => 'checkbox',
-		'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
+		'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph ' .
+			'Template and associated Graphs that are not included in the imported ' .
+			'Graph Template.'),
 		'value'         => '',
 		'default'       => ''
 	],
 	'replace_svalues' => [
 		'friendly_name' => __('Replace Data Query Suggested Value Patterns'),
 		'method'        => 'checkbox',
-		'description'   => __('Replace Data Source and Graph Template Suggested Value Records for Data Queries.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process.'),
+		'description'   => __('Replace Data Source and Graph Template Suggested Value Records for ' .
+			'Data Queries.  Graphs and Data Sources will take on new names after ' .
+			'either a Data Query Reindex or by using the forced Replace Suggested ' .
+			'Values process.'),
 		'value'         => '',
 		'default'       => ''
 	],
@@ -1955,7 +2086,9 @@ $fields_manager_edit = [
 ] + $fields_snmp_item + [
 	'snmp_message_type' => [
 		'friendly_name' => __('SNMP Message Type'),
-		'description'   => __('SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called "INFORMS", SNMPv2 or above will be required.'),
+		'description'   => __('SNMP traps are always unacknowledged. To send out acknowledged SNMP ' .
+			'notifications, formally called "INFORMS", SNMPv2 or above will be ' .
+			'required.'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:snmp_message_type|',
 		'default'       => '1',
@@ -2011,7 +2144,10 @@ $struct_aggregate = [
 	],
 	'aggregate_graph_type' => [
 		'friendly_name' => __('Graph Type'),
-		'description'   => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
+		'description'   => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st ' .
+			'graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all ' .
+			'items convert to LINE1 items<br>LINE2: all items convert to LINE2 ' .
+			'items<br>LINE3: all items convert to LINE3 items'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:aggregate_graph_type|',
 		'array'         => $agg_graph_types,
@@ -2019,7 +2155,8 @@ $struct_aggregate = [
 	],
 	'aggregate_total' => [
 		'friendly_name' => __('Totaling'),
-		'description'   => __('Please check those Items that shall be totaled in the "Total" column, when selecting any totaling option here.'),
+		'description'   => __('Please check those Items that shall be totaled in the "Total" column, ' .
+			'when selecting any totaling option here.'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:aggregate_total|',
 		'array'         => $agg_totals,
@@ -2082,7 +2219,9 @@ $struct_aggregate_graph = [
 	],
 	'gprint_prefix' => [
 		'friendly_name' => __('Prefix'),
-		'description'   => __('A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix.'),
+		'description'   => __('A Prefix for all GPRINT lines to distinguish e.g. different hosts.  ' .
+			'You may use both Host as well as Data Query replacement variables in ' .
+			'this prefix.'),
 		'method'        => 'textbox',
 		'max_length'    => '255',
 		'value'         => '|arg1:gprint_prefix|',
@@ -2097,7 +2236,10 @@ $struct_aggregate_graph = [
 	],
 	'graph_type' => [
 		'friendly_name' => __('Graph Type'),
-		'description'   => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
+		'description'   => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st ' .
+			'graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all ' .
+			'items convert to LINE1 items<br>LINE2: all items convert to LINE2 ' .
+			'items<br>LINE3: all items convert to LINE3 items'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:graph_type|',
 		'array'         => $agg_graph_types,
@@ -2105,7 +2247,8 @@ $struct_aggregate_graph = [
 	],
 	'total' => [
 		'friendly_name' => __('Totaling'),
-		'description'   => __('Please check those Items that shall be totaled in the "Total" column, when selecting any totaling option here.'),
+		'description'   => __('Please check those Items that shall be totaled in the "Total" column, ' .
+			'when selecting any totaling option here.'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:total|',
 		'array'         => $agg_totals,
@@ -2187,7 +2330,9 @@ $struct_aggregate_template = [
 	],
 	'gprint_prefix' => [
 		'friendly_name' => __('Prefix'),
-		'description'   => __('A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix.'),
+		'description'   => __('A Prefix for all GPRINT lines to distinguish e.g. different hosts.  ' .
+			'You may use both Host as well as Data Query replacement variables in ' .
+			'this prefix.'),
 		'method'        => 'textbox',
 		'max_length'    => '255',
 		'value'         => '|arg1:gprint_prefix|',
@@ -2202,7 +2347,10 @@ $struct_aggregate_template = [
 	],
 	'graph_type' => [
 		'friendly_name' => __('Graph Type'),
-		'description'   => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
+		'description'   => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st ' .
+			'graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all ' .
+			'items convert to LINE1 items<br>LINE2: all items convert to LINE2 ' .
+			'items<br>LINE3: all items convert to LINE3 items'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:graph_type|',
 		'array'         => $agg_graph_types,
@@ -2210,7 +2358,8 @@ $struct_aggregate_template = [
 	],
 	'total' => [
 		'friendly_name' => __('Totaling'),
-		'description'   => __('Please check those Items that shall be totaled in the "Total" column, when selecting any totaling option here.'),
+		'description'   => __('Please check those Items that shall be totaled in the "Total" column, ' .
+			'when selecting any totaling option here.'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:total|',
 		'array'         => $agg_totals,
@@ -2458,7 +2607,8 @@ $fields_automation_tree_rules_edit2 = [
 	'tree_item_id' => [
 		'method'        => 'drop_tree',
 		'friendly_name' => __('Optional: Sub-Tree Item'),
-		'description'   => __('Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!'),
+		'description'   => __('Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still ' .
+			'there when this rule is executed!'),
 		'tree_id'       => '|arg1:tree_id|',
 		'value'         => '|arg1:tree_item_id|',
 	]
@@ -2504,7 +2654,8 @@ $fields_automation_tree_rule_item_edit = [
 	'search_pattern' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Matching Pattern'),
-		'description'   => __('The String Pattern (Regular Expression) to match against.<br>Enclosing \'/\' must <strong>NOT</strong> be provided!'),
+		'description'   => __('The String Pattern (Regular Expression) to match ' .
+			'against.<br>Enclosing \'/\' must <strong>NOT</strong> be provided!'),
 		'value'         => '|arg1:search_pattern|',
 		'max_length'    => '255',
 		'size'          => '50',
@@ -2512,7 +2663,8 @@ $fields_automation_tree_rule_item_edit = [
 	'replace_pattern' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Replacement Pattern'),
-		'description'   => __('The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\${1}</strong> for the first match!'),
+		'description'   => __('The Replacement String Pattern for use as a Tree Header.<br>Refer to ' .
+			'a Match by e.g. <strong>\${1}</strong> for the first match!'),
 		'value'         => '|arg1:replace_pattern|',
 		'max_length'    => '255',
 		'size'          => '50',

@@ -79,11 +79,14 @@ function support_lockout() : void {
 
 		if ($expected !== 'locked' && $expected !== 'unlocked') {
 			raise_message('lockout',
-				__('The Cacti maintenance lockout request did not specify a valid expected state.  Please review the current status and try again.'),
+				__('The Cacti maintenance lockout request did not specify a valid ' .
+					'expected state.  Please review the current status and try again.'),
 				MESSAGE_LEVEL_INFO);
 		} elseif ($is_locked !== ($expected === 'locked')) {
 			raise_message('lockout',
-				__('The Cacti maintenance lockout state was changed by another administrator since this page was loaded.  Please review the current status and try again.'),
+				__('The Cacti maintenance lockout state was changed by another ' .
+					'administrator since this page was loaded.  Please review the current ' .
+					'status and try again.'),
 				MESSAGE_LEVEL_INFO);
 		} elseif (!$is_locked) {
 			raise_message('lockout',
@@ -94,7 +97,8 @@ function support_lockout() : void {
 			set_config_option('cacti_lockout_status', json_encode(['session' => session_id(), 'time' => time()]));
 		} else {
 			raise_message('lockout',
-				__esc('Cacti maintenance lockout has been cleared by \'%s\'.  Press the button again after Cacti maintenance is over.',
+				__esc('Cacti maintenance lockout has been cleared by \'%s\'.  Press the ' .
+					'button again after Cacti maintenance is over.',
 					get_username($admin)),
 				MESSAGE_LEVEL_INFO);
 			cacti_log('WARNING: Cacti maintenance lockout has been cleared by the primary administrator!');
@@ -940,7 +944,8 @@ function show_cacti_processes() : void {
 			'display' => __('Task ID'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
-			'tip'     => __('The ID of the Task which is often times the LSF clusterid or the License Service ID, but can be other metrics as well.')
+			'tip'     => __('The ID of the Task which is often times the LSF clusterid or the ' .
+				'License Service ID, but can be other metrics as well.')
 		],
 		'runtime' => [
 			'display' => __('Run/Update Time'),
@@ -956,13 +961,15 @@ function show_cacti_processes() : void {
 			'display' => __('Timeout'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
-			'tip'     => __('The background process timeout in seconds when a Cacti process.  Otherwise controlled by the individual plugins.')
+			'tip'     => __('The background process timeout in seconds when a Cacti process.  ' .
+				'Otherwise controlled by the individual plugins.')
 		],
 		'started' => [
 			'display' => __('Start Time'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
-			'tip'     => __('Time the background process started for a Cacti process.  The start time may or may not be supported for various plugins.')
+			'tip'     => __('Time the background process started for a Cacti process.  The start ' .
+				'time may or may not be supported for various plugins.')
 		],
 		'last_update' => [
 			'display' => __('Last Updated'),
@@ -1368,7 +1375,8 @@ function show_tech_summary() : void {
 		$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
 		$snmp_installed = true;
 	} else {
-		$snmp_version   = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
+		$snmp_version   = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if ' .
+			'you wish to monitor SNMP enabled devices.') . '</span>';
 		$snmp_installed = false;
 	}
 
@@ -1376,14 +1384,17 @@ function show_tech_summary() : void {
 	$rrdtool_errors = [];
 
 	if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
-		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.',
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured ' .
+			'version.<br>Please visit the %s and select the correct RRDtool ' .
+			'Utility Version.',
 			"<a href='" . htmle('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . '</span>';
 	}
 
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 
 	if ($graph_gif_count > 0) {
-		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.',
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" ' .
+			'graph(s) and/or templates have GIF set as the image format.',
 			$graph_gif_count) . '</span>';
 	}
 
@@ -1405,8 +1416,10 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>' . __('Diagnostics Export') . '</td>';
-	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a diagnostics report to the clipboard.  Enable the redact toggle to mask identifying details before sharing.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" aria-live="polite"></span>' .
-		'<label style="margin-left:12px"><input type="checkbox" id="redact_toggle"' . ($redact ? ' checked="checked"' : '') . '> ' . __('Redact for sharing') . '</label></td>';
+	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a diagnostics report to the clipboard.  Enable the redact toggle ' .
+		'to mask identifying details before sharing.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" aria-live="polite"></span>' .
+		('<label style="margin-left:12px"><input type="checkbox" ' .
+			'id="redact_toggle"') . ($redact ? ' checked="checked"' : '') . '> ' . __('Redact for sharing') . '</label></td>';
 	form_end_row();
 
 	$lockout = read_config_option('cacti_lockout_status', true);
@@ -1423,13 +1436,16 @@ function show_tech_summary() : void {
 			$unlock_time = $lockout['time'] + (30 * 60);
 			$unlock_hms  = date('H:i', $unlock_time);
 
-			print '<td><button class="deviceDown" type="button" id="lockout" data-expected="locked" title="' . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!',
-				$unlock_hms) . '</button></td>';
+			print ('<td><button class="deviceDown" type="button" id="lockout" ' .
+				'data-expected="locked" title="') . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!',
+					$unlock_hms) . '</button></td>';
 		} else {
-			print '<td><button type="button" id="lockout" data-expected="unlocked" title="' . __('Press this button to Lockout Cacti for 30 minutes for maintenance.') . '">' . __('Lockout Cacti for Maintenance') . '</button></td>';
+			print ('<td><button type="button" id="lockout" data-expected="unlocked" ' .
+				'title="') . __('Press this button to Lockout Cacti for 30 minutes for maintenance.') . '">' . __('Lockout Cacti for Maintenance') . '</button></td>';
 		}
 	} else {
-		print '<td><button class="deviceDisabled" type="button" id="lockout" disabled="disabled" title="' . __('To enable this feature, goto Settings > Authentication.') . '">' . __('Cacti Maintenance Mode feature is disabled') . '</button></td>';
+		print ('<td><button class="deviceDisabled" type="button" id="lockout" ' .
+			'disabled="disabled" title="') . __('To enable this feature, goto Settings > Authentication.') . '">' . __('Cacti Maintenance Mode feature is disabled') . '</button></td>';
 	}
 	form_end_row();
 
@@ -1852,7 +1868,10 @@ function show_tech_summary() : void {
 			form_end_row();
 			form_alternate_row();
 			print '<td></td>';
-			print '<td>' . __('Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method.') . '</td>';
+			print '<td>' . __('Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  ' .
+				'Preserve additional Cache Memory for RRDfiles if the Database is on ' .
+				'the same system as the RRDfiles.  See Core and Client Totals below ' .
+				'for explanation of calculation method.') . '</td>';
 			form_end_row();
 		} else {
 			form_alternate_row();
@@ -1885,7 +1904,9 @@ function show_tech_summary() : void {
 
 		form_alternate_row();
 		print '<td>' . __('Calculation Formula') . '</td>';
-		print '<td>SELECT @@GLOBAL.key_buffer_size + <br>@@GLOBAL.query_cache_size + <br>@@GLOBAL.tmp_table_size + <br>@@GLOBAL.innodb_buffer_pool_size + <br>@@GLOBAL.innodb_log_buffer_size</td>';
+		print('<td>SELECT @@GLOBAL.key_buffer_size + <br>@@GLOBAL.query_cache_size + ' .
+			'<br>@@GLOBAL.tmp_table_size + <br>@@GLOBAL.innodb_buffer_pool_size + ' .
+			'<br>@@GLOBAL.innodb_log_buffer_size</td>');
 		form_end_row();
 
 		if ($clientMemory > ($total_memory * 0.8)) {
@@ -1905,7 +1926,10 @@ function show_tech_summary() : void {
 
 		form_alternate_row();
 		print '<td>' . __('Calculation Formula') . '</td>';
-		print '<td>SELECT @@GLOBAL.max_connections * (<br>@@GLOBAL.sort_buffer_size + <br>@@GLOBAL.read_buffer_size + <br>@@GLOBAL.read_rnd_buffer_size + <br>@@GLOBAL.join_buffer_size + <br>@@GLOBAL.thread_stack + <br>@@GLOBAL.binlog_cache_size)</td>';
+		print('<td>SELECT @@GLOBAL.max_connections * (<br>@@GLOBAL.sort_buffer_size ' .
+			'+ <br>@@GLOBAL.read_buffer_size + <br>@@GLOBAL.read_rnd_buffer_size + ' .
+			'<br>@@GLOBAL.join_buffer_size + <br>@@GLOBAL.thread_stack + ' .
+			'<br>@@GLOBAL.binlog_cache_size)</td>');
 		form_end_row();
 	} else {
 		form_alternate_row();
@@ -1915,7 +1939,9 @@ function show_tech_summary() : void {
 
 		form_alternate_row();
 		print '<td>' . __('Calculation Formula') . '</td>';
-		print '<td>SELECT @@GLOBAL.key_buffer_size + <br>@@GLOBAL.query_cache_size + <br>@@GLOBAL.tmp_table_size + <br>@@GLOBAL.innodb_buffer_pool_size + <br>@@GLOBAL.innodb_log_buffer_size</td>';
+		print('<td>SELECT @@GLOBAL.key_buffer_size + <br>@@GLOBAL.query_cache_size + ' .
+			'<br>@@GLOBAL.tmp_table_size + <br>@@GLOBAL.innodb_buffer_pool_size + ' .
+			'<br>@@GLOBAL.innodb_log_buffer_size</td>');
 		form_end_row();
 
 		form_alternate_row();
@@ -1925,7 +1951,10 @@ function show_tech_summary() : void {
 
 		form_alternate_row();
 		print '<td>' . __('Calculation Formula') . '</td>';
-		print '<td>SELECT @@GLOBAL.max_connections * (<br>@@GLOBAL.sort_buffer_size + <br>@@GLOBAL.read_buffer_size + <br>@@GLOBAL.read_rnd_buffer_size + <br>@@GLOBAL.join_buffer_size + <br>@@GLOBAL.thread_stack + <br>@@GLOBAL.binlog_cache_size)</td>';
+		print('<td>SELECT @@GLOBAL.max_connections * (<br>@@GLOBAL.sort_buffer_size ' .
+			'+ <br>@@GLOBAL.read_buffer_size + <br>@@GLOBAL.read_rnd_buffer_size + ' .
+			'<br>@@GLOBAL.join_buffer_size + <br>@@GLOBAL.thread_stack + ' .
+			'<br>@@GLOBAL.binlog_cache_size)</td>');
 		form_end_row();
 	}
 
@@ -1960,7 +1989,8 @@ function show_tech_summary() : void {
 	if (!function_exists('snmpget')) {
 		print __('Not Installed');
 	} elseif (!CACTI_PHP_SNMP) {
-		print __('Installed, but disabled by $php_snmp_support in include/config.php.  The Net-SNMP binaries are used instead.');
+		print __('Installed, but disabled by $php_snmp_support in include/config.php.  ' .
+			'The Net-SNMP binaries are used instead.');
 	} else {
 		print __('Installed.');
 	}
@@ -2001,7 +2031,9 @@ function show_tech_summary() : void {
 
 		print __('It is highly suggested that you alter you php.ini memory_limit to %s or higher.',
 			memory_readable($memory_suggestion)) . ' <br/>' .
-			__('This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.');
+			__('This suggested memory value is calculated based on the number of data ' .
+				'source present and is only to be used as a suggestion, actual values ' .
+				'may vary system to system based on requirements.');
 
 		print '</span><br>';
 	}
@@ -2063,7 +2095,8 @@ function show_tech_summary() : void {
 	$report .= '- ' . __('RSA Fingerprint') . ': ' . $rsa_report . "\n";
 
 	form_alternate_row();
-	print "<td colspan='2'><textarea id='diag_report' style='display:none' readonly='readonly'>" . html_escape($report) . '</textarea></td>';
+	print ("<td colspan='2'><textarea id='diag_report' style='display:none' " .
+		"readonly='readonly'>") . html_escape($report) . '</textarea></td>';
 	form_end_row();
 }
 

@@ -302,8 +302,9 @@ function aggregate_form_actions() : void {
 					'aggregate_template_id'));
 				db_execute('DELETE FROM aggregate_graph_templates_graph WHERE ' . array_to_sql_or($selected_items,
 					'aggregate_template_id'));
-				db_execute("UPDATE aggregate_graphs SET aggregate_template_id=0, template_propogation='' WHERE " . array_to_sql_or($selected_items,
-					'aggregate_template_id'));
+				db_execute(('UPDATE aggregate_graphs SET aggregate_template_id=0, ' .
+					"template_propogation='' WHERE ") . array_to_sql_or($selected_items,
+						'aggregate_template_id'));
 			}
 		}
 
@@ -616,7 +617,8 @@ function aggregate_template() : void {
 		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.')
+			'tip'     => __('Aggregate Templates that are in use can not be Deleted.  In use is ' .
+				'defined as being referenced by an Aggregate.')
 		],
 		'nosort1' => [
 			'display' => __('Graphs Using'),

@@ -173,7 +173,8 @@ switch ($action) {
 		// Check new password does not match stored password
 		if (compat_password_verify($password, $user['password'])) {
 			$bad_password = true;
-			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . '</span>';
+			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try ' .
+				'again.') . '</span>';
 
 			break;
 		}

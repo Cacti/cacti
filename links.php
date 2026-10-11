@@ -361,7 +361,8 @@ function pages() : void {
 
 			if (grv('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort = ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
@@ -369,7 +370,8 @@ function pages() : void {
 				if ($i == cacti_sizeof($pages) - 1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
-					$sort .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '1%', 'center');
@@ -496,7 +498,8 @@ function edit_page() : void {
 			'friendly_name' => __('Console Menu Section'),
 			'method'        => 'drop_array',
 			'array'         => $sec_ar,
-			'description'   => __('Under which Console heading should this item appear? (All External Link menus will appear between Configuration and Utilities)'),
+			'description'   => __('Under which Console heading should this item appear? (All External ' .
+				'Link menus will appear between Configuration and Utilities)'),
 			'value'         => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
 		],
 		'consolenewsection' => [
@@ -519,13 +522,17 @@ function edit_page() : void {
 			'directory'     => CACTI_PATH_INCLUDE . '/content',
 			'exclusions'    => ['README', 'index.php'],
 			'none_value'    => __('Web URL Below'),
-			'description'   => __('The file that contains the content for this page. This file needs to be in the Cacti \'include/content/\' directory.'),
+			'description'   => __('The file that contains the content for this page. This file needs to ' .
+				'be in the Cacti \'include/content/\' directory.'),
 			'value'         => (isset($data['contentfile']) ? $data['contentfile'] : '')
 		],
 		'fileurl' => [
 			'friendly_name' => __('Web URL Location'),
 			'method'        => 'textbox',
-			'description'   => __('The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work.'),
+			'description'   => __('The valid URL to use for this external link.  Must include the type, ' .
+				'for example http://www.cacti.net.  Note that many websites do not ' .
+				'allow them to be embedded in an iframe from a foreign site, and ' .
+				'therefore External Linking may not work.'),
 			'max_length'    => 255,
 			'size'          => 80,
 			'default'       => 'http://www.cacti.net',

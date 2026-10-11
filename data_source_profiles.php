@@ -158,14 +158,16 @@ function profile_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Data Source Profile from Local File'),
-			'description'   => __('If the JSON file containing the Data Source Profile data is located on your local machine, select it here.'),
+			'description'   => __('If the JSON file containing the Data Source Profile data is located ' .
+				'on your local machine, select it here.'),
 			'method'        => 'file',
 			'accept'        => '.json'
 		],
 		'import_text' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Import Data Source Profile from Text'),
-			'description'   => __('If you have the JSON file containing the Data Source Profile data as text, you can paste it into this box to import it.'),
+			'description'   => __('If you have the JSON file containing the Data Source Profile data as ' .
+				'text, you can paste it into this box to import it.'),
 			'value'         => '',
 			'default'       => '',
 			'textarea_rows' => '10',
@@ -368,7 +370,8 @@ function profile_import_execute(mixed $json_data) : array {
 			}
 		}
 	} else {
-		$debug_data['failure'][] = __('Data Source Profile Import data is either for another object type or not JSON formatted.');
+		$debug_data['failure'][] = __('Data Source Profile Import data is either for another object type or ' .
+			'not JSON formatted.');
 	}
 
 	return $debug_data;
@@ -643,7 +646,10 @@ function form_save() : void {
 							[grv('heartbeat'), grv('id')]);
 
 						raise_message('heartbeat_change',
-							__('Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool\'s \'tune\' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>'),
+							__('Changing the Heartbeat from this page, does not change the Heartbeat ' .
+								'for your existing Data Sources.  Use RRDtool\'s \'tune\' function to ' .
+								'make that change to your existing RRDfiles heartbeats, or run the CLI ' .
+								'utility update_heartbeat.php to correct.<br>'),
 							MESSAGE_LEVEL_WARN);
 					}
 				}
@@ -1432,7 +1438,8 @@ function profile() : void {
 		'nosort01' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')
+			'tip'     => __('Profiles that are in use cannot be Deleted. In use is defined as ' .
+				'being referenced by a Data Source or a Data Template.')
 		],
 		'nosort02' => [
 			'display' => __('Read Only'),

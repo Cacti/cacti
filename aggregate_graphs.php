@@ -894,8 +894,10 @@ function form_actions() : void {
 				}
 
 				if (cacti_sizeof($graph_templates) > 1) {
-					$message = '<p>' . __('The selected Aggregate Graphs represent elements from more than one Graph Template.') . '</p>
-						<p>' . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.') . "</p>
+					$message = '<p>' . __('The selected Aggregate Graphs represent elements from more than one ' .
+						'Graph Template.') . '</p>
+						<p>' . __('In order to migrate the Aggregate Graphs below to a Template based ' .
+							'Aggregate, they must only be using one Graph Template.') . "</p>
 						<div class='itemlist'><ul>$ilist</ul></div>";
 
 					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
@@ -905,8 +907,10 @@ function form_actions() : void {
 				}
 
 				if (cacti_sizeof($graph_templates) == 0) {
-					$message = '<p>' . __('The selected Aggregate Graphs does not appear to have any matching Aggregate Templates.') . '</p>
-						<p>' . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.') . "</p>
+					$message = '<p>' . __('The selected Aggregate Graphs does not appear to have any matching ' .
+						'Aggregate Templates.') . '</p>
+						<p>' . __('In order to migrate the Aggregate Graphs below use an Aggregate ' .
+							'Template, one must already exist.') . "</p>
 						<div class='itemlist'><ul>$ilist</ul></div>";
 
 					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
@@ -931,9 +935,12 @@ function form_actions() : void {
 							WHERE id = ?',
 							[$graph_template]);
 
-						$message = '<p>' . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . '</p>
-							<p>' . __esc('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.',
-							$name) . "</p>
+						$message = '<p>' . __('There are currently no Aggregate Templates defined for the selected ' .
+							'Legacy Aggregates.') . '</p>
+							<p>' . __esc('In order to migrate the Aggregate Graphs below to a Template based ' .
+								'Aggregate, first create an Aggregate Template for the Graph Template ' .
+								'\'%s\'.',
+								$name) . "</p>
 							<div class='itemlist'><ul>$ilist</ul></div>";
 
 						raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
@@ -1222,7 +1229,8 @@ function graph_edit() : bool {
 	if (!ierv('id') && $current_tab == 'preview') {
 		print "<ul style='float:right;'><li><a class='pic' href='" . htmle('aggregate_graphs.php?action=edit&id=' . gfrv('id') . '&tab=' . rawurlencode(grv('tab')) . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . '</a></li></ul></nav></div></div>';
 	} elseif (!ierv('id') && $current_tab == 'details' && (!cacti_sizeof($template))) {
-		print "<ul style='float:right;'><li><a id='toggle_items' class='pic' href='#'>" . __('Show Item Details') . '</a></li></ul></nav></div></div>';
+		print ("<ul style='float:right;'><li><a id='toggle_items' class='pic' " .
+			"href='#'>") . __('Show Item Details') . '</a></li></ul></nav></div></div>';
 	} else {
 		print '</nav></div></div>';
 	}

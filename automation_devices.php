@@ -159,7 +159,8 @@ function form_actions() : void {
 				input_validate_input_number($matches[1], 'chk[1]');
 				// ====================================================
 
-				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?',
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") ' .
+					'FROM automation_devices WHERE id = ?',
 					[$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];

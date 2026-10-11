@@ -207,14 +207,16 @@ function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Device Rules from Local File'),
-			'description'   => __('If the JSON file containing the Device Rules data is located on your local machine, select it here.'),
+			'description'   => __('If the JSON file containing the Device Rules data is located on your ' .
+				'local machine, select it here.'),
 			'method'        => 'file',
 			'accept'        => '.json'
 		],
 		'import_text' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Import Device Rules from Text'),
-			'description'   => __('If you have the JSON file containing the Device Rules data as text, you can paste it into this box to import it.'),
+			'description'   => __('If you have the JSON file containing the Device Rules data as text, ' .
+				'you can paste it into this box to import it.'),
 			'value'         => '',
 			'default'       => '',
 			'textarea_rows' => '10',
@@ -623,7 +625,8 @@ function form_actions() : void {
 				input_validate_input_number($matches[1], 'chk[1]');
 				// ====================================================
 
-				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?',
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN ' .
+					'host_template AS ht ON ht.id=at.host_template WHERE at.id = ?',
 					[$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
@@ -734,7 +737,8 @@ function automation_remove_ttr_confirm() : void {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to Delete the following Threshold Template will be disassociated from the Device Rule.'); ?></p>
+			<p><?php print __('Click \'Continue\' to Delete the following Threshold Template will be ' .
+				'disassociated from the Device Rule.'); ?></p>
 			<p><?php print __("Threshold Template Name: '%s'", htmle($name)); ?>
 			<br>
 		</td>
@@ -800,7 +804,8 @@ function automation_remove_agr_confirm() : void {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to Delete the following Graph Rule will be disassociated from the Device Rule.'); ?></p>
+			<p><?php print __('Click \'Continue\' to Delete the following Graph Rule will be ' .
+				'disassociated from the Device Rule.'); ?></p>
 			<p><?php print __("Graph Rule Name: '%s'", htmle($name)); ?>
 			<br>
 		</td>
@@ -924,7 +929,8 @@ function automation_remove_atr_confirm() : void {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to Delete the following Tree Rule(s) will be disassociated from the Device Rule.'); ?></p>
+			<p><?php print __('Click \'Continue\' to Delete the following Tree Rule(s) will be ' .
+				'disassociated from the Device Rule.'); ?></p>
 			<p><?php print __("Tree Rule Name: '%s'", htmle($name)); ?>
 			<br>
 		</td>
@@ -1072,21 +1078,27 @@ function template_edit() : void {
 		'sysDescr' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System Description Match'),
-			'description'   => __('This is a unique string that will be matched to a device\'s sysDescr string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a device\'s sysDescr ' .
+				'string to pair it to this Device Rule.  Any Perl regular expression ' .
+				'can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysDescr|',
 			'max_length'    => '255',
 		],
 		'sysName' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System Name Match'),
-			'description'   => __('This is a unique string that will be matched to a device\'s sysName string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a device\'s sysName ' .
+				'string to pair it to this Device Rule.  Any Perl regular expression ' .
+				'can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysName|',
 			'max_length'    => '128',
 		],
 		'sysOid' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System OID Match'),
-			'description'   => __('This is a unique string that will be matched to a device\'s sysOid string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a device\'s sysOid ' .
+				'string to pair it to this Device Rule.  Any Perl regular expression ' .
+				'can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysOid|',
 			'max_length'    => '128',
 		],
@@ -1097,7 +1109,15 @@ function template_edit() : void {
 		'description_pattern' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Device Description Pattern'),
-			'description'   => __('Represents the final desired Device description to be used in Cacti.  The following replacement values can be used: |sysName|, |ipAddress|, |dnsName|, |dnsShortName|, |sysLocation|.  The following functions can also be used: CONCAT(), SUBSTRING(), SUBSTRING_INDEX().  See the MySQL/MariaDB documentation for examples on how to use these functions.  An example would be: CONCAT(\'|sysName|\', SUBSTRING(\'|sysLocation|\',1,3)).  Take care to include quoting around the variables names when used in the supported MySQL/MariaDB function examples.'),
+			'description'   => __('Represents the final desired Device description to be used in Cacti.  ' .
+				'The following replacement values can be used: |sysName|, |ipAddress|, ' .
+				'|dnsName|, |dnsShortName|, |sysLocation|.  The following functions ' .
+				'can also be used: CONCAT(), SUBSTRING(), SUBSTRING_INDEX().  See the ' .
+				'MySQL/MariaDB documentation for examples on how to use these ' .
+				'functions.  An example would be: CONCAT(\'|sysName|\', ' .
+				'SUBSTRING(\'|sysLocation|\',1,3)).  Take care to include quoting ' .
+				'around the variables names when used in the supported MySQL/MariaDB ' .
+				'function examples.'),
 			'value'         => '|arg1:description_pattern|',
 			'default'       => '|sysName|',
 			'max_length'    => '128',
@@ -1106,7 +1126,9 @@ function template_edit() : void {
 		'populate_location' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('Populate Location with sysLocation'),
-			'description'   => __('If checked, when the Automation Network is scanned if a Device is found that will be added to Cacti, its Location will be updated to match the Devices sysLocation.'),
+			'description'   => __('If checked, when the Automation Network is scanned if a Device is ' .
+				'found that will be added to Cacti, its Location will be updated to ' .
+				'match the Devices sysLocation.'),
 			'value'         => '|arg1:populate_location|',
 			'default'       => ''
 		],
@@ -1200,13 +1222,15 @@ function template_edit() : void {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($graph_rules) - 1) {
-						$action .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
@@ -1314,13 +1338,15 @@ function template_edit() : void {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($tree_rules) - 1) {
-						$action .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
@@ -1704,13 +1730,15 @@ function template() : void {
 				$add_text = '';
 
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$add_text .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$add_text .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}

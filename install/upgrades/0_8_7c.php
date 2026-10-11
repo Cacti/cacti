@@ -45,8 +45,10 @@ function upgrade_to_0_8_7c() : void {
 	// add a default for NOT NULL columns
 	db_install_execute("ALTER TABLE `data_local` MODIFY COLUMN `snmp_index` VARCHAR(255) NOT NULL DEFAULT '';");
 	db_install_execute("ALTER TABLE `graph_local` MODIFY COLUMN `snmp_index` VARCHAR(255) NOT NULL DEFAULT '';");
-	db_install_execute("ALTER TABLE `graph_templates_graph` MODIFY COLUMN `upper_limit` VARCHAR(20) NOT NULL DEFAULT '0';");
-	db_install_execute("ALTER TABLE `graph_templates_graph` MODIFY COLUMN `lower_limit` VARCHAR(20) NOT NULL DEFAULT '0';");
+	db_install_execute('ALTER TABLE `graph_templates_graph` MODIFY COLUMN `upper_limit` ' .
+		"VARCHAR(20) NOT NULL DEFAULT '0';");
+	db_install_execute('ALTER TABLE `graph_templates_graph` MODIFY COLUMN `lower_limit` ' .
+		"VARCHAR(20) NOT NULL DEFAULT '0';");
 	db_install_execute('ALTER TABLE `graph_templates_graph` MODIFY COLUMN `scale_log_units` CHAR(2) DEFAULT NULL;');
 	db_install_execute("ALTER TABLE `host` MODIFY COLUMN `availability` DECIMAL(8,5) NOT NULL DEFAULT '100.00000';");
 	db_install_execute("ALTER TABLE `host_snmp_cache` MODIFY COLUMN `snmp_index` VARCHAR(255) NOT NULL DEFAULT '';");

@@ -355,7 +355,9 @@ function color_import() : void {
 	</tr><?php
 	form_alternate_row(); ?>
 		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?'); ?></font><br>
-			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.'); ?>
+			<?php print __('Should the import process be allowed to overwrite existing data?  ' .
+				'Please note, this does not mean delete old rows, only update ' .
+				'duplicate rows.'); ?>
 		</td>
 		<td class='left'>
 			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?'); ?>
@@ -538,7 +540,8 @@ function color() : void {
 			'display' => __('Deletable'),
 			'align'   => 'right',
 			'sort'    => '',
-			'tip'     => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')
+			'tip'     => __('Colors in use cannot be Deleted.  In use is defined as being ' .
+				'referenced either by a Graph or a Graph Template.')
 		],
 		'graphs' => [
 			'display' => __('Graphs Using'),

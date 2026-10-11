@@ -78,7 +78,10 @@ if (isrv('error')) {
 		print json_encode(
 			[
 				'status'  => 'Not Reachable',
-				'message' => __('The Document page \'%s\' count not be reached.  The Cacti Documentation site is not reachable.  The http error was \'%s\'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally.',
+				'message' => __('The Document page \'%s\' count not be reached.  The Cacti ' .
+					'Documentation site is not reachable.  The http error was \'%s\'.  ' .
+					'Consider downloading an official release to obtain the latest ' .
+					'documentation and hosting the documentation locally.',
 					$page,
 					$response_code)
 			]

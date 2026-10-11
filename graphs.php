@@ -2182,8 +2182,14 @@ function form_actions() : void {
 					]
 				],
 				2 => [
-					'smessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graph.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
-					'pmessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graphs.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
+					'smessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph ' .
+						'Template for the following Graph.  Note that only compatible Graph ' .
+						'Templates will be displayed.  Compatible is identified by those ' .
+						'having identical Data Sources.'),
+					'pmessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph ' .
+						'Template for the following Graphs.  Note that only compatible Graph ' .
+						'Templates will be displayed.  Compatible is identified by those ' .
+						'having identical Data Sources.'),
 					'cont'     => __('Change Graph Template'),
 					'extra'    => [
 						'graph_template_id' => [
@@ -2266,8 +2272,10 @@ function form_actions() : void {
 						cacti_sizeof($data_sources)),
 				],
 				10 => [
-					'smessage' => __('Choose an Aggregate Template and click \'Continue\' to Create the Aggregate Graph from the following Graph.'),
-					'pmessage' => __('Choose an Aggregate Template and click \'Continue\' to Create the Aggregate Graph from the following Graphs.'),
+					'smessage' => __('Choose an Aggregate Template and click \'Continue\' to Create the ' .
+						'Aggregate Graph from the following Graph.'),
+					'pmessage' => __('Choose an Aggregate Template and click \'Continue\' to Create the ' .
+						'Aggregate Graph from the following Graphs.'),
 					'cont'     => __('Create Aggregate Graph'),
 					'return'   => $return,
 					'rmessage' => $rmessage,
@@ -2715,7 +2723,9 @@ function graph_edit() : void {
 				'graph_template_id' => [
 					'method'        => 'drop_sql',
 					'friendly_name' => __('Selected Graph Template'),
-					'description'   => __('Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources.'),
+					'description'   => __('Choose a Graph Template to apply to this Graph. Please note that you ' .
+						'may only change Graph Templates to a 100%% compatible Graph Template, ' .
+						'which means that it includes identical Data Sources.'),
 					'filter'        => FILTER_VALIDATE_INT,
 					'value'         => $graph_template_id,
 					'none_value'    => (!isset($graph['graph_template_id']) || $graph['graph_template_id'] == 0 ? __('None') : ''),
@@ -3263,7 +3273,9 @@ function graphs() : void {
 			'display' => __('Graph Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
-			'tip'     => __('The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+			'tip'     => __('The Title of this Graph.  Generally programmatically generated from ' .
+				'the Graph Template definition or Suggested Naming rules.  The max ' .
+				'length of the Title is controlled under Settings->Visual.')
 		],
 		'local_graph_id' => [
 			'display' => __('ID'),

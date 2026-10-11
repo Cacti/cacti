@@ -326,7 +326,8 @@ if (isset($no_http_headers) && $no_http_headers == true) {
 }
 
 if ($config['is_web'] && ini_get('session.auto_start') == 1) {
-	print 'FATAL: PHP setting session.auto_start NOT supported.  Disable in your php.ini file and then restart your Web Service' . PHP_EOL;
+	print ('FATAL: PHP setting session.auto_start NOT supported.  Disable in your ' .
+		'php.ini file and then restart your Web Service') . PHP_EOL;
 
 	exit;
 }
@@ -382,7 +383,9 @@ $il = $config['is_web'] ? '</li>' : '';
 $vendor_autoload = CACTI_PATH_INCLUDE . '/vendor/autoload.php';
 
 if (!is_file($vendor_autoload) && !defined('IN_CACTI_INSTALL')) {
-	print $ps . 'FATAL: The include/vendor directory is not populated.  Cacti requires its Composer dependencies before it can start.  From the Cacti directory, run:' . $sp;
+	print $ps . ('FATAL: The include/vendor directory is not populated.  Cacti requires ' .
+		'its Composer dependencies before it can start.  From the Cacti ' .
+		'directory, run:') . $sp;
 	print $ps . 'composer install' . $sp;
 	print $ps . 'Then reload this page.  See the README for details.' . $sp;
 

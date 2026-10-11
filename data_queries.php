@@ -775,7 +775,9 @@ function data_query_item_edit() : void {
 											'',
 											grv('id'),
 											'',
-											__('If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here.'));
+											__('If this Graph Template requires the Data Template Data Source to the ' .
+												'left, select the correct XML output column and then to enable the ' .
+												'mapping either check or toggle here.'));
 						print '<br>'; ?>
 									</td>
 								</tr>
@@ -1136,7 +1138,9 @@ function data_query_edit() : void {
 
 		if (!cacti_sizeof($snmp_query)) {
 			raise_message('data_query_missing',
-				__('The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue.',
+				__('The Data Query ID [%s] that you are trying to Edit does not exist.  ' .
+					'Please run the repair_database.php CLI script to resolve this ' .
+					'database issue.',
 					grv('id')),
 				MESSAGE_LEVEL_ERROR);
 			header('Location: data_queries.php');
@@ -1391,7 +1395,8 @@ function data_query() : void {
 		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('Data Queries that are in use cannot be Deleted. In use is defined as being referenced by either a Graph or a Graph Template.')
+			'tip'     => __('Data Queries that are in use cannot be Deleted. In use is defined as ' .
+				'being referenced by either a Graph or a Graph Template.')
 		],
 		'graphs' => [
 			'display' => __('Graphs Using'),

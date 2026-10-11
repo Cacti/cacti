@@ -59,7 +59,8 @@ function form_save() : void {
 		if (gnrv('output_format') == '1') {
 			top_header();
 
-			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . htmle($xml_data) . '</pre></td></tr></table>';
+			print ("<table style='width:100%;' class='center'><tr><td " .
+				"style='text-align:left;'><pre>") . htmle($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
 		} elseif (gnrv('output_format') == '2') {
@@ -126,7 +127,9 @@ function export() : void {
 		],
 		'include_deps' => [
 			'friendly_name' => __('Include Dependencies'),
-			'description'   => __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.'),
+			'description'   => __('Some templates rely on other items in Cacti to function properly. It ' .
+				'is highly recommended that you select this box or the resulting ' .
+				'import may fail.'),
 			'value'         => 'on',
 			'method'        => 'checkbox',
 			'default'       => 'on'

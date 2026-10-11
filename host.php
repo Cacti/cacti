@@ -886,7 +886,8 @@ function host_edit() : void {
 
 	if (cacti_sizeof($host)) {
 		$content  = "<div class='pingRow'>";
-		$content .= "<div id='ping_results'>" . __('Contacting Device') . "&nbsp;<i style='font-size:12px;' class='ti fa-spin ti-loader'></i></div>";
+		$content .= "<div id='ping_results'>" . __('Contacting Device') . ("&nbsp;<i style='font-size:12px;' class='ti fa-spin " .
+			"ti-loader'></i></div>");
 		$content .= '</div>';
 
 		$filters = create_host_edit_filter($host, $content);
@@ -1665,7 +1666,8 @@ function host() : void {
 			'display' => __('Hostname'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
-			'tip'     => __('Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.')
+			'tip'     => __('Either an IP address, or hostname.  If a hostname, it must be ' .
+				'resolvable by either DNS, or from your hosts file.')
 		],
 		'id' => [
 			'display' => __('ID'),
@@ -1695,13 +1697,19 @@ function host() : void {
 			'display' => __('Errors'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
-			'tip'     => __('The total number current data collection errors on this Device.  Enable Device Debug to track them.')
+			'tip'     => __('The total number current data collection errors on this Device.  ' .
+				'Enable Device Debug to track them.')
 		],
 		'status' => [
 			'display' => __('Status'),
 			'align'   => 'center',
 			'sort'    => 'ASC',
-			'tip'     => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')
+			'tip'     => __('The monitoring status of the Device based upon ping results.  If this ' .
+				'Device is a special type Device, by using the hostname "localhost", ' .
+				'or due to the setting to not perform an Availability Check, it will ' .
+				'always remain Up.  When using cmd.php data collector, a Device with ' .
+				'no Graphs, is not pinged by the data collector and will remain in an ' .
+				'"Unknown" state.')
 		],
 		'site_name' => [
 			'display' => __('Site'),
@@ -1713,7 +1721,9 @@ function host() : void {
 			'display' => __('Service Check'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
-			'tip'     => __('The Availability/Reachability method used to communicate with the device.  In some cases, the Availability/Reachability method will be \'none\', which is not uncommon for some devices'),
+			'tip'     => __('The Availability/Reachability method used to communicate with the ' .
+				'device.  In some cases, the Availability/Reachability method will be ' .
+				'\'none\', which is not uncommon for some devices'),
 		],
 		'instate' => [
 			'display' => __('In State'),
@@ -1743,13 +1753,15 @@ function host() : void {
 			'display' => __('Average (ms)'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
-			'tip'     => __('The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.')
+			'tip'     => __('The average ping time in milliseconds to reach the Device since the ' .
+				'counters were cleared for this Device.')
 		],
 		'availability' => [
 			'display' => __('Availability'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
-			'tip'     => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
+			'tip'     => __('The availability percentage based upon ping results since the ' .
+				'counters were cleared for this Device.')
 		],
 		'created' => [
 			'display' => __('Create Date'),

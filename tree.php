@@ -850,7 +850,8 @@ function tree_edit(bool $partial = false) : void {
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
 		$lockdiv  = "<div style='padding:5px 5px 5px 0px'><table><tr>
 			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='lock'>" . __esc('Edit Tree') . "</button></td>
-			<td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . '</td>
+			<td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree ' .
+				'button.') . '</td>
 		</tr></table></div>';
 
 		$editable = false;
@@ -866,7 +867,8 @@ function tree_edit(bool $partial = false) : void {
 			$lockdiv .= '</td></tr></table></div>';
 		} else {
 			$editable = false;
-			$lockdiv .= __('To edit the tree, you must first unlock it and then lock it as yourself') . '</td></tr></table></div>';
+			$lockdiv .= __('To edit the tree, you must first unlock it and then lock it as ' .
+				'yourself') . '</td></tr></table></div>';
 		}
 	} else {
 		$tree['id'] = 0;
@@ -2218,7 +2220,8 @@ function tree() : void {
 			'display' => __('Order'),
 			'align'   => 'center',
 			'sort'    => 'ASC',
-			'tip'     => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')
+			'tip'     => __('To change the order of the trees, first sort by this column, press ' .
+				'the up or down arrows once they appear.')
 		],
 		'last_modified' => [
 			'display' => __('Last Edited'),
@@ -2271,14 +2274,18 @@ function tree() : void {
 					$sequence .= '<span class="moveArrowNone"></span>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == 1) {
-					$sequence .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$sequence .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == cacti_sizeof($trees)) {
 					$sequence .= '<span class="moveArrowNone"></span>';
-					$sequence .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$sequence .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				} else {
-					$sequence .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
-					$sequence .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$sequence .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$sequence .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+						'href="#" data-url="') . html_escape_url('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				}
 			}
 

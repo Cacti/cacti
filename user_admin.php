@@ -433,8 +433,14 @@ function form_actions() : void {
 					'pcont'    => __('Disable Users')
 				],
 				5 => [
-					'smessage' => __('Click \'Continue\' to Overwrite the User settings with the selected Template User settings and permissions.  The original User Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from the Template User.'),
-					'pmessage' => __('Click \'Continue\' to Overwrite the Users settings with the selected Template User settings and permissions.  The original Users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from the Template User.'),
+					'smessage' => __('Click \'Continue\' to Overwrite the User settings with the selected ' .
+						'Template User settings and permissions.  The original User Full Name, ' .
+						'Password, Realm and Enable status will be retained, all other fields ' .
+						'will be overwritten from the Template User.'),
+					'pmessage' => __('Click \'Continue\' to Overwrite the Users settings with the selected ' .
+						'Template User settings and permissions.  The original Users Full ' .
+						'Name, Password, Realm and Enable status will be retained, all other ' .
+						'fields will be overwritten from the Template User.'),
 					'scont'    => __('Replace User Settings for User'),
 					'pcont'    => __('Replace User Settings for Users'),
 					'extra'    => [
@@ -826,13 +832,20 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 			$graph_auth_method = read_config_option('graph_auth_method');
 
 			if ($graph_auth_method == 1) {
-				$policy_note = __('<b>Note:</b> System Graph Policy is \'Permissive\' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph');
+				$policy_note = __('<b>Note:</b> System Graph Policy is \'Permissive\' meaning the User ' .
+					'must have access to at least one of Graph, Device, or Graph Template ' .
+					'to gain access to the Graph');
 			} elseif ($graph_auth_method == 2) {
-				$policy_note = __('<b>Note:</b> System Graph Policy is \'Restrictive\' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph');
+				$policy_note = __('<b>Note:</b> System Graph Policy is \'Restrictive\' meaning the User ' .
+					'must have access to either the Graph or the Device and Graph Template ' .
+					'to gain access to the Graph');
 			} elseif ($graph_auth_method == 3) {
-				$policy_note = __('<b>Note:</b> System Graph Policy is \'Device\' meaning the User must have access to the Graph or Device to gain access to the Graph');
+				$policy_note = __('<b>Note:</b> System Graph Policy is \'Device\' meaning the User must ' .
+					'have access to the Graph or Device to gain access to the Graph');
 			} else {
-				$policy_note = __('<b>Note:</b> System Graph Policy is \'Graph Template\' meaning the User must have access to the Graph or Graph Template to gain access to the Graph');
+				$policy_note = __('<b>Note:</b> System Graph Policy is \'Graph Template\' meaning the ' .
+					'User must have access to the Graph or Graph Template to gain access ' .
+					'to the Graph');
 			}
 
 			// box: device permissions
@@ -1660,7 +1673,8 @@ function user_realms_edit(string $header_label) : void {
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div class='cactiTableTitleRow'>
 			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . ' ' . htmle($header_label) . "</span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'></a><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . ("' onClick='selectAllRealms(this.checked)'></a><label " .
+				"class='formCheckboxLabel' title='") . __esc('Select All') . "' for='all'></label></span></div>
 		</div>
 	</div>";
 
@@ -1889,7 +1903,8 @@ function settings_edit(string $header_label) : void {
 	html_start_box(__esc('User Settings %s', $header_label), '100%', true, 3, 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
-		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='ti ti-chevrons-up'></i></div></div></div>";
+		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ("<div style='float:right;padding-right:4px;'><i class='ti " .
+			"ti-chevrons-up'></i></div></div></div>");
 
 		$form_array = [];
 

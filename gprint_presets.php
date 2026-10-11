@@ -243,7 +243,8 @@ function gprint_presets() : void {
 		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')
+			'tip'     => __('GPRINTs that are in use cannot be Deleted.  In use is defined as ' .
+				'being referenced by either a Graph or a Graph Template.')
 		],
 		'graphs' => [
 			'display' => __('Graphs Using'),

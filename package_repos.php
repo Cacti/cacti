@@ -144,7 +144,9 @@ function form_save() : void {
 						raise_message('repo_exists', __esc('The Repo \'%s\' is Reachable on GitHub.', $save['name']), MESSAGE_LEVEL_INFO);
 					} else {
 						raise_message('repo_missing',
-							__esc('The Repo \'%s\' is NOT Reachable on GitHub or the package.manifest file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/.',
+							__esc('The Repo \'%s\' is NOT Reachable on GitHub or the package.manifest ' .
+								'file is missing or it could be an invalid branch.  Valid Package ' .
+								'Locations are normally: https://github.com/Author/RepoName/.',
 								$save['name']),
 							MESSAGE_LEVEL_WARN);
 					}
@@ -262,10 +264,11 @@ function form_actions() : void {
 				</td>
 			</tr>";
 
-			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button>
+			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
 				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Delete Package Repository',
-				'Delete Package Repositories',
-				cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
+					'Delete Package Repositories',
+					cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
 		} elseif (gnrv('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
@@ -276,10 +279,11 @@ function form_actions() : void {
 				</td>
 			</tr>";
 
-			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button>
+			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
 				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Disable Package Repository',
-				'Disable Package Repositories',
-				cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
+					'Disable Package Repositories',
+					cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
 		} elseif (gnrv('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
@@ -290,10 +294,11 @@ function form_actions() : void {
 				</td>
 			</tr>";
 
-			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button>
+			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
 				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Enabled Package Repository',
-				'Enable Package Repositories',
-				cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
+					'Enable Package Repositories',
+					cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
 		} elseif (gnrv('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
@@ -302,7 +307,8 @@ function form_actions() : void {
 				</td>
 			</tr>";
 
-			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button>
+			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+				"onClick='cactiReturnTo()'>") . __esc('Cancel') . "</button>
 				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __esc('Make Selected Repository Default') . "'>" . __esc('Continue') . '</button>';
 		}
 	} else {
@@ -390,7 +396,9 @@ function repo_edit() : void {
 		'repo_location' => [
 			'method'        => $method,
 			'friendly_name' => __('Location'),
-			'description'   => __('Either the full path on the Cacti Web Server to the Repository or a URL to the Repository.  For example: https://github.com/Cacti/packages/'),
+			'description'   => __('Either the full path on the Cacti Web Server to the Repository or a ' .
+				'URL to the Repository.  For example: ' .
+				'https://github.com/Cacti/packages/'),
 			'value'         => '|arg1:repo_location|',
 			'max_length'    => '128',
 			'size'          => '120'

@@ -161,13 +161,15 @@ function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import SNMP Options from Local File'),
-			'description'   => __('If the JSON file containing the SNMP Options data is located on your local machine, select it here.'),
+			'description'   => __('If the JSON file containing the SNMP Options data is located on your ' .
+				'local machine, select it here.'),
 			'method'        => 'file',
 			'accept'        => '.json'
 		],
 		'import_text' => [
 			'friendly_name' => __('Import SNMP Options from Text'),
-			'description'   => __('If you have the JSON file containing the SNMP Options data as text, you can paste it into this box to import it.'),
+			'description'   => __('If you have the JSON file containing the SNMP Options data as text, ' .
+				'you can paste it into this box to import it.'),
 			'method'        => 'textarea',
 			'value'         => '',
 			'default'       => '',
@@ -875,13 +877,15 @@ function automation_snmp_edit() : void {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$form_data .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						$form_data .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$form_data .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}

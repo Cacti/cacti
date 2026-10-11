@@ -879,7 +879,8 @@ function draw_poller_cache_filter(bool $render = false) : void {
 
 			break;
 		case true:
-			$header = __('Poller Cache Items [ <span class="blink deviceUp">Rebuild In Process - Press Go to Check Status</span> ]');
+			$header = __('Poller Cache Items [ <span class="blink deviceUp">Rebuild In Process ' .
+				'- Press Go to Check Status</span> ]');
 
 			break;
 		case 97:
@@ -915,47 +916,73 @@ function utilities() : void {
 	$utilities[__('Technical Support')] = [
 		__('Technical Support') => [
 			'link'        => 'support.php?tab=summary',
-			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
+			'description' => __('Cacti technical support page.  Used by developers and technical ' .
+				'support persons to assist with issues in Cacti.  Includes checks for ' .
+				'common configuration issues.')
 		],
 		__('Log Administration') => [
 			'link'        => 'utilities.php?action=view_logfile',
-			'description' => __('The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.')
+			'description' => __('The Cacti Log stores statistic, error and other message depending on ' .
+				'system settings.  This information can be used to identify problems ' .
+				'with the poller and application.')
 		],
 		__('View User Log') => [
 			'link'        => 'utilities.php?action=view_user_log',
-			'description' => __('Allows Administrators to browse the user log.  Administrators can filter and export the log as well.')
+			'description' => __('Allows Administrators to browse the user log.  Administrators can ' .
+				'filter and export the log as well.')
 		]
 	];
 
 	$utilities[__('Poller Cache Administration')] = [
 		__('View Poller Cache') => [
 			'link'        => 'utilities.php?action=view_poller_cache',
-			'description' => __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display.')
+			'description' => __('This is the data that is being passed to the poller each time it ' .
+				'runs. This data is then in turn executed/interpreted and the results ' .
+				'are fed into the RRDfiles for graphing or the database for display.')
 		],
 		__('View Data Query Cache') => [
 			'link'        => 'utilities.php?action=view_snmp_cache',
-			'description' => __('The Data Query Cache stores information gathered from Data Query input types. The values from these fields can be used in the text area of Graphs for Legends, Vertical Labels, and GPRINTS as well as in CDEF\'s.')
+			'description' => __('The Data Query Cache stores information gathered from Data Query ' .
+				'input types. The values from these fields can be used in the text ' .
+				'area of Graphs for Legends, Vertical Labels, and GPRINTS as well as ' .
+				'in CDEF\'s.')
 		],
 		__('Rebuild Poller Cache') => [
 			'link'        => 'utilities.php?action=clear_poller_cache',
 			'mode'        => 'online',
-			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.'),
+			'description' => __('The Poller Cache will be re-generated if you select this option. Use ' .
+				'this option only in the event of a database crash if you are ' .
+				'experiencing issues after the crash and have already run the database ' .
+				'repair tools.  Alternatively, if you are having problems with a ' .
+				'specific Device, simply re-save that Device to rebuild its Poller ' .
+				'Cache.  There is also a command line interface equivalent to this ' .
+				'command that is recommended for large systems.'),
 			'note'        => [
-				'message' => __('NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at the command line for more information.'),
+				'message' => __('NOTE: On large systems, this command may take several minutes to ' .
+					'hours to complete and therefore should not be run from the Cacti UI.  ' .
+					'You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at ' .
+					'the command line for more information.'),
 				'class'   => 'textWarning'
 			]
 		],
 		__('Rebuild Resource Cache') => [
 			'link'        => 'utilities.php?action=rebuild_resource_cache',
 			'mode'        => 'online',
-			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
+			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt ' .
+				'to maintain state for key files on all Data Collectors.  This ' .
+				'includes all core, non-install related website and plugin files.  ' .
+				'When you force a Resource Cache rebuild, Cacti will clear the local ' .
+				'Resource Cache, and then rebuild it at the next scheduled poller ' .
+				'start.  This will trigger all Remote Data Collectors to recheck their ' .
+				'website and plugin files for consistency.')
 		],
 	];
 
 	$utilities[__('Boost Utilities')] = [
 		__('View Boost Status') => [
 			'link'        => 'utilities.php?action=view_boost_status',
-			'description' => __('This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.')
+			'description' => __('This menu pick allows you to view various boost settings and ' .
+				'statistics associated with the current running Boost configuration.')
 		],
 	];
 
@@ -963,7 +990,10 @@ function utilities() : void {
 		__('Purge Data Source Statistics') => [
 			'link'        => 'utilities.php?action=purge_data_source_statistics',
 			'mode'        => 'online',
-			'description' => __('This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass.')
+			'description' => __('This menu pick will purge all existing Data Source Statistics from ' .
+				'the Database.  If Data Source Statistics is enabled, the Data Sources ' .
+				'Statistics will start collection again on the next Data Collector ' .
+				'pass.')
 		],
 	];
 
@@ -977,12 +1007,15 @@ function utilities() : void {
 			__('Rebuild SNMP Agent Cache') => [
 				'link'        => 'utilities.php?action=rebuild_snmpagent_cache',
 				'mode'        => 'online',
-				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
+				'description' => __('The SNMP cache will be cleared and re-generated if you select this ' .
+					'option. Note that it takes another poller run to restore the SNMP ' .
+					'cache completely.')
 			],
 			__('View SNMP Agent Notification Log') => [
 				'link'        => 'utilities.php?action=view_snmpagent_events',
 				'mode'        => 'online',
-				'description' => __('This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers.')
+				'description' => __('This menu pick allows you to view the latest events SNMP Agent has ' .
+					'handled in relation to the registered notification receivers.')
 			]
 		];
 	}
@@ -1340,7 +1373,8 @@ function boost_display_run_status() : void {
 		} else {
 			$max_length = 0;
 		}
-		db_execute("REPLACE INTO settings (name, value) VALUES ('boost_max_output_length', '" . time() . ':' . $max_length . "')");
+		db_execute(('REPLACE INTO settings (name, value) VALUES ' .
+			"('boost_max_output_length', '") . time() . ':' . $max_length . "')");
 	} elseif (isset($parts[1])) {
 		$max_length = $parts[1];
 	} else {
@@ -1444,7 +1478,9 @@ function boost_display_run_status() : void {
 			$update = explode(':', $values[6])[1];
 			$delete = explode(':', $values[7])[1];
 
-			$detail_stats = __('Records: %s (ds rows), Time: %s (secs), GetRows: %s (secs), ResultsCycle: %s (secs), FileAndTemplate: %s (secs), LastUpdate: %s (secs), RRDUpdate: %s (secs), Delete: %s (secs)',
+			$detail_stats = __('Records: %s (ds rows), Time: %s (secs), GetRows: %s (secs), ' .
+				'ResultsCycle: %s (secs), FileAndTemplate: %s (secs), LastUpdate: %s ' .
+				'(secs), RRDUpdate: %s (secs), Delete: %s (secs)',
 				number_format_i18n($rows),
 				number_format_i18n($time),
 				number_format_i18n($recs),
@@ -1491,14 +1527,17 @@ function boost_display_run_status() : void {
 
 				if ($rows_to_process > 0) {
 					print '<td class="utilityPick">' . __esc('Process: %d',
-						$process) . '</td><td>' . __('Status: <span class="deviceUp"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)',
+						$process) . '</td><td>' . __('Status: <span class="deviceUp"><b>Running</b></span>, Remaining: %s ' .
+							'(dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), ' .
+							'PrevProcessed: %10s (ds rows)',
 							number_format_i18n((int) $rows_to_process),
 							number_format_i18n((float) $runtime),
 							number_format_i18n((float) $time),
 							number_format_i18n((int) $rrds)) . '</td>';
 				} else {
 					print '<td class="utilityPick">' . __esc('Process: %d',
-						$process) . '</td><td>' . __('Status: <span class="deviceRecovering"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)',
+						$process) . '</td><td>' . __('Status: <span class="deviceRecovering"><b>Idle</b></span>, ' .
+							'PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)',
 							number_format_i18n((float) $time),
 							number_format_i18n((int) $rrds)) . '</td>';
 				}
@@ -1547,7 +1586,8 @@ function create_snmp_agent_cache_filter() : array {
 	global $item_rows;
 
 	$mibs = array_rekey(
-		db_fetch_assoc("SELECT 'any' AS id, '" . __esc('Any') . "' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM snmpagent_cache"),
+		db_fetch_assoc("SELECT 'any' AS id, '" . __esc('Any') . ("' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM " .
+			'snmpagent_cache')),
 		'id', 'name'
 	);
 

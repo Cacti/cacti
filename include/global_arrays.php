@@ -215,13 +215,16 @@ $messages = [
 		'message' => __('User delete not permitted for designated graph export user.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	23 => [
-		'message' => __('Data Template includes deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile.'),
+		'message' => __('Data Template includes deleted Data Source Profile.  Please resave ' .
+			'the Data Template with an existing Data Source Profile.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	24 => [
-		'message' => __('Graph Template includes deleted GPrint Prefix.  Please run database repair script to identify and/or correct.'),
+		'message' => __('Graph Template includes deleted GPrint Prefix.  Please run database ' .
+			'repair script to identify and/or correct.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	25 => [
-		'message' => __('Graph Template includes deleted CDEFs.  Please run database repair script to identify and/or correct.'),
+		'message' => __('Graph Template includes deleted CDEFs.  Please run database repair ' .
+			'script to identify and/or correct.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	26 => [
 		'message' => __('Graph Template includes deleted Data Input Method.  Please run database repair script to identify.'),
@@ -269,7 +272,8 @@ $messages = [
 		'message' => __('You must select at least one object from the list.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	41 => [
-		'message' => __('Device Template updated.  Remember to Sync Devices to push all changes to Devices that use this Device Template.'),
+		'message' => __('Device Template updated.  Remember to Sync Devices to push all ' .
+			'changes to Devices that use this Device Template.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	42 => [
 		'message' => __('Save Successful. Settings replicated to Remote Data Collectors.'),
@@ -284,16 +288,23 @@ $messages = [
 		'message' => __('Data Source Item field holds a value the Data Source form would reject.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	'input_save_wo_ds' => [
-		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
+		'message' => __('Data Input Saved.  You must update the Data Templates referencing ' .
+			'this Data Input Method before creating Graphs or Data Sources.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'input_save_w_ds' => [
-		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input - Input Fields.'),
+		'message' => __('Data Input Saved.  You must update the Data Templates referencing ' .
+			'this Data Input Method before the Data Collectors will start using ' .
+			'any new or modified Data Input - Input Fields.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'input_field_save_wo_ds' => [
-		'message' => __('Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
+		'message' => __('Data Input Field Saved.  You must update the Data Templates ' .
+			'referencing this Data Input Method before creating Graphs or Data ' .
+			'Sources.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'input_field_save_w_ds' => [
-		'message' => __('Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input - Input Fields.'),
+		'message' => __('Data Input Field Saved.  You must update the Data Templates ' .
+			'referencing this Data Input Method before the Data Collectors will ' .
+			'start using any new or modified Data Input - Input Fields.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'clog_invalid' => [
 		'message' => __('Log file specified is not a Cacti log or archive file.'),
@@ -356,7 +367,8 @@ $messages = [
 		'message' => __('When saving a Remote Data Collector, the Database Hostname must be unique from all others.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	'poller_dbhost' => [
-		'message' => __('Your Remote Database Hostname must be something other than \'localhost\' for each Remote Data Collector.'),
+		'message' => __('Your Remote Database Hostname must be something other than ' .
+			'\'localhost\' for each Remote Data Collector.'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	'poller_paths' => [
 		'message' => __('Path variables on this page were only saved locally.'),
@@ -389,7 +401,9 @@ $messages = [
 		'message' => __('All Graphs have been added to the Report.  Duplicate Graphs with the same Timespan were skipped.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'resource_cache_rebuild' => [
-		'message' => __('Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
+		'message' => __('Poller Resource Cache cleared.  Main Data Collector will rebuild at ' .
+			'the next poller start, and Remote Data Collectors will sync ' .
+			'afterwards.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'permission_denied' => [
 		'message' => __('Permission Denied.  You do not have permission to the requested action.'),
@@ -542,8 +556,10 @@ $reindex_types = [
 ];
 
 $reindex_types_tips = [
-	DATA_QUERY_AUTOINDEX_NONE               => __('All Re-Indexing will be manual or managed through scripts or Device Automation.'),
-	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('When the Devices SNMP uptime goes backward, a Re-Index will be performed.'),
+	DATA_QUERY_AUTOINDEX_NONE               => __('All Re-Indexing will be manual or managed through scripts or Device ' .
+		'Automation.'),
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('When the Devices SNMP uptime goes backward, a Re-Index will be ' .
+		'performed.'),
 	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('When the Data Query index count changes, a Re-Index will be performed.'),
 	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Every polling cycle, a Re-Index will be performed.  Very expensive.')
 ];

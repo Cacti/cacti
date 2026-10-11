@@ -159,7 +159,8 @@ $fields_site_edit = [
 	'zoom' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Zoom'),
-		'description'   => __('The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15.'),
+		'description'   => __('The default Map Zoom for this Site.  Values can be from 0 to 23. Note ' .
+			'that some regions of the planet have a max Zoom of 15.'),
 		'value'         => '|arg1:zoom|',
 		'placeholder'   => __('0 - 23'),
 		'default'       => '12',

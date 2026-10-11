@@ -159,14 +159,16 @@ function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Graph Rules from Local File'),
-			'description'   => __('If the JSON file containing the Graph Rules data is located on your local machine, select it here.'),
+			'description'   => __('If the JSON file containing the Graph Rules data is located on your ' .
+				'local machine, select it here.'),
 			'method'        => 'file',
 			'accept'        => '.json'
 		],
 		'import_text' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Import Graph Rules from Text'),
-			'description'   => __('If you have the JSON file containing the Graph Rules data as text, you can paste it into this box to import it.'),
+			'description'   => __('If you have the JSON file containing the Graph Rules data as text, ' .
+				'you can paste it into this box to import it.'),
 			'value'         => '',
 			'default'       => '',
 			'textarea_rows' => '10',
@@ -344,7 +346,8 @@ function form_save() : void {
 						__('An attempt was made to perform a SQL injection in Graph automation'),
 						MESSAGE_LEVEL_ERROR);
 
-					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'',
+					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph ' .
+						'Automation from client address \'%s\'',
 						get_client_addr()),
 						false,
 						'SECURITY');
@@ -418,7 +421,8 @@ function form_save() : void {
 				__('An attempt was made to perform a SQL injection in Graph automation'),
 				MESSAGE_LEVEL_ERROR);
 
-			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'',
+			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph ' .
+				'Automation from client address \'%s\'',
 				get_client_addr()),
 				false,
 				'SECURITY');

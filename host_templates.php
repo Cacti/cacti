@@ -436,7 +436,8 @@ function template_item_remove_gt_confirm() : void {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to delete the following Graph Template will be disassociated from the Device Template.'); ?></p>
+			<p><?php print __('Click \'Continue\' to delete the following Graph Template will be ' .
+				'disassociated from the Device Template.'); ?></p>
 			<p><?php print __('Graph Template Name: %s', htmle($template['name'])); ?>'<br>
 		</td>
 	</tr>
@@ -502,7 +503,8 @@ function template_item_remove_dq_confirm() : void {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to delete the following Data Queries will be disassociated from the Device Template.'); ?></p>
+			<p><?php print __('Click \'Continue\' to delete the following Data Queries will be ' .
+				'disassociated from the Device Template.'); ?></p>
 			<p><?php print __('Data Query Name: %s', htmle($query['name'])); ?>'<br>
 		</td>
 	</tr>
@@ -605,7 +607,8 @@ function template_edit() : void {
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
-	print "<div style='display:none;'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Default Submit Button') . '</button></div>';
+	print ("<div style='display:none;'><button type='submit' class='ui-button " .
+		"ui-corner-all ui-widget ui-state-active'>") . __esc('Default Submit Button') . '</button></div>';
 
 	html_end_box(true, true);
 
@@ -1089,7 +1092,8 @@ function device_templates() : void {
 			'display' => __('ID'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
-			'tip'     => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
+			'tip'     => __('The internal database ID for this Device Template.  Useful when ' .
+				'performing automation or debugging.')
 		],
 		'nosort' => [
 			'display' => __('Deletable'),
@@ -1514,7 +1518,8 @@ function device_archives() : void {
 			'display' => __('ID'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
-			'tip'     => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
+			'tip'     => __('The internal database ID for this Device Template.  Useful when ' .
+				'performing automation or debugging.')
 		],
 		'size' => [
 			'display' => __('Size'),
@@ -1526,7 +1531,8 @@ function device_archives() : void {
 			'display' => __('Archive Date'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
-			'tip'     => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
+			'tip'     => __('The internal database ID for this Device Template.  Useful when ' .
+				'performing automation or debugging.')
 		]
 	];
 

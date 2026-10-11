@@ -84,7 +84,10 @@ function check_tmp_dir() : mixed {
 		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found'); ?>';
 
 		sessionMessage = {
-			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.'); ?>',
+			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i ' .
+				'class="deviceUp">genkey.php</i></b> script in the cli directory.  ' .
+				'Once that is complete, you will have a public and private key used to ' .
+				'sign your packages.'); ?>',
 			level: MESSAGE_LEVEL_MIXED
 		};
 
@@ -408,9 +411,11 @@ function form_actions() : void {
 					</tr>";
 				}
 
-				$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Import Package',
-					'Import Packages',
-					cacti_sizeof($pkg_array)) . "'>" . __esc('Continue') . '</button>';
+				$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+					"onClick='cactiReturnTo()'>") . __esc('Cancel') . ("</button><button type='submit' class='ui-button ui-corner-all " .
+					"ui-widget ui-state-active' title='") . __n('Import Package',
+						'Import Packages',
+						cacti_sizeof($pkg_array)) . "'>" . __esc('Continue') . '</button>';
 			} else {
 				raise_message('no_selection',
 					__('You must select either a File or a Template Item to import before proceeding'),
@@ -1055,7 +1060,9 @@ function package_get_details() : void {
 				raise_message_javascript(__('Error in Package'),
 					__('The package "%s" download or validation failed',
 						$package_name),
-					__('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available.'));
+					__('See the cacti.log for more information.  It could be that you had ' .
+						'either an API Key error or the package was tamered with, or the ' .
+						'location is not available.'));
 			}
 		}
 
@@ -1063,7 +1070,9 @@ function package_get_details() : void {
 	} else {
 		raise_message_javascript(__('Error in Package'),
 			__('The package download or validation failed'),
-			__('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available'));
+			__('See the cacti.log for more information.  It could be that you had ' .
+				'either an API Key error or the package was tamered with, or the ' .
+				'location is not available'));
 	}
 }
 
@@ -1105,7 +1114,8 @@ function import_validate_public_key(string $xmlfile, bool $accept = false) : mix
 		} else {
 			raise_message_javascript(__('Error in Package'),
 				__('Package XML File Damaged.'),
-				__('The XML files appears to be invalid and does not contain a public key.  Please contact the package author to obtain a revised package.'));
+				__('The XML files appears to be invalid and does not contain a public ' .
+					'key.  Please contact the package author to obtain a revised package.'));
 		}
 	} else {
 		raise_message_javascript(__('Error in Package'),
@@ -1527,7 +1537,9 @@ function get_import_form(int $repo_id, int $default_profile) : array {
 		],
 		'data_source_profile' => [
 			'friendly_name' => __('Data Source Profile'),
-			'description'   => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
+			'description'   => __('Select the Data Source Profile.  The Data Source Profile controls ' .
+				'polling interval, the data aggregation, and retention policy for the ' .
+				'resulting Data Sources.'),
 			'method'        => 'drop_sql',
 			'sql'           => 'SELECT id, name FROM data_source_profiles ORDER BY name',
 			'none_value'    => __('Create New from Template'),
@@ -1541,14 +1553,18 @@ function get_import_form(int $repo_id, int $default_profile) : array {
 		],
 		'remove_orphans' => [
 			'friendly_name' => __('Remove Orphaned Graph Items'),
-			'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
+			'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph ' .
+				'Template and associated Graphs that are not included in the imported ' .
+				'Graph Template.'),
 			'method'        => 'checkbox',
 			'value'         => $remove_orphans,
 			'default'       => ''
 		],
 		'replace_svalues' => [
 			'friendly_name' => __('Replace Suggested Value Patterns'),
-			'description'   => __('Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process.'),
+			'description'   => __('Replace Data Source and Graph Template Suggested Value Records.  ' .
+				'Graphs and Data Sources will take on new names after either a Data ' .
+				'Query Reindex or by using the forced Replace Suggested Values process.'),
 			'method'        => 'checkbox',
 			'value'         => $replace_svalues,
 			'default'       => ''
@@ -2070,7 +2086,9 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 
 			if (!$javascript) {
 				raise_message('repo_missing',
-					__esc('The Repo \'%s\' is NOT Reachable on GitHub or the \'%s\' file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/.',
+					__esc('The Repo \'%s\' is NOT Reachable on GitHub or the \'%s\' file is ' .
+						'missing or it could be an invalid branch.  Valid Package Locations ' .
+						'are normally: https://github.com/Author/RepoName/.',
 						$repo['name'],
 						$filename),
 					MESSAGE_LEVEL_ERROR);

@@ -160,14 +160,16 @@ function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Tree Rules from Local File'),
-			'description'   => __('If the JSON file containing the Tree Rules data is located on your local machine, select it here.'),
+			'description'   => __('If the JSON file containing the Tree Rules data is located on your ' .
+				'local machine, select it here.'),
 			'method'        => 'file',
 			'accept'        => '.json'
 		],
 		'import_text' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Import Tree Rules from Text'),
-			'description'   => __('If you have the JSON file containing the Tree Rules data as text, you can paste it into this box to import it.'),
+			'description'   => __('If you have the JSON file containing the Tree Rules data as text, you ' .
+				'can paste it into this box to import it.'),
 			'value'         => '',
 			'default'       => '',
 			'textarea_rows' => '10',
@@ -368,7 +370,8 @@ function form_save() : void {
 				__('An attempt was made to perform a SQL injection in Tree automation'),
 				MESSAGE_LEVEL_ERROR);
 
-			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Tree automation from client address \'%s\'',
+			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Tree ' .
+				'automation from client address \'%s\'',
 				get_client_addr()),
 				false,
 				'SECURITY');
@@ -458,7 +461,8 @@ function form_save() : void {
 						__('An attempt was made to perform a SQL injection in Graph Tree automation'),
 						MESSAGE_LEVEL_ERROR);
 
-					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Tree Automation from client address \'%s\'',
+					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Tree ' .
+						'Automation from client address \'%s\'',
 						get_client_addr()),
 						false,
 						'SECURITY');
@@ -1028,8 +1032,10 @@ function automation_tree_rules_edit() : void {
 				var automationLeafTypeContainer = '<div id="automationLeafTypeContainer" style="display:none">' +
 					'<p style="display:table-cell;overflow:auto"> ' +
 					'<b><?php print __('WARNING:'); ?></b>' +
-					'<?php print __('You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.'); ?>' +
-					'<?php print __('By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable.'); ?> <br/><br/>' +
+					'<?php print __('You are changing the leaf type to "Device" which does not support ' .
+						'Graph-based object matching/creation.'); ?>' +
+					'<?php print __('By changing the leaf type, all invalid rules will be automatically ' .
+						'removed and will not be recoverable.'); ?> <br/><br/>' +
 					'<?php print __('Are you sure you wish to continue?'); ?>' +
 					'</p>' +
 					'</div>';

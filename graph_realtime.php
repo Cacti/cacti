@@ -424,7 +424,8 @@ if (read_config_option('realtime_enabled') == '') {
 if (!is_dir(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print '	<p><strong>' . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
+	print '	<p><strong>' . __('The Image Cache Directory does not exist.  Please first create it and ' .
+		'set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 
@@ -434,7 +435,8 @@ if (!is_dir(read_config_option('realtime_cache_path'))) {
 if (!is_writable(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print '	<p><strong>' . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
+	print '	<p><strong>' . __('The Image Cache Directory is not writable.  Please set permissions ' .
+		'and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 

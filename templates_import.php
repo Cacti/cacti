@@ -155,7 +155,9 @@ function form_save() : void {
 				'package'),
 				__('The Template XML file "%s" validation failed',
 					$_FILES['import_file']['name']),
-				__('See the cacti.log for more information, and review the XML file for proper syntax.  The error details are shown below.<br><br><b>Errors:</b><br>%s',
+				__('See the cacti.log for more information, and review the XML file for ' .
+					'proper syntax.  The error details are shown ' .
+					'below.<br><br><b>Errors:</b><br>%s',
 					$message_text));
 		}
 	}
@@ -354,7 +356,8 @@ function display_template_data(array &$templates) : void {
 			}
 
 			if ($detail['status'] == 'damaged') {
-				form_selectable_cell(__('Some CDEF Items will not import due to an export error! Contact Template provider for an updated export.'),
+				form_selectable_cell(__('Some CDEF Items will not import due to an export error! Contact ' .
+					'Template provider for an updated export.'),
 					$id);
 			} elseif (isset($detail['vals'])) {
 				$diff_details = '';

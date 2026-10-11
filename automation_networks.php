@@ -118,14 +118,16 @@ function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Network Discovery Rule from Local File'),
-			'description'   => __('If the JSON file containing the Network Discovery Rule data is located on your local machine, select it here.'),
+			'description'   => __('If the JSON file containing the Network Discovery Rule data is ' .
+				'located on your local machine, select it here.'),
 			'method'        => 'file',
 			'accept'        => '.json'
 		],
 		'import_text' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Import Network Discovery Rule from Text'),
-			'description'   => __('If you have the JSON file containing the Network Discovery Rule data as text, you can paste it into this box to import it.'),
+			'description'   => __('If you have the JSON file containing the Network Discovery Rule data ' .
+				'as text, you can paste it into this box to import it.'),
 			'value'         => '',
 			'default'       => '',
 			'textarea_rows' => '10',
@@ -583,8 +585,12 @@ function form_actions() : void {
 					'pcont'    => __('Duplicate Networks')
 				],
 				8 => [
-					'smessage' => __('Click \'Continue\' to Change Network options for the following Network.  Check the checkboxes to indicate that this setting should be changed.'),
-					'pmessage' => __('Click \'Continue\' to Change Network options for the following Networks.  Check the checkboxes to indicate that this setting should be changed.'),
+					'smessage' => __('Click \'Continue\' to Change Network options for the following ' .
+						'Network.  Check the checkboxes to indicate that this setting should ' .
+						'be changed.'),
+					'pmessage' => __('Click \'Continue\' to Change Network options for the following ' .
+						'Networks.  Check the checkboxes to indicate that this setting should ' .
+						'be changed.'),
 					'scont'    => __('Change Network'),
 					'pcont'    => __('Change Networks'),
 					'header'   => $header_array
@@ -636,7 +642,9 @@ function network_get_field_array(array $network = []) : array {
 		'subnet_range' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Subnet Range'),
-			'description'   => __('Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*'),
+			'description'   => __('Enter valid Network Ranges separated by commas.  You may use an IP ' .
+				'address, a Network range such as 192.168.1.0/24 or ' .
+				'192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*'),
 			'value'         => '|arg1:subnet_range|',
 			'textarea_rows' => '4',
 			'textarea_cols' => '80',
@@ -662,7 +670,8 @@ function network_get_field_array(array $network = []) : array {
 		'dns_servers' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Alternate DNS Servers'),
-			'description'   => __('A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names.'),
+			'description'   => __('A space delimited list of alternate DNS Servers to use for DNS ' .
+				'resolution. If blank, the poller OS will be used to resolve DNS names.'),
 			'value'         => '|arg1:dns_servers|',
 			'max_length'    => '250',
 			'placeholder'   => __('Enter IPs or FQDNs of DNS Servers')
@@ -722,7 +731,8 @@ function network_get_field_array(array $network = []) : array {
 		'add_to_cacti' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('Automatically Add to Cacti'),
-			'description'   => __('For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti.'),
+			'description'   => __('For any newly discovered Devices that are reachable using SNMP and ' .
+				'who match a Device Rule, add them to Cacti.'),
 			'value'         => '|arg1:add_to_cacti|'
 		],
 		'same_sysname' => [
@@ -750,7 +760,8 @@ function network_get_field_array(array $network = []) : array {
 		'notification_enabled' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('Notification Enabled'),
-			'description'   => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
+			'description'   => __('If checked, when the Automation Network is scanned, a report will be ' .
+				'sent to the Notification Email account..'),
 			'value'         => '|arg1:notification_enabled|',
 			'default'       => ''
 		],
@@ -765,7 +776,10 @@ function network_get_field_array(array $network = []) : array {
 		'notification_fromname' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Notification From Name'),
-			'description'   => __('The Email account name to be used as the sender\'s name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name'),
+			'description'   => __('The Email account name to be used as the sender\'s name for the ' .
+				'Notification Email.  If left blank, Cacti will use the default ' .
+				'Automation Notification Name if specified, otherwise, it will use the ' .
+				'Cacti system default Email name'),
 			'value'         => '|arg1:notification_fromname|',
 			'max_length'    => '32',
 			'size'          => '30',
@@ -774,7 +788,10 @@ function network_get_field_array(array $network = []) : array {
 		'notification_fromemail' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Notification From Email Address'),
-			'description'   => __('The Email Address to be used as the sender\'s Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address'),
+			'description'   => __('The Email Address to be used as the sender\'s Email for the ' .
+				'Notification Email.  If left blank, Cacti will use the default ' .
+				'Automation Notification Email Address if specified, otherwise, it ' .
+				'will use the Cacti system default Email Address'),
 			'value'         => '|arg1:notification_fromemail|',
 			'max_length'    => '128',
 			'default'       => ''
@@ -810,7 +827,8 @@ function network_get_field_array(array $network = []) : array {
 		],
 		'ping_timeout' => [
 			'friendly_name' => __('Ping Timeout Value'),
-			'description'   => __('The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.'),
+			'description'   => __('The timeout value to use for host ICMP and UDP pinging.  This host ' .
+				'SNMP timeout value applies for SNMP pings.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:ping_timeout|',
 			'default'       => read_config_option('ping_timeout'),

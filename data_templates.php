@@ -320,7 +320,8 @@ function form_save() : void {
 			if (cacti_sizeof($data_template_fields)) {
 				foreach ($data_template_fields as $data_template_field) {
 					raise_message('data_template_rrd_' . $data_template_field['dtr_id'],
-						__esc('Field "%s" is missing an Output Field.  Select the Output Field associated with this Data Source, and press Save again.',
+						__esc('Field "%s" is missing an Output Field.  Select the Output Field ' .
+							'associated with this Data Source, and press Save again.',
 							$data_template_field['data_source_name']),
 						MESSAGE_LEVEL_WARN);
 				}
@@ -585,7 +586,8 @@ function form_actions() : void {
 					'pmessage' => __('Click \'Continue\' to Change Profile following Data Templates.'),
 					'scont'    => __('Change Profile for Data Template'),
 					'pcont'    => __('Change Profile for Data Templates'),
-					'footer'   => __('NOTE: This change will only affect future Data Sources and does not alter existing Data Sources.'),
+					'footer'   => __('NOTE: This change will only affect future Data Sources and does not ' .
+						'alter existing Data Sources.'),
 					'extra'    => [
 						'data_source_profile_id' => [
 							'method'  => 'drop_array',
@@ -596,7 +598,15 @@ function form_actions() : void {
 						'update_data_sources' => [
 							'method'      => 'checkbox',
 							'title'       => __('Update database for existing Data Sources?'),
-							'description' => __('WARNING: This change will not change either the step or the heartbeat of existing RRDfiles.  After this change, a Rebuild Poller Cache operation will take place in background to update the data collection cycle for the impacted Data Sources.  It is strongly suggested that you either delete all the impacted RRDfiles afterwards, or use the splice_rrd.php CLI script to preserve old data and repopulate the new RRDfiles with the legacy data.  Otherwise, this change will have no on the data and may in fact lead to a loss of fidelity if you are increasing the time between data collection cycles.'),
+							'description' => __('WARNING: This change will not change either the step or the heartbeat ' .
+								'of existing RRDfiles.  After this change, a Rebuild Poller Cache ' .
+								'operation will take place in background to update the data collection ' .
+								'cycle for the impacted Data Sources.  It is strongly suggested that ' .
+								'you either delete all the impacted RRDfiles afterwards, or use the ' .
+								'splice_rrd.php CLI script to preserve old data and repopulate the new ' .
+								'RRDfiles with the legacy data.  Otherwise, this change will have no ' .
+								'on the data and may in fact lead to a loss of fidelity if you are ' .
+								'increasing the time between data collection cycles.'),
 							'default'     => ''
 						]
 					],
@@ -812,7 +822,8 @@ function template_edit() : void {
 		} else {
 			$form_array[$field_name]['sub_checkbox'] = [
 				'name'          => 't_' . $field_name,
-				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.'),
+				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the ' .
+					'value on the right during Data Source creation.'),
 				'value'         => (isset($template_data['t_' . $field_name]) ? $template_data['t_' . $field_name] : ''),
 				'default'       => ''
 			];
@@ -937,7 +948,8 @@ function template_edit() : void {
 		$form_array[$field_name]['value']        = (isset($template_rrd) ? $template_rrd[$field_name] : '');
 		$form_array[$field_name]['sub_checkbox'] = [
 			'name'          => 't_' . $field_name,
-			'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.'),
+			'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the ' .
+				'value on the right during Data Source creation.'),
 			'value'         => (isset($template_rrd['t_' . $field_name]) ? $template_rrd['t_' . $field_name] : ''),
 			'default'       => ''
 		];
@@ -987,7 +999,9 @@ function template_edit() : void {
 
 				// Data Query Key fields
 				if (data_input_field_always_checked($field['id'])) {
-					$message = __esc('This value is disabled due to its value being derived from the Device or special Data Query object that keeps track of Data Query associations.');
+					$message = __esc('This value is disabled due to its value being derived from the Device ' .
+						'or special Data Query object that keeps track of Data Query ' .
+						'associations.');
 
 					if (cacti_sizeof($data_input_data)) {
 						$old_value  = $data_input_data['value'] ?? '';
@@ -1005,7 +1019,8 @@ function template_edit() : void {
 					$old_tvalue = '';
 					$disable    = 'disable';
 				} else {
-					$message = __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.');
+					$message = __esc('Check this checkbox if you wish to allow the user to override the ' .
+						'value on the right during Data Source creation.');
 
 					if (cacti_sizeof($data_input_data)) {
 						$old_value  = $data_input_data['value'] ?? '';
@@ -1106,7 +1121,9 @@ function template_edit() : void {
 				raiseMessage(
 					'<?= __('Custom Data Warning Message'); ?>',
 					'<?= __esc('WARNING: Data Loss can Occur'); ?>',
-					'<?= __esc('After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will lose their Custom Data.  This can result in broken Data Collection and Graphs'); ?>',
+					'<?= __esc('After you uncheck this checkbox and then Save the Data Template, any ' .
+						'existing Data Sources based on this Data Template will lose their ' .
+						'Custom Data.  This can result in broken Data Collection and Graphs'); ?>',
 					MESSAGE_LEVEL_MIXED
 				);
 			}
@@ -1199,7 +1216,8 @@ function data_templates() : void {
 		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source.')
+			'tip'     => __('Data Templates that are in use cannot be Deleted.  In use is defined ' .
+				'as being referenced by a Data Source.')
 		],
 		'data_sources' => [
 			'display' => __('Data Sources Using'),

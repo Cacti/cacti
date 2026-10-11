@@ -157,7 +157,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 		if (!cacti_sizeof($template)) {
 			cacti_log("LOGIN FAILED: Template user id '" . $templateUserId . "' does not exist.", false, 'AUTH');
 
-			auth_display_custom_error_message(__('Access Denied!  Template user id %s does not exist.  Please contact your Administrator.',
+			auth_display_custom_error_message(__('Access Denied!  Template user id %s does not exist.  Please contact ' .
+				'your Administrator.',
 				$templateUserId));
 
 			exit;
@@ -178,11 +179,13 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 	}
 
 	if (!cacti_sizeof($user)) {
-		cacti_log("LOGIN FAILED: user '" . $result->username . "' authenticated but the provider has no template and no existing account.",
+		cacti_log("LOGIN FAILED: user '" . $result->username . ("' authenticated but the provider has no template and no existing " .
+			'account.'),
 			false,
 			'AUTH');
 
-		auth_display_custom_error_message(__('Access Denied!  Provider template is not configured.  Please contact your Administrator.'));
+		auth_display_custom_error_message(__('Access Denied!  Provider template is not configured.  Please contact ' .
+			'your Administrator.'));
 
 		exit;
 	}

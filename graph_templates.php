@@ -942,7 +942,8 @@ function form_save() : void {
 
 				if (!$mutation_failed && cacti_sizeof($selected_graph_items) > 0) {
 					foreach ($selected_graph_items as $graph_template_item_id) {
-						if (!db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)',
+						if (!db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, ' .
+							'graph_template_item_id) VALUES (?, ?)',
 							[$graph_template_input_id,
 							$graph_template_item_id])) {
 							$mutation_failed = true;
@@ -1089,7 +1090,8 @@ function item_remove() : void {
 
 	if (cacti_sizeof($graph_item_inputs) > 0) {
 		foreach ($graph_item_inputs as $graph_item_input) {
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id = ?',
+			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE ' .
+				'graph_template_input_id = ?',
 				[$graph_item_input['id']])) == 1) {
 				db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', [$graph_item_input['id']]);
 			}
@@ -1637,14 +1639,34 @@ function form_actions() : void {
 					]
 				],
 				4 => [
-					'smessage' => __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Template. If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.'),
-					'pmessage' => __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Templates. If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.'),
+					'smessage' => __('Click \'Continue\' to perform a Full Synchronization between your ' .
+						'Graphs and the chosen Graph Template. If you simply have a situation ' .
+						'where the Graph Items don\'t match the Graph Template, try the Quick ' .
+						'Sync Graphs option first as it will take much less time.  This ' .
+						'function is important if you have Graphs that exist with multiple ' .
+						'versions of a Graph Template and wish to make them all common in ' .
+						'appearance.'),
+					'pmessage' => __('Click \'Continue\' to perform a Full Synchronization between your ' .
+						'Graphs and the chosen Graph Templates. If you simply have a situation ' .
+						'where the Graph Items don\'t match the Graph Template, try the Quick ' .
+						'Sync Graphs option first as it will take much less time.  This ' .
+						'function is important if you have Graphs that exist with multiple ' .
+						'versions of a Graph Template and wish to make them all common in ' .
+						'appearance.'),
 					'scont'    => __('Synchronize Graphs to Graph Template'),
 					'pcont'    => __('Synchronize Graphs to Graph Templates'),
 				],
 				5 => [
-					'smessage' => __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Template. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
-					'pmessage' => __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Templates. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
+					'smessage' => __('Click \'Continue\' to perform a Quick Synchronization of your Graphs ' .
+						'for the following Graph Template. Use this option if your Graphs have ' .
+						'Graph Items that do not match your Graph Template.  If this option ' .
+						'does not work, use the Full Sync Graphs option, which will take more ' .
+						'time to complete.'),
+					'pmessage' => __('Click \'Continue\' to perform a Quick Synchronization of your Graphs ' .
+						'for the following Graph Templates. Use this option if your Graphs ' .
+						'have Graph Items that do not match your Graph Template.  If this ' .
+						'option does not work, use the Full Sync Graphs option, which will ' .
+						'take more time to complete.'),
 					'scont'    => __('Synchronize Graphs to Graph Template'),
 					'pcont'    => __('Synchronize Graphs to Graph Templates'),
 				]
@@ -1841,7 +1863,8 @@ function template_edit() : void {
 		if ($form_array[$field_name]['method'] != 'spacer') {
 			$form_array[$field_name]['sub_checkbox'] = [
 				'name'          => 't_' . $field_name,
-				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Graph creation.'),
+				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the ' .
+					'value on the right during Graph creation.'),
 				'value'         => (isset($template_graph['t_' . $field_name]) ? $template_graph['t_' . $field_name] : '')
 			];
 		}
@@ -1992,7 +2015,8 @@ function graph_templates() : void {
 		'nosort3' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph.')
+			'tip'     => __('Graph Templates that are in use cannot be Deleted.  In use is defined ' .
+				'as being referenced by a Graph.')
 		],
 		'graph_items' => [
 			'display' => __('Graph Items'),
@@ -2112,7 +2136,8 @@ function input_remove() : void {
 	if (db_begin_transaction()) {
 		$deleted_defs  = db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?',
 			[grv('id')]);
-		$deleted_input = $deleted_defs && db_execute_prepared('DELETE FROM graph_template_input WHERE id = ? AND graph_template_id = ?',
+		$deleted_input = $deleted_defs && db_execute_prepared('DELETE FROM graph_template_input WHERE id = ? AND graph_template_id = ' .
+			'?',
 			[grv('id'),
 			grv('graph_template_id')]);
 

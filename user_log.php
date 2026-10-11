@@ -221,7 +221,9 @@ function purge_user_log() : void {
 
 	print "<tr>
 			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to purge the User Log.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.') . "</p>
+				<p>" . __('Click \'Continue\' to purge the User Log.<br><br><br>Note: If logging ' .
+					'is set to both Cacti and Syslog, the log information will remain in ' .
+					'Syslog.') . "</p>
 			</td>
 		</tr>
 		<tr class='saveRow'>

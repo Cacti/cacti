@@ -306,7 +306,8 @@ function create_manager_notification_filter() : array {
 	global $item_rows;
 
 	$mibs = array_rekey(
-		db_fetch_assoc("SELECT 'any' AS id, '" . __esc('Any') . "' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM snmpagent_cache"),
+		db_fetch_assoc("SELECT 'any' AS id, '" . __esc('Any') . ("' AS name UNION SELECT DISTINCT mib AS id, mib AS name FROM " .
+			'snmpagent_cache')),
 		'id', 'name'
 	);
 
@@ -973,14 +974,18 @@ function form_actions() : void {
 			],
 			'options' => [
 				1 => [
-					'smessage' => __('Click \'Continue\' to Disable Forwarding the following Notification Object the following Notification Receiver.'),
-					'pmessage' => __('Click \'Continue\' to Disable Forwarding the following Notification Objects to the following Notification Receiver.'),
+					'smessage' => __('Click \'Continue\' to Disable Forwarding the following Notification ' .
+						'Object the following Notification Receiver.'),
+					'pmessage' => __('Click \'Continue\' to Disable Forwarding the following Notification ' .
+						'Objects to the following Notification Receiver.'),
 					'scont'    => __('Disable Forwarding Object'),
 					'pcont'    => __('Disable Forwarding Objects')
 				],
 				2 => [
-					'smessage' => __('Click \'Continue\' to Enable Forwarding the following Notification Object to this Notification Receiver.'),
-					'pmessage' => __('Click \'Continue\' to Enable Forwarding the following Notification Objects Notification Receivers.'),
+					'smessage' => __('Click \'Continue\' to Enable Forwarding the following Notification ' .
+						'Object to this Notification Receiver.'),
+					'pmessage' => __('Click \'Continue\' to Enable Forwarding the following Notification ' .
+						'Objects Notification Receivers.'),
 					'scont'    => __('Enable Forwarding Object'),
 					'pcont'    => __('Enable Forwarding Objects')
 				]

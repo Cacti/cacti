@@ -597,7 +597,8 @@ function graphs() : void {
 
 		print "<tr class='tableHeader'>
 			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='selectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='all_cg'></label></th>
+			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . ("' onClick='selectAll(\"sg\",this.checked)'><label " .
+				"class='formCheckboxLabel' title='") . __esc('Select All Rows') . "' for='all_cg'></label></th>
 		</tr>";
 
 		if (grv('filter') != '') {
@@ -734,7 +735,8 @@ function graphs() : void {
 								}
 							} else {
 								raise_message('xmlfielderr' . $field_name,
-									__esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'.  Field Name \'%s\' missing a \'direction\' attribute',
+									__esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with ' .
+										'id \'%s\'.  Field Name \'%s\' missing a \'direction\' attribute',
 										$snmp_query['name'],
 										$snmp_query['id'],
 										$field_name),
@@ -927,7 +929,8 @@ function graphs() : void {
 						}
 
 						if (!cacti_sizeof($snmp_query_indexes)) {
-							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . htmle('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . '</a> ' . __('From there you can get more information.') . '</td></tr>';
+							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem ' .
+								'executing this Data Query.') . "<a href='" . htmle('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . '</a> ' . __('From there you can get more information.') . '</td></tr>';
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
@@ -1000,7 +1003,8 @@ function graphs() : void {
 				} else {
 					html_start_box('', '100%', false, 3, 'center', '');
 
-					print "<tr class='odd'><td class='textError'>" . __('Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
+					print "<tr class='odd'><td class='textError'>" . __('Error in Data Query.  This could be due to the following: File ' .
+						'Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
 				}
 
 				html_end_box();
@@ -1056,7 +1060,10 @@ function graphs() : void {
 			});
 		});";
 
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id'] : '') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });}); $('tr.notemplate').tooltip();</script>";
+		$script .= ("$('.default').click(function() { " .
+			"$.get('graphs_new.php?action=ajax_save&query=") . (isset($snmp_query['id']) ? $snmp_query['id'] : '') . ("'+'&item='+$(\".dqselect\").val()).fail(function(data) { " .
+			'getPresentHTTPError(data); });}); ' .
+			"$('tr.notemplate').tooltip();</script>");
 
 		print $script;
 	}

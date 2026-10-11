@@ -634,13 +634,15 @@ function vdef_edit() : void {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$actions .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						$actions .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('vdef.php?action=item_moveup&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$actions .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('vdef.php?action=item_moveup&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
@@ -790,7 +792,8 @@ function vdef(bool $refresh = true) : void {
 		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __esc('VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template.')
+			'tip'     => __esc('VDEFs that are in use cannot be Deleted. In use is defined as being ' .
+				'referenced by a Graph or a Graph Template.')
 		],
 		'graphs' => [
 			'display' => __('Graphs Using'),

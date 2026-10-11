@@ -98,9 +98,11 @@ function form_actions() : void {
 				</td>
 			</tr>";
 
-			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' value='cancel' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Delete Public Key',
-				'Delete Public Keys',
-				cacti_sizeof($p_array)) . "' value='continue'>" . __esc('Continue') . '</button>';
+			$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+				"value='cancel' onClick='cactiReturnTo()'>") . __esc('Cancel') . ("</button><button type='submit' class='ui-button ui-corner-all " .
+				"ui-widget ui-state-active' title='") . __n('Delete Public Key',
+					'Delete Public Keys',
+					cacti_sizeof($p_array)) . "' value='continue'>" . __esc('Continue') . '</button>';
 		}
 	} else {
 		raise_message(40);

@@ -338,7 +338,9 @@ function export() : void {
 		'include_deps' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('Include Dependencies'),
-			'description'   => __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.'),
+			'description'   => __('Some templates rely on other items in Cacti to function properly. It ' .
+				'is highly recommended that you select this box or the resulting ' .
+				'import may fail.'),
 			'value'         => 'on',
 			'sql'           => $export_types[gnrv('export_type')]['dropdown_sql']
 		],
@@ -396,7 +398,9 @@ function export() : void {
 		'installation' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Installation Instructions'),
-			'description'   => __('Some Packages require additional changes outside of Cacti\'s scope such as setting up an SNMP Agent Extension on the Devices to be monitored.  You should add those instructions here..'),
+			'description'   => __('Some Packages require additional changes outside of Cacti\'s scope ' .
+				'such as setting up an SNMP Agent Extension on the Devices to be ' .
+				'monitored.  You should add those instructions here..'),
 			'value'         => (isset($info['installation']) ? $info['installation'] : read_config_option('package_installation',
 				true)),
 			'textarea_rows' => '5',

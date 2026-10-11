@@ -627,7 +627,8 @@ function form_actions() : void {
 
 					if ($rrd_changes > 0) {
 						$_SESSION['sess_messages']['custom_info'] = [
-							'message' => sprintf(__('%d RRD files were backed up and will be recreated with new step value at next polling.'),
+							'message' => sprintf(__('%d RRD files were backed up and will be recreated with new step value ' .
+								'at next polling.'),
 								$rrd_changes),
 							'type'    => 'info'
 						];
@@ -1213,7 +1214,9 @@ function ds_edit() : void {
 		'data_template_id' => [
 			'method'        => 'drop_sql',
 			'friendly_name' => __('Data Template'),
-			'description'   => __('The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources.'),
+			'description'   => __('The name given to this data template.  Please note that you may only ' .
+				'change Graph Templates to a 100%$ compatible Graph Template, which ' .
+				'means that it includes identical Data Sources.'),
 			'value'         => (cacti_sizeof($data_template) ? $data_template['id'] : '0'),
 			'none_value'    => (cacti_sizeof($data_template) ? '' : 'None'),
 			'sql'           => $dtsql
@@ -1380,7 +1383,8 @@ function ds_edit() : void {
 				print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
 
 				foreach ($template_data_rrds as $template_data_rrd) {
-					print "<li class='subTab'><a " . (($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . htmle('data_sources.php?action=ds_edit&id=' . grv('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmle($template_data_rrd['data_source_name']) . '</a>' . ($use_data_template == false ? " <a class='pic deleteMarker ti ti-x cactiPostAction' href='#' data-url='" . html_escape_url('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . grv('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
+					print "<li class='subTab'><a " . (($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . htmle('data_sources.php?action=ds_edit&id=' . grv('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmle($template_data_rrd['data_source_name']) . '</a>' . ($use_data_template == false ? (" <a class='pic deleteMarker ti ti-x cactiPostAction' href='#' " .
+						"data-url='") . html_escape_url('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . grv('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
 
 					$i++;
 				}
@@ -1409,7 +1413,8 @@ function ds_edit() : void {
 				[$data['data_input_id']]) > '1')) {
 			unset($struct_data_source_item['data_input_field_id']);
 		} else {
-			$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id,CONCAT(data_name,' - ',name) as name FROM data_input_fields WHERE data_input_id=" . $data['data_input_id'] . " and input_output='out' and update_rra='on' order by data_name,name";
+			$struct_data_source_item['data_input_field_id']['sql'] = ("SELECT id,CONCAT(data_name,' - ',name) as name FROM data_input_fields " .
+				'WHERE data_input_id=') . $data['data_input_id'] . " and input_output='out' and update_rra='on' order by data_name,name";
 		}
 
 		$form_array = [];
@@ -1610,7 +1615,8 @@ function data_sources() : void {
 	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	if (grv('orphans') == 'true') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND ' : 'WHERE ') . '((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS NULL OR dl.orphan = 1)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND ' : 'WHERE ') . ('((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS ' .
+			'NULL OR dl.orphan = 1)');
 
 		$orphan_join = "LEFT JOIN (
 			SELECT dtr.local_data_id, COUNT(DISTINCT gti.task_item_id) AS graph_items
@@ -1710,7 +1716,8 @@ function data_sources() : void {
 			'display' => __('Data Source Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
-			'tip'     => __('The name of this Data Source. Generally programmatically generated from the Data Template definition.')
+			'tip'     => __('The name of this Data Source. Generally programmatically generated ' .
+				'from the Data Template definition.')
 		],
 		'local_data_id' => [
 			'display' => __('ID'),

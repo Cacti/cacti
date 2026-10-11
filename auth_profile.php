@@ -421,7 +421,8 @@ function settings() : bool {
 			'logout_everywhere' => [
 				'method'        => 'button',
 				'friendly_name' => __('Logout Everywhere'),
-				'description'   => __('Clear all your Login Session Tokens from all devices that you have logged into using your session cookies.'),
+				'description'   => __('Clear all your Login Session Tokens from all devices that you have ' .
+					'logged into using your session cookies.'),
 				'value'         => __('Logout Everywhere'),
 				'on_click'      => 'logoutEverywhere()'
 			]
@@ -449,7 +450,8 @@ function settings() : bool {
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
-			print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='ti ti-chevrons-up'></i></div>" . '</div></div>';
+			print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ("<div style='float:right;padding-right:4px;'><i class='ti " .
+				"ti-chevrons-up'></i></div>") . '</div></div>';
 
 			$form_array = [];
 

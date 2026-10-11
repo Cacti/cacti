@@ -383,7 +383,8 @@ function field_remove() : void {
 		for ($i = 0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$j++;
-				db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?",
+				db_execute_prepared('UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND ' .
+					"input_output = 'in' AND data_name = ?",
 					[$j,
 					$field['data_input_id'],
 					$matches[1][$i]]);
@@ -582,9 +583,11 @@ function data_input_edit() : void {
 			if ($aud === true) {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Succeeded.');
 			} elseif ($aud == false) {
-				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php to correct.');
+				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php ' .
+					'to correct.');
 			} elseif ($aud == '-1') {
-				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script input_whitelist.php to correct.');
+				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script ' .
+					'input_whitelist.php to correct.');
 			}
 		}
 	}
@@ -843,12 +846,14 @@ function data() : void {
 			'display' => __('ID'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
-			'tip'     => __('The internal database ID for this Data Input Method.  Useful when performing automation or debugging.')
+			'tip'     => __('The internal database ID for this Data Input Method.  Useful when ' .
+				'performing automation or debugging.')
 		],
 		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')
+			'tip'     => __('Data Inputs that are in use cannot be Deleted. In use is defined as ' .
+				'being referenced either by a Data Source or a Data Template.')
 		],
 		'data_sources' => [
 			'display' => __('Data Sources Using'),

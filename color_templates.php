@@ -159,13 +159,15 @@ function draw_color_template_items_list(array $item_list,
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						print '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						print ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						print '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('color_templates.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						print ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
+							'href="#" data-url="') . html_escape_url('color_templates.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}
@@ -896,7 +898,8 @@ function color_template() : void {
 		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
-			'tip'     => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')
+			'tip'     => __('Color Templates that are in use cannot be Deleted. In use is defined ' .
+				'as being referenced by an Aggregate Template.')
 		],
 		'graphs'    => [
 			'display' => __('Graphs'),

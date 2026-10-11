@@ -240,14 +240,16 @@ function provider_edit() : void {
 		'name' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Name'),
-			'description'   => __('Enter a meaningful name for this Login Provider. This will be the name that appears in the Login Realm during login.'),
+			'description'   => __('Enter a meaningful name for this Login Provider. This will be the ' .
+				'name that appears in the Login Realm during login.'),
 			'value'         => '|arg1:name|',
 			'max_length'    => '64',
 		],
 		'description' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Description'),
-			'description'   => __('An optional longer description of this Login Provider, for the benefit of other administrators.'),
+			'description'   => __('An optional longer description of this Login Provider, for the ' .
+				'benefit of other administrators.'),
 			'value'         => '|arg1:description|',
 			'max_length'    => '255',
 		],
@@ -263,7 +265,9 @@ function provider_edit() : void {
 		'button_label' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Login Button Label'),
-			'description'   => __('For SAML2 and OpenID Providers, the text shown on the login page button, e.g. "Login with Azure AD". Ignored for LDAP/Active Directory. Defaults to the Name above when left blank.'),
+			'description'   => __('For SAML2 and OpenID Providers, the text shown on the login page ' .
+				'button, e.g. "Login with Azure AD". Ignored for LDAP/Active ' .
+				'Directory. Defaults to the Name above when left blank.'),
 			'value'         => '|arg1:button_label|',
 			'max_length'    => '50',
 		],
@@ -286,7 +290,9 @@ function provider_edit() : void {
 		'allow_auth_cookies' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('Allow "Remember Me" Cookies'),
-			'description'   => __('If unchecked, users authenticated through this Provider will never be offered a "remember me" auth cookie, even when the global setting is enabled.'),
+			'description'   => __('If unchecked, users authenticated through this Provider will never be ' .
+				'offered a "remember me" auth cookie, even when the global setting is ' .
+				'enabled.'),
 			'value'         => '|arg1:allow_auth_cookies|',
 			'default'       => 'on',
 		],
@@ -314,7 +320,15 @@ function provider_edit() : void {
 		],
 		'server' => [
 			'friendly_name' => __('Server(s)'),
-			'description'   => __('A space delimited list of DNS hostnames or IP addresses for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.<br><br>For One-Time Password (OTP/MFA) logins, do not use a space delimited multi-server list.  On a failed bind Cacti advances to the next server and re-binds with the same credentials, and the already-consumed one-time code will be rejected.  Instead enter a single, resilient DNS name fronted by a DNS load balancer (VIP) so that server failover is handled below Cacti and only one authentication bind is ever performed.'),
+			'description'   => __('A space delimited list of DNS hostnames or IP addresses for valid ' .
+				'LDAP servers.  Cacti will attempt to use the LDAP servers from left ' .
+				'to right to authenticate a user.<br><br>For One-Time Password ' .
+				'(OTP/MFA) logins, do not use a space delimited multi-server list.  On ' .
+				'a failed bind Cacti advances to the next server and re-binds with the ' .
+				'same credentials, and the already-consumed one-time code will be ' .
+				'rejected.  Instead enter a single, resilient DNS name fronted by a ' .
+				'DNS load balancer (VIP) so that server failover is handled below ' .
+				'Cacti and only one authentication bind is ever performed.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:server|',
 			'default'       => '',
@@ -389,14 +403,43 @@ function provider_edit() : void {
 		],
 		'mode' => [
 			'friendly_name' => __('Mode'),
-			'description'   => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password.'),
+			'description'   => __('Mode which cacti will attempt to authenticate against the LDAP ' .
+				'server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) ' .
+				'searching occurs, just attempt to bind with the provided ' .
+				'Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - ' .
+				'Attempts to search for username against LDAP directory via anonymous ' .
+				'binding to locate the users Distinguished Name ' .
+				'(DN).<br><br><i>Specific Searching</i> - Attempts search for username ' .
+				'against LDAP directory via Specific Distinguished Name (DN) and ' .
+				'Specific Password for binding to locate the users Distinguished Name ' .
+				'(DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the ' .
+				'user password only once, during final authentication.  <i>No ' .
+				'Searching</i> performs no directory lookup and binds directly using ' .
+				'the Distinguished Name (DN) template, so it is safe for OTP when the ' .
+				'DN template alone identifies the user.  When a directory lookup is ' .
+				'required to resolve the DN, use <i>Specific Searching</i> with a ' .
+				'dedicated service account (or <i>Anonymous Searching</i> where the ' .
+				'directory permits it) so the lookup never consumes the single-use ' .
+				'code.  For resilient OTP deployments use a single DNS load balancer ' .
+				'name in the Server(s) field rather than a space delimited ' .
+				'multi-server list, which would re-attempt the bind with an ' .
+				'already-consumed one-time password.'),
 			'method'        => 'drop_array',
 			'value'         => '|arg1:mode|',
 			'array'         => $ldap_modes
 		],
 		'dn' => [
 			'friendly_name' => __('Distinguished Name (DN)'),
-			'description'   => __('The "Distinguished Name" syntax, applicable for both OpenLDAP and Windows AD configurations, offers flexibility in defining user identity. For OpenLDAP, the format follows this structure: <i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>. Windows AD provides an alternative syntax: <i>"&lt;username&gt;@win2kdomain.local"</i>, commonly known as "userPrincipalName (UPN)". In this context, "&lt;username&gt;" represents the specific username provided during the login prompt. This is particularly pertinent when operating in "No Searching" mode, or "Require Group Membership" enabled.'),
+			'description'   => __('The "Distinguished Name" syntax, applicable for both OpenLDAP and ' .
+				'Windows AD configurations, offers flexibility in defining user ' .
+				'identity. For OpenLDAP, the format follows this structure: ' .
+				'<i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>. Windows ' .
+				'AD provides an alternative syntax: ' .
+				'<i>"&lt;username&gt;@win2kdomain.local"</i>, commonly known as ' .
+				'"userPrincipalName (UPN)". In this context, "&lt;username&gt;" ' .
+				'represents the specific username provided during the login prompt. ' .
+				'This is particularly pertinent when operating in "No Searching" mode, ' .
+				'or "Require Group Membership" enabled.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:dn|',
 			'max_length'    => '255',
@@ -409,7 +452,9 @@ function provider_edit() : void {
 		],
 		'group_dn' => [
 			'friendly_name' => __('Group Distinguished Name (DN)'),
-			'description'   => __('Distinguished Name of the group that the user must be a member of in order to login. Leave blank to allow any successfully authenticated user to login.'),
+			'description'   => __('Distinguished Name of the group that the user must be a member of in ' .
+				'order to login. Leave blank to allow any successfully authenticated ' .
+				'user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_dn|',
 			'max_length'    => '255',
@@ -417,7 +462,11 @@ function provider_edit() : void {
 		],
 		'group_attrib' => [
 			'friendly_name' => __('Group Member Attribute'),
-			'description'   => __('This refers to the specific attribute within the LDAP directory that holds the usernames of group members. It is crucial to ensure that the attribute value aligns with the configuration specified in the "Distinguished Name" or that the actual attribute value is searchable using the settings outlined in the "Distinguished Name".'),
+			'description'   => __('This refers to the specific attribute within the LDAP directory that ' .
+				'holds the usernames of group members. It is crucial to ensure that ' .
+				'the attribute value aligns with the configuration specified in the ' .
+				'"Distinguished Name" or that the actual attribute value is searchable ' .
+				'using the settings outlined in the "Distinguished Name".'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_attrib|',
 			'max_length'    => '255',
@@ -425,7 +474,8 @@ function provider_edit() : void {
 		],
 		'group_member_type' => [
 			'friendly_name' => __('Group Member Type'),
-			'description'   => __('Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute.'),
+			'description'   => __('Defines if users use full Distinguished Name or just Username in the ' .
+				'defined Group Member Attribute.'),
 			'method'        => 'drop_array',
 			'value'         => '|arg1:group_member_type|',
 			'array'         => [1 => 'Distinguished Name', 2 => 'Username']
@@ -436,7 +486,9 @@ function provider_edit() : void {
 		],
 		'search_base' => [
 			'friendly_name' => __('Search Base'),
-			'description'   => __('Search base for searching the LDAP directory, such as <i>"dc=win2kdomain,dc=local"</i> or <i>"ou=people,dc=domain,dc=local"</i>.'),
+			'description'   => __('Search base for searching the LDAP directory, such as ' .
+				'<i>"dc=win2kdomain,dc=local"</i> or ' .
+				'<i>"ou=people,dc=domain,dc=local"</i>.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:search_base|',
 			'max_length'    => '255',
@@ -444,7 +496,8 @@ function provider_edit() : void {
 		],
 		'search_filter' => [
 			'friendly_name' => __('Search Filter'),
-			'description'   => __('Search filter to use to locate the user in the LDAP directory, such as for windows: <i>"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))"</i> or for OpenLDAP: <i>"(&(objectClass=account)(uid=&lt;username&gt))"</i>.  "&lt;username&gt" is replaced with the username that was supplied at the login prompt.'),
+			'description'   => __('Search filter to use to locate the user in the LDAP directory, such ' .
+				'as for windows: <i>"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))"</i> or for OpenLDAP: <i>"(&(objectClass=account)(uid=&lt;username&gt))"</i>.  "&lt;username&gt" is replaced with the username that was supplied at the login prompt.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:search_filter|',
 			'max_length'    => '512',
@@ -471,7 +524,8 @@ function provider_edit() : void {
 		],
 		'claim_full_name' => [
 			'friendly_name' => __('Full Name Attribute'),
-			'description'   => __('The LDAP attribute that will populate a new user\'s Full Name, e.g. "displayName" on Active Directory or "cn" on most OpenLDAP servers.'),
+			'description'   => __('The LDAP attribute that will populate a new user\'s Full Name, e.g. ' .
+				'"displayName" on Active Directory or "cn" on most OpenLDAP servers.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:claim_full_name|',
 			'default'       => $type == PROVIDER_TYPE_AD ? 'displayName' : 'cn',
@@ -479,7 +533,8 @@ function provider_edit() : void {
 		],
 		'claim_email' => [
 			'friendly_name' => __('Email Attribute'),
-			'description'   => __('The LDAP attribute that will populate a new user\'s Email Address, e.g. "mail" on both Active Directory and most OpenLDAP servers.'),
+			'description'   => __('The LDAP attribute that will populate a new user\'s Email Address, ' .
+				'e.g. "mail" on both Active Directory and most OpenLDAP servers.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:claim_email|',
 			'default'       => 'mail',
@@ -490,12 +545,14 @@ function provider_edit() : void {
 	$fields_saml = [
 		'sp_header' => [
 			'friendly_name' => __('Service Provider (SP)'),
-			'description'   => __('Settings describing Cacti itself, the Service Provider, as it will be known to the Identity Provider.'),
+			'description'   => __('Settings describing Cacti itself, the Service Provider, as it will be ' .
+				'known to the Identity Provider.'),
 			'method'        => 'spacer'
 		],
 		'sp_entity_id' => [
 			'friendly_name' => __('SP Entity ID'),
-			'description'   => __('Uniquely identifies this Cacti installation to the Identity Provider. Leave blank to default to the Metadata URL below.') . ' ' .
+			'description'   => __('Uniquely identifies this Cacti installation to the Identity Provider. ' .
+				'Leave blank to default to the Metadata URL below.') . ' ' .
 				__('Assertion Consumer Service (ACS) URL: %s',
 					rtrim((string) read_config_option('base_url'),
 						'/') . '/login_sso.php?action=acs&realm={realm}') . ' ' .
@@ -543,7 +600,9 @@ function provider_edit() : void {
 		],
 		'sp_private_key' => [
 			'friendly_name' => __('SP Private Key (PEM)'),
-			'description'   => __('Only required when signing AuthnRequests or supporting encrypted assertions. Stored encrypted; leave blank to keep the existing key unchanged.'),
+			'description'   => __('Only required when signing AuthnRequests or supporting encrypted ' .
+				'assertions. Stored encrypted; leave blank to keep the existing key ' .
+				'unchanged.'),
 			'method'        => 'privkey',
 			'textarea_rows' => 4,
 			'textarea_cols' => 60,
@@ -592,7 +651,8 @@ function provider_edit() : void {
 		],
 		'saml_claim_username' => [
 			'friendly_name' => __('Username Attribute'),
-			'description'   => __('The SAML Attribute that identifies the Cacti username. Leave blank to use the Assertion\'s NameID.'),
+			'description'   => __('The SAML Attribute that identifies the Cacti username. Leave blank to ' .
+				'use the Assertion\'s NameID.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:claim_username|',
 			'max_length'    => '255'
@@ -617,7 +677,8 @@ function provider_edit() : void {
 		],
 		'saml_group_claim' => [
 			'friendly_name' => __('Group Claim Attribute'),
-			'description'   => __('The SAML Attribute carrying the user\'s group membership, e.g. "memberOf" or "groups". Leave blank to skip group checking.'),
+			'description'   => __('The SAML Attribute carrying the user\'s group membership, e.g. ' .
+				'"memberOf" or "groups". Leave blank to skip group checking.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_claim|',
 			'max_length'    => '255',
@@ -625,7 +686,9 @@ function provider_edit() : void {
 		],
 		'saml_group_name' => [
 			'friendly_name' => __('Required Group'),
-			'description'   => __('The group name/DN that must appear in the Group Claim Attribute above for the user to be allowed to login. Leave blank to allow any successfully authenticated user to login.'),
+			'description'   => __('The group name/DN that must appear in the Group Claim Attribute above ' .
+				'for the user to be allowed to login. Leave blank to allow any ' .
+				'successfully authenticated user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_name|',
 			'max_length'    => '255',
@@ -636,7 +699,8 @@ function provider_edit() : void {
 	$fields_openid = [
 		'oidc_sp_header' => [
 			'friendly_name' => __('Service Provider (SP)'),
-			'description'   => __('Settings describing Cacti itself, the OpenID Connect Relying Party, as registered with the Identity Provider.'),
+			'description'   => __('Settings describing Cacti itself, the OpenID Connect Relying Party, ' .
+				'as registered with the Identity Provider.'),
 			'method'        => 'spacer'
 		],
 		'oidc_redirect_uri' => [
@@ -675,7 +739,8 @@ function provider_edit() : void {
 		],
 		'discovery_url' => [
 			'friendly_name' => __('Discovery URL'),
-			'description'   => __('The Identity Provider\'s OpenID Connect discovery document URL, typically ending in "/.well-known/openid-configuration".'),
+			'description'   => __('The Identity Provider\'s OpenID Connect discovery document URL, ' .
+				'typically ending in "/.well-known/openid-configuration".'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:discovery_url|',
 			'max_length'    => '255',
@@ -715,7 +780,8 @@ function provider_edit() : void {
 		],
 		'oidc_group_claim' => [
 			'friendly_name' => __('Group Claim'),
-			'description'   => __('The ID Token/UserInfo claim carrying the user\'s group membership, e.g. "groups". Leave blank to skip group checking.'),
+			'description'   => __('The ID Token/UserInfo claim carrying the user\'s group membership, ' .
+				'e.g. "groups". Leave blank to skip group checking.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_claim|',
 			'max_length'    => '255',
@@ -723,7 +789,9 @@ function provider_edit() : void {
 		],
 		'oidc_group_name' => [
 			'friendly_name' => __('Required Group'),
-			'description'   => __('The group name that must appear in the Group Claim above for the user to be allowed to login. Leave blank to allow any successfully authenticated user to login.'),
+			'description'   => __('The group name that must appear in the Group Claim above for the user ' .
+				'to be allowed to login. Leave blank to allow any successfully ' .
+				'authenticated user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_name|',
 			'max_length'    => '255',

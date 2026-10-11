@@ -89,8 +89,10 @@ function upgrade_to_0_8_8() : void {
 	 * be prepared to find those data already present
 	 * in case of upgrade of a cacti+PIA installation */
 	db_install_execute("REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management')");
-	db_install_execute("REPLACE INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1)");
-	db_install_execute("REPLACE INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
+	db_install_execute("REPLACE INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', " .
+		"'', 'plugin_config_arrays', 1)");
+	db_install_execute("REPLACE INTO `plugin_hooks` VALUES (2, 'internal', " .
+		"'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
 	// allow admin user to access Plugin Management
 	db_install_execute('REPLACE INTO user_auth_realm VALUES (101,1)');
 

@@ -63,8 +63,10 @@ function display_settings() : void {
 
 	print '<div class="settingsFilter">';
 	print '<div>' . __('Search') . '</div>';
-	print '<div><input class="ui-state-default ui-corner-all" type="text" size="25" id="filter" value="' . htmlerv('filter') . '"></div>';
-	print '<div><span><button class="ui-state-default ui-corner-all" type="button" id="clear">' . __esc('Clear') . '</button></span></div>';
+	print ('<div><input class="ui-state-default ui-corner-all" type="text" ' .
+		'size="25" id="filter" value="') . htmlerv('filter') . '"></div>';
+	print ('<div><span><button class="ui-state-default ui-corner-all" ' .
+		'type="button" id="clear">') . __esc('Clear') . '</button></span></div>';
 	print '</div>';
 
 	html_end_box(false, true);
@@ -264,8 +266,13 @@ function display_settings() : void {
 	var currentTab     = '<?php print $current_tab; ?>';
 	var dataCollectors = '<?php print $data_collectors; ?>';
 	var permsTitle     = '<?php print __esc('Changing Permission Model Warning'); ?>';
-	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.'); ?>';
-	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.'); ?>';
+	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph ' .
+		'permissions.'); ?>';
+	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your ' .
+		'Users and User Groups Effective Graph permission to ensure that you ' .
+		'still have adequate control of your Graphs.  NOTE: If you want to ' .
+		'restrict all Graphs at the Device or Graph Template Graph Permission ' .
+		'Model, the default Graph Policy should be set to \'Deny\'.'); ?>';
 
 	$(function() {
 		$('#filter').keyup(function() {

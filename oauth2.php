@@ -89,5 +89,6 @@ if (isempty_request_var('state') || empty($_SESSION['oauth2state']) ||
 	// Use this to get a new access token if the old one expires
 	print __('Refresh Token: ') . htmle((string) $token->getRefreshToken());
 	print '<br/>' . __('Store this token in Settings -> Mail/Reporting/DNS -> Oauth2 refresh token. ');
-	print '<br/>' . __('If the token is empty, it means it stays the same. The Oatuh2 provider will not resend it in that case. ');
+	print '<br/>' . __('If the token is empty, it means it stays the same. The Oatuh2 ' .
+		'provider will not resend it in that case. ');
 }

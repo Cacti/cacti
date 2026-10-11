@@ -175,7 +175,10 @@ if (CACTI_WEB && isset($_SESSION[SESS_USER_ID])) {
 			if (($enabled == 0 && $admin_user != $_SESSION[SESS_USER_ID]) || $enabled == 1) {
 				general_header();
 				print '<h1>' . __('Cacti is Locked Out for Maintenance') . '</h1>';
-				print '<p>' . __('The primary Cacti administrator has locked out the Cacti user interface for maintenance for activities such as upgrades.  If you feel this is in error, please contact your Cacti adminnistrator.  This lockout will stay in place for approximately 30 minutes.') . '</p>';
+				print '<p>' . __('The primary Cacti administrator has locked out the Cacti user ' .
+					'interface for maintenance for activities such as upgrades.  If you ' .
+					'feel this is in error, please contact your Cacti adminnistrator.  ' .
+					'This lockout will stay in place for approximately 30 minutes.') . '</p>';
 				bottom_footer();
 
 				exit;
@@ -367,11 +370,13 @@ if (empty($_SESSION[SESS_USER_ID])) {
 		raise_ajax_permission_denied();
 
 		$title_header = __('Permission Denied');
-		$title_body   = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
+		$title_body   = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti ' .
+			'Administrator.');
 
 		if ($realm_id == 26) {
 			$title_header = __('Installation In Progress');
-			$title_body   = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time') . '</p>';
+			$title_body   = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at ' .
+				'this time') . '</p>';
 		}
 
 		print "<!DOCTYPE html>\n";
