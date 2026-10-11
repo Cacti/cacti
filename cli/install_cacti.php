@@ -391,7 +391,12 @@ function set_install_option(array &$options, string $key, string $display_name, 
 /**
  * set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix
  */
-function set_install_multioption(array &$options, string $key, string $display_name, mixed $value, string $prefix, bool $replace_dots = false) : void {
+function set_install_multioption(array &$options,
+	string $key,
+	string $display_name,
+	mixed $value,
+	string $prefix,
+	bool $replace_dots = false) : void {
 	$option_pos = strpos($value, ':');
 
 	if ($option_pos !== false) {

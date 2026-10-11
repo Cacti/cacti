@@ -414,7 +414,11 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case 'authpriv':
-				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password) || empty($snmp_priv_passphrase) || empty($snmp_priv_protocol)) {
+				if (empty($snmp_username) ||
+					empty($snmp_auth_protocol) ||
+					empty($snmp_password) ||
+					empty($snmp_priv_passphrase) ||
+					empty($snmp_priv_protocol)) {
 					print 'ERROR: For SNMP security level authNoPriv, you must enter username, password, SNMP auth protocol, priv protocol and priv passphrase' . PHP_EOL;
 
 					exit(1);
@@ -474,7 +478,9 @@ if (cacti_sizeof($parms)) {
 		}
 
 		if ($fail) {
-			db_execute_prepared('UPDATE host SET description = ? WHERE deleted = "" AND id = ?', [$description, $addresses[$ip]]);
+			db_execute_prepared('UPDATE host SET description = ? WHERE deleted = "" AND id = ?',
+				[$description,
+				$addresses[$ip]]);
 			print "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ')' . PHP_EOL;
 
 			exit(1);

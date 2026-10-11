@@ -54,7 +54,9 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 		foreach ($objects as &$object) {
 			$oids[] = $object['oid'];
 
-			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? ['type' => $object['type'], 'value' => $object['value']] : false;
+			$object = ($object['otype'] == 'DATA' &&
+				$object['max-access'] != 'not-accessible') ? ['type' => $object['type'],
+				'value'                                              => $object['value']] : false;
 		}
 
 		// natural sorting with MySQL is not available - especially not for OIDs
@@ -99,7 +101,9 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 		fclose($lock);
 		unlink($path_mibcache_lock);
 	} else {
-		cacti_log('WARNING: Unable to open MIB cache lock file; skipping cache rebuild to avoid clobbering a concurrent writer.', false, 'SNMPAGENT');
+		cacti_log('WARNING: Unable to open MIB cache lock file; skipping cache rebuild to avoid clobbering a concurrent writer.',
+			false,
+			'SNMPAGENT');
 	}
 }
 

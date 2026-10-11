@@ -147,7 +147,10 @@ $start = microtime(true);
 $include_file = '';
 
 if (CACTI_SERVER_OS == 'win32') {
-	cacti_log('DEBUG: GETCWD: ' . cacti_strtolower(strtr((string) getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: GETCWD: ' . cacti_strtolower(strtr((string) getcwd(),'\\','/')),
+		false,
+		'PHPSVR',
+		POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . cacti_strtolower(strtr(__DIR__,'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 } else {
 	cacti_log('DEBUG: GETCWD: ' . strtr((string) getcwd(),'\\','/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
@@ -204,12 +207,18 @@ while (1) {
 
 		if ($isParentRunning) {
 			if (!empty($parent_pid)) {
-				cacti_log('WARNING: Input Expected, parent process ' . $parent_pid . ' should have sent non-blank line', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+				cacti_log('WARNING: Input Expected, parent process ' . $parent_pid . ' should have sent non-blank line',
+					false,
+					'PHPSVR',
+					POLLER_VERBOSITY_DEBUG);
 			} else {
 				cacti_log('WARNING: Input Expected, unable to check parent process', false, 'PHPSVR', POLLER_VERBOSITY_MEDIUM);
 			}
 		} else {
-			cacti_log('WARNING: Parent (' . $parent_pid . ') of Script Server (' . getmypid() . ') has been lost, forcing exit', false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
+			cacti_log('WARNING: Parent (' . $parent_pid . ') of Script Server (' . getmypid() . ') has been lost, forcing exit',
+				false,
+				'PHPSVR',
+				POLLER_VERBOSITY_HIGH);
 			$input_string = 'quit';
 		}
 	}
@@ -318,7 +327,9 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '" . basename($include_file) . "' FUNC: '" . $function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
+				cacti_log("WARNING: Function does not exist  INC: '" . basename($include_file) . "' FUNC: '" . $function . "' PARMS: '" . $parameters . "'",
+					false,
+					'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 			}
@@ -327,7 +338,9 @@ while (1) {
 
 	// end the process if the runtime exceeds MAX_POLLER_RUNTIME
 	if (($start + MAX_POLLER_RUNTIME) < time()) {
-		cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded for the Script Server. Exiting.', true, 'PHPSVR');
+		cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded for the Script Server. Exiting.',
+			true,
+			'PHPSVR');
 
 		exit(-1);
 	}
@@ -470,12 +483,18 @@ function sig_handler(int $signo) : void {
 		case SIGABRT:
 		case SIGQUIT:
 		case SIGSEGV:
-			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_MEDIUM);
+			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'",
+				false,
+				'PHPSVR',
+				POLLER_VERBOSITY_MEDIUM);
 			db_close();
 
 			exit;
 		default:
-			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
+			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'",
+				false,
+				'PHPSVR',
+				POLLER_VERBOSITY_HIGH);
 
 			break;
 	}

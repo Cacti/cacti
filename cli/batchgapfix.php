@@ -364,8 +364,16 @@ if ($child == 0) {
 		$now = date('H:i:s');
 
 		if ($not_finished > 0) {
-			printf('NOTE: %s, Status %s of %s RRDfiles processed. Total Time is %.0f.' . PHP_EOL, $now, number_format($rrdfiles - $not_finished), number_format($rrdfiles), $end - $start);
-			printf('NOTE: %s, Processing Rate: %s RRDfiles per/second, Estimated Complete in: %s seconds, Sleeping 1 seconds.' . PHP_EOL, $now, round($rate, 2), $estimate);
+			printf('NOTE: %s, Status %s of %s RRDfiles processed. Total Time is %.0f.' . PHP_EOL,
+				$now,
+				number_format($rrdfiles - $not_finished),
+				number_format($rrdfiles),
+				$end - $start);
+			printf('NOTE: %s, Processing Rate: %s RRDfiles per/second, Estimated Complete in: %s seconds, Sleeping 1 seconds.' . PHP_EOL,
+				$now,
+				round($rate,
+					2),
+				$estimate);
 		} else {
 			printf('NOTE: All RRDfiles processed.  Total Time was %.2f seconds.' . PHP_EOL, $end - $start);
 
@@ -376,7 +384,16 @@ if ($child == 0) {
 	$succeeded = db_fetch_cell('SELECT COUNT(*) FROM graph_local_spikekill WHERE exit_code = 0');
 	$failed    = db_fetch_cell('SELECT COUNT(*) FROM graph_local_spikekill WHERE exit_code != 0');
 
-	cacti_log(sprintf('BATCHFIX STATS: Time:%s, RRDfiles:%s, Threads:%s, Rate:%s, Succeeded:%s, Failed:%s', round($end - $start, 2), $rrdfiles, $threads, round($rate,2), $succeeded, $failed), false, 'SYSTEM');
+	cacti_log(sprintf('BATCHFIX STATS: Time:%s, RRDfiles:%s, Threads:%s, Rate:%s, Succeeded:%s, Failed:%s',
+		round($end - $start,
+			2),
+		$rrdfiles,
+		$threads,
+		round($rate,2),
+		$succeeded,
+		$failed),
+		false,
+		'SYSTEM');
 
 	unregister_process('batchgapfix', $type, $child);
 
@@ -444,9 +461,21 @@ if ($child == 0) {
 
 	$end = microtime(true);
 
-	printf('NOTE: Batch Fill Process Ended in %s seconds.  Succeeded:%s, Failed:%s' . PHP_EOL, round($end - $start, 2), $succeeded, $failed);
+	printf('NOTE: Batch Fill Process Ended in %s seconds.  Succeeded:%s, Failed:%s' . PHP_EOL,
+		round($end - $start,
+			2),
+		$succeeded,
+		$failed);
 
-	cacti_log(sprintf('BATCHFIX CHILD STATS: Time:%s, Thread:%s, RRDfiles:%s, Succeeded:%s, Failed:%s', round($end - $start, 2), $child, cacti_sizeof($rrdfiles), $succeeded, $failed), false, 'SYSTEM');
+	cacti_log(sprintf('BATCHFIX CHILD STATS: Time:%s, Thread:%s, RRDfiles:%s, Succeeded:%s, Failed:%s',
+		round($end - $start,
+			2),
+		$child,
+		cacti_sizeof($rrdfiles),
+		$succeeded,
+		$failed),
+		false,
+		'SYSTEM');
 
 	unregister_process('batchgapfix', $type, $child);
 }

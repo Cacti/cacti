@@ -278,7 +278,12 @@ switch ($type) {
 			$sql_where",
 			$params);
 
-		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d', $thread_id, $ds_per_process, ($thread_id - 1) * $ds_per_process), true, 'REINDEX');
+		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d',
+			$thread_id,
+			$ds_per_process,
+			($thread_id - 1) * $ds_per_process),
+			true,
+			'REINDEX');
 
 		foreach ($data_queries as $data_query) {
 			run_data_query($data_query['host_id'], $data_query['snmp_query_id'], false, $forcerun);
@@ -385,9 +390,15 @@ function reindex_launch_child(int $thread_id, int $threads) : void {
 
 	reindex_debug(sprintf('Launching Reindex hosts Process Number %s for Type %s', $thread_id, 'child'));
 
-	cacti_log(sprintf('NOTE: Launching Reindex hosts Number %s for Type %s', $thread_id, 'child'), true, 'REINDEX', POLLER_VERBOSITY_MEDIUM);
+	cacti_log(sprintf('NOTE: Launching Reindex hosts Number %s for Type %s',
+		$thread_id,
+		'child'),
+		true,
+		'REINDEX',
+		POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_id ? " --id=$host_id" : '') . ($query_id ? " --qid=$query_id" : '') . ($host_descr ? " --host-descr=$host_descr" : '') . ($forcerun ? ' --force' : ''));
+	exec_background($php_binary,
+		CACTI_PATH_CLI . "/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_id ? " --id=$host_id" : '') . ($query_id ? " --qid=$query_id" : '') . ($host_descr ? " --host-descr=$host_descr" : '') . ($forcerun ? ' --force' : ''));
 }
 
 /**
@@ -467,7 +478,11 @@ function reindex_kill_running_processes() : void {
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running((int) $p['pid'])) {
-				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'REINDEX');
+				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.',
+					ucfirst($p['taskname']),
+					$p['pid']),
+					false,
+					'REINDEX');
 
 				cacti_process_kill((int) $p['pid'], SIGTERM, 'REINDEX');
 			}

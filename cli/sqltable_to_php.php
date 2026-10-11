@@ -192,9 +192,11 @@ function sqltable_to_php(string $table, bool $create, string $plugin = '') : str
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
 					if ($plugin != '') {
-						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => '" . implode('`,`', $k) . "');" . PHP_EOL;
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => '" . implode('`,`',
+							$k) . "');" . PHP_EOL;
 					} else {
-						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => array('" . implode("','", $k) . "'));" . PHP_EOL;
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => array('" . implode("','",
+							$k) . "'));" . PHP_EOL;
 					}
 				}
 			}

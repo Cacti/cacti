@@ -231,7 +231,9 @@ function remote_client_authorized() : bool {
 
 	if (!$forward_match) {
 		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
-		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.',
+			false,
+			'SECURITY');
 
 		return false;
 	}
@@ -424,7 +426,8 @@ function poll_for_data() : mixed {
 							if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 								$output = 'U';
 							} else {
-								$host    = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?', [$item['hostname']]);
+								$host    = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?',
+									[$item['hostname']]);
 								$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 									$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 									$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
@@ -482,12 +485,17 @@ function poll_for_data() : mixed {
 							$pipes    = false;
 
 							if (function_exists('proc_open')) {
-								$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+								$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id),
+									$cactides,
+									$pipes);
 
 								// proc_open returns false if the child could not be spawned; fall back to
 								// the non-proc path rather than reading from non-existent pipes
 								if (!is_resource($cactiphp)) {
-									cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution', false, 'POLLER', POLLER_VERBOSITY_LOW);
+									cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution',
+										false,
+										'POLLER',
+										POLLER_VERBOSITY_LOW);
 
 									$using_proc_function = false;
 									$pipes               = false;

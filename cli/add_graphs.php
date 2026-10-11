@@ -714,7 +714,9 @@ if (cacti_sizeof($parms)) {
 			print 'Graph Not Added due to whitelist check failure.' . PHP_EOL;
 		}
 	} elseif ($graph_type == 'ds') {
-		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (cacti_sizeof($dsGraph['snmpField']) == 0)) {
+		if (($dsGraph['snmpQueryId'] == '') ||
+			($dsGraph['snmpQueryType'] == '') ||
+			(cacti_sizeof($dsGraph['snmpField']) == 0)) {
 			print 'ERROR: For graph-type of \'ds\' you must supply more options' . PHP_EOL;
 			display_help();
 

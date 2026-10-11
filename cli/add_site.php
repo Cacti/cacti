@@ -427,7 +427,11 @@ function doDeviceMap(int $deviceId, int $siteId) : bool {
  *
  * @return array - The geocodeAddress location
  */
-function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, string $siteZip, string $siteCountry) : array {
+function geocodeAddress(string $siteAddr1,
+	string $siteAddr2,
+	string $siteCity,
+	string $siteZip,
+	string $siteCountry) : array {
 	global $verbose, $debug, $quiet, $geocodeApiKey, $httpsProxy;
 
 	$latGeocode = '';
@@ -444,7 +448,13 @@ function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, 
 		exit(1);
 	}
 
-	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s', $googleApiUrl, urlencode($siteAddr1), urlencode($siteAddr2), urlencode($siteCity), urlencode($siteCountry), $geocodeApiKey);
+	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s',
+		$googleApiUrl,
+		urlencode($siteAddr1),
+		urlencode($siteAddr2),
+		urlencode($siteCity),
+		urlencode($siteCountry),
+		$geocodeApiKey);
 
 	if ($verbose || $debug) {
 		echoQuiet("Geocode URL: $requestUrl\n" . PHP_EOL);
@@ -477,9 +487,13 @@ function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, 
 }
 
 function fixCoordinates(string $lat, string $lng) : array {
-	$utfCoord = mb_convert_encoding("$lat $lng", 'ISO-8859-1', 'UTF-8'); // Normalise the characters to put them through a regex
+	$utfCoord = mb_convert_encoding("$lat $lng",
+		'ISO-8859-1',
+		'UTF-8'); // Normalise the characters to put them through a regex
 
-	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/', $utfCoord, $matches)) {
+	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/',
+		$utfCoord,
+		$matches)) {
 		array_shift($matches); // Get rid of $matches[0]
 		[$degN, $minN, $secN, $NS, $degE, $minE, $secE, $EW] = $matches; // Get the matches from the regex
 

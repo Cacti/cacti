@@ -216,7 +216,8 @@ if (cacti_sizeof($graph)) {
 			', Graph Item ' . implode(',',$graph_templates_item) .
 			', Task Item ID ' . implode(',',$task_item_id) . '->' . $rrd_data[0]['id'] . PHP_EOL;
 
-		$query = 'UPDATE graph_templates_item SET task_item_id =' . $rrd_data[0]['id'] . ' WHERE task_item_id != ' . $rrd_data[0]['id'] . ' AND graph_template_id = ' . $graph_template_id . ' AND local_graph_id=' . $g['id'] . ' AND id IN (' . implode(',', $graph_templates_item) . ')';
+		$query = 'UPDATE graph_templates_item SET task_item_id =' . $rrd_data[0]['id'] . ' WHERE task_item_id != ' . $rrd_data[0]['id'] . ' AND graph_template_id = ' . $graph_template_id . ' AND local_graph_id=' . $g['id'] . ' AND id IN (' . implode(',',
+			$graph_templates_item) . ')';
 
 		if ($show_sql) {
 			print $query . ';' . PHP_EOL;

@@ -173,7 +173,11 @@ if ($host_id === false) {
 		// take time to log performance data
 		$recache = microtime(true);
 
-		$recache_stats = sprintf('Poller:%s RecacheTime:%01.4f DevicesRecached:%s',	$poller_id, round($recache - $start, 4), cacti_sizeof($hosts));
+		$recache_stats = sprintf('Poller:%s RecacheTime:%01.4f DevicesRecached:%s',
+			$poller_id,
+			round($recache - $start,
+				4),
+			cacti_sizeof($hosts));
 
 		if (cacti_sizeof($hosts)) {
 			cacti_log('STATS: ' . $recache_stats, true, 'RECACHE');
@@ -238,7 +242,10 @@ if ($host_id === false) {
 						cacti_log("Device[$device_id] NOTE: Recache Event Detected for Device", true, 'PCOMMAND');
 					}
 
-					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recache for Device started.", true, 'PCOMMAND', $verbosity);
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recache for Device started.",
+						true,
+						'PCOMMAND',
+						$verbosity);
 					run_data_query($device_id, $data_query_id);
 					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
 
@@ -333,7 +340,12 @@ function commands_launch_child(int $host_id) : void {
 
 	commands_debug(sprintf('Launching Commands Process Number %s for Type %s', $host_id, 'child'));
 
-	cacti_log(sprintf('NOTE: Launching Commands Process Number %s for Type %s', $host_id, 'child'), false, 'CLEANUP', POLLER_VERBOSITY_MEDIUM);
+	cacti_log(sprintf('NOTE: Launching Commands Process Number %s for Type %s',
+		$host_id,
+		'child'),
+		false,
+		'CLEANUP',
+		POLLER_VERBOSITY_MEDIUM);
 
 	exec_background($php_binary, CACTI_PATH_BASE . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug' : ''));
 }
@@ -423,7 +435,11 @@ function commands_kill_running_processes() : void {
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running((int) $p['pid'])) {
-				cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
+				cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.',
+					ucfirst($p['taskname']),
+					$p['pid']),
+					false,
+					'CLEANUP');
 
 				cacti_process_kill((int) $p['pid'], SIGTERM, 'CLEANUP');
 			}

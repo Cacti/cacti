@@ -107,7 +107,8 @@ while (true) {
 			$oid = trim((string) fgets(STDIN));
 
 			if ($data = cache_read($oid)) {
-				fwrite(STDOUT, $oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
+				fwrite(STDOUT,
+					$oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
 			} else {
 				fwrite(STDOUT, 'NONE' . $eol);
 			}
@@ -118,7 +119,8 @@ while (true) {
 
 			if ($next_oid = cache_get_next($oid)) {
 				if ($data = cache_read($next_oid)) {
-					fwrite(STDOUT, $next_oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
+					fwrite(STDOUT,
+						$next_oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
 				} else {
 					fwrite(STDOUT, 'NONE' . $eol);
 				}

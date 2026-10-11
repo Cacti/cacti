@@ -181,7 +181,8 @@ if ($new_heartbeat !== false && (!is_numeric($new_heartbeat) || $new_heartbeat <
 }
 
 if (!array_key_exists($new_heartbeat, $heartbeats)) {
-	printf('ERROR: Your New Heartbeat \'%s\' is not a supported Heartbeat.  Use --list-heartbeats to see the list.' . PHP_EOL, $new_heartbeat);
+	printf('ERROR: Your New Heartbeat \'%s\' is not a supported Heartbeat.  Use --list-heartbeats to see the list.' . PHP_EOL,
+		$new_heartbeat);
 
 	exit(1);
 }
@@ -238,7 +239,9 @@ if (!$force) {
 
 	foreach ($profile_ids as $pid) {
 		if ($pid['heartbeat'] != $new_heartbeat) {
-			printf('ERROR: Data Source Profile \'%s\' has a heartbeat of %s which does' . PHP_EOL, $pid['name'], $pid['heartbeat']);
+			printf('ERROR: Data Source Profile \'%s\' has a heartbeat of %s which does' . PHP_EOL,
+				$pid['name'],
+				$pid['heartbeat']);
 			printf('       not match the new heartbeat of %s.  Use the --force option to update' . PHP_EOL, $new_heartbeat);
 			printf('       the Data Source Profile\'s heartbeat as well as the Data Sources.' . PHP_EOL . PHP_EOL);
 			$exit = true;
@@ -275,7 +278,10 @@ if (cacti_sizeof($rrdfiles)) {
 			$output      = [];
 			$return_code = 0;
 
-			debug(sprintf('Updating Heartbeat for Data Source:%s, Data Template:%s, RRD:%s from 600 to 900' . PHP_EOL, $f['name_cache'], $f['name'], $f['rrd']));
+			debug(sprintf('Updating Heartbeat for Data Source:%s, Data Template:%s, RRD:%s from 600 to 900' . PHP_EOL,
+				$f['name_cache'],
+				$f['name'],
+				$f['rrd']));
 			debug(sprintf("The RRDtool command is '$command'" . PHP_EOL));
 
 			$result = exec($command, $output, $return_code);

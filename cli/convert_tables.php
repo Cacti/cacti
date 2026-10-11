@@ -136,7 +136,8 @@ if (cacti_sizeof($parms)) {
 }
 
 if (cacti_sizeof($skip_tables) && $table_name != '') {
-	print_or_log($installer,  'ERROR: You can not specify a single table and skip tables at the same time.' . PHP_EOL . PHP_EOL);
+	print_or_log($installer,
+		'ERROR: You can not specify a single table and skip tables at the same time.' . PHP_EOL . PHP_EOL);
 	display_help();
 
 	exit(1);

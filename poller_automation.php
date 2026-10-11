@@ -53,8 +53,13 @@ if (POLLER_ID > 1) {
 	if (CACTI_CONNECTION == 'online') {
 		db_force_remote_cnn();
 	} elseif (debounce_run_notification('db_offline')) {
-		cacti_log(sprintf('WARNING: Main Cacti database %s offline or in recovery.  Can not run automation', $rdatabase_hostname), true, 'AUTOM8');
-		admin_email(__('Cacti System Warning'), __('WARNING: Main Cacti database %s offline or in recovery', $rdatabase_hostname));
+		cacti_log(sprintf('WARNING: Main Cacti database %s offline or in recovery.  Can not run automation',
+			$rdatabase_hostname),
+			true,
+			'AUTOM8');
+		admin_email(__('Cacti System Warning'),
+			__('WARNING: Main Cacti database %s offline or in recovery',
+				$rdatabase_hostname));
 
 		exit(1);
 	}
@@ -232,7 +237,9 @@ if (!$master && $thread == 0) {
 		[$network_id, $poller_id]);
 
 	if ($status != 'on' && !$force) {
-		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force its execution.", true, 'AUTOM8');
+		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force its execution.",
+			true,
+			'AUTOM8');
 
 		exit(1);
 	}
@@ -253,7 +260,9 @@ if ($master) {
 	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['snmp_id'] == 0) {
-				cacti_log("ERROR: Automation can not run for Network '" . $network['name'] . "' since the SNMP ID is not set.", true, 'AUTOM8');
+				cacti_log("ERROR: Automation can not run for Network '" . $network['name'] . "' since the SNMP ID is not set.",
+					true,
+					'AUTOM8');
 
 				continue;
 			}
@@ -267,7 +276,8 @@ if ($master) {
 			if (api_scheduler_is_time_to_start($network) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
+				exec_background(read_config_option('path_php_binary'),
+					'-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
 
 				$launched++;
 
@@ -349,7 +359,8 @@ if ($master === false && $thread == 0) {
 
 	while ($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
-		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
+		exec_background(read_config_option('path_php_binary'),
+			'-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
 		$curthread++;
 	}
 
@@ -476,10 +487,15 @@ function discoverDevices(int $network_id, int $thread) : bool {
 		if (cacti_sizeof($device) && isset($device['ip_address'])) {
 			$count++;
 
-			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] . '\' to check', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] . '\' to check',
+				false,
+				'AUTOM8',
+				POLLER_VERBOSITY_MEDIUM);
 
 			if (!filter_var($device['ip_address'], FILTER_VALIDATE_IP)) {
-				cacti_log(automation_get_pid() . ' WARNING: IP address \'' . $device['ip_address'] . '\' is not a valid IP address.', false, 'AUTOM8');
+				cacti_log(automation_get_pid() . ' WARNING: IP address \'' . $device['ip_address'] . '\' is not a valid IP address.',
+					false,
+					'AUTOM8');
 
 				markIPDone($device['ip_address'], $network_id);
 
@@ -947,7 +963,9 @@ function discoverDevices(int $network_id, int $thread) : bool {
 		}
 	}
 
-	cacti_log(automation_get_pid() . ' Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph . ' Graphs Added to Cacti', true, 'AUTOM8');
+	cacti_log(automation_get_pid() . ' Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph . ' Graphs Added to Cacti',
+		true,
+		'AUTOM8');
 
 	return true;
 }
@@ -1106,7 +1124,9 @@ function reportNetworkStatus(int $network_id, array $old_devices) : bool {
 					$admin_user = read_config_option('admin_user');
 
 					if ($admin_user == '') {
-						cacti_log('WARNING: Unable to send Automation Notification Email.  No Primary Admin User Account specified.', false, 'POLLER');
+						cacti_log('WARNING: Unable to send Automation Notification Email.  No Primary Admin User Account specified.',
+							false,
+							'POLLER');
 
 						return false;
 					}
@@ -1117,13 +1137,17 @@ function reportNetworkStatus(int $network_id, array $old_devices) : bool {
 						[$admin_user]);
 
 					if (!cacti_sizeof($details)) {
-						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not exist.', false, 'POLLER');
+						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not exist.',
+							false,
+							'POLLER');
 
 						return false;
 					}
 
 					if ($details['notification_email'] == '') {
-						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not have an Email Address.', false, 'POLLER');
+						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not have an Email Address.',
+							false,
+							'POLLER');
 
 						return false;
 					}
@@ -1232,7 +1256,9 @@ function reportNetworkStatus(int $network_id, array $old_devices) : bool {
 			);
 
 			if (strlen($error)) {
-				cacti_log("WARNING: Automation had problems sending to '$email' for $status.  The error was '$error'", false, 'AUTOM8');
+				cacti_log("WARNING: Automation had problems sending to '$email' for $status.  The error was '$error'",
+					false,
+					'AUTOM8');
 			} else {
 				cacti_log("NOTICE: Email Notification Sent to '$email' for $status.", false, 'AUTOM8');
 			}

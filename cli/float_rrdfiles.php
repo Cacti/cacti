@@ -197,7 +197,11 @@ if (!is_numeric($end_time)) {
 
 // validate the start and end times are sane
 if ($start_time >= $end_time) {
-	printf('ERROR: The Start Time \'%s\' is equal or grater to the End Time \'%s\' is not a valid date/time' . PHP_EOL, date('Y-m-d H:i:s', (int) $start_time), date('Y-m-d H:i:s', $end_time));
+	printf('ERROR: The Start Time \'%s\' is equal or grater to the End Time \'%s\' is not a valid date/time' . PHP_EOL,
+		date('Y-m-d H:i:s',
+			(int) $start_time),
+		date('Y-m-d H:i:s',
+			$end_time));
 
 	exit(1);
 }
@@ -268,7 +272,16 @@ if (!$forcerun) {
 // Collect data as determined by the type
 switch ($type) {
 	case 'rmaster':
-		float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $local_graph_ids, $threads, $step, $start_time, $end_time);
+		float_master_handler($forcerun,
+			$resume,
+			$host_id,
+			$host_template_id,
+			$graph_template_id,
+			$local_graph_ids,
+			$threads,
+			$step,
+			$start_time,
+			$end_time);
 
 		unregister_process('rfloat', 'rmaster', 0);
 
@@ -415,9 +428,28 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 						} elseif ($prev_data != '') {
 							if ($seebug) {
 								if ($step !== false) {
-									is_resource($lf) && fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s, Step:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time, $step));
+									is_resource($lf) && fwrite($lf,
+										sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s, Step:%s' . PHP_EOL,
+											date('Y-m-d H:i:s',
+												$timestamp),
+											date('Y-m-d H:i:s',
+												$start_time),
+											date('Y-m-d H:i:s',
+												$end_time),
+											$granularity,
+											$delta_time,
+											$step));
 								} else {
-									is_resource($lf) && fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									is_resource($lf) && fwrite($lf,
+										sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL,
+											date('Y-m-d H:i:s',
+												$timestamp),
+											date('Y-m-d H:i:s',
+												$start_time),
+											date('Y-m-d H:i:s',
+												$end_time),
+											$granularity,
+											$delta_time));
 								}
 							}
 
@@ -429,14 +461,36 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 								$nline = $db_prefix . implode(' ', $parts) . ' ' . $prev_data . PHP_EOL;
 
 								if ($seebug) {
-									is_resource($lf) && fwrite($lf, sprintf('Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
-									is_resource($lf) && fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\nNewLine: %s\n\n", trim($prev_line), trim($line), trim($nline)));
+									is_resource($lf) && fwrite($lf,
+										sprintf('Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL,
+											date('Y-m-d H:i:s',
+												$timestamp),
+											date('Y-m-d H:i:s',
+												$start_time),
+											date('Y-m-d H:i:s',
+												$end_time),
+											$granularity,
+											$delta_time));
+									is_resource($lf) && fwrite($lf,
+										sprintf("PreLine: %s\nOldLine: %s\nNewLine: %s\n\n",
+											trim($prev_line),
+											trim($line),
+											trim($nline)));
 								}
 
 								$line = $nline;
 							} else {
 								if ($seebug) {
-									is_resource($lf) && fwrite($lf, sprintf('Not Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									is_resource($lf) && fwrite($lf,
+										sprintf('Not Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL,
+											date('Y-m-d H:i:s',
+												$timestamp),
+											date('Y-m-d H:i:s',
+												$start_time),
+											date('Y-m-d H:i:s',
+												$end_time),
+											$granularity,
+											$delta_time));
 									is_resource($lf) && fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\n\n", trim($prev_line), trim($line)));
 								}
 
@@ -478,7 +532,11 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 
 					return true;
 				} else {
-					cacti_log(sprintf('WARNING: Range float FAILED for RRDfile %s.  Message is %s', $rrd_path, $response), false, 'RFLOAT');
+					cacti_log(sprintf('WARNING: Range float FAILED for RRDfile %s.  Message is %s',
+						$rrd_path,
+						$response),
+						false,
+						'RFLOAT');
 
 					return false;
 				}
@@ -583,7 +641,8 @@ function float_master_handler(bool $forcerun, bool $resume, int $host_id, int $h
 		return false;
 	}
 
-	$rrdfiles_per_process = ceil(db_fetch_cell_prepared('SELECT COUNT(*)/? FROM poller_float_rrdfiles_not_done', [$threads]));
+	$rrdfiles_per_process = ceil(db_fetch_cell_prepared('SELECT COUNT(*)/? FROM poller_float_rrdfiles_not_done',
+		[$threads]));
 
 	print "There are $threads and $rrdfiles_per_process RRDfiles to process per thread" . PHP_EOL;
 
@@ -640,9 +699,15 @@ function float_launch_child(int $thread_id, mixed $step, int $start_time, int $e
 
 	float_debug(sprintf('Launching Float Data Process Number %s for Type %s', $thread_id, 'child'));
 
-	cacti_log(sprintf('NOTE: Launching Float Data Number %s for Type %s', $thread_id, 'child'), false, 'RFLOAT', POLLER_VERBOSITY_MEDIUM);
+	cacti_log(sprintf('NOTE: Launching Float Data Number %s for Type %s',
+		$thread_id,
+		'child'),
+		false,
+		'RFLOAT',
+		POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step : '') . ($seebug ? ' --debug' : ''));
+	exec_background($php_binary,
+		CACTI_PATH_CLI . "/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step : '') . ($seebug ? ' --debug' : ''));
 }
 
 /**
@@ -722,7 +787,11 @@ function float_kill_running_processes() : void {
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running((int) $p['pid'])) {
-				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'RFLOAT');
+				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.',
+					ucfirst($p['taskname']),
+					$p['pid']),
+					false,
+					'RFLOAT');
 
 				cacti_process_kill((int) $p['pid'], SIGTERM, 'RFLOAT');
 			}

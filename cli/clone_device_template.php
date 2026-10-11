@@ -225,7 +225,12 @@ if (cacti_sizeof($parms)) {
 	printf('---------------------------------------------------------------' . PHP_EOL);
 
 	if ($template_id) {
-		$output = api_clone_device_template_check_for_errors($template_id, $template_name, $include_gt, $clone_gt, $include_dq, $clone_dq,
+		$output = api_clone_device_template_check_for_errors($template_id,
+			$template_name,
+			$include_gt,
+			$clone_gt,
+			$include_dq,
+			$clone_dq,
 			$include_dt, $clone_dt, $suffix, $clone_xml, $clone_script);
 	} else {
 		$output['errors'][] = sprintf('FATAL: You must specify a Device Template ID to continue!');

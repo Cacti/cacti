@@ -159,7 +159,12 @@ $stats = device_recovery_sweep();
 $end = microtime(true);
 
 if ($stats['devices'] > 0) {
-	cacti_log(sprintf('MAINT RECOVERY STATS: Time:%0.2f Checks:%s Recovered:%s', $stats['sweeptime'], $stats['devices'], $stats['recovered']), false, 'SYSTEM');
+	cacti_log(sprintf('MAINT RECOVERY STATS: Time:%0.2f Checks:%s Recovered:%s',
+		$stats['sweeptime'],
+		$stats['devices'],
+		$stats['recovered']),
+		false,
+		'SYSTEM');
 }
 
 cacti_log(sprintf('MAINT TOTAL STATS: Time:%0.2f', $end - $start), false, 'SYSTEM');
@@ -290,8 +295,17 @@ function device_recovery_sweep() : array {
 					$ping->host = $thost;
 					$ping->port = $thost['ping_port'];
 
-					if ($ping->ping($thost['availability_method'], $thost['ping_method'], $thost['ping_timeout'], $thost['ping_retries'])) {
-						cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' brought UP with Options Set [%s]', microtime(true) - $start, $thost['id'], $thost['hostname'], $names[$o['snmp_id']]), true, 'SYSTEM');
+					if ($ping->ping($thost['availability_method'],
+						$thost['ping_method'],
+						$thost['ping_timeout'],
+						$thost['ping_retries'])) {
+						cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' brought UP with Options Set [%s]',
+							microtime(true) - $start,
+							$thost['id'],
+							$thost['hostname'],
+							$names[$o['snmp_id']]),
+							true,
+							'SYSTEM');
 
 						$sql        = 'UPDATE host SET ';
 						$sql_params = [];
@@ -314,7 +328,12 @@ function device_recovery_sweep() : array {
 				}
 
 				if (!$device_up && isset($thost['id'])) {
-					cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' remains Down. No matching Options Sets.', microtime(true) - $start, $thost['id'], $thost['hostname']), true, 'SYSTEM');
+					cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' remains Down. No matching Options Sets.',
+						microtime(true) - $start,
+						$thost['id'],
+						$thost['hostname']),
+						true,
+						'SYSTEM');
 					db_execute_prepared('UPDATE host SET status_options_date = NOW() WHERE id = ?', [$thost['id']]);
 				}
 			}
@@ -516,7 +535,10 @@ function rrdfile_purge(bool $force) : void {
 
 		$poller_end = microtime(true);
 		set_config_option('rrdcleaner_last_run_time', time());
-		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
+		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s',
+			($poller_end - $poller_start),
+			$purged,
+			$archived);
 		cacti_log($string, true, 'SYSTEM');
 	} else {
 		maint_debug('No RRDfiles scheduled for arching or removal');
@@ -609,7 +631,11 @@ function logrotate_rotatenow() : void {
 
 	// record the start time
 	$poller_end = microtime(true);
-	$string     = sprintf('LOGMAINT STATS: Time:%4.4f, Rotated:%d, Removed:%d, Days Retained:%d', ($poller_end - $poller_start), $rotated, $cleaned, $days);
+	$string     = sprintf('LOGMAINT STATS: Time:%4.4f, Rotated:%d, Removed:%d, Days Retained:%d',
+		($poller_end - $poller_start),
+		$rotated,
+		$cleaned,
+		$days);
 
 	cacti_log($string, true, 'SYSTEM');
 }
@@ -668,13 +694,19 @@ function logrotate_file_rotate(string $name, string $log, object $date) : int {
 
 				return 1;
 			} else {
-				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . $name . ' Log "' . basename($log) . '" to "' . basename($log) . '-' . $ext . '"', true, 'MAINT');
+				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . $name . ' Log "' . basename($log) . '" to "' . basename($log) . '-' . $ext . '"',
+					true,
+					'MAINT');
 			}
 		} else {
-			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log directory : ' . basename($log), true, 'MAINT');
+			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log directory : ' . basename($log),
+				true,
+				'MAINT');
 		}
 	} else {
-		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log as directory or file are not writable : ' . $log, true, 'MAINT');
+		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log as directory or file are not writable : ' . $log,
+			true,
+			'MAINT');
 	}
 
 	return 0;
@@ -730,7 +762,10 @@ function logrotate_file_clean(string $name, string $log, object $date, int $rota
 									cacti_log('Cacti Log Rotation - ERROR: Can not purge ' . $name . ' Log : ' . $d, true, 'MAINT');
 								}
 							} else {
-								cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
+								cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping ' . $name . ' Log : ' . $d,
+									true,
+									'MAINT',
+									POLLER_VERBOSITY_HIGH);
 							}
 						}
 					}
@@ -738,7 +773,10 @@ function logrotate_file_clean(string $name, string $log, object $date, int $rota
 			}
 
 			if ($matches) {
-				cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_DEBUG);
+				cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring ' . $name . ' Log : ' . $d,
+					true,
+					'MAINT',
+					POLLER_VERBOSITY_DEBUG);
 			}
 		}
 	}
@@ -886,7 +924,9 @@ function remove_files(array $file_array) : void {
 					if (rrdtool_execute('archive ' . $file['name'], false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
 						maint_debug("Moved: {file['name']} to: RRDproxy Archive");
 					} else {
-						cacti_log("WARNING RRDfile Maintenance is unable to move {$file['name']} to the RRDproxy Archive!", true, 'MAINT');
+						cacti_log("WARNING RRDfile Maintenance is unable to move {$file['name']} to the RRDproxy Archive!",
+							true,
+							'MAINT');
 					}
 
 					$archived++;
@@ -1088,7 +1128,9 @@ function phpversion_check(bool $force = false) : void {
 	$phpbad_ver = version_compare(PHP_VERSION,'7.4','<');
 
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {
-		cacti_log('WARNING: PHP Version "' . PHP_VERSION . '"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches', false, 'CACTI');
+		cacti_log('WARNING: PHP Version "' . PHP_VERSION . '"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches',
+			false,
+			'CACTI');
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', [$now]);
 	}
 }
@@ -1112,25 +1154,51 @@ function cpu_cores_check() : void {
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_count, $cores]);
 	} elseif ($cores != $last_count && $last_notify < ($now - 86400)) {
-		cacti_log('WARNING: CPU cores changed. Maybe you should adjust the Poller settings (Processes and threads)', true, 'POLLER');
-		admin_email(__('Cacti System Warning'), __('WARNING: CPU cores changed for poller %d with name %s. Maybe you should adjust the Poller settings (Processes and threads)', POLLER_ID, $poller_settings['name']));
+		cacti_log('WARNING: CPU cores changed. Maybe you should adjust the Poller settings (Processes and threads)',
+			true,
+			'POLLER');
+		admin_email(__('Cacti System Warning'),
+			__('WARNING: CPU cores changed for poller %d with name %s. Maybe you should adjust the Poller settings (Processes and threads)',
+				POLLER_ID,
+				$poller_settings['name']));
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_count, $cores]);
 	}
 
-	if ($poller_type == 1 && $poller_settings['processes'] < 2 && $cores > $poller_settings['processes'] && $last_notify < ($now - 86400)) {
-		cacti_log('WARNING: Default setting number of processes. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)', true, 'POLLER');
-		admin_email(__('Cacti System Warning'), __('WARNING: Default number of processes on poller %d with name %s. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)', POLLER_ID, $poller_settings['name']));
+	if ($poller_type == 1 &&
+		$poller_settings['processes'] < 2 &&
+		$cores > $poller_settings['processes'] &&
+		$last_notify < ($now - 86400)) {
+		cacti_log('WARNING: Default setting number of processes. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)',
+			true,
+			'POLLER');
+		admin_email(__('Cacti System Warning'),
+			__('WARNING: Default number of processes on poller %d with name %s. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)',
+				POLLER_ID,
+				$poller_settings['name']));
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
-	} elseif ($poller_type == 2 && $poller_settings['threads'] <= 2 && $cores > $poller_settings['processes'] && $last_notify < ($now - 86400)) {
-		cacti_log('WARNING: Default setting number of processes/threads. It looks like this spine poller uses default settings. To achieve optimal performance, change poller settings (Processes and threads)', true, 'POLLER');
-		admin_email(__('Cacti System Warning'), __('WARNING: Default number of processes/threads on poller %d with name %s. It looks like this spine poller uses default settings. To achieve optimal performance, change poller settings (Processes and threads)', POLLER_ID, $poller_settings['name']));
+	} elseif ($poller_type == 2 &&
+		$poller_settings['threads'] <= 2 &&
+		$cores > $poller_settings['processes'] &&
+		$last_notify < ($now - 86400)) {
+		cacti_log('WARNING: Default setting number of processes/threads. It looks like this spine poller uses default settings. To achieve optimal performance, change poller settings (Processes and threads)',
+			true,
+			'POLLER');
+		admin_email(__('Cacti System Warning'),
+			__('WARNING: Default number of processes/threads on poller %d with name %s. It looks like this spine poller uses default settings. To achieve optimal performance, change poller settings (Processes and threads)',
+				POLLER_ID,
+				$poller_settings['name']));
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
 	}
 
 	if ($poller_type == 1 && ($cores * 2) < $poller_settings['processes'] && $last_notify < ($now - 86400)) {
-		cacti_log('WARNING: Number of CMD poller processes is too high. To achieve optimal performance, change poller settings (Processes)', true, 'POLLER');
-		admin_email(__('Cacti System Warning'), __('WARNING: Number of CMD poller processes on poller %d with name %s is too high. To achieve optimal performance, change poller settings (Processes)', POLLER_ID, $poller_settings['name']));
+		cacti_log('WARNING: Number of CMD poller processes is too high. To achieve optimal performance, change poller settings (Processes)',
+			true,
+			'POLLER');
+		admin_email(__('Cacti System Warning'),
+			__('WARNING: Number of CMD poller processes on poller %d with name %s is too high. To achieve optimal performance, change poller settings (Processes)',
+				POLLER_ID,
+				$poller_settings['name']));
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
 	}
 }

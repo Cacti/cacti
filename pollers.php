@@ -322,19 +322,32 @@ function form_save() : void {
 		$save['notes']     = CactiValidator::validateInput(gnrv('notes'), 'notes', []);
 
 		// Process settings
-		$save['processes'] = CactiValidator::validateInput(gnrv('processes'), 'processes', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
-		$save['threads']   = CactiValidator::validateInput(gnrv('threads'), 'threads', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
+		$save['processes'] = CactiValidator::validateInput(gnrv('processes'),
+			'processes',
+			[new Assert\NotBlank(),
+			new Assert\Regex(pattern: '/^[0-9]+$/')]);
+		$save['threads']   = CactiValidator::validateInput(gnrv('threads'),
+			'threads',
+			[new Assert\NotBlank(),
+			new Assert\Regex(pattern: '/^[0-9]+$/')]);
 
 		if ($save['id'] != 1) {
-			$save['sync_interval'] = CactiValidator::validateInput(gnrv('sync_interval'), 'sync_interval', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
+			$save['sync_interval'] = CactiValidator::validateInput(gnrv('sync_interval'),
+				'sync_interval',
+				[new Assert\NotBlank(),
+				new Assert\Regex(pattern: '/^[0-9]+$/')]);
 
 			// Database settings
 			$save['dbdefault']             = CactiValidator::validateInput(gnrv('dbdefault'), 'dbdefault', []);
 			$save['dbhost']                = CactiValidator::validateInput(gnrv('dbhost'),    'dbhost',    []);
 			$save['dbuser']                = CactiValidator::validateInput(gnrv('dbuser'),    'dbuser',    []);
 			$save['dbpass']                = CactiValidator::validateInput(gnrv('dbpass'),    'dbpass',    []);
-			$save['dbport']                = CactiValidator::validateInput(gnrv('dbport'),    'dbport',    [new Assert\Regex(pattern: '/^[0-9]+$/')]);
-			$save['dbretries']             = CactiValidator::validateInput(gnrv('dbretries'), 'dbretries', [new Assert\Regex(pattern: '/^[0-9]+$/')]);
+			$save['dbport']                = CactiValidator::validateInput(gnrv('dbport'),
+				'dbport',
+				[new Assert\Regex(pattern: '/^[0-9]+$/')]);
+			$save['dbretries']             = CactiValidator::validateInput(gnrv('dbretries'),
+				'dbretries',
+				[new Assert\Regex(pattern: '/^[0-9]+$/')]);
 			$save['dbssl']                 = isrv('dbssl') ? 'on' : '';
 			$save['dbsslkey']              = CactiValidator::validateInput(gnrv('dbsslkey'),  'dbsslkey',  []);
 			$save['dbsslcert']             = CactiValidator::validateInput(gnrv('dbsslcert'), 'dbsslcert', []);
@@ -347,13 +360,19 @@ function form_save() : void {
 		$error = false;
 
 		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
-			raise_message('dupe_hostname', __esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+			raise_message('dupe_hostname',
+				__esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.',
+					$save['hostname']),
+				MESSAGE_LEVEL_ERROR);
 			$error = true;
 		}
 
 		if (isset($save['dbhost'])) {
 			if (poller_check_duplicate_poller_id($save['id'], $save['dbhost'], 'dbhost')) {
-				raise_message('dupe_dbhost', __esc('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+				raise_message('dupe_dbhost',
+					__esc('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.',
+						$save['hostname']),
+					MESSAGE_LEVEL_ERROR);
 				$error = true;
 			}
 		}
@@ -497,15 +516,24 @@ function form_actions() : void {
 				db_execute('UPDATE poller_output_realtime SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
 				db_execute('UPDATE poller_time SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
 
-				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' deleted by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
+				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',',
+					$selected_items) . ' deleted by user ' . $_SESSION[SESS_USER_ID],
+					false,
+					'WEBUI');
 			} elseif (grv('drp_action') == POLLER_DISABLE) { // disable
 				db_execute('UPDATE poller SET disabled="on" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' disabled by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
+				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',',
+					$selected_items) . ' disabled by user ' . $_SESSION[SESS_USER_ID],
+					false,
+					'WEBUI');
 			} elseif (grv('drp_action') == POLLER_ENABLE) { // enable
 				db_execute('UPDATE poller SET disabled="" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
+				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',',
+					$selected_items) . ' enabled by user ' . $_SESSION[SESS_USER_ID],
+					false,
+					'WEBUI');
 			} elseif (grv('drp_action') == POLLER_RESYNC || grv('drp_action') == POLLER_AUTHSYNC) { // full or auth sync
 				cacti_session_close();
 
@@ -563,9 +591,15 @@ function form_actions() : void {
 				cacti_session_start();
 
 				if (cacti_sizeof($failed)) {
-					cacti_log('WARNING: Some Selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION[SESS_USER_ID]) . ', Successful/Failed[' . cacti_sizeof($success) . '/' . cacti_sizeof($failed) . '].  See log for details.', false, 'WEBUI');
+					cacti_log('WARNING: Some Selected Remote Data Collectors in [' . implode(', ',
+						$ids) . '] failed synchronization by user ' . get_username($_SESSION[SESS_USER_ID]) . ', Successful/Failed[' . cacti_sizeof($success) . '/' . cacti_sizeof($failed) . '].  See log for details.',
+						false,
+						'WEBUI');
 				} else {
-					cacti_log('NOTE: All Selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
+					cacti_log('NOTE: All Selected Remote Data Collectors in [' . implode(', ',
+						$ids) . '] synchronized correctly by user ' . get_username($_SESSION[SESS_USER_ID]),
+						false,
+						'WEBUI');
 				}
 			} elseif (grv('drp_action') == '5') { // clear statistics
 				foreach ($selected_items as $item) {
@@ -948,7 +982,15 @@ function pollers() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('pollers.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Pollers'), 'page', 'main');
+	$nav = html_nav_bar('pollers.php?filter=' . grv('filter'),
+		MAX_DISPLAY_PAGES,
+		grv('page'),
+		$rows,
+		$total_rows,
+		5,
+		__('Pollers'),
+		'page',
+		'main');
 
 	form_start('pollers.php', 'chk');
 
@@ -1071,7 +1113,10 @@ function pollers() : void {
 
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 
-			form_selectable_cell(filter_value($poller['name'], grv('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
+			form_selectable_cell(filter_value($poller['name'],
+				grv('filter'),
+				'pollers.php?action=edit&id=' . $poller['id']),
+				$poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
 			form_selectable_ecell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');

@@ -209,7 +209,8 @@ function get_poller_list() : mixed {
  * @return array List of devices on the poller
  */
 function get_devices_by_poller(int $poller_id) : mixed {
-	return db_fetch_assoc_prepared('SELECT id, hostname, description, poller_id FROM host WHERE poller_id = ?', [$poller_id]);
+	return db_fetch_assoc_prepared('SELECT id, hostname, description, poller_id FROM host WHERE poller_id = ?',
+		[$poller_id]);
 }
 
 /**

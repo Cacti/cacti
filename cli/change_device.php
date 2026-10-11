@@ -415,8 +415,18 @@ $host_id = api_device_save($device_id, $host['host_template_id'], $host['descrip
 	$host['snmp_port'], $host['snmp_timeout'], $host['disabled'], $host['availability_method'], $host['ping_method'],
 	$host['ping_port'], $host['ping_timeout'], $host['ping_retries'], $host['notes'],
 	$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
-	$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['max_oids'], $host['device_threads'],
-	$host['poller_id'], $host['site_id'], $host['external_id'], $host['location'], $host['bulk_walk_size'], $host['snmp_options'], $host['snmp_retries']);
+	$host['snmp_priv_protocol'],
+	$host['snmp_context'],
+	$host['snmp_engine_id'],
+	$host['max_oids'],
+	$host['device_threads'],
+	$host['poller_id'],
+	$host['site_id'],
+	$host['external_id'],
+	$host['location'],
+	$host['bulk_walk_size'],
+	$host['snmp_options'],
+	$host['snmp_retries']);
 
 if (is_error_message() || $host_id != $device_id) {
 	print "ERROR: Failed to change this device ($device_id-$host_id)" . PHP_EOL;

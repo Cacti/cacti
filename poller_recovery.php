@@ -93,7 +93,11 @@ function recovery_delete_acknowledged_rows(array $rows, mixed $conn) : bool {
 			$params[]  = $row['time'];
 		}
 
-		if (db_execute_prepared('DELETE FROM poller_output_boost WHERE ' . implode(' OR ', $clauses), $params, true, $conn) === false) {
+		if (db_execute_prepared('DELETE FROM poller_output_boost WHERE ' . implode(' OR ',
+			$clauses),
+			$params,
+			true,
+			$conn) === false) {
 			return false;
 		}
 	}
@@ -120,13 +124,17 @@ function recovery_transfer_rows(array $rows, mixed $remote_conn, mixed $local_co
 	cacti_log('RECOVERY: Writing ' . $record_count . ' records to main.', false, 'POLLER');
 
 	if (!boost_flush_output_batch($sql_array, $remote_conn)) {
-		cacti_log('RECOVERY ERROR: Main collector did not acknowledge the Boost batch; retaining local rows.', false, 'POLLER');
+		cacti_log('RECOVERY ERROR: Main collector did not acknowledge the Boost batch; retaining local rows.',
+			false,
+			'POLLER');
 
 		return false;
 	}
 
 	if (!recovery_delete_acknowledged_rows($rows, $local_conn)) {
-		cacti_log('RECOVERY ERROR: Unable to remove acknowledged local Boost rows; they will be retried idempotently.', false, 'POLLER');
+		cacti_log('RECOVERY ERROR: Unable to remove acknowledged local Boost rows; they will be retried idempotently.',
+			false,
+			'POLLER');
 
 		return false;
 	}
@@ -319,7 +327,9 @@ if ($run) {
 		WHERE id= ?', [$poller_id], false, $remote_db_cnn_id);
 } else {
 	debug('Recovery process still running, exiting');
-	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'POLLER');
+	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid,
+		false,
+		'POLLER');
 
 	exit(1);
 }

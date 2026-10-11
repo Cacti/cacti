@@ -241,7 +241,12 @@ switch ($type) {
 			WHERE h.disabled='' " . $sql_where,
 			$sql_params);
 
-		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d', $thread_id, $hosts_per_process, ($thread_id - 1) * $hosts_per_process), true, 'PUSHOUT');
+		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d',
+			$thread_id,
+			$hosts_per_process,
+			($thread_id - 1) * $hosts_per_process),
+			true,
+			'PUSHOUT');
 
 		foreach ($rows as $row) {
 			if (!$debug) {
@@ -266,7 +271,11 @@ pushout_debug('Polling Ending');
 
 exit(0);
 
-function pushout_master_handler(bool $forcerun, int $host_id, int $host_template_id, int $data_template_id, int $threads) : bool {
+function pushout_master_handler(bool $forcerun,
+	int $host_id,
+	int $host_template_id,
+	int $data_template_id,
+	int $threads) : bool {
 	global $type;
 
 	$sql_where  = '';
@@ -343,9 +352,15 @@ function pushout_launch_child(int $thread_id, int $threads) : void {
 
 	pushout_debug(sprintf('Launching Rebuild poller cache Process Number %s for Type %s', $thread_id, 'child'));
 
-	cacti_log(sprintf('NOTE: Launching Rebuild poller cache Number %s for Type %s', $thread_id, 'child'), true, 'PUSHOUT', POLLER_VERBOSITY_MEDIUM);
+	cacti_log(sprintf('NOTE: Launching Rebuild poller cache Number %s for Type %s',
+		$thread_id,
+		'child'),
+		true,
+		'PUSHOUT',
+		POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_template_id ? " --host-template-id=$host_template_id" : '') . ($data_template_id ? " --data-template-id=$data_template_id" : ''));
+	exec_background($php_binary,
+		CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_template_id ? " --host-template-id=$host_template_id" : '') . ($data_template_id ? " --data-template-id=$data_template_id" : ''));
 }
 
 /**
@@ -425,7 +440,11 @@ function pushout_kill_running_processes() : void {
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running((int) $p['pid'])) {
-				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'PUSHOUT');
+				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.',
+					ucfirst($p['taskname']),
+					$p['pid']),
+					false,
+					'PUSHOUT');
 
 				cacti_process_kill((int) $p['pid'], SIGTERM, 'PUSHOUT');
 			}

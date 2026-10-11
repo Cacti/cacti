@@ -179,7 +179,9 @@ if (cacti_sizeof($parms)) {
 			object_cache_update_totals('diff');
 		}
 
-		api_plugin_hook_function('add_graph_template_to_host', ['host_id' => $host_id, 'graph_template_id' => $graph_template_id]);
+		api_plugin_hook_function('add_graph_template_to_host',
+			['host_id'          => $host_id,
+			'graph_template_id' => $graph_template_id]);
 	}
 
 	if (is_error_message()) {

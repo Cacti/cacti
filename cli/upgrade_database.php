@@ -206,7 +206,8 @@ function exit_error(string $text) : void {
 }
 
 function exit_version_error(string $old_cacti_version, string $text) : void {
-	exit_error($text . PHP_EOL . '  - from: v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL . '      to: v' . CACTI_VERSION_BRIEF_FULL);
+	exit_error($text . PHP_EOL . '  - from: v' . get_cacti_version_text(false,
+		$old_cacti_version) . PHP_EOL . '      to: v' . CACTI_VERSION_BRIEF_FULL);
 }
 
 function db_install_errors(string $cacti_version) : int {
@@ -238,7 +239,19 @@ function db_install_errors(string $cacti_version) : int {
 
 					$sep1 = '################################';
 					$sep2 = '+------------------------------+';
-					printf('%s%s%s%-10s   -   %s%s%s%s%s%s%s%s', PHP_EOL, $sep1, PHP_EOL, $db_status, $error, PHP_EOL, $sep2, PHP_EOL, clean_up_lines($sql), PHP_EOL, $sep1, PHP_EOL);
+					printf('%s%s%s%-10s   -   %s%s%s%s%s%s%s%s',
+						PHP_EOL,
+						$sep1,
+						PHP_EOL,
+						$db_status,
+						$error,
+						PHP_EOL,
+						$sep2,
+						PHP_EOL,
+						clean_up_lines($sql),
+						PHP_EOL,
+						$sep1,
+						PHP_EOL);
 				}
 			}
 		}

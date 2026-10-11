@@ -136,7 +136,9 @@ print_separator(true);
 if ($total_errors == 0 && $total_repairs == 0) { // @phpstan-ignore booleanAnd.alwaysTrue
 	printf('NOTE: Found 0 Cacti database issues to repair.' . PHP_EOL . PHP_EOL);
 } elseif (!$force) {
-	printf('WARNING: Found %s problems in your Cacti database and automatically repaired %s of them.' . PHP_EOL, $total_errors, $total_repairs);
+	printf('WARNING: Found %s problems in your Cacti database and automatically repaired %s of them.' . PHP_EOL,
+		$total_errors,
+		$total_repairs);
 	printf('WARNING: Using the \'--force\' option will either repair, remove or ignore any additional issues' . PHP_EOL);
 	printf('WARNING: if they can not be repaired.' . PHP_EOL . PHP_EOL);
 	printf('WARNING: Because these changes can not be reversed, make sure you make a Cacti backup first.' . PHP_EOL . PHP_EOL);
@@ -182,7 +184,8 @@ function table_structural_repair() : void {
 		}
 	} else {
 		printf('NOTE: Skipping table physical repair' . PHP_EOL);
-		printf('NOTE: %s Cacti base tables would be checked/repaired if using --tables option.' . PHP_EOL, cacti_sizeof($base_tables));
+		printf('NOTE: %s Cacti base tables would be checked/repaired if using --tables option.' . PHP_EOL,
+			cacti_sizeof($base_tables));
 	}
 }
 
@@ -585,7 +588,9 @@ function detailed_checks() : void {
 			}
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . '%s Graphs from %s Graph Templates that had invalid item counts.' . PHP_EOL, $total_graphs, cacti_sizeof($rows));
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . '%s Graphs from %s Graph Templates that had invalid item counts.' . PHP_EOL,
+			$total_graphs,
+			cacti_sizeof($rows));
 	} else {
 		printf('NOTE: Found 0 Graph Templates whose Graphs had incorrect item counts.' . PHP_EOL);
 	}
@@ -762,7 +767,9 @@ function snmp_repairs() : void {
 
 		if (cacti_sizeof($errors)) {
 			if ($force) {
-				printf('NOTE: Found and repaired %s Device SNMP issues in %s Devices.' . PHP_EOL, $snmp_errors, cacti_sizeof($errors));
+				printf('NOTE: Found and repaired %s Device SNMP issues in %s Devices.' . PHP_EOL,
+					$snmp_errors,
+					cacti_sizeof($errors));
 			} else {
 				printf('NOTE: Not repairing %s Device SNMP issues in %s Devices.' . PHP_EOL, $snmp_errors, cacti_sizeof($errors));
 			}
@@ -863,7 +870,9 @@ function snmp_index_repairs() : void {
 			}
 		}
 
-		printf('NOTE: Found and repaired %s of %s Data Sources entries with invalid Device information.' . PHP_EOL, $fixes, cacti_sizeof($entries));
+		printf('NOTE: Found and repaired %s of %s Data Sources entries with invalid Device information.' . PHP_EOL,
+			$fixes,
+			cacti_sizeof($entries));
 
 		$total_errors  += $fixes;
 		$total_repairs += $fixes;
@@ -955,7 +964,8 @@ function snmp_index_repairs() : void {
 		$total_errors += cacti_sizeof($broken_data_rows);
 
 		if ($force) {
-			printf('NOTE: Attempting to repair %s Data Query indexes from other Cacti tables.' . PHP_EOL, $broken_local_data_ids);
+			printf('NOTE: Attempting to repair %s Data Query indexes from other Cacti tables.' . PHP_EOL,
+				$broken_local_data_ids);
 
 			$fixes = 0;
 
@@ -1047,9 +1057,12 @@ function snmp_index_repairs() : void {
 
 			$total_repairs += $fixes;
 
-			printf('NOTE: Found and repaired %s of %s Data Query Index entries in (Pass 1).' . PHP_EOL, $fixes, cacti_sizeof($broken_data_rows));
+			printf('NOTE: Found and repaired %s of %s Data Query Index entries in (Pass 1).' . PHP_EOL,
+				$fixes,
+				cacti_sizeof($broken_data_rows));
 		} else {
-			printf('NOTE: Skipping attempt to repair %s Data Query indexes in (Pass 1).' . PHP_EOL, cacti_sizeof($broken_data_rows));
+			printf('NOTE: Skipping attempt to repair %s Data Query indexes in (Pass 1).' . PHP_EOL,
+				cacti_sizeof($broken_data_rows));
 		}
 	} else {
 		printf('NOTE: Found no damaged Data Query indexes in (Pass 1).' . PHP_EOL);
@@ -1218,7 +1231,8 @@ function snmp_index_repairs() : void {
 	$total_errors += cacti_sizeof($local_data_ids);
 
 	if (cacti_sizeof($local_data_ids)) {
-		printf('NOTE: Found %s Devices with orphaned Data Sources that may not be orphaned.' . PHP_EOL, cacti_sizeof($local_data_ids));
+		printf('NOTE: Found %s Devices with orphaned Data Sources that may not be orphaned.' . PHP_EOL,
+			cacti_sizeof($local_data_ids));
 
 		if ($force) {
 			printf('NOTE: Attempting to confirm and repair Data Sources are in fact not orphaned.' . PHP_EOL);
@@ -1249,7 +1263,9 @@ function snmp_index_repairs() : void {
 
 			$total_repairs += $fixes;
 
-			printf('NOTE: Found and repaired %s of %s Data Sources with invalid orphan status.' . PHP_EOL, $fixes, cacti_sizeof($local_data_ids));
+			printf('NOTE: Found and repaired %s of %s Data Sources with invalid orphan status.' . PHP_EOL,
+				$fixes,
+				cacti_sizeof($local_data_ids));
 		} else {
 			printf('NOTE: Skipping attempt to confirm and repair Data Sources orphan status.' . PHP_EOL);
 		}

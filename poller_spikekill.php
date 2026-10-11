@@ -167,7 +167,9 @@ function timeToRun() : bool {
 	$baselower = $basetime - 300;
 	$now       = time();
 
-	debug("LastRun:'$lastrun', Frequency:'$frequency', BaseTime:'" . date('Y-m-d H:i:s', $basetime) . "', BaseUpper:'$baseupper', BaseLower:'$baselower', Now:'" . date('Y-m-d H:i:s', $now) . "'");
+	debug("LastRun:'$lastrun', Frequency:'$frequency', BaseTime:'" . date('Y-m-d H:i:s',
+		$basetime) . "', BaseUpper:'$baseupper', BaseLower:'$baselower', Now:'" . date('Y-m-d H:i:s',
+			$now) . "'");
 
 	if ($frequency > 0 && ($now - $lastrun > $frequency)) {
 		debug("Frequency is '$frequency' Seconds");

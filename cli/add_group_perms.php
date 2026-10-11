@@ -222,7 +222,8 @@ if (cacti_sizeof($params) == 0) {
 	// TODO replace magic numbers by global constants, treat user_admin as well
 	switch ($itemType) {
 		case 1: // graph
-			if (!db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', [$itemId])) {
+			if (!db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?',
+				[$itemId])) {
 				print "ERROR: Invalid Graph item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
