@@ -1289,8 +1289,9 @@ function api_plugin_register_realm(string $plugin, string $file, string $display
 
 	foreach ($files as $tfile) {
 		$sql_where .= ($sql_where != '(' ? ' OR ' : '') .
-			' (file = ? OR file LIKE ? OR file LIKE ? OR file LIKE ?)';
-		array_push($params, $tfile, $tfile . ',%', '%,' . $tfile . ',%', '%,' . $tfile);
+			' (file = ? OR file LIKE ? ESCAPE \'!\' OR file LIKE ? ESCAPE \'!\' OR file LIKE ? ESCAPE \'!\')';
+		$literal = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $tfile);
+		array_push($params, $tfile, $literal . ',%', '%,' . $literal . ',%', '%,' . $literal);
 	}
 	$sql_where .= ')';
 
