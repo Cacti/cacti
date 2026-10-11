@@ -79,6 +79,11 @@
 	border-radius: 3px;
 }
 
+.ui-datepicker .ui-datepicker-prev-hover .ui-icon,
+.ui-datepicker .ui-datepicker-next-hover .ui-icon {
+	filter: none;
+}
+
 /* Weekday labels */
 .ui-datepicker th {
 	color: #2d2d2d;
@@ -110,7 +115,7 @@
 .ui-datepicker td.ui-datepicker-current-day a.ui-state-active {
 	background: #2da84c;
 	border: 1px solid #2da84c;
-	color: #ffffff;
+	color: #1a1a1a;
 }
 
 /* Button pane (Now / Done) */
@@ -127,7 +132,7 @@
 .ui-datepicker .ui-datepicker-buttonpane button:focus {
 	background: #2da84c;
 	border-color: #2da84c;
-	color: #ffffff;
+	color: #1a1a1a;
 }
 
 /* Timepicker addon - time sliders */

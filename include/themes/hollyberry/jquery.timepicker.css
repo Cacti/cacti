@@ -50,12 +50,12 @@
 .ui-datepicker .ui-datepicker-header.ui-widget-header {
 	background: #00a10b;
 	border: 1px solid #00a10b;
-	color: #ffffff;
+	color: #1a1a1a;
 	border-radius: 3px;
 }
 .ui-datepicker .ui-datepicker-title,
 .ui-datepicker .ui-datepicker-title select {
-	color: #ffffff;
+	color: #1a1a1a;
 }
 .ui-datepicker .ui-datepicker-title select {
 	background: #ffffff;
@@ -63,7 +63,7 @@
 	border: 1px solid #c4c4c4;
 }
 .ui-datepicker .ui-datepicker-header .ui-icon {
-	filter: brightness(0) invert(1);
+	filter: none;
 }
 
 /* Prev / next navigation */
@@ -110,7 +110,7 @@
 .ui-datepicker td.ui-datepicker-current-day a.ui-state-active {
 	background: #00a10b;
 	border: 1px solid #00a10b;
-	color: #ffffff;
+	color: #1a1a1a;
 }
 
 /* Button pane (Now / Done) */
@@ -127,7 +127,7 @@
 .ui-datepicker .ui-datepicker-buttonpane button:focus {
 	background: #00a10b;
 	border-color: #00a10b;
-	color: #ffffff;
+	color: #1a1a1a;
 }
 
 /* Timepicker addon - time sliders */

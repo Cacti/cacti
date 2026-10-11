@@ -162,6 +162,12 @@
 	border-color: #1e1e1e;
 }
 
+.ui-datepicker .ui-timepicker-div .ui-slider .ui-slider-handle:focus,
+.ui-datepicker .ui-timepicker-div .ui-slider .ui-slider-handle:focus-visible {
+	outline: 2px solid #e9f2dd;
+	outline-offset: 2px;
+}
+
 /* Editable time input */
 .ui-datepicker .ui-timepicker-div .ui_tpicker_time .ui_tpicker_time_input {
 	color: #e3e3e3;

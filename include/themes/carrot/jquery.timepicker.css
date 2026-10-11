@@ -50,12 +50,12 @@
 .ui-datepicker .ui-datepicker-header.ui-widget-header {
 	background: #d2691e;
 	border: 1px solid #d2691e;
-	color: #ffffff;
+	color: #1a1a1a;
 	border-radius: 3px;
 }
 .ui-datepicker .ui-datepicker-title,
 .ui-datepicker .ui-datepicker-title select {
-	color: #ffffff;
+	color: #1a1a1a;
 }
 .ui-datepicker .ui-datepicker-title select {
 	background: #ffffff;
@@ -63,7 +63,7 @@
 	border: 1px solid #c4c4c4;
 }
 .ui-datepicker .ui-datepicker-header .ui-icon {
-	filter: brightness(0) invert(1);
+	filter: none;
 }
 
 /* Prev / next navigation */
@@ -103,14 +103,14 @@
 .ui-datepicker td.ui-datepicker-today a.ui-state-highlight,
 .ui-datepicker td.ui-datepicker-today a {
 	background: transparent;
-	border: 1px solid #ef8a1e;
+	border: 1px solid #d2691e;
 	color: #2d2d2d;
 }
 .ui-datepicker td a.ui-state-active,
 .ui-datepicker td.ui-datepicker-current-day a.ui-state-active {
-	background: #ef8a1e;
-	border: 1px solid #ef8a1e;
-	color: #ffffff;
+	background: #d2691e;
+	border: 1px solid #d2691e;
+	color: #1a1a1a;
 }
 
 /* Button pane (Now / Done) */
@@ -125,9 +125,9 @@
 }
 .ui-datepicker .ui-datepicker-buttonpane button:hover,
 .ui-datepicker .ui-datepicker-buttonpane button:focus {
-	background: #ef8a1e;
-	border-color: #ef8a1e;
-	color: #ffffff;
+	background: #d2691e;
+	border-color: #d2691e;
+	color: #1a1a1a;
 }
 
 /* Timepicker addon - time sliders */
@@ -147,18 +147,18 @@
 	border-radius: 6px;
 }
 .ui-datepicker .ui-timepicker-div .ui-slider .ui-slider-range {
-	background: #ef8a1e;
+	background: #d2691e;
 	border-radius: 6px;
 }
 .ui-datepicker .ui-timepicker-div .ui-slider .ui-slider-handle {
-	background: #ef8a1e;
+	background: #d2691e;
 	border: 2px solid #ffffff;
 	border-radius: 50%;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 .ui-datepicker .ui-timepicker-div .ui-slider .ui-slider-handle:hover,
 .ui-datepicker .ui-timepicker-div .ui-slider .ui-slider-handle:focus {
-	background: #ff9d00;
+	background: #b85816;
 	border-color: #ffffff;
 }
 

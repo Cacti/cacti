@@ -79,6 +79,11 @@
 	border-radius: 3px;
 }
 
+.ui-datepicker .ui-datepicker-prev-hover .ui-icon,
+.ui-datepicker .ui-datepicker-next-hover .ui-icon {
+	filter: none;
+}
+
 /* Weekday labels */
 .ui-datepicker th {
 	color: #2d2d2d;
