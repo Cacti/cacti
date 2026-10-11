@@ -2062,8 +2062,6 @@ function getCactiHelp(cactiPage) {
 function responsiveResizeGraphs(initialize) {
 	var mainWidth  = getMainWidth() - 30;
 	var myColumns  = $('#columns').val();
-	$('#thumbnails').is(':checked') || $('#thumbnails').val() == 'true';
-	$('#business_hours').is(':checked') || $('#business_hours').val() == 'true';
 
 	if ($('.tableRowGraph:first').length) {
 		var graphRow = $('.tableRowGraph:first').width();
