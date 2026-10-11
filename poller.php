@@ -435,7 +435,9 @@ if ((($poller_start - $poller_lastrun - 10) > MAX_POLLER_RUNTIME) && ($poller_la
 		true,
 		'POLLER');
 	admin_email(__('Cacti System Warning'),
-		__('WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!',
+		__('WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  ' .
+			'The Poller Interval is %d seconds, with a maximum of a %d seconds, ' .
+			'but %d seconds have passed since the last poll!',
 			$task_type,
 			$poller_id,
 			$poller_interval,
@@ -719,7 +721,8 @@ while ($poller_runs_completed < $poller_runs) {
 		// The swapped-in copy inherits the engine, so only convert when it is
 		// not already MEMORY. This drops a metadata-locking ALTER from every
 		// poll cycle in the steady state.
-		if (db_fetch_cell("SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'poller_output'") != 'MEMORY') {
+		if (db_fetch_cell('SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = ' .
+			"DATABASE() AND TABLE_NAME = 'poller_output'") != 'MEMORY') {
 			db_execute('ALTER TABLE poller_output ENGINE=MEMORY');
 		}
 
@@ -1186,7 +1189,8 @@ function bad_index_check(bool $mibs) : void {
 			$devices    = explode(',', $bad_index_devices);
 			$device_str = 'Device[' . implode('], Device[', $devices) . ']';
 
-			cacti_log('WARNING: You have ' . cacti_sizeof($devices) . ' Devices with bad SNMP Indexes.  Devices: ' . $device_str . ' totalling ' . $bad_indexes . ' Data Sources.  Please Either Re-Index, Delete or Disable these Data Sources.',
+			cacti_log('WARNING: You have ' . cacti_sizeof($devices) . ' Devices with bad SNMP Indexes.  Devices: ' . $device_str . ' totalling ' . $bad_indexes . (' Data Sources.  Please Either Re-Index, Delete or Disable these Data ' .
+				'Sources.'),
 				false,
 				'POLLER');
 		}
@@ -1268,14 +1272,16 @@ function poller_enabled_check(int $poller_id) : void {
 	$should_exit = false;
 
 	if ($system_enabled == '') {
-		cacti_log('WARNING: System Polling is Disabled!  Therefore, data collection from the poller will be suspended till re-enabled.',
+		cacti_log('WARNING: System Polling is Disabled!  Therefore, data collection from ' .
+			'the poller will be suspended till re-enabled.',
 			true,
 			'SYSTEM');
 		$should_exit = true;
 	}
 
 	if ($poller_disabled == 'on') {
-		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled.  Therefore, data collection for this Poller will be suspended till it\'s re-enabled.',
+		cacti_log('WARNING: Poller ' . $poller_id . (' is Disabled.  Therefore, data collection for this Poller will be ' .
+			'suspended till it\'s re-enabled.'),
 			true,
 			'SYSTEM');
 		$should_exit = true;
@@ -1394,7 +1400,9 @@ function log_cacti_stats(float $loop_start, string $method, int $concurrent_proc
 		$totalErrors
 	];
 
-	$cacti_stats = vsprintf('Time:%01.4f Method:%s Processes:%s Threads:%s Hosts:%s HostsPerProcess:%s DataSources:%s RRDsProcessed:%s ErrorHosts:%s TotalErrors:%s',
+	$cacti_stats = vsprintf('Time:%01.4f Method:%s Processes:%s Threads:%s Hosts:%s ' .
+		'HostsPerProcess:%s DataSources:%s RRDsProcessed:%s ErrorHosts:%s ' .
+		'TotalErrors:%s',
 		$perf_data);
 	cacti_log('STATS: ' . $cacti_stats , true, 'SYSTEM');
 
@@ -1486,7 +1494,8 @@ function poller_run_stats(float $loop_start) : bool {
 					'POLLER');
 
 				admin_email(__('Cacti System Warning'),
-					__('WARNING: 24 Hour Poller[%d] Average run time threshold breached.  It is %f seconds (more than %d &#37; of threshold.)',
+					__('WARNING: 24 Hour Poller[%d] Average run time threshold breached.  It ' .
+						'is %f seconds (more than %d &#37; of threshold.)',
 						$poller_id,
 						$ratio,
 						$threshold_24h));
@@ -1503,7 +1512,8 @@ function poller_run_stats(float $loop_start) : bool {
 			[$poller_interval, $threshold_1h]);
 
 		if ($count > $threshold_1h_count && $threshold_1h_count > 0) {
-			cacti_log(sprintf('WARNING: In the last hour, the Poller run time exceeded the threshold %d times (limit %d) by %d percent of time limit.',
+			cacti_log(sprintf('WARNING: In the last hour, the Poller run time exceeded the threshold ' .
+				'%d times (limit %d) by %d percent of time limit.',
 				$count,
 				$threshold_1h_count,
 				$threshold_1h) ,
@@ -1511,7 +1521,8 @@ function poller_run_stats(float $loop_start) : bool {
 				'POLLER');
 
 			admin_email(__('Cacti System Warning'),
-				__('WARNING: In last hour Poller[%d] run time exceeded the threshold %d times (limit %d) by %d percent of the time limit.',
+				__('WARNING: In last hour Poller[%d] run time exceeded the threshold %d ' .
+					'times (limit %d) by %d percent of the time limit.',
 					$poller_id,
 					$count,
 					$threshold_1h_count,

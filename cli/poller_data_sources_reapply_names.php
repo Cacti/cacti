@@ -208,7 +208,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: poller_data_sources_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=string] [--debug]' . PHP_EOL . PHP_EOL;
+	print ('usage: poller_data_sources_reapply_names.php ' .
+		'--host-id=[id|all][N1,N2,...] [--filter=string] [--debug]') . PHP_EOL . PHP_EOL;
 
 	print 'A utility that will recalculate Data Source names for the selected Data Templates.' . PHP_EOL . PHP_EOL;
 

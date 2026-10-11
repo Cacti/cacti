@@ -181,7 +181,8 @@ if ($new_heartbeat !== false && (!is_numeric($new_heartbeat) || $new_heartbeat <
 }
 
 if (!array_key_exists($new_heartbeat, $heartbeats)) {
-	printf('ERROR: Your New Heartbeat \'%s\' is not a supported Heartbeat.  Use --list-heartbeats to see the list.' . PHP_EOL,
+	printf(('ERROR: Your New Heartbeat \'%s\' is not a supported Heartbeat.  Use ' .
+		'--list-heartbeats to see the list.') . PHP_EOL,
 		$new_heartbeat);
 
 	exit(1);
@@ -365,20 +366,27 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: update_heartbeat.php --new-heartbeat=N [--data-template-id=id] [--prev-heartbeat=N] [--force] [--debug|-d]' . PHP_EOL . PHP_EOL;
+	print ('usage: update_heartbeat.php --new-heartbeat=N [--data-template-id=id] ' .
+		'[--prev-heartbeat=N] [--force] [--debug|-d]') . PHP_EOL . PHP_EOL;
 
 	print 'A utility to update RRDfile heartbeats and the Cacti database to match.' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
-	print '    --new-heartbeat=N     - A Heartbeat in seconds.  It must align with available Heartbeats in Cacti' . PHP_EOL;
-	print '                            Currently Heartbeats include from 20-172800 seconds.  The value must also' . PHP_EOL;
+	print ('    --new-heartbeat=N     - A Heartbeat in seconds.  It must align ' .
+		'with available Heartbeats in Cacti') . PHP_EOL;
+	print ('                            Currently Heartbeats include from ' .
+		'20-172800 seconds.  The value must also') . PHP_EOL;
 	print '                            be at least two times the current Cacti poller interval.' . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
-	print '    --data-template-id=N  - Only update Cacti Data Source Heartbeats that are associated with a Data Template id.' . PHP_EOL;
-	print '    --prev-heartbeat=N    - Only update Cacti Data Sources that currently have the Heartbeat specified.' . PHP_EOL;
-	print '    --force               - If the heartbeat selected does not match the Data Source Profile, update the' . PHP_EOL;
-	print '                            Data Source Profile to match the command.  Otherwise, the script will exit.' . PHP_EOL;
+	print ('    --data-template-id=N  - Only update Cacti Data Source Heartbeats ' .
+		'that are associated with a Data Template id.') . PHP_EOL;
+	print ('    --prev-heartbeat=N    - Only update Cacti Data Sources that ' .
+		'currently have the Heartbeat specified.') . PHP_EOL;
+	print ('    --force               - If the heartbeat selected does not match ' .
+		'the Data Source Profile, update the') . PHP_EOL;
+	print ('                            Data Source Profile to match the command. ' .
+		' Otherwise, the script will exit.') . PHP_EOL;
 	print '    --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 
 	print 'List Options:' . PHP_EOL;

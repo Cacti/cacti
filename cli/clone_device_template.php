@@ -456,7 +456,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: clone_device_template.php --device-template=N [ --device-template-name=S ] [ --debug ] [ --quiet ]' . PHP_EOL;
+	print ('usage: clone_device_template.php --device-template=N [ ' .
+		'--device-template-name=S ] [ --debug ] [ --quiet ]') . PHP_EOL;
 	print '       [ --include-graph-templates=all|N,N,... ] [ --clone-graph-templates=all|N,N,N ]' . PHP_EOL;
 	print '       [ --include-data-queries=all|N,N,... ] [ --clone-data-queries=all|N,N,N ]' . PHP_EOL;
 	print '       [ --include-data-templates=all|N,N,... ] [ --clone-data-templates=all|N,N,N ]' . PHP_EOL;
@@ -478,7 +479,8 @@ function display_help() : void {
 	print '* The default Device Template Name will be the original with the --suffix specified' . PHP_EOL;
 	print '* The default setting for both \'--include-*\' and \'--clone-*\' is \'--include=all\'' . PHP_EOL;
 	print '* The default setting for \'--suffix\' id \'_copy\'.' . PHP_EOL . PHP_EOL;
-	print '* The \'all\' Options for \'--include-*\' and \'--clone-*\' are mutually exclusive to one another.' . PHP_EOL . PHP_EOL;
+	print ('* The \'all\' Options for \'--include-*\' and \'--clone-*\' are ' .
+		'mutually exclusive to one another.') . PHP_EOL . PHP_EOL;
 
 	print 'NOTES:' . PHP_EOL;
 	print '* CDEFs, VDEFs, GPRINTs, and Data Source Profiles will not be cloned.' . PHP_EOL;
@@ -498,7 +500,8 @@ function display_help() : void {
 	print '  --clone-data-templates=all|N,N    - Comma delimited list of Data Templates to clone.' . PHP_EOL;
 
 	print '  --suffix=S                        - When cloning the object, the new name suffix.' . PHP_EOL;
-	print '  --quiet                           - Do not prompt to confirm, just take action (batch mode).' . PHP_EOL . PHP_EOL;
+	print ('  --quiet                           - Do not prompt to confirm, just ' .
+		'take action (batch mode).') . PHP_EOL . PHP_EOL;
 
 	print 'Script and XML Handling:' . PHP_EOL;
 	print '  --clone-scripts - Will copy the Data Input Scripts to new names when cloning Data Templates.' . PHP_EOL;
@@ -506,7 +509,8 @@ function display_help() : void {
 
 	print 'List Options:' . PHP_EOL;
 	print '  --list-all                        - List all Device Templates their names and ids.' . PHP_EOL;
-	print '  --list-template=N                 - List a specific Device Template and all its components.' . PHP_EOL . PHP_EOL;
+	print ('  --list-template=N                 - List a specific Device Template ' .
+		'and all its components.') . PHP_EOL . PHP_EOL;
 
 	print 'Debug Options:' . PHP_EOL;
 	print '  --debug                           - Be more verbose in during processing' . PHP_EOL;

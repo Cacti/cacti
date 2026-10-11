@@ -124,7 +124,8 @@ foreach ($parms as $parameter) {
 			break;
 		case '--threads':
 			if (!is_numeric(trim($value))) {
-				print 'ERROR: You must supply a valid Number of Treads or skip this parameter for default value (' . $threads . ')' . PHP_EOL;
+				print ('ERROR: You must supply a valid Number of Treads or skip this ' .
+					'parameter for default value (') . $threads . ')' . PHP_EOL;
 
 				exit(1);
 			}
@@ -517,7 +518,8 @@ function display_help() : void {
 
 	print 'Optional:' . PHP_EOL;
 	print '   [--host-descr=[description]] [--debug]' . PHP_EOL . PHP_EOL;
-	print '--id=host_id             - The host_id to have data queries reindexed or \'all\' to reindex all hosts' . PHP_EOL;
+	print ('--id=host_id             - The host_id to have data queries reindexed ' .
+		'or \'all\' to reindex all hosts') . PHP_EOL;
 	print '--qid=query_id           - Only index on a specific data query id; defaults to \'all\'' . PHP_EOL;
 	print '--host-descr=description - The host description to filter by (SQL filters acknowledged)' . PHP_EOL;
 	print '--threads=N              - The number of threads to use to repopulate' . PHP_EOL;

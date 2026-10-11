@@ -519,13 +519,18 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: script_server.php [environ poller_id] | [ --environ=S --poller=N --mode [--force-level=N] ]' . PHP_EOL . PHP_EOL;
+	print ('usage: script_server.php [environ poller_id] | [ --environ=S ' .
+		'--poller=N --mode [--force-level=N] ]') . PHP_EOL . PHP_EOL;
 	print 'Cacti\'s Script Server.  The Script Server provides a memory resident server for executing php' . PHP_EOL;
-	print 'scripts saving reducing the time to process the scripts through pre-compiling them for all consumers.' . PHP_EOL;
-	print 'The Script Server can be called using two methods.  The first method is the legacy method.  When using' . PHP_EOL;
-	print 'the legacy method, the first argument will be the environment, and the second will be the poller id.' . PHP_EOL . PHP_EOL;
+	print ('scripts saving reducing the time to process the scripts through ' .
+		'pre-compiling them for all consumers.') . PHP_EOL;
+	print ('The Script Server can be called using two methods.  The first method ' .
+		'is the legacy method.  When using') . PHP_EOL;
+	print ('the legacy method, the first argument will be the environment, and ' .
+		'the second will be the poller id.') . PHP_EOL . PHP_EOL;
 
-	print 'The modern calling method has multiple options processed by getopt.  Those options include:' . PHP_EOL . PHP_EOL;
+	print ('The modern calling method has multiple options processed by getopt.  ' .
+		'Those options include:') . PHP_EOL . PHP_EOL;
 
 	print '  --environ=S      The default being \'cmd\', and options being \'spine\', \'cmd\', and \'realtime\'' . PHP_EOL;
 	print '  --poller=N       The poller id for the Data Collector in use' . PHP_EOL;
@@ -533,7 +538,8 @@ function display_help() : void {
 	print '  --mode=S         Force a Database mode \'online\' or \'offline\'.  This is only relevant for' . PHP_EOL;
 	print '                   Remote Data Collectors.' . PHP_EOL . PHP_EOL;
 
-	print 'If no options are passed to the Script Server, it assumes that the environ is \'cmd\' and the poller id' . PHP_EOL;
+	print ('If no options are passed to the Script Server, it assumes that the ' .
+		'environ is \'cmd\' and the poller id') . PHP_EOL;
 	print 'is 1 or the Main Data Collector.' . PHP_EOL . PHP_EOL;
 
 	print 'It is common that when developing Cacti Data Input methods one will use the Script Server to test' . PHP_EOL;

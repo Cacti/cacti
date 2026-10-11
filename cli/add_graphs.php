@@ -910,7 +910,8 @@ function display_help() : void {
 	print '                         --snmp-value=[SNMP Value] | --snmp-value-regex=[REGEX]' . PHP_EOL;
 	print '    [--graph-title=S]       Defaults to what ever is in the Graph Template/Data Template.' . PHP_EOL;
 	print '    [--reindex-method=N]    The reindex method to be used for that data query.' . PHP_EOL;
-	print '                            NOTE: If Data Query is already associated, the reindex method will NOT be changed.' . PHP_EOL . PHP_EOL;
+	print ('                            NOTE: If Data Query is already ' .
+		'associated, the reindex method will NOT be changed.') . PHP_EOL . PHP_EOL;
 	print '    --snmp-field-exclude=[SNMP Field] | --snmp-value-exclude=[REGEX]' . PHP_EOL;
 	print '				   Optionally used to exclude specific word/s in adding graphs' . PHP_EOL;
 	print '    Valid --reindex-methods include' . PHP_EOL;
@@ -918,8 +919,10 @@ function display_help() : void {
 	print '        1|Uptime = Uptime goes Backwards (Default)' . PHP_EOL;
 	print '        2|Index  = Index Count Changed' . PHP_EOL;
 	print '        3|Fields = Verify all Fields' . PHP_EOL . PHP_EOL;
-	print '    NOTE: You may supply multiples of the --snmp-field and --snmp-value | --snmp-value-regex arguments.' . PHP_EOL . PHP_EOL;
-	print '    NOTE2: You may supply multiples of the --snmp-field-exclude and --snmp-value-exclude arguments.' . PHP_EOL . PHP_EOL;
+	print ('    NOTE: You may supply multiples of the --snmp-field and ' .
+		'--snmp-value | --snmp-value-regex arguments.') . PHP_EOL . PHP_EOL;
+	print ('    NOTE2: You may supply multiples of the --snmp-field-exclude and ' .
+		'--snmp-value-exclude arguments.') . PHP_EOL . PHP_EOL;
 	print 'List Options:' . PHP_EOL;
 	print '    --list-hosts' . PHP_EOL;
 	print '    --list-graph-templates [--host-template-id=[ID]]' . PHP_EOL;

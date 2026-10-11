@@ -357,7 +357,9 @@ if ($host['hostname'] == '') {
 }
 
 if ($host['snmp_version'] > 3 || $host['snmp_version'] < 0 || !is_numeric($host['snmp_version'])) {
-	print 'ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.' . PHP_EOL;
+	print ('ERROR: The snmp version must be between 0 and 3.  If you did not ' .
+		'specify one, goto Configuration > Settings > Device Defaults and ' .
+		'resave your defaults.') . PHP_EOL;
 
 	exit(1);
 }
@@ -459,16 +461,20 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: change_device.php --id=<device-id> [--description=[description]] [--ip=[IP]] [--template=[ID]] [--notes="[]"] [--disable]' . PHP_EOL;
+	print ('usage: change_device.php --id=<device-id> ' .
+		'[--description=[description]] [--ip=[IP]] [--template=[ID]] ' .
+		'[--notes="[]"] [--disable]') . PHP_EOL;
 	print '    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]' . PHP_EOL;
-	print '    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]' . PHP_EOL;
+	print ('    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] ' .
+		'--ping_timeout=[N] --ping_retries=[2]') . PHP_EOL;
 	print '    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500] [--retries=3] [--options=0]' . PHP_EOL;
 	print '    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]' . PHP_EOL;
 	print '    [--quiet]' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
 	print '    --id           the id for a device, that is field id in table host' . PHP_EOL;
-	print '                   any optional device attribute parameter given, will replace the existing parameter' . PHP_EOL . PHP_EOL;
+	print ('                   any optional device attribute parameter given, ' .
+		'will replace the existing parameter') . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
 	print '    --description  the name that will be displayed by Cacti in the graphs' . PHP_EOL;
@@ -501,6 +507,7 @@ function display_help() : void {
 	print "    --context      '', snmp context for snmpv3" . PHP_EOL;
 	print "    --engineid     '', snmp engineid for snmpv3" . PHP_EOL;
 	print '    --max_oids     10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request' . PHP_EOL;
-	print '    --bulk_walk    -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.' . PHP_EOL;
+	print ('    --bulk_walk    -1, 1-60, the bulk walk chunk size that will be ' .
+		'used for bulk walks.  Use -1 for auto-tune.') . PHP_EOL;
 	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
 }

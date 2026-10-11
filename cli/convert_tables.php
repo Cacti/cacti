@@ -334,7 +334,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: convert_tables.php [--debug] [--innodb] [--utf8] [--latin1] [--table=N] [--size=N] [--rebuild] [--dynamic]' . PHP_EOL . PHP_EOL;
+	print ('usage: convert_tables.php [--debug] [--innodb] [--utf8] [--latin1] ' .
+		'[--table=N] [--size=N] [--rebuild] [--dynamic]') . PHP_EOL . PHP_EOL;
 
 	print 'A utility to convert a Cacti Database from MyISAM to the InnoDB table format.' . PHP_EOL;
 	print 'MEMORY tables are not converted to InnoDB in this process.' . PHP_EOL . PHP_EOL;

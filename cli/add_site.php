@@ -491,7 +491,8 @@ function fixCoordinates(string $lat, string $lng) : array {
 		'ISO-8859-1',
 		'UTF-8'); // Normalise the characters to put them through a regex
 
-	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/',
+	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) ' .
+		'+(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/',
 		$utfCoord,
 		$matches)) {
 		array_shift($matches); // Get rid of $matches[0]
@@ -613,8 +614,10 @@ function display_help() : void {
 
 	echoQuiet('Geocoding Options:' . PHP_EOL);
 	echoQuiet('    --geocode                     Try to turn addresses into GPS coordinates' . PHP_EOL);
-	echoQuiet('    --geocode-api-key             Your Google API key - https://developers.google.com/maps/documentation/geocoding/get-api-key' . PHP_EOL);
-	echoQuiet('    --proxy                       Proxy server to use in http://proxy.server:port format' . PHP_EOL . PHP_EOL);
+	echoQuiet(('    --geocode-api-key             Your Google API key - ' .
+		'https://developers.google.com/maps/documentation/geocoding/get-api-key') . PHP_EOL);
+	echoQuiet(('    --proxy                       Proxy server to use in ' .
+		'http://proxy.server:port format') . PHP_EOL . PHP_EOL);
 
 	echoQuiet('Device Map Options:' . PHP_EOL);
 	echoQuiet("    --device-map-regex=[regular expression]  e.g.'rtr-th[e|w]-pe\d'" . PHP_EOL);

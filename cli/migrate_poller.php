@@ -506,7 +506,8 @@ function display_help() : void {
 	print 'Purpose: This script is used to move devices off a given poller to another poller' . PHP_EOL . PHP_EOL;
 
 	print 'Usage:' . PHP_EOL;
-	print 'php ' . basename(__FILE__) . ' --source-poller=ID --dest-poller=ID [--all | --host-ids=ID1,ID2,...] [--quiet] [--help]' . PHP_EOL . PHP_EOL;
+	print 'php ' . basename(__FILE__) . (' --source-poller=ID --dest-poller=ID [--all | --host-ids=ID1,ID2,...] ' .
+		'[--quiet] [--help]') . PHP_EOL . PHP_EOL;
 
 	print 'Required Arguments:' . PHP_EOL;
 	print '    --source-poller=ID     Source Poller ID to move devices from' . PHP_EOL;
@@ -514,7 +515,8 @@ function display_help() : void {
 
 	print 'Migration Mode (choose exactly one):' . PHP_EOL;
 	print '    --all                  Migrate all devices off the source poller' . PHP_EOL;
-	print '    --host-ids=ID1,ID2,... Migrate specific devices by host ID (single ID or comma-separated list)' . PHP_EOL . PHP_EOL;
+	print ('    --host-ids=ID1,ID2,... Migrate specific devices by host ID ' .
+		'(single ID or comma-separated list)') . PHP_EOL . PHP_EOL;
 
 	print 'Optional Arguments:' . PHP_EOL;
 	print '    --quiet                Suppress verbose output (batch mode)' . PHP_EOL;

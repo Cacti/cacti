@@ -261,7 +261,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]' . PHP_EOL . PHP_EOL;
+	print ('usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] ' .
+		'--reindex-method=[method] [--quiet]') . PHP_EOL . PHP_EOL;
 	print 'Required Options:' . PHP_EOL;
 	print '    --host-id         the numerical ID of the host' . PHP_EOL;
 	print '    --data-query-id   the numerical ID of the data_query to be added' . PHP_EOL;

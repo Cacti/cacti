@@ -107,14 +107,16 @@ if ($host_id !== false && ($host_id <= 0 || !is_numeric($host_id))) {
 }
 
 if ($host_template_id !== false && ($host_template_id <= 0 || !is_numeric($host_template_id))) {
-	print PHP_EOL . 'FATAL: When specifying a Device Template ID, you must pick on greater or equal than zero.' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . ('FATAL: When specifying a Device Template ID, you must pick on greater ' .
+		'or equal than zero.') . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
 if ($proceed == false) {
-	print PHP_EOL . 'FATAL: You Must Explicitly Instruct This Script to Proceed with the \'--proceed\' Option' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . ('FATAL: You Must Explicitly Instruct This Script to Proceed with the ' .
+		'\'--proceed\' Option') . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
@@ -144,7 +146,9 @@ if ($pattern == '' || $pattern == 'device') {
 } elseif ($pattern == 'device_dq') {
 	$pattern1  = "CONCAT('<path_rra>/', host_id, '/', snmp_query_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
 	$pattern2  = "REPLACE(CONCAT('<path_rra>/', host_id, '/', snmp_query_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
-	$sql_where = "WHERE dtd.data_source_path != CONCAT('<path_rra>/', dl.host_id, '/', IF(dl.snmp_query_id > 0, CONCAT(dl.snmp_query_id, '/'), ''), dtd.local_data_id, '.rrd')";
+	$sql_where = ("WHERE dtd.data_source_path != CONCAT('<path_rra>/', dl.host_id, '/', " .
+		"IF(dl.snmp_query_id > 0, CONCAT(dl.snmp_query_id, '/'), ''), " .
+		"dtd.local_data_id, '.rrd')");
 } elseif ($pattern == 'hash_device') {
 	$pattern1  = "CONCAT('<path_rra>/', host_id % $maxdirs, '/', host_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
 	$pattern2  = "REPLACE(CONCAT('<path_rra>/', host_id % $maxdirs, '/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";

@@ -119,7 +119,8 @@ $old_version_index = (array_key_exists($old_cacti_version, $cacti_version_codes)
 if (cacti_version_compare($old_cacti_version,CACTI_VERSION,'=')) {
 	exit_version_error($old_cacti_version, 'Your Cacti is already up to date');
 } elseif (cacti_version_compare($old_cacti_version,'0.7','<')) {
-	exit_error('You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database.");
+	exit_error('You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . ("To continue, you must create a new database, import 'cacti.sql' into " .
+		'it,') . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database.");
 } elseif (empty($old_cacti_version)) {
 	exit_error('You have created a new database, but have not yet imported the \'cacti.sql\' file.');
 

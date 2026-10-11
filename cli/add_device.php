@@ -385,7 +385,9 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($snmp_ver > 3 || $snmp_ver < 0 || !is_numeric($snmp_ver)) {
-		print 'ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.' . PHP_EOL;
+		print ('ERROR: The snmp version must be between 0 and 3.  If you did not ' .
+			'specify one, goto Configuration > Settings > Device Defaults and ' .
+			'resave your defaults.') . PHP_EOL;
 
 		exit(1);
 	}
@@ -405,7 +407,8 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'authnopriv':
 				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password)) {
-					print 'ERROR: For SNMP security level authNoPriv, you must enter username, password and SNMP auth protocol' . PHP_EOL;
+					print ('ERROR: For SNMP security level authNoPriv, you must enter username, ' .
+						'password and SNMP auth protocol') . PHP_EOL;
 
 					exit(1);
 				} else {
@@ -419,7 +422,8 @@ if (cacti_sizeof($parms)) {
 					empty($snmp_password) ||
 					empty($snmp_priv_passphrase) ||
 					empty($snmp_priv_protocol)) {
-					print 'ERROR: For SNMP security level authNoPriv, you must enter username, password, SNMP auth protocol, priv protocol and priv passphrase' . PHP_EOL;
+					print ('ERROR: For SNMP security level authNoPriv, you must enter username, ' .
+						'password, SNMP auth protocol, priv protocol and priv passphrase') . PHP_EOL;
 
 					exit(1);
 				}
@@ -592,9 +596,11 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes="[]"] [--disable]' . PHP_EOL;
+	print ('usage: add_device.php --description=[description] --ip=[IP] ' .
+		'--template=[ID] [--notes="[]"] [--disable]') . PHP_EOL;
 	print '    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]' . PHP_EOL;
-	print '    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]' . PHP_EOL;
+	print ('    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] ' .
+		'--ping_timeout=[N] --ping_retries=[2]') . PHP_EOL;
 	print '    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500] [--retries=3] [--options=0]' . PHP_EOL;
 	print '    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]' . PHP_EOL;
 	print '    [--quiet]' . PHP_EOL . PHP_EOL;
@@ -625,13 +631,18 @@ function display_help() : void {
 	print "    --security-level '', noAuthNoPriv|authNoPriv|authPriv, security level for snmpv3" . PHP_EOL;
 	print "    --username       '', snmp username for snmpv3" . PHP_EOL;
 	print "    --password       '', snmp password for snmpv3" . PHP_EOL;
-	print "    --authproto      '', [None]|MD5|SHA|SHA224|SHA256|SHA392|SHA512$, snmp authentication protocol for snmpv3" . PHP_EOL;
+	print ("    --authproto      '', [None]|MD5|SHA|SHA224|SHA256|SHA392|SHA512$, " .
+		'snmp authentication protocol for snmpv3') . PHP_EOL;
 	print "    --privpass       '', snmp privacy passphrase for snmpv3" . PHP_EOL;
-	print "    --privproto      '', [None]|DES|AES|AES128|AES192|AES192C|AES256|AES256C$, snmp privacy protocol for snmpv3" . PHP_EOL;
+	print ("    --privproto      '', " .
+		'[None]|DES|AES|AES128|AES192|AES192C|AES256|AES256C$, snmp privacy ' .
+		'protocol for snmpv3') . PHP_EOL;
 	print "    --context        '', snmp context for snmpv3" . PHP_EOL;
 	print "    --engineid       '', snmp engineid for snmpv3" . PHP_EOL;
-	print '    --max_oids       10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request' . PHP_EOL . PHP_EOL;
-	print '    --bulk_walk      -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.' . PHP_EOL . PHP_EOL;
+	print ('    --max_oids       10, 1-60, the number of OIDs that can be ' .
+		'obtained in a single SNMP Get request') . PHP_EOL . PHP_EOL;
+	print ('    --bulk_walk      -1, 1-60, the bulk walk chunk size that will be ' .
+		'used for bulk walks.  Use -1 for auto-tune.') . PHP_EOL . PHP_EOL;
 	print 'List Options:' . PHP_EOL;
 	print '    --list-host-templates' . PHP_EOL;
 	print '    --list-communities' . PHP_EOL;

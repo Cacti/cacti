@@ -101,7 +101,8 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 		fclose($lock);
 		unlink($path_mibcache_lock);
 	} else {
-		cacti_log('WARNING: Unable to open MIB cache lock file; skipping cache rebuild to avoid clobbering a concurrent writer.',
+		cacti_log('WARNING: Unable to open MIB cache lock file; skipping cache rebuild ' .
+			'to avoid clobbering a concurrent writer.',
 			false,
 			'SNMPAGENT');
 	}

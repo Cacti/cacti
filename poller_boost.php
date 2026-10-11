@@ -185,7 +185,8 @@ if ($child == false) {
 		 */
 		if ($boost_debug && $boost_log != '') {
 			if (dirname($cacti_log) != dirname($boost_log)) {
-				cacti_log(sprintf('WARNING: Boost Debug Log location:%s must be in the same directory as the Cacti Log location:%s.  Change the path to a correct location',
+				cacti_log(sprintf('WARNING: Boost Debug Log location:%s must be in the same directory as ' .
+					'the Cacti Log location:%s.  Change the path to a correct location',
 					$boost_log,
 					$cacti_log),
 					true,
@@ -318,7 +319,8 @@ if ($child == false) {
 			if ($failed_children > 0) {
 				boost_log_statistics($rrd_updates);
 				set_config_option('boost_last_run_time', $last_run_time);
-				cacti_log(sprintf('WARNING: Boost retained archive tables because %d child process(es) reported an RRD update failure.',
+				cacti_log(sprintf('WARNING: Boost retained archive tables because %d child process(es) ' .
+					'reported an RRD update failure.',
 					$failed_children),
 					true,
 					'BOOST');
@@ -355,7 +357,8 @@ if ($child == false) {
 						}
 					}
 				} else {
-					cacti_log(sprintf('WARNING: Boost run only completed %d of %d shards; leaving archive tables in place for the next run to pick up.',
+					cacti_log(sprintf('WARNING: Boost run only completed %d of %d shards; leaving archive ' .
+						'tables in place for the next run to pick up.',
 						boost_completed_children($run_id),
 						$expected_children),
 						true,

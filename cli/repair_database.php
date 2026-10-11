@@ -141,7 +141,8 @@ if ($total_errors == 0 && $total_repairs == 0) { // @phpstan-ignore booleanAnd.a
 		$total_repairs);
 	printf('WARNING: Using the \'--force\' option will either repair, remove or ignore any additional issues' . PHP_EOL);
 	printf('WARNING: if they can not be repaired.' . PHP_EOL . PHP_EOL);
-	printf('WARNING: Because these changes can not be reversed, make sure you make a Cacti backup first.' . PHP_EOL . PHP_EOL);
+	printf(('WARNING: Because these changes can not be reversed, make sure you ' .
+		'make a Cacti backup first.') . PHP_EOL . PHP_EOL);
 } else {
 	printf('WARNING: Found %s and repaired %s Cacti database issues.' . PHP_EOL . PHP_EOL, $total_errors, $total_repairs);
 }
@@ -471,21 +472,29 @@ function detailed_checks() : void {
 
 	$cdef_references = [
 		[
-			'rows' => db_fetch_cell('SELECT COUNT(*) FROM graph_templates_item AS source LEFT JOIN cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id IS NULL'),
+			'rows' => db_fetch_cell('SELECT COUNT(*) FROM graph_templates_item AS source LEFT JOIN cdef ON ' .
+				'source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id IS NULL'),
 			'fix'  => static function (): void {
-				db_execute('UPDATE graph_templates_item SET cdef_id = 0 WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)');
+				db_execute('UPDATE graph_templates_item SET cdef_id = 0 WHERE cdef_id > 0 AND ' .
+					'cdef_id NOT IN (SELECT id FROM cdef)');
 			},
 		],
 		[
-			'rows' => db_fetch_cell('SELECT COUNT(*) FROM aggregate_graph_templates_item AS source LEFT JOIN cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id IS NULL'),
+			'rows' => db_fetch_cell('SELECT COUNT(*) FROM aggregate_graph_templates_item AS source LEFT ' .
+				'JOIN cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND ' .
+				'cdef.id IS NULL'),
 			'fix'  => static function (): void {
-				db_execute("UPDATE aggregate_graph_templates_item SET cdef_id = 0, t_cdef_id = '' WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)");
+				db_execute("UPDATE aggregate_graph_templates_item SET cdef_id = 0, t_cdef_id = '' " .
+					'WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)');
 			},
 		],
 		[
-			'rows' => db_fetch_cell('SELECT COUNT(*) FROM aggregate_graphs_graph_item AS source LEFT JOIN cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id IS NULL'),
+			'rows' => db_fetch_cell('SELECT COUNT(*) FROM aggregate_graphs_graph_item AS source LEFT JOIN ' .
+				'cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id ' .
+				'IS NULL'),
 			'fix'  => static function (): void {
-				db_execute("UPDATE aggregate_graphs_graph_item SET cdef_id = 0, t_cdef_id = '' WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)");
+				db_execute("UPDATE aggregate_graphs_graph_item SET cdef_id = 0, t_cdef_id = '' " .
+					'WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)');
 			},
 		],
 	];

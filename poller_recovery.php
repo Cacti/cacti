@@ -62,7 +62,8 @@ function sig_handler(int $signo) : void {
 			cacti_log('RECOVERY WARNING: Recovery Poller terminated by user', false, 'POLLER');
 
 			// tell the main poller that we are done
-			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') . "')");
+			db_execute(("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', " .
+				"'terminated - end time:") . date('Y-m-d G:i:s') . "')");
 
 			exit;
 		default:

@@ -934,7 +934,8 @@ function discoverDevices(int $network_id, int $thread) : bool {
 
 					automation_debug("\n");
 				} else {
-					automation_debug(", Status: Ignoring Address (PHP Bug does not allow us to ping .255 as it thinks its a broadcast IP)!\n");
+					automation_debug(', Status: Ignoring Address (PHP Bug does not allow us to ping .255 as ' .
+						"it thinks its a broadcast IP)!\n");
 					markIPDone($device['ip_address'], $network_id);
 				}
 			} else {
@@ -1137,7 +1138,8 @@ function reportNetworkStatus(int $network_id, array $old_devices) : bool {
 						[$admin_user]);
 
 					if (!cacti_sizeof($details)) {
-						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not exist.',
+						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary ' .
+							'Admin User Account does not exist.',
 							false,
 							'POLLER');
 
@@ -1145,7 +1147,8 @@ function reportNetworkStatus(int $network_id, array $old_devices) : bool {
 					}
 
 					if ($details['notification_email'] == '') {
-						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not have an Email Address.',
+						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary ' .
+							'Admin User Account does not have an Email Address.',
 							false,
 							'POLLER');
 

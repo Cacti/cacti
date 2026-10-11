@@ -244,7 +244,8 @@ function upgrade_database() : void {
 	if ($return_var == 0) {
 		cacti_log(sprintf('NOTE: Cacti Upgrade succeeded in %.2f seconds', $end - $start), true, 'UPGRADE');
 	} else {
-		cacti_log('WARNING: Cacti Upgrade Encountered Errors.  Messages below.  Details are below, but also in Cacti upgrade log.',
+		cacti_log('WARNING: Cacti Upgrade Encountered Errors.  Messages below.  Details ' .
+			'are below, but also in Cacti upgrade log.',
 			true,
 			'UPGRADE');
 		print '------------------------------------------------------------------------------------------------' . PHP_EOL;

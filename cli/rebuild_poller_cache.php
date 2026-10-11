@@ -115,7 +115,8 @@ foreach ($parms as $parameter) {
 			break;
 		case '--threads':
 			if (!is_numeric(trim($value))) {
-				print 'ERROR: You must supply a valid Number of Treads or skip this parameter for default value (' . $threads . ')' . PHP_EOL;
+				print ('ERROR: You must supply a valid Number of Treads or skip this ' .
+					'parameter for default value (') . $threads . ')' . PHP_EOL;
 
 				exit(1);
 			}
@@ -471,7 +472,8 @@ function display_version() : void {
 function display_help() : void {
 	display_version();
 
-	print PHP_EOL . 'usage: rebuild_poller_cache.php [--host-id=N] [--host-template-id=N] [--data-template-id=N] [--debug]' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . ('usage: rebuild_poller_cache.php [--host-id=N] [--host-template-id=N] ' .
+		'[--data-template-id=N] [--debug]') . PHP_EOL . PHP_EOL;
 
 	print 'Cacti\'s repopulate poller cache tool.  This CLI script will ' . PHP_EOL;
 	print 'repopulate poller cache for all or specified hosts.' . PHP_EOL . PHP_EOL;

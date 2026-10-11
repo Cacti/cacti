@@ -1096,9 +1096,10 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 									$strout = strlen($output);
 								}
 
-								cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE WARNING: Result from Script Server not valid. Partial Result: ' . substr($output,
-									0,
-									$strout),
+								cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . ('] RECACHE WARNING: Result from Script Server not valid. Partial ' .
+									'Result: ') . substr($output,
+										0,
+										$strout),
 									$print_data_to_stdout,
 									'POLLER');
 							}

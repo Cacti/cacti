@@ -369,7 +369,8 @@ if ($child == 0) {
 				number_format($rrdfiles - $not_finished),
 				number_format($rrdfiles),
 				$end - $start);
-			printf('NOTE: %s, Processing Rate: %s RRDfiles per/second, Estimated Complete in: %s seconds, Sleeping 1 seconds.' . PHP_EOL,
+			printf(('NOTE: %s, Processing Rate: %s RRDfiles per/second, Estimated Complete ' .
+				'in: %s seconds, Sleeping 1 seconds.') . PHP_EOL,
 				$now,
 				round($rate,
 					2),

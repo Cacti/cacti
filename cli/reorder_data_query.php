@@ -196,7 +196,8 @@ function display_help() : void {
 	print 'A utility to Re-order Cacti Data Queries for a Device or system in batch mode.' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
-	print "    --qid=query_id - Only index on a specific data query id; or 'all' to reindex all data query id" . PHP_EOL . PHP_EOL;
+	print ("    --qid=query_id - Only index on a specific data query id; or 'all' " .
+		'to reindex all data query id') . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
 	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices." . PHP_EOL;

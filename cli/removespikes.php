@@ -263,7 +263,8 @@ function display_help() : void {
 	print '    --rrdfile=F   - The path to the RRDfile that will be de-spiked.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
-	print '    --method        - The spike removal method to use.  Options are stddev|variance|fill|float|absolute' . PHP_EOL;
+	print ('    --method        - The spike removal method to use.  Options are ' .
+		'stddev|variance|fill|float|absolute') . PHP_EOL;
 	print '    --avgnan        - The spike replacement method to use.  Options are last|avg|nan' . PHP_EOL;
 	print '    --stddev        - The number of standard deviations +/- allowed' . PHP_EOL;
 	print '    --percent       - The sample to sample percentage variation allowed' . PHP_EOL;

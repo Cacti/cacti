@@ -302,7 +302,8 @@ if ($listGraphTemplates) {
 	}
 
 	if ($all_option && $all === false && $list === false) {
-		print 'ERROR: The options specified will remove all graphs.  To do this you must use the --all option.  Exiting' . PHP_EOL;
+		print ('ERROR: The options specified will remove all graphs.  To do this you ' .
+			'must use the --all option.  Exiting') . PHP_EOL;
 
 		exit(1);
 	}

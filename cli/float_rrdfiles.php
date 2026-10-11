@@ -819,7 +819,8 @@ function display_version() : void {
 function display_help() : void {
 	display_version();
 
-	print PHP_EOL . 'usage: float_rrdfiles.php --start=TS --end=TS [--threads=N --host-id=N --host-template-id=N --graph-template-id=N] [--debug]' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . ('usage: float_rrdfiles.php --start=TS --end=TS [--threads=N ' .
+		'--host-id=N --host-template-id=N --graph-template-id=N] [--debug]') . PHP_EOL . PHP_EOL;
 
 	print 'Cacti\'s RRDfile Data Float Tool.  This CLI script will float a' . PHP_EOL;
 	print 'range in select Cacti Graphs using the RRDtool dump/import utility.' . PHP_EOL . PHP_EOL;
