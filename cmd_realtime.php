@@ -124,7 +124,11 @@ if (cacti_sizeof($idbyhost)) {
 		];
 
 		if (function_exists('proc_open')) {
-			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id),
+			$cactiphp = proc_open(read_config_option('path_php_binary') .
+				' -q ' .
+				CACTI_PATH_BASE .
+				'/script_server.php realtime ' .
+				cacti_escapeshellarg($poller_id),
 				$cactides,
 				$pipes);
 

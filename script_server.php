@@ -327,7 +327,13 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '" . basename($include_file) . "' FUNC: '" . $function . "' PARMS: '" . $parameters . "'",
+				cacti_log("WARNING: Function does not exist  INC: '" .
+					basename($include_file) .
+					"' FUNC: '" .
+					$function .
+					"' PARMS: '" .
+					$parameters .
+					"'",
 					false,
 					'PHPSVR');
 				fputs(STDOUT, "U\n");
@@ -483,7 +489,9 @@ function sig_handler(int $signo) : void {
 		case SIGABRT:
 		case SIGQUIT:
 		case SIGSEGV:
-			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'",
+			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" .
+				basename($include_file) .
+				"', function:'$function', params:'$parameters'",
 				false,
 				'PHPSVR',
 				POLLER_VERBOSITY_MEDIUM);

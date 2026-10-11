@@ -400,7 +400,9 @@ if ($debug) {
 $poller_seconds_sincerun = 'Never';
 $poller_seconds_sincerun = round($poller_start - $poller_lastrun, 2);
 
-cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME . "', Poller Runs: '$poller_runs'",
+cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" .
+	MAX_POLLER_RUNTIME .
+	"', Poller Runs: '$poller_runs'",
 	true,
 	'POLLER',
 	$level);
@@ -416,8 +418,9 @@ if ($poller_interval <= 60) {
 if ($poller_lastrun > 0 && $force === false) {
 	// give the user some flexibility to run a little moe often
 	if ((($poller_start - $poller_lastrun) * 1.3) < MAX_POLLER_RUNTIME) {
-		cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . number_format_i18n($poller_start - $poller_lastrun,
-			1) . ' seconds have passed since the poller last ran.',
+		cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " .
+			number_format_i18n($poller_start - $poller_lastrun,
+				1) . ' seconds have passed since the poller last ran.',
 			true,
 			'POLLER',
 			$level);
@@ -430,8 +433,9 @@ if ($poller_lastrun > 0 && $force === false) {
  * the poller is actually ran, if so, issue a warning
  */
 if ((($poller_start - $poller_lastrun - 10) > MAX_POLLER_RUNTIME) && ($poller_lastrun > 0)) {
-	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . number_format_i18n($poller_start - $poller_lastrun,
-		1) . ' seconds have passed since the last poll!',
+	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " .
+		number_format_i18n($poller_start - $poller_lastrun,
+			1) . ' seconds have passed since the last poll!',
 		true,
 		'POLLER');
 	admin_email(__('Cacti System Warning'),
@@ -1189,7 +1193,13 @@ function bad_index_check(bool $mibs) : void {
 			$devices    = explode(',', $bad_index_devices);
 			$device_str = 'Device[' . implode('], Device[', $devices) . ']';
 
-			cacti_log('WARNING: You have ' . cacti_sizeof($devices) . ' Devices with bad SNMP Indexes.  Devices: ' . $device_str . ' totalling ' . $bad_indexes . (' Data Sources.  Please Either Re-Index, Delete or Disable these Data ' .
+			cacti_log('WARNING: You have ' .
+				cacti_sizeof($devices) .
+				' Devices with bad SNMP Indexes.  Devices: ' .
+				$device_str .
+				' totalling ' .
+				$bad_indexes .
+				(' Data Sources.  Please Either Re-Index, Delete or Disable these Data ' .
 				'Sources.'),
 				false,
 				'POLLER');
@@ -1253,7 +1263,11 @@ function poller_replicate_check() : void {
 	if (cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
 			$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
-			$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_replicate.php') . ' --poller=' . $poller['id'];
+			$extra_args     = '-q ' .
+				cacti_escapeshellarg(CACTI_PATH_CLI .
+				'/poller_replicate.php') .
+				' --poller=' .
+				$poller['id'];
 			exec_background($command_string, $extra_args);
 		}
 	}

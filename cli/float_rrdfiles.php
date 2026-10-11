@@ -515,7 +515,11 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 				// restore the file
 				$return  = 0;
 				$output  = [];
-				$command = cacti_escapeshellcmd($rrdtool_bin) . ' restore -f ' . cacti_escapeshellarg($tmp_file) . ' ' . cacti_escapeshellarg($rrd_path);
+				$command = cacti_escapeshellcmd($rrdtool_bin) .
+					' restore -f ' .
+					cacti_escapeshellarg($tmp_file) .
+					' ' .
+					cacti_escapeshellarg($rrd_path);
 
 				$response = exec($command, $output, $return);
 
@@ -707,7 +711,11 @@ function float_launch_child(int $thread_id, mixed $step, int $start_time, int $e
 		POLLER_VERBOSITY_MEDIUM);
 
 	exec_background($php_binary,
-		CACTI_PATH_CLI . "/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step : '') . ($seebug ? ' --debug' : ''));
+		CACTI_PATH_CLI .
+			"/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" .
+			($step !== false ? ' --step=' .
+			$step : '') .
+			($seebug ? ' --debug' : ''));
 }
 
 /**

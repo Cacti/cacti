@@ -463,7 +463,17 @@ function process_install_errors(array $results) : void {
 			}
 		}
 
-		print PHP_EOL . 'Unable to continue as ' . $count . ' issue' . ($count == 1 ? '' : 's') . ' in ' . $sections . ' section' . ($sections == 1 ? '' : 's') . ' were found.' . PHP_EOL;
+		print PHP_EOL .
+			'Unable to continue as ' .
+			$count .
+			' issue' .
+			($count == 1 ? '' : 's') .
+			' in ' .
+			$sections .
+			' section' .
+			($sections == 1 ? '' : 's') .
+			' were found.' .
+			PHP_EOL;
 
 		// exit does not execute the caller's finally block.
 		unregister_process('install', 'master', 0);

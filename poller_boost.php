@@ -1230,7 +1230,11 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 			// don't generate error messages if the RRD has already been updated
 			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!",
+				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" .
+					$time .
+					"', RRD Time:'" .
+					$last_update .
+					"' Ignoring Value!",
 					true,
 					'BOOST',
 					POLLER_VERBOSITY_HIGH);
@@ -1353,7 +1357,13 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 										$buflen += 2;
 									}
 
-									boost_debug("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $nt_rrd_field_names[$matches[1]] . ']');
+									boost_debug("Parsed MULTI output field '" .
+										$matches[0] .
+										"' [map " .
+										$matches[1] .
+										'->' .
+										$nt_rrd_field_names[$matches[1]] .
+										']');
 								}
 
 								$vals_in_buffer++;

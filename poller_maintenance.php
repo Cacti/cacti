@@ -695,17 +695,31 @@ function logrotate_file_rotate(string $name, string $log, object $date) : int {
 
 				return 1;
 			} else {
-				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . $name . ' Log "' . basename($log) . '" to "' . basename($log) . '-' . $ext . '"',
+				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' .
+					$name .
+					' Log "' .
+					basename($log) .
+					'" to "' .
+					basename($log) .
+					'-' .
+					$ext .
+					'"',
 					true,
 					'MAINT');
 			}
 		} else {
-			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log directory : ' . basename($log),
+			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' .
+				$name .
+				' Log directory : ' .
+				basename($log),
 				true,
 				'MAINT');
 		}
 	} else {
-		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log as directory or file are not writable : ' . $log,
+		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' .
+			$name .
+			' Log as directory or file are not writable : ' .
+			$log,
 			true,
 			'MAINT');
 	}
@@ -1129,7 +1143,9 @@ function phpversion_check(bool $force = false) : void {
 	$phpbad_ver = version_compare(PHP_VERSION,'7.4','<');
 
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {
-		cacti_log('WARNING: PHP Version "' . PHP_VERSION . ('"will not be supported by the develop branch in the future.  If you ' .
+		cacti_log('WARNING: PHP Version "' .
+			PHP_VERSION .
+			('"will not be supported by the develop branch in the future.  If you ' .
 			'cannot upgrade to PHP 7.1 or higher, please switch branches'),
 			false,
 			'CACTI');

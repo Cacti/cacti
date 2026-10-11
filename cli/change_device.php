@@ -409,7 +409,8 @@ if ($host['snmp_version'] < 3) {
 }
 
 if (!$quietMode) {
-	print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']} with community \"{$host['snmp_community']}\"" . PHP_EOL;
+	print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']} with community \"{$host['snmp_community']}\"" .
+		PHP_EOL;
 }
 
 $host_id = api_device_save($device_id, $host['host_template_id'], $host['description'], $host['hostname'],

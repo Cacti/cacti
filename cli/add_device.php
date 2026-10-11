@@ -549,9 +549,15 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($snmp_ver < 3) {
-		print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with community \"$community\"" . PHP_EOL;
+		print "Adding $description ($ip) as \"" .
+			$host_templates[$template_id] .
+			"\" using SNMP v$snmp_ver with community \"$community\"" .
+			PHP_EOL;
 	} else {
-		print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with username \"$snmp_username\"" . PHP_EOL;
+		print "Adding $description ($ip) as \"" .
+			$host_templates[$template_id] .
+			"\" using SNMP v$snmp_ver with username \"$snmp_username\"" .
+			PHP_EOL;
 	}
 
 	$host_id = api_device_save(0, (int) $template_id, $description, $ip,

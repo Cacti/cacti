@@ -233,7 +233,10 @@ switch ($type) {
 
 		$hosts_per_process = ceil($rows / $threads);
 
-		$sql_where .= ' GROUP BY h.id ORDER BY h.id LIMIT ' . (($thread_id - 1) * $hosts_per_process) . ',' . $hosts_per_process;
+		$sql_where .= ' GROUP BY h.id ORDER BY h.id LIMIT ' .
+			(($thread_id - 1) * $hosts_per_process) .
+			',' .
+			$hosts_per_process;
 
 		$rows = db_fetch_assoc_prepared("SELECT h.id AS id, COUNT(dl.id) AS dl_count
 			FROM host AS h
@@ -361,7 +364,11 @@ function pushout_launch_child(int $thread_id, int $threads) : void {
 		POLLER_VERBOSITY_MEDIUM);
 
 	exec_background($php_binary,
-		CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_template_id ? " --host-template-id=$host_template_id" : '') . ($data_template_id ? " --data-template-id=$data_template_id" : ''));
+		CACTI_PATH_CLI .
+			"/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " .
+			($debug ? ' --debug' : '') .
+			($host_template_id ? " --host-template-id=$host_template_id" : '') .
+			($data_template_id ? " --data-template-id=$data_template_id" : ''));
 }
 
 /**

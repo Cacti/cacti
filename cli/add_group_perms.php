@@ -273,7 +273,8 @@ if (cacti_sizeof($params) == 0) {
 	 * Right now it only does hostname */
 	$idName = db_fetch_cell_prepared('SELECT hostname FROM host WHERE id = ?', [$itemId]);
 
-	print "Group Permissions Created - Group-Name: ($groupId - \"$groupName\" ) Item-Type: ($itemType - $itemTypeName) Item-ID: ($itemId - $idName)" . PHP_EOL;
+	print "Group Permissions Created - Group-Name: ($groupId - \"$groupName\" ) Item-Type: ($itemType - $itemTypeName) Item-ID: ($itemId - $idName)" .
+		PHP_EOL;
 
 	exit(0);
 }

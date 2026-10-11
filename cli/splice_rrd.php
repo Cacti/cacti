@@ -276,7 +276,10 @@ if (strlen((string) $response)) {
 	$response_array = explode(' ', (string) $response);
 	print 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . PHP_EOL;
 } else {
-	print 'FATAL: RRDTool not found in configuration or path.' . PHP_EOL . 'Please insure RRDTool can be found using one of these methods!' . PHP_EOL;
+	print 'FATAL: RRDTool not found in configuration or path.' .
+		PHP_EOL .
+		'Please insure RRDTool can be found using one of these methods!' .
+		PHP_EOL;
 
 	exit(1);
 }
@@ -303,10 +306,18 @@ if ($finrrd === '') {
 
 // execute the dump commands
 debug("Creating XML file '$oldxmlfile' from '$oldrrd'");
-shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
+shell_exec(cacti_escapeshellcmd($rrdtool) .
+	' dump ' .
+	cacti_escapeshellarg($oldrrd) .
+	' > ' .
+	cacti_escapeshellarg($oldxmlfile));
 
 debug("Creating XML file '$newxmlfile' from '$newrrd'");
-shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
+shell_exec(cacti_escapeshellcmd($rrdtool) .
+	' dump ' .
+	cacti_escapeshellarg($newrrd) .
+	' > ' .
+	cacti_escapeshellarg($newxmlfile));
 
 // read the xml files into arrays
 if (file_exists($oldxmlfile)) {

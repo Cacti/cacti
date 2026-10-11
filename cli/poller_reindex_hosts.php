@@ -344,7 +344,8 @@ function reindex_master_handler(bool $forcerun, int $host_id, int $query_id, str
 
 	$ds_per_process = ceil($rows / $threads);
 
-	print "There are $rows data queries, $threads threads and $ds_per_process data sources to process per thread" . PHP_EOL;
+	print "There are $rows data queries, $threads threads and $ds_per_process data sources to process per thread" .
+		PHP_EOL;
 
 	$h_done = 0;
 
@@ -399,7 +400,13 @@ function reindex_launch_child(int $thread_id, int $threads) : void {
 		POLLER_VERBOSITY_MEDIUM);
 
 	exec_background($php_binary,
-		CACTI_PATH_CLI . "/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_id ? " --id=$host_id" : '') . ($query_id ? " --qid=$query_id" : '') . ($host_descr ? " --host-descr=$host_descr" : '') . ($forcerun ? ' --force' : ''));
+		CACTI_PATH_CLI .
+			"/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " .
+			($debug ? ' --debug' : '') .
+			($host_id ? " --id=$host_id" : '') .
+			($query_id ? " --qid=$query_id" : '') .
+			($host_descr ? " --host-descr=$host_descr" : '') .
+			($forcerun ? ' --force' : ''));
 }
 
 /**

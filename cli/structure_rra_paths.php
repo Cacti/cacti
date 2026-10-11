@@ -250,17 +250,45 @@ foreach ($data_sources as $info) {
 			LIMIT 1',
 			[$local_data_id]);
 
-		$data_source_path1 = $base_rra_path . '/' . cacti_strtolower(clean_up_file_name($info['description'])) . '_' . $local_data_id . '.rrd';
+		$data_source_path1 = $base_rra_path .
+			'/' .
+			cacti_strtolower(clean_up_file_name($info['description'])) .
+			'_' .
+			$local_data_id .
+			'.rrd';
 		$data_source_path2 = '';
 
 		if ($pattern == '' || $pattern == 'device') {
-			$data_source_path2 = $base_rra_path . '/' . $info['host_id'] . '/' . $info['snmp_query_id'] . '/' . $local_data_id . '.rrd';
+			$data_source_path2 = $base_rra_path .
+				'/' .
+				$info['host_id'] .
+				'/' .
+				$info['snmp_query_id'] .
+				'/' .
+				$local_data_id .
+				'.rrd';
 		} elseif ($pattern == 'device_dq') {
 			$data_source_path2 = $base_rra_path . '/' . $info['host_id'] . '/' . $local_data_id . '.rrd';
 		} elseif ($pattern == 'hash_device') {
-			$data_source_path2 = $base_rra_path . '/' . $info['hash_id'] . '/' . $info['host_id'] . '/' . $local_data_id . '.rrd';
+			$data_source_path2 = $base_rra_path .
+				'/' .
+				$info['hash_id'] .
+				'/' .
+				$info['host_id'] .
+				'/' .
+				$local_data_id .
+				'.rrd';
 		} elseif ($pattern == 'hash_device_dq') {
-			$data_source_path2 = $base_rra_path . '/' . $info['hash_id'] . '/' . $info['host_id'] . '/' . $info['snmp_query_id'] . '/' . $local_data_id . '.rrd';
+			$data_source_path2 = $base_rra_path .
+				'/' .
+				$info['hash_id'] .
+				'/' .
+				$info['host_id'] .
+				'/' .
+				$info['snmp_query_id'] .
+				'/' .
+				$local_data_id .
+				'.rrd';
 		}
 
 		if (file_exists($data_source_path1)) {

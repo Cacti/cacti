@@ -231,7 +231,11 @@ function remote_client_authorized() : bool {
 
 	if (!$forward_match) {
 		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
-		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.',
+		cacti_log('WARNING: PTR record for ' .
+			$client_addr .
+			' resolves to ' .
+			$safe_name .
+			' but forward lookup does not match. Rejecting.',
 			false,
 			'SECURITY');
 
@@ -485,7 +489,11 @@ function poll_for_data() : mixed {
 							$pipes    = false;
 
 							if (function_exists('proc_open')) {
-								$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id),
+								$cactiphp = proc_open(read_config_option('path_php_binary') .
+									' -q ' .
+									CACTI_PATH_BASE .
+									'/script_server.php realtime ' .
+									cacti_escapeshellarg($poller_id),
 									$cactides,
 									$pipes);
 

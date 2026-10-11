@@ -237,7 +237,8 @@ if (!$master && $thread == 0) {
 		[$network_id, $poller_id]);
 
 	if ($status != 'on' && !$force) {
-		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force its execution.",
+		cacti_log(automation_get_pid() .
+			" WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force its execution.",
 			true,
 			'AUTOM8');
 
@@ -277,7 +278,14 @@ if ($master) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 
 				exec_background(read_config_option('path_php_binary'),
-					'-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
+					'-q ' .
+						read_config_option('path_webroot') .
+						'/poller_automation.php --poller=' .
+						$poller_id .
+						' --network=' .
+						$network['id'] .
+						($force ? ' --force' : '') .
+						($debug ? ' --debug' : ''));
 
 				$launched++;
 
@@ -360,7 +368,13 @@ if ($master === false && $thread == 0) {
 	while ($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
 		exec_background(read_config_option('path_php_binary'),
-			'-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
+			'-q ' .
+				read_config_option('path_webroot') .
+				'/poller_automation.php --poller=' .
+				$poller_id .
+				" --thread=$curthread --network=$network_id" .
+				($force ? ' --force' : '') .
+				($debug ? ' --debug' : ''));
 		$curthread++;
 	}
 
@@ -493,7 +507,10 @@ function discoverDevices(int $network_id, int $thread) : bool {
 				POLLER_VERBOSITY_MEDIUM);
 
 			if (!filter_var($device['ip_address'], FILTER_VALIDATE_IP)) {
-				cacti_log(automation_get_pid() . ' WARNING: IP address \'' . $device['ip_address'] . '\' is not a valid IP address.',
+				cacti_log(automation_get_pid() .
+					' WARNING: IP address \'' .
+					$device['ip_address'] .
+					'\' is not a valid IP address.',
 					false,
 					'AUTOM8');
 
@@ -964,7 +981,20 @@ function discoverDevices(int $network_id, int $thread) : bool {
 		}
 	}
 
-	cacti_log(automation_get_pid() . ' Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph . ' Graphs Added to Cacti',
+	cacti_log(automation_get_pid() .
+		' Network ' .
+		$network['name'] .
+		" Thread $thread Finished, " .
+		$stats['scanned'] .
+		' IPs Scanned, ' .
+		$stats['ping'] .
+		' IPs Responded to Ping, ' .
+		$stats['snmp'] .
+		' Responded to SNMP, ' .
+		$stats['added'] .
+		' Device Added, ' .
+		$count_graph .
+		' Graphs Added to Cacti',
 		true,
 		'AUTOM8');
 
@@ -1155,7 +1185,10 @@ function reportNetworkStatus(int $network_id, array $old_devices) : bool {
 						return false;
 					}
 
-					$email = ($details['full_name'] != '' ? $details['full_name'] : __('Cacti Primary Admin')) . ' <' . $details['notification_email'] . '>';
+					$email = ($details['full_name'] != '' ? $details['full_name'] : __('Cacti Primary Admin')) .
+						' <' .
+						$details['notification_email'] .
+						'>';
 				}
 			}
 

@@ -530,7 +530,10 @@ function fetchCurl(string $url) : string|false {
 	global $verbose, $debug, $httpsProxy;
 
 	if (!function_exists('curl_init')) {
-		print 'Error: cURL must be enabled in PHP if --geocode is specified.' . PHP_EOL . 'See http://php.net/manual/en/curl.setup.php for help.' . PHP_EOL;
+		print 'Error: cURL must be enabled in PHP if --geocode is specified.' .
+			PHP_EOL .
+			'See http://php.net/manual/en/curl.setup.php for help.' .
+			PHP_EOL;
 
 		display_help();
 

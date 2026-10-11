@@ -415,7 +415,11 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 	if (!$quietMode) {
 		print 'Migration Mode: Specific host IDs' . PHP_EOL;
 		print 'Host IDs to migrate: ' . implode(', ', $host_id_array) . PHP_EOL;
-		print 'This will move ' . count($host_id_array) . " device(s) from any poller to Poller $dest_poller" . PHP_EOL . PHP_EOL;
+		print 'This will move ' .
+			count($host_id_array) .
+			" device(s) from any poller to Poller $dest_poller" .
+			PHP_EOL .
+			PHP_EOL;
 
 		// Display devices to be migrated
 		print 'Devices to be migrated:' . PHP_EOL;
@@ -424,7 +428,8 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 			$device = db_fetch_row_prepared('SELECT id, hostname, description, poller_id FROM host WHERE id = ?', [$host_id]);
 
 			if (!empty($device)) {
-				print "  ID: {$device['id']} - {$device['hostname']} ({$device['description']}) [Current Poller: {$device['poller_id']}]" . PHP_EOL;
+				print "  ID: {$device['id']} - {$device['hostname']} ({$device['description']}) [Current Poller: {$device['poller_id']}]" .
+					PHP_EOL;
 			} else {
 				print "  ID: $host_id - ERROR: Device not found" . PHP_EOL;
 			}
@@ -456,7 +461,8 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 				$success_count++;
 
 				if (!$quietMode) {
-					print "Moved device: {$device['description']} (ID: {$device['id']}) from Poller {$device['poller_id']} to Poller $dest_poller" . PHP_EOL;
+					print "Moved device: {$device['description']} (ID: {$device['id']}) from Poller {$device['poller_id']} to Poller $dest_poller" .
+						PHP_EOL;
 				}
 			} else {
 				$error_count++;
@@ -533,7 +539,11 @@ function display_help() : void {
 	print '    # Migrate a single device by host ID:' . PHP_EOL;
 	print '    php ' . basename(__FILE__) . ' --source-poller=1 --dest-poller=2 --host-ids=123' . PHP_EOL;
 	print '    # Migrate multiple devices by host IDs:' . PHP_EOL;
-	print '    php ' . basename(__FILE__) . ' --source-poller=1 --dest-poller=2 --host-ids=123,124,125' . PHP_EOL . PHP_EOL;
+	print '    php ' .
+		basename(__FILE__) .
+		' --source-poller=1 --dest-poller=2 --host-ids=123,124,125' .
+		PHP_EOL .
+		PHP_EOL;
 
 	print 'Note: You must specify exactly one migration option: --all or --host-ids' . PHP_EOL . PHP_EOL;
 }

@@ -340,14 +340,18 @@ function upgrade_database() : void {
 							if ($return_var == 0) {
 								print implode(PHP_EOL, $output) . PHP_EOL;
 								cacti_log("NOTE: Cacti Plugin $pname Upgrade Succeeded.", true, 'UPGRADE');
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 								print implode(PHP_EOL, $output) . PHP_EOL;
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 							} else {
 								cacti_log("WARNING: Cacti Plugin $pname Upgrade Encountered Errors.", true, 'UPGRADE');
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 								print implode(PHP_EOL, $output) . PHP_EOL;
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 							}
 						}
 					} else {
@@ -644,7 +648,16 @@ function report_audit_results(bool $output = true) : array {
 												// Handle Timestamp on DEFAULT/ON UPDATE irregularities
 												continue;
 											} else {
-												print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
+												print PHP_EOL .
+													'ERROR Col: \'' .
+													$c['Field'] .
+													'\', Attribute \'' .
+													$col .
+													'\' invalid. Should be: \'' .
+													$dbc[$dbcol] .
+													'\', Is: \'' .
+													$c[$col] .
+													'\'';
 											}
 										}
 									}
@@ -736,7 +749,16 @@ function report_audit_results(bool $output = true) : array {
 									if ($i['Key_name'] != 'PRIMARY') {
 										if (array_search($i['Key_name'], $idx_added, true) === false) {
 											if ($output) {
-												print PHP_EOL . 'ERROR Index: \'' . $i['Key_name'] . '\', Attribute \'' . $idx . '\' invalid. Should be: \'' . $dbc[$dbidx] . '\', Is: \'' . $i[$idx] . '\'';
+												print PHP_EOL .
+													'ERROR Index: \'' .
+													$i['Key_name'] .
+													'\', Attribute \'' .
+													$idx .
+													'\' invalid. Should be: \'' .
+													$dbc[$dbidx] .
+													'\', Is: \'' .
+													$i[$idx] .
+													'\'';
 											}
 
 											$alter_cmds  = array_merge($alter_cmds, make_index_alter($table_name, $i['Key_name']));

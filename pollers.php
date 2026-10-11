@@ -608,7 +608,14 @@ function form_actions() : void {
 
 				if (cacti_sizeof($failed)) {
 					cacti_log('WARNING: Some Selected Remote Data Collectors in [' . implode(', ',
-						$ids) . '] failed synchronization by user ' . get_username($_SESSION[SESS_USER_ID]) . ', Successful/Failed[' . cacti_sizeof($success) . '/' . cacti_sizeof($failed) . '].  See log for details.',
+						$ids) .
+							'] failed synchronization by user ' .
+							get_username($_SESSION[SESS_USER_ID]) .
+							', Successful/Failed[' .
+							cacti_sizeof($success) .
+							'/' .
+							cacti_sizeof($failed) .
+							'].  See log for details.',
 						false,
 						'WEBUI');
 				} else {
@@ -771,8 +778,13 @@ function poller_edit() : void {
 	}
 
 	$row_html = ('<div class="formRow odd"><div class="formColumnLeft"><div ' .
-		'class="formFieldName">') . __('Test Database Connection') . $tooltip . ('</div></div><div class="formColumnRight"><button type="button" ' .
-		'class="ui-button ui-corner-all ui-widget" id="dbtest">') . __esc('Test Connection') . '</button><span id="results"></span></div></div>';
+		'class="formFieldName">') .
+			__('Test Database Connection') .
+			$tooltip .
+			('</div></div><div class="formColumnRight"><button type="button" ' .
+		'class="ui-button ui-corner-all ui-widget" id="dbtest">') .
+			__esc('Test Connection') .
+			'</button><span id="results"></span></div></div>';
 
 	$pt = read_config_option('poller_type');
 
@@ -1161,7 +1173,11 @@ function pollers() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Collectors Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Data Collectors Found') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);

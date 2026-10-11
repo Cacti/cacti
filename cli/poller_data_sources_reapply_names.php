@@ -164,7 +164,9 @@ if (cacti_sizeof($data_source_list)) {
 
 		update_data_source_title_cache($data_source['local_data_id']);
 
-		debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source['local_data_id'])) . "'");
+		debug("Data Source Rename Done for Data Source '" .
+			addslashes(get_data_source_title($data_source['local_data_id'])) .
+			"'");
 
 		$i++;
 	}
