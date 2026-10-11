@@ -55,7 +55,7 @@ function realtimeDetectBrowser() {
 
 function imageOptionsChanged(action) {
 	const graph_start  = $('#graph_start').val();
-	var graph_end      = 0;
+
 	const ds_step      = $('#ds_step').val();
 	var size           = $('#size').val();
 	const isThumb      = $('#thumbnails').is(':checked');
@@ -170,7 +170,7 @@ function countRealtimeGraphs() {
 }
 
 function stopRealtime() {
-	var graph;
+
 
 	for (key in realtimeArray) {
 		var graph_id = key;
@@ -239,7 +239,7 @@ function realtimeGrapher() {
 	}
 
 	const graph_start = $('#graph_start').val();
-	var graph_end   = 0;
+
 	const ds_step     = $('#ds_step').val();
 	var size        = $('#size').val();
     const isThumb     = $('#thumbnails').is(':checked');

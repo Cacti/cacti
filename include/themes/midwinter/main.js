@@ -597,7 +597,7 @@ function toggleCactiNavigationBoxPin(event) {
 	let caller = $(event.currentTarget);
 	let helper = caller.attr('data-helper');
 	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
-	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
+	$('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
 
 	if(event.data && event.data.dock) {
 		event.data.dock = event.data.dock.replace(/^./, str => str.toUpperCase());

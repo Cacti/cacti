@@ -127,7 +127,7 @@ function setButtonData(buttonName, buttonData) {
 		button.button();
 		button.data('buttonData', buttonData);
 		if (buttonData != null) {
-			var buttonCheck = button.data('buttonData');
+			button.data('buttonData');
 			if (buttonData.Enabled) {
 				button.button('enable');
 			} else {

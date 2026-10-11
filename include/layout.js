@@ -199,7 +199,7 @@ jQuery.ajaxQ = (function () {
  */
 function basename(path, suffix) {
 	var b = path;
-	var lastChar = b.charAt(b.length - 1);
+	b.charAt(b.length - 1);
 
 	// Don't remove trailing slash for now //
 	/*
@@ -842,7 +842,7 @@ function dqUpdateDeps(snmp_query_id) {
 	$('tr[id^="dqline' + snmp_query_id + '_"]').each(function (data) {
 		var id = $(this).attr('id');
 		var pieces = id.split('_');
-		var dq = pieces[0].substr(6);
+		pieces[0].substr(6);
 		var hash = pieces[1];
 
 		if ($.inArray(hash, created_graphs[snmp_query_graph_id]) >= 0) {
@@ -1171,7 +1171,7 @@ function applySkin() {
 
 	$('#main').css('display', 'table');
 
-	var showPage = $('#main').map(function (i, el) {
+	$('#main').map(function (i, el) {
 		var dfd = $.Deferred();
 		$(el).show(function () {
 			dfd.resolve();
@@ -2062,8 +2062,8 @@ function getCactiHelp(cactiPage) {
 function responsiveResizeGraphs(initialize) {
 	var mainWidth  = getMainWidth() - 30;
 	var myColumns  = $('#columns').val();
-	var isThumb    = $('#thumbnails').is(':checked') || $('#thumbnails').val() == 'true';
-	var isBusiness = $('#business_hours').is(':checked') || $('#business_hours').val() == 'true';
+	$('#thumbnails').is(':checked') || $('#thumbnails').val() == 'true';
+	$('#business_hours').is(':checked') || $('#business_hours').val() == 'true';
 
 	if ($('.tableRowGraph:first').length) {
 		var graphRow = $('.tableRowGraph:first').width();
@@ -2103,11 +2103,11 @@ function responsiveResizeGraphs(initialize) {
 			graph_id = $(this).attr('id').replace('graph_', '');
 		}
 
-		var rra_id = $(this).attr('rra_id');
+		$(this).attr('rra_id');
 		var type = $(this).attr('graph_type');
 
 		var original_cwidth = $('#wrapper_' + graph_id).attr('graph_width');
-		var original_cheight = $('#wrapper_' + graph_id).attr('graph_height');
+		$('#wrapper_' + graph_id).attr('graph_height');
 
 		/* original image attributes */
 		var image_width = $(this).attr('image_width');
@@ -2279,10 +2279,10 @@ function tuneTable(object, width) {
 	var width = width;
 	var tableWidth = $(object).width();
 	var totalCols = $(object).find('th').length;
-	var reducedWidth = 0;
+
 	var columnsHidden = countHiddenCols(object);
 	var visibleColumns = totalCols - columnsHidden;
-	var id = $(object).attr('id');
+	$(object).attr('id');
 
 	if (rows > 101) return false;
 
@@ -2306,7 +2306,7 @@ function tuneTable(object, width) {
 	var debug = false;
 
 	var tableHeaders = $(object).find('th');
-	var tableCheckBox = $(tableHeaders).each(function () {
+	$(tableHeaders).each(function () {
 		if ($(this).index() == tableHeaders.length) {
 			calculatedColumns.addClass('noHide');
 		}
@@ -2343,7 +2343,7 @@ function tuneTable(object, width) {
 			// and See which need to be hidden
 			if (!calculatedColumns.includes($(this).index())) {
 				var columnWidth = $.textMetrics(this).width + calculatedPadding;
-				var name = $(this).find('div.sortinfo').attr('sort-column');
+				$(this).find('div.sortinfo').attr('sort-column');
 
 				if (debug) {
 					console.log(
@@ -2383,7 +2383,7 @@ function tuneTable(object, width) {
 			if (!calculatedColumns.includes($(this).index())) {
 				if ($(this).is(':hidden') && stopExpand == false) {
 					var columnWidth = $.textMetrics(this).width + calculatedPadding;
-					var name = $(this).find('div.sortinfo').attr('sort-column');
+					$(this).find('div.sortinfo').attr('sort-column');
 
 					if (allSeenWidth + columnWidth < tableWidth) {
 						$(this).show();
@@ -2572,7 +2572,7 @@ function tuneFilter(object, width) {
 function handleUserMenu(toggle) {
 	var storage = Storages.sessionStorage;
 
-	var windowWidth = $(window).width();
+	$(window).width();
 
 	/* set the navigation id is not set */
 	if (currentNavId == 'undefined' || currentNavId == null) {
@@ -2690,7 +2690,7 @@ function loadTopTab(href, id, force) {
 	var storage = Storages.sessionStorage;
 
 	/* used for debugging */
-	var stack = ''; //getStackTrace(); // new Error().stack;
+	 //getStackTrace(); // new Error().stack;
 	var url   = href;// + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
 
 	/* close all toasts */
@@ -3310,7 +3310,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 }
 
 function ajaxAnchors() {
-	var page = basename(location.pathname);
+	basename(location.pathname);
 
 	$(document).rebind('click.cactiPostAction', 'a.cactiPostAction', function (event) {
 		if (!shouldCaptureClick(event)) {
@@ -3538,7 +3538,7 @@ function setupSortable() {
 
 		var $target = $(e.target);
 		var sortAdd = '';
-		var href = '';
+
 
 		if (!$target.is('.ui-resizable-handle')) {
 			var page = $(this).find('.sortinfo').attr('sort-page');
@@ -3595,7 +3595,7 @@ function setupBreadcrumbs() {
 function saveTableWidths(initial) {
 	// We will save columns widths persistently
 	var storage = Storages.localStorage;
-	var key;
+
 
 	// Initialize table width on the page
 	$('table.cactiTable').each(function (data) {
@@ -3942,7 +3942,7 @@ function setSelectMenus() {
 			}
 		},
 		_renderButtonItem: function(item) {
-			let that = this;
+
 			let attr = this.element[0].attributes;
 			let showDefaultLabel = select2Setup["displayDefaultLabel"];
 
@@ -4357,7 +4357,7 @@ function keepWindowSize() {
 				otherWidth += $(this).outerWidth();
 			});
 
-			var ellipsisWidth = $('.maintabs-submenu-ellipsis').outerWidth();
+			$('.maintabs-submenu-ellipsis').outerWidth();
 			var tabHeight = $('#tabs').outerHeight();
 			var mainTabPos = false;
 
@@ -5346,7 +5346,7 @@ $.widget('custom.dropcolor', {
 	_select: function (event, ui) {
 		var regExp = /\(([^)]+)\)/;
 		var hex = regExp.exec(ui.item.label);
-		var id = $(ui.item.option).attr('value');
+		$(ui.item.option).attr('value');
 
 		if (hex !== null) {
 			color = hex[1];
@@ -5441,7 +5441,7 @@ function expandClipboardSection(section) {
 		section.slideDown('fast');
 	}
 
-	var children = section.find('table').each(function (i) {
+	section.find('table').each(function (i) {
 		expandClipboardSection($(this));
 	});
 }
@@ -5826,7 +5826,7 @@ const streamAvailabilityToggleOptions = ['0', '1', '2', '3', '4', '5', '6'];
 const streamSNMPToggleOptions = ['1', '2', '3'];
 
 function setAvailability() {
-	var hasChanged = false;
+
 
 	if ($('#availability_method').val() != '7') {
 		if ($('#snmp_version').val() == '0') {
