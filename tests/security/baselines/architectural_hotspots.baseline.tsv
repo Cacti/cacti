@@ -1,6 +1,6 @@
 class	location	match
 cmd_exec	./cactid.php		exec('pgrep -a php | grep cactid.php', $output);
-cmd_exec	./cli/audit_database.php								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
+cmd_exec	./cli/audit_database.php								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old,
 cmd_exec	./cli/audit_database.php				$db_shell = trim((string) shell_exec('which mysql'));
 cmd_exec	./cli/audit_database.php				exec($cmd, $output, $error);
 cmd_exec	./cli/audit_database.php		exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
@@ -16,7 +16,7 @@ cmd_exec	./cli/splice_rrd.php	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump
 cmd_exec	./cli/splice_rrd.php	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
 cmd_exec	./cli/update_heartbeat.php				$result = exec($command, $output, $return_code);
 cmd_exec	./cmd.php			$cactiphp = proc_open($command, $cactides, $pipes);
-cmd_exec	./cmd_realtime.php				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+cmd_exec	./cmd_realtime.php				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id),
 cmd_exec	./graph_realtime.php			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 cmd_exec	./install/functions.php				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
@@ -93,7 +93,7 @@ cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_spikekill.php				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./remote_agent.php									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+cmd_exec	./remote_agent.php									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id),
 cmd_exec	./script_server.php					exec("TASKLIST /FO LIST /FI \"PID eq $ppid\"", $out);
 cmd_exec	./scripts/sql.php	$sql = shell_exec($cmd);
 cmd_exec	./scripts/ss_netsnmp_lmsensors.php			$virtual = intval(shell_exec('/usr/bin/hostnamectl 2> /dev/null | grep -i virtual | wc -l'));
