@@ -202,6 +202,11 @@ db_cacti -e "UPDATE version SET cacti = '1.2.22';"
 run_installer
 assert_complete_install "$EXPECTED_TABLES"
 
+printf 'Scenario: forced replay on the populated, already upgraded schema\n'
+docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \
+	php /var/www/html/cacti/tests/e2e/installer_failure_paths.php forced-upgrade-replay
+assert_complete_install "$EXPECTED_TABLES"
+
 printf 'Scenario: table conversion handoff reaches its postcondition\n'
 reset_database "$REPO_DIR/cacti.sql"
 db_cacti -e 'ALTER TABLE host ROW_FORMAT=Compact, CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci;'
@@ -252,7 +257,7 @@ printf '%s\n' "$BACKGROUND_OUTPUT"
 [ "$BACKGROUND_STATUS" -ne 0 ] || fail 'background installer accepted an incomplete schema'
 [ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'install_step';")" = '99' ] || fail 'background failure did not preserve STEP_ERROR'
 
-for scenario in domain-read ldap-read count-read upgrade-warning cli-failure composer-failure installer-lock; do
+for scenario in domain-read ldap-read count-read upgrade-warning cli-failure forced-cli-failure composer-failure installer-lock; do
 	printf 'Scenario: %s\n' "$scenario"
 	reset_database "$REPO_DIR/cacti.sql"
 	docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \

@@ -78,7 +78,10 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_column('sites', ['name' => 'disabled', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'name']);
 	db_install_add_column('sites', ['name' => 'region', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '', 'after' => 'country']);
 
-	db_install_add_column('user_domains_ldap', ['name' => 'tls_certificate', 'type' => 'tinyint(3)', 'unsigned' => true, 'NULL' => false, 'default' => '3']);
+	// Completed provider migrations have already removed this legacy table.
+	if (db_table_exists('user_domains_ldap')) {
+		db_install_add_column('user_domains_ldap', ['name' => 'tls_certificate', 'type' => 'tinyint(3)', 'unsigned' => true, 'NULL' => false, 'default' => '3']);
+	}
 
 	db_install_add_column('graph_templates_graph', ['name' => 't_left_axis_format', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_formatter']);
 	db_install_add_column('graph_templates_graph', ['name' => 'left_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_left_axis_format']);

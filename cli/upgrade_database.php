@@ -172,23 +172,18 @@ try {
 				break;
 			}
 
-			if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-				if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
-					$upgrade_failed = true;
-
-					break;
-				}
-
-				$orig_cacti_version = $cacti_upgrade_version;
-			}
-
 			$prev_cacti_version = $cacti_upgrade_version;
 		}
 
-		if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
-			$upgrade_failed = true;
+		// Forced replays may start below the installed schema version. Only
+		// advance it, so a later failure cannot leave an older version recorded.
+		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+			if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
+				$upgrade_failed = true;
 
-			break;
+				break;
+			}
+			$orig_cacti_version = $cacti_upgrade_version;
 		}
 
 		if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
