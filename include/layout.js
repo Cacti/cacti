@@ -4252,7 +4252,7 @@ function redrawGraph(graph_id) {
 function initGraphDrilldown() {
 	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
 	// A hamburger glyph over the graph's top-right toggles the action icons; they
-	// close on a second click, on leaving the graph, or on an outside click.
+	// close on a second click, on moving off the graph image, or on an outside click.
 	$(document).off('.graphdd');
 
 	function closeGraphDrilldown(container) {
@@ -4292,31 +4292,52 @@ function initGraphDrilldown() {
 		}
 	});
 
-	// Close when the pointer leaves the whole graph, not merely the icon strip, so
-	// the action icons stay reachable while moving onto them from the hamburger.  A
-	// native tooltip over an icon can fire a spurious mouseleave (relatedTarget is
-	// null), so defer and re-check the graph is really not hovered before closing.
+	// The hamburger is revealed only while the pointer is over this graph's image or
+	// the toggle overlaid on its top-right.  A grace period lets the pointer dip off
+	// and back (including onto the toggle) without hiding, and a native tooltip's
+	// spurious mouseleave is ignored by re-checking real hover.
 	var graphDrilldownCloseTimer;
 
-	$(document).on('mouseenter.graphdd', '.graphWrapperOuter', function () {
+	function graphDrilldownToggleFor(el) {
+		return $(el).closest('.graphWrapperOuter').find('.graphDrillDownToggle');
+	}
+
+	function graphDrilldownStillHovered(toggle) {
+		return toggle.is(':hover') || toggle.closest('.graphWrapperOuter').find('.graphimage').is(':hover');
+	}
+
+	function graphDrilldownHide(toggle) {
+		toggle.removeClass('reveal');
+
+		if (toggle.hasClass('open')) {
+			closeGraphDrilldown(toggle);
+		}
+
+		toggle.find('.graphDrillDownMenu:focus').trigger('blur');
+	}
+
+	$(document).on('mouseenter.graphdd', '.graphimage, .graphDrillDownToggle', function () {
 		clearTimeout(graphDrilldownCloseTimer);
+
+		var toggle = $(this).hasClass('graphDrillDownToggle') ? $(this) : graphDrilldownToggleFor(this);
+
+		// Entering a graph hides every other graph's hamburger and closes its strip.
+		$('.graphDrillDownToggle').not(toggle).each(function () {
+			graphDrilldownHide($(this));
+		});
+
+		toggle.addClass('reveal');
 	});
 
-	$(document).on('mouseleave.graphdd', '.graphWrapperOuter', function () {
-		var outer = $(this);
+	$(document).on('mouseleave.graphdd', '.graphimage, .graphDrillDownToggle', function () {
+		var toggle = $(this).hasClass('graphDrillDownToggle') ? $(this) : graphDrilldownToggleFor(this);
 
 		clearTimeout(graphDrilldownCloseTimer);
 
 		graphDrilldownCloseTimer = setTimeout(function () {
-			if (outer.is(':hover')) {
-				return;
+			if (!graphDrilldownStillHovered(toggle)) {
+				graphDrilldownHide(toggle);
 			}
-
-			outer.find('.graphDrillDownToggle.open').each(function () {
-				closeGraphDrilldown($(this));
-			});
-
-			outer.find('.graphDrillDownMenu:focus').trigger('blur');
 		}, 500);
 	});
 
