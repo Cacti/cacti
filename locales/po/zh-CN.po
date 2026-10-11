@@ -20112,6 +20112,11 @@ msgstr ""
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "如果您有SSD磁盘，请使用此建议。否则，请勿设置此设置。"
 
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "已安装。 <span class=\"deviceDown\">注意：如果您打算使用SNMPv3，则必须删除php-snmp并使用Net-SNMP工具集。</span>"
 
