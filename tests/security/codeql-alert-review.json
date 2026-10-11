@@ -142,7 +142,8 @@
       "path": "include/js/jquery.timepicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This is Timepicker Addon 1.6.3, invoked through datetimepicker (not a separate unused timepicker plugin). Graph/tree date filters set static format/grid options; scheduler adds a server-generated numeric Date. Browser coverage confirms hostile field text is parsed separately from template options and valid date/time round-trips. Regional labels, custom grid/select formats and plugin configuration remain unverified."
     },
     {
       "number": 119,
@@ -150,7 +151,8 @@
       "path": "include/js/jquery.timepicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This is Timepicker Addon 1.6.3, invoked through datetimepicker (not a separate unused timepicker plugin). Graph/tree date filters set static format/grid options; scheduler adds a server-generated numeric Date. Browser coverage confirms hostile field text is parsed separately from template options and valid date/time round-trips. Regional labels, custom grid/select formats and plugin configuration remain unverified."
     },
     {
       "number": 118,
@@ -262,47 +264,53 @@
       "path": "include/js/jstree.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Sibling and rename findings were reviewed separately. get_node accepts selector-like IDs, and vakata.attributes accepts a generic node argument; those broader API input boundaries still require caller/plugin evidence. They are not covered by the scoped sibling/rename false-positive conclusions."
     },
     {
       "number": 105,
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jstree.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "jsTree edit() keeps h2 as the internally constructed rename-input jQuery object; the outside-click handler wraps that same object and triggers blur. Cacti ctree already enables core.force_text=true. Browser coverage reads that actual configuration and verifies markup-like rename text survives outside-click blur without becoming HTML. Scoped to this reported h2 sink and current Cacti editor, not arbitrary plugin rendering.",
+      "resolution": "Replace ownership-only dismissal with controlled rename-input evidence and existing force_text/browser coverage in PR #8298."
     },
     {
       "number": 104,
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jstree.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "jsTree get_next_dom/get_prev_dom obtain next/previous siblings through DOM traversal; the reported jQuery constructors wrap DOM elements, not node label HTML. Browser test verifies element identity for strict and ordinary forward/backward paths with markup-like labels.",
+      "resolution": "Replace ownership-only dismissal with sibling DOM evidence and browser coverage in PR #8298."
     },
     {
       "number": 103,
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jstree.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "jsTree get_next_dom/get_prev_dom obtain next/previous siblings through DOM traversal; the reported jQuery constructors wrap DOM elements, not node label HTML. Browser test verifies element identity for strict and ordinary forward/backward paths with markup-like labels.",
+      "resolution": "Replace ownership-only dismissal with sibling DOM evidence and browser coverage in PR #8298."
     },
     {
       "number": 102,
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jstree.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "jsTree get_next_dom/get_prev_dom obtain next/previous siblings through DOM traversal; the reported jQuery constructors wrap DOM elements, not node label HTML. Browser test verifies element identity for strict and ordinary forward/backward paths with markup-like labels.",
+      "resolution": "Replace ownership-only dismissal with sibling DOM evidence and browser coverage in PR #8298."
     },
     {
       "number": 101,
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jstree.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "jsTree get_next_dom/get_prev_dom obtain next/previous siblings through DOM traversal; the reported jQuery constructors wrap DOM elements, not node label HTML. Browser test verifies element identity for strict and ordinary forward/backward paths with markup-like labels.",
+      "resolution": "Replace ownership-only dismissal with sibling DOM evidence and browser coverage in PR #8298."
     },
     {
       "number": 100,
@@ -310,7 +318,8 @@
       "path": "include/js/jstree.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Sibling and rename findings were reviewed separately. get_node accepts selector-like IDs, and vakata.attributes accepts a generic node argument; those broader API input boundaries still require caller/plugin evidence. They are not covered by the scoped sibling/rename false-positive conclusions."
     },
     {
       "number": 99,

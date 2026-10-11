@@ -5,6 +5,9 @@ import { resolve } from 'node:path';
 const layoutSource = readFileSync(resolve(__dirname, '../../../include/layout.js'), 'utf8');
 const validationSource = layoutSource.slice(layoutSource.indexOf('function formValidate('), layoutSource.indexOf('function toggleFields('));
 const serializationSource = layoutSource.slice(layoutSource.indexOf('$.fn.serializeForm ='), layoutSource.indexOf('$.fn.serializeObject ='));
+const treeSource = readFileSync(resolve(__dirname, '../../../tree.php'), 'utf8');
+const editorSource = treeSource.slice(treeSource.indexOf('$("#ctree").jstree({'), treeSource.indexOf(".on('ready.jstree'"));
+const editorForceText = editorSource.match(/'force_text'\s*:\s*(true|false)/)?.[1] === 'true';
 
 async function validationFixture(page: import('@playwright/test').Page) {
 	await page.goto('/');
@@ -70,6 +73,79 @@ test('core colorpicker input is parsed as a color rather than template HTML', as
 	}, payload);
 	expect(colors.invalid).not.toContain('<');
 	expect(colors.valid.toLowerCase()).toBe('12ab34');
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+async function treeFixture(page: import('@playwright/test').Page) {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jstree.js', jquery).href });
+	await page.evaluate(forceText => new Promise<void>(resolve => {
+		const container = document.createElement('div');
+		container.id = 'tree-probe';
+		const list = document.createElement('ul');
+		for (const id of ['first', 'second', 'third']) {
+			const item = document.createElement('li');
+			item.id = id;
+			item.textContent = '<img src=x onerror="window.dependencyExecuted=1"> ' + id;
+			list.append(item);
+		}
+		container.append(list);
+		document.body.append(container);
+		Reflect.get(window, '$')(container).one('ready.jstree', () => resolve()).jstree({
+			core: { animation: 0, check_callback: true, force_text: forceText },
+		});
+	}), editorForceText);
+}
+
+test('jsTree next/previous navigation wraps DOM siblings rather than label HTML (CodeQL 101-104)', async ({ page }) => {
+	await treeFixture(page);
+	const result = await page.evaluate(() => {
+		const tree = Reflect.get(window, '$')('#tree-probe').jstree(true);
+		return {
+			next: tree.get_next_dom('first')[0] === document.getElementById('second'),
+			nextStrict: tree.get_next_dom('first', true)[0] === document.getElementById('second'),
+			previous: tree.get_prev_dom('third')[0] === document.getElementById('second'),
+			previousStrict: tree.get_prev_dom('third', true)[0] === document.getElementById('second'),
+		};
+	});
+	expect(result).toEqual({ next: true, nextStrict: true, previous: true, previousStrict: true });
+	await expect(page.locator('#tree-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('Cacti tree editor keeps markup-like labels as text through rename and outside-click blur (CodeQL 105)', async ({ page }) => {
+	expect(editorForceText).toBe(true);
+	await treeFixture(page);
+	await page.evaluate(() => Reflect.get(window, '$')('#tree-probe').jstree(true).edit('first'));
+	const input = page.locator('.jstree-rename-input');
+	const payload = '<img src=x onerror="window.dependencyExecuted=1"> renamed';
+	await input.fill(payload);
+	await page.locator('#email').click();
+	await expect(input).toHaveCount(0);
+	await expect(page.locator('#first > .jstree-anchor')).toHaveText(payload);
+	await expect(page.locator('#tree-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('core datetimepicker parses field text separately from grid template options', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery-ui.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.timepicker.js', jquery).href });
+	const result = await page.evaluate(() => {
+		const input = document.createElement('input');
+		input.id = 'date-probe';
+		input.value = '<img src=x onerror="window.dependencyExecuted=1">';
+		document.body.append(input);
+		const $ = Reflect.get(window, '$');
+		// Match the graph/tree date-filter configuration.
+		$(input).datetimepicker({ minuteGrid: 10, stepMinute: 1, showAnim: 'slideDown', numberOfMonths: 1, timeFormat: 'HH:mm', dateFormat: 'yy-mm-dd', showButtonPanel: false });
+		$(input).datetimepicker('show');
+		const grid = document.querySelector('.ui-timepicker-div') !== null;
+		$(input).datetimepicker('setDate', new Date(2026, 9, 10, 12, 30));
+		return { grid, value: input.value };
+	});
+	expect(result).toEqual({ grid: true, value: '2026-10-10 12:30' });
 	await expect(page.locator('img')).toHaveCount(0);
 	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
 });
