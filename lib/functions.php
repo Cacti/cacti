@@ -2972,11 +2972,12 @@ function data_source_path_within_rra($path) {
 	foreach ($parts as $segment) {
 		$walk .= '/' . $segment;
 
-		if (file_exists($walk)) {
-			if (is_link($walk)) {
-				return false;
-			}
+		/* file_exists() is false for dangling links; reject every link first. */
+		if (is_link($walk)) {
+			return false;
+		}
 
+		if (file_exists($walk)) {
 			$deepest_existing = $walk;
 		}
 	}
