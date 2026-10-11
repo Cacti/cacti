@@ -4084,6 +4084,12 @@ msgstr "Toon grafiek"
 msgid "The Graph you requested does not exist."
 msgstr "Data bron bestaat niet."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Grafiek opties"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Grafiek details, zoom en debug utilities"
