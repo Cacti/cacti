@@ -33,9 +33,14 @@ jobs:
       matrix:
         php: ['8.3', '8.5']
         database: ['mariadb:10.11', 'mysql:8.4']
+        include:
+          - database: 'mariadb:10.11'
+            digest: '7db29378d4fdab73f8123bbc2b48905c90d1a4b00cf848b028f1e81e623257f2'
+          - database: 'mysql:8.4'
+            digest: '6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242'
     services:
       database:
-        image: ${{ matrix.database }}
+        image: ${{ matrix.database }}@sha256:${{ matrix.digest }}
         env:
           MYSQL_DATABASE: cacti_plugin_grant_test
           MYSQL_ROOT_PASSWORD: fixture-password
@@ -63,6 +68,7 @@ jobs:
         env:
           MYSQL_PWD: fixture-password
         run: |
+          set -euo pipefail
           mysql --protocol=TCP -h 127.0.0.1 -u root cacti_plugin_grant_test < cacti.sql
           cp include/config.php.dist include/config.php
           cat >> include/config.php <<'PHP'
