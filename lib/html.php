@@ -115,7 +115,7 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 	if (!ierv('action')) {
 		$colsizing_view = clean_up_name(gnrv('action'));
 
-		if (in_array($colsizing_view, array('go', 'change', 'clear', 'reset'), true)) {
+		if (in_array($colsizing_view, ['go', 'change', 'clear', 'reset'], true)) {
 			$colsizing_view = '';
 		}
 	} elseif (!ierv('report')) {
