@@ -167,8 +167,34 @@ EXPECTED_TABLES="$(grep -c '^CREATE TABLE' cacti.sql)"
 
 printf 'Scenario: fresh CLI installation\n'
 reset_database "$REPO_DIR/cacti.sql"
-run_installer
+run_installer --debug=json:3
 assert_complete_install "$EXPECTED_TABLES"
+[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'log_install_json';")" = '3' ] || fail 'installer reset the requested debug level'
+
+printf 'Scenario: table conversion rejects missing conversion options\n'
+if docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php; then
+	fail 'table converter returned success without a conversion option'
+fi
+
+printf 'Scenario: table conversion rejects disabled file-per-table\n'
+db_root -e 'SET GLOBAL innodb_file_per_table = OFF;'
+if docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --innodb --table=host; then
+	fail 'table converter returned success with file-per-table disabled'
+fi
+db_root -e 'SET GLOBAL innodb_file_per_table = ON;'
+
+printf 'Scenario: installer logging mode loads the conversion helpers\n'
+docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --installer --utf8 --table=host
+
+printf 'Scenario: row-format-only conversion does not require a charset change\n'
+db_cacti -e 'CREATE TABLE installer_conversion_fixture (id int unsigned NOT NULL PRIMARY KEY) ENGINE=InnoDB ROW_FORMAT=Compact DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;'
+docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --innodb --dynamic --table=installer_conversion_fixture
+[ "$(db_cacti -e "SELECT ROW_FORMAT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'installer_conversion_fixture';")" = 'Dynamic' ] || fail 'row-format-only conversion did not convert the fixture table'
+
+printf 'Scenario: Aria conversion reaches the requested InnoDB engine\n'
+db_cacti -e 'ALTER TABLE installer_conversion_fixture ENGINE=Aria;'
+docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --innodb --utf8 --table=installer_conversion_fixture
+[ "$(db_cacti -e "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'installer_conversion_fixture';")" = 'InnoDB' ] || fail 'table converter left the fixture table using Aria'
 
 printf 'Scenario: 1.2.22 to %s CLI upgrade\n' "$CACTI_VERSION"
 reset_database "$OLD_SCHEMA"
@@ -195,6 +221,7 @@ VERSION_STATUS=$?
 set -e
 printf '%s\n' "$VERSION_OUTPUT"
 [ "$VERSION_STATUS" -ne 0 ] || fail 'installer ignored a rejected version write'
+[ "$(db_cacti -e "SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master';")" -eq 0 ] || fail 'failed installer retained its process registration'
 [ "$(db_cacti -e 'SELECT cacti FROM version;')" = 'new_install' ] || fail 'failed version transaction did not roll back'
 
 printf 'Scenario: incomplete schema fails closed in CLI mode\n'
@@ -206,6 +233,7 @@ CLI_STATUS=$?
 set -e
 printf '%s\n' "$CLI_OUTPUT"
 [ "$CLI_STATUS" -ne 0 ] || fail 'CLI installer accepted an incomplete schema'
+[ "$(db_cacti -e "SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master';")" -eq 0 ] || fail 'schema validation failure retained its process registration'
 grep -q 'user_auth_row_cache' <<< "$CLI_OUTPUT" || fail 'CLI failure did not identify the missing table'
 [ "$(db_cacti -e 'SELECT cacti FROM version;')" = 'new_install' ] || fail 'failed install advanced the version row'
 
@@ -223,5 +251,12 @@ set -e
 printf '%s\n' "$BACKGROUND_OUTPUT"
 [ "$BACKGROUND_STATUS" -ne 0 ] || fail 'background installer accepted an incomplete schema'
 [ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'install_step';")" = '99' ] || fail 'background failure did not preserve STEP_ERROR'
+
+for scenario in domain-read ldap-read count-read upgrade-warning cli-failure composer-failure installer-lock; do
+	printf 'Scenario: %s\n' "$scenario"
+	reset_database "$REPO_DIR/cacti.sql"
+	docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \
+		php /var/www/html/cacti/tests/e2e/installer_failure_paths.php "$scenario"
+done
 
 printf 'PASS installer unit/integration Docker matrix\n'
