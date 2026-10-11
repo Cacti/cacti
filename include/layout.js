@@ -4252,7 +4252,7 @@ function redrawGraph(graph_id) {
 function initGraphDrilldown() {
 	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
 	// A hamburger glyph over the graph's top-right toggles the action icons; they
-	// close on a second click, on leaving the strip, or on an outside click.
+	// close on a second click, on leaving the graph, or on an outside click.
 	$(document).off('.graphdd');
 
 	function closeGraphDrilldown(container) {
@@ -4292,8 +4292,15 @@ function initGraphDrilldown() {
 		}
 	});
 
-	$(document).on('mouseleave.graphdd', '.graphDrillDownToggle.open', function () {
-		closeGraphDrilldown($(this));
+	// Close when the pointer leaves the whole graph, not merely the icon strip, so
+	// the action icons stay reachable while moving onto them from the hamburger.
+	$(document).on('mouseleave.graphdd', '.graphWrapperOuter', function () {
+		$(this).find('.graphDrillDownToggle.open').each(function () {
+			closeGraphDrilldown($(this));
+		});
+
+		// Drop any lingering focus so the hamburger hides once the pointer is gone.
+		$(this).find('.graphDrillDownMenu:focus').trigger('blur');
 	});
 
 	$(document).on('click.graphdd', function (event) {
