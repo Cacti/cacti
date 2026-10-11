@@ -3512,24 +3512,31 @@ function data_source_path_within_rra(string $path) : bool {
 		return false;
 	}
 
-	// block symlink pivots below the RRA directory, even for RRD files that don't exist yet
-	$walk = $base_real;
+	// Block symlink pivots below the RRA directory, even for an RRD file (and
+	// its structured-path subdirectories) that do not exist yet. Track the
+	// deepest ancestor that actually exists: once a segment is missing every
+	// deeper one is too, so a not-yet-created intermediate directory - e.g. the
+	// host_id folder on a data source's first poll - leaves the file lexically
+	// contained (checked above) and must not be reported as an escape. Only the
+	// deepest existing ancestor needs to resolve inside the RRA root.
+	$walk             = $base_real;
+	$deepest_existing = $base_real;
 
 	foreach ($parts as $segment) {
 		$walk .= '/' . $segment;
 
-		if (file_exists($walk) && is_link($walk)) {
-			return false;
+		if (file_exists($walk)) {
+			if (is_link($walk)) {
+				return false;
+			}
+
+			$deepest_existing = $walk;
 		}
 	}
 
-	if (file_exists($walk)) {
-		return cacti_path_is_within($walk, $base_real);
-	}
+	$resolved = realpath($deepest_existing);
 
-	$parent = realpath(dirname($walk));
-
-	return $parent !== false && cacti_path_is_within($parent, $base_real);
+	return $resolved !== false && cacti_path_is_within($resolved, $base_real);
 }
 
 /**
