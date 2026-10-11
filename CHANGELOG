@@ -50,7 +50,7 @@ Cacti CHANGELOG
 -issue#8116: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh
 -issue#8105: Add a Force Uninstall action to remove an orphaned plugin whose directory is missing
 -issue#8073: Render a separate password reset link on local login errors while keeping error text escaped
--issue#7968: Honor plugin version-range operators, align INFO compatibility status, report configuration failures, preserve installed state after successful checks, compare dependency requirements against installed versions, and confine error attribution to the plugin root
+-issue#7968: Honor plugin version-range operators, align INFO compatibility status, report configuration failures, preserve installed state after successful checks, compare dependency requirements against installed versions, confine error attribution to the plugin root, reject invalid entrypoints without warnings, and bind realm filenames
 -issue#7969: Restore excluded integration and mutation regression coverage
 -issue#7969: Align Rocky Linux compatibility checks with the supported PHP runtime
 -issue#8063: Support searching by graph ID on the Graphs list/preview and Aggregate Graphs pages
