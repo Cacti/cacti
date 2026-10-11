@@ -456,7 +456,7 @@ function setupTheme() {
 				});
 			} else {
 				$("#navBackdrop").on('click', function() {
-					window.open('https://cacti.net', '_blank');
+					window.open('https://cacti.net', '_blank', 'noopener,noreferrer');
 				});
 			}
 		}
