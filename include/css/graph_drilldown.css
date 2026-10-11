@@ -61,9 +61,11 @@
 }
 
 /* Keep the toggle focusable (never display:none) and reveal it on hover,
-   keyboard focus, the open state, and on devices that cannot hover. */
+   keyboard focus, the open state, and on devices that cannot hover.  Use
+   :focus-visible so a mouse click does not latch the reveal via :focus -
+   that is what previously forced a focus-destroying blur() on pointer exit. */
 .graphDrillDownToggle.reveal .graphDrillDownMenu,
-.graphDrillDownToggle .graphDrillDownMenu:focus,
+.graphDrillDownToggle .graphDrillDownMenu:focus-visible,
 .graphDrillDownToggle.open .graphDrillDownMenu {
 	opacity: 1;
 }
