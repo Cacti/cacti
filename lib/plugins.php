@@ -1815,7 +1815,7 @@ function plugin_is_compatible(string $plugin) : array {
 	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');
 
 	if ($info !== false) {
-		if (!isset($info['compat']) || plugin_valid_version_range($info['compat'], CACTI_VERSION)) {
+		if (!isset($info['compat']) || !plugin_valid_version_range($info['compat'], CACTI_VERSION)) {
 			return ['compat' => false, 'requires' => __('Requires: Cacti >= %s', $info['compat'])];
 		}
 	} else {
@@ -1825,44 +1825,27 @@ function plugin_is_compatible(string $plugin) : array {
 	return ['compat' => true, 'requires' => __('Requires: Cacti >= %s', $info['compat'])];
 }
 
+/**
+ * Match whitespace-separated, attached comparison operators. A bare version
+ * retains the legacy minimum-version meaning. All constraints must match.
+ */
 function plugin_valid_version_range(string $range_string, string $compare_version = CACTI_VERSION) : bool {
-	if (str_contains($range_string, ' ')) {
-		$compares = explode(' ', $range_string);
+	$compares = preg_split('/\s+/', trim($range_string));
 
-		foreach ($compares as $line) {
-			if (str_contains($line, '<=')) {
-				$theversion = str_replace('<=', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '>=')) {
-				$theversion = str_replace('>=', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '<')) {
-				$theversion = str_replace('<', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '>')) {
-				$theversion = str_replace('>', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '=')) {
-				$theversion = str_replace('=', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} else {
-				cacti_log('Invalid version comparison');
+	if ($compares === false) {
+		return false;
+	}
 
-				return false;
-			}
+	foreach ($compares as $constraint) {
+		if (!preg_match('/^(<=|>=|<|>|=)?([0-9][0-9A-Za-z._-]*)$/D', $constraint, $parts)) {
+			cacti_log('Invalid version comparison');
+
+			return false;
 		}
 
-		foreach ($versions as $v) {
-			if (!cacti_version_compare($compare_version, $v['version'], $v['direction'])) {
-				return false;
-			}
-		}
-	} else {
-		$versions[] = ['direction' => '>=', 'version' => $range_string];
+		$direction = $parts[1] !== '' ? $parts[1] : '>=';
 
-		if (cacti_version_compare($compare_version, $range_string, '>=')) {
-			return true;
-		} else {
+		if (!cacti_version_compare($compare_version, $parts[2], $direction)) {
 			return false;
 		}
 	}
@@ -1942,7 +1925,7 @@ function plugin_load_info_defaults(string $file, mixed $info, array $defaults = 
 			$result['status'] = -3;
 		} elseif (cacti_strtolower($dir) != cacti_strtolower($result['name'])) {
 			$result['status'] = -2;
-		} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
+		} elseif (!isset($result['compat']) || !plugin_valid_version_range($result['compat'], CACTI_VERSION)) {
 			$result['status'] = -1;
 		}
 	}
