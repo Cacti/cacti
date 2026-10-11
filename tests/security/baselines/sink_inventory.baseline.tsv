@@ -227,8 +227,8 @@ header_redirect	./aggregate_graphs.php						header('Location: aggregate_graphs.p
 header_redirect	./aggregate_graphs.php					header('Location: aggregate_graphs.php');
 header_redirect	./aggregate_graphs.php					header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php					header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
-header_redirect	./aggregate_graphs.php				header('Location: ' .
 header_redirect	./aggregate_graphs.php				header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
+header_redirect	./aggregate_graphs.php				header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . ($graph_template_item_id === null ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
 header_redirect	./aggregate_graphs.php				header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php				header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php			header('Location: ' . $referer);

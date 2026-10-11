@@ -158,13 +158,7 @@ function form_actions() : void {
 
 				$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', [$matches[1]]);
 
-				$ilist .= '<li>' .
-					($color['name'] != '' ? htmle($color['name']) : __('Unnamed Color')) .
-					' (<span style="background-color:#' .
-					$color['hex'] .
-					'">' .
-					$color['hex'] .
-					'</span>)</li>';
+				$ilist .= '<li>' . ($color['name'] != '' ? htmle($color['name']) : __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -251,8 +245,7 @@ function color_import_processor(array &$colors) : array {
 				if ($required >= 2) {
 					array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
 				} else {
-					array_push($return_array,
-						'<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
+					array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
 
 					break;
 				}
@@ -361,9 +354,7 @@ function color_import() : void {
 	</tr><?php
 	form_alternate_row(); ?>
 		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?'); ?></font><br>
-			<?php print __('Should the import process be allowed to overwrite existing data?  ' .
-				'Please note, this does not mean delete old rows, only update ' .
-				'duplicate rows.'); ?>
+			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.'); ?>
 		</td>
 		<td class='left'>
 			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?'); ?>
@@ -501,15 +492,7 @@ function color() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('color.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		8,
-		__('Colors'),
-		'page',
-		'main');
+	$nav = html_nav_bar('color.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
 
 	form_start('color.php', 'chk');
 
@@ -546,8 +529,7 @@ function color() : void {
 			'display' => __('Deletable'),
 			'align'   => 'right',
 			'sort'    => '',
-			'tip'     => __('Colors in use cannot be Deleted.  In use is defined as being ' .
-				'referenced either by a Graph or a Graph Template.')
+			'tip'     => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')
 		],
 		'graphs' => [
 			'display' => __('Graphs Using'),

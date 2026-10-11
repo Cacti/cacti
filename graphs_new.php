@@ -206,9 +206,7 @@ function host_new_graphs_save(int $host_id) : void {
 			} else { // this is a data query field
 				$values['sg'][$matches[1]][$matches[2]]['graph_template'][$matches[3]] = $val;
 			}
-		} elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/',
-			$var,
-			$matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name
+		} elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name
 			// ================= input validation =================
 			input_validate_input_number($matches[3], 'gi[3]');
 			// ====================================================
@@ -230,9 +228,7 @@ function host_new_graphs_save(int $host_id) : void {
 					}
 				}
 			}
-		} elseif (preg_match('/^d_(\d+)_(\d+)_(\d+)_(\w+)/',
-			$var,
-			$matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_name
+		} elseif (preg_match('/^d_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_name
 			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg'][$matches[2]]['data_template'][$matches[3]][$matches[4]] = $val;
 			} else { // this is a data query field
@@ -268,9 +264,7 @@ function host_new_graphs_save(int $host_id) : void {
 			} else { // this is a data query field
 				$values['sg'][$matches[1]][$matches[2]]['custom_data'][$matches[3]][$matches[4]] = $val;
 			}
-		} elseif (preg_match('/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/',
-			$var,
-			$matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name
+		} elseif (preg_match('/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name
 			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg'][$matches[2]]['data_template_item'][$matches[4]][$matches[5]] = $val;
 			} else { // this is a data query field
@@ -448,10 +442,7 @@ function create_graphs_new_filter(array $host, array $snmp_queries) : array {
 	return $filters;
 }
 
-function draw_graphs_new_filter(bool $render = false,
-	string $header_label = '',
-	array $host = [],
-	array $snmp_queries = []) : void {
+function draw_graphs_new_filter(bool $render = false, string $header_label = '', array $host = [], array $snmp_queries = []) : void {
 	$filters = create_graphs_new_filter($host, $snmp_queries);
 
 	// create the page filter
@@ -493,10 +484,7 @@ function graphs() : void {
 			WHERE id = ?',
 			[$host['host_template_id']]);
 
-		$header_label = __esc('New Graphs [ %s - %s ] [ %s ]',
-			$host['description'],
-			$host['hostname'],
-			(!empty($host['host_template_id']) ? $name : ''));
+		$header_label = __esc('New Graphs [ %s - %s ] [ %s ]', $host['description'], $host['hostname'], (!empty($host['host_template_id']) ? $name : ''));
 	} else {
 		$header_label = __('New Graphs [ Search for a Device First ]');
 	}
@@ -576,20 +564,11 @@ function graphs() : void {
 		print "<tr class='even'>
 			<td class='left' style='width:1%'>";
 
-		form_dropdown('cg_g',
-			$available_graph_templates,
-			'name',
-			'id',
-			'',
-			__('(Select a graph type to create)'),
-			'',
-			'textArea');
+		form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', __('(Select a graph type to create)'), '', 'textArea');
 
 		print '</td>
 			<td class="left">
-				<button type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" role="button">' .
-					__('Create') .
-					'</button>
+				<button type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" role="button">' . __('Create') . '</button>
 			</td>
 		</tr>';
 
@@ -599,10 +578,7 @@ function graphs() : void {
 
 		print "<tr class='tableHeader'>
 			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" .
-				__esc('Select All') .
-				("' onClick='selectAll(\"sg\",this.checked)'><label " .
-				"class='formCheckboxLabel' title='") . __esc('Select All Rows') . "' for='all_cg'></label></th>
+			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='selectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='all_cg'></label></th>
 		</tr>";
 
 		if (grv('filter') != '') {
@@ -657,15 +633,12 @@ function graphs() : void {
 			foreach ($graph_templates as $graph_template) {
 				$query_row = $graph_template['graph_template_id'];
 
-				print "<tr id='gt_line$query_row' style='display:table-row' class='selectable " .
-					(($i % 2 == 0) ? 'odd' : 'even') .
-					"'>";
+				print "<tr id='gt_line$query_row' style='display:table-row' class='selectable " . (($i % 2 == 0) ? 'odd' : 'even') . "'>";
 
 				$i++;
 
 				print "<td>
-					<span id='gt_text$query_row" . "_0'>" . filter_value($graph_template['graph_template_name'],
-					grv('filter')) . "</span>
+					<span id='gt_text$query_row" . "_0'>" . filter_value($graph_template['graph_template_name'], grv('filter')) . "</span>
 					</td>
 					<td class='checkbox' style='width:1%;'>
 						<input class='checkbox' type='checkbox' name='cg_$query_row' id='cg_$query_row'>
@@ -720,10 +693,7 @@ function graphs() : void {
 						foreach ($xml_array['fields'] as $field_name => $field_array) {
 							if (!is_array($field_array)) {
 								if (!$message_raised) {
-									raise_message('xmlerror',
-										__('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id of \'%s\'',
-											$snmp_query['id']),
-										MESSAGE_LEVEL_ERROR);
+									raise_message('xmlerror', __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id of \'%s\'', $snmp_query['id']), MESSAGE_LEVEL_ERROR);
 									$message_raised = true;
 								}
 							} elseif (isset($field_array['direction'])) {
@@ -740,21 +710,11 @@ function graphs() : void {
 									}
 								}
 							} else {
-								raise_message('xmlfielderr' . $field_name,
-									__esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with ' .
-										'id \'%s\'.  Field Name \'%s\' missing a \'direction\' attribute',
-										$snmp_query['name'],
-										$snmp_query['id'],
-										$field_name),
-									MESSAGE_LEVEL_ERROR);
+								raise_message('xmlfielderr' . $field_name, __esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'.  Field Name \'%s\' missing a \'direction\' attribute', $snmp_query['name'], $snmp_query['id'], $field_name), MESSAGE_LEVEL_ERROR);
 							}
 						}
 					} elseif (!$message_raised) {
-						raise_message('xmlerror',
-							__esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'',
-								$snmp_query['name'],
-								$snmp_query['id']),
-							MESSAGE_LEVEL_ERROR);
+						raise_message('xmlerror', __esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'', $snmp_query['name'], $snmp_query['id']), MESSAGE_LEVEL_ERROR);
 						$message_raised = true;
 					}
 				}
@@ -798,13 +758,7 @@ function graphs() : void {
 							<span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span>
 						</div>
 						<div class='cactiTableButton'>
-							<span class='reloadquery ti ti-refresh' id='reload" .
-								$snmp_query['id'] .
-								"' title='" .
-								__esc('Reload Query') .
-								"' data-id='" .
-								$snmp_query['id'] .
-								"'></span>
+							<span class='reloadquery ti ti-refresh' id='reload" . $snmp_query['id'] . "' title='" . __esc('Reload Query') . "' data-id='" . $snmp_query['id'] . "'></span>
 						</div>
 					</div>
 				</div>";
@@ -913,23 +867,14 @@ function graphs() : void {
 							load_current_session_value('page' . $snmp_query['id'], 'sess_grn_page' . $snmp_query['id'], '1');
 						}
 
-						$nav = html_nav_bar('graphs_new.php?host_id=' . grv('host_id'),
-							MAX_DISPLAY_PAGES,
-							$page,
-							$rows,
-							$total_rows,
-							15,
-							__('Items'),
-							'page' . $snmp_query['id']);
+						$nav = html_nav_bar('graphs_new.php?host_id=' . grv('host_id'), MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, __('Items'), 'page' . $snmp_query['id']);
 
 						print $nav;
 
 						html_start_box('', '100%', false, 3, 'center', '');
 
 						foreach ($xml_array['fields'] as $field_name => $field_array) {
-							if (($field_array['direction'] == 'input' ||
-								$field_array['direction'] == 'input-output') &&
-								cacti_sizeof($field_names)) {
+							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && cacti_sizeof($field_names)) {
 								foreach ($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
 										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . '</th>';
@@ -941,34 +886,11 @@ function graphs() : void {
 						}
 
 						if (!cacti_sizeof($snmp_query_indexes)) {
-							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem ' .
-								'executing this Data Query.') .
-									"<a href='" .
-									htmle('host.php?action=query_verbose&id=' .
-									$snmp_query['id'] .
-									'&host_id=' .
-									$host['id']) .
-									"'>" .
-									__('You can run this Data Query in debug mode') .
-									'</a> ' .
-									__('From there you can get more information.') .
-									'</td></tr>';
+							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . htmle('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . '</a> ' . __('From there you can get more information.') . '</td></tr>';
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" .
-										$snmp_query['id'] .
-										"' type='checkbox' name='all_" .
-										$snmp_query['id'] .
-										"' title='" .
-										__esc('Select All') .
-										"' onClick='selectAll(\"sg_" .
-										$snmp_query['id'] .
-										"\",this.checked)'><label class='formCheckboxLabel' title='" .
-										__esc('Select All Rows') .
-										"' for='all_" .
-										$snmp_query['id'] .
-										"'></label></th>
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='selectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='all_" . $snmp_query['id'] . "'></label></th>
 								</tr>";
 						}
 
@@ -996,9 +918,7 @@ function graphs() : void {
 									print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>";
 									$i++;
 								} else {
-									print "<tr id='nodqline$query_row' title='$disabled_text' class='selectable notemplate " .
-										(($row_counter % 2 == 0) ? 'odd' : 'even') .
-										"'>";
+									print "<tr id='nodqline$query_row' title='$disabled_text' class='selectable notemplate " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>";
 									$i++;
 								}
 
@@ -1008,13 +928,7 @@ function graphs() : void {
 									if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 										if (in_array($field_name, $fields, true)) {
 											if (isset($row[$field_name])) {
-												print "<td><span class='textOverflow' id='text$query_row" .
-													'_' .
-													$column_counter .
-													"'>" .
-													filter_value($row[$field_name],
-														grv('filter')) .
-													'</span></td>';
+												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], grv('filter')) . '</span></td>';
 											} else {
 												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}
@@ -1045,9 +959,7 @@ function graphs() : void {
 				} else {
 					html_start_box('', '100%', false, 3, 'center', '');
 
-					print "<tr class='odd'><td class='textError'>" .
-						__('Error in Data Query.  This could be due to the following: File ' .
-						'Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
+					print "<tr class='odd'><td class='textError'>" . __('Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
 				}
 
 				html_end_box();
@@ -1060,13 +972,7 @@ function graphs() : void {
 					[$snmp_query['id']]);
 
 				if (cacti_sizeof($data_query_graphs) == 1) {
-					print "<input type='hidden' id='sgg_" .
-						$snmp_query['id'] .
-						"' name='sgg_" .
-						$snmp_query['id'] .
-						"' value='" .
-						$data_query_graphs[0]['id'] .
-						"'>";
+					print "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>";
 				} elseif (cacti_sizeof($data_query_graphs) > 1) {
 					print "<div class='break'></div>";
 
@@ -1082,24 +988,10 @@ function graphs() : void {
 							" . __('Select a Graph Type to Create') . "
 						</td>
 						<td class='right'>
-							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .
-								$snmp_query['id'] .
-								"' title='" .
-								__esc('Make selection default') .
-								"'>" .
-								__esc('Set Default') .
-								"</button>
+							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" . $snmp_query['id'] . "' title='" . __esc('Make selection default') . "'>" . __esc('Set Default') . "</button>
 						</td>
 						<td class='right'>
-							<select class='dqselect' name='sgg_" .
-								$snmp_query['id'] .
-								"' id='sgg_" .
-								$snmp_query['id'] .
-								"' onChange='dqUpdateDeps(" .
-								$snmp_query['id'] .
-								',' .
-								(isset($column_counter) ? $column_counter : '') .
-								");'>
+							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter : '') . ");'>
 								";
 					html_create_list($data_query_graphs, 'name', 'id', $selected);
 					print '
@@ -1123,12 +1015,7 @@ function graphs() : void {
 			});
 		});";
 
-		$script .= ("$('.default').click(function() { " .
-			"$.get('graphs_new.php?action=ajax_save&query=") .
-				(isset($snmp_query['id']) ? $snmp_query['id'] : '') .
-				("'+'&item='+$(\".dqselect\").val()).fail(function(data) { " .
-			'getPresentHTTPError(data); });}); ' .
-			"$('tr.notemplate').tooltip();</script>");
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id'] : '') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });}); $('tr.notemplate').tooltip();</script>";
 
 		print $script;
 	}
