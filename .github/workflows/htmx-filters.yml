@@ -19,6 +19,9 @@ on:
     paths:
       - 'lib/htmx.php'
       - 'include/layout.js'
+      - 'include/js/jquery.tablednd.js'
+      - 'include/js/jquery.colorpicker.js'
+      - 'color.php'
       - 'include/global.php'
       - 'include/js/htmx.js'
       - 'include/js/htmx.js.version'
@@ -48,6 +51,9 @@ on:
     paths:
       - 'lib/htmx.php'
       - 'include/layout.js'
+      - 'include/js/jquery.tablednd.js'
+      - 'include/js/jquery.colorpicker.js'
+      - 'color.php'
       - 'include/global.php'
       - 'include/js/htmx.js'
       - 'include/js/htmx.js.version'

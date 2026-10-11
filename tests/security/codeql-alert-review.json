@@ -190,7 +190,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 113,
@@ -198,7 +199,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 112,
@@ -206,7 +208,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 111,
@@ -214,7 +217,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 110,
@@ -222,7 +226,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 109,
@@ -230,7 +235,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 108,
@@ -238,7 +244,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 107,
@@ -246,7 +253,8 @@
       "path": "include/js/jquery.dropdown.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "This file is Cacti-authored (its GPL header says maintained by Cacti), so the prior third-party rationale is incorrect. Exact DropDownMenu API and loader searches found no core call or include. Its title/subtitle/name/html options are intentionally rendered as HTML; plugin/theme use and compatibility require evidence before deletion, hardening or dismissal."
     },
     {
       "number": 106,
@@ -591,8 +599,9 @@
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jquery.tablednd.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "tableDnD makeDraggable uses table.rows (HTMLCollection), iterates row DOM elements, and calls $(this).css with static cursor strings. Row content is never passed to the jQuery constructor at this sink. Browser regression verifies preserved row identity, hostile text retained as text, and nodrag behavior.",
+      "resolution": "Replace library-ownership dismissal with DOM-element source evidence and browser regression in PR #8298."
     },
     {
       "number": 63,
@@ -840,7 +849,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 32,
@@ -848,7 +858,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 31,
@@ -856,7 +867,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 30,
@@ -864,7 +876,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 29,
@@ -872,7 +885,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 28,
@@ -880,7 +894,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 27,
@@ -888,7 +903,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 26,
@@ -896,7 +912,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 25,
@@ -904,7 +921,8 @@
       "path": "include/js/jquery.colorpicker.js",
       "observedState": "dismissed",
       "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient.",
+      "coreReview": "Core color.php calls $(#hex).colorpicker() with defaults. Input .val() is parsed into a Color object; it does not provide size, regional labels or template options. Browser regression checks hostile input and valid hex round-trip. The reported templates include configurable size/regional values, so plugin-provided configuration and overrides remain unverified; this does not establish a globally safe library boundary."
     },
     {
       "number": 24,

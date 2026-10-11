@@ -22,7 +22,57 @@ async function validationFixture(page: import('@playwright/test').Page) {
 	await page.addScriptTag({ url: validation });
 	// Use the production functions; only their page-level state is isolated.
 	await page.addScriptTag({ content: 'var changed=false; var formArray={}; var formRules={"#probe":{}};' + serializationSource + validationSource });
+	return jquery;
 }
+
+test('table drag initializes existing rows without interpreting their text as HTML (CodeQL 64)', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery.tablednd.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	const result = await page.evaluate(payload => {
+		const table = document.createElement('table');
+		table.id = 'drag-probe';
+		const first = table.insertRow();
+		first.id = 'first';
+		first.insertCell().textContent = payload;
+		const second = table.insertRow();
+		second.id = 'second';
+		second.className = 'nodrag';
+		second.insertCell().textContent = 'fixed row';
+		document.body.append(table);
+		Reflect.get(window, '$')(table).tableDnD();
+		return { first: table.rows[0] === first, second: table.rows[1] === second, cursor: first.style.cursor, fixedCursor: second.style.cursor };
+	}, payload);
+	expect(result).toEqual({ first: true, second: true, cursor: 'move', fixedCursor: '' });
+	await expect(page.locator('#first td')).toHaveText(payload);
+	await expect(page.locator('#drag-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('core colorpicker input is parsed as a color rather than template HTML', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery-ui.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.colorpicker.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	const colors = await page.evaluate(payload => {
+		const input = document.createElement('input');
+		input.id = 'hex';
+		input.value = payload;
+		document.body.append(input);
+		const $ = Reflect.get(window, '$');
+		// Match color.php: no caller-supplied HTML, size or regional options.
+		$(input).colorpicker();
+		$(input).colorpicker('open');
+		const invalid = $(input).colorpicker('getColor');
+		$(input).colorpicker('setColor', '12ab34');
+		const valid = $(input).colorpicker('getColor');
+		return { invalid, valid };
+	}, payload);
+	expect(colors.invalid).not.toContain('<');
+	expect(colors.valid.toLowerCase()).toBe('12ab34');
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
 
 test('Cacti validation renders title and custom error messages as text on creation and update', async ({ page }) => {
 	await validationFixture(page);
