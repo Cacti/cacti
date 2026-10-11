@@ -4060,6 +4060,10 @@ msgstr ""
 msgid "The Graph you requested does not exist."
 msgstr ""
 
+#: lib/html.php
+msgid "Graph Actions"
+msgstr ""
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr ""

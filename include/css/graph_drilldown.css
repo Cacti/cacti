@@ -38,7 +38,8 @@
 }
 
 .graphDrillDownToggle .graphDrillDownMenu {
-	display: none;
+	display: inline-block;
+	opacity: 0;
 	cursor: pointer;
 	margin: 3px;
 	padding: 2px 6px;
@@ -47,11 +48,21 @@
 	font-size: 13px;
 	color: #ffffff;
 	background: rgba(0, 0, 0, 0.55);
+	transition: opacity 0.12s ease-in-out;
 }
 
+/* Keep the toggle focusable (never display:none) and reveal it on hover,
+   keyboard focus, the open state, and on devices that cannot hover. */
 .graphWrapperOuter:hover .graphDrillDownToggle .graphDrillDownMenu,
+.graphDrillDownToggle .graphDrillDownMenu:focus,
 .graphDrillDownToggle.open .graphDrillDownMenu {
-	display: inline-block;
+	opacity: 1;
+}
+
+@media (hover: none) {
+	.graphDrillDownToggle .graphDrillDownMenu {
+		opacity: 1;
+	}
 }
 
 .graphDrillDownToggle.open .graphDrillDownMenu {
