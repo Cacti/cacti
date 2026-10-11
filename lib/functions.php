@@ -3518,11 +3518,16 @@ function data_source_path_within_rra(string $path) : bool {
 	foreach ($parts as $segment) {
 		$walk .= '/' . $segment;
 
-		if (file_exists($walk)) {
-			if (is_link($walk)) {
-				return false;
-			}
+		// is_link() must be tested before file_exists(): file_exists() follows
+		// the link and is false for a dangling symlink, so a symlink segment
+		// whose target does not exist yet would otherwise be skipped and the
+		// lexically-contained path accepted - then resolve outside the RRA root
+		// once that target is created before the recursive directory/RRD build.
+		if (is_link($walk)) {
+			return false;
+		}
 
+		if (file_exists($walk)) {
 			$deepest_existing = $walk;
 		}
 	}
