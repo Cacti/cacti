@@ -351,15 +351,9 @@ switch($action) {
 				WHERE directory = ?',
 				[$plugin]);
 
-			raise_message('plugin_good',
-				__esc('Plugin \'%s\' has passed it\'s Configuration Check test and can not be Installed',
-					$plugin),
-				MESSAGE_LEVEL_INFO);
+			raise_message('plugin_good', __esc('Plugin \'%s\' has passed it\'s Configuration Check test and can not be Installed', $plugin), MESSAGE_LEVEL_INFO);
 		} elseif ($response === null) {
-			raise_message('plugin_good',
-				__esc('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.',
-					$plugin),
-				MESSAGE_LEVEL_WARN);
+			raise_message('plugin_good', __esc('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
 		}
 
 		header('Location: plugins.php');

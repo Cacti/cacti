@@ -58,10 +58,7 @@ if (empty($_SESSION[SESS_USER_2FA]) && isset($_COOKIE[session_name() . '_otp']))
 		$tfaCookeHash  = false;
 	}
 
-	if ($tfaCookieTime &&
-		$tfaCookeHash === hash_hmac('sha1',
-			$user['username'] . ':' . $tfaMins . ':' . $tfaCookieTime . ':' . $_SERVER['HTTP_USER_AGENT'],
-			$user['tfa_secret'])) {
+	if ($tfaCookieTime && $tfaCookeHash === hash_hmac('sha1', $user['username'] . ':' . $tfaMins . ':' . $tfaCookieTime . ':' . $_SERVER['HTTP_USER_AGENT'], $user['tfa_secret'])) {
 		$_SESSION[SESS_USER_2FA] = $tfaCookieTime;
 	}
 }

@@ -286,9 +286,7 @@ function form_actions() : void {
 						if ($_SESSION[SESS_USER_ID] != $selected_items[$i]) {
 							user_remove($selected_items[$i]);
 						} else {
-							raise_message('attempt current',
-								__('You are not allowed to delete the current login account'),
-								MESSAGE_LEVEL_ERROR);
+							raise_message('attempt current', __('You are not allowed to delete the current login account'), MESSAGE_LEVEL_ERROR);
 						}
 					}
 				} elseif (gnrv('drp_action') == '3') { // enable
@@ -300,9 +298,7 @@ function form_actions() : void {
 						if ($_SESSION[SESS_USER_ID] != $selected_items[$i]) {
 							user_disable($selected_items[$i]);
 						} else {
-							raise_message('attempt current',
-								__('You are not allowed to disable the current login account'),
-								MESSAGE_LEVEL_ERROR);
+							raise_message('attempt current', __('You are not allowed to disable the current login account'), MESSAGE_LEVEL_ERROR);
 						}
 					}
 				} elseif (gnrv('drp_action') == '5') { // batch copy
@@ -655,11 +651,7 @@ function form_save() : void {
 						send_mail($save['email_address'], null, read_config_option('secnotify_newuser_subject'), $body, [], [],  true);
 					}
 
-					cacti_log(sprintf('NOTE: New user created, username %s, created by %s',
-						$save['email_address'],
-						get_username()),
-						false,
-						'SYSTEM');
+					cacti_log(sprintf('NOTE: New user created, username %s, created by %s', $save['email_address'], get_username()), false, 'SYSTEM');
 				}
 
 				if ($save['id'] > 0) {
@@ -669,11 +661,7 @@ function form_save() : void {
 						send_mail($save['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, [], [],  true);
 					}
 
-					cacti_log(sprintf('NOTE: Admin %s, changed password for user %s',
-						get_username(),
-						$save['email_address']),
-						false,
-						'SYSTEM');
+					cacti_log(sprintf('NOTE: Admin %s, changed password for user %s', get_username(), $save['email_address']), false, 'SYSTEM');
 				}
 
 				raise_message(1);
