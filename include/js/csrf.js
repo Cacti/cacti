@@ -49,7 +49,9 @@ CsrfMagic = function(real) {
 CsrfMagic.prototype = {
 
 	open: function(method, url, async, username, password) {
-		if (method == 'POST') this.csrf_isPost = true;
+		this.csrf_isPost = String(method).toUpperCase() === 'POST' && CsrfMagic.isSameOrigin(url);
+		this.csrf_contentType = false;
+		if (async === undefined) async = true;
 		// deal with Opera bug, thanks jQuery
 		if (username) return this.csrf_open(method, url, async, username, password);
 		else return this.csrf_open(method, url, async);
@@ -61,23 +63,19 @@ CsrfMagic.prototype = {
 
 	send: function(data) {
 		if (!this.csrf_isPost) return this.csrf_send(data);
-		prepend = csrfMagicName + '=' + csrfMagicToken + '&';
 		delete this.csrf_isPost;
-
-		if (typeof data == 'object') {
-			prepend = data;
-			prepend[csrfMagicName] = csrfMagicToken;
-		} else {
-			prepend = csrfMagicName + '=' + csrfMagicToken;
-			if (data) prepend = prepend + '&' + data;
+		var body = CsrfMagic.process(data);
+		if (typeof body === 'string' && !this.csrf_contentType) {
+			this.csrf_setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 		}
-		return this.csrf_send(prepend);
+		return this.csrf_send(body);
 	},
 	csrf_send: function(data) {
 		return this.csrf.send(data);
 	},
 
 	setRequestHeader: function(header, value) {
+		if (String(header).toLowerCase() === 'content-type') this.csrf_contentType = true;
 		// We have to auto-set this at the end, since we don't know how long the
 		// nonce is when added to the data.
 		if (this.csrf_isPost && header == "Content-length") {
@@ -111,15 +109,27 @@ CsrfMagic.prototype._updateProps = function() {
 		this.statusText   = this.csrf.statusText;
 	}
 }
-CsrfMagic.process = function(base) {
-	if (typeof base == 'object') {
-		prepend = base;
-		prepend[csrfMagicName] = csrfMagicToken;
-	} else {
-		var prepend = csrfMagicName + '=' + csrfMagicToken;
-		if (base) prepend = prepend + '&' + base;
+CsrfMagic.isSameOrigin = function(url) {
+	try {
+		return new URL(url, window.location.href).origin === window.location.origin;
+	} catch (error) {
+		return false;
 	}
-	return prepend;
+};
+CsrfMagic.process = function(base) {
+	if ((window.FormData && base instanceof window.FormData) ||
+		(window.URLSearchParams && base instanceof window.URLSearchParams)) {
+		base.set(csrfMagicName, csrfMagicToken);
+		return base;
+	}
+	if (base !== null && typeof base === 'object') {
+		// Preserve binary and XML request bodies. They cannot carry a form field.
+		if (Object.prototype.toString.call(base) !== '[object Object]') return base;
+		base[csrfMagicName] = csrfMagicToken;
+		return base;
+	}
+	var token = encodeURIComponent(csrfMagicName) + '=' + encodeURIComponent(csrfMagicToken);
+	return base ? token + '&' + base : token;
 }
 // callback function for when everything on the page has loaded
 CsrfMagic.end = function() {
@@ -168,7 +178,8 @@ if (window.XMLHttpRequest && window.XMLHttpRequest.prototype && '\v' != 'v') {
 		// to do this the hard way.
 		jQuery.csrf_ajax = jQuery.ajax;
 		jQuery.ajax = function( s ) {
-			if (s.type && s.type.toUpperCase() == 'POST') {
+			if (String(s.method || s.type || jQuery.ajaxSettings.type).toUpperCase() === 'POST' &&
+				CsrfMagic.isSameOrigin(s.url || jQuery.ajaxSettings.url || window.location.href)) {
 				s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
 				if ( s.data && s.processData && typeof s.data != "string" ) {
 					s.data = jQuery.param(s.data);
