@@ -3217,7 +3217,7 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 	//   quote      - the shell quote this frame currently has open ('', '"', "'")
 	//   quoteEmpty - true while that open quote has emitted no content yet
 	//   kind       - 'top', 'cmdsub' (entered via $(...)) or 'backtick'
-	$stack = array(array('quote' => '', 'quoteEmpty' => false, 'kind' => 'top'));
+	$stack = [['quote' => '', 'quoteEmpty' => false, 'kind' => 'top']];
 
 	while ($i < $len) {
 		$top   = count($stack) - 1;
@@ -3301,9 +3301,9 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 		// shell context whose quoting is independent of this frame, so push a
 		// fresh frame and judge any token inside against that context
 		if ($ch === '$' && $i + 1 < $len && $template[$i + 1] === '(') {
-			$out    .= '$(';
+			$out .= '$(';
 			$i      += 2;
-			$stack[] = array('quote' => '', 'quoteEmpty' => false, 'kind' => 'cmdsub');
+			$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'cmdsub'];
 
 			continue;
 		}
@@ -3322,7 +3322,7 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 			if ($stack[$top]['kind'] === 'backtick' && $quote === '') {
 				array_pop($stack);
 			} else {
-				$stack[] = array('quote' => '', 'quoteEmpty' => false, 'kind' => 'backtick');
+				$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'backtick'];
 			}
 
 			$out .= '`';
