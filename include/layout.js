@@ -4801,7 +4801,7 @@ function redrawGraph(graph_id) {
 		(isOrder ? '&graph_order='+$('#graph_order').val() : '') +
 		(isCF ? '&cf='+$('#cf').val() : '') +
 		(isMeasure ? '&measure='+$('#measure').val() : '') +
-		'&business_hours=' + (isBusiness ? 'true' : 'false') +
+		'&business_hours=' + (isBusiness ? 'true' : 'false');
 
 	$.getJSON(href, function(data) {
 		if (data.status === undefined) {

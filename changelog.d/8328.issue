@@ -1,1 +1,1 @@
-Enable graph item opacity controls with Select2 in Modern and Dark themes
+Fix graph opacity controls and redraw URLs and retry failed realtime requests without stale callbacks
