@@ -538,7 +538,7 @@ function template_edit() {
 		?>
 		<tr class='odd'>
 			<td colspan='2'>
-				<table>
+				<table role='presentation'>
 					<tr style='line-height:10px'>
 						<td class='nowrap templateAdd'>
 							<?php print __('Add Graph Template');?>
@@ -595,7 +595,7 @@ function template_edit() {
 		?>
 		<tr class='odd'>
 			<td colspan='2'>
-				<table>
+				<table role='presentation'>
 					<tr style='line-height:10px;'>
 						<td class='nowrap queryAdd'>
 							<?php print __('Add Data Query');?>
@@ -752,10 +752,10 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_host_template' action='host_templates.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Class');?>
+						<label for='class'><?php print __('Class');?></label>
 					</td>
 					<td>
 						<select id='class'>
@@ -770,7 +770,7 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Graph Template');?>
+						<label for='graph_template'><?php print __('Graph Template');?></label>
 					</td>
 					<td>
 						<select id='graph_template'>
@@ -830,29 +830,10 @@ function template() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Device Templates');?>
-					</td>
-					<td>
-						<select id='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
+					<?php html_search_filter();?>
+					<?php html_rows_filter(__('Rows'));?>
 					<td>
 						<span>
 							<input type='checkbox' id='has_hosts' <?php print (get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
