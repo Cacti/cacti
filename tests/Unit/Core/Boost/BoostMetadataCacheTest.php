@@ -5,7 +5,6 @@
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
- | as published by the Free Software Foundation; either version 2          |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
@@ -21,6 +20,12 @@ function boostMetadataFetch($sql, $params = array()) {
 	}
 
 	return array(array('data_name' => 'input', 'data_source_name' => 'rrd'));
+}
+
+function boostMetadataFetchAll($sql) {
+	$GLOBALS['boost_metadata_queries'][] = array($sql, array());
+
+	return array(array('local_data_id' => 900001, 'data_source_name' => 'unused'));
 }
 
 function boostMetadataRekey($rows, $key, $value) {
@@ -50,11 +55,13 @@ function boostMetadataLoadFunctions($root) {
 		'boost_get_unused_data_source_names',
 		'boost_get_input_field_names',
 		'db_fetch_assoc_prepared',
+		'db_fetch_assoc',
 		'array_rekey',
 	), array(
 		'boostMetadataUnused',
 		'boostMetadataFields',
 		'boostMetadataFetch',
+		'boostMetadataFetchAll',
 		'boostMetadataRekey',
 	), $functions);
 
@@ -66,9 +73,10 @@ beforeEach(function () use ($root) {
 	$GLOBALS['boost_metadata_queries'] = array();
 });
 
-test('unused data-source metadata is queried once per local data source', function () {
+test('unused data-source metadata is loaded once for the whole process', function () {
 	expect(boostMetadataUnused(900001))->toBe(array('unused' => 'unused'))
 		->and(boostMetadataUnused(900001))->toBe(array('unused' => 'unused'))
+		->and(boostMetadataUnused(900002))->toBe(array())
 		->and($GLOBALS['boost_metadata_queries'])->toHaveCount(1);
 });
 

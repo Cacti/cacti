@@ -1029,6 +1029,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
  */
 function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array(), &$successful_updates = array()) {
 	$track_updates      = func_num_args() >= 4;
+	$unused_authoritative = func_num_args() >= 3;
 	$successful_updates = array();
 
 	/* lets count the number of rrd files processed */
@@ -1072,6 +1073,9 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 			if ($data_template_id > 0) {
 				if (isset($unused_data_source_names_by_id[$rrd_fields['local_data_id']])) {
 					$unused_data_source_names = $unused_data_source_names_by_id[$rrd_fields['local_data_id']];
+				} elseif ($unused_authoritative) {
+					/* Caller supplied the stateful map; a miss means no orphaned fields -- do not re-query. */
+					$unused_data_source_names = array();
 				} else {
 					$unused_data_source_names = array_rekey(
 						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name

@@ -1064,17 +1064,15 @@ function poller_table_maintenance() {
 		db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
 	}
 
-	// catch the unlikely event that the stateful orphan/unused cache is missing
+	// catch the unlikely event that the stateful orphan/unused cache is missing; an
+	// empty table is safe (no filtering = harmless extra writes, never lost samples),
+	// and repopulate_poller_cache() / the data source API seed and maintain it.
 	if (!db_table_exists('poller_data_source_unused')) {
 		db_execute("CREATE TABLE poller_data_source_unused (
 			local_data_id int(10) unsigned NOT NULL default '0',
 			data_source_name varchar(19) NOT NULL default '',
 			PRIMARY KEY (local_data_id, data_source_name))
 			ENGINE=InnoDB ROW_FORMAT=Dynamic");
-
-		if (function_exists('api_data_source_cache_unused')) {
-			api_data_source_cache_unused();
-		}
 	}
 
 	boost_ensure_process_table();

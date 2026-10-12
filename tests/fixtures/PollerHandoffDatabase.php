@@ -9,7 +9,7 @@ $handoff_dsn = 'mysql:host=' . (getenv('BOOST_DB_HOST') ?: '127.0.0.1') . ';port
 $handoff_pdo = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $remote_db_cnn_id = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $handoff_prefix = 'handoff_' . bin2hex(random_bytes(6)) . '_';
-$handoff_tables = ['poller_output_boost', 'poller_data_template_field_mappings', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
+$handoff_tables = ['poller_output_boost', 'poller_data_template_field_mappings', 'poller_data_source_unused', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
 $handoff_dir = sys_get_temp_dir() . '/' . $handoff_prefix;
 mkdir($handoff_dir, 0700);
 $handoff_rrd = $handoff_dir . '/source.rrd';
@@ -66,6 +66,7 @@ function handoff_seed(&$config, &$state, $time) {
 		'poller_data_template_field_mappings' => 'data_template_id INT, data_name VARCHAR(30), data_source_names VARCHAR(30)',
 		'data_template_rrd' => 'id INT, local_data_id INT, local_data_template_rrd_id INT, data_source_name VARCHAR(30), data_input_field_id INT, rrd_heartbeat INT, rrd_minimum VARCHAR(30), rrd_maximum VARCHAR(30), data_source_type_id INT',
 		'graph_templates_item' => 'task_item_id INT',
+		'poller_data_source_unused' => 'local_data_id INT, data_source_name VARCHAR(30), PRIMARY KEY(local_data_id, data_source_name)',
 		'data_input_fields' => 'id INT, data_name VARCHAR(30)',
 		'data_template_data' => 'local_data_id INT, rrd_step INT, data_source_profile_id INT',
 		'data_source_profiles' => 'id INT, x_files_factor DOUBLE',

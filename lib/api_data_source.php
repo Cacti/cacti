@@ -53,7 +53,9 @@ function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replic
  * @return void No value is returned.
  */
 function api_data_source_cache_unused() {
-	if (!db_table_exists('poller_data_source_unused')) {
+	/* Non-cached existence check: db_table_exists() caches a prior miss, which would
+	 * skip seeding right after a defensive CREATE in the same request. */
+	if (db_fetch_cell("SHOW TABLES LIKE 'poller_data_source_unused'") == '') {
 		return;
 	}
 
