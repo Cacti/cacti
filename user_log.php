@@ -118,15 +118,8 @@ function view_user_log() : void {
 		'ip'        => [__('IP Address'), 'DESC']
 	];
 
-	$nav = html_nav_bar('user_log.php?user_id=' . grv('user_id') . '&filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		6,
-		__('Login Attempts'),
-		'page',
-		'main');
+	$nav = html_nav_bar('user_log.php?user_id=' . grv('user_id') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES,
+		grv('page'), $rows, $total_rows, 6, __('Login Attempts'), 'page', 'main');
 
 	print $nav;
 
@@ -222,18 +215,14 @@ function purge_user_log() : void {
 	print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to purge the User Log.<br><br><br>Note: If logging ' .
-					'is set to both Cacti and Syslog, the log information will remain in ' .
-					'Syslog.') . "</p>
+					'is set to both Cacti and Syslog, the log information will remain in ' . 'Syslog.') . "</p>
 			</td>
 		</tr>
 		<tr class='saveRow'>
 			<td colspan='2' class='right'>
 				<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __esc('Cancel') . "</button>
 				<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='" .
-					__esc('Purge Log') .
-					"'>" .
-					__esc('Continue') .
-					"</button>
+					__esc('Purge Log') . "'>" . __esc('Continue') . "</button>
 				<script type='text/javascript'>
 				$(function() {
 					$('#pc').click(function() {

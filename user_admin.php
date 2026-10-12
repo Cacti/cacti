@@ -261,15 +261,10 @@ function form_actions() : void {
 
 			if ($new_username != '') {
 				if (cacti_sizeof(db_fetch_assoc_prepared('SELECT username FROM user_auth WHERE username = ? AND realm = ?',
-					[$new_username,
-					$new_realm]))) {
+					[$new_username, $new_realm]))) {
 					raise_message(19);
 				} else {
-					if (user_copy($template_user['username'],
-						$new_username,
-						$template_user['realm'],
-						$new_realm,
-						false,
+					if (user_copy($template_user['username'], $new_username, $template_user['realm'], $new_realm, false,
 						$overwrite) === false) {
 						raise_message(2);
 					} else {
@@ -540,9 +535,7 @@ function form_save() : void {
 
 		// check duplicate username
 		if (cacti_sizeof(db_fetch_row_prepared('SELECT * FROM user_auth WHERE realm = ? AND username = ? AND id != ?',
-			[gnrv('realm'),
-			gnrv('username'),
-			gnrv('id')]))) {
+			[gnrv('realm'), gnrv('username'), gnrv('id')]))) {
 			raise_message(12);
 		}
 
@@ -560,19 +553,12 @@ function form_save() : void {
 		}
 
 		$save['id']                   = gnrv('id');
-		$save['username']             = form_input_validate(gnrv('username'),
-			'username',
-			"^[A-Za-z0-9\._\\\@\ -]+$",
-			false,
+		$save['username']             = form_input_validate(gnrv('username'), 'username', "^[A-Za-z0-9\._\\\@\ -]+$", false,
 			3);
 		$save['full_name']            = form_input_validate(gnrv('full_name'), 'full_name', '', true, 3);
 		$save['password']             = $password;
-		$save['must_change_password'] = form_input_validate(gnrv('must_change_password',
-			''),
-			'must_change_password',
-			'',
-			true,
-			3);
+		$save['must_change_password'] = form_input_validate(gnrv('must_change_password', ''), 'must_change_password', '',
+			true, 3);
 		$save['password_change']      = form_input_validate(gnrv('password_change', ''), 'password_change', '', true, 3);
 		$save['show_tree']            = form_input_validate(gnrv('show_tree', ''), 'show_tree', '', true, 3);
 		$save['show_list']            = form_input_validate(gnrv('show_list', ''), 'show_list', '', true, 3);
@@ -930,15 +916,8 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 				ON h.id = gl.host_id
 				$sql_where");
 
-			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				11,
-				__('Graphs'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, 11, __('Graphs'), 'page', 'main');
 
 			form_start('user_admin.php?tab=permsg&id=' . grv('id'), 'chk');
 
@@ -1062,15 +1041,8 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			$groups = db_fetch_assoc($sql_query);
 
-			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				11,
-				__('Groups'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, 11, __('Groups'), 'page', 'main');
 
 			form_start('user_admin.php?tab=permsd&id=' . grv('id'), 'chk');
 
@@ -1078,11 +1050,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			html_start_box('', '100%', false, 3, 'center', '');
 
-			$display_text = [__('Name'),
-				__('Description'),
-				__('Member'),
-				__('ID'),
-				__('Policies (Graph/Device/Template)'),
+			$display_text = [__('Name'), __('Description'), __('Member'), __('ID'), __('Policies (Graph/Device/Template)'),
 				__('Enabled')];
 
 			html_header_checkbox($display_text, false);
@@ -1091,9 +1059,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 				foreach ($groups as $g) {
 					form_alternate_row('line' . $g['id'], true);
 
-					form_selectable_cell(filter_value($g['name'],
-						grv('filter'),
-						'user_group_admin.php?action=edit&id=' . $g['id']),
+					form_selectable_cell(filter_value($g['name'], grv('filter'), 'user_group_admin.php?action=edit&id=' . $g['id']),
 						$g['id']);
 					form_selectable_cell(filter_value($g['description'], grv('filter')), $g['id']);
 					form_selectable_cell($g['user_id'] > 0 ? __('Member') : __('Non Member'), $g['id']);
@@ -1228,15 +1194,8 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			$hosts = db_fetch_assoc_prepared($sql_query, $sql_params);
 
-			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				11,
-				__('Devices'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, 11, __('Devices'), 'page', 'main');
 
 			form_start('user_admin.php?tab=permsd&id=' . grv('id'), 'chk');
 
@@ -1244,12 +1203,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			html_start_box('', '100%', false, 3, 'center', '');
 
-			$display_text = [__('Description'),
-				__('ID'),
-				__('Effective Policy'),
-				__('Graphs'),
-				__('Data Sources'),
-				__('Status'),
+			$display_text = [__('Description'), __('ID'), __('Effective Policy'), __('Graphs'), __('Data Sources'), __('Status'),
 				__('Hostname')];
 
 			html_header_checkbox($display_text, false);
@@ -1276,8 +1230,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 					}
 					form_selectable_cell((isset($host_graphs[$host['id']]) ? $host_graphs[$host['id']] : 0), $host['id']);
 					form_selectable_cell((isset($host_data_sources[$host['id']]) ? $host_data_sources[$host['id']] : 0), $host['id']);
-					form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false),
-						$host['status']),
+					form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']),
 						$host['id']);
 					form_selectable_cell(filter_value($host['hostname'], grv('filter')), $host['id']);
 
@@ -1404,15 +1357,8 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 				__('Total Graphs')
 			];
 
-			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permste&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				cacti_sizeof($display_text) + 1,
-				__('Graph Templates'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permste&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, cacti_sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
 
 			form_start('user_admin.php?tab=permste&id=' . grv('id'), 'chk');
 
@@ -1560,15 +1506,8 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			html_header_checkbox($display_text, false);
 
-			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permstr&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				cacti_sizeof($display_text) + 1,
-				__('Trees'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permstr&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, cacti_sizeof($display_text) + 1, __('Trees'), 'page', 'main');
 
 			form_start('user_admin.php?tab=permstr&id=' . grv('id'), 'chk');
 
@@ -1792,16 +1731,8 @@ function user_realms_edit(string $header_label) : void {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm,
-				$old_value,
-				trim(substr($local_user_auth_realms,
-					$pos)),
-				'',
-				'',
-				'',
-				'',
-				$r['display'],
-				true);
+			form_checkbox('section' . $realm, $old_value, trim(substr($local_user_auth_realms, $pos)), '', '', '', '',
+				$r['display'], true);
 			print '</div>';
 		}
 
@@ -1891,8 +1822,7 @@ function settings_edit(string $header_label) : void {
 					}
 
 					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?',
-						[$sub_field_name,
-						grv('id')]);
+						[$sub_field_name, grv('id')]);
 				}
 			} else {
 				if (user_setting_exists($field_name, grv('id'))) {
@@ -1900,8 +1830,7 @@ function settings_edit(string $header_label) : void {
 				}
 
 				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? and user_id = ?',
-					[$field_name,
-					grv('id')]);
+					[$field_name, grv('id')]);
 			}
 		}
 
@@ -2250,10 +2179,7 @@ function user() : void {
 	$filters = create_user_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('User Management'),
-		'user_admin.php',
-		'form_user',
-		'sess_ua',
+	$pageFilter = new CactiTableFilter(__('User Management'), 'user_admin.php', 'form_user', 'sess_ua',
 		'user_admin.php?action=user_edit&tab=general');
 
 	$pageFilter->rows_label       = __('Users');
@@ -2325,15 +2251,8 @@ function user() : void {
 	// GHSA-m49v-hr7h-wwcj: keep every sort key on a displayed column so ORDER BY cannot pivot onto user_auth.password/locked/tfa_secret.
 	// update_order_string() has already merged the request value into $_SESSION['sort_data'], so validate the stored keys too,
 	// not just the current request, and clear both session entries (data + string) if any key is disallowed.
-	$allowed_sort = ['username',
-		'id',
-		'full_name',
-		'enabled',
-		'realm',
-		'policy_graphs',
-		'policy_hosts',
-		'policy_graph_templates',
-		'dtime'];
+	$allowed_sort = ['username', 'id', 'full_name', 'enabled', 'realm', 'policy_graphs', 'policy_hosts',
+		'policy_graph_templates', 'dtime'];
 	$order_page   = get_order_string_page(false);
 	$sort_ok      = in_array(grv('sort_column'), $allowed_sort, true);
 
@@ -2413,15 +2332,8 @@ function user() : void {
 		]
 	];
 
-	$nav = html_nav_bar('user_admin.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		9,
-		__('Users'),
-		'page',
-		'main');
+	$nav = html_nav_bar('user_admin.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 9,
+		__('Users'), 'page', 'main');
 
 	form_start('user_admin.php', 'chk');
 
@@ -2462,10 +2374,8 @@ function user() : void {
 
 			form_alternate_row('line' . $user['id'], true, $disabled);
 
-			form_selectable_cell(filter_value($user['username'],
-				grv('filter'),
-				CACTI_PATH_URL . 'user_admin.php?action=user_edit&tab=general&id=' . $user['id']),
-				$user['id']);
+			form_selectable_cell(filter_value($user['username'], grv('filter'),
+				CACTI_PATH_URL . 'user_admin.php?action=user_edit&tab=general&id=' . $user['id']), $user['id']);
 			form_selectable_cell($user['id'], $user['id']);
 			form_selectable_cell(filter_value($user['full_name'], grv('filter')), $user['id']);
 			form_selectable_cell($enabled, $user['id']);
@@ -2564,11 +2474,8 @@ function graph_filter(string $header_label) : void {
 	$filters = create_ugraphs_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Graph Permissions %s',
-		$header_label),
-		'user_admin.php?action=user_edit&tab=permsg&id=' . grv('id'),
-		'form_template',
-		'sess_ua_d');
+	$pageFilter = new CactiTableFilter(__('Graph Permissions %s', $header_label),
+		'user_admin.php?action=user_edit&tab=permsg&id=' . grv('id'), 'form_template', 'sess_ua_d');
 
 	$pageFilter->rows_label       = __('Graphs');
 	$pageFilter->has_associated   = true;
@@ -2584,11 +2491,8 @@ function graph_filter(string $header_label) : void {
 
 function group_filter(string $header_label) : void {
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Group Membership %s',
-		$header_label),
-		'user_admin.php?action=user_edit&tab=permsgr&id=' . grv('id'),
-		'form_group',
-		'sess_ua_g');
+	$pageFilter = new CactiTableFilter(__('Group Membership %s', $header_label),
+		'user_admin.php?action=user_edit&tab=permsgr&id=' . grv('id'), 'form_group', 'sess_ua_g');
 
 	$pageFilter->rows_label       = __('Groups');
 	$pageFilter->has_associated   = true;
@@ -2668,11 +2572,8 @@ function device_filter(string $header_label) : void {
 	$filters = create_device_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Device Permissions %s',
-		$header_label),
-		'user_admin.php?action=user_edit&tab=permsd&id=' . grv('id'),
-		'form_template',
-		'sess_ua_d');
+	$pageFilter = new CactiTableFilter(__('Device Permissions %s', $header_label),
+		'user_admin.php?action=user_edit&tab=permsd&id=' . grv('id'), 'form_template', 'sess_ua_d');
 
 	$pageFilter->rows_label       = __('Devices');
 	$pageFilter->has_associated   = true;
@@ -2688,11 +2589,8 @@ function device_filter(string $header_label) : void {
 
 function template_filter(string $header_label) : void {
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Template Permissions %s',
-		$header_label),
-		'user_admin.php?action=user_edit&tab=permste&id=' . grv('id'),
-		'form_template',
-		'sess_ua_te');
+	$pageFilter = new CactiTableFilter(__('Template Permissions %s', $header_label),
+		'user_admin.php?action=user_edit&tab=permste&id=' . grv('id'), 'form_template', 'sess_ua_te');
 
 	$pageFilter->rows_label       = __('Templatee');
 	$pageFilter->has_associated   = true;
@@ -2706,11 +2604,8 @@ function template_filter(string $header_label) : void {
 
 function tree_filter(string $header_label) : void {
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Tree Permissions %s',
-		$header_label),
-		'user_admin.php?action=user_edit&tab=permstr&id=' . grv('id'),
-		'form_tree',
-		'sess_ua_tr');
+	$pageFilter = new CactiTableFilter(__('Tree Permissions %s', $header_label),
+		'user_admin.php?action=user_edit&tab=permstr&id=' . grv('id'), 'form_tree', 'sess_ua_tr');
 
 	$pageFilter->rows_label       = __('Trees');
 	$pageFilter->has_associated   = true;

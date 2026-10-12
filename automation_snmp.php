@@ -209,11 +209,8 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" .
-				__esc('Import SNMP Options') .
-				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
-				__esc('Import') .
-				"</button>
+			<button type='submit' value='import' title='" . __esc('Import SNMP Options') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -304,64 +301,35 @@ function form_save() : void {
 
 		$save = [];
 
-		$save['id']                   = CactiValidator::validateInput(grv('item_id'),
-			'item_id',
-			[new Assert\NotBlank(),
-			new Assert\Type('numeric'),
-			new Assert\GreaterThanOrEqual(0)]);
+		$save['id']                   = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(),
+			new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
 		$save['hash']                 = get_hash_automation(grv('item_id'), 'automation_snmp_items');
-		$save['snmp_id']              = CactiValidator::validateInput(gnrv('id'),
-			'snmp_id',
-			[new Assert\NotBlank(),
-			new Assert\Type('numeric'),
-			new Assert\GreaterThanOrEqual(0)]);
-		$save['sequence']             = CactiValidator::validateInput(gnrv('sequence'),
-			'sequence',
-			[new Assert\NotBlank(),
-			new Assert\Type('numeric'),
-			new Assert\GreaterThanOrEqual(0)]);
-		$save['snmp_community']       = CactiValidator::validateInput(gnrv('snmp_community'),
-			'snmp_community',
+		$save['snmp_id']              = CactiValidator::validateInput(gnrv('id'), 'snmp_id', [new Assert\NotBlank(),
+			new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
+		$save['sequence']             = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(),
+			new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
+		$save['snmp_community']       = CactiValidator::validateInput(gnrv('snmp_community'), 'snmp_community',
 			[new Assert\NotBlank()]);
-		$save['snmp_version']         = CactiValidator::validateInput(gnrv('snmp_version'),
-			'snmp_version',
-			[new Assert\NotBlank(),
-			new Assert\Choice(['1',
-			'2',
-			'3'])]);
+		$save['snmp_version']         = CactiValidator::validateInput(gnrv('snmp_version'), 'snmp_version',
+			[new Assert\NotBlank(), new Assert\Choice(['1', '2', '3'])]);
 		$save['snmp_username']        = CactiValidator::validateInput(gnrv('snmp_username'), 'snmp_username', []);
 		$save['snmp_password']        = CactiValidator::validateInput(gnrv('snmp_password'), 'snmp_password', []);
 		$save['snmp_auth_protocol']   = CactiValidator::validateInput(gnrv('snmp_auth_protocol'), 'snmp_auth_protocol', []);
-		$save['snmp_priv_passphrase'] = CactiValidator::validateInput(gnrv('snmp_priv_passphrase'),
-			'snmp_priv_passphrase',
+		$save['snmp_priv_passphrase'] = CactiValidator::validateInput(gnrv('snmp_priv_passphrase'), 'snmp_priv_passphrase',
 			[]);
 		$save['snmp_priv_protocol']   = CactiValidator::validateInput(gnrv('snmp_priv_protocol'), 'snmp_priv_protocol', []);
 		$save['snmp_context']         = CactiValidator::validateInput(gnrv('snmp_context'), 'snmp_context', []);
 		$save['snmp_engine_id']       = CactiValidator::validateInput(gnrv('snmp_engine_id'), 'snmp_engine_id', []);
-		$save['snmp_port']            = CactiValidator::validateInput(gnrv('snmp_port'),
-			'snmp_port',
-			[new Assert\NotBlank(),
-			new Assert\Range(min: 1,
-				max: 65535)]);
-		$save['snmp_timeout']         = CactiValidator::validateInput(gnrv('snmp_timeout'),
-			'snmp_timeout',
-			[new Assert\NotBlank(),
-			new Assert\Type('numeric'),
-			new Assert\GreaterThan(0)]);
-		$save['snmp_retries']         = CactiValidator::validateInput(gnrv('snmp_retries'),
-			'snmp_retries',
-			[new Assert\NotBlank(),
-			new Assert\Type('numeric'),
-			new Assert\GreaterThanOrEqual(0)]);
-		$save['max_oids']             = CactiValidator::validateInput(gnrv('max_oids'),
-			'max_oids',
-			[new Assert\NotBlank(),
-			new Assert\Type('numeric'),
-			new Assert\GreaterThan(0)]);
-		$save['bulk_walk_size']       = CactiValidator::validateInput(gnrv('bulk_walk_size'),
-			'bulk_walk_size',
-			[new Assert\NotBlank(),
-			new Assert\Type('numeric')]);
+		$save['snmp_port']            = CactiValidator::validateInput(gnrv('snmp_port'), 'snmp_port', [new Assert\NotBlank(),
+			new Assert\Range(min: 1, max: 65535)]);
+		$save['snmp_timeout']         = CactiValidator::validateInput(gnrv('snmp_timeout'), 'snmp_timeout',
+			[new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThan(0)]);
+		$save['snmp_retries']         = CactiValidator::validateInput(gnrv('snmp_retries'), 'snmp_retries',
+			[new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
+		$save['max_oids']             = CactiValidator::validateInput(gnrv('max_oids'), 'max_oids', [new Assert\NotBlank(),
+			new Assert\Type('numeric'), new Assert\GreaterThan(0)]);
+		$save['bulk_walk_size']       = CactiValidator::validateInput(gnrv('bulk_walk_size'), 'bulk_walk_size',
+			[new Assert\NotBlank(), new Assert\Type('numeric')]);
 
 		$item_id = null;
 
@@ -376,9 +344,7 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?action=item_edit&id=' .
-				gnrv('id') .
-				'&item_id=' .
+			header('Location: automation_snmp.php?action=item_edit&id=' . gnrv('id') . '&item_id=' .
 				($item_id === null ? gfrv('id') : $item_id));
 		} else {
 			header('Location: automation_snmp.php?action=edit&id=' . gnrv('id'));
@@ -403,10 +369,8 @@ function form_actions() : void {
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
 				db_execute('DELETE FROM automation_snmp WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id',
-					'snmp_id',
-					array_to_sql_or($selected_items,
-						'id')));
+				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id',
+					array_to_sql_or($selected_items, 'id')));
 			} elseif (gnrv('drp_action') == '2') { // duplicate
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_duplicate_snmp_option($selected_items[$i], gnrv('name_format'));
@@ -790,11 +754,7 @@ function automation_snmp_edit() : void {
 			WHERE snmp_id = ?
 			ORDER BY sequence', [grv('id')]);
 
-		html_start_box(__('SNMP Options'),
-			'100%',
-			false,
-			3,
-			'center',
+		html_start_box(__('SNMP Options'), '100%', false, 3, 'center',
 			'automation_snmp.php?action=item_edit&id=' . grv('id'));
 
 		$display_text = [
@@ -866,17 +826,10 @@ function automation_snmp_edit() : void {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true);
 
-				$form_data = "<td><a class='linkEditMain' href='" .
-					htmle('automation_snmp.php?action=item_edit&item_id=' .
-					$item['id'] .
-					'&id=' .
-					$item['snmp_id']) .
-					"'>" .
-					__('Item # %d',
-						$i) . '</a></td>';
+				$form_data = "<td><a class='linkEditMain' href='" . htmle('automation_snmp.php?action=item_edit&item_id=' .
+					$item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item # %d', $i) . '</a></td>';
 				$form_data .= '<td>' . $item['snmp_version'] . '</td>';
-				$form_data .= '<td class="left">' .
-					($item['snmp_version'] == 3 ? __('none') : htmle($item['snmp_community'])) .
+				$form_data .= '<td class="left">' . ($item['snmp_version'] == 3 ? __('none') : htmle($item['snmp_community'])) .
 					'</td>';
 				$form_data .= '<td class="right">' . $item['snmp_port'] . '</td>';
 				$form_data .= '<td class="right">' . $item['snmp_timeout'] . '</td>';
@@ -893,41 +846,24 @@ function automation_snmp_edit() : void {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$form_data .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('automation_snmp.php?action=item_movedown&item_id=' .
-								$item['id'] .
-								'&id=' .
-								$item['snmp_id']) .
-								'" title="' .
-								__esc('Move Down') .
-								'"></a>';
+						$form_data .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) .
+								'" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$form_data .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('automation_snmp.php?action=item_moveup&item_id=' .
-								$item['id'] .
-								'&id=' .
-								$item['snmp_id']) .
-								'" title="' .
-								__esc('Move Up') .
-								'"></a>';
+						$form_data .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) .
+								'" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				$form_data .= '<a class="delete deleteMarker ti ti-x" id="' .
-					$item['id'] .
-					'_' .
-					$item['snmp_id'] .
-					'" title="' .
-					__esc('Delete') .
-					'"></a>';
+				$form_data .= '<a class="delete deleteMarker ti ti-x" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' .
+					__esc('Delete') . '"></a>';
 				$form_data .= '</td>';
 
 				print $form_data;
@@ -937,10 +873,7 @@ function automation_snmp_edit() : void {
 				$i++;
 			}
 		} else {
-			print '<tr class="tableRow odd"><td colspan="' .
-				(cacti_sizeof($display_text) + 1) .
-				'"><em>' .
-				__('No SNMP Items') .
+			print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No SNMP Items') .
 				'</em></td></tr>';
 		}
 
@@ -999,10 +932,7 @@ function automation_snmp() : void {
 	global $item_rows, $actions;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('SNMP Options'),
-		'automation_snmp.php',
-		'snmp_form',
-		'sess_autom_snmp',
+	$pageFilter = new CactiTableFilter(__('SNMP Options'), 'automation_snmp.php', 'snmp_form', 'sess_autom_snmp',
 		'automation_snmp.php?action=edit');
 
 	$pageFilter->rows_label = __('Rules');
@@ -1050,15 +980,8 @@ function automation_snmp() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('automation_snmp.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		12,
-		__('SNMP Option Sets'),
-		'page',
-		'main');
+	$nav = html_nav_bar('automation_snmp.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		12, __('SNMP Option Sets'), 'page', 'main');
 
 	form_start('automation_snmp.php', 'chk');
 
@@ -1105,10 +1028,8 @@ function automation_snmp() : void {
 		foreach ($snmp_options as $snmp_option) {
 			form_alternate_row('line' . $snmp_option['id'], true);
 
-			form_selectable_cell(filter_value($snmp_option['name'],
-				grv('filter'),
-				'automation_snmp.php?action=edit&id=' . $snmp_option['id'] . '&page=1'),
-				$snmp_option['id']);
+			form_selectable_cell(filter_value($snmp_option['name'], grv('filter'),
+				'automation_snmp.php?action=edit&id=' . $snmp_option['id'] . '&page=1'), $snmp_option['id']);
 			form_selectable_cell($snmp_option['networks'], $snmp_option['id'], '', 'right');
 			form_selectable_cell($snmp_option['totals'], $snmp_option['id'], '', 'right');
 			form_selectable_cell($snmp_option['v1entries'], $snmp_option['id'], '', 'right');
@@ -1119,11 +1040,8 @@ function automation_snmp() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No SNMP Option Sets Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No SNMP Option Sets Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

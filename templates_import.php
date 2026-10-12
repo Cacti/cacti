@@ -110,11 +110,7 @@ function form_save() : void {
 		}
 
 		// obtain debug information if it's set
-		$debug_data = import_xml_data($xml_data,
-			$import_as_new,
-			$profile_id,
-			$remove_orphans,
-			$replace_svalues,
+		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues,
 			$import_hashes);
 
 		if (!$preview_only) {
@@ -131,9 +127,7 @@ function form_save() : void {
 
 			exit;
 		} else {
-			cacti_log(sprintf('ERROR: Import or Preview failed for XML file %s!',
-				$_FILES['import_file']['name']),
-				false,
+			cacti_log(sprintf('ERROR: Import or Preview failed for XML file %s!', $_FILES['import_file']['name']), false,
 				'IMPORT');
 
 			$message_text = '';
@@ -151,14 +145,9 @@ function form_save() : void {
 				}
 			}
 
-			raise_message_javascript(__('Error in Template',
-				'package'),
-				__('The Template XML file "%s" validation failed',
-					$_FILES['import_file']['name']),
-				__('See the cacti.log for more information, and review the XML file for ' .
-					'proper syntax.  The error details are shown ' .
-					'below.<br><br><b>Errors:</b><br>%s',
-					$message_text));
+			raise_message_javascript(__('Error in Template', 'package'), __('The Template XML file "%s" validation failed',
+				$_FILES['import_file']['name']), __('See the cacti.log for more information, and review the XML file for ' .
+				'proper syntax.  The error details are shown ' . 'below.<br><br><b>Errors:</b><br>%s', $message_text));
 		}
 	}
 }
@@ -229,12 +218,8 @@ function display_template_data(array &$templates) : void {
 
 		unset($templates['files']);
 
-		html_start_box(__('Import Files [ If Files are missing, locate and install before using ]'),
-			'100%',
-			false,
-			3,
-			'center',
-			'');
+		html_start_box(__('Import Files [ If Files are missing, locate and install before using ]'), '100%', false, 3,
+			'center', '');
 
 		$display_text = [
 			[
@@ -270,12 +255,8 @@ function display_template_data(array &$templates) : void {
 	}
 
 	if (cacti_sizeof($templates)) {
-		html_start_box(__('Import Templates [ None selected imports all, Check to import selectively ]'),
-			'100%',
-			false,
-			3,
-			'center',
-			'');
+		html_start_box(__('Import Templates [ None selected imports all, Check to import selectively ]'), '100%', false, 3,
+			'center', '');
 
 		$display_text = [
 			[
@@ -357,8 +338,7 @@ function display_template_data(array &$templates) : void {
 
 			if ($detail['status'] == 'damaged') {
 				form_selectable_cell(__('Some CDEF Items will not import due to an export error! Contact ' .
-					'Template provider for an updated export.'),
-					$id);
+					'Template provider for an updated export.'), $id);
 			} elseif (isset($detail['vals'])) {
 				$diff_details = '';
 				$diff_array   = [];
@@ -381,9 +361,8 @@ function display_template_data(array &$templates) : void {
 				}
 
 				if (cacti_sizeof($orphan_array)) {
-					$diff_details .= ($diff_details != '' ? '<br>' : '') . __('Orphans',
-						'package') . '<br>' . implode('<br>',
-							$orphan_array);
+					$diff_details .= ($diff_details != '' ? '<br>' : '') . __('Orphans', 'package') . '<br>' . implode('<br>',
+						$orphan_array);
 				}
 
 				form_selectable_cell($diff_details, $id, '', 'white-space:pre-wrap');
@@ -403,11 +382,8 @@ function display_template_data(array &$templates) : void {
 function bad_tmp() : void {
 	html_start_box(__('Import Template'), '60%', false, 3, 'center', '');
 	form_alternate_row();
-	print "<td class='textarea'><p><strong>" .
-		__('ERROR') .
-		':</strong> ' .
-		__('Failed to access temporary folder, import functionality is disabled') .
-		"</p></td></tr>\n";
+	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' .
+		__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
 }
 

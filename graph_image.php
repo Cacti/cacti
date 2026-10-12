@@ -140,11 +140,7 @@ if (isrv('rra_id')) {
 
 if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-ignore-line
 	$null_param = [];
-	$output     = rrdtool_function_graph(grv('local_graph_id'),
-		$rra_id,
-		$graph_data_array,
-		'',
-		$null_param,
+	$output     = rrdtool_function_graph(grv('local_graph_id'), $rra_id, $graph_data_array, '', $null_param,
 		$_SESSION['sess_user_id']);
 } else {
 	$url  = CACTI_PATH_URL . 'remote_agent.php?action=graph_json';
@@ -202,11 +198,7 @@ if ($output !== false && $output != '') {
 
 	$null_param = [];
 
-	rrdtool_function_graph(grv('local_graph_id'),
-		$rra_id,
-		$graph_data_array,
-		null,
-		$null_param,
+	rrdtool_function_graph(grv('local_graph_id'), $rra_id, $graph_data_array, null, $null_param,
 		$_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
@@ -216,8 +208,7 @@ if ($output !== false && $output != '') {
 	}
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
-		$image = rrdtool_create_error_image((string) $error,
-			$graph_data_array['graph_width'],
+		$image = rrdtool_create_error_image((string) $error, $graph_data_array['graph_width'],
 			$graph_data_array['graph_height']);
 	} else {
 		$image = rrdtool_create_error_image((string) $error);

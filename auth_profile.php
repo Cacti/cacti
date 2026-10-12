@@ -451,8 +451,7 @@ function settings() : bool {
 			$collapsible = true;
 
 			print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div class='formHeaderText'>" .
-				$tabs_graphs[$tab_short_name] .
-				("<div style='float:right;padding-right:4px;'><i class='ti " .
+				$tabs_graphs[$tab_short_name] . ("<div style='float:right;padding-right:4px;'><i class='ti " .
 				"ti-chevrons-up'></i></div>") . '</div></div>';
 
 			$form_array = [];

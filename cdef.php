@@ -164,9 +164,7 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?action=item_edit&cdef_id=' .
-				gnrv('cdef_id') .
-				'&id=' .
+			header('Location: cdef.php?action=item_edit&cdef_id=' . gnrv('cdef_id') . '&id=' .
 				($cdef_item_id === null ? gnrv('id') : $cdef_item_id));
 		} else {
 			header('Location: cdef.php?action=edit&id=' . gnrv('cdef_id'));
@@ -597,14 +595,8 @@ function cdef_edit() : void {
 		draw_cdef_preview(grv('id'));
 		html_end_box();
 
-		html_start_box(__('CDEF Items'),
-			'100%',
-			false,
-			3,
-			'center',
-			'cdef.php?action=item_edit&cdef_id=' . $cdef['id'],
-			false,
-			false);
+		html_start_box(__('CDEF Items'), '100%', false, 3, 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id'],
+			false, false);
 
 		$display_text = [
 			['display' => __('Item'), 'align' => 'left'],
@@ -627,15 +619,10 @@ function cdef_edit() : void {
 			foreach ($cdef_items as $cdef_item) {
 				form_alternate_row('line' . $cdef_item['id'], true);
 
-				form_selectable_cell(filter_value(__('Item # %d',
-					$i),
-					'',
-					'cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']),
-					$cdef_item['id']);
+				form_selectable_cell(filter_value(__('Item # %d', $i), '',
+					'cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']), $cdef_item['id']);
 
-				$item_value = '<em>' .
-					htmle($cdef_item_types[$cdef_item['type']] ?? __('Unknown')) .
-					'</em>' .
+				$item_value = '<em>' . htmle($cdef_item_types[$cdef_item['type']] ?? __('Unknown')) . '</em>' .
 					htmle(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));
 
 				form_selectable_cell($item_value, $cdef_item['id']);
@@ -644,37 +631,24 @@ function cdef_edit() : void {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$actions .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('cdef.php?action=item_movedown&id=' .
-								$cdef_item['id'] .
-								'&cdef_id=' .
-								$cdef_item['cdef_id']) .
-								'" title="' .
-								__esc('Move Down') .
-								'"></a>';
+						$actions .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) .
+								'" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$actions .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('cdef.php?action=item_moveup&id=' .
-								$cdef_item['id'] .
-								'&cdef_id=' .
-								$cdef_item['cdef_id']) .
-								'" title="' .
-								__esc('Move Up') .
-								'"></a>';
+						$actions .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) .
+								'" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 				}
 
 				$actions .= "<a id='{$cdef['id']}_{$cdef_item['id']}' class='delete deleteMarker ti ti-x' title='" .
-					__esc('Delete') .
-					"' href='#'></a>";
+					__esc('Delete') . "' href='#'></a>";
 
 				form_selectable_cell($actions, $cdef_item['id'], '', 'right');
 
@@ -784,15 +758,8 @@ function cdef() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('cdef.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		5,
-		__('CDEFs'),
-		'page',
-		'main');
+	$nav = html_nav_bar('cdef.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5,
+		__('CDEFs'), 'page', 'main');
 
 	form_start('cdef.php', 'chk');
 
@@ -842,24 +809,12 @@ function cdef() : void {
 
 			form_alternate_row('line' . $cdef['id'], false, $disabled);
 
-			form_selectable_cell(filter_value($cdef['name'],
-				grv('filter'),
-				'cdef.php?action=edit&id=' . $cdef['id']),
+			form_selectable_cell(filter_value($cdef['name'], grv('filter'), 'cdef.php?action=edit&id=' . $cdef['id']),
 				$cdef['id']);
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $cdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($cdef['graphs'],
-				-1),
-				'',
-				$graphs_url),
-				$cdef['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($cdef['graphs'], -1), '', $graphs_url), $cdef['id'], '',
 				'right');
-			form_selectable_cell(filter_value(number_format_i18n($cdef['templates'],
-				-1),
-				'',
-				$templates_url),
-				$cdef['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($cdef['templates'], -1), '', $templates_url), $cdef['id'], '',
 				'right');
 
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
@@ -867,10 +822,7 @@ function cdef() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No CDEFs') .
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No CDEFs') .
 			'</em></td></tr>';
 	}
 

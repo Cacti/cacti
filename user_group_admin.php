@@ -522,8 +522,7 @@ function form_save() : void {
 		// ====================================================
 
 		// check duplicate group
-		if (cacti_sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?',
-			[gnrv('name'),
+		if (cacti_sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?', [gnrv('name'),
 			gnrv('id')]))) {
 			raise_message(12);
 		}
@@ -548,11 +547,8 @@ function form_save() : void {
 
 		foreach ($providers as $provider) {
 			// no-validation: free-text IdP/directory group name; escaped at every sink (ldap_escape in group lookups, prepared statements / json_encode on store)
-			$group_name = trim((string) CactiValidator::validateInput(gnrv('auto_assign_' . $provider['id'],
-				''),
-				'auto_assign_' . $provider['id'],
-				[],
-				3));
+			$group_name = trim((string) CactiValidator::validateInput(gnrv('auto_assign_' . $provider['id'], ''),
+				'auto_assign_' . $provider['id'], [], 3));
 
 			if ($group_name !== '') {
 				$auto_assignments[(string) $provider['id']] = $group_name;
@@ -586,10 +582,8 @@ function form_save() : void {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
-					db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)',
-						[grv('id'),
-						substr($var,
-							7)]);
+					db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', [grv('id'),
+						substr($var, 7)]);
 				}
 			}
 		}
@@ -608,17 +602,12 @@ function form_save() : void {
 			foreach ($tab_fields as $field_name => $field_array) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)',
-							[gfrv('id'),
-							$sub_field_name,
-							gnrv($sub_field_name,
-								'')]);
+						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', [gfrv('id'),
+							$sub_field_name, gnrv($sub_field_name, '')]);
 					}
 				} else {
-					db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)',
-						[grv('id'),
-						$field_name,
-						gnrv($field_name)]);
+					db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', [grv('id'),
+						$field_name, gnrv($field_name)]);
 				}
 			}
 		}
@@ -648,20 +637,16 @@ function perm_remove() : void {
 
 	if (grv('type') == 'graph') {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=1 AND group_id = ? AND item_id = ?',
-			[grv('group_id'),
-			grv('id')]);
+			[grv('group_id'), grv('id')]);
 	} elseif (grv('type') == 'tree') {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=2 AND group_id = ? AND item_id = ?',
-			[grv('group_id'),
-			grv('id')]);
+			[grv('group_id'), grv('id')]);
 	} elseif (grv('type') == 'host') {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=3 AND group_id = ? AND item_id = ?',
-			[grv('group_id'),
-			grv('id')]);
+			[grv('group_id'), grv('id')]);
 	} elseif (grv('type') == 'graph_template') {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=4 AND group_id = ? AND item_id = ?',
-			[grv('group_id'),
-			grv('id')]);
+			[grv('group_id'), grv('id')]);
 	}
 
 	header('Location: user_group_admin.php?action=edit&tab=gperms&id=' . grv('group_id'));
@@ -721,15 +706,8 @@ function user_group_members_edit(string $header_label) : void {
 		__('Realm')
 	];
 
-	$nav = html_nav_bar('user_group_admin.php?action=edit&tab=members&id=' . grv('id'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('Users'),
-		'page',
-		'main');
+	$nav = html_nav_bar('user_group_admin.php?action=edit&tab=members&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+		$rows, $total_rows, cacti_sizeof($display_text) + 1, __('Users'), 'page', 'main');
 
 	form_start('user_group_admin.php?tab=members&id=' . grv('id'), 'chk');
 
@@ -751,9 +729,7 @@ function user_group_members_edit(string $header_label) : void {
 
 			form_alternate_row('line' . $g['id'], true);
 
-			form_selectable_cell(filter_value($g['username'],
-				grv('filter'),
-				'user_admin.php?action=user_edit&id=' . $g['id']),
+			form_selectable_cell(filter_value($g['username'], grv('filter'), 'user_admin.php?action=user_edit&id=' . $g['id']),
 				$g['id']);
 			form_selectable_cell(filter_value($g['full_name'], grv('filter')), $g['id']);
 			form_selectable_cell($g['id'], $g['id']);
@@ -771,11 +747,8 @@ function user_group_members_edit(string $header_label) : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Matching Group Members Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Matching Group Members Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -826,19 +799,16 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 
 			if ($graph_auth_method == 1) {
 				$policy_note = __('<b>Note:</b> System Graph Policy is \'Permissive\' meaning the User ' .
-					'must have access to at least one of Graph, Device, or Graph Template ' .
-					'to gain access to the Graph');
+					'must have access to at least one of Graph, Device, or Graph Template ' . 'to gain access to the Graph');
 			} elseif ($graph_auth_method == 2) {
 				$policy_note = __('<b>Note:</b> System Graph Policy is \'Restrictive\' meaning the User ' .
-					'must have access to either the Graph or the Device and Graph Template ' .
-					'to gain access to the Graph');
+					'must have access to either the Graph or the Device and Graph Template ' . 'to gain access to the Graph');
 			} elseif ($graph_auth_method == 3) {
 				$policy_note = __('<b>Note:</b> System Graph Policy is \'Device\' meaning the User must ' .
 					'have access to the Graph or Device to gain access to the Graph');
 			} else {
 				$policy_note = __('<b>Note:</b> System Graph Policy is \'Graph Template\' meaning the ' .
-					'User must have access to the Graph or Graph Template to gain access ' .
-					'to the Graph');
+					'User must have access to the Graph or Graph Template to gain access ' . 'to the Graph');
 			}
 
 			graph_filter($header_label);
@@ -955,15 +925,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 				ON h.id = gl.host_id
 				$sql_where");
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsg&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				7,
-				__('Graphs'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsg&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, 7, __('Graphs'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permsg&id=' . grv('id'), 'chk');
 
@@ -988,11 +951,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' .
-					(cacti_sizeof($display_text) + 1) .
-					'"><em>' .
-					__('No Matching Graphs Found') .
-					'</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+					__('No Matching Graphs Found') . '</em></td></tr>';
 			}
 
 			html_end_box(false);
@@ -1146,15 +1106,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 				__('Hostname')
 			];
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				cacti_sizeof($display_text) + 1,
-				__('Devices'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, cacti_sizeof($display_text) + 1, __('Devices'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permsd&id=' . grv('id'), 'chk');
 
@@ -1186,8 +1139,7 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					}
 					form_selectable_cell((isset($host_graphs[$host['id']]) ? $host_graphs[$host['id']] : 0), $host['id']);
 					form_selectable_cell((isset($host_data_sources[$host['id']]) ? $host_data_sources[$host['id']] : 0), $host['id']);
-					form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false),
-						$host['status']),
+					form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']),
 						$host['id']);
 					form_selectable_cell(filter_value($host['hostname'], grv('filter')), $host['id']);
 
@@ -1196,11 +1148,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' .
-					(cacti_sizeof($display_text) + 1) .
-					'"><em>' .
-					__('No Matching Devices Found') .
-					'</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+					__('No Matching Devices Found') . '</em></td></tr>';
 			}
 
 			html_end_box(false);
@@ -1277,9 +1226,7 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 
 			if (grv('associated') != 'false') {
 				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
-					' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' .
-					grv('id',
-						0) . ')';
+					' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . grv('id', 0) . ')';
 			}
 
 			$total_rows = db_fetch_cell_prepared("SELECT
@@ -1309,15 +1256,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 
 			$graphs = db_fetch_assoc_prepared($sql_query, [grv('id')]);
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permste&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				11,
-				__('Graph Templates'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permste&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permste&id=' . grv('id'), 'chk');
 
@@ -1356,11 +1296,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' .
-					(cacti_sizeof($display_text) + 1) .
-					'"><em>' .
-					__('No Matching Graph Templates Found') .
-					'</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+					__('No Matching Graph Templates Found') . '</em></td></tr>';
 			}
 
 			html_end_box(false);
@@ -1436,9 +1373,7 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 
 			if (grv('associated') != 'false') {
 				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
-					' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' .
-					grv('id',
-						0) . ')';
+					' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . grv('id', 0) . ')';
 			}
 
 			$total_rows = db_fetch_cell('SELECT
@@ -1446,31 +1381,22 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 				FROM graph_tree AS gt
 				LEFT JOIN user_auth_group_perms
 				ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id = ' .
-					grv('id') .
-					")
+					grv('id') . ")
 				$sql_where");
 
 			$sql_query = 'SELECT gt.id, gt.name, user_auth_group_perms.group_id
 				FROM graph_tree AS gt
 				LEFT JOIN user_auth_group_perms
 				ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id = ' .
-					grv('id') .
-					")
+					grv('id') . ")
 				$sql_where
 				ORDER BY name
 				LIMIT " . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 			$trees = db_fetch_assoc($sql_query);
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permstr&id=' . grv('id'),
-				MAX_DISPLAY_PAGES,
-				grv('page'),
-				$rows,
-				$total_rows,
-				11,
-				__('Trees'),
-				'page',
-				'main');
+			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permstr&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'),
+				$rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permstr&id=' . grv('id'), 'chk');
 
@@ -1508,11 +1434,8 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="' .
-					(cacti_sizeof($display_text) + 1) .
-					'"><em>' .
-					__('No Matching Trees Found') .
-					'</em></td></tr>';
+				print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+					__('No Matching Trees Found') . '</em></td></tr>';
 			}
 			html_end_box(false);
 
@@ -1562,14 +1485,10 @@ function user_group_realms_edit(string $header_label) : void {
 
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div class='cactiTableTitleRow'>
-			<div class='cactiTableTitle'><span style='padding:3px;'>" .
-				__('User Permissions') .
-				' ' .
-				htmle($header_label) .
+			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . ' ' . htmle($header_label) .
 				"</span></div>
 			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" .
-				__esc('Select All') .
-				("' onClick='selectAllRealms(this.checked)'><label " .
+				__esc('Select All') . ("' onClick='selectAllRealms(this.checked)'><label " .
 				"class='formCheckboxLabel' title='") . __esc('Select All') . "' for='all'></label></a></span></div>
 		</div>
 	</div>";
@@ -1650,11 +1569,8 @@ function user_group_realms_edit(string $header_label) : void {
 
 			switch($r['style']) {
 				case 'CONSOLE':
-					$description = $style_translate[$r['style']] .
-						': ' .
-						($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) .
-						'/' .
-						$r['title'];
+					$description = $style_translate[$r['style']] . ': ' .
+						($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) . '/' . $r['title'];
 
 					break;
 				default:
@@ -1718,15 +1634,7 @@ function user_group_realms_edit(string $header_label) : void {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm,
-				$old_value,
-				substr($user_auth_realms[$realm],
-					$pos),
-				'',
-				'',
-				'',
-				'',
-				$r['display'],
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'],
 				true);
 			print '</div>';
 		}
@@ -1805,8 +1713,7 @@ function user_group_settings_edit(string $header_label) : void {
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" .
-			$tabs_graphs[$tab_short_name] .
-			("<div style='float:right;padding-right:4px;'><i class='ti " .
+			$tabs_graphs[$tab_short_name] . ("<div style='float:right;padding-right:4px;'><i class='ti " .
 			"ti-chevrons-up'></i></div></div></div>");
 
 		$form_array = [];
@@ -1821,8 +1728,7 @@ function user_group_settings_edit(string $header_label) : void {
 					}
 
 					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?',
-						[$sub_field_name,
-						grv('id')]);
+						[$sub_field_name, grv('id')]);
 				}
 			} else {
 				if (graph_config_value_exists($field_name, grv('id'))) {
@@ -1830,8 +1736,7 @@ function user_group_settings_edit(string $header_label) : void {
 				}
 
 				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?',
-					[$field_name,
-					grv('id')]);
+					[$field_name, grv('id')]);
 			}
 		}
 
@@ -1921,8 +1826,7 @@ function user_group_auto_assignment_inject_fields(array $fields, array $group) :
 			'description'   => __('If your IdP returns Group information and any of your users are a ' .
 				'member of this group, they will be auto-added to it.  If, when they ' .
 				'login, they are not a member of this group but have it assigned, they ' .
-				'will be removed from it.  Enter the plain Group Name (for example ' .
-				'"Cacti Admins"), not a full DN.'),
+				'will be removed from it.  Enter the plain Group Name (for example ' . '"Cacti Admins"), not a full DN.'),
 			'value'         => (string) ($assignments[$provider['id']] ?? ''),
 			'max_length'    => '255',
 		];
@@ -2104,10 +2008,7 @@ function user_group() : void {
 	global $group_actions, $item_rows;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('User Group Management'),
-		'user_group_admin.php',
-		'forms',
-		'sess_ugad',
+	$pageFilter = new CactiTableFilter(__('User Group Management'), 'user_group_admin.php', 'forms', 'sess_ugad',
 		'user_group_admin.php?action=edit&tab=general');
 
 	$pageFilter->rows_label = __('Groups');
@@ -2181,15 +2082,8 @@ function user_group() : void {
 		]
 	];
 
-	$nav = html_nav_bar('user_group_admin.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('Groups'),
-		'page',
-		'main');
+	$nav = html_nav_bar('user_group_admin.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		cacti_sizeof($display_text) + 1, __('Groups'), 'page', 'main');
 
 	form_start('user_group_admin.php', 'chk');
 
@@ -2209,10 +2103,8 @@ function user_group() : void {
 
 			form_alternate_row('line' . $group['id'], true);
 
-			form_selectable_cell(filter_value($group['name'],
-				grv('filter'),
-				'user_group_admin.php?action=edit&tab=general&id=' . $group['id']),
-				$group['id']);
+			form_selectable_cell(filter_value($group['name'], grv('filter'),
+				'user_group_admin.php?action=edit&tab=general&id=' . $group['id']), $group['id']);
 			form_selectable_cell(($group['members'] > 0 ? number_format_i18n($group['members'], 0) : 'None'), $group['id']);
 			form_selectable_cell(filter_value($group['description'], grv('filter')), $group['id']);
 			form_selectable_cell(($group['policy_graphs'] == 1 ? __('ALLOW') : __('DENY')), $group['id']);
@@ -2225,11 +2117,8 @@ function user_group() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No User Groups Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No User Groups Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -2313,11 +2202,8 @@ function graph_filter(string $header_label) : void {
 	$filters = create_uggraphs_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Graph Permissions %s',
-		$header_label),
-		'user_group_admin.php?action=edit&tab=permsg&id=' . grv('id'),
-		'form_template',
-		'sess_ua_d');
+	$pageFilter = new CactiTableFilter(__('Graph Permissions %s', $header_label),
+		'user_group_admin.php?action=edit&tab=permsg&id=' . grv('id'), 'form_template', 'sess_ua_d');
 
 	$pageFilter->rows_label       = __('Graphs');
 	$pageFilter->has_associated   = true;
@@ -2399,11 +2285,8 @@ function device_filter(string $header_label) : void {
 	$filters = create_device_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Device Permissions %s',
-		$header_label),
-		'user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'),
-		'form_template',
-		'sess_ug_d');
+	$pageFilter = new CactiTableFilter(__('Device Permissions %s', $header_label),
+		'user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'), 'form_template', 'sess_ug_d');
 
 	$pageFilter->rows_label       = __('Devices');
 	$pageFilter->has_associated   = true;
@@ -2419,11 +2302,8 @@ function device_filter(string $header_label) : void {
 
 function template_filter(string $header_label) : void {
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Template Permissions %s',
-		$header_label),
-		'user_group_admin.php?action=edit&tab=permste&id=' . grv('id'),
-		'form_template',
-		'sess_ug_te');
+	$pageFilter = new CactiTableFilter(__('Template Permissions %s', $header_label),
+		'user_group_admin.php?action=edit&tab=permste&id=' . grv('id'), 'form_template', 'sess_ug_te');
 
 	$pageFilter->rows_label       = __('Templatee');
 	$pageFilter->has_associated   = true;
@@ -2437,11 +2317,8 @@ function template_filter(string $header_label) : void {
 
 function tree_filter(string $header_label) : void {
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Tree Permissions %s',
-		$header_label),
-		'user_group_admin.php?action=edit&tab=permstr&id=' . grv('id'),
-		'form_tree',
-		'sess_ug_tr');
+	$pageFilter = new CactiTableFilter(__('Tree Permissions %s', $header_label),
+		'user_group_admin.php?action=edit&tab=permstr&id=' . grv('id'), 'form_tree', 'sess_ug_tr');
 
 	$pageFilter->rows_label       = __('Trees');
 	$pageFilter->has_associated   = true;
@@ -2455,10 +2332,8 @@ function tree_filter(string $header_label) : void {
 
 function member_filter(string $header_label) : void {
 	// create the page filter
-	$pageFilter = new CactiTableFilter($header_label,
-		'user_group_admin.php?action=edit&tab=members&id=' . grv('id'),
-		'forms',
-		'sess_ug_g');
+	$pageFilter = new CactiTableFilter($header_label, 'user_group_admin.php?action=edit&tab=members&id=' . grv('id'),
+		'forms', 'sess_ug_g');
 
 	$pageFilter->rows_label       = __('Users');
 	$pageFilter->has_associated   = true;

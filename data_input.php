@@ -99,9 +99,7 @@ function form_save() : void {
 		$save['hash']         = get_hash_data_input(gnrv('id'));
 		$save['name']         = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()], 3);
 		$save['input_string'] = CactiValidator::validateInput(gnrv('input_string'), 'input_string', [], 3);
-		$save['type_id']      = CactiValidator::validateInput(gnrv('type_id'),
-			'type_id',
-			[new Assert\Regex('/^[0-9]+$/')],
+		$save['type_id']      = CactiValidator::validateInput(gnrv('type_id'), 'type_id', [new Assert\Regex('/^[0-9]+$/')],
 			3);
 
 		if (!is_error_message()) {
@@ -140,23 +138,15 @@ function form_save() : void {
 		$save['name']          = CactiValidator::validateInput(gnrv('fname'), 'fname', [new Assert\NotBlank()], 3);
 		$save['data_name']     = CactiValidator::validateInput(gnrv('data_name'), 'data_name', [new Assert\NotBlank()], 3);
 		$save['input_output']  = gnrv('input_output');
-		$save['update_rra']    = CactiValidator::validateInput((isrv('update_rra') ? gnrv('update_rra') : ''),
-			'update_rra',
-			[],
-			3);
+		$save['update_rra']    = CactiValidator::validateInput((isrv('update_rra') ? gnrv('update_rra') : ''), 'update_rra',
+			[], 3);
 		$save['sequence']      = grv('sequence');
-		$save['type_code']     = CactiValidator::validateInput((isrv('type_code') ? gnrv('type_code') : ''),
-			'type_code',
-			[],
+		$save['type_code']     = CactiValidator::validateInput((isrv('type_code') ? gnrv('type_code') : ''), 'type_code', [],
 			3);
 		$save['regexp_match']  = CactiValidator::validateInput((isrv('regexp_match') ? gnrv('regexp_match') : ''),
-			'regexp_match',
-			[],
-			3);
+			'regexp_match', [], 3);
 		$save['allow_nulls']   = CactiValidator::validateInput((isrv('allow_nulls') ? gnrv('allow_nulls') : ''),
-			'allow_nulls',
-			[],
-			3);
+			'allow_nulls', [], 3);
 
 		if (is_error_message() === false) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
@@ -166,8 +156,7 @@ function form_save() : void {
 
 				if ($data_input_field_id > 0 && grv('input_output') == 'in') {
 					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?',
-						[grv('data_input_id')]),
-						grv('data_input_id'));
+						[grv('data_input_id')]), grv('data_input_id'));
 				}
 
 				update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
@@ -179,11 +168,8 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?action=field_edit&data_input_id=' .
-				grv('data_input_id') .
-				'&id=' .
-				($data_input_field_id === null ? grv('id') : $data_input_field_id) .
-				(!ierv('input_output') ? '&type=' .
+			header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' .
+				($data_input_field_id === null ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' .
 				grv('input_output') : ''));
 		} else {
 			header('Location: data_input.php?action=edit&id=' . grv('data_input_id'));
@@ -379,20 +365,15 @@ function field_remove() : void {
 
 	// when a field is deleted; we need to re-order the field sequences
 	if (($field['input_output'] == 'in') &&
-		(preg_match_all('/<([_a-zA-Z0-9]+)>/',
-			db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?',
-				[$field['data_input_id']]),
-			$matches))) {
+		(preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?',
+			[$field['data_input_id']]), $matches))) {
 		$j = 0;
 
 		for ($i = 0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$j++;
 				db_execute_prepared('UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND ' .
-					"input_output = 'in' AND data_name = ?",
-					[$j,
-					$field['data_input_id'],
-					$matches[1][$i]]);
+					"input_output = 'in' AND data_name = ?", [$j, $field['data_input_id'], $matches[1][$i]]);
 			}
 		}
 	}
@@ -466,8 +447,7 @@ function field_edit() : void {
 	if ((!cacti_sizeof($array_field_names)) &&
 		(isrv('type') ? grv('type') == 'in' : false) &&
 		($data_input['type_id'] == 1)) {
-		raise_message('invalid_inputs',
-			__('This script appears to have no input values, therefore there is nothing to add.'),
+		raise_message('invalid_inputs', __('This script appears to have no input values, therefore there is nothing to add.'),
 			MESSAGE_LEVEL_WARN);
 		header('Location: data_input.php?action=edit&id=' . gfrv('data_input_id'));
 
@@ -514,9 +494,7 @@ function field_edit() : void {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => $form_array + inject_form_variables($fields_data_input_field_edit,
-				$field,
-				$current_field_type,
+			'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, $field, $current_field_type,
 				$_REQUEST)
 		]
 	);
@@ -672,16 +650,8 @@ function data_input_edit() : void {
 				form_selectable_cell($field['sequence'], $i);
 
 				form_selectable_cell("<a class='delete deleteMarker ti ti-x' href='" .
-					htmle('data_input.php?action=field_remove_confirm&id=' .
-					$field['id'] .
-					'&data_input_id=' .
-					grv('id')) .
-					"' title='" .
-					__esc('Delete') .
-					"'></a>",
-					$i,
-					'',
-					'right');
+					htmle('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . grv('id')) .
+					"' title='" . __esc('Delete') . "'></a>", $i, '', 'right');
 
 				form_end_row();
 
@@ -699,11 +669,7 @@ function data_input_edit() : void {
 			__('Update RRA')
 		];
 
-		html_start_box(__('Output Fields'),
-			'100%',
-			false,
-			3,
-			'center',
+		html_start_box(__('Output Fields'), '100%', false, 3, 'center',
 			'data_input.php?action=field_edit&type=out&data_input_id=' . grv('id'));
 
 		html_header($display_text, 2);
@@ -731,16 +697,12 @@ function data_input_edit() : void {
 
 				if ($output_disabled) {
 					form_selectable_cell("<a class='deleteMarkerDisabled ti ti-x' href='#' title='" .
-						__esc('Output Fields can not be removed when Data Sources are present') .
-						"'></a>",
-						$i);
+						__esc('Output Fields can not be removed when Data Sources are present') . "'></a>", $i);
 				} else {
 					$url = htmle('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . grv('id'));
 
-					form_selectable_cell("<a class='delete deleteMarker ti ti-x' href='$url' title='" . __esc('Delete') . "'></a>",
-						$i,
-						'',
-						'right');
+					form_selectable_cell("<a class='delete deleteMarker ti ti-x' href='$url' title='" . __esc('Delete') . "'></a>", $i,
+						'', 'right');
 				}
 
 				form_end_row();
@@ -795,10 +757,7 @@ function data() : void {
 	global $input_types, $actions, $item_rows, $hash_system_data_inputs;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Data Input Methods'),
-		'data_input.php',
-		'form_data_input',
-		'sess_data_input',
+	$pageFilter = new CactiTableFilter(__('Data Input Methods'), 'data_input.php', 'form_data_input', 'sess_data_input',
 		'data_input.php?action=edit');
 
 	$pageFilter->rows_label = __('Input Methods');
@@ -835,15 +794,8 @@ function data() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('data_input.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		6,
-		__('Input Methods'),
-		'page',
-		'main');
+	$nav = html_nav_bar('data_input.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6,
+		__('Input Methods'), 'page', 'main');
 
 	form_start('data_input.php', 'chk');
 
@@ -852,10 +804,8 @@ function data() : void {
 	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
-		'name'         => ['display' => __('Data Input Name'),
-			'align'                     => 'left',
-			'sort'                      => 'ASC',
-			'tip'                       => __('The name of this Data Input Method.')],
+		'name'         => ['display' => __('Data Input Name'), 'align'                     => 'left',
+			'sort'                      => 'ASC', 'tip'                       => __('The name of this Data Input Method.')],
 		'id'           => [
 			'display' => __('ID'),
 			'align'   => 'right',
@@ -904,10 +854,8 @@ function data() : void {
 
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 
-			form_selectable_cell(filter_value($data_input['name'],
-				grv('filter'),
-				'data_input.php?action=edit&id=' . $data_input['id']),
-				$data_input['id']);
+			form_selectable_cell(filter_value($data_input['name'], grv('filter'),
+				'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($data_input['id'], $data_input['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $data_input['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources'], -1), $data_input['id'],'', 'right');
@@ -919,11 +867,8 @@ function data() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Data Input Methods Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Data Input Methods Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

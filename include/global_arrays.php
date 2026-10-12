@@ -298,8 +298,7 @@ $messages = [
 		'level'   => MESSAGE_LEVEL_INFO],
 	'input_field_save_wo_ds' => [
 		'message' => __('Data Input Field Saved.  You must update the Data Templates ' .
-			'referencing this Data Input Method before creating Graphs or Data ' .
-			'Sources.'),
+			'referencing this Data Input Method before creating Graphs or Data ' . 'Sources.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'input_field_save_w_ds' => [
 		'message' => __('Data Input Field Saved.  You must update the Data Templates ' .
@@ -402,8 +401,7 @@ $messages = [
 		'level'   => MESSAGE_LEVEL_INFO],
 	'resource_cache_rebuild' => [
 		'message' => __('Poller Resource Cache cleared.  Main Data Collector will rebuild at ' .
-			'the next poller start, and Remote Data Collectors will sync ' .
-			'afterwards.'),
+			'the next poller start, and Remote Data Collectors will sync ' . 'afterwards.'),
 		'level'   => MESSAGE_LEVEL_INFO],
 	'permission_denied' => [
 		'message' => __('Permission Denied.  You do not have permission to the requested action.'),

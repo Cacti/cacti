@@ -188,10 +188,7 @@ function gprint_presets() : void {
 	global $actions, $item_rows;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('GRPRINT Presets'),
-		'gprint_presets.php',
-		'form_gprint',
-		'sess_gp',
+	$pageFilter = new CactiTableFilter(__('GRPRINT Presets'), 'gprint_presets.php', 'form_gprint', 'sess_gp',
 		'gprint_presets.php?action=edit');
 
 	$pageFilter->rows_label = __('GPRINTs');
@@ -261,15 +258,8 @@ function gprint_presets() : void {
 		]
 	];
 
-	$nav = html_nav_bar('gprint_presets.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('GPRINTs'),
-		'page',
-		'main');
+	$nav = html_nav_bar('gprint_presets.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		cacti_sizeof($display_text) + 1, __('GPRINTs'), 'page', 'main');
 
 	form_start('gprint_presets.php', 'chk');
 
@@ -291,9 +281,7 @@ function gprint_presets() : void {
 
 			form_alternate_row('line' . $gp['id'], false, $disabled);
 
-			form_selectable_cell(filter_value($gp['name'],
-				grv('filter'),
-				'gprint_presets.php?action=edit&id=' . $gp['id']),
+			form_selectable_cell(filter_value($gp['name'], grv('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']),
 				$gp['id']);
 			form_selectable_ecell($gp['gprint_text'], $gp['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $gp['id'], '', 'right');
@@ -304,11 +292,8 @@ function gprint_presets() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No GPRINT Presets') .
-			"</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No GPRINT Presets') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

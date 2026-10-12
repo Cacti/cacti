@@ -200,12 +200,8 @@ function host_reindex() : void {
 	$start = microtime(true);
 
 	$host_id = gfrv('host_id');
-	shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) .
-		' -q ' .
-		cacti_escapeshellarg(CACTI_PATH_CLI .
-		'/poller_reindex_hosts.php') .
-		' --qid=all --id=' .
-		$host_id);
+	shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
+		cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 
 	$end = microtime(true);
 
@@ -217,11 +213,8 @@ function host_reindex() : void {
 		[$host_id]
 	);
 
-	raise_message('host_reindex',
-		__esc('Device Reindex Completed in %0.2f seconds.  There were %d items updated.',
-			$total_time,
-			$items),
-		MESSAGE_LEVEL_INFO);
+	raise_message('host_reindex', __esc('Device Reindex Completed in %0.2f seconds.  There were %d items updated.',
+		$total_time, $items), MESSAGE_LEVEL_INFO);
 }
 
 function add_tree_names_to_actions_array() : void {
@@ -365,9 +358,7 @@ function form_actions() : void {
 						[grv('report_id')]
 					);
 
-					raise_message('reports_add_error',
-						__esc('Unable to add some Devices to Report \'%s\'',
-							$name),
+					raise_message('reports_add_error', __esc('Unable to add some Devices to Report \'%s\'', $name),
 						MESSAGE_LEVEL_WARN);
 				}
 			} elseif (grv('drp_action') == '1') { // delete
@@ -383,16 +374,7 @@ function form_actions() : void {
 				gfrv('tree_item_id');
 
 				foreach ($selected_items as $selected_item) {
-					api_tree_item_save(0,
-						gnrv('tree_id'),
-						TREE_ITEM_TYPE_HOST,
-						gnrv('tree_item_id'),
-						'',
-						0,
-						$selected_item,
-						0,
-						1,
-						1,
+					api_tree_item_save(0, gnrv('tree_id'), TREE_ITEM_TYPE_HOST, gnrv('tree_item_id'), '', 0, $selected_item, 0, 1, 1,
 						false);
 				}
 			} elseif (grv('drp_action') == 6) { // automation
@@ -727,9 +709,8 @@ function host_add_gt() : void {
 
 	automation_hook_graph_template(gnrv('host_id'), gnrv('graph_template_id'));
 
-	api_plugin_hook_function('add_graph_template_to_host',
-		['host_id'          => gnrv('host_id'),
-		'graph_template_id' => gnrv('graph_template_id')]);
+	api_plugin_hook_function('add_graph_template_to_host', ['host_id'          => gnrv('host_id'),
+		'graph_template_id'                                                       => gnrv('graph_template_id')]);
 
 	if (grv('host_id') > 0) {
 		object_cache_get_totals('device_state', grv('host_id'), true);
@@ -802,15 +783,13 @@ function create_host_edit_filter(array $host, string $content = '') : array {
 			],
 			[
 				'display' => __('View Poller Cache'),
-				'url'     => 'utilities.php?poller_action=-1&action=view_poller_cache&host_id=' .
-					$host['id'] .
+				'url'     => 'utilities.php?poller_action=-1&action=view_poller_cache&host_id=' . $host['id'] .
 					'&template_id=-1&filter=&rows=-1',
 				'class'   => 'fa-solid fa-list-ul viewCache'
 			],
 			[
 				'display' => __('View Data Source List'),
-				'url'     => 'data_sources.php?reset=true&host_id=' .
-					$host['id'] .
+				'url'     => 'data_sources.php?reset=true&host_id=' . $host['id'] .
 					'&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1',
 				'class'   => 'ti ti-brand-databricks viewSources'
 			],
@@ -895,10 +874,8 @@ function host_edit() : void {
 
 	if (cacti_sizeof($host)) {
 		$content  = "<div class='pingRow'>";
-		$content .= "<div id='ping_results'>" .
-			__('Contacting Device') .
-			("&nbsp;<i style='font-size:12px;' class='ti fa-spin " .
-			"ti-loader'></i></div>");
+		$content .= "<div id='ping_results'>" . __('Contacting Device') .
+			("&nbsp;<i style='font-size:12px;' class='ti fa-spin " . "ti-loader'></i></div>");
 		$content .= '</div>';
 
 		$filters = create_host_edit_filter($host, $content);
@@ -1020,16 +997,9 @@ function host_edit() : void {
 					<strong><?php print $i; ?>)</strong> <?php print htmle($item['name']); ?>
 				</td>
 				<td class='nowrap'>
-					<?php print(($is_being_graphed == true) ? "<span class='beingGraphed'>" .
-						__('Is Being Graphed') .
-						"</span> (<a class='linkEditMain' href='" .
-						htmle('graphs.php?action=graph_edit&id=' .
-						$item['graph_local_id']) .
-						"'>" .
-						__('Edit') .
-						'</a>)' : "<span class='notBeingGraphed'>" .
-						__('Not Being Graphed') .
-						'</span>'); ?>
+					<?php print(($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') .
+						"</span> (<a class='linkEditMain' href='" . htmle('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) .
+						"'>" . __('Edit') . '</a>)' : "<span class='notBeingGraphed'>" . __('Not Being Graphed') . '</span>'); ?>
 				</td>
 				<td class='nowrap right'>
 					<span title='<?php print __esc('Delete Graph Template Association'); ?>' class='deletequery ti ti-x' id='gtremove<?php print $item['id']; ?>' data-id='<?php print $item['id']; ?>'></span>
@@ -1172,13 +1142,8 @@ function host_edit() : void {
 					<?php print($item['reindex_last_duration'] == 0 ? '-' : __('%0.2f secs', $item['reindex_last_duration'])); ?>
 				</td>
 				<td>
-					<?php print (($status == 'success') ? "<span class='success'>" .
-						__('Success') .
-						'</span>' : "<span class='failed'>" .
-						__('Fail')) .
-						'</span>' .
-						__(' [%d Items, %d Rows]',
-							$item['itemCount'],
+					<?php print (($status == 'success') ? "<span class='success'>" . __('Success') .
+						'</span>' : "<span class='failed'>" . __('Fail')) . '</span>' . __(' [%d Items, %d Rows]', $item['itemCount'],
 							$item['rowCount']); ?>
 				</td>
 				<td class='nowrap right' style='vertical-align:middle;'>
@@ -1248,30 +1213,11 @@ function device_reindex_methods(array $item, array $host) : void {
 		if ($i == 0) {
 			print "<fieldset class='reindex_methods'>";
 		}
-		print "<input name='reindex_radio_" .
-			$item['id'] .
-			"' type='radio' data-device-id='" .
-			$host['id'] .
-			"' data-query-id='" .
-			$item['id'] .
-			"' data-reindex-method='" .
-			$key .
-			"' id='reindex_" .
-			$item['id'] .
-			'_' .
-			$key .
-			"'" .
-			($item['reindex_method'] == $key ? ' checked="checked"' : '') .
-			' />';
-		print "<label title='" .
-			htmle($reindex_types_tips[$key]) .
-			"' for='reindex_" .
-			$item['id'] .
-			'_' .
-			$key .
-			"'>" .
-			$type .
-			'</label>';
+		print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] .
+			"' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . '_' . $key .
+			"'" . ($item['reindex_method'] == $key ? ' checked="checked"' : '') . ' />';
+		print "<label title='" . htmle($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . '_' . $key . "'>" .
+			$type . '</label>';
 
 		$i++;
 	}
@@ -1757,8 +1703,7 @@ function host() : void {
 				'Device is a special type Device, by using the hostname "localhost", ' .
 				'or due to the setting to not perform an Availability Check, it will ' .
 				'always remain Up.  When using cmd.php data collector, a Device with ' .
-				'no Graphs, is not pinged by the data collector and will remain in an ' .
-				'"Unknown" state.')
+				'no Graphs, is not pinged by the data collector and will remain in an ' . '"Unknown" state.')
 		],
 		'site_name' => [
 			'display' => __('Site'),
@@ -1826,15 +1771,8 @@ function host() : void {
 
 	$hosts = get_device_records($total_rows, $rows);
 
-	$nav = html_nav_bar('host.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('Devices'),
-		'page',
-		'main');
+	$nav = html_nav_bar('host.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		cacti_sizeof($display_text) + 1, __('Devices'), 'page', 'main');
 
 	form_start('host.php', 'chk');
 
@@ -1851,9 +1789,7 @@ function host() : void {
 			$disabled = ($host['disabled'] == 'on');
 
 			if (isset($host['thold_failure_count'])) {
-				$host_status = get_colored_device_status($disabled,
-					$host['status'],
-					$host['thold_failure_count'],
+				$host_status = get_colored_device_status($disabled, $host['status'], $host['thold_failure_count'],
 					$host['status_event_count']);
 			} else {
 				$host_status = get_colored_device_status($disabled, $host['status']);
@@ -1889,36 +1825,19 @@ function host() : void {
 
 			$maint = ($host['maint'] == 1 ? '<i class="ti ti-tool" title="' . __('Maintenance') . '"></i>' : '');
 
-			form_selectable_cell(filter_value($host['description'],
-				grv('filter'),
-				'host.php?action=edit&id=' . $host['id']) . $maint,
-				$host['id']);
+			form_selectable_cell(filter_value($host['description'], grv('filter'),
+				'host.php?action=edit&id=' . $host['id']) . $maint, $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], grv('filter')), $host['id']);
 			form_selectable_cell(filter_value($host['id'], grv('filter')), $host['id'], '', 'right');
 			form_selectable_cell($host['device_threads'], $host['id'], '', 'right');
 
-			form_selectable_cell(filter_value(number_format_i18n($host['graphs'],
-				-1),
-				'',
-				$graphs_url),
-				$host['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($host['graphs'], -1), '', $graphs_url), $host['id'], '',
 				'right');
 
-			form_selectable_cell(filter_value(number_format_i18n($host['data_sources'],
-				-1),
-				'',
-				$data_source_url),
-				$host['id'],
-				'',
-				'right');
+			form_selectable_cell(filter_value(number_format_i18n($host['data_sources'], -1), '', $data_source_url), $host['id'],
+				'', 'right');
 
-			form_selectable_cell(filter_value(number_format_i18n($host['current_errors'],
-				-1),
-				'',
-				$errors_url),
-				$host['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($host['current_errors'], -1), '', $errors_url), $host['id'], '',
 				'right');
 
 			form_selectable_cell($host_status, $host['id'], '', 'center');
@@ -1949,21 +1868,14 @@ function host() : void {
 				form_selectable_cell(__('N/A'), $host['id'], '', 'right');
 			}
 
-			form_selectable_cell($host['created'] == '' ? __('Unknown') : substr($host['created'],
-				0,
-				10),
-				$host['id'],
-				'',
+			form_selectable_cell($host['created'] == '' ? __('Unknown') : substr($host['created'], 0, 10), $host['id'], '',
 				'right');
 			form_checkbox_cell($host['description'], $host['id']);
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Devices Found') .
-			'</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No Devices Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

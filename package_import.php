@@ -86,8 +86,7 @@ function check_tmp_dir() : mixed {
 		sessionMessage = {
 			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i ' .
 				'class="deviceUp">genkey.php</i></b> script in the cli directory.  ' .
-				'Once that is complete, you will have a public and private key used to ' .
-				'sign your packages.'); ?>',
+				'Once that is complete, you will have a public and private key used to ' . 'sign your packages.'); ?>',
 			level: MESSAGE_LEVEL_MIXED
 		};
 
@@ -219,9 +218,7 @@ function form_actions() : void {
 
 						if (!is_dir($tmp_dir)) {
 							if (!mkdir($tmp_dir, 0777, true)) {
-								raise_message('tmpdir_fail',
-									__esc('Unable to create package temporary directory %s.',
-										$tmp_dir),
+								raise_message('tmpdir_fail', __esc('Unable to create package temporary directory %s.', $tmp_dir),
 									MESSAGE_LEVEL_ERROR);
 
 								header('Location: package_import.php?package_location=' . $package_location);
@@ -234,21 +231,12 @@ function form_actions() : void {
 
 						file_put_contents($xmlfile, $data);
 
-						$data = import_package($xmlfile,
-							$profile_id,
-							$remove_orphans,
-							$replace_svalues,
-							$preview,
-							false,
-							true,
-							$hashes,
+						$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview, false, true, $hashes,
 							$files);
 
 						if ($data !== false && cacti_sizeof($data[0])) {
 							import_display_results($data[0], [], true, true);
-							raise_message('import_success_' . md5($xmlfile),
-								__esc('The Package %s Imported Successfully',
-									$name),
+							raise_message('import_success_' . md5($xmlfile), __esc('The Package %s Imported Successfully', $name),
 								MESSAGE_LEVEL_INFO);
 						} else {
 							raise_message('import_fail_' . md5($xmlfile), __esc('The Package %s Import Failed', $name), MESSAGE_LEVEL_ERROR);
@@ -357,8 +345,7 @@ function form_actions() : void {
 				print "<tr>
 					<td class='textArea'>
 						<p>" . __n('Click \'Continue\' to Import the following Package.',
-					'Click \'Continue\' to Import all following Packages.',
-					cacti_sizeof($pkg_array)) . "</p>
+					'Click \'Continue\' to Import all following Packages.', cacti_sizeof($pkg_array)) . "</p>
 						<div class='itemlist'><ul>$pkg_list</ul></div>
 					</td>
 				</tr>";
@@ -411,16 +398,12 @@ function form_actions() : void {
 					</tr>";
 				}
 
-				$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
-					"onClick='cactiReturnTo()'>") .
-						__esc('Cancel') .
-						("</button><button type='submit' class='ui-button ui-corner-all " .
-					"ui-widget ui-state-active' title='") . __n('Import Package',
-						'Import Packages',
+				$save_html = ("<button type='button' class='ui-button ui-corner-all ui-widget' " . "onClick='cactiReturnTo()'>") .
+						__esc('Cancel') . ("</button><button type='submit' class='ui-button ui-corner-all " .
+					"ui-widget ui-state-active' title='") . __n('Import Package', 'Import Packages',
 						cacti_sizeof($pkg_array)) . "'>" . __esc('Continue') . '</button>';
 			} else {
-				raise_message('no_selection',
-					__('You must select either a File or a Template Item to import before proceeding'),
+				raise_message('no_selection', __('You must select either a File or a Template Item to import before proceeding'),
 					MESSAGE_LEVEL_ERROR);
 				header('Location: package_import.php');
 
@@ -457,9 +440,7 @@ function form_actions() : void {
 	bottom_footer();
 }
 
-function package_import_store_state(array $selected_items,
-	array $selected_hashes,
-	array $selected_files,
+function package_import_store_state(array $selected_items, array $selected_hashes, array $selected_files,
 	array $context) : string {
 	$state_limit = 10;
 	$token       = generate_hash();
@@ -627,14 +608,7 @@ function form_save() : void {
 		cacti_log('Package name is ' . $package_name);
 
 		// obtain debug information if it's set
-		$data = import_package($xmlfile,
-			$profile_id,
-			$remove_orphans,
-			$replace_svalues,
-			$preview_only,
-			false,
-			false,
-			$hashes,
+		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, false, $hashes,
 			$files);
 
 		if ($preview_only) {
@@ -643,14 +617,10 @@ function form_save() : void {
 			import_display_package_data($templates, $files, $package_name, $xmlfile, $data, false);
 		} else {
 			if ($data !== false) {
-				raise_message('import_success_' . md5($xmlfile),
-					__esc('The Package %s Imported Successfully',
-						$package_name),
+				raise_message('import_success_' . md5($xmlfile), __esc('The Package %s Imported Successfully', $package_name),
 					MESSAGE_LEVEL_INFO);
 			} else {
-				raise_message('import_fail_' . md5($xmlfile),
-					__esc('The Package %s Import Failed',
-						$package_name),
+				raise_message('import_fail_' . md5($xmlfile), __esc('The Package %s Import Failed', $package_name),
 					MESSAGE_LEVEL_ERROR);
 			}
 
@@ -991,8 +961,7 @@ function package_accept_key() : void {
 				} else {
 					raise_message('repo_missing',
 						__esc('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.',
-							$repo['name']),
-						MESSAGE_LEVEL_WARN);
+							$repo['name']), MESSAGE_LEVEL_WARN);
 					header('Location: package_import.php');
 
 					exit;
@@ -1059,22 +1028,17 @@ function package_get_details() : void {
 
 				unlink($xmlfile);
 			} else {
-				raise_message_javascript(__('Error in Package'),
-					__('The package "%s" download or validation failed',
-						$package_name),
-					__('See the cacti.log for more information.  It could be that you had ' .
-						'either an API Key error or the package was tamered with, or the ' .
-						'location is not available.'));
+				raise_message_javascript(__('Error in Package'), __('The package "%s" download or validation failed',
+					$package_name), __('See the cacti.log for more information.  It could be that you had ' .
+					'either an API Key error or the package was tamered with, or the ' . 'location is not available.'));
 			}
 		}
 
 		import_display_package_data($templates, $files, $package_name, $filename, $data);
 	} else {
-		raise_message_javascript(__('Error in Package'),
-			__('The package download or validation failed'),
+		raise_message_javascript(__('Error in Package'), __('The package download or validation failed'),
 			__('See the cacti.log for more information.  It could be that you had ' .
-				'either an API Key error or the package was tamered with, or the ' .
-				'location is not available'));
+				'either an API Key error or the package was tamered with, or the ' . 'location is not available'));
 	}
 }
 
@@ -1114,26 +1078,20 @@ function import_validate_public_key(string $xmlfile, bool $accept = false) : mix
 				return $info['pubkey'];
 			}
 		} else {
-			raise_message_javascript(__('Error in Package'),
-				__('Package XML File Damaged.'),
+			raise_message_javascript(__('Error in Package'), __('Package XML File Damaged.'),
 				__('The XML files appears to be invalid and does not contain a public ' .
 					'key.  Please contact the package author to obtain a revised package.'));
 		}
 	} else {
-		raise_message_javascript(__('Error in Package'),
-			__('The XML files for the package does not exist'),
+		raise_message_javascript(__('Error in Package'), __('The XML files for the package does not exist'),
 			__('Check the package repository file for files that should exist and find the one that is missing'));
 	}
 
 	return false;
 }
 
-function import_display_package_data(array $templates,
-	array $files,
-	string $package_name,
-	string $filename,
-	array $data,
-	bool $multipackage = true) : void {
+function import_display_package_data(array $templates, array $files, string $package_name, string $filename,
+	array $data, bool $multipackage = true) : void {
 	global $device_classes;
 
 	if (!$multipackage) {
@@ -1188,12 +1146,8 @@ function import_display_package_data(array $templates,
 
 	// Show the filename status'
 	if (cacti_sizeof($files)) {
-		html_start_box(__('Import Package Filenames [ None selected imports all, Check to import selectively ]'),
-			'100%',
-			false,
-			3,
-			'center',
-			'');
+		html_start_box(__('Import Package Filenames [ None selected imports all, Check to import selectively ]'), '100%',
+			false, 3, 'center', '');
 
 		$display_text = [
 			[
@@ -1268,12 +1222,8 @@ function import_display_package_data(array $templates,
 	}
 
 	if (cacti_sizeof($templates)) {
-		html_start_box(__('Import Package Templates [ None selected imports all, Check to import selectively ]'),
-			'100%',
-			false,
-			3,
-			'center',
-			'');
+		html_start_box(__('Import Package Templates [ None selected imports all, Check to import selectively ]'), '100%',
+			false, 3, 'center', '');
 
 		if ($multipackage) {
 			$display_text = [
@@ -1540,8 +1490,7 @@ function get_import_form(int $repo_id, int $default_profile) : array {
 		'data_source_profile' => [
 			'friendly_name' => __('Data Source Profile'),
 			'description'   => __('Select the Data Source Profile.  The Data Source Profile controls ' .
-				'polling interval, the data aggregation, and retention policy for the ' .
-				'resulting Data Sources.'),
+				'polling interval, the data aggregation, and retention policy for the ' . 'resulting Data Sources.'),
 			'method'        => 'drop_sql',
 			'sql'           => 'SELECT id, name FROM data_source_profiles ORDER BY name',
 			'none_value'    => __('Create New from Template'),
@@ -1556,8 +1505,7 @@ function get_import_form(int $repo_id, int $default_profile) : array {
 		'remove_orphans' => [
 			'friendly_name' => __('Remove Orphaned Graph Items'),
 			'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph ' .
-				'Template and associated Graphs that are not included in the imported ' .
-				'Graph Template.'),
+				'Template and associated Graphs that are not included in the imported ' . 'Graph Template.'),
 			'method'        => 'checkbox',
 			'value'         => $remove_orphans,
 			'default'       => ''
@@ -1805,11 +1753,8 @@ function package_import() : void {
 				$i++;
 			}
 		} else {
-			print "<tr class='tableRow odd'><td colspan='" .
-				(cacti_sizeof($display_text) + 1) .
-				"'><em>" .
-				__('No Packages Found') .
-				'</em></td></tr>';
+			print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+				__('No Packages Found') . '</em></td></tr>';
 		}
 
 		html_end_box(true);
@@ -2091,13 +2036,9 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 			}
 
 			if (!$javascript) {
-				raise_message('repo_missing',
-					__esc('The Repo \'%s\' is NOT Reachable on GitHub or the \'%s\' file is ' .
+				raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable on GitHub or the \'%s\' file is ' .
 						'missing or it could be an invalid branch.  Valid Package Locations ' .
-						'are normally: https://github.com/Author/RepoName/.',
-						$repo['name'],
-						$filename),
-					MESSAGE_LEVEL_ERROR);
+						'are normally: https://github.com/Author/RepoName/.', $repo['name'], $filename), MESSAGE_LEVEL_ERROR);
 			}
 		} elseif ($repo['repo_type'] == 2) { // Direct URL
 			$file = $repo['repo_location'] . '/' . $filename;
@@ -2118,8 +2059,7 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 			if (!$javascript) {
 				raise_message('repo_missing',
 					__esc('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.',
-						$repo['name']),
-					MESSAGE_LEVEL_ERROR);
+						$repo['name']), MESSAGE_LEVEL_ERROR);
 			}
 		} else { // Server Directory
 			$file = $repo['repo_location'] . '/' . $filename;
@@ -2134,14 +2074,12 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 				if (!$javascript) {
 					raise_message('repo_exists',
 						__esc('The Repo \'%s\' is Reachable on the Local Cacti Server.  But not data returned from the manifest file.',
-							$repo['name']),
-						MESSAGE_LEVEL_ERROR);
+							$repo['name']), MESSAGE_LEVEL_ERROR);
 				}
 			} elseif (!$javascript) {
 				raise_message('repo_missing',
 					__esc('The Repo \'%s\' is NOT Reachable on the Local Cacti Server or the package.manifest file is missing.',
-						$repo['name']),
-					MESSAGE_LEVEL_ERROR);
+						$repo['name']), MESSAGE_LEVEL_ERROR);
 			}
 		}
 	}
@@ -2162,10 +2100,7 @@ function is_tmp_writable() : bool {
 	return $is_tmp;
 }
 
-function package_prepare_import_array(array &$templates,
-	array &$files,
-	string $package_name,
-	string $package_filename,
+function package_prepare_import_array(array &$templates, array &$files, string $package_name, string $package_filename,
 	array $import_info) : void {
 	global $hash_type_names;
 

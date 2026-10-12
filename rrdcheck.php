@@ -119,15 +119,8 @@ function rrdcheck_display_problems() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcheck.php?filter' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		8,
-		__('RRDcheck Problems'),
-		'page',
-		'main');
+	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcheck.php?filter' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows,
+		$total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
 
 	form_start('rrdcheck.php');
 

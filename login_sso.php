@@ -105,8 +105,7 @@ try {
 	$providerName = isset($provider) ? $provider->getName() : 'realm ' . $realm;
 
 	cacti_log('LOGIN FAILED: SSO Provider \'' . $providerName . '\' threw ' . get_class($e) . ': ' . $e->getMessage(),
-		false,
-		'AUTH');
+		false, 'AUTH');
 
 	auth_display_custom_error_message(__('Access Denied!  Login Failed.'));
 
@@ -124,12 +123,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 	$result = $provider->complete();
 
 	if (!$result->success) {
-		cacti_log(sprintf("LOGIN FAILED: SSO Provider '%s' Error from IP address %s: %s",
-			$provider->getName(),
-			get_client_addr(),
-			$result->error),
-			false,
-			'AUTH');
+		cacti_log(sprintf("LOGIN FAILED: SSO Provider '%s' Error from IP address %s: %s", $provider->getName(),
+			get_client_addr(), $result->error), false, 'AUTH');
 
 		auth_display_custom_error_message($result->error !== '' ? $result->error : __('Access Denied!  Login Failed.'));
 
@@ -158,8 +153,7 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 			cacti_log("LOGIN FAILED: Template user id '" . $templateUserId . "' does not exist.", false, 'AUTH');
 
 			auth_display_custom_error_message(__('Access Denied!  Template user id %s does not exist.  Please contact ' .
-				'your Administrator.',
-				$templateUserId));
+				'your Administrator.', $templateUserId));
 
 			exit;
 		}
@@ -179,12 +173,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 	}
 
 	if (!cacti_sizeof($user)) {
-		cacti_log("LOGIN FAILED: user '" .
-			$result->username .
-			("' authenticated but the provider has no template and no existing " .
-			'account.'),
-			false,
-			'AUTH');
+		cacti_log("LOGIN FAILED: user '" . $result->username .
+			("' authenticated but the provider has no template and no existing " . 'account.'), false, 'AUTH');
 
 		auth_display_custom_error_message(__('Access Denied!  Provider template is not configured.  Please contact ' .
 			'your Administrator.'));
@@ -219,12 +209,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 
 	$client_addr = get_client_addr();
 
-	cacti_log(sprintf("LOGIN: User '%s' authenticated via SSO Provider '%s' from IP Address '%s'",
-		$user['username'],
-		$provider->getName(),
-		$client_addr),
-		false,
-		'AUTH');
+	cacti_log(sprintf("LOGIN: User '%s' authenticated via SSO Provider '%s' from IP Address '%s'", $user['username'],
+		$provider->getName(), $client_addr), false, 'AUTH');
 
 	db_execute_prepared('INSERT IGNORE INTO user_log
 		(username, user_id, result, ip, time)

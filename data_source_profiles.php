@@ -206,10 +206,7 @@ function profile_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<input type='submit' value='" .
-				__esc('Import') .
-				"' title='" .
-				__esc('Import Data Source Profiles') .
+			<input type='submit' value='" . __esc('Import') . "' title='" . __esc('Import Data Source Profiles') .
 				"' class='ui-button ui-corner-all ui-widget ui-state-active'>
 		</td>
 		<script type='text/javascript'>
@@ -353,22 +350,18 @@ function profile_import_execute(mixed $json_data) : array {
 
 			if ($data_source_profile_id > 0) {
 				if (CACTI_WEB) {
-					$debug_data['success'][] = __esc('Data Source Profile \'%s\' %s!',
-						$name,
+					$debug_data['success'][] = __esc('Data Source Profile \'%s\' %s!', $name,
 						($save['id'] > 0 ? __('Updated') : __('Imported')));
 				} else {
-					$debug_data['success'][] = __('Data Source Profile \'%s\' %s!',
-						$name,
+					$debug_data['success'][] = __('Data Source Profile \'%s\' %s!', $name,
 						($save['id'] > 0 ? __('Updated') : __('Imported')));
 				}
 			} else {
 				if (CACTI_WEB) {
-					$debug_data['failure'][] = __esc('Data Source Profile \'%s\' %s Failed!',
-						$name,
+					$debug_data['failure'][] = __esc('Data Source Profile \'%s\' %s Failed!', $name,
 						($save['id'] > 0 ? __('Update') : __('Import')));
 				} else {
-					$debug_data['failure'][] = __('Data Source Profile \'%s\' %s Failed!',
-						$name,
+					$debug_data['failure'][] = __('Data Source Profile \'%s\' %s Failed!', $name,
 						($save['id'] > 0 ? __('Update') : __('Import')));
 				}
 			}
@@ -649,12 +642,10 @@ function form_save() : void {
 							WHERE dtd.data_source_profile_id = ?',
 							[grv('heartbeat'), grv('id')]);
 
-						raise_message('heartbeat_change',
-							__('Changing the Heartbeat from this page, does not change the Heartbeat ' .
+						raise_message('heartbeat_change', __('Changing the Heartbeat from this page, does not change the Heartbeat ' .
 								'for your existing Data Sources.  Use RRDtool\'s \'tune\' function to ' .
 								'make that change to your existing RRDfiles heartbeats, or run the CLI ' .
-								'utility update_heartbeat.php to correct.<br>'),
-							MESSAGE_LEVEL_WARN);
+								'utility update_heartbeat.php to correct.<br>'), MESSAGE_LEVEL_WARN);
 					}
 				}
 
@@ -706,9 +697,7 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?action=item_edit&profile_id=' .
-				grv('profile_id') .
-				'&id=' .
+			header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' .
 				($profile_rra_id === null ? grv('id') : $profile_rra_id));
 		} else {
 			header('Location: data_source_profiles.php?action=edit&id=' . grv('profile_id'));
@@ -877,8 +866,7 @@ function duplicate_data_source_profile(mixed $source_profile, string $title_form
 				raise_message(2);
 			}
 		} else {
-			raise_message('profile_error',
-				__('Unable to duplicate Data Source Profile.  Check Cacti Log for errors.'),
+			raise_message('profile_error', __('Unable to duplicate Data Source Profile.  Check Cacti Log for errors.'),
 				MESSAGE_LEVEL_ERROR);
 		}
 	}
@@ -1024,14 +1012,8 @@ function item_edit() : void {
 		WHERE id = ?',
 		[grv('id')]);
 
-	html_start_box(__esc('RRA [edit: %s %s]',
-		$name,
-		($readonly ? __('(Some Elements Read Only)') : '')),
-		'100%',
-		true,
-		3,
-		'center',
-		'');
+	html_start_box(__esc('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)') : '')), '100%', true, 3,
+		'center', '');
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
@@ -1144,11 +1126,7 @@ function profile_edit() : void {
 
 	if (!ierv('id')) {
 		if (!$readonly) {
-			html_start_box(__('Data Source Profile RRAs (press save to update timespans)'),
-				'100%',
-				false,
-				3,
-				'center',
+			html_start_box(__('Data Source Profile RRAs (press save to update timespans)'), '100%', false, 3, 'center',
 				'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
 		} else {
 			html_start_box(__('Data Source Profile RRAs (Read Only)'), '100%', false, 3, 'center', '');
@@ -1176,9 +1154,7 @@ function profile_edit() : void {
 			foreach ($profile_rras as $rra) {
 				form_alternate_row('line' . $rra['id']);
 
-				$url = 'data_source_profiles.php?action=item_edit&id=' .
-					$rra['id'] .
-					'&profile_id=' .
+				$url = 'data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' .
 					$rra['data_source_profile_id'];
 
 				form_selectable_cell(filter_value($rra['name'], '', $url), $i);
@@ -1189,16 +1165,8 @@ function profile_edit() : void {
 				form_selectable_cell('<em>' . $rra['rows'] . '</em>', $i);
 
 				if (!$readonly) {
-					form_selectable_cell("<a id='" .
-						$profile['id'] .
-						'_' .
-						$rra['id'] .
-						"' class='delete deleteMarker ti ti-x' title='" .
-						__esc('Delete') .
-						"' href='#'></a>",
-						$i,
-						'',
-						'right');
+					form_selectable_cell("<a id='" . $profile['id'] . '_' . $rra['id'] .
+						"' class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='#'></a>", $i, '', 'right');
 				} else {
 					form_selectable_cell('', $i, '', 'right');
 				}
@@ -1325,8 +1293,7 @@ function get_size(int $id, string $type, string $cfs = '', int $rows = 1) : stri
 			[$id]);
 
 		return __('%s KBytes per Data Sources and %s Bytes for the Header',
-			number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000),
-			$header);
+			number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
 	}
 
 	if ($rows > 0) {
@@ -1397,10 +1364,7 @@ function profile() : void {
 	global $actions, $item_rows, $sampling_intervals, $heartbeats;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Data Source Profiles'),
-		'data_source_profiles.php',
-		'snmp_dsp',
-		'sess_dsp',
+	$pageFilter = new CactiTableFilter(__('Data Source Profiles'), 'data_source_profiles.php', 'snmp_dsp', 'sess_dsp',
 		'data_source_profiles.php?action=edit');
 
 	$pageFilter->rows_label = __('Profiles');
@@ -1488,15 +1452,8 @@ function profile() : void {
 		]
 	];
 
-	$nav = html_nav_bar('data_source_profiles.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('Profiles'),
-		'page',
-		'main');
+	$nav = html_nav_bar('data_source_profiles.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows,
+		$total_rows, cacti_sizeof($display_text) + 1, __('Profiles'), 'page', 'main');
 
 	form_start('data_source_profiles.php', 'chk');
 
@@ -1523,35 +1480,23 @@ function profile() : void {
 			}
 
 			if ($profile['data_sources'] > 0) {
-				$ds = '<a class="linkEditMain" href="' .
-					CACTI_PATH_URL .
-					'data_sources.php?reset=true&profile=' .
-					$profile['id'] .
-					'">' .
-					number_format_i18n($profile['data_sources'],
-						-1) . '</a>';
+				$ds = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_sources.php?reset=true&profile=' . $profile['id'] .
+					'">' . number_format_i18n($profile['data_sources'], -1) . '</a>';
 			} else {
 				$ds = number_format_i18n($profile['data_sources'], -1);
 			}
 
 			if ($profile['templates'] > 0) {
-				$dt = '<a class="linkEditMain" href="' .
-					CACTI_PATH_URL .
-					'data_templates.php?reset=true&profile=' .
-					$profile['id'] .
-					'">' .
-					number_format_i18n($profile['templates'],
-						-1) . '</a>';
+				$dt = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_templates.php?reset=true&profile=' .
+					$profile['id'] . '">' . number_format_i18n($profile['templates'], -1) . '</a>';
 			} else {
 				$dt = number_format_i18n($profile['templates'], -1);
 			}
 
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 
-			form_selectable_cell(filter_value($profile['name'],
-				grv('filter'),
-				'data_source_profiles.php?action=edit&id=' . $profile['id']),
-				$profile['id']);
+			form_selectable_cell(filter_value($profile['name'], grv('filter'),
+				'data_source_profiles.php?action=edit&id=' . $profile['id']), $profile['id']);
 			form_selectable_cell($profile['default'] == 'on' ? __('Yes') : '', $profile['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $profile['id'], '', 'right');
 			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'right');
@@ -1565,11 +1510,8 @@ function profile() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Data Source Profiles Found') .
-			"</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No Data Source Profiles Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

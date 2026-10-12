@@ -110,8 +110,7 @@ switch (grv('action')) {
 			$id = sql_save($save, 'external_links');
 
 			// always give the login account access
-			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)',
-				[$_SESSION[SESS_USER_ID],
+			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', [$_SESSION[SESS_USER_ID],
 				$id + 10000]);
 
 			raise_message(1);
@@ -269,14 +268,8 @@ function pages() : void {
 	];
 
 	if (grv('filter') != '') {
-		$sql_where = ' WHERE title LIKE ' .
-			db_qstr('%' .
-			grv('filter') .
-			'%') .
-			' OR contentfile LIKE ' .
-			db_qstr('%' .
-			grv('filter') .
-			'%');
+		$sql_where = ' WHERE title LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR contentfile LIKE ' . db_qstr('%' .
+			grv('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
@@ -297,15 +290,8 @@ function pages() : void {
 
 	form_start('links.php', 'chk');
 
-	$nav = html_nav_bar('links.php',
-		MAX_DISPLAY_PAGES,
-		get_request_var_request('page'),
-		$rows,
-		$total_rows,
-		8,
-		__('External Links'),
-		'page',
-		'main');
+	$nav = html_nav_bar('links.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 8,
+		__('External Links'), 'page', 'main');
 
 	print $nav;
 
@@ -352,42 +338,26 @@ function pages() : void {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$menuicons = '<a class="pic"  href="' .
-				htmle('links.php?action=edit&id=' .
-				$page['id']) .
-				'" title="' .
-				__esc('Edit Page') .
-				'"><i class="ti ti-edit editTemplate"></i></a>';
+			$menuicons = '<a class="pic"  href="' . htmle('links.php?action=edit&id=' . $page['id']) . '" title="' .
+				__esc('Edit Page') . '"><i class="ti ti-edit editTemplate"></i></a>';
 
 			if ($page['enabled'] == 'on') {
-				$menuicons .= '<a class="pic" href="' .
-					htmle('link.php?id=' .
-					$page['id']) .
-					'" title="' .
-					__esc('View Page') .
+				$menuicons .= '<a class="pic" href="' . htmle('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') .
 					'"><i class="ti ti-eye deviceUp"></i></a>';
 			}
 
 			form_selectable_cell($menuicons, $page['id'], '1%');
 			form_selectable_ecell($page['contentfile'], $page['id']);
 			form_selectable_ecell($page['title'], $page['id']);
-			form_selectable_ecell($style_translate[$page['style']] .
-				($page['style'] == 'CONSOLE' ? ' ( ' .
-				($page['extendedstyle'] == '' ? __('External Links') : $page['extendedstyle']) .
-				' )' : ''),
-				$page['id']);
+			form_selectable_ecell($style_translate[$page['style']] . ($page['style'] == 'CONSOLE' ? ' ( ' .
+				($page['extendedstyle'] == '' ? __('External Links') : $page['extendedstyle']) . ' )' : ''), $page['id']);
 
 			form_selectable_cell(($page['enabled'] == 'on' ? __('Yes') : __('No')), $page['id']);
 
 			if (grv('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') .
-							html_escape_url('links.php?action=move_page_up&order=' .
-							$page['sortorder'] .
-							'&id=' .
-							$page['id']) .
-							'"></a>';
+					$sort = ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+							html_escape_url('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
@@ -395,13 +365,8 @@ function pages() : void {
 				if ($i == cacti_sizeof($pages) - 1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
-					$sort .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') .
-							html_escape_url('links.php?action=move_page_down&order=' .
-							$page['sortorder'] .
-							'&id=' .
-							$page['id']) .
-							'"></a>';
+					$sort .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+							html_escape_url('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '1%', 'center');
@@ -415,10 +380,7 @@ function pages() : void {
 			$i++;
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($nav) + 1) .
-			"'><em>" .
-			__('No Pages Found') .
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($nav) + 1) . "'><em>" . __('No Pages Found') .
 			"</em></td></tr>\n";
 	}
 
@@ -565,8 +527,7 @@ function edit_page() : void {
 			'method'        => 'textbox',
 			'description'   => __('The valid URL to use for this external link.  Must include the type, ' .
 				'for example http://www.cacti.net.  Note that many websites do not ' .
-				'allow them to be embedded in an iframe from a foreign site, and ' .
-				'therefore External Linking may not work.'),
+				'allow them to be embedded in an iframe from a foreign site, and ' . 'therefore External Linking may not work.'),
 			'max_length'    => 255,
 			'size'          => 80,
 			'default'       => 'http://www.cacti.net',

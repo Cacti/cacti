@@ -262,11 +262,8 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" .
-				__esc('Import Network Discovery Rule') .
-				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
-				__esc('Import') .
-				"</button>
+			<button type='submit' value='import' title='" . __esc('Import Network Discovery Rule') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -630,8 +627,7 @@ function form_actions() : void {
 				// ====================================================
 
 				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN ' .
-					'host_template AS ht ON ht.id=at.host_template WHERE at.id = ?',
-					[$matches[1]])) . '</li>';
+					'host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -671,16 +667,10 @@ function form_save() : void {
 
 		$save['id']                   = gnrv('id');
 		$save['hash']                 = get_hash_automation(gnrv('id'), 'automation_templates');
-		$save['host_template']        = CactiValidator::validateInput(gnrv('host_template'),
-			'host_template',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
-		$save['availability_method']  = CactiValidator::validateInput(gnrv('availability_method'),
-			'availability_method',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+		$save['host_template']        = CactiValidator::validateInput(gnrv('host_template'), 'host_template',
+			[new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
+		$save['availability_method']  = CactiValidator::validateInput(gnrv('availability_method'), 'availability_method',
+			[new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['sysDescr']             = gnrv('sysDescr');
 		$save['sysName']              = gnrv('sysName');
 		$save['sysOid']               = gnrv('sysOid');
@@ -1000,8 +990,7 @@ function automation_remove_ttr() : void {
 		AND host_template_id = ?',
 		[grv('rule_id'), grv('template_id')]);
 
-	raise_message('rule_remove',
-		__('The Threshold Template has been removed from the Device Automation Rule'),
+	raise_message('rule_remove', __('The Threshold Template has been removed from the Device Automation Rule'),
 		MESSAGE_LEVEL_INFO);
 }
 
@@ -1120,8 +1109,7 @@ function template_edit() : void {
 				'MySQL/MariaDB documentation for examples on how to use these ' .
 				'functions.  An example would be: CONCAT(\'|sysName|\', ' .
 				'SUBSTRING(\'|sysLocation|\',1,3)).  Take care to include quoting ' .
-				'around the variables names when used in the supported MySQL/MariaDB ' .
-				'function examples.'),
+				'around the variables names when used in the supported MySQL/MariaDB ' . 'function examples.'),
 			'value'         => '|arg1:description_pattern|',
 			'default'       => '|sysName|',
 			'max_length'    => '128',
@@ -1131,8 +1119,7 @@ function template_edit() : void {
 			'method'        => 'checkbox',
 			'friendly_name' => __('Populate Location with sysLocation'),
 			'description'   => __('If checked, when the Automation Network is scanned if a Device is ' .
-				'found that will be added to Cacti, its Location will be updated to ' .
-				'match the Devices sysLocation.'),
+				'found that will be added to Cacti, its Location will be updated to ' . 'match the Devices sysLocation.'),
 			'value'         => '|arg1:populate_location|',
 			'default'       => ''
 		],
@@ -1226,47 +1213,25 @@ function template_edit() : void {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($graph_rules) - 1) {
-						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('automation_templates.php?action=item_movedown&template_id=' .
-								grv('id') .
-								'&id=' .
-								$rule['id'] .
-								'&rule_type=1') .
-								'" title="' .
-								__esc('Move Down') .
-								'"></a>';
+						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' .
+								$rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('automation_templates.php?action=item_moveup&template_id=' .
-								grv('id') .
-								'&id=' .
-								$rule['id'] .
-								'&rule_type=1') .
-								'" title="' .
-								__esc('Move Up') .
-								'"></a>';
+						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] .
+								'&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
-				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" .
-					__esc('Delete') .
-					"' href='" .
-					htmle('automation_templates.php?action=item_remove_agr_confirm&template_id=' .
-					grv('id') .
-					'&rule_id=' .
-					$rule['id']) .
-					"'></a>",
-					$id,
-					'40',
-					'right');
+				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" .
+					htmle('automation_templates.php?action=item_remove_agr_confirm&template_id=' . grv('id') . '&rule_id=' .
+					$rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
 
@@ -1365,47 +1330,25 @@ function template_edit() : void {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($tree_rules) - 1) {
-						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('automation_templates.php?action=item_movedown&template_id=' .
-								grv('id') .
-								'&id=' .
-								$rule['id'] .
-								'&rule_type=2') .
-								'" title="' .
-								__esc('Move Down') .
-								'"></a>';
+						$action .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' .
+								$rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('automation_templates.php?action=item_moveup&template_id=' .
-								grv('id') .
-								'&id=' .
-								$rule['id'] .
-								'&rule_type=2') .
-								'" title="' .
-								__esc('Move Up') .
-								'"></a>';
+						$action .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] .
+								'&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
-				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" .
-					__esc('Delete') .
-					"' href='" .
-					htmle('automation_templates.php?action=item_remove_atr_confirm&template_id=' .
-					grv('id') .
-					'&rule_id=' .
-					$rule['id']) .
-					"'></a>",
-					$id,
-					'40',
-					'right');
+				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" .
+					htmle('automation_templates.php?action=item_remove_atr_confirm&template_id=' . grv('id') . '&rule_id=' .
+					$rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
 
@@ -1480,25 +1423,14 @@ function template_edit() : void {
 
 					form_selectable_ecell($rule['name'], $id);
 
-					form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" .
-						__esc('Delete') .
-						"' href='" .
-						htmle('automation_templates.php?action=item_remove_ttr_confirm&id=' .
-						grv('id') .
-						'&template_id=' .
-						$template['host_template'] .
-						'&rule_id=' .
-						$rule['rule_id']) .
-						"'></a>",
-						$id,
-						'40',
-						'right');
+					form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" .
+						htmle('automation_templates.php?action=item_remove_ttr_confirm&id=' . grv('id') . '&template_id=' .
+						$template['host_template'] . '&rule_id=' . $rule['rule_id']) . "'></a>", $id, '40', 'right');
 
 					form_end_row();
 				}
 			} else {
-				print '<tr class="tableRow odd"><td colspan="2"><em>' .
-					__('No Associated Threshold Template Rules') .
+				print '<tr class="tableRow odd"><td colspan="2"><em>' . __('No Associated Threshold Template Rules') .
 					'</em></td></tr>';
 			}
 
@@ -1646,12 +1578,8 @@ function template_edit() : void {
 	<?php
 }
 
-function create_add_form_dropdown(string $field_label,
-	string $field_name,
-	array $field_array,
-	string $button_id,
-	string $button_label,
-	string $button_title) : void {
+function create_add_form_dropdown(string $field_label, string $field_name, array $field_array, string $button_id,
+	string $button_label, string $button_title) : void {
 	?>
 	<tr class='odd'>
 		<td colspan='2'>
@@ -1679,10 +1607,7 @@ function template() : void {
 	automation_update_hashes();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Device Rules'),
-		'automation_templates.php',
-		'snmp_at',
-		'sess_autot',
+	$pageFilter = new CactiTableFilter(__('Device Rules'), 'automation_templates.php', 'snmp_at', 'sess_autot',
 		'automation_templates.php?action=edit');
 
 	$pageFilter->rows_label = __('Templates');
@@ -1719,15 +1644,8 @@ function template() : void {
 		ORDER BY sequence " .
 		' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_templates.php',
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		7,
-		__('Templates'),
-		'page',
-		'main');
+	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Templates'),
+		'page', 'main');
 
 	form_start('automation_templates.php', 'chk');
 
@@ -1778,9 +1696,7 @@ function template() : void {
 
 			form_alternate_row('line' . $dt['id'], true);
 
-			form_selectable_cell(filter_value($name,
-				grv('filter'),
-				'automation_templates.php?action=edit&id=' . $dt['id']),
+			form_selectable_cell(filter_value($name, grv('filter'), 'automation_templates.php?action=edit&id=' . $dt['id']),
 				$dt['id']);
 			form_selectable_cell($availability_options[$dt['availability_method']], $dt['id']);
 			form_selectable_cell(filter_value($dt['sysDescr'], grv('filter')), $dt['id']);
@@ -1791,24 +1707,16 @@ function template() : void {
 				$add_text = '';
 
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') .
-							html_escape_url('automation_templates.php?action=movedown&id=' .
-							$dt['id']) .
-							'" title="' .
-							__esc('Move Down') .
+					$add_text .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+							html_escape_url('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') .
 							'"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-						'href="#" data-url="') .
-							html_escape_url('automation_templates.php?action=moveup&id=' .
-							$dt['id']) .
-							'" title="' .
-							__esc('Move Up') .
+					$add_text .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+							html_escape_url('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') .
 							'"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
@@ -1824,11 +1732,8 @@ function template() : void {
 			$i++;
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Automation Device Templates Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Automation Device Templates Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

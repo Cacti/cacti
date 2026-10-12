@@ -76,15 +76,11 @@ if (gnrv('action') == 'login_2fa') {
 
 	if (cacti_sizeof($user)) {
 		if (empty($user['tfa_enabled'])) {
-			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token, but not 2fa enabled",
-				false,
-				'AUTH',
-				POLLER_VERBOSITY_DEBUG);
+			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token, but not 2fa enabled", false,
+				'AUTH', POLLER_VERBOSITY_DEBUG);
 			$_SESSION[SESS_USER_2FA] = true;
 		} else {
-			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token",
-				false,
-				'AUTH',
+			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH',
 				POLLER_VERBOSITY_DEBUG);
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 
@@ -122,9 +118,7 @@ if (gnrv('action') == 'login_2fa') {
 		}
 	} else {
 		// BAD token
-		cacti_log("DEBUG: User '" . $user['username'] . "' failed to verify 2fa token",
-			false,
-			'AUTH',
+		cacti_log("DEBUG: User '" . $user['username'] . "' failed to verify 2fa token", false, 'AUTH',
 			POLLER_VERBOSITY_DEBUG);
 
 		// Structured failure line for fail2ban, at normal verbosity (the human line

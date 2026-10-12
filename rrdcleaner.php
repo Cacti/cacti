@@ -213,10 +213,8 @@ function get_files() : void {
 			foreach ($files as $file) {
 				[$pathname, $size, $mtime] = explode(',', $file);
 
-				$sql[] = "('" . str_replace($rra_path,
-					'',
-					$pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s',
-						intval($mtime)) . "',0)";
+				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s',
+					intval($mtime)) . "',0)";
 				$size++;
 
 				if ($size == 400) {
@@ -235,15 +233,11 @@ function get_files() : void {
 		$iterator     = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
 
 		foreach ($iterator as $file) {
-			if (substr($file->getPathname(),
-				-3) == 'rrd' &&
+			if (substr($file->getPathname(), -3) == 'rrd' &&
 				!($archive &&
-				strstr($file->getPathname(),
-					$arcbase . '/') !== false)) {
-				$sql[] = "('" . str_replace($rra_path,
-					'',
-					$file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s',
-						$file->getMTime()) . "',0)";
+				strstr($file->getPathname(), $arcbase . '/') !== false)) {
+				$sql[] = "('" . str_replace($rra_path, '',
+					$file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
 				$size++;
 
 				if ($size == 400) {
@@ -336,15 +330,8 @@ function list_rrd() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcleaner.php?filter' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		8,
-		__('RRDfiles'),
-		'page',
-		'main');
+	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcleaner.php?filter' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows,
+		$total_rows, 8, __('RRDfiles'), 'page', 'main');
 
 	form_start('rrdcleaner.php');
 
@@ -370,10 +357,8 @@ function list_rrd() : void {
 			form_alternate_row('line' . $file['id'], true);
 
 			form_selectable_cell(filter_value($file['name'], grv('filter')), $file['id']);
-			form_selectable_cell(filter_value($file['name_cache'],
-				grv('filter'),
-				CACTI_PATH_URL . 'data_sources.php?action=ds_edit&id=' . $file['local_data_id']),
-				$file['id']);
+			form_selectable_cell(filter_value($file['name_cache'], grv('filter'),
+				CACTI_PATH_URL . 'data_sources.php?action=ds_edit&id=' . $file['local_data_id']), $file['id']);
 			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id'] : '<i>' . __('Deleted') . '</i>',
 				$file['id']);
 			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id'] : '<i>' . __('Deleted') . '</i>',
@@ -386,11 +371,8 @@ function list_rrd() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Unused RRDfiles') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Unused RRDfiles') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

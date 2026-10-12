@@ -75,14 +75,11 @@ if (!cacti_sizeof($page)) {
 
 		if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
 			if (filter_var($page['contentfile'], FILTER_VALIDATE_URL)) {
-				print '<iframe id="content" src="' .
-					htmle($page['contentfile']) .
-					('" sandbox="allow-scripts allow-popups allow-forms" ' .
-					'frameborder="0"></iframe>');
+				print '<iframe id="content" src="' . htmle($page['contentfile']) .
+					('" sandbox="allow-scripts allow-popups allow-forms" ' . 'frameborder="0"></iframe>');
 			} else {
 				$message = __esc("External Link ID '%s' with Title '%s' attempted to inject an invalid URL and was blocked!",
-					$page['id'],
-					$page['title']);
+					$page['id'], $page['title']);
 				cacti_log($message, false, 'SECURITY');
 				raise_message('invalid_url', $message, MESSAGE_LEVEL_ERROR);
 			}

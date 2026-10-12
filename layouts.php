@@ -198,15 +198,8 @@ function layouts_manage() : void {
 		$sql_order
 		$sql_limit", $sql_params);
 
-	$nav = html_nav_bar('layouts.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		5,
-		__('Layouts'),
-		'page',
-		'main');
+	$nav = html_nav_bar('layouts.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5,
+		__('Layouts'), 'page', 'main');
 
 	form_start('layouts.php', 'chk');
 
@@ -271,11 +264,8 @@ function layouts_manage() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Layouts Found') .
-			'</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No Layouts Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

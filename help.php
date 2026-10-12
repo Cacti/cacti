@@ -41,11 +41,8 @@ if (isrv('error')) {
 	cacti_log($message, false);
 
 	if (debounce_run_notification('page_error_' . $page)) {
-		admin_email(__('Cacti System Warning'),
-			__('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!',
-				$page,
-				$username,
-				$error));
+		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!', $page,
+			$username, $error));
 	}
 } elseif (isrv('page')) {
 	gfrv('page', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
@@ -81,9 +78,7 @@ if (isrv('error')) {
 				'message' => __('The Document page \'%s\' count not be reached.  The Cacti ' .
 					'Documentation site is not reachable.  The http error was \'%s\'.  ' .
 					'Consider downloading an official release to obtain the latest ' .
-					'documentation and hosting the documentation locally.',
-					$page,
-					$response_code)
+					'documentation and hosting the documentation locally.', $page, $response_code)
 			]
 		);
 	} elseif ($contents != '' && !preg_match('/does not appear to exist/i', $contents)) {
@@ -97,13 +92,9 @@ if (isrv('error')) {
 		print json_encode(
 			[
 				'status'   => 'Not Found',
-				'location' => __esc('The Help File %s was not located on the Cacti Documentation Website.',
-					$page) .
-						'<br><br>' .
-						__esc('Open a ticket at ') .
-						'<a target="_blank" href="https://github.com/cacti/cacti/issues">' .
-						__esc('Cacti GitHub Site') .
-						'</a>.'
+				'location' => __esc('The Help File %s was not located on the Cacti Documentation Website.', $page) . '<br><br>' .
+						__esc('Open a ticket at ') . '<a target="_blank" href="https://github.com/cacti/cacti/issues">' .
+						__esc('Cacti GitHub Site') . '</a>.'
 			]
 		);
 	} elseif (file_exists(CACTI_PATH_DOCS . '/' . $page)) {

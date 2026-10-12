@@ -198,11 +198,8 @@ function changelog_view() : void {
 						print '<td>' . $icon . '</td><td>' . htmle($type) . '</td><td>';
 
 						if (!empty($detail['issue'])) {
-							print '<a target="_blank" href="https://github.com/cacti/cacti/issues/' .
-								htmle($detail['issue']) .
-								'">' .
-								htmle($detail['issue']) .
-								'</a>';
+							print '<a target="_blank" href="https://github.com/cacti/cacti/issues/' . htmle($detail['issue']) . '">' .
+								htmle($detail['issue']) . '</a>';
 						}
 						print '</td><td>' . htmle($detail['desc']) . '</td>';
 

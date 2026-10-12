@@ -166,11 +166,8 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" .
-				__esc('Import Network Discovery Rule') .
-				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
-				__esc('Import') .
-				"</button>
+			<button type='submit' value='import' title='" . __esc('Import Network Discovery Rule') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -359,15 +356,11 @@ function api_networks_discover(int $network_id, bool $discover_debug, bool $disc
 				$response = call_remote_data_collector($poller_id, $url, 'AUTOM8');
 			}
 		} else {
-			raise_message('automation_message',
-				__esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'',
-					$name),
-				MESSAGE_LEVEL_ERROR);
+			raise_message('automation_message', __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'',
+				$name), MESSAGE_LEVEL_ERROR);
 		}
 	} else {
-		raise_message('automation_message',
-			__esc('Can Not Perform Discovery for Disabled Network \'%s\'',
-				$name),
+		raise_message('automation_message', __esc('Can Not Perform Discovery for Disabled Network \'%s\'', $name),
 			MESSAGE_LEVEL_ERROR);
 	}
 
@@ -590,11 +583,9 @@ function form_actions() : void {
 				],
 				8 => [
 					'smessage' => __('Click \'Continue\' to Change Network options for the following ' .
-						'Network.  Check the checkboxes to indicate that this setting should ' .
-						'be changed.'),
+						'Network.  Check the checkboxes to indicate that this setting should ' . 'be changed.'),
 					'pmessage' => __('Click \'Continue\' to Change Network options for the following ' .
-						'Networks.  Check the checkboxes to indicate that this setting should ' .
-						'be changed.'),
+						'Networks.  Check the checkboxes to indicate that this setting should ' . 'be changed.'),
 					'scont'    => __('Change Network'),
 					'pcont'    => __('Change Networks'),
 					'header'   => $header_array
@@ -782,8 +773,7 @@ function network_get_field_array(array $network = []) : array {
 			'friendly_name' => __('Notification From Name'),
 			'description'   => __('The Email account name to be used as the sender\'s name for the ' .
 				'Notification Email.  If left blank, Cacti will use the default ' .
-				'Automation Notification Name if specified, otherwise, it will use the ' .
-				'Cacti system default Email name'),
+				'Automation Notification Name if specified, otherwise, it will use the ' . 'Cacti system default Email name'),
 			'value'         => '|arg1:notification_fromname|',
 			'max_length'    => '32',
 			'size'          => '30',
@@ -971,10 +961,7 @@ function networks() : void {
 	global $actions, $networks, $item_rows, $sched_types;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Network Rules'),
-		'automation_networks.php',
-		'networks',
-		'sess_networks',
+	$pageFilter = new CactiTableFilter(__('Network Rules'), 'automation_networks.php', 'networks', 'sess_networks',
 		'automation_networks.php?action=edit');
 
 	$pageFilter->rows_label  = __('Networks');
@@ -996,15 +983,8 @@ function networks() : void {
 
 	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM automation_networks ' . $sql_where);
 
-	$nav = html_nav_bar('automation_networks.php',
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		14,
-		__('Networks'),
-		'page',
-		'main');
+	$nav = html_nav_bar('automation_networks.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 14, __('Networks'),
+		'page', 'main');
 
 	form_start('automation_networks.php', 'chk');
 
@@ -1131,49 +1111,29 @@ function networks() : void {
 
 			form_alternate_row('line' . $network['id'], true);
 
-			form_selectable_cell('<a class="linkEditMain" href="' .
-				htmle('automation_networks.php?action=edit&id=' .
-				$network['id']) .
-				'">' .
-				htmle($network['name']) .
-				'</a>',
-				$network['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . htmle('automation_networks.php?action=edit&id=' .
+				$network['id']) . '">' . htmle($network['name']) . '</a>', $network['id']);
 			form_selectable_ecell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
 			form_selectable_cell(number_format_i18n($network['total_ips']), $network['id'], '', 'right');
 			form_selectable_cell($mystat, $network['id'], '', 'right');
 			form_selectable_cell($progress, $network['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($updown['up']) . '/' . number_format_i18n($updown['snmp']),
-				$network['id'],
-				'',
-				'right');
+			form_selectable_cell(number_format_i18n($updown['up']) . '/' . number_format_i18n($updown['snmp']), $network['id'],
+				'', 'right');
 			form_selectable_cell(number_format_i18n($network['threads']), $network['id'], '', 'right');
 			form_selectable_cell(round($network['last_runtime'], 2), $network['id'], '', 'right');
 			form_selectable_cell($network['enabled'] == '' ||
 				$network['sched_type'] == SCHEDULE_MANUAL ? __('N/A') : ($network['next_start'] == '0000-00-00 00:00:00' ? substr($network['start_at'],
-					0,
-					16) : substr($network['next_start'],
-						0,
-						16)),
-				$network['id'],
-				'',
-				'right');
+					0, 16) : substr($network['next_start'], 0, 16)), $network['id'], '', 'right');
 			form_selectable_cell($network['last_started'] == '0000-00-00 00:00:00' ? __('Never') : substr($network['last_started'],
-				0,
-				16),
-				$network['id'],
-				'',
-				'right');
+				0, 16), $network['id'], '', 'right');
 			form_checkbox_cell($network['name'], $network['id']);
 
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Networks Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Networks Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

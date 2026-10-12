@@ -73,11 +73,8 @@ if (grv('action') == 'timeout' || grv('action') == 'disabled' || grv('action') =
 		$reason = __('a change in state of the Remote Data Collector');
 	}
 
-	html_auth_header($hook,
-		__('Logout of Cacti'),
-		__('Automatic Logout'),
-		__('You have been logged out of Cacti due to %s.',
-			$reason));
+	html_auth_header($hook, __('Logout of Cacti'), __('Automatic Logout'),
+		__('You have been logged out of Cacti due to %s.', $reason));
 	print '<div>' . __('Please close your browser or %sLogin Again%s', '[<a href="index.php">', '</a>]') . '</div>';
 	html_auth_footer($hook, __('Cookies have been cleared'), '');
 } else {

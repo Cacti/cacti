@@ -93,12 +93,8 @@ switch (grv('action')) {
 	case 'qedit':
 		automation_change_query_type();
 
-		header('Location: automation_graph_rules.php?action=edit&name=' .
-			grv('name') .
-			'&id=' .
-			gfrv('id') .
-			'&snmp_query_id=' .
-			grv('snmp_query_id'));
+		header('Location: automation_graph_rules.php?action=edit&name=' . grv('name') . '&id=' . gfrv('id') .
+			'&snmp_query_id=' . grv('snmp_query_id'));
 
 		break;
 	case 'remove':
@@ -212,11 +208,8 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" .
-				__esc('Import Graph Rules') .
-				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
-				__esc('Import') .
-				"</button>
+			<button type='submit' value='import' title='" . __esc('Import Graph Rules') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -280,14 +273,10 @@ function form_save() : void {
 		$save['id']            = gnrv('id');
 		$save['hash']          = get_hash_automation(grv('id'), 'automation_graph_rules');
 		$save['name']          = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()]);
-		$save['snmp_query_id'] = CactiValidator::validateInput(gnrv('snmp_query_id'),
-			'snmp_query_id',
-			[new Assert\NotBlank(),
+		$save['snmp_query_id'] = CactiValidator::validateInput(gnrv('snmp_query_id'), 'snmp_query_id', [new Assert\NotBlank(),
 			new Assert\Regex('/^[0-9]+$/')]);
 		$save['graph_type_id'] = (isrv('graph_type_id')) ? CactiValidator::validateInput(gnrv('graph_type_id'),
-			'graph_type_id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')]) : 0;
+			'graph_type_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]) : 0;
 		$save['enabled']       = (isrv('enabled') ? 'on' : '');
 
 		if (!is_error_message()) {
@@ -308,26 +297,17 @@ function form_save() : void {
 		// ====================================================
 
 		$save              = [];
-		$save['id']        = CactiValidator::validateInput(grv('item_id'),
-			'item_id',
-			[new Assert\NotBlank(),
+		$save['id']        = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(),
 			new Assert\Regex('/^[0-9]+$/')]);
 		$save['hash']      = get_hash_automation(grv('id_item'), 'automation_graph_rule_items');
-		$save['rule_id']   = CactiValidator::validateInput(grv('id'),
-			'id',
-			[new Assert\NotBlank(),
+		$save['rule_id']   = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(),
 			new Assert\Regex('/^[0-9]+$/')]);
-		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'),
-			'sequence',
-			[new Assert\NotBlank(),
+		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(),
 			new Assert\Regex('/^[0-9]+$/')]);
 		$save['operation'] = CactiValidator::validateInput(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')]);
 		$save['field']     = CactiValidator::validateInput(((isrv('field') &&
-			gnrv('field') != '0') ? gnrv('field') : ''),
-			'field',
-			[]);
-		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''),
-			'operator',
+			gnrv('field') != '0') ? gnrv('field') : ''), 'field', []);
+		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''), 'operator',
 			[new Assert\Regex('/^[0-9]+$/')]);
 		$save['pattern']   = CactiValidator::validateInput((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', []);
 
@@ -343,23 +323,15 @@ function form_save() : void {
 		if (!$exists) {
 			// check the case where there is no entry in the host_snmp_cache table yet
 			if ("'$field_name'" != db_qstr($field_name)) {
-				if (!db_column_exists('host',
-					$field_name) &&
-					!db_column_exists('host_template',
-						$field_name) &&
-					!db_column_exists('graph_templates',
-						$field_name) &&
-					!db_column_exists('graph_templates_graph',
-						$field_name)) {
-					raise_message('sql_injection',
-						__('An attempt was made to perform a SQL injection in Graph automation'),
+				if (!db_column_exists('host', $field_name) &&
+					!db_column_exists('host_template', $field_name) &&
+					!db_column_exists('graph_templates', $field_name) &&
+					!db_column_exists('graph_templates_graph', $field_name)) {
+					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'),
 						MESSAGE_LEVEL_ERROR);
 
 					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph ' .
-						'Automation from client address \'%s\'',
-						get_client_addr()),
-						false,
-						'SECURITY');
+						'Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
 					header('Location: automation_graph_rules.php?header=false&action=edit&id=' . grv('id'));
 
@@ -381,16 +353,10 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' .
-				grv('id') .
-				'&item_id=' .
-				($item_id === null ? grv('item_id') : $item_id) .
-				'&rule_type=' .
-				AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' .
+				($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		} else {
-			header('Location: automation_graph_rules.php?action=edit&id=' .
-				grv('id') .
-				'&rule_type=' .
+			header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 	} elseif (isrv('save_component_automation_match_item')) {
@@ -401,52 +367,34 @@ function form_save() : void {
 
 		$save = [];
 
-		$save['id']        = CactiValidator::validateInput(grv('item_id'),
-			'item_id',
-			[new Assert\NotBlank(),
+		$save['id']        = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(),
 			new Assert\Regex('/^[0-9]+$/')]);
 		$save['hash']      = get_hash_automation(grv('item_idid'), 'automation_match_rule_items');
-		$save['rule_id']   = CactiValidator::validateInput(grv('id'),
-			'id',
-			[new Assert\NotBlank(),
+		$save['rule_id']   = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(),
 			new Assert\Regex('/^[0-9]+$/')]);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_GRAPH_MATCH;
-		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'),
-			'sequence',
-			[new Assert\NotBlank(),
+		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(),
 			new Assert\Regex('/^[0-9]+$/')]);
 		$save['operation'] = CactiValidator::validateInput(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')]);
 		$save['field']     = CactiValidator::validateInput(((isrv('field') &&
-			gnrv('field') != '0') ? gnrv('field') : ''),
-			'field',
-			[]);
-		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''),
-			'operator',
+			gnrv('field') != '0') ? gnrv('field') : ''), 'field', []);
+		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''), 'operator',
 			[new Assert\Regex('/^[0-9]+$/')]);
 		$save['pattern']   = CactiValidator::validateInput((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', []);
 
 		// Test for SQL injections
 		$field_name = str_replace(['ht.', 'h.', 'gt.'], '', $save['field']);
 
-		if (!db_column_exists('host',
-			$field_name) &&
-			!db_column_exists('host_template',
-				$field_name) &&
-			!db_column_exists('graph_templates',
-				$field_name)) {
-			raise_message('sql_injection',
-				__('An attempt was made to perform a SQL injection in Graph automation'),
+		if (!db_column_exists('host', $field_name) &&
+			!db_column_exists('host_template', $field_name) &&
+			!db_column_exists('graph_templates', $field_name)) {
+			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'),
 				MESSAGE_LEVEL_ERROR);
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph ' .
-				'Automation from client address \'%s\'',
-				get_client_addr()),
-				false,
-				'SECURITY');
+				'Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' .
-				grv('id') .
-				'&rule_type=' .
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . grv('id') . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 
 			exit;
@@ -465,16 +413,10 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' .
-				grv('id') .
-				'&item_id=' .
-				($item_id === null ? grv('item_id') : $item_id) .
-				'&rule_type=' .
-				AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' .
+				($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		} else {
-			header('Location: automation_graph_rules.php?action=edit&id=' .
-				grv('id') .
-				'&rule_type=' .
+			header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
 	} else {
@@ -630,8 +572,7 @@ function automation_graph_rules_item_movedown() : void {
 	// ====================================================
 
 	if (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
-		move_item_down('automation_match_rule_items',
-			grv('item_id'),
+		move_item_down('automation_match_rule_items', grv('item_id'),
 			'rule_id=' . grv('id') . ' AND rule_type=' . grv('rule_type'));
 	} elseif (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
 		move_item_down('automation_graph_rule_items', grv('item_id'), 'rule_id=' . grv('id'));
@@ -646,8 +587,7 @@ function automation_graph_rules_item_moveup() : void {
 	// ====================================================
 
 	if (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
-		move_item_up('automation_match_rule_items',
-			grv('item_id'),
+		move_item_up('automation_match_rule_items', grv('item_id'),
 			'rule_id=' . grv('id') . ' AND rule_type=' . grv('rule_type'));
 	} elseif (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
 		move_item_up('automation_graph_rule_items', grv('item_id'), 'rule_id=' . grv('id'));
@@ -852,15 +792,11 @@ function automation_graph_rules_edit() : void {
 
 		if (isset($rule['id'])) {
 			// display graph rules for host match
-			display_match_rule_items(__('Device Selection Criteria'),
-				$rule,
-				AUTOMATION_RULE_TYPE_GRAPH_MATCH,
+			display_match_rule_items(__('Device Selection Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH,
 				'automation_graph_rules.php');
 
 			// fetch graph action rules
-			display_graph_rule_items(__('Graph Creation Criteria'),
-				$rule,
-				AUTOMATION_RULE_TYPE_GRAPH_ACTION,
+			display_graph_rule_items(__('Graph Creation Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_ACTION,
 				'automation_graph_rules.php');
 		}
 
@@ -868,8 +804,7 @@ function automation_graph_rules_edit() : void {
 
 		print '<br>';
 	} elseif (gnrv('tab') == 'hosts') {
-		display_matching_hosts($rule,
-			AUTOMATION_RULE_TYPE_GRAPH_MATCH,
+		display_matching_hosts($rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH,
 			'automation_graph_rules.php?action=edit&id=' . grv('id'));
 	} elseif (gnrv('tab') == 'objects') {
 		display_new_graphs($rule, 'automation_graph_rules.php?action=edit&id=' . grv('id'));
@@ -1010,10 +945,7 @@ function draw_graph_rules_filter(bool $render = false) : void {
 	$filters = create_graph_rules_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Graph Rules'),
-		'automation_graph_rules.php',
-		'form_automation',
-		'sess_autom_gr',
+	$pageFilter = new CactiTableFilter(__('Graph Rules'), 'automation_graph_rules.php', 'form_automation', 'sess_autom_gr',
 		'automation_graph_rules.php?action=edit');
 
 	$pageFilter->rows_label = __('Graph Rules');
@@ -1084,15 +1016,8 @@ function automation_graph_rules() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar('automation_graph_rules.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		7,
-		__('Graph Rules'),
-		'page',
-		'main');
+	$nav = html_nav_bar('automation_graph_rules.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows,
+		$total_rows, 7, __('Graph Rules'), 'page', 'main');
 
 	form_start('automation_graph_rules.php', 'chk');
 
@@ -1139,27 +1064,21 @@ function automation_graph_rules() : void {
 
 			form_alternate_row('line' . $automation_graph_rules['id'], true);
 
-			form_selectable_cell(filter_value($automation_graph_rules['name'],
-				grv('filter'),
+			form_selectable_cell(filter_value($automation_graph_rules['name'], grv('filter'),
 				'automation_graph_rules.php?action=edit&id=' . $automation_graph_rules['id'] . '&page=1'),
 				$automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['id'], $automation_graph_rules['id'], '', 'text-align:right');
 			form_selectable_cell(filter_value($snmp_query_name, grv('filter')), $automation_graph_rules['id']);
 			form_selectable_cell(filter_value($graph_type_name, grv('filter')), $automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['enabled'] ? __('Enabled') : __('Disabled'),
-				$automation_graph_rules['id'],
-				'',
-				'text-align:right');
+				$automation_graph_rules['id'], '', 'text-align:right');
 			form_checkbox_cell($automation_graph_rules['name'], $automation_graph_rules['id']);
 
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Graph Rules Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Graph Rules Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

@@ -133,8 +133,7 @@ $fields_snmp_item = [
 		'method'        => 'textbox',
 		'friendly_name' => __('SNMP Engine ID (v3)'),
 		'description'   => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field ' .
-			'empty to use the SNMP Engine ID being defined per SNMPv3 Notification ' .
-			'receiver.'),
+			'empty to use the SNMP Engine ID being defined per SNMPv3 Notification ' . 'receiver.'),
 		'value'         => '|arg1:snmp_engine_id|',
 		'default'       => '',
 		'max_length'    => '64',
@@ -272,8 +271,7 @@ $fields_profile_edit = [
 		'description'   => __('How long can data be missing before RRDtool records unknown data.  ' .
 			'Increase this value if your Data Source is unstable and you wish to ' .
 			'carry forward old data rather than show gaps in your graphs.  This ' .
-			'value is multiplied by the X-Files Factor to determine the actual ' .
-			'amount of time.'),
+			'value is multiplied by the X-Files Factor to determine the actual ' . 'amount of time.'),
 		'array'         => $heartbeats,
 		'value'         => '|arg1:heartbeat|',
 		'default'       => (read_config_option('poller_interval') * 2),
@@ -307,8 +305,7 @@ $fields_profile_edit = [
 		'method'        => 'other',
 		'friendly_name' => __('RRDfile Size (in Bytes)'),
 		'description'   => __('Based upon the number of Rows in all RRAs and the number of ' .
-			'Consolidation Functions selected, the size of this entire in the ' .
-			'RRDfile.'),
+			'Consolidation Functions selected, the size of this entire in the ' . 'RRDfile.'),
 		'value'         => ''
 	],
 	'id' => [
@@ -507,9 +504,7 @@ $fields_data_input_field_edit_2 = [
 		'friendly_name' => __('Field [%s]', '|arg1:|'),
 		'description'   => __('Enter a name for this %s field.  Note: If using name value pairs in ' .
 			'your script, for example: NAME:VALUE, it is important that the name ' .
-			'matches your output field name identically to the script output name ' .
-			'or names.',
-			'|arg1:|'),
+			'matches your output field name identically to the script output name ' . 'or names.', '|arg1:|'),
 		'value'         => '|arg2:data_name|',
 		'max_length'    => '50',
 		'size'          => '40'
@@ -555,14 +550,8 @@ $fields_data_input_field_edit = [
 		'method'        => 'textbox',
 		'friendly_name' => __('Special Type Code'),
 		'description'   => __('If this field should be treated specially by host templates, indicate ' .
-			'so here. Valid keywords for this field are %s',
-			str_replace(')',
-				"'",
-				str_replace('(',
-					"'",
-					str_replace('|',
-						', ',
-						$valid_host_fields)))),
+			'so here. Valid keywords for this field are %s', str_replace(')', "'", str_replace('(', "'", str_replace('|', ', ',
+				$valid_host_fields)))),
 		'value'         => '|arg1:type_code|',
 		'max_length'    => '40',
 		'size'          => '20'
@@ -637,8 +626,7 @@ $struct_data_source = [
 		'default'       => '',
 		'description'   => __('Choose a name for this data source.  It can include replacement ' .
 			'variables such as |host_description| or |query_fieldName|.  For a ' .
-			'complete list of supported replacement tags, please see the Cacti ' .
-			'documentation.'),
+			'complete list of supported replacement tags, please see the Cacti ' . 'documentation.'),
 		'flags'         => ''
 	],
 	'data_source_path' => [
@@ -663,12 +651,9 @@ $struct_data_source = [
 		'friendly_name' => __('Data Source Profile'),
 		'method'        => 'drop_sql',
 		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls ' .
-			'polling interval, the data aggregation, and retention policy for the ' .
-			'resulting Data Sources.'),
-		'sql'           => 'SELECT "0" AS id, "' .
-			__('External') .
-			('" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY ' .
-			'name'),
+			'polling interval, the data aggregation, and retention policy for the ' . 'resulting Data Sources.'),
+		'sql'           => 'SELECT "0" AS id, "' . __('External') .
+			('" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY ' . 'name'),
 		'default'       => $def_profile,
 		'flags'         => ''
 	],
@@ -783,8 +768,7 @@ $struct_graph = [
 		'default'       => '',
 		'description'   => __('The name that is printed on the graph.  It can include replacement ' .
 			'variables such as |host_description| or |query_fieldName|.  For a ' .
-			'complete list of supported replacement tags, please see the Cacti ' .
-			'documentation.'),
+			'complete list of supported replacement tags, please see the Cacti ' . 'documentation.'),
 		'size'          => '80'
 	],
 	'vertical_label' => [
@@ -926,8 +910,7 @@ $struct_graph = [
 		'default'       => '',
 		'description'   => __('Sets the exponent value on the Y-axis for numbers. Note: This option ' .
 			'is deprecated and replaced by the --y-grid option.  In this option, ' .
-			'Y-axis grid lines appear at each grid step interval.  Labels are ' .
-			'placed every label factor lines.'),
+			'Y-axis grid lines appear at each grid step interval.  Labels are ' . 'placed every label factor lines.'),
 		'size'          => '12'
 	],
 	'unit_exponent_value' => [
@@ -946,8 +929,7 @@ $struct_graph = [
 		'default'       => '',
 		'size'          => '30',
 		'description'   => __('How many digits should RRDtool assume the y-axis labels to be? You ' .
-			'may have to use this option to make enough space once you start ' .
-			'fiddling with the y-axis labeling.'),
+			'may have to use this option to make enough space once you start ' . 'fiddling with the y-axis labeling.'),
 	],
 	'no_gridfit' => [
 		'friendly_name' => __('No Gridfit (--no-gridfit)'),
@@ -956,8 +938,7 @@ $struct_graph = [
 		'description'   => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points ' .
 			'to device resolution pixels, this results in a crisper appearance. If ' .
 			'this is not to your liking, you can use this switch to turn this ' .
-			'behavior off.<br><strong>Note: </strong>Gridfitting is turned off for ' .
-			'PDF, EPS, SVG output by default.'),
+			'behavior off.<br><strong>Note: </strong>Gridfitting is turned off for ' . 'PDF, EPS, SVG output by default.'),
 	],
 	'alt_y_grid' => [
 		'friendly_name' => __('Alternative Y Grid (--alt-y-grid)'),
@@ -1013,8 +994,7 @@ $struct_graph = [
 			'(number of seconds since January 1970) and expressed using strftime ' .
 			'format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and ' .
 			'--right-axis-format.  Finally "duration" where values are interpreted ' .
-			'as duration in milliseconds.  Formatting follows the rules of ' .
-			'valstrfduration qualified PRINT/GPRINT.'),
+			'as duration in milliseconds.  Formatting follows the rules of ' . 'valstrfduration qualified PRINT/GPRINT.'),
 	],
 	'left_axis_format'  => [
 		'friendly_name' => __('Left Axis Format (--left-axis-format &lt;format&gt;)'),
@@ -1038,8 +1018,7 @@ $struct_graph = [
 			'(number of seconds since January 1970) and expressed using strftime ' .
 			'format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length.  ' .
 			'Finally "duration" where values are interpreted as duration in ' .
-			'milliseconds.  Formatting follows the rules of valstrfduration ' .
-			'qualified PRINT/GPRINT.'),
+			'milliseconds.  Formatting follows the rules of valstrfduration ' . 'qualified PRINT/GPRINT.'),
 	],
 	'legend_header' => [
 		'friendly_name' => __('Legend Options'),
@@ -1052,8 +1031,7 @@ $struct_graph = [
 		'default'       => 'on',
 		'description'   => __('Pad text so that legend and graph data always line up. Note: this ' .
 			'could cause graphs to take longer to render because of the larger ' .
-			'overhead. Also Auto Padding may not be accurate on all types of ' .
-			'graphs, consistent labeling usually helps.')
+			'overhead. Also Auto Padding may not be accurate on all types of ' . 'graphs, consistent labeling usually helps.')
 	],
 	'dynamic_labels' => [
 		'friendly_name' => __('Dynamic Labels (--dynamic-labels)'),
@@ -1211,8 +1189,7 @@ $struct_graph_item = [
 			'use this command multiple times in a single graph.  This command does ' .
 			'not produce tabular layout.<br/><strong>Note: </strong>You may want ' .
 			'to insert a &lt;HR&gt; on the preceding graph item.<br/> ' .
-			'<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete ' .
-			'this setting!'),
+			'<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete ' . 'this setting!'),
 	],
 	'text_format' => [
 		'friendly_name' => __('Text Format'),
@@ -1460,8 +1437,7 @@ $fields_host_edit = [
 	'availability_method' => [
 		'friendly_name' => __('Downed Device Detection'),
 		'description'   => __('The method Cacti will use to determine if a host is available for ' .
-			'polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP ' .
-			'always be selected.</i>'),
+			'polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP ' . 'always be selected.</i>'),
 		'on_change'     => 'changeHostForm()',
 		'value'         => '|arg1:availability_method|',
 		'method'        => 'drop_array',
@@ -1477,8 +1453,7 @@ $fields_host_edit = [
 		'value'         => '|arg1:snmp_options|',
 		'method'        => 'drop_sql',
 		'default'       => read_config_option('snmp_options'),
-		'sql'           => 'SELECT "0" AS id, "' .
-			__esc('Disabled') .
+		'sql'           => 'SELECT "0" AS id, "' . __esc('Disabled') .
 			'" AS name UNION SELECT id, name FROM automation_snmp ORDER BY id'
 	],
 	'ping_method' => [
@@ -1684,8 +1659,7 @@ $fields_data_query_edit = [
 		'method'        => 'drop_sql',
 		'friendly_name' => __('Data Input Method'),
 		'description'   => __('Choose the input method for this Data Query.  This input method ' .
-			'defines how data is collected for each Device associated with the ' .
-			'Data Query.'),
+			'defines how data is collected for each Device associated with the ' . 'Data Query.'),
 		'value'         => '|arg1:data_input_id|',
 		'sql'           => 'SELECT id, name FROM data_input WHERE type_id IN(3,4,6) ORDER BY name',
 	],
@@ -1918,8 +1892,7 @@ $fields_user_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Authentication Realm'),
 		'description'   => __('Only used if you have LDAP or Web Basic Authentication enabled.  ' .
-			'Changing this to a non-enabled realm will effectively disable the ' .
-			'user.'),
+			'Changing this to a non-enabled realm will effectively disable the ' . 'user.'),
 		'value'         => '|arg1:realm|',
 		'default'       => 0,
 		'array'         => $auth_realms,
@@ -1988,8 +1961,7 @@ $fields_template_import = [
 		'friendly_name' => __('Data Source Profile'),
 		'method'        => 'drop_sql',
 		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls ' .
-			'polling interval, the data aggregation, and retention policy for the ' .
-			'resulting Data Sources.'),
+			'polling interval, the data aggregation, and retention policy for the ' . 'resulting Data Sources.'),
 		'sql'           => 'SELECT id, name FROM data_source_profiles ORDER BY name',
 		'none_value'    => __('Create New from Template'),
 		'value'         => '',
@@ -2004,8 +1976,7 @@ $fields_template_import = [
 		'friendly_name' => __('Remove Orphaned Graph Items'),
 		'method'        => 'checkbox',
 		'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph ' .
-			'Template and associated Graphs that are not included in the imported ' .
-			'Graph Template.'),
+			'Template and associated Graphs that are not included in the imported ' . 'Graph Template.'),
 		'value'         => '',
 		'default'       => ''
 	],
@@ -2014,8 +1985,7 @@ $fields_template_import = [
 		'method'        => 'checkbox',
 		'description'   => __('Replace Data Source and Graph Template Suggested Value Records for ' .
 			'Data Queries.  Graphs and Data Sources will take on new names after ' .
-			'either a Data Query Reindex or by using the forced Replace Suggested ' .
-			'Values process.'),
+			'either a Data Query Reindex or by using the forced Replace Suggested ' . 'Values process.'),
 		'value'         => '',
 		'default'       => ''
 	],
@@ -2091,8 +2061,7 @@ $fields_manager_edit = [
 	'snmp_message_type' => [
 		'friendly_name' => __('SNMP Message Type'),
 		'description'   => __('SNMP traps are always unacknowledged. To send out acknowledged SNMP ' .
-			'notifications, formally called "INFORMS", SNMPv2 or above will be ' .
-			'required.'),
+			'notifications, formally called "INFORMS", SNMPv2 or above will be ' . 'required.'),
 		'method'        => 'drop_array',
 		'value'         => '|arg1:snmp_message_type|',
 		'default'       => '1',
@@ -2224,8 +2193,7 @@ $struct_aggregate_graph = [
 	'gprint_prefix' => [
 		'friendly_name' => __('Prefix'),
 		'description'   => __('A Prefix for all GPRINT lines to distinguish e.g. different hosts.  ' .
-			'You may use both Host as well as Data Query replacement variables in ' .
-			'this prefix.'),
+			'You may use both Host as well as Data Query replacement variables in ' . 'this prefix.'),
 		'method'        => 'textbox',
 		'max_length'    => '255',
 		'value'         => '|arg1:gprint_prefix|',
@@ -2335,8 +2303,7 @@ $struct_aggregate_template = [
 	'gprint_prefix' => [
 		'friendly_name' => __('Prefix'),
 		'description'   => __('A Prefix for all GPRINT lines to distinguish e.g. different hosts.  ' .
-			'You may use both Host as well as Data Query replacement variables in ' .
-			'this prefix.'),
+			'You may use both Host as well as Data Query replacement variables in ' . 'this prefix.'),
 		'method'        => 'textbox',
 		'max_length'    => '255',
 		'value'         => '|arg1:gprint_prefix|',

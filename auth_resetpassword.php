@@ -88,24 +88,17 @@ switch ($action) {
 				$body = str_replace($search, $replacement, read_config_option('secnotify_chpass_message'));
 
 				send_mail($user['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, [], [],  true);
-				cacti_log(sprintf('NOTE: Reset password request for user %s from IP %s',
-					$user['username'],
-					get_client_addr()),
-					false,
-					'SYSTEM');
+				cacti_log(sprintf('NOTE: Reset password request for user %s from IP %s', $user['username'], get_client_addr()),
+					false, 'SYSTEM');
 			} else {
 				cacti_log(sprintf('ERROR: Unable to replace password reset token for user %s', $user['username']), false, 'AUTH');
 			}
 		} else {
-			cacti_log(sprintf('NOTE: Reset password request for unknown user "%s" from IP %s',
-				db_qstr($identity),
-				get_client_addr()),
-				false,
-				'SYSTEM');
+			cacti_log(sprintf('NOTE: Reset password request for unknown user "%s" from IP %s', db_qstr($identity),
+				get_client_addr()), false, 'SYSTEM');
 		}
 
-		$errorMessage = "<span class='badpassword_message'>" .
-			__('Reset password token was sent. Check your mailbox') .
+		$errorMessage = "<span class='badpassword_message'>" . __('Reset password token was sent. Check your mailbox') .
 			'</span>';
 		$action       = 'formidentity';
 
@@ -135,8 +128,7 @@ switch ($action) {
 			[$hash['user_id']]);
 
 		if (!cacti_sizeof($user)) {
-			$errorMessage = "<span class='badpassword_message'>" .
-				__('Password reset is not available for this account.') .
+			$errorMessage = "<span class='badpassword_message'>" . __('Password reset is not available for this account.') .
 				'</span>';
 			$action       = 'formidentity';
 
@@ -167,8 +159,7 @@ switch ($action) {
 
 		// Password and Confirmed password checks
 		if ($password !== $password_confirm) {
-			$errorMessage = "<span class='badpassword_message'>" .
-				__('Your new passwords do not match, please retype.') .
+			$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') .
 				'</span>';
 			$action       = 'formreset';
 
@@ -178,8 +169,7 @@ switch ($action) {
 		// Check new password does not match stored password
 		if (compat_password_verify($password, $user['password'])) {
 			$errorMessage = "<span class='badpassword_message'>" .
-				__('Your new password cannot be the same as the old password. Please try ' .
-				'again.') . '</span>';
+				__('Your new password cannot be the same as the old password. Please try ' . 'again.') . '</span>';
 			$action       = 'formreset';
 
 			break;
@@ -190,8 +180,7 @@ switch ($action) {
 			db_check_password_length();
 
 			if (!db_begin_transaction()) {
-				$errorMessage = "<span class='badpassword_message'>" .
-					__('Unable to securely consume the password reset link.') .
+				$errorMessage = "<span class='badpassword_message'>" . __('Unable to securely consume the password reset link.') .
 					'</span>';
 				$action       = 'formidentity';
 
@@ -281,8 +270,7 @@ switch ($action) {
 
 			if (!$reset_ok || !db_commit_transaction()) {
 				db_rollback_transaction();
-				$errorMessage = "<span class='badpassword_message'>" .
-					__('Unable to securely consume the password reset link.') .
+				$errorMessage = "<span class='badpassword_message'>" . __('Unable to securely consume the password reset link.') .
 					'</span>';
 				$action       = 'formidentity';
 

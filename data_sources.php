@@ -242,32 +242,18 @@ function form_save() : void {
 		$save2['id']                          = gfrv('data_template_data_id');
 		$save2['local_data_template_data_id'] = gfrv('local_data_template_data_id');
 		$save2['data_template_id']            = gfrv('data_template_id');
-		$save2['data_input_id']               = CactiValidator::validateInput(grv('data_input_id'),
-			'data_input_id',
-			[new Assert\Regex('/^[0-9]+$/')],
+		$save2['data_input_id']               = CactiValidator::validateInput(grv('data_input_id'), 'data_input_id',
+			[new Assert\Regex('/^[0-9]+$/')], 3);
+		$save2['name']                        = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()],
 			3);
-		$save2['name']                        = CactiValidator::validateInput(gnrv('name'),
-			'name',
-			[new Assert\NotBlank()],
-			3);
-		$save2['data_source_path']            = CactiValidator::validateInput(gnrv('data_source_path'),
-			'data_source_path',
-			[],
-			3);
+		$save2['data_source_path']            = CactiValidator::validateInput(gnrv('data_source_path'), 'data_source_path',
+			[], 3);
 		$save2['active']                      = CactiValidator::validateInput((isrv('active') ? gnrv('active') : ''),
-			'active',
-			[],
-			3);
+			'active', [], 3);
 		$save2['data_source_profile_id']      = CactiValidator::validateInput(grv('data_source_profile_id'),
-			'data_source_profile_id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
-		$save2['rrd_step']                    = CactiValidator::validateInput(grv('rrd_step'),
-			'rrd_step',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+			'data_source_profile_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
+		$save2['rrd_step']                    = CactiValidator::validateInput(grv('rrd_step'), 'rrd_step',
+			[new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
 
 		if (is_error_message() == false) {
 			$local_data_id = sql_save($save1, 'data_local');
@@ -332,24 +318,16 @@ function form_save() : void {
 							[new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U|\|query_ifSpeed\||\|query_ifHighSpeed\|)\z/')]);
 
 						$save3['rrd_heartbeat'] = CactiValidator::validateInput(gnrv("rrd_heartbeat$name_modifier"),
-							"rrd_heartbeat$name_modifier",
-							[new Assert\Regex('/^[0-9]+$/')],
-							3);
+							"rrd_heartbeat$name_modifier", [new Assert\Regex('/^[0-9]+$/')], 3);
 
 						$save3['data_source_type_id'] = CactiValidator::validateInput(gnrv("data_source_type_id$name_modifier"),
-							"data_source_type_id$name_modifier",
-							[new Assert\Regex('/^[0-9]+$/')],
-							3);
+							"data_source_type_id$name_modifier", [new Assert\Regex('/^[0-9]+$/')], 3);
 
 						$save3['data_source_name'] = CactiValidator::validateInput(gnrv("data_source_name$name_modifier"),
-							"data_source_name$name_modifier",
-							[new Assert\Regex('/^[a-zA-Z0-9_-]{1,19}$/')],
-							3);
+							"data_source_name$name_modifier", [new Assert\Regex('/^[a-zA-Z0-9_-]{1,19}$/')], 3);
 
 						$save3['data_input_field_id'] = CactiValidator::validateInput((isrv("data_input_field_id$name_modifier") ? gnrv("data_input_field_id$name_modifier") : '0'),
-							"data_input_field_id$name_modifier",
-							[],
-							3);
+							"data_input_field_id$name_modifier", [], 3);
 
 						if ($save3['rrd_minimum'] != 'U' && $save3['rrd_maximum'] != 'U') {
 							if ($save3['rrd_minimum'] >= $save3['rrd_maximum']) {
@@ -358,11 +336,8 @@ function form_save() : void {
 								$_SESSION[SESS_ERROR_FIELDS]['rrd_maximum'] = 'rrd_maximum';
 
 								header('Location: data_sources.php?action=ds_edit&id=' .
-									(empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) .
-									'&host_id=' .
-									grv('host_id') .
-									'&view_rrd=' .
-									(isrv('current_rrd') ? gnrv('current_rrd') : '0'));
+									(empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') .
+									'&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
 
 								exit;
 							}
@@ -418,10 +393,7 @@ function form_save() : void {
 		(gfrv('data_input_id') != gfrv('_data_input_id')) ||
 		(gfrv('host_id') != gfrv('_host_id'))) {
 		header('Location: data_sources.php?action=ds_edit&id=' .
-			(empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) .
-			'&host_id=' .
-			grv('host_id') .
-			'&view_rrd=' .
+			(empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' .
 			(isrv('current_rrd') ? gnrv('current_rrd') : '0'));
 	} else {
 		header('Location: data_sources.php');
@@ -638,8 +610,7 @@ function form_actions() : void {
 					if ($rrd_changes > 0) {
 						$_SESSION['sess_messages']['custom_info'] = [
 							'message' => sprintf(__('%d RRD files were backed up and will be recreated with new step value ' .
-								'at next polling.'),
-								$rrd_changes),
+								'at next polling.'), $rrd_changes),
 							'type'    => 'info'
 						];
 					}
@@ -728,11 +699,9 @@ function form_actions() : void {
 					'pcont'     => __('Delete Data Sources'),
 					'flist'     => $flist,
 					'sfmessage' => __n('The following Graph is using this Data Source.',
-						'The following Graphs are using this Data Source.',
-						cacti_sizeof($graphs)),
+						'The following Graphs are using this Data Source.', cacti_sizeof($graphs)),
 					'pfmessage' => __n('The following Graph is using these Data Sources.',
-						'The following Graphs are using these Data Sources.',
-						cacti_sizeof($graphs)),
+						'The following Graphs are using these Data Sources.', cacti_sizeof($graphs)),
 					'extra'     => [
 						'delete_type' => [
 							'method'  => 'radio_button',
@@ -744,14 +713,12 @@ function form_actions() : void {
 								'2' => [
 									'default' => 3,
 									'title'   => __n('Delete all Graph Items that reference this Data Source.',
-										'Delete all Graph Items that reference these Data Sources',
-										cacti_sizeof($iarray))
+										'Delete all Graph Items that reference these Data Sources', cacti_sizeof($iarray))
 								],
 								'3' => [
 									'default' => 3,
 									'title'   => __n('Delete all Graphs that reference this Data Source.',
-										'Delete all Graphs that reference these Data Sources',
-										cacti_sizeof($iarray))
+										'Delete all Graphs that reference these Data Sources', cacti_sizeof($iarray))
 								]
 							]
 						]
@@ -898,10 +865,7 @@ function data_edit(bool $incform = true) : void {
 						htmle($host['hostname'])) . '</td>';
 					print '<td><em>' . htmle($old_value) . '</em></td>';
 				} elseif (empty($can_template)) {
-					print "<td style='width:50%;'><strong>" .
-						htmle($field['name']) .
-						'</strong> ' .
-						__('(From Data Template)') .
+					print "<td style='width:50%;'><strong>" . htmle($field['name']) . '</strong> ' . __('(From Data Template)') .
 						'</td>';
 					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : htmle($old_value)) . '</em></td>';
 				} else {
@@ -918,8 +882,7 @@ function data_edit(bool $incform = true) : void {
 				$i++;
 			}
 		} else {
-			print '<tr class="tableRow odd"><td><em>' .
-				__('No Input Fields for the Selected Data Input Source') .
+			print '<tr class="tableRow odd"><td><em>' . __('No Input Fields for the Selected Data Input Source') .
 				'</em></td></tr>';
 		}
 
@@ -1135,9 +1098,7 @@ function ds_edit() : void {
 			$debug         = false;
 		}
 
-		$debug_url = 'data_sources.php?action=ds_edit&id=' .
-			(isrv('id') ? grv('id') : '0') .
-			'&debug=' .
+		$debug_url = 'data_sources.php?action=ds_edit&id=' . (isrv('id') ? grv('id') : '0') . '&debug=' .
 			(isset($_SESSION['ds_debug_mode']) ? '0' : '1');
 
 		if (isset($_SESSION['ds_info_mode'])) {
@@ -1148,9 +1109,7 @@ function ds_edit() : void {
 			$info_on      = false;
 		}
 
-		$info_url = 'data_sources.php?action=ds_edit&id=' .
-			(isrv('id') ? grv('id') : '0') .
-			'&info=' .
+		$info_url = 'data_sources.php?action=ds_edit&id=' . (isrv('id') ? grv('id') : '0') . '&info=' .
 			(isset($_SESSION['ds_info_mode']) ? '0' : '1');
 
 		$filters = [
@@ -1220,13 +1179,8 @@ function ds_edit() : void {
 
 	form_start('data_sources.php', 'data_source');
 
-	$pageFilter = new CactiTableFilter($header_label,
-		'data_sources.php?action=ds_edit&id=' . grv('id'),
-		'data_source',
-		'sess_ds_edit',
-		'',
-		'',
-		false);
+	$pageFilter = new CactiTableFilter($header_label, 'data_sources.php?action=ds_edit&id=' . grv('id'), 'data_source',
+		'sess_ds_edit', '', '', false);
 	$pageFilter->set_filter_array($filters);
 	$pageFilter->render();
 
@@ -1298,22 +1252,10 @@ function ds_edit() : void {
 
 		html_start_box(__('Supplemental Data Template Data'), '100%', true, 3, 'center', '');
 
-		draw_nontemplated_fields_data_source($data['data_template_id'],
-			$data['local_data_id'],
-			$data,
-			'|field|',
-			__('Data Source Fields'),
-			true,
-			true,
-			0);
-		draw_nontemplated_fields_data_source_item($data['data_template_id'],
-			$template_data_rrds,
-			'|field|_|id|',
-			__('Data Source Item Fields'),
-			true,
-			true,
-			true,
-			0);
+		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|',
+			__('Data Source Fields'), true, true, 0);
+		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|',
+			__('Data Source Item Fields'), true, true, true, 0);
 		draw_nontemplated_fields_custom_data($data['id'], 'value_|id|', __('Custom Data'), true, true, 0);
 
 		form_hidden_box('save_component_data','1','');
@@ -1406,25 +1348,12 @@ function ds_edit() : void {
 
 				foreach ($template_data_rrds as $template_data_rrd) {
 					print "<li class='subTab'><a " .
-						(($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") .
-						" href='" .
-						htmle('data_sources.php?action=ds_edit&id=' .
-						grv('id') .
-						'&view_rrd=' .
-						$template_data_rrd['id']) .
-						"'>$i: " .
-						htmle($template_data_rrd['data_source_name']) .
-						'</a>' .
-						($use_data_template == false ? (" <a class='pic deleteMarker ti ti-x cactiPostAction' href='#' " .
-						"data-url='") .
-							html_escape_url('data_sources.php?action=rrd_remove&id=' .
-							$template_data_rrd['id'] .
-							'&local_data_id=' .
-							grv('id')) .
-							"' title='" .
-							__esc('Delete') .
-							"'></a>" : '') .
-							'</li>';
+						(($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" .
+						htmle('data_sources.php?action=ds_edit&id=' . grv('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " .
+						htmle($template_data_rrd['data_source_name']) . '</a>' .
+						($use_data_template == false ? (" <a class='pic deleteMarker ti ti-x cactiPostAction' href='#' " . "data-url='") .
+							html_escape_url('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' .
+							grv('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
 
 					$i++;
 				}
@@ -1444,24 +1373,17 @@ function ds_edit() : void {
 			<div class='tableSubHeaderColumn right'>
 				" . ((!ierv('id') &&
 					(empty($data_template['id']))) ? "<a class='linkOverDark cactiPostAction' href='#' data-url='" .
-						html_escape_url('data_sources.php?action=rrd_add&id=' .
-						grv('id')) .
-						"'>" .
-						__('New') .
-						'</a>&nbsp;' : '') .
-						'
+						html_escape_url('data_sources.php?action=rrd_add&id=' . grv('id')) . "'>" . __('New') . '</a>&nbsp;' : '') . '
 			</div>
 		</div>';
 
 		// data input fields list
 		if ((empty($data['data_input_id'])) ||
-			(db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?',
-				[$data['data_input_id']]) > '1')) {
+			(db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', [$data['data_input_id']]) > '1')) {
 			unset($struct_data_source_item['data_input_field_id']);
 		} else {
 			$struct_data_source_item['data_input_field_id']['sql'] = ("SELECT id,CONCAT(data_name,' - ',name) as name FROM data_input_fields " .
-				'WHERE data_input_id=') .
-					$data['data_input_id'] .
+				'WHERE data_input_id=') . $data['data_input_id'] .
 					" and input_output='out' and update_rra='on' order by data_name,name";
 		}
 
@@ -1664,8 +1586,7 @@ function data_sources() : void {
 
 	if (grv('orphans') == 'true') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND ' : 'WHERE ') .
-			('((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS ' .
-			'NULL OR dl.orphan = 1)');
+			('((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS ' . 'NULL OR dl.orphan = 1)');
 
 		$orphan_join = "LEFT JOIN (
 			SELECT dtr.local_data_id, COUNT(DISTINCT gti.task_item_id) AS graph_items
@@ -1744,15 +1665,8 @@ function data_sources() : void {
 			$sql_params1);
 	}
 
-	$nav = html_nav_bar('data_sources.php',
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		7,
-		__('Data Sources'),
-		'page',
-		'main');
+	$nav = html_nav_bar('data_sources.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Data Sources'),
+		'page', 'main');
 
 	form_start('data_sources.php', 'chk');
 
@@ -1854,8 +1768,7 @@ function data_sources() : void {
 			// Show link to Graphs and Aggregates
 			form_selectable_cell($graphs_aggregates_url, $data_source['local_data_id'], '', 'center');
 
-			form_selectable_cell(get_poller_interval($data_source['rrd_step'],
-				$data_source['data_source_profile_id']),
+			form_selectable_cell(get_poller_interval($data_source['rrd_step'], $data_source['data_source_profile_id']),
 				$data_source['local_data_id']);
 			form_selectable_cell(api_data_source_deletable($data_source['local_data_id']) ? __('Yes') : __('No'),
 				$data_source['local_data_id']);
@@ -1866,11 +1779,8 @@ function data_sources() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Data Sources Found') .
-			'</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No Data Sources Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1916,25 +1826,16 @@ function get_graphs_aggregates_url(int $local_data_id) : string {
 	$url = '';
 
 	if (cacti_sizeof($graphs) && $graphs['total'] > 0) {
-		$url .= '<a class="linkEditMain" title="' .
-			__('Graphs') .
-			'" href="graphs.php?reset=1&custom=true&local_graph_ids=' .
-			$graphs['graphs'] .
-			'">' .
-			$graphs['total'] .
-			'</a>';
+		$url .= '<a class="linkEditMain" title="' . __('Graphs') . '" href="graphs.php?reset=1&custom=true&local_graph_ids=' .
+			$graphs['graphs'] . '">' . $graphs['total'] . '</a>';
 	} else {
 		$url .= '<span title="' . __('No Graphs') . '">0</span>';
 	}
 
 	if (cacti_sizeof($aggregates) && $aggregates['total'] > 0) {
-		$url .= ' / <a class="linkEditMain" title="' .
-			__('Aggregates') .
-			'" href="aggregate_graphs.php?reset=1&custom=true&local_graph_ids=' .
-			$aggregates['graphs'] .
-			'">' .
-			$aggregates['total'] .
-			'</a>';
+		$url .= ' / <a class="linkEditMain" title="' . __('Aggregates') .
+			'" href="aggregate_graphs.php?reset=1&custom=true&local_graph_ids=' . $aggregates['graphs'] . '">' .
+			$aggregates['total'] . '</a>';
 	} else {
 		$url .= ' / <span title="' . __('No Aggregates') . '">0</span>';
 	}

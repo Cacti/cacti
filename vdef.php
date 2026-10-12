@@ -591,14 +591,8 @@ function vdef_edit() : void {
 		draw_vdef_preview(grv('id'));
 		html_end_box();
 
-		html_start_box(__('VDEF Items'),
-			'100%',
-			false,
-			3,
-			'center',
-			'vdef.php?action=item_edit&vdef_id=' . $vdef['id'],
-			false,
-			false);
+		html_start_box(__('VDEF Items'), '100%', false, 3, 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id'],
+			false, false);
 
 		$header_items = [
 			['display' => __('Item'), 'align' => 'left'],
@@ -620,11 +614,8 @@ function vdef_edit() : void {
 			foreach ($vdef_items as $vdef_item) {
 				form_alternate_row('line' . $vdef_item['id'], true);
 
-				form_selectable_cell(filter_value(__('Item # %d',
-					$i),
-					'',
-					'vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']),
-					$vdef_item['id']);
+				form_selectable_cell(filter_value(__('Item # %d', $i), '',
+					'vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']), $vdef_item['id']);
 
 				$item_value = '<em>' . $vdef_item_types[$vdef_item['type']] . '</em>' . htmle(get_vdef_item_name($vdef_item['id']));
 
@@ -634,37 +625,24 @@ function vdef_edit() : void {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$actions .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('vdef.php?action=item_movedown&id=' .
-								$vdef_item['id'] .
-								'&vdef_id=' .
-								$vdef_item['vdef_id']) .
-								'" title="' .
-								__esc('Move Down') .
-								'"></a>';
+						$actions .= ('<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) .
+								'" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$actions .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' .
-							'href="#" data-url="') .
-								html_escape_url('vdef.php?action=item_moveup&id=' .
-								$vdef_item['id'] .
-								'&vdef_id=' .
-								$vdef_item['vdef_id']) .
-								'" title="' .
-								__esc('Move Up') .
-								'"></a>';
+						$actions .= ('<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" ' . 'href="#" data-url="') .
+								html_escape_url('vdef.php?action=item_moveup&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) .
+								'" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 				}
 
 				$actions .= "<a id='{$vdef['id']}_{$vdef_item['id']}' class='delete deleteMarker ti ti-x' title='" .
-					__esc('Delete') .
-					"' href='#'></a>";
+					__esc('Delete') . "' href='#'></a>";
 
 				form_selectable_cell($actions, $vdef_item['id'], '', 'right');
 
@@ -782,15 +760,8 @@ function vdef(bool $refresh = true) : void {
 
 	$vdefs = get_vdef_records($total_rows, $rows);
 
-	$nav = html_nav_bar('vdef.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		5,
-		__('VDEFs'),
-		'page',
-		'main');
+	$nav = html_nav_bar('vdef.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5,
+		__('VDEFs'), 'page', 'main');
 
 	form_start('vdef.php', 'chk');
 
@@ -840,24 +811,12 @@ function vdef(bool $refresh = true) : void {
 
 			form_alternate_row('line' . $vdef['id'], false, $disabled);
 
-			form_selectable_cell(filter_value($vdef['name'],
-				grv('filter'),
-				'vdef.php?action=edit&id=' . $vdef['id']),
+			form_selectable_cell(filter_value($vdef['name'], grv('filter'), 'vdef.php?action=edit&id=' . $vdef['id']),
 				$vdef['id']);
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $vdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($vdef['graphs'],
-				-1),
-				'',
-				$graphs_url),
-				$vdef['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($vdef['graphs'], -1), '', $graphs_url), $vdef['id'], '',
 				'right');
-			form_selectable_cell(filter_value(number_format_i18n($vdef['templates'],
-				-1),
-				'',
-				$templates_url),
-				$vdef['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($vdef['templates'], -1), '', $templates_url), $vdef['id'], '',
 				'right');
 
 			form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
@@ -865,10 +824,7 @@ function vdef(bool $refresh = true) : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No VDEFs') .
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No VDEFs') .
 			'</em></td></tr>';
 	}
 

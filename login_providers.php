@@ -89,10 +89,7 @@ function form_save() : void {
 		$save['debug']              = (isrv('debug') ? form_input_validate(gnrv('debug'), 'debug', '', true, 3) : '');
 		// no-validation: checkbox values are constrained to 'on'/'' by the isrv() guard, not a text field
 		$save['allow_auth_cookies'] = (isrv('allow_auth_cookies') ? form_input_validate(gnrv('allow_auth_cookies'),
-			'allow_auth_cookies',
-			'',
-			true,
-			3) : '');
+			'allow_auth_cookies', '', true, 3) : '');
 
 		$parameters = LoginProviderFactory::collectParameters((int) $save['type']);
 
@@ -291,8 +288,7 @@ function provider_edit() : void {
 			'method'        => 'checkbox',
 			'friendly_name' => __('Allow "Remember Me" Cookies'),
 			'description'   => __('If unchecked, users authenticated through this Provider will never be ' .
-				'offered a "remember me" auth cookie, even when the global setting is ' .
-				'enabled.'),
+				'offered a "remember me" auth cookie, even when the global setting is ' . 'enabled.'),
 			'value'         => '|arg1:allow_auth_cookies|',
 			'default'       => 'on',
 		],
@@ -422,8 +418,7 @@ function provider_edit() : void {
 				'directory permits it) so the lookup never consumes the single-use ' .
 				'code.  For resilient OTP deployments use a single DNS load balancer ' .
 				'name in the Server(s) field rather than a space delimited ' .
-				'multi-server list, which would re-attempt the bind with an ' .
-				'already-consumed one-time password.'),
+				'multi-server list, which would re-attempt the bind with an ' . 'already-consumed one-time password.'),
 			'method'        => 'drop_array',
 			'value'         => '|arg1:mode|',
 			'array'         => $ldap_modes
@@ -433,8 +428,7 @@ function provider_edit() : void {
 			'description'   => __('The "Distinguished Name" syntax, applicable for both OpenLDAP and ' .
 				'Windows AD configurations, offers flexibility in defining user ' .
 				'identity. For OpenLDAP, the format follows this structure: ' .
-				'<i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>. Windows ' .
-				'AD provides an alternative syntax: ' .
+				'<i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>. Windows ' . 'AD provides an alternative syntax: ' .
 				'<i>"&lt;username&gt;@win2kdomain.local"</i>, commonly known as ' .
 				'"userPrincipalName (UPN)". In this context, "&lt;username&gt;" ' .
 				'represents the specific username provided during the login prompt. ' .
@@ -453,8 +447,7 @@ function provider_edit() : void {
 		'group_dn' => [
 			'friendly_name' => __('Group Distinguished Name (DN)'),
 			'description'   => __('Distinguished Name of the group that the user must be a member of in ' .
-				'order to login. Leave blank to allow any successfully authenticated ' .
-				'user to login.'),
+				'order to login. Leave blank to allow any successfully authenticated ' . 'user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_dn|',
 			'max_length'    => '255',
@@ -487,8 +480,7 @@ function provider_edit() : void {
 		'search_base' => [
 			'friendly_name' => __('Search Base'),
 			'description'   => __('Search base for searching the LDAP directory, such as ' .
-				'<i>"dc=win2kdomain,dc=local"</i> or ' .
-				'<i>"ou=people,dc=domain,dc=local"</i>.'),
+				'<i>"dc=win2kdomain,dc=local"</i> or ' . '<i>"ou=people,dc=domain,dc=local"</i>.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:search_base|',
 			'max_length'    => '255',
@@ -552,13 +544,10 @@ function provider_edit() : void {
 		'sp_entity_id' => [
 			'friendly_name' => __('SP Entity ID'),
 			'description'   => __('Uniquely identifies this Cacti installation to the Identity Provider. ' .
-				'Leave blank to default to the Metadata URL below.') . ' ' .
-				__('Assertion Consumer Service (ACS) URL: %s',
-					rtrim((string) read_config_option('base_url'),
-						'/') . '/login_sso.php?action=acs&realm={realm}') . ' ' .
-				__('Metadata URL: %s',
-					rtrim((string) read_config_option('base_url'),
-						'/') . '/login_sso.php?action=metadata&realm={realm}'),
+				'Leave blank to default to the Metadata URL below.') . ' ' . __('Assertion Consumer Service (ACS) URL: %s',
+					rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=acs&realm={realm}') . ' ' .
+				__('Metadata URL: %s', rtrim((string) read_config_option('base_url'),
+					'/') . '/login_sso.php?action=metadata&realm={realm}'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:sp_entity_id|',
 			'max_length'    => '255',
@@ -601,8 +590,7 @@ function provider_edit() : void {
 		'sp_private_key' => [
 			'friendly_name' => __('SP Private Key (PEM)'),
 			'description'   => __('Only required when signing AuthnRequests or supporting encrypted ' .
-				'assertions. Stored encrypted; leave blank to keep the existing key ' .
-				'unchanged.'),
+				'assertions. Stored encrypted; leave blank to keep the existing key ' . 'unchanged.'),
 			'method'        => 'privkey',
 			'textarea_rows' => 4,
 			'textarea_cols' => 60,
@@ -687,8 +675,7 @@ function provider_edit() : void {
 		'saml_group_name' => [
 			'friendly_name' => __('Required Group'),
 			'description'   => __('The group name/DN that must appear in the Group Claim Attribute above ' .
-				'for the user to be allowed to login. Leave blank to allow any ' .
-				'successfully authenticated user to login.'),
+				'for the user to be allowed to login. Leave blank to allow any ' . 'successfully authenticated user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_name|',
 			'max_length'    => '255',
@@ -706,8 +693,7 @@ function provider_edit() : void {
 		'oidc_redirect_uri' => [
 			'friendly_name' => __('Redirect URI'),
 			'description'   => __('Register this callback URL with your Identity Provider: %s',
-				rtrim((string) read_config_option('base_url'),
-					'/') . '/login_sso.php?action=callback&realm={realm}'),
+				rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=callback&realm={realm}'),
 			'method'        => 'spacer'
 		],
 		'client_id' => [
@@ -790,8 +776,7 @@ function provider_edit() : void {
 		'oidc_group_name' => [
 			'friendly_name' => __('Required Group'),
 			'description'   => __('The group name that must appear in the Group Claim above for the user ' .
-				'to be allowed to login. Leave blank to allow any successfully ' .
-				'authenticated user to login.'),
+				'to be allowed to login. Leave blank to allow any successfully ' . 'authenticated user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_name|',
 			'max_length'    => '255',
@@ -891,10 +876,7 @@ function login_providers() : void {
 	global $provider_types, $actions;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Login Providers'),
-		'login_providers.php',
-		'form_provider',
-		'sess_provider',
+	$pageFilter = new CactiTableFilter(__('Login Providers'), 'login_providers.php', 'form_provider', 'sess_provider',
 		'login_providers.php?action=edit');
 
 	$pageFilter->rows_label = __('Providers');
@@ -954,15 +936,8 @@ function login_providers() : void {
 		]
 	];
 
-	$nav = html_nav_bar('login_providers.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		6,
-		__('Login Providers'),
-		'page',
-		'main');
+	$nav = html_nav_bar('login_providers.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		6, __('Login Providers'), 'page', 'main');
 
 	form_start('login_providers.php', 'chk');
 
@@ -981,10 +956,8 @@ function login_providers() : void {
 				WHERE id = ?',
 				[$provider['user_id']]);
 
-			form_selectable_cell(filter_value($provider['name'],
-				grv('filter'),
-				'login_providers.php?action=edit&id=' . $provider['id']),
-				$provider['id']);
+			form_selectable_cell(filter_value($provider['name'], grv('filter'),
+				'login_providers.php?action=edit&id=' . $provider['id']), $provider['id']);
 			form_selectable_cell($provider_types[$provider['type']] ?? __('Unknown'), $provider['id']);
 			form_selectable_cell(($provider['is_default'] == '0' ? '--' : __('Yes')), $provider['id']);
 			form_selectable_ecell(($provider['user_id'] == '0' ? __('None Selected') : $effective_id), $provider['id']);
@@ -994,11 +967,8 @@ function login_providers() : void {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Login Providers Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Login Providers Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

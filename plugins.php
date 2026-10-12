@@ -166,9 +166,7 @@ if (isrv('plugin')) {
 	if (!in_array($plugin, $pluginslist, true) && !in_array($action, $safe_actions, true)) {
 		raise_message('invalid_plugin',
 			__esc('The action \'%s\' on Plugin \'%s\' can not be performed due to the Plugin in it\'s current state.',
-				$display_action,
-				$plugin),
-			MESSAGE_LEVEL_ERROR);
+				$display_action, $plugin), MESSAGE_LEVEL_ERROR);
 		header('Location: plugins.php');
 
 		exit;
@@ -176,9 +174,7 @@ if (isrv('plugin')) {
 
 	if (in_array($plugin, $plugins_integrated, true)) {
 		raise_message('invalid_plugin_action',
-			__esc('The action \'%s\' on Plugin \'%s\' can not be taken as the Plugin is integrated.',
-				$display_action,
-				$plugin),
+			__esc('The action \'%s\' on Plugin \'%s\' can not be taken as the Plugin is integrated.', $display_action, $plugin),
 			MESSAGE_LEVEL_ERROR);
 		header('Location: plugins.php');
 
@@ -229,12 +225,10 @@ switch($action) {
 
 				usleep(300000);
 
-				raise_message('fetch_background',
-					__('The fetch latest plugins process has been launched into background.'),
+				raise_message('fetch_background', __('The fetch latest plugins process has been launched into background.'),
 					MESSAGE_LEVEL_INFO);
 			} elseif ($running === true) {
-				raise_message('fetch_background',
-					__('The fetch latest plugins process has already been started.'),
+				raise_message('fetch_background', __('The fetch latest plugins process has already been started.'),
 					MESSAGE_LEVEL_WARN);
 			}
 
@@ -283,8 +277,7 @@ switch($action) {
 		if (is_dir(CACTI_PATH_PLUGINS . '/' . $plugin)) {
 			raise_message('force_remove_present',
 				__esc('Plugin \'%s\' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead.',
-					$plugin),
-				MESSAGE_LEVEL_ERROR);
+					$plugin), MESSAGE_LEVEL_ERROR);
 
 			header('Location: plugins.php');
 
@@ -299,10 +292,8 @@ switch($action) {
 
 		if ($required != '') {
 			raise_message('force_remove_required',
-				__esc('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'',
-					$plugin,
-					ucfirst($required)),
-				MESSAGE_LEVEL_ERROR);
+				__esc('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'', $plugin,
+					ucfirst($required)), MESSAGE_LEVEL_ERROR);
 
 			header('Location: plugins.php');
 
@@ -1208,15 +1199,8 @@ function update_show_current() : void {
 
 	$plugins = db_fetch_assoc_prepared($sql, $where_params);
 
-	$nav = html_nav_bar('plugins.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		8,
-		__('Plugins'),
-		'page',
-		'main');
+	$nav = html_nav_bar('plugins.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8,
+		__('Plugins'), 'page', 'main');
 
 	form_start('plugins.php', 'chk');
 
@@ -1557,10 +1541,8 @@ function format_plugin_row(array $plugin, bool $last_plugin, bool $include_order
 
 	if (POLLER_ID > 1) {
 		if (isset($plugin['capabilities']) &&
-			(str_contains($plugin['capabilities'],
-				'remote_collect:1') ||
-			str_contains($plugin['capabilities'],
-				'remote_poller:1'))) {
+			(str_contains($plugin['capabilities'], 'remote_collect:1') ||
+			str_contains($plugin['capabilities'], 'remote_poller:1'))) {
 			if ($plugin['remote_status'] == '-1') {
 				$status = plugin_is_compatible($plugin['plugin']);
 				$row .= ' / ' . __('Not Compatible, \'%s\'', $status['requires']);
@@ -2104,10 +2086,8 @@ function plugin_actions(array $plugin, string $table) : string {
 
 	if (POLLER_ID > 1) {
 		if (isset($plugin['capabilities']) &&
-			(str_contains($plugin['capabilities'],
-				'remote_collect:1') ||
-			str_contains($plugin['capabilities'],
-				'remote_poller:1'))) {
+			(str_contains($plugin['capabilities'], 'remote_collect:1') ||
+			str_contains($plugin['capabilities'], 'remote_poller:1'))) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
 				// ToDo: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward

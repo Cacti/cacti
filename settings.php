@@ -121,16 +121,9 @@ function display_settings() : void {
 
 	if (cacti_sizeof($tabs)) {
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name,
-				$system_tabs,
-				true) ? ' pluginTab' : '') .
-					"'><a " .
-					(($tab_short_name == $current_tab) ? "class='selected'" : "class=''") .
-					" href='" .
-					htmle("settings.php?tab=$tab_short_name") .
-					"'>" .
-					$tabs[$tab_short_name] .
-					'</a></li>';
+			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs,
+				true) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") .
+					" href='" . htmle("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . '</a></li>';
 		}
 	}
 
@@ -1551,9 +1544,7 @@ function save_settings() : void {
 
 			foreach ($pollers as $p => $t) {
 				if ($t > $gone_time) {
-					raise_message('poller_' . $p,
-						__esc('Settings save to Data Collector %d skipped due to heartbeat.',
-							$p),
+					raise_message('poller_' . $p, __esc('Settings save to Data Collector %d skipped due to heartbeat.', $p),
 						MESSAGE_LEVEL_WARN);
 				} else {
 					$rcnn_id = poller_connect_to_remote($p);

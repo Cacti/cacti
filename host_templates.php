@@ -272,9 +272,7 @@ function form_actions() : void {
 
 						db_execute_prepared('DELETE FROM host_template_archive WHERE id = ?', [$id]);
 
-						raise_message('archives_removed_' . $id,
-							__esc('The Device Template Archive %s has been removed.',
-								$name),
+						raise_message('archives_removed_' . $id, __esc('The Device Template Archive %s has been removed.', $name),
 							MESSAGE_LEVEL_INFO);
 					}
 				} elseif (gnrv('drp_action') == 2) {
@@ -632,9 +630,7 @@ function template_edit() : void {
 				</td>
 				<td class='right'>
 					<a class='delete deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('host_templates.php?action=item_remove_gt_confirm&id=' .
-						$item['id'] .
-						'&host_template_id=' .
-						grv('id')); ?>'></a>
+						$item['id'] . '&host_template_id=' . grv('id')); ?>'></a>
 				</td>
 				<?php
 				form_end_row();
@@ -693,9 +689,7 @@ function template_edit() : void {
 				</td>
 				<td class='right'>
 					<a class='delete deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='<?php print htmle('host_templates.php?action=item_remove_dq_confirm&id=' .
-						$item['id'] .
-						'&host_template_id=' .
-						grv('id')); ?>'></a>
+						$item['id'] . '&host_template_id=' . grv('id')); ?>'></a>
 				</td>
 				<?php
 				form_end_row();
@@ -953,10 +947,7 @@ function draw_template_filter(bool $render = false) : void {
 	$filters = create_template_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Device Templates'),
-		'host_templates.php',
-		'form_template',
-		'sess_ht',
+	$pageFilter = new CactiTableFilter(__('Device Templates'), 'host_templates.php', 'form_template', 'sess_ht',
 		'host_templates.php?action=edit');
 
 	$pageFilter->set_filter_array($filters);
@@ -1115,15 +1106,8 @@ function device_templates() : void {
 		]
 	];
 
-	$nav = html_nav_bar('host_templates.php?action=templates',
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('Device Templates'),
-		'page',
-		'main');
+	$nav = html_nav_bar('host_templates.php?action=templates', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		cacti_sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
 
 	form_start('host_templates.php?action=templates', 'chk');
 
@@ -1131,10 +1115,7 @@ function device_templates() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text,
-		grv('sort_column'),
-		grv('sort_direction'),
-		false,
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false,
 		'host_templates.php?action=template');
 
 	if (cacti_sizeof($template_list)) {
@@ -1147,10 +1128,8 @@ function device_templates() : void {
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
 
-			form_selectable_cell(filter_value($template['name'],
-				grv('filter'),
-				'host_templates.php?action=edit&id=' . $template['id']),
-				$template['id']);
+			form_selectable_cell(filter_value($template['name'], grv('filter'),
+				'host_templates.php?action=edit&id=' . $template['id']), $template['id']);
 
 			if ($template['class'] != '') {
 				form_selectable_cell($device_classes[$template['class']], $template['id']);
@@ -1170,12 +1149,7 @@ function device_templates() : void {
 
 			$url = 'host.php?reset=true&host_template_id=' . $template['id'];
 
-			form_selectable_cell(filter_value(number_format_i18n($template['hosts'],
-				-1),
-				'',
-				$url),
-				$template['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($template['hosts'], -1), '', $url), $template['id'], '',
 				'right');
 
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
@@ -1183,11 +1157,8 @@ function device_templates() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Device Templates Found') .
-			'</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No Device Templates Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1546,15 +1517,8 @@ function device_archives() : void {
 		]
 	];
 
-	$nav = html_nav_bar('host_templates.php?action=archives',
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('Device Templates'),
-		'page',
-		'main');
+	$nav = html_nav_bar('host_templates.php?action=archives', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		cacti_sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
 
 	form_start('host_templates.php?action=archives', 'chk');
 
@@ -1562,10 +1526,7 @@ function device_archives() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text,
-		grv('sort_column'),
-		grv('sort_direction'),
-		false,
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false,
 		'host_templates.php?action=archives');
 
 	if (cacti_sizeof($archives)) {
@@ -1596,11 +1557,8 @@ function device_archives() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Device Template Archives Found') .
-			'</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No Device Template Archives Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

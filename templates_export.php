@@ -52,8 +52,7 @@ function form_save() : void {
 
 	if (isrv('save_component_export')) {
 		$export_errors = 0;
-		$xml_data      = get_item_xml(gnrv('export_type'),
-			gnrv('export_item_id'),
+		$xml_data      = get_item_xml(gnrv('export_type'), gnrv('export_item_id'),
 			(((isrv('include_deps') ? gnrv('include_deps') : '') == '') ? false : true));
 
 		if (gnrv('output_format') == '1') {
@@ -128,8 +127,7 @@ function export() : void {
 		'include_deps' => [
 			'friendly_name' => __('Include Dependencies'),
 			'description'   => __('Some templates rely on other items in Cacti to function properly. It ' .
-				'is highly recommended that you select this box or the resulting ' .
-				'import may fail.'),
+				'is highly recommended that you select this box or the resulting ' . 'import may fail.'),
 			'value'         => 'on',
 			'method'        => 'checkbox',
 			'default'       => 'on'
@@ -170,12 +168,7 @@ function export() : void {
 
 	html_end_box();
 
-	html_start_box(__('Available Templates [%s]',
-		$export_types[gnrv('export_type')]['name']),
-		'100%',
-		false,
-		3,
-		'center',
+	html_start_box(__('Available Templates [%s]', $export_types[gnrv('export_type')]['name']), '100%', false, 3, 'center',
 		'');
 
 	draw_edit_form(

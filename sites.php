@@ -528,15 +528,8 @@ function sites() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('sites.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		5,
-		__('Sites'),
-		'page',
-		'main');
+	$nav = html_nav_bar('sites.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5,
+		__('Sites'), 'page', 'main');
 
 	form_start('sites.php', 'chk');
 
@@ -599,18 +592,11 @@ function sites() : void {
 
 			form_alternate_row('line' . $site['id'], true);
 
-			form_selectable_cell(filter_value($site['name'],
-				grv('filter'),
-				'sites.php?action=edit&id=' . $site['id']),
+			form_selectable_cell(filter_value($site['name'], grv('filter'), 'sites.php?action=edit&id=' . $site['id']),
 				$site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
 			form_selectable_cell($site['disabled'] == 'on' ? __('Disabled') : __('Enabled'), $site['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($site['hosts'],
-				-1),
-				'',
-				$devices_url),
-				$site['id'],
-				'',
+			form_selectable_cell(filter_value(number_format_i18n($site['hosts'], -1), '', $devices_url), $site['id'], '',
 				'right');
 			form_selectable_ecell($site['city'], $site['id'], '', 'left');
 			form_selectable_ecell($site['state'], $site['id'], '', 'left');
@@ -620,10 +606,7 @@ function sites() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Sites Found') .
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Sites Found') .
 			"</em></td></tr>\n";
 	}
 

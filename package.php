@@ -118,11 +118,8 @@ function form_save() : void {
 	}
 
 	if ($export_errors || !$success) {
-		raise_message('package_error',
-			__('There were errors packaging your Templates.  Errors Follow. ') . str_replace("\n",
-				'<br>',
-				$debug),
-			MESSAGE_LEVEL_ERROR);
+		raise_message('package_error', __('There were errors packaging your Templates.  Errors Follow. ') . str_replace("\n",
+			'<br>', $debug), MESSAGE_LEVEL_ERROR);
 		header('Location: package.php');
 
 		exit;
@@ -315,12 +312,7 @@ function export() : void {
 
 	form_start('package.php', 'form_id');
 
-	html_start_box(__('Available Templates [%s]',
-		$export_types[gnrv('export_type')]['name']),
-		'100%',
-		false,
-		3,
-		'center',
+	html_start_box(__('Available Templates [%s]', $export_types[gnrv('export_type')]['name']), '100%', false, 3, 'center',
 		'');
 
 	$package_form = [
@@ -339,8 +331,7 @@ function export() : void {
 			'method'        => 'checkbox',
 			'friendly_name' => __('Include Dependencies'),
 			'description'   => __('Some templates rely on other items in Cacti to function properly. It ' .
-				'is highly recommended that you select this box or the resulting ' .
-				'import may fail.'),
+				'is highly recommended that you select this box or the resulting ' . 'import may fail.'),
 			'value'         => 'on',
 			'sql'           => $export_types[gnrv('export_type')]['dropdown_sql']
 		],

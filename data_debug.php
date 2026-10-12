@@ -512,15 +512,8 @@ function debug_wizard() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar('data_debug.php',
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		cacti_sizeof($display_text) + 1,
-		__('Data Sources'),
-		'page',
-		'main');
+	$nav = html_nav_bar('data_debug.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows,
+		cacti_sizeof($display_text) + 1, __('Data Sources'), 'page', 'main');
 
 	form_start('data_debug.php', 'chk');
 
@@ -562,9 +555,7 @@ function debug_wizard() : void {
 				form_selectable_ecell($check['username'], $check['local_data_id']);
 				form_selectable_cell(date($datefmt, $check['started']), $check['local_data_id'], '', 'right');
 				form_selectable_cell($check['local_data_id'], $check['local_data_id'], '', 'right');
-				form_selectable_cell(debug_icon(($check['done'] ? ($iline != '' ? 'off' : 'on') : '')),
-					$check['local_data_id'],
-					'',
+				form_selectable_cell(debug_icon(($check['done'] ? ($iline != '' ? 'off' : 'on') : '')), $check['local_data_id'], '',
 					'center');
 				form_selectable_cell(debug_icon($info['rrd_writable']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['rrd_exists']), $check['local_data_id'], '', 'center');
@@ -578,13 +569,8 @@ function debug_wizard() : void {
 					form_selectable_cell(debug_icon(($info['rra_timestamp2'] != '' ? 1 : '')), $check['local_data_id'], '', 'center');
 				}
 
-				form_selectable_cell(filter_value($iline != '' ? __('Issues') : __('N/A'),
-					'',
-					'#',
-					$issue_title),
-					$check['local_data_id'],
-					'',
-					'right');
+				form_selectable_cell(filter_value($iline != '' ? __('Issues') : __('N/A'), '', '#', $issue_title),
+					$check['local_data_id'], '', 'right');
 			} else {
 				form_selectable_cell('-', $check['local_data_id']);
 				form_selectable_cell(__('Not Debugging'), $check['local_data_id'], '', 'right');
@@ -603,11 +589,8 @@ function debug_wizard() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" .
-			(cacti_sizeof($display_text) + 1) .
-			"'><em>" .
-			__('No Data Source Checks Found') .
-			'</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" .
+			__('No Data Source Checks Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -787,31 +770,15 @@ function debug_view() : void {
 	if ($debug_status == 'waiting') {
 		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s',
 			'<i class="reloadquery ti ti-refresh icon-rotate" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'),
-			'100%',
-			false,
-			3,
-			'center',
-			'');
+			'100%', false, 3, 'center', '');
 	} elseif ($debug_status == 'analysis') {
 		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s',
 			'<i class="reloadquery ti ti-refresh icon-rotate" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'),
-			'100%',
-			false,
-			3,
-			'center',
-			'');
+			'100%', false, 3, 'center', '');
 	} else {
 		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]',
-			'<a href="#" class="rerun linkEditMain" data-id="' .
-				$id .
-				'" style="cursor:pointer;">' .
-				__('Rerun Analysis') .
-				'</a>'),
-			'100%',
-			false,
-			3,
-			'center',
-			'');
+			'<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') .
+				'</a>'), '100%', false, 3, 'center', '');
 	}
 
 	html_header(
@@ -901,17 +868,8 @@ function debug_view() : void {
 			$path = get_data_source_path($id, true);
 
 			if (is_writeable($path)) {
-				html_start_box(__('Repair Steps [ %s ]',
-					'<a href="#" class="repairme linkEditMain" data-id="' .
-						$id .
-						'" style="cursor:pointer;">' .
-						__('Apply Suggested Fixes') .
-						'</a>'),
-					'100%',
-					false,
-					3,
-					'center',
-					'');
+				html_start_box(__('Repair Steps [ %s ]', '<a href="#" class="repairme linkEditMain" data-id="' . $id .
+						'" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '100%', false, 3, 'center', '');
 			} else {
 				html_start_box(__('Repair Steps [ Run Fix from Command Line ]', $path), '100%', false, 3, 'center', '');
 			}

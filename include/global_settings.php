@@ -200,9 +200,7 @@ $settings['path'] = [
 		'default'       => '',
 		'max_length'    => '255',
 		'constraints'   => [
-			fn () => new Assert\Length(min: 1,
-				max: 255,
-				minMessage: __('must not be empty.'),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'),
 				maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
@@ -214,9 +212,7 @@ $settings['path'] = [
 		'default'       => '',
 		'max_length'    => '255',
 		'constraints'   => [
-			fn () => new Assert\Length(min: 1,
-				max: 255,
-				minMessage: __('must not be empty.'),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'),
 				maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
@@ -251,9 +247,7 @@ $settings['path'] = [
 		'max_length'    => '255',
 		'constraints'   => [
 			fn () => new Assert\NotBlank(message: __('must not be empty.')),
-			fn () => new Assert\Length(min: 1,
-				max: 255,
-				minMessage: __('must not be empty.'),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'),
 				maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
@@ -266,9 +260,7 @@ $settings['path'] = [
 		'max_length'    => '255',
 		'constraints'   => [
 			fn () => new Assert\NotBlank(message: __('must not be empty.')),
-			fn () => new Assert\Length(min: 1,
-				max: 255,
-				minMessage: __('must not be empty.'),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'),
 				maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
@@ -306,8 +298,7 @@ $settings['path'] = [
 	'path_stderrlog' => [
 		'friendly_name'    => __('Poller Standard Error Log Path'),
 		'description'      => __('If you are having issues with Cacti\'s Data Collectors, set this file ' .
-			'path and the Data Collectors standard error will be redirected to ' .
-			'this file'),
+			'path and the Data Collectors standard error will be redirected to ' . 'this file'),
 		'method'           => 'filepath',
 		'file_type'        => 'ascii',
 		'default'          => CACTI_PATH_LOG . '/cacti_stderr.log',
@@ -404,8 +395,7 @@ $settings['logging'] = [
 	'log_verbosity' => [
 		'friendly_name' => __('Generic Log Level'),
 		'description'   => __('What level of detail do you want sent to the log file.  WARNING: ' .
-			'Leaving in any other status than NONE or LOW can exhaust your disk ' .
-			'space rapidly.'),
+			'Leaving in any other status than NONE or LOW can exhaust your disk ' . 'space rapidly.'),
 		'method'        => 'drop_array',
 		'default'       => POLLER_VERBOSITY_LOW,
 		'array'         => $logfile_verbosity
@@ -436,16 +426,14 @@ $settings['logging'] = [
 		'friendly_name' => __('Log Ignored General Errors'),
 		'description'   => __('Cacti will mask certain errors that are often times considered fatal ' .
 			'and that would otherwise disable plugins and additionally confuse ' .
-			'some users.  If you wish to see these errors instead, check the ' .
-			'checkbox.'),
+			'some users.  If you wish to see these errors instead, check the ' . 'checkbox.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	],
 	'selective_debug' => [
 		'friendly_name'     => __('Selective File Debug'),
 		'description'       => __('Select which files you wish to place in Debug mode regardless of the ' .
-			'Generic Log Level setting.  Any files selected will be treated as ' .
-			'they are in Debug mode.'),
+			'Generic Log Level setting.  Any files selected will be treated as ' . 'they are in Debug mode.'),
 		'method'            => 'drop_multi',
 		'array'             => $logfiles,
 		'select_all_text'   => __('Select File(s)'),
@@ -455,8 +443,7 @@ $settings['logging'] = [
 	'selective_plugin_debug' => [
 		'friendly_name'     => __('Selective Plugin Debug'),
 		'description'       => __('Select which Plugins you wish to place in Debug mode regardless of ' .
-			'the Generic Log Level setting.  Any files used by this plugin will be ' .
-			'treated as they are in Debug mode.'),
+			'the Generic Log Level setting.  Any files used by this plugin will be ' . 'treated as they are in Debug mode.'),
 		'method'            => 'drop_multi',
 		'array'             => $logplugins,
 		'select_all_text'   => __('Select Plugin(s)'),
@@ -466,8 +453,7 @@ $settings['logging'] = [
 	'selective_device_debug' => [
 		'friendly_name' => __('Selective Device Debug'),
 		'description'   => __('A comma delimited list of Device ID\'s that you wish to be in Debug ' .
-			'mode during data collection.  This Debug level is only in place ' .
-			'during the Cacti polling process.'),
+			'mode during data collection.  This Debug level is only in place ' . 'during the Cacti polling process.'),
 		'method'        => 'textbox',
 		'size'          => '30',
 		'max_length'    => 30,
@@ -532,8 +518,7 @@ $settings['general'] = [
 		'friendly_name' => __('Language Support'),
 		'description'   => __('Choose \'enabled\' to allow the localization of Cacti. The strict ' .
 			'mode requires that the requested language will also be supported by ' .
-			'all plugins being installed at your system. If that\'s not the fact ' .
-			'everything will be displayed in English.'),
+			'all plugins being installed at your system. If that\'s not the fact ' . 'everything will be displayed in English.'),
 		'method'        => 'drop_array',
 		'default'       => '1',
 		'array'         => $i18n_modes
@@ -549,8 +534,7 @@ $settings['general'] = [
 		'friendly_name' => __('Auto Language Detection'),
 		'description'   => __('Allow to automatically determine the \'default\' language of the user ' .
 			'and provide it at login time if that language is supported by Cacti. ' .
-			'If disabled, the default language will be in force until the user ' .
-			'elects another language.'),
+			'If disabled, the default language will be in force until the user ' . 'elects another language.'),
 		'method'        => 'drop_array',
 		'default'       => '1',
 		'array'         => [
@@ -561,8 +545,7 @@ $settings['general'] = [
 	'i18n_language_handler' => [
 		'friendly_name' => __('Preferred Language Processor'),
 		'description'   => __('Cacti includes support for multiple alternate Language Translation ' .
-			'Processors.  If none is selected Cacti will attempt to use the first ' .
-			'one found.'),
+			'Processors.  If none is selected Cacti will attempt to use the first ' . 'one found.'),
 		'method'        => 'drop_array',
 		'default'       => CACTI_LANGUAGE_HANDLER_DEFAULT,
 		'array'         => $i18n_supported_languages
@@ -633,8 +616,7 @@ $settings['general'] = [
 			'additional options are available.  They are \'Device Based\', which ' .
 			'means if you have access to the Device, you get access to it\'s ' .
 			'Graphs.  And lastly \'Graph Template Based\', which means if you have ' .
-			'access to the \'Graph Template\' you get access to all Device Graphs ' .
-			'of that Template.'),
+			'access to the \'Graph Template\' you get access to all Device Graphs ' . 'of that Template.'),
 		'method'        => 'drop_array',
 		'default'       => '1',
 		'array'         => [
@@ -648,8 +630,7 @@ $settings['general'] = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Graph/Data Source Creation Method'),
 		'description'   => __('If set to Simple, Graphs and Data Sources can only be created from ' .
-			'New Graphs.  If Advanced, legacy Graph and Data Source creation is ' .
-			'supported.'),
+			'New Graphs.  If Advanced, legacy Graph and Data Source creation is ' . 'supported.'),
 		'default'       => '0',
 		'array'         => [
 			'0' => __('Simple'),
@@ -704,8 +685,7 @@ $settings['general'] = [
 	'drag_and_drop' => [
 		'friendly_name' => __('Enable Drag-N-Drop'),
 		'description'   => __('Some of Cacti\'s interfaces support Drag-N-Drop.  If checked this ' .
-			'option will be enabled.  Note: For visually impaired user, this ' .
-			'option may be disabled.'),
+			'option will be enabled.  Note: For visually impaired user, this ' . 'option may be disabled.'),
 		'method'        => 'checkbox',
 		'default'       => 'on',
 	],
@@ -728,8 +708,7 @@ $settings['general'] = [
 	'github_user' => [
 		'friendly_name' => __('GitHub User Account'),
 		'description'   => __('The User account that holds your GitHub/GitLab repositories.  Change ' .
-			'this only if you have your own repository that you maintain for Cacti ' .
-			'Plugins.'),
+			'this only if you have your own repository that you maintain for Cacti ' . 'Plugins.'),
 		'method'        => 'textbox',
 		'default'       => 'cacti',
 		'size'          => '20',
@@ -738,8 +717,7 @@ $settings['general'] = [
 	'github_access_token' => [
 		'friendly_name' => __('Personal Access Token'),
 		'description'   => __('If you wish to get the latest plguins versions directly from GitHub ' .
-			'without overly restricted rate limiting, enter your Personal Access ' .
-			'Token here.'),
+			'without overly restricted rate limiting, enter your Personal Access ' . 'Token here.'),
 		'method'        => 'textbox_password',
 		'default'       => '',
 		'noconfirm'     => true,
@@ -796,8 +774,7 @@ $settings['general'] = [
 	'remove_orphans' => [
 		'friendly_name' => __('Remove Orphaned Graph Items'),
 		'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph ' .
-			'Template and associated Graphs that are not included in the imported ' .
-			'Graph Template.'),
+			'Template and associated Graphs that are not included in the imported ' . 'Graph Template.'),
 		'method'        => 'checkbox',
 		'default'       => 'on'
 	],
@@ -832,8 +809,7 @@ $settings['general'] = [
 			'breaking the UI.  Nonce Enforcement blocks scripts without the ' .
 			'request nonce and requires CACTI_CSP_NONCE_ENFORCE to be true in ' .
 			'include/config.php; without that explicit gate it safely remains in ' .
-			'report-only mode.  None also permits unsafe eval() calls and is the ' .
-			'least restrictive option.'),
+			'report-only mode.  None also permits unsafe eval() calls and is the ' . 'least restrictive option.'),
 		'default'       => '',
 		'array'         => [
 			''              => __('HTMX (Default)'),
@@ -846,8 +822,7 @@ $settings['general'] = [
 		'friendly_name' => __('CSP Violation Report URI'),
 		'description'   => __('Used in Nonce Migration and Nonce Enforcement modes.  URL where ' .
 			'browsers post Content-Security-Policy violation reports.  Leave blank ' .
-			'to use the bundled csp_report.php handler under the configured Cacti ' .
-			'URL path.'),
+			'to use the bundled csp_report.php handler under the configured Cacti ' . 'URL path.'),
 		'method'        => 'textbox',
 		'default'       => '',
 		'size'          => '100',
@@ -859,8 +834,7 @@ $settings['general'] = [
 			'outside of the Web Server itself.  This is important for users ' .
 			'choosing to use a CDN, or hosting site.  Sources can include ' .
 			'wildcards for example: *.mydomain.com, or a protocol, for example: ' .
-			'https://*.example.com.  These Alternate Sources include Image, CSS ' .
-			'and JavaScript types only.'),
+			'https://*.example.com.  These Alternate Sources include Image, CSS ' . 'and JavaScript types only.'),
 		'method'        => 'textbox',
 		'default'       => '',
 		'size'          => '100',
@@ -869,8 +843,7 @@ $settings['general'] = [
 	'htmx_enabled' => [
 		'friendly_name' => __('Enable htmx for in-place filter updates'),
 		'description'   => __('When enabled, the htmx loader is included so pages that opt in can ' .
-			'refresh their filter results without a full page reload. Disable only ' .
-			'if plugins misbehave.'),
+			'refresh their filter results without a full page reload. Disable only ' . 'if plugins misbehave.'),
 		'method'        => 'drop_array',
 		'default'       => 'on',
 		'array'         => [
@@ -901,8 +874,7 @@ $settings['general'] = [
 			'will wait for a response from the Remote Data Collector to obtain ' .
 			'various Device information before abandoning the request.  On Devices ' .
 			'that are associated with Data Collectors other than the Central Cacti ' .
-			'Data Collector, the Remote Agent must be used to gather Device ' .
-			'information.'),
+			'Data Collector, the Remote Agent must be used to gather Device ' . 'information.'),
 		'method'        => 'drop_array',
 		'default'       => '5',
 		'array'         => [
@@ -917,8 +889,7 @@ $settings['general'] = [
 	'remote_agent_verify_tls' => [
 		'friendly_name' => __('Verify Remote Agent TLS Certificates'),
 		'description'   => __('Require a trusted certificate whose name matches the Remote Data ' .
-			'Collector hostname. Disable only while replacing legacy self-signed ' .
-			'certificates.'),
+			'Collector hostname. Disable only while replacing legacy self-signed ' . 'certificates.'),
 		'method'        => 'drop_array',
 		'default'       => 'on',
 		'array'         => [
@@ -929,8 +900,7 @@ $settings['general'] = [
 	'remote_agent_ca_file' => [
 		'friendly_name' => __('Remote Agent CA File'),
 		'description'   => __('Optional absolute path to a PEM CA bundle used to verify Remote Data ' .
-			'Collector certificates. Leave blank to use the PHP/OpenSSL system ' .
-			'trust store.'),
+			'Collector certificates. Leave blank to use the PHP/OpenSSL system ' . 'trust store.'),
 		'method'        => 'filepath',
 		'default'       => '',
 		'max_length'    => 255
@@ -960,8 +930,7 @@ $settings['general'] = [
 		'friendly_name' => __('Enable Automatic Graph Creation'),
 		'description'   => __('When disabled, Cacti Automation will not actively create any Graph.  ' .
 			'This is useful when adjusting Device settings so as to avoid creating ' .
-			'new Graphs each time you save an object.  Invoking Automation Rules ' .
-			'manually will still be possible.'),
+			'new Graphs each time you save an object.  Invoking Automation Rules ' . 'manually will still be possible.'),
 		'default'       => 'on',
 	],
 	'automation_tree_enabled' => [
@@ -977,8 +946,7 @@ $settings['general'] = [
 		'friendly_name' => __('Automation Notification To Email'),
 		'description'   => __('The Email Address to send Automation Notification Emails to if not ' .
 			'specified at the Automation Network level.  If either this field, or ' .
-			'the Automation Network value are left blank, Cacti will use the ' .
-			'Primary Cacti Admins Email account.'),
+			'the Automation Network value are left blank, Cacti will use the ' . 'Primary Cacti Admins Email account.'),
 		'method'        => 'textbox',
 		'default'       => '',
 		'max_length'    => '128',
@@ -987,8 +955,7 @@ $settings['general'] = [
 		'friendly_name' => __('Automation Notification From Name'),
 		'description'   => __('The Email Name to use for Automation Notification Emails to if not ' .
 			'specified at the Automation Network level.  If either this field, or ' .
-			'the Automation Network value are left blank, Cacti will use the ' .
-			'system default From Name.'),
+			'the Automation Network value are left blank, Cacti will use the ' . 'system default From Name.'),
 		'method'        => 'textbox',
 		'default'       => '',
 		'max_length'    => '32',
@@ -998,8 +965,7 @@ $settings['general'] = [
 		'friendly_name' => __('Automation Notification From Email'),
 		'description'   => __('The Email Address to use for Automation Notification Emails to if not ' .
 			'specified at the Automation Network level.  If either this field, or ' .
-			'the Automation Network value are left blank, Cacti will use the ' .
-			'system default From Email Address.'),
+			'the Automation Network value are left blank, Cacti will use the ' . 'system default From Email Address.'),
 		'method'        => 'textbox',
 		'default'       => '',
 		'max_length'    => '100',
@@ -1019,8 +985,7 @@ $settings['general'] = [
 			'to have a more generic Device Template that can include more Graph ' .
 			'Templates that can be selectively applied depending on the ' .
 			'characteristics of the Device itself.  Note: If you have a long ' .
-			'running script as a Data Source, the time to create Graphs will be ' .
-			'increased.'),
+			'running script as a Data Source, the time to create Graphs will be ' . 'increased.'),
 		'default'       => '',
 	],
 	'default_image_format' => [
@@ -1107,8 +1072,7 @@ $settings['snmp'] = [
 	'default_interface_speed' => [
 		'friendly_name' => __('Default Interface Speed'),
 		'description'   => __('If Cacti can not determine the interface speed due to either ifSpeed ' .
-			'or ifHighSpeed not being set or being zero, what maximum value do you ' .
-			'wish on the resulting RRDfiles.'),
+			'or ifHighSpeed not being set or being zero, what maximum value do you ' . 'wish on the resulting RRDfiles.'),
 		'method'        => 'drop_array',
 		'default'       => '1000',
 		'array'         => [
@@ -1198,8 +1162,7 @@ $settings['snmp'] = [
 		'method'        => 'textbox',
 		'friendly_name' => __('SNMP Engine ID (v3)'),
 		'description'   => __('Default SNMP v3 Engine Id for all new Devices. Leave this field empty ' .
-			'to use the SNMP Engine ID being defined per SNMPv3 Notification ' .
-			'receiver.'),
+			'to use the SNMP Engine ID being defined per SNMPv3 Notification ' . 'receiver.'),
 		'value'         => '|arg1:snmp_engine_id|',
 		'default'       => '',
 		'max_length'    => '64',
@@ -1245,8 +1208,7 @@ $settings['snmp'] = [
 	'enable_snmp_agent' => [
 		'friendly_name' => __('SNMP Agent Support Enabled'),
 		'description'   => __('If this option is checked, Cacti will populate SNMP Agent tables with ' .
-			'Cacti device and system information.  It does not enable the SNMP ' .
-			'Agent itself.'),
+			'Cacti device and system information.  It does not enable the SNMP ' . 'Agent itself.'),
 		'method'        => 'checkbox',
 		'default'       => 'on'
 	],
@@ -1256,8 +1218,7 @@ $settings['snmp'] = [
 			'and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When ' .
 			'disabled, MD5 and DES are removed from the SNMPv3 Authentication and ' .
 			'Privacy Protocol dropdowns shown when editing a Device and in the ' .
-			'Automation SNMP Options, leaving only the stronger SHA and AES ' .
-			'algorithms.'),
+			'Automation SNMP Options, leaving only the stronger SHA and AES ' . 'algorithms.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	],
@@ -1271,8 +1232,7 @@ $settings['snmp'] = [
 			'cache, but the Net-SNMP binaries (and therefore this cache) are still ' .
 			'used for SNMP walks, hex output, requests that set a context or ' .
 			'engine id, and protocol combinations that the running PHP version ' .
-			'does not support.  Enable this if you collect any of those workloads ' .
-			'with SNMPv3 credentials.'),
+			'does not support.  Enable this if you collect any of those workloads ' . 'with SNMPv3 credentials.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	],
@@ -1280,8 +1240,7 @@ $settings['snmp'] = [
 		'friendly_name' => __('Max OID Limit'),
 		'description'   => __('The default maximum number of SNMP Get OIDs to issue per snmpget ' .
 			'request.  For Devices, this setting is controlled at the Device ' .
-			'level.  You should only use this setting when using Cacti\'s SNMP API ' .
-			'natively in your scripts or plugins.'),
+			'level.  You should only use this setting when using Cacti\'s SNMP API ' . 'natively in your scripts or plugins.'),
 		'method'        => 'textbox',
 		'default'       => '10',
 		'max_length'    => '10',
@@ -1290,8 +1249,7 @@ $settings['snmp'] = [
 	'snmp_bulk_walk_size' => [
 		'friendly_name' => __('Bulkwalk Fetch Size'),
 		'description'   => __('How many OID\'s should be returned per snmpbulkwalk request?  For ' .
-			'Devices with large SNMP trees, increasing this size will increase ' .
-			're-index performance over a WAN.'),
+			'Devices with large SNMP trees, increasing this size will increase ' . 're-index performance over a WAN.'),
 		'method'        => 'drop_array',
 		'default'       => '10',
 		'array'         => [
@@ -1324,8 +1282,7 @@ $settings['snmp'] = [
 		'friendly_name' => __('Downed Device Detection'),
 		'description'   => __('Default Availability/Reachability for all new Devices.  The method ' .
 			'Cacti will use to determine if a Device is available for polling.  ' .
-			'<br><i>NOTE: It is recommended that, at a minimum, SNMP always be ' .
-			'selected.</i>'),
+			'<br><i>NOTE: It is recommended that, at a minimum, SNMP always be ' . 'selected.</i>'),
 		'method'        => 'drop_array',
 		'default'       => AVAIL_SNMP,
 		'array'         => $availability_options,
@@ -1343,8 +1300,7 @@ $settings['snmp'] = [
 	'snmp_options_retry_interval' => [
 		'friendly_name' => __('Downed Device SNMP Recovery Options Retry Frequency'),
 		'description'   => __('When a Device is Down, and has an SNMP Recovery Options Set ' .
-			'established, how often do you wish to try to retry the Device using ' .
-			'the SNMP Options Set specified?'),
+			'established, how often do you wish to try to retry the Device using ' . 'the SNMP Options Set specified?'),
 		'method'        => 'drop_array',
 		'default'       => 3600,
 		'array'         => $poller_sync_intervals,
@@ -1360,8 +1316,7 @@ $settings['snmp'] = [
 		'friendly_name' => __('Ping Port'),
 		'description'   => __('Default Ping Port for all new Devices.  With TCP, Cacti will attempt ' .
 			'to Syn the port.  With UDP, Cacti requires either a successful ' .
-			'connection, or a \'port not reachable\' error to determine if the ' .
-			'Device is up or not.'),
+			'connection, or a \'port not reachable\' error to determine if the ' . 'Device is up or not.'),
 		'method'        => 'textbox',
 		'default'       => '23',
 		'max_length'    => '10',
@@ -1514,11 +1469,8 @@ $settings['visual'] = [
 	],
 	'num_rows_table' => [
 		'friendly_name' => __('Rows Per Page'),
-		'description'   => __('The default number of rows to display on for a table.') .
-			' ' .
-			__('.  This is limited by the php setting \'max_input_vars\', currently:') .
-			' ' .
-			ini_get('max_input_vars'),
+		'description'   => __('The default number of rows to display on for a table.') . ' ' .
+			__('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows
@@ -1526,8 +1478,7 @@ $settings['visual'] = [
 	'select2_search_rows' => [
 		'friendly_name' => __('Select Search Minimum Rows'),
 		'description'   => __('The minimum number of options a dropdown must have before Cacti shows ' .
-			'a search box inside it.  Choose \'Always\' to show the search box ' .
-			'regardless of the number of options.'),
+			'a search box inside it.  Choose \'Always\' to show the search box ' . 'regardless of the number of options.'),
 		'method'        => 'drop_array',
 		'default'       => '10',
 		'array'         => [
@@ -1541,12 +1492,8 @@ $settings['visual'] = [
 	],
 	'autocomplete_rows' => [
 		'friendly_name' => __('Autocomplete Rows'),
-		'description'   => __('The default number of rows to return from an autocomplete based ' .
-			'select pattern match.') .
-				' ' .
-				__('.  This is limited by the php setting \'max_input_vars\', currently:') .
-				' ' .
-				ini_get('max_input_vars'),
+		'description'   => __('The default number of rows to return from an autocomplete based ' . 'select pattern match.') .
+				' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows
@@ -1666,8 +1613,7 @@ $settings['visual'] = [
 		'friendly_name' => __('Exclusion Regex'),
 		'description'   => __('Any strings that match this regex will be excluded from the user ' .
 			'display.  <strong>For example, if you want to exclude all log lines ' .
-			'that include the words \'Admin\' or \'Login\' you would type \'(Admin ' .
-			'|| Login)\'</strong>'),
+			'that include the words \'Admin\' or \'Login\' you would type \'(Admin ' . '|| Login)\'</strong>'),
 		'method'        => 'textarea',
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
@@ -1696,8 +1642,7 @@ $settings['visual'] = [
 		'description'   => __('This is the minimal supported time between Graph updates.  This value ' .
 			'is also used to set certain RRDfile attributes.  If you have a Device ' .
 			'that caches data and does not provide realtime updates, you may have ' .
-			'to increase the default Minimum Refresh Interval to prevent creating ' .
-			'Graphs with gaps.'),
+			'to increase the default Minimum Refresh Interval to prevent creating ' . 'Graphs with gaps.'),
 		'method'        => 'drop_array',
 		'default'       => 10,
 		'array'         => $realtime_refresh,
@@ -1706,8 +1651,7 @@ $settings['visual'] = [
 		'friendly_name' => __('Cache Directory'),
 		'description'   => __('This is the location, on the web server where the RRDfiles and PNG ' .
 			'files will be cached.  This cache will be managed by the poller.  ' .
-			'Make sure you have the correct read and write permissions on this ' .
-			'folder'),
+			'Make sure you have the correct read and write permissions on this ' . 'folder'),
 		'method'        => 'dirpath',
 		'default'       => CACTI_PATH_CACHE . '/realtime/',
 		'max_length'    => 255,
@@ -1759,8 +1703,7 @@ $settings['visual'] = [
 	'path_rrdtool_default_font' => [
 		'friendly_name' => __('Default Font'),
 		'description'   => __('When not using Theme based font control, the Pangon font-config font ' .
-			'name to use for all Graphs. Optionally, you may leave blank and ' .
-			'control font settings on a per object basis.'),
+			'name to use for all Graphs. Optionally, you may leave blank and ' . 'control font settings on a per object basis.'),
 		'method'        => 'font',
 		'placeholder'   => __('Enter Valid Font Config Value'),
 		'max_length'    => '255'
@@ -1855,8 +1798,7 @@ $settings['poller'] = [
 		'friendly_name' => __('Poller Interval'),
 		'description'   => __('The polling interval in use.  This setting will affect how often ' .
 			'RRDfiles are checked and updated.  <strong><u>NOTE: If you change ' .
-			'this value, you must re-populate the poller cache.  Failure to do so, ' .
-			'may result in lost data.</u></strong>'),
+			'this value, you must re-populate the poller cache.  Failure to do so, ' . 'may result in lost data.</u></strong>'),
 		'method'        => 'drop_array',
 		'default'       => 300,
 		'array'         => $poller_intervals,
@@ -1878,8 +1820,7 @@ $settings['poller'] = [
 		'description'   => __('The frequency that the Cacti data collector will be started.  You can ' .
 			'use either crontab, a scheduled task (for windows), or the cactid ' .
 			'systemd service to control launching the Cacti data collector.  For ' .
-			'instructions on using the cactid daemon, review the README.md file in ' .
-			'the service directory.'),
+			'instructions on using the cactid daemon, review the README.md file in ' . 'the service directory.'),
 		'method'        => 'drop_array',
 		'default'       => 300,
 		'array'         => $cron_intervals,
@@ -1914,8 +1855,7 @@ $settings['poller'] = [
 			'will wait for a response from the Remote Data Collector to obtain ' .
 			'various Device information before abandoning the request.  On Devices ' .
 			'that are associated with Data Collectors other than the Central Cacti ' .
-			'Data Collector, the Remote Agent must be used to gather Device ' .
-			'information.'),
+			'Data Collector, the Remote Agent must be used to gather Device ' . 'information.'),
 		'method'        => 'drop_array',
 		'default'       => '5',
 		'array'         => [
@@ -1931,8 +1871,7 @@ $settings['poller'] = [
 		'friendly_name' => __('Refresh Poller Table Per Cycle'),
 		'description'   => __('This setting is for a single poller systems only to rebuild the ' .
 			'poller output table on each polling cycle to prevent the memory table ' .
-			'from swapping on very large systems with large databases that could ' .
-			'use swap.'),
+			'from swapping on very large systems with large databases that could ' . 'use swap.'),
 		'method'        => 'checkbox',
 		'default'       => '',
 	],
@@ -1944,8 +1883,7 @@ $settings['poller'] = [
 	'poller_sync_interval' => [
 		'friendly_name' => __('Poller Sync Interval'),
 		'description'   => __('The default polling sync interval to use when creating a poller.  ' .
-			'This setting will affect how often remote pollers are checked and ' .
-			'updated.'),
+			'This setting will affect how often remote pollers are checked and ' . 'updated.'),
 		'method'        => 'drop_array',
 		'default'       => 7200,
 		'array'         => $poller_sync_intervals,
@@ -1967,8 +1905,7 @@ $settings['poller'] = [
 			'Full Sync to all Data Collectors.  This process may be time ' .
 			'consuming.  Therefore, to allow upgrades to be completed quicker, we ' .
 			'provide this option.  Note that if this is disabled, the Cacti ' .
-			'administrator must force this process from the Data Collectors ' .
-			'interface after upgrade.'),
+			'administrator must force this process from the Data Collectors ' . 'interface after upgrade.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	],
@@ -1981,8 +1918,7 @@ $settings['poller'] = [
 		'friendly_name' => __('Invalid Data Logging'),
 		'description'   => __('How would you like the Data Collector output errors logged?  Options ' .
 			'include: \'Detailed\' which details every error, \'Summary\' which ' .
-			'provides the number of output errors per Device, and \'None\', which ' .
-			'does not provide error counts.'),
+			'provides the number of output errors per Device, and \'None\', which ' . 'does not provide error counts.'),
 		'method'        => 'drop_array',
 		'default'       => '0',
 		'array'         => [
@@ -2005,8 +1941,7 @@ $settings['poller'] = [
 	'script_timeout' => [
 		'friendly_name' => __('Script and Script Server Timeout Value'),
 		'description'   => __('The maximum time that spine will wait on a script to complete.  This ' .
-			'timeout value is in seconds and valid for both cmd.php and spine Data ' .
-			'Collectors.'),
+			'timeout value is in seconds and valid for both cmd.php and spine Data ' . 'Collectors.'),
 		'method'        => 'textbox',
 		'default'       => '25',
 		'max_length'    => '10',
@@ -2180,8 +2115,7 @@ $settings['scheduler'] = [
 		'friendly_name' => __('Poller Commands Timeout'),
 		'description'   => __('The maximum amount of time Cacti\'s Background Commands script can ' .
 			'run without generating a timeout error and being killed.  This script ' .
-			'will perform tasks such as re-indexing Devices and pruning devices ' .
-			'from Remote Data Collectors.'),
+			'will perform tasks such as re-indexing Devices and pruning devices ' . 'from Remote Data Collectors.'),
 		'method'        => 'drop_array',
 		'default'       => '300',
 		'array'         => [
@@ -2289,8 +2223,7 @@ $settings['authentication'] = [
 		'description'   => __('If a user authenticates and selects \'Keep me signed in\', an ' .
 			'authentication cookie will be created on the user\'s computer ' .
 			'allowing that user to stay logged in.  The authentication cookie ' .
-			'expires after 90 days of non-use.  Note, the client must use HTTPS to ' .
-			'leverage this feature.'),
+			'expires after 90 days of non-use.  Note, the client must use HTTPS to ' . 'leverage this feature.'),
 		'default'       => 'on',
 		'method'        => 'checkbox'
 	],
@@ -2321,8 +2254,7 @@ $settings['authentication'] = [
 		'description'   => __('The name of the primary administrative account that will ' .
 			'automatically receive Emails when the Cacti system experiences ' .
 			'issues.  To receive these Emails, ensure that your mail settings are ' .
-			'correct, and the administrative account has an Email address that is ' .
-			'set.'),
+			'correct, and the administrative account has an Email address that is ' . 'set.'),
 		'method'        => 'drop_sql',
 		'none_value'    => __('No User'),
 		'sql'           => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
@@ -2576,22 +2508,19 @@ $settings['authentication'] = [
 		'friendly_name' => __('Email body for new account message'),
 		'description'   => __('This is the message that will be send to new user account. Max 1024 ' .
 			'characters. HTML is allowed. There are several common replacement ' .
-			'tags that may be used in include &#060CACTIURL&#062 ' .
-			'&#060USERNAME&#062 &#060PASSWORD&#062'),
+			'tags that may be used in include &#060CACTIURL&#062 ' . '&#060USERNAME&#062 &#060PASSWORD&#062'),
 		'method'        => 'textarea',
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
 		'max_length'    => 1024,
 		'default'       => __('New Cacti account created. <br>Server: <a ' .
 			'href="<CACTIURL>"><CACTIURL></a><br>Username: <USERNAME><br>To login ' .
-			'and set a new password, click the <a href="<PWDRESETLINK>">password ' .
-			'reset link</a><br><br>')
+			'and set a new password, click the <a href="<PWDRESETLINK>">password ' . 'reset link</a><br><br>')
 	],
 	'secnotify_chpass' => [
 		'friendly_name' => __('Send email when an admin changes an account password'),
 		'description'   => __('When an admin changes the password of an account and the email ' .
-			'address for that account is entered, an informational email will be ' .
-			'sent to that address.'),
+			'address for that account is entered, an informational email will be ' . 'sent to that address.'),
 		'method'        => 'checkbox',
 		'default'       => '',
 	],
@@ -2608,16 +2537,14 @@ $settings['authentication'] = [
 		'friendly_name' => __('Email body for password reset message'),
 		'description'   => __('This is the message that will be sent when a user requests a password ' .
 			'reset. Max 1024 characters. HTML is allowed. There are several common ' .
-			'replacement tags that may be used in include &#060CACTIURL&#062 ' .
-			'&#060USERNAME&#062 &#060PASSWORD&#062'),
+			'replacement tags that may be used in include &#060CACTIURL&#062 ' . '&#060USERNAME&#062 &#060PASSWORD&#062'),
 		'method'        => 'textarea',
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
 		'max_length'    => 1024,
 		'default'       => __('Your account password has been reset. <br>Server: <a ' .
 			'href="<CACTIURL>"><CACTIURL></a><br>Username: <USERNAME><br>To set a ' .
-			'new password, click the <a href="<PWDRESETLINK>">password reset ' .
-			'link</a><br><br>')
+			'new password, click the <a href="<PWDRESETLINK>">password reset ' . 'link</a><br><br>')
 	],
 	'secnotify_resetlink_timeout' => [
 		'friendly_name' => __('Reset link validity'),
@@ -2642,8 +2569,7 @@ $settings['mail'] = [
 	'base_url' => [
 		'friendly_name' => __('Server Base URL'),
 		'description'   => __('This is a the server location that will be used for links to the ' .
-			'Cacti site. This should include the subdirectory if Cacti does not ' .
-			'run from root folder.'),
+			'Cacti site. This should include the subdirectory if Cacti does not ' . 'run from root folder.'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
 		'size'          => '60',
@@ -2658,8 +2584,7 @@ $settings['mail'] = [
 		'description'   => __('In cases where the Cacti server is experiencing problems, should the ' .
 			'Primary Administrator be notified by Email?  The Primary ' .
 			'Administrator\'s Cacti user account is specified under the ' .
-			'Authentication tab on Cacti\'s settings page. It defaults to the ' .
-			'\'admin\' account.'),
+			'Authentication tab on Cacti\'s settings page. It defaults to the ' . '\'admin\' account.'),
 		'default'       => '',
 		'method'        => 'checkbox'
 	],
@@ -2840,8 +2765,7 @@ $settings['mail'] = [
 		'friendly_name' => __('OAuth2 refresh token'),
 		'description'   => __('You can insert here OAuth2 refresh token directly, if you know it. ' .
 			'Second option is retrieved from oauth2 provider. In this case set ' .
-			'correct OAuth2 setting, save setting and open new browser tab or ' .
-			'window and go to OAuth2 Redirect URI'),
+			'correct OAuth2 setting, save setting and open new browser tab or ' . 'window and go to OAuth2 Redirect URI'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
 	],
@@ -2902,8 +2826,7 @@ $settings['mail'] = [
 	'reports_log_verbosity' => [
 		'friendly_name' => __('Poller Logging Level for Cacti Reporting'),
 		'description'   => __('What level of detail do you want sent to the log file. WARNING: ' .
-			'Leaving in any other status than NONE or LOW can exhaust your disk ' .
-			'space rapidly.'),
+			'Leaving in any other status than NONE or LOW can exhaust your disk ' . 'space rapidly.'),
 		'method'        => 'drop_array',
 		'default'       => POLLER_VERBOSITY_LOW,
 		'array'         => $logfile_verbosity,
@@ -2943,8 +2866,7 @@ $settings['mail'] = [
 	'settings_proxy_server' => [
 		'friendly_name' => __('Internet Proxy Address'),
 		'description'   => __('For either core Cacti Services or Plugins that require internet ' .
-			'access, enter the proxy server and port here in the following format ' .
-			'IP:PORT.  For example 192.168.1.1:8080.'),
+			'access, enter the proxy server and port here in the following format ' . 'IP:PORT.  For example 192.168.1.1:8080.'),
 		'method'        => 'textbox',
 		'default'       => '',
 		'max_length'    => '30',
@@ -2978,8 +2900,7 @@ $settings['boost'] = [
 		'friendly_name' => __('Enable On-demand RRD Updating'),
 		'description'   => __('Should Boost enable on demand RRD updating in Cacti?  If you disable, ' .
 			'this change will not take affect until after the next polling cycle.  ' .
-			'When you have Remote Data Collectors, this settings is required to be ' .
-			'on.'),
+			'When you have Remote Data Collectors, this settings is required to be ' . 'on.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	],
@@ -3080,8 +3001,7 @@ $settings['boost'] = [
 	'boost_debug_enabled' => [
 		'friendly_name' => __('Enable Boost Debugging'),
 		'description'   => __('If set, Boost will log debug information directly to the Boost log ' .
-			'file.  Please note, enabling can cause a high I/O rate on the local ' .
-			'file system.'),
+			'file.  Please note, enabling can cause a high I/O rate on the local ' . 'file system.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	],
@@ -3099,8 +3019,7 @@ $settings['boost'] = [
 	'boost_png_cache_directory' => [
 		'friendly_name' => __('Location for Image Files'),
 		'description'   => __('Specify the location where Boost should place your image files.  ' .
-			'These files will be automatically purged by the poller when they ' .
-			'expire.'),
+			'These files will be automatically purged by the poller when they ' . 'expire.'),
 		'method'        => 'dirpath',
 		'max_length'    => '255',
 		'default'       => CACTI_PATH_CACHE . '/boost/'
@@ -3124,8 +3043,7 @@ $settings['data'] = [
 		'description'   => __('Data Source Statistics can use a legacy method where it will ' .
 			'determine peak and average values, or an advanced mode which will ' .
 			'calculated several additional statistical values in addition to peak ' .
-			'and average.  Using All Statistical Metrics can place additional CPU ' .
-			'and IO load on the system.'),
+			'and average.  Using All Statistical Metrics can place additional CPU ' . 'and IO load on the system.'),
 		'default'       => '0',
 		'method'        => 'drop_array',
 		'array'         => [
@@ -3179,8 +3097,7 @@ $settings['data'] = [
 	'dsstats_hourly_duration' => [
 		'friendly_name' => __('Hourly Average Window'),
 		'description'   => __('The number of consecutive hours that represent the hourly average.  ' .
-			'Keep in mind that a setting too high can result in very large memory ' .
-			'tables'),
+			'Keep in mind that a setting too high can result in very large memory ' . 'tables'),
 		'default'       => '60',
 		'method'        => 'drop_array',
 		'array'         => $dsstats_hourly_avg
@@ -3213,8 +3130,7 @@ $settings['data'] = [
 			'will be based upon the following formula: Daily - One partition per ' .
 			'day, Weekly - One Partition per Week, Monthly - One partition per ' .
 			'Month, Yearly - One Partition per Year.  All tables will have the ' .
-			'following suffixes by type Daily: YYYYDDD, Weekly: YYYYWW, Monthly: ' .
-			'YYYYMM, and Yearly: YYYY suffixes.'),
+			'following suffixes by type Daily: YYYYDDD, Weekly: YYYYWW, Monthly: ' . 'YYYYMM, and Yearly: YYYY suffixes.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	],
@@ -3417,8 +3333,7 @@ $settings['spikes'] = [
 	'spikekill_method' => [
 		'friendly_name' => __('Removal Method'),
 		'description'   => __('There are two removal methods.  The first, Standard Deviation, will ' .
-			'remove any sample that is X number of standard deviations away from ' .
-			'the average of samples.'),
+			'remove any sample that is X number of standard deviations away from ' . 'the average of samples.'),
 		'method'        => 'drop_array',
 		'default'       => '1',
 		'array'         => [
@@ -3429,8 +3344,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('Replacement Method'),
 		'description'   => __('There are three replacement methods.  The first method replaces the ' .
 			'spike with the average of the data source in question.  The second ' .
-			'method replaces the spike with a \'NaN\'.  The last replaces the ' .
-			'spike with the last known good value found.'),
+			'method replaces the spike with a \'NaN\'.  The last replaces the ' . 'spike with the last known good value found.'),
 		'method'        => 'drop_array',
 		'default'       => 'last',
 		'array'         => [
@@ -3443,8 +3357,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('Number of Standard Deviations'),
 		'description'   => __('Any value that is this many standard deviations above the average ' .
 			'will be excluded.  A good number will be dependent on the type of ' .
-			'data to be operated on.  We recommend a number no lower than 5 ' .
-			'Standard Deviations.'),
+			'data to be operated on.  We recommend a number no lower than 5 ' . 'Standard Deviations.'),
 		'method'        => 'drop_array',
 		'default'       => '10',
 		'array'         => [
@@ -3549,8 +3462,7 @@ $settings['spikes'] = [
 	'spikekill_basetime' => [
 		'friendly_name' => __('Base Time'),
 		'description'   => __('The Base Time for Spike removal to occur.  For example, if you use ' .
-			'\'12:00am\' and you choose once per day, the batch removal would ' .
-			'begin at approximately midnight every day.'),
+			'\'12:00am\' and you choose once per day, the batch removal would ' . 'begin at approximately midnight every day.'),
 		'method'        => 'textbox',
 		'default'       => '12:00am',
 		'max_length'    => '10',
@@ -3595,8 +3507,7 @@ $settings_user = [
 			'friendly_name' => __('Page Filter Format'),
 			'description'   => __('How table filters are presented. Modern collapses the filter into a ' .
 				'Layouts selector with an Edit dialog that holds the filter fields; ' .
-				'Legacy shows the classic inline filter. The Layouts selector is ' .
-				'available in both.'),
+				'Legacy shows the classic inline filter. The Layouts selector is ' . 'available in both.'),
 			'method'        => 'drop_array',
 			'default'       => 'modern',
 			'array'         => [
@@ -3969,8 +3880,7 @@ if (!$config['is_web'] || is_realm_allowed(8)) {
 			'description'   => __('For users with Console access only, how long this user can stay ' .
 				'logged in before being automatically logged out.  Note that if you ' .
 				'have not been active in more than an hour, you may have to refresh ' .
-				'your browser.  Also note that this setting has no affect when ' .
-				'Authentication Cookies are enabled.'),
+				'your browser.  Also note that this setting has no affect when ' . 'Authentication Cookies are enabled.'),
 			'method'        => 'drop_array',
 			'default'       => $max_life,
 			'array'         => $auto_array

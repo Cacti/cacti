@@ -79,11 +79,8 @@ api_plugin_hook_function('auth_alternate_realms');
  */
 if ($auth_method != AUTH_METHOD_BASIC) {
 	if (isset($_SESSION[SESS_CHANGE_PASSWORD])) {
-		header('Location: ' .
-			CACTI_PATH_URL .
-			'auth_changepassword.php?ref=' .
-			rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '',
-				'index.php')));
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' .
+			rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php')));
 		exit;
 	}
 
@@ -144,13 +141,8 @@ if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 
 			$client_addr = get_client_addr();
 
-			cacti_log("LOGIN: User '" .
-				$current_user['username'] .
-				"' authenticated via Basic Authentication from IP Address '" .
-				$client_addr .
-				"'",
-				false,
-				'AUTH');
+			cacti_log("LOGIN: User '" . $current_user['username'] .
+				"' authenticated via Basic Authentication from IP Address '" . $client_addr . "'", false, 'AUTH');
 
 			db_execute_prepared('INSERT IGNORE INTO user_log
 				(username, user_id, result, ip, time)
@@ -367,19 +359,10 @@ if (empty($_SESSION[SESS_USER_ID])) {
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . validate_redirect_url($_SERVER['HTTP_REFERER'],
-				$_SERVER['SCRIPT_NAME']) .
-					"'>" .
-					__('Return') .
-					"</a> | <a href='" .
-					CACTI_PATH_URL .
-					"logout.php'>" .
-					__('Login Again') .
-					'</a>]</td>';
+				$_SERVER['SCRIPT_NAME']) . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" .
+					__('Login Again') . '</a>]</td>';
 		} elseif ($auth_method != AUTH_METHOD_BASIC) {
-			$goBack = "<td colspan='2' class='center'>[<a href='" .
-				CACTI_PATH_URL .
-				"logout.php'>" .
-				__('Login Again') .
+			$goBack = "<td colspan='2' class='center'>[<a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') .
 				'</a>]</td>';
 		} else {
 			$goBack = '';
@@ -388,19 +371,13 @@ if (empty($_SESSION[SESS_USER_ID])) {
 		raise_ajax_permission_denied();
 
 		$title_header = __('Permission Denied');
-		$title_body   = '<p>' .
-			__('You are not permitted to access this section of Cacti.') .
-			'</p><p>' .
-			__('If you feel that this is an error. Please contact your Cacti ' .
-			'Administrator.');
+		$title_body   = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' .
+			__('If you feel that this is an error. Please contact your Cacti ' . 'Administrator.');
 
 		if ($realm_id == 26) {
 			$title_header = __('Installation In Progress');
-			$title_body   = '<p>' .
-				__('There is an Installation or Upgrade in progress.') .
-				'</p><p>' .
-				__('Only Cacti Administrators with Install/Upgrade privilege may login at ' .
-				'this time') . '</p>';
+			$title_body   = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' .
+				__('Only Cacti Administrators with Install/Upgrade privilege may login at ' . 'this time') . '</p>';
 		}
 
 		print "<!DOCTYPE html>\n";

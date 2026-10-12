@@ -215,11 +215,8 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" .
-				__esc('Import Tree Rules') .
-				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" .
-				__esc('Import') .
-				"</butotn>
+			<button type='submit' value='import' title='" . __esc('Import Tree Rules') .
+				"' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</butotn>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -289,26 +286,14 @@ function form_save() : void {
 		$save['id']                 = grv('id');
 		$save['hash']               = get_hash_automation(grv('id'), 'automation_tree_rules');
 		$save['name']               = CactiValidator::validateInput(gnrv('name'), 'name', [], 3);
-		$save['tree_id']            = CactiValidator::validateInput(gnrv('tree_id'),
-			'tree_id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+		$save['tree_id']            = CactiValidator::validateInput(gnrv('tree_id'), 'tree_id', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['tree_item_id']       = isrv('tree_item_id') ? CactiValidator::validateInput(gnrv('tree_item_id'),
-			'tree_item_id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3) : 0;
-		$save['leaf_type']          = (isrv('leaf_type')) ? CactiValidator::validateInput(gnrv('leaf_type'),
-			'leaf_type',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3) : 0;
+			'tree_item_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3) : 0;
+		$save['leaf_type']          = (isrv('leaf_type')) ? CactiValidator::validateInput(gnrv('leaf_type'), 'leaf_type',
+			[new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3) : 0;
 		$save['host_grouping_type'] = isrv('host_grouping_type') ? CactiValidator::validateInput(gnrv('host_grouping_type'),
-			'host_grouping_type',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3) : 0;
+			'host_grouping_type', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3) : 0;
 		$save['enabled']            = (isrv('enabled') ? 'on' : '');
 
 		if (!is_error_message()) {
@@ -329,63 +314,36 @@ function form_save() : void {
 		// ====================================================
 
 		$save              = [];
-		$save['id']        = CactiValidator::validateInput(grv('item_id'),
-			'item_id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+		$save['id']        = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['hash']      = get_hash_automation(grv('item_id'), 'automation_match_rule_items');
-		$save['rule_id']   = CactiValidator::validateInput(grv('id'),
-			'id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+		$save['rule_id']   = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_TREE_MATCH;
-		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'),
-			'sequence',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
-		$save['operation'] = CactiValidator::validateInput(gnrv('operation'),
-			'operation',
-			[new Assert\Regex('/^[-0-9]+$/')],
+		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
+		$save['operation'] = CactiValidator::validateInput(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')],
 			3);
 		$save['field']     = CactiValidator::validateInput(((isrv('field') &&
-			gnrv('field') != '0') ? gnrv('field') : ''),
-			'field',
-			[],
-			3);
-		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''),
-			'operator',
-			[new Assert\Regex('/^[0-9]+$/')],
-			3);
+			gnrv('field') != '0') ? gnrv('field') : ''), 'field', [], 3);
+		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''), 'operator',
+			[new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['pattern']   = CactiValidator::validateInput((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', [], 3);
 
 		// Test for SQL injections
 		$field_name = str_replace(['ht.', 'h.', 'gt.'], '', $save['field']);
 
-		if (!db_column_exists('host',
-			$field_name) &&
-			!db_column_exists('host_template',
-				$field_name) &&
-			!db_column_exists('graph_templates',
-				$field_name)) {
-			raise_message('sql_injection',
-				__('An attempt was made to perform a SQL injection in Tree automation'),
+		if (!db_column_exists('host', $field_name) &&
+			!db_column_exists('host_template', $field_name) &&
+			!db_column_exists('graph_templates', $field_name)) {
+			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Tree automation'),
 				MESSAGE_LEVEL_ERROR);
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Tree ' .
-				'automation from client address \'%s\'',
-				get_client_addr()),
-				false,
-				'SECURITY');
+				'automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' .
-				grv('id') .
-				'&item_id=' .
-				grv('item_id') .
-				'&rule_type=' .
-				AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . grv('id') . '&item_id=' .
+				grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 
 			exit;
 		}
@@ -401,16 +359,10 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' .
-				grv('id') .
-				'&item_id=' .
-				grv('item_id') .
-				'&rule_type=' .
-				AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') .
+				'&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' .
-				grv('id') .
-				'&rule_type=' .
+			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	} elseif (isrv('save_component_automation_tree_rule_item')) {
@@ -421,37 +373,21 @@ function form_save() : void {
 
 		$save = [];
 
-		$save['id']                = CactiValidator::validateInput(grv('item_id'),
-			'item_id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+		$save['id']                = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['hash']              = get_hash_automation(grv('item_id'), 'automation_tree_rule_items');
-		$save['rule_id']           = CactiValidator::validateInput(grv('id'),
-			'id',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
-		$save['sequence']          = CactiValidator::validateInput(gnrv('sequence'),
-			'sequence',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+		$save['rule_id']           = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
+		$save['sequence']          = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['field']             = CactiValidator::validateInput((isrv('field') ? gnrv('field') : ''), 'field', [], 3);
-		$save['sort_type']         = CactiValidator::validateInput(gnrv('sort_type'),
-			'sort_type',
-			[new Assert\NotBlank(),
-			new Assert\Regex('/^[0-9]+$/')],
-			3);
+		$save['sort_type']         = CactiValidator::validateInput(gnrv('sort_type'), 'sort_type', [new Assert\NotBlank(),
+			new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['propagate_changes'] = (isrv('propagate_changes') ? 'on' : '');
 		$save['search_pattern']    = isrv('search_pattern') ? CactiValidator::validateInput(gnrv('search_pattern'),
-			'search_pattern',
-			[new Assert\NotBlank()],
-			3) : '';
+			'search_pattern', [new Assert\NotBlank()], 3) : '';
 		$save['replace_pattern']   = isrv('replace_pattern') ? CactiValidator::validateInput(gnrv('replace_pattern'),
-			'replace_pattern',
-			[],
-			3) : '';
+			'replace_pattern', [], 3) : '';
 
 		$automation_graph_rule_item_id = null;
 
@@ -466,23 +402,15 @@ function form_save() : void {
 		if (!$exists) {
 			// check the case where there is no entry in the host_snmp_cache table yet
 			if ("'$field_name'" != db_qstr($field_name)) {
-				if (!db_column_exists('host',
-					$field_name) &&
-					!db_column_exists('host_template',
-						$field_name) &&
-					!db_column_exists('graph_templates',
-						$field_name) &&
-					!db_column_exists('graph_templates_graph',
-						$field_name)) {
-					raise_message('sql_injection',
-						__('An attempt was made to perform a SQL injection in Graph Tree automation'),
+				if (!db_column_exists('host', $field_name) &&
+					!db_column_exists('host_template', $field_name) &&
+					!db_column_exists('graph_templates', $field_name) &&
+					!db_column_exists('graph_templates_graph', $field_name)) {
+					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph Tree automation'),
 						MESSAGE_LEVEL_ERROR);
 
 					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Tree ' .
-						'Automation from client address \'%s\'',
-						get_client_addr()),
-						false,
-						'SECURITY');
+						'Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
 					header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id'));
 
@@ -502,16 +430,11 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' .
-				grv('id') .
-				'&item_id=' .
-				($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) .
-				'&rule_type=' .
+			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' .
+				($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_TREE_ACTION);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' .
-				grv('id') .
-				'&rule_type=' .
+			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
@@ -669,8 +592,7 @@ function automation_tree_rules_item_movedown() : void {
 	// ====================================================
 
 	if (grv('rule_type') == AUTOMATION_RULE_TYPE_TREE_MATCH) {
-		move_item_down('automation_match_rule_items',
-			grv('item_id'),
+		move_item_down('automation_match_rule_items', grv('item_id'),
 			'rule_id=' . grv('id') . ' AND rule_type=' . grv('rule_type'));
 	} elseif (grv('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION) {
 		move_item_down('automation_tree_rule_items', grv('item_id'), 'rule_id=' . grv('id'));
@@ -685,8 +607,7 @@ function automation_tree_rules_item_moveup() : void {
 	// ====================================================
 
 	if (grv('rule_type') == AUTOMATION_RULE_TYPE_TREE_MATCH) {
-		move_item_up('automation_match_rule_items',
-			grv('item_id'),
+		move_item_up('automation_match_rule_items', grv('item_id'),
 			'rule_id=' . grv('id') . ' AND rule_type=' . grv('rule_type'));
 	} elseif (grv('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION) {
 		move_item_up('automation_tree_rule_items', grv('item_id'), 'rule_id=' . grv('id'));
@@ -762,14 +683,8 @@ function automation_tree_rules_item_edit() : void {
 		// display list of matching trees
 		if (grv('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION &&
 			$item['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING) {
-			display_matching_trees(grv('id'),
-				AUTOMATION_RULE_TYPE_TREE_ACTION,
-				$item,
-				'automation_tree_rules.php?action=item_edit&id=' .
-					grv('id') .
-					'&item_id=' .
-					grv('item_id') .
-					'&rule_type=' .
+			display_matching_trees(grv('id'), AUTOMATION_RULE_TYPE_TREE_ACTION, $item,
+				'automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' .
 					grv('rule_type'));
 		}
 	}
@@ -953,27 +868,20 @@ function automation_tree_rules_edit() : void {
 		 */
 		if (isset($rule['id'])) {
 			// display tree rules for host match
-			display_match_rule_items(__('Object Selection Criteria'),
-				$rule,
-				AUTOMATION_RULE_TYPE_TREE_MATCH,
+			display_match_rule_items(__('Object Selection Criteria'), $rule, AUTOMATION_RULE_TYPE_TREE_MATCH,
 				'automation_tree_rules.php');
 
 			// fetch tree action rules
-			display_tree_rule_items(__('Tree Creation Criteria'),
-				$rule,
-				$rule['leaf_type'],
-				AUTOMATION_RULE_TYPE_TREE_ACTION,
+			display_tree_rule_items(__('Tree Creation Criteria'), $rule, $rule['leaf_type'], AUTOMATION_RULE_TYPE_TREE_ACTION,
 				'automation_tree_rules.php');
 		}
 
 		form_save_button('automation_tree_rules.php', 'return');
 	} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
-		display_matching_hosts($rule,
-			AUTOMATION_RULE_TYPE_TREE_MATCH,
+		display_matching_hosts($rule, AUTOMATION_RULE_TYPE_TREE_MATCH,
 			'automation_tree_rules.php?action=edit&tab=hosts&id=' . grv('id'));
 	} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
-		display_matching_graphs($rule,
-			AUTOMATION_RULE_TYPE_TREE_MATCH,
+		display_matching_graphs($rule, AUTOMATION_RULE_TYPE_TREE_MATCH,
 			'automation_tree_rules.php?action=edit&tab=graphs&id=' . grv('id'));
 	}
 
@@ -1178,10 +1086,7 @@ function draw_tree_rules_filter(bool $render = false) : void {
 	$filters = create_tree_rules_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Tree Rules'),
-		'automation_tree_rules.php',
-		'form_automation',
-		'sess_autom_tr',
+	$pageFilter = new CactiTableFilter(__('Tree Rules'), 'automation_tree_rules.php', 'form_automation', 'sess_autom_tr',
 		'automation_tree_rules.php?action=edit');
 
 	$pageFilter->rows_label = __('Tree Rules');
@@ -1251,15 +1156,8 @@ function automation_tree_rules() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar('automation_tree_rules.php?filter=' . grv('filter'),
-		MAX_DISPLAY_PAGES,
-		grv('page'),
-		$rows,
-		$total_rows,
-		11,
-		__('Tree Rules'),
-		'page',
-		'main');
+	$nav = html_nav_bar('automation_tree_rules.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows,
+		$total_rows, 11, __('Tree Rules'), 'page', 'main');
 
 	form_start('automation_tree_rules.php', 'chk');
 
@@ -1309,18 +1207,15 @@ function automation_tree_rules() : void {
 
 	if (cacti_sizeof($automation_tree_rules)) {
 		foreach ($automation_tree_rules as $automation_tree_rule) {
-			$tree_item_type_name     = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' .
-				__('None') .
+			$tree_item_type_name     = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') .
 				'</em>' : $automation_tree_item_types[$automation_tree_rule['leaf_type']]);
-			$subtree_name            = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' .
-				__('ROOT') .
+			$subtree_name            = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') .
 				'</em>' : htmle($automation_tree_rule['subtree_name']));
 			$tree_host_grouping_type = ((empty($host_group_types[$automation_tree_rule['host_grouping_type']])) ? '' : $host_group_types[$automation_tree_rule['host_grouping_type']]);
 
 			form_alternate_row('line' . $automation_tree_rule['id'], true);
 
-			form_selectable_cell(filter_value($automation_tree_rule['name'],
-				grv('filter'),
+			form_selectable_cell(filter_value($automation_tree_rule['name'], grv('filter'),
 				'automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1'),
 				$automation_tree_rule['id']);
 			form_selectable_cell($automation_tree_rule['id'], $automation_tree_rule['id'], '', 'text-align:right');
@@ -1328,20 +1223,15 @@ function automation_tree_rules() : void {
 			form_selectable_cell($subtree_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_item_type_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_host_grouping_type, $automation_tree_rule['id']);
-			form_selectable_cell($automation_tree_rule['enabled'] ? __('Enabled') : __('Disabled'),
-				$automation_tree_rule['id'],
-				'',
-				'text-align:right');
+			form_selectable_cell($automation_tree_rule['enabled'] ? __('Enabled') : __('Disabled'), $automation_tree_rule['id'],
+				'', 'text-align:right');
 			form_checkbox_cell($automation_tree_rule['name'], $automation_tree_rule['id']);
 
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' .
-			(cacti_sizeof($display_text) + 1) .
-			'"><em>' .
-			__('No Tree Rules Found') .
-			'</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' .
+			__('No Tree Rules Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

@@ -69,15 +69,8 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		$realm = $frv_realm;
 	}
 
-	cacti_log("DEBUG: User '" .
-		$username .
-		"' attempting to login with realm " .
-		$frv_realm .
-		', using method ' .
-		$auth_method,
-		false,
-		'AUTH',
-		POLLER_VERBOSITY_DEBUG);
+	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm " . $frv_realm . ', using method ' .
+		$auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	switch ($auth_method) {
 		case AUTH_METHOD_NONE: // No authentication, should not be reachable
@@ -135,14 +128,12 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		$user = is_array($guestRow) ? $guestRow : [];
 
 		if ($user) {
-			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'",
-				false,
+			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false,
 				'AUTH');
 
 			if ($username != '' && get_template_account($username) == 0) {
 				raise_message('template_disabled',
-					__('User was Authenticated, but the Template Account is disabled. Using Guest Account'),
-					MESSAGE_LEVEL_WARN);
+					__('User was Authenticated, but the Template Account is disabled. Using Guest Account'), MESSAGE_LEVEL_WARN);
 			}
 
 			$guest_user = true;
@@ -167,12 +158,10 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		$client_addr = get_client_addr();
 
 		if (!$guest_user) {
-			cacti_log("LOGIN: User '" . $user['username'] . "' authenticated from IP Address '" . $client_addr . "'",
-				false,
+			cacti_log("LOGIN: User '" . $user['username'] . "' authenticated from IP Address '" . $client_addr . "'", false,
 				'AUTH');
 		} else {
-			cacti_log("LOGIN: Guest User '" . $user['username'] . "' in use from IP Address '" . $client_addr . "'",
-				false,
+			cacti_log("LOGIN: Guest User '" . $user['username'] . "' in use from IP Address '" . $client_addr . "'", false,
 				'AUTH');
 		}
 
@@ -206,11 +195,8 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			$error     = true;
 			$error_msg = __('You do not have access to any area of Cacti.  Contact your administrator.');
 
-			cacti_log(sprintf('LOGIN FAILED: User %s with id %s does not have access to any area of Cacti.',
-				$user['username'],
-				$user['id']),
-				false,
-				'AUTH');
+			cacti_log(sprintf('LOGIN FAILED: User %s with id %s does not have access to any area of Cacti.', $user['username'],
+				$user['id']), false, 'AUTH');
 
 			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
@@ -252,9 +238,7 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 				$_SESSION[SESS_USER_LANGUAGE] = read_user_setting('user_language');
 			}
 
-			cacti_log("DEBUG: User '" . $username . "' about to re-direct to preferred login page",
-				false,
-				'AUTH',
+			cacti_log("DEBUG: User '" . $username . "' about to re-direct to preferred login page", false, 'AUTH',
 				POLLER_VERBOSITY_DEBUG);
 
 			auth_login_redirect($user['login_opts']);
@@ -290,15 +274,8 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			[$username, !empty($id) ? $id : 0, get_client_addr()]
 		);
 
-		cacti_log('LOGIN FAILED: ' .
-			$realm_name .
-			" login failed for user '" .
-			$username .
-			"' from IP address '" .
-			get_client_addr() .
-			"'.",
-			false,
-			'AUTH');
+		cacti_log('LOGIN FAILED: ' . $realm_name . " login failed for user '" . $username . "' from IP address '" .
+			get_client_addr() . "'.", false, 'AUTH');
 
 		// Single machine-parseable failure line for fail2ban. This is the universal
 		// choke point for a failed login across every realm, so it fires exactly once
@@ -365,13 +342,8 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP ||
 				<?php
 						if (cacti_sizeof($realms)) {
 							foreach ($realms as $index => $realm) {
-								print "\t\t\t\t\t<option value='" .
-									$index .
-									"'" .
-									($realm['selected'] ? ' selected="selected"' : '') .
-									'>' .
-									htmle($realm['name']) .
-									"</option>\n";
+								print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"' : '') . '>' .
+									htmle($realm['name']) . "</option>\n";
 							}
 						}
 	?>
