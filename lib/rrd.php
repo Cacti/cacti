@@ -242,6 +242,8 @@ function rrd_close() {
  * @return void No value is returned.
  */
 function __rrd_close($rrdtool_pipe) {
+	rrdtool_acknowledged_close();
+
 	/* close the rrdtool file descriptor */
 	if (is_resource($rrdtool_pipe)) {
 		pclose($rrdtool_pipe);
@@ -771,10 +773,11 @@ function rrdtool_function_interface_speed($data_local) {
  * @param int $local_data_id The local data ID.
  * @param bool $show_source The show source.
  * @param mixed $rrdtool_pipe The rrdtool pipe.
+ * @param bool $acknowledge Wait for confirmation on the poller connection.
  *
  * @return mixed The result of the operation, or false on failure.
  */
-function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = false) {
+function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = false, $acknowledge = false) {
 	global $config, $data_source_types, $consolidation_functions, $encryption;
 
 	include ($config['include_path'] . '/global_arrays.php');
@@ -989,7 +992,10 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
 	} else {
-		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+		$command = "create $data_source_path $create_ds$create_rra";
+		$success = $acknowledge
+			? rrdtool_execute_acknowledged($command, $rrdtool_pipe)
+			: rrdtool_execute($command, true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
 			if (file_exists($data_source_path)) {
@@ -1049,7 +1055,8 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 
 			if ($file_exists === false) {
 				$times = array_keys($rrd_fields['times']);
-				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
+				/* Finish creation before the acknowledged-update connection reads it. */
+				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe, $track_updates);
 				$create_rrd_file = true;
 			}
 
@@ -1144,9 +1151,12 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 					continue;
 				}
 
-				$update_result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				$command = "update $rrd_path $update_options --template $rrd_update_template $rrd_update_values";
+				$update_result = $track_updates
+					? rrdtool_execute_acknowledged($command, $rrdtool_pipe)
+					: rrdtool_execute($command, true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
-				if ($update_result === false) {
+				if ($update_result === false || ($track_updates && $update_result !== true)) {
 					cacti_log('ERROR: RRDtool update failed; retaining poller output for retry.', false, 'POLLER');
 					break;
 				}
@@ -1160,6 +1170,109 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 	}
 
 	return $rrds_processed;
+}
+
+/**
+ * Confirm poller writes before acknowledging queued samples. The legacy popen
+ * pipe is write-only, so tracked creates and updates share a separate process.
+ */
+function rrdtool_execute_acknowledged($command, $rrdtool_pipe = false) {
+	global $config, $rrdtool_acknowledged_process;
+	static $shutdown_registered = false;
+
+	if (read_config_option('storage_location') && ($config['force_storage_location_local'] ?? false) !== true) {
+		return rrdtool_execute($command, true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') === true;
+	}
+
+	if (cacti_has_control_chars($command)) {
+		return false;
+	}
+
+	if (!isset($rrdtool_acknowledged_process)) {
+		$process = @proc_open([read_config_option('path_rrdtool'), '-'], [
+			0 => ['pipe', 'r'],
+			1 => ['pipe', 'w'],
+			2 => ['redirect', 1]
+		], $pipes);
+
+		if (!is_resource($process)) {
+			return false;
+		}
+
+		$rrdtool_acknowledged_process = ['process' => $process, 'input' => $pipes[0], 'output' => $pipes[1]];
+
+		if (!$shutdown_registered) {
+			register_shutdown_function('rrdtool_acknowledged_close');
+			$shutdown_registered = true;
+		}
+	}
+
+	$input = $command . "\n";
+	$length = strlen($input);
+	$written = 0;
+
+	while ($written < $length) {
+		$count = @fwrite($rrdtool_acknowledged_process['input'], substr($input, $written));
+
+		if ($count === false || $count === 0) {
+			rrdtool_acknowledged_close();
+			return false;
+		}
+
+		$written += $count;
+	}
+
+	if (!@fflush($rrdtool_acknowledged_process['input'])) {
+		rrdtool_acknowledged_close();
+		return false;
+	}
+
+	/* Windows does not support stream_select on proc_open pipes. */
+	if ($config['cacti_server_os'] == 'win32') {
+		$response = @fgets($rrdtool_acknowledged_process['output'], 65536);
+	} else {
+		stream_set_blocking($rrdtool_acknowledged_process['output'], false);
+		$response = '';
+		$deadline = hrtime(true) + 30000000000;
+
+		while (strpos($response, "\n") === false && strlen($response) < 65536) {
+			$remaining = $deadline - hrtime(true);
+			$read = [$rrdtool_acknowledged_process['output']];
+			$write = $except = null;
+
+			if ($remaining <= 0 || @stream_select($read, $write, $except, intdiv($remaining, 1000000000), intdiv($remaining % 1000000000, 1000)) !== 1) {
+				break;
+			}
+
+			$chunk = @fread($rrdtool_acknowledged_process['output'], 4096);
+
+			if ($chunk === false || $chunk === '') {
+				break;
+			}
+
+			$response .= $chunk;
+		}
+	}
+
+	if (is_string($response) && preg_match('/^OK(?: u:[^\r\n]*)?\r?\n$/D', $response)) {
+		return true;
+	}
+
+	rrdtool_acknowledged_close();
+	return false;
+}
+
+/** Close the acknowledged-update connection at the end of a polling cycle. */
+function rrdtool_acknowledged_close() {
+	global $rrdtool_acknowledged_process;
+
+	if (isset($rrdtool_acknowledged_process)) {
+		fclose($rrdtool_acknowledged_process['input']);
+		fclose($rrdtool_acknowledged_process['output']);
+		proc_terminate($rrdtool_acknowledged_process['process']);
+		proc_close($rrdtool_acknowledged_process['process']);
+		$rrdtool_acknowledged_process = null;
+	}
 }
 
 /**

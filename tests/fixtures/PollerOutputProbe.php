@@ -7,7 +7,7 @@ if (PHP_SAPI !== 'cli') {
 $root = getenv('CACTI_POLLER_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 // The maintenance probe uses no Composer classes.
 $scenario = $argv[1] ?? 'partial';
-$state    = ['rows' => [], 'queries' => 0, 'mapping_queries' => 0, 'commands' => [], 'rrd_calls' => 0, 'boost_calls' => 0, 'delete_calls' => 0, 'arrived' => false];
+$state    = ['rows' => [], 'queries' => 0, 'mapping_queries' => 0, 'commands' => [], 'rrd_calls' => 0, 'create_calls' => 0, 'boost_calls' => 0, 'delete_calls' => 0, 'arrived' => false];
 function probe_load(string $path, string $name) : void {
 	$tokens  = token_get_all(file_get_contents($path));
 	$code    = '';
@@ -65,10 +65,13 @@ function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 	if (str_contains($sql, 'poller_data_template_field_mappings')) {
 		$state['mapping_queries']++;
 
-		if ($scenario === 'metadata' && $state['mapping_queries'] === 1) {
+		if (in_array($scenario, ['metadata', 'metadata-empty'], true) && $state['mapping_queries'] === 1) {
 			return false;
 		}
 
+		if (in_array($scenario, ['empty-mappings', 'metadata-empty'], true)) {
+			return [];
+		}
 		return $scenario === 'fanout' || $scenario === 'fanout-orphan' ? [['keyname' => '1_value', 'data_source_name' => 'in,out']] : [['keyname' => '1_in', 'data_source_name' => 'in'], ['keyname' => '1_out', 'data_source_name' => 'out']];
 	}
 
@@ -133,6 +136,7 @@ function dsdebug_poller_output(...$args) : void {
 function api_plugin_hook_function(...$args) : void {
 }
 function read_config_option($key) : string {
+	if ($key === 'path_rrdtool') return $GLOBALS['probe_rrd_binary'] ?? '';
 	if ($key === 'storage_location') return '1';
 	if ($key === 'boost_rrd_update_enable') {
 		return str_starts_with($GLOBALS['scenario'], 'boost-') ? 'on' : '';
@@ -155,7 +159,18 @@ function cacti_rrdtool_valid_ds_name($s) : bool { return true; }
 function cacti_rrdtool_valid_ds_template($s) : bool { return true; }
 function cacti_has_control_chars($s) : bool { return false; }
 function db_fetch_cell_prepared($sql, $params = []) : int { return 1; }
-function rrdtool_function_create(...$args) : bool { return true; }
+function rrdtool_function_create(...$args) : bool {
+	if ($GLOBALS['scenario'] === 'local-create') {
+		if ($args[3] !== true) {
+			throw new RuntimeException('Creation still uses the asynchronous write-only pipe');
+		}
+		if (!rrdtool_execute_acknowledged('create source-1', $args[2])) {
+			return false;
+		}
+	}
+	$GLOBALS['state']['create_calls']++;
+	return true;
+}
 function rrdtool_file_exists(...$args) : bool {
 	return true;
 }
@@ -171,8 +186,8 @@ function cacti_escapeshellarg($s) : string {
 function rrdtool_command_log_context($s) : string {
 	return $s;
 }
-function rrdtool_execute_path_command(...$args) : bool { return true; }
-function rrdtool_execute($command, ...$args) : string|false {
+function rrdtool_execute_path_command(...$args) : bool { return $GLOBALS['scenario'] !== 'local-create'; }
+function rrdtool_execute($command, ...$args) : string|bool|null {
 	global $state, $scenario;
 	$state['rrd_calls']++;
 	$command = is_array($command) ? implode(' ', $command) : $command;
@@ -190,7 +205,11 @@ function rrdtool_execute($command, ...$args) : string|false {
 		return false;
 	}
 
-	return '';
+	if ($scenario === 'proxy-null') {
+		return null;
+	}
+
+	return $args[1] === RRDTOOL_OUTPUT_BOOLEAN ? true : '';
 }
 
 foreach (['SQL_NO_CACHE' => '', 'POLLER_VERBOSITY_HIGH' => 4, 'POLLER_VERBOSITY_NONE' => 0, 'POLLER_ID' => 1, 'CACTI_CONNECTION' => 'online', 'RRDTOOL_OUTPUT_STDOUT' => 1, 'RRDTOOL_OUTPUT_BOOLEAN' => 2, 'CACTI_PATH_LIBRARY' => dirname(__DIR__) . '/performance/fixtures'] as $name => $value) {
@@ -200,15 +219,42 @@ foreach (['SQL_NO_CACHE' => '', 'POLLER_VERBOSITY_HIGH' => 4, 'POLLER_VERBOSITY_
 foreach (['cacti_sizeof', 'array_rekey', 'is_hexadecimal'] as $name) {
 	probe_load($root . '/lib/functions.php', $name);
 }
-probe_load($root . '/lib/rrd.php', 'rrdtool_function_update');
+foreach (['rrdtool_function_update', 'rrdtool_execute_acknowledged', 'rrdtool_acknowledged_close'] as $name) {
+	probe_load($root . '/lib/rrd.php', $name);
+}
 
 foreach (['boost_flush_output_batch', 'boost_poller_on_demand'] as $name) {
 	probe_load($root . '/lib/boost.php', $name);
 }
 require $root . '/lib/poller.php';
-$config = ['library_path' => dirname(__DIR__) . '/performance/fixtures', 'poller_id' => 1, 'connection' => 'online'];
+$config = ['library_path' => dirname(__DIR__) . '/performance/fixtures', 'poller_id' => 1, 'connection' => 'online', 'cacti_server_os' => 'unix'];
 $debug = false;
 $time  = 1700000000;
+
+if (str_starts_with($scenario, 'local-')) {
+	$config['force_storage_location_local'] = true;
+	$probe_rrd_binary = tempnam(sys_get_temp_dir(), 'rrd acknowledgement ');
+	$probe_rrd_starts = tempnam(sys_get_temp_dir(), 'rrd starts ');
+	$reply = match ($scenario) {
+		'local-error' => "ERROR: update rejected\n",
+		'local-empty' => '',
+		'local-partial' => 'OK u:0.00 s:0.00 r:0.00',
+		default => "OK u:0.00 s:0.00 r:0.00\n"
+	};
+	file_put_contents($probe_rrd_binary, '#!' . PHP_BINARY . "\n<?php\n"
+		. 'file_put_contents(' . var_export($probe_rrd_starts, true) . ', "start\n", FILE_APPEND);'
+		. '$reply = ' . var_export($reply, true) . ';'
+		. ($scenario === 'local-retry' ? 'if (substr_count(file_get_contents(' . var_export($probe_rrd_starts, true) . '), "start\n") === 1) $reply = "ERROR: rejected\n";' : '')
+		. 'while (fgets(STDIN) !== false) {' . ($scenario === 'local-timeout' ? 'sleep(60);' : '')
+		. 'fwrite(STDOUT, $reply); fflush(STDOUT);'
+		. (in_array($scenario, ['local-success', 'local-create'], true) ? '' : 'exit(1);') . '}');
+	chmod($probe_rrd_binary, 0700);
+	register_shutdown_function(static function () use ($probe_rrd_binary, $probe_rrd_starts) {
+		rrdtool_acknowledged_close();
+		unlink($probe_rrd_binary);
+		unlink($probe_rrd_starts);
+	});
+}
 
 if ($scenario === 'partial') {
 	$state['rows'] = [probe_row(1, $time, 'in', '42', 2), probe_row(1, $time, 'out', '43', 2), probe_row(1, $time + 60, 'in', '44', 2)];
@@ -244,12 +290,20 @@ if ($scenario === 'partial') {
 } else {
 	$state['rows'] = [probe_row(1, $time, 'in', '42')];
 }
-$pipe   = null;
+
+if ($scenario === 'local-success') {
+	$state['rows'][] = probe_row(1, $time + 60, 'in', '43');
+}
+$pipe   = $scenario === 'local-create' ? fopen('php://temp', 'w+') : null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'retry-failed'], true)) {
+if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry'], true)) {
 	$second = process_poller_output($pipe);
+}
+
+if ($scenario === 'metadata-empty') {
+	process_poller_output($pipe);
 }
 
 if ($scenario === 'retry') {
@@ -257,4 +311,4 @@ if ($scenario === 'retry') {
 	$state['rows'][] = probe_row(1, $time + 60, 'in', '43');
 	$second          = process_poller_output($pipe, 1);
 }
-print json_encode(['first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls']], JSON_THROW_ON_ERROR) . "\n";
+print json_encode(['first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'create_calls' => $state['create_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls'], 'local_starts' => isset($probe_rrd_starts) ? substr_count(file_get_contents($probe_rrd_starts), "start\n") : 0], JSON_THROW_ON_ERROR) . "\n";
