@@ -4871,11 +4871,12 @@ function refreshGraphs() {
 function initGraphDrilldown() {
 	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
 	// A hamburger glyph over the graph's top-right toggles the action icons; they
-	// close on a second click, on leaving the strip, or on an outside click.
+	// close on a second click, on moving off the graph image, or on an outside click.
 	$(document).off('.graphdd');
 
 	function closeGraphDrilldown(container) {
 		container.removeClass('open');
+		container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
 		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
 
 		// Close an open SpikeKill submenu so it is not orphaned with the strip.
@@ -4898,6 +4899,7 @@ function initGraphDrilldown() {
 
 		if (willOpen) {
 			container.addClass('open');
+			container.closest('.graphWrapperOuter').addClass('graphDrillActive');
 			menu.attr('aria-expanded', 'true');
 		} else {
 			closeGraphDrilldown(container);
@@ -4911,8 +4913,59 @@ function initGraphDrilldown() {
 		}
 	});
 
-	$(document).on('mouseleave.graphdd', '.graphDrillDownToggle.open', function () {
-		closeGraphDrilldown($(this));
+	// The hamburger is revealed only while the pointer is over this graph's image or
+	// the toggle overlaid on its top-right.  A grace period lets the pointer dip off
+	// and back (including onto the toggle) without hiding, and a native tooltip's
+	// spurious mouseleave is ignored by re-checking real hover.
+	var graphDrilldownCloseTimer;
+
+	function graphDrilldownToggleFor(el) {
+		return $(el).closest('.graphWrapperOuter').find('.graphDrillDownToggle');
+	}
+
+	function graphDrilldownStillHovered(toggle) {
+		return toggle.is(':hover') || toggle.closest('.graphWrapperOuter').find('.graphimage').is(':hover');
+	}
+
+	function graphDrilldownHide(toggle) {
+		if (toggle.find('.iconWrapper :focus, .graphDrillDownMenu:focus-visible').length > 0) {
+			return;
+		}
+
+		toggle.removeClass('reveal');
+
+		if (toggle.hasClass('open')) {
+			closeGraphDrilldown(toggle);
+		}
+
+		// Keyboard focus is left intact: the menu is revealed for keyboard
+		// users via :focus-visible (not :focus), so a mouse click never latches
+		// the reveal and there is nothing to blur away on pointer exit.
+	}
+
+	$(document).on('mouseenter.graphdd', '.graphimage, .graphDrillDownToggle', function () {
+		clearTimeout(graphDrilldownCloseTimer);
+
+		var toggle = $(this).hasClass('graphDrillDownToggle') ? $(this) : graphDrilldownToggleFor(this);
+
+		// Entering a graph hides every other graph's hamburger and closes its strip.
+		$('.graphDrillDownToggle').not(toggle).each(function () {
+			graphDrilldownHide($(this));
+		});
+
+		toggle.addClass('reveal');
+	});
+
+	$(document).on('mouseleave.graphdd', '.graphimage, .graphDrillDownToggle', function () {
+		var toggle = $(this).hasClass('graphDrillDownToggle') ? $(this) : graphDrilldownToggleFor(this);
+
+		clearTimeout(graphDrilldownCloseTimer);
+
+		graphDrilldownCloseTimer = setTimeout(function () {
+			if (!graphDrilldownStillHovered(toggle)) {
+				graphDrilldownHide(toggle);
+			}
+		}, 500);
 	});
 
 	$(document).on('click.graphdd', function (event) {
@@ -4921,6 +4974,23 @@ function initGraphDrilldown() {
 				closeGraphDrilldown($(this));
 			});
 		}
+	});
+
+	$(document).on('keydown.graphdd', '.graphDrillDownToggle', function (event) {
+		if (event.keyCode == 27) {
+			var toggle = $(this);
+			closeGraphDrilldown(toggle);
+			toggle.find('.graphDrillDownMenu').trigger('focus');
+		}
+	});
+
+	$(document).on('focusout.graphdd', '.graphDrillDownToggle', function () {
+		var toggle = $(this);
+		setTimeout(function () {
+			if (!graphDrilldownStillHovered(toggle)) {
+				graphDrilldownHide(toggle);
+			}
+		}, 0);
 	});
 }
 
