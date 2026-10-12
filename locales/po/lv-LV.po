@@ -4123,6 +4123,12 @@ msgstr "Grafika apskate"
 msgid "The Graph you requested does not exist."
 msgstr "Datu avots nepastāv."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Grafika opcijas"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Grafika informācija, tālummaiņas un atkļūdošanas utilītas"
@@ -20259,6 +20265,11 @@ msgstr ""
 #| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "Ja jums ir SSD diski, izmantojiet šo ieteikumu. Pretējā gadījumā neiestatiet šo iestatījumu."
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "Uzstādīts. <span class=\"deviceDown\">Piezīme. Ja plānojat izmantot SNMPv3, jums ir jānoņem php-snmp un jāizmanto Net-SNMP rīku kopa.</span>"

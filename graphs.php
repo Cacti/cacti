@@ -1667,7 +1667,7 @@ function graph_edit() {
 			array(get_request_var('id')));
 
 		?>
-		<table style='width:100%;'>
+		<table role='presentation' style='width:100%;'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top'>
 					<?php print html_escape(get_graph_title(get_request_var('id')));?>
@@ -2152,12 +2152,12 @@ function graph_management() {
 	<tr class='even noprint'>
 		<td>
 			<form id='form_graphs' action='graphs.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php print html_site_filter(get_request_var('site_id'));?>
 					<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', $host_where);?>
 					<td>
-						<?php print __('Template');?>
+						<label for='template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='template_id'>
@@ -2198,16 +2198,16 @@ function graph_management() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='rfilter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
-						<?php print __('Graph Source');?>
+						<label for='source'><?php print __('Graph Source');?></label>
 					</td>
 					<td>
 						<select id='source'>
@@ -2218,7 +2218,7 @@ function graph_management() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Graphs');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>

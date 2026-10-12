@@ -865,7 +865,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_graphs', $policy_array, '', '', $policy['policy_graphs'], '', ''); ?>
@@ -1050,7 +1050,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
@@ -1198,7 +1198,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Graph Template Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
@@ -1341,7 +1341,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Tree Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
@@ -2075,16 +2075,16 @@ function user_group() {
 	<tr class='even'>
 		<td>
 		<form id='forms' action='user_group_admin.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Groups');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2439,16 +2439,16 @@ function graph_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' action='user_group_admin.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Template');?>
+						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='graph_template_id'>
@@ -2470,7 +2470,7 @@ function graph_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Graphs');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2593,7 +2593,7 @@ function device_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Devices');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2697,7 +2697,7 @@ function template_filter($header_label) {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Templates');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2801,7 +2801,7 @@ function tree_filter($header_label) {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Trees');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2905,7 +2905,7 @@ function member_filter($header_label) {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Users');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>

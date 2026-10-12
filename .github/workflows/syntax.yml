@@ -96,6 +96,10 @@ jobs:
       working-directory: tests
       run: php vendor/bin/pest --configuration=phpunit-boost.xml --colors=never
 
+    - name: Run sortable header compatibility contracts
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit-sortable-header.xml --colors=never
+
   javascript-contracts:
     name: JavaScript contracts
     runs-on: ubuntu-22.04

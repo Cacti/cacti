@@ -4114,6 +4114,12 @@ msgstr "Просмотр графика"
 msgid "The Graph you requested does not exist."
 msgstr "Источника данных не существует."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Параметры графиков"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Подробная информация о графике, Утилиты масштабирования и отладки"
@@ -20302,6 +20308,11 @@ msgstr ""
 #| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "Если у вас есть SSD-диски, воспользуйтесь этим предложением. В противном случае, не устанавливайте эту настройку."
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "Установлены. <span class=\"deviceDown\">Примечание. Если вы планируете использовать SNMPv3, вы должны удалить php-snmp и использовать набор инструментов Net-SNMP.</span>"

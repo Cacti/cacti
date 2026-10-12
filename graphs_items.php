@@ -376,13 +376,13 @@ function item_edit() {
 	<tr class='even noprint'>
 		<td>
 		<form name='form_graph_items' action='graphs_items.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 				</tr>
 				<tr>
 					<td>
-						<?php print __('Data Template');?>
+						<label for='data_template_id'><?php print __('Data Template');?></label>
 					</td>
 					<td>
 						<select id='data_template_id'>

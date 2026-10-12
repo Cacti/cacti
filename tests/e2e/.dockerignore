@@ -3,10 +3,13 @@
 .claude
 .omc
 .worktrees
-tests/e2e/node_modules
-tests/e2e/playwright-report
-tests/e2e/test-results
-tests/e2e/.playwright
+node_modules
+playwright-report
+test-results
+.playwright
+coverage
+.env
+.env.*
 **/*.log
 **/.DS_Store
 notepad.md

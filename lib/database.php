@@ -1984,10 +1984,18 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 	}
 
 	if (!db_is_safe_identifier($table)) {
+		if ($log) {
+			cacti_log('ERROR: Table creation rejected an invalid table identifier.', false, 'DB');
+		}
+
 		return false;
 	}
 
 	if (!db_is_safe_table_definition($data)) {
+		if ($log) {
+			cacti_log(sprintf("ERROR: Cannot create table '%s': invalid table definition.", $table), false, 'DB');
+		}
+
 		return false;
 	}
 
@@ -2003,6 +2011,10 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 				$definition = db_build_column_definition_sql($column, $db_conn, false);
 
 				if ($definition === false) {
+					if ($log) {
+						cacti_log(sprintf("ERROR: Cannot create table '%s': invalid column definition.", $table), false, 'DB');
+					}
+
 					return false;
 				}
 
