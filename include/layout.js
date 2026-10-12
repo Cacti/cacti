@@ -4311,9 +4311,9 @@ function initGraphDrilldown() {
 			var label = glyph.attr('title') || link.attr('title') || $.trim(link.text());
 
 			if (label != '' && link.find('.iconLabel').length == 0) {
-				// Keep a single hover tooltip on the row and drop the glyph's duplicate;
-				// the label is prepended so it sits in the left table cell, glyph right.
-				link.attr('title', label);
+				// The visible label replaces the tooltip, so strip the title from the
+				// row and glyph to suppress the duplicate native/jQuery-UI tooltip.
+				link.removeAttr('title');
 				glyph.removeAttr('title').attr('aria-hidden', 'true');
 				link.prepend($('<span class="iconLabel"></span>').text(label));
 			}

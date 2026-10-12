@@ -91,7 +91,7 @@
 	margin: 0 3px 3px 3px;
 	padding: 4px;
 	border-radius: 4px;
-	background: rgba(0, 0, 0, 0.82);
+	background: rgba(0, 0, 0, 0.6);
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
 	color: #ffffff;
 }
@@ -121,11 +121,12 @@
 }
 
 /* Glyphs stacked directly above one another in a fixed-width right-hand column;
-   targets any glyph <i> so plugin icons without the drillDown class align too. */
+   targets any glyph <i> so plugin icons without the drillDown class align too.
+   The 2px right padding lines the column up under the hamburger's own glyph. */
 .graphDrillDownToggle.open .iconWrapper .iconLink > i {
 	display: table-cell;
 	width: 16px;
-	padding: 2px 4px;
+	padding: 2px 2px 2px 4px;
 	text-align: right;
 	vertical-align: middle;
 }

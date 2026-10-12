@@ -115,9 +115,9 @@ test('opening a strip labels each action glyph with its tooltip text once', asyn
 	// A plugin glyph without the drillDown class is still labelled from its title.
 	await expect(labels.nth(3)).toHaveText('Add to Dashboard');
 
-	// The row carries the hover tooltip and the glyph's duplicate is dropped.
+	// The row carries no title, so the visible label is not duplicated by a tooltip.
 	const firstLink = page.locator('#g1 .iconWrapper .iconLink').first();
-	await expect(firstLink).toHaveAttribute('title', 'Action tooltip');
+	expect(await firstLink.getAttribute('title')).toBeNull();
 	await expect(firstLink.locator('.drillDown')).toHaveAttribute('aria-hidden', 'true');
 	// The markup's <br> separators are removed in favour of the flex rows.
 	await expect(page.locator('#g1 .iconWrapper br')).toHaveCount(0);
