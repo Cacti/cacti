@@ -34,5 +34,10 @@ register_shutdown_function(static function () {
 function grv($name) {
 	return $GLOBALS['action'];
 }
+// csrf_startup() has already accepted the POST token before page dispatch.
+// The helper also checks it when combined with the reorder hardening change.
+function csrf_check(bool $fatal = true): bool {
+	return true;
+}
 eval($printer->prettyPrint([$helper, $guard]));
 $reached = true;
