@@ -13,8 +13,12 @@
 
 // Isolated CLI harness: execute production function bodies with instrumented I/O.
 // Never included by Pest's collection process or a production entry point.
-$root = dirname(__DIR__, 2);
-$mode = $argv[1] ?? 'quick';
+$root = getenv('CACTI_POLLER_SOURCE_ROOT') ?: dirname(__DIR__, 2);
+define('DATA_INPUT_TYPE_SCRIPT', 1);
+define('DATA_INPUT_TYPE_PHP_SCRIPT_SERVER', 5);
+$acknowledgements_in_third_argument = !str_contains(file_get_contents($root . '/lib/poller.php'), '$unused_cache, $successful_updates');
+$bounded                            = str_contains(file_get_contents($root . '/lib/poller.php'), 'function process_poller_output_batch(');
+$mode                               = $argv[1] ?? 'quick';
 
 if (!in_array($mode, ['quick', 'scale', 'empty', 'recovery', 'recovery-empty', 'exec'], true)) {
 	throw new RuntimeException('Unknown performance scenario');
@@ -37,8 +41,8 @@ function perf_load(string $path, string $name) : bool {
 	$end      = strpos($source, "\nfunction ", $start + 1);
 	$function = substr($source, $start, $end === false ? null : $end - $start);
 	$map      = [
-		'process_poller_output', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names',
-		'db_fetch_assoc', 'db_fetch_assoc_prepared', 'db_fetch_cell', 'db_execute', 'db_in_clause', 'array_rekey',
+		'process_poller_output', 'process_poller_output_batch', 'poller_acknowledge_output', 'poller_prefetch_source_fields', 'boost_load_unused_data_source_names', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names',
+		'db_fetch_assoc', 'db_fetch_assoc_prepared', 'db_fetch_cell', 'db_execute', 'db_execute_prepared', 'db_in_clause', 'array_rekey',
 		'cacti_sizeof', 'is_hexadecimal', 'cacti_log', 'dsstats_poller_output', 'dsdebug_poller_output',
 		'api_plugin_hook_function', 'boost_poller_on_demand', 'rrdtool_function_update',
 		'cacti_exec', 'cacti_exec_log_describe',
@@ -76,10 +80,23 @@ function perf_dsdebug_poller_output(...$args) : void {
 }
 function perf_api_plugin_hook_function(...$args) : void {
 }
-function perf_boost_poller_on_demand(...$args) : bool {
+function perf_boost_poller_on_demand($results, &$staged = null) : bool {
+	$staged = $GLOBALS['state']['boost'];
+
 	return !$GLOBALS['state']['boost'];
 }
-function perf_rrdtool_function_update($updates, &$pipe, ...$args) : int {
+function perf_rrdtool_function_update($updates, &$pipe, &$metadata = [], &$successful_updates = []) : int {
+	$successful_updates = [];
+
+	foreach ($updates as $path => $rrd) {
+		foreach ($rrd['times'] ?? [] as $time => $fields) {
+			$successful_updates[$path][$time] = true;
+		}
+	}
+
+	if ($GLOBALS['bounded'] && $GLOBALS['acknowledgements_in_third_argument']) {
+		$metadata = $successful_updates;
+	}
 	$GLOBALS['state']['updates'] = $updates;
 
 	return count($updates);
@@ -95,6 +112,10 @@ function perf_array_rekey($rows, $key, $value) : array {
 }
 function perf_db_fetch_assoc($sql, ...$args) : array {
 	$GLOBALS['state']['queries'][] = ['sql' => $sql, 'params' => []];
+
+	if (str_contains($sql, 'FROM poller_data_source_unused')) {
+		return [['local_data_id' => 2, 'data_source_name' => 'b']];
+	}
 	perf_assert(str_contains($sql, 'FROM poller_output AS po'), 'Unexpected main query: ' . $sql);
 
 	return $GLOBALS['state']['rows'];
@@ -102,12 +123,42 @@ function perf_db_fetch_assoc($sql, ...$args) : array {
 function perf_db_fetch_assoc_prepared($sql, $params = [], ...$args) : array|false {
 	$GLOBALS['state']['queries'][] = ['sql' => $sql, 'params' => $params];
 
+	if (str_contains($sql, 'FROM poller_output AS po')) {
+		return $GLOBALS['state']['rows'];
+	}
+
+	if (str_contains($sql, 'FROM settings WHERE name = ?')) {
+		perf_assert($params === ['poller_unused_cache_generation'], 'Unexpected generation query');
+
+		return [['value' => 'fixture-generation']];
+	}
+
+	if (str_contains($sql, 'FROM data_input AS di')) {
+		perf_assert($params === [1, 5], 'Orphan preload must be restricted to script methods');
+
+		return [['local_data_id' => 2, 'data_source_name' => 'b']];
+	}
+
+	if (str_contains($sql, 'dtr.local_data_id IN (')) {
+		perf_assert(count($params) <= 1000, 'Manual metadata query exceeds the source bound');
+		$fields = [];
+
+		foreach ($params as $id) {
+			foreach (['a', 'b'] as $field) {
+				$fields[] = ['local_data_id' => $id, 'data_name' => $field, 'data_source_name' => $field];
+			}
+		}
+
+		return $fields;
+	}
+
 	if (str_contains($sql, 'FROM poller_data_template_field_mappings')) {
 		if (in_array($GLOBALS['mode'], ['recovery', 'recovery-empty'], true) && !isset($GLOBALS['state']['mapping_failed'])) {
 			$GLOBALS['state']['mapping_failed'] = true;
 
 			return false;
 		}
+
 		return in_array($GLOBALS['mode'], ['empty', 'recovery-empty'], true) ? [] : [['keyname' => '1_a', 'data_source_name' => 'a'], ['keyname' => '1_b', 'data_source_name' => 'b']];
 	}
 	perf_assert(count($params) === 1 && str_contains($sql, 'dtr.local_data_id = ?'), 'Metadata lookup must be bounded to one source');
@@ -129,6 +180,16 @@ function perf_db_execute($sql, ...$args) : bool {
 
 	return true;
 }
+function perf_db_execute_prepared($sql, $params = []) : bool {
+	perf_assert(str_starts_with($sql, 'DELETE FROM poller_output WHERE'), 'Unexpected prepared write');
+	perf_assert(count($params) <= 3000, 'Acknowledgement exceeds 1000 keys');
+	$GLOBALS['state']['writes'][] = $sql;
+
+	return true;
+}
+function perf_mapping_count() : int {
+	return count(array_filter($GLOBALS['state']['queries'], fn ($query) => str_contains($query['sql'], 'FROM poller_data_template_field_mappings')));
+}
 function perf_db_in_clause($column, $ids) : string {
 	return $column . ' IN (' . implode(',', $ids) . ')';
 }
@@ -138,7 +199,7 @@ function perf_row(int $id, string $output, int $template = 1, int $fields = 1) :
 		'rrd_name'      => 'a', 'rrd_num' => $fields];
 }
 function perf_metadata_count() : int {
-	return count(array_filter($GLOBALS['state']['queries'], fn ($query) => !str_contains($query['sql'], 'poller_output')));
+	return count(array_filter($GLOBALS['state']['queries'], fn ($query) => !str_contains($query['sql'], 'poller_output') && !str_contains($query['sql'], 'FROM settings WHERE name = ?')));
 }
 function perf_sample(int $id) : array {
 	return $GLOBALS['state']['updates']['source-' . $id]['times'][1767225600] ?? [];
@@ -203,7 +264,9 @@ $config = ['library_path' => __DIR__ . '/fixtures'];
 $debug  = false;
 perf_assert(perf_load($root . '/lib/functions.php', 'is_hexadecimal'), 'Production hex parser is missing');
 
-foreach (['poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names', 'process_poller_output'] as $name) {
+perf_load($root . '/lib/boost.php', 'boost_load_unused_data_source_names');
+
+foreach (['poller_prefetch_source_fields', 'process_poller_output_batch', 'poller_acknowledge_output', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names', 'process_poller_output'] as $name) {
 	$loaded = perf_load($root . '/lib/poller.php', $name);
 	perf_assert($loaded || $name !== 'process_poller_output', 'Production poller function is missing');
 }
@@ -213,13 +276,13 @@ $start = hrtime(true);
 if (in_array($mode, ['recovery', 'recovery-empty'], true)) {
 	// Fail with an empty batch, then recover; an empty successful read is cached too.
 	perf_process_poller_output($pipe);
-	perf_assert(perf_metadata_count() === 1, 'First mapping read must fail once');
+	perf_assert(perf_mapping_count() === 1, 'First mapping read must fail once');
 	perf_process_poller_output($pipe);
-	perf_assert(perf_metadata_count() === 2, 'Failed mapping read was cached');
+	perf_assert(perf_mapping_count() === 2, 'Failed mapping read was cached');
 
 	for ($pass = 0; $pass < 5; $pass++) {
 		perf_process_poller_output($pipe);
-		perf_assert(perf_metadata_count() === 2, 'Successful mapping read was not cached');
+		perf_assert(perf_mapping_count() === 2, 'Successful mapping read was not cached');
 	}
 
 	if ($mode === 'recovery') {
@@ -231,7 +294,7 @@ if (in_array($mode, ['recovery', 'recovery-empty'], true)) {
 	for ($i = 0; $i < 5; $i++) {
 		perf_process_poller_output($pipe);
 	}
-	perf_assert(perf_metadata_count() === 1, 'Empty template map was reloaded on repeated passes');
+	perf_assert(perf_mapping_count() === 1, 'Empty template map was reloaded on repeated passes');
 } elseif ($mode === 'quick') {
 	$state['rows'] = [perf_row(1, 'a:10 b:20', 1, 2), perf_row(2, 'a:30 b:40'), perf_row(3, 'a:50 b:60', 0, 2), perf_row(4, 'invalid', 1, 2), perf_row(5, 'FF'), perf_row(6, 'U')];
 
@@ -271,7 +334,7 @@ if (in_array($mode, ['recovery', 'recovery-empty'], true)) {
 		$state['writes']  = [];
 		$state['queries'] = [];
 		$processed += perf_process_poller_output($pipe);
-		perf_assert(perf_metadata_count() === ($offset === 0 ? 1 : 0), 'Single-value processing added metadata queries');
+		perf_assert(perf_metadata_count() === ($offset === 0 ? (function_exists('perf_boost_load_unused_data_source_names') || function_exists('perf_poller_prefetch_source_fields') ? 2 : 1) : 0), 'Single-value processing added metadata queries');
 	}
 	perf_assert($processed === $total, 'Scale run lost or duplicated source updates');
 }
