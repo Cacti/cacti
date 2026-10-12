@@ -4302,7 +4302,12 @@ function initGraphDrilldown() {
 
 		wrapper.find('.iconLink').each(function () {
 			var link  = $(this);
+			// Core icons carry the drillDown class; a plugin-contributed glyph may
+			// not, so fall back to the first titled <i> in the link.
 			var glyph = link.find('.drillDown').first();
+			if (glyph.length == 0) {
+				glyph = link.find('i[title]').first();
+			}
 			var label = glyph.attr('title') || link.attr('title') || $.trim(link.text());
 
 			if (label != '' && link.find('.iconLabel').length == 0) {

@@ -120,8 +120,9 @@
 	white-space: nowrap;
 }
 
-/* Glyphs stacked directly above one another in a fixed-width right-hand column. */
-.graphDrillDownToggle.open .iconWrapper .iconLink .drillDown {
+/* Glyphs stacked directly above one another in a fixed-width right-hand column;
+   targets any glyph <i> so plugin icons without the drillDown class align too. */
+.graphDrillDownToggle.open .iconWrapper .iconLink > i {
 	display: table-cell;
 	width: 16px;
 	padding: 2px 4px;

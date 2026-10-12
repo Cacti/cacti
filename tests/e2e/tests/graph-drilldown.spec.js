@@ -9,7 +9,7 @@ require('./fixture-coverage').collectCoverage(test);
 
 test.beforeEach(async ({ page }) => {
 	await page.setContent('<style>.graphWrapperOuter {margin:20px;width:400px}.graphimage {width:400px;height:60px;background:gray}.iconLink {display:block;height:25px} </style>' +
-		[1, 2].map(id => `<div class="graphWrapperOuter" id="g${id}"><div><div class="graphimage"></div><div class="graphDrillDownToggle"><span class="graphDrillDownMenu" role="button" tabindex="0" aria-label="Graph Actions" aria-expanded="false">Menu</span><div class="iconWrapper"><a class="iconLink" href="#"><i class="drillDown" title="Action tooltip">A</i></a><br><a class="iconLink" href="#"><i class="drillDown" title="Export data">E</i></a><br><a class="iconLink" href="#"><i class="drillDown" title="SpikeKill spikes">S</i></a></div></div></div></div>`).join('') + '<button id="outside">Outside</button>');
+		[1, 2].map(id => `<div class="graphWrapperOuter" id="g${id}"><div><div class="graphimage"></div><div class="graphDrillDownToggle"><span class="graphDrillDownMenu" role="button" tabindex="0" aria-label="Graph Actions" aria-expanded="false">Menu</span><div class="iconWrapper"><a class="iconLink" href="#"><i class="drillDown" title="Action tooltip">A</i></a><br><a class="iconLink" href="#"><i class="drillDown" title="Export data">E</i></a><br><a class="iconLink" href="#"><i class="drillDown" title="SpikeKill spikes">S</i></a><br><a class="iconLink" href="#"><i class="fa fa-eye" title="Add to Dashboard">D</i></a></div></div></div></div>`).join('') + '<button id="outside">Outside</button>');
 	await page.addStyleTag({ path: path.join(root, 'include/css/graph_drilldown.css') });
 	await page.addScriptTag({ path: path.join(root, 'include/js/jquery.js') });
 	const source = fs.readFileSync(path.join(root, 'include/layout.js'), 'utf8');
@@ -108,10 +108,12 @@ test('opening a strip labels each action glyph with its tooltip text once', asyn
 	await menu.click();
 
 	const labels = page.locator('#g1 .iconWrapper .iconLabel');
-	await expect(labels).toHaveCount(3);
+	await expect(labels).toHaveCount(4);
 	await expect(labels.nth(0)).toHaveText('Action tooltip');
 	await expect(labels.nth(1)).toHaveText('Export data');
 	await expect(labels.nth(2)).toHaveText('SpikeKill spikes');
+	// A plugin glyph without the drillDown class is still labelled from its title.
+	await expect(labels.nth(3)).toHaveText('Add to Dashboard');
 
 	// The row carries the hover tooltip and the glyph's duplicate is dropped.
 	const firstLink = page.locator('#g1 .iconWrapper .iconLink').first();
@@ -124,7 +126,7 @@ test('opening a strip labels each action glyph with its tooltip text once', asyn
 	await menu.click();
 	await page.locator('#g1 .graphimage').hover();
 	await menu.click();
-	await expect(page.locator('#g1 .iconWrapper .iconLabel')).toHaveCount(3);
+	await expect(page.locator('#g1 .iconWrapper .iconLabel')).toHaveCount(4);
 });
 
 test('touch users can see and activate the hamburger without hover', async ({ browser }) => {
