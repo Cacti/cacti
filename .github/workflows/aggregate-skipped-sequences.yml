@@ -1,0 +1,88 @@
+name: Aggregate skipped sequences
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - 'lib/api_aggregate.php'
+      - 'lib/database.php'
+      - 'tests/integration/fixtures/aggregate_skipped_sequences.php'
+      - '.github/workflows/aggregate-skipped-sequences.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'lib/api_aggregate.php'
+      - 'lib/database.php'
+      - 'tests/integration/fixtures/aggregate_skipped_sequences.php'
+      - '.github/workflows/aggregate-skipped-sequences.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  skipped-sequences:
+    name: PHP ${{ matrix.php }} / ${{ matrix.database }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.5']
+        database: ['mariadb:10.11', 'mysql:8.4']
+        include:
+          - database: 'mariadb:10.11'
+            digest: '7db29378d4fdab73f8123bbc2b48905c90d1a4b00cf848b028f1e81e623257f2'
+          - database: 'mysql:8.4'
+            digest: '6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242'
+    services:
+      database:
+        image: ${{ matrix.database }}@sha256:${{ matrix.digest }}
+        env:
+          MYSQL_DATABASE: cacti_aggregate_skip_test
+          MYSQL_ROOT_PASSWORD: fixture-password
+          MYSQL_ROOT_HOST: '%'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pfixture-password"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          extensions: pdo_mysql, mbstring, gd, intl, gmp, ldap, sockets, xml, sqlite3
+          tools: composer:2.10.3
+      - name: Install locked dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Seed disposable database
+        env:
+          MYSQL_PWD: fixture-password
+        run: |
+          set -euo pipefail
+          mysql --protocol=TCP -h 127.0.0.1 -u root cacti_aggregate_skip_test < cacti.sql
+          cp include/config.php.dist include/config.php
+          cat >> include/config.php <<'PHP'
+          $database_hostname = '127.0.0.1';
+          $database_default = 'cacti_aggregate_skip_test';
+          $database_username = 'root';
+          $database_password = 'fixture-password';
+          PHP
+          # PHP variables must reach PHP unchanged.
+          # shellcheck disable=SC2016
+          php -r '
+          require "include/config.php";
+          $db = new PDO("mysql:host=127.0.0.1;dbname=cacti_aggregate_skip_test", $database_username, $database_password);
+          $db->prepare("UPDATE version SET cacti = ?")->execute([trim(file_get_contents("include/cacti_version"))]);
+          $db->exec("REPLACE INTO settings (name, value) VALUES (\"install_complete\", \"1\")");
+          '
+      - name: Verify production aggregate skip filters
+        env:
+          CACTI_AGGREGATE_SKIP_TEST: '1'
+        run: php -d auto_prepend_file= tests/integration/fixtures/aggregate_skipped_sequences.php

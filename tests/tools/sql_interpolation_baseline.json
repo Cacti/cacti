@@ -23,7 +23,7 @@
     "install/upgrades/1_2_17.php": 1,
     "install/upgrades/1_3_0.php": 1,
     "lib/aggregate.php": 5,
-    "lib/api_aggregate.php": 5,
+    "lib/api_aggregate.php": 3,
     "lib/api_automation.php": 9,
     "lib/api_device.php": 21,
     "lib/api_graph.php": 8,
