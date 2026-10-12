@@ -1,4 +1,5 @@
 """Exercise actual Git changes, including rename/deletion and missing bases."""
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -43,6 +44,11 @@ class ScopeTests(unittest.TestCase):
         self.assertEqual(result["run"], "true")
         self.assertEqual(result["full"], "true")
         self.assertEqual(result["refs"], '["develop", "1.2.x"]')
+
+    def test_release_includes_minimum_maintenance_runtime(self):
+        with patch.dict(os.environ, {"TRACK": "release/1.2.32"}):
+            matrix = json.loads(select("release", "", "a" * 40)["matrix"])
+        self.assertEqual([item["php"] for item in matrix["include"]], ["8.2", "8.3", "8.4"])
 
     def test_manual_quick_and_new_branch(self):
         with patch.dict(os.environ, {"FULL": "false"}):

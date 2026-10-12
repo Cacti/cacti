@@ -36,7 +36,7 @@ def select(event, base, head):
     matrix = {"include": [
         {"ref": ref, "php": php}
         for ref in refs
-        for php in (["8.2", "8.3", "8.4"] if (ref == "1.2.x" or os.getenv("TRACK") == "1.2.x") else ["8.3", "8.4"])
+        for php in (["8.2", "8.3", "8.4"] if (event == "release" or ref == "1.2.x" or os.getenv("TRACK") == "1.2.x") else ["8.3", "8.4"])
     ]}
     return {"run": str(run).lower(), "full": str(full).lower(), "refs": json.dumps(refs), "matrix": json.dumps(matrix)}
 
