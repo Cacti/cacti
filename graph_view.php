@@ -661,10 +661,10 @@ case 'list':
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						<?php print __('Search');?>
+						<label for='rfilter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
@@ -682,7 +682,7 @@ case 'list':
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php html_site_filter(get_request_var('site_id'));?>
 					<?php
@@ -696,7 +696,7 @@ case 'list':
 					html_location_filter(get_request_var('location'), '', $loc_where);
 					?>
 					<td>
-						<?php print __('Template');?>
+						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='graph_template_id' multiple class='select2-multi-count'
@@ -739,7 +739,7 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						<?php print __('Graphs');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>

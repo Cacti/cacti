@@ -385,6 +385,7 @@ $selectedTheme = get_selected_theme();
 	<form method='post' action='graph_realtime.php' id='gform'>
 		<div id='rtfilter' class='cactiTable center'>
 			<div class='filterTable even'>
+				<label for='graph_start'><?php print __('Presets');?></label>
 				<select id='graph_start' onChange='imageOptionsChanged("timespan")'>
 					<?php
 					foreach ($realtime_window as $interval => $text) {
@@ -394,6 +395,7 @@ $selectedTheme = get_selected_theme();
 					}
 					?>
 				</select>
+				<label for='ds_step'><?php print __('Refresh Interval');?></label>
 				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
 					$min_refresh = read_config_option('realtime_interval');
@@ -406,6 +408,7 @@ $selectedTheme = get_selected_theme();
 					}
 				?>
 				</select>
+				<label for='size'><?php print __('Size');?></label>
 				<select id='size' onChange='imageOptionsChanged("interval")'>
 					<?php
 					foreach ($realtime_sizes as $key => $value) {
