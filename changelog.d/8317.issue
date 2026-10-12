@@ -1,0 +1,1 @@
+Allow repeated forced upgrades after legacy LDAP migration and preserve the installed version when a replay fails
