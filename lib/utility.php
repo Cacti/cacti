@@ -2200,8 +2200,10 @@ function memory_bytes(mixed $val) : mixed {
 	switch($last) {
 		case 'g':
 			$val *= 1024;
+			// Fall through: gigabytes also need the megabyte and kilobyte multipliers.
 		case 'm':
 			$val *= 1024;
+			// Fall through: megabytes also need the kilobyte multiplier.
 		case 'k':
 			$val *= 1024;
 	}
