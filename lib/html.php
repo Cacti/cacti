@@ -3315,6 +3315,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/js/purify.js');
+	print get_md5_include_js('include/js/cacti-rendering.js');
 	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/js/ui-notices.js');
 	print get_md5_include_js('include/js/lzjs.js');

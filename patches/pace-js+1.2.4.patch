@@ -2,6 +2,10 @@ diff --git a/node_modules/pace-js/pace.js b/node_modules/pace-js/pace.js
 index 0831a47..092b731 100644
 --- a/node_modules/pace-js/pace.js
 +++ b/node_modules/pace-js/pace.js
+@@ -118,1 +118,2 @@
+-					if (!__hasProp.call(source, key)) continue;
++					if (!__hasProp.call(source, key)) continue;
++					if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
 @@ -273,7 +273,7 @@
  				}
  				this.el = document.createElement('div');

@@ -51,6 +51,8 @@ const tablesorterJquery4 = content => content
 	.replace(/\$\.isWindow\(\s*([^()]+?)\s*\)/g, '($1 != null && $1 === $1.window)')
 	.replace(/\$\.isArray\(/g, 'Array.isArray(')
 	.replace(/\$\.parseJSON\(/g, 'JSON.parse(')
+	// jQuery 4 no longer exposes Array.prototype.sort on collections.
+	.replace(/\$input\.sort\(/g, 'Array.prototype.sort.call($input, ')
 	// the bare `if ($.parseJSON)` feature-check references an API jQuery 4 removed; test native JSON.parse
 	.replace(/if \(\$\.parseJSON\)/g, 'if (window.JSON && window.JSON.parse)')
 	// drop the redundant `str &&` guard inside the already-truthy `str ?` branch that CodeQL flags
