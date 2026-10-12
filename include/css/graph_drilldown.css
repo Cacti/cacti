@@ -88,13 +88,47 @@
 .graphDrillDownToggle.open .iconWrapper {
 	display: inline-block;
 	margin: 0 3px 3px 3px;
-	padding: 5px 7px;
-	border-radius: 3px;
+	padding: 4px;
+	border-radius: 4px;
 	background: rgba(0, 0, 0, 0.82);
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-	text-align: center;
+	text-align: left;
+	white-space: nowrap;
+}
+
+/* initGraphDrilldown() rewrites the strip into one glyph+label row per action
+   and removes the markup's <br> separators; hide any that remain defensively. */
+.graphDrillDownToggle .iconWrapper br {
+	display: none;
 }
 
 .graphDrillDownToggle.open .iconWrapper .iconLink {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 3px 7px;
+	border-radius: 3px;
+	line-height: 1.4;
+	color: #ffffff;
 	text-decoration: none;
+	cursor: pointer;
+}
+
+.graphDrillDownToggle.open .iconWrapper .iconLink:hover,
+.graphDrillDownToggle.open .iconWrapper .iconLink:focus-visible {
+	background: rgba(255, 255, 255, 0.14);
+	outline: none;
+}
+
+/* Fix the glyph column so every label starts at the same horizontal offset. */
+.graphDrillDownToggle.open .iconWrapper .iconLink .drillDown {
+	flex: 0 0 auto;
+	width: 16px;
+	text-align: center;
+}
+
+.graphDrillDownToggle.open .iconWrapper .iconLabel {
+	flex: 1 1 auto;
+	font-size: 12px;
+	color: #ffffff;
 }

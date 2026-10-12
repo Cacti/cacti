@@ -4285,6 +4285,42 @@ function initGraphDrilldown() {
 		}
 	}
 
+	// Turn the icon strip into a labelled menu the first time a graph's strip is
+	// opened: each action becomes a row of its glyph followed by the text taken
+	// from the glyph's title.  Done here (not at page load) so only the single
+	// open strip is touched - never all graphs - and only once per strip.  The
+	// core icons and plugin-contributed ones share the .iconLink / inner <i title>
+	// convention, so a plugin's icons are labelled without the plugin changing.
+	function labelGraphDrilldownIcons(container) {
+		var wrapper = container.find('.iconWrapper');
+
+		if (wrapper.data('ddLabeled')) {
+			return;
+		}
+
+		wrapper.find('br').remove();
+
+		wrapper.find('.iconLink').each(function () {
+			var link  = $(this);
+			var glyph = link.find('.drillDown').first();
+			var label = glyph.attr('title') || link.attr('title') || $.trim(link.text());
+
+			if (label == '') {
+				return;
+			}
+
+			// Keep a single hover tooltip on the row and drop the glyph's duplicate.
+			link.attr('title', label);
+			glyph.removeAttr('title').attr('aria-hidden', 'true');
+
+			if (link.find('.iconLabel').length == 0) {
+				link.append($('<span class="iconLabel"></span>').text(label));
+			}
+		});
+
+		wrapper.data('ddLabeled', true);
+	}
+
 	$(document).on('click.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -4301,6 +4337,7 @@ function initGraphDrilldown() {
 			container.addClass('open');
 			container.closest('.graphWrapperOuter').addClass('graphDrillActive');
 			menu.attr('aria-expanded', 'true');
+			labelGraphDrilldownIcons(container);
 		} else {
 			closeGraphDrilldown(container);
 		}
