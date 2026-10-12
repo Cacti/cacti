@@ -540,30 +540,11 @@ $.fn.getObjectDetails = function () {
 };
 
 $.fn.serializeForm = function () {
-	var arrayData, objectData, hiddenSelectData;
+	var arrayData, objectData;
 	arrayData = this.serializeArray();
 
-	/* for some reason the new selectmenus are not serialized */
-	hiddenSelectData = $('select:hidden').serializeArray();
-
-	$.each(hiddenSelectData, function(id, fd) {
-		var found = false;
-
-		$.each(arrayData, function(aid, afd) {
-			if (fd.name == afd.name) {
-				found = true;
-			}
-		});
-
-		if (!found) {
-			arrayData = arrayData.concat(fd);
-		}
-	});
-
-	formID = $(this).attr('id');
-
 	arrayData = arrayData.concat(
-		$('#' + formID + ' input[type=checkbox]:not(:checked)').map(function () {
+		this.find('input[type=checkbox]:not(:checked):enabled[name]').map(function () {
 			return { "name": this.name, "value": $(this).is(':checked') ? 'on' : '' }
 		}).get());
 
@@ -593,27 +574,8 @@ $.fn.serializeForm = function () {
 };
 
 $.fn.serializeObject = function () {
-	var arrayData, objectData, formID, hiddenSelectData;
+	var arrayData, objectData;
 	arrayData = this.serializeArray();
-
-	/* for some reason the new selectmenus are not serialized */
-	hiddenSelectData = $('select:hidden').serializeArray();
-
-	$.each(hiddenSelectData, function(id, fd) {
-		var found = false;
-
-		$.each(arrayData, function(aid, afd) {
-			if (fd.name == afd.name) {
-				found = true;
-			}
-		});
-
-		if (!found) {
-			arrayData = arrayData.concat(fd);
-		}
-	});
-
-	formID = $(this).attr('id');
 
 	objectData = {};
 
@@ -1007,7 +969,8 @@ function applySkin() {
 	}
 
 	// Setup blinking
-	setInterval(blinkMe, 1200);
+	clearInterval(applySkin.blinkTimer);
+	applySkin.blinkTimer = setInterval(blinkMe, 1200);
 
 	function blinkMe() {
 		$('.blink').each(function() {
@@ -6092,7 +6055,7 @@ function formValidate(formId, href) {
 
 	var formObj = $(formId);
 	if (formObj.length) {
-		formArray[formId] = $(formObj).serializeForm();
+		formArray[formObj.attr('id')] = formObj.serializeForm();
 
 		$(formObj).find('input[type="email"]').each(function () {
 			var name = $(this).attr('id');
@@ -6148,7 +6111,7 @@ function formValidate(formId, href) {
 					$("div.error").hide();
 				}
 
-				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enabled');
+				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enable');
 			}
 		});
 	}

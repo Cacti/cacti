@@ -375,7 +375,7 @@ function setupTheme() {
 		};
 
 		/* process table elements and transform to modern layout */
-		$authTable.find("input, button, label").each(function() {
+		$authTable.find('input, button, label, select, textarea, a').each(function() {
 			const $el = $(this);
 			const type = $el.attr('type');
 			const id = $el.attr('id');
@@ -391,7 +391,7 @@ function setupTheme() {
 					$(`<i class="ti ti-lock" data-helper="${id}" data-func="togglePwdInputField"></i>`).insertAfter($el);
 				}
 			} else {
-				$el.appendTo($authForm);
+				$el.add($el.next('.select2-container')).appendTo($authForm);
 			}
 		});
 
