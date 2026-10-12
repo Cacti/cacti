@@ -70,3 +70,19 @@ test('incomplete timestamps block later timestamps across batch boundaries', fun
 	$r = poller_output_probe('boundary-partial');
 	expect($r['first'])->toBe(39999)->and($r['second'])->toBe(0)->and($r['remaining'])->toBe(3);
 });
+
+test('failed timestamps block later timestamps across batch boundaries', function () {
+	$r = poller_output_probe('boundary-failure');
+	expect($r['first'])->toBe(39999)->and($r['second'])->toBe(0)->and($r['remaining'])->toBe(2);
+});
+
+test('a failed delete never leaves only part of a stored timestamp group queued', function () {
+	$r = poller_output_probe('delete-group');
+	expect($r['first'])->toBe(1001)->and($r['remaining'])->toBe(1);
+	expect($r['rows'][0]['local_data_id'])->toBe(1001);
+});
+
+test('a failed sample succeeds on a later pass without being lost or duplicated', function () {
+	$r = poller_output_probe('retry-failed');
+	expect($r['first'])->toBe(0)->and($r['second'])->toBe(1)->and($r['remaining'])->toBe(0);
+});

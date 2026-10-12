@@ -784,24 +784,29 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
  * @param bool                            $staged             Every Boost insert succeeded.
  */
 function poller_acknowledge_output($results, $successful_updates, $staged) {
-	$params = [];
-	$tuples = [];
+	$params     = [];
+	$tuples     = [];
+	$last_group = null;
 
 	foreach ($results as $item) {
 		if (!$staged && empty($successful_updates[$item['rrd_path']][$item['unix_time']])) {
 			continue;
 		}
 
-		$tuples[] = '(?, ?, ?)';
-		array_push($params, (int) $item['local_data_id'], $item['rrd_name'], $item['time']);
+		$group = $item['local_data_id'] . ':' . $item['time'];
 
-		if (count($tuples) === 1000) {
+		// A failed DELETE must not leave half of a stored timestamp group queued.
+		if (count($tuples) >= 1000 && $group !== $last_group) {
 			if (!db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' . implode(',', $tuples) . ')', $params)) {
 				return;
 			}
 			$tuples = [];
 			$params = [];
 		}
+
+		$tuples[]   = '(?, ?, ?)';
+		$last_group = $group;
+		array_push($params, (int) $item['local_data_id'], $item['rrd_name'], $item['time']);
 	}
 
 	if ($tuples !== []) {
@@ -1077,6 +1082,13 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 
 		if (boost_poller_on_demand($completed, $staged)) {
 			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe, $unused_cache, $successful_updates);
+		}
+
+		// Carry failed timestamps as well as incomplete ones when a file spans batches.
+		foreach ($completed as $item) {
+			if (!$staged && empty($successful_updates[$item['rrd_path']][$item['unix_time']])) {
+				$blocked_after[$item['rrd_path']] = min($blocked_after[$item['rrd_path']] ?? $item['unix_time'], $item['unix_time']);
+			}
 		}
 
 		poller_acknowledge_output($completed, $successful_updates, $staged);
