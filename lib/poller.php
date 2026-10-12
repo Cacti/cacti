@@ -821,24 +821,29 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
  * @param bool                            $staged             Every Boost insert succeeded.
  */
 function poller_acknowledge_output(array $results, array $successful_updates, bool $staged) : void {
-	$params = [];
-	$tuples = [];
+	$params     = [];
+	$tuples     = [];
+	$last_group = null;
 
 	foreach ($results as $item) {
 		if (!$staged && empty($successful_updates[$item['rrd_path']][$item['unix_time']])) {
 			continue;
 		}
 
-		$tuples[] = '(?, ?, ?)';
-		array_push($params, (int) $item['local_data_id'], $item['rrd_name'], $item['time']);
+		$group = $item['local_data_id'] . ':' . $item['time'];
 
-		if (count($tuples) === 1000) {
+		// A failed DELETE must not leave half of a stored timestamp group queued.
+		if (count($tuples) >= 1000 && $group !== $last_group) {
 			if (!db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' . implode(',', $tuples) . ')', $params)) {
 				return;
 			}
 			$tuples = [];
 			$params = [];
 		}
+
+		$tuples[]   = '(?, ?, ?)';
+		$last_group = $group;
+		array_push($params, (int) $item['local_data_id'], $item['rrd_name'], $item['time']);
 	}
 
 	if ($tuples !== []) {

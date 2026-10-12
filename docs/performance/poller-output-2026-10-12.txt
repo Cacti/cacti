@@ -16,15 +16,15 @@ one trailing source's incomplete timestamp is carried between batches. Deleted s
 can be discarded; incomplete live sources are retained. Hooks/statistics can run again on
 a retry, so this provides retryable storage, not exactly-once plugin side effects.
 
-15 behavioral regressions cover complete/partial timestamps, concurrent arrivals, RRD
+18 behavioral regressions cover complete/partial timestamps, concurrent arrivals, RRD
 failure and mixed outcomes, mapping fanout/orphans, boundaries, incomplete backlogs,
-Boost success/redirect/failure, delete failure and metadata retry. Nine additional local
+Boost success/redirect/failure, delete failure, group-atomic deletion, metadata retry and failed-write retry. Nine additional local
 MariaDB 10.11.19/RRDtool 1.11.0 scenarios checked real SQL deletion and real RRD timestamps.
-Full Unit on PHP 8.5.11: 2563 passed, 4 existing skips, 7787 assertions.
+Full Unit on PHP 8.5.11: 2566 passed, 4 existing skips, 7796 assertions.
 
 Synthetic benchmark: 10000 invalid rows, 1000 templates, five alternating rounds.
 CLI OPcache enabled, JIT disabled, PHP 8.5.11, macOS arm64.
-Median 381.34 ms before / 16.34 ms after: 95.7% less time.
+Median 378.20 ms before / 18.79 ms after: 95.0% less time.
 Fixtures, interpreter and I/O adapters contribute to these timings; this does not measure
 production polling, enabled plugins/statistics, database latency or actual RRD throughput.
 Existing bounded scale harness completed 150k, 1M and 2.5M sources without a growing batch.
@@ -41,4 +41,4 @@ Reproduce:
 The JSON records raw rotating samples and source digests. Runtime selected through mise.
 A separate 1.2.x backport preserves its existing Boost no-inline-fallback policy, RRD
 validation and third metadata-cache argument. It excludes the lazy template index.
-The pending RRDtool rewrite #8012 also needs the optional update acknowledgements.
+The same polling fixes are carried into the draft RRDtool rewrite #8012.

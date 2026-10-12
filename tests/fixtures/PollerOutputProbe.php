@@ -84,7 +84,7 @@ function db_execute_prepared($sql, $params = []) : bool {
 	global $state, $scenario;
 	$state['delete_calls']++;
 
-	if ($scenario === 'delete-failure') {
+	if ($scenario === 'delete-failure' || ($scenario === 'delete-group' && $state['delete_calls'] === 2)) {
 		return false;
 	}
 	$keys = [];
@@ -182,7 +182,7 @@ function rrdtool_execute($command, ...$args) : string|false {
 		$state['arrived'] = true;
 	}
 
-	if (($scenario === 'boundary-failure' && str_contains($command, 'source-40000') && str_contains($command, '1700000000:')) || in_array($scenario, ['failed', 'boost-failure'], true) || ($scenario === 'mixed' && str_contains($command, 'source-1'))) {
+	if (($scenario === 'retry-failed' && $state['rrd_calls'] === 1) || ($scenario === 'boundary-failure' && str_contains($command, 'source-40000') && str_contains($command, '1700000000:')) || in_array($scenario, ['failed', 'boost-failure'], true) || ($scenario === 'mixed' && str_contains($command, 'source-1'))) {
 		return false;
 	}
 
@@ -209,6 +209,13 @@ if ($scenario === 'partial') {
 	$state['rows'] = [probe_row(1, $time, 'in', '42', 2), probe_row(1, $time, 'out', '43', 2), probe_row(1, $time + 60, 'in', '44', 2)];
 } elseif ($scenario === 'early-partial') {
 	$state['rows'] = [probe_row(1, $time, 'in', '42', 2), probe_row(1, $time + 60, 'in', '43', 2), probe_row(1, $time + 60, 'out', '44', 2)];
+} elseif ($scenario === 'delete-group') {
+	for ($i = 1; $i <= 999; $i++) {
+		$state['rows'][] = probe_row($i, $time, 'in', '42');
+	}
+	$state['rows'][] = probe_row(1000, $time, 'in', '42', 2);
+	$state['rows'][] = probe_row(1000, $time, 'out', '43', 2);
+	$state['rows'][] = probe_row(1001, $time, 'in', '44');
 } elseif ($scenario === 'mixed') {
 	$state['rows'] = [probe_row(1, $time, 'in', '42'), probe_row(1, $time + 60, 'in', '43'), probe_row(2, $time, 'in', '44')];
 } elseif (str_starts_with($scenario, 'fanout')) {
@@ -236,7 +243,7 @@ $pipe   = null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata'], true)) {
+if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'retry-failed'], true)) {
 	$second = process_poller_output($pipe);
 }
 
