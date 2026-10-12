@@ -819,6 +819,7 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 	global $config, $debug;
 
 	static $rrd_field_names = array();
+	static $rrd_field_names_loaded = false;
 
 	/* per-data-source metadata caches, keyed by local_data_id and held static so each data
 	 * source is queried at most once per poller process (not once per completion-wait re-entry):
@@ -831,7 +832,7 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 
 	$rrds_processed = 0;
 
-	if (!cacti_sizeof($rrd_field_names)) {
+	if (!$rrd_field_names_loaded) {
 		$template_fields = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 			CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
 			FROM poller_data_template_field_mappings');
@@ -840,6 +841,7 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 			return 0;
 		}
 		$rrd_field_names = array_rekey($template_fields, 'keyname', array('data_source_name'));
+		$rrd_field_names_loaded = true;
 	}
 
 	if (cacti_sizeof($results)) {

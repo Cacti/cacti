@@ -19,6 +19,36 @@ test('failed RRDtool writes retain their queue rows', function () {
 	$r = poller_output_probe('failed');
 	expect($r['first'])->toBe(0)->and($r['remaining'])->toBe(1)->and($r['delete_calls'])->toBe(0);
 });
+test('a missing proxy response retains queued samples', function () {
+	$r = poller_output_probe('proxy-null');
+	expect($r['first'])->toBe(0)->and($r['remaining'])->toBe(1)->and($r['delete_calls'])->toBe(0);
+});
+test('local transport failures retain queued samples', function (string $scenario) {
+	$r = poller_output_probe($scenario);
+	expect($r['first'])->toBe(0)->and($r['remaining'])->toBe(1)->and($r['delete_calls'])->toBe(0);
+})->with(['local-error', 'local-empty', 'local-partial'])->skip(PHP_OS_FAMILY === 'Windows');
+
+test('a silent local process times out without acknowledging queued samples', function () {
+	$start = hrtime(true);
+	$r = poller_output_probe('local-timeout');
+	expect($r['first'])->toBe(0)->and($r['remaining'])->toBe(1)->and($r['delete_calls'])->toBe(0);
+	expect((hrtime(true) - $start) / 1000000000)->toBeLessThan(40);
+})->skip(PHP_OS_FAMILY === 'Windows');
+
+test('acknowledged local updates reuse one process across timestamps', function () {
+	$r = poller_output_probe('local-success');
+	expect($r['first'])->toBe(2)->and($r['remaining'])->toBe(0)->and($r['local_starts'])->toBe(1);
+})->skip(PHP_OS_FAMILY === 'Windows');
+
+test('local failures close the connection and retry retained samples on a new process', function () {
+	$r = poller_output_probe('local-retry');
+	expect($r['first'])->toBe(0)->and($r['second'])->toBe(1)->and($r['remaining'])->toBe(0)->and($r['local_starts'])->toBe(2);
+})->skip(PHP_OS_FAMILY === 'Windows');
+
+test('tracked updates finish creating missing files before sending updates', function () {
+	$r = poller_output_probe('local-create');
+	expect($r['first'])->toBe(1)->and($r['remaining'])->toBe(0)->and($r['create_calls'])->toBe(1)->and($r['local_starts'])->toBe(1);
+})->skip(PHP_OS_FAMILY === 'Windows');
 test('one failing file stops before later timestamps while other files can succeed', function () {
 	$r = poller_output_probe('mixed');
 	expect($r['first'])->toBe(1)->and($r['remaining'])->toBe(2)->and($r['rrd_calls'])->toBe(2);
@@ -58,6 +88,16 @@ test('failed acknowledgement leaves stored samples available for a safe retry', 
 });
 test('failed template metadata reads retain samples and retry on the next pass', function () {
 	$r = poller_output_probe('metadata');
+	expect($r['first'])->toBe(0)->and($r['second'])->toBe(1)->and($r['mapping_queries'])->toBe(2)->and($r['remaining'])->toBe(0);
+});
+
+test('empty template mappings remain cached across polling passes', function () {
+	$r = poller_output_probe('empty-mappings');
+	expect($r['mapping_queries'])->toBe(1);
+});
+
+test('a failed mapping read retries and then caches an empty successful result', function () {
+	$r = poller_output_probe('metadata-empty');
 	expect($r['first'])->toBe(0)->and($r['second'])->toBe(1)->and($r['mapping_queries'])->toBe(2)->and($r['remaining'])->toBe(0);
 });
 
