@@ -80,7 +80,7 @@ test('mapping expansion applies orphan exclusions to each field', function () {
 test('batch boundaries defer a whole timestamp group', function () {
 	$r = poller_output_probe('boundary');
 	expect($r['first'])->toBe(39999)->and($r['second'])->toBe(1)->and($r['remaining'])->toBe(0)->and($r['queries'])->toBe(2);
-	expect($r['orphan_queries'])->toBe(41);
+	expect($r['orphan_queries'])->toBe(1);
 });
 test('large incomplete backlogs return without recursion and advance past the first batch', function () {
 	$r = poller_output_probe('backlog');
@@ -135,7 +135,7 @@ test('failed timestamps block later timestamps across batch boundaries', functio
 test('a failed delete never leaves only part of a stored timestamp group queued', function () {
 	$r = poller_output_probe('delete-group');
 	expect($r['first'])->toBe(1001)->and($r['remaining'])->toBe(1);
-	expect($r['orphan_queries'])->toBe(2);
+	expect($r['orphan_queries'])->toBe(1);
 	expect($r['rows'][0]['local_data_id'])->toBe(1001);
 });
 

@@ -816,40 +816,33 @@ function poller_acknowledge_output($results, $successful_updates, $staged) {
 
 /** Prefetch source-specific fields in bounded queries, including numeric outputs. */
 function poller_prefetch_source_fields($results, &$unused_cache, &$nt_cache) {
-	$templated = $manual = array();
-
+	static $unused_sources = null;
+	if ($unused_sources === null) {
+		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
+			FROM data_input AS di
+			INNER JOIN (SELECT data_input_id FROM data_input_fields
+				WHERE input_output = "out" AND update_rra = "on"
+				GROUP BY data_input_id HAVING COUNT(*) > 1) AS multi
+			ON multi.data_input_id = di.id
+			INNER JOIN data_template_data AS dtd ON dtd.data_input_id = di.id
+			INNER JOIN data_local AS dl ON dl.id = dtd.local_data_id AND dl.snmp_query_id = 0
+			INNER JOIN data_template_rrd AS dtr ON dtr.local_data_id = dl.id
+			LEFT JOIN graph_templates_item AS gti ON gti.task_item_id = dtr.id
+			WHERE di.type_id IN (?, ?)
+			AND dtr.data_template_id > 0 AND dtr.local_data_id > 0
+			AND gti.task_item_id IS NULL', array(DATA_INPUT_TYPE_SCRIPT, DATA_INPUT_TYPE_PHP_SCRIPT_SERVER));
+		if ($rows === false) return false;
+		$unused_sources = array();
+		foreach ($rows as $row) {
+			$unused_sources[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
+		}
+	}
+	$unused_cache = $unused_sources;
+	$manual = array();
 	foreach ($results as $item) {
-		if ($item['data_template_id'] > 0) {
-			$templated[(int) $item['local_data_id']] = true;
-		} else {
-			$manual[(int) $item['local_data_id']] = true;
-		}
+		if ($item['data_template_id'] == 0) $manual[(int) $item['local_data_id']] = true;
 	}
-
-	/* Retain only this batch's sources, rather than a polling-run-sized cache. */
-	$unused_cache = array_intersect_key($unused_cache, $templated);
 	$nt_cache = array_intersect_key($nt_cache, $manual);
-
-	foreach (array_chunk(array_keys(array_diff_key($templated, $unused_cache)), 1000) as $ids) {
-		$placeholders = implode(',', array_fill(0, count($ids), '?'));
-		$fields = db_fetch_assoc_prepared("SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
-			FROM data_template_rrd AS dtr
-			LEFT JOIN graph_templates_item AS gti ON dtr.id = gti.task_item_id
-			WHERE dtr.local_data_id IN ($placeholders)
-			AND gti.task_item_id IS NULL", $ids);
-
-		if ($fields === false) {
-			return false;
-		}
-
-		foreach ($ids as $id) {
-			$unused_cache[$id] = array();
-		}
-
-		foreach ($fields as $field) {
-			$unused_cache[$field['local_data_id']][$field['data_source_name']] = $field['data_source_name'];
-		}
-	}
 
 	foreach (array_chunk(array_keys(array_diff_key($manual, $nt_cache)), 1000) as $ids) {
 		$placeholders = implode(',', array_fill(0, count($ids), '?'));
@@ -956,7 +949,7 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 				/* Source-specific fields were prefetched for this bounded batch. */
 				if ($data_template_id > 0) {
 
-					$unused_data_source_names = $unused_cache[$local_data_id];
+					$unused_data_source_names = $unused_cache[$local_data_id] ?? array();
 				} else {
 					$unused_data_source_names = array();
 				}
@@ -1015,7 +1008,7 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 				/* Invalid output uses the same prefetched source-specific fields. */
 				if ($data_template_id > 0) {
 
-					$unused_data_source_names = $unused_cache[$local_data_id];
+					$unused_data_source_names = $unused_cache[$local_data_id] ?? array();
 
 					/* expected field names for this template come from the static template cache */
 					$nt_rrd_field_names = array();
