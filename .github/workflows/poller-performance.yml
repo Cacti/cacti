@@ -101,7 +101,7 @@ jobs:
           php -d memory_limit=512M tests/performance/poller.php scale 150000 > performance-results/150000.json
           php -d memory_limit=512M tests/performance/poller.php scale 1000000 > performance-results/1000000.json
           php -d memory_limit=512M tests/performance/poller.php scale 2500000 > performance-results/2500000.json
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: poller-performance-${{ strategy.job-index }}
           path: performance-results
