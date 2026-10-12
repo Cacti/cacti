@@ -816,40 +816,17 @@ function poller_acknowledge_output($results, $successful_updates, $staged) {
 
 /** Prefetch source-specific fields in bounded queries, including numeric outputs. */
 function poller_prefetch_source_fields($results, &$unused_cache, &$nt_cache) {
-	$templated = $manual = array();
-
+	$unused_cache = boost_load_unused_data_source_names(true);
+	if ($unused_cache === false) {
+		return false;
+	}
+	$manual = array();
 	foreach ($results as $item) {
-		if ($item['data_template_id'] > 0) {
-			$templated[(int) $item['local_data_id']] = true;
-		} else {
+		if ($item['data_template_id'] == 0) {
 			$manual[(int) $item['local_data_id']] = true;
 		}
 	}
-
-	/* Retain only this batch's sources, rather than a polling-run-sized cache. */
-	$unused_cache = array_intersect_key($unused_cache, $templated);
 	$nt_cache = array_intersect_key($nt_cache, $manual);
-
-	foreach (array_chunk(array_keys(array_diff_key($templated, $unused_cache)), 1000) as $ids) {
-		$placeholders = implode(',', array_fill(0, count($ids), '?'));
-		$fields = db_fetch_assoc_prepared("SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
-			FROM data_template_rrd AS dtr
-			LEFT JOIN graph_templates_item AS gti ON dtr.id = gti.task_item_id
-			WHERE dtr.local_data_id IN ($placeholders)
-			AND gti.task_item_id IS NULL", $ids);
-
-		if ($fields === false) {
-			return false;
-		}
-
-		foreach ($ids as $id) {
-			$unused_cache[$id] = array();
-		}
-
-		foreach ($fields as $field) {
-			$unused_cache[$field['local_data_id']][$field['data_source_name']] = $field['data_source_name'];
-		}
-	}
 
 	foreach (array_chunk(array_keys(array_diff_key($manual, $nt_cache)), 1000) as $ids) {
 		$placeholders = implode(',', array_fill(0, count($ids), '?'));
@@ -956,7 +933,7 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 				/* Source-specific fields were prefetched for this bounded batch. */
 				if ($data_template_id > 0) {
 
-					$unused_data_source_names = $unused_cache[$local_data_id];
+					$unused_data_source_names = $unused_cache[$local_data_id] ?? array();
 				} else {
 					$unused_data_source_names = array();
 				}
@@ -1015,7 +992,7 @@ function process_poller_output_batch(&$rrdtool_pipe, $results, &$blocked_after =
 				/* Invalid output uses the same prefetched source-specific fields. */
 				if ($data_template_id > 0) {
 
-					$unused_data_source_names = $unused_cache[$local_data_id];
+					$unused_data_source_names = $unused_cache[$local_data_id] ?? array();
 
 					/* expected field names for this template come from the static template cache */
 					$nt_rrd_field_names = array();
@@ -1772,6 +1749,33 @@ function poller_connect_to_remote($poller_id) {
 	return $rcnn_id;
 }
 
+/** Publish exclusions on a remote only when its metadata snapshot is current. */
+function poller_replicate_unused_sources($conn, $poller_id, $generation) {
+	if ($generation === '') {
+		return false;
+	}
+	$rows = db_fetch_assoc_prepared('SELECT u.local_data_id, u.data_source_name
+		FROM poller_data_source_unused AS u
+		INNER JOIN data_local AS dl ON dl.id = u.local_data_id
+		INNER JOIN host AS h ON h.id = dl.host_id
+		WHERE h.poller_id = ? AND h.deleted = ""', array($poller_id));
+	if ($rows === false || !db_begin_transaction($conn)) {
+		return false;
+	}
+	$ok = db_execute('DELETE FROM poller_data_source_unused', true, $conn);
+	foreach ($rows as $row) {
+		$ok = $ok && db_execute_prepared('INSERT INTO poller_data_source_unused (local_data_id, data_source_name) VALUES (?, ?)', array($row['local_data_id'], $row['data_source_name']), true, $conn);
+	}
+	$after = db_fetch_assoc_prepared('SELECT value FROM settings WHERE name = ?', array('poller_unused_cache_generation'));
+	$ok = $ok && isset($after[0]['value']) && $after[0]['value'] === $generation;
+	$ok = $ok && db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array('poller_unused_cache_generation', $generation), true, $conn);
+	if ($ok && db_commit_transaction($conn)) {
+		return true;
+	}
+	db_rollback_transaction($conn);
+	return false;
+}
+
 /**
  * This function sends table changes from the resource cache to the remote database. This happens
  * as a result of a full sync within Cacti. Used as part of Cacti's lib functionality.
@@ -1803,6 +1807,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			AND name NOT LIKE "stats%"
 			AND name != "rrdtool_version"
 			AND name NOT LIKE "poller_replicate%"
+			AND name <> "poller_unused_cache_generation"
 			AND name NOT LIKE "install%"
 			AND name != "poller_enabled"
 			AND name NOT LIKE "md5dirsum%"
@@ -1815,6 +1820,13 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 	}
 
 	// Core tables
+	if ($class == 'all' || $class == 'data') {
+		$unused_generation = db_fetch_assoc_prepared('SELECT value FROM settings WHERE name = ?', array('poller_unused_cache_generation'));
+		if (!db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array('poller_unused_cache_generation', ''), true, $rcnn_id)) {
+			return false;
+		}
+	}
+
 	if ($class == 'all') {
 		$data = db_fetch_assoc('SELECT * FROM automation_graph_rule_items');
 		replicate_out_table($rcnn_id, $data, 'automation_graph_rule_items', $remote_poller_id);
@@ -2030,6 +2042,9 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'graph_templates_item', $remote_poller_id);
+
+
+		poller_replicate_unused_sources($rcnn_id, $remote_poller_id, $unused_generation[0]['value'] ?? '');
 
 		$data = db_fetch_assoc_prepared('SELECT did.*
 			FROM data_input_data AS did

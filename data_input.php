@@ -106,6 +106,10 @@ switch (get_request_var('action')) {
  * @return void No value is returned.
  */
 function form_save() {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $config, $registered_cacti_names;
 
 	if (isset_request_var('save_component_data_input')) {
@@ -406,6 +410,10 @@ function field_remove_confirm() {
  * @return void No value is returned.
  */
 function field_remove() {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $registered_cacti_names;
 
 	/* ================= input validation ================= */

@@ -54,6 +54,14 @@ function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 	global $state, $scenario;
 	if (isset($GLOBALS['handoff_pdo'])) return handoff_fetch($sql, $params);
 
+	if (str_contains($sql, 'SELECT value FROM settings')) {
+		$state['generation_queries'] = ($state['generation_queries'] ?? 0) + 1;
+		if ($state['generation_queries'] === 1) {
+			if ($scenario === 'cache-pending') return [['value' => '']];
+			if ($scenario === 'cache-missing') return [];
+		}
+		return [['value' => 'probe']];
+	}
 	if (str_contains($sql, 'FROM poller_output AS po')) {
 		$state['queries']++;
 
@@ -95,6 +103,13 @@ function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 	return [];
 }
 function db_fetch_assoc($sql) : array|false {
+	global $scenario;
+	if ($scenario === 'cache-read-failure' && str_contains($sql, 'FROM poller_data_source_unused') && empty($GLOBALS['state']['cache_failed'])) {
+		$GLOBALS['state']['cache_failed'] = true;
+		return false;
+	}
+	if (str_contains($sql, 'FROM poller_data_source_unused')) $GLOBALS['state']['cache_reads'] = ($GLOBALS['state']['cache_reads'] ?? 0) + 1;
+	if (str_contains($sql, 'FROM poller_data_source_unused')) return $scenario === 'fanout-orphan' ? [['local_data_id' => 1, 'data_source_name' => 'out']] : [];
 	return db_fetch_assoc_prepared($sql);
 }
 function db_fetch_cell($sql) : int {
@@ -253,7 +268,7 @@ foreach (['rrdtool_function_update', 'rrdtool_execute_acknowledged', 'rrdtool_ac
 	probe_load($root . '/lib/rrd.php', $name);
 }
 
-foreach (['boost_flush_output_batch', 'boost_validate_poller_ownership', 'boost_poller_on_demand'] as $name) {
+foreach (['boost_load_unused_data_source_names', 'boost_flush_output_batch', 'boost_validate_poller_ownership', 'boost_poller_on_demand'] as $name) {
 	probe_load($root . '/lib/boost.php', $name);
 }
 require $root . '/lib/poller.php';
@@ -341,7 +356,7 @@ $pipe   = $scenario === 'local-create' ? fopen('php://temp', 'w+') : null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry', 'manual-query-failure', 'orphan-query-failure', 'integration-manual-retry', 'integration-stage-retry', 'integration-delete-retry'], true)) {
+if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry', 'cache-pending', 'cache-missing', 'cache-read-failure', 'manual-query-failure', 'orphan-query-failure', 'integration-manual-retry', 'integration-stage-retry', 'integration-delete-retry'], true)) {
 	$second = process_poller_output($pipe);
 }
 
@@ -358,4 +373,4 @@ if (isset($handoff_pdo)) {
 	$state['rows'] = handoff_fetch('SELECT local_data_id, rrd_name, time, output FROM poller_output');
 	$state['handoff'] = handoff_verdict();
 }
-print json_encode(['handoff' => ($state['handoff'] ?? null), 'orphan_queries' => ($state['orphan_queries'] ?? 0), 'manual_queries' => ($state['manual_queries'] ?? 0), 'first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'create_calls' => $state['create_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls'], 'local_starts' => isset($probe_rrd_starts) ? substr_count(file_get_contents($probe_rrd_starts), "start\n") : 0], JSON_THROW_ON_ERROR) . "\n";
+print json_encode(['cache_reads' => ($state['cache_reads'] ?? 0), 'handoff' => ($state['handoff'] ?? null), 'orphan_queries' => ($state['orphan_queries'] ?? 0), 'manual_queries' => ($state['manual_queries'] ?? 0), 'first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'create_calls' => $state['create_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls'], 'local_starts' => isset($probe_rrd_starts) ? substr_count(file_get_contents($probe_rrd_starts), "start\n") : 0], JSON_THROW_ON_ERROR) . "\n";

@@ -117,6 +117,10 @@ switch (get_request_var('action')) {
  */
 
 function form_save() {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	if (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('graph_template_id');
@@ -435,6 +439,10 @@ function item_moveup() {
  * @return void No value is returned.
  */
 function item_remove() {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('graph_template_id');

@@ -1261,32 +1261,48 @@ function boost_get_arch_table_names($latest_table = '') {
  * @return array An array of results.
  */
 function boost_get_unused_data_source_names($local_data_id) {
-	static $cache = null;
-
-	$local_data_id = (int) $local_data_id;
-
-	if ($local_data_id <= 0) {
+	if ((int) $local_data_id <= 0) {
 		return array();
 	}
-
-	/* Seed once from the stateful, API-managed poller_data_source_unused cache
-	 * instead of a per-source graph_templates_item lookup every flush. A failed
-	 * read is retried; a miss means the source has no orphaned fields. */
-	if ($cache === null) {
-		$rows = db_fetch_assoc('SELECT local_data_id, data_source_name
-			FROM poller_data_source_unused');
-
-		if ($rows !== false) {
-			$cache = array();
-
-			foreach ($rows as $row) {
-				$cache[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
-			}
-		}
-	}
-
-	return ($cache !== null && isset($cache[$local_data_id])) ? $cache[$local_data_id] : array();
+	$cache = boost_load_unused_data_source_names();
+	return $cache === false ? false : ($cache[(int) $local_data_id] ?? array());
 }
+
+/** Read the small exclusion set; only page boundaries check its generation. */
+function boost_load_unused_data_source_names($refresh = false) {
+	static $cache = null;
+	static $generation = null;
+	if ($cache !== null && !$refresh) {
+		return $cache;
+	}
+	$versions = db_fetch_assoc_prepared('SELECT value FROM settings WHERE name = ?', array('poller_unused_cache_generation'));
+	if ($versions === false || !isset($versions[0]['value']) || $versions[0]['value'] === '') {
+		$cache = null;
+		return false;
+	}
+	$version = $versions[0]['value'];
+	if ($cache !== null && $generation === $version) {
+		return $cache;
+	}
+	$rows = db_fetch_assoc('SELECT local_data_id, data_source_name FROM poller_data_source_unused');
+	if ($rows === false) {
+		$cache = null;
+		return false;
+	}
+	/* A writer may have invalidated the old generation during the load. */
+	$after = db_fetch_assoc_prepared('SELECT value FROM settings WHERE name = ?', array('poller_unused_cache_generation'));
+	if ($after === false || !isset($after[0]['value']) || $after[0]['value'] !== $version) {
+		$cache = null;
+		return false;
+	}
+	$cache = array();
+	foreach ($rows as $row) {
+		$cache[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
+	}
+	$generation = $version;
+	return $cache;
+}
+
 
 /**
  * Handles the boost get input field names. Used as part of Cacti's lib functionality.
@@ -1366,6 +1382,9 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	$local_data_id = (int) $local_data_id;
 
 	if ($local_data_id <= 0) {
+		return -1;
+	}
+	if (boost_load_unused_data_source_names(true) === false) {
 		return -1;
 	}
 

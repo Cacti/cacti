@@ -40,139 +40,140 @@ function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replic
 }
 
 /**
- * api_data_source_cache_unused - rebuild the stateful poller_data_source_unused cache.
- *
- * The orphan/unused filter in the poller hot paths (process_poller_output() and
- * poller_boost.php) only ever applies to standalone (snmp_query_id = 0), multi-output
- * Script/Script Server data sources that carry data source names not consumed by any
- * graph. That membership is configuration-derived, not per-poll, so it is resolved
- * here and the hot paths simply read the result. Call this on a full cache rebuild
- * or at install/upgrade; api_data_source_cache_unused_update() maintains it per
- * source on save, and api_data_source_cache_unused_remove() on delete.
- *
- * @return void No value is returned.
+ * Publish the derived script-output exclusions atomically. Management requests
+ * coalesce changes into one rebuild; polling only reads the resulting small set.
  */
 function api_data_source_cache_unused() {
-	/* Non-cached existence check: db_table_exists() caches a prior miss, which would
-	 * skip seeding right after a defensive CREATE in the same request. */
-	if (db_fetch_cell("SHOW TABLES LIKE 'poller_data_source_unused'") == '') {
-		return;
-	}
+	$own_lock = empty($GLOBALS['poller_unused_cache_lock']);
+	api_data_source_cache_unused_lock();
+	try {
+		global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* A data query returns one data source per row, so it never emits the
-	 * 'namea:valuea nameb:valueb' stream the orphan filter acts on. Multi-output
-	 * is a property of the data input method: more than one 'out' field written
-	 * to the RRD, matching how update_poller_cache() classifies single vs multi. */
-	$multi_script_input_ids = array();
-
-	foreach (db_fetch_assoc('SELECT di.id
-		FROM data_input AS di
-		INNER JOIN data_input_fields AS dif
-		ON dif.data_input_id = di.id
-		WHERE di.type_id IN (' . DATA_INPUT_TYPE_SCRIPT . ', ' . DATA_INPUT_TYPE_PHP_SCRIPT_SERVER . ')
-		AND dif.input_output = "out"
-		AND dif.update_rra = "on"
-		GROUP BY di.id
-		HAVING COUNT(*) > 1') as $r) {
-		$multi_script_input_ids[] = (int) $r['id'];
-	}
-
-	db_execute('TRUNCATE TABLE poller_data_source_unused');
-
-	if (!cacti_sizeof($multi_script_input_ids)) {
-		return;
-	}
-
-	db_execute('INSERT IGNORE INTO poller_data_source_unused (local_data_id, data_source_name)
-		SELECT dtr.local_data_id, dtr.data_source_name
-		FROM data_template_rrd AS dtr
-		INNER JOIN data_local AS dl
-		ON dl.id = dtr.local_data_id
-		AND dl.snmp_query_id = 0
-		INNER JOIN data_template_data AS dtd
-		ON dtd.local_data_id = dtr.local_data_id
-		AND dtd.data_input_id IN (' . implode(',', $multi_script_input_ids) . ')
-		LEFT JOIN graph_templates_item AS gti
-		ON gti.task_item_id = dtr.id
-		WHERE dtr.data_template_id > 0
-		AND dtr.local_data_id > 0
-		AND gti.task_item_id IS NULL');
-}
-
-/**
- * api_data_source_cache_unused_update - refresh the unused cache for one data source.
- *
- * Call after a data source or its graphs change so the stateful cache stays current
- * without a full rebuild. Non-qualifying sources simply end up with no rows.
- *
- * @param int $local_data_id The data source to refresh.
- *
- * @return void No value is returned.
- */
-function api_data_source_cache_unused_update($local_data_id) {
-	$local_data_id = (int) $local_data_id;
-
-	if ($local_data_id <= 0 || !db_table_exists('poller_data_source_unused')) {
-		return;
-	}
-
-	db_execute_prepared('DELETE FROM poller_data_source_unused
-		WHERE local_data_id = ?',
-		array($local_data_id));
-
-	db_execute_prepared('INSERT IGNORE INTO poller_data_source_unused (local_data_id, data_source_name)
-		SELECT dtr.local_data_id, dtr.data_source_name
-		FROM data_template_rrd AS dtr
-		INNER JOIN data_local AS dl
-		ON dl.id = dtr.local_data_id
-		AND dl.snmp_query_id = 0
-		INNER JOIN data_template_data AS dtd
-		ON dtd.local_data_id = dtr.local_data_id
-		INNER JOIN data_input AS di
-		ON di.id = dtd.data_input_id
-		AND di.type_id IN (' . DATA_INPUT_TYPE_SCRIPT . ', ' . DATA_INPUT_TYPE_PHP_SCRIPT_SERVER . ')
-		LEFT JOIN graph_templates_item AS gti
-		ON gti.task_item_id = dtr.id
-		WHERE dtr.local_data_id = ?
-		AND dtr.data_template_id > 0
-		AND gti.task_item_id IS NULL
-		AND (SELECT COUNT(*) FROM data_input_fields AS dif
-			WHERE dif.data_input_id = di.id
-			AND dif.input_output = "out"
-			AND dif.update_rra = "on") > 1',
-		array($local_data_id));
-}
-
-/**
- * api_data_source_cache_unused_remove - drop unused cache rows for removed sources.
- *
- * @param array|int $local_data_ids One id or an array of ids being removed.
- *
- * @return void No value is returned.
- */
-function api_data_source_cache_unused_remove($local_data_ids) {
-	if (!db_table_exists('poller_data_source_unused')) {
-		return;
-	}
-
-	if (!is_array($local_data_ids)) {
-		$local_data_ids = array($local_data_ids);
-	}
-
-	$ids = array();
-
-	foreach ($local_data_ids as $id) {
-		$id = (int) $id;
-
-		if ($id > 0) {
-			$ids[] = $id;
+		$conn = $database_sessions["$database_hostname:$database_port:$database_default"] ?? false;
+		if (!is_object($conn) || db_fetch_cell("SHOW TABLES LIKE 'poller_data_source_unused'") == '') {
+			return false;
+		}
+		if (!db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array('poller_unused_cache_generation', ''), true, $conn)) {
+			return false;
+		}
+		$nested = $conn->inTransaction();
+		if ($nested ? !db_execute('SAVEPOINT poller_unused_cache', true, $conn) : !db_begin_transaction($conn)) {
+			return false;
+		}
+		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
+			FROM data_input AS di
+			INNER JOIN (SELECT data_input_id FROM data_input_fields
+				WHERE input_output = "out" AND update_rra = "on"
+				GROUP BY data_input_id HAVING COUNT(*) > 1) AS multi
+			ON multi.data_input_id = di.id
+			INNER JOIN data_template_data AS dtd ON dtd.data_input_id = di.id
+			INNER JOIN data_local AS dl ON dl.id = dtd.local_data_id AND dl.snmp_query_id = 0
+			INNER JOIN data_template_rrd AS dtr ON dtr.local_data_id = dl.id
+			LEFT JOIN graph_templates_item AS gti ON gti.task_item_id = dtr.id
+			WHERE di.type_id IN (' . DATA_INPUT_TYPE_SCRIPT . ', ' . DATA_INPUT_TYPE_PHP_SCRIPT_SERVER . ')
+			AND dtr.data_template_id > 0 AND dtr.local_data_id > 0
+			AND gti.task_item_id IS NULL', true, $conn);
+		$ok = $rows !== false && db_execute('DELETE FROM poller_data_source_unused', true, $conn);
+		if ($ok) {
+			foreach (array_chunk($rows, 1000) as $chunk) {
+				$params = array();
+				foreach ($chunk as $row) {
+					$params[] = (int) $row['local_data_id'];
+					$params[] = $row['data_source_name'];
+				}
+				if (!db_execute_prepared('INSERT INTO poller_data_source_unused (local_data_id, data_source_name) VALUES ' . implode(',', array_fill(0, count($chunk), '(?, ?)')), $params, true, $conn)) {
+					$ok = false;
+					break;
+				}
+			}
+		}
+		if ($ok) {
+			$ok = db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
+				array('poller_unused_cache_generation', bin2hex(random_bytes(16))), true, $conn);
+		}
+		if ($ok) {
+			$ok = $nested ? db_execute('RELEASE SAVEPOINT poller_unused_cache', true, $conn) : db_commit_transaction($conn);
+		}
+		if (!$ok) {
+			if ($nested) {
+				db_execute('ROLLBACK TO SAVEPOINT poller_unused_cache', true, $conn);
+			} else {
+				db_rollback_transaction($conn);
+			}
+			return false;
+		}
+		$GLOBALS['poller_unused_cache_pending'] = false;
+		$pollers = db_fetch_assoc('SELECT id FROM poller WHERE id > 1');
+		if ($pollers !== false) {
+			foreach ($pollers as $poller) {
+				api_data_source_cache_crc_update($poller['id']);
+			}
+		}
+		return true;
+	} finally {
+		if ($own_lock) {
+			api_data_source_cache_unused_unlock();
 		}
 	}
+}
 
-	if (cacti_sizeof($ids)) {
-		db_execute('DELETE FROM poller_data_source_unused
-			WHERE local_data_id IN (' . implode(',', $ids) . ')');
+/** Serialize management rebuilds; readers never wait for this lock. */
+function api_data_source_cache_unused_lock($timeout = 10) {
+	global $database_default;
+	if (empty($GLOBALS['poller_unused_cache_lock'])) {
+		if ((int) db_fetch_cell_prepared('SELECT GET_LOCK(?, ?)', array('poller_unused_cache:' . sha1($database_default), $timeout)) !== 1) {
+			throw new RuntimeException('Polling metadata is being edited by another request.');
+		}
+		$GLOBALS['poller_unused_cache_lock'] = true;
+		$GLOBALS['poller_unused_cache_lock_name'] = 'poller_unused_cache:' . sha1($database_default);
 	}
+}
+
+/** Release the management request lock after publishing or a failed rebuild. */
+function api_data_source_cache_unused_unlock() {
+	if (!empty($GLOBALS['poller_unused_cache_lock'])) {
+		db_fetch_cell_prepared('SELECT RELEASE_LOCK(?)', array($GLOBALS['poller_unused_cache_lock_name']));
+		$GLOBALS['poller_unused_cache_lock'] = false;
+	}
+}
+
+/** Mark exclusions unavailable until the complete management change is published. */
+function api_data_source_cache_unused_invalidate() {
+	if (!empty($GLOBALS['poller_unused_cache_pending']) || !db_table_exists('poller_data_source_unused')) {
+		return;
+	}
+	api_data_source_cache_unused_lock();
+	if (!db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array('poller_unused_cache_generation', ''))) {
+		api_data_source_cache_unused_unlock();
+		throw new RuntimeException('Unable to invalidate polling output metadata.');
+	}
+	$GLOBALS['poller_unused_cache_pending'] = true;
+	if (empty($GLOBALS['poller_unused_cache_shutdown'])) {
+		$GLOBALS['poller_unused_cache_shutdown'] = true;
+		register_shutdown_function(function () {
+			try {
+				if (!empty($GLOBALS['poller_unused_cache_pending']) && !api_data_source_cache_unused()) {
+					cacti_log('ERROR: Unable to rebuild polling output exclusions; queued samples will be retained.', false, 'PCACHE');
+				}
+			} catch (Throwable $error) {
+				cacti_log('ERROR: Unable to publish polling output exclusions.', false, 'PCACHE');
+			} finally {
+				api_data_source_cache_unused_unlock();
+			}
+		});
+	}
+}
+
+/** Schedule one rebuild after data-source and graph edits have completed. */
+function api_data_source_cache_unused_update($local_data_id) {
+	if ((int) $local_data_id > 0) {
+		api_data_source_cache_unused_invalidate();
+	}
+}
+
+/** Removed sources are pruned by the same coalesced management rebuild. */
+function api_data_source_cache_unused_remove($local_data_ids) {
+	api_data_source_cache_unused_invalidate();
 }
 
 /**
@@ -830,6 +831,10 @@ function api_reapply_suggested_data_source_data($local_data_id) {
  * @return bool True on success, false otherwise.
  */
 function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_data_source, $struct_data_source_item;
 
 	if (!empty($_local_data_id)) {

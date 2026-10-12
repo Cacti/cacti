@@ -9,7 +9,7 @@ $handoff_dsn = 'mysql:host=' . (getenv('BOOST_DB_HOST') ?: '127.0.0.1') . ';port
 $handoff_pdo = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $remote_db_cnn_id = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $handoff_prefix = 'handoff_' . bin2hex(random_bytes(6)) . '_';
-$handoff_tables = ['poller_output_boost', 'poller_data_template_field_mappings', 'poller_data_source_unused', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
+$handoff_tables = ['settings', 'poller_output_boost', 'poller_data_template_field_mappings', 'poller_data_source_unused', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
 $handoff_dir = sys_get_temp_dir() . '/' . $handoff_prefix;
 mkdir($handoff_dir, 0700);
 $handoff_rrd = $handoff_dir . '/source.rrd';
@@ -59,6 +59,7 @@ function handoff_execute($sql, $params = [], $conn = false) {
 function handoff_seed(&$config, &$state, $time) {
 	global $scenario, $handoff_dir, $handoff_rrd, $handoff_pdo;
 	$schema = [
+		'settings' => 'name VARCHAR(128) PRIMARY KEY, value VARCHAR(255)',
 		'poller_output' => 'local_data_id INT, rrd_name VARCHAR(30), time DATETIME, output VARCHAR(255), PRIMARY KEY(local_data_id, rrd_name, time)',
 		'poller_output_boost' => 'local_data_id INT, rrd_name VARCHAR(30), time DATETIME, output VARCHAR(255), PRIMARY KEY(local_data_id, rrd_name, time)',
 		'poller_item' => 'local_data_id INT, rrd_name VARCHAR(30), rrd_path VARCHAR(255), rrd_num INT, poller_id INT',
@@ -74,6 +75,7 @@ function handoff_seed(&$config, &$state, $time) {
 		'data_source_profiles_cf' => 'data_source_profile_id INT, consolidation_function_id INT'
 	];
 	foreach ($schema as $table => $columns) handoff_execute("CREATE TABLE $table ($columns) ENGINE=InnoDB");
+	handoff_execute("INSERT INTO settings VALUES ('poller_unused_cache_generation', 'probe')");
 	$manual = $scenario === 'integration-manual-retry';
 	$remote = !in_array($scenario, ['integration-create', 'integration-manual-retry'], true);
 	$config['include_path'] = $handoff_dir;

@@ -32,6 +32,10 @@
  * @return bool Bool.
  */
 function push_out_data_source_custom_data($data_template_id) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	/* valid data template id? */
 	if (empty($data_template_id)) {
 		return 0;
@@ -190,6 +194,10 @@ function push_out_data_source_templates($did_vals, $ds_in_str) {
  * @return bool Bool.
  */
 function push_out_data_source_item($data_template_rrd_id) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_data_source_item;
 
 	/* get information about this data template */
@@ -221,6 +229,10 @@ function push_out_data_source_item($data_template_rrd_id) {
  * @return bool Bool.
  */
 function push_out_data_source($data_template_data_id) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_data_source;
 
 	/* get information about this data template */
@@ -302,6 +314,10 @@ function data_input_field_always_checked($data_input_field_id = 0, $return_ids =
  * @return void No value is returned.
  */
 function change_data_template($local_data_id, $data_template_id, $profile = array()) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_data_source, $struct_data_source_item;
 
 	/* always update tables to new data template (or no data template) */
@@ -496,6 +512,10 @@ function push_out_graph($graph_template_graph_id, $push_title = true) {
  * @return void No value is returned.
  */
 function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	$graph_input = db_fetch_row_prepared('SELECT graph_template_id, column_name
 		FROM graph_template_input
 		WHERE id = ?', array($graph_template_input_id));
@@ -589,6 +609,10 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
  * @return bool Bool.
  */
 function push_out_graph_item($graph_template_item_id, $task_item_changed = false) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_graph_item;
 
 	/* get information about this graph template */
@@ -626,6 +650,10 @@ function push_out_graph_item($graph_template_item_id, $task_item_changed = false
  * @return void No value is returned.
  */
 function update_graph_data_source_output_type($local_graph_id, $output_type_id) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
 		WHERE id = ?',
@@ -1020,6 +1048,10 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_on
  * @return bool Bool.
  */
 function change_graph_template($local_graph_id, $graph_template_id, $force = false) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_graph, $struct_graph_item;
 
 	static $cols = array();
@@ -1269,6 +1301,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
  * @return void Null.
  */
 function update_graph_template_items($graph_template_id, $graph_template_item_id, $task_item_changed) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_graph_item;
 
 	static $cols = array();
@@ -1588,6 +1624,10 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
  * @return mixed False if failing, otherwise the local_data_id data in a cache array.
  */
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $config;
 
 	include_once($config['library_path'] . '/data_query.php');

@@ -247,6 +247,10 @@ function parse_validate_graph_template_id($variable) {
  * @return void No value is returned.
  */
 function form_save() {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	/* ================= input validation ================= */
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('host_id_prev');

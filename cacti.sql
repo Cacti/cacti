@@ -3137,3 +3137,6 @@ CREATE TABLE version (
 --
 
 INSERT INTO version VALUES ('new_install');
+
+-- An empty newly installed cache is valid; management changes publish a new generation.
+REPLACE INTO settings (name, value) VALUES ('poller_unused_cache_generation', 'initial');

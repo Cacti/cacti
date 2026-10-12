@@ -126,7 +126,9 @@ function repopulate_poller_cache() {
 		GROUP BY dtr.data_template_id, dif.data_name');
 
 	/* rebuild the stateful orphan/unused cache the poller hot paths read */
-	api_data_source_cache_unused();
+	if (!api_data_source_cache_unused()) {
+		throw new RuntimeException('Unable to publish polling output exclusions.');
+	}
 
 	if (isset($_SESSION['sess_user_id'])) {
 		cacti_log('NOTE: Poller Cache repopulated by user ' . get_username($_SESSION['sess_user_id']), false, 'PCACHE');
@@ -627,6 +629,8 @@ function update_poller_cache($data_source, $commit = false) {
 		 * for that case, so callers like data_sources.php form_save
 		 * silently left stale rows behind. */
 		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items, $poller_id);
+		include_once($config['library_path'] . '/api_data_source.php');
+		api_data_source_cache_unused_update($data_source['id']);
 	} else {
 		return $poller_items;
 	}

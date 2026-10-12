@@ -35,6 +35,10 @@
  * @return int ID of the new graph.
  */
 function aggregate_graph_save($_local_graph_id, $_graph_template_id, $_graph_title, $_aggregate_template_id = 0, $graph_data = array()) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	/* suppress warnings */
 	error_reporting(E_ALL);
 
@@ -91,6 +95,10 @@ function aggregate_graph_local_save($id = 0) {
  * @return int ID of record in graph_templates_graph.
  */
 function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_id, $graph_title = '', $aggregate_template_id = 0, $new_data = array()) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $local_graph_id . ' template: ' . $graph_template_id . ' title: ' . $graph_title . ' aggregate template: '. $aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* base graph must exist */
@@ -200,6 +208,10 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_graph_template_id,
 	$_skip, $_totali, $_graph_item_sequence, $_selected_graph_index, $_color_templates, $_graph_item_types, $_cdefs,
 	$_graph_type, $_gprint_prefix, $_gprint_format, $_total, $_total_type = '', $member_graphs = array()) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 
 	global $struct_graph_item, $graph_item_types, $config;
 
@@ -493,6 +505,10 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
  * @return bool True if save was successful, false otherwise.
  */
 function aggregate_graph_items_save($items, $table) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	$defaults = array();
 	if ($table == 'aggregate_graphs_graph_item') {
 		$defaults['aggregate_graph_id'] = null;
@@ -722,6 +738,10 @@ function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
  */
 function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reorder, $graph_type) {
 	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
+	global $config;
 
 	cacti_log(__FUNCTION__ . ' called. Base Graph ' . $base . ' Graph Template ' . $graph_template_id . ' Aggregate Graph ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -894,6 +914,10 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
  * @return bool True when every selected aggregate was updated.
  */
 function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	$attribs                    = array();
 	$attribs['skipped_items']   = array();
 	$attribs['total_items']     = array();
@@ -1106,6 +1130,10 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
  * @return array $attribs - the attributes for this new graph.
  */
 function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs, $manage_transaction = true) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $config;
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 

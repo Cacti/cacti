@@ -33,6 +33,10 @@
  * @return void No value is returned.
  */
 function api_delete_graphs(&$local_graph_ids, $delete_type) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	/* check for a bad local_graph_id = 0, and remove graphs */
 	api_graph_remove_bad_graphs($local_graph_ids);
 
@@ -125,6 +129,10 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
  * @return void No value is returned.
  */
 function api_graph_remove($local_graph_id) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	if (empty($local_graph_id)) {
 		$local_graph_ids = array($local_graph_id);
 		api_graph_remove_bad_graphs($local_graph_ids);
@@ -157,6 +165,10 @@ function api_graph_remove($local_graph_id) {
  * @return void No value is returned.
  */
 function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	if (cacti_sizeof($local_graph_ids)) {
 		$bad_graph = array_search(0, $local_graph_ids);
 		if ($bad_graph !== false) {
@@ -222,6 +234,10 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
  * @return void No value is returned.
  */
 function api_graph_remove_multi($local_graph_ids) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	/* check for a bad local_graph_id = 0, and remove graphs */
 	api_graph_remove_bad_graphs($local_graph_ids);
 
@@ -412,6 +428,10 @@ function api_get_graphs_from_datasource($local_data_id) {
  * @return int|false The ID of the newly created local graph or graph template, or false on failure.
  */
 function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title, $map_to_data_query = true) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	global $struct_graph, $struct_graph_item;
 	$transaction_started = false;
 
@@ -755,6 +775,10 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
  * @return bool Returns true if the device was successfully changed, false otherwise.
  */
 function api_graph_change_device($local_graph_id, $host_id) {
+	global $config;
+	include_once($config['library_path'] . '/api_data_source.php');
+	api_data_source_cache_unused_invalidate();
+
 	$proceed = false;
 
 	$graph = db_fetch_row_prepared('SELECT *

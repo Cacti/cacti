@@ -13,6 +13,7 @@
 $root = dirname(__DIR__, 4);
 
 function boostMetadataFetch($sql, $params = array()) {
+	if (strpos($sql, 'SELECT value FROM settings') !== false) return array(array('value' => $GLOBALS['boost_metadata_generation'] ?? 'probe'));
 	$GLOBALS['boost_metadata_queries'][] = array($sql, $params);
 
 	if (strpos($sql, 'gti.task_item_id IS NULL') !== false) {
@@ -25,7 +26,7 @@ function boostMetadataFetch($sql, $params = array()) {
 function boostMetadataFetchAll($sql) {
 	$GLOBALS['boost_metadata_queries'][] = array($sql, array());
 
-	return array(array('local_data_id' => 900001, 'data_source_name' => 'unused'));
+	return $GLOBALS['boost_metadata_rows'] ?? array(array('local_data_id' => 900001, 'data_source_name' => 'unused'));
 }
 
 function boostMetadataRekey($rows, $key, $value) {
@@ -52,12 +53,14 @@ function boostMetadataLoadFunctions($root) {
 
 	$functions = substr($source, $start, $end - $start);
 	$functions = str_replace(array(
+		'boost_load_unused_data_source_names',
 		'boost_get_unused_data_source_names',
 		'boost_get_input_field_names',
 		'db_fetch_assoc_prepared',
 		'db_fetch_assoc',
 		'array_rekey',
 	), array(
+		'boostMetadataLoadUnused',
 		'boostMetadataUnused',
 		'boostMetadataFields',
 		'boostMetadataFetch',
@@ -92,4 +95,21 @@ test('invalid local data-source IDs never reach metadata SQL', function () {
 	expect(boostMetadataUnused(0))->toBe(array())
 		->and(boostMetadataFields(-1, true))->toBe(array())
 		->and($GLOBALS['boost_metadata_queries'])->toBe(array());
+});
+
+test('a changed generation reloads exclusions instead of retaining a stale orphan', function () {
+	$GLOBALS['boost_metadata_generation'] = 'before';
+	$GLOBALS['boost_metadata_rows'] = array(array('local_data_id' => 900001, 'data_source_name' => 'unused'));
+	expect(boostMetadataLoadUnused(true))->toBe(array(900001 => array('unused' => 'unused')));
+	$GLOBALS['boost_metadata_generation'] = 'after';
+	$GLOBALS['boost_metadata_rows'] = array();
+	expect(boostMetadataLoadUnused(true))->toBe(array())
+		->and(boostMetadataUnused(900001))->toBe(array());
+});
+
+test('an unpublished rebuild defers output and can recover on the next page', function () {
+	$GLOBALS['boost_metadata_generation'] = '';
+	expect(boostMetadataLoadUnused(true))->toBeFalse();
+	$GLOBALS['boost_metadata_generation'] = 'published';
+	expect(boostMetadataLoadUnused(true))->toBe(array());
 });

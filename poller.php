@@ -1064,15 +1064,21 @@ function poller_table_maintenance() {
 		db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
 	}
 
-	// catch the unlikely event that the stateful orphan/unused cache is missing; an
-	// empty table is safe (no filtering = harmless extra writes, never lost samples),
-	// and repopulate_poller_cache() / the data source API seed and maintain it.
+	// A repaired table is unavailable until its exclusions have been published.
 	if (!db_table_exists('poller_data_source_unused')) {
-		db_execute("CREATE TABLE poller_data_source_unused (
+		if (!db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array('poller_unused_cache_generation', ''))) {
+			return;
+		}
+		db_execute("CREATE TABLE IF NOT EXISTS poller_data_source_unused (
 			local_data_id int(10) unsigned NOT NULL default '0',
 			data_source_name varchar(19) NOT NULL default '',
 			PRIMARY KEY (local_data_id, data_source_name))
 			ENGINE=InnoDB ROW_FORMAT=Dynamic");
+		global $config;
+		include_once($config['library_path'] . '/api_data_source.php');
+		if (!api_data_source_cache_unused()) {
+			cacti_log('ERROR: Unable to seed polling output exclusions.', false, 'PCACHE');
+		}
 	}
 
 	boost_ensure_process_table();

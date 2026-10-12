@@ -935,6 +935,9 @@ function boost_output_rrd_data($child) {
 function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 	global $config, $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 	global $run_id, $max_run_duration;
+	if (boost_load_unused_data_source_names(true) === false) {
+		return -1;
+	}
 
 	/* cache this call as it takes time */
 	static $archive_tables  = false;
