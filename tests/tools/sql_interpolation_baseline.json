@@ -39,7 +39,7 @@
     "lib/mib_cache.php": 1,
     "lib/package.php": 1,
     "lib/plugins.php": 1,
-    "lib/poller.php": 11,
+    "lib/poller.php": 7,
     "lib/rrdcheck.php": 1,
     "lib/template.php": 5,
     "lib/variables.php": 1,

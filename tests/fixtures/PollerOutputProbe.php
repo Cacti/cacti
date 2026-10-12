@@ -167,6 +167,10 @@ function rrdtool_command_log_context($s) : string {
 function rrdtool_execute($command, ...$args) : string|false {
 	global $state, $scenario;
 	$state['rrd_calls']++;
+
+	if ($command instanceof \Cacti\Rrd\RrdCommand) {
+		$command = [$command->operation, ...$command->arguments];
+	}
 	$command = is_array($command) ? implode(' ', $command) : $command;
 
 	if (count($state['commands']) < 5) {
