@@ -456,7 +456,7 @@ function setupTheme() {
 				});
 			} else {
 				$("#navBackdrop").on('click', function() {
-					window.open('https://cacti.net', '_blank');
+					window.open('https://cacti.net', '_blank', 'noopener,noreferrer');
 				});
 			}
 		}
@@ -597,7 +597,7 @@ function toggleCactiNavigationBoxPin(event) {
 	let caller = $(event.currentTarget);
 	let helper = caller.attr('data-helper');
 	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
-	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
+	$('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
 
 	if(event.data && event.data.dock) {
 		event.data.dock = event.data.dock.replace(/^./, str => str.toUpperCase());
@@ -670,7 +670,7 @@ function hideDropDownMenu() {
 function toggleTableColumn(event) {
 	let storage = Storages.localStorage;
 	let tableHash = event.target.dataset.table;
-	let cIndex = parseInt(event.target.dataset.column);
+	let cIndex = Number.parseInt(event.target.dataset.column);
 	let cClass = 'no-col'+cIndex;
 	let storage_table_headers = storage.get('midWinter_' + tableHash);
 
@@ -914,7 +914,7 @@ function changeGuiFontSize(change=true) {
         setDocumentAttribute('zoom-level', mdw.session.theme.font.zoom);
 	}
 	/* update output field beside input selector */
-	$('#mdw_themeFontSizeValue').val((parseFloat(mdw.session.theme.font.zoom) + 25).toFixed(1) + ' %');
+	$('#mdw_themeFontSizeValue').val((Number.parseFloat(mdw.session.theme.font.zoom) + 25).toFixed(1) + ' %');
 }
 
 function toggleGuiAnimations() {
@@ -1022,9 +1022,9 @@ function togglePopOver(force) {
 
 function fullScreen(event) {
 	if (!document.fullscreenElement) {
-		document.documentElement.requestFullscreen().then( r => fullScreenChangeHandler() );
+		document.documentElement.requestFullscreen().then(() => fullScreenChangeHandler()).catch(() => fullScreenChangeHandler());
 	}else if (document.exitFullscreen) {
-		document.exitFullscreen().then( r => fullScreenChangeHandler() );
+		document.exitFullscreen().then(() => fullScreenChangeHandler()).catch(() => fullScreenChangeHandler());
 	}
 }
 
@@ -1328,7 +1328,7 @@ registry.midwinter = {
 				let midWinter_Color_Mode_Auto = mdw.session.theme.color.auto;
 				let midWinter_Font_Size = mdw.session.theme.font.zoom;
 				let midWinter_Animations = mdw.session.theme.boxes.animated
-				let midWinter_ShownFontSizeValue = parseFloat(midWinter_Font_Size) + 25;
+				let midWinter_ShownFontSizeValue = Number.parseFloat(midWinter_Font_Size) + 25;
 				let midWinter_Auto_Table_Layout = mdw.session.theme.mobile.autoTableLayout;
 				let midWinter_Controls_SubTitle = mdw.session.theme.controls.subTitle;
 

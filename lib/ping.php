@@ -42,23 +42,23 @@ class Net_Ping {
 	public int $avail_method;
 	public int $ping_type;
 
-	function __construct() {
+	public function __construct() {
 		$this->port = 33439;
 	}
 
-	function __destruct() {
+	public function __destruct() {
 	}
 
-	function close_socket() : void {
+	public function close_socket() : void {
 		@socket_shutdown($this->socket, 2);
 		socket_close($this->socket);
 	}
 
-	function start_time() : void {
+	public function start_time() : void {
 		$this->timer_start_time = microtime(true);
 	}
 
-	function get_time(int $acc = 2) : mixed {
+	public function get_time(int $acc = 2) : mixed {
 		// format start time
 		$start_time = $this->timer_start_time;
 		// get and format end time
@@ -67,7 +67,7 @@ class Net_Ping {
 		return number_format($end_time - $start_time, $acc);
 	}
 
-	function build_udp_packet() : void {
+	public function build_udp_packet() : void {
 		$data  = 'cacti-monitoring-system'; // the actual test data
 
 		// now lets build the actual UDP packet
@@ -75,19 +75,19 @@ class Net_Ping {
 		$this->request_len = strlen($this->request);
 	}
 
-	function ping_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []) : bool {
+	public function ping_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []) : bool {
 		return true;
 	}
 
-	function set_ping_error_handler() : void {
+	public function set_ping_error_handler() : void {
 		set_error_handler([$this, 'ping_error_handler']);
 	}
 
-	function restore_cacti_error_handler() : void {
+	public function restore_cacti_error_handler() : void {
 		restore_error_handler();
 	}
 
-	function build_icmp_packet() : void {
+	public function build_icmp_packet() : void {
 		$seq_low   = random_int(0,255);
 		$seq_high  = random_int(0,255);
 
@@ -107,7 +107,7 @@ class Net_Ping {
 		$this->request_len = strlen($this->request);
 	}
 
-	function get_checksum(string $data) : string {
+	public function get_checksum(string $data) : string {
 		if (strlen($data) % 2) {
 			$data .= "\x00";
 		}
@@ -122,7 +122,7 @@ class Net_Ping {
 		return pack('n*', ~$sum);
 	}
 
-	function ping_icmp() : bool {
+	public function ping_icmp() : bool {
 		// ping me
 		if ($this->host['hostname']) {
 			// initialize variables
@@ -299,7 +299,7 @@ class Net_Ping {
 		}
 	}
 
-	function seteuid() : int {
+	public function seteuid() : int {
 		$cacti_user = '';
 
 		// if we are unix, set the effective userid to root and then create
@@ -312,7 +312,7 @@ class Net_Ping {
 		return $cacti_user;
 	}
 
-	function setuid(int $cacti_poller_account) : void {
+	public function setuid(int $cacti_poller_account) : void {
 		// if we are unix, set the effective userid to root and then create
 		if ((CACTI_SERVER_OS == 'unix') &&
 			(function_exists('posix_getuid'))) {
@@ -320,7 +320,7 @@ class Net_Ping {
 		}
 	}
 
-	function ping_snmp() : mixed {
+	public function ping_snmp() : mixed {
 		// initialize variables
 		$this->snmp_status   = 'down';
 		$this->snmp_response = 'Device did not respond to SNMP';
@@ -352,7 +352,7 @@ class Net_Ping {
 		return $result;
 	}
 
-	function get_snmp_result(string $oid) : bool {
+	public function get_snmp_result(string $oid) : bool {
 		$h = $this->host;
 
 		// getnext does not work in php versions less than 5
@@ -389,7 +389,7 @@ class Net_Ping {
 		}
 	} // ping_snmp
 
-	function ping_udp() : bool {
+	public function ping_udp() : bool {
 		$this->set_ping_error_handler();
 
 		// hostname must be nonblank
@@ -519,7 +519,7 @@ class Net_Ping {
 		}
 	} // end ping_udp
 
-	function ping_tcp() : bool {
+	public function ping_tcp() : bool {
 		$this->set_ping_error_handler();
 
 		// hostname must be nonblank
@@ -651,7 +651,7 @@ class Net_Ping {
 		}
 	} // end ping_tcp
 
-	function ping(int $avail_method = AVAIL_SNMP_AND_PING, int $ping_type = PING_ICMP, int $timeout = 500, int $retries = 3) : bool {
+	public function ping(int $avail_method = AVAIL_SNMP_AND_PING, int $ping_type = PING_ICMP, int $timeout = 500, int $retries = 3) : bool {
 		$this->set_ping_error_handler();
 
 		// initialize variables
@@ -761,7 +761,7 @@ class Net_Ping {
 		};
 	} // end_ping
 
-	function is_ipaddress(string $ip_address = '') : bool {
+	public function is_ipaddress(string $ip_address = '') : bool {
 		// check for ipv4/v6
 		if (function_exists('filter_var')) {
 			if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
@@ -776,7 +776,7 @@ class Net_Ping {
 		}
 	}
 
-	function strip_ip_address(string $ip_address) : string {
+	public function strip_ip_address(string $ip_address) : string {
 		// clean up hostname if specifying snmp_transport
 		if (str_contains($ip_address, 'tcp6:')) {
 			$ip_address = str_replace('tcp6:', '', cacti_strtolower($ip_address));
