@@ -34,10 +34,19 @@
 // and lose the request ID saved before the IdP redirect. These protocol fields
 // cannot use the ordinary request wrappers until the bootstrap has loaded.
 require_once(__DIR__ . '/lib/Auth/SamlPostRelay.php');
-$samlPost = \Cacti\Auth\SamlPostRelay::isCallbackPost($_SERVER['REQUEST_METHOD'] ?? 'GET', $_GET, $_POST);
+$samlQuery = [
+	'action' => filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW),
+	'realm'  => filter_input(INPUT_GET, 'realm', FILTER_VALIDATE_INT)
+];
+$samlFields = [
+	'SAMLResponse'     => filter_input(INPUT_POST, 'SAMLResponse', FILTER_UNSAFE_RAW),
+	'RelayState'       => filter_input(INPUT_POST, 'RelayState', FILTER_UNSAFE_RAW),
+	'cacti_saml_relay' => filter_input(INPUT_POST, 'cacti_saml_relay', FILTER_UNSAFE_RAW)
+];
+$samlPost = \Cacti\Auth\SamlPostRelay::isCallbackPost($_SERVER['REQUEST_METHOD'] ?? 'GET', $samlQuery, $samlFields);
 
-if ($samlPost && ($_POST['cacti_saml_relay'] ?? '') !== '1') {
-	\Cacti\Auth\SamlPostRelay::relay($_GET, $_POST);
+if ($samlPost && $samlFields['cacti_saml_relay'] !== '1') {
+	\Cacti\Auth\SamlPostRelay::relay($samlQuery, $samlFields);
 }
 
 if ($samlPost) {
