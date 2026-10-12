@@ -82,6 +82,17 @@ test('GHSA-5v3j: a backslash before a token still substitutes the field (no over
 		->and(substitute_script_path('"a\\"<arg1>"', ['arg1' => $esc]))->toBe('"a\\""' . $esc . '""');
 });
 
+test('GHSA-5v3j: a token inside the template\'s own $(...) or backticks keeps the value quoted', function () {
+	$esc = "'" . '$(id)' . "'";
+
+	// a template that itself contains a $(...) command substitution or a `...`
+	// backtick is re-parsed with a fresh quoting context, exactly as /bin/sh
+	// re-parses the nested shell, so the already-escaped value keeps its own
+	// single quotes and the inner $(id) cannot expand within that nested context
+	expect(substitute_script_path('$(<arg1>)', ['arg1' => $esc]))->toBe('$(' . $esc . ')')
+		->and(substitute_script_path('`<arg1>`', ['arg1' => $esc]))->toBe('`' . $esc . '`');
+});
+
 test('GHSA-5v3j: substituted templates round-trip through /bin/sh as safe literal arguments', function () {
 	// run a single already-quoted shell word through /bin/sh via `printf %s` and
 	// return [exitCode, stdout]; proves the substitution is a well-formed word
