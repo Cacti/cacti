@@ -60,6 +60,17 @@ test('a not-yet-created file under the RRA directory is still contained', functi
 	expect(data_source_path_within_rra(data_source_path_test_base() . '/1/new_ds.rrd'))->toBeTrue();
 });
 
+test('a not-yet-created intermediate directory under the RRA directory is still contained', function () use ($rra_ready) : void {
+	if (!$rra_ready) {
+		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
+	}
+
+	$missing = data_source_path_test_base() . '/does_not_exist_' . bin2hex(random_bytes(4)) . '/4242.rrd';
+
+	expect(is_dir(dirname($missing)))->toBeFalse()
+		->and(data_source_path_within_rra($missing))->toBeTrue();
+});
+
 test('redundant slashes from a trailing-slash path_rra are contained, not an escape', function () use ($rra_ready) : void {
 	if (!$rra_ready) {
 		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
@@ -161,6 +172,31 @@ test('a symlink pivot below the RRA directory is rejected even for a not-yet-cre
 	} finally {
 		unlink($link);
 		rmdir($outside);
+	}
+});
+
+test('a dangling symlink below the RRA directory is rejected even for a not-yet-created file', function () use ($rra_ready) : void {
+	if (!$rra_ready) {
+		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
+	}
+
+	// A dangling symlink (target does not exist) is false for file_exists() but
+	// true for is_link(); the containment must reject a path through it so the
+	// link cannot be pointed outside the RRA root and have its target created
+	// before the recursive directory/RRD build materializes the path.
+	$missing_target = sys_get_temp_dir() . '/cacti_rra_dangling_' . bin2hex(random_bytes(6));
+	$link           = data_source_path_test_base() . '/dangling';
+
+	if (!@symlink($missing_target, $link)) {
+		$this->markTestSkipped('symlink() is not available in this environment');
+	}
+
+	try {
+		expect(is_link($link))->toBeTrue()
+			->and(file_exists($link))->toBeFalse()
+			->and(data_source_path_within_rra($link . '/escaped.rrd'))->toBeFalse();
+	} finally {
+		unlink($link);
 	}
 });
 
