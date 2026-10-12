@@ -102,9 +102,11 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		if (in_array($colsizing_view, array('go', 'change', 'clear', 'reset'), true)) {
 			$colsizing_view = '';
 		}
-	} elseif (!isempty_request_var('report')) {
+	}
+
+	if ($colsizing_view === '' && !isempty_request_var('report')) {
 		$colsizing_view = clean_up_name(get_nfilter_request_var('report'));
-	} elseif (!isempty_request_var('tab')) {
+	} elseif ($colsizing_view === '' && !isempty_request_var('tab')) {
 		$colsizing_view = clean_up_name(get_nfilter_request_var('tab'));
 	}
 
