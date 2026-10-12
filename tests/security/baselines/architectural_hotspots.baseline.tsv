@@ -543,3 +543,4 @@ sort_order_input	./host_templates.php:573				ORDER BY snmp_query.name', array(ge
 sort_order_input	./host_templates.php:608									ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
 dynamic_include	./poller.php:43	require_once($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./poller_maintenance.php:199		include_once($config['library_path'] . '/snmp.php');
+cmd_exec	./lib/rrd.php:1192			$process = @proc_open([read_config_option('path_rrdtool'), '-'], [
