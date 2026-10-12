@@ -7,6 +7,9 @@ if (PHP_SAPI !== 'cli') {
 $root = getenv('CACTI_POLLER_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 // The maintenance probe uses no Composer classes.
 $scenario = $argv[1] ?? 'partial';
+if (str_starts_with($scenario, 'integration-')) {
+	require __DIR__ . '/PollerHandoffDatabase.php';
+}
 $state    = ['rows' => [], 'queries' => 0, 'mapping_queries' => 0, 'commands' => [], 'rrd_calls' => 0, 'create_calls' => 0, 'boost_calls' => 0, 'delete_calls' => 0, 'arrived' => false];
 function probe_load(string $path, string $name) : void {
 	$tokens  = token_get_all(file_get_contents($path));
@@ -49,6 +52,7 @@ function probe_row(int $id, int $time, string $field, string $value, int $fields
 }
 function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 	global $state, $scenario;
+	if (isset($GLOBALS['handoff_pdo'])) return handoff_fetch($sql, $params);
 
 	if (str_contains($sql, 'FROM poller_output AS po')) {
 		$state['queries']++;
@@ -75,7 +79,20 @@ function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 		return $scenario === 'fanout' || $scenario === 'fanout-orphan' ? [['keyname' => '1_value', 'data_source_name' => 'in,out']] : [['keyname' => '1_in', 'data_source_name' => 'in'], ['keyname' => '1_out', 'data_source_name' => 'out']];
 	}
 
-	return $scenario === 'fanout-orphan' ? [['data_source_name' => 'out']] : [];
+	if (str_contains($sql, 'WHERE poller_id = ?')) {
+		return $scenario === 'boost-owner-query-failure' ? false : ($scenario === 'boost-owner-mismatch' ? [] : [['local_data_id' => 1]]);
+	}
+	if (str_contains($sql, 'LEFT JOIN graph_templates_item')) {
+		$state['orphan_queries'] = ($state['orphan_queries'] ?? 0) + 1;
+		if ($scenario === 'orphan-query-failure' && $state['orphan_queries'] === 1) return false;
+		return $scenario === 'fanout-orphan' ? [['local_data_id' => 1, 'data_source_name' => 'out']] : [];
+	}
+	if (str_contains($sql, 'INNER JOIN data_input_fields')) {
+		$state['manual_queries'] = ($state['manual_queries'] ?? 0) + 1;
+		if ($scenario === 'manual-query-failure' && $state['manual_queries'] === 1) return false;
+		return [['local_data_id' => 1, 'data_name' => 'value', 'data_source_name' => 'in']];
+	}
+	return [];
 }
 function db_fetch_assoc($sql) : array|false {
 	return db_fetch_assoc_prepared($sql);
@@ -85,6 +102,7 @@ function db_fetch_cell($sql) : int {
 }
 function db_execute_prepared($sql, $params = []) : bool {
 	global $state, $scenario;
+	if (isset($GLOBALS['handoff_pdo'])) return handoff_execute($sql, $params);
 	$state['delete_calls']++;
 
 	if ($scenario === 'delete-failure' || ($scenario === 'delete-group' && $state['delete_calls'] === 2)) {
@@ -101,6 +119,7 @@ function db_execute_prepared($sql, $params = []) : bool {
 }
 function db_execute($sql, ...$args) : bool {
 	global $state, $scenario;
+	if (isset($GLOBALS['handoff_pdo'])) return handoff_execute($sql, [], $args[1] ?? false);
 
 	if (str_contains($sql, 'INSERT IGNORE INTO poller_output_boost')) {
 		$state['boost_calls']++;
@@ -119,10 +138,11 @@ function db_in_clause($column, $ids) : string {
 	return $column . ' IN (' . implode(',', $ids) . ')';
 }
 function db_fetch_row(...$args) : array {
+	if (isset($GLOBALS['handoff_pdo'])) return handoff_fetch($args[0], [], $args[2] ?? false)[0] ?? [];
 	return ['Value' => 1048576];
 }
 function db_affected_rows(...$args) : int {
-	return 100000;
+	return $GLOBALS['handoff_affected'] ?? 100000;
 }
 function db_qstr($s, ...$args) : string {
 	return "'" . str_replace("'", "''", $s) . "'";
@@ -137,7 +157,7 @@ function api_plugin_hook_function(...$args) : void {
 }
 function read_config_option($key) : string {
 	if ($key === 'path_rrdtool') return $GLOBALS['probe_rrd_binary'] ?? '';
-	if ($key === 'storage_location') return '1';
+	if ($key === 'storage_location') return isset($GLOBALS['handoff_pdo']) ? '' : '1';
 	if ($key === 'boost_rrd_update_enable') {
 		return str_starts_with($GLOBALS['scenario'], 'boost-') ? 'on' : '';
 	}
@@ -157,8 +177,13 @@ function boost_log_ignored_sample_keys(...$args) : void {
 function cacti_rrdtool_valid_path($s) : bool { return true; }
 function cacti_rrdtool_valid_ds_name($s) : bool { return true; }
 function cacti_rrdtool_valid_ds_template($s) : bool { return true; }
-function cacti_has_control_chars($s) : bool { return false; }
-function db_fetch_cell_prepared($sql, $params = []) : int { return 1; }
+function db_fetch_cell_prepared($sql, $params = []) : int { return isset($GLOBALS['handoff_pdo']) ? (int) array_values(handoff_fetch($sql, $params)[0])[0] : 1; }
+function db_fetch_row_prepared($sql, $params = []) : array { return handoff_fetch($sql, $params)[0] ?? []; }
+function get_data_source_path(...$args) : string { return $GLOBALS['handoff_rrd']; }
+function get_data_source_item_name(...$args) : string { return 'in'; }
+function rrdtool_function_interface_speed(...$args) : int { return 0; }
+function cacti_rrdtool_valid_bound($s) : bool { return true; }
+if (!isset($handoff_pdo)) {
 function rrdtool_function_create(...$args) : bool {
 	if ($GLOBALS['scenario'] === 'local-create') {
 		if ($args[3] !== true) {
@@ -171,6 +196,10 @@ function rrdtool_function_create(...$args) : bool {
 	$GLOBALS['state']['create_calls']++;
 	return true;
 }
+} else {
+	probe_load($root . '/lib/rrd.php', 'rrdtool_function_create');
+}
+
 function rrdtool_file_exists(...$args) : bool {
 	return true;
 }
@@ -216,20 +245,25 @@ foreach (['SQL_NO_CACHE' => '', 'POLLER_VERBOSITY_HIGH' => 4, 'POLLER_VERBOSITY_
 	define($name, $value);
 }
 
-foreach (['cacti_sizeof', 'array_rekey', 'is_hexadecimal'] as $name) {
+define('RRD_NL', " \\\n");
+foreach (['cacti_sizeof', 'array_rekey', 'is_hexadecimal', 'cacti_has_control_chars'] as $name) {
 	probe_load($root . '/lib/functions.php', $name);
 }
 foreach (['rrdtool_function_update', 'rrdtool_execute_acknowledged', 'rrdtool_acknowledged_close'] as $name) {
 	probe_load($root . '/lib/rrd.php', $name);
 }
 
-foreach (['boost_flush_output_batch', 'boost_poller_on_demand'] as $name) {
+foreach (['boost_flush_output_batch', 'boost_validate_poller_ownership', 'boost_poller_on_demand'] as $name) {
 	probe_load($root . '/lib/boost.php', $name);
 }
 require $root . '/lib/poller.php';
 $config = ['library_path' => dirname(__DIR__) . '/performance/fixtures', 'poller_id' => 1, 'connection' => 'online', 'cacti_server_os' => 'unix'];
 $debug = false;
 $time  = 1700000000;
+
+if (str_starts_with($scenario, 'boost-owner-')) {
+	$config['poller_id'] = 2;
+}
 
 if (str_starts_with($scenario, 'local-')) {
 	$config['force_storage_location_local'] = true;
@@ -291,14 +325,23 @@ if ($scenario === 'partial') {
 	$state['rows'] = [probe_row(1, $time, 'in', '42')];
 }
 
+if (isset($handoff_pdo)) {
+	$time = time();
+	handoff_seed($config, $state, $time);
+}
+
 if ($scenario === 'local-success') {
 	$state['rows'][] = probe_row(1, $time + 60, 'in', '43');
+}
+if ($scenario === 'manual-query-failure') {
+	$state['rows'] = [probe_row(1, $time, '', 'value:42')];
+	$state['rows'][0]['data_template_id'] = 0;
 }
 $pipe   = $scenario === 'local-create' ? fopen('php://temp', 'w+') : null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry'], true)) {
+if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry', 'manual-query-failure', 'orphan-query-failure', 'integration-manual-retry', 'integration-stage-retry', 'integration-delete-retry'], true)) {
 	$second = process_poller_output($pipe);
 }
 
@@ -311,4 +354,8 @@ if ($scenario === 'retry') {
 	$state['rows'][] = probe_row(1, $time + 60, 'in', '43');
 	$second          = process_poller_output($pipe, 1);
 }
-print json_encode(['first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'create_calls' => $state['create_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls'], 'local_starts' => isset($probe_rrd_starts) ? substr_count(file_get_contents($probe_rrd_starts), "start\n") : 0], JSON_THROW_ON_ERROR) . "\n";
+if (isset($handoff_pdo)) {
+	$state['rows'] = handoff_fetch('SELECT local_data_id, rrd_name, time, output FROM poller_output');
+	$state['handoff'] = handoff_verdict();
+}
+print json_encode(['handoff' => ($state['handoff'] ?? null), 'orphan_queries' => ($state['orphan_queries'] ?? 0), 'manual_queries' => ($state['manual_queries'] ?? 0), 'first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'create_calls' => $state['create_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls'], 'local_starts' => isset($probe_rrd_starts) ? substr_count(file_get_contents($probe_rrd_starts), "start\n") : 0], JSON_THROW_ON_ERROR) . "\n";
