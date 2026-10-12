@@ -19,8 +19,31 @@ on:
       - include/global.php
       - include/global_settings.php
       - csp_report.php
+      - include/layout.js
+      - include/realtime.js
+      - include/themes/midwinter/main.js
+      - include/themes/sunrise/main.js
+      - auth_login.php
+      - auth_changepassword.php
+      - install/install.php
+      - graph_realtime.php
+      - about.php
+      - include/content/iframe-example.html
+      - cdef.php
+      - color.php
+      - data_input.php
+      - data_queries.php
+      - data_source_profiles.php
+      - data_templates.php
+      - gprint_presets.php
+      - graph_templates.php
+      - vdef.php
+      - host_templates.php
       - tests/integration/**
       - tests/e2e/**
+      - lib/functions.php
+      - user_admin.php
+      - tests/fixtures/Core/UserActionLogProbe.php
       - .github/workflows/csp-e2e.yml
 
 permissions:
@@ -39,7 +62,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4
 
       - name: Setup PHP 8.2
-        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240  # v2.37.2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, json, openssl, curl, xml
@@ -55,7 +78,7 @@ jobs:
           ./vendor/bin/pest \
             --bootstrap=./bootstrap-unit.php \
             --log-junit="$RUNNER_TEMP/csp-unit.xml" \
-            Unit/Security/Csp/
+            Unit/Security/Csp/ Unit/Security/DockerConfigTest.php
           # PHP variables must not expand in the shell.
           # shellcheck disable=SC2016
           php -r '$xml = is_file($argv[1]) ? @simplexml_load_file($argv[1]) : false; $tests = $xml === false ? false : $xml->xpath("//testcase"); if (!is_array($tests) || count($tests) < 1) { fwrite(STDERR, "Missing, invalid, or empty CSP unit test report\n"); exit(1); }' "$RUNNER_TEMP/csp-unit.xml"
@@ -68,7 +91,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4
 
       - name: Setup PHP 8.2
-        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240  # v2.37.2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, json, openssl, curl, xml
@@ -151,15 +174,33 @@ jobs:
 
       - name: Install Playwright dependencies
         working-directory: tests/e2e
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Install Playwright browser (chromium)
         working-directory: tests/e2e
-        run: npx playwright install --with-deps chromium
+        run: node node_modules/@playwright/test/cli.js install --with-deps chromium
 
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
-        run: npx playwright test tests/csp.spec.ts
+        run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
+
+      - name: Prepare real-time popup for document tests
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php mkdir -p /var/www/html/cacti/cache/realtime
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "REPLACE INTO settings (name,value) VALUES ('realtime_enabled','on'),('realtime_cache_path','/var/www/html/cacti/cache/realtime');"
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
+
+      - name: Run document semantics browser regressions
+        working-directory: tests/e2e
+        run: node ./node_modules/@playwright/test/cli.js test tests/document-semantics.spec.ts
+      - name: Run authentication form semantics regressions
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
+          node ./node_modules/@playwright/test/cli.js test tests/auth-form-semantics.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
@@ -168,7 +209,26 @@ jobs:
         # GitHub Actions UI. The plugin spec depends on thold and
         # monitor sources baked into the image at build time; the
         # docker compose up --build above runs the clone.
-        run: npx playwright test tests/csp-plugins.spec.ts
+        run: node node_modules/@playwright/test/cli.js test tests/csp-plugins.spec.ts
+
+      - name: Run native account audit regressions
+        working-directory: tests/e2e
+        env:
+          CACTI_USER_AUDIT_LOG: ../../log/cacti.log
+        run: |
+          bash test-user-action-log.sh
+          node node_modules/@playwright/test/cli.js test tests/user-action-audit.spec.ts
+
+      - name: Enable real-time popup in disposable fixture
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php mkdir -p /var/www/html/cacti/cache/realtime
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "REPLACE INTO settings (name,value) VALUES ('realtime_enabled','on'),('realtime_cache_path','/var/www/html/cacti/cache/realtime');"
+
+      - name: Run client state browser regressions
+        working-directory: tests/e2e
+        run: node ./node_modules/@playwright/test/cli.js test tests/client-state.spec.ts
 
       - name: Upload Playwright report
         if: failure()

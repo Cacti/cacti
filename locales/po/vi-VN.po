@@ -4047,6 +4047,12 @@ msgstr "Xem biểu đồ"
 msgid "The Graph you requested does not exist."
 msgstr "Nguồn dữ liệu không tồn tại."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Tùy chọn đồ thị"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Chi tiết đồ thị, thu phóng và gỡ lỗi tiện ích"
@@ -20105,6 +20111,11 @@ msgstr ""
 #| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu không, không đặt cài đặt này."
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "Cài đặt. <span class=\"deviceDown\">Lưu ý: Nếu bạn đang dự định sử dụng SNMPv3, bạn phải xóa php-snmp và sử dụng bộ công cụ Net-SNMP.</span>"

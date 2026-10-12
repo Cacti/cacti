@@ -307,7 +307,7 @@ $selectedTheme = get_selected_theme();
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html lang='<?php print CACTI_LOCALE;?>'>
 <head>
 	<?php html_common_header(api_plugin_hook_function('login_title', __('Login to Cacti')));?>
 </head>
@@ -316,8 +316,9 @@ $selectedTheme = get_selected_theme();
 	<div class='loginCenter'>
 	<div class='loginArea'>
 		<div class='cactiLoginLogo'></div>
-			<legend><?php print __('User Login');?></legend>
 			<form id='login' name='login' method='post' action='<?php print get_current_page();?>'>
+				<fieldset style='border:0;padding:0;margin:0;min-width:0'>
+				<legend><?php print __('User Login');?></legend>
 				<input type='hidden' name='action' value='login'>
 				<?php api_plugin_hook_function('login_before',
 					array(
@@ -333,7 +334,7 @@ $selectedTheme = get_selected_theme();
 					<p><?php print __('Enter your Username and Password below');?></p>
 				</div>
 				<div class='cactiLogin'>
-					<table class='cactiLoginTable'>
+					<table role='presentation' class='cactiLoginTable'>
 						<tr>
 							<td>
 								<label for='login_username'><?php print __('Username');?></label>
@@ -407,6 +408,7 @@ $selectedTheme = get_selected_theme();
 					</table>
 				</div>
 			<?php api_plugin_hook('login_after'); ?>
+				</fieldset>
 			</form>
 			<div class='loginErrors'>
 				<?php

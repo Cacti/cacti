@@ -284,19 +284,25 @@ function form_actions() {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+							$affected_user = get_username($selected_items[$i]);
 							user_remove($selected_items[$i]);
+							log_user_action($affected_user, 'removed');
 						} else {
 							raise_message('attempt current', __('You are not allowed to delete the current login account'), MESSAGE_LEVEL_ERROR);
 						}
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
+						$affected_user = get_username($selected_items[$i]);
 						user_enable($selected_items[$i]);
+						log_user_action($affected_user, 'enabled');
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '4') { // disable
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+							$affected_user = get_username($selected_items[$i]);
 							user_disable($selected_items[$i]);
+							log_user_action($affected_user, 'disabled');
 						} else {
 							raise_message('attempt current', __('You are not allowed to disable the current login account'), MESSAGE_LEVEL_ERROR);
 						}
@@ -563,6 +569,11 @@ function form_save() {
 		get_filter_request_var('policy_graph_templates');
 		/* ==================================================== */
 
+		$original_user = db_fetch_row_prepared('SELECT username, enabled, locked
+			FROM user_auth
+			WHERE id = ?',
+			array(get_nfilter_request_var('id')));
+
 		$old_password = db_fetch_cell_prepared('SELECT password
 			FROM user_auth
 			WHERE id = ?',
@@ -644,12 +655,31 @@ function form_save() {
 			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', array($save['id']));
 		}
 
+		$is_new_user = empty($save['id']);
+
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
+				log_user_action($save['username'], $is_new_user ? 'created' : 'edited');
+
+				if (!$is_new_user) {
+					$was_enabled = ($original_user['enabled'] ?? '') === 'on';
+					$is_enabled  = ($save['enabled'] ?? '') === 'on';
+					$was_locked  = ($original_user['locked'] ?? '') === 'on';
+					$is_locked   = ($save['locked'] ?? '') === 'on';
+
+					if ($was_enabled !== $is_enabled) {
+						log_user_action($save['username'], $is_enabled ? 'enabled' : 'disabled');
+					}
+
+					if ($was_locked !== $is_locked) {
+						log_user_action($save['username'], $is_locked ? 'locked' : 'unlocked');
+					}
+				}
+
 				raise_message(1);
 			} else {
 				raise_message(2);

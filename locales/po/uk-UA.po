@@ -4113,6 +4113,12 @@ msgstr "Перегляд Графіка"
 msgid "The Graph you requested does not exist."
 msgstr "Доступні Агреговані Графіки не існують"
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Actions"
+msgid "Graph Actions"
+msgstr "Дії"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Деталі Графіку, Збільшення та Засоби Відлагодження"
@@ -20161,6 +20167,11 @@ msgstr ""
 
 #: lib/utility.php:1929 lib/utility.php:1965
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
+msgstr ""
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""
 
 #, php-format

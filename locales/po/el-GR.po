@@ -4085,6 +4085,12 @@ msgstr "Προβολή γραφήματος"
 msgid "The Graph you requested does not exist."
 msgstr "Δεν υπάρχει πηγή δεδομένων."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Επιλογές γραφήματος"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Λεπτομέρειες γραφήματος, βοηθητικά προγράμματα μεγέθυνσης και εντοπισμός σφαλμάτων"
@@ -20191,6 +20197,11 @@ msgstr ""
 #| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "Εάν διαθέτετε δίσκους SSD, χρησιμοποιήστε αυτήν την πρόταση. Διαφορετικά, μην ορίσετε αυτήν τη ρύθμιση."
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "Εγκατεστημένο. <span class=\"deviceDown\">Σημείωση: Εάν σκοπεύετε να χρησιμοποιήσετε το SNMPv3, πρέπει να καταργήσετε το php-snmp και να χρησιμοποιήσετε το σύνολο εργαλείων Net-SNMP.</span>"

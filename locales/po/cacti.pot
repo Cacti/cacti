@@ -4060,6 +4060,10 @@ msgstr ""
 msgid "The Graph you requested does not exist."
 msgstr ""
 
+#: lib/html.php
+msgid "Graph Actions"
+msgstr ""
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr ""
@@ -20046,4 +20050,9 @@ msgstr ""
 #: lib/utility.php:1929 lib/utility.php:1965
 msgid ""
 "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
+msgstr ""
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""

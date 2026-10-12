@@ -23,6 +23,7 @@ Requirements: Docker (with Compose v2) and Node.js 18+.
 
 ```bash
 cd tests/e2e
+export CACTI_E2E_UID="$(id -u)"
 
 # First run builds the PHP image (~90s).
 docker compose up -d --build
@@ -31,9 +32,8 @@ docker compose up -d --build
 # human-readable signal.
 until curl -fsS http://localhost:8080/ >/dev/null; do sleep 2; done
 
-# Install Playwright and run the suite. npm install (not npm ci) because
-# package-lock.json is gitignored under tests/e2e/.
-npm install
+# Install the committed Playwright lock and run the suite.
+npm ci --ignore-scripts
 npm run install-browsers   # chromium + OS deps, once per machine
 npm test
 

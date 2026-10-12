@@ -230,6 +230,20 @@ $.fn.delayKeyup = function(callback, ms){
 	return $(this);
 };
 
+/** rebind - Shorthand for off(events).on(events, ...) to cleanly re-attach
+ * an event handler, optionally for a delegated selector. */
+$.fn.rebind = function(events) {
+	// A string second argument is always a delegated selector (jQuery never
+	// treats a string as handler data), including the .on(map, selector) overload.
+	if (typeof arguments[1] === 'string') {
+		this.off(events, arguments[1]);
+	} else {
+		this.off(events);
+	}
+
+	return this.on.apply(this, arguments);
+};
+
 /** bindFirst - Function ensures that the event is found at the top
  * of the event stack. */
 $.fn.bindFirst = function(which, handler) {
@@ -558,7 +572,7 @@ function updateCheckboxes(checkboxes, clicked_element) {
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
 	// Change for accessibility
-	$('input[type="radio"]').off('click').on('click', function() {
+	$('input[type="radio"]').rebind('click', function() {
 		if ($(this).is(':checked')) {
 			$(this).attr('aria-checked', 'true');
 		} else {
@@ -577,12 +591,12 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Rows
-	$('tr[id^="gt_line"].selectable:not(.disabled_row)').off('click').on('click', function(event) {
+	$('tr[id^="gt_line"].selectable:not(.disabled_row)').rebind('click', function(event) {
 		selectUpdateRow(event, $(this));
 	});
 
 	// Create Actions for Rows
-	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').off('click').on('click', function(event) {
+	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').rebind('click', function(event) {
 		selectUpdateRow(event, $(this));
 	});
 }
@@ -662,7 +676,7 @@ function dqUpdateDeps(snmp_query_id) {
 		$('#all_'+snmp_query_id).prop('checked', false);
 	}
 
-	$('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row').off('click').on('click', function(event) {
+	$('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row').rebind('click', function(event) {
 		selectUpdateRow(event, $(this));
 	});
 }
@@ -804,8 +818,7 @@ function handleTableNav() {
 function setupSelectmenuScrollClose() {
 	$('.cactiConsoleContentArea, .cactiGraphContentArea, .cactiGraphContentAreaPreview, .cactiTreeNavigationArea')
 		.add(window)
-		.off('scroll.cactiSelectmenu')
-		.on('scroll.cactiSelectmenu', function() {
+		.rebind('scroll.cactiSelectmenu', function() {
 			if (!$('.ui-selectmenu-open').length) {
 				return;
 			}
@@ -873,7 +886,7 @@ function applySkin() {
 
 	handleTableNav();
 
-	$('.helpPage').off('click').on('click', function(event) {
+	$('.helpPage').rebind('click', function(event) {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));
 	});
@@ -891,7 +904,7 @@ function applySkin() {
 	setupButtonStyle();
 
 	// Debug message actions
-	$('table.debug tr:nth-child(1)').off('click').on('click', function() {
+	$('table.debug tr:nth-child(1)').rebind('click', function() {
 		if ($(this).parent().find('table').is(':visible')) {
 			$(this).parent().find('table').slideUp('fast');
 		} else {
@@ -899,7 +912,7 @@ function applySkin() {
 		}
 	});
 
-	$('.cactiTableCopy').off('click').on('click', function(event) {
+	$('.cactiTableCopy').rebind('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		var containerId =  $(this).attr('id');
@@ -1188,7 +1201,7 @@ function applySkin() {
 			 * select2 widget on every AJAX filter reload, but that destroy doesn't remove
 			 * a plain jQuery listener bound to the underlying <select> itself, so without
 			 * this the handler would accumulate and fire the callback multiple times */
-			$select.off('select2:select.select2Callback').on('select2:select.select2Callback', function() {
+			$select.rebind('select2:select.select2Callback', function() {
 				executeFunctionByName(changeFunc.replace('(', '').replace(')', ''), window);
 			});
 		}
@@ -1536,7 +1549,7 @@ function makeFiltersResponsive() {
 							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="'+tableConstraints+'" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-expand"></i></a></span>');
 						}
 
-						$('.cactiSwitchConstraints').off('click').on('click', function(event) {
+						$('.cactiSwitchConstraints').rebind('click', function(event) {
 							event.preventDefault();
 							event.stopPropagation();
 
@@ -1574,7 +1587,7 @@ function makeFiltersResponsive() {
 					title = $('#export').attr('value');
 					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"></i></span>');
 
-					$('.cactiFilterExport').off('click').on('click', function(event) {
+					$('.cactiFilterExport').rebind('click', function(event) {
 						event.stopPropagation();
 						$('#export').trigger('click');
 					}).tooltip();
@@ -1584,7 +1597,7 @@ function makeFiltersResponsive() {
 					title = $('#import').attr('value');
 					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
 
-					$('.cactiFilterImport').off('click').on('click', function(event) {
+					$('.cactiFilterImport').rebind('click', function(event) {
 						event.stopPropagation();
 						$('#import').trigger('click');
 					}).tooltip();
@@ -1595,7 +1608,7 @@ function makeFiltersResponsive() {
 						filterHeader.find('div.cactiTableButton').append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-alt"></i></span>');
 					}
 
-					$('.cactiFilterClear').off('click').on('click', function(event) {
+					$('.cactiFilterClear').rebind('click', function(event) {
 						event.stopPropagation();
 						$('#clear').trigger('click');
 					}).tooltip();
@@ -1603,7 +1616,7 @@ function makeFiltersResponsive() {
 
 				toggleFilterAndIcon(id, child, true);
 
-				filterHeader.find('.cactiTableTitle, .cactiTableButton').off('click').on('click', function() {
+				filterHeader.find('.cactiTableTitle, .cactiTableButton').rebind('click', function() {
 					id     = $(this).closest('.cactiTable').attr('id');
 					child  = id+'_child';
 					toggleFilterAndIcon(id, child, false);
@@ -1726,7 +1739,7 @@ function setGraphTabs() {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function(event) {
+	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').rebind('click', function(event) {
 		page = basename($(this).attr('href'));
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
@@ -2168,8 +2181,6 @@ function tuneTable(object, width) {
 	tableChanged = false;
 
 	if (allSeenWidth < width) {
-		calculatedColumns = calculatedColumns.sort();
-
 		// Since we can show hidden columns now, let's go
 		// in reverse until we run out of space
 		$($(object).find('th').get()).each(function() {
@@ -3010,7 +3021,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').rebind('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -3119,7 +3130,7 @@ function setupCollapsible() {
 		}
 	});
 
-	$('.collapsible').off('click').on('click', function(data) {
+	$('.collapsible').rebind('click', function(data) {
 		var id = $(this).attr('id')+'_cs';
 
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
@@ -3523,6 +3534,8 @@ $(function() {
 
 	applySkin();
 
+	initGraphDrilldown();
+
 	setupEllipsis();
 
 	handleUserMenu();
@@ -3572,7 +3585,7 @@ function setupEllipsis() {
 		+'</ul>'
 	+'</div>').appendTo('body');
 
-	$('.maintabs-submenu, .usertabs-submenu, .submenu-ellipsis').off('click').on('click', function(event) {
+	$('.maintabs-submenu, .usertabs-submenu, .submenu-ellipsis').rebind('click', function(event) {
 		event.preventDefault();
 
 		var submenu_index = $(this).attr('id').replace('menu-', 'submenu-');
@@ -3981,7 +3994,7 @@ function handlePopState() {
 			} else if (basename(href) == lastPage) {
 				loadPageNoHeader(href + (href.indexOf('?') > 0 ? '&header=false&nostate=true':'?header=false&nostate=true'));
 			} else {
-				href.replace('header=false','').replace('?&', '?').replace('&&', '&');
+				href = href.replace('header=false','').replace('?&', '?').replace('&&', '&');
 				document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
 			}
 		}
@@ -4236,6 +4249,62 @@ function redrawGraph(graph_id) {
 	);
 }
 
+function initGraphDrilldown() {
+	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
+	// A hamburger glyph over the graph's top-right toggles the action icons; they
+	// close on a second click, on leaving the strip, or on an outside click.
+	$(document).off('.graphdd');
+
+	function closeGraphDrilldown(container) {
+		container.removeClass('open');
+		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+
+		// Close an open SpikeKill submenu so it is not orphaned with the strip.
+		if (typeof spikeKillClose == 'function') {
+			spikeKillClose();
+		}
+	}
+
+	$(document).on('click.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		var menu      = $(this);
+		var container = menu.closest('.graphDrillDownToggle');
+		var willOpen  = !container.hasClass('open');
+
+		$('.graphDrillDownToggle.open').not(container).each(function () {
+			closeGraphDrilldown($(this));
+		});
+
+		if (willOpen) {
+			container.addClass('open');
+			menu.attr('aria-expanded', 'true');
+		} else {
+			closeGraphDrilldown(container);
+		}
+	});
+
+	$(document).on('keydown.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		if (event.keyCode == 13 || event.keyCode == 32) {
+			event.preventDefault();
+			$(this).trigger('click');
+		}
+	});
+
+	$(document).on('mouseleave.graphdd', '.graphDrillDownToggle.open', function () {
+		closeGraphDrilldown($(this));
+	});
+
+	$(document).on('click.graphdd', function (event) {
+		if ($(event.target).closest('.graphDrillDownToggle').length == 0) {
+			$('.graphDrillDownToggle.open').each(function () {
+				closeGraphDrilldown($(this));
+			});
+		}
+	});
+}
+
 function initializeGraphs(disable_cache) {
 	disable_cache = (typeof disable_cache == 'undefined') ? false : true;
 
@@ -4246,7 +4315,7 @@ function initializeGraphs(disable_cache) {
 
 		$(this).attr('href', urlPath + 'graph.php?local_graph_id=' + graph_id);
 
-		$(this).off('click').on('click', function(event) {
+		$(this).rebind('click', function(event) {
 			var graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 
 			event.preventDefault();
@@ -4297,7 +4366,7 @@ function initializeGraphs(disable_cache) {
 
 		$(this).attr('href', url);
 
-		$(this).off('click').on('click', function(event) {
+		$(this).rebind('click', function(event) {
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_csv','');
 			event.preventDefault();
 			event.stopPropagation();
@@ -4314,7 +4383,7 @@ function initializeGraphs(disable_cache) {
 		});
 	});
 
-	$('#form_graph_view').off('submit').on('submit', function(event) {
+	$('#form_graph_view').rebind('submit', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		applyGraphFilter();
@@ -4432,11 +4501,11 @@ function initializeGraphs(disable_cache) {
 		);
 	});
 
-	$('#realtimeoff').off('click').on('click', function() {
+	$('#realtimeoff').rebind('click', function() {
 		stopRealtime();
 	});
 
-	$('#ds_step').off('change').on('change', function() {
+	$('#ds_step').rebind('change', function() {
 		realtimeGrapher();
 	});
 
@@ -4451,7 +4520,7 @@ function initializeGraphs(disable_cache) {
 			'&graph_start='    + timestampDate1 +
 			'&graph_end='      + timestampDate2);
 
-		$(this).off('click').on('click', function(event) {
+		$(this).rebind('click', function(event) {
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_util','');
 
 			event.preventDefault();
@@ -4492,7 +4561,7 @@ function initializeGraphs(disable_cache) {
 			return false;
 		});
 
-		$(this).off('click').on('click', function(event) {
+		$(this).rebind('click', function(event) {
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_realtime','');
 
 			event.preventDefault();

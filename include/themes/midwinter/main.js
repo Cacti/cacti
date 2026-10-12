@@ -518,7 +518,7 @@ function setupDefaultElements() {
 			});
 		} else {
 			$("#cactiConsoleBackdrop").click( function() {
-				window.open('https://cacti.net', '_blank');
+				window.open('https://cacti.net', '_blank', 'noopener');
 			});
 		}
 	}
@@ -665,41 +665,6 @@ function setupDefaultElements() {
 		}
 	});
 
-	// Hide the graph icons until you hover
-	$('.graphDrillDown').hover(
-		function() {
-			element = $(this);
-
-			// hide the previously shown element
-			if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-				$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
-			}
-
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-		},
-		function() {
-			element = $(this);
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-		}
-	);
-
-	function showGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show(300, function() {
-			graphMenuElement = element.attr('id').replace('dd', '');
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
-	function hideGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide(300, function() {
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
 	setNavigationScroll();
 }
 
@@ -716,7 +681,7 @@ function initStorageItem(name, default_value, data_attribute= '') {
 
 function themeLoader(state='off', force = false) {
 	if (state === 'on') {
-		if (getDocumentAttribute('data-theme-state') !== 'ready' | force === true) {
+		if (getDocumentAttribute('theme-state') !== 'ready' || force === true) {
 			setDocumentAttribute('theme-state', 'loading');
 		}
 	} else {
@@ -1008,7 +973,7 @@ function getFullscreenElement() {
 function toggleFullscreen(element = false){
 	if(getFullscreenElement()){
 		if(element === false) {
-			document.exitFullscreen();
+			document.exitFullscreen().catch(console.log);
 		}else {
 			document.documentElement.requestFullscreen().catch(console.log);
 		}

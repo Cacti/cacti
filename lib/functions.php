@@ -6963,6 +6963,41 @@ function IgnoreErrorHandler($message) {
  *
  * @return bool True on success, false otherwise.
  */
+/**
+ * Attribute errors only to files within the resolved Cacti plugins directory.
+ * The first directory below that root owns nested vendor/plugin directories.
+ */
+function cacti_error_plugin($file) {
+	global $config;
+	$root = realpath($config['base_path'] . '/plugins');
+	$path = realpath($file);
+
+	if ($root === false || $path === false) {
+		return '';
+	}
+
+	$root           = str_replace('\\', '/', $root) . '/';
+	$path           = str_replace('\\', '/', $path);
+	$prefix_matches = DIRECTORY_SEPARATOR === '\\'
+		? strpos(strtolower($path), strtolower($root)) === 0
+		: strpos($path, $root) === 0;
+
+	if (!$prefix_matches) {
+		return '';
+	}
+
+	$relative  = substr($path, strlen($root));
+	$separator = strpos($relative, '/');
+
+	if ($separator === false) {
+		return '';
+	}
+
+	$plugin = substr($relative, 0, $separator);
+
+	return preg_match('/^[A-Za-z0-9_-]+$/D', $plugin) ? $plugin : '';
+}
+
 function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	global $phperrors;
 
@@ -6978,9 +7013,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 		return true;
 	}
 
-	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
-
-	$plugin = (is_array($output_array) && isset($output_array[1]) ? $output_array[1] : '');
+	$plugin = cacti_error_plugin($file);
 
 	if ($level !== null && isset($phperrors[$level])) {
 		$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
@@ -7052,9 +7085,7 @@ function CactiShutdownHandler() {
 				case E_CORE_WARNING:
 				case E_COMPILE_WARNING:
 				case E_PARSE:
-					preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
-
-					$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
+					$plugin = cacti_error_plugin($error['file']);
 
 					if ($error['type'] !== null && isset($phperrors[$error['type']])) {
 						$message = 'PHP ' . $phperrors[$error['type']] .
@@ -9816,3 +9847,40 @@ function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string
 
 	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '');
 }
+
+/**
+ * Log an administrative action performed on a user account.
+ *
+ * @param mixed $user   Username of the affected account.
+ * @param mixed $action Action that was performed.
+ *
+ * @return bool Whether the message was written to the Cacti log.
+ */
+function log_user_action($user, $action) {
+
+	if ($user === '' || $action === '') {
+		return false;
+	}
+
+	if (!empty($_SESSION['sess_user_id'])) {
+		$acting_user_id = $_SESSION['sess_user_id'];
+		$acting_user    = get_username($acting_user_id);
+
+		if ($acting_user === false || $acting_user === '') {
+			$acting_user = 'user ID ' . $acting_user_id;
+		}
+	} elseif (PHP_SAPI === 'cli') {
+		$acting_user = get_execution_user();
+
+		if ($acting_user === '') {
+			$acting_user = 'unknown user';
+		}
+
+		$acting_user .= ' (CLI)';
+	} else {
+		$acting_user = 'unknown user';
+	}
+
+	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'AUTHC' : 'AUTH');
+}
+
