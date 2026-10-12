@@ -1,13 +1,24 @@
 <?php
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
-require_once dirname(__DIR__, 4) . '/lib/functions.php';
-require_once dirname(__DIR__, 4) . '/lib/html_utility.php';
-require_once dirname(__DIR__, 4) . '/lib/html.php';
+// Load the actual libraries in a child: legacy suites declare core-function stubs during collection.
+function sortable_header_probe(string $scenario, array $arguments = []) : array {
+	$fixture = dirname(__DIR__, 3) . '/fixtures/SortableHeaderProbe.php';
+	$process = proc_open([PHP_BINARY, $fixture, $scenario, json_encode($arguments, JSON_THROW_ON_ERROR)],
+		[1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	expect(is_resource($process))->toBeTrue();
+	$output = stream_get_contents($pipes[1]);
+	$errors = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	expect(proc_close($process))->toBe(0, $errors);
+
+	return json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+}
 
 test('sortable header columns preserve named and legacy metadata', function (array $metadata, string $column,
 	string $sort_column, string $sort_direction, array $orders, string $primary, string $fallback, array $expected) {
-	expect(html_header_sort_column($metadata, $column, $sort_column, $sort_direction, $orders, $primary, $fallback))
+	expect(sortable_header_probe('column', [$metadata, $column, $sort_column, $sort_direction, $orders, $primary, $fallback]))
 		->toBe($expected);
 })->with([
 	'active ascending'                         => [['display' => 'Name'], 'name', 'name', 'ASC', [], 'name', 'neutral', ['Name', 'fa fa-sort-up', 'DESC', 'left', '', '', 'primarySort']],
@@ -32,68 +43,19 @@ test('sortable header columns preserve named and legacy metadata', function (arr
 ]);
 
 test('sortable header history stays scoped to renderer count, action and tab', function () {
-	global $_CACTI_REQUEST, $config;
-	$saved = [$_SERVER, $_GET, $_POST, $_REQUEST, $_CACTI_REQUEST ?? [], $_SESSION ?? [], $config ?? []];
-
-	try {
-		$_SERVER['SCRIPT_NAME'] = '/headers.php';
-		$config                 = ['is_web' => false, 'config_options_array' => ['log_validation' => '']];
-		set_request_var('action', 'edit');
-		set_request_var('tab', 'details');
-		set_request_var('sort_column', 'name');
-		set_request_var('sort_direction', 'ASC');
-		$_SESSION['sort_data']['2_headers_edit_details'] = ['other' => 'DESC', 'name' => 'ASC'];
-		expect(html_header_sort_order(2))->toBe(['other' => 'DESC', 'name' => 'ASC']);
-		expect(html_header_sort_order(3))->toBe(['name' => 'ASC']);
-	} finally {
-		[$_SERVER, $_GET, $_POST, $_REQUEST, $_CACTI_REQUEST, $_SESSION, $config] = $saved;
-	}
+	$result = sortable_header_probe('history');
+	expect($result[0])->toBe(['other' => 'DESC', 'name' => 'ASC']);
+	expect($result[1])->toBe(['name' => 'ASC']);
 });
 
 test('both sortable renderers retain legacy icons, escaping and independent counters', function () {
-	global $_CACTI_REQUEST, $config;
-	$saved        = [$_SERVER, $_GET, $_POST, $_REQUEST, $_CACTI_REQUEST ?? [], $_SESSION ?? [], $config ?? []];
-	$buffer_level = ob_get_level();
+	[$plain, $checkbox, $second, $columns] = sortable_header_probe('renderers');
 
-	try {
-		$config = ['is_web' => false, 'config_options_array' => ['log_validation' => '', 'i18n_language_support' => '0']];
-		require_once dirname(__DIR__, 4) . '/include/global_constants.php';
-		require_once dirname(__DIR__, 4) . '/include/global_languages.php';
-		$_SERVER['SCRIPT_NAME'] = '/headers.php';
-		set_request_var('action', 'edit');
-		set_request_var('tab', 'details');
-		set_request_var('sort_column', 'name');
-		set_request_var('sort_direction', 'ASC');
-		$_SESSION = [];
-		$headers  = [
-			'name'        => ['display' => 'Name', 'tip' => 'Quotes " &', 'nohide' => false],
-			'count'       => ['Count', 'DESC'],
-			'nosort_note' => ['display' => 'Note']
-		];
-
-		ob_start();
-		html_header_sort($headers, 'name', 'ASC', 2, '/headers.php');
-		$plain = ob_get_clean();
-		ob_start();
-		html_header_sort_checkbox($headers, 'name', 'ASC', true, '/headers.php', '', 'rows');
-		$checkbox = ob_get_clean();
-
-		foreach ([$plain, $checkbox] as $html) {
-			expect($html)->toContain('fa fa-sort-up', 'fa fa-sort', "sort-direction='DESC'", 'primarySort', 'nohide', 'Quotes &quot; &amp;');
-		}
-		expect($checkbox)->toContain("id='selectall'", "data-prefix='rows'", "name='rows' method='post'");
-		expect($_SESSION['valid_sort_columns']['0_headers_edit_details'])->toBe(['name', 'count']);
-
-		$_SESSION['sort_data']['1_headers_edit_details'] = ['count' => 'DESC', 'name' => 'ASC'];
-		ob_start();
-		html_header_sort($headers, 'count', 'DESC', 2, '/headers.php');
-		$second = ob_get_clean();
-		expect($second)->toContain('fa fa-sort-down', 'primarySort', 'secondarySort', "sort-column='count' sort-direction='ASC'");
-		expect($_SESSION['valid_sort_columns']['1_headers_edit_details'])->toBe(['name', 'count']);
-	} finally {
-		while (ob_get_level() > $buffer_level) {
-			ob_end_clean();
-		}
-		[$_SERVER, $_GET, $_POST, $_REQUEST, $_CACTI_REQUEST, $_SESSION, $config] = $saved;
+	foreach ([$plain, $checkbox] as $html) {
+		expect($html)->toContain('fa fa-sort-up', 'fa fa-sort', "sort-direction='DESC'", 'primarySort', 'nohide', 'Quotes &quot; &amp;');
 	}
+	expect($checkbox)->toContain("id='selectall'", "data-prefix='rows'", "name='rows' method='post'");
+	expect($columns['0_headers_edit_details'])->toBe(['name', 'count']);
+	expect($second)->toContain('fa fa-sort-down', 'primarySort', 'secondarySort', "sort-column='count' sort-direction='ASC'");
+	expect($columns['1_headers_edit_details'])->toBe(['name', 'count']);
 });
