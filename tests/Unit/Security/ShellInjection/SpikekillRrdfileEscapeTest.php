@@ -22,6 +22,6 @@
 $spikekillSource = file_get_contents(dirname(__DIR__, 4) . '/poller_spikekill.php');
 
 test('GHSA-vhh2: the spikekill poller escapes the RRDfile path', function () use ($spikekillSource) {
-	expect($spikekillSource)->toContain("' --rrdfile=' . cacti_escapeshellarg(\$f)")
-		->and($spikekillSource)->not->toContain("' --rrdfile=' . \$f .");
+	expect(preg_match('~[\x27] --rrdfile=[\x27]\s*\.\s*cacti_escapeshellarg\(\$f\)~', $spikekillSource))->toBe(1)
+		->and(preg_match('~[\x27] --rrdfile=[\x27]\s*\.\s*\$f\s*\.~', $spikekillSource))->toBe(0);
 });
