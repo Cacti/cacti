@@ -494,8 +494,11 @@ function boost_validate_poller_ownership($results, $poller_id, $conn = false) {
  * @return bool Returns `false` if the boost functionality is enabled and processed, or `true` if
  *   the boost functionality is disabled or bypassed.
  */
-function boost_poller_on_demand(&$results) {
+function boost_poller_on_demand(&$results, &$staged = null) {
 	global $config, $remote_db_cnn_id;
+
+	$track_staging = func_num_args() >= 2;
+	$staged        = false;
 
 	if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 		$conn = $remote_db_cnn_id;
@@ -521,7 +524,7 @@ function boost_poller_on_demand(&$results) {
 			/* cmd.php already staged these rows into poller_output_boost when direct
 			 * redirection is active; once boost owns the pipeline, results reaching
 			 * here must never fall through to an inline RRD update instead. */
-			if (read_config_option('boost_redirect') == 'on') {
+			if (!$track_staging && read_config_option('boost_redirect') == 'on') {
 				$return_value = false;
 			} elseif (cacti_sizeof($results)) {
 				if ($config['poller_id'] > 1 && !boost_validate_poller_ownership($results, $config['poller_id'], $conn)) {
@@ -546,7 +549,9 @@ function boost_poller_on_demand(&$results) {
 
 				/* a staging failure must not fall through to an inline RRD update; that
 				 * would silently defeat Boost every time the insert fails */
-				if (!boost_flush_output_batch($value_tuples, $conn)) {
+				$staged = boost_flush_output_batch($value_tuples, $conn);
+
+				if (!$staged) {
 					cacti_log('ERROR: Boost failed to stage poller output into poller_output_boost. Data will be retried, not written inline.', false, 'BOOST');
 				}
 
