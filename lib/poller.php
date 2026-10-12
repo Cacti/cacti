@@ -720,16 +720,139 @@ function poller_get_nt_rrd_field_names(int $local_data_id, array &$cache) : arra
  * results to RRDtool for processing
  *
  * @param mixed $rrdtool_pipe The array of pipes containing the file descriptor for rrdtool
- * @param int   $remainder    Don't use LIMIT if true
+ * @param int   $remainder    Drain all bounded batches when nonzero
  *
  * @return int The number of rrdfiles processed
  */
 function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
+	global $poller_start;
+
+	static $cursor        = null;
+	static $blocked_after = [];
+
+	// Normal passes resume past partial/failed groups; the final pass revisits the whole queue.
+	if ($remainder !== 0) {
+		$cursor = null;
+	}
+
+	if ($cursor === null) {
+		$blocked_after = [];
+	}
+
+	$rrds_processed = 0;
+	$max_rows       = 40000;
+
+	do {
+		$where  = '';
+		$params = [];
+
+		if ($cursor !== null) {
+			$where  = 'WHERE (po.local_data_id > ? OR (po.local_data_id = ? AND po.time > ?))';
+			$params = [$cursor[0], $cursor[0], $cursor[1]];
+		}
+
+		// One lookahead row lets us defer a split group without a per-source query.
+		$results = db_fetch_assoc_prepared("SELECT po.output, po.time,
+			UNIX_TIMESTAMP(po.time) AS unix_time, po.local_data_id, dl.data_template_id,
+			pi.rrd_path, pi.rrd_name, pi.rrd_num
+			FROM poller_output AS po
+			INNER JOIN poller_item AS pi
+			ON po.local_data_id = pi.local_data_id AND po.rrd_name = pi.rrd_name
+			INNER JOIN data_local AS dl ON dl.id = po.local_data_id
+			$where
+			ORDER BY po.local_data_id, po.time, po.rrd_name
+			LIMIT 40001", $params);
+
+		if ($results === false) {
+			break;
+		}
+
+		$more = count($results) > $max_rows;
+
+		if ($more) {
+			$lookahead = array_pop($results);
+
+			while ($results !== []) {
+				$last = $results[array_key_last($results)];
+
+				if ($last['local_data_id'] != $lookahead['local_data_id'] || $last['time'] !== $lookahead['time']) {
+					break;
+				}
+				array_pop($results);
+			}
+
+			$last   = $results === [] ? $lookahead : $results[array_key_last($results)];
+			$cursor = [(int) $last['local_data_id'], $last['time']];
+
+			if ($results === []) {
+				cacti_log('WARNING: Poller output group exceeds the batch limit; retaining it for inspection', false, 'POLLER');
+			}
+		} else {
+			$cursor = null;
+		}
+
+		$tail_path = $more && $results !== [] ? $results[array_key_last($results)]['rrd_path'] : null;
+		$rrds_processed += process_poller_output_batch($rrdtool_pipe, $results, $blocked_after);
+		// Only the trailing source can span the next batch; do not retain a backlog-sized cache.
+		$blocked_after = $tail_path !== null && isset($blocked_after[$tail_path]) ? [$tail_path => $blocked_after[$tail_path]] : [];
+
+		// Return control to the poller between normal batches, including batches with no progress.
+		if ($remainder === 0 || (isset($poller_start) && defined('MAX_POLLER_RUNTIME') &&
+			time() >= $poller_start + MAX_POLLER_RUNTIME)) {
+			break;
+		}
+	} while ($more);
+
+	if ($remainder !== 0) {
+		// Only truly deleted sources are discarded; incomplete/live sources remain retryable.
+		db_execute('DELETE po FROM poller_output AS po
+			LEFT JOIN data_local AS dl ON dl.id = po.local_data_id
+			WHERE dl.id IS NULL');
+	}
+
+	return $rrds_processed;
+}
+
+/**
+ * Acknowledge exact fetched keys only after durable staging or an individual RRD update.
+ *
+ * @param array                           $results            Complete fetched groups.
+ * @param array<string, array<int, bool>> $successful_updates RRDtool acknowledgements.
+ * @param bool                            $staged             Every Boost insert succeeded.
+ */
+function poller_acknowledge_output(array $results, array $successful_updates, bool $staged) : void {
+	$params = [];
+	$tuples = [];
+
+	foreach ($results as $item) {
+		if (!$staged && empty($successful_updates[$item['rrd_path']][$item['unix_time']])) {
+			continue;
+		}
+
+		$tuples[] = '(?, ?, ?)';
+		array_push($params, (int) $item['local_data_id'], $item['rrd_name'], $item['time']);
+
+		if (count($tuples) === 1000) {
+			if (!db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' . implode(',', $tuples) . ')', $params)) {
+				return;
+			}
+			$tuples = [];
+			$params = [];
+		}
+	}
+
+	if ($tuples !== []) {
+		db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' . implode(',', $tuples) . ')', $params);
+	}
+}
+
+/** Process one bounded batch, reusing template and per-source metadata across passes. */
+function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array &$blocked_after = []) : int {
 	global $debug;
 
 	static $rrd_field_names        = [];
 	static $rrd_field_names_loaded = false;
-	static $checked_bad            = false;
+	static $expected_by_template   = null;
 
 	// per-data-source metadata caches, keyed by local_data_id and held static so each data
 	// source is queried at most once per poller process (not once per row or per re-entry):
@@ -740,34 +863,7 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-	// let's count the number of rrd files we processed
 	$rrds_processed = 0;
-	$max_rows       = 40000;
-
-	if ($remainder == 0) {
-		$remainder = $max_rows;
-	}
-
-	cacti_log("Processing Poller Output with $remainder maximum items to be processed", false, 'POLLER', POLLER_VERBOSITY_HIGH);
-
-	if ($remainder === 0) {
-		$limit = 'LIMIT ' . $max_rows;
-	} else {
-		$limit = '';
-	}
-
-	// create/update the rrd files
-	$results = db_fetch_assoc("SELECT po.output, po.time,
-		UNIX_TIMESTAMP(po.time) as unix_time, po.local_data_id, dl.data_template_id,
-		pi.rrd_path, pi.rrd_name, pi.rrd_num
-		FROM poller_output AS po
-		INNER JOIN poller_item AS pi
-		ON po.local_data_id = pi.local_data_id
-		AND po.rrd_name = pi.rrd_name
-		INNER JOIN data_local AS dl
-		ON dl.id = po.local_data_id
-		ORDER BY po.local_data_id
-		$limit");
 
 	if (!$rrd_field_names_loaded) {
 		$template_fields = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
@@ -775,10 +871,12 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 			FROM poller_data_template_field_mappings');
 
 		// A failed read is not an empty cache; retry on the next pass.
-		if ($template_fields !== false) {
-			$rrd_field_names        = array_rekey($template_fields, 'keyname', ['data_source_name']);
-			$rrd_field_names_loaded = true;
+		if ($template_fields === false) {
+			return 0;
 		}
+
+		$rrd_field_names        = array_rekey($template_fields, 'keyname', ['data_source_name']);
+		$rrd_field_names_loaded = true;
 	}
 
 	if (cacti_sizeof($results)) {
@@ -834,37 +932,41 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 					$matches = explode(':', $value);
 
 					if (cacti_sizeof($matches) == 2) {
-						$field = '';
+						$fields = [];
 
 						if ($data_template_id > 0) {
 							if (isset($rrd_field_names[$data_template_id . '_' . $matches[0]])) {
-								$field = $rrd_field_names[$data_template_id . '_' . $matches[0]]['data_source_name'];
+								$fields = explode(',', $rrd_field_names[$data_template_id . '_' . $matches[0]]['data_source_name']);
 							}
 						} elseif (isset($nt_rrd_field_names[$matches[0]])) {
-							$field = $nt_rrd_field_names[$matches[0]];
+							$fields = [$nt_rrd_field_names[$matches[0]]];
 						}
 
-						if ($field === '') {
-							continue;
+						foreach ($fields as $field) {
+							$field = trim($field);
+
+							if ($field === '') {
+								continue;
+							}
+
+							if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
+								continue;
+							}
+
+							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
+
+							if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
+								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
+							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
+								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = hexdec($matches[1]);
+							} else {
+								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
+							}
+
+							$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
+
+							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 						}
-
-						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
-							continue;
-						}
-
-						cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
-
-						if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
-							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
-						} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
-							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = hexdec($matches[1]);
-						} else {
-							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
-						}
-
-						$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
-
-						$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 					}
 				}
 			} else {
@@ -873,21 +975,23 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 
 				if ($data_template_id > 0) {
 					// expected field names for this template come from the static template cache
-					$nt_rrd_field_names = [];
-					$prefix             = $data_template_id . '_';
+					if ($expected_by_template === null) {
+						$expected_by_template = [];
 
-					foreach ($rrd_field_names as $keyname => $mapping) {
-						if (str_starts_with($keyname, $prefix)) {
-							// data_source_names is GROUP_CONCAT'd, so a multi-source template yields e.g. 'in,out'
+						foreach ($rrd_field_names as $keyname => $mapping) {
+							$template_id = (int) explode('_', $keyname, 2)[0];
+
 							foreach (explode(',', $mapping['data_source_name']) as $field) {
 								$field = trim($field);
 
 								if ($field !== '') {
-									$nt_rrd_field_names[$field] = $field;
+									$expected_by_template[$template_id][$field] = $field;
 								}
 							}
 						}
 					}
+
+					$nt_rrd_field_names = $expected_by_template[$data_template_id] ?? [];
 				} else {
 					$nt_rrd_field_names = poller_get_nt_rrd_field_names($local_data_id, $nt_cache);
 				}
@@ -916,42 +1020,33 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 			if ((!isset($rrd_update_array[$rrd_path]['times'][$unix_time])) && ($rrd_name != '')) {
 				$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 			} elseif ((!isset($rrd_update_array[$rrd_path]['times'][$unix_time])) && ($rrd_name == '')) {
-				unset($rrd_update_array[$rrd_path]);
+				unset($rrd_update_array[$rrd_path]['times'][$unix_time]);
 			}
 		}
 
-		// make sure each .rrd file has complete data
-		$k        = 0;
-		$data_ids = [];
-
+		// Do not advance a file past an incomplete timestamp that must still be retried.
 		foreach ($results as $item) {
 			$unix_time = $item['unix_time'];
 			$rrd_path  = $item['rrd_path'];
-			$rrd_name  = $item['rrd_name'];
 
-			if (isset($rrd_update_array[$rrd_path]['times'][$unix_time])) {
-				/**
-				 * Check to see if we have partial data sources.  If so
-				 * we did not get a full update, so we should not be removing
-				 * those data sources from the $rrd_update_array yet.
-				 */
-				if ($item['rrd_num'] <= cacti_sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
-					$data_ids[] = $item['local_data_id'];
-					$k++;
-
-					if ($k % 10000 == 0) {
-						db_execute('DELETE FROM poller_output WHERE ' . db_in_clause('local_data_id', $data_ids));
-						$data_ids = [];
-						$k        = 0;
-					}
-				} else {
-					unset($rrd_update_array[$rrd_path]['times'][$unix_time]);
-				}
+			if (!isset($rrd_update_array[$rrd_path]['times'][$unix_time]) ||
+				$item['rrd_num'] > cacti_sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
+				$blocked_after[$rrd_path] = min($blocked_after[$rrd_path] ?? $unix_time, $unix_time);
 			}
 		}
 
-		if ($k > 0) {
-			db_execute('DELETE FROM poller_output WHERE ' . db_in_clause('local_data_id', $data_ids));
+		$completed = [];
+
+		foreach ($results as $item) {
+			if (isset($blocked_after[$item['rrd_path']]) && $item['unix_time'] >= $blocked_after[$item['rrd_path']]) {
+				unset($rrd_update_array[$item['rrd_path']]['times'][$item['unix_time']]);
+
+				continue;
+			}
+
+			if (isset($rrd_update_array[$item['rrd_path']]['times'][$item['unix_time']])) {
+				$completed[] = $item;
+			}
 		}
 
 		// process dsstats information
@@ -960,61 +1055,14 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 
 		api_plugin_hook_function('poller_output', $rrd_update_array);
 
-		if (boost_poller_on_demand($results)) {
-			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
+		$staged             = false;
+		$successful_updates = [];
+
+		if (boost_poller_on_demand($completed, $staged)) {
+			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe, $successful_updates);
 		}
 
-		$results          = null;
-		$rrd_update_array = null;
-
-		// to much records in poller_output, process in chunks
-		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
-			FROM poller_output');
-
-		// to much records in poller_output, process in chunks
-		if ($rows && $remainder == $max_rows) {
-			$running = db_fetch_cell('SELECT COUNT(*)
-				FROM poller_time
-				WHERE end_time = "0000-00-00"');
-
-			$rrds_processed += process_poller_output($rrdtool_pipe, $rows < $max_rows ? $rows : $max_rows);
-
-			if ($running == 0 && !$checked_bad) {
-				// Remove recently deleted items from the poller_output table
-				db_execute('DELETE FROM poller_output WHERE local_data_id NOT IN (SELECT id FROM data_local)');
-
-				// Identify data sources that are somehow not aligned
-				$items = db_fetch_assoc('SELECT rrd_num,
-					COUNT(DISTINCT po.local_data_id, po.rrd_name) AS ids, dt.name, dl.host_id,
-					GROUP_CONCAT(DISTINCT po.local_data_id) AS local_data_ids
-					FROM poller_output AS po
-					LEFT JOIN poller_item AS pi
-					ON po.local_data_id = pi.local_data_id
-					LEFT JOIN data_local AS dl
-					ON po.local_data_id = dl.id
-					LEFT JOIN data_template AS dt
-					ON dl.data_template_id = dt.id
-					GROUP BY po.local_data_id
-					HAVING rrd_num IS NULL OR rrd_num != ids
-					ORDER BY dt.name');
-
-				if (cacti_sizeof($items)) {
-					cacti_log(sprintf('WARNING: There are %s Data Sources not returning all data leaving rows in the poller output table.  Details to follow.', cacti_sizeof($items)), false, 'POLLER');
-					$prevName = '';
-
-					foreach ($items as $item) {
-						if ($prevName != $item['name']) {
-							cacti_log(sprintf('WARNING: Data Template \'%s\' is impacted by lack of complete information', $item['name']), false, 'POLLER');
-							$prevName = $item['name'];
-
-							db_execute('DELETE FROM poller_output WHERE ' . db_in_clause('local_data_id', $item['local_data_ids']));
-						}
-					}
-				}
-
-				$checked_bad = true;
-			}
-		}
+		poller_acknowledge_output($completed, $successful_updates, $staged);
 	}
 
 	return $rrds_processed;

@@ -3,10 +3,10 @@
 
 // Isolated CLI harness: execute production function bodies with instrumented I/O.
 // Never included by Pest's collection process or a production entry point.
-$root = dirname(__DIR__, 2);
+$root = getenv('CACTI_POLLER_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 $mode = $argv[1] ?? 'quick';
 
-if (!in_array($mode, ['quick', 'scale', 'empty', 'recovery', 'recovery-empty', 'exec'], true)) {
+if (!in_array($mode, ['quick', 'scale', 'empty', 'recovery', 'recovery-empty', 'exec', 'invalid'], true)) {
 	throw new RuntimeException('Unknown performance scenario');
 }
 $state = ['rows' => [], 'queries' => [], 'writes' => [], 'updates' => [], 'boost' => false];
@@ -27,8 +27,8 @@ function perf_load(string $path, string $name) : bool {
 	$end      = strpos($source, "\nfunction ", $start + 1);
 	$function = substr($source, $start, $end === false ? null : $end - $start);
 	$map      = [
-		'process_poller_output', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names',
-		'db_fetch_assoc', 'db_fetch_assoc_prepared', 'db_fetch_cell', 'db_execute', 'db_in_clause', 'array_rekey',
+		'process_poller_output', 'process_poller_output_batch', 'poller_acknowledge_output', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names',
+		'db_fetch_assoc', 'db_fetch_assoc_prepared', 'db_fetch_cell', 'db_execute', 'db_execute_prepared', 'db_in_clause', 'array_rekey',
 		'cacti_sizeof', 'is_hexadecimal', 'cacti_log', 'dsstats_poller_output', 'dsdebug_poller_output',
 		'api_plugin_hook_function', 'boost_poller_on_demand', 'rrdtool_function_update',
 		'cacti_exec', 'cacti_exec_log_describe',
@@ -66,10 +66,19 @@ function perf_dsdebug_poller_output(...$args) : void {
 }
 function perf_api_plugin_hook_function(...$args) : void {
 }
-function perf_boost_poller_on_demand(...$args) : bool {
+function perf_boost_poller_on_demand($results, &$staged = null) : bool {
+	$staged = $GLOBALS['state']['boost'];
+
 	return !$GLOBALS['state']['boost'];
 }
-function perf_rrdtool_function_update($updates, &$pipe, ...$args) : int {
+function perf_rrdtool_function_update($updates, &$pipe, &$successful_updates = []) : int {
+	$successful_updates = [];
+
+	foreach ($updates as $path => $rrd) {
+		foreach ($rrd['times'] ?? [] as $time => $fields) {
+			$successful_updates[$path][$time] = true;
+		}
+	}
 	$GLOBALS['state']['updates'] = $updates;
 
 	return count($updates);
@@ -92,11 +101,27 @@ function perf_db_fetch_assoc($sql, ...$args) : array {
 function perf_db_fetch_assoc_prepared($sql, $params = [], ...$args) : array|false {
 	$GLOBALS['state']['queries'][] = ['sql' => $sql, 'params' => $params];
 
+	if (str_contains($sql, 'FROM poller_output AS po')) {
+		return $GLOBALS['state']['rows'];
+	}
+
 	if (str_contains($sql, 'FROM poller_data_template_field_mappings')) {
 		if (in_array($GLOBALS['mode'], ['recovery', 'recovery-empty'], true) && !isset($GLOBALS['state']['mapping_failed'])) {
 			$GLOBALS['state']['mapping_failed'] = true;
 
 			return false;
+		}
+
+		if ($GLOBALS['mode'] === 'invalid') {
+			$maps = [];
+
+			for ($id = 1; $id <= (int) ($GLOBALS['argv'][3] ?? 1000); $id++) {
+				foreach (['a', 'b'] as $field) {
+					$maps[] = ['keyname' => $id . '_' . $field, 'data_source_name' => $field];
+				}
+			}
+
+			return $maps;
 		}
 
 		return in_array($GLOBALS['mode'], ['empty', 'recovery-empty'], true) ? [] : [['keyname' => '1_a', 'data_source_name' => 'a'], ['keyname' => '1_b', 'data_source_name' => 'b']];
@@ -105,7 +130,7 @@ function perf_db_fetch_assoc_prepared($sql, $params = [], ...$args) : array|fals
 
 	if (str_contains($sql, 'gti.task_item_id IS NULL')) {
 		// Source 2 shares a template with source 1 but has a different graph binding.
-		return $params[0] === 2 ? [['data_source_name' => 'b']] : [];
+		return $GLOBALS['mode'] !== 'invalid' && $params[0] === 2 ? [['data_source_name' => 'b']] : [];
 	}
 
 	return [['data_name' => 'a', 'data_source_name' => 'a'], ['data_name' => 'b', 'data_source_name' => 'b']];
@@ -116,6 +141,11 @@ function perf_db_fetch_cell($sql, ...$args) : int {
 	return 0; // No remaining backlog in this isolated batch.
 }
 function perf_db_execute($sql, ...$args) : bool {
+	$GLOBALS['state']['writes'][] = $sql;
+
+	return true;
+}
+function perf_db_execute_prepared($sql, $params = []) : bool {
 	$GLOBALS['state']['writes'][] = $sql;
 
 	return true;
@@ -194,7 +224,7 @@ $config = ['library_path' => __DIR__ . '/fixtures'];
 $debug  = false;
 perf_assert(perf_load($root . '/lib/functions.php', 'is_hexadecimal'), 'Production hex parser is missing');
 
-foreach (['poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names', 'process_poller_output'] as $name) {
+foreach (['poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names', 'poller_acknowledge_output', 'process_poller_output_batch', 'process_poller_output'] as $name) {
 	$loaded = perf_load($root . '/lib/poller.php', $name);
 	perf_assert($loaded || $name !== 'process_poller_output', 'Production poller function is missing');
 }
@@ -218,6 +248,15 @@ if (in_array($mode, ['recovery', 'recovery-empty'], true)) {
 		perf_process_poller_output($pipe);
 		perf_assert(perf_sample(1) === ['a' => '10', 'b' => '20'], 'MULTI output did not recover');
 	}
+} elseif ($mode === 'invalid') {
+	$total = (int) ($argv[2] ?? 10000);
+	perf_assert($total > 0 && $total <= 40000 && (int) ($argv[3] ?? 1000) > 0 && (int) ($argv[3] ?? 1000) <= 10000, 'Invalid diagnostic size');
+
+	for ($id = 1; $id <= $total; $id++) {
+		$state['rows'][] = perf_row($id, 'invalid', 1, 2);
+	}
+	$processed = perf_process_poller_output($pipe);
+	perf_assert($processed === $total, 'Invalid output did not produce complete unknown updates');
 } elseif ($mode === 'empty') {
 	for ($i = 0; $i < 5; $i++) {
 		perf_process_poller_output($pipe);

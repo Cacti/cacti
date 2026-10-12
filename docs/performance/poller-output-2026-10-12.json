@@ -1,0 +1,116 @@
+{
+  "samples": [
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.3760635,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "before",
+      "round": 1
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.016168875,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "after",
+      "round": 1
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.016498583,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "after",
+      "round": 2
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.381336959,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "before",
+      "round": 2
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.401666584,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "before",
+      "round": 3
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.016339667,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "after",
+      "round": 3
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.016205792,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "after",
+      "round": 4
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.391755708,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "before",
+      "round": 4
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.374731291,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "before",
+      "round": 5
+    },
+    {
+      "scenario": "invalid",
+      "sources": 10000,
+      "elapsed_seconds": 0.016732667,
+      "peak_bytes": 31457280,
+      "php": "8.5.11",
+      "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
+      "version": "after",
+      "round": 5
+    }
+  ],
+  "summary": {
+    "before": 0.381336959,
+    "after": 0.016339667,
+    "improvement_percent": 95.71516302987038
+  },
+  "baseline": "7d8cdfdef47922efbcf15e586c6aa06139ab7e98",
+  "sources": {
+    "lib/poller.php": "0cf4808fbfcb43045ea9d26b90604cc5f33d1fe88eecec179e95f503cb4c9867",
+    "lib/rrd.php": "cce821a75814321546ec252ef79595f3cdfc77334844da8d131489c26d670d71",
+    "lib/boost.php": "5954eb08aa8fcf2bbbc5c3c91c4a82b934a88c47436be4b1ce3799738df04019"
+  },
+  "limitations": "Synthetic PHP processing; database, plugin, statistics and RRD I/O boundaries instrumented. Not production throughput."
+}
