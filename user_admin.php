@@ -669,7 +669,9 @@ function form_save() : void {
 						send_mail($save['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, [], [],  true);
 					}
 
-					log_user_action($save['username'], 'changed password');
+					if (($save['password'] ?? $old_password) !== $old_password) {
+						log_user_action($save['username'], 'changed password');
+					}
 				}
 
 				raise_message(1);
