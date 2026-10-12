@@ -1021,7 +1021,10 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
  *
  * @return int The resulting integer value.
  */
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array()) {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array(), &$successful_updates = array()) {
+	$track_updates      = func_num_args() >= 4;
+	$successful_updates = array();
+
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -1141,8 +1144,17 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 					continue;
 				}
 
-				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				$update_result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+
+				if ($update_result === false) {
+					cacti_log('ERROR: RRDtool update failed; retaining poller output for retry.', false, 'POLLER');
+					break;
+				}
 				$rrds_processed++;
+
+				if ($track_updates) {
+					$successful_updates[$rrd_path][(int) $update_time] = true;
+				}
 			}
 		}
 	}
