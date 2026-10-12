@@ -969,7 +969,8 @@ function applySkin() {
 	}
 
 	// Setup blinking
-	setInterval(blinkMe, 1200);
+	clearInterval(applySkin.blinkTimer);
+	applySkin.blinkTimer = setInterval(blinkMe, 1200);
 
 	function blinkMe() {
 		$('.blink').each(function() {
