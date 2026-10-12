@@ -643,8 +643,10 @@ function poller_update_poller_reindex_from_buffer(int $host_id, int $data_query_
  *
  * @return array data_source_name => data_source_name for orphaned fields.
  */
-function poller_get_unused_data_source_names(int $local_data_id, ?array &$cache) : array|false {
-	if ($cache === null) {
+function poller_get_unused_data_source_names(int $local_data_id, array &$cache) : array|false {
+	static $unused_sources = null;
+
+	if ($unused_sources === null) {
 		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
 			FROM data_input AS di
 			INNER JOIN (SELECT data_input_id FROM data_input_fields
@@ -662,12 +664,14 @@ function poller_get_unused_data_source_names(int $local_data_id, ?array &$cache)
 		if ($rows === false) {
 			return false;
 		}
-		$cache = [];
+		$unused_sources = [];
 
 		foreach ($rows as $row) {
-			$cache[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
+			$unused_sources[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
 		}
 	}
+
+	$cache = $unused_sources;
 
 	return $cache[$local_data_id] ?? [];
 }
@@ -876,7 +880,7 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 	// source is queried at most once per poller process (not once per row or per re-entry):
 	//   $unused_cache - local_data_id => orphaned (not-on-graph) data source names (templated only)
 	//   $nt_cache     - local_data_id => data_name => data_source_name (non-templated, dt == 0)
-	static $unused_cache = null;
+	static $unused_cache = [];
 	static $nt_cache     = [];
 
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
@@ -943,9 +947,11 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 				$unused_data_source_names = $data_template_id > 0 ? poller_get_unused_data_source_names($local_data_id, $unused_cache) : [];
 
 				if ($unused_data_source_names === false) {
-					$blocked_after[$rrd_path] = min($blocked_after[$rrd_path] ?? $unix_time, $unix_time);
+					foreach ($results as $pending) {
+						$blocked_after[$pending['rrd_path']] = min($blocked_after[$pending['rrd_path']] ?? $pending['unix_time'], $pending['unix_time']);
+					}
 
-					continue;
+					return 0;
 				}
 
 				// the Data Template dictates field names; only non-templated (dt == 0) sources
@@ -1004,9 +1010,11 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 				$unused_data_source_names = $data_template_id > 0 ? poller_get_unused_data_source_names($local_data_id, $unused_cache) : [];
 
 				if ($unused_data_source_names === false) {
-					$blocked_after[$rrd_path] = min($blocked_after[$rrd_path] ?? $unix_time, $unix_time);
+					foreach ($results as $pending) {
+						$blocked_after[$pending['rrd_path']] = min($blocked_after[$pending['rrd_path']] ?? $pending['unix_time'], $pending['unix_time']);
+					}
 
-					continue;
+					return 0;
 				}
 
 				if ($data_template_id > 0) {
