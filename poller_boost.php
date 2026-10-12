@@ -943,7 +943,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 	// per-data-source metadata caches, keyed by local_data_id and held static so each data
 	// source is queried at most once per boost process (see poller_get_unused_data_source_names()
 	// and poller_get_nt_rrd_field_names() in lib/poller.php).
-	static $unused_cache = [];
+	static $unused_cache = null;
 	static $nt_cache     = [];
 
 	require_once(CACTI_PATH_LIBRARY . '/rrd.php');

@@ -6,6 +6,8 @@ if (PHP_SAPI !== 'cli') {
 }
 $root = getenv('CACTI_POLLER_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 require dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+define('DATA_INPUT_TYPE_SCRIPT', 1);
+define('DATA_INPUT_TYPE_PHP_SCRIPT_SERVER', 5);
 $scenario = $argv[1] ?? 'partial';
 $state    = ['rows' => [], 'queries' => 0, 'mapping_queries' => 0, 'commands' => [], 'rrd_calls' => 0, 'boost_calls' => 0, 'delete_calls' => 0, 'arrived' => false];
 function probe_load(string $path, string $name) : void {
@@ -76,7 +78,7 @@ function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 		return $scenario === 'fanout' || $scenario === 'fanout-orphan' ? [['keyname' => '1_value', 'data_source_name' => 'in,out']] : [['keyname' => '1_in', 'data_source_name' => 'in'], ['keyname' => '1_out', 'data_source_name' => 'out']];
 	}
 
-	if (str_contains($sql, 'FROM data_template_rrd')) {
+	if (str_contains($sql, 'FROM data_template_rrd') || str_contains($sql, 'FROM data_input AS di')) {
 		$state['source_queries'] = ($state['source_queries'] ?? 0) + 1;
 
 		if (in_array($scenario, ['manual-query-failure', 'orphan-query-failure'], true) && $state['source_queries'] === 1) {
@@ -88,7 +90,7 @@ function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 		}
 	}
 
-	return $scenario === 'fanout-orphan' ? [['data_source_name' => 'out']] : [];
+	return $scenario === 'fanout-orphan' ? [['local_data_id' => 1, 'data_source_name' => 'out']] : [];
 }
 function db_fetch_assoc($sql) : array|false {
 	return str_contains($sql, 'FROM poller_output AS po') ? db_fetch_assoc_prepared($sql) : [];

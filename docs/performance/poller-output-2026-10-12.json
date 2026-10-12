@@ -3,7 +3,7 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.37919275,
+      "elapsed_seconds": 0.353635542,
       "peak_bytes": 31457280,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
@@ -13,8 +13,8 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.018496917,
-      "peak_bytes": 31457280,
+      "elapsed_seconds": 0.014363584,
+      "peak_bytes": 25165824,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
       "version": "after",
@@ -23,8 +23,8 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.019529167,
-      "peak_bytes": 31457280,
+      "elapsed_seconds": 0.014378541,
+      "peak_bytes": 25165824,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
       "version": "after",
@@ -33,7 +33,7 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.378668125,
+      "elapsed_seconds": 0.356044583,
       "peak_bytes": 31457280,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
@@ -43,7 +43,7 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.378202041,
+      "elapsed_seconds": 0.359096833,
       "peak_bytes": 31457280,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
@@ -53,8 +53,8 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.018788,
-      "peak_bytes": 31457280,
+      "elapsed_seconds": 0.014540084,
+      "peak_bytes": 25165824,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
       "version": "after",
@@ -63,8 +63,8 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.019253375,
-      "peak_bytes": 31457280,
+      "elapsed_seconds": 0.014278916,
+      "peak_bytes": 25165824,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
       "version": "after",
@@ -73,7 +73,7 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.374874291,
+      "elapsed_seconds": 0.368925042,
       "peak_bytes": 31457280,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
@@ -83,7 +83,7 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.376569875,
+      "elapsed_seconds": 0.343392208,
       "peak_bytes": 31457280,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
@@ -93,8 +93,8 @@
     {
       "scenario": "invalid",
       "sources": 10000,
-      "elapsed_seconds": 0.018787625,
-      "peak_bytes": 31457280,
+      "elapsed_seconds": 0.013300292,
+      "peak_bytes": 25165824,
       "php": "8.5.11",
       "kind": "synthetic PHP processing; instrumented database and RRD boundaries",
       "version": "after",
@@ -102,13 +102,13 @@
     }
   ],
   "summary": {
-    "before": 0.378202041,
-    "after": 0.018788,
-    "improvement_percent": 95.03228487336482
+    "before": 0.356044583,
+    "after": 0.014363584,
+    "improvement_percent": 95.96579060999223
   },
   "baseline": "7d8cdfdef47922efbcf15e586c6aa06139ab7e98",
   "sources": {
-    "lib/poller.php": "e7511a71a78ecf1a4e5a2989bb36b61a88a915807fad43cabf9f6d957f7d6f36",
+    "lib/poller.php": "6b8cf52cb54d341a43eda0daaf9138b2dbfc911f3db458b2604225abd5847f3a",
     "lib/rrd.php": "cce821a75814321546ec252ef79595f3cdfc77334844da8d131489c26d670d71",
     "lib/boost.php": "5954eb08aa8fcf2bbbc5c3c91c4a82b934a88c47436be4b1ce3799738df04019"
   },

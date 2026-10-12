@@ -1,5 +1,7 @@
 <?php
 // Copyright (C) 2026 The Cacti Group. Licensed under GPL-2.0-or-later.
+define('DATA_INPUT_TYPE_SCRIPT', 1);
+define('DATA_INPUT_TYPE_PHP_SCRIPT_SERVER', 5);
 
 // Isolated CLI harness: execute production function bodies with instrumented I/O.
 // Never included by Pest's collection process or a production entry point.
@@ -126,6 +128,13 @@ function perf_db_fetch_assoc_prepared($sql, $params = [], ...$args) : array|fals
 
 		return in_array($GLOBALS['mode'], ['empty', 'recovery-empty'], true) ? [] : [['keyname' => '1_a', 'data_source_name' => 'a'], ['keyname' => '1_b', 'data_source_name' => 'b']];
 	}
+
+	if (str_contains($sql, 'FROM data_input AS di')) {
+		perf_assert($params === [DATA_INPUT_TYPE_SCRIPT, DATA_INPUT_TYPE_PHP_SCRIPT_SERVER], 'Orphan preload must be limited to standalone multi-output scripts');
+
+		return $GLOBALS['mode'] !== 'invalid' ? [['local_data_id' => 2, 'data_source_name' => 'b']] : [];
+	}
+
 	perf_assert(count($params) === 1 && str_contains($sql, 'dtr.local_data_id = ?'), 'Metadata lookup must be bounded to one source');
 
 	if (str_contains($sql, 'gti.task_item_id IS NULL')) {

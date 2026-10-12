@@ -643,28 +643,33 @@ function poller_update_poller_reindex_from_buffer(int $host_id, int $data_query_
  *
  * @return array data_source_name => data_source_name for orphaned fields.
  */
-function poller_get_unused_data_source_names(int $local_data_id, array &$cache) : array|false {
-	if (!array_key_exists($local_data_id, $cache)) {
-		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name
-			FROM data_template_rrd AS dtr
-			LEFT JOIN graph_templates_item AS gti
-			ON dtr.id = gti.task_item_id
-			WHERE dtr.local_data_id = ?
-			AND gti.task_item_id IS NULL',
-			[$local_data_id]);
+function poller_get_unused_data_source_names(int $local_data_id, ?array &$cache) : array|false {
+	if ($cache === null) {
+		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
+			FROM data_input AS di
+			INNER JOIN (SELECT data_input_id FROM data_input_fields
+				WHERE input_output = "out" AND update_rra = "on"
+				GROUP BY data_input_id HAVING COUNT(*) > 1) AS multi
+			ON multi.data_input_id = di.id
+			INNER JOIN data_template_data AS dtd ON dtd.data_input_id = di.id
+			INNER JOIN data_local AS dl ON dl.id = dtd.local_data_id AND dl.snmp_query_id = 0
+			INNER JOIN data_template_rrd AS dtr ON dtr.local_data_id = dl.id
+			LEFT JOIN graph_templates_item AS gti ON gti.task_item_id = dtr.id
+			WHERE di.type_id IN (?, ?)
+			AND dtr.data_template_id > 0 AND dtr.local_data_id > 0
+			AND gti.task_item_id IS NULL', [DATA_INPUT_TYPE_SCRIPT, DATA_INPUT_TYPE_PHP_SCRIPT_SERVER]);
 
 		if ($rows === false) {
 			return false;
 		}
-
-		$cache[$local_data_id] = [];
+		$cache = [];
 
 		foreach ($rows as $row) {
-			$cache[$local_data_id][$row['data_source_name']] = $row['data_source_name'];
+			$cache[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
 		}
 	}
 
-	return $cache[$local_data_id];
+	return $cache[$local_data_id] ?? [];
 }
 
 /**
@@ -871,7 +876,7 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 	// source is queried at most once per poller process (not once per row or per re-entry):
 	//   $unused_cache - local_data_id => orphaned (not-on-graph) data source names (templated only)
 	//   $nt_cache     - local_data_id => data_name => data_source_name (non-templated, dt == 0)
-	static $unused_cache = [];
+	static $unused_cache = null;
 	static $nt_cache     = [];
 
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
