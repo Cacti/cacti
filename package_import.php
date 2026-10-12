@@ -2029,9 +2029,15 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 				raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_ERROR);
 			}
 		} else { // Server Directory
-			$file = $repo['repo_location'] . '/' . $filename;
+			// Symlinks are allowed as long as the resolved file stays inside the repository directory.
+			$base = realpath($repo['repo_location']);
+			$file = ($base === false || str_contains($filename, "\0")) ? false : realpath($base . '/' . $filename);
 
-			if (file_exists($file)) {
+			if ($file !== false && !str_starts_with($file, rtrim($base, '/') . '/')) {
+				$file = false;
+			}
+
+			if ($file !== false && file_exists($file)) {
 				$data = file_get_contents($file);
 
 				if ($data != '') {
