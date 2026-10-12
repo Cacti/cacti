@@ -4306,10 +4306,11 @@ function initGraphDrilldown() {
 			var label = glyph.attr('title') || link.attr('title') || $.trim(link.text());
 
 			if (label != '' && link.find('.iconLabel').length == 0) {
-				// Keep a single hover tooltip on the row and drop the glyph's duplicate.
+				// Keep a single hover tooltip on the row and drop the glyph's duplicate;
+				// the label is prepended so it sits in the left table cell, glyph right.
 				link.attr('title', label);
 				glyph.removeAttr('title').attr('aria-hidden', 'true');
-				link.append($('<span class="iconLabel"></span>').text(label));
+				link.prepend($('<span class="iconLabel"></span>').text(label));
 			}
 		});
 
