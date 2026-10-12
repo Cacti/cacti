@@ -311,13 +311,13 @@ function midWinterNavigation(element) {
 	let helper   		= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('helper');
 	let rubric		 	= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('title');
 
-	const btnManager = new cactiButton();
+	const btnManager = mdw.obj.ctrl.btn;
 
 	$('#navBreadCrumb .rubric').html( '<span>'+rubric+'</span>').attr('data-helper', helper).off().on(
-		"click", {param: 'force_open', filter: 'reset'}, btnManager.toggleConsoleNavigationBox
+		'click', {param: 'force_open', filter: 'reset'}, event => btnManager.toggleConsoleNavigationBox(event)
 	);
 	$('#navBreadCrumb .category').empty().append($('<span>').text(category)).attr('data-helper', helper).off().on(
-		"click", {param: 'force_open', filter: category}, btnManager.toggleConsoleNavigationBox
+		'click', {param: 'force_open', filter: category}, event => btnManager.toggleConsoleNavigationBox(event)
 	);
 	$('#navBreadCrumb .action').html( action );
 
@@ -1038,42 +1038,45 @@ function fullScreenChangeHandler() {
 
 
 function kioskMode(event = false) {
+	const tap = mdw.cache.tap;
+	clearTimeout(tap.timer);
+	tap.count = 0;
+	tap.clientX = 0;
+	tap.clientY = 0;
+	$('#mdw-Main').off('click.midwinterKiosk');
+	$(document).off('keydown.midwinterKiosk');
+
 	if (event === false) {
 		setDocumentAttribute('kiosk-mode', 'off');
-		if(isMobile.any() != null) {
-			$('#mdw-Main').off('click');
-		}
 	}else {
-		toggleConsoleNavigationBox(event);
+		mdw.obj.ctrl.nav.closeAllBoxes();
 		setDocumentAttribute('kiosk-mode', 'on');
+		$(document).on('keydown.midwinterKiosk', function(e) {
+			if (e.key === 'Escape') {
+				e.preventDefault();
+				kioskMode(false);
+			}
+		});
 		if(isMobile.any() != null) {
-			$('#mdw-Main').rebind('click', function(e) {
-				let tap;
-				mdw.cache.tab.count++;
+			$('#mdw-Main').on('click.midwinterKiosk', function(e) {
+				tap.count++;
 
-				if(mdw.cache.tab.count === 1) {
-					mdw.cache.tab.clientX = e.clientX;
-					mdw.cache.tab.clientY = e.clientY;
+				if(tap.count === 1) {
+					tap.clientX = e.clientX;
+					tap.clientY = e.clientY;
 
-					tap = setTimeout(function(){
-						mdw.cache.tab.count = 0;
-						mdw.cache.tab.clientX = 0;
-						mdw.cache.tab.clientY = 0;
+					tap.timer = setTimeout(function(){
+						tap.count = 0;
+						tap.clientX = 0;
+						tap.clientY = 0;
 					},300);
-				}else if (mdw.cache.tab.count === 2) {
-					if(Math.abs(e.clientX-mdw.cache.tab.clientX) < 10 && Math.abs(e.clientY-mdw.cache.tab.clientY) < 10) {
+				}else {
+					clearTimeout(tap.timer);
+					tap.count = 0;
+					if(Math.abs(e.clientX-tap.clientX) < 10 && Math.abs(e.clientY-tap.clientY) < 10) {
 						e.preventDefault();
-						clearTimeout(tap);
-						mdw.cache.tab.count = 0;
-						mdw.cache.tab.clientX = 0;
-						mdw.cache.tab.clientY = 0;
 						kioskMode(false);
 					}
-				}else {
-					mdw.cache.tab.count = 0;
-					mdw.cache.tab.clientX = 0;
-					mdw.cache.tab.clientY = 0;
-					kioskMode(false);
 				}
 			});
 		}
