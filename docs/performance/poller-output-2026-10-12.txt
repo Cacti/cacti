@@ -1,0 +1,49 @@
+Polling output fix plan and validation
+
+Target: develop/1.3. Baseline: 7d8cdfdef47922efbcf15e586c6aa06139ab7e98.
+
+Plan
+1. Exercise production batching, parsing, Boost and RRD update functions in isolated probes.
+2. Acknowledge exact fetched keys only after storage succeeds, retaining partial/failed groups.
+3. Drain ordered bounded batches without recursion, deferring groups split by the lookahead row.
+4. Preserve timestamp order across partial groups, failed writes and batch boundaries.
+5. Expand comma-separated field mappings and build expected-template fields lazily.
+6. Run full Unit, PHPStan, formatter, existing performance cases and real storage checks.
+
+Implemented without changing the existing persistent RRD transport. Normal passes process
+one batch; the final pass drains ordered batches within the poller runtime budget. Only
+one trailing source's incomplete timestamp is carried between batches. Deleted sources
+can be discarded; incomplete live sources are retained. Hooks/statistics can run again on
+a retry, so this provides retryable storage, not exactly-once plugin side effects.
+
+20 behavioral regressions cover complete/partial timestamps, concurrent arrivals, RRD
+failure and mixed outcomes, mapping fanout/orphans, boundaries, incomplete backlogs,
+Boost success/redirect/failure, delete failure, group-atomic deletion, metadata retry and failed-write retry. Nine additional local
+MariaDB 10.11.19/RRDtool 1.11.0 scenarios checked real SQL deletion and real RRD timestamps.
+Full Unit on PHP 8.5.11: 2568 passed, 4 existing skips, 7804 assertions.
+
+Synthetic benchmark: 10000 invalid rows, 1000 templates, five alternating rounds.
+CLI OPcache enabled, JIT disabled, PHP 8.5.11, macOS arm64.
+Median 356.04 ms before / 14.36 ms after: 96.0% less time.
+Fixtures, interpreter and I/O adapters contribute to these timings; this does not measure
+production polling, enabled plugins/statistics, database latency or actual RRD throughput.
+Existing bounded scale harness completed 150k, 1M and 2.5M sources without a growing batch.
+
+Reproduce:
+  php tests/performance/poller.php invalid 10000 1000
+  php tests/performance/poller.php quick
+  php tests/performance/poller.php empty
+  php tests/performance/poller.php recovery
+  php tests/performance/poller.php recovery-empty
+  php -d memory_limit=512M tests/performance/poller.php scale 2500000
+  composer test -- --testsuite=Unit
+
+The JSON records raw rotating samples and source digests. Runtime selected through mise.
+A separate 1.2.x backport preserves its existing Boost no-inline-fallback policy, RRD
+validation and third metadata-cache argument. It excludes the lazy template index.
+The same polling fixes are carried into the draft RRDtool rewrite #8012.
+
+Orphan fields are preloaded once per process, restricted to standalone multi-output
+Script/Script Server sources (snmp_query_id = 0). Successful empty maps stay cached;
+failed reads retain queued samples and retry. No per-source orphan lookup remains.
+The same restriction is in #8334; #8335 manages a shared derived table separately.
