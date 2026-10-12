@@ -70,3 +70,8 @@ test('incomplete timestamps block later timestamps across batch boundaries', fun
 	$r = poller_output_probe('boundary-partial');
 	expect($r['first'])->toBe(39999)->and($r['second'])->toBe(0)->and($r['remaining'])->toBe(3);
 });
+
+test('failed timestamps block later timestamps across batch boundaries', function () {
+	$r = poller_output_probe('boundary-failure');
+	expect($r['first'])->toBe(39999)->and($r['second'])->toBe(0)->and($r['remaining'])->toBe(2);
+});

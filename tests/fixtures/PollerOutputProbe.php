@@ -182,7 +182,7 @@ function rrdtool_execute($command, ...$args) : string|false {
 		$state['arrived'] = true;
 	}
 
-	if (in_array($scenario, ['failed', 'boost-failure'], true) || ($scenario === 'mixed' && str_contains($command, 'source-1'))) {
+	if (($scenario === 'boundary-failure' && str_contains($command, 'source-40000') && str_contains($command, '1700000000:')) || in_array($scenario, ['failed', 'boost-failure'], true) || ($scenario === 'mixed' && str_contains($command, 'source-1'))) {
 		return false;
 	}
 
@@ -213,12 +213,15 @@ if ($scenario === 'partial') {
 	$state['rows'] = [probe_row(1, $time, 'in', '42'), probe_row(1, $time + 60, 'in', '43'), probe_row(2, $time, 'in', '44')];
 } elseif (str_starts_with($scenario, 'fanout')) {
 	$state['rows'] = [probe_row(1, $time, '', 'value:42', $scenario === 'fanout' ? 2 : 1)];
-} elseif ($scenario === 'boundary' || $scenario === 'boundary-partial' || $scenario === 'backlog') {
+} elseif ($scenario === 'boundary' || $scenario === 'boundary-partial' || $scenario === 'boundary-failure' || $scenario === 'backlog') {
 	for ($i = 1; $i <= ($scenario !== 'backlog' ? 39999 : 40001); $i++) {
 		$state['rows'][] = probe_row($i, $time, 'in', '42', $scenario === 'backlog' ? 2 : 1);
 	}
 
-	if ($scenario === 'boundary-partial') {
+	if ($scenario === 'boundary-failure') {
+		$state['rows'][] = probe_row(40000, $time, 'in', '42');
+		$state['rows'][] = probe_row(40000, $time + 60, 'in', '43');
+	} elseif ($scenario === 'boundary-partial') {
 		$state['rows'][] = probe_row(40000, $time, 'in', '42', 2);
 		$state['rows'][] = probe_row(40000, $time + 60, 'in', '43', 2);
 		$state['rows'][] = probe_row(40000, $time + 60, 'out', '44', 2);
@@ -233,7 +236,7 @@ $pipe   = null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'backlog', 'metadata'], true)) {
+if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata'], true)) {
 	$second = process_poller_output($pipe);
 }
 

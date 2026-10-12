@@ -1062,6 +1062,13 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe, $successful_updates);
 		}
 
+		// Carry failed timestamps as well as incomplete ones when a file spans batches.
+		foreach ($completed as $item) {
+			if (!$staged && empty($successful_updates[$item['rrd_path']][$item['unix_time']])) {
+				$blocked_after[$item['rrd_path']] = min($blocked_after[$item['rrd_path']] ?? $item['unix_time'], $item['unix_time']);
+			}
+		}
+
 		poller_acknowledge_output($completed, $successful_updates, $staged);
 	}
 
