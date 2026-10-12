@@ -86,3 +86,9 @@ test('a failed sample succeeds on a later pass without being lost or duplicated'
 	$r = poller_output_probe('retry-failed');
 	expect($r['first'])->toBe(0)->and($r['second'])->toBe(1)->and($r['remaining'])->toBe(0);
 });
+
+test('failed source-specific metadata reads retry without losing samples', function (string $scenario) {
+	$r = poller_output_probe($scenario);
+	expect($r['first'])->toBe(0)->and($r['second'])->toBe(1)->and($r['remaining'])->toBe(0)
+		->and($r['source_queries'])->toBe(2);
+})->with(['manual-query-failure', 'orphan-query-failure']);

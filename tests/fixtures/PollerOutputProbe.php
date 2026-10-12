@@ -69,7 +69,23 @@ function db_fetch_assoc_prepared($sql, $params = []) : array|false {
 			return false;
 		}
 
+		if ($scenario === 'orphan-query-failure') {
+			return [['keyname' => '1_value', 'data_source_name' => 'in']];
+		}
+
 		return $scenario === 'fanout' || $scenario === 'fanout-orphan' ? [['keyname' => '1_value', 'data_source_name' => 'in,out']] : [['keyname' => '1_in', 'data_source_name' => 'in'], ['keyname' => '1_out', 'data_source_name' => 'out']];
+	}
+
+	if (str_contains($sql, 'FROM data_template_rrd')) {
+		$state['source_queries'] = ($state['source_queries'] ?? 0) + 1;
+
+		if (in_array($scenario, ['manual-query-failure', 'orphan-query-failure'], true) && $state['source_queries'] === 1) {
+			return false;
+		}
+
+		if ($scenario === 'manual-query-failure') {
+			return [['data_name' => 'value', 'data_source_name' => 'in']];
+		}
 	}
 
 	return $scenario === 'fanout-orphan' ? [['data_source_name' => 'out']] : [];
@@ -239,11 +255,16 @@ if ($scenario === 'partial') {
 } else {
 	$state['rows'] = [probe_row(1, $time, 'in', '42')];
 }
+
+if (in_array($scenario, ['manual-query-failure', 'orphan-query-failure'], true)) {
+	$state['rows']                        = [probe_row(1, $time, '', 'value:42')];
+	$state['rows'][0]['data_template_id'] = $scenario === 'manual-query-failure' ? 0 : 1;
+}
 $pipe   = null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'retry-failed'], true)) {
+if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'retry-failed', 'manual-query-failure', 'orphan-query-failure'], true)) {
 	$second = process_poller_output($pipe);
 }
 
@@ -252,4 +273,4 @@ if ($scenario === 'retry') {
 	$state['rows'][] = probe_row(1, $time + 60, 'in', '43');
 	$second          = process_poller_output($pipe, 1);
 }
-print json_encode(['first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls']], JSON_THROW_ON_ERROR) . "\n";
+print json_encode(['source_queries' => ($state['source_queries'] ?? 0), 'first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls']], JSON_THROW_ON_ERROR) . "\n";

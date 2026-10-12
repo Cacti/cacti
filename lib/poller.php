@@ -643,10 +643,8 @@ function poller_update_poller_reindex_from_buffer(int $host_id, int $data_query_
  *
  * @return array data_source_name => data_source_name for orphaned fields.
  */
-function poller_get_unused_data_source_names(int $local_data_id, array &$cache) : array {
+function poller_get_unused_data_source_names(int $local_data_id, array &$cache) : array|false {
 	if (!array_key_exists($local_data_id, $cache)) {
-		$cache[$local_data_id] = [];
-
 		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name
 			FROM data_template_rrd AS dtr
 			LEFT JOIN graph_templates_item AS gti
@@ -654,6 +652,12 @@ function poller_get_unused_data_source_names(int $local_data_id, array &$cache) 
 			WHERE dtr.local_data_id = ?
 			AND gti.task_item_id IS NULL',
 			[$local_data_id]);
+
+		if ($rows === false) {
+			return false;
+		}
+
+		$cache[$local_data_id] = [];
 
 		foreach ($rows as $row) {
 			$cache[$local_data_id][$row['data_source_name']] = $row['data_source_name'];
@@ -679,16 +683,20 @@ function poller_get_unused_data_source_names(int $local_data_id, array &$cache) 
  *
  * @return array data_name => data_source_name.
  */
-function poller_get_nt_rrd_field_names(int $local_data_id, array &$cache) : array {
+function poller_get_nt_rrd_field_names(int $local_data_id, array &$cache) : array|false {
 	if (!array_key_exists($local_data_id, $cache)) {
-		$cache[$local_data_id] = [];
-
 		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
 			FROM data_template_rrd AS dtr
 			INNER JOIN data_input_fields AS dif
 			ON dtr.data_input_field_id = dif.id
 			WHERE dtr.local_data_id = ?',
 			[$local_data_id]);
+
+		if ($rows === false) {
+			return false;
+		}
+
+		$cache[$local_data_id] = [];
 
 		foreach ($rows as $row) {
 			$cache[$local_data_id][$row['data_name']] = $row['data_source_name'];
@@ -929,9 +937,21 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 				// orphan filter applies to templated sources only; cached per data source
 				$unused_data_source_names = $data_template_id > 0 ? poller_get_unused_data_source_names($local_data_id, $unused_cache) : [];
 
+				if ($unused_data_source_names === false) {
+					$blocked_after[$rrd_path] = min($blocked_after[$rrd_path] ?? $unix_time, $unix_time);
+
+					continue;
+				}
+
 				// the Data Template dictates field names; only non-templated (dt == 0) sources
 				// need a per-instance lookup (rare exception), cached per data source
 				$nt_rrd_field_names = $data_template_id == 0 ? poller_get_nt_rrd_field_names($local_data_id, $nt_cache) : [];
+
+				if ($nt_rrd_field_names === false) {
+					$blocked_after[$rrd_path] = min($blocked_after[$rrd_path] ?? $unix_time, $unix_time);
+
+					continue;
+				}
 
 				foreach (($values ?: []) as $value) {
 					$matches = explode(':', $value);
@@ -978,6 +998,12 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 				// orphan filter applies to templated sources only; cached per data source
 				$unused_data_source_names = $data_template_id > 0 ? poller_get_unused_data_source_names($local_data_id, $unused_cache) : [];
 
+				if ($unused_data_source_names === false) {
+					$blocked_after[$rrd_path] = min($blocked_after[$rrd_path] ?? $unix_time, $unix_time);
+
+					continue;
+				}
+
 				if ($data_template_id > 0) {
 					// expected field names for this template come from the static template cache
 					if ($expected_by_template === null) {
@@ -999,6 +1025,12 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 					$nt_rrd_field_names = $expected_by_template[$data_template_id] ?? [];
 				} else {
 					$nt_rrd_field_names = poller_get_nt_rrd_field_names($local_data_id, $nt_cache);
+
+					if ($nt_rrd_field_names === false) {
+						$blocked_after[$rrd_path] = min($blocked_after[$rrd_path] ?? $unix_time, $unix_time);
+
+						continue;
+					}
 				}
 
 				$expected = '';
