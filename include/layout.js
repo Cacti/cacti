@@ -4309,6 +4309,10 @@ function initGraphDrilldown() {
 	}
 
 	function graphDrilldownHide(toggle) {
+		if (toggle.find('.iconWrapper :focus, .graphDrillDownMenu:focus-visible').length > 0) {
+			return;
+		}
+
 		toggle.removeClass('reveal');
 
 		if (toggle.hasClass('open')) {
@@ -4351,6 +4355,23 @@ function initGraphDrilldown() {
 				closeGraphDrilldown($(this));
 			});
 		}
+	});
+
+	$(document).on('keydown.graphdd', '.graphDrillDownToggle', function (event) {
+		if (event.keyCode == 27) {
+			var toggle = $(this);
+			closeGraphDrilldown(toggle);
+			toggle.find('.graphDrillDownMenu').trigger('focus');
+		}
+	});
+
+	$(document).on('focusout.graphdd', '.graphDrillDownToggle', function () {
+		var toggle = $(this);
+		setTimeout(function () {
+			if (!graphDrilldownStillHovered(toggle)) {
+				graphDrilldownHide(toggle);
+			}
+		}, 0);
 	});
 }
 
