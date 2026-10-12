@@ -6,6 +6,7 @@ on:
     branches: [1.2.x]
     paths:
       - include/themes/**
+      - install/install.css
       - tests/e2e/theme-style-regressions.*
       - tests/e2e/theme-css.spec.js
       - tests/e2e/theme-smoke.html
@@ -16,6 +17,7 @@ on:
     branches: [1.2.x]
     paths:
       - include/themes/**
+      - install/install.css
       - tests/e2e/theme-style-regressions.*
       - tests/e2e/theme-css.spec.js
       - tests/e2e/theme-smoke.html
