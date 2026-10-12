@@ -2178,6 +2178,16 @@ CREATE TABLE `poller_data_template_field_mappings` (
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Tracks mapping of Data Templates to their Data Source Names';
 
 --
+-- Table structure for table `poller_data_source_unused`
+--
+
+CREATE TABLE `poller_data_source_unused` (
+  `local_data_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `data_source_name` varchar(19) NOT NULL DEFAULT '',
+  PRIMARY KEY (`local_data_id`,`data_source_name`)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Orphaned (not-on-graph) field names for standalone multi-output script data sources';
+
+--
 -- Table structure for table `poller_item`
 --
 
@@ -2227,7 +2237,8 @@ CREATE TABLE poller_output (
   rrd_name varchar(19) NOT NULL default '',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   output varchar(512) NOT NULL default '',
-  PRIMARY KEY (local_data_id, rrd_name, time) /*!50060 USING BTREE */
+  PRIMARY KEY (local_data_id, rrd_name, time) /*!50060 USING BTREE */,
+  KEY local_data_id_time (local_data_id, time, rrd_name) /*!50060 USING BTREE */
 ) ENGINE=MEMORY;
 
 --

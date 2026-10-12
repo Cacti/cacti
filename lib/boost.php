@@ -1261,7 +1261,7 @@ function boost_get_arch_table_names($latest_table = '') {
  * @return array An array of results.
  */
 function boost_get_unused_data_source_names($local_data_id) {
-	static $cache = array();
+	static $cache = null;
 
 	$local_data_id = (int) $local_data_id;
 
@@ -1269,19 +1269,23 @@ function boost_get_unused_data_source_names($local_data_id) {
 		return array();
 	}
 
-	if (!isset($cache[$local_data_id])) {
-		$cache[$local_data_id] = array_rekey(
-			db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-				FROM data_template_rrd AS dtr
-				LEFT JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
-				WHERE dtr.local_data_id = ?
-				AND gti.task_item_id IS NULL', array($local_data_id)),
-			'data_source_name', 'data_source_name'
-		);
+	/* Seed once from the stateful, API-managed poller_data_source_unused cache
+	 * instead of a per-source graph_templates_item lookup every flush. A failed
+	 * read is retried; a miss means the source has no orphaned fields. */
+	if ($cache === null) {
+		$rows = db_fetch_assoc('SELECT local_data_id, data_source_name
+			FROM poller_data_source_unused');
+
+		if ($rows !== false) {
+			$cache = array();
+
+			foreach ($rows as $row) {
+				$cache[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
+			}
+		}
 	}
 
-	return $cache[$local_data_id];
+	return ($cache !== null && isset($cache[$local_data_id])) ? $cache[$local_data_id] : array();
 }
 
 /**

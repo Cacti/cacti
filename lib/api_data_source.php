@@ -40,6 +40,140 @@ function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replic
 }
 
 /**
+ * api_data_source_cache_unused - rebuild the stateful poller_data_source_unused cache.
+ *
+ * The orphan/unused filter in the poller hot paths (process_poller_output() and
+ * poller_boost.php) only ever applies to standalone (snmp_query_id = 0), multi-output
+ * Script/Script Server data sources that carry data source names not consumed by any
+ * graph. That membership is configuration-derived, not per-poll, so it is resolved
+ * here and the hot paths simply read the result. Call this on a full cache rebuild
+ * or at install/upgrade; api_data_source_cache_unused_update() maintains it per
+ * source on save, and api_data_source_cache_unused_remove() on delete.
+ *
+ * @return void No value is returned.
+ */
+function api_data_source_cache_unused() {
+	if (!db_table_exists('poller_data_source_unused')) {
+		return;
+	}
+
+	/* A data query returns one data source per row, so it never emits the
+	 * 'namea:valuea nameb:valueb' stream the orphan filter acts on. Multi-output
+	 * is a property of the data input method: more than one 'out' field written
+	 * to the RRD, matching how update_poller_cache() classifies single vs multi. */
+	$multi_script_input_ids = array();
+
+	foreach (db_fetch_assoc('SELECT di.id
+		FROM data_input AS di
+		INNER JOIN data_input_fields AS dif
+		ON dif.data_input_id = di.id
+		WHERE di.type_id IN (' . DATA_INPUT_TYPE_SCRIPT . ', ' . DATA_INPUT_TYPE_PHP_SCRIPT_SERVER . ')
+		AND dif.input_output = "out"
+		AND dif.update_rra = "on"
+		GROUP BY di.id
+		HAVING COUNT(*) > 1') as $r) {
+		$multi_script_input_ids[] = (int) $r['id'];
+	}
+
+	db_execute('TRUNCATE TABLE poller_data_source_unused');
+
+	if (!cacti_sizeof($multi_script_input_ids)) {
+		return;
+	}
+
+	db_execute('INSERT IGNORE INTO poller_data_source_unused (local_data_id, data_source_name)
+		SELECT dtr.local_data_id, dtr.data_source_name
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_local AS dl
+		ON dl.id = dtr.local_data_id
+		AND dl.snmp_query_id = 0
+		INNER JOIN data_template_data AS dtd
+		ON dtd.local_data_id = dtr.local_data_id
+		AND dtd.data_input_id IN (' . implode(',', $multi_script_input_ids) . ')
+		LEFT JOIN graph_templates_item AS gti
+		ON gti.task_item_id = dtr.id
+		WHERE dtr.data_template_id > 0
+		AND dtr.local_data_id > 0
+		AND gti.task_item_id IS NULL');
+}
+
+/**
+ * api_data_source_cache_unused_update - refresh the unused cache for one data source.
+ *
+ * Call after a data source or its graphs change so the stateful cache stays current
+ * without a full rebuild. Non-qualifying sources simply end up with no rows.
+ *
+ * @param int $local_data_id The data source to refresh.
+ *
+ * @return void No value is returned.
+ */
+function api_data_source_cache_unused_update($local_data_id) {
+	$local_data_id = (int) $local_data_id;
+
+	if ($local_data_id <= 0 || !db_table_exists('poller_data_source_unused')) {
+		return;
+	}
+
+	db_execute_prepared('DELETE FROM poller_data_source_unused
+		WHERE local_data_id = ?',
+		array($local_data_id));
+
+	db_execute_prepared('INSERT IGNORE INTO poller_data_source_unused (local_data_id, data_source_name)
+		SELECT dtr.local_data_id, dtr.data_source_name
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_local AS dl
+		ON dl.id = dtr.local_data_id
+		AND dl.snmp_query_id = 0
+		INNER JOIN data_template_data AS dtd
+		ON dtd.local_data_id = dtr.local_data_id
+		INNER JOIN data_input AS di
+		ON di.id = dtd.data_input_id
+		AND di.type_id IN (' . DATA_INPUT_TYPE_SCRIPT . ', ' . DATA_INPUT_TYPE_PHP_SCRIPT_SERVER . ')
+		LEFT JOIN graph_templates_item AS gti
+		ON gti.task_item_id = dtr.id
+		WHERE dtr.local_data_id = ?
+		AND dtr.data_template_id > 0
+		AND gti.task_item_id IS NULL
+		AND (SELECT COUNT(*) FROM data_input_fields AS dif
+			WHERE dif.data_input_id = di.id
+			AND dif.input_output = "out"
+			AND dif.update_rra = "on") > 1',
+		array($local_data_id));
+}
+
+/**
+ * api_data_source_cache_unused_remove - drop unused cache rows for removed sources.
+ *
+ * @param array|int $local_data_ids One id or an array of ids being removed.
+ *
+ * @return void No value is returned.
+ */
+function api_data_source_cache_unused_remove($local_data_ids) {
+	if (!db_table_exists('poller_data_source_unused')) {
+		return;
+	}
+
+	if (!is_array($local_data_ids)) {
+		$local_data_ids = array($local_data_ids);
+	}
+
+	$ids = array();
+
+	foreach ($local_data_ids as $id) {
+		$id = (int) $id;
+
+		if ($id > 0) {
+			$ids[] = $id;
+		}
+	}
+
+	if (cacti_sizeof($ids)) {
+		db_execute('DELETE FROM poller_data_source_unused
+			WHERE local_data_id IN (' . implode(',', $ids) . ')');
+	}
+}
+
+/**
  * Tells you if a data source can be removed. Used as part of Cacti's lib functionality.
  *
  * @param int $local_data_id The id of the poller impacted by hash update.
@@ -77,6 +211,8 @@ function api_data_source_remove($local_data_id) {
 	}
 
 	api_plugin_hook_function('data_source_remove', array($local_data_id));
+
+	api_data_source_cache_unused_remove($local_data_id);
 
 	$autoclean = read_config_option('rrd_autoclean');
 	$acmethod  = read_config_option('rrd_autoclean_method');
@@ -205,6 +341,8 @@ function api_data_source_remove_multi($local_data_ids) {
 	}
 
 	api_plugin_hook_function('data_source_remove', $local_data_ids);
+
+	api_data_source_cache_unused_remove($local_data_ids);
 
 	$autoclean = read_config_option('rrd_autoclean');
 	$acmethod  = read_config_option('rrd_autoclean_method');

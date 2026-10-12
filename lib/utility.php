@@ -125,6 +125,9 @@ function repopulate_poller_cache() {
 		AND gti.local_graph_id = 0
 		GROUP BY dtr.data_template_id, dif.data_name');
 
+	/* rebuild the stateful orphan/unused cache the poller hot paths read */
+	api_data_source_cache_unused();
+
 	if (isset($_SESSION['sess_user_id'])) {
 		cacti_log('NOTE: Poller Cache repopulated by user ' . get_username($_SESSION['sess_user_id']), false, 'PCACHE');
 	} else {

@@ -712,6 +712,8 @@ INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',1,'dat
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',2,'data_name','varchar(40)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',3,'data_source_names','varchar(125)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',4,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('poller_data_source_unused',1,'local_data_id','int(10) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('poller_data_source_unused',2,'data_source_name','varchar(19)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_item',1,'local_data_id','int(10) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_item',2,'poller_id','int(10) unsigned','NO','MUL','1','');
 INSERT INTO `table_columns` VALUES ('poller_item',3,'host_id','mediumint(8) unsigned','NO','MUL','0','');
@@ -1303,6 +1305,8 @@ INSERT INTO `table_indexes` VALUES ('poller_command',0,'PRIMARY',3,'command','A'
 INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',1,'data_template_id','A',93,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',2,'data_name','A',186,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',3,'data_source_names','A',186,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_data_source_unused',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_data_source_unused',0,'PRIMARY',2,'data_source_name','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'action',1,'action','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'host_id',1,'host_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_action',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
@@ -1319,6 +1323,9 @@ INSERT INTO `table_indexes` VALUES ('poller_item',0,'PRIMARY',2,'rrd_name','A',5
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',1,'local_data_id','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',2,'rrd_name','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',3,'time','A',NULL,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_output',1,'local_data_id_time',1,'local_data_id','A',NULL,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_output',1,'local_data_id_time',2,'time','A',NULL,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_output',1,'local_data_id_time',3,'rrd_name','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',2,'time','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',3,'rrd_name','A',0,NULL,NULL,'','BTREE','');
