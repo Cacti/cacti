@@ -85,3 +85,88 @@ test('Midwinter mobile kiosk exits on nearby double taps and expires isolated ta
 	await expect(page.locator('html')).toHaveAttribute('data-kiosk-mode', 'off');
 	expect(await page.evaluate(() => (window as any).otherClicks)).toBe(7);
 });
+
+test('navigation buttons share keyboard and mouse activation', async ({ page }) => {
+	await page.evaluate(() => (window as any).mdw.obj.ctrl.btn.add({ helper: 'settings', destination: '#navControl', tooltip: 'Settings' }));
+	const button = page.getByRole('button', { name: 'Settings', exact: true });
+	const box = page.locator('.mdw-ConsoleNavigationBox[data-helper="settings"]');
+	await button.focus();
+	await page.keyboard.press('Enter');
+	await expect(box).toHaveAttribute('data-status', 'open');
+	await page.keyboard.press('Space');
+	await expect(box).toHaveAttribute('data-status', 'closed');
+	await button.dispatchEvent('keydown', { keyCode: 13, repeat: true });
+	await expect(box).toHaveAttribute('data-status', 'closed');
+	await button.click();
+	await expect(box).toHaveAttribute('data-status', 'open');
+	await page.getByRole('button', { name: 'Enable Kiosk Mode' }).focus();
+	await page.keyboard.press('Enter');
+	await expect(page.locator('html')).toHaveAttribute('data-kiosk-mode', 'on');
+	await page.keyboard.press('Escape');
+	await expect(page.locator('html')).toHaveAttribute('data-kiosk-mode', 'off');
+});
+
+test('filter plugins keep live controls through setup and replace them on AJAX navigation', async ({ page }) => {
+	await page.addScriptTag({ path: resolve(root, 'include/js/navigationBox.tableFilter.js') });
+	const layout = readFileSync(resolve(root, 'include/layout.js'), 'utf8');
+	for (const name of ['basename', 'findElement', 'sanitizeAjaxOptions', 'handleAjaxResponse']) {
+		const start = layout.indexOf(`function ${name}(`);
+		const end = layout.indexOf('\nfunction ', start + 1);
+		expect(start).toBeGreaterThan(0);
+		expect(end).toBeGreaterThan(start);
+		await page.addScriptTag({ content: layout.slice(start, end) });
+	}
+	await page.addScriptTag({ content: `window.filterBox = new cactiBox();
+		$('#mdw-Main').append('<main id="main"><div class="cactiTable"><table class="filterTable"><tr><td><input id="filter" value="Router"></td></tr></table></div></main>');
+		window.originalFilter = document.getElementById('filter');
+		window.filterChanges = 0;
+		$('#filter').on('change.fixture', () => window.filterChanges++);
+		filterBox.add(midwinter.navigationBox.buildConfigs([{type:'filter',overrides:{buttons:{menu:false,close:false}}}])[0]);
+		window.checkForLogout = window.pushState = window.handleConsole = () => {};
+		window.Pace = {stop: () => {}};
+		window.applySkin = () => midwinter.navigationBox.refreshPlugins();` });
+	const content = page.locator('[data-helper="displayFilterOptions"] > .navBox-content');
+	await expect(content.locator('#filter')).toHaveCount(1);
+	await page.evaluate(() => {
+		const browser = window as any;
+		browser.midwinter.navigationBox.refreshPlugins();
+		browser.midwinter.navigationBox.refreshPlugins();
+		browser.$('#filter').trigger('change');
+	});
+	expect(await page.evaluate(() => document.getElementById('filter') === (window as any).originalFilter)).toBe(true);
+	expect(await page.evaluate(() => (window as any).filterChanges)).toBe(1);
+	await page.evaluate(() => (window as any).handleAjaxResponse('<title>No filters</title><main id="main"><p>Details</p></main>', { url: 'host.php', elementId: 'main', noState: true }));
+	await expect(content).toBeEmpty();
+	await page.evaluate(() => (window as any).handleAjaxResponse('<title>New filters</title><main id="main"><div class="cactiTable"><table class="filterTable"><tr><td><input id="filter" value="Switch"></td></tr></table></div></main>', { url: 'host.php', elementId: 'main', noState: true }));
+	await expect(content.locator('#filter')).toHaveValue('Switch');
+	expect(await page.evaluate(() => document.getElementById('filter') === (window as any).originalFilter)).toBe(false);
+});
+
+test('menu search treats queries as text, keeps ancestors and preserves links when cleared', async ({ page }) => {
+	await page.clock.install();
+	await page.addScriptTag({ content: `window.searchBox = new cactiBox();
+		searchBox.add({helper:'searchFixture',title:'Search',buttons:{menu:false,close:false,search:'searchToHighlight'},
+		content:'<ul><li class="menuitem"><a role="menuitem" href="host.php">Devices [edge]</a><ul><li class="menuitem"><a role="menuitem" href="host.php?id=1">Child</a></li></ul></li><li class="menuitem"><a role="menuitem" href="user_admin.php">Users &lt;all&gt;</a></li></ul>'});
+		searchBox.toggleBox('searchFixture','force_open');
+		window.linkClicks = 0;
+		$('[data-helper="searchFixture"] a').on('click.fixture', event => {event.preventDefault();window.linkClicks++;});` });
+	const box = page.locator('.mdw-ConsoleNavigationBox[data-helper="searchFixture"]');
+	const input = box.locator('input[type="search"]');
+	await input.fill('Child');
+	await page.clock.fastForward(251);
+	await expect(box.locator('li.menuitem:not(.hide)')).toHaveCount(2);
+	await expect(box.locator('mark')).toHaveText('Child');
+	await input.fill('Devices [edge]');
+	await page.clock.fastForward(251);
+	await expect(box.locator('mark')).toHaveText('Devices [edge]');
+	await input.fill('<all>');
+	await page.clock.fastForward(251);
+	await expect(box.locator('mark')).toHaveText('<all>');
+	await expect(box.locator('all')).toHaveCount(0);
+	await input.fill('');
+	await page.clock.fastForward(251);
+	await expect(box.locator('mark')).toHaveCount(0);
+	await expect(box.locator('li.menuitem:not(.hide)')).toHaveCount(3);
+	await box.getByRole('menuitem', { name: 'Users <all>', exact: true }).click();
+	expect(await page.evaluate(() => (window as any).linkClicks)).toBe(1);
+});

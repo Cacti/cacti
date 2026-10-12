@@ -3178,6 +3178,8 @@ function handleAjaxResponse(html, options) {
 				if (htmlConfirm !== undefined && typeof window['preparePopOver'] === 'function') {
 					preparePopOver(htmlConfirm);
 				}else {
+					const content = $(elementId);
+					content.data('cactiContentVersion', (content.data('cactiContentVersion') || 0) + 1);
 					$(elementId).hide().empty().hide();
 					$(elementId).html(htmlContent);
 					$(elementId).show();
