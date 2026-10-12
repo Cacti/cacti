@@ -15553,6 +15553,10 @@ msgstr ""
 msgid "Data Query:"
 msgstr ""
 
+#: lib/html.php
+msgid "Graph Actions"
+msgstr ""
+
 #: lib/html.php lib/html_graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr ""
