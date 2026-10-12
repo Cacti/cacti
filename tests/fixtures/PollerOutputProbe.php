@@ -6,6 +6,8 @@ if (PHP_SAPI !== 'cli') {
 }
 $root = getenv('CACTI_POLLER_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 // The maintenance probe uses no Composer classes.
+define('DATA_INPUT_TYPE_SCRIPT', 1);
+define('DATA_INPUT_TYPE_PHP_SCRIPT_SERVER', 5);
 $scenario = $argv[1] ?? 'partial';
 if (str_starts_with($scenario, 'integration-')) {
 	require __DIR__ . '/PollerHandoffDatabase.php';
