@@ -12,6 +12,53 @@ const treeSource = readFileSync(resolve(__dirname, '../../../tree.php'), 'utf8')
 const editorSource = treeSource.slice(treeSource.indexOf('$("#ctree").jstree({'), treeSource.indexOf(".on('ready.jstree'"));
 const editorForceText = editorSource.match(/'force_text'\s*:\s*(true|false)/)?.[1] === 'true';
 
+const csrfSource = readFileSync(resolve(__dirname, '../../../include/js/csrf.js'), 'utf8');
+
+async function csrfFixture(page: import('@playwright/test').Page) {
+	await page.route('http://csrf.fixture/**', route => route.fulfill({contentType: 'text/html', body: '<!doctype html><html><body></body></html>'}));
+	await page.goto('http://csrf.fixture/');
+	await page.addScriptTag({content: 'var csrfMagicName="__csrf_magic", csrfMagicToken="fixture-token";' + csrfSource});
+}
+
+test('CSRF XHR leaves cross-origin POST bodies unchanged', async ({page}) => {
+	await csrfFixture(page);
+	const bodies: string[] = [];
+	await page.route('http://receiver.fixture/**', async route => {
+		bodies.push(route.request().postData() || '');
+		await route.fulfill({body:'fixture'});
+	});
+	await page.evaluate(() => new Promise<void>(resolve => {
+		const xhr = new XMLHttpRequest();
+		xhr.onload = xhr.onerror = () => resolve();
+		xhr.open('POST', 'http://receiver.fixture/capture');
+		xhr.send('value=1');
+	}));
+	expect(bodies).toEqual(['value=1']);
+});
+
+test('CSRF XHR serializes multipart tokens and accepts empty POST bodies', async ({page}) => {
+	await csrfFixture(page);
+	const bodies: string[] = [];
+	await page.route('http://csrf.fixture/capture', async route => {
+		bodies.push(route.request().postData() || '');
+		await route.fulfill({body:'fixture'});
+	});
+	await page.evaluate(async () => {
+		const data = new FormData();
+		data.append('file', new Blob(['fixture']), 'fixture.txt');
+		for (const body of [data, null]) {
+			await new Promise<void>((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				xhr.onload = () => resolve(); xhr.onerror = () => reject(new Error('XHR failed'));
+				xhr.open('POST', '/capture'); xhr.send(body);
+			});
+		}
+	});
+	expect(bodies[0]).toContain('name="__csrf_magic"');
+	expect(bodies[0]).toContain('fixture-token');
+	expect(new URLSearchParams(bodies[1]).get('__csrf_magic')).toBe('fixture-token');
+});
+
 async function validationFixture(page: import('@playwright/test').Page) {
 	await page.goto('/');
 	const asset = await page.locator('script[src*="htmx.js"]').getAttribute('src');
