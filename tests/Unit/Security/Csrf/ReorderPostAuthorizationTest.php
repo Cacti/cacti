@@ -6,6 +6,10 @@ test('link and plugin reorders reject GET and invalid tokens before writing (#74
 	$parser  = (new PhpParser\ParserFactory())->createForNewestSupportedVersion();
 	$finder  = new PhpParser\NodeFinder();
 	$printer = new PhpParser\PrettyPrinter\Standard();
+	$helper  = $finder->findFirst($parser->parse(file_get_contents($root . '/include/csrf.php')),
+		static fn ($node) => $node instanceof PhpParser\Node\Stmt\Function_ && $node->name->toString() === 'csrf_require_post');
+	expect($helper)->not->toBeNull();
+	$guard = $printer->prettyPrint([$helper]);
 
 	foreach (['links.php', 'plugins.php'] as $file) {
 		$nodes = $parser->parse(file_get_contents($root . '/' . $file));
@@ -14,7 +18,7 @@ test('link and plugin reorders reject GET and invalid tokens before writing (#74
 		expect($case)->not->toBeNull();
 		$body = $printer->prettyPrint($case->stmts);
 
-		foreach ([['GET', null, 405], ['POST', null, 403], ['POST', 'invalid', 403], ['POST', 'valid', 302]] as $scenario) {
+		foreach ([['GET', null, 405], ['GET', 'valid', 405], ['HEAD', 'valid', 405], ['PUT', 'valid', 405], [null, 'valid', 405], ['POST', null, 403], ['POST', 'invalid', 403], ['POST', 'valid', 302]] as $scenario) {
 			[$method, $token, $status] = $scenario;
 			$seed                      = var_export(['method' => $method, 'token' => $token], true);
 			$script                    = '<?php $seed = ' . $seed . ';' . <<<'PHP'
@@ -28,7 +32,7 @@ function gnrv($name) { return array(2, 1); }
 function links_reorder($order) { $GLOBALS['writes']++; }
 function api_plugin_reorder($order) { $GLOBALS['writes']++; }
 PHP;
-			$script .= "\nswitch ('ajax_dnd') { case 'ajax_dnd':\n" . $body . "\n}";
+			$script .= "\n" . $guard . "\nswitch ('ajax_dnd') { case 'ajax_dnd':\n" . $body . "\n}";
 			$process = proc_open([PHP_BINARY], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 			fwrite($pipes[0], $script);
 			fclose($pipes[0]);

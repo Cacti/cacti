@@ -397,16 +397,8 @@ switch($action) {
 
 		break;
 	case 'ajax_dnd':
-		if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
-			header('Allow: POST');
-			http_response_code(405);
-			exit;
-		}
+		csrf_require_post();
 
-		if (!csrf_check(false)) {
-			http_response_code(403);
-			exit;
-		}
 		$new_order = gnrv('dnd');
 
 		api_plugin_reorder($new_order);
