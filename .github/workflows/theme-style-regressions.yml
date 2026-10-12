@@ -7,6 +7,8 @@ on:
     paths:
       - include/themes/**
       - tests/e2e/theme-style-regressions.*
+      - tests/e2e/theme-css.spec.js
+      - tests/e2e/theme-smoke.html
       - tests/e2e/playwright.config.js
       - tests/e2e/package*.json
       - .github/workflows/theme-style-regressions.yml
@@ -15,6 +17,8 @@ on:
     paths:
       - include/themes/**
       - tests/e2e/theme-style-regressions.*
+      - tests/e2e/theme-css.spec.js
+      - tests/e2e/theme-smoke.html
       - tests/e2e/playwright.config.js
       - tests/e2e/package*.json
       - .github/workflows/theme-style-regressions.yml
@@ -49,4 +53,4 @@ jobs:
         run: node node_modules/@playwright/test/cli.js install --with-deps chromium
       - name: Verify changed theme rules in Chromium
         working-directory: tests/e2e
-        run: node node_modules/@playwright/test/cli.js test --config=playwright.config.js theme-style-regressions.spec.js --workers=1
+        run: node node_modules/@playwright/test/cli.js test --config=playwright.config.js theme-style-regressions.spec.js theme-css.spec.js --workers=1
