@@ -342,8 +342,8 @@ function form_save() : void {
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Tree ' .
 				'automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . grv('id') . '&item_id=' .
-				grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' .
+				grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 
 			exit;
 		}
@@ -359,11 +359,11 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') .
-				'&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' .
+				grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
-				AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=edit&id=' .
+				grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	} elseif (isrv('save_component_automation_tree_rule_item')) {
 		// ================= input validation =================
@@ -430,12 +430,13 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' .
+			header('Location: automation_tree_rules.php?action=item_edit&id=' .
+				grv('id') . '&item_id=' .
 				($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_TREE_ACTION);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
-				AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?action=edit&id=' .
+				grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
 		raise_message(2);

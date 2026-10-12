@@ -164,8 +164,8 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?action=item_edit&cdef_id=' . gnrv('cdef_id') . '&id=' .
-				($cdef_item_id === null ? gnrv('id') : $cdef_item_id));
+			header('Location: cdef.php?action=item_edit&cdef_id=' .
+				gnrv('cdef_id') . '&id=' . ($cdef_item_id === null ? gnrv('id') : $cdef_item_id));
 		} else {
 			header('Location: cdef.php?action=edit&id=' . gnrv('cdef_id'));
 		}

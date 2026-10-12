@@ -93,8 +93,8 @@ switch (grv('action')) {
 	case 'qedit':
 		automation_change_query_type();
 
-		header('Location: automation_graph_rules.php?action=edit&name=' . grv('name') . '&id=' . gfrv('id') .
-			'&snmp_query_id=' . grv('snmp_query_id'));
+		header('Location: automation_graph_rules.php?action=edit&name=' .
+			grv('name') . '&id=' . gfrv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 
 		break;
 	case 'remove':
@@ -353,11 +353,12 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' .
-				($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
-		} else {
-			header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
+			header('Location: automation_graph_rules.php?action=item_edit&id=' .
+				grv('id') . '&item_id=' . ($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+		} else {
+			header('Location: automation_graph_rules.php?action=edit&id=' .
+				grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 	} elseif (isrv('save_component_automation_match_item')) {
 		// ================= input validation =================
@@ -394,8 +395,8 @@ function form_save() : void {
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph ' .
 				'Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . grv('id') . '&rule_type=' .
-				AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' .
+				grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 
 			exit;
 		}
@@ -413,11 +414,12 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' .
-				($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
-		} else {
-			header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' .
+			header('Location: automation_graph_rules.php?action=item_edit&id=' .
+				grv('id') . '&item_id=' . ($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' .
 				AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+		} else {
+			header('Location: automation_graph_rules.php?action=edit&id=' .
+				grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
 	} else {
 		raise_message(2);

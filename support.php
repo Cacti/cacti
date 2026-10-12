@@ -2083,8 +2083,8 @@ function show_tech_environment() : void {
 	$php_binary = read_config_option('path_php_binary');
 
 	if ($php_binary != '' && file_exists($php_binary) && is_executable($php_binary)) {
-		$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL .
-			'/cli_check.php') . ' extensions');
+		$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) .
+			' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
 		$cli_ext  = @json_decode((string) $cli_json, true);
 
 		if (is_array($cli_ext)) {

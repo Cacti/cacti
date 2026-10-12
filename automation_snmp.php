@@ -344,8 +344,8 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?action=item_edit&id=' . gnrv('id') . '&item_id=' .
-				($item_id === null ? gfrv('id') : $item_id));
+			header('Location: automation_snmp.php?action=item_edit&id=' .
+				gnrv('id') . '&item_id=' . ($item_id === null ? gfrv('id') : $item_id));
 		} else {
 			header('Location: automation_snmp.php?action=edit&id=' . gnrv('id'));
 		}

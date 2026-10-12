@@ -50,43 +50,43 @@ switch (grv('action')) {
 	case 'item_moveup_dssv':
 		data_query_item_moveup_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' .
-			gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_movedown_dssv':
 		data_query_item_movedown_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' .
-			gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_dssv':
 		data_query_item_remove_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' .
-			gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_moveup_gsv':
 		data_query_item_moveup_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' .
-			gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_movedown_gsv':
 		data_query_item_movedown_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' .
-			gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_gsv':
 		data_query_item_remove_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' .
-			gfrv('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' .
+			gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_confirm':
