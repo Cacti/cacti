@@ -494,9 +494,9 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 
 	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
 	print "<div class='iconWrapper'>";
-	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
-	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
-	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fa-table threeBars' title='" . __esc('Time Graph View'). "'></i></a><br>";
+	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Details') . "'></i></a><br>";
+	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export'). "'></i></a><br>";
+	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fa-table threeBars' title='" . __esc('Time View'). "'></i></a><br>";
 
 	if (is_realm_allowed(3)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
@@ -518,14 +518,14 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
 		if (read_user_setting('realtime_mode') == '' || read_user_setting('realtime_mode') == '1') {
-			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time'). "'></i></a><br/>";
+			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Realtime'). "'></i></a><br/>";
 		} else {
-			print "<a class='iconLink' href='#' onclick=\"window.open('" . $config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br/>";
+			print "<a class='iconLink' href='#' onclick=\"window.open('" . $config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Realtime') . "'></i></a><br/>";
 		}
 	}
 
 	if (is_realm_allowed(1043)) {
-		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown fa fa-paint-roller spikeKill' title='" . __esc('Kill Spikes in Graphs') . "'></i></span>";
+		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown fa fa-paint-roller spikeKill' title='" . __esc('Kill Spikes') . "'></i></span>";
 		print '<br/>';
 	}
 
