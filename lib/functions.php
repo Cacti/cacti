@@ -2686,15 +2686,25 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  *   tokens are left intact for the caller's trailing cleanup to strip.
  */
 function substitute_script_path($template, $escaped_values) {
-	$template   = (string) $template;
-	$out        = '';
-	$len        = strlen($template);
-	$quote      = '';    // active shell quote char the template opened ('', '"' or "'")
-	$quoteEmpty = false; // true while the open quote has emitted no content yet
-	$i          = 0;
+	$template = (string) $template;
+	$out = '';
+	$len = strlen($template);
+	$i   = 0;
+
+	// Stack of parsing frames so a command substitution ($(...)) or backtick is
+	// scanned with its own fresh quoting context, exactly as /bin/sh re-parses
+	// it. Without this the scanner would believe an outer double quote still
+	// protects a value that actually sits inside a nested command substitution,
+	// where $(...) and backticks are live again. Each frame:
+	//   quote      - the shell quote this frame currently has open ('', '"', "'")
+	//   quoteEmpty - true while that open quote has emitted no content yet
+	//   kind       - 'top', 'cmdsub' (entered via $(...)) or 'backtick'
+	$stack = [['quote' => '', 'quoteEmpty' => false, 'kind' => 'top']];
 
 	while ($i < $len) {
-		$ch = $template[$i];
+		$top   = count($stack) - 1;
+		$quote = $stack[$top]['quote'];
+		$ch    = $template[$i];
 
 		if ($ch === '<' && preg_match('/\G<([A-Za-z0-9_]+)>/', $template, $m, 0, $i)) {
 			$tokenLen = strlen($m[0]);
@@ -2722,13 +2732,13 @@ function substitute_script_path($template, $escaped_values) {
 					}
 
 					$out .= $value;
-				} elseif ($quoteEmpty && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
+				} elseif ($stack[$top]['quoteEmpty'] && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
 					// template wrapped the token exactly ("<arg>"): drop the pair
 					// so the already-escaped value stands on its own
 					$out   = substr($out, 0, -1);
 					$out .= $value;
 					$i    += 1;
-					$quote = '';
+					$stack[$top]['quote'] = '';
 				} else {
 					// token sits inside a larger quoted word: close the template's
 					// quoting around the value so it cannot be re-interpreted. A
@@ -2741,24 +2751,72 @@ function substitute_script_path($template, $escaped_values) {
 					$out .= $quote . $value . $quote;
 				}
 
-				$i          += $tokenLen;
-				$quoteEmpty  = false;
+				$i                        += $tokenLen;
+				$stack[$top]['quoteEmpty'] = false;
 
 				continue;
 			}
 
 			// unknown token: leave intact for the caller's trailing cleanup
 			$out .= $m[0];
-			$i          += $tokenLen;
-			$quoteEmpty  = false;
+			$i                        += $tokenLen;
+			$stack[$top]['quoteEmpty'] = false;
+
+			continue;
+		}
+
+		// inside single quotes everything is literal until the closing quote;
+		// command substitution and backticks are not active there
+		if ($quote === "'") {
+			if ($ch === "'") {
+				$stack[$top]['quote'] = '';
+			}
+
+			$out .= $ch;
+			$stack[$top]['quoteEmpty'] = false;
+			$i++;
+
+			continue;
+		}
+
+		// unquoted or inside double quotes: $(...) and backticks start a nested
+		// shell context whose quoting is independent of this frame, so push a
+		// fresh frame and judge any token inside against that context
+		if ($ch === '$' && $i + 1 < $len && $template[$i + 1] === '(') {
+			$out .= '$(';
+			$i      += 2;
+			$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'cmdsub'];
+
+			continue;
+		}
+
+		if ($ch === ')' && $quote === '' && $stack[$top]['kind'] === 'cmdsub') {
+			array_pop($stack);
+			$out .= ')';
+			$i++;
+
+			continue;
+		}
+
+		if ($ch === '`') {
+			// an unescaped backtick is live command substitution both unquoted and
+			// inside double quotes; only the matching close sits at quote-state ''
+			if ($stack[$top]['kind'] === 'backtick' && $quote === '') {
+				array_pop($stack);
+			} else {
+				$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'backtick'];
+			}
+
+			$out .= '`';
+			$i++;
 
 			continue;
 		}
 
 		if ($quote === '') {
 			if ($ch === '"' || $ch === "'") {
-				$quote      = $ch;
-				$quoteEmpty = true;
+				$stack[$top]['quote']      = $ch;
+				$stack[$top]['quoteEmpty'] = true;
 				$out .= $ch;
 				$i++;
 
@@ -2768,11 +2826,12 @@ function substitute_script_path($template, $escaped_values) {
 			if ($ch === '\\' && $i + 1 < $len) {
 				$next = $template[$i + 1];
 
-				// only pair the backslash with a following quote/backslash so an
-				// escaped quote cannot toggle quote-state; for anything else -
-				// notably a <token> start - emit just the backslash and let the
-				// next iteration process the character so \<arg> still substitutes
-				if ($next === '"' || $next === "'" || $next === '\\') {
+				// pair the backslash only with a character whose shell meaning it
+				// must neutralise (a quote that could toggle quote-state, another
+				// backslash, or a $/backtick that would otherwise open a command
+				// substitution); for anything else - notably a <token> start -
+				// emit just the backslash so \<arg> still substitutes
+				if ($next === '"' || $next === "'" || $next === '\\' || $next === '$' || $next === '`') {
 					$out .= $ch . $next;
 					$i   += 2;
 
@@ -2786,7 +2845,7 @@ function substitute_script_path($template, $escaped_values) {
 			}
 		} elseif ($quote === '"') {
 			if ($ch === '"') {
-				$quote = '';
+				$stack[$top]['quote'] = '';
 				$out .= $ch;
 				$i++;
 
@@ -2796,30 +2855,27 @@ function substitute_script_path($template, $escaped_values) {
 			if ($ch === '\\' && $i + 1 < $len) {
 				$next = $template[$i + 1];
 
-				if ($next === '"' || $next === "'" || $next === '\\') {
+				// inside double quotes a backslash is literal unless it escapes one
+				// of " ' \ $ ` - escaping $/` keeps a \$(...) or \`...` from being
+				// treated as a live command substitution
+				if ($next === '"' || $next === "'" || $next === '\\' || $next === '$' || $next === '`') {
 					$out .= $ch . $next;
-					$i          += 2;
-					$quoteEmpty  = false;
+					$i                        += 2;
+					$stack[$top]['quoteEmpty'] = false;
 
 					continue;
 				}
 
 				$out .= $ch;
 				$i++;
-				$quoteEmpty  = false;
+				$stack[$top]['quoteEmpty'] = false;
 
 				continue;
 			}
-		} elseif ($ch === "'") { // inside a single-quoted region
-			$quote = '';
-			$out .= $ch;
-			$i++;
-
-			continue;
 		}
 
 		$out .= $ch;
-		$quoteEmpty  = false;
+		$stack[$top]['quoteEmpty'] = false;
 		$i++;
 	}
 
