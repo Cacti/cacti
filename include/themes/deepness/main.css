@@ -1492,7 +1492,9 @@ legend {
 .ui-dialog.cactiFilterDialog .ui-dialog-titlebar {
 	border: 0;
 	border-radius: 0;
-	padding: 10px 14px;
+	padding: 0 14px;
+	height: 28px;
+	line-height: 28px;
 	background: var(--dp-accent-deep);
 	color: var(--dp-text);
 	font-size: 14px;
@@ -1505,14 +1507,44 @@ legend {
 .ui-dialog.cactiFilterDialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
 	background: transparent;
 	border: 0;
+	color: inherit;
 }
 
 .ui-dialog.cactiFilterDialog .ui-dialog-titlebar-close .ui-icon {
-	filter: invert(1) brightness(2);
+	background: none;
+	text-indent: 0;
+	color: inherit;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar-close .ui-icon::before {
+	content: '\00d7';
+	display: block;
+	width: 16px;
+	line-height: 16px;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
 }
 
 .ui-dialog.cactiFilterDialog .ui-dialog-content {
 	padding: 14px 16px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-content input[type="text"],
+.ui-dialog.cactiFilterDialog .ui-dialog-content input.ui-state-default,
+.ui-dialog.cactiFilterDialog .ui-dialog-content textarea,
+.ui-dialog.cactiFilterDialog .ui-dialog-content select {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-content input[type="text"]:focus,
+.ui-dialog.cactiFilterDialog .ui-dialog-content input.ui-state-default:focus,
+.ui-dialog.cactiFilterDialog .ui-dialog-content textarea:focus,
+.ui-dialog.cactiFilterDialog .ui-dialog-content select:focus {
+	border-color: var(--dp-accent);
 }
 
 .ui-dialog.cactiFilterDialog .cactiFilterEditTable {
