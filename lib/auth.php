@@ -4672,7 +4672,8 @@ function auth_display_custom_error_message(string $message) : void {
 
 	print '</head>';
 	print '<body><center>';
-	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . $message . '</p><p>' . $custom_message . '</p></div>';
+	// basic_auth_fail_message is set by an administrator and documented as text or HTML, so it is not escaped.
+	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . htmle($message) . '</p><p>' . $custom_message . '</p></div>';
 
 	if ($auth_method != AUTH_METHOD_BASIC) {
 		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>$(function() { $("a").button(); });</script>';
@@ -5033,7 +5034,8 @@ function enable_2fa(int $user_id) : string {
 		} else {
 			$result['status'] = 200;
 			$result['text']   = __('2FA secret has needs verification');
-			$result['link']   = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($current_user['username'] . '@' . $_SERVER['HTTP_HOST'], $current_user['tfa_secret'], 'Cacti');
+			// Colons separate the issuer in an OTP label, including those in ports and IPv6 hosts.
+			$result['link']   = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate(str_replace(':', '_', $current_user['username'] . '@' . $_SERVER['HTTP_HOST']), $current_user['tfa_secret'], 'Cacti');
 		}
 	}
 
