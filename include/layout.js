@@ -4305,15 +4305,10 @@ function initGraphDrilldown() {
 			var glyph = link.find('.drillDown').first();
 			var label = glyph.attr('title') || link.attr('title') || $.trim(link.text());
 
-			if (label == '') {
-				return;
-			}
-
-			// Keep a single hover tooltip on the row and drop the glyph's duplicate.
-			link.attr('title', label);
-			glyph.removeAttr('title').attr('aria-hidden', 'true');
-
-			if (link.find('.iconLabel').length == 0) {
+			if (label != '' && link.find('.iconLabel').length == 0) {
+				// Keep a single hover tooltip on the row and drop the glyph's duplicate.
+				link.attr('title', label);
+				glyph.removeAttr('title').attr('aria-hidden', 'true');
 				link.append($('<span class="iconLabel"></span>').text(label));
 			}
 		});

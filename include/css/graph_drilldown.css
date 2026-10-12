@@ -96,12 +96,6 @@
 	white-space: nowrap;
 }
 
-/* initGraphDrilldown() rewrites the strip into one glyph+label row per action
-   and removes the markup's <br> separators; hide any that remain defensively. */
-.graphDrillDownToggle .iconWrapper br {
-	display: none;
-}
-
 .graphDrillDownToggle.open .iconWrapper .iconLink {
 	display: flex;
 	align-items: center;
