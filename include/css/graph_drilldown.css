@@ -120,13 +120,13 @@
 	white-space: nowrap;
 }
 
-/* Glyphs stacked directly above one another in a fixed-width right-hand column;
-   targets any glyph <i> so plugin icons without the drillDown class align too.
-   The 2px right padding lines the column up under the hamburger's own glyph. */
+/* Glyphs stacked above one another in a fixed-width column, centred so each
+   icon sits in the middle of its cell; targets any glyph <i> so plugin icons
+   without the drillDown class align too. */
 .graphDrillDownToggle.open .iconWrapper .iconLink > i {
 	display: table-cell;
 	width: 16px;
-	padding: 2px 2px 2px 4px;
-	text-align: right;
+	padding: 2px 4px;
+	text-align: center;
 	vertical-align: middle;
 }
