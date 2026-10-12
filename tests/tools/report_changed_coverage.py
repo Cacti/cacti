@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gate executable added lines using Xdebug and Chromium coverage evidence.
+"""Gate committed executable added lines using Xdebug and Chromium evidence.
 
 Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 Run in the PR checkout, with --base set to the PR base commit. This reports
@@ -15,7 +15,7 @@ import subprocess
 def added_lines(base):
     base = subprocess.check_output(['git', 'merge-base', base, 'HEAD'], text=True).strip()
     diff = subprocess.check_output(
-        ['git', 'diff', '--no-ext-diff', '--no-textconv', '--unified=0', base, '--', '*.php', '*.js', '*.css',
+        ['git', 'diff', '--no-ext-diff', '--no-textconv', '--unified=0', base, 'HEAD', '--', '*.php', '*.js', '*.css',
          ':(exclude)tests/**', ':(exclude)include/vendor/**'], text=True)
     files = {}
     name = None
@@ -31,7 +31,7 @@ def added_lines(base):
             line += 1
         elif not record.startswith(('-', '\\')):
             line += 1
-    return files
+    return {name: lines for name, lines in files.items() if lines}
 
 
 def main():

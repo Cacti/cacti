@@ -19,6 +19,11 @@ SPEC.loader.exec_module(GATE)
 
 
 class CoverageEvidenceTest(unittest.TestCase):
+    def test_deletion_only_files_do_not_require_added_line_coverage(self):
+        diff = '--- a/lib/old.php\n+++ b/lib/old.php\n@@ -3 +2,0 @@\n-return true;\n'
+        with patch.object(GATE.subprocess, 'check_output', side_effect=['base', diff]):
+            self.assertEqual(GATE.added_lines('HEAD^'), {})
+
     def evaluate(self, evidence, added=(3,)):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
