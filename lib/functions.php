@@ -3291,6 +3291,7 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 			}
 
 			$out .= $ch;
+			$stack[$top]['quoteEmpty'] = false;
 			$i++;
 
 			continue;

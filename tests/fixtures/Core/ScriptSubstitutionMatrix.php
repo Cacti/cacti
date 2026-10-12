@@ -53,6 +53,17 @@ $cases = [
 	["'a'", [], "'a'"],
 	['"a"', [], '"a"'],
 	['<a>', ['a' => '"safe"'], '"safe"'],
+	// command-substitution, backtick and escaped-dollar/backtick template shapes:
+	// the scanner parses $(...) and backticks as nested contexts with their own
+	// quoting and treats \$ / \` as escaped, so a self-quoting value stays literal
+	['"$(printf %s <field>)"', ['field' => "'p'"], '"$(printf %s \'p\')"'],
+	['$(printf %s <field>)', ['field' => "'p'"], '$(printf %s \'p\')'],
+	['"`printf %s <field>`"', ['field' => "'p'"], '"`printf %s \'p\'`"'],
+	['`printf %s <field>`', ['field' => "'p'"], '`printf %s \'p\'`'],
+	['"\\$(<field>)"', ['field' => "'p'"], '"\\$("\'p\'")"'],
+	['"\\`<field>"', ['field' => "'p'"], '"\\`"\'p\'""'],
+	['\\$(<field>)', ['field' => "'p'"], '\\$(\'p\')'],
+	['\\`<field>', ['field' => "'p'"], '\\`\'p\''],
 ];
 
 foreach ($cases as $index => [$template, $values, $expected]) {
