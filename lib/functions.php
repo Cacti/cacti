@@ -10810,7 +10810,6 @@ function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
  * @return bool Whether the message was written to the Cacti log.
  */
 function log_user_action($user, $action) {
-
 	if ($user === '' || $action === '') {
 		return false;
 	}
@@ -10836,4 +10835,3 @@ function log_user_action($user, $action) {
 
 	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'AUTHC' : 'AUTH');
 }
-

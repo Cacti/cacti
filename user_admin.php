@@ -522,7 +522,7 @@ function form_save() : void {
 		$original_user = db_fetch_row_prepared('SELECT username, enabled, locked
 			FROM user_auth
 			WHERE id = ?',
-			array(get_nfilter_request_var('id')));
+			[get_nfilter_request_var('id')]);
 
 		$old_password = db_fetch_cell_prepared('SELECT password
 			FROM user_auth
@@ -614,14 +614,13 @@ function form_save() : void {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
-
 				log_user_action($save['username'], $is_new_user ? 'created' : 'edited');
 
 				if (!$is_new_user) {
 					$was_enabled = ($original_user['enabled'] ?? '') === 'on';
-					$is_enabled  = ($save['enabled'] ?? '') === 'on';
-					$was_locked  = ($original_user['locked'] ?? '') === 'on';
-					$is_locked   = ($save['locked'] ?? '') === 'on';
+					$is_enabled  = ($save['enabled'] ?? '')          === 'on';
+					$was_locked  = ($original_user['locked'] ?? '')  === 'on';
+					$is_locked   = ($save['locked'] ?? '')           === 'on';
 
 					if ($was_enabled !== $is_enabled) {
 						log_user_action($save['username'], $is_enabled ? 'enabled' : 'disabled');
