@@ -1180,6 +1180,9 @@ function rrdtool_execute_acknowledged($command, $rrdtool_pipe = false) {
 	global $config, $rrdtool_acknowledged_process;
 	static $shutdown_registered = false;
 
+	/* Collapse the create builder's continuations, then reject data framing. */
+	$command = str_replace(RRD_NL, ' ', $command);
+
 	if (read_config_option('storage_location') && ($config['force_storage_location_local'] ?? false) !== true) {
 		return rrdtool_execute($command, true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') === true;
 	}

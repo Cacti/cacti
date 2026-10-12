@@ -65,13 +65,18 @@ jobs:
       working-directory: tests
       run: composer install --no-interaction --no-progress --prefer-dist
 
+    - name: Install RRDtool for handoff integration
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends rrdtool
+
     - name: Run Boost MariaDB contracts
+      # Exercise the real poller-to-RRDtool and remote-to-Boost boundaries too.
       working-directory: tests
       env:
         BOOST_DB_HOST: 127.0.0.1
         BOOST_DB_NAME: cacti_boost_contract
         BOOST_DB_USER: cactiuser
         BOOST_DB_PASSWORD: cactiuser
+        RRDTOOL_TEST_BINARY: /usr/bin/rrdtool
       run: php vendor/bin/pest --configuration=phpunit-boost-mariadb.xml --colors=never
 
   boost-contracts:

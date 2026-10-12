@@ -532,9 +532,8 @@ function boost_poller_on_demand(&$results, &$staged = null) {
 					restore_error_handler();
 					error_reporting($previous_error_reporting);
 
-					/* The handoff rows have already been consumed.  Signal the
-					 * caller to perform the safe direct-RRD fallback instead. */
-					return true;
+					/* Keep the handoff queued; an unverified owner cannot write inline. */
+					return false;
 				}
 
 				$value_tuples = array();
