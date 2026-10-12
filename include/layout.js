@@ -2897,6 +2897,78 @@ function loadPage(href, force) {
 	});
 }
 
+function cactiIsPostActionUrl(href) {
+	var target;
+	try {
+		target = new URL(href, window.location.href);
+	} catch (error) {
+		return false;
+	}
+	if (target.origin !== window.location.origin) return false;
+	var actions = {
+	"utilities.php": [
+		"clear_poller_cache",
+		"rebuild_resource_cache",
+		"clear_logfile",
+		"purge_logfile",
+		"purge_data_source_statistics",
+		"rebuild_snmpagent_cache"
+	],
+	"tree.php": [
+		"sortasc",
+		"sortdesc",
+		"ajax_dnd",
+		"lock",
+		"unlock",
+		"set_host_sort",
+		"set_branch_sort"
+	],
+	"links.php": [
+		"delete_page",
+		"ajax_dnd"
+	],
+	"reports.php": [
+		"send",
+		"remove_history",
+		"ajax_dnd"
+	],
+	"plugins.php": [
+		"load",
+		"latest",
+		"install",
+		"uninstall",
+		"remove",
+		"remove_data",
+		"disable",
+		"enable",
+		"check",
+		"moveup",
+		"movedown",
+		"remote_enable",
+		"remote_disable",
+		"restore",
+		"delete",
+		"archive",
+		"ajax_dnd"
+	],
+	"host.php": [
+		"reindex",
+		"gt_add",
+		"query_add",
+		"query_change",
+		"query_reload",
+		"query_verbose",
+		"enable_debug",
+		"disable_debug",
+		"repopulate"
+	]
+};
+	var page = target.pathname.split('/').pop();
+	var root = typeof urlPath === 'undefined' ? new URL('.', window.location.href).href : new URL(urlPath, window.location.href).href;
+	if (target.pathname !== new URL(page, root).pathname) return false;
+	return (actions[page] || []).indexOf(target.searchParams.get('action')) !== -1;
+}
+
 function loadUrl(options) {
 	setCactiTabCookie();
 
@@ -2943,6 +3015,14 @@ function loadUrl(options) {
 		 */
 
 		$.ajaxQ.abortAll();
+
+		if (cactiIsPostActionUrl(options.url)) {
+			var request = cactiPreparePostRequestFromUrl(options.url);
+			options.url = request.url;
+			return $.post(options.url, request.data, undefined, options.json ? 'json' : undefined)
+				.done(function (html) { handleAjaxResponse(html, options); return false; })
+				.fail(function (html) { getPresentHTTPError(html); });
+		}
 
 		if (options.json == true) {
 			return $.getJSON(options.url)
