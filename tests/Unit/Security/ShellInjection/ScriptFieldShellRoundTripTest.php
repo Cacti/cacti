@@ -13,5 +13,5 @@ test('substituted shell fields retain literal values across quote and backslash 
 	exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($fixture), $output, $status);
 	expect($status)->toBe(0);
 	$result = json_decode(implode("\n", $output), true, 512, JSON_THROW_ON_ERROR);
-	expect($result['passed'])->toBe(90);
-})->skip(stripos(PHP_OS, 'WIN') === 0 || !function_exists('proc_open'), 'POSIX shell required');
+	expect($result['passed'])->toBe(97);
+})->skip(stripos(PHP_OS, 'WIN') === 0 || !function_exists('exec') || !function_exists('proc_open'), 'POSIX shell required');

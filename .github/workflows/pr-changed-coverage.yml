@@ -30,7 +30,6 @@ permissions:
 
 jobs:
   changed-coverage:
-    if: github.event_name == 'workflow_dispatch' || contains(fromJSON('[8237,8238,8310,8312,8313,8314,8315,8316]'), github.event.pull_request.number)
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
