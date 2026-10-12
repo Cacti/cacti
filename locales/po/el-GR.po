@@ -4085,6 +4085,12 @@ msgstr "Προβολή γραφήματος"
 msgid "The Graph you requested does not exist."
 msgstr "Δεν υπάρχει πηγή δεδομένων."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Επιλογές γραφήματος"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Λεπτομέρειες γραφήματος, βοηθητικά προγράμματα μεγέθυνσης και εντοπισμός σφαλμάτων"

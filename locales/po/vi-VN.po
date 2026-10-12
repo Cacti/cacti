@@ -4047,6 +4047,12 @@ msgstr "Xem biểu đồ"
 msgid "The Graph you requested does not exist."
 msgstr "Nguồn dữ liệu không tồn tại."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Tùy chọn đồ thị"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Chi tiết đồ thị, thu phóng và gỡ lỗi tiện ích"

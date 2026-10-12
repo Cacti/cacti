@@ -4085,6 +4085,12 @@ msgstr "Visualizando Gráfico"
 msgid "The Graph you requested does not exist."
 msgstr "A origem dos dados não existe."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Opções de Gráfico"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Graph Details, Zooming and Debugging Utilities"

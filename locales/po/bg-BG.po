@@ -4079,6 +4079,12 @@ msgstr "Преглед на графиката"
 msgid "The Graph you requested does not exist."
 msgstr "Източникът на данни не съществува."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Опции на графиката"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Подробности за графиката, Мащабиране и отстраняване на грешки"

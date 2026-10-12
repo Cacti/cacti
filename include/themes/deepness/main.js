@@ -218,40 +218,6 @@ function themeReady() {
 	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
 	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
 
-	// Hide the graph icons until you hover
-	$('.graphDrillDown').hover(
-	function() {
-		element = $(this);
-
-		// hide the previously shown element
-		if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
-		}
-
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-	},
-	function() {
-		element = $(this);
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-	});
-
-	function showGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show(300, function() {
-			graphMenuElement = element.attr('id').replace('dd', '');;
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
-	function hideGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide(300, function() {
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
 	setNavigationScroll();
 }
 

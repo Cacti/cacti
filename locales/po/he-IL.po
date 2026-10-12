@@ -4154,6 +4154,12 @@ msgstr "הצגת תרשים"
 msgid "The Graph you requested does not exist."
 msgstr "מקור הנתונים אינו קיים."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "אפשרויות תרשים"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "גרף פרטים, התקרבות ו Debugging כלי עזר"
