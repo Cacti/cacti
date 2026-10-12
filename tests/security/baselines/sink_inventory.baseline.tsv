@@ -1025,3 +1025,4 @@ dynamic_include	./poller_maintenance.php:197		include_once($config['library_path
 header_redirect	./include/themes/deepness/default/index.php:25	header("Location:../index.php");
 header_redirect	./include/themes/deepness/images/index.php:25	header("Location:../index.php");
 header_redirect	./include/themes/deepness/index.php:25	header("Location:../index.php");
+cmd_exec	./lib/rrd.php:1192			$process = @proc_open([read_config_option('path_rrdtool'), '-'], [
