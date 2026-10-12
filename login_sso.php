@@ -29,6 +29,21 @@
  *   - metadata: publish this Cacti instance's SAML2 SP metadata (SAML2 only)
  */
 
+// Run before session_start(): a cross-site IdP POST does not carry Cacti's
+// Strict cookie. Opening a new session here would replace the original cookie
+// and lose the request ID saved before the IdP redirect. These protocol fields
+// cannot use the ordinary request wrappers until the bootstrap has loaded.
+require_once(__DIR__ . '/lib/Auth/SamlPostRelay.php');
+$samlPost = \Cacti\Auth\SamlPostRelay::isCallbackPost($_SERVER['REQUEST_METHOD'] ?? 'GET', $_GET, $_POST);
+
+if ($samlPost && ($_POST['cacti_saml_relay'] ?? '') !== '1') {
+	\Cacti\Auth\SamlPostRelay::relay($_GET, $_POST);
+}
+
+if ($samlPost) {
+	define('CACTI_SAML_POST_CALLBACK', true);
+}
+
 require_once('./include/auth.php');
 
 use Cacti\Auth\LoginProviderFactory;

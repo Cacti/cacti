@@ -164,6 +164,10 @@ function csrf_check(bool $fatal = true) : bool {
 		return true;
 	}
 
+	if (csrf_is_saml_callback()) {
+		return true;
+	}
+
 	$submitted = filter_input(INPUT_POST, CactiCsrfGuard::INPUT_NAME, FILTER_UNSAFE_RAW);
 	$submitted = (is_string($submitted) ? $submitted : '');
 
@@ -176,6 +180,31 @@ function csrf_check(bool $fatal = true) : bool {
 	}
 
 	return false;
+}
+
+/**
+ * SAML ACS requests carry an IdP assertion rather than a Cacti form token.
+ * Only the dedicated controller may request this exemption, and only for an
+ * enabled SAML provider while Login Providers is the active auth method.
+ * The provider still requires its saved request ID and validates signatures.
+ */
+function csrf_is_saml_callback() : bool {
+	if (!defined('CACTI_SAML_POST_CALLBACK') ||
+		($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+		return false;
+	}
+
+	if ((int) read_config_option('auth_method') !== AUTH_METHOD_PROVIDERS) {
+		return false;
+	}
+
+	try {
+		$provider = \Cacti\Auth\LoginProviderFactory::fromRealm((int) gfrv('realm'));
+
+		return $provider instanceof \Cacti\Auth\SamlLoginProvider;
+	} catch (\Throwable $error) {
+		return false;
+	}
 }
 
 /**
