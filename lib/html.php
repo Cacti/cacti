@@ -480,36 +480,10 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
  *
  * @return void No value is returned.
  */
-/* Inline CSS custom properties that tint the graph drilldown hamburger and action
-   strip for the active theme. graph_drilldown.css consumes these via var(), with a
-   dark fallback baked in, so themes without an entry keep the original dark look.
-   Returned as a style-attribute string (CSP-safe; no inline <style> element). */
-function graph_drilldown_palette_style() {
-	$theme = function_exists('get_selected_theme') ? get_selected_theme() : '';
-
-	// foreground, hamburger pill bg (closed/open), panel bg, hairline border, accent
-	static $palettes = array(
-		'classic'     => '--cacti-dd-fg:#242424;--cacti-dd-menu-bg:rgba(248,248,248,0.92);--cacti-dd-menu-bg-open:rgba(255,255,255,0.97);--cacti-dd-panel-bg:rgba(255,255,255,0.97);--cacti-dd-border:rgba(0,0,0,0.22);--cacti-dd-accent:#41708c',
-		'modern'      => '--cacti-dd-fg:#223344;--cacti-dd-menu-bg:rgba(248,250,252,0.92);--cacti-dd-menu-bg-open:rgba(255,255,255,0.97);--cacti-dd-panel-bg:rgba(255,255,255,0.97);--cacti-dd-border:rgba(20,40,70,0.20);--cacti-dd-accent:#1b6ca8',
-		'paw'         => '--cacti-dd-fg:#242424;--cacti-dd-menu-bg:rgba(250,250,250,0.92);--cacti-dd-menu-bg-open:rgba(255,255,255,0.97);--cacti-dd-panel-bg:rgba(255,255,255,0.97);--cacti-dd-border:rgba(0,0,0,0.20);--cacti-dd-accent:#2f7d6b',
-		'dark'        => '--cacti-dd-fg:#ffffff;--cacti-dd-menu-bg:rgba(0,0,0,0.55);--cacti-dd-menu-bg-open:rgba(0,0,0,0.82);--cacti-dd-panel-bg:rgba(0,0,0,0.85);--cacti-dd-border:rgba(255,255,255,0.16);--cacti-dd-accent:#4aa3df',
-		'deepness'    => '--cacti-dd-fg:#e6edf3;--cacti-dd-menu-bg:rgba(11,14,19,0.70);--cacti-dd-menu-bg-open:rgba(11,14,19,0.90);--cacti-dd-panel-bg:rgba(17,22,29,0.94);--cacti-dd-border:rgba(230,237,243,0.16);--cacti-dd-accent:#1f9f6e',
-		'midwinter'   => '--cacti-dd-fg:#eef3f8;--cacti-dd-menu-bg:rgba(16,22,30,0.65);--cacti-dd-menu-bg-open:rgba(16,22,30,0.88);--cacti-dd-panel-bg:rgba(20,28,38,0.92);--cacti-dd-border:rgba(199,208,217,0.18);--cacti-dd-accent:#5aa0d0',
-		'paper-plane' => '--cacti-dd-fg:#ffffff;--cacti-dd-menu-bg:rgba(10,11,13,0.60);--cacti-dd-menu-bg-open:rgba(10,11,13,0.86);--cacti-dd-panel-bg:rgba(29,31,33,0.92);--cacti-dd-border:rgba(255,255,255,0.16);--cacti-dd-accent:#7cb342',
-		'sunrise'     => '--cacti-dd-fg:#f2e9df;--cacti-dd-menu-bg:rgba(10,8,6,0.55);--cacti-dd-menu-bg-open:rgba(10,8,6,0.85);--cacti-dd-panel-bg:rgba(24,18,12,0.90);--cacti-dd-border:rgba(242,233,223,0.16);--cacti-dd-accent:#e0922a',
-	);
-
-	$dark_default = '--cacti-dd-fg:#ffffff;--cacti-dd-menu-bg:rgba(0,0,0,0.55);--cacti-dd-menu-bg-open:rgba(0,0,0,0.82);--cacti-dd-panel-bg:rgba(0,0,0,0.85);--cacti-dd-border:rgba(255,255,255,0.16);--cacti-dd-accent:#4aa3df';
-
-	return isset($palettes[$theme]) ? $palettes[$theme] : $dark_default;
-}
-
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
 
 	static $rand = 0;
-
-	$dd_style = graph_drilldown_palette_style();
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
@@ -518,8 +492,8 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		WHERE id = ?',
 		array($local_graph_id));
 
-	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "' style='" . $dd_style . "'><i class='fa fa-bars'></i></span>";
-	print "<div class='iconWrapper' style='" . $dd_style . "'>";
+	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
+	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Details') . "'></i></a><br>";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export'). "'></i></a><br>";
 	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fa-table threeBars' title='" . __esc('Time View'). "'></i></a><br>";

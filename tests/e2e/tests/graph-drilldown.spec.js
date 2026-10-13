@@ -129,9 +129,9 @@ test('opening a strip labels each action glyph with its tooltip text once', asyn
 	await expect(page.locator('#g1 .iconWrapper .iconLabel')).toHaveCount(4);
 });
 
-test('the open strip adopts the theme palette from inline custom properties', async ({ page }) => {
-	// graph_drilldown_icons() emits these custom properties per theme; a light
-	// theme must yield a light panel with a dark foreground (the hamburger fix).
+test('the open strip consumes the theme palette custom properties', async ({ page }) => {
+	// Each theme's main.css declares the --cacti-dd-* properties; graph_drilldown.css
+	// consumes them. A light palette must yield a light panel with a dark foreground.
 	await page.locator('#g1 .graphDrillDownMenu, #g1 .iconWrapper').evaluateAll(els => {
 		els.forEach(el => el.setAttribute('style', '--cacti-dd-fg:rgb(36,36,36);--cacti-dd-menu-bg:rgb(248,248,248);--cacti-dd-panel-bg:rgb(255,255,255);--cacti-dd-border:rgba(0,0,0,0.22);--cacti-dd-accent:rgb(65,112,140)'));
 	});
@@ -141,6 +141,37 @@ test('the open strip adopts the theme palette from inline custom properties', as
 	await expect(wrapper).toHaveCSS('background-color', 'rgb(255, 255, 255)');
 	await expect(wrapper).toHaveCSS('color', 'rgb(36, 36, 36)');
 });
+
+// Each theme's main.css declares the --cacti-dd-* palette; load one per test (so
+// its stylesheet is instrumented). The filter-table toggle markup exercises the
+// theme's switch rules, and we confirm the drilldown accent variable resolves.
+for (const [theme, accent] of [['classic', '#41708c'], ['dark', '#4aa3df'], ['deepness', '#1f9f6e'], ['midwinter', '#5aa0d0'], ['modern', '#1b6ca8'], ['paper-plane', '#7cb342'], ['paw', '#2f7d6b'], ['sunrise', '#e0922a']]) {
+	test(`the ${theme} stylesheet declares the drilldown palette variables`, async ({ page }) => {
+		await page.setContent('<div class="filterTable"><span><input type="checkbox" id="t"><label for="t">x</label><input type="checkbox" checked><input type="checkbox" disabled></span></div>');
+		await page.addStyleTag({ path: path.join(root, `include/themes/${theme}/main.css`) });
+		// Force :hover/:focus-visible on the switch via CDP rather than real keyboard
+		// focus: Chromium's :focus-visible heuristic depends on keyboard-modality
+		// history, so a programmatic/keyboard focus covers the rule only for some
+		// positions in the run. Forcing the pseudo-state makes every switch rule
+		// (base, ::before, :checked, :focus-visible, :disabled) match deterministically.
+		const client = await page.context().newCDPSession(page);
+		await client.send('DOM.enable');
+		await client.send('CSS.enable');
+		const { root: documentRoot } = await client.send('DOM.getDocument');
+		const { nodeId } = await client.send('DOM.querySelector', { nodeId: documentRoot.nodeId, selector: '#t' });
+		await client.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: ['hover', 'focus', 'focus-visible'] });
+		await page.evaluate(() => {
+			void document.body.offsetHeight;
+			document.querySelectorAll('.filterTable input[type="checkbox"]').forEach(el => {
+				void getComputedStyle(el).background;
+				void getComputedStyle(el, '::before').transform;
+				void getComputedStyle(el).outline;
+			});
+		});
+		const value = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--cacti-dd-accent').trim());
+		expect(value).toBe(accent);
+	});
+}
 
 test('touch users can see and activate the hamburger without hover', async ({ browser }) => {
 	const context = await browser.newContext({ hasTouch: true, isMobile: true });

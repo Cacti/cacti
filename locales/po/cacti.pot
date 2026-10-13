@@ -288,7 +288,7 @@ msgstr ""
 msgid "Aggregate Graph does not Exist"
 msgstr ""
 
-#: aggregate_graphs.php lib/html_reports.php utilities.php
+#: aggregate_graphs.php lib/html.php lib/html_reports.php utilities.php
 msgid "Details"
 msgstr ""
 
@@ -4083,8 +4083,20 @@ msgstr ""
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr ""
 
-#: graph.php
+#: graph.php lib/html.php
 msgid "CSV Export"
+msgstr ""
+
+#: lib/html.php
+msgid "Time View"
+msgstr ""
+
+#: lib/html.php
+msgid "Realtime"
+msgstr ""
+
+#: lib/html.php
+msgid "Kill Spikes"
 msgstr ""
 
 #: graph.php lib/html.php

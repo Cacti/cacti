@@ -29,7 +29,6 @@ function __esc($text) {
 function api_plugin_hook($type, $args) {
 	$GLOBALS['graph_markup_hook'] = $args;
 }
-\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html.php', 'graph_drilldown_palette_style', __NAMESPACE__);
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html.php', 'graph_drilldown_icons', __NAMESPACE__);
 
 // Render with the realtime and spikekill realms enabled so every action icon -
