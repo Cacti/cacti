@@ -127,7 +127,7 @@ for (const method of methods) for (const dryrun of [false, true]) {
 	});
 }
 
-for (const [name, id, setting, value] of preferences) {
+for (const [name, , setting, value] of preferences) {
 	test(`SpikeKill ${setting} preference changes use CSRF-protected POST`, async ({ page }) => {
 		const requests = await setup(page);
 		await open(page, 1);
