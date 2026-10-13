@@ -17,12 +17,20 @@ function db_fetch_assoc_prepared($sql, $args) {
 function db_execute($sql) {return true;}
 function db_execute_prepared($sql,$args) {
  global $data;
- if (strpos($sql,'REPLACE INTO')===0) {$data['inputs'][]=array('graph_template_input_id'=>$args[0],'graph_template_item_id'=>$args[1]);return true;}
+ if (strpos($sql,'REPLACE INTO')===0) {
+  $input=array('graph_template_input_id'=>$args[0],'graph_template_item_id'=>$args[1]);
+  if (!in_array($input,$data['inputs'])) $data['inputs'][]=$input;
+  return true;
+ }
  foreach ($data['items'] as &$r) if ($r['id']==$args[2]) {$r['sequence']=$args[0];$r['text_format']=$args[1];return true;}
  return false;
 }
 function sql_save($row,$table) {
  global $data;
+ if (isset($row['id'])) {
+  foreach ($data['items'] as &$item) if ($item['id']==$row['id']) {$item=$row;return $row['id'];}
+  return false;
+ }
  $row['id']=max(array_column($data['items'],'id'))+1;$data['items'][]=$row;return $row['id'];
 }
 function check($test,$message) {if(!$test) throw new RuntimeException($message);}
@@ -49,4 +57,32 @@ foreach($data['templates'] as $t) {
  }
 }
 $first=$data;upgrade_interface_traffic_legends();check($first==$data,'Second run changed data');
-echo "PASS: five templates, five existing graphs, arbitrary IDs, preserved calculations, input links, alignment and idempotence\n";
+
+// Signed package imports restore stock template items without removing peaks.
+foreach (array(false,true) as $restore_graphs) {
+ foreach ($original['items'] as $old) {
+  if (!$restore_graphs && $old['local_graph_id']!=0) continue;
+  foreach ($data['items'] as &$item) if ($item['id']==$old['id']) $item=$old;
+  unset($item);
+ }
+ upgrade_interface_traffic_legends();
+ check($first==$data,'Reimport must reuse peak IDs, hashes and input links');
+ upgrade_interface_traffic_legends();
+ check($first==$data,'Migration after reimport is not idempotent');
+}
+
+// An extra Minimum GPRINT must keep its original AVERAGE-series context.
+foreach (array(0,700) as $custom_gid) {
+ $data=$original;
+ $rows=array_values(array_filter($data['items'],function($r) use($custom_gid) {return $r['graph_template_id']==900&&$r['local_graph_id']==$custom_gid;}));
+ $minimum=$rows[3];$minimum['id']=99999;$minimum['text_format']='Minimum:';
+ $minimum['consolidation_function_id']=2;$minimum['sequence']=4;
+ $minimum['local_graph_template_item_id']=0;
+ $data['items'][]=$minimum;
+ check(traffic_legend_plan(array_merge($rows,array($minimum)))===false,'Custom GPRINT layout must be rejected');
+ $custom=array_values(array_filter($data['items'],function($r) use($custom_gid) {return $r['graph_template_id']==900&&$r['local_graph_id']==$custom_gid;}));
+ upgrade_interface_traffic_legends();
+ $after=array_values(array_filter($data['items'],function($r) use($custom_gid) {return $r['graph_template_id']==900&&$r['local_graph_id']==$custom_gid;}));
+ check($custom===$after,'Custom graph items changed during migration');
+}
+echo "PASS: five templates, five existing graphs, preserved calculations and linkage, reimport reuse, idempotence and custom GPRINT preservation\n";

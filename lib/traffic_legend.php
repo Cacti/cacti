@@ -26,7 +26,7 @@
  * Clarify the standard interface traffic legends without changing RRD data.
  * Template hashes identify stock templates independently of installation IDs.
  */
-function traffic_legend_plan($rows) {
+function traffic_legend_plan($rows, $template_peaks = array()) {
 	$ordered = array();
 	$used = array();
 	foreach (array('Inbound', 'Outbound') as $direction) {
@@ -84,10 +84,31 @@ function traffic_legend_plan($rows) {
 			$used[$row['id']] = true;
 			$ordered[] = array('existing' => $row);
 		}
-		$ordered[] = array('peak' => $maximum);
+		$entry = array('peak' => $maximum);
+		// Package reimports restore stock labels but may retain migrated peaks.
+		foreach ($rows as $row) {
+			$matches_peak = $maximum['local_graph_id'] == 0
+				? $row['hash'] == md5('traffic-max-peak:' . $maximum['hash'])
+				: isset($template_peaks[$maximum['local_graph_template_item_id']]) &&
+					$row['local_graph_template_item_id'] == $template_peaks[$maximum['local_graph_template_item_id']];
+			if (!$matches_peak) {
+				continue;
+			}
+			if (isset($entry['reuse']) || $row['graph_type_id'] != 9 ||
+				$row['task_item_id'] != $task || trim($row['text_format']) != 'Max peak:') {
+				return false;
+			}
+			$entry['reuse'] = $row['id'];
+			$used[$row['id']] = true;
+		}
+		$ordered[] = $entry;
 	}
 	foreach ($rows as $row) {
 		if (!isset($used[$row['id']])) {
+			// Reordering an additional GPRINT can change its inherited RRD series.
+			if (in_array($row['graph_type_id'], array(9, 11, 12, 13, 14))) {
+				return false;
+			}
 			$ordered[] = array('existing' => $row);
 		}
 	}
@@ -123,7 +144,7 @@ function upgrade_interface_traffic_legends() {
 		db_execute('START TRANSACTION');
 		try {
 			foreach ($groups as $gid => $items) {
-				$plan = $gid == 0 ? $template_plan : traffic_legend_plan($items);
+				$plan = $gid == 0 ? $template_plan : traffic_legend_plan($items, $template_peaks);
 				if ($plan === false) {
 					continue;
 				}
@@ -142,6 +163,9 @@ function upgrade_interface_traffic_legends() {
 							throw new RuntimeException('Missing template linkage for traffic peak');
 						}
 						unset($row['id']);
+						if (isset($entry['reuse'])) {
+							$row['id'] = $entry['reuse'];
+						}
 						$row['sequence'] = $sequence++;
 						$row['hash'] = $gid == 0 ? md5('traffic-max-peak:' . $row['hash']) : '';
 						$row['local_graph_template_item_id'] = $gid == 0 ? 0 : $template_peaks[$source_id];
