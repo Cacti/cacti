@@ -582,7 +582,9 @@ class spikekill {
 											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 										}
 									} elseif ($this->method == SPIKE_METHOD_FLOAT) {
-										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
+										if ($this->debug) {
+											$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
+										}
 									} else {
 										if ($dsvalue >= $this->absmax) {
 											$this->debug(sprintf('AbsMax Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
@@ -880,7 +882,9 @@ class spikekill {
 											$rra[$rra_num][$ds_num]['outwind_samples']++;
 
 											if ($this->method == SPIKE_METHOD_FLOAT) {
-												$this->debug(sprintf('Window Float Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
+												if ($this->debug) {
+													$this->debug(sprintf('Window Float Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
+												}
 
 												$rra[$rra_num][$ds_num]['outwind_killed']++;
 												$this->out_kills = true;
