@@ -2010,10 +2010,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	}
 
 	if ($updates_ok && cacti_sizeof($results)) {
-		$updates_ok = db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id = ?
-			AND time < FROM_UNIXTIME(?)',
-			[$local_data_id, $timestamp], false) !== false;
+		$updates_ok = boost_delete_output_keys($local_data_id, $results);
 	}
 
 	boost_timer('delete', BOOST_TIMER_END);
@@ -2031,6 +2028,60 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	error_reporting($previous_error_reporting);
 
 	return $updates_ok ? cacti_sizeof($results) : -1;
+}
+
+/**
+ * Delete exactly the fetched keys so rows that arrived after the fetch survive.
+ *
+ * The keys are staged in a temporary table and removed by one statement, which
+ * is atomic and uses the primary key. A long (rrd_name, time) IN list does not
+ * use the key in that column order and degrades roughly quadratically.
+ *
+ * @param array<int, array{timestamp: int|string, rrd_name: string}> $results
+ */
+function boost_delete_output_keys(int $local_data_id, array $results) : bool {
+	if (!cacti_sizeof($results)) {
+		return true;
+	}
+
+	$table = 'poller_output_boost_acked_' . $local_data_id . '_' . random_int(0, PHP_INT_MAX);
+
+	if (db_execute("CREATE TEMPORARY TABLE `$table` (
+		time timestamp NOT NULL,
+		rrd_name varchar(19) NOT NULL,
+		PRIMARY KEY (time, rrd_name))") === false) {
+		return false;
+	}
+
+	$ok = true;
+
+	foreach (array_chunk($results, 500) as $chunk) {
+		$values = [];
+		$params = [];
+
+		foreach ($chunk as $item) {
+			$values[] = '(FROM_UNIXTIME(?), ?)';
+			$params[] = $item['timestamp'];
+			$params[] = $item['rrd_name'];
+		}
+
+		if (db_execute_prepared("INSERT IGNORE INTO `$table` (time, rrd_name) VALUES " . implode(',', $values), $params, false) === false) {
+			$ok = false;
+
+			break;
+		}
+	}
+
+	if ($ok) {
+		$ok = db_execute_prepared("DELETE FROM poller_output_boost
+			WHERE local_data_id = ?
+			AND (time, rrd_name) IN (SELECT time, rrd_name FROM `$table`)",
+			[$local_data_id], false) !== false;
+	}
+
+	db_execute("DROP TEMPORARY TABLE `$table`");
+
+	return $ok;
 }
 
 /**
