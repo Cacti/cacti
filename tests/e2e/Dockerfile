@@ -73,6 +73,15 @@ RUN composer install --no-interaction --prefer-dist --no-dev \
 COPY tests/e2e/entrypoint.sh /usr/local/bin/cacti-entrypoint
 RUN chmod +x /usr/local/bin/cacti-entrypoint
 
+# Optional instrumentation for the disposable test environment.
+ARG CACTI_TEST_COVERAGE=0
+RUN if [ "$CACTI_TEST_COVERAGE" = 1 ]; then \
+        pecl install xdebug-3.5.3 \
+        && docker-php-ext-enable xdebug \
+        && printf '%s\n' 'xdebug.mode=coverage' 'auto_prepend_file=/var/www/html/tests/Helpers/RequestCoverage.php' > /usr/local/etc/php/conf.d/cacti-test-coverage.ini \
+        && install -d -o www-data -g www-data -m 0750 /tmp/cacti-pr-coverage; \
+    fi
+
 EXPOSE 80
 
 ENTRYPOINT ["/usr/local/bin/cacti-entrypoint"]
