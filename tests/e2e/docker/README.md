@@ -135,3 +135,5 @@ mise exec python@3.12.12 -- python tests/tools/run_poller_ack_e2e.py \
 Use `--database-image mysql:8.4` or `--database-image mariadb:10.3` for another database version. `--image` selects an existing compatible Cacti runtime image. The database name is fixed to `cacti_poller_ack_e2e`; the PHP probe refuses other installations. The runner stops only its own containers and leaves them available for inspection. Raw output, structured results and source hashes are written to the selected output directory. Existing databases and runtime files are not used.
 
 These are functional integration checks. Timings include the actual poller entry point, but do not establish production throughput. EXPLAIN records the full joined fetch; a matching index can be present while the optimizer still chooses filesort.
+
+The runner also checks the installation against `docs/audit_schema.sql` and verifies that a rejected canonical-schema load exits with failure rather than reporting a clean audit.

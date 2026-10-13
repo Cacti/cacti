@@ -50,6 +50,24 @@ try:
         run('docker','exec','-i','-e','MYSQL_PWD=ack-e2e',DB,client,'--named-commands','-uroot','cacti_poller_ack_e2e',stdin=schema)
     with (OUT/'install.log').open('w') as log:
         run('docker','exec','-w','/var/www/html',APP,'php','cli/install_cacti.php','--accept-eula','--install','--mode=1',stdout=log,stderr=subprocess.STDOUT)
+    # Match Cacti's unencrypted SQL connection on this internal-only network.
+    client_config=OUT/'client.cnf'
+    client_config.write_text('[client]\nssl=0\n')
+    run('docker','cp',str(client_config),APP+':/root/.my.cnf')
+    run('docker','exec',APP,'chmod','600','/root/.my.cnf')
+    bad_schema=OUT/'invalid-schema.sql'
+    bad_schema.write_text('INVALID CANONICAL SCHEMA;\n')
+    run('docker','cp',str(bad_schema),APP+':/var/www/html/docs/audit_schema.sql')
+    rejected=subprocess.run(['docker','exec','-w','/var/www/html',APP,'php','cli/audit_database.php','--report'],text=True,capture_output=True)
+    (OUT/'audit-rejected.log').write_text(rejected.stdout+rejected.stderr)
+    if rejected.returncode!=1 or 'Audit was clean' in rejected.stdout:
+        raise RuntimeError('Failed canonical schema load did not fail the audit')
+    run('docker','cp',str(ROOT/'docs/audit_schema.sql'),APP+':/var/www/html/docs/audit_schema.sql')
+    with (OUT/'audit.log').open('w') as log:
+        run('docker','exec','-w','/var/www/html',APP,'php','cli/audit_database.php','--report',stdout=log,stderr=subprocess.STDOUT)
+    audit_output=(OUT/'audit.log').read_text()
+    if 'SUCCESS: Loaded the Audit Schema' not in audit_output or 'Audit was clean' not in audit_output:
+        raise RuntimeError('Canonical schema audit did not complete')
     with (OUT/'poller.log').open('w') as log:
         run('docker','exec','-w','/var/www/html',APP,'php','tests/e2e/docker/probes/probe_poller_ack.php',stdout=log,stderr=subprocess.STDOUT,timeout=600)
     result=json.loads((OUT/'poller.log').read_text())
@@ -58,6 +76,7 @@ try:
     result['source_base_revision']=run('git','-C',str(ROOT),'rev-parse','HEAD',capture_output=True).stdout.strip()
     result['production_sha256']={path:hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in ['lib/poller.php','poller.php','cacti.sql','install/upgrades/1_2_32.php']}
     result['runtime_image']=args.image
+    result['canonical_schema_audit']='passed, including rejected load'
     (OUT/'result.json').write_text(json.dumps(result,indent=2))
     print('PASS', OUT/'poller.log',flush=True)
 except Exception:
