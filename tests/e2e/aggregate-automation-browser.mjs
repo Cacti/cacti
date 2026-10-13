@@ -49,6 +49,35 @@ try {
 		assert.equal(await page.evaluate(() => Boolean(window.cactiAggregateInjected)), false);
 		assert.equal(await page.locator('img[src="x"]').count(), 0);
 	}
+	// Invalid edits must leave the last saved automation settings intact.
+	const savedPattern = await page.locator('#automation_pattern').inputValue();
+	const savedTitle = await page.locator('#automation_title').inputValue();
+	for (const invalid of [
+		{automation_pattern: '/[/'},
+		{automation_max_members: '0'},
+		{automation_max_members: '5001'},
+		{automation_host_template_id: '987654321'},
+	]) {
+		const rejected = await page.evaluate(async invalid => {
+			const form = document.querySelector('#template_edit');
+			const body = new FormData(form);
+			body.set('action', 'save');
+			for (const [name, value] of Object.entries(invalid)) {
+				body.set(name, value);
+			}
+			const response = await fetch('aggregate_templates.php', {method: 'POST', body});
+			return {status: response.status, url: response.url};
+		}, invalid);
+		assert.equal(rejected.status, 200);
+		assert.ok(rejected.url.includes('action=edit'));
+		await page.goto(`${origin}/aggregate_templates.php?action=edit&id=800001`);
+		assert.equal(await page.locator('#automation_pattern').inputValue(), savedPattern);
+		assert.equal(await page.locator('#automation_title').inputValue(), savedTitle);
+		assert.equal(await page.locator('#automation_max_members').inputValue(), '25');
+	}
+	await page.goto(`${origin}/aggregate_templates.php`);
+	const rule = page.locator('tr').filter({has: page.locator('a[href*="action=edit&id=800001"]')});
+	assert.ok((await rule.innerText()).includes('Enabled'));
 	assert.deepEqual(errors, []);
 	console.log(JSON.stringify({browser: 'chromium', save_reload: true, escaped_fields: true, get_save_status: 405}));
 } finally {
