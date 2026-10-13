@@ -2970,6 +2970,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				} else {
 					$cf_id = 1; // CF: AVERAGE
 				}
+
+				$cf_ds_key = "{$graph_item['data_template_rrd_id']}:{$cf_id}";
 			}
 
 			// +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++
