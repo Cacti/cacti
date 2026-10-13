@@ -157,11 +157,14 @@ test('scheduled Boost pages are hard bounded and advance run-scoped primary-key 
 test('on-demand Boost defers oversized result sets without deleting them', function () use ($root) {
 	$source = file_get_contents($root . '/lib/boost.php');
 	$body   = boostLifecycleFunctionBody($source, 'function boost_process_poller_output(');
+	$guard  = strpos($body, 'if (cacti_sizeof($results) > $max_rows)');
+	$delete = strpos($body, 'boost_delete_output_keys(');
 
 	expect($body)->toContain('LIMIT \' . ($max_rows + 1)')
 		->and($body)->toContain('if (cacti_sizeof($results) > $max_rows)')
 		->and($body)->toContain('rows were retained for scheduled processing')
-		->and(strpos($body, 'return -1;'))->toBeLessThan(strpos($body, 'DELETE FROM poller_output_boost'));
+		->and($delete)->not->toBeFalse()
+		->and(strpos($body, 'return -1;', $guard))->toBeLessThan($delete);
 });
 
 test('scheduled and on-demand parsers share cached data-source metadata', function () use ($root) {

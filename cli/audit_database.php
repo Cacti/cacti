@@ -1243,6 +1243,7 @@ function create_tables($load = true) {
 				print ($altersopt ? '-- ' : '') . 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
 			} else {
 				print 'FATAL: Failed Load the Audit Schema' . PHP_EOL;
+				exit(1);
 				print 'ERROR: ' . implode(",\n   ", $output) . PHP_EOL;
 			}
 		} else {

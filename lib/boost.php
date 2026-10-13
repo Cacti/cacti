@@ -1339,6 +1339,14 @@ function boost_get_input_field_names($local_data_id, $templated) {
 				WHERE dtr.local_data_id = ?', array($local_data_id));
 		}
 
+		if ($rows === false) {
+			return false;
+		}
+
+		if (count($cache) >= 1000) {
+			$cache = array();
+		}
+
 		$cache[$key] = array_rekey($rows, 'data_name', 'data_source_name');
 	}
 
@@ -1430,28 +1438,35 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	$sql_params          = array();
 	$locks               = false;
 	$temp_table          = false;
+	$copy_ok             = true;
+	$temp_created        = false;
 
 	if (cacti_count($archive_tables)) {
 		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . mt_rand();
 
-		db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost");
+		$temp_created = db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost") !== false;
+		$copy_ok = $temp_created;
 
 		foreach($archive_tables as $index => $table) {
-			db_execute_prepared("INSERT IGNORE INTO $temp_table
+			if (!$copy_ok) {
+				break;
+			}
+
+			$copy_ok = db_execute_prepared("INSERT IGNORE INTO $temp_table
 				SELECT *
 				FROM $table
 				WHERE local_data_id = ?",
-				array($local_data_id), false);
+				array($local_data_id), false) !== false;
 		}
 	}
 
 	if ($temp_table !== false) {
-		db_execute_prepared("INSERT IGNORE INTO $temp_table
+		$copy_ok = $copy_ok && db_execute_prepared("INSERT IGNORE INTO $temp_table
 			SELECT *
 			FROM poller_output_boost
 			WHERE local_data_id = ?
 			AND time < FROM_UNIXTIME(?)",
-			array($local_data_id, $timestamp), false);
+			array($local_data_id, $timestamp), false) !== false;
 
 		$query_string = "SELECT po.local_data_id, dl.data_template_id,
 			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
@@ -1478,12 +1493,13 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	$sql_params[] = $timestamp;
 
 	boost_timer('get_records', BOOST_TIMER_START);
-	$results = db_fetch_assoc_prepared($query_string, $sql_params);
+	/* Failed copies use the existing failure and cleanup path. */
+	$results = $copy_ok ? db_fetch_assoc_prepared($query_string, $sql_params) : false;
 	boost_timer('get_records', BOOST_TIMER_END);
 
 	$boost_results = cacti_sizeof($results);
 
-	if ($temp_table !== false) {
+	if ($temp_table !== false && $temp_created) {
 		db_execute("DROP TEMPORARY TABLE $temp_table");
 	}
 
@@ -1554,6 +1570,15 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 		$unused_data_source_names = boost_get_unused_data_source_names($local_data_id);
 
+		if ($unused_data_source_names === false) {
+			if ($rrdp_auto_close) {
+				rrd_close($rrdtool_pipe);
+			}
+			restore_error_handler();
+			error_reporting($previous_error_reporting);
+			return -1;
+		}
+
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
 		/* go through each poller_output_boost entries and process */
@@ -1594,6 +1619,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					if (trim((string) $return_value) !== 'OK') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 						$updates_ok = false;
+						break;
 					}
 				}
 
@@ -1629,6 +1655,11 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					} else {
 						$rrd_field_names = boost_get_input_field_names($item['local_data_id'], false);
 						$unused_data_source_names = array();
+					}
+
+					if ($rrd_field_names === false || $unused_data_source_names === false) {
+						$updates_ok = false;
+						break;
 					}
 
 					$rrd_tmpl = '';
@@ -1694,6 +1725,11 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 						$unused_data_source_names = array();
 					}
 
+					if ($rrd_field_names === false || $unused_data_source_names === false) {
+						$updates_ok = false;
+						break;
+					}
+
 					$rrd_tmpl = '';
 				}
 
@@ -1724,7 +1760,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		}
 
 		/* process the last rrdupdate if applicable */
-		if ($vals_in_buffer) {
+		if ($updates_ok && $vals_in_buffer) {
 			boost_timer('rrdupdate', BOOST_TIMER_START);
 			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);
 			boost_timer('rrdupdate', BOOST_TIMER_END);
@@ -1782,10 +1818,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	}
 
 	if ($updates_ok && cacti_sizeof($results)) {
-		$updates_ok = db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id = ?
-			AND time < FROM_UNIXTIME(?)',
-			array($local_data_id, $timestamp), false) !== false;
+		$updates_ok = boost_delete_output_keys($local_data_id, $results);
 	}
 
 	boost_timer('delete', BOOST_TIMER_END);
@@ -1803,6 +1836,46 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	error_reporting($previous_error_reporting);
 
 	return $updates_ok ? cacti_sizeof($results) : -1;
+}
+
+
+/**
+ * Delete fetched keys in timestamp order, without splitting a timestamp across batches.
+ * @param array<int, array{timestamp: int|string, rrd_name: string}> $results
+ */
+function boost_delete_output_keys(int $local_data_id, array $results): bool {
+	$keys = array();
+	$params = array($local_data_id);
+	$flush = static function (array $keys, array $params): bool {
+		if (!$keys) return true;
+		return db_execute_prepared('DELETE FROM poller_output_boost
+			WHERE local_data_id = ? AND (rrd_name, time) IN (' . implode(',', $keys) . ')', $params, false) !== false;
+	};
+	$append_group = static function (int|string|null $timestamp, array $names, array &$keys, array &$params) use ($flush, $local_data_id): bool {
+		if ($timestamp === null) return true;
+		if ($keys && count($keys) + count($names) > 1000) {
+			if (!$flush($keys, $params)) return false;
+			$keys = array();
+			$params = array($local_data_id);
+		}
+		foreach ($names as $name) {
+			$keys[] = '(?, FROM_UNIXTIME(?))';
+			$params[] = $name;
+			$params[] = $timestamp;
+		}
+		return true;
+	};
+	$timestamp = null;
+	$names = array();
+	foreach ($results as $item) {
+		if ((string) $timestamp !== (string) $item['timestamp']) {
+			if (!$append_group($timestamp, $names, $keys, $params)) return false;
+			$timestamp = $item['timestamp'];
+			$names = array();
+		}
+		$names[] = $item['rrd_name'];
+	}
+	return $append_group($timestamp, $names, $keys, $params) && $flush($keys, $params);
 }
 
 /**
@@ -2239,7 +2312,11 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	if ($file_exists == false) {
-		$ds_exists = db_fetch_cell_prepared('SELECT id FROM data_local WHERE id = ?', array($local_data_id));
+		$ds_exists = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE id = ?', array($local_data_id));
+
+		if ($ds_exists === false) {
+			return 'ERROR: Unable to verify data source';
+		}
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
@@ -2275,7 +2352,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute_acknowledged("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", $rrdtool_pipe);
 		} else {
 			if (cacti_has_control_chars($rrd_update_values)) {
 				cacti_log("ERROR: Invalid RRD update value set for local_data_id: $local_data_id.", false, 'BOOST');
@@ -2285,11 +2362,11 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 			cacti_log("update $rrd_path $update_options $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute_acknowledged("update $rrd_path $update_options $rrd_update_values", $rrdtool_pipe);
 		}
 
-		if ($result === false || preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim((string) $result))) {
-			return is_string($result) && $result !== '' ? $result : 'ERROR: RRDtool did not acknowledge the update';
+		if ($result !== true) {
+			return 'ERROR: RRDtool did not acknowledge the update';
 		}
 
 		return 'OK';

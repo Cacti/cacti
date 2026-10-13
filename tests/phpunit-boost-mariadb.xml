@@ -8,6 +8,7 @@
 			<file>./integration/BoostProcessTableMariaDbTest.php</file>
 			<file>./integration/PollerHandoffIntegrationTest.php</file>
 			<file>./integration/UnusedSourceCacheIntegrationTest.php</file>
+			<file>./integration/BoostDrainIntegrationTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

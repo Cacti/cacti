@@ -943,6 +943,7 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 	static $archive_tables  = false;
 	static $rrdtool_version = null;
 	static $rrd_field_names = array();
+	static $rrd_field_names_loaded = false;
 
 	include_once($config['library_path'] . '/rrd.php');
 	$previous_error_reporting = error_reporting();
@@ -991,12 +992,19 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 		return -1;
 	}
 
-	if (!cacti_sizeof($rrd_field_names)) {
+	if (!$rrd_field_names_loaded) {
+		$mapping_rows = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
+			CONCAT(data_template_id, '_', data_name) AS keyname, data_source_names AS data_source_name
+			FROM poller_data_template_field_mappings");
+		if ($mapping_rows === false) {
+			restore_error_handler();
+			error_reporting($previous_error_reporting);
+			return -1;
+		}
 		$rrd_field_names = array_rekey(
-			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-					CONCAT(data_template_id, \'_\', data_name) AS keyname, data_source_names AS data_source_name
-				FROM poller_data_template_field_mappings'),
+			$mapping_rows,
 			'keyname', array('data_source_name'));
+		$rrd_field_names_loaded = true;
 	}
 
 	$query_string = 'SELECT * FROM (';
@@ -1139,6 +1147,10 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 				$current_lock = $item['local_data_id'];
 
 				$unused_data_source_names = boost_get_unused_data_source_names($item['local_data_id']);
+				if ($unused_data_source_names === false) {
+					$updates_ok = false;
+					break;
+				}
 				if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
 					$skip_item = true;
 				}
@@ -1302,6 +1314,11 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 								$nt_rrd_field_names = boost_get_input_field_names($item['local_data_id'], false);
 							}
 
+							if ($nt_rrd_field_names === false) {
+								$updates_ok = false;
+								break 2;
+							}
+
 							if (cacti_sizeof($nt_rrd_field_names)) {
 								if (isset($nt_rrd_field_names[$matches[0]])) {
 									$field = $nt_rrd_field_names[$matches[0]];
@@ -1353,6 +1370,11 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 					}
 				}
 
+				if ($nt_rrd_field_names === false || $unused_data_source_names === false) {
+					$updates_ok = false;
+					break;
+				}
+
 				$expected = '';
 
 				if (cacti_sizeof($nt_rrd_field_names)) {
@@ -1377,7 +1399,7 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 		}
 
 		/* process the last rrdupdate if applicable */
-		if ($vals_in_buffer) {
+		if ($updates_ok && $vals_in_buffer) {
 			/* place the latest update at the end of the output array */
 			$outarray[] = $tv_tmpl;
 
