@@ -311,13 +311,13 @@ function midWinterNavigation(element) {
 	let helper   		= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('helper');
 	let rubric		 	= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('title');
 
-	const btnManager = new cactiButton();
+	const btnManager = mdw.obj.ctrl.btn;
 
 	$('#navBreadCrumb .rubric').html( '<span>'+rubric+'</span>').attr('data-helper', helper).off().on(
-		"click", {param: 'force_open', filter: 'reset'}, btnManager.toggleConsoleNavigationBox
+		'click', {param: 'force_open', filter: 'reset'}, event => btnManager.toggleConsoleNavigationBox(event)
 	);
 	$('#navBreadCrumb .category').empty().append($('<span>').text(category)).attr('data-helper', helper).off().on(
-		"click", {param: 'force_open', filter: category}, btnManager.toggleConsoleNavigationBox
+		'click', {param: 'force_open', filter: category}, event => btnManager.toggleConsoleNavigationBox(event)
 	);
 	$('#navBreadCrumb .action').html( action );
 
@@ -375,7 +375,7 @@ function setupTheme() {
 		};
 
 		/* process table elements and transform to modern layout */
-		$authTable.find("input, button, label").each(function() {
+		$authTable.find('input, button, label, select, textarea, a').each(function() {
 			const $el = $(this);
 			const type = $el.attr('type');
 			const id = $el.attr('id');
@@ -391,7 +391,7 @@ function setupTheme() {
 					$(`<i class="ti ti-lock" data-helper="${id}" data-func="togglePwdInputField"></i>`).insertAfter($el);
 				}
 			} else {
-				$el.appendTo($authForm);
+				$el.add($el.next('.select2-container')).appendTo($authForm);
 			}
 		});
 
@@ -456,7 +456,7 @@ function setupTheme() {
 				});
 			} else {
 				$("#navBackdrop").on('click', function() {
-					window.open('https://cacti.net', '_blank');
+					window.open('https://cacti.net', '_blank', 'noopener,noreferrer');
 				});
 			}
 		}
@@ -597,7 +597,7 @@ function toggleCactiNavigationBoxPin(event) {
 	let caller = $(event.currentTarget);
 	let helper = caller.attr('data-helper');
 	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
-	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
+	$('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
 
 	if(event.data && event.data.dock) {
 		event.data.dock = event.data.dock.replace(/^./, str => str.toUpperCase());
@@ -670,7 +670,7 @@ function hideDropDownMenu() {
 function toggleTableColumn(event) {
 	let storage = Storages.localStorage;
 	let tableHash = event.target.dataset.table;
-	let cIndex = parseInt(event.target.dataset.column);
+	let cIndex = Number.parseInt(event.target.dataset.column);
 	let cClass = 'no-col'+cIndex;
 	let storage_table_headers = storage.get('midWinter_' + tableHash);
 
@@ -840,47 +840,6 @@ function setupDefaultElements() {
 			$('.import_text').text(fileText);
 		}
 
-		// Hide the graph icons until you hover
-		$('.graphDrillDown').on('mouseenter', function () {
-				element = $(this);
-
-				// hide the previously shown element
-				if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-					$('#dd' + graphMenuElement).find('.iconWrapper:first').hide(300);
-				}
-
-				clearTimeout(graphMenuTimer);
-				graphMenuTimer = setTimeout(function () {
-					showGraphMenu(element);
-				}, 400);
-			}).on('mouseleave', function () {
-				element = $(this);
-				clearTimeout(graphMenuTimer);
-				graphMenuTimer = setTimeout(function () {
-					hideGraphMenu(element);
-				}, 400);
-
-				if (typeof spikeKillClose == 'function') {
-					spikeKillClose();
-				}
-			});
-
-		function showGraphMenu(element) {
-			element.find('.spikekillMenu').menu('disable');
-			element.find('.iconWrapper').show(300, function () {
-				graphMenuElement = element.attr('id').replace('dd', '');
-				$(this).find('.spikekillMenu').menu('enable');
-				$(this).css('display', 'block');
-			});
-		}
-
-		function hideGraphMenu(element) {
-			element.find('.spikekillMenu').menu('disable');
-			element.find('.iconWrapper').hide(300, function () {
-				$(this).find('.spikekillMenu').menu('enable');
-			});
-		}
-
 		setNavigationScroll();
 	}
 }
@@ -955,7 +914,7 @@ function changeGuiFontSize(change=true) {
         setDocumentAttribute('zoom-level', mdw.session.theme.font.zoom);
 	}
 	/* update output field beside input selector */
-	$('#mdw_themeFontSizeValue').val((parseFloat(mdw.session.theme.font.zoom) + 25).toFixed(1) + ' %');
+	$('#mdw_themeFontSizeValue').val((Number.parseFloat(mdw.session.theme.font.zoom) + 25).toFixed(1) + ' %');
 }
 
 function toggleGuiAnimations() {
@@ -1063,9 +1022,9 @@ function togglePopOver(force) {
 
 function fullScreen(event) {
 	if (!document.fullscreenElement) {
-		document.documentElement.requestFullscreen().then( r => fullScreenChangeHandler() );
+		document.documentElement.requestFullscreen().then(() => fullScreenChangeHandler()).catch(() => fullScreenChangeHandler());
 	}else if (document.exitFullscreen) {
-		document.exitFullscreen().then( r => fullScreenChangeHandler() );
+		document.exitFullscreen().then(() => fullScreenChangeHandler()).catch(() => fullScreenChangeHandler());
 	}
 }
 
@@ -1079,42 +1038,45 @@ function fullScreenChangeHandler() {
 
 
 function kioskMode(event = false) {
+	const tap = mdw.cache.tap;
+	clearTimeout(tap.timer);
+	tap.count = 0;
+	tap.clientX = 0;
+	tap.clientY = 0;
+	$('#mdw-Main').off('click.midwinterKiosk');
+	$(document).off('keydown.midwinterKiosk');
+
 	if (event === false) {
 		setDocumentAttribute('kiosk-mode', 'off');
-		if(isMobile.any() != null) {
-			$('#mdw-Main').off('click');
-		}
 	}else {
-		toggleConsoleNavigationBox(event);
+		mdw.obj.ctrl.nav.closeAllBoxes();
 		setDocumentAttribute('kiosk-mode', 'on');
+		$(document).on('keydown.midwinterKiosk', function(e) {
+			if (e.key === 'Escape') {
+				e.preventDefault();
+				kioskMode(false);
+			}
+		});
 		if(isMobile.any() != null) {
-			$('#mdw-Main').rebind('click', function(e) {
-				let tap;
-				mdw.cache.tab.count++;
+			$('#mdw-Main').on('click.midwinterKiosk', function(e) {
+				tap.count++;
 
-				if(mdw.cache.tab.count === 1) {
-					mdw.cache.tab.clientX = e.clientX;
-					mdw.cache.tab.clientY = e.clientY;
+				if(tap.count === 1) {
+					tap.clientX = e.clientX;
+					tap.clientY = e.clientY;
 
-					tap = setTimeout(function(){
-						mdw.cache.tab.count = 0;
-						mdw.cache.tab.clientX = 0;
-						mdw.cache.tab.clientY = 0;
+					tap.timer = setTimeout(function(){
+						tap.count = 0;
+						tap.clientX = 0;
+						tap.clientY = 0;
 					},300);
-				}else if (mdw.cache.tab.count === 2) {
-					if(Math.abs(e.clientX-mdw.cache.tab.clientX) < 10 && Math.abs(e.clientY-mdw.cache.tab.clientY) < 10) {
+				}else {
+					clearTimeout(tap.timer);
+					tap.count = 0;
+					if(Math.abs(e.clientX-tap.clientX) < 10 && Math.abs(e.clientY-tap.clientY) < 10) {
 						e.preventDefault();
-						clearTimeout(tap);
-						mdw.cache.tab.count = 0;
-						mdw.cache.tab.clientX = 0;
-						mdw.cache.tab.clientY = 0;
 						kioskMode(false);
 					}
-				}else {
-					mdw.cache.tab.count = 0;
-					mdw.cache.tab.clientX = 0;
-					mdw.cache.tab.clientY = 0;
-					kioskMode(false);
 				}
 			});
 		}
@@ -1369,7 +1331,7 @@ registry.midwinter = {
 				let midWinter_Color_Mode_Auto = mdw.session.theme.color.auto;
 				let midWinter_Font_Size = mdw.session.theme.font.zoom;
 				let midWinter_Animations = mdw.session.theme.boxes.animated
-				let midWinter_ShownFontSizeValue = parseFloat(midWinter_Font_Size) + 25;
+				let midWinter_ShownFontSizeValue = Number.parseFloat(midWinter_Font_Size) + 25;
 				let midWinter_Auto_Table_Layout = mdw.session.theme.mobile.autoTableLayout;
 				let midWinter_Controls_SubTitle = mdw.session.theme.controls.subTitle;
 

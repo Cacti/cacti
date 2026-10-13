@@ -477,7 +477,7 @@ class Ldap {
 	public string $cn_full_name;
 	public string $cn_email;
 
-	function __construct() {
+	public function __construct() {
 		// No DB lookup here: Cacti\Auth\LdapLoginProvider::buildLdap() is the
 		// single source of truth for mapping login_providers.parameters onto
 		// these properties, so this class stays a pure connection/protocol
@@ -486,14 +486,14 @@ class Ldap {
 		$this->host  = '';
 	}
 
-	function __destruct() {
+	public function __destruct() {
 	}
 
-	function ErrorHandler(int $level, string $message, string $file, int $line, array $context = []) : bool {
+	public function ErrorHandler(int $level, string $message, string $file, int $line, array $context = []) : bool {
 		return true;
 	}
 
-	function SetLdapHandler() : void {
+	public function SetLdapHandler() : void {
 		// drop out of cactis error handler
 		restore_error_handler();
 
@@ -503,7 +503,7 @@ class Ldap {
 		cacti_session_close();
 	}
 
-	function RestoreCactiHandler() : void {
+	public function RestoreCactiHandler() : void {
 		// drop out of ldaps error handler
 		restore_error_handler();
 
@@ -513,13 +513,13 @@ class Ldap {
 		cacti_session_start();
 	}
 
-	function RecordError(array $output, string $section = 'LDAP') : void {
+	public function RecordError(array $output, string $section = 'LDAP') : void {
 		$logDN = empty($output['dn']) ? '' : (', DN: ' . $output['dn']);
 		cacti_log($section . ': ' . $output['error_text'] . $logDN, false, 'AUTH');
 		cacti_log($section . ': ' . $output['stack'], false, 'AUTH', $this->debug);
 	}
 
-	function Connect() : array {
+	public function Connect() : array {
 		$output    = [];
 		$ldap_conn = null;
 
@@ -698,7 +698,7 @@ class Ldap {
 		}
 	}
 
-	function Authenticate() : array {
+	public function Authenticate() : array {
 		$output = [];
 
 		cacti_log('LDAP: Authentication Start', false, 'AUTH', $this->debug);
@@ -838,7 +838,7 @@ class Ldap {
 		return $output;
 	}
 
-	function GetMask() : int {
+	public function GetMask() : int {
 		if (!defined('ENT_HTML401')) {
 			return ENT_COMPAT;
 		} else {
@@ -869,7 +869,7 @@ class Ldap {
 	 *                    failure) so the caller can leave assignments untouched
 	 *                    rather than revoking them on a transient outage.
 	 */
-	function ResolveGroupMemberships(string $username, array $groupNames) : ?array {
+	public function ResolveGroupMemberships(string $username, array $groupNames) : ?array {
 		if (!cacti_sizeof($groupNames)) {
 			return [];
 		}
@@ -1136,7 +1136,7 @@ class Ldap {
 		return $queries;
 	}
 
-	function Search() : array {
+	public function Search() : array {
 		$output = [];
 
 		// Determine connection method and create LDAP Object
@@ -1256,7 +1256,7 @@ class Ldap {
 		return $output;
 	}
 
-	function Getcn() : array {
+	public function Getcn() : array {
 		$output = [];
 
 		// Determine connection method and create LDAP Object
@@ -1397,7 +1397,7 @@ class Ldap {
 		return $output;
 	}
 
-	function isUserInLDAPGroup(object $ldapConn, string $ldapbasedn, string $groupDN, string $ldapUser) : bool {
+	public function isUserInLDAPGroup(object $ldapConn, string $ldapbasedn, string $groupDN, string $ldapUser) : bool {
 		$query = cacti_ldap_filter(
 			'(&(distinguishedName=<user>)(memberOf:1.2.840.113556.1.4.1941:=<group>))',
 			['user' => $ldapUser, 'group' => $groupDN]

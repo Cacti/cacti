@@ -627,7 +627,8 @@ function automation_tree_rules_item_edit() : void {
 	}
 
 	if (!isrv('tab') || grv('tab') == 'rule') {
-		global_item_edit(grv('id'), grv('item_id'), grv('rule_type'));
+		// Numeric validation preserves an empty ID when creating a new item.
+		global_item_edit(grv('id'), (int) grv('item_id'), grv('rule_type'));
 
 		form_hidden_box('rule_type', grv('rule_type'), grv('rule_type'));
 		form_hidden_box('id', (isrv('id') ? grv('id') : '0'), '');

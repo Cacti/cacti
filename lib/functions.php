@@ -3512,24 +3512,29 @@ function data_source_path_within_rra(string $path) : bool {
 		return false;
 	}
 
-	// block symlink pivots below the RRA directory, even for RRD files that don't exist yet
-	$walk = $base_real;
+	$walk             = $base_real;
+	$deepest_existing = $base_real;
 
 	foreach ($parts as $segment) {
 		$walk .= '/' . $segment;
 
-		if (file_exists($walk) && is_link($walk)) {
+		// is_link() must be tested before file_exists(): file_exists() follows
+		// the link and is false for a dangling symlink, so a symlink segment
+		// whose target does not exist yet would otherwise be skipped and the
+		// lexically-contained path accepted - then resolve outside the RRA root
+		// once that target is created before the recursive directory/RRD build.
+		if (is_link($walk)) {
 			return false;
+		}
+
+		if (file_exists($walk)) {
+			$deepest_existing = $walk;
 		}
 	}
 
-	if (file_exists($walk)) {
-		return cacti_path_is_within($walk, $base_real);
-	}
+	$resolved = realpath($deepest_existing);
 
-	$parent = realpath(dirname($walk));
-
-	return $parent !== false && cacti_path_is_within($parent, $base_real);
+	return $resolved !== false && cacti_path_is_within($resolved, $base_real);
 }
 
 /**

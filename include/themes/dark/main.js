@@ -88,63 +88,22 @@ function themeReady() {
 		case '6':
 		case '7':
 		case '8':
-			$('#alpha').selectmenu('enable');
+				$('#alpha').prop('disabled', false);
 		}
 	});
-
-	// Hide the graph icons until you hover
-	$('.graphDrillDown').on('mouseenter', function() {
-			element = $(this);
-
-			// hide the previously shown element
-			if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-				$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
-			}
-
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-		}).on('mouseleave', function() {
-			element = $(this);
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-
-			if (typeof spikeKillClose == 'function') {
-				spikeKillClose();
-			}
-		});
-
-	function showGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show(300, function() {
-			graphMenuElement = element.attr('id').replace('dd', '');;
-			$(this).find('.spikekillMenu').menu('enable');
-			$(this).css('display', 'block');
-		});
-	}
-
-	function hideGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide(300, function() {
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
 
 	setNavigationScroll();
 }
 
 function setMenuVisibility() {
-	storage=Storages.sessionStorage;
+	const storage = Storages.sessionStorage;
 
 	// Initialize the navigation settings
 	// This will setup the initial visibility of the menu
 	$('li.menuitem').each(function() {
-		var id = $(this).attr('id');
+		const id = $(this).attr('id');
 
-		if (storage.isSet(id)) {
-			var active = storage.get(id);
-		} else {
-			var active = null;
-		}
+		const active = storage.isSet(id) ? storage.get(id) : null;
 
 		if (active != null && active == 'active') {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
@@ -169,7 +128,7 @@ function setMenuVisibility() {
 	$('#nav li:has(ul) a.active').rebind('click', function(event) {
 		event.preventDefault();
 
-		id = $(this).closest('.menuitem').attr('id');
+		const id = $(this).closest('.menuitem').attr('id');
 
 		if ($(this).next().is(':visible')) {
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
@@ -186,8 +145,6 @@ function setMenuVisibility() {
 		}
 
 		$('li.menuitem').not('#'+id).each(function() {
-			text = $(this).attr('id');
-			id   = $(this).attr('id');
 
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );

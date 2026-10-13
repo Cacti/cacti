@@ -1277,19 +1277,20 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 			case AGGREGATE_TOTAL_ALL: // any totalling option was selected ...
 				$_graph_type = GRAPH_ITEM_TYPE_LINE1;
 
-				$cf_id = db_fetch_cell('SELECT consolidation_function_id
+				$cf_id = db_fetch_cell_prepared('SELECT consolidation_function_id
 					FROM graph_templates_item
 					WHERE color_id > 0' .
 					(cacti_sizeof($member_graphs) > 0 ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id') : '') .
-					(cacti_sizeof($skipped_items) > 0 ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')' : '') . '
+					(cacti_sizeof($skipped_items) > 0 ? ' AND sequence NOT IN(' . implode(',', array_fill(0, count($skipped_items), '?')) . ')' : '') . '
 					ORDER BY sequence ASC
-					LIMIT 1');
+					LIMIT 1', array_values($skipped_items));
 
 				// add an empty line before total items
 				db_execute_prepared("INSERT INTO graph_templates_item
 					(local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
 					VALUES (?, 1, ?, '', '', 'on', 2, ?)", [$local_graph_id, $cf_id, $next_item_sequence++]);
 
+				// Fall through: all totals also need the common totalling graph items.
 			case AGGREGATE_TOTAL_ONLY:
 				// use the prefix for totalling GPRINTs as given by the user
 				switch ($_total_type) {
@@ -1421,10 +1422,11 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 			FROM graph_templates_item
 			WHERE graph_type_id IN (?, ?)
 			AND graph_template_id = ?
-			AND local_graph_id = 0
+			AND local_graph_id = 0' .
+			(cacti_sizeof($skipped_items) ? ' AND sequence NOT IN(' . implode(',', array_fill(0, count($skipped_items), '?')) . ')' : '') . '
 			AND (text_format != "" || value != "")
 			ORDER BY sequence ASC',
-			[GRAPH_ITEM_TYPE_COMMENT, GRAPH_ITEM_TYPE_HRULE, $agg_info['graph_template_id']]);
+			[GRAPH_ITEM_TYPE_COMMENT, GRAPH_ITEM_TYPE_HRULE, $agg_info['graph_template_id'], ...array_values($skipped_items)]);
 
 		$graph_template_id = $agg_info['graph_template_id'];
 	} else {
@@ -1434,13 +1436,13 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 			$template_graph   = [];
 		}
 
-		$comments_hrules = db_fetch_assoc('SELECT *
+		$comments_hrules = db_fetch_assoc_prepared('SELECT *
 			FROM graph_templates_item
 			WHERE graph_type_id IN(' . GRAPH_ITEM_TYPE_COMMENT . ',' . GRAPH_ITEM_TYPE_HRULE . ')' .
 			(cacti_sizeof($template_graph) ? ' AND ' . array_to_sql_or($template_graph, 'local_graph_id') : '') .
-			(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')' : '') . '
+			(cacti_sizeof($skipped_items) ? ' AND sequence NOT IN(' . implode(',', array_fill(0, count($skipped_items), '?')) . ')' : '') . '
 			AND (text_format != "" || value != "")
-			ORDER BY local_graph_id, sequence ASC');
+			ORDER BY local_graph_id, sequence ASC', array_values($skipped_items));
 
 		if (cacti_sizeof($comments_hrules)) {
 			$graph_template_id = $comments_hrules[0]['graph_template_id'];

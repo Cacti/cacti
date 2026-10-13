@@ -85,6 +85,12 @@ if (cacti_sizeof($parms)) {
 			case '--partition':
 				$fpartition = true;
 
+				// Preserve the legacy --partition=TYPE spelling for QA callers.
+				if ($value !== '') {
+					$type = $value;
+				}
+
+				break;
 			case '--type':
 				$type = $value;
 

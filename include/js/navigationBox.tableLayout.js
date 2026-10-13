@@ -261,7 +261,7 @@ midwinter.navigationBox.table = {
      */
     init: function($box) {
         if (!$box || !$box.length) return;
-        const helper = $box.data('helper');
+        $box.data('helper');
         const ns = midwinter.navigationBox.table;
 
         // bind toggle checkboxes

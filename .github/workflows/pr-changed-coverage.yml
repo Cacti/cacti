@@ -1,0 +1,71 @@
+name: PR changed-code coverage
+
+on:
+  pull_request:
+    paths:
+      - 'auth_2fa.php'
+      - 'auth_resetpassword.php'
+      - 'package_import.php'
+      - 'package_repos.php'
+      - 'lib/functions.php'
+      - 'lib/html.php'
+      - 'include/layout.js'
+      - 'include/css/graph_drilldown.css'
+      - 'include/themes/**/main.css'
+      - 'tests/Helpers/FixtureCoverage.php'
+      - 'tests/Helpers/SourceSlice.php'
+      - 'tests/fixtures/Core/**'
+      - 'tests/e2e/tests/**'
+      - 'tests/tools/report_changed_coverage.py'
+      - 'tests/tools/run_pr_change_tests.sh'
+      - '.github/workflows/pr-changed-coverage.yml'
+  workflow_dispatch:
+    inputs:
+      base_commit:
+        description: Base commit for changed-line coverage
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  changed-coverage:
+    if: github.event_name == 'workflow_dispatch' || contains(fromJSON('[8237,8238,8310,8312,8313,8314,8315,8316]'), github.event.pull_request.number)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.3'
+          extensions: curl, dom
+          coverage: xdebug
+          ini-values: memory_limit=1G
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+      - name: Install browser test dependencies
+        if: hashFiles('tests/e2e/tests/fixture-coverage.js') != ''
+        working-directory: tests/e2e
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npx --no-install playwright install --with-deps chromium
+      - name: Run changed-code tests and require 100 percent changed-line coverage
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha || inputs.base_commit }}
+          CACTI_COVERAGE_DIR: ${{ runner.temp }}/cacti-changed-coverage
+        run: bash tests/tools/run_pr_change_tests.sh "$BASE_COMMIT"
+      - name: Preserve coverage evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: changed-code-coverage
+          path: |
+            ${{ runner.temp }}/cacti-changed-coverage
+            tests/e2e/test-results
+          if-no-files-found: warn

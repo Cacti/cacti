@@ -16,7 +16,7 @@ midwinter.navigationBox.filter = {
         const event = new CustomEvent('mdw:pluginStateUpdate', {
             detail: {
                 helper: $box.data('helper'),
-                plugin: 'table',
+                plugin: 'filter',
                 hasContent: hasContent
             },
             bubbles: true // ensure we are reaching the document level
@@ -46,12 +46,16 @@ midwinter.navigationBox.filter = {
     content: function($box) {
         const ns = midwinter.navigationBox.filter;
         const sel = ns._selectors;
+        const $main = $('#main');
+        const version = $main.data('cactiContentVersion') || 0;
+        const previous = $box.data('filterSource');
         const $filterSource = $(`#main ${sel.cactiFilterTable}`).first();
 
         if ($filterSource.length) {
 
             // Find the surrounding cacti table container and detach it
             const $filterContainer = $filterSource.closest(sel.cactiTable).detach();
+            $box.data('filterSource', { element: $main[0], version: version });
 
             /* Legacy support for cacti breaks/titles */
             const $mainFirstDiv = $("#main > div:first");
@@ -64,9 +68,13 @@ midwinter.navigationBox.filter = {
             }
 
             return $filterContainer;
-        } else {
-            return '';
         }
+
+        // Repeated setup on the same content must keep the relocated controls.
+        // An AJAX replacement advances the version even when its URL is unchanged.
+        if (previous && previous.element === $main[0] && previous.version === version) return null;
+        $box.removeData('filterSource');
+        return '';
     },
 
     /**
@@ -75,7 +83,7 @@ midwinter.navigationBox.filter = {
     init: function($box) {
         const ns = midwinter.navigationBox.filter;
         const $content = $box.find('.navBox-content');
-        const hasContent = $content.children().length > 0 && $content.text().trim() !== "";
+        const hasContent = $content.find(ns._selectors.cactiFilterTable).length > 0;
 
         ns._notifyState($box, hasContent);
     }
