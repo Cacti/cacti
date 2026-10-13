@@ -3584,3 +3584,13 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .filterTable input[type='checkbox']:not(.formCheckbox) + label {
 	cursor: pointer;
 }
+
+/* Graph drilldown action menu palette (consumed by include/css/graph_drilldown.css). */
+:root {
+	--cacti-dd-fg: #ffffff;
+	--cacti-dd-menu-bg: rgba(10,11,13,0.60);
+	--cacti-dd-menu-bg-open: rgba(10,11,13,0.86);
+	--cacti-dd-panel-bg: rgba(29,31,33,0.92);
+	--cacti-dd-border: rgba(255,255,255,0.16);
+	--cacti-dd-accent: #7cb342;
+}

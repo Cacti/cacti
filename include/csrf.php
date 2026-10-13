@@ -445,11 +445,11 @@ function csrf_error_callback() : void {
 }
 
 /**
- * csrf_require_post - reject a non-POST request for a state-changing action.
+ * csrf_require_post - require a CSRF-protected POST for a state-changing action.
  *
  * State-changing actions reached through a direct action= URL must arrive by
  * POST so they cannot be triggered cross-site with a GET (for example an <img>
- * tag).  csrf-magic validates the token on the resulting POST.
+ * tag). Reject invalid POST tokens before the action can change state.
  *
  * @return void
  */
@@ -457,6 +457,11 @@ function csrf_require_post() : void {
 	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 		header('Allow: POST');
 		http_response_code(405);
+		exit;
+	}
+
+	if (!csrf_check(false)) {
+		http_response_code(403);
 		exit;
 	}
 }
