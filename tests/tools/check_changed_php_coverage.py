@@ -4,6 +4,7 @@
 Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 """
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -52,7 +53,7 @@ def prepare_config(config, output, changed):
     tree.write(output, encoding='utf-8', xml_declaration=True)
 
 
-def measure(changed, report, root):
+def measure(changed, report, root, request_reports=None):
     evidence = {}
     for file in ET.parse(report).iter('file'):
         try:
@@ -64,6 +65,28 @@ def measure(changed, report, root):
             if item.attrib.get('type') == 'stmt':
                 number = int(item.attrib['num'])
                 statements[number] = max(statements.get(number, 0), int(item.attrib['count']))
+    if request_reports:
+        reports = list(request_reports.glob('*.json'))
+        if not reports:
+            raise ValueError('Request coverage directory contains no reports')
+        for path in reports:
+            request = json.loads(path.read_text())
+            for file, lines in (request['coverage'] or {}).items():
+                name = str(Path(file).relative_to(request['root']))
+                if name not in changed:
+                    continue
+                if hashlib.sha256((root / name).read_bytes()).hexdigest() != request['hashes'].get(file):
+                    raise ValueError(f'Request coverage source does not match {name}')
+                statements = evidence.get(name, {})
+                for number, hits in (lines or {}).items():
+                    number = int(number)
+                    if number in statements and hits > 0:
+                        statements[number] = max(statements[number], hits)
+                for start, end in request.get('html_spans', {}).get(file, []):
+                    if (lines or {}).get(str(end), 0) > 0:
+                        for number in changed[name] & statements.keys():
+                            if start <= number <= end:
+                                statements[number] = max(statements[number], 1)
     files = {}
     for name, added in changed.items():
         if name not in evidence:
@@ -96,6 +119,7 @@ def main():
     parser.add_argument('--prepare-config', type=Path)
     parser.add_argument('--output-config', type=Path)
     parser.add_argument('--report', type=Path)
+    parser.add_argument('--request-reports', type=Path)
     parser.add_argument('--minimum', type=float, default=80)
     parser.add_argument('--json-output', type=Path)
     args = parser.parse_args()
@@ -111,7 +135,7 @@ def main():
         return 0
     if not args.report:
         parser.error('--report is required when measuring coverage')
-    result = measure(changed, args.report, root)
+    result = measure(changed, args.report, root, args.request_reports)
     output = json.dumps(result, indent=2)
     print(output)
     if args.json_output:
