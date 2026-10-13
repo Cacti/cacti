@@ -129,6 +129,19 @@ test('opening a strip labels each action glyph with its tooltip text once', asyn
 	await expect(page.locator('#g1 .iconWrapper .iconLabel')).toHaveCount(4);
 });
 
+test('the open strip adopts the theme palette from inline custom properties', async ({ page }) => {
+	// graph_drilldown_icons() emits these custom properties per theme; a light
+	// theme must yield a light panel with a dark foreground (the hamburger fix).
+	await page.locator('#g1 .graphDrillDownMenu, #g1 .iconWrapper').evaluateAll(els => {
+		els.forEach(el => el.setAttribute('style', '--cacti-dd-fg:rgb(36,36,36);--cacti-dd-menu-bg:rgb(248,248,248);--cacti-dd-panel-bg:rgb(255,255,255);--cacti-dd-border:rgba(0,0,0,0.22);--cacti-dd-accent:rgb(65,112,140)'));
+	});
+	await page.locator('#g1 .graphimage').hover();
+	await page.locator('#g1 .graphDrillDownMenu').click();
+	const wrapper = page.locator('#g1 .iconWrapper');
+	await expect(wrapper).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+	await expect(wrapper).toHaveCSS('color', 'rgb(36, 36, 36)');
+});
+
 test('touch users can see and activate the hamburger without hover', async ({ browser }) => {
 	const context = await browser.newContext({ hasTouch: true, isMobile: true });
 	const page = await context.newPage();
