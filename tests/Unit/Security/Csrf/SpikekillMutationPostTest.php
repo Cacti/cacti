@@ -12,9 +12,9 @@ test('SpikeKill preference writes require POST before dispatch', function () {
 	expect($source)->toMatch("/case 'spikesave':\s*csrf_require_post\(\);/");
 });
 
-test('the actual SpikeKill request guards reject unsafe methods before dispatch', function ($method, $mode, $route, $status) {
+test('the actual SpikeKill request guards reject unsafe methods before dispatch', function ($method, $mode, $route, $status, $token = 'valid') {
 	$fixture = dirname(__DIR__, 3) . '/fixtures/Core/SpikekillRequestGate.php';
-	$process = proc_open([PHP_BINARY, $fixture, $method, $mode, $route], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$process = proc_open([PHP_BINARY, $fixture, $method, $mode, $route, $token], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 	expect(is_resource($process))->toBeTrue();
 	$output = stream_get_contents($pipes[1]);
 	$errors = stream_get_contents($pipes[2]);
@@ -30,4 +30,8 @@ test('the actual SpikeKill request guards reject unsafe methods before dispatch'
 	['DELETE', '', 'mutation', 405],
 	['GET', '', 'settings', 405],
 	['POST', '', 'settings', 200],
+	['POST', '', 'mutation', 403, 'missing'],
+	['POST', '', 'mutation', 403, 'invalid'],
+	['POST', '', 'settings', 403, 'missing'],
+	['POST', '', 'settings', 403, 'invalid'],
 ]);

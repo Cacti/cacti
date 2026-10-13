@@ -169,3 +169,29 @@ test('request failures clear pending state and report the HTTP error', async ({ 
 	await expect.poll(() => page.evaluate(() => httpErrors)).toEqual([500]);
 	expect(await page.evaluate(() => spikeKillAnchor)).toBeNull();
 });
+
+
+test('the active action toggles the submenu and an outside click closes it', async ({ page }) => {
+	await setup(page);
+	await open(page, 1);
+	await expect(page.locator('#g1 .spikekillParent')).toBeVisible();
+	await page.locator('#g1 .iconLink.spikekill').click();
+	await expect(page.locator('.spikekillParent')).toHaveCount(0);
+	await page.locator('#g1 .iconLink.spikekill').click();
+	await expect(page.locator('#g1 .spikekillParent')).toBeVisible();
+	await page.locator('#outside').click();
+	await expect(page.locator('.spikekillParent')).toHaveCount(0);
+});
+
+test('a submenu near the right edge remains on screen and accepts keyboard selection', async ({ page }) => {
+	await setup(page);
+	await page.locator('#g1').evaluate(element => { element.style.marginLeft = (document.documentElement.clientWidth - 150) + 'px'; });
+	await open(page, 1);
+	const menu = page.locator('#g1 .spikekillMenu');
+	await expect(menu).toBeVisible();
+	await expect(menu).toHaveCSS('left', '-180px');
+	await menu.focus();
+	await page.keyboard.press('Home');
+	await page.keyboard.press('Enter');
+	await expect(menu.locator('.ui-state-active')).toHaveCount(1);
+});

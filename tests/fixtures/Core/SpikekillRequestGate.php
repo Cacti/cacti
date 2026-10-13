@@ -10,7 +10,22 @@ require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 $root = dirname(__DIR__, 3);
 require_once $root . '/lib/html_utility.php';
+// CLI has no HTTP input stream; adapt only that PHP transport primitive.
+// Token issuance, token validation and the request guard remain production code.
+function filter_input(int $type, string $name, int $filter): mixed {
+	return $_POST[$name] ?? null;
+}
+require_once $root . '/include/vendor/autoload.php';
+define('CACTI_WEB', true);
+define('CACTI_PATH_LIBRARY', $root . '/lib');
+define('CACTI_PATH_INCLUDE', $root . '/include');
+define('CACTI_PATH_URL', '/');
+require_once $root . '/include/csrf.php';
+class_alias(\CactiCsrfGuard::class, __NAMESPACE__ . '\\CactiCsrfGuard');
+\cacti_fixture_source_function($root . '/include/csrf.php', 'csrf_check', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/include/csrf.php', 'csrf_require_post', __NAMESPACE__);
+$tokenMode = $argv[4] ?? 'valid';
+$_POST     = $tokenMode === 'missing' ? [] : ['__csrf_magic' => $tokenMode === 'invalid' ? 'invalid-token' : \csrf_guard()->token()];
 
 $_SERVER['REQUEST_METHOD'] = $argv[1] ?? 'GET';
 $_REQUEST                  = ($argv[2] ?? '') === 'dryrun' ? ['dryrun' => '1'] : [];
