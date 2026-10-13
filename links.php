@@ -32,6 +32,12 @@ $actions = [
 
 set_default_action();
 
+if (in_array(grv('action'), [
+	'delete_page', 'ajax_dnd',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'actions':
 		form_actions();

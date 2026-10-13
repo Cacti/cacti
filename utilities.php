@@ -34,6 +34,13 @@ require_once(CACTI_PATH_LIBRARY . '/clog_webapi.php');
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), [
+	'clear_poller_cache', 'rebuild_resource_cache', 'clear_logfile',
+	'purge_logfile', 'purge_data_source_statistics', 'rebuild_snmpagent_cache',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'clear_poller_cache':
 		$running = is_process_running('pushout', 'rmaster', 0);

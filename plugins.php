@@ -180,6 +180,17 @@ if (isrv('plugin')) {
 	$plugin = '';
 }
 
+if (in_array(grv('action'), [
+	'load', 'latest', 'install',
+	'uninstall', 'remove', 'remove_data',
+	'disable', 'enable', 'check',
+	'moveup', 'movedown', 'remote_enable',
+	'remote_disable', 'restore', 'delete',
+	'archive', 'ajax_dnd',
+], true)) {
+	csrf_require_post();
+}
+
 switch($action) {
 	case 'list':
 	case 'avail':

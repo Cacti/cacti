@@ -1,0 +1,18 @@
+{
+  "description": "Cacti-maintained browser adapters and compatibility forks. These files must not be overwritten with an upstream distribution without reviewing their Cacti-specific behavior.",
+  "files": {
+    "include/js/jquery.colorpicker.js": {"upstream": "https://github.com/evoluteur/colorpicker", "reason": "Cacti field handling and text rendering"},
+    "include/js/jquery.contextMenu.js": {"upstream": "https://github.com/swisnl/jQuery-contextMenu", "version": "2.9.2", "reason": "Cacti menu integration"},
+    "include/js/jquery.cookie.js": {"upstream": "https://github.com/carhartl/jquery-cookie", "reason": "Legacy $.cookie(name, null) deletion contract"},
+    "include/js/jquery.dropdown.js": {"reason": "Cacti dropdown implementation"},
+    "include/js/jquery.hotkeys.js": {"upstream": "https://github.com/tzuryby/jquery.hotkeys", "version": "0.2.0", "reason": "Existing jQuery keyboard binding contract"},
+    "include/js/jquery.multiselect.js": {"upstream": "https://github.com/ehynds/jquery-ui-multiselect-widget", "version": "3.0.0", "reason": "Cacti widget and rendering integration"},
+    "include/js/jquery.multiselect.filter.js": {"upstream": "https://github.com/ehynds/jquery-ui-multiselect-widget", "version": "3.0.0", "reason": "Companion to the retained multiselect adapter"},
+    "include/js/jquery.tablednd.js": {"upstream": "https://github.com/isocra/TableDnD", "reason": "Cacti row handling and reordering callbacks"},
+    "include/js/jquery.timepicker.js": {"upstream": "https://github.com/trentrichardson/jQuery-Timepicker-Addon", "version": "1.6.3", "reason": "Existing datetimepicker options and callback contract"},
+    "include/js/jquery.toast.js": {"upstream": "https://github.com/kamranahmedse/jquery-toast-plugin", "reason": "Existing Cacti notification API"},
+    "include/js/jquery.zoom.js": {"reason": "Cacti graph zoom implementation"},
+    "include/js/js.storage.js": {"upstream": "https://github.com/julien-maurel/js-storage", "version": "1.1.0", "reason": "Existing Storages API and stored-value format"}
+  },
+  "applicationFiles": ["include/js/cacti-rendering.js", "include/js/csrf.js", "include/js/navigationBox.js", "include/js/navigationBox.tableFilter.js", "include/js/navigationBox.tableLayout.js", "include/js/navigationBox.tree.js", "include/js/ui-notices.js"]
+}
