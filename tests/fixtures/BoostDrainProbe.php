@@ -148,7 +148,7 @@ $state['delete_calls'] = 0;
 $create_args           = [getenv('RRDTOOL_TEST_BINARY'), 'create', $handoff_rrd, '--start', (string)($time - 60), '--step', '60', 'DS:in:GAUGE:120:U:U', 'RRA:AVERAGE:0.5:1:10'];
 
 if ($scenario === 'integration-drain-multi-field') {
-	handoff_execute('INSERT INTO data_template_rrd VALUES (2,1,2,"out",2,120,"U","U",1)');
+	handoff_execute('INSERT INTO data_template_rrd (id, local_data_id, local_data_template_rrd_id, data_source_name, data_input_field_id, rrd_heartbeat, rrd_minimum, rrd_maximum, data_source_type_id, data_template_id) VALUES (2,1,2,"out",2,120,"U","U",1,1)');
 	handoff_execute('INSERT INTO graph_templates_item VALUES (2)');
 	handoff_execute('INSERT INTO poller_item VALUES (1,"out",?,2,1)', [$handoff_rrd]);
 	handoff_execute('INSERT INTO poller_output_boost VALUES (1,"in",FROM_UNIXTIME(?),"43"),(1,"out",FROM_UNIXTIME(?),"44")', [$time + 10, $time + 10]);
