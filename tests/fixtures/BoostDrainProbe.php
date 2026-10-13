@@ -59,6 +59,9 @@ function db_execute($sql, ...$args) {
 function db_execute_prepared($sql, $params = [], ...$args) {
 	return handoff_execute($sql, $params);
 }
+function db_affected_rows(...$args) {
+	return $GLOBALS['handoff_affected'] ?? 0;
+}
 function cacti_log(...$args) {
 }
 function cacti_system_zone_set() {
@@ -69,7 +72,7 @@ function boost_error_handler(...$args) {
 function boost_timer(...$args) {
 }
 function boost_get_arch_table_names(...$args) {
-	return str_starts_with($GLOBALS['scenario'], 'integration-scheduled-') ? ['poller_output_boost_arch_1'] : [];
+	return (str_starts_with($GLOBALS['scenario'], 'integration-scheduled-') || str_starts_with($GLOBALS['scenario'], 'integration-archive-')) ? ['poller_output_boost_arch_1'] : [];
 }
 function boost_debug(...$args) {
 }
@@ -201,10 +204,17 @@ if ($scheduled) {
 		$probe_rrd_binary = $crash;
 	}
 }
+
+if (str_starts_with($scenario, 'integration-archive-')) {
+	handoff_execute('CREATE TABLE poller_output_boost_arch_1 LIKE poller_output_boost');
+	handoff_execute('INSERT INTO poller_output_boost_arch_1 SELECT * FROM poller_output_boost');
+	handoff_execute('DELETE FROM poller_output_boost');
+}
 $first            = $scheduled ? boost_process_local_data_ids(1, null, 2) : boost_process_poller_output(1);
 $first_cursor     = $scheduled ? handoff_fetch('SELECT cursor_time FROM poller_output_boost_local_data_ids')[0]['cursor_time'] : null;
 $after            = handoff_fetch('SELECT output FROM poller_output_boost');
 $first_last       = handoff_verdict()['lastupdate'];
+$archive_retained = str_starts_with($scenario, 'integration-archive-') ? count(handoff_fetch('SELECT output FROM poller_output_boost_arch_1')) : null;
 $probe_rrd_binary = getenv('RRDTOOL_TEST_BINARY');
 
 if ($scenario === 'integration-drain-multi-field') {
@@ -216,4 +226,4 @@ $second_cursor    = $scheduled ? handoff_fetch('SELECT cursor_time FROM poller_o
 if ($scheduled) {
 	boost_process_local_data_ids(1, null, 2);
 }
-print json_encode(['first_cursor'=>$first_cursor, 'second_cursor'=>$second_cursor, 'mapping_queries'=>$state['mapping_queries'], 'first'=>$first, 'second'=>$second, 'retained'=>count($after), 'first_last'=>$first_last, 'handoff'=>handoff_verdict()],JSON_THROW_ON_ERROR);
+print json_encode(['archive_retained'=>$archive_retained, 'first_cursor'=>$first_cursor, 'second_cursor'=>$second_cursor, 'mapping_queries'=>$state['mapping_queries'], 'first'=>$first, 'second'=>$second, 'retained'=>count($after), 'first_last'=>$first_last, 'handoff'=>handoff_verdict()],JSON_THROW_ON_ERROR);

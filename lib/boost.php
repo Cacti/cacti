@@ -1423,28 +1423,35 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	$sql_params          = array();
 	$locks               = false;
 	$temp_table          = false;
+	$copy_ok             = true;
+	$temp_created        = false;
 
 	if (cacti_count($archive_tables)) {
 		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . mt_rand();
 
-		db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost");
+		$temp_created = db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost") !== false;
+		$copy_ok = $temp_created;
 
 		foreach($archive_tables as $index => $table) {
-			db_execute_prepared("INSERT IGNORE INTO $temp_table
+			if (!$copy_ok) {
+				break;
+			}
+
+			$copy_ok = db_execute_prepared("INSERT IGNORE INTO $temp_table
 				SELECT *
 				FROM $table
 				WHERE local_data_id = ?",
-				array($local_data_id), false);
+				array($local_data_id), false) !== false;
 		}
 	}
 
 	if ($temp_table !== false) {
-		db_execute_prepared("INSERT IGNORE INTO $temp_table
+		$copy_ok = $copy_ok && db_execute_prepared("INSERT IGNORE INTO $temp_table
 			SELECT *
 			FROM poller_output_boost
 			WHERE local_data_id = ?
 			AND time < FROM_UNIXTIME(?)",
-			array($local_data_id, $timestamp), false);
+			array($local_data_id, $timestamp), false) !== false;
 
 		$query_string = "SELECT po.local_data_id, dl.data_template_id,
 			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
@@ -1469,6 +1476,19 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	$sql_params[] = $local_data_id;
 	$sql_params[] = $timestamp;
+
+	/* Failed temporary-table copies must never reach archive cleanup. */
+	if (!$copy_ok) {
+		if ($temp_created) {
+			db_execute("DROP TEMPORARY TABLE $temp_table");
+		}
+		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+		}
+		restore_error_handler();
+		error_reporting($previous_error_reporting);
+		return -1;
+	}
 
 	boost_timer('get_records', BOOST_TIMER_START);
 	$results = db_fetch_assoc_prepared($query_string, $sql_params);

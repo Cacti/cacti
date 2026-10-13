@@ -54,3 +54,12 @@ test('an incomplete multi-field timestamp cannot discard itself or advance past 
 	expect($r['first'])->toBe(-1)->and($r['retained'])->toBe(3)->and($r['first_last'])->toContain(': U U')
 		->and($r['second'])->toBe(4)->and($r['handoff']['staged'])->toBe([])->and($r['handoff']['lastupdate'])->toContain(': 43 44');
 });
+
+test('a failed archive copy retains closed-round samples for storage on retry', function (string $scenario) {
+	if (!getenv('BOOST_DB_HOST') || !is_executable(getenv('RRDTOOL_TEST_BINARY') ?: '')) {
+		$this->markTestSkipped('Requires MariaDB and RRDtool.');
+	}
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/BoostDrainProbe.php', [$scenario]);
+	expect($r['first'])->toBe(-1)->and($r['archive_retained'])->toBe(1)->and($r['first_last'])->toContain(': U')
+		->and($r['second'])->toBe(1)->and($r['handoff']['lastupdate'])->toContain(': 42');
+})->with(['integration-archive-copy-retry', 'integration-archive-active-copy-retry']);

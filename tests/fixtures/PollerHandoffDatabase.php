@@ -47,6 +47,10 @@ function handoff_fetch($sql, $params = [], $conn = false) {
 
 function handoff_execute($sql, $params = [], $conn = false) {
 	global $state, $scenario;
+	if (in_array($scenario, ['integration-archive-copy-retry', 'integration-archive-active-copy-retry'], true) && str_starts_with($sql, 'INSERT IGNORE INTO poller_output_boost_temp_') && ($scenario === 'integration-archive-copy-retry' || preg_match('/FROM poller_output_boost\s/', $sql)) && !isset($state['archive_copy_failed'])) {
+		$state['archive_copy_failed'] = true;
+		return false;
+	}
 	if (str_starts_with($sql, 'DELETE FROM poller_output WHERE') || str_starts_with($sql, 'DELETE FROM poller_output_boost\n') || preg_match('/^DELETE FROM poller_output_boost\s+WHERE/', $sql)) {
 		$state['delete_calls']++;
 		if (in_array($scenario, ['integration-delete-retry', 'integration-drain-delete-retry'], true) && $state['delete_calls'] === 1) return false;
