@@ -10,7 +10,7 @@ changed_paths="$(git diff --name-only "$merge_base" HEAD)"
 
 run_probe() {
 	local script="$1" pattern="$2" port="$3"
-	if [[ -f "$script" ]] && printf '%s\n' "$changed_paths" | rg -q "$pattern"; then
+	if [[ -f "$script" ]] && grep -Eq "$pattern" <<< "$changed_paths"; then
 		HOST_PORT="$port" bash "$script"
 	fi
 }
