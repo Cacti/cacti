@@ -7,7 +7,11 @@ the core lock, so two PHPUnit dependency graphs are never loaded together.
 Both installs run as the runner user. Only downloaded Composer archives are
 cached; installed vendor trees are rebuilt from the locks.
 
-Plugin callers pin the action and Cacti fixture to full commit SHAs. They keep
+Plugin callers pin the tooling checkout and Cacti fixture to full commit SHAs.
+Cacti source archives exclude `.github` and `tests`, so callers sparse-checkout
+those tooling paths into `ci-tools` and invoke the composite action locally.
+Do not use a remote `uses: Cacti/cacti/.github/actions/...@SHA` reference: the
+GitHub Action archive does not contain these paths. They keep
 their existing jobs, matrices, PHPUnit configuration, coverage thresholds,
 database/schema setup, localization checks and polling steps. Keeping those
 steps in the callers preserves check names and makes plugin differences visible.
