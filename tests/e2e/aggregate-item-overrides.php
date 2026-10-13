@@ -9,6 +9,8 @@ require_once CACTI_PATH_LIBRARY . '/aggregate.php';
 require_once CACTI_PATH_LIBRARY . '/api_graph.php';
 require_once CACTI_PATH_LIBRARY . '/data_query.php';
 require_once CACTI_PATH_LIBRARY . '/template.php';
+require_once dirname(__DIR__, 2) . '/install/functions.php';
+require_once dirname(__DIR__, 2) . '/install/upgrades/1_3_0.php';
 $_SESSION[SESS_USER_ID] = 1;
 
 if ((int) db_fetch_cell('SELECT COUNT(*) FROM graph_local') !== 0) {
@@ -79,4 +81,20 @@ foreach ([0, 900003] as $aggregateTemplate) {
 		$profiles[] = ['template' => $aggregateTemplate > 0, 'override_enabled' => $enabled, 'members' => $count, 'seconds' => $seconds, 'queries' => $queries, 'override_map_queries' => 1];
 	}
 }
-print json_encode(['php' => PHP_VERSION, 'database' => db_fetch_cell('SELECT VERSION()'), 'peak_bytes' => memory_get_peak_usage(true), 'scope' => 'Synthetic SQL and graph metadata only; no RRD or SNMP IO.', 'profiles' => $profiles], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT) . PHP_EOL;
+$savedOverrides = [];
+
+foreach (['aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
+	$savedOverrides[$table] = db_fetch_assoc('SELECT * FROM ' . $table . ' ORDER BY id');
+}
+
+// Repeated upgrades must preserve the labels operators already saved.
+$cacti_upgrade_version = '1.3.0';
+upgrade_aggregate_item_overrides();
+upgrade_aggregate_item_overrides();
+
+foreach ($savedOverrides as $table => $rows) {
+	if (db_fetch_assoc('SELECT * FROM ' . $table . ' ORDER BY id') !== $rows) {
+		throw new RuntimeException('Repeating the override migration changed saved labels.');
+	}
+}
+print json_encode(['php' => PHP_VERSION, 'database' => db_fetch_cell('SELECT VERSION()'), 'peak_bytes' => memory_get_peak_usage(true), 'scope' => 'Synthetic SQL and graph metadata only; no RRD or SNMP IO.', 'migration_preserves_labels' => true, 'profiles' => $profiles], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT) . PHP_EOL;
