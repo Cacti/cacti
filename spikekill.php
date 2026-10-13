@@ -111,11 +111,7 @@ if (is_realm_allowed(1043) && is_graph_allowed($local_graph_id)) {
 						cacti_log("NOTICE: SpikeKill succeeded for $rrdfile.  Message is " . $spiker->get_output(), false, 'SPIKEKILL');
 					}
 				} else {
-					if (!$result) {
-						$results = $spiker->get_errors();
-					} else {
-						$results = $spiker->get_output();
-					}
+					$results .= ($results !== '' ? "\n" : '') . ($result ? $spiker->get_output() : $spiker->get_errors());
 				}
 			}
 		}
