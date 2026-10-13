@@ -33,6 +33,25 @@ $check                  = static function (bool $condition, string $message) use
 	}
 };
 
+define('IN_CACTI_INSTALL', true);
+
+// Fresh install and upgrade must provide the same override columns (#431).
+require_once CACTI_PATH_BASE . '/install/functions.php';
+require_once CACTI_PATH_BASE . '/install/upgrades/1_3_0.php';
+$cacti_upgrade_version = '1.3.0';
+
+foreach (['aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
+	$fresh = db_fetch_assoc("SHOW COLUMNS FROM $table");
+
+	foreach (['t_text_format', 'text_format', 't_legend', 'legend'] as $column) {
+		$check(db_execute("ALTER TABLE $table DROP COLUMN $column"), 'remove new override column from disposable schema');
+	}
+	upgrade_aggregate_item_overrides();
+	$check(db_fetch_assoc("SHOW COLUMNS FROM $table") === $fresh, 'upgraded override columns match a fresh install');
+	upgrade_aggregate_item_overrides();
+	$check(db_fetch_assoc("SHOW COLUMNS FROM $table") === $fresh, 'override migration is idempotent');
+}
+
 // A graph ID equal to a skipped sequence must not hide the whole graph.
 foreach ([false, true] as $templated) {
 	foreach ([[3 => 3, 4 => 4], [], [1 => 1, 2 => 2, 3 => 3, 4 => 4]] as $skipped) {
@@ -115,6 +134,75 @@ try {
 	$check((int) $separatorCf === 3, 'TOTAL_ALL separator uses first non-skipped colored item CF');
 } finally {
 	db_rollback_transaction();
+}
+
+// Legend editing applies to every member, persists through bulk saves and rebuilds,
+// and remains independent of the original source items and generated bindings.
+foreach ([false, true] as $templated) {
+	$check(db_begin_transaction(), 'begin legend override fixture');
+
+	try {
+		$template          = 900002;
+		$aggregateTemplate = $templated ? 900003 : 0;
+		$check(db_execute_prepared('INSERT INTO graph_templates_graph (graph_template_id, local_graph_id, title, title_cache) VALUES (?, 0, ?, ?)', [$template, 'Legend fixture', 'Legend fixture']), 'seed legend graph template');
+		$sourceItems = [];
+
+		foreach ([1, 2] as $sequence) {
+			$sourceItems[$sequence] = sql_save(['local_graph_id' => 0, 'graph_template_id' => $template, 'sequence' => $sequence, 'graph_type_id' => GRAPH_ITEM_TYPE_LINE1, 'cdef_id' => 1, 'color_id' => 1, 'text_format' => 'Source ' . $sequence, 'legend' => 'Inherited', 'hard_return' => 'on'], 'graph_templates_item');
+		}
+
+		foreach ([3, 4] as $member) {
+			$check(db_execute_prepared('INSERT INTO graph_local (id, graph_template_id) VALUES (?, ?)', [$member, $template]), 'seed legend member graph');
+			sql_save(['id' => $member], 'data_local');
+			sql_save(['local_data_id' => $member, 'name' => 'Member source', 'name_cache' => 'Member source'], 'data_template_data');
+			$task = sql_save(['local_data_id' => $member, 'data_source_name' => 'traffic', 'data_source_type_id' => 1, 'rrd_minimum' => '0', 'rrd_maximum' => 'U'], 'data_template_rrd');
+			sql_save(['local_graph_id' => $member, 'title' => 'Member graph', 'title_cache' => 'Member graph'], 'graph_templates_graph');
+
+			foreach ([1, 2] as $sequence) {
+				sql_save(['task_item_id' => $task, 'local_graph_id' => $member, 'graph_template_id' => $template, 'sequence' => $sequence, 'local_graph_template_item_id' => $sourceItems[$sequence], 'graph_type_id' => GRAPH_ITEM_TYPE_LINE1, 'cdef_id' => 1, 'color_id' => 1, 'text_format' => 'Member ' . $sequence, 'legend' => 'Inherited', 'hard_return' => 'on'], 'graph_templates_item');
+			}
+		}
+
+		if ($templated) {
+			$check(db_execute_prepared("INSERT INTO aggregate_graph_templates (id, name, graph_template_id, gprint_prefix, gprint_format, graph_type, total, total_type, total_prefix, order_type) VALUES (?, 'Legend fixture', ?, 'Device', '', 4, 0, 0, '', 0)", [$aggregateTemplate, $template]), 'seed aggregate legend template');
+		}
+		$graph      = 0;
+		$attributes = ['aggregate_template_id' => $aggregateTemplate, 'graph_title' => 'Legend fixture', 'graph_template_id' => $template, 'graph_type' => AGGREGATE_GRAPH_TYPE_KEEP, 'total' => AGGREGATE_TOTAL_NONE, 'gprint_prefix' => 'Device', 'item_no' => 2, 'color_templates' => [], 'graph_item_types' => [], 'cdefs' => [], 'skipped_items' => [], 'total_items' => []];
+		$check(aggregate_create_update($graph, [3, 4], $attributes, false), 'create aggregate before overrides');
+		$id    = $templated ? $aggregateTemplate : (int) db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', [$graph]);
+		$key   = $templated ? 'aggregate_template_id' : 'aggregate_graph_id';
+		$table = $templated ? 'aggregate_graph_templates_item' : 'aggregate_graphs_graph_item';
+		$items = [];
+
+		foreach ([1 => '', 2 => 'Custom'] as $sequence => $text) {
+			$items[] = [$key => $id, 'graph_templates_item_id' => $sourceItems[$sequence], 'sequence' => $sequence, 't_text_format' => 'on', 'text_format' => $text, 't_legend' => 'on', 'legend' => 'Export ' . $sequence];
+		}
+		$check(aggregate_graph_items_save($items, $table), 'save both item overrides');
+		$stored                  = db_fetch_assoc_prepared("SELECT * FROM $table WHERE $key = ? ORDER BY sequence", [$id]);
+		$stored[0]['item_total'] = 'on';
+		$check(aggregate_graph_items_save($stored, $table), 'bulk item editing retains legend overrides');
+		$check(aggregate_create_update($graph, [3, 4], $attributes, false), 'rebuild with overrides');
+		$output   = db_fetch_assoc_prepared('SELECT text_format, legend FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graph]);
+		$expected = [['text_format' => 'Device', 'legend' => 'Export 1'], ['text_format' => 'Device Custom', 'legend' => 'Export 2']];
+		$check($output === [...$expected, ...$expected], 'empty and custom labels apply to each member even with prefix-only mode');
+		$check((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id = ? AND cdef_id = 1', [$graph]) === 4, 'disabled CDEF overrides inherit source math');
+		$attributes['cdefs'] = [1 => 0];
+		$check(aggregate_create_update($graph, [3, 4], $attributes, false), 'explicit None CDEF override rebuilds');
+		$check((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id = ? AND cdef_id = 0', [$graph]) === 2, 'None CDEF clears only the selected position');
+		$attributes['cdefs'] = [];
+
+		$check(aggregate_create_update($graph, [4], $attributes, false), 'rebuild after membership change');
+		$check(db_fetch_assoc_prepared('SELECT text_format, legend FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graph]) === $expected, 'membership rebuild preserves labels');
+		$check(db_fetch_cell_prepared('SELECT text_format FROM graph_templates_item WHERE id = ?', [$sourceItems[1]]) === 'Source 1', 'editing aggregate does not mutate source template');
+		$stored[0]['t_text_format'] = '';
+		$stored[0]['t_legend']      = '';
+		$check(aggregate_graph_items_save($stored, $table), 'remove the first item override');
+		$check(aggregate_create_update($graph, [4], $attributes, false), 'rebuild after reset');
+		$output = db_fetch_assoc_prepared('SELECT text_format, legend FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graph]);
+		$check($output[0] === ['text_format' => 'Device', 'legend' => 'Inherited'] && $output[1] === $expected[1], 'unchecked override restores inheritance without affecting another item');
+	} finally {
+		db_rollback_transaction();
+	}
 }
 
 if ($failures) {
