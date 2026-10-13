@@ -1,0 +1,63 @@
+name: Changed PHP Coverage
+
+on:
+  pull_request:
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'tests/tools/check_changed_php_coverage.py'
+      - 'tests/tools/test_check_changed_php_coverage.py'
+      - '.github/workflows/pr-php-coverage.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: changed-php-coverage-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: Changed PHP lines >= 80%
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.3'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          ini-values: memory_limit=2G
+          dependency-mode: locked-pr-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+      - name: Validate the coverage gate and include every changed PHP file
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          python3 tests/tools/test_check_changed_php_coverage.py
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --prepare-config phpunit.xml --output-config phpunit-changed.xml
+      - name: Exercise unit and integration contracts with statement coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: include/vendor/bin/pest --configuration=phpunit-changed.xml --testsuite=Unit,Integration --coverage-clover=coverage-changed.xml
+      - name: Require at least 80 percent of changed executable PHP lines
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --report coverage-changed.xml --minimum 80 --json-output coverage-changed.json
+      - name: Preserve coverage evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: changed-php-coverage
+          path: |
+            coverage-changed.xml
+            coverage-changed.json
+          if-no-files-found: warn
