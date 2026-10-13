@@ -32,6 +32,12 @@ $actions = [
 
 set_default_action();
 
+if (in_array(grv('action'), [
+	'delete_page', 'ajax_dnd',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'actions':
 		form_actions();
@@ -62,6 +68,8 @@ switch (grv('action')) {
 
 		break;
 	case 'ajax_dnd':
+		csrf_require_post();
+
 		$new_order = gnrv('dnd');
 
 		links_reorder($new_order);
@@ -403,7 +411,8 @@ function pages() : void {
 			$('#dnd').find('tr:first').addClass('nodrag').addClass('nodrop');
 			$('#dnd').tableDnD({
 				onDrop: function(table, row) {
-					loadUrl({url:'links.php?action=ajax_dnd&'+$.tableDnD.serialize()})
+					const request = cactiPreparePostRequest('links.php', 'action=ajax_dnd&' + $.tableDnD.serialize());
+					postUrl({url: request.url}, request.data);
 				}
 			});
 		});

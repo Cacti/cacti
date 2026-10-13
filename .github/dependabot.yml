@@ -74,6 +74,9 @@ updates:
     ignore:
       - dependency-name: jquery
         update-types: ["version-update:semver-major"]
+      # 1.2.x loads screenfull's classic script; v6+ only ships ESM.
+      - dependency-name: screenfull
+        versions: [">=6.0.0"]
 
   - package-ecosystem: npm
     directory: /tests/e2e

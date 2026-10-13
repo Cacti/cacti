@@ -44,8 +44,6 @@ cmd_exec	./lib/functions.php		return exec('whoami') ?: '';
 cmd_exec	./lib/functions.php	 * On Windows, exec()/shell_exec()/popen() route through cmd.exe, which ignores
 cmd_exec	./lib/installer.php						$output = shell_exec(
 cmd_exec	./lib/installer.php						$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
-cmd_exec	./lib/installer.php			$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
-cmd_exec	./lib/installer.php			$output = shell_exec("$composer install --no-interaction --no-progress --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php			$process = proc_open(
 cmd_exec	./lib/ping.php							$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 cmd_exec	./lib/ping.php							$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true) . ' 2>&1');
@@ -118,7 +116,7 @@ deserialize	./lib/functions.php		return unserialize($strobj, ['allowed_classes' 
 deserialize	./lib/reports.php		$items = unserialize($unstripped, ['allowed_classes' => false]);
 dynamic_include	./cli/audit_database.php								require_once($plugin . '/includes/database.php');
 dynamic_include	./cli/audit_database.php							require_once($plugin . '/setup.php');
-dynamic_include	./cli/upgrade_database.php			include($upgrade_file);
+dynamic_include	./cli/upgrade_database.php				include($upgrade_file);
 dynamic_include	./include/global.php		require_once($vendor_autoload);
 dynamic_include	./include/global_languages.php				require_once($providerFull);
 dynamic_include	./index.php							require_once($file);

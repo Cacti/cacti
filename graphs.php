@@ -204,6 +204,7 @@ switch (grv('action')) {
 	case 'unlock':
 		$_SESSION['sess_graph_lock_id'] = gfrv('id');
 		$_SESSION['sess_graph_locked']  = (grv('action') == 'lock' ? true : false);
+		// Fall through: show the editor with the new lock state.
 	case 'graph_edit':
 		top_header();
 		graph_edit();

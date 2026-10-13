@@ -67,6 +67,14 @@ set_default_action();
 
 api_plugin_hook('device_top');
 
+if (in_array(grv('action'), [
+	'reindex', 'gt_add', 'query_add',
+	'query_change', 'query_reload', 'query_verbose',
+	'enable_debug', 'disable_debug', 'repopulate',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'export':
 		host_export();

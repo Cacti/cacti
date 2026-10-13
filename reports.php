@@ -49,6 +49,12 @@ ini_set('max_execution_time', '300');
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), [
+	'send', 'remove_history', 'ajax_dnd',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		reports_form_save();

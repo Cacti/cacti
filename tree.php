@@ -84,6 +84,14 @@ if (grv('action') != '') {
 	// ================= input validation =================
 }
 
+if (in_array(grv('action'), [
+	'sortasc', 'sortdesc', 'ajax_dnd',
+	'lock', 'unlock', 'set_host_sort',
+	'set_branch_sort',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -1148,7 +1156,7 @@ function tree_edit(bool $partial = false) : void {
 		}
 
 		function setBranchSortOrder(type, nodeid) {
-			$.get('tree.php?action=set_branch_sort&type='+type+'&nodeid='+nodeid)
+			$.post('tree.php', {action: 'set_branch_sort', type: type, nodeid: nodeid, __csrf_magic: csrfMagicToken})
 			.done(function(data) {
 				branchSortInfo[nodeid] = type;
 			})
@@ -1158,7 +1166,7 @@ function tree_edit(bool $partial = false) : void {
 		}
 
 		function setHostSortOrder(type, nodeid) {
-			$.get('tree.php?action=set_host_sort&type='+type+'&nodeid='+nodeid)
+			$.post('tree.php', {action: 'set_host_sort', type: type, nodeid: nodeid, __csrf_magic: csrfMagicToken})
 			.done(function(data) {
 				hostSortInfo[nodeid] = type;
 			})

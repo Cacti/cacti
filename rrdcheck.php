@@ -43,6 +43,7 @@ switch(grv('action')) {
 
 		rrdcheck_purge();
 
+		// Fall through: display the remaining problems after purging.
 	default:
 		rrdcheck_display_problems();
 }

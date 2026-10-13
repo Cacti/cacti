@@ -15,6 +15,39 @@
 
 import { test, expect } from '@playwright/test';
 
+test('SAML POST relay preserves the original Strict session cookie', async ({ page, context, baseURL }) => {
+	const origin = new URL(baseURL!).origin;
+	const callback = new URL('/login_sso.php?action=acs&realm=1001', origin).href;
+	const originalSession = 'saml-relay-fixture-session';
+	await context.addCookies([{ name: 'Cacti', value: originalSession, url: origin, sameSite: 'Strict', httpOnly: true }]);
+	await page.route('**/__saml-start', route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fixture</title>' }));
+	const requests: Array<{ cookie: string; fields: URLSearchParams }> = [];
+	await page.route(callback, async route => {
+		const request = route.request();
+		const fields = new URLSearchParams(request.postData() ?? '');
+		requests.push({ cookie: (await request.allHeaders()).cookie ?? '', fields });
+		if (fields.get('cacti_saml_relay') === '1') {
+			await route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Callback reached</title>' });
+		} else {
+			// Exercise login_sso.php's actual pre-bootstrap relay response.
+			await route.continue();
+		}
+	});
+	await page.route('http://idp.fixture/**', route => route.fulfill({
+		contentType: 'text/html',
+		body: `<!doctype html><form method="POST" action="${callback.replace(/&/g, '&amp;')}"><input name="SAMLResponse" value="owned-fixture-assertion"><input name="RelayState" value="owned-fixture-state"></form><script>document.forms[0].submit()</script>`,
+	}));
+	await page.goto('/__saml-start');
+	await page.goto('http://idp.fixture/');
+	await expect(page).toHaveTitle('Callback reached');
+	expect(requests).toHaveLength(2);
+	expect(requests[0].cookie).not.toContain(`Cacti=${originalSession}`);
+	expect(requests[1].cookie).toContain(`Cacti=${originalSession}`);
+	expect(requests[1].fields.get('SAMLResponse')).toBe('owned-fixture-assertion');
+	expect(requests[1].fields.get('RelayState')).toBe('owned-fixture-state');
+	expect((await context.cookies(origin)).find(cookie => cookie.name === 'Cacti')?.value).toBe(originalSession);
+});
+
 for (const scenario of [
 	{ name: 'wrong password', username: 'admin', password: 'wrong-fixture-password' },
 	{ name: 'unknown user', username: 'missingfixtureuser', password: 'wrong-fixture-password' },

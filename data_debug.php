@@ -129,6 +129,7 @@ switch (grv('action')) {
 	case 'runall':
 		debug_runall_filtered();
 
+		// Fall through: render the refreshed list after running the selected sources.
 	default:
 		$refresh = [
 			'seconds' => grv('refresh'),

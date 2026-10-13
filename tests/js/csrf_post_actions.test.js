@@ -47,6 +47,25 @@ const context = {
 
 vm.runInNewContext(`${extractFunction(source, 'cactiPreparePostRequest')}\n${extractFunction(source, 'cactiPreparePostRequestFromUrl')}`, context);
 
+for (const page of ['links.php', 'plugins.php']) {
+	test(`${page} drag-and-drop sends the serialized order and trusted CSRF token in a POST body`, () => {
+		const pageSource = fs.readFileSync(path.join(__dirname, '..', '..', page), 'utf8');
+		const callback = pageSource.match(/const request = cactiPreparePostRequest\([^\n]+\);\s*postUrl\(\{url: request\.url\}, request\.data\);/);
+		assert.ok(callback, 'drag-and-drop must use the POST helper');
+		let sent;
+		const callbackContext = {...context,
+			$: {...context.$, tableDnD: {serialize: () => 'dnd%5B%5D=2&dnd%5B%5D=1'}},
+			postUrl: (options, data) => { sent = {options, data}; },
+		};
+		vm.runInNewContext(callback[0], callbackContext);
+		assert.equal(sent.options.url, `/cacti/${page}`);
+		const fields = new URLSearchParams(sent.data);
+		assert.equal(fields.get('action'), 'ajax_dnd');
+		assert.deepEqual(fields.getAll('dnd[]'), ['2', '1']);
+		assert.equal(fields.get('__csrf_magic'), 'trusted-token');
+	});
+}
+
 test('state-changing URL fields move into a same-origin POST body with the trusted token', () => {
 	const request = context.cactiPreparePostRequestFromUrl('/cacti/cdef.php?action=item_remove&id=7&__csrf_magic=attacker');
 	const fields = new URLSearchParams(request.data);
