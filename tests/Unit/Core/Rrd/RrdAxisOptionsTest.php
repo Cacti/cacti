@@ -2,10 +2,10 @@
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 require_once dirname(__DIR__, 4) . '/lib/CactiValidator.php';
 require_once dirname(__DIR__, 4) . '/lib/rrd.php';
+require_once dirname(__DIR__, 4) . '/lib/api_aggregate.php';
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 3) . '/fixtures/Core/Rrd/AxisOptions.php';
 cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/rrd.php', 'rrd_function_process_graph_options', 'CactiAxisFixture');
-cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/api_aggregate.php', 'aggregate_validate_graph_params', 'CactiAxisFixture');
 cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/template.php', 'push_out_graph', 'CactiAxisFixture');
 
 test('axis defaults and older configured versions preserve graph commands', function () {
@@ -69,7 +69,7 @@ test('aggregate overrides retain zero and reject invalid axis values', function 
 	$_SESSION[SESS_ERROR_FIELDS] = [];
 	$posted                      = ['t_vertical_label_angle' => 'on', 'vertical_label_angle' => '0',
 		't_right_axis_range'                                    => 'on', 'right_axis_range' => '100:0'];
-	$params = CactiAxisFixture\aggregate_validate_graph_params($posted, true);
+	$params = aggregate_validate_graph_params($posted, true);
 	expect($params['vertical_label_angle'])->toBe('0')
 		->and($params['t_vertical_label_angle'])->toBe('on')
 		->and($params['right_axis_label_angle'])->toBe('')
