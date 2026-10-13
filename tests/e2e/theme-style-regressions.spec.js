@@ -3,6 +3,7 @@
 'use strict';
 
 const { test, expect } = require('@playwright/test');
+const path = require('node:path');
 
 async function stylesheet(page, file) {
     await page.goto('/tests/e2e/theme-style-regressions.html');
@@ -22,6 +23,19 @@ async function stylesheet(page, file) {
 async function style(page, selector, property) {
     return page.locator(selector).evaluate((element, property) => getComputedStyle(element)[property], property);
 }
+
+test('installer headings and layout fit desktop and narrow screens', async ({ page }) => {
+    await page.setContent('<!DOCTYPE html><h2>Prerequisites</h2><h3>Database</h3><div class="cactiInstallTable">Installer</div>');
+    await page.addStyleTag({ path: path.resolve(__dirname, '../../install/install.css') });
+    expect(await style(page, 'h2', 'fontSize')).toBe('20.8px');
+    expect(await style(page, 'h3', 'fontSize')).toBe('19.2px');
+    for (const width of [1440, 375, 320]) {
+        await page.setViewportSize({ width, height: 700 });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    }
+    await page.setViewportSize({ width: 1440, height: 700 });
+    expect(await style(page, '.cactiInstallTable', 'width')).toBe('900px');
+});
 
 for (const theme of ['deepness', 'paw']) {
     test(`${theme} graph headings use valid white text`, async ({ page }) => {

@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
+-issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
 -feature#8311: Make the graph drilldown action icons a common hamburger toggle over the graph's top-right across all themes (centralized in layout.js) instead of the per-theme hover-to-the-right behaviour
 -issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
 -security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
@@ -188,6 +190,7 @@ Cacti CHANGELOG
 -issue#8227: Theme the jQuery UI selectmenu, autocomplete and dialog widgets in every theme to match that theme's select2 and html_start_box styling instead of the default jQuery UI themeroller look
 -issue#8227: Add the translucent device-status pill styling to the classic, midwinter, modern, paw and sunrise themes using each theme's own status hues and contrast, matching the deepness/dark/paper-plane pills
 -issue#8228: Colour the MidWinter theme's graph drilldown action icons from the theme's HSL variable palette with a distinct task-appropriate hue per action, in both the dark and light modes
+-issue#8325: Fit the installer layout to narrow screens and restore heading font sizes
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
