@@ -56,6 +56,7 @@ set_default_action();
 
 switch (grv('action')) {
 	case 'save':
+		csrf_require_post();
 		form_save();
 
 		break;
@@ -236,7 +237,7 @@ function form_save() : void {
 						WHERE aggregate_graph_id = ?
 						ORDER BY sequence', [$aggregate_graph_id]),
 					'graph_templates_item_id',
-					['aggregate_graph_id', 'graph_templates_item_id', 'sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total']
+					['aggregate_graph_id', 'graph_templates_item_id', 'sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 't_text_format', 'text_format', 't_legend', 'legend', 'item_skip', 'item_total']
 				);
 
 				// update graph template item values with posted values
@@ -401,6 +402,8 @@ function form_save() : void {
  * Inserting new items here is not possible. Just editing existing ones.
  */
 function form_save_aggregate() : mixed {
+	global $graph_item_types;
+
 	if (!isrv('save_component_item')) {
 		return false;
 	}
@@ -421,30 +424,48 @@ function form_save_aggregate() : mixed {
 
 	// only some properties can be saved here
 	$save                    = [];
-	$save['t_graph_type_id'] = form_input_validate((isrv('t_graph_type_id') ? gnrv('t_graph_type_id') : ''), 't_graph_type_id', '', true, 3);
+	$save['t_graph_type_id'] = isrv('t_graph_type_id') ? 'on' : '';
 	$save['graph_type_id']   = form_input_validate((($save['t_graph_type_id']) ? gfrv('graph_type_id') : 0), 'graph_type_id', '', true, 3);
-	$save['t_cdef_id']       = form_input_validate((isrv('t_cdef_id') ? gnrv('t_cdef_id') : ''), 't_cdef_id', '', true, 3);
+	$save['t_cdef_id']       = isrv('t_cdef_id') ? 'on' : '';
 	$save['cdef_id']         = form_input_validate((($save['t_cdef_id']) ? gfrv('cdef_id') : 0), 'cdef_id', '', true, 3);
 
+	foreach (['text_format' => 255, 'legend' => 30] as $field => $length) {
+		$save['t_' . $field] = isrv('t_' . $field) ? 'on' : '';
+		$value               = $save['t_' . $field] === 'on' ? gnrv($field, '') : '';
+		$save[$field]        = is_string($value) ? $value : '';
+
+		if (!is_string($value) || mb_strlen($value) > $length) {
+			raise_message(2);
+		}
+	}
+
+	if ($save['t_graph_type_id'] && (!isset($graph_item_types[$save['graph_type_id']]) || in_array($save['graph_type_id'], [GRAPH_ITEM_TYPE_LEGEND, GRAPH_ITEM_TYPE_LEGEND_CAMM], true))) {
+		raise_message(2);
+	}
+
+	if ($save['t_cdef_id'] && $save['cdef_id'] > 0 && !db_fetch_cell_prepared('SELECT id FROM cdef WHERE id = ?', [$save['cdef_id']])) {
+		raise_message(2);
+	}
+
 	if (!is_error_message()) {
-		// sql_save will not give useful return values when row key is
-		// composed from multiple columns. need to manually build query
-		$sql_set = 'SET ';
+		$parent_id    = $save_to === 'aggregate_graph_templates_item' ? gfrv('aggregate_template_id') : gfrv('aggregate_graph_id');
+		$parent_table = $save_to === 'aggregate_graph_templates_item' ? 'aggregate_graph_templates' : 'aggregate_graphs';
+		$parent       = db_fetch_row_prepared("SELECT * FROM $parent_table WHERE id = ?", [$parent_id]);
+		$item         = db_fetch_row_prepared('SELECT id, sequence FROM graph_templates_item WHERE id = ? AND local_graph_id = 0 AND graph_template_id = ?', [gfrv('graph_template_item_id'), $parent['graph_template_id'] ?? 0]);
 
-		foreach ($save as $key => $value) {
-			$sql_set .= $key . '=' . db_qstr($value) . ', ';
+		if (!is_array($parent) || !$parent || !is_array($item) || !$item || ($save_to === 'aggregate_graphs_graph_item' && (int) $parent['aggregate_template_id'] !== 0)) {
+			raise_message(2);
+			cacti_redirect($save_to === 'aggregate_graph_templates_item' ? 'aggregate_templates.php' : 'aggregate_graphs.php');
 		}
-		$sql_set = substr($sql_set, 0, -2);
 
-		$sql_where = 'graph_templates_item_id = ' . gfrv('graph_template_item_id') . ' AND ';
-
-		if ($save_to == 'aggregate_graph_templates_item') {
-			$sql_where .= 'aggregate_template_id=' . gfrv('aggregate_template_id');
-		} else {
-			$sql_where .= 'aggregate_graph_id=' . gfrv('aggregate_graph_id');
+		if ($save_to === 'aggregate_graphs_graph_item') {
+			srv('local_graph_id', $parent['local_graph_id']);
+			$location_success = 'aggregate_graphs.php?action=edit&id=' . $parent['local_graph_id'];
 		}
-		$sql     = "UPDATE $save_to $sql_set WHERE $sql_where LIMIT 1";
-		$success = db_execute($sql);
+		$key     = $key_cols[0];
+		$columns = array_keys($save);
+		$updates = implode(', ', array_map(static fn ($column) => "$column = VALUES($column)", $columns));
+		$success = db_execute_prepared("INSERT INTO $save_to ($key, graph_templates_item_id, sequence, color_template, item_skip, item_total, " . implode(', ', $columns) . ") VALUES (?, ?, ?, 0, '', '', " . implode(', ', array_fill(0, count($columns), '?')) . ") ON DUPLICATE KEY UPDATE $updates", [$parent_id, $item['id'], $item['sequence'], ...array_values($save)]);
 
 		if ($success) {
 			raise_message(1);
@@ -560,6 +581,18 @@ function item_edit() : void {
 			[grv('id')]);
 	}
 
+	$parent_table = $id_field === 'aggregate_template_id' ? 'aggregate_graph_templates' : 'aggregate_graphs';
+	$parent       = db_fetch_row_prepared("SELECT * FROM $parent_table WHERE id = ?", [grv($id_field)]);
+
+	if (!is_array($parent) || !$parent || !is_array($template_item) || !$template_item || (int) $template_item['local_graph_id'] !== 0 || (int) $template_item['graph_template_id'] !== (int) $parent['graph_template_id'] || ($id_field === 'aggregate_graph_id' && (int) $parent['aggregate_template_id'] !== 0)) {
+		raise_message(2);
+		cacti_redirect($page_name);
+	}
+
+	if ($id_field === 'aggregate_graph_id') {
+		srv('local_graph_id', $parent['local_graph_id']);
+	}
+
 	// override some template_item values from aggregate tables
 	$item_overrides = db_fetch_row_prepared("SELECT *
 		FROM $table_name
@@ -567,25 +600,8 @@ function item_edit() : void {
 		AND graph_templates_item_id = ?",
 		[grv($id_field), grv('id')]);
 
-	if (cacti_sizeof($item_overrides) == 0) {
-		/* this item is not currently in aggregate tables
-		 * item editor will not work in this case, so let's
-		 * save it now
-		 */
-		$item_new = [
-			$id_field                 => grv($id_field),
-			'graph_templates_item_id' => grv('id'),
-			'sequence'                => $template_item['sequence'] ?? 1
-		];
-
-		aggregate_graph_items_save([$item_new], $table_name);
-
-		$item_overrides = db_fetch_row_prepared("SELECT *
-			FROM $table_name
-			WHERE $id_field = ?
-			AND graph_templates_item_id = ?",
-			[grv($id_field), grv('id')]);
-	}
+	$item_overrides = is_array($item_overrides) ? $item_overrides : [];
+	$item_overrides += ['t_graph_type_id' => '', 't_cdef_id' => '', 't_text_format' => '', 't_legend' => ''];
 
 	if (cacti_sizeof($template_item)) {
 		foreach (array_keys($template_item) as $field_name) {
@@ -600,11 +616,12 @@ function item_edit() : void {
 		}
 	}
 
+	form_start('aggregate_graphs.php', 'aggregate_item_form');
 	html_start_box(__('Override Values for Graph Item'), '100%', true, 3, 'center', '');
 
 	$form_array = [];
 
-	foreach ($struct_graph_item as $field_name => $field_array) {
+	foreach (['graph_type_id', 'cdef_id', 'text_format', 'legend'] as $field_name) {
 		$form_array += [$field_name => $struct_graph_item[$field_name]];
 
 		// should we draw an override checkbox
@@ -617,6 +634,10 @@ function item_edit() : void {
 			];
 		}
 
+		if ($field_name === 'graph_type_id') {
+			unset($form_array[$field_name]['array'][GRAPH_ITEM_TYPE_LEGEND], $form_array[$field_name]['array'][GRAPH_ITEM_TYPE_LEGEND_CAMM]);
+		}
+
 		$form_array[$field_name]['value']   = (cacti_sizeof($template_item) ? $template_item[$field_name] : '');
 		$form_array[$field_name]['form_id'] = (cacti_sizeof($template_item) ? $template_item['id'] : '0');
 	}
@@ -624,7 +645,7 @@ function item_edit() : void {
 	draw_edit_form(
 		[
 			'config' => [
-				'post_to' => CACTI_PATH_URL . 'aggregate_graphs.php'
+				'no_form_tag' => true
 			],
 			'fields' => $form_array
 		]
@@ -637,36 +658,22 @@ function item_edit() : void {
 	form_hidden_box('sequence', (cacti_sizeof($template_item) ? $template_item['sequence'] : '0'), '');
 	form_hidden_box('_graph_type_id', (cacti_sizeof($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
-	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
+	form_hidden_box('invisible_alpha', 'FF', 'FF');
 	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 	form_hidden_box('aggregate_graph_id', grv('aggregate_graph_id'), '0');
 	form_hidden_box('aggregate_template_id', grv('aggregate_template_id'), '0');
 
 	html_end_box(true, true);
 
-	form_save_button(CACTI_PATH_URL . "$page_name?action=edit&id=" . gfrv('local_graph_id'));
+	form_save_button(cacti_url($page_name, ['action' => 'edit', 'id' => $id_field === 'aggregate_template_id' ? grv($id_field) : grv('local_graph_id')]));
 
 	// Now we need some javascript to make it dynamic
 	?>
 	<script type='text/javascript'>
 
 	$(function() {
-		dynamic();
 		setFieldsDisabled();
 	});
-
-	function dynamic() {
-		$('#alpha').prop('disabled', true);
-		if ($('#color_id').val() != 0) {
-			$('#alpha').prop('disabled', true);
-		}
-	}
-
-	function changeColorId() {
-		if ($('#color_id').attr('selectedIndex') != 0) {
-			$('#alpha').prop('disabled', true);
-		}
-	}
 
 	// disable all items with sub-checkboxes except
 	// where sub-checkbox checked
@@ -687,7 +694,7 @@ function item_edit() : void {
 
 	// enable or disable form field based on state of corresponding checkbox
 	function toggleFieldEnabled(toggleFieldId) {
-		fieldId  = toggleFieldId.substr(2);
+		const fieldId = toggleFieldId.substr(2);
 
 		if ($('#'+fieldId).hasClass('ui-state-disabled')) {
 			$('#'+fieldId).prop('disabled', false).removeClass('ui-state-disabled');
