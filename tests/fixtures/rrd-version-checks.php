@@ -45,7 +45,14 @@ function version_fixture_load($path, $name) {
 			$compiled .= $token;
 		}
 	}
-	eval($compiled);
+	$file = tempnam(sys_get_temp_dir(), 'rrd-version');
+
+	try {
+		file_put_contents($file, "<?php\n" . $compiled);
+		include $file;
+	} finally {
+		unlink($file);
+	}
 }
 
 if (str_contains(file_get_contents($root . '/lib/functions.php'), 'function cacti_rrdtool_valid_path(')) {
