@@ -89,6 +89,23 @@ db_execute("INSERT INTO graph_templates_graph (local_graph_id, graph_template_id
 db_execute("INSERT INTO graph_templates_item (id, local_graph_id, graph_template_id, task_item_id, graph_type_id, sequence, text_format) VALUES (800001, 0, 800001, 10004, 4, 1, 'QoS value')");
 db_execute('INSERT INTO graph_templates_item (local_graph_id, task_item_id, graph_type_id, sequence) VALUES (10001, 10001, 9, 2)');
 
+// Rule compilation must preserve the template's individual item overrides.
+aggregate_fixture_check(db_begin_transaction(), 'Could not start the item override fixture.');
+
+try {
+	db_execute("UPDATE aggregate_graph_templates_item SET item_skip = 'on', item_total = 'on',
+		t_graph_type_id = 'on', graph_type_id = 4, t_cdef_id = 'on', cdef_id = 1
+		WHERE aggregate_template_id = 800001");
+	$rule       = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id = 800001');
+	$attributes = automation_aggregate_attributes($rule);
+	aggregate_fixture_check($attributes['skipped_items'] === [1 => 1], 'Skipped item override was lost.');
+	aggregate_fixture_check($attributes['total_items'] === [1 => 1], 'Total item override was lost.');
+	aggregate_fixture_check($attributes['graph_item_types'] === [1 => 4], 'Graph type override was lost.');
+	aggregate_fixture_check($attributes['cdefs'] === [1 => 1], 'CDEF override was lost.');
+} finally {
+	db_rollback_transaction();
+}
+
 foreach (['graph_templates_graph', 'graph_templates_item'] as $table) {
 	foreach (db_fetch_assoc('SHOW COLUMNS FROM ' . $table) as $column) {
 		if ($column['Null'] === 'YES') {
@@ -179,6 +196,10 @@ foreach ($workers as $process) {
 }
 aggregate_fixture_check((int) db_fetch_cell('SELECT COUNT(*) FROM automation_aggregate_graphs WHERE host_id = 900004') === 1, 'Concurrent execution duplicated the ownership mapping.');
 aggregate_fixture_check((int) db_fetch_cell("SELECT COUNT(*) FROM aggregate_graphs WHERE title_format = 'Changed Fixture device 900004'") === 1, 'Concurrent execution duplicated the graph.');
+
+db_execute("UPDATE host SET deleted = 'on' WHERE id = 900004");
+aggregate_fixture_check(automation_execute_device_aggregates(900004, true) === [], 'Deleted device still ran aggregate automation.');
+db_execute("UPDATE host SET deleted = '' WHERE id = 900004");
 
 db_execute("UPDATE aggregate_graph_templates SET automation_enabled = '' WHERE id = 800001");
 aggregate_fixture_check(automation_execute_device_aggregates(900001, true) === [], 'Disabled rule still ran.');
