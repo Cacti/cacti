@@ -1612,28 +1612,14 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	$sql_params[] = $local_data_id;
 	$sql_params[] = $timestamp;
 
-	// Failed temporary-table copies must never reach archive cleanup.
-	if (!$copy_ok) {
-		if ($temp_created) {
-			db_execute("DROP TEMPORARY TABLE $temp_table");
-		}
-
-		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
-		}
-		restore_error_handler();
-		error_reporting($previous_error_reporting);
-
-		return -1;
-	}
-
 	boost_timer('get_records', BOOST_TIMER_START);
-	$results = db_fetch_assoc_prepared($query_string, $sql_params);
+	// Failed copies use the existing failure and cleanup path.
+	$results = $copy_ok ? db_fetch_assoc_prepared($query_string, $sql_params) : false;
 	boost_timer('get_records', BOOST_TIMER_END);
 
 	$boost_results = cacti_sizeof($results);
 
-	if ($temp_table !== false) {
+	if ($temp_table !== false && $temp_created) {
 		db_execute("DROP TEMPORARY TABLE $temp_table");
 	}
 
