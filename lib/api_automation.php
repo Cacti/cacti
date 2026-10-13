@@ -4548,6 +4548,14 @@ function automation_update_device(int $host_id) : void {
 		object_cache_update_totals('diff');
 	}
 
+	require_once __DIR__ . '/api_automation_aggregate.php';
+
+	try {
+		automation_execute_device_aggregates($host_id);
+	} catch (Throwable $error) {
+		cacti_log('ERROR: Aggregate automation Device[' . $host_id . ']: ' . $error->getMessage(), false, 'AUTOM8');
+	}
+
 	// now handle tree rules for that host
 	cacti_log($function . ' Create Tree for Device[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	automation_execute_device_create_tree($host_id);
