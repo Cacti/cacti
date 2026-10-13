@@ -634,11 +634,16 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
  *                       - 'time': The timestamp of the data.
  *                       - 'output': The output value to be stored.
  *
+ * @param-out bool $staged Whether every requested row was durably staged.
+ *
  * @return bool Returns `false` if the boost functionality is enabled and processed,
  *              or `true` if the boost functionality is disabled or bypassed.
  */
-function boost_poller_on_demand(array &$results) : bool {
+function boost_poller_on_demand(array &$results, ?bool &$staged = null) : bool {
 	global $remote_db_cnn_id;
+
+	$track_staging = func_num_args() >= 2;
+	$staged        = false;
 
 	if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') { // @phpstan-ignore-line
 		$conn = $remote_db_cnn_id;
@@ -662,7 +667,7 @@ function boost_poller_on_demand(array &$results) : bool {
 
 		if (boost_check_correct_enabled()) {
 			// cmd.php already staged these rows when direct redirection is active.
-			if (read_config_option('boost_redirect') == 'on') {
+			if (!$track_staging && read_config_option('boost_redirect') == 'on') {
 				restore_error_handler();
 				error_reporting($previous_error_reporting);
 
@@ -682,7 +687,10 @@ function boost_poller_on_demand(array &$results) : bool {
 						')';
 				}
 
-				$return_value = !boost_flush_output_batch($value_tuples, $conn);
+				$acknowledged = boost_flush_output_batch($value_tuples, $conn);
+
+				$staged       = $acknowledged;
+				$return_value = !$acknowledged;
 			} else {
 				$return_value = false;
 			}

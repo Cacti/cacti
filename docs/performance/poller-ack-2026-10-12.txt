@@ -1,0 +1,21 @@
+Acknowledgement query validation
+
+Plan: compare the existing bounded tuple-key DELETE with an exact-key temporary
+MEMORY-table join before changing the query or raising the database floor.
+
+MariaDB 10.3.39 and 10.11.19 both selected PRIMARY range access for the existing
+1000-key DELETE on InnoDB and MEMORY, estimating 1000 matching rows in a 100000-row
+queue. The join selected one PRIMARY lookup per scratch key. Five alternating
+rounds per engine included clearing/refilling scratch keys in join timings.
+
+These quiet local tests do not reproduce RTM concurrency or purge pressure, and
+the servers use different default character sets. Do not compare their absolute
+timings with each other. The 10.3 results disprove a blanket claim that this query
+necessarily scans the entire queue below 10.6. No minimum-version change is made.
+
+Run with mise-selected PHP and BOOST_DB_HOST/PORT/USER/PASSWORD pointing to a
+disposable cacti_boost_contract database:
+  php tests/performance/poller-ack.php
+
+The script creates randomly named test tables, removes them in finally blocks,
+and rejects any other database name. Raw plans and measurements are in the JSON.

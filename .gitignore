@@ -148,6 +148,12 @@ verify_task*.php
 /include/js/jquery.validate/additional-methods.js
 /include/js/jquery.validate/additional-methods.min.js
 /include/js/jquery-ui.js
+/include/js/jquery.ui.touch.punch.js
+/include/js/Chart.js
+/include/js/vendor/moment/
+/include/js/vendor/daterangepicker/
+/include/js/vendor/mark/
+/include/js/vendor/hotkeys/
 /include/js/pace.js
 /include/js/jquery.tablesorter.widgets.js
 /include/js/jquery.tablesorter.pager.js

@@ -1149,6 +1149,15 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 				$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'],
 					$unused_cache) : [];
 
+				if ($unused_data_source_names === false) {
+					$updates_ok     = false;
+					$vals_in_buffer = 0;
+					$tv_tmpl        = [];
+					$outarray       = [];
+
+					break;
+				}
+
 				if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
 					continue;
 				}
@@ -1289,8 +1298,16 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 				if (!$reset_template) {
 					$rrd_tmpl = '';
 				} else {
-					$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'],
-						$unused_cache) : [];
+					$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'], $unused_cache) : [];
+
+					if ($unused_data_source_names === false) {
+						$updates_ok     = false;
+						$vals_in_buffer = 0;
+						$tv_tmpl        = [];
+						$outarray       = [];
+
+						break;
+					}
 				}
 
 				foreach (($values ?: []) as $value) {
@@ -1330,6 +1347,15 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 							 */
 							$nt_rrd_field_names = $item['data_template_id'] == 0 ? poller_get_nt_rrd_field_names($item['local_data_id'],
 								$nt_cache) : [];
+
+							if ($nt_rrd_field_names === false) {
+								$updates_ok     = false;
+								$vals_in_buffer = 0;
+								$tv_tmpl        = [];
+								$outarray       = [];
+
+								break 2;
+							}
 
 							if (cacti_sizeof($nt_rrd_field_names)) {
 								if (isset($nt_rrd_field_names[$matches[0]])) {
@@ -1376,6 +1402,15 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 					$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'],
 						$unused_cache) : [];
 
+					if ($unused_data_source_names === false) {
+						$updates_ok     = false;
+						$vals_in_buffer = 0;
+						$tv_tmpl        = [];
+						$outarray       = [];
+
+						break;
+					}
+
 					if ($item['data_template_id'] > 0) {
 						// expected field names for this template come from the static template cache
 						$nt_rrd_field_names = [];
@@ -1395,6 +1430,15 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 						}
 					} else {
 						$nt_rrd_field_names = poller_get_nt_rrd_field_names($item['local_data_id'], $nt_cache);
+
+						if ($nt_rrd_field_names === false) {
+							$updates_ok     = false;
+							$vals_in_buffer = 0;
+							$tv_tmpl        = [];
+							$outarray       = [];
+
+							break;
+						}
 					}
 				}
 

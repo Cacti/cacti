@@ -5,8 +5,12 @@ $.toastPopup = function(options) {
         allowToastClose: true,
         position: 'bottom-center',
         showHideTransition: 'fade',
-		afterHidden: function () {
-           $('.jq-toast-wrap').remove();
+		afterHidden: function (toast) {
+			const wrapper = toast.closest('.jq-toast-wrap');
+			toast.remove();
+			if (!wrapper.children('.jq-toast-single').length) {
+				wrapper.remove();
+			}
 		}
     }
 

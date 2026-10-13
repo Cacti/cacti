@@ -96,12 +96,12 @@ Windows users may need:
 composer install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
 ```
 
-Run nmp install within Cacti installation directory so that to install the required cacti-frontend-assets:
+For a source checkout, install the locked browser dependencies before configuring
+the web server. Node.js is required for this build; release archives already
+contain the generated assets. Run this command as the owner of the Cacti files:
 
 ```bash
-sudo -u <cacti user> npm install
-e.g.
-sudo -u www-data npm install
+npm ci
 ```
 
 
