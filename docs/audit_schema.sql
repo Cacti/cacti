@@ -1326,9 +1326,6 @@ INSERT INTO `table_indexes` VALUES ('poller_output',1,'local_data_id_time',3,'rr
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',1,'local_data_id','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',2,'rrd_name','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',3,'time','A',NULL,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_output',1,'local_data_id_time',1,'local_data_id','A',NULL,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_output',1,'local_data_id_time',2,'time','A',NULL,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_output',1,'local_data_id_time',3,'rrd_name','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',2,'time','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',3,'rrd_name','A',0,NULL,NULL,'','BTREE','');
