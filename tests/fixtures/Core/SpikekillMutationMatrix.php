@@ -63,8 +63,8 @@ function spike_matrix_object(int $method = SPIKE_METHOD_STDDEV): spikekill {
 }
 function spike_matrix_rows(spikekill $spiker, array $rows): array {
 	$statistics = [[
-		['average' => 10, 'variance_avg' => 10, 'min_cutoff' => 0, 'max_cutoff' => 20, 'outwind_killed' => 0],
-		['average' => 10, 'variance_avg' => 10, 'min_cutoff' => 0, 'max_cutoff' => 20, 'outwind_killed' => 0],
+		['average' => 10, 'variance_avg' => 10, 'min_cutoff' => 0, 'max_cutoff' => 20, 'outwind_killed' => 0, 'last' => 0],
+		['average' => 10, 'variance_avg' => 10, 'min_cutoff' => 0, 'max_cutoff' => 20, 'outwind_killed' => 0, 'last' => 0],
 	]];
 	$statistics[] = $statistics[0];
 	$xml          = [];
@@ -194,8 +194,9 @@ foreach (['success' => "exit 0\n", 'stderr' => "printf '%s\\n' '<restore-failure
 		$config['config_options_array']['path_rrdtool'] = escapeshellarg($tool);
 		$spiker                                         = spike_matrix_object();
 		$spiker->html                                   = true;
-		$result                                         = (new ReflectionMethod(spikekill::class, 'createRRDFileFromXML'))->invoke($spiker, $directory . '/input.xml', $directory . '/output.rrd');
+		$result                                         = (new ReflectionMethod(spikekill::class, 'createRRDFileFromXML'))->invoke($spiker, $directory . '/<input>.xml', $directory . '/output.rrd');
 		spike_matrix_assert($result === ($mode === 'success'), 'Restore status ignored');
+		spike_matrix_assert(!str_contains($spiker->get_output(), '<input>'), 'RRD filenames must be escaped in HTML notes');
 		spike_matrix_assert(($spiker->get_errors() === '') === ($mode === 'success'), 'Restore failure missing from error channel');
 
 		if ($mode === 'stderr') {
@@ -332,6 +333,28 @@ foreach (['success', 'restore-failure', 'no-repairs'] as $mode) {
 		$result = $probe();
 		spike_matrix_assert($result === ($mode !== 'restore-failure'), 'Complete mutation swallowed restore error');
 		spike_matrix_assert(($spiker->get_errors() === '') === ($mode !== 'restore-failure'), 'Complete mutation has wrong error state');
+	};
+}
+
+foreach (defined('SPIKE_METHOD_VARIANCE') ? [SPIKE_METHOD_STDDEV, SPIKE_METHOD_VARIANCE] : [SPIKE_METHOD_STDDEV] as $method) {
+	$cases['window-zero-last-' . $method] = static function () use ($method): void {
+		$spiker            = spike_matrix_object($method);
+		$spiker->avgnan    = 'last';
+		$spiker->out_start = 100;
+		$spiker->out_end   = 200;
+		$result            = spike_matrix_rows($spiker, ['<row><timestamp>50</timestamp><v>0</v><v>10</v></row>', [100, 10]]);
+		spike_matrix_assert(str_contains($result[1], '<v> 0</v>'), 'Window repair must accept a previous zero outside the window');
+	};
+}
+
+if (property_exists(spikekill::class, 'dsfilter')) {
+	$cases['gap-fill-last-zero'] = static function (): void {
+		$spiker            = spike_matrix_object(SPIKE_METHOD_FILL);
+		$spiker->avgnan    = 'last';
+		$spiker->out_start = 1;
+		$spiker->out_end   = 200;
+		$result            = spike_matrix_rows($spiker, [[0, 'NaN']]);
+		spike_matrix_assert(str_contains($result[0], '<v> 0</v><v> 0</v>'), 'Gap filling must retain real zero and replace only the missing sample');
 	};
 }
 $requested = $argv[1] ?? 'all';

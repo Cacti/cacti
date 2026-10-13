@@ -798,8 +798,9 @@ class spikekill {
 	// All Functions
 	private function createRRDFileFromXML(string $xmlfile, string $rrdfile) : bool {
 		// execute the dump command
+		$message = "NOTE: Re-Importing '$xmlfile' to '$rrdfile'";
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n" : "\n");
+			($this->html ? htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : $message) . ($this->html ? "</p>\n" : "\n");
 
 		$response = [];
 		$status   = 0;
@@ -836,8 +837,9 @@ class spikekill {
 			$newfile = basename($rrdfile);
 		}
 
+		$message = "NOTE: Backing Up '$rrdfile' to '$backupdir/$newfile'";
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' . $newfile . "'" . ($this->html ? "</p>\n" : "\n");
+			($this->html ? htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : $message) . ($this->html ? "</p>\n" : "\n");
 
 		return @copy($rrdfile, $backupdir . '/' . $newfile);
 	}
