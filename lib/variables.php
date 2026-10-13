@@ -450,9 +450,11 @@ function substitute_host_data(string $string, string $l_escape_string, string $r
  * @param string $snmp_index    The data query index to match
  * @param int    $max_chars     The maximum number of characters to substitute
  *
+ * @param bool $allow_empty Replace known empty fields when rendering graph text.
+ *
  * @return string The original string with all of the variable substitutions made
  */
-function substitute_snmp_query_data(string $string, int $host_id, int $snmp_query_id, string $snmp_index, int $max_chars = 0) : string {
+function substitute_snmp_query_data(string $string, int $host_id, int $snmp_query_id, string $snmp_index, int $max_chars = 0, bool $allow_empty = false) : string {
 	if ($host_id > 0) {
 		$snmp_cache_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' field_name, field_value
 			FROM host_snmp_cache
@@ -471,7 +473,11 @@ function substitute_snmp_query_data(string $string, int $host_id, int $snmp_quer
 
 	if (cacti_sizeof($snmp_cache_data)) {
 		foreach ($snmp_cache_data as $data) {
-			if (trim($data['field_value']) != '') {
+			if ($allow_empty || trim($data['field_value']) != '') {
+				if ($allow_empty && trim($data['field_value']) == '') {
+					$data['field_value'] = '';
+				}
+
 				if ($max_chars > 0) {
 					$data['field_value'] = substr($data['field_value'], 0, $max_chars);
 				}
