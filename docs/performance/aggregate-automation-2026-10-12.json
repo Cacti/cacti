@@ -1,0 +1,43 @@
+{
+  "diagnostic_only": true,
+  "kind": "Disposable MariaDB and graph metadata; no SNMP or RRD I/O",
+  "source_sha256": "ca1b7ce183f60b9376e510a44d85e36ff7352d19a7f70748f16903cf3403581b",
+  "runtime_contracts": {
+    "checks": 34,
+    "elapsed_seconds": 0.079088469,
+    "php": "8.3.35",
+    "database": "10.11.19-MariaDB-ubu2204",
+    "diagnostic_only": true
+  },
+  "scale": {
+    "diagnostic_only": true,
+    "kind": "real SQL and graph metadata; no SNMP or RRD I/O",
+    "php": "8.3.35",
+    "database": "10.11.19-MariaDB-ubu2204",
+    "profile": [
+      {
+        "pass": "create",
+        "devices": 1000,
+        "members_per_device": 1,
+        "elapsed_seconds": 1.481383467,
+        "queries": 36002,
+        "peak_memory_bytes": 12582912
+      },
+      {
+        "pass": "unchanged",
+        "devices": 1000,
+        "members_per_device": 1,
+        "elapsed_seconds": 0.211357392,
+        "queries": 6000,
+        "peak_memory_bytes": 12582912
+      }
+    ]
+  },
+  "browser": {
+    "browser": "chromium",
+    "save_reload": true,
+    "escaped_fields": true,
+    "get_save_status": 405
+  },
+  "limitations": "One member graph per device, local database, single scale run; query counts and semantics are asserted, timing is diagnostic."
+}
