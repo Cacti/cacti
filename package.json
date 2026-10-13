@@ -13,7 +13,7 @@
   "dependencies": {
     "big.js": "7.0.1",
     "billboard.js": "4.1.1",
-    "chart.js": "2.9.4",
+    "chart.js": "4.5.1",
     "d3": "7.9.0",
     "daterangepicker": "3.1.0",
     "dompurify": "3.4.16",
