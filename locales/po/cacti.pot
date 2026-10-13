@@ -595,6 +595,10 @@ msgid "No Aggregate Graphs Found"
 msgstr ""
 
 #: aggregate_templates.php
+msgid "Check the aggregate automation pattern, title, device template and member limit."
+msgstr ""
+
+#: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template."
 msgstr ""
 
@@ -652,6 +656,29 @@ msgstr ""
 #: include/global_arrays.php include/global_form.php lib/html_reports.php
 #: tree.php
 msgid "Graph Template"
+msgstr ""
+
+#: aggregate_templates.php include/global_form.php
+msgid "Aggregate Automation"
+msgstr ""
+
+#: aggregate_templates.php auth_profile.php automation_graph_rules.php
+#: automation_networks.php automation_tree_rules.php data_debug.php
+#: data_sources.php data_templates.php host.php include/global_arrays.php
+#: include/global_form.php include/global_settings.php lib/api_automation.php
+#: lib/html.php lib/html_reports.php lib/html_utility.php links.php
+#: login_providers.php managers.php pollers.php sites.php user_admin.php
+#: user_group_admin.php utilities.php
+msgid "Disabled"
+msgstr ""
+
+#: aggregate_templates.php auth_profile.php automation_graph_rules.php
+#: automation_networks.php automation_tree_rules.php data_debug.php
+#: data_sources.php host.php include/global_arrays.php include/global_form.php
+#: include/global_settings.php lib/api_automation.php lib/html_reports.php
+#: links.php login_providers.php managers.php package_repos.php sites.php
+#: user_admin.php user_group_admin.php utilities.php
+msgid "Enabled"
 msgstr ""
 
 #: aggregate_templates.php
@@ -961,25 +988,6 @@ msgstr ""
 
 #: auth_profile.php
 msgid "Verify the 2FA App token entered above"
-msgstr ""
-
-#: auth_profile.php automation_graph_rules.php automation_networks.php
-#: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
-#: host.php include/global_arrays.php include/global_form.php
-#: include/global_settings.php lib/api_automation.php lib/html.php
-#: lib/html_reports.php lib/html_utility.php links.php login_providers.php
-#: managers.php pollers.php sites.php user_admin.php user_group_admin.php
-#: utilities.php
-msgid "Disabled"
-msgstr ""
-
-#: auth_profile.php automation_graph_rules.php automation_networks.php
-#: automation_tree_rules.php data_debug.php data_sources.php host.php
-#: include/global_arrays.php include/global_form.php
-#: include/global_settings.php lib/api_automation.php lib/html_reports.php
-#: links.php login_providers.php managers.php package_repos.php sites.php
-#: user_admin.php user_group_admin.php utilities.php
-msgid "Enabled"
 msgstr ""
 
 #: auth_profile.php
@@ -10373,6 +10381,42 @@ msgstr ""
 
 #: include/global_form.php
 msgid "Aggregate Template Settings"
+msgstr ""
+
+#: include/global_form.php
+msgid "Enable Aggregate Automation"
+msgstr ""
+
+#: include/global_form.php
+msgid "Create one aggregate per matching device after its graph automation rules run."
+msgstr ""
+
+#: include/global_form.php
+msgid "Data Source Name Pattern"
+msgstr ""
+
+#: include/global_form.php
+msgid "PCRE expression with delimiters, for example /QoS.*(Gold|Silver)/i. A graph matches when any bound data source name matches."
+msgstr ""
+
+#: include/global_form.php
+msgid "Limit this aggregate rule to a device template, or select None for all devices."
+msgstr ""
+
+#: include/global_form.php
+msgid "Automated Aggregate Title"
+msgstr ""
+
+#: include/global_form.php
+msgid "Supported variables: |host_description|, |host_hostname|, |host_id| and |aggregate_template_name|."
+msgstr ""
+
+#: include/global_form.php
+msgid "Maximum Aggregate Members"
+msgstr ""
+
+#: include/global_form.php
+msgid "Maximum matching graphs per device (1-5000). Exceeding this limit leaves the aggregate unchanged."
 msgstr ""
 
 #: include/global_form.php

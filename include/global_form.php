@@ -2262,6 +2262,38 @@ $struct_aggregate_template = [
 	]
 ];
 
+// Aggregate automation uses the same rendering and permissions as the template editor.
+$struct_aggregate_template += [
+	'automation_spacer'  => ['friendly_name' => __('Aggregate Automation'), 'method' => 'spacer'],
+	'automation_enabled' => [
+		'friendly_name' => __('Enable Aggregate Automation'),
+		'description'   => __('Create one aggregate per matching device after its graph automation rules run.'),
+		'method'        => 'checkbox', 'value' => '|arg1:automation_enabled|', 'default' => '',
+	],
+	'automation_pattern' => [
+		'friendly_name' => __('Data Source Name Pattern'),
+		'description'   => __('PCRE expression with delimiters, for example /QoS.*(Gold|Silver)/i. A graph matches when any bound data source name matches.'),
+		'method'        => 'textbox', 'value' => '|arg1:automation_pattern|', 'default' => '', 'max_length' => 512, 'size' => 80,
+	],
+	'automation_host_template_id' => [
+		'friendly_name' => __('Device Template'),
+		'description'   => __('Limit this aggregate rule to a device template, or select None for all devices.'),
+		'method'        => 'drop_sql', 'value' => '|arg1:automation_host_template_id|', 'default' => 0,
+		'sql'           => 'SELECT id, name FROM host_template ORDER BY name', 'none_value' => 'None',
+	],
+	'automation_title' => [
+		'friendly_name' => __('Automated Aggregate Title'),
+		'description'   => __('Supported variables: |host_description|, |host_hostname|, |host_id| and |aggregate_template_name|.'),
+		'method'        => 'textbox', 'value' => '|arg1:automation_title|',
+		'default'       => '|host_description| - |aggregate_template_name|', 'max_length' => 255, 'size' => 80,
+	],
+	'automation_max_members' => [
+		'friendly_name' => __('Maximum Aggregate Members'),
+		'description'   => __('Maximum matching graphs per device (1-5000). Exceeding this limit leaves the aggregate unchanged.'),
+		'method'        => 'textbox', 'value' => '|arg1:automation_max_members|', 'default' => 1000, 'max_length' => 4, 'size' => 8,
+	],
+];
+
 // ------------------------------------------------------------
 // Color Templates
 // ------------------------------------------------------------
