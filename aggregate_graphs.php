@@ -435,15 +435,18 @@ function form_save_aggregate() : mixed {
 		$save[$field]        = is_string($value) ? $value : '';
 
 		if (!is_string($value) || mb_strlen($value) > $length) {
+			$_SESSION[SESS_ERROR_FIELDS][$field] = 2;
 			raise_message(2);
 		}
 	}
 
 	if ($save['t_graph_type_id'] && (!isset($graph_item_types[$save['graph_type_id']]) || in_array($save['graph_type_id'], [GRAPH_ITEM_TYPE_LEGEND, GRAPH_ITEM_TYPE_LEGEND_CAMM], true))) {
+		$_SESSION[SESS_ERROR_FIELDS]['graph_type_id'] = 2;
 		raise_message(2);
 	}
 
 	if ($save['t_cdef_id'] && $save['cdef_id'] > 0 && !db_fetch_cell_prepared('SELECT id FROM cdef WHERE id = ?', [$save['cdef_id']])) {
+		$_SESSION[SESS_ERROR_FIELDS]['cdef_id'] = 2;
 		raise_message(2);
 	}
 
