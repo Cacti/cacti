@@ -1,0 +1,617 @@
+import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+declare const cactiBox: new () => { add: (options: Record<string, unknown>) => unknown };
+declare const cactiNavigation: new () => unknown;
+
+const layoutSource = readFileSync(resolve(__dirname, '../../../include/layout.js'), 'utf8');
+const validationSource = layoutSource.slice(layoutSource.indexOf('function formValidate('), layoutSource.indexOf('function toggleFields('));
+const serializationSource = layoutSource.slice(layoutSource.indexOf('$.fn.serializeForm ='), layoutSource.indexOf('$.fn.serializeObject ='));
+const treeSource = readFileSync(resolve(__dirname, '../../../tree.php'), 'utf8');
+const editorSource = treeSource.slice(treeSource.indexOf('$("#ctree").jstree({'), treeSource.indexOf(".on('ready.jstree'"));
+const editorForceText = editorSource.match(/'force_text'\s*:\s*(true|false)/)?.[1] === 'true';
+
+const csrfSource = readFileSync(resolve(__dirname, '../../../include/js/csrf.js'), 'utf8');
+
+async function csrfFixture(page: import('@playwright/test').Page) {
+	await page.route('http://csrf.fixture/**', route => route.fulfill({contentType: 'text/html', body: '<!doctype html><html><body></body></html>'}));
+	await page.goto('http://csrf.fixture/');
+	await page.addScriptTag({content: 'var csrfMagicName="__csrf_magic", csrfMagicToken="fixture-token";' + csrfSource});
+}
+
+test('CSRF XHR leaves cross-origin POST bodies unchanged', async ({page}) => {
+	await csrfFixture(page);
+	const bodies: string[] = [];
+	await page.route('http://receiver.fixture/**', async route => {
+		bodies.push(route.request().postData() || '');
+		await route.fulfill({body:'fixture'});
+	});
+	await page.evaluate(() => new Promise<void>(resolve => {
+		const xhr = new XMLHttpRequest();
+		xhr.onload = xhr.onerror = () => resolve();
+		xhr.open('POST', 'http://receiver.fixture/capture');
+		xhr.send('value=1');
+	}));
+	expect(bodies).toEqual(['value=1']);
+});
+
+test('CSRF XHR serializes multipart tokens and accepts empty POST bodies', async ({page}) => {
+	await csrfFixture(page);
+	const bodies: string[] = [];
+	await page.route('http://csrf.fixture/capture', async route => {
+		bodies.push(route.request().postData() || '');
+		await route.fulfill({body:'fixture'});
+	});
+	await page.evaluate(async () => {
+		const data = new FormData();
+		data.append('file', new Blob(['fixture']), 'fixture.txt');
+		for (const body of [data, null]) {
+			await new Promise<void>((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				xhr.onload = () => resolve(); xhr.onerror = () => reject(new Error('XHR failed'));
+				xhr.open('POST', '/capture'); xhr.send(body);
+			});
+		}
+	});
+	expect(bodies[0]).toContain('name="__csrf_magic"');
+	expect(bodies[0]).toContain('fixture-token');
+	expect(new URLSearchParams(bodies[1]).get('__csrf_magic')).toBe('fixture-token');
+});
+
+async function validationFixture(page: import('@playwright/test').Page) {
+	await page.goto('/');
+	const asset = await page.locator('script[src*="htmx.js"]').getAttribute('src');
+	expect(asset).toBeTruthy();
+	const jquery = new URL('jquery.js', new URL(asset!, page.url())).href;
+	expect(jquery).toBeTruthy();
+	const validation = new URL('jquery.validate/jquery.validate.js', jquery).href;
+	await page.route('**/__codeql-validation', route => route.fulfill({
+		contentType: 'text/html',
+		body: '<!doctype html><html><body><form id="probe"><input id="email" name="email" type="email"></form></body></html>',
+	}));
+	await page.goto('/__codeql-validation');
+	await page.addScriptTag({ url: jquery! });
+	await page.addScriptTag({ url: validation });
+	// Use the production functions; only their page-level state is isolated.
+	await page.addScriptTag({ content: 'var changed=false; var formArray={}; var formRules={"#probe":{}};' + serializationSource + validationSource });
+	return jquery;
+}
+
+test('table drag initializes existing rows without interpreting their text as HTML (CodeQL 64)', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery.tablednd.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	const result = await page.evaluate(payload => {
+		const table = document.createElement('table');
+		table.id = 'drag-probe';
+		const first = table.insertRow();
+		first.id = 'first';
+		first.insertCell().textContent = payload;
+		const second = table.insertRow();
+		second.id = 'second';
+		second.className = 'nodrag';
+		second.insertCell().textContent = 'fixed row';
+		document.body.append(table);
+		Reflect.get(window, '$')(table).tableDnD();
+		return { first: table.rows[0] === first, second: table.rows[1] === second, cursor: first.style.cursor, fixedCursor: second.style.cursor };
+	}, payload);
+	expect(result).toEqual({ first: true, second: true, cursor: 'move', fixedCursor: '' });
+	await expect(page.locator('#first td')).toHaveText(payload);
+	await expect(page.locator('#drag-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('core colorpicker input is parsed as a color rather than template HTML', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery-ui.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.colorpicker.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	const colors = await page.evaluate(payload => {
+		const input = document.createElement('input');
+		input.id = 'hex';
+		input.value = payload;
+		document.body.append(input);
+		const $ = Reflect.get(window, '$');
+		// Match color.php: no caller-supplied HTML, size or regional options.
+		$(input).colorpicker();
+		$(input).colorpicker('open');
+		const invalid = $(input).colorpicker('getColor');
+		$(input).colorpicker('setColor', '12ab34');
+		const valid = $(input).colorpicker('getColor');
+		return { invalid, valid };
+	}, payload);
+	expect(colors.invalid).not.toContain('<');
+	expect(colors.valid.toLowerCase()).toBe('12ab34');
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+async function treeFixture(page: import('@playwright/test').Page) {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jstree.js', jquery).href });
+	await page.evaluate(forceText => new Promise<void>(resolve => {
+		const container = document.createElement('div');
+		container.id = 'tree-probe';
+		const list = document.createElement('ul');
+		for (const id of ['first', 'second', 'third']) {
+			const item = document.createElement('li');
+			item.id = id;
+			item.textContent = '<img src=x onerror="window.dependencyExecuted=1"> ' + id;
+			list.append(item);
+		}
+		container.append(list);
+		document.body.append(container);
+		Reflect.get(window, '$')(container).one('ready.jstree', () => resolve()).jstree({
+			core: { animation: 0, check_callback: true, force_text: forceText },
+		});
+	}), editorForceText);
+}
+
+test('Cacti dropdown builds labels as text and sanitizes menu HTML while preserving submenu navigation', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('purify.js', jquery).href });
+	await page.addScriptTag({ url: new URL('cacti-rendering.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.dropdown.js', jquery).href });
+	await page.evaluate(() => {
+		Reflect.get(window, '$').fx.off = true;
+		Reflect.get(window, '$')('#email').DropDownMenu({
+			name: 'dropdown-probe', auto_close: false,
+			title: '<img src=x onerror="window.dependencyExecuted=1">', subtitle: '<b>literal subtitle</b>',
+			html: '<h6><a href="#">Section</a><div><a id="unsafe" href="javascript:window.dependencyExecuted=1" onclick="window.dependencyExecuted=1">Unsafe URL</a><a href="https://example.org/">Valid link</a><strong>Formatting</strong><img src=x onerror="window.dependencyExecuted=1"><script>window.dependencyExecuted=1</script></div></h6>',
+		});
+	});
+	await expect(page.locator('#dropdown-probe')).toBeVisible();
+	await expect(page.locator('#dropdown-probe_title')).toHaveText('<img src=x onerror="window.dependencyExecuted=1">');
+	await expect(page.locator('#dropdown-probe_subtitle')).toHaveText('<b>literal subtitle</b>');
+	await expect(page.locator('#dropdown-probe img, #dropdown-probe script, #dropdown-probe [onclick], #dropdown-probe [id="unsafe"]')).toHaveCount(0);
+	await page.locator('#dropdown-probe_content > h6 > a').click();
+	await expect(page.locator('#dropdown-probe_content strong')).toHaveText('Formatting');
+	await expect(page.locator('#dropdown-probe_content a').filter({ hasText: 'Unsafe URL' })).not.toHaveAttribute('href');
+	await expect(page.locator('#dropdown-probe_content a').filter({ hasText: 'Valid link' })).toHaveAttribute('href', 'https://example.org/');
+	await page.locator('#dropdown-probe_back').click();
+	await expect(page.locator('#dropdown-probe_content > h6 > a')).toHaveText('Section');
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('Cacti dropdown falls back to text without a sanitizer and rejects unsafe menu identifiers', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('cacti-rendering.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.dropdown.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	await page.evaluate(payload => {
+		const $ = Reflect.get(window, '$');
+		$.fx.off = true;
+		$('#email').DropDownMenu({ name: '\"><img src=x onerror="window.dependencyExecuted=1">', html: payload, auto_close: false });
+		$('#email').DropDownMenu({ name: 'fallback-probe', html: payload, auto_close: false });
+	}, payload);
+	await expect(page.locator('.cacti_dd_menu')).toHaveCount(1);
+	await expect(page.locator('#fallback-probe_content')).toHaveText(payload);
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('navigation-box plugin menu labels stay text and explicit HTML uses the shared boundary', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	for (const asset of ['jquery-ui.js', 'js.storage.js', 'purify.js', 'cacti-rendering.js', 'jquery.contextMenu.js', 'navigationBox.js']) {
+		await page.addScriptTag({ url: new URL(asset, jquery).href });
+	}
+	await page.evaluate(() => {
+		const container = document.createElement('div');
+		container.id = 'mdw-SideBarContainer';
+		document.body.append(container);
+		new cactiNavigation();
+		const box = new cactiBox();
+		box.add({
+			helper: 'menu-probe', title: 'Probe',
+			contextMenuItems: {
+				label: { name: '<img src=x onerror="window.dependencyExecuted=1">', isHtmlName: true },
+				markup: { type: 'html', html: '<strong>Valid format</strong><img src=x onerror="window.dependencyExecuted=1"><a href="javascript:window.dependencyExecuted=1">Unsafe</a>' },
+			},
+		});
+	});
+	await expect(page.locator('.context-menu-item').filter({ hasText: '<img src=x onerror="window.dependencyExecuted=1">' })).toHaveCount(1);
+	await expect(page.locator('.context-menu-html strong')).toHaveText('Valid format');
+	await expect(page.locator('.context-menu-html a')).not.toHaveAttribute('href');
+	await expect(page.locator('.context-menu-list img, .context-menu-list [onerror]')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('jsTree next/previous navigation wraps DOM siblings rather than label HTML (CodeQL 101-104)', async ({ page }) => {
+	await treeFixture(page);
+	const result = await page.evaluate(() => {
+		const tree = Reflect.get(window, '$')('#tree-probe').jstree(true);
+		return {
+			next: tree.get_next_dom('first')[0] === document.getElementById('second'),
+			nextStrict: tree.get_next_dom('first', true)[0] === document.getElementById('second'),
+			previous: tree.get_prev_dom('third')[0] === document.getElementById('second'),
+			previousStrict: tree.get_prev_dom('third', true)[0] === document.getElementById('second'),
+		};
+	});
+	expect(result).toEqual({ next: true, nextStrict: true, previous: true, previousStrict: true });
+	await expect(page.locator('#tree-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('Cacti tree editor keeps markup-like labels as text through rename and outside-click blur (CodeQL 105)', async ({ page }) => {
+	expect(editorForceText).toBe(true);
+	await treeFixture(page);
+	await page.evaluate(() => Reflect.get(window, '$')('#tree-probe').jstree(true).edit('first'));
+	const input = page.locator('.jstree-rename-input');
+	const payload = '<img src=x onerror="window.dependencyExecuted=1"> renamed';
+	await input.fill(payload);
+	await page.locator('#email').click();
+	await expect(input).toHaveCount(0);
+	await expect(page.locator('#first > .jstree-anchor')).toHaveText(payload);
+	await expect(page.locator('#tree-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('core datetimepicker parses field text separately from grid template options', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery-ui.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.timepicker.js', jquery).href });
+	const result = await page.evaluate(() => {
+		const input = document.createElement('input');
+		input.id = 'date-probe';
+		input.value = '<img src=x onerror="window.dependencyExecuted=1">';
+		document.body.append(input);
+		const $ = Reflect.get(window, '$');
+		// Match the graph/tree date-filter configuration.
+		$(input).datetimepicker({ minuteGrid: 10, stepMinute: 1, showAnim: 'slideDown', numberOfMonths: 1, timeFormat: 'HH:mm', dateFormat: 'yy-mm-dd', showButtonPanel: false });
+		$(input).datetimepicker('show');
+		const grid = document.querySelector('.ui-timepicker-div') !== null;
+		$(input).datetimepicker('setDate', new Date(2026, 9, 10, 12, 30));
+		return { grid, value: input.value };
+	});
+	expect(result).toEqual({ grid: true, value: '2026-10-10 12:30' });
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('jQuery selector scoping and single-tag parsing do not reinterpret field text (CodeQL 9/115/116)', async ({ page }) => {
+	await validationFixture(page);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, '$');
+		const context = document.createElement('div');
+		context.id = '\"><img src=x onerror="window.dependencyExecuted=1">';
+		const child = document.createElement('span');
+		child.className = 'selector-probe';
+		context.append(child);
+		document.body.append(context);
+		const found = $(context).find('> .selector-probe')[0] === child;
+		const parsed = $.parseHTML('<img>')[0];
+		return { found, tag: parsed.tagName, attributes: parsed.attributes.length, children: parsed.childNodes.length };
+	});
+	expect(result).toEqual({ found: true, tag: 'IMG', attributes: 0, children: 0 });
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('tablesorter preserves escaped header and cell text through sorting and filtering', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery.tablesorter.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.tablesorter.widgets.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	await page.evaluate(payload => {
+		const table = document.createElement('table');
+		table.id = 'sort-probe';
+		table.createTHead().insertRow().append(document.createElement('th'));
+		table.tHead!.rows[0].cells[0].textContent = payload;
+		const body = table.createTBody();
+		for (const label of ['z ' + payload, 'a ' + payload]) body.insertRow().insertCell().textContent = label;
+		document.body.append(table);
+		const $ = Reflect.get(window, '$');
+		$(table).tablesorter({ widgets: ['zebra', 'filter'], headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>', sortList: [[0, 0]] });
+		// Core enables zebra; this controlled filter setup also exercises the
+		// reviewed table/node helper APIs without treating filter values as HTML.
+		$.tablesorter.setFilters(table, [payload], true);
+		$.tablesorter.storage(table, 'codeql-test', { value: payload });
+	}, payload);
+	await expect(page.locator('#sort-probe tbody tr').first()).toHaveText('a ' + payload);
+	await expect(page.locator('#sort-probe thead tr').first()).toHaveText(payload);
+	await expect(page.locator('#sort-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('jQuery UI default button tooltip and dialog paths preserve text and constrain heading tags', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery-ui.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	await page.evaluate(payload => {
+		const $ = Reflect.get(window, '$');
+		const button = document.createElement('button');
+		button.id = 'ui-probe';
+		button.textContent = payload;
+		button.title = payload;
+		document.body.append(button);
+		$(button).button().tooltip();
+		$(button).tooltip('open');
+		const dialog = document.createElement('div');
+		dialog.id = 'dialog-probe';
+		dialog.textContent = payload;
+		document.body.append(dialog);
+		$(dialog).dialog({ modal: true, title: payload, uiDialogTitleHeadingLevel: '\"><img src=x onerror="window.dependencyExecuted=1">' });
+	}, payload);
+	await expect(page.locator('#ui-probe')).toHaveText(payload);
+	await expect(page.locator('.ui-dialog-title')).toHaveText(payload);
+	await expect(page.locator('.ui-dialog-title')).toHaveJSProperty('tagName', 'SPAN');
+	await expect(page.locator('#dialog-probe')).toHaveText(payload);
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('Billboard tooltip sanitization rejects executable markup and encoded URI schemes (CodeQL 6/7)', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('d3.js', jquery).href });
+	await page.addScriptTag({ url: new URL('billboard.js', jquery).href });
+	await page.evaluate(() => {
+		const container = document.createElement('div');
+		container.id = 'tooltip-chart';
+		document.body.append(container);
+		const chart = Reflect.get(window, 'bb').generate({
+			bindto: '#tooltip-chart', data: { columns: [['data', 1, 2]] }, transition: { duration: 0 },
+			tooltip: { contents: () => '<strong>Valid format</strong><img src=x onerror="window.dependencyExecuted=1"><svg><g onload="window.dependencyExecuted=1"><a href="java&#x73;cript&colon;window.dependencyExecuted=1">unsafe</a></g></svg><scr<script>ipt>window.dependencyExecuted=1</scr<script>ipt>' },
+		});
+		chart.tooltip.show({ index: 0 });
+	});
+	await expect(page.locator('.bb-tooltip-container strong')).toHaveText('Valid format');
+	const unsafe = page.locator('.bb-tooltip-container script, .bb-tooltip-container [onload], .bb-tooltip-container [onerror]');
+	expect(await unsafe.evaluateAll(nodes => nodes.map(node => node.outerHTML))).toEqual([]);
+	expect(await page.evaluate(() => Array.from(document.querySelectorAll('.bb-tooltip-container [href]')).some(node => /^javascript:/i.test(node.getAttribute('href') || '')))).toBe(false);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('Cacti validation renders title and custom error messages as text on creation and update', async ({ page }) => {
+	await validationFixture(page);
+	const payload = '<img src=x onerror="window.validationExecuted=1">';
+	await page.evaluate(payload => {
+		const input = document.getElementById('email') as HTMLInputElement;
+		input.title = payload;
+		input.value = 'invalid';
+		Reflect.get(window, 'formValidate')('#probe', '/unused');
+		Reflect.get(window, '$')('#probe').data('validator').element(input);
+	}, payload);
+	await expect(page.locator('#email-error')).toHaveText(payload);
+	await expect(page.locator('#email-error *')).toHaveCount(0);
+	await page.evaluate(payload => Reflect.get(window, '$')('#probe').data('validator').showErrors({ email: payload }), payload + ' updated');
+	await expect(page.locator('#email-error')).toHaveText(payload + ' updated');
+	await expect(page.locator('#email-error *')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'validationExecuted'))).toBeUndefined();
+	await page.locator('#email').fill('valid@example.org');
+	await page.evaluate(() => Reflect.get(window, '$')('#probe').data('validator').element(document.getElementById('email')));
+	await expect(page.locator('#email-error')).toBeHidden();
+});
+
+test('validation lookup and ARIA paths retain DOM elements rather than parsing selector text (CodeQL 91/92/619/620)', async ({ page }) => {
+	await validationFixture(page);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, '$');
+		Reflect.get(window, 'formValidate')('#probe', '/unused');
+		const validator = $('#probe').data('validator');
+		const input = document.getElementById('email') as HTMLInputElement;
+		const name = '\"><img src=x onerror="window.validationExecuted=1">';
+		input.name = name;
+		validator.groups[name] = 'group';
+		const error = document.createElement('label');
+		error.id = 'validation-error';
+		document.getElementById('probe')!.append(error);
+		validator.addErrorAriaDescribedBy(input, $(error), true);
+		return {
+			found: validator.findByName(name)[0] === input,
+			clean: validator.clean(validator.findByName(name)) === input,
+			target: validator.validationTargetFor(input) === input,
+			aria: input.getAttribute('aria-describedby'),
+		};
+	});
+	expect(result).toEqual({ found: true, clean: true, target: true, aria: 'validation-error' });
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'validationExecuted'))).toBeUndefined();
+});
+
+// These cases exercise generated dependencies in a real browser. Fixtures
+// isolate library behavior from CSP so blocked execution cannot hide a bug.
+test('HTMX query text remains a history URL rather than restored HTML (CodeQL 622)', async ({ page }) => {
+	await page.goto('/');
+	const asset = await page.locator('script[src*="htmx.js"]').getAttribute('src');
+	expect(asset).toBeTruthy();
+	await page.route('**/__codeql-history-origin?*', route => route.fulfill({
+		contentType: 'text/html',
+		body: `<!doctype html><html><head><meta name="htmx-config" content='{"allowEval":false,"allowScriptTags":false}'>
+		<script src="${asset}"></script></head><body>
+		<button id="next" hx-get="/__codeql-history-next" hx-target="#target" hx-push-url="true">Next</button>
+		<div id="target"><p id="marker">original</p></div></body></html>`,
+	}));
+	await page.route('**/__codeql-history-next', route => route.fulfill({ contentType: 'text/html', body: '<p id="marker">second</p>' }));
+	const payload = '"><img src=x onerror="window.codeqlExecuted=1">';
+	await page.goto('/__codeql-history-origin?probe=' + encodeURIComponent(payload));
+	await page.locator('#next').click();
+	await expect(page).toHaveURL(/__codeql-history-next$/);
+	const entry = await page.evaluate(() => JSON.parse(sessionStorage.getItem('htmx-history-cache')!)[0]);
+	expect(entry.url).toContain('probe=');
+	expect(entry.content).not.toContain('codeqlExecuted');
+	await page.goBack();
+	await expect(page.locator('#marker')).toHaveText('original');
+	expect(await page.evaluate(() => Reflect.get(window, 'codeqlExecuted'))).toBeUndefined();
+});
+
+test('Cacti disables HTML history snapshots and restricts HTMX requests to this origin', async ({ page }) => {
+	await page.goto('/');
+	const config = await page.evaluate(() => Reflect.get(window, 'htmx').config);
+	expect(config.allowEval).toBe(false);
+	expect(config.allowScriptTags).toBe(false);
+	expect(config.selfRequestsOnly).toBe(true);
+	expect(config.historyCacheSize).toBe(0);
+	expect(config.refreshOnHistoryMiss).toBe(true);
+});
+
+test('HTMX expression prefixes are not URL schemes and cannot enable evaluation (CodeQL 167)', async ({ page }) => {
+	await page.goto('/');
+	await page.route('**/__codeql-values', route => route.fulfill({ contentType: 'text/html', body: 'safe' }));
+	await page.evaluate(() => {
+		const button = document.createElement('button');
+		button.id = 'expression-probe';
+		button.textContent = 'Probe';
+		button.setAttribute('hx-get', '/__codeql-values');
+		button.setAttribute('hx-vals', 'js:{probe:(window.codeqlExecuted=1)}');
+		document.body.append(button);
+		document.addEventListener('htmx:evalDisallowedError', () => button.dataset.blocked = 'true');
+		Reflect.get(window, 'htmx').process(button);
+	});
+	await page.locator('#expression-probe').click();
+	await expect(page.locator('#expression-probe')).toHaveAttribute('data-blocked', 'true');
+	expect(await page.evaluate(() => Reflect.get(window, 'codeqlExecuted'))).toBeUndefined();
+});
+
+test('Cacti history protection leaves non-HTMX popstate handlers intact', async ({ page }) => {
+	await page.goto('/');
+	const reached = await page.evaluate(() => {
+		let calls = 0;
+		const previous = window.onpopstate;
+		window.onpopstate = () => { calls++; };
+		try {
+			window.dispatchEvent(new PopStateEvent('popstate', { state: { cacti: true } }));
+			window.dispatchEvent(new PopStateEvent('popstate', { state: null }));
+			return calls;
+		} finally {
+			window.onpopstate = previous;
+		}
+	});
+	expect(reached).toBe(2);
+});
+
+test('Cacti rejects tampered history HTML and reloads from the server even when snapshots are reenabled', async ({ page }) => {
+	let documents = 0;
+	page.on('request', request => { if (request.isNavigationRequest()) documents++; });
+	await page.goto('/');
+	await page.waitForLoadState('networkidle');
+	documents = 0;
+	const original = page.url();
+	await page.route('**/__codeql-history-next', route => route.fulfill({ contentType: 'text/html', body: '<p id="marker">second</p>' }));
+	await page.evaluate(() => {
+		// Cacti's legacy navigation owns the initial state. Mark this fixture
+		// entry as HTMX-owned so Back actually exercises restoreHistory().
+		history.replaceState({ ...history.state, htmx: true }, document.title);
+		// Exercise stale/plugin-enabled caches rather than relying on size=0.
+		Reflect.get(window, 'htmx').config.historyCacheSize = 10;
+		Reflect.get(window, 'htmx').config.refreshOnHistoryMiss = false;
+		const button = document.createElement('button');
+		button.id = 'history-next';
+		button.textContent = 'Next';
+		button.setAttribute('hx-get', '/__codeql-history-next');
+		button.setAttribute('hx-target', '#history-target');
+		button.setAttribute('hx-push-url', 'true');
+		const target = document.createElement('div');
+		target.id = 'history-target';
+		document.body.append(button, target);
+		Reflect.get(window, 'htmx').process(button);
+	});
+	await page.locator('#history-next').click();
+	await expect(page).toHaveURL(/__codeql-history-next$/);
+	await page.evaluate(() => {
+		const cache = JSON.parse(sessionStorage.getItem('htmx-history-cache')!);
+		cache[0].content = '<p id="tampered">tampered</p><img src=x onerror="window.codeqlExecuted=1">';
+		sessionStorage.setItem('htmx-history-cache', JSON.stringify(cache));
+		// Prevent saveCurrentPageToHistory from clearing the seeded cache.
+		document.body.setAttribute('hx-history', 'false');
+	});
+	await page.goBack();
+	await expect.poll(() => documents).toBeGreaterThan(0);
+	// The navigation request can start before the new document's loader runs.
+	// Wait for its cache cleanup rather than inspecting the departing page.
+	await page.waitForFunction(() => sessionStorage.getItem('htmx-history-cache') === null);
+	await expect(page).toHaveURL(original);
+	await expect(page.locator('#tampered')).toHaveCount(0);
+	expect(await page.evaluate(() => sessionStorage.getItem('htmx-history-cache'))).toBeNull();
+});
+
+for (const input of [
+	'{"__proto__":{"codeqlPollution":true},"minTime":35,"startOnPageLoad":false}',
+	'{"ajax":{"__proto__":{"codeqlPollution":true}},"minTime":35,"startOnPageLoad":false}',
+	'{"constructor":{"prototype":{"codeqlPollution":true}},"minTime":35,"startOnPageLoad":false}',
+]) {
+	test(`Pace option merging rejects prototype keys: ${input}`, async ({ page }) => {
+		await page.route('**/__codeql-pace', route => route.fulfill({
+			contentType: 'text/html',
+			body: '<!doctype html><html><head><script src="/include/js/pace.js"></script></head><body>safe</body></html>',
+		}));
+		await page.addInitScript(options => { Reflect.set(window, 'paceOptions', JSON.parse(options)); }, input);
+		await page.goto('/__codeql-pace');
+		const result = await page.evaluate(() => ({
+			polluted: Reflect.get(Object.prototype, 'codeqlPollution'),
+			minTime: Reflect.get(window, 'Pace').options.minTime,
+			constructorOverride: Object.hasOwn(Reflect.get(window, 'Pace').options, 'constructor'),
+		}));
+		expect(result.polluted).toBeUndefined();
+		expect(result.constructorOverride).toBe(false);
+		expect(result.minTime).toBe(35);
+	});
+}
+
+test('Billboard ignores prototype keys while preserving valid chart options (CodeQL 129)', async ({ page }) => {
+	await page.route('**/__codeql-billboard', route => route.fulfill({
+		contentType: 'text/html',
+		body: '<!doctype html><html><head><script src="/include/js/d3.js"></script><script src="/include/js/billboard.js"></script></head><body><div id="chart"></div></body></html>',
+	}));
+	await page.goto('/__codeql-billboard');
+	const result = await page.evaluate(() => {
+		const options = JSON.parse('{"bindto":"#chart","data":{"columns":[["safe",1,2]],"__proto__":{"codeqlPollution":true}},"__proto__":{"codeqlPollution":true},"constructor":{"prototype":{"codeqlPollution":true}}}');
+		const chart = Reflect.get(window, 'bb').generate(options);
+		const data = chart.data();
+		chart.destroy();
+		return { polluted: Reflect.get(Object.prototype, 'codeqlPollution'), id: data[0].id };
+	});
+	expect(result.polluted).toBeUndefined();
+	expect(result.id).toBe('safe');
+});
+
+async function managedLibraryFixture(page: import('@playwright/test').Page, assets: string[]) {
+	await page.route('http://frontend.fixture/**', route => route.fulfill({contentType:'text/html', body:'<!doctype html><html><body></body></html>'}));
+	await page.goto('http://frontend.fixture/');
+	for (const asset of assets) {
+		await page.addScriptTag({content:readFileSync(resolve(__dirname, '../../../include/js', asset), 'utf8')});
+	}
+}
+
+test('managed legacy libraries preserve date, highlighting and keyboard APIs', async ({page}) => {
+	await managedLibraryFixture(page, ['jquery.js', 'vendor/moment/moment.min.js', 'vendor/daterangepicker/daterangepicker.js', 'vendor/mark/jquery.mark.js', 'vendor/hotkeys/hotkeys.js']);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, 'jQuery');
+		const moment = Reflect.get(window, 'moment');
+		const hotkeys = Reflect.get(window, 'hotkeys');
+		const input = document.createElement('input'); document.body.append(input);
+		$(input).daterangepicker({startDate:'10/01/2026', endDate:'10/11/2026'});
+		const range = $(input).data('daterangepicker');
+		const dates = [range.startDate.format('YYYY-MM-DD'), range.endDate.format('YYYY-MM-DD')];
+		range.remove();
+		const label = document.createElement('p'); label.textContent = 'Fixture'; document.body.append(label);
+		$(label).markRegExp(/Fixture/);
+		let pressed = 0; hotkeys('ctrl+x', () => pressed++);
+		document.dispatchEvent(new KeyboardEvent('keydown', {key:'x', keyCode:88, ctrlKey:true, bubbles:true}));
+		hotkeys.unbind('ctrl+x');
+		return {version:moment.version, dates, marks:label.querySelectorAll('mark').length, pressed};
+	});
+	expect(result).toEqual({version:'2.31.0', dates:['2026-10-01','2026-10-11'], marks:1, pressed:1});
+});
+
+test('generated tablesorter filters work with jQuery 4', async ({page}) => {
+	await managedLibraryFixture(page, ['jquery.js','jquery.tablesorter.js','jquery.tablesorter.widgets.js']);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, 'jQuery');
+		const table = document.createElement('table');
+		table.innerHTML = '<thead><tr><th>Name</th></tr></thead><tbody><tr><td>Two</td></tr><tr><td>One</td></tr></tbody>';
+		document.body.append(table);
+		$(table).tablesorter({widgets:['filter'], sortList:[[0,0]]});
+		$.tablesorter.setFilters(table, ['One'], true);
+		return table.tBodies[0].rows[0].textContent;
+	});
+	expect(result).toBe('One');
+});
+
+test('generated Pace retains prototype-key filtering', async ({page}) => {
+	await page.route('http://frontend.fixture/**', route => route.fulfill({contentType:'text/html', body:'<!doctype html><html><body></body></html>'}));
+	await page.goto('http://frontend.fixture/');
+	await page.evaluate(() => Reflect.set(window, 'paceOptions', JSON.parse('{"__proto__":{"fixturePollution":true},"constructor":{"prototype":{"fixturePollution":true}},"startOnPageLoad":false}')));
+	await page.addScriptTag({content:readFileSync(resolve(__dirname, '../../../include/js/pace.js'), 'utf8')});
+	expect(await page.evaluate(() => Reflect.get(Object.prototype, 'fixturePollution'))).toBeUndefined();
+});

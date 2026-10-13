@@ -38,16 +38,17 @@ var url;
 var local_graph_id  = null;
 
 function realtimeDetectBrowser() {
+	var browser;
 	if (navigator.userAgent.indexOf('MSIE') >= 0) {
-		var browser = 'IE';
+		browser = 'IE';
 	} else if (navigator.userAgent.indexOf('Chrome') >= 0) {
-		var browser = 'Chrome';
+		browser = 'Chrome';
 	} else if (navigator.userAgent.indexOf('Mozilla') >= 0) {
-		var browser = 'FF';
+		browser = 'FF';
 	} else if (navigator.userAgent.indexOf('Opera') >= 0) {
-		var browser = 'Opera';
+		browser = 'Opera';
 	} else {
-		var browser = 'Other';
+		browser = 'Other';
 	}
 
 	return browser;
@@ -55,7 +56,7 @@ function realtimeDetectBrowser() {
 
 function imageOptionsChanged(action) {
 	const graph_start  = $('#graph_start').val();
-	var graph_end      = 0;
+
 	const ds_step      = $('#ds_step').val();
 	var size           = $('#size').val();
 	const isThumb      = $('#thumbnails').is(':checked');
@@ -78,12 +79,12 @@ function imageOptionsChanged(action) {
 	if (action === 'countdown') {
 		url = `graph_realtime.php?action=countdown&top=0&left=0&local_graph_id=${local_graph_id}&ds_step=${ds_step}&count=${count}&size=${size}&graph_nolegend=${isThumb}`;
 	} else if (action === 'initial') {
-		url = `graph_realtime.php?action=initial&top=0&left=0&local_graph_id=${local_graph_id}&graph_start=-${parseInt(graph_start) > 0 ? graph_start:'60'}&ds_step=${ds_step}&count=${count}&size=${size}`;
+		url = `graph_realtime.php?action=initial&top=0&left=0&local_graph_id=${local_graph_id}&graph_start=-${Number.parseInt(graph_start) > 0 ? graph_start:'60'}&ds_step=${ds_step}&count=${count}&size=${size}`;
 	} else {
-		url = `graph_realtime.php?action=${action}&top=0&left=0&local_graph_id=${local_graph_id}&graph_start=-${parseInt(graph_start) > 0 ? graph_start:'60'}&ds_step=${ds_step}&count=${count}&size=${size}&graph_nolegend=${isThumb}`;
+		url = `graph_realtime.php?action=${action}&top=0&left=0&local_graph_id=${local_graph_id}&graph_start=-${Number.parseInt(graph_start) > 0 ? graph_start:'60'}&ds_step=${ds_step}&count=${count}&size=${size}&graph_nolegend=${isThumb}`;
 	}
 
-	Pace.stop;
+	Pace.stop();
 
 	$.getJSON(url)
 		.done(function(data) {
@@ -170,7 +171,7 @@ function countRealtimeGraphs() {
 }
 
 function stopRealtime() {
-	var graph;
+
 
 	for (key in realtimeArray) {
 		var graph_id = key;
@@ -239,7 +240,7 @@ function realtimeGrapher() {
 	}
 
 	const graph_start = $('#graph_start').val();
-	var graph_end   = 0;
+
 	const ds_step     = $('#ds_step').val();
 	var size        = $('#size').val();
     const isThumb     = $('#thumbnails').is(':checked');
@@ -255,6 +256,7 @@ function realtimeGrapher() {
 
 		graphsRendered = 0;
 		prevTotalGraphs = totalGraphs;
+		const cycle = realtimeGrapher.cycle = (realtimeGrapher.cycle || 0) + 1;
 
 		for (key in realtimeArray) {
 			if (realtimeArray[key] === true) {
@@ -276,9 +278,10 @@ function realtimeGrapher() {
 						position = $('body').position();
 					}
 
-					$.get(`${urlPath}graph_realtime.php?action=countdown&top=${parseInt(position.top)}&left=${parseInt(position.left)}${isThumb ? '&graph_nolegend=true':'&graph_nolegend=false'}&graph_end=0&graph_start=-${parseInt(graph_start) > 0 ? graph_start:'60'}&local_graph_id=${local_graph_id}&ds_step=${ds_step}&count=${count}&size=${size}`)
+					$.getJSON(`${urlPath}graph_realtime.php?action=countdown&top=${Number.parseInt(position.top)}&left=${Number.parseInt(position.left)}${isThumb ? '&graph_nolegend=true':'&graph_nolegend=false'}&graph_end=0&graph_start=-${Number.parseInt(graph_start) > 0 ? graph_start:'60'}&local_graph_id=${local_graph_id}&ds_step=${ds_step}&count=${count}&size=${size}`)
 						.done(function(data) {
-							var results = (typeof data === 'string') ? JSON.parse(data) : data;
+							if (cycle !== realtimeGrapher.cycle) return;
+							var results = data;
 
 							if (realtimeArray[results.local_graph_id] === true) {
 								const image_format = (results.image_format === 'svg+xml') ? 'svg+xml' : 'png';
@@ -294,11 +297,12 @@ function realtimeGrapher() {
 							destroy(data);
 							destroy(results);
 							destroy(position);
-
-							graphsRendered++;
 						})
 						.fail(function(data) {
-							getPresentHTTPError(data);
+							if (cycle === realtimeGrapher.cycle) getPresentHTTPError(data);
+						})
+						.always(function() {
+							if (cycle === realtimeGrapher.cycle) graphsRendered++;
 						});
 				});
 			}

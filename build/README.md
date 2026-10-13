@@ -15,14 +15,22 @@ npm run build:js   # or run the sync explicitly
 
 ## What is managed here
 
-The managed third-party JavaScript libraries are npm-sourced (generated,
-git-ignored): jquery, jquery-ui, jstree, billboard.js, DOMPurify, pace-js,
-select2, the tablesorter files (core, widgets, pager) and the
-jquery-validation files.
+`assetMap` in `build/sync-js.mjs` lists the npm-sourced, generated files. It
+includes the main UI libraries, Chart.js, Touch Punch, Moment, daterangepicker,
+mark.js, and hotkeys-js. The latter libraries retain their existing public
+paths under `include/js/vendor/`. Moment is pinned to a patched release;
+mark.js uses the published 8.11.1 release rather than the old copy marked 9.0.0.
 
-`pace-js` carries a one-line local fix (a stray regex alternation removed) applied
-through `patch-package` from `patches/pace-js+1.2.4.patch`. The fix should also be
-sent upstream so the patch can eventually be dropped.
+The copy transforms preserve Pace's prototype-key rejection and body-class
+fix, rewrite screenfull's ESM export, and replace removed jQuery APIs in
+tablesorter's core, widgets, and minified pager. No npm package source is
+modified. Unexpected Pace or screenfull source formats fail the build so an
+update cannot silently discard the fixes.
+
+`build/legacy-js.json` lists the remaining Cacti-maintained adapters and their
+compatibility requirements. They are not interchangeable with upstream
+distributions. The inventory test covers every root browser script and every
+static JavaScript dependency in the shared header.
 
 Only Cacti's own themed CSS for jquery-ui and jstree remains committed; those are
 Cacti theme assets, not upstream library files.
@@ -35,6 +43,6 @@ each theme's `main.css` instead.
 
 ## Release and source-tree checkouts
 
-Because the generated files are no longer committed, `npm ci` must run before a
+Because generated files may be absent or stale in a source checkout, `npm ci` must run before a
 release tarball is assembled and after a fresh `git clone`. The release pipeline
 must invoke `npm ci` (which runs the build via `postinstall`).

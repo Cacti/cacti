@@ -1731,7 +1731,13 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 	}
 }
 
-function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe = null) : int {
+/**
+ * @param-out array<string, array<int, bool>> $successful_updates Per-timestamp acknowledgements.
+ */
+function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe = null, array &$successful_updates = []) : int {
+	$track_updates      = func_num_args() >= 3;
+	$successful_updates = [];
+
 	// lets count the number of rrd files processed
 	$rrds_processed = 0;
 
@@ -1781,8 +1787,15 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 
 				if ($update_result !== false) {
 					$rrds_processed++;
+
+					if ($track_updates) {
+						$successful_updates[(string) $rrd_path][(int) $update_time] = true;
+					}
 				} else {
 					cacti_log('ERROR: RRDtool update failed for ' . rrdtool_command_log_context('update ' . $rrd_path), false, 'POLLER');
+
+					// Do not advance this file past a failed timestamp before it can be retried.
+					break;
 				}
 			}
 		}

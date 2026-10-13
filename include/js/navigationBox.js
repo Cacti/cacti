@@ -71,7 +71,10 @@ midwinter.navigationBox = {
                 const $box = $(el);
 
                 if (typeof plugin.content === 'function') {
-                    $box.find('.navBox-content').html(plugin.content($box));
+                    const content = plugin.content($box);
+                    if (content !== null && content !== undefined) {
+                        $box.children('.navBox-content').empty().append(content);
+                    }
                 }
                 if (typeof plugin.init === 'function') {
                     plugin.init($box);
@@ -398,11 +401,7 @@ class cactiNavigation {
         // Only trigger on Enter (13) or Space (32)
         if (!(event.keyCode === 13 || event.keyCode === 32)) return;
         event.preventDefault();
-
-        const funcName = event.data.function;
-        if (typeof window[funcName] === 'function') {
-            window[funcName](event);
-        }
+        if (!(event.originalEvent?.repeat || event.repeat)) $(event.currentTarget).trigger('click');
     }
 
     _isObject(obj) {
@@ -647,10 +646,7 @@ class cactiButton extends cactiNavigation {
                     }
                 });
 
-                $button.on("keydown", {
-                    param: config.param,
-                    function: clickFunc
-                }, (e) => this._runKeyEvent(e));
+                $button.on('keydown', (e) => this._runKeyEvent(e));
             }
         }
 
@@ -775,11 +771,7 @@ class cactiBox extends cactiNavigation {
 
         if (!config.header) config.header = config.title;
 
-        const { buttons, helper, layout, title, header, width, content, contentLoader, control, controlLoader } = config;
-
-        // content & control loading via registry
-        const finalContent = content || (contentLoader ? this._runFunction(contentLoader) : '');
-        const finalControl = control || (controlLoader ? this._runFunction(controlLoader) : '');
+        const { buttons, helper, layout, title, header, width } = config;
 
         // generate UI components
         const btnSearch     = buttons.search    ? `<div class="navBox-header-button ti-icon-search" data-action="search" data-helper="${helper}" role="button" tabindex="0"></div>` : '';
@@ -804,8 +796,8 @@ class cactiBox extends cactiNavigation {
                     <div class="navBox-header-title"><span>${header}</span></div>
                     ${rightButtons}
                 </div>
-                <div class="navBox-control">${finalControl}</div>
-                <div class="navBox-content">${finalContent}</div>
+                <div class="navBox-control"></div>
+                <div class="navBox-content"></div>
             </div>`;
 
         return this.#build(config, containerHtml);
@@ -814,6 +806,13 @@ class cactiBox extends cactiNavigation {
     #build(config, containerHtml) {
         const destinationId = this._readConfigOption('container');
         const $box = $(containerHtml).appendTo(`#${destinationId}`);
+
+        // Load after the shell exists so plugins can return live DOM nodes and
+        // retain their event handlers instead of being converted to strings.
+        const content = config.content || (config.contentLoader ? this._runFunction(config.contentLoader, $box) : '');
+        const control = config.control || (config.controlLoader ? this._runFunction(config.controlLoader, $box) : '');
+        $box.children('.navBox-content').append(content);
+        $box.children('.navBox-control').append(control);
 
         // register close button
         if (config.buttons.close) {
@@ -910,6 +909,15 @@ class cactiBox extends cactiNavigation {
                 // create copy to avoid reference issues
                 let newItem = { ...item };
                 const safeKey = `plugin_${key}`;
+
+                // Plugin labels are text. Explicit HTML items use the shared
+                // reviewed boundary and fall back to a text node if unavailable.
+                newItem.isHtmlName = false;
+                if (newItem.type === 'html') {
+                    newItem.html = window.CactiRenderer && typeof window.CactiRenderer.menuFragment === 'function'
+                        ? window.CactiRenderer.menuFragment(newItem.html)
+                        : document.createTextNode(typeof newItem.html === 'string' ? newItem.html : '');
+                }
 
                 // process sub-items if they exist
                 if (newItem.items && typeof newItem.items === 'object') {
@@ -1228,35 +1236,46 @@ class cactiBox extends cactiNavigation {
     }
 
     searchToHighlight(data) {
-        // critical check: ensure external library mark.js is loaded
-        if (typeof $.fn.markRegExp !== 'function') {
-            console.error("NavigationBox Error: 'mark.js' is not loaded! The search function requires this library.");
-            return;
-        }
-
-        const query = typeof data === 'object' ? data.query : data;
+        const query = typeof data?.query === 'string' ? data.query : '';
         const $container = data.$box ? data.$box.find('.navBox-content') : this._getBox(data.helper).find('.navBox-content');
 
         if (!$container.length) return;
 
-        // prepare search pattern
-        const pattern = '.*' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
-        const re = new RegExp(pattern, 'gmiu');
+        $container.find('mark[data-cacti-navigation-match]').each(function() {
+            const parent = this.parentNode;
+            this.replaceWith(...this.childNodes);
+            parent.normalize();
+        });
+        const literal = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const pattern = new RegExp(literal, 'iu');
+        $container.find('li.menuitem').each(function() {
+            $(this).toggleClass('hide', query !== '' && !pattern.test(this.textContent));
+        });
+        if (!query) return;
 
-        // execute mark.js logic
-        $("li.menuitem", $container).removeClass('hide');
-        $("a[role='menuitem'], li.menuitem", $container).unmark({
-            done: () => {
-                if (query) {
-                    $("a[role='menuitem'], li.menuitem", $container).markRegExp(re, {
-                        "accuracy": "complementary",
-                        "separateWordSearch": false,
-                        "done": () => {
-                            $("li.menuitem", $container).not(":has(mark)").addClass('hide');
-                        }
-                    });
-                }
+        const walker = document.createTreeWalker($container[0], NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        while (walker.nextNode()) {
+            if (!walker.currentNode.parentElement.closest('script, style, textarea')) {
+                nodes.push(walker.currentNode);
             }
+        }
+        nodes.forEach(node => {
+            const text = node.textContent;
+            const matches = Array.from(text.matchAll(new RegExp(literal, 'giu')));
+            if (!matches.length) return;
+            const fragment = document.createDocumentFragment();
+            let offset = 0;
+            matches.forEach(match => {
+                fragment.append(document.createTextNode(text.slice(offset, match.index)));
+                const mark = document.createElement('mark');
+                mark.setAttribute('data-cacti-navigation-match', '');
+                mark.textContent = match[0];
+                fragment.append(mark);
+                offset = match.index + match[0].length;
+            });
+            fragment.append(document.createTextNode(text.slice(offset)));
+            node.replaceWith(fragment);
         });
     }
 
