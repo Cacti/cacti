@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup SpikekillFloatDebug SpikekillCliStatistics; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup SpikekillMutationMatrix SpikekillFloatDebug SpikekillCliStatistics; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi

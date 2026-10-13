@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
--issue#8316: Keep graph drilldown controls fixed and keyboard focus intact, bind SpikeKill requests to their graph, clean up submenu state, and require CSRF-protected POSTs for SpikeKill writes
+-issue#8316: Keep graph drilldown controls fixed and keyboard focus intact, bind SpikeKill requests to their graph, clean up submenu state, and require CSRF-protected POSTs for SpikeKill writes, enforce RRA kill limits, preserve missing samples, and report RRD failures
 -feature#8316: Expand the open graph drilldown strip into a labelled table menu (text label on the left, glyphs aligned in a fixed right-hand column) built in layout.js on open so plugin-contributed icons are labelled from their title without plugin changes
 -issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
 -issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
