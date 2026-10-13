@@ -2678,6 +2678,8 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  * "<path_php_binary>" validly quoted for the shell and leaves a bare
  * <path_cacti>/scripts/x.php unquoted for the PHP script server, which resolves the
  * first token as a filesystem path rather than through a shell.
+ * Unsupported shell grammar inside command substitutions rejects the complete
+ * template by returning an empty string, including any previously resolved fields.
  *
  * @param string $template The command template containing <field> tokens.
  * @param array $escaped_values Map of field name => already-escaped value.
@@ -2777,6 +2779,16 @@ function substitute_script_path($template, $escaped_values) {
 			$i++;
 
 			continue;
+		}
+
+		// Grouping, case patterns, comments and redirections require shell grammar
+		// beyond this quote scanner. Reject the whole template before an ambiguous
+		// closing parenthesis can expose field values to the outer quote context.
+		if ($quote === '' && $stack[$top]['kind'] !== 'top' &&
+			($ch === '(' || $ch === '#' || $ch === '<' || $ch === '>' ||
+				preg_match('/\Gcase(?=\s|$)/', $template, $unused, 0, $i) &&
+				($i === 0 || strpos(" \t\r\n;|&(", $template[$i - 1]) !== false))) {
+			return '';
 		}
 
 		// unquoted or inside double quotes: $(...) and backticks start a nested

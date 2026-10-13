@@ -64,6 +64,15 @@ $cases = [
 	['"\\`<field>"', ['field' => "'p'"], '"\\`"\'p\'""'],
 	['\\$(<field>)', ['field' => "'p'"], '\\$(\'p\')'],
 	['\\`<field>', ['field' => "'p'"], '\\`\'p\''],
+	// Unsupported nested shell syntax must reject the complete template.
+	['"$( (true); printf %s <field>)"', ['field' => "'p'"], ''],
+	['"$( ((true)); printf %s <field>)"', ['field' => "'p'"], ''],
+	['"$(case x in x) printf %s <field>;; esac)"', ['field' => "'p'"], ''],
+	['"$(printf %s <field>; (true))"', ['field' => "'p'"], ''],
+	['"$(printf %s <field> # )\n)"', ['field' => "'p'"], ''],
+	['"$(cat <<EOF\n<field>\nEOF\n)"', ['field' => "'p'"], ''],
+	['"`(true); printf %s <field>`"', ['field' => "'p'"], ''],
+	['"$((1 + <field>))"', ['field' => "'p'"], ''],
 ];
 
 foreach ($cases as $index => [$template, $values, $expected]) {

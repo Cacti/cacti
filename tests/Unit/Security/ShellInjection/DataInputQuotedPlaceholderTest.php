@@ -25,6 +25,10 @@
 
 $functionsSource = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
 
+if (!function_exists('substitute_script_path')) {
+	require_once dirname(__DIR__, 4) . '/lib/functions.php';
+}
+
 test('GHSA-5v3j: substitute_script_path is quote-aware and closes template quoting around values', function () use ($functionsSource) {
 	expect($functionsSource)->toContain("preg_match('/\\G<([A-Za-z0-9_]+)>/'")
 		->and($functionsSource)->toContain('$out .= $quote . $value . $quote;')
