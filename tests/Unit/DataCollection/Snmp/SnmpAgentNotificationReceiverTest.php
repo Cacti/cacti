@@ -21,7 +21,6 @@ const SNMPAGENT_EVENT_SEVERITY_CRITICAL = 4;
 const POLLER_VERBOSITY_NONE             = 1;
 const POLLER_VERBOSITY_MEDIUM           = 5;
 
-$GLOBALS['config']                      = array();
 $GLOBALS['snmpagent_notification_logs'] = array();
 $GLOBALS['snmpagent_event_severity']    = array(
 	SNMPAGENT_EVENT_SEVERITY_LOW      => 'low',
@@ -93,7 +92,8 @@ if (preg_match('/function snmpagent_notification\(.*?^}\R/ms', $source, $matches
 eval('namespace SnmpAgentNotificationReceiverTest;' . $matches[0]);
 
 beforeEach(function () {
-	$GLOBALS['config']                      = array();
+	$GLOBALS['snmpagent_test_config_before'] = $GLOBALS['config'];
+	$GLOBALS['config']                      = array('library_path' => dirname(__DIR__, 4) . '/lib');
 	$GLOBALS['snmpagent_notification_logs'] = array();
 	$GLOBALS['snmpagent_fetch_calls']       = 0;
 	$GLOBALS['snmpagent_managers']          = array();
@@ -177,4 +177,8 @@ test('a v1 notification is sent through the argv-based background path without l
 	expect($noteLine)->not->toBeNull()
 		->and($noteLine)->toContain('[REDACTED]')
 		->not->toContain('public%PATH%');
+});
+
+afterEach(function () {
+	$GLOBALS['config'] = $GLOBALS['snmpagent_test_config_before'];
 });

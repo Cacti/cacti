@@ -1,11 +1,11 @@
 <?php
 
 $basePath = dirname(__DIR__, 4);
-$GLOBALS['config'] = array(
+$GLOBALS['config'] = array_merge($GLOBALS['config'] ?? array(), array(
 	'base_path'    => $basePath,
 	'include_path' => $basePath . '/include',
 	'is_web'       => false,
-);
+));
 $config = $GLOBALS['config'];
 
 require_once($basePath . '/include/csrf.php');

@@ -52,6 +52,7 @@ $invalid_results = array(
 );
 
 print json_encode(array(
+	'normalization'       => array_map('automation_prepare_id_list', array(false, array(), '7', array(2, '9'), '1e3', '1 OR 1=1', (string) PHP_INT_MAX, (string) PHP_INT_MAX . '0', str_repeat('9', strlen((string) PHP_INT_MAX) + 1), 0, -1, 1.5)),
 	'queries'             => $valid_queries,
 	'invalid_results'     => $invalid_results,
 	'invalid_query_count' => count($queries),
