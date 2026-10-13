@@ -7662,28 +7662,61 @@ function get_rrdtool_version($force = false) {
 }
 
 /**
- * Retrieves the installed rrdtool version. Used as part of Cacti's lib functionality.
+ * Retrieve the installed RRDtool capability level used by the installer.
  *
  * @return string|false The resulting string.
  */
 function get_installed_rrdtool_version() {
-	global $config, $rrdtool_versions;
-	static $version = '';
+	global $rrdtool_versions;
 
-	if ($version == '') {
-		if ($config['cacti_server_os'] == 'win32') {
-			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
-		} else {
-			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
-		}
+	$version = get_rrdtool_binary_version();
 
+	return $version === false ? false : get_supported_rrdtool_version($version, $rrdtool_versions);
+}
+
+/**
+ * Read the exact release from the configured binary. Refresh when its path changes.
+ * Cache failed detection too, so repeated checks do not spawn another process.
+ *
+ * @param bool $force Retry detection after replacing the binary at the same path.
+ * @return string|false The exact release, or false when detection fails.
+ */
+function get_rrdtool_binary_version($force = false) {
+	static $path = null;
+	static $version = false;
+
+	$rrdtool = read_config_option('path_rrdtool');
+
+	if ($force || $path !== $rrdtool) {
+		$path = $rrdtool;
 		$version = false;
-		if ($shell && preg_match('/^RRDtool ([0-9.]+) /', $shell, $matches)) {
-			foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
-				if (cacti_version_compare($rrdtool_version, $matches[1], '<=')) {
-					$version = $rrdtool_version;
-				}
+
+		if (!empty($rrdtool)) {
+			$shell = shell_exec(cacti_escapeshellarg($rrdtool) . ' -v 2>&1');
+
+			if ($shell && preg_match('/^RRDtool ([0-9]+\.[0-9]+\.[0-9]+)(?:\s|$)/', $shell, $matches)) {
+				$version = $matches[1];
 			}
+		}
+	}
+
+	return $version;
+}
+
+/**
+ * Map a binary release to a configured capability level without losing its
+ * exact version or returning a value absent from the installer's dropdown.
+ *
+ * @param string $installed_version The exact release reported by RRDtool.
+ * @param array $supported_versions Supported capability levels and labels.
+ * @return string|false The supported level, or false below the supported floor.
+ */
+function get_supported_rrdtool_version($installed_version, $supported_versions) {
+	$version = false;
+
+	foreach ($supported_versions as $supported_version => $label) {
+		if (cacti_version_compare($supported_version, $installed_version, '<=')) {
+			$version = $supported_version;
 		}
 	}
 
