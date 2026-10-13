@@ -595,7 +595,7 @@ function graph_drilldown_icons(int $local_graph_id, string $type = 'graph_button
 	}
 
 	if (is_realm_allowed(1043)) {
-		print "<a href='#' class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown ti ti-paint-filled spikeKill' title='" . __esc('Kill Spikes in Graphs') . "'></i></a>";
+		print "<a href='#' role='button' class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown ti ti-paint-filled spikeKill' title='" . __esc('Kill Spikes in Graphs') . "'></i></a>";
 		print '<br>';
 	}
 
@@ -2788,6 +2788,8 @@ function html_spikekill_actions() : void {
 
 			break;
 		case 'spikesave':
+			csrf_require_post();
+
 			switch(gnrv('setting')) {
 				case 'ravgnan':
 					$id = gnrv('id');
@@ -2936,146 +2938,163 @@ function html_spikekill_js() : void {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	var spikeKillOpen = false;
+	var spikeKillRequest = null;
+	var spikeKillAnchor = null;
 
 	$(function() {
-		$(document).click(function() {
-			spikeKillClose();
-		});
-
-		$('a.spikekill').children().contextmenu(function() {
-			return false;
-		});
-
-		$('a.spikekill').unbind().click(function(event) {
-			event.preventDefault();
-
-			if (spikeKillOpen == false) {
-				local_graph_id = $(this).attr('data-graph');
-
-				$.get('?action=spikemenu&local_graph_id='+local_graph_id)
-					.done(function(data) {
-						$('#sk'+local_graph_id).after(data);
-
-						menuAnchor = $('#sk'+local_graph_id).offset().left;
-						pageWidth  = $(document).width();
-
-						if (pageWidth - menuAnchor < 180) {
-							$('.spikekillMenu').css({ position: 'absolute', top: 0, left: -180 });
-						}
-
-						$('.spikekillMenu').menu({
-							select: function(event, ui) {
-								$(this).menu('focus', event, ui.item);
-							},
-							delay: 1000
-						});
-
-						$('.spikekillParent').show();
-
-						spikeKillActions();
-
-						spikeKillOpen = true;
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					});
-			} else {
+		$(document).off('click.spikekill').on('click.spikekill', function(event) {
+			if ($(event.target).closest('.spikekillParent, .iconLink.spikekill').length == 0) {
 				spikeKillClose();
 			}
+		});
+
+		$('.iconLink.spikekill').off('.spikekill').on('keydown.spikekill', function(event) {
+			if (event.keyCode == 32) {
+				event.preventDefault();
+				$(this).trigger('click');
+			}
+		}).on('click.spikekill', function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (spikeKillAnchor === this) {
+				spikeKillClose();
+				return;
+			}
+
+			spikeKillClose();
+			var anchor = $(this);
+			var local_graph_id = anchor.attr('data-graph');
+			spikeKillAnchor = this;
+			var request = $.get('?action=spikemenu&local_graph_id=' + local_graph_id);
+			spikeKillRequest = request;
+
+			request.done(function(data) {
+				if (spikeKillRequest !== request) {
+					return;
+				}
+
+				spikeKillRequest = null;
+				if (!$.contains(document, anchor[0]) || !anchor.closest('.graphDrillDownToggle').hasClass('open')) {
+					spikeKillAnchor = null;
+					return;
+				}
+				anchor.after(data);
+				var parent = anchor.next('.spikekillParent');
+				if ($(document).width() - anchor.offset().left < 180) {
+					parent.find('.spikekillMenu').css({ position: 'absolute', top: 0, left: -180 });
+				}
+				parent.find('.spikekillMenu').menu({
+					select: function(event, ui) {
+						$(this).menu('focus', event, ui.item);
+					},
+					delay: 1000
+				});
+				parent.show();
+				spikeKillActions();
+				spikeKillOpen = true;
+			}).fail(function(data, status) {
+				if (status !== 'abort' && spikeKillRequest === request) {
+					spikeKillRequest = null;
+					spikeKillAnchor = null;
+					getPresentHTTPError(data);
+				}
+			});
 		});
 	});
 
 	function spikeKillClose() {
-		if (spikeKillOpen) {
-			$(document).find('.spikekillMenu').menu('destroy').parent().remove();
-			spikeKillOpen = false;
+		var request = spikeKillRequest;
+		spikeKillRequest = null;
+		spikeKillAnchor = null;
+		if (request) {
+			request.abort();
 		}
+		$('.spikekillMenu.ui-menu').menu('destroy');
+		$('.spikekillParent').remove();
+		spikeKillOpen = false;
 	}
 
 	function spikeKillActions() {
-		$('.rstddev').unbind().click(function() {
+		$('.rstddev').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('stddev', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.dstddev').unbind().click(function() {
+		$('.dstddev').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('stddev', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.rfill').unbind().click(function() {
+		$('.rfill').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('fill', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.dfill').unbind().click(function() {
+		$('.dfill').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('fill', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.rfloat').unbind().click(function() {
+		$('.rfloat').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('float', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.dfloat').unbind().click(function() {
+		$('.dfloat').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('float', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.rabsolute').unbind().click(function() {
+		$('.rabsolute').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('absolute', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.dabsolute').unbind().click(function() {
+		$('.dabsolute').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('absolute', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.skmethod').unbind().click(function() {
+		$('.skmethod').off('click.spikekill').on('click.spikekill', function() {
 			$('.skmethod').find('i').removeClass('ti ti-check');
 			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 
-			strURL = '?action=spikesave&setting=ravgnan&id='+$(this).attr('id').replace('method_','');
-			$.get(strURL)
+			$.post('?action=spikesave', {setting: 'ravgnan', id: $(this).attr('id').replace('method_', ''), __csrf_magic: csrfMagicToken})
 			.fail(function(data) {
 				getPresentHTTPError(data);
 			});
 		});
 
-		$('.skills').unbind().click(function() {
+		$('.skills').off('click.spikekill').on('click.spikekill', function() {
 			$('.skills').find('i').removeClass('ti ti-check');
 			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 
-			strURL = '?action=spikesave&setting=rkills&id='+$(this).attr('id').replace('kills_','');
-			$.get(strURL)
+			$.post('?action=spikesave', {setting: 'rkills', id: $(this).attr('id').replace('kills_', ''), __csrf_magic: csrfMagicToken})
 			.fail(function(data) {
 				getPresentHTTPError(data);
 			});
 		});
 
-		$('.skstddev').unbind().click(function() {
+		$('.skstddev').off('click.spikekill').on('click.spikekill', function() {
 			$('.skstddev').find('i').removeClass('ti ti-check');
 			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 
-			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
-			$.get(strURL)
+			$.post('?action=spikesave', {setting: 'rstddev', id: $(this).attr('id').replace('stddev_', ''), __csrf_magic: csrfMagicToken})
 			.fail(function(data) {
 				getPresentHTTPError(data);
 			});
 		});
 
-		$('.skabsmax').unbind().click(function() {
+		$('.skabsmax').off('click.spikekill').on('click.spikekill', function() {
 			$('.skabsmax').find('i').removeClass('ti ti-check');
 			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 
-			strURL = '?action=spikesave&setting=rabsmax&id='+$(this).attr('id').replace('absmax_','');
-			$.get(strURL)
+			$.post('?action=spikesave', {setting: 'rabsmax', id: $(this).attr('id').replace('absmax_', ''), __csrf_magic: csrfMagicToken})
 			.fail(function(data) {
 				getPresentHTTPError(data);
 			});

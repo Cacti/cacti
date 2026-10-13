@@ -15,7 +15,7 @@ function db_fetch_cell_prepared($sql, $params) {
 	return 0;
 }
 function is_realm_allowed($realm) {
-	return false;
+	return in_array($realm, $GLOBALS['graph_markup_realms'] ?? [], true);
 }
 function read_config_option($key) {
 	return '';
@@ -27,6 +27,21 @@ function api_plugin_hook($type, $args) {
 	$GLOBALS['graph_markup_hook'] = $args;
 }
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html.php', 'graph_drilldown_icons', __NAMESPACE__);
+
+if (($argv[1] ?? '') === 'browser') {
+	$GLOBALS['graph_markup_config'] = [];
+	$GLOBALS['graph_markup_realms'] = [1043];
+	print '<!DOCTYPE html>';
+
+	foreach ([1, 2] as $id) {
+		print "<div class='graphWrapperOuter' id='g$id'><div><div class='graphimage' id='graph_$id' graph_start='100' graph_end='200'></div><div class='graphDrillDownToggle'>";
+		graph_drilldown_icons($id);
+		print '</div></div></div>';
+	}
+	print '<button id="outside">Outside</button>';
+	exit;
+}
+
 ob_start();
 graph_drilldown_icons(7);
 $html     = ob_get_clean();

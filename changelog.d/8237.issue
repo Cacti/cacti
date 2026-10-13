@@ -1,0 +1,1 @@
+Bind SpikeKill actions to their graph, clean up submenu state, and require CSRF-protected POSTs for SpikeKill writes

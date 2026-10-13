@@ -25,6 +25,10 @@
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/spikekill.php');
 
+if (!isrv('dryrun')) {
+	csrf_require_post();
+}
+
 $debug = false;
 
 if (isrv('method')) {
