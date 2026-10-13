@@ -199,5 +199,3 @@ test('a dangling symlink below the RRA directory is rejected even for a not-yet-
 		unlink($link);
 	}
 });
-
-
