@@ -1865,7 +1865,7 @@ th.sortable {
 }
 
 .graphSubHeaderColumn {
-	color: #white;
+	color: white;
 	font-size: 12px;
 	vertical-align: middle;
 	text-align: left;
@@ -3133,7 +3133,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* open/close carets as glyphs, centered to match the node glyphs */
 .jstree-default .jstree-ocl {
 	background: none !important;
-	font-family: 'Font Awesome 5 Free';
+	font-family: 'Font Awesome 5 Free', sans-serif;
 	font-weight: 900;
 	font-size: 14px;
 	line-height: 20px;

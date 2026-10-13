@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap-unit.php">
+	<testsuites>
+		<testsuite name="Sortable header compatibility">
+			<file>Unit/Ui/Html/SortableHeaderColumnTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>

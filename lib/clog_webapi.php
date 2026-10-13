@@ -565,10 +565,10 @@ function filter($clogAdmin, $selectedFile) {
 	<tr class='even'>
 		<td>
 		<form id='logfile'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('File');?>
+						<label for='filename'><?php print __('File');?></label>
 					</td>
 					<td>
 						<select id='filename'>
@@ -595,7 +595,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<?php print (get_request_var('reverse') == 1 ? __('Tail Lines'):__('Head Lines'));?>
+						<label for='tail_lines'><?php print (get_request_var('reverse') == 1 ? __('Tail Lines'):__('Head Lines'));?></label>
 					</td>
 					<td>
 						<select id='tail_lines'>
@@ -619,10 +619,10 @@ function filter($clogAdmin, $selectedFile) {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Type');?>
+						<label for='message_type'><?php print __('Type');?></label>
 					</td>
 					<td>
 						<select id='message_type'>
@@ -658,7 +658,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Display');?>
+						<label for='reverse'><?php print __('Display');?></label>
 					</td>
 					<td>
 						<select id='reverse'>
@@ -667,7 +667,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Refresh');?>
+						<label for='refresh'><?php print __('Refresh');?></label>
 					</td>
 					<td>
 						<select id='refresh'>
@@ -684,10 +684,10 @@ function filter($clogAdmin, $selectedFile) {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='matches'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<select id='matches'>
@@ -696,7 +696,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' aria-label='<?php print __esc('Search');?>' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>

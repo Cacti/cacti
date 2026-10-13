@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-09-28 15:57-0400\n"
+"POT-Creation-Date: 2026-10-11 16:07-0700\n"
 "PO-Revision-Date: 2024-04-20 18:53-0400\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Hebrew (Israel) <http://translate.cacti.net/projects/cacti/core-v1-2-x/he_IL/>\n"
@@ -380,36 +380,33 @@ msgid "Matching Graphs"
 msgstr "גרפים תואמים"
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
-#: automation_graph_rules.php automation_networks.php automation_snmp.php
-#: automation_templates.php automation_tree_rules.php cdef.php color.php
-#: color_templates.php data_debug.php data_input.php data_queries.php
-#: data_source_profiles.php data_sources.php data_templates.php
-#: gprint_presets.php graph_templates.php graph_view.php graphs.php
-#: graphs_new.php host.php host_templates.php lib/api_automation.php
-#: lib/clog_webapi.php lib/html_filter.php lib/html_graph.php
-#: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
-#: pollers.php rrdcheck.php rrdcleaner.php settings.php sites.php tree.php
-#: user_admin.php user_domains.php user_group_admin.php utilities.php vdef.php
+#: automation_networks.php color_templates.php data_debug.php data_sources.php
+#: graph_view.php graphs.php graphs_new.php host.php lib/api_automation.php
+#: lib/clog_webapi.php lib/html.php lib/html_filter.php lib/html_graph.php
+#: lib/html_reports.php lib/html_tree.php managers.php plugins.php rrdcheck.php
+#: rrdcleaner.php tree.php user_admin.php user_group_admin.php utilities.php
 msgid "Search"
 msgstr "חיפוש"
 
-#: aggregate_graphs.php color_templates.php data_sources.php graph_view.php
-#: graphs.php host.php include/global_arrays.php lib/api_automation.php
-#: lib/html.php lib/html_graph.php lib/html_tree.php tree.php user_admin.php
-#: user_group_admin.php utilities.php
-msgid "Graphs"
-msgstr "גרפים"
-
-#: aggregate_graphs.php aggregate_templates.php automation_devices.php
-#: automation_graph_rules.php automation_networks.php automation_snmp.php
-#: automation_templates.php automation_tree_rules.php cdef.php color.php
-#: color_templates.php data_debug.php data_input.php data_queries.php
-#: data_source_profiles.php data_sources.php data_templates.php
-#: gprint_presets.php graph_templates.php graph_view.php graphs.php
-#: graphs_new.php host.php host_templates.php include/global_form.php
-#: lib/api_automation.php lib/html_reports.php links.php managers.php
+#: aggregate_graphs.php automation_devices.php automation_graph_rules.php
+#: automation_networks.php automation_snmp.php automation_templates.php
+#: automation_tree_rules.php cdef.php color.php data_debug.php data_input.php
+#: data_queries.php data_source_profiles.php data_sources.php
+#: data_templates.php gprint_presets.php graph_templates.php graph_view.php
+#: graphs.php graphs_new.php host.php host_templates.php
+#: include/global_form.php lib/api_automation.php lib/html.php
+#: lib/html_filter.php lib/installer.php lib/rrd.php links.php managers.php
 #: plugins.php pollers.php rrdcheck.php rrdcleaner.php sites.php tree.php
 #: user_admin.php user_domains.php user_group_admin.php utilities.php vdef.php
+msgid "Rows"
+msgstr "שורות"
+
+#: aggregate_graphs.php aggregate_templates.php automation_devices.php
+#: automation_networks.php color_templates.php data_debug.php
+#: data_source_profiles.php data_sources.php graph_view.php graphs.php
+#: graphs_new.php host.php include/global_form.php lib/api_automation.php
+#: lib/html.php lib/html_reports.php plugins.php rrdcheck.php rrdcleaner.php
+#: tree.php user_admin.php user_domains.php user_group_admin.php utilities.php
 msgid "Default"
 msgstr "ברירת מחדל"
 
@@ -463,6 +460,13 @@ msgstr "נקה"
 msgid "Clear Filters"
 msgstr "מחיקת מסננים"
 
+#: aggregate_graphs.php color_templates.php data_sources.php graph_view.php
+#: graphs.php host.php include/global_arrays.php lib/api_automation.php
+#: lib/html.php lib/html_graph.php lib/html_tree.php tree.php user_admin.php
+#: user_group_admin.php utilities.php
+msgid "Graphs"
+msgstr "גרפים"
+
 #: aggregate_graphs.php graphs.php lib/api_automation.php user_admin.php
 #: user_group_admin.php
 msgid "Graph Title"
@@ -480,8 +484,8 @@ msgstr "מזהה"
 msgid "Included in Aggregate"
 msgstr "כלול במצטבר"
 
-#: aggregate_graphs.php graph_templates.php graph_view.php graphs.php
-#: lib/html_graph.php lib/html_tree.php lib/spikekill.php
+#: aggregate_graphs.php graph_realtime.php graph_templates.php graph_view.php
+#: graphs.php lib/html_graph.php lib/html_tree.php lib/spikekill.php
 msgid "Size"
 msgstr "גודל"
 
@@ -536,7 +540,7 @@ msgstr "הכל"
 #: graph_templates_items.php graphs.php graphs_items.php host.php
 #: include/global_arrays.php include/global_form.php
 #: include/global_settings.php lib/api_automation.php lib/auth.php lib/html.php
-#: lib/html_form.php lib/html_reports.php package_import.php settings.php
+#: lib/html_form.php lib/html_reports.php package_import.php
 #: templates_import.php user_admin.php user_group_admin.php utilities.php
 msgid "None"
 msgstr "ללא"
@@ -589,8 +593,7 @@ msgid "Aggregate Templates"
 msgstr "תבניות מצטברות"
 
 #: aggregate_templates.php automation_templates.php color_templates.php
-#: include/global_arrays.php lib/installer.php user_admin.php
-#: user_group_admin.php
+#: include/global_arrays.php lib/installer.php
 msgid "Templates"
 msgstr "תבניות"
 
@@ -1054,8 +1057,8 @@ msgstr "טיהור התגלה התקנים"
 
 #: automation_devices.php automation_networks.php automation_snmp.php
 #: data_debug.php data_source_profiles.php host.php lib/functions.php
-#: lib/html.php lib/html_reports.php lib/spikekill.php plugins.php pollers.php
-#: user_admin.php utilities.php
+#: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
+#: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
 msgstr "לא זמין"
 
@@ -1633,9 +1636,15 @@ msgstr "באיזה שבוע (ים) של החודש יתגלה טווח הרשת 
 msgid "First"
 msgstr "ראשון"
 
-#: automation_networks.php
+#: automation_networks.php graph.php
+#, fuzzy
+#| msgid "Second"
 msgid "Second"
-msgstr "שניה"
+msgid_plural "Seconds"
+msgstr[0] "שניה"
+msgstr[1] "שניה"
+msgstr[2] "שניה"
+msgstr[3] "שניה"
 
 #: automation_networks.php
 msgid "Third"
@@ -1980,10 +1989,6 @@ msgstr "אין פריטים SNMP"
 #: automation_snmp.php
 msgid "Delete SNMP Option Item"
 msgstr "מחק פריט אפשרות SNMP"
-
-#: automation_snmp.php
-msgid "SNMP Rules"
-msgstr "כללי SNMP"
 
 #: automation_snmp.php
 msgid "SNMP Option Sets"
@@ -2968,7 +2973,7 @@ msgstr "פרופיל"
 
 #: data_debug.php data_sources.php data_templates.php graphs.php graphs_new.php
 #: host.php host_templates.php lib/clog_webapi.php lib/html_reports.php
-#: plugins.php settings.php tree.php user_admin.php utilities.php
+#: plugins.php tree.php user_admin.php utilities.php
 msgid "All"
 msgstr "הכל"
 
@@ -3345,7 +3350,7 @@ msgstr "לא הוגדרו תבניות גרפים."
 msgid "Delete Associated Graph"
 msgstr "מחק גרף משויך"
 
-#: data_queries.php include/global_arrays.php lib/api_automation.php
+#: data_queries.php include/global_arrays.php
 msgid "Data Queries"
 msgstr "שאילתות נתונים"
 
@@ -3476,11 +3481,6 @@ msgstr "גרף Timespan"
 msgid "Steps"
 msgstr "שלבי הבישול/אפיה"
 
-#: data_source_profiles.php graphs_new.php include/global_form.php lib/html.php
-#: lib/html_filter.php lib/installer.php lib/rrd.php utilities.php
-msgid "Rows"
-msgstr "שורות"
-
 #: data_source_profiles.php
 msgid "Select Consolidation Function(s)"
 msgstr "בחר פונקציית מיזוג"
@@ -3554,10 +3554,6 @@ msgstr "שעה אחת"
 msgid "Data Source Profiles"
 msgstr "פרופילי מקור נתונים"
 
-#: data_source_profiles.php
-msgid "Profiles"
-msgstr "פרופילים"
-
 #: data_source_profiles.php data_templates.php
 msgid "Has Data Sources"
 msgstr "יש מקורות נתונים"
@@ -3605,6 +3601,10 @@ msgstr "מספר מקורות הנתונים באמצעות פרופיל זה."
 #: data_source_profiles.php
 msgid "The number of Data Templates using this Profile."
 msgstr "מספר תבניות הנתונים באמצעות פרופיל זה."
+
+#: data_source_profiles.php
+msgid "Profiles"
+msgstr "פרופילים"
 
 #: data_source_profiles.php
 msgid "No Data Source Profiles Found"
@@ -4104,10 +4104,6 @@ msgstr "GPRINT Presets [חדש]"
 msgid "GPRINT Presets"
 msgstr "GPRINT presets"
 
-#: gprint_presets.php include/global_arrays.php
-msgid "GPRINTs"
-msgstr "GPRINTs"
-
 #: gprint_presets.php
 msgid "GPRINT Preset Name"
 msgstr "שם מראש של GPRINT"
@@ -4136,6 +4132,10 @@ msgstr "מספר הגרפים באמצעות GPRINT זה."
 msgid "The number of Graphs Templates using this GPRINT."
 msgstr "מספר תבניות גרפים באמצעות GPRINT זה."
 
+#: gprint_presets.php include/global_arrays.php
+msgid "GPRINTs"
+msgstr "GPRINTs"
+
 #: gprint_presets.php
 msgid "No GPRINT Presets"
 msgstr "לא GPRINT presets"
@@ -4153,6 +4153,41 @@ msgstr "הצגת תרשים"
 #| msgid "Data Source does not exist."
 msgid "The Graph you requested does not exist."
 msgstr "מקור הנתונים אינו קיים."
+
+#: graph.php
+#, fuzzy
+#| msgid "Daily"
+msgid "Day"
+msgid_plural "Days"
+msgstr[0] "יומי"
+msgstr[1] "יומי"
+msgstr[2] "יומי"
+msgstr[3] "יומי"
+
+#: graph.php
+#, fuzzy
+#| msgid "1 Hour"
+msgid "Hour"
+msgid_plural "Hours"
+msgstr[0] "שעה אחת"
+msgstr[1] "שעה אחת"
+msgstr[2] "שעה אחת"
+msgstr[3] "שעה אחת"
+
+#: graph.php
+#, fuzzy
+#| msgid "1 Minute"
+msgid "Minute"
+msgid_plural "Minutes"
+msgstr[0] "1 דקה"
+msgstr[1] "1 דקה"
+msgstr[2] "1 דקה"
+msgstr[3] "1 דקה"
+
+#: graph.php
+#, php-format
+msgid "2 Years (%s Average)"
+msgstr ""
 
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -4209,6 +4244,15 @@ msgstr "מדריך המטמון של התמונה אינו ניתן לכתיבה
 #: graph_realtime.php
 msgid "Cacti Real-time Graphing"
 msgstr "קקטוסים בזמן אמת גרפים"
+
+#: graph_realtime.php include/global_arrays.php lib/html_filter.php
+#: lib/html_graph.php lib/html_tree.php
+msgid "Presets"
+msgstr "קבועים מראש"
+
+#: graph_realtime.php utilities.php
+msgid "Refresh Interval"
+msgstr "מרווח רענון"
 
 #: graph_realtime.php lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "Thumbnails"
@@ -4465,7 +4509,8 @@ msgstr "דו\"ח"
 msgid "All Graphs & Templates"
 msgstr "כל הגרפים והתבניות"
 
-#: graph_view.php lib/html_graph.php lib/html_tree.php settings.php
+#: graph_view.php include/global_settings.php lib/html_graph.php
+#: lib/html_tree.php
 msgid "Templates Selected"
 msgstr "תבניות נבחרו"
 
@@ -6431,11 +6476,6 @@ msgstr "התקנים שנתגלו"
 msgid "Device Rules"
 msgstr "כללי התקן"
 
-#: include/global_arrays.php lib/html_filter.php lib/html_graph.php
-#: lib/html_tree.php
-msgid "Presets"
-msgstr "קבועים מראש"
-
 #: include/global_arrays.php
 msgid "Data Profiles"
 msgstr "פרופילי נתונים"
@@ -7401,6 +7441,10 @@ msgstr "מודרני"
 #: include/global_arrays.php
 msgid "Dark"
 msgstr "כהה"
+
+#: include/global_arrays.php
+msgid "Deepness"
+msgstr ""
 
 #: include/global_arrays.php
 msgid "Paper-plane"
@@ -9287,12 +9331,28 @@ msgid "Select which files you wish to place in Debug mode regardless of the Gene
 msgstr "בחר אילו קבצים ברצונך להציב במצב Debug ללא קשר להגדרת Generic Log Level. כל הקבצים שנבחרו יטופלו כפי שהם במצב Debug."
 
 #: include/global_settings.php
+msgid "Select File(s)"
+msgstr "בחר קבצים)"
+
+#: include/global_settings.php
+msgid "Files Selected"
+msgstr "קבצים נבחרים"
+
+#: include/global_settings.php
 msgid "Selective Plugin Debug"
 msgstr "סלקטיבי Plugin Debug"
 
 #: include/global_settings.php
 msgid "Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode."
 msgstr "בחר אילו תוספים ברצונך להציב במצב Debug ללא קשר להגדרת Generic Log Level. כל הקבצים המשמשים את הפלאגין יטופלו כפי שהם במצב Debug."
+
+#: include/global_settings.php
+msgid "Select Plugin(s)"
+msgstr "בחר פלאגין (ים)"
+
+#: include/global_settings.php
+msgid "Plugins Selected"
+msgstr "תוספים נבחרים"
 
 #: include/global_settings.php
 msgid "Selective Device Debug"
@@ -10248,14 +10308,6 @@ msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr "אם ברצונך להפסיק לחלוטין את תהליך הסקרים, בטל את הסימון בתיבה זו."
 
 #: include/global_settings.php
-msgid "SNMP Agent Support Enabled"
-msgstr "תמיכה ב - SNMP Agent מופעלת"
-
-#: include/global_settings.php
-msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
-msgstr "אם אפשרות זו מסומנת, Cacti יאכלס טבלאות SNMP Agent עם התקן Cacti ומידע על המערכת. הוא אינו מאפשר את ה- SNMP Agent עצמו."
-
-#: include/global_settings.php
 msgid "Poller Type"
 msgstr "סוג פולר"
 
@@ -10300,36 +10352,12 @@ msgid "If you choose this option, Cacti will check for output that exceeds Cacti
 msgstr "אם תבחר באפשרות זו, Cacti תבדוק פלט שחורג מיכולתו של Cacti לאחסן אותו ולהוציא אזהרה כאשר הוא מוצא אותו."
 
 #: include/global_settings.php
-msgid "Disable increasing OID Check"
-msgstr "השבת את בדיקת OID הגוברת"
-
-#: include/global_settings.php
-msgid "Controls disabling check for increasing OID while walking OID tree."
-msgstr "שולטת לבדוק השבתה עבור הגדלת OID בעת הליכה עץ OID."
-
-#: include/global_settings.php
 msgid "Remote Agent Timeout"
 msgstr "זמן קצוב לסוכן"
 
 #: include/global_settings.php
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
 msgstr "משך הזמן, בשניות, ששרת האינטרנט המרכזי של Cacti יחכה לתגובה ממאגר הנתונים המרוחק כדי לקבל מידע מכשיר אחר לפני שתנטוש את הבקשה. במכשירים המשויכים ל- Data Collectors, פרט למאגר הנתונים המרכזי של Cacti, יש להשתמש ב&#39;נציג המרוחק &#39;כדי לאסוף מידע על ההתקן."
-
-#: include/global_settings.php
-msgid "SNMP Bulkwalk Fetch Size"
-msgstr "גודל אחזור SNMP Bulkwalk"
-
-#: include/global_settings.php
-msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN."
-msgstr "כמה OID צריך להיות מוחזר לכל בקשה snmpbulkwalk? עבור מכשירים עם עצי SNMP גדולים, הגדלת גודל זה תגדיל את ביצועי המדד מחדש באמצעות רשת WAN."
-
-#: include/global_settings.php
-msgid "SNMP Get OID Limit"
-msgstr "SNMP קבל"
-
-#: include/global_settings.php
-msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
-msgstr "מספר ברירת המחדל המרבי של SNMP קבל OID להנפיק לכל בקשת snmpget. עבור מכשירים, הגדרה זו נשלטת ברמת המכשיר. עליך להשתמש בהגדרה זו רק כאשר אתה משתמש ב- SNMP API של Cacti באופן מקורי בסקריפטים או בתוספים שלך."
 
 #: include/global_settings.php
 msgid "Refresh Poller Table Per Cycle"
@@ -10352,6 +10380,56 @@ msgstr "כברירת מחדל, קקטוסים הנתונים הראשי של ק�
 #| msgid "SNMP error"
 msgid "SNMP Behavior"
 msgstr "שגיאת SNMP"
+
+#: include/global_settings.php
+msgid "SNMP Agent Support Enabled"
+msgstr "תמיכה ב - SNMP Agent מופעלת"
+
+#: include/global_settings.php
+msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
+msgstr "אם אפשרות זו מסומנת, Cacti יאכלס טבלאות SNMP Agent עם התקן Cacti ומידע על המערכת. הוא אינו מאפשר את ה- SNMP Agent עצמו."
+
+#: include/global_settings.php
+msgid "Enable MD5 and DES for SNMPv3"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Enable Image Caching"
+msgid "Enable Credential Cache"
+msgstr "אפשר מטמון תמונות"
+
+#: include/global_settings.php
+msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
+msgstr ""
+
+#: include/global_settings.php
+msgid "SNMP Get OID Limit"
+msgstr "SNMP קבל"
+
+#: include/global_settings.php
+msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
+msgstr "מספר ברירת המחדל המרבי של SNMP קבל OID להנפיק לכל בקשת snmpget. עבור מכשירים, הגדרה זו נשלטת ברמת המכשיר. עליך להשתמש בהגדרה זו רק כאשר אתה משתמש ב- SNMP API של Cacti באופן מקורי בסקריפטים או בתוספים שלך."
+
+#: include/global_settings.php
+msgid "SNMP Bulkwalk Fetch Size"
+msgstr "גודל אחזור SNMP Bulkwalk"
+
+#: include/global_settings.php
+msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN."
+msgstr "כמה OID צריך להיות מוחזר לכל בקשה snmpbulkwalk? עבור מכשירים עם עצי SNMP גדולים, הגדלת גודל זה תגדיל את ביצועי המדד מחדש באמצעות רשת WAN."
+
+#: include/global_settings.php
+msgid "Disable increasing OID Check"
+msgstr "השבת את בדיקת OID הגוברת"
+
+#: include/global_settings.php
+msgid "Controls disabling check for increasing OID while walking OID tree."
+msgstr "שולטת לבדוק השבתה עבור הגדלת OID בעת הליכה עץ OID."
 
 #: include/global_settings.php
 msgid "Additional Data Collector Settings"
@@ -11523,6 +11601,10 @@ msgid "When performing batch spike removal, only the templates selected below wi
 msgstr "בעת ביצוע הסרת ספייק אצווה, רק את התבניות שנבחרו להלן יפעלו."
 
 #: include/global_settings.php
+msgid "Select Template(s)"
+msgstr "בחר תבניות (תבניות)"
+
+#: include/global_settings.php
 msgid "Backup Retention"
 msgstr "שמירת נתונים"
 
@@ -12303,10 +12385,6 @@ msgstr "על הסיסמה שלך להכיל לפחות תו אחד מיוחד!"
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "Cacti יומן מסומנת"
-
-#: lib/auth.php
-msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
-msgstr "אימות לא הוגדר בעבר. ניסיתי להגדיר לאימות מקומית, אך לא נמצא חשבון Admintrative."
 
 #: lib/boost.php utilities.php
 #, fuzzy, php-format
@@ -16256,7 +16334,282 @@ msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source v
 msgstr "הערה: הגרף לא נוסף עבור שאילתת נתונים %s ואינדקס %s עקב כשל באימות מקור נתונים"
 
 #: lib/utility.php
-msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
+msgid "Default collation used by the server when creating databases and tables."
+msgstr ""
+
+#: lib/utility.php
+msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
+msgstr ""
+
+#: lib/utility.php
+msgid "Default character set used by the server."
+msgstr ""
+
+#: lib/utility.php
+msgid "e.g. utf8mb4, utf8, latin1."
+msgstr ""
+
+#: lib/utility.php
+msgid "Character set the client uses when sending statements to the server."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum number of simultaneous client connections permitted."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; default 151. Allow enough for the pollers plus user logins."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy name for the open-table cache; renamed to table_open_cache."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer. Use table_open_cache on modern servers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size of one packet or any generated/intermediate string."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; keep at or above 16M for remote pollers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size to which user-created MEMORY tables may grow."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; sized relative to total system memory."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size of internal in-memory temporary tables before they spill to disk."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
+msgid "Bytes; a larger value keeps temporary tables in memory."
+msgstr "בעת ביצוע שאילתות משנה, כאשר יש גודל שולחן זמני גדול יותר, שמור את הטבלאות הזמניות בזיכרון."
+
+#: lib/utility.php
+msgid "Minimum per-join buffer size for joins that do not use indexes."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; per-connection allocation, default 262144."
+msgstr ""
+
+#: lib/utility.php
+msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; per-connection allocation, default 2097152."
+msgstr ""
+
+#: lib/utility.php
+msgid "Store each InnoDB table and its indexes in its own .ibd tablespace file."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; ON is recommended."
+msgstr ""
+
+#: lib/utility.php
+msgid "InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format."
+msgstr ""
+
+#: lib/utility.php
+msgid "Antelope, Barracuda."
+msgstr ""
+
+#: lib/utility.php
+msgid "Allow index key prefixes longer than 767 bytes (requires the Barracuda format)."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON/1 or OFF/0; this behaviour is now always enabled."
+msgstr ""
+
+#: lib/utility.php
+msgid "Total memory InnoDB uses to cache table and index data."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; commonly 25%-80% of total system memory."
+msgstr ""
+
+#: lib/utility.php
+msgid "Write pages twice (the doublewrite buffer) to protect against partial page writes."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy pool for the InnoDB internal data dictionary and structures."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; obsolete on modern servers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid " seconds left."
+msgid "Seconds; default 50."
+msgstr "שניות נותרו."
+
+#: lib/utility.php
+msgid "Method used to flush data and log files to disk."
+msgstr ""
+
+#: lib/utility.php
+msgid "O_DIRECT, fsync, O_DSYNC, and similar."
+msgstr ""
+
+#: lib/utility.php
+msgid "Controls how the redo log is written and flushed at transaction commit."
+msgstr ""
+
+#: lib/utility.php
+msgid "0, 1, or 2."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
+msgstr ""
+
+#: lib/utility.php
+msgid "Write and flush the InnoDB redo log every N seconds."
+msgstr ""
+
+#: lib/utility.php
+msgid "Seconds (1-2700); default 1."
+msgstr ""
+
+#: lib/utility.php
+msgid "Number of I/O threads used for read operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "default"
+msgid "1-64; default 4."
+msgstr "בְּרִירַת מֶחדָל"
+
+#: lib/utility.php
+msgid "Number of I/O threads used for write operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php
+msgid "Number of regions the InnoDB buffer pool is divided into."
+msgstr ""
+
+#: lib/utility.php
+msgid "1-64; MariaDB removed this in 10.6."
+msgstr ""
+
+#: lib/utility.php
+msgid "Estimated I/O operations per second available to InnoDB background tasks."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; use higher values for SSD/NVMe storage."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum IOPS InnoDB may use when flushing falls behind."
+msgstr ""
+
+#: lib/utility.php
+msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
+msgstr ""
+
+#: lib/utility.php
+msgid "0, 1, or 2; use 0 on SSD storage."
+msgstr ""
+
+#: lib/utility.php
+msgid "Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; MariaDB only."
+msgstr ""
+
+#: lib/utility.php
+msgid "Enforce strict snapshot isolation for InnoDB transactions."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "(Remove)"
+msgid "Removed"
+msgstr "הסר"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Duplicate"
+msgid "Deprecated"
+msgstr "שכפל"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Not Applicable"
+msgid "Not applicable to this engine"
+msgstr "לא ישים"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Support"
+msgid "Supported"
+msgstr "תמיכה"
+
+#: lib/utility.php
+#, php-format
+msgid "%s Variable Capability Matrix"
+msgstr ""
+
+#: lib/utility.php
+msgid "Support by engine and version for each Cacti-recommended variable"
+msgstr ""
+
+#: lib/utility.php
+msgid "Variable"
+msgstr "משתנה"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Table Settings"
+msgid "Available settings:"
+msgstr "הגדרות הטבלה"
+
+#: lib/utility.php
+msgid "N/A - Not applicable to this engine"
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
+msgid "MariaDB 10.5+ and MySQL 8.0+ are the recommended, supported releases (for example, the default database streams on Rocky Linux 9). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6 + ו MariaDB 10.0 + הם משחרר נהדר, והם גרסאות טובות מאוד לבחור. ודא שאתה מפעיל את המהדורה העדכנית ביותר על אף שתיקן ארוך עומד ברמה נמוכה בעיה ברשת שגורמת עמוד השדרה בעיות רבות עם אמינות."
 
 #: lib/utility.php
@@ -16380,7 +16733,9 @@ msgid "If you have SSD disks, use this suggestion.  If you have physical hard dr
 msgstr "אם יש לך דיסקים SSD, השתמש הצעה זו. אם יש לך כוננים קשיחים פיזיים, השתמש ב- 2000 * מספר הכוננים הפעילים במערך. אם באמצעות NVMe או PCIe Flash, מספרים גדולים בהרבה כמו 200000 ניתן להשתמש."
 
 #: lib/utility.php
-msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+#, fuzzy
+#| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "אם יש לך דיסקים SSD, השתמש הצעה זו. אחרת, אל תגדיר הגדרה זו."
 
 #: lib/utility.php
@@ -16407,10 +16762,6 @@ msgstr "%s כוונון"
 #: lib/utility.php
 msgid "Note: Many changes below require a database restart"
 msgstr "הערה: שינויים רבים להלן דורשים הפעלה מחדש של מסד נתונים"
-
-#: lib/utility.php
-msgid "Variable"
-msgstr "משתנה"
 
 #: lib/utility.php
 msgid "Current Value"
@@ -16479,10 +16830,6 @@ msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הדפים הבא�
 #: links.php
 msgid "Delete Page(s)"
 msgstr "מחק דפים"
-
-#: links.php
-msgid "Links"
-msgstr "קישורים"
 
 #: links.php
 msgid "Apply Filter"
@@ -16648,12 +16995,12 @@ msgid "SNMP Notification Receivers"
 msgstr "מקבלי הודעות SNMP"
 
 #: managers.php
-msgid "Receivers"
-msgstr "מקבלים"
-
-#: managers.php
 msgid "Id"
 msgstr "מזהה"
+
+#: managers.php
+msgid "Receivers"
+msgstr "מקבלים"
 
 #: managers.php
 msgid "No SNMP Notification Receivers"
@@ -16932,6 +17279,41 @@ msgid "Awaiting Upgrade"
 msgstr "ממתין לשדרוג"
 
 #: plugins.php
+#, php-format
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy, php-format
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "לא ניתן להסיר את ההתקנה. תוסף זה נדרש על ידי: %s"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "האם אתה בטוח שברצונך להסיר את ההתקנה?"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr "הסרת תוסף זה תסיר את כל נתוני הפלאגין וההגדרות. אם אתה באמת רוצה להסיר את תוסף, לחץ על &#39;הסר&#39; להלן. אחרת, לחץ על &#39;ביטול&#39;"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "הסרת התוסף"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "הסרת התקנה"
+
+#: plugins.php
 msgid "Plugin Management"
 msgstr "ניהול תוסף"
 
@@ -17051,8 +17433,19 @@ msgid "Enable Plugin"
 msgstr "הפעל פלאגין"
 
 #: plugins.php
-msgid "Plugin directory is missing!"
-msgstr "ספריית Plugin חסרה!"
+#, php-format
+msgid "Plugin directory '%s' is missing setup.php"
+msgstr "ספריית הפלאגין &#39; %s&#39; חסרה את setup.php"
+
+#: plugins.php
+#, fuzzy, php-format
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "לא ניתן להסיר את ההתקנה. תוסף זה נדרש על ידי: %s"
+
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
 
 #: plugins.php
 msgid "Plugin is not compatible (Pre-1.x)"
@@ -17066,11 +17459,6 @@ msgstr "ספריות תוסף לא יכול לכלול רווחים"
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
 msgstr "ספריית Plugin אינה נכונה. צריך להיות &#39; %s&#39; אך הוא &#39; %s&#39;"
-
-#: plugins.php
-#, php-format
-msgid "Plugin directory '%s' is missing setup.php"
-msgstr "ספריית הפלאגין &#39; %s&#39; חסרה את setup.php"
 
 #: plugins.php
 msgid "Plugin is lacking an INFO file"
@@ -17405,10 +17793,6 @@ msgid "Test Database Connection"
 msgstr "בדוק חיבור מסד נתונים"
 
 #: pollers.php
-msgid "Collectors"
-msgstr "אספנים"
-
-#: pollers.php
 msgid "Collector Name"
 msgstr "שם אספן"
 
@@ -17563,10 +17947,6 @@ msgstr "יום %d"
 msgid "%d days"
 msgstr "%d ימים"
 
-#: rrdcheck.php
-msgid "Messages"
-msgstr "הודעות"
-
 #: rrdcheck.php rrdcleaner.php user_domains.php user_group_admin.php
 msgctxt "filter: use"
 msgid "Go"
@@ -17637,10 +18017,6 @@ msgid "Time Since Update"
 msgstr "זמן מאז עדכון"
 
 #: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRDfiles"
-
-#: rrdcleaner.php
 msgid "Rescan"
 msgstr "×¢×§××£ ××ª ×¨×©×××ª ××§×××××× (×××××× \"hextile raw\")"
 
@@ -17684,34 +18060,6 @@ msgstr "לאחר שתשנה את מודל הרשאות הגרף, עליך לבד
 #: settings.php
 msgid "Poller Interval must be less than Cron Interval"
 msgstr "מרווח פולר חייב להיות פחות מרווח Cron"
-
-#: settings.php
-msgid "Select Plugin(s)"
-msgstr "בחר פלאגין (ים)"
-
-#: settings.php
-msgid "Plugins Selected"
-msgstr "תוספים נבחרים"
-
-#: settings.php
-msgid "Enter keyword"
-msgstr "הקלד מילת חיפוש..."
-
-#: settings.php
-msgid "Select File(s)"
-msgstr "בחר קבצים)"
-
-#: settings.php
-msgid "Files Selected"
-msgstr "קבצים נבחרים"
-
-#: settings.php
-msgid "Select Template(s)"
-msgstr "בחר תבניות (תבניות)"
-
-#: settings.php
-msgid "All Templates Selected"
-msgstr "כל התבניות נבחרו"
 
 #: settings.php
 msgid "Send a Test Email"
@@ -18858,10 +19206,6 @@ msgid "Domain Properties"
 msgstr "מאפייני דומיין"
 
 #: user_domains.php
-msgid "Domains"
-msgstr "שמות מתחם"
-
-#: user_domains.php
 msgid "Domain Name"
 msgstr "שם דומיין"
 
@@ -19274,7 +19618,6 @@ msgid "Max Total Memory Possible"
 msgstr "זיכרון מקסימלי לפולרים מותרים:"
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "צמצם את זיכרון MySQL/MariaDB לפחות מ -80% of זיכרון מערכת.  שמור זיכרון מטמון נוסף עבור קבצי RRD אם מסד הנתונים נמצא באותה מערכת כמו קבצי RRD.  ראה סיכומי ליבה ולקוחות להלן להסבר על שיטת החישוב."
 
@@ -19396,10 +19739,6 @@ msgstr "הצלחה - אסימון"
 #: utilities.php
 msgid "Success - Password Change"
 msgstr "הצלחה - Pswd"
-
-#: utilities.php
-msgid "Attempts"
-msgstr "ניסיונות"
 
 #: utilities.php vdef.php
 msgctxt "Button: use filter settings"
@@ -19635,10 +19974,6 @@ msgid "Cacti System Utilities"
 msgstr "מערכת כלי עזר"
 
 #: utilities.php
-msgid "Refresh Interval"
-msgstr "מרווח רענון"
-
-#: utilities.php
 msgid "Overrun Warning"
 msgstr "אזהרה על הצפת"
 
@@ -19859,10 +20194,6 @@ msgid "SNMP Agent Cache"
 msgstr "מטמון SNMPAgent"
 
 #: utilities.php
-msgid "OIDs"
-msgstr "OIDs"
-
-#: utilities.php
 msgid "Column Data"
 msgstr "נתוני עמודה"
 
@@ -20008,342 +20339,59 @@ msgstr "מספר תבניות גרפים באמצעות VDEF זה."
 msgid "No VDEFs"
 msgstr "אין VDEFs"
 
-#: plugins.php
-msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
-msgstr ""
-
-#: plugins.php
+#: lib/html.php
 #, fuzzy
-#| msgid "Are you sure you want to Uninstall?"
-msgid "Are you sure you want to Force Uninstall the plugin"
-msgstr "האם אתה בטוח שברצונך להסיר את ההתקנה?"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "הסרת תוסף זה תסיר את כל נתוני הפלאגין וההגדרות. אם אתה באמת רוצה להסיר את תוסף, לחץ על &#39;הסר&#39; להלן. אחרת, לחץ על &#39;ביטול&#39;"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Uninstall Plugin"
-msgid "Force Uninstall Plugin"
-msgstr "הסרת התוסף"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Uninstall"
-msgid "Force Uninstall"
-msgstr "הסרת התקנה"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
-msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
-msgstr "לא ניתן להסיר את ההתקנה. תוסף זה נדרש על ידי: %s"
-
-#: plugins.php
-msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
-msgstr ""
-
-#: plugins.php
-#, fuzzy
-#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
-msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
-msgstr "לא ניתן להסיר את ההתקנה. תוסף זה נדרש על ידי: %s"
-
-#: include/global_settings.php:1330
-#, fuzzy
-#| msgid "Enable Image Caching"
-msgid "Enable Credential Cache"
-msgstr "אפשר מטמון תמונות"
-
-#: include/global_settings.php:1331
-msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
-msgstr ""
-
-#: include/global_settings.php:1302
-msgid "Enable MD5 and DES for SNMPv3"
-msgstr ""
-
-#: include/global_settings.php:1303
-msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
-msgstr ""
-
-#: lib/utility.php:1291
-msgid "Default collation used by the server when creating databases and tables."
-msgstr ""
-
-#: lib/utility.php:1292
-msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
-msgstr ""
-
-#: lib/utility.php:1297
-msgid "Default character set used by the server."
-msgstr ""
-
-#: lib/utility.php:1298 lib/utility.php:1304
-msgid "e.g. utf8mb4, utf8, latin1."
-msgstr ""
-
-#: lib/utility.php:1303
-msgid "Character set the client uses when sending statements to the server."
-msgstr ""
-
-#: lib/utility.php:1309
-msgid "Maximum number of simultaneous client connections permitted."
-msgstr ""
-
-#: lib/utility.php:1310
-msgid "Integer; default 151. Allow enough for the pollers plus user logins."
-msgstr ""
-
-#: lib/utility.php:1315
-msgid "Legacy name for the open-table cache; renamed to table_open_cache."
-msgstr ""
-
-#: lib/utility.php:1316
-msgid "Integer. Use table_open_cache on modern servers."
-msgstr ""
-
-#: lib/utility.php:1321
-msgid "Maximum size of one packet or any generated/intermediate string."
-msgstr ""
-
-#: lib/utility.php:1322
-msgid "Bytes; keep at or above 16M for remote pollers."
-msgstr ""
-
-#: lib/utility.php:1327
-msgid "Maximum size to which user-created MEMORY tables may grow."
-msgstr ""
-
-#: lib/utility.php:1328
-msgid "Bytes; sized relative to total system memory."
-msgstr ""
-
-#: lib/utility.php:1333
-msgid "Maximum size of internal in-memory temporary tables before they spill to disk."
-msgstr ""
-
-#: lib/utility.php:1334
-#, fuzzy
-#| msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
-msgid "Bytes; a larger value keeps temporary tables in memory."
-msgstr "בעת ביצוע שאילתות משנה, כאשר יש גודל שולחן זמני גדול יותר, שמור את הטבלאות הזמניות בזיכרון."
-
-#: lib/utility.php:1339
-msgid "Minimum per-join buffer size for joins that do not use indexes."
-msgstr ""
-
-#: lib/utility.php:1340
-msgid "Bytes; per-connection allocation, default 262144."
-msgstr ""
-
-#: lib/utility.php:1345
-msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
-msgstr ""
-
-#: lib/utility.php:1346
-msgid "Bytes; per-connection allocation, default 2097152."
-msgstr ""
-
-#: lib/utility.php:1351
-msgid "Store each InnoDB table and its indexes in its own .ibd tablespace file."
-msgstr ""
-
-#: lib/utility.php:1352
-msgid "ON or OFF; ON is recommended."
-msgstr ""
-
-#: lib/utility.php:1357
-msgid "InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format."
-msgstr ""
-
-#: lib/utility.php:1358
-msgid "Antelope, Barracuda."
-msgstr ""
-
-#: lib/utility.php:1363
-msgid "Allow index key prefixes longer than 767 bytes (requires the Barracuda format)."
-msgstr ""
-
-#: lib/utility.php:1364
-msgid "ON/1 or OFF/0; this behaviour is now always enabled."
-msgstr ""
-
-#: lib/utility.php:1369
-msgid "Total memory InnoDB uses to cache table and index data."
-msgstr ""
-
-#: lib/utility.php:1370
-msgid "Bytes; commonly 25%-80% of total system memory."
-msgstr ""
-
-#: lib/utility.php:1375
-msgid "Write pages twice (the doublewrite buffer) to protect against partial page writes."
-msgstr ""
-
-#: lib/utility.php:1376
-msgid "ON or OFF."
-msgstr ""
-
-#: lib/utility.php:1381
-msgid "Legacy pool for the InnoDB internal data dictionary and structures."
-msgstr ""
-
-#: lib/utility.php:1382
-msgid "Bytes; obsolete on modern servers."
-msgstr ""
-
-#: lib/utility.php:1387
-msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
-msgstr ""
-
-#: lib/utility.php:1388
-#, fuzzy
-#| msgid " seconds left."
-msgid "Seconds; default 50."
-msgstr "שניות נותרו."
-
-#: lib/utility.php:1393
-msgid "Method used to flush data and log files to disk."
-msgstr ""
-
-#: lib/utility.php:1394
-msgid "O_DIRECT, fsync, O_DSYNC, and similar."
-msgstr ""
-
-#: lib/utility.php:1399
-msgid "Controls how the redo log is written and flushed at transaction commit."
-msgstr ""
-
-#: lib/utility.php:1400
-msgid "0, 1, or 2."
-msgstr ""
-
-#: lib/utility.php:1405
-msgid "Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings."
-msgstr ""
-
-#: lib/utility.php:1406
-msgid "Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
-msgstr ""
-
-#: lib/utility.php:1411
-msgid "Write and flush the InnoDB redo log every N seconds."
-msgstr ""
-
-#: lib/utility.php:1412
-msgid "Seconds (1-2700); default 1."
-msgstr ""
-
-#: lib/utility.php:1417
-msgid "Number of I/O threads used for read operations in InnoDB."
-msgstr ""
-
-#: lib/utility.php:1418 lib/utility.php:1424
-#, fuzzy
-#| msgid "default"
-msgid "1-64; default 4."
-msgstr "בְּרִירַת מֶחדָל"
-
-#: lib/utility.php:1423
-msgid "Number of I/O threads used for write operations in InnoDB."
-msgstr ""
-
-#: lib/utility.php:1429
-msgid "Number of regions the InnoDB buffer pool is divided into."
-msgstr ""
-
-#: lib/utility.php:1430
-msgid "1-64; MariaDB removed this in 10.6."
-msgstr ""
-
-#: lib/utility.php:1435
-msgid "Estimated I/O operations per second available to InnoDB background tasks."
-msgstr ""
-
-#: lib/utility.php:1436 lib/utility.php:1442
-msgid "Integer; use higher values for SSD/NVMe storage."
-msgstr ""
-
-#: lib/utility.php:1441
-msgid "Maximum IOPS InnoDB may use when flushing falls behind."
-msgstr ""
-
-#: lib/utility.php:1447
-msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
-msgstr ""
-
-#: lib/utility.php:1448
-msgid "0, 1, or 2; use 0 on SSD storage."
-msgstr ""
-
-#: lib/utility.php:1453
-msgid "Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled."
-msgstr ""
-
-#: lib/utility.php:1454
-msgid "ON or OFF; MariaDB only."
-msgstr ""
-
-#: lib/utility.php:1458
-msgid "Enforce strict snapshot isolation for InnoDB transactions."
-msgstr ""
-
-#: lib/utility.php:1459
-msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller."
-msgstr ""
-
-#: lib/utility.php:1577 lib/utility.php:1674
-#, fuzzy
-#| msgid "(Remove)"
-msgid "Removed"
-msgstr "הסר"
-
-#: lib/utility.php:1579 lib/utility.php:1673
-#, fuzzy
-#| msgid "Duplicate"
-msgid "Deprecated"
-msgstr "שכפל"
-
-#: lib/utility.php:1581
-#, fuzzy
-#| msgid "Not Applicable"
-msgid "Not applicable to this engine"
-msgstr "לא ישים"
-
-#: lib/utility.php:1583 lib/utility.php:1672
-#, fuzzy
-#| msgid "Support"
-msgid "Supported"
-msgstr "תמיכה"
-
-#: lib/utility.php:1628
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "אפשרויות תרשים"
+
+#: lib/plugins.php:835
 #, php-format
-msgid "%s Variable Capability Matrix"
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""
 
-#: lib/utility.php:1628
-msgid "Support by engine and version for each Cacti-recommended variable"
-msgstr ""
+#: links.php
+msgid "Links"
+msgstr "קישורים"
 
-#: lib/utility.php:1657
-#, fuzzy
-#| msgid "Table Settings"
-msgid "Available settings:"
-msgstr "הגדרות הטבלה"
+#: pollers.php
+msgid "Collectors"
+msgstr "אספנים"
 
-#: lib/utility.php:1675
-msgid "N/A - Not applicable to this engine"
-msgstr ""
+#: rrdcleaner.php
+msgid "RRDfiles"
+msgstr "RRDfiles"
 
-#: lib/utility.php:1929 lib/utility.php:1965
-#, fuzzy
-#| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
-msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
-msgstr "אם יש לך דיסקים SSD, השתמש הצעה זו. אחרת, אל תגדיר הגדרה זו."
+#: user_domains.php
+msgid "Domains"
+msgstr "שמות מתחם"
+
+#~ msgid "SNMP Rules"
+#~ msgstr "כללי SNMP"
+
+#~ msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
+#~ msgstr "אימות לא הוגדר בעבר. ניסיתי להגדיר לאימות מקומית, אך לא נמצא חשבון Admintrative."
+
+#~ msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+#~ msgstr "אם יש לך דיסקים SSD, השתמש הצעה זו. אחרת, אל תגדיר הגדרה זו."
+
+#~ msgid "Plugin directory is missing!"
+#~ msgstr "ספריית Plugin חסרה!"
+
+#~ msgid "Messages"
+#~ msgstr "הודעות"
+
+#~ msgid "Enter keyword"
+#~ msgstr "הקלד מילת חיפוש..."
+
+#~ msgid "All Templates Selected"
+#~ msgstr "כל התבניות נבחרו"
+
+#~ msgid "Attempts"
+#~ msgstr "ניסיונות"
+
+#~ msgid "OIDs"
+#~ msgstr "OIDs"
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "מותקן. <span class=\"deviceDown\">הערה: אם אתה מתכנן להשתמש ב- SNMPv3, עליך להסיר php-snmp ולהשתמש בערכת הכלים Net-SNMP.</span>"

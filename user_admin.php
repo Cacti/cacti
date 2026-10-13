@@ -284,19 +284,25 @@ function form_actions() {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+							$affected_user = get_username($selected_items[$i]);
 							user_remove($selected_items[$i]);
+							log_user_action($affected_user, 'removed');
 						} else {
 							raise_message('attempt current', __('You are not allowed to delete the current login account'), MESSAGE_LEVEL_ERROR);
 						}
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
+						$affected_user = get_username($selected_items[$i]);
 						user_enable($selected_items[$i]);
+						log_user_action($affected_user, 'enabled');
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '4') { // disable
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+							$affected_user = get_username($selected_items[$i]);
 							user_disable($selected_items[$i]);
+							log_user_action($affected_user, 'disabled');
 						} else {
 							raise_message('attempt current', __('You are not allowed to disable the current login account'), MESSAGE_LEVEL_ERROR);
 						}
@@ -563,6 +569,11 @@ function form_save() {
 		get_filter_request_var('policy_graph_templates');
 		/* ==================================================== */
 
+		$original_user = db_fetch_row_prepared('SELECT username, enabled, locked
+			FROM user_auth
+			WHERE id = ?',
+			array(get_nfilter_request_var('id')));
+
 		$old_password = db_fetch_cell_prepared('SELECT password
 			FROM user_auth
 			WHERE id = ?',
@@ -644,12 +655,31 @@ function form_save() {
 			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', array($save['id']));
 		}
 
+		$is_new_user = empty($save['id']);
+
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
+				log_user_action($save['username'], $is_new_user ? 'created' : 'edited');
+
+				if (!$is_new_user) {
+					$was_enabled = ($original_user['enabled'] ?? '') === 'on';
+					$is_enabled  = ($save['enabled'] ?? '') === 'on';
+					$was_locked  = ($original_user['locked'] ?? '') === 'on';
+					$is_locked   = ($save['locked'] ?? '') === 'on';
+
+					if ($was_enabled !== $is_enabled) {
+						log_user_action($save['username'], $is_enabled ? 'enabled' : 'disabled');
+					}
+
+					if ($was_locked !== $is_locked) {
+						log_user_action($save['username'], $is_locked ? 'locked' : 'unlocked');
+					}
+				}
+
 				raise_message(1);
 			} else {
 				raise_message(2);
@@ -833,7 +863,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Graph Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
@@ -1115,7 +1145,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Device Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
@@ -1280,7 +1310,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Graph Template Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
@@ -1424,7 +1454,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Tree Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
@@ -2250,16 +2280,16 @@ function user() {
 	<tr class='even'>
 		<td>
 		<form id='forms' action='user_admin.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Group');?>
+						<label for='group'><?php print __('Group');?></label>
 					</td>
 					<td>
 						<select id='group'>
@@ -2281,7 +2311,7 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Last Login');?>
+						<label for='login'><?php print __('Last Login');?></label>
 					</td>
 					<td>
 						<select id='login'>
@@ -2295,7 +2325,7 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Realm');?>
+						<label for='realm'><?php print __('Realm');?></label>
 					</td>
 					<td>
 						<select id='realm'>
@@ -2307,7 +2337,7 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Users');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2733,16 +2763,16 @@ function graph_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' action='user_admin.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Template');?>
+						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='graph_template_id'>
@@ -2764,7 +2794,7 @@ function graph_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Graphs');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2868,7 +2898,7 @@ function group_filter($header_label) {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Groups');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2991,7 +3021,7 @@ function device_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Devices');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -3095,7 +3125,7 @@ function template_filter($header_label) {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Templates');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -3199,7 +3229,7 @@ function tree_filter($header_label) {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Trees');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -3303,7 +3333,7 @@ function member_filter($header_label) {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Trees');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>

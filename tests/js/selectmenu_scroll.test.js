@@ -65,15 +65,11 @@ test('scroll handlers close initialized select menus without duplicate bindings'
 					assert.equal(target, windowObject);
 
 					return {
-						off: (event) => {
-							assert.equal(event, 'scroll.cactiSelectmenu');
+						rebind: (bound, handler) => {
+							assert.equal(bound, 'scroll.cactiSelectmenu');
 
-							return {
-								on: (bound, handler) => {
-									boundEvent = bound;
-									scrollHandler = handler;
-								}
-							};
+							boundEvent = bound;
+							scrollHandler = handler;
 						}
 					};
 				}

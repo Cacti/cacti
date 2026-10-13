@@ -162,7 +162,7 @@ case 'view':
 			?>
 			<tr class='tableRowGraph'>
 				<td class='center'>
-					<table class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
+					<table role='presentation' class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 						<tr>
 							<td>
 								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
@@ -281,7 +281,7 @@ case 'view':
 				});
 		});
 
-		$('a[id$="_util"]').off('click').on('click', function() {
+		$('a[id$="_util"]').rebind('click', function() {
 			graph_id    = $(this).attr('id').replace('graph_','').replace('_util','');
 			rra_id      = $(this).attr('rra_id');
 			graph_start = $(this).attr('graph_start');
@@ -304,7 +304,7 @@ case 'view':
 				});
 		});
 		$('a[id$="_csv"]').each(function() {
-			$(this).off('click').on('click', function(event) {
+			$(this).rebind('click', function(event) {
 				event.preventDefault();
 				event.stopPropagation();
 				document.location = $(this).attr('href');
@@ -425,7 +425,7 @@ case 'zoom':
 	</tr>
 	<tr class='tableRowGraph'>
 		<td class='center'>
-			<table class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
+			<table role='presentation' class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 				<tr>
 					<td class='center'>
 						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-09-28 15:57-0400\n"
+"POT-Creation-Date: 2026-10-11 16:07-0700\n"
 "PO-Revision-Date: 2023-03-07 13:33+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Vietnamese <http://translate.cacti.net/projects/cacti/core-v1-2-x/vi/>\n"
@@ -378,36 +378,33 @@ msgid "Matching Graphs"
 msgstr "Kết hợp đồ thị"
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
-#: automation_graph_rules.php automation_networks.php automation_snmp.php
-#: automation_templates.php automation_tree_rules.php cdef.php color.php
-#: color_templates.php data_debug.php data_input.php data_queries.php
-#: data_source_profiles.php data_sources.php data_templates.php
-#: gprint_presets.php graph_templates.php graph_view.php graphs.php
-#: graphs_new.php host.php host_templates.php lib/api_automation.php
-#: lib/clog_webapi.php lib/html_filter.php lib/html_graph.php
-#: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
-#: pollers.php rrdcheck.php rrdcleaner.php settings.php sites.php tree.php
-#: user_admin.php user_domains.php user_group_admin.php utilities.php vdef.php
+#: automation_networks.php color_templates.php data_debug.php data_sources.php
+#: graph_view.php graphs.php graphs_new.php host.php lib/api_automation.php
+#: lib/clog_webapi.php lib/html.php lib/html_filter.php lib/html_graph.php
+#: lib/html_reports.php lib/html_tree.php managers.php plugins.php rrdcheck.php
+#: rrdcleaner.php tree.php user_admin.php user_group_admin.php utilities.php
 msgid "Search"
 msgstr "Tìm kiếm"
 
-#: aggregate_graphs.php color_templates.php data_sources.php graph_view.php
-#: graphs.php host.php include/global_arrays.php lib/api_automation.php
-#: lib/html.php lib/html_graph.php lib/html_tree.php tree.php user_admin.php
-#: user_group_admin.php utilities.php
-msgid "Graphs"
-msgstr "Đồ thị"
-
-#: aggregate_graphs.php aggregate_templates.php automation_devices.php
-#: automation_graph_rules.php automation_networks.php automation_snmp.php
-#: automation_templates.php automation_tree_rules.php cdef.php color.php
-#: color_templates.php data_debug.php data_input.php data_queries.php
-#: data_source_profiles.php data_sources.php data_templates.php
-#: gprint_presets.php graph_templates.php graph_view.php graphs.php
-#: graphs_new.php host.php host_templates.php include/global_form.php
-#: lib/api_automation.php lib/html_reports.php links.php managers.php
+#: aggregate_graphs.php automation_devices.php automation_graph_rules.php
+#: automation_networks.php automation_snmp.php automation_templates.php
+#: automation_tree_rules.php cdef.php color.php data_debug.php data_input.php
+#: data_queries.php data_source_profiles.php data_sources.php
+#: data_templates.php gprint_presets.php graph_templates.php graph_view.php
+#: graphs.php graphs_new.php host.php host_templates.php
+#: include/global_form.php lib/api_automation.php lib/html.php
+#: lib/html_filter.php lib/installer.php lib/rrd.php links.php managers.php
 #: plugins.php pollers.php rrdcheck.php rrdcleaner.php sites.php tree.php
 #: user_admin.php user_domains.php user_group_admin.php utilities.php vdef.php
+msgid "Rows"
+msgstr "Hàng"
+
+#: aggregate_graphs.php aggregate_templates.php automation_devices.php
+#: automation_networks.php color_templates.php data_debug.php
+#: data_source_profiles.php data_sources.php graph_view.php graphs.php
+#: graphs_new.php host.php include/global_form.php lib/api_automation.php
+#: lib/html.php lib/html_reports.php plugins.php rrdcheck.php rrdcleaner.php
+#: tree.php user_admin.php user_domains.php user_group_admin.php utilities.php
 msgid "Default"
 msgstr "Mặc định"
 
@@ -461,6 +458,13 @@ msgstr "Xóa"
 msgid "Clear Filters"
 msgstr "Xóa bộ lọc"
 
+#: aggregate_graphs.php color_templates.php data_sources.php graph_view.php
+#: graphs.php host.php include/global_arrays.php lib/api_automation.php
+#: lib/html.php lib/html_graph.php lib/html_tree.php tree.php user_admin.php
+#: user_group_admin.php utilities.php
+msgid "Graphs"
+msgstr "Đồ thị"
+
 #: aggregate_graphs.php graphs.php lib/api_automation.php user_admin.php
 #: user_group_admin.php
 msgid "Graph Title"
@@ -478,8 +482,8 @@ msgstr "ID"
 msgid "Included in Aggregate"
 msgstr "Bao gồm trong cốt liệu"
 
-#: aggregate_graphs.php graph_templates.php graph_view.php graphs.php
-#: lib/html_graph.php lib/html_tree.php lib/spikekill.php
+#: aggregate_graphs.php graph_realtime.php graph_templates.php graph_view.php
+#: graphs.php lib/html_graph.php lib/html_tree.php lib/spikekill.php
 msgid "Size"
 msgstr "Kích thước"
 
@@ -534,7 +538,7 @@ msgstr "Bất kỳ"
 #: graph_templates_items.php graphs.php graphs_items.php host.php
 #: include/global_arrays.php include/global_form.php
 #: include/global_settings.php lib/api_automation.php lib/auth.php lib/html.php
-#: lib/html_form.php lib/html_reports.php package_import.php settings.php
+#: lib/html_form.php lib/html_reports.php package_import.php
 #: templates_import.php user_admin.php user_group_admin.php utilities.php
 msgid "None"
 msgstr "Không"
@@ -587,8 +591,7 @@ msgid "Aggregate Templates"
 msgstr "Mẫu tổng hợp"
 
 #: aggregate_templates.php automation_templates.php color_templates.php
-#: include/global_arrays.php lib/installer.php user_admin.php
-#: user_group_admin.php
+#: include/global_arrays.php lib/installer.php
 msgid "Templates"
 msgstr "Giao diện"
 
@@ -1052,8 +1055,8 @@ msgstr "Thiết bị phát hiện"
 
 #: automation_devices.php automation_networks.php automation_snmp.php
 #: data_debug.php data_source_profiles.php host.php lib/functions.php
-#: lib/html.php lib/html_reports.php lib/spikekill.php plugins.php pollers.php
-#: user_admin.php utilities.php
+#: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
+#: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
 msgstr "N/A"
 
@@ -1631,9 +1634,12 @@ msgstr "Tuần nào của Phạm vi Mạng này sẽ được phát hiện."
 msgid "First"
 msgstr "Đầu tiên"
 
-#: automation_networks.php
+#: automation_networks.php graph.php
+#, fuzzy
+#| msgid "Second"
 msgid "Second"
-msgstr "Giây"
+msgid_plural "Seconds"
+msgstr[0] "Giây"
 
 #: automation_networks.php
 msgid "Third"
@@ -1978,10 +1984,6 @@ msgstr "Không có mục SNMP"
 #: automation_snmp.php
 msgid "Delete SNMP Option Item"
 msgstr "Xóa mục tùy chọn SNMP"
-
-#: automation_snmp.php
-msgid "SNMP Rules"
-msgstr "Quy tắc SNMP"
 
 #: automation_snmp.php
 msgid "SNMP Option Sets"
@@ -2930,7 +2932,7 @@ msgstr "Hồ sơ"
 
 #: data_debug.php data_sources.php data_templates.php graphs.php graphs_new.php
 #: host.php host_templates.php lib/clog_webapi.php lib/html_reports.php
-#: plugins.php settings.php tree.php user_admin.php utilities.php
+#: plugins.php tree.php user_admin.php utilities.php
 msgid "All"
 msgstr "Tất cả"
 
@@ -3289,7 +3291,7 @@ msgstr "Không có mẫu đồ thị được xác định."
 msgid "Delete Associated Graph"
 msgstr "Xóa đồ thị liên kết"
 
-#: data_queries.php include/global_arrays.php lib/api_automation.php
+#: data_queries.php include/global_arrays.php
 msgid "Data Queries"
 msgstr "Truy vấn dữ liệu"
 
@@ -3408,11 +3410,6 @@ msgstr "Biểu đồ thời gian"
 msgid "Steps"
 msgstr "Bước"
 
-#: data_source_profiles.php graphs_new.php include/global_form.php lib/html.php
-#: lib/html_filter.php lib/installer.php lib/rrd.php utilities.php
-msgid "Rows"
-msgstr "Hàng"
-
 #: data_source_profiles.php
 msgid "Select Consolidation Function(s)"
 msgstr "Chọn chức năng hợp nhất"
@@ -3486,10 +3483,6 @@ msgstr "1 Giờ"
 msgid "Data Source Profiles"
 msgstr "Hồ sơ nguồn dữ liệu"
 
-#: data_source_profiles.php
-msgid "Profiles"
-msgstr "Hồ sơ"
-
 #: data_source_profiles.php data_templates.php
 msgid "Has Data Sources"
 msgstr "Có nguồn dữ liệu"
@@ -3537,6 +3530,10 @@ msgstr "Số lượng nguồn dữ liệu sử dụng hồ sơ này."
 #: data_source_profiles.php
 msgid "The number of Data Templates using this Profile."
 msgstr "Số lượng mẫu dữ liệu sử dụng hồ sơ này."
+
+#: data_source_profiles.php
+msgid "Profiles"
+msgstr "Hồ sơ"
 
 #: data_source_profiles.php
 msgid "No Data Source Profiles Found"
@@ -3997,10 +3994,6 @@ msgstr "Cài đặt trước GPRINT [mới]"
 msgid "GPRINT Presets"
 msgstr "GPRINT cài sẵn"
 
-#: gprint_presets.php include/global_arrays.php
-msgid "GPRINTs"
-msgstr "GPRINT"
-
 #: gprint_presets.php
 msgid "GPRINT Preset Name"
 msgstr "Tên đặt trước GPRINT"
@@ -4029,6 +4022,10 @@ msgstr "Số lượng đồ thị sử dụng GPRINT này."
 msgid "The number of Graphs Templates using this GPRINT."
 msgstr "Số lượng Mẫu biểu đồ sử dụng GPRINT này."
 
+#: gprint_presets.php include/global_arrays.php
+msgid "GPRINTs"
+msgstr "GPRINT"
+
 #: gprint_presets.php
 msgid "No GPRINT Presets"
 msgstr "Không có cài đặt trước GPRINT"
@@ -4046,6 +4043,32 @@ msgstr "Xem biểu đồ"
 #| msgid "Data Source does not exist."
 msgid "The Graph you requested does not exist."
 msgstr "Nguồn dữ liệu không tồn tại."
+
+#: graph.php
+#, fuzzy
+#| msgid "Daily"
+msgid "Day"
+msgid_plural "Days"
+msgstr[0] "Hàng ngày"
+
+#: graph.php
+#, fuzzy
+#| msgid "1 Hour"
+msgid "Hour"
+msgid_plural "Hours"
+msgstr[0] "1 Giờ"
+
+#: graph.php
+#, fuzzy
+#| msgid "1 Minute"
+msgid "Minute"
+msgid_plural "Minutes"
+msgstr[0] "1 Phút"
+
+#: graph.php
+#, php-format
+msgid "2 Years (%s Average)"
+msgstr ""
 
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -4102,6 +4125,15 @@ msgstr "Thư mục bộ nhớ cache hình ảnh là không thể ghi. Vui lòng 
 #: graph_realtime.php
 msgid "Cacti Real-time Graphing"
 msgstr "Vẽ đồ thị theo thời gian thực của Cacti"
+
+#: graph_realtime.php include/global_arrays.php lib/html_filter.php
+#: lib/html_graph.php lib/html_tree.php
+msgid "Presets"
+msgstr "Đặt trước"
+
+#: graph_realtime.php utilities.php
+msgid "Refresh Interval"
+msgstr "Thời gian cập nhật"
 
 #: graph_realtime.php lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "Thumbnails"
@@ -4358,7 +4390,8 @@ msgstr "Báo cáo"
 msgid "All Graphs & Templates"
 msgstr "Tất cả đồ thị và mẫu"
 
-#: graph_view.php lib/html_graph.php lib/html_tree.php settings.php
+#: graph_view.php include/global_settings.php lib/html_graph.php
+#: lib/html_tree.php
 msgid "Templates Selected"
 msgstr "Mẫu được chọn"
 
@@ -6323,11 +6356,6 @@ msgstr "Thiết bị được phát hiện"
 msgid "Device Rules"
 msgstr "Quy tắc thiết bị"
 
-#: include/global_arrays.php lib/html_filter.php lib/html_graph.php
-#: lib/html_tree.php
-msgid "Presets"
-msgstr "Đặt trước"
-
 #: include/global_arrays.php
 msgid "Data Profiles"
 msgstr "Hồ sơ dữ liệu"
@@ -7293,6 +7321,10 @@ msgstr "Hiện đại"
 #: include/global_arrays.php
 msgid "Dark"
 msgstr "Tối"
+
+#: include/global_arrays.php
+msgid "Deepness"
+msgstr ""
 
 #: include/global_arrays.php
 msgid "Paper-plane"
@@ -9179,12 +9211,28 @@ msgid "Select which files you wish to place in Debug mode regardless of the Gene
 msgstr "Chọn tệp bạn muốn đặt trong chế độ Gỡ lỗi bất kể cài đặt Cấp nhật ký chung. Mọi tệp được chọn sẽ được xử lý khi chúng ở chế độ Gỡ lỗi."
 
 #: include/global_settings.php
+msgid "Select File(s)"
+msgstr "Chọn tệp tin)"
+
+#: include/global_settings.php
+msgid "Files Selected"
+msgstr "Tập tin được chọn"
+
+#: include/global_settings.php
 msgid "Selective Plugin Debug"
 msgstr "Gỡ lỗi plugin chọn lọc"
 
 #: include/global_settings.php
 msgid "Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode."
 msgstr "Chọn các Plugin bạn muốn đặt trong chế độ Gỡ lỗi bất kể cài đặt Cấp nhật ký chung. Bất kỳ tệp nào được sử dụng bởi plugin này sẽ được xử lý khi chúng ở chế độ Gỡ lỗi."
+
+#: include/global_settings.php
+msgid "Select Plugin(s)"
+msgstr "Chọn Plugin"
+
+#: include/global_settings.php
+msgid "Plugins Selected"
+msgstr "Plugin được chọn"
 
 #: include/global_settings.php
 msgid "Selective Device Debug"
@@ -10139,14 +10187,6 @@ msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr "Nếu bạn muốn dừng hoàn toàn quá trình bỏ phiếu, hãy bỏ chọn hộp này."
 
 #: include/global_settings.php
-msgid "SNMP Agent Support Enabled"
-msgstr "Hỗ trợ đại lý SNMP được kích hoạt"
-
-#: include/global_settings.php
-msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
-msgstr "Nếu tùy chọn này được chọn, Cacti sẽ điền vào bảng SNMP Agent với thông tin hệ thống và thiết bị Cacti. Nó không kích hoạt SNMP Agent."
-
-#: include/global_settings.php
 msgid "Poller Type"
 msgstr "Loại xe đẩy"
 
@@ -10191,36 +10231,12 @@ msgid "If you choose this option, Cacti will check for output that exceeds Cacti
 msgstr "Nếu bạn chọn tùy chọn này, Cacti sẽ kiểm tra đầu ra vượt quá khả năng lưu trữ của Cacti và đưa ra cảnh báo khi tìm thấy."
 
 #: include/global_settings.php
-msgid "Disable increasing OID Check"
-msgstr "Vô hiệu hóa tăng kiểm tra OID"
-
-#: include/global_settings.php
-msgid "Controls disabling check for increasing OID while walking OID tree."
-msgstr "Kiểm soát vô hiệu hóa kiểm tra để tăng OID trong khi đi bộ cây OID."
-
-#: include/global_settings.php
 msgid "Remote Agent Timeout"
 msgstr "Thời gian chờ đại lý từ xa"
 
 #: include/global_settings.php
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
 msgstr "Lượng thời gian, tính bằng giây, máy chủ web Central Cacti sẽ chờ phản hồi từ Bộ thu thập dữ liệu từ xa để có được thông tin thiết bị khác nhau trước khi từ bỏ yêu cầu. Trên các thiết bị được liên kết với Bộ thu thập dữ liệu khác với Bộ thu thập dữ liệu Cacti trung tâm, Tác nhân từ xa phải được sử dụng để thu thập thông tin Thiết bị."
-
-#: include/global_settings.php
-msgid "SNMP Bulkwalk Fetch Size"
-msgstr "Kích thước tìm nạp hàng loạt SNMP"
-
-#: include/global_settings.php
-msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN."
-msgstr "Cần trả lại bao nhiêu OID cho mỗi yêu cầu snmpbulkwalk? Đối với các Thiết bị có cây SNMP lớn, việc tăng kích thước này sẽ tăng hiệu suất lập chỉ mục lại qua mạng WAN."
-
-#: include/global_settings.php
-msgid "SNMP Get OID Limit"
-msgstr "Nhận SNMP"
-
-#: include/global_settings.php
-msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
-msgstr "Số SNMP tối đa mặc định Nhận OID để phát hành cho mỗi yêu cầu snmpget. Đối với Thiết bị, cài đặt này được kiểm soát ở cấp Thiết bị. Bạn chỉ nên sử dụng cài đặt này khi sử dụng API SNMP của Cacti nguyên bản trong các tập lệnh hoặc plugin của bạn."
 
 #: include/global_settings.php
 msgid "Refresh Poller Table Per Cycle"
@@ -10243,6 +10259,56 @@ msgstr "Theo mặc định, Trình thu thập dữ liệu Cacti chính sẽ lưu
 #| msgid "SNMP error"
 msgid "SNMP Behavior"
 msgstr "Lỗi SNMP"
+
+#: include/global_settings.php
+msgid "SNMP Agent Support Enabled"
+msgstr "Hỗ trợ đại lý SNMP được kích hoạt"
+
+#: include/global_settings.php
+msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
+msgstr "Nếu tùy chọn này được chọn, Cacti sẽ điền vào bảng SNMP Agent với thông tin hệ thống và thiết bị Cacti. Nó không kích hoạt SNMP Agent."
+
+#: include/global_settings.php
+msgid "Enable MD5 and DES for SNMPv3"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Enable Image Caching"
+msgid "Enable Credential Cache"
+msgstr "Kích hoạt bộ nhớ đệm hình ảnh"
+
+#: include/global_settings.php
+msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
+msgstr ""
+
+#: include/global_settings.php
+msgid "SNMP Get OID Limit"
+msgstr "Nhận SNMP"
+
+#: include/global_settings.php
+msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
+msgstr "Số SNMP tối đa mặc định Nhận OID để phát hành cho mỗi yêu cầu snmpget. Đối với Thiết bị, cài đặt này được kiểm soát ở cấp Thiết bị. Bạn chỉ nên sử dụng cài đặt này khi sử dụng API SNMP của Cacti nguyên bản trong các tập lệnh hoặc plugin của bạn."
+
+#: include/global_settings.php
+msgid "SNMP Bulkwalk Fetch Size"
+msgstr "Kích thước tìm nạp hàng loạt SNMP"
+
+#: include/global_settings.php
+msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN."
+msgstr "Cần trả lại bao nhiêu OID cho mỗi yêu cầu snmpbulkwalk? Đối với các Thiết bị có cây SNMP lớn, việc tăng kích thước này sẽ tăng hiệu suất lập chỉ mục lại qua mạng WAN."
+
+#: include/global_settings.php
+msgid "Disable increasing OID Check"
+msgstr "Vô hiệu hóa tăng kiểm tra OID"
+
+#: include/global_settings.php
+msgid "Controls disabling check for increasing OID while walking OID tree."
+msgstr "Kiểm soát vô hiệu hóa kiểm tra để tăng OID trong khi đi bộ cây OID."
 
 #: include/global_settings.php
 msgid "Additional Data Collector Settings"
@@ -11414,6 +11480,10 @@ msgid "When performing batch spike removal, only the templates selected below wi
 msgstr "Khi thực hiện loại bỏ đột biến hàng loạt, chỉ các mẫu được chọn bên dưới sẽ được thực hiện."
 
 #: include/global_settings.php
+msgid "Select Template(s)"
+msgstr "Chọn mẫu"
+
+#: include/global_settings.php
 msgid "Backup Retention"
 msgstr "Lưu trữ dữ liệu"
 
@@ -12194,10 +12264,6 @@ msgstr "Mật khẩu của bạn phải chứa ít nhất 1 ký tự đặc bi�
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "Nhật ký xương rồng đã bị xóa"
-
-#: lib/auth.php
-msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
-msgstr "Xác thực trước đó chưa được đặt. Đã cố gắng đặt thành Xác thực cục bộ, nhưng không tìm thấy tài khoản Quản trị viên nào."
 
 #: lib/boost.php utilities.php
 #, php-format
@@ -16143,7 +16209,282 @@ msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source v
 msgstr ""
 
 #: lib/utility.php
-msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
+msgid "Default collation used by the server when creating databases and tables."
+msgstr ""
+
+#: lib/utility.php
+msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
+msgstr ""
+
+#: lib/utility.php
+msgid "Default character set used by the server."
+msgstr ""
+
+#: lib/utility.php
+msgid "e.g. utf8mb4, utf8, latin1."
+msgstr ""
+
+#: lib/utility.php
+msgid "Character set the client uses when sending statements to the server."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum number of simultaneous client connections permitted."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; default 151. Allow enough for the pollers plus user logins."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy name for the open-table cache; renamed to table_open_cache."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer. Use table_open_cache on modern servers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size of one packet or any generated/intermediate string."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; keep at or above 16M for remote pollers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size to which user-created MEMORY tables may grow."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; sized relative to total system memory."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size of internal in-memory temporary tables before they spill to disk."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
+msgid "Bytes; a larger value keeps temporary tables in memory."
+msgstr "Khi thực hiện các truy vấn con, có kích thước bảng tạm thời lớn hơn, hãy giữ các bảng tạm thời đó trong bộ nhớ."
+
+#: lib/utility.php
+msgid "Minimum per-join buffer size for joins that do not use indexes."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; per-connection allocation, default 262144."
+msgstr ""
+
+#: lib/utility.php
+msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; per-connection allocation, default 2097152."
+msgstr ""
+
+#: lib/utility.php
+msgid "Store each InnoDB table and its indexes in its own .ibd tablespace file."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; ON is recommended."
+msgstr ""
+
+#: lib/utility.php
+msgid "InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format."
+msgstr ""
+
+#: lib/utility.php
+msgid "Antelope, Barracuda."
+msgstr ""
+
+#: lib/utility.php
+msgid "Allow index key prefixes longer than 767 bytes (requires the Barracuda format)."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON/1 or OFF/0; this behaviour is now always enabled."
+msgstr ""
+
+#: lib/utility.php
+msgid "Total memory InnoDB uses to cache table and index data."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; commonly 25%-80% of total system memory."
+msgstr ""
+
+#: lib/utility.php
+msgid "Write pages twice (the doublewrite buffer) to protect against partial page writes."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy pool for the InnoDB internal data dictionary and structures."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; obsolete on modern servers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid " seconds left."
+msgid "Seconds; default 50."
+msgstr "Vài giây còn lại."
+
+#: lib/utility.php
+msgid "Method used to flush data and log files to disk."
+msgstr ""
+
+#: lib/utility.php
+msgid "O_DIRECT, fsync, O_DSYNC, and similar."
+msgstr ""
+
+#: lib/utility.php
+msgid "Controls how the redo log is written and flushed at transaction commit."
+msgstr ""
+
+#: lib/utility.php
+msgid "0, 1, or 2."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
+msgstr ""
+
+#: lib/utility.php
+msgid "Write and flush the InnoDB redo log every N seconds."
+msgstr ""
+
+#: lib/utility.php
+msgid "Seconds (1-2700); default 1."
+msgstr ""
+
+#: lib/utility.php
+msgid "Number of I/O threads used for read operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "default"
+msgid "1-64; default 4."
+msgstr "mặc định"
+
+#: lib/utility.php
+msgid "Number of I/O threads used for write operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php
+msgid "Number of regions the InnoDB buffer pool is divided into."
+msgstr ""
+
+#: lib/utility.php
+msgid "1-64; MariaDB removed this in 10.6."
+msgstr ""
+
+#: lib/utility.php
+msgid "Estimated I/O operations per second available to InnoDB background tasks."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; use higher values for SSD/NVMe storage."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum IOPS InnoDB may use when flushing falls behind."
+msgstr ""
+
+#: lib/utility.php
+msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
+msgstr ""
+
+#: lib/utility.php
+msgid "0, 1, or 2; use 0 on SSD storage."
+msgstr ""
+
+#: lib/utility.php
+msgid "Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; MariaDB only."
+msgstr ""
+
+#: lib/utility.php
+msgid "Enforce strict snapshot isolation for InnoDB transactions."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller."
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "(Remove)"
+msgid "Removed"
+msgstr "Xóa"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Duplicate"
+msgid "Deprecated"
+msgstr "Bản sao"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Not Applicable"
+msgid "Not applicable to this engine"
+msgstr "Không áp dụng"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Support"
+msgid "Supported"
+msgstr "Hỗ trợ"
+
+#: lib/utility.php
+#, php-format
+msgid "%s Variable Capability Matrix"
+msgstr ""
+
+#: lib/utility.php
+msgid "Support by engine and version for each Cacti-recommended variable"
+msgstr ""
+
+#: lib/utility.php
+msgid "Variable"
+msgstr "Biến thể"
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "Table Settings"
+msgid "Available settings:"
+msgstr "Bảng cài đặt"
+
+#: lib/utility.php
+msgid "N/A - Not applicable to this engine"
+msgstr ""
+
+#: lib/utility.php
+#, fuzzy
+#| msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
+msgid "MariaDB 10.5+ and MySQL 8.0+ are the recommended, supported releases (for example, the default database streams on Rocky Linux 9). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6+ và MariaDB 10.0+ là những bản phát hành tuyệt vời và là phiên bản rất tốt để lựa chọn. Hãy chắc chắn rằng bạn chạy bản phát hành mới nhất mặc dù đã khắc phục được sự cố mạng cấp độ thấp đã gây ra nhiều vấn đề về độ tin cậy."
 
 #: lib/utility.php
@@ -16267,7 +16608,9 @@ msgid "If you have SSD disks, use this suggestion.  If you have physical hard dr
 msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu bạn có ổ đĩa cứng vật lý, hãy sử dụng 2000 * số lượng ổ đĩa hoạt động trong mảng. Nếu sử dụng NVMe hoặc PCIe Flash, có thể sử dụng số lượng lớn hơn nhiều tới 200000."
 
 #: lib/utility.php
-msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+#, fuzzy
+#| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu không, không đặt cài đặt này."
 
 #: lib/utility.php
@@ -16294,10 +16637,6 @@ msgstr "%s Điều chỉnh"
 #: lib/utility.php
 msgid "Note: Many changes below require a database restart"
 msgstr "Lưu ý: Nhiều thay đổi dưới đây yêu cầu khởi động lại cơ sở dữ liệu"
-
-#: lib/utility.php
-msgid "Variable"
-msgstr "Biến thể"
 
 #: lib/utility.php
 msgid "Current Value"
@@ -16366,10 +16705,6 @@ msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) trang sau."
 #: links.php
 msgid "Delete Page(s)"
 msgstr "Xóa trang"
-
-#: links.php
-msgid "Links"
-msgstr "Liên kết"
 
 #: links.php
 msgid "Apply Filter"
@@ -16535,12 +16870,12 @@ msgid "SNMP Notification Receivers"
 msgstr "Người nhận thông báo SNMP"
 
 #: managers.php
-msgid "Receivers"
-msgstr "Người nhận"
-
-#: managers.php
 msgid "Id"
 msgstr "Id"
+
+#: managers.php
+msgid "Receivers"
+msgstr "Người nhận"
 
 #: managers.php
 msgid "No SNMP Notification Receivers"
@@ -16809,6 +17144,41 @@ msgid "Awaiting Upgrade"
 msgstr "Đang chờ nâng cấp"
 
 #: plugins.php
+#, php-format
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy, php-format
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "Không thể gỡ cài đặt. Plugin này được yêu cầu bởi: %s"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "Bạn có chắc là muốn gỡ cài đặt không?"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr "Gỡ cài đặt Plugin này sẽ xóa tất cả Dữ liệu và Cài đặt của Plugin. Nếu bạn thực sự muốn Gỡ cài đặt Plugin, nhấp vào &#39;Gỡ cài đặt&#39; bên dưới. Nếu không, nhấp vào &#39;Hủy&#39;"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "Gỡ cài đặt Plugin"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "Gỡ cài đặt"
+
+#: plugins.php
 msgid "Plugin Management"
 msgstr "Quản Lý Trình Cắm"
 
@@ -16928,8 +17298,19 @@ msgid "Enable Plugin"
 msgstr "Sử dụng Plugin"
 
 #: plugins.php
-msgid "Plugin directory is missing!"
-msgstr "Thiếu thư mục plugin!"
+#, php-format
+msgid "Plugin directory '%s' is missing setup.php"
+msgstr "Thư mục plugin &#39; %s&#39; bị thiếu setup.php"
+
+#: plugins.php
+#, fuzzy, php-format
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "Không thể gỡ cài đặt. Plugin này được yêu cầu bởi: %s"
+
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
 
 #: plugins.php
 msgid "Plugin is not compatible (Pre-1.x)"
@@ -16943,11 +17324,6 @@ msgstr "Thư mục plugin không thể bao gồm dấu cách"
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
 msgstr "Thư mục plugin không đúng. Nên là &#39; %s&#39; nhưng là &#39; %s&#39;"
-
-#: plugins.php
-#, php-format
-msgid "Plugin directory '%s' is missing setup.php"
-msgstr "Thư mục plugin &#39; %s&#39; bị thiếu setup.php"
 
 #: plugins.php
 msgid "Plugin is lacking an INFO file"
@@ -17255,10 +17631,6 @@ msgid "Test Database Connection"
 msgstr "Kiểm tra kết nối cơ sở dữ liệu"
 
 #: pollers.php
-msgid "Collectors"
-msgstr "Người sưu tầm"
-
-#: pollers.php
 msgid "Collector Name"
 msgstr "Tên người sưu tầm"
 
@@ -17413,10 +17785,6 @@ msgstr ""
 msgid "%d days"
 msgstr "ngày"
 
-#: rrdcheck.php
-msgid "Messages"
-msgstr ""
-
 #: rrdcheck.php rrdcleaner.php user_domains.php user_group_admin.php
 msgctxt "filter: use"
 msgid "Go"
@@ -17487,10 +17855,6 @@ msgid "Time Since Update"
 msgstr "Thời gian kể từ khi cập nhật"
 
 #: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRDfiles"
-
-#: rrdcleaner.php
 msgid "Rescan"
 msgstr "Quét lại"
 
@@ -17534,34 +17898,6 @@ msgstr ""
 #: settings.php
 msgid "Poller Interval must be less than Cron Interval"
 msgstr "Khoảng thời gian của Poller phải nhỏ hơn Cron Interval"
-
-#: settings.php
-msgid "Select Plugin(s)"
-msgstr "Chọn Plugin"
-
-#: settings.php
-msgid "Plugins Selected"
-msgstr "Plugin được chọn"
-
-#: settings.php
-msgid "Enter keyword"
-msgstr "Nhập từ khóa"
-
-#: settings.php
-msgid "Select File(s)"
-msgstr "Chọn tệp tin)"
-
-#: settings.php
-msgid "Files Selected"
-msgstr "Tập tin được chọn"
-
-#: settings.php
-msgid "Select Template(s)"
-msgstr "Chọn mẫu"
-
-#: settings.php
-msgid "All Templates Selected"
-msgstr "Tất cả các mẫu được chọn"
 
 #: settings.php
 msgid "Send a Test Email"
@@ -18657,10 +18993,6 @@ msgid "Domain Properties"
 msgstr "Thuộc tính miền"
 
 #: user_domains.php
-msgid "Domains"
-msgstr "Miền"
-
-#: user_domains.php
 msgid "Domain Name"
 msgstr "Tên miền Domain"
 
@@ -19047,7 +19379,6 @@ msgid "Max Total Memory Possible"
 msgstr "Bộ nhớ Max Poller được phép:"
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -19169,10 +19500,6 @@ msgstr "Thành công - Mã thông báo"
 #: utilities.php
 msgid "Success - Password Change"
 msgstr "Thành công - Pswd"
-
-#: utilities.php
-msgid "Attempts"
-msgstr "Cố gắng"
 
 #: utilities.php vdef.php
 msgctxt "Button: use filter settings"
@@ -19408,10 +19735,6 @@ msgid "Cacti System Utilities"
 msgstr "Tiện ích hệ thống Cacti"
 
 #: utilities.php
-msgid "Refresh Interval"
-msgstr "Thời gian cập nhật"
-
-#: utilities.php
 msgid "Overrun Warning"
 msgstr "Cảnh báo tràn ngập"
 
@@ -19632,10 +19955,6 @@ msgid "SNMP Agent Cache"
 msgstr "Bộ nhớ cache SNMPAgent"
 
 #: utilities.php
-msgid "OIDs"
-msgstr "OID"
-
-#: utilities.php
 msgid "Column Data"
 msgstr "Dữ liệu cột"
 
@@ -19769,342 +20088,56 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 msgid "No VDEFs"
 msgstr "Không có VDEF"
 
-#: plugins.php
-msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
-msgstr ""
-
-#: plugins.php
+#: lib/html.php
 #, fuzzy
-#| msgid "Are you sure you want to Uninstall?"
-msgid "Are you sure you want to Force Uninstall the plugin"
-msgstr "Bạn có chắc là muốn gỡ cài đặt không?"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Gỡ cài đặt Plugin này sẽ xóa tất cả Dữ liệu và Cài đặt của Plugin. Nếu bạn thực sự muốn Gỡ cài đặt Plugin, nhấp vào &#39;Gỡ cài đặt&#39; bên dưới. Nếu không, nhấp vào &#39;Hủy&#39;"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Uninstall Plugin"
-msgid "Force Uninstall Plugin"
-msgstr "Gỡ cài đặt Plugin"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Uninstall"
-msgid "Force Uninstall"
-msgstr "Gỡ cài đặt"
-
-#: plugins.php
-#, fuzzy
-#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
-msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
-msgstr "Không thể gỡ cài đặt. Plugin này được yêu cầu bởi: %s"
-
-#: plugins.php
-msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
-msgstr ""
-
-#: plugins.php
-#, fuzzy
-#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
-msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
-msgstr "Không thể gỡ cài đặt. Plugin này được yêu cầu bởi: %s"
-
-#: include/global_settings.php:1330
-#, fuzzy
-#| msgid "Enable Image Caching"
-msgid "Enable Credential Cache"
-msgstr "Kích hoạt bộ nhớ đệm hình ảnh"
-
-#: include/global_settings.php:1331
-msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
-msgstr ""
-
-#: include/global_settings.php:1302
-msgid "Enable MD5 and DES for SNMPv3"
-msgstr ""
-
-#: include/global_settings.php:1303
-msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
-msgstr ""
-
-#: lib/utility.php:1291
-msgid "Default collation used by the server when creating databases and tables."
-msgstr ""
-
-#: lib/utility.php:1292
-msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
-msgstr ""
-
-#: lib/utility.php:1297
-msgid "Default character set used by the server."
-msgstr ""
-
-#: lib/utility.php:1298 lib/utility.php:1304
-msgid "e.g. utf8mb4, utf8, latin1."
-msgstr ""
-
-#: lib/utility.php:1303
-msgid "Character set the client uses when sending statements to the server."
-msgstr ""
-
-#: lib/utility.php:1309
-msgid "Maximum number of simultaneous client connections permitted."
-msgstr ""
-
-#: lib/utility.php:1310
-msgid "Integer; default 151. Allow enough for the pollers plus user logins."
-msgstr ""
-
-#: lib/utility.php:1315
-msgid "Legacy name for the open-table cache; renamed to table_open_cache."
-msgstr ""
-
-#: lib/utility.php:1316
-msgid "Integer. Use table_open_cache on modern servers."
-msgstr ""
-
-#: lib/utility.php:1321
-msgid "Maximum size of one packet or any generated/intermediate string."
-msgstr ""
-
-#: lib/utility.php:1322
-msgid "Bytes; keep at or above 16M for remote pollers."
-msgstr ""
-
-#: lib/utility.php:1327
-msgid "Maximum size to which user-created MEMORY tables may grow."
-msgstr ""
-
-#: lib/utility.php:1328
-msgid "Bytes; sized relative to total system memory."
-msgstr ""
-
-#: lib/utility.php:1333
-msgid "Maximum size of internal in-memory temporary tables before they spill to disk."
-msgstr ""
-
-#: lib/utility.php:1334
-#, fuzzy
-#| msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
-msgid "Bytes; a larger value keeps temporary tables in memory."
-msgstr "Khi thực hiện các truy vấn con, có kích thước bảng tạm thời lớn hơn, hãy giữ các bảng tạm thời đó trong bộ nhớ."
-
-#: lib/utility.php:1339
-msgid "Minimum per-join buffer size for joins that do not use indexes."
-msgstr ""
-
-#: lib/utility.php:1340
-msgid "Bytes; per-connection allocation, default 262144."
-msgstr ""
-
-#: lib/utility.php:1345
-msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
-msgstr ""
-
-#: lib/utility.php:1346
-msgid "Bytes; per-connection allocation, default 2097152."
-msgstr ""
-
-#: lib/utility.php:1351
-msgid "Store each InnoDB table and its indexes in its own .ibd tablespace file."
-msgstr ""
-
-#: lib/utility.php:1352
-msgid "ON or OFF; ON is recommended."
-msgstr ""
-
-#: lib/utility.php:1357
-msgid "InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format."
-msgstr ""
-
-#: lib/utility.php:1358
-msgid "Antelope, Barracuda."
-msgstr ""
-
-#: lib/utility.php:1363
-msgid "Allow index key prefixes longer than 767 bytes (requires the Barracuda format)."
-msgstr ""
-
-#: lib/utility.php:1364
-msgid "ON/1 or OFF/0; this behaviour is now always enabled."
-msgstr ""
-
-#: lib/utility.php:1369
-msgid "Total memory InnoDB uses to cache table and index data."
-msgstr ""
-
-#: lib/utility.php:1370
-msgid "Bytes; commonly 25%-80% of total system memory."
-msgstr ""
-
-#: lib/utility.php:1375
-msgid "Write pages twice (the doublewrite buffer) to protect against partial page writes."
-msgstr ""
-
-#: lib/utility.php:1376
-msgid "ON or OFF."
-msgstr ""
-
-#: lib/utility.php:1381
-msgid "Legacy pool for the InnoDB internal data dictionary and structures."
-msgstr ""
-
-#: lib/utility.php:1382
-msgid "Bytes; obsolete on modern servers."
-msgstr ""
-
-#: lib/utility.php:1387
-msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
-msgstr ""
-
-#: lib/utility.php:1388
-#, fuzzy
-#| msgid " seconds left."
-msgid "Seconds; default 50."
-msgstr "Vài giây còn lại."
-
-#: lib/utility.php:1393
-msgid "Method used to flush data and log files to disk."
-msgstr ""
-
-#: lib/utility.php:1394
-msgid "O_DIRECT, fsync, O_DSYNC, and similar."
-msgstr ""
-
-#: lib/utility.php:1399
-msgid "Controls how the redo log is written and flushed at transaction commit."
-msgstr ""
-
-#: lib/utility.php:1400
-msgid "0, 1, or 2."
-msgstr ""
-
-#: lib/utility.php:1405
-msgid "Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings."
-msgstr ""
-
-#: lib/utility.php:1406
-msgid "Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
-msgstr ""
-
-#: lib/utility.php:1411
-msgid "Write and flush the InnoDB redo log every N seconds."
-msgstr ""
-
-#: lib/utility.php:1412
-msgid "Seconds (1-2700); default 1."
-msgstr ""
-
-#: lib/utility.php:1417
-msgid "Number of I/O threads used for read operations in InnoDB."
-msgstr ""
-
-#: lib/utility.php:1418 lib/utility.php:1424
-#, fuzzy
-#| msgid "default"
-msgid "1-64; default 4."
-msgstr "mặc định"
-
-#: lib/utility.php:1423
-msgid "Number of I/O threads used for write operations in InnoDB."
-msgstr ""
-
-#: lib/utility.php:1429
-msgid "Number of regions the InnoDB buffer pool is divided into."
-msgstr ""
-
-#: lib/utility.php:1430
-msgid "1-64; MariaDB removed this in 10.6."
-msgstr ""
-
-#: lib/utility.php:1435
-msgid "Estimated I/O operations per second available to InnoDB background tasks."
-msgstr ""
-
-#: lib/utility.php:1436 lib/utility.php:1442
-msgid "Integer; use higher values for SSD/NVMe storage."
-msgstr ""
-
-#: lib/utility.php:1441
-msgid "Maximum IOPS InnoDB may use when flushing falls behind."
-msgstr ""
-
-#: lib/utility.php:1447
-msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
-msgstr ""
-
-#: lib/utility.php:1448
-msgid "0, 1, or 2; use 0 on SSD storage."
-msgstr ""
-
-#: lib/utility.php:1453
-msgid "Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled."
-msgstr ""
-
-#: lib/utility.php:1454
-msgid "ON or OFF; MariaDB only."
-msgstr ""
-
-#: lib/utility.php:1458
-msgid "Enforce strict snapshot isolation for InnoDB transactions."
-msgstr ""
-
-#: lib/utility.php:1459
-msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller."
-msgstr ""
-
-#: lib/utility.php:1577 lib/utility.php:1674
-#, fuzzy
-#| msgid "(Remove)"
-msgid "Removed"
-msgstr "Xóa"
-
-#: lib/utility.php:1579 lib/utility.php:1673
-#, fuzzy
-#| msgid "Duplicate"
-msgid "Deprecated"
-msgstr "Bản sao"
-
-#: lib/utility.php:1581
-#, fuzzy
-#| msgid "Not Applicable"
-msgid "Not applicable to this engine"
-msgstr "Không áp dụng"
-
-#: lib/utility.php:1583 lib/utility.php:1672
-#, fuzzy
-#| msgid "Support"
-msgid "Supported"
-msgstr "Hỗ trợ"
-
-#: lib/utility.php:1628
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Tùy chọn đồ thị"
+
+#: lib/plugins.php:835
 #, php-format
-msgid "%s Variable Capability Matrix"
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""
 
-#: lib/utility.php:1628
-msgid "Support by engine and version for each Cacti-recommended variable"
-msgstr ""
+#: links.php
+msgid "Links"
+msgstr "Liên kết"
 
-#: lib/utility.php:1657
-#, fuzzy
-#| msgid "Table Settings"
-msgid "Available settings:"
-msgstr "Bảng cài đặt"
+#: pollers.php
+msgid "Collectors"
+msgstr "Người sưu tầm"
 
-#: lib/utility.php:1675
-msgid "N/A - Not applicable to this engine"
-msgstr ""
+#: rrdcleaner.php
+msgid "RRDfiles"
+msgstr "RRDfiles"
 
-#: lib/utility.php:1929 lib/utility.php:1965
-#, fuzzy
-#| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
-msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
-msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu không, không đặt cài đặt này."
+#: user_domains.php
+msgid "Domains"
+msgstr "Miền"
+
+#~ msgid "SNMP Rules"
+#~ msgstr "Quy tắc SNMP"
+
+#~ msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
+#~ msgstr "Xác thực trước đó chưa được đặt. Đã cố gắng đặt thành Xác thực cục bộ, nhưng không tìm thấy tài khoản Quản trị viên nào."
+
+#~ msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+#~ msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu không, không đặt cài đặt này."
+
+#~ msgid "Plugin directory is missing!"
+#~ msgstr "Thiếu thư mục plugin!"
+
+#~ msgid "Enter keyword"
+#~ msgstr "Nhập từ khóa"
+
+#~ msgid "All Templates Selected"
+#~ msgstr "Tất cả các mẫu được chọn"
+
+#~ msgid "Attempts"
+#~ msgstr "Cố gắng"
+
+#~ msgid "OIDs"
+#~ msgstr "OID"
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "Cài đặt. <span class=\"deviceDown\">Lưu ý: Nếu bạn đang dự định sử dụng SNMPv3, bạn phải xóa php-snmp và sử dụng bộ công cụ Net-SNMP.</span>"

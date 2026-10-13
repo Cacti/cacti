@@ -99,7 +99,12 @@ jobs:
       - name: Resolve native dependencies
         env:
           COMPOSER: composer.compat.json
-        run: composer update --no-dev --prefer-dist --no-progress --no-interaction
+        run: composer update --no-install --no-dev --no-scripts --no-plugins --prefer-dist --no-progress --no-interaction
+
+      - name: Install the native compatibility lock
+        env:
+          COMPOSER: composer.compat.json
+        run: composer install --no-dev --no-scripts --no-plugins --prefer-dist --no-progress --no-interaction
 
       - name: Smoke-test the native production autoloader
         run: php -r "require 'include/vendor/autoload.php';"

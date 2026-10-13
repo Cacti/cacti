@@ -499,7 +499,7 @@ class Ldap {
 	 *
 	 * @return bool True on success, false otherwise.
 	 */
-	function __construct() {
+	public function __construct() {
 		/* Initialize LDAP parameters for Authenticate */
 		$this->dn         = read_config_option('ldap_dn');
 		$this->host       = read_config_option('ldap_server');
@@ -541,7 +541,7 @@ class Ldap {
 	 *
 	 * @return bool True on success, false otherwise.
 	 */
-	function __destruct() {
+	public function __destruct() {
 		return true;
 	}
 
@@ -556,7 +556,7 @@ class Ldap {
 	 *
 	 * @return bool True on success, false otherwise.
 	 */
-	function ErrorHandler($level, $message, $file, $line, $context = []) {
+	public function ErrorHandler($level, $message, $file, $line, $context = []) {
 		return true;
 	}
 
@@ -565,7 +565,7 @@ class Ldap {
 	 *
 	 * @return void No value is returned.
 	 */
-	function SetLdapHandler() {
+	public function SetLdapHandler() {
 		/* drop out of cactis error handler */
 		restore_error_handler();
 
@@ -580,7 +580,7 @@ class Ldap {
 	 *
 	 * @return void No value is returned.
 	 */
-	function RestoreCactiHandler() {
+	public function RestoreCactiHandler() {
 		/* drop out of ldaps error handler */
 		restore_error_handler();
 
@@ -598,7 +598,7 @@ class Ldap {
 	 *
 	 * @return void No value is returned.
 	 */
-	function RecordError($output, $section = 'LDAP') {
+	public function RecordError($output, $section = 'LDAP') {
 		$logDN = empty($output['dn']) ? '' : (', DN: ' . $output['dn']);
 		cacti_log($section . ': ' . $output['error_text'] . $logDN, false, 'AUTH');
 		cacti_log($section . ': ' . $output['stack'], false, 'AUTH', $this->debug);
@@ -609,7 +609,7 @@ class Ldap {
 	 *
 	 * @return array An array of results.
 	 */
-	function Connect() {
+	public function Connect() {
 		$output    = array();
 		$ldap_conn = null;
 
@@ -778,7 +778,7 @@ class Ldap {
 	 *
 	 * @return array An array of results.
 	 */
-	function Authenticate() {
+	public function Authenticate() {
 		$output = array();
 
 		/* Determine connection method and create LDAP Object */
@@ -898,7 +898,7 @@ class Ldap {
 	 *
 	 * @return int The resulting integer value.
 	 */
-	function GetMask() {
+	public function GetMask() {
 		if (!defined('ENT_HTML401')) {
 			return ENT_COMPAT;
 		} else {
@@ -911,7 +911,7 @@ class Ldap {
 	 *
 	 * @return array An array of results.
 	 */
-	function Search() {
+	public function Search() {
 		$output = array();
 
 		/* Determine connection method and create LDAP Object */
@@ -1026,7 +1026,7 @@ class Ldap {
 	 *
 	 * @return array An array of results.
 	 */
-	function Getcn() {
+	public function Getcn() {
 		$output = array();
 
 		/* Determine connection method and create LDAP Object */
@@ -1158,7 +1158,7 @@ class Ldap {
 	 *
 	 * @return bool True on success, false otherwise.
 	 */
-	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
+	public function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = cacti_ldap_filter(
 			'(&(distinguishedName=<user>)(memberOf:1.2.840.113556.1.4.1941:=<group>))',
 			array('user' => $ldapUser, 'group' => $groupDN)

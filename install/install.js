@@ -861,11 +861,9 @@ $(function() {
 				if (buttonData.Step == STEP_GO_SITE) {
 					window.location.assign('../');
 				} else if (buttonData.Step == STEP_GO_FORUMS) {
-					var win = window.open('https://forums.cacti.net/');
-					win.focus;
+					window.open('https://forums.cacti.net/', '_blank', 'noopener');
 				} else if (buttonData.Step == STEP_GO_GITHUB) {
-					var win = window.open('https://github.com/cacti/cacti/issues/');
-					win.focus;
+					window.open('https://github.com/cacti/cacti/issues/', '_blank', 'noopener');
 				} else if (buttonData.Step == STEP_TEST_REMOTE) {
 					performTestConnection();
 				} else {

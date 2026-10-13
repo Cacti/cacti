@@ -667,7 +667,7 @@ function template_edit() {
 		$header_label = __esc('Data Templates [edit: %s]', $template['name']);
 
 		?>
-		<table style='width:100%'>
+		<table role='presentation' style='width:100%'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top;'>
 					<?php print html_escape($template['name']);?>
@@ -1073,16 +1073,11 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_data_template' action='data_templates.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
+					<?php html_search_filter(true);?>
 					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Profile');?>
+						<label for='profile'><?php print __('Profile');?></label>
 					</td>
 					<td>
 						<select id='profile'>
@@ -1097,21 +1092,7 @@ function template() {
 							?>
 						</select>
 					</td>
-					<td>
-						<?php print __('Data Templates');?>
-					</td>
-					<td>
-						<select id='rows' name='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
+					<?php html_rows_filter(__('Rows'), true);?>
 					<td>
 						<span>
 							<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
