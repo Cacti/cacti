@@ -15,3 +15,9 @@ if [[ "${CACTI_AGGREGATE_TEST_BROWSER:-0}" == 1 ]]; then
 	CACTI_AGGREGATE_TEST_DISPOSABLE=1 CACTI_BASE_URL="http://127.0.0.1:${HOST_PORT:-8080}" \
 		mise exec node@22 -- node tests/e2e/aggregate-automation-browser.mjs
 fi
+
+if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 ]]; then
+    : "${CACTI_PR_COVERAGE_OUTPUT:?Coverage output directory is required}"
+    mkdir -p "$CACTI_PR_COVERAGE_OUTPUT"
+    "${compose[@]}" cp cacti:/tmp/cacti-pr-coverage/. "$CACTI_PR_COVERAGE_OUTPUT"
+fi
