@@ -787,30 +787,74 @@ function poller_acknowledge_output($results, $successful_updates, $staged) {
 	$params     = [];
 	$tuples     = [];
 	$last_group = null;
-
-	foreach ($results as $item) {
-		if (!$staged && empty($successful_updates[$item['rrd_path']][$item['unix_time']])) {
-			continue;
-		}
-
-		$group = $item['local_data_id'] . ':' . $item['time'];
-
-		// A failed DELETE must not leave half of a stored timestamp group queued.
-		if (count($tuples) >= 1000 && $group !== $last_group) {
-			if (!db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' . implode(',', $tuples) . ')', $params)) {
-				return;
+	$group_start = 0;
+	$created    = false;
+	$flush = static function ($tuples, $params) use (&$created) {
+		if (!$created) {
+			// Derive key types and collation from the queue, without copying its payload.
+			if (!db_execute('CREATE TEMPORARY TABLE IF NOT EXISTS poller_output_ack_keys
+				(PRIMARY KEY (local_data_id, rrd_name, time) USING BTREE) ENGINE=MEMORY
+				AS SELECT local_data_id, rrd_name, time FROM poller_output WHERE 1=0')) {
+				return false;
 			}
-			$tuples = [];
-			$params = [];
+			$created = true;
 		}
 
-		$tuples[]   = '(?, ?, ?)';
-		$last_group = $group;
-		array_push($params, (int) $item['local_data_id'], $item['rrd_name'], $item['time']);
-	}
+		// A reconnect loses this session-local table. Do not recreate it between
+		// staging and deletion: a missing table must retain the queue for retry.
+		if (!db_execute('TRUNCATE TABLE poller_output_ack_keys') ||
+			!db_execute_prepared('INSERT INTO poller_output_ack_keys (local_data_id, rrd_name, time) VALUES ' . implode(',', $tuples), $params)) {
+			return false;
+		}
 
-	if ($tuples !== []) {
-		db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' . implode(',', $tuples) . ')', $params);
+		return db_execute('DELETE po FROM poller_output AS po
+			INNER JOIN poller_output_ack_keys AS ack
+			ON po.local_data_id = ack.local_data_id
+			AND po.rrd_name = ack.rrd_name AND po.time = ack.time');
+	};
+
+	try {
+		foreach ($results as $item) {
+			if (!$staged && empty($successful_updates[$item['rrd_path']][$item['unix_time']])) {
+				continue;
+			}
+
+			$group = $item['local_data_id'] . ':' . $item['time'];
+
+			// Defer a crossing timestamp group without splitting it across DELETEs.
+			if (count($tuples) >= 1000) {
+				$carry = $carry_params = [];
+				if ($group === $last_group) {
+					if ($group_start === 0) {
+						cacti_log('WARNING: Poller acknowledgement group exceeds 1000 keys; retaining it for retry', false, 'POLLER');
+						return;
+					}
+					$carry = array_splice($tuples, $group_start);
+					$carry_params = array_splice($params, $group_start * 3);
+				}
+				if (!$flush($tuples, $params)) {
+					return;
+				}
+				$tuples = $carry;
+				$params = $carry_params;
+				$group_start = 0;
+			}
+			if ($group !== $last_group) {
+				$group_start = count($tuples);
+			}
+
+			$tuples[]   = '(?, ?, ?)';
+			$last_group = $group;
+			array_push($params, (int) $item['local_data_id'], $item['rrd_name'], $item['time']);
+		}
+
+		if ($tuples !== []) {
+			$flush($tuples, $params);
+		}
+	} finally {
+		if ($created) {
+			db_execute('DROP TEMPORARY TABLE IF EXISTS poller_output_ack_keys');
+		}
 	}
 }
 

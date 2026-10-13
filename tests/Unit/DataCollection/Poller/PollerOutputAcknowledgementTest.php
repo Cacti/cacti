@@ -102,6 +102,10 @@ test('failed acknowledgement leaves stored samples available for a safe retry', 
 	$r = poller_output_probe('delete-failure');
 	expect($r['first'])->toBe(1)->and($r['remaining'])->toBe(1);
 });
+test('failed temporary key setup or staging retains samples for the next pass', function (string $scenario) {
+	$r = poller_output_probe($scenario);
+	expect($r['first'])->toBe(1)->and($r['second'])->toBe(1)->and($r['remaining'])->toBe(0)->and($r['delete_calls'])->toBe(1);
+})->with(['ack-create-failure', 'ack-clear-failure', 'ack-stage-failure']);
 test('failed template metadata reads retain samples and retry on the next pass', function () {
 	$r = poller_output_probe('metadata');
 	expect($r['first'])->toBe(0)->and($r['second'])->toBe(1)->and($r['mapping_queries'])->toBe(2)->and($r['remaining'])->toBe(0);
@@ -134,9 +138,10 @@ test('failed timestamps block later timestamps across batch boundaries', functio
 
 test('a failed delete never leaves only part of a stored timestamp group queued', function () {
 	$r = poller_output_probe('delete-group');
-	expect($r['first'])->toBe(1001)->and($r['remaining'])->toBe(1);
+	expect($r['first'])->toBe(1001)->and($r['remaining'])->toBe(3);
 	expect($r['orphan_queries'])->toBe(1);
-	expect($r['rows'][0]['local_data_id'])->toBe(1001);
+	expect($r['rows'][0]['local_data_id'])->toBe(1000);
+	expect($r['ack_batch_sizes'])->toBe([999, 3]);
 });
 
 test('a failed sample succeeds on a later pass without being lost or duplicated', function () {

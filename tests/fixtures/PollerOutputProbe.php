@@ -105,6 +105,15 @@ function db_fetch_cell($sql) : int {
 function db_execute_prepared($sql, $params = []) : bool {
 	global $state, $scenario;
 	if (isset($GLOBALS['handoff_pdo'])) return handoff_execute($sql, $params);
+	if (str_starts_with($sql, 'INSERT INTO poller_output_ack_keys')) {
+		if ($scenario === 'ack-stage-failure' && empty($state['ack_failed'])) {
+			$state['ack_failed'] = true;
+			return false;
+		}
+		$state['ack_params'] = $params;
+		$state['ack_batch_sizes'][] = count($params) / 3;
+		return true;
+	}
 	$state['delete_calls']++;
 
 	if ($scenario === 'delete-failure' || ($scenario === 'delete-group' && $state['delete_calls'] === 2)) {
@@ -122,6 +131,13 @@ function db_execute_prepared($sql, $params = []) : bool {
 function db_execute($sql, ...$args) : bool {
 	global $state, $scenario;
 	if (isset($GLOBALS['handoff_pdo'])) return handoff_execute($sql, [], $args[1] ?? false);
+	if (empty($state['ack_failed']) && (($scenario === 'ack-create-failure' && str_starts_with($sql, 'CREATE TEMPORARY TABLE IF NOT EXISTS poller_output_ack_keys')) || ($scenario === 'ack-clear-failure' && str_starts_with($sql, 'TRUNCATE TABLE poller_output_ack_keys')))) {
+		$state['ack_failed'] = true;
+		return false;
+	}
+	if (str_starts_with($sql, 'DELETE po FROM poller_output AS po') && str_contains($sql, 'poller_output_ack_keys')) {
+		return db_execute_prepared($sql, $state['ack_params'] ?? []);
+	}
 
 	if (str_contains($sql, 'INSERT IGNORE INTO poller_output_boost')) {
 		$state['boost_calls']++;
@@ -343,7 +359,7 @@ $pipe   = $scenario === 'local-create' ? fopen('php://temp', 'w+') : null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry', 'manual-query-failure', 'orphan-query-failure', 'integration-manual-retry', 'integration-stage-retry', 'integration-delete-retry', 'integration-owner-change'], true)) {
+if (in_array($scenario, ['ack-create-failure', 'ack-clear-failure', 'ack-stage-failure', 'boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry', 'manual-query-failure', 'orphan-query-failure', 'integration-manual-retry', 'integration-stage-retry', 'integration-delete-retry', 'integration-owner-change'], true)) {
 	if ($scenario === 'integration-owner-change') handoff_execute('UPDATE poller_item SET poller_id = 2');
 	$second = process_poller_output($pipe);
 }
@@ -361,4 +377,4 @@ if (isset($handoff_pdo)) {
 	$state['rows'] = handoff_fetch('SELECT local_data_id, rrd_name, time, output FROM poller_output');
 	$state['handoff'] = handoff_verdict();
 }
-print json_encode(['handoff' => ($state['handoff'] ?? null), 'orphan_queries' => ($state['orphan_queries'] ?? 0), 'manual_queries' => ($state['manual_queries'] ?? 0), 'first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'create_calls' => $state['create_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls'], 'local_starts' => isset($probe_rrd_starts) ? substr_count(file_get_contents($probe_rrd_starts), "start\n") : 0], JSON_THROW_ON_ERROR) . "\n";
+print json_encode(['ack_batch_sizes' => ($state['ack_batch_sizes'] ?? []), 'handoff' => ($state['handoff'] ?? null), 'orphan_queries' => ($state['orphan_queries'] ?? 0), 'manual_queries' => ($state['manual_queries'] ?? 0), 'first' => $first, 'second' => $second, 'remaining' => count($state['rows']), 'rows' => array_slice($state['rows'], 0, 3), 'queries' => $state['queries'], 'mapping_queries' => $state['mapping_queries'], 'rrd_calls' => $state['rrd_calls'], 'create_calls' => $state['create_calls'], 'commands' => $state['commands'], 'boost_calls' => $state['boost_calls'], 'delete_calls' => $state['delete_calls'], 'local_starts' => isset($probe_rrd_starts) ? substr_count(file_get_contents($probe_rrd_starts), "start\n") : 0], JSON_THROW_ON_ERROR) . "\n";

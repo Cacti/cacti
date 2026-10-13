@@ -9,7 +9,7 @@ $handoff_dsn = 'mysql:host=' . (getenv('BOOST_DB_HOST') ?: '127.0.0.1') . ';port
 $handoff_pdo = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $remote_db_cnn_id = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $handoff_prefix = 'handoff_' . bin2hex(random_bytes(6)) . '_';
-$handoff_tables = ['data_input', 'poller_output_boost_arch_1', 'poller_output_boost_local_data_ids', 'poller_output_boost', 'poller_data_template_field_mappings', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
+$handoff_tables = ['poller_output_ack_keys', 'data_input', 'poller_output_boost_arch_1', 'poller_output_boost_local_data_ids', 'poller_output_boost', 'poller_data_template_field_mappings', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
 $handoff_dir = sys_get_temp_dir() . '/' . $handoff_prefix;
 mkdir($handoff_dir, 0700);
 $handoff_rrd = $handoff_dir . '/source.rrd';
@@ -51,7 +51,7 @@ function handoff_execute($sql, $params = [], $conn = false) {
 		$state['archive_copy_failed'] = true;
 		return false;
 	}
-	if (str_starts_with($sql, 'DELETE FROM poller_output WHERE') || str_starts_with($sql, 'DELETE FROM poller_output_boost\n') || preg_match('/^DELETE FROM poller_output_boost\s+WHERE/', $sql)) {
+	if ((str_starts_with($sql, 'DELETE po FROM poller_output AS po') && str_contains($sql, 'poller_output_ack_keys')) || str_starts_with($sql, 'DELETE FROM poller_output WHERE') || str_starts_with($sql, 'DELETE FROM poller_output_boost\n') || preg_match('/^DELETE FROM poller_output_boost\s+WHERE/', $sql)) {
 		$state['delete_calls']++;
         if ($scenario === 'integration-drain-arrival' && $state['delete_calls'] === 1) {
             $incoming = $GLOBALS['handoff_pdo']->prepare(handoff_sql('INSERT INTO poller_output_boost VALUES (1,"in",FROM_UNIXTIME(?),"43")'));
