@@ -46,7 +46,8 @@ test('Boost hand-off batches expose database acknowledgement', function () {
 
 	expect($boost)->toContain('function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bool');
 	expect($boost)->toContain('$acknowledged = db_execute($sql_prefix . $out_buffer, true, $conn) !== false;');
-	expect($boost)->toContain('$return_value = !boost_flush_output_batch($value_tuples, $conn);');
+	expect($boost)->toContain('$acknowledged = boost_flush_output_batch($value_tuples, $conn);');
+	expect($boost)->toContain('$return_value = !$acknowledged;');
 });
 
 test('Recovery deletes only the exact rows acknowledged by the main collector', function () {
@@ -106,10 +107,10 @@ test('Boost child completion and archive deletion are scoped to a parent run', f
 	expect($schema)->toContain('`child_id` int(10) unsigned NOT NULL default 0');
 });
 
-test('direct Boost redirection does not stage the same rows twice', function () {
+test('legacy direct Boost redirection bypasses staging while acknowledgement callers verify storage', function () {
 	$boost = boostSource('lib/boost.php');
 
-	expect($boost)->toContain("if (read_config_option('boost_redirect') == 'on')")
+	expect($boost)->toContain("if (!\$track_staging && read_config_option('boost_redirect') == 'on')")
 		->and($boost)->toContain('cmd.php already staged these rows');
 });
 

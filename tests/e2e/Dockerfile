@@ -84,7 +84,6 @@ FROM node:22-bookworm-slim AS profile-assets
 WORKDIR /assets
 COPY package.json package-lock.json ./
 COPY build/ build/
-COPY patches/ patches/
 RUN npm ci
 
 # Cache the extension independently of source changes.

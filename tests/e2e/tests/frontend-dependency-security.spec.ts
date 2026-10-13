@@ -12,6 +12,53 @@ const treeSource = readFileSync(resolve(__dirname, '../../../tree.php'), 'utf8')
 const editorSource = treeSource.slice(treeSource.indexOf('$("#ctree").jstree({'), treeSource.indexOf(".on('ready.jstree'"));
 const editorForceText = editorSource.match(/'force_text'\s*:\s*(true|false)/)?.[1] === 'true';
 
+const csrfSource = readFileSync(resolve(__dirname, '../../../include/js/csrf.js'), 'utf8');
+
+async function csrfFixture(page: import('@playwright/test').Page) {
+	await page.route('http://csrf.fixture/**', route => route.fulfill({contentType: 'text/html', body: '<!doctype html><html><body></body></html>'}));
+	await page.goto('http://csrf.fixture/');
+	await page.addScriptTag({content: 'var csrfMagicName="__csrf_magic", csrfMagicToken="fixture-token";' + csrfSource});
+}
+
+test('CSRF XHR leaves cross-origin POST bodies unchanged', async ({page}) => {
+	await csrfFixture(page);
+	const bodies: string[] = [];
+	await page.route('http://receiver.fixture/**', async route => {
+		bodies.push(route.request().postData() || '');
+		await route.fulfill({body:'fixture'});
+	});
+	await page.evaluate(() => new Promise<void>(resolve => {
+		const xhr = new XMLHttpRequest();
+		xhr.onload = xhr.onerror = () => resolve();
+		xhr.open('POST', 'http://receiver.fixture/capture');
+		xhr.send('value=1');
+	}));
+	expect(bodies).toEqual(['value=1']);
+});
+
+test('CSRF XHR serializes multipart tokens and accepts empty POST bodies', async ({page}) => {
+	await csrfFixture(page);
+	const bodies: string[] = [];
+	await page.route('http://csrf.fixture/capture', async route => {
+		bodies.push(route.request().postData() || '');
+		await route.fulfill({body:'fixture'});
+	});
+	await page.evaluate(async () => {
+		const data = new FormData();
+		data.append('file', new Blob(['fixture']), 'fixture.txt');
+		for (const body of [data, null]) {
+			await new Promise<void>((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				xhr.onload = () => resolve(); xhr.onerror = () => reject(new Error('XHR failed'));
+				xhr.open('POST', '/capture'); xhr.send(body);
+			});
+		}
+	});
+	expect(bodies[0]).toContain('name="__csrf_magic"');
+	expect(bodies[0]).toContain('fixture-token');
+	expect(new URLSearchParams(bodies[1]).get('__csrf_magic')).toBe('fixture-token');
+});
+
 async function validationFixture(page: import('@playwright/test').Page) {
 	await page.goto('/');
 	const asset = await page.locator('script[src*="htmx.js"]').getAttribute('src');
@@ -516,4 +563,55 @@ test('Billboard ignores prototype keys while preserving valid chart options (Cod
 	});
 	expect(result.polluted).toBeUndefined();
 	expect(result.id).toBe('safe');
+});
+
+async function managedLibraryFixture(page: import('@playwright/test').Page, assets: string[]) {
+	await page.route('http://frontend.fixture/**', route => route.fulfill({contentType:'text/html', body:'<!doctype html><html><body></body></html>'}));
+	await page.goto('http://frontend.fixture/');
+	for (const asset of assets) {
+		await page.addScriptTag({content:readFileSync(resolve(__dirname, '../../../include/js', asset), 'utf8')});
+	}
+}
+
+test('managed legacy libraries preserve date, highlighting and keyboard APIs', async ({page}) => {
+	await managedLibraryFixture(page, ['jquery.js', 'vendor/moment/moment.min.js', 'vendor/daterangepicker/daterangepicker.js', 'vendor/mark/jquery.mark.js', 'vendor/hotkeys/hotkeys.js']);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, 'jQuery');
+		const moment = Reflect.get(window, 'moment');
+		const hotkeys = Reflect.get(window, 'hotkeys');
+		const input = document.createElement('input'); document.body.append(input);
+		$(input).daterangepicker({startDate:'10/01/2026', endDate:'10/11/2026'});
+		const range = $(input).data('daterangepicker');
+		const dates = [range.startDate.format('YYYY-MM-DD'), range.endDate.format('YYYY-MM-DD')];
+		range.remove();
+		const label = document.createElement('p'); label.textContent = 'Fixture'; document.body.append(label);
+		$(label).markRegExp(/Fixture/);
+		let pressed = 0; hotkeys('ctrl+x', () => pressed++);
+		document.dispatchEvent(new KeyboardEvent('keydown', {key:'x', keyCode:88, ctrlKey:true, bubbles:true}));
+		hotkeys.unbind('ctrl+x');
+		return {version:moment.version, dates, marks:label.querySelectorAll('mark').length, pressed};
+	});
+	expect(result).toEqual({version:'2.31.0', dates:['2026-10-01','2026-10-11'], marks:1, pressed:1});
+});
+
+test('generated tablesorter filters work with jQuery 4', async ({page}) => {
+	await managedLibraryFixture(page, ['jquery.js','jquery.tablesorter.js','jquery.tablesorter.widgets.js']);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, 'jQuery');
+		const table = document.createElement('table');
+		table.innerHTML = '<thead><tr><th>Name</th></tr></thead><tbody><tr><td>Two</td></tr><tr><td>One</td></tr></tbody>';
+		document.body.append(table);
+		$(table).tablesorter({widgets:['filter'], sortList:[[0,0]]});
+		$.tablesorter.setFilters(table, ['One'], true);
+		return table.tBodies[0].rows[0].textContent;
+	});
+	expect(result).toBe('One');
+});
+
+test('generated Pace retains prototype-key filtering', async ({page}) => {
+	await page.route('http://frontend.fixture/**', route => route.fulfill({contentType:'text/html', body:'<!doctype html><html><body></body></html>'}));
+	await page.goto('http://frontend.fixture/');
+	await page.evaluate(() => Reflect.set(window, 'paceOptions', JSON.parse('{"__proto__":{"fixturePollution":true},"constructor":{"prototype":{"fixturePollution":true}},"startOnPageLoad":false}')));
+	await page.addScriptTag({content:readFileSync(resolve(__dirname, '../../../include/js/pace.js'), 'utf8')});
+	expect(await page.evaluate(() => Reflect.get(Object.prototype, 'fixturePollution'))).toBeUndefined();
 });

@@ -25,6 +25,6 @@ jobs:
           set -euo pipefail
           npm ci --ignore-scripts
           npx --no-install playwright install --with-deps chromium
-      - name: Verify popup isolation, navigation state and column widths
+      - name: Verify client behavior in Chromium
         working-directory: tests/e2e
-        run: npx --no-install playwright test tests/develop-client-security.spec.ts tests/develop-menu-state.spec.ts tests/table-column-widths.spec.ts --project=chromium
+        run: npx --no-install playwright test tests/develop-client-*.spec.ts tests/develop-menu-state.spec.ts tests/table-column-widths.spec.ts --project=chromium
