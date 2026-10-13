@@ -38,12 +38,15 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+      - name: Set up PHP and Cacti test dependencies
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.3'
-          extensions: curl, dom
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, dom
           coverage: xdebug
           ini-values: memory_limit=1G
+          dependency-mode: locked-tests
+          install-args: --prefer-dist --no-progress --no-interaction
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: '22'
