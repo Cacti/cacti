@@ -1725,6 +1725,8 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 					if (!str_contains(trim($return_value), 'OK') && $return_value != '') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 						$updates_ok = false;
+
+						break;
 					}
 				}
 
@@ -2429,7 +2431,11 @@ function boost_rrdtool_function_update(int $local_data_id, string $rrd_path, str
 	}
 
 	if ($file_exists == false) {
-		$ds_exists = db_fetch_cell_prepared('SELECT id FROM data_local WHERE id = ?', [$local_data_id]);
+		$ds_exists = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE id = ?', [$local_data_id]);
+
+		if ($ds_exists === false) {
+			return 'ERROR: Unable to verify data source';
+		}
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
