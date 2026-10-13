@@ -3,6 +3,7 @@
 // Run the real save handler and audit helper with an isolated SQLite save boundary.
 $scenario = $argv[1] ?? 'edit';
 $root     = dirname(__DIR__, 2);
+require $root . '/include/global_constants.php';
 $pdo      = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $pdo->exec('CREATE TABLE user_auth (id INTEGER PRIMARY KEY, username TEXT, password TEXT, enabled TEXT, locked TEXT)');
 $old_hash  = password_hash('old password', PASSWORD_DEFAULT);
@@ -51,7 +52,18 @@ function read_config_option($key) {
 	return $key === 'admin_user' ? 1 : '';
 }
 function is_template_account($id) {
-	return false;
+	return $GLOBALS['scenario'] === 'delete-template';
+}
+function get_guest_account() {
+	return $GLOBALS['scenario'] === 'delete-guest' ? 10 : 0;
+}
+function input_validate_input_number(...$args) {
+}
+function cacti_count($value) {
+	return count($value);
+}
+function sanitize_unserialize_selected_items($value) {
+	return unserialize($value, ['allowed_classes' => false]);
 }
 function cacti_sizeof($value) {
 	return is_countable($value) ? count($value) : 0;
@@ -63,6 +75,10 @@ function form_input_validate($value, ...$args) {
 	return $value;
 }
 function db_fetch_row_prepared($sql, $params = []) {
+	if ($GLOBALS['scenario'] === 'delete-read-failure' && str_contains($sql, 'SELECT id')) {
+		return false;
+	}
+
 	if (str_contains($sql, 'realm = ?')) {
 		return [];
 	}
@@ -79,7 +95,16 @@ function db_fetch_cell_prepared($sql, $params = []) {
 
 	return $row[str_contains($sql, 'SELECT password') ? 'password' : 'username'] ?? '';
 }
-function db_execute_prepared(...$args) {
+function db_execute_prepared($sql, $params = []) {
+	if (str_starts_with($sql, 'DELETE FROM user_auth WHERE')) {
+		if ($GLOBALS['scenario'] === 'delete-failure') {
+			return false;
+		}
+		$statement = $GLOBALS['pdo']->prepare($sql);
+
+		return $statement->execute($params);
+	}
+
 	return true;
 }
 function api_plugin_hook_function($hook, $save) {
@@ -96,7 +121,11 @@ function sql_save($save, $table) {
 	return $id;
 }
 function get_username($id) {
-	return 'admin';
+	if ($id === 1) {
+		return $GLOBALS['scenario'] === 'audit-controls' ? "admin\r\n\x00\x1b\x7f" : 'admin';
+	}
+
+	return db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', [$id]);
 }
 function cacti_log($message, ...$args) {
 	$GLOBALS['logs'][] = $message;
@@ -106,6 +135,27 @@ function cacti_log($message, ...$args) {
 
 load_audit_function($root . '/user_admin.php', 'form_save');
 load_audit_function($root . '/lib/functions.php', 'log_user_action');
+
+if ($scenario === 'audit-controls') {
+	log_user_action("target\r\n\x00\x1b\x7f", "edited\r\n\x00\x1b\x7f");
+	print json_encode(['logs' => $logs], JSON_THROW_ON_ERROR) . "\n";
+
+	exit;
+}
+
+if (str_starts_with($scenario, 'delete')) {
+	load_audit_function($root . '/user_admin.php', 'form_actions');
+	load_audit_function($root . '/lib/auth.php', 'user_remove');
+	$request = ['selected_items' => serialize([10]), 'drp_action' => '1'];
+
+	if ($scenario === 'delete-missing') {
+		$pdo->exec('DELETE FROM user_auth WHERE id = 10');
+	}
+	register_shutdown_function(static function () use ($pdo, &$logs, &$messages): void {
+		print json_encode(['logs' => $logs, 'remaining' => (int) $pdo->query('SELECT COUNT(*) FROM user_auth WHERE id = 10')->fetchColumn(), 'errors' => $messages], JSON_THROW_ON_ERROR) . "\n";
+	});
+	form_actions();
+}
 form_save();
 $saved = $pdo->query('SELECT password FROM user_auth WHERE id = ' . ($scenario === 'new' ? 11 : 10))->fetchColumn();
 print json_encode(['logs' => $logs, 'password_changed' => $saved !== $old_hash, 'new_password_matches' => password_verify('new password', $saved), 'errors' => $messages], JSON_THROW_ON_ERROR) . "\n";

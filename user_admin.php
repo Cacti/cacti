@@ -279,7 +279,10 @@ function form_actions() : void {
 						if ($_SESSION[SESS_USER_ID] != $selected_items[$i]) {
 							$affected_user = get_username($selected_items[$i]);
 							user_remove($selected_items[$i]);
-							log_user_action($affected_user, 'removed');
+
+							if (is_string($affected_user) && $affected_user !== '' && db_fetch_row_prepared('SELECT id FROM user_auth WHERE id = ?', [$selected_items[$i]]) === []) {
+								log_user_action($affected_user, 'removed');
+							}
 						} else {
 							raise_message('attempt current', __('You are not allowed to delete the current login account'), MESSAGE_LEVEL_ERROR);
 						}

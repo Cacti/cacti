@@ -10810,6 +10810,16 @@ function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
  * @return bool Whether the message was written to the Cacti log.
  */
 function log_user_action($user, $action) {
+	if (!is_string($user) || !is_string($action)) {
+		return false;
+	}
+
+	$clean = static function (string $value) : string {
+		return preg_replace('/[\x00-\x1f\x7f]/', '', $value) ?? '';
+	};
+	$user   = $clean($user);
+	$action = $clean($action);
+
 	if ($user === '' || $action === '') {
 		return false;
 	}
@@ -10818,7 +10828,7 @@ function log_user_action($user, $action) {
 		$acting_user_id = $_SESSION['sess_user_id'];
 		$acting_user    = get_username($acting_user_id);
 
-		if ($acting_user === false || $acting_user === '') {
+		if (!is_string($acting_user) || $acting_user === '') {
 			$acting_user = 'user ID ' . $acting_user_id;
 		}
 	} elseif (PHP_SAPI === 'cli') {
@@ -10832,6 +10842,8 @@ function log_user_action($user, $action) {
 	} else {
 		$acting_user = 'unknown user';
 	}
+
+	$acting_user = $clean($acting_user);
 
 	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'AUTHC' : 'AUTH');
 }

@@ -21,3 +21,21 @@ test('new accounts emit creation rather than an existing-account password-change
 	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', ['new']);
 	expect(implode("\n", $r['logs']))->toContain('was created')->not->toContain('changed password');
 });
+
+test('account audit fields cannot inject log lines or terminal controls', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', ['audit-controls']);
+	expect($r['logs'])->toBe(["NOTE: User 'target' was edited by user 'admin'"]);
+});
+
+test('account removals are audited only when the existing row is confirmed deleted', function (string $scenario, int $remaining, bool $audited) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', [$scenario]);
+	expect($r['remaining'])->toBe($remaining)
+		->and($r['logs'])->toBe($audited ? ["NOTE: User 'target' was removed by user 'admin'"] : []);
+})->with([
+	'deleted account'          => ['delete', 0, true],
+	'template account'         => ['delete-template', 1, false],
+	'guest account'            => ['delete-guest', 1, false],
+	'failed deletion'          => ['delete-failure', 1, false],
+	'failed confirmation read' => ['delete-read-failure', 0, false],
+	'missing account'          => ['delete-missing', 0, false]
+]);
