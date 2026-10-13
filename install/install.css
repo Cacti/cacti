@@ -31,12 +31,12 @@ h1 {
 }
 
 h2 {
-	display: block /* !important; */
+	display: block;
 	font-size: 1.3em;
 }
 
 h3 {
-	display: block /* !important; */
+	display: block;
 	font-size: 1.2em;
 	border-bottom: 1px dashed black;
 }
@@ -55,7 +55,7 @@ label {
 
 .cactiInstallTable {
 	width: 90%;
-	min-width: 400px;
+	min-width: min(400px, 100%);
 	max-width: 900px;
 	min-height: 200px;
 	height: 90%;
