@@ -198,7 +198,7 @@ function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_te
  */
 function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph_id, int $_graph_template_id,
 	array $_skip, array $_totali, int $_graph_item_sequence, int $_selected_graph_index, array $_color_templates, array $_graph_item_types, array $_cdefs,
-	int $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = []) : int {
+	int $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = [], array $legend_overrides = []) : int {
 	global $struct_graph_item, $graph_item_types;
 
 	// Remove filter item
@@ -238,6 +238,10 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 			[$_old_graph_id, $_graph_template_id]);
 
 		$graph_local = [];
+	}
+
+	foreach ($graph_items as $index => $graph_item) {
+		$graph_items[$index] = aggregate_apply_item_legend($graph_item, $legend_overrides[$index + 1] ?? []);
 	}
 
 	// create new entry(s): graph_templates_item
@@ -338,8 +342,8 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_STACK) {
 				if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 					$graph_item['text_format'] = $_gprint_prefix;
-				} elseif ($_gprint_format != '') {
-					$graph_item['text_format'] = $_gprint_prefix . ' ' . $graph_item['text_format'];
+				} elseif ($_gprint_format != '' || ($legend_overrides[$i]['t_text_format'] ?? '') === 'on') {
+					$graph_item['text_format'] = ($_gprint_prefix === '' ? '' : $_gprint_prefix . ($graph_item['text_format'] === '' ? '' : ' ')) . $graph_item['text_format'];
 				} else {
 					$graph_item['text_format'] = $_gprint_prefix;
 				}
@@ -389,7 +393,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 
 			// do we want to override cdef of this item
 			// certainly not if it was set to $make0_cdef above
-			if ($_cdefs[$i] > 0 && $graph_item['cdef_id'] != $make0_cdef) {
+			if (isset($_cdefs[$i]) && $graph_item['cdef_id'] != $make0_cdef) {
 				$save['cdef_id'] = $_cdefs[$i];
 			}
 
@@ -515,6 +519,10 @@ function aggregate_graph_items_save(array $items, string $table) : bool {
 	$defaults['graph_type_id']           = 0;
 	$defaults['t_cdef_id']               = '';
 	$defaults['cdef_id']                 = 0;
+	$defaults['t_text_format']           = '';
+	$defaults['text_format']             = '';
+	$defaults['t_legend']                = '';
+	$defaults['legend']                  = '';
 	$defaults['item_skip']               = '';
 	$defaults['item_total']              = '';
 
@@ -534,7 +542,7 @@ function aggregate_graph_items_save(array $items, string $table) : bool {
 
 		// convert to partial SQL statement
 		$items_sql[] = sprintf(
-			' (%d, %d, %d, %d, %s, %d, %s, %d, %s, %s)',
+			' (%d, %d, %d, %d, %s, %d, %s, %d, %s, %s, %s, %s, %s, %s)',
 			$item[$id_field],
 			$item['graph_templates_item_id'],
 			$item['sequence'],
@@ -543,6 +551,10 @@ function aggregate_graph_items_save(array $items, string $table) : bool {
 			$item['graph_type_id'],
 			db_qstr($item['t_cdef_id']),
 			$item['cdef_id'],
+			db_qstr($item['t_text_format']),
+			db_qstr($item['text_format']),
+			db_qstr($item['t_legend']),
+			db_qstr($item['legend']),
 			db_qstr($item['item_skip']),
 			db_qstr($item['item_total'])
 		);
@@ -1201,6 +1213,18 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 		$save1['order_type']        = $_reorder;
 		$save1['user_id']           = $_SESSION[SESS_USER_ID];
 		$aggregate_graph_id         = sql_save($save1, 'aggregate_graphs');
+		$legend_overrides           = aggregate_item_legend_overrides((int) $aggregate_template, (int) $aggregate_graph_id);
+
+		if ($legend_overrides === false) {
+			if ($manage_transaction) {
+				db_rollback_transaction();
+				$local_graph_id = $original_local_graph_id;
+			}
+			raise_message(2);
+			restore_error_handler();
+
+			return false;
+		}
 
 		// sequence number of next graph item to be added, index starts at 1
 		$next_item_sequence = 1;
@@ -1239,7 +1263,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 				$gprint_format,
 				$_total,
 				'',
-				$member_graphs);
+				$member_graphs, $legend_overrides);
 
 			db_execute_prepared('REPLACE INTO aggregate_graphs_items
 				(aggregate_graph_id, local_graph_id, sequence)
@@ -1339,7 +1363,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 					$gprint_format,
 					AGGREGATE_TOTAL_ALL, // now add the totalling line(s)
 					$_total_type,
-					$member_graphs);
+					$member_graphs, $legend_overrides);
 
 				// now pay attention to CDEFs
 				// next_item_sequence still points to the first totalling graph item
@@ -1384,7 +1408,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 
 		// Handle aggregate nth percentiles
 		if ($_total != AGGREGATE_TOTAL_NONE) {
-			aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type);
+			aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type, $legend_overrides);
 		}
 	}
 
@@ -1414,7 +1438,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
  *
  * @return void
  */
-function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items, int $local_graph_id, int $_total, string $_total_type) : void {
+function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items, int $local_graph_id, int $_total, string $_total_type, array $legend_overrides = []) : void {
 	$special_comments  = null;
 	$special_hrules    = null;
 	$graph_template_id = 0;
@@ -1463,6 +1487,8 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 
 	if (cacti_sizeof($comments_hrules)) {
 		foreach ($comments_hrules as $item) {
+			$item = aggregate_apply_item_legend($item, $legend_overrides[$item['sequence']] ?? []);
+
 			switch($item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
 					if (!isset($special_comments[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']])) {
@@ -1531,13 +1557,14 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 							}
 
 							db_execute_prepared("INSERT INTO graph_templates_item
-								(graph_template_id, local_graph_id, task_item_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-								VALUES (?, ?, ?, ?, 1, ?, '', ?, 2, ?)", [
+								(graph_template_id, local_graph_id, task_item_id, graph_type_id, consolidation_function_id, text_format, legend, value, hard_return, gprint_id, sequence)
+								VALUES (?, ?, ?, ?, 1, ?, ?, '', ?, 2, ?)", [
 									$graph_template_id,
 									$local_graph_id,
 									$item['task_item_id'],
 									GRAPH_ITEM_TYPE_COMMENT,
 									$item['text_format'],
+									$item['legend'] ?? '',
 									$item['hard_return'],
 									$next_item_sequence++
 								]
@@ -1615,19 +1642,20 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 							// add an empty line before nth percentile for the first item only
 							if (cacti_sizeof($special_hrules) == 1) {
 								db_execute_prepared("INSERT INTO graph_templates_item
-									(graph_template_id, local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-									VALUES (?, ?, 1, 1, '', '', 'on', 2, ?)", [$graph_template_id, $local_graph_id, $next_item_sequence++]);
+									(graph_template_id, local_graph_id, graph_type_id, consolidation_function_id, text_format, legend, value, hard_return, gprint_id, sequence)
+									VALUES (?, ?, 1, 1, '', '', '', 'on', 2, ?)", [$graph_template_id, $local_graph_id, $next_item_sequence++]);
 							}
 
 							db_execute_prepared("INSERT INTO graph_templates_item
-								(graph_template_id, local_graph_id, task_item_id, graph_type_id, color_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-								VALUES (?, ?, ?, ?, ?, 1, ?, ?, '', 2, ?)", [
+								(graph_template_id, local_graph_id, task_item_id, graph_type_id, color_id, consolidation_function_id, text_format, legend, value, hard_return, gprint_id, sequence)
+								VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, '', 2, ?)", [
 									$graph_template_id,
 									$local_graph_id,
 									$item['task_item_id'],
 									GRAPH_ITEM_TYPE_HRULE,
 									$item['color_id'],
 									$item['text_format'],
+									$item['legend'] ?? '',
 									$item['value'],
 									$next_item_sequence++
 								]
@@ -1868,7 +1896,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 		$current_vals = array_rekey(
 			$current_vals,
 			'graph_templates_item_id',
-			['color_template', 'item_skip', 'item_total', 't_graph_type_id', 'graph_type_id']
+			['color_template', 'item_skip', 'item_total', 't_graph_type_id', 'graph_type_id', 't_text_format', 'text_format', 't_legend', 'legend']
 		);
 	}
 
@@ -1896,6 +1924,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 
 	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
+			$item = aggregate_apply_item_legend($item, $current_vals[$item['id']] ?? []);
 			// graph grouping display logic
 			$this_row_style   = '';
 			$use_custom_class = false;
@@ -1975,18 +2004,20 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			}
 
 			// column 'Graph Item'
-			print '<td title="' . __esc('Aggregate Items are not modifiable') . '">';
+			print '<td>';
 
 			if ($is_edit == false) {
 				// no existing aggregate graph/template
 				print __('Item # %d', ($i + 1));
-			} elseif (isset($_object['template_propogation']) && $_object['template_propogation']) {
+			} elseif (isset($_object['aggregate_template_id']) && (int) $_object['aggregate_template_id'] > 0) {
 				// existing aggregate graph with template propagation enabled
 				print __('Item # %d', ($i + 1));
-			} else {
+			} elseif ($_graph_template_id > 0) {
 				// existing aggregate template or graph with no templating
 				// create a link to graph item editor
-				print '<span title="' . __esc('Aggregate Items are not editable') . '">' . __('Item # %d', ($i + 1)) . '</span>';
+				print '<a href="' . html_escape_attr(CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&' . $item_editor_link_param . '&id=' . $item['id']) . '">' . __('Item # %d', ($i + 1)) . '</a>';
+			} else {
+				print __('Item # %d', ($i + 1));
 			}
 			print '</td>';
 
@@ -2170,4 +2201,34 @@ function draw_aggregate_template_graph_config(int $aggregate_template_id, int $g
 
 	</script>
 	<?php
+}
+
+/** Fetch legend settings once per aggregate rebuild, keyed by source-item position. */
+function aggregate_item_legend_overrides(int $template_id, int $aggregate_id) : array|false {
+	if ($template_id > 0) {
+		$table = 'aggregate_graph_templates_item';
+		$key   = 'aggregate_template_id';
+		$id    = $template_id;
+	} elseif ($aggregate_id > 0) {
+		$table = 'aggregate_graphs_graph_item';
+		$key   = 'aggregate_graph_id';
+		$id    = $aggregate_id;
+	} else {
+		return [];
+	}
+
+	$rows = db_fetch_assoc_prepared("SELECT sequence, t_text_format, text_format, t_legend, legend FROM $table WHERE $key = ?", [$id]);
+
+	return is_array($rows) ? array_column($rows, null, 'sequence') : false;
+}
+
+/** Empty strings are valid overrides: they remove the inherited legend text. */
+function aggregate_apply_item_legend(array $item, array $overrides) : array {
+	foreach (['text_format', 'legend'] as $field) {
+		if (($overrides['t_' . $field] ?? '') === 'on') {
+			$item[$field] = $overrides[$field];
+		}
+	}
+
+	return $item;
 }
