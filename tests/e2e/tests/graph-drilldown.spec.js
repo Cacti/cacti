@@ -8,8 +8,8 @@ const root = path.resolve(__dirname, '../../..');
 require('./fixture-coverage').collectCoverage(test);
 
 test.beforeEach(async ({ page }) => {
-	await page.setContent('<style>.graphWrapperOuter {margin:20px;width:200px}.graphimage {width:200px;height:60px;background:gray}.iconLink {display:block;height:25px} </style>' +
-		[1, 2].map(id => `<div class="graphWrapperOuter" id="g${id}"><div><div class="graphimage"></div><div class="graphDrillDownToggle"><span class="graphDrillDownMenu" role="button" tabindex="0" aria-label="Graph Actions" aria-expanded="false">Menu</span><div class="iconWrapper"><a class="iconLink" href="#" title="Action tooltip">Action</a><a class="iconLink" href="#">Export</a><a class="iconLink" href="#">SpikeKill</a></div></div></div></div>`).join('') + '<button id="outside">Outside</button>');
+	await page.setContent('<style>.graphWrapperOuter {margin:20px;width:400px}.graphimage {width:400px;height:60px;background:gray}.iconLink {display:block;height:25px} </style>' +
+		[1, 2].map(id => `<div class="graphWrapperOuter" id="g${id}"><div><div class="graphimage"></div><div class="graphDrillDownToggle"><span class="graphDrillDownMenu" role="button" tabindex="0" aria-label="Graph Actions" aria-expanded="false">Menu</span><div class="iconWrapper"><a class="iconLink" href="#"><i class="drillDown" title="Action tooltip">A</i></a><br><a class="iconLink" href="#"><i class="drillDown" title="Export data">E</i></a><br><a class="iconLink" href="#"><i class="drillDown" title="SpikeKill spikes">S</i></a><br><a class="iconLink" href="#"><i class="fa fa-eye" title="Add to Dashboard">D</i></a></div></div></div></div>`).join('') + '<button id="outside">Outside</button>');
 	await page.addStyleTag({ path: path.join(root, 'include/css/graph_drilldown.css') });
 	await page.addScriptTag({ path: path.join(root, 'include/js/jquery.js') });
 	const source = fs.readFileSync(path.join(root, 'include/layout.js'), 'utf8');
@@ -100,6 +100,46 @@ test('mixed pointer and keyboard input keeps a focused action visible', async ({
 	await page.keyboard.press('Escape');
 	await expect(menu).toBeFocused();
 	await expect(menu).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('opening a strip labels each action glyph with its tooltip text once', async ({ page }) => {
+	const menu = page.locator('#g1 .graphDrillDownMenu');
+	await page.locator('#g1 .graphimage').hover();
+	await menu.click();
+
+	const labels = page.locator('#g1 .iconWrapper .iconLabel');
+	await expect(labels).toHaveCount(4);
+	await expect(labels.nth(0)).toHaveText('Action tooltip');
+	await expect(labels.nth(1)).toHaveText('Export data');
+	await expect(labels.nth(2)).toHaveText('SpikeKill spikes');
+	// A plugin glyph without the drillDown class is still labelled from its title.
+	await expect(labels.nth(3)).toHaveText('Add to Dashboard');
+
+	// The row carries no title, so the visible label is not duplicated by a tooltip.
+	const firstLink = page.locator('#g1 .iconWrapper .iconLink').first();
+	expect(await firstLink.getAttribute('title')).toBeNull();
+	await expect(firstLink.locator('.drillDown')).toHaveAttribute('aria-hidden', 'true');
+	// The markup's <br> separators are removed in favour of the flex rows.
+	await expect(page.locator('#g1 .iconWrapper br')).toHaveCount(0);
+
+	// Re-opening the same strip must not relabel it (idempotent, single-pass).
+	await menu.click();
+	await page.locator('#g1 .graphimage').hover();
+	await menu.click();
+	await expect(page.locator('#g1 .iconWrapper .iconLabel')).toHaveCount(4);
+});
+
+test('the open strip adopts the theme palette from inline custom properties', async ({ page }) => {
+	// graph_drilldown_icons() emits these custom properties per theme; a light
+	// theme must yield a light panel with a dark foreground (the hamburger fix).
+	await page.locator('#g1 .graphDrillDownMenu, #g1 .iconWrapper').evaluateAll(els => {
+		els.forEach(el => el.setAttribute('style', '--cacti-dd-fg:rgb(36,36,36);--cacti-dd-menu-bg:rgb(248,248,248);--cacti-dd-panel-bg:rgb(255,255,255);--cacti-dd-border:rgba(0,0,0,0.22);--cacti-dd-accent:rgb(65,112,140)'));
+	});
+	await page.locator('#g1 .graphimage').hover();
+	await page.locator('#g1 .graphDrillDownMenu').click();
+	const wrapper = page.locator('#g1 .iconWrapper');
+	await expect(wrapper).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+	await expect(wrapper).toHaveCSS('color', 'rgb(36, 36, 36)');
 });
 
 test('touch users can see and activate the hamburger without hover', async ({ browser }) => {

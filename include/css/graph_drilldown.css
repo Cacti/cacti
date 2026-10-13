@@ -55,8 +55,9 @@
 	border-radius: 3px;
 	line-height: 1;
 	font-size: 13px;
-	color: #ffffff;
-	background: rgba(0, 0, 0, 0.55);
+	color: var(--cacti-dd-fg, #ffffff);
+	background: var(--cacti-dd-menu-bg, rgba(0, 0, 0, 0.55));
+	box-shadow: 0 0 0 1px var(--cacti-dd-border, transparent);
 	transition: opacity 0.12s ease-in-out;
 }
 
@@ -77,7 +78,7 @@
 }
 
 .graphDrillDownToggle.open .graphDrillDownMenu {
-	background: rgba(0, 0, 0, 0.82);
+	background: var(--cacti-dd-menu-bg-open, rgba(0, 0, 0, 0.82));
 }
 
 .graphDrillDownToggle .iconWrapper {
@@ -85,15 +86,48 @@
 }
 
 .graphDrillDownToggle.open .iconWrapper {
-	display: inline-block;
+	display: table;
+	border-collapse: collapse;
 	margin: 0 3px 3px 3px;
-	padding: 5px 7px;
-	border-radius: 3px;
-	background: rgba(0, 0, 0, 0.82);
-	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-	text-align: center;
+	padding: 4px;
+	border-radius: 4px;
+	background: var(--cacti-dd-panel-bg, rgba(0, 0, 0, 0.85));
+	box-shadow: 0 0 0 1px var(--cacti-dd-border, transparent), 0 3px 10px rgba(0, 0, 0, 0.4);
+	color: var(--cacti-dd-fg, #ffffff);
 }
 
 .graphDrillDownToggle.open .iconWrapper .iconLink {
+	display: table-row;
+	color: var(--cacti-dd-fg, #ffffff);
 	text-decoration: none;
+	cursor: pointer;
+}
+
+/* Theme-appropriate row highlight: a wash of the theme's drilldown accent (the
+   hamburger/panel hue), falling back to the current text colour. */
+.graphDrillDownToggle.open .iconWrapper .iconLink:hover,
+.graphDrillDownToggle.open .iconWrapper .iconLink:focus-visible {
+	background: color-mix(in srgb, var(--cacti-dd-accent, currentColor) 22%, transparent);
+	outline: none;
+}
+
+/* Label on the left; the vertical cell padding keeps a few pixels between rows. */
+.graphDrillDownToggle.open .iconWrapper .iconLabel {
+	display: table-cell;
+	padding: 2px 8px;
+	font-size: 12px;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* Glyphs stacked above one another in a fixed-width column, centred so each
+   icon sits in the middle of its cell; targets any glyph <i> so plugin icons
+   without the drillDown class align too. */
+.graphDrillDownToggle.open .iconWrapper .iconLink > i {
+	display: table-cell;
+	width: 16px;
+	padding: 2px 8px 2px 2px;
+	text-align: center;
+	vertical-align: middle;
 }
