@@ -55,13 +55,22 @@ function db_fetch_assoc_prepared($sql, $params = []) {
 function db_fetch_cell(...$args) {
 	return 0;
 }
+function db_execute($sql, ...$args) {
+	return !($GLOBALS['scenario'] === 'temp-create' && str_starts_with($sql, 'CREATE TEMPORARY TABLE'));
+}
 function db_execute_prepared(...$args) {
-	$GLOBALS['deletes']++;
+	if ($GLOBALS['scenario'] === 'archive-copy' && str_starts_with($args[0], 'INSERT IGNORE INTO')) {
+		return false;
+	}
+
+	if (str_starts_with($args[0], 'DELETE')) {
+		$GLOBALS['deletes']++;
+	}
 
 	return true;
 }
 function boost_get_arch_table_names(...$args) {
-	return [];
+	return in_array($GLOBALS['scenario'], ['archive-copy', 'temp-create'], true) ? ['poller_output_boost_arch_1'] : [];
 }
 function boost_get_unused_data_source_names(...$args) {
 	return [];
