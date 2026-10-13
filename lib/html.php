@@ -3279,6 +3279,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	print get_md5_include_css('include/themes/' . $selectedTheme . '/main.css');
 	print get_md5_include_css('include/themes/print.css');
 	print get_md5_include_css('include/css/graph_drilldown.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'context_menu_overrides.css');
 
 	// Global scripts
 	print get_md5_include_js('include/js/screenfull.js', true);

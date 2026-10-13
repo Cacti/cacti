@@ -75,3 +75,19 @@ for (const theme of ['dark', 'deepness', 'modern', 'sunrise']) {
 		expect(frames).toEqual([['0%', 'rotate(0deg)'], ['100%', 'rotate(360deg)']]);
 	});
 }
+
+
+test('Cacti context menu fallbacks override package fonts and preserve Midwinter icons', async ({ page }) => {
+	for (const theme of ['modern', 'midwinter']) {
+		await page.setContent('<!DOCTYPE html><span class="context-menu-icon"></span><span class="context-menu-icon context-menu-icon--fa"></span><span class="context-menu-icon context-menu-icon-ti"></span>');
+		await page.addStyleTag({ content: readFileSync(resolve(root, 'include/css/jquery.contextMenu.css'), 'utf8') });
+		if (theme === 'midwinter') await page.addStyleTag({ content: readFileSync(resolve(root, 'include/themes/midwinter/jquery.contextMenu.css'), 'utf8') });
+		await page.addStyleTag({ content: readFileSync(resolve(root, 'include/css/context_menu_overrides.css'), 'utf8') });
+		if (theme === 'midwinter') await page.addStyleTag({ content: readFileSync(resolve(root, 'include/themes/midwinter/context_menu_overrides.css'), 'utf8') });
+		const fonts = await page.locator('span').evaluateAll(els => els.map(el => getComputedStyle(el, '::before').fontFamily));
+		expect(fonts[0]).toContain(theme === 'midwinter' ? 'tabler-icons' : 'context-menu-icons');
+		expect(fonts[1]).toBe('FontAwesome, sans-serif');
+		expect(fonts[2]).toContain('tabler-icons');
+		for (const font of fonts) expect(font).toMatch(/sans-serif$/);
+	}
+});

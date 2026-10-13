@@ -1,5 +1,4 @@
 [
-  "include/css/jquery.contextMenu.css",
   "include/themes/cacti/jquery.zoom.css",
   "include/themes/carrot/jquery.zoom.css",
   "include/themes/carrot/main.css",
@@ -15,7 +14,6 @@
   "include/themes/midwinter/css/media/core.css",
   "include/themes/midwinter/css/media/daterangepicker.css",
   "include/themes/midwinter/css/pre/helper.css",
-  "include/themes/midwinter/jquery.contextMenu.css",
   "include/themes/midwinter/jquery.zoom.css",
   "include/themes/midwinter/main.css",
   "include/themes/modern/jquery.zoom.css",
@@ -27,5 +25,7 @@
   "include/themes/raspberry/jquery.zoom.css",
   "include/themes/raspberry/main.css",
   "include/themes/sunrise/jquery.zoom.css",
-  "include/themes/sunrise/pace.css"
+  "include/themes/sunrise/pace.css",
+  "include/css/context_menu_overrides.css",
+  "include/themes/midwinter/context_menu_overrides.css"
 ]
