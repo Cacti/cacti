@@ -10,42 +10,7 @@ define('DATA_INPUT_TYPE_SCRIPT', 1);
 define('DATA_INPUT_TYPE_PHP_SCRIPT_SERVER', 5);
 $scenario = $argv[1] ?? 'partial';
 $state    = ['rows' => [], 'queries' => 0, 'mapping_queries' => 0, 'commands' => [], 'rrd_calls' => 0, 'boost_calls' => 0, 'delete_calls' => 0, 'arrived' => false];
-function probe_load(string $path, string $name) : void {
-	$tokens  = token_get_all(file_get_contents($path));
-	$code    = '';
-	$capture = false;
-	$depth   = 0;
-	$started = false;
-
-	foreach ($tokens as $i => $token) {
-		if (!$capture && is_array($token) && $token[0] === T_FUNCTION) {
-			$j = $i + 1;
-
-			while (is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE) {
-				$j++;
-			}
-			$capture = is_array($tokens[$j]) && $tokens[$j][1] === $name;
-		}
-
-		if (!$capture) {
-			continue;
-		}
-		$code .= is_array($token) ? $token[1] : $token;
-
-		if ($token === '{' || (is_array($token) && in_array($token[0], [T_CURLY_OPEN, T_DOLLAR_OPEN_CURLY_BRACES], true))) {
-			$depth++;
-			$started = true;
-		}
-
-		if ($token === '}' && --$depth === 0 && $started) {
-			eval($code);
-
-			return;
-		}
-	}
-
-	throw new RuntimeException('Missing production function: ' . $name);
-}
+require __DIR__ . '/ProbeLoader.php';
 function probe_row(int $id, int $time, string $field, string $value, int $fields = 1) : array {
 	return ['local_data_id' => $id, 'unix_time' => $time, 'time' => gmdate('Y-m-d H:i:s', $time), 'rrd_name' => $field, 'output' => $value, 'rrd_num' => $fields, 'rrd_path' => 'source-' . $id, 'data_template_id' => 1];
 }
