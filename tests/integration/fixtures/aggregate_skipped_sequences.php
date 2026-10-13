@@ -94,6 +94,24 @@ foreach ([false, true] as $templated) {
 				$check(str_starts_with($item['text_format'], 'Skip fixture ' . $sequence), 'retained percentile label order');
 				$check(str_contains($item['text_format'] . $item['value'], ':aggregate_current:'), 'per-source percentile remains intact');
 			}
+
+			if (!$skipped) {
+				$overrides   = [];
+				$sourceItems = db_fetch_assoc_prepared('SELECT id, text_format FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = ? ORDER BY sequence', [$template, $source]);
+
+				foreach ($sourceItems as $item) {
+					$overrides[$item['id']] = ['t_text_format' => 'on', 'text_format' => 'Custom ' . $item['text_format'], 't_legend' => 'on', 'legend' => 'Export ' . $item['id']];
+				}
+				$check(db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ? AND graph_type_id IN (?, ?)', [$target, GRAPH_ITEM_TYPE_COMMENT, GRAPH_ITEM_TYPE_HRULE]), 'clear generated percentile items');
+				aggregate_handle_ptile_type([$member], [], $target, AGGREGATE_TOTAL_ALL, (string) AGGREGATE_TOTAL_TYPE_SIMILAR, $overrides);
+				$output = db_fetch_assoc_prepared('SELECT text_format, legend FROM graph_templates_item WHERE local_graph_id = ? AND text_format != ? ORDER BY sequence, id', [$target, '']);
+				$check(count($output) === 4, 'all percentile items retain their overrides');
+
+				foreach ($output as $index => $item) {
+					$check(str_starts_with($item['text_format'], 'Custom Skip fixture ' . ($index + 1)), 'percentile text override follows source item identity');
+					$check($item['legend'] === 'Export ' . $sourceItems[$index]['id'], 'percentile export override follows source item identity');
+				}
+			}
 		} finally {
 			db_rollback_transaction();
 		}
@@ -200,6 +218,17 @@ foreach ([false, true] as $templated) {
 		$check(aggregate_create_update($graph, [4], $attributes, false), 'rebuild after reset');
 		$output = db_fetch_assoc_prepared('SELECT text_format, legend FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graph]);
 		$check($output[0] === ['text_format' => 'Device', 'legend' => 'Inherited'] && $output[1] === $expected[1], 'unchecked override restores inheritance without affecting another item');
+
+		// Reordering the source template does not update stored aggregate sequences.
+		// Overrides must follow item identity, including when source sequences have gaps.
+		foreach ([1 => 20, 2 => 10] as $original => $sequence) {
+			$check(db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ? OR local_graph_template_item_id = ?', [$sequence, $sourceItems[$original], $sourceItems[$original]]), 'reorder source item and its member copies');
+		}
+		$reordered = [$expected[1], ['text_format' => 'Device', 'legend' => 'Inherited']];
+		$check(aggregate_create_update($graph, [3, 4], $attributes, false), 'rebuild reordered template with both members');
+		$check(db_fetch_assoc_prepared('SELECT text_format, legend FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graph]) === [...$reordered, ...$reordered], 'labels follow source identity after reorder with stale override sequences');
+		$check(aggregate_create_update($graph, [4], $attributes, false), 'change membership after source reorder');
+		$check(db_fetch_assoc_prepared('SELECT text_format, legend FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graph]) === $reordered, 'reordered labels survive membership changes');
 	} finally {
 		db_rollback_transaction();
 	}

@@ -62,9 +62,39 @@ try {
 		await page.goto(new URL(link, origin).href);
 		assert.equal(await page.locator('#text_format').inputValue(), '<img src=x onerror=window.aggregateItemInjected=1> & "quotes"');
 		assert.equal(await page.locator('#legend').inputValue(), 'Export legend');
+		// A rejected save must not replace the last valid override values.
+		for (const invalid of [
+			{t_graph_type_id: 'on', graph_type_id: '10'},
+			{t_graph_type_id: 'on', graph_type_id: '999'},
+			{t_cdef_id: 'on', cdef_id: '987654'},
+			{t_text_format: 'on', text_format: 'x'.repeat(256)},
+			{t_legend: 'on', legend: 'x'.repeat(31)},
+			{t_text_format: 'on', 'text_format[]': 'invalid array'},
+		]) {
+			const rejected = await page.evaluate(async invalid => {
+				const form = document.querySelector('#aggregate_item_form');
+				const data = new FormData(form);
+				data.set('action', 'save');
+				if ('text_format[]' in invalid) {
+					data.delete('text_format');
+				}
+				for (const [name, value] of Object.entries(invalid)) {
+					data.set(name, value);
+				}
+				const response = await fetch(form.getAttribute('action'), {method: 'POST', body: data});
+				return {status: response.status, url: response.url};
+			}, invalid);
+			assert.equal(rejected.status, 200);
+			assert.ok(rejected.url.includes('action=item_edit'));
+			await page.goto(new URL(link, origin).href);
+			assert.equal(await page.locator('#text_format').inputValue(), '<img src=x onerror=window.aggregateItemInjected=1> & "quotes"');
+			assert.equal(await page.locator('#legend').inputValue(), 'Export legend');
+			assert.equal(await page.locator('#t_graph_type_id').isChecked(), false);
+			assert.equal(await page.locator('#t_cdef_id').isChecked(), false);
+		}
 	}
 	assert.deepEqual(errors, []);
-	console.log(JSON.stringify({browser: 'chromium', template_and_graph_save_reload: true, empty_labels: true, escaped_labels: true, get_save_status: 405}));
+	console.log(JSON.stringify({browser: 'chromium', template_and_graph_save_reload: true, empty_labels: true, escaped_labels: true, rejected_invalid_saves: true, get_save_status: 405}));
 } finally {
 	await browser.close();
 }
