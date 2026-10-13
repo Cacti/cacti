@@ -14,3 +14,9 @@ mise exec node@22 -- npm ci --prefix tests/e2e --ignore-scripts
 mise exec node@22 -- tests/e2e/node_modules/.bin/playwright install chromium
 CACTI_AGGREGATE_ITEM_DISPOSABLE=1 CACTI_BASE_URL="http://127.0.0.1:$HOST_PORT" \
 	mise exec node@22 -- node tests/e2e/aggregate-item-overrides-browser.mjs
+
+if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 ]]; then
+    : "${CACTI_PR_COVERAGE_OUTPUT:?Coverage output directory is required}"
+    mkdir -p "$CACTI_PR_COVERAGE_OUTPUT"
+    "${compose[@]}" cp cacti:/tmp/cacti-pr-coverage/. "$CACTI_PR_COVERAGE_OUTPUT"
+fi
