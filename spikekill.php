@@ -25,6 +25,10 @@
 include('./include/auth.php');
 include_once($config['base_path'] . '/lib/spikekill.php');
 
+if (!isset_request_var('dryrun')) {
+	csrf_require_post();
+}
+
 $debug = false;
 
 if (isset_request_var('method')) {

@@ -37,6 +37,18 @@ $GLOBALS['config']              = array('url_path' => '/cacti/');
 $GLOBALS['graph_markup_realms'] = array(25, 1043);
 $GLOBALS['graph_markup_config'] = array('realtime_enabled' => 'on');
 $GLOBALS['graph_markup_user']   = array('realtime_mode' => '1');
+if (($argv[1] ?? '') === 'browser') {
+	$GLOBALS['graph_markup_config'] = array();
+	print '<!DOCTYPE html>';
+	foreach (array(1, 2) as $id) {
+		print "<div class='graphWrapperOuter' id='g$id'><div><div class='graphimage' id='graph_$id' graph_start='100' graph_end='200'></div><div class='graphDrillDownToggle'>";
+		graph_drilldown_icons($id);
+		print '</div></div></div>';
+	}
+	print '<button id="outside">Outside</button>';
+	exit;
+}
+
 ob_start();
 graph_drilldown_icons(7);
 $html     = ob_get_clean();
