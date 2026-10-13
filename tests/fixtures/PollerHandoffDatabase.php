@@ -9,7 +9,7 @@ $handoff_dsn = 'mysql:host=' . (getenv('BOOST_DB_HOST') ?: '127.0.0.1') . ';port
 $handoff_pdo = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $remote_db_cnn_id = new PDO($handoff_dsn, getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $handoff_prefix = 'handoff_' . bin2hex(random_bytes(6)) . '_';
-$handoff_tables = ['data_input', 'poller_output_boost', 'poller_data_template_field_mappings', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
+$handoff_tables = ['data_input', 'poller_output_boost_arch_1', 'poller_output_boost_local_data_ids', 'poller_output_boost', 'poller_data_template_field_mappings', 'data_source_profiles_rra', 'data_source_profiles_cf', 'data_source_profiles', 'data_template_data', 'data_template_rrd', 'data_input_fields', 'graph_templates_item', 'poller_output', 'poller_item', 'data_local'];
 $handoff_dir = sys_get_temp_dir() . '/' . $handoff_prefix;
 mkdir($handoff_dir, 0700);
 $handoff_rrd = $handoff_dir . '/source.rrd';
@@ -26,11 +26,17 @@ function handoff_sql($sql) {
 function handoff_fetch($sql, $params = [], $conn = false) {
 	global $state, $scenario;
 	if (str_contains($sql, 'FROM poller_output AS po')) $state['queries']++;
-	if (str_contains($sql, 'poller_data_template_field_mappings')) $state['mapping_queries']++;
-	if (str_contains($sql, 'LEFT JOIN graph_templates_item')) $state['orphan_queries'] = ($state['orphan_queries'] ?? 0) + 1;
+	if (str_contains($sql, 'poller_data_template_field_mappings')) {
+		$state['mapping_queries']++;
+		if ($scenario === 'integration-scheduled-mapping-retry' && $state['mapping_queries'] === 1) return false;
+	}
+	if (str_contains($sql, 'LEFT JOIN graph_templates_item')) {
+		$state['orphan_queries'] = ($state['orphan_queries'] ?? 0) + 1;
+		if ($scenario === 'integration-drain-orphan-retry' && $state['orphan_queries'] === 1) return false;
+	}
 	if (str_contains($sql, 'INNER JOIN data_input_fields')) {
 		$state['manual_queries'] = ($state['manual_queries'] ?? 0) + 1;
-		if ($scenario === 'integration-manual-retry' && $state['manual_queries'] === 1) return false;
+		if (in_array($scenario, ['integration-manual-retry', 'integration-drain-manual-retry'], true) && $state['manual_queries'] === 1) return false;
 	}
 	if ($scenario === 'integration-owner-failure' && str_contains($sql, 'WHERE poller_id = ?')) return false;
 	$pdo = $conn instanceof PDO ? $conn : $GLOBALS['handoff_pdo'];
@@ -41,9 +47,9 @@ function handoff_fetch($sql, $params = [], $conn = false) {
 
 function handoff_execute($sql, $params = [], $conn = false) {
 	global $state, $scenario;
-	if (str_starts_with($sql, 'DELETE FROM poller_output WHERE')) {
+	if (str_starts_with($sql, 'DELETE FROM poller_output WHERE') || str_starts_with($sql, 'DELETE FROM poller_output_boost\n') || preg_match('/^DELETE FROM poller_output_boost\s+WHERE/', $sql)) {
 		$state['delete_calls']++;
-		if ($scenario === 'integration-delete-retry' && $state['delete_calls'] === 1) return false;
+		if (in_array($scenario, ['integration-delete-retry', 'integration-drain-delete-retry'], true) && $state['delete_calls'] === 1) return false;
 	}
 	if (str_contains($sql, 'INSERT IGNORE INTO poller_output_boost')) {
 		$state['boost_calls']++;
@@ -74,14 +80,14 @@ function handoff_seed(&$config, &$state, $time) {
 		'data_source_profiles_cf' => 'data_source_profile_id INT, consolidation_function_id INT'
 	];
 	foreach ($schema as $table => $columns) handoff_execute("CREATE TABLE $table ($columns) ENGINE=InnoDB");
-	$manual = $scenario === 'integration-manual-retry';
+	$manual = in_array($scenario, ['integration-manual-retry', 'integration-drain-manual-retry'], true);
 	$remote = !in_array($scenario, ['integration-create', 'integration-manual-retry'], true);
 	$config['include_path'] = $handoff_dir;
 	$config['rra_path'] = $handoff_dir;
 	$config['is_web'] = false;
 	$config['poller_id'] = $remote ? 2 : 1;
 	$config['force_storage_location_local'] = true;
-	$assignment = $scenario === 'integration-owner-mismatch' ? 3 : $config['poller_id'];
+	$assignment = in_array($scenario, ['integration-owner-mismatch', 'integration-owner-change'], true) ? 3 : $config['poller_id'];
 	handoff_execute('INSERT INTO data_local VALUES (1, ?, 1, 0, "")', [$manual ? 0 : 1]);
 	handoff_execute('INSERT INTO poller_item VALUES (1, ?, ?, 1, ?)', [$manual ? '' : 'in', $handoff_rrd, $assignment]);
 	handoff_execute('INSERT INTO poller_output VALUES (1, ?, FROM_UNIXTIME(?), ?)', [$manual ? '' : 'in', $time, $manual ? 'value:42' : '42']);

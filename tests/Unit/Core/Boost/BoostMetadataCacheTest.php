@@ -13,20 +13,26 @@
 
 $root = dirname(__DIR__, 4);
 
-function boostMetadataFetch($sql, $params = array()) {
-	$GLOBALS['boost_metadata_queries'][] = array($sql, $params);
+function boostMetadataFetch($sql, $params = []) {
+	$GLOBALS['boost_metadata_queries'][] = [$sql, $params];
 
-	if (strpos($sql, 'gti.task_item_id IS NULL') !== false) {
-		return array(array('data_source_name' => 'unused'));
+	if ($GLOBALS['boost_metadata_fail_once'] ?? false) {
+		$GLOBALS['boost_metadata_fail_once'] = false;
+
+		return false;
 	}
 
-	return array(array('data_name' => 'input', 'data_source_name' => 'rrd'));
+	if (strpos($sql, 'gti.task_item_id IS NULL') !== false) {
+		return [['data_source_name' => 'unused']];
+	}
+
+	return [['data_name' => 'input', 'data_source_name' => 'rrd']];
 }
 
 function boostMetadataRekey($rows, $key, $value) {
-	$result = array();
+	$result = [];
 
-	foreach($rows as $row) {
+	foreach ($rows as $row) {
 		$result[$row[$key]] = $row[$value];
 	}
 
@@ -46,42 +52,62 @@ function boostMetadataLoadFunctions($root) {
 		->and($end)->not->toBeFalse();
 
 	$functions = substr($source, $start, $end - $start);
-	$functions = str_replace(array(
+	$functions = str_replace([
 		'boost_get_unused_data_source_names',
 		'boost_get_input_field_names',
 		'db_fetch_assoc_prepared',
 		'array_rekey',
-	), array(
+	], [
 		'boostMetadataUnused',
 		'boostMetadataFields',
 		'boostMetadataFetch',
 		'boostMetadataRekey',
-	), $functions);
+	], $functions);
 
 	eval($functions);
 }
 
 beforeEach(function () use ($root) {
 	boostMetadataLoadFunctions($root);
-	$GLOBALS['boost_metadata_queries'] = array();
+	$GLOBALS['boost_metadata_queries'] = [];
 });
 
 test('unused data-source metadata is queried once per local data source', function () {
-	expect(boostMetadataUnused(900001))->toBe(array('unused' => 'unused'))
-		->and(boostMetadataUnused(900001))->toBe(array('unused' => 'unused'))
+	expect(boostMetadataUnused(900001))->toBe(['unused' => 'unused'])
+		->and(boostMetadataUnused(900001))->toBe(['unused' => 'unused'])
 		->and($GLOBALS['boost_metadata_queries'])->toHaveCount(1);
 });
 
 test('templated and non-templated field maps use separate cached queries', function () {
-	expect(boostMetadataFields(900002, true))->toBe(array('input' => 'rrd'))
-		->and(boostMetadataFields(900002, true))->toBe(array('input' => 'rrd'))
-		->and(boostMetadataFields(900002, false))->toBe(array('input' => 'rrd'))
-		->and(boostMetadataFields(900002, false))->toBe(array('input' => 'rrd'))
+	expect(boostMetadataFields(900002, true))->toBe(['input' => 'rrd'])
+		->and(boostMetadataFields(900002, true))->toBe(['input' => 'rrd'])
+		->and(boostMetadataFields(900002, false))->toBe(['input' => 'rrd'])
+		->and(boostMetadataFields(900002, false))->toBe(['input' => 'rrd'])
 		->and($GLOBALS['boost_metadata_queries'])->toHaveCount(2);
 });
 
 test('invalid local data-source IDs never reach metadata SQL', function () {
-	expect(boostMetadataUnused(0))->toBe(array())
-		->and(boostMetadataFields(-1, true))->toBe(array())
-		->and($GLOBALS['boost_metadata_queries'])->toBe(array());
+	expect(boostMetadataUnused(0))->toBe([])
+		->and(boostMetadataFields(-1, true))->toBe([])
+		->and($GLOBALS['boost_metadata_queries'])->toBe([]);
 });
+
+test('failed Boost metadata reads are retried rather than cached as empty', function ($kind, $id) {
+	$GLOBALS['boost_metadata_fail_once'] = true;
+	$read                                = $kind === 'unused' ? fn () => boostMetadataUnused($id) : fn () => boostMetadataFields($id, true);
+	expect($read())->toBeFalse()->and($read())->toBeArray()->not->toBeEmpty()
+		->and($GLOBALS['boost_metadata_queries'])->toHaveCount(2);
+})->with([['unused', 900010], ['fields', 900011]]);
+
+test('Boost source metadata remains bounded as workers visit new sources', function ($kind) {
+	$name = $kind === 'unused' ? 'boostMetadataUnused' : 'boostMetadataFields';
+
+	for ($id = 1000000; $id <= 1001000; $id++) {
+		$name($id, true);
+	}
+	$cache = (new ReflectionFunction($name))->getStaticVariables()['cache'];
+	expect(count($cache))->toBeLessThanOrEqual(1000);
+	$before = count($GLOBALS['boost_metadata_queries']);
+	$name(1000000, true);
+	expect(count($GLOBALS['boost_metadata_queries']))->toBe($before + 1);
+})->with(['unused', 'fields']);

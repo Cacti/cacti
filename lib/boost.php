@@ -1270,15 +1270,23 @@ function boost_get_unused_data_source_names($local_data_id) {
 	}
 
 	if (!isset($cache[$local_data_id])) {
-		$cache[$local_data_id] = array_rekey(
-			db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 				FROM data_template_rrd AS dtr
 				LEFT JOIN graph_templates_item AS gti
 				ON dtr.id = gti.task_item_id
 				WHERE dtr.local_data_id = ?
-				AND gti.task_item_id IS NULL', array($local_data_id)),
-			'data_source_name', 'data_source_name'
-		);
+				AND gti.task_item_id IS NULL', array($local_data_id));
+
+		if ($rows === false) {
+			return false;
+		}
+
+		/* Bound metadata retained by workers that process millions of sources. */
+		if (count($cache) >= 1000) {
+			$cache = array();
+		}
+
+		$cache[$local_data_id] = array_rekey($rows, 'data_source_name', 'data_source_name');
 	}
 
 	return $cache[$local_data_id];
@@ -1317,6 +1325,14 @@ function boost_get_input_field_names($local_data_id, $templated) {
 				INNER JOIN data_input_fields AS dif
 				ON dtr.data_input_field_id = dif.id
 				WHERE dtr.local_data_id = ?', array($local_data_id));
+		}
+
+		if ($rows === false) {
+			return false;
+		}
+
+		if (count($cache) >= 1000) {
+			$cache = array();
 		}
 
 		$cache[$key] = array_rekey($rows, 'data_name', 'data_source_name');
@@ -1531,6 +1547,15 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 		$unused_data_source_names = boost_get_unused_data_source_names($local_data_id);
 
+		if ($unused_data_source_names === false) {
+			if ($rrdp_auto_close) {
+				rrd_close($rrdtool_pipe);
+			}
+			restore_error_handler();
+			error_reporting($previous_error_reporting);
+			return -1;
+		}
+
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
 		/* go through each poller_output_boost entries and process */
@@ -1571,6 +1596,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					if (trim((string) $return_value) !== 'OK') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 						$updates_ok = false;
+						break;
 					}
 				}
 
@@ -1606,6 +1632,11 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					} else {
 						$rrd_field_names = boost_get_input_field_names($item['local_data_id'], false);
 						$unused_data_source_names = array();
+					}
+
+					if ($rrd_field_names === false || $unused_data_source_names === false) {
+						$updates_ok = false;
+						break;
 					}
 
 					$rrd_tmpl = '';
@@ -1671,6 +1702,11 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 						$unused_data_source_names = array();
 					}
 
+					if ($rrd_field_names === false || $unused_data_source_names === false) {
+						$updates_ok = false;
+						break;
+					}
+
 					$rrd_tmpl = '';
 				}
 
@@ -1701,7 +1737,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		}
 
 		/* process the last rrdupdate if applicable */
-		if ($vals_in_buffer) {
+		if ($updates_ok && $vals_in_buffer) {
 			boost_timer('rrdupdate', BOOST_TIMER_START);
 			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);
 			boost_timer('rrdupdate', BOOST_TIMER_END);
@@ -2216,7 +2252,11 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	if ($file_exists == false) {
-		$ds_exists = db_fetch_cell_prepared('SELECT id FROM data_local WHERE id = ?', array($local_data_id));
+		$ds_exists = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE id = ?', array($local_data_id));
+
+		if ($ds_exists === false) {
+			return 'ERROR: Unable to verify data source';
+		}
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
@@ -2252,7 +2292,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute_acknowledged("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", $rrdtool_pipe);
 		} else {
 			if (cacti_has_control_chars($rrd_update_values)) {
 				cacti_log("ERROR: Invalid RRD update value set for local_data_id: $local_data_id.", false, 'BOOST');
@@ -2262,11 +2302,11 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 			cacti_log("update $rrd_path $update_options $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute_acknowledged("update $rrd_path $update_options $rrd_update_values", $rrdtool_pipe);
 		}
 
-		if ($result === false || preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim((string) $result))) {
-			return is_string($result) && $result !== '' ? $result : 'ERROR: RRDtool did not acknowledge the update';
+		if ($result !== true) {
+			return 'ERROR: RRDtool did not acknowledge the update';
 		}
 
 		return 'OK';

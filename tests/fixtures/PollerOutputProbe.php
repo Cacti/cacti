@@ -343,7 +343,8 @@ $pipe   = $scenario === 'local-create' ? fopen('php://temp', 'w+') : null;
 $first  = process_poller_output($pipe);
 $second = null;
 
-if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry', 'manual-query-failure', 'orphan-query-failure', 'integration-manual-retry', 'integration-stage-retry', 'integration-delete-retry'], true)) {
+if (in_array($scenario, ['boundary', 'boundary-partial', 'boundary-failure', 'backlog', 'metadata', 'metadata-empty', 'empty-mappings', 'retry-failed', 'local-retry', 'manual-query-failure', 'orphan-query-failure', 'integration-manual-retry', 'integration-stage-retry', 'integration-delete-retry', 'integration-owner-change'], true)) {
+	if ($scenario === 'integration-owner-change') handoff_execute('UPDATE poller_item SET poller_id = 2');
 	$second = process_poller_output($pipe);
 }
 

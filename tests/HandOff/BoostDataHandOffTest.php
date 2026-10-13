@@ -43,7 +43,7 @@ test('Scheduled Boost retains shard ownership after an RRD update failure', func
 	expect($poller)->toContain('if ($updates_ok && $results !== false)');
 	expect($poller)->toContain('return $updates_ok && $results !== false ? cacti_sizeof($results) : -1;');
 	expect($poller)->toContain('if ($pass_rows < 0)');
-	expect(boostSource('lib/boost.php'))->toContain("return is_string(\$result) && \$result !== '' ? \$result : 'ERROR: RRDtool did not acknowledge the update';");
+	expect(boostSource('lib/boost.php'))->toContain("return 'ERROR: RRDtool did not acknowledge the update';");
 });
 
 test('Boost child completion and archive deletion are scoped to a parent run', function () {
