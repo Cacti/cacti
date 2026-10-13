@@ -1060,6 +1060,10 @@ function api_aggregate_remove_multi(array $graphs) : void {
 			db_execute_prepared('DELETE FROM aggregate_graphs_graph_item
 				WHERE aggregate_graph_id = ?',
 				[$ag]);
+
+			db_execute_prepared('DELETE FROM automation_aggregate_graphs
+				WHERE local_graph_id = ?',
+				[$graph]);
 		}
 
 		api_graph_remove_multi($graphs);
@@ -1171,6 +1175,10 @@ function api_aggregate_convert_to_graph(array $graphs) : void {
 			db_execute_prepared('DELETE FROM aggregate_graphs_graph_item
 				WHERE aggregate_graph_id = ?',
 				[$ag]);
+
+			db_execute_prepared('DELETE FROM automation_aggregate_graphs
+				WHERE local_graph_id = ?',
+				[$graph]);
 
 			$graph_template = db_fetch_cell_prepared('SELECT MAX(gl.graph_template_id)
 				FROM graph_local AS gl
