@@ -240,10 +240,6 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 		$graph_local = [];
 	}
 
-	foreach ($graph_items as $index => $graph_item) {
-		$graph_items[$index] = aggregate_apply_item_legend($graph_item, $legend_overrides[$index + 1] ?? []);
-	}
-
 	// create new entry(s): graph_templates_item
 	$num_items = cacti_sizeof($graph_items);
 
@@ -268,6 +264,10 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 		$i           = 0;
 
 		foreach ($graph_items as $graph_item) {
+			$source_item_id = $_old_graph_id > 0 ? (int) $graph_item['local_graph_template_item_id'] : (int) $graph_item['id'];
+			$item_overrides = $legend_overrides[$source_item_id] ?? [];
+			$graph_item     = aggregate_apply_item_legend($graph_item, $item_overrides);
+
 			// loop starts at 0, but $_skip starts at 1, so increment before comparing
 			$i++;
 
@@ -342,7 +342,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_STACK) {
 				if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 					$graph_item['text_format'] = $_gprint_prefix;
-				} elseif ($_gprint_format != '' || ($legend_overrides[$i]['t_text_format'] ?? '') === 'on') {
+				} elseif ($_gprint_format != '' || ($item_overrides['t_text_format'] ?? '') === 'on') {
 					$graph_item['text_format'] = ($_gprint_prefix === '' ? '' : $_gprint_prefix . ($graph_item['text_format'] === '' ? '' : ' ')) . $graph_item['text_format'];
 				} else {
 					$graph_item['text_format'] = $_gprint_prefix;
@@ -1487,7 +1487,7 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 
 	if (cacti_sizeof($comments_hrules)) {
 		foreach ($comments_hrules as $item) {
-			$item = aggregate_apply_item_legend($item, $legend_overrides[$item['sequence']] ?? []);
+			$item = aggregate_apply_item_legend($item, $legend_overrides[$item['id']] ?? []);
 
 			switch($item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
@@ -2203,7 +2203,7 @@ function draw_aggregate_template_graph_config(int $aggregate_template_id, int $g
 	<?php
 }
 
-/** Fetch legend settings once per aggregate rebuild, keyed by source-item position. */
+/** Fetch legend settings once per aggregate rebuild, keyed by source-template item ID. */
 function aggregate_item_legend_overrides(int $template_id, int $aggregate_id) : array|false {
 	if ($template_id > 0) {
 		$table = 'aggregate_graph_templates_item';
@@ -2217,9 +2217,9 @@ function aggregate_item_legend_overrides(int $template_id, int $aggregate_id) : 
 		return [];
 	}
 
-	$rows = db_fetch_assoc_prepared("SELECT sequence, t_text_format, text_format, t_legend, legend FROM $table WHERE $key = ?", [$id]);
+	$rows = db_fetch_assoc_prepared("SELECT graph_templates_item_id, t_text_format, text_format, t_legend, legend FROM $table WHERE $key = ?", [$id]);
 
-	return is_array($rows) ? array_column($rows, null, 'sequence') : false;
+	return is_array($rows) ? array_column($rows, null, 'graph_templates_item_id') : false;
 }
 
 /** Empty strings are valid overrides: they remove the inherited legend text. */
