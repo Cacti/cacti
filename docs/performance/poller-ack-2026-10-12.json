@@ -1,0 +1,405 @@
+{
+  "kind": "synthetic local database comparison; not production RTM throughput",
+  "runs": [
+    {
+      "database": "10.11.19-MariaDB-ubu2204",
+      "limitations": "Synthetic local database, 100k rows, VARCHAR(64) output; no representative RTM concurrency or purge pressure. Joined timings include clearing and refilling keys, exclude initial temporary-table creation.",
+      "results": [
+        {
+          "engine": "InnoDB",
+          "rows": 100000,
+          "batch": 1000,
+          "tuple_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack_profile_3310ca8f74_innodb",
+              "type": "range",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "86",
+              "ref": null,
+              "rows": "1000",
+              "Extra": "Using where"
+            }
+          ],
+          "joined_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack",
+              "type": "ALL",
+              "possible_keys": "PRIMARY",
+              "key": null,
+              "key_len": null,
+              "ref": null,
+              "rows": "1000",
+              "Extra": ""
+            },
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "po",
+              "type": "eq_ref",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "86",
+              "ref": "cacti_boost_contract.ack.local_data_id,cacti_boost_contract.ack.rrd_name,cacti_boost_contract.ack.time",
+              "rows": "1",
+              "Extra": ""
+            }
+          ],
+          "samples": [
+            {
+              "kind": "tuple",
+              "round": 1,
+              "milliseconds": 8.419417
+            },
+            {
+              "kind": "joined",
+              "round": 1,
+              "milliseconds": 9.746458
+            },
+            {
+              "kind": "joined",
+              "round": 2,
+              "milliseconds": 8.623708
+            },
+            {
+              "kind": "tuple",
+              "round": 2,
+              "milliseconds": 7.490416
+            },
+            {
+              "kind": "tuple",
+              "round": 3,
+              "milliseconds": 6.846125
+            },
+            {
+              "kind": "joined",
+              "round": 3,
+              "milliseconds": 7.796916
+            },
+            {
+              "kind": "joined",
+              "round": 4,
+              "milliseconds": 7.731708
+            },
+            {
+              "kind": "tuple",
+              "round": 4,
+              "milliseconds": 6.692416
+            },
+            {
+              "kind": "tuple",
+              "round": 5,
+              "milliseconds": 6.96
+            },
+            {
+              "kind": "joined",
+              "round": 5,
+              "milliseconds": 7.7375
+            }
+          ]
+        },
+        {
+          "engine": "MEMORY",
+          "rows": 100000,
+          "batch": 1000,
+          "tuple_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack_profile_3310ca8f74_memory",
+              "type": "range",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "86",
+              "ref": null,
+              "rows": "1000",
+              "Extra": "Using where"
+            }
+          ],
+          "joined_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack",
+              "type": "ALL",
+              "possible_keys": "PRIMARY",
+              "key": null,
+              "key_len": null,
+              "ref": null,
+              "rows": "1000",
+              "Extra": ""
+            },
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "po",
+              "type": "eq_ref",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "86",
+              "ref": "cacti_boost_contract.ack.local_data_id,cacti_boost_contract.ack.rrd_name,cacti_boost_contract.ack.time",
+              "rows": "1",
+              "Extra": ""
+            }
+          ],
+          "samples": [
+            {
+              "kind": "tuple",
+              "round": 1,
+              "milliseconds": 3.54125
+            },
+            {
+              "kind": "joined",
+              "round": 1,
+              "milliseconds": 2.353208
+            },
+            {
+              "kind": "joined",
+              "round": 2,
+              "milliseconds": 2.241708
+            },
+            {
+              "kind": "tuple",
+              "round": 2,
+              "milliseconds": 2.634417
+            },
+            {
+              "kind": "tuple",
+              "round": 3,
+              "milliseconds": 2.803708
+            },
+            {
+              "kind": "joined",
+              "round": 3,
+              "milliseconds": 2.55825
+            },
+            {
+              "kind": "joined",
+              "round": 4,
+              "milliseconds": 2.625041
+            },
+            {
+              "kind": "tuple",
+              "round": 4,
+              "milliseconds": 3.038334
+            },
+            {
+              "kind": "tuple",
+              "round": 5,
+              "milliseconds": 3.023333
+            },
+            {
+              "kind": "joined",
+              "round": 5,
+              "milliseconds": 2.787125
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "database": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+      "limitations": "Synthetic local database, 100k rows, VARCHAR(64) output; no representative RTM concurrency or purge pressure. Joined timings include clearing and refilling keys, exclude initial temporary-table creation.",
+      "results": [
+        {
+          "engine": "InnoDB",
+          "rows": 100000,
+          "batch": 1000,
+          "tuple_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack_profile_01be4e656d_innodb",
+              "type": "range",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "29",
+              "ref": null,
+              "rows": 1000,
+              "Extra": "Using where"
+            }
+          ],
+          "joined_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack",
+              "type": "ALL",
+              "possible_keys": "PRIMARY",
+              "key": null,
+              "key_len": null,
+              "ref": null,
+              "rows": 1000,
+              "Extra": ""
+            },
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "po",
+              "type": "eq_ref",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "29",
+              "ref": "cacti_boost_contract.ack.local_data_id,cacti_boost_contract.ack.rrd_name,cacti_boost_contract.ack.time",
+              "rows": 1,
+              "Extra": ""
+            }
+          ],
+          "samples": [
+            {
+              "kind": "tuple",
+              "round": 1,
+              "milliseconds": 4.274292
+            },
+            {
+              "kind": "joined",
+              "round": 1,
+              "milliseconds": 4.05875
+            },
+            {
+              "kind": "joined",
+              "round": 2,
+              "milliseconds": 3.894
+            },
+            {
+              "kind": "tuple",
+              "round": 2,
+              "milliseconds": 3.884584
+            },
+            {
+              "kind": "tuple",
+              "round": 3,
+              "milliseconds": 3.843167
+            },
+            {
+              "kind": "joined",
+              "round": 3,
+              "milliseconds": 3.858833
+            },
+            {
+              "kind": "joined",
+              "round": 4,
+              "milliseconds": 3.7785
+            },
+            {
+              "kind": "tuple",
+              "round": 4,
+              "milliseconds": 3.81375
+            },
+            {
+              "kind": "tuple",
+              "round": 5,
+              "milliseconds": 3.854792
+            },
+            {
+              "kind": "joined",
+              "round": 5,
+              "milliseconds": 3.973959
+            }
+          ]
+        },
+        {
+          "engine": "MEMORY",
+          "rows": 100000,
+          "batch": 1000,
+          "tuple_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack_profile_01be4e656d_memory",
+              "type": "range",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "29",
+              "ref": null,
+              "rows": 1000,
+              "Extra": "Using where"
+            }
+          ],
+          "joined_plan": [
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "ack",
+              "type": "ALL",
+              "possible_keys": "PRIMARY",
+              "key": null,
+              "key_len": null,
+              "ref": null,
+              "rows": 1000,
+              "Extra": ""
+            },
+            {
+              "id": 1,
+              "select_type": "SIMPLE",
+              "table": "po",
+              "type": "eq_ref",
+              "possible_keys": "PRIMARY",
+              "key": "PRIMARY",
+              "key_len": "29",
+              "ref": "cacti_boost_contract.ack.local_data_id,cacti_boost_contract.ack.rrd_name,cacti_boost_contract.ack.time",
+              "rows": 1,
+              "Extra": ""
+            }
+          ],
+          "samples": [
+            {
+              "kind": "tuple",
+              "round": 1,
+              "milliseconds": 3.131667
+            },
+            {
+              "kind": "joined",
+              "round": 1,
+              "milliseconds": 2.309208
+            },
+            {
+              "kind": "joined",
+              "round": 2,
+              "milliseconds": 2.269666
+            },
+            {
+              "kind": "tuple",
+              "round": 2,
+              "milliseconds": 2.503125
+            },
+            {
+              "kind": "tuple",
+              "round": 3,
+              "milliseconds": 2.513667
+            },
+            {
+              "kind": "joined",
+              "round": 3,
+              "milliseconds": 2.268125
+            },
+            {
+              "kind": "joined",
+              "round": 4,
+              "milliseconds": 2.266833
+            },
+            {
+              "kind": "tuple",
+              "round": 4,
+              "milliseconds": 2.415792
+            },
+            {
+              "kind": "tuple",
+              "round": 5,
+              "milliseconds": 2.581875
+            },
+            {
+              "kind": "joined",
+              "round": 5,
+              "milliseconds": 2.349542
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

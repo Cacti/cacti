@@ -540,30 +540,11 @@ $.fn.getObjectDetails = function () {
 };
 
 $.fn.serializeForm = function () {
-	var arrayData, objectData, hiddenSelectData;
+	var arrayData, objectData;
 	arrayData = this.serializeArray();
 
-	/* for some reason the new selectmenus are not serialized */
-	hiddenSelectData = $('select:hidden').serializeArray();
-
-	$.each(hiddenSelectData, function(id, fd) {
-		var found = false;
-
-		$.each(arrayData, function(aid, afd) {
-			if (fd.name == afd.name) {
-				found = true;
-			}
-		});
-
-		if (!found) {
-			arrayData = arrayData.concat(fd);
-		}
-	});
-
-	formID = $(this).attr('id');
-
 	arrayData = arrayData.concat(
-		$('#' + formID + ' input[type=checkbox]:not(:checked)').map(function () {
+		this.find('input[type=checkbox]:not(:checked):enabled[name]').map(function () {
 			return { "name": this.name, "value": $(this).is(':checked') ? 'on' : '' }
 		}).get());
 
@@ -593,27 +574,8 @@ $.fn.serializeForm = function () {
 };
 
 $.fn.serializeObject = function () {
-	var arrayData, objectData, formID, hiddenSelectData;
+	var arrayData, objectData;
 	arrayData = this.serializeArray();
-
-	/* for some reason the new selectmenus are not serialized */
-	hiddenSelectData = $('select:hidden').serializeArray();
-
-	$.each(hiddenSelectData, function(id, fd) {
-		var found = false;
-
-		$.each(arrayData, function(aid, afd) {
-			if (fd.name == afd.name) {
-				found = true;
-			}
-		});
-
-		if (!found) {
-			arrayData = arrayData.concat(fd);
-		}
-	});
-
-	formID = $(this).attr('id');
 
 	objectData = {};
 
@@ -1007,7 +969,8 @@ function applySkin() {
 	}
 
 	// Setup blinking
-	setInterval(blinkMe, 1200);
+	clearInterval(applySkin.blinkTimer);
+	applySkin.blinkTimer = setInterval(blinkMe, 1200);
 
 	function blinkMe() {
 		$('.blink').each(function() {
@@ -2934,6 +2897,78 @@ function loadPage(href, force) {
 	});
 }
 
+function cactiIsPostActionUrl(href) {
+	var target;
+	try {
+		target = new URL(href, window.location.href);
+	} catch (error) {
+		return false;
+	}
+	if (target.origin !== window.location.origin) return false;
+	var actions = {
+	"utilities.php": [
+		"clear_poller_cache",
+		"rebuild_resource_cache",
+		"clear_logfile",
+		"purge_logfile",
+		"purge_data_source_statistics",
+		"rebuild_snmpagent_cache"
+	],
+	"tree.php": [
+		"sortasc",
+		"sortdesc",
+		"ajax_dnd",
+		"lock",
+		"unlock",
+		"set_host_sort",
+		"set_branch_sort"
+	],
+	"links.php": [
+		"delete_page",
+		"ajax_dnd"
+	],
+	"reports.php": [
+		"send",
+		"remove_history",
+		"ajax_dnd"
+	],
+	"plugins.php": [
+		"load",
+		"latest",
+		"install",
+		"uninstall",
+		"remove",
+		"remove_data",
+		"disable",
+		"enable",
+		"check",
+		"moveup",
+		"movedown",
+		"remote_enable",
+		"remote_disable",
+		"restore",
+		"delete",
+		"archive",
+		"ajax_dnd"
+	],
+	"host.php": [
+		"reindex",
+		"gt_add",
+		"query_add",
+		"query_change",
+		"query_reload",
+		"query_verbose",
+		"enable_debug",
+		"disable_debug",
+		"repopulate"
+	]
+};
+	var page = target.pathname.split('/').pop();
+	var root = typeof urlPath === 'undefined' ? new URL('.', window.location.href).href : new URL(urlPath, window.location.href).href;
+	if (target.pathname !== new URL(page, root).pathname) return false;
+	return (actions[page] || []).indexOf(target.searchParams.get('action')) !== -1;
+}
+
 function loadUrl(options) {
 	setCactiTabCookie();
 
@@ -2980,6 +3015,14 @@ function loadUrl(options) {
 		 */
 
 		$.ajaxQ.abortAll();
+
+		if (cactiIsPostActionUrl(options.url)) {
+			var request = cactiPreparePostRequestFromUrl(options.url);
+			options.url = request.url;
+			return $.post(options.url, request.data, undefined, options.json ? 'json' : undefined)
+				.done(function (html) { handleAjaxResponse(html, options); return false; })
+				.fail(function (html) { getPresentHTTPError(html); });
+		}
 
 		if (options.json == true) {
 			return $.getJSON(options.url)
@@ -3178,6 +3221,8 @@ function handleAjaxResponse(html, options) {
 				if (htmlConfirm !== undefined && typeof window['preparePopOver'] === 'function') {
 					preparePopOver(htmlConfirm);
 				}else {
+					const content = $(elementId);
+					content.data('cactiContentVersion', (content.data('cactiContentVersion') || 0) + 1);
 					$(elementId).hide().empty().hide();
 					$(elementId).html(htmlContent);
 					$(elementId).show();
@@ -4805,7 +4850,7 @@ function redrawGraph(graph_id) {
 		(isOrder ? '&graph_order='+$('#graph_order').val() : '') +
 		(isCF ? '&cf='+$('#cf').val() : '') +
 		(isMeasure ? '&measure='+$('#measure').val() : '') +
-		'&business_hours=' + (isBusiness ? 'true' : 'false') +
+		'&business_hours=' + (isBusiness ? 'true' : 'false');
 
 	$.getJSON(href, function(data) {
 		if (data.status === undefined) {
@@ -4889,6 +4934,43 @@ function initGraphDrilldown() {
 		}
 	}
 
+	// Turn the icon strip into a labelled menu the first time a graph's strip is
+	// opened: each action becomes a row of its glyph followed by the text taken
+	// from the glyph's title.  Done here (not at page load) so only the single
+	// open strip is touched - never all graphs - and only once per strip.  The
+	// core icons and plugin-contributed ones share the .iconLink / inner <i title>
+	// convention, so a plugin's icons are labelled without the plugin changing.
+	function labelGraphDrilldownIcons(container) {
+		var wrapper = container.find('.iconWrapper');
+
+		if (wrapper.data('ddLabeled')) {
+			return;
+		}
+
+		wrapper.find('br').remove();
+
+		wrapper.find('.iconLink').each(function () {
+			var link  = $(this);
+			// Core icons carry the drillDown class; a plugin-contributed glyph may
+			// not, so fall back to the first titled <i> in the link.
+			var glyph = link.find('.drillDown').first();
+			if (glyph.length == 0) {
+				glyph = link.find('i[title]').first();
+			}
+			var label = glyph.attr('title') || link.attr('title') || $.trim(link.text());
+
+			if (label != '' && link.find('.iconLabel').length == 0) {
+				// The visible label replaces the tooltip, so strip the title from the
+				// row and glyph to suppress the duplicate native/jQuery-UI tooltip.
+				link.removeAttr('title');
+				glyph.removeAttr('title').attr('aria-hidden', 'true');
+				link.prepend($('<span class="iconLabel"></span>').text(label));
+			}
+		});
+
+		wrapper.data('ddLabeled', true);
+	}
+
 	$(document).on('click.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -4905,6 +4987,7 @@ function initGraphDrilldown() {
 			container.addClass('open');
 			container.closest('.graphWrapperOuter').addClass('graphDrillActive');
 			menu.attr('aria-expanded', 'true');
+			labelGraphDrilldownIcons(container);
 		} else {
 			closeGraphDrilldown(container);
 		}
@@ -6096,7 +6179,7 @@ function formValidate(formId, href) {
 
 	var formObj = $(formId);
 	if (formObj.length) {
-		formArray[formId] = $(formObj).serializeForm();
+		formArray[formObj.attr('id')] = formObj.serializeForm();
 
 		$(formObj).find('input[type="email"]').each(function () {
 			var name = $(this).attr('id');
@@ -6152,7 +6235,7 @@ function formValidate(formId, href) {
 					$("div.error").hide();
 				}
 
-				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enabled');
+				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enable');
 			}
 		});
 	}

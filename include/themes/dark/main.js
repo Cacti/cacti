@@ -88,7 +88,7 @@ function themeReady() {
 		case '6':
 		case '7':
 		case '8':
-			$('#alpha').selectmenu('enable');
+				$('#alpha').prop('disabled', false);
 		}
 	});
 

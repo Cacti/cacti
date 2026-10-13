@@ -180,6 +180,17 @@ if (isrv('plugin')) {
 	$plugin = '';
 }
 
+if (in_array(grv('action'), [
+	'load', 'latest', 'install',
+	'uninstall', 'remove', 'remove_data',
+	'disable', 'enable', 'check',
+	'moveup', 'movedown', 'remote_enable',
+	'remote_disable', 'restore', 'delete',
+	'archive', 'ajax_dnd',
+], true)) {
+	csrf_require_post();
+}
+
 switch($action) {
 	case 'list':
 	case 'avail':
@@ -397,6 +408,8 @@ switch($action) {
 
 		break;
 	case 'ajax_dnd':
+		csrf_require_post();
+
 		$new_order = gnrv('dnd');
 
 		api_plugin_reorder($new_order);
@@ -877,7 +890,8 @@ function update_show_current() : void {
 //							console.log(row);
 						},
 						onDrop: function(table, row) {
-							loadUrl({url:'plugins.php?action=ajax_dnd&'+$.tableDnD.serialize()})
+							const request = cactiPreparePostRequest('plugins.php', 'action=ajax_dnd&' + $.tableDnD.serialize());
+							postUrl({url: request.url}, request.data);
 						}
 					});
 				}

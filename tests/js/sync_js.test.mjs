@@ -22,6 +22,9 @@ function fixtureContent(source) {
 	if (source === 'node_modules/screenfull/index.js') {
 		return `// fixture:${source}\nlet screenfull = {};\nexport default screenfull;\n`;
 	}
+	if (source === 'node_modules/pace-js/pace.js') {
+		return "if (!__hasProp.call(source, key)) continue;\ndocument.body.className.replace(/(pace-done )|/, 'pace-running ');\n";
+	}
 
 	return `fixture:${source}\n`;
 }
@@ -32,6 +35,10 @@ function assertSynced(root) {
 
 		if (source === 'node_modules/screenfull/index.js') {
 			assert.equal(actual, `// fixture:${source}\nlet screenfull = {};\nwindow.screenfull = screenfull;\n`);
+		} else if (source === 'node_modules/pace-js/pace.js') {
+			assert.match(actual, /key === '__proto__'.*key === 'constructor'.*key === 'prototype'/);
+			assert.match(actual, /replace\(\/\(pace-done \)\//);
+			assert.doesNotMatch(actual, /pace-done \)\|/);
 		} else {
 			assert.equal(actual, fixtureContent(source));
 		}
@@ -49,6 +56,25 @@ test('syncAssets copies every managed asset and reports each destination', () =>
 		messages,
 		Object.values(assetMap).map(destination => `synced ${destination}`),
 	);
+});
+
+test('pace source changes fail the build instead of silently losing security fixes', () => {
+	const root = fixture();
+	writeFileSync(join(root, 'node_modules/pace-js/pace.js'), 'changed upstream source');
+	assert.throws(() => syncAssets(root, () => {}), /pace source changed/);
+});
+
+test('the pager transform handles minified jQuery utilities', () => {
+	const root = fixture();
+	writeFileSync(join(root, 'node_modules/tablesorter/dist/js/extras/jquery.tablesorter.pager.min.js'), 'E.isArray(a); E.trim(h[o][n]);');
+	syncAssets(root, () => {});
+	assert.equal(readFileSync(join(root, 'include/js/jquery.tablesorter.pager.js'), 'utf8'), "Array.isArray(a); String((h[o][n]) ?? '').trim();");
+});
+
+test('unsupported pager utilities fail before shipping a broken asset', () => {
+	const root = fixture();
+	writeFileSync(join(root, 'node_modules/tablesorter/dist/js/extras/jquery.tablesorter.pager.min.js'), 'E.isFunction(fn);');
+	assert.throws(() => syncAssets(root, () => {}), /unsupported jQuery API/);
 });
 
 test('the command-line entry point builds a release-tree checkout', () => {

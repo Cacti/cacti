@@ -256,6 +256,7 @@ function realtimeGrapher() {
 
 		graphsRendered = 0;
 		prevTotalGraphs = totalGraphs;
+		const cycle = realtimeGrapher.cycle = (realtimeGrapher.cycle || 0) + 1;
 
 		for (key in realtimeArray) {
 			if (realtimeArray[key] === true) {
@@ -277,9 +278,10 @@ function realtimeGrapher() {
 						position = $('body').position();
 					}
 
-					$.get(`${urlPath}graph_realtime.php?action=countdown&top=${Number.parseInt(position.top)}&left=${Number.parseInt(position.left)}${isThumb ? '&graph_nolegend=true':'&graph_nolegend=false'}&graph_end=0&graph_start=-${Number.parseInt(graph_start) > 0 ? graph_start:'60'}&local_graph_id=${local_graph_id}&ds_step=${ds_step}&count=${count}&size=${size}`)
+					$.getJSON(`${urlPath}graph_realtime.php?action=countdown&top=${Number.parseInt(position.top)}&left=${Number.parseInt(position.left)}${isThumb ? '&graph_nolegend=true':'&graph_nolegend=false'}&graph_end=0&graph_start=-${Number.parseInt(graph_start) > 0 ? graph_start:'60'}&local_graph_id=${local_graph_id}&ds_step=${ds_step}&count=${count}&size=${size}`)
 						.done(function(data) {
-							var results = (typeof data === 'string') ? JSON.parse(data) : data;
+							if (cycle !== realtimeGrapher.cycle) return;
+							var results = data;
 
 							if (realtimeArray[results.local_graph_id] === true) {
 								const image_format = (results.image_format === 'svg+xml') ? 'svg+xml' : 'png';
@@ -295,11 +297,12 @@ function realtimeGrapher() {
 							destroy(data);
 							destroy(results);
 							destroy(position);
-
-							graphsRendered++;
 						})
 						.fail(function(data) {
-							getPresentHTTPError(data);
+							if (cycle === realtimeGrapher.cycle) getPresentHTTPError(data);
+						})
+						.always(function() {
+							if (cycle === realtimeGrapher.cycle) graphsRendered++;
 						});
 				});
 			}

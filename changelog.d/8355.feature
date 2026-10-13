@@ -1,0 +1,1 @@
+Theme the graph drilldown action menu for each theme - a labelled action strip with a theme-appropriate light or dark foreground/background and the theme's own accent hue, and a hamburger that reads correctly on light themes
