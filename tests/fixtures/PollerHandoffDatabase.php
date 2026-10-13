@@ -53,6 +53,11 @@ function handoff_execute($sql, $params = [], $conn = false) {
 	}
 	if (str_starts_with($sql, 'DELETE FROM poller_output WHERE') || str_starts_with($sql, 'DELETE FROM poller_output_boost\n') || preg_match('/^DELETE FROM poller_output_boost\s+WHERE/', $sql)) {
 		$state['delete_calls']++;
+        if ($scenario === 'integration-drain-arrival' && $state['delete_calls'] === 1) {
+            $incoming = $GLOBALS['handoff_pdo']->prepare(handoff_sql('INSERT INTO poller_output_boost VALUES (1,"in",FROM_UNIXTIME(?),"43")'));
+            $incoming->execute([time()-30]);
+        }
+
 		if (in_array($scenario, ['integration-delete-retry', 'integration-drain-delete-retry'], true) && $state['delete_calls'] === 1) return false;
 	}
 	if (str_contains($sql, 'INSERT IGNORE INTO poller_output_boost')) {

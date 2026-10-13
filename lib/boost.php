@@ -1803,10 +1803,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	}
 
 	if ($updates_ok && cacti_sizeof($results)) {
-		$updates_ok = db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id = ?
-			AND time < FROM_UNIXTIME(?)',
-			array($local_data_id, $timestamp), false) !== false;
+		$updates_ok = boost_delete_output_keys($local_data_id, $results);
 	}
 
 	boost_timer('delete', BOOST_TIMER_END);
@@ -1824,6 +1821,46 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	error_reporting($previous_error_reporting);
 
 	return $updates_ok ? cacti_sizeof($results) : -1;
+}
+
+
+/**
+ * Delete fetched keys in timestamp order, without splitting a timestamp across batches.
+ * @param array<int, array{timestamp: int|string, rrd_name: string}> $results
+ */
+function boost_delete_output_keys(int $local_data_id, array $results): bool {
+    $keys = array();
+    $params = array($local_data_id);
+    $flush = static function (array $keys, array $params): bool {
+        if (!$keys) return true;
+        return db_execute_prepared('DELETE FROM poller_output_boost
+            WHERE local_data_id = ? AND (rrd_name, time) IN (' . implode(',', $keys) . ')', $params, false) !== false;
+    };
+    $append_group = static function (int|string|null $timestamp, array $names, array &$keys, array &$params) use ($flush, $local_data_id): bool {
+        if ($timestamp === null) return true;
+        if ($keys && count($keys) + count($names) > 1000) {
+            if (!$flush($keys, $params)) return false;
+            $keys = array();
+            $params = array($local_data_id);
+        }
+        foreach ($names as $name) {
+            $keys[] = '(?, FROM_UNIXTIME(?))';
+            $params[] = $name;
+            $params[] = $timestamp;
+        }
+        return true;
+    };
+    $timestamp = null;
+    $names = array();
+    foreach ($results as $item) {
+        if ((string) $timestamp !== (string) $item['timestamp']) {
+            if (!$append_group($timestamp, $names, $keys, $params)) return false;
+            $timestamp = $item['timestamp'];
+            $names = array();
+        }
+        $names[] = $item['rrd_name'];
+    }
+    return $append_group($timestamp, $names, $keys, $params) && $flush($keys, $params);
 }
 
 /**

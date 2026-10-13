@@ -63,3 +63,12 @@ test('a failed archive copy retains closed-round samples for storage on retry', 
 	expect($r['first'])->toBe(-1)->and($r['archive_retained'])->toBe(1)->and($r['first_last'])->toContain(': U')
 		->and($r['second'])->toBe(1)->and($r['handoff']['lastupdate'])->toContain(': 42');
 })->with(['integration-archive-copy-retry', 'integration-archive-active-copy-retry']);
+
+test('Boost preserves late arrivals that were not fetched by the acknowledged update', function () {
+	if (!getenv('BOOST_DB_HOST') || !is_executable(getenv('RRDTOOL_TEST_BINARY') ?: '')) {
+		$this->markTestSkipped('Requires MariaDB and RRDtool.');
+	}
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/BoostDrainProbe.php', ['integration-drain-arrival']);
+	expect($r['first'])->toBe(1)->and($r['retained'])->toBe(1)->and($r['first_last'])->toContain(': 42')
+		->and($r['second'])->toBe(1)->and($r['handoff']['staged'])->toBe([])->and($r['handoff']['lastupdate'])->toContain(': 43');
+});

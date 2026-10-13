@@ -1,6 +1,6 @@
 <?php
 // Copyright (C) 2026 The Cacti Group. Licensed under GPL-2.0-or-later.
-$root     = dirname(__DIR__, 2);
+$root     = getenv('CACTI_BOOST_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 $scenario = $argv[1] ?? 'integration-drain';
 require __DIR__ . '/PollerHandoffDatabase.php';
 $state = ['rows' => [], 'queries' => 0, 'mapping_queries' => 0, 'delete_calls' => 0, 'boost_calls' => 0];
@@ -141,6 +141,10 @@ foreach (['boost_rrdtool_function_update', 'boost_process_poller_output', 'boost
 probe_load($root . '/lib/boost.php', 'boost_limit_complete_timestamp_page');
 probe_load($root . '/poller_boost.php', 'boost_process_output');
 probe_load($root . '/poller_boost.php', 'boost_process_local_data_ids');
+
+if (str_contains(file_get_contents($root . '/lib/boost.php'), 'function boost_delete_output_keys(')) {
+	probe_load($root . '/lib/boost.php', 'boost_delete_output_keys');
+}
 $config = ['library_path'=>__DIR__ . '/../performance/fixtures', 'cacti_server_os'=>'unix', 'is_web'=>false];
 $debug  = $get_memory = false;
 $time   = time() - 60;
