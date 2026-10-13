@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.x
 -security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
 -security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
+-issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
 -issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
 -feature#8311: Make the graph drilldown action icons a common hamburger toggle over the graph's top-right across all themes (centralized in layout.js) instead of the per-theme hover-to-the-right behaviour
 -issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
