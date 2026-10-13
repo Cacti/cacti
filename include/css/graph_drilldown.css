@@ -56,8 +56,9 @@
 	border-radius: 3px;
 	line-height: 1;
 	font-size: 13px;
-	color: #ffffff;
-	background: rgba(0, 0, 0, 0.55);
+	color: var(--cacti-dd-fg, #ffffff);
+	background: var(--cacti-dd-menu-bg, rgba(0, 0, 0, 0.55));
+	box-shadow: 0 0 0 1px var(--cacti-dd-border, transparent);
 	transition: opacity 0.12s ease-in-out;
 }
 
@@ -78,7 +79,7 @@
 }
 
 .graphDrillDownToggle.open .graphDrillDownMenu {
-	background: rgba(0, 0, 0, 0.82);
+	background: var(--cacti-dd-menu-bg-open, rgba(0, 0, 0, 0.82));
 }
 
 .graphDrillDownToggle .iconWrapper {
@@ -91,22 +92,23 @@
 	margin: 0 3px 3px 3px;
 	padding: 4px;
 	border-radius: 4px;
-	background: rgba(0, 0, 0, 0.85);
-	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-	color: #ffffff;
+	background: var(--cacti-dd-panel-bg, rgba(0, 0, 0, 0.85));
+	box-shadow: 0 0 0 1px var(--cacti-dd-border, transparent), 0 3px 10px rgba(0, 0, 0, 0.4);
+	color: var(--cacti-dd-fg, #ffffff);
 }
 
 .graphDrillDownToggle.open .iconWrapper .iconLink {
 	display: table-row;
-	color: #ffffff;
+	color: var(--cacti-dd-fg, #ffffff);
 	text-decoration: none;
 	cursor: pointer;
 }
 
-/* Theme-appropriate row highlight: a wash of the current (panel) text colour. */
+/* Theme-appropriate row highlight: a wash of the theme's drilldown accent (the
+   hamburger/panel hue), falling back to the current text colour. */
 .graphDrillDownToggle.open .iconWrapper .iconLink:hover,
 .graphDrillDownToggle.open .iconWrapper .iconLink:focus-visible {
-	background: color-mix(in srgb, currentColor 16%, transparent);
+	background: color-mix(in srgb, var(--cacti-dd-accent, currentColor) 22%, transparent);
 	outline: none;
 }
 
