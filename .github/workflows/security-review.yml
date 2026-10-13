@@ -53,7 +53,9 @@ jobs:
         if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
+          umask 077
           mkdir -m 700 "$RUNNER_TEMP/cacti-security-review"
+          install -m 0600 /dev/null "$RUNNER_TEMP/cacti-security-review/pr.diff"
           git diff "origin/${GITHUB_BASE_REF}...HEAD" > "$RUNNER_TEMP/cacti-security-review/pr.diff"
           printf 'Diff: %d bytes\n' "$(wc -c < "$RUNNER_TEMP/cacti-security-review/pr.diff")"
 
@@ -76,8 +78,9 @@ jobs:
         if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
+          umask 077
           out="$RUNNER_TEMP/cacti-security-review/grep_hits.txt"
-          : > "$out"
+          install -m 0600 /dev/null "$out"
 
           if [[ ! -s /tmp/changed_php_files.txt ]]; then
             printf '(no PHP files changed)\n' > "$out"
@@ -145,8 +148,9 @@ jobs:
         if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
+          umask 077
           out="$RUNNER_TEMP/cacti-security-review/hotspot_contents.txt"
-          : > "$out"
+          install -m 0600 /dev/null "$out"
 
           # Files with a history of security issues in Cacti advisories
           hotspots=(

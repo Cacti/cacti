@@ -182,6 +182,7 @@ jobs:
       - name: Enforce workflow policy
         run: |
           set -euo pipefail
+          python3 tests/tools/test_security_review_paths.py
           python3 .github/scripts/check-workflow-policy.py
 
   dependency-review:
