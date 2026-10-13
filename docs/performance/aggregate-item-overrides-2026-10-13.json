@@ -1,0 +1,42 @@
+{
+  "php": "8.3.35",
+  "database": "10.11.19-MariaDB-ubu2204",
+  "peak_bytes": 12582912,
+  "scope": "Synthetic SQL and graph metadata only; no RRD or SNMP IO.",
+  "profiles": [
+    {
+      "template": false,
+      "override_enabled": false,
+      "members": 1000,
+      "seconds": 0.162174151,
+      "queries": 6021,
+      "override_map_queries": 1
+    },
+    {
+      "template": false,
+      "override_enabled": true,
+      "members": 1000,
+      "seconds": 0.166287095,
+      "queries": 6021,
+      "override_map_queries": 1
+    },
+    {
+      "template": true,
+      "override_enabled": false,
+      "members": 1000,
+      "seconds": 0.168387733,
+      "queries": 6022,
+      "override_map_queries": 1
+    },
+    {
+      "template": true,
+      "override_enabled": true,
+      "members": 1000,
+      "seconds": 0.180986525,
+      "queries": 6022,
+      "override_map_queries": 1
+    }
+  ],
+  "date": "2026-10-13",
+  "source_sha256": "1b56d99d5d21540f46f06da6c0a9379aa7a6db59b6c7ba480a68f66bd0621879"
+}
