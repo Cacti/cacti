@@ -1,0 +1,19 @@
+{
+    "name": "cacti/plugin-test-harness",
+    "description": "Locked Pest toolchain for Cacti plugin integration CI",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "require-dev": {
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-drift": "^3.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "platform": {
+            "php": "8.2.0"
+        },
+        "sort-packages": true
+    }
+}

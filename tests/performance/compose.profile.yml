@@ -1,0 +1,11 @@
+# Reuses the disposable E2E stack. Never attach this override to a deployment.
+services:
+  cacti:
+    build:
+      target: profiling
+    environment:
+      CACTI_PROFILE_DISPOSABLE: '1'
+    ports: !override
+      - '127.0.0.1:${HOST_PORT:-18093}:80'
+    volumes:
+      - '${CACTI_PROFILE_OUTPUT:?Select an output directory}:/profiles'

@@ -223,7 +223,9 @@ function display_version() : void {
 function display_help() : void {
 	display_version();
 
-	print PHP_EOL . 'usage: import_package.php --filename=[filename] [--info] [--remove-orphans] [--replace-svalues] [--with-profile] [--profile-id=N' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . ('usage: import_package.php --filename=[filename] [--info] ' .
+		'[--remove-orphans] [--replace-svalues] [--with-profile] ' .
+		'[--profile-id=N') . PHP_EOL . PHP_EOL;
 	print 'A utility to allow signed Cacti Packages to be imported from the command line.' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;

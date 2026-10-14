@@ -427,7 +427,11 @@ function doDeviceMap(int $deviceId, int $siteId) : bool {
  *
  * @return array - The geocodeAddress location
  */
-function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, string $siteZip, string $siteCountry) : array {
+function geocodeAddress(string $siteAddr1,
+	string $siteAddr2,
+	string $siteCity,
+	string $siteZip,
+	string $siteCountry) : array {
 	global $verbose, $debug, $quiet, $geocodeApiKey, $httpsProxy;
 
 	$latGeocode = '';
@@ -444,7 +448,13 @@ function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, 
 		exit(1);
 	}
 
-	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s', $googleApiUrl, urlencode($siteAddr1), urlencode($siteAddr2), urlencode($siteCity), urlencode($siteCountry), $geocodeApiKey);
+	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s',
+		$googleApiUrl,
+		urlencode($siteAddr1),
+		urlencode($siteAddr2),
+		urlencode($siteCity),
+		urlencode($siteCountry),
+		$geocodeApiKey);
 
 	if ($verbose || $debug) {
 		echoQuiet("Geocode URL: $requestUrl\n" . PHP_EOL);
@@ -477,9 +487,14 @@ function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, 
 }
 
 function fixCoordinates(string $lat, string $lng) : array {
-	$utfCoord = mb_convert_encoding("$lat $lng", 'ISO-8859-1', 'UTF-8'); // Normalise the characters to put them through a regex
+	$utfCoord = mb_convert_encoding("$lat $lng",
+		'ISO-8859-1',
+		'UTF-8'); // Normalise the characters to put them through a regex
 
-	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/', $utfCoord, $matches)) {
+	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) ' .
+		'+(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/',
+		$utfCoord,
+		$matches)) {
 		array_shift($matches); // Get rid of $matches[0]
 		[$degN, $minN, $secN, $NS, $degE, $minE, $secE, $EW] = $matches; // Get the matches from the regex
 
@@ -515,7 +530,10 @@ function fetchCurl(string $url) : string|false {
 	global $verbose, $debug, $httpsProxy;
 
 	if (!function_exists('curl_init')) {
-		print 'Error: cURL must be enabled in PHP if --geocode is specified.' . PHP_EOL . 'See http://php.net/manual/en/curl.setup.php for help.' . PHP_EOL;
+		print 'Error: cURL must be enabled in PHP if --geocode is specified.' .
+			PHP_EOL .
+			'See http://php.net/manual/en/curl.setup.php for help.' .
+			PHP_EOL;
 
 		display_help();
 
@@ -599,8 +617,10 @@ function display_help() : void {
 
 	echoQuiet('Geocoding Options:' . PHP_EOL);
 	echoQuiet('    --geocode                     Try to turn addresses into GPS coordinates' . PHP_EOL);
-	echoQuiet('    --geocode-api-key             Your Google API key - https://developers.google.com/maps/documentation/geocoding/get-api-key' . PHP_EOL);
-	echoQuiet('    --proxy                       Proxy server to use in http://proxy.server:port format' . PHP_EOL . PHP_EOL);
+	echoQuiet(('    --geocode-api-key             Your Google API key - ' .
+		'https://developers.google.com/maps/documentation/geocoding/get-api-key') . PHP_EOL);
+	echoQuiet(('    --proxy                       Proxy server to use in ' .
+		'http://proxy.server:port format') . PHP_EOL . PHP_EOL);
 
 	echoQuiet('Device Map Options:' . PHP_EOL);
 	echoQuiet("    --device-map-regex=[regular expression]  e.g.'rtr-th[e|w]-pe\d'" . PHP_EOL);

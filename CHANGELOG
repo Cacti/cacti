@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -security#GHSA-54fg-q9h9-88mm: Route package repository manifest fetches through cacti_http() to close the Direct-URL/GitHub SSRF
 -security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
 -security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
+-security: Use a shared locked plugin test harness and cache Composer downloads in coverage jobs
 -security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary before the resource-cache PHP syntax-check shell command
 -security#GHSA-967c-6qj7-q7rh: Confirm the rrdtool control-character strip closes the RRD-create |query_*| injection path
@@ -416,6 +417,7 @@ Cacti CHANGELOG
 -feature#7372: Add installer domain foundation types and lifecycle tests
 -feature#7634: Add indexes for host-template and session lookup queries
 -feature#7681: Add fail2ban support with a stable authentication-failure log line and a bundled filter
+-feature#8281: Log user actions (create, delete, ...)
 
 1.2.32
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line

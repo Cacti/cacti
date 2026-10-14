@@ -147,7 +147,10 @@ $start = microtime(true);
 $include_file = '';
 
 if (CACTI_SERVER_OS == 'win32') {
-	cacti_log('DEBUG: GETCWD: ' . cacti_strtolower(strtr((string) getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: GETCWD: ' . cacti_strtolower(strtr((string) getcwd(),'\\','/')),
+		false,
+		'PHPSVR',
+		POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . cacti_strtolower(strtr(__DIR__,'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 } else {
 	cacti_log('DEBUG: GETCWD: ' . strtr((string) getcwd(),'\\','/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
@@ -204,12 +207,18 @@ while (1) {
 
 		if ($isParentRunning) {
 			if (!empty($parent_pid)) {
-				cacti_log('WARNING: Input Expected, parent process ' . $parent_pid . ' should have sent non-blank line', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+				cacti_log('WARNING: Input Expected, parent process ' . $parent_pid . ' should have sent non-blank line',
+					false,
+					'PHPSVR',
+					POLLER_VERBOSITY_DEBUG);
 			} else {
 				cacti_log('WARNING: Input Expected, unable to check parent process', false, 'PHPSVR', POLLER_VERBOSITY_MEDIUM);
 			}
 		} else {
-			cacti_log('WARNING: Parent (' . $parent_pid . ') of Script Server (' . getmypid() . ') has been lost, forcing exit', false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
+			cacti_log('WARNING: Parent (' . $parent_pid . ') of Script Server (' . getmypid() . ') has been lost, forcing exit',
+				false,
+				'PHPSVR',
+				POLLER_VERBOSITY_HIGH);
 			$input_string = 'quit';
 		}
 	}
@@ -318,7 +327,15 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '" . basename($include_file) . "' FUNC: '" . $function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
+				cacti_log("WARNING: Function does not exist  INC: '" .
+					basename($include_file) .
+					"' FUNC: '" .
+					$function .
+					"' PARMS: '" .
+					$parameters .
+					"'",
+					false,
+					'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 			}
@@ -327,7 +344,9 @@ while (1) {
 
 	// end the process if the runtime exceeds MAX_POLLER_RUNTIME
 	if (($start + MAX_POLLER_RUNTIME) < time()) {
-		cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded for the Script Server. Exiting.', true, 'PHPSVR');
+		cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded for the Script Server. Exiting.',
+			true,
+			'PHPSVR');
 
 		exit(-1);
 	}
@@ -470,12 +489,20 @@ function sig_handler(int $signo) : void {
 		case SIGABRT:
 		case SIGQUIT:
 		case SIGSEGV:
-			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_MEDIUM);
+			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" .
+				basename($include_file) .
+				"', function:'$function', params:'$parameters'",
+				false,
+				'PHPSVR',
+				POLLER_VERBOSITY_MEDIUM);
 			db_close();
 
 			exit;
 		default:
-			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
+			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'",
+				false,
+				'PHPSVR',
+				POLLER_VERBOSITY_HIGH);
 
 			break;
 	}
@@ -500,13 +527,18 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: script_server.php [environ poller_id] | [ --environ=S --poller=N --mode [--force-level=N] ]' . PHP_EOL . PHP_EOL;
+	print ('usage: script_server.php [environ poller_id] | [ --environ=S ' .
+		'--poller=N --mode [--force-level=N] ]') . PHP_EOL . PHP_EOL;
 	print 'Cacti\'s Script Server.  The Script Server provides a memory resident server for executing php' . PHP_EOL;
-	print 'scripts saving reducing the time to process the scripts through pre-compiling them for all consumers.' . PHP_EOL;
-	print 'The Script Server can be called using two methods.  The first method is the legacy method.  When using' . PHP_EOL;
-	print 'the legacy method, the first argument will be the environment, and the second will be the poller id.' . PHP_EOL . PHP_EOL;
+	print ('scripts saving reducing the time to process the scripts through ' .
+		'pre-compiling them for all consumers.') . PHP_EOL;
+	print ('The Script Server can be called using two methods.  The first method ' .
+		'is the legacy method.  When using') . PHP_EOL;
+	print ('the legacy method, the first argument will be the environment, and ' .
+		'the second will be the poller id.') . PHP_EOL . PHP_EOL;
 
-	print 'The modern calling method has multiple options processed by getopt.  Those options include:' . PHP_EOL . PHP_EOL;
+	print ('The modern calling method has multiple options processed by getopt.  ' .
+		'Those options include:') . PHP_EOL . PHP_EOL;
 
 	print '  --environ=S      The default being \'cmd\', and options being \'spine\', \'cmd\', and \'realtime\'' . PHP_EOL;
 	print '  --poller=N       The poller id for the Data Collector in use' . PHP_EOL;
@@ -514,7 +546,8 @@ function display_help() : void {
 	print '  --mode=S         Force a Database mode \'online\' or \'offline\'.  This is only relevant for' . PHP_EOL;
 	print '                   Remote Data Collectors.' . PHP_EOL . PHP_EOL;
 
-	print 'If no options are passed to the Script Server, it assumes that the environ is \'cmd\' and the poller id' . PHP_EOL;
+	print ('If no options are passed to the Script Server, it assumes that the ' .
+		'environ is \'cmd\' and the poller id') . PHP_EOL;
 	print 'is 1 or the Main Data Collector.' . PHP_EOL . PHP_EOL;
 
 	print 'It is common that when developing Cacti Data Input methods one will use the Script Server to test' . PHP_EOL;

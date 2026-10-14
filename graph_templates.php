@@ -245,6 +245,12 @@ function form_save() : void {
 		$save2['lower_limit']                   = CactiValidator::validateInput(gnrv('lower_limit'), 'lower_limit', [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
 		$save2['t_vertical_label']              = CactiValidator::validateInput((isrv('t_vertical_label') ? gnrv('t_vertical_label') : ''), 't_vertical_label', [], 3);
 		$save2['vertical_label']                = CactiValidator::validateInput(gnrv('vertical_label'), 'vertical_label', [], 3);
+		$save2['t_vertical_label_angle']        = CactiValidator::validateInput((isrv('t_vertical_label_angle') ? gnrv('t_vertical_label_angle') : ''), 't_vertical_label_angle', [new Assert\Choice(['', 'on'])], 3);
+		$save2['vertical_label_angle']          = CactiValidator::validateRrdGraphAxisInput((isrv('vertical_label_angle') ? gnrv('vertical_label_angle') : ''), 'vertical_label_angle');
+		$save2['t_right_axis_label_angle']      = CactiValidator::validateInput((isrv('t_right_axis_label_angle') ? gnrv('t_right_axis_label_angle') : ''), 't_right_axis_label_angle', [new Assert\Choice(['', 'on'])], 3);
+		$save2['right_axis_label_angle']        = CactiValidator::validateRrdGraphAxisInput((isrv('right_axis_label_angle') ? gnrv('right_axis_label_angle') : ''), 'right_axis_label_angle');
+		$save2['t_right_axis_range']            = CactiValidator::validateInput((isrv('t_right_axis_range') ? gnrv('t_right_axis_range') : ''), 't_right_axis_range', [new Assert\Choice(['', 'on'])], 3);
+		$save2['right_axis_range']              = CactiValidator::validateRrdGraphAxisInput((isrv('right_axis_range') ? gnrv('right_axis_range') : ''), 'right_axis_range');
 		$save2['t_slope_mode']                  = CactiValidator::validateInput((isrv('t_slope_mode') ? gnrv('t_slope_mode') : ''), 't_slope_mode', [], 3);
 		$save2['slope_mode']                    = CactiValidator::validateInput((isrv('slope_mode') ? gnrv('slope_mode') : ''), 'slope_mode', [], 3);
 		$save2['t_auto_scale']                  = CactiValidator::validateInput((isrv('t_auto_scale') ? gnrv('t_auto_scale') : ''), 't_auto_scale', [], 3);

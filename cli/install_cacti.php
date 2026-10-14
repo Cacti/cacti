@@ -391,7 +391,12 @@ function set_install_option(array &$options, string $key, string $display_name, 
 /**
  * set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix
  */
-function set_install_multioption(array &$options, string $key, string $display_name, mixed $value, string $prefix, bool $replace_dots = false) : void {
+function set_install_multioption(array &$options,
+	string $key,
+	string $display_name,
+	mixed $value,
+	string $prefix,
+	bool $replace_dots = false) : void {
 	$option_pos = strpos($value, ':');
 
 	if ($option_pos !== false) {
@@ -458,7 +463,17 @@ function process_install_errors(array $results) : void {
 			}
 		}
 
-		print PHP_EOL . 'Unable to continue as ' . $count . ' issue' . ($count == 1 ? '' : 's') . ' in ' . $sections . ' section' . ($sections == 1 ? '' : 's') . ' were found.' . PHP_EOL;
+		print PHP_EOL .
+			'Unable to continue as ' .
+			$count .
+			' issue' .
+			($count == 1 ? '' : 's') .
+			' in ' .
+			$sections .
+			' section' .
+			($sections == 1 ? '' : 's') .
+			' were found.' .
+			PHP_EOL;
 
 		// exit does not execute the caller's finally block.
 		unregister_process('install', 'master', 0);
