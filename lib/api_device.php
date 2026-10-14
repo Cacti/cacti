@@ -855,27 +855,21 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'host_snmp_query', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'host_snmp_query', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT pi.*
 		FROM poller_item AS pi
 		WHERE pi.host_id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'poller_item', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'poller_item', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT h.*
 		FROM host AS h
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'host', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'host', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT hsc.*
 		FROM host_snmp_cache AS hsc
@@ -884,9 +878,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'host_snmp_cache', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'host_snmp_cache', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT hsc.*
 		FROM host_value_cache AS hsc
@@ -895,9 +887,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'host_value_cache', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'host_value_cache', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT pri.*
 		FROM poller_reindex AS pri
@@ -906,9 +896,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'poller_reindex', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'poller_reindex', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT dl.*
 		FROM data_local AS dl
@@ -917,9 +905,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'data_local', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'data_local', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT gl.*
 		FROM graph_local AS gl
@@ -928,9 +914,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'graph_local', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'graph_local', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT dtd.*
 		FROM data_template_data AS dtd
@@ -941,9 +925,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'data_template_data', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'data_template_data', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT dtr.*
 		FROM data_template_rrd AS dtr
@@ -954,9 +936,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'data_template_rrd', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'data_template_rrd', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT gti.*
 		FROM graph_templates_item AS gti
@@ -967,9 +947,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'graph_templates_item', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'graph_templates_item', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT did.*
 		FROM data_input_data AS did
@@ -982,9 +960,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE h.id = ?',
 		[$device_id]);
 
-	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'data_input_data', $poller_id);
-	}
+	replicate_table_to_poller($rcnn_id, $data, 'data_input_data', $poller_id);
 
 	api_plugin_hook_function('replicate_out', ['remote_poller_id' => $poller_id, 'rcnn_id' => $rcnn_id, 'class' => 'all']);
 
