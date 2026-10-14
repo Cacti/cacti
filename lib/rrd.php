@@ -4384,6 +4384,64 @@ function rrdtool_function_contains_cf(int $local_data_id, string $cf, mixed $rrd
 }
 
 /**
+ * rrdtool_tune_ds_add_spec - build an rrdtool 'tune' DS specification used to add a data source
+ * that the Graph requires but that is missing from the RRDfile.  A non-numeric minimum or maximum
+ * falls back to 'U'.  Adding a data source with 'tune' requires RRDtool 1.5 or above.
+ *
+ * @param string $ds_name   The data source name
+ * @param string $type      The RRDtool data source type
+ * @param mixed  $heartbeat The minimal heartbeat for the data source
+ * @param mixed  $min       The minimum acceptable value or 'U'
+ * @param mixed  $max       The maximum acceptable value or 'U'
+ *
+ * @return string The 'DS:name:type:heartbeat:min:max' specification
+ */
+function rrdtool_tune_ds_add_spec(string $ds_name, string $type, $heartbeat, $min, $max) : string {
+	$min = is_numeric($min) ? $min : 'U';
+	$max = is_numeric($max) ? $max : 'U';
+
+	return 'DS:' . $ds_name . ':' . $type . ':' . $heartbeat . ':' . $min . ':' . $max;
+}
+
+/**
+ * rrdtool_cacti_compare_ds - records data source count, add and remove recommendations between the
+ * Cacti definition and the RRDfile into the supplied diff array.  Data sources the Graph requires
+ * but the RRDfile lacks are added with 'DS:'; data sources the RRDfile carries but the Graph no
+ * longer requires are removed with 'DEL:'.
+ *
+ * @param array  $diff     The diff array to populate, passed by reference
+ * @param string $filename The RRDfile path
+ * @param array  $cacti_ds The data sources Cacti expects, keyed by name
+ * @param array  $file_ds  The data sources present in the RRDfile, keyed by name
+ *
+ * @return void
+ */
+function rrdtool_cacti_compare_ds(array &$diff, string $filename, array $cacti_ds, array $file_ds) : void {
+	$cacti_count = cacti_sizeof($cacti_ds);
+	$file_count  = cacti_sizeof($file_ds);
+
+	if ($cacti_count > $file_count) {
+		$diff['ds_count'] = __('The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added.', $cacti_count, $file_count);
+	} elseif ($cacti_count < $file_count) {
+		$diff['ds_count'] = __('The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed.', $cacti_count, $file_count);
+	}
+
+	foreach ($cacti_ds as $name => $ds) {
+		if (!isset($file_ds[$name])) {
+			$diff['ds'][$name]['error'] = __("Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added", $name);
+			$diff['tune'][]             = cacti_escapeshellarg($filename) . ' ' . cacti_escapeshellarg(rrdtool_tune_ds_add_spec($name, $ds['type'], $ds['minimal_heartbeat'], $ds['min'], $ds['max']));
+		}
+	}
+
+	foreach ($file_ds as $name => $ds) {
+		if (!isset($cacti_ds[$name])) {
+			$diff['ds'][$name]['error'] = __("Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed", $name);
+			$diff['tune'][]             = cacti_escapeshellarg($filename) . ' ' . cacti_escapeshellarg('DEL:' . $name);
+		}
+	}
+}
+
+/**
  * rrdtool_cacti_compare - compares cacti information to rrd file information
  *
  * @param int   $data_source_id The id of the data source
@@ -4436,12 +4494,9 @@ function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 			WHERE dtd.local_data_id = ?',
 			[$data_source_id]);
 
-		// cursory checks on total data sources
-		if (isset($cacti_info['ds']) && isset($info['ds'])) {
-			if (cacti_sizeof($cacti_info['ds']) != cacti_sizeof($info['ds'])) {
-				// Need to warn here about the total number of data sources not matchhing
-			}
+		$file_ds_before = isset($info['ds']) ? $info['ds'] : [];
 
+		if (isset($cacti_info['ds']) && isset($info['ds'])) {
 			foreach ($cacti_info['ds'] as $data_source_name => $data_source) {
 				/**
 				 * This should be a rare case today where the RRDfile does not
@@ -4505,12 +4560,7 @@ function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 			}
 		}
 
-		// if there are data sources missing log that now
-		foreach ($info['ds'] as $data_source_name => $data_source) {
-			if (!isset($data_source['seen'])) {
-				$diff['ds'][$data_source_name]['error'] = __("DS '%s' missing in Cacti definition", $data_source_name);
-			}
-		}
+		rrdtool_cacti_compare_ds($diff, $info['filename'], isset($cacti_info['ds']) ? $cacti_info['ds'] : [], $file_ds_before);
 
 		if (isset($cacti_info['rra']) && isset($info['rra'])) {
 			$resize = true; // assume a resize operation as long as no rra duplicates are found
