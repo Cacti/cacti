@@ -214,7 +214,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							data-select-zero-value='0'
 							data-select-zero-text='<?php print html_escape(__('Not Templated'));?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<?php if (graph_view_has_untemplated_graphs($templates_where) || get_request_var('graph_template_id') == '0') {?>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
+							<?php }?>
 							<?php
 							// suppress total rows collection
 							$total_rows = -1;
@@ -481,12 +483,6 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 			setupPageTimeout();
 
 			$('#graphs, #columns').on('change', function() {
-				applyGraphFilter();
-			});
-
-			// cross-filter: changing the Graph Template reloads so the Device list
-			// (and, in the classic theme, the static host dropdown) narrows to match
-			$('#graph_template_id').on('change', function() {
 				applyGraphFilter();
 			});
 

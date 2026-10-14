@@ -1287,8 +1287,11 @@ function applySkin() {
 		/* only reload if the selection actually changed while open - just opening
 		 * and closing without picking anything shouldn't refresh the page */
 		if (currentValue !== graphTemplateValueAtOpen) {
+			/* List view has its own reload that preserves site_id/location/rows; Preview and Tree use applyGraphFilter */
+			var reload = ($('#action').val() === 'list' && typeof applyFilter === 'function') ? applyFilter : applyGraphFilter;
+
 			/* defer past select2's own close teardown so the reload isn't torn down with it */
-			setTimeout(applyGraphFilter, 0);
+			setTimeout(reload, 0);
 		}
 	});
 }

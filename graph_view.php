@@ -203,6 +203,25 @@ function graph_view_template_host_where() {
 	return $sql_where;
 }
 
+/**
+ * Determine whether the 'Not Templated' sentinel should be offered in the Graph Template filter.
+ * It is only shown when the current Device filter has at least one allowed graph with no Graph
+ * Template, so the Device/Template combination never resolves to an empty result. Used by the
+ * Preview and List views.
+ *
+ * @param string $templates_where The device restriction from graph_view_template_host_where().
+ *
+ * @return bool True when an allowed untemplated graph exists for the current filter.
+ */
+function graph_view_has_untemplated_graphs($templates_where = '') {
+	$sql_where  = '(gl.graph_template_id = 0)' . ($templates_where != '' ? ' AND ' . $templates_where : '');
+	$total_rows = 0;
+
+	get_allowed_graphs($sql_where, '', '1', $total_rows);
+
+	return ($total_rows > 0);
+}
+
 switch (get_nfilter_request_var('action')) {
 case 'ajax_hosts':
 	get_allowed_ajax_hosts(true, true, graph_view_device_template_where());
@@ -756,7 +775,9 @@ case 'list':
 							data-select-zero-value='0'
 							data-select-zero-text='<?php print html_escape(__('Not Templated'));?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<?php if (graph_view_has_untemplated_graphs(graph_view_template_host_where()) || get_request_var('graph_template_id') == '0') {?>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
+							<?php }?>
 							<?php
 
 							// suppress total rows collection
@@ -1148,12 +1169,6 @@ case 'list':
 		// select2 also fires a native change event, so including it here would
 		// apply the filter twice per selection
 		$('#site_id, #rows, #location').on('change', function() {
-			applyFilter();
-		});
-
-		// cross-filter: changing the Graph Template reloads so the Device list
-		// (and, in the classic theme, the static host dropdown) narrows to match
-		$('#graph_template_id').on('change', function() {
 			applyFilter();
 		});
 
