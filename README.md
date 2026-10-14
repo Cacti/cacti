@@ -190,8 +190,8 @@ composer run-script phpstan -- --memory-limit=2G
 Coverage reports for the PRs checked on October 14, 2026 measure changed
 first-party executable statements. Applicable changes exceed 80%; this is not
 whole-project coverage. Formatting-only PHP changes are checked for equivalent
-syntax trees, and documentation, configuration and generated dependency files
-have no executable statements to cover. The [validation snapshot](docs/validation/pr-coverage-2026-10-14.json)
+syntax trees. Documentation, workflow definitions, lockfiles and generated
+vendor bundles are outside this execution metric. The [validation snapshot](docs/validation/pr-coverage-2026-10-14.json)
 records the measured counts and scope.
 
 Run the disposable browser and SQL/RRD profile with Docker and mise installed:
