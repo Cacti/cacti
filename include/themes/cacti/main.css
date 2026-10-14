@@ -1345,6 +1345,8 @@ legend {
 }
 
 .ui-dialog.cactiFilterDialog .ui-dialog-content {
+	/* floor the content width so the table-display edit rows lay out instead of collapsing to min-content under the dialog's width:auto sizing */
+	min-width: 480px;
 	padding: 14px 16px;
 }
 
