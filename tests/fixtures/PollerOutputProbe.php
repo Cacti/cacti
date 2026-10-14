@@ -1,4 +1,6 @@
 <?php
+require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__) . '/Helpers/SourceSlice.php';
 // Copyright (C) 2026 The Cacti Group. Licensed under GPL-2.0-or-later.
 // Isolated behavioral probe: production parsing, batching, staging and update bodies.
 if (PHP_SAPI !== 'cli') {
@@ -14,40 +16,7 @@ if (str_starts_with($scenario, 'integration-')) {
 }
 $state    = ['rows' => [], 'queries' => 0, 'mapping_queries' => 0, 'commands' => [], 'rrd_calls' => 0, 'create_calls' => 0, 'boost_calls' => 0, 'delete_calls' => 0, 'arrived' => false];
 function probe_load(string $path, string $name) : void {
-	$tokens  = token_get_all(file_get_contents($path));
-	$code    = '';
-	$capture = false;
-	$depth   = 0;
-	$started = false;
-
-	foreach ($tokens as $i => $token) {
-		if (!$capture && is_array($token) && $token[0] === T_FUNCTION) {
-			$j = $i + 1;
-
-			while (is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE) {
-				$j++;
-			}
-			$capture = is_array($tokens[$j]) && $tokens[$j][1] === $name;
-		}
-
-		if (!$capture) {
-			continue;
-		}
-		$code .= is_array($token) ? $token[1] : $token;
-
-		if ($token === '{' || (is_array($token) && in_array($token[0], [T_CURLY_OPEN, T_DOLLAR_OPEN_CURLY_BRACES], true))) {
-			$depth++;
-			$started = true;
-		}
-
-		if ($token === '}' && --$depth === 0 && $started) {
-			eval($code);
-
-			return;
-		}
-	}
-
-	throw new RuntimeException('Missing production function: ' . $name);
+	cacti_fixture_source_function($path, $name, __NAMESPACE__);
 }
 function probe_row(int $id, int $time, string $field, string $value, int $fields = 1) : array {
 	return ['local_data_id' => $id, 'unix_time' => $time, 'time' => gmdate('Y-m-d H:i:s', $time), 'rrd_name' => $field, 'output' => $value, 'rrd_num' => $fields, 'rrd_path' => 'source-' . $id, 'data_template_id' => 1];
@@ -289,7 +258,9 @@ foreach (['rrdtool_function_update', 'rrdtool_execute_acknowledged', 'rrdtool_ac
 foreach (['boost_load_unused_data_source_names', 'boost_flush_output_batch', 'boost_validate_poller_ownership', 'boost_poller_on_demand'] as $name) {
 	probe_load($root . '/lib/boost.php', $name);
 }
-require $root . '/lib/poller.php';
+foreach (['process_poller_output', 'poller_acknowledge_output', 'poller_prefetch_source_fields', 'process_poller_output_batch'] as $name) {
+	probe_load($root . '/lib/poller.php', $name);
+}
 $config = ['library_path' => dirname(__DIR__) . '/performance/fixtures', 'poller_id' => 1, 'connection' => 'online', 'cacti_server_os' => 'unix'];
 $debug = false;
 $time  = 1700000000;

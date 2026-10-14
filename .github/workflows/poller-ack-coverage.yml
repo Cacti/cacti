@@ -1,0 +1,92 @@
+name: Poller acknowledgement coverage
+
+on:
+  pull_request:
+    paths:
+      - '**.php'
+      - 'phpunit-poller-ack.xml'
+      - 'tests/fixtures/management-invalidation.json'
+      - 'tests/tools/check_changed_php_coverage.py'
+      - 'tests/tools/test_check_changed_php_coverage.py'
+      - '.github/workflows/poller-ack-coverage.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    if: github.head_ref == 'fix/poller-output-ack-batching-1.2'
+    name: Changed PHP lines >= 80%
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      database:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: coverage-fixture
+          MARIADB_DATABASE: cacti_boost_contract
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      BOOST_DB_HOST: 127.0.0.1
+      BOOST_DB_PORT: '3306'
+      BOOST_DB_USER: root
+      BOOST_DB_PASSWORD: coverage-fixture
+      BOOST_DB_NAME: cacti_boost_contract
+      RRDTOOL_TEST_BINARY: /usr/bin/rrdtool
+      CACTI_PR_RAW_COVERAGE: /tmp/cacti-poller-coverage
+      XDEBUG_MODE: coverage
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.3'
+          coverage: xdebug
+          extensions: pdo_mysql, pdo_sqlite, dom, mbstring, xml
+          ini-values: memory_limit=2G
+          dependency-mode: locked-maintenance-pr-coverage
+          cache-dependency-path: tests/composer.lock
+      - name: Install locked test dependencies and RRDtool
+        run: |
+          set -euo pipefail
+          composer install --working-dir=tests --prefer-dist --no-progress --no-interaction
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq rrdtool
+      - name: Include all changed production PHP statements
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$CACTI_PR_RAW_COVERAGE"
+          python3 tests/tools/test_check_changed_php_coverage.py
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --prepare-config phpunit-poller-ack.xml --output-config phpunit-changed.xml
+      - name: Exercise acknowledged writes, retries and database handoffs
+        working-directory: tests
+        run: vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+      - name: Require at least 80 percent of changed executable PHP lines
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --report coverage-changed.xml --request-reports "$CACTI_PR_RAW_COVERAGE" \
+            --minimum 80 --json-output coverage-changed.json
+      - name: Preserve native coverage evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: changed-php-coverage
+          path: |
+            coverage-changed.xml
+            coverage-changed.json
+            /tmp/cacti-poller-coverage
+          if-no-files-found: warn

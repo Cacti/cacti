@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd" bootstrap="tests/bootstrap-unit.php" colors="true">
+    <testsuites>
+        <testsuite name="Boost">
+            <directory suffix="Test.php">tests/Unit/Core/Boost</directory>
+            <file>tests/HandOff/BoostDataHandOffTest.php</file>
+            <file>tests/Unit/DataCollection/Poller/PollerOutputAcknowledgementTest.php</file>
+            <file>tests/Unit/Core/Rrd/RrdNullOffsetCfTest.php</file>
+            <file>tests/Unit/Ui/Html/CactiNonceApplySkinTest.php</file>
+            <file>tests/integration/PollerHandoffIntegrationTest.php</file>
+            <file>tests/integration/UnusedSourceCacheIntegrationTest.php</file>
+            <file>tests/integration/BoostDrainIntegrationTest.php</file>
+            <file>tests/Unit/DataCollection/Poller/ManagementInvalidationTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
