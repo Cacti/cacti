@@ -60,3 +60,25 @@ test('account removals are audited only when the existing row is confirmed delet
 	'failed confirmation read' => ['delete-read-failure', 0, false],
 	'missing account'          => ['delete-missing', 0, false]
 ]);
+
+test('unconfirmed account saves emit no success audit events', function (string $scenario) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', [$scenario]);
+	expect($r['logs'])->toBe([]);
+})->with(['failed-save', 'failed-save-id', 'save-read-failure', 'save-missing']);
+
+test('bulk account transitions are audited only after the stored state changes', function (string $scenario, string|false $enabled, string|false $action) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', [$scenario]);
+	expect($r['enabled'])->toBe($enabled)
+		->and($r['logs'])->toBe($action === false ? [] : ["NOTE: User 'target' was $action by user 'admin'"]);
+})->with([
+	['bulk-enable', 'on', 'enabled'],
+	['bulk-disable', '', 'disabled'],
+	['bulk-enable-failure', '', false],
+	['bulk-disable-failure', 'on', false],
+	['bulk-enable-read-failure', 'on', false],
+	['bulk-disable-read-failure', '', false],
+	['bulk-enable-missing', false, false],
+	['bulk-disable-missing', false, false],
+	['bulk-enable-noop', 'on', false],
+	['bulk-disable-noop', '', false],
+]);

@@ -19,7 +19,7 @@ $messages = [];
 $_SESSION = ['sess_user_id' => 1];
 $request  = ['save_component_user' => '1', 'id' => $scenario === 'new' ? 0 : 10, 'username' => 'target', 'realm' => 0, 'enabled' => 'on', 'locked' => '', 'password' => '', 'password_confirm' => ''];
 
-if ($scenario === 'enable') {
+if ($scenario === 'enable' || str_starts_with($scenario, 'bulk-enable')) {
 	$pdo->exec("UPDATE user_auth SET enabled = '' WHERE id = 10");
 } elseif ($scenario === 'disable') {
 	$request['enabled'] = '';
@@ -29,7 +29,7 @@ if ($scenario === 'enable') {
 	$pdo->exec("UPDATE user_auth SET locked = 'on' WHERE id = 10");
 }
 
-if (in_array($scenario, ['password', 'failed-save', 'mismatch'], true)) {
+if (in_array($scenario, ['password', 'failed-save', 'failed-save-id', 'save-read-failure', 'save-missing', 'mismatch'], true)) {
 	$request['password']         = 'new password';
 	$request['password_confirm'] = $scenario === 'mismatch' ? 'different password' : 'new password';
 }
@@ -91,6 +91,20 @@ function db_fetch_row_prepared($sql, $params = []) {
 		return false;
 	}
 
+	if (str_contains($sql, 'SELECT id, username, password, enabled, locked')) {
+		if (in_array($GLOBALS['scenario'], ['save-read-failure', 'bulk-enable-read-failure', 'bulk-disable-read-failure'], true)) {
+			return false;
+		}
+
+		if ($GLOBALS['scenario'] === 'save-missing') {
+			return [];
+		}
+	}
+
+	if (str_starts_with($sql, 'SELECT username, enabled') && !empty($GLOBALS['bulk_mutated']) && str_ends_with($GLOBALS['scenario'], '-read-failure')) {
+		return false;
+	}
+
 	if (str_contains($sql, 'realm = ?')) {
 		return [];
 	}
@@ -108,6 +122,17 @@ function db_fetch_cell_prepared($sql, $params = []) {
 	return $row[str_contains($sql, 'SELECT password') ? 'password' : 'username'] ?? '';
 }
 function db_execute_prepared($sql, $params = []) {
+	if (str_starts_with($sql, 'UPDATE user_auth SET enabled')) {
+		$GLOBALS['bulk_mutated'] = true;
+
+		if (str_ends_with($GLOBALS['scenario'], '-failure') && !str_ends_with($GLOBALS['scenario'], '-read-failure')) {
+			return false;
+		}
+		$statement = $GLOBALS['pdo']->prepare($sql);
+
+		return $statement->execute($params);
+	}
+
 	if (str_starts_with($sql, 'DELETE FROM user_auth WHERE')) {
 		if ($GLOBALS['scenario'] === 'delete-failure') {
 			return false;
@@ -126,6 +151,12 @@ function sql_save($save, $table) {
 	if ($GLOBALS['scenario'] === 'failed-save') {
 		return false;
 	}
+
+	// The legacy production helper could return the existing ID on write
+	// failure. Keep that case to verify the handler also confirms persistence.
+	if ($GLOBALS['scenario'] === 'failed-save-id') {
+		return $save['id'];
+	}
 	$id        = $save['id'] ?: 11;
 	$statement = $GLOBALS['pdo']->prepare('INSERT OR REPLACE INTO user_auth VALUES (?, ?, ?, ?, ?)');
 	$statement->execute([$id, $save['username'], $save['password'], $save['enabled'], $save['locked']]);
@@ -143,6 +174,8 @@ function cacti_log($message, ...$args) {
 	$GLOBALS['logs'][] = $message;
 
 	return true;
+}
+function reset_user_perms($id) {
 }
 
 load_audit_function($root . '/user_admin.php', 'form_save');
@@ -172,16 +205,28 @@ if ($scenario === 'audit-controls') {
 	exit;
 }
 
-if (str_starts_with($scenario, 'delete')) {
+if (str_starts_with($scenario, 'delete') || str_starts_with($scenario, 'bulk-')) {
 	load_audit_function($root . '/user_admin.php', 'form_actions');
 	load_audit_function($root . '/lib/auth.php', 'user_remove');
-	$request = ['selected_items' => serialize([10]), 'drp_action' => '1'];
+	load_audit_function($root . '/lib/auth.php', 'user_enable');
+	load_audit_function($root . '/lib/auth.php', 'user_disable');
+	$request = ['selected_items' => serialize([10]), 'drp_action' => str_starts_with($scenario, 'bulk-enable') ? '3' : (str_starts_with($scenario, 'bulk-disable') ? '4' : '1')];
 
 	if ($scenario === 'delete-missing') {
 		$pdo->exec('DELETE FROM user_auth WHERE id = 10');
 	}
+
+	if (str_ends_with($scenario, '-missing')) {
+		$pdo->exec('DELETE FROM user_auth WHERE id = 10');
+	}
+
+	if ($scenario === 'bulk-enable-noop') {
+		$pdo->exec("UPDATE user_auth SET enabled = 'on' WHERE id = 10");
+	} elseif ($scenario === 'bulk-disable-noop') {
+		$pdo->exec("UPDATE user_auth SET enabled = '' WHERE id = 10");
+	}
 	register_shutdown_function(static function () use ($pdo, &$logs, &$messages): void {
-		print json_encode(['logs' => $logs, 'remaining' => (int) $pdo->query('SELECT COUNT(*) FROM user_auth WHERE id = 10')->fetchColumn(), 'errors' => $messages], JSON_THROW_ON_ERROR) . "\n";
+		print json_encode(['logs' => $logs, 'remaining' => (int) $pdo->query('SELECT COUNT(*) FROM user_auth WHERE id = 10')->fetchColumn(), 'enabled' => $pdo->query('SELECT enabled FROM user_auth WHERE id = 10')->fetchColumn(), 'errors' => $messages], JSON_THROW_ON_ERROR) . "\n";
 	});
 	form_actions();
 }

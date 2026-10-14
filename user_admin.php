@@ -289,16 +289,26 @@ function form_actions() : void {
 					}
 				} elseif (gnrv('drp_action') == '3') { // enable
 					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-						$affected_user = get_username($selected_items[$i]);
+						$original_user = db_fetch_row_prepared('SELECT username, enabled FROM user_auth WHERE id = ?', [$selected_items[$i]]);
 						user_enable($selected_items[$i]);
-						log_user_action($affected_user, 'enabled');
+						$saved_user = db_fetch_row_prepared('SELECT username, enabled FROM user_auth WHERE id = ?', [$selected_items[$i]]);
+
+						if (is_array($original_user) && $original_user !== [] && is_array($saved_user) && $saved_user !== [] &&
+							($original_user['enabled'] ?? '') !== 'on' && ($saved_user['enabled'] ?? '') === 'on') {
+							log_user_action($saved_user['username'], 'enabled');
+						}
 					}
 				} elseif (gnrv('drp_action') == '4') { // disable
 					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 						if ($_SESSION[SESS_USER_ID] != $selected_items[$i]) {
-							$affected_user = get_username($selected_items[$i]);
+							$original_user = db_fetch_row_prepared('SELECT username, enabled FROM user_auth WHERE id = ?', [$selected_items[$i]]);
 							user_disable($selected_items[$i]);
-							log_user_action($affected_user, 'disabled');
+							$saved_user = db_fetch_row_prepared('SELECT username, enabled FROM user_auth WHERE id = ?', [$selected_items[$i]]);
+
+							if (is_array($original_user) && $original_user !== [] && is_array($saved_user) && $saved_user !== [] &&
+								($original_user['enabled'] ?? '') === 'on' && ($saved_user['enabled'] ?? '') === '') {
+								log_user_action($saved_user['username'], 'disabled');
+							}
 						} else {
 							raise_message('attempt current', __('You are not allowed to disable the current login account'), MESSAGE_LEVEL_ERROR);
 						}
@@ -617,20 +627,34 @@ function form_save() : void {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
-				log_user_action($save['username'], $is_new_user ? 'created' : 'edited');
+				$saved_user = db_fetch_row_prepared('SELECT id, username, password, enabled, locked FROM user_auth WHERE id = ?', [$user_id]);
 
-				if (!$is_new_user) {
+				// sql_save() success and the intended audit fields must both be
+				// confirmed before recording a completed account action.
+				if (!is_array($saved_user) ||
+					($saved_user['username'] ?? null) !== $save['username'] ||
+					($saved_user['password'] ?? null) !== $save['password'] ||
+					($saved_user['enabled'] ?? null) !== $save['enabled'] ||
+					($saved_user['locked'] ?? null) !== $save['locked']) {
+					$saved_user = [];
+				}
+
+				if ($saved_user !== []) {
+					log_user_action($saved_user['username'], $is_new_user ? 'created' : 'edited');
+				}
+
+				if (!$is_new_user && is_array($original_user) && $original_user !== [] && $saved_user !== []) {
 					$was_enabled = ($original_user['enabled'] ?? '') === 'on';
-					$is_enabled  = ($save['enabled'] ?? '')          === 'on';
+					$is_enabled  = ($saved_user['enabled'] ?? '')    === 'on';
 					$was_locked  = ($original_user['locked'] ?? '')  === 'on';
-					$is_locked   = ($save['locked'] ?? '')           === 'on';
+					$is_locked   = ($saved_user['locked'] ?? '')     === 'on';
 
 					if ($was_enabled !== $is_enabled) {
-						log_user_action($save['username'], $is_enabled ? 'enabled' : 'disabled');
+						log_user_action($saved_user['username'], $is_enabled ? 'enabled' : 'disabled');
 					}
 
 					if ($was_locked !== $is_locked) {
-						log_user_action($save['username'], $is_locked ? 'locked' : 'unlocked');
+						log_user_action($saved_user['username'], $is_locked ? 'locked' : 'unlocked');
 					}
 				}
 
@@ -672,8 +696,8 @@ function form_save() : void {
 						send_mail($save['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, [], [],  true);
 					}
 
-					if (($save['password'] ?? $old_password) !== $old_password) {
-						log_user_action($save['username'], 'changed password');
+					if (is_array($original_user) && $original_user !== [] && $saved_user !== [] && $saved_user['password'] !== $old_password) {
+						log_user_action($saved_user['username'], 'changed password');
 					}
 				}
 
