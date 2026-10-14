@@ -14,9 +14,9 @@ on:
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
-      - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-integration.xml'
-      - 'phpunit.xml'
+      - 'tests/phpunit-cdef.xml'
+      - 'tests/phpunit-cdef-integration.xml'
+      - 'tests/phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
@@ -36,9 +36,9 @@ on:
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
-      - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-integration.xml'
-      - 'phpunit.xml'
+      - 'tests/phpunit-cdef.xml'
+      - 'tests/phpunit-cdef-integration.xml'
+      - 'tests/phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
@@ -100,7 +100,7 @@ jobs:
         run: |
           set -euo pipefail
           include/vendor/bin/pest \
-            --configuration=phpunit-cdef.xml \
+            --configuration=tests/phpunit-cdef.xml \
             --coverage \
             --coverage-text \
             --min=100
@@ -113,4 +113,4 @@ jobs:
           CACTI_TEST_DB_NAME: cacti_test
           CACTI_TEST_DB_USER: cacti
           CACTI_TEST_DB_PASS: cacti
-        run: include/vendor/bin/pest --configuration=phpunit-cdef-integration.xml
+        run: include/vendor/bin/pest --configuration=tests/phpunit-cdef-integration.xml

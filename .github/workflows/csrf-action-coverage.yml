@@ -61,7 +61,7 @@ jobs:
           node-version: '22'
 
       - name: Verify guarded actions and links
-        run: include/vendor/bin/pest tests/Unit/Security/Csrf/ItemActionPostOnlyTest.php
+        run: include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/Security/Csrf/ItemActionPostOnlyTest.php
 
       - name: Verify browser POST construction
         run: node --test tests/js/csrf_post_actions.test.js

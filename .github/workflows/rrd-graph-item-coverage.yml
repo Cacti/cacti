@@ -9,7 +9,7 @@ on:
       - 'composer.lock'
       - 'lib/rrd_graph_item.php'
       - 'lib/rrd.php'
-      - 'phpunit-rrd-graph-item.xml'
+      - 'tests/phpunit-rrd-graph-item.xml'
       - 'tests/Coverage/RrdGraphItemCoverageTest.php'
       - 'tests/Unit/RrdGraphItemFieldContractTest.php'
   pull_request:
@@ -20,7 +20,7 @@ on:
       - 'composer.lock'
       - 'lib/rrd_graph_item.php'
       - 'lib/rrd.php'
-      - 'phpunit-rrd-graph-item.xml'
+      - 'tests/phpunit-rrd-graph-item.xml'
       - 'tests/Coverage/RrdGraphItemCoverageTest.php'
       - 'tests/Unit/RrdGraphItemFieldContractTest.php'
   workflow_dispatch:
@@ -62,7 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           include/vendor/bin/pest \
-            --configuration=phpunit-rrd-graph-item.xml \
+            --configuration=tests/phpunit-rrd-graph-item.xml \
             --coverage \
             --coverage-text \
             --min=100

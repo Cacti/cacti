@@ -9,7 +9,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/CactiProcessLock.php'
-      - 'phpunit-process-lock.xml'
+      - 'tests/phpunit-process-lock.xml'
       - 'tests/Unit/Core/CactiProcessLockTest.php'
   pull_request:
     branches: [develop]
@@ -19,7 +19,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/CactiProcessLock.php'
-      - 'phpunit-process-lock.xml'
+      - 'tests/phpunit-process-lock.xml'
       - 'tests/Unit/Core/CactiProcessLockTest.php'
   workflow_dispatch:
 
@@ -60,7 +60,7 @@ jobs:
         run: |
           set -euo pipefail
           include/vendor/bin/pest \
-            --configuration=phpunit-process-lock.xml \
+            --configuration=tests/phpunit-process-lock.xml \
             --coverage \
             --coverage-text \
             --min=100

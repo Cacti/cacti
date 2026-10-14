@@ -13,7 +13,7 @@ on:
       - 'lib/CactiNotification.php'
       - 'lib/CactiRecipient.php'
       - 'lib/api_notification.php'
-      - 'phpunit-notification-coverage.xml'
+      - 'tests/phpunit-notification-coverage.xml'
       - 'tests/Unit/Core/CactiNotificationApiTest.php'
   pull_request:
     branches: [develop]
@@ -27,7 +27,7 @@ on:
       - 'lib/CactiNotification.php'
       - 'lib/CactiRecipient.php'
       - 'lib/api_notification.php'
-      - 'phpunit-notification-coverage.xml'
+      - 'tests/phpunit-notification-coverage.xml'
       - 'tests/Unit/Core/CactiNotificationApiTest.php'
   workflow_dispatch:
 
@@ -43,4 +43,4 @@ jobs:
     uses: ./.github/workflows/script-coverage.yml
     with:
       job-name: Notification API 100% coverage
-      phpunit-config: phpunit-notification-coverage.xml
+      phpunit-config: tests/phpunit-notification-coverage.xml
