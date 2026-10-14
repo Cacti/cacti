@@ -1,5 +1,10 @@
 <?php
 // Copyright (C) 2026 The Cacti Group. Licensed under GPL-2.0-or-later.
+namespace CactiUserAuditFixture;
+use PDO;
+use RuntimeException;
+require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__) . '/Helpers/SourceSlice.php';
 // Run the real save handler and audit helper with an isolated SQLite save boundary.
 $scenario = $argv[1] ?? 'edit';
 $root     = dirname(__DIR__, 2);
@@ -14,16 +19,23 @@ $messages = [];
 $_SESSION = ['sess_user_id' => 1];
 $request  = ['save_component_user' => '1', 'id' => $scenario === 'new' ? 0 : 10, 'username' => 'target', 'realm' => 0, 'enabled' => 'on', 'locked' => '', 'password' => '', 'password_confirm' => ''];
 
+if ($scenario === 'enable') {
+	$pdo->exec("UPDATE user_auth SET enabled = '' WHERE id = 10");
+} elseif ($scenario === 'disable') {
+	$request['enabled'] = '';
+} elseif ($scenario === 'lock') {
+	$request['locked'] = 'on';
+} elseif ($scenario === 'unlock') {
+	$pdo->exec("UPDATE user_auth SET locked = 'on' WHERE id = 10");
+}
+
 if (in_array($scenario, ['password', 'failed-save', 'mismatch'], true)) {
 	$request['password']         = 'new password';
 	$request['password_confirm'] = $scenario === 'mismatch' ? 'different password' : 'new password';
 }
 
 function load_audit_function($file, $name) {
-	$source = file_get_contents($file);
-	$start  = strpos($source, 'function ' . $name . '(');
-	$end    = strpos($source, "\nfunction ", $start + 1);
-	eval(substr($source, $start, $end === false ? null : $end - $start));
+	cacti_fixture_source_function($file, $name, __NAMESPACE__);
 }
 function gnrv($key, $default = '') {
 	return $GLOBALS['request'][$key] ?? $default;
@@ -135,6 +147,23 @@ function cacti_log($message, ...$args) {
 
 load_audit_function($root . '/user_admin.php', 'form_save');
 load_audit_function($root . '/lib/functions.php', 'log_user_action');
+load_audit_function($root . '/lib/functions.php', 'get_execution_user');
+
+if (str_starts_with($scenario, 'audit-') && $scenario !== 'audit-controls') {
+	if ($scenario === 'audit-invalid') {
+		foreach ([[[], 'edited'], ['target', []], ["\r\n", 'edited'], ['target', "\x00"]] as [$user, $action]) {
+			if (log_user_action($user, $action) !== false) {
+				throw new RuntimeException('Invalid audit input was logged');
+			}
+		}
+	} else {
+		$_SESSION = $scenario === 'audit-cli' ? [] : ['sess_user_id' => 404];
+		log_user_action('target', 'edited');
+	}
+	print json_encode(['logs' => $logs], JSON_THROW_ON_ERROR) . "\n";
+
+	exit;
+}
 
 if ($scenario === 'audit-controls') {
 	log_user_action("target\r\n\x00\x1b\x7f", "edited\r\n\x00\x1b\x7f");

@@ -17,6 +17,27 @@ test('account save audits a password change only after it is persisted', functio
 	'password mismatch'    => ['mismatch', false]
 ]);
 
+test('saved enabled and locked transitions identify the affected account and actor', function ($scenario, $action) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', [$scenario]);
+	expect($r['logs'])->toContain("NOTE: User 'target' was $action by user 'admin'");
+})->with([['enable', 'enabled'], ['disable', 'disabled'], ['lock', 'locked'], ['unlock', 'unlocked']]);
+
+test('invalid audit inputs produce no log records', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', ['audit-invalid']);
+	expect($r['logs'])->toBe([]);
+});
+
+test('an unavailable actor is identified by account ID', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', ['audit-unknown']);
+	expect($r['logs'])->toBe(["NOTE: User 'target' was edited by user 'user ID 404'"]);
+});
+
+test('CLI audit records identify the execution user', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', ['audit-cli']);
+	expect($r['logs'])->toHaveCount(1);
+	expect($r['logs'][0])->toContain("User 'target' was edited")->toContain(' (CLI)');
+});
+
 test('new accounts emit creation rather than an existing-account password-change event', function () {
 	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/UserAdministrationAuditProbe.php', ['new']);
 	expect(implode("\n", $r['logs']))->toContain('was created')->not->toContain('changed password');
