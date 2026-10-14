@@ -10,7 +10,7 @@ on:
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
-      - 'phpunit-rrd-capabilities.xml'
+      - 'tests/phpunit-rrd-capabilities.xml'
       - '.github/workflows/rrd-capability-coverage.yml'
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
           set -euo pipefail
           python3 tests/tools/test_check_changed_php_coverage.py
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
-            --prepare-config phpunit-rrd-capabilities.xml --output-config phpunit-changed.xml
+            --prepare-config tests/phpunit-rrd-capabilities.xml --output-config phpunit-changed.xml
       - name: Exercise native update and graph capability contracts
         working-directory: tests
         env:

@@ -10,7 +10,7 @@ on:
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
-      - 'phpunit-poller-mapping.xml'
+      - 'tests/phpunit-poller-mapping.xml'
       - '.github/workflows/poller-mapping-coverage.yml'
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
           set -euo pipefail
           python3 tests/tools/test_check_changed_php_coverage.py
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
-            --prepare-config phpunit-poller-mapping.xml --output-config phpunit-changed.xml
+            --prepare-config tests/phpunit-poller-mapping.xml --output-config phpunit-changed.xml
       - name: Exercise empty cache and failed reads
         working-directory: tests
         env:

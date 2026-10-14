@@ -18,7 +18,7 @@
  * check_auth_cookie() calls db_execute_prepared()/db_fetch_row_prepared()/
  * db_fetch_cell_prepared()/db_table_exists() with no explicit connection,
  * so exercising them means stubbing those global functions. PHP cannot
- * redeclare an already-defined function, and phpunit.xml now runs Unit and
+ * redeclare an already-defined function, and tests/phpunit-root.xml now runs Unit and
  * Integration in a single process (#7497) -- once any Unit test that
  * requires lib/database.php (e.g. DbExecutePreparedTest) loads first, the
  * *real* db_* functions win the race for the rest of the process, and any

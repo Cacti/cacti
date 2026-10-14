@@ -14,8 +14,8 @@ on:
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
-      - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-integration.xml'
+      - 'tests/phpunit-cdef.xml'
+      - 'tests/phpunit-cdef-integration.xml'
       - 'tests/composer.json'
       - 'tests/composer.lock'
       - 'tests/.htaccess'
@@ -39,8 +39,8 @@ on:
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
-      - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-integration.xml'
+      - 'tests/phpunit-cdef.xml'
+      - 'tests/phpunit-cdef-integration.xml'
       - 'tests/composer.json'
       - 'tests/composer.lock'
       - 'tests/.htaccess'
@@ -114,7 +114,7 @@ jobs:
         run: |
           set -euo pipefail
           pest --colors=never \
-            --configuration=phpunit-cdef.xml \
+            --configuration=tests/phpunit-cdef.xml \
             tests/Coverage/CdefCoverageTest.php \
             --coverage \
             --coverage-text \
@@ -129,4 +129,4 @@ jobs:
           CACTI_TEST_DB_NAME: cacti_test
           CACTI_TEST_DB_USER: cacti
           CACTI_TEST_DB_PASS: cacti
-        run: vendor/bin/pest --colors=never --configuration=../phpunit-cdef-integration.xml
+        run: vendor/bin/pest --colors=never --configuration=phpunit-cdef-integration.xml
