@@ -202,7 +202,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view'>
 			<table role='presentation' id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter', $devices_where);?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter', $devices_where, false, false, 'site_id,graph_template_id');?>
 					<td>
 						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
@@ -219,7 +219,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							// suppress total rows collection
 							$total_rows = -1;
 
-							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+							$graph_templates = get_allowed_graph_templates($templates_where, 'name', '', $total_rows);
 
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
@@ -481,6 +481,12 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 			setupPageTimeout();
 
 			$('#graphs, #columns').on('change', function() {
+				applyGraphFilter();
+			});
+
+			// cross-filter: changing the Graph Template reloads so the Device list
+			// (and, in the classic theme, the static host dropdown) narrows to match
+			$('#graph_template_id').on('change', function() {
 				applyGraphFilter();
 			});
 
