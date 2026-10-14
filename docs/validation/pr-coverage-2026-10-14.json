@@ -1,6 +1,6 @@
 {
   "date": "2026-10-14",
-  "scope": "37 original open PRs and 3 PRs opened during validation; measured at each validated revision",
+  "scope": "37 original open PRs and 4 PRs opened during validation; measured at each validated revision",
   "minimum_percent": 80,
   "metric": "changed first-party executable statements, not whole-project coverage",
   "results": [
@@ -249,6 +249,16 @@
       "covered": 5,
       "executable": 5,
       "check_url": "https://github.com/Cacti/cacti/actions/runs/38530531064/job/115741066802"
+    },
+    {
+      "pr": 8360,
+      "url": "https://github.com/Cacti/cacti/pull/8360",
+      "language": "PHP",
+      "covered": 57,
+      "executable": 60,
+      "percent": 95,
+      "evidence": "native changed-code CI coverage",
+      "check_url": "https://github.com/Cacti/cacti/actions/runs/38531697354/job/115744840517"
     }
   ],
   "additional_native_coverage": [

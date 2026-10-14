@@ -38,7 +38,6 @@
     ],
     "php": "8.3.35",
     "xdebug": "3.5.3",
-    "rrdtool": "1.4.0",
     "database": "10.11.19-MariaDB-ubu2204",
     "frontend_dependencies": {
       "big.js": "7.0.1",
@@ -61,7 +60,11 @@
       "screenfull": "6.0.2",
       "select2": "4.1.0",
       "tablesorter": "2.32.0"
-    }
+    },
+    "rrdtool_configured_capability": "1.7.2",
+    "rrdtool": "1.7.2",
+    "rrdtool_version_provenance": "Verified with rrdtool --version in the retained profiling image sha256:e54c2e086897cd60495fa154c8ddb1b7bdeb94d9b0e20a3916312a95d97000ec; original fixture metadata recorded configured capability as rrdtool.",
+    "rrdtool_cached_capability_during_seed": "1.4.0"
   },
   "workload": {
     "devices": 500,

@@ -76,10 +76,14 @@ foreach (['graph_templates_graph', 'graph_templates_item'] as $table) {
 	}
 }
 
+$rrdtool_output = shell_exec('/usr/bin/rrdtool --version');
+profile_check(preg_match('/^RRDtool ([0-9.]+) /', (string) $rrdtool_output, $rrdtool_match) === 1, 'Unable to determine the installed RRDtool version.');
+
 file_put_contents('/profiles/fixture.json', json_encode([
-	'kind'                  => 'disposable SQL/RRD fixture; no live SNMP', 'end' => $end, 'start' => $end - 86400,
-	'devices'               => 500, 'graphs' => 50, 'samples_per_rrd' => 289, 'themes' => $theme_names,
-	'php'                   => PHP_VERSION, 'xdebug' => phpversion('xdebug'), 'rrdtool' => get_rrdtool_version(), 'database' => db_fetch_cell('SELECT VERSION()'),
-	'frontend_dependencies' => json_decode(file_get_contents(CACTI_PATH_BASE . '/package.json'), true, 512, JSON_THROW_ON_ERROR)['dependencies'],
+	'kind'                          => 'disposable SQL/RRD fixture; no live SNMP', 'end' => $end, 'start' => $end - 86400,
+	'devices'                       => 500, 'graphs' => 50, 'samples_per_rrd' => 289, 'themes' => $theme_names,
+	'php'                           => PHP_VERSION, 'xdebug' => phpversion('xdebug'), 'rrdtool' => $rrdtool_match[1],
+	'rrdtool_configured_capability' => read_config_option('rrdtool_version', true), 'database' => db_fetch_cell('SELECT VERSION()'),
+	'frontend_dependencies'         => json_decode(file_get_contents(CACTI_PATH_BASE . '/package.json'), true, 512, JSON_THROW_ON_ERROR)['dependencies'],
 ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR) . "\n");
 print "Seeded 500 disabled devices and 50 deterministic RRD graphs.\n";
