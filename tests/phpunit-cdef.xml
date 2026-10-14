@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="../tests/Helpers/CdefCoverageBootstrap.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="Helpers/CdefCoverageBootstrap.php" beStrictAboutOutputDuringTests="false">
 	<php>
 		<ini name="error_reporting" value="-1"/>
 		<env name="CACTI_TEST_BOOTSTRAP" value="1"/>
@@ -11,7 +11,7 @@
 	</source>
 	<testsuites>
 		<testsuite name="CDEF coverage">
-			<file>../tests/Coverage/CdefCoverageTest.php</file>
+			<file>Coverage/CdefCoverageTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

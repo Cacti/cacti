@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="../tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
     <php>
         <ini name="error_reporting" value="-1"/>
         <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
     </php>
     <testsuites>
         <testsuite name="Installer Unit">
-            <directory>../tests/Unit/Installer</directory>
-            <file>../tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php</file>
+            <directory>Unit/Installer</directory>
+            <file>Unit/Security/Csrf/InstallerCsrfRecoveryTest.php</file>
             <!-- Covers the lib/utility.php MySQL capability helpers that the installer's recommendations step relies on. -->
-            <file>../tests/Unit/Ui/Utility/MysqlCapabilityMatrixTest.php</file>
+            <file>Unit/Ui/Utility/MysqlCapabilityMatrixTest.php</file>
         </testsuite>
         <testsuite name="Installer Integration">
-            <file>../tests/integration/InstallerComposerContractTest.php</file>
-            <file>../tests/integration/InstallerVendorRefreshContractTest.php</file>
-            <file>../tests/integration/Issue7343InstallerCsrfRecoveryIntegrationTest.php</file>
+            <file>integration/InstallerComposerContractTest.php</file>
+            <file>integration/InstallerVendorRefreshContractTest.php</file>
+            <file>integration/Issue7343InstallerCsrfRecoveryIntegrationTest.php</file>
         </testsuite>
     </testsuites>
     <source>

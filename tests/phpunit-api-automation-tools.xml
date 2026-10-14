@@ -1,4 +1,4 @@
-<phpunit bootstrap="../include/vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="../../../../Users/thomasvincent/tmp/cacti-witness-review/include/vendor/autoload.php" beStrictAboutOutputDuringTests="false">
     <php>
         <ini name="error_reporting" value="-1"/>
         <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
@@ -10,8 +10,8 @@
     </source>
     <testsuites>
         <testsuite name="API automation tools coverage">
-            <file>../tests/Coverage/ApiAutomationToolsCoverageTest.php</file>
-            <file>../tests/Unit/Security/SqlInjection/AutomationPreparedInClauseTest.php</file>
+            <file>Coverage/ApiAutomationToolsCoverageTest.php</file>
+            <file>Unit/Security/SqlInjection/AutomationPreparedInClauseTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
