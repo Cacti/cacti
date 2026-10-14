@@ -1064,6 +1064,8 @@ function api_plugin_disable($plugin) {
 function api_plugin_replicate_config() {
 	global $config;
 
+	include_once($config['base_path'] . '/lib/poller.php');
+
 	$gone_time = read_config_option('poller_interval') * 2;
 
 	$pollers = array_rekey(
