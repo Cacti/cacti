@@ -10,7 +10,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/api_automation_tools.php'
-      - 'phpunit-api-automation-tools.xml'
+      - 'tests/phpunit-api-automation-tools.xml'
       - 'tests/Coverage/ApiAutomationToolsCoverageTest.php'
       - 'tests/Unit/Security/SqlInjection/AutomationPreparedInClauseTest.php'
       - 'tests/fixtures/automation_prepared_in_clause_probe.php'
@@ -23,7 +23,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/api_automation_tools.php'
-      - 'phpunit-api-automation-tools.xml'
+      - 'tests/phpunit-api-automation-tools.xml'
       - 'tests/Coverage/ApiAutomationToolsCoverageTest.php'
       - 'tests/Unit/Security/SqlInjection/AutomationPreparedInClauseTest.php'
       - 'tests/fixtures/automation_prepared_in_clause_probe.php'
@@ -41,4 +41,4 @@ jobs:
     uses: ./.github/workflows/script-coverage.yml
     with:
       job-name: API automation tools 100% coverage
-      phpunit-config: phpunit-api-automation-tools.xml
+      phpunit-config: tests/phpunit-api-automation-tools.xml

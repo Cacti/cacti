@@ -6,6 +6,7 @@ Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -42,13 +43,25 @@ def added_lines(base, root):
 def prepare_config(config, output, changed):
     """Keep the test suite, but include every changed production PHP file."""
     tree = ET.parse(config)
+    config_dir = Path(config).resolve().parent
+    output_dir = Path(output).resolve().parent
+    for element in tree.iter():
+        for attribute in ('bootstrap', 'cacheDirectory', 'cacheResultFile',
+                          'outputDirectory', 'outputFile', 'target'):
+            value = element.get(attribute)
+            if value and not Path(value).is_absolute():
+                element.set(attribute, os.path.relpath(config_dir / value, output_dir))
+        if element.tag in ('file', 'directory', 'exclude') and element.text:
+            value = element.text
+            if not Path(value).is_absolute():
+                element.text = os.path.relpath(config_dir / value, output_dir)
     source = tree.getroot().find('source')
     if source is None:
         source = ET.SubElement(tree.getroot(), 'source')
     source.clear()
     include = ET.SubElement(source, 'include')
     for name in sorted(changed):
-        ET.SubElement(include, 'file').text = name
+        ET.SubElement(include, 'file').text = os.path.relpath(Path.cwd() / name, output_dir)
     ET.indent(tree, space='    ')
     tree.write(output, encoding='utf-8', xml_declaration=True)
 
