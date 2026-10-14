@@ -9,7 +9,7 @@
 
 namespace ShelllessBackgroundProcessTest;
 
-$GLOBALS['config'] = array('cacti_server_os' => 'unix');
+$GLOBALS['config']['cacti_server_os'] = 'unix';
 $GLOBALS['shellless_force_proc_failure'] = false;
 $GLOBALS['shellless_process_calls']       = array();
 $GLOBALS['shellless_process_logs']        = array();
