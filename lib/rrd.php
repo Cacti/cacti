@@ -4386,7 +4386,8 @@ function rrdtool_function_contains_cf(int $local_data_id, string $cf, mixed $rrd
 /**
  * rrdtool_tune_ds_add_spec - build an rrdtool 'tune' DS specification used to add a data source
  * that the Graph requires but that is missing from the RRDfile.  A non-numeric minimum or maximum
- * falls back to 'U'.  Adding a data source with 'tune' requires RRDtool 1.5 or above.
+ * falls back to 'U', and a 0/0 range becomes 0:U since RRDtool requires the maximum to exceed the
+ * minimum.  Adding a data source with 'tune' requires RRDtool 1.5 or above.
  *
  * @param string $ds_name   The data source name
  * @param string $type      The RRDtool data source type
@@ -4399,6 +4400,10 @@ function rrdtool_function_contains_cf(int $local_data_id, string $cf, mixed $rrd
 function rrdtool_tune_ds_add_spec(string $ds_name, string $type, $heartbeat, $min, $max) : string {
 	$min = is_numeric($min) ? $min : 'U';
 	$max = is_numeric($max) ? $max : 'U';
+
+	if ($min !== 'U' && $max !== 'U' && (float) $min == 0 && (float) $max == 0) {
+		$max = 'U';
+	}
 
 	return 'DS:' . $ds_name . ':' . $type . ':' . $heartbeat . ':' . $min . ':' . $max;
 }
