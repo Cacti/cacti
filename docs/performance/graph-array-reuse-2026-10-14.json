@@ -868,6 +868,7 @@
     "Cold means application caches only; OS and database caches were not flushed.",
     "Concurrent validation workloads affected wall time; no wall-time speedup is claimed.",
     "RRDtool boundaries include subprocess waits, not measured disk latency.",
-    "Retained DOM growth and expensive Midwinter styling remain diagnostic findings requiring retainer and CSS analysis."
+    "Retained DOM growth and expensive Midwinter styling remain diagnostic findings requiring retainer and CSS analysis.",
+    "The existing disposable image uses RRDtool 1.7.2. These basic rendering measurements do not validate performance of the newer RRDtool features supported by develop."
   ]
 }

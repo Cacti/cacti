@@ -213,7 +213,8 @@ Boost and 46.6% with Boost in the equally instrumented fixture. Browser profiles
 still show retained DOM growth and expensive Midwinter styling.
 
 Timings include Xdebug overhead and use synthetic data; they do not measure live
-SNMP, collector throughput or production fleet capacity.
+SNMP, collector throughput or production fleet capacity. The current fixture
+uses RRDtool 1.7.2 for basic rendering; it does not exercise newer RRDtool features.
 
 ---
 

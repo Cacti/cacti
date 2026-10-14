@@ -1,6 +1,6 @@
 {
   "date": "2026-10-14",
-  "scope": "37 original open PRs and 4 PRs opened during validation; measured at each validated revision",
+  "scope": "37 original open PRs, 4 PRs opened during validation and the profiling follow-up #8361; measured at each validated revision",
   "minimum_percent": 80,
   "metric": "changed first-party executable statements, not whole-project coverage",
   "results": [
@@ -302,12 +302,14 @@
     8320,
     8319,
     8357,
-    8358
+    8358,
+    8361
   ],
   "notes": [
     "Formatting, documentation, workflow configuration and generated dependency files are not assigned artificial execution coverage.",
     "Counts include uncovered changed executable statements.",
     "Results describe tested revisions. Later PR changes require another run.",
-    "A passing coverage gate does not imply every unrelated CI check passes."
+    "A passing coverage gate does not imply every unrelated CI check passes.",
+    "The profiling follow-up #8361 removes two redundant production includes and adds no executable production statements. Both full native rendering scenarios and a repeated PNG/SVG/PNG options contract validate the removal."
   ]
 }
