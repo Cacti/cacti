@@ -2444,10 +2444,16 @@ function html_make_device_where() : string {
 
 	// cross-filter the Device list by the selected Graph Template(s); -1 == 'All' applies no restriction
 	if (isrv('graph_template_id') && gnrv('graph_template_id') != '-1') {
-		$graph_templates = html_transform_graph_template_ids(gnrv('graph_template_id'));
+		// ajax_hosts reaches this before the graph filter is sanitized, so validate the raw
+		// request value against the same allowlist the filter uses before transforming it
+		$requested = gnrv('graph_template_id');
 
-		if ($graph_templates !== '' && $graph_templates !== '-1') {
-			$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . db_in_clause('gl.graph_template_id', $graph_templates);
+		if (is_string($requested) && preg_match('/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$/', $requested)) {
+			$graph_templates = html_transform_graph_template_ids($requested);
+
+			if ($graph_templates !== '' && $graph_templates !== '-1') {
+				$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . db_in_clause('gl.graph_template_id', $graph_templates);
+			}
 		}
 	}
 
