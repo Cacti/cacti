@@ -25463,3 +25463,35 @@ msgstr ""
 #: lib/Auth/LocalAuthLoginProvider.php:164
 msgid "Access Denied! Login Failed."
 msgstr ""
+
+#: include/global_form.php
+msgid "Vertical Label Angle (--vertical-label-angle)"
+msgstr ""
+
+#: include/global_form.php
+msgid "RRDtool Default"
+msgstr ""
+
+#: include/global_form.php
+msgid "Label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank uses the RRDtool default. Angles other than 90 and 270 may overlap nearby content."
+msgstr ""
+
+#: include/global_form.php
+msgid "Right Axis Label Angle (--right-axis-label-angle)"
+msgstr ""
+
+#: include/global_form.php
+msgid "Right label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank follows the vertical label angle. Angles other than 90 and 270 may overlap nearby content."
+msgstr ""
+
+#: include/global_form.php
+msgid "Right Axis Label Range (--right-axis-range)"
+msgstr ""
+
+#: include/global_form.php
+msgid "Only show right axis labels within min:max, for example 0:100. Either bound may be blank. This does not change the axis scale. Requires RRDtool 1.11 or newer. Blank leaves labels unrestricted."
+msgstr ""
+
+#: lib/CactiValidator.php
+msgid "Invalid RRDtool axis option."
+msgstr ""

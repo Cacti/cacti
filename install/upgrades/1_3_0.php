@@ -83,6 +83,13 @@ function upgrade_to_1_3_0() : void {
 		db_install_add_column('user_domains_ldap', ['name' => 'tls_certificate', 'type' => 'tinyint(3)', 'unsigned' => true, 'NULL' => false, 'default' => '3']);
 	}
 
+	foreach (['graph_templates_graph', 'aggregate_graph_templates_graph'] as $table) {
+		foreach (['vertical_label_angle' => 3, 'right_axis_label_angle' => 3, 'right_axis_range' => 64] as $field => $length) {
+			db_install_add_column($table, ['name' => 't_' . $field, 'type' => 'char(2)', 'default' => '']);
+			db_install_add_column($table, ['name' => $field, 'type' => 'varchar(' . $length . ')', 'NULL' => false, 'default' => '']);
+		}
+	}
+
 	db_install_add_column('graph_templates_graph', ['name' => 't_left_axis_format', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_formatter']);
 	db_install_add_column('graph_templates_graph', ['name' => 'left_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_left_axis_format']);
 
