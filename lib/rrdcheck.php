@@ -573,7 +573,7 @@ function rrdcheck_ds_findings($data_sources, $rrd_info, $cacti_ds, $file) {
 function rrdcheck_tune_rrdfile($file, $spec, $local_data_id, $use_proxy, &$pipes) {
 	$command = read_config_option('path_rrdtool') . ' tune ' . cacti_escapeshellarg($file) . ' ' . $spec;
 
-	if (!is_resource_writable($file)) {
+	if (!$use_proxy && !is_resource_writable($file)) {
 		cacti_log("WARNING: RRDcheck - RRDfile not writable, tune not run - DS[$local_data_id] Command[$command]", false, 'RRDCHECK');
 
 		return 'the RRDfile is not writable so the tune was not run automatically';
