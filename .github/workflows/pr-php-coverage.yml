@@ -10,6 +10,7 @@ on:
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
       - 'tests/tools/run_request_coverage.sh'
+      - 'tests/tools/test_request_coverage_dispatch.py'
       - '.github/workflows/pr-php-coverage.yml'
 
 permissions:
@@ -47,6 +48,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tests/tools/test_check_changed_php_coverage.py
+          python3 tests/tools/test_request_coverage_dispatch.py
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
             --prepare-config phpunit.xml --output-config phpunit-changed.xml
       - name: Exercise unit and integration contracts with statement coverage
