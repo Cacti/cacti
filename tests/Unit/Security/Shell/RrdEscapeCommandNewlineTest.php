@@ -15,7 +15,6 @@
  * strips CR/LF; RRD_NL line-continuations are already collapsed before it runs.
  */
 require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
 require_once dirname(__DIR__, 4) . '/lib/rrd.php';
 
 test('escape_command strips a raw newline (rrdtool-protocol injection)', function () {
