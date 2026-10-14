@@ -1,4 +1,4 @@
-<phpunit bootstrap="../tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
     <php>
         <ini name="error_reporting" value="-1"/>
         <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
@@ -10,7 +10,7 @@
     </source>
     <testsuites>
         <testsuite name="Client address coverage">
-            <file>../tests/Coverage/ClientAddressCoverageTest.php</file>
+            <file>Coverage/ClientAddressCoverageTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
