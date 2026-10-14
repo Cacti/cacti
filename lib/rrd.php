@@ -3572,8 +3572,9 @@ function rrdtool_function_contains_cf($local_data_id, $cf) {
 
 /**
  * Build an rrdtool 'tune' DS specification used to add a data source that the Graph requires but
- * that is missing from the RRDfile.  A non-numeric minimum or maximum falls back to 'U'.  Adding a
- * data source with 'tune' requires RRDtool 1.5 or above. Used as part of Cacti's lib functionality.
+ * that is missing from the RRDfile.  A non-numeric minimum or maximum falls back to 'U', and a 0/0
+ * range becomes 0:U since RRDtool requires the maximum to exceed the minimum.  Adding a data source
+ * with 'tune' requires RRDtool 1.5 or above. Used as part of Cacti's lib functionality.
  *
  * @param string $ds_name The data source name.
  * @param string $type The RRDtool data source type.
@@ -3586,6 +3587,10 @@ function rrdtool_function_contains_cf($local_data_id, $cf) {
 function rrdtool_tune_ds_add_spec($ds_name, $type, $heartbeat, $min, $max) {
 	$min = is_numeric($min) ? $min : 'U';
 	$max = is_numeric($max) ? $max : 'U';
+
+	if ($min !== 'U' && $max !== 'U' && (float) $min == 0 && (float) $max == 0) {
+		$max = 'U';
+	}
 
 	return 'DS:' . $ds_name . ':' . $type . ':' . $heartbeat . ':' . $min . ':' . $max;
 }

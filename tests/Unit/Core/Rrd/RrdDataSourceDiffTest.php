@@ -31,6 +31,11 @@ test('rrdtool_tune_ds_add_spec falls back to U for non numeric limits', function
 	expect(rrdtool_tune_ds_add_spec('x', 'GAUGE', 300, '', ''))->toBe('DS:x:GAUGE:300:U:U');
 });
 
+test('rrdtool_tune_ds_add_spec normalizes a 0/0 range to 0:U', function () {
+	expect(rrdtool_tune_ds_add_spec('x', 'GAUGE', 300, 0, 0))->toBe('DS:x:GAUGE:300:0:U');
+	expect(rrdtool_tune_ds_add_spec('x', 'COUNTER', 600, '0', '0'))->toBe('DS:x:COUNTER:600:0:U');
+});
+
 test('rrdtool_cacti_compare_ds reports a missing data source and an add tune', function () {
 	$diff  = array();
 	$cacti = array(
