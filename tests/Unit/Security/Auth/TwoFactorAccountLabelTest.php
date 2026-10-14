@@ -9,9 +9,14 @@ test('2FA enrollment accepts account labels with ports and IPv6', function ($use
 	$previous             = $_SERVER['HTTP_HOST'] ?? null;
 	$_SERVER['HTTP_HOST'] = $host;
 
+	$path = tempnam(sys_get_temp_dir(), 'cacti-2fa-');
+
 	try {
-		$link = eval('return ' . $expression[1] . ';');
+		file_put_contents($path, '<?php return ' . $expression[1] . ';');
+		$link = include $path;
 	} finally {
+		unlink($path);
+
 		if ($previous === null) {
 			unset($_SERVER['HTTP_HOST']);
 		} else {
