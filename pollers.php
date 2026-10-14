@@ -79,7 +79,9 @@ $fields_poller_edit = [
 	'hostname' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Data Collector Hostname'),
-		'description'   => __('The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote Pollers to contact it for activities such as re-indexing, Real-time graphing, etc.'),
+		'description'   => __('The hostname for Data Collector.  It may have to be a Fully Qualified ' .
+			'Domain name for the remote Pollers to contact it for activities such ' .
+			'as re-indexing, Real-time graphing, etc.'),
 		'value'         => '|arg1:hostname|',
 		'size'          => '50',
 		'default'       => '',
@@ -88,7 +90,8 @@ $fields_poller_edit = [
 	'log_level' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Custom Log Level'),
-		'description'   => __('In Cases where you need to perform debugging for a single Data Collector Only, you can change it\'s log level here.'),
+		'description'   => __('In Cases where you need to perform debugging for a single Data ' .
+			'Collector Only, you can change it\'s log level here.'),
 		'value'         => '|arg1:log_level|',
 		'default'       => '-1',
 		'array'         => $logfile_verbosity,
@@ -135,7 +138,8 @@ $fields_poller_edit = [
 	'sync_interval' => [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Sync Interval'),
-		'description'   => __('The polling sync interval in use.  This setting will affect how often this poller is checked and updated.'),
+		'description'   => __('The polling sync interval in use.  This setting will affect how often ' .
+			'this poller is checked and updated.'),
 		'value'         => '|arg1:sync_interval|',
 		'default'       => read_config_option('poller_sync_interval'),
 		'array'         => $poller_sync_intervals,
@@ -201,12 +205,14 @@ $fields_poller_edit = [
 	'spacerssl' => [
 		'method'        => 'spacer',
 		'friendly_name' => __('Remote Database SSL Information'),
-		'description'   => __('Starting in MariaDB 11.4 and above, SSL is autonegotiated between the client and server.  So, this option may not be required')
+		'description'   => __('Starting in MariaDB 11.4 and above, SSL is autonegotiated between the ' .
+			'client and server.  So, this option may not be required')
 	],
 	'dbssl' => [
 		'method'        => 'checkbox',
 		'friendly_name' => __('Remote Database SSL'),
-		'description'   => __('If the remote database uses SSL to connect, and it\'s prior to MariaDB 11.4, check the checkbox below to enter the details.'),
+		'description'   => __('If the remote database uses SSL to connect, and it\'s prior to ' .
+			'MariaDB 11.4, check the checkbox below to enter the details.'),
 		'value'         => '|arg1:dbssl|',
 		'default'       => $database_ssl ? 'on' : ''
 	],
@@ -231,7 +237,10 @@ $fields_poller_edit = [
 	'dbsslca' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Remote Database SSL Authority'),
-		'description'   => __('The file holding the SSL Certificate Authority to use to connect to the remote database.  This is an optional parameter that can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option.'),
+		'description'   => __('The file holding the SSL Certificate Authority to use to connect to ' .
+			'the remote database.  This is an optional parameter that can be ' .
+			'required by the database provider if they have started SSL using the ' .
+			'--ssl-mode=VERIFY_CA option.'),
 		'value'         => '|arg1:dbsslca|',
 		'size'          => '50',
 		'default'       => $database_ssl_ca,
@@ -240,7 +249,12 @@ $fields_poller_edit = [
 	'dbsslcapath' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Remote Database SSL Authorities directory'),
-		'description'   => __('The file path to the directory that contains the trusted SSL Certificate Authority certificates. This is an optional parameter that can used instead of giving the path to an individual Certificate Authority file. This parameter can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option.'),
+		'description'   => __('The file path to the directory that contains the trusted SSL ' .
+			'Certificate Authority certificates. This is an optional parameter ' .
+			'that can used instead of giving the path to an individual Certificate ' .
+			'Authority file. This parameter can be required by the database ' .
+			'provider if they have started SSL using the --ssl-mode=VERIFY_CA ' .
+			'option.'),
 		'value'         => '|arg1:dbsslcapath|',
 		'size'          => '50',
 		'default'       => $database_ssl_capath,
@@ -249,7 +263,9 @@ $fields_poller_edit = [
 	'dbsslverifyservercert' => [
 		'method'        => 'checkbox',
 		'friendly_name' => __('Remote Database SSL'),
-		'description'   => __("Provides a way to disable verification of the server's SSL certificate Common Name against the server's hostname when connecting. This verification is enabled by default."),
+		'description'   => __("Provides a way to disable verification of the server's SSL " .
+			"certificate Common Name against the server's hostname when " .
+			'connecting. This verification is enabled by default.'),
 		'value'         => '|arg1:dbsslverifyservercert|',
 		'default'       => $database_ssl_verify_server_cert ? 'on' : ''
 	],
@@ -322,19 +338,32 @@ function form_save() : void {
 		$save['notes']     = CactiValidator::validateInput(gnrv('notes'), 'notes', []);
 
 		// Process settings
-		$save['processes'] = CactiValidator::validateInput(gnrv('processes'), 'processes', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
-		$save['threads']   = CactiValidator::validateInput(gnrv('threads'), 'threads', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
+		$save['processes'] = CactiValidator::validateInput(gnrv('processes'),
+			'processes',
+			[new Assert\NotBlank(),
+			new Assert\Regex(pattern: '/^[0-9]+$/')]);
+		$save['threads']   = CactiValidator::validateInput(gnrv('threads'),
+			'threads',
+			[new Assert\NotBlank(),
+			new Assert\Regex(pattern: '/^[0-9]+$/')]);
 
 		if ($save['id'] != 1) {
-			$save['sync_interval'] = CactiValidator::validateInput(gnrv('sync_interval'), 'sync_interval', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
+			$save['sync_interval'] = CactiValidator::validateInput(gnrv('sync_interval'),
+				'sync_interval',
+				[new Assert\NotBlank(),
+				new Assert\Regex(pattern: '/^[0-9]+$/')]);
 
 			// Database settings
 			$save['dbdefault']             = CactiValidator::validateInput(gnrv('dbdefault'), 'dbdefault', []);
 			$save['dbhost']                = CactiValidator::validateInput(gnrv('dbhost'),    'dbhost',    []);
 			$save['dbuser']                = CactiValidator::validateInput(gnrv('dbuser'),    'dbuser',    []);
 			$save['dbpass']                = CactiValidator::validateInput(gnrv('dbpass'),    'dbpass',    []);
-			$save['dbport']                = CactiValidator::validateInput(gnrv('dbport'),    'dbport',    [new Assert\Regex(pattern: '/^[0-9]+$/')]);
-			$save['dbretries']             = CactiValidator::validateInput(gnrv('dbretries'), 'dbretries', [new Assert\Regex(pattern: '/^[0-9]+$/')]);
+			$save['dbport']                = CactiValidator::validateInput(gnrv('dbport'),
+				'dbport',
+				[new Assert\Regex(pattern: '/^[0-9]+$/')]);
+			$save['dbretries']             = CactiValidator::validateInput(gnrv('dbretries'),
+				'dbretries',
+				[new Assert\Regex(pattern: '/^[0-9]+$/')]);
 			$save['dbssl']                 = isrv('dbssl') ? 'on' : '';
 			$save['dbsslkey']              = CactiValidator::validateInput(gnrv('dbsslkey'),  'dbsslkey',  []);
 			$save['dbsslcert']             = CactiValidator::validateInput(gnrv('dbsslcert'), 'dbsslcert', []);
@@ -347,13 +376,19 @@ function form_save() : void {
 		$error = false;
 
 		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
-			raise_message('dupe_hostname', __esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+			raise_message('dupe_hostname',
+				__esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.',
+					$save['hostname']),
+				MESSAGE_LEVEL_ERROR);
 			$error = true;
 		}
 
 		if (isset($save['dbhost'])) {
 			if (poller_check_duplicate_poller_id($save['id'], $save['dbhost'], 'dbhost')) {
-				raise_message('dupe_dbhost', __esc('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+				raise_message('dupe_dbhost',
+					__esc('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.',
+						$save['hostname']),
+					MESSAGE_LEVEL_ERROR);
 				$error = true;
 			}
 		}
@@ -497,15 +532,24 @@ function form_actions() : void {
 				db_execute('UPDATE poller_output_realtime SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
 				db_execute('UPDATE poller_time SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
 
-				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' deleted by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
+				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',',
+					$selected_items) . ' deleted by user ' . $_SESSION[SESS_USER_ID],
+					false,
+					'WEBUI');
 			} elseif (grv('drp_action') == POLLER_DISABLE) { // disable
 				db_execute('UPDATE poller SET disabled="on" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' disabled by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
+				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',',
+					$selected_items) . ' disabled by user ' . $_SESSION[SESS_USER_ID],
+					false,
+					'WEBUI');
 			} elseif (grv('drp_action') == POLLER_ENABLE) { // enable
 				db_execute('UPDATE poller SET disabled="" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
+				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',',
+					$selected_items) . ' enabled by user ' . $_SESSION[SESS_USER_ID],
+					false,
+					'WEBUI');
 			} elseif (grv('drp_action') == POLLER_RESYNC || grv('drp_action') == POLLER_AUTHSYNC) { // full or auth sync
 				cacti_session_close();
 
@@ -563,9 +607,22 @@ function form_actions() : void {
 				cacti_session_start();
 
 				if (cacti_sizeof($failed)) {
-					cacti_log('WARNING: Some Selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION[SESS_USER_ID]) . ', Successful/Failed[' . cacti_sizeof($success) . '/' . cacti_sizeof($failed) . '].  See log for details.', false, 'WEBUI');
+					cacti_log('WARNING: Some Selected Remote Data Collectors in [' . implode(', ',
+						$ids) .
+							'] failed synchronization by user ' .
+							get_username($_SESSION[SESS_USER_ID]) .
+							', Successful/Failed[' .
+							cacti_sizeof($success) .
+							'/' .
+							cacti_sizeof($failed) .
+							'].  See log for details.',
+						false,
+						'WEBUI');
 				} else {
-					cacti_log('NOTE: All Selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
+					cacti_log('NOTE: All Selected Remote Data Collectors in [' . implode(', ',
+						$ids) . '] synchronized correctly by user ' . get_username($_SESSION[SESS_USER_ID]),
+						false,
+						'WEBUI');
 				}
 			} elseif (grv('drp_action') == '5') { // clear statistics
 				foreach ($selected_items as $item) {
@@ -710,7 +767,9 @@ function poller_edit() : void {
 		]
 	);
 
-	$tip_text = __('Remote Data Collectors must be able to communicate to the Main Data Collector, and vice versa.  Use this button to verify that the Main Data Collector can communicate to this Remote Data Collector.');
+	$tip_text = __('Remote Data Collectors must be able to communicate to the Main Data ' .
+		'Collector, and vice versa.  Use this button to verify that the Main ' .
+		'Data Collector can communicate to this Remote Data Collector.');
 
 	if (read_config_option('hide_form_description') == 'on') {
 		$tooltip = '<br><span class="formFieldDescription">' . $tip_text . '</span>';
@@ -718,7 +777,14 @@ function poller_edit() : void {
 		$tooltip = '<div class="formTooltip">' . str_replace("\n", '', display_tooltip($tip_text)) . '</div>';
 	}
 
-	$row_html = '<div class="formRow odd"><div class="formColumnLeft"><div class="formFieldName">' . __('Test Database Connection') . $tooltip . '</div></div><div class="formColumnRight"><button type="button" class="ui-button ui-corner-all ui-widget" id="dbtest">' . __esc('Test Connection') . '</button><span id="results"></span></div></div>';
+	$row_html = ('<div class="formRow odd"><div class="formColumnLeft"><div ' .
+		'class="formFieldName">') .
+			__('Test Database Connection') .
+			$tooltip .
+			('</div></div><div class="formColumnRight"><button type="button" ' .
+		'class="ui-button ui-corner-all ui-widget" id="dbtest">') .
+			__esc('Test Connection') .
+			'</button><span id="results"></span></div></div>';
 
 	$pt = read_config_option('poller_type');
 
@@ -948,7 +1014,15 @@ function pollers() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('pollers.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Pollers'), 'page', 'main');
+	$nav = html_nav_bar('pollers.php?filter=' . grv('filter'),
+		MAX_DISPLAY_PAGES,
+		grv('page'),
+		$rows,
+		$total_rows,
+		5,
+		__('Pollers'),
+		'page',
+		'main');
 
 	form_start('pollers.php', 'chk');
 
@@ -1071,7 +1145,10 @@ function pollers() : void {
 
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 
-			form_selectable_cell(filter_value($poller['name'], grv('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
+			form_selectable_cell(filter_value($poller['name'],
+				grv('filter'),
+				'pollers.php?action=edit&id=' . $poller['id']),
+				$poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
 			form_selectable_ecell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
@@ -1096,7 +1173,11 @@ function pollers() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Collectors Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='" .
+			(cacti_sizeof($display_text) + 1) .
+			"'><em>" .
+			__('No Data Collectors Found') .
+			"</em></td></tr>\n";
 	}
 
 	html_end_box(false);

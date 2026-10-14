@@ -212,7 +212,10 @@ if (cacti_sizeof($parms)) {
 
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
-		print "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ')' . PHP_EOL;
+		print "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " .
+			$reindex_types[$reindex_method] .
+			')' .
+			PHP_EOL;
 
 		exit(1);
 	} else {
@@ -228,11 +231,17 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if (is_error_message()) {
-		print "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ')' . PHP_EOL;
+		print "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " .
+			$reindex_types[$reindex_method] .
+			')' .
+			PHP_EOL;
 
 		exit(1);
 	} else {
-		print "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ')' . PHP_EOL;
+		print "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " .
+			$reindex_types[$reindex_method] .
+			')' .
+			PHP_EOL;
 
 		exit;
 	}
@@ -261,7 +270,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]' . PHP_EOL . PHP_EOL;
+	print ('usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] ' .
+		'--reindex-method=[method] [--quiet]') . PHP_EOL . PHP_EOL;
 	print 'Required Options:' . PHP_EOL;
 	print '    --host-id         the numerical ID of the host' . PHP_EOL;
 	print '    --data-query-id   the numerical ID of the data_query to be added' . PHP_EOL;

@@ -244,7 +244,10 @@ function upgrade_database() : void {
 	if ($return_var == 0) {
 		cacti_log(sprintf('NOTE: Cacti Upgrade succeeded in %.2f seconds', $end - $start), true, 'UPGRADE');
 	} else {
-		cacti_log('WARNING: Cacti Upgrade Encountered Errors.  Messages below.  Details are below, but also in Cacti upgrade log.', true, 'UPGRADE');
+		cacti_log('WARNING: Cacti Upgrade Encountered Errors.  Messages below.  Details ' .
+			'are below, but also in Cacti upgrade log.',
+			true,
+			'UPGRADE');
 		print '------------------------------------------------------------------------------------------------' . PHP_EOL;
 		print implode(PHP_EOL, $output) . PHP_EOL;
 		print '------------------------------------------------------------------------------------------------' . PHP_EOL;
@@ -310,7 +313,9 @@ function upgrade_database() : void {
 						// Always run the new function if it's there
 						// Some plugins don't upgrade in the proper way
 						if (function_exists($ufunc3)) {
-							cacti_log("NOTE: Running Plugin $pname install function due to some plugins not upgrading properly.", true, 'UPGRADE');
+							cacti_log("NOTE: Running Plugin $pname install function due to some plugins not upgrading properly.",
+								true,
+								'UPGRADE');
 							$ufunc3(true);
 						}
 
@@ -328,19 +333,25 @@ function upgrade_database() : void {
 							$return_var = 0;
 							$output     = [];
 
-							exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
+							exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old,
+								$output,
+								$return_var);
 
 							if ($return_var == 0) {
 								print implode(PHP_EOL, $output) . PHP_EOL;
 								cacti_log("NOTE: Cacti Plugin $pname Upgrade Succeeded.", true, 'UPGRADE');
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 								print implode(PHP_EOL, $output) . PHP_EOL;
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 							} else {
 								cacti_log("WARNING: Cacti Plugin $pname Upgrade Encountered Errors.", true, 'UPGRADE');
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 								print implode(PHP_EOL, $output) . PHP_EOL;
-								print '------------------------------------------------------------------------------------------------' . PHP_EOL;
+								print '------------------------------------------------------------------------------------------------' .
+									PHP_EOL;
 							}
 						}
 					} else {
@@ -374,7 +385,9 @@ function upgrade_database() : void {
 
 					api_plugin_uninstall($pname, false);
 				} else {
-					cacti_log("NOTE: Uninstalling Plugin $pname which is not supported and setup.php not found.  Preserving tables.", true, 'UPGRADE');
+					cacti_log("NOTE: Uninstalling Plugin $pname which is not supported and setup.php not found.  Preserving tables.",
+						true,
+						'UPGRADE');
 					db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', [$pname]);
 					db_execute_prepared('DELETE FROM plugin_db_changes WHERE plugin = ?', [$pname]);
 					db_execute_prepared('DELETE FROM plugin_hooks WHERE name = ?', [$pname]);
@@ -635,7 +648,16 @@ function report_audit_results(bool $output = true) : array {
 												// Handle Timestamp on DEFAULT/ON UPDATE irregularities
 												continue;
 											} else {
-												print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
+												print PHP_EOL .
+													'ERROR Col: \'' .
+													$c['Field'] .
+													'\', Attribute \'' .
+													$col .
+													'\' invalid. Should be: \'' .
+													$dbc[$dbcol] .
+													'\', Is: \'' .
+													$c[$col] .
+													'\'';
 											}
 										}
 									}
@@ -727,7 +749,16 @@ function report_audit_results(bool $output = true) : array {
 									if ($i['Key_name'] != 'PRIMARY') {
 										if (array_search($i['Key_name'], $idx_added, true) === false) {
 											if ($output) {
-												print PHP_EOL . 'ERROR Index: \'' . $i['Key_name'] . '\', Attribute \'' . $idx . '\' invalid. Should be: \'' . $dbc[$dbidx] . '\', Is: \'' . $i[$idx] . '\'';
+												print PHP_EOL .
+													'ERROR Index: \'' .
+													$i['Key_name'] .
+													'\', Attribute \'' .
+													$idx .
+													'\' invalid. Should be: \'' .
+													$dbc[$dbidx] .
+													'\', Is: \'' .
+													$i[$idx] .
+													'\'';
 											}
 
 											$alter_cmds  = array_merge($alter_cmds, make_index_alter($table_name, $i['Key_name']));
@@ -1123,7 +1154,10 @@ function create_tables(bool $load = true) : void {
 			/* the credentials go in a private defaults file rather than on the
 			 * command line, where any local user could read them out of the
 			 * process list for as long as the import runs */
-			$defaults_file = audit_database_defaults_file($database_username, $database_password, $database_hostname, $database_port);
+			$defaults_file = audit_database_defaults_file($database_username,
+				$database_password,
+				$database_hostname,
+				$database_port);
 
 			if ($defaults_file === false) {
 				print 'FATAL: Unable to create a private credentials file' . PHP_EOL;

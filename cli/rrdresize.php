@@ -436,7 +436,10 @@ if ($scanned_directory['folders']) {
 						if (isset($tmp_ds[$defined_ds_name])) {
 							$tmp_ds_rrd = $tmp_ds[$defined_ds_name];
 
-							if ($tmp_ds_rrd['type'] == $defined_ds_type && $tmp_ds_rrd['minimal_heartbeat'] == $defined_min_heartbeat && $tmp_ds_rrd['min'] == $defined_minimum && $tmp_ds_rrd['max'] == $defined_maximum) {
+							if ($tmp_ds_rrd['type'] == $defined_ds_type &&
+								$tmp_ds_rrd['minimal_heartbeat'] == $defined_min_heartbeat &&
+								$tmp_ds_rrd['min'] == $defined_minimum &&
+								$tmp_ds_rrd['max'] == $defined_maximum) {
 								$found = true;
 							} else {
 								$ds_mismatch         = true;
@@ -520,7 +523,10 @@ if ($scanned_directory['folders']) {
 						$defined_ppr  = $data_template__rra_settings['steps'];
 
 						foreach ($tmp_rras as $tmp_rra) {
-							if ($tmp_rra['cf'] == $defined_cf && $tmp_rra['rows'] == $defined_rows && $tmp_rra['xff'] == $defined_xff && $tmp_rra['pdp_per_row'] == $defined_ppr) {
+							if ($tmp_rra['cf'] == $defined_cf &&
+								$tmp_rra['rows'] == $defined_rows &&
+								$tmp_rra['xff'] == $defined_xff &&
+								$tmp_rra['pdp_per_row'] == $defined_ppr) {
 								$found = true;
 
 								break;
@@ -682,13 +688,17 @@ if ($scanned_directory['folders']) {
 
 						foreach ($rra_timespans[$defined_cf] as $g_rra_index => $g_rra_settings) {
 							if ($g_rra_settings['step'] > $defined_step) {
-								if (($timestamp > $g_rra_settings['start']) && ($timestamp <= $g_rra_settings['end']) && ($g_rra_settings['step'] <= $step)) {
+								if (($timestamp > $g_rra_settings['start']) &&
+									($timestamp <= $g_rra_settings['end']) &&
+									($g_rra_settings['step'] <= $step)) {
 									$consolidation_required = false;
 									$step                   = $g_rra_settings['step'];
 									$selected_archive_index = $g_rra_index;
 								}
 							} elseif ($g_rra_settings['step'] < $defined_step) {
-								if ((($timestamp - $defined_step) >= $g_rra_settings['start']) && ($timestamp <= $g_rra_settings['end']) && ($g_rra_settings['step'] <= $step)) {
+								if ((($timestamp - $defined_step) >= $g_rra_settings['start']) &&
+									($timestamp <= $g_rra_settings['end']) &&
+									($g_rra_settings['step'] <= $step)) {
 									$consolidation_required = true;
 									$step                   = $g_rra_settings['step'];
 									$selected_archive_index = $g_rra_index;
@@ -706,7 +716,9 @@ if ($scanned_directory['folders']) {
 
 						// There's no data available we could reuse. Fill these entries with NaNs and jump to the next one
 						if ($selected_archive_index === false) {
-							$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy_fake) ? implode('</v><v>', $row_copy_fake) : $row_copy_fake) . '</v></row>' . PHP_EOL;
+							$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ',
+								($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy_fake) ? implode('</v><v>',
+									$row_copy_fake) : $row_copy_fake) . '</v></row>' . PHP_EOL;
 
 							continue;
 						}
@@ -730,7 +742,9 @@ if ($scanned_directory['folders']) {
 									}
 								}
 
-								$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy) ? implode('</v><v>', $row_copy) : $row_copy) . '</v></row>' . PHP_EOL;
+								$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ',
+									($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy) ? implode('</v><v>',
+										$row_copy) : $row_copy) . '</v></row>' . PHP_EOL;
 							} else {
 								f_notify(false, "\033[0;31m[FAILED]\033[0m");
 								print_r($rra_timespans);
@@ -782,7 +796,10 @@ if ($scanned_directory['folders']) {
 
 												break;
 										}
-										$consolidated_ds_values[$ds_index] = preg_replace('/(e[+-])(\d)$/', '${1}0$2', sprintf('%.10e', $consolidated_value));
+										$consolidated_ds_values[$ds_index] = preg_replace('/(e[+-])(\d)$/',
+											'${1}0$2',
+											sprintf('%.10e',
+												$consolidated_value));
 									} else {
 										$consolidated_ds_values[$ds_index] = 'NaN';
 									}
@@ -832,7 +849,9 @@ if ($scanned_directory['folders']) {
 									unset($consolidated_ds_values[$ds_superfluous_id]);
 								}
 							}
-							$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . implode('</v><v>', $consolidated_ds_values) . '</v></row>' . PHP_EOL;
+							$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ',
+								($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . implode('</v><v>',
+									$consolidated_ds_values) . '</v></row>' . PHP_EOL;
 						}
 					}
 
@@ -873,7 +892,8 @@ if ($scanned_directory['folders']) {
 
 				// Use RRDtool to verify if XML structure is valid
 				f_notify('RRDtool Restore');
-				$file_restore = rrdtool_pipe_execute(' restore -r -f ' . $tmp_xml_file . ' ' . $tmp_rrd_file . "\r\n", $rrdtool_pipes);
+				$file_restore = rrdtool_pipe_execute(' restore -r -f ' . $tmp_xml_file . ' ' . $tmp_rrd_file . "\r\n",
+					$rrdtool_pipes);
 
 				if (str_contains($file_restore, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");

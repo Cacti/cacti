@@ -391,36 +391,24 @@ function form_save() : void {
 			$save2['id']                            = gnrv('graph_template_graph_id');
 			$save2['local_graph_template_graph_id'] = gnrv('local_graph_template_graph_id');
 			$save2['graph_template_id']             = gnrv('graph_template_id');
-			$save2['image_format_id']               = CactiValidator::validateInput(gnrv('image_format_id'), 'image_format_id',
-				[new Assert\Regex('/^[0-9]+$/')], 3);
-			$save2['title']                         = CactiValidator::validateInput(gnrv('title'), 'title',
-				[new Assert\NotBlank()], 3);
-			$save2['height']                        = CactiValidator::validateInput(gnrv('height'), 'height',
-				[new Assert\Regex('/^[0-9]+$/')], 3);
-			$save2['width']                         = CactiValidator::validateInput(gnrv('width'), 'width',
-				[new Assert\Regex('/^[0-9]+$/')], 3);
-			$save2['upper_limit']                   = CactiValidator::validateInput(gnrv('upper_limit'), 'upper_limit',
-				[new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
-			$save2['lower_limit']                   = CactiValidator::validateInput(gnrv('lower_limit'), 'lower_limit',
-				[new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
-			$save2['vertical_label']                = CactiValidator::validateInput(gnrv('vertical_label'), 'vertical_label', [],
-				3);
-			$save2['slope_mode']                    = CactiValidator::validateInput((isrv('slope_mode') ? gnrv('slope_mode') : ''),
-				'slope_mode', [], 3);
-			$save2['auto_scale']                    = CactiValidator::validateInput((isrv('auto_scale') ? gnrv('auto_scale') : ''),
-				'auto_scale', [], 3);
-			$save2['auto_scale_opts']               = CactiValidator::validateInput(gnrv('auto_scale_opts'), 'auto_scale_opts',
-				[], 3);
-			$save2['auto_scale_log']                = CactiValidator::validateInput((isrv('auto_scale_log') ? gnrv('auto_scale_log') : ''),
-				'auto_scale_log', [], 3);
-			$save2['scale_log_units']               = CactiValidator::validateInput((isrv('scale_log_units') ? gnrv('scale_log_units') : ''),
-				'scale_log_units', [], 3);
-			$save2['auto_scale_rigid']              = CactiValidator::validateInput((isrv('auto_scale_rigid') ? gnrv('auto_scale_rigid') : ''),
-				'auto_scale_rigid', [], 3);
-			$save2['auto_padding']                  = CactiValidator::validateInput((isrv('auto_padding') ? gnrv('auto_padding') : ''),
-				'auto_padding', [], 3);
-			$save2['base_value']                    = CactiValidator::validateInput(gnrv('base_value'), 'base_value',
-				[new Assert\Regex('/^[0-9]+$/')], 3);
+			$save2['image_format_id']               = CactiValidator::validateInput(gnrv('image_format_id'), 'image_format_id', [new Assert\Regex('/^[0-9]+$/')], 3);
+			$save2['title']                         = CactiValidator::validateInput(gnrv('title'), 'title', [new Assert\NotBlank()], 3);
+			$save2['height']                        = CactiValidator::validateInput(gnrv('height'), 'height', [new Assert\Regex('/^[0-9]+$/')], 3);
+			$save2['width']                         = CactiValidator::validateInput(gnrv('width'), 'width', [new Assert\Regex('/^[0-9]+$/')], 3);
+			$save2['upper_limit']                   = CactiValidator::validateInput(gnrv('upper_limit'), 'upper_limit', [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
+			$save2['lower_limit']                   = CactiValidator::validateInput(gnrv('lower_limit'), 'lower_limit', [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
+			$save2['vertical_label']                = CactiValidator::validateInput(gnrv('vertical_label'), 'vertical_label', [], 3);
+			$save2['vertical_label_angle']          = CactiValidator::validateRrdGraphAxisInput((isrv('vertical_label_angle') ? gnrv('vertical_label_angle') : ''), 'vertical_label_angle');
+			$save2['right_axis_label_angle']        = CactiValidator::validateRrdGraphAxisInput((isrv('right_axis_label_angle') ? gnrv('right_axis_label_angle') : ''), 'right_axis_label_angle');
+			$save2['right_axis_range']              = CactiValidator::validateRrdGraphAxisInput((isrv('right_axis_range') ? gnrv('right_axis_range') : ''), 'right_axis_range');
+			$save2['slope_mode']                    = CactiValidator::validateInput((isrv('slope_mode') ? gnrv('slope_mode') : ''), 'slope_mode', [], 3);
+			$save2['auto_scale']                    = CactiValidator::validateInput((isrv('auto_scale') ? gnrv('auto_scale') : ''), 'auto_scale', [], 3);
+			$save2['auto_scale_opts']               = CactiValidator::validateInput(gnrv('auto_scale_opts'), 'auto_scale_opts', [], 3);
+			$save2['auto_scale_log']                = CactiValidator::validateInput((isrv('auto_scale_log') ? gnrv('auto_scale_log') : ''), 'auto_scale_log', [], 3);
+			$save2['scale_log_units']               = CactiValidator::validateInput((isrv('scale_log_units') ? gnrv('scale_log_units') : ''), 'scale_log_units', [], 3);
+			$save2['auto_scale_rigid']              = CactiValidator::validateInput((isrv('auto_scale_rigid') ? gnrv('auto_scale_rigid') : ''), 'auto_scale_rigid', [], 3);
+			$save2['auto_padding']                  = CactiValidator::validateInput((isrv('auto_padding') ? gnrv('auto_padding') : ''), 'auto_padding', [], 3);
+			$save2['base_value']                    = CactiValidator::validateInput(gnrv('base_value'), 'base_value', [new Assert\Regex('/^[0-9]+$/')], 3);
 			$save2['unit_value']                    = CactiValidator::validateInput(gnrv('unit_value'), 'unit_value', [], 3);
 			$save2['unit_exponent_value']           = CactiValidator::validateInput(gnrv('unit_exponent_value'),
 				'unit_exponent_value', [new Assert\Regex('/^-?[0-9]+$/')], 3);
