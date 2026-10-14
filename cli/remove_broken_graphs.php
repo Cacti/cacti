@@ -107,7 +107,8 @@ if (!$report && !$remove) {
 	$report = true;
 }
 
-print 'Running Query to find Broken Graphs.  This Query may run for some time depending the number of Graph in your System' . PHP_EOL;
+print ('Running Query to find Broken Graphs.  This Query may run for some ' .
+	'time depending the number of Graph in your System') . PHP_EOL;
 
 $sql = "SELECT name, graph_template_id, graphs, local_graph_ids
 	FROM (

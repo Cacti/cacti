@@ -18,6 +18,8 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+require_once(__DIR__ . '/rrd_graph_axis.php');
+
 class CactiValidator {
 	private static ?ValidatorInterface $validator = null;
 
@@ -184,6 +186,17 @@ class CactiValidator {
 			new Assert\Length(max: 255),
 			new Assert\Regex('/\A[\x20-\x7E]+\z/'),
 		]);
+	}
+
+	/** Apply the same axis validation to graph, template and aggregate saves. */
+	public static function validateRrdGraphAxisInput(mixed $value, string $name): mixed {
+		return self::validateInput($value, $name, [new Assert\Callback(
+			static function (mixed $value, \Symfony\Component\Validator\Context\ExecutionContextInterface $context) use ($name): void {
+				if (!rrd_graph_axis_option_is_valid($name, $value)) {
+					$context->buildViolation(__('Invalid RRDtool axis option.'))->addViolation();
+				}
+			}
+		)], 3);
 	}
 
 	/**

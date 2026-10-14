@@ -129,7 +129,10 @@ if (cacti_sizeof($idbyhost)) {
 			// proc_open returns false if the child could not be spawned; fall back to
 			// the non-proc path rather than reading from non-existent pipes
 			if (!is_resource($cactiphp)) {
-				cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution', false, 'POLLER', POLLER_VERBOSITY_LOW);
+				cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution',
+					false,
+					'POLLER',
+					POLLER_VERBOSITY_LOW);
 
 				$using_proc_function = false;
 				$pipes               = false;

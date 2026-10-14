@@ -275,7 +275,8 @@ function display_version() : void {
  * @return void
  */
 function display_help() : void {
-	print 'usage: plugin_manage.php [--plugin=S] [--install --enable --allperms] [--uninstall ] [--disable]' . PHP_EOL . PHP_EOL;
+	print ('usage: plugin_manage.php [--plugin=S] [--install --enable --allperms] ' .
+		'[--uninstall ] [--disable]') . PHP_EOL . PHP_EOL;
 
 	print 'A utility to install/uninstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;
 

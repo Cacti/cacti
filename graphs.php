@@ -397,6 +397,9 @@ function form_save() : void {
 			$save2['upper_limit']                   = CactiValidator::validateInput(gnrv('upper_limit'), 'upper_limit', [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
 			$save2['lower_limit']                   = CactiValidator::validateInput(gnrv('lower_limit'), 'lower_limit', [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
 			$save2['vertical_label']                = CactiValidator::validateInput(gnrv('vertical_label'), 'vertical_label', [], 3);
+			$save2['vertical_label_angle']          = CactiValidator::validateRrdGraphAxisInput((isrv('vertical_label_angle') ? gnrv('vertical_label_angle') : ''), 'vertical_label_angle');
+			$save2['right_axis_label_angle']        = CactiValidator::validateRrdGraphAxisInput((isrv('right_axis_label_angle') ? gnrv('right_axis_label_angle') : ''), 'right_axis_label_angle');
+			$save2['right_axis_range']              = CactiValidator::validateRrdGraphAxisInput((isrv('right_axis_range') ? gnrv('right_axis_range') : ''), 'right_axis_range');
 			$save2['slope_mode']                    = CactiValidator::validateInput((isrv('slope_mode') ? gnrv('slope_mode') : ''), 'slope_mode', [], 3);
 			$save2['auto_scale']                    = CactiValidator::validateInput((isrv('auto_scale') ? gnrv('auto_scale') : ''), 'auto_scale', [], 3);
 			$save2['auto_scale_opts']               = CactiValidator::validateInput(gnrv('auto_scale_opts'), 'auto_scale_opts', [], 3);

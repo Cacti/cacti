@@ -164,7 +164,9 @@ if (cacti_sizeof($data_source_list)) {
 
 		update_data_source_title_cache($data_source['local_data_id']);
 
-		debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source['local_data_id'])) . "'");
+		debug("Data Source Rename Done for Data Source '" .
+			addslashes(get_data_source_title($data_source['local_data_id'])) .
+			"'");
 
 		$i++;
 	}
@@ -208,7 +210,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: poller_data_sources_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=string] [--debug]' . PHP_EOL . PHP_EOL;
+	print ('usage: poller_data_sources_reapply_names.php ' .
+		'--host-id=[id|all][N1,N2,...] [--filter=string] [--debug]') . PHP_EOL . PHP_EOL;
 
 	print 'A utility that will recalculate Data Source names for the selected Data Templates.' . PHP_EOL . PHP_EOL;
 

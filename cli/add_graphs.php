@@ -467,7 +467,8 @@ if (cacti_sizeof($parms)) {
 			}
 		} elseif ($nbSnmpValuesRegex) {
 			if ($nbSnmpFields != $nbSnmpValuesRegex) {
-				print "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match" . PHP_EOL;
+				print "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match" .
+					PHP_EOL;
 
 				exit(1);
 			}
@@ -544,7 +545,10 @@ if (cacti_sizeof($parms)) {
 		foreach ($dsGraph['snmpFieldExclude'] as $snmpField) {
 			if ($snmpField != '') {
 				if (!isset($snmpFields[$snmpField])) {
-					print 'ERROR: Unknown snmp-field-exclude ' . $dsGraph['snmpFieldExclude'][$index_filter] . " for host $host_id" . PHP_EOL;
+					print 'ERROR: Unknown snmp-field-exclude ' .
+						$dsGraph['snmpFieldExclude'][$index_filter] .
+						" for host $host_id" .
+						PHP_EOL;
 					print 'Try --list-snmp-fields' . PHP_EOL;
 
 					exit(1);
@@ -639,7 +643,9 @@ if (cacti_sizeof($parms)) {
 
 				$value = $option_value[1];
 
-				$values['cg'][$template_id]['custom_data'][$data_template_id][$input_fields[$data_template_id . ':' . $field_name]['data_input_field_id']] = $value;
+				$values['cg'][$template_id]['custom_data'][$data_template_id][$input_fields[$data_template_id .
+					':' .
+					$field_name]['data_input_field_id']] = $value;
 			}
 		}
 	}
@@ -671,7 +677,8 @@ if (cacti_sizeof($parms)) {
 				LIMIT 1',
 				[$existsAlready]);
 
-			print "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)" . PHP_EOL;
+			print "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)" .
+				PHP_EOL;
 
 			exit(1);
 		} else {
@@ -714,7 +721,9 @@ if (cacti_sizeof($parms)) {
 			print 'Graph Not Added due to whitelist check failure.' . PHP_EOL;
 		}
 	} elseif ($graph_type == 'ds') {
-		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (cacti_sizeof($dsGraph['snmpField']) == 0)) {
+		if (($dsGraph['snmpQueryId'] == '') ||
+			($dsGraph['snmpQueryType'] == '') ||
+			(cacti_sizeof($dsGraph['snmpField']) == 0)) {
 			print 'ERROR: For graph-type of \'ds\' you must supply more options' . PHP_EOL;
 			display_help();
 
@@ -736,7 +745,10 @@ if (cacti_sizeof($parms)) {
 		if (cacti_sizeof($dsGraph['snmpField'])) {
 			foreach ($dsGraph['snmpField'] as $snmpField) {
 				$req .= ' AND snmp_index IN (
-					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
+					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' .
+						$host_id .
+						' AND field_name = ' .
+						db_qstr($snmpField);
 
 				if (isset($dsGraph['snmpValue'][$index_snmp_filter])) {
 					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]) . ')';
@@ -753,7 +765,10 @@ if (cacti_sizeof($parms)) {
 		if (cacti_sizeof($dsGraph['snmpFieldExclude'])) {
 			foreach ($dsGraph['snmpFieldExclude'] as $snmpField) {
 				$req .= ' AND snmp_index NOT IN (
-					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
+					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' .
+						$host_id .
+						' AND field_name = ' .
+						db_qstr($snmpField);
 				$req .= ' AND field_value REGEXP ' . db_qstr($dsGraph['snmpValueExclude'][$index_snmp_filter]) . ')';
 				$index_snmp_filter++;
 			}
@@ -794,7 +809,8 @@ if (cacti_sizeof($parms)) {
 						LIMIT 1',
 						[$existsAlready]);
 
-					print "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)" . PHP_EOL;
+					print "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)" .
+						PHP_EOL;
 
 					continue;
 				}
@@ -846,7 +862,10 @@ if (cacti_sizeof($parms)) {
 			}
 
 			if (cacti_sizeof($dsGraph['snmpValueExclude'])) {
-				$err_msg .= ') and snmp-field-exclude (' . implode(',',$dsGraph['snmpFieldExclude']) . ' ) with values (' . implode(',',$dsGraph['snmpValueExclude']);
+				$err_msg .= ') and snmp-field-exclude (' .
+					implode(',',$dsGraph['snmpFieldExclude']) .
+					' ) with values (' .
+					implode(',',$dsGraph['snmpValueExclude']);
 			}
 
 			$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ')' . PHP_EOL;
@@ -908,7 +927,8 @@ function display_help() : void {
 	print '                         --snmp-value=[SNMP Value] | --snmp-value-regex=[REGEX]' . PHP_EOL;
 	print '    [--graph-title=S]       Defaults to what ever is in the Graph Template/Data Template.' . PHP_EOL;
 	print '    [--reindex-method=N]    The reindex method to be used for that data query.' . PHP_EOL;
-	print '                            NOTE: If Data Query is already associated, the reindex method will NOT be changed.' . PHP_EOL . PHP_EOL;
+	print ('                            NOTE: If Data Query is already ' .
+		'associated, the reindex method will NOT be changed.') . PHP_EOL . PHP_EOL;
 	print '    --snmp-field-exclude=[SNMP Field] | --snmp-value-exclude=[REGEX]' . PHP_EOL;
 	print '				   Optionally used to exclude specific word/s in adding graphs' . PHP_EOL;
 	print '    Valid --reindex-methods include' . PHP_EOL;
@@ -916,8 +936,10 @@ function display_help() : void {
 	print '        1|Uptime = Uptime goes Backwards (Default)' . PHP_EOL;
 	print '        2|Index  = Index Count Changed' . PHP_EOL;
 	print '        3|Fields = Verify all Fields' . PHP_EOL . PHP_EOL;
-	print '    NOTE: You may supply multiples of the --snmp-field and --snmp-value | --snmp-value-regex arguments.' . PHP_EOL . PHP_EOL;
-	print '    NOTE2: You may supply multiples of the --snmp-field-exclude and --snmp-value-exclude arguments.' . PHP_EOL . PHP_EOL;
+	print ('    NOTE: You may supply multiples of the --snmp-field and ' .
+		'--snmp-value | --snmp-value-regex arguments.') . PHP_EOL . PHP_EOL;
+	print ('    NOTE2: You may supply multiples of the --snmp-field-exclude and ' .
+		'--snmp-value-exclude arguments.') . PHP_EOL . PHP_EOL;
 	print 'List Options:' . PHP_EOL;
 	print '    --list-hosts' . PHP_EOL;
 	print '    --list-graph-templates [--host-template-id=[ID]]' . PHP_EOL;

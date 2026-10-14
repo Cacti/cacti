@@ -215,7 +215,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: add_groups.php --type=[add_group|group_perm] --name=[name] --description=[description]' . PHP_EOL . PHP_EOL;
+	print ('usage: add_groups.php --type=[add_group|group_perm] --name=[name] ' .
+		'--description=[description]') . PHP_EOL . PHP_EOL;
 	print '[--quiet]' . PHP_EOL . PHP_EOL;
 	print 'List Options:' . PHP_EOL;
 	print '    --list-users' . PHP_EOL;

@@ -45,3 +45,5 @@ node_modules/
 **/*.p12
 **/*.pfx
 **/.DS_Store
+node_modules/
+tests/e2e/node_modules/
