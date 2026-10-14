@@ -1033,7 +1033,8 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 	$successful_updates = array();
 
 	/* lets count the number of rrd files processed */
-	$rrds_processed = 0;
+	$rrds_processed            = 0;
+	$supports_skip_past_updates = null;
 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		$create_rrd_file = false;
@@ -1139,7 +1140,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 					}
 				}
 
-				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
+				if (($supports_skip_past_updates ??= cacti_version_compare(get_rrdtool_version(), '1.5', '>='))) {
 					$update_options = '--skip-past-updates';
 				} else {
 					$update_options = '';
@@ -1524,11 +1525,12 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	include($config['include_path'] . '/global_arrays.php');
 
 	/* define some variables */
-	$scale               = '';
-	$rigid               = '';
-	$unit_value          = '';
-	$version             = get_rrdtool_version();
-	$unit_exponent_value = '';
+	$scale                     = '';
+	$rigid                     = '';
+	$unit_value                = '';
+	$version                   = get_rrdtool_version();
+	$supports_graph_formatters = null;
+	$unit_exponent_value       = '';
 
 	if ($graph['auto_scale'] == 'on') {
 		switch ($graph['auto_scale_opts']) {
@@ -1758,7 +1760,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 			break;
 		case 'legend_position':
-			if (cacti_version_compare($version, '1.4', '>=')) {
+			if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
 				if (!empty($value)) {
 					$graph_opts .= '--legend-position ' . cacti_escapeshellarg($value) . RRD_NL;
 				}
@@ -1766,7 +1768,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 			break;
 		case 'legend_direction':
-			if (cacti_version_compare($version, '1.4', '>=')) {
+			if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
 				if (!empty($value)) {
 					$graph_opts .= '--legend-direction ' . cacti_escapeshellarg($value) . RRD_NL;
 				}
@@ -1774,7 +1776,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 			break;
 		case 'left_axis_formatter':
-			if (cacti_version_compare($version, '1.4', '>=')) {
+			if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
 				if (!empty($value)) {
 					$graph_opts .= '--left-axis-formatter ' . cacti_escapeshellarg($value) . RRD_NL;
 				}
@@ -1782,7 +1784,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 			break;
 		case 'right_axis_formatter':
-			if (cacti_version_compare($version, '1.4', '>=')) {
+			if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
 				if (!empty($value)) {
 					$graph_opts .= '--right-axis-formatter ' . cacti_escapeshellarg($value) . RRD_NL;
 				}

@@ -34,6 +34,62 @@ def added_lines(base):
     return {name: lines for name, lines in files.items() if lines}
 
 
+def inline_script_lines(source):
+    """Select static script lines outside PHP; never credit PHP via Chromium."""
+    result = set()
+    in_php = False
+    in_script = False
+    for number, line in enumerate(source.splitlines(), 1):
+        static_script = in_script and not in_php and '<?' not in line and '?>' not in line
+        for token in re.finditer(r'<\?(?:php|=)?|\?>|<script\b|</script\s*>', line, re.I):
+            value = token.group().lower()
+            if value.startswith('<?'):
+                in_php = True
+            elif value == '?>':
+                in_php = False
+            elif not in_php:
+                in_script = value.startswith('<script')
+        if static_script and '</script' not in line.lower():
+            result.add(number)
+    return result
+
+
+def inline_browser_coverage(name, lines, added, browser):
+    executable = set()
+    covered = set()
+    instrumented = False
+    in_comment = False
+    for number, line in enumerate(lines, 1):
+        stripped = line.strip()
+        if stripped.startswith('/*'):
+            in_comment = True
+        comment = in_comment
+        if '*/' in stripped:
+            in_comment = False
+        if number in added and stripped and not comment and not stripped.startswith('//') and stripped not in ['}', '});', '];', '};']:
+            executable.add(number)
+    for session in browser:
+        for entry in session.get('js', []):
+            if not entry.get('url', '').endswith('/' + name):
+                continue
+            content = entry.get('text', entry.get('source', ''))
+            content_lines = content.splitlines(keepends=True)
+            offsets = [0]
+            for line in content_lines:
+                offsets.append(offsets[-1] + len(line))
+            ranges = [r for function in entry['functions'] for r in function['ranges']]
+            for number in executable:
+                if number > len(content_lines) or content_lines[number - 1].strip() != lines[number - 1].strip():
+                    continue
+                instrumented = True
+                line = content_lines[number - 1]
+                offset = offsets[number - 1] + len(line) - len(line.lstrip())
+                enclosing = [r for r in ranges if r['startOffset'] <= offset < r['endOffset']]
+                if enclosing and min(enclosing, key=lambda r: r['endOffset'] - r['startOffset'])['count'] > 0:
+                    covered.add(number)
+    return executable, covered, instrumented
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True)
@@ -71,6 +127,11 @@ def main():
                 if number not in evidence and re.match(r'^\s*(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
                     executable.add(number)
             covered = {n for n in executable if evidence.get(n, -1) > 0}
+            script = inline_script_lines(source) & added
+            script_executable, script_covered, script_instrumented = inline_browser_coverage(name, lines, script, browser)
+            executable |= script_executable
+            covered |= script_covered
+            instrumented = instrumented or script_instrumented
         else:
             offsets = []
             offset = 0

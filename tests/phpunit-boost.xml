@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-		bootstrap="vendor/autoload.php"
+		bootstrap="bootstrap-unit.php"
 		colors="true">
 	<testsuites>
 		<testsuite name="Boost">
@@ -10,6 +10,23 @@
 			<file>./Unit/DataCollection/Poller/PollerOutputAcknowledgementTest.php</file>
 			<file>./Unit/Core/Rrd/RrdNullOffsetCfTest.php</file>
 			<file>./Unit/Ui/Html/CactiNonceApplySkinTest.php</file>
+		</testsuite>
+		<testsuite name="Collection regressions">
+			<file>./Unit/Core/Automation/AutomationPreparedInClauseTest.php</file>
+			<file>./Unit/Core/Availability_Tests/PingOrSnmpAvailabilityTest.php</file>
+			<file>./Unit/Core/RemoteAgent/CactiBuildRemoteUrlTest.php</file>
+			<file>./Unit/DataCollection/Poller/ShelllessBackgroundProcessTest.php</file>
+			<file>./Unit/DataCollection/Snmp/SnmpAgentNotificationReceiverTest.php</file>
+			<file>./Unit/Database/DbLayerHardeningTest.php</file>
+			<file>./Unit/Installer/InstallerSelectionPayloadTest.php</file>
+			<file>./Unit/Security/Auth/CactiAuthorizeTest.php</file>
+			<file>./Unit/Security/Csp/CspReportEndpointTest.php</file>
+			<file>./Unit/Security/Csrf/CsrfRuntimeSecurityTest.php</file>
+			<file>./Unit/Security/Shell/RrdEscapeCommandNewlineTest.php</file>
+			<file>./Unit/Security/SqlInjection/CactiValidateSortColumnTest.php</file>
+			<file>./Unit/Security/Xss/CactiHtmlContextEscapeTest.php</file>
+			<file>./Unit/Ui/Theme/CactiValidateThemeTest.php</file>
+			<file>./Unit/Ui/Utility/MysqlCapabilityMatrixTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

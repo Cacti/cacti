@@ -283,7 +283,7 @@ msgstr "[redigera: %s]"
 msgid "Aggregate Graph does not Exist"
 msgstr "Aggregate Graph Settings"
 
-#: aggregate_graphs.php lib/html_reports.php utilities.php
+#: aggregate_graphs.php lib/html.php lib/html_reports.php utilities.php
 msgid "Details"
 msgstr "Detaljer"
 
@@ -4086,9 +4086,27 @@ msgstr ""
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Grafikinformation, Zoomning och Debugging Utilities"
 
-#: graph.php
+#: graph.php lib/html.php
 msgid "CSV Export"
 msgstr "CSV-export"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Trädvy"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "Område"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "Spikes"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"

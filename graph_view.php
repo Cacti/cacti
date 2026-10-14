@@ -153,9 +153,78 @@ function get_matching_nodes() {
 	}
 }
 
+/**
+ * Build a SQL WHERE fragment that restricts the Device (host) list to only those devices that
+ * have at least one graph of the currently selected Graph Template(s). Used to cross-filter the
+ * Device dropdown from the Graph Template selection on the Preview and List views.
+ *
+ * @return string A SQL WHERE fragment (without the WHERE keyword), or '' for no restriction.
+ */
+function graph_view_device_template_where() {
+	$sql_where = '';
+
+	if (isset_request_var('graph_template_id')) {
+		$ids = array();
+
+		foreach (explode(',', get_nfilter_request_var('graph_template_id')) as $id) {
+			if (is_numeric($id)) {
+				$ids[] = (int) $id;
+			}
+		}
+
+		/* -1 == 'All Graphs & Templates', so no restriction is applied */
+		if (cacti_sizeof($ids) && !in_array(-1, $ids, true)) {
+			$sql_where = 'gl.graph_template_id IN (' . implode(',', $ids) . ')';
+		}
+	}
+
+	return $sql_where;
+}
+
+/**
+ * Build a SQL WHERE fragment that restricts the Graph Template list to only those templates that
+ * have at least one graph on the currently selected Device. Used to cross-filter the Graph
+ * Template dropdown from the Device selection on the Preview and List views.
+ *
+ * @return string A SQL WHERE fragment (without the WHERE keyword), or '' for no restriction.
+ */
+function graph_view_template_host_where() {
+	$sql_where = '';
+
+	if (isset_request_var('host_id')) {
+		$host_id = get_nfilter_request_var('host_id');
+
+		/* -1 == 'Any', so no restriction is applied */
+		if (is_numeric($host_id) && $host_id >= 0) {
+			$sql_where = 'gl.host_id=' . (int) $host_id;
+		}
+	}
+
+	return $sql_where;
+}
+
+/**
+ * Determine whether the 'Not Templated' sentinel should be offered in the Graph Template filter.
+ * It is only shown when the current Device filter has at least one allowed graph with no Graph
+ * Template, so the Device/Template combination never resolves to an empty result. Used by the
+ * Preview and List views.
+ *
+ * @param string $templates_where The device restriction from graph_view_template_host_where().
+ *
+ * @return bool True when an allowed untemplated graph exists for the current filter.
+ */
+function graph_view_has_untemplated_graphs($templates_where = '') {
+	$sql_where  = '(gl.graph_template_id = 0)' . ($templates_where != '' ? ' AND ' . $templates_where : '');
+	$total_rows = 0;
+
+	get_allowed_graphs($sql_where, '', '1', $total_rows);
+
+	return ($total_rows > 0);
+}
+
 switch (get_nfilter_request_var('action')) {
 case 'ajax_hosts':
-	get_allowed_ajax_hosts();
+	get_allowed_ajax_hosts(true, true, graph_view_device_template_where());
 
 	break;
 case 'ajax_search':
@@ -424,7 +493,7 @@ case 'preview':
 	/* include graph view filter selector */
 	html_start_box(__('Graph Preview Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):''), '100%', '', '3', 'center', '');
 
-	html_graph_preview_filter('graph_view.php', 'preview');
+	html_graph_preview_filter('graph_view.php', 'preview', graph_view_device_template_where(), graph_view_template_host_where());
 
 	html_end_box();
 
@@ -669,7 +738,7 @@ case 'list':
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
-					<?php html_host_filter(get_request_var('host_id'));?>
+					<?php html_host_filter(get_request_var('host_id'), 'applyFilter', graph_view_device_template_where(), false, false, 'site_id,graph_template_id');?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
@@ -706,13 +775,15 @@ case 'list':
 							data-select-zero-value='0'
 							data-select-zero-text='<?php print html_escape(__('Not Templated'));?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<?php if (graph_view_has_untemplated_graphs(graph_view_template_host_where()) || get_request_var('graph_template_id') == '0') {?>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
+							<?php }?>
 							<?php
 
 							// suppress total rows collection
 							$total_rows = -1;
 
-							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+							$graph_templates = get_allowed_graph_templates(graph_view_template_host_where(), 'name', '', $total_rows);
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {

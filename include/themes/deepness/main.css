@@ -3556,3 +3556,13 @@ text.bb-chart-arcs-gauge-title {
 .filterTable input[type='checkbox']:not(.formCheckbox) + label {
 	cursor: pointer;
 }
+
+/* Graph drilldown action menu palette (consumed by include/css/graph_drilldown.css). */
+:root {
+	--cacti-dd-fg: #e6edf3;
+	--cacti-dd-menu-bg: rgba(11,14,19,0.70);
+	--cacti-dd-menu-bg-open: rgba(11,14,19,0.90);
+	--cacti-dd-panel-bg: rgba(17,22,29,0.94);
+	--cacti-dd-border: rgba(230,237,243,0.16);
+	--cacti-dd-accent: #1f9f6e;
+}
