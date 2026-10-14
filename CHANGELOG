@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.2.x
--security: Pin workflow Actions and isolate release signing from builds
 -security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
 -security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
 -security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
@@ -93,6 +92,7 @@ Cacti CHANGELOG
 -security#7235: Harden - Harden advisory command execution and database DDL sink validation
 -security#GHSA-2pmj-f26c-3ghv: Restrict graph input fields across the template, graph and import handoffs
 -security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
+-security#8346: Pin workflow Actions and isolate release signing from builds
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
