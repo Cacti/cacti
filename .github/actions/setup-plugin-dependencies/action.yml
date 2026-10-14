@@ -1,0 +1,69 @@
+name: Install locked plugin test dependencies
+description: Install the Cacti fixture and a separate locked Pest 3 harness as the runner user.
+
+inputs:
+  cacti-directory:
+    description: Cacti checkout directory relative to the workspace.
+    default: cacti
+  install-core-dev:
+    description: Install the core development tools for plugins targeting develop.
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Validate dependency paths
+      id: paths
+      shell: bash
+      env:
+        CACTI_DIRECTORY: ${{ inputs.cacti-directory }}
+        CORE_DEV: ${{ inputs.install-core-dev }}
+        ACTION_DIRECTORY: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        [[ "$CACTI_DIRECTORY" =~ ^[a-zA-Z0-9_-]+$ ]]
+        [[ "$CORE_DEV" == 'true' || "$CORE_DEV" == 'false' ]]
+        fixture=$(realpath "$GITHUB_WORKSPACE/$CACTI_DIRECTORY")
+        [[ "$fixture" == "$GITHUB_WORKSPACE/$CACTI_DIRECTORY" ]]
+        harness="$RUNNER_TEMP/cacti-plugin-harness"
+        mkdir -p "$harness"
+        cp "$ACTION_DIRECTORY/../../../tests/tools/plugin-harness/composer.json" "$harness/"
+        cp "$ACTION_DIRECTORY/../../../tests/tools/plugin-harness/composer.lock" "$harness/"
+        lock_hash=$(sha256sum "$harness/composer.lock" | cut -d ' ' -f1)
+        printf 'fixture=%s\nharness=%s\nharness-lock=%s\n' "$fixture" "$harness" "$lock_hash" >> "$GITHUB_OUTPUT"
+        if [[ "$CORE_DEV" == 'true' ]]; then
+          printf 'CACTI_PEST_BIN=%s/include/vendor/bin/pest\n' "$fixture" >> "$GITHUB_ENV"
+        else
+          printf 'CACTI_PEST_BIN=%s/vendor/bin/pest\n' "$harness" >> "$GITHUB_ENV"
+        fi
+
+    - name: Resolve Composer download cache
+      id: cache
+      shell: bash
+      run: echo "directory=$(composer config --global cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache downloaded Composer archives
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
+      with:
+        path: ${{ steps.cache.outputs.directory }}
+        key: ${{ runner.os }}-plugin-composer-${{ hashFiles(format('{0}/composer.lock', inputs.cacti-directory)) }}-${{ steps.paths.outputs.harness-lock }}
+
+    - name: Install the locked Cacti fixture and test harness
+      shell: bash
+      env:
+        FIXTURE_DIRECTORY: ${{ steps.paths.outputs.fixture }}
+        HARNESS_DIRECTORY: ${{ steps.paths.outputs.harness }}
+        CORE_DEV: ${{ inputs.install-core-dev }}
+      run: |
+        set -euo pipefail
+        [[ "$(id -u)" != '0' ]]
+        composer --working-dir="$FIXTURE_DIRECTORY" validate --strict --no-check-publish
+        args=(--no-interaction --no-progress --prefer-dist)
+        if [[ "$CORE_DEV" == 'false' ]]; then
+          args+=(--no-dev)
+        fi
+        composer --working-dir="$FIXTURE_DIRECTORY" install "${args[@]}"
+        composer --working-dir="$HARNESS_DIRECTORY" validate --strict
+        if [[ "$CORE_DEV" == 'false' ]]; then
+          composer --working-dir="$HARNESS_DIRECTORY" install --no-interaction --no-progress --prefer-dist
+        fi

@@ -146,7 +146,12 @@ $max_threads = read_config_option('max_threads');
 
 // Determine Command Name
 $command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
-$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd_realtime.php') . ' ' . cacti_escapeshellarg($poller_id) . " $graph_id $interval";
+$extra_args     = '-q ' .
+	cacti_escapeshellarg(CACTI_PATH_BASE .
+	'/cmd_realtime.php') .
+	' ' .
+	cacti_escapeshellarg($poller_id) .
+	" $graph_id $interval";
 
 // Determine if Realtime will work or not
 $cache_dir = read_config_option('realtime_cache_path');
@@ -218,7 +223,12 @@ function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $i
 	if (cacti_sizeof($results) > 0) {
 		// create an array keyed off of each .rrd file
 		foreach ($results as $item) {
-			$rt_graph_path    = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_' . $item['local_data_id'] . '.rrd';
+			$rt_graph_path    = read_config_option('realtime_cache_path') .
+				'/user_' .
+				$poller_id .
+				'_' .
+				$item['local_data_id'] .
+				'.rrd';
 			$data_source_path = get_data_source_path($item['local_data_id'], true);
 
 			// create rt rrd

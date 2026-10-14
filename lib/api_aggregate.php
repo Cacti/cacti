@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
  */
 
+require_once(__DIR__ . '/CactiValidator.php');
+
 /**
  * Create or update aggregate graph.
  * Save all graph definitions, but omit graph items. Wipe out host_id and graph_template_id.
@@ -575,37 +577,40 @@ function aggregate_graph_items_save(array $items, string $table) : bool {
  */
 function aggregate_validate_graph_params(array $posted, bool $has_override = false) : array {
 	$check_post_params = [
-		'alt_y_grid'           => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'auto_padding'         => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'auto_scale'           => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'auto_scale_log'       => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'auto_scale_opts'      => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''],
-		'auto_scale_rigid'     => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'base_value'           => ['type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^[0-9]+$'],
-		'dynamic_labels'       => ['type' => 'str',  'allow_empty' => true,  'default' => 0,  'regex' => ''],
-		'force_rules_legend'   => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'grouping'             => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'height'               => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'],
-		'image_format_id'      => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''],
-		'left_axis_format'     => ['type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'],
-		'left_axis_formatter'  => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'legend_direction'     => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'legend_position'      => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'lower_limit'          => ['type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'],
-		'no_gridfit'           => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'right_axis'           => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'right_axis_format'    => ['type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'],
-		'right_axis_formatter' => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'right_axis_label'     => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'scale_log_units'      => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'slope_mode'           => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'tab_width'            => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'],
-		'unit_exponent_value'  => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'unit_length'          => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'unit_value'           => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'upper_limit'          => ['type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'],
-		'vertical_label'       => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
-		'width'                => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$']
+		'alt_y_grid'             => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'auto_padding'           => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'auto_scale'             => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'auto_scale_log'         => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'auto_scale_opts'        => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''],
+		'auto_scale_rigid'       => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'base_value'             => ['type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^[0-9]+$'],
+		'dynamic_labels'         => ['type' => 'str',  'allow_empty' => true,  'default' => 0,  'regex' => ''],
+		'force_rules_legend'     => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'grouping'               => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'height'                 => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'],
+		'image_format_id'        => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''],
+		'left_axis_format'       => ['type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'],
+		'left_axis_formatter'    => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'legend_direction'       => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'legend_position'        => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'lower_limit'            => ['type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'],
+		'no_gridfit'             => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'right_axis'             => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'right_axis_format'      => ['type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'],
+		'right_axis_formatter'   => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'right_axis_label_angle' => ['type' => 'str', 'allow_empty' => true, 'default' => '', 'regex' => ''],
+		'right_axis_range'       => ['type' => 'str', 'allow_empty' => true, 'default' => '', 'regex' => ''],
+		'vertical_label_angle'   => ['type' => 'str', 'allow_empty' => true, 'default' => '', 'regex' => ''],
+		'right_axis_label'       => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'scale_log_units'        => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'slope_mode'             => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'tab_width'              => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'],
+		'unit_exponent_value'    => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'unit_length'            => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'unit_value'             => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'upper_limit'            => ['type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'],
+		'vertical_label'         => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
+		'width'                  => ['type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$']
 	];
 
 	$params_new = [];
@@ -626,7 +631,9 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
 		}
 
 		// validate value
-		if ($defs['type'] == 'bool') {
+		if (in_array($field, ['vertical_label_angle', 'right_axis_label_angle', 'right_axis_range'], true)) {
+			$params_new[$field] = CactiValidator::validateRrdGraphAxisInput($posted[$field] ?? '', $field);
+		} elseif ($defs['type'] == 'bool') {
 			$params_new[$field] = (isset($posted[$field])) ? 'on' : '';
 		} else {
 			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmle($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
