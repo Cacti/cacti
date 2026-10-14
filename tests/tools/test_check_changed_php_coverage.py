@@ -105,6 +105,28 @@ class ChangedPhpCoverageTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'contains no reports'):
                 GATE.measure({}, report, root, root)
 
+    def test_bootstrap_instructions_remain_in_the_coverage_denominator(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'include').mkdir()
+            source = root / 'include/global.php'
+            source.write_text('<?php\n$theme = "modern";\n$_SESSION["theme"] = $theme;\n')
+            report = root / 'coverage.xml'
+            report.write_text(f'<coverage><project><file name="{source}"/></project></coverage>')
+            result = GATE.measure({'include/global.php': {2, 3}}, report, root)
+            self.assertEqual(result['executable'], 2)
+            self.assertFalse(GATE.passes(result, 80))
+            requests = root / 'requests'
+            requests.mkdir()
+            snapshot = {'root': '/var/www/html', 'coverage': {
+                '/var/www/html/include/global.php': {'2': 1, '3': -1}}, 'hashes': {
+                '/var/www/html/include/global.php': hashlib.sha256(source.read_bytes()).hexdigest()}}
+            (requests / 'one.json').write_text(json.dumps(snapshot))
+            result = GATE.measure({'include/global.php': {2, 3}}, report, root, requests)
+            self.assertEqual(result['covered'], 1)
+            self.assertEqual(result['executable'], 2)
+            self.assertFalse(GATE.passes(result, 80))
+
     def test_multiline_html_is_covered_only_when_its_output_opcode_runs(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
