@@ -86,4 +86,22 @@ foreach ($nestedCases as $case) {
 	$count++;
 }
 
+// Unsupported shell grammar inside a substitution must not expose a field to
+// the suspended outer quote. Check rejection before starting any shell.
+$rejectedTemplates = [
+	'"$( (true); printf %s <field>)"',
+	'"$(case x in x) printf %s <field>;; esac)"',
+	'"$(printf %s # )' . "\n" . '<field>)"',
+	'"$(printf %s < /dev/null; printf %s <field>)"',
+	'"$(printf %s > /dev/null; printf %s <field>)"',
+	'"`(true); printf %s <field>`"',
+];
+
+foreach ($rejectedTemplates as $template) {
+	if (substitute_script_path($template, ['field' => cacti_escapeshellarg('hello world')]) !== '') {
+		throw new RuntimeException('Unsupported nested shell grammar was accepted');
+	}
+	$count++;
+}
+
 print json_encode(['passed' => $count], JSON_THROW_ON_ERROR) . "\n";

@@ -3297,6 +3297,16 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 			continue;
 		}
 
+		// Grouping, case patterns, comments and redirections require shell grammar
+		// beyond this quote scanner. Reject the whole template before an ambiguous
+		// closing parenthesis can expose field values to the outer quote context.
+		if ($quote === '' && $stack[$top]['kind'] !== 'top' &&
+			($ch === '(' || $ch === '#' || $ch === '<' || $ch === '>' ||
+				preg_match('/\Gcase(?=\s|$)/', $template, $unused, 0, $i) &&
+				($i === 0 || strpos(" \t\r\n;|&(", $template[$i - 1]) !== false))) {
+			return '';
+		}
+
 		// unquoted or inside double quotes: $(...) and backticks start a nested
 		// shell context whose quoting is independent of this frame, so push a
 		// fresh frame and judge any token inside against that context

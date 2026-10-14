@@ -64,6 +64,14 @@ $cases = [
 	['"\\`<field>"', ['field' => "'p'"], '"\\`"\'p\'""'],
 	['\\$(<field>)', ['field' => "'p'"], '\\$(\'p\')'],
 	['\\`<field>', ['field' => "'p'"], '\\`\'p\''],
+	// Unsupported nested grammar must reject the command before a field can
+	// inherit the suspended outer quote context.
+	['"$( (true); printf %s <field>)"', ['field' => "'p'"], ''],
+	['"$(case x in x) printf %s <field>;; esac)"', ['field' => "'p'"], ''],
+	['"$(printf %s # )' . "\n" . '<field>)"', ['field' => "'p'"], ''],
+	['"$(printf %s < /dev/null; printf %s <field>)"', ['field' => "'p'"], ''],
+	['"$(printf %s > /dev/null; printf %s <field>)"', ['field' => "'p'"], ''],
+	['"`(true); printf %s <field>`"', ['field' => "'p'"], ''],
 ];
 
 foreach ($cases as $index => [$template, $values, $expected]) {
