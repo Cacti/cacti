@@ -74,8 +74,8 @@ cmd_exec	./lib/rrd.php:126		return popen($command, 'w');
 cmd_exec	./lib/rrd.php:452				$process = proc_open(cacti_escapeshellarg(read_config_option('path_rrdtool')) . ' - ' . $debug, $descriptorspec, $pipes);
 cmd_exec	./lib/rrdcheck.php:805		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/snmpagent.php:766		/* add pollers of a distributed system (future) */
-cmd_exec	./lib/spikekill.php:500			shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
-cmd_exec	./lib/spikekill.php:833			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
+cmd_exec	./lib/spikekill.php:502			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile), $dump_output, $dump_status);
+cmd_exec	./lib/spikekill.php:841			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile) . ' 2>&1', $response, $status);
 cmd_exec	./lib/utility.php:2242						$nproc = system('nproc');
 cmd_exec	./lib/utility.php:2384			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
 cmd_exec	./lib/utility.php:2385			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);

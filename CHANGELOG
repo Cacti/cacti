@@ -3,16 +3,7 @@ Cacti CHANGELOG
 1.2.x
 -security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
 -security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
--issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
--issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
--feature#8311: Make the graph drilldown action icons a common hamburger toggle over the graph's top-right across all themes (centralized in layout.js) instead of the per-theme hover-to-the-right behaviour
--issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
 -security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
--issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
--issue#8232: Use a clean green for the device-status .deviceUp color instead of a muddy olive, most visibly on the jQuery UI message dialog where info/success messages are rendered with that class
--issue#7968: Confine PHP error attribution to the plugin root, reject invalid entrypoints without warnings, and bind realm filenames
--feature#8222: Add theme-appropriate host status pills to the Dark theme
--feature#8189: Add a MySQL/MariaDB variable capability matrix to the Database section and stop recommending variables deprecated or removed on the detected server
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
 -security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
 -security#GHSA-hh7r-464j-rf39: Neutralize CSV formula injection and sanitize the Content-Disposition filename in the graph data export
@@ -193,6 +184,13 @@ Cacti CHANGELOG
 -issue#8227: Add the translucent device-status pill styling to the classic, midwinter, modern, paw and sunrise themes using each theme's own status hues and contrast, matching the deepness/dark/paper-plane pills
 -issue#8228: Colour the MidWinter theme's graph drilldown action icons from the theme's HSL variable palette with a distinct task-appropriate hue per action, in both the dark and light modes
 -issue#8325: Fit the installer layout to narrow screens and restore heading font sizes
+-issue#7968: Confine PHP error attribution to the plugin root, reject invalid entrypoints without warnings, and bind realm filenames
+-issue#8232: Use a clean green for the device-status .deviceUp color instead of a muddy olive, most visibly on the jQuery UI message dialog where info/success messages are rendered with that class
+-issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
+-issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
+-issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
+-issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
+-issue#8316: Keep graph drilldown controls fixed and keyboard focus intact, bind SpikeKill requests to their graph, clean up submenu state, and require CSRF-protected POSTs for SpikeKill writes, enforce RRA kill limits, preserve missing samples, and report RRD failures
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
@@ -212,6 +210,10 @@ Cacti CHANGELOG
 -feature#8168: Add a two-year panel to the detailed graph view when archive retention supports it
 -feature#8257: Log user actions (create, delete, ...) 
 -feature#8280: Add a jQuery rebind() helper for the common off(events).on(events, ...) idiom and roll it out across the core JavaScript and inline PHP event handlers
+-feature#8189: Add a MySQL/MariaDB variable capability matrix to the Database section and stop recommending variables deprecated or removed on the detected server
+-feature#8222: Add theme-appropriate host status pills to the Dark theme
+-feature#8311: Make the graph drilldown action icons a common hamburger toggle over the graph's top-right across all themes (centralized in layout.js) instead of the per-theme hover-to-the-right behaviour
+-feature#8316: Expand the open graph drilldown strip into a labelled table menu (text label on the left, glyphs aligned in a fixed right-hand column) built in layout.js on open so plugin-contributed icons are labelled from their title without plugin changes
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
