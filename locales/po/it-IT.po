@@ -290,7 +290,7 @@ msgstr "[modifica: %s]"
 msgid "Aggregate Graph does not Exist"
 msgstr "Impostazioni del grafico aggregato"
 
-#: aggregate_graphs.php lib/html_reports.php utilities.php
+#: aggregate_graphs.php lib/html.php lib/html_reports.php utilities.php
 msgid "Details"
 msgstr "Dettagli"
 
@@ -4115,9 +4115,27 @@ msgstr ""
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Dettagli del grafico, utilità di zoom e debug"
 
-#: graph.php
+#: graph.php lib/html.php
 msgid "CSV Export"
 msgstr "Esportazione CSV"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Titolo campo"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "Regno"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "Raggi"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
