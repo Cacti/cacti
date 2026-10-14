@@ -186,7 +186,8 @@ if ($out_start != '' && !is_numeric($out_start)) {
 	$out_start      = strtotime($out_start);
 
 	if ($out_start == false) {
-		print "ERROR: The outlier start value '$orig_out_start' is invalid.  Use either a timestamp or a datetime format." . PHP_EOL;
+		print "ERROR: The outlier start value '$orig_out_start' is invalid.  Use either a timestamp or a datetime format." .
+			PHP_EOL;
 		exit(1);
 	}
 }
@@ -196,7 +197,8 @@ if ($out_end != '' && !is_numeric($out_end)) {
 	$out_end      = strtotime($out_end);
 
 	if ($out_end == false) {
-		print "ERROR: The outlier end value '$orig_out_end' is invalid.  Use either a timestamp or a datetime format." . PHP_EOL;
+		print "ERROR: The outlier end value '$orig_out_end' is invalid.  Use either a timestamp or a datetime format." .
+			PHP_EOL;
 		exit(1);
 	}
 }
@@ -263,7 +265,8 @@ function display_help() : void {
 	print '    --rrdfile=F   - The path to the RRDfile that will be de-spiked.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
-	print '    --method        - The spike removal method to use.  Options are stddev|variance|fill|float|absolute' . PHP_EOL;
+	print ('    --method        - The spike removal method to use.  Options are ' .
+		'stddev|variance|fill|float|absolute') . PHP_EOL;
 	print '    --avgnan        - The spike replacement method to use.  Options are last|avg|nan' . PHP_EOL;
 	print '    --stddev        - The number of standard deviations +/- allowed' . PHP_EOL;
 	print '    --percent       - The sample to sample percentage variation allowed' . PHP_EOL;

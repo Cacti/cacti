@@ -109,3 +109,12 @@ updates:
       composer-tests-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer, 1.2.x]
     commit-message: {prefix: deps, include: scope}
+  - package-ecosystem: composer
+    directory: /tests/tools/plugin-harness
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      plugin-harness: {patterns: ["*"], update-types: [minor, patch]}
+    labels: [dependencies, composer]
+    commit-message: {prefix: deps, include: scope}

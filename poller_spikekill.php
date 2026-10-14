@@ -167,7 +167,9 @@ function timeToRun() : bool {
 	$baselower = $basetime - 300;
 	$now       = time();
 
-	debug("LastRun:'$lastrun', Frequency:'$frequency', BaseTime:'" . date('Y-m-d H:i:s', $basetime) . "', BaseUpper:'$baseupper', BaseLower:'$baselower', Now:'" . date('Y-m-d H:i:s', $now) . "'");
+	debug("LastRun:'$lastrun', Frequency:'$frequency', BaseTime:'" . date('Y-m-d H:i:s',
+		$basetime) . "', BaseUpper:'$baseupper', BaseLower:'$baselower', Now:'" . date('Y-m-d H:i:s',
+			$now) . "'");
 
 	if ($frequency > 0 && ($now - $lastrun > $frequency)) {
 		debug("Frequency is '$frequency' Seconds");
@@ -264,7 +266,11 @@ function kill_spikes(array $templates, int &$found) : int {
 			debug("Removing Spikes from '$f'");
 
 			$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
-				cacti_escapeshellarg(CACTI_PATH_CLI . '/removespikes.php') . ' --rrdfile=' . cacti_escapeshellarg($f) . ($debug ? ' --debug' : ''));
+				cacti_escapeshellarg(CACTI_PATH_CLI .
+					'/removespikes.php') .
+					' --rrdfile=' .
+					cacti_escapeshellarg($f) .
+					($debug ? ' --debug' : ''));
 
 			if (substr_count((string) $response, 'Spikes Found and Remediated')) {
 				$found++;

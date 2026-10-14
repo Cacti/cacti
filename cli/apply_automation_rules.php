@@ -201,7 +201,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: apply_automation_rules.php --ids="id1 id2 ..." || --description=S || --hostname=S [--debug]' . PHP_EOL . PHP_EOL;
+	print ('usage: apply_automation_rules.php --ids="id1 id2 ..." || ' .
+		'--description=S || --hostname=S [--debug]') . PHP_EOL . PHP_EOL;
 	print 'A utility to execute Cacti automation rules for a devices or devices.  Any of the following' . PHP_EOL;
 	print 'three options can be used, but at least one must be specified.' . PHP_EOL . PHP_EOL;
 

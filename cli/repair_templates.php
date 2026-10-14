@@ -88,7 +88,8 @@ if ($execute) {
 	print 'NOTE: Performing Check of Data Templates' . PHP_EOL;
 }
 
-$damaged_template_ids = db_fetch_assoc("SELECT DISTINCT data_template_id FROM data_template_rrd WHERE hash='' AND local_data_id=0");
+$damaged_template_ids = db_fetch_assoc("SELECT DISTINCT data_template_id FROM data_template_rrd WHERE hash='' " .
+	'AND local_data_id=0');
 
 if (cacti_sizeof($damaged_template_ids)) {
 	foreach ($damaged_template_ids as $id) {

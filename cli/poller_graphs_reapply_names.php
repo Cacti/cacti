@@ -189,7 +189,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print 'usage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]' . PHP_EOL . PHP_EOL;
+	print ('usage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] ' .
+		'[--filter=[string] [--debug]') . PHP_EOL . PHP_EOL;
 
 	print 'A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.' . PHP_EOL . PHP_EOL;
 
