@@ -46,3 +46,56 @@ python3 tests/performance/verify_mutations.py proves the guards by introducing
 uncached lookups, empty-array initialization and the fixed 50ms sleep in
 disposable source copies. It also runs with the weekly/release scale checks.
 The actual checkout is never changed. No production collection runs.
+
+Browser and graph profiling
+
+Run `bash tests/performance/profile.sh` from the repository root. This uses the
+existing Playwright and Docker E2E stack with an optional Xdebug image. Select
+Node 22 and Python 3.12 through mise; the runner does this automatically. It
+creates a new disposable MariaDB database, 500 disabled devices, 50 deterministic
+RRDs, and one fixture user per shipped theme. No live SNMP target is contacted.
+Docker Compose 2.24.4+ is needed for the loopback-only port override.
+
+The default browser workload records 100 AJAX filter/navigation transitions in
+Modern and Midwinter, 1/10/50 realtime graphs with normal/250ms/failed responses,
+and scrolling/resizing device tables and graph grids in every shipped theme.
+Navigation fetches real page fragments and calls handleAjaxResponse/applySkin;
+it measures that rendering path, without the loadUrl transport scheduler.
+External font/CDN requests are blocked so runs use consistent fallback fonts.
+Realtime images come from real RRDTool rendering; latency and HTTP failures are
+simulated. Browser results are not end-to-end SNMP or collector throughput.
+
+The server workload renders 50 graphs over four passes with Boost disabled,
+then four passes with fresh queued Boost updates. The first pass has cold
+application caches; later passes reuse them. OS and database caches are not
+flushed. PHP/child CPU, elapsed time, peak RSS, memory, image bytes, container
+block-I/O counters (when available) and Xdebug function costs are recorded.
+Block-I/O counters include the container's other work and are reported per
+device, not as disk latency. SQL counts and function profiles include bootstrap,
+queue setup and validation. Inclusive Boost and RRDTool costs overlap; never add
+them as disjoint portions of elapsed time.
+RRDTool boundary time includes subprocess waits and cached I/O, not measured
+disk latency. Xdebug adds overhead, so compare equally instrumented runs.
+
+The printed output directory contains fixture/runtime/source metadata,
+browser.json, render.json, boost.json, summary.json, Chromium trace files and
+Callgrind profiles. Open browser/*.trace.json in Chrome DevTools Performance;
+open cachegrind.out.* in QCacheGrind/KCacheGrind. Detached-tree counts are null
+when that Chromium build lacks the experimental API. Timer observation and
+forced GC run in the profiling browser only; GC checkpoints affect timings.
+Missing graph images fail the run, and the report rejects partial browser runs.
+Realtime stalls remain visible in browser.json even when other workloads finish.
+
+Optional settings:
+  CACTI_PROFILE_OUTPUT=/absolute/new/directory bash tests/performance/profile.sh
+  HOST_PORT=18094 CACTI_PROFILE_TRANSITIONS=100 bash tests/performance/profile.sh
+  mise exec python@3.12 -- python tests/performance/profile-report.py \
+    /path/to/candidate --baseline /path/to/baseline/summary.json
+
+Capture baseline and candidate on the same idle machine with the same browser,
+PHP, database, RRDTool versions and workload. The comparison rejects mismatched
+environments and sample counts. Timings remain diagnostic; this adds no CI gate
+or performance threshold. Containers and their database are removed on exit;
+the result directory is retained. Use a fresh directory for each run. Keep
+profiles outside the repository; this runner accepts only its disposable local
+stack, with no production credentials or authenticated storage files.

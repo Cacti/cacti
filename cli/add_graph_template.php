@@ -162,11 +162,16 @@ if (cacti_sizeof($parms)) {
 
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
-		print "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" . PHP_EOL;
+		print "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" .
+			PHP_EOL;
 
 		exit(1);
 	} else {
-		db_execute('replace into host_graph (host_id,graph_template_id) values (' . $host_id . ',' . $graph_template_id . ')');
+		db_execute('replace into host_graph (host_id,graph_template_id) values (' .
+			$host_id .
+			',' .
+			$graph_template_id .
+			')');
 
 		if ($host_id > 0) {
 			object_cache_get_totals('device_state', $host_id);
@@ -179,15 +184,19 @@ if (cacti_sizeof($parms)) {
 			object_cache_update_totals('diff');
 		}
 
-		api_plugin_hook_function('add_graph_template_to_host', ['host_id' => $host_id, 'graph_template_id' => $graph_template_id]);
+		api_plugin_hook_function('add_graph_template_to_host',
+			['host_id'          => $host_id,
+			'graph_template_id' => $graph_template_id]);
 	}
 
 	if (is_error_message()) {
-		print "ERROR: Failed to add this graph template for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" . PHP_EOL;
+		print "ERROR: Failed to add this graph template for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" .
+			PHP_EOL;
 
 		exit(1);
 	} else {
-		print "Success: Graph Template associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" . PHP_EOL;
+		print "Success: Graph Template associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" .
+			PHP_EOL;
 
 		exit(0);
 	}

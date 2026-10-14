@@ -106,7 +106,9 @@ if (cacti_sizeof($tables)) {
 		print ($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
 	}
 
-	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.', false, 'SYSTEM');
+	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.',
+		false,
+		'SYSTEM');
 }
 
 /**

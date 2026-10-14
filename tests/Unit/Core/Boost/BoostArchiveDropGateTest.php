@@ -53,14 +53,34 @@ test('archive-table drop is gated on shard completeness, not the status sum', fu
 test('partial-completion path logs a warning instead of silently keeping the tables', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
 
-	$drop_pos = strpos($contents, 'DROP TABLE IF EXISTS `$table`');
-	expect($drop_pos)->not->toBeFalse();
+	$parser   = (new \PhpParser\ParserFactory())->createForNewestSupportedVersion();
+	$finder   = new \PhpParser\NodeFinder();
+	$printer  = new \PhpParser\PrettyPrinter\Standard();
+	$branches = $finder->findInstanceOf($parser->parse($contents), \PhpParser\Node\Stmt\If_::class);
+	$gate     = null;
 
-	// Search a window around the drop for the else branch that must log when
-	// completeness is not met.
-	$window = substr($contents, max(0, $drop_pos - 200), 1200);
+	foreach ($branches as $branch) {
+		$condition = $printer->prettyPrintExpr($branch->cond);
 
-	expect($window)->toContain('leaving archive tables in place for the next run to pick up');
+		if (str_contains($condition, 'boost_completed_children($run_id) >= $expected_children')) {
+			$gate = $branch;
+
+			break;
+		}
+	}
+
+	expect($gate)->not->toBeNull();
+	expect($gate->else)->not->toBeNull();
+	$logs = $finder->find($gate->else->stmts, fn ($node) => $node instanceof \PhpParser\Node\Expr\FuncCall &&
+		$node->name instanceof \PhpParser\Node\Name &&
+		$node->name->toString() === 'cacti_log'
+	);
+	expect($logs)->toHaveCount(1);
+	$format = array_values($logs)[0]->args[0]->value;
+	expect($format)->toBeInstanceOf(\PhpParser\Node\Expr\FuncCall::class);
+	expect($format->name->toString())->toBe('sprintf');
+	$message = (new \PhpParser\ConstExprEvaluator())->evaluateDirectly($format->args[0]->value);
+	expect($message)->toContain('leaving archive tables in place for the next run to pick up');
 });
 
 test('boost_completed_children and expected_children are still computed the same way the drain loop uses', function () use ($boostPollerPath) {

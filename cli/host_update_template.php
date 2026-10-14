@@ -188,7 +188,9 @@ if ($exists > 0) {
 
 					automation_hook_graph_template($host['id'], $graph_template['graph_template_id']);
 
-					api_plugin_hook_function('add_graph_template_to_host', ['host_id' => $host['id'], 'graph_template_id' => $graph_template['graph_template_id']]);
+					api_plugin_hook_function('add_graph_template_to_host',
+						['host_id'          => $host['id'],
+						'graph_template_id' => $graph_template['graph_template_id']]);
 				}
 			}
 
