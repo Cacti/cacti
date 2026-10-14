@@ -23,6 +23,7 @@
 */
 
 require_once(__DIR__ . '/rrd_graph_item.php');
+require_once(__DIR__ . '/rrd_graph_axis.php');
 
 use phpseclib4\Crypt\Rijndael;
 use phpseclib4\Crypt\RSA;
@@ -2174,6 +2175,8 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 		}
 	}
 
+	$graph_opts .= rrd_graph_axis_options($graph, $version);
+
 	foreach ($graph as $key => $value) {
 		if (is_string($value)) {
 			$value = rrdtool_resolve_graph_text($value, $graph);
@@ -2557,12 +2560,13 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 	}
 
 	$graph = db_fetch_row_prepared('SELECT gl.id AS local_graph_id, gl.host_id,
-		gl.snmp_query_id, gl.snmp_index, gtg.title_cache, gtg.vertical_label,
+		gl.snmp_query_id, gl.snmp_index, gtg.title_cache, gtg.vertical_label, gtg.vertical_label_angle,
 		gtg.slope_mode, gtg.auto_scale, gtg.auto_scale_opts, gtg.auto_scale_log,
 		gtg.scale_log_units, gtg.auto_scale_rigid, gtg.auto_padding, gtg.base_value,
 		gtg.upper_limit, gtg.lower_limit, gtg.height, gtg.width, gtg.image_format_id,
 		gtg.unit_value, gtg.unit_exponent_value, gtg.alt_y_grid,
-		gtg.right_axis, gtg.right_axis_label, gtg.right_axis_format, gtg.no_gridfit,
+		gtg.right_axis, gtg.right_axis_label, gtg.right_axis_label_angle,
+		gtg.right_axis_range, gtg.right_axis_format, gtg.no_gridfit,
 		gtg.unit_length, gtg.tab_width, gtg.dynamic_labels, gtg.force_rules_legend,
 		gtg.legend_position, gtg.legend_direction, gtg.right_axis_formatter,
 		gtg.left_axis_format, gtg.left_axis_formatter,
