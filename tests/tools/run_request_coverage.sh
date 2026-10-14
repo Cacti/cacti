@@ -37,3 +37,5 @@ run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassw
 run_php_probe tests/fixtures/Core/Rrd/FallbackSourceIdentity.php '^(lib/rrd\.php|tests/fixtures/Core/Rrd/FallbackSourceIdentity\.php)'
 
 run_php_probe tests/fixtures/UserAdministrationAuditCoverage.php '^(user_admin\.php|lib/functions\.php|tests/fixtures/UserAdministrationAudit)'
+
+run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277

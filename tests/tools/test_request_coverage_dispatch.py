@@ -20,6 +20,18 @@ class RequestDispatchTest(unittest.TestCase):
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
 
+    def test_installer_change_runs_the_installer_probe(self):
+        self.dispatch('lib/installer.php', 'installer')
+
+    def test_graph_change_runs_the_native_graph_probe(self):
+        self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
+
+    def test_account_change_runs_the_native_audit_probe(self):
+        self.dispatch('lib/functions.php', 'UserAdministrationAuditCoverage.php')
+
+    def test_auth_change_runs_the_native_auth_probe(self):
+        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -29,6 +41,11 @@ class RequestDispatchTest(unittest.TestCase):
             tools.mkdir()
             for command in ['git', 'bash', 'grep', 'mkdir']:
                 (tools / command).symlink_to(shutil.which(command))
+            php = tools / 'php'
+            php.write_text('#!' + shutil.which('bash') + '\n'
+                           'script="${!#}"\n'
+                           'printf "%s\\n" "${script##*/}" >> "$CACTI_PR_RAW_COVERAGE/probes"\n')
+            php.chmod(0o700)
             env = dict(os.environ, PATH=str(tools))
 
             def git(*arguments):
@@ -39,10 +56,16 @@ class RequestDispatchTest(unittest.TestCase):
 
             git('init', '--quiet')
             (repository / 'README.md').write_text('fixture\n')
-            for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh')]:
+            for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh'),
+                                 ('installer', 'installer-coverage.sh')]:
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
+            for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
+                           'UserAdministrationAuditCoverage.php']:
+                path = repository / 'tests/fixtures' / script
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('<?php // dispatch fixture\n')
             git('add', '.')
             git('commit', '--quiet', '-m', 'fixture base')
             base = git('rev-parse', 'HEAD')
