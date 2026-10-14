@@ -1,5 +1,11 @@
 <?php
-require __DIR__ . '/../lib/traffic_legend.php';
+namespace CactiTrafficMigrationFixture;
+use RuntimeException;
+use Throwable;
+require __DIR__ . '/Helpers/RequestCoverage.php';
+require __DIR__ . '/Helpers/SourceSlice.php';
+cacti_fixture_source_function(__DIR__ . '/../lib/traffic_legend.php', 'traffic_legend_plan', __NAMESPACE__);
+cacti_fixture_source_function(__DIR__ . '/../lib/traffic_legend.php', 'upgrade_interface_traffic_legends', __NAMESPACE__);
 $data = json_decode(file_get_contents(__DIR__ . '/fixtures/traffic-legends.json'), true);
 $original = $data;
 function db_fetch_cell_prepared($sql, $args) {
@@ -14,9 +20,16 @@ function db_fetch_assoc_prepared($sql, $args) {
  usort($rows, function($a,$b) {return array($a['local_graph_id'],$a['sequence'],$a['id']) <=> array($b['local_graph_id'],$b['sequence'],$b['id']);});
  return $rows;
 }
-function db_execute($sql) {return true;}
+function db_execute($sql) {
+ global $data, $transaction;
+ if ($sql === 'START TRANSACTION') $transaction = $data;
+ if ($sql === 'ROLLBACK') $data = $transaction;
+ return true;
+}
 function db_execute_prepared($sql,$args) {
- global $data;
+ global $data, $failure;
+ if ($failure === 'update' && strpos($sql, 'UPDATE') === 0) return false;
+ if ($failure === 'link' && strpos($sql, 'REPLACE INTO') === 0) return false;
  if (strpos($sql,'REPLACE INTO')===0) {
   $input=array('graph_template_input_id'=>$args[0],'graph_template_item_id'=>$args[1]);
   if (!in_array($input,$data['inputs'])) $data['inputs'][]=$input;
@@ -26,7 +39,8 @@ function db_execute_prepared($sql,$args) {
  return false;
 }
 function sql_save($row,$table) {
- global $data;
+ global $data, $failure;
+ if ($failure === 'save') return false;
  if (isset($row['id'])) {
   foreach ($data['items'] as &$item) if ($item['id']==$row['id']) {$item=$row;return $row['id'];}
   return false;
@@ -34,6 +48,7 @@ function sql_save($row,$table) {
  $row['id']=max(array_column($data['items'],'id'))+1;$data['items'][]=$row;return $row['id'];
 }
 function check($test,$message) {if(!$test) throw new RuntimeException($message);}
+$failure = null;
 upgrade_interface_traffic_legends();
 check(count($data['items'])==count($original['items'])+20,'Expected two peaks for each of five templates and five existing graphs');
 foreach($original['items'] as $old) {
@@ -85,4 +100,15 @@ foreach (array(0,700) as $custom_gid) {
  $after=array_values(array_filter($data['items'],function($r) use($custom_gid) {return $r['graph_template_id']==900&&$r['local_graph_id']==$custom_gid;}));
  check($custom===$after,'Custom graph items changed during migration');
 }
-echo "PASS: five templates, five existing graphs, preserved calculations and linkage, reimport reuse, idempotence and custom GPRINT preservation\n";
+// Failed writes must roll back the template and graph changes together.
+foreach (array('update', 'save', 'link') as $failure) {
+ $data = $original;
+ try {
+  upgrade_interface_traffic_legends();
+  throw new RuntimeException('Expected failed migration to throw');
+ } catch (Throwable $error) {
+  check(strpos($error->getMessage(), 'Unable to') === 0, 'Unexpected failure');
+  check($data === $original, 'Failed migration left partially changed legends');
+ }
+}
+echo "PASS: five templates, five existing graphs, preserved calculations and linkage, reimport reuse, idempotence, custom GPRINT preservation and rollback\n";
