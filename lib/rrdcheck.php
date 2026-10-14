@@ -558,9 +558,29 @@ function rrdcheck_ds_findings($data_sources, $rrd_info, $cacti_ds, $file) {
 }
 
 /**
- * Applies an rrdtool 'tune' specification to an RRDfile from the RRDchecker batch process, but only
- * when the RRDfile is writable so that a permission problem is reported rather than masked.  The
- * full command is written to the Cacti log for auditing. Used as part of Cacti's lib functionality.
+ * Validates an rrdtool 'tune' specification against RRDtool's documented data source grammar before
+ * it is sent to RRDtool.  Per rrdcreate, ds-name is 1 to 19 characters from [a-zA-Z0-9_], DST is one
+ * of the known data source types, heartbeat is a positive integer and min/max are either a number or
+ * 'U'. Used as part of Cacti's lib functionality.
+ *
+ * @param string $spec The tune specification to validate.
+ *
+ * @return bool True when the specification matches a known-good DS:/DEL: form.
+ */
+function rrdcheck_valid_tune_spec($spec) {
+	if (preg_match('/^DEL:[a-zA-Z0-9_]{1,19}$/', $spec)) {
+		return true;
+	}
+
+	return (bool) preg_match('/^DS:[a-zA-Z0-9_]{1,19}:(GAUGE|COUNTER|DERIVE|DCOUNTER|DDERIVE|ABSOLUTE):[0-9]+:(U|-?[0-9]+(\.[0-9]+)?):(U|-?[0-9]+(\.[0-9]+)?)$/', $spec);
+}
+
+/**
+ * Applies an rrdtool 'tune' specification to an RRDfile from the RRDchecker batch process.  The
+ * specification is validated against RRDtool's grammar first; for local storage the RRDfile must
+ * resolve inside the RRA directory and be writable, while the storage proxy enforces remote
+ * containment and permissions.  The full command is written to the Cacti log for auditing. Used as
+ * part of Cacti's lib functionality.
  *
  * @param string $file The fully qualified RRDfile path.
  * @param string $spec The rrdtool tune specification to apply.
@@ -571,21 +591,37 @@ function rrdcheck_ds_findings($data_sources, $rrd_info, $cacti_ds, $file) {
  * @return string A short phrase describing whether the tune ran.
  */
 function rrdcheck_tune_rrdfile($file, $spec, $local_data_id, $use_proxy, &$pipes) {
-	$command = read_config_option('path_rrdtool') . ' tune ' . cacti_escapeshellarg($file) . ' ' . $spec;
+	$command = read_config_option('path_rrdtool') . ' tune ' . cacti_escapeshellarg($file) . ' ' . cacti_escapeshellarg($spec);
 
-	if (!$use_proxy && !is_resource_writable($file)) {
-		cacti_log("WARNING: RRDcheck - RRDfile not writable, tune not run - DS[$local_data_id] Command[$command]", false, 'RRDCHECK');
+	if (!rrdcheck_valid_tune_spec($spec)) {
+		cacti_log("ERROR: RRDcheck - refusing malformed tune specification - DS[$local_data_id] Spec[$spec]", false, 'RRDCHECK');
 
-		return 'the RRDfile is not writable so the tune was not run automatically';
+		return 'the tune specification was not valid so it was not run';
+	}
+
+	if (!$use_proxy) {
+		if (!data_source_path_within_rra($file)) {
+			cacti_log("ERROR: RRDcheck - RRDfile resolves outside the RRA directory, tune not run - DS[$local_data_id] File[$file]", false, 'RRDCHECK');
+
+			return 'the RRDfile is outside the RRA directory so the tune was not run';
+		}
+
+		if (!is_resource_writable($file)) {
+			cacti_log("WARNING: RRDcheck - RRDfile not writable, tune not run - DS[$local_data_id] Command[$command]", false, 'RRDCHECK');
+
+			return 'the RRDfile is not writable so the tune was not run automatically';
+		}
 	}
 
 	if ($use_proxy) {
-		$output = rrdtool_execute('tune ' . cacti_escapeshellarg($file) . ' ' . cacti_escapeshellarg($spec), false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+		$output = rrdtool_execute('tune ' . cacti_escapeshellarg($file) . ' ' . cacti_escapeshellarg($spec), false, RRDTOOL_OUTPUT_RETURN_STDERR, false, 'RRDCHECK');
+		$failed = ($output === false || trim((string) $output) !== '');
 	} else {
 		$output = rrdcheck_rrdtool_execute(array('tune', $file, $spec), $pipes);
+		$failed = ($output === null || $output === false || strpos((string) $output, 'ERROR') !== false || strpos((string) $output, 'OK') === false);
 	}
 
-	if (strpos((string) $output, 'ERROR') !== false) {
+	if ($failed) {
 		cacti_log("ERROR: RRDcheck - tune failed - DS[$local_data_id] Command[$command] Output[" . trim((string) $output) . ']', false, 'RRDCHECK');
 
 		return 'the tune command failed, see the Cacti log for details';
