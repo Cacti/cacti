@@ -22,6 +22,9 @@
 	width: -moz-fit-content;
 	width: fit-content;
 	max-width: 100%;
+	/* centre the fit-content graph within its (often full-width, single-column) wrapper */
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .graphDrillDownToggle {
