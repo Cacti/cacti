@@ -5,7 +5,7 @@
 		colors="true">
 	<testsuites>
 		<testsuite name="Boost MariaDB">
-			<file>./integration/BoostProcessTableMariaDbTest.php</file>
+			<file>integration/BoostProcessTableMariaDbTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
