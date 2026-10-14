@@ -1,0 +1,103 @@
+name: CI image mirror
+
+# Service containers are pulled before any step runs, so the registry mirror
+# in setup-ci-docker cannot reach them. Copying the pinned images to GHCR lets
+# those jobs pull with GITHUB_TOKEN instead of as throttled anonymous clients.
+
+on:
+  # A new workflow cannot be dispatched until it exists on the default branch,
+  # so a push of the manifest is how the first copy happens.
+  push:
+    paths:
+      - '.github/ci-images.txt'
+      - '.github/workflows/ci-images.yml'
+  schedule:
+    - cron: "41 4 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ci-images
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    name: Copy CI images to GHCR
+    # Forks cannot write to the Cacti namespace.
+    if: github.repository == 'Cacti/cacti'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Log in to GHCR
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$GHCR_TOKEN" | skopeo login ghcr.io --username "$GHCR_USER" --password-stdin
+
+      - name: Copy and verify pinned images
+        run: |
+          set -euo pipefail
+          manifest="$RUNNER_TEMP/manifest.json"
+          seen=' '
+          failed=0
+
+          # The manifest is read on fd 3 so nothing in the loop can consume it.
+          while read -r source destination extra <&3; do
+            [[ -z "$source" || "$source" == \#* ]] && continue
+
+            if [[ -n "${extra:-}" ]] \
+              || [[ ! "$source" =~ ^[a-z0-9.-]+(/[a-z0-9._-]+)+@sha256:[0-9a-f]{64}$ ]] \
+              || [[ ! "$destination" =~ ^[a-z0-9._-]+:[A-Za-z0-9._-]+$ ]]; then
+              echo "::error::Malformed manifest line: $source $destination ${extra:-}"
+              failed=1
+              continue
+            fi
+
+            if [[ "$seen" == *" $destination "* ]]; then
+              echo "::error::Duplicate destination: $destination"
+              failed=1
+              continue
+            fi
+            seen+="$destination "
+
+            digest="${source##*@sha256:}"
+            target="ghcr.io/cacti/ci-images/$destination"
+
+            # Copying again is cheap but rewrites the tag, so skip when it
+            # already points at the pinned index.
+            if skopeo inspect --raw "docker://$target" > "$manifest" 2>/dev/null \
+              && [[ "$(sha256sum "$manifest" | cut -d' ' -f1)" == "$digest" ]]; then
+              echo "$target already at sha256:$digest"
+              continue
+            fi
+
+            # --all keeps the multi-arch index and --preserve-digests refuses
+            # any copy that would rewrite a manifest.
+            if ! skopeo copy --all --preserve-digests --retry-times 3 \
+              "docker://$source" "docker://$target"; then
+              echo "::error::Copy failed: $source -> $target"
+              failed=1
+              continue
+            fi
+
+            # Check the bytes GHCR now serves rather than trusting the copy.
+            skopeo inspect --raw "docker://$target" > "$manifest"
+            copied="$(sha256sum "$manifest" | cut -d' ' -f1)"
+            if [[ "$copied" != "$digest" ]]; then
+              echo "::error::$target serves sha256:$copied, expected sha256:$digest"
+              failed=1
+              continue
+            fi
+            echo "$target copied at sha256:$digest"
+          done 3< .github/ci-images.txt
+
+          exit "$failed"
