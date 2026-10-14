@@ -1146,7 +1146,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							// suppress total rows collection
 							$total_rows = -1;
 
-							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+							$graph_templates = get_allowed_graph_templates(graph_view_template_host_where(), 'name', '', $total_rows);
 
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
