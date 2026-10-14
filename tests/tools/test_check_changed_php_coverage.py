@@ -70,8 +70,26 @@ class ChangedPhpCoverageTest(unittest.TestCase):
             tree = ET.parse(output)
             self.assertEqual(tree.getroot().attrib['bootstrap'], 'tests/bootstrap-unit.php')
             self.assertEqual(tree.findtext('testsuites/testsuite/directory'), 'tests/Unit')
-            self.assertEqual([file.text for file in tree.findall('source/include/file')],
-                             ['lib/plugins.php', 'plugins.php'])
+            self.assertEqual([(output.parent / file.text).resolve() for file in tree.findall('source/include/file')],
+                             [(Path.cwd() / name).resolve() for name in ['lib/plugins.php', 'plugins.php']])
+
+    def test_relocated_config_keeps_bootstrap_and_test_paths(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tests = root / 'tests'
+            tests.mkdir()
+            config = tests / 'phpunit.xml'
+            output = root / 'phpunit-changed.xml'
+            config.write_text('<phpunit bootstrap="../tests/bootstrap-unit.php">'
+                              '<testsuites><testsuite name="Unit">'
+                              '<directory>../tests/Unit</directory>'
+                              '</testsuite></testsuites></phpunit>')
+            GATE.prepare_config(config, output, {'lib/plugins.php': {3}})
+            tree = ET.parse(output)
+            self.assertEqual((output.parent / tree.getroot().get('bootstrap')).resolve(),
+                             (tests / 'bootstrap-unit.php').resolve())
+            self.assertEqual((output.parent / tree.findtext('testsuites/testsuite/directory')).resolve(),
+                             (tests / 'Unit').resolve())
 
     def test_request_reports_require_matching_source_and_keep_uncovered_lines(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -10,7 +10,7 @@ on:
       - 'composer.lock'
       - 'lib/client_address.php'
       - 'lib/functions.php'
-      - 'phpunit-client-address.xml'
+      - 'tests/phpunit-client-address.xml'
       - 'tests/Coverage/ClientAddressCoverageTest.php'
       - 'tests/Unit/Security/Misc/GetClientAddrTest.php'
   pull_request:
@@ -22,7 +22,7 @@ on:
       - 'composer.lock'
       - 'lib/client_address.php'
       - 'lib/functions.php'
-      - 'phpunit-client-address.xml'
+      - 'tests/phpunit-client-address.xml'
       - 'tests/Coverage/ClientAddressCoverageTest.php'
       - 'tests/Unit/Security/Misc/GetClientAddrTest.php'
   workflow_dispatch:
@@ -39,5 +39,5 @@ jobs:
     uses: ./.github/workflows/script-coverage.yml
     with:
       job-name: Client address 100% coverage
-      phpunit-config: phpunit-client-address.xml
+      phpunit-config: tests/phpunit-client-address.xml
       php-version: '8.4'

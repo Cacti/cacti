@@ -10,7 +10,7 @@ on:
       - 'composer.lock'
       - 'include/csrf.php'
       - 'lib/csrf.php'
-      - 'phpunit-csrf-coverage.xml'
+      - 'tests/phpunit-csrf-coverage.xml'
       - 'tests/Unit/Security/Csrf/**'
   pull_request:
     branches: [develop]
@@ -21,7 +21,7 @@ on:
       - 'composer.lock'
       - 'include/csrf.php'
       - 'lib/csrf.php'
-      - 'phpunit-csrf-coverage.xml'
+      - 'tests/phpunit-csrf-coverage.xml'
       - 'tests/Unit/Security/Csrf/**'
   workflow_dispatch:
 
@@ -62,7 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           include/vendor/bin/pest \
-            --configuration=phpunit-csrf-coverage.xml \
+            --configuration=tests/phpunit-csrf-coverage.xml \
             --coverage \
             --coverage-text \
             --min=100

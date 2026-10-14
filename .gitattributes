@@ -48,8 +48,8 @@ CHANGELOG merge=union
 /build/psalm/       export-ignore
 /docker-compose.yml export-ignore
 /phpstan-baseline.neon export-ignore
-/phpunit.xml        export-ignore
-/phpunit-*.xml      export-ignore
+/tests/phpunit.xml        export-ignore
+/tests/phpunit-*.xml      export-ignore
 /psalm-baseline.xml export-ignore
 /psalm.xml          export-ignore
 /rector.php         export-ignore
