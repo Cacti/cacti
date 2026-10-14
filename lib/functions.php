@@ -2720,6 +2720,17 @@ function substitute_script_path($template, $escaped_values) {
 				$valLen     = strlen($value);
 				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
 
+				// Backtick substitutions preprocess their contents before parsing
+				// shell quotes. A backtick in a quoted field can close that outer
+				// substitution. Refuse fields anywhere inside it, including $().
+				if ($selfQuoted) {
+					foreach ($stack as $frame) {
+						if ($frame['kind'] === 'backtick') {
+							return '';
+						}
+					}
+				}
+
 				if (!$selfQuoted) {
 					// trusted raw value (path_* config): substitute in place so the
 					// template's own quotes (if any) survive around the value

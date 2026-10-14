@@ -58,8 +58,8 @@ $cases = [
 	// quoting and treats \$ / \` as escaped, so a self-quoting value stays literal
 	['"$(printf %s <field>)"', ['field' => "'p'"], '"$(printf %s \'p\')"'],
 	['$(printf %s <field>)', ['field' => "'p'"], '$(printf %s \'p\')'],
-	['"`printf %s <field>`"', ['field' => "'p'"], '"`printf %s \'p\'`"'],
-	['`printf %s <field>`', ['field' => "'p'"], '`printf %s \'p\'`'],
+	['"`printf %s <field>`"', ['field' => "'p'"], ''],
+	['`printf %s <field>`', ['field' => "'p'"], ''],
 	['"\\$(<field>)"', ['field' => "'p'"], '"\\$("\'p\'")"'],
 	['"\\`<field>"', ['field' => "'p'"], '"\\`"\'p\'""'],
 	['\\$(<field>)', ['field' => "'p'"], '\\$(\'p\')'],
