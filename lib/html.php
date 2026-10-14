@@ -2442,7 +2442,7 @@ function html_make_device_where() : string {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.external_id = ' . db_qstr(gnrv('external_id'));
 	}
 
-	/* cross-filter the Device list by the selected Graph Template(s); -1 == 'All' applies no restriction */
+	// cross-filter the Device list by the selected Graph Template(s); -1 == 'All' applies no restriction
 	if (isrv('graph_template_id') && gnrv('graph_template_id') != '-1') {
 		$graph_templates = html_transform_graph_template_ids(gnrv('graph_template_id'));
 
