@@ -963,6 +963,16 @@ function create_tree_filter() : array {
 		$templates = get_allowed_graph_templates_normalized('gl.host_id=0', 'name', '', $total_rows);
 	} elseif (gfrv('host_id') > 0) {
 		$templates = get_allowed_graph_templates_normalized('gl.host_id=' . gfrv('host_id'), 'name', '', $total_rows);
+	} elseif (gfrv('host_template_id') > 0) {
+		// Site Branch drilled into by Device Template: limit the Graph Templates to
+		// those present on that Device Template's devices (within the Site when set)
+		$device_where = 'host_template_id=' . gfrv('host_template_id');
+
+		if (gfrv('site_id') > 0) {
+			$device_where .= ' AND site_id=' . gfrv('site_id');
+		}
+
+		$templates = get_allowed_graph_templates_normalized('gl.host_id IN (SELECT id FROM host WHERE ' . $device_where . ')', 'name', '', $total_rows);
 	} else {
 		$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 	}
