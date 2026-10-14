@@ -312,7 +312,11 @@ function grow_dhtml_trees() : void {
 						href = href.replace('action=tree', 'action=tree_content');
 						href = href + '&hyper=true';
 						$('.cactiGraphContentArea').hide();
-						loadUrl({url:href,noState:pageGraphFirstLoad});
+
+						// reveal the content area once the new branch content has loaded (hidden above to avoid flashing the previous branch)
+						$.when(loadUrl({url:href,noState:pageGraphFirstLoad})).always(function() {
+							$('.cactiGraphContentArea').show();
+						});
 					}
 
 					node = data.node.id;
