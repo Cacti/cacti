@@ -32,8 +32,10 @@
  *      https://github.com/Cacti/cacti/issues/6647
  */
 
-$pollerPath  = __DIR__ . '/../../../../poller_spikekill.php';
-$spikeLib    = __DIR__ . '/../../../../lib/spikekill.php';
+require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
+
+$pollerPath     = __DIR__ . '/../../../../poller_spikekill.php';
+$spikeLib       = __DIR__ . '/../../../../lib/spikekill.php';
 $globalSettings = __DIR__ . '/../../../../include/global_settings.php';
 
 // ---------------------------------------------------------------------------
@@ -65,7 +67,7 @@ test('poller_spikekill.php --rrdfile argument uses cacti_escapeshellarg not raw 
 	$src = file_get_contents($pollerPath);
 
 	// Ensure the full safe pattern is present.
-	expect($src)->toContain("' --rrdfile=' . cacti_escapeshellarg(\$f)");
+	expect($src)->toContainPhp("' --rrdfile=' . cacti_escapeshellarg(\$f)");
 });
 
 // ---------------------------------------------------------------------------

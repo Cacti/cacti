@@ -347,7 +347,17 @@ if (cacti_sizeof($parms)) {
 		}
 
 		// $nodeId could be a Header Node, a Graph Node, or a Host node.
-		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $hostId, $siteId, $hostGroupStyle, $sortMethods[$sortMethod], false);
+		$nodeId = api_tree_item_save(0,
+			$treeId,
+			$itemType,
+			$parentNode,
+			$name,
+			$graphId,
+			$hostId,
+			$siteId,
+			$hostGroupStyle,
+			$sortMethods[$sortMethod],
+			false);
 
 		print "Added Node node-id: ($nodeId)" . PHP_EOL;
 

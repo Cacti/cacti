@@ -98,7 +98,10 @@ if (!isset($config['input_whitelist'])) {
 
 if ($audit) {
 	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
-		print 'ERROR: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' does not exist.  Please run with the \'--update\' option.' . PHP_EOL;
+		print 'ERROR: Data Input Whitelist file \'' .
+			$config['input_whitelist'] .
+			'\' does not exist.  Please run with the \'--update\' option.' .
+			PHP_EOL;
 
 		exit(1);
 	}
@@ -110,24 +113,29 @@ if ($audit) {
 
 	if ($items) {
 		print 'Data Input Methods Whitelist Verification' . PHP_EOL . PHP_EOL;
-		print '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
+		print '------------------------------------------------------------------------------------------------------------' .
+			PHP_EOL;
 
 		foreach ($input as $hash => $input_string) {
 			$aud = verify_data_input($hash, $input_string);
 
 			if ($aud['status'] == true) {
 				print 'ID: ' . $aud['id'] . ', Name: ' . $aud['name'] . ', Status: ' . 'Success' . PHP_EOL;
-				print '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
+				print '------------------------------------------------------------------------------------------------------------' .
+					PHP_EOL;
 				print 'Command:   ' . $aud['input_string'] . PHP_EOL . 'Whitelist: ' . $input_string . PHP_EOL;
 			} else {
 				print 'ID: ' . $aud['id'] . ', Name: ' . $aud['name'] . ', Status: ' . 'Failed' . PHP_EOL;
-				print '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
+				print '------------------------------------------------------------------------------------------------------------' .
+					PHP_EOL;
 				print 'Command:   ' . $aud['input_string'] . PHP_EOL . 'Whitelist: ' . $input_string . PHP_EOL;
 
 				$totals++;
 			}
 
-			print '------------------------------------------------------------------------------------------------------------' . PHP_EOL . PHP_EOL;
+			print '------------------------------------------------------------------------------------------------------------' .
+				PHP_EOL .
+				PHP_EOL;
 		}
 
 		if ($totals) {
