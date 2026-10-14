@@ -314,8 +314,11 @@ function grow_dhtml_trees() : void {
 						$('.cactiGraphContentArea').hide();
 
 						// reveal the content area once the new branch content has loaded (hidden above to avoid flashing the previous branch)
-						$.when(loadUrl({url:href,noState:pageGraphFirstLoad})).always(function() {
-							$('.cactiGraphContentArea').show();
+						$.when(loadUrl({url:href,noState:pageGraphFirstLoad})).always(function(data, textStatus) {
+							// a superseding branch click aborts this request; its hide() must win, so don't re-show stale graphs
+							if (textStatus !== 'abort') {
+								$('.cactiGraphContentArea').show();
+							}
 						});
 					}
 
