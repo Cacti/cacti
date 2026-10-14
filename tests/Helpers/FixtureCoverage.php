@@ -1,6 +1,11 @@
 <?php
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+// The same native fixtures also provide evidence to the repository-wide gate.
+if (getenv('CACTI_PR_RAW_COVERAGE') && !getenv('CACTI_COVERAGE_FILE')) {
+	require_once __DIR__ . '/RequestCoverage.php';
+}
+
 $fixtureCoveragePath = getenv('CACTI_COVERAGE_FILE');
 
 if ($fixtureCoveragePath !== false && $fixtureCoveragePath !== '') {

@@ -6,6 +6,10 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
+if (getenv('CACTI_PR_RAW_COVERAGE') && !getenv('CACTI_COVERAGE_FILE')) {
+	require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+}
+
 $coverage = getenv('CACTI_COVERAGE_FILE');
 
 if ($coverage !== false && $coverage !== '') {
@@ -60,6 +64,7 @@ $cases = [
 	['$(printf %s <field>)', ['field' => "'p'"], '$(printf %s \'p\')'],
 	['"`printf %s <field>`"', ['field' => "'p'"], ''],
 	['`printf %s <field>`', ['field' => "'p'"], ''],
+	['`printf %s <field>`', ['field' => 'configured-path'], '`printf %s configured-path`'],
 	['"\\$(<field>)"', ['field' => "'p'"], '"\\$("\'p\'")"'],
 	['"\\`<field>"', ['field' => "'p'"], '"\\`"\'p\'""'],
 	['\\$(<field>)', ['field' => "'p'"], '\\$(\'p\')'],
