@@ -80,6 +80,10 @@ def measure(changed, report, root, request_reports=None):
                 statements = evidence.get(name, {})
                 for number, hits in (lines or {}).items():
                     number = int(number)
+                    # The application bootstrap runs before PHPUnit starts its driver.
+                    # Its native request instructions must still enter the denominator.
+                    if name == 'include/global.php' and number in changed[name] and hits != -2:
+                        statements.setdefault(number, 0)
                     if number in statements and hits > 0:
                         statements[number] = max(statements[number], hits)
                 for start, end in request.get('html_spans', {}).get(file, []):
@@ -93,6 +97,11 @@ def measure(changed, report, root, request_reports=None):
             files[name] = {'missing': True}
             continue
         statements = evidence[name]
+        if name == 'include/global.php':
+            source_lines = (root / name).read_text().splitlines()
+            for number in added:
+                if re.match(r'^\s*(?:\$|(?:return|throw|if|elseif|foreach|while|for|print|echo|require|require_once|include|include_once)\b|[A-Za-z_\\][\w\\]*\()', source_lines[number - 1]):
+                    statements.setdefault(number, 0)
         executable = added & statements.keys()
         covered = {number for number in executable if statements[number] > 0}
         files[name] = {
