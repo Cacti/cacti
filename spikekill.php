@@ -25,6 +25,10 @@
 include('./include/auth.php');
 include_once($config['base_path'] . '/lib/spikekill.php');
 
+if (!isset_request_var('dryrun')) {
+	csrf_require_post();
+}
+
 $debug = false;
 
 if (isset_request_var('method')) {
@@ -107,11 +111,7 @@ if (is_realm_allowed(1043) && is_graph_allowed($local_graph_id)) {
 						cacti_log("NOTICE: SpikeKill succeeded for $rrdfile.  Message is " . $spiker->get_output(), false, 'SPIKEKILL');
 					}
 				} else {
-					if (!$result) {
-						$results = $spiker->get_errors();
-					} else {
-						$results = $spiker->get_output();
-					}
+					$results .= ($results !== '' ? "\n" : '') . ($result ? $spiker->get_output() : $spiker->get_errors());
 				}
 			}
 		}

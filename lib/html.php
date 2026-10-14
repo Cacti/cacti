@@ -492,11 +492,11 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		WHERE id = ?',
 		array($local_graph_id));
 
-	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "' title='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
+	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
 	print "<div class='iconWrapper'>";
-	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
-	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
-	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fa-table threeBars' title='" . __esc('Time Graph View'). "'></i></a><br>";
+	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Details') . "'></i></a><br>";
+	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export'). "'></i></a><br>";
+	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fa-table threeBars' title='" . __esc('Time View'). "'></i></a><br>";
 
 	if (is_realm_allowed(3)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
@@ -518,14 +518,14 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
 		if (read_user_setting('realtime_mode') == '' || read_user_setting('realtime_mode') == '1') {
-			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time'). "'></i></a><br/>";
+			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Realtime'). "'></i></a><br/>";
 		} else {
-			print "<a class='iconLink' href='#' onclick=\"window.open('" . $config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br/>";
+			print "<a class='iconLink' href='#' onclick=\"window.open('" . $config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Realtime') . "'></i></a><br/>";
 		}
 	}
 
 	if (is_realm_allowed(1043)) {
-		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown fa fa-paint-roller spikeKill' title='" . __esc('Kill Spikes in Graphs') . "'></i></span>";
+		print "<a href='#' role='button' class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown fa fa-paint-roller spikeKill' title='" . __esc('Kill Spikes') . "'></i></a>";
 		print '<br/>';
 	}
 
@@ -2138,10 +2138,12 @@ function html_rows_filter($caption, $with_name = false) {
  *   empty string.
  * @param bool $noany Whether to exclude the 'Any' option from the dropdown. Defaults to false.
  * @param bool $nonone Whether to exclude the 'None' option from the dropdown. Defaults to false.
+ * @param string $data_variables Comma separated list of filter element ids whose values are sent
+ *   to the ajax_hosts callback (autocomplete theme only). Defaults to 'site_id'.
  *
  * @return void No value is returned.
  */
-function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
+function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false, $data_variables = 'site_id') {
 	$theme = get_selected_theme();
 
 	if (strpos($call_back, '()') === false) {
@@ -2190,7 +2192,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<label for='host_id'><?php print __('Device');?></label>
 		</td>
 		<td>
-			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print html_escape($call_back);?>'>
+			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='<?php print html_escape($data_variables);?>' data-callback='<?php print html_escape($call_back);?>'>
 				<option value='<?php print html_escape($host_id);?>' selected><?php print html_escape($hostname);?></option>
 			</select>
 		</td>
@@ -2316,6 +2318,7 @@ function html_spikekill_actions() {
 
 			break;
 		case 'spikesave':
+			csrf_require_post();
 			switch(get_nfilter_request_var('setting')) {
 				case 'ravgnan':
 					$id = get_nfilter_request_var('id');
@@ -2451,120 +2454,143 @@ function html_spikekill_menu($local_graph_id) {
 function html_spikekill_js() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
-	spikeKillOpen = false;
+	var spikeKillOpen = false;
+	var spikeKillRequest = null;
+	var spikeKillAnchor = null;
+
 	$(function() {
-		$(document).on('click', function() {
-			if (spikeKillOpen) {
-				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-				spikeKillOpen = false;
+		$(document).off('click.spikekill').on('click.spikekill', function(event) {
+			if ($(event.target).closest('.spikekillParent, .iconLink.spikekill').length == 0) {
+				spikeKillClose();
 			}
 		});
 
-		$('span.spikekill').children().contextmenu(function() {
-			return false;
-		});
-
-		$('span.spikekill').on('click', function() {
-			if (spikeKillOpen == false) {
-				local_graph_id = $(this).attr('data-graph');
-
-				$.get('?action=spikemenu&local_graph_id='+local_graph_id)
-					.done(function(data) {
-						$('#sk'+local_graph_id).after(data);
-
-						menuAnchor = $('#sk'+local_graph_id).offset().left;
-						pageWidth  = $(document).width();
-
-						if (pageWidth - menuAnchor < 180) {
-							$('.spikekillMenu').css({ position: 'absolute', top: 0, left: -180 });
-						}
-
-						$('.spikekillMenu').menu({
-							select: function(event, ui) {
-								$(this).menu('focus', event, ui.item);
-							},
-							delay: 1000
-						});
-
-						$('.spikekillParent').show();
-
-						spikeKillActions();
-
-						spikeKillOpen = true;
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					});
-
-			} else {
-				spikeKillOpen = false;
-				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		$('.iconLink.spikekill').off('.spikekill').on('keydown.spikekill', function(event) {
+			if (event.keyCode == 32) {
+				event.preventDefault();
+				$(this).trigger('click');
 			}
+		}).on('click.spikekill', function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (spikeKillAnchor === this) {
+				spikeKillClose();
+				return;
+			}
+
+			spikeKillClose();
+			var anchor = $(this);
+			var local_graph_id = anchor.attr('data-graph');
+			spikeKillAnchor = this;
+			var request = $.get('?action=spikemenu&local_graph_id=' + local_graph_id);
+			spikeKillRequest = request;
+
+			request.done(function(data) {
+				if (spikeKillRequest !== request) {
+					return;
+				}
+
+				spikeKillRequest = null;
+				if (!$.contains(document, anchor[0]) || !anchor.closest('.graphDrillDownToggle').hasClass('open')) {
+					spikeKillAnchor = null;
+					return;
+				}
+				anchor.after(data);
+				var parent = anchor.next('.spikekillParent');
+				if ($(document).width() - anchor.offset().left < 180) {
+					parent.find('.spikekillMenu').css({ position: 'absolute', top: 0, left: -180 });
+				}
+				parent.find('.spikekillMenu').menu({
+					select: function(event, ui) {
+						$(this).menu('focus', event, ui.item);
+					},
+					delay: 1000
+				});
+				parent.show();
+				spikeKillActions();
+				spikeKillOpen = true;
+			}).fail(function(data, status) {
+				if (status !== 'abort' && spikeKillRequest === request) {
+					spikeKillRequest = null;
+					spikeKillAnchor = null;
+					getPresentHTTPError(data);
+				}
+			});
 		});
 	});
 
+	function spikeKillClose() {
+		var request = spikeKillRequest;
+		spikeKillRequest = null;
+		spikeKillAnchor = null;
+		if (request) {
+			request.abort();
+		}
+		$('.spikekillMenu.ui-menu').menu('destroy');
+		$('.spikekillParent').remove();
+		spikeKillOpen = false;
+	}
+
 	function spikeKillActions() {
-		$('.rstddev').on('click', function() {
+		$('.rstddev').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('stddev', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.dstddev').on('click', function() {
+		$('.dstddev').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('stddev', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.rfill').on('click', function() {
+		$('.rfill').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('fill', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.dfill').on('click', function() {
+		$('.dfill').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('fill', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.rfloat').on('click', function() {
+		$('.rfloat').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('float', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.dfloat').on('click', function() {
+		$('.dfloat').off('click.spikekill').on('click.spikekill', function() {
 			removeSpikes('float', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 		});
 
-		$('.skmethod').on('click', function() {
+		$('.skmethod').off('click.spikekill').on('click.spikekill', function() {
 			$('.skmethod').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 
-			strURL = '?action=spikesave&setting=ravgnan&id='+$(this).attr('id').replace('method_','');
-			$.get(strURL)
+			$.post('?action=spikesave', {setting: 'ravgnan', id: $(this).attr('id').replace('method_', ''), __csrf_magic: csrfMagicToken})
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
 		});
 
-		$('.skills').on('click', function() {
+		$('.skills').off('click.spikekill').on('click.spikekill', function() {
 			$('.skills').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 
-			strURL = '?action=spikesave&setting=rkills&id='+$(this).attr('id').replace('kills_','');
-			$.get(strURL)
+			$.post('?action=spikesave', {setting: 'rkills', id: $(this).attr('id').replace('kills_', ''), __csrf_magic: csrfMagicToken})
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
 		});
 
-		$('.skstddev').on('click', function() {
+		$('.skstddev').off('click.spikekill').on('click.spikekill', function() {
 			$('.skstddev').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+			spikeKillClose();
 
-			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
-			$.get(strURL)
+			$.post('?action=spikesave', {setting: 'rstddev', id: $(this).attr('id').replace('stddev_', ''), __csrf_magic: csrfMagicToken})
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});

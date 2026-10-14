@@ -22,82 +22,80 @@
  * intended encoding contract and skipped until the helper actually lands.
  */
 
-describe('cacti_build_remote_url', function () {
-	it('encodes both keys and values with rawurlencode', function () {
-		$url = cacti_build_remote_url('/endpoint', [
-			'a b' => 'c d',
-			'x&y' => 'p=q',
-		]);
-		expect($url)->toBe('/endpoint?a%20b=c%20d&x%26y=p%3Dq');
-	});
+it('cacti_build_remote_url: encodes both keys and values with rawurlencode', function () {
+	$url = cacti_build_remote_url('/endpoint', [
+		'a b' => 'c d',
+		'x&y' => 'p=q',
+	]);
+	expect($url)->toBe('/endpoint?a%20b=c%20d&x%26y=p%3Dq');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('returns base URL unchanged when params is empty', function () {
-		expect(cacti_build_remote_url('/endpoint', []))
-			->toBe('/endpoint');
-	});
+it('cacti_build_remote_url: returns base URL unchanged when params is empty', function () {
+	expect(cacti_build_remote_url('/endpoint', []))
+		->toBe('/endpoint');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('prevents HTTP parameter pollution via ampersand injection', function () {
-		// Attack: attempt to inject `&admin=1` via a value.
-		// Before fix, raw concatenation would produce `?user=evil&admin=1`.
-		// After fix, the & is encoded and stays inside the value.
-		$url = cacti_build_remote_url('/api', ['user' => 'evil&admin=1']);
-		expect($url)->toContain('user=evil%26admin%3D1')
-			->and($url)->not->toContain('&admin=1');
-	});
+it('cacti_build_remote_url: prevents HTTP parameter pollution via ampersand injection', function () {
+	// Attack: attempt to inject `&admin=1` via a value.
+	// Before fix, raw concatenation would produce `?user=evil&admin=1`.
+	// After fix, the & is encoded and stays inside the value.
+	$url = cacti_build_remote_url('/api', ['user' => 'evil&admin=1']);
+	expect($url)->toContain('user=evil%26admin%3D1')
+		->and($url)->not->toContain('&admin=1');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('prevents HTTP parameter pollution via equals injection', function () {
-		// Attack: value contains `=` to split into key/value on unaware parsers.
-		$url = cacti_build_remote_url('/api', ['key' => 'a=b']);
-		expect($url)->toContain('key=a%3Db');
-	});
+it('cacti_build_remote_url: prevents HTTP parameter pollution via equals injection', function () {
+	// Attack: value contains `=` to split into key/value on unaware parsers.
+	$url = cacti_build_remote_url('/api', ['key' => 'a=b']);
+	expect($url)->toContain('key=a%3Db');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('encodes spaces as %20 not + (RFC 3986)', function () {
-		// rawurlencode uses %20; urlencode uses +. Prefer rawurlencode for
-		// URL-path and query consistency.
-		$url = cacti_build_remote_url('/api', ['q' => 'hello world']);
-		expect($url)->toContain('q=hello%20world')
-			->and($url)->not->toContain('q=hello+world');
-	});
+it('cacti_build_remote_url: encodes spaces as %20 not + (RFC 3986)', function () {
+	// rawurlencode uses %20; urlencode uses +. Prefer rawurlencode for
+	// URL-path and query consistency.
+	$url = cacti_build_remote_url('/api', ['q' => 'hello world']);
+	expect($url)->toContain('q=hello%20world')
+		->and($url)->not->toContain('q=hello+world');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('stringifies non-string values before encoding', function () {
-		$url = cacti_build_remote_url('/api', [
-			'id'    => 123,
-			'flag'  => true,
-			'ratio' => 0.5,
-		]);
-		expect($url)->toContain('id=123')
-			->and($url)->toContain('flag=1')
-			->and($url)->toContain('ratio=0.5');
-	});
+it('cacti_build_remote_url: stringifies non-string values before encoding', function () {
+	$url = cacti_build_remote_url('/api', [
+		'id'    => 123,
+		'flag'  => true,
+		'ratio' => 0.5,
+	]);
+	expect($url)->toContain('id=123')
+		->and($url)->toContain('flag=1')
+		->and($url)->toContain('ratio=0.5');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('encodes reserved URI characters in keys and values', function () {
-		$url = cacti_build_remote_url('/api', [
-			'#key' => 'val/ue',
-			'a?b'  => 'c#d',
-		]);
-		expect($url)->toContain('%23key=val%2Fue')
-			->and($url)->toContain('a%3Fb=c%23d');
-	});
+it('cacti_build_remote_url: encodes reserved URI characters in keys and values', function () {
+	$url = cacti_build_remote_url('/api', [
+		'#key' => 'val/ue',
+		'a?b'  => 'c#d',
+	]);
+	expect($url)->toContain('%23key=val%2Fue')
+		->and($url)->toContain('a%3Fb=c%23d');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('encodes unicode multi-byte values', function () {
-		$url = cacti_build_remote_url('/api', ['name' => 'café']);
-		// café → c a f %C3 %A9  (UTF-8 bytes for é)
-		expect($url)->toContain('name=caf%C3%A9');
-	});
+it('cacti_build_remote_url: encodes unicode multi-byte values', function () {
+	$url = cacti_build_remote_url('/api', ['name' => 'café']);
+	// café → c a f %C3 %A9  (UTF-8 bytes for é)
+	expect($url)->toContain('name=caf%C3%A9');
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('joins multiple parameters with literal &', function () {
-		$url = cacti_build_remote_url('/api', ['a' => '1', 'b' => '2', 'c' => '3']);
-		// One ? then two & separators.
-		expect(substr_count($url, '?'))->toBe(1);
-		expect(substr_count($url, '&'))->toBe(2);
-	});
+it('cacti_build_remote_url: joins multiple parameters with literal &', function () {
+	$url = cacti_build_remote_url('/api', ['a' => '1', 'b' => '2', 'c' => '3']);
+	// One ? then two & separators.
+	expect(substr_count($url, '?'))->toBe(1);
+	expect(substr_count($url, '&'))->toBe(2);
+})->skip('cacti_build_remote_url() is not implemented on 1.2.x');
 
-	it('does not double-encode already-encoded input', function () {
-		// rawurlencode treats % as literal, so pre-encoded input gets encoded again.
-		// Callers must pass RAW values, not pre-encoded ones.
-		// Document this contract via test.
-		$url = cacti_build_remote_url('/api', ['x' => '%20']);
-		expect($url)->toContain('x=%2520')  // the % is re-encoded
-			->and($url)->not->toBe('/api?x=%20');
-	});
+it('cacti_build_remote_url: does not double-encode already-encoded input', function () {
+	// rawurlencode treats % as literal, so pre-encoded input gets encoded again.
+	// Callers must pass RAW values, not pre-encoded ones.
+	// Document this contract via test.
+	$url = cacti_build_remote_url('/api', ['x' => '%20']);
+	expect($url)->toContain('x=%2520')  // the % is re-encoded
+		->and($url)->not->toBe('/api?x=%20');
 })->skip('cacti_build_remote_url() is not implemented on 1.2.x');

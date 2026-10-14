@@ -2655,13 +2655,31 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 }
 
 /**
- * Performs a single-pass substitution of <field> tokens in a data-input command
- * template using pre-escaped values. Used as part of Cacti's lib functionality.
+ * Performs a single-pass, quote-aware substitution of <field> tokens in a
+ * data-input command template using pre-escaped values. Used as part of Cacti's
+ * lib functionality.
  *
  * Each <name> token in the ORIGINAL template is replaced at most once from the
  * supplied map; substituted values are never re-scanned, so a field whose value
  * contains another field's <token> cannot splice an already-escaped payload into
  * a neighbouring quoted region (second-order breakout, GHSA-fq9x-x3vf-3vf2).
+ *
+ * The scanner tracks the template's own shell-quoting state so a resolved value -
+ * which cacti_escapeshellarg() has already wrapped in its own quotes - is never
+ * left sitting inside a quote the template introduced. A self-quoting value the
+ * template wraps exactly ("<arg>" or '<arg>') simply sheds that pair; one embedded
+ * anywhere else inside a quoted word ("prefix<arg>", "<arg>suffix", "<a><b>") has
+ * the template's quoting briefly closed around the value, so $(...)/backticks in
+ * the value cannot be re-interpreted by an outer double quote (GHSA-5v3j-wcrr-jxjg).
+ *
+ * A resolved value that is NOT self-quoting - the trusted path_* tokens resolve to
+ * raw configuration values that the callers do not shell-escape - is substituted
+ * in place so the template keeps its own quotes. That leaves a spaced path such as
+ * "<path_php_binary>" validly quoted for the shell and leaves a bare
+ * <path_cacti>/scripts/x.php unquoted for the PHP script server, which resolves the
+ * first token as a filesystem path rather than through a shell.
+ * Unsupported shell grammar inside command substitutions rejects the complete
+ * template by returning an empty string, including any previously resolved fields.
  *
  * @param string $template The command template containing <field> tokens.
  * @param array $escaped_values Map of field name => already-escaped value.
@@ -2670,11 +2688,210 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  *   tokens are left intact for the caller's trailing cleanup to strip.
  */
 function substitute_script_path($template, $escaped_values) {
-	return preg_replace_callback('/<([A-Za-z0-9_]+)>/',
-		function($matches) use ($escaped_values) {
-			return array_key_exists($matches[1], $escaped_values) ? $escaped_values[$matches[1]] : $matches[0];
-		},
-		(string) $template);
+	$template = (string) $template;
+	$out = '';
+	$len = strlen($template);
+	$i   = 0;
+
+	// Stack of parsing frames so a command substitution ($(...)) or backtick is
+	// scanned with its own fresh quoting context, exactly as /bin/sh re-parses
+	// it. Without this the scanner would believe an outer double quote still
+	// protects a value that actually sits inside a nested command substitution,
+	// where $(...) and backticks are live again. Each frame:
+	//   quote      - the shell quote this frame currently has open ('', '"', "'")
+	//   quoteEmpty - true while that open quote has emitted no content yet
+	//   kind       - 'top', 'cmdsub' (entered via $(...)) or 'backtick'
+	$stack = [['quote' => '', 'quoteEmpty' => false, 'kind' => 'top']];
+
+	while ($i < $len) {
+		$top   = count($stack) - 1;
+		$quote = $stack[$top]['quote'];
+		$ch    = $template[$i];
+
+		if ($ch === '<' && preg_match('/\G<([A-Za-z0-9_]+)>/', $template, $m, 0, $i)) {
+			$tokenLen = strlen($m[0]);
+
+			if (array_key_exists($m[1], $escaped_values)) {
+				$value = $escaped_values[$m[1]];
+
+				// a value is self-defending only when it carries its own matched
+				// shell quotes (cacti_escapeshellarg() output); trusted raw path_*
+				// values are not, so they keep whatever quoting the template gave
+				$valLen     = strlen($value);
+				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
+
+				if (!$selfQuoted) {
+					// trusted raw value (path_* config): substitute in place so the
+					// template's own quotes (if any) survive around the value
+					$out .= $value;
+				} elseif ($quote === '') {
+					// outside any template quote the value stands on its own quotes.
+					// A dangling (odd) run of backslashes right before it would escape
+					// its opening quote (\'x' -> literal quote + unmatched quote); shed
+					// one so the run is even and the quote still opens
+					if ((strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+						$out = substr($out, 0, -1);
+					}
+
+					$out .= $value;
+				} elseif ($stack[$top]['quoteEmpty'] && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
+					// template wrapped the token exactly ("<arg>"): drop the pair
+					// so the already-escaped value stands on its own
+					$out   = substr($out, 0, -1);
+					$out .= $value;
+					$i    += 1;
+					$stack[$top]['quote'] = '';
+				} else {
+					// token sits inside a larger quoted word: close the template's
+					// quoting around the value so it cannot be re-interpreted. A
+					// dangling backslash inside double quotes would escape that closing
+					// quote. Inside single quotes every backslash is literal and must stay.
+					if ($quote === '"' && (strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+						$out = substr($out, 0, -1);
+					}
+
+					$out .= $quote . $value . $quote;
+				}
+
+				$i                        += $tokenLen;
+				$stack[$top]['quoteEmpty'] = false;
+
+				continue;
+			}
+
+			// unknown token: leave intact for the caller's trailing cleanup
+			$out .= $m[0];
+			$i                        += $tokenLen;
+			$stack[$top]['quoteEmpty'] = false;
+
+			continue;
+		}
+
+		// inside single quotes everything is literal until the closing quote;
+		// command substitution and backticks are not active there
+		if ($quote === "'") {
+			if ($ch === "'") {
+				$stack[$top]['quote'] = '';
+			}
+
+			$out .= $ch;
+			$stack[$top]['quoteEmpty'] = false;
+			$i++;
+
+			continue;
+		}
+
+		// Grouping, case patterns, comments and redirections require shell grammar
+		// beyond this quote scanner. Reject the whole template before an ambiguous
+		// closing parenthesis can expose field values to the outer quote context.
+		if ($quote === '' && $stack[$top]['kind'] !== 'top' &&
+			($ch === '(' || $ch === '#' || $ch === '<' || $ch === '>' ||
+				preg_match('/\Gcase(?=\s|$)/', $template, $unused, 0, $i) &&
+				($i === 0 || strpos(" \t\r\n;|&(", $template[$i - 1]) !== false))) {
+			return '';
+		}
+
+		// unquoted or inside double quotes: $(...) and backticks start a nested
+		// shell context whose quoting is independent of this frame, so push a
+		// fresh frame and judge any token inside against that context
+		if ($ch === '$' && $i + 1 < $len && $template[$i + 1] === '(') {
+			$out .= '$(';
+			$i      += 2;
+			$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'cmdsub'];
+
+			continue;
+		}
+
+		if ($ch === ')' && $quote === '' && $stack[$top]['kind'] === 'cmdsub') {
+			array_pop($stack);
+			$out .= ')';
+			$i++;
+
+			continue;
+		}
+
+		if ($ch === '`') {
+			// an unescaped backtick is live command substitution both unquoted and
+			// inside double quotes; only the matching close sits at quote-state ''
+			if ($stack[$top]['kind'] === 'backtick' && $quote === '') {
+				array_pop($stack);
+			} else {
+				$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'backtick'];
+			}
+
+			$out .= '`';
+			$i++;
+
+			continue;
+		}
+
+		if ($quote === '') {
+			if ($ch === '"' || $ch === "'") {
+				$stack[$top]['quote']      = $ch;
+				$stack[$top]['quoteEmpty'] = true;
+				$out .= $ch;
+				$i++;
+
+				continue;
+			}
+
+			if ($ch === '\\' && $i + 1 < $len) {
+				$next = $template[$i + 1];
+
+				// pair the backslash only with a character whose shell meaning it
+				// must neutralise (a quote that could toggle quote-state, another
+				// backslash, or a $/backtick that would otherwise open a command
+				// substitution); for anything else - notably a <token> start -
+				// emit just the backslash so \<arg> still substitutes
+				if ($next === '"' || $next === "'" || $next === '\\' || $next === '$' || $next === '`') {
+					$out .= $ch . $next;
+					$i   += 2;
+
+					continue;
+				}
+
+				$out .= $ch;
+				$i++;
+
+				continue;
+			}
+		} elseif ($quote === '"') {
+			if ($ch === '"') {
+				$stack[$top]['quote'] = '';
+				$out .= $ch;
+				$i++;
+
+				continue;
+			}
+
+			if ($ch === '\\' && $i + 1 < $len) {
+				$next = $template[$i + 1];
+
+				// inside double quotes a backslash is literal unless it escapes one
+				// of " ' \ $ ` - escaping $/` keeps a \$(...) or \`...` from being
+				// treated as a live command substitution
+				if ($next === '"' || $next === "'" || $next === '\\' || $next === '$' || $next === '`') {
+					$out .= $ch . $next;
+					$i                        += 2;
+					$stack[$top]['quoteEmpty'] = false;
+
+					continue;
+				}
+
+				$out .= $ch;
+				$i++;
+				$stack[$top]['quoteEmpty'] = false;
+
+				continue;
+			}
+		}
+
+		$out .= $ch;
+		$stack[$top]['quoteEmpty'] = false;
+		$i++;
+	}
+
+	return $out;
 }
 
 /**

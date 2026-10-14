@@ -7,20 +7,7 @@
  +-------------------------------------------------------------------------+
 */
 
-if (!function_exists('cacti_sizeof')) {
-	/**
-	 * Returns the size of an array test value.
-	 *
-	 * @param mixed $value Value to count.
-	 *
-	 * @return int Number of elements.
-	 */
-	function cacti_sizeof($value) {
-		return is_array($value) ? count($value) : 0;
-	}
-}
 
-require_once dirname(__DIR__, 4) . '/lib/api_automation_tools.php';
 
 /**
  * Runs the prepared-query probe in a clean PHP process.
@@ -57,19 +44,16 @@ function automation_run_prepared_probe() {
 }
 
 test('ID list normalization is strict and fail closed', function () {
-	expect(cacti_sizeof(new ArrayObject(array(1))))->toBe(0)
-		->and(automation_prepare_id_list(false))->toBe(array('placeholders' => '', 'params' => array()))
-		->and(automation_prepare_id_list(array()))->toBe(array('placeholders' => '', 'params' => array()))
-		->and(automation_prepare_id_list('7'))->toBe(array('placeholders' => '?', 'params' => array(7)))
-		->and(automation_prepare_id_list(array(2, '9')))->toBe(array('placeholders' => '?, ?', 'params' => array(2, 9)))
-		->and(automation_prepare_id_list('1e3'))->toBeFalse()
-		->and(automation_prepare_id_list('1 OR 1=1'))->toBeFalse()
-		->and(automation_prepare_id_list((string) PHP_INT_MAX))->toBe(array('placeholders' => '?', 'params' => array(PHP_INT_MAX)))
-		->and(automation_prepare_id_list((string) PHP_INT_MAX . '0'))->toBeFalse()
-		->and(automation_prepare_id_list(str_repeat('9', strlen((string) PHP_INT_MAX) + 1)))->toBeFalse()
-		->and(automation_prepare_id_list(0))->toBeFalse()
-		->and(automation_prepare_id_list(-1))->toBeFalse()
-		->and(automation_prepare_id_list(1.5))->toBeFalse();
+    $r = automation_run_prepared_probe();
+    expect($r['normalization'])->toBe(array(
+        array('placeholders' => '', 'params' => array()),
+        array('placeholders' => '', 'params' => array()),
+        array('placeholders' => '?', 'params' => array(7)),
+        array('placeholders' => '?, ?', 'params' => array(2, 9)),
+        false, false,
+        array('placeholders' => '?', 'params' => array(PHP_INT_MAX)),
+        false, false, false, false, false
+    ));
 });
 
 test('all three host-template filters bind dynamic IN clause values', function () {

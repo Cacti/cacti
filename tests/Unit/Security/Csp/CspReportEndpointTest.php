@@ -10,7 +10,9 @@
 /* Prevent the entry-point block from executing when the file is included
  * during testing. The guard in csp_report_endpoint.php checks for this
  * constant and returns before touching $_SERVER or php://input. */
-define('CACTI_CSP_REPORT_TEST_MODE', 1);
+if (!defined('CACTI_CSP_REPORT_TEST_MODE')) {
+	define('CACTI_CSP_REPORT_TEST_MODE', 1);
+}
 
 /* functions.php is required by the endpoint; stub cacti_log() so the test
  * process does not need a live database or session. */
