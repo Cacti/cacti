@@ -1,0 +1,73 @@
+name: RRDtool capability coverage
+
+on:
+  pull_request:
+    paths:
+      - 'lib/rrd.php'
+      - 'tests/Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php'
+      - 'tests/Unit/Core/Rrd/RrdVersionCheckReuseTest.php'
+      - 'tests/fixtures/Core/Rrd/**'
+      - 'tests/Helpers/RequestCoverage.php'
+      - 'tests/tools/check_changed_php_coverage.py'
+      - 'tests/tools/test_check_changed_php_coverage.py'
+      - 'tests/phpunit-rrd-capabilities.xml'
+      - '.github/workflows/rrd-capability-coverage.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    name: Changed PHP lines >= 80%
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.3'
+          coverage: xdebug
+          extensions: curl, dom, mbstring, xml
+          ini-values: memory_limit=2G
+          dependency-mode: locked-maintenance-pr-coverage
+          cache-dependency-path: tests/composer.lock
+      - name: Install locked test dependencies
+        run: composer install --working-dir=tests --prefer-dist --no-progress --no-interaction
+      - name: Validate the gate and include every changed production PHP file
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          python3 tests/tools/test_check_changed_php_coverage.py
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --prepare-config tests/phpunit-rrd-capabilities.xml --output-config phpunit-changed.xml
+      - name: Exercise native update and graph capability contracts
+        working-directory: tests
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: |
+          set -euo pipefail
+          mkdir -p "$CACTI_PR_RAW_COVERAGE"
+          vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+      - name: Require at least 80 percent of changed executable PHP lines
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --report coverage-changed.xml --request-reports "${{ runner.temp }}/request-coverage" \
+            --minimum 80 --json-output coverage-changed.json
+      - name: Preserve coverage evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: changed-php-coverage
+          path: |
+            coverage-changed.xml
+            coverage-changed.json
+            ${{ runner.temp }}/request-coverage
+          if-no-files-found: warn

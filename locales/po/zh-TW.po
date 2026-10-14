@@ -316,7 +316,7 @@ msgstr "[編輯：%s]"
 msgid "Aggregate Graph does not Exist"
 msgstr "聚合圖設置"
 
-#: aggregate_graphs.php lib/html_reports.php utilities.php
+#: aggregate_graphs.php lib/html.php lib/html_reports.php utilities.php
 #, fuzzy
 msgid "Details"
 msgstr "詳細資料"
@@ -4722,10 +4722,25 @@ msgstr ""
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "圖形詳細信息，縮放和調試實用程序"
 
-#: graph.php
+#: graph.php lib/html.php
 #, fuzzy
 msgid "CSV Export"
 msgstr "CSV匯出"
+
+#: lib/html.php
+#, fuzzy
+msgid "Time View"
+msgstr "樹狀圖"
+
+#: lib/html.php
+#, fuzzy
+msgid "Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
+msgid "Kill Spikes"
+msgstr "釘鞋"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"

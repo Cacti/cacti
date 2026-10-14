@@ -7,9 +7,18 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
-require_once dirname(__DIR__, 4) . '/lib/utility.php';
+namespace MysqlCapabilityMatrixTest;
+
+function __($text) { return $text; }
+
+$source = file_get_contents(dirname(__DIR__, 4) . '/lib/utility.php');
+preg_match_all('/function utilities_mysql_(?:variable_capabilities|variable_status|normalize_version|branch|version_introduced)\(.*?^}/ms', $source, $functions);
+if (count($functions[0]) !== 5) {
+	throw new \RuntimeException('Missing MySQL capability functions.');
+}
+foreach ($functions[0] as $function) {
+    eval('namespace MysqlCapabilityMatrixTest;' . $function);
+}
 
 test('an empty engine bounds array means supported for every version', function () {
 	$caps = utilities_mysql_variable_capabilities();

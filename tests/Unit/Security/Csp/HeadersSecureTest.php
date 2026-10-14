@@ -9,14 +9,13 @@
 
 require_once __DIR__ . '/../../../../lib/headers_secure.php';
 
-/* Stub read_config_option() so tests can control flag values via
- * $GLOBALS['__test_config_options'] without a database connection. */
+/* Drive flag values through the cached options array that read_config_option()
+ * consults in non-web mode. The shared bootstrap (tests/bootstrap-unit.php) loads
+ * the real lib/functions.php, so a function_exists()-guarded stub would be bypassed;
+ * writing to config_options_array works for both the real function and this stub. */
 if (!function_exists('read_config_option')) {
 	function read_config_option($key) {
-		if (isset($GLOBALS['__test_config_options'][$key])) {
-			return $GLOBALS['__test_config_options'][$key];
-		}
-		return '';
+		return $GLOBALS['config']['config_options_array'][$key] ?? '';
 	}
 }
 
@@ -56,25 +55,25 @@ test('getNonceAttribute wraps in nonce="..."', function () {
 });
 
 test('getCspMode empty flag returns empty string', function () {
-	$GLOBALS['__test_config_options']['content_security_policy_script'] = '';
+	$GLOBALS['config']['config_options_array']['content_security_policy_script'] = '';
 	expect(CactiSecureHeaders::getCspMode())->toBe('');
 });
 
 test('getCspMode unknown value returns empty string', function () {
-	$GLOBALS['__test_config_options']['content_security_policy_script'] = 'garbage';
+	$GLOBALS['config']['config_options_array']['content_security_policy_script'] = 'garbage';
 	expect(CactiSecureHeaders::getCspMode())->toBe('');
 });
 
 test('getCspMode returns nonce when flag set', function () {
-	$GLOBALS['__test_config_options']['content_security_policy_script'] = 'nonce';
+	$GLOBALS['config']['config_options_array']['content_security_policy_script'] = 'nonce';
 	expect(CactiSecureHeaders::getCspMode())->toBe('nonce');
 });
 
 test('isNonceMode true for nonce and nonce-report', function () {
-	$GLOBALS['__test_config_options']['content_security_policy_script'] = 'nonce';
+	$GLOBALS['config']['config_options_array']['content_security_policy_script'] = 'nonce';
 	expect(CactiSecureHeaders::isNonceMode())->toBeTrue();
 
-	$GLOBALS['__test_config_options']['content_security_policy_script'] = 'nonce-report';
+	$GLOBALS['config']['config_options_array']['content_security_policy_script'] = 'nonce-report';
 	expect(CactiSecureHeaders::isNonceMode())->toBeTrue();
 });
 
