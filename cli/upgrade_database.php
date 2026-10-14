@@ -119,7 +119,12 @@ $old_version_index = (array_key_exists($old_cacti_version, $cacti_version_codes)
 if (cacti_version_compare($old_cacti_version,CACTI_VERSION,'=')) {
 	exit_version_error($old_cacti_version, 'Your Cacti is already up to date');
 } elseif (cacti_version_compare($old_cacti_version,'0.7','<')) {
-	exit_error('You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database.");
+	exit_error('You are attempting to install cacti ' .
+		CACTI_VERSION .
+		' onto a 0.6.x database.' .
+		PHP_EOL .
+		("To continue, you must create a new database, import 'cacti.sql' into " .
+		'it,') . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database.");
 } elseif (empty($old_cacti_version)) {
 	exit_error('You have created a new database, but have not yet imported the \'cacti.sql\' file.');
 
@@ -206,7 +211,8 @@ function exit_error(string $text) : void {
 }
 
 function exit_version_error(string $old_cacti_version, string $text) : void {
-	exit_error($text . PHP_EOL . '  - from: v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL . '      to: v' . CACTI_VERSION_BRIEF_FULL);
+	exit_error($text . PHP_EOL . '  - from: v' . get_cacti_version_text(false,
+		$old_cacti_version) . PHP_EOL . '      to: v' . CACTI_VERSION_BRIEF_FULL);
 }
 
 function db_install_errors(string $cacti_version) : int {
@@ -238,7 +244,19 @@ function db_install_errors(string $cacti_version) : int {
 
 					$sep1 = '################################';
 					$sep2 = '+------------------------------+';
-					printf('%s%s%s%-10s   -   %s%s%s%s%s%s%s%s', PHP_EOL, $sep1, PHP_EOL, $db_status, $error, PHP_EOL, $sep2, PHP_EOL, clean_up_lines($sql), PHP_EOL, $sep1, PHP_EOL);
+					printf('%s%s%s%-10s   -   %s%s%s%s%s%s%s%s',
+						PHP_EOL,
+						$sep1,
+						PHP_EOL,
+						$db_status,
+						$error,
+						PHP_EOL,
+						$sep2,
+						PHP_EOL,
+						clean_up_lines($sql),
+						PHP_EOL,
+						$sep1,
+						PHP_EOL);
 				}
 			}
 		}

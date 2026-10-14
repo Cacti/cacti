@@ -773,6 +773,13 @@ $struct_graph = [
 		'description'   => __('Should be set to 1024 for memory and 1000 for traffic measurements.'),
 		'size'          => '12'
 	],
+	'vertical_label_angle' => [
+		'friendly_name' => __('Vertical Label Angle (--vertical-label-angle)'),
+		'method'        => 'drop_array',
+		'array'         => ['' => __('RRDtool Default'), '0' => '0', '90' => '90', '180' => '180', '270' => '270'],
+		'default'       => '',
+		'description'   => __('Label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank uses the RRDtool default. Angles other than 90 and 270 may overlap nearby content.'),
+	],
 	'slope_mode' => [
 		'friendly_name' => __('Slope Mode (--slope-mode)'),
 		'method'        => 'checkbox',
@@ -911,6 +918,21 @@ $struct_graph = [
 		'default'       => '',
 		'size'          => '30',
 		'description'   => __('The label for the right axis.'),
+	],
+	'right_axis_label_angle' => [
+		'friendly_name' => __('Right Axis Label Angle (--right-axis-label-angle)'),
+		'method'        => 'drop_array',
+		'array'         => ['' => __('RRDtool Default'), '0' => '0', '90' => '90', '180' => '180', '270' => '270'],
+		'default'       => '',
+		'description'   => __('Right label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank follows the vertical label angle. Angles other than 90 and 270 may overlap nearby content.'),
+	],
+	'right_axis_range' => [
+		'friendly_name' => __('Right Axis Label Range (--right-axis-range)'),
+		'method'        => 'textbox',
+		'max_length'    => '64',
+		'default'       => '',
+		'size'          => '20',
+		'description'   => __('Only show right axis labels within min:max, for example 0:100. Either bound may be blank. This does not change the axis scale. Requires RRDtool 1.11 or newer. Blank leaves labels unrestricted.'),
 	],
 	'right_axis_format' => [
 		'friendly_name' => __('Right Axis Format (--right-axis-format &lt;format&gt;)'),
