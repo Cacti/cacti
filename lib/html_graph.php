@@ -202,7 +202,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view'>
 			<table role='presentation' id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter', $devices_where);?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter', $devices_where, false, false, 'site_id,graph_template_id');?>
 					<td>
 						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
@@ -214,12 +214,14 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							data-select-zero-value='0'
 							data-select-zero-text='<?php print html_escape(__('Not Templated'));?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<?php if (graph_view_has_untemplated_graphs($templates_where) || get_request_var('graph_template_id') == '0') {?>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
+							<?php }?>
 							<?php
 							// suppress total rows collection
 							$total_rows = -1;
 
-							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+							$graph_templates = get_allowed_graph_templates($templates_where, 'name', '', $total_rows);
 
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));

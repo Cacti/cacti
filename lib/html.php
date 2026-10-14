@@ -2138,10 +2138,12 @@ function html_rows_filter($caption, $with_name = false) {
  *   empty string.
  * @param bool $noany Whether to exclude the 'Any' option from the dropdown. Defaults to false.
  * @param bool $nonone Whether to exclude the 'None' option from the dropdown. Defaults to false.
+ * @param string $data_variables Comma separated list of filter element ids whose values are sent
+ *   to the ajax_hosts callback (autocomplete theme only). Defaults to 'site_id'.
  *
  * @return void No value is returned.
  */
-function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
+function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false, $data_variables = 'site_id') {
 	$theme = get_selected_theme();
 
 	if (strpos($call_back, '()') === false) {
@@ -2190,7 +2192,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<label for='host_id'><?php print __('Device');?></label>
 		</td>
 		<td>
-			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print html_escape($call_back);?>'>
+			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='<?php print html_escape($data_variables);?>' data-callback='<?php print html_escape($call_back);?>'>
 				<option value='<?php print html_escape($host_id);?>' selected><?php print html_escape($hostname);?></option>
 			</select>
 		</td>
