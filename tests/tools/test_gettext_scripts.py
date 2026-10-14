@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from shell_coverage import shell_command
 
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ['xgettext', 'msgmerge', 'msgfmt', 'realpath']
@@ -39,7 +40,7 @@ class GettextScriptsTest(unittest.TestCase):
 
     def run_script(self, name, cwd=None, env=None):
         return subprocess.run(
-            ['/bin/sh', str(self.locales / name)], cwd=cwd or self.root,
+            shell_command(self.locales / name, ROOT / 'locales' / name), cwd=cwd or self.root,
             env=env or self.env, capture_output=True, text=True, timeout=30,
         )
 
