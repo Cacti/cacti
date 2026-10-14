@@ -51,15 +51,12 @@ foreach ($values as $value) {
 // surrounding $()/`` re-parses with its own fresh quoting context, so the scanner
 // must not leave the already-escaped value re-interpretable there. Each case must
 // echo the field value back verbatim with nothing inside it executing. Backtick
-// templates are not paired with backtick-bearing values (backticks do not nest).
+// templates with fields are rejected below because their preprocessing ignores quotes.
 $nestedCases = [
 	['"$(printf %s <field>)"', 'hello world',                 'hello world'],
 	['"$(printf %s <field>)"', '$(printf unexpected)',         '$(printf unexpected)'],
 	['"$(printf %s <field>)"', 'back`printf unexpected`tick',  'back`printf unexpected`tick'],
 	['"$(printf %s <field>)"', 'dollar$HOME',                  'dollar$HOME'],
-	['"`printf %s <field>`"',  'hello world',                  'hello world'],
-	['"`printf %s <field>`"',  '$(printf unexpected)',         '$(printf unexpected)'],
-	['"`printf %s <field>`"',  'dollar$HOME',                  'dollar$HOME'],
 ];
 
 foreach ($nestedCases as $case) {
@@ -89,6 +86,10 @@ foreach ($nestedCases as $case) {
 // Unsupported shell grammar inside a substitution must not expose a field to
 // the suspended outer quote. Check rejection before starting any shell.
 $rejectedTemplates = [
+	'"`printf %s <field>`"',
+	'`printf %s <field>`',
+	'"`printf %s "$(printf %s <field>)"`"',
+	'"$(printf %s "`printf %s <field>`")"',
 	'"$( (true); printf %s <field>)"',
 	'"$(case x in x) printf %s <field>;; esac)"',
 	'"$(printf %s # )' . "\n" . '<field>)"',
@@ -98,10 +99,12 @@ $rejectedTemplates = [
 ];
 
 foreach ($rejectedTemplates as $template) {
-	if (substitute_script_path($template, ['field' => cacti_escapeshellarg('hello world')]) !== '') {
-		throw new RuntimeException('Unsupported nested shell grammar was accepted');
+	foreach (['hello world', 'back`printf unexpected`tick'] as $value) {
+		if (substitute_script_path($template, ['field' => cacti_escapeshellarg($value)]) !== '') {
+			throw new RuntimeException('Unsupported nested shell grammar was accepted');
+		}
+		$count++;
 	}
-	$count++;
 }
 
 print json_encode(['passed' => $count], JSON_THROW_ON_ERROR) . "\n";

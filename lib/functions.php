@@ -3185,8 +3185,9 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
  * the value cannot be re-interpreted by an outer double quote (GHSA-5v3j-wcrr-jxjg).
  * The scanner also follows the template's own $(...) and backtick command
  * substitutions as nested contexts with their own quoting, so a token placed
- * inside one ("$(cmd <arg>)") is judged against that fresh context rather than a
- * suspended outer quote, closing the nested-reinterpretation bypass.
+ * inside $(...) is judged against that fresh context rather than a suspended
+ * outer quote. Fields inside backticks are rejected because backtick preprocessing
+ * can interpret their contents before the nested shell sees the field quotes.
  * A dangling (odd) run of template backslashes immediately before such a value is
  * normalised to an even run first, so it cannot escape the quote that must open or
  * close around the value and leave the shell with an unmatched quote.
@@ -3235,6 +3236,17 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 				// values are not, so they keep whatever quoting the template gave
 				$valLen     = strlen($value);
 				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
+
+				// Backtick substitutions preprocess their contents before parsing
+				// shell quotes. A backtick in a quoted field can close that outer
+				// substitution. Refuse fields anywhere inside it, including $().
+				if ($selfQuoted) {
+					foreach ($stack as $frame) {
+						if ($frame['kind'] === 'backtick') {
+							return '';
+						}
+					}
+				}
 
 				if (!$selfQuoted) {
 					// trusted raw value (path_* config): substitute in place so the
