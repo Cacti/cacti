@@ -7,12 +7,15 @@ test('theme switching stores an allowlisted theme name', function ($requested) {
 	expect($block)->not->toBeEmpty();
 	$body     = str_replace("gnrv('newtheme')", '$requested', $block[1]);
 	$previous = $_SESSION;
+	$path     = tempnam(sys_get_temp_dir(), 'cacti-theme-test-');
 
 	try {
-		eval($body);
+		file_put_contents($path, '<?php ' . $body);
+		include $path;
 		expect($_SESSION['selected_theme'])->not->toContain('..')->not->toContain('/')
 			->and(is_dir(CACTI_PATH_INCLUDE . '/themes/' . $_SESSION['selected_theme']))->toBeTrue();
 	} finally {
+		unlink($path);
 		$_SESSION = $previous;
 	}
 })->with(['../themes/modern', '../../../tmp/modern', 'modern', [['modern']]]);
