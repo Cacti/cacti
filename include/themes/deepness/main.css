@@ -824,7 +824,8 @@ label {
 }
 
 .filteredValue {
-	background-color: #F8D93D;
+	background-color: #e3b341;
+	color: var(--dp-page);
 }
 
 .graphItemGr1Alt1 {
