@@ -10779,7 +10779,10 @@ function cacti_path_is_within(string $candidate, string $base, ?bool $windows = 
  * validate_relative_path_within - validates an untrusted relative path
  *
  * Rejects absolute paths, drive letters, empty or dot segments, and symlinked
- * segments under the base, then confirms the result resolves inside the base.
+ * segments under the base, then confirms the deepest existing ancestor resolves
+ * inside the base. A not-yet-created entry (including nested directories that
+ * an archive restore has not built yet) is allowed, mirroring
+ * data_source_path_within_rra().
  *
  * @param mixed  $path     The untrusted relative path
  * @param string $base_dir The base directory the path must stay within
@@ -10815,29 +10818,35 @@ function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
 
 	$candidate = $base_real . '/' . implode('/', $parts);
 
-	// block symlink pivots under writable base paths
-	$walk = $base_real;
+	// block symlink pivots under writable base paths, and remember the deepest
+	// ancestor that actually exists
+	$walk             = $base_real;
+	$deepest_existing = $base_real;
 
 	foreach ($parts as $part) {
 		$walk .= '/' . $part;
 
+		// is_link() before file_exists(): file_exists() follows the link and is
+		// false for a dangling symlink, so a symlink segment whose target does
+		// not exist yet would otherwise be accepted.
 		if (is_link($walk)) {
 			return false;
+		}
+
+		if (file_exists($walk)) {
+			$deepest_existing = $walk;
 		}
 	}
 
 	/**
-	 * An entry that does not exist yet is judged by its parent directory.
-	 * cacti_path_is_within() already fails closed when realpath() cannot
-	 * resolve either side, so both cases share one check.
+	 * A not-yet-created entry is judged by its deepest existing ancestor, so a
+	 * nested archive directory that has not been created yet is not mistaken
+	 * for an escape. Every segment is a plain name and no walked segment is a
+	 * symlink, so the full candidate stays within the base.
 	 */
-	$anchor = file_exists($candidate) ? $candidate : dirname($candidate);
+	$resolved = realpath($deepest_existing);
 
-	if (!cacti_path_is_within($anchor, $base_real)) {
-		return false;
-	}
-
-	return $candidate;
+	return $resolved !== false && cacti_path_is_within($resolved, $base_real) ? $candidate : false;
 }
 
 /**
