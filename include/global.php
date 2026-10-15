@@ -645,7 +645,7 @@ if ($config['is_web']) {
 			'item_movedown_gsv', 'item_movedown_dssv',
 			'moveup', 'movedown',
 			'tree_up', 'tree_down', 'move_page_up', 'move_page_down',
-			'rrd_add', 'rrd_remove'
+			'rrd_add', 'rrd_remove', 'ds_repair'
 		);
 
 		foreach($bad_actions as $bad) {
