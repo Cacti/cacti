@@ -101,8 +101,25 @@ test('a dangling symlink is rejected as the final or an intermediate segment', f
 		->toBe(realpath($this->base) . '/nested/present.txt');
 });
 
-test('a path whose parent cannot be resolved is rejected', function () : void {
-	expect(validate_relative_path_within('missing_dir/child/file.txt', $this->base))->toBeFalse();
+test('a not-yet-created nested path is accepted so archive directories can be built', function () : void {
+	// Regression: a plugin restore writes entries such as includes/database.php
+	// before those directories exist. The deepest existing ancestor (the base)
+	// is inside the base, so the entry must be accepted, not skipped.
+	expect(validate_relative_path_within('missing_dir/child/file.txt', $this->base))
+		->toBe(realpath($this->base) . '/missing_dir/child/file.txt');
+
+	expect(validate_relative_path_within('includes/database.php', $this->base))
+		->toBe(realpath($this->base) . '/includes/database.php');
+});
+
+test('a nested path is still rejected when it traverses or pivots through a symlink', function () : void {
+	// The relaxed not-yet-created handling must not weaken traversal or symlink
+	// containment for nested entries.
+	expect(validate_relative_path_within('missing_dir/../../escape.php', $this->base))->toBeFalse();
+
+	symlink(sys_get_temp_dir(), $this->base . '/link');
+
+	expect(validate_relative_path_within('link/missing/child.txt', $this->base))->toBeFalse();
 });
 
 test('cacti_path_is_within accepts the base itself and children', function () : void {
