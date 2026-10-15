@@ -69,6 +69,8 @@ def prepare_config(config, output, changed):
 
 
 def measure(changed, report, root, request_reports=None):
+    if not changed and request_reports is None:
+        return {'covered': 0, 'executable': 0, 'percent': None, 'files': {}}
     evidence = {}
     for file in ET.parse(report).iter('file'):
         try:

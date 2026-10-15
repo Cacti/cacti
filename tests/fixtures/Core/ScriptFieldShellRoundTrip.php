@@ -86,6 +86,12 @@ foreach ($nestedCases as $case) {
 // Unsupported shell grammar inside a substitution must not expose a field to
 // the suspended outer quote. Check rejection before starting any shell.
 $rejectedTemplates = [
+	'cat <<EOF' . "\n<field>\nEOF",
+	'cat <' . "\\\n" . '<EOF' . "\n<field>\nEOF",
+	'"${name:-<field>}"',
+	'${name#<field>}',
+	'$' . "\\\n" . '{name:-<field>}',
+	'"prefix' . "\\\r\n" . '<field>"',
 	'"`printf %s <field>`"',
 	'`printf %s <field>`',
 	'"`printf %s "$(printf %s <field>)"`"',
