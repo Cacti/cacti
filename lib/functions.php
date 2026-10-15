@@ -2720,6 +2720,17 @@ function substitute_script_path($template, $escaped_values) {
 				$valLen     = strlen($value);
 				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
 
+				// Backtick substitutions preprocess their contents before parsing
+				// shell quotes. A backtick in a quoted field can close that outer
+				// substitution. Refuse fields anywhere inside it, including $().
+				if ($selfQuoted) {
+					foreach ($stack as $frame) {
+						if ($frame['kind'] === 'backtick') {
+							return '';
+						}
+					}
+				}
+
 				if (!$selfQuoted) {
 					// trusted raw value (path_* config): substitute in place so the
 					// template's own quotes (if any) survive around the value
@@ -2777,6 +2788,26 @@ function substitute_script_path($template, $escaped_values) {
 			$out .= $ch;
 			$stack[$top]['quoteEmpty'] = false;
 			$i++;
+
+			continue;
+		}
+
+		// These constructs change how the shell interprets quoting around a
+		// field. Simple ${name} expansion is safe; its operators and here-docs
+		// need a full shell parser. Line continuations can conceal their syntax.
+		if ($ch === '\\' && ($template[$i + 1] ?? '') === "\n" ||
+			$ch === '\\' && substr($template, $i + 1, 2) === "\r\n" ||
+			$quote === '' && $ch === '<' && ($template[$i + 1] ?? '') === '<') {
+			return '';
+		}
+
+		if ($ch === '$' && ($template[$i + 1] ?? '') === '{') {
+			if (!preg_match('/\G\$\{(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+|[@*?#$!\-])\}/', $template, $variable, 0, $i)) {
+				return '';
+			}
+			$out .= $variable[0];
+			$i += strlen($variable[0]);
+			$stack[$top]['quoteEmpty'] = false;
 
 			continue;
 		}
