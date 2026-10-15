@@ -183,7 +183,7 @@ repository root:
 
 ```bash
 composer install
-include/vendor/bin/pest --testsuite=Unit,Integration
+include/vendor/bin/pest --configuration=tests/phpunit.xml --testsuite=Unit,Integration
 composer run-script phpstan -- --memory-limit=2G
 ```
 

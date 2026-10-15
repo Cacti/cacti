@@ -67,6 +67,9 @@ def prepare_config(config, output, changed):
 
 
 def measure(changed, report, root, request_reports=None):
+    # Deletion-only changes leave no source filter, so PHPUnit writes no report.
+    if not changed:
+        return {'covered': 0, 'executable': 0, 'percent': None, 'files': {}}
     evidence = {}
     for file in ET.parse(report).iter('file'):
         try:
