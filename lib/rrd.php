@@ -2038,8 +2038,6 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 function rrd_function_process_graph_options(int $graph_start, int $graph_end, array &$graph, array &$graph_data_array) : string {
 	global $image_types;
 
-	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
-
 	// define some variables
 	$scale               = '';
 	$rigid               = '';
@@ -2428,7 +2426,6 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 	include_once(CACTI_PATH_LIBRARY . '/graph_variables.php');
 	include_once(CACTI_PATH_LIBRARY . '/boost.php');
 	include_once(CACTI_PATH_LIBRARY . '/xml.php');
-	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
 	/* prevent command injection
 	 * This function prepares an rrdtool graph statement to be executed by the web server.

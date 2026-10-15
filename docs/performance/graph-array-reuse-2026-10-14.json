@@ -1,0 +1,874 @@
+{
+  "date": "2026-10-14",
+  "diagnostic_only": true,
+  "change": "Remove repeated global_arrays.php includes from rrdtool_function_graph and rrd_function_process_graph_options; reuse arrays initialized by include/global.php.",
+  "production_baseline_revision": "2cc48189bad18f5c2da7453a9523dfcd2a8656bd",
+  "candidate_change": "The same production revision with only those two includes removed.",
+  "source_sha256": {
+    "before": "72c43081f68f0612ac850a81110575812ecce71c7c1495c175d8c50f746a4c15",
+    "after": "6ff0b76d096988d096d4a7bf917a30e741a16fbd0426f24548dda1e6fcff9d8b"
+  },
+  "environment": {
+    "node": "v22.22.2",
+    "browser": "153.0.8010.12",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M3 Max",
+    "timezone": "UTC"
+  },
+  "fixture": {
+    "kind": "disposable SQL/RRD fixture; no live SNMP",
+    "end": 1760000100,
+    "start": 1759913700,
+    "devices": 500,
+    "graphs": 50,
+    "samples_per_rrd": 289,
+    "themes": [
+      "cacti",
+      "carrot",
+      "dark",
+      "deepness",
+      "hollyberry",
+      "midwinter",
+      "modern",
+      "paper-plane",
+      "paw",
+      "raspberry",
+      "sunrise"
+    ],
+    "php": "8.3.35",
+    "xdebug": "3.5.3",
+    "database": "10.11.19-MariaDB-ubu2204",
+    "frontend_dependencies": {
+      "big.js": "7.0.1",
+      "billboard.js": "4.1.1",
+      "chart.js": "2.9.4",
+      "d3": "7.9.0",
+      "daterangepicker": "3.1.0",
+      "dompurify": "3.4.16",
+      "htmx.org": "2.0.11",
+      "hotkeys-js": "3.10.1",
+      "jquery": "4.0.0",
+      "jquery-ui": "1.14.2",
+      "jquery-ui-touch-punch": "0.2.3",
+      "jquery-validation": "1.22.1",
+      "jstree": "3.3.17",
+      "lzjs": "1.3.1",
+      "mark.js": "8.11.1",
+      "moment": "2.31.0",
+      "pace-js": "1.2.4",
+      "screenfull": "6.0.2",
+      "select2": "4.1.0",
+      "tablesorter": "2.32.0"
+    },
+    "rrdtool_configured_capability": "1.7.2",
+    "rrdtool": "1.7.2",
+    "rrdtool_version_provenance": "Verified with rrdtool --version in the retained profiling image sha256:e54c2e086897cd60495fa154c8ddb1b7bdeb94d9b0e20a3916312a95d97000ec; original fixture metadata recorded configured capability as rrdtool.",
+    "rrdtool_cached_capability_during_seed": "1.4.0"
+  },
+  "workload": {
+    "devices": 500,
+    "graphs_per_pass": 50,
+    "passes_per_scenario": 4,
+    "ajax_transitions_per_theme": 100,
+    "realtime_graph_counts": [
+      1,
+      10,
+      50
+    ],
+    "realtime_modes": [
+      "normal",
+      "250ms delay",
+      "HTTP failure"
+    ]
+  },
+  "server": {
+    "render": {
+      "before": {
+        "warm_php_cpu_median_ms": 555.831,
+        "warm_elapsed_median_ms": 1105.631834,
+        "samples": [
+          {
+            "pass": 0,
+            "application_cache": "cold",
+            "elapsed_ms": 1182.894768,
+            "php_cpu_ms": 560.8140000000001,
+            "child_cpu_ms": 590.749,
+            "process_max_rss_kb": 43904,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 1327104,
+                "wbytes": 0,
+                "rios": 20,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 1,
+            "application_cache": "warm",
+            "elapsed_ms": 1077.563756,
+            "php_cpu_ms": 546.9249999999998,
+            "child_cpu_ms": 497.05299999999994,
+            "process_max_rss_kb": 43904,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 2,
+            "application_cache": "warm",
+            "elapsed_ms": 1105.631834,
+            "php_cpu_ms": 557.7090000000001,
+            "child_cpu_ms": 513.887,
+            "process_max_rss_kb": 43904,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 3,
+            "application_cache": "warm",
+            "elapsed_ms": 1112.465258,
+            "php_cpu_ms": 555.831,
+            "child_cpu_ms": 520.025,
+            "process_max_rss_kb": 43904,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          }
+        ],
+        "global_arrays_hotspot": {
+          "function": "include::/var/www/html/include/global_arrays.php",
+          "self_ms": 378.34742,
+          "inclusive_ms": 1503.34009,
+          "calls": 400
+        }
+      },
+      "after": {
+        "warm_php_cpu_median_ms": 162.844,
+        "warm_elapsed_median_ms": 1005.719339,
+        "samples": [
+          {
+            "pass": 0,
+            "application_cache": "cold",
+            "elapsed_ms": 1097.667909,
+            "php_cpu_ms": 155.582,
+            "child_cpu_ms": 902.1139999999999,
+            "process_max_rss_kb": 42612,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 1433600,
+                "wbytes": 0,
+                "rios": 28,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 1,
+            "application_cache": "warm",
+            "elapsed_ms": 1112.93967,
+            "php_cpu_ms": 162.844,
+            "child_cpu_ms": 864.035,
+            "process_max_rss_kb": 42612,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 2,
+            "application_cache": "warm",
+            "elapsed_ms": 1005.719339,
+            "php_cpu_ms": 228.287,
+            "child_cpu_ms": 729.2549999999998,
+            "process_max_rss_kb": 42612,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 3,
+            "application_cache": "warm",
+            "elapsed_ms": 913.032013,
+            "php_cpu_ms": 125.41800000000003,
+            "child_cpu_ms": 738.7270000000003,
+            "process_max_rss_kb": 42612,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          }
+        ],
+        "global_arrays_hotspot": {
+          "calls": 0,
+          "note": "Full Callgrind symbol table inspected; the bootstrap require_once remains."
+        },
+        "global_arrays_profile_entries": [
+          {
+            "function": "require_once::/var/www/html/include/global_arrays.php",
+            "self_ms": 1.14613,
+            "inclusive_ms": 4.45619,
+            "calls": 1
+          }
+        ]
+      },
+      "warm_php_cpu_reduction_percent": 70.70260564811967
+    },
+    "boost": {
+      "before": {
+        "warm_php_cpu_median_ms": 566.3050000000001,
+        "warm_elapsed_median_ms": 1197.973085,
+        "samples": [
+          {
+            "pass": 0,
+            "application_cache": "cold",
+            "elapsed_ms": 1340.097238,
+            "php_cpu_ms": 605.696,
+            "child_cpu_ms": 692.989,
+            "process_max_rss_kb": 43732,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 1,
+            "application_cache": "warm",
+            "elapsed_ms": 1226.787377,
+            "php_cpu_ms": 576.9700000000003,
+            "child_cpu_ms": 605.6560000000001,
+            "process_max_rss_kb": 43732,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 2,
+            "application_cache": "warm",
+            "elapsed_ms": 1197.973085,
+            "php_cpu_ms": 566.3050000000001,
+            "child_cpu_ms": 591.342,
+            "process_max_rss_kb": 43732,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 421888,
+                "rios": 0,
+                "wios": 51,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 3,
+            "application_cache": "warm",
+            "elapsed_ms": 1172.539526,
+            "php_cpu_ms": 547.558,
+            "child_cpu_ms": 586.3749999999994,
+            "process_max_rss_kb": 43732,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          }
+        ],
+        "global_arrays_hotspot": {
+          "function": "include::/var/www/html/include/global_arrays.php",
+          "self_ms": 365.49495,
+          "inclusive_ms": 1432.93945,
+          "calls": 400
+        }
+      },
+      "after": {
+        "warm_php_cpu_median_ms": 302.531,
+        "warm_elapsed_median_ms": 1642.42489,
+        "samples": [
+          {
+            "pass": 0,
+            "application_cache": "cold",
+            "elapsed_ms": 1872.844694,
+            "php_cpu_ms": 328.909,
+            "child_cpu_ms": 1428.115,
+            "process_max_rss_kb": 42576,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 1,
+            "application_cache": "warm",
+            "elapsed_ms": 1681.8837,
+            "php_cpu_ms": 302.531,
+            "child_cpu_ms": 1261.4960000000005,
+            "process_max_rss_kb": 42576,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 2,
+            "application_cache": "warm",
+            "elapsed_ms": 1642.42489,
+            "php_cpu_ms": 318.91499999999996,
+            "child_cpu_ms": 1217.238,
+            "process_max_rss_kb": 42576,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          },
+          {
+            "pass": 3,
+            "application_cache": "warm",
+            "elapsed_ms": 1299.734586,
+            "php_cpu_ms": 214.52399999999994,
+            "child_cpu_ms": 1009.1640000000002,
+            "process_max_rss_kb": 42576,
+            "container_io_delta_by_device": {
+              "254:16": {
+                "rbytes": 0,
+                "wbytes": 0,
+                "rios": 0,
+                "wios": 0,
+                "dbytes": 0,
+                "dios": 0
+              }
+            },
+            "peak_memory_bytes": 14680064,
+            "image_bytes": 657558
+          }
+        ],
+        "global_arrays_hotspot": {
+          "calls": 0,
+          "note": "Full Callgrind symbol table inspected; the bootstrap require_once remains."
+        },
+        "global_arrays_profile_entries": [
+          {
+            "function": "require_once::/var/www/html/include/global_arrays.php",
+            "self_ms": 1.0323,
+            "inclusive_ms": 5.16256,
+            "calls": 1
+          }
+        ]
+      },
+      "warm_php_cpu_reduction_percent": 46.57808071622183
+    }
+  },
+  "browser": {
+    "before": {
+      "complete": true,
+      "navigation": [
+        {
+          "theme": "midwinter",
+          "transitions": 100,
+          "checkpoints": [
+            {
+              "transition": 0,
+              "heapBytes": 42804324,
+              "domNodes": 37290,
+              "listeners": 65306,
+              "detachedTrees": 87,
+              "layoutCount": 27,
+              "layoutSeconds": 0.126359,
+              "styleCount": 53,
+              "styleSeconds": 4.189135,
+              "scriptSeconds": 0.009713,
+              "taskSeconds": 5.705946,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 25,
+              "heapBytes": 45801792,
+              "domNodes": 38965,
+              "listeners": 65331,
+              "detachedTrees": 184,
+              "layoutCount": 727,
+              "layoutSeconds": 3.779747,
+              "styleCount": 1329,
+              "styleSeconds": 117.395854,
+              "scriptSeconds": 0.140909,
+              "taskSeconds": 158.653518,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 50,
+              "heapBytes": 46447116,
+              "domNodes": 38639,
+              "listeners": 65356,
+              "detachedTrees": 281,
+              "layoutCount": 1427,
+              "layoutSeconds": 7.49662,
+              "styleCount": 2604,
+              "styleSeconds": 230.332298,
+              "scriptSeconds": 0.341628,
+              "taskSeconds": 311.507946,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 75,
+              "heapBytes": 46951552,
+              "domNodes": 40314,
+              "listeners": 65381,
+              "detachedTrees": 378,
+              "layoutCount": 2127,
+              "layoutSeconds": 11.065587,
+              "styleCount": 3879,
+              "styleSeconds": 339.793278,
+              "scriptSeconds": 0.535948,
+              "taskSeconds": 459.967332,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 100,
+              "heapBytes": 47577992,
+              "domNodes": 39988,
+              "listeners": 65406,
+              "detachedTrees": 475,
+              "layoutCount": 2827,
+              "layoutSeconds": 14.651771,
+              "styleCount": 5154,
+              "styleSeconds": 448.7642,
+              "scriptSeconds": 0.67076,
+              "taskSeconds": 607.646577,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            }
+          ],
+          "pageErrors": 0
+        },
+        {
+          "theme": "modern",
+          "transitions": 100,
+          "checkpoints": [
+            {
+              "transition": 0,
+              "heapBytes": 41598708,
+              "domNodes": 34892,
+              "listeners": 64219,
+              "detachedTrees": 18,
+              "layoutCount": 26,
+              "layoutSeconds": 0.044674,
+              "styleCount": 50,
+              "styleSeconds": 0.018655,
+              "scriptSeconds": 0.010097,
+              "taskSeconds": 1.282934,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 25,
+              "heapBytes": 44576112,
+              "domNodes": 35947,
+              "listeners": 64219,
+              "detachedTrees": 45,
+              "layoutCount": 701,
+              "layoutSeconds": 1.396824,
+              "styleCount": 1325,
+              "styleSeconds": 0.656796,
+              "scriptSeconds": 0.219888,
+              "taskSeconds": 34.644115,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 50,
+              "heapBytes": 45102768,
+              "domNodes": 35000,
+              "listeners": 64219,
+              "detachedTrees": 72,
+              "layoutCount": 1376,
+              "layoutSeconds": 2.575903,
+              "styleCount": 2600,
+              "styleSeconds": 1.292562,
+              "scriptSeconds": 0.408888,
+              "taskSeconds": 67.715032,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 75,
+              "heapBytes": 45703016,
+              "domNodes": 36055,
+              "listeners": 64219,
+              "detachedTrees": 99,
+              "layoutCount": 2051,
+              "layoutSeconds": 3.898822,
+              "styleCount": 3875,
+              "styleSeconds": 1.934596,
+              "scriptSeconds": 0.613251,
+              "taskSeconds": 100.861326,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 100,
+              "heapBytes": 46160052,
+              "domNodes": 35108,
+              "listeners": 64219,
+              "detachedTrees": 126,
+              "layoutCount": 2726,
+              "layoutSeconds": 5.200852,
+              "styleCount": 5150,
+              "styleSeconds": 2.578787,
+              "scriptSeconds": 0.819329,
+              "taskSeconds": 133.987258,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            }
+          ],
+          "pageErrors": 0
+        }
+      ],
+      "navigation_medians_ms": {
+        "midwinter": 5910.299999952316,
+        "modern": 1300.1499999761581
+      },
+      "realtime_scenarios": 9,
+      "themes_profiled": 11
+    },
+    "after": {
+      "complete": true,
+      "navigation": [
+        {
+          "theme": "midwinter",
+          "transitions": 100,
+          "checkpoints": [
+            {
+              "transition": 0,
+              "heapBytes": 42774236,
+              "domNodes": 37290,
+              "listeners": 65306,
+              "detachedTrees": 87,
+              "layoutCount": 27,
+              "layoutSeconds": 0.135198,
+              "styleCount": 53,
+              "styleSeconds": 4.479718,
+              "scriptSeconds": 0.004953,
+              "taskSeconds": 6.014039,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 25,
+              "heapBytes": 45803472,
+              "domNodes": 38965,
+              "listeners": 65331,
+              "detachedTrees": 184,
+              "layoutCount": 727,
+              "layoutSeconds": 3.885936,
+              "styleCount": 1330,
+              "styleSeconds": 117.277858,
+              "scriptSeconds": 0.136318,
+              "taskSeconds": 158.192811,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 50,
+              "heapBytes": 46444048,
+              "domNodes": 38639,
+              "listeners": 65356,
+              "detachedTrees": 281,
+              "layoutCount": 1427,
+              "layoutSeconds": 7.667882,
+              "styleCount": 2605,
+              "styleSeconds": 230.591454,
+              "scriptSeconds": 0.342531,
+              "taskSeconds": 312.427682,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 75,
+              "heapBytes": 46950032,
+              "domNodes": 40314,
+              "listeners": 65381,
+              "detachedTrees": 378,
+              "layoutCount": 2127,
+              "layoutSeconds": 11.598938,
+              "styleCount": 3880,
+              "styleSeconds": 346.771243,
+              "scriptSeconds": 0.562301,
+              "taskSeconds": 470.514299,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 100,
+              "heapBytes": 47577324,
+              "domNodes": 39988,
+              "listeners": 65406,
+              "detachedTrees": 475,
+              "layoutCount": 2827,
+              "layoutSeconds": 15.632586,
+              "styleCount": 5155,
+              "styleSeconds": 467.16012,
+              "scriptSeconds": 0.718022,
+              "taskSeconds": 633.852343,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            }
+          ],
+          "pageErrors": 0
+        },
+        {
+          "theme": "modern",
+          "transitions": 100,
+          "checkpoints": [
+            {
+              "transition": 0,
+              "heapBytes": 41930612,
+              "domNodes": 34892,
+              "listeners": 64219,
+              "detachedTrees": 18,
+              "layoutCount": 26,
+              "layoutSeconds": 0.05313,
+              "styleCount": 50,
+              "styleSeconds": 0.019737,
+              "scriptSeconds": 0.008785,
+              "taskSeconds": 1.414214,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 25,
+              "heapBytes": 44581628,
+              "domNodes": 35947,
+              "listeners": 64219,
+              "detachedTrees": 45,
+              "layoutCount": 701,
+              "layoutSeconds": 1.533928,
+              "styleCount": 1325,
+              "styleSeconds": 0.710574,
+              "scriptSeconds": 0.217817,
+              "taskSeconds": 36.340117,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 50,
+              "heapBytes": 45109980,
+              "domNodes": 35000,
+              "listeners": 64219,
+              "detachedTrees": 72,
+              "layoutCount": 1376,
+              "layoutSeconds": 3.086354,
+              "styleCount": 2600,
+              "styleSeconds": 1.42027,
+              "scriptSeconds": 0.43806,
+              "taskSeconds": 71.646524,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 75,
+              "heapBytes": 45723828,
+              "domNodes": 36055,
+              "listeners": 64219,
+              "detachedTrees": 99,
+              "layoutCount": 2051,
+              "layoutSeconds": 4.595375,
+              "styleCount": 3875,
+              "styleSeconds": 2.143236,
+              "scriptSeconds": 0.652522,
+              "taskSeconds": 107.978402,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            },
+            {
+              "transition": 100,
+              "heapBytes": 46196624,
+              "domNodes": 35108,
+              "listeners": 64219,
+              "detachedTrees": 126,
+              "layoutCount": 2726,
+              "layoutSeconds": 5.998783,
+              "styleCount": 5150,
+              "styleSeconds": 2.841949,
+              "scriptSeconds": 0.882595,
+              "taskSeconds": 143.678328,
+              "timers": {
+                "timeouts": 0,
+                "intervals": 2
+              }
+            }
+          ],
+          "pageErrors": 0
+        }
+      ],
+      "navigation_medians_ms": {
+        "midwinter": 6205.199999988079,
+        "modern": 1421.2500000596046
+      },
+      "realtime_scenarios": 9,
+      "themes_profiled": 11
+    }
+  },
+  "limitations": [
+    "Synthetic disposable SQL/RRD data, no live SNMP or collector throughput.",
+    "Both runs use Xdebug profiling and include its overhead.",
+    "Cold means application caches only; OS and database caches were not flushed.",
+    "Concurrent validation workloads affected wall time; no wall-time speedup is claimed.",
+    "RRDtool boundaries include subprocess waits, not measured disk latency.",
+    "Retained DOM growth and expensive Midwinter styling remain diagnostic findings requiring retainer and CSS analysis.",
+    "The existing disposable image uses RRDtool 1.7.2. These basic rendering measurements do not validate performance of the newer RRDtool features supported by develop."
+  ]
+}

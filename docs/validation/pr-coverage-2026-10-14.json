@@ -1,0 +1,315 @@
+{
+  "date": "2026-10-14",
+  "scope": "37 original open PRs, 4 PRs opened during validation and the profiling follow-up #8361; measured at each validated revision",
+  "minimum_percent": 80,
+  "metric": "changed first-party executable statements, not whole-project coverage",
+  "results": [
+    {
+      "pr": 7790,
+      "url": "https://github.com/Cacti/cacti/pull/7790",
+      "language": "PHP",
+      "covered": 558,
+      "executable": 630,
+      "percent": 88.57142857142857,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8012,
+      "url": "https://github.com/Cacti/cacti/pull/8012",
+      "language": "PHP",
+      "covered": 305,
+      "executable": 342,
+      "percent": 89.18128654970761,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8169,
+      "url": "https://github.com/Cacti/cacti/pull/8169",
+      "language": "PHP",
+      "covered": 106,
+      "executable": 124,
+      "percent": 85.48387096774194,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8237,
+      "url": "https://github.com/Cacti/cacti/pull/8237",
+      "percent": 100,
+      "evidence": "passing native changed-code CI gate at 100 percent"
+    },
+    {
+      "pr": 8238,
+      "url": "https://github.com/Cacti/cacti/pull/8238",
+      "percent": 100,
+      "evidence": "passing native changed-code CI gate at 100 percent"
+    },
+    {
+      "pr": 8281,
+      "url": "https://github.com/Cacti/cacti/pull/8281",
+      "language": "PHP",
+      "covered": 36,
+      "executable": 43,
+      "percent": 83.72093023255815,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8285,
+      "url": "https://github.com/Cacti/cacti/pull/8285",
+      "language": "PHP",
+      "covered": 6,
+      "executable": 7,
+      "percent": 85.71428571428571,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8293,
+      "url": "https://github.com/Cacti/cacti/pull/8293",
+      "language": "PHP",
+      "covered": 1,
+      "executable": 1,
+      "percent": 100.0,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8294,
+      "url": "https://github.com/Cacti/cacti/pull/8294",
+      "percent": 100,
+      "scope": "first-party Python tools; native Bash gettext coverage 41/41",
+      "evidence": "native line, branch and function coverage"
+    },
+    {
+      "pr": 8295,
+      "url": "https://github.com/Cacti/cacti/pull/8295",
+      "language": "PHP",
+      "covered": 68,
+      "executable": 79,
+      "percent": 86.07594936708861,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8297,
+      "url": "https://github.com/Cacti/cacti/pull/8297",
+      "language": "PHP",
+      "covered": 61,
+      "executable": 69,
+      "percent": 88.40579710144928,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8305,
+      "url": "https://github.com/Cacti/cacti/pull/8305",
+      "language": "Python",
+      "covered": 159,
+      "executable": 167,
+      "percent": 95.20958083832335,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8306,
+      "url": "https://github.com/Cacti/cacti/pull/8306",
+      "language": "PHP",
+      "covered": 341,
+      "executable": 385,
+      "percent": 88.57142857142857,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8316,
+      "url": "https://github.com/Cacti/cacti/pull/8316",
+      "percent": 100,
+      "evidence": "passing native changed-code CI gate at 100 percent"
+    },
+    {
+      "pr": 8334,
+      "url": "https://github.com/Cacti/cacti/pull/8334",
+      "language": "PHP",
+      "covered": 281,
+      "executable": 329,
+      "percent": 85.41033434650456,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8335,
+      "url": "https://github.com/Cacti/cacti/pull/8335",
+      "language": "PHP",
+      "covered": 464,
+      "executable": 565,
+      "percent": 82.12389380530973,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8337,
+      "url": "https://github.com/Cacti/cacti/pull/8337",
+      "language": "PHP",
+      "covered": 8,
+      "executable": 9,
+      "percent": 88.88888888888889,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8339,
+      "url": "https://github.com/Cacti/cacti/pull/8339",
+      "language": "PHP",
+      "covered": 1,
+      "executable": 1,
+      "percent": 100.0,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8340,
+      "url": "https://github.com/Cacti/cacti/pull/8340",
+      "language": "PHP",
+      "covered": 13,
+      "executable": 13,
+      "percent": 100.0,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8341,
+      "url": "https://github.com/Cacti/cacti/pull/8341",
+      "language": "PHP",
+      "covered": 13,
+      "executable": 13,
+      "percent": 100.0,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8343,
+      "url": "https://github.com/Cacti/cacti/pull/8343",
+      "percent": 100,
+      "scope": "first-party JavaScript dependency builder; 76 JavaScript contracts",
+      "evidence": "native line, branch and function coverage"
+    },
+    {
+      "pr": 8344,
+      "url": "https://github.com/Cacti/cacti/pull/8344",
+      "percent": 100,
+      "scope": "first-party JavaScript dependency builder; 76 JavaScript contracts",
+      "evidence": "native line, branch and function coverage"
+    },
+    {
+      "pr": 8347,
+      "url": "https://github.com/Cacti/cacti/pull/8347",
+      "language": "Python",
+      "covered": 54,
+      "executable": 56,
+      "percent": 96.42857142857143,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8349,
+      "url": "https://github.com/Cacti/cacti/pull/8349",
+      "language": "PHP",
+      "covered": 5,
+      "executable": 5,
+      "percent": 100.0,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8351,
+      "url": "https://github.com/Cacti/cacti/pull/8351",
+      "language": "PHP",
+      "covered": 41,
+      "executable": 49,
+      "percent": 83.6734693877551,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8352,
+      "url": "https://github.com/Cacti/cacti/pull/8352",
+      "language": "PHP",
+      "covered": 190,
+      "executable": 237,
+      "percent": 80.16877637130801,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8353,
+      "url": "https://github.com/Cacti/cacti/pull/8353",
+      "language": "PHP",
+      "covered": 89,
+      "executable": 111,
+      "percent": 80.18018018018019,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8356,
+      "url": "https://github.com/Cacti/cacti/pull/8356",
+      "language": "PHP",
+      "covered": 90,
+      "executable": 105,
+      "percent": 85.71428571428571,
+      "evidence": "native statement coverage; source-mapped request evidence where applicable"
+    },
+    {
+      "pr": 8359,
+      "url": "https://github.com/Cacti/cacti/pull/8359",
+      "percent": 100,
+      "evidence": "passing native changed-code CI gate at 100 percent",
+      "covered": 5,
+      "executable": 5,
+      "check_url": "https://github.com/Cacti/cacti/actions/runs/38530531064/job/115741066802"
+    },
+    {
+      "pr": 8360,
+      "url": "https://github.com/Cacti/cacti/pull/8360",
+      "language": "PHP",
+      "covered": 57,
+      "executable": 60,
+      "percent": 95,
+      "evidence": "native changed-code CI coverage",
+      "check_url": "https://github.com/Cacti/cacti/actions/runs/38531697354/job/115744840517"
+    }
+  ],
+  "additional_native_coverage": [
+    {
+      "pr": 8293,
+      "language": "CSS",
+      "covered": 77,
+      "executable": 96,
+      "percent": 80.20833333333333
+    },
+    {
+      "pr": 8306,
+      "language": "Bash",
+      "covered": 9,
+      "executable": 9,
+      "percent": 100
+    }
+  ],
+  "formatting_equivalence": [
+    {
+      "pr": 8301,
+      "php_files": 73,
+      "evidence": "normalized PHP AST equivalence; seven checker regression cases"
+    },
+    {
+      "pr": 8302,
+      "php_files": 71,
+      "evidence": "normalized PHP AST equivalence; seven checker regression cases"
+    },
+    {
+      "pr": 8303,
+      "php_files": 60,
+      "evidence": "normalized PHP AST equivalence; seven checker regression cases"
+    }
+  ],
+  "no_changed_first_party_executable_statements": [
+    8348,
+    8346,
+    8345,
+    8336,
+    8320,
+    8319,
+    8357,
+    8358,
+    8361
+  ],
+  "notes": [
+    "Formatting, documentation, workflow configuration and generated dependency files are not assigned artificial execution coverage.",
+    "Counts include uncovered changed executable statements.",
+    "Results describe tested revisions. Later PR changes require another run.",
+    "A passing coverage gate does not imply every unrelated CI check passes.",
+    "The profiling follow-up #8361 removes two redundant production includes and adds no executable production statements. Both full native rendering scenarios and a repeated PNG/SVG/PNG options contract validate the removal."
+  ]
+}
