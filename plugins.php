@@ -803,7 +803,10 @@ function update_show_current() : void {
 								post['__csrf_magic'] = csrfMagicToken;
 								postUrl({url: url, noState: true}, post);
 							} else {
-								loadUrl({url: url});
+								// Navigate the whole page so the jQuery UI dialog is cleared; an
+								// Ajax postUrl() would leave #pidialog detached under body and
+								// break the next confirmation.
+								submitPageUsingPost(url);
 							}
 						}
 					}
@@ -872,8 +875,37 @@ function update_show_current() : void {
 
 				$('#latest').click(function() {
 					strURL = 'plugins.php?action=latest';
-					loadUrl({url:strURL});
+					submitPageUsingPost(strURL);
 				});
+
+				// The install, enable, remote enable and load actions are guarded by
+				// csrf_require_post() on the server, so they must be submitted over POST.
+				// A capture-phase listener on the document intercepts these clicks before
+				// the bubble-phase generic anchor handler (which would issue a GET and be
+				// rejected), works for rows added by later Ajax table refreshes, and is
+				// bound only once for the life of the page.
+				if (!window.cactiPluginPostActionsBound) {
+					window.cactiPluginPostActionsBound = true;
+
+					document.addEventListener('click', function(event) {
+						var anchor = event.target.closest('a.piinstall, a.pienable, a.piload');
+
+						if (anchor === null) {
+							return;
+						}
+
+						var url = anchor.getAttribute('href');
+
+						if (url === null || url === '' || url === '#') {
+							return;
+						}
+
+						event.preventDefault();
+						event.stopImmediatePropagation();
+
+						postUrl({ url: url }, { __csrf_magic: csrfMagicToken });
+					}, true);
+				}
 
 				$('#form_plugins').submit(function(event) {
 					event.preventDefault();
