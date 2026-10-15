@@ -286,7 +286,7 @@ function package_file_get_contents($filename) {
 
 		$data = import_read_package_data($xmlfile, $binary_signature);
 
-		if (isset($data['publickey']) && package_public_key_is_trusted(base64_decode($data['publickey']))) {
+		if (isset($data['publickey'])) {
 			$public_key = base64_decode($data['publickey']);
 		} else {
 			$public_key = get_public_key();
@@ -300,13 +300,7 @@ function package_file_get_contents($filename) {
 
 				$fdata = base64_decode($file['data']);
 
-				// Prefer SHA-256, but fall back to SHA-1 so packages signed before the
-				// SHA-256 transition still verify against a trusted public key.
 				$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-
-				if ($ok != 1) {
-					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
-				}
 
 				if ($ok != 1) {
 					$fdata = false;
@@ -444,36 +438,6 @@ function package_get_details() {
 }
 
 /**
- * Handles the package public key is trusted. Used as part of Cacti's package import
- * functionality.
- *
- * @param mixed $public_key The public key.
- *
- * @return bool True on success, false otherwise.
- */
-function package_public_key_is_trusted($public_key) {
-	if ($public_key == '') {
-		return false;
-	}
-
-	if ($public_key == get_public_key()) {
-		return true;
-	}
-
-	$trusted = db_fetch_assoc('SELECT public_key FROM package_public_keys');
-
-	if (cacti_sizeof($trusted)) {
-		foreach ($trusted as $t) {
-			if ($t['public_key'] == $public_key) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
-/**
  * Handles the import validate public key. Used as part of Cacti's package import functionality.
  *
  * @param string $xmlfile The xmlfile.
@@ -527,10 +491,7 @@ function import_validate_public_key($xmlfile, $accept = false) {
 				$package_publickey = base64_decode($xml['publickey']);
 			}
 
-			// Only trust the key the package ships if the operator has
-			// already trusted it; otherwise verify against the Cacti key, which
-			// a self-signed package cannot forge.
-			if ($package_publickey != '' && package_public_key_is_trusted($package_publickey)) {
+			if ($package_publickey != '') {
 				return $package_publickey;
 			} else {
 				return get_public_key();

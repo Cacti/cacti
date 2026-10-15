@@ -5,10 +5,10 @@
 		colors="true">
 	<testsuites>
 		<testsuite name="Boost MariaDB">
-			<file>./integration/BoostProcessTableMariaDbTest.php</file>
-			<file>./integration/PollerHandoffIntegrationTest.php</file>
-			<file>./integration/UnusedSourceCacheIntegrationTest.php</file>
-			<file>./integration/BoostDrainIntegrationTest.php</file>
+			<file>integration/BoostProcessTableMariaDbTest.php</file>
+			<file>integration/PollerHandoffIntegrationTest.php</file>
+			<file>integration/UnusedSourceCacheIntegrationTest.php</file>
+			<file>integration/BoostDrainIntegrationTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

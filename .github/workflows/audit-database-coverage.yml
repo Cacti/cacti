@@ -11,7 +11,7 @@ on:
       - 'cli/install_cacti.php'
       - 'lib/audit.php'
       - 'lib/installer.php'
-      - 'phpunit-audit.xml'
+      - 'tests/phpunit-audit.xml'
       - 'tests/Unit/Database/AuditDatabaseMissingTableTest.php'
       - 'tests/Unit/Installer/InstallerSchemaValidationTest.php'
   pull_request:
@@ -24,7 +24,7 @@ on:
       - 'cli/install_cacti.php'
       - 'lib/audit.php'
       - 'lib/installer.php'
-      - 'phpunit-audit.xml'
+      - 'tests/phpunit-audit.xml'
       - 'tests/Unit/Database/AuditDatabaseMissingTableTest.php'
       - 'tests/Unit/Installer/InstallerSchemaValidationTest.php'
   workflow_dispatch:
@@ -62,7 +62,7 @@ jobs:
           XDEBUG_MODE: coverage
         run: |
           pest --colors=never \
-            --configuration=phpunit-audit.xml \
+            --configuration=tests/phpunit-audit.xml \
             --coverage \
             --coverage-text \
             --min=100
