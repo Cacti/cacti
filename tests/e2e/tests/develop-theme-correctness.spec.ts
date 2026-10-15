@@ -74,6 +74,8 @@ for (const [file, html, selector, pseudo, property, expected] of [
 	['include/themes/paw/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
 	['include/themes/raspberry/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
 	['include/themes/sunrise/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
+	['include/themes/deepness/main.css', '<span class="filteredValue">match</span>', '.filteredValue', '', 'backgroundColor', /^rgb\(227, 179, 65\)$/],
+	['include/themes/deepness/main.css', '<span class="filteredValue">match</span>', '.filteredValue', '', 'color', /^rgb\(11, 14, 19\)$/],
 ] as [string, string, string, string, string, RegExp][]) {
 	test(`${file} keeps repaired ${selector}${pseudo} ${property}`, async ({ page }) => {
 		await page.setContent(`<!DOCTYPE html>${html}`);
