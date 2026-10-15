@@ -40,18 +40,37 @@ for (const file of files) {
 	});
 }
 
-test('graph headings retain white text and theme gradients retain fallback colors', async ({ page }) => {
-	for (const [file, selector, expected] of [
-		['include/themes/deepness/main.css', '.graphSubHeaderColumn', 'rgb(255, 255, 255)'],
-		['include/themes/midwinter/css/media/core.css', '.graphSubHeaderColumn', 'rgb(255, 255, 255)'],
-		['include/themes/hollyberry/main.css', '.cactiPageHead', 'rgb(0, 161, 11)'],
-	]) {
+// One test per stylesheet: setContent discards the previous sheet and its rule usage.
+for (const [file, selector, expected] of [
+	['include/themes/deepness/main.css', '.graphSubHeaderColumn', 'rgb(255, 255, 255)'],
+	['include/themes/midwinter/css/media/core.css', '.graphSubHeaderColumn', 'rgb(255, 255, 255)'],
+	['include/themes/hollyberry/main.css', '.cactiPageHead', 'rgb(0, 161, 11)'],
+]) {
+	test(`${file} graph headings retain white text and gradients retain fallback colors`, async ({ page }) => {
 		await page.setContent('<!DOCTYPE html><div class="graphSubHeaderColumn"></div><div class="cactiPageHead"></div>');
 		await installThemeCss(page, file);
 		expect(await page.locator(selector).evaluate(el => getComputedStyle(el)[el.classList.contains('graphSubHeaderColumn') ? 'color' : 'backgroundColor'])).toBe(expected);
 		if (selector === '.cactiPageHead') expect(await page.locator(selector).evaluate(el => getComputedStyle(el).backgroundImage)).toContain('linear-gradient(');
-	}
-});
+	});
+}
+
+for (const [file, html, selector, pseudo, property, expected] of [
+	['include/themes/midwinter/css/media/core.css', '<legend>Options</legend>', 'legend', '', 'fontFamily', /monospace$/],
+	['include/themes/midwinter/css/media/core.css', '<div class="formFieldDescription">Help</div>', '.formFieldDescription', '', 'cssFloat', /^left$/],
+	['include/themes/midwinter/css/pre/helper.css', '<span class="icon ti-icon-star"></span>', 'span', '', 'fontFamily', /^tabler-icons, sans-serif$/],
+	['include/themes/midwinter/css/media/compact.css', '<div class="mdw-GridContainer-PopOver"><div class="cactiInstallTable"></div></div>', '.cactiInstallTable', '', 'borderTopLeftRadius', /^2px$/],
+	['include/themes/midwinter/css/media/compact.css', '<div class="elementsOnTop"><div class="tableNavBarOnTop"><div class="navBarNavigationPrevious"><a href="#prev">Previous</a></div></div></div>', '.navBarNavigationPrevious a', '::before', 'fontFamily', /^tabler-icons, sans-serif$/],
+	['include/themes/midwinter/css/media/compact.css', '<div class="elementsOnTop"><div class="tableNavBarOnTop"><div class="navBarNavigationNext"><a href="#next">Next</a></div></div></div>', '.navBarNavigationNext a', '::before', 'fontFamily', /^tabler-icons, sans-serif$/],
+	['include/themes/midwinter/css/media/compact-landscape.css', '<div class="navBreadCrumb"><div>Console</div><div>Devices</div></div>', '.navBreadCrumb div:first-child', '::after', 'fontFamily', /^"Font Awesome 5 Free", sans-serif$/],
+	['include/themes/midwinter/css/media/compact-landscape.css', '<div class="navBox-header-dropdown-content"><a href="#item">Item</a></div>', 'a', '', 'textDecorationLine', /^none$/],
+	['include/themes/midwinter/css/media/compact-landscape.css', '<div class="navBox-content"><div class="mdw-jstree-wrapper"><ul><li class="jstree-node jstree-closed"><i class="jstree-ocl"></i></li></ul></div></div>', '.jstree-ocl', '::before', 'fontFamily', /^tabler-icons, sans-serif$/],
+] as [string, string, string, string, string, RegExp][]) {
+	test(`${file} keeps repaired ${selector}${pseudo} ${property}`, async ({ page }) => {
+		await page.setContent(`<!DOCTYPE html>${html}`);
+		await installThemeCss(page, file);
+		expect(await page.locator(selector).evaluate((element, [pseudo, property]) => (getComputedStyle(element, pseudo || null) as any)[property], [pseudo, property])).toMatch(expected);
+	});
+}
 
 for (const width of [700, 900, 1100]) {
 	test(`Midwinter responsive table rules have an explicit root at width ${width}`, async ({ page }) => {
