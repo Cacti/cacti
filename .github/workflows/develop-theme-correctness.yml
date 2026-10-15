@@ -37,6 +37,11 @@ jobs:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
+          # The event's base SHA can predate the develop tip this checkout was
+          # merged onto, which counts develop's own lines as the PR's.
+          if git rev-parse --verify --quiet 'HEAD^2' >/dev/null; then
+            BASE_COMMIT="$(git rev-parse 'HEAD^1')"
+          fi
           python3 tests/tools/test_report_changed_coverage.py
           python3 tests/tools/report_changed_coverage.py --base "$BASE_COMMIT" \
             --language css --minimum 80 --browser-root tests/e2e/test-results
