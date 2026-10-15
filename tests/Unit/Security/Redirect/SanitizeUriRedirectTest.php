@@ -73,3 +73,22 @@ test('sanitize_uri leaves a legitimate local path untouched', function () {
 	expect(sanitize_uri('/cacti/settings.php'))->toBe('/cacti/settings.php')
 		->and(sanitize_uri('graph_view.php?local_graph_id=3'))->toStartWith('graph_view.php');
 });
+
+// global_session.php prints the result inside a single-quoted inline script
+// string, where a raw line break ends the script and a backslash escapes the
+// closing quote.
+test('sanitize_uri drops backslash, NUL, CR and LF', function (string $uri) {
+	$out = sanitize_uri($uri);
+
+	expect($out)->toBe('/cacti/index.php?a=b')
+		->and(strpbrk($out, "\\\0\r\n"))->toBeFalse();
+})->with([
+	'backslash'         => ['/cacti/index.php?a=\\b'],
+	'nul'               => ["/cacti/index.php?a=\0b"],
+	'cr'                => ["/cacti/index.php?a=\rb"],
+	'lf'                => ["/cacti/index.php?a=\nb"],
+	'encoded backslash' => ['/cacti/index.php?a=%5Cb'],
+	'encoded nul'       => ['/cacti/index.php?a=%00b'],
+	'encoded cr'        => ['/cacti/index.php?a=%0db'],
+	'encoded lf'        => ['/cacti/index.php?a=%0ab'],
+]);

@@ -5673,10 +5673,14 @@ function sanitize_uri(string $uri) : string {
 		']', '{',
 		'}', ';',
 		'!', '(',
-		')'
+		')', '\\',
+		"\0", "\r",
+		"\n"
 	];
 
 	static $drop_char_replace = [
+		'', '',
+		'', '',
 		'', '',
 		'', '',
 		'', '',
