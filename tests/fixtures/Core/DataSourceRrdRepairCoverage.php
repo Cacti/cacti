@@ -25,8 +25,8 @@ if (!defined('MESSAGE_LEVEL_INFO')) {
 if (!defined('MESSAGE_LEVEL_ERROR')) {
 	define('MESSAGE_LEVEL_ERROR', 1);
 }
-if (!defined('RRDTOOL_OUTPUT_RETURN_STDERR')) {
-	define('RRDTOOL_OUTPUT_RETURN_STDERR', 4);
+if (!defined('RRDTOOL_OUTPUT_BOOLEAN')) {
+	define('RRDTOOL_OUTPUT_BOOLEAN', 4);
 }
 
 /* Mutable boundary state the stubs read, reset per scenario below. */
@@ -35,8 +35,7 @@ $GLOBALS['ds_repair_state'] = [
 	'rrd_info'    => ['rra' => [0 => []], 'filename' => '/tmp/fixture.rrd', 'ds' => []],
 	'diff'        => ['tune' => ['/tmp/fixture.rrd DS:traffic_in:COUNTER:600:0:U']],
 	'writable'    => true,
-	'ctrl'        => [],
-	'exec_output' => '',
+	'exec_result' => true,
 ];
 
 $GLOBALS['ds_repair_messages'] = [];
@@ -74,11 +73,11 @@ function is_writeable($path) {
 function read_config_option($name, $force = false) {
 	return 'rrdtool';
 }
-function cacti_has_control_chars($string) {
-	return in_array($string, $GLOBALS['ds_repair_state']['ctrl'], true);
+function rrd_strip_control_chars($command_line) {
+	return preg_replace('/[\x00-\x1f\x7f]/', '', $command_line);
 }
 function rrdtool_execute($command, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
-	return $GLOBALS['ds_repair_state']['exec_output'];
+	return $GLOBALS['ds_repair_state']['exec_result'];
 }
 function cacti_log($message, $print = false, $type = '', $level = 0) {
 	// no-op
@@ -98,8 +97,7 @@ function run_scenario(array $overrides) : void {
 		'rrd_info'    => ['rra' => [0 => []], 'filename' => '/tmp/fixture.rrd', 'ds' => []],
 		'diff'        => ['tune' => ['/tmp/fixture.rrd DS:traffic_in:COUNTER:600:0:U']],
 		'writable'    => true,
-		'ctrl'        => [],
-		'exec_output' => '',
+		'exec_result' => true,
 	], $overrides);
 
 	ds_repair();
@@ -122,13 +120,12 @@ run_scenario(['writable' => false]);
 
 /* writable: one control-character recommendation is skipped, one succeeds */
 run_scenario([
-	'diff' => ['tune' => ['/tmp/fixture.rrd DEL:control', '/tmp/fixture.rrd DS:traffic_in:COUNTER:600:0:U']],
-	'ctrl' => ['/tmp/fixture.rrd DEL:control'],
-	'exec_output' => '',
+	'diff' => ['tune' => ["/tmp/fixture.rrd DEL:control\x01", '/tmp/fixture.rrd DS:traffic_in:COUNTER:600:0:U']],
+	'exec_result' => true,
 ]);
 
 /* writable: the tune command fails, so the repair is reported as failed */
-run_scenario(['exec_output' => 'ERROR: some rrdtool failure']);
+run_scenario(['exec_result' => false]);
 
 $messages = $GLOBALS['ds_repair_messages'];
 
