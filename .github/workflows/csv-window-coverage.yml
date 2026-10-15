@@ -8,7 +8,7 @@ on:
       - 'graph.php'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
-      - 'phpunit-csv.xml'
+      - 'tests/phpunit-csv.xml'
       - 'tests/Unit/Core/Rrd/RrdFetchWindowTest.php'
       - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
@@ -24,7 +24,7 @@ on:
       - 'graph.php'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
-      - 'phpunit-csv.xml'
+      - 'tests/phpunit-csv.xml'
       - 'tests/Unit/Core/Rrd/RrdFetchWindowTest.php'
       - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
@@ -99,5 +99,5 @@ jobs:
             Unit/Ui/Graph/PercentileResolutionBehaviorTest.php \
             Unit/TwoYearGraphPanelTest.php \
             integration/CsvWindowRrdIntegrationTest.php; do
-            "${pest_runner}" --configuration=../phpunit-csv.xml "${test_file}"
+            "${pest_runner}" --configuration=phpunit-csv.xml "${test_file}"
           done
