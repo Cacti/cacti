@@ -1,0 +1,1 @@
+Reject dangling symlinks in validate_relative_path_within
