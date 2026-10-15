@@ -46,7 +46,7 @@ class ChangedPhpCoverageTest(unittest.TestCase):
     def test_deletion_only_changes_pass_without_a_coverage_report(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            result = GATE.measure({}, root / 'coverage-changed.xml', root, root / 'request-coverage')
+            result = GATE.measure({}, root / 'coverage-changed.xml', root)
             self.assertEqual(result['executable'], 0)
             self.assertTrue(GATE.passes(result, 80))
 
