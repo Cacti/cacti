@@ -8,6 +8,15 @@ easiest to get wrong, and does not repeat the rest.
 `CLAUDE.md` contains shared repository guidance. Keep private security-research
 notes outside tracked instruction files and follow `SECURITY.md` for reporting.
 
+## Maintenance fix scope
+
+Follow the [maintenance fix scope rules](.github/copilot-instructions.md#maintenance-fix-scope).
+Before adding cache lifecycle machinery or hooks across management APIs, show
+why the existing mechanism cannot support the fix and which operations change
+the derived result. Reconsider designs that introduce dependencies across
+unrelated subsystems. Passing tests alone do not justify expanded scope.
+Keep maintenance fixes small and compatible with the target branch.
+
 ## Where tests go
 
 Unit tests live under `tests/Unit/` in a category subfolder. Do not add a flat

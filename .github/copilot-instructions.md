@@ -74,6 +74,17 @@
   - Use `cacti_redirect($path, $params)` for local redirects; it rejects absolute and protocol-relative destinations (checking both raw and percent-decoded forms) and terminates the request.
   - Escape output for HTML attribute contexts with `html_escape_attr()`, not `htmle()`/`html_escape()`; only the attribute helper double-encodes to stop pre-encoded entities from breaking out of the attribute.
 
+## Maintenance fix scope
+
+Keep maintenance fixes focused on the reported defect and preserve branch compatibility.
+
+- Before adding persistent caches, staging tables, locks, shutdown handlers, or invalidation hooks across management APIs, show why the existing mechanism cannot support the fix. Use a concrete failure case from the target branch's implementation and its callers.
+- Identify the authoritative data, the derived result, and the exact operations that can change that result. Add invalidation hooks only for those operations. A component that displays or combines existing data does not automatically own its lifecycle.
+- If a cache design requires hooks across unrelated subsystems, reconsider the cache design before expanding the patch. Do not use dependencies introduced by the proposed design as proof that the original bug requires that scope.
+- Keep architectural changes in a separate proposal unless required for correctness. Before expanding a focused fix across unrelated subsystems, explain the dependency with a concrete example and the smallest viable alternative. Continue work already within scope.
+- Tests must validate intended product behavior and realistic failures. Passing tests or tests that require every proposed hook do not establish that the design or expanded scope is necessary.
+- For maintenance branches such as `1.2.x`, prefer the smallest compatible fix. Avoid unrelated refactors, new dependencies, and expanded CI requirements.
+
 ## Pull request pre-flight (MANDATORY)
 - **Before creating any pull request you MUST run `composer run-script php-cs-fixit`** to apply the repo's `php-cs-fixer` formatting rules, then commit any resulting changes. This script fixes in place (unlike the dry-run `composer phpcsfixer`), so creating a PR without running it is what trips the coding-standards job in CI. Run it from WSL (see Windows/WSL note below). Do not open the PR until the working tree is clean after the fixer runs.
 - **Every commit must also pass PHPStan static analysis.** Run `composer run-script phpstan -- --memory-limit=2G` from WSL and confirm it reports `No errors` before opening the PR. The default 128M limit crashes a parallel worker, so always pass `--memory-limit=2G` (or higher). The repo config (`.phpstan.neon`) analyses at **level 8**, which is cumulative and therefore satisfies the Level 6 floor; `tests/*` is excluded from analysis, so test-only files will not surface here but production code (e.g. `lib/`) will.
