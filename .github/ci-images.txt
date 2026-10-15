@@ -1,0 +1,23 @@
+# Third-party images that CI pulls, copied to ghcr.io/cacti/ci-images/ by
+# .github/workflows/ci-images.yml so jobs pull them with GITHUB_TOKEN instead
+# of as anonymous clients of Docker Hub or public.ecr.aws.
+#
+# Format: <source>@sha256:<digest> <destination name>:<tag>
+#
+# The copy keeps the source digest, so a workflow that pins a digest today
+# keeps the same digest after it switches to the GHCR name. To bump an image,
+# change the digest here and in every workflow that pins it in the same PR.
+# The tag names the upstream release the digest was taken from.
+
+docker.io/library/mariadb@sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98 mariadb:10.6
+docker.io/library/mariadb@sha256:7db29378d4fdab73f8123bbc2b48905c90d1a4b00cf848b028f1e81e623257f2 mariadb:10.11
+docker.io/library/mariadb@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430 mariadb:11.4
+docker.io/library/mariadb@sha256:6422478cb8e159f080fb1d8ccf65101e26fe51385787fde7d16c3b165a331f15 mariadb:11.8
+docker.io/library/mysql@sha256:6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242 mysql:8.4
+docker.io/library/nginx@sha256:0e5caf3555a79db2f1624c61fb1e585c4298a26384fea83f3e5108e451c1eb2c nginx:alpine
+docker.io/library/rockylinux@sha256:d7be1c094cc5845ee815d4632fe377514ee6ebcf8efaed6892889657e5ddaaa6 rockylinux:9
+docker.io/osixia/openldap@sha256:18742e9c449c9c1afe129d3f2f3ee15fb34cc43e5f940a20f3399728f41d7c28 openldap:1.5.0
+docker.io/anchore/syft@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0 syft:v1.51.0
+# The pinned Semgrep image has no release tag; its version label reads
+# "develop" at revision c1e36cc0.
+docker.io/semgrep/semgrep@sha256:e04d2cb132288d90035db8791d64f610cb255b21e727b94db046243b30c01ae9 semgrep:develop-c1e36cc0

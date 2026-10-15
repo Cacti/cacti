@@ -1,0 +1,17 @@
+<phpunit bootstrap="../../../../Users/thomasvincent/tmp/cacti-witness-review/include/vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+    <source>
+        <include>
+            <file>../lib/rrd_graph_item.php</file>
+        </include>
+    </source>
+    <testsuites>
+        <testsuite name="RRD graph item field contract coverage">
+            <file>Coverage/RrdGraphItemCoverageTest.php</file>
+            <file>Unit/RrdGraphItemFieldContractTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

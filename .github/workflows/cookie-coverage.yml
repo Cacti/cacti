@@ -97,7 +97,7 @@ jobs:
 
       - name: Run PHP cookie matrix
         run: >-
-          include/vendor/bin/pest
+          include/vendor/bin/pest --configuration=tests/phpunit.xml
           tests/Unit/Security/Session/CookiePolicyContractTest.php
           tests/Unit/Security/Session/CookieRuntimeTest.php
           tests/integration/AuthSystemRegressionIntegrationTest.php

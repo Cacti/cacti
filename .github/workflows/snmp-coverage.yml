@@ -9,7 +9,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/snmp.php'
-      - 'phpunit-snmp.xml'
+      - 'tests/phpunit-snmp.xml'
       - 'tests/Unit/DataCollection/Snmp/SnmpCoverageTest.php'
       - 'tests/Unit/DataCollection/Snmp/SnmpSessionErrorLoggingTest.php'
       - 'tests/fixtures/snmp-coverage/**'
@@ -22,7 +22,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/snmp.php'
-      - 'phpunit-snmp.xml'
+      - 'tests/phpunit-snmp.xml'
       - 'tests/Unit/DataCollection/Snmp/SnmpCoverageTest.php'
       - 'tests/Unit/DataCollection/Snmp/SnmpSessionErrorLoggingTest.php'
       - 'tests/fixtures/snmp-coverage/**'
@@ -90,7 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           include/vendor/bin/pest --colors=never \
-            --configuration=phpunit-snmp.xml \
+            --configuration=tests/phpunit-snmp.xml \
             --coverage \
             --coverage-text \
             --min=100

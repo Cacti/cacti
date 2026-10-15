@@ -312,7 +312,14 @@ function grow_dhtml_trees() : void {
 						href = href.replace('action=tree', 'action=tree_content');
 						href = href + '&hyper=true';
 						$('.cactiGraphContentArea').hide();
-						loadUrl({url:href,noState:pageGraphFirstLoad});
+
+						// reveal the content area once the new branch content has loaded (hidden above to avoid flashing the previous branch)
+						$.when(loadUrl({url:href,noState:pageGraphFirstLoad})).always(function(data, textStatus) {
+							// a superseding branch click aborts this request; its hide() must win, so don't re-show stale graphs
+							if (textStatus !== 'abort') {
+								$('.cactiGraphContentArea').show();
+							}
+						});
 					}
 
 					node = data.node.id;
@@ -963,6 +970,16 @@ function create_tree_filter() : array {
 		$templates = get_allowed_graph_templates_normalized('gl.host_id=0', 'name', '', $total_rows);
 	} elseif (gfrv('host_id') > 0) {
 		$templates = get_allowed_graph_templates_normalized('gl.host_id=' . gfrv('host_id'), 'name', '', $total_rows);
+	} elseif (gfrv('host_template_id') > 0) {
+		// Site Branch drilled into by Device Template: limit the Graph Templates to
+		// those present on that Device Template's devices (within the Site when set)
+		$device_where = 'host_template_id=' . gfrv('host_template_id');
+
+		if (gfrv('site_id') > 0) {
+			$device_where .= ' AND site_id=' . gfrv('site_id');
+		}
+
+		$templates = get_allowed_graph_templates_normalized('gl.host_id IN (SELECT id FROM host WHERE ' . $device_where . ')', 'name', '', $total_rows);
 	} else {
 		$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 	}
