@@ -42,4 +42,6 @@ run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.
 
 run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/html_tree\.php|tests/fixtures/Core/TreeFilterDeviceTemplateCoverage\.php)'
 
+run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
+
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
