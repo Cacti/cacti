@@ -21202,12 +21202,7 @@ msgstr ""
 msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
 msgstr ""
 
-#: plugins.php
-#, php-format
-msgid "Plugin '%s' has passed it's Configuration Check test and can not be Installed"
-msgstr ""
-
-#: plugins.php
+#: lib/plugins.php
 #, php-format
 msgid "Plugin '%s' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update."
 msgstr ""
@@ -25494,4 +25489,19 @@ msgstr ""
 
 #: lib/CactiValidator.php
 msgid "Invalid RRDtool axis option."
+msgstr ""
+
+#: plugins.php
+#, php-format
+msgid "Plugin '%s' passed its configuration check and can be enabled."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
+msgid "Plugin '%s' failed its configuration check. Review the plugin settings before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""

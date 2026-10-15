@@ -335,15 +335,14 @@ switch($action) {
 		$response = api_plugin_check_config($plugin);
 
 		if ($response === true) {
-			// set the status as installable again if check passes
+			// A successful recheck makes an installed plugin ready to enable.
 			db_execute_prepared('UPDATE plugin_config
-				SET status = 0
-				WHERE directory = ?',
+				SET status = 4
+				WHERE directory = ?
+				AND status = 2',
 				[$plugin]);
 
-			raise_message('plugin_good', __esc('Plugin \'%s\' has passed it\'s Configuration Check test and can not be Installed', $plugin), MESSAGE_LEVEL_INFO);
-		} elseif ($response === null) {
-			raise_message('plugin_good', __esc('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
+			raise_message('plugin_good', __esc('Plugin \'%s\' passed its configuration check and can be enabled.', $plugin), MESSAGE_LEVEL_INFO);
 		}
 
 		header('Location: plugins.php');

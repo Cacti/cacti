@@ -7656,6 +7656,40 @@ function IgnoreErrorHandler(string $message, string $file = '', int $line = 0) :
 	return false;
 }
 
+/**
+ * Attribute errors only to files within the resolved Cacti plugins directory.
+ * The first directory below that root owns nested vendor/plugin directories.
+ */
+function cacti_error_plugin(string $file) : string {
+	$root = realpath(CACTI_PATH_PLUGINS);
+	$path = realpath($file);
+
+	if ($root === false || $path === false) {
+		return '';
+	}
+
+	$root           = str_replace('\\', '/', $root) . '/';
+	$path           = str_replace('\\', '/', $path);
+	$prefix_matches = DIRECTORY_SEPARATOR === '\\'
+		? str_starts_with(strtolower($path), strtolower($root))
+		: str_starts_with($path, $root);
+
+	if (!$prefix_matches) {
+		return '';
+	}
+
+	$relative  = substr($path, strlen($root));
+	$separator = strpos($relative, '/');
+
+	if ($separator === false) {
+		return '';
+	}
+
+	$plugin = substr($relative, 0, $separator);
+
+	return preg_match('/^[A-Za-z0-9_-]+$/D', $plugin) ? $plugin : '';
+}
+
 function CactiErrorHandler(int $level, string $message, string $file, int $line, array $context = []) : bool {
 	global $phperrors;
 
@@ -7673,9 +7707,7 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 		return true;
 	}
 
-	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
-
-	$plugin = $output_array[1] ?? '';
+	$plugin = cacti_error_plugin($file);
 	$error  = 'Unknown error occurred';
 
 	if ($level != null && isset($phperrors[$level])) {
@@ -7762,9 +7794,7 @@ function CactiShutdownHandler() : bool {
 			case E_CORE_WARNING:
 			case E_COMPILE_WARNING:
 			case E_PARSE:
-				preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
-
-				$plugin = ($output_array[1] ?? '');
+				$plugin = cacti_error_plugin($error['file']);
 
 				if ($error['type'] != null && isset($phperrors[$error['type']])) {
 					$message = 'PHP ' . $phperrors[$error['type']] .
