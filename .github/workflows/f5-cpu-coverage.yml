@@ -10,7 +10,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/ss_f5_cpu.php'
-      - 'phpunit-f5-cpu.xml'
+      - 'tests/phpunit-f5-cpu.xml'
       - 'tests/Unit/DataCollection/Scripts/F5CpuTest.php'
   pull_request:
     branches: [develop]
@@ -21,7 +21,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/ss_f5_cpu.php'
-      - 'phpunit-f5-cpu.xml'
+      - 'tests/phpunit-f5-cpu.xml'
       - 'tests/Unit/DataCollection/Scripts/F5CpuTest.php'
   workflow_dispatch:
 
@@ -37,5 +37,5 @@ jobs:
     uses: ./.github/workflows/script-coverage.yml
     with:
       job-name: scripts/ss_f5_cpu.php 100% coverage
-      phpunit-config: phpunit-f5-cpu.xml
+      phpunit-config: tests/phpunit-f5-cpu.xml
       extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, snmp

@@ -8,7 +8,7 @@ on:
       - '.github/workflows/form-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'lib/CactiForm.php'
-      - 'phpunit-form-coverage.xml'
+      - 'tests/phpunit-form-coverage.xml'
       - 'sites.php'
       - 'tests/Unit/CactiFormTest.php'
       - 'tests/integration/CactiFormIntegrationTest.php'
@@ -19,7 +19,7 @@ on:
       - '.github/workflows/form-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'lib/CactiForm.php'
-      - 'phpunit-form-coverage.xml'
+      - 'tests/phpunit-form-coverage.xml'
       - 'sites.php'
       - 'tests/Unit/CactiFormTest.php'
       - 'tests/integration/CactiFormIntegrationTest.php'
@@ -37,4 +37,4 @@ jobs:
     uses: ./.github/workflows/script-coverage.yml
     with:
       job-name: Form API 100% coverage
-      phpunit-config: phpunit-form-coverage.xml
+      phpunit-config: tests/phpunit-form-coverage.xml

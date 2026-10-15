@@ -10,7 +10,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/ss_juniper_operating.php'
-      - 'phpunit-juniper-operating.xml'
+      - 'tests/phpunit-juniper-operating.xml'
       - 'tests/Unit/DataCollection/Scripts/JuniperOperatingTest.php'
   pull_request:
     branches: [develop]
@@ -21,7 +21,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/ss_juniper_operating.php'
-      - 'phpunit-juniper-operating.xml'
+      - 'tests/phpunit-juniper-operating.xml'
       - 'tests/Unit/DataCollection/Scripts/JuniperOperatingTest.php'
   workflow_dispatch:
 
@@ -37,5 +37,5 @@ jobs:
     uses: ./.github/workflows/script-coverage.yml
     with:
       job-name: scripts/ss_juniper_operating.php 100% coverage
-      phpunit-config: phpunit-juniper-operating.xml
+      phpunit-config: tests/phpunit-juniper-operating.xml
       extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, snmp

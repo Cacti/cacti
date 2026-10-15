@@ -5673,10 +5673,14 @@ function sanitize_uri(string $uri) : string {
 		']', '{',
 		'}', ';',
 		'!', '(',
-		')'
+		')', '\\',
+		"\0", "\r",
+		"\n"
 	];
 
 	static $drop_char_replace = [
+		'', '',
+		'', '',
 		'', '',
 		'', '',
 		'', '',
@@ -10787,7 +10791,7 @@ function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
 	foreach ($parts as $part) {
 		$walk .= '/' . $part;
 
-		if (file_exists($walk) && is_link($walk)) {
+		if (is_link($walk)) {
 			return false;
 		}
 	}

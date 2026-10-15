@@ -149,7 +149,7 @@ jobs:
       run: composer update --prefer-dist --no-progress --no-interaction
 
     - name: Run unit tests
-      run: include/vendor/bin/pest --display-warnings --testsuite=Unit
+      run: include/vendor/bin/pest --configuration=tests/phpunit.xml --display-warnings --testsuite=Unit
 
   check:
     runs-on: ubuntu-24.04

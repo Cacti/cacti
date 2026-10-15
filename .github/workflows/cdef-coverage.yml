@@ -14,9 +14,9 @@ on:
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
-      - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-integration.xml'
-      - 'phpunit.xml'
+      - 'tests/phpunit-cdef.xml'
+      - 'tests/phpunit-cdef-integration.xml'
+      - 'tests/phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
@@ -36,9 +36,9 @@ on:
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
-      - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-integration.xml'
-      - 'phpunit.xml'
+      - 'tests/phpunit-cdef.xml'
+      - 'tests/phpunit-cdef-integration.xml'
+      - 'tests/phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
@@ -62,10 +62,17 @@ jobs:
     name: lib/cdef.php 100% coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
 
     services:
       mariadb:
-        image: public.ecr.aws/docker/library/mariadb@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430 # 11.4
+        # Copied by ci-images.yml; services pull before any step can set a mirror.
+        image: ghcr.io/cacti/ci-images/mariadb:11.4@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           MARIADB_ROOT_PASSWORD: root
           MARIADB_DATABASE: cacti_test
@@ -100,7 +107,7 @@ jobs:
         run: |
           set -euo pipefail
           include/vendor/bin/pest \
-            --configuration=phpunit-cdef.xml \
+            --configuration=tests/phpunit-cdef.xml \
             --coverage \
             --coverage-text \
             --min=100
@@ -113,4 +120,4 @@ jobs:
           CACTI_TEST_DB_NAME: cacti_test
           CACTI_TEST_DB_USER: cacti
           CACTI_TEST_DB_PASS: cacti
-        run: include/vendor/bin/pest --configuration=phpunit-cdef-integration.xml
+        run: include/vendor/bin/pest --configuration=tests/phpunit-cdef-integration.xml

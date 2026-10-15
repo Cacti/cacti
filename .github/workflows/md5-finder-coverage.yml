@@ -10,7 +10,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/CactiMd5FileFinder.php'
-      - 'phpunit-md5-finder-coverage.xml'
+      - 'tests/phpunit-md5-finder-coverage.xml'
       - 'tests/Unit/CactiMd5FileFinderTest.php'
   pull_request:
     branches: [develop]
@@ -21,7 +21,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/CactiMd5FileFinder.php'
-      - 'phpunit-md5-finder-coverage.xml'
+      - 'tests/phpunit-md5-finder-coverage.xml'
       - 'tests/Unit/CactiMd5FileFinderTest.php'
   workflow_dispatch:
 
@@ -37,4 +37,4 @@ jobs:
     uses: ./.github/workflows/script-coverage.yml
     with:
       job-name: MD5 finder 100% coverage
-      phpunit-config: phpunit-md5-finder-coverage.xml
+      phpunit-config: tests/phpunit-md5-finder-coverage.xml

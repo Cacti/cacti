@@ -1,0 +1,1 @@
+Drop backslash, NUL and line breaks from sanitize_uri again so a crafted URI cannot break the inline refresh script

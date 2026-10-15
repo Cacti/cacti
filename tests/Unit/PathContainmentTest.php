@@ -28,10 +28,12 @@ beforeEach(function () : void {
 	$this->base = sys_get_temp_dir() . '/cacti_containment_' . bin2hex(random_bytes(6));
 	mkdir($this->base . '/nested', 0755, true);
 	file_put_contents($this->base . '/nested/present.txt', 'x');
+
+	$this->outside = $this->base . '_outside/pwned.txt';
 });
 
 afterEach(function () : void {
-	foreach (['/nested/present.txt', '/nested/link', '/link', '/nested', ''] as $leaf) {
+	foreach (['/nested/present.txt', '/nested/link', '/nested/dangling.php', '/link', '/dangling', '/nested', ''] as $leaf) {
 		$path = $this->base . $leaf;
 
 		if (is_link($path)) {
@@ -82,6 +84,21 @@ test('a symlinked segment under the base is rejected', function () : void {
 	symlink(sys_get_temp_dir(), $this->base . '/link');
 
 	expect(validate_relative_path_within('link/anything.txt', $this->base))->toBeFalse();
+});
+
+test('a dangling symlink is rejected as the final or an intermediate segment', function () : void {
+	if (DIRECTORY_SEPARATOR === '\\') {
+		$this->markTestSkipped('Symlink creation is not consistently available on Windows.');
+	}
+
+	if (!@symlink($this->outside, $this->base . '/nested/dangling.php') || !@symlink($this->outside, $this->base . '/dangling')) {
+		$this->markTestSkipped('Symlink creation is not permitted in this environment.');
+	}
+
+	expect(validate_relative_path_within('nested/dangling.php', $this->base))->toBeFalse()
+		->and(validate_relative_path_within('dangling/child.php', $this->base))->toBeFalse()
+		->and(validate_relative_path_within('nested/present.txt', $this->base))
+		->toBe(realpath($this->base) . '/nested/present.txt');
 });
 
 test('a path whose parent cannot be resolved is rejected', function () : void {
