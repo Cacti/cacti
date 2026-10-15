@@ -276,27 +276,16 @@ function do_rrdcheck($thread_id = 1) {
 					);
 				}
 
-				// Not really an issue that we should be calling out till we can fix
-				if (cacti_sizeof($data_sources) > cacti_sizeof($rrd_info)) {
-					db_execute_prepared ('INSERT INTO rrdcheck
-						(local_data_id, test_date, message)
-						VALUES (?, NOW(), ?)',
-						array(
-							$local_data_id,
-							"There are more Data Sources in the database than in the RRDfile, please investigate.  File '$file'."
-						)
-					);
-				}
+				$cacti_ds = rrdtool_function_info_from_ds($local_data_id);
+				$cacti_ds = isset($cacti_ds['ds']) ? $cacti_ds['ds'] : array();
 
-				if (cacti_sizeof($data_sources) < cacti_sizeof($rrd_info)) {
-					db_execute_prepared ('INSERT INTO rrdcheck
+				foreach (rrdcheck_ds_findings($data_sources, $rrd_info, $cacti_ds, $file) as $finding) {
+					$suffix = $finding['spec'] !== '' ? '  ' . rrdcheck_tune_rrdfile($file, $finding['spec'], $local_data_id, $use_proxy, $pipes) . '.' : '';
+
+					db_execute_prepared('INSERT INTO rrdcheck
 						(local_data_id, test_date, message)
 						VALUES (?, NOW(), ?)',
-						array(
-							$local_data_id,
-							"There are less Data Sources in the database than in the RRDfile, please investigate.  File '$file'."
-						)
-					);
+						array($local_data_id, $finding['message'] . $suffix));
 				}
 
 				$output  = '';
@@ -304,15 +293,6 @@ function do_rrdcheck($thread_id = 1) {
 
 				foreach ($rrd_info as $info_key => $info_array) {
 					if (!isset($data_sources[$info_key])) {
-						db_execute_prepared ('INSERT INTO rrdcheck
-							(local_data_id, test_date, message)
-							VALUES (?, NOW(), ?)',
-							array(
-								$local_data_id,
-								"The Data Source '$info_key' exists in RRDfile, but not in database.  File '$file'."
-							)
-						);
-
 						continue;
 					}
 
@@ -334,32 +314,6 @@ function do_rrdcheck($thread_id = 1) {
 							array(
 								$local_data_id,
 								"The RRDfile minimal heartbeat for Data Source '{$info_key}' should be '{$rrdval['profile_heartbeat']}' and is currently '{$info_array['minimal_heartbeat']}'.  File '$file'."
-							)
-						);
-					}
-				}
-
-				// test if ds in db == ds in rra
-				foreach ($data_sources as $dsname) {
-					if (!array_key_exists($dsname, $rrd_info)) {
-						db_execute_prepared ('INSERT INTO rrdcheck
-							(local_data_id, test_date, message)
-							VALUES (?, NOW(), ?)',
-							array(
-								$local_data_id,
-								"Data Source name '$dsname' exists in the Database, but not in RRDfile.  File '$file'."
-							)
-						);
-					}
-
-					// Should never happen
-					if (empty($dsname)) {
-						db_execute_prepared ('INSERT INTO rrdcheck
-							(local_data_id, test_date, message)
-							VALUES (?, NOW(), ?)',
-							array(
-								$local_data_id,
-								"Database Data Source name is empty for local data id '$local_data_id'.   File '$file'."
 							)
 						);
 					}
@@ -548,6 +502,134 @@ function do_rrdcheck($thread_id = 1) {
 		set_config_option('rrdcheck_total_rrds_'  . $type . '_' . $thread_id, $rrd_files);
 		set_config_option('rrdcheck_total_dsses_' . $type . '_' . $thread_id, $total_dsses);
 	}
+}
+
+/**
+ * Compares the data sources the Graph requires against those present in an RRDfile and returns the
+ * findings, each with the rrdtool 'tune' specification (when applicable) needed to reconcile the
+ * difference.  A data source the Graph requires but the RRDfile lacks is added with 'DS:'; a data
+ * source the RRDfile carries but the Graph no longer requires is removed with 'DEL:'. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param array $data_sources The data source names the Graph requires, keyed by name.
+ * @param array $rrd_info The data sources present in the RRDfile, keyed by name.
+ * @param array $cacti_ds The Cacti data source definitions, keyed by name.
+ * @param string $file The RRDfile path.
+ *
+ * @return array A list of array('message' => string, 'spec' => string) findings.
+ */
+function rrdcheck_ds_findings($data_sources, $rrd_info, $cacti_ds, $file) {
+	$findings  = array();
+	$db_count  = cacti_sizeof($data_sources);
+	$rrd_count = cacti_sizeof($rrd_info);
+
+	if ($db_count > $rrd_count) {
+		$findings[] = array('message' => "The Graph requires $db_count Data Sources but the RRDfile only includes $rrd_count.  File '$file'.", 'spec' => '');
+	} elseif ($db_count < $rrd_count) {
+		$findings[] = array('message' => "The Graph requires $db_count Data Sources but the RRDfile includes $rrd_count.  File '$file'.", 'spec' => '');
+	}
+
+	foreach ($rrd_info as $name => $info) {
+		if (!isset($data_sources[$name])) {
+			$spec       = 'DEL:' . $name;
+			$findings[] = array('message' => "The RRDfile includes Data Source '$name' which the Graph no longer requires.  RRDtune: tune $spec.", 'spec' => $spec);
+		}
+	}
+
+	foreach ($data_sources as $name) {
+		if ($name === '') {
+			$findings[] = array('message' => "Database Data Source name is empty.  File '$file'.", 'spec' => '');
+
+			continue;
+		}
+
+		if (!array_key_exists($name, $rrd_info)) {
+			if (isset($cacti_ds[$name])) {
+				$ds         = $cacti_ds[$name];
+				$spec       = rrdtool_tune_ds_add_spec($name, $ds['type'], $ds['minimal_heartbeat'], $ds['min'], $ds['max']);
+				$findings[] = array('message' => "The Graph requires Data Source '$name' which is missing from the RRDfile.  RRDtune: tune $spec.", 'spec' => $spec);
+			} else {
+				$findings[] = array('message' => "Data Source name '$name' exists in the Database, but not in RRDfile.  File '$file'.", 'spec' => '');
+			}
+		}
+	}
+
+	return $findings;
+}
+
+/**
+ * Validates an rrdtool 'tune' specification against RRDtool's documented data source grammar before
+ * it is sent to RRDtool.  Per rrdcreate, ds-name is 1 to 19 characters from [a-zA-Z0-9_], DST is one
+ * of the known data source types, heartbeat is a positive integer and min/max are either a number or
+ * 'U'. Used as part of Cacti's lib functionality.
+ *
+ * @param string $spec The tune specification to validate.
+ *
+ * @return bool True when the specification matches a known-good DS:/DEL: form.
+ */
+function rrdcheck_valid_tune_spec($spec) {
+	if (preg_match('/^DEL:[a-zA-Z0-9_]{1,19}$/', $spec)) {
+		return true;
+	}
+
+	return (bool) preg_match('/^DS:[a-zA-Z0-9_]{1,19}:(GAUGE|COUNTER|DERIVE|DCOUNTER|DDERIVE|ABSOLUTE):[0-9]+:(U|-?[0-9]+(\.[0-9]+)?):(U|-?[0-9]+(\.[0-9]+)?)$/', $spec);
+}
+
+/**
+ * Applies an rrdtool 'tune' specification to an RRDfile from the RRDchecker batch process.  The
+ * specification is validated against RRDtool's grammar first; for local storage the RRDfile must
+ * resolve inside the RRA directory and be writable, while the storage proxy enforces remote
+ * containment and permissions.  The full command is written to the Cacti log for auditing. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param string $file The fully qualified RRDfile path.
+ * @param string $spec The rrdtool tune specification to apply.
+ * @param int $local_data_id The local data id being checked.
+ * @param bool $use_proxy Whether rrdtool runs through the storage proxy.
+ * @param array &$pipes The local rrdtool pipes when not using the proxy.
+ *
+ * @return string A short phrase describing whether the tune ran.
+ */
+function rrdcheck_tune_rrdfile($file, $spec, $local_data_id, $use_proxy, &$pipes) {
+	$command = read_config_option('path_rrdtool') . ' tune ' . cacti_escapeshellarg($file) . ' ' . cacti_escapeshellarg($spec);
+
+	if (!rrdcheck_valid_tune_spec($spec)) {
+		cacti_log("ERROR: RRDcheck - refusing malformed tune specification - DS[$local_data_id] Spec[$spec]", false, 'RRDCHECK');
+
+		return 'the tune specification was not valid so it was not run';
+	}
+
+	if (!$use_proxy) {
+		if (!data_source_path_within_rra($file)) {
+			cacti_log("ERROR: RRDcheck - RRDfile resolves outside the RRA directory, tune not run - DS[$local_data_id] File[$file]", false, 'RRDCHECK');
+
+			return 'the RRDfile is outside the RRA directory so the tune was not run';
+		}
+
+		if (!is_resource_writable($file)) {
+			cacti_log("WARNING: RRDcheck - RRDfile not writable, tune not run - DS[$local_data_id] Command[$command]", false, 'RRDCHECK');
+
+			return 'the RRDfile is not writable so the tune was not run automatically';
+		}
+	}
+
+	if ($use_proxy) {
+		$output = rrdtool_execute('tune ' . cacti_escapeshellarg($file) . ' ' . cacti_escapeshellarg($spec), false, RRDTOOL_OUTPUT_RETURN_STDERR, false, 'RRDCHECK');
+		$failed = ($output === false || trim((string) $output) !== '');
+	} else {
+		$output = rrdcheck_rrdtool_execute(array('tune', $file, $spec), $pipes);
+		$failed = ($output === null || $output === false || strpos((string) $output, 'ERROR') !== false || strpos((string) $output, 'OK') === false);
+	}
+
+	if ($failed) {
+		cacti_log("ERROR: RRDcheck - tune failed - DS[$local_data_id] Command[$command] Output[" . trim((string) $output) . ']', false, 'RRDCHECK');
+
+		return 'the tune command failed, see the Cacti log for details';
+	}
+
+	cacti_log("RRDcheck - tune ran successfully - DS[$local_data_id] Command[$command]", false, 'RRDCHECK');
+
+	return 'the tune command was run automatically to correct the issue';
 }
 
 /**

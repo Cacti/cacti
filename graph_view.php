@@ -200,6 +200,27 @@ function graph_view_template_host_where() {
 		}
 	}
 
+	/* Site Branch drilled into by Device Template (host_id == -1): limit the Graph
+	   Templates to those present on that Device Template's devices, within the Site
+	   when one is set, matching the graphs the branch actually shows */
+	if ($sql_where == '' && isset_request_var('host_template_id')) {
+		$host_template_id = get_nfilter_request_var('host_template_id');
+
+		if (is_numeric($host_template_id) && $host_template_id > 0) {
+			$device_where = 'host_template_id=' . (int) $host_template_id;
+
+			if (isset_request_var('site_id')) {
+				$site_id = get_nfilter_request_var('site_id');
+
+				if (is_numeric($site_id) && $site_id > 0) {
+					$device_where .= ' AND site_id=' . (int) $site_id;
+				}
+			}
+
+			$sql_where = 'gl.host_id IN (SELECT id FROM host WHERE ' . $device_where . ')';
+		}
+	}
+
 	return $sql_where;
 }
 
