@@ -5276,7 +5276,7 @@ function validate_relative_path_within($path, $base_dir) {
 	foreach ($parts as $part) {
 		$walk .= '/' . $part;
 
-		if (file_exists($walk) && is_link($walk)) {
+		if (is_link($walk)) {
 			return false;
 		}
 	}
