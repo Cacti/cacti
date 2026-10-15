@@ -445,10 +445,13 @@ class spikekill {
 
 		// '2>&1' before the file redirection leaves stderr on the captured stream
 		// while stdout still goes to the xml file
-		$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile));
+		$dump_output = [];
+		$dump_status = 0;
+		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile), $dump_output, $dump_status);
+		$dump_output = implode("\n", $dump_output);
 
 		// read the xml file into an array
-		if (file_exists($xmlfile)) {
+		if ($dump_status === 0 && is_file($xmlfile) && filesize($xmlfile) > 0) {
 			$output = file($xmlfile);
 
 			// remove the temp file
@@ -457,6 +460,9 @@ class spikekill {
 			// the dump produced no file; capture any diagnostic output for the log
 			cacti_log(sprintf("ERROR: RRDtool dump of '%s' produced no output file. Output:'%s'", $this->rrdfile, trim((string) $dump_output)), false, 'SPIKEKILL');
 
+			if (is_file($xmlfile)) {
+				unlink($xmlfile);
+			}
 			$this->set_error(__('FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!'));
 
 			return false;
@@ -582,7 +588,9 @@ class spikekill {
 											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 										}
 									} elseif ($this->method == SPIKE_METHOD_FLOAT) {
-										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
+										if ($this->debug) {
+											$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
+										}
 									} else {
 										if ($dsvalue >= $this->absmax) {
 											$this->debug(sprintf('AbsMax Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
@@ -717,7 +725,7 @@ class spikekill {
 			if (!$this->dryrun) {
 				$new_output = $this->updateXML($output, $rra);
 				$output     = true;
-				$continue   = true;
+				$continue   = $this->total_kills > 0;
 			} else {
 				$new_output = $this->updateXML($output, $rra);
 				$output     = false;
@@ -748,17 +756,15 @@ class spikekill {
 				if ($output == true && $new_output != '') {
 					if ($this->writeXMLFile($new_output, $xmlfile)) {
 						if ($this->backupRRDFile($this->rrdfile)) {
-							$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
-
-							$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-								__esc('NOTE: Time:%s, Spikes Found and Remediated.  Total Spikes %s', $total, $this->total_kills) . ($this->html ? "</p>\n" : "\n");
+							if ($this->createRRDFileFromXML($xmlfile, $this->rrdfile)) {
+								$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+									__esc('NOTE: Time:%s, Spikes Found and Remediated.  Total Spikes %s', $total, $this->total_kills) . ($this->html ? "</p>\n" : "\n");
+							}
 						} else {
-							$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-								__esc("FATAL: Time:%s, Unable to backup '%s'", $total, $this->rrdfile) . ($this->html ? "</p>\n" : "\n");
+							$this->set_error(__esc("FATAL: Time:%s, Unable to backup '%s'", $total, $this->rrdfile));
 						}
 					} else {
-						$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-							__esc("FATAL: Time:%s, Unable to write XML file '%s'", $total, $xmlfile) . ($this->html ? "</p>\n" : "\n");
+						$this->set_error(__esc("FATAL: Time:%s, Unable to write XML file '%s'", $total, $xmlfile));
 					}
 				} else {
 					$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
@@ -772,7 +778,7 @@ class spikekill {
 
 		$this->strout .= ($this->html ? '</table>' : '');
 
-		if ($this->total_kills > 0) {
+		if (!$this->dryrun && !$this->is_error_set() && $this->total_kills > 0) {
 			cacti_log(sprintf("WARNING: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'", $total, $this->total_kills, $this->rrdfile, $this->method), false, 'WEBUI');
 		} elseif ($this->debug) {
 			cacti_log(sprintf("NOTE: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'", $total, $this->total_kills, $this->rrdfile, $this->method), false, 'WEBUI');
@@ -786,24 +792,36 @@ class spikekill {
 			unlink($bakfile);
 		}
 
-		return true;
+		return !$this->is_error_set();
 	}
 
 	// All Functions
-	private function createRRDFileFromXML(string $xmlfile, string $rrdfile) : void {
+	private function createRRDFileFromXML(string $xmlfile, string $rrdfile) : bool {
 		// execute the dump command
+		$message = "NOTE: Re-Importing '$xmlfile' to '$rrdfile'";
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n" : "\n");
+			($this->html ? htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : $message) . ($this->html ? "</p>\n" : "\n");
 
-		$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
+		$response = [];
+		$status   = 0;
+		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile) . ' 2>&1', $response, $status);
 
-		if ($response != '') {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . $response . ($this->html ? "</p>\n" : "\n");
+		if ($status !== 0) {
+			$this->set_error(__('FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!'));
+
+			if ($response) {
+				$message = implode("\n", $response);
+				$this->set_error($this->html ? htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : $message);
+			}
+
+			return false;
 		}
+
+		return true;
 	}
 
 	private function writeXMLFile(array $output, string $xmlfile) : mixed {
-		return file_put_contents($xmlfile, $output);
+		return @file_put_contents($xmlfile, $output);
 	}
 
 	private function backupRRDFile(string $rrdfile) : bool {
@@ -819,14 +837,34 @@ class spikekill {
 			$newfile = basename($rrdfile);
 		}
 
+		$message = "NOTE: Backing Up '$rrdfile' to '$backupdir/$newfile'";
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' . $newfile . "'" . ($this->html ? "</p>\n" : "\n");
+			($this->html ? htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : $message) . ($this->html ? "</p>\n" : "\n");
 
-		return copy($rrdfile, $backupdir . '/' . $newfile);
+		return @copy($rrdfile, $backupdir . '/' . $newfile);
+	}
+
+	private function selectedDataSources() : array {
+		$selected = [];
+		$patterns = array_filter(array_map('trim', explode(',', (string) $this->dsfilter)), static fn ($value) => $value !== '');
+
+		foreach ($this->ds_name as $index => $name) {
+			foreach ($patterns as $pattern) {
+				if (ctype_digit($pattern) ? (int) $pattern === $index : preg_match('/^' . str_replace(['\\*', '\\?'], ['.*', '.'], preg_quote($pattern, '/')) . '$/D', $name)) {
+					$selected[$index] = true;
+
+					break;
+				}
+			}
+		}
+
+		return $selected;
 	}
 
 	private function calculateOverallStatistics(array &$rra, array &$samples) : void {
-		$rra_num = 0;
+		$rra_num      = 0;
+		$filterActive = trim((string) $this->dsfilter) !== '';
+		$selected     = $filterActive ? $this->selectedDataSources() : [];
 
 		if (cacti_sizeof($rra)) {
 			foreach ($rra as $dses) {
@@ -853,13 +891,13 @@ class spikekill {
 
 							$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - ($this->stddev * $rra[$rra_num][$ds_num]['stddev']);
 
-							if ($rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
+							if (is_numeric($this->ds_min[$ds_num]) && $rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
 								$rra[$rra_num][$ds_num]['min_cutoff'] = $this->ds_min[$ds_num];
 							}
 
 							$rra[$rra_num][$ds_num]['max_cutoff'] = $rra[$rra_num][$ds_num]['average'] + ($this->stddev * $rra[$rra_num][$ds_num]['stddev']);
 
-							if ($rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
+							if (is_numeric($this->ds_max[$ds_num]) && $rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
 								$rra[$rra_num][$ds_num]['max_cutoff'] = $this->ds_max[$ds_num];
 							}
 
@@ -873,14 +911,16 @@ class spikekill {
 							$rra[$rra_num][$ds_num]['outwind_killed']  = 0;
 
 							// count the number of kills required
-							if (cacti_sizeof($samples[$rra_num][$ds_num])) {
+							if ((!$filterActive || isset($selected[$ds_num])) && cacti_sizeof($samples[$rra_num][$ds_num])) {
 								foreach ($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 									if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL) {
 										if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 											$rra[$rra_num][$ds_num]['outwind_samples']++;
 
 											if ($this->method == SPIKE_METHOD_FLOAT) {
-												$this->debug(sprintf('Window Float Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
+												if ($this->debug) {
+													$this->debug(sprintf('Window Float Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
+												}
 
 												$rra[$rra_num][$ds_num]['outwind_killed']++;
 												$this->out_kills = true;
@@ -905,7 +945,7 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_samples']++;
 											}
 
-											if ($sample > $this->absmax) {
+											if (is_numeric($sample) && $sample > $this->absmax) {
 												$this->debug(sprintf('Window AbsMax Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
 
 												if ($this->out_start > 0) {
@@ -927,7 +967,7 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_samples']++;
 											}
 
-											if ($sample > $rra[$rra_num][$ds_num]['max_cutoff'] || $sample < $rra[$rra_num][$ds_num]['min_cutoff']) {
+											if (is_numeric($sample) && ($sample > $rra[$rra_num][$ds_num]['max_cutoff'] || $sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 												$this->debug(sprintf('StdDev Found, Date:%s, Value:%.2e, StandardDev:%.2e, StdDevLimit:%.2e', date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['stddev'], $rra[$rra_num][$ds_num]['max_cutoff']));
 
 												$rra[$rra_num][$ds_num]['stddev_killed']++;
@@ -1070,10 +1110,13 @@ class spikekill {
 	}
 
 	private function updateXML(array &$output, array &$rra) : array {
-		$rra_num   = 0;
-		$ds_num    = 0;
-		$last_num  = [];
-		$new_array = [];
+		$rra_num      = 0;
+		$ds_num       = 0;
+		$last_num     = [];
+		$new_array    = [];
+		$kills        = 0;
+		$filterActive = trim((string) $this->dsfilter) !== '';
+		$selected     = $filterActive ? $this->selectedDataSources() : [];
 
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
@@ -1097,11 +1140,17 @@ class spikekill {
 					// initialize variables
 					$ds_num  = 0;
 					$out_row = '<row>';
-					$kills   = 0;
 
 					foreach ($linearray as $dsvalue) {
 						// peel off garbage
 						$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
+
+						if ($filterActive && !isset($selected[$ds_num])) {
+							$out_row .= '<v> ' . $dsvalue . '</v>';
+							$ds_num++;
+
+							continue;
+						}
 
 						switch($this->method) {
 							case SPIKE_METHOD_FLOAT:
@@ -1141,7 +1190,7 @@ class spikekill {
 							case SPIKE_METHOD_FILL:
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->avgnan == 'avg') {
-										if (!is_numeric($dsvalue) || $dsvalue == 0) {
+										if (!is_numeric($dsvalue)) {
 											$message = sprintf('Replacing dsvalue %s with average %s', $dsvalue, $rra[$rra_num][$ds_num]['average']);
 
 											if ($this->debug) {
@@ -1157,7 +1206,7 @@ class spikekill {
 									} elseif ($this->avgnan == 'nan') {
 										// Not supported for fill and float modes
 									} elseif ($this->avgnan == 'last' && isset($rra[$rra_num][$ds_num]['last'])) {
-										if (!is_numeric($dsvalue) || $dsvalue == 0) {
+										if (!is_numeric($dsvalue)) {
 											$message = sprintf('Replacing dsvalue %s with last value %s', $dsvalue, $rra[$rra_num][$ds_num]['last']);
 
 											if ($this->debug) {
@@ -1177,8 +1226,8 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_STDDEV:
-								if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
-									($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+								if (is_numeric($dsvalue) && (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+									($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff']))) {
 									if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
 										if ($kills < $this->numspike) {
 											if ($this->avgnan == 'avg') {
@@ -1220,14 +1269,14 @@ class spikekill {
 											}
 										}
 									}
-								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue)) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
 								break;
 							case SPIKE_METHOD_ABSOLUTE:
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
-									if ($dsvalue >= $this->absmax) {
+									if (is_numeric($dsvalue) && $dsvalue > $this->absmax) {
 										if ($this->avgnan == 'avg') {
 											$message = sprintf('Replacing dsvalue %s with average %s', $dsvalue, $rra[$rra_num][$ds_num]['average']);
 

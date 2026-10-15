@@ -15,7 +15,7 @@ function db_fetch_cell_prepared($sql, $params) {
 	return 0;
 }
 function is_realm_allowed($realm) {
-	return in_array($realm, $GLOBALS['graph_markup_realms'] ?? array(), true);
+	return in_array($realm, $GLOBALS['graph_markup_realms'] ?? [], true);
 }
 function read_config_option($key) {
 	return $GLOBALS['graph_markup_config'][$key] ?? '';
@@ -40,10 +40,25 @@ if (!defined('CACTI_PATH_URL')) {
 
 // Render with the realtime and spikekill realms enabled so every action icon -
 // including the conditional ones - is exercised for changed-line coverage.
-$GLOBALS['graph_markup_realms'] = array(25, 1043);
-$GLOBALS['graph_markup_config'] = array('realtime_enabled' => 'on');
-$GLOBALS['graph_markup_user']   = array('realtime_mode' => '1');
+$GLOBALS['graph_markup_realms'] = [25, 1043];
+$GLOBALS['graph_markup_config'] = ['realtime_enabled' => 'on'];
+$GLOBALS['graph_markup_user']   = ['realtime_mode' => '1'];
 $GLOBALS['graph_markup_theme']  = 'modern';
+
+if (($argv[1] ?? '') === 'browser') {
+	$GLOBALS['graph_markup_config'] = [];
+	$GLOBALS['graph_markup_realms'] = [1043];
+	print '<!DOCTYPE html>';
+
+	foreach ([1, 2] as $id) {
+		print "<div class='graphWrapperOuter' id='g$id'><div><div class='graphimage' id='graph_$id' graph_start='100' graph_end='200'></div><div class='graphDrillDownToggle'>";
+		graph_drilldown_icons($id);
+		print '</div></div></div>';
+	}
+	print '<button id="outside">Outside</button>';
+	exit;
+}
+
 ob_start();
 graph_drilldown_icons(7);
 $html     = ob_get_clean();
@@ -61,7 +76,7 @@ if ($GLOBALS['graph_markup_hook']['local_graph_id'] !== 7) {
 }
 
 // Second render exercising the non-default realtime mode (window.open branch).
-$GLOBALS['graph_markup_user'] = array('realtime_mode' => '2');
+$GLOBALS['graph_markup_user'] = ['realtime_mode' => '2'];
 ob_start();
 graph_drilldown_icons(7);
 ob_get_clean();

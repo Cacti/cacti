@@ -1975,25 +1975,14 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 			$file    = $repoloc . '/' . $repo['repo_branch'] . '/' . $filename;
 
 			if ($repo['repo_api_key'] != '') {
-				$options = [
-					'https' => [
-						'method'  => 'GET',
-						'header'  => 'Authorization: Bearer ' . $repo['repo_api_key']
-					]
-				];
-
-				$context  = stream_context_create($options);
+				$http_options = ['headers' => ['Authorization: Bearer ' . $repo['repo_api_key']]];
 			} else {
-				$options = [
-					'https' => [
-						'method'  => 'GET',
-					]
-				];
-
-				$context  = stream_context_create($options);
+				$http_options = [];
 			}
 
-			$data = file_get_contents($file, false, $context);
+			$result = cacti_http('GET', $file, $http_options);
+
+			$data = ($result['success'] ? $result['body'] : '');
 
 			if ($data != '') {
 				return $data;
@@ -2005,14 +1994,9 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 		} elseif ($repo['repo_type'] == 2) { // Direct URL
 			$file = $repo['repo_location'] . '/' . $filename;
 
-			$context = [
-				'ssl' => [
-					'verify_peer'      => true,
-					'verify_peer_name' => true,
-				],
-			];
+			$result = cacti_http('GET', $file);
 
-			$data = file_get_contents($file, false, stream_context_create($context));
+			$data = ($result['success'] ? $result['body'] : '');
 
 			if ($data != '') {
 				return $data;

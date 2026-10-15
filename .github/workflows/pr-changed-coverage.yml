@@ -30,7 +30,6 @@ permissions:
 
 jobs:
   changed-coverage:
-    if: github.event_name == 'workflow_dispatch' || contains(fromJSON('[8237,8238,8310,8312,8313,8314,8315,8316]'), github.event.pull_request.number)
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -39,12 +38,15 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+      - name: Set up PHP and Cacti test dependencies
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.3'
-          extensions: curl, dom
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, dom
           coverage: xdebug
           ini-values: memory_limit=1G
+          dependency-mode: locked-tests
+          install-args: --prefer-dist --no-progress --no-interaction
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: '22'
