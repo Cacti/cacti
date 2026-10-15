@@ -118,6 +118,7 @@
         "code",
         "security",
         "doc",
+        "test",
         "review"
       ]
     },
