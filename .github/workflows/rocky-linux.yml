@@ -17,11 +17,20 @@ jobs:
     name: Rocky Linux 9 PHP compatibility
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Log in to GHCR
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USER" --password-stdin
 
       - name: Run PHP checks in Rocky Linux 9
         run: |
@@ -29,7 +38,7 @@ jobs:
           docker run --rm \
             --volume "$GITHUB_WORKSPACE:/workspace:ro" \
             --workdir /workspace \
-            rockylinux@sha256:d7be1c094cc5845ee815d4632fe377514ee6ebcf8efaed6892889657e5ddaaa6 \
+            ghcr.io/cacti/ci-images/rockylinux:9@sha256:d7be1c094cc5845ee815d4632fe377514ee6ebcf8efaed6892889657e5ddaaa6 \
             bash -euo pipefail -c '
               dnf -y module enable php:8.3
               dnf -y install php-cli php-common php-curl php-gd php-intl php-mbstring php-mysqlnd php-xml php-zip

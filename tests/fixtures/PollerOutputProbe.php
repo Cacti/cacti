@@ -167,6 +167,8 @@ function boost_error_handler(...$args) : bool {
 }
 function boost_log_ignored_sample_keys(...$args) : void {
 }
+function boost_log_failed_staging(...$args) : void {
+}
 function rrdtool_file_exists(...$args) : bool {
 	return true;
 }
