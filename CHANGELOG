@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
 -security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
 -security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
 -security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
