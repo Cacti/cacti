@@ -908,14 +908,16 @@ function ds_repair() {
 
 	foreach ($diff['tune'] as $options) {
 		/* never execute a recommendation carrying control characters */
-		if (cacti_has_control_chars($options)) {
+		if (preg_match('/[\x00-\x1f\x7f]/', $options)) {
 			continue;
 		}
 
 		$command = $rrdtool_path . ' tune ' . $options;
 		$output  = rrdtool_execute('tune ' . $options, false, RRDTOOL_OUTPUT_RETURN_STDERR);
 
-		if ($output === '') {
+		/* local storage returns empty output on success; the RRDtool proxy
+		   returns its raw "OK u:..." status line, so accept either as success */
+		if ($output === '' || (is_string($output) && strpos($output, 'OK u') !== false)) {
 			cacti_log("RRDfile repair command succeeded for DS[$id] Command[$command]", false, 'DSDEBUG');
 		} else {
 			cacti_log("ERROR: RRDfile repair command failed for DS[$id] Command[$command] Output[$output]", false, 'DSDEBUG');
@@ -926,7 +928,7 @@ function ds_repair() {
 	if ($failures == 0) {
 		raise_message('ds_repair', __('All RRDfile repairs succeeded.'), MESSAGE_LEVEL_INFO);
 	} else {
-		raise_message('ds_repair', __('One or more RRDfile repairs failed.  See the Cacti log for errors.'), MESSAGE_LEVEL_ERROR);
+		raise_message('ds_repair', __('One or more RRDfile repairs failed.  See Cacti log for errors.'), MESSAGE_LEVEL_ERROR);
 	}
 
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
