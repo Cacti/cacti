@@ -100,7 +100,7 @@
 		top: -10px;
 	left: -4px;
 		content: "\f0d7";
-		font-family: "Font Awesome 5 Free";
+		font-family: "Font Awesome 5 Free", sans-serif;
 		font-weight: 600;
 }
 	&::after {
@@ -108,7 +108,7 @@
 		bottom: -10px;
 		position: inherit;
 		content: "\f0d8";
-		font-family: "Font Awesome 5 Free";
+		font-family: "Font Awesome 5 Free", sans-serif;
 		font-weight: 600;
 	}
 	.zoom-marker-tooltip {
@@ -128,7 +128,7 @@
 			color: rgba(0,0,0,0.75);
 			display: none;
 			content: "\f0d9";
-			font-family: "Font Awesome 5 Free";
+			font-family: "Font Awesome 5 Free", sans-serif;
 			font-weight: 600;
 			font-size: 1rem;
 			z-index:301;

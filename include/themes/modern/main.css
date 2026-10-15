@@ -769,9 +769,6 @@ label {
 	z-index: -1;
 }
 
-.navigation {
-}
-
 .debug td {
 	padding: 3px;
 	margin: 0px;
@@ -826,7 +823,6 @@ ul#breadcrumbs {
 	border-color: #f5f5f5 #e5e5e5 #ccc;
 	border-radius: 5px;
 	white-space: nowrap;
-	max-width: 100%;
 	box-shadow: 0 0 2px rgba(0,0,0,.2);
 	overflow: hidden;
 	max-width: 60%;
@@ -962,11 +958,10 @@ ul#breadcrumbs {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	padding: 15px;
-	background-color: snow;
 	top: 30%;
 	max-width: 460px;
 	max-height: 300px;
-	background: #ffffff;
+	background-color: #ffffff;
 	border: 1px solid #cccccc;
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
@@ -984,14 +979,6 @@ ul#breadcrumbs {
 .cactiAuthCenter {
 	width: 400px;
 	height: 350px;
-}
-
-.cactiAuthCenter legend {
-
-}
-
-.cactiAuthCenter legend div {
-
 }
 
 .cactiAuthLogo {
@@ -1692,9 +1679,6 @@ legend {
 	vertical-align: -10%;
 }
 
-.formSubCheckbox label {
-}
-
 .formCheckboxLabel {
 	color: #444;
 	vertical-align: 5%;
@@ -2000,7 +1984,7 @@ legend {
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 }
 
-.navBarNavigation a, navBarNavigation a:hover, navBarNavigation a:visited {
+.navBarNavigation a, .navBarNavigation a:hover, .navBarNavigation a:visited {
 	color: white;
 	font-weight: normal !important;
 }
@@ -2752,7 +2736,7 @@ tr#realtime td:first-child {
 
 .graphWrapper {
 	padding-top:10px;
-	display: inline-block;;
+	display: inline-block;
 }
 
 .graphWrapperOuter[data-disabled="true"] {
@@ -2760,7 +2744,7 @@ tr#realtime td:first-child {
 }
 
 .code {
-	font-family: Consolas, Courier New;
+	font-family: Consolas, Courier New, monospace;
 	font-size: 0.8em;
 	padding: 5px 15px 5px 15px;
 	background: #dfdfdf;
@@ -2943,10 +2927,6 @@ input:checked + .radioSlider {
 	background-color: rgba(167,217,134,1);
 }
 
-input:checked + .radioSlider:before {
-	display: inline-block;
-}
-
 input:disabled + .radioSlider {
 	cursor: not-allowed;
 }
@@ -2956,6 +2936,7 @@ input:focus + .radioSlider {
 }
 
 input:checked + .radioSlider:before {
+	display: inline-block;
 	display: block;
 }
 
@@ -3308,7 +3289,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;

@@ -1,0 +1,11 @@
+/* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
+/* Cacti font fallbacks; keep the plugin package styles unchanged. */
+.context-menu-icon::before {
+	font-family: "context-menu-icons", sans-serif;
+}
+.context-menu-icon.context-menu-icon--fa::before {
+	font-family: FontAwesome, sans-serif;
+}
+.context-menu-icon.context-menu-icon-ti::before {
+	font-family: "tabler-icons", sans-serif;
+}

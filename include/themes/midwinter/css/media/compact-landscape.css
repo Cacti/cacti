@@ -6,12 +6,6 @@ html {
         }
     }
 
-    &:not([data-controls-subtitle="on"]) {
-        /*.compact_nav_icon::after {
-            display: none !important;
-        }*/
-    }
-
     &[data-kiosk-mode="on"] {
 
         .mdw-GridContainer {
@@ -31,11 +25,6 @@ html {
             height: 100dvh;
             width: 100dvw;
             border-top: none;
-            /*
-                        &:has(.saveRowParent) {
-                            height: calc(100vh - 4rem);
-                        }
-              */
         }
 
         .saveRowParent {
@@ -146,7 +135,7 @@ html {
         &:not(:last-child)::after {
             margin: 0 0.5rem;
             content: "\f105";
-            font-family: "Font Awesome 5 Free";
+            font-family: "Font Awesome 5 Free", sans-serif;
             font-weight: 600;
             display: block;
         }
@@ -184,15 +173,6 @@ html {
     .compact_nav_icon.selected {
         color: var(--text-color-normal);
         background-color: rgba(0,0,0,0.2);
-        &::after {
-            /*
-            height: 25px;
-            width: 25px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            */
-        }
         &:hover {
             color: var(--text-color-white);
             background-color: rgba(0,0,0,0.3);
@@ -258,18 +238,6 @@ html {
                 background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 14% / min(1.5rem) auto;
             }
         }
-
-     /*   &[data-subtitle]:not([data-subtitle=""])::after {
-            display: block;
-            content: attr(data-subtitle);
-            font-size: var(--fs-small);
-            margin-top: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-*/
         & > span {
             display: none;
         }
@@ -285,10 +253,8 @@ html {
     flex-direction: column;
     justify-content: flex-start;
     width: auto;
-    /* background: var(--background-navigation); */
     background: var(--background-content);
     align-items: center;
-    /* box-shadow: 3px 6px 5px 2px var(--box-shadow-color); */
     border-left: 1px solid var(--border-color-semilight);
 
     &:has( div[class^="mdw-Action"]:not(:empty) ) {     /* only show ActionBar with content */
@@ -476,10 +442,6 @@ html {
         }
     }
 
-    & input {
-        /*display: none;*/
-    }
-
     & ul.nav,
     & ul#nav {
         display: flex;
@@ -576,7 +538,6 @@ html {
     width: 2.5rem;
     height: 2.5rem;
     &[aria-pressed="true"] {
-        /*background: var(--background-active-section);*/
         box-shadow: 0 .33em 2em rgba(25,85,138,.67) inset,
                     1px 1px 0 rgba(255,255,255,.25) inset,
                     -1px -1px 0 rgba(255,255,255,.25) inset;
@@ -630,11 +591,7 @@ html {
     & a {
         display: block;
         padding: 0.5rem 1rem;
-        text-decoration: none;
-
-        &:hover {
-
-        }
+        text-decoration: none
     }
 }
 
@@ -704,7 +661,7 @@ html {
         .jstree-node.jstree-closed > .jstree-ocl {
             background: none;
             &:before {
-                font-family: 'tabler-icons';
+                font-family: 'tabler-icons', sans-serif;
             }
         }
 
@@ -802,7 +759,6 @@ html {
 
     [class^="mdw-ConsoleNavigationBox"] {
         top: 0;
-        /*width: calc(100vw - 4rem) !important;*/
         max-width: calc(100dvw - 4rem) !important;
         max-height: 100dvh;
         border-top: none;
@@ -936,12 +892,6 @@ html {
         height: 4rem;
     }
 
-    .cactiGraphContentArea, .cactiConsoleContentArea {
-        & #main {
-           /* padding: 0 0.5rem 1rem 0.5rem; */
-        }
-    }
-
     html {
         &[data-kiosk-mode="on"] {
             .mdw-GridContainer {
@@ -966,7 +916,7 @@ html {
     }
 }
 @media screen and (max-width: 768px) {
-    &[data-auto-table-layout="on"] {
+    :root[data-auto-table-layout="on"] {
         .cactiTable:has(th) {
             th:nth-of-type(n+2):nth-last-of-type(n+2):not(.nohide),
             td:nth-of-type(n+2):nth-last-of-type(n+2):not(.nohide) {
@@ -976,7 +926,7 @@ html {
     }
 }
 @media screen and (min-width: 769px) and (max-width: 1023px) {
-    &[data-auto-table-layout="on"] {
+    :root[data-auto-table-layout="on"] {
         .cactiTable:has(th) {
             th:nth-of-type(n+3):nth-last-of-type(n+4):not(.nohide),
             td:nth-of-type(n+3):nth-last-of-type(n+4):not(.nohide) {
@@ -986,7 +936,7 @@ html {
     }
 }
 @media screen and (min-width: 1024px) and (max-width: 1280px) {
-    &[data-auto-table-layout="on"] {
+    :root[data-auto-table-layout="on"] {
         .cactiTable:has(th) {
             th:nth-of-type(n+4):nth-last-of-type(n+5):not(.nohide),
             td:nth-of-type(n+4):nth-last-of-type(n+5):not(.nohide) {

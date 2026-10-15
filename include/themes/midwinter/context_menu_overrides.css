@@ -1,0 +1,7 @@
+/* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
+.context-menu-icon::before {
+	font-family: "tabler-icons", sans-serif;
+}
+.context-menu-icon.context-menu-icon--fa::before {
+	font-family: FontAwesome, sans-serif;
+}

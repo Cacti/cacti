@@ -175,7 +175,7 @@ label {
 
 .glyph_tab-console:before {
 	content: '\f7aa';
-	font-family: "Font Awesome 5 Free";
+	font-family: "Font Awesome 5 Free", sans-serif;
 	display: inline-block;
 }
 
@@ -480,13 +480,13 @@ label {
 }
 
 .submenuoptions {
-	background: white;
+	background-color: white;
 	border-width: 0px 3px 3px 3px;
 	border-color: rgba(0, 161, 11,0.7);
 	border-style: solid;
-	background: -moz-linear-gradient(top, rgba(255,4,0,0.7) 0%, rgba(3,159,11,0.7) 99%, rgba(0,161,11,0.7) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	background-image: -moz-linear-gradient(top, rgba(255,4,0,0.7) 0%, rgba(3,159,11,0.7) 99%, rgba(0,161,11,0.7) 100%); /* FF3.6-15 */
+	background-image: -webkit-linear-gradient(top, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* Chrome10-25,Safari5.1-6 */
+	background-image: linear-gradient(to bottom, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 	position: absolute;
 	top: 45px;
@@ -702,9 +702,9 @@ label {
 
 .cactiPageHead {
 	background-color: rgba(0, 161, 11,1);
-	background: -moz-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, #ff0400 0%, #00a10b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	background-image: -moz-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* FF3.6-15 */
+	background-image: -webkit-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* Chrome10-25,Safari5.1-6 */
+	background-image: linear-gradient(to bottom, #ff0400 0%, #00a10b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0400', endColorstr='#00a10b',GradientType=0 ); /* IE6-9 */
 	height: 45px;
 	width: 100%;
@@ -729,9 +729,9 @@ label {
 
 .cactiPageBottom {
 	background-color: rgba(0, 161, 11,0.7);
-	background: -moz-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, #ff0400 0%, #00a10b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	background-image: -moz-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* FF3.6-15 */
+	background-image: -webkit-linear-gradient(top, #ff0400 0%, #00a10b 100%); /* Chrome10-25,Safari5.1-6 */
+	background-image: linear-gradient(to bottom, #ff0400 0%, #00a10b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0400', endColorstr='#00a10b',GradientType=0 ); /* IE6-9 */
 	height: 15px;
 	width: 100%;
@@ -843,11 +843,10 @@ label {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	padding: 15px;
-	background-color: white;
 	top: 30%;
 	width: 360px;
 	max-height: 300px;
-	background: #ffffff;
+	background-color: #ffffff;
 	border: 1px solid #cccccc;
 }
 
@@ -1043,9 +1042,6 @@ legend {
 	padding: 3px;
 	cursor: pointer;
 	text-decoration: none;
-}
-
-.iconLink {
 }
 
 .iconLink img {
@@ -1507,9 +1503,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckbox {
@@ -2471,9 +2464,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 }
 
-.menuitem span {
-}
-
 .ui-autocomplete {
 	height: 300px;
 	overflow-y: scroll;
@@ -2641,9 +2631,9 @@ input:checked + .checkboxSlider:before {
 
 input:checked + .radioSlider {
 	background-color: rgba(0, 161, 11,0.9);
-	background: -moz-linear-gradient(top, rgba(255,4,0,0.9) 0%, rgba(3,159,11,0.9) 99%, rgba(0,161,11,0.9) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	background-image: -moz-linear-gradient(top, rgba(255,4,0,0.9) 0%, rgba(3,159,11,0.9) 99%, rgba(0,161,11,0.9) 100%); /* FF3.6-15 */
+	background-image: -webkit-linear-gradient(top, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* Chrome10-25,Safari5.1-6 */
+	background-image: linear-gradient(to bottom, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
@@ -2988,7 +2978,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;

@@ -59,7 +59,6 @@ body {
     margin: 0;
     opacity: 0;
     color: var(--text-color-normal);
-    /* background-color: var(--background); */
     background: transparent;
 
     [data-theme-state="ready"] & {
@@ -213,11 +212,6 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
     color: var(--text-color-lighter);
 }
 
-input[type="checkbox"]:focus-within + label:before {
-    /*outline: none !important;*/
-    /*box-shadow: var(--background-content) 0 0 0 2px, var(--border-color-highlight) 0 0 0 3px;*/
-}
-
 .cols1 {
     width: 100%;
     display:table-cell;
@@ -255,7 +249,6 @@ input[type="checkbox"]:focus-within + label:before {
     gap: 1rem;
 
     & .graphWrapperOuter {
-        /*min-width: fit-content;*/
         &.cols1 { width:  100%; }
         &.cols2 { width:   calc(50% - 2rem); }
         &.cols3 { width:   calc(33% - 2rem); }
@@ -277,7 +270,6 @@ input[type="checkbox"]:focus-within + label:before {
     width: 2.25rem;
     height: 0.75rem;
     margin-right: 1rem;
-    /* margin-left: 5px;*/
     cursor: pointer;
 }
 
@@ -384,18 +376,6 @@ input[type="checkbox"]:focus-within + label:before {
             & tr.selected {
                 td {
                     background: var(--table-selected);
-                    /*
-                    &:first-of-type::before {
-                        background: var(--background-progress);
-                        border-radius: 4px;
-                        content: " ";
-                        display: block;
-                        height: 100%;
-                        position: absolute;
-                        width: 0.15rem;
-                        left: -0.4rem;
-                    }
-                    */
                 }
 
                 &:hover {
@@ -473,11 +453,6 @@ input, select {
     background: transparent;
 }
 
-label {
-    cursor: pointer;
-    white-space: nowrap;
-}
-
 .glyph_tab-console:before {
     margin-left: 17px;
     content: "\ec42";
@@ -488,6 +463,7 @@ label {
 }
 
 label {
+    cursor: pointer;
     white-space: nowrap;
 }
 
@@ -1280,20 +1256,11 @@ ul#breadcrumbs {
 legend {
     font-size: var(--fs-huge);
     font-weight: bold;
-    font-family: Courier;
+    font-family: Courier, monospace;
     display: flex;
     align-items: flex-end;
     flex-direction: row;
 }
-/*
-legend::before {
-    display: block;
-    width: 75px;
-    height: 100px;
-    content: "";
-    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 60px auto;
-}
-*/
 .cactiAuthRight {
     display: none;
 }
@@ -1382,7 +1349,7 @@ legend::before {
     line-height: 1.5em;
     margin: 0;
     padding: 10px 0 10px 0 !important;
-;
+
     color: var(--text-color-highlight-a);
     border: 1px solid #3a3b3c;
     background: #100000;
@@ -1505,14 +1472,6 @@ legend::before {
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
-}
-
-.linkEditMain {
-    &:hover,
-    tr:hover & {
-       /* text-decoration: underline;
-        color: var(--text-color-highlight-a);*/
-    }
 }
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
@@ -1817,7 +1776,7 @@ table.cactiTable {
     padding-left: 1px;
     text-align: left;
     color: var(--text-color-medium);
-    word-break-wrap: auto;
+    overflow-wrap: normal;
 }
 
 .formTooltip {
@@ -1977,9 +1936,6 @@ table.cactiTable {
     text-align: right;
 }
 
-.tablesorter-headerRow {
-}
-
 .tablesorter-headerRow th {
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
@@ -2002,7 +1958,7 @@ table.cactiTable {
     padding: 3px;
     text-align: left;
     vertical-align: middle;
-    color: #white;
+    color: white;
 }
 
 .tableSubHeaderCheckbox {
@@ -2106,9 +2062,6 @@ table.cactiTable {
 .installArea {
     padding: 10px;
     background-color: var(--text-color-lighter);
-}
-
-.textAreaNotes {
 }
 
 .textEditTitle {
@@ -2310,10 +2263,6 @@ div.submenu span {
     display: block;
     text-decoration: none;
     color: var(--text-color-navigation);
-}
-
-#nav li a.active, .nav li a.active {
-
 }
 
 #nav li a.active:not(.selected), .nav li a.active:not(.selected) {
@@ -2548,7 +2497,7 @@ tr#realtime td:first-child {
 
 .darkblue {
     background: #2d4ca8;
-    /* Old browsers */;
+    /* Old browsers */
 }
 
 .menuitem {
@@ -2579,10 +2528,6 @@ hr.menu {
 
 .hostInfoHeader {
     padding: 8px;
-}
-
-.cactiInstallArea {
-
 }
 
 .cactiInstallSqlResults {

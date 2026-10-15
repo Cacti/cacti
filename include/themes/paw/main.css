@@ -640,10 +640,7 @@ label {
 }
 
 .even-alternate {
-	/* #background: none repeat scroll 0 0 #E7E9F2;
-	#background-color: #E7E9F2; */
 	border: none;
-	/* #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1); */
 }
 
 .saveRow {
@@ -841,11 +838,10 @@ label {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	padding: 15px;
-	background-color: white;
 	top: 30%;
 	width: 360px;
 	max-height: 300px;
-	background: #ffffff;
+	background-color: #ffffff;
 	border: 1px solid #cccccc;
 }
 
@@ -1477,7 +1473,6 @@ legend {
 }
 
 .formData {
-	/* display: inline-block; */
 	float: left;
 	text-align: left;
 }
@@ -1497,15 +1492,11 @@ legend {
 	vertical-align: -10%;
 }
 
-.formSubCheckbox label {
-}
-
 .formCheckbox {
 	vertical-align: -15%;
 }
 
 .formFieldName {
-	/* display: inline-block; */
 	color: #000000;
 	float: left;
 	text-align: left;
@@ -1710,7 +1701,6 @@ th.sortable {
 }
 
 .graphSubHeaderColumn {
-	/* color: #white; */
 	font-size: 12px;
 	vertical-align: middle;
 	text-align: left;
@@ -1817,7 +1807,6 @@ th.sortable {
 }
 
 .popupBox {
-	/* #z-index: 2; */
 	position: absolute;
 	padding: 0px;
 	display: none;
@@ -2040,7 +2029,6 @@ div#gtabs {
 	float: left !important;
 	text-decoration: none;
 	font-size: 18px;
-	/* vertical-align: bottom; */
 	display: block;
 }
 
@@ -2129,14 +2117,6 @@ div.submenu span {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-}
-
-tr td:last-child .checkbox {
-	margin-right: 10px !important;
-}
-
-tr th:last-child .checkbox {
-	margin-right: 10px !important;
 }
 
 /* Navigation Area */
@@ -2983,7 +2963,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;

@@ -175,7 +175,7 @@ label {
 
 .glyph_tab-console:before {
 	content: '\f787';
-	font-family: "Font Awesome 5 Free";
+	font-family: "Font Awesome 5 Free", sans-serif;
 	display: inline-block;
 }
 
@@ -823,11 +823,10 @@ label {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	padding: 15px;
-	background-color: white;
 	top: 30%;
 	width: 360px;
 	max-height: 300px;
-	background: #ffffff;
+	background-color: #ffffff;
 	border: 1px solid #cccccc;
 }
 
@@ -1028,9 +1027,6 @@ legend {
 	padding: 3px;
 	cursor: pointer;
 	text-decoration: none;
-}
-
-.iconLink {
 }
 
 .iconLink img {
@@ -1470,9 +1466,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckbox {
@@ -2402,9 +2395,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 }
 
-.menuitem span {
-}
-
 .ui-autocomplete {
 	height: 300px;
 	overflow-y: scroll;
@@ -2915,7 +2905,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;
