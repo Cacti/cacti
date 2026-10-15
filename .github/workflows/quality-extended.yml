@@ -147,7 +147,10 @@ jobs:
           cache: npm
 
       - name: Build managed JavaScript
-        run: npm ci
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npm run postinstall --ignore-scripts
 
       - name: Setup locked PHP 8.3 dependencies
         uses: ./.github/actions/setup-php-composer

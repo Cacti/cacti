@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../.." && pwd)"
-base_image="${CACTI_DOCKER_BASE_IMAGE:-cacti-web}"
+base_image="${CACTI_DOCKER_BASE_IMAGE:-cacti-web:1.3-dev}"
 test_image="${CACTI_DOCKER_TEST_IMAGE:-cacti-test}"
 
 docker build \
@@ -13,6 +13,7 @@ docker build \
 
 docker build \
 	--tag "${test_image}" \
+	--build-arg "CACTI_TEST_BASE=${base_image}" \
 	--file "${repo_root}/docker/Dockerfile.test" \
 	"${repo_root}"
 

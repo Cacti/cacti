@@ -20,39 +20,36 @@
 #| http://www.cacti.net/                                                   |
 #+-------------------------------------------------------------------------+
 
-# get script name
-SCRIPT_NAME=`basename ${0}`
-
 # locate base directory of Cacti
-REALPATH_BIN=`which realpath 2>/dev/null`
+REALPATH_BIN=$(command -v realpath)
 if [ $? -gt 0 ]
 then
-	echo "ERROR: unable to locate realpath"
-	echo
-	echo "Linux: Confirm coreutils installed"
-	echo "Mac: Brew install coreutils"
-	echo
+	echo "ERROR: unable to locate realpath" >&2
+	echo >&2
+	echo "Linux: Confirm coreutils installed" >&2
+	echo "Mac: Brew install coreutils" >&2
+	echo >&2
 	exit 1
 fi
-BASE_PATH=`${REALPATH_BIN} ${0} | sed s#/locales/${SCRIPT_NAME}##`
+BASE_PATH=$(dirname "$(dirname "$("$REALPATH_BIN" "$0")")")
 
 # locate xgettext for processing
-XGETTEXT_BIN=`which xgettext 2>/dev/null`
+XGETTEXT_BIN=$(command -v xgettext)
 if [ $? -gt 0 ]
 then
-	echo "ERROR: Unable to locate xgettext"
-	echo
-	echo "Linux: Install GNU gettext"
-	echo "Mac: Brew install GNU gettext"
-	echo
+	echo "ERROR: Unable to locate xgettext" >&2
+	echo >&2
+	echo "Linux: Install GNU gettext" >&2
+	echo "Mac: Brew install GNU gettext" >&2
+	echo >&2
 	exit 1
 fi
 
 # Update main gettext POT file with application strings
 echo "Updating Cacti language gettext language file..."
-cd ${BASE_PATH}
+cd "$BASE_PATH" || exit 1
 
-${XGETTEXT_BIN} --add-location=file --no-wrap --copyright-holder="The Cacti Group" --package-name="Cacti" --package-version=`cat include/cacti_version` --msgid-bugs-address="developers@cacti.net" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot `find . -maxdepth 2 -name \*.php`
+find . -maxdepth 2 -name '*.php' -print | "$XGETTEXT_BIN" --add-location=file --no-wrap --copyright-holder="The Cacti Group" --package-name="Cacti" --package-version="$(cat include/cacti_version)" --msgid-bugs-address="developers@cacti.net" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot --files-from=-
 
 sed -i 's/FULL NAME <EMAIL@ADDRESS\>/Cacti Developers <developers@cacti.net>/g' locales/po/cacti.pot
 sed -i 's/LANGUAGE <LL@li.org>/Cacti Developers <developers@cacti.net>/g' locales/po/cacti.pot
@@ -61,15 +58,17 @@ sed -i 's/CHARSET/UTF-8/g' locales/po/cacti.pot
 # Merge any changes to POT file into language files
 echo "Merging updates to language files..."
 
-for file in `ls -1 locales/po/*.po`;do
+for file in locales/po/*.po; do
+	[ -f "$file" ] || continue
 	echo "Updating $file from cacti.pot"
-	msgmerge --backup off --no-wrap --update -F $file locales/po/cacti.pot
+	msgmerge --backup off --no-wrap --update -F "$file" locales/po/cacti.pot
 done
 
-for file in `ls -1 locales/po/*.po`;do
-  ofile=$(basename --suffix=.po ${file})
+for file in locales/po/*.po; do
+	[ -f "$file" ] || continue
+  ofile=$(basename "$file" .po)
   echo "Converting $file to LC_MESSAGES/${ofile}.mo"
-  msgfmt ${file} -o locales/LC_MESSAGES/${ofile}.mo
+  msgfmt "$file" -o "locales/LC_MESSAGES/$ofile.mo"
 done
 
 exit 0

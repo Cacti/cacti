@@ -25,12 +25,13 @@ on:
   schedule:
   - cron: '0 0 * * *'
 
-permissions:
-  issues: write #  to close stale issues (actions/stale)
-  pull-requests: write #  to close stale PRs (actions/stale)
+permissions: {}
 
 jobs:
   stale:
+    permissions:
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
@@ -59,6 +60,9 @@ jobs:
           activity occurs. Thank you for your contributions.
 
   lock:
+    permissions:
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-slim
     timeout-minutes: 10
 

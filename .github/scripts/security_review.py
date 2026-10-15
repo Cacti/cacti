@@ -15,6 +15,7 @@ errors) to avoid blocking PRs on infrastructure failures.
 
 import json
 import os
+from pathlib import Path
 import sys
 import textwrap
 import urllib.error
@@ -29,10 +30,12 @@ GITHUB_TOKEN      = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO       = os.environ.get("GITHUB_REPOSITORY", "")   # "owner/repo"
 PR_NUMBER         = os.environ.get("GITHUB_PR_NUMBER", "")
 
+REVIEW_DIR = Path(os.environ.get("RUNNER_TEMP", str(Path(__file__).resolve().parent))) / "cacti-security-review"
+
 PROMPT_FILE  = os.environ.get("SECURITY_PROMPT_FILE", ".github/prompts/security-review.md")
-DIFF_FILE    = os.environ.get("PR_DIFF_FILE",    "/tmp/pr.diff")
-GREP_FILE    = os.environ.get("GREP_HITS_FILE",  "/tmp/grep_hits.txt")
-HOTSPOT_FILE = os.environ.get("HOTSPOT_FILE",    "/tmp/hotspot_contents.txt")
+DIFF_FILE    = os.environ.get("PR_DIFF_FILE",    str(REVIEW_DIR / "pr.diff"))
+GREP_FILE    = os.environ.get("GREP_HITS_FILE",  str(REVIEW_DIR / "grep_hits.txt"))
+HOTSPOT_FILE = os.environ.get("HOTSPOT_FILE",    str(REVIEW_DIR / "hotspot_contents.txt"))
 
 MODEL          = "claude-opus-4-8"
 MAX_TOKENS     = 4096

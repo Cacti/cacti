@@ -93,7 +93,10 @@ jobs:
           cache: npm
 
       - name: Install JavaScript dependencies
-        run: npm ci
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npm run postinstall --ignore-scripts
 
       - name: Run PHP cookie matrix
         run: >-
