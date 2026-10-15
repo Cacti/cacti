@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
-	bootstrap="../tests/Helpers/CdefCoverageBootstrap.php"
+	bootstrap="Helpers/CdefCoverageBootstrap.php"
 	beStrictAboutOutputDuringTests="false"
 	cacheDirectory="../.phpunit.cache">
 	<php>
@@ -15,7 +15,7 @@
 	</source>
 	<testsuites>
 		<testsuite name="CDEF coverage">
-			<file>../tests/Coverage/CdefCoverageTest.php</file>
+			<file>Coverage/CdefCoverageTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
