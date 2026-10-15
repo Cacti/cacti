@@ -128,7 +128,10 @@ def main():
     print(json.dumps(report, indent=2))
     covered = sum(row['covered'] for row in report.values())
     total = sum(row['executable'] for row in report.values())
-    complete = report and all(row['instrumented'] for row in report.values())
+    # An empty report means the PR changed no files of this language, so there
+    # is nothing to gate; all() over no rows is already True, so only the
+    # redundant "report and" guard turned that into a failure.
+    complete = all(row['instrumented'] for row in report.values())
     return 0 if complete and (total == 0 or covered * 100 >= args.minimum * total) else 1
 
 

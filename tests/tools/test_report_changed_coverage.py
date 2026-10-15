@@ -61,6 +61,15 @@ class CoverageEvidenceTest(unittest.TestCase):
     def test_lower_threshold_does_not_allow_missing_evidence(self):
         self.assertEqual(self.evaluate(None, minimum=80), 1)
 
+    def test_no_changed_lines_of_the_language_passes(self):
+        # A PR that changes nothing in the gated language has nothing to cover,
+        # so the gate must pass rather than fail closed on an empty report.
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            arguments = ['gate', '--base', 'HEAD']
+            with patch.object(GATE.Path, 'cwd', return_value=root), patch.object(GATE, 'added_lines', return_value={}), patch('sys.argv', arguments), redirect_stdout(io.StringIO()):
+                self.assertEqual(GATE.main(), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
