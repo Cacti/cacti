@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - '**.php'
-      - 'phpunit.xml'
+      - 'tests/phpunit.xml'
       - 'tests/e2e/**'
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/tools/check_changed_php_coverage.py'
@@ -51,7 +51,7 @@ jobs:
           python3 tests/tools/test_check_changed_php_coverage.py
           python3 tests/tools/test_request_coverage_dispatch.py
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
-            --prepare-config phpunit.xml --output-config phpunit-changed.xml
+            --prepare-config tests/phpunit.xml --output-config phpunit-changed.xml
       - name: Exercise unit and integration contracts with statement coverage
         env:
           XDEBUG_MODE: coverage

@@ -169,7 +169,7 @@ jobs:
       - name: Run Pest with coverage
         run: |
           set -euo pipefail
-          include/vendor/bin/pest --display-warnings --coverage-clover=coverage.xml \
+          include/vendor/bin/pest --configuration=tests/phpunit.xml --display-warnings --coverage-clover=coverage.xml \
             --coverage-text --testsuite=Unit,Integration | tee coverage-summary.txt
 
       - name: Enforce minimum statement coverage

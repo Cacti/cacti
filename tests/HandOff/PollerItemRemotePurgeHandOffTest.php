@@ -56,7 +56,7 @@
  *
  * Neither of these depends on POLLER_ID, which the shared Pest process may
  * already have pinned to 1 via a prior test file's UnitStubs.php include
- * (HandOff runs after Unit per phpunit.xml's testsuite order, so it always
+ * (HandOff runs after Unit per tests/phpunit.xml's testsuite order, so it always
  * has been in a full-suite run).
  *
  * Docker fixture: set CACTI_HANDOFF_MYSQL_HOST/_PORT/_USER/_PASS/_DB to

@@ -44,9 +44,9 @@ test('successful Boost staging acknowledges queue rows without inline RRD writes
 	$r = poller_output_probe('boost-success');
 	expect($r['remaining'])->toBe(0)->and($r['boost_calls'])->toBe(1)->and($r['rrd_calls'])->toBe(0);
 });
-test('redirected polling still confirms queued samples were staged before acknowledging them', function () {
+test('redirected polling never re-inserts collector-staged samples into poller_output_boost', function () {
 	$r = poller_output_probe('boost-redirect');
-	expect($r['remaining'])->toBe(0)->and($r['boost_calls'])->toBe(1)->and($r['rrd_calls'])->toBe(0);
+	expect($r['remaining'])->toBe(0)->and($r['boost_calls'])->toBe(0)->and($r['rrd_calls'])->toBe(0);
 });
 test('failed Boost staging and failed RRD fallback retain queue rows', function () {
 	$r = poller_output_probe('boost-failure');

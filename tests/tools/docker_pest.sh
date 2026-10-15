@@ -19,4 +19,4 @@ docker build \
 docker run --rm \
 	--env XDEBUG_MODE="${XDEBUG_MODE:-off}" \
 	"${test_image}" \
-	include/vendor/bin/pest --display-warnings "$@"
+	include/vendor/bin/pest --configuration=tests/phpunit.xml --display-warnings "$@"
