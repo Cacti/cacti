@@ -1766,7 +1766,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	if (empty($graph_data_array['graph_end'])) {
-		$main_last_run = read_config_option('poller_lastrun_1');
+		/* Standalone graph requests may retain a last-poll value cached in the web session. */
+		$main_last_run = read_config_option('poller_lastrun_1', true);
 		$now_time      = time();
 		$default_delta = (int) read_config_option('poller_interval') * -1;
 

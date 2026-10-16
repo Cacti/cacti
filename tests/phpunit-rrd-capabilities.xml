@@ -2,6 +2,7 @@
 <phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
     <testsuites>
         <testsuite name="RrdCapabilities">
+            <file>Unit/Core/Rrd/GraphPollTimeTest.php</file>
             <file>Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php</file>
             <file>Unit/Core/Rrd/RrdVersionCheckReuseTest.php</file>
             <file>Unit/Core/Rrd/RrdDataSourceDiffTest.php</file>

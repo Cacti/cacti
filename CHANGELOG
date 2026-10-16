@@ -1,101 +1,98 @@
 Cacti CHANGELOG
 
 1.2.x
--issue#8414: Restore tree-device and breadcrumb navigation from Time Graph View
--issue#8390: Reject dangling symlinks in validate_relative_path_within
--issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
--security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
--security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
--security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
--security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
--security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
--security#GHSA-hh7r-464j-rf39: Neutralize CSV formula injection and sanitize the Content-Disposition filename in the graph data export
--security#GHSA-v99q-57w7-mpmg: Escape the page title rendered in the HTML title element
--security#GHSA-f5f5-h85v-6m3h: Render user administration tooltip content as escaped text
--security#GHSA-p3rg-7pc3-2h86: Dummy-verify passwords for unknown users to close a login-timing enumeration side channel
--security#GHSA-92jm-r83q-cjr8: Validate the hgd graph-template id as a number before the tree-view graph SQL filter
--security#GHSA-4j2v-vxgp-83ch: Validate the hgd graph-template id for host-leaf Graph Template grouping before the SQL filter
--security#GHSA-q46f-rxh6-8pw2: Bind the reverse-DNS hostname when updating automation_ips
--security#GHSA-gf3f-mwjj-vj2v: Validate the automation tree rule item field against existing columns before storage
--security#GHSA-jv53-qfw3-v2fh: Validate the automation graph rule item field against existing columns before storage
--security#GHSA-mgcq-r6vm-4xhw: Escape SNMP and Data Query names in Reports tree titles
--security#GHSA-v2mq-mxpw-55pf: CVE-2026-46530 Escape graph preset names rendered in the gprint presets list
--security#GHSA-4fr7-45gj-5cx6: Validate and escape data_source_path before RRDtool execution
--security#GHSA-fgwr-944r-wg98: Validate rrd and data_source path tokens in the CLI maintenance tools and Boost
--security#GHSA-p5xj-48vc-mqrf: Cap remember-me token lifetime to 90 days via the login-time predicate and the poller_maintenance authcache purge
--security#GHSA-69vw-qxxv-p8w2: Remove the No Authentication mode and its auto-admin grant, migrating legacy auth_method=0 to Builtin login
--security#GHSA-jpf3-w6p4-pjrf: CVE-2026-44480 Validate the automation tree rule item field against existing columns before storage
--security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary in the resource-cache PHP syntax-check system() call
--security#GHSA-hcj6-pmvx-fwgr: Strip CR/LF in escape_command so interpolated data cannot inject a second rrdtool command
--security#GHSA-967c-6qj7-q7rh: Close the rrd_maximum |query_*| newline injection via the escape_command control-character strip
--security#GHSA-9ffc-rr2g-c8hh: Reject spoofable Remote-User and PHP_AUTH_USER headers under web basic auth
--security#GHSA-c3wx-gf8r-j4m7: Escape the device Location option value in host.php
--security#GHSA-34x4-x9jp-6w4c: Escape the RRD file path arguments in the CLI maintenance tools
--security#GHSA-m49v-hr7h-wwcj: Constrain the user_admin sort_column to displayed columns to block an ORDER BY pivot
--security#GHSA-q8j8-p456-wr4f: Escape LIKE wildcards in the sites.php name filter
--security#GHSA-fchr-jrc7-94v5: Authorize tree node modify and lock actions against per-tree access
--security#GHSA-hc4f-f236-v98q: Authorize Reports item read and write against report ownership
--security#GHSA-62fx-cvfm-wqx7: Anchor the rrd_maximum and rrd_minimum validation regex on the data source form
--security#GHSA-wp33-g6gc-444m: Anchor the rrd_maximum and rrd_minimum validation regex on the data template form
--security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
--security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
--security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
--security#GHSA-73qf-hq23-c4m7: Authorize the tree copy, lock and unlock actions against per-tree access before mutating
--security#GHSA-929h-4c93-hxcg: Quote the aggregate graph filter LIKE term
--security#GHSA-cg45-2mww-g98p: Revoke the server-side remember-me row on the auth_changepassword nopassword path
--security#GHSA-f7jw-gfhr-cxwm: Escape the Resulting Branch value in the automation tree-rule matching preview
--security#GHSA-h5wg-qf6f-7f6r: Reject unsafe identifiers in the plugin table create and drop helpers
--security#GHSA-m3fh-gxqj-76hq: Strip control characters from the SNMPv3 credential device fields
--security#GHSA-m57p-vf3v-cpgg: Escape the SNMP-sourced device description in the automation tree-rule matching preview
--security#GHSA-m67r-fcmw-gvv7: Confine the imported data-query xml_path to the Cacti tree
--security#GHSA-m6wx-f538-m6q3: Enforce the .log extension on the Boost debug log path setting
--security#GHSA-mpfm-qhvj-5879: Validate the theme in rrdtool_create_error_image() through the theme allowlist
--security#GHSA-r6jp-ff29-v9qw: Escape the imported template name in the template-import preview
--security#GHSA-vx2m-q53g-hmrf: Escape host_snmp_cache.field_name in the automation pivot CASE WHEN builders
--security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
--security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
--security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
--security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
--security#GHSA-x5pw-cg7j-mj4r: Run the bundled webhits poller script wc through a shell-free open
--security#GHSA-9737-rqh3-h7fh: Escape interpolated names in raise_message across the UI
--security#GHSA-9x9h-2577-9w86: Build the colordropdown autocomplete from nodes and text, not HTML strings
--security#GHSA-h96j-8xhc-2p3w: Authorize remote_agent on the genuine peer address, not forwarded headers
--security#GHSA-9qff-xccr-rrc5: Contain data_source_path within the RRA directory
--security#GHSA-vp35-4h28-r883: CVE-2026-39939 Harden package import path traversal defenses
--security#GHSA-pqrp-v752-mc4f: Stop disabled accounts authenticating and revoke tokens on disable
--security#GHSA-3466-fp7g-c9rf: Prefer base_url over the client Host header for the force_https redirect
--security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
--security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
--security#GHSA-77pr-g949-4v5f: Authorize the target graph before Spike Kill rewrites its RRD history
--security#GHSA-w3qw-762w-6g9v: Reject array-form GET actions that bypass the POST and CSRF guard
--security#GHSA-xhpr-w454-cc9w: Cast the stored data-query output_type before building the poller cache query
--security#GHSA-j3px-vw6r-g25x: Escape stored snmp_index values in the New Graphs data-query pivot
--security#GHSA-h745-3r76-g253: Escape the data-query and field names in the New Graphs parse error messages
--security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
--security#8055: Harden - Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
--security#8055: Harden - Strip CR/LF from escape_command to stop rrdtool-protocol injection
--security#GHSA-5c9j-rhf5-rj4h: Harden Net-SNMP command execution and SNMP cache processing
--security#8055: Harden - Escape the device Location filter option value to stop stored XSS
--security#8055: Harden - Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
--security#7990: Harden - Reject clean-client login requests when the session cookie was not accepted
--security#8008: Harden - Fail closed on a posted LDAP realm that is not a configured domain
--security#8008: Harden - Keep LDAP directory errors out of the login page
--security#8008: Harden - Demand TLS certificates for new LDAP installs
--security#8008: Harden - Restore the Cacti error handler on LDAP bind-only and empty-password paths
--security#7972: Harden - Harden CLI shell arguments, database credentials, and temporary RRD files
+-security#7235: Harden - Harden advisory command execution and database DDL sink validation
+-security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
+-security#7817: Harden - Constrain external-link includes to regular files inside the configured content directory
+-security#7832: Harden - Build forced-HTTPS redirects from the server-configured name
+-security#7845: Harden - Substitute query data before escaping graph titles and axis labels
 -security#7847: Harden - Revoke anonymous access when the guest account is disabled
 -security#7847: Harden - Cast graph and device ids to int in get_allowed_* permission filters
 -security#7847: Harden - Set the Secure session cookie behind a trusted TLS-terminating proxy
 -security#7847: Harden - Escape path_dsstats_log before logging
 -security#7847: Harden - Escape aggregate graph local_graph_id before SQL use
 -security#7847: Harden - Reject Windows-special log filename forms in the clog purge validation
--security#7845: Harden - Substitute query data before escaping graph titles and axis labels
--security#7832: Harden - Build forced-HTTPS redirects from the server-configured name
--security#7817: Harden - Constrain external-link includes to regular files inside the configured content directory
--security#7235: Harden - Harden advisory command execution and database DDL sink validation
--security#GHSA-2pmj-f26c-3ghv: Restrict graph input fields across the template, graph and import handoffs
--security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
+-security#7972: Harden - Harden CLI shell arguments, database credentials, and temporary RRD files
+-security#7990: Harden - Reject clean-client login requests when the session cookie was not accepted
+-security#8008: Harden - Fail closed on a posted LDAP realm that is not a configured domain
+-security#8008: Harden - Keep LDAP directory errors out of the login page
+-security#8008: Harden - Demand TLS certificates for new LDAP installs
+-security#8008: Harden - Restore the Cacti error handler on LDAP bind-only and empty-password paths
+-security#8055: Harden - Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
+-security#8055: Harden - Strip CR/LF from escape_command to stop rrdtool-protocol injection
+-security#8055: Harden - Escape the device Location filter option value to stop stored XSS
+-security#8055: Harden - Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
 -security#8346: Pin workflow Actions and isolate release signing from builds
+-security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
+-security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
+-security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
+-security#GHSA-2pmj-f26c-3ghv: Restrict graph input fields across the template, graph and import handoffs
+-security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
+-security#GHSA-3466-fp7g-c9rf: Prefer base_url over the client Host header for the force_https redirect
+-security#GHSA-34x4-x9jp-6w4c: Escape the RRD file path arguments in the CLI maintenance tools
+-security#GHSA-4fr7-45gj-5cx6: Validate and escape data_source_path before RRDtool execution
+-security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
+-security#GHSA-4j2v-vxgp-83ch: Validate the hgd graph-template id for host-leaf Graph Template grouping before the SQL filter
+-security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary in the resource-cache PHP syntax-check system() call
+-security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
+-security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
+-security#GHSA-5c9j-rhf5-rj4h: Harden Net-SNMP command execution and SNMP cache processing
+-security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
+-security#GHSA-62fx-cvfm-wqx7: Anchor the rrd_maximum and rrd_minimum validation regex on the data source form
+-security#GHSA-69vw-qxxv-p8w2: Remove the No Authentication mode and its auto-admin grant, migrating legacy auth_method=0 to Builtin login
+-security#GHSA-73qf-hq23-c4m7: Authorize the tree copy, lock and unlock actions against per-tree access before mutating
+-security#GHSA-77pr-g949-4v5f: Authorize the target graph before Spike Kill rewrites its RRD history
+-security#GHSA-929h-4c93-hxcg: Quote the aggregate graph filter LIKE term
+-security#GHSA-92jm-r83q-cjr8: Validate the hgd graph-template id as a number before the tree-view graph SQL filter
+-security#GHSA-967c-6qj7-q7rh: Close the rrd_maximum |query_*| newline injection via the escape_command control-character strip
+-security#GHSA-9737-rqh3-h7fh: Escape interpolated names in raise_message across the UI
+-security#GHSA-9ffc-rr2g-c8hh: Reject spoofable Remote-User and PHP_AUTH_USER headers under web basic auth
+-security#GHSA-9qff-xccr-rrc5: Contain data_source_path within the RRA directory
+-security#GHSA-9x9h-2577-9w86: Build the colordropdown autocomplete from nodes and text, not HTML strings
+-security#GHSA-c3wx-gf8r-j4m7: Escape the device Location option value in host.php
+-security#GHSA-cg45-2mww-g98p: Revoke the server-side remember-me row on the auth_changepassword nopassword path
+-security#GHSA-f5f5-h85v-6m3h: Render user administration tooltip content as escaped text
+-security#GHSA-f7jw-gfhr-cxwm: Escape the Resulting Branch value in the automation tree-rule matching preview
+-security#GHSA-fchr-jrc7-94v5: Authorize tree node modify and lock actions against per-tree access
+-security#GHSA-fgwr-944r-wg98: Validate rrd and data_source path tokens in the CLI maintenance tools and Boost
+-security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
+-security#GHSA-gf3f-mwjj-vj2v: Validate the automation tree rule item field against existing columns before storage
+-security#GHSA-h5wg-qf6f-7f6r: Reject unsafe identifiers in the plugin table create and drop helpers
+-security#GHSA-h745-3r76-g253: Escape the data-query and field names in the New Graphs parse error messages
+-security#GHSA-h96j-8xhc-2p3w: Authorize remote_agent on the genuine peer address, not forwarded headers
+-security#GHSA-hc4f-f236-v98q: Authorize Reports item read and write against report ownership
+-security#GHSA-hcj6-pmvx-fwgr: Strip CR/LF in escape_command so interpolated data cannot inject a second rrdtool command
+-security#GHSA-hh7r-464j-rf39: Neutralize CSV formula injection and sanitize the Content-Disposition filename in the graph data export
+-security#GHSA-j3px-vw6r-g25x: Escape stored snmp_index values in the New Graphs data-query pivot
+-security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
+-security#GHSA-jpf3-w6p4-pjrf: CVE-2026-44480 Validate the automation tree rule item field against existing columns before storage
+-security#GHSA-jv53-qfw3-v2fh: Validate the automation graph rule item field against existing columns before storage
+-security#GHSA-m3fh-gxqj-76hq: Strip control characters from the SNMPv3 credential device fields
+-security#GHSA-m49v-hr7h-wwcj: Constrain the user_admin sort_column to displayed columns to block an ORDER BY pivot
+-security#GHSA-m57p-vf3v-cpgg: Escape the SNMP-sourced device description in the automation tree-rule matching preview
+-security#GHSA-m67r-fcmw-gvv7: Confine the imported data-query xml_path to the Cacti tree
+-security#GHSA-m6wx-f538-m6q3: Enforce the .log extension on the Boost debug log path setting
+-security#GHSA-mgcq-r6vm-4xhw: Escape SNMP and Data Query names in Reports tree titles
+-security#GHSA-mpfm-qhvj-5879: Validate the theme in rrdtool_create_error_image() through the theme allowlist
+-security#GHSA-p3rg-7pc3-2h86: Dummy-verify passwords for unknown users to close a login-timing enumeration side channel
+-security#GHSA-p5xj-48vc-mqrf: Cap remember-me token lifetime to 90 days via the login-time predicate and the poller_maintenance authcache purge
+-security#GHSA-pqrp-v752-mc4f: Stop disabled accounts authenticating and revoke tokens on disable
+-security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
+-security#GHSA-q46f-rxh6-8pw2: Bind the reverse-DNS hostname when updating automation_ips
+-security#GHSA-q8j8-p456-wr4f: Escape LIKE wildcards in the sites.php name filter
+-security#GHSA-r6jp-ff29-v9qw: Escape the imported template name in the template-import preview
+-security#GHSA-v2mq-mxpw-55pf: CVE-2026-46530 Escape graph preset names rendered in the gprint presets list
+-security#GHSA-v99q-57w7-mpmg: Escape the page title rendered in the HTML title element
+-security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
+-security#GHSA-vp35-4h28-r883: CVE-2026-39939 Harden package import path traversal defenses
+-security#GHSA-vx2m-q53g-hmrf: Escape host_snmp_cache.field_name in the automation pivot CASE WHEN builders
+-security#GHSA-w3qw-762w-6g9v: Reject array-form GET actions that bypass the POST and CSRF guard
+-security#GHSA-wp33-g6gc-444m: Anchor the rrd_maximum and rrd_minimum validation regex on the data template form
+-security#GHSA-x5pw-cg7j-mj4r: Run the bundled webhits poller script wc through a shell-free open
+-security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
+-security#GHSA-xhpr-w454-cc9w: Cast the stored data-query output_type before building the poller cache query
+-security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
+-security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
@@ -149,35 +146,36 @@ Cacti CHANGELOG
 -issue#7747: Keep missing PHP extensions visible to the Cacti installer
 -issue#7777: Url encode the base64 regex filter before it reaches the query string
 -issue#7801: Harden CSRF secret storage and state-changing browser request handoffs
+-issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 4
 -issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
 -issue#7810: Stop using null as a graph CF cache offset on PHP 8.5
 -issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
 -issue#7819: Remove obsolete pre-PHP 8 compatibility branches
+-issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)
 -issue#7829: Report a missing session cookie instead of redirecting into a login loop
 -issue#7868: Apply Boost process-table columns on the 1.2.32 upgrade path
 -issue#7907: Reject CLI RLIKE patterns, remove the unused remove_graphs --graph-type option, and improve cli argument handling and exit status
+-issue#7930: Commit transactions on MySQL as well as MariaDB
 -issue#7954: Guard applySkin when cactiNonce is not defined
 -issue#7957: Stop treating every PID in a container as a reserved system PID
 -issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
 -issue#7961: Preserve the full Plugin Management layout after dependency errors
 -issue#7967: Fail CSP Pest jobs when no tests execute
+-issue#7968: Confine PHP error attribution to the plugin root, reject invalid entrypoints without warnings, and bind realm filenames
 -issue#7975: Harden malformed remember-me cookies and protocol-aware UI cookie flags
 -issue#7978: Revoke remember-me tokens before clearing cookies on every logout path
 -issue#7979: Fail closed on invalid, cyclic, or oversized CDEF definitions
 -issue#7981: Require a POST token for actions that reorder or delete items, trees and link pages
 -issue#7986: Preserve child exit codes observed by cacti_exec
 -issue#8002: Propagate plugin install-hook failures to the API, web manager, and CLI while disabling hooks and retaining setup data for recovery
--issue#8026: Log rejected plugin table definitions and failed table creation or schema refresh with plugin/table context
 -issue#8025: An enum type in a table definition can cause problems when creating the table
+-issue#8026: Log rejected plugin table definitions and failed table creation or schema refresh with plugin/table context
 -issue#8042: Detect a real TTY instead of a dead github_actions check before calling stty size
 -issue#8063: Support searching by graph ID on the Graphs list/preview and Aggregate Graphs pages
 -issue#8104: Hash the debounce notification key to stop 50-character truncation errors
 -issue#8105: Add a Force Uninstall action to remove an orphaned plugin whose directory is missing
--issue#8121: Do not replicate repository and tooling metadata files to remote data collectors during file replication
 -issue#8115: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
--issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)
--issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 4
--issue#7930: Commit transactions on MySQL as well as MariaDB
+-issue#8121: Do not replicate repository and tooling metadata files to remote data collectors during file replication
 -issue#8173: Restore selected preset and custom date ranges for graph lists while preserving detailed panel ranges (PR#8178)
 -issue#8177: Prevent clipped detailed graph panels and improve theme visibility when printing or saving as PDF
 -issue#8209: Make filter Go buttons submit the form
@@ -187,19 +185,22 @@ Cacti CHANGELOG
 -issue#8227: Theme the jQuery UI selectmenu, autocomplete and dialog widgets in every theme to match that theme's select2 and html_start_box styling instead of the default jQuery UI themeroller look
 -issue#8227: Add the translucent device-status pill styling to the classic, midwinter, modern, paw and sunrise themes using each theme's own status hues and contrast, matching the deepness/dark/paper-plane pills
 -issue#8228: Colour the MidWinter theme's graph drilldown action icons from the theme's HSL variable palette with a distinct task-appropriate hue per action, in both the dark and light modes
--issue#8325: Fit the installer layout to narrow screens and restore heading font sizes
--issue#7968: Confine PHP error attribution to the plugin root, reject invalid entrypoints without warnings, and bind realm filenames
 -issue#8232: Use a clean green for the device-status .deviceUp color instead of a muddy olive, most visibly on the jQuery UI message dialog where info/success messages are rendered with that class
 -issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
 -issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
 -issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
 -issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
 -issue#8316: Keep graph drilldown controls fixed and keyboard focus intact, bind SpikeKill requests to their graph, clean up submenu state, and require CSRF-protected POSTs for SpikeKill writes, enforce RRA kill limits, preserve missing samples, and report RRD failures
+-issue#8325: Fit the installer layout to narrow screens and restore heading font sizes
+-issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
+-issue#8390: Reject dangling symlinks in validate_relative_path_within
+-issue#8414: Restore tree-device and breadcrumb navigation from Time Graph View
+-issue#8415: Refresh the last-poll timestamp when selecting an automatic graph end time
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
--feature#8032: Update phpseclib to version 4.0.1
 -feature#7887: Update bundled jQuery UI to 1.14.2 and jQuery Tablesorter to 2.31.3
+-feature#8032: Update phpseclib to version 4.0.1
 -feature#8159: Update bundled DOMPurify to 3.4.16
 -feature#8159: Update bundled d3 to 7.9.0
 -feature#8159: Update bundled billboard.js to 4.1.0
@@ -212,10 +213,10 @@ Cacti CHANGELOG
 -feature#8166: Collect each device's SNMP data sources in cmd.php in a single max_oids-sized batched request over the persistent session, replacing one SNMP round trip per OID with one per max_get_size OIDs
 -feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, matching hardened (FIPS) PHP and Net-SNMP builds
 -feature#8168: Add a two-year panel to the detailed graph view when archive retention supports it
--feature#8257: Log user actions (create, delete, ...) 
--feature#8280: Add a jQuery rebind() helper for the common off(events).on(events, ...) idiom and roll it out across the core JavaScript and inline PHP event handlers
 -feature#8189: Add a MySQL/MariaDB variable capability matrix to the Database section and stop recommending variables deprecated or removed on the detected server
 -feature#8222: Add theme-appropriate host status pills to the Dark theme
+-feature#8257: Log user actions (create, delete, ...)
+-feature#8280: Add a jQuery rebind() helper for the common off(events).on(events, ...) idiom and roll it out across the core JavaScript and inline PHP event handlers
 -feature#8311: Make the graph drilldown action icons a common hamburger toggle over the graph's top-right across all themes (centralized in layout.js) instead of the per-theme hover-to-the-right behaviour
 -feature#8316: Expand the open graph drilldown strip into a labelled table menu (text label on the left, glyphs aligned in a fixed right-hand column) built in layout.js on open so plugin-contributed icons are labelled from their title without plugin changes
 
