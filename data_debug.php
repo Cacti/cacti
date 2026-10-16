@@ -37,6 +37,10 @@ set_default_action();
 
 draw_data_debug_filter(false);
 
+if (in_array(grv('action'), ['run_repair', 'run_debug'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'actions':
 		form_actions();
@@ -769,7 +773,7 @@ function debug_view() : void {
 	} elseif ($debug_status == 'analysis') {
 		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery ti ti-refresh icon-rotate" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
 	} else {
-		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]', '<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'), '100%', false, 3, 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]', '<a href="#" class="cactiPostAction linkEditMain" data-url="' . html_escape_url('data_debug.php?action=run_debug&id=' . $id) . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'), '100%', false, 3, 'center', '');
 	}
 
 	html_header(
@@ -859,7 +863,7 @@ function debug_view() : void {
 			$path = get_data_source_path($id, true);
 
 			if (is_writeable($path)) {
-				html_start_box(__('Repair Steps [ %s ]', '<a href="#" class="repairme linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '100%', false, 3, 'center', '');
+				html_start_box(__('Repair Steps [ %s ]', '<a href="#" class="cactiPostAction linkEditMain" data-url="' . html_escape_url('data_debug.php?action=run_repair&id=' . $id) . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '100%', false, 3, 'center', '');
 			} else {
 				html_start_box(__('Repair Steps [ Run Fix from Command Line ]', $path), '100%', false, 3, 'center', '');
 			}
@@ -889,21 +893,9 @@ function debug_view() : void {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('.repairme').click(function(event) {
-			event.preventDefault();
-			id = $(this).attr('data-id');
-			loadUrl({url:'data_debug.php?action=run_repair&id=' + id})
-		});
-
 		$('.reloadquery').click(function() {
 			id = $(this).attr('data-id');
 			loadUrl({url:'data_debug.php?action=view&id=' + id})
-		});
-
-		$('.rerun').click(function(event) {
-			event.preventDefault();
-			id = $(this).attr('data-id');
-			loadUrl({url:'data_debug.php?action=run_debug&id=' + id})
 		});
 	});
 	</script>
