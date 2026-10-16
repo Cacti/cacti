@@ -20,21 +20,27 @@ if (!function_exists('__')) {
 	}
 }
 
-// lib/html.php carries a large web runtime dependency, so the balanced box
-// rendering is validated against lightweight stubs that record the output.
-if (!function_exists('html_start_box')) {
-	function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
-		print "<div class='cactiTable'><div class='cactiTableTitle'>" . $title . '</div>';
-	}
-}
-
-if (!function_exists('html_end_box')) {
-	function html_end_box($trailing_br = true, $div = false) {
-		print '</div>';
-	}
-}
-
 require_once dirname(__DIR__, 4) . '/lib/rrd.php';
+
+/**
+ * Recording box renderers injected into rrdtool_tune_print_html() so the
+ * balanced-box rendering can be validated without the large web runtime
+ * dependency carried by the real html_start_box()/html_end_box() helpers.
+ */
+function rrd_tune_box_recorders(array &$titles, &$opened, &$closed) {
+	$open = function ($title) use (&$titles, &$opened) {
+		$titles[] = $title;
+		$opened++;
+		print "<div class='cactiTable'><div class='cactiTableTitle'>" . $title . '</div>';
+	};
+
+	$close = function () use (&$closed) {
+		$closed++;
+		print '</div>';
+	};
+
+	return array($open, $close);
+}
 
 function rrd_tune_capture(callable $callback) {
 	ob_start();
@@ -88,12 +94,20 @@ test('rrdtool_tune_print_html renders self contained, balanced div boxes', funct
 		'resize' => array('/rra/x.rrd 0 GROW 10'),
 	);
 
-	$output = rrd_tune_capture(function () use ($diff) {
-		rrdtool_tune_print_html('/rra/x.rrd', $diff);
+	$titles = array();
+	$opened = 0;
+	$closed = 0;
+	list($open, $close) = rrd_tune_box_recorders($titles, $opened, $closed);
+
+	$output = rrd_tune_capture(function () use ($diff, $open, $close) {
+		rrdtool_tune_print_html('/rra/x.rrd', $diff, $open, $close);
 	});
 
-	expect($output)->toContain('Errors Found');
-	expect($output)->toContain('Optional Tuning Recommendations');
+	// each section is a self contained, balanced box
+	expect($titles)->toBe(array('Errors Found', 'Optional Tuning Recommendations'));
+	expect($opened)->toBe(2);
+	expect($closed)->toBe(2);
+
 	expect($output)->toContain('tune /rra/x.rrd DEL:timeafter');
 	expect($output)->toContain('resize /rra/x.rrd 0 GROW 10');
 	expect($output)->toContain('rename');
@@ -103,11 +117,18 @@ test('rrdtool_tune_print_html renders self contained, balanced div boxes', funct
 });
 
 test('rrdtool_tune_print_html is empty when there is nothing to report', function () {
-	$output = rrd_tune_capture(function () {
-		rrdtool_tune_print_html('/rra/x.rrd', array());
+	$titles = array();
+	$opened = 0;
+	$closed = 0;
+	list($open, $close) = rrd_tune_box_recorders($titles, $opened, $closed);
+
+	$output = rrd_tune_capture(function () use ($open, $close) {
+		rrdtool_tune_print_html('/rra/x.rrd', array(), $open, $close);
 	});
 
 	expect($output)->toBe('');
+	expect($opened)->toBe(0);
+	expect($closed)->toBe(0);
 });
 
 test('rrdtool_tune_print_cli prints the rrdtool source commands', function () {

@@ -4104,25 +4104,29 @@ function rrdtool_tune_print_cli($rrd_file, $diff) {
 /**
  * rrdtool_tune_print_html - render the rrdtool tune/resize output as balanced div boxes.
  *
- * @param string $rrd_file The rrd file name.
- * @param array  $diff     The array of discrepancies between cacti settings and rrd file info.
+ * @param string        $rrd_file  The rrd file name.
+ * @param array         $diff      The array of discrepancies between cacti settings and rrd file info.
+ * @param callable|null $open_box  Test seam for html_start_box().
+ * @param callable|null $close_box Test seam for html_end_box().
  *
  * @return void No value is returned.
  */
-function rrdtool_tune_print_html($rrd_file, $diff) {
-	$rrd_path = read_config_option('path_rrdtool');
+function rrdtool_tune_print_html($rrd_file, $diff, $open_box = null, $close_box = null) {
+	$open_box  = $open_box ?? 'html_start_box';
+	$close_box = $close_box ?? 'html_end_box';
+	$rrd_path  = read_config_option('path_rrdtool');
 
 	if (cacti_sizeof($diff)) {
-		html_start_box(__('Errors Found'), '100%', true, '3', 'center', '');
+		$open_box(__('Errors Found'), '100%', true, '3', 'center', '');
 
 		rrdtool_tune_print_leaves($diff, true);
 
-		html_end_box(true, true);
+		$close_box(true, true);
 	}
 
 	if ((isset($diff['tune']) && cacti_sizeof($diff['tune'])) ||
 		(isset($diff['resize']) && cacti_sizeof($diff['resize']))) {
-		html_start_box(__('Optional Tuning Recommendations'), '100%', true, '3', 'center', '');
+		$open_box(__('Optional Tuning Recommendations'), '100%', true, '3', 'center', '');
 
 		if (isset($diff['tune'])) {
 			foreach ($diff['tune'] as $line) {
@@ -4137,7 +4141,7 @@ function rrdtool_tune_print_html($rrd_file, $diff) {
 			}
 		}
 
-		html_end_box(true, true);
+		$close_box(true, true);
 	}
 }
 
