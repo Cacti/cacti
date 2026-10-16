@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
 require_once CACTI_PATH_LIBRARY . '/rrd.php';
 require_once CACTI_PATH_LIBRARY . '/html.php';
 
