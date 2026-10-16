@@ -1230,10 +1230,13 @@ legend {
 }
 
 .cactiConsoleContentArea {
+	box-sizing: border-box;
 	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden;
 	border-left: 1px solid #000000;
+	padding-right: 15px;
+	padding-bottom: 20px;
 }
 
 #graph_view_preview2 table.cactiTable {

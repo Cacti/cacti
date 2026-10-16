@@ -1099,10 +1099,12 @@ legend {
 }
 
 .cactiConsoleContentArea {
+	box-sizing: border-box;
 	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top: 10px;
-	padding-right: 5px;
+	padding-right: 15px;
 	padding-left: 5px;
+	padding-bottom: 20px;
 	margin-left: 162px;
 	height: 100vh;
 	width: 100%;
