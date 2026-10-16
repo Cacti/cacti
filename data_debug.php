@@ -37,6 +37,12 @@ set_default_action();
 
 draw_data_debug_filter(false);
 
+if (in_array(grv('action'), [
+	'run_repair', 'run_debug',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'actions':
 		form_actions();
