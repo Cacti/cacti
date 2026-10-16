@@ -128,7 +128,7 @@ test('rrdtool_tune_print_cli prints the rrdtool source commands', function () {
 	expect($output)->not->toContain('<div');
 });
 
-test('rrdtool_tune_execute relocates the resized file beside the rrd under a storage location', function () {
+test('rrdtool_tune_execute runs the commands and relocates the resized file beside the rrd under a storage location', function () {
 	$GLOBALS['config']['config_options_array']['storage_location'] = 1;
 
 	$dir = sys_get_temp_dir() . '/rrd_tune_exec_remote_' . getmypid();
@@ -136,16 +136,30 @@ test('rrdtool_tune_execute relocates the resized file beside the rrd under a sto
 
 	$target = $dir . '/data.rrd';
 	file_put_contents($target, 'target');
-	file_put_contents($dir . '/resize.rrd', 'resized');
 
-	// control characters in the command keep rrdtool_execute from running while
-	// still exercising the surrounding tune/resize bookkeeping and the rename
+	// a recording executor stands in for rrdtool and, like the real resize, only
+	// produces resize.rrd beside the rrd when the resize command actually runs
+	$commands = array();
+	$executor = function ($command) use (&$commands, $dir) {
+		$commands[] = $command;
+
+		if (strpos($command, 'resize ') === 0) {
+			file_put_contents($dir . '/resize.rrd', 'resized');
+		}
+
+		return true;
+	};
+
 	$diff = array(
-		'tune'   => array("DEL:timeafter\x01"),
-		'resize' => array("0 GROW 10\x01"),
+		'tune'   => array(cacti_escapeshellarg($target) . ' DEL:timeafter'),
+		'resize' => array(cacti_escapeshellarg($target) . ' 0 GROW 10'),
 	);
 
-	rrdtool_tune_execute($target, $diff);
+	rrdtool_tune_execute($target, $diff, $executor);
+
+	expect($commands)->toHaveCount(2);
+	expect($commands[0])->toBe('tune ' . cacti_escapeshellarg($target) . ' DEL:timeafter');
+	expect($commands[1])->toBe('resize ' . cacti_escapeshellarg($target) . ' 0 GROW 10');
 
 	expect(file_exists($dir . '/resize.rrd'))->toBeFalse();
 	expect(file_get_contents($target))->toBe('resized');
@@ -166,20 +180,56 @@ test('rrdtool_tune_execute relocates the resized file from the working directory
 
 	$previous = getcwd();
 	chdir($dir);
-	file_put_contents($dir . '/resize.rrd', 'resized');
 
-	$diff = array(
-		'resize' => array("0 GROW 10\x01"),
-	);
+	$commands = array();
+	$executor = function ($command) use (&$commands) {
+		$commands[] = $command;
 
-	rrdtool_tune_execute($target, $diff);
+		if (strpos($command, 'resize ') === 0) {
+			file_put_contents('resize.rrd', 'resized');
+		}
+
+		return true;
+	};
+
+	rrdtool_tune_execute($target, array('resize' => array(cacti_escapeshellarg($target) . ' 0 GROW 10')), $executor);
 
 	chdir($previous);
 
+	expect($commands)->toBe(array('resize ' . cacti_escapeshellarg($target) . ' 0 GROW 10'));
 	expect(file_get_contents($target))->toBe('resized');
 
 	@unlink($target);
 	@rmdir($dir);
+});
+
+test('rrdtool_tune_execute honours the control character guard', function () {
+	$GLOBALS['config']['config_options_array']['storage_location'] = 1;
+
+	$dir = sys_get_temp_dir() . '/rrd_tune_exec_ctrl_' . getmypid();
+	@mkdir($dir);
+
+	$target = $dir . '/data.rrd';
+	file_put_contents($target, 'target');
+	file_put_contents($dir . '/resize.rrd', 'resized');
+
+	$commands = array();
+	$executor = function ($command) use (&$commands) {
+		$commands[] = $command;
+
+		return true;
+	};
+
+	// a command carrying control characters must never reach the executor, but
+	// the surrounding resize bookkeeping and rename still run
+	rrdtool_tune_execute($target, array('resize' => array("0 GROW 10\x01")), $executor);
+
+	expect($commands)->toBe(array());
+	expect(file_get_contents($target))->toBe('resized');
+
+	@unlink($target);
+	@rmdir($dir);
+	$GLOBALS['config']['config_options_array']['storage_location'] = 0;
 });
 
 test('rrdtool_tune dispatches to the execute path when not showing the source', function () {
@@ -190,6 +240,8 @@ test('rrdtool_tune dispatches to the execute path when not showing the source', 
 
 	$target = $dir . '/data.rrd';
 	file_put_contents($target, 'target');
+	// control characters keep the real rrdtool_execute from running while the
+	// resize rename is still exercised through the default executor
 	file_put_contents($dir . '/resize.rrd', 'resized');
 
 	$diff = array(
@@ -218,48 +270,4 @@ test('rrdtool_tune dispatches to the CLI printer under CACTI_CLI', function () {
 
 	expect($output)->toContain('tune /rra/x.rrd DEL:timeafter' . PHP_EOL);
 	expect($output)->not->toContain('<div');
-});
-
-// rrdtool_execute() carries a heavy runtime dependency (locale constants, the
-// server OS, a working RRDtool binary or proxy) that the lightweight bootstrap
-// cannot satisfy, so these two cases only assert the execute path reaches the
-// rrdtool_execute() call site for a clean (non control character) command.
-test('rrdtool_tune_execute reaches rrdtool_execute for a clean tune command', function () {
-	$GLOBALS['config']['config_options_array']['storage_location'] = 0;
-
-	$dir = sys_get_temp_dir() . '/rrd_tune_exec_tune_' . getmypid();
-	@mkdir($dir);
-	$target = $dir . '/data.rrd';
-	file_put_contents($target, 'target');
-
-	try {
-		rrdtool_tune_execute($target, array('tune' => array('DEL:timeafter')));
-	} catch (\Throwable $e) {
-		// reaching the call site is sufficient for this environment
-	}
-
-	expect(true)->toBeTrue();
-
-	@unlink($target);
-	@rmdir($dir);
-});
-
-test('rrdtool_tune_execute reaches rrdtool_execute for a clean resize command', function () {
-	$GLOBALS['config']['config_options_array']['storage_location'] = 0;
-
-	$dir = sys_get_temp_dir() . '/rrd_tune_exec_resize_' . getmypid();
-	@mkdir($dir);
-	$target = $dir . '/data.rrd';
-	file_put_contents($target, 'target');
-
-	try {
-		rrdtool_tune_execute($target, array('resize' => array('0 GROW 10')));
-	} catch (\Throwable $e) {
-		// reaching the call site is sufficient for this environment
-	}
-
-	expect(true)->toBeTrue();
-
-	@unlink($target);
-	@rmdir($dir);
 });

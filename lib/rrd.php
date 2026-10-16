@@ -4036,16 +4036,19 @@ function rrdtool_tune_print_leaves($array, $html = true) {
 /**
  * rrdtool_tune_execute - apply the rrdtool tune/resize commands for a repair.
  *
- * @param string $rrd_file The rrd file name.
- * @param array  $diff     The array of discrepancies between cacti settings and rrd file info.
+ * @param string        $rrd_file The rrd file name.
+ * @param array         $diff     The array of discrepancies between cacti settings and rrd file info.
+ * @param callable|null $executor Test seam for RRDtool execution.
  *
  * @return void No value is returned.
  */
-function rrdtool_tune_execute($rrd_file, $diff) {
+function rrdtool_tune_execute($rrd_file, $diff, $executor = null) {
+	$executor = $executor ?? 'rrdtool_execute';
+
 	if (isset($diff['tune']) && cacti_sizeof($diff['tune'])) {
 		foreach ($diff['tune'] as $line) {
 			if (!cacti_has_control_chars($line)) {
-				rrdtool_execute("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
+				$executor("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
 			}
 		}
 	}
@@ -4053,7 +4056,7 @@ function rrdtool_tune_execute($rrd_file, $diff) {
 	if (isset($diff['resize']) && cacti_sizeof($diff['resize'])) {
 		foreach ($diff['resize'] as $line) {
 			if (!cacti_has_control_chars($line)) {
-				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
+				$executor("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
 			}
 
 			/* when run locally rrdtool writes resize.rrd to the PHP process cwd; under a
