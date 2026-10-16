@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#8414: Restore tree-device and breadcrumb navigation from Time Graph View
 -issue#8390: Reject dangling symlinks in validate_relative_path_within
 -issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
 -security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
