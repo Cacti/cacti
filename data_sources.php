@@ -1361,16 +1361,16 @@ function ds_edit() {
 						/* offer a one-click repair when the web server can write
 						 * the RRDfile, otherwise present the commands to run by hand */
 						if ($has_tune && is_writeable(get_data_source_path(get_request_var('id'), true))) {
-							html_start_box(__('RRDtool Tune Info [ %s ]', '<a href="#" class="cactiPostAction linkEditMain" data-url="' . html_escape('data_sources.php?action=ds_repair&id=' . get_request_var('id')) . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '100%', '', '3', 'center', '');
+							html_start_box(__('RRDtool Tune Info [ %s ]', '<a href="#" class="cactiPostAction linkEditMain" data-url="' . html_escape('data_sources.php?action=ds_repair&id=' . get_request_var('id')) . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '100%', true, '3', 'center', '');
 						} elseif ($has_tune) {
-							html_start_box(__('RRDtool Tune Info [ %s ]', __('Run Fix from Command Line')), '100%', '', '3', 'center', '');
+							html_start_box(__('RRDtool Tune Info [ %s ]', __('Run Fix from Command Line')), '100%', true, '3', 'center', '');
 						} else {
-							html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
+							html_start_box(__('RRDtool Tune Info'), '100%', true, '3', 'center', '');
 						}
 
 						rrdtool_tune($rrd_info['filename'], $diff, true);
 
-						html_end_box();
+						html_end_box(true, true);
 					}
 				}
 				?></td>
