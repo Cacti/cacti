@@ -25273,23 +25273,11 @@ msgid "(New Layout)"
 msgstr ""
 
 #: lib/html_filter.php
-msgid "Overwrite the selected layout with the current filter"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Save the current filter as a new layout"
-msgstr ""
-
-#: lib/html_filter.php
 msgid "Rename the selected layout"
 msgstr ""
 
 #: lib/html_filter.php
 msgid "Delete the selected layout"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Publish the selected layout so all users can see it"
 msgstr ""
 
 #: lib/html_filter.php
@@ -25309,22 +25297,6 @@ msgid "The layout operation failed."
 msgstr ""
 
 #: lib/html_filter.php
-msgid "Please select a layout to rename."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Please select a layout to delete."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Please select a layout to publish."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "You are not permitted to modify this layout."
-msgstr ""
-
-#: lib/html_filter.php
 msgid "Delete the selected layout?"
 msgstr ""
 
@@ -25341,7 +25313,7 @@ msgid "Page Filter Format"
 msgstr ""
 
 #: include/global_settings.php
-msgid "How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows the classic inline filter. The Layouts selector is available in both."
+msgid "How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows only the classic inline filter. The Layouts selector is available in Modern only."
 msgstr ""
 
 #: include/global_arrays.php

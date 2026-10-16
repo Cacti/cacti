@@ -90,7 +90,7 @@ test('the filter class exposes a render_layouts toggle that preset pages clear',
 	expect($src)->toContain('public bool   $render_layouts  = true;');
 	expect($src)->toContain('in_array($page, filter_layouts_preset_pages(), true)');
 	expect($src)->toContain('$this->render_layouts = false;');
-	expect($src)->toContain('if ($this->render_layouts) {');
+	expect($src)->toContain('$this->render_layouts && $this->filter_format');
 });
 
 test('publishing and global management require the Settings/Utilities realm', function () use ($root) {
@@ -137,6 +137,11 @@ test('the filter class renders a legacy or modern layout from the user preferenc
 	// Modern short-circuits create_filter() before the inline rendering.
 	expect($src)->toContain('if ($this->use_modern_filter()) {');
 	expect($src)->toContain('print $this->create_modern_filter();');
+
+	// Legacy renders only the classic inline filter: the layouts selector and its
+	// script helpers are gone.
+	expect($src)->not->toContain('create_layouts(');
+	expect($src)->not->toContain('create_layouts_javascript(');
 });
 
 test('field rendering is shared so legacy and the modern dialog stay in sync', function () use ($root) {
