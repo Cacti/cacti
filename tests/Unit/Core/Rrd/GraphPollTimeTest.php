@@ -3,66 +3,54 @@
 
 namespace GraphPollTimeTest;
 
-$source = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd.php');
-$function = substr($source, strpos($source, 'function rrdtool_function_graph('));
-$start = strpos($function, "\tif (empty(\$graph_data_array['graph_start']))");
-$end = strpos($function, "\n\t\$local_data_ids", $start);
-
-if ($start === false || $end === false) {
-	throw new \RuntimeException('Unable to extract graph time defaults.');
-}
-
-// Exercise the renderer's actual default-time block without rendering an image or accessing a database.
-eval('namespace GraphPollTimeTest; function graphTimes($graph_data_array) {' .
-	substr($function, $start, $end - $start) . ' return $graph_data_array; }'); // nosemgrep: php.lang.security.eval-use.eval-use
-
-function time() {
-	return 1792161900;
-}
-
-function read_config_option($name, $force = false) {
-	if ($name === 'poller_interval') {
-		return '300';
+/** Run the real graph renderer in an isolated process without a database or RRDtool. */
+function results() {
+	static $results = null;
+	if ($results === null) {
+		$fixture = dirname(__DIR__, 3) . '/fixtures/Core/Rrd/GraphPollTime.php';
+		exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=stderr ' . escapeshellarg($fixture), $output, $status);
+		expect($status)->toBe(0);
+		$results = json_decode(implode("\n", $output), true, 512, JSON_THROW_ON_ERROR);
 	}
+	return $results;
+}
 
-	return $force ? $GLOBALS['graph_poll_time_database'] : 1792160400;
+/** Allow the actual clock to advance while the renderer loads its dependencies. */
+function expectPollEnd(array $case) {
+	expect($case['reads'])->toBe(array(true))
+		->and($case['times']['graph_end'])->toBeGreaterThanOrEqual((int) $case['database'] - $case['after'])
+		->and($case['times']['graph_end'])->toBeLessThanOrEqual((int) $case['database'] - $case['before']);
 }
 
 test('automatic graph end uses the latest poll instead of a stale session value', function () {
-	$GLOBALS['graph_poll_time_database'] = '1792161600';
-	$result = graphTimes(array());
-
-	expect($result['graph_start'])->toBe(-86400)
-		->and($result['graph_end'])->toBe(-300);
+	$case = results()['automatic'];
+	expectPollEnd($case);
+	expect($case['times']['graph_start'])->toBe(-86400);
 });
 
 test('successive standalone graph requests follow later completed polls', function () {
-	$GLOBALS['graph_poll_time_database'] = '1792161000';
-	$first = graphTimes(array());
-	$GLOBALS['graph_poll_time_database'] = '1792161600';
-	$second = graphTimes(array());
-
-	expect($first['graph_end'])->toBe(-900)
-		->and($second['graph_end'])->toBe(-300);
+	$cases = results();
+	expectPollEnd($cases['earlier']);
+	expectPollEnd($cases['automatic']);
+	expect($cases['automatic']['times']['graph_end'])->toBeGreaterThan($cases['earlier']['times']['graph_end']);
 });
 
 test('an explicit historical graph range remains unchanged', function () {
-	$result = graphTimes(array('graph_start' => 1700000000, 'graph_end' => 1700003600));
-
-	expect($result)->toBe(array('graph_start' => 1700000000, 'graph_end' => 1700003600));
+	$case = results()['historical'];
+	expect($case['times'])->toBe(array('graph_start' => 1700000000, 'graph_end' => 1700003600))
+		->and($case['reads'])->toBe(array());
 });
 
 test('missing and future poll timestamps retain the poll-interval fallback', function () {
-	foreach (array('', '1792162200') as $last_run) {
-		$GLOBALS['graph_poll_time_database'] = $last_run;
-		expect(graphTimes(array())['graph_end'])->toBe(-300);
+	$cases = results();
+	foreach (array('missing', 'future') as $name) {
+		expect($cases[$name]['times']['graph_end'])->toBe(-300)
+			->and($cases[$name]['reads'])->toBe(array(true));
 	}
 });
 
 test('a custom relative start is preserved when selecting the latest poll', function () {
-	$GLOBALS['graph_poll_time_database'] = '1792161600';
-	$result = graphTimes(array('graph_start' => -3600));
-
-	expect($result['graph_start'])->toBe(-3600)
-		->and($result['graph_end'])->toBe(-300);
+	$case = results()['custom_start'];
+	expectPollEnd($case);
+	expect($case['times']['graph_start'])->toBe(-3600);
 });
