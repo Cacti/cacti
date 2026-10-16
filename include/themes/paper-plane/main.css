@@ -1191,6 +1191,7 @@ legend {
 	overflow-x: hidden;
 	border-left: 1px solid #000000;
 	height: 95vh;
+	padding-right: 15px;
 }
 
 #graph_view_preview2 table.cactiTable {

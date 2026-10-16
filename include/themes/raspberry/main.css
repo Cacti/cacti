@@ -1033,6 +1033,7 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	padding-left: 10px;
+	padding-right: 15px;
 }
 
 .cactiConsoleContentArea>div:last-child {

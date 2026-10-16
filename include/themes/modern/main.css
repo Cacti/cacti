@@ -1163,7 +1163,7 @@ legend {
 
 .cactiConsoleContentArea {
 	padding-top: 5px;
-	padding-right: 0px;
+	padding-right: 15px;
 	padding-left: 5px;
 	vertical-align: top;
 	overflow-y: auto !important;
