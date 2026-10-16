@@ -4465,6 +4465,8 @@ function initializeGraphs(disable_cache) {
 					checkForRedirects(data);
 
 					$('#main').empty().hide();
+					// The former current-page crumb becomes the return link from the detail view.
+					$('#breadcrumbs > li:last-child > a[href="#"]').attr('href', window.location.href);
 					$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
 					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
