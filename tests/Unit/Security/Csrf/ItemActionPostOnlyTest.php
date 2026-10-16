@@ -40,6 +40,7 @@ function guarded_actions() {
         'moveup', 'movedown',
         'tree_up', 'tree_down', 'move_page_up', 'move_page_down',
         'rrd_add', 'rrd_remove',
+        'ds_repair',
     );
 }
 
