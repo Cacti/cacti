@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue: Refresh the last-poll timestamp when selecting an automatic graph end time
 -issue#8414: Restore tree-device and breadcrumb navigation from Time Graph View
 -issue#8390: Reject dangling symlinks in validate_relative_path_within
 -issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
