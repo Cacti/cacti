@@ -6,6 +6,7 @@
             <file>Unit/Core/Rrd/RrdVersionCheckReuseTest.php</file>
             <file>Unit/Core/Rrd/RrdDataSourceDiffTest.php</file>
             <file>Unit/Core/Rrd/RrdcheckDataSourceFindingsTest.php</file>
+            <file>Unit/Core/Rrd/RrdTuneRenderTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

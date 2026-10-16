@@ -3997,108 +3997,161 @@ function rrdtool_info2html($info_array, $diff=array()) {
  *
  * @return void No value is returned.
  */
-function rrdtool_tune($rrd_file, $diff, $show_source = true) {
-	$rrd_path = read_config_option('path_rrdtool');
-
-	/**
-	 * A function used by the rrdtool_tune function to output data.
-	 *
-	 * @param array $array The array of leaves.
-	 *
-	 * @return void No value is returned.
-	 */
-	function print_leaves($array) {
-		foreach ($array as $key => $line) {
-			if (!is_array($line)) {
-				if (CACTI_CLI) {
-					print $line . PHP_EOL;
-				} else {
-					print '<tr><td>' . $line . '</td></tr>';
-				}
+/**
+ * rrdtool_tune_print_leaves - a helper used by rrdtool_tune() to recursively
+ * output the leaf nodes of an rrdtool 'diff' array.
+ *
+ * @param array $array The array of leaves.
+ *
+ * @return void No value is returned.
+ */
+/**
+ * rrdtool_tune_print_leaves - a helper used by rrdtool_tune_print_cli() and
+ * rrdtool_tune_print_html() to recursively output the leaf nodes of an rrdtool
+ * 'diff' array.
+ *
+ * @param array $array The array of leaves.
+ * @param bool  $html  Emit div rows for the web UI, or plain text for the CLI.
+ *
+ * @return void No value is returned.
+ */
+function rrdtool_tune_print_leaves($array, $html = true) {
+	foreach ($array as $key => $line) {
+		if (!is_array($line)) {
+			if ($html) {
+				print "<div class='formRow'>" . $line . '</div>';
 			} else {
-				if ($key === 'tune') {
-					continue;
-				}
-
-				if ($key === 'resize') {
-					continue;
-				}
-				print_leaves($line);
+				print $line . PHP_EOL;
 			}
-		}
+		} else {
+			if ($key === 'tune' || $key === 'resize') {
+				continue;
+			}
 
-	}
-
-	$cmd = array();
-
-	if ($show_source && cacti_sizeof($diff)) {
-		if (!CACTI_CLI) {
-			html_header(array(__('Errors Found')));
-		}
-
-		print_leaves($diff);
-
-		if (!CACTI_CLI) {
-			html_end_box();
+			rrdtool_tune_print_leaves($line, $html);
 		}
 	}
+}
 
-	if (isset($diff['tune']) || isset($diff['resize'])) {
-		if (!CACTI_CLI) {
-			html_header(array(__('Optional Tuning Recommendations')));
-		}
-	}
+/**
+ * rrdtool_tune_execute - apply the rrdtool tune/resize commands for a repair.
+ *
+ * @param string        $rrd_file The rrd file name.
+ * @param array         $diff     The array of discrepancies between cacti settings and rrd file info.
+ * @param callable|null $executor Test seam for RRDtool execution.
+ *
+ * @return void No value is returned.
+ */
+function rrdtool_tune_execute($rrd_file, $diff, $executor = null) {
+	$executor = $executor ?? 'rrdtool_execute';
 
 	if (isset($diff['tune']) && cacti_sizeof($diff['tune'])) {
-		/* create tune commands */
 		foreach ($diff['tune'] as $line) {
-			if ($show_source == true) {
-				if (CACTI_CLI) {
-					print $rrd_path . ' tune ' . $line . PHP_EOL;
-				} else {
-					print '<tr><td>' . $rrd_path . ' tune ' . $line . '</td></tr>';
-				}
-			} else {
-				if (!cacti_has_control_chars($line)) {
-				rrdtool_execute("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
-				}
+			if (!cacti_has_control_chars($line)) {
+				$executor("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
 			}
 		}
 	}
 
 	if (isset($diff['resize']) && cacti_sizeof($diff['resize'])) {
-		// each resize goes into an extra line
 		foreach ($diff['resize'] as $line) {
-			if ($show_source == true) {
-				if (CACTI_CLI) {
-					print read_config_option('path_rrdtool') . ' resize ' . $line . PHP_EOL;
-					print __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . PHP_EOL;
-				} else {
-					print '<tr><td>' . read_config_option('path_rrdtool') . ' resize ' . $line . '</td></tr>';
-					print '<tr><td>' . __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . '</td></tr>';
-				}
-			} else {
-				if (!cacti_has_control_chars($line)) {
-				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
-				}
-
-				/* when run locally rrdtool writes resize.rrd to the PHP process cwd; under a
-				   storage_location proxy it runs remotely, so keep the legacy path next to the rrd */
-				if (read_config_option('storage_location')) {
-					$resize_rrd = dirname($rrd_file) . '/resize.rrd';
-				} else {
-					$resize_rrd = getcwd() . '/resize.rrd';
-				}
-
-				rename($resize_rrd, $rrd_file);
+			if (!cacti_has_control_chars($line)) {
+				$executor("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
 			}
+
+			/* when run locally rrdtool writes resize.rrd to the PHP process cwd; under a
+			   storage_location proxy it runs remotely, so keep the legacy path next to the rrd */
+			if (read_config_option('storage_location')) {
+				$resize_rrd = dirname($rrd_file) . '/resize.rrd';
+			} else {
+				$resize_rrd = getcwd() . '/resize.rrd';
+			}
+
+			rename($resize_rrd, $rrd_file);
+		}
+	}
+}
+
+/**
+ * rrdtool_tune_print_cli - print the rrdtool tune/resize source commands as plain text.
+ *
+ * @param string $rrd_file The rrd file name.
+ * @param array  $diff     The array of discrepancies between cacti settings and rrd file info.
+ *
+ * @return void No value is returned.
+ */
+function rrdtool_tune_print_cli($rrd_file, $diff) {
+	$rrd_path = read_config_option('path_rrdtool');
+
+	if (cacti_sizeof($diff)) {
+		rrdtool_tune_print_leaves($diff, false);
+	}
+
+	if (isset($diff['tune']) && cacti_sizeof($diff['tune'])) {
+		foreach ($diff['tune'] as $line) {
+			print $rrd_path . ' tune ' . $line . PHP_EOL;
 		}
 	}
 
-	if (isset($diff['tune']) || isset($diff['resize'])) {
-		if (!CACTI_CLI) {
-			html_end_box();
+	if (isset($diff['resize']) && cacti_sizeof($diff['resize'])) {
+		foreach ($diff['resize'] as $line) {
+			print $rrd_path . ' resize ' . $line . PHP_EOL;
+			print __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . PHP_EOL;
 		}
+	}
+}
+
+/**
+ * rrdtool_tune_print_html - render the rrdtool tune/resize output as balanced div boxes.
+ *
+ * @param string        $rrd_file  The rrd file name.
+ * @param array         $diff      The array of discrepancies between cacti settings and rrd file info.
+ * @param callable|null $open_box  Test seam for html_start_box().
+ * @param callable|null $close_box Test seam for html_end_box().
+ *
+ * @return void No value is returned.
+ */
+function rrdtool_tune_print_html($rrd_file, $diff, $open_box = null, $close_box = null) {
+	$open_box  = $open_box ?? 'html_start_box';
+	$close_box = $close_box ?? 'html_end_box';
+	$rrd_path  = read_config_option('path_rrdtool');
+
+	if (cacti_sizeof($diff)) {
+		$open_box(__('Errors Found'), '100%', true, '3', 'center', '');
+
+		rrdtool_tune_print_leaves($diff, true);
+
+		$close_box(true, true);
+	}
+
+	if ((isset($diff['tune']) && cacti_sizeof($diff['tune'])) ||
+		(isset($diff['resize']) && cacti_sizeof($diff['resize']))) {
+		$open_box(__('Optional Tuning Recommendations'), '100%', true, '3', 'center', '');
+
+		if (isset($diff['tune'])) {
+			foreach ($diff['tune'] as $line) {
+				print "<div class='formRow'>" . $rrd_path . ' tune ' . $line . '</div>';
+			}
+		}
+
+		if (isset($diff['resize'])) {
+			foreach ($diff['resize'] as $line) {
+				print "<div class='formRow'>" . $rrd_path . ' resize ' . $line . '</div>';
+				print "<div class='formRow'>" . __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . '</div>';
+			}
+		}
+
+		$close_box(true, true);
+	}
+}
+
+function rrdtool_tune($rrd_file, $diff, $show_source = true) {
+	if (!$show_source) {
+		rrdtool_tune_execute($rrd_file, $diff);
+	} elseif (CACTI_CLI) {
+		rrdtool_tune_print_cli($rrd_file, $diff);
+	} else {
+		rrdtool_tune_print_html($rrd_file, $diff);
 	}
 }
 
