@@ -594,7 +594,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			'POLLER');
 	}
 
-	if ($using_proc_function && $script_server_calls > 0) {
+	if ($using_proc_function) {
 		// close php server process
 		@fwrite($pipes[0], "quit\r\n");
 		fclose($pipes[0]);

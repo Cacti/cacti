@@ -1,0 +1,1 @@
+Resolve PHPStan 2.3 diagnostics while preserving poller cleanup, remote replication, log filtering, and sensor output

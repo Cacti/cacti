@@ -275,7 +275,11 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 
 				return null;
 			} else {
-				$sensor_array[$sensor_count]['index'] = $scratch[1];
+				$sensor_array[$sensor_count] = [
+					'index'   => $scratch[1],
+					'name'    => '',
+					'reading' => ''
+				];
 			}
 
 			$sensor_count++;
@@ -285,9 +289,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		// requests for data other than index values require additional processing
 		//
 		if ($data_request != 'sensordevice' && cacti_sizeof($sensor_array)) {
-			$sensor_count = 0;
-
-			foreach ($sensor_array as $sensor) {
+			foreach ($sensor_array as $sensor_key => $sensor) {
 				switch ($data_request) {
 					case 'sensordevice':
 						//
@@ -337,7 +339,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						//
 						// store the sensor name
 						//
-						$sensor_array[$sensor_count]['name'] = $scratch;
+						$sensor['name'] = $scratch;
 
 						break;
 					case 'sensorreading':
@@ -378,15 +380,12 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						//
 						// store the sensor reading
 						//
-						$sensor_array[$sensor_count]['reading'] = $scratch;
+						$sensor['reading'] = $scratch;
 
 						break;
 				}
 
-				//
-				// increment the sensor counter
-				//
-				$sensor_count++;
+				$sensor_array[$sensor_key] = $sensor;
 			}
 		}
 
