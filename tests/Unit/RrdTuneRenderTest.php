@@ -117,18 +117,58 @@ test('rrdtool_tune_execute runs the tune and resize commands and relocates the r
 
 	$target = $dir . '/data.rrd';
 	file_put_contents($target, 'target');
-	file_put_contents($dir . '/resize.rrd', 'resized');
 
 	$diff = [
 		'tune'   => [cacti_escapeshellarg($target) . ' DEL:timeafter'],
 		'resize' => [cacti_escapeshellarg($target) . ' 0 GROW 10'],
 	];
 
-	rrdtool_tune_execute($target, $diff);
+	// a recording executor stands in for rrdtool and, like the real resize,
+	// only produces resize.rrd when the resize command actually runs
+	$commands = [];
+	$executor = function ($command) use (&$commands, $dir) {
+		$commands[] = $command;
+
+		if (strpos($command, 'resize ') === 0) {
+			file_put_contents($dir . '/resize.rrd', 'resized');
+		}
+
+		return true;
+	};
+
+	rrdtool_tune_execute($target, $diff, $executor);
+
+	// both commands must have been executed, not just the rename
+	expect($commands)->toHaveCount(2);
+	expect($commands[0])->toBe('tune ' . cacti_escapeshellarg($target) . ' DEL:timeafter');
+	expect($commands[1])->toBe('resize ' . cacti_escapeshellarg($target) . ' 0 GROW 10');
 
 	// the resize step renames resize.rrd over the target
 	expect(file_exists($dir . '/resize.rrd'))->toBeFalse();
 	expect(file_get_contents($target))->toBe('resized');
+
+	@unlink($target);
+	@rmdir($dir);
+});
+
+test('rrdtool_tune_execute skips the resize rename when no resize is produced', function () {
+	$dir = sys_get_temp_dir() . '/rrd_tune_noresize_' . getmypid();
+	@mkdir($dir);
+
+	$target = $dir . '/data.rrd';
+	file_put_contents($target, 'target');
+
+	$commands  = [];
+	$executor  = function ($command) use (&$commands) {
+		$commands[] = $command;
+
+		return true;
+	};
+
+	rrdtool_tune_execute($target, ['tune' => [cacti_escapeshellarg($target) . ' DEL:timeafter']], $executor);
+
+	expect($commands)->toBe(['tune ' . cacti_escapeshellarg($target) . ' DEL:timeafter']);
+	expect(file_get_contents($target))->toBe('target');
 
 	@unlink($target);
 	@rmdir($dir);
@@ -146,6 +186,8 @@ test('rrdtool_tune dispatches to the execute path when not showing the source', 
 		'resize' => [cacti_escapeshellarg($target) . ' 0 GROW 10'],
 	];
 
+	// no executor is supplied, so the real rrdtool_execute is invoked; it returns
+	// without side effects in this environment while the resize rename still runs
 	rrdtool_tune($target, $diff, false);
 
 	expect(file_get_contents($target))->toBe('resized');

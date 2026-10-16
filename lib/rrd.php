@@ -4832,21 +4832,24 @@ function rrdtool_tune_print_leaves(array $array, bool $html = true) : void {
 /**
  * rrdtool_tune_execute - apply the rrdtool tune/resize commands for a repair
  *
- * @param string $rrd_file The rrd file name
- * @param array  $diff     The array of discrepancies between cacti settings and rrd file info
+ * @param string        $rrd_file The rrd file name
+ * @param array         $diff     The array of discrepancies between cacti settings and rrd file info
+ * @param callable|null $executor Test seam for RRDtool execution
  *
  * @return void
  */
-function rrdtool_tune_execute(string $rrd_file, array $diff) : void {
+function rrdtool_tune_execute(string $rrd_file, array $diff, ?callable $executor = null) : void {
+	$executor ??= 'rrdtool_execute';
+
 	if (isset($diff['tune']) && cacti_sizeof($diff['tune'])) {
 		foreach ($diff['tune'] as $line) {
-			rrdtool_execute("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
+			$executor("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
 		}
 	}
 
 	if (isset($diff['resize']) && cacti_sizeof($diff['resize'])) {
 		foreach ($diff['resize'] as $line) {
-			rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
+			$executor("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
 			rename(dirname($rrd_file) . '/resize.rrd', $rrd_file);
 		}
 	}

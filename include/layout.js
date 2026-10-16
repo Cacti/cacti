@@ -2961,10 +2961,6 @@ function cactiIsPostActionUrl(href) {
 		"enable_debug",
 		"disable_debug",
 		"repopulate"
-	],
-	"data_debug.php": [
-		"run_repair",
-		"run_debug"
 	]
 };
 	var page = target.pathname.split('/').pop();
