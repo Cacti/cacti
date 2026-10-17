@@ -23,10 +23,18 @@
 */
 
 include_once(__DIR__ . '/../lib/poller.php');
+require_once __DIR__ . '/Installer/CommandRunner.php';
+require_once __DIR__ . '/Installer/CompletionWarnings.php';
+require_once __DIR__ . '/Installer/SchemaRequirements.php';
+require_once __DIR__ . '/Installer/DependencyPreflight.php';
+require_once __DIR__ . '/Installer/RunReport.php';
+require_once __DIR__ . '/Installer/UpgradePlan.php';
+require_once __DIR__ . '/Installer/AuthenticationRequirements.php';
 
 class Installer implements JsonSerializable {
-	const EXIT_DB_EMPTY = 1;
-	const EXIT_DB_OLD   = 2;
+	private ?\Cacti\Installer\RunReport $runReport = null;
+	const EXIT_DB_EMPTY                            = 1;
+	const EXIT_DB_OLD                              = 2;
 
 	/*
 	 * The STEP_ constants are defined in the following files: *
@@ -3209,6 +3217,52 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	public function getUpgradePlan() : \Cacti\Installer\UpgradePlan {
+		global $cacti_version_codes, $plugins_integrated;
+
+		$versions = [];
+
+		foreach (array_keys($cacti_version_codes) as $versionKey) {
+			$version = (string) $versionKey;
+
+			if (is_file(CACTI_PATH_INSTALL . '/upgrades/' . str_replace('.', '_', $version) . '.php')) {
+				$versions[] = $version;
+			}
+		}
+
+		$changes = [];
+		$plugins = db_fetch_assoc('SELECT directory FROM plugin_config WHERE status IN (1, 2)');
+
+		foreach (is_array($plugins) ? $plugins : [] as $plugin) {
+			$name = $plugin['directory'];
+
+			if (in_array($name, $plugins_integrated, true)) {
+				$changes[] = $name . ': ' . __('Integrated into Cacti');
+			} elseif (!preg_match('/^[a-zA-Z0-9_-]+$/D', $name) || !is_dir(CACTI_PATH_PLUGINS . '/' . $name) || !is_file(CACTI_PATH_PLUGINS . '/' . $name . '/setup.php') || !is_file(CACTI_PATH_PLUGINS . '/' . $name . '/INFO')) {
+				$changes[] = $name . ': ' . __('Disabled because plugin files are missing');
+			} else {
+				$info = parse_ini_file(CACTI_PATH_PLUGINS . '/' . $name . '/INFO', true);
+
+				if (!isset($info['info']['compat']) || version_compare(CACTI_VERSION, $info['info']['compat']) < 0) {
+					$changes[] = $name . ': ' . __('Disabled because the plugin is incompatible');
+				}
+			}
+		}
+
+		$templates  = db_fetch_assoc("SELECT value FROM settings WHERE name LIKE 'install_tp_%' AND value != ''");
+		$tables     = db_fetch_assoc("SELECT value FROM settings WHERE name LIKE 'install_table_%' AND value != ''");
+		$collectors = db_fetch_assoc('SELECT id FROM poller WHERE id > 1 AND disabled = ""');
+
+		if (!is_array($plugins) || !is_array($templates) || !is_array($tables) || !is_array($collectors)) {
+			throw new RuntimeException('Unable to read a complete installer upgrade plan');
+		}
+
+		return new \Cacti\Installer\UpgradePlan($this->old_cacti_version, CACTI_VERSION, $versions,
+			array_column(is_array($templates) ? $templates : [], 'value'),
+			array_column(is_array($tables) ? $tables : [], 'value'), $changes,
+			array_map('intval', array_column(is_array($collectors) ? $collectors : [], 'id')));
+	}
+
 	public function processStepInstallConfirm() : string {
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
@@ -3240,6 +3294,16 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti Server is almost ready.  Please check that you are happy to proceed.'));
 
 			$output .= Installer::showInstallOptions();
+			$output .= Installer::sectionTitle(__('Upgrade plan'));
+			$plan = $this->getUpgradePlan();
+
+			foreach ([__('Migrations')    => $plan->migrations, __('Device Packages') => $plan->templates,
+				__('Table Upgrades')         => $plan->tables, __('Plugin compatibility changes') => $plan->plugins,
+				__('Remote Data Collectors') => $plan->collectors] as $label => $items) {
+				$output .= Installer::sectionNormal(html_escape($label . ': ' . implode(', ', $items)));
+			}
+			$output .= Installer::sectionTitle(__('Backup and recovery'));
+			$output .= Installer::sectionNormal(__('Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md.'));
 
 			$output .= Installer::sectionNote(
 				__('Press \'%s\' then click \'%s\' to complete the installation process after selecting your Device Templates.', $title, $button)
@@ -3498,8 +3562,12 @@ class Installer implements JsonSerializable {
 		$output    = '';
 
 		if ($this->stepCurrent == Installer::STEP_COMPLETE) {
-			$output = Installer::sectionTitle(__('Complete'));
+			$output = Installer::sectionTitle(self::getCompletionWarnings() === [] ? __('Complete') : __('Complete with warnings'));
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION_FULL));
+
+			foreach (self::getCompletionWarnings() as $warning) {
+				$output .= Installer::sectionNormal(html_escape($warning));
+			}
 
 			db_execute('DELETE FROM settings WHERE name LIKE "install_%"');
 
@@ -3510,6 +3578,7 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION_BRIEF_FULL));
 		}
 
+		$output .= Installer::sectionNormal('<a href="report.php">' . __('Download installer report') . '</a>');
 		$output .= Installer::sectionSubTitleEnd();
 
 		$sections = [];
@@ -3645,87 +3714,47 @@ class Installer implements JsonSerializable {
 
 	// The following functions perform the leg work for installation
 
-	/**
-	 * refreshVendorDependencies() - runs composer install when the configured
-	 * composer binary reports the committed lock file is ahead of the
-	 * include/vendor tree.  A missing or failing composer is never fatal:
-	 * the vendor tree was complete enough to boot the installer, so the
-	 * outcome is logged and the install continues.
-	 *
-	 * @return void
+	/** @return list<string> */
+	public static function getCompletionWarnings() : array {
+		$report   = \Cacti\Installer\CompletionWarnings::decode((string) read_config_option('install_warnings', true));
+		$messages = [];
+
+		foreach ($report->collectors as $state => $ids) {
+			$messages[] = __('Collector synchronization needs attention (%s): IDs %s. Run a manual full synchronization after checking collector status.', $state, implode(', ', $ids));
+		}
+
+		return $messages;
+	}
+
+	/** @template T
+	 * @param  callable(): T $operation
+	 * @return T
 	 */
-	private function refreshVendorDependencies() : void {
-		$composer = read_config_option('path_composer', true);
+	private function runOperation(string $name, callable $operation) : mixed {
+		$started = hrtime(true);
 
-		if (empty($composer) || !file_exists($composer)) {
-			return;
+		try {
+			$result = $operation();
+		} catch (Throwable $error) {
+			$this->runReport?->record($name, (hrtime(true) - $started) / 1e9, false);
+			set_config_option('maintenance_lastrun_installer_report', $this->runReport?->encode() ?? '');
+
+			throw $error;
 		}
 
-		// composer refuses to run without a home for its cache
-		if (getenv('COMPOSER_HOME') == '' && getenv('HOME') == '') {
-			putenv('COMPOSER_HOME=' . sys_get_temp_dir() . '/cacti-composer');
-		}
+		$this->runReport?->record($name, (hrtime(true) - $started) / 1e9, $result !== false && (!is_string($result) || $result === ''));
+		set_config_option('maintenance_lastrun_installer_report', $this->runReport?->encode() ?? '');
 
-		$command = [$composer, 'install', '--no-interaction', '--working-dir=' . CACTI_PATH_BASE];
-		$result  = $this->runCommand([...$command, '--dry-run']);
-		$check   = implode(PHP_EOL, $result['output']);
-
-		if ($result['exitCode'] !== 0) {
-			log_install_always('', __('WARNING: Composer could not be executed.  Run \'composer install\' from the Cacti directory manually and check its output.'));
-
-			return;
-		}
-
-		if (str_contains((string) $check, 'Nothing to install, update or remove')) {
-			log_install_always('', __('Composer dependencies are current, no vendor refresh needed.'));
-
-			return;
-		}
-
-		/* only a dry-run that lists package operations proves the vendor tree
-		   is stale; any other output means composer itself has a problem */
-		if (!preg_match('/Package operations: (\d+) installs?, (\d+) updates?, (\d+) removals?/', $check, $ops)) {
-			log_install_always('', __('WARNING: Composer could not determine the vendor state.  Run \'composer install\' from the Cacti directory manually and check its output.'));
-
-			return;
-		}
-
-		/* a checkout without vendor produces installs only.  Updates or
-		   removals mean the committed tree differs from the lock file; that
-		   is a repository question, not something to change during install */
-		if ($ops[1] == 0 || $ops[2] > 0 || $ops[3] > 0) {
-			log_install_always('', __('NOTE: Composer reports the vendor state as \'%s\'.  No refresh was attempted.', trim($ops[0])));
-
-			return;
-		}
-
-		// composer writes into include/vendor, or creates it under include/
-		$vendor_dir = CACTI_PATH_INCLUDE . '/vendor';
-		$write_path = is_dir($vendor_dir) ? $vendor_dir . '/' : CACTI_PATH_INCLUDE . '/';
-
-		if (!is_resource_writable($write_path)) {
-			log_install_always('', __('WARNING: Composer reports include/vendor is missing packages, but it is not writable by the web server.  Run \'composer install\' from the Cacti directory manually.'));
-
-			return;
-		}
-
-		log_install_always('', __('Refreshing Composer dependencies in include/vendor.'));
-
-		$result = $this->runCommand([...$command, '--no-progress']);
-
-		if ($result['output'] !== []) {
-			log_install_debug('composer', implode(PHP_EOL, $result['output']));
-		}
-
-		if ($result['exitCode'] !== 0 || !is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
-			log_install_always('', __('WARNING: Composer refresh did not complete.  Run \'composer install\' from the Cacti directory manually.'));
-		} else {
-			log_install_always('', __('Composer dependencies refreshed.'));
-		}
+		return $result;
 	}
 
 	private function install() : void {
-		$failure = $this->mode == Installer::MODE_UPGRADE ? '' : $this->validateRequiredSchema();
+		$this->runReport = new \Cacti\Installer\RunReport();
+		$failure         = $this->runOperation('preflight', static fn () : string => implode(PHP_EOL, (new \Cacti\Installer\DependencyPreflight(CACTI_PATH_BASE))->errors()));
+
+		if ($failure === '' && $this->mode != Installer::MODE_UPGRADE) {
+			$failure = $this->runOperation('schema', fn () : string => $this->validateRequiredSchema());
+		}
 
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
@@ -3744,40 +3773,46 @@ class Installer implements JsonSerializable {
 
 		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION_FULL));
 
+		set_install_config_option('install_warnings', '');
 		$this->setProgress(Installer::PROGRESS_START);
 
 		if ($failure === '') {
-			$this->setCSRFSecret();
+			$this->runOperation('csrf', fn () => $this->setCSRFSecret());
 
-			$this->refreshVendorDependencies();
-
-			$failure = $this->convertDatabase();
+			$failure = $this->runOperation('conversion', fn () : string => $this->convertDatabase());
 
 			if ($failure === '') {
 				if ($this->mode == Installer::MODE_POLLER) {
-					$failure = $this->installPoller();
+					$failure = $this->runOperation('poller', fn () : string => $this->installPoller());
 				} else {
 					if ($this->mode == Installer::MODE_INSTALL) {
-						$failure = $this->installTemplate();
+						$failure = $this->runOperation('templates', fn () : string => $this->installTemplate());
 
 						if ($failure === '') {
-							$failure = $this->installServer();
+							$failure = $this->runOperation('server', fn () : string => $this->installServer());
 						}
 					} elseif ($this->mode == Installer::MODE_UPGRADE) {
 						$failure = $this->upgradeDatabase();
 
 						if ($failure === '') {
-							$failure = $this->installTemplate();
+							$failure = $this->runOperation('templates', fn () : string => $this->installTemplate());
 						}
 					}
-					Installer::disableInvalidPlugins();
+
+					if ($failure === '') {
+						$this->runOperation('plugins', static fn () => Installer::disableInvalidPlugins());
+					}
 				}
 			}
 		}
 
 		if ($failure === '') {
 			$this->setDefaultTemplate();
-			$failure = $this->validateRequiredSchema();
+			$failure = $this->runOperation('schema', fn () : string => $this->validateRequiredSchema());
+		}
+
+		if ($failure === '' && $this->mode != Installer::MODE_POLLER) {
+			$failure = $this->runOperation('authentication', static fn () : string => install_verify_authentication());
 		}
 
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
@@ -3788,7 +3823,7 @@ class Installer implements JsonSerializable {
 			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
 
-			if (!$this->writeInstalledVersion()) {
+			if (!$this->runOperation('version', fn () : bool => $this->writeInstalledVersion())) {
 				$failure = __('Unable to persist and verify the installed Cacti version');
 				set_install_config_option('install_error', $failure);
 			} else {
@@ -3801,7 +3836,7 @@ class Installer implements JsonSerializable {
 			// Sync the remote data collectors
 			if ($this->mode != Installer::MODE_POLLER) {
 				$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
-				Installer::fullSyncDataCollectors();
+				$this->runOperation('collectors', static fn () => Installer::fullSyncDataCollectors());
 				$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_END);
 			}
 
@@ -3829,7 +3864,7 @@ class Installer implements JsonSerializable {
 		$missingTables  = array_values(array_diff($requiredTables, $actualTables));
 
 		if ($missingTables === []) {
-			return '';
+			return install_verify_schema_columns();
 		}
 
 		$failure = __('The Cacti database schema is incomplete. Missing required tables: %s', implode(', ', $missingTables));
@@ -4245,44 +4280,7 @@ class Installer implements JsonSerializable {
 	 * @return array{exitCode: int, output: array<int, string>}
 	 */
 	private function runCommand(array $command) : array {
-		$pipes     = [];
-		$errorFile = tmpfile();
-
-		if ($errorFile === false) {
-			return ['exitCode' => 127, 'output' => [__('Unable to create a temporary file for CLI errors')]];
-		}
-
-		$process = proc_open(
-			$command,
-			[
-				1 => ['pipe', 'w'],
-				2 => $errorFile,
-			],
-			$pipes,
-			null,
-			null,
-			['bypass_shell' => true]
-		);
-
-		if (!is_resource($process)) {
-			fclose($errorFile);
-
-			return ['exitCode' => 127, 'output' => [__('Unable to start the Cacti CLI process')]];
-		}
-
-		$output = stream_get_contents($pipes[1]);
-		fclose($pipes[1]);
-		$exitCode = proc_close($process);
-		rewind($errorFile);
-		$errors = stream_get_contents($errorFile);
-		fclose($errorFile);
-		$combinedOutput = ($output === false ? '' : $output) . ($errors === false ? '' : $errors);
-		$lines          = preg_split('/\R/', trim($combinedOutput));
-
-		return [
-			'exitCode' => $exitCode,
-			'output'   => is_array($lines) ? array_values(array_filter($lines, static fn (string $line) : bool => $line !== '')) : [],
-		];
+		return (new \Cacti\Installer\CommandRunner())->run($command);
 	}
 
 	private function convertDatabase() : string {
@@ -4365,6 +4363,7 @@ class Installer implements JsonSerializable {
 
 			// check for upgrade version file, then include, check for function and execute
 			$ver_status = DB_STATUS_SKIPPED;
+			$started    = hrtime(true);
 
 			if (file_exists($upgrade_file)) {
 				log_install_always('', __('Upgrading from v%s (DB %s) to v%s', $prev_cacti_version, $orig_cacti_version, $cacti_upgrade_version));
@@ -4372,7 +4371,14 @@ class Installer implements JsonSerializable {
 				include_once($upgrade_file);
 
 				if (function_exists($upgrade_function)) {
-					call_user_func($upgrade_function);
+					try {
+						call_user_func($upgrade_function);
+					} catch (Throwable $error) {
+						$this->runReport?->record('migration', (hrtime(true) - $started) / 1e9, false, (string) $cacti_upgrade_version);
+						set_config_option('maintenance_lastrun_installer_report', $this->runReport?->encode() ?? '');
+
+						throw $error;
+					}
 					print PHP_EOL;
 					$ver_status = $this->checkDatabaseUpgrade($cacti_upgrade_version);
 				} else {
@@ -4394,6 +4400,11 @@ class Installer implements JsonSerializable {
 						$prev_cacti_version = $cacti_upgrade_version;
 					}
 				}
+			}
+
+			if (file_exists($upgrade_file)) {
+				$this->runReport?->record('migration', (hrtime(true) - $started) / 1e9, $ver_status > DB_STATUS_WARNING, (string) $cacti_upgrade_version);
+				set_config_option('maintenance_lastrun_installer_report', $this->runReport?->encode() ?? '');
 			}
 
 			if ($failure > $ver_status) {
@@ -4517,8 +4528,14 @@ class Installer implements JsonSerializable {
 			set_install_config_option('install_error', $error);
 
 			if ($installer != null) {
+				$installer->setStep(Installer::STEP_ERROR);
 				$installer->addError(Installer::STEP_ERROR, 'Install', 'Exception', $error);
 			}
+		}
+
+		if ($installer instanceof self && $installer->runReport !== null) {
+			$installer->runReport->finish($completed, \Cacti\Installer\CompletionWarnings::decode((string) read_config_option('install_warnings', true)));
+			set_config_option('maintenance_lastrun_installer_report', $installer->runReport->encode());
 		}
 
 		$backgroundDone = (string) microtime(true);
@@ -4633,6 +4650,8 @@ class Installer implements JsonSerializable {
 	private static function fullSyncDataCollectors() : void {
 		// Perform full sync to complete upgrade
 		$status = install_full_sync();
+		$report = (new \Cacti\Installer\CompletionWarnings())->withCollectors($status);
+		set_install_config_option('install_warnings', $report->encode());
 
 		if ($status['total'] == 0) {
 			log_install_always('sync', __('No Remote Data Collectors found for full synchronization'));
