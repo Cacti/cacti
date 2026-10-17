@@ -23,6 +23,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/../install/preflight.php';
+
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
@@ -138,8 +140,15 @@ if (!register_process_start('install', 'master', 0, 86400)) {
 }
 
 $upgrade_failed = false;
+require_once CACTI_PATH_LIBRARY . '/Installer/RunReport.php';
+require_once CACTI_PATH_LIBRARY . '/Installer/CompletionWarnings.php';
+require_once CACTI_PATH_LIBRARY . '/Installer/UpgradePlan.php';
+$report = new \Cacti\Installer\RunReport();
+set_config_option('maintenance_lastrun_installer_report', $report->encode());
 
 try {
+	print (new \Cacti\Installer\UpgradePlan($old_cacti_version, CACTI_VERSION, array_values(array_filter(array_map('strval', array_keys($cacti_version_codes)), static fn (string $version) : bool => is_file(CACTI_PATH_INSTALL . '/upgrades/' . str_replace('.', '_', $version) . '.php')))))->encode() . PHP_EOL;
+	print __('Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md.') . PHP_EOL;
 	print 'Upgrading from v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL;
 
 	$prev_cacti_version = $old_cacti_version;
@@ -158,46 +167,92 @@ try {
 
 		// check for upgrade version file, then include, check for function and execute
 		if (file_exists($upgrade_file)) {
+			$started = hrtime(true);
 			print 'Performing Database Upgrade' . PHP_EOL;
 			print '  - from v' . $prev_cacti_version . ' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
 			print '      to v' . $cacti_upgrade_version . PHP_EOL;
-			include($upgrade_file);
 
-			if (function_exists($upgrade_function)) {
-				call_user_func($upgrade_function);
-				$status = db_install_errors($cacti_upgrade_version);
-			} else {
-				$status = DB_STATUS_ERROR;
-				print 'Error: upgrade function (' . $upgrade_function . ') not found' . PHP_EOL;
+			try {
+				include($upgrade_file);
+
+				if (function_exists($upgrade_function)) {
+					call_user_func($upgrade_function);
+					$status = db_install_errors($cacti_upgrade_version);
+				} else {
+					$status = DB_STATUS_ERROR;
+					print 'Error: upgrade function (' . $upgrade_function . ') not found' . PHP_EOL;
+				}
+			} catch (Throwable $exception) {
+				$report->record('migration', (hrtime(true) - $started) / 1e9, false, (string) $cacti_upgrade_version);
+
+				throw $exception;
 			}
+
+			$report->record('migration', (hrtime(true) - $started) / 1e9, $status > DB_STATUS_WARNING, (string) $cacti_upgrade_version);
+			set_config_option('maintenance_lastrun_installer_report', $report->encode());
 
 			if ($status <= DB_STATUS_WARNING) {
 				$upgrade_failed = true;
 
 				break;
 			}
-
-			$prev_cacti_version = $cacti_upgrade_version;
 		}
 
-		// Forced replays may start below the installed schema version. Only
-		// advance it, so a later failure cannot leave an older version recorded.
-		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-			if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
+		$target = cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=');
+
+		if ($target) {
+			foreach (['schema' => 'install_verify_schema_columns', 'authentication' => 'install_verify_authentication'] as $operation => $verify) {
+				$started = hrtime(true);
+				$error   = $verify();
+				$report->record($operation, (hrtime(true) - $started) / 1e9, $error === '');
+
+				if ($error !== '') {
+					print $error . PHP_EOL;
+					$upgrade_failed = true;
+
+					break;
+				}
+			}
+
+			if ($upgrade_failed) {
+				break;
+			}
+		}
+
+		// Forced replays must preserve a newer installed version on failure.
+		if ($target || cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+			$started = hrtime(true);
+			$written = (bool) db_execute_prepared('UPDATE version SET cacti = ?', [$target ? CACTI_VERSION_FULL : $cacti_upgrade_version]);
+
+			if ($written && $target) {
+				$version = db_fetch_row('SELECT COUNT(*) AS row_count, MAX(cacti) AS cacti FROM version');
+				$written = is_array($version) && (int) $version['row_count'] === 1 && $version['cacti'] === CACTI_VERSION_FULL;
+			}
+			$report->record('version', (hrtime(true) - $started) / 1e9, $written, (string) $cacti_upgrade_version);
+			set_config_option('maintenance_lastrun_installer_report', $report->encode());
+
+			if (!$written) {
 				$upgrade_failed = true;
 
 				break;
 			}
-			$orig_cacti_version = $cacti_upgrade_version;
+
+			$orig_cacti_version = $target ? CACTI_VERSION_FULL : $cacti_upgrade_version;
 		}
+		$prev_cacti_version = $cacti_upgrade_version;
 
-		if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
-			$upgrade_failed = !db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL]);
-
+		if ($target) {
 			break;
 		}
 	}
+} catch (Throwable $exception) {
+	$upgrade_failed = true;
+	fwrite(STDERR, $exception->getMessage() . PHP_EOL);
+	cacti_log('ERROR: Unexpected upgrade failure: ' . $exception->getMessage(), false, 'INSTALL');
+	print __('Unexpected upgrade failure. Preserve the installer report and follow docs/INSTALLER_RECOVERY.md before retrying.') . PHP_EOL;
 } finally {
+	$report->finish(!$upgrade_failed, new \Cacti\Installer\CompletionWarnings());
+	set_config_option('maintenance_lastrun_installer_report', $report->encode());
 	unregister_process('install', 'master', 0);
 }
 

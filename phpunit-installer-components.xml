@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="include/vendor/autoload.php">
+    <testsuites>
+        <testsuite name="Installer component coverage">
+            <file>tests/Unit/Installer/InstallerComponentsTest.php</file>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">lib/Installer</directory>
+        </include>
+    </source>
+</phpunit>
