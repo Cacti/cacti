@@ -46,6 +46,11 @@ test('global.php guards the autoload require with instructions', function () {
 	expect($requireGuardPos)->not->toBeFalse('require must itself be guarded')
 		->and($requireGuardPos)->toBeLessThan($requirePos, 'require guard must precede the require');
 
+	$queueRequirePos = strpos($src, "require_once(CACTI_PATH_LIBRARY . '/api_queue.php');");
+	expect($queueRequirePos)->not->toBeFalse('queue API require must exist')
+		->and($requirePos)->toBeLessThan($queueRequirePos, 'queue API must load after Composer autoload')
+		->and(substr($src, $requireGuardPos, $queueRequirePos - $requireGuardPos))->not->toContain('}', 'queue API must stay inside the vendor guard');
+
 	$dbPos = strpos($src, 'db_connect_real(');
 	expect($dbPos)->not->toBeFalse('db connect must exist')
 		->and($guardPos)->toBeLessThan($dbPos, 'guard must run before any database work');
