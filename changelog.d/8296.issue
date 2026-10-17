@@ -1,0 +1,1 @@
+Grant existing plugin realms for --allperms and stop automatic enable/grants after install or configuration failures (issue #8290)
