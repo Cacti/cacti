@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.2.x
--issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -security#7235: Harden - Harden advisory command execution and database DDL sink validation
 -security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
 -security#7817: Harden - Constrain external-link includes to regular files inside the configured content directory
@@ -188,15 +187,22 @@ Cacti CHANGELOG
 -issue#8228: Colour the MidWinter theme's graph drilldown action icons from the theme's HSL variable palette with a distinct task-appropriate hue per action, in both the dark and light modes
 -issue#8232: Use a clean green for the device-status .deviceUp color instead of a muddy olive, most visibly on the jQuery UI message dialog where info/success messages are rendered with that class
 -issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
+-issue#8275: Consolidate accessibility fixes and standardize Rows filter labels
+-issue#8285: Cache empty poller template field maps and add scoped performance regressions with weekly synthetic benchmarks
 -issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
 -issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
 -issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
 -issue#8316: Keep graph drilldown controls fixed and keyboard focus intact, bind SpikeKill requests to their graph, clean up submenu state, and require CSRF-protected POSTs for SpikeKill writes, enforce RRA kill limits, preserve missing samples, and report RRD failures
+-issue#8318: Share sortable header history and column state while preserving 1.2.x renderer compatibility (backport of #8307)
 -issue#8325: Fit the installer layout to narrow screens and restore heading font sizes
+-issue#8338: Escape the password-change username as text
+-issue#8341: Avoid repeated RRDtool capability checks in graph options and update batches
+-issue#8350: Render empty known query fields as blank graph text without changing suggested-value fallback
 -issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
 -issue#8390: Reject dangling symlinks in validate_relative_path_within
 -issue#8414: Restore tree-device and breadcrumb navigation from Time Graph View
 -issue#8415: Refresh the last-poll timestamp when selecting an automatic graph end time
+-issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
