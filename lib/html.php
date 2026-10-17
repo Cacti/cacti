@@ -3261,17 +3261,11 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 		var zoom_i18n_zoom_out_factor = '<?php print __esc('Zoom Out Factor'); ?>';
 		var zoom_i18n_zoom_out_positioning = '<?php print __esc('Zoom Out Positioning'); ?>';
 		var zoom_outOfRangeTitle='<?php print __esc('Zoom Window Out of Range'); ?>';
-		var zoom_outOfRangeMessage= <?php print cacti_js_encode(__esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a ' .
-			'more recent date.')); ?>;
+		var zoom_outOfRangeMessage= <?php print cacti_js_encode(__esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a more recent date.')); ?>;
 	</script>
 	<?php
-	// Global icons, if the theme provides an SVG favicon it is all we need
-	if (file_exists($config['base_path'] . '/include/themes/' . $selectedTheme . '/images/favicon.svg')) {
-		print "\t<link href='" . $config['url_path'] . 'include/themes/' . $selectedTheme . "/images/favicon.svg' rel='icon' type='image/svg+xml'>" . PHP_EOL;
-	} else {
-		print get_md5_include_icon('images', theme: $selectedTheme, file: 'favicon.ico', rel: 'shortcut icon');
-		print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
-	}
+
+	print get_md5_include_icon('images', theme: $selectedTheme, file: 'favicon.svg', rel: 'icon', type: 'image/svg+xml');
 
 	// Global styles that can be overloaded by themes css as required.
 	print get_md5_include_css('include/css/jquery.contextMenu.css');
