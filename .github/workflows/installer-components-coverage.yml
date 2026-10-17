@@ -1,0 +1,52 @@
+name: Installer component coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/installer-components-coverage.yml'
+      - '.github/workflows/script-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/Installer/**'
+      - 'lib/installer.php'
+      - 'install/**'
+      - 'cli/prepare_install.sh'
+      - 'phpunit-installer-components.xml'
+      - 'tests/Unit/Installer/InstallerComponentsTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/installer-components-coverage.yml'
+      - '.github/workflows/script-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/Installer/**'
+      - 'lib/installer.php'
+      - 'install/**'
+      - 'cli/prepare_install.sh'
+      - 'phpunit-installer-components.xml'
+      - 'tests/Unit/Installer/InstallerComponentsTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: installer-components-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
+    uses: ./.github/workflows/script-coverage.yml
+    with:
+      job-name: Installer components PHP ${{ matrix.php }} 100% coverage
+      phpunit-config: phpunit-installer-components.xml
+      php-version: ${{ matrix.php }}
+      min-coverage: 100

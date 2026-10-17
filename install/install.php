@@ -21,6 +21,8 @@
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
+
+require_once __DIR__ . '/../install/preflight.php';
 error_reporting(E_ALL);
 
 define('IN_CACTI_INSTALL', 1);
