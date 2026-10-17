@@ -23,6 +23,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/../install/preflight.php';
+
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_INSTALL . '/functions.php');
 
@@ -264,6 +266,8 @@ try {
 		if ($force_install) {
 			$time = '-b';
 		}
+		print $installer->getUpgradePlan()->encode() . PHP_EOL;
+		log_install_always('cli', __('Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md.'));
 		log_install_always('cli', 'Starting installation...');
 
 		Installer::beginInstall($time, $installer);
@@ -291,6 +295,10 @@ try {
 
 			break;
 		case Installer::STEP_COMPLETE:
+			foreach (Installer::getCompletionWarnings() as $warning) {
+				log_install_always('cli', $warning);
+			}
+
 			log_install_always('cli', 'Installation has now completed, you may launch the web console');
 
 			break;
