@@ -167,11 +167,11 @@ function export() : void {
 	?>
 	<tr class='tableRow'>
 		<td>
-			<table>
+			<table role='presentation'>
 				<tr>
-					<td><span class='formItemName'><?php print __('What would you like to Package?'); ?>&nbsp;</span></td>
+					<td><span class='formItemName'><label for='package_export_type'><?php print __('What would you like to Package?'); ?></label>&nbsp;</span></td>
 					<td>
-						<select id='export_type'>
+						<select id='package_export_type'>
 							<?php
 							foreach ($export_types as $key => $array) {
 								print "<option value='$key'";
@@ -434,7 +434,7 @@ function export() : void {
 	html_end_box();
 
 	?>
-	<table style='width:100%;text-align:center;'>
+	<table role='presentation' style='width:100%;text-align:center;'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
@@ -448,9 +448,9 @@ function export() : void {
 	var stopTimer = null;
 
 	$(function() {
-		$('#export_type').change(function() {
+		$('#package_export_type').change(function() {
 			strURL  = urlPath+'package.php';
-			strURL += '?export_type='+$('#export_type').val();
+			strURL += '?export_type='+$('#package_export_type').val();
 			strURL += '&author='+$('#author').val();
 			strURL += '&homepage='+escape($('#homepage').val());
 			strURL += '&email='+$('#email').val();
@@ -461,7 +461,7 @@ function export() : void {
 
 		$('#export_item_id').change(function() {
 			strURL  = urlPath+'package.php';
-			strURL += '?export_type='+$('#export_type').val();
+			strURL += '?export_type='+$('#package_export_type').val();
 			strURL += '&export_item_id='+$('#export_item_id').val();
 			strURL += '&author='+$('#author').val();
 			strURL += '&homepage='+escape($('#homepage').val());
@@ -474,7 +474,7 @@ function export() : void {
 		if ($('#details').length) {
 			strURL  = urlPath+'package.php';
 			strURL += '?action=get_contents';
-			strURL += '&export_type='+$('#export_type').val();
+			strURL += '&export_type='+$('#package_export_type').val();
 			strURL += '&export_item_id='+$('#export_item_id').val();
 			strURL += '&include_deps='+$('#include_deps').is(':checked');
 			$.get(strURL, function(data) {

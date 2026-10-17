@@ -1915,7 +1915,7 @@ function html_graph_single_view() : void {
 				print "<i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export') . "'></i></a><br>";
 
 				if (is_realm_allowed(10) && $graph_template_id > 0) {
-					print "<a class='iconLink' role='link' href='" . htmle(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'>";
+					print "<a class='iconLink' href='" . htmle(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'>";
 					print "<i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 					print '<br>';
 				}
@@ -2238,7 +2238,7 @@ function html_graph_zoom() : void {
 					<br>
 					<?php
 					if (is_realm_allowed(10) && $graph_template_id > 0) {
-						print "<a class='iconLink' role='link' href='" . htmle(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
+						print "<a class='iconLink' href='" . htmle(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 						print '<br>';
 					}
 
@@ -2456,7 +2456,7 @@ function html_graph_properties() : void {
 	?>
 	<br>
 	<div class='cactiTable'>
-		<div id="data" class='cactiTable'>
+		<div class='cactiTable'>
 			<div class='cactiTable'>
 				<span class='cactiTableTitleRow'><?php print __('RRDtool Command:'); ?></span>
 				<?php

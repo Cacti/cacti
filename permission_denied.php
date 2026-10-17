@@ -44,6 +44,6 @@ html_auth_header('denied', __('Permission Denied'), __('Permission Denied'),
 	__('You are not permitted to access this section of Cacti.'));
 ?>
 	<tr><td><?php print __('If you feel that this is an error. Please contact your Cacti Administrator.'); ?></td></tr>
-	<tr><td><center><?php print $goBack; ?></center></td></tr>
+	<tr><td><div class='center'><?php print $goBack; ?></div></td></tr>
 <?php
 html_auth_footer('denied');

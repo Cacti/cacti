@@ -1046,6 +1046,7 @@ function graph_edit() : bool {
 	$use_graph_template = false;
 	$aginfo             = [];
 	$graphs             = [];
+	$preview_title      = '';
 
 	if (!ierv('id')) {
 		$graphs = db_fetch_row_prepared('SELECT *
@@ -1065,7 +1066,8 @@ function graph_edit() : bool {
 				$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
 			}
 
-			$header_label = __esc('[edit: %s]', get_graph_title(grv('id')));
+			$preview_title = get_graph_title(grv('id'));
+			$header_label  = __esc('[edit: %s]', $preview_title);
 		} else {
 			$header_label = __('Aggregate Graph does not Exist');
 		}
@@ -1181,11 +1183,14 @@ function graph_edit() : bool {
 			return false;
 		}
 
+		$preview_image_url = CACTI_PATH_URL . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . gfrv('id') .
+			'&rra_id=' . read_user_setting('default_rra_id') . '&random=' . hrtime(true);
+
 		html_start_box(__('Aggregate Preview %s', $header_label), '100%', false, 3, 'center', '');
 		?>
 		<tr>
 			<td id='imagewindow' class='center'>
-				<img src='<?php print htmle(CACTI_PATH_URL . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . gfrv('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand()); ?>' alt=''>
+				<img src='<?php print html_escape_attr($preview_image_url); ?>' alt='<?php print html_escape_attr($preview_title); ?>'>
 				<script type='text/javascript'>
 					$(function() {
 						$('#agg_preview').show();

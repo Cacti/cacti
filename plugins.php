@@ -693,16 +693,16 @@ function update_show_current() : void {
 	<tr class='even noprint'>
 		<td class='noprint'>
 			<form id='form_plugins' method='get' action='plugins.php'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr class='noprint'>
 						<td>
-							<?php print __('Search'); ?>
+							<label for='filter'><?php print __('Search'); ?></label>
 						</td>
 						<td>
 							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print htmlerv('filter'); ?>'>
 						</td>
 						<td>
-							<?php print __('Status'); ?>
+							<label for='state'><?php print __('Status'); ?></label>
 						</td>
 						<td>
 							<select id='state' name='state' onChange='applyFilter()' data-defaultLabel='<?php print __('Status'); ?>'>
@@ -733,7 +733,7 @@ function update_show_current() : void {
 						<td><input type='hidden' id='type' value='-1'></td>
 						<?php } ?>
 						<td>
-							<?php print __('Plugins'); ?>
+							<label for='rows'><?php print __('Plugins'); ?></label>
 						</td>
 						<td>
 							<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Plugins'); ?>'>
