@@ -52,12 +52,15 @@ services:
     build:
       context: ../..
       dockerfile: tests/e2e/Dockerfile
+      args:
+        CACTI_TEST_COVERAGE: "${CACTI_TEST_COVERAGE:-0}"
     depends_on:
       mariadb:
         condition: service_healthy
       openldap:
         condition: service_healthy
     environment:
+      CACTI_PR_RAW_COVERAGE: "${CACTI_PR_RAW_COVERAGE:-}"
       CACTI_DB_HOST: mariadb
       CACTI_DB_NAME: cacti
       CACTI_DB_USER: cactiuser
