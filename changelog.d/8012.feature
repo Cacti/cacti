@@ -1,0 +1,1 @@
+Introduce typed RRDtool service boundaries under lib/Rrd; graph image formats are limited to png and svg+xml and non-numeric or non-finite graph sizes now fail with an error instead of being passed through
