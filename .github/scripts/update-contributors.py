@@ -23,7 +23,6 @@ import json
 import math
 import re
 import subprocess
-import sys
 from pathlib import Path
 
 REPO = "Cacti/cacti"
@@ -183,22 +182,27 @@ def badges_for(activity: dict) -> set[str]:
     return badges
 
 
+def contributor_activity(contributor: dict, by_author: dict[str, dict]) -> dict | None:
+    login = contributor["login"].lower()
+    name = contributor.get("name", "").lower()
+    activity = by_author.get(login) or by_author.get(name)
+    for alias in FOUNDER_ALIASES.get(contributor["login"], []):
+        alias_activity = by_author.get(alias.lower())
+        if alias_activity is None or alias_activity is activity:
+            continue
+        if activity is None:
+            activity = alias_activity
+        else:
+            activity["paths"] |= alias_activity["paths"]
+            activity["messages"] += alias_activity["messages"]
+    return activity
+
+
 def refresh_path_badges(config: dict) -> bool:
     by_author = git_log_by_author()
     changed = False
     for contributor in config["contributors"]:
-        login = contributor["login"].lower()
-        name = contributor.get("name", "").lower()
-        activity = by_author.get(login) or by_author.get(name)
-        for alias in FOUNDER_ALIASES.get(contributor["login"], []):
-            alias_activity = by_author.get(alias.lower())
-            if alias_activity is None or alias_activity is activity:
-                continue
-            if activity is None:
-                activity = alias_activity
-            else:
-                activity["paths"] |= alias_activity["paths"]
-                activity["messages"] += alias_activity["messages"]
+        activity = contributor_activity(contributor, by_author)
         if activity is None:
             continue
         new_badges = badges_for(activity)
@@ -210,7 +214,17 @@ def refresh_path_badges(config: dict) -> bool:
     return changed
 
 
-def refresh_review_badges(config: dict) -> bool:
+def reviewer_logins(prs: dict) -> set[str]:
+    reviewers: set[str] = set()
+    for pr in prs["nodes"]:
+        for review in pr["reviews"]["nodes"]:
+            author = review.get("author")
+            if author and author.get("login"):
+                reviewers.add(author["login"].lower())
+    return reviewers
+
+
+def fetch_reviewers() -> set[str]:
     query = """
     query($cursor: String) {
       repository(owner: "Cacti", name: "cacti") {
@@ -230,14 +244,16 @@ def refresh_review_badges(config: dict) -> bool:
             args += ["-f", f"cursor={cursor}"]
         data = json.loads(run(args))
         prs = data["data"]["repository"]["pullRequests"]
-        for pr in prs["nodes"]:
-            for review in pr["reviews"]["nodes"]:
-                author = review.get("author")
-                if author and author.get("login"):
-                    reviewers.add(author["login"].lower())
+        reviewers.update(reviewer_logins(prs))
         if not prs["pageInfo"]["hasNextPage"]:
             break
         cursor = prs["pageInfo"]["endCursor"]
+
+    return reviewers
+
+
+def refresh_review_badges(config: dict) -> bool:
+    reviewers = fetch_reviewers()
 
     changed = False
     by_login = {c["login"].lower(): c for c in config["contributors"]}
@@ -305,7 +321,7 @@ def update_readme(config: dict) -> bool:
     return True
 
 
-def main() -> int:
+def main() -> None:
     config = load_contributors()
 
     changed = False
@@ -315,13 +331,12 @@ def main() -> int:
 
     if not changed:
         print("no contributor changes detected")
-        return 0
+        return
 
     CONTRIBUTORSRC.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     update_readme(config)
     print("contributors updated")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
