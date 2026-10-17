@@ -30,7 +30,8 @@
  *
  * @return void
  */
-function api_data_source_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_data_source_cache_crc') : void {
+function api_data_source_cache_crc_update(int $poller_id,
+	string $variable = 'poller_replicate_data_source_cache_crc') : void {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . "$poller_id");
 
 	db_execute_prepared("REPLACE INTO settings
@@ -447,7 +448,10 @@ function api_data_source_disable_multi(array $local_data_ids) : void {
 			foreach ($poller_ids as $poller_id) {
 				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 					poller_item_delete_for_data_source($ids_to_disable, $rcnn_id, false);
-					db_execute("UPDATE data_template_data SET active='' WHERE " . array_to_sql_or($ids_to_disable, 'local_data_id'), true, $rcnn_id);
+					db_execute("UPDATE data_template_data SET active='' WHERE " . array_to_sql_or($ids_to_disable,
+						'local_data_id'),
+						true,
+						$rcnn_id);
 				}
 			}
 		}
@@ -564,10 +568,16 @@ function api_data_source_change_host(array $data_sources, int $device_id) : void
 					if (($old_rcnn_id = poller_push_to_remote_db_connect($old_poller_id, true)) !== false) {
 						poller_item_delete_for_data_source($data_source, $old_rcnn_id, false);
 					} else {
-						raise_message('poller_down_' . $old_poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $old_poller_id,
+							__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+								$old_poller_id),
+							MESSAGE_LEVEL_WARN);
 					}
 				} else {
-					raise_message('poller_down_' . $old_poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $old_poller_id,
+						__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+							$old_poller_id),
+						MESSAGE_LEVEL_WARN);
 				}
 			}
 
@@ -637,7 +647,9 @@ function api_reapply_suggested_data_source_data(int $local_data_id) : void {
 		foreach ($svs as $sv) {
 			$sv['text'] = trim($sv['text']);
 
-			if (($sv['text'] == '|query_ifSpeed|' || $sv['text'] == '|query_ifHighSpeed|') && $sv['field_name'] == 'rrd_maximum') {
+			if (($sv['text'] == '|query_ifSpeed|' ||
+				$sv['text'] == '|query_ifHighSpeed|') &&
+				$sv['field_name'] == 'rrd_maximum') {
 				$subs_string = api_data_source_get_interface_speed($data_local);
 				$sv['text']  = $subs_string;
 			} else {
@@ -670,7 +682,13 @@ function api_reapply_suggested_data_source_data(int $local_data_id) : void {
 						WHERE local_data_id = ?',
 						[$sv['text'], $local_data_id]);
 				} else {
-					cacti_log('ERROR: Suggested value column error.  Column ' . $sv['field_name'] . ' for Data Template ID ' . $data_local['data_template_id'] . ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
+					cacti_log('ERROR: Suggested value column error.  Column ' .
+						$sv['field_name'] .
+						' for Data Template ID ' .
+						$data_local['data_template_id'] .
+						(' is not a compatible field name for tables data_template_data and ' .
+						'data_template_rrd.  Please correct this suggested value mapping'),
+						false);
 				}
 			}
 		}

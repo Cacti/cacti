@@ -7,6 +7,8 @@
 
 require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
 
+require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
+
 test('external link titles are escaped by the real navigation renderer', function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default, $navigation;
 
@@ -54,5 +56,5 @@ test('external link titles are escaped by the real navigation renderer', functio
 test('tree data query indexes are escaped at their output boundary', function () {
 	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/html_tree.php');
 
-	expect($source)->toContain("htmle(get_formatted_data_query_index(\$leaf['host_id'], intval(\$host_group_data_array[1]), \$host_group_data_array[2]))");
+	expect($source)->toContainPhp("htmle(get_formatted_data_query_index(\$leaf['host_id'], intval(\$host_group_data_array[1]), \$host_group_data_array[2]))");
 });

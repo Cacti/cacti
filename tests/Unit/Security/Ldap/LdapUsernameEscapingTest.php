@@ -28,6 +28,8 @@ $blocklist = static fn (string $username): string => str_replace(['&', '|', '(',
 
 $dn_template = 'uid=<username>,ou=people,dc=example,dc=com';
 
+require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
+
 test('the blocklist leaves every RFC 4514 DN metacharacter in place', function () use ($blocklist) {
 	foreach ([',', '\\', '+', '"', ';', '#', ' admin', 'admin '] as $payload) {
 		expect($blocklist('alice' . $payload))->toBe('alice' . $payload);
@@ -76,8 +78,8 @@ test('every username splice in the Ldap class escapes for its own context', func
 
 	// Authenticate(), Search() and Getcn() each build a DN; Search() and Getcn()
 	// also build a search filter
-	expect(substr_count($src, "str_replace('<username>', ldap_escape(\$this->username, '', LDAP_ESCAPE_DN), \$this->dn)"))->toBe(3)
-		->and(substr_count($src, "str_replace('<username>', ldap_escape(\$this->username, '', LDAP_ESCAPE_FILTER), \$this->search_filter)"))->toBe(2)
+	expect(\Cacti\Tests\Helpers\PhpSource::count($src, "str_replace('<username>', ldap_escape(\$this->username, '', LDAP_ESCAPE_DN), \$this->dn)"))->toBe(3)
+		->and(\Cacti\Tests\Helpers\PhpSource::count($src, "str_replace('<username>', ldap_escape(\$this->username, '', LDAP_ESCAPE_FILTER), \$this->search_filter)"))->toBe(2)
 		->and($src)->not->toContain("str_replace('<username>', \$this->username,");
 
 	// the group_member_type 2 lookup escapes the username before using it in

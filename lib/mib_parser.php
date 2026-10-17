@@ -347,7 +347,14 @@ class MibParser extends MibCache {
 			if ($tokens[$index] == 'DEFINITIONS' && $tokens[$index + 1] == '::=' && $tokens[$index + 2] == 'BEGIN') {
 				$mib_name  = $tokens[$index - 1];
 				$this->mib = $mib_name;
-			} elseif (in_array($tokens[$index], ['OBJECT-IDENTITY', 'OBJECT-TYPE', 'OBJECT-GROUP', 'NOTIFICATION-GROUP', 'MODULE-IDENTITY', 'NOTIFICATION-TYPE'], true)) {
+			} elseif (in_array($tokens[$index],
+				['OBJECT-IDENTITY',
+				'OBJECT-TYPE',
+				'OBJECT-GROUP',
+				'NOTIFICATION-GROUP',
+				'MODULE-IDENTITY',
+				'NOTIFICATION-TYPE'],
+				true)) {
 				if ($tokens[$index - 1] != ',' && $tokens[$index + 1] != 'FROM' && $tokens[$index + 1] != 'MACRO') {
 					if (isset($rec['NAME']) && isset($rec['VALUE'])) {
 						$this->parsed[] = $rec;
@@ -373,7 +380,11 @@ class MibParser extends MibCache {
 					];
 				}
 			} elseif ($tokens[$index] == 'OBJECT') {
-				if ($tokens[$index + 1] == 'IDENTIFIER' && $tokens[$index - 1] != '(' && $tokens[$index - 1] != '::=' && $tokens[$index - 1] != 'SYNTAX' && $tokens[$index - 2] != '(') {
+				if ($tokens[$index + 1] == 'IDENTIFIER' &&
+					$tokens[$index - 1] != '(' &&
+					$tokens[$index - 1] != '::=' &&
+					$tokens[$index - 1] != 'SYNTAX' &&
+					$tokens[$index - 2] != '(') {
 					if (isset($rec['NAME']) && isset($rec['VALUE'])) {
 						$this->parsed[] = $rec;
 					}
@@ -405,11 +416,22 @@ class MibParser extends MibCache {
 					} elseif ($tokens[$index] == 'INDEX') {
 						$rec['INDEX'] = MibParser::parse_simple_token($tokens, $index);
 					} elseif ($tokens[$index] == 'MAX-ACCESS') {
-						$rec['MAX-ACCESS'] = MibParser::parse_simple_token($tokens, $index, ['read-only', 'not-accessible', 'read-write', 'read-create', 'accessible-for-notify']);
+						$rec['MAX-ACCESS'] = MibParser::parse_simple_token($tokens,
+							$index,
+							['read-only',
+							'not-accessible',
+							'read-write',
+							'read-create',
+							'accessible-for-notify']);
 					} elseif ($tokens[$index] == 'REFERENCE') {
 						$rec['REFERENCE'] = MibParser::parse_simple_token($tokens, $index);
 					} elseif ($tokens[$index] == 'STATUS') {
-						$rec['STATUS'] = MibParser::parse_simple_token($tokens, $index, ['current', 'deprecated', 'obsolete', 'mandatory']);
+						$rec['STATUS'] = MibParser::parse_simple_token($tokens,
+							$index,
+							['current',
+							'deprecated',
+							'obsolete',
+							'mandatory']);
 					} elseif ($tokens[$index] == 'SYNTAX') {
 						$rec['SYNTAX'] = MibParser::parse_SYNTAX_token($tokens, $index);
 					} elseif ($tokens[$index] == 'UNITS') {
@@ -451,7 +473,17 @@ class MibParser extends MibCache {
 					$parent_otype = strtoupper(substr($object['VALUE'][0], -5));
 					$otype        = $object['TYPE'];
 
-					if ($otype == 'OBJECT-TYPE' && $syntax !== null && !in_array(strtoupper(substr($object['NAME'], -5)), ['TABLE', 'ENTRY'], true) && !in_array($parent_otype, ['TABLE', 'ENTRY'], true)) {
+					if ($otype == 'OBJECT-TYPE' &&
+						$syntax !== null &&
+						!in_array(strtoupper(substr($object['NAME'],
+							-5)),
+							['TABLE',
+							'ENTRY'],
+							true) &&
+						!in_array($parent_otype,
+							['TABLE',
+							'ENTRY'],
+							true)) {
 						$oid .= '.0';
 						$otype = 'DATA';
 					}
@@ -462,9 +494,15 @@ class MibParser extends MibCache {
 						$kind = 'Node';
 					} elseif (in_array($otype, ['NOTIFICATION-GROUP', 'OBJECT-GROUP'], true)) {
 						$kind = 'Group';
-					} elseif ($otype == 'OBJECT-TYPE' && strtoupper(substr($object['NAME'], -5)) == 'TABLE' && $syntax == 'SEQUENCE OF') {
+					} elseif ($otype == 'OBJECT-TYPE' &&
+						strtoupper(substr($object['NAME'],
+							-5)) == 'TABLE' &&
+						$syntax == 'SEQUENCE OF') {
 						$kind = 'Table';
-					} elseif ($otype == 'OBJECT-TYPE' && strtoupper(substr($object['NAME'], -5)) == 'ENTRY' && $parent_otype == 'TABLE') {
+					} elseif ($otype == 'OBJECT-TYPE' &&
+						strtoupper(substr($object['NAME'],
+							-5)) == 'ENTRY' &&
+						$parent_otype == 'TABLE') {
 						$kind = 'Row';
 					} elseif ($otype == 'OBJECT-TYPE' && $parent_otype == 'ENTRY') {
 						$kind = 'Column';

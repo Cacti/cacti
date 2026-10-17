@@ -290,7 +290,14 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 					$data_source_item_name = '';
 				}
 
-				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], [], $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'],
+					[],
+					$data_source['id'],
+					$data_input['rrd_step'],
+					$action,
+					$data_source_item_name,
+					1,
+					$script_path);
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
 				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
@@ -366,7 +373,14 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 					WHERE local_data_id = ?',
 					[$data_source['id']]);
 
-				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, ($host_fields['snmp_oid'] ?? ''));
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'],
+					$host_fields,
+					$data_source['id'],
+					$data_input['rrd_step'],
+					0,
+					get_data_source_item_name($data_template_rrd_id),
+					1,
+					($host_fields['snmp_oid'] ?? ''));
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
@@ -455,7 +469,14 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 						}
 
 						if (!empty($oid)) {
-							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($output['data_template_rrd_id']), cacti_sizeof($outputs), $oid);
+							$poller_items[] = api_poller_cache_item_add($data_source['host_id'],
+								$host_fields,
+								$data_source['id'],
+								$data_input['rrd_step'],
+								0,
+								get_data_source_item_name($output['data_template_rrd_id']),
+								cacti_sizeof($outputs),
+								$oid);
 						}
 					}
 				}
@@ -546,15 +567,40 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 									$prepend = $script_queries['arg_prepend'];
 								}
 
-								$script_path = get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
+								$script_path = get_script_query_path(trim($prepend .
+									' ' .
+									$script_queries['arg_get'] .
+									' ' .
+									$identifier .
+									' "' .
+									$data_source['snmp_index'] .
+									'"'),
+									$script_queries['script_path'] . ' ' . $script_queries['script_function'],
+									$data_source['host_id']);
 							} else {
 								$action      = POLLER_ACTION_SCRIPT;
-								$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'], $data_source['host_id']);
+								$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') .
+									' ' .
+									$script_queries['arg_get'] .
+									' ' .
+									$identifier .
+									' "' .
+									$data_source['snmp_index'] .
+									'"'),
+									$script_queries['script_path'],
+									$data_source['host_id']);
 							}
 						}
 
 						if (isset($script_path)) {
-							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], $action, get_data_source_item_name($output['data_template_rrd_id']), cacti_sizeof($outputs), $script_path);
+							$poller_items[] = api_poller_cache_item_add($data_source['host_id'],
+								$host_fields,
+								$data_source['id'],
+								$data_input['rrd_step'],
+								$action,
+								get_data_source_item_name($output['data_template_rrd_id']),
+								cacti_sizeof($outputs),
+								$script_path);
 						}
 					}
 				}
@@ -582,7 +628,10 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 			[$data_source['id']]);
 
 		if (cacti_sizeof($data_template_data) && $data_template_data['data_input_id'] > 0) {
-			cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted', false, 'PCACHE');
+			cacti_log(('WARNING: Repopulate Poller Cache found Data Input Missing for Data ' .
+				'Source ') . $data_source['id'] . '.  Database may be corrupted',
+				false,
+				'PCACHE');
 		}
 	}
 
@@ -645,7 +694,9 @@ function push_out_data_input_method(int $data_input_id) : void {
  *
  * @return void
  */
-function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$poller_items, int $poller_id = 1) : void {
+function poller_update_poller_cache_from_buffer(array $local_data_ids,
+	array &$poller_items,
+	int $poller_id = 1) : void {
 	$ids    = '';
 	$raised = false;
 
@@ -669,11 +720,17 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 							AND local_data_id IN ($ids)",
 							[$poller_id], true, $rcnn_id);
 					} else {
-						raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $poller_id,
+							__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+								$poller_id),
+							MESSAGE_LEVEL_WARN);
 						$raised = true;
 					}
 				} else {
-					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id,
+						__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+							$poller_id),
+						MESSAGE_LEVEL_WARN);
 					$raised = true;
 				}
 			}
@@ -750,11 +807,17 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 							db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 						} elseif (!$raised) {
-							raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+							raise_message('poller_down_' . $poller_id,
+								__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+									$poller_id),
+								MESSAGE_LEVEL_WARN);
 							$raised = true;
 						}
 					} elseif (!$raised) {
-						raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $poller_id,
+							__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+								$poller_id),
+							MESSAGE_LEVEL_WARN);
 						$raised = true;
 					}
 				}
@@ -776,11 +839,17 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 					db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 				} else {
-					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id,
+						__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+							$poller_id),
+						MESSAGE_LEVEL_WARN);
 					$raised = true;
 				}
 			} elseif (!$raised) {
-				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id,
+					__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+						$poller_id),
+					MESSAGE_LEVEL_WARN);
 				$raised = true;
 			}
 		}
@@ -803,10 +872,16 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 						AND local_data_id IN ($ids)",
 						[$poller_id], true, $rcnn_id);
 				} elseif (!$raised) {
-					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id,
+						__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+							$poller_id),
+						MESSAGE_LEVEL_WARN);
 				}
 			} elseif (!$raised) {
-				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id,
+					__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+						$poller_id),
+					MESSAGE_LEVEL_WARN);
 			}
 		}
 	}
@@ -984,7 +1059,10 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 								[$template_field['id'], $data_source['id']]);
 
 							if (isset($old_value['value']) && $old_data['value'] != $host[$field]) {
-								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
+								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]",
+									false,
+									'PCACHE',
+									POLLER_VERBOSITY_MEDIUM);
 							}
 
 							db_execute_prepared('REPLACE INTO data_input_data
@@ -1096,11 +1174,20 @@ function data_input_whitelist_check(int $data_input_id) : bool {
 						if ($data_input_whitelist[$hash] == $id['input_string']) {
 							$validated_input_ids[$id['id']] = true;
 						} else {
-							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
+							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' .
+								$id['name'] .
+								'[ ' .
+								$id['id'] .
+								(' ].  Data Collection will not run.  Run CLI command ' .
+								'input_whitelist.php --audit and --update to remediate.'));
 							$validated_input_ids[$id['id']] = false;
 						}
 					} else {
-						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Run CLI command input_whitelist.php --update to remediate.');
+						cacti_log('WARNING: Whitelist entry missing for Data Input: ' .
+							$id['name'] .
+							'[ ' .
+							$id['id'] .
+							' ].  Run CLI command input_whitelist.php --update to remediate.');
 						$validated_input_ids[$id['id']] = true;
 					}
 				} else {
@@ -1258,7 +1345,8 @@ function utilities_mysql_variable_capabilities() : array {
 			'MySQL'       => [],
 		],
 		'innodb_file_io_threads' => [
-			'description' => __('Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings.'),
+			'description' => __('Legacy single setting for InnoDB file I/O threads, replaced by the ' .
+				'read/write I/O thread settings.'),
 			'settings'    => __('Integer; superseded by innodb_read_io_threads and innodb_write_io_threads.'),
 			'MariaDB'     => ['removed' => '5.5.0'],
 			'MySQL'       => ['removed' => '5.5.0'],
@@ -1312,7 +1400,8 @@ function utilities_mysql_variable_capabilities() : array {
 		],
 		'innodb_snapshot_isolation' => [
 			'description' => __('Enforce strict snapshot isolation for InnoDB transactions.'),
-			'settings'    => __('ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller.'),
+			'settings'    => __('ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set ' .
+				'OFF for the Cacti poller.'),
 			'MariaDB'     => ['introduced' => ['10.6.18', '10.11.8', '11.4.2']],
 		],
 	];
@@ -1484,7 +1573,8 @@ function utilities_get_mysql_capabilities() : void {
 	}
 
 	print '<tr class="tableHeader tableFixed">';
-	print '<th colspan="2">' . __('%s Variable Capability Matrix', $database) . ' - ' . __('Support by engine and version for each Cacti-recommended variable') . '</th>';
+	print '<th colspan="2">' . __('%s Variable Capability Matrix',
+		$database) . ' - ' . __('Support by engine and version for each Cacti-recommended variable') . '</th>';
 	print '</tr>';
 
 	form_alternate_row();
@@ -1495,7 +1585,11 @@ function utilities_get_mysql_capabilities() : void {
 	print "  <th class='tableSubHeaderColumn' rowspan='2'>" . __('Variable') . '</th>';
 
 	foreach ($columns as $engine => $versions) {
-		print "  <th class='tableSubHeaderColumn center' colspan='" . cacti_sizeof($versions) . "'>" . html_escape($engine) . '</th>';
+		print "  <th class='tableSubHeaderColumn center' colspan='" .
+			cacti_sizeof($versions) .
+			"'>" .
+			html_escape($engine) .
+			'</th>';
 	}
 
 	print '</tr>';
@@ -1513,7 +1607,11 @@ function utilities_get_mysql_capabilities() : void {
 	foreach ($capabilities as $name => $cap) {
 		form_alternate_row();
 
-		$title = html_escape_attr($cap['description']) . '<br><br><strong>' . html_escape_attr(__('Available settings:')) . '</strong> ' . html_escape_attr($cap['settings']);
+		$title = html_escape_attr($cap['description']) .
+			'<br><br><strong>' .
+			html_escape_attr(__('Available settings:')) .
+			'</strong> ' .
+			html_escape_attr($cap['settings']);
 
 		print "<td><span class='cactiTooltipHint' tabindex='0' title='" . $title . "'>" . html_escape($name) . '</span></td>';
 
@@ -1561,7 +1659,11 @@ function utilities_get_mysql_recommendations() : int {
 			'value'   => ($database == 'MariaDB' ? '10.11' : '8.4'),
 			'class'   => 'warning',
 			'measure' => 'ge',
-			'comment' => __('MariaDB 10.11+ and MySQL 8.4+ are the recommended, supported releases for Cacti 1.3.x (available on Rocky Linux 9 through the vendor module streams). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
+			'comment' => __('MariaDB 10.11+ and MySQL 8.4+ are the recommended, supported releases ' .
+				'for Cacti 1.3.x (available on Rocky Linux 9 through the vendor module ' .
+				'streams). Make sure you run the very latest release though which ' .
+				'fixes a long standing low level networking issue that was causing ' .
+				'spine many issues with reliability.')
 		]
 	];
 
@@ -1573,7 +1675,8 @@ function utilities_get_mysql_recommendations() : int {
 						'value'   => 'ON',
 						'class'   => 'warning',
 						'measure' => 'equalint',
-						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
+						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.',
+							$database)
 					]
 				];
 
@@ -1586,19 +1689,25 @@ function utilities_get_mysql_recommendations() : int {
 				'value'   => 'utf8mb4_unicode_ci',
 				'class'   => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important ' .
+					'to use the utf8mb4_unicode_ci collation type as some characters take ' .
+					'more than a single byte.')
 			],
 			'character_set_server' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important ' .
+					'to use the utf8mb4 character set as some characters take more than a ' .
+					'single byte.')
 			],
 			'character_set_client' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important ' .
+					'to use the utf8mb4 character set as some characters take more than a ' .
+					'single byte.')
 			]
 		];
 	} else {
@@ -1622,19 +1731,25 @@ function utilities_get_mysql_recommendations() : int {
 			'collation_server' => [
 				'value'   => 'utf8mb4_unicode_ci',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important ' .
+					'to use the utf8mb4_unicode_ci collation type as some characters take ' .
+					'more than a single byte.')
 			],
 			'character_set_server' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important ' .
+					'to use the utf8mb4 character set as some characters take more than a ' .
+					'single byte.')
 			],
 			'character_set_client' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important ' .
+					'to use the utf8mb4 character set as some characters take more than a ' .
+					'single byte.')
 			]
 		];
 	}
@@ -1643,71 +1758,141 @@ function utilities_get_mysql_recommendations() : int {
 		'max_connections' => [
 			'value'   => '100',
 			'measure' => 'ge',
-			'comment' => __('Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts.', $database)
+			'comment' => __('Depending on the number of logins and use of spine data collector, %s ' .
+				'will need many connections.  The calculation for spine is: ' .
+				'total_connections = total_processes * (total_threads + script_servers ' .
+				'+ 1), then you must leave headroom for user connections, which will ' .
+				'change depending on the number of concurrent login accounts.',
+				$database)
 		],
 		'table_cache' => [
 			'value'   => '200',
 			'measure' => 'ge',
-			'comment' => __('Keeping the table cache larger means less file open/close operations when using innodb_file_per_table.')
+			'comment' => __('Keeping the table cache larger means less file open/close operations ' .
+				'when using innodb_file_per_table.')
 		],
 		'max_allowed_packet' => [
 			'value'   => 16777216,
 			'measure' => 'ge',
-			'comment' => __('With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M.')
+			'comment' => __('With Remote polling capabilities, large amounts of data will be ' .
+				'synced from the main server to the remote pollers.  Therefore, keep ' .
+				'this value at or above 16M.')
 		],
 		'max_heap_table_size' => [
 			'value'   => '1.6',
 			'measure' => 'pmem',
 			'class'   => 'warning',
-			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
+			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage ' .
+				'engine, you have to be careful to flush your Performance Booster ' .
+				'buffer before the system runs out of memory table space.  This is ' .
+				'done two ways, first reducing the size of your output column to just ' .
+				'the right size.  This column is in the tables poller_output, and ' .
+				'poller_output_boost.  The second thing you can do is allocate more ' .
+				'memory to memory tables.  We have arbitrarily chosen a recommended ' .
+				'value of 10%% of system memory, but if you are using SSD disk drives, ' .
+				'or have a smaller system, you may ignore this recommendation or ' .
+				'choose a different storage engine.  You may see the expected ' .
+				'consumption of the Performance Booster tables under Console -> System ' .
+				'Utilities -> View Boost Status.')
 		],
 		'tmp_table_size' => [
 			'value'   => '1.6',
 			'measure' => 'pmem',
 			'class'   => 'warning',
-			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
+			'comment' => __('When executing subqueries, having a larger temporary table size, keep ' .
+				'those temporary tables in memory.')
 		],
 		'join_buffer_size' => [
 			'value'   => '262144',
 			'measure' => 'ge',
 			'class'   => 'warning',
-			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the join_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the systems memory if the database is separate from the Cacti web server.  However, try to not go below the default of 262,144.  When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80% if the database is hosted on the Cacti web server and less if you intend to have very large RRDfiles or hundreds of thousands to millions long term.')
+			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until ' .
+				'the join_buffer_size turns positive, but allocate approximately from ' .
+				'between 25%-50% of memory to the innodb_buffer_pool_size if the ' .
+				'database is hosted on the Cacti server, or upto 80% of the systems ' .
+				'memory if the database is separate from the Cacti web server.  ' .
+				'However, try to not go below the default of 262,144.  When performing ' .
+				'joins, if they are below this size, they will be kept in memory and ' .
+				'never written to a temporary file.  As this is a per connection ' .
+				'memory allocation, care must be taken not to increase it too high.  ' .
+				'The sum of the join_buffer_size + sort_buffer_size + read_buffer_size ' .
+				'+ read_rnd_buffer_size + thread_stack + binlog_cache_size + Core ' .
+				'MySQL/MariaDB memory should be below 80% if the database is hosted on ' .
+				'the Cacti web server and less if you intend to have very large ' .
+				'RRDfiles or hundreds of thousands to millions long term.')
 		],
 		'sort_buffer_size' => [
 			'value'   => '2097152',
 			'measure' => 'ge',
 			'class'   => 'warning',
-			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the sort_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the system memory if the database is separate from the Cacti web server.  However, try to not go below the default setting of 2,097,152.  A sort buffer performs sorts for some queries using ORDER BY or GROUP BY. Configuring sort_buffer_size decides how much memory will be allocated for sort queries.  The sort_buffer_size may need to be adjusted from the default if the workload requires a significant number of sort queries. The sort_buffer_size is defined on a per-session variable.  Use the same equation as that of the join_buffer_size to determine the per connection possible memory.')
+			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until ' .
+				'the sort_buffer_size turns positive, but allocate approximately from ' .
+				'between 25%-50% of memory to the innodb_buffer_pool_size if the ' .
+				'database is hosted on the Cacti server, or upto 80% of the system ' .
+				'memory if the database is separate from the Cacti web server.  ' .
+				'However, try to not go below the default setting of 2,097,152.  A ' .
+				'sort buffer performs sorts for some queries using ORDER BY or GROUP ' .
+				'BY. Configuring sort_buffer_size decides how much memory will be ' .
+				'allocated for sort queries.  The sort_buffer_size may need to be ' .
+				'adjusted from the default if the workload requires a significant ' .
+				'number of sort queries. The sort_buffer_size is defined on a ' .
+				'per-session variable.  Use the same equation as that of the ' .
+				'join_buffer_size to determine the per connection possible memory.')
 		],
 		'innodb_file_per_table' => [
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
+			'comment' => __('When using InnoDB storage it is important to keep your table spaces ' .
+				'separate.  This makes managing the tables simpler for long time users ' .
+				'of %s.  If you are running with this currently off, you can migrate ' .
+				'to the per file storage by enabling the feature, and then running an ' .
+				'alter statement on all InnoDB tables.',
+				$database)
 		],
 		'innodb_file_format' => [
 			'value'   => 'Barracuda',
 			'measure' => 'equal',
 			'class'   => 'error',
-			'comment' => __('When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables.')
+			'comment' => __('When using innodb_file_per_table, it is important to set the ' .
+				'innodb_file_format to Barracuda.  This setting will allow longer ' .
+				'indexes important for certain Cacti tables.')
 		],
 		'innodb_large_prefix' => [
 			'value'   => '1',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables.')
+			'comment' => __('If your tables have very large indexes, you must operate with the ' .
+				'Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  ' .
+				'Failure to do this may result in plugins that can not properly create ' .
+				'tables.')
 		],
 		'innodb_buffer_pool_size' => [
 			'value'   => '25',
 			'measure' => 'pmem',
 			'class'   => 'warning',
-			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping.')
+			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is ' .
+				'possible.  Therefore, you should make the innodb_buffer_pool large ' .
+				'enough to hold as much of the tables and index in memory.  Checking ' .
+				'the size of the /var/lib/mysql/cacti directory will help in ' .
+				'determining this value.  We are recommending 25%% of your systems ' .
+				'total memory, but your requirements will vary depending on your ' .
+				'systems size.  If you database is very large or remote, you can ' .
+				'consider increasing this size.  If remote, it can by as high as 80% ' .
+				'of the systems memory.  However, cautions must be taken to reduce the ' .
+				'swappiness of the system, or to remove swap to keep the system from ' .
+				'swapping.')
 		],
 		'innodb_doublewrite' => [
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('This setting should remain ON unless your Cacti instances are running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
+			'comment' => __('This setting should remain ON unless your Cacti instances are running ' .
+				'on either ZFS or FusionI/O which both have internal journaling to ' .
+				'accommodate abrupt system crashes.  However, if you have very good ' .
+				'power, and your systems rarely go down and you have backups, turning ' .
+				'this setting to OFF can net you almost a 50% increase in database ' .
+				'performance.')
 		],
 		'innodb_additional_mem_pool_size' => [
 			'value'   => '80M',
@@ -1717,7 +1902,8 @@ function utilities_get_mysql_recommendations() : int {
 		'innodb_lock_wait_timeout' => [
 			'value'   => '50',
 			'measure' => 'ge',
-			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system.')
+			'comment' => __('Rogue queries should not for the database to go offline to others.  ' .
+				'Kill these queries before they kill your system.')
 		],
 		'innodb_flush_method' => [
 			'value'   => 'O_DIRECT',
@@ -1732,48 +1918,87 @@ function utilities_get_mysql_recommendations() : int {
 				'innodb_flush_log_at_trx_commit' => [
 					'value'   => '2',
 					'measure' => 'equal',
-					'comment' => __('Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often.', $database)
+					'comment' => __('Setting this value to 2 means that you will flush all transactions ' .
+						'every second rather than at commit.  This allows %s to perform ' .
+						'writing less often.',
+						$database)
 				],
 				'innodb_file_io_threads' => [
 					'value'   => '16',
 					'measure' => 'ge',
-					'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
+					'comment' => __('With modern SSD type storage, having multiple io threads is ' .
+						'advantageous for applications with high io characteristics.')
 				]
 			];
-		} elseif ($database == 'MariaDB' && version_compare($variables['innodb_version'], '10.5', '<') || $database == 'MySQL') {
+		} elseif ($database == 'MariaDB' &&
+			version_compare($variables['innodb_version'],
+				'10.5',
+				'<') ||
+			$database == 'MySQL') {
 			$recommendations += [
 				'innodb_flush_log_at_timeout' => [
 					'value'    => '3',
 					'measure'  => 'ge',
-					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
+					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to ' .
+						'disk.  The default is 1 second, but in high I/O systems setting to a ' .
+						'value greater than 1 can allow disk I/O to be more sequential',
+						$database,
+						$version,
+						$database),
 				],
 				'innodb_read_io_threads' => [
 					'value'   => '32',
 					'measure' => 'ge',
-					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
+					'comment' => __('With modern SSD type storage, having multiple read io threads is ' .
+						'advantageous for applications with high io characteristics.  ' .
+						'Depending on your MariaDB/MySQL versions, this value can go as high ' .
+						'as 64.  But try to keep the number less than your total SMT threads ' .
+						'on the database server.')
 				],
 				'innodb_write_io_threads' => [
 					'value'   => '16',
 					'measure' => 'ge',
-					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
+					'comment' => __('With modern SSD type storage, having multiple write io threads is ' .
+						'advantageous for applications with high io characteristics.  ' .
+						'Depending on your MariaDB/MySQL versions, this value can go as high ' .
+						'as 64.  But try to keep the number less than your total SMT threads ' .
+						'on the database server.')
 				],
 				'innodb_buffer_pool_instances' => [
 					'value'   => '16',
 					'measure' => 'pinst',
 					'class'   => 'warning',
-					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database) : __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
+					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve ' .
+						'performance for versions of MySQL upto and including MySQL 8.0.  The ' .
+						'max value is 64, but should not exceed more than the number of CPU ' .
+						'cores/threads.  When your innodb_buffer_pool is less than 1GB, you ' .
+						'should use the pool size divided by 128MB.  Continue to use this ' .
+						'equation up to the max of the number of CPU cores or 64.',
+						$database) : __('%s will divide the innodb_buffer_pool into memory regions to improve ' .
+							'performance for versions of MariaDB less than 10.5.  The max value is ' .
+							'64, but should not exceed more than the number of CPU cores/threads.  ' .
+							'When your innodb_buffer_pool is less than 1GB, you should use the ' .
+							'pool size divided by 128MB.  Continue to use this equation up to the ' .
+							'max the number of CPU cores or 64.',
+							$database))
 				],
 				'innodb_io_capacity' => [
 					'value'   => '5000',
 					'measure' => 'ge',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical ' .
+						'hard drives, use 200 * the number of active drives in the array.  If ' .
+						'using NVMe or PCIe Flash, much larger numbers as high as 100000 can ' .
+						'be used.')
 				],
 				'innodb_io_capacity_max' => [
 					'value'   => '10000',
 					'measure' => 'ge',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical ' .
+						'hard drives, use 2000 * the number of active drives in the array.  If ' .
+						'using NVMe or PCIe Flash, much larger numbers as high as 200000 can ' .
+						'be used.')
 				],
 				'innodb_flush_neighbors' => [
 					'value'   => '0',
@@ -1787,29 +2012,42 @@ function utilities_get_mysql_recommendations() : int {
 				'innodb_flush_log_at_timeout' => [
 					'value'    => '3',
 					'measure'  => 'ge',
-					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
+					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to ' .
+						'disk.  The default is 1 second, but in high I/O systems setting to a ' .
+						'value greater than 1 can allow disk I/O to be more sequential',
+						$database,
+						$version,
+						$database),
 				],
 				'innodb_read_io_threads' => [
 					'value'   => '32',
 					'measure' => 'ge',
-					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
+					'comment' => __('With modern SSD type storage, having multiple read io threads is ' .
+						'advantageous for applications with high io characteristics.')
 				],
 				'innodb_write_io_threads' => [
 					'value'   => '16',
 					'measure' => 'ge',
-					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
+					'comment' => __('With modern SSD type storage, having multiple write io threads is ' .
+						'advantageous for applications with high io characteristics.')
 				],
 				'innodb_io_capacity' => [
 					'value'   => '5000',
 					'measure' => 'ge',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical ' .
+						'hard drives, use 200 * the number of active drives in the array.  If ' .
+						'using NVMe or PCIe Flash, much larger numbers as high as 100000 can ' .
+						'be used.')
 				],
 				'innodb_io_capacity_max' => [
 					'value'   => '10000',
 					'measure' => 'ge',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical ' .
+						'hard drives, use 2000 * the number of active drives in the array.  If ' .
+						'using NVMe or PCIe Flash, much larger numbers as high as 200000 can ' .
+						'be used.')
 				],
 				'innodb_flush_neighbors' => [
 					'value'   => '0',
@@ -1828,14 +2066,17 @@ function utilities_get_mysql_recommendations() : int {
 			'value'   => 'OFF',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance.')
+			'comment' => __('When using MariaDB 10.2.4 and above, this setting should be off if ' .
+				'atomic writes are enabled.  Therefore, please enable atomic writes ' .
+				'instead of the double write buffer as it will increase performance.')
 		];
 
 		$recommendations['innodb_use_atomic_writes'] = [
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance.')
+			'comment' => __('When using MariaDB 10.2.4 and above, you can use atomic writes over ' .
+				'the doublewrite buffer to increase performance.')
 		];
 	}
 
@@ -1849,7 +2090,11 @@ function utilities_get_mysql_recommendations() : int {
 			'value'   => 'OFF',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default. This causes severe lock contention: UPDATE statements can block for tens of thousands of seconds on small tables under concurrent load, which stalls the Cacti poller. Set innodb_snapshot_isolation=OFF in your [mysqld] configuration. See MDEV-39628.')
+			'comment' => __('MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default. This ' .
+				'causes severe lock contention: UPDATE statements can block for tens ' .
+				'of thousands of seconds on small tables under concurrent load, which ' .
+				'stalls the Cacti poller. Set innodb_snapshot_isolation=OFF in your ' .
+				'[mysqld] configuration. See MDEV-39628.')
 		];
 	}
 
@@ -1883,7 +2128,17 @@ function utilities_get_mysql_recommendations() : int {
 	}
 
 	print '<tr class="tableHeader tableFixed">';
-	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '<th colspan="2">' . __('%s Tuning',
+		$database) .
+			' (' .
+			$location .
+			') - [ <a class="linkOverDark" target="_blank" href="' .
+			$variables_url .
+			'">' .
+			__('Documentation') .
+			'</a> ] ' .
+			__('Note: Many changes below require a database restart') .
+			'</th>';
 	print '</tr>';
 
 	form_alternate_row();
@@ -2388,7 +2643,10 @@ function utility_php_recommends() : array {
 	return $ext;
 }
 
-function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mixed &$output_value, string $default_type = 'B') : mixed {
+function utility_get_formatted_bytes(mixed $input_value,
+	string $wanted_type,
+	mixed &$output_value,
+	string $default_type = 'B') : mixed {
 	$default_type = cacti_strtoupper($default_type);
 	$multiplier   = [
 		'B' => 1,
@@ -2419,7 +2677,10 @@ function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mi
 		$output_value = $input_value . 'B';
 	}
 
-	cacti_log("Input values $input_value, Wanted Type $wanted_type, Output Value $output_value", false, 'SYSTEM', POLLER_VERBOSITY_DEBUG);
+	cacti_log("Input values $input_value, Wanted Type $wanted_type, Output Value $output_value",
+		false,
+		'SYSTEM',
+		POLLER_VERBOSITY_DEBUG);
 
 	return $input_value;
 }
@@ -2469,13 +2730,15 @@ function utility_php_verify_recommends(mixed &$recommends, string $source) : voi
 			'name'        => 'memory_limit',
 			'value'       => $rec_memory_mb,
 			'current'     => $memory_ini,
-			'status'      => (($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS : ($memory_limit != $cfg_mem_limit ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
+			'status'      => (($memory_limit <= 0 ||
+				$memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS : ($memory_limit != $cfg_mem_limit ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
 		],
 		[
 			'name'        => 'max_execution_time',
 			'value'       => $rec_execute,
 			'current'     => $execute_time,
-			'status'      => (($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : ($execute_time != $cfg_max_exec ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
+			'status'      => (($execute_time <= 0 ||
+				$execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : ($execute_time != $cfg_max_exec ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
 		],
 		[
 			'name'        => 'date.timezone',
