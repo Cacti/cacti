@@ -1,0 +1,1 @@
+Render empty known query fields as blank graph text without changing suggested-value fallback
