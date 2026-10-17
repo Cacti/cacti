@@ -757,7 +757,12 @@ function api_tree_get_main(mixed $tree_id, int $parent = 0) : void {
 				WHERE id = ?',
 				[$tree_id]);
 
-			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . htmle('graph_view.php?action=tree&node=tree_anchor-' . $tree_id) . "'>" . htmle($name) . "</a>\n";
+			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" .
+				htmle('graph_view.php?action=tree&node=tree_anchor-' .
+				$tree_id) .
+				"'>" .
+				htmle($name) .
+				"</a>\n";
 
 			$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
@@ -834,7 +839,12 @@ function api_tree_get_node(int $tree_id, string $node_id, bool $editing = false)
  *
  * @return int|false The ID of the saved tree item, or false if the item already exists.
  */
-function api_tree_item_save(int $id, int $tree_id, int $type, int $parent_tree_item_id, string $title, int $local_graph_id,
+function api_tree_item_save(int $id,
+	int $tree_id,
+	int $type,
+	int $parent_tree_item_id,
+	string $title,
+	int $local_graph_id,
 int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bool $propagate_changes) : int|false {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($parent_tree_item_id, 'parent_tree_item_id');
@@ -878,7 +888,11 @@ int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bo
 
 	$save['id']                 = $id;
 	$save['graph_tree_id']      = $tree_id;
-	$save['title']              = form_input_validate($title, 'title', '', ($type == TREE_ITEM_TYPE_HEADER ? false : true), 3);
+	$save['title']              = form_input_validate($title,
+		'title',
+		'',
+		($type == TREE_ITEM_TYPE_HEADER ? false : true),
+		3);
 	$save['parent']             = $parent_tree_item_id;
 	$save['local_graph_id']     = form_input_validate($local_graph_id, 'local_graph_id', '', true, 3);
 	$save['host_id']            = form_input_validate($host_id, 'host_id', '', true, 3);
@@ -973,7 +987,8 @@ function naturally_sort_graphs(array $a, array $b) : int {
  * @return int The branch ordering type. Returns 1 if the leaf node is not found.
  */
 function api_tree_get_branch_ordering(int $leaf_id) : int {
-	$leaf = db_fetch_row_prepared('SELECT sort_children_type, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', [$leaf_id]);
+	$leaf = db_fetch_row_prepared('SELECT sort_children_type, parent, graph_tree_id FROM graph_tree_items WHERE id = ?',
+		[$leaf_id]);
 
 	if (cacti_sizeof($leaf)) {
 		if ($leaf['sort_children_type'] == 0) {
@@ -1002,7 +1017,9 @@ function api_tree_get_branch_ordering(int $leaf_id) : int {
  * @return string The title of the branch.
  */
 function api_tree_get_branch_name(int $tree_id, int $leaf_id) : string {
-	return db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE graph_tree_id = ? AND id = ?', [$tree_id, $leaf_id]);
+	return db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE graph_tree_id = ? AND id = ?',
+		[$tree_id,
+		$leaf_id]);
 }
 
 /**
@@ -1015,7 +1032,10 @@ function api_tree_get_branch_name(int $tree_id, int $leaf_id) : string {
  * @return int|null The ID of the branch if found, or null if not found.
  */
 function api_tree_get_branch_id(int $tree_id, int $parent, string $title) : int|null {
-	return db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE graph_tree_id = ? AND parent = ? AND title = ?', [$tree_id, $parent, $title]);
+	return db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE graph_tree_id = ? AND parent = ? AND title = ?',
+		[$tree_id,
+		$parent,
+		$title]);
 }
 
 /**

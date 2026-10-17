@@ -113,7 +113,11 @@ function get_cdef(int $cdef_id) : ?string {
  *
  * @return string|null The CDEF string, or null when recursion is unsafe.
  */
-function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, array &$cache, int &$cache_bytes) : ?string {
+function get_cdef_recursive(int $cdef_id,
+	array &$visited,
+	int &$expansion,
+	array &$cache,
+	int &$cache_bytes) : ?string {
 	if (isset($visited[$cdef_id])) {
 		cacti_log(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id), false, 'CDEF');
 
@@ -137,7 +141,9 @@ function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, arra
 	}
 
 	$visited[$cdef_id] = true;
-	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
+	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY ' .
+		'sequence',
+		[$cdef_id]);
 
 	if ($cdef_items === false) {
 		unset($visited[$cdef_id]);
