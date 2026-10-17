@@ -1956,8 +1956,10 @@ function responsiveResizeGraphs(initialize) {
 		} else {
 			$(this).css('width', '');
 			$(this).css('height', '');
-			$(this).removeAttr('width');
-			$(this).removeAttr('height');
+			// Reserve the image size while a replacement PNG is decoding.
+			// Removing these attributes can collapse the row and clamp its scroll container.
+			$(this).attr('width', image_width);
+			$(this).attr('height', image_height);
 		}
 	});
 
