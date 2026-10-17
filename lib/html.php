@@ -3109,7 +3109,7 @@ function html_spikekill_js() : void {
  * @return void
  */
 function html_common_header(string $title, string $selectedTheme = '') : void {
-	global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
+	global $config, $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
 
 	if ($selectedTheme == '') {
 		$selectedTheme = get_selected_theme();
@@ -3265,9 +3265,13 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 			'more recent date.')); ?>;
 	</script>
 	<?php
-	// Global icons
-	print get_md5_include_icon('images', theme: $selectedTheme, file: 'favicon.ico', rel: 'shortcut icon');
-	print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
+	// Global icons, if the theme provides an SVG favicon it is all we need
+	if (file_exists($config['base_path'] . '/include/themes/' . $selectedTheme . '/images/favicon.svg')) {
+		print "\t<link href='" . $config['url_path'] . 'include/themes/' . $selectedTheme . "/images/favicon.svg' rel='icon' type='image/svg+xml'>" . PHP_EOL;
+	} else {
+		print get_md5_include_icon('images', theme: $selectedTheme, file: 'favicon.ico', rel: 'shortcut icon');
+		print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
+	}
 
 	// Global styles that can be overloaded by themes css as required.
 	print get_md5_include_css('include/css/jquery.contextMenu.css');
