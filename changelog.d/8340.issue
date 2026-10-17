@@ -1,0 +1,1 @@
+Avoid repeated RRDtool capability checks in graph options and update batches
