@@ -67,8 +67,19 @@
  *
  * @return array - Return values
  */
-function cacti_ldap_auth(string $username, string $password = '', string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0, int $version = 0,
-	int $encryption = 0, int $referrals = 0, mixed $group_require = false, string $group_dn = '', string $group_attrib = '', int $group_member_type = 0) : array {
+function cacti_ldap_auth(string $username,
+	string $password = '',
+	string $dn = '',
+	string $host = '',
+	int $port = 0,
+	int $port_ssl = 0,
+	int $version = 0,
+	int $encryption = 0,
+		int $referrals = 0,
+		mixed $group_require = false,
+		string $group_dn = '',
+		string $group_attrib = '',
+		int $group_member_type = 0) : array {
 	$ldap = new Ldap();
 
 	if (!empty($username)) {
@@ -405,7 +416,10 @@ abstract class LdapError {
 	const EmptyPassword         = 17;
 	const Disabled              = 99;
 
-	public static function GetErrorDetails(int $returnError, mixed $ldapConn = null, string $ldapServer = '', int $ldapError = 0) : array {
+	public static function GetErrorDetails(int $returnError,
+		mixed $ldapConn = null,
+		string $ldapServer = '',
+		int $ldapError = 0) : array {
 		$error_num  = $returnError;
 		$error_text = '';
 
@@ -420,11 +434,19 @@ abstract class LdapError {
 				LdapError::Failure                  => __('Authentication Failure'),
 				LdapError::Disabled                 => __('PHP LDAP not enabled'),
 				LdapError::UndefinedUsername        => __('No username defined'),
-				LdapError::ProtocolErrorVersion     => __('Protocol Error, Unable to set version (%s) on Server (%s)', $ldapError, $ldapServer),
-				LdapError::ProtocolErrorReferral    => __('Protocol Error, Unable to set referrals option (%s) on Server (%s)', $ldapError, $ldapServer),
-				LdapError::ProtocolErrorTls         => __('Protocol Error, unable to start TLS communications (%s) on Server (%s)', $ldapError, $ldapServer),
+				LdapError::ProtocolErrorVersion     => __('Protocol Error, Unable to set version (%s) on Server (%s)',
+					$ldapError,
+					$ldapServer),
+				LdapError::ProtocolErrorReferral    => __('Protocol Error, Unable to set referrals option (%s) on Server (%s)',
+					$ldapError,
+					$ldapServer),
+				LdapError::ProtocolErrorTls         => __('Protocol Error, unable to start TLS communications (%s) on Server (%s)',
+					$ldapError,
+					$ldapServer),
 				LdapError::ProtocolErrorGeneral     => __('Protocol Error, General failure (%s)', $ldapError, $ldapServer),
-				LdapError::ProtocolErrorBind        => __('Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)', $ldapError, $ldapServer),
+				LdapError::ProtocolErrorBind        => __('Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)',
+					$ldapError,
+					$ldapServer),
 				LdapError::ConnectionUnavailable    => __('Unable to Connect to Server (%s)', $ldapServer),
 				LdapError::ConnectionTimeout        => __('Connection Timeout to Server (%s)', $ldapServer),
 				LdapError::InsufficientAccess       => __('Insufficient Access to Server (%s)', $ldapServer),
@@ -435,7 +457,10 @@ abstract class LdapError {
 				LdapError::MissingLdapObject        => __('Unable to create LDAP connection object to Server (%s)', $ldapServer),
 				LdapError::UndefinedDnOrPassword    => __('Specific DN and Password required'),
 				LdapError::EmptyPassword            => __('Invalid Password provided.  Login failed.'),
-				default                             => __('Unexpected error %s (Ldap Error: %s) on Server (%s)', $returnError, $ldapError, $ldapServer),
+				default                             => __('Unexpected error %s (Ldap Error: %s) on Server (%s)',
+					$returnError,
+					$ldapError,
+					$ldapServer),
 			};
 		}
 
@@ -545,7 +570,10 @@ class Ldap {
 
 		// Set debug if selective debug is enabled.  This places log data into the apache error_log
 		if (get_selective_log_level() == POLLER_VERBOSITY_DEBUG || $this->debug == POLLER_VERBOSITY_DEBUG) {
-			cacti_log('LDAP: Setting php-ldap into DEBUG mode.  Check your Web Server error_log for details', false, 'AUTH', $this->debug);
+			cacti_log('LDAP: Setting php-ldap into DEBUG mode.  Check your Web Server error_log for details',
+				false,
+				'AUTH',
+				$this->debug);
 			ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
 		}
 
@@ -747,7 +775,13 @@ class Ldap {
 		}
 
 		// Bind to the LDAP directory
-		cacti_log(sprintf('LDAP: Binding User \'%s\' with DN \'%s\' on Server \'%s\'', $this->username, $this->dn, $this->host), false, 'AUTH', $this->debug);
+		cacti_log(sprintf('LDAP: Binding User \'%s\' with DN \'%s\' on Server \'%s\'',
+			$this->username,
+			$this->dn,
+			$this->host),
+			false,
+			'AUTH',
+			$this->debug);
 
 		$ldap_response = ldap_bind($ldap_conn, $this->dn, $this->password);
 
@@ -764,7 +798,10 @@ class Ldap {
 					}
 				} elseif ($this->group_member_type == 2) {
 					$filter_user    = ldap_escape($this->username, '', LDAP_ESCAPE_FILTER);
-					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $filter_user . ')(cn=' . $filter_user . ')(userPrincipalName=' . $filter_user . '))', ['dn']);
+					$true_dn_result = ldap_search($ldap_conn,
+						$this->search_base,
+						'(|(uid=' . $filter_user . ')(cn=' . $filter_user . ')(userPrincipalName=' . $filter_user . '))',
+						['dn']);
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 					// we will test in two ways
@@ -898,7 +935,13 @@ class Ldap {
 		$bound = false;
 
 		if ($this->mode == 2 && $this->specific_dn !== '' && $this->specific_password !== '') {
-			$bound = @ldap_bind($ldap_conn, html_entity_decode($this->specific_dn, $this->GetMask(), 'UTF-8'), html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8'));
+			$bound = @ldap_bind($ldap_conn,
+				html_entity_decode($this->specific_dn,
+					$this->GetMask(),
+					'UTF-8'),
+				html_entity_decode($this->specific_password,
+					$this->GetMask(),
+					'UTF-8'));
 		} elseif ($this->mode == 1) {
 			$bound = @ldap_bind($ldap_conn);
 		}
@@ -918,7 +961,13 @@ class Ldap {
 		$matched = [];
 
 		foreach ($groupNames as $group) {
-			$in = $this->UserInGroupByName($ldap_conn, $search_base, $username_esc, $user_dn, $user_dn_esc, (string) $group, $is_ad);
+			$in = $this->UserInGroupByName($ldap_conn,
+				$search_base,
+				$username_esc,
+				$user_dn,
+				$user_dn_esc,
+				(string) $group,
+				$is_ad);
 
 			if ($in === null) {
 				// Membership for at least one rule could not be determined (a
@@ -1016,7 +1065,13 @@ class Ldap {
 	 *                   determined (every probe errored) so the caller can
 	 *                   preserve existing assignments rather than revoke them.
 	 */
-	protected function UserInGroupByName($ldap_conn, string $search_base, string $username_esc, string $user_dn, string $user_dn_esc, string $group, bool $is_ad) : ?bool {
+	protected function UserInGroupByName($ldap_conn,
+		string $search_base,
+		string $username_esc,
+		string $user_dn,
+		string $user_dn_esc,
+		string $group,
+		bool $is_ad) : ?bool {
 		$queries = $this->BuildGroupMembershipQueries($search_base, $username_esc, $user_dn, $user_dn_esc, $group, $is_ad);
 
 		if (!cacti_sizeof($queries)) {
@@ -1072,7 +1127,12 @@ class Ldap {
 	 *
 	 * @return array List of ['base','read','filter','return'] probe descriptors.
 	 */
-	protected function BuildGroupMembershipQueries(string $search_base, string $username_esc, string $user_dn, string $user_dn_esc, string $group, bool $is_ad) : array {
+	protected function BuildGroupMembershipQueries(string $search_base,
+		string $username_esc,
+		string $user_dn,
+		string $user_dn_esc,
+		string $group,
+		bool $is_ad) : array {
 		if ($group === '') {
 			return [];
 		}
@@ -1103,16 +1163,25 @@ class Ldap {
 
 				// AD nested groups via LDAP_MATCHING_RULE_IN_CHAIN.
 				if ($is_ad) {
-					$queries[] = ['base' => $user_dn, 'read' => true, 'filter' => "(memberOf:1.2.840.113556.1.4.1941:=$group_esc)", 'return' => ['1.1']];
+					$queries[] = ['base' => $user_dn,
+						'read'              => true,
+						'filter'            => "(memberOf:1.2.840.113556.1.4.1941:=$group_esc)",
+						'return'            => ['1.1']];
 				}
 			}
 
 			// OpenLDAP RFC2307 posixGroup (memberUid holds the bare username).
-			$queries[] = ['base' => $group, 'read' => true, 'filter' => "(&(objectClass=posixGroup)(memberUid=$username_esc))", 'return' => ['1.1']];
+			$queries[] = ['base' => $group,
+				'read'              => true,
+				'filter'            => "(&(objectClass=posixGroup)(memberUid=$username_esc))",
+				'return'            => ['1.1']];
 
 			// RFC2307bis groupOfNames/groupOfUniqueNames at the exact group DN.
 			if ($user_dn !== '') {
-				$queries[] = ['base' => $group, 'read' => true, 'filter' => "(&(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))(|(member=$user_dn_esc)(uniqueMember=$user_dn_esc)))", 'return' => ['1.1']];
+				$queries[] = ['base' => $group,
+					'read'              => true,
+					'filter'            => "(&(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))(|(member=$user_dn_esc)(uniqueMember=$user_dn_esc)))",
+					'return'            => ['1.1']];
 			}
 		} else {
 			// Active Directory group objects are objectClass=group, matched by
@@ -1121,15 +1190,24 @@ class Ldap {
 			// (LDAP_MATCHING_RULE_IN_CHAIN) matches direct AND nested membership
 			// in a single query.
 			if ($is_ad && $user_dn !== '') {
-				$queries[] = ['base' => $search_base, 'read' => false, 'filter' => "(&(objectClass=group)(cn=$group_cn_esc)(member:1.2.840.113556.1.4.1941:=$user_dn_esc))", 'return' => ['cn']];
+				$queries[] = ['base' => $search_base,
+					'read'              => false,
+					'filter'            => "(&(objectClass=group)(cn=$group_cn_esc)(member:1.2.840.113556.1.4.1941:=$user_dn_esc))",
+					'return'            => ['cn']];
 			}
 
 			// Bare group name: fall back to a cn subtree search. memberOf cannot
 			// be used here because it stores DNs, not names.
-			$queries[] = ['base' => $search_base, 'read' => false, 'filter' => "(&(objectClass=posixGroup)(cn=$group_cn_esc)(memberUid=$username_esc))", 'return' => ['memberUid']];
+			$queries[] = ['base' => $search_base,
+				'read'              => false,
+				'filter'            => "(&(objectClass=posixGroup)(cn=$group_cn_esc)(memberUid=$username_esc))",
+				'return'            => ['memberUid']];
 
 			if ($user_dn !== '') {
-				$queries[] = ['base' => $search_base, 'read' => false, 'filter' => "(&(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))(cn=$group_cn_esc)(|(member=$user_dn_esc)(uniqueMember=$user_dn_esc)))", 'return' => ['cn']];
+				$queries[] = ['base' => $search_base,
+					'read'              => false,
+					'filter'            => "(&(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))(cn=$group_cn_esc)(|(member=$user_dn_esc)(uniqueMember=$user_dn_esc)))",
+					'return'            => ['cn']];
 			}
 		}
 
@@ -1189,7 +1267,11 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_FILTER), $this->search_filter);
+		$this->search_filter = str_replace('<username>',
+			ldap_escape($this->username,
+				'',
+				LDAP_ESCAPE_FILTER),
+			$this->search_filter);
 
 		// Fix encoding on ldap specific search DN and password
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
@@ -1312,7 +1394,11 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_FILTER), $this->search_filter);
+		$this->search_filter = str_replace('<username>',
+			ldap_escape($this->username,
+				'',
+				LDAP_ESCAPE_FILTER),
+			$this->search_filter);
 
 		// Fix encoding on ldap specific search DN and password
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');

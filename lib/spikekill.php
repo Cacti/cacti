@@ -286,7 +286,9 @@ class spikekill {
 		 * The fill, float, and absolute require a time range.  It's optional for stddev.
 		 * Convert these to timestamps if they are not already so.
 		 */
-		if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_ABSOLUTE) {
+		if ($this->method == SPIKE_METHOD_FLOAT ||
+			$this->method == SPIKE_METHOD_FILL ||
+			$this->method == SPIKE_METHOD_ABSOLUTE) {
 			if (!is_numeric($this->out_start)) {
 				$this->out_start = strtotime($this->out_start);
 			}
@@ -296,7 +298,8 @@ class spikekill {
 			}
 
 			if ($this->out_start === false || $this->out_end === false) {
-				$this->set_error(__('FATAL: The outlier-start and outlier-end arguments must be in the format of YYYY-MM-DD HH:MM or a UNIX timestamp.'));
+				$this->set_error(__('FATAL: The outlier-start and outlier-end arguments must be in the ' .
+					'format of YYYY-MM-DD HH:MM or a UNIX timestamp.'));
 			}
 		}
 
@@ -325,15 +328,18 @@ class spikekill {
 		}
 
 		if ($this->method == SPIKE_METHOD_FLOAT && $this->out_start == 0) {
-			$this->set_error(__("FATAL: The 'float' removal method requires the specification of a start and end date or timestamp."));
+			$this->set_error(__("FATAL: The 'float' removal method requires the specification of a " .
+				'start and end date or timestamp.'));
 		}
 
 		if ($this->method == SPIKE_METHOD_FILL && $this->out_start == 0) {
-			$this->set_error(__("FATAL: The 'fill' removal method requires the specification of a start and end date or timestamp."));
+			$this->set_error(__("FATAL: The 'fill' removal method requires the specification of a " .
+				'start and end date or timestamp.'));
 		}
 
 		if ($this->method == SPIKE_METHOD_ABSOLUTE && $this->out_start == 0) {
-			$this->set_error(__("FATAL: The 'absolute' removal method requires the specification of a start and end date or timestamp."));
+			$this->set_error(__("FATAL: The 'absolute' removal method requires the specification of a " .
+				'start and end date or timestamp.'));
 		}
 
 		// Verify the replacement methods
@@ -346,28 +352,46 @@ class spikekill {
 				$this->set_error(__("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method."));
 		}
 
-		$this->strout .= ($this->html ? "<h3 class='spikekillNote'>" : '') . __('Spike Kill Settings Used for Analysis/Correction') . ($this->html ? '</h3><hr>' : PHP_EOL);
+		$this->strout .= ($this->html ? "<h3 class='spikekillNote'>" : '') .
+			__('Spike Kill Settings Used for Analysis/Correction') .
+			($this->html ? '</h3><hr>' : PHP_EOL);
 
 		if (!$this->html) {
 			$this->strout .= '------------------------------------------------' . PHP_EOL;
 		}
 
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Method:        %s', $dispmethod) . ($this->html ? '</p>' : PHP_EOL);
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('RRDfile:       %s', $this->rrdfile) . ($this->html ? '</p>' : PHP_EOL);
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Repair Type:   %s', ucfirst($this->avgnan)) . ($this->html ? '</p>' : PHP_EOL);
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Method:        %s',
+			$dispmethod) . ($this->html ? '</p>' : PHP_EOL);
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('RRDfile:       %s',
+			$this->rrdfile) . ($this->html ? '</p>' : PHP_EOL);
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Repair Type:   %s',
+			ucfirst($this->avgnan)) . ($this->html ? '</p>' : PHP_EOL);
 
 		if ($this->method == SPIKE_METHOD_STDDEV) {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Max Kills:     %s', $this->numspike) . ($this->html ? '</p>' : PHP_EOL);
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Standard Devs: %s', $this->stddev) . ($this->html ? '</p>' : PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Max Kills:     %s',
+				$this->numspike) . ($this->html ? '</p>' : PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Standard Devs: %s',
+				$this->stddev) . ($this->html ? '</p>' : PHP_EOL);
 		} else {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __('Max Kills:     Unlimited') . ($this->html ? '</p>' : PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+				__('Max Kills:     Unlimited') .
+				($this->html ? '</p>' : PHP_EOL);
 		}
 
 		if ($this->out_start > 0) {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Window Start:  %s (%s)' . PHP_EOL, $this->out_start, date('Y-m-d H:i', $this->out_start)) . ($this->html ? '</p>' : PHP_EOL);
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Window End:    %s (%s)', $this->out_end, date('Y-m-d H:i', $this->out_end)) . ($this->html ? '</p>' : PHP_EOL . PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Window Start:  %s (%s)' . PHP_EOL,
+				$this->out_start,
+				date('Y-m-d H:i',
+					$this->out_start)) . ($this->html ? '</p>' : PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Window End:    %s (%s)',
+				$this->out_end,
+				date('Y-m-d H:i',
+					$this->out_end)) . ($this->html ? '</p>' : PHP_EOL . PHP_EOL);
 		} else {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __('Window Range:  All') . ($this->html ? '</p>' : PHP_EOL . PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+				__('Window Range:  All') .
+				($this->html ? '</p>' : PHP_EOL .
+				PHP_EOL);
 		}
 
 		if ($this->html) {
@@ -399,40 +423,56 @@ class spikekill {
 		if (CACTI_SERVER_OS == 'win32') {
 			$this->tempdir  = read_config_option('spikekill_backupdir');
 			$xmlfile        = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
-			$bakfile        = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
+			$bakfile        = $this->tempdir . '/' . str_replace('.rrd',
+				'',
+				basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
 		} else {
 			$this->tempdir = read_config_option('spikekill_backupdir');
 			$xmlfile       = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
-			$bakfile       = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
+			$bakfile       = $this->tempdir . '/' . str_replace('.rrd',
+				'',
+				basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
 		}
 
 		if (!empty($this->out_start) && !$this->dryrun) {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __('NOTE: Removing Outliers in Range and Replacing with Last') . ($this->html ? "</p>\n" : "\n");
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+				__('NOTE: Removing Outliers in Range and Replacing with Last') .
+				($this->html ? "</p>\n" : "\n");
 		}
 
 		// execute the dump command
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc("NOTE: Creating XML file '%s' from '%s'", $xmlfile, $this->rrdfile) . ($this->html ? "</p>\n" : "\n");
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc("NOTE: Creating XML file '%s' from '%s'",
+			$xmlfile,
+			$this->rrdfile) . ($this->html ? "</p>\n" : "\n");
 
 		if (!$this->dryrun) {
 			switch ($this->method) {
 				case SPIKE_METHOD_STDDEV:
 					$mm  = 'StdDev';
-					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, StdDevs:$this->stddev, AvgNan:$this->avgnan, Kills:$this->numspike";
+					$mes = "$this->username, File:" .
+						basename($this->rrdfile) .
+						", Method:$mm, StdDevs:$this->stddev, AvgNan:$this->avgnan, Kills:$this->numspike";
 
 					break;
 				case SPIKE_METHOD_FLOAT:
 					$mm  = 'RangeFloat';
-					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
+					$mes = "$this->username, File:" .
+						basename($this->rrdfile) .
+						", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
 
 					break;
 				case SPIKE_METHOD_FILL:
 					$mm  = 'GapFill';
-					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
+					$mes = "$this->username, File:" .
+						basename($this->rrdfile) .
+						", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
 
 					break;
 				case SPIKE_METHOD_ABSOLUTE:
 					$mm  = 'AbsMax';
-					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
+					$mes = "$this->username, File:" .
+						basename($this->rrdfile) .
+						", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
 
 					break;
 				default:
@@ -445,7 +485,11 @@ class spikekill {
 
 		// '2>&1' before the file redirection leaves stderr on the captured stream
 		// while stdout still goes to the xml file
-		$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile));
+		$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) .
+			' dump ' .
+			cacti_escapeshellarg($this->rrdfile) .
+			' 2>&1 > ' .
+			cacti_escapeshellarg($xmlfile));
 
 		// read the xml file into an array
 		if (file_exists($xmlfile)) {
@@ -455,9 +499,14 @@ class spikekill {
 			unlink($xmlfile);
 		} else {
 			// the dump produced no file; capture any diagnostic output for the log
-			cacti_log(sprintf("ERROR: RRDtool dump of '%s' produced no output file. Output:'%s'", $this->rrdfile, trim((string) $dump_output)), false, 'SPIKEKILL');
+			cacti_log(sprintf("ERROR: RRDtool dump of '%s' produced no output file. Output:'%s'",
+				$this->rrdfile,
+				trim((string) $dump_output)),
+				false,
+				'SPIKEKILL');
 
-			$this->set_error(__('FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!'));
+			$this->set_error(__('FATAL: RRDtool Command Failed.  Please verify that the RRDtool path ' .
+				'is valid in Settings->Paths!'));
 
 			return false;
 		}
@@ -465,7 +514,9 @@ class spikekill {
 		// backup the rrdfile if requested
 		if ($this->backup && !$this->dryrun) {
 			if (copy($this->rrdfile, $bakfile)) {
-				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc("NOTE: RRDfile '%s' backed up to '%s'", $this->rrdfile, $bakfile) . ($this->html ? "</p>\n" : "\n");
+				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc("NOTE: RRDfile '%s' backed up to '%s'",
+					$this->rrdfile,
+					$bakfile) . ($this->html ? "</p>\n" : "\n");
 			} else {
 				$this->set_error(__esc("FATAL: RRDfile Backup of '%s' to '%s' FAILED!", $this->rrdfile, $bakfile));
 
@@ -569,7 +620,9 @@ class spikekill {
 
 						// check for outlier territory
 						if ($timestamp > 0) {
-							if ($this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_ABSOLUTE) {
+							if ($this->method == SPIKE_METHOD_FILL ||
+								$this->method == SPIKE_METHOD_FLOAT ||
+								$this->method == SPIKE_METHOD_ABSOLUTE) {
 								if ($timestamp < $this->out_start) {
 									if (is_numeric($dsvalue)) {
 										$rra[$rra_num][$ds_num]['last'] = $dsvalue;
@@ -579,13 +632,28 @@ class spikekill {
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->method == SPIKE_METHOD_FILL) {
 										if (!is_numeric($dsvalue)) {
-											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
+											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e',
+												$rra_num,
+												$ds_num,
+												date('Y-m-d H:i:s',
+													$timestamp),
+												$dsvalue));
 										}
 									} elseif ($this->method == SPIKE_METHOD_FLOAT) {
-										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
+										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e',
+											$rra_num,
+											$ds_num,
+											date('Y-m-d H:i:s',
+												$timestamp),
+											$dsvalue));
 									} else {
 										if ($dsvalue >= $this->absmax) {
-											$this->debug(sprintf('AbsMax Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
+											$this->debug(sprintf('AbsMax Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.2e',
+												$rra_num,
+												$ds_num,
+												date('Y-m-d H:i:s',
+													$timestamp),
+												$dsvalue));
 										}
 									}
 
@@ -684,9 +752,18 @@ class spikekill {
 				__esc("NOTE: Searching for Spikes in XML file '%s'", $xmlfile) . ($this->html ? "</p>\n" : "\n");
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-				__esc('NOTE: Limited to Time Window: %s through %s', date('M j, Y H:i:s', $this->out_start), date('M j, Y H:i:s',$this->out_end)) . ($this->html ? "</p><br>\n" : "\n");
+				__esc('NOTE: Limited to Time Window: %s through %s',
+					date('M j, Y H:i:s',
+						$this->out_start),
+					date('M j, Y H:i:s',$this->out_end)) . ($this->html ? "</p><br>\n" : "\n");
 
-			cacti_log('DEBUG: Limited to Time Window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+			cacti_log('DEBUG: Limited to Time Window: ' .
+				date('M j, Y H:i:s',$this->out_start) .
+				' thru ' .
+				date('M j, Y H:i:s',$this->out_end),
+				false,
+				'SPIKE',
+				POLLER_VERBOSITY_DEBUG);
 		}
 
 		$this->calculateOverallStatistics($rra, $samples);
@@ -697,7 +774,8 @@ class spikekill {
 		// debugging and/or status report
 		if ($this->debug || $this->dryrun) {
 			if ($this->html) {
-				$this->strout .= "<div style='overflow-x:auto;'><table style='width:100%' class='spikekillData' id='spikekillData'>";
+				$this->strout .= ("<div style='overflow-x:auto;'><table style='width:100%' " .
+					"class='spikekillData' id='spikekillData'>");
 			}
 
 			$this->outputStatistics($rra);
@@ -751,7 +829,9 @@ class spikekill {
 							$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
 
 							$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-								__esc('NOTE: Time:%s, Spikes Found and Remediated.  Total Spikes %s', $total, $this->total_kills) . ($this->html ? "</p>\n" : "\n");
+								__esc('NOTE: Time:%s, Spikes Found and Remediated.  Total Spikes %s',
+									$total,
+									$this->total_kills) . ($this->html ? "</p>\n" : "\n");
 						} else {
 							$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
 								__esc("FATAL: Time:%s, Unable to backup '%s'", $total, $this->rrdfile) . ($this->html ? "</p>\n" : "\n");
@@ -773,9 +853,21 @@ class spikekill {
 		$this->strout .= ($this->html ? '</table>' : '');
 
 		if ($this->total_kills > 0) {
-			cacti_log(sprintf("WARNING: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'", $total, $this->total_kills, $this->rrdfile, $this->method), false, 'WEBUI');
+			cacti_log(sprintf("WARNING: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'",
+				$total,
+				$this->total_kills,
+				$this->rrdfile,
+				$this->method),
+				false,
+				'WEBUI');
 		} elseif ($this->debug) {
-			cacti_log(sprintf("NOTE: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'", $total, $this->total_kills, $this->rrdfile, $this->method), false, 'WEBUI');
+			cacti_log(sprintf("NOTE: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'",
+				$total,
+				$this->total_kills,
+				$this->rrdfile,
+				$this->method),
+				false,
+				'WEBUI');
 		}
 
 		if (file_exists($xmlfile)) {
@@ -795,7 +887,11 @@ class spikekill {
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
 			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n" : "\n");
 
-		$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
+		$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) .
+			' restore -f -r ' .
+			cacti_escapeshellarg($xmlfile) .
+			' ' .
+			cacti_escapeshellarg($rrdfile));
 
 		if ($response != '') {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . $response . ($this->html ? "</p>\n" : "\n");
@@ -944,7 +1040,12 @@ class spikekill {
 											}
 
 											if (is_numeric($sample) && ($sample > $rra[$rra_num][$ds_num]['max_cutoff'] || $sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-												$this->debug(sprintf('StdDev Found, Date:%s, Value:%.2e, StandardDev:%.2e, StdDevLimit:%.2e', date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['stddev'], $rra[$rra_num][$ds_num]['max_cutoff']));
+												$this->debug(sprintf('StdDev Found, Date:%s, Value:%.2e, StandardDev:%.2e, StdDevLimit:%.2e',
+													date('Y-m-d H:i',
+														$timestamp),
+													$sample,
+													$rra[$rra_num][$ds_num]['stddev'],
+													$rra[$rra_num][$ds_num]['max_cutoff']));
 
 												$rra[$rra_num][$ds_num]['stddev_killed']++;
 
@@ -1041,9 +1142,22 @@ class spikekill {
 
 				$this->strout .= "\n";
 			} else {
-				$this->strout .= sprintf("<tr class='tableHeader'><th class='nowrap' style='width:10%%'>%s</th><th>%s</th><th>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th></tr>\n",
+				$this->strout .= sprintf("<tr class='tableHeader'><th class='nowrap' " .
+					"style='width:10%%'>%s</th><th>%s</th><th>%s</th><th " .
+					"class='right'>%s</th><th class='right'>%s</th><th " .
+					"class='right'>%s</th><th class='right'>%s</th><th " .
+					"class='right'>%s</th><th class='right'>%s</th><th " .
+					"class='right'>%s</th><th class='right'>%s</th><th " .
+					"class='right'>%s</th><th class='right'>%s</th><th " .
+					"class='right'>%s</th></tr>\n",
 					__('Size'), __('DataSource'), __('CF'), __('Samples'), __('NonNan'), __('Avg'), __('StdDev'),
-					__('MaxValue'), __('MinValue'), __('MaxStdDev'), __('MinStdDev'), __('StdKilled'), __('WindSamples'), __('WindKilled'));
+					__('MaxValue'),
+					__('MinValue'),
+					__('MaxStdDev'),
+					__('MinStdDev'),
+					__('StdKilled'),
+					__('WindSamples'),
+					__('WindKilled'));
 
 				foreach ($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
