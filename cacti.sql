@@ -139,6 +139,10 @@ CREATE TABLE `aggregate_graph_templates_item` (
   `graph_type_id` tinyint(3) unsigned NOT NULL default '0',
   `t_cdef_id` char(2) default '',
   `cdef_id` mediumint(8) unsigned default NULL,
+  `t_text_format` char(2) NOT NULL default '',
+  `text_format` varchar(255) NOT NULL default '',
+  `t_legend` char(2) NOT NULL default '',
+  `legend` varchar(30) NOT NULL default '',
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_template_id`,`graph_templates_item_id`)
@@ -184,6 +188,10 @@ CREATE TABLE `aggregate_graphs_graph_item` (
   `graph_type_id` tinyint(3) unsigned NOT NULL default '0',
   `t_cdef_id` char(2) default '',
   `cdef_id` mediumint(8) unsigned default NULL,
+  `t_text_format` char(2) NOT NULL default '',
+  `text_format` varchar(255) NOT NULL default '',
+  `t_legend` char(2) NOT NULL default '',
+  `legend` varchar(30) NOT NULL default '',
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_graph_id`,`graph_templates_item_id`)

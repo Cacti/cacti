@@ -13859,14 +13859,6 @@ msgstr ""
 msgid "Skip"
 msgstr ""
 
-#: lib/api_aggregate.php
-msgid "Aggregate Items are not modifiable"
-msgstr ""
-
-#: lib/api_aggregate.php
-msgid "Aggregate Items are not editable"
-msgstr ""
-
 #: lib/api_automation.php
 msgid "No Matching Devices"
 msgstr ""

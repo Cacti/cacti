@@ -23,6 +23,7 @@
 */
 
 function upgrade_to_1_3_0() : void {
+	upgrade_aggregate_item_overrides();
 	db_install_execute("CREATE TABLE IF NOT EXISTS process_locks (
 		key_id varchar(64) NOT NULL,
 		key_token varchar(44) NOT NULL,
@@ -1254,4 +1255,14 @@ function upgrade_dsstats() : void {
 	}
 
 	db_install_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
+}
+
+/** Add persistent legend overrides to both aggregate item editors. */
+function upgrade_aggregate_item_overrides() : void {
+	foreach (['aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
+		db_install_add_column($table, ['name' => 't_text_format', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'cdef_id']);
+		db_install_add_column($table, ['name' => 'text_format', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 't_text_format']);
+		db_install_add_column($table, ['name' => 't_legend', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'text_format']);
+		db_install_add_column($table, ['name' => 'legend', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '', 'after' => 't_legend']);
+	}
 }
