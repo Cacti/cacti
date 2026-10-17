@@ -73,7 +73,7 @@ test('atomic graph writes reject missing roots and missing parents', function ()
 });
 
 test('RRDtool output filenames are escaped at command construction', function () {
-	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd_graph_options.php');
 
 	expect($source)->toContain("cacti_escapeshellarg((string) \$graph_data_array['export_filename'])")
 		->and($source)->toContain("cacti_escapeshellarg((string) \$graph_data_array['output_filename'])");

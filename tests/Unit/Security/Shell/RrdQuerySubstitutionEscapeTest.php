@@ -16,7 +16,7 @@
  * whole-command pass that previously injected into the quoted args must be gone.
  */
 
-$rrd = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd.php');
+$rrd = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd_graph_options.php');
 
 test('the resolved title value is escaped', function () use ($rrd) {
 	expect($rrd)->toContain('cacti_escapeshellarg(htmle($value))');
@@ -33,7 +33,7 @@ test('the post-escape whole-command substitution is removed', function () use ($
 test('cacti_escapeshellarg neutralises a device-supplied quote', function () {
 	require_once dirname(__DIR__, 4) . '/lib/functions.php';
 	$GLOBALS['config']['cacti_server_os'] = 'unix';
-	$wrapped = cacti_escapeshellarg("Traffic eth0' COMMENT:pwned");
+	$wrapped                              = cacti_escapeshellarg("Traffic eth0' COMMENT:pwned");
 	expect($wrapped)->not->toContain("Traffic eth0' COMMENT");
 	expect(substr($wrapped, 0, 1))->toBe("'");
 });
