@@ -132,6 +132,12 @@ def main() -> int:
             continue
 
         jobs = doc.get("jobs", {}) if isinstance(doc, dict) else {}
+        # PyYAML's YAML 1.1 loader reads the unquoted `on` key as True.
+        events = doc.get("on", doc.get(True, {})) if isinstance(doc, dict) else {}
+        privileged_pr = (
+            events == "pull_request_target"
+            or isinstance(events, (dict, list)) and "pull_request_target" in events
+        )
         if not isinstance(jobs, dict):
             continue
 
@@ -196,6 +202,15 @@ def main() -> int:
                         if persisted is not False:
                             violations.append(
                                 f"{rel}:{step_name}: read-only checkout must set persist-credentials: false"
+                            )
+                    if privileged_pr and uses_value.startswith("actions/checkout@"):
+                        checkout_with = step.get("with", {})
+                        ref = str(checkout_with.get("ref", "")).replace(" ", "")
+                        repository = checkout_with.get("repository")
+                        trusted_refs = {"${{github.sha}}", "${{github.event.pull_request.base.sha}}"}
+                        if repository is not None or ref not in trusted_refs:
+                            violations.append(
+                                f"{rel}:{step_name}: privileged PR checkout must use the current repository's trusted base SHA"
                             )
 
                 run_value = step.get("run")
