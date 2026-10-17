@@ -1,0 +1,53 @@
+RRDtool capability-check profile, 2026-10-12
+
+Reuse the 1.4 graph-option and 1.5 update capability comparisons within each
+function call. Cache false as well as true. Reset on the next invocation;
+empty update batches require no capability lookup. This keeps validation,
+plugin options, command construction and the persistent process intact.
+
+The production-body fixture covers two files, six timestamps, RRDtool
+1.3/1.4/1.5/1.8 and a return to 1.3. Comparisons fall from six to one for
+updates and four to one for the four affected graph options. Complete
+commands and reference mutations are unchanged on develop, 1.2.x and the
+rewrite. The maintenance fixture also runs natively on PHP 8.2.31.
+
+Five rotating rounds, median microseconds per operation:
+
+                              Develop before/after   Rewrite before/after
+Graph-option preparation              250.15 / 243.90          72.32 / 68.86
+Persistent batch, per update           43.12 / 41.25            42.86 / 41.96
+Persistent single update               45.92 / 44.78            47.81 / 46.49
+
+Raw ranges overlap and include scheduling outliers. These medians are
+local diagnostics, not established production throughput improvements.
+A single-update invocation still needs one version comparison, so there
+is no count-based improvement in that control case. Allocated memory
+remains unchanged per benchmark mode. All successful update counts and
+final RRD timestamps/values match; graph-option output hashes agree.
+
+Separate Xdebug 3.5.3 graph profiling records 3,302 version comparisons
+versus 6,602 in the previous profile, including bootstrap and 100 warm-up
+calls plus 1,000 measured calls. Version parsing falls from 13,204 to
+6,604 calls. Two theme/font capability checks per graph remain; these
+are different comparisons and were not combined with the option check.
+Instrumented timings are excluded from the uninstrumented samples.
+
+PHP 8.5.11 through mise; RRDtool 1.11.0; macOS arm64; CLI OPcache enabled;
+JIT disabled. Each checkout uses its own locked Composer dependencies.
+Timings exclude bootstrap, fixtures and warm-up. Batch fixtures contain
+10,000 timestamps for one disposable RRD. The adjacent JSON records
+source hashes, commits, raw samples, ranges and allocated peak memory.
+The rewrite source hashes measured before the final develop integration
+match the retained RRD implementation after that integration.
+
+Reproduce each mode, with the target checkout's dependencies installed:
+
+mise exec -- php -d opcache.enable_cli=1 tests/performance/profile_rrd.php /path/to/checkout graph-options 3000 /path/to/rrdtool
+mise exec -- php -d opcache.enable_cli=1 tests/performance/profile_rrd.php /path/to/checkout persistent-batch 10000 /path/to/rrdtool
+mise exec -- php -d opcache.enable_cli=1 tests/performance/profile_rrd.php /path/to/checkout persistent-update 1000 /path/to/rrdtool
+
+Alternate before/after checkout order over five rounds. Use the rewrite's
+harness for both revisions. Callgrind and the run driver are retained at
+/tmp/cacti-rrd-version-evidence-20261012. No live collection or database
+was used. These fixtures do not measure full graph rendering, SQL plans,
+SNMP, Spine, Boost, remote replication or RTM fleet throughput.

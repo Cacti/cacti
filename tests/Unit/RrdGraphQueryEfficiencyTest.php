@@ -22,6 +22,9 @@ test('graph rendering loads axis formats with the graph metadata', function () u
 		->toContain('left_gprint.gprint_text AS left_axis_format_text')
 		->toContain('ON right_gprint.id = gtg.right_axis_format')
 		->toContain('ON left_gprint.id = gtg.left_axis_format')
+		->not->toContain("db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint");
+
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/rrd_graph_options.php'))
 		->toContain("\$format = \$graph['right_axis_format_text'];")
 		->toContain("\$format = \$graph['left_axis_format_text'];")
 		->not->toContain("db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint");
