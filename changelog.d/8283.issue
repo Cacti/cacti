@@ -1,0 +1,1 @@
+Normalize empty rule item IDs before rendering Graph and Tree rule item editors (issue #7947)
