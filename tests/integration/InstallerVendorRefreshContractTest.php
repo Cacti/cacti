@@ -1,65 +1,22 @@
 <?php
-/*
- +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2026 The Cacti Group                                 |
- +-------------------------------------------------------------------------+
-*/
-
-/*
- * Cross-file contract test for the installer vendor refresh (#6456).
- *
- * refreshVendorDependencies() must stay non-fatal, run before the
- * database conversion, and only execute composer when the configured
- * binary exists and the dry-run reports missing packages alone.
- */
+// Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
 $root = dirname(__DIR__, 2);
 
-test('install flow calls the vendor refresh before database conversion', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
-	expect($src)->not->toBeFalse('Failed to read lib/installer.php');
+test('installer verifies dependencies before side effects and never builds them', function () use ($root) {
+	$source = file_get_contents($root . '/lib/installer.php');
+	$start  = strpos($source, 'private function install()');
+	$body   = substr($source, $start);
 
-	$installPos = strpos($src, 'private function install() : void');
-	expect($installPos)->not->toBeFalse('install() must exist');
-
-	$refreshPos = strpos($src, '$this->refreshVendorDependencies();', $installPos);
-	$convertPos = strpos($src, '$this->convertDatabase();', $installPos);
-
-	expect($refreshPos)->not->toBeFalse('install() must call refreshVendorDependencies')
-		->and($convertPos)->not->toBeFalse('install() must call convertDatabase')
-		->and($refreshPos)->toBeLessThan($convertPos, 'vendor refresh must run before database conversion');
+	expect(strpos($body, 'DependencyPreflight'))->toBeLessThan(strpos($body, '$this->setCSRFSecret()'))
+		->and($source)->not->toContain('refreshVendorDependencies', '--dry-run', 'Refreshing Composer dependencies');
 });
 
-test('vendor refresh bails out without a configured composer binary', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
-
-	$fnPos = strpos($src, 'private function refreshVendorDependencies()');
-	expect($fnPos)->not->toBeFalse('refreshVendorDependencies must exist');
-
-	$fnEnd = strpos($src, "\n\tprivate function", $fnPos + 1);
-	$body  = substr($src, $fnPos, ($fnEnd === false ? strlen($src) : $fnEnd) - $fnPos);
-
-	expect(preg_match('/read_config_option\(\s*\'path_composer\'/', $body))->toBe(1, 'must read path_composer')
-		->and(preg_match('/empty\(\$composer\)|file_exists\(\$composer\)/', $body))->toBe(1, 'must bail without a usable binary')
-		->and(strpos($body, '--dry-run'))->not->toBeFalse('must dry-run before touching the tree')
-		->and(strpos($body, 'is_resource_writable'))->not->toBeFalse('must check vendor writability before running composer')
-		->and(strpos($body, 'addError'))->toBeFalse('refresh must never fail the install');
-});
-
-test('global bootstrap permits the installer to repair a missing vendor tree', function () use ($root) {
-	$src = file_get_contents($root . '/include/global.php');
-
-	expect($src)->not->toBeFalse()
-		->and(strpos($src, "!defined('IN_CACTI_INSTALL')"))->not->toBeFalse()
-		->and(strpos($src, 'if (is_file($vendor_autoload))'))->not->toBeFalse();
-});
-
-test('refresh gating requires pure installs', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
-
-	$pattern = '/Package operations: \(\\\\d\+\) installs\?, \(\\\\d\+\) updates\?, \(\\\\d\+\) removals\?/';
-	expect(preg_match($pattern, $src))->toBe(1,
-		'refresh must parse the dry-run operations summary')
-		->and(preg_match('/\$ops\[1\] == 0 \|\| \$ops\[2\] > 0 \|\| \$ops\[3\] > 0/', $src))->toBe(1,
-			'refresh must skip when there are no installs or any updates/removals');
+test('all installer transports check dependencies before application bootstrap', function () use ($root) {
+	foreach (['cli/install_cacti.php', 'cli/upgrade_database.php', 'install/background.php', 'install/install.php', 'install/step_json.php'] as $file) {
+		$source    = file_get_contents($root . '/' . $file);
+		$preflight = strpos($source, 'preflight.php');
+		$bootstrap = strpos($source, $file === 'install/install.php' || $file === 'install/step_json.php' ? 'include/auth.php' : 'include/cli_check.php');
+		expect($preflight)->not->toBeFalse()->and($preflight)->toBeLessThan($bootstrap);
+	}
 });
