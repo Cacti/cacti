@@ -1,0 +1,185 @@
+{
+    "autoscale": {
+        "command": "- \\\n--imgformat=SVG \\\n--start=1700000000 \\\n--end=1700003600 \\\n--pango-markup  \\\n--disable-rrdtool-tag  \\\n--height=120 \\\n--width=500 \\\n--title='Interface &apos; uplink ' \\\n--vertical-label='Bits per second' \\\n--legend-position 'south' \\\n--legend-direction 'topdown' \\\n--left-axis-formatter 'numeric' \\\n--right-axis-formatter 'numeric' \\\n--alt-autoscale \\\nCOMMENT:\"From 2023/11/14 22\\:13\\:20 To 2023/11/14 23\\:13\\:20\\c\" \\\nCOMMENT:\"  \\n\" \\\n--color BACK#F3F3F3 \\\n--color CANVAS#FDFDFD \\\n--color SHADEA#CBCBCB \\\n--color SHADEB#999999 \\\n--color FONT#000000 \\\n--color AXIS#2C4D43 \\\n--color ARROW#2C4D43 \\\n--color FRAME#2C4D43 \\\n--border 1 \\\n--font TITLE:10:'DejaVu Sans' \\\n--font AXIS:10:'DejaVu Sans' \\\n--font LEGEND:10:'DejaVu Sans' \\\n--font UNIT:10:'DejaVu Sans' \\\n--font WATERMARK:10:'DejaVu Sans' \\\n--watermark 'Cacti graph' \\\n",
+        "graph": {
+            "auto_scale": "on",
+            "auto_scale_opts": "1",
+            "lower_limit": "0",
+            "upper_limit": "100",
+            "auto_scale_log": "",
+            "scale_log_units": "",
+            "auto_scale_rigid": "",
+            "unit_value": "",
+            "unit_exponent_value": "",
+            "height": "120",
+            "width": "500",
+            "image_format_id": 3,
+            "title_cache": "Interface ' uplink |host_snmp_password|",
+            "vertical_label": "Bits per second",
+            "legend_position": "south",
+            "legend_direction": "topdown",
+            "left_axis_formatter": "numeric",
+            "right_axis_formatter": "numeric"
+        },
+        "options": {
+            "graph_theme": "modern",
+            "graph_start": 1700000000,
+            "graph_end": 1700003600
+        }
+    },
+    "autoscale maximum": {
+        "command": "- \\\n--imgformat=SVG \\\n--start=1700000000 \\\n--end=1700003600 \\\n--pango-markup  \\\n--disable-rrdtool-tag  \\\n--height=120 \\\n--width=500 \\\n--title='Interface &apos; uplink ' \\\n--vertical-label='Bits per second' \\\n--legend-position 'south' \\\n--legend-direction 'topdown' \\\n--left-axis-formatter 'numeric' \\\n--right-axis-formatter 'numeric' \\\n--alt-autoscale-max \\\n--lower-limit='0' \\\nCOMMENT:\"From 2023/11/14 22\\:13\\:20 To 2023/11/14 23\\:13\\:20\\c\" \\\nCOMMENT:\"  \\n\" \\\n--color BACK#F3F3F3 \\\n--color CANVAS#FDFDFD \\\n--color SHADEA#CBCBCB \\\n--color SHADEB#999999 \\\n--color FONT#000000 \\\n--color AXIS#2C4D43 \\\n--color ARROW#2C4D43 \\\n--color FRAME#2C4D43 \\\n--border 1 \\\n--font TITLE:10:'DejaVu Sans' \\\n--font AXIS:10:'DejaVu Sans' \\\n--font LEGEND:10:'DejaVu Sans' \\\n--font UNIT:10:'DejaVu Sans' \\\n--font WATERMARK:10:'DejaVu Sans' \\\n--watermark 'Cacti graph' \\\n",
+        "graph": {
+            "auto_scale": "on",
+            "auto_scale_opts": "2",
+            "lower_limit": "0",
+            "upper_limit": "100",
+            "auto_scale_log": "",
+            "scale_log_units": "",
+            "auto_scale_rigid": "",
+            "unit_value": "",
+            "unit_exponent_value": "",
+            "height": "120",
+            "width": "500",
+            "image_format_id": 3,
+            "title_cache": "Interface ' uplink |host_snmp_password|",
+            "vertical_label": "Bits per second",
+            "legend_position": "south",
+            "legend_direction": "topdown",
+            "left_axis_formatter": "numeric",
+            "right_axis_formatter": "numeric"
+        },
+        "options": {
+            "graph_theme": "modern",
+            "graph_start": 1700000000,
+            "graph_end": 1700003600
+        }
+    },
+    "autoscale minimum": {
+        "command": "- \\\n--imgformat=SVG \\\n--start=1700000000 \\\n--end=1700003600 \\\n--pango-markup  \\\n--disable-rrdtool-tag  \\\n--height=120 \\\n--width=500 \\\n--title='Interface &apos; uplink ' \\\n--vertical-label='Bits per second' \\\n--legend-position 'south' \\\n--legend-direction 'topdown' \\\n--left-axis-formatter 'numeric' \\\n--right-axis-formatter 'numeric' \\\n--alt-autoscale-min \\\n--upper-limit='100' \\\nCOMMENT:\"From 2023/11/14 22\\:13\\:20 To 2023/11/14 23\\:13\\:20\\c\" \\\nCOMMENT:\"  \\n\" \\\n--color BACK#F3F3F3 \\\n--color CANVAS#FDFDFD \\\n--color SHADEA#CBCBCB \\\n--color SHADEB#999999 \\\n--color FONT#000000 \\\n--color AXIS#2C4D43 \\\n--color ARROW#2C4D43 \\\n--color FRAME#2C4D43 \\\n--border 1 \\\n--font TITLE:10:'DejaVu Sans' \\\n--font AXIS:10:'DejaVu Sans' \\\n--font LEGEND:10:'DejaVu Sans' \\\n--font UNIT:10:'DejaVu Sans' \\\n--font WATERMARK:10:'DejaVu Sans' \\\n--watermark 'Cacti graph' \\\n",
+        "graph": {
+            "auto_scale": "on",
+            "auto_scale_opts": "3",
+            "lower_limit": "0",
+            "upper_limit": "100",
+            "auto_scale_log": "",
+            "scale_log_units": "",
+            "auto_scale_rigid": "",
+            "unit_value": "",
+            "unit_exponent_value": "",
+            "height": "120",
+            "width": "500",
+            "image_format_id": 3,
+            "title_cache": "Interface ' uplink |host_snmp_password|",
+            "vertical_label": "Bits per second",
+            "legend_position": "south",
+            "legend_direction": "topdown",
+            "left_axis_formatter": "numeric",
+            "right_axis_formatter": "numeric"
+        },
+        "options": {
+            "graph_theme": "modern",
+            "graph_start": 1700000000,
+            "graph_end": 1700003600
+        }
+    },
+    "autoscale limits": {
+        "command": "- \\\n--imgformat=SVG \\\n--start=1700000000 \\\n--end=1700003600 \\\n--pango-markup  \\\n--disable-rrdtool-tag  \\\n--height=120 \\\n--width=500 \\\n--title='Interface &apos; uplink ' \\\n--vertical-label='Bits per second' \\\n--legend-position 'south' \\\n--legend-direction 'topdown' \\\n--left-axis-formatter 'numeric' \\\n--right-axis-formatter 'numeric' \\\n--alt-autoscale \\\n--upper-limit='100' \\\n--lower-limit='-50' \\\nCOMMENT:\"From 2023/11/14 22\\:13\\:20 To 2023/11/14 23\\:13\\:20\\c\" \\\nCOMMENT:\"  \\n\" \\\n--color BACK#F3F3F3 \\\n--color CANVAS#FDFDFD \\\n--color SHADEA#CBCBCB \\\n--color SHADEB#999999 \\\n--color FONT#000000 \\\n--color AXIS#2C4D43 \\\n--color ARROW#2C4D43 \\\n--color FRAME#2C4D43 \\\n--border 1 \\\n--font TITLE:10:'DejaVu Sans' \\\n--font AXIS:10:'DejaVu Sans' \\\n--font LEGEND:10:'DejaVu Sans' \\\n--font UNIT:10:'DejaVu Sans' \\\n--font WATERMARK:10:'DejaVu Sans' \\\n--watermark 'Cacti graph' \\\n",
+        "graph": {
+            "auto_scale": "on",
+            "auto_scale_opts": "4",
+            "lower_limit": "-50",
+            "upper_limit": "100",
+            "auto_scale_log": "",
+            "scale_log_units": "",
+            "auto_scale_rigid": "",
+            "unit_value": "",
+            "unit_exponent_value": "",
+            "height": "120",
+            "width": "500",
+            "image_format_id": 3,
+            "title_cache": "Interface ' uplink |host_snmp_password|",
+            "vertical_label": "Bits per second",
+            "legend_position": "south",
+            "legend_direction": "topdown",
+            "left_axis_formatter": "numeric",
+            "right_axis_formatter": "numeric"
+        },
+        "options": {
+            "graph_theme": "modern",
+            "graph_start": 1700000000,
+            "graph_end": 1700003600
+        }
+    },
+    "fixed logarithmic": {
+        "command": "- \\\n--imgformat=SVG \\\n--start=1700000000 \\\n--end=1700003600 \\\n--pango-markup  \\\n--disable-rrdtool-tag  \\\n--y-grid='10:1' \\\n--units-exponent=3 \\\n--height=120 \\\n--width=500 \\\n--title='Interface &apos; uplink ' \\\n--vertical-label='Bits per second' \\\n--legend-position 'south' \\\n--legend-direction 'topdown' \\\n--left-axis-formatter 'numeric' \\\n--right-axis-formatter 'numeric' \\\n--slope-mode \\\n--alt-y-grid \\\n--right-axis '1:0' \\\n--right-axis-label 'Secondary '\\'' label' \\\n--right-axis-format '%8.2lf' \\\n--left-axis-format '%6.1lf' \\\n--rigid \\\n--upper-limit='100' \\\n--lower-limit='0' \\\n--logarithmic \\\n--units=si \\\n--y-grid='10:1' \\\n--units-exponent='3' \\\nCOMMENT:\"From 2023/11/14 22\\:13\\:20 To 2023/11/14 23\\:13\\:20\\c\" \\\nCOMMENT:\"  \\n\" \\\n--color BACK#F3F3F3 \\\n--color CANVAS#FDFDFD \\\n--color SHADEA#CBCBCB \\\n--color SHADEB#999999 \\\n--color FONT#000000 \\\n--color AXIS#2C4D43 \\\n--color ARROW#2C4D43 \\\n--color FRAME#2C4D43 \\\n--border 1 \\\n--font TITLE:10:'DejaVu Sans' \\\n--font AXIS:10:'DejaVu Sans' \\\n--font LEGEND:10:'DejaVu Sans' \\\n--font UNIT:10:'DejaVu Sans' \\\n--font WATERMARK:10:'DejaVu Sans' \\\n--watermark 'Cacti graph' \\\n",
+        "graph": {
+            "auto_scale": "",
+            "auto_scale_opts": "1",
+            "lower_limit": "0",
+            "upper_limit": "100",
+            "auto_scale_log": "on",
+            "scale_log_units": "on",
+            "auto_scale_rigid": "on",
+            "unit_value": "10:1",
+            "unit_exponent_value": "3",
+            "height": "120",
+            "width": "500",
+            "image_format_id": 3,
+            "title_cache": "Interface ' uplink |host_snmp_password|",
+            "vertical_label": "Bits per second",
+            "legend_position": "south",
+            "legend_direction": "topdown",
+            "left_axis_formatter": "numeric",
+            "right_axis_formatter": "numeric",
+            "slope_mode": "on",
+            "alt_y_grid": "on",
+            "right_axis": "1:0",
+            "right_axis_label": "Secondary ' label",
+            "right_axis_format": 1,
+            "right_axis_format_text": "%8.2lf %s",
+            "left_axis_format": 1,
+            "left_axis_format_text": "%6.1lf"
+        },
+        "options": {
+            "graph_theme": "modern",
+            "graph_start": 1700000000,
+            "graph_end": 1700003600
+        }
+    },
+    "export PNG and overrides": {
+        "command": "'/tmp/graph '\\'' export.png' \\\n--imgformat=PNG \\\n--start=1700000000 \\\n--end=1700003600 \\\n--pango-markup  \\\n--disable-rrdtool-tag  \\\n--height=240 \\\n--width=800 \\\n--title='Interface &apos; uplink ' \\\n--vertical-label='Bits per second' \\\n--legend-position 'south' \\\n--legend-direction 'topdown' \\\n--left-axis-formatter 'numeric' \\\n--right-axis-formatter 'numeric' \\\n--alt-autoscale \\\n--no-legend \\\nCOMMENT:\"From 2023/11/14 22\\:13\\:20 To 2023/11/14 23\\:13\\:20\\c\" \\\nCOMMENT:\"  \\n\" \\\n--color BACK#F3F3F3 \\\n--color CANVAS#FDFDFD \\\n--color SHADEA#CBCBCB \\\n--color SHADEB#999999 \\\n--color FONT#000000 \\\n--color AXIS#2C4D43 \\\n--color ARROW#2C4D43 \\\n--color FRAME#2C4D43 \\\n--border 1 \\\n--font TITLE:7:'DejaVu Sans' \\\n--font AXIS:10:'DejaVu Sans' \\\n--font LEGEND:10:'DejaVu Sans' \\\n--font UNIT:10:'DejaVu Sans' \\\n--font WATERMARK:10:'DejaVu Sans' \\\n--watermark 'Cacti graph' \\\n",
+        "graph": {
+            "auto_scale": "on",
+            "auto_scale_opts": "1",
+            "lower_limit": "0",
+            "upper_limit": "100",
+            "auto_scale_log": "",
+            "scale_log_units": "",
+            "auto_scale_rigid": "",
+            "unit_value": "",
+            "unit_exponent_value": "",
+            "height": "120",
+            "width": "500",
+            "image_format_id": 1,
+            "title_cache": "Interface ' uplink |host_snmp_password|",
+            "vertical_label": "Bits per second",
+            "legend_position": "south",
+            "legend_direction": "topdown",
+            "left_axis_formatter": "numeric",
+            "right_axis_formatter": "numeric"
+        },
+        "options": {
+            "graph_theme": "modern",
+            "graph_start": 1700000000,
+            "graph_end": 1700003600,
+            "export": true,
+            "export_filename": "/tmp/graph ' export.png",
+            "image_format": "png",
+            "graph_height": "240",
+            "graph_width": "800",
+            "graph_nolegend": "on",
+            "graphv": true
+        }
+    }
+}
