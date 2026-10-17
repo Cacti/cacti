@@ -3628,6 +3628,9 @@ class Installer implements JsonSerializable {
 			log_install_always('', __('No templates were selected for import'));
 		}
 
+		require_once(__DIR__ . '/traffic_legend.php');
+		upgrade_interface_traffic_legends();
+
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
 
 		return '';
