@@ -166,7 +166,7 @@
 
 		function zoomGetElement(zoom) {
 			var id = '#' + zoom.image.reference;
-			if (zoom.image.rra_id > 0) {
+			if (/^[0-9]+$/.test(zoom.image.rra_id)) {
 				id += '[rra_id=\'' + zoom.image.rra_id + '\']';
 			}
 			return id;
@@ -174,7 +174,7 @@
 
 		function zoomGetImageId(image) {
 			var id = image.attr('id');
-			if (image.attr('rra_id') > 0) {
+			if (/^[0-9]+$/.test(image.attr('rra_id'))) {
 				id += '_rra' + image.attr('rra_id');
 			}
 			return id;
@@ -182,7 +182,7 @@
 
 		function zoomGetId(zoom) {
 			var id = zoom.image.reference;
-			if (zoom.image.rra_id > 0) {
+			if (/^[0-9]+$/.test(zoom.image.rra_id)) {
 				id += '_rra' + zoom.image.rra_id;
 			}
 			return id;
