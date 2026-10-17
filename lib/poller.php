@@ -1781,10 +1781,10 @@ function poller_connect_to_remote(int $poller_id) : mixed {
 			$cinfo['dbport'],
 			$cinfo['dbretries'],
 			$cinfo['dbssl'],
-			$cinfo['dbsslkey'],
-			$cinfo['dbsslcert'],
-			$cinfo['dbsslca'],
-			$cinfo['dbsslcapath'],
+			$cinfo['dbsslkey'] ?? '',
+			$cinfo['dbsslcert'] ?? '',
+			$cinfo['dbsslca'] ?? '',
+			$cinfo['dbsslcapath'] ?? '',
 			$cinfo['dbsslverifyservercert']);
 
 		if (!is_object($rcnn_id)) {

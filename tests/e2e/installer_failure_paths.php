@@ -36,6 +36,14 @@ function installer_fixture_check(bool $condition, string $message) : void {
 }
 
 $scenario = $_SERVER['argv'][1] ?? '';
+
+// These child processes execute deliberately modified production files. Their
+// injected code must not count as coverage of the checked-in implementation.
+if (in_array($scenario, ['schema-postcondition', 'collector-exception'], true)) {
+	putenv('CACTI_PR_RAW_COVERAGE=');
+	$_ENV['CACTI_PR_RAW_COVERAGE']    = '';
+	$_SERVER['CACTI_PR_RAW_COVERAGE'] = '';
+}
 $key      = "$database_hostname:$database_port:$database_default";
 $pdo      = $database_sessions[$key];
 $version  = db_fetch_cell('SELECT cacti FROM version');
@@ -108,7 +116,7 @@ try {
 		installer_fixture_check($status !== 0 && str_contains(implode(PHP_EOL, $output), 'not found'), 'Forced replay swallowed a genuine migration failure');
 		installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === CACTI_VERSION_FULL, 'Failed replay downgraded the installed version');
 		installer_fixture_check((int) db_fetch_cell("SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master'") === 0, 'Failed replay retained the installer lock');
-	} elseif (in_array($scenario, ['upgrade-warning', 'cli-failure'], true)) {
+	} elseif (in_array($scenario, ['upgrade-warning', 'upgrade-report', 'cli-failure'], true)) {
 		foreach (['1_2_29', '1_2_30'] as $target) {
 			$path           = CACTI_PATH_INSTALL . '/upgrades/' . $target . '.php';
 			$backups[$path] = is_file($path) ? file_get_contents($path) : false;
@@ -117,39 +125,62 @@ try {
 		file_put_contents(CACTI_PATH_INSTALL . '/upgrades/1_2_30.php', '<?php function upgrade_to_1_2_30(): void { db_install_execute("SELECT 1"); }');
 		db_execute("UPDATE version SET cacti = '1.2.28'");
 
-		if ($scenario === 'upgrade-warning') {
+		if (in_array($scenario, ['upgrade-warning', 'upgrade-report'], true)) {
+			if ($scenario === 'upgrade-report') {
+				file_put_contents(CACTI_PATH_INSTALL . '/upgrades/1_2_29.php', '<?php function upgrade_to_1_2_29(): void { db_install_execute("SELECT 1"); }');
+			}
 			$cacti_version_codes = array_intersect_key($cacti_version_codes, array_flip(['1.2.29', '1.2.30']));
 			$reflection          = new ReflectionClass(Installer::class);
 			$installer           = $reflection->newInstanceWithoutConstructor();
 			$reflection->getProperty('old_cacti_version')->setValue($installer, '1.2.28');
+			$reflection->getProperty('runReport')->setValue($installer, new \Cacti\Installer\RunReport());
 			$error = $reflection->getMethod('upgradeDatabase')->invoke($installer);
-			installer_fixture_check($error !== '', 'Incomplete migration reported success');
+			installer_fixture_check(($error === '') === ($scenario === 'upgrade-report'), 'Migration success was reported incorrectly');
+			$report = json_decode(read_config_option('maintenance_lastrun_installer_report', true), true, flags: JSON_THROW_ON_ERROR);
+			installer_fixture_check(array_column($report['operations'], 'version') === ($scenario === 'upgrade-report' ? ['1.2.29', '1.2.30'] : ['1.2.29']), 'Installer report omitted the migration versions');
+			installer_fixture_check($report['operations'][0]['succeeded'] === ($scenario === 'upgrade-report'), 'Installer report lost the failed migration');
 		} else {
 			$output = [];
 			exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(CACTI_PATH_CLI . '/upgrade_database.php') . ' --forcever=1.2.28 2>&1', $output, $status);
 			installer_fixture_check($status !== 0, 'CLI migration failure returned success');
 			installer_fixture_check(str_contains(implode(PHP_EOL, $output), 'not found'), 'CLI fixture did not exercise the missing migration');
 		}
-		installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === '1.2.28', 'Incomplete migration advanced the recorded version');
-	} elseif ($scenario === 'composer-failure') {
-		$composer = tempnam(sys_get_temp_dir(), 'installer-composer-');
-		installer_fixture_check($composer !== false, 'Could not create Composer fixture');
-		file_put_contents($composer, '#!' . PHP_BINARY . PHP_EOL . '<?php if (in_array("--dry-run", $argv, true)) { echo "Package operations: 1 install, 0 updates, 0 removals\n"; exit(0); } echo "download failed\n"; exit(7);');
-		chmod($composer, 0700);
-		set_config_option('path_composer', $composer);
-		$logPath = read_config_option('path_cactilog');
 
-		if ($logPath === '') {
-			$logPath = CACTI_PATH_LOG . '/cacti.log';
+		if ($scenario !== 'upgrade-report') {
+			installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === '1.2.28', 'Incomplete migration advanced the recorded version');
 		}
-		$offset     = is_file($logPath) ? filesize($logPath) : 0;
-		$reflection = new ReflectionClass(Installer::class);
-		$installer  = $reflection->newInstanceWithoutConstructor();
-		$reflection->getMethod('refreshVendorDependencies')->invoke($installer);
-		$log = substr(file_get_contents($logPath), $offset);
-		installer_fixture_check(str_contains($log, 'Composer refresh did not complete'), 'Failed Composer command did not log a warning');
-		installer_fixture_check(!str_contains($log, 'Composer dependencies refreshed.'), 'Failed Composer command reported success');
-		unlink($composer);
+	} elseif ($scenario === 'dependency-preflight') {
+		$asset           = CACTI_PATH_INCLUDE . '/js/jquery.js';
+		$backups[$asset] = file_get_contents($asset);
+		unlink($asset);
+		$before = db_fetch_cell('SELECT cacti FROM version');
+		$result = (new \Cacti\Installer\CommandRunner())->run([PHP_BINARY, CACTI_PATH_CLI . '/install_cacti.php', '--accept-eula', '--install', '--force']);
+		installer_fixture_check($result['exitCode'] !== 0, 'Missing frontend asset did not block installation');
+		installer_fixture_check(str_contains(implode(PHP_EOL, $result['output']), 'jquery.js'), 'Preflight omitted actionable asset details');
+		installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === $before, 'Dependency failure changed the installed version');
+	} elseif ($scenario === 'schema-postcondition') {
+		$path           = CACTI_PATH_INSTALL . '/upgrades/1_3_0.php';
+		$backups[$path] = file_get_contents($path);
+		$changed        = preg_replace("/^\\s*db_install_add_column\\('data_template', \\['name' => 'templates'.*\\);\\R/m", '', $backups[$path], 1, $changes);
+		installer_fixture_check($changes === 1 && is_string($changed), 'Schema fixture did not find the template column migration');
+		file_put_contents($path, $changed);
+		$result = (new \Cacti\Installer\CommandRunner())->run([PHP_BINARY, CACTI_PATH_CLI . '/upgrade_database.php', '--forcever=' . $version]);
+		installer_fixture_check($result['exitCode'] !== 0, 'Missing schema postcondition returned CLI success');
+		installer_fixture_check(str_contains(implode(PHP_EOL, $result['output']), 'Missing required columns: data_template.templates'), 'CLI omitted the missing column diagnosis');
+		installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') !== CACTI_VERSION_FULL, 'Incomplete schema advanced to the target version');
+		$report = json_decode((string) read_config_option('maintenance_lastrun_installer_report', true), true);
+		installer_fixture_check(($report['state'] ?? '') === 'failed', 'Missing schema did not preserve failed diagnostics');
+	} elseif ($scenario === 'collector-exception') {
+		$path           = CACTI_PATH_LIBRARY . '/installer.php';
+		$backups[$path] = file_get_contents($path);
+		$changed        = str_replace('static fn () => Installer::fullSyncDataCollectors()', "static fn () => throw new RuntimeException('Installer collector fixture')", $backups[$path], $changes);
+		installer_fixture_check($changes === 1, 'Collector exception fixture did not find its injection boundary');
+		file_put_contents($path, $changed);
+		$result = (new \Cacti\Installer\CommandRunner())->run([PHP_BINARY, CACTI_PATH_CLI . '/install_cacti.php', '--accept-eula', '--install', '--force', '--path=php_binary:' . PHP_BINARY]);
+		installer_fixture_check($result['exitCode'] !== 0, 'Unexpected collector exception returned CLI success');
+		$report = json_decode((string) read_config_option('maintenance_lastrun_installer_report', true), true);
+		installer_fixture_check(($report['state'] ?? '') === 'failed', 'Collector exception did not preserve failed diagnostics');
+		installer_fixture_check((int) db_fetch_cell("SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master'") === 0, 'Collector exception retained the installer lock');
 	} elseif ($scenario === 'installer-lock') {
 		installer_fixture_check(register_process_start('install', 'master', 0, 86400), 'Could not register lock fixture');
 		set_config_option('install_eula', 'lock-owner-fixture');

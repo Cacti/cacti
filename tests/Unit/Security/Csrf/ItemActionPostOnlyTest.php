@@ -220,5 +220,5 @@ test('the data template add button submits its guarded action by POST', function
 	expect($data_templates)->toContain("'data_url' => 'data_templates.php?action=rrd_add&id='")
 		->and($html)->toContain("isset(\$icon['data_url'])")
 		->and($html)->toContain("html_escape_url(\$icon['data_url'])")
-		->and($html)->toContain("linkOverDark cactiPostAction");
+		->and($html)->toContain('linkOverDark cactiPostAction');
 });
