@@ -34,7 +34,11 @@ services:
     restart: unless-stopped
 
   db:
-    image: mariadb:11.8
+    build:
+      context: .
+      dockerfile: docker/Database.Dockerfile
+      args:
+        DATABASE_IMAGE: mariadb:11.8
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: ${DB_NAME:-cacti}
@@ -45,7 +49,6 @@ services:
       - "127.0.0.1:${DB_PORT:-3306}:3306"
     volumes:
       - cacti_db:/var/lib/mysql
-      - ./cacti.sql:/docker-entrypoint-initdb.d/cacti.sql:ro
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci

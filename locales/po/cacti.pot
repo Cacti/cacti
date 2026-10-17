@@ -1739,7 +1739,7 @@ msgstr ""
 msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr ""
 
-#: automation_networks.php lib/html_filter.php
+#: automation_networks.php include/global_settings.php lib/html_filter.php
 #, php-format
 msgid "%d Minute"
 msgstr ""
@@ -1751,6 +1751,7 @@ msgid "%d Minutes"
 msgstr ""
 
 #: automation_networks.php include/global_arrays.php
+#: include/global_settings.php
 #, php-format
 msgid "%d Hour"
 msgstr ""
@@ -10508,6 +10509,10 @@ msgid "Device Defaults"
 msgstr ""
 
 #: include/global_settings.php
+msgid "Queue"
+msgstr ""
+
+#: include/global_settings.php
 msgid "Scheduler"
 msgstr ""
 
@@ -12194,6 +12199,50 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "24 Hour Guarded Poller Ratio average/max Runtime"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Asynchronous Queue"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Default Queue Transport"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The registered transport used when a queue has no explicit route."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Queue Transport Routes"
+msgstr ""
+
+#: include/global_settings.php
+msgid "A JSON object mapping queue names to registered transport names."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Queue Visibility Lease"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The default number of seconds a database message remains reserved."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Completed Message Retention"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The number of days completed database messages are retained."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Dead Message Retention"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The number of days dead-letter database messages are retained."
 msgstr ""
 
 #: include/global_settings.php
