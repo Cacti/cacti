@@ -689,7 +689,7 @@ function template_edit() : void {
 		$header_label = __esc('Data Templates [edit: %s]', $template['name']);
 
 		?>
-		<table style='width:100%'>
+		<table role='presentation' style='width:100%'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top;'>
 					<?php print htmle($template['name']); ?>

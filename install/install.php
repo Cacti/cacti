@@ -95,7 +95,7 @@ if ($help != '') {
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang='<?php print html_escape_attr(CACTI_LOCALE); ?>'>
 <head>
 <?php
 
@@ -139,7 +139,7 @@ if ($hasEverything) {
 ?>
 			</div>
 			<div class='cactiInstallLoader' id='installLoader'>
-				<div class='cactiInstallLoaderLogo'><img src='../images/cacti_logo.svg' /></div>
+				<div class='cactiInstallLoaderLogo'><img src='../images/cacti_logo.svg' alt='Cacti' /></div>
 				<div class='cactiInstallLoaderSpinnerTheme cactiInstallLoaderSpinner'></div>
 			</div>
 		</div>
