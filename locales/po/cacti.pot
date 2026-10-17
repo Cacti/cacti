@@ -25484,6 +25484,42 @@ msgstr ""
 msgid "Invalid RRDtool axis option."
 msgstr ""
 
+msgid "Queue"
+msgstr ""
+
+msgid "Asynchronous Queue"
+msgstr ""
+
+msgid "Default Queue Transport"
+msgstr ""
+
+msgid "The registered transport used when a queue has no explicit route."
+msgstr ""
+
+msgid "Queue Transport Routes"
+msgstr ""
+
+msgid "A JSON object mapping queue names to registered transport names."
+msgstr ""
+
+msgid "Queue Visibility Lease"
+msgstr ""
+
+msgid "The default number of seconds a database message remains reserved."
+msgstr ""
+
+msgid "Completed Message Retention"
+msgstr ""
+
+msgid "The number of days completed database messages are retained."
+msgstr ""
+
+msgid "Dead Message Retention"
+msgstr ""
+
+msgid "The number of days dead-letter database messages are retained."
+msgstr ""
+
 #: plugins.php
 #, php-format
 msgid "Plugin '%s' passed its configuration check and can be enabled."
