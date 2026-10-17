@@ -719,7 +719,7 @@ function data_query_item_edit() : void {
 						form_alternate_row();
 						?>
 						<td>
-							<table>
+							<table role='presentation'>
 								<tr>
 									<td style='width:200px;'>
 										<?php print __('Data Source'); ?>
@@ -831,16 +831,16 @@ function data_query_item_edit() : void {
 		form_alternate_row();
 		?>
 		<td colspan='4'>
-			<table>
+			<table role='presentation'>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Field Name'); ?>
+						<label for='svg_field'><?php print __('Field Name'); ?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_field' size='15'>
 					</td>
 					<td class='nowrap'>
-						<?php print __('Suggested Value'); ?>
+						<label for='svg_text'><?php print __('Suggested Value'); ?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_text' size='60'>
@@ -940,16 +940,16 @@ function data_query_item_edit() : void {
 				form_alternate_row();
 				?>
 				<td colspan='4'>
-					<table>
+					<table role='presentation'>
 						<tr>
 							<td class='nowrap'>
-								<?php print __('Field Name'); ?>
+								<label for='svds_<?php print $data_template['id']; ?>_field'><?php print __('Field Name'); ?></label>
 							</td>
 							<td>
 								<input type='text' class='svds_field ui-state-default ui-corner-all' id='svds_<?php print $data_template['id']; ?>_field' size='15'>
 							</td>
 							<td class='nowrap'>
-								<?php print __('Suggested Value'); ?>
+								<label for='svds_<?php print $data_template['id']; ?>_text'><?php print __('Suggested Value'); ?></label>
 							</td>
 							<td>
 								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print $data_template['id']; ?>_text' size='60'>
