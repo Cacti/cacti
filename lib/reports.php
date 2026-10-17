@@ -172,14 +172,20 @@ function reports_add_devices(int $report_id, array $device_ids, array $timespan,
 						]
 					);
 
-					raise_message('reports_add_device_' . $device_id, __esc('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
+					raise_message('reports_add_device_' . $device_id,
+						__esc('Device \'%s\' successfully added to Report.',
+							$description),
+						MESSAGE_LEVEL_INFO);
 				} else {
 					$errors++;
 					raise_message('reports_device_not_found', __('Device not found! Unable to add to Report'), MESSAGE_LEVEL_ERROR);
 				}
 			} else {
 				$errors++;
-				raise_message('reports_no_add_device_' . $device_id, __esc('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
+				raise_message('reports_no_add_device_' . $device_id,
+					__esc('Device \'%s\' not added to Report as it already exists on report.',
+						$description),
+					MESSAGE_LEVEL_WARN);
 			}
 		}
 
@@ -321,7 +327,19 @@ function reports_date_time_format() : string {
  */
 function reports_interval_start(int $interval, int $count, int $offset, int $timestamp) : int {
 	global $reports_interval;
-	reports_log(__FUNCTION__ . ', interval: ' . $reports_interval[$interval] . ' count: ' . $count . ' offset: ' . $offset . ' timestamp: ' . date('Y/m/d H:i:s', $timestamp), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+	reports_log(__FUNCTION__ .
+		', interval: ' .
+		$reports_interval[$interval] .
+		' count: ' .
+		$count .
+		' offset: ' .
+		$offset .
+		' timestamp: ' .
+		date('Y/m/d H:i:s',
+			$timestamp),
+		false,
+		'REPORTS TRACE',
+		POLLER_VERBOSITY_MEDIUM);
 
 	switch ($interval) {
 		case REPORTS_SCHED_INTVL_MINUTE:
@@ -359,11 +377,32 @@ function reports_interval_start(int $interval, int $count, int $offset, int $tim
 
 			$date_str     = '+' . $count . ' months';
 			$month_base   = (int) strtotime($date_str, $timestamp);
-			$new_month    = mktime((int) date('H', $month_base), (int) date('i', $month_base), (int) date('s', $month_base), (int) date('m', $month_base), 1, (int) date('Y', $month_base));
+			$new_month    = mktime((int) date('H',
+				$month_base),
+				(int) date('i',
+					$month_base),
+				(int) date('s',
+					$month_base),
+				(int) date('m',
+					$month_base),
+				1,
+				(int) date('Y',
+					$month_base));
 
 			$date_str     = '+' . ($nth_weekday - 1) . ' week ' . $weekday;
 			$base         = (int) strtotime($date_str, $new_month);
-			$ts           = mktime((int) date('H', $month_base), (int) date('i', $month_base), (int) date('s', $month_base), (int) date('m', $base), (int) date('d', $base), (int) date('Y', $base));
+			$ts           = mktime((int) date('H',
+				$month_base),
+				(int) date('i',
+					$month_base),
+				(int) date('s',
+					$month_base),
+				(int) date('m',
+					$base),
+				(int) date('d',
+					$base),
+				(int) date('Y',
+					$base));
 
 			break;
 		case REPORTS_SCHED_INTVL_YEAR:
@@ -425,7 +464,10 @@ function utime_add(int $timestamp, int $yr = 0, int $mon = 0,
  *
  * @return void
  */
-function reports_log(string $string, bool $output = false, string $environ = 'REPORTS', int $level = POLLER_VERBOSITY_NONE) : void {
+function reports_log(string $string,
+	bool $output = false,
+	string $environ = 'REPORTS',
+	int $level = POLLER_VERBOSITY_NONE) : void {
 	// Define REPORTS_DEBUG if not already set
 	if (!defined('REPORTS_DEBUG')) {
 		if (function_exists('read_config_option')) {
@@ -536,7 +578,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 			switch($report['attachment_type']) {
 				case REPORTS_TYPE_INLINE_PNG:
 					$attachments[] = [
-						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
+						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id,
+							'',
+							$graph_data_array,
+							null,
+							$xport_meta,
+							$user)),
 						'filename'       => 'graph_' . $local_graph_id . '.png',
 						'mime_type'      => 'image/png',
 						'local_graph_id' => $local_graph_id,
@@ -547,7 +594,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 					break;
 				case REPORTS_TYPE_INLINE_JPG:
 					$attachments[] = [
-						'attachment'     => base64_encode(png2jpeg(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
+						'attachment'     => base64_encode(png2jpeg(rrdtool_function_graph($local_graph_id,
+							'',
+							$graph_data_array,
+							null,
+							$xport_meta,
+							$user))),
 						'filename'       => 'graph_' . $local_graph_id . '.jpg',
 						'mime_type'      => 'image/jpg',
 						'local_graph_id' => $local_graph_id,
@@ -558,7 +610,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 					break;
 				case REPORTS_TYPE_INLINE_GIF:
 					$attachments[] = [
-						'attachment'     => base64_encode(png2gif(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
+						'attachment'     => base64_encode(png2gif(rrdtool_function_graph($local_graph_id,
+							'',
+							$graph_data_array,
+							null,
+							$xport_meta,
+							$user))),
 						'filename'       => 'graph_' . $local_graph_id . '.gif',
 						'mime_type'      => 'image/gif',
 						'local_graph_id' => $local_graph_id,
@@ -569,7 +626,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 					break;
 				case REPORTS_TYPE_ATTACH_PNG:
 					$attachments[] = [
-						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
+						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id,
+							'',
+							$graph_data_array,
+							null,
+							$xport_meta,
+							$user)),
 						'filename'       => 'graph_' . $local_graph_id . '.png',
 						'mime_type'      => 'image/png',
 						'local_graph_id' => $local_graph_id,
@@ -580,7 +642,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 					break;
 				case REPORTS_TYPE_ATTACH_JPG:
 					$attachments[] = [
-						'attachment'     => base64_encode(png2jpeg(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
+						'attachment'     => base64_encode(png2jpeg(rrdtool_function_graph($local_graph_id,
+							'',
+							$graph_data_array,
+							null,
+							$xport_meta,
+							$user))),
 						'filename'       => 'graph_' . $local_graph_id . '.jpg',
 						'mime_type'      => 'image/jpg',
 						'local_graph_id' => $local_graph_id,
@@ -591,7 +658,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 					break;
 				case REPORTS_TYPE_ATTACH_GIF:
 					$attachments[] = [
-						'attachment'     => base64_encode(png2gif(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
+						'attachment'     => base64_encode(png2gif(rrdtool_function_graph($local_graph_id,
+							'',
+							$graph_data_array,
+							null,
+							$xport_meta,
+							$user))),
 						'filename'       => 'graph_' . $local_graph_id . '.gif',
 						'mime_type'      => 'image/gif',
 						'local_graph_id' => $local_graph_id,
@@ -634,7 +706,18 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 	if ($schedule_id > 0) {
 		$raw_data = $output_raw = $output_text = '';
 
-		reports_log_and_notify($schedule_id, $start_time, 'html', 'reports', $report['id'], $subject, $raw_data, $output_raw, $body, $output_text, $attachments, $headers);
+		reports_log_and_notify($schedule_id,
+			$start_time,
+			'html',
+			'reports',
+			$report['id'],
+			$subject,
+			$raw_data,
+			$output_raw,
+			$body,
+			$output_text,
+			$attachments,
+			$headers);
 
 		$error = '';
 	} else {
@@ -661,9 +744,19 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 
 	if ($error != '') {
 		if (isrv('id')) {
-			raise_message('report_message', __esc('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'', $report['name'], $error), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message',
+				__esc('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'',
+					$report['name'],
+					$error),
+				MESSAGE_LEVEL_ERROR);
 		} else {
-			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
+			reports_log(__FUNCTION__ .
+				", Problems sending Report '" .
+				$report['name'] .
+				"'.  Problem with e-mail Subsystem Error is '$error'",
+				false,
+				'REPORTS',
+				POLLER_VERBOSITY_LOW);
 		}
 
 		return false;
@@ -686,7 +779,10 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
  *
  * @return bool Whether or not the format file was processed correctly
  */
-function reports_load_format_file(string $format_file, mixed &$output, bool &$report_tag = false, mixed &$theme = false) : bool {
+function reports_load_format_file(string $format_file,
+	mixed &$output,
+	bool &$report_tag = false,
+	mixed &$theme = false) : bool {
 	$contents = [];
 
 	if ($format_file == '') {
@@ -879,9 +975,16 @@ function reports_remove_history(int $history_id, int $report_id = 0) : void {
 	if (is_reports_admin() || $report['user_id'] == SESS_USER_ID) {
 		db_execute_prepared('DELETE FROM reports_log WHERE id = ?', [$history_id]);
 
-		raise_message('remove_message', __esc('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.', $report['name'], get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_INFO);
+		raise_message('remove_message',
+			__esc('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.',
+				$report['name'],
+				get_username($_SESSION[SESS_USER_ID])),
+			MESSAGE_LEVEL_INFO);
 	} else {
-		raise_message('remove_error', __esc('Only the owning user \'%s\' or a Report Administrator can remove the report.', get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_ERROR);
+		raise_message('remove_error',
+			__esc('Only the owning user \'%s\' or a Report Administrator can remove the report.',
+				get_username($_SESSION[SESS_USER_ID])),
+			MESSAGE_LEVEL_ERROR);
 	}
 }
 
@@ -950,7 +1053,10 @@ function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STD
 		$include_body = true;
 	}
 
-	reports_log(__FUNCTION__ . ', items found: ' . cacti_sizeof($reports_items), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+	reports_log(__FUNCTION__ . ', items found: ' . cacti_sizeof($reports_items),
+		false,
+		'REPORTS TRACE',
+		POLLER_VERBOSITY_MEDIUM);
 
 	if (cacti_sizeof($reports_items)) {
 		if ($output == REPORTS_OUTPUT_EMAIL && $include_body) {
@@ -960,7 +1066,10 @@ function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STD
 		if ($format_ok) {
 			$outstr .= "\t<table class='report_table'>" . PHP_EOL;
 		} else {
-			$outstr .= "\t<table class='report_table' " . ($output == REPORTS_OUTPUT_STDOUT ? "style='background-color:#F9F9F9;'" : '') . '>' . PHP_EOL;
+			$outstr .= "\t<table class='report_table' " .
+				($output == REPORTS_OUTPUT_STDOUT ? "style='background-color:#F9F9F9;'" : '') .
+				'>' .
+				PHP_EOL;
 		}
 
 		$outstr .= "\t\t<tr class='title_row'>" . PHP_EOL;
@@ -968,7 +1077,12 @@ function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STD
 		if ($format_ok) {
 			$outstr .= "\t\t\t<td class='title'>" . PHP_EOL;
 		} else {
-			$outstr .= "\t\t\t<td class='title' style='text-align:" . $alignment[$report['alignment']] . ';font-size:' . $report['font_size'] . "pt;'>" . PHP_EOL;
+			$outstr .= "\t\t\t<td class='title' style='text-align:" .
+				$alignment[$report['alignment']] .
+				';font-size:' .
+				$report['font_size'] .
+				"pt;'>" .
+				PHP_EOL;
 		}
 
 		$outstr .= "\t\t\t\t<h3>" . htmle($report['name']) . '</h3>' . PHP_EOL;
@@ -987,7 +1101,10 @@ function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STD
 		$column = 0;
 
 		foreach ($reports_items as $item) {
-			reports_log(__FUNCTION__ . ', item_id: ' . $item['id'] . ' local_graph_id: ' . $item['local_graph_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+			reports_log(__FUNCTION__ . ', item_id: ' . $item['id'] . ' local_graph_id: ' . $item['local_graph_id'],
+				false,
+				'REPORTS TRACE',
+				POLLER_VERBOSITY_MEDIUM);
 
 			if ($item['item_type'] == REPORTS_ITEM_GRAPH) {
 				if (is_graph_allowed($item['local_graph_id'], $report['user_id'])) {
@@ -1039,7 +1156,12 @@ function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STD
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 				} else {
-					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;' class='text'>" . PHP_EOL;
+					$outstr .= "\t\t\t<td style='text-align:" .
+						$alignment[$item['align']] .
+						';font-size: ' .
+						$item['font_size'] .
+						"pt;' class='text'>" .
+						PHP_EOL;
 				}
 
 				$outstr .= "\t\t\t\t" . htmle($item['item_text']) . PHP_EOL;
@@ -1056,7 +1178,10 @@ function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STD
 				if (is_tree_allowed($item['tree_id'], $report['user_id'])) {
 					if ($item['tree_cascade'] == 'on') {
 						$outstr .= expand_branch($report, $item, $item['branch_id'], $output, $format_ok, $theme);
-					} elseif (reports_tree_has_graphs($item['tree_id'], $item['branch_id'], $report['user_id'], $item['graph_name_regexp'])) {
+					} elseif (reports_tree_has_graphs($item['tree_id'],
+						$item['branch_id'],
+						$report['user_id'],
+						$item['graph_name_regexp'])) {
 						$outstr .= reports_expand_tree($report, $item, $item['branch_id'], $output, $format_ok, $theme, false);
 					}
 				}
@@ -1096,7 +1221,12 @@ function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STD
 	}
 }
 
-function expand_branch(array &$report, array &$item, int $branch_id, int $output = REPORTS_OUTPUT_STDOUT, bool $format_ok = false, string $theme = 'modern') : string {
+function expand_branch(array &$report,
+	array &$item,
+	int $branch_id,
+	int $output = REPORTS_OUTPUT_STDOUT,
+	bool $format_ok = false,
+	string $theme = 'modern') : string {
 	$outstr = '';
 
 	if (reports_tree_has_graphs($item['tree_id'], $branch_id, $report['user_id'], $item['graph_name_regexp'])) {
@@ -1160,7 +1290,8 @@ function reports_graph_image($report, $item, $timespan, $output = REPORTS_OUTPUT
 			set_config_option('base_url', $prefix . read_config_option('base_url'));
 		}
 
-		$out = "<a href='" . htmle(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id=' . $item['local_graph_id'] . '&rra_id=0') . "'>" . $out . '</a>';
+		$out = "<a href='" . htmle(read_config_option('base_url',
+			true) . '/graph.php?action=view&local_graph_id=' . $item['local_graph_id'] . '&rra_id=0') . "'>" . $out . '</a>';
 	}
 
 	return $out . PHP_EOL;
@@ -1178,7 +1309,12 @@ function reports_graph_image($report, $item, $timespan, $output = REPORTS_OUTPUT
  *
  * @return string html
  */
-function reports_expand_device(array &$report, array $item, int $device_id, int $output = REPORTS_OUTPUT_STDOUT, bool $format_ok = false, mixed $theme = 'modern') : string {
+function reports_expand_device(array &$report,
+	array $item,
+	int $device_id,
+	int $output = REPORTS_OUTPUT_STDOUT,
+	bool $format_ok = false,
+	mixed $theme = 'modern') : string {
 	global $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
@@ -1295,7 +1431,12 @@ function reports_expand_device(array &$report, array $item, int $device_id, int 
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 				} else {
-					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+					$outstr .= "\t\t\t<td class='text' style='text-align:" .
+						$alignment[$item['align']] .
+						';font-size: ' .
+						$item['font_size'] .
+						"pt;'>" .
+						PHP_EOL;
 				}
 
 				$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
@@ -1322,7 +1463,13 @@ function reports_expand_device(array &$report, array $item, int $device_id, int 
  *
  * @return string html
  */
-function reports_expand_tree(array &$report, array $item, int $parent, int $output, bool $format_ok, string $theme = 'modern', bool $nested = false) : string {
+function reports_expand_tree(array &$report,
+	array $item,
+	int $parent,
+	int $output,
+	bool $format_ok,
+	string $theme = 'modern',
+	bool $nested = false) : string {
 	global $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
@@ -1483,7 +1630,12 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 						if ($format_ok) {
 							$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 						} else {
-							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+							$outstr .= "\t\t\t<td class='text' style='text-align:" .
+								$alignment[$item['align']] .
+								';font-size: ' .
+								$item['font_size'] .
+								"pt;'>" .
+								PHP_EOL;
 						}
 						$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
 						$outstr .= "\t\t\t</td>" . PHP_EOL;
@@ -1527,7 +1679,12 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 						if ($format_ok) {
 							$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 						} else {
-							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+							$outstr .= "\t\t\t<td class='text' style='text-align:" .
+								$alignment[$item['align']] .
+								';font-size: ' .
+								$item['font_size'] .
+								"pt;'>" .
+								PHP_EOL;
 						}
 						$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
 						$outstr .= "\t\t\t</td>" . PHP_EOL;
@@ -1603,7 +1760,12 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 									if ($format_ok) {
 										$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 									} else {
-										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+										$outstr .= "\t\t\t<td class='text' style='text-align:" .
+											$alignment[$item['align']] .
+											';font-size: ' .
+											$item['font_size'] .
+											"pt;'>" .
+											PHP_EOL;
 									}
 
 									$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
@@ -1671,7 +1833,12 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 											if ($format_ok) {
 												$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 											} else {
-												$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+												$outstr .= "\t\t\t<td class='text' style='text-align:" .
+													$alignment[$item['align']] .
+													';font-size: ' .
+													$item['font_size'] .
+													"pt;'>" .
+													PHP_EOL;
 											}
 											$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
 											$outstr .= "\t\t\t</td>" . PHP_EOL;
@@ -1687,7 +1854,15 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 										$outstr .= "\t\t\t</td>" . PHP_EOL;
 										$outstr .= "\t\t</tr>" . PHP_EOL;
 									} else {
-										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . __('Data Query:') . ' ' . htmle($data_query['name']) . PHP_EOL;
+										$outstr .= "\t\t\t<td class='text' style='text-align:" .
+											$alignment[$item['align']] .
+											';font-size: ' .
+											$item['font_size'] .
+											"pt;'>" .
+											__('Data Query:') .
+											' ' .
+											htmle($data_query['name']) .
+											PHP_EOL;
 										$outstr .= "\t\t\t</td>" . PHP_EOL;
 										$outstr .= "\t\t</tr>" . PHP_EOL;
 									}
@@ -1745,7 +1920,12 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 							if ($format_ok) {
 								$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 							} else {
-								$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+								$outstr .= "\t\t\t<td class='text' style='text-align:" .
+									$alignment[$item['align']] .
+									';font-size: ' .
+									$item['font_size'] .
+									"pt;'>" .
+									PHP_EOL;
 							}
 							$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
 							$outstr .= "\t\t\t</td>" . PHP_EOL;
@@ -1766,7 +1946,12 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 				} else {
-					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+					$outstr .= "\t\t\t<td class='text' style='text-align:" .
+						$alignment[$item['align']] .
+						';font-size: ' .
+						$item['font_size'] .
+						"pt;'>" .
+						PHP_EOL;
 				}
 				$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
 				$outstr .= "\t\t\t</td>" . PHP_EOL;
@@ -1805,7 +1990,13 @@ function necturally_sort_graphs(mixed $a, mixed $b) : int {
  *
  * @return string
  */
-function reports_graph_area(array $graphs, array &$report, array $item, array $timespan, int $output, bool $format_ok, string $theme = 'modern') : string {
+function reports_graph_area(array $graphs,
+	array &$report,
+	array $item,
+	array $timespan,
+	int $output,
+	bool $format_ok,
+	string $theme = 'modern') : string {
 	global $alignment;
 
 	$outstr = '';
@@ -2029,7 +2220,8 @@ function reports_graphs_action_prepare(array $save) : mixed {
 	if ($save['drp_action'] == 'reports') { // report
 		print "<tr>
 			<td class='textArea'>
-				<p>" . __('Choose the Report to associate these graphs with.  The defaults for alignment will be used for each graph in the list below.') . '</p>
+				<p>" . __('Choose the Report to associate these graphs with.  The defaults for ' .
+					'alignment will be used for each graph in the list below.') . '</p>
 				<p>' . $save['graph_list'] . '</p>
 				<p>' . __('Report:') . '<br>';
 
@@ -2135,10 +2327,12 @@ function reports_graphs_action_execute(string $action) : string {
 						if ($id) {
 							$message .= __('Created Report Graph Item \'<i>%s</i>\'', get_graph_title($local_graph_id)) . '<br>';
 						} else {
-							$message .= __('Failed Adding Report Graph Item \'<i>%s</i>\' Already Exists', get_graph_title($local_graph_id)) . '<br>';
+							$message .= __('Failed Adding Report Graph Item \'<i>%s</i>\' Already Exists',
+								get_graph_title($local_graph_id)) . '<br>';
 						}
 					} else {
-						$message .= __('Skipped Report Graph Item \'<i>%s</i>\' Already Exists', get_graph_title($local_graph_id)) . '<br>';
+						$message .= __('Skipped Report Graph Item \'<i>%s</i>\' Already Exists',
+							get_graph_title($local_graph_id)) . '<br>';
 					}
 				}
 			}
@@ -2175,8 +2369,18 @@ function reports_graphs_action_execute(string $action) : string {
  *
  * @return void
  */
-function reports_log_and_notify(int $id, int $start_time, string $report_type, string $source, int $source_id, string $subject,
-	mixed &$raw_data, string &$oput_raw, string &$oput_html, string &$oput_text, array $attachments = [], mixed $headers = false) : void {
+function reports_log_and_notify(int $id,
+	int $start_time,
+	string $report_type,
+	string $source,
+	int $source_id,
+	string $subject,
+	mixed &$raw_data,
+		string &$oput_raw,
+		string &$oput_html,
+		string &$oput_text,
+		array $attachments = [],
+		mixed $headers = false) : void {
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports_queued
 		WHERE id = ?',
@@ -2206,13 +2410,20 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 			$notifications = json_decode($report['notification'], true);
 
 			if (!is_array($notifications)) {
-				cacti_log(sprintf("WARNING: Report '%s' has an invalid notification payload; notifications were skipped", $report['name']), false, 'REPORTS');
+				cacti_log(sprintf("WARNING: Report '%s' has an invalid notification payload; notifications were skipped",
+					$report['name']),
+					false,
+					'REPORTS');
 				$notifications = [];
 			}
 
 			foreach ($notifications as $type => $data) {
 				if (!is_array($data)) {
-					cacti_log(sprintf("WARNING: Report '%s' has invalid notification data for type '%s'; notification was skipped", $report['name'], $type), false, 'REPORTS');
+					cacti_log(sprintf("WARNING: Report '%s' has invalid notification data for type '%s'; notification was skipped",
+						$report['name'],
+						$type),
+						false,
+						'REPORTS');
 
 					continue;
 				}
@@ -2220,7 +2431,10 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 				switch($type) {
 					case 'email':
 						if (!isset($data['to_email'])) {
-							cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Missing 'to_email' attribute in request", $report['name']), false, 'REPORTS');
+							cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Missing 'to_email' attribute in request",
+								$report['name']),
+								false,
+								'REPORTS');
 
 							break;
 						} else {
@@ -2249,12 +2463,24 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 							$from = $data['from'];
 						}
 
-						mailer($from, $to_emails, $cc_emails, $bcc_emails, $reply_to, $subject, $oput_html, $oput_text, $attachments, $headers);
+						mailer($from,
+							$to_emails,
+							$cc_emails,
+							$bcc_emails,
+							$reply_to,
+							$subject,
+							$oput_html,
+							$oput_text,
+							$attachments,
+							$headers);
 
 						break;
 					case 'notification_list':
 						if (!isset($data['id'])) {
-							cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Missing notification list 'id' attribute in request", $report['name']), false, 'REPORTS');
+							cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Missing notification list 'id' attribute in request",
+								$report['name']),
+								false,
+								'REPORTS');
 
 							break;
 						} else {
@@ -2295,15 +2521,32 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 									$reply_to = '';
 								}
 
-								mailer($from, $to_emails, $cc_emails, $bcc_emails, $reply_to, $subject, $oput_html, $oput_text, $attachments, $headers);
+								mailer($from,
+									$to_emails,
+									$cc_emails,
+									$bcc_emails,
+									$reply_to,
+									$subject,
+									$oput_html,
+									$oput_text,
+									$attachments,
+									$headers);
 							} else {
-								cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Unable to locate notification list '%s'", $report['name'], $id), false, 'REPORTS');
+								cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Unable to locate notification list '%s'",
+									$report['name'],
+									$id),
+									false,
+									'REPORTS');
 							}
 						}
 
 						break;
 					default:
-						cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Unknown notification type '%s' attribute in request", $report['name'], $type), false, 'REPORTS');
+						cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Unknown notification type '%s' attribute in request",
+							$report['name'],
+							$type),
+							false,
+							'REPORTS');
 
 						break;
 				}
@@ -2347,7 +2590,12 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 	}
 }
 
-function reports_queue(string $name, int $request_type, string $source, int $source_id, string $command, array $notification) : mixed {
+function reports_queue(string $name,
+	int $request_type,
+	string $source,
+	int $source_id,
+	string $command,
+	array $notification) : mixed {
 	if (isset($_SESSION['sess_user_id'])) {
 		$requested_id = $_SESSION['sess_user_id'];
 		$requested_by = db_fetch_cell_prepared('SELECT username
@@ -2381,15 +2629,38 @@ function reports_queue(string $name, int $request_type, string $source, int $sou
 
 	if ($id > 0) {
 		if ($requested_id > 0) {
-			raise_message('report_scheduled', __esc("The Report '%s' from source %s with id %s is scheduled to run!", $name, $source, $source_id, 'flowview'), MESSAGE_LEVEL_INFO);
+			raise_message('report_scheduled',
+				__esc("The Report '%s' from source %s with id %s is scheduled to run!",
+					$name,
+					$source,
+					$source_id,
+					'flowview'),
+				MESSAGE_LEVEL_INFO);
 		} else {
-			cacti_log(sprintf("The Report '%s' from source %s with id %s is scheduled to run!", $name, $source, $source_id), false, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
+			cacti_log(sprintf("The Report '%s' from source %s with id %s is scheduled to run!",
+				$name,
+				$source,
+				$source_id),
+				false,
+				'REPORTS',
+				POLLER_VERBOSITY_MEDIUM);
 		}
 	} else {
 		if ($requested_id > 0) {
-			raise_message('report_not_scheduled', __esc("The Report '%s' from source %s with id %s was not scheduled to run due to an error!", $name, $source, $source_id, 'flowview'), MESSAGE_LEVEL_ERROR);
+			raise_message('report_not_scheduled',
+				__esc("The Report '%s' from source %s with id %s was not scheduled to run due to an error!",
+					$name,
+					$source,
+					$source_id,
+					'flowview'),
+				MESSAGE_LEVEL_ERROR);
 		} else {
-			cacti_log(sprintf("FATAL: The Report '%s' from source %s with id %s was not scheduled to run due to an error!", $name, $source, $source_id), false, 'REPORTS');
+			cacti_log(sprintf("FATAL: The Report '%s' from source %s with id %s was not scheduled to run due to an error!",
+				$name,
+				$source,
+				$source_id),
+				false,
+				'REPORTS');
 		}
 	}
 
@@ -2417,7 +2688,11 @@ function reports_run(int $id) : bool {
 
 	$return_code = 0;
 	$output      = [];
-	$command     = cacti_escapeshellcmd($report['run_command']) . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
+	$command     = cacti_escapeshellcmd($report['run_command']) .
+		' --report-id=' .
+		$report['source_id'] .
+		' --queue-id=' .
+		$id;
 	$timeout     = $report['run_timeout'];
 	$source      = cacti_strtoupper($report['source']);
 
@@ -2431,7 +2706,10 @@ function reports_run(int $id) : bool {
 
 	$end  = microtime(true);
 
-	$stats = sprintf("$source STATS: Time:%0.2f Report:'%s' Id:'%s'", $end - $start, $report['name'], $report['source_id']);
+	$stats = sprintf("$source STATS: Time:%0.2f Report:'%s' Id:'%s'",
+		$end - $start,
+		$report['name'],
+		$report['source_id']);
 
 	cacti_log($stats, false, 'SYSTEM');
 

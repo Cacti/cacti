@@ -78,7 +78,10 @@ final class CactiCsrfGuard {
 	 * @param int                            $legacyExpiry Seconds a legacy token stays acceptable,
 	 *                                                     matching csrf-magic's configured expiry.
 	 */
-	public function __construct(?CsrfTokenManagerInterface $manager = null, bool $enabled = true, string $legacySecret = '', int $legacyExpiry = 7200) {
+	public function __construct(?CsrfTokenManagerInterface $manager = null,
+		bool $enabled = true,
+		string $legacySecret = '',
+		int $legacyExpiry = 7200) {
 		$this->manager      = $manager;
 		$this->enabled      = $enabled && $manager !== null;
 		$this->legacySecret = $legacySecret;

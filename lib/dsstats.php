@@ -169,14 +169,21 @@ function dsstats_get_and_store_ds_avgpeak_values(string $interval, string $type,
 				$local_data_id = $file['local_data_id'];
 				$dsnames       = explode(',', $file['dsnames']);
 
-				$stats[$local_data_id] = dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $mode, $peak, $rrd_process);
+				$stats[$local_data_id] = dsstats_obtain_data_source_avgpeak_values($local_data_id,
+					$rrdfile,
+					$interval,
+					$mode,
+					$peak,
+					$rrd_process);
 			} else {
 				$data_source_name = db_fetch_cell_prepared('SELECT name_cache
 					FROM data_template_data
 					WHERE local_data_id = ?',
 					[$file['local_data_id']]);
 
-				cacti_log("WARNING: Data Source '$data_source_name' is damaged and contains no path.  Please delete and re-create both the Graph and Data Source.", false, 'DSSTATS');
+				cacti_log("WARNING: Data Source '$data_source_name' is damaged and contains no path.  Please delete and re-create both the Graph and Data Source.",
+					false,
+					'DSSTATS');
 			}
 		}
 	}
@@ -307,7 +314,12 @@ function dsstats_write_buffer(array &$stats_array, string $interval, int $mode) 
 					WHERE id = ?',
 					[$local_data_id]);
 
-				cacti_log(sprintf('WARNING: Problem with Data Source for Device[%s], DS[%s], Interval[%s]', $host_id, $local_data_id, ucfirst($interval)), false, 'DSSTATS');
+				cacti_log(sprintf('WARNING: Problem with Data Source for Device[%s], DS[%s], Interval[%s]',
+					$host_id,
+					$local_data_id,
+					ucfirst($interval)),
+					false,
+					'DSSTATS');
 			}
 		}
 
@@ -342,13 +354,22 @@ function dsstats_write_buffer(array &$stats_array, string $interval, int $mode) 
  *
  * @return array An array of AVERAGE, and MAX values in an RRDfile by Data Source name
  */
-function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $rrdfile, string $interval, int $mode, bool $peak, array $rrd_process) : array {
+function dsstats_obtain_data_source_avgpeak_values(int $local_data_id,
+	string $rrdfile,
+	string $interval,
+	int $mode,
+	bool $peak,
+	array $rrd_process) : array {
 	global $user_time, $system_time, $real_time;
 
 	$use_proxy = (read_config_option('storage_location') ? true : false);
 
 	if ($use_proxy) {
-		$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($rrdfile), true, RRDTOOL_OUTPUT_BOOLEAN, $rrd_process, 'DSSTATS');
+		$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($rrdfile),
+			true,
+			RRDTOOL_OUTPUT_BOOLEAN,
+			$rrd_process,
+			'DSSTATS');
 	} else {
 		clearstatcache();
 		$file_exists = file_exists($rrdfile);
@@ -475,12 +496,21 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 	return $dsvalues;
 }
 
-function dsstats_get_stats_command(int $local_data_id, string $rrdfile, bool $use_proxy, int $mode, bool $peak, array $rrd_process) : mixed {
+function dsstats_get_stats_command(int $local_data_id,
+	string $rrdfile,
+	bool $use_proxy,
+	int $mode,
+	bool $peak,
+	array $rrd_process) : mixed {
 	global $user_time, $system_time, $real_time;
 
 	// high speed or snail speed
 	if ($use_proxy) {
-		$info = rrdtool_execute('info ' . cacti_escapeshellarg($rrdfile), false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
+		$info = rrdtool_execute('info ' . cacti_escapeshellarg($rrdfile),
+			false,
+			RRDTOOL_OUTPUT_STDOUT,
+			$rrd_process,
+			'DSSTATS');
 	} else {
 		$info = dsstats_rrdtool_execute('info ' . cacti_escapeshellarg($rrdfile), $rrd_process);
 	}
@@ -671,7 +701,16 @@ function dsstats_log_statistics(string $type) : void {
 
 		$processes  = read_config_option('dsstats_parallel');
 
-		$cacti_stats = sprintf('Time:%01.2f Type:%s Threads:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $end - $start, $type, $processes, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+		$cacti_stats = sprintf('Time:%01.2f Type:%s Threads:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f ' .
+			'RRDSystem:%01.2f RRDReal:%01.2f',
+			$end - $start,
+			$type,
+			$processes,
+			$rrd_files,
+			$dsses,
+			$rrd_user,
+			$rrd_system,
+			$rrd_real);
 
 		db_execute("DELETE FROM settings
 			WHERE name LIKE 'dsstats_rrd_%$sub_type%'
@@ -708,7 +747,16 @@ function dsstats_log_child_stats(string $type, int $thread_id, float $total_time
 	$rrd_files  = $totals['rrd_files'];
 	$dsses      = $totals['dsses'];
 
-	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, cacti_strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s ' .
+		'RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f',
+		$total_time,
+		cacti_strtoupper($type),
+		$thread_id,
+		$rrd_files,
+		$dsses,
+		$rrd_user,
+		$rrd_system,
+		$rrd_real);
 
 	cacti_log('DSSTATS CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
 }
@@ -902,7 +950,8 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 			// initialize some variables related to the DB inserts
 			$outbuf           = '';
 			$sql_cache_prefix = 'INSERT INTO data_source_stats_hourly_cache (local_data_id, rrd_name, time, `value`) VALUES';
-			$sql_last_prefix  = 'INSERT INTO data_source_stats_hourly_last (local_data_id, rrd_name, `value`, calculated) VALUES';
+			$sql_last_prefix  = ('INSERT INTO data_source_stats_hourly_last (local_data_id, rrd_name, ' .
+				'`value`, calculated) VALUES');
 			$sql_suffix       = ' ON DUPLICATE KEY UPDATE `value`=VALUES(`value`)';
 			$sql_last_suffix  = ' ON DUPLICATE KEY UPDATE `value`=VALUES(`value`), `calculated`=VALUES(`calculated`)';
 			$overhead         = strlen($sql_cache_prefix) + strlen($sql_suffix);
@@ -1053,7 +1102,9 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 									break;
 								default:
-									cacti_log("WARNING: Unknown RRDtool Data Type '$ds_type', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
+									cacti_log("WARNING: Unknown RRDtool Data Type '$ds_type', For '" . $result['rrd_name'] . "'",
+										false,
+										'DSSTATS');
 
 									break;
 							}
@@ -1216,7 +1267,12 @@ function dsstats_wait_for_children(string $type, int $expected_children) : void 
 	}
 
 	if (dsstats_processes_running($type) < $expected_children) {
-		cacti_log(sprintf('WARNING: DSStats startup barrier timed out; %d of %d %s children registered before draining.', dsstats_processes_running($type), $expected_children, $type), false, 'DSSTATS');
+		cacti_log(sprintf('WARNING: DSStats startup barrier timed out; %d of %d %s children registered before draining.',
+			dsstats_processes_running($type),
+			$expected_children,
+			$type),
+			false,
+			'DSSTATS');
 	}
 
 	// Wait for all processes to continue
@@ -1254,9 +1310,16 @@ function dsstats_poller_bottom() : void {
 
 		if (read_config_option('path_dsstats_log') != '') {
 			if (CACTI_SERVER_OS == 'unix') {
-				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php >> ' . cacti_escapeshellarg(read_config_option('path_dsstats_log')) . ' 2>&1';
+				$extra_args = '-q ' .
+					CACTI_PATH_BASE .
+					'/poller_dsstats.php >> ' .
+					cacti_escapeshellarg(read_config_option('path_dsstats_log')) .
+					' 2>&1';
 			} else {
-				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php >> ' . cacti_escapeshellarg(read_config_option('path_dsstats_log'));
+				$extra_args = '-q ' .
+					CACTI_PATH_BASE .
+					'/poller_dsstats.php >> ' .
+					cacti_escapeshellarg(read_config_option('path_dsstats_log'));
 			}
 		} else {
 			$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php';
@@ -1358,7 +1421,10 @@ function dsstats_rrdtool_execute(string $command, array $rrd_process) : string {
 				}
 			}
 		} elseif (!$broken) {
-			cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
+			cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found ' .
+				'or system out of resources.  Blocking subsequent messages.',
+				false,
+				'POLLER');
 			$broken = true;
 		}
 	}
@@ -1405,9 +1471,15 @@ function dsstats_launch_children(string $type) : int {
 	for ($i = 1; $i <= $processes; $i++) {
 		dsstats_debug(sprintf('Launching DSStats Process Number %s for Type %s', $i, $type));
 
-		cacti_log(sprintf('NOTE: Launching DSStats Process Number %s for Type %s', $i, $type), false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
+		cacti_log(sprintf('NOTE: Launching DSStats Process Number %s for Type %s',
+			$i,
+			$type),
+			false,
+			'BOOST',
+			POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, CACTI_PATH_BASE . "/poller_dsstats.php --type=$sub_type --child=$i" . ($debug ? ' --debug' : ''));
+		exec_background($php_binary,
+			CACTI_PATH_BASE . "/poller_dsstats.php --type=$sub_type --child=$i" . ($debug ? ' --debug' : ''));
 	}
 
 	sleep(2);
@@ -1470,7 +1542,11 @@ function dsstats_kill_running_processes() : void {
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running((int) $p['pid'])) {
-				cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+				cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to signal or overrun.',
+					ucfirst($p['taskname']),
+					$p['pid']),
+					false,
+					'BOOST');
 				cacti_process_kill((int) $p['pid'], SIGTERM, 'BOOST');
 			}
 

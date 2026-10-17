@@ -32,6 +32,8 @@
 
 $src = file_get_contents(__DIR__ . '/../../../../lib/data_query.php');
 
+require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
+
 test('get_data_query_array checks file existence before calling realpath', function () use ($src) {
 	expect($src)->toContain('file_exists($xml_file_path)');
 });
@@ -45,7 +47,7 @@ test('get_data_query_array calls realpath on CACTI_PATH_BASE for boundary anchor
 });
 
 test('realpath boundary check uses str_starts_with with DIRECTORY_SEPARATOR', function () use ($src) {
-	expect($src)->toContain('str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)');
+	expect($src)->toContainPhp('str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)');
 });
 
 test('file_exists check precedes realpath boundary check', function () use ($src) {
@@ -61,8 +63,8 @@ test('$allowed_base is initialised with realpath() before the boundary compariso
 	// Guards against symlink-diverged installs where CACTI_PATH_BASE is a symlink:
 	// if $allowed_base were set from the raw constant, $resolved (canonicalized)
 	// and $allowed_base would diverge, blocking every legitimate path.
-	$init_pos    = strpos($src, '$allowed_base = realpath(');
-	$compare_pos = strpos($src, 'str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base,');
+	$init_pos    = \Cacti\Tests\Helpers\PhpSource::position($src, '$allowed_base = realpath(');
+	$compare_pos = \Cacti\Tests\Helpers\PhpSource::position($src, 'str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base,');
 
 	expect($init_pos)->not->toBeFalse()
 		->and($compare_pos)->not->toBeFalse()
@@ -70,7 +72,7 @@ test('$allowed_base is initialised with realpath() before the boundary compariso
 });
 
 test('get_data_query_array returns empty array when xml_path resolves outside base', function () use ($src) {
-	$guard_pos = strpos($src, '!str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)');
+	$guard_pos = \Cacti\Tests\Helpers\PhpSource::position($src, '!str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)');
 	// After the TOCTOU fix, the actual I/O uses the validated $resolved path, not the raw $xml_file_path.
 	$file_pos  = strpos($src, 'file($resolved)');
 
@@ -107,7 +109,7 @@ test('file_exists early-return log uses $safe_path not raw $xml_file_path', func
 	// past the search string) without reaching realpath($xml_file_path) ~150
 	// chars later.
 	$safe_def   = strpos($src, '$safe_path');
-	$exists_log = strpos($src, "Could not find data query XML file at");
+	$exists_log = strpos($src, 'Could not find data query XML file at');
 	$block      = substr($src, $exists_log ?: 0, 80);
 	$raw_in_log = strpos($block, '$xml_file_path)');
 
@@ -149,6 +151,7 @@ function makeDQTempBase(): string {
 	$tmp = sys_get_temp_dir() . '/cacti_dq_test_' . getmypid() . '_' . bin2hex(random_bytes(4));
 	mkdir($tmp . '/resource/snmp-queries', 0755, true);
 	mkdir($tmp . '/outside',               0755, true);
+
 	return $tmp;
 }
 
