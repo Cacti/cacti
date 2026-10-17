@@ -99,7 +99,9 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 			return '';
 		}
 
-		$parameters = json_decode((string) db_fetch_cell_prepared('SELECT parameters FROM login_providers WHERE id = ?', [$id]), true);
+		$parameters = json_decode((string) db_fetch_cell_prepared('SELECT parameters FROM login_providers WHERE id = ?',
+			[$id]),
+			true);
 		$parameters = is_array($parameters) ? $parameters : [];
 
 		return (string) ($parameters[$key] ?? '');

@@ -35,7 +35,11 @@ final class CactiProcessLock {
 	private LockInterface $lock;
 	private ?PDO $connection;
 
-	public function __construct(LockFactory $factory, string $tasktype, string $taskname, int $taskid, ?PDO $connection = null) {
+	public function __construct(LockFactory $factory,
+		string $tasktype,
+		string $taskname,
+		int $taskid,
+		?PDO $connection = null) {
 		$this->lock       = $factory->createLock(self::key($tasktype, $taskname, $taskid), self::TTL);
 		$this->connection = $connection;
 	}

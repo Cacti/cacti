@@ -212,7 +212,9 @@ function api_graph_remove_aggregate_items(mixed $local_graph_ids) : void {
 		$local_graph_ids = explode(',', $local_graph_ids);
 	}
 
-	$local_graph_ids = array_values(array_filter(array_map('intval', $local_graph_ids), static fn (int $id): bool => $id > 0));
+	$local_graph_ids = array_values(array_filter(array_map('intval',
+		$local_graph_ids),
+		static fn (int $id): bool => $id > 0));
 
 	foreach ($local_graph_ids as $lgid) {
 		$aggregate_graphs = array_rekey(
@@ -343,7 +345,11 @@ function api_reapply_suggested_graph_title(int $local_graph_id) : bool {
 					$max_chars = 40;
 				}
 
-				$subs_string = substitute_snmp_query_data($suggested_value['text'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], $max_chars);
+				$subs_string = substitute_snmp_query_data($suggested_value['text'],
+					$graph_local['host_id'],
+					$graph_local['snmp_query_id'],
+					$graph_local['snmp_index'],
+					$max_chars);
 
 				// if there are no '|' characters, all of the substitutions were successful
 				if (!substr_count($subs_string, '|query')) {
@@ -401,7 +407,10 @@ function api_get_graphs_from_datasource(int $local_data_id) : array {
  *
  * @return int|false The ID of the newly created local graph or graph template, or false on failure.
  */
-function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, string $graph_title, bool $map_to_data_query = true) : int|false {
+function api_duplicate_graph(int $_local_graph_id,
+	int $_graph_template_id,
+	string $graph_title,
+	bool $map_to_data_query = true) : int|false {
 	global $struct_graph, $struct_graph_item;
 
 	$local_graph_id        = 0;
@@ -562,7 +571,8 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 			$save['id'] = 0;
 
 			// save a hash only for graph_template copy operations
-			$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
+			$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0,
+				'graph_template_item') : 0);
 			$save['local_graph_id']               = $local_graph_id;
 			$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
 			$save['local_graph_template_item_id'] = ($graph_template_item['local_graph_template_item_id'] ?? 0);
@@ -610,14 +620,15 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 				// create new entry(s): graph_template_input_defs (graph template only)
 				if (cacti_sizeof($graph_template_input_defs)) {
 					foreach ($graph_template_input_defs as $graph_template_input_def) {
-						if (!isset($graph_item_mappings[$graph_template_input_def['graph_template_item_id']]) || !db_execute_prepared('INSERT INTO graph_template_input_defs
+						if (!isset($graph_item_mappings[$graph_template_input_def['graph_template_item_id']]) ||
+							!db_execute_prepared('INSERT INTO graph_template_input_defs
 							(graph_template_input_id, graph_template_item_id)
 							VALUES (?, ?)',
-							[
-								$graph_template_input_id,
-								$graph_item_mappings[$graph_template_input_def['graph_template_item_id']]
-							]
-						)) {
+								[
+									$graph_template_input_id,
+									$graph_item_mappings[$graph_template_input_def['graph_template_item_id']]
+								]
+							)) {
 							db_rollback_transaction();
 
 							return false;

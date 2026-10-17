@@ -40,11 +40,21 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			// PEM certificate blob; onelogin/php-saml validates the structure
 			// itself when the settings are used, not at form-save time.
 			// no-validation: PEM certificate blob, validated by onelogin/php-saml itself
-			'sp_x509cert'            => self::keepExistingIfBlank(form_input_validate(gnrv('sp_x509cert'), 'sp_x509cert', '', true, 3), 'sp_x509cert'),
+			'sp_x509cert'            => self::keepExistingIfBlank(form_input_validate(gnrv('sp_x509cert'),
+				'sp_x509cert',
+				'',
+				true,
+				3),
+				'sp_x509cert'),
 			// The "privkey" field never redisplays its stored value, so a blank
 			// submission means "keep the existing key" rather than "clear it".
 			// no-validation: PEM private key blob, an arbitrary secret with no format to enforce here
-			'sp_private_key'         => self::encryptOrKeepExisting(form_input_validate(gnrv('sp_private_key'), 'sp_private_key', '', true, 3), 'sp_private_key'),
+			'sp_private_key'         => self::encryptOrKeepExisting(form_input_validate(gnrv('sp_private_key'),
+				'sp_private_key',
+				'',
+				true,
+				3),
+				'sp_private_key'),
 			// no-validation: admin-entered IdP entity ID URI, free text
 			'idp_entity_id'          => form_input_validate(gnrv('idp_entity_id'), 'idp_entity_id', '', true, 3),
 			// no-validation: admin-entered IdP SSO URL, used server-side only by onelogin/php-saml
@@ -56,7 +66,12 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			// PEM certificate blob; onelogin/php-saml validates the structure
 			// itself when the settings are used, not at form-save time.
 			// no-validation: PEM certificate blob, validated by onelogin/php-saml itself
-			'idp_x509cert'           => self::keepExistingIfBlank(form_input_validate(gnrv('idp_x509cert'), 'idp_x509cert', '', true, 3), 'idp_x509cert'),
+			'idp_x509cert'           => self::keepExistingIfBlank(form_input_validate(gnrv('idp_x509cert'),
+				'idp_x509cert',
+				'',
+				true,
+				3),
+				'idp_x509cert'),
 			'claim_username'         => gnrv('saml_claim_username'),
 			'claim_full_name'        => gnrv('saml_claim_full_name'),
 			'claim_email'            => gnrv('saml_claim_email'),
@@ -145,7 +160,8 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 		}
 
 		$attributes = $auth->getAttributes();
-		$username   = (string) $this->firstAttribute($attributes, (string) $this->param('claim_username')) ?: $auth->getNameId();
+		$username   = (string) $this->firstAttribute($attributes,
+			(string) $this->param('claim_username')) ?: $auth->getNameId();
 
 		if ($username === '') {
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
@@ -185,7 +201,10 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 		$responseUrl = $auth->processSLO(keepLocalSession: true, stay: true);
 
 		if ($auth->getErrors()) {
-			cacti_log('LOGIN: SAML SLO error for provider \'' . $this->getName() . '\': ' . implode(', ', $auth->getErrors()), false, 'AUTH');
+			cacti_log('LOGIN: SAML SLO error for provider \'' . $this->getName() . '\': ' . implode(', ',
+				$auth->getErrors()),
+				false,
+				'AUTH');
 		}
 
 		// A LogoutRequest is not complete until the IdP receives this
@@ -227,7 +246,8 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 		$realm       = 1000 + $this->getId();
 		$acsUrl      = rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=acs&realm=' . $realm;
 		$sloUrl      = rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=sls&realm=' . $realm;
-		$entityId    = (string) $this->param('sp_entity_id') ?: rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=metadata&realm=' . $realm;
+		$entityId    = (string) $this->param('sp_entity_id') ?: rtrim((string) read_config_option('base_url'),
+			'/') . '/login_sso.php?action=metadata&realm=' . $realm;
 
 		return [
 			'strict' => true,
@@ -242,7 +262,8 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 					'url'     => $sloUrl,
 					'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
 				],
-				'NameIDFormat'  => (string) $this->param('name_id_format', 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'),
+				'NameIDFormat'  => (string) $this->param('name_id_format',
+					'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'),
 				'x509cert'      => (string) $this->param('sp_x509cert'),
 				'privateKey'    => $this->decryptedPrivateKey(),
 			],

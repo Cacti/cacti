@@ -201,7 +201,15 @@ function cacti_http_resolve_safe_ips(string $host) : array {
 function cacti_http_ipv4_mapped_address(string $ip) : ?string {
 	$binary = @inet_pton($ip);
 
-	if ($binary === false || strlen($binary) !== 16 || substr($binary, 0, 10) !== str_repeat("\x00", 10) || substr($binary, 10, 2) !== "\xff\xff") {
+	if ($binary === false ||
+		strlen($binary) !== 16 ||
+		substr($binary,
+			0,
+			10) !== str_repeat("\x00",
+				10) ||
+		substr($binary,
+			10,
+			2) !== "\xff\xff") {
 		return null;
 	}
 
@@ -405,7 +413,17 @@ function set_user_setting(string $config_name, mixed $value, mixed $user = null)
 
 	if ($user == 0) {
 		$mode = isset($_SESSION[SESS_USER_ID]) ? 'WEBUI' : 'POLLER';
-		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no valid user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
+		cacti_log('NOTE: Attempt to set user setting \'' .
+			$config_name .
+			'\', with no valid user id: ' .
+			cacti_debug_backtrace('',
+				false,
+				false,
+				0,
+				1),
+			false,
+			$mode,
+			POLLER_VERBOSITY_MEDIUM);
 	} elseif (db_table_exists('settings_user')) {
 		if (strlen($config_name) > 255) {
 			cacti_log("ERROR: User setting name '$config_name' is too long, will be truncated", false, 'SYSTEM');
@@ -636,7 +654,10 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 
 		foreach ($pollers as $p => $t) {
 			if ($t > $gone_time) {
-				raise_message('poller_' . $p, __esc('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+				raise_message('poller_' . $p,
+					__esc('Settings save to Data Collector %d skipped due to heartbeat.',
+						$p),
+					MESSAGE_LEVEL_WARN);
 			} else {
 				$rcnn_id = poller_connect_to_remote($p);
 
@@ -665,7 +686,13 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 	${$set_var}[$set_key][$config_name] = $value;
 
 	if (!empty($config['DEBUG_SET_CONFIG_OPTION'])) {
-		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
+			get_debug_prefix() . cacti_debug_backtrace($config_name,
+				false,
+				false,
+				0,
+				1) . "\n",
+			FILE_APPEND);
 	}
 }
 
@@ -712,7 +739,9 @@ function read_default_config_option(string $config_name) : mixed {
 				return $tab_array[$config_name]['default'];
 			} else {
 				foreach ($tab_array as $field_array) {
-					if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
+					if (isset($field_array['items']) &&
+						isset($field_array['items'][$config_name]) &&
+						isset($field_array['items'][$config_name]['default'])) {
 						return $field_array['items'][$config_name]['default'];
 					}
 				}
@@ -886,7 +915,13 @@ function read_config_option(string $config_name, bool $force = false) : mixed {
 	$loaded = isset(${$set_var}[$set_key][$config_name]);
 
 	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
-		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
+			get_debug_prefix() . cacti_debug_backtrace($config_name,
+				false,
+				false,
+				0,
+				1) . "\n",
+			FILE_APPEND);
 	}
 
 	// Do we have a value already stored in the array, or
@@ -1112,7 +1147,11 @@ function is_valid_theme(mixed &$theme, int $set_user = 0) : bool {
  *
  * @return mixed - The original $field_value
  */
-function form_input_validate(mixed $field_value, string $field_name, string $regexp_match, bool $allow_nulls, mixed $message_id = 3) : mixed {
+function form_input_validate(mixed $field_value,
+	string $field_name,
+	string $regexp_match,
+	bool $allow_nulls,
+	mixed $message_id = 3) : mixed {
 	global $messages;
 
 	// write current values to the "field_values" array so we can retain them
@@ -1127,7 +1166,10 @@ function form_input_validate(mixed $field_value, string $field_name, string $reg
 	if ($allow_nulls == false && $field_value == '') {
 		$report_message = __("Form Validation Failed: Variable '%s' does not allow nulls and variable is null", $field_name);
 	} elseif ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
-		$report_message = __("Form Validation Failed: Variable '%s' with Value '%s' Failed REGEX '%s'", $field_name, $field_value, $regexp_match);
+		$report_message = __("Form Validation Failed: Variable '%s' with Value '%s' Failed REGEX '%s'",
+			$field_name,
+			$field_value,
+			$regexp_match);
 	}
 
 	if ($report_message !== null) {
@@ -1315,7 +1357,10 @@ function get_message_max_type(mixed $output_messages = null) : int {
  *
  * @return bool
  */
-function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
+function raise_message(mixed $message_id,
+	string $message = '',
+	int $message_level = MESSAGE_LEVEL_NONE,
+	mixed $message_title = null) : bool {
 	global $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
@@ -1409,7 +1454,10 @@ function raise_message(mixed $message_id, string $message = '', int $message_lev
  *
  * @return void
  */
-function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) : void {
+function raise_message_javascript(string $title,
+	string $header,
+	string $message,
+	int $level = MESSAGE_LEVEL_MIXED) : void {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR); ?>);
@@ -1916,7 +1964,15 @@ function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPH
  *
  * @return array
  */
-function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, mixed $filter = '', mixed &$page_nr = 1, mixed &$total_rows = 0, mixed $matches = true, mixed $expand_text = false, int $reverse = 1) : array {
+function tail_file(string $file_name,
+	int $line_cnt,
+	mixed $message_type = -1,
+	mixed $filter = '',
+	mixed &$page_nr = 1,
+	mixed &$total_rows = 0,
+	mixed $matches = true,
+	mixed $expand_text = false,
+	int $reverse = 1) : array {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 
@@ -2182,7 +2238,11 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
  *
  * @return void
  */
-function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) : void {
+function update_host_status(int $status,
+	int $host_id,
+	Net_Ping &$ping,
+	int $ping_availability,
+	bool $print_data_to_stdout) : void {
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option('ping_failure_count');
 	$ping_recovery_count = read_config_option('ping_recovery_count');
@@ -2369,7 +2429,10 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 		} elseif ($ping_availability == AVAIL_SNMP) {
 			if ($host['snmp_community'] == '' && $host['snmp_version'] != 3) {
-				cacti_log("Device[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+				cacti_log("Device[$host_id] SNMP: Device does not require SNMP",
+					$print_data_to_stdout,
+					'PING',
+					POLLER_VERBOSITY_HIGH);
 			} else {
 				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			}
@@ -2390,7 +2453,8 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 	// if there is supposed to be an event generated, do it
 	if ($issue_log_message) {
 		if ($host['status'] == HOST_DOWN) {
-			cacti_log("Device[$host_id] ERROR: HOST EVENT: Device is DOWN Message: " . $host['status_last_error'], $print_data_to_stdout);
+			cacti_log("Device[$host_id] ERROR: HOST EVENT: Device is DOWN Message: " . $host['status_last_error'],
+				$print_data_to_stdout);
 		} else {
 			cacti_log("Device[$host_id] NOTICE: HOST EVENT: Device Returned FROM DOWN State: ", $print_data_to_stdout);
 		}
@@ -2594,7 +2658,11 @@ function prepare_validate_result(string &$result) : mixed {
 
 			$space_cnt = substr_count(trim($result), ' ');
 
-			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt + 1 == $delim_cnt) ? '' : 'NOT ') . 'okay', POLLER_VERBOSITY_MEDIUM);
+			dsv_log('prepare_validate_result',
+				"data has $space_cnt spaces and $delim_cnt fields which is " .
+					(($space_cnt + 1 == $delim_cnt) ? '' : 'NOT ') .
+					'okay',
+				POLLER_VERBOSITY_MEDIUM);
 
 			return ($space_cnt + 1 == $delim_cnt);
 		}
@@ -2683,7 +2751,11 @@ function dsv_log(string $message, mixed $data = null, int $level = POLLER_VERBOS
  *
  * @return bool true or false
  */
-function test_data_sources(int $graph_template_id, int $host_id, int $snmp_query_id = 0, string $snmp_index = '', array $values = []) : bool {
+function test_data_sources(int $graph_template_id,
+	int $host_id,
+	int $snmp_query_id = 0,
+	string $snmp_index = '',
+	array $values = []) : bool {
 	$data_template_ids = array_rekey(
 		db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
 			FROM graph_templates_item AS gti
@@ -2704,7 +2776,12 @@ function test_data_sources(int $graph_template_id, int $host_id, int $snmp_query
 
 	if (cacti_sizeof($data_template_ids) && $test_source == 'on') {
 		foreach ($data_template_ids as $dt) {
-			dsv_log('test_data_source', [ 'dt' => $dt, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'values' => $values]);
+			dsv_log('test_data_source',
+				[ 'dt'          => $dt,
+				'host_id'       => $host_id,
+				'snmp_query_id' => $snmp_query_id,
+				'snmp_index'    => $snmp_index,
+				'values'        => $values]);
 
 			if (!test_data_source($dt, $host_id, $snmp_query_id, $snmp_index, $values)) {
 				return false;
@@ -2730,14 +2807,23 @@ function test_data_sources(int $graph_template_id, int $host_id, int $snmp_query
  *
  * @return bool - true or false
  */
-function test_data_source(int $data_template_id, int $host_id, int $snmp_query_id = 0, string $snmp_index = '', array $suggested_vals = []) : bool {
+function test_data_source(int $data_template_id,
+	int $host_id,
+	int $snmp_query_id = 0,
+	string $snmp_index = '',
+	array $suggested_vals = []) : bool {
 	global $called_by_script_server;
 
 	$called_by_script_server = true;
 
 	$outputs = [];
 
-	dsv_log('test_data_source', ['data_template_id' => $data_template_id, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'suggested_vals' => $suggested_vals]);
+	dsv_log('test_data_source',
+		['data_template_id' => $data_template_id,
+		'host_id'           => $host_id,
+		'snmp_query_id'     => $snmp_query_id,
+		'snmp_index'        => $snmp_index,
+		'suggested_vals'    => $suggested_vals]);
 
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
@@ -3139,10 +3225,30 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+							$script_path = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) .
+								' -q ' .
+								get_script_query_path(trim($prepend .
+								' ' .
+								$script_queries['arg_get'] .
+								' ' .
+								$identifier .
+								' "' .
+								$snmp_index .
+								'"'),
+									$script_queries['script_path'],
+									$host_id);
 						} else {
 							$action      = POLLER_ACTION_SCRIPT;
-							$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+							$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') .
+								' ' .
+								$script_queries['arg_get'] .
+								' ' .
+								$identifier .
+								' "' .
+								$snmp_index .
+								'"'),
+								$script_queries['script_path'],
+								$host_id);
 						}
 					}
 
@@ -3267,7 +3373,15 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 	 * in the input string so we don't mess up the script
 	 */
 	if (preg_match_all('/<[A-Za-z0-9_]+>/', $full_path, $matches)) {
-		cacti_log(sprintf('WARNING: Test command for Data Template[%d] and Device[%d] contains unresolved substitution variables %s.  Positional arguments may be misaligned.', $data_template_id, $host_id, implode(', ', array_unique($matches[0]))), false, 'POLLER');
+		cacti_log(sprintf('WARNING: Test command for Data Template[%d] and Device[%d] contains ' .
+			'unresolved substitution variables %s.  Positional arguments may be ' .
+			'misaligned.',
+			$data_template_id,
+			$host_id,
+			implode(', ',
+				array_unique($matches[0]))),
+			false,
+			'POLLER');
 
 		$full_path = preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
 	}
@@ -3347,7 +3461,15 @@ function get_full_script_path(int $local_data_id) : mixed {
 	if (preg_match_all('/<[A-Za-z0-9_]+>/', $full_path, $matches)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', [$local_data_id]);
 
-		cacti_log(sprintf('WARNING: Command for Data Source[%d] on Device[%d] contains unresolved substitution variables %s.  Positional arguments may be misaligned.  Check the Data Input Method and its field values.', $local_data_id, (int)$host_id, implode(', ', array_unique($matches[0]))), false, 'POLLER');
+		cacti_log(sprintf('WARNING: Command for Data Source[%d] on Device[%d] contains ' .
+			'unresolved substitution variables %s.  Positional arguments may be ' .
+			'misaligned.  Check the Data Input Method and its field values.',
+			$local_data_id,
+			(int)$host_id,
+			implode(', ',
+				array_unique($matches[0]))),
+			false,
+			'POLLER');
 
 		$full_path = preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
 	}
@@ -3385,7 +3507,9 @@ function get_data_source_item_name(int $data_template_rrd_id) : mixed {
 	if (empty($data_source['data_source_name'])) {
 		// limit input to 19 characters
 		$data_source_name = clean_up_name($data_source['name']);
-		$data_source_name = substr(cacti_strtolower($data_source_name), 0, (19 - strlen('' . $data_template_rrd_id))) . $data_template_rrd_id;
+		$data_source_name = substr(cacti_strtolower($data_source_name),
+			0,
+			(19 - strlen('' . $data_template_rrd_id))) . $data_template_rrd_id;
 
 		return $data_source_name;
 	} else {
@@ -3437,7 +3561,12 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
 			 * Contain it here, where every consumer resolves the path, and fall
 			 * back to the generated location when it escapes. */
 			if (!data_source_path_within_rra($data_source_path)) {
-				cacti_log(sprintf('SECURITY: Data source %d has a data_source_path that escapes the RRA directory (%s).  Using the generated path instead.', $local_data_id, $data_source['data_source_path']), false, 'POLLER');
+				cacti_log(sprintf('SECURITY: Data source %d has a data_source_path that escapes the RRA ' .
+					'directory (%s).  Using the generated path instead.',
+					$local_data_id,
+					$data_source['data_source_path']),
+					false,
+					'POLLER');
 
 				$data_source_path = str_replace('<path_rra>/', CACTI_PATH_RRA . '/', generate_data_source_path($local_data_id));
 			}
@@ -3955,7 +4084,9 @@ function generate_data_source_path($local_data_id) {
 	}
 
 	// update our changes to the db
-	db_execute_prepared('UPDATE data_template_data SET data_source_path = ? WHERE local_data_id = ?', [$new_path, $local_data_id]);
+	db_execute_prepared('UPDATE data_template_data SET data_source_path = ? WHERE local_data_id = ?',
+		[$new_path,
+		$local_data_id]);
 
 	return $new_path;
 }
@@ -4148,7 +4279,10 @@ function generate_data_input_field_sequences(string $string, int $data_input_id)
  *
  * @return void
  */
-function move_graph_group(int $graph_template_item_id, array $graph_group_array, int $target_id, string $direction) : void {
+function move_graph_group(int $graph_template_item_id,
+	array $graph_group_array,
+	int $target_id,
+	string $direction) : void {
 	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id
 		FROM graph_templates_item
 		WHERE id = ?',
@@ -4311,9 +4445,15 @@ function get_graph_group(int $graph_template_item_id) : array {
 					$is_hard = true;
 				}
 			} elseif (str_contains($graph_item_types[$item['graph_type_id']], 'COMMENT')) {
-				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/', $item['text_format'], $matches, PREG_SET_ORDER)) {
+				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/',
+					$item['text_format'],
+					$matches,
+					PREG_SET_ORDER)) {
 					$graph_item_children_array[$item['id']] = $item['id'];
-				} elseif (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/', $item['text_format'], $matches, PREG_SET_ORDER)) {
+				} elseif (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/',
+					$item['text_format'],
+					$matches,
+					PREG_SET_ORDER)) {
 					$graph_item_children_array[$item['id']] = $item['id'];
 				} else {
 					// if not a GPRINT or special COMMENT then get out
@@ -4447,7 +4587,9 @@ function get_item(string $tblname, string $field, int $startid, string|array $lm
 			$where_clause = $lmt_query;
 		}
 
-		$sql_query = "SELECT id FROM $tblname WHERE $field $sql_operator ? " . ($where_clause != '' ? " AND $where_clause" : '') . " ORDER BY $field $sql_order LIMIT 1";
+		$sql_query = "SELECT id FROM $tblname WHERE $field $sql_operator ? " .
+			($where_clause != '' ? " AND $where_clause" : '') .
+			" ORDER BY $field $sql_order LIMIT 1";
 		array_unshift($params, $current_sequence);
 
 		$new_item_id = db_fetch_cell_prepared($sql_query, $params);
@@ -4617,11 +4759,24 @@ function draw_login_status(bool $using_guest_account = false) : void {
 	if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] === $guest_account) {
 		api_plugin_hook('nav_login_before');
 
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>' : "<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
+		print __('Logged in as') .
+			" <span id='user' class='user usermenuup'>" .
+			__('guest') .
+			"</span></div><div><ul class='menuoptions' style='display:none;'>" .
+			($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" .
+			CACTI_PATH_URL .
+			"index.php?login=true'>" .
+			__('Login as Regular User') .
+			'</a></li>' : "<li><a href='#'>" .
+			__('Logged in a Guest') .
+			'</a></li>');
 
 		print "<li class='menuHr'><hr class='menu'></li>";
-		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
-		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank' rel='noopener'>" . __('Documentation') . '</a></li>';
+		print ("<li id='userCommunity'><a href='https://forums.cacti.net' " .
+			"target='_blank' rel='noopener'>") . __('User Community') . '</a></li>';
+		print ("<li id='userDocumentation'><a " .
+			"href='https://github.com/Cacti/documentation/blob/develop/README.md' " .
+			"target='_blank' rel='noopener'>") . __('Documentation') . '</a></li>';
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
@@ -4640,19 +4795,41 @@ function draw_login_status(bool $using_guest_account = false) : void {
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . htmle($user['username']) .
 			"</span></div><div><ul class='menuoptions' style='display:none;'>";
 
-		print "<li><a href='#' class='loggedInAs' style='display:none;'>" . __esc('Logged in as %s', $user['username']) . "</a></li><hr class='menu'>";
+		print "<li><a href='#' class='loggedInAs' style='display:none;'>" . __esc('Logged in as %s',
+			$user['username']) . "</a></li><hr class='menu'>";
 
-		print(is_realm_allowed(20) ? "<li><a href='" . htmle(CACTI_PATH_URL . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>' : '');
-		print($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . htmle(CACTI_PATH_URL . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>' : '');
-		print((is_realm_allowed(20) || ($user['password_change'] == 'on' && $user['realm'] == 0)) ? "<li class='menuHr'><hr class='menu'></li>" : '');
+		print(is_realm_allowed(20) ? "<li><a href='" .
+			htmle(CACTI_PATH_URL .
+			'auth_profile.php?action=edit') .
+			"'>" .
+			__('Edit Profile') .
+			'</a></li>' : '');
+		print($user['password_change'] == 'on' &&
+			$user['realm'] == 0 ? "<li><a href='" .
+				htmle(CACTI_PATH_URL .
+				'auth_changepassword.php') .
+				"'>" .
+				__('Change Password') .
+				'</a></li>' : '');
+		print((is_realm_allowed(20) ||
+			($user['password_change'] == 'on' &&
+			$user['realm'] == 0)) ? "<li class='menuHr'><hr class='menu'></li>" : '');
 
 		if (is_realm_allowed(28)) {
-			print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
-			print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank' rel='noopener'>" . __('Documentation') . '</a></li>';
+			print ("<li id='userCommunity'><a href='https://forums.cacti.net' " .
+				"target='_blank' rel='noopener'>") . __('User Community') . '</a></li>';
+			print ("<li id='userDocumentation'><a " .
+				"href='https://github.com/Cacti/documentation/blob/develop/README.md' " .
+				"target='_blank' rel='noopener'>") . __('Documentation') . '</a></li>';
 			print "<li class='menuHr'><hr class='menu'></li>";
 		}
 
-		print($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . htmle(CACTI_PATH_URL . 'logout.php') . "'>" . __('Logout') . '</a></li>' : '');
+		print($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" .
+			htmle(CACTI_PATH_URL .
+			'logout.php') .
+			"'>" .
+			__('Logout') .
+			'</a></li>' : '');
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
@@ -4745,7 +4922,9 @@ function draw_navigation_text(string $type = 'url') : string {
 
 		// We've already appended the full path, not the end bit
 		if (isset($current_array['title'])) {
-			$current_nav .= "<li><a id='nav_$i' href='#'>" . htmle(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+			$current_nav .= "<li><a id='nav_$i' href='#'>" .
+				htmle(resolve_navigation_variables($current_array['title'])) .
+				'</a></li>';
 		}
 	} else {
 		$i++;
@@ -4755,7 +4934,9 @@ function draw_navigation_text(string $type = 'url') : string {
 		$url           = ($current_array['url'] ?? '');
 
 		if (isset($current_array['title'])) {
-			$current_nav .= "<li><a id='nav_$i' href='$url'>" . htmle(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+			$current_nav .= "<li><a id='nav_$i' href='$url'>" .
+				htmle(resolve_navigation_variables($current_array['title'])) .
+				'</a></li>';
 		}
 	}
 
@@ -4842,7 +5023,12 @@ function draw_navigation_text(string $type = 'url') : string {
 			}
 		}
 
-		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name) : '') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')' : ($leaf_name != '' ? ')' : ''));
+		$tree_title = $tree_name .
+			($leaf_name != '' ? ' (' .
+			trim($leaf_name) : '') .
+			($leaf_sub != '' ? ':' .
+			trim($leaf_sub) .
+			')' : ($leaf_name != '' ? ')' : ''));
 
 		if ($tree_title != '') {
 			$current_nav .= "<li><a id='nav_title' href='#'>" . htmle($tree_title) . '</a></li>';
@@ -5242,7 +5428,8 @@ function get_hash_vdef(int $vdef_id, string $sub_type = 'vdef') : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function get_hash_data_source_profile(int $data_source_profile_id) : string {
-	$hash = (string) db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', [$data_source_profile_id]);
+	$hash = (string) db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?',
+		[$data_source_profile_id]);
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
@@ -5344,12 +5531,24 @@ function debug_log_insert_section_start($type, $text, $allowcopy = false) : void
 
 	if ($allowcopy) {
 		$uid           = generate_hash();
-		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy ti ti-copy\' id=\'copyToClipboard' . $uid . '\' title=\'' . __esc('Copy Section Output to Clipboard') . '\'</a></span></div>';
+		$copy_prefix   = ('<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark ' .
+			'cactiTableCopy ti ti-copy\' id=\'copyToClipboard') .
+				$uid .
+				'\' title=\'' .
+				__esc('Copy Section Output to Clipboard') .
+				'\'</a></span></div>';
 		$copy_dataid   = ' id=\'clipboardData' . $uid . '\'';
 		$copy_headerid = ' id=\'clipboardHeader' . $uid . '\'';
 	}
 
-	debug_log_insert($type, '<table class=\'cactiTable debug\'' . $copy_headerid . '><tr class=\'tableHeader\'><td>' . htmle($text) . $copy_prefix . '</td></tr><tr><td style=\'padding:0px;\'><table style=\'display:none;\'' . $copy_dataid . '><tr><td><div style=\'font-family: monospace;\'>');
+	debug_log_insert($type,
+		'<table class=\'cactiTable debug\'' .
+			$copy_headerid .
+			'><tr class=\'tableHeader\'><td>' .
+			htmle($text) .
+			$copy_prefix .
+			('</td></tr><tr><td style=\'padding:0px;\'><table ' .
+			'style=\'display:none;\'') . $copy_dataid . '><tr><td><div style=\'font-family: monospace;\'>');
 }
 
 /**
@@ -5571,7 +5770,10 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
 		return $default;
 	}
 
-	if (str_contains($result, '(') && preg_match('/^(?:INET_ATON|NATURAL_SORT_KEY)\([a-zA-Z_][a-zA-Z0-9_.]*\)$/i', $result) !== 1) {
+	if (str_contains($result,
+		'(') &&
+		preg_match('/^(?:INET_ATON|NATURAL_SORT_KEY)\([a-zA-Z_][a-zA-Z0-9_.]*\)$/i',
+			$result) !== 1) {
 		return $default;
 	}
 
@@ -5633,8 +5835,50 @@ function cacti_csv_needs_formula_guard(string $value) : bool {
  * @return string The sanitized search string
  */
 function sanitize_search_string(string $string) : string {
-	static $drop_char_match   = ['(', ')', '^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*'];
-	static $drop_char_replace = ['', '', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+	static $drop_char_match   = ['(',
+		')',
+		'^',
+		'$',
+		'<',
+		'>',
+		'`',
+		'\'',
+		'"',
+		'|',
+		',',
+		'?',
+		'+',
+		'[',
+		']',
+		'{',
+		'}',
+		'#',
+		';',
+		'!',
+		'=',
+		'*'];
+	static $drop_char_replace = ['',
+		'',
+		' ',
+		' ',
+		' ',
+		' ',
+		'',
+		'',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' ',
+		' '];
 
 	// Replace line endings by a space
 	$string = preg_replace('/[\n\r]/is', ' ', $string) ?? $string;
@@ -5969,7 +6213,9 @@ function set_page_refresh(array $refresh) : void {
 		$_SESSION['refresh']['seconds'] = $refresh['seconds'];
 	}
 
-	if (read_config_option('auth_cache_enabled') == 'on' && isset($_SESSION['cacti_remembers']) && $_SESSION['cacti_remembers'] == true) {
+	if (read_config_option('auth_cache_enabled') == 'on' &&
+		isset($_SESSION['cacti_remembers']) &&
+		$_SESSION['cacti_remembers'] == true) {
 		$_SESSION['refresh']['logout'] = 'false';
 	} elseif (isset($refresh['logout'])) {
 		if ($refresh['logout'] == 'true' || $refresh['logout'] === true) {
@@ -6115,12 +6361,26 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 		}
 
 		if ($from != '') {
-			return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+			return mailer($from,
+				$to,
+				subject: $subject,
+				body: $body,
+				attachments: $attachments,
+				headers: $headers,
+				html: $html,
+				expandIds: $expandIds);
 		} else {
 			return 'ERROR: From Email Address Not Set';
 		}
 	} else {
-		return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+		return mailer($from,
+			$to,
+			subject: $subject,
+			body: $body,
+			attachments: $attachments,
+			headers: $headers,
+			html: $html,
+			expandIds: $expandIds);
 	}
 }
 
@@ -6174,7 +6434,10 @@ function mailer_secure_tls_flag(string $secure) : bool {
  *
  * @return EsmtpTransport
  */
-function mailer_build_esmtp_transport(string $host, int $port, string $secure, ?array $authenticators = null) : EsmtpTransport {
+function mailer_build_esmtp_transport(string $host,
+	int $port,
+	string $secure,
+	?array $authenticators = null) : EsmtpTransport {
 	require_once(CACTI_PATH_LIBRARY . '/CactiMailerTransport.php');
 
 	$secure = mailer_normalize_secure_mode($secure);
@@ -6468,7 +6731,8 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		cacti_log('ERROR: No recipient address set!!', false, 'MAILER');
 		cacti_debug_backtrace('MAILER ERROR');
 
-		return __('Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
+		return __('Mailer Error: No recipient address set!!<br>If using the <i>Test ' .
+			'Mail</i> link, please set the <b>Alert e-mail</b> setting.');
 	}
 
 	$replyto   = parse_email_details($replyto);
@@ -6634,7 +6898,9 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 					// handle the body text
 					switch ($attachment['inline']) {
 						case 'inline':
-							$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', "<img src='cid:$cid' >", $body);
+							$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>',
+								"<img src='cid:$cid' >",
+								$body);
 
 							break;
 						case 'attachment':
@@ -6889,7 +7155,12 @@ function create_emailtext(array $e) : string {
 	return $text;
 }
 
-function ping_mail_server(string $host, int $port, string $user, string $password, int $timeout = 10, string $secure = 'none') : mixed {
+function ping_mail_server(string $host,
+	int $port,
+	string $user,
+	string $password,
+	int $timeout = 10,
+	string $secure = 'none') : mixed {
 	$results   = true;
 	$transport = null;
 
@@ -6920,7 +7191,8 @@ function ping_mail_server(string $host, int $port, string $user, string $passwor
 }
 
 function email_test() : void {
-	$message =  __('This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.') . '<br><br>';
+	$message =  __('This is a test message generated from Cacti.  This message was sent ' .
+		'to test the configuration of your Mail Settings.') . '<br><br>';
 	$message .= __('Your email settings are currently set as follows') . '<br><br>';
 	$message .= '<b>' . __('Method') . '</b>: ';
 
@@ -6963,7 +7235,12 @@ function email_test() : void {
 		}
 
 		if (read_config_option('settings_ping_mail') == 0) {
-			$ping_results = ping_mail_server($smtp_host, $smtp_port, $smtp_username, $smtp_password, $smtp_timeout, $smtp_secure);
+			$ping_results = ping_mail_server($smtp_host,
+				$smtp_port,
+				$smtp_username,
+				$smtp_password,
+				$smtp_timeout,
+				$smtp_secure);
 
 			print __('Ping Results:') . ' ' . ($ping_results == 1 ? __('Success') : $ping_results) . '<br>';
 
@@ -7188,7 +7465,11 @@ function clog_authorized() : bool {
 	}
 }
 
-function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0) : mixed {
+function cacti_debug_backtrace(string $entry = '',
+	bool $html = false,
+	bool $record = true,
+	int $limit = 0,
+	int $skip = 0) : mixed {
 	$skip  = $skip >= 0 ? $skip : 1;
 	$limit = $limit > 0 ? ($limit + $skip) : 0;
 
@@ -7361,7 +7642,11 @@ function get_uptime(array $host, bool $return_as_date = false) : string {
 	}
 }
 
-function get_daysfromtime(mixed $time, bool $secs = false, string $pad = '', int $format = DAYS_FORMAT_SHORT, bool $all = false) : string {
+function get_daysfromtime(mixed $time,
+	bool $secs = false,
+	string $pad = '',
+	int $format = DAYS_FORMAT_SHORT,
+	bool $all = false) : string {
 	global $days_from_time_settings;
 
 	// Work around stricter typing in PHP 8.1.2+
@@ -7711,9 +7996,14 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 	$error  = 'Unknown error occurred';
 
 	if ($level != null && isset($phperrors[$level])) {
-		$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+		$error  = 'PHP ' .
+			$phperrors[$level] .
+			($plugin != '' ? " in  Plugin '$plugin'" : '') .
+			": $message in file: $file  on line: $line";
 	} else {
-		$error  = 'PHP Unknown Error' . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+		$error  = 'PHP Unknown Error' .
+			($plugin != '' ? " in  Plugin '$plugin'" : '') .
+			": $message in file: $file  on line: $line";
 	}
 
 	switch ($level) {
@@ -7727,7 +8017,10 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
-				admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $error));
+				admin_email(__('Cacti System Warning'),
+					__('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.',
+						$plugin,
+						$error));
 			}
 
 			break;
@@ -7812,7 +8105,10 @@ function CactiShutdownHandler() : bool {
 				if ($plugin != '') {
 					api_plugin_disable_all($plugin);
 					cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
-					admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $message));
+					admin_email(__('Cacti System Warning'),
+						__('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.',
+							$plugin,
+							$message));
 				}
 
 				return false;
@@ -7926,7 +8222,10 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 	$port         = '';
 
 	if ($port_setting !== '') {
-		$validated_port = filter_var($port_setting, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]);
+		$validated_port = filter_var($port_setting,
+			FILTER_VALIDATE_INT,
+			['options' => ['min_range' => 1,
+			'max_range'                => 65535]]);
 
 		if ($validated_port === false) {
 			cacti_log('ERROR: Remote Agent TCP port is invalid.', false, 'SECURITY');
@@ -7941,7 +8240,10 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 
 	if (!is_ipaddress($normalized_host)) {
 		if (filter_var($normalized_host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
-			cacti_log(sprintf('ERROR: PollerID:%d has an invalid Remote Data Collector hostname.', $poller_id), false, 'SECURITY');
+			cacti_log(sprintf('ERROR: PollerID:%d has an invalid Remote Data Collector hostname.',
+				$poller_id),
+				false,
+				'SECURITY');
 
 			return false;
 		}
@@ -7950,9 +8252,16 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 
 		if (!is_ipaddress($ipaddress)) {
 			if (debounce_run_notification('poller_down:' . $poller_id)) {
-				cacti_log(sprintf('WARNING: PollerID:%s has an invalid hostname:%s.  It is not reachable via DNS!', $poller_id, $hostname), false, $logtype);
+				cacti_log(sprintf('WARNING: PollerID:%s has an invalid hostname:%s.  It is not reachable via DNS!',
+					$poller_id,
+					$hostname),
+					false,
+					$logtype);
 
-				admin_email(__('Cacti System Warning'), __('WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!', $poller_id, $hostname));
+				admin_email(__('Cacti System Warning'),
+					__('WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!',
+						$poller_id,
+						$hostname));
 			}
 
 			return '';
@@ -7966,7 +8275,11 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 	 * still allowed because distributed Data Collectors legitimately run on
 	 * internal LANs. This closes SSRF to services on the Cacti host or network. */
 	if ($target_ip === '' || filter_var($target_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) === false) {
-		cacti_log(sprintf('SECURITY: Refusing Remote Data Collector fetch for PollerID:%d to disallowed address %s.', $poller_id, $target_ip), false, 'SECURITY');
+		cacti_log(sprintf('SECURITY: Refusing Remote Data Collector fetch for PollerID:%d to disallowed address %s.',
+			$poller_id,
+			$target_ip),
+			false,
+			'SECURITY');
 
 		return false;
 	}
@@ -7986,7 +8299,9 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 	 * TLS peer_name so vhost routing and certificate checks still see the name. */
 	$fgc_contextoption = get_default_contextoption(false, $normalized_host);
 
-	$host_header = (filter_var($normalized_host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $normalized_host . ']' : $normalized_host) . $port;
+	$host_header = (filter_var($normalized_host,
+		FILTER_VALIDATE_IP,
+		FILTER_FLAG_IPV6) ? '[' . $normalized_host . ']' : $normalized_host) . $port;
 
 	if (isset($fgc_contextoption['http']['header'])) {
 		$fgc_contextoption['http']['header'] .= 'Host: ' . $host_header . "\r\n";
@@ -8025,8 +8340,15 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 
 		$status = remote_agent_http_status($http_response_header);
 
-		if (!is_string($output) || strlen($output) > REMOTE_AGENT_MAX_RESPONSE_BYTES || $status === null || $status < 200 || $status >= 300) {
-			cacti_log(sprintf('WARNING: Remote Data Collector %d returned an invalid, oversized, or non-success response.', $poller_id), false, $logtype);
+		if (!is_string($output) ||
+			strlen($output) > REMOTE_AGENT_MAX_RESPONSE_BYTES ||
+			$status === null ||
+			$status < 200 ||
+			$status >= 300) {
+			cacti_log(sprintf('WARNING: Remote Data Collector %d returned an invalid, oversized, or non-success response.',
+				$poller_id),
+				false,
+				$logtype);
 
 			return false;
 		}
@@ -8034,8 +8356,18 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		$ra_end = microtime(true);
 
 		if (debounce_run_notification('poller_connect_down:' . $poller_id)) {
-			cacti_log(sprintf('WARNING: Failed talking to Remote Data Collector \'%s\' after %0.2f seconds.  URL:\'%s:\', Error:\'%s:\'', $poller_id, ($ra_end - $ra_start), $url, $e->getMessage()), false, $logtype);
-			admin_email(__('Cacti System Warning'), __("Failed to Contact Remote Agent %s\nReason: %s.\nSee Cacti Log for details.", $hostname, $e->getMessage()));
+			cacti_log(sprintf('WARNING: Failed talking to Remote Data Collector \'%s\' after %0.2f ' .
+				'seconds.  URL:\'%s:\', Error:\'%s:\'',
+				$poller_id,
+				($ra_end - $ra_start),
+				$url,
+				$e->getMessage()),
+				false,
+				$logtype);
+			admin_email(__('Cacti System Warning'),
+				__("Failed to Contact Remote Agent %s\nReason: %s.\nSee Cacti Log for details.",
+					$hostname,
+					$e->getMessage()));
 		}
 
 		return false;
@@ -8163,7 +8495,8 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 				[$data_input_id]);
 
 			if (cacti_sizeof($bad_hashes)) {
-				cacti_log(cacti_strtoupper($step) . ' NOTE: Repairing ' . cacti_sizeof($bad_hashes) . ' Damaged data_input_fields', false);
+				cacti_log(cacti_strtoupper($step) . ' NOTE: Repairing ' . cacti_sizeof($bad_hashes) . ' Damaged data_input_fields',
+					false);
 
 				foreach ($bad_hashes as $bhash) {
 					$good_field_id = db_fetch_cell_prepared('SELECT id
@@ -8174,7 +8507,10 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 						[$bhash['hash'], $data_input_id, $bhash['data_name']]);
 
 					if (!empty($good_field_id)) {
-						cacti_log("Data Input ID $data_input_id Bad Field ID is " . $bhash['id'] . ', Good Field ID: ' . $good_field_id, false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+						cacti_log("Data Input ID $data_input_id Bad Field ID is " . $bhash['id'] . ', Good Field ID: ' . $good_field_id,
+							false,
+							'WEBUI',
+							POLLER_VERBOSITY_DEVDBG);
 
 						cacti_log('Executing Data Input Data Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
@@ -8185,7 +8521,8 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 							[$bhash['id']]);
 
 						if (cacti_sizeof($bad_mappings)) {
-							cacti_log(cacti_strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_input_fields', false);
+							cacti_log(cacti_strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_input_fields',
+								false);
 
 							foreach ($bad_mappings as $mfid) {
 								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -8195,14 +8532,20 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 									[$good_field_id, $mfid['data_template_data_id']]);
 
 								if ($good_found > 0) {
-									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing',
+										false,
+										'WEBUI',
+										POLLER_VERBOSITY_DEVDBG);
 
 									db_execute_prepared('DELETE FROM data_input_data
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
 										[$mfid['data_input_field_id'], $mfid['data_template_data_id']]);
 								} else {
-									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing',
+										false,
+										'WEBUI',
+										POLLER_VERBOSITY_DEVDBG);
 
 									db_execute_prepared('UPDATE data_input_data
 										SET data_input_field_id = ?
@@ -8224,7 +8567,8 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 							[$bhash['id']]);
 
 						if (cacti_sizeof($bad_mappings)) {
-							cacti_log(cacti_strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
+							cacti_log(cacti_strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_template_rrd',
+								false);
 
 							foreach ($bad_mappings as $mfid) {
 								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -8234,14 +8578,20 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 									[$good_field_id, $mfid['id']]);
 
 								if ($good_found > 0) {
-									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing',
+										false,
+										'WEBUI',
+										POLLER_VERBOSITY_DEVDBG);
 
 									db_execute_prepared('DELETE FROM data_template_rrd
 										WHERE data_input_field_id = ?
 										AND id = ?',
 										[$mfid['data_input_field_id'], $mfid['id']]);
 								} else {
-									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing',
+										false,
+										'WEBUI',
+										POLLER_VERBOSITY_DEVDBG);
 
 									db_execute_prepared('UPDATE data_template_rrd
 										SET data_input_field_id = ?
@@ -8271,7 +8621,8 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 								[$data_input_field_id]);
 						}
 					} else {
-						cacti_log('WARNING: Could not find Cacti default matching hash for unknown system hash "' . $bhash['hash'] . '" for ' . $data_input_id . '.  No repair performed.');
+						cacti_log(('WARNING: Could not find Cacti default matching hash for unknown ' .
+							'system hash "') . $bhash['hash'] . '" for ' . $data_input_id . '.  No repair performed.');
 					}
 				}
 			}
@@ -8452,7 +8803,8 @@ function get_source_timestamp() : array {
 
 function format_cacti_version(string $version, int $format = CACTI_VERSION_FORMAT_FULL) : string {
 	if ($version == 'new_install') {
-		$version = CACTI_VERSION . ($format == CACTI_VERSION_FORMAT_FULL ? '.0.0' : ''); // ($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
+		$version = CACTI_VERSION .
+			($format == CACTI_VERSION_FORMAT_FULL ? '.0.0' : ''); // ($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
 	}
 
 	$parts = explode('.', $version);
@@ -8870,7 +9222,13 @@ function version_to_bits(string $version, $hex = false) : int|string {
 
 	// Do we have a valid hex value? If not, lets note it
 	if (!ctype_xdigit("$newver")) {
-		cacti_log('Invalid hex passed - ' . $newver . ' - ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING');
+		cacti_log('Invalid hex passed - ' . $newver . ' - ' . cacti_debug_backtrace('',
+			false,
+			false,
+			0,
+			1),
+			false,
+			'WARNING');
 	}
 
 	$newver = (int) $newver;
@@ -8958,7 +9316,11 @@ function get_rrdtool_version() : string {
 	static $version = '';
 
 	if ($version == '') {
-		$version = str_replace('rrd-', '', str_replace('.x', '.0', (read_config_option('rrdtool_version') ?: read_default_config_option('rrdtool_version')) ?: '1.4.0'));
+		$version = str_replace('rrd-',
+			'',
+			str_replace('.x',
+				'.0',
+				(read_config_option('rrdtool_version') ?: read_default_config_option('rrdtool_version')) ?: '1.4.0'));
 	}
 
 	return $version;
@@ -9072,7 +9434,12 @@ function get_include_relpath(string $path, mixed $basePath = null) : string {
  *
  * @throws Exception
  */
-function get_theme_paths(string $format, string $path, string|null $theme = null, string|null $file = null, bool $pathFirst = false, ... $args) {
+function get_theme_paths(string $format,
+	string $path,
+	string|null $theme = null,
+	string|null $file = null,
+	bool $pathFirst = false,
+	... $args) {
 	$output = [];
 	$paths  = [];
 
@@ -9141,8 +9508,14 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
 		}
 
 		$npath = implode('", "', $paths);
-		$ntext = sprintf('WARNING: Key Cacti Include File "%s" missing.  Please locate and replace this file as we checked in "%s"', $file, $npath);
-		$itext = __('WARNING: Key Cacti Include File "%s" missing.  Please locate and replace this file as we checked in "%s"', $file, $npath);
+		$ntext = sprintf('WARNING: Key Cacti Include File "%s" missing.  Please locate and ' .
+			'replace this file as we checked in "%s"',
+			$file,
+			$npath);
+		$itext = __('WARNING: Key Cacti Include File "%s" missing.  Please locate and ' .
+			'replace this file as we checked in "%s"',
+			$file,
+			$npath);
 
 		cacti_log($ntext, false, 'WEBUI');
 		admin_email(__('Cacti System Warning'), $itext);
@@ -9161,7 +9534,10 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
  *
  * @return string
  */
-function get_md5_include_js(string $path, bool $async = false, string|null $theme = null, string|null $file = null) : string {
+function get_md5_include_js(string $path,
+	bool $async = false,
+	string|null $theme = null,
+	string|null $file = null) : string {
 	$format = '<script type=\'text/javascript\' src=\'%s\'%s ' . CactiSecureHeaders::getNonceAttribute() . '></script>';
 
 	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' async' : '');
@@ -9177,10 +9553,18 @@ function get_md5_include_js(string $path, bool $async = false, string|null $them
  *
  * @return string
  */
-function get_md5_include_css(string $path, bool $async = false, string|null $theme = null, string|null $file = null) : string {
+function get_md5_include_css(string $path,
+	bool $async = false,
+	string|null $theme = null,
+	string|null $file = null) : string {
 	$format = '<link href=\'%s\' type=\'text/css\' rel=\'stylesheet\'%s>';
 
-	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' media=\'print\' online="this.media=\'all\'"' : '');
+	return get_theme_paths($format,
+		$path,
+		$theme,
+		$file,
+		true,
+		$async ? ' media=\'print\' online="this.media=\'all\'"' : '');
 }
 
 /**
@@ -9196,7 +9580,13 @@ function get_md5_include_css(string $path, bool $async = false, string|null $the
  *
  * @return string
  */
-function get_md5_include_icon(string $path, bool $async = false, string|null $theme = null, string|null $file = null, string|null $rel = null, string|null $type = null, string|null $sizes = null) : string {
+function get_md5_include_icon(string $path,
+	bool $async = false,
+	string|null $theme = null,
+	string|null $file = null,
+	string|null $rel = null,
+	string|null $type = null,
+	string|null $sizes = null) : string {
 	if ($type === null) {
 		$format = '<link href=\'%s\' type=\'text/css\' %s%s>';
 	} else {
@@ -9460,7 +9850,11 @@ function get_client_addr() : string|false {
 
 		if (empty($last_time)) {
 			// First run — no record yet; log immediately and record today
-			cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
+			cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false ' .
+				'(only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a ' .
+				'reverse proxy.',
+				false,
+				'AUTH');
 			set_config_option('proxy_alert', date('Y-m-d'));
 		} else {
 			$last_date = new DateTime($last_time);
@@ -9470,7 +9864,11 @@ function get_client_addr() : string|false {
 			$this_days = $this_diff->format('%a');
 
 			if ((int) $this_days >= 1) {
-				cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
+				cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false ' .
+					'(only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a ' .
+					'reverse proxy.',
+					false,
+					'AUTH');
 				set_config_option('proxy_alert', date('Y-m-d'));
 			}
 		}
@@ -9516,7 +9914,10 @@ function get_client_addr() : string|false {
 function cacti_is_https() : bool {
 	global $config;
 
-	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && $_SERVER['HTTPS'] !== '0' && strtolower($_SERVER['HTTPS']) !== 'off') {
+	if (isset($_SERVER['HTTPS']) &&
+		$_SERVER['HTTPS'] !== '' &&
+		$_SERVER['HTTPS'] !== '0' &&
+		strtolower($_SERVER['HTTPS']) !== 'off') {
 		return true;
 	}
 
@@ -9708,7 +10109,8 @@ function is_function_enabled(string $name) : bool {
 }
 
 function is_page_ajax() : bool {
-	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && cacti_strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+		cacti_strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		return true;
 	}
 
@@ -9718,7 +10120,10 @@ function is_page_ajax() : bool {
 function raise_ajax_permission_denied() : void {
 	if (is_page_ajax()) {
 		header('HTTP/1.1 401 ' . __('Permission Denied'));
-		print __('You are not permitted to access this section of Cacti.') . '  ' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
+		print __('You are not permitted to access this section of Cacti.') .
+			'  ' .
+			__('If you feel that this is an error. Please contact your Cacti ' .
+			'Administrator.');
 
 		exit;
 	}
@@ -9754,7 +10159,13 @@ function cacti_session_start() : bool {
 	$session_result  = session_start($session_options);
 
 	if (!$session_result) {
-		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
+		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('',
+			false,
+			false,
+			0,
+			1),
+			false,
+			'WARNING:');
 	}
 
 	return true;
@@ -9813,7 +10224,13 @@ function cacti_cookie_set($session, $val, $timeout = null) : void {
 
 		setcookie((string) $session, $val, $options);
 	} else {
-		setcookie((string) $session, $val, ['expires' => time() + 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
+		setcookie((string) $session,
+			$val,
+			['expires' => time() + 3600,
+			'path'     => CACTI_PATH_URL,
+			'domain'   => $domain,
+			'secure'   => $secure,
+			'httponly' => true]);
 	}
 }
 
@@ -9833,7 +10250,10 @@ function cacti_cookie_logout() : void {
 
 	$secure = cacti_is_https();
 
-	$cookies = [(string) session_name(), (string) session_name() . '_opt', (string) session_name() . '_otp', 'cacti_remembers'];
+	$cookies = [(string) session_name(),
+		(string) session_name() . '_opt',
+		(string) session_name() . '_otp',
+		'cacti_remembers'];
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = [
@@ -9850,7 +10270,13 @@ function cacti_cookie_logout() : void {
 		}
 	} else {
 		foreach ($cookies as $cookie) {
-			setcookie($cookie, '', ['expires' => time() - 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
+			setcookie($cookie,
+				'',
+				['expires' => time() - 3600,
+				'path'     => CACTI_PATH_URL,
+				'domain'   => $domain,
+				'secure'   => $secure,
+				'httponly' => true]);
 		}
 	}
 
@@ -9893,7 +10319,13 @@ function cacti_cookie_session_set(string $user, int $realm, string $nssecret) : 
 
 		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, $options);
 	} else {
-		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, ['expires' => time() + (86400 * 30), 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
+		setcookie('cacti_remembers',
+			$user . ',' . $realm . ',' . $nssecret,
+			['expires' => time() + (86400 * 30),
+			'path'     => CACTI_PATH_URL,
+			'domain'   => $domain,
+			'secure'   => $secure,
+			'httponly' => true]);
 	}
 }
 
@@ -9925,7 +10357,13 @@ function cacti_cookie_session_logout() : void {
 
 		setcookie('cacti_remembers', '', $options);
 	} else {
-		setcookie('cacti_remembers', '', ['expires' => time() - 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
+		setcookie('cacti_remembers',
+			'',
+			['expires' => time() - 3600,
+			'path'     => CACTI_PATH_URL,
+			'domain'   => $domain,
+			'secure'   => $secure,
+			'httponly' => true]);
 	}
 }
 
@@ -10295,7 +10733,8 @@ function text_get_regex_array(mixed $extraSubstitutions = []) : array {
 
 function text_regex_replace(int $id, string $link, string $url, array $matches, array $cache) : string {
 	if ($link) {
-		return $matches[1] . '<a href=\'' . htmle(CACTI_PATH_URL . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? htmle($cache[$id]) : $id) . '</a>' . $matches[3];
+		return $matches[1] . '<a href=\'' . htmle(CACTI_PATH_URL . sprintf($url,
+			$id)) . '\'>' . (isset($cache[$id]) ? htmle($cache[$id]) : $id) . '</a>' . $matches[3];
 	} else {
 		return $matches[1] . ($cache[$id] ?? $id) . $matches[3];
 	}
@@ -10423,7 +10862,11 @@ function text_regex_datasource(array $matches, mixed $link = false) : string {
 		$ds_matches[1] = $ds_matches[3] = '';
 
 		foreach ($ds_ids as $ds_id) {
-			$result .= $sep . text_regex_replace($ds_id, $link, 'data_sources.php?action=ds_edit&id=%s', $ds_matches, $ds_titles);
+			$result .= $sep . text_regex_replace($ds_id,
+				$link,
+				'data_sources.php?action=ds_edit&id=%s',
+				$ds_matches,
+				$ds_titles);
 			$sep = ', ';
 		}
 
@@ -10570,7 +11013,11 @@ function text_regex_graphtemplates(array $matches, mixed $link = false) : string
 		$result = '';
 
 		foreach ($ids as $id) {
-			$result .= text_regex_replace($id, $link, 'graph_templates.php?action=template_edit&id=%s', $matches, $templates_cache);
+			$result .= text_regex_replace($id,
+				$link,
+				'graph_templates.php?action=template_edit&id=%s',
+				$matches,
+				$templates_cache);
 		}
 	}
 
@@ -10598,7 +11045,11 @@ function text_regex_users(array $matches, mixed $link = false) : string {
 		}
 
 		foreach ($user_ids as $id) {
-			$result .= text_regex_replace($id, $link, 'user_admin.php?action=user_edit&tab=general&id=%s', $matches, $users_cache);
+			$result .= text_regex_replace($id,
+				$link,
+				'user_admin.php?action=user_edit&tab=general&id=%s',
+				$matches,
+				$users_cache);
 		}
 	}
 
@@ -10624,7 +11075,11 @@ function text_regex_rule(array $matches, mixed $link = false) : string {
 		$result = '';
 
 		foreach ($dev_ids as $rule_id) {
-			$result .= text_regex_replace($rule_id, $link, 'automation_graph_rules.php?action=edit&id=%s', $matches, $rules_cache);
+			$result .= text_regex_replace($rule_id,
+				$link,
+				'automation_graph_rules.php?action=edit&id=%s',
+				$matches,
+				$rules_cache);
 		}
 	}
 

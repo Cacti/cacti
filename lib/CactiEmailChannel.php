@@ -38,7 +38,9 @@ final class CactiEmailChannel implements ChannelInterface {
 		$this->mailer = Closure::fromCallable($mailer);
 	}
 
-	public function notify(Notification $notification, RecipientInterface $recipient, ?string $transportName = null) : void {
+	public function notify(Notification $notification,
+		RecipientInterface $recipient,
+		?string $transportName = null) : void {
 		if (!$recipient instanceof EmailRecipientInterface || trim($recipient->getEmail()) === '') {
 			throw new LogicException('The Cacti email channel needs an email recipient.');
 		}

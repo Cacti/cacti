@@ -27,7 +27,8 @@ final class LoginProviderFactory {
 			PROVIDER_TYPE_AD     => new ActiveDirectoryLoginProvider($row),
 			PROVIDER_TYPE_SAML2  => new SamlLoginProvider($row),
 			PROVIDER_TYPE_OPENID => new OpenIdLoginProvider($row),
-			default              => throw new \InvalidArgumentException('Unknown login provider type: ' . ($row['type'] ?? 'null')),
+			default              => throw new \InvalidArgumentException('Unknown login provider type: ' .
+				($row['type'] ?? 'null')),
 		};
 	}
 

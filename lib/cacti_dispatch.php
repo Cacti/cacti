@@ -57,7 +57,9 @@ function cacti_dispatch(array $actions, string $default = ''): void {
 		$action = $default;
 	}
 
-	if ($action !== '' && strspn($action, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-') !== strlen($action)) {
+	if ($action !== '' &&
+		strspn($action,
+			'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-') !== strlen($action)) {
 		$action = $default;
 	}
 
@@ -79,14 +81,28 @@ function cacti_dispatch(array $actions, string $default = ''): void {
 	$request_method = isset($_SERVER['REQUEST_METHOD']) ? cacti_strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
 
 	if (!in_array($method, ['GET', 'POST', 'ANY'], true)) {
-		cacti_log('WARNING: cacti_dispatch: invalid method "' . $method . '" declared for action "' . $action . '"; failing closed', false, 'WEBUI');
+		cacti_log('WARNING: cacti_dispatch: invalid method "' .
+			$method .
+			'" declared for action "' .
+			$action .
+			'"; failing closed',
+			false,
+			'WEBUI');
 		cacti_dispatch_deny(403);
 
 		return;
 	}
 
 	if ($method !== 'ANY' && $request_method !== $method) {
-		cacti_log('WARNING: cacti_dispatch: method mismatch for action "' . $action . '" (expected ' . $method . ', got ' . $request_method . ')', false, 'WEBUI');
+		cacti_log('WARNING: cacti_dispatch: method mismatch for action "' .
+			$action .
+			'" (expected ' .
+			$method .
+			', got ' .
+			$request_method .
+			')',
+			false,
+			'WEBUI');
 		header('HTTP/1.1 405 Method Not Allowed');
 		header('Allow: ' . $method);
 
@@ -95,7 +111,9 @@ function cacti_dispatch(array $actions, string $default = ''): void {
 
 	// Enforce realm permission.
 	if (isset($entry['realm']) && !is_realm_allowed($entry['realm'])) {
-		cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"', false, 'WEBUI');
+		cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"',
+			false,
+			'WEBUI');
 		cacti_dispatch_deny(403);
 
 		return;
