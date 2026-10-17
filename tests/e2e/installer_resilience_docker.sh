@@ -13,16 +13,28 @@ RUN_ID="cacti_installer_e2e_$$"
 NETWORK="${RUN_ID}_net"
 DB_CONTAINER="${RUN_ID}_db"
 WEB_CONTAINER="${RUN_ID}_web"
+LDAP_CONTAINER="${RUN_ID}_ldap"
 IMAGE="${RUN_ID}:test"
 APP_VOLUME="${RUN_ID}_app"
 DB_VOLUME="${RUN_ID}_db"
 CACHE_VOLUME="${RUN_ID}_cache"
 RRA_VOLUME="${RUN_ID}_rra"
 LOG_VOLUME="${RUN_ID}_log"
-OLD_SCHEMA="$(mktemp "${TMPDIR:-/tmp}/cacti-1.2.22.XXXXXX.sql")"
+SOURCE_VERSION="${1:-${INSTALLER_SOURCE_VERSION:-1.2.22}}"
+DB_IMAGE="${2:-${INSTALLER_DB_IMAGE:-mariadb:11.8}}"
+OLD_SCHEMA="$(mktemp "${TMPDIR:-/tmp}/cacti-upgrade.XXXXXX")"
 
 cleanup() {
-	docker rm -f "$WEB_CONTAINER" "$DB_CONTAINER" >/dev/null 2>&1 || true
+	local status=$?
+	if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 && -n "${CACTI_PR_COVERAGE_OUTPUT:-}" ]]; then
+		mkdir -p "$CACTI_PR_COVERAGE_OUTPUT"
+		docker cp "$WEB_CONTAINER:/tmp/cacti-pr-coverage/." "$CACTI_PR_COVERAGE_OUTPUT/" || status=1
+	fi
+	if [ "$status" -ne 0 ] && [ "${INSTALLER_KEEP_FAILURE:-0}" = 1 ]; then
+		printf 'Retained disposable failed fixture: %s (%s)\n' "$RUN_ID" "$IMAGE" >&2
+		return
+	fi
+	docker rm -f "$WEB_CONTAINER" "$DB_CONTAINER" "$LDAP_CONTAINER" >/dev/null 2>&1 || true
 	docker volume rm "$APP_VOLUME" "$DB_VOLUME" "$CACHE_VOLUME" "$RRA_VOLUME" "$LOG_VOLUME" >/dev/null 2>&1 || true
 	docker network rm "$NETWORK" >/dev/null 2>&1 || true
 	docker image rm "$IMAGE" >/dev/null 2>&1 || true
@@ -85,7 +97,8 @@ assert_complete_install() {
 }
 
 cd "$REPO_DIR"
-git show release/1.2.22:cacti.sql > "$OLD_SCHEMA"
+git show "release/$SOURCE_VERSION:cacti.sql" > "$OLD_SCHEMA"
+printf 'Upgrade fixture source: release/%s (%s)\n' "$SOURCE_VERSION" "$(git rev-parse "release/$SOURCE_VERSION")"
 
 docker build --quiet -t "$IMAGE" -f docker/Dockerfile docker
 docker network create "$NETWORK" >/dev/null
@@ -106,7 +119,7 @@ docker run --rm \
 docker run --rm \
 	-v "$APP_VOLUME:/app" \
 	-w /app \
-	composer:2 install --ignore-platform-reqs --no-interaction --no-progress >/dev/null 2>&1
+	composer:2 install '--ignore-platform-req=ext-*' --no-interaction --no-progress >/dev/null 2>&1
 
 docker run -d \
 	--name "$DB_CONTAINER" \
@@ -114,7 +127,7 @@ docker run -d \
 	--network-alias db \
 	-e MARIADB_ROOT_PASSWORD=testroot \
 	-v "$DB_VOLUME:/var/lib/mysql" \
-	mariadb:11.8 \
+	"$DB_IMAGE" \
 	--character-set-server=utf8mb4 \
 	--collation-server=utf8mb4_unicode_ci >/dev/null
 
@@ -129,6 +142,7 @@ done
 docker exec "$DB_CONTAINER" healthcheck.sh --connect --innodb_initialized >/dev/null 2>&1 || fail 'MariaDB did not become ready'
 
 docker run -d \
+	--publish 127.0.0.1::80 \
 	--name "$WEB_CONTAINER" \
 	--network "$NETWORK" \
 	-e DB_HOST=db \
@@ -137,6 +151,7 @@ docker run -d \
 	-e DB_PASS=testroot \
 	-e DB_NAME=cacti \
 	-e TIMEZONE=UTC \
+	-e CACTI_PR_RAW_COVERAGE="${CACTI_PR_RAW_COVERAGE:-}" \
 	-v "$APP_VOLUME:/var/www/html/cacti" \
 	-v "$CACHE_VOLUME:/var/www/html/cacti/cache" \
 	-v "$RRA_VOLUME:/var/www/html/cacti/rra" \
@@ -152,15 +167,29 @@ for _ in $(seq 1 30); do
 done
 
 docker exec "$WEB_CONTAINER" test -f /var/www/html/cacti/include/config.php || fail 'Cacti configuration was not generated'
+docker exec "$WEB_CONTAINER" service cron stop >/dev/null
 docker exec "$WEB_CONTAINER" apt-get update -qq
 docker exec "$WEB_CONTAINER" apt-get install -y -qq fping >/dev/null
 docker exec "$WEB_CONTAINER" sh -c "printf '%s\n' 'display_errors=Off' 'error_reporting=24575' > /usr/local/etc/php/conf.d/zz-cacti-e2e.ini"
+if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 ]]; then
+	docker exec "$WEB_CONTAINER" pecl install xdebug-3.5.3 >/dev/null
+	docker exec "$WEB_CONTAINER" docker-php-ext-enable xdebug
+	docker exec "$WEB_CONTAINER" mkdir -p /tmp/cacti-pr-coverage
+	docker exec "$WEB_CONTAINER" chmod 0777 /tmp/cacti-pr-coverage
+	docker exec "$WEB_CONTAINER" sh -c "printf '%s\n' 'xdebug.mode=coverage' 'auto_prepend_file=/var/www/html/cacti/tests/Helpers/RequestCoverage.php' > /usr/local/etc/php/conf.d/zz-request-coverage.ini"
+	docker exec "$WEB_CONTAINER" sh -c "printf '%s\n' '[www]' 'env[CACTI_PR_RAW_COVERAGE] = /tmp/cacti-pr-coverage' >> /usr/local/etc/php-fpm.d/zz-docker.conf"
+	docker exec "$WEB_CONTAINER" pkill -USR2 php-fpm
+fi
 docker exec "$WEB_CONTAINER" mkdir -p \
 	/var/www/html/cacti/cache/boost \
 	/var/www/html/cacti/cache/mibcache \
 	/var/www/html/cacti/cache/realtime \
 	/var/www/html/cacti/cache/spikekill
-docker exec "$WEB_CONTAINER" chown -R www-data:www-data /var/www/html/cacti/cache
+docker exec "$WEB_CONTAINER" touch /var/www/html/cacti/log/cacti.log
+docker exec "$WEB_CONTAINER" chown -R www-data:www-data /var/www/html/cacti/cache /var/www/html/cacti/log
+
+docker exec "$WEB_CONTAINER" php -r 'echo "Installer test PHP ", PHP_VERSION, PHP_EOL;'
+db_root -e 'SELECT VERSION();'
 
 CACTI_VERSION="$(docker exec "$WEB_CONTAINER" awk -F. '{print $1 "." $2 "." $3}' /var/www/html/cacti/include/cacti_version)"
 EXPECTED_TABLES="$(grep -c '^CREATE TABLE' cacti.sql)"
@@ -196,11 +225,80 @@ db_cacti -e 'ALTER TABLE installer_conversion_fixture ENGINE=Aria;'
 docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --innodb --utf8 --table=installer_conversion_fixture
 [ "$(db_cacti -e "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'installer_conversion_fixture';")" = 'InnoDB' ] || fail 'table converter left the fixture table using Aria'
 
-printf 'Scenario: 1.2.22 to %s CLI upgrade\n' "$CACTI_VERSION"
+printf 'Scenario: %s to %s CLI upgrade\n' "$SOURCE_VERSION" "$CACTI_VERSION"
 reset_database "$OLD_SCHEMA"
-db_cacti -e "UPDATE version SET cacti = '1.2.22';"
+db_cacti -e "UPDATE version SET cacti = '$SOURCE_VERSION';"
 run_installer
 assert_complete_install "$EXPECTED_TABLES"
+printf 'Scenario: database-only CLI verifies target schema and authentication\n'
+reset_database "$OLD_SCHEMA"
+db_cacti -e "UPDATE version SET cacti = '$SOURCE_VERSION';"
+docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/upgrade_database.php --forcever="$SOURCE_VERSION"
+[ "$(db_cacti -e "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'data_template' AND COLUMN_NAME = 'templates';")" = 'templates' ] || fail 'database-only CLI did not install the template column'
+[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(value, '$.state')) FROM settings WHERE name = 'maintenance_lastrun_installer_report';")" = 'succeeded' ] || fail 'database-only CLI did not preserve successful diagnostics'
+
+printf 'Scenario: database-only CLI rejects incomplete target schema\n'
+reset_database "$OLD_SCHEMA"
+db_cacti -e "UPDATE version SET cacti = '$SOURCE_VERSION';"
+docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" php /var/www/html/cacti/tests/e2e/installer_failure_paths.php schema-postcondition
+
+printf 'Scenario: populated %s installation preserves authentication, templates, plugins and collector state\n' "$SOURCE_VERSION"
+reset_database "$OLD_SCHEMA"
+for collector_db in collector_two collector_three; do
+	db_root -e "DROP DATABASE IF EXISTS $collector_db; CREATE DATABASE $collector_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+	docker exec -i "$DB_CONTAINER" mariadb -uroot -ptestroot "$collector_db" < "$REPO_DIR/cacti.sql"
+done
+
+docker run -d --name "$LDAP_CONTAINER" --network "$NETWORK" --network-alias ldap \
+	-e LDAP_ORGANISATION='Cacti installer fixture' -e LDAP_DOMAIN=example.org \
+	-e LDAP_ADMIN_PASSWORD=adminpassword -e LDAP_TLS=false \
+	-v "$REPO_DIR/tests/e2e/ldap/50-e2e.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-e2e.ldif:ro" \
+	osixia/openldap:1.5.0 --copy-service >/dev/null
+for _ in $(seq 1 30); do
+	if docker exec "$LDAP_CONTAINER" ldapsearch -x -H ldap://127.0.0.1:389 -b dc=example,dc=org -D cn=admin,dc=example,dc=org -w adminpassword -LLL cn=ldapuser >/dev/null 2>&1; then
+		break
+	fi
+	sleep 2
+done
+
+docker exec -i "$DB_CONTAINER" mariadb -uroot -ptestroot cacti < "$REPO_DIR/tests/e2e/installer_populated_fixture.sql"
+docker exec "$WEB_CONTAINER" mkdir -p /var/www/html/cacti/plugins/installer_fixture
+docker cp "$REPO_DIR/tests/fixtures/InstallerPlugin/." "$WEB_CONTAINER:/var/www/html/cacti/plugins/installer_fixture/"
+docker exec "$WEB_CONTAINER" rrdtool create /var/www/html/cacti/rra/installer_fixture.rrd --step 300 DS:fixture:GAUGE:600:0:U RRA:AVERAGE:0.5:1:48
+RRD_BEFORE="$(docker exec "$WEB_CONTAINER" sha256sum /var/www/html/cacti/rra/installer_fixture.rrd)"
+ADMIN_HASH="$(docker exec "$WEB_CONTAINER" php -r 'echo password_hash("installer-e2e-pass", PASSWORD_DEFAULT);')"
+db_cacti -e "UPDATE version SET cacti = '$SOURCE_VERSION'; UPDATE settings SET value = '3600' WHERE name = 'poller_interval'; UPDATE user_auth SET password = '$ADMIN_HASH', must_change_password = '', lastchange = UNIX_TIMESTAMP() WHERE id = 1;"
+run_installer
+assert_complete_install "$((EXPECTED_TABLES))"
+[ "$(db_cacti -e "SELECT name FROM host_template WHERE id = 700;")" = 'Installer custom template' ] || fail 'custom template changed during upgrade'
+[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'installer_fixture_custom_setting';")" = 'preserve-me' ] || fail 'custom setting changed during upgrade'
+[ "$(db_cacti -e "SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = 700;")" -eq 100000 ] || fail 'populated large-table data changed during upgrade'
+[ "$(db_cacti -e "SELECT realm FROM user_auth WHERE id = 700;")" -eq 1007 ] || fail 'LDAP user lost its provider realm'
+[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'auth_method';")" -eq 4 ] || fail 'legacy domain authentication was not preserved as provider authentication'
+[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(parameters, '$.server')) FROM login_providers WHERE id = 7;")" = 'ldap' ] || fail 'LDAP server configuration was not preserved'
+[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(parameters, '$.group_dn')) FROM login_providers WHERE id = 7;")" = '' ] || fail 'disabled LDAP group enforcement became enabled'
+[ "$(db_cacti -e "SELECT status FROM plugin_config WHERE directory = 'installer_missing';")" -ne 1 ] || fail 'missing plugin stayed enabled'
+[ "$(db_cacti -e "SELECT status FROM plugin_config WHERE directory = 'installer_fixture';")" -eq 1 ] || fail 'compatible plugin was disabled'
+[ "$(db_cacti -e "SELECT data_source_name FROM data_template_rrd WHERE id = 700;")" = 'fixture' ] || fail 'custom data source changed'
+[ "$(docker exec "$WEB_CONTAINER" sha256sum /var/www/html/cacti/rra/installer_fixture.rrd)" = "$RRD_BEFORE" ] || fail 'existing RRD file changed during upgrade'
+[ "$(db_cacti -e "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'data_local' AND INDEX_NAME = 'host_id_snmp_query_id';")" = 'host_id,snmp_query_id' ] || fail 'required data-local index changed'
+[ "$(db_cacti -e "SELECT COLUMN_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_auth' AND INDEX_NAME = 'username';")" = 'username' ] || fail 'required authentication index changed'
+[ "$(db_cacti -e "SELECT COUNT(*) FROM poller WHERE id IN (2, 3) AND last_sync > '2000-01-01';")" -eq 2 ] || fail 'not all remote collectors were synchronized'
+for collector_db in collector_two collector_three; do
+	[ "$(db_root "$collector_db" -e "SELECT COUNT(*) FROM user_auth WHERE id = 700;")" -eq 1 ] || fail 'remote collector did not receive upgraded users'
+done
+docker exec "$WEB_CONTAINER" bash /var/www/html/cacti/tests/e2e/installer_application_check.sh
+[ "$(db_cacti -e 'SELECT description FROM host WHERE id = 700;')" = 'Installer custom device' ] || fail 'invalid CSRF request changed the existing device'
+BROWSER_PORT="$(docker port "$WEB_CONTAINER" 80/tcp)"
+CACTI_BASE_URL="http://$BROWSER_PORT/cacti/" CACTI_INSTALLER_UPGRADE_TEST=1 \
+	npm --prefix tests/e2e test -- tests/installer-upgrade.spec.ts --project=chromium --workers=1
+
+
+printf 'Scenario: repeated completed installation preserves custom objects\n'
+run_installer
+[ "$(db_cacti -e "SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = 700;")" -eq 100000 ] || fail 'repeated installation changed buffered data'
+[ "$(db_cacti -e "SELECT name FROM host_template WHERE id = 700;")" = 'Installer custom template' ] || fail 'repeated installation changed the custom template'
+[ "$(docker exec "$WEB_CONTAINER" sha256sum /var/www/html/cacti/rra/installer_fixture.rrd)" = "$RRD_BEFORE" ] || fail 'repeated installation changed the RRD file'
 
 printf 'Scenario: forced replay on the populated, already upgraded schema\n'
 docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \
@@ -257,7 +355,7 @@ printf '%s\n' "$BACKGROUND_OUTPUT"
 [ "$BACKGROUND_STATUS" -ne 0 ] || fail 'background installer accepted an incomplete schema'
 [ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'install_step';")" = '99' ] || fail 'background failure did not preserve STEP_ERROR'
 
-for scenario in domain-read ldap-read count-read upgrade-warning cli-failure forced-cli-failure composer-failure installer-lock; do
+for scenario in domain-read ldap-read count-read upgrade-warning upgrade-report cli-failure forced-cli-failure dependency-preflight collector-exception installer-lock; do
 	printf 'Scenario: %s\n' "$scenario"
 	reset_database "$REPO_DIR/cacti.sql"
 	docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \
