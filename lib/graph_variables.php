@@ -36,7 +36,13 @@
  */
 function nth_percentile(mixed $local_data_ids, int $start_seconds, int $end_seconds, int $percentile = 95,
 	int $resolution = 0, bool $peak = false) : mixed {
-	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
+	$stats = json_decode(rrdtool_function_stats($local_data_ids,
+		$start_seconds,
+		$end_seconds,
+		$percentile,
+		$resolution,
+		$peak),
+		true);
 
 	if ($peak) {
 		/* rrdtool_function_stats() emits an empty peak when the RRDfile
@@ -78,7 +84,11 @@ function nth_percentile(mixed $local_data_ids, int $start_seconds, int $end_seco
  *
  * @return string JSON data containing each data source item, and its 95th percentile
  */
-function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $end_seconds, int $percentile = 95, int $resolution = 0,
+function rrdtool_function_stats(mixed $local_data_ids,
+	int $start_seconds,
+	int $end_seconds,
+	int $percentile = 95,
+	int $resolution = 0,
 	bool $peak = false, mixed $rrdtool_pipe = null) : string {
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
@@ -126,7 +136,14 @@ function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $
 				$total_system += $system_time;
 				$total_real   += $real_time;
 
-				$fetch_array_max[$ldi] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, '', 'MAX', $rrdtool_pipe);
+				$fetch_array_max[$ldi] = rrdtool_function_fetch($ldi,
+					$start_seconds,
+					$end_seconds,
+					$resolution,
+					false,
+					'',
+					'MAX',
+					$rrdtool_pipe);
 
 				$total_user   += $user_time;
 				$total_system += $system_time;
@@ -140,7 +157,14 @@ function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $
 			$total_system += $system_time;
 			$total_real   += $real_time;
 
-			$fetch_array_avg[$ldi] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, '', 'AVERAGE', $rrdtool_pipe);
+			$fetch_array_avg[$ldi] = rrdtool_function_fetch($ldi,
+				$start_seconds,
+				$end_seconds,
+				$resolution,
+				false,
+				'',
+				'AVERAGE',
+				$rrdtool_pipe);
 
 			$total_user   += $user_time;
 			$total_system += $system_time;
@@ -220,7 +244,10 @@ function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $
 	return (string) json_encode($stats);
 }
 
-function nth_percentile_fetch_statistics(int $percentile, array &$local_data_ids, array &$fetch_array, string $cf) : array {
+function nth_percentile_fetch_statistics(int $percentile,
+	array &$local_data_ids,
+	array &$fetch_array,
+	string $cf) : array {
 	// start by summing the data across local data ids, for the average cf
 	$asum_array = [];
 
@@ -411,7 +438,11 @@ function cacti_stats_calc(array $array, int $ptile = 95) : array {
  *
  * @return array An array containing each data source item, and its sum
  */
-function bandwidth_summation(int $local_data_id, int $start_time, int $end_time, int $rra_steps, int $ds_steps) : array {
+function bandwidth_summation(int $local_data_id,
+	int $start_time,
+	int $end_time,
+	int $rra_steps,
+	int $ds_steps) : array {
 	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
 
 	$return_array = [];
@@ -683,7 +714,10 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
  *
  * @return string A string containing the bandwidth summation suitable for placing on the graph
  */
-function variable_bandwidth_summation(array &$regexp_match_array, array &$graph, array &$graph_item, array &$graph_items,
+function variable_bandwidth_summation(array &$regexp_match_array,
+	array &$graph,
+	array &$graph_item,
+	array &$graph_items,
 	int $graph_start, int $graph_end, int $rra_step, int $ds_step) : string {
 	global $graph_item_types;
 
@@ -716,7 +750,11 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 
 	switch($regexp_match_array[2]) {
 		case 'current':
-			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], (int) $summation_timespan_start, $graph_end, $rra_step, $ds_step);
+			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'],
+				(int) $summation_timespan_start,
+				$graph_end,
+				$rra_step,
+				$ds_step);
 
 			break;
 		case 'total':
@@ -724,13 +762,21 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 				if (!empty($graph_element['data_template_rrd_id']) &&
 					!empty($graph_element['local_data_id']) &&
 					is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
-					$summation_cache[$graph_element['local_data_id']] = bandwidth_summation($graph_element['local_data_id'], (int) $summation_timespan_start, $graph_end, $rra_step, $ds_step);
+					$summation_cache[$graph_element['local_data_id']] = bandwidth_summation($graph_element['local_data_id'],
+						(int) $summation_timespan_start,
+						$graph_end,
+						$rra_step,
+						$ds_step);
 				}
 			}
 
 			break;
 		case 'atomic':
-			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], (int) $summation_timespan_start, $graph_end, $rra_step, 1);
+			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'],
+				(int) $summation_timespan_start,
+				$graph_end,
+				$rra_step,
+				1);
 
 			break;
 	}

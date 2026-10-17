@@ -47,7 +47,16 @@ function draw_edit_form(array $array) : void {
 
 	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . '>';
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" .
+				($config_array['post_to'] ?? get_current_page()) .
+				"'" .
+				((isset($config_array['form_name'])) ? " name='" .
+				$config_array['form_name'] .
+				"'" : '') .
+				((isset($config_array['enctype'])) ? " enctype='" .
+				$config_array['enctype'] .
+				"'" : '') .
+				'>';
 		}
 
 		$i         = 0;
@@ -62,7 +71,8 @@ function draw_edit_form(array $array) : void {
 					if (isset($field_array['default'])) {
 						$field_array['value'] = $field_array['default'];
 					} else {
-						cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'default' Column.  Using empty string.", false);
+						cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'default' Column.  Using empty string.",
+							false);
 						$field_array['value'] = '';
 					}
 				}
@@ -89,9 +99,15 @@ function draw_edit_form(array $array) : void {
 			} elseif ($field_array['method'] == 'spacer') {
 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
-				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$field_name'><div class='formHeaderText'>" . htmle($field_array['friendly_name']);
-				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip($field_array['description']) : '') . '</div>';
-				print ($collapsible ? "<div class='formHeaderAnchor'><i class='ti ti-chevrons-up'></i></div>" : '') . '</div></div>';
+				print "<div class='spacer formHeader" .
+					($collapsible ? ' collapsible' : '') .
+					"' id='row_$field_name'><div class='formHeaderText'>" .
+					htmle($field_array['friendly_name']);
+				print '<div class="formTooltip">' .
+					(isset($field_array['description']) ? display_tooltip($field_array['description']) : '') .
+					'</div>';
+				print ($collapsible ? "<div class='formHeaderAnchor'><i class='ti ti-chevrons-up'></i></div>" : '') .
+					'</div></div>';
 			} else {
 				// Make a row using a div
 				if (isset($config_array['force_row_color'])) {
@@ -113,7 +129,8 @@ function draw_edit_form(array $array) : void {
 
 				if (isset($field_array['sub_checkbox'])) {
 					if (!isset($field_array['sub_checkbox']['value'])) {
-						cacti_log("WARNING: Cacti Form field '$field_name' does not include a sub_checkbox 'value' Column.  Using default", false);
+						cacti_log("WARNING: Cacti Form field '$field_name' does not include a sub_checkbox 'value' Column.  Using default",
+							false);
 						cacti_debug_backtrace('form_edit');
 
 						if (isset($field_array['sub_checkbox']['default'])) {
@@ -565,7 +582,12 @@ function draw_edit_control(string $field_name, array &$field_array) : void {
 
 				form_hidden_box($field_name, $field_array['value'], '', true);
 			} else {
-				cacti_log('ERROR: Field Name: ' . $field_name . ' includes Method: ' . $field_array['method'] . ' does not include a value \'value\' element.', false);
+				cacti_log('ERROR: Field Name: ' .
+					$field_name .
+					' includes Method: ' .
+					$field_array['method'] .
+					' does not include a value \'value\' element.',
+					false);
 			}
 
 			break;
@@ -631,7 +653,9 @@ function form_file(string $form_name, int $form_size = 30, string $form_accept =
 		print " class='import_button ui-state-default ui-corner-all'";
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'" . ($form_accept != '' ? " accept='$form_accept'" : '') . '>';
+	print " id='$form_name' name='$form_name' size='$form_size'" .
+		($form_accept != '' ? " accept='$form_accept'" : '') .
+		'>';
 	print "<span class='import_text'></span>";
 	print '</div>';
 }
@@ -712,7 +736,14 @@ function form_filepath_box(string $form_name, mixed $prev_val, mixed $default_va
 
 	print " class='ui-state-default ui-corner-all$error_class'";
 
-	print " id='$form_name' placeholder='" . __esc('Enter a valid file path') . "' name='$form_name' size='$form_size'" . (!empty($max_length) ? " maxlength='$max_length'" : '') . " value='" . htmle($prev_val) . "'>" . $extra_data;
+	print " id='$form_name' placeholder='" .
+		__esc('Enter a valid file path') .
+		"' name='$form_name' size='$form_size'" .
+		(!empty($max_length) ? " maxlength='$max_length'" : '') .
+		" value='" .
+		htmle($prev_val) .
+		"'>" .
+		$extra_data;
 }
 
 /**
@@ -754,16 +785,26 @@ function form_dirpath_box(string $form_name, mixed $prev_val, mixed $default_val
 	}
 
 	if (is_dir($prev_val)) {
-		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-check' style='padding:5px;font-size:16px;color:green' title='" . __esc('Directory Found') . "'></span>";
+		$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-check' " .
+			"style='padding:5px;font-size:16px;color:green' title='") . __esc('Directory Found') . "'></span>";
 	} elseif (is_file($prev_val)) {
-		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-x' style='padding:5px;font-size:16px;color:red' title='" . __esc('Path is a File and not a Directory') . '></span>';
+		$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-x' " .
+			"style='padding:5px;font-size:16px;color:red' title='") . __esc('Path is a File and not a Directory') . '></span>';
 	} elseif ($prev_val == '') {
 		$extra_data = '';
 	} else {
-		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-x' style='padding:5px;font-size:16px;color:red' title='" . __esc('Directory is Not found') . "'></span>";
+		$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-x' " .
+			"style='padding:5px;font-size:16px;color:red' title='") . __esc('Directory is Not found') . "'></span>";
 	}
 
-	print " id='$form_name' name='$form_name' placeholder='" . __esc('Enter a valid directory path') . "' size='$form_size'" . (!empty($max_length) ? " maxlength='$max_length'" : '') . " value='" . htmle($prev_val) . "'>" . $extra_data;
+	print " id='$form_name' name='$form_name' placeholder='" .
+		__esc('Enter a valid directory path') .
+		"' size='$form_size'" .
+		(!empty($max_length) ? " maxlength='$max_length'" : '') .
+		" value='" .
+		htmle($prev_val) .
+		"'>" .
+		$extra_data;
 }
 
 /**
@@ -783,7 +824,11 @@ function form_dirpath_box(string $form_name, mixed $prev_val, mixed $default_val
  *
  * @return void
  */
-function form_cert_box(string $form_name, mixed $stored_val, mixed $default_val, int $form_rows, int $form_columns) : void {
+function form_cert_box(string $form_name,
+	mixed $stored_val,
+	mixed $default_val,
+	int $form_rows,
+	int $form_columns) : void {
 	if ($stored_val == '') {
 		$stored_val = $default_val;
 	}
@@ -811,19 +856,31 @@ function form_cert_box(string $form_name, mixed $stored_val, mixed $default_val,
 		$parsed = @openssl_x509_parse((string) $stored_val);
 
 		if ($parsed === false || empty($parsed['validTo_time_t'])) {
-			$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark deviceDown' style='padding:5px;font-size:16px' title='" . __esc('Not a valid Certificate') . "'></span>";
+			$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-xmark deviceDown' " .
+				"style='padding:5px;font-size:16px' title='") . __esc('Not a valid Certificate') . "'></span>";
 		} else {
 			$expires = date('Y-m-d', $parsed['validTo_time_t']);
 
 			if ($parsed['validTo_time_t'] < time()) {
-				$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark deviceDown' style='padding:5px;font-size:16px' title='" . __esc('Certificate expired on %s', $expires) . "'>" . __esc('Expired: %s', $expires) . '</span>';
+				$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-xmark deviceDown' " .
+					"style='padding:5px;font-size:16px' title='") . __esc('Certificate expired on %s',
+						$expires) . "'>" . __esc('Expired: %s',
+							$expires) . '</span>';
 			} else {
-				$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-check deviceUp' style='padding:5px;font-size:16px' title='" . __esc('Certificate expires on %s', $expires) . "'>" . __esc('Good Till: %s', $expires) . '</span>';
+				$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-check deviceUp' " .
+					"style='padding:5px;font-size:16px' title='") . __esc('Certificate expires on %s',
+						$expires) . "'>" . __esc('Good Till: %s',
+							$expires) . '</span>';
 			}
 		}
 	}
 
-	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" . __esc('Paste your Certificate Here') . "'>" . htmle($textarea_val) . '</textarea>' . $extra_data;
+	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" .
+		__esc('Paste your Certificate Here') .
+		"'>" .
+		htmle($textarea_val) .
+		'</textarea>' .
+		$extra_data;
 }
 
 /**
@@ -859,12 +916,27 @@ function form_privkey_box(string $form_name, mixed $stored_val, int $form_rows, 
 	$textarea_val = '';
 
 	if (trim((string) $stored_val) == '') {
-		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark' style='padding:5px;font-size:16px;color:red' title='" . __esc('No Private Key is currently stored') . "'>" . __esc('[not set]') . '</span>';
+		$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-xmark' " .
+			"style='padding:5px;font-size:16px;color:red' title='") .
+				__esc('No Private Key is currently stored') .
+				"'>" .
+				__esc('[not set]') .
+				'</span>';
 	} else {
-		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-check' style='padding:5px;font-size:16px;color:green' title='" . __esc('A Private Key is currently stored. Leave blank to keep it unchanged.') . "'>" . __esc('[stored]') . '</span>';
+		$extra_data = ("<span class='cactiTooltipHint fa-solid fa-circle-check' " .
+			"style='padding:5px;font-size:16px;color:green' title='") .
+				__esc('A Private Key is currently stored. Leave blank to keep it unchanged.') .
+				"'>" .
+				__esc('[stored]') .
+				'</span>';
 	}
 
-	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" . __esc('Paste your Private Key Here') . "'>" . htmle($textarea_val) . '</textarea>' . $extra_data;
+	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" .
+		__esc('Paste your Private Key Here') .
+		"'>" .
+		htmle($textarea_val) .
+		'</textarea>' .
+		$extra_data;
 }
 
 /**
@@ -885,12 +957,18 @@ function form_privkey_box(string $form_name, mixed $stored_val, int $form_rows, 
  * @return void
  */
 function form_text_box(string $form_name, mixed $prev_val, mixed $default_val, mixed $max_length,
-	mixed $form_size = 30, string $type = 'text', mixed $current_id = 0, string $placeholder = '', string $title = '') : void {
+	mixed $form_size = 30,
+		string $type = 'text',
+		mixed $current_id = 0,
+		string $placeholder = '',
+		string $title = '') : void {
 	if (($prev_val == '') && (empty($current_id))) {
 		$prev_val = $default_val;
 	}
 
-	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="off" readonly onfocus="this.removeAttribute(\'readonly\');"' : '') . ($title != '' ? ' title="' . htmle($title) . '"' : '');
+	print "<input type='$type' " . ($type == 'password' ||
+		$type == 'password_confirm' ? ('autocomplete="off" readonly ' .
+			'onfocus="this.removeAttribute(\'readonly\');"') : '') . ($title != '' ? ' title="' . htmle($title) . '"' : '');
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
 		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
@@ -909,7 +987,15 @@ function form_text_box(string $form_name, mixed $prev_val, mixed $default_val, m
 		}
 	}
 
-	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmle($placeholder) . "'" : '') . " name='$form_name' size='$form_size'" . (!empty($max_length) ? " maxlength='$max_length'" : '') . " value='" . htmle($prev_val) . "'>";
+	print " id='$form_name' " .
+		($placeholder != '' ? "placeholder='" .
+		htmle($placeholder) .
+		"'" : '') .
+		" name='$form_name' size='$form_size'" .
+		(!empty($max_length) ? " maxlength='$max_length'" : '') .
+		" value='" .
+		htmle($prev_val) .
+		"'>";
 }
 
 /**
@@ -927,7 +1013,9 @@ function form_hidden_box(string $form_name, mixed $prev_val, mixed $default_val,
 		$prev_val = $default_val;
 	}
 
-	print "<div style='display:none;'><input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . htmle($prev_val) . "'></div>";
+	print "<div style='display:none;'><input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" .
+		htmle($prev_val) .
+		"'></div>";
 }
 
 /**
@@ -992,7 +1080,17 @@ function form_dropdown(string $form_name, array $form_data, string $column_displ
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select id='" . htmle($form_name) . "' name='" . htmle($form_name) . "'" . $display . $class . $on_change . ' form="' . $form_id . '">';
+	print "<select id='" .
+		htmle($form_name) .
+		"' name='" .
+		htmle($form_name) .
+		"'" .
+		$display .
+		$class .
+		$on_change .
+		' form="' .
+		$form_id .
+		'">';
 
 	if (!empty($none_entry)) {
 		print "<option value='0'" . (empty($prev_val) ? ' selected' : '') . ">$none_entry</option>";
@@ -1135,7 +1233,17 @@ function form_droplanguage(string $form_name, string $column_display, string $co
 			$flagName = cacti_strtolower($flags[0]);
 		}
 
-		print '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-' . $flagName . '"></span>' . __($value) . '</option>';
+		print '<option value=\'' .
+			$key .
+			'\'' .
+			$selected .
+			' data-class=\'fi-' .
+			$flagName .
+			'\'><span class="fi fis fi-' .
+			$flagName .
+			'"></span>' .
+			__($value) .
+			'</option>';
 	}
 
 	print '</select>';
@@ -1178,7 +1286,13 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 	 * plain <select>; every other case uses the ajax-backed select2 lookup that
 	 * replaced the old .drop-callback autocomplete widget. */
 	if (read_config_option('autocomplete') > 0 && !preg_match('/(^|\s)select2-callback(\s|$)/', $class)) {
-		print "<select id='" . htmle($form_name) . "' name='" . htmle($form_name) . "'" . ($class != '' ? " class='$class'" : '') . '>';
+		print "<select id='" .
+			htmle($form_name) .
+			"' name='" .
+			htmle($form_name) .
+			"'" .
+			($class != '' ? " class='$class'" : '') .
+			'>';
 
 		if (!empty($none_entry)) {
 			print "<option value='0'" . (empty($prev_val) ? ' selected' : '') . ">$none_entry</option>";
@@ -1201,8 +1315,21 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 		$prev_val = $none_entry;
 	}
 
-	print "<select id='" . html_escape_attr($form_name) . "' name='" . html_escape_attr($form_name) . "' class='" . html_escape_attr($class) . "'"
-		. " data-action='" . html_escape_attr($action) . "' data-variables='" . html_escape_attr($request_vars) . "' data-callback='" . html_escape_attr($on_change) . "'>";
+	print "<select id='" .
+		html_escape_attr($form_name) .
+		"' name='" .
+		html_escape_attr($form_name) .
+		"' class='" .
+		html_escape_attr($class) .
+		"'"
+		.
+			" data-action='" .
+			html_escape_attr($action) .
+			"' data-variables='" .
+			html_escape_attr($request_vars) .
+			"' data-callback='" .
+			html_escape_attr($on_change) .
+			"'>";
 
 	if ($previous_id != '' && $prev_val != '') {
 		print "<option value='" . html_escape_attr($previous_id) . "' selected>" . htmle($prev_val) . '</option>';
@@ -1234,7 +1361,11 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
  */
 
 function form_checkbox(string $form_name, mixed $prev_val, string $form_caption, mixed $default_val,
-	mixed $current_id = 0, string $class = '', string $on_change = '', string $title = '', bool $show_label = false) : void {
+	mixed $current_id = 0,
+		string $class = '',
+		string $on_change = '',
+		string $title = '',
+		bool $show_label = false) : void {
 	if (($prev_val === null) && (empty($current_id))) {
 		$prev_val = $default_val;
 	}
@@ -1266,7 +1397,18 @@ function form_checkbox(string $form_name, mixed $prev_val, string $form_caption,
 	}
 
 	print "<span class='nowrap'>";
-	print "<label class='checkboxSwitch' " . ($title != '' ? " title='" . htmle($title) . "'" : '') . '><input ' . ($title != '' ? " title='" . htmle($title) . "'" : '') . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
+	print "<label class='checkboxSwitch' " .
+		($title != '' ? " title='" .
+		htmle($title) .
+		"'" : '') .
+		'><input ' .
+		($title != '' ? " title='" .
+		htmle($title) .
+		"'" : '') .
+		" class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" .
+		$on_change .
+		$checked .
+		"><span class='checkboxSlider checkboxRound'></span></label>";
 	print "<label class='checkboxLabel$labelClass' for='$form_name'>" . htmle($form_caption) . '</label>';
 	print '</span>';
 }
@@ -1361,7 +1503,12 @@ function form_text_area(string $form_name, mixed $prev_val, int $form_rows, int 
 		$placeholder = " placeholder='" . htmle($placeholder) . "'";
 	}
 
-	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $on_change . $placeholder . '>' . htmle($prev_val) . '</textarea>';
+	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" .
+		$on_change .
+		$placeholder .
+		'>' .
+		htmle($prev_val) .
+		'</textarea>';
 }
 
 /**
@@ -1449,7 +1596,8 @@ function form_multi_dropdown(string $form_name, array $array_display, mixed $pre
 		$select2Attrs .= " data-select-all-value='" . html_escape_attr($select_all_value) . "'";
 	}
 
-	print "<select style='height:20px;' size='1' class='$class'$select2Attrs id='$form_name' name='$form_name" . "[]' multiple>";
+	print "<select style='height:20px;' size='1' class='$class'$select2Attrs id='$form_name' name='$form_name" .
+		"[]' multiple>";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
@@ -1516,7 +1664,10 @@ function form_color_dropdown(string $form_name, mixed $prev_val, string $none_en
 
 	$colors_list = db_fetch_assoc($colors_sql);
 
-	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . '>';
+	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" .
+		$class .
+		$on_change .
+		'>';
 
 	if ($none_entry != '') {
 		print "<option value='0'>$none_entry</option>";
@@ -1530,7 +1681,13 @@ function form_color_dropdown(string $form_name, mixed $prev_val, string $none_en
 				$display = $color['name'] . ' (' . $color['hex'] . ')';
 			}
 
-			print "<option data-color='" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
+			print "<option data-color='" .
+				$color['hex'] .
+				"' style='background-color: #" .
+				$color['hex'] .
+				";' value='" .
+				$color['id'] .
+				"'";
 
 			if ($prev_val == $color['id']) {
 				print ' selected';
@@ -1596,7 +1753,16 @@ function form_font_box(string $form_name, mixed $prev_val, mixed $default_val,
 		$extra_data = "<span style='color:green'><br>[" . __('NO FONT VERIFICATION POSSIBLE') . ']</span>';
 	}
 
-	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmle($placeholder) . "'" : '') . " name='$form_name' size='$form_size'" . (!empty($max_length) ? " maxlength='$max_length'" : '') . " value='" . htmle($prev_val) . "'>" . $extra_data;
+	print " id='$form_name' " .
+		($placeholder != '' ? "placeholder='" .
+		htmle($placeholder) .
+		"'" : '') .
+		" name='$form_name' size='$form_size'" .
+		(!empty($max_length) ? " maxlength='$max_length'" : '') .
+		" value='" .
+		htmle($prev_val) .
+		"'>" .
+		$extra_data;
 }
 
 /**
@@ -1884,10 +2050,17 @@ function form_continue_confirmation(array $form_data, string $plugin_hook = '', 
 		print "<input type='hidden' name='{$data['eaction']}' value='{$data['eactionid']}' form='action_confirm'>";
 	}
 
-	print "<input type='hidden' name='selected_items' form='action_confirm' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>";
+	print ("<input type='hidden' name='selected_items' form='action_confirm' " .
+		"value='") . (isset($iarray) ? serialize($iarray) : '') . "'>";
 	print "<input type='hidden' name='drp_action' form='action_confirm' value='" . htmle($drpval) . "'>";
-	print "<button type='button' class='ui-button ui-corner-all ui-widget' value='cancel' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page') . "'>" . __esc('Cancel') . '</button>';
-	print "<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='continue' title='$title' form='action_confirm'>" . __esc('Continue') . '</button>';
+	print "<button type='button' class='ui-button ui-corner-all ui-widget' value='cancel' onClick='cactiReturnTo(\"$page\")' title='" .
+		__('Return to previous page') .
+		"'>" .
+		__esc('Cancel') .
+		'</button>';
+	print "<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='continue' title='$title' form='action_confirm'>" .
+		__esc('Continue') .
+		'</button>';
 	print '</div>';
 
 	html_end_box(false, true);
@@ -1942,8 +2115,11 @@ function form_confirm_buttons(mixed $action_url, string $cancel_url) : void {
 	?>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print htmle(CACTI_PATH_URL . $cancel_url); ?>")' value='cancel'><?php print __esc('Cancel'); ?></button>
-            <button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print htmle(CACTI_PATH_URL . $action_url . '&confirm=true'); ?>")' value='delete'><?php print __esc('Delete'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print htmle(CACTI_PATH_URL .
+				$cancel_url); ?>")' value='cancel'><?php print __esc('Cancel'); ?></button>
+            <button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print htmle(CACTI_PATH_URL .
+	$action_url .
+	'&confirm=true'); ?>")' value='delete'><?php print __esc('Delete'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -2002,8 +2178,19 @@ function form_save_button(mixed $cancel_url, mixed $force_type = '',
 		$alt = __esc('Export');
 	}
 
-	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
-		$cancel_action = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . htmle(sanitize_uri($cancel_url)) . "\")' value='" . $catp . "'>" . $calt . '</button>';
+	if ($force_type != 'import' &&
+		$force_type    != 'export' &&
+		$force_type    != 'save' &&
+		$force_type    != 'close' &&
+		$cancel_url    != '') {
+		$cancel_action = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+			"onClick='cactiReturnTo(\"") .
+				htmle(sanitize_uri($cancel_url)) .
+				"\")' value='" .
+				$catp .
+				"'>" .
+				$calt .
+				'</button>';
 	} else {
 		$cancel_action = '';
 	}
@@ -2090,8 +2277,13 @@ function form_save_buttons(array $buttons, mixed $cancel_url = '', string $force
 		$alt = __esc('Export');
 	}
 
-	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
-		$cancel_action = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . htmle($cancel_url) . "\")' value='" . $catp . "'>" . $calt . '</button>';
+	if ($force_type != 'import' &&
+		$force_type    != 'export' &&
+		$force_type    != 'save' &&
+		$force_type    != 'close' &&
+		$cancel_url    != '') {
+		$cancel_action = ("<button type='button' class='ui-button ui-corner-all ui-widget' " .
+			"onClick='cactiReturnTo(\"") . htmle($cancel_url) . "\")' value='" . $catp . "'>" . $calt . '</button>';
 	} else {
 		$cancel_action = '';
 	}
@@ -2108,7 +2300,11 @@ function form_save_buttons(array $buttons, mixed $cancel_url = '', string $force
 						$type = 'submit';
 					}
 
-					print "<button type='$type' class='ui-button ui-corner-all ui-widget ui-state-active' id='" . $b['id'] . "' value='" . $b['id'] . "'";
+					print "<button type='$type' class='ui-button ui-corner-all ui-widget ui-state-active' id='" .
+						$b['id'] .
+						"' value='" .
+						$b['id'] .
+						"'";
 
 					$onclick = '';
 
@@ -2180,7 +2376,9 @@ function form_start(mixed $action, string $id = '', bool $multipart = false) : v
 
 	$form_action = $action;
 
-	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'" : '') . '>';
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" .
+		($multipart ? " enctype='multipart/form-data'" : '') .
+		'>';
 }
 
 /**
@@ -2213,7 +2411,9 @@ function form_end(bool $ajax = true) : void {
 				title = '<?php print __esc('Warning Unsaved Form Data'); ?>';
 				returnStr = '<div id="messageContainer" style="display:none">' +
 					'<h4><?php print __('Unsaved Changes Detected'); ?></h4>' +
-					'<p style="display:table-cell;overflow:auto"><?php print __esc("You have unsaved changes on this form.  If you press 'Continue' these changes will be discarded.  Press 'Cancel' to continue editing the form."); ?></p>' +
+					'<p style="display:table-cell;overflow:auto"><?php print __esc("You have unsaved changes on this form.  If you press 'Continue' these " .
+						"changes will be discarded.  Press 'Cancel' to continue editing the " .
+						'form.'); ?></p>' +
 					'</div>';
 
 				$('#messageContainer').remove();

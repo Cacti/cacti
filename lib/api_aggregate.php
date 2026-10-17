@@ -36,20 +36,39 @@ require_once(__DIR__ . '/CactiValidator.php');
  *
  * @return int The ID of the newly inserted graph.
  */
-function aggregate_graph_save(int $_local_graph_id, int $_graph_template_id, string $_graph_title, int $_aggregate_template_id = 0, array $graph_data = []) : int {
+function aggregate_graph_save(int $_local_graph_id,
+	int $_graph_template_id,
+	string $_graph_title,
+	int $_aggregate_template_id = 0,
+	array $graph_data = []) : int {
 	// suppress warnings
 	error_reporting(E_ALL);
 
 	// install own error handler
 	set_error_handler('aggregate_error_handler');
 
-	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id . ' template: ' . $_graph_template_id . ' graph title: ' . $_graph_title . ' aggregate template: ' . $_aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ .
+		' local_graph: ' .
+		$_local_graph_id .
+		' template: ' .
+		$_graph_template_id .
+		' graph title: ' .
+		$_graph_title .
+		' aggregate template: ' .
+		$_aggregate_template_id,
+		true,
+		'AGGREGATE',
+		POLLER_VERBOSITY_DEVDBG);
 
 	// store basic graph info
 	$local_graph_id = aggregate_graph_local_save($_local_graph_id);
 
 	// store extra graph data
-	$graph_templates_graph_id = aggregate_graph_templates_graph_save($local_graph_id, $_graph_template_id, $_graph_title, $_aggregate_template_id, $graph_data);
+	$graph_templates_graph_id = aggregate_graph_templates_graph_save($local_graph_id,
+		$_graph_template_id,
+		$_graph_title,
+		$_aggregate_template_id,
+		$graph_data);
 
 	// restore original error handler
 	restore_error_handler();
@@ -90,8 +109,23 @@ function aggregate_graph_local_save(int $id = 0) : int {
  *
  * @return int ID of record in graph_templates_graph
  */
-function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_template_id, string $graph_title = '', int $aggregate_template_id = 0, array $new_data = []) : int {
-	cacti_log(__FUNCTION__ . ' local_graph: ' . $local_graph_id . ' template: ' . $graph_template_id . ' title: ' . $graph_title . ' aggregate template: ' . $aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+function aggregate_graph_templates_graph_save(int $local_graph_id,
+	int $graph_template_id,
+	string $graph_title = '',
+	int $aggregate_template_id = 0,
+	array $new_data = []) : int {
+	cacti_log(__FUNCTION__ .
+		' local_graph: ' .
+		$local_graph_id .
+		' template: ' .
+		$graph_template_id .
+		' title: ' .
+		$graph_title .
+		' aggregate template: ' .
+		$aggregate_template_id,
+		true,
+		'AGGREGATE',
+		POLLER_VERBOSITY_DEVDBG);
 
 	// base graph must exist
 	if ($local_graph_id < 1) {
@@ -197,8 +231,19 @@ function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_te
  * @return int The next sequence number to be filled.
  */
 function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph_id, int $_graph_template_id,
-	array $_skip, array $_totali, int $_graph_item_sequence, int $_selected_graph_index, array $_color_templates, array $_graph_item_types, array $_cdefs,
-	int $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = []) : int {
+	array $_skip,
+		array $_totali,
+		int $_graph_item_sequence,
+		int $_selected_graph_index,
+		array $_color_templates,
+		array $_graph_item_types,
+		array $_cdefs,
+	int $_graph_type,
+		string $_gprint_prefix,
+		string $_gprint_format,
+		int $_total,
+		string $_total_type = '',
+		array $member_graphs = []) : int {
 	global $struct_graph_item, $graph_item_types;
 
 	// Remove filter item
@@ -212,7 +257,22 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 	// install own error handler
 	set_error_handler('aggregate_error_handler');
 
-	cacti_log(__FUNCTION__ . ' called. Insert example graph:' . $_old_graph_id . ' Graph Template:' . $_graph_template_id . ' into Graph:' . $_new_graph_id . ' at Sequence:' . $_graph_item_sequence . ' Graph_No:' . $_selected_graph_index . ' Type Action: ' . $_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ .
+		' called. Insert example graph:' .
+		$_old_graph_id .
+		' Graph Template:' .
+		$_graph_template_id .
+		' into Graph:' .
+		$_new_graph_id .
+		' at Sequence:' .
+		$_graph_item_sequence .
+		' Graph_No:' .
+		$_selected_graph_index .
+		' Type Action: ' .
+		$_graph_type,
+		true,
+		'AGGREGATE',
+		POLLER_VERBOSITY_DEVDBG);
 
 	cacti_log(__FUNCTION__ . ' skipping: ' . serialize($_skip), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -428,7 +488,10 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 						$save['text_format'] = str_replace(':current:', ':aggregate_current:', $save['text_format']);
 					} else {
-						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :current: in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :current: in text_format',
+							true,
+							'AGGREGATE',
+							POLLER_VERBOSITY_DEBUG);
 					}
 				} elseif (str_contains($save['text_format'], ':max:')) {
 					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
@@ -436,7 +499,10 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 						$save['text_format'] = str_replace(':max:', ':aggregate_current_peak:', $save['text_format']);
 					} else {
-						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :max: in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :max: in text_format',
+							true,
+							'AGGREGATE',
+							POLLER_VERBOSITY_DEBUG);
 					}
 				}
 			}
@@ -449,9 +515,24 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 				if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && $graph_local['snmp_index'] != '') {
 					$max_chars = intval(read_config_option('max_data_query_field_length'));
 
-					$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], $max_chars);
+					$save['text_format'] = substitute_snmp_query_data($save['text_format'],
+						$graph_local['host_id'],
+						$graph_local['snmp_query_id'],
+						$graph_local['snmp_index'],
+						$max_chars);
 
-					cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'] . ' for ' . $graph_local['host_id'] . ',' . $graph_local['snmp_query_id'] . ',' . $graph_local['snmp_index'], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+					cacti_log(__FUNCTION__ .
+						' substituted:' .
+						$save['text_format'] .
+						' for ' .
+						$graph_local['host_id'] .
+						',' .
+						$graph_local['snmp_query_id'] .
+						',' .
+						$graph_local['snmp_index'],
+						true,
+						'AGGREGATE',
+						POLLER_VERBOSITY_DEVDBG);
 				}
 			}
 
@@ -467,7 +548,10 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 
 			// provide new sequence number
 			$save['sequence'] = $_graph_item_sequence;
-			cacti_log(__FUNCTION__ . '  hard return: ' . $save['hard_return'] . ' sequence: ' . $_graph_item_sequence, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+			cacti_log(__FUNCTION__ . '  hard return: ' . $save['hard_return'] . ' sequence: ' . $_graph_item_sequence,
+				true,
+				'AGGREGATE',
+				POLLER_VERBOSITY_DEBUG);
 
 			$save['id']                           = 0;
 			$save['local_graph_template_item_id'] = 0;   // disconnect this graph item from the graph template item
@@ -636,7 +720,11 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
 		} elseif ($defs['type'] == 'bool') {
 			$params_new[$field] = (isset($posted[$field])) ? 'on' : '';
 		} else {
-			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmle($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
+			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmle($posted[$field]),
+				$field,
+				$defs['regex'],
+				$defs['allow_empty'],
+				3) : $defs['default']);
 		}
 	}
 
@@ -710,7 +798,10 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items) : vo
 function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder) : void {
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
-	cacti_log(__FUNCTION__ . ' called. Base ' . $base . ' Aggregate ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . ' called. Base ' . $base . ' Aggregate ' . $aggregate . ' Reorder: ' . $reorder,
+		true,
+		'AGGREGATE',
+		POLLER_VERBOSITY_DEVDBG);
 
 	// suppress warnings
 	error_reporting(E_ALL);
@@ -733,8 +824,23 @@ function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder) : voi
  *
  * @return bool
  */
-function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $aggregate, int $reorder, int $graph_type) : bool {
-	cacti_log(__FUNCTION__ . ' called. Base Graph ' . $base . ' Graph Template ' . $graph_template_id . ' Aggregate Graph ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+function aggregate_reorder_ds_graph(int $base,
+	string $graph_template_id,
+	int $aggregate,
+	int $reorder,
+	int $graph_type) : bool {
+	cacti_log(__FUNCTION__ .
+		' called. Base Graph ' .
+		$base .
+		' Graph Template ' .
+		$graph_template_id .
+		' Aggregate Graph ' .
+		$aggregate .
+		' Reorder: ' .
+		$reorder,
+		true,
+		'AGGREGATE',
+		POLLER_VERBOSITY_DEVDBG);
 
 	// suppress warnings
 	error_reporting(E_ALL);
@@ -767,7 +873,8 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 		/* get all different local_data_template_rrd_id's
 		 * respecting the order that the aggregated graph has
 		 */
-		$sql_where     = "WHERE gti.local_graph_id = $base" . ($base == 0 ? " AND gti.graph_template_id = $graph_template_id" : '');
+		$sql_where     = "WHERE gti.local_graph_id = $base" .
+			($base == 0 ? " AND gti.graph_template_id = $graph_template_id" : '');
 		$sql_id_column = ($base == 0 ? 'id' : 'local_data_template_rrd_id');
 		$sql           = "SELECT DISTINCT dtr.$sql_id_column AS local_data_template_rrd_id
 			FROM data_template_rrd AS dtr
@@ -779,7 +886,10 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 		$ds_ids = db_fetch_assoc($sql);
 
 		foreach ($ds_ids as $ds_id) {
-			cacti_log('local_data_template_rrd_id: ' . $ds_id['local_data_template_rrd_id'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+			cacti_log('local_data_template_rrd_id: ' . $ds_id['local_data_template_rrd_id'],
+				false,
+				'AGGREGATE',
+				POLLER_VERBOSITY_DEBUG);
 			/* get all different task_item_id's
 			 * respecting the order that the aggregated graph has
 			 */
@@ -993,7 +1103,9 @@ function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0
 		$attribs['total_type']           = $template_data['total_type'];
 		$attribs['total_prefix']         = $template_data['total_prefix'];
 		$attribs['reorder']              = $template_data['order_type'];
-		$attribs['item_no']              = db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', [$id]);
+		$attribs['item_no']              = db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graphs_graph_item WHERE ' .
+			'aggregate_graph_id = ?',
+			[$id]);
 	} else {
 		$attribs['graph_title'] = '';
 
@@ -1123,7 +1235,10 @@ function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0
  *
  * @return bool True when the aggregate update was committed.
  */
-function aggregate_create_update(int &$local_graph_id, array $member_graphs, array $attribs, bool $manage_transaction = true) : bool {
+function aggregate_create_update(int &$local_graph_id,
+	array $member_graphs,
+	array $attribs,
+	bool $manage_transaction = true) : bool {
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	// suppress warnings
@@ -1250,7 +1365,10 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 			$i++;
 		}
 
-		cacti_log(__FUNCTION__ . '  all items inserted, next item seq: ' . $next_item_sequence . ' selGraph: ' . $i, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		cacti_log(__FUNCTION__ . '  all items inserted, next item seq: ' . $next_item_sequence . ' selGraph: ' . $i,
+			true,
+			'AGGREGATE',
+			POLLER_VERBOSITY_DEBUG);
 
 		/* post processing for pure LINEx graphs
 		 * if we convert to AREA/STACK, the function aggregate_graphs_insert_graph_items
@@ -1351,7 +1469,9 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 						db_rollback_transaction();
 						$local_graph_id = $original_local_graph_id;
 					}
-					raise_message('aggregate_invalid_cdef', __('Unable to create aggregate totals because a referenced CDEF is invalid or empty.'), MESSAGE_LEVEL_ERROR);
+					raise_message('aggregate_invalid_cdef',
+						__('Unable to create aggregate totals because a referenced CDEF is invalid or empty.'),
+						MESSAGE_LEVEL_ERROR);
 					restore_error_handler();
 
 					return false;
@@ -1414,7 +1534,11 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
  *
  * @return void
  */
-function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items, int $local_graph_id, int $_total, string $_total_type) : void {
+function aggregate_handle_ptile_type(array $member_graphs,
+	array $skipped_items,
+	int $local_graph_id,
+	int $_total,
+	string $_total_type) : void {
 	$special_comments  = null;
 	$special_hrules    = null;
 	$graph_template_id = 0;
@@ -1482,7 +1606,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									} else {
-										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in text_format',
+											true,
+											'AGGREGATE',
+											POLLER_VERBOSITY_DEBUG);
 									}
 
 									switch($pparts[3]) {
@@ -1564,7 +1691,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									} else {
-										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in value', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in value',
+											true,
+											'AGGREGATE',
+											POLLER_VERBOSITY_DEBUG);
 									}
 
 									switch($pparts[3]) {
@@ -1652,7 +1782,11 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
  *
  * @return void
  */
-function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph_type, int $_total, string $_total_type, string $_total_prefix) : void {
+function aggregate_handle_stacked_lines(int $local_graph_id,
+	string $_orig_graph_type,
+	int $_total,
+	string $_total_type,
+	string $_total_prefix) : void {
 	// Handle the stacked line cases switch line widths
 	$width        = '0.01';
 	$special_type = '';
@@ -1730,7 +1864,10 @@ function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph
  *
  * @return bool True on success, false on failure.
  */
-function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, mixed &$graph_template, string &$message = '') : bool {
+function aggregate_get_data_sources(array &$graph_array,
+	mixed &$data_sources,
+	mixed &$graph_template,
+	string &$message = '') : bool {
 	if (cacti_sizeof($graph_array)) {
 		// fetch all data sources for all selected graphs
 		$data_sources = db_fetch_assoc('SELECT dtd.local_data_id, dtd.name_cache
@@ -1751,7 +1888,9 @@ function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, m
 			WHERE ' . array_to_sql_or($graph_array, 'gl.id'));
 
 		if (cacti_sizeof($templates) > 1) {
-			$message = __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.');
+			$message = __('The Graphs chosen for the Aggregate Graph below represent Graphs from ' .
+				'multiple Graph Templates.  Aggregate does not support creating ' .
+				'Aggregate Graphs from multiple Graph Templates.');
 
 			return false;
 		}
@@ -1759,7 +1898,9 @@ function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, m
 		if (cacti_sizeof($templates) == 1) {
 			if ($templates[0]['id'] == 0) {
 				// selected graphs do not use templates
-				$message = __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.');
+				$message = __('The Graphs chosen for the Aggregate Graph do not use Graph Templates. ' .
+					' Aggregate does not support creating Aggregate Graphs from ' .
+					'non-templated graphs.');
 
 				return false;
 			} else {
@@ -1791,7 +1932,10 @@ function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, m
 function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_template_id = 0, array $_object = []) : void {
 	global $graph_item_types, $consolidation_functions;
 
-	cacti_log(__FUNCTION__ . '  called. graph: ' . $_graph_id . ' template: ' . $_graph_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . '  called. graph: ' . $_graph_id . ' template: ' . $_graph_template_id,
+		true,
+		'AGGREGATE',
+		POLLER_VERBOSITY_DEVDBG);
 
 	if ($_graph_id == 0 && $_graph_template_id == 0) {
 		return;
@@ -1963,7 +2107,9 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			}
 
 			// values can be overridden in aggregate graph/template
-			if ($is_edit && isset($current_vals[$item['id']]['t_graph_type_id']) && $current_vals[$item['id']]['t_graph_type_id'] == 'on') {
+			if ($is_edit &&
+				isset($current_vals[$item['id']]['t_graph_type_id']) &&
+				$current_vals[$item['id']]['t_graph_type_id'] == 'on') {
 				$item['graph_type_id'] = $current_vals[$item['id']]['graph_type_id'];
 			}
 
@@ -2012,7 +2158,11 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			print "<td style='$this_row_style'>" . $item['vdef_name'] . '</td>';
 
 			// column 'Item Color'
-			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '>&nbsp;</td>';
+			print "<td style='width:1%;" .
+				((!empty($item['hex'])) ? 'background-color:#' .
+				$item['hex'] .
+				";'" : "'") .
+				'>&nbsp;</td>';
 			print "<td style='$this_row_style'>" . $item['hex'] . '</td>';
 
 			// column 'Color Template'
@@ -2021,7 +2171,11 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			if (!empty($item['hex'])) {
 				print "<select id='agg_color_" . $item['id'] . "' name='agg_color_" . $item['id'] . "'>";
 				print "<option value='0' selected>None</option>";
-				html_create_list($color_templates, 'name', 'color_template_id', ($is_edit && isset($current_vals[$item['id']]['color_template']) ? $current_vals[$item['id']]['color_template'] : ''));
+				html_create_list($color_templates,
+					'name',
+					'color_template_id',
+					($is_edit &&
+					isset($current_vals[$item['id']]['color_template']) ? $current_vals[$item['id']]['color_template'] : ''));
 				print '</select>';
 			}
 			print '</td>';
@@ -2029,18 +2183,69 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			// column "Skip"
 			if (!$force_skip) {
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmle($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked' : '') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
+				print "<input class='checkbox' id='agg_skip_" .
+					$item['id'] .
+					"' type='checkbox' name='agg_skip_" .
+					$item['id'] .
+					"' title='" .
+					htmle($item['text_format']) .
+					"' " .
+					($is_edit &&
+					(!isset($current_vals[$item['id']]['item_total']) ||
+					(isset($current_vals[$item['id']]['item_skip']) &&
+					$current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked' : '') .
+						"><label class='formCheckboxLabel' for='agg_skip_" .
+						$item['id'] .
+						"'>";
 				print '</td>';
 
 				// column 'Total'
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmle($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked' : '') . "><label class='formCheckboxLabel' for='agg_total_" . $item['id'] . "'>";
+				print "<input class='checkbox' id='agg_total_" .
+					($item['id']) .
+					"' type='checkbox' name='agg_total_" .
+					($item['id']) .
+					"' title='" .
+					htmle($item['text_format']) .
+					"' " .
+					($is_edit &&
+					isset($current_vals[$item['id']]['item_total']) &&
+					$current_vals[$item['id']]['item_total'] == 'on' ? 'checked' : '') .
+						"><label class='formCheckboxLabel' for='agg_total_" .
+						$item['id'] .
+						"'>";
 				print '</td>';
 			} else {
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "'" . ($is_edit ? 'checked' : '') . '></td>';
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
-				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmle($item['text_format']) . "' " . ($is_edit ? 'checked' : '') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
-				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmle($item['text_format']) . "'><label class='formCheckboxLabel' for='agg_total_" . ($item['id']) . "'></label></td>";
+				print ("<td style='width:1%;text-align:center;'><input class='checkbox' " .
+					"id='dummy_") .
+						$item['id'] .
+						"' disabled='disabled' type='checkbox' name='dummy_" .
+						$item['id'] .
+						"'" .
+						($is_edit ? 'checked' : '') .
+						'></td>';
+				print ("<td style='width:1%;text-align:center;'><input class='checkbox' " .
+					"id='dummy1_") . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" .
+					$item['id'] .
+					"' type='checkbox' name='agg_skip_" .
+					$item['id'] .
+					"' title='" .
+					htmle($item['text_format']) .
+					"' " .
+					($is_edit ? 'checked' : '') .
+					"><label class='formCheckboxLabel' for='agg_skip_" .
+					$item['id'] .
+					"'>";
+				print "<input style='display:none;' class='checkbox' id='agg_total_" .
+					($item['id']) .
+					"' type='checkbox' name='agg_total_" .
+					($item['id']) .
+					"' title='" .
+					htmle($item['text_format']) .
+					"'><label class='formCheckboxLabel' for='agg_total_" .
+					($item['id']) .
+					"'></label></td>";
 			}
 
 			print '</tr>';

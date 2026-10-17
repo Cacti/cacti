@@ -225,7 +225,11 @@ function push_out_data_source_item(int $data_template_rrd_id) : bool {
 	// loop through each data source column name (from the above array)
 	foreach ($struct_data_source_item as $field_name => $field_array) {
 		// are we allowed to push out the column?
-		if (((empty($data_template_rrd['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_rrd['t_' . $field_name])) && (isset($data_template_rrd[$field_name])))) {
+		if (((empty($data_template_rrd['t_' . $field_name])) ||
+			(preg_match('/FORCE:/',
+				$field_name))) &&
+				((isset($data_template_rrd['t_' . $field_name])) &&
+				(isset($data_template_rrd[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_rrd
 				SET $field_name = ?
 				WHERE local_data_template_rrd_id = ?",
@@ -257,7 +261,11 @@ function push_out_data_source(int $data_template_data_id) : bool {
 	// loop through each data source column name (from the above array)
 	foreach ($struct_data_source as $field_name => $field_array) {
 		// are we allowed to push out the column?
-		if (((empty($data_template_data['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_data['t_' . $field_name])) && (isset($data_template_data[$field_name])))) {
+		if (((empty($data_template_data['t_' . $field_name])) ||
+			(preg_match('/FORCE:/',
+				$field_name))) &&
+				((isset($data_template_data['t_' . $field_name])) &&
+				(isset($data_template_data[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_data
 				SET $field_name = ?
 				WHERE local_data_template_data_id=?",
@@ -455,7 +463,9 @@ function change_data_template(int $local_data_id, int $data_template_id, array $
 			 * always propagate on a new save, only propagate templated fields thereafter
 			 * noting that always checked should not be propagated after the initial save.
 			 */
-			if ($new_save == true || (empty($item['t_value']) && !data_input_field_always_checked($item['data_input_field_id']))) {
+			if ($new_save == true ||
+				(empty($item['t_value']) &&
+				!data_input_field_always_checked($item['data_input_field_id']))) {
 				db_execute_prepared('REPLACE INTO data_input_data
 					(data_input_field_id, data_template_data_id, data_template_id, local_data_id, host_id, t_value, value)
 					VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -540,7 +550,9 @@ function push_out_graph(int $graph_template_graph_id, bool $push_title = true) :
  *
  * @return void
  */
-function push_out_graph_input(int $graph_template_input_id, int $graph_template_item_id, array $session_members) : void {
+function push_out_graph_input(int $graph_template_input_id,
+	int $graph_template_item_id,
+	array $session_members) : void {
 	$graph_input = db_fetch_row_prepared('SELECT graph_template_id, column_name
 		FROM graph_template_input
 		WHERE id = ?', [$graph_template_input_id]);
@@ -600,7 +612,8 @@ function push_out_graph_input(int $graph_template_input_id, int $graph_template_
 			FROM graph_templates_item
 			WHERE graph_template_id=' . $graph_template_id . '
 			AND local_graph_id>0
-			AND !(' . array_to_sql_or($new_session_members, 'local_graph_template_item_id') . ") $sql_include_items GROUP BY local_graph_id");
+			AND !(' . array_to_sql_or($new_session_members,
+			'local_graph_template_item_id') . ") $sql_include_items GROUP BY local_graph_id");
 	}
 
 	if (cacti_sizeof($values_to_apply)) {
@@ -892,7 +905,12 @@ function resequence_graphs(int $graph_template_id, int $local_graph_id = 0, bool
 				$deletes = [];
 
 				if (cacti_sizeof($graph_items) != cacti_sizeof($template_items)) {
-					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $local_graph_id, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
+					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s',
+						$local_graph_id,
+						$graph_template_id,
+						cacti_sizeof($graph_items),
+						cacti_sizeof($template_items)),
+						false);
 
 					// First search the graph_items list for items that don't exist in the template
 					foreach ($graph_items as $gitem) {
@@ -1066,7 +1084,10 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
 	}
 
 	if (!cacti_sizeof($template_graph_list)) {
-		cacti_log(sprintf('WARNING: Graph Template with ID %s Does not have any Graph Items', $graph_template_id), false, 'AUTOM8');
+		cacti_log(sprintf('WARNING: Graph Template with ID %s Does not have any Graph Items',
+			$graph_template_id),
+			false,
+			'AUTOM8');
 
 		return false;
 	}
@@ -1296,7 +1317,9 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
  *
  * @return void
  */
-function update_graph_template_items(int $graph_template_id, int $graph_template_item_id, bool $task_item_changed) : void {
+function update_graph_template_items(int $graph_template_id,
+	int $graph_template_item_id,
+	bool $task_item_changed) : void {
 	global $struct_graph_item;
 
 	static $cols = [];
@@ -1616,10 +1639,16 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 				poller_item_delete_for_data_source($local_data_id, $rcnn_id, false);
 			} else {
-				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id,
+					__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+						$poller_id),
+					MESSAGE_LEVEL_WARN);
 			}
 		} else {
-			raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			raise_message('poller_down_' . $poller_id,
+				__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+					$poller_id),
+				MESSAGE_LEVEL_WARN);
 		}
 	}
 }
@@ -1738,7 +1767,10 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
  *
  * @return mixed False if failing, otherwise the local_data_id data in a cache array
  */
-function create_complete_graph_from_template(int $graph_template_id, int $host_id, array $snmp_query_array, mixed &$suggested_vals) : mixed {
+function create_complete_graph_from_template(int $graph_template_id,
+	int $host_id,
+	array $snmp_query_array,
+	mixed &$suggested_vals) : mixed {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
@@ -2437,8 +2469,14 @@ function create_save_graph(int $host_id, string $form_type, int $form_id1, array
 		foreach ($snmp_index_array as $snmp_index => $true) {
 			$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
 
-			if (test_data_sources($graph_template_id, $host_id, $snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'])) {
-				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
+			if (test_data_sources($graph_template_id,
+				$host_id,
+				$snmp_query_array['snmp_query_id'],
+				$snmp_query_array['snmp_index'])) {
+				$return_array = create_complete_graph_from_template($graph_template_id,
+					$host_id,
+					$snmp_query_array,
+					$values['sg'][$snmp_query_array['snmp_query_id']]);
 
 				if ($return_array !== false) {
 					debug_log_insert('new_graphs', __esc('Created: %s', get_graph_title($return_array['local_graph_id'])));
@@ -2460,13 +2498,19 @@ function create_save_graph(int $host_id, string $form_type, int $form_id1, array
 					WHERE id = ?',
 					[$snmp_query_array['snmp_query_id']]);
 
-				debug_log_insert('new_graphs', __esc('NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure', $name, $snmp_query_array['snmp_index']));
+				debug_log_insert('new_graphs',
+					__esc('NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure',
+						$name,
+						$snmp_query_array['snmp_index']));
 			}
 		}
 	}
 }
 
-function data_source_exists(int $graph_template_id, int $host_id, array &$data_template, array &$snmp_query_array) : mixed {
+function data_source_exists(int $graph_template_id,
+	int $host_id,
+	array &$data_template,
+	array &$snmp_query_array) : mixed {
 	if (cacti_sizeof($snmp_query_array)) {
 		$input_fields = db_fetch_cell_prepared('SELECT
 			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
