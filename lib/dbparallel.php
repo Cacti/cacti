@@ -34,7 +34,11 @@
  *
  * @return mixed The output of the sql query as a single variable
  */
-function db_fetch_cell_parallel(string $sql, string $col_name = '', int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_cell_parallel(string $sql,
+	string $col_name = '',
+	int $threads = 2,
+	bool $log = true,
+	mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -57,11 +61,17 @@ function db_fetch_cell_parallel(string $sql, string $col_name = '', int $threads
  *
  * @return mixed The output of the sql query as a single variable
  */
-function db_fetch_cell_parallel_prepared(string $sql, array $params = [], string $col_name = '', int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_cell_parallel_prepared(string $sql,
+	array $params = [],
+	string $col_name = '',
+	int $threads = 2,
+	bool $log = true,
+	mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_cell_prepared($sql, $params = ' . clean_up_lines(var_export($params, true)) . ', $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
+		db_echo_sql('db_fetch_cell_prepared($sql, $params = ' . clean_up_lines(var_export($params,
+			true)) . ', $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
 	}
 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Cell', false, 'db_fetch_cell_return', $col_name);
@@ -81,7 +91,14 @@ function db_fetch_row_parallel(string $sql, int $threads = 2, bool $log = true, 
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
+		db_echo_sql('db_fetch_row(\'' .
+			clean_up_lines($sql) .
+			'\', $log = ' .
+			$log .
+			', $db_conn = ' .
+			($db_conn ? 'true' : 'false') .
+			')' .
+			"\n");
 	}
 
 	return db_fetch_row_prepared($sql, [], $log, $db_conn);
@@ -98,11 +115,16 @@ function db_fetch_row_parallel(string $sql, int $threads = 2, bool $log = true, 
  *
  * @return mixed The first row of the result or false if failed
  */
-function db_fetch_row_parallel_prepared(string $sql, array $params = [], int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_row_parallel_prepared(string $sql,
+	array $params = [],
+	int $threads = 2,
+	bool $log = true,
+	mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
+		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'',
+			$params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return');
@@ -139,7 +161,11 @@ function db_fetch_assoc_parallel(string $sql, int $threads = 2, bool $log = true
  *
  * @return mixed The entire result or false on error
  */
-function db_fetch_assoc_parallel_prepared(string $sql, array $params = [], int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_assoc_parallel_prepared(string $sql,
+	array $params = [],
+	int $threads = 2,
+	bool $log = true,
+	mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -291,7 +317,8 @@ function db_query_parallelize(string $sql, bool $log = true, mixed $db_conn = fa
 	$response = [
 		'error'              => false,
 		'error_message'      => '',
-		'temp_table_name'    => 'par_' . generate_hash() . '_res', // Limited to 40 characters due to process table length limit
+		'temp_table_name'    => 'par_' . generate_hash() . '_res',
+			// Limited to 40 characters due to process table length limit
 		'temp_create_syntax' => '',
 		'reduce_query'       => '',
 		'map_queries'        => []

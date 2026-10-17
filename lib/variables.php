@@ -287,7 +287,14 @@ function expand_title(int $host_id, int $snmp_query_id, string $snmp_index, stri
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
 			$max_chars = intval(read_config_option('max_data_query_field_length'));
-			$title     = substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, $max_chars);
+			$title     = substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title,
+				'|',
+				'|',
+				$host_id)),
+				$host_id,
+				$snmp_query_id,
+				$snmp_index,
+				$max_chars);
 		} else {
 			$title = null_out_substitutions(substitute_host_data($title, '|', '|', $host_id));
 		}
@@ -431,7 +438,10 @@ function substitute_host_data(string $string, string $l_escape_string, string $r
 
 		$temp = api_plugin_hook_function(
 			'substitute_host_data',
-			['string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'host_id' => $host_id]
+			['string'          => $string,
+				'l_escape_string' => $l_escape_string,
+				'r_escape_string' => $r_escape_string,
+				'host_id'         => $host_id]
 		);
 
 		$string = $temp['string'];
@@ -454,7 +464,12 @@ function substitute_host_data(string $string, string $l_escape_string, string $r
  *
  * @return string The original string with all of the variable substitutions made
  */
-function substitute_snmp_query_data(string $string, int $host_id, int $snmp_query_id, string $snmp_index, int $max_chars = 0, bool $allow_empty = false) : string {
+function substitute_snmp_query_data(string $string,
+	int $host_id,
+	int $snmp_query_id,
+	string $snmp_index,
+	int $max_chars = 0,
+	bool $allow_empty = false) : string {
 	if ($host_id > 0) {
 		$snmp_cache_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' field_name, field_value
 			FROM host_snmp_cache

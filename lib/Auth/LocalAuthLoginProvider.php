@@ -105,7 +105,10 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			$error     = true;
 			$error_msg = __('Access Denied!  Login Failed.');
 
-			cacti_log(sprintf('LOGIN FAILED: Empty Local Username provided, from IP Address %s', get_client_addr()), false, 'AUTH');
+			cacti_log(sprintf('LOGIN FAILED: Empty Local Username provided, from IP Address %s',
+				get_client_addr()),
+				false,
+				'AUTH');
 
 			return [];
 		}
@@ -137,7 +140,11 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 				$error     = true;
 				$error_msg = __('Access Denied!  Login failed, account disabled.');
 
-				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s, account disabled.', $username, get_client_addr()), false, 'AUTH');
+				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s, account disabled.',
+					$username,
+					get_client_addr()),
+					false,
+					'AUTH');
 
 				return [];
 			}
@@ -147,14 +154,21 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 				$error     = true;
 				$error_msg = __('Access Denied!  No password provided by user.');
 
-				cacti_log(sprintf('LOGIN FAILED: No password provided for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
+				cacti_log(sprintf('LOGIN FAILED: No password provided for user %s from IP Address %s',
+					$username,
+					get_client_addr()),
+					false,
+					'AUTH');
 
 				$valid_pass = false;
 			} else {
 				$valid_pass = compat_password_verify($password, $user['password']);
 			}
 
-			cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+			cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass,
+				false,
+				'AUTH',
+				POLLER_VERBOSITY_DEBUG);
 
 			if (!$valid_pass) {
 				auth_process_lockout($username, 0);
@@ -163,7 +177,11 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 					$error     = true;
 					$error_msg = __('Access Denied! Login Failed.');
 
-					cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
+					cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s',
+						$username,
+						get_client_addr()),
+						false,
+						'AUTH');
 				}
 
 				return [];
@@ -188,7 +206,11 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			$error     = true;
 			$error_msg = __('Access Denied!  Login Failed.');
 
-			cacti_log(sprintf('LOGIN FAILED: Invalid user %s specified from IP Address %s', $username, get_client_addr()), false, 'AUTH');
+			cacti_log(sprintf('LOGIN FAILED: Invalid user %s specified from IP Address %s',
+				$username,
+				get_client_addr()),
+				false,
+				'AUTH');
 
 			return [];
 		}
@@ -216,7 +238,9 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 					AND enabled = 'on'",
 					[$username]);
 
-				$forced_msg = __('Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now.');
+				$forced_msg = __('Your Cacti administrator has forced complex passwords for logins and ' .
+					'your current Cacti password does not match the new requirements.  ' .
+					'Therefore, you must change your password now.');
 
 				raise_message('forced_password', $forced_msg, MESSAGE_LEVEL_INFO);
 				header('Location: auth_changepassword.php');

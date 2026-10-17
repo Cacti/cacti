@@ -17,6 +17,8 @@ function consolidatedSource(string $path): string {
 	return $source;
 }
 
+require_once dirname(__DIR__, 1) . '/Helpers/PhpSource.php';
+
 test('database recovery and identifier handling retain the corrected connection', function (): void {
 	$source = consolidatedSource('lib/database.php');
 
@@ -35,7 +37,7 @@ test('CSV export capacity follows the selected archive resolution', function ():
 
 	expect(max(10000, (int) ceil(abs($end - $start) / $step) + 10))->toBe(25930)
 		->and($source)->toContain('$export_rows = (int) ceil(abs($graph_end - $graph_start) / $export_step) + 10;')
-		->and($source)->toContain("'--maxrows=' . max(10000, \$export_rows)");
+		->and($source)->toContainPhp("'--maxrows=' . max(10000, \$export_rows)");
 });
 
 test('automation host offsets carry across every IPv4 octet', function (): void {
