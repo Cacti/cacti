@@ -80,3 +80,5 @@ run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(funct
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
+
+run_probe tests/e2e/library-behavior.sh '^(lib/(auth|rrd|snmp|data_query|poller|api_device|api_graph|api_data_source|api_tree|aggregate|api_aggregate|template|export|import|reports|html_reports|api_scheduler|utility)\.php|cacti\.sql|install/templates/|resource/snmp_queries/|tests/fixtures/(Core/LibraryBehavior\.php|snmp-coverage/)|tests/e2e/(library-behavior\.sh|Dockerfile|entrypoint\.sh|docker-compose\.yml)|tests/Helpers/RequestCoverage\.php|\.dockerignore|composer\.(json|lock)|package(-lock)?\.json|build/)' 18278
