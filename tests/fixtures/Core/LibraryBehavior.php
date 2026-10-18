@@ -28,6 +28,14 @@ $GLOBALS['cacti_fixture_contract'] = [
 	'assertions' => 0,
 	'producers'  => [
 		'tests/fixtures/Core/LibraryBehavior.php',
+		'tests/fixtures/Core/LibraryCollection.php',
+		'tests/fixtures/Core/LibraryAuthentication.php',
+		'tests/fixtures/Core/LibraryStorage.php',
+		'tests/fixtures/Core/LibraryForms.php',
+		'tests/fixtures/Core/LibraryDatabase.php',
+		'tests/fixtures/Core/LibraryPlugins.php',
+		'tests/fixtures/Core/PluginProducer.php',
+		'tests/fixtures/Core/QueryProducer.php',
 		'tests/e2e/library-behavior.sh',
 		'tests/Helpers/RequestCoverage.php',
 		'tests/e2e/Dockerfile',
@@ -181,6 +189,8 @@ api_device_dq_add($queryDevice, $interfaceQuery, '1');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$queryDevice, $interfaceQuery, 'ifDescr']), $indexCount, 'Readding a query rediscovers its interfaces');
 api_device_dq_add($queryDevice, $interfaceQuery, '1');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$queryDevice, $interfaceQuery]), 1, 'Repeated query association keeps one mapping');
+require __DIR__ . '/LibraryCollection.php';
+library_collection_queries($queryDevice, $interfaceQuery);
 api_device_remove($queryDevice);
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ?', [$queryDevice]), 0, 'Removing the fixture clears its query cache');
 
@@ -433,6 +443,13 @@ library_expect((int) $stored['total_polls'], 0, 'Statistics reset clears polls')
 library_expect((int) $stored['failed_polls'], 0, 'Statistics reset clears failures');
 library_expect((float) $stored['availability'], 100.0, 'Statistics reset restores availability');
 
+require __DIR__ . '/LibraryStorage.php';
+library_storage($templateId);
+require __DIR__ . '/LibraryForms.php';
+library_forms();
+require __DIR__ . '/LibraryDatabase.php';
+library_spike_repair();
+
 // An unavailable collector must retain local changes and report incomplete
 // propagation. Disabled records keep every network path inside this fixture.
 $offlinePoller = (int) sql_save(['id' => 0, 'name' => 'Offline fixture', 'hostname' => '127.0.0.1', 'disabled' => 'on'], 'poller');
@@ -602,6 +619,12 @@ foreach ([
 ] as [$interval, $count, $expected]) {
 	library_expect(reports_interval_start($interval, $count, 0, $start), strtotime($expected . ' UTC'), 'Report interval ' . $interval);
 }
+
+require __DIR__ . '/LibraryAuthentication.php';
+library_authentication();
+require __DIR__ . '/LibraryPlugins.php';
+library_plugins();
+library_database();
 
 $complete                                        = true;
 $GLOBALS['cacti_fixture_contract']['complete']   = true;
