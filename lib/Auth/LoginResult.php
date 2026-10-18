@@ -51,7 +51,10 @@ final class LoginResult {
 		return new self(false, null, $error, isCredentialFailure: $isCredentialFailure);
 	}
 
-	public static function authenticated(string $username, array $claims = [], ?array $user = null, bool $rememberMe = false): self {
+	public static function authenticated(string $username,
+		array $claims = [],
+		?array $user = null,
+		bool $rememberMe = false): self {
 		return new self(true, $user, '', $username, $claims, $rememberMe);
 	}
 }
