@@ -57,7 +57,14 @@ function graph_template_input_value_is_allowed(mixed $column_name, mixed $value)
 		return false;
 	}
 
-	if (in_array($column_name, ['graph_type_id', 'task_item_id', 'consolidation_function_id', 'cdef_id', 'vdef_id', 'gprint_id'], true)) {
+	if (in_array($column_name,
+		['graph_type_id',
+		'task_item_id',
+		'consolidation_function_id',
+		'cdef_id',
+		'vdef_id',
+		'gprint_id'],
+		true)) {
 		return preg_match('/^\d{1,10}$/D', $value) === 1;
 	}
 
@@ -109,7 +116,9 @@ function graph_template_input_value_is_allowed(mixed $column_name, mixed $value)
  *
  * @param array<int|string> $graph_template_item_ids
  */
-function graph_template_input_relationships_are_valid(int $input_id, int $graph_template_id, array $graph_template_item_ids) : bool {
+function graph_template_input_relationships_are_valid(int $input_id,
+	int $graph_template_id,
+	array $graph_template_item_ids) : bool {
 	if ($graph_template_id <= 0) {
 		return false;
 	}
@@ -155,7 +164,8 @@ function graph_template_input_xml_preflight(array $xml_array) : bool {
 
 	$available_items = [];
 
-	foreach (isset($xml_array['items']) && is_array($xml_array['items']) ? array_keys($xml_array['items']) : [] as $item_hash) {
+	foreach (isset($xml_array['items']) &&
+		is_array($xml_array['items']) ? array_keys($xml_array['items']) : [] as $item_hash) {
 		$parsed_hash = parse_xml_hash($item_hash);
 
 		if ($parsed_hash === false) {
@@ -171,7 +181,9 @@ function graph_template_input_xml_preflight(array $xml_array) : bool {
 			return false;
 		}
 
-		foreach (array_filter(explode('|', $input['items']), static fn (string $item_hash) : bool => $item_hash !== '') as $item_hash) {
+		foreach (array_filter(explode('|',
+			$input['items']),
+			static fn (string $item_hash) : bool => $item_hash !== '') as $item_hash) {
 			$parsed_hash = parse_xml_hash($item_hash);
 
 			if ($parsed_hash === false || !isset($available_items[$parsed_hash['hash']])) {
