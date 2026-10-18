@@ -213,13 +213,17 @@ jobs:
     - name: Start the database from the verified local image
       env:
         DATABASE_IMAGE: ${{ steps.database_image.outputs.image }}
+        MYSQL_DATABASE: cacti
+        MYSQL_USER: cactiuser
+        MYSQL_PASSWORD: cactiuser
+        MYSQL_ROOT_PASSWORD: cactiroot
       run: |
         set -euo pipefail
         docker run --detach --pull=never --name cacti-ci-mariadb \
           --publish 127.0.0.1:3306:3306 \
-          --env MYSQL_DATABASE=cacti --env MYSQL_USER=cactiuser \
-          --env MYSQL_PASSWORD=cactiuser --env MYSQL_ROOT_PASSWORD=cactiroot \
-          --health-cmd="mariadb --protocol=TCP --host=127.0.0.1 --user=cactiuser --password=cactiuser cacti --execute='SELECT 1'" --health-interval=2s \
+          --env MYSQL_DATABASE --env MYSQL_USER \
+          --env MYSQL_PASSWORD --env MYSQL_ROOT_PASSWORD \
+          --health-cmd='mariadb --protocol=TCP --host=127.0.0.1 --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE" --execute="SELECT 1"' --health-interval=2s \
           --health-timeout=5s --health-retries=30 "$DATABASE_IMAGE"
         for _ in $(seq 1 60); do
           status=$(docker inspect --format '{{.State.Health.Status}}' cacti-ci-mariadb)
@@ -564,6 +568,7 @@ jobs:
       env:
         DOCKER_CONFIG: ${{ runner.temp }}/cacti-mariadb-auth
       run: |
+        set -euo pipefail
         docker rm --force --volumes cacti-ci-mariadb 2>/dev/null || true
         docker logout ghcr.io
 
