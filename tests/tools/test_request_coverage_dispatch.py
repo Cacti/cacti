@@ -32,7 +32,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/rrd.php', ['FallbackSourceIdentity.php', 'library'])
 
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', 'UserAdministrationAuditCoverage.php')
+        self.dispatch('lib/functions.php', ['UserAdministrationAuditCoverage.php', 'library'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'library'])
@@ -41,7 +41,11 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/api_device.php', 'library')
 
     def test_library_fixture_changes_run_the_database_contracts(self):
-        self.dispatch('tests/fixtures/Core/LibraryBehavior.php', 'library')
+        for name in ['LibraryBehavior', 'LibraryCollection', 'LibraryAuthentication',
+                     'LibraryStorage', 'LibraryForms', 'LibraryDatabase', 'LibraryPlugins',
+                     'QueryProducer', 'PluginProducer']:
+            with self.subTest(producer=name):
+                self.dispatch(f'tests/fixtures/Core/{name}.php', 'library')
 
     def test_library_runtime_changes_run_the_database_contracts(self):
         self.dispatch('tests/e2e/Dockerfile', 'library')
@@ -52,7 +56,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_library_dependencies_run_the_database_contracts(self):
         for changed in ['lib/api_tree.php', 'lib/api_aggregate.php', 'lib/data_query.php',
                         'resource/snmp_queries/interface.xml', 'composer.lock',
-                        'tests/fixtures/snmp-coverage/snmpd.conf']:
+                        'tests/fixtures/snmp-coverage/snmpd.conf', 'lib/boost.php',
+                        'lib/spikekill.php', 'lib/database.php', 'lib/plugins.php',
+                        'lib/Auth/LocalAuthLoginProvider.php']:
             with self.subTest(changed=changed):
                 self.dispatch(changed, 'library')
 
