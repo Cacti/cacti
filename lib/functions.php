@@ -9191,12 +9191,17 @@ function get_md5_include_css(string $path, bool $async = false, string|null $the
  * @param string|null $theme Theme to use
  * @param string|null $file  File to include
  * @param string|null $rel   Rel type output when not null (eg, icon, shortcut icon)
+ * @param string|null $type  Icon type output when not null (eg, image/svg+xml)
  * @param string|null $sizes Sizes output when not null (eg, 96x96)
  *
  * @return string
  */
-function get_md5_include_icon(string $path, bool $async = false, string|null $theme = null, string|null $file = null, string|null $rel = null, string|null $sizes = null) : string {
-	$format = '<link href=\'%s\' type=\'text/css\' %s%s>';
+function get_md5_include_icon(string $path, bool $async = false, string|null $theme = null, string|null $file = null, string|null $rel = null, string|null $type = null, string|null $sizes = null) : string {
+	if ($type === null) {
+		$format = '<link href=\'%s\' type=\'text/css\' %s%s>';
+	} else {
+		$format = "<link href='%s' type='$type' %s%s>";
+	}
 
 	if (!empty($rel)) {
 		$rel = " rel='" . htmlspecialchars($rel) . "'";
