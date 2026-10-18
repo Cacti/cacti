@@ -63,13 +63,15 @@ function library_authentication(): void {
 		library_expect($provider->authenticate('coverage_local', $password)->success, false, 'Disabled account cannot authenticate');
 		library_expect((int) db_fetch_cell_prepared('SELECT failed_attempts FROM user_auth WHERE id = ?', [$user]), 0, 'Disabled-account rejection does not consume password attempts');
 		user_enable($user);
-		db_execute_prepared('UPDATE user_auth SET password = ? WHERE id = ?', [md5($password), $user]);
+		// Historical MD5 record for the disposable "Fixture Password 2!" account.
+		$legacyHash = '31e814b17e3c758e5fdead1029f9a67f';
+		db_execute_prepared('UPDATE user_auth SET password = ? WHERE id = ?', [$legacyHash, $user]);
 		$error     = false;
 		$error_msg = '';
 		library_expect($provider->authenticate('coverage_local', $password)->success, true, 'Legacy password authenticates before transparent rehash');
 		$rehashed = db_fetch_cell_prepared('SELECT password FROM user_auth WHERE id = ?', [$user]);
 		library_expect(password_verify($password, $rehashed), true, 'Rehash persists a verifiable modern password');
-		library_expect($rehashed !== md5($password), true, 'Legacy hash is replaced only after success');
+		library_expect($rehashed !== $legacyHash, true, 'Legacy hash is replaced only after success');
 
 		foreach (['short', 'LongPassword!', 'longpassword2!', 'LongPassword2'] as $invalid) {
 			library_expect(secpass_check_pass($invalid) !== 'ok', true, 'Password policy rejects a missing requirement');
