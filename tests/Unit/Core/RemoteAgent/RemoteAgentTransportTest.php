@@ -14,6 +14,8 @@ declare(strict_types = 1);
 
 require_once dirname(__DIR__, 4) . '/lib/remote_agent_transport.php';
 
+require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
+
 test('remote-agent HTTP status parser returns the final valid status', function () {
 	expect(remote_agent_http_status([
 		'HTTP/1.1 301 Moved Permanently',
@@ -62,7 +64,7 @@ test('remote collector handoff enforces path status and response-size contracts'
 		->and($source)->toContain('REMOTE_AGENT_MAX_RESPONSE_BYTES + 1')
 		->and($source)->toContain('$http_response_header = [];')
 		->and($source)->toContain('remote_agent_http_status($http_response_header)')
-		->and($source)->toContain('$status < 200 || $status >= 300');
+		->and($source)->toContainPhp('$status < 200 || $status >= 300');
 });
 
 test('remote graph JSON accepts only strict supported image envelopes', function (string $image) {

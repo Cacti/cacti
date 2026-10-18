@@ -59,7 +59,8 @@ function api_notification_assert_dependencies() : void {
 		// Dependency absence is validated in an isolated process; it cannot be
 		// reproduced after this coverage process has loaded the vendor classes.
 		// @codeCoverageIgnoreStart
-		throw new RuntimeException('Symfony Notifier dependencies are unavailable. Run Composer install to restore the vendor tree.');
+		throw new RuntimeException('Symfony Notifier dependencies are unavailable. Run Composer install ' .
+			'to restore the vendor tree.');
 		// @codeCoverageIgnoreEnd
 	}
 }
@@ -115,7 +116,9 @@ function api_notification_recipients(array|string|RecipientInterface $recipients
 		return [$recipients];
 	}
 
-	if (is_array($recipients) && array_filter($recipients, fn (mixed $recipient) : bool => $recipient instanceof RecipientInterface) !== []) {
+	if (is_array($recipients) &&
+		array_filter($recipients,
+			fn (mixed $recipient) : bool => $recipient instanceof RecipientInterface) !== []) {
 		foreach ($recipients as $recipient) {
 			if (!$recipient instanceof RecipientInterface) {
 				throw new InvalidArgumentException('Symfony recipients cannot be mixed with email address values.');
