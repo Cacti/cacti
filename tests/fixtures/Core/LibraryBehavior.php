@@ -290,6 +290,7 @@ $secondGraphId = (int) $secondGraph['local_graph_id'];
 library_expect($secondGraphId > 0 && $secondGraphId !== $graphId, true, 'Aggregate members have separate graph identities');
 $sourceItems  = db_fetch_assoc_prepared('SELECT sequence FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graphId]);
 $itemDefaults = array_fill_keys(array_column($sourceItems, 'sequence'), 0);
+require_once __DIR__ . '/LibraryForms.php';
 
 foreach ([AGGREGATE_TOTAL_NONE, AGGREGATE_TOTAL_ALL, AGGREGATE_TOTAL_ONLY] as $totalMode) {
 	$aggregateId = 0;
@@ -306,6 +307,7 @@ foreach ([AGGREGATE_TOTAL_NONE, AGGREGATE_TOTAL_ALL, AGGREGATE_TOTAL_ONLY] as $t
 	library_expect(aggregate_create_update($aggregateId, [$graphId, $secondGraphId], $attributes), true, 'Aggregate creation succeeds for total mode ' . $totalMode);
 	library_expect($aggregateId > 0, true, 'Aggregate creation returns its graph identity');
 	$aggregate = db_fetch_row_prepared('SELECT * FROM aggregate_graphs WHERE local_graph_id = ?', [$aggregateId]);
+	library_aggregate_editor($templateId, $aggregate);
 	library_expect($aggregate['title_format'], $attributes['graph_title'], 'Aggregate title persists');
 	$members = db_fetch_assoc_prepared('SELECT local_graph_id FROM aggregate_graphs_items WHERE aggregate_graph_id = ? ORDER BY sequence', [$aggregate['id']]);
 	library_expect(array_map('intval', array_column($members, 'local_graph_id')), [$graphId, $secondGraphId], 'Aggregate membership preserves source order');
@@ -445,7 +447,7 @@ library_expect((float) $stored['availability'], 100.0, 'Statistics reset restore
 
 require __DIR__ . '/LibraryStorage.php';
 library_storage($templateId);
-require __DIR__ . '/LibraryForms.php';
+library_business_hours($graphId);
 library_forms();
 require __DIR__ . '/LibraryDatabase.php';
 library_spike_repair();
