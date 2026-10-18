@@ -104,6 +104,10 @@ jobs:
       working-directory: tests
       run: php vendor/bin/pest --configuration=phpunit-permission-display.xml --colors=never
 
+    - name: Run spike-removal regression tests
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/Ui/Spikekill/ --colors=never
+
   javascript-contracts:
     name: JavaScript contracts
     runs-on: ubuntu-22.04
