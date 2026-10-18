@@ -67,3 +67,5 @@ run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cac
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
+
+run_probe tests/e2e/library-behavior.sh '^(lib/(auth|rrd|snmp|data_query|poller|api_device|api_graph|api_data_source|api_tree|aggregate|api_aggregate|template|export|import|reports|html_reports|api_scheduler|utility)\.php|cacti\.sql|install/templates/|resource/snmp_queries/|tests/fixtures/(Core/LibraryBehavior\.php|snmp-coverage/)|tests/e2e/(library-behavior\.sh|Dockerfile|entrypoint\.sh|docker-compose\.yml)|tests/Helpers/RequestCoverage\.php|\.dockerignore|composer\.(json|lock)|package(-lock)?\.json|build/)' 18278
