@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap-unit.php">
+	<testsuites>
+		<testsuite name="Graph permission display">
+			<file>Unit/Security/Auth/GraphPermissionDisplayTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>
