@@ -47,3 +47,5 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
+
+run_probe tests/e2e/library-behavior.sh '^(lib/(auth|rrd|snmp|data_query|poller|api_device|api_graph|api_data_source|api_tree|aggregate|api_aggregate|template|export|import|reports|html_reports|api_scheduler|utility)\.php|cacti\.sql|install/templates/|resource/snmp_queries/|tests/fixtures/(Core/LibraryBehavior\.php|snmp-coverage/)|tests/e2e/(library-behavior\.sh|Dockerfile|entrypoint\.sh|docker-compose\.yml)|tests/Helpers/RequestCoverage\.php|\.dockerignore|composer\.(json|lock)|package(-lock)?\.json|build/)' 18278
