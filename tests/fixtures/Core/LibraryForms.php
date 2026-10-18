@@ -24,6 +24,50 @@ function library_form_dom(callable $render): DOMXPath {
 	return new DOMXPath($document);
 }
 
+function library_aggregate_editor(int $template, array $aggregate): void {
+	$items = db_fetch_assoc_prepared('SELECT id, graph_type_id FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence', [$template]);
+	library_expect(count($items) > 0, true, 'Aggregate editor uses installed template items');
+	$dom = library_form_dom(static fn () => draw_aggregate_graph_items_list(0, $template));
+	library_expect($dom->evaluate('string(//input[@name="item_no"]/@value)'), (string) count($items), 'New aggregate submits the actual number of source items');
+	library_expect($dom->evaluate('count(//input[starts-with(@name,"agg_total_")][@checked])'), 0.0, 'New aggregate does not preselect totals');
+	$submitted = [];
+	$save      = [];
+
+	foreach ($items as $index => $item) {
+		$id        = (int) $item['id'];
+		$save[$id] = ['aggregate_graph_id' => $aggregate['id'], 'graph_templates_item_id' => $id,
+			'item_skip'                       => '', 'item_total' => '', 'sequence' => $index + 1];
+		$submitted[($index % 2 === 0 ? 'agg_total_' : 'agg_skip_') . $id] = 'on';
+	}
+	aggregate_validate_graph_items($submitted, $save);
+	library_expect(aggregate_graph_items_save($save, 'aggregate_graphs_graph_item'), true, 'Submitted editor selections persist through the production save helper');
+	$values = db_fetch_assoc_prepared('SELECT * FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', [$aggregate['id']]);
+	library_expect(count($values) > 0, true, 'Saved aggregate has persisted editor values');
+	$dom = library_form_dom(static fn () => draw_aggregate_graph_items_list(0, $template, $aggregate));
+	library_expect($dom->evaluate('string(//input[@name="item_no"]/@value)'), (string) count($items), 'Editing retains the full source item count');
+
+	foreach ($values as $value) {
+		$id = (int) $value['graph_templates_item_id'];
+		library_expect($dom->query('//input[@name="agg_total_' . $id . '"]')->length, 1, 'Every saved item has its own rendered total control');
+		library_expect($value['item_total'], $submitted['agg_total_' . $id] ?? '', 'Stored total matches the submitted selection');
+		library_expect($value['item_skip'], $submitted['agg_skip_' . $id] ?? '', 'Stored skip matches the submitted selection');
+		library_expect($dom->query('//input[@name="agg_total_' . $id . '"][@checked]')->length > 0, $value['item_total'] === 'on', 'Saved total selection returns to its own item');
+		library_expect($dom->query('//input[@name="agg_skip_' . $id . '"][@checked]')->length > 0, $value['item_skip'] === 'on', 'Saved skip selection returns to its own item');
+	}
+	$source   = (int) $items[0]['id'];
+	$original = db_fetch_cell_prepared('SELECT text_format FROM graph_templates_item WHERE id = ?', [$source]);
+
+	try {
+		library_expect(db_execute_prepared('UPDATE graph_templates_item SET text_format = ? WHERE id = ?', ['<em>Fixture & legend</em>', $source]), true, 'Template legend persists before rendering');
+		$dom = library_form_dom(static fn () => draw_aggregate_graph_items_list(0, $template, $aggregate));
+		library_expect(str_contains($dom->document->textContent, '<em>Fixture & legend</em>'), true, 'Aggregate legend remains literal text');
+		library_expect($dom->query('//em[text()="Fixture & legend"]')->length, 0, 'Legend cannot inject an element into the editor');
+	} finally {
+		db_execute_prepared('UPDATE graph_templates_item SET text_format = ? WHERE id = ?', [$original, $source]);
+		db_execute_prepared('DELETE FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', [$aggregate['id']]);
+	}
+}
+
 function library_forms(): void {
 	global $form_id;
 	require_once CACTI_PATH_LIBRARY . '/html_form.php';
