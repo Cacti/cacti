@@ -169,10 +169,42 @@ $indexCount = count($interfaces);
 library_expect(run_data_query($queryDevice, $interfaceQuery), true, 'Repeated SNMP indexing succeeds');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$queryDevice, $interfaceQuery, 'ifDescr']), $indexCount, 'Repeated indexing does not duplicate interface rows');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_reindex WHERE host_id = ?', [$queryDevice]) > 0, true, 'Index discovery registers the production poller reindex check');
+api_device_dq_change($queryDevice, $interfaceQuery, '2');
+library_expect((int) db_fetch_cell_prepared('SELECT reindex_method FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$queryDevice, $interfaceQuery]), 2, 'Changing reindex policy persists');
+library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$queryDevice, $interfaceQuery, 'ifDescr']), $indexCount, 'Changing policy preserves discovered interfaces');
+api_device_dq_remove($queryDevice, $interfaceQuery);
+
+foreach (['host_snmp_query' => 'snmp_query_id', 'host_snmp_cache' => 'snmp_query_id', 'poller_reindex' => 'data_query_id'] as $table => $column) {
+	library_expect((int) db_fetch_cell_prepared("SELECT COUNT(*) FROM $table WHERE host_id = ? AND $column = ?", [$queryDevice, $interfaceQuery]), 0, 'Removing a query clears ' . $table);
+}
+api_device_dq_add($queryDevice, $interfaceQuery, '1');
+library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$queryDevice, $interfaceQuery, 'ifDescr']), $indexCount, 'Readding a query rediscovers its interfaces');
+api_device_dq_add($queryDevice, $interfaceQuery, '1');
+library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$queryDevice, $interfaceQuery]), 1, 'Repeated query association keeps one mapping');
 api_device_remove($queryDevice);
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ?', [$queryDevice]), 0, 'Removing the fixture clears its query cache');
 
-$templateId = (int) db_fetch_cell('SELECT graph_template_id FROM host_template_graph ORDER BY graph_template_id LIMIT 1');
+$templateId       = (int) db_fetch_cell('SELECT graph_template_id FROM host_template_graph ORDER BY graph_template_id LIMIT 1');
+$deviceTemplateId = (int) db_fetch_cell('SELECT host_template_id FROM host_template_snmp_query ORDER BY host_template_id LIMIT 1');
+$deviceTemplate   = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$deviceTemplateId]);
+library_expect($deviceTemplateId > 0, true, 'Package supplies a device template with queries');
+$duplicatedTemplate = api_duplicate_device_template($deviceTemplateId, 'Fixture copy of <template_title>');
+library_expect(is_int($duplicatedTemplate) && $duplicatedTemplate > 0 && $duplicatedTemplate !== $deviceTemplateId, true, 'Duplicating creates a distinct template identity');
+$duplicateTemplateRow = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$duplicatedTemplate]);
+library_expect($duplicateTemplateRow['name'], 'Fixture copy of ' . $deviceTemplate['name'], 'Template copy expands its title');
+library_expect($duplicateTemplateRow['hash'] !== $deviceTemplate['hash'], true, 'Template copy has a new export identity');
+
+foreach (['host_template_graph' => 'graph_template_id', 'host_template_snmp_query' => 'snmp_query_id'] as $table => $column) {
+	$originalMappings = db_fetch_assoc_prepared("SELECT $column FROM $table WHERE host_template_id = ? ORDER BY $column", [$deviceTemplateId]);
+	$copiedMappings   = db_fetch_assoc_prepared("SELECT $column FROM $table WHERE host_template_id = ? ORDER BY $column", [$duplicatedTemplate]);
+	library_expect(count($originalMappings) > 0, true, 'Original template has ' . $table . ' associations');
+	library_expect($copiedMappings, $originalMappings, 'Copy preserves ' . $table . ' associations');
+	db_execute_prepared("DELETE FROM $table WHERE host_template_id = ?", [$duplicatedTemplate]);
+	library_expect(db_fetch_assoc_prepared("SELECT $column FROM $table WHERE host_template_id = ? ORDER BY $column", [$deviceTemplateId]), $originalMappings, 'Deleting copy mappings preserves original template');
+}
+db_execute_prepared('DELETE FROM host_template WHERE id = ?', [$duplicatedTemplate]);
+library_expect(db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$deviceTemplateId]), $deviceTemplate, 'Duplicating leaves the original template unchanged');
+library_expect(api_duplicate_device_template(0, 'Missing template'), false, 'Missing template cannot be duplicated');
 $suggested  = [];
 $created    = create_complete_graph_from_template($templateId, $device, [], $suggested);
 library_expect(is_array($created), true, 'Graph creation returns its identities');
@@ -400,6 +432,150 @@ $stored = db_fetch_row_prepared('SELECT total_polls, failed_polls, availability 
 library_expect((int) $stored['total_polls'], 0, 'Statistics reset clears polls');
 library_expect((int) $stored['failed_polls'], 0, 'Statistics reset clears failures');
 library_expect((float) $stored['availability'], 100.0, 'Statistics reset restores availability');
+
+// An unavailable collector must retain local changes and report incomplete
+// propagation. Disabled records keep every network path inside this fixture.
+$offlinePoller = (int) sql_save(['id' => 0, 'name' => 'Offline fixture', 'hostname' => '127.0.0.1', 'disabled' => 'on'], 'poller');
+library_expect($offlinePoller > 1, true, 'An isolated disabled collector exists');
+library_expect(remote_poller_up($offlinePoller), false, 'Disabled collector is unavailable');
+$remoteDevice = library_save_device(['description' => 'Remote fixture', 'snmp_version' => 0]);
+library_expect($remoteDevice > 0, true, 'Remote fixture device exists');
+library_expect(db_execute_prepared('UPDATE host SET poller_id = ? WHERE id = ?', [$offlinePoller, $remoteDevice]), true, 'Fixture device belongs to unavailable collector');
+
+foreach ([
+	static fn () => api_device_disable_devices([$remoteDevice]),
+	static fn () => api_device_enable_devices([$remoteDevice]),
+	static fn () => api_device_clear_statistics([$remoteDevice]),
+] as $operation) {
+	$_SESSION[SESS_MESSAGES] = [];
+	$operation();
+	library_expect($_SESSION[SESS_MESSAGES]['poller_down_' . $offlinePoller]['level'] ?? null, MESSAGE_LEVEL_WARN, 'Unavailable collector reports incomplete propagation');
+}
+library_expect(db_fetch_cell_prepared('SELECT disabled FROM host WHERE id = ?', [$remoteDevice]), '', 'Remote enable still persists locally');
+api_device_disable_devices([$remoteDevice]);
+
+foreach (['add', 'change', 'remove'] as $operation) {
+	$_SESSION[SESS_MESSAGES] = [];
+
+	if ($operation === 'add') {
+		api_device_dq_add($remoteDevice, $interfaceQuery, '1');
+	} elseif ($operation === 'change') {
+		api_device_dq_change($remoteDevice, $interfaceQuery, '2');
+	} else {
+		api_device_dq_remove($remoteDevice, $interfaceQuery);
+	}
+	library_expect($_SESSION[SESS_MESSAGES]['poller_down_' . $offlinePoller]['level'] ?? null, MESSAGE_LEVEL_WARN, 'Query mutation reports unavailable collector');
+	$mapping = db_fetch_row_prepared('SELECT reindex_method FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$remoteDevice, $interfaceQuery]);
+	library_expect(count($mapping), $operation === 'remove' ? 0 : 1, 'Query mutation persists locally');
+
+	if ($operation !== 'remove') {
+		library_expect((int) $mapping['reindex_method'], $operation === 'add' ? 1 : 2, 'Remote query keeps the selected reindex method');
+	}
+}
+library_expect(db_execute_prepared('INSERT INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', [$remoteDevice, $templateId]), true, 'Remote graph association exists');
+$_SESSION[SESS_MESSAGES] = [];
+api_device_gt_remove($remoteDevice, $templateId);
+library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$remoteDevice]), 0, 'Remote graph association is removed locally');
+library_expect($_SESSION[SESS_MESSAGES]['poller_down_' . $offlinePoller]['level'] ?? null, MESSAGE_LEVEL_WARN, 'Graph association warns about incomplete propagation');
+api_device_remove($remoteDevice);
+library_expect(db_fetch_cell_prepared('SELECT deleted FROM host WHERE id = ?', [$remoteDevice]), 'on', 'Remote deletion leaves a tombstone until synchronization');
+library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_command WHERE poller_id = ? AND action = ? AND command = ?', [$offlinePoller, POLLER_COMMAND_PURGE, (string) $remoteDevice]), 1, 'Remote deletion queues its purge');
+api_device_purge_from_remote($remoteDevice, $offlinePoller);
+library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_command WHERE poller_id = ? AND action = ? AND command = ?', [$offlinePoller, POLLER_COMMAND_PURGE, (string) $remoteDevice]), 1, 'Retry does not duplicate the queued purge');
+db_execute_prepared('DELETE FROM host WHERE id = ?', [$remoteDevice]);
+db_execute_prepared('DELETE FROM poller_command WHERE poller_id = ?', [$offlinePoller]);
+db_execute_prepared('DELETE FROM poller WHERE id = ?', [$offlinePoller]);
+
+// Bulk removal must preserve unselected devices and honor the graph-retention choice.
+foreach ([1, 2] as $deleteType) {
+	$batchDevices = [];
+	$batchGraphs  = [];
+	$batchData    = [];
+
+	foreach (['first', 'second'] as $suffix) {
+		$batchDevice = library_save_device(['description' => 'Bulk removal ' . $suffix, 'snmp_version' => 0]);
+		library_expect($batchDevice > 0, true, 'A selected bulk device exists');
+		$batchDevices[] = $batchDevice;
+		$batchCreated   = create_complete_graph_from_template($templateId, $batchDevice, [], $suggested);
+		library_expect(is_array($batchCreated) && $batchCreated['local_graph_id'] > 0, true, 'A selected device has a real graph');
+		$batchGraphs[] = (int) $batchCreated['local_graph_id'];
+		$batchData     = array_merge($batchData, array_map('intval', array_values($batchCreated['local_data_id'])));
+		library_expect(db_execute_prepared('INSERT INTO host_value_cache (host_id, dimension, value) VALUES (?, ?, ?)', [$batchDevice, 'fixture', 'selected']), true, 'Selected cache row exists');
+	}
+	library_expect(count($batchData) > 0, true, 'Selected graphs have data sources');
+	$unselected = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$device]);
+	api_device_remove_multi($batchDevices, $deleteType);
+
+	foreach ($batchDevices as $batchDevice) {
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$batchDevice]), 0, 'Bulk removal deletes selected device');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_value_cache WHERE host_id = ?', [$batchDevice]), 0, 'Bulk removal deletes selected cache');
+	}
+	library_expect(db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$device]), $unselected, 'Bulk removal leaves the unselected device unchanged');
+	library_expect((int) db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', [$graphId]), $device, 'Bulk removal preserves the unselected graph');
+
+	foreach ($batchGraphs as $batchGraph) {
+		$remaining = db_fetch_row_prepared('SELECT host_id FROM graph_local WHERE id = ?', [$batchGraph]);
+		library_expect(count($remaining), $deleteType === 1 ? 1 : 0, 'Bulk removal honors graph retention');
+
+		if ($deleteType === 1) {
+			library_expect((int) $remaining['host_id'], 0, 'Retained graph is detached from the deleted device');
+		}
+	}
+
+	foreach ($batchData as $batchDataId) {
+		$remaining = db_fetch_row_prepared('SELECT dl.host_id, dtd.active FROM data_local AS dl INNER JOIN data_template_data AS dtd ON dtd.local_data_id = dl.id WHERE dl.id = ?', [$batchDataId]);
+		library_expect(count($remaining), $deleteType === 1 ? 2 : 0, 'Bulk removal honors data-source retention');
+
+		if ($deleteType === 1) {
+			library_expect((int) $remaining['host_id'], 0, 'Retained data source is detached');
+			library_expect($remaining['active'], '', 'Retained data source stops polling');
+		}
+	}
+
+	if ($deleteType === 1) {
+		api_delete_graphs($batchGraphs, 2);
+	}
+}
+
+// Fail actual SQL statements, after earlier cleanup has already run. The retry
+// must retain the device and its dependencies until the whole operation succeeds.
+foreach ([false, true] as $bulk) {
+	foreach (['host_value_cache', 'host'] as $failureTable) {
+		$failureDevice = library_save_device(['description' => 'Rollback fixture', 'snmp_version' => 0]);
+		library_expect($failureDevice > 0, true, 'Rollback device exists');
+		library_expect(db_execute_prepared('INSERT INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', [$failureDevice, $templateId]), true, 'Early cleanup dependency exists');
+		library_expect(db_execute_prepared('INSERT INTO host_value_cache (host_id, dimension, value) VALUES (?, ?, ?)', [$failureDevice, 'rollback', 'preserve']), true, 'Later cleanup dependency exists');
+		$idColumn = $failureTable === 'host' ? 'id' : 'host_id';
+		library_expect(db_execute("CREATE TRIGGER library_delete_failure BEFORE DELETE ON $failureTable FOR EACH ROW BEGIN IF OLD.$idColumn = $failureDevice THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'library cleanup failure'; END IF; END"), true, 'Database failure injection is installed');
+		$_SESSION['sess_messages'] = [];
+
+		try {
+			if ($bulk) {
+				api_device_remove_multi([$failureDevice]);
+			} else {
+				api_device_remove($failureDevice);
+			}
+			$messageId = $bulk ? 'device_remove_multi_failed' : 'device_remove_failed_' . $failureDevice;
+			library_expect($_SESSION[SESS_MESSAGES][$messageId]['level'] ?? null, MESSAGE_LEVEL_ERROR, 'Failed deletion reports an error');
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$failureDevice]), 1, 'Failed deletion preserves the device');
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$failureDevice]), 1, 'Failed deletion rolls back earlier cleanup');
+			library_expect(db_fetch_cell_prepared('SELECT value FROM host_value_cache WHERE host_id = ?', [$failureDevice]), 'preserve', 'Failed deletion preserves later dependencies');
+		} finally {
+			library_expect(db_execute('DROP TRIGGER library_delete_failure'), true, 'Only the fixture trigger is removed');
+		}
+		$_SESSION['sess_messages'] = [];
+
+		if ($bulk) {
+			api_device_remove_multi([$failureDevice]);
+		} else {
+			api_device_remove($failureDevice);
+		}
+		library_expect(array_filter($_SESSION[SESS_MESSAGES], static fn (array $message): bool => $message['level'] === MESSAGE_LEVEL_ERROR), [], 'Deletion retry reports no error');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$failureDevice]), 0, 'Retry deletes the preserved device');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$failureDevice]), 0, 'Retry cleans up early dependency');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_value_cache WHERE host_id = ?', [$failureDevice]), 0, 'Retry cleans up later dependency');
+	}
+}
 
 api_device_remove($device);
 
