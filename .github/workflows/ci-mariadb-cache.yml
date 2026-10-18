@@ -1,0 +1,87 @@
+name: CI MariaDB image cache
+
+on:
+  pull_request:
+    paths:
+      - 'tests/tools/ci_mariadb_image.py'
+      - 'tests/tools/test_ci_mariadb_image.py'
+      - 'tests/tools/verify_ci_mariadb_image.sh'
+      - '.github/workflows/ci-mariadb-cache.yml'
+      - '.github/workflows/syntax.yml'
+      - '.github/ci-images.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  miss:
+    name: GHCR cache miss and database startup
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Read image pin
+        id: pin
+        run: python3 tests/tools/ci_mariadb_image.py metadata
+      - name: Authenticate to GHCR
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USER" --password-stdin
+      - name: Prepare image without restoring a cache
+        id: image
+        env:
+          IMAGE_CACHE: ${{ runner.temp }}/cacti-mariadb-image
+        run: python3 tests/tools/ci_mariadb_image.py prepare "$IMAGE_CACHE"
+      - name: Confirm a real registry miss path
+        env:
+          IMAGE_SOURCE: ${{ steps.image.outputs.source }}
+        run: test "$IMAGE_SOURCE" = ghcr
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
+        with:
+          path: ${{ runner.temp }}/cacti-mariadb-image/mariadb.tar
+          key: ${{ steps.pin.outputs.key }}
+      - name: Start and query MariaDB without pulling
+        env:
+          DATABASE_IMAGE: ${{ steps.image.outputs.image }}
+        run: bash tests/tools/verify_ci_mariadb_image.sh "$DATABASE_IMAGE"
+      - name: Remove registry credentials
+        if: always()
+        run: docker logout ghcr.io
+
+  hit:
+    name: Restored cache hit and database startup
+    needs: miss
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Read image pin
+        id: pin
+        run: python3 tests/tools/ci_mariadb_image.py metadata
+      - name: Restore archive on a fresh runner
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
+        with:
+          path: ${{ runner.temp }}/cacti-mariadb-image/mariadb.tar
+          key: ${{ steps.pin.outputs.key }}
+          fail-on-cache-miss: true
+      - name: Load cached image without registry credentials
+        id: image
+        env:
+          IMAGE_CACHE: ${{ runner.temp }}/cacti-mariadb-image
+          DOCKER_CONFIG: ${{ runner.temp }}/empty-docker-auth
+        run: python3 tests/tools/ci_mariadb_image.py prepare "$IMAGE_CACHE"
+      - name: Confirm the restored cache path
+        env:
+          IMAGE_SOURCE: ${{ steps.image.outputs.source }}
+        run: test "$IMAGE_SOURCE" = cache
+      - name: Start and query MariaDB without pulling
+        env:
+          DATABASE_IMAGE: ${{ steps.image.outputs.image }}
+        run: bash tests/tools/verify_ci_mariadb_image.sh "$DATABASE_IMAGE"
