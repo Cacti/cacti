@@ -198,8 +198,9 @@ it('clamps delivery policy and rejects oversized correlation identifiers', funct
 		->and($stamp->correlationId())->toBe('request')
 		->and($stamp->maxPayloadBytes())->toBe(1024);
 
-	new CactiQueueStamp('reports', correlation_id: str_repeat('x', 256));
-})->throws(LengthException::class, 'correlation_id');
+	expect(fn () => new CactiQueueStamp('reports', correlation_id: str_repeat('x', 256)))
+		->toThrow(LengthException::class, 'correlation_id');
+});
 
 it('validates and round trips safe queue messages', function () {
 	$serializer = new CactiQueueSerializer();
