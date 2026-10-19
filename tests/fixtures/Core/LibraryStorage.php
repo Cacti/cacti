@@ -75,6 +75,7 @@ function library_storage(int $template): void {
 			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = ?', [$id]), 0, 'Successful retry clears staging');
 			library_expect(boost_process_poller_output($id), 0, 'An empty retry is idempotent');
 			library_rrd_diagnostics($id);
+			library_dsstats($id);
 			db_execute_prepared('DELETE FROM poller_time WHERE id = ?', [$pollerTime]);
 			$pollerTime = 0;
 		}
@@ -381,6 +382,104 @@ function library_spike_repair(bool $windowedStddev = true): void {
 
 		foreach (glob($directory . '/*') as $owned) {
 			unlink($owned);
+		}
+		rmdir($directory);
+	}
+}
+
+/** Follow real RRDtool statistics through the cache and database writer. */
+function library_dsstats(int $id): void {
+	require_once CACTI_PATH_LIBRARY . '/dsstats.php';
+	$directory = sys_get_temp_dir() . '/cacti-dsstats-' . bin2hex(random_bytes(8));
+	library_expect(mkdir($directory, 0700), true, 'Statistics fixture owns its RRD directory');
+	$path     = $directory . '/samples.rrd';
+	$process  = null;
+	$options  = ['dsstats_mode', 'dsstats_peak', 'dsstats_temp_mode', 'dsstats_temp_peak'];
+	$previous = [];
+
+	foreach ($options as $option) {
+		$previous[$option] = read_config_option($option);
+	}
+
+	try {
+		$step  = 300;
+		$end   = intdiv(time(), $step) * $step;
+		$start = $end - 289 * $step;
+		library_rrd_command(['create', $path, '--start', (string) $start, '--step', (string) $step,
+			'DS:sensor:GAUGE:600:U:U', 'RRA:AVERAGE:0.5:1:1440', 'RRA:MAX:0.5:1:1440']);
+		$samples = [];
+
+		foreach (range(1, 289) as $value) {
+			$samples[] = ($start + $value * $step) . ':' . $value;
+		}
+		library_rrd_command(array_merge(['update', $path], $samples));
+		$process = dsstats_rrdtool_init();
+		library_expect(is_resource($process[0]), true, 'Statistics start the installed RRDtool');
+		library_expect(dsstats_rrdtool_execute('', $process), '', 'Empty statistics command produces no result');
+
+		foreach ([[0, false, 'daily'], [0, true, 'daily'], [1, false, 'daily'], [1, true, 'daily']] as [$mode, $peak, $interval]) {
+			set_config_option('dsstats_mode', (string) $mode);
+			set_config_option('dsstats_peak', $peak ? 'on' : '');
+			db_execute_prepared('DELETE FROM data_source_stats_command_cache WHERE local_data_id = ?', [$id]);
+			$values = dsstats_obtain_data_source_avgpeak_values($id, $path, $interval, $mode, $peak, $process);
+			library_expect(array_keys($values), $peak ? ['avg', 'max'] : ['avg'], 'Statistics respect the configured consolidation functions');
+			$command = db_fetch_cell_prepared('SELECT stats_command FROM data_source_stats_command_cache WHERE local_data_id = ?', [$id]);
+			library_expect(is_string($command) && str_contains($command, $path), true, 'Statistics cache targets the actual fixture RRD');
+			$again = dsstats_obtain_data_source_avgpeak_values($id, $path, $interval, $mode, $peak, $process);
+			library_expect($again, $values, 'Cached statistics reproduce the same samples');
+			db_execute_prepared('DELETE FROM data_source_stats_' . $interval . ' WHERE local_data_id = ?', [$id]);
+			$buffer = [$id => $values];
+			dsstats_write_buffer($buffer, $interval, $mode);
+			$rows = db_fetch_assoc_prepared('SELECT * FROM data_source_stats_' . $interval . ' WHERE local_data_id = ? ORDER BY cf', [$id]);
+			library_expect(count($rows), $peak ? 2 : 1, 'Database stores one row per requested consolidation function');
+
+			foreach ($rows as $row) {
+				$stats = $values[(int) $row['cf'] === 0 ? 'avg' : 'max']['sensor'];
+				library_expect($row['rrd_name'], 'sensor', 'Stored statistics retain the RRD series identity');
+				library_expect((float) $row['average'] >= 140 && (float) $row['average'] <= 150, true, 'Observed average matches the seeded daily ramp');
+				library_expect((float) $row['peak'], 289.0, 'Observed peak matches the largest stored sample');
+
+				foreach (['avg' => 'average', 'peak' => 'peak'] + ($mode === 1 ? array_combine(['p95n', 'p90n', 'p75n', 'p50n', 'p25n', 'sum', 'stddev', 'lslslope', 'lslint', 'lslcorrel'], ['p95n', 'p90n', 'p75n', 'p50n', 'p25n', 'sum', 'stddev', 'lslslope', 'lslint', 'lslcorrel']) : []) as $metric => $column) {
+					library_expect(is_numeric($stats[$metric]) && abs((float) $row[$column] - (float) $stats[$metric]) < max(0.001, abs((float) $stats[$metric]) * 0.000001), true, 'Database preserves RRDtool metric ' . $metric);
+				}
+
+				if ($mode === 1) {
+					library_expect((float) $stats['p90n'] > 250 && (float) $stats['p90n'] < 270, true, 'Percentile follows the seeded ramp');
+					library_expect((float) $stats['lslcorrel'] > 0.99, true, 'Trend correlation recognizes the increasing samples');
+				}
+			}
+			dsstats_write_buffer($buffer, $interval, $mode);
+			library_expect(db_fetch_assoc_prepared('SELECT * FROM data_source_stats_' . $interval . ' WHERE local_data_id = ? ORDER BY cf', [$id]), $rows, 'Repeated statistics write is idempotent');
+		}
+
+		// Longer windows consolidate the ramp at the resolution chosen by RRDtool.
+		foreach (['weekly', 'monthly', 'yearly'] as $interval) {
+			$values = dsstats_obtain_data_source_avgpeak_values($id, $path, $interval, 1, true, $process);
+			library_expect(array_keys($values), ['avg', 'max'], 'Long-window statistics retain both consolidation functions');
+
+			foreach ($values as $statistics) {
+				$average = (float) $statistics['sensor']['avg'];
+				$peak    = (float) $statistics['sensor']['peak'];
+				library_expect($average > 0 && $average <= $peak && $peak <= 289, true, 'Consolidated values remain within the seeded sample range');
+			}
+		}
+		library_expect(dsstats_obtain_data_source_avgpeak_values($id, $directory . '/missing.rrd', 'daily', 0, false, $process), [], 'Missing RRD cannot fabricate statistics');
+	} finally {
+		if (is_array($process) && is_resource($process[0])) {
+			dsstats_rrdtool_close($process);
+		}
+
+		foreach (['daily', 'weekly', 'monthly', 'yearly'] as $interval) {
+			db_execute_prepared('DELETE FROM data_source_stats_' . $interval . ' WHERE local_data_id = ?', [$id]);
+		}
+		db_execute_prepared('DELETE FROM data_source_stats_command_cache WHERE local_data_id = ?', [$id]);
+
+		foreach ($previous as $option => $value) {
+			set_config_option($option, $value);
+		}
+
+		if (is_file($path)) {
+			unlink($path);
 		}
 		rmdir($directory);
 	}
