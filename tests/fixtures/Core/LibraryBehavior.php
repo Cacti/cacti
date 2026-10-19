@@ -36,6 +36,8 @@ $GLOBALS['cacti_fixture_contract'] = [
 		'tests/fixtures/Core/LibraryPlugins.php',
 		'tests/fixtures/Core/LibraryReports.php',
 		'tests/fixtures/Core/LibraryDevices.php',
+		'tests/fixtures/Core/LibraryAccess.php',
+		'tests/fixtures/Core/LibraryWeb.php',
 		'tests/fixtures/Core/PluginProducer.php',
 		'tests/fixtures/Core/QueryProducer.php',
 		'tests/e2e/library-behavior.sh',
@@ -362,10 +364,11 @@ foreach (['user' => $policyUser, 'group' => $policyGroup] as $kind => $actor) {
 				$rows  = db_fetch_assoc('SELECT gl.id FROM graph_local gl INNER JOIN host h ON h.id = gl.host_id ' . $where);
 				library_expect(is_array($rows), true, 'Permission query executes');
 				library_expect(count($rows) > 0, in_array($grants, $allowed, true), "$kind permissions: model $method, default $defaultPolicy, grants $grants");
-				$graphPermission = ['disabled' => ''];
+				$joined          = get_policy_join_select($policies);
+				$graphPermission = db_fetch_row('SELECT h.disabled, ' . $joined['sql_select'] . ' FROM graph_local gl INNER JOIN host h ON h.id = gl.host_id ' . $joined['sql_join'] . ' WHERE gl.id = ' . $graphId);
 
 				foreach (['graph1' => 1, 'device1' => 2, 'template1' => 4] as $field => $bit) {
-					$graphPermission[$field] = (($grants & $bit) !== 0) === ($defaultPolicy === 2) ? $actor : null;
+					library_expect((int) $graphPermission[$field], (($grants & $bit) !== 0) === ($defaultPolicy === 2) ? $actor : 0, 'Permission display join preserves ' . $field . ' identity');
 				}
 				$permissionHtml = get_permission_string($graphPermission, $policies);
 				library_expect(str_contains($permissionHtml, "class='accessGranted'"), in_array($grants, $allowed, true), "Displayed $kind permission: model $method, default $defaultPolicy, grants $grants");
@@ -431,6 +434,8 @@ $treeGraph = api_tree_item_save(0, $tree, TREE_ITEM_TYPE_GRAPH, $branch, '', $gr
 library_expect($treeGraph > 0, true, 'A graph can be added under the branch');
 library_expect(api_tree_item_save(0, $tree, TREE_ITEM_TYPE_GRAPH, $branch, '', $graphId, 0, 0, 1, TREE_ORDERING_INHERIT, false), false, 'Duplicate graph leaves are refused');
 library_report_tree($tree, $branch, $graphId);
+require __DIR__ . '/LibraryAccess.php';
+library_access($graphId, $device, $templateId, $tree, $branch);
 api_tree_delete_node($tree, 'tbranch:' . $branch);
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE graph_tree_id = ?', [$tree]), 0, 'Deleting a branch removes its children');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_local WHERE id = ?', [$graphId]), 1, 'Deleting a tree branch preserves its graph');
@@ -636,6 +641,8 @@ library_authentication();
 require __DIR__ . '/LibraryPlugins.php';
 library_plugins();
 library_database();
+require __DIR__ . '/LibraryWeb.php';
+library_web();
 
 $complete                                        = true;
 $GLOBALS['cacti_fixture_contract']['complete']   = true;
