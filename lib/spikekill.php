@@ -851,15 +851,31 @@ class spikekill {
 								$rra[$rra_num][$ds_num]['average'] = 0;
 							}
 
+							// Windowed deviation uses the surrounding samples as its
+							// baseline. Its mean must use that same population.
+							if ($this->method == SPIKE_METHOD_STDDEV && $this->out_start > 0) {
+								$reference = [];
+
+								foreach ($samples[$rra_num][$ds_num] as $timestamp => $value) {
+									if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($value)) {
+										$reference[] = $value;
+									}
+								}
+
+								if (count($reference) > 0) {
+									$rra[$rra_num][$ds_num]['average'] = array_sum($reference) / count($reference);
+								}
+							}
+
 							$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - ($this->stddev * $rra[$rra_num][$ds_num]['stddev']);
 
-							if ($rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
+							if (is_numeric($this->ds_min[$ds_num]) && $rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
 								$rra[$rra_num][$ds_num]['min_cutoff'] = $this->ds_min[$ds_num];
 							}
 
 							$rra[$rra_num][$ds_num]['max_cutoff'] = $rra[$rra_num][$ds_num]['average'] + ($this->stddev * $rra[$rra_num][$ds_num]['stddev']);
 
-							if ($rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
+							if (is_numeric($this->ds_max[$ds_num]) && $rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
 								$rra[$rra_num][$ds_num]['max_cutoff'] = $this->ds_max[$ds_num];
 							}
 
@@ -905,7 +921,7 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_samples']++;
 											}
 
-											if ($sample > $this->absmax) {
+											if (is_numeric($sample) && $sample > $this->absmax) {
 												$this->debug(sprintf('Window AbsMax Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
 
 												if ($this->out_start > 0) {
@@ -927,7 +943,7 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_samples']++;
 											}
 
-											if ($sample > $rra[$rra_num][$ds_num]['max_cutoff'] || $sample < $rra[$rra_num][$ds_num]['min_cutoff']) {
+											if (is_numeric($sample) && ($sample > $rra[$rra_num][$ds_num]['max_cutoff'] || $sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 												$this->debug(sprintf('StdDev Found, Date:%s, Value:%.2e, StandardDev:%.2e, StdDevLimit:%.2e', date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['stddev'], $rra[$rra_num][$ds_num]['max_cutoff']));
 
 												$rra[$rra_num][$ds_num]['stddev_killed']++;
@@ -1177,8 +1193,8 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_STDDEV:
-								if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
-									($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+								if (is_numeric($dsvalue) && (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+									($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff']))) {
 									if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
 										if ($kills < $this->numspike) {
 											if ($this->avgnan == 'avg') {
@@ -1226,8 +1242,12 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_ABSOLUTE:
+								if (is_numeric($dsvalue) && $dsvalue < $this->absmax) {
+									$last_num[$ds_num] = $dsvalue;
+								}
+
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
-									if ($dsvalue >= $this->absmax) {
+									if (is_numeric($dsvalue) && $dsvalue >= $this->absmax) {
 										if ($this->avgnan == 'avg') {
 											$message = sprintf('Replacing dsvalue %s with average %s', $dsvalue, $rra[$rra_num][$ds_num]['average']);
 
