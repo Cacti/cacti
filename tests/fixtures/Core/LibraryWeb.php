@@ -40,7 +40,7 @@ function library_web(): void {
 				curl_setopt($client, CURLOPT_POSTFIELDS, http_build_query($fields));
 			}
 			$html = curl_exec($client);
-			library_expect(is_string($html), true, 'HTTP response exists for ' . $path);
+			library_expect(is_string($html), true, 'HTTP response exists for ' . $path . ': ' . curl_error($client));
 			library_expect(curl_getinfo($client, CURLINFO_RESPONSE_CODE), 200, 'HTTP status for ' . $path);
 			library_expect(str_starts_with(curl_getinfo($client, CURLINFO_EFFECTIVE_URL), $base . '/'), true, 'Redirects remain in the isolated application');
 
@@ -103,28 +103,37 @@ function library_web(): void {
 			library_expect($dom->query('//form[@id="form_settings"]//*[@name="' . $field . '"]')->length, 1, 'Settings tab exposes its configured field: ' . $tab);
 			library_expect($dom->query('//form[@id="form_settings"]//input[@name="__csrf_magic"]')->length, 1, 'Settings form carries CSRF protection');
 		}
+
+		$invalid = $request('host.php?action=edit&id=invalid-fixture');
+		library_expect(str_contains($invalid->document->textContent, 'Validation error for variable'), true, 'Invalid device ID renders a controlled HTML validation error');
+		library_expect($invalid->query('//input[@name="description"]')->length, 0, 'Invalid device ID never reaches an editable form');
+		cacti_log('Native HTTP fixture log marker', false, 'SYSTEM');
+		$log = $request('clog.php?filename=cacti.log');
+		library_expect(str_contains($log->document->textContent, 'Native HTTP fixture log marker'), true, 'Log viewer renders the actual stored entry');
+
+		foreach (['purge', 'rotate'] as $action) {
+			$confirmation = $request('clog.php?filename=cacti.log&action=' . $action);
+			library_expect($confirmation->query('//button[@id="pc"]')->length, 1, 'Log operation exposes its confirmation control');
+			library_expect(str_contains($confirmation->document->textContent, 'cacti.log'), true, 'Log confirmation identifies its target file');
+		}
 		$logout = $request('logout.php');
 		library_expect($logout->query('//input[@name="login_username"]')->length, 1, 'Logout returns to authentication');
 		$denied = $request('host.php');
 		library_expect($denied->query('//input[@name="login_username"]')->length, 1, 'The logged-out session cannot reach the device list');
 
 		$reports = glob($temporary . '/coverage/*.json');
-		library_expect(count($reports) >= count($pages) + 9 + 4 + 4, true, 'Every HTTP scenario produces native coverage');
+		library_expect(count($reports) >= count($pages) + 9 + 4 + 4 + 1 + 3, true, 'Every HTTP scenario produces native coverage');
 
-		foreach ($reports as $path) {
-			$report = json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
-
-			foreach ($report['coverage'] as $file => $lines) {
-				if (hash_file('sha256', $file) !== $report['hashes'][$file]) {
-					throw new RuntimeException('HTTP coverage does not match ' . $file);
-				}
-
-				foreach ($lines as $line => $hits) {
-					$GLOBALS['cacti_fixture_request_coverage'][$file][$line] = max($hits, $GLOBALS['cacti_fixture_request_coverage'][$file][$line] ?? -2);
-				}
-			}
-		}
+		library_import_coverage($reports);
 		library_expect(count($GLOBALS['cacti_fixture_request_coverage'] ?? []) > 0, true, 'Completed HTTP scenarios retain matching source coverage');
+	} catch (Throwable $error) {
+		$evidence = getenv('CACTI_PR_RAW_COVERAGE');
+
+		if (is_string($evidence) && is_dir($evidence) && is_file($temporary . '/server.log')) {
+			copy($temporary . '/server.log', $evidence . '/library-web-failure.log');
+		}
+
+		throw $error;
 	} finally {
 		if (is_resource($server)) {
 			proc_terminate($server);

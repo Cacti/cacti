@@ -56,8 +56,102 @@ function library_database(): void {
 		});
 		library_expect(str_contains($dom->document->textContent, 'max_connections'), true, 'Health output includes the live connection limit');
 		library_expect(str_contains($dom->document->textContent, 'MariaDB'), true, 'Health output identifies the actual database family');
+		library_database_debug($table);
+		library_database_uninitialized();
 	} finally {
 		db_execute('DROP TABLE IF EXISTS `' . $table . '`');
 		unlink($dump);
+	}
+}
+
+/** A connection-local temporary table simulates an incomplete installed schema. */
+function library_database_uninitialized(): void {
+	$directory = sys_get_temp_dir() . '/cacti-initialization-' . bin2hex(random_bytes(8));
+	library_expect(mkdir($directory, 0700), true, 'Initialization fixture owns its evidence directory');
+	$source = <<<'PHP'
+require 'tests/Helpers/RequestCoverage.php';
+require 'include/global.php';
+$connection = $database_sessions["$database_hostname:$database_port:$database_default"];
+$connection->exec('CREATE TEMPORARY TABLE version (fixture INT)');
+db_cacti_initialized($argv[1] === 'web');
+throw new RuntimeException('An incomplete schema must stop initialization');
+PHP;
+	$environment                          = getenv();
+	$environment['CACTI_PR_RAW_COVERAGE'] = $directory;
+	$environment['XDEBUG_MODE']           = 'coverage';
+
+	try {
+		foreach (['cli', 'web'] as $mode) {
+			$process = proc_open([PHP_BINARY, '-r', $source, $mode], [0 => ['pipe', 'r'],
+				1                                                          => ['file', $directory . '/output.txt', 'w'], 2 => ['file', $directory . '/error.txt', 'w']], $pipes, CACTI_PATH_BASE, $environment);
+			library_expect(is_resource($process), true, 'Incomplete-schema probe starts in its own connection');
+			fclose($pipes[0]);
+			library_expect(proc_close($process), 0, 'Incomplete schema exits through the established installation response');
+			$output = file_get_contents($directory . '/output.txt');
+			library_expect(str_contains($output, 'The Cacti Database has not been initialized.'), true, 'Incomplete schema supplies initialization guidance');
+			library_expect(str_contains($output, 'mysql -uroot -p cacti'), true, 'Initialization response includes the schema import command');
+			library_expect(str_contains($output, '<head>'), $mode === 'web', 'Initialization response distinguishes HTML and CLI output');
+			library_expect(file_get_contents($directory . '/error.txt'), '', 'Initialization stops without a PHP exception');
+		}
+		$reports = glob($directory . '/*.json');
+		library_expect(count($reports), 2, 'Both initialization scenarios produce coverage');
+		library_import_coverage($reports);
+		library_expect(db_cacti_initialized(false), true, 'Child temporary schema never changes the parent database');
+	} finally {
+		foreach (glob($directory . '/*') as $path) {
+			unlink($path);
+		}
+		rmdir($directory);
+	}
+}
+
+/** SQL diagnostics must preserve results, failures, and parameter binding. */
+function library_database_debug(string $table): void {
+	global $config;
+	require_once CACTI_PATH_LIBRARY . '/dbparallel.php';
+	$flags   = ['DEBUG_SQL_CMD', 'DEBUG_SQL_FLOW'];
+	$before  = [];
+	$logfile = sys_get_temp_dir() . '/cacti-sql.log';
+	$owned   = !file_exists($logfile);
+	$offset  = $owned ? 0 : filesize($logfile);
+
+	if ($owned) {
+		$stream = fopen($logfile, 'x');
+		library_expect(is_resource($stream), true, 'SQL diagnostics own their new log');
+		fclose($stream);
+	}
+
+	foreach ($flags as $flag) {
+		$before[$flag] = $config[$flag] ?? null;
+		$config[$flag] = true;
+	}
+
+	try {
+		$label = 'fixture diagnostic Café';
+		library_expect(db_execute_prepared("UPDATE `$table` SET label = ?", [$label], timeout: 0.1), true, 'Diagnostics preserve an update when a SELECT timeout is inapplicable');
+		library_expect(db_fetch_cell_prepared("SELECT label FROM `$table` WHERE label = ?", [$label]), $label, 'Diagnostic cell lookup preserves UTF-8 binding');
+		library_expect(db_fetch_row("SELECT label FROM `$table`"), ['label' => $label], 'Diagnostic row lookup preserves its result');
+		library_expect(db_fetch_row_parallel("SELECT label FROM `$table`"), ['label' => $label], 'Parallel compatibility wrapper preserves the row');
+		library_expect(db_fetch_row_parallel_prepared("SELECT label FROM `$table` WHERE label = ?", [$label]), ['label' => $label], 'Parallel prepared wrapper preserves binding');
+		library_expect(db_fetch_cell_parallel_prepared("SELECT label FROM `$table` WHERE label = ?", [$label]), $label, 'Parallel cell wrapper returns the bound value');
+		library_expect(db_fetch_assoc_parallel_prepared("SELECT label FROM `$table` WHERE label = ?", [$label]), [['label' => $label]], 'Parallel collection wrapper returns its rows');
+		library_expect(db_fetch_row("SELECT missing_fixture_column FROM `$table`"), false, 'Diagnostics do not turn a database failure into an empty success');
+		library_expect(str_contains(db_error(), 'missing_fixture_column'), true, 'Database failure retains the actionable column error');
+		library_expect(db_fetch_cell("SELECT label FROM `$table`"), $label, 'Failed diagnostic query preserves stored data');
+		$contents = file_get_contents($logfile, false, null, $offset);
+		library_expect(str_contains($contents, 'Memory [Before]') && str_contains($contents, 'Memory [ After]'), true, 'SQL diagnostics report both sides of execution');
+		library_expect(str_contains($contents, 'fixture diagnostic') && str_contains($contents, 'db_fetch_row'), true, 'SQL diagnostics identify the fixture operation and result');
+	} finally {
+		foreach ($before as $flag => $value) {
+			if ($value === null) {
+				unset($config[$flag]);
+			} else {
+				$config[$flag] = $value;
+			}
+		}
+
+		if ($owned) {
+			unlink($logfile);
+		}
 	}
 }
