@@ -108,6 +108,11 @@ function library_rrd_diagnostics(int $id): void {
 		$info = rrdtool_function_info($id);
 		library_expect(rrdtool_cacti_compare($id, $info), [], 'Freshly created RRD matches its stored definition');
 		library_expect(hash_file('sha256', $path), $original, 'Inspection preserves the actual RRD');
+		db_execute_prepared('UPDATE data_template_rrd SET rrd_heartbeat = 1 WHERE local_data_id = ? AND data_source_name = ?', [$id, $name]);
+		rrdtool_cacti_compare($id, $info);
+		library_expect((int) db_fetch_cell_prepared('SELECT rrd_heartbeat FROM data_template_rrd WHERE local_data_id = ? AND data_source_name = ?', [$id, $name]), (int) $expected['ds'][$name]['minimal_heartbeat'], 'Diagnostics repair a stale database heartbeat from the authoritative profile');
+		library_expect(hash_file('sha256', $path), $original, 'Database heartbeat repair preserves existing RRD samples');
+		library_duplicate_profile($id);
 		library_expect(rrdtool_function_contains_cf($id, 'AVERAGE'), true, 'Observed RRD contains its average archive');
 		library_expect(rrdtool_function_contains_cf($id, 'UNSUPPORTED'), false, 'Missing archive is not reported as present');
 

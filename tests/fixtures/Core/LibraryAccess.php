@@ -86,6 +86,35 @@ function library_access(int $graph, int $device, int $template, int $tree, int $
 		$_SESSION = [SESS_USER_ID => $user];
 		library_expect(is_tree_branch_empty($tree, $branch), false, 'The same branch is populated after a graph grant');
 		library_expect(is_tree_branch_empty($tree), false, 'The visible graph makes its ancestor branch nonempty');
+		$requestState = [$_REQUEST, $GLOBALS['_CACTI_REQUEST']];
+
+		try {
+			$_REQUEST                  = [];
+			$GLOBALS['_CACTI_REQUEST'] = [];
+			srv('term', '');
+			ob_start();
+
+			try {
+				$devices    = get_allowed_ajax_hosts(false, false, 'h.id = ' . $device);
+				$deviceJson = ob_get_contents();
+			} finally {
+				ob_end_clean();
+			}
+			library_expect(json_decode($deviceJson, true, 512, JSON_THROW_ON_ERROR), $devices, 'Device autocomplete emits its actual permitted result');
+			library_expect(array_map('intval', array_column($devices, 'id')), [$device], 'Device autocomplete includes the granted device only');
+			ob_start();
+
+			try {
+				$graphs    = get_allowed_ajax_graphs('gl.id = ' . $graph);
+				$graphJson = ob_get_contents();
+			} finally {
+				ob_end_clean();
+			}
+			library_expect(json_decode($graphJson, true, 512, JSON_THROW_ON_ERROR), $graphs, 'Graph autocomplete emits its actual permitted result');
+			library_expect(array_map('intval', array_column($graphs, 'id')), [$graph], 'Graph autocomplete includes the granted graph only');
+		} finally {
+			[$_REQUEST, $GLOBALS['_CACTI_REQUEST']] = $requestState;
+		}
 		library_user_menu($user);
 	} finally {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ?', [$group]);

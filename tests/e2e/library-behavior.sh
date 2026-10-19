@@ -28,7 +28,7 @@ YAML
 
 export HOST_PORT="${HOST_PORT:-18278}"
 "${compose[@]}" build cacti snmp-fixture
-"${compose[@]}" up -d --wait mariadb snmp-fixture
+"${compose[@]}" up -d --wait mariadb snmp-fixture openldap
 "${compose[@]}" up -d --no-deps --wait cacti
 "${compose[@]}" exec -T cacti mkdir -p /tmp/library-coverage
 "${compose[@]}" exec -T -e CACTI_PR_RAW_COVERAGE=/tmp/library-coverage cacti \

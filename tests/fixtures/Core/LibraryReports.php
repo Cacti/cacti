@@ -138,6 +138,28 @@ function library_report_tree(int $tree, int $branch, int $graph): void {
 			library_expect(str_contains($html, $needle), true, 'Cascading report discovers a graph below a nested header');
 		}
 	}
+	$device = (int) db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', [$graph]);
+	$leaf   = (int) api_tree_item_save(0, $tree, TREE_ITEM_TYPE_HOST, $branch, '', 0, $device, 0, HOST_GROUPING_GRAPH_TEMPLATE, TREE_ORDERING_INHERIT, false);
+	library_expect($leaf > 0, true, 'Report fixture owns a device leaf');
+
+	try {
+		foreach ([HOST_GROUPING_GRAPH_TEMPLATE, HOST_GROUPING_DATA_QUERY_INDEX] as $grouping) {
+			db_execute_prepared('UPDATE graph_tree_items SET host_grouping_type = ? WHERE id = ?', [$grouping, $leaf]);
+
+			foreach (['', 'on'] as $cascade) {
+				$item['tree_cascade'] = $cascade;
+
+				foreach ([false, true] as $format) {
+					$html = reports_expand_tree($report, $item, $leaf, REPORTS_OUTPUT_EMAIL, $format);
+					library_expect(str_contains($html, '<GRAPH:' . $graph . ':'), true, 'Device leaf renders its graph with the requested grouping and cascade');
+					library_expect(str_contains($html, 'Updated fixture'), true, 'Device report identifies its device');
+				}
+			}
+		}
+	} finally {
+		db_execute_prepared('DELETE FROM graph_tree_items WHERE id = ?', [$leaf]);
+		unset($item['tree_cascade']);
+	}
 	$id = (int) sql_save(array_replace($report, ['id' => 0, 'name' => 'Tree report fixture', 'font_size' => 10,
 		'alignment'                                      => 1, 'from_name' => '', 'from_email' => '', 'email' => '', 'bcc' => '']), 'reports');
 	library_expect($id > 0, true, 'Tree report fixture persists');
