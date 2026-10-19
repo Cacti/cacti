@@ -744,7 +744,7 @@ function package_template(string &$template, array &$info, array &$files, string
 
 	$xml .= '   <signature>' . $basesig . "</signature>\n</xml>";
 
-	$name = get_item_name(grv('export_type'), grv('export_item_id'));
+	$name = $info['name'];
 
 	$debug .= 'NOTE: Creating compressed template xml "' . clean_up_name($name) . ".xml.gz\"\n";
 

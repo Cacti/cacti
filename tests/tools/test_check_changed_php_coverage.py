@@ -20,6 +20,36 @@ SPEC.loader.exec_module(GATE)
 
 
 class ChangedPhpCoverageTest(unittest.TestCase):
+    def test_package_evidence_requires_both_scenarios_and_current_producers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            producers = ['tests/fixtures/Core/PackageArchive.php', 'tests/Helpers/RequestCoverage.php']
+            hashes = {}
+            for name in producers:
+                source = root / name
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_text('fixture source\n')
+                hashes[name] = hashlib.sha256(source.read_bytes()).hexdigest()
+            contract = {'name': 'package-archive', 'complete': True, 'assertions': 2,
+                        'producers': producers, 'hashes': hashes}
+            path = root / 'package-archive-test.json'
+            GATE.validate_package_contract({'contract': contract}, path, root)
+            for field in contract:
+                with self.subTest(missing=field), self.assertRaises(ValueError):
+                    GATE.validate_package_contract({'contract': {k: v for k, v in contract.items() if k != field}}, path, root)
+            for count in [0, 1, 3, True, '2']:
+                with self.subTest(count=count), self.assertRaises(ValueError):
+                    GATE.validate_package_contract({'contract': dict(contract, assertions=count)}, path, root)
+            with self.assertRaises(ValueError):
+                GATE.validate_package_contract({'contract': dict(contract, complete=False)}, path, root)
+            for name in producers:
+                with self.subTest(missing_producer=name), self.assertRaises(ValueError):
+                    GATE.validate_package_contract({'contract': dict(contract, hashes={k: v for k, v in hashes.items() if k != name})}, path, root)
+                (root / name).write_text('changed source\n')
+                with self.subTest(stale=name), self.assertRaises(ValueError):
+                    GATE.validate_package_contract({'contract': contract}, path, root)
+                (root / name).write_text('fixture source\n')
+
     def test_diff_uses_merge_base_and_ignores_deletion_only_files(self):
         diff = ('diff --git a/lib/a.php b/lib/a.php\n+++ b/lib/a.php\n'
                 '@@ -4,0 +5,2 @@\n+return true;\n+}\n'
