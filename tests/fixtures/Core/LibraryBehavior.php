@@ -39,13 +39,47 @@ $GLOBALS['cacti_fixture_contract'] = [
 		'tests/fixtures/Core/LibraryAccess.php',
 		'tests/fixtures/Core/LibraryWeb.php',
 		'tests/fixtures/Core/LibraryLogs.php',
+		'tests/fixtures/Core/LibraryPluginCatalog.php',
+		'tests/fixtures/Core/LibraryUtilities.php',
+		'tests/fixtures/Core/LibraryLdap.php',
+		'tests/fixtures/Core/LibraryRemote.php',
+		'tests/fixtures/Core/LibraryGraphOptions.php',
+		'tests/fixtures/Core/LibraryProfiles.php',
+		'tests/fixtures/Core/LibraryPropagation.php',
+		'tests/fixtures/Core/LibraryGraphCache.php',
+		'tests/fixtures/Core/LibraryBoundaries.php',
+		'tests/fixtures/Core/LibraryValidation.php',
+		'tests/fixtures/Core/LibraryRrdStorage.php',
+		'tests/fixtures/Core/LibraryLoginRouting.php',
+		'tests/fixtures/Core/LibraryAdministration.php',
+		'tests/fixtures/Core/LibraryResources.php',
+		'tests/fixtures/Core/LibraryProbe.php',
+		'tests/fixtures/Core/LibraryTransfer.php',
+		'tests/fixtures/Core/LibraryRemoval.php',
+		'tests/fixtures/Core/LibraryQueues.php',
+		'tests/fixtures/Core/LibraryErrorHandling.php',
+		'tests/fixtures/Core/LibraryReindex.php',
+		'tests/fixtures/Core/LibraryRuntime.php',
+		'tests/fixtures/Core/LibraryProvider.php',
+		'tests/fixtures/Core/LibraryMib.php',
+		'tests/fixtures/Core/LibraryLifecycle.php',
+		'tests/fixtures/Core/LibraryReportDelivery.php',
+		'tests/fixtures/Core/LibraryDiagnostics.php',
+		'tests/fixtures/Core/LibraryNotifications.php',
+		'tests/fixtures/Core/LibraryMaintenance.php',
+		'tests/fixtures/Core/LibraryWorkers.php',
+		'tests/fixtures/Core/LibraryWorker.php',
 		'tests/fixtures/Core/PluginProducer.php',
 		'tests/fixtures/Core/QueryProducer.php',
 		'tests/e2e/library-behavior.sh',
 		'tests/Helpers/RequestCoverage.php',
+		'tests/Helpers/SourceSlice.php',
+		'tests/Helpers/PhpSource.php',
+		'cli/fetch_plugins.php',
 		'tests/e2e/Dockerfile',
 		'tests/e2e/entrypoint.sh',
 		'tests/e2e/docker-compose.yml',
+		'tests/e2e/ldap/50-e2e.ldif',
 		'tests/fixtures/snmp-coverage/Dockerfile',
 		'tests/fixtures/snmp-coverage/snmpd.conf',
 		'cacti.sql',
@@ -212,7 +246,21 @@ library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cach
 api_device_dq_add($queryDevice, $interfaceQuery, '1');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$queryDevice, $interfaceQuery]), 1, 'Repeated query association keeps one mapping');
 require __DIR__ . '/LibraryCollection.php';
-library_collection_queries($queryDevice, $interfaceQuery);
+$traceBefore = read_config_option('data_source_trace');
+set_config_option('data_source_trace', 'on');
+
+try {
+	library_collection_queries($queryDevice, $interfaceQuery);
+	library_query_indexes($queryDevice, $interfaceQuery);
+	require __DIR__ . '/LibraryBoundaries.php';
+	require __DIR__ . '/LibraryPropagation.php';
+	require __DIR__ . '/LibraryProfiles.php';
+	library_template_propagation();
+	require __DIR__ . '/LibraryReindex.php';
+	library_reindex($queryDevice, $interfaceQuery);
+} finally {
+	set_config_option('data_source_trace', $traceBefore);
+}
 library_remote_transport();
 api_device_remove($queryDevice);
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ?', [$queryDevice]), 0, 'Removing the fixture clears its query cache');
@@ -311,12 +359,34 @@ $export = rrdtool_function_graph($graphId, '', $graphOptions + ['export_csv' => 
 library_expect(is_array($export) && (int) $export['meta']['local_graph_id'] === $graphId, true, 'Graph export preserves graph identity');
 library_expect(count($export['data']) > 0, true, 'Graph export includes actual samples');
 
+require __DIR__ . '/LibraryDiagnostics.php';
+library_dispatch();
+library_diagnostic_totals();
+require __DIR__ . '/LibraryProvider.php';
+\CactiLibraryProviderFixture\run();
+\CactiLibraryProviderFixture\parameters();
+require __DIR__ . '/LibraryMib.php';
+library_mib();
+require __DIR__ . '/LibraryLifecycle.php';
+\CactiLibraryLifecycleFixture\run();
+require __DIR__ . '/LibraryReportDelivery.php';
+\CactiLibraryReportDeliveryFixture\run();
+\CactiLibraryReportDeliveryFixture\failures();
+require __DIR__ . '/LibraryQueues.php';
+library_report_queue();
+
+require __DIR__ . '/LibraryGraphOptions.php';
+library_graph_options($graphId, $graphOptions);
+require __DIR__ . '/LibraryGraphCache.php';
+library_graph_cache($graphId, $graphOptions);
+
 $secondGraph   = create_complete_graph_from_template($templateId, $device, [], $suggested);
 $secondGraphId = (int) $secondGraph['local_graph_id'];
 library_expect($secondGraphId > 0 && $secondGraphId !== $graphId, true, 'Aggregate members have separate graph identities');
 $sourceItems  = db_fetch_assoc_prepared('SELECT sequence FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', [$graphId]);
 $itemDefaults = array_fill_keys(array_column($sourceItems, 'sequence'), 0);
 require_once __DIR__ . '/LibraryForms.php';
+require __DIR__ . '/LibraryValidation.php';
 
 foreach ([AGGREGATE_TOTAL_NONE, AGGREGATE_TOTAL_ALL, AGGREGATE_TOTAL_ONLY] as $totalMode) {
 	$aggregateId = 0;
@@ -335,12 +405,27 @@ foreach ([AGGREGATE_TOTAL_NONE, AGGREGATE_TOTAL_ALL, AGGREGATE_TOTAL_ONLY] as $t
 	$aggregate = db_fetch_row_prepared('SELECT * FROM aggregate_graphs WHERE local_graph_id = ?', [$aggregateId]);
 	library_aggregate_editor($templateId, $aggregate);
 	library_expect($aggregate['title_format'], $attributes['graph_title'], 'Aggregate title persists');
+
+	foreach ([[-1, -1, -1], [1000, 2000, 2]] as [$begin, $end, $archive]) {
+		$dom = library_form_dom(static function () use ($aggregateId, $begin, $end, $archive): void { print aggregate_build_children_url($aggregateId, $begin, $end, $archive); });
+		$url = $dom->evaluate('string(//a[@class="hyperLink aggregates"]/@href)');
+		parse_str(parse_url($url, PHP_URL_QUERY), $parameters);
+		library_expect(array_filter(explode(',', $parameters['graph_add'])), [(string) $graphId, (string) $secondGraphId], 'Aggregate drilldown retains ordered member identities');
+		library_expect($parameters['action'], 'preview', 'Aggregate drilldown targets the graph preview route');
+		library_expect(isset($parameters['graph_start']), $begin >= 0, 'Default drilldown omits a start-time override');
+
+		if ($begin >= 0) {
+			library_expect([$parameters['graph_start'], $parameters['graph_end'], $parameters['rra_id']], ['1000', '2000', '2'], 'Explicit drilldown preserves its time range and archive');
+		}
+	}
+
 	$members = db_fetch_assoc_prepared('SELECT local_graph_id FROM aggregate_graphs_items WHERE aggregate_graph_id = ? ORDER BY sequence', [$aggregate['id']]);
 	library_expect(array_map('intval', array_column($members, 'local_graph_id')), [$graphId, $secondGraphId], 'Aggregate membership preserves source order');
 	$itemsBefore = (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id = ?', [$aggregateId]);
 	library_expect($itemsBefore > 0, true, 'Aggregate has executable graph items');
 	library_expect(aggregate_create_update($aggregateId, [$graphId, $secondGraphId], $attributes), true, 'Aggregate rebuild succeeds');
 	library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id = ?', [$aggregateId]), $itemsBefore, 'Aggregate rebuild does not duplicate graph items');
+	library_aggregate_validation($graphId, $secondGraphId, $templateId, $aggregateId);
 	api_aggregate_remove_multi([$aggregateId]);
 	library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graphs_items WHERE aggregate_graph_id = ?', [$aggregate['id']]), 0, 'Removing aggregate clears membership');
 	library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_local WHERE id IN (?, ?)', [$graphId, $secondGraphId]), 2, 'Removing aggregate preserves member graphs');
@@ -482,6 +567,12 @@ require __DIR__ . '/LibraryStorage.php';
 library_storage($templateId);
 library_business_hours($graphId);
 library_forms();
+library_template_forms($graphId);
+require __DIR__ . '/LibraryRuntime.php';
+library_runtime();
+require __DIR__ . '/LibraryErrorHandling.php';
+\CactiLibraryErrorFixture\run();
+\CactiLibraryErrorFixture\remote();
 require __DIR__ . '/LibraryDatabase.php';
 library_spike_repair();
 
@@ -629,6 +720,27 @@ foreach ([false, true] as $bulk) {
 	}
 }
 
+require __DIR__ . '/LibraryRemoval.php';
+library_removal($templateId);
+require __DIR__ . '/LibraryTransfer.php';
+library_transfer();
+require __DIR__ . '/LibraryProbe.php';
+library_probe();
+require __DIR__ . '/LibraryResources.php';
+library_resources();
+require __DIR__ . '/LibraryAdministration.php';
+library_administration();
+require __DIR__ . '/LibraryLoginRouting.php';
+\CactiLibraryLoginRoutingFixture\run();
+
+library_calendar_validation();
+library_two_factor();
+library_archive_validation();
+library_archive_destination();
+require __DIR__ . '/LibraryRrdStorage.php';
+\CactiLibraryRrdStorageFixture\run($templateId);
+require __DIR__ . '/LibraryWeb.php';
+library_web();
 api_device_remove($device);
 
 foreach ($ownedRrdFiles as $rrdPath) {
@@ -659,11 +771,23 @@ require __DIR__ . '/LibraryAuthentication.php';
 library_authentication();
 require __DIR__ . '/LibraryPlugins.php';
 library_plugins();
+require __DIR__ . '/LibraryWorkers.php';
+library_worker('catalog');
+require __DIR__ . '/LibraryUtilities.php';
+CactiLibraryUtilityFixture\run();
+require __DIR__ . '/LibraryLdap.php';
+CactiLibraryLdapFixture\run();
+CactiLibraryLdapFixture\native();
+require __DIR__ . '/LibraryNotifications.php';
+library_notifications();
+require __DIR__ . '/LibraryMaintenance.php';
+library_maintenance();
+library_input_repair();
+require __DIR__ . '/LibraryRemote.php';
+library_remote();
 library_database();
 require __DIR__ . '/LibraryLogs.php';
 library_logs();
-require __DIR__ . '/LibraryWeb.php';
-library_web();
 
 $complete                                        = true;
 $GLOBALS['cacti_fixture_contract']['complete']   = true;

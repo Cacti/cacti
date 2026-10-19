@@ -6,6 +6,7 @@ function library_device_templates(int $templateId): void {
 	global $export_errors;
 	$packagingState = [$export_errors, $GLOBALS['debug'] ?? false, $GLOBALS['package_file'] ?? ''];
 	require_once CACTI_PATH_LIBRARY . '/package.php';
+	require_once __DIR__ . '/LibraryForms.php';
 	$original = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$templateId]);
 	$suffix   = ' library fixture';
 	$cloneXml = $cloneScript = false;
@@ -46,6 +47,12 @@ function library_device_templates(int $templateId): void {
 			$expected = db_fetch_assoc_prepared("SELECT $column FROM $table WHERE host_template_id = ? ORDER BY $column", [$templateId]);
 			library_expect(db_fetch_assoc_prepared("SELECT $column FROM $table WHERE host_template_id = ? ORDER BY $column", [$copy]), $expected, 'Include mode shares existing ' . $column . ' identities');
 		}
+		$preview = library_form_dom(static function () use ($copy): void { print get_package_contents('host_template', $copy); });
+		library_expect(str_contains($preview->document->textContent, 'Resource Files'), true, 'Package preview lists dependent query resources');
+		library_expect($preview->evaluate('count(//i[contains(@class,"deviceUp")])') > 0, true, 'Package preview verifies existing dependent files');
+		$missingFile = CACTI_PATH_SCRIPTS . '/coverage-missing-' . bin2hex(random_bytes(8)) . '.php';
+		library_expect(process_paths($missingFile, [], true), [], 'Missing script is excluded from package contents');
+		library_expect(isset($_SESSION[SESS_MESSAGES]['missing_' . $missingFile]), true, 'Missing dependency supplies a packaging error');
 		$device = library_save_device(['description' => 'Template synchronization fixture', 'snmp_version' => 0]);
 		library_expect($device > 0, true, 'Template synchronization uses an owned disabled device');
 		api_device_update_host_template($device, $copy);
@@ -101,6 +108,25 @@ function library_device_templates(int $templateId): void {
 				library_expect(openssl_verify(base64_decode((string) $file->data, true), base64_decode((string) $file->filesignature, true), $public, OPENSSL_ALGO_SHA256), 1, 'Each packaged file has a valid signature from the disposable signer');
 			}
 		}
+		$wrongKey = openssl_pkey_new(['private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
+		library_expect($wrongKey !== false, true, 'Signing failure fixture owns a second key');
+		$wrongPublic  = openssl_pkey_get_details($wrongKey)['key'];
+		$archiveCount = (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_template_archive WHERE host_template_id = ?', [$copy]);
+
+		try {
+			library_expect(file_put_contents(CACTI_PATH_PKI . '/package.pem', $wrongPublic), strlen($wrongPublic), 'Fixture reproduces a mismatched signing certificate');
+
+			foreach (['archive', 'export'] as $operation) {
+				unset($_SESSION[SESS_MESSAGES]['package_error_' . $copy]);
+				$result = $operation === 'archive' ? api_device_template_archive($copy, 'Rejected signature') : api_device_template_archive_for_export($copy);
+				library_expect($result, false, 'Mismatched signing identity cannot publish an archive');
+				library_expect(isset($_SESSION[SESS_MESSAGES]['package_error_' . $copy]), true, 'Signing failure reaches the operator');
+				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_template_archive WHERE host_template_id = ?', [$copy]), $archiveCount, 'Failed signing preserves the existing archive history');
+			}
+		} finally {
+			library_expect(file_put_contents(CACTI_PATH_PKI . '/package.pem', $public), strlen($public), 'Fixture restores the matching public key');
+		}
+		library_expect(is_string(api_device_template_archive_for_export($copy)), true, 'Matching signing identity recovers a valid export');
 		library_expect(api_device_template_archive(0, 'Missing'), false, 'Missing template cannot be archived');
 		library_expect(api_device_template_archive_for_export(0), false, 'Missing template cannot be exported');
 		library_expect(db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$templateId]), $original, 'Clone, sync, and archive preserve the source template');

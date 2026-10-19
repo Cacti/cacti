@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 function library_collection_queries(int $snmpDevice, int $interfaceQuery): void {
 	global $data_query_xml_arrays;
+	library_snmp_multi();
 	library_snmp_query_formats($snmpDevice, $interfaceQuery);
 
 	library_expect(db_execute_prepared('UPDATE host SET bulk_walk_size = 0 WHERE id = ?', [$snmpDevice]), true, 'SNMP auto-sizing with persistence is enabled');
@@ -85,6 +86,28 @@ function library_collection_queries(int $snmpDevice, int $interfaceQuery): void 
 	api_device_remove($scriptDevice);
 }
 
+function library_snmp_multi(): void {
+	$values = ['.1.3.6.1.2.1.1.6.0' => 'Cacti coverage fixture', '.1.3.6.1.2.1.1.4.0' => 'cacti@example.invalid'];
+
+	foreach ([1, 2, 3] as $version) {
+		foreach ([1, 2] as $batch) {
+			$actual = cacti_snmp_get_multi('snmp-fixture', 'public', array_keys($values), $version,
+				auth_user: 'user', max_oids: $batch);
+			library_expect($actual, $values, 'Native SNMP v' . $version . ' preserves OID association across batch sizes');
+		}
+		$oid = array_key_first($values);
+		library_expect(cacti_snmp_get_multi('snmp-fixture', 'public', $oid, $version, auth_user: 'user'), [$oid => $values[$oid]], 'Scalar OID uses the same result envelope');
+		$hex = cacti_snmp_get_multi('snmp-fixture', 'public', array_keys($values), $version,
+			auth_user: 'user', value_output_format: SNMP_STRING_OUTPUT_HEX);
+
+		foreach ($values as $oid => $value) {
+			library_expect(strtolower(str_replace(' ', '', $hex[$oid])), bin2hex($value), 'Binary SNMP fallback preserves every octet and requested OID');
+		}
+	}
+	library_expect(cacti_snmp_get_multi('snmp-fixture', 'public', [], 2), [], 'Empty request has no fabricated samples');
+	library_expect(cacti_snmp_get_multi('127.0.0.1', 'public', array_keys($values), 2, port: 9, timeout_ms: 10), array_fill_keys(array_keys($values), 'U'), 'A failed batch marks each requested sample unknown');
+}
+
 function library_snmp_query_formats(int $device, int $interfaceQuery): void {
 	global $data_query_xml_arrays;
 	$loopback = db_fetch_cell_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? AND field_value = ?', [$device, $interfaceQuery, 'ifDescr', 'lo']);
@@ -106,6 +129,10 @@ function library_snmp_query_formats(int $device, int $interfaceQuery): void {
 			['walk', 'VALUE/TEST:lo:loopback:other', '', '', 'loopback'],
 			['walk', 'VALUE/TABLE:lo:loopback', '', '', 'loopback'],
 			['walk', 'OID/REGEXP:.*\.([0-9]+)$', '', '', $loopback],
+			['walk', 'OIDVALUE/REGEXP:.*\.([0-9]+)$:interface-\1', '', '', 'interface-' . $loopback],
+			['walk', 'value', '<rewrite_index>|index|</rewrite_index>', '', 'lo'],
+			['get', 'VALUE/REGEXP:^(.).*$', '<rewrite_index>|index|</rewrite_index>', '', 'l'],
+			['get', 'OID/REGEXP:.*\\.([0-9]+)$', '<rewrite_index>|index|</rewrite_index>', '', $loopback],
 			['get', 'value', '', '<oid_rewrite_pattern>OID/REGEXP:\.999\.</oid_rewrite_pattern><oid_rewrite_replacement>.2.</oid_rewrite_replacement>', 'lo'],
 		];
 
@@ -120,7 +147,8 @@ function library_snmp_query_formats(int $device, int $interfaceQuery): void {
 				'<direction>input</direction><oid>.1.3.6.1.2.1.2.2.1.' . ($rewrite === '' ? '2' : '999') . '</oid>' . $format . $rewrite . '</label></fields></query>';
 			library_expect(file_put_contents($path, $xml), strlen($xml), 'Complete SNMP XML is written');
 			unset($data_query_xml_arrays[$query]);
-			api_device_dq_add($device, $query, (string) DATA_QUERY_AUTOINDEX_NONE);
+			api_device_dq_add($device, $query, (string) DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE);
+			library_expect((int) db_fetch_cell_prepared('SELECT action FROM poller_reindex WHERE host_id = ? AND data_query_id = ?', [$device, $query]), POLLER_ACTION_SNMP_COUNT, 'A query without a count OID uses native SNMP index counting');
 			$rows = db_fetch_assoc_prepared('SELECT snmp_index, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? ORDER BY snmp_index', [$device, $query, 'label']);
 			library_expect($rows, [['snmp_index' => $loopback, 'field_value' => $expected]], 'Native SNMP ' . $method . ' and ' . $source . ' preserve the filtered interface identity and transformed label');
 			library_expect(db_fetch_cell_prepared('SELECT field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$device, $query, 'index']), $loopback, 'Index-source field preserves the selected index');
@@ -248,5 +276,57 @@ PHP;
 			unlink($path);
 		}
 		rmdir($directory);
+	}
+}
+
+/** Only unique, complete input fields may identify a reindexed object. */
+function library_query_indexes(int $device, int $interfaceQuery): void {
+	global $data_query_xml_arrays;
+	$path = tempnam(CACTI_PATH_RESOURCE . '/snmp_queries', 'coverage-index-');
+	library_expect(is_string($path), true, 'Index fixture owns its XML file');
+	$query = 0;
+
+	try {
+		$input = (int) db_fetch_cell_prepared('SELECT data_input_id FROM snmp_query WHERE id = ?', [$interfaceQuery]);
+		$query = (int) sql_save(['id' => 0, 'name' => 'Index identity fixture', 'xml_path' => $path, 'data_input_id' => $input], 'snmp_query');
+		library_expect($query > 0, true, 'Index fixture owns its query');
+		$fields = '<fields>';
+
+		foreach (['index', 'label', 'duplicate', 'partial', 'ignored', 'value'] as $name) {
+			$fields .= '<' . $name . '><name>' . $name . '</name><direction>' . ($name === 'value' ? 'output' : 'input') . '</direction><oid>.1.2.3' . ($name === 'index' ? '' : '.4') . '</oid></' . $name . '>';
+		}
+		$fields .= '</fields>';
+
+		foreach (['index' => ['1', '2'], 'label' => ['alpha', 'beta'], 'duplicate' => ['same', 'same'], 'partial' => ['one'], 'ignored' => ['a', 'b']] as $field => $values) {
+			foreach ($values as $offset => $value) {
+				library_expect(db_execute_prepared('INSERT INTO host_snmp_cache (host_id, snmp_query_id, field_name, field_value, snmp_index, oid) VALUES (?, ?, ?, ?, ?, ?)', [$device, $query, $field, $value, (string) ($offset + 1), '.1.2.3.' . ($offset + 1)]), true, 'Index fixture stores its observed field');
+			}
+		}
+		$snapshot = db_fetch_assoc_prepared('SELECT * FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? ORDER BY field_name, snmp_index', [$device, $query]);
+
+		foreach ([
+			['<index_order>label:duplicate:partial:index</index_order><index_order_type>alphanumeric</index_order_type>', ['label', 'index']],
+			['<index_order>label:duplicate:partial:index</index_order><index_order_type>unknown-fixture</index_order_type>', ['label', 'index']],
+			['<index_order>label</index_order><index_order_type>alphanumeric</index_order_type>', ['label']],
+			['', ['index', 'label', 'ignored']],
+		] as [$order, $expected]) {
+			$xml = '<query><name>Index fixture</name><oid_index>.1.2.3</oid_index>' . $order . $fields . '</query>';
+			library_expect(file_put_contents($path, $xml), strlen($xml), 'Index selection uses actual query XML');
+			unset($data_query_xml_arrays[$query]);
+			library_expect(get_ordered_index_type_list($device, $query), $expected, 'Index selection excludes duplicates, missing values, output-only fields, and unrequested fields');
+			library_expect(db_fetch_assoc_prepared('SELECT * FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? ORDER BY field_name, snmp_index', [$device, $query]), $snapshot, 'Index selection preserves observed query data');
+		}
+		$xml = '<query><name>Invalid output index</name><oid_index>.1.2.3</oid_index><index_order>value</index_order><index_order_type>alphanumeric</index_order_type>' . $fields . '</query>';
+		file_put_contents($path, $xml);
+		unset($data_query_xml_arrays[$query]);
+		library_expect(query_snmp_host($device, $query), false, 'An output-only index is rejected before SNMP collection');
+		library_expect(db_fetch_assoc_prepared('SELECT * FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? ORDER BY field_name, snmp_index', [$device, $query]), $snapshot, 'Rejected query preserves its previously observed fields');
+	} finally {
+		if ($query > 0) {
+			db_execute_prepared('DELETE FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', [$device, $query]);
+			db_execute_prepared('DELETE FROM snmp_query WHERE id = ?', [$query]);
+			unset($data_query_xml_arrays[$query]);
+		}
+		unlink($path);
 	}
 }

@@ -28,6 +28,10 @@ function plugin_coveragefixture_uninstall(): void {
 	$GLOBALS['coveragefixture_uninstalled'] = true;
 }
 
+function plugin_coveragefixture_remove_data(): void {
+	db_execute_prepared('DELETE FROM settings WHERE name = ?', ['coveragefixture_owned_data']);
+}
+
 function coveragefixture_notify(array $arguments): void {
 	$GLOBALS['coveragefixture_calls'][] = $arguments;
 }
