@@ -18,8 +18,19 @@ function library_logs(): void {
 	}
 	$path    = $directory . '/fixture.log';
 	$payload = "2026-01-01 12:00:00 - SYSTEM STATS: fixture log marker\n";
+	$user    = (int) sql_save(['id' => 0, 'username' => 'Log <fixture>'], 'user_auth');
+	$rule    = (int) sql_save(['id' => 0, 'name' => 'Rule <fixture>'], 'automation_graph_rules');
 
 	try {
+		foreach ([['text_regex_users', $user, 'Log <fixture>', 'user_admin.php'], ['text_regex_rule', $rule, 'Rule <fixture>', 'automation_graph_rules.php']] as [$formatter, $id, $label, $page]) {
+			$matches = ['Reference [' . $id . ']', 'Reference [', (string) $id, ']'];
+			library_expect($formatter($matches, ''), 'Reference [' . $label . ']', 'Plain log references resolve the stored identity');
+			$dom = library_form_dom(static function () use ($formatter, $matches): void { print $formatter($matches, '1'); });
+			library_expect($dom->query('//a')->length, 1, 'HTML log reference has one navigable target');
+			library_expect($dom->query('//a')->item(0)->textContent, $label, 'HTML reference escapes operator-controlled names');
+			library_expect(str_contains($dom->query('//a')->item(0)->getAttribute('href'), $page), true, 'Log reference links to the correct administration page');
+			library_expect($dom->query('//fixture')->length, 0, 'Log labels cannot create markup');
+		}
 		library_expect(file_put_contents($path, $payload), strlen($payload), 'Fixture log contains known bytes');
 
 		foreach ([[LOG_ACTION_PURGE, 'rotate', 'rotate_failed'], [LOG_ACTION_ROTATE, 'purge', 'purge_failed']] as [$policy, $action, $message]) {
@@ -53,6 +64,9 @@ function library_logs(): void {
 		clog_purge_logfile('purge');
 		library_expect(isset($_SESSION[SESS_MESSAGES]['clog_missing']), true, 'A missing log reports failure');
 	} finally {
+		user_remove($user);
+		db_execute_prepared('DELETE FROM automation_graph_rules WHERE id = ?', [$rule]);
+
 		foreach ($previous as $name => $value) {
 			set_config_option($name, $value);
 		}
