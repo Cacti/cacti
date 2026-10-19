@@ -8,14 +8,29 @@
  * Only checked-in source may be passed; never request data or remote content.
  */
 function cacti_fixture_source_function(string $file, string $function, string $namespace) : void {
+	require_once __DIR__ . '/PhpSource.php';
 	$source = file_get_contents($file);
 
-	if (!preg_match('/^function ' . preg_quote($function, '/') . '\([^\n]*.*?^\}/ms', $source, $match, PREG_OFFSET_CAPTURE)) {
-		throw new RuntimeException('Cannot locate source function ' . $function);
+	if ($source === false || realpath($file) === false) {
+		throw new RuntimeException('Cannot read source file ' . $file);
 	}
-	$line      = substr_count(substr($source, 0, $match[0][1]), "\n") + 1;
+	$definition = \Cacti\Tests\Helpers\PhpSource::functionDefinition($source, $function);
+
+	if ($namespace !== '' && !preg_match('/^[A-Za-z_][A-Za-z0-9_]*(?:\\\\[A-Za-z_][A-Za-z0-9_]*)*$/D', $namespace)) {
+		throw new InvalidArgumentException('Invalid fixture namespace');
+	}
 	$temporary = tempnam(sys_get_temp_dir(), 'cacti-source-slice-');
-	file_put_contents($temporary, '<?php namespace ' . $namespace . ';' . str_repeat("\n", $line - 1) . $match[0][0]);
+
+	if ($temporary === false) {
+		throw new RuntimeException('Cannot create source fixture');
+	}
+	$code = '<?php ' . ($namespace === '' ? '' : 'namespace ' . $namespace . ';') . str_repeat("\n", $definition['line'] - 1) . $definition['code'];
+
+	if (file_put_contents($temporary, $code) !== strlen($code)) {
+		unlink($temporary);
+
+		throw new RuntimeException('Cannot write complete source fixture');
+	}
 	$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($file);
 
 	try {

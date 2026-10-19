@@ -51,6 +51,11 @@ function library_plugins(): void {
 				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_hooks WHERE name = ? AND status = 1', ['coveragefixture']), 0, 'Failed installation disables every hook');
 			}
 		}
+		library_plugin_install_errors();
+		set_config_option('coveragefixture_owned_data', 'owned');
+		api_plugin_remove_data('coveragefixture');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM settings WHERE name = ?', ['coveragefixture_owned_data']), 0, 'Plugin data removal invokes its actual cleanup hook');
+		library_expect($_SESSION[SESS_MESSAGES]['rmdata_complete']['level'] ?? null, MESSAGE_LEVEL_INFO, 'Completed plugin data removal reaches the operator');
 		api_plugin_uninstall('coveragefixture');
 		library_expect($GLOBALS['coveragefixture_uninstalled'] ?? false, true, 'Uninstall calls the plugin lifecycle hook');
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_config WHERE directory = ?', ['coveragefixture']), 0, 'Uninstall removes the plugin configuration');
@@ -59,10 +64,40 @@ function library_plugins(): void {
 		chdir($cwd);
 		api_plugin_uninstall('coveragefixture');
 		db_execute_prepared('DELETE FROM plugin_archive WHERE plugin = ?', ['coveragefixture']);
+		db_execute_prepared('DELETE FROM settings WHERE name = ?', ['coveragefixture_owned_data']);
+		unset($GLOBALS['config'][OPTIONS_CLI]['coveragefixture_owned_data']);
 
 		foreach (glob($directory . '/*') as $owned) {
 			unlink($owned);
 		}
 		rmdir($directory);
 	}
+}
+
+function library_plugin_install_errors(): void {
+	foreach (['plugin_cov_' => 'directory_error', 'cov_version_' => 'version_error', 'cov_install_' => 'install_error'] as $prefix => $message) {
+		$name = $prefix . bin2hex(random_bytes(5));
+		$path = CACTI_PATH_PLUGINS . '/' . $name;
+		library_expect(mkdir($path, 0700), true, 'Invalid plugin fixture owns its directory');
+		$code = '<?php';
+
+		if ($message === 'install_error') {
+			$code .= ' function plugin_' . $name . '_version() { return ["longname" => "Incomplete fixture", "author" => "Cacti tests", "version" => "1.0"]; }';
+		}
+
+		try {
+			library_expect(file_put_contents($path . '/setup.php', $code), strlen($code), 'Incomplete plugin entry point is written completely');
+			unset($_SESSION[SESS_MESSAGES][$message]);
+			library_expect(api_plugin_install($name), false, 'Incomplete plugin cannot report successful installation');
+			library_expect($_SESSION[SESS_MESSAGES][$message]['level'] ?? null, MESSAGE_LEVEL_ERROR, 'Installation explains the missing plugin contract');
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_config WHERE directory = ? AND status = 1', [$name]), 0, 'Failed installation never activates its plugin');
+			api_plugin_remove_data($name);
+			library_expect($_SESSION[SESS_MESSAGES]['rmdata_not_complete']['level'] ?? null, MESSAGE_LEVEL_ERROR, 'Missing cleanup hook cannot report successful data removal');
+		} finally {
+			db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', [$name]);
+			unlink($path . '/setup.php');
+			rmdir($path);
+		}
+	}
+	library_expect(api_plugin_status_run('unsupported_fixture_hook', [], ''), false, 'An unsupported remote hook cannot run without capabilities');
 }

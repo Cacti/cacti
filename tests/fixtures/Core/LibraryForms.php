@@ -62,6 +62,23 @@ function library_aggregate_editor(int $template, array $aggregate): void {
 		$dom = library_form_dom(static fn () => draw_aggregate_graph_items_list(0, $template, $aggregate));
 		library_expect(str_contains($dom->document->textContent, '<em>Fixture & legend</em>'), true, 'Aggregate legend remains literal text');
 		library_expect($dom->query('//em[text()="Fixture & legend"]')->length, 0, 'Legend cannot inject an element into the editor');
+		$sourceItem = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', [$source]);
+
+		try {
+			foreach ([[GRAPH_ITEM_TYPE_HRULE, '42', 'Rule'], [GRAPH_ITEM_TYPE_VRULE, '1000', 'Time'], [GRAPH_ITEM_TYPE_COMMENT, '', '']] as [$type, $value, $legend]) {
+				db_execute_prepared('UPDATE graph_templates_item SET graph_type_id = ?, value = ?, text_format = ? WHERE id = ?', [$type, $value, $legend, $source]);
+
+				foreach ([[], $aggregate] as $object) {
+					$dom = library_form_dom(static fn () => draw_aggregate_graph_items_list(0, $template, $object));
+					library_expect($dom->query('//input[@id="dummy_' . $source . '"][@disabled]')->length, 1, 'Non-series item shows a disabled skip control');
+					library_expect($dom->query('//input[@id="dummy1_' . $source . '"][@disabled]')->length, 1, 'Non-series item cannot be selected for totals');
+					library_expect($dom->query('//input[@name="agg_skip_' . $source . '"][@checked]')->length, $object ? 1 : 0, 'Editing carries forced exclusion through its successful hidden control');
+					library_expect($dom->query('//input[@name="agg_total_' . $source . '"][@checked]')->length, 0, 'Forced exclusion never submits a total');
+				}
+			}
+		} finally {
+			sql_save($sourceItem, 'graph_templates_item');
+		}
 	} finally {
 		db_execute_prepared('UPDATE graph_templates_item SET text_format = ? WHERE id = ?', [$original, $source]);
 		db_execute_prepared('DELETE FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', [$aggregate['id']]);
@@ -148,5 +165,56 @@ function library_forms(): void {
 	} finally {
 		$_SESSION = $session;
 		set_config_option('autocomplete', $autocomplete);
+	}
+}
+
+function library_template_forms(int $graph): void {
+	global $struct_graph_item;
+	require_once CACTI_PATH_LIBRARY . '/html_form_template.php';
+	$graphValues   = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', [$graph]);
+	$template      = (int) $graphValues['graph_template_id'];
+	$graphTemplate = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ? AND local_graph_id = 0', [$template]);
+	$dataId        = (int) db_fetch_cell_prepared('SELECT dtr.local_data_id FROM graph_templates_item gti JOIN data_template_rrd dtr ON dtr.id = gti.task_item_id WHERE gti.local_graph_id = ? LIMIT 1', [$graph]);
+	$dataValues    = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id = ?', [$dataId]);
+	$dataTemplate  = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', [$dataValues['data_template_id']]);
+	$rrds          = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ? ORDER BY id', [$dataId]);
+	library_expect(count($rrds) > 0, true, 'Template editor uses a real graph with data sources');
+	$structure = $struct_graph_item;
+
+	try {
+		library_expect(db_execute_prepared('UPDATE graph_templates_graph SET t_title = ?, t_width = ? WHERE id = ?', ['on', '', $graphTemplate['id']]), true, 'Graph template field ownership is configured');
+		library_expect(db_execute_prepared('UPDATE data_template_data SET t_name = ? WHERE id = ?', ['on', $dataTemplate['id']]), true, 'Data template allows instance names');
+
+		foreach ([false, true] as $hidden) {
+			$dom = library_form_dom(static function () use ($template, &$graphValues, $hidden): void {
+				$count = draw_nontemplated_fields_graph($template, $graphValues, 'g_|field|', 'Graph fields', $hidden, $hidden);
+				library_expect($count > 0, true, 'Graph template exposes its per-graph fields');
+			});
+			library_expect($dom->evaluate('string(//input[@name="g_title"]/@value)'), $graphValues['title'], 'Graph editor preserves the stored title');
+			library_expect($dom->query('//input[@name="g_width"][@type="hidden"]')->length, $hidden ? 1 : 0, 'Template-owned width is hidden or omitted according to the form contract');
+
+			foreach ([0, $dataId] as $local) {
+				$dom = library_form_dom(static fn () => draw_nontemplated_fields_data_source((int) $dataValues['data_template_id'], $local, $dataValues, 'd_|field|', 'Data fields', $hidden, $hidden));
+				library_expect($dom->evaluate('string(//input[@name="d_name"]/@value)'), $dataValues['name'], 'Data source editor retains the instance name');
+				library_expect($dom->query('//input[@name="d_data_source_path"][@type="hidden"]')->length, $local === 0 && $hidden ? 1 : 0, 'Pre-creation form does not expose an editable RRD path');
+			}
+			$dom = library_form_dom(static fn () => draw_nontemplated_fields_data_source_item((int) $dataValues['data_template_id'], $rrds, 'r_|field|_|id|', 'Series fields', $hidden, $hidden, true));
+
+			foreach ($rrds as $rrd) {
+				library_expect($dom->evaluate('string(//input[@name="r_data_source_name_' . $rrd['id'] . '"]/@value)'), $rrd['data_source_name'], 'Series editor preserves each stored RRD identity');
+			}
+
+			foreach ([0, $graph] as $local) {
+				$dom = library_form_dom(static function () use ($template, $local, $hidden): void {
+					$count = draw_nontemplated_fields_graph_item($template, $local, '|field|_|id|', 'Graph item fields', $hidden, $hidden ? 'true' : 'false');
+					library_expect($count >= 0, true, 'Graph item form reports the rendered input count');
+				});
+				library_expect($dom->query('//select[starts-with(@name,"task_item_id")]')->length > 0, $local !== 0 && !$hidden, 'Data-source selection is available only for existing unlocked graphs');
+			}
+		}
+	} finally {
+		sql_save($graphTemplate, 'graph_templates_graph');
+		sql_save($dataTemplate, 'data_template_data');
+		$struct_graph_item = $structure;
 	}
 }
