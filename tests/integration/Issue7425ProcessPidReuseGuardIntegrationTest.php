@@ -34,6 +34,7 @@ require_once dirname(__DIR__, 2) . '/include/global_constants.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 require_once dirname(__DIR__, 2) . '/lib/functions.php';
 require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once dirname(__DIR__) . '/Helpers/BufferedPDOStatement.php';
 
 /* include/global.php resolves these from config and the settings table, which
    would need a live install; the registry only logs through them. */
@@ -57,7 +58,7 @@ require_once dirname(__DIR__, 2) . '/lib/poller.php';
 class ProcessRegistryPDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [ProcessRegistryStatement::class, []]);
+		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [BufferedPDOStatement::class, []]);
 	}
 
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
@@ -102,49 +103,6 @@ class ProcessRegistryPDO extends FakeMySQLPDO {
 
 		// IF(a, b, c); the word boundary keeps IFNULL and friends intact
 		return preg_replace('/\bIF\s*\(/i', 'iif(', $sql);
-	}
-}
-
-/**
- * sqlite reports rowCount() as 0 for SELECT, which db_fetch_row_return() reads
- * as no rows at all, so the result set is captured up front on execute().
- * Because that capture drains the cursor, fetch() is served from the buffer
- * too: db_fetch_row_return() reads a single row with fetch(), and without this
- * it would see an exhausted cursor and report every registered row as missing.
- */
-class ProcessRegistryStatement extends PDOStatement {
-	/** @var array<int,array<string,mixed>>|null rows of a SELECT, null otherwise */
-	private ?array $rows = null;
-
-	/** @var int next row fetch() returns from the buffer */
-	private int $cursor = 0;
-
-	protected function __construct() {
-	}
-
-	public function execute(?array $params = null) : bool {
-		$executed = parent::execute($params);
-
-		$this->rows   = $this->columnCount() > 0 ? parent::fetchAll(PDO::FETCH_ASSOC) : null;
-		$this->cursor = 0;
-
-		return $executed;
-	}
-
-	public function rowCount() : int {
-		return $this->rows === null ? parent::rowCount() : count($this->rows);
-	}
-
-	public function fetch(int $mode = PDO::FETCH_DEFAULT, int $cursorOrientation = PDO::FETCH_ORI_NEXT, int $cursorOffset = 0) : mixed {
-		if ($this->rows === null) {
-			return parent::fetch($mode, $cursorOrientation, $cursorOffset);
-		}
-
-		return $this->rows[$this->cursor++] ?? false;
-	}
-
-	public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args) : array {
-		return $this->rows ?? parent::fetchAll($mode, ...$args);
 	}
 }
 
