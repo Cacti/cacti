@@ -20,7 +20,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('cli/queue_worker.php', 'queue')
 
     def test_html_change_runs_the_browser_probe(self):
-        self.dispatch('lib/html.php', 'accessibility')
+        self.dispatch('lib/html.php', ['accessibility', 'library'])
 
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
@@ -43,7 +43,7 @@ class RequestDispatchTest(unittest.TestCase):
     def test_library_fixture_changes_run_the_database_contracts(self):
         for name in ['LibraryBehavior', 'LibraryCollection', 'LibraryAuthentication',
                      'LibraryStorage', 'LibraryForms', 'LibraryDatabase', 'LibraryPlugins',
-                     'LibraryReports', 'LibraryDevices', 'LibraryAccess', 'LibraryWeb',
+                     'LibraryReports', 'LibraryDevices', 'LibraryAccess', 'LibraryWeb', 'LibraryLogs',
                      'QueryProducer', 'PluginProducer']:
             with self.subTest(producer=name):
                 self.dispatch(f'tests/fixtures/Core/{name}.php', 'library')
@@ -58,10 +58,17 @@ class RequestDispatchTest(unittest.TestCase):
         for changed in ['lib/api_tree.php', 'lib/api_aggregate.php', 'lib/data_query.php',
                         'resource/snmp_queries/interface.xml', 'composer.lock',
                         'tests/fixtures/snmp-coverage/snmpd.conf', 'lib/boost.php',
-                        'lib/spikekill.php', 'lib/database.php', 'lib/plugins.php',
+                        'lib/spikekill.php', 'lib/database.php', 'lib/dbparallel.php',
+                        'lib/clog_webapi.php', 'lib/dsstats.php', 'lib/remote_agent_transport.php',
+                        'lib/html_validate.php', 'lib/html_utility.php', 'lib/html.php',
+                        'host.php', 'clog.php', 'graph_templates.php', 'include/global_constants.php',
+                        'include/global.php', 'user_admin.php', 'lib/plugins.php',
                         'lib/Auth/LocalAuthLoginProvider.php']:
             with self.subTest(changed=changed):
-                self.dispatch(changed, 'library')
+                additional = {'lib/html.php': ['accessibility'], 'host.php': ['accessibility'],
+                              'include/global.php': ['BoundaryContracts.php'],
+                              'user_admin.php': ['accessibility', 'UserAdministrationAuditCoverage.php']}
+                self.dispatch(changed, additional.get(changed, []) + ['library'])
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:

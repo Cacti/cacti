@@ -132,3 +132,121 @@ function library_snmp_query_formats(int $device, int $interfaceQuery): void {
 		unlink($path);
 	}
 }
+
+/** Exercise collector HTTP transport without leaving the disposable network. */
+function library_remote_transport(): void {
+	$directory = sys_get_temp_dir() . '/cacti-collector-' . bin2hex(random_bytes(8));
+	library_expect(mkdir($directory, 0700), true, 'Collector fixture owns its temporary directory');
+	$server   = null;
+	$poller   = 0;
+	$options  = ['force_https', 'remote_agent_port', 'remote_agent_timeout', 'remote_agent_ca_file'];
+	$previous = [];
+
+	foreach ($options as $option) {
+		$previous[$option] = read_config_option($option);
+	}
+
+	try {
+		$hostname = gethostname();
+		$address  = gethostbyname($hostname);
+		library_expect(filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false && $address !== '127.0.0.1', true, 'Collector fixture uses its isolated container address');
+		$socket = stream_socket_server('tcp://' . $address . ':0', $number, $message);
+		library_expect(is_resource($socket), true, 'Collector fixture reserves an isolated port');
+		$listen = stream_socket_get_name($socket, false);
+		fclose($socket);
+		$port   = (int) substr($listen, strrpos($listen, ':') + 1);
+		$router = <<<'PHP'
+<?php
+file_put_contents(__DIR__ . '/requests.log', $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
+if ($_SERVER['REQUEST_URI'] === '/redirect') {
+    header('Location: /forbidden', true, 302);
+} elseif ($_SERVER['REQUEST_URI'] === '/unavailable') {
+    http_response_code(503);
+    echo 'fixture unavailable';
+} else {
+    header('Content-Type: application/json');
+    echo json_encode(['host' => $_SERVER['HTTP_HOST'], 'path' => $_SERVER['REQUEST_URI']]);
+}
+PHP;
+		library_expect(file_put_contents($directory . '/router.php', $router), strlen($router), 'Collector router is written completely');
+		$server = proc_open([PHP_BINARY, '-S', $listen, $directory . '/router.php'], [0 => ['pipe', 'r'], 1 => ['file', $directory . '/server.log', 'a'], 2 => ['file', $directory . '/server.log', 'a']], $pipes, $directory);
+		library_expect(is_resource($server), true, 'Collector fixture starts its HTTP server');
+		fclose($pipes[0]);
+		$ready = false;
+
+		for ($attempt = 0; $attempt < 50; $attempt++) {
+			$connection = @stream_socket_client('tcp://' . $listen, $number, $message, 0.1);
+
+			if (is_resource($connection)) {
+				fclose($connection);
+				$ready = true;
+
+				break;
+			}
+			usleep(100000);
+		}
+		library_expect($ready, true, 'Collector HTTP server becomes ready');
+		$poller = (int) sql_save(['id' => 0, 'name' => 'Transport fixture', 'hostname' => $hostname, 'disabled' => 'on'], 'poller');
+		library_expect($poller > 1, true, 'Collector fixture owns its poller record');
+		set_config_option('force_https', '');
+		set_config_option('remote_agent_port', (string) $port);
+		set_config_option('remote_agent_timeout', '2');
+		set_config_option('remote_agent_ca_file', '');
+		$sentinel = static fn (): bool => false;
+		set_error_handler($sentinel);
+
+		try {
+			$response = call_remote_data_collector($poller, '/ok?fixture=1');
+			library_expect(json_decode($response, true, 512, JSON_THROW_ON_ERROR), ['host' => $hostname . ':' . $port, 'path' => '/ok?fixture=1'], 'Pinned collector request retains the original Host header and exact path');
+
+			foreach (['/redirect', '/unavailable'] as $path) {
+				library_expect(call_remote_data_collector($poller, $path), false, 'Non-success collector response cannot report success');
+			}
+			$current = set_error_handler($sentinel);
+			restore_error_handler();
+			library_expect($current, $sentinel, 'Collector transport restores the caller error handler');
+		} finally {
+			restore_error_handler();
+		}
+		$requests = file($directory . '/requests.log', FILE_IGNORE_NEW_LINES);
+		library_expect($requests, ['/ok?fixture=1', '/redirect', '/unavailable'], 'Collector transport never follows a redirect');
+
+		foreach (['relative', "/ok\r\nInjected: fixture", "/ok\0"] as $path) {
+			library_expect(call_remote_data_collector($poller, $path), false, 'Malformed collector path is rejected before I/O');
+		}
+
+		foreach (['0', '65536', '1.5'] as $invalidPort) {
+			set_config_option('remote_agent_port', $invalidPort);
+			library_expect(call_remote_data_collector($poller, '/ok'), false, 'Invalid collector port is rejected before I/O');
+		}
+		set_config_option('remote_agent_port', (string) $port);
+
+		foreach (['', 'bad/host', '127.0.0.1', '169.254.169.254', '[::1]'] as $invalidHost) {
+			db_execute_prepared('UPDATE poller SET hostname = ? WHERE id = ?', [$invalidHost, $poller]);
+			library_expect(call_remote_data_collector($poller, '/ok'), false, 'Missing, malformed, or reserved collector host is rejected');
+		}
+		db_execute_prepared('UPDATE poller SET hostname = ? WHERE id = ?', [$hostname, $poller]);
+		set_config_option('force_https', 'on');
+		set_config_option('remote_agent_ca_file', $directory . '/missing-ca.pem');
+		library_expect(call_remote_data_collector($poller, '/ok'), false, 'Unreadable configured CA fails before the TLS request');
+		library_expect(file($directory . '/requests.log', FILE_IGNORE_NEW_LINES), $requests, 'Rejected collector configuration produces no network request');
+	} finally {
+		if (is_resource($server)) {
+			proc_terminate($server);
+			proc_close($server);
+		}
+
+		if ($poller > 0) {
+			db_execute_prepared('DELETE FROM poller WHERE id = ?', [$poller]);
+		}
+
+		foreach ($previous as $option => $value) {
+			set_config_option($option, $value);
+		}
+
+		foreach (glob($directory . '/*') as $path) {
+			unlink($path);
+		}
+		rmdir($directory);
+	}
+}
