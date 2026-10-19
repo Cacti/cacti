@@ -34,6 +34,8 @@ $GLOBALS['cacti_fixture_contract'] = [
 		'tests/fixtures/Core/LibraryForms.php',
 		'tests/fixtures/Core/LibraryDatabase.php',
 		'tests/fixtures/Core/LibraryPlugins.php',
+		'tests/fixtures/Core/LibraryReports.php',
+		'tests/fixtures/Core/LibraryDevices.php',
 		'tests/fixtures/Core/PluginProducer.php',
 		'tests/fixtures/Core/QueryProducer.php',
 		'tests/e2e/library-behavior.sh',
@@ -216,6 +218,9 @@ db_execute_prepared('DELETE FROM host_template WHERE id = ?', [$duplicatedTempla
 library_expect(db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$deviceTemplateId]), $deviceTemplate, 'Duplicating leaves the original template unchanged');
 library_expect(api_duplicate_device_template(0, 'Missing template'), false, 'Missing template cannot be duplicated');
 $suggested  = [];
+require __DIR__ . '/LibraryDevices.php';
+library_device_templates($deviceTemplateId);
+
 $created    = create_complete_graph_from_template($templateId, $device, [], $suggested);
 library_expect(is_array($created), true, 'Graph creation returns its identities');
 $graphId = (int) $created['local_graph_id'];
@@ -394,6 +399,9 @@ foreach ([REPORTS_OUTPUT_STDOUT, REPORTS_OUTPUT_EMAIL] as $output) {
 	library_expect(str_contains($html, '<script>'), false, 'Report text cannot create an executable element');
 	library_expect(str_contains($html, $output === REPORTS_OUTPUT_EMAIL ? '<GRAPH:' . $graphId . ':' : 'local_graph_id=' . $graphId), true, 'Report includes the permitted graph');
 }
+require __DIR__ . '/LibraryReports.php';
+library_reports($report, $graphId, $device);
+
 $beforeItems            = (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items WHERE report_id = ?', [$report]);
 $_SESSION[SESS_USER_ID] = 2;
 library_expect(reports_add_graphs($report, $graphId, [], '1'), false, 'A different user cannot edit the report');
@@ -422,6 +430,7 @@ library_expect((int) api_tree_branch_exists($tree, 0, 'Fixture branch'), $branch
 $treeGraph = api_tree_item_save(0, $tree, TREE_ITEM_TYPE_GRAPH, $branch, '', $graphId, 0, 0, 1, TREE_ORDERING_INHERIT, false);
 library_expect($treeGraph > 0, true, 'A graph can be added under the branch');
 library_expect(api_tree_item_save(0, $tree, TREE_ITEM_TYPE_GRAPH, $branch, '', $graphId, 0, 0, 1, TREE_ORDERING_INHERIT, false), false, 'Duplicate graph leaves are refused');
+library_report_tree($tree, $branch, $graphId);
 api_tree_delete_node($tree, 'tbranch:' . $branch);
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE graph_tree_id = ?', [$tree]), 0, 'Deleting a branch removes its children');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_local WHERE id = ?', [$graphId]), 1, 'Deleting a tree branch preserves its graph');
