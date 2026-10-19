@@ -38,6 +38,7 @@ $GLOBALS['cacti_fixture_contract'] = [
 		'tests/fixtures/Core/LibraryDevices.php',
 		'tests/fixtures/Core/LibraryAccess.php',
 		'tests/fixtures/Core/LibraryWeb.php',
+		'tests/fixtures/Core/LibraryLogs.php',
 		'tests/fixtures/Core/PluginProducer.php',
 		'tests/fixtures/Core/QueryProducer.php',
 		'tests/e2e/library-behavior.sh',
@@ -76,6 +77,23 @@ function library_expect(mixed $actual, mixed $expected, string $message): void {
 
 	if ($actual !== $expected) {
 		throw new RuntimeException($message . ': ' . var_export($actual, true) . ' != ' . var_export($expected, true));
+	}
+}
+
+/** Import only completed child scenarios whose source still matches. */
+function library_import_coverage(array $reports): void {
+	foreach ($reports as $path) {
+		$report = json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+
+		foreach ($report['coverage'] as $file => $lines) {
+			if (hash_file('sha256', $file) !== $report['hashes'][$file]) {
+				throw new RuntimeException('Child coverage does not match ' . $file);
+			}
+
+			foreach ($lines as $line => $hits) {
+				$GLOBALS['cacti_fixture_request_coverage'][$file][$line] = max($hits, $GLOBALS['cacti_fixture_request_coverage'][$file][$line] ?? -2);
+			}
+		}
 	}
 }
 
@@ -195,6 +213,7 @@ api_device_dq_add($queryDevice, $interfaceQuery, '1');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$queryDevice, $interfaceQuery]), 1, 'Repeated query association keeps one mapping');
 require __DIR__ . '/LibraryCollection.php';
 library_collection_queries($queryDevice, $interfaceQuery);
+library_remote_transport();
 api_device_remove($queryDevice);
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ?', [$queryDevice]), 0, 'Removing the fixture clears its query cache');
 
@@ -641,6 +660,8 @@ library_authentication();
 require __DIR__ . '/LibraryPlugins.php';
 library_plugins();
 library_database();
+require __DIR__ . '/LibraryLogs.php';
+library_logs();
 require __DIR__ . '/LibraryWeb.php';
 library_web();
 
