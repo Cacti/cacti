@@ -43,7 +43,7 @@ class RequestDispatchTest(unittest.TestCase):
     def test_library_fixture_changes_run_the_database_contracts(self):
         for name in ['LibraryBehavior', 'LibraryCollection', 'LibraryAuthentication',
                      'LibraryStorage', 'LibraryForms', 'LibraryDatabase', 'LibraryPlugins',
-                     'LibraryReports', 'LibraryDevices',
+                     'LibraryReports', 'LibraryDevices', 'LibraryAccess', 'LibraryWeb',
                      'QueryProducer', 'PluginProducer']:
             with self.subTest(producer=name):
                 self.dispatch(f'tests/fixtures/Core/{name}.php', 'library')
