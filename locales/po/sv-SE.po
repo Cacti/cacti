@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-09 17:18+0000\n"
+"PO-Revision-Date: 2026-10-19 09:09+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -411,7 +411,7 @@ msgstr "Sammanfattning Förhandsgranskning [ %s]"
 
 #: aggregate_graphs.php:1180 graph.php:624 graphs.php:2418
 msgid "RRDtool Command:"
-msgstr "RRDtool Command:"
+msgstr "Kommando för RRDtool:"
 
 #: aggregate_graphs.php:1182 graph.php:631 graphs.php:2420
 msgid "RRDtool Says:"
@@ -1324,7 +1324,7 @@ msgstr "Enhetsmall"
 #: automation_devices.php:249 automation_templates.php:906
 #: automation_templates.php:1451
 msgid "Availability Method"
-msgstr "Tillgänglighet Metod"
+msgstr "Tillgänglighetsmetod"
 
 #: automation_devices.php:258
 msgid "Click 'Continue' to Remove the following Discovered Device."
@@ -1494,7 +1494,7 @@ msgstr "Rensning av upptäckta enheter"
 #: utilities.php:1710 utilities.php:1721 utilities.php:1744 utilities.php:1790
 #: utilities.php:2034
 msgid "N/A"
-msgstr "Ej tillämpligt"
+msgstr "Inte tillämpligt"
 
 #: automation_graph_rules.php:30 automation_networks.php:34
 #: automation_snmp.php:31 automation_tree_rules.php:30 cdef.php:30
@@ -1802,13 +1802,12 @@ msgstr "Importera regel för nätverksupptäckt"
 #: automation_networks.php:366
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr ""
-"Kan inte starta om Discovery för Discovery pågår för nätverket &#39; %s&#39;"
+msgstr "Kan inte starta om Discovery för Discovery som pågår för nätverket '%s'"
 
 #: automation_networks.php:370
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "Kan inte utföra discovery för funktionshindrade nätverk &quot; %s&quot;"
+msgstr "Kan inte utföra discovery för inaktiverade nätverket '%s'"
 
 #: automation_networks.php:439
 #, php-format
@@ -1832,7 +1831,7 @@ msgstr ""
 #: automation_networks.php:469
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
-msgstr "FEL: Nätverket &#39; %s&#39; är ogiltigt."
+msgstr "FEL: Nätverket '%s' är ogiltigt."
 
 #: automation_networks.php:628 host.php:436 lib/html_form.php:1614
 msgid "Update this Field"
@@ -2419,7 +2418,7 @@ msgstr "E-postadressen som ska användas som avsändarens e-postadress för avis
 
 #: automation_networks.php:1022
 msgid "Reachability Settings"
-msgstr "Reachability Settings"
+msgstr "Inställningar för tillgänglighet"
 
 #: automation_networks.php:1027 automation_snmp.php:713 automation_snmp.php:873
 #: include/global_form.php:1316 include/global_form.php:1917
@@ -2444,7 +2443,7 @@ msgstr "Typ av pingpaket att skicka."
 #: automation_networks.php:1042 include/global_form.php:1353
 #: include/global_settings.php:991
 msgid "Ping Port"
-msgstr "Ping port"
+msgstr "Pingport"
 
 #: automation_networks.php:1044 include/global_form.php:1355
 msgid "TCP or UDP port to attempt connection."
@@ -2453,32 +2452,32 @@ msgstr "TCP eller UDP-port för att försöka ansluta."
 #: automation_networks.php:1050 include/global_form.php:1361
 #: include/global_settings.php:999
 msgid "Ping Timeout Value"
-msgstr "Ping Timeout-värde"
+msgstr "Tidsgräns för ping"
 
 #: automation_networks.php:1051 include/global_form.php:1362
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
 msgstr ""
-"Timeout-värdet för värd ICMP och UDP-pingning. Det här värdet SNMP timeout-"
-"värdet gäller för SNMP-pingar."
+"Tidsgränsen för ICMP- och UDP-pingning av värdar. Den här SNMP-tidsgränsen "
+"gäller för SNMP-pingningar."
 
 #: automation_networks.php:1059 include/global_form.php:1370
 #: include/global_settings.php:1007
 msgid "Ping Retry Count"
-msgstr "Ping Retry Count"
+msgstr "Antal pingförsök"
 
 #: automation_networks.php:1060 include/global_form.php:1371
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
 msgstr ""
-"Efter ett initialt misslyckande försöker antalet ping igen Cacti innan de "
-"misslyckas."
+"Efter ett första misslyckande är detta antalet pingförsök som Cacti gör "
+"innan kontrollen markeras som misslyckad."
 
 #: automation_networks.php:1086
 msgid "Select the days(s) of the week"
-msgstr "Välj veckans dagar (ar)"
+msgstr "Välj veckans dag(ar)"
 
 #: automation_networks.php:1096
 msgid "Select the month(s) of the year"
-msgstr "Välj årets månad (er)"
+msgstr "Välj månad(er) på året"
 
 #: automation_networks.php:1106
 msgid "Select the day(s) of the month"
@@ -2826,7 +2825,7 @@ msgstr "Port"
 #: automation_snmp.php:720 include/global_settings.php:681
 #: include/global_settings.php:941 support.php:788
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Tidsgränsen överskreds"
 
 #: automation_snmp.php:721 include/global_settings.php:949
 msgid "Retries"
@@ -3064,7 +3063,7 @@ msgstr "Välj Tillgänglighetsmetod som ska användas för Upptäckta enheter."
 
 #: automation_templates.php:914 automation_templates.php:1455
 msgid "System Description Match"
-msgstr "Systembeskrivning Match"
+msgstr "Matchning av systembeskrivning"
 
 #: automation_templates.php:915
 msgid "This is a unique string that will be matched to a devices sysDescr string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression."
@@ -3618,7 +3617,7 @@ msgstr "Tillåt befintliga rader att uppdateras?"
 
 #: color.php:371
 msgid "Required File Format Notes"
-msgstr "Obligatoriska filformat Notes"
+msgstr "Anmärkningar om obligatoriskt filformat"
 
 #: color.php:374
 msgid "The file must contain a header row with the following column headings."
@@ -3858,7 +3857,7 @@ msgstr "Datakällafelsökning mottog ett ogiltigt datakälla-ID."
 
 #: data_debug.php:64
 msgid "All RRDfile repairs succeeded."
-msgstr "Alla RRDfile reparationer lyckades."
+msgstr "Alla RRD-filreparationer lyckades."
 
 #: data_debug.php:66
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
@@ -3989,7 +3988,7 @@ msgstr "Hittades inte"
 
 #: data_debug.php:717 data_debug.php:723
 msgid "Not Checked Yet"
-msgstr "Inga kontroller"
+msgstr "Har inte kontrollerats ännu"
 
 #: data_debug.php:742
 msgid "Issues found!  Waiting on RRDfile update"
@@ -4062,7 +4061,7 @@ msgstr "Datakälla Felsökare [ %s]"
 
 #: data_debug.php:831 data_debug.php:833
 msgid "Refresh Now"
-msgstr "Uppdatera"
+msgstr "Uppdatera nu"
 
 #: data_debug.php:833
 #, php-format
@@ -4694,7 +4693,7 @@ msgstr "Datalagring"
 #: data_source_profiles.php:642 include/global_settings.php:1207
 #: lib/html_reports.php:1170
 msgid "Graph Timespan"
-msgstr "Graf Timespan"
+msgstr "Grafens tidsintervall"
 
 #: data_source_profiles.php:643
 msgid "Steps"
@@ -4807,7 +4806,7 @@ msgstr "%d Dag"
 #: include/global_settings.php:1974 include/global_settings.php:1975
 #, php-format
 msgid "%d Days"
-msgstr "%d dygn"
+msgstr "%d dagar"
 
 #: data_source_profiles.php:859 include/global_arrays.php:745
 #: include/global_arrays.php:1666 include/global_arrays.php:1687
@@ -5822,7 +5821,7 @@ msgstr "Artikelnummer %s"
 
 #: graph_view.php:444
 msgid "Graph Preview Filters"
-msgstr "Graph Preview Filters"
+msgstr "Filter för graföversikt"
 
 #: graph_view.php:444
 msgid "[ Custom Graph List Applied - Filtering from List ]"
@@ -5930,7 +5929,7 @@ msgstr "Lägg till valda grafer för att rapportera"
 
 #: graph_view.php:1132 lib/html.php:3119
 msgid "Ok"
-msgstr "Ok"
+msgstr "OK"
 
 #: graph_xport.php:122 graph_xport.php:161 include/global_form.php:1955
 #: include/global_form.php:2223 lib/html.php:2167 links.php:377
@@ -6274,7 +6273,7 @@ msgstr "Redigera grafmall."
 #: graphs.php:2275
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "Datakällor [ %s]"
+msgstr "Redigera datakälla: '%s'."
 
 #: graphs.php:2284
 msgid "Unlock Graph."
@@ -6851,7 +6850,7 @@ msgstr "Uppe"
 #: host.php:1649 lib/api_automation.php:77 lib/api_automation.php:1177
 #: lib/html.php:86 lib/html_utility.php:1138 pollers.php:48
 msgid "Recovering"
-msgstr "Påväg upp"
+msgstr "Återhämtar sig"
 
 #: host.php:1654 host.php:1657 host.php:1802
 msgid "Service Check"
@@ -7835,7 +7834,7 @@ msgstr "Ping eller SNMP Uptime"
 
 #: include/global_arrays.php:693
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "SNMP-drifttid"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
@@ -7847,7 +7846,7 @@ msgstr "SNMP GetNext"
 
 #: include/global_arrays.php:696
 msgid "Ping"
-msgstr "Notifiera"
+msgstr "Pingtest"
 
 #: include/global_arrays.php:697
 msgid "Stream Device"
@@ -9725,7 +9724,7 @@ msgstr "Ange UDP-portnumret som ska användas för SNMP (standard är 161)."
 
 #: include/global_form.php:135
 msgid "SNMP Timeout"
-msgstr "SNMP Timeout"
+msgstr "SNMP-tidsgräns"
 
 #: include/global_form.php:136
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -9735,7 +9734,7 @@ msgstr ""
 
 #: include/global_form.php:144 include/global_form.php:211
 msgid "SNMP Retries"
-msgstr "SNMP Retries"
+msgstr "SNMP-försök"
 
 #: include/global_form.php:145
 msgid "The maximum number of times SNMP will attempt to contact the remote device before giving up."
@@ -12310,7 +12309,7 @@ msgstr "Standard SNMPv3 Privacy Protocol för alla nya enheter."
 
 #: include/global_settings.php:908
 msgid "Privacy Passphrase (v3)"
-msgstr "Sekretess lösenordsfras (v3)."
+msgstr "Sekretess lösenordsfras (v3)"
 
 #: include/global_settings.php:909
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -13788,7 +13787,7 @@ msgstr ""
 
 #: include/global_settings.php:2248
 msgid "DNS Timeout"
-msgstr "DNS Timeout"
+msgstr "DNS-tidsgräns"
 
 #: include/global_settings.php:2249
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
@@ -15188,7 +15187,7 @@ msgstr "Importerad"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #: package_import.php:1213 templates_import.php:289
 msgid "Updated"
-msgstr "Uppdatera"
+msgstr "Uppdaterad"
 
 #: lib/api_automation.php:5279 lib/api_automation.php:5281
 #, php-format
@@ -16044,9 +16043,7 @@ msgstr "Exekvering av SNMP får för %s oids ( %s)"
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr ""
-"Sorteringsfältet returnerade inte data. Kan inte fortsätta Reindexera för "
-"OID [ %s]"
+msgstr "Sorteringsfältet returnerade inte data för OID [ %s]. Hoppar över."
 
 #: lib/data_query.php:1171
 #, php-format
@@ -17176,7 +17173,7 @@ msgstr "Intervall"
 
 #: lib/html_graph.php:460 lib/html_tree.php:1453
 msgid "Stop"
-msgstr "Stopp"
+msgstr "Stoppa"
 
 #: lib/html_graph.php:649 lib/html_graph.php:679
 #, php-format
@@ -17619,7 +17616,7 @@ msgstr "Rapportera objekt [ny rapport: %s]"
 
 #: lib/html_reports.php:1463
 msgid "Events"
-msgstr "Evenemang"
+msgstr "Händelser"
 
 #: lib/html_reports.php:1492
 msgid "Send Report"
@@ -18046,7 +18043,7 @@ msgstr ""
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
 msgstr ""
 "OBS! Dina befintliga data ändras inte och varken data eller historik blir "
-"tillgängliga för den nya installationen."
+"tillgängliga för den nya installationen"
 
 #: lib/installer.php:1744
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
@@ -21109,7 +21106,7 @@ msgstr "Repository-baserad import av paket"
 
 #: package_import.php:1681
 msgid "Not Set"
-msgstr "Ej inställt"
+msgstr "Inte angiven"
 
 #: package_import.php:1705
 msgid "No Packages Found"
@@ -22053,7 +22050,7 @@ msgstr "Anteckningar för denna datasamlare databas."
 
 #: pollers.php:106
 msgid "Collection Settings"
-msgstr "Samlingsinställningar"
+msgstr "Insamlingsinställningar"
 
 #: pollers.php:110 support.php:600 support.php:752
 msgid "Processes"
@@ -22453,7 +22450,7 @@ msgstr "%d Dag"
 #: rrdcheck.php:240 rrdcheck.php:241
 #, php-format
 msgid "%d days"
-msgstr "%d dygn"
+msgstr "%d dagar"
 
 #: rrdcheck.php:245 rrdcheck.php:248
 msgid "Messages"
@@ -23061,7 +23058,7 @@ msgstr "Poller:"
 
 #: support.php:698 support.php:707
 msgid "Collector"
-msgstr "Samlare"
+msgstr "Insamlare"
 
 #: support.php:763
 msgid "The Type of Task.  Generally represents the plugin and task within the plugin."
