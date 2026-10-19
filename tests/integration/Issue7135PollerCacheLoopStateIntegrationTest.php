@@ -41,6 +41,7 @@ require_once dirname(__DIR__, 2) . '/lib/functions.php';
    not define. */
 require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once dirname(__DIR__) . '/Helpers/BufferedPDOStatement.php';
 
 /* include/global.php resolves these from config and the settings table, which
    would need a live install. update_poller_cache() only uses them to build the
@@ -66,73 +67,12 @@ require_once dirname(__DIR__, 2) . '/lib/utility.php';
 require_once dirname(__DIR__, 2) . '/lib/plugins.php';
 
 /**
- * sqlite reports rowCount() as 0 for SELECT, and db_fetch_row_return() guards
- * on it, so without this every row read in update_poller_cache() comes back
- * empty.
- */
-class PollerCacheStatement extends PDOStatement {
-	/** @var array<int,array<string,mixed>>|null rows of a SELECT, null otherwise */
-	private ?array $rows = null;
-	private int $cursor = 0;
-
-	protected function __construct() {
-	}
-
-	public function execute(?array $params = null) : bool {
-		$executed = parent::execute($params);
-
-		$this->rows = $this->columnCount() > 0 ? parent::fetchAll(PDO::FETCH_ASSOC) : null;
-		$this->cursor = 0;
-
-		return $executed;
-	}
-
-	public function rowCount() : int {
-		return $this->rows === null ? parent::rowCount() : count($this->rows);
-	}
-
-	public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args) : array {
-		return $this->rows ?? parent::fetchAll($mode, ...$args);
-	}
-
-	public function fetch(int $mode = PDO::FETCH_DEFAULT, int $cursorOrientation = PDO::FETCH_ORI_NEXT, int $cursorOffset = 0) : mixed {
-		if ($this->rows === null) {
-			return parent::fetch($mode, $cursorOrientation, $cursorOffset);
-		}
-
-		$row = $this->rows[$this->cursor++] ?? null;
-
-		if ($row === null) {
-			return false;
-		}
-
-		return match ($mode) {
-			PDO::FETCH_NUM    => array_values($row),
-			PDO::FETCH_BOTH   => $row + array_values($row),
-			PDO::FETCH_COLUMN => reset($row),
-			PDO::FETCH_OBJ    => (object) $row,
-			default           => $row,
-		};
-	}
-
-	public function fetchColumn(int $column = 0) : mixed {
-		if ($this->rows === null) {
-			return parent::fetchColumn($column);
-		}
-
-		$row = $this->rows[$this->cursor++] ?? null;
-
-		return $row === null ? false : (array_values($row)[$column] ?? false);
-	}
-}
-
-/**
  * A FakeMySQLPDO that hands out counting statements.
  */
 class PollerCachePDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PollerCacheStatement::class, []]);
+		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [BufferedPDOStatement::class, []]);
 	}
 
 	public function prepare(string $query, array $options = []): PDOStatement|false {

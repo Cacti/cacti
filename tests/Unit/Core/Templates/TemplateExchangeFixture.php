@@ -18,77 +18,14 @@
  */
 
 require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/BufferedPDOStatement.php';
 require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
 require_once dirname(__DIR__, 4) . '/include/global.php';
-
-/**
- * sqlite reports rowCount() as 0 for SELECT and db_fetch_row_return() guards
- * on it, so the rows are buffered at execute time and counted from there.
- */
-class TemplateExchangeStatement extends PDOStatement {
-	/** @var array<int,array<string,mixed>>|null rows of a SELECT, null otherwise */
-	private ?array $rows = null;
-
-	private int $cursor = 0;
-
-	protected function __construct() {
-	}
-
-	public function execute(?array $params = null) : bool {
-		$executed = parent::execute($params);
-
-		$this->rows   = $this->columnCount() > 0 ? parent::fetchAll(PDO::FETCH_ASSOC) : null;
-		$this->cursor = 0;
-
-		return $executed;
-	}
-
-	public function rowCount() : int {
-		return $this->rows === null ? parent::rowCount() : count($this->rows);
-	}
-
-	public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args) : array {
-		if ($this->rows === null) {
-			return parent::fetchAll($mode, ...$args);
-		}
-
-		return $mode === PDO::FETCH_NUM ? array_map('array_values', $this->rows) : $this->rows;
-	}
-
-	public function fetch(int $mode = PDO::FETCH_DEFAULT, int $cursorOrientation = PDO::FETCH_ORI_NEXT, int $cursorOffset = 0) : mixed {
-		if ($this->rows === null) {
-			return parent::fetch($mode, $cursorOrientation, $cursorOffset);
-		}
-
-		$row = $this->rows[$this->cursor++] ?? null;
-
-		if ($row === null) {
-			return false;
-		}
-
-		return match ($mode) {
-			PDO::FETCH_NUM  => array_values($row),
-			PDO::FETCH_BOTH => $row + array_values($row),
-			PDO::FETCH_OBJ  => (object) $row,
-			default         => $row,
-		};
-	}
-
-	public function fetchColumn(int $column = 0) : mixed {
-		if ($this->rows === null) {
-			return parent::fetchColumn($column);
-		}
-
-		$row = $this->rows[$this->cursor++] ?? null;
-
-		return $row === null ? false : (array_values($row)[$column] ?? false);
-	}
-}
 
 class TemplateExchangePDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [TemplateExchangeStatement::class, []]);
+		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [BufferedPDOStatement::class, []]);
 	}
 
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
