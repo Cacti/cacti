@@ -43,13 +43,19 @@ class RequestDispatchTest(unittest.TestCase):
     def test_library_fixture_changes_run_the_database_contracts(self):
         for name in ['LibraryBehavior', 'LibraryCollection', 'LibraryAuthentication',
                      'LibraryStorage', 'LibraryForms', 'LibraryDatabase', 'LibraryPlugins',
-                     'LibraryReports', 'LibraryDevices', 'LibraryAccess', 'LibraryWeb', 'LibraryLogs',
+                     'LibraryReports', 'LibraryDevices', 'LibraryAccess', 'LibraryWeb', 'LibraryLogs', 'LibraryPluginCatalog', 'LibraryUtilities', 'LibraryLdap', 'LibraryRemote', 'LibraryGraphOptions', 'LibraryProfiles', 'LibraryPropagation', 'LibraryGraphCache', 'LibraryBoundaries', 'LibraryValidation', 'LibraryRrdStorage', 'LibraryLoginRouting', 'LibraryAdministration', 'LibraryResources', 'LibraryProbe', 'LibraryTransfer', 'LibraryRemoval', 'LibraryQueues', 'LibraryErrorHandling', 'LibraryReindex', 'LibraryRuntime', 'LibraryProvider', 'LibraryMib', 'LibraryLifecycle', 'LibraryReportDelivery', 'LibraryDiagnostics', 'LibraryNotifications', 'LibraryMaintenance', 'LibraryWorkers', 'LibraryWorker',
                      'QueryProducer', 'PluginProducer']:
             with self.subTest(producer=name):
                 self.dispatch(f'tests/fixtures/Core/{name}.php', 'library')
 
     def test_library_runtime_changes_run_the_database_contracts(self):
-        self.dispatch('tests/e2e/Dockerfile', 'library')
+        for path in ['tests/e2e/Dockerfile', 'tests/e2e/ldap/50-e2e.ldif',
+                     'tests/Helpers/SourceSlice.php', 'tests/Helpers/PhpSource.php',
+                     'lib/ldap.php', 'lib/mib_parser.php', 'lib/mib_cache.php',
+                     'lib/dsdebug.php', 'lib/snmpagent.php', 'lib/cacti_dispatch.php',
+                     'cli/fetch_plugins.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'library')
 
     def test_library_schema_changes_run_the_database_contracts(self):
         self.dispatch('cacti.sql', 'library')
