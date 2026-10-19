@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 function library_collection_queries(int $snmpDevice, int $interfaceQuery): void {
 	global $data_query_xml_arrays;
+	library_snmp_query_formats($snmpDevice, $interfaceQuery);
 
 	library_expect(db_execute_prepared('UPDATE host SET bulk_walk_size = 0 WHERE id = ?', [$snmpDevice]), true, 'SNMP auto-sizing with persistence is enabled');
 	library_expect(run_data_query($snmpDevice, $interfaceQuery), true, 'Native SNMP auto-sizing discovers interfaces');
@@ -82,4 +83,52 @@ function library_collection_queries(int $snmpDevice, int $interfaceQuery): void 
 		}
 	}
 	api_device_remove($scriptDevice);
+}
+
+function library_snmp_query_formats(int $device, int $interfaceQuery): void {
+	global $data_query_xml_arrays;
+	$loopback = db_fetch_cell_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? AND field_value = ?', [$device, $interfaceQuery, 'ifDescr', 'lo']);
+	library_expect(ctype_digit($loopback), true, 'The native agent exposes a numeric loopback index');
+	$input = (int) db_fetch_cell_prepared('SELECT data_input_id FROM snmp_query WHERE id = ?', [$interfaceQuery]);
+	$path  = tempnam(CACTI_PATH_RESOURCE . '/snmp_queries', 'library-format-');
+	library_expect(is_string($path), true, 'SNMP format fixture owns its XML file');
+	$query = 0;
+
+	try {
+		$query = (int) sql_save(['id' => 0, 'name' => 'SNMP format fixture', 'xml_path' => $path, 'data_input_id' => $input], 'snmp_query');
+		library_expect($query > 0, true, 'SNMP format query is registered');
+		$cases = [
+			['get', 'value', '', '', 'lo'],
+			['get', 'value', '<output_format>ascii</output_format>', '', 'lo'],
+			['get', 'VALUE/REGEXP:^(.).*$', '', '', 'l'],
+			['get', 'VALUE/REGEXP:^(.).*$', '<output_format>ascii</output_format>', '', 'l'],
+			['walk', 'VALUE/REGEXP:^(.).*$', '<output_format>ascii</output_format>', '', 'l'],
+			['walk', 'VALUE/TEST:lo:loopback:other', '', '', 'loopback'],
+			['walk', 'VALUE/TABLE:lo:loopback', '', '', 'loopback'],
+			['walk', 'OID/REGEXP:.*\.([0-9]+)$', '', '', $loopback],
+			['get', 'value', '', '<oid_rewrite_pattern>OID/REGEXP:\.999\.</oid_rewrite_pattern><oid_rewrite_replacement>.2.</oid_rewrite_replacement>', 'lo'],
+		];
+
+		foreach ($cases as [$method, $source, $format, $rewrite, $expected]) {
+			$xml = '<query><name>SNMP format fixture</name><oid_index>.1.3.6.1.2.1.2.2.1.1</oid_index>' .
+				'<value_index_parse>VALUE/REGEXP:^' . $loopback . '$</value_index_parse>' .
+				'<oid_index_parse>OID/REGEXP:.*\.([0-9]+)$</oid_index_parse>' .
+				'<index_order>index</index_order><index_order_type>numeric</index_order_type>' .
+				'<index_title_format>|chosen_order_field|</index_title_format><fields>' .
+				'<index><name>Index</name><source>index</source><direction>input</direction></index>' .
+				'<label><name>Label</name><method>' . $method . '</method><source>' . $source . '</source>' .
+				'<direction>input</direction><oid>.1.3.6.1.2.1.2.2.1.' . ($rewrite === '' ? '2' : '999') . '</oid>' . $format . $rewrite . '</label></fields></query>';
+			library_expect(file_put_contents($path, $xml), strlen($xml), 'Complete SNMP XML is written');
+			unset($data_query_xml_arrays[$query]);
+			api_device_dq_add($device, $query, (string) DATA_QUERY_AUTOINDEX_NONE);
+			$rows = db_fetch_assoc_prepared('SELECT snmp_index, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? ORDER BY snmp_index', [$device, $query, 'label']);
+			library_expect($rows, [['snmp_index' => $loopback, 'field_value' => $expected]], 'Native SNMP ' . $method . ' and ' . $source . ' preserve the filtered interface identity and transformed label');
+			library_expect(db_fetch_cell_prepared('SELECT field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$device, $query, 'index']), $loopback, 'Index-source field preserves the selected index');
+		}
+	} finally {
+		api_device_dq_remove($device, $query);
+		db_execute_prepared('DELETE FROM snmp_query WHERE id = ?', [$query]);
+		unset($data_query_xml_arrays[$query]);
+		unlink($path);
+	}
 }
