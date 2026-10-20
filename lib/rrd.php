@@ -3566,6 +3566,10 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
  * @return bool Whether the complete file was safely replaced
  */
 function rrdtool_atomic_write(string $path, string $contents, string $allowed_root) : bool {
+	if (str_contains($path, "\0") || str_contains($allowed_root, "\0")) {
+		return false;
+	}
+
 	$root   = realpath($allowed_root);
 	$parent = realpath(dirname($path));
 
@@ -3579,7 +3583,9 @@ function rrdtool_atomic_write(string $path, string $contents, string $allowed_ro
 		return false;
 	}
 
-	$temporary = tempnam($parent, '.cacti-rrd-');
+	// Use the verified parent for the mutation, not the original path spelling.
+	$destination = $parent . DIRECTORY_SEPARATOR . basename($path);
+	$temporary   = tempnam($parent, '.cacti-rrd-');
 
 	if ($temporary === false) {
 		return false;
@@ -3592,7 +3598,7 @@ function rrdtool_atomic_write(string $path, string $contents, string $allowed_ro
 			return false;
 		}
 
-		return rename($temporary, $path);
+		return rename($temporary, $destination);
 	} finally {
 		if (is_file($temporary)) {
 			unlink($temporary);
