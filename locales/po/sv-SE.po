@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-20 08:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-20 16:23+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -256,7 +256,7 @@ msgstr "Klicka på &quot;Fortsätt&quot; för att placera följande Aggregate Gr
 
 #: aggregate_graphs.php host.php
 msgid "Destination Branch:"
-msgstr "Destination Branch:"
+msgstr "Målgren:"
 
 #: aggregate_graphs.php graphs.php
 msgid "Place Graph(s) on Tree"
@@ -310,7 +310,7 @@ msgstr "Sammanfattning Förhandsgranskning [ %s]"
 
 #: aggregate_graphs.php graph.php graphs.php
 msgid "RRDtool Command:"
-msgstr "Kommando för RRDtool:"
+msgstr "RRDtool-kommando:"
 
 #: aggregate_graphs.php graph.php graphs.php
 msgid "Not Checked"
@@ -1004,7 +1004,7 @@ msgstr "Inga enheter hittades"
 
 #: automation_devices.php
 msgid "Discovery Filters"
-msgstr "Discovery Filters"
+msgstr "Upptäcktsfilter"
 
 #: automation_devices.php
 msgid "Network"
@@ -1202,7 +1202,7 @@ msgstr "Kan inte utföra discovery för inaktiverade nätverket '%s'"
 #: automation_networks.php
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
-msgstr "FEL: Du måste ange veckodag. Inaktiverar nätverk %s!."
+msgstr "FEL: Du måste ange veckodag. Nätverk %s inaktiveras."
 
 #: automation_networks.php
 #, php-format
@@ -1279,7 +1279,7 @@ msgstr "Network Discovery Range [redigera: %s]"
 
 #: automation_networks.php
 msgid "Network Discovery Range [new]"
-msgstr "Network Discovery Range [new]"
+msgstr "Nätverksintervall för upptäckt [ny]"
 
 #: automation_networks.php include/global_form.php include/global_settings.php
 #: lib/html_reports.php
@@ -1319,7 +1319,7 @@ msgstr "Välj den Cacti-platsen som du vill associera upptäckta enheter med."
 
 #: automation_networks.php
 msgid "Subnet Range"
-msgstr "Subnet Range"
+msgstr "Subnätsintervall"
 
 #: automation_networks.php
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
@@ -1355,7 +1355,7 @@ msgstr "Definiera samlingsfrekvensen."
 
 #: automation_networks.php
 msgid "Discovery Threads"
-msgstr "Discovery Threads"
+msgstr "Upptäcktstrådar"
 
 #: automation_networks.php
 msgid "Define the number of threads to use for discovering this Network Range."
@@ -1431,7 +1431,7 @@ msgstr "När du upptäcker enheter tillåter du att dubbla sysnames läggs till 
 
 #: automation_networks.php
 msgid "Rerun Data Queries"
-msgstr "Rerun Data Queries"
+msgstr "Kör datafrågor igen"
 
 #: automation_networks.php
 msgid "If a device previously added to Cacti is found, rerun its data queries."
@@ -1475,7 +1475,7 @@ msgstr "E-postadressen som ska användas som avsändare E-post för meddelandepo
 
 #: automation_networks.php
 msgid "Discovery Timing"
-msgstr "Discovery Timing"
+msgstr "Tidpunkt för upptäckt"
 
 #: automation_networks.php
 msgid "Starting Date/Time"
@@ -1551,7 +1551,7 @@ msgstr "Mars"
 
 #: automation_networks.php include/global_arrays.php
 msgid "April"
-msgstr "April"
+msgstr "april"
 
 #: automation_networks.php include/global_arrays.php
 msgid "May"
@@ -1571,7 +1571,7 @@ msgstr "Augusti"
 
 #: automation_networks.php include/global_arrays.php
 msgid "September"
-msgstr "September"
+msgstr "september"
 
 #: automation_networks.php include/global_arrays.php
 msgid "October"
@@ -1579,11 +1579,11 @@ msgstr "Oktober"
 
 #: automation_networks.php include/global_arrays.php
 msgid "November"
-msgstr "November"
+msgstr "november"
 
 #: automation_networks.php include/global_arrays.php
 msgid "December"
-msgstr "December"
+msgstr "december"
 
 #: automation_networks.php
 msgid "Days of Month"
@@ -1625,7 +1625,7 @@ msgstr "Dag (er) i veckan"
 
 #: automation_networks.php
 msgid "Reachability Settings"
-msgstr "Inställningar för tillgänglighet"
+msgstr "Inställningar för nåbarhet"
 
 #: automation_networks.php include/global_form.php
 msgid "SNMP Options"
@@ -1645,7 +1645,7 @@ msgstr "Typ av pingpaket att skicka."
 
 #: automation_networks.php include/global_form.php include/global_settings.php
 msgid "Ping Port"
-msgstr "Pingport"
+msgstr "Ping-port"
 
 #: automation_networks.php include/global_form.php
 msgid "TCP or UDP port to attempt connection."
@@ -1900,7 +1900,7 @@ msgstr "Försök"
 
 #: automation_snmp.php
 msgid "Max OIDS"
-msgstr "Max OIDS"
+msgstr "Max antal OID:er"
 
 #: automation_snmp.php
 msgid "Auth Username"
@@ -1965,7 +1965,7 @@ msgstr "SNMP-alternativsatser"
 
 #: automation_snmp.php
 msgid "SNMP Option Set"
-msgstr "SNMP Option Set"
+msgstr "SNMP-alternativuppsättning"
 
 #: automation_snmp.php
 msgid "Networks Using"
@@ -2030,7 +2030,7 @@ msgstr "Detta är en unik sträng som matchas med en sysName-sträng för enhete
 
 #: automation_templates.php
 msgid "System OID Match"
-msgstr "System OID Match"
+msgstr "Matchning av system-OID"
 
 #: automation_templates.php
 msgid "This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
@@ -2060,11 +2060,11 @@ msgstr "Mallnamn"
 
 #: automation_templates.php
 msgid "System ObjectId Match"
-msgstr "System ObjectId Match"
+msgstr "Matchning av systemobjekt-ID"
 
 #: automation_templates.php data_queries.php links.php tree.php
 msgid "Order"
-msgstr "Order"
+msgstr "Ordning"
 
 #: automation_templates.php
 msgid "Unknown Template"
@@ -2171,7 +2171,7 @@ msgstr "Inga trädregler hittades"
 #: cactid.php help.php lib/functions.php poller.php poller_automation.php
 #: poller_boost.php
 msgid "Cacti System Warning"
-msgstr "Cacti System Warning"
+msgstr "Cacti-systemvarning"
 
 #: cactid.php
 msgid "WARNING: Cacti Daemon PID["
@@ -2298,7 +2298,7 @@ msgstr "Radera CDEF-objektet"
 
 #: cdef.php include/global_arrays.php
 msgid "CDEFs"
-msgstr "CDEFs"
+msgstr "CDEF:er"
 
 #: cdef.php
 msgid "CDEF Name"
@@ -2420,7 +2420,7 @@ msgstr "Exportera färger"
 
 #: color.php color_templates.php
 msgid "Hex"
-msgstr "Hex"
+msgstr "Hexadecimal"
 
 #: color.php
 msgid "The Hex Value for this Color."
@@ -2712,7 +2712,7 @@ msgstr "Bestämmer om datakällan är aktiverad."
 
 #: data_debug.php
 msgid "RRD Match"
-msgstr "RRD Match"
+msgstr "RRD-matchning"
 
 #: data_debug.php
 msgid "Determines if the RRDfile matches the Data Source Template."
@@ -2817,7 +2817,7 @@ msgstr "Först Kontrollera TimeStamp"
 
 #: data_debug.php
 msgid "Second Check TimeStamp"
-msgstr "Second Check TimeStamp"
+msgstr "Tidsstämpel för andra kontroll"
 
 #: data_debug.php
 msgid "Were we able to convert the title?"
@@ -2911,7 +2911,7 @@ msgstr "Datakälla Felsökare [ %s]"
 
 #: data_debug.php
 msgid "No Device"
-msgstr "No Device"
+msgstr "Ingen enhet"
 
 #: data_debug.php
 msgid "Delete All Checks"
@@ -3031,7 +3031,7 @@ msgstr "SNMP-fråga"
 
 #: data_input.php include/global_arrays.php
 msgid "Script Query"
-msgstr "Script Query"
+msgstr "Skriptfråga"
 
 #: data_input.php include/global_arrays.php
 msgid "Script Server Query"
@@ -3095,7 +3095,7 @@ msgstr "Uppdatera vitlista"
 
 #: data_input.php include/global_arrays.php
 msgid "Data Input Methods"
-msgstr "Data Input Methods"
+msgstr "Datainmatningsmetoder"
 
 #: data_input.php
 msgid "Input Methods"
@@ -3132,7 +3132,7 @@ msgstr "Antalet datamallar som använder denna datainmatningsmetod."
 #: data_input.php data_queries.php include/global_arrays.php
 #: include/global_form.php
 msgid "Data Input Method"
-msgstr "Data Input Method"
+msgstr "Datainmatningsmetod"
 
 #: data_input.php
 msgid "The method used to gather information for this Data Input Method."
@@ -3276,7 +3276,7 @@ msgstr "Grafmallnamn"
 
 #: data_queries.php
 msgid "Mapping ID"
-msgstr "Mapping ID"
+msgstr "Mappnings-ID"
 
 #: data_queries.php
 msgid "Association Read Only until XML file located"
@@ -3403,7 +3403,7 @@ msgstr "Data Source Profile RRAs (tryck på Spara för att uppdatera tidsinterva
 
 #: data_source_profiles.php
 msgid "Data Source Profile RRAs (Read Only)"
-msgstr "Data Source Profile RRAs (Read Only)"
+msgstr "RRA:er för datakällsprofil (skrivskyddade)"
 
 #: data_source_profiles.php include/global_form.php
 msgid "Data Retention"
@@ -3516,7 +3516,7 @@ msgstr "Profiler som används av datakällor blir endast skrivna för nu."
 
 #: data_source_profiles.php data_sources.php include/global_settings.php
 msgid "Poller Interval"
-msgstr "Poller Interval"
+msgstr "Insamlingsintervall"
 
 #: data_source_profiles.php
 msgid "The Polling Frequency for the Profile"
@@ -3753,7 +3753,7 @@ msgstr "Datakälla Felsökning"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
-msgstr "RRDtool Tune Info"
+msgstr "Information om justering av RRDtool"
 
 #: data_sources.php data_templates.php include/global_form.php
 msgid "External"
@@ -4113,11 +4113,11 @@ msgstr "Klicka för att visa just denna graf i realtid"
 
 #: graph.php lib/html.php
 msgid "Utility View"
-msgstr "Utility View"
+msgstr "Verktygsvy"
 
 #: graph.php
 msgid "Graph Utility View"
-msgstr "Graph Utility View"
+msgstr "Diagramverktygsvy"
 
 #: graph.php
 msgid "Graph Source/Properties"
@@ -4129,7 +4129,7 @@ msgstr "Grafdata"
 
 #: graph.php
 msgid "RRDtool Graph Syntax"
-msgstr "RRDtool Graph Syntax"
+msgstr "RRDtool-diagramsyntax"
 
 #: graph_image.php graph_json.php graph_realtime.php lib/rrd.php
 msgid "The Cacti Poller has not run yet."
@@ -4338,11 +4338,11 @@ msgstr "Artikelnummer %s"
 
 #: graph_templates_items.php graphs_items.php
 msgid "Cur:"
-msgstr "Cur:"
+msgstr "Aktuellt:"
 
 #: graph_templates_items.php graphs_items.php
 msgid "Avg:"
-msgstr "Avg:"
+msgstr "Medel:"
 
 #: graph_templates_items.php graphs_items.php
 msgid "Max:"
@@ -4375,7 +4375,7 @@ msgstr "DU HAR INTE RÄTTIGHETER FÖR FÖRSIKTIGHETSFRÅGOR"
 
 #: graph_view.php
 msgid "Graph Preview Filters"
-msgstr "Filter för graföversikt"
+msgstr "Filter för förhandsvisning av diagram"
 
 #: graph_view.php
 msgid "[ Custom Graph List Applied - Filtering from List ]"
@@ -4387,7 +4387,7 @@ msgstr "DU HAR INTE RÄTTIGHETER FÖR LISTA VISNING"
 
 #: graph_view.php
 msgid "Graph List View Filters"
-msgstr "Graph List View Filters"
+msgstr "Filter för diagramlistvy"
 
 #: graph_view.php
 msgid "[ Custom Graph List Applied - Filter FROM List ]"
@@ -4510,7 +4510,7 @@ msgstr "Värd-ID"
 
 #: graph_xport.php
 msgid "Nth Percentile"
-msgstr "Nth Percentile"
+msgstr "N:te percentilen"
 
 #: graph_xport.php
 msgid "Summation"
@@ -4641,7 +4641,7 @@ msgstr "Klicka på &quot;Fortsätt&quot; för att placera följande graf (er) un
 
 #: graphs.php
 msgid "Destination Branch"
-msgstr "Destination Branch"
+msgstr "Målgren"
 
 #: graphs.php
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
@@ -5160,11 +5160,11 @@ msgstr "Lägg till grafmall till enhet"
 
 #: host.php
 msgid "Data Query Debug Information"
-msgstr "Data Query Debug Information"
+msgstr "Felsökningsinformation för datafråga"
 
 #: host.php lib/functions.php tree.php user_admin.php user_group_admin.php
 msgid "Copy"
-msgstr "kopia"
+msgstr "Kopiera"
 
 #: host.php
 msgid "Hide"
@@ -5202,7 +5202,7 @@ msgstr "Uppdatera fråga"
 
 #: host.php
 msgid "Verbose Query"
-msgstr "Verbose Query"
+msgstr "Utförlig fråga"
 
 #: host.php
 msgid "Remove Query"
@@ -5238,11 +5238,11 @@ msgstr "Ping eller SNMP Uptime"
 
 #: host.php include/global_arrays.php
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "SNMP-beskrivning"
 
 #: host.php
 msgid "SNMP GetNext"
-msgstr "SNMP GetNext"
+msgstr "SNMP-GetNext"
 
 #: host.php
 msgid "Delete Item from Device"
@@ -5304,7 +5304,7 @@ msgstr "Övervakningsstatus för enheten baserat på pingresultat. Om den här e
 
 #: host.php
 msgid "In State"
-msgstr "Län"
+msgstr "I status"
 
 #: host.php
 msgid "The amount of time that this Device has been in its current state."
@@ -5884,11 +5884,11 @@ msgstr "Script / Command"
 
 #: include/global_arrays.php utilities.php
 msgid "Script Server"
-msgstr "Script Server"
+msgstr "Skriptserver"
 
 #: include/global_arrays.php
 msgid "Index Count"
-msgstr "Index Count"
+msgstr "Antal index"
 
 #: include/global_arrays.php
 msgid "Verify All"
@@ -5920,7 +5920,7 @@ msgstr "SNMP-fältvärde (från användare)"
 
 #: include/global_arrays.php
 msgid "SNMP Output Type (Dropdown)"
-msgstr "SNMP Output Type (Dropdown)"
+msgstr "SNMP-utdatatyp (rullgardinslista)"
 
 #: include/global_arrays.php
 msgid "Normal"
@@ -6065,15 +6065,15 @@ msgstr "Syslog / Eventlog Only"
 
 #: include/global_arrays.php
 msgid "SNMP getNext"
-msgstr "SNMP getNext"
+msgstr "SNMP-GetNext"
 
 #: include/global_arrays.php
 msgid "ICMP Ping"
-msgstr "ICMP Ping"
+msgstr "ICMP-ping"
 
 #: include/global_arrays.php
 msgid "TCP Ping"
-msgstr "TCP Ping"
+msgstr "TCP-ping"
 
 #: include/global_arrays.php
 msgid "TCP Ping Closed"
@@ -6081,7 +6081,7 @@ msgstr "TCP Ping stängd"
 
 #: include/global_arrays.php
 msgid "UDP Ping"
-msgstr "UDP Ping"
+msgstr "UDP-ping"
 
 #: include/global_arrays.php
 msgid "NONE - Syslog Only if Selected"
@@ -6105,7 +6105,7 @@ msgstr "DEBUG - Statistik, fel, resultat, I/O och programflöde"
 
 #: include/global_arrays.php
 msgid "DEVEL - Developer DEBUG Level"
-msgstr "DEVEL - Developer DEBUG Level"
+msgstr "DEVEL – felsökningsnivå för utvecklare"
 
 #: include/global_arrays.php
 msgid "Selected Poller Interval"
@@ -6167,7 +6167,7 @@ msgstr "Inbyggd autentisering"
 
 #: include/global_arrays.php
 msgid "Web Basic Authentication"
-msgstr "Web Basic Authentication"
+msgstr "Grundläggande webbautentisering"
 
 #: include/global_arrays.php
 msgid "LDAP Authentication"
@@ -6259,7 +6259,7 @@ msgstr "Diagram"
 
 #: include/global_arrays.php tree.php
 msgid "Data Query Index"
-msgstr "Data Query Index"
+msgstr "Datafrågeindex"
 
 #: include/global_arrays.php
 msgid "Current Graph Item Polling Interval"
@@ -6355,7 +6355,7 @@ msgstr "Aggregation"
 
 #: include/global_arrays.php include/global_settings.php
 msgid "Automation"
-msgstr "Automation"
+msgstr "Automatisering"
 
 #: include/global_arrays.php
 msgid "Discovered Devices"
@@ -6427,7 +6427,7 @@ msgstr "Felsökning"
 
 #: include/global_arrays.php
 msgid "Support"
-msgstr "Support"
+msgstr "Stöd"
 
 #: include/global_arrays.php
 msgid "Access Points, Controllers"
@@ -6628,7 +6628,7 @@ msgstr "Datakällaprofil"
 
 #: include/global_arrays.php
 msgid "Data Template Item"
-msgstr "Data Template Item"
+msgstr "Datamallobjekt"
 
 #: include/global_arrays.php
 msgid "Graph Template Item"
@@ -6852,7 +6852,7 @@ msgstr "%s minuter"
 
 #: include/global_arrays.php
 msgid "1 Megabyte"
-msgstr "1 Megabyte"
+msgstr "1 megabyte"
 
 #: include/global_arrays.php
 #, php-format
@@ -6877,7 +6877,7 @@ msgstr "Inline JPEG-bild"
 
 #: include/global_arrays.php
 msgid "Inline GIF Image"
-msgstr "Inline GIF Image"
+msgstr "Inbäddad GIF-bild"
 
 #: include/global_arrays.php
 msgid "Attached PNG Image"
@@ -6897,11 +6897,11 @@ msgstr "Inline PNG-bild, LN-stil"
 
 #: include/global_arrays.php
 msgid "Inline JPEG Image, LN Style"
-msgstr "Inline JPEG Image, LN Style"
+msgstr "Inbäddad JPEG-bild, LN-stil"
 
 #: include/global_arrays.php
 msgid "Inline GIF Image, LN Style"
-msgstr "Inline GIF Image, LN Style"
+msgstr "Inbäddad GIF-bild, LN-stil"
 
 #: include/global_arrays.php
 msgid "Text"
@@ -7123,12 +7123,12 @@ msgstr "Var %d:e vecka"
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
-msgstr "Jan"
+msgstr "jan"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
-msgstr "Feb"
+msgstr "feb"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7138,7 +7138,7 @@ msgstr "Mars"
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
-msgstr "Apr"
+msgstr "apr"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7148,22 +7148,22 @@ msgstr "Maj"
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
-msgstr "Jun"
+msgstr "jun"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
-msgstr "Jul"
+msgstr "jul"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
-msgstr "Aug"
+msgstr "aug"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
-msgstr "Sep"
+msgstr "sep"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7173,12 +7173,12 @@ msgstr "Okt"
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
-msgstr "Nov"
+msgstr "nov"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
-msgstr "Dec"
+msgstr "dec"
 
 #: include/global_arrays.php
 msgid "Use the First Handler Found"
@@ -7422,11 +7422,11 @@ msgstr "Grafmallar"
 
 #: include/global_arrays.php
 msgid "Round Robin Archives"
-msgstr "Round Robin Archives"
+msgstr "Round Robin-arkiv"
 
 #: include/global_arrays.php
 msgid "Data Input Fields"
-msgstr "Data Input Fields"
+msgstr "Datainmatningsfält"
 
 #: include/global_arrays.php
 msgid "(Remove Item)"
@@ -7434,7 +7434,7 @@ msgstr "(Ta bort sak)"
 
 #: include/global_arrays.php include/global_settings.php rrdcleaner.php
 msgid "RRD Cleaner"
-msgstr "RRD Cleaner"
+msgstr "RRD-rensare"
 
 #: include/global_arrays.php
 msgid "List unused Files"
@@ -7530,11 +7530,11 @@ msgstr "Färgmallar"
 
 #: include/global_arrays.php
 msgid "Graph Rule Items"
-msgstr "Graph Rule Items"
+msgstr "Diagramregelobjekt"
 
 #: include/global_arrays.php
 msgid "Tree Rule Items"
-msgstr "Tree Rule Items"
+msgstr "Trädregelobjekt"
 
 #: include/global_arrays.php lib/api_device.php
 msgid "days"
@@ -7574,7 +7574,7 @@ msgstr "Välj SNMP-versionen för den här värden."
 
 #: include/global_form.php
 msgid "SNMP Community String"
-msgstr "SNMP Community String"
+msgstr "SNMP-communitysträng"
 
 #: include/global_form.php
 msgid "Fill in the SNMP read community for this device."
@@ -7697,7 +7697,7 @@ msgstr "Auto Detect/Set vid första återindex"
 #: include/global_form.php
 #, php-format
 msgid "%d Repitition"
-msgstr "%d Repitition"
+msgstr "%d upprepning"
 
 #: include/global_form.php
 #, php-format
@@ -7830,7 +7830,7 @@ msgstr "Välj den metod du vill använda för att samla in data för denna datai
 
 #: include/global_form.php
 msgid "Input String"
-msgstr "Input String"
+msgstr "Indatasträng"
 
 #: include/global_form.php
 msgid "The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets."
@@ -7869,7 +7869,7 @@ msgstr "Om data från detta utmatningsfält ska matas in i RRDfilen."
 
 #: include/global_form.php
 msgid "Regular Expression Match"
-msgstr "Regular Expression Match"
+msgstr "Matchning med reguljärt uttryck"
 
 #: include/global_form.php
 msgid "If you want to require a certain regular expression to be matched against input data, enter it here (preg_match format)."
@@ -8211,11 +8211,11 @@ msgstr "När du konfigurerar märkningen av vänster axel tillämpar du en regel
 
 #: include/global_form.php
 msgid "Legend Options"
-msgstr "Legend Options"
+msgstr "Alternativ för förklaring"
 
 #: include/global_form.php
 msgid "Auto Padding"
-msgstr "Auto Padding"
+msgstr "Automatisk utfyllnad"
 
 #: include/global_form.php
 msgid "Pad text so that legend and graph data always line up. Note: this could cause graphs to take longer to render because of the larger overhead. Also Auto Padding may not be accurate on all types of graphs, consistent labeling usually helps."
@@ -8239,7 +8239,7 @@ msgstr "Tvinga generationen av HRULE och VRULE-legender."
 
 #: include/global_form.php
 msgid "Tab Width (--tabwidth &lt;pixels&gt;)"
-msgstr "Tab Width (--tabwidth &lt;pixels&gt;)"
+msgstr "Tabulatorbredd (--tabwidth &lt;pixlar&gt;)"
 
 #: include/global_form.php
 msgid "By default the tab-width is 40 pixels, use this option to change it."
@@ -8431,11 +8431,11 @@ msgstr "Den fysiska platsen för enheten. Denna fria formulärtext kan vara ett 
 
 #: include/global_form.php
 msgid "Poller Association"
-msgstr "Poller Association"
+msgstr "Pollerassociation"
 
 #: include/global_form.php
 msgid "Device Site Association"
-msgstr "Device Site Association"
+msgstr "Koppling mellan enhet och plats"
 
 #: include/global_form.php
 msgid "What Site is this Device associated with."
@@ -8467,7 +8467,7 @@ msgstr "Tillgänglighet / Reachability Options"
 
 #: include/global_form.php include/global_settings.php
 msgid "Downed Device Detection"
-msgstr "Downed Device Detection"
+msgstr "Identifiering av otillgänglig enhet"
 
 #: include/global_form.php
 msgid "The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
@@ -8699,7 +8699,7 @@ msgstr "Standard grafbredd som ska användas för alla nya grafmallar."
 
 #: include/global_form.php
 msgid "General SNMP Entity Options"
-msgstr "General SNMP Entity Options"
+msgstr "Allmänna SNMP-enhetsalternativ"
 
 #: include/global_form.php
 msgid "Give this SNMP entity a meaningful description."
@@ -8799,7 +8799,7 @@ msgstr "Är det här att bära mallen?"
 
 #: include/global_form.php
 msgid "Aggregate Graph Settings"
-msgstr "Aggregate Graph Settings"
+msgstr "Inställningar för aggregerade diagram"
 
 #: include/global_form.php
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
@@ -8891,7 +8891,7 @@ msgstr "Välj ett träd för de nya trädämnena."
 
 #: include/global_form.php
 msgid "Leaf Item Type"
-msgstr "Leaf Item Type"
+msgstr "Typ av bladobjekt"
 
 #: include/global_form.php
 msgid "The Item Type that shall be dynamically added to the tree."
@@ -8987,7 +8987,7 @@ msgstr "Prestanda"
 
 #: include/global_settings.php
 msgid "Spikes"
-msgstr "Spikes"
+msgstr "Spikar"
 
 #: include/global_settings.php
 msgid "Mail/Reporting/DNS"
@@ -9095,7 +9095,7 @@ msgstr "Vägen till din Cacti-loggfil (om den är tom, som standard till &lt;pat
 
 #: include/global_settings.php
 msgid "Poller Standard Error Log Path"
-msgstr "Poller Standard Error Log Path"
+msgstr "Sökväg till pollerstandardfellogg"
 
 #: include/global_settings.php
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
@@ -9119,11 +9119,11 @@ msgstr "Vid vilken frekvens vill du rotera dina stockar?"
 
 #: include/global_settings.php
 msgid "Log Retention"
-msgstr "Log Retention"
+msgstr "Lagringstid för loggar"
 
 #: include/global_settings.php
 msgid "How many log files do you wish to retain?  Use 0 to never remove any logs. (0-365)"
-msgstr "Hur många loggfiler vill du behålla? Använd 0 för att aldrig ta bort några loggar. (0-365)"
+msgstr "Hur många loggfiler vill du behålla? Använd 0 för att aldrig ta bort några loggar. (0 till 365)"
 
 #: include/global_settings.php
 msgid "Alternate Poller Path"
@@ -9147,7 +9147,7 @@ msgstr "Vägen till Spine-konfigurationsfilen. Som standard, i cpd i ryggraden, 
 
 #: include/global_settings.php
 msgid "RRDfile Auto Clean"
-msgstr "RRDfile Auto Clean"
+msgstr "Automatisk rensning av RRD-filer"
 
 #: include/global_settings.php
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
@@ -9155,7 +9155,7 @@ msgstr "Arkivera eller radera RRDfiles automatiskt när motsvarande datakällor 
 
 #: include/global_settings.php
 msgid "RRDfile Auto Clean Method"
-msgstr "RRDfile Auto Clean Method"
+msgstr "Metod för automatisk rensning av RRD-filer"
 
 #: include/global_settings.php
 msgid "The method used to Clean RRDfiles from Cacti after their Data Sources are deleted."
@@ -9179,7 +9179,7 @@ msgstr "Logginställningar"
 
 #: include/global_settings.php
 msgid "Log Destination"
-msgstr "Log Destination"
+msgstr "Loggmål"
 
 #: include/global_settings.php
 msgid "How will Cacti handle event logging."
@@ -9243,7 +9243,7 @@ msgstr "Plugins selected"
 
 #: include/global_settings.php
 msgid "Selective Device Debug"
-msgstr "Selective Device Debug"
+msgstr "Selektiv felsökning av enheter"
 
 #: include/global_settings.php
 msgid "A comma delimited list of Device ID's that you wish to be in Debug mode during data collection.  This Debug level is only in place during the Cacti polling process."
@@ -9351,7 +9351,7 @@ msgstr "Ska har grafen och har datakällor kontrolleras som standard."
 
 #: include/global_settings.php utilities.php
 msgid "RRDtool Version"
-msgstr "RRDtool Version"
+msgstr "RRDtool-version"
 
 #: include/global_settings.php
 msgid "The version of RRDtool that you have installed."
@@ -9705,7 +9705,7 @@ msgstr "Standard SNMP v3-auktoriseringsanvändare för alla nya enheter."
 
 #: include/global_settings.php
 msgid "Auth Passphrase (v3)"
-msgstr "Auth Passphrase (v3)"
+msgstr "Autentiseringslösenfras (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
@@ -9793,7 +9793,7 @@ msgstr "Antalet avvalsintervaller En enhet måste vara nere innan du loggar ett 
 
 #: include/global_settings.php
 msgid "Recovery Count"
-msgstr "Recovery Count"
+msgstr "Antal återställningar"
 
 #: include/global_settings.php
 msgid "The number of polling intervals a Device must remain up before returning Device to an up status and issuing a notice."
@@ -9913,7 +9913,7 @@ msgstr "Fältlängden för maximal dataförfrågan."
 
 #: include/global_settings.php
 msgid "Graph Creation"
-msgstr "Graph Creation"
+msgstr "Skapa diagram"
 
 #: include/global_settings.php
 msgid "Default Graph Type"
@@ -9997,7 +9997,7 @@ msgstr "Detta är den minimala tiden som stöds mellan grafuppdateringar. Detta 
 
 #: include/global_settings.php
 msgid "Cache Directory"
-msgstr "Cache Directory"
+msgstr "Cachekatalog"
 
 #: include/global_settings.php
 msgid "This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder"
@@ -10033,7 +10033,7 @@ msgstr "Förutsatt att din RRDtool -version stöder det kan du inaktivera RRDtoo
 
 #: include/global_settings.php
 msgid "Font Selection Method"
-msgstr "Font Selection Method"
+msgstr "Metod för val av teckensnitt"
 
 #: include/global_settings.php
 msgid "How do you wish fonts to be handled by default?"
@@ -10073,7 +10073,7 @@ msgstr "Teckensnittet som ska användas för graftitlar. Ange antingen en giltig
 
 #: include/global_settings.php
 msgid "Legend Font Size"
-msgstr "Legend Font Size"
+msgstr "Teckenstorlek för förklaring"
 
 #: include/global_settings.php
 msgid "The size of the font used for Graph Legend items"
@@ -10081,7 +10081,7 @@ msgstr "Storleken på teckensnittet som används för Graph Legend-objekt"
 
 #: include/global_settings.php
 msgid "Legend Font Setting"
-msgstr "Legend Font Setting"
+msgstr "Teckensnittsinställning för förklaring"
 
 #: include/global_settings.php
 msgid "The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value."
@@ -10189,7 +10189,7 @@ msgstr "Den poller typ som ska användas. Den här inställningen träder i kraf
 
 #: include/global_settings.php
 msgid "Poller Sync Interval"
-msgstr "Poller Sync Interval"
+msgstr "Synkroniseringsintervall för poller"
 
 #: include/global_settings.php
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
@@ -10468,7 +10468,7 @@ msgstr "<blockquote> <i>Inbyggd autentisering</i> - Cacti hanterar användaraute
 
 #: include/global_settings.php
 msgid "Support Authentication Cookies"
-msgstr "Support Authentication Cookies"
+msgstr "Stöd för autentiseringskakor"
 
 #: include/global_settings.php
 msgid "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the user's computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use."
@@ -10658,7 +10658,7 @@ msgstr "TCP / UDP-port för icke-SSL-kommunikation."
 
 #: include/global_settings.php user_domains.php
 msgid "Port SSL"
-msgstr "Port SSL"
+msgstr "SSL-port"
 
 #: include/global_settings.php
 msgid "TCP port for LDAPS for SSL communications.  Default is 636."
@@ -10690,7 +10690,7 @@ msgstr "Vänligen ange SMTP-timeout på några sekunder."
 
 #: include/global_settings.php
 msgid "LDAP Debug Mode"
-msgstr "LDAP Debug Mode"
+msgstr "LDAP-felsökningsläge"
 
 #: include/global_settings.php
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
@@ -10842,7 +10842,7 @@ msgstr "Detta är en serverplats som ska användas för länkar till Cacti-webbp
 
 #: include/global_settings.php
 msgid "Emailing Options"
-msgstr "E-postalternativ"
+msgstr "E-postinställningar"
 
 #: include/global_settings.php
 msgid "Notify Primary Admin of Issues"
@@ -10870,7 +10870,7 @@ msgstr "Vilken posttjänst som ska användas för att skicka mail"
 
 #: include/global_settings.php
 msgid "Ping Mail Server"
-msgstr "Ping Mail Server"
+msgstr "Pinga e-postserver"
 
 #: include/global_settings.php
 msgid "Ping the Mail Server before sending test Email?"
@@ -10966,7 +10966,7 @@ msgstr "TLS"
 
 #: include/global_settings.php
 msgid "SMTP Timeout"
-msgstr "SMTP Timeout"
+msgstr "SMTP-tidsgräns"
 
 #: include/global_settings.php
 msgid "Please enter the SMTP timeout in seconds."
@@ -11122,7 +11122,7 @@ msgstr "Aktiverar direktinfogning av poster i pollarens Boost-utdata, vilket fö
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
-msgstr "Boost Debug Log"
+msgstr "Boost-felsökningslogg"
 
 #: include/global_settings.php
 msgid "If this field is non-blank, Boost will log RRDUpdate output from the boost\tpoller process."
@@ -11238,7 +11238,7 @@ msgstr "Välj om RRDs lagras lokalt eller hanteras av en extern RRDtool proxyser
 
 #: include/global_settings.php
 msgid "RRDtool Proxy Server"
-msgstr "RRDtool Proxy Server"
+msgstr "RRDtool-proxyserver"
 
 #: include/global_settings.php
 msgid "Structure RRDfile Paths"
@@ -11310,7 +11310,7 @@ msgstr "Fingeravtrycket av den nuvarande offentliga RSA-tangenten som proxyen an
 
 #: include/global_settings.php
 msgid "RRDtool Proxy Server - Backup"
-msgstr "RRDtool Proxy Server - Backup"
+msgstr "Säkerhetskopia av RRDtool-proxyserver"
 
 #: include/global_settings.php
 msgid "Load Balancing"
@@ -11422,7 +11422,7 @@ msgstr "%d Spikar"
 
 #: include/global_settings.php
 msgid "RRDfile Backup Directory"
-msgstr "RRDfile Backup Directory"
+msgstr "Säkerhetskopieringskatalog för RRD-filer"
 
 #: include/global_settings.php
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
@@ -11711,7 +11711,7 @@ msgstr "Typsnittet som ska användas för graftitlar"
 
 #: include/global_settings.php
 msgid "Legend Font File"
-msgstr "Legend Font File"
+msgstr "Teckensnittsfil för förklaring"
 
 #: include/global_settings.php
 msgid "The font file to be used for Graph Legend items"
@@ -11719,7 +11719,7 @@ msgstr "Stilsortsfilen som ska användas för Graph Legend-objekt"
 
 #: include/global_settings.php
 msgid "Axis Font File"
-msgstr "Axis Font File"
+msgstr "Teckensnittsfil för axel"
 
 #: include/global_settings.php
 msgid "The font file to be used for Graph Axis items"
@@ -11799,7 +11799,7 @@ msgstr "Återställning"
 
 #: index.php
 msgid "Remote Data Collector Status:"
-msgstr "Remote Data Collector Status:"
+msgstr "Status för fjärrdatainsamlare:"
 
 #: index.php
 msgid "Number of Offline Records:"
@@ -11891,7 +11891,7 @@ msgstr "Graferna som valts för Aggregatgrafen använder inte grafmallar. Aggreg
 
 #: lib/api_aggregate.php lib/html.php
 msgid "Graph Item"
-msgstr "Graph Item"
+msgstr "Diagramobjekt"
 
 #: lib/api_aggregate.php lib/html.php
 msgid "CF Type"
@@ -12017,7 +12017,7 @@ msgstr "Skapa grafregeln"
 
 #: lib/api_automation.php
 msgid "Graph Match Rule"
-msgstr "Graph Match Rule"
+msgstr "Diagrammatchningsregel"
 
 #: lib/api_automation.php
 msgid "Create Tree Rule (Device)"
@@ -12072,7 +12072,7 @@ msgstr "Enhets tillgänglighetskontroll Bypassed"
 
 #: lib/api_device.php
 msgid "SNMP Information"
-msgstr "SNMP Information"
+msgstr "SNMP-information"
 
 #: lib/api_device.php
 msgid "SNMP not in use"
@@ -12124,7 +12124,7 @@ msgstr "Ny gren"
 
 #: lib/auth.php
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "Grundläggande webbautentisering"
 
 #: lib/auth.php
 msgid "Device:(Hide Disabled)"
@@ -13013,7 +13013,7 @@ msgstr "Skickar meddelande..."
 
 #: lib/functions.php
 msgid "Cacti Test Message"
-msgstr "Cacti Test Message"
+msgstr "Cacti-testmeddelande"
 
 #: lib/functions.php
 msgid "Success!"
@@ -13083,7 +13083,7 @@ msgstr "CSV-export av grafdata"
 
 #: lib/html.php
 msgid "Time Graph View"
-msgstr "Time Graph View"
+msgstr "Tidsdiagramvy"
 
 #: lib/html.php
 msgid "Edit Device"
@@ -13163,11 +13163,11 @@ msgstr "Ta bort StdDev"
 
 #: lib/html.php
 msgid "Gap Fill Range"
-msgstr "Gap Fill Range"
+msgstr "Intervall för att fylla luckor"
 
 #: lib/html.php lib/spikekill.php
 msgid "Float Range"
-msgstr "Float Range"
+msgstr "Flyttalsintervall"
 
 #: lib/html.php
 msgid "Dry Run StdDev"
@@ -13175,11 +13175,11 @@ msgstr "Torrkörning StdDev"
 
 #: lib/html.php
 msgid "Dry Run Gap Fill Range"
-msgstr "Dry Run Gap Fill Range"
+msgstr "Intervall för simulerad luckfyllning"
 
 #: lib/html.php
 msgid "Dry Run Float Range"
-msgstr "Dry Run Float Range"
+msgstr "Intervall för simulerade flyttal"
 
 #: lib/html.php
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
@@ -13255,7 +13255,7 @@ msgstr "Diagram"
 
 #: lib/html.php
 msgid "Cacti Project Page"
-msgstr "Cacti Project Page"
+msgstr "Cacti-projektsida"
 
 #: lib/html.php
 msgid "Spine"
@@ -13724,7 +13724,7 @@ msgstr "Definierar standardinriktningen för text och grafer."
 
 #: lib/html_reports.php
 msgid "Graph Linked"
-msgstr "Graph Linked"
+msgstr "Länkat diagram"
 
 #: lib/html_reports.php
 msgid "Should the Graphs be linked back to the Cacti site?"
@@ -13896,7 +13896,7 @@ msgstr "Artikeltyp som ska läggas till."
 
 #: lib/html_reports.php
 msgid "Graph Tree"
-msgstr "Graph Tree"
+msgstr "Diagramträd"
 
 #: lib/html_reports.php
 msgid "Select a Tree to use."
@@ -13904,7 +13904,7 @@ msgstr "Välj ett träd att använda."
 
 #: lib/html_reports.php
 msgid "Graph Tree Branch"
-msgstr "Graph Tree Branch"
+msgstr "Gren i diagramträd"
 
 #: lib/html_reports.php
 msgid "Select a Tree Branch to use for Graphs and Devices.  Devices will be considered as Branches."
@@ -14497,7 +14497,7 @@ msgstr "Nedgradera"
 
 #: lib/installer.php utilities.php
 msgid "Cacti Version"
-msgstr "Cacti Version"
+msgstr "Cacti-version"
 
 #: lib/installer.php
 msgid "License Agreement"
@@ -14654,7 +14654,7 @@ msgstr "Valfritt"
 
 #: lib/installer.php
 msgid "MySQL - TimeZone Support"
-msgstr "MySQL - TimeZone Support"
+msgstr "MySQL-stöd för tidszon"
 
 #: lib/installer.php
 msgid "Your MySQL TimeZone database is not populated.  Please populate this database before proceeding."
@@ -14789,7 +14789,7 @@ msgstr "Din Remote Cacti Poller-information har inte inkluderats i din config.ph
 
 #: lib/installer.php
 msgid "Remote Poller Variables"
-msgstr "Remote Poller Variables"
+msgstr "Variabler för fjärrpoller"
 
 #: lib/installer.php
 msgid "The variables that must be set in the config.php file include the following:"
@@ -14894,7 +14894,7 @@ msgstr "Alla mappar är skrivbara"
 
 #: lib/installer.php
 msgid "Input Validation Whitelist Protection"
-msgstr "Input Validation Whitelist Protection"
+msgstr "Skydd med vitlista för indatavalidering"
 
 #: lib/installer.php
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
@@ -15026,7 +15026,7 @@ msgstr "Enhetsmallar låter dig övervaka och gradera ett stort sortiment av dat
 
 #: lib/installer.php
 msgid "Server Collation"
-msgstr "Server Collation"
+msgstr "Serversortering"
 
 #: lib/installer.php
 msgid "Your server collation appears to be UTF8 compliant"
@@ -15546,7 +15546,7 @@ msgstr "UDP Ping-framgång ( %s ms)"
 #: lib/ping.php
 #, php-format
 msgid "TCP Ping Success Connection Refused (%s ms)"
-msgstr "TCP Ping Success Connection Refused (%s ms)"
+msgstr "TCP-ping lyckades: anslutningen nekades (%s ms)"
 
 #: lib/ping.php
 #, php-format
@@ -15611,7 +15611,7 @@ msgstr "Kräver: Cacti&gt; = %s"
 
 #: lib/plugins.php
 msgid "Legacy Plugin"
-msgstr "Legacy Plugin"
+msgstr "Äldre insticksmodul"
 
 #: lib/plugins.php
 msgid "Not Stated"
@@ -15784,11 +15784,11 @@ msgstr "Okänt Sek"
 
 #: lib/rrd.php
 msgid "Round Robin Archive"
-msgstr "Round Robin Archive"
+msgstr "Round Robin-arkiv"
 
 #: lib/rrd.php
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Aktuell rad"
 
 #: lib/rrd.php
 msgid "PDP per Row"
@@ -15901,11 +15901,11 @@ msgstr "StdDev"
 
 #: lib/spikekill.php
 msgid "Variance"
-msgstr "Variance"
+msgstr "Varians"
 
 #: lib/spikekill.php
 msgid "Gap Fill"
-msgstr "Gap Fill"
+msgstr "Luckfyllning"
 
 #: lib/spikekill.php
 msgid "FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods."
@@ -16670,7 +16670,7 @@ msgstr "Konsolmeny"
 
 #: links.php
 msgid "Bottom of Console Page"
-msgstr "Bottom of Console Page"
+msgstr "Nederst på konsolsidan"
 
 #: links.php
 msgid "Top of Console Page"
@@ -16846,7 +16846,7 @@ msgstr "Notifikation"
 
 #: managers.php utilities.php
 msgid "Varbinds"
-msgstr "Varbinds"
+msgstr "Variabelbindningar"
 
 #: managers.php
 msgid "Severity Level"
@@ -16952,7 +16952,7 @@ msgstr "Paketnedladdningen eller valideringen misslyckades"
 
 #: package_import.php
 msgid "Package XML File Damaged."
-msgstr "Package XML File Damaged."
+msgstr "Paketets XML-fil är skadad."
 
 #: package_import.php
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -17086,7 +17086,7 @@ msgstr "Framtvinga avinstallation"
 
 #: plugins.php
 msgid "Plugin Management"
-msgstr "Plugin Management"
+msgstr "Hantering av insticksmoduler"
 
 #: plugins.php
 msgid "Plugin Error"
@@ -17319,7 +17319,7 @@ msgstr "Ny / Idle"
 
 #: pollers.php
 msgid "Data Collector Information"
-msgstr "Data Collector Information"
+msgstr "Information om datainsamlare"
 
 #: pollers.php
 msgid "The primary name for this Data Collector."
@@ -17391,7 +17391,7 @@ msgstr "Namnet på fjärrdatabasen."
 
 #: pollers.php
 msgid "Remote Database User"
-msgstr "Remote Database User"
+msgstr "Användare för fjärrdatabas"
 
 #: pollers.php
 msgid "The user name to use to connect to the remote database."
@@ -17423,7 +17423,7 @@ msgstr "Användarnamnet som ska användas för att ansluta till fjärrdatabasen.
 
 #: pollers.php
 msgid "Remote Database SSL"
-msgstr "Remote Database SSL"
+msgstr "SSL för fjärrdatabas"
 
 #: pollers.php
 msgid "If the remote database uses SSL to connect, check the checkbox below."
@@ -17447,7 +17447,7 @@ msgstr "Filen som innehar SSL-certifikatet ska användas för att ansluta till f
 
 #: pollers.php
 msgid "Remote Database SSL Authority"
-msgstr "Remote Database SSL Authority"
+msgstr "SSL-utfärdare för fjärrdatabas"
 
 #: pollers.php
 msgid "The file holding the SSL Certificate Authority to use to connect to the remote database.  This is an optional parameter that can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option."
@@ -17593,7 +17593,7 @@ msgstr "Antalet enheter som är kopplade till denna datasamlare."
 
 #: pollers.php
 msgid "SNMP Gets"
-msgstr "SNMP Gets"
+msgstr "SNMP-hämtningar"
 
 #: pollers.php
 msgid "The number of SNMP gets associated with this Collector."
@@ -17733,7 +17733,7 @@ msgstr "RRD-filnamn"
 
 #: rrdcleaner.php
 msgid "DS Name"
-msgstr "DS-namn"
+msgstr "Datakällans namn"
 
 #: rrdcleaner.php
 msgid "DS ID"
@@ -17818,7 +17818,7 @@ msgstr "Skicka ett testmeddelande"
 
 #: settings.php
 msgid "Test Email Results"
-msgstr "Test Email Results"
+msgstr "Resultat av testmeddelande"
 
 #: sites.php
 msgid "Site Information"
@@ -17914,7 +17914,7 @@ msgstr "Tidszonen för webbplatsen."
 
 #: sites.php
 msgid "Geolocation Information"
-msgstr "Geolocation Information"
+msgstr "Geolokaliseringsinformation"
 
 #: sites.php
 msgid "Latitude"
@@ -17950,7 +17950,7 @@ msgstr "Standard Map Zoom för denna webbplats. Värden kan vara från 0 till 23
 
 #: sites.php
 msgid "0 - 23"
-msgstr "0-23"
+msgstr "0 till 23"
 
 #: sites.php
 msgid "Additional Information"
@@ -18087,7 +18087,7 @@ msgstr "Format för utdata"
 
 #: templates_export.php
 msgid "Choose the format to output the resulting XML file in."
-msgstr "Välj formatet för den resulterande XML-filen."
+msgstr "Välj format för den resulterande XML-filen."
 
 #: templates_export.php
 msgid "Output to the Browser (within Cacti)"
@@ -18434,7 +18434,7 @@ msgstr "Inga träd hittades"
 
 #: user_admin.php
 msgid "Batch Copy"
-msgstr "Batch Copy"
+msgstr "Batchkopiera"
 
 #: user_admin.php
 msgid "You are not allowed to delete the current login account"
@@ -18675,7 +18675,7 @@ msgstr "Graf Perms"
 
 #: user_admin.php user_group_admin.php
 msgid "Device Perms"
-msgstr "Device Perms"
+msgstr "Enhetsbehörigheter"
 
 #: user_admin.php user_group_admin.php
 msgid "Template Perms"
@@ -18972,7 +18972,7 @@ msgstr "Ett mer beskrivande namn för den här gruppen, som kan innehålla mella
 
 #: user_group_admin.php
 msgid "General Group Options"
-msgstr "General Group Options"
+msgstr "Allmänna gruppalternativ"
 
 #: user_group_admin.php
 msgid "Set any user account-specific options here."
@@ -19113,11 +19113,11 @@ msgstr "User Group Management [redigera: %s]"
 
 #: user_group_admin.php
 msgid "User Group Management [new]"
-msgstr "User Group Management [new]"
+msgstr "Hantering av användargrupper [ny]"
 
 #: user_group_admin.php
 msgid "User Group Management"
-msgstr "User Group Management"
+msgstr "Hantering av användargrupper"
 
 #: user_group_admin.php
 msgid "No User Groups Found"
@@ -19185,7 +19185,7 @@ msgstr "Allmän information"
 
 #: utilities.php
 msgid "Cacti OS"
-msgstr "Cacti OS"
+msgstr "Cacti-operativsystem"
 
 #: utilities.php
 msgid "NET-SNMP Version"
@@ -19206,7 +19206,7 @@ msgstr "Totalt: %s"
 
 #: utilities.php
 msgid "Poller Information"
-msgstr "Poller Information"
+msgstr "Information om poller"
 
 #: utilities.php
 msgid "Different version of Cacti and Spine!"
@@ -19227,7 +19227,7 @@ msgstr "Namn: "
 
 #: utilities.php
 msgid "Procs: "
-msgstr "Procs: "
+msgstr "Processer: "
 
 #: utilities.php
 msgid "Threads: "
@@ -19273,11 +19273,11 @@ msgstr "Varje webbläsarflik kan använda upp till 10 anslutningar beroende på 
 
 #: utilities.php
 msgid "Script Timeout"
-msgstr "Script Timeout"
+msgstr "Tidsgräns för skript"
 
 #: utilities.php
 msgid "Max OID"
-msgstr "Max OID"
+msgstr "Max antal OID"
 
 #: utilities.php
 msgid "Last Run Statistics"
@@ -19326,7 +19326,7 @@ msgstr "Minska det totala klientminnet"
 
 #: utilities.php
 msgid "PHP Information"
-msgstr "PHP Information"
+msgstr "PHP-information"
 
 #: utilities.php
 msgid "PHP Version"
@@ -19468,11 +19468,11 @@ msgstr "Logga [Totalt antal rader: %d - Alla objekt visas]"
 
 #: utilities.php
 msgid "Clear Cacti Log"
-msgstr "Clear Cacti Log"
+msgstr "Rensa Cacti-logg"
 
 #: utilities.php
 msgid "Cacti Log Cleared"
-msgstr "Cacti Log Cleared"
+msgstr "Cacti-loggen har rensats"
 
 #: utilities.php
 msgid "Error: Unable to clear log, no write permissions."
@@ -19536,7 +19536,7 @@ msgstr "Skript:"
 
 #: utilities.php
 msgid "Script Server:"
-msgstr "Script Server:"
+msgstr "Skriptserver:"
 
 #: utilities.php
 msgid "RRD:"
@@ -19556,7 +19556,7 @@ msgstr "Tillåter administratörer att bläddra i användarloggen. Administratö
 
 #: utilities.php
 msgid "Poller Cache Administration"
-msgstr "Poller Cache Administration"
+msgstr "Administration av pollercache"
 
 #: utilities.php
 msgid "This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display."
@@ -19588,7 +19588,7 @@ msgstr "När du använder flera datainsamlare i Cacti, försöker Cacti att beh�
 
 #: utilities.php
 msgid "Boost Utilities"
-msgstr "Boost Utilities"
+msgstr "Boost-verktyg"
 
 #: utilities.php
 msgid "View Boost Status"
@@ -19612,11 +19612,11 @@ msgstr "Denna menyval rensar all befintlig datakällstatistik från databasen. O
 
 #: utilities.php
 msgid "RRD Utilities"
-msgstr "RRD Utilities"
+msgstr "RRD-verktyg"
 
 #: utilities.php
 msgid "RRDfile Cleaner"
-msgstr "RRDfile Cleaner"
+msgstr "Rensare för RRD-filer"
 
 #: utilities.php
 msgid "When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files."
@@ -19700,7 +19700,7 @@ msgstr "Återstående datakällor:"
 
 #: utilities.php
 msgid "TBD"
-msgstr "TBD"
+msgstr "Återstår"
 
 #: utilities.php
 msgid "Queued Boost Records:"
@@ -19712,11 +19712,11 @@ msgstr "Ungefärligt i processen:"
 
 #: utilities.php
 msgid "Total Boost Records:"
-msgstr "Total Boost Records:"
+msgstr "Totalt antal Boost-poster:"
 
 #: utilities.php
 msgid "Boost Storage Statistics"
-msgstr "Boost Storage Statistics"
+msgstr "Lagringsstatistik för Boost"
 
 #: utilities.php
 msgid "Database Engine:"
@@ -19792,7 +19792,7 @@ msgstr "MB"
 
 #: utilities.php
 msgid "Peak Poller Memory:"
-msgstr "Peak Poller Memory:"
+msgstr "Högsta minnesanvändning för poller:"
 
 #: utilities.php
 msgid "Max Poller Memory Allowed:"
@@ -19860,7 +19860,7 @@ msgstr "Bild Caching Status:"
 
 #: utilities.php
 msgid "Cache Directory:"
-msgstr "Cache Directory:"
+msgstr "Cachekatalog:"
 
 #: utilities.php
 msgid "Cached Files:"
@@ -20029,7 +20029,7 @@ msgstr "Samlare"
 
 #: rrdcleaner.php
 msgid "RRDfiles"
-msgstr "RRDfiles"
+msgstr "RRD-filer"
 
 #: user_domains.php
 msgid "Domains"
