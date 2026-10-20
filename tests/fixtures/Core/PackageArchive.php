@@ -41,13 +41,17 @@ try {
 	}
 
 	foreach ([[], ['export_type' => 'graph_template', 'export_item_id' => 999999]] as $request) {
-		$_REQUEST = $_GET = $_POST = $GLOBALS['_CACTI_REQUEST'] = $request;
-		$template = '<cacti><fixture>Original template bytes</fixture></cacti>';
-		$info     = ['name' => $name, 'author' => 'Disposable fixture'];
-		$files    = [];
-		$debug    = '';
+		$name         = basename($temporary) . ($request === [] ? '' : '/../../outside');
+		$expectedStem = str_replace('-', '', basename($temporary)) . ($request === [] ? '' : '_outside');
+		$xmlPath      = '/tmp/' . $expectedStem . '.xml';
+		$archivePath  = $xmlPath . '.gz';
+		$_REQUEST     = $_GET = $_POST = $GLOBALS['_CACTI_REQUEST'] = $request;
+		$template     = '<cacti><fixture>Original template bytes</fixture></cacti>';
+		$info         = ['name' => $name, 'author' => 'Disposable fixture'];
+		$files        = [];
+		$debug        = '';
 
-		if (!package_template($template, $info, $files, $debug) || basename($package_file) !== basename($archivePath) || !is_file($archivePath)) {
+		if (!package_template($template, $info, $files, $debug) || dirname($package_file) !== '/tmp' || basename($package_file) !== $expectedStem . '.xml.gz' || !is_file($archivePath)) {
 			throw new RuntimeException('Archive filename must come from the supplied package metadata');
 		}
 		$xml      = gzdecode(file_get_contents($package_file));
