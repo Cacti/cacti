@@ -1,1 +1,1 @@
-Preserve form action URLs when rendering HTML attributes and AJAX initialization
+Preserve form action URLs and configured attributes with context-specific encoding

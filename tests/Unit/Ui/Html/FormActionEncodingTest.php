@@ -142,3 +142,29 @@ it('preserves generated form IDs and the non-AJAX form mode', function () {
 		->and($ids[1])->toMatch('/^form[0-9]+$/')
 		->not->toBe($ids[0]);
 });
+
+it('keeps configured form attributes as literal values', function (string $name, string $enctype) {
+	ob_start();
+
+	try {
+		draw_edit_form([
+			'config' => ['post_to' => 'edit.php', 'form_name' => $name, 'enctype' => $enctype],
+			'fields' => ['id' => ['method' => 'hidden', 'value' => 7]],
+		]);
+		print '</form>';
+		$html = ob_get_contents();
+	} finally {
+		ob_end_clean();
+	}
+
+	$document = new DOMDocument();
+	expect($document->loadHTML($html))->toBeTrue();
+	$form = $document->getElementsByTagName('form')->item(0);
+	expect($form->getAttribute('name'))->toBe($name)
+		->and($form->getAttribute('enctype'))->toBe($enctype)
+		->and($form->attributes->length)->toBe(6);
+})->with([
+	'normal'                   => ['edit_form', 'multipart/form-data'],
+	'name quotes and entities' => ["Bob's &quot;form", 'multipart/form-data'],
+	'enctype quoting'          => ['edit_form', "multipart/form-data' data-extra='value"],
+]);

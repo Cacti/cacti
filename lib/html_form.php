@@ -47,7 +47,7 @@ function draw_edit_form(array $array) : void {
 
 	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form class='cactiForm' method='post' autocomplete='off' action='" . html_escape_url($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . '>';
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . html_escape_url($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . html_escape_attr($config_array['form_name']) . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . html_escape_attr($config_array['enctype']) . "'" : '') . '>';
 		}
 
 		$i         = 0;
