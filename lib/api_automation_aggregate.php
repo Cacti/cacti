@@ -35,7 +35,7 @@ function automation_aggregate_settings(array $values) : array {
 		throw new InvalidArgumentException('Invalid aggregate automation pattern or title length.');
 	}
 
-	if ($settings['automation_pattern'] !== '' && @preg_match($settings['automation_pattern'], '') === false) {
+	if ($settings['automation_pattern'] !== '' && automation_aggregate_match($settings['automation_pattern'], '') === false) {
 		throw new InvalidArgumentException('Aggregate automation requires a valid PCRE pattern with delimiters.');
 	}
 
@@ -44,6 +44,24 @@ function automation_aggregate_settings(array $values) : array {
 	}
 
 	return $settings;
+}
+
+/** Bound operator-supplied patterns without changing their delimiters or flags. */
+function automation_aggregate_match(string $pattern, string $subject) : int|false {
+	$backtrack = ini_get('pcre.backtrack_limit');
+	$recursion = ini_get('pcre.recursion_limit');
+
+	try {
+		if (ini_set('pcre.backtrack_limit', (string) min((int) $backtrack, 10000)) === false ||
+			ini_set('pcre.recursion_limit', (string) min((int) $recursion, 100))      === false) {
+			return false;
+		}
+
+		return @preg_match($pattern, $subject);
+	} finally {
+		ini_set('pcre.backtrack_limit', $backtrack);
+		ini_set('pcre.recursion_limit', $recursion);
+	}
 }
 
 function automation_aggregate_title(array $rule, array $host) : string {
@@ -106,7 +124,7 @@ function automation_aggregate_members(array $rule, int $host_id) : array {
 		}
 
 		foreach ($names as $source) {
-			$matched = preg_match($rule['automation_pattern'], (string) $source['name']);
+			$matched = automation_aggregate_match($rule['automation_pattern'], (string) $source['name']);
 
 			if ($matched === false) {
 				throw new RuntimeException('Aggregate automation pattern failed while matching a data source.');
