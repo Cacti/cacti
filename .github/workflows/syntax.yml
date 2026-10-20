@@ -100,6 +100,14 @@ jobs:
       working-directory: tests
       run: php vendor/bin/pest --configuration=phpunit-sortable-header.xml --colors=never
 
+    - name: Run graph permission display contracts
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit-permission-display.xml --colors=never
+
+    - name: Run form action rendering contracts
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/Ui/Html/FormActionEncodingTest.php --colors=never
+
   javascript-contracts:
     name: JavaScript contracts
     runs-on: ubuntu-22.04

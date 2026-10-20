@@ -2425,9 +2425,9 @@ function get_permission_string(&$graph, &$policies) {
 					}
 				} else {
 					if (!empty($graph["template$i"])) {
-						$rejected++;
-					} else {
 						$allowed++;
+					} else {
+						$rejected++;
 					}
 				}
 
