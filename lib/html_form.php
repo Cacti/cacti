@@ -47,7 +47,7 @@ function draw_edit_form(array $array) : void {
 
 	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . '>';
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . html_escape_url($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . '>';
 		}
 
 		$i         = 0;
@@ -2180,7 +2180,7 @@ function form_start(mixed $action, string $id = '', bool $multipart = false) : v
 
 	$form_action = $action;
 
-	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'" : '') . '>';
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='" . html_escape_url($form_action) . "' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'" : '') . '>';
 }
 
 /**
@@ -2277,7 +2277,7 @@ function form_end(bool $ajax = true) : void {
 			}
 
 			$(function() {
-				formValidate('#<?php print $form_id; ?>', '<?php print $form_action; ?>');
+				formValidate('#<?php print $form_id; ?>', <?php print cacti_js_encode((string) $form_action); ?>);
 			});
 		</script>
 		<?php
