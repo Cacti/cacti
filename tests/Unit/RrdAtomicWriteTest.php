@@ -78,3 +78,40 @@ test('RRDtool output filenames are escaped at command construction', function ()
 	expect($source)->toContain("cacti_escapeshellarg((string) \$graph_data_array['export_filename'])")
 		->and($source)->toContain("cacti_escapeshellarg((string) \$graph_data_array['output_filename'])");
 });
+
+test('atomic graph writes reject sibling prefixes and symlinked parents outside the root', function () {
+	$root    = rrd_atomic_test_directory('containment');
+	$outside = $root . '-sibling';
+	mkdir($outside, 0700);
+	symlink($outside, $root . '/escape');
+	file_put_contents($outside . '/graph.png', 'unchanged');
+
+	try {
+		expect(rrdtool_atomic_write($outside . '/graph.png', 'bad', $root))->toBeFalse()
+			->and(rrdtool_atomic_write($root . '/escape/graph.png', 'bad', $root))->toBeFalse()
+			->and(file_get_contents($outside . '/graph.png'))->toBe('unchanged')
+			->and(glob($root . '/.cacti-rrd-*'))->toBe([]);
+	} finally {
+		unlink($root . '/escape');
+		unlink($outside . '/graph.png');
+		rmdir($outside);
+		rmdir($root);
+	}
+});
+
+test('atomic graph writes use the verified parent for equivalent path spellings', function () {
+	$root = rrd_atomic_test_directory('canonical');
+	mkdir($root . '/child', 0700);
+
+	try {
+		expect(rrdtool_atomic_write($root . '/child/../graph.png', 'complete', $root))->toBeTrue()
+			->and(file_get_contents($root . '/graph.png'))->toBe('complete')
+			->and(rrdtool_atomic_write($root . "/bad\0.png", 'bad', $root))->toBeFalse()
+			->and(rrdtool_atomic_write($root . '/graph.png', 'bad', $root . "\0"))->toBeFalse()
+			->and(file_get_contents($root . '/graph.png'))->toBe('complete');
+	} finally {
+		unlink($root . '/graph.png');
+		rmdir($root . '/child');
+		rmdir($root);
+	}
+});
