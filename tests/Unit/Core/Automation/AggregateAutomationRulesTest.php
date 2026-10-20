@@ -66,3 +66,43 @@ it('drops automation ownership when its template or aggregate graph is removed',
 		->toContain("DELETE FROM automation_aggregate_graphs WHERE ' . array_to_sql_or(\$selected_items, 'aggregate_template_id')");
 	expect(substr_count(file_get_contents($root . '/lib/aggregate.php'), 'DELETE FROM automation_aggregate_graphs'))->toBe(2);
 });
+
+it('bounds runaway aggregate patterns and restores caller PCRE settings', function () {
+	$backtrack = ini_get('pcre.backtrack_limit');
+	$recursion = ini_get('pcre.recursion_limit');
+
+	try {
+		ini_set('pcre.backtrack_limit', '1000000');
+		ini_set('pcre.recursion_limit', '100000');
+		$subject = str_repeat('a', 15) . '!';
+		expect(preg_match('/(*LIMIT_MATCH=999999)^(a+)+$/', $subject))->toBe(0);
+
+		// The lower match limit must win even if the pattern requests more.
+		expect(automation_aggregate_match('/(*LIMIT_MATCH=999999)^(a+)+$/', $subject))->toBeFalse()
+			->and(preg_last_error())->toBe(PREG_BACKTRACK_LIMIT_ERROR)
+			->and(ini_get('pcre.backtrack_limit'))->toBe('1000000')
+			->and(ini_get('pcre.recursion_limit'))->toBe('100000');
+		expect(automation_aggregate_match('/[/', 'valid'))->toBeFalse()
+			->and(ini_get('pcre.backtrack_limit'))->toBe('1000000');
+		expect(automation_aggregate_match('/^valid$/', 'valid'))->toBe(1);
+	} finally {
+		ini_set('pcre.backtrack_limit', $backtrack);
+		ini_set('pcre.recursion_limit', $recursion);
+	}
+});
+
+it('preserves PCRE delimiters and modifiers for aggregate matches', function (string $pattern) {
+	expect(automation_aggregate_match($pattern, 'router QoS Gold'))->toBe(1)
+		->and(automation_aggregate_match($pattern, 'unrelated'))->toBe(0);
+})->with(['/qos.*gold/i', '#qos.*gold#i', '{qos.*gold}i', '*qos.+gold*i']);
+
+it('preserves stricter caller limits', function () {
+	$previous = ini_set('pcre.backtrack_limit', '5');
+
+	try {
+		expect(automation_aggregate_match('/^(a+)+$/', str_repeat('a', 20) . '!'))->toBeFalse()
+			->and(ini_get('pcre.backtrack_limit'))->toBe('5');
+	} finally {
+		ini_set('pcre.backtrack_limit', $previous);
+	}
+});
