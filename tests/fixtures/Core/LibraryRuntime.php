@@ -37,11 +37,16 @@ function library_runtime(): void {
 			library_expect(get_client_addr(), '192.0.2.7', 'Unconfigured proxy trust uses the immediate peer');
 			library_expect(read_config_option('proxy_alert', true), date('Y-m-d'), 'Proxy configuration notice records its daily throttle');
 		}
-		$config['proxy_headers']   = ['HTTP_X_FORWARDED_FOR'];
-		$config['trusted_proxies'] = ['192.0.2.7'];
-		library_expect(get_client_addr(), '198.51.100.9', 'Explicitly trusted proxy contributes the client address');
-		$config['trusted_proxies'] = [];
-		library_expect(get_client_addr(), '192.0.2.7', 'Untrusted peer cannot select its client identity');
+		$config['proxy_headers'] = ['HTTP_X_FORWARDED_FOR'];
+		$clientAddressFor        = static function (array $trusted): string {
+			global $config;
+
+			$config['trusted_proxies'] = $trusted;
+
+			return get_client_addr();
+		};
+		library_expect($clientAddressFor(['192.0.2.7']), '198.51.100.9', 'Explicitly trusted proxy contributes the client address');
+		library_expect($clientAddressFor([]), '192.0.2.7', 'Untrusted peer cannot select its client identity');
 		set_user_setting($setting, 'must not persist', 0);
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM settings_user WHERE name = ?', [$setting]), 0, 'An anonymous user cannot persist preferences');
 		set_user_setting($setting, '0', 1);
