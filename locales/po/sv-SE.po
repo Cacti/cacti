@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
-"PO-Revision-Date: 2026-10-09 17:18+0000\n"
-"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
-"Language: sv-SE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-20 08:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -322,7 +310,7 @@ msgstr "Sammanfattning Förhandsgranskning [ %s]"
 
 #: aggregate_graphs.php graph.php graphs.php
 msgid "RRDtool Command:"
-msgstr "RRDtool Command:"
+msgstr "Kommando för RRDtool:"
 
 #: aggregate_graphs.php graph.php graphs.php
 msgid "Not Checked"
@@ -426,7 +414,7 @@ msgstr "Start"
 #: managers.php plugins.php pollers.php sites.php tree.php user_admin.php
 #: user_domains.php user_group_admin.php utilities.php
 msgid "Set/Refresh Filters"
-msgstr "Ställ in/uppdatera filter"
+msgstr "Ange/uppdatera filter"
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -936,7 +924,7 @@ msgstr "Välj mall"
 
 #: automation_devices.php automation_templates.php
 msgid "Availability Method"
-msgstr "Tillgänglighet Metod"
+msgstr "Tillgänglighetsmetod"
 
 #: automation_devices.php
 msgid "Add Device(s)"
@@ -1047,7 +1035,7 @@ msgstr "Rensa Upptäckta enheter"
 #: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
 #: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
-msgstr "Ej tillämpligt"
+msgstr "Inte tillämpligt"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -1112,7 +1100,7 @@ msgstr "Är du säker?"
 #: automation_graph_rules.php
 #, php-format
 msgid "Are you sure you want to delete the Rule '%s'?"
-msgstr "Är du säker på att du vill ta bort regeln &#39; %s&#39;?"
+msgstr "Är du säker på att du vill ta bort regeln '%s'?"
 
 #: automation_graph_rules.php
 #, php-format
@@ -1204,12 +1192,12 @@ msgstr "Avbryt Discovery"
 #: automation_networks.php
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr "Kan inte starta om Discovery för Discovery pågår för nätverket &#39; %s&#39;"
+msgstr "Kan inte starta om Discovery för Discovery som pågår för nätverket '%s'"
 
 #: automation_networks.php
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "Kan inte utföra discovery för funktionshindrade nätverk &quot; %s&quot;"
+msgstr "Kan inte utföra discovery för inaktiverade nätverket '%s'"
 
 #: automation_networks.php
 #, php-format
@@ -1229,7 +1217,7 @@ msgstr "FEL: Du måste ange månadar, veckor av månader och veckodagar. Inaktiv
 #: automation_networks.php
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
-msgstr "FEL: Nätverket &#39; %s&#39; är ogiltigt."
+msgstr "FEL: Nätverket '%s' är ogiltigt."
 
 #: automation_networks.php
 msgid "Click 'Continue' to delete the following Network(s)."
@@ -1622,12 +1610,10 @@ msgid "First"
 msgstr "Första"
 
 #: automation_networks.php graph.php
-#, fuzzy
-#| msgid "Second"
 msgid "Second"
 msgid_plural "Seconds"
 msgstr[0] "Sekund"
-msgstr[1] "Sekund"
+msgstr[1] "Sekunder"
 
 #: automation_networks.php
 msgid "Third"
@@ -1639,7 +1625,7 @@ msgstr "Dag (er) i veckan"
 
 #: automation_networks.php
 msgid "Reachability Settings"
-msgstr "Reachability Settings"
+msgstr "Inställningar för tillgänglighet"
 
 #: automation_networks.php include/global_form.php
 msgid "SNMP Options"
@@ -1659,7 +1645,7 @@ msgstr "Typ av pingpaket att skicka."
 
 #: automation_networks.php include/global_form.php include/global_settings.php
 msgid "Ping Port"
-msgstr "Ping Port"
+msgstr "Pingport"
 
 #: automation_networks.php include/global_form.php
 msgid "TCP or UDP port to attempt connection."
@@ -1667,27 +1653,27 @@ msgstr "TCP eller UDP-port för att försöka ansluta."
 
 #: automation_networks.php include/global_form.php include/global_settings.php
 msgid "Ping Timeout Value"
-msgstr "Ping Timeout-värde"
+msgstr "Tidsgräns för ping"
 
 #: automation_networks.php include/global_form.php
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
-msgstr "Timeout-värdet för värd ICMP och UDP-pingning. Det här värdet SNMP timeout-värdet gäller för SNMP-pingar."
+msgstr "Tidsgränsen för ICMP- och UDP-pingning av värdar. Den här SNMP-tidsgränsen gäller för SNMP-pingningar."
 
 #: automation_networks.php include/global_form.php include/global_settings.php
 msgid "Ping Retry Count"
-msgstr "Ping Retry Count"
+msgstr "Antal pingförsök"
 
 #: automation_networks.php include/global_form.php
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
-msgstr "Efter ett initialt misslyckande försöker antalet ping igen Cacti innan de misslyckas."
+msgstr "Efter ett första misslyckande är detta antalet pingförsök som Cacti gör innan kontrollen markeras som misslyckad."
 
 #: automation_networks.php
 msgid "Select the days(s) of the week"
-msgstr "Välj veckans dagar (ar)"
+msgstr "Välj veckans dag(ar)"
 
 #: automation_networks.php
 msgid "Select the month(s) of the year"
-msgstr "Välj årets månad (er)"
+msgstr "Välj månad(er) på året"
 
 #: automation_networks.php
 msgid "Select the day(s) of the month"
@@ -1906,7 +1892,7 @@ msgstr "Port"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Tidsgräns"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Retries"
@@ -2028,7 +2014,7 @@ msgstr "Välj Tillgänglighetsmetod som ska användas för Upptäckta enheter."
 
 #: automation_templates.php
 msgid "System Description Match"
-msgstr "Systembeskrivning Match"
+msgstr "Matchning av systembeskrivning"
 
 #: automation_templates.php
 msgid "This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
@@ -2111,7 +2097,7 @@ msgstr "Skapade träd"
 #: automation_tree_rules.php
 #, php-format
 msgid "Are you sure you want to DELETE the Rule '%s'?"
-msgstr "Är du säker på att du vill ta bort regeln &#39; %s&#39;?"
+msgstr "Är du säker på att du vill ta bort regeln '%s'?"
 
 #: automation_tree_rules.php
 msgid "Eligible Objects"
@@ -2393,7 +2379,7 @@ msgstr "Tillåt befintliga rader att uppdateras?"
 
 #: color.php
 msgid "Required File Format Notes"
-msgstr "Obligatoriska filformat Notes"
+msgstr "Anmärkningar om obligatoriskt filformat"
 
 #: color.php
 msgid "The file must contain a header row with the following column headings."
@@ -2631,7 +2617,7 @@ msgstr "Datakällafelsökning mottog ett ogiltigt datakälla-ID."
 
 #: data_debug.php
 msgid "All RRDfile repairs succeeded."
-msgstr "Alla RRDfile reparationer lyckades."
+msgstr "Alla RRD-filreparationer lyckades."
 
 #: data_debug.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
@@ -2639,29 +2625,24 @@ msgstr "En eller flera RRD-filreparationer misslyckades. Se Cacti logga för fel
 
 #: data_sources.php
 msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
+msgstr "RRD-filen kunde inte läsas, så inga reparationer utfördes."
 
 #: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
 msgid "No RRDfile repairs were necessary."
-msgstr "Alla RRDfile reparationer lyckades."
+msgstr "Inga RRD-filreparationer behövdes."
 
 #: data_sources.php
 msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
+msgstr "RRD-filen är inte skrivbar för webbservern. Kör i stället de föreslagna kommandona från kommandoraden."
 
 #: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
+#, php-format
 msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool Tune Info"
+msgstr "Information om RRDtool-tuning [ %s ]"
 
 #: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
 msgid "Run Fix from Command Line"
-msgstr "Reparationssteg [Kör fix från kommandorad]"
+msgstr "Kör reparation från kommandoraden"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2780,7 +2761,7 @@ msgstr "Hittades inte"
 
 #: data_debug.php
 msgid "Not Checked Yet"
-msgstr "Inga kontroller"
+msgstr "Har inte kontrollerats ännu"
 
 #: data_debug.php
 msgid "Issues found!  Waiting on RRDfile update"
@@ -2853,7 +2834,7 @@ msgstr "Datakälla Felsökare [ %s]"
 
 #: data_debug.php
 msgid "Refresh Now"
-msgstr "Uppdatera"
+msgstr "Uppdatera nu"
 
 #: data_debug.php
 #, php-format
@@ -3430,7 +3411,7 @@ msgstr "Datalagring"
 
 #: data_source_profiles.php include/global_settings.php lib/html_reports.php
 msgid "Graph Timespan"
-msgstr "Graf Timespan"
+msgstr "Grafens tidsintervall"
 
 #: data_source_profiles.php
 msgid "Steps"
@@ -3498,7 +3479,7 @@ msgstr "%d Dag"
 #: include/global_settings.php
 #, php-format
 msgid "%d Days"
-msgstr "%d dygn"
+msgstr "%d dagar"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
@@ -3571,7 +3552,7 @@ msgstr "Ändra enhet"
 
 #: data_sources.php graphs.php
 msgid "Reapply Suggested Names"
-msgstr "Tillåta föreslagna namn"
+msgstr "Använd föreslagna namn igen"
 
 #: data_sources.php
 msgid "Click 'Continue' to delete the following Data Source"
@@ -4080,33 +4061,27 @@ msgid "The Graph you requested does not exist."
 msgstr "Grafen du begärde finns inte."
 
 #: graph.php
-#, fuzzy
-#| msgid "Daily"
 msgid "Day"
 msgid_plural "Days"
-msgstr[0] "Dagligen"
-msgstr[1] "Dagligen"
+msgstr[0] "Dag"
+msgstr[1] "Dagar"
 
 #: graph.php
-#, fuzzy
-#| msgid "1 Hour"
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] "1 timme"
-msgstr[1] "1 timme"
+msgstr[0] "Timme"
+msgstr[1] "Timmar"
 
 #: graph.php
-#, fuzzy
-#| msgid "1 Minute"
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] "1 Minut"
-msgstr[1] "1 Minut"
+msgstr[0] "Minut"
+msgstr[1] "Minuter"
 
 #: graph.php
 #, php-format
 msgid "2 Years (%s Average)"
-msgstr ""
+msgstr "2 år (%s i genomsnitt)"
 
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -4117,22 +4092,16 @@ msgid "CSV Export"
 msgstr "CSV-export"
 
 #: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
 msgid "Time View"
-msgstr "Trädvy"
+msgstr "Tidsvy"
 
 #: lib/html.php
-#, fuzzy
-#| msgid "Realm"
 msgid "Realtime"
-msgstr "Område"
+msgstr "Realtid"
 
 #: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
 msgid "Kill Spikes"
-msgstr "Spikes"
+msgstr "Ta bort toppar"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
@@ -4406,7 +4375,7 @@ msgstr "DU HAR INTE RÄTTIGHETER FÖR FÖRSIKTIGHETSFRÅGOR"
 
 #: graph_view.php
 msgid "Graph Preview Filters"
-msgstr "Graph Preview Filters"
+msgstr "Filter för graföversikt"
 
 #: graph_view.php
 msgid "[ Custom Graph List Applied - Filtering from List ]"
@@ -4501,7 +4470,7 @@ msgstr "Lägg till valda grafer för att rapportera"
 
 #: graph_view.php lib/html.php
 msgid "Ok"
-msgstr "Ok"
+msgstr "OK"
 
 #: graph_xport.php include/global_form.php lib/html.php links.php
 msgid "Title"
@@ -4755,7 +4724,7 @@ msgstr "Redigera grafmall."
 #: graphs.php
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "Datakällor [ %s]"
+msgstr "Redigera datakälla: '%s'."
 
 #: graphs.php
 msgid "Unlock Graph."
@@ -4813,7 +4782,7 @@ msgstr "Diagram, datakälla"
 
 #: graphs.php
 msgid "Non Templated"
-msgstr "Inte Templated"
+msgstr "Utan mall"
 
 #: graphs.php
 msgid "The internal database ID for this Graph.  Useful when performing automation or debugging."
@@ -5253,7 +5222,7 @@ msgstr "Lägg till datafråga till enhet"
 
 #: host.php include/global_arrays.php
 msgid "Ping"
-msgstr "Notifiera"
+msgstr "Pingtest"
 
 #: host.php include/global_arrays.php
 msgid "Ping and SNMP Uptime"
@@ -5261,7 +5230,7 @@ msgstr "Ping och SNMP Uptime"
 
 #: host.php include/global_arrays.php
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "SNMP-drifttid"
 
 #: host.php include/global_arrays.php
 msgid "Ping or SNMP Uptime"
@@ -5293,12 +5262,12 @@ msgstr "Exportera enheter"
 
 #: host.php lib/api_automation.php
 msgid "Not Up"
-msgstr "Uppe"
+msgstr "Inte uppe"
 
 #: host.php lib/api_automation.php lib/html.php lib/html_utility.php
 #: pollers.php
 msgid "Recovering"
-msgstr "Påväg upp"
+msgstr "Återhämtar sig"
 
 #: host.php lib/api_automation.php tree.php utilities.php
 msgid "Device Description"
@@ -5355,7 +5324,7 @@ msgstr "Den tid det tar att samla data från den här enheten."
 
 #: host.php
 msgid "Current (ms)"
-msgstr "Nuvarande"
+msgstr "Aktuellt värde (ms)"
 
 #: host.php
 msgid "The current ping time in milliseconds to reach the Device."
@@ -5363,7 +5332,7 @@ msgstr "Den aktuella pingtiden i millisekunder för att nå enheten."
 
 #: host.php
 msgid "Average (ms)"
-msgstr "Genomsnitt"
+msgstr "Genomsnitt (ms)"
 
 #: host.php
 msgid "The average ping time in milliseconds to reach the Device since the counters were cleared for this Device."
@@ -6154,7 +6123,7 @@ msgstr "Varje minut"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Minutes"
-msgstr "Var %d minut"
+msgstr "Var %d:e minut"
 
 #: include/global_arrays.php
 msgid "Every Hour"
@@ -6163,7 +6132,7 @@ msgstr "Varje timme"
 #: include/global_arrays.php include/global_settings.php
 #, php-format
 msgid "Every %d Hours"
-msgstr "Varje %d timme"
+msgstr "Var %d:e timme"
 
 #: include/global_arrays.php
 #, php-format
@@ -6623,15 +6592,15 @@ msgstr "Loghantering"
 
 #: include/global_arrays.php
 msgid "Normal User"
-msgstr "Normal användare"
+msgstr "Vanlig användare"
 
 #: include/global_arrays.php
 msgid "Template Editor"
-msgstr "Mall Redigerare"
+msgstr "Mallredigerare"
 
 #: include/global_arrays.php
 msgid "General Administration"
-msgstr "Allmän administration u Stöd till transaktioner Jürgen MOEHRKE"
+msgstr "Allmän administration"
 
 #: include/global_arrays.php
 msgid "System Administration"
@@ -7149,7 +7118,7 @@ msgstr "Varje vecka"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Weeks"
-msgstr "Varje %d veckor"
+msgstr "Var %d:e vecka"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7364,7 +7333,7 @@ msgstr "Mörk"
 
 #: include/global_arrays.php
 msgid "Deepness"
-msgstr ""
+msgstr "Djup"
 
 #: include/global_arrays.php
 msgid "Paper-plane"
@@ -7685,7 +7654,7 @@ msgstr "Ange UDP-portnumret som ska användas för SNMP (standard är 161)."
 
 #: include/global_form.php
 msgid "SNMP Timeout"
-msgstr "SNMP Timeout"
+msgstr "SNMP-tidsgräns"
 
 #: include/global_form.php
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -7737,7 +7706,7 @@ msgstr "%d Upprepningar"
 
 #: include/global_form.php
 msgid "SNMP Retries"
-msgstr "SNMP Retries"
+msgstr "SNMP-försök"
 
 #: include/global_form.php
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
@@ -8522,7 +8491,7 @@ msgstr "Ange anteckningar till den här värden."
 
 #: include/global_form.php
 msgid "External ID"
-msgstr "Extern ID"
+msgstr "Externt ID"
 
 #: include/global_form.php
 msgid "External ID for linking Cacti data to external monitoring systems."
@@ -9752,7 +9721,7 @@ msgstr "Standard SNMPv3 Privacy Protocol för alla nya enheter."
 
 #: include/global_settings.php
 msgid "Privacy Passphrase (v3)"
-msgstr "Sekretess lösenordsfras (v3)."
+msgstr "Sekretess lösenordsfras (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -10873,7 +10842,7 @@ msgstr "Detta är en serverplats som ska användas för länkar till Cacti-webbp
 
 #: include/global_settings.php
 msgid "Emailing Options"
-msgstr "Emailing Options"
+msgstr "E-postalternativ"
 
 #: include/global_settings.php
 msgid "Notify Primary Admin of Issues"
@@ -10909,7 +10878,7 @@ msgstr "Ping Mail Server innan du skickar test Email?"
 
 #: include/global_settings.php lib/html_reports.php
 msgid "From Email Address"
-msgstr "Från E-post"
+msgstr "Avsändaradress för e-post"
 
 #: include/global_settings.php
 msgid "This is the Email address that the Email will appear from."
@@ -10917,7 +10886,7 @@ msgstr "Det här är den e-postadress som e-postmeddelandet kommer att visas fr�
 
 #: include/global_settings.php lib/html_reports.php
 msgid "From Name"
-msgstr "Från namn"
+msgstr "Avsändarnamn"
 
 #: include/global_settings.php
 msgid "This is the actual name that the Email will appear from."
@@ -11061,7 +11030,7 @@ msgstr "Ange den sekundära DNS-IP-adressen för att använda för omvända sök
 
 #: include/global_settings.php
 msgid "DNS Timeout"
-msgstr "DNS Timeout"
+msgstr "DNS-tidsgräns"
 
 #: include/global_settings.php
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
@@ -12746,7 +12715,7 @@ msgstr "Exekvering av SNMP får för %s oids ( %s)"
 #: lib/data_query.php
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "Sorteringsfältet returnerade inte data. Kan inte fortsätta Reindexera för OID [ %s]"
+msgstr "Sorteringsfältet returnerade inte data för OID [ %s]. Hoppar över."
 
 #: lib/data_query.php
 #, php-format
@@ -13669,7 +13638,7 @@ msgstr "Intervall"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Stop"
-msgstr "Stopp"
+msgstr "Stoppa"
 
 #: lib/html_graph.php
 #, php-format
@@ -13735,7 +13704,7 @@ msgstr "Formatera fil som ska användas"
 
 #: lib/html_reports.php
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "Välj den anpassade HTML-wrapper och CSS-filen som ska användas. Den här filen innehåller både html och CSS för att paketera runt din rapport. Om det innehåller mer än bara CSS, måste du placera en speciell <REPORT> tagga inuti filen. Denna formattag kommer att ersättas med rapportinnehållet. Dessa filer finns i katalogen &quot;format&quot;."
+msgstr "Välj den anpassade HTML-omslutningen och CSS-filen som ska användas. Filen innehåller HTML och CSS som omsluter rapporten. Om den innehåller mer än CSS måste du placera en särskild <REPORT>-tagg i filen. Formattaggen ersätts med rapportens innehåll. Filerna finns i katalogen ”formats”."
 
 #: lib/html_reports.php
 msgid "Default Text Font Size"
@@ -14017,7 +13986,7 @@ msgstr "Rapportera objekt [ny rapport: %s]"
 
 #: lib/html_reports.php
 msgid "Events"
-msgstr "Evenemang"
+msgstr "Händelser"
 
 #: lib/html_reports.php
 msgid "Send Report"
@@ -14309,7 +14278,7 @@ msgstr "Importera förhandsgranskningsresultat"
 
 #: lib/import.php
 msgid "Import Results"
-msgstr "Importera resultat"
+msgstr "Importresultat"
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Package was imported:"
@@ -14484,7 +14453,7 @@ msgstr "Du <b>måste</b> då uppdatera &quot;include / config.php&quot; för att
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
-msgstr "OBS! Dina befintliga data ändras inte och varken data eller historik blir tillgängliga för den nya installationen."
+msgstr "OBS! Dina befintliga data ändras inte och varken data eller historik blir tillgängliga för den nya installationen"
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
@@ -16433,10 +16402,8 @@ msgid "N/A - Not applicable to this engine"
 msgstr "Inte tillämpligt – gäller inte för denna motor"
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgid "MariaDB 10.5+ and MySQL 8.0+ are the recommended, supported releases (for example, the default database streams on Rocky Linux 9). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
-msgstr "MySQL 5.6+ och MariaDB 10.0+ är bra utgåvor och lämpliga versioner att välja. Se dock till att använda den senaste utgåvan, som åtgärdar ett långvarigt nätverksfel på låg nivå som har orsakat tillförlitlighetsproblem för Spine."
+msgstr "MariaDB 10.5+ och MySQL 8.0+ är rekommenderade och stödda versioner, till exempel standarddatabasströmmarna i Rocky Linux 9. Använd dock den allra senaste utgåvan, eftersom den åtgärdar ett sedan länge känt nätverksproblem på låg nivå som har orsakat många tillförlitlighetsproblem för Spine."
 
 #: lib/utility.php
 #, php-format
@@ -17045,7 +17012,7 @@ msgstr "Ändra enhet"
 
 #: package_import.php templates_import.php
 msgid "Updated"
-msgstr "Uppdatera"
+msgstr "Uppdaterad"
 
 #: package_import.php templates_import.php
 msgid "Orphans"
@@ -17384,7 +17351,7 @@ msgstr "Anteckningar för denna datasamlare databas."
 
 #: pollers.php
 msgid "Collection Settings"
-msgstr "Samlingsinställningar"
+msgstr "Insamlingsinställningar"
 
 #: pollers.php
 msgid "Processes"
@@ -17729,7 +17696,7 @@ msgstr "%d dag"
 #: rrdcheck.php
 #, php-format
 msgid "%d days"
-msgstr "%d dygn"
+msgstr "%d dagar"
 
 #: rrdcheck.php rrdcleaner.php user_domains.php user_group_admin.php
 msgctxt "filter: use"
@@ -17766,7 +17733,7 @@ msgstr "RRD-filnamn"
 
 #: rrdcleaner.php
 msgid "DS Name"
-msgstr "DS namn"
+msgstr "DS-namn"
 
 #: rrdcleaner.php
 msgid "DS ID"
@@ -19925,7 +19892,7 @@ msgstr "Mottagare"
 
 #: utilities.php
 msgid "Log Entries"
-msgstr "App loggnoteringar"
+msgstr "Loggposter"
 
 #: utilities.php
 #, php-format
@@ -20044,15 +20011,13 @@ msgid "No VDEFs"
 msgstr "Inga VDEFs"
 
 #: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
 msgid "Graph Actions"
-msgstr "Grafikalternativ"
+msgstr "Grafåtgärder"
 
 #: lib/plugins.php:835
 #, php-format
 msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
+msgstr "Installationen av insticksmodulen %s misslyckades. Dess krokar är inaktiverade. Granska insticksmodulens inställningar och Cacti-loggen innan du aktiverar den."
 
 #: links.php
 msgid "Links"
