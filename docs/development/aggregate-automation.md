@@ -22,6 +22,12 @@ cache is used, falling back to the configured data-source name when empty.
 Members stay within the device; aggregate graphs cannot become members.
 Several matching data sources or graph items still include the graph only once.
 
+Each regular-expression evaluation uses at most 10000 backtracking steps and
+a recursion limit of 100, or the PHP installation's stricter limits. A limit
+failure aborts that rule's update and retains the previous aggregate. Simplify
+the expression before retrying. These limits apply to validation and matching;
+the caller's PHP settings are restored afterward.
+
 Device discovery and `cli/apply_automation_rules.php` run these rules after
 ordinary graph automation. Apply rules to existing devices with, for example:
 
