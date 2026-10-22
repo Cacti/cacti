@@ -5,6 +5,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/cdef-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
@@ -27,6 +28,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/cdef-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
