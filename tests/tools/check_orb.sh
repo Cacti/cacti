@@ -89,8 +89,10 @@ docker compose -p "$COMPOSE_PROJECT" --env-file .env.test up -d 2>&1
 echo "Waiting for containers..."
 TRIES=0
 while [ $TRIES -lt 24 ]; do
-    DB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | head -1 | cut -d'"' -f4)
-    WEB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | tail -1 | cut -d'"' -f4)
+    # grep returns non-zero before the Health field appears; tolerate it under
+    # pipefail so the poll loop keeps waiting instead of exiting the script
+    DB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
+    WEB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | tail -1 | cut -d'"' -f4 || true)
     if [ "$DB_HEALTH" = "healthy" ] && [ "$WEB_HEALTH" = "healthy" ]; then
         break
     fi
