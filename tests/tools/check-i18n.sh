@@ -28,11 +28,13 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 AUDIT_SCRIPT="$REPO_ROOT/tests/tools/audit_po.py"
 ERRORS=0
 
-# Collect staged .po files only
+# Collect staged .po files only, including renamed ones.
 STAGED_PO=()
 while IFS= read -r -d '' file; do
-    STAGED_PO+=("$file")
-done < <(git diff --cached --name-only --diff-filter=ACM -z | grep -z '\.po$' || true)
+    case "$file" in
+        *.po) STAGED_PO+=("$file") ;;
+    esac
+done < <(git diff --cached --name-only --diff-filter=ACMR -z)
 
 if [ ${#STAGED_PO[@]} -eq 0 ]; then
     exit 0
@@ -40,26 +42,31 @@ fi
 
 echo "i18n: checking ${#STAGED_PO[@]} staged .po file(s)..."
 
+# Check the staged blobs, not the working tree, so the result describes what
+# is about to be committed. Tools run inside the copy to report the same
+# relative paths a reviewer sees.
+STAGED_TREE="$(mktemp -d)"
+trap 'rm -rf "$STAGED_TREE"' EXIT
+printf '%s\0' "${STAGED_PO[@]}" | git checkout-index -z --stdin --prefix="$STAGED_TREE/"
+GIT_DIR="$(git rev-parse --absolute-git-dir)"
+export GIT_DIR
+cd "$STAGED_TREE"
+
 # 1. msgfmt syntax and format-string check
 if ! command -v msgfmt &>/dev/null; then
     echo "ERROR: msgfmt not found. Install gettext (brew install gettext / apt install gettext)." >&2
     exit 1
 fi
 for po in "${STAGED_PO[@]}"; do
-    if ! msgfmt -c -o /dev/null "$REPO_ROOT/$po" 2>&1; then
+    if ! msgfmt -c -o /dev/null -- "$po" 2>&1; then
         echo "FAIL: msgfmt check failed for $po"
         ERRORS=1
     fi
 done
 
 # 2. msgcheck fuzzy/whitespace/punctuation lint (mirrors CI step)
-FULL_PATHS=()
-for po in "${STAGED_PO[@]}"; do
-    FULL_PATHS+=("$REPO_ROOT/$po")
-done
-
 if command -v msgcheck &>/dev/null; then
-    if ! msgcheck --error-on-fuzzy --no-lines "${FULL_PATHS[@]}"; then
+    if ! msgcheck --error-on-fuzzy --no-lines "${STAGED_PO[@]}"; then
         ERRORS=1
     fi
 else
@@ -76,7 +83,8 @@ if [ ! -f "$AUDIT_SCRIPT" ]; then
     echo "ERROR: audit script not found at $AUDIT_SCRIPT." >&2
     exit 1
 fi
-if ! python3 "$AUDIT_SCRIPT" "${FULL_PATHS[@]}"; then
+# Audit only entries the commit changes; GIT_DIR lets the audit read HEAD.
+if ! python3 "$AUDIT_SCRIPT" --base HEAD "${STAGED_PO[@]}"; then
     ERRORS=1
 fi
 
