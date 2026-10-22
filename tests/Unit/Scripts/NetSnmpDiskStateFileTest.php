@@ -70,12 +70,15 @@ test('the state directory and its parent are created private to the poller user'
 	expect(fileperms($dir) & 0777)->toBe(0700);
 });
 
-test('a world-writable state directory left by an earlier release is closed', function () {
+test('a state directory left open by an earlier release is closed', function () {
 	$dir = $this->base . '/cacti/net-snmp-devio';
 
-	mkdir($dir, 0777, true);
-	chmod($this->base . '/cacti', 0777);
-	chmod($dir, 0777);
+	/* earlier releases created these with mkdir(0777); any group or other
+	 * permission bit takes the same tightening path, so group access is
+	 * enough to prove it without creating a world-writable directory */
+	mkdir($dir, 0700, true);
+	chmod($this->base . '/cacti', 0770);
+	chmod($dir, 0750);
 
 	expect(ss_net_snmp_state_dir($dir))->toBe($dir);
 	clearstatcache();

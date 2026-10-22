@@ -57,7 +57,21 @@ foreach ($diskfree_scripts as $name => $script) {
 			$this->markTestSkipped($script[0] . ' is not installed');
 		}
 
-		list($status, $output) = diskfree_run(array($interpreter, $script[1], '/'));
+		/* diskfree.pl matches its argument against the df line, so it is
+		 * given the device that holds '/', which must itself be a path */
+		$argument = '/';
+
+		if ($script[0] == 'perl') {
+			list(, $df) = diskfree_run(array('df', '-k', '-P', '/'));
+			$lines    = explode("\n", trim($df));
+			$argument = strtok((string) end($lines), ' ');
+
+			if (!preg_match('/^\/[\w.\/-]*$/', (string) $argument)) {
+				$this->markTestSkipped("the root filesystem has no device path ('$argument')");
+			}
+		}
+
+		list($status, $output) = diskfree_run(array($interpreter, $script[1], $argument));
 
 		expect($status)->toBe(0);
 		expect($output)->toMatch('/^megabytes:[0-9]+ percent:[0-9]+$/');
