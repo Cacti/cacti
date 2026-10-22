@@ -20,7 +20,12 @@ test('valid LDAP credentials with realm 1001 reach the application', async ({ pa
 	await page.locator('#login_username').fill('ldapuser');
 	await page.locator('#login_password').fill('ldap-e2e-pass');
 	await page.locator('#realm').selectOption('1001');
-	await page.locator('form#auth').evaluate((form: HTMLFormElement) => form.submit());
+	// Wait for the POST navigation itself; networkidle alone can resolve on the
+	// login page before the submit has navigated anywhere.
+	await Promise.all([
+		page.waitForNavigation(),
+		page.locator('form#auth').evaluate((form: HTMLFormElement) => form.submit()),
+	]);
 	await page.waitForLoadState('networkidle');
 
 	await expect(page.locator('#login_username')).toHaveCount(0);
@@ -32,7 +37,10 @@ test('wrong LDAP password stays on the login page', async ({ page }) => {
 	await page.locator('#login_username').fill('ldapuser');
 	await page.locator('#login_password').fill('wrong-password');
 	await page.locator('#realm').selectOption('1001');
-	await page.locator('form#auth').evaluate((form: HTMLFormElement) => form.submit());
+	await Promise.all([
+		page.waitForNavigation(),
+		page.locator('form#auth').evaluate((form: HTMLFormElement) => form.submit()),
+	]);
 	await page.waitForLoadState('networkidle');
 
 	await expect(page.locator('#login_username')).toBeVisible();

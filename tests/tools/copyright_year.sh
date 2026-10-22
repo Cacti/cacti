@@ -33,19 +33,21 @@ update_copyright() {
 		line=
 	fi
 
-	old_reg="20[0-9][0-9][ ]*-[ ]*20[0-9][0-9]"
-	old_data=$(grep -c -e "$old_reg" "$1" 2>/dev/null)
-	new_reg="2004-$YEAR"
+	# Only rewrite years on Copyright lines; other ranges such as "lines
+	# 2041-2056" are data. grep -E and sed -E share one ERE syntax on GNU and BSD.
+	old_reg="(Copyright.*)20[0-9][0-9] *- *20[0-9][0-9]"
+	old_data=$(grep -c -E -e "$old_reg" "$1" 2>/dev/null)
+	new_reg="\12004-$YEAR"
 
 	if [[ $old_data -eq 0 ]]; then
 		old_reg="(Copyright.*) 20[0-9][0-9] "
-		old_data=$(grep -c -e "$old_reg" "$1" 2>/dev/null)
-		new_reg="\1 2004-$YEAR"
+		old_data=$(grep -c -E -e "$old_reg" "$1" 2>/dev/null)
+		new_reg="\1 2004-$YEAR "
 	fi
 
 	if [[ $old_data -gt 0 ]]; then
-		old_data=$(grep -e "$old_reg" "$1" 2>/dev/null)
-		new_data=$(echo "$old_data" | sed -r s/"$old_reg"/"$new_reg"/g)
+		old_data=$(grep -E -e "$old_reg" "$1" 2>/dev/null)
+		new_data=$(echo "$old_data" | sed -E "s/$old_reg/$new_reg/")
 		if [[ "$old_data" == "$new_data" ]]; then
 			if [[ -z "$ERRORS_ONLY" ]]; then
 				echo "$line Skipping Copyright Data"
@@ -55,7 +57,11 @@ update_copyright() {
 			printf "%60s %s\n" "==============================" "===================="
 			printf "%60s %s\n" "$old_data" "=>"
 			printf "%60s %s\n" "$new_data" ""
-			sed -i -r s/"$old_reg"/"$new_reg"/g "$1"
+			# sed -i takes different arguments on GNU and BSD. Rewrite through a
+			# temporary file and copy back so the original mode is kept.
+			tmp=$(mktemp)
+			sed -E "s/$old_reg/$new_reg/" "$1" > "$tmp" && cat "$tmp" > "$1"
+			rm -f "$tmp"
 			printf "%60s %s\n" "==============================" "===================="
 		fi
 	else
@@ -80,6 +86,11 @@ scan_folders() {
 		fi
 		SCRIPT_INCLUSION="$SCRIPT_INCLUSION $SCRIPT_SEPARATOR-name $f"
 	done
+
+	# Group the -o alternatives; otherwise -print0 binds to the last -name only.
+	if [ -n "$SCRIPT_INCLUSION" ]; then
+		SCRIPT_INCLUSION="\( $SCRIPT_INCLUSION \)"
+	fi
 
 	SCRIPT_SEPARATOR=
 	FOLDER_INCLUSION=
@@ -120,9 +131,11 @@ scan_folders() {
 	fi
 
 	SCRIPT_CMD="find ${SCRIPT_BASE} -type f $SCRIPT_INCLUSION $SCRIPT_EXCLUSION -print0"
-	bash -c "$SCRIPT_CMD" | while IFS= read -r -d '' file; do
+	# Read from process substitution, not a pipe, so SCRIPT_ERR set by
+	# update_copyright survives in this shell.
+	while IFS= read -r -d '' file; do
 		update_copyright "${file}"
-	done
+	done < <(bash -c "$SCRIPT_CMD")
 
 }
 
