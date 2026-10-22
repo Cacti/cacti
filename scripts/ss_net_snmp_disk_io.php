@@ -53,6 +53,12 @@ if (!function_exists('ss_counter_step')) {
 	 * @return string The resulting string.
 	 */
 	function ss_counter_step($running, string $current, string $previous, string $modulus) : string {
+		/* counters arrive from the device and the state file; anything other
+		 * than an unsigned integer would make gmp_init() throw */
+		if (!ctype_digit($current) || !ctype_digit($previous)) {
+			return 'U';
+		}
+
 		if (!function_exists('gmp_init')) {
 			$cur   = (float) $current;
 			$prev  = (float) $previous;
@@ -82,6 +88,106 @@ if (!function_exists('ss_counter_step')) {
 	}
 }
 
+if (!function_exists('ss_net_snmp_state_dir')) {
+	/**
+	 * Return a state directory private to the poller user, creating it when it
+	 * does not exist. Used as part of Cacti's scripts functionality.
+	 *
+	 * The directory lives under the shared system temporary directory, so the
+	 * directory and its parent must be real directories owned by this user and
+	 * closed to other users before state is read from or written to them.
+	 *
+	 * @param string $dir The state directory.
+	 *
+	 * @return string|false The directory, or false when it cannot be trusted.
+	 */
+	function ss_net_snmp_state_dir($dir) {
+		foreach (array(dirname($dir), $dir) as $path) {
+			if (!is_link($path) && !file_exists($path)) {
+				@mkdir($path, 0700);
+			}
+
+			clearstatcache(true, $path);
+
+			if (is_link($path) || !is_dir($path)) {
+				cacti_log("WARNING: State directory '$path' is not a directory", false, 'POLLER');
+
+				return false;
+			}
+
+			if (function_exists('posix_geteuid') && fileowner($path) !== posix_geteuid()) {
+				cacti_log("WARNING: State directory '$path' is owned by another user", false, 'POLLER');
+
+				return false;
+			}
+
+			if ((fileperms($path) & 0077) && !@chmod($path, 0700)) {
+				cacti_log("WARNING: State directory '$path' is open to other users", false, 'POLLER');
+
+				return false;
+			}
+		}
+
+		return $dir;
+	}
+}
+
+if (!function_exists('ss_net_snmp_state_read')) {
+	/**
+	 * Load the previous poll's counters. Used as part of Cacti's scripts functionality.
+	 *
+	 * @param string $file The state file.
+	 *
+	 * @return array|false The decoded state, or false when there is no usable state file.
+	 */
+	function ss_net_snmp_state_read($file) {
+		if (is_link($file) || !is_file($file)) {
+			return false;
+		}
+
+		if (function_exists('posix_geteuid') && fileowner($file) !== posix_geteuid()) {
+			return false;
+		}
+
+		$state = json_decode((string) file_get_contents($file), true);
+
+		return (is_array($state) ? $state : array());
+	}
+}
+
+if (!function_exists('ss_net_snmp_state_write')) {
+	/**
+	 * Replace the state file in one step so a reader never sees a partial
+	 * write. Used as part of Cacti's scripts functionality.
+	 *
+	 * @param string $dir The state directory.
+	 * @param string $file The state file.
+	 * @param string $data The encoded state.
+	 *
+	 * @return bool True when the state file was replaced.
+	 */
+	function ss_net_snmp_state_write($dir, $file, $data) {
+		$temp = tempnam($dir, 'state');
+
+		/* tempnam() falls back to the system directory when $dir is unusable */
+		if ($temp === false || realpath(dirname($temp)) !== realpath($dir)) {
+			if ($temp !== false) {
+				@unlink($temp);
+			}
+
+			return false;
+		}
+
+		if (file_put_contents($temp, $data) === false || !rename($temp, $file)) {
+			@unlink($temp);
+
+			return false;
+		}
+
+		return true;
+	}
+}
+
 /**
  * Handles the ss net SNMP disk io. Used as part of Cacti's scripts functionality.
  *
@@ -103,6 +209,12 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		$host_id = $host_id_or_hostname;
 	}
 
+	$host_id = (int) $host_id;
+
+	if ($host_id <= 0) {
+		return 'reads:0 writes:0';
+	}
+
 	$tmpdir = sys_get_temp_dir();
 
 	if ($environ != 'realtime') {
@@ -110,19 +222,21 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		$tmpfile = $host_id . '_io';
 	} else {
 		$tmpdir = $tmpdir . '/cacti-rt/net-snmp-devio';
-		$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
+		$tmpfile = $host_id . '_' . (int) $poller_id . '_io_rt';
 	}
 
-	if (!is_dir($tmpdir)) {
-		mkdir($tmpdir, 0777, true);
-	}
+	$tmpdir = ss_net_snmp_state_dir($tmpdir);
 
 	$previous = array();
 	$found    = false;
 
-	if (file_exists("$tmpdir/$tmpfile")) {
-		$previous = json_decode(file_get_contents("$tmpdir/$tmpfile"), true);
-		$found = true;
+	if ($tmpdir !== false) {
+		$previous = ss_net_snmp_state_read("$tmpdir/$tmpfile");
+		$found    = ($previous !== false);
+
+		if (!$found) {
+			$previous = array();
+		}
 	}
 
 	$indexes = array();
@@ -255,8 +369,9 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			}
 		}
 
-		$data = json_encode($current);
-		file_put_contents("$tmpdir/$tmpfile", $data);
+		if ($tmpdir !== false) {
+			ss_net_snmp_state_write($tmpdir, "$tmpdir/$tmpfile", json_encode($current));
+		}
 	}
 
 	if ($found) {
