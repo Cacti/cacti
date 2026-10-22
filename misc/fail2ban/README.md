@@ -45,8 +45,34 @@ The bundled filter matches this line and extracts the IP.
 ## Logging destination
 
 The filter reads Cacti's file log (`path_cactilog`, default `<cacti>/log/cacti.log`).
-If you route Cacti to syslog instead, point `logpath` at the syslog file that receives
-the `AUTH` entries, or run a jail with `backend = systemd`.
+Set Settings > Logging > Log Destination to `Logfile Only` or `Logfile and Syslog/Eventlog`,
+and keep Generic Log Level above `NONE`, since that level stops all writes to the file.
+
+Syslog cannot be used as the jail's source. Cacti forwards only `ERROR`, `WARNING`,
+`STATS` and `NOTICE` messages to syslog, so the `AUTH FAILURE` lines never reach it.
+
+## Log date format
+
+Cacti stamps each log line with the format chosen under Settings > General >
+Date Display Format and Date Separator. The filter recognises these without changes:
+
+- year first, the default: `2026-10-22`, `2026/10/22`, `2026.10.22`
+- year first with a month name: `2026-Oct-22`
+- a month name in any other position: `Oct-22-2026`, `22-Oct-2026`
+
+Each of these works with any of the three separators. The numeric month-first and day-first formats
+(`10/22/2026` and `22/10/2026`) look the same to Fail2Ban, so the filter cannot tell
+which one you use, and the line is stamped with the time Fail2Ban read it rather than
+the time Cacti wrote it. If you use either, add `/etc/fail2ban/filter.d/cacti.local`
+with the matching pattern:
+
+```
+[Definition]
+# day first, e.g. 22/10/2026
+datepattern = ^%%d[-/.]%%m[-/.]%%Y %%H:%%M:%%S
+# or month first, e.g. 10/22/2026
+#datepattern = ^%%m[-/.]%%d[-/.]%%Y %%H:%%M:%%S
+```
 
 ## Reverse proxy caveat
 
