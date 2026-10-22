@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -security#8055: Harden - Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
 -security#8346: Pin workflow Actions and isolate release signing from builds
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
+-security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
 -security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
 -security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
