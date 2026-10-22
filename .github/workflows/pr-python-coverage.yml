@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - '**.py'
+      - 'resource/catalogs/**'
+      - 'resource/snmp_queries/interface.xml'
+      - 'install/templates/Generic_SNMP_Device.xml.gz'
+      - '.github/scripts/catalog/requirements.txt'
       - '.github/workflows/pr-python-coverage.yml'
 
 permissions:
@@ -29,11 +33,13 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install coverage==7.13.2 pyyaml==6.0.2
+          python -m pip install --require-hashes -r .github/scripts/catalog/requirements.txt
           sudo apt-get update
           sudo apt-get install -y gettext
       - name: Exercise maintenance tool contracts
         run: |
           set -euo pipefail
+          python .github/scripts/catalog/interface_catalog.py
           python -m coverage run -m unittest discover -s tests/tools -p 'test_*.py'
           python -m coverage json -o coverage-python.json
       - name: Require at least 80 percent of changed Python statements
