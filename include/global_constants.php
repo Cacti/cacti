@@ -117,6 +117,10 @@ define('POLLER_ACTION_SNMP_COUNT', 10);
 define('POLLER_ACTION_SCRIPT_COUNT', 11);
 define('POLLER_ACTION_SCRIPT_PHP_COUNT', 12);
 
+/* longest script server request, excluding the line terminator, that the
+ * script server reads as one line; cmd.php refuses to send anything longer */
+define('SCRIPT_SERVER_MAX_REQUEST', 1024);
+
 define('POLLER_COMMAND_REINDEX', 1);
 define('POLLER_COMMAND_RRDPURGE', 2);
 define('POLLER_COMMAND_PURGE', 3);
