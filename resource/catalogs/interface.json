@@ -1,0 +1,1435 @@
+{
+  "schema_version": 1,
+  "family_id": "if_mib_interfaces",
+  "query": {
+    "path": "resource/snmp_queries/interface.xml",
+    "sha256": "f9119258af2b3a0e33d72ad0c04f71bee8c07965674c342914e5bde696f2e8ad",
+    "root": "interface",
+    "header": [
+      {
+        "key": "name",
+        "value": "Get SNMP Interfaces"
+      },
+      {
+        "key": "description",
+        "value": "Queries a host for a list of monitorable interfaces"
+      },
+      {
+        "key": "oid_index",
+        "value": ".1.3.6.1.2.1.2.2.1.1"
+      },
+      {
+        "key": "oid_num_indexes",
+        "value": ".1.3.6.1.2.1.2.1.0"
+      },
+      {
+        "key": "index_order",
+        "value": "ifName:ifDescr:ifHwAddr:ifIndex"
+      },
+      {
+        "key": "index_order_type",
+        "value": "numeric"
+      },
+      {
+        "key": "index_title_format",
+        "value": "|chosen_order_field|"
+      }
+    ],
+    "fields": [
+      {
+        "name": "ifIndex",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Index"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.1"
+          }
+        ]
+      },
+      {
+        "name": "ifOperStatus",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Status"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "VALUE/REGEXP:[a-zA-Z]{1,}\\(([1-]{1})+\\)$"
+          },
+          {
+            "key": "direction",
+            "value": "input-output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.8"
+          }
+        ]
+      },
+      {
+        "name": "ifAdminStatus",
+        "properties": [
+          {
+            "key": "name",
+            "value": "AdminStatus"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "VALUE/REGEXP:[a-zA-Z]{1,}\\(([1-]{1})+\\)$"
+          },
+          {
+            "key": "direction",
+            "value": "input-output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.7"
+          }
+        ]
+      },
+      {
+        "name": "ifDescr",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Description"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "output_format",
+            "value": "ascii"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.2"
+          }
+        ]
+      },
+      {
+        "name": "ifName",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Name (IF-MIB)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "output_format",
+            "value": "ascii"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.1"
+          }
+        ]
+      },
+      {
+        "name": "ifAlias",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Alias (IF-MIB)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "output_format",
+            "value": "ascii"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.18"
+          }
+        ]
+      },
+      {
+        "name": "ifType",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Type"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "output_format",
+            "value": "ascii"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.3"
+          }
+        ]
+      },
+      {
+        "name": "ifSpeed",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Speed"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.5"
+          }
+        ]
+      },
+      {
+        "name": "ifHighSpeed",
+        "properties": [
+          {
+            "key": "name",
+            "value": "High Speed"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input-output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.15"
+          }
+        ]
+      },
+      {
+        "name": "ifHwAddr",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Hardware Address"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "output_format",
+            "value": "hex"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.6"
+          }
+        ]
+      },
+      {
+        "name": "ifInOctets",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Bytes In"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.10"
+          }
+        ]
+      },
+      {
+        "name": "ifOutOctets",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Bytes Out"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.16"
+          }
+        ]
+      },
+      {
+        "name": "ifHCInOctets",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Bytes In - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.6"
+          }
+        ]
+      },
+      {
+        "name": "ifHCOutOctets",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Bytes Out - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.10"
+          }
+        ]
+      },
+      {
+        "name": "ifInOctetsIPv4",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv4 Bytes In"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.5.1"
+          }
+        ]
+      },
+      {
+        "name": "ifOutOctetsIPv4",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv4 Bytes Out"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.32.1"
+          }
+        ]
+      },
+      {
+        "name": "ifHCInOctetsIPv4",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv4 Bytes In - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.6.1"
+          }
+        ]
+      },
+      {
+        "name": "ifHCOutOctetsIPv4",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv4 Bytes Out - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.33.1"
+          }
+        ]
+      },
+      {
+        "name": "ifInOctetsIPv6",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv6 Bytes In"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.5.2"
+          }
+        ]
+      },
+      {
+        "name": "ifOutOctetsIPv6",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv6 Bytes Out"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.32.2"
+          }
+        ]
+      },
+      {
+        "name": "ifHCInOctetsIPv6",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv6 Bytes In - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.6.2"
+          }
+        ]
+      },
+      {
+        "name": "ifHCOutOctetsIPv6",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv6 Bytes Out - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.31.3.1.33.2"
+          }
+        ]
+      },
+      {
+        "name": "ifInDiscards",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Discarded Packets In"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.13"
+          }
+        ]
+      },
+      {
+        "name": "ifOutDiscards",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Discarded Packets Out"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.19"
+          }
+        ]
+      },
+      {
+        "name": "ifInNUcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Non-Unicast Packets In"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.12"
+          }
+        ]
+      },
+      {
+        "name": "ifOutNUcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Non-Unicast Packets Out"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.18"
+          }
+        ]
+      },
+      {
+        "name": "ifInUcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Unicast Packets In (Legacy)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.11"
+          }
+        ]
+      },
+      {
+        "name": "ifOutUcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Unicast Packets Out (Legacy)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.17"
+          }
+        ]
+      },
+      {
+        "name": "ifHCInUcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Unicast Packets In - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.7"
+          }
+        ]
+      },
+      {
+        "name": "ifHCOutUcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Unicast Packets Out - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.11"
+          }
+        ]
+      },
+      {
+        "name": "ifInMulticastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Multicast Packets In (Legacy)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.2"
+          }
+        ]
+      },
+      {
+        "name": "ifOutMulticastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Multicast Packets Out (Legacy)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.4"
+          }
+        ]
+      },
+      {
+        "name": "ifHCInMulticastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Multicast Packets In - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.8"
+          }
+        ]
+      },
+      {
+        "name": "ifHCOutMulticastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Multicast Packets Out - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.12"
+          }
+        ]
+      },
+      {
+        "name": "ifInBroadcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Broadcast Packets In (Legacy)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.3"
+          }
+        ]
+      },
+      {
+        "name": "ifOutBroadcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Broadcast Packets Out (Legacy)"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.5"
+          }
+        ]
+      },
+      {
+        "name": "ifHCInBroadcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Broadcast Packets In - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.9"
+          }
+        ]
+      },
+      {
+        "name": "ifHCOutBroadcastPkts",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Broadcast Packets Out - 64-bit Counters"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.31.1.1.1.13"
+          }
+        ]
+      },
+      {
+        "name": "ifInErrors",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Errors In"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.14"
+          }
+        ]
+      },
+      {
+        "name": "ifOutErrors",
+        "properties": [
+          {
+            "key": "name",
+            "value": "Errors Out"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "value"
+          },
+          {
+            "key": "direction",
+            "value": "output"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.2.2.1.20"
+          }
+        ]
+      },
+      {
+        "name": "ifIP",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IP Address"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "OID/REGEXP:^\\.?1\\.3\\.6\\.1\\.2\\.1\\.4\\.20\\.1\\.2\\.([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}).*"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.20.1.2"
+          }
+        ]
+      },
+      {
+        "name": "ifIPv6",
+        "properties": [
+          {
+            "key": "name",
+            "value": "IPv6 Address"
+          },
+          {
+            "key": "method",
+            "value": "walk"
+          },
+          {
+            "key": "source",
+            "value": "OID2HEX/REGEXP:^\\.?1\\.3\\.6\\.1\\.2\\.1\\.4\\.34\\.1\\.3\\.2\\.16\\.(.)"
+          },
+          {
+            "key": "direction",
+            "value": "input"
+          },
+          {
+            "key": "oid",
+            "value": ".1.3.6.1.2.1.4.34.1.3.2.16"
+          }
+        ]
+      }
+    ]
+  },
+  "package": {
+    "path": "install/templates/Generic_SNMP_Device.xml.gz",
+    "sha256": "7b1a421bfd9ee3abb31695f7bc42768856fa3c527425320ba13de2c01a2a3205",
+    "template_file": "Generic_SNMP_Device.xml",
+    "embedded_query_path": "resource/snmp_queries/interface.xml",
+    "embedded_query_sha256": "628133bc0df9dddfbe70966ec04b4f60e81c6b9f3b756108bc74707885fc4bab"
+  },
+  "identities": [
+    "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+    "hash_0101046632e1e0b58a565c135d7ff90440c335",
+    "hash_0001045deb0d66c81262843dce5f3861be9966"
+  ],
+  "dependencies": [
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_0001040470b2427dbfadb6b8346e10a71268fa"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_0001042f222f28084085cd06a1f46e4449c793"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_00010455acbcc33f46ee6d754e8e81d1b54808"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_000104671e989be7cbf12c623b4e79d91c7bed"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_00010467b03eadc8e1d948a23326b7c6e225aa"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_000104768318f42819217ed81196d2179d3e1b"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_0001047ca34f612d35e1abafff8fe4ac59124a"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_00010484a5fe0db518550266309823f994ce9c"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_000104b5445c3a25f2b596953a87b5495e7b3e"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_000104cb3aa6256dcb3acd50d4517b77a1a5c3"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_000104d71b8ba294f057e0f135cc4c644e6b0d"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_000104fdaf2321fc890e355711c2bffc07d036"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_05010473f95f8b77b5508157d64047342c421e"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_050104a42185bd8b64e1b0d0a76d7e156ccfb8"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_060104e9c43831e54eca8069317a2ce8c6f751"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_0801042df25c57022b0c7e7d0be4c035ada1a0"
+    },
+    {
+      "from": "hash_0001045deb0d66c81262843dce5f3861be9966",
+      "to": "hash_080104721c0794526d1ac1c359f27dc56faa49"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_0101046632e1e0b58a565c135d7ff90440c335"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_030104bf566c869ac6443b0c75d1c32b5a350e"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_0701041cc1493a6781af2c478fa4de971531cf"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_0701042cf7129ad3ff819a7a7ac189bee48ce8"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_07010432285d5bf16e56c478f5e83f32cda9ef"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_0701043a33d4fc65b8329ab2ac46a36da26b72"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_0701046027a919c7c7731fbe095b6f53ab127b"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104617cdc8a230615e59f06f361ef6e7728"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_0701046b13ac0a0194e171d241d4b06f913158"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_07010492f5906c8dc0f964b41f4253df582c38"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104acb449d1451e8a2a655c2c99d31142c7"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104ad14ac90641aed388139f6ba86a2e48b"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104b5c23f246559df38662c255f4aa21d6b"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104c1f36ee60c3dc98945556d57f26e475b"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104cbbe5c1ddfb264a6e5d509ce1c78c95f"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104e6deda7be0f391399c5130e7c4a48b28"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_070104f4facc5e2ca7ebee621f09bc6d9fc792"
+    },
+    {
+      "from": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "to": "hash_200104ce51738ac1fd640a0b8e84ea0f2c8825"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_00010406621cd4a9289417cadcb8f9b5cfba80"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_00010410ca5530554da7b73dc69d291bf55d38"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_00010413b47e10b2d5db45707d61851f69c52b"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0001041742b2066384637022d178cc5072905a"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_00010447c9d51345c3ddc162ae17331aa2e728"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0001044fa57b3556e4a14c888a6669349b7a6f"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0001045deb0d66c81262843dce5f3861be9966"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0001048ad6790c22b693680e041f21d62537ac"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_000104d4dff05337bbf42c70cb6f73647d0d2a"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_000104df244b337547b434b486662c3c5c7472"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_000104e0d1625a1f4776a5294583659d5cee15"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_000104ed3f434a9ebd2f23ab9bc173d608b3d7"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0101042f654f7d69ac71a5d56b1db8543ccad3"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_01010436335cd98633963a575b70639cd2fdad"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0101046632e1e0b58a565c135d7ff90440c335"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_010104a389c7b3370fb8e7a690ad2979c5875e"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_010104c84e511401a747409053c90ba910d0fe"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_010104fd841e8bb822927289b7acbc031f3d7e"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_030104bf566c869ac6443b0c75d1c32b5a350e"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_08010413ebb33f9cbccfcba828db1075a8167c"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_08010416f0a62ef0724d6f2817d77cbc065323"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_08010418ce92c125a236a190ee9dd948f56268"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0801042df25c57022b0c7e7d0be4c035ada1a0"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_08010431399c3725bee7e09ec04049e3d5cd17"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0801044e2a72240955380dc8ffacfcc8c09874"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_080104636672962b5bb2f31d86985e2ab4bdfe"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_080104721c0794526d1ac1c359f27dc56faa49"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0801047bba0a4dfc10b19ec95b651882af3e14"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_0801047be68cbc4ee0b2973eb9785f8c7a35c7"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_08010493e2b6f59b10b13f2ddf2da3ae98b89a"
+    },
+    {
+      "from": "hash_040104d75e406fdeca4fcef45b8be3a9a63cbc",
+      "to": "hash_080104c802e2fd77f5b0a4c4298951bf65957c"
+    }
+  ],
+  "metrics": [
+    {
+      "name": "traffic_in",
+      "data_template": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "rrd_item": "hash_0801042df25c57022b0c7e7d0be4c035ada1a0",
+      "query_fields": [
+        {
+          "name": "ifInOctets",
+          "counter_width": 32
+        },
+        {
+          "name": "ifHCInOctets",
+          "counter_width": 64
+        }
+      ],
+      "unit": "octets",
+      "rrd_type": "COUNTER",
+      "minimum": "0",
+      "maximum": "|query_ifSpeed|",
+      "heartbeat": 600
+    },
+    {
+      "name": "traffic_out",
+      "data_template": "hash_0101046632e1e0b58a565c135d7ff90440c335",
+      "rrd_item": "hash_080104721c0794526d1ac1c359f27dc56faa49",
+      "query_fields": [
+        {
+          "name": "ifOutOctets",
+          "counter_width": 32
+        },
+        {
+          "name": "ifHCOutOctets",
+          "counter_width": 64
+        }
+      ],
+      "unit": "octets",
+      "rrd_type": "COUNTER",
+      "minimum": "0",
+      "maximum": "|query_ifSpeed|",
+      "heartbeat": 600
+    }
+  ],
+  "sources": [
+    "https://www.rfc-editor.org/rfc/rfc2863",
+    "https://www.rfc-editor.org/rfc/rfc4293"
+  ]
+}
