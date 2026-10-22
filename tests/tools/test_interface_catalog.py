@@ -7,7 +7,7 @@ import io
 import gzip
 import hashlib
 import tempfile
-from unittest import mock
+import unittest.mock
 import json
 from pathlib import Path
 import subprocess
@@ -155,17 +155,17 @@ class InterfaceCatalogTest(unittest.TestCase):
 
     def test_cli_summary_render_and_controlled_error(self):
         output = io.StringIO()
-        with mock.patch.object(sys, 'argv', ['interface_catalog']), contextlib.redirect_stdout(output):
+        with unittest.mock.patch.object(sys, 'argv', ['interface_catalog']), contextlib.redirect_stdout(output):
             self.assertEqual(MODULE.main(), 0)
         self.assertEqual(json.loads(output.getvalue())['fields'], 42)
         raw = io.BytesIO()
         stream = io.TextIOWrapper(raw, encoding='utf-8', write_through=True)
-        with mock.patch.object(sys, 'argv', ['interface_catalog', '--render']), contextlib.redirect_stdout(stream):
+        with unittest.mock.patch.object(sys, 'argv', ['interface_catalog', '--render']), contextlib.redirect_stdout(stream):
             self.assertEqual(MODULE.main(), 0)
         self.assertEqual(raw.getvalue(), (ROOT / self.catalog['query']['path']).read_bytes())
         with tempfile.TemporaryDirectory() as directory:
             error = io.StringIO()
-            with mock.patch.object(MODULE, 'ROOT', Path(directory)), mock.patch.object(sys, 'argv', ['interface_catalog']), contextlib.redirect_stderr(error):
+            with unittest.mock.patch.object(MODULE, 'ROOT', Path(directory)), unittest.mock.patch.object(sys, 'argv', ['interface_catalog']), contextlib.redirect_stderr(error):
                 with self.assertRaises(SystemExit) as exit_status:
                     MODULE.main()
             self.assertEqual(exit_status.exception.code, 1)
@@ -203,7 +203,7 @@ class InterfaceCatalogTest(unittest.TestCase):
             self.catalog['package']['sha256'] = hashlib.sha256(package.read_bytes()).hexdigest()
             (root / MODULE.CATALOG).write_text(json.dumps(self.catalog))
             error = io.StringIO()
-            with mock.patch.object(MODULE, 'ROOT', root), mock.patch.object(sys, 'argv', ['interface_catalog']), contextlib.redirect_stderr(error):
+            with unittest.mock.patch.object(MODULE, 'ROOT', root), unittest.mock.patch.object(sys, 'argv', ['interface_catalog']), contextlib.redirect_stderr(error):
                 with self.assertRaises(SystemExit) as exit_status:
                     MODULE.main()
             self.assertEqual(exit_status.exception.code, 1)
