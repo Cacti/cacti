@@ -29,7 +29,15 @@ $conn = new PDO("mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4", gete
 	PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
 	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ]);
-$tables = ['snmp_query', 'snmp_query_graph', 'snmp_query_graph_rrd', 'snmp_query_graph_sv', 'snmp_query_graph_rrd_sv', 'settings'];
+$drop_statements = [
+	'snmp_query'              => 'DROP TABLE snmp_query',
+	'snmp_query_graph'        => 'DROP TABLE snmp_query_graph',
+	'snmp_query_graph_rrd'    => 'DROP TABLE snmp_query_graph_rrd',
+	'snmp_query_graph_sv'     => 'DROP TABLE snmp_query_graph_sv',
+	'snmp_query_graph_rrd_sv' => 'DROP TABLE snmp_query_graph_rrd_sv',
+	'settings'                => 'DROP TABLE settings',
+];
+$tables = array_keys($drop_statements);
 
 foreach ($tables as $table) {
 	$query = $conn->prepare('SHOW TABLES LIKE ?');
@@ -128,7 +136,7 @@ try {
 		throw new RuntimeException('Native query reimport failed.');
 	}
 	$checks['reimport_identical_rows_and_ids'] = $snapshot() === $first;
-	$custom                                    = md5('operator additional interface title');
+	$custom                                    = '0a5589f7a0d646fb938d4fe4436054e8';
 	$insert                                    = $conn->prepare('INSERT INTO snmp_query_graph_sv (hash,snmp_query_graph_id,sequence,field_name,text) VALUES (?,?,999,?,?)');
 	$insert->execute([$custom, $first['snmp_query_graph'][0]['id'], 'title', 'Operator interface label']);
 
@@ -154,6 +162,6 @@ try {
 	echo json_encode($report, JSON_THROW_ON_ERROR), PHP_EOL;
 } finally {
 	foreach (array_reverse($created) as $table) {
-		$conn->exec('DROP TABLE `' . $table . '`');
+		$conn->exec($drop_statements[$table]);
 	}
 }
