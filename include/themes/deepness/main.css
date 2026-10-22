@@ -2665,7 +2665,6 @@ tr#realtime td:first-child {
 	background: var(--dp-panel);
 	background-image: none;
 	border: 1px solid var(--dp-border);
-	border-radius: 6px;
 	color: var(--dp-text);
 	text-transform: none;
 }
