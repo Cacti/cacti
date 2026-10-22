@@ -8674,7 +8674,9 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		if (!empty($host_id)) {
 			$log_level = read_config_option('spine_log_level') ?? 0;
 
-			if ($log_level < 2) {
+			if (is_device_debug_enabled($host_id)) {
+				$log = true;
+			} elseif ($log_level < 2) {
 				$log = false;
 			}
 		}
