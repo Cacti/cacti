@@ -8563,13 +8563,13 @@ function cacti_input_string_is_safe($input_string) {
  *
  * @param string $binary The executable path.
  * @param array $args The ordered argument list passed to cacti_exec().
+ * @param string $hostname The hostname that the exec applies to.
  *
  * @return string A single-line, secret-free description safe for cacti_log().
  */
-function cacti_exec_log_describe($binary, array $args) {
+function cacti_exec_log_describe($binary, array $args, string $hostname) {
 	$parts       = array();
 	$redact_next = false;
-	$host        = '';
 
 	foreach ($args as $arg) {
 		$arg = (string) $arg;
@@ -8597,23 +8597,17 @@ function cacti_exec_log_describe($binary, array $args) {
 		}
 
 		$parts[] = $arg;
-
-		/* Net-SNMP target: host:port, ipv4:port, or (udp6|tcp6):[ipv6]:port (zone id included) */
-		if ($host === '' &&
-			preg_match('/^(?:(?:udp|tcp)6?:)?(?:\[([^\]]+)\]|([0-9A-Za-z._-]+)):\d+$/', $arg, $m)) {
-			$host = (isset($m[1]) && $m[1] !== '') ? $m[1] : $m[2];
-		}
 	}
 
 	$prefix = '';
 
-	if ($host !== '' && function_exists('db_fetch_cell_prepared')) {
+	if ($hostname !== '' && function_exists('db_fetch_cell_prepared')) {
 		$host_id = db_fetch_cell_prepared('SELECT id
 			FROM host
 			WHERE hostname = ?
 			AND deleted = ""
 			LIMIT 1',
-			array($host));
+			array($hostname));
 
 		if (!empty($host_id)) {
 			$prefix = 'Device[' . $host_id . '] ';
@@ -8638,13 +8632,13 @@ function cacti_exec_log_describe($binary, array $args) {
  * @param array $args Ordered argument strings (not shell-escaped).
  * @param array& $output Array &$output Receives stdout lines on success; empty array on empty
  *   output.
+ * @param string $hostname The hostname applied to.
  * @param mixed $timeout False for 4 hour timeout or seconds before the process is killed (default
  *   30).
  *
  * @return int Exit code, or 255 on spawn failure, error with binary or timeout.
  */
-function cacti_exec($binary, array $args = array(), array &$output = array(), $timeout = 30) {
-	$host = '';
+function cacti_exec($binary, array $args = array(), array &$output = array(), $hostname = '', $timeout = 30) {
 	$log  = true;
 
 	// Ensure buffers flush automatically
@@ -8653,23 +8647,13 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	}
 
 	// Gather the host id from the arguments
-	foreach ($args as $arg) {
-		$arg = (string) $arg;
-
-		/* Net-SNMP target: host:port, ipv4:port, or (udp6|tcp6):[ipv6]:port (zone id included) */
-		if ($host === '' &&
-			preg_match('/^(?:(?:udp|tcp)6?:)?(?:\[([^\]]+)\]|([0-9A-Za-z._-]+)):\d+$/', $arg, $m)) {
-			$host = (isset($m[1]) && $m[1] !== '') ? $m[1] : $m[2];
-		}
-	}
-
-	if ($host !== '' && function_exists('db_fetch_cell_prepared')) {
+	if ($hostname !== '' && function_exists('db_fetch_cell_prepared')) {
 		$host_id = db_fetch_cell_prepared('SELECT id
 			FROM host
 			WHERE hostname = ?
 			AND deleted = ""
 			LIMIT 1',
-			array($host));
+			array($hostname));
 
 		if (!empty($host_id)) {
 			$log_level = read_config_option('spine_log_level') ?? 0;
@@ -8708,7 +8692,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 
 	if (!is_resource($process)) {
 		if ($log) {
-			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
+			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args, $hostname) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
 		}
 
 		return 255;
@@ -8793,7 +8777,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		proc_close($process);
 
 		if ($log) {
-			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
+			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args, $hostname) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
 		}
 
 		return 1;
@@ -8810,7 +8794,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	}
 
 	if (!empty($stderr) && $log) {
-		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_LOW);
+		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args, $hostname) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_LOW);
 	}
 
 	$stdout  = rtrim($stdout, "\n");
@@ -8825,13 +8809,14 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
  *
  * @param string $binary The binary.
  * @param array $args The args.
+ * @param string $hostname The hostname applied to.
  * @param int $timeout The timeout.
  *
  * @return string|false Stdout on exit code 0, false on failure.
  */
-function cacti_exec_string($binary, array $args = array(), $timeout = 30) {
+function cacti_exec_string($binary, array $args = array(), string $hostname = '', int $timeout = 30) {
 	$output = array();
-	$exit   = cacti_exec($binary, $args, $output, $timeout);
+	$exit   = cacti_exec($binary, $args, $output, $hostname, $timeout);
 
 	return ($exit === 0) ? implode("\n", $output) : false;
 }

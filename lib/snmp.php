@@ -409,7 +409,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 			snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
-		cacti_exec($binary, $args, $snmp_value, cacti_snmp_command_timeout($timeout_s, $retries));
+		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
@@ -525,7 +525,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 			snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
-		cacti_exec($binary, $args, $snmp_value, cacti_snmp_command_timeout($timeout_s, $retries));
+		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
@@ -636,7 +636,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 			snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
-		cacti_exec($binary, $args, $snmp_value, cacti_snmp_command_timeout($timeout_s, $retries));
+		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
@@ -1505,7 +1505,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			$args[] = snmp_format_target_arg($hostname, $port);
 			$args[] = $oid;
 			cacti_snmp_debug_command($binary, $args);
-			cacti_exec($binary, $args, $temp_array, cacti_snmp_command_timeout($timeout_s, $retries));
+			cacti_exec($binary, $args, $temp_array, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 		} else {
 			$binary = read_config_option('path_snmpwalk');
 			$args   = array_merge(array('-OQnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')),
@@ -1518,7 +1518,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			$args[] = snmp_format_target_arg($hostname, $port);
 			$args[] = $oid;
 			cacti_snmp_debug_command($binary, $args);
-			cacti_exec($binary, $args, $temp_array, cacti_snmp_command_timeout($timeout_s, $retries));
+			cacti_exec($binary, $args, $temp_array, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 		}
 
 		if (strpos(implode(' ', $temp_array), 'Timeout') !== false) {
