@@ -4,7 +4,9 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
-    directory: /
+    # "/" covers only .github/workflows and a root action.yml, so the local
+    # composite actions need their own entry.
+    directories: [/, /.github/actions/*]
     schedule: {interval: weekly, day: friday}
     open-pull-requests-limit: 5
     cooldown: {default-days: 7}
@@ -22,7 +24,7 @@ updates:
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
   - package-ecosystem: github-actions
-    directory: /
+    directories: [/, /.github/actions/*]
     target-branch: 1.2.x
     schedule: {interval: weekly, day: friday}
     open-pull-requests-limit: 5
