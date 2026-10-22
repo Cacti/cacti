@@ -45,6 +45,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
 
+    def test_export_page_change_runs_the_selected_items_probe(self):
+        self.dispatch('automation_snmp.php', 'SelectedItemsCoverage.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -76,7 +79,7 @@ class RequestDispatchTest(unittest.TestCase):
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
                            'UserAdministrationAuditCoverage.php', 'Core/PackageArchive.php',
-                           'Installer/RetiredThemeCleanup.php']:
+                           'Installer/RetiredThemeCleanup.php', 'Core/SelectedItemsCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
