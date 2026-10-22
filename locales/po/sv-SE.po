@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-20 16:23+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-21 18:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -4407,7 +4407,7 @@ msgstr "Lägg till i en rapport"
 
 #: graph_view.php
 msgid "Report"
-msgstr "Rapportera"
+msgstr "Rapport"
 
 #: graph_view.php lib/html_graph.php lib/html_tree.php
 msgid "All Graphs & Templates"
@@ -6463,7 +6463,7 @@ msgstr "Hypervisorrelaterad"
 
 #: include/global_arrays.php
 msgid "ILO, IPMI, iDrac, etc."
-msgstr "ILO, IPMI, iDrac, etc."
+msgstr "ILO, IPMI, iDrac osv."
 
 #: include/global_arrays.php
 msgid "Licensing Related"
@@ -6604,7 +6604,7 @@ msgstr "Allmän administration"
 
 #: include/global_arrays.php
 msgid "System Administration"
-msgstr "Systemadministratör"
+msgstr "Systemadministration"
 
 #: include/global_arrays.php lib/html.php
 msgid "CDEF"
@@ -6793,15 +6793,15 @@ msgstr "5 000 datakällobjekt"
 
 #: include/global_arrays.php
 msgid "10,000 Data Source Items"
-msgstr "10 000 datakälla objekt"
+msgstr "10 000 datakällobjekt"
 
 #: include/global_arrays.php
 msgid "15,000 Data Source Items"
-msgstr "15 000 datakälla objekt"
+msgstr "15 000 datakällobjekt"
 
 #: include/global_arrays.php
 msgid "25,000 Data Source Items"
-msgstr "25 000 datakällans artiklar"
+msgstr "25 000 datakällobjekt"
 
 #: include/global_arrays.php
 msgid "50,000 Data Source Items (Default)"
@@ -7133,7 +7133,7 @@ msgstr "feb"
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
-msgstr "Mars"
+msgstr "mar"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7341,7 +7341,7 @@ msgstr "Pappersflygplan"
 
 #: include/global_arrays.php
 msgid "Paw"
-msgstr "Par"
+msgstr "Tass"
 
 #: include/global_arrays.php
 msgid "Sunrise"
@@ -7357,7 +7357,7 @@ msgstr "[Varning]"
 
 #: include/global_arrays.php
 msgid "[Restart]"
-msgstr "Begränsat"
+msgstr "[Starta om]"
 
 #: include/global_arrays.php
 msgid "[Success]"
@@ -7377,7 +7377,7 @@ msgstr "Trädläge"
 
 #: include/global_arrays.php
 msgid "List Mode"
-msgstr "List läget"
+msgstr "Listläge"
 
 #: include/global_arrays.php lib/functions.php lib/html.php links.php
 #: user_admin.php user_group_admin.php
@@ -7662,11 +7662,11 @@ msgstr "Det maximala antalet millisekunder Cacti väntar på ett SNMP-svar (fung
 
 #: include/global_form.php
 msgid "Maximum OIDs Per Get Request"
-msgstr "Högsta OID: s per-få-förfrågan"
+msgstr "Högsta antal OID:er per GET-förfrågan"
 
 #: include/global_form.php
 msgid "The number of SNMP OIDs that can be obtained in a single SNMP Get request."
-msgstr "Anges antalet OID-filer som kan erhållas i en enda SNMP-förfrågan."
+msgstr "Antalet SNMP-OID:er som kan hämtas i en enda SNMP-GET-förfrågan."
 
 #: include/global_form.php
 #, php-format
@@ -8931,7 +8931,7 @@ msgstr "Föröka alla alternativ på denna blankett (förutom &quot;Titel&quot;)
 
 #: include/global_form.php
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
-msgstr "Stringmönstret (Regular Expression) för att matcha mot. <br> Inklämning &#39;/&#39; får <strong>INTE</strong> tillhandahållas!"
+msgstr "Strängmönstret (reguljärt uttryck) som ska matchas.<br>Avgränsande '/' får <strong>INTE</strong> anges!"
 
 #: include/global_form.php
 msgid "Replacement Pattern"
@@ -10730,7 +10730,7 @@ msgstr "Läge som Cacti använder för att försöka autentisera mot LDAP-server
 
 #: include/global_settings.php user_domains.php
 msgid "Distinguished Name (DN)"
-msgstr "Distinguished Name (DN)"
+msgstr "Unikt namn (DN)"
 
 #: include/global_settings.php user_domains.php
 msgid "The \"Distinguished Name\" syntax, applicable for both OpenLDAP and Windows AD configurations, offers flexibility in defining user identity. For OpenLDAP, the format follows this structure: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>. Windows AD provides an alternative syntax: <i>\"&lt;username&gt;@win2kdomain.local\"</i>, commonly known as \"userPrincipalName (UPN)\". In this context, \"&lt;username&gt;\" represents the specific username provided during the login prompt. This is particularly pertinent when operating in \"No Searching\" mode, or \"Require Group Membership\" enabled."
@@ -11667,7 +11667,7 @@ msgstr "Bredden på miniatyrbilderna i pixlar."
 
 #: include/global_settings.php
 msgid "Default Tree"
-msgstr "Standard Tree"
+msgstr "Standardträd"
 
 #: include/global_settings.php
 msgid "The default graph tree to use when displaying graphs in tree mode."
@@ -12261,7 +12261,7 @@ msgstr "%s GBytes"
 #: lib/boost.php
 #, php-format
 msgid "%s Bytes"
-msgstr "%s GBytes"
+msgstr "%s byte"
 
 #: lib/clog_webapi.php utilities.php
 #, php-format
@@ -12402,7 +12402,7 @@ msgstr "Running Data Query [ %s]."
 #: lib/data_query.php
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "Hittade Typ = &#39; %s&#39; [ %s]."
+msgstr "Hittade typen = '%s' [%s]."
 
 #: lib/data_query.php
 #, php-format
@@ -12491,7 +12491,7 @@ msgstr "Kontrollera efter sorteringsändring. Inga ändringar upptäckts."
 #: lib/data_query.php
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "Upptäckt nytt sorteringsfält: &#39; %s&#39; gammalt sorteringsfält &#39; %s&#39;"
+msgstr "Nytt sorteringsfält upptäckt: '%s', tidigare sorteringsfält: '%s'"
 
 #: lib/data_query.php
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -12504,12 +12504,12 @@ msgstr "Nytt sorteringsfält validerat. Sorteringsfältet uppdateras."
 #: lib/data_query.php
 #, php-format
 msgid "Could not find data query XML file at '%s'"
-msgstr "Det gick inte att hitta XML-filen för datasökningen vid &quot; %s&quot;"
+msgstr "Det gick inte att hitta XML-filen för datasökningen vid ”%s”"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found data query XML file at '%s'"
-msgstr "Funnet XML-fil för XML-sökning vid &quot; %s&quot;"
+msgstr "Hittade XML-filen för datasökningen vid ”%s”"
 
 #: lib/data_query.php
 msgid "Error parsing XML file into an array."
@@ -12539,7 +12539,7 @@ msgstr "&lt;arg_num_indexes&gt; saknas i XML-fil, &quot;Index Count Changed&quot
 #: lib/data_query.php
 #, php-format
 msgid "Executing script for num of indexes '%s'"
-msgstr "Utför skript för antal index &quot; %s&quot;"
+msgstr "Kör skript för antal index ”%s”"
 
 #: lib/data_query.php
 #, php-format
@@ -12575,7 +12575,7 @@ msgstr "Hittade index: %s"
 #: lib/data_query.php
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "Klicka för att visa Data Query-utgång för fältet &#39; %s&#39;"
+msgstr "Klicka för att visa utdata från datasökningen för fältet '%s'"
 
 #: lib/data_query.php
 #, php-format
@@ -12585,12 +12585,12 @@ msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s, hoppar öve
 #: lib/data_query.php
 #, php-format
 msgid "Executing script query '%s'"
-msgstr "Utför skriptfrågan &#39; %s&#39;"
+msgstr "Kör skriptfrågan '%s'"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "Hittade objektet [ %s = &#39; %s&#39;] index: %s"
+msgstr "Hittade objekt [%s='%s'], index: %s"
 
 #: lib/data_query.php
 #, php-format
@@ -12632,7 +12632,7 @@ msgstr "Bulk Walk Size är fastställd till %d."
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "Utför SNMP för antal index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Kör SNMP-get för antal index @ '%s', antal index: %s"
 
 #: lib/data_query.php
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -12641,7 +12641,7 @@ msgstr "&lt;oid_num_indexes&gt; saknas i XML-fil, &quot;Index Count Changed&quot
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr "Utför SNMP-promenad för lista över index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Kör SNMP-walk för indexlistan @ '%s', antal index: %s"
 
 #: lib/data_query.php
 msgid "No SNMP data returned"
@@ -12650,27 +12650,27 @@ msgstr "Ingen SNMP-data returnerad"
 #: lib/data_query.php
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "Index hittat vid OID: &#39; %s&#39; värde: &#39; %s&#39;"
+msgstr "Hittade index vid OID: '%s', värde: '%s'"
 
 #: lib/data_query.php
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Filtrera lista över index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Lista över index filtrerad efter värdet '%s', antal index: %s"
 
 #: lib/data_query.php
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "Filtrerat index som hittades vid OID: &#39; %s&#39; -värde: &#39; %s&#39;"
+msgstr "Filtrerat index hittades vid OID: '%s', värde: '%s'"
 
 #: lib/data_query.php
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "Filtrera lista över index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Filtrerar indexlistan @ '%s', antal index: %s"
 
 #: lib/data_query.php
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "Filtrerat index som hittades vid OID: &#39; %s&#39; -värde: &#39; %s&#39;"
+msgstr "Index filtrerat efter värde hittades vid OID: ”%s”, värde: ”%s”"
 
 #: lib/data_query.php
 #, php-format
@@ -12680,12 +12680,12 @@ msgstr "Fixing wrong &#39;metodfältet för&#39; %s &#39;eftersom&#39; rewrite_i
 #: lib/data_query.php
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "Infoga indexdata för fältet &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "Infogar indexdata för fältet '%s' [value='%s']"
 
 #: lib/data_query.php
 #, php-format
 msgid "Located input field '%s' [get]"
-msgstr "Ligger inmatningsfältet &#39; %s&#39; [get]"
+msgstr "Hittade inmatningsfältet '%s' [get]"
 
 #: lib/data_query.php
 #, php-format
@@ -12695,12 +12695,12 @@ msgstr "Funnet OID-omskrivningsregel: &#39;s / %s / %s /&#39;"
 #: lib/data_query.php
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite vid OID: &#39; %s&#39; new OID: &#39; %s&#39;"
+msgstr "oid_rewrite vid OID: '%s', ny OID: '%s'"
 
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "Exekvering av SNMP får för data @ &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "Kör SNMP-get för data @ '%s' [value='%s']"
 
 #: lib/data_query.php
 #, php-format
@@ -12720,37 +12720,37 @@ msgstr "Sorteringsfältet returnerade inte data för OID [ %s]. Hoppar över."
 #: lib/data_query.php
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "Hittade resultat för data @ &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "Hittade resultat för data @ '%s' [value='%s']"
 
 #: lib/data_query.php
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr "Inställning av resultat för data @ &#39; %s&#39; [nyckel = &#39; %s&#39;, värde = &#39; %s&#39;]"
+msgstr "Ställer in resultat för data @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "Hoppad resultat för data @ &#39; %s&#39; [nyckel = &#39; %s&#39;, värde = &#39; %s&#39;]"
+msgstr "Hoppade över resultat för data @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr "Fick SNMP få resultat för data @ &#39; %s&#39; [value = &#39; %s&#39;] (index: %s)"
+msgstr "Fick resultat från SNMP-get för data @ '%s' [value='%s'] (index: %s)"
 
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='$value']"
-msgstr "Utför SNMP för data @ &#39; %s&#39; [value = &#39;$ value&#39;]"
+msgstr "Kör SNMP-get för data @ '%s' [value='$value']"
 
 #: lib/data_query.php
 #, php-format
 msgid "Located input field '%s' [walk]"
-msgstr "Ligger inmatningsfältet &#39; %s&#39; [gå]"
+msgstr "Hittade inmatningsfältet '%s' [walk]"
 
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP walk for data @ '%s'"
-msgstr "Utför SNMP-promenad för data @ &#39; %s&#39;"
+msgstr "Kör SNMP-walk för data @ '%s'"
 
 #: lib/data_query.php
 #, php-format
@@ -12760,22 +12760,22 @@ msgstr "Inget index[%s] i value_index_parse, hoppar över."
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "Hittade objektet [ %s = &#39; %s&#39;] index: %s [från %s]"
+msgstr "Hittade objekt [%s='%s'], index: %s [från %s]"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "Funnet OCTET STRING &#39; %s&#39; avkodat värde: &#39; %s&#39;"
+msgstr "Hittade OCTET STRING '%s', avkodat värde: '%s'"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr "Hittade objekt [ %s = &#39; %s&#39;] index: %s [från regexp oid parse]"
+msgstr "Hittade objekt [%s='%s'], index: %s [från regexp oid-analys]"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr "Hittade objektet [ %s = &#39; %s&#39;] index: %s [från regexp oid value parse]"
+msgstr "Hittade objekt [%s='%s'], index: %s [från regexp oid-värdeanalys]"
 
 #: lib/data_query.php
 #, php-format
@@ -13159,7 +13159,7 @@ msgstr "Dödar per RRA"
 
 #: lib/html.php
 msgid "Remove StdDev"
-msgstr "Ta bort StdDev"
+msgstr "Ta bort standardavvikelse"
 
 #: lib/html.php
 msgid "Gap Fill Range"
@@ -13610,15 +13610,15 @@ msgstr "Slutdatumväljare"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Shift Time Backward"
-msgstr "Växla tiden bakåt"
+msgstr "Flytta tiden bakåt"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Define Shifting Interval"
-msgstr "Definiera växlingsintervall"
+msgstr "Definiera förskjutningsintervall"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Shift Time Forward"
-msgstr "Växla tiden framåt"
+msgstr "Flytta tiden framåt"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Refresh selected time span"
@@ -13700,7 +13700,7 @@ msgstr "Markera den här rutan om du vill använda anpassad html och CSS för ra
 
 #: lib/html_reports.php
 msgid "Format File to Use"
-msgstr "Formatera fil som ska användas"
+msgstr "Formatfil att använda"
 
 #: lib/html_reports.php
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
@@ -14179,7 +14179,7 @@ msgstr "Valda"
 #: lib/html_utility.php
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "Sökordet &quot; %s&quot; är inte giltigt. Felet är %s"
+msgstr "Det reguljära uttrycket \"%s\" är inte giltigt. Felet är %s"
 
 #: lib/html_utility.php
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -14515,7 +14515,7 @@ msgstr "Tack för att du tog dig tid att ladda ner och installera Cacti, den ful
 #: lib/installer.php
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
-msgstr "Se till att du har läst och följt de nödvändiga stegen som behövs för att installera Cacti innan du fortsätter. Installationsinformation finns för <a href=\"%1$s\">Unix</a> och <a href=\"%2$s\">Win32-</a> baserade operativsystem."
+msgstr "Kontrollera att du har läst och följt de steg som krävs för att installera Cacti innan du fortsätter. Installationsinformation finns för <a href=\"%s\">Unix</a> och <a href=\"%s\">Win32</a>-baserade operativsystem."
 
 #: lib/installer.php
 #, php-format
@@ -14874,7 +14874,7 @@ msgstr "Om SELinux är aktiverat på din server kan du antingen permanent avakti
 #: lib/installer.php
 #, php-format
 msgid "The user '%s' should have MODIFY permission to enable read/write."
-msgstr "Användaren &#39; %s&#39; ska ha MODIFY-behörighet för att aktivera läs / skriv."
+msgstr "Användaren '%s' måste ha MODIFY-behörighet för att kunna läsa och skriva."
 
 #: lib/installer.php
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
@@ -15132,7 +15132,7 @@ msgstr "Din Cacti Server är nästan klar. Vänligen kontrollera att du är glad
 #: lib/installer.php
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
-msgstr "Tryck på &#39; %s&#39; och klicka sedan på &#39; %s&#39; för att slutföra installationsprocessen efter att du har valt din Enhetsmallar."
+msgstr "Tryck på '%s' och sedan på '%s' för att slutföra installationen efter att du har valt enhetsmallar."
 
 #: lib/installer.php
 #, php-format
@@ -15702,17 +15702,17 @@ msgstr "Den nödvändiga RRD-filens stegstorlek är \"%s\" men det observerade s
 #: lib/rrd.php
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Typ för datakälla &#39; %s&#39; ska vara &#39; %s&#39;"
+msgstr "Datakällan '%s' ska ha typen '%s'"
 
 #: lib/rrd.php
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Heartbeat för datakälla &#39; %s&#39; ska vara &#39; %s&#39;"
+msgstr "Hjärtslag för datakällan '%s' ska vara '%s'"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "RRD-minsta för datakälla &#39; %s&#39; ska vara &#39; %s&#39;"
+msgstr "RRD-minimum för datakällan '%s' ska vara '%s'"
 
 #: lib/rrd.php
 #, php-format
@@ -15722,12 +15722,12 @@ msgstr "DS ‘%s’ saknas i Cactis definition"
 #: lib/rrd.php
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA &#39; %s&#39; har samma CF / steg ( %s, %s) som &#39; %s&#39;"
+msgstr "Cacti RRA '%s' har samma CF/steg (%s, %s) som '%s'"
 
 #: lib/rrd.php
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Fil RRA &#39; %s&#39; har samma CF / steg ( %s, %s) som &#39; %s&#39;"
+msgstr "Filens RRA '%s' har samma CF/steg (%s, %s) som '%s'"
 
 #: lib/rrd.php
 #, php-format
@@ -15747,12 +15747,12 @@ msgstr "Antalet rader för Cacti RRA-id '%s' är felaktigt.  Antalet rader är \
 #: lib/rrd.php
 #, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
-msgstr "RRA &#39; %s&#39; saknas i RRDfile"
+msgstr "RRA '%s' saknas i den befintliga Cacti-RRD-filen"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "RRA &#39; %s&#39; saknas i Cactis definition"
+msgstr "Cactis definition saknar RRA '%s'"
 
 #: lib/rrd.php
 msgid "RRD File Information"
@@ -15897,7 +15897,7 @@ msgstr "ALLVARLIGT: Standardavvikelsen måste vara ett positivt heltal."
 
 #: lib/spikekill.php
 msgid "StdDev"
-msgstr "StdDev"
+msgstr "Stdav"
 
 #: lib/spikekill.php
 msgid "Variance"
@@ -16079,7 +16079,7 @@ msgstr "DS"
 
 #: lib/spikekill.php
 msgid "NonNan"
-msgstr "NonNan"
+msgstr "Ej NaN"
 
 #: lib/spikekill.php
 msgid "Samples"
@@ -16087,35 +16087,35 @@ msgstr "Prover"
 
 #: lib/spikekill.php
 msgid "MaxStdDev"
-msgstr "MaxStdDev"
+msgstr "Maximal standardavvikelse"
 
 #: lib/spikekill.php
 msgid "MaxValue"
-msgstr "MaxValue"
+msgstr "Maxvärde"
 
 #: lib/spikekill.php
 msgid "MinStdDev"
-msgstr "MinStdDev"
+msgstr "Minimal standardavvikelse"
 
 #: lib/spikekill.php
 msgid "MinValue"
-msgstr "MinValue"
+msgstr "Minvärde"
 
 #: lib/spikekill.php
 msgid "StdKilled"
-msgstr "StdKilled"
+msgstr "Borttagna standardavvikelser"
 
 #: lib/spikekill.php
 msgid "VarKilled"
-msgstr "VarKilled"
+msgstr "Borttagna variansvärden"
 
 #: lib/spikekill.php
 msgid "WindKilled"
-msgstr "WindKilled"
+msgstr "Borttagna fönstervärden"
 
 #: lib/spikekill.php
 msgid "WindSamples"
-msgstr "WindSamples"
+msgstr "Fönsterprover"
 
 #: lib/template.php
 msgid "Attempting to Create Graph from Non-Template"
@@ -16469,7 +16469,7 @@ msgstr "InnoDB kommer att hålla så mycket tabeller och index i systemminnet so
 
 #: lib/utility.php
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr "Denna inställning bör vara PÅ om inte dina Cacti-instanser körs på ZFS eller FusionI/O, som båda har intern journalföring för att hantera plötsliga systemkrascher. Om du har mycket tillförlitlig strömförsörjning, systemen sällan går ned och du har säkerhetskopior kan du få nästan 50 % bättre databasprestanda genom att ställa in alternativet på AV."
+msgstr "Den här inställningen bör förbli PÅ, såvida inte dina Cacti-instanser körs på ZFS eller FusionI/O, som båda har intern journalföring för att hantera plötsliga systemkrascher. Om du har en mycket tillförlitlig strömförsörjning, dina system sällan går ned och du har säkerhetskopior kan du dock få nästan 50 % bättre databasprestanda genom att ställa in alternativet på AV."
 
 #: lib/utility.php
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
@@ -16546,7 +16546,7 @@ msgstr "När du använder MariaDB 10.2.4 och senare kan du använda atomskrivnin
 #: lib/utility.php
 #, php-format
 msgid "%s Tuning"
-msgstr "%s Tuning"
+msgstr "%s-justering"
 
 #: lib/utility.php
 msgid "Note: Many changes below require a database restart"
@@ -17206,7 +17206,7 @@ msgstr "Aktivera insticksprogram"
 #: plugins.php
 #, php-format
 msgid "Plugin directory '%s' is missing setup.php"
-msgstr "Plugin-katalogen &#39; %s&#39; saknar setup.php"
+msgstr "Plugin-katalogen '%s' saknar setup.php"
 
 #: plugins.php
 #, php-format
@@ -17228,7 +17228,7 @@ msgstr "Plugin-kataloger får inte innehålla mellanslag"
 #: plugins.php
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "Plugin-katalogen är inte korrekt. Bör vara &#39; %s&#39; men är &#39; %s&#39;"
+msgstr "Plugin-katalogen är felaktig. Ska vara ”%s” men är ”%s”"
 
 #: plugins.php
 msgid "Plugin is lacking an INFO file"
@@ -17741,7 +17741,7 @@ msgstr "DS ID"
 
 #: rrdcleaner.php
 msgid "Template ID"
-msgstr "Mall ID"
+msgstr "Mall-ID"
 
 #: rrdcleaner.php
 msgid "Last Modified"
@@ -18047,7 +18047,7 @@ msgstr "Inga webbplatser hittades"
 #: spikekill.php
 #, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid"
-msgstr "FATAL: Spike Kill-metoden &#39; %s&#39; är ogiltig"
+msgstr "FATALT: Spike Kill-metoden ”%s” är ogiltig"
 
 #: spikekill.php
 msgid "FATAL: Spike Kill Not Allowed"
@@ -18294,7 +18294,7 @@ msgstr "Avsluta redigeringsträdet"
 #: tree.php
 #, php-format
 msgid "This tree has been locked for Editing on %s by %s."
-msgstr "Detta träd har blivit låst för redigering på%1$s av%2$s."
+msgstr "Detta träd låstes för redigering den %s av %s."
 
 #: tree.php
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
@@ -18920,7 +18920,7 @@ msgstr "Effektiv användare"
 
 #: user_domains.php
 msgid "CN FullName"
-msgstr "CN FullName"
+msgstr "CN fullständigt namn"
 
 #: user_domains.php
 msgid "CN eMail"
