@@ -1095,7 +1095,7 @@ function form_actions() {
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receiver_notifications' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? cacti_html_context_escape(serialize($selected_items), CACTI_ESC_ATTR) : '') . "'>
-				<input type='hidden' name='id' value='" . get_nfilter_request_var('id') . "'>
+				<input type='hidden' name='id' value='" . get_filter_request_var('id') . "'>
 				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 				$save_html
 				</td>
