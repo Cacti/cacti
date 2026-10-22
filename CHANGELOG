@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue: Skin jQuery multiselect buttons and menus in the Deepness theme with its own palette so they match the select2 and selectmenu controls instead of rendering like the Dark theme
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -security#7235: Harden - Harden advisory command execution and database DDL sink validation
 -security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
