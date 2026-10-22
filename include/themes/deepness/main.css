@@ -2627,7 +2627,10 @@ tr#realtime td:first-child {
 }
 
 .ui-multiselect-header {
-	background-color: var(--dp-row-even);
+	background: var(--dp-row-even);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
 	margin-bottom: 5px;
 }
 
@@ -2653,6 +2656,66 @@ tr#realtime td:first-child {
 .ui-multiselect-filter-label > input {
 	padding: 2px;
 	margin-left: 4px;
+}
+
+/* jQuery multiselect - jquery.multiselect.css is stock, so repaint the button
+   and popup menu onto this theme's palette here to match the select2
+   controls instead of the jquery-ui.css surfaces. */
+.ui-multiselect.ui-state-default {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+	text-transform: none;
+}
+
+.ui-multiselect.ui-state-default:hover,
+.ui-multiselect.ui-state-hover,
+.ui-multiselect.ui-state-focus,
+.ui-multiselect.ui-state-active {
+	background: var(--dp-panel-alt);
+	background-image: none;
+	border-color: var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-multiselect.ui-state-disabled {
+	background: var(--dp-panel-alt);
+	color: var(--dp-text-muted);
+}
+
+.ui-multiselect-menu.ui-widget-content {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label {
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label.ui-state-hover {
+	background: var(--dp-header);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label.ui-state-active {
+	background: var(--dp-panel-alt);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label.ui-state-disabled {
+	color: var(--dp-text-muted);
+}
+
+.ui-multiselect-grouplabel {
+	border-bottom-color: var(--dp-border);
+	color: var(--dp-text);
 }
 
 .ui-widget {

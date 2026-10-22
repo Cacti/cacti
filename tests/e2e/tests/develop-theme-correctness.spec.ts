@@ -1,5 +1,5 @@
 /* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { installThemeCss, collectThemeCoverage } from '../theme-css';
@@ -191,3 +191,75 @@ test('Hollyberry checked radio sliders retain their gradient and solid fallback'
 	expect(styles.color).toBe('rgba(0, 161, 11, 0.9)');
 	expect(styles.image).toContain('linear-gradient(');
 });
+
+// Mirrors the button and menu markup that include/js/jquery.multiselect.js 3.x builds.
+const multiselectMarkup = '<!DOCTYPE html><div style="font-size:20px">' +
+	'<button type="button" id="ms-button" class="ui-multiselect ui-widget ui-state-default ui-corner-all"><span class="ui-icon ui-icon-triangle-1-s"></span><span>2 Selected</span></button>' +
+	'<button type="button" id="ms-hover" class="ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-hover"><span>2 Selected</span></button>' +
+	'<button type="button" id="ms-disabled" class="ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-disabled" disabled><span>None</span></button>' +
+	'<div id="ms-menu" class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all" style="display:block">' +
+	'<div class="ui-multiselect-header ui-widget-header ui-corner-all ui-helper-clearfix"><ul class="ui-helper-reset"><li><a class="ui-multiselect-all"><span>Check all</span></a></li></ul></div>' +
+	'<ul class="ui-multiselect-checkboxes ui-helper-reset"><li class="ui-multiselect-optgroup"><a class="ui-multiselect-grouplabel">Protocols</a><ul>' +
+	'<li><label id="ms-option" class="ui-corner-all ui-state-hover"><input type="checkbox"><span>TCP</span></label></li>' +
+	'<li><label id="ms-active" class="ui-corner-all ui-state-active"><input type="checkbox" checked><span>UDP</span></label></li>' +
+	'<li><label id="ms-option-disabled" class="ui-corner-all ui-state-disabled"><input type="checkbox" disabled><span>ESP</span></label></li>' +
+	'</ul></li></ul></div>' +
+	'<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all ui-multiselect-single" style="display:block">' +
+	'<ul class="ui-multiselect-checkboxes ui-helper-reset"><li><label id="ms-single" class="ui-corner-all"><input type="radio"><span>Last Hour</span></label></li></ul></div>' +
+	'</div>';
+
+async function computedStyles(page: Page, styles: [string, string][]) {
+	const result: string[] = [];
+	for (const [selector, property] of styles) {
+		result.push(await page.locator(selector).first().evaluate((element, property) => (getComputedStyle(element) as any)[property], property));
+	}
+	return result;
+}
+
+test('deepness skins jQuery multiselect buttons and menus with its own palette', async ({ page }) => {
+	await page.setContent(multiselectMarkup);
+	await installThemeCss(page, 'include/themes/deepness/jquery.multiselect.css');
+	await installThemeCss(page, 'include/themes/deepness/main.css');
+	expect(await computedStyles(page, [
+		['#ms-button', 'backgroundColor'], ['#ms-button', 'backgroundImage'], ['#ms-button', 'textTransform'],
+		['#ms-hover', 'backgroundColor'],
+		['#ms-disabled', 'color'],
+		['#ms-menu', 'backgroundColor'], ['#ms-menu', 'borderTopColor'],
+		['#ms-menu .ui-multiselect-header', 'backgroundColor'], ['#ms-menu .ui-multiselect-header', 'backgroundImage'],
+		['#ms-option', 'backgroundColor'], ['#ms-option', 'color'],
+		['#ms-active', 'backgroundColor'],
+		['#ms-option-disabled', 'color'],
+		['.ui-multiselect-grouplabel', 'borderBottomColor'],
+	])).toEqual([
+		'rgb(17, 22, 29)', 'none', 'none',
+		'rgb(22, 28, 37)',
+		'rgb(151, 163, 176)',
+		'rgb(17, 22, 29)', 'rgb(38, 48, 64)',
+		'rgb(13, 18, 23)', 'none',
+		'rgb(7, 10, 14)', 'rgb(230, 237, 243)',
+		'rgb(22, 28, 37)',
+		'rgb(151, 163, 176)',
+		'rgb(38, 48, 64)',
+	]);
+});
+
+for (const theme of ['cacti', 'carrot', 'hollyberry', 'raspberry']) {
+	test(`${theme} lays out jQuery multiselect 3.x option groups`, async ({ page }) => {
+		await page.setContent(multiselectMarkup);
+		await installThemeCss(page, `include/themes/${theme}/jquery.multiselect.css`);
+		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		expect(await computedStyles(page, [
+			['#ms-menu .ui-multiselect-optgroup', 'listStyleType'], ['#ms-menu .ui-multiselect-optgroup', 'fontSize'],
+			['#ms-menu .ui-multiselect-optgroup > ul', 'paddingLeft'],
+			['#ms-option', 'fontSize'], ['#ms-option', 'paddingLeft'], ['#ms-option', 'textIndent'],
+			['#ms-single', 'textIndent'],
+			['.ui-multiselect-grouplabel', 'display'], ['.ui-multiselect-grouplabel', 'fontWeight'], ['.ui-multiselect-grouplabel', 'textAlign'], ['.ui-multiselect-grouplabel', 'borderBottomStyle'],
+		])).toEqual([
+			'none', '20px',
+			'3px',
+			'18px', '21px', '-20px',
+			'0px',
+			'block', '700', 'center', 'solid',
+		]);
+	});
+}
