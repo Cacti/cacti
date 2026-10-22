@@ -1,0 +1,1 @@
+Validate arguments and fail closed in data input scripts, and keep cactigetOIDs credentials out of argv
