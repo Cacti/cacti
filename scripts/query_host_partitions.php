@@ -95,8 +95,9 @@ if ($cmd == 'index') {
 	$arr_index = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids['index'], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids[$arg], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 
+	/* a line break in a device value would start a new output record */
 	for ($i=0;($i<cacti_sizeof($arr_index));$i++) {
-		print $arr_index[$i] . '!' . $arr[$i] . PHP_EOL;
+		print str_replace(array("\r", "\n"), '', $arr_index[$i] . '!' . $arr[$i]) . PHP_EOL;
 	}
 
 /*
