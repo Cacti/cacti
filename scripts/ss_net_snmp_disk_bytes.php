@@ -159,7 +159,7 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 		WHERE id = ?',
 		[$host_id]);
 
-	if (!cacti_sizeof($host)) {
+	if (!is_array($host) || !cacti_sizeof($host)) {
 		return 'reads:0 writes:0';
 	}
 
@@ -194,6 +194,7 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 		$host['snmp_port'],
 		$host['snmp_timeout'],
 		$host['snmp_retries'],
+		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
@@ -211,6 +212,8 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 
 	$bytesread = $byteswritten = 0;
 
+	$bytesread_invalid = $byteswritten_invalid = false;
+
 	if (cacti_sizeof($indexes)) {
 		$bytes = cacti_snmp_walk($host['hostname'],
 			$host['snmp_community'],
@@ -224,6 +227,7 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 			$host['snmp_context'],
 			$host['snmp_port'],
 			$host['snmp_timeout'],
+			$host['snmp_retries'],
 			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
@@ -239,12 +243,19 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 					$bytesread = 'U';
 				} elseif (!isset($previous["br$index"])) {
 					$bytesread = 'U';
+				} elseif (!ctype_digit((string) $measure['value']) || !ctype_digit((string) $previous["br$index"])) {
+					// a non-counter value from the device fails this measure rather than gmp_init()
+					$bytesread_invalid = true;
 				} else {
 					$bytesread = ss_counter_step($bytesread, (string) $measure['value'], (string) $previous["br$index"], '18446744073709551616');
 				}
 
 				$current["br$index"] = $measure['value'];
 			}
+		}
+
+		if ($bytesread_invalid) {
+			$bytesread = 'U';
 		}
 
 		$bytes = cacti_snmp_walk($host['hostname'],
@@ -275,12 +286,19 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 					$byteswritten = 'U';
 				} elseif (!isset($previous["bw$index"])) {
 					$byteswritten = 'U';
+				} elseif (!ctype_digit((string) $measure['value']) || !ctype_digit((string) $previous["bw$index"])) {
+					// a non-counter value from the device fails this measure rather than gmp_init()
+					$byteswritten_invalid = true;
 				} else {
 					$byteswritten = ss_counter_step($byteswritten, (string) $measure['value'], (string) $previous["bw$index"], '18446744073709551616');
 				}
 
 				$current["bw$index"] = $measure['value'];
 			}
+		}
+
+		if ($byteswritten_invalid) {
+			$byteswritten = 'U';
 		}
 
 		if (!db_table_exists('host_value_cache')) {
