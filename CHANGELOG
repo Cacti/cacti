@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.x
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -security#7235: Harden - Harden advisory command execution and database DDL sink validation
+-security#7484: Escape the password-change username as text
 -security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
 -security#7817: Harden - Constrain external-link includes to regular files inside the configured content directory
 -security#7832: Harden - Build forced-HTTPS redirects from the server-configured name
@@ -94,6 +95,7 @@ Cacti CHANGELOG
 -security#GHSA-xhpr-w454-cc9w: Cast the stored data-query output_type before building the poller cache query
 -security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
 -security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
+-issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
@@ -188,6 +190,7 @@ Cacti CHANGELOG
 -issue#8228: Colour the MidWinter theme's graph drilldown action icons from the theme's HSL variable palette with a distinct task-appropriate hue per action, in both the dark and light modes
 -issue#8232: Use a clean green for the device-status .deviceUp color instead of a muddy olive, most visibly on the jQuery UI message dialog where info/success messages are rendered with that class
 -issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
+-issue#8284: Cache empty poller template field maps and add scoped performance regressions with weekly synthetic benchmarks
 -issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
 -issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
 -issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
@@ -199,6 +202,9 @@ Cacti CHANGELOG
 -issue#8415: Refresh the last-poll timestamp when selecting an automatic graph end time
 -issue#8420: Correct restrictive graph permission labels for default-deny graph templates
 -issue#8438: Preserve form action URLs and configured attributes with context-specific encoding
+-issue#8441: Consolidate accessibility fixes and standardize Rows filter labels
+-issue#8441: Share sortable header history and column state while preserving 1.2.x renderer compatibility (backport of #8307)
+-issue#8441: Avoid repeated RRDtool capability checks in graph options and update batches
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
