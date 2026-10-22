@@ -131,30 +131,18 @@ function ss_host_disk(string $hostname = '', int $host_id = 0, mixed $snmp_auth 
 
 		if (is_array($value)) {
 			if (($arg == 'total') || ($arg == 'used')) {
-				$sau = preg_replace('/[^0-9]/i', '', db_fetch_cell_prepared("SELECT field_value
+				$sau = (string) preg_replace('/[^0-9]/i', '', (string) db_fetch_cell_prepared("SELECT field_value
 					FROM host_snmp_cache
 					WHERE host_id = ?
 					AND field_name = 'hrStorageAllocationUnits'
 					AND snmp_index = ?",
 					[$host_id, $index]));
 
-				$sau = intval($sau);
-
 				$snmp_data = cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version,
 					$snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase,
 					$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
-				if ($snmp_data != '' && $snmp_data < 0) {
-					$snmp_data = intval($snmp_data);
-
-					return (abs($snmp_data) + 2147483647) * $sau;
-				}
-
-				if (is_numeric($snmp_data)) {
-					return $snmp_data * $sau;
-				} else {
-					return 'U';
-				}
+				return ss_host_disk_scale($snmp_data, $sau);
 			} else {
 				return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version,
 					$snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase,
@@ -166,6 +154,33 @@ function ss_host_disk(string $hostname = '', int $host_id = 0, mixed $snmp_auth 
 	}
 
 	return null;
+}
+
+/**
+ * ss_host_disk_scale - convert an hrStorage reading into bytes
+ *
+ * hrStorageSize and hrStorageUsed are Integer32, so a large volume reports a
+ * negative value that must be unwrapped before scaling by the allocation unit.
+ *
+ * @param string $snmp_data The raw SNMP reading
+ * @param string $sau       The allocation unit digits, or '' when unknown
+ *
+ * @return mixed The size in bytes, the raw reading without a unit, or 'U'
+ */
+function ss_host_disk_scale(string $snmp_data, string $sau) : mixed {
+	if (!is_numeric($snmp_data)) {
+		return 'U';
+	}
+
+	if ($sau === '') {
+		return ($snmp_data < 0) ? 'U' : $snmp_data;
+	}
+
+	if ($snmp_data < 0) {
+		return ($snmp_data + 4294967296) * (int) $sau;
+	}
+
+	return $snmp_data * (int) $sau;
 }
 
 function ss_host_disk_reindex(array $arr) : array {
