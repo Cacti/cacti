@@ -8706,8 +8706,11 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 
 	$process = proc_open($argv, $descriptors, $pipes);
 
-	if (!is_resource($process) && $log) {
-		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
+	if (!is_resource($process)) {
+		if ($log) {
+			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
+		}
+
 		return 255;
 	}
 
