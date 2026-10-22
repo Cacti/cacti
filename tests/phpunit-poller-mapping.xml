@@ -5,5 +5,13 @@
             <file>Unit/PollerMappingCacheTest.php</file>
             <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
         </testsuite>
+        <testsuite name="ScriptServer">
+            <file>Unit/Scripts/ScriptServerHardeningProbeTest.php</file>
+            <file>Unit/Scripts/ScriptServerRequestHandlingTest.php</file>
+            <file>Unit/Scripts/ScriptArgumentBoundsTest.php</file>
+            <file>Unit/Scripts/NetSnmpDiskStateFileTest.php</file>
+            <file>Unit/Scripts/SqlScriptsTest.php</file>
+            <file>Unit/Scripts/DiskfreeArgumentTest.php</file>
+        </testsuite>
     </testsuites>
 </phpunit>
