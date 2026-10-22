@@ -8554,20 +8554,41 @@ function cacti_input_string_is_safe($input_string) {
 }
 
 /**
+ * Resolve the id of the device whose hostname a cacti_exec() invocation applies to. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname that the exec applies to.
+ *
+ * @return int The device id, or 0 when there is no hostname or no such device.
+ */
+function cacti_exec_host_id(string $hostname): int {
+	if ($hostname === '' || !function_exists('db_fetch_cell_prepared')) {
+		return 0;
+	}
+
+	return (int) db_fetch_cell_prepared('SELECT id
+		FROM host
+		WHERE hostname = ?
+		AND deleted = ""
+		LIMIT 1',
+		array($hostname));
+}
+
+/**
  * Build a credential-redacted, human-readable description of a cacti_exec() invocation for
  * logging. The values following -c, -A and -X (SNMP community string and SNMPv3 auth/priv
- * passphrases) are replaced with [REDACTED] so secrets never reach the log. When an argument looks
- * like a Net-SNMP target (host:port or udp6:[addr]:port) and resolves to a device hostname, the
- * line is prefixed with Device[id] so Cacti's log filtering and description resolution work the
- * same way they do for poller output. Used as part of Cacti's lib functionality.
+ * passphrases) are replaced with [REDACTED] so secrets never reach the log. When the hostname
+ * the exec applies to resolves to a device, the line is prefixed with Device[id] so Cacti's log
+ * filtering and description resolution work the same way they do for poller output. Used as part
+ * of Cacti's lib functionality.
  *
  * @param string $binary The executable path.
  * @param array $args The ordered argument list passed to cacti_exec().
- * @param string $hostname The hostname that the exec applies to.
+ * @param string $hostname The hostname that the exec applies to, or '' when it applies to none.
  *
  * @return string A single-line, secret-free description safe for cacti_log().
  */
-function cacti_exec_log_describe($binary, array $args, string $hostname) {
+function cacti_exec_log_describe($binary, array $args, string $hostname = '') {
 	$parts       = array();
 	$redact_next = false;
 
@@ -8599,20 +8620,8 @@ function cacti_exec_log_describe($binary, array $args, string $hostname) {
 		$parts[] = $arg;
 	}
 
-	$prefix = '';
-
-	if ($hostname !== '' && function_exists('db_fetch_cell_prepared')) {
-		$host_id = db_fetch_cell_prepared('SELECT id
-			FROM host
-			WHERE hostname = ?
-			AND deleted = ""
-			LIMIT 1',
-			array($hostname));
-
-		if (!empty($host_id)) {
-			$prefix = 'Device[' . $host_id . '] ';
-		}
-	}
+	$host_id = cacti_exec_host_id($hostname);
+	$prefix  = $host_id > 0 ? 'Device[' . $host_id . '] ' : '';
 
 	return $prefix . trim($binary . ' ' . implode(' ', $parts));
 }
@@ -8646,16 +8655,11 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $h
 		ini_set('implicit_flush', true);
 	}
 
-	// Gather the host id from the arguments
-	if ($hostname !== '' && function_exists('db_fetch_cell_prepared')) {
-		$host_id = db_fetch_cell_prepared('SELECT id
-			FROM host
-			WHERE hostname = ?
-			AND deleted = ""
-			LIMIT 1',
-			array($hostname));
+	// Warnings for a device are only logged when it is debugged or the log level asks for them
+	if ($hostname !== '') {
+		$host_id = cacti_exec_host_id($hostname);
 
-		if (!empty($host_id)) {
+		if ($host_id > 0) {
 			$log_level = read_config_option('spine_log_level') ?? 0;
 
 			if (is_device_debug_enabled($host_id)) {

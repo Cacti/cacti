@@ -117,7 +117,7 @@ test('a non-existent binary matches this PHP builds spawn behavior', function ()
 test('timeout zero fails closed without entering the process wait loop', function () {
 	$out = array();
 
-	expect(_exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(200000);'), $out, 0)))->toBe(1);
+	expect(_exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(200000);'), $out, '', 0)))->toBe(1);
 });
 
 test('a signal-terminated child does not fabricate a successful exit code', function () {
@@ -159,7 +159,7 @@ test('a fractional timeout is honored and reaps a silent child near its deadline
 	$start = microtime(true);
 	// 0.5s idle budget against a 5s silent sleep: the child must be reaped well
 	// before its own sleep elapses, proving sub-second timeouts take effect.
-	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(5000000);'), $out, 0.5));
+	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(5000000);'), $out, '', 0.5));
 	$elapsed = microtime(true) - $start;
 
 	expect($exit)->toBe(1);
@@ -193,7 +193,7 @@ test('streaming output refills the idle budget so a long but active child is not
 	// well under it, so the idle timer resets on every line and the child runs
 	// to completion instead of being treated as a stall.
 	$script = 'for ($i = 0; $i < 10; $i++) { echo "tick$i\n"; usleep(200000); } exit(0);';
-	$exit   = cacti_exec(PHP_BINARY, array('-r', $script), $out, 1);
+	$exit   = cacti_exec(PHP_BINARY, array('-r', $script), $out, '', 1);
 
 	expect($exit)->toBe(0);
 	expect(count($out))->toBe(10);
@@ -204,7 +204,7 @@ test('a silent child is terminated once the idle budget elapses', function () {
 	$out   = array();
 	$start = microtime(true);
 	// No output for longer than the 1s idle budget: must be reaped as a stall.
-	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(4000000);'), $out, 1));
+	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(4000000);'), $out, '', 1));
 	$elapsed = microtime(true) - $start;
 
 	expect($exit)->toBe(1);
