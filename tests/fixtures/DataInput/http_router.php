@@ -21,7 +21,8 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 if ($path === '/cmSignalData.htm') {
 	header('Content-Type: text/html');
-	readfile(__DIR__ . '/sb6141_cmSignalData.htm');
+	// .txt keeps the modem's legacy markup out of web-markup analysis
+	readfile(__DIR__ . '/sb6141_cmSignalData.html.txt');
 } elseif ($path === '/plain') {
 	header('Content-Type: text/plain');
 	print "line one\nline two\n";
