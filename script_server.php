@@ -175,10 +175,19 @@ snmp_auth_cache_load();
 while (1) {
 	$result = '';
 
-	$input_string    = fgets(STDIN, 1024);
+	$input_string    = script_server_read_request(STDIN);
 	$function        = '';
 	$parameters      = '';
 	$parameter_array = array();
+
+	if ($input_string === null) {
+		cacti_log('WARNING: Script Server request exceeds ' . SCRIPT_SERVER_MAX_REQUEST . ' bytes and was discarded', false, 'PHPSVR');
+
+		fputs(STDOUT, "U\n");
+		fflush(STDOUT);
+
+		continue;
+	}
 
 	$isParentRunning = true;
 	if (empty($input_string)) {
@@ -255,14 +264,14 @@ while (1) {
 			}
 
 			if (!parseArgs($parameters, $parameter_array)) {
-				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
+				cacti_log('WARNING: Script Server could not parse the ' . strlen($parameters) . " byte argument list for $function", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 				continue;
 			}
 
 			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
-				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
+				"' FUNC: '$function' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) .
 				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 			/* Validate the include path unconditionally. Built-ins like system,
@@ -322,7 +331,7 @@ while (1) {
 			error_reporting(0);
 
 			if (!function_exists($function)) {
-				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
+				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) . "'", false, 'PHPSVR');
 
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
@@ -380,11 +389,7 @@ while (1) {
 				continue;
 			}
 
-			if ($parameters == '') {
-				$result = call_user_func($function);
-			} else {
-				$result = call_user_func_array($function, $parameter_array);
-			}
+			$result = script_server_call($function, $parameters, $parameter_array);
 
 			fputs(STDOUT, trim($result) . "\n");
 			fflush(STDOUT);
@@ -435,30 +440,33 @@ function parseArgs($string, &$str_list, $debug = false) {
 		return true;
 	}
 
-	/* Break str down into an array of characters and process */
+	/* Break str down into an array of characters and process.  $indelim holds
+	 * the quote that opened the current quoted section, so only that quote
+	 * closes it.  Quoted and unquoted pieces with no space between them form a
+	 * single argument, which is how cacti_escapeshellarg() encodes a value that
+	 * contains an apostrophe. */
 	$char_array = str_split($string);
 	$escaping = false;
 	$indelim  = false;
+	$inword   = false;
 	$parse_ok = true;
 	$curstr   = '';
 	foreach($char_array as $char) {
 		switch ($char) {
 		case '\'':
 		case '"':
-			if (!$indelim) {
+			if ($indelim === false) {
 				if (!$escaping) {
-					$indelim = true;
+					$indelim = $char;
+					$inword  = true;
 				} else {
 					$curstr .= $char;
 					$escaping = false;
 				}
-			} elseif (!$escaping) {
-				$str_list[] = $curstr;
-				$curstr     = '';
-				$indelim    = false;
-			} elseif ($escaping) {
-				$curstr  .= $char;
-				$escaping = false;
+			} elseif ($char === $indelim) {
+				$indelim = false;
+			} else {
+				$curstr .= $char;
 			}
 
 			break;
@@ -477,11 +485,12 @@ function parseArgs($string, &$str_list, $debug = false) {
 			if ($escaping) {
 				$parse_ok = false;
 				$msg = 'Parse error attempting to parse string';
-			} elseif ($indelim) {
+			} elseif ($indelim !== false) {
 				$curstr .= $char;
-			} elseif ($curstr != '') {
+			} elseif ($curstr != '' || $inword) {
 				$str_list[] = $curstr;
 				$curstr = '';
+				$inword = false;
 			}
 
 			break;
@@ -506,20 +515,148 @@ function parseArgs($string, &$str_list, $debug = false) {
 	}
 
 	/* Add the last str to the string array */
-	if ($indelim || $escaping) {
+	if ($indelim !== false || $escaping) {
 		$parse_ok = false;
 		$msg = 'Parse error attempting to parse string';
 	}
 
 	if (!$parse_ok) {
-		echo 'ERROR: ' . $msg . " '" . $string . "'\n";
-	} elseif ($curstr != '') {
+		/* the caller answers U on STDOUT; an extra line here would be read as
+		 * the reply to the next request */
+		if ($debug) echo 'ERROR: ' . $msg . " '" . $string . "'\n";
+	} elseif ($curstr != '' || $inword) {
 		$str_list[] = $curstr;
 	}
 
 	if ($debug) echo "Output: '" . implode(",", $str_list) . "'\n";
 
 	return $parse_ok;
+}
+
+/**
+ * Read one request line from the poller. Used as part of Cacti's script server functionality.
+ *
+ * A line longer than SCRIPT_SERVER_MAX_REQUEST is consumed up to and including
+ * its line terminator and reported as null, so its tail is never read back as
+ * a separate request.
+ *
+ * @param resource $stream The stream to read from.
+ *
+ * @return string|false|null The raw line, false when nothing was read, or null when the line was too long.
+ */
+function script_server_read_request($stream) {
+	/* room for the request, a CR/LF terminator and fgets' own terminator */
+	$line = fgets($stream, SCRIPT_SERVER_MAX_REQUEST + 3);
+
+	if ($line === false || $line === '') {
+		return $line;
+	}
+
+	$complete = (substr($line, -1) == "\n" || feof($stream));
+
+	if ($complete && strlen(rtrim($line, "\r\n")) <= SCRIPT_SERVER_MAX_REQUEST) {
+		return $line;
+	}
+
+	while (!$complete) {
+		$line = fgets($stream, SCRIPT_SERVER_MAX_REQUEST + 3);
+
+		$complete = ($line === false || substr($line, -1) == "\n" || feof($stream));
+	}
+
+	return null;
+}
+
+/**
+ * Call a validated script function, containing any error it raises. Used as part of Cacti's
+ * script server functionality.
+ *
+ * @param string $function The function name.
+ * @param string $parameters The raw parameter string.
+ * @param array $parameter_array The parsed parameters.
+ *
+ * @return mixed The function result, or 'U' when the function failed.
+ */
+function script_server_call($function, $parameters, $parameter_array) {
+	/* one failing script must not take down the server and every request
+	 * queued behind it; the parameters can carry device credentials, so
+	 * they are left out of the log */
+	try {
+		if ($parameters == '') {
+			$result = call_user_func($function);
+		} else {
+			$result = call_user_func_array($function, $parameter_array);
+		}
+	} catch (Throwable $e) {
+		cacti_log("WARNING: Function '$function' raised " . get_class($e) . ' at ' . basename($e->getFile()) . ':' . $e->getLine() . ', returning U', false, 'PHPSVR');
+
+		return 'U';
+	}
+
+	if ($result !== null && !is_scalar($result)) {
+		cacti_log("WARNING: Function '$function' returned a " . gettype($result) . ', returning U', false, 'PHPSVR');
+
+		return 'U';
+	}
+
+	return $result;
+}
+
+/**
+ * Mask any device SNMP credential among script arguments before they are logged. Used as part
+ * of Cacti's script server functionality.
+ *
+ * The script server cannot tell which argument is a credential, so every
+ * argument, and every colon separated field of one, is compared with the
+ * credentials configured on the devices.
+ *
+ * @param array $params The parsed parameters.
+ * @param array|null $secrets Credential values as keys, or null to load them once from the database.
+ *
+ * @return array The parameters with credentials masked.
+ */
+function script_server_redact_params($params, $secrets = null) {
+	static $known = null;
+
+	if ($secrets === null) {
+		if ($known === null) {
+			$known = array();
+
+			$rows = db_fetch_assoc('SELECT DISTINCT snmp_community, snmp_password, snmp_priv_passphrase FROM host');
+
+			if (is_array($rows)) {
+				foreach ($rows as $row) {
+					foreach ($row as $value) {
+						if ($value != '') {
+							$known[$value] = true;
+						}
+					}
+				}
+			}
+		}
+
+		$secrets = $known;
+	}
+
+	foreach ($params as $index => $param) {
+		$param = (string) $param;
+
+		if (isset($secrets[$param])) {
+			$params[$index] = '********';
+		} elseif (strpos($param, ':') !== false) {
+			$fields = explode(':', $param);
+
+			foreach ($fields as $findex => $field) {
+				if ($field != '' && isset($secrets[$field])) {
+					$fields[$findex] = '********';
+				}
+			}
+
+			$params[$index] = implode(':', $fields);
+		}
+	}
+
+	return $params;
 }
 
 /**
@@ -590,7 +727,10 @@ function script_server_path_is_allowed($resolved_path, array $roots) {
  * @return void No value is returned.
  */
 function sig_handler($signo) {
-	global $include_file, $function, $parameters;
+	global $include_file, $function, $parameter_array;
+
+	/* argument values can carry device credentials, so only their count is logged */
+	$parameters = (is_array($parameter_array) ? count($parameter_array) : 0) . ' argument(s)';
 
 	switch ($signo) {
 		case SIGTERM:
