@@ -1,0 +1,1 @@
+Confine Script Server dispatch to Cacti scripts, bound request length, and stop passing database and SNMP secrets on command lines
