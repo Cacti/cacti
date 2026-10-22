@@ -29,7 +29,7 @@ Install them in a separate environment:
 
 ```sh
 mise exec python@3.12 -- python -m venv /tmp/cacti-catalog-venv
-mise exec python@3.12 -- /tmp/cacti-catalog-venv/bin/python -m pip install --require-hashes -r .github/scripts/catalog/requirements.txt
+mise exec python@3.12 -- /tmp/cacti-catalog-venv/bin/python -m pip install --only-binary=:all: --require-hashes -r .github/scripts/catalog/requirements.txt
 mise exec python@3.12 -- /tmp/cacti-catalog-venv/bin/python .github/scripts/catalog/interface_catalog.py
 mise exec python@3.12 -- /tmp/cacti-catalog-venv/bin/python -m unittest discover -s tests/tools -p test_interface_catalog.py
 ```

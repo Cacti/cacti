@@ -33,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install coverage==7.13.2 pyyaml==6.0.2
-          python -m pip install --require-hashes -r .github/scripts/catalog/requirements.txt
+          python -m pip install --only-binary=:all: --require-hashes -r .github/scripts/catalog/requirements.txt
           sudo apt-get update
           sudo apt-get install -y gettext
       - name: Exercise maintenance tool contracts
