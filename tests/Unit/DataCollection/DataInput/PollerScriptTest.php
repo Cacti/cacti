@@ -79,7 +79,7 @@ test('cacti_http reaches a device on a private address and refuses non-2xx respo
 	}
 
 	try {
-		$base = 'http://' . $server['address'];
+		$base = 'http://' . $server['address']; // NOSONAR local plain-HTTP fixture server, as the modems serve HTTP only
 
 		expect(cacti_http($base . '/plain', 10))->toBe("line one\nline two\n")
 			->and(cacti_http($base . '/missing', 10))->toBeFalse()
