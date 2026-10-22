@@ -69,7 +69,7 @@ test('undefined and non-function names are refused', function () {
 });
 
 test('a function declared outside the Cacti roots is refused', function () {
-	$name = 'ss_outside_' . getmypid() . '_' . mt_rand();
+	$name = 'ss_outside_' . bin2hex(random_bytes(8));
 	$file = sys_get_temp_dir() . '/' . $name . '.php';
 
 	file_put_contents($file, "<?php\nfunction $name() { return 'x'; }\n");
