@@ -48,13 +48,28 @@ class RequestException(Exception):
 
 
 class Response:
-    def __init__(self, text, error=None):
-        self.text = text
+    """Streamed response double matching the parts of requests the script uses."""
+
+    def __init__(self, text, error=None, status_code=200, chunks=None):
+        self.body = text.encode()
         self.error = error
+        self.status_code = status_code
+        self.chunks = chunks
+        self.closed = False
 
     def raise_for_status(self):
         if self.error:
             raise RequestException(self.error)
+
+    def iter_content(self, chunk_size):
+        if self.chunks is not None:
+            yield from self.chunks
+            return
+        for start in range(0, len(self.body), chunk_size):
+            yield self.body[start:start + chunk_size]
+
+    def close(self):
+        self.closed = True
 
 
 class TreeShim:
@@ -77,10 +92,11 @@ def html_module():
 
 
 class MotorolaSurfboardScriptTest(unittest.TestCase):
-    def run_script(self, args, text=MODEM_PAGE, error=None):
+    def run_script(self, args, text=MODEM_PAGE, error=None, response=None):
+        self.response = response or Response(text, error)
         requests = types.ModuleType('requests')
         requests.RequestException = RequestException
-        requests.get = mock.Mock(return_value=Response(text, error))
+        requests.get = mock.Mock(return_value=self.response)
         lxml = types.ModuleType('lxml')
         lxml.html = html_module()
         stdout, stderr = io.StringIO(), io.StringIO()
@@ -98,10 +114,56 @@ class MotorolaSurfboardScriptTest(unittest.TestCase):
     def test_downstream_output_keeps_field_names_and_order(self):
         code, out, err, get = self.run_script(['Downstream', 'modem.example'])
         self.assertEqual((code, err), (0, ''))
-        get.assert_called_once_with('http://modem.example/cmSignalData.htm', timeout=10)
+        get.assert_called_once_with('http://modem.example/cmSignalData.htm', timeout=10,
+                                    allow_redirects=False, stream=True)
+        self.assertTrue(self.response.closed)
         expected = [f'DownstreamPower{n}:-{n}' for n in DOWN]
         expected += [f'DownstreamNoiseRatio{n}:3{n}' for n in DOWN]
         self.assertEqual(out, ' '.join(expected) + '\n')
+
+    def test_host_with_port_and_bracketed_ipv6_is_accepted(self):
+        for host in ('192.0.2.1:8080', '[2001:db8::1]:80', 'modem-1.example'):
+            with self.subTest(host=host):
+                code, _, _, get = self.run_script(['Upstream', host])
+                self.assertEqual(code, 0)
+                self.assertEqual(get.call_args.args[0], f'http://{host}/cmSignalData.htm')
+
+    def test_host_that_is_not_a_bare_name_or_address_is_rejected(self):
+        for host in ('-modem', 'user@modem', 'modem/x', 'modem?x', 'modem#x', 'mo dem', 'modem\n', ''):
+            with self.subTest(host=host):
+                code, out, err, get = self.run_script(['Downstream', host])
+                self.assertEqual((code, out), (1, ''))
+                self.assertIn('invalid modem hostname or IP', err)
+                get.assert_not_called()
+
+    def test_redirect_is_not_followed(self):
+        code, out, err, _ = self.run_script(['Downstream', 'modem.example'],
+                                            response=Response('', status_code=302))
+        self.assertEqual((code, out), (1, ''))
+        self.assertIn('unexpected HTTP status 302', err)
+
+    def test_oversized_response_is_abandoned(self):
+        chunks = [b'x' * 65536] * 17
+        code, out, err, _ = self.run_script(['Downstream', 'modem.example'],
+                                            response=Response('', chunks=chunks))
+        self.assertEqual((code, out), (1, ''))
+        self.assertIn('larger than 1048576 bytes', err)
+        self.assertTrue(self.response.closed)
+
+    def test_slow_response_is_abandoned_at_the_deadline(self):
+        clock = iter([100.0, 100.0, 125.0])
+        with mock.patch('time.monotonic', side_effect=lambda: next(clock)):
+            code, out, err, _ = self.run_script(['Downstream', 'modem.example'],
+                                                response=Response('', chunks=[b'a', b'b']))
+        self.assertEqual((code, out), (1, ''))
+        self.assertIn('longer than 20 seconds', err)
+
+    def test_remote_text_cannot_add_output_fields(self):
+        modem = page(table('Upstream', ['5', '6 x:1', '7'],
+                           [('Power Level', ['41 dBmV', '42 dBmV', '43 extra:9'])]))
+        code, out, _, _ = self.run_script(['Upstream', 'modem.example'], text=modem)
+        self.assertEqual(code, 0)
+        self.assertEqual(out, 'UpstreamPower5:41 UpstreamPower7:U\n')
 
     def test_upstream_output(self):
         code, out, _, _ = self.run_script(['Upstream', 'modem.example'])
