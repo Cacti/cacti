@@ -69,6 +69,7 @@ cmd_exec	./lib/poller.php:52			$output = shell_exec($command);
 cmd_exec	./lib/poller.php:64	 *   proc_open() and proc_close() functions (php 4.3+).
 cmd_exec	./lib/poller.php:65	 * @param array $pipes The array of r/w pipes returned from proc_open().
 cmd_exec	./lib/poller.php:66	 * @param resource $proc_fd The file descriptor returned from proc_open().
+cmd_exec	./lib/poller_script.php:105		$process = @proc_open($command, $descriptors, $pipes, null, $env);
 cmd_exec	./lib/rrd.php:1195					$fp = popen($rrdtool_cmd, 'r');
 cmd_exec	./lib/rrd.php:126		return popen($command, 'w');
 cmd_exec	./lib/rrd.php:452				$process = proc_open(cacti_escapeshellarg(read_config_option('path_rrdtool')) . ' - ' . $debug, $descriptorspec, $pipes);
@@ -379,10 +380,10 @@ dynamic_include	./lib/functions.php:6278	    require_once($config['include_path'
 dynamic_include	./lib/graph_variables.php:76		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/html.php:1135		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:115		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/html_tree.php:539		include_once($config['base_path'] . '/lib/data_query.php');
-dynamic_include	./lib/html_tree.php:967		include($config['include_path'] . '/global_arrays.php');
-dynamic_include	./lib/html_tree.php:968		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/html_tree.php:969		include_once($config['library_path'] . '/html_utility.php');
+dynamic_include	./lib/html_tree.php:541		include_once($config['base_path'] . '/lib/data_query.php');
+dynamic_include	./lib/html_tree.php:969		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/html_tree.php:970		include_once($config['library_path'] . '/data_query.php');
+dynamic_include	./lib/html_tree.php:971		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/import.php:2297		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:42		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:3940					include_once($upgrade_file);
@@ -421,9 +422,9 @@ dynamic_include	./lib/rrd.php:1732		include_once($config['library_path'] . '/gra
 dynamic_include	./lib/rrd.php:1733		include_once($config['library_path'] . '/boost.php');
 dynamic_include	./lib/rrd.php:1734		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/rrd.php:1735		include($config['include_path'] . '/global_arrays.php');
-dynamic_include	./lib/rrd.php:3091			include($rrdtheme);
-dynamic_include	./lib/rrd.php:3863		include_once($config['library_path'] . '/time.php');
-dynamic_include	./lib/rrd.php:4713			include($themefile);
+dynamic_include	./lib/rrd.php:3092			include($rrdtheme);
+dynamic_include	./lib/rrd.php:3864		include_once($config['library_path'] . '/time.php');
+dynamic_include	./lib/rrd.php:4767			include($themefile);
 dynamic_include	./lib/rrd.php:780		include ($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrdcheck.php:806			include_once($config['base_path'] . '/lib/rrd.php');
 dynamic_include	./lib/rrdcheck.php:835			include_once($config['library_path'] . '/poller.php');
@@ -579,7 +580,7 @@ fs_write	./lib/poller.php:1488												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php:1517								file_put_contents($mypath, $contents);
 fs_write	./lib/reports.php:1773			$f = fopen($fn, 'wb');
 fs_write	./lib/reports.php:1815			$f = fopen($fn, 'wb');
-fs_write	./lib/rrd.php:2920					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
+fs_write	./lib/rrd.php:2921					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
 fs_write	./lib/spikekill.php:863			return @file_put_contents($xmlfile, $output);
 fs_write	./package_import.php:108		if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
 fs_write	./package_import.php:414					file_put_contents($xmlfile, $data);
@@ -587,6 +588,7 @@ fs_write	./script_server.php:49		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php:50		define('STDOUT', fopen('php://stdout', 'w'));
 fs_write	./scripts/ss_net_snmp_disk_bytes.php:260			file_put_contents("$tmpdir/$tmpfile", $data);
 fs_write	./scripts/ss_net_snmp_disk_io.php:259			file_put_contents("$tmpdir/$tmpfile", $data);
+fs_write	./scripts/ss_webhits.php:72		$log = @fopen($log_path, 'rb');
 fs_write	./snmpagent_mibcachechild.php:90		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./templates_import.php:73				$fp = fopen($_FILES['import_file']['tmp_name'],'r');
@@ -701,10 +703,10 @@ header_redirect	./color_templates_items.php:48			header('Location: color_templat
 header_redirect	./color_templates_items.php:55			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'));
 header_redirect	./color_templates_items.php:62			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'));
 header_redirect	./contrib/index.php:25	header("Location:../index.php");
-header_redirect	./data_debug.php:253					header('Location: data_debug.php?header=false&debug=-1');
-header_redirect	./data_debug.php:256					header('Location: data_debug.php?header=false&debug=1');
-header_redirect	./data_debug.php:53				header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
-header_redirect	./data_debug.php:76				header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+header_redirect	./data_debug.php:257					header('Location: data_debug.php?header=false&debug=-1');
+header_redirect	./data_debug.php:260					header('Location: data_debug.php?header=false&debug=1');
+header_redirect	./data_debug.php:55				header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+header_redirect	./data_debug.php:80				header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
 header_redirect	./data_input.php:126					header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
 header_redirect	./data_input.php:158			header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
 header_redirect	./data_input.php:201				header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
@@ -756,8 +758,8 @@ header_redirect	./data_sources.php:874			header('Location: data_sources.php');
 header_redirect	./data_sources.php:883			header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
 header_redirect	./data_sources.php:892			header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
 header_redirect	./data_sources.php:901			header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
-header_redirect	./data_sources.php:932		header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
-header_redirect	./data_sources.php:977				header ('Location: data_sources.php');
+header_redirect	./data_sources.php:934		header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
+header_redirect	./data_sources.php:979				header ('Location: data_sources.php');
 header_redirect	./data_templates.php:167					header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
 header_redirect	./data_templates.php:354			header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
 header_redirect	./data_templates.php:443			header('Location: data_templates.php?header=false');
