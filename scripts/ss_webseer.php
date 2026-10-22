@@ -61,7 +61,7 @@ function ss_webseer(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 
 				if (cacti_sizeof($arr)) {
 					foreach ($arr as $item) {
-						print $item['id'] . '!' . $item['name'] . PHP_EOL;
+						print $item['id'] . '!' . str_replace(["\r", "\n"], '', (string) $item['name']) . PHP_EOL;
 					}
 				}
 			}

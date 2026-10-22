@@ -41,6 +41,9 @@ if (!isset($called_by_script_server)) {
 function ss_fping(string $hostname = '', int $ping_sweeps = 6, string $ping_type = 'ICMP', int $port = 80) : string {
 	global $called_by_script_server;
 
+	// the sweep count comes from the data source, keep it to a sane range
+	$ping_sweeps = max(1, min($ping_sweeps, 100));
+
 	// record start time
 	$ss_fping_start = microtime(true);
 
