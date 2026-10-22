@@ -261,12 +261,19 @@ EOF
                 continue
             fi
 
-            # Fetch the SNMP output
-            output=$(snmpget -v2c -c "$community" "$hostname" "$OID" 2>&1)
+            # snmpget would read a leading '-' as an option, and whitespace
+            # cannot be part of a valid agent address.
+            if [[ "$hostname" == -* || "$hostname" =~ [[:space:]] ]]; then
+                echo "Skipping host with an invalid hostname: desc='$desc', hostname='$hostname'" >&2
+                continue
+            fi
+
+            # Fetch the SNMP output; '--' keeps the agent and OID positional
+            output=$(snmpget -v2c -c "$community" -- "$hostname" "$OID" 2>&1)
 
             # Check if output contains "No Such Object available"
             if [[ "$output" == *"No Such Object available"* ]]; then
-                output=$(snmpget -v2c -c "$community" "$hostname" "$OID.0" 2>&1)
+                output=$(snmpget -v2c -c "$community" -- "$hostname" "$OID.0" 2>&1)
                 if [[ "$output" != *"No Such Object available"* ]]; then
                     output+=" MODIFIED"
                 else
