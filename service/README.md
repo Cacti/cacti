@@ -37,13 +37,21 @@ There are only a few steps.  For this service here they are.
 3. Modify the file to use the user and group that your Cacti is installed
    with, on RedHat variants, it is usually: apache:apache, for Debian variants,
    it is generally www-data:www-data
-4. Create the file /etc/sysconfig/cactid, even though it's not used today,
-   we'll keep it there as a future path to overwrite certain settings
-5. Install the service using 'systemctl enable cactid'
-6. Reload systemd using 'systemctl daemon-reload'
+4. Optionally create /etc/sysconfig/cactid (RedHat variants) or
+   /etc/default/cactid (Debian variants) to set environment variables for the
+   service.  Neither file is required, and the service starts without them
+5. Reload systemd using 'systemctl daemon-reload' so it sees the new unit
+6. Install the service using 'systemctl enable cactid'
 7. Comment out the cacti crontab file or simply remove the /etc/cron.d/cacti
    file in place today
 8. Start the service using 'systemctl start cactid'
+
+The unit runs the daemon with a private /tmp (PrivateTmp=yes), so debug
+files that Cacti writes to the system temporary directory while running under
+cactid appear in a per-service directory below /tmp rather than in /tmp
+itself.  It does not set NoNewPrivileges= or ProtectSystem=: the first would
+stop the setuid spine binary and ping from sending ICMP, and the second would
+make /usr read-only, which breaks installs that keep writable paths there.
 
 ### Debugging
 
