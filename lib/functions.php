@@ -8554,8 +8554,10 @@ function cacti_input_string_is_safe($input_string) {
 }
 
 /**
- * Resolve the id of the device whose hostname a cacti_exec() invocation applies to. Used as part
- * of Cacti's lib functionality.
+ * Resolve the id of the device whose hostname a cacti_exec() invocation applies to. The binary
+ * SNMP paths bracket an IPv6 address for the Net-SNMP target, so a bracketed hostname is also
+ * looked up without its brackets, as that is how the device stores it. Used as part of Cacti's lib
+ * functionality.
  *
  * @param string $hostname The hostname that the exec applies to.
  *
@@ -8566,12 +8568,18 @@ function cacti_exec_host_id(string $hostname): int {
 		return 0;
 	}
 
+	$names = array($hostname);
+
+	if (preg_match('/^\[([^\]]+)\]$/', $hostname, $matches)) {
+		$names[] = $matches[1];
+	}
+
 	return (int) db_fetch_cell_prepared('SELECT id
 		FROM host
-		WHERE hostname = ?
+		WHERE hostname IN (' . implode(', ', array_fill(0, count($names), '?')) . ')
 		AND deleted = ""
 		LIMIT 1',
-		array($hostname));
+		$names);
 }
 
 /**

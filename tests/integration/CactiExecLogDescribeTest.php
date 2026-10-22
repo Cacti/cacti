@@ -31,9 +31,13 @@ if (!function_exists('db_fetch_cell_prepared')) {
 			'fe80::1%eth0'       => 99,
 		);
 
-		$host = isset($params[0]) ? $params[0] : '';
+		foreach ((array) $params as $host) {
+			if (isset($map[$host])) {
+				return $map[$host];
+			}
+		}
 
-		return isset($map[$host]) ? $map[$host] : false;
+		return false;
 	}
 }
 
@@ -105,6 +109,20 @@ test('a plain IPv6 hostname resolves while its bracketed udp6 target is logged u
 	expect($out)->toStartWith('Device[7] ')
 		->and($out)->toContain('udp6:[2001:db8::1]:161')
 		->and($out)->not->toContain('public');
+});
+
+test('a bracketed IPv6 hostname, as the binary SNMP paths pass it, resolves to the device stored without brackets', function () {
+	$hostname = cacti_format_ipv6_colon('2001:db8::1');
+
+	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
+		'-v', '2c', '-c', 'public', 'udp6:[2001:db8::1]:161', '.1.3.6.1.2.1.1.3.0'
+	), $hostname);
+
+	expect($hostname)->toBe('[2001:db8::1]')
+		->and($out)->toStartWith('Device[7] ')
+		->and($out)->toContain('udp6:[2001:db8::1]:161')
+		->and(cacti_exec_host_id('[fe80::1%eth0]'))->toBe(99)
+		->and(cacti_exec_host_id('[2001:db8::99]'))->toBe(0);
 });
 
 test('zone-scoped IPv6 keeps its zone id, resolves and still redacts the secret', function () {
