@@ -7,17 +7,20 @@ delete @ENV{qw(PATH)};
 $ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 
 
-my $osname = "$^O";
 my $path = $ARGV[0] // '';
-($path) = $path =~ /^([\w\/-]+)$/ if $path ne '';
-
-my @dfcmd;
-if ($osname =~ /freebsd/i) {
-	# FreeBSD have other parameters
-	@dfcmd = ('df', '-k', '-P');
-} else {
-	@dfcmd = ('df', '--block-size=1024', '-P');
+if ($path ne '') {
+	# A path that fails validation must not fall through to listing every
+	# filesystem. A leading '-' would also be read by df as an option.
+	($path) = $path =~ /^([\w.\/][\w.\/-]*)$/;
+	if (!defined $path) {
+		print 'megabytes:U percent:U';
+		exit 1;
+	}
 }
+
+# POSIX df: -k with -P reports 1024-byte blocks on GNU, BSD, macOS and
+# busybox alike, matching the GNU-only --block-size=1024 used before.
+my @dfcmd = ('df', '-k', '-P');
 
 if ($path ne '') {
 	push @dfcmd, $path;

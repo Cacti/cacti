@@ -35,10 +35,16 @@
 # and allow you to select a template to work with.
 #---------------------------------------------------------------------------
 
+# The host list and the client option file hold SNMP communities and the
+# database password, so nothing this script creates may be readable by others.
+umask 077
+
 clear
 # Read the configuration file paths
 CONF_FILE="/var/www/html/cacti/include/config.php"
-HOST_FILE="getOID.hosts"
+HOST_FILE=$(mktemp) || exit 1
+DB_OPTS=$(mktemp) || exit 1
+trap 'rm -f "$HOST_FILE" "$DB_OPTS"' EXIT
 
 # Check for command-line argument prefixed with --tmatch and validate it
 TEMPLATE_MATCH=""
@@ -56,7 +62,7 @@ done
 if [ -z "$TEMPLATE_MATCH" ]; then
     # Prompt for template match pattern if not provided on the command line
     echo -n "Enter template match pattern (can use simple pattern matching with %): "
-    read TEMPLATE_MATCH
+    read -r TEMPLATE_MATCH
     # Validate the input
     if [[ ! "$TEMPLATE_MATCH" =~ ^[a-zA-Z0-9%_]+$ ]]; then
         echo "Error: TEMPLATE_MATCH can only contain alphanumeric characters, % and _."
@@ -64,15 +70,52 @@ if [ -z "$TEMPLATE_MATCH" ]; then
     fi
 fi
 
-# Escape special characters for MySQL LIKE pattern
-TEMPLATE_MATCH_ESCAPED=$(echo "$TEMPLATE_MATCH" | sed 's/[%_]/\\&/g')
-
 clear
 
+# Print the value of "$<name> = <value>;" from config.php. The value is
+# everything after the first '=', so passwords containing '=', ';', '&' or
+# brackets are passed through intact.
 function getProperty {
-    CONF_KEY=$1
-    CONF_VALUE=$(grep -m 1 "$CONF_KEY" $CONF_FILE | cut -d'=' -f2)
-    echo $CONF_VALUE | sed -r 's/(\x27|\;|&|\[|\]\))//g'
+    local line value
+    line=$(grep -m 1 -E "^[[:space:]]*[\$]$1[[:space:]]*=" "$CONF_FILE") || return 0
+    value=${line#*=}
+    [[ "$value" =~ ^[[:space:]]*(.*[^[:space:]])[[:space:]]*$ ]] || return 0
+    value=${BASH_REMATCH[1]%;}
+    [[ "$value" =~ ^(.*[^[:space:]])[[:space:]]*$ ]] && value=${BASH_REMATCH[1]}
+    if [[ "$value" =~ ^\'(.*)\'$ ]]; then
+        # PHP single-quoted strings only escape \' and \\
+        value=${BASH_REMATCH[1]//\\\'/\'}
+        value=${value//\\\\/\\}
+    elif [[ "$value" =~ ^\"(.*)\"$ ]]; then
+        value=${BASH_REMATCH[1]}
+    fi
+    printf '%s\n' "$value"
+}
+
+# Quote a value for a MySQL option file, which unescapes \\ and \".
+function optionValue {
+    local value=${1//\\/\\\\}
+    printf '"%s"' "${value//\"/\\\"}"
+}
+
+# Hand the credentials to mysql in an option file rather than with -p, which
+# any local user could read from the process list.
+function writeClientOptions {
+    {
+        printf '[client]\n'
+        printf 'user=%s\n' "$(optionValue "$DB_USER")"
+        printf 'password=%s\n' "$(optionValue "$DB_PASS")"
+        printf 'host=%s\n' "$(optionValue "${DB_HOST:-localhost}")"
+        if [[ "$DB_PORT" =~ ^[0-9]+$ ]]; then
+            printf 'port=%s\n' "$DB_PORT"
+        fi
+    } > "$DB_OPTS"
+}
+
+# Batch mode with -s already omits the header row; --skip-column-names keeps
+# that true whatever the client defaults are, so no row is ever discarded.
+function dbQuery {
+    mysql --defaults-extra-file="$DB_OPTS" -s --skip-column-names "$DB_NAME" "$@"
 }
 
 # Main loop to restart the process if the user chooses "no" at the confirmation prompt
@@ -81,11 +124,15 @@ while true; do
     DB_USER=$(getProperty "database_username")
     DB_PASS=$(getProperty "database_password")
     DB_PORT=$(getProperty "database_port")
+    DB_HOST=$(getProperty "database_hostname")
+    DB_NAME=$(getProperty "database_default")
+    DB_NAME=${DB_NAME:-cacti}
+    writeClientOptions
     echo
     echo "Reading from DB..."
 
     # Fetch template ids and names from the database
-    TEMPLATE_LIST=$(mysql -s -u $DB_USER -p$DB_PASS cacti -e "SELECT id, name FROM host_template WHERE name LIKE '$TEMPLATE_MATCH' ORDER BY id;" | tail -n +2)
+    TEMPLATE_LIST=$(dbQuery -e "SELECT id, name FROM host_template WHERE name LIKE '$TEMPLATE_MATCH' ORDER BY id;")
 
     # Check if any templates are returned
     if [ -z "$TEMPLATE_LIST" ]; then
@@ -118,7 +165,7 @@ while true; do
 
     # Prompt user to choose a template_index
     echo -n "Please choose an ID from \"Choice\" (0 to exit, 1-${#TEMPLATE_IDS[@]}): "
-    read choice
+    read -r choice
 
     # Check for exit choice
     if [ "$choice" -eq 0 ]; then
@@ -137,7 +184,7 @@ while true; do
     SELECTED_TEMPLATE_NAME="${TEMPLATE_NAMES[$((choice-1))]}"
 
     # Fetch host details for the selected template_id
-    HOST_LIST=$(mysql -s -u $DB_USER -p$DB_PASS cacti -e "SELECT description, hostname, snmp_community FROM host WHERE host_template_id = $SELECTED_TEMPLATE_ID AND disabled != 'on' ORDER BY description ASC;")
+    HOST_LIST=$(dbQuery -e "SELECT description, hostname, snmp_community FROM host WHERE host_template_id = $SELECTED_TEMPLATE_ID AND disabled != 'on' ORDER BY description ASC;")
 
     if [ -z "$HOST_LIST" ]; then
         echo "No hosts found for the selected template. Exiting."
@@ -148,11 +195,11 @@ while true; do
     calculate_max_width() {
         local max_width=0
         while IFS=$'\t' read -r data; do
-            if [ ${#data} -gt $max_width ]; then
+            if [ ${#data} -gt "$max_width" ]; then
                 max_width=${#data}
             fi
         done
-        echo $max_width
+        echo "$max_width"
     }
 
     # Calculate column widths for description, hostname, and snmp_community
@@ -164,20 +211,20 @@ while true; do
     clear
     echo "Hosts associated with Template ID $SELECTED_TEMPLATE_ID ($SELECTED_TEMPLATE_NAME):"
     echo "----------------------------------------------------------------------"
-    echo -e "Index\t$(printf '%-*s' $HOST_WIDTH 'Host Description')\t$(printf '%-*s' $HOSTNAME_WIDTH 'Hostname')\t$(printf '%-*s' $COMMUNITY_WIDTH 'SNMP Community')"
+    echo -e "Index\t$(printf '%-*s' "$HOST_WIDTH" 'Host Description')\t$(printf '%-*s' "$HOSTNAME_WIDTH" 'Hostname')\t$(printf '%-*s' "$COMMUNITY_WIDTH" 'SNMP Community')"
     echo "----------------------------------------------------------------------"
     HOST_INDEX=1
     declare -a HOSTS
     while IFS=$'\t' read -r DESCRIPTION HOSTNAME COMMUNITY; do
         HOSTS+=("$DESCRIPTION $HOSTNAME $COMMUNITY")
-        printf "%-3d\t%-*s\t%-*s\t%-*s\n" $HOST_INDEX $HOST_WIDTH "$DESCRIPTION" $HOSTNAME_WIDTH "$HOSTNAME" $COMMUNITY_WIDTH "$COMMUNITY"
+        printf "%-3d\t%-*s\t%-*s\t%-*s\n" "$HOST_INDEX" "$HOST_WIDTH" "$DESCRIPTION" "$HOSTNAME_WIDTH" "$HOSTNAME" "$COMMUNITY_WIDTH" "$COMMUNITY"
         ((HOST_INDEX++))
     done <<< "$HOST_LIST"
     echo "----------------------------------------------------------------------"
 
     # Confirm continuation
     echo -n "Do you want to continue with these hosts? (y/n): "
-    read CONFIRMATION
+    read -r CONFIRMATION
 
     # Restart the loop if the user chooses "no"
     if [[ ! "$CONFIRMATION" =~ ^[Yy]$ ]]; then
@@ -187,10 +234,10 @@ while true; do
 
     # Prompt for OID inputs
     echo -n "Enter OIDs separated by space (e.g. OID1 OID2 OID3): "
-    read -a OIDS
+    read -r -a OIDS
 
     # Create the HOST_FILE with description, hostname, and snmp_community
-    mysql -s -u $DB_USER -p$DB_PASS cacti << EOF > $HOST_FILE 2>&1
+    dbQuery << EOF > "$HOST_FILE" 2>&1
 SELECT CONCAT(description, ',', hostname, ',', snmp_community)
  FROM host
  WHERE host_template_id = $SELECTED_TEMPLATE_ID
@@ -199,11 +246,11 @@ SELECT CONCAT(description, ',', hostname, ',', snmp_community)
 EOF
 
     # Ensure that commas are preserved as field separators in HOST_FILE
-    sed -i 's/[ \(]/_/g;s/[\)]//g' $HOST_FILE
+    sed -i 's/[ \(]/_/g;s/[\)]//g' "$HOST_FILE"
 
     # Process OIDs and generate output for each
     clear
-    echo -e "Index\t$(printf '%-*s' $HOST_WIDTH 'Host Description')\t$(printf '%-*s' $HOSTNAME_WIDTH 'Hostname')\t$(printf '%-*s' $COMMUNITY_WIDTH 'SNMP Community')\tOutput"
+    echo -e "Index\t$(printf '%-*s' "$HOST_WIDTH" 'Host Description')\t$(printf '%-*s' "$HOSTNAME_WIDTH" 'Hostname')\t$(printf '%-*s' "$COMMUNITY_WIDTH" 'SNMP Community')\tOutput"
     echo "----------------------------------------------------------------------"
 
     for OID in "${OIDS[@]}"; do
@@ -228,7 +275,7 @@ EOF
             fi
 
             # Print the results with dynamic column widths
-            printf "%-3d\t%-*s\t%-*s\t%-*s\t%s\n" $HOST_NUM $HOST_WIDTH "$desc" $HOSTNAME_WIDTH "$hostname" $COMMUNITY_WIDTH "$community" "$output"
+            printf "%-3d\t%-*s\t%-*s\t%-*s\t%s\n" "$HOST_NUM" "$HOST_WIDTH" "$desc" "$HOSTNAME_WIDTH" "$hostname" "$COMMUNITY_WIDTH" "$community" "$output"
             ((HOST_NUM++))
         done < "$HOST_FILE"
     done
