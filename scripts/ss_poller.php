@@ -190,9 +190,10 @@ function ss_webseer_counts() : mixed {
 	$stats = [];
 
 	if (db_table_exists('plugin_webseer_urls')) {
-		$stats = db_fetch_row('SELECT SUM(triggered) AS triggered,
-			SUM(CASE WHEN triggered=0 THEN 1 ELSE 0 END) AS successful,
-			SUM(CASE WHEN enabled="" THEN 1 ELSE 0 END) AS disabled
+		// SUM() over an empty table is NULL, which would print an empty value
+		$stats = db_fetch_row('SELECT COALESCE(SUM(triggered), 0) AS triggered,
+			COALESCE(SUM(CASE WHEN triggered=0 THEN 1 ELSE 0 END), 0) AS successful,
+			COALESCE(SUM(CASE WHEN enabled="" THEN 1 ELSE 0 END), 0) AS disabled
 			FROM plugin_webseer_urls');
 	}
 
