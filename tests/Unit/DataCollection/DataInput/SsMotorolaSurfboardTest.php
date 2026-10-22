@@ -24,7 +24,8 @@ require_once dirname(__DIR__, 4) . '/scripts/ss_motorola_surfboard_SB6141.php';
 require_once dirname(__DIR__, 3) . '/Helpers/DataInputHttpServer.php';
 
 function _sb6141_page() : string {
-	return (string) file_get_contents(dirname(__DIR__, 3) . '/fixtures/DataInput/sb6141_cmSignalData.htm');
+	// The fixture keeps the modem's legacy markup; .txt keeps it out of web-markup analysis
+	return (string) file_get_contents(dirname(__DIR__, 3) . '/fixtures/DataInput/sb6141_cmSignalData.html.txt');
 }
 
 const SS_MOTOROLA_DOWNSTREAM = 'DownstreamPower9:0 DownstreamPower10:-1 DownstreamPower11:1 DownstreamPower12:-2 DownstreamPower13:0 DownstreamPower14:-1 DownstreamPower15:-3 DownstreamPower16:2 '
