@@ -246,7 +246,7 @@ function form_actions() : void {
 						}
 
 						$(function() {
-							DownloadStart(\'host_templates.php?action=download&action_type=templates&ids=' . implode(',', $selected_items) . '\');
+							DownloadStart(' . cacti_js_encode(cacti_url('host_templates.php', ['action' => 'download', 'action_type' => 'templates', 'ids' => implode(',', $selected_items)])) . ');
 						});
 					</script>
 					<iframe id="download_iframe" style="display:none;"></iframe>';
@@ -285,7 +285,7 @@ function form_actions() : void {
 						}
 
 						$(function() {
-							DownloadStart(\'host_templates.php?action=download&action_type=archives&ids=' . implode(',', $selected_items) . '\');
+							DownloadStart(' . cacti_js_encode(cacti_url('host_templates.php', ['action' => 'download', 'action_type' => 'archives', 'ids' => implode(',', $selected_items)])) . ');
 						});
 					</script>
 					<iframe id="download_iframe" style="display:none;"></iframe>';
