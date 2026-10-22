@@ -179,16 +179,28 @@ fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
 require_once(__DIR__ . '/lib/snmp.php');
+require_once(__DIR__ . '/lib/script_server.php');
 snmp_auth_cache_load();
+
+$allowed_roots = script_server_allowed_roots();
 
 // process waits for input and then calls functions as required
 while (1) {
 	$result = '';
 
-	$input_string    = fgets(STDIN, 1024);
+	[$input_string, $overlong] = script_server_read_request(STDIN);
+
 	$function        = '';
 	$parameters      = '';
 	$parameter_array = [];
+
+	if ($overlong) {
+		cacti_log('WARNING: Script Server request exceeds ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' bytes and was discarded', false, 'PHPSVR');
+		fputs(STDOUT, "U\n");
+		fflush(STDOUT);
+
+		continue;
+	}
 
 	$isParentRunning = true;
 
@@ -238,41 +250,10 @@ while (1) {
 		}
 
 		if ($input_string != '') {
-			// pull off the parameters
-			$i = 0;
-
-			while (true) {
-				$pos = strpos($input_string, ' ');
-
-				if ($pos > 0) {
-					switch ($i) {
-						case 0:
-							// cut off include file as first part of input string and keep rest for further parsing
-							$include_file = trim(substr($input_string,0,$pos));
-							$input_string = trim((string) strchr($input_string, ' ')) . ' ';
-
-							break;
-						case 1:
-							// cut off function as second part of input string and keep rest for further parsing
-							$function     = trim(substr($input_string,0,$pos), "' ");
-							$input_string = trim((string) strchr($input_string, ' ')) . ' ';
-
-							break;
-						case 2:
-							// take the rest as parameter(s) to the function stripped off previously
-							$parameters = trim($input_string);
-
-							break 2;
-					}
-				} else {
-					break;
-				}
-
-				$i++;
-			}
+			[$include_file, $function, $parameters] = script_server_split_request($input_string);
 
 			if (!parseArgs($parameters, $parameter_array)) {
-				script_server_log_parse_failure($function, $parameters);
+				cacti_log("WARNING: Script Server could not parse the parameters for $function", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 
@@ -281,129 +262,48 @@ while (1) {
 
 			script_server_log_request((int) $pid, $ctr, $include_file, $function, $parameter_array);
 
-			/* The allowed script roots are needed to validate both the include
-			 * file (when the function still has to be loaded) and the resolved
-			 * source file of an already-loaded function below, so build them
-			 * unconditionally. The scripts_path setting is an explicitly
-			 * configured Cacti script root that may live outside the web root,
-			 * so it is an allowed containment root as well. */
-			$allowed_roots = [CACTI_PATH_BASE];
+			$real_include = script_server_resolve_include($include_file, $allowed_roots);
 
-			if (defined('CACTI_PATH_SCRIPTS') && CACTI_PATH_SCRIPTS != '') {
-				$allowed_roots[] = CACTI_PATH_SCRIPTS;
-			}
-
-			// validate the existence of the function, and include if applicable
-			if (!function_exists($function)) {
-				/* Validate the include path unconditionally. Built-ins like
-				 * system, passthru, exec satisfy function_exists() without ever
-				 * loading a script file, so the path guard cannot be gated on
-				 * the function being undefined. require_once() is idempotent,
-				 * so re-running it on cached entries is a no-op. */
-				$real_include = realpath($include_file);
-
-				if ($real_include === false || !script_server_path_is_allowed($real_include, $allowed_roots)) {
-					if ($real_include !== false) {
-						cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
-					} else {
-						cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
-					}
-
-					fputs(STDOUT, "U\n");
-					fflush(STDOUT);
-
-					continue;
-				}
-
-				$include_file = $real_include;
-
-				if (file_exists($include_file)) {
-					/**
-					 * quirk in php on Windows, believe it or not....
-					 * path must be lower case
-					 */
-					if (CACTI_SERVER_OS == 'win32') {
-						$include_file = cacti_strtolower($include_file);
-					}
-
-					/**
-					 * set this variable so the calling script can determine if it was called
-					 * by the script server or stand-alone
-					 */
-					$called_by_script_server = true;
-
-					// turn on output buffering to avoid problems with nasty scripts
-					ob_start();
-					require_once($include_file);
-					ob_end_clean();
-
-					error_reporting(0);
-				} else {
-					cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
-				}
-			}
-
-			if (function_exists($function)) {
-				/* Refuse to call PHP internals (system, passthru, exec, ...)
-				 * and any function whose source file lives outside the allowed
-				 * script roots. The script-server contract is to dispatch into
-				 * user scripts in the Cacti tree; anything else is a
-				 * containment failure. */
-				try {
-					$ref = new ReflectionFunction($function);
-				} catch (ReflectionException $e) {
-					cacti_log("WARNING: Function '$function' not introspectable. Rejected.", false, 'PHPSVR');
-
-					fputs(STDOUT, "U\n");
-					fflush(STDOUT);
-
-					continue;
-				}
-
-				if ($ref->isInternal()) {
-					cacti_log("WARNING: Refusing to dispatch PHP internal function '$function' from script server.", false, 'PHPSVR');
-
-					fputs(STDOUT, "U\n");
-					fflush(STDOUT);
-
-					continue;
-				}
-
-				$fn_file = $ref->getFileName();
-
-				if ($fn_file === false) {
-					cacti_log("WARNING: Function '$function' has no source file. Rejected.", false, 'PHPSVR');
-
-					fputs(STDOUT, "U\n");
-					fflush(STDOUT);
-
-					continue;
-				}
-
-				if (!script_server_path_is_allowed(realpath($fn_file), $allowed_roots)) {
-					cacti_log("WARNING: Function '$function' defined outside the allowed script roots ('$fn_file'). Rejected.", false, 'PHPSVR');
-
-					fputs(STDOUT, "U\n");
-					fflush(STDOUT);
-
-					continue;
-				}
-
-				error_reporting(0);
-
-				$result = script_server_call($function, $parameters, $parameter_array);
-
-				fputs(STDOUT, script_server_response($result) . "\n");
-				fflush(STDOUT);
-
-				script_server_log_response((int) $pid, $ctr, $result);
-
-				$ctr++;
-			} else {
-				script_server_log_missing_function($include_file, $function, $parameter_array);
+			if ($real_include === false) {
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
+				continue;
 			}
+
+			$include_file = $real_include;
+
+			if (!function_exists($function)) {
+				/**
+				 * set this variable so the calling script can determine if it was called
+				 * by the script server or stand-alone
+				 */
+				$called_by_script_server = true;
+
+				// turn on output buffering to avoid problems with nasty scripts
+				ob_start();
+
+				try {
+					require_once($include_file);
+				} catch (Throwable $e) {
+					cacti_log("WARNING: Script file '" . basename($include_file) . "' raised " . get_class($e) . ' while loading', false, 'PHPSVR');
+				}
+
+				ob_end_clean();
+
+				error_reporting(0);
+			}
+
+			error_reporting(0);
+
+			$result = script_server_run($function, ($parameters == '' ? [] : $parameter_array), $allowed_roots, $include_file);
+
+			fputs(STDOUT, $result . "\n");
+			fflush(STDOUT);
+
+			script_server_log_response((int) $pid, $ctr, $result);
+
+			$ctr++;
 		}
 	}
 
@@ -415,131 +315,6 @@ while (1) {
 
 		exit(-1);
 	}
-}
-
-function parseArgs(string $string, array &$str_list, bool $debug = false) : bool {
-	$delimiters = ["'", '"'];
-	$delimited  = false;
-	$str_list   = [];
-
-	if ($debug) {
-		print "String: '" . $string . "'\n";
-	}
-
-	foreach ($delimiters as $delimiter) {
-		if (str_contains($string, $delimiter)) {
-			$delimited = true;
-
-			break;
-		}
-	}
-
-	// process the simple case
-	if (!$delimited) {
-		$str_list = explode(' ', $string);
-
-		if ($debug) {
-			print "Output: '" . implode(',', $str_list) . "'\n";
-		}
-
-		return true;
-	}
-
-	// Break str down into an array of characters and process
-	$char_array = str_split($string);
-	$escaping   = false;
-	$indelim    = false;
-	$parse_ok   = true;
-	$curstr     = '';
-
-	foreach ($char_array as $char) {
-		switch ($char) {
-			case '\'':
-			case '"':
-				if (!$indelim) {
-					if (!$escaping) {
-						$indelim = true;
-					} else {
-						$curstr .= $char;
-						$escaping = false;
-					}
-				} elseif (!$escaping) {
-					$str_list[] = $curstr;
-					$curstr     = '';
-					$indelim    = false;
-				} elseif ($escaping) {
-					$curstr .= $char;
-					$escaping = false;
-				}
-
-				break;
-			case '\\':
-				if ($indelim) {
-					$curstr .= $char;
-				} elseif ($escaping) {
-					$curstr .= $char;
-					$escaping = false;
-				} else {
-					$escaping = true;
-				}
-
-				break;
-			case ' ':
-				if ($escaping) {
-					$parse_ok = false;
-					$msg      = 'Parse error attempting to parse string';
-				} elseif ($indelim) {
-					$curstr .= $char;
-				} elseif ($curstr != '') {
-					$str_list[] = $curstr;
-					$curstr     = '';
-				}
-
-				break;
-			case '`':
-				$parse_ok = false;
-				$msg      = 'Backtic (`) characters not allowed';
-
-				break;
-			default:
-				if ($escaping) {
-					$parse_ok = false;
-					$msg      = 'Parse error attempting to parse string';
-				} else {
-					$curstr .= $char;
-				}
-
-				break;
-		}
-
-		if (!$parse_ok) {
-			break;
-		}
-	}
-
-	// Add the last str to the string array
-	$msg = 'Unknown error message';
-
-	if ($indelim || $escaping) {
-		$parse_ok = false;
-		$msg      = 'Parse error attempting to parse string';
-	}
-
-	if (!$parse_ok) {
-		// the caller answers U on STDOUT; an extra line here would be read as
-		// the reply to the next request
-		if ($debug) {
-			print 'ERROR: ' . $msg . " '" . $string . "'\n";
-		}
-	} elseif ($curstr != '') {
-		$str_list[] = $curstr;
-	}
-
-	if ($debug) {
-		print "Output: '" . implode(',', $str_list) . "'\n";
-	}
-
-	return $parse_ok;
 }
 
 /**
@@ -647,10 +422,7 @@ function script_server_response(mixed $result) : string {
  * @return void
  */
 function sig_handler(int $signo) : void {
-	global $include_file, $function, $parameter_array;
-
-	// argument values can carry device credentials, so only their count is logged
-	$parameters = (is_array($parameter_array) ? cacti_count($parameter_array) : 0) . ' argument(s)';
+	global $include_file, $function;
 
 	switch ($signo) {
 		case SIGTERM:
@@ -660,7 +432,7 @@ function sig_handler(int $signo) : void {
 		case SIGSEGV:
 			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" .
 				basename($include_file) .
-				"', function:'$function', params:'$parameters'",
+				"', function:'$function'",
 				false,
 				'PHPSVR',
 				POLLER_VERBOSITY_MEDIUM);
@@ -668,7 +440,7 @@ function sig_handler(int $signo) : void {
 
 			exit;
 		default:
-			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'",
+			cacti_log("WARNING: Script Server received signal '$signo' in file:'" . basename((string) $include_file) . "', function:'$function'",
 				false,
 				'PHPSVR',
 				POLLER_VERBOSITY_HIGH);
