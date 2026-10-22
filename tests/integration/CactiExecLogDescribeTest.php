@@ -31,13 +31,9 @@ if (!function_exists('db_fetch_cell_prepared')) {
 			'fe80::1%eth0'       => 99,
 		);
 
-		foreach ((array) $params as $host) {
-			if (isset($map[$host])) {
-				return $map[$host];
-			}
-		}
+		$host = isset($params[0]) ? $params[0] : '';
 
-		return false;
+		return isset($map[$host]) ? $map[$host] : false;
 	}
 }
 
@@ -111,7 +107,7 @@ test('a plain IPv6 hostname resolves while its bracketed udp6 target is logged u
 		->and($out)->not->toContain('public');
 });
 
-test('a bracketed IPv6 hostname, as the binary SNMP paths pass it, resolves to the device stored without brackets', function () {
+test('a bracketed IPv6 hostname, as the binary SNMP paths pass it, is looked up without its transport brackets', function () {
 	$hostname = cacti_format_ipv6_colon('2001:db8::1');
 
 	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
