@@ -2086,3 +2086,50 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 
 	return $results;
 }
+
+/**
+ * snmp_script_auth_fields - resolve the SNMP fields a script server data query receives
+ *
+ * Data queries used to pass every credential in a colon joined argument, which
+ * left them in the poller cache and the process list. They now pass only
+ * version:port:timeout:retries:max_oids and the credentials are read from the
+ * device. A cached argument in the old layout is still honoured until the
+ * poller cache is rebuilt.
+ *
+ * @param int    $host_id   The device id
+ * @param string $snmp_auth The colon joined argument from the poller cache
+ *
+ * @return array The 13 fields in the legacy positional layout: 0 version, 1 port,
+ *               2 timeout, 3 retries, 4 max_oids, 5 community, 6 username,
+ *               7 password, 8 auth protocol, 9 priv passphrase, 10 priv
+ *               protocol, 11 context, 12 engine id
+ */
+function snmp_script_auth_fields(int $host_id, string $snmp_auth) : array {
+	$fields = explode(':', $snmp_auth);
+
+	if (cacti_sizeof($fields) > 5 || $host_id <= 0) {
+		return array_pad($fields, 13, '');
+	}
+
+	$host = db_fetch_row_prepared('SELECT snmp_community, snmp_username, snmp_password,
+		snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context,
+		snmp_engine_id
+		FROM host
+		WHERE id = ?',
+		[$host_id]);
+
+	if (!is_array($host) || !cacti_sizeof($host)) {
+		return array_pad($fields, 13, '');
+	}
+
+	return array_merge(array_pad($fields, 5, ''), [
+		$host['snmp_community'],
+		$host['snmp_username'],
+		$host['snmp_password'],
+		$host['snmp_auth_protocol'],
+		$host['snmp_priv_passphrase'],
+		$host['snmp_priv_protocol'],
+		$host['snmp_context'],
+		$host['snmp_engine_id']
+	]);
+}
