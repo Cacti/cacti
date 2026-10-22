@@ -45,17 +45,26 @@ function ss_multicpu_avg($device_id) {
 		$snmp_retries
 	);
 
-	$load = 0;
+	$load  = 0;
+	$count = 0;
 
 	if (cacti_sizeof($array)) {
 		foreach ($array as $key=>$value)	{
-		    $load += $value['value'];
+			/* a device can return a non-numeric value for a processor */
+			if (!is_numeric($value['value'])) {
+				continue;
+			}
+
+			$load += $value['value'];
+			$count++;
 		}
-	} else {
+	}
+
+	if ($count == 0) {
 		return "load:0\n";
 	}
 
-	$load = $load / cacti_count($array);
+	$load = $load / $count;
 
 	return "load:$load\n";
 }
