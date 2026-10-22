@@ -230,6 +230,7 @@ Cacti CHANGELOG
 -feature#8280: Add a jQuery rebind() helper for the common off(events).on(events, ...) idiom and roll it out across the core JavaScript and inline PHP event handlers
 -feature#8311: Make the graph drilldown action icons a common hamburger toggle over the graph's top-right across all themes (centralized in layout.js) instead of the per-theme hover-to-the-right behaviour
 -feature#8316: Expand the open graph drilldown strip into a labelled table menu (text label on the left, glyphs aligned in a fixed right-hand column) built in layout.js on open so plugin-contributed icons are labelled from their title without plugin changes
+-feature#8455: Add Script Server PHP versions of the Perl and Python data input scripts
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
