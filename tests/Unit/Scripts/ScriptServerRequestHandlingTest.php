@@ -55,7 +55,7 @@ function ss_request_fixture_ok($a, $b) {
 if (!function_exists(__NAMESPACE__ . '\\parseArgs')) {
 	$root = dirname(__DIR__, 3);
 
-	foreach (array('parseArgs', 'script_server_read_request', 'script_server_call', 'script_server_redact_params') as $function) {
+	foreach (array('parseArgs', 'script_server_read_request', 'script_server_drain_line', 'script_server_call', 'script_server_redact_params') as $function) {
 		\cacti_fixture_source_function($root . '/script_server.php', $function, __NAMESPACE__);
 	}
 
@@ -82,7 +82,7 @@ beforeEach(function () {
 });
 
 test('a request at the limit is returned whole', function () {
-	$request = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST);
+	$request = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH);
 	$stream  = ss_request_stream($request . "\r\nquit\r\n");
 
 	expect(script_server_read_request($stream))->toBe($request . "\r\n");
@@ -90,7 +90,7 @@ test('a request at the limit is returned whole', function () {
 });
 
 test('an over-length request is discarded and its tail is not read as a new request', function () {
-	$request = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST * 3) . ' quit';
+	$request = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH * 3) . ' quit';
 	$stream  = ss_request_stream($request . "\r\nnext request\r\n");
 
 	expect(script_server_read_request($stream))->toBeNull();
@@ -98,7 +98,7 @@ test('an over-length request is discarded and its tail is not read as a new requ
 });
 
 test('a request one byte over the limit is refused even with a bare newline', function () {
-	$stream = ss_request_stream(str_repeat('a', SCRIPT_SERVER_MAX_REQUEST + 1) . "\nnext\n");
+	$stream = ss_request_stream(str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH + 1) . "\nnext\n");
 
 	expect(script_server_read_request($stream))->toBeNull();
 	expect(script_server_read_request($stream))->toBe("next\n");
@@ -110,12 +110,87 @@ test('end of input is reported as false', function () {
 	expect(script_server_read_request($stream))->toBeFalse();
 });
 
+/* what spine's php_cmd() writes: snprintf(command, BUFSIZE = 1024, "%s\r\n") */
+function ss_request_spine_write($payload) {
+	return substr($payload . "\r\n", 0, 1023);
+}
+
+function ss_request_pipe() {
+	return stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+}
+
+test('the limit is the longest payload spine sends with its CR LF intact', function () {
+	expect(SCRIPT_SERVER_MAX_REQUEST_LENGTH)->toBe(1021);
+	expect(ss_request_spine_write(str_repeat('a', 1021)))->toEndWith("\r\n");
+	expect(ss_request_spine_write(str_repeat('a', 1022)))->not->toEndWith("\n");
+});
+
+test('a full length request from spine is read whole from a pipe', function () {
+	list($spine, $server) = ss_request_pipe();
+	$payload = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH);
+
+	fwrite($spine, ss_request_spine_write($payload));
+
+	expect(script_server_read_request($server, 0.2))->toBe($payload . "\r\n");
+});
+
+foreach (array(1022, 1023, 5000) as $length) {
+	test("a $length byte request truncated by spine is refused without waiting for a line feed", function () use ($length) {
+		list($spine, $server) = ss_request_pipe();
+
+		/* spine keeps the pipe open and waits for the reply */
+		fwrite($spine, ss_request_spine_write(str_repeat('a', $length)));
+
+		$start  = microtime(true);
+		$result = script_server_read_request($server, 0.2);
+		$waited = microtime(true) - $start;
+
+		expect($result)->toBeNull();
+		expect($waited)->toBeLessThan(1.0);
+
+		fwrite($spine, "next\r\n");
+
+		expect(script_server_read_request($server, 0.2))->toBe("next\r\n");
+	});
+}
+
+test('the default wait for a missing line feed is half a second', function () {
+	list($spine, $server) = ss_request_pipe();
+
+	fwrite($spine, ss_request_spine_write(str_repeat('a', 2000)));
+
+	$start = microtime(true);
+
+	expect(script_server_read_request($server))->toBeNull();
+	expect(microtime(true) - $start)->toBeGreaterThanOrEqual(0.4)->toBeLessThan(1.5);
+});
+
+test('the rest of an over-length line is drained when it arrives in pieces', function () {
+	list($writer, $server) = ss_request_pipe();
+
+	fwrite($writer, str_repeat('a', 1500));
+
+	$child = pcntl_fork();
+
+	if ($child === 0) {
+		usleep(50000);
+		fwrite($writer, str_repeat('b', 3000));
+		usleep(50000);
+		fwrite($writer, "tail\r\nnext\r\n");
+		exit(0);
+	}
+
+	expect(script_server_read_request($server, 0.5))->toBeNull();
+	pcntl_waitpid($child, $status);
+	expect(script_server_read_request($server, 0.5))->toBe("next\r\n");
+})->skip(!function_exists('pcntl_fork'), 'pcntl is not available');
+
 test('the poller refuses to send a command longer than the script server limit', function () {
 	$to_server   = fopen('php://memory', 'w+');
 	$from_server = ss_request_stream("42\n");
 	$proc        = fopen('php://memory', 'r');
 
-	$result = exec_poll_php(str_repeat('a', SCRIPT_SERVER_MAX_REQUEST + 1), 1, array($to_server, $from_server), $proc);
+	$result = exec_poll_php(str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH + 1), 1, array($to_server, $from_server), $proc);
 
 	expect($result)->toBe('U');
 	rewind($to_server);
@@ -123,11 +198,23 @@ test('the poller refuses to send a command longer than the script server limit',
 	expect(implode("\n", $GLOBALS['ss_request_log']))->toContain('byte limit');
 });
 
+test('the poller refuses a command that carries its own line break', function () {
+	foreach (array("a\nb", "a\rb", "a\r\n") as $command) {
+		$to_server   = fopen('php://memory', 'w+');
+		$from_server = ss_request_stream("42\n");
+		$proc        = fopen('php://memory', 'r');
+
+		expect(exec_poll_php($command, 1, array($to_server, $from_server), $proc))->toBe('U');
+		rewind($to_server);
+		expect(stream_get_contents($to_server))->toBe('');
+	}
+});
+
 test('the poller still sends a command at the limit', function () {
 	$to_server   = fopen('php://memory', 'w+');
 	$from_server = ss_request_stream("42\n");
 	$proc        = fopen('php://memory', 'r');
-	$command     = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST);
+	$command     = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH);
 
 	expect(exec_poll_php($command, 1, array($to_server, $from_server), $proc))->toBe("42\n");
 	rewind($to_server);

@@ -181,7 +181,7 @@ while (1) {
 	$parameter_array = array();
 
 	if ($input_string === null) {
-		cacti_log('WARNING: Script Server request exceeds ' . SCRIPT_SERVER_MAX_REQUEST . ' bytes and was discarded', false, 'PHPSVR');
+		cacti_log('WARNING: Script Server request exceeds ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' bytes and was discarded', false, 'PHPSVR');
 
 		fputs(STDOUT, "U\n");
 		fflush(STDOUT);
@@ -536,35 +536,90 @@ function parseArgs($string, &$str_list, $debug = false) {
 /**
  * Read one request line from the poller. Used as part of Cacti's script server functionality.
  *
- * A line longer than SCRIPT_SERVER_MAX_REQUEST is consumed up to and including
- * its line terminator and reported as null, so its tail is never read back as
- * a separate request.
+ * A line longer than SCRIPT_SERVER_MAX_REQUEST_LENGTH is reported as null and
+ * the rest of it is discarded, so its tail is never read back as a separate
+ * request.
  *
  * @param resource $stream The stream to read from.
+ * @param float $drain_wait Seconds to wait for each further piece of an over-length line.
  *
  * @return string|false|null The raw line, false when nothing was read, or null when the line was too long.
  */
-function script_server_read_request($stream) {
-	/* room for the request, a CR/LF terminator and fgets' own terminator */
-	$line = fgets($stream, SCRIPT_SERVER_MAX_REQUEST + 3);
+function script_server_read_request($stream, $drain_wait = 0.5) {
+	/* room for the request, its CR LF and fgets' own terminator, so a full
+	 * buffer without a LF can only be an over-length line */
+	$line = fgets($stream, SCRIPT_SERVER_MAX_REQUEST_LENGTH + 3);
 
 	if ($line === false || $line === '') {
 		return $line;
 	}
 
-	$complete = (substr($line, -1) == "\n" || feof($stream));
+	if (substr($line, -1) != "\n" && strlen($line) >= SCRIPT_SERVER_MAX_REQUEST_LENGTH + 2) {
+		script_server_drain_line($stream, $drain_wait);
 
-	if ($complete && strlen(rtrim($line, "\r\n")) <= SCRIPT_SERVER_MAX_REQUEST) {
-		return $line;
+		return null;
 	}
 
-	while (!$complete) {
-		$line = fgets($stream, SCRIPT_SERVER_MAX_REQUEST + 3);
-
-		$complete = ($line === false || substr($line, -1) == "\n" || feof($stream));
+	if (strlen(rtrim($line, "\r\n")) > SCRIPT_SERVER_MAX_REQUEST_LENGTH) {
+		return null;
 	}
 
-	return null;
+	return $line;
+}
+
+/**
+ * Discard input up to and including the next line feed. Used as part of Cacti's script server
+ * functionality.
+ *
+ * spine truncates an over-length request without a terminator and then waits
+ * for the reply, so a blocking read for the line feed would stall both sides.
+ * The drain stops once no further input arrives within $wait seconds.
+ *
+ * @param resource $stream The input stream.
+ * @param float $wait Seconds to wait for each further piece of input.
+ *
+ * @return void No value is returned.
+ */
+function script_server_drain_line($stream, $wait) {
+	$seconds = (int) floor($wait);
+	$micro   = (int) (($wait - $seconds) * 1000000);
+
+	stream_set_blocking($stream, false);
+
+	while (true) {
+		$read   = array($stream);
+		$write  = null;
+		$except = null;
+
+		/* stream_select() cannot watch every stream type (Windows pipes,
+		 * memory streams); those are read until a line feed or end of input */
+		try {
+			$ready = @stream_select($read, $write, $except, $seconds, $micro);
+		} catch (Throwable $e) {
+			$ready = false;
+		}
+
+		if ($ready === 0) {
+			break;
+		}
+
+		if ($ready === false) {
+			stream_set_blocking($stream, true);
+		}
+
+		/* non-blocking fgets() stops at the line feed, leaving the next request */
+		$chunk = fgets($stream, 8192);
+
+		if ($chunk !== false && substr($chunk, -1) == "\n") {
+			break;
+		}
+
+		if ($chunk === false && (feof($stream) || $ready === false)) {
+			break;
+		}
+	}
+
+	stream_set_blocking($stream, true);
 }
 
 /**

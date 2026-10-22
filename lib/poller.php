@@ -81,9 +81,10 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			 * 2 => any error output will be sent to child stderr */
 
 			/* the script server reads one bounded line per request, so a longer
-			 * command would be split and its tail read as a second request */
-			if (strlen($command) > SCRIPT_SERVER_MAX_REQUEST) {
-				cacti_log('WARNING: Script Server command of ' . strlen($command) . ' bytes exceeds the ' . SCRIPT_SERVER_MAX_REQUEST . ' byte limit, not sent', false, 'POLLER');
+			 * command, or one with its own line break, would be split and its
+			 * tail read as a second request */
+			if (strlen($command) > SCRIPT_SERVER_MAX_REQUEST_LENGTH || strpbrk($command, "\r\n") !== false) {
+				cacti_log('WARNING: Script Server command of ' . strlen($command) . ' bytes exceeds the ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' byte limit or contains a line break, not sent', false, 'POLLER');
 
 				return 'U';
 			}
