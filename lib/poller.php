@@ -140,10 +140,27 @@ function poller_redact_snmp_secrets($string, $item) {
 	$secrets = array();
 
 	foreach (array('snmp_community', 'snmp_password', 'snmp_priv_passphrase') as $column) {
-		if (isset($item[$column]) && $item[$column] != '') {
-			$secrets[] = (string) $item[$column];
+		if (!isset($item[$column]) || $item[$column] == '') {
+			continue;
+		}
+
+		/* the command line carries each credential as cacti_escapeshellarg()
+		 * or cacti_escapeshellarg_cmd() wrote it, so mask every form either
+		 * can produce on unix and win32, not just the stored value */
+		$value = (string) $item[$column];
+		$bases = array($value, str_replace(array("\n", "\r"), '', $value));
+		$cmd   = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $bases[1]);
+		$bases[] = $cmd;
+		$bases[] = str_replace('%', '', $cmd);
+
+		foreach ($bases as $base) {
+			$secrets[] = $base;
+			$secrets[] = str_replace("'", "'\\''", $base);
+			$secrets[] = str_replace(CACTI_ESCAPE_CHARACTER, '\\' . CACTI_ESCAPE_CHARACTER, $base);
 		}
 	}
+
+	$secrets = array_unique(array_filter($secrets, 'strlen'));
 
 	if (!cacti_sizeof($secrets)) {
 		return $string;
