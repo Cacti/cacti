@@ -37,7 +37,7 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_host_disk(string $hostname = '', int $host_id = 0, mixed $snmp_auth = '', string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
-	$snmp           = explode(':', $snmp_auth);
+	$snmp           = snmp_script_auth_fields($host_id, (string) $snmp_auth);
 	$snmp_version   = $snmp[0];
 	$snmp_port      = $snmp[1];
 	$snmp_timeout   = $snmp[2];
