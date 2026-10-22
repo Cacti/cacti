@@ -8608,7 +8608,11 @@ function cacti_exec_log_describe($binary, array $args) {
 	$prefix = '';
 
 	if ($host !== '' && function_exists('db_fetch_cell_prepared')) {
-		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE hostname = ? AND deleted = "" LIMIT 1',
+		$host_id = db_fetch_cell_prepared('SELECT id
+			FROM host
+			WHERE hostname = ?
+			AND deleted = ""
+			LIMIT 1',
 			array($host));
 
 		if (!empty($host_id)) {
@@ -8640,9 +8644,40 @@ function cacti_exec_log_describe($binary, array $args) {
  * @return int Exit code, or 255 on spawn failure, error with binary or timeout.
  */
 function cacti_exec($binary, array $args = array(), array &$output = array(), $timeout = 30) {
+	$host = '';
+	$log  = true;
+
 	// Ensure buffers flush automatically
 	if (PHP_SAPI === 'cli') {
 		ini_set('implicit_flush', true);
+	}
+
+	// Gather the host id from the arguments
+	foreach ($args as $arg) {
+		$arg = (string) $arg;
+
+		/* Net-SNMP target: host:port, ipv4:port, or (udp6|tcp6):[ipv6]:port (zone id included) */
+		if ($host === '' &&
+			preg_match('/^(?:(?:udp|tcp)6?:)?(?:\[([^\]]+)\]|([0-9A-Za-z._-]+)):\d+$/', $arg, $m)) {
+			$host = (isset($m[1]) && $m[1] !== '') ? $m[1] : $m[2];
+		}
+	}
+
+	if ($host !== '' && function_exists('db_fetch_cell_prepared')) {
+		$host_id = db_fetch_cell_prepared('SELECT id
+			FROM host
+			WHERE hostname = ?
+			AND deleted = ""
+			LIMIT 1',
+			array($host));
+
+		if (!empty($host_id)) {
+			$log_level = read_config_option('spine_log_level') ?? 0;
+
+			if ($log_level < 2) {
+				$log = false;
+			}
+		}
 	}
 
 	// Blocking assumes a timeout of 4 hours
@@ -8669,7 +8704,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 
 	$process = proc_open($argv, $descriptors, $pipes);
 
-	if (!is_resource($process)) {
+	if (!is_resource($process) && $log) {
 		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
 		return 255;
 	}
@@ -8752,7 +8787,9 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		proc_terminate($process, 9);
 		proc_close($process);
 
-		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
+		if ($log) {
+			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
+		}
 
 		return 1;
 	}
@@ -8767,7 +8804,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$exit = $close_exit;
 	}
 
-	if (!empty($stderr)) {
+	if (!empty($stderr) && $log) {
 		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_LOW);
 	}
 
