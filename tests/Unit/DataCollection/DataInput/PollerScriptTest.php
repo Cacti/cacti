@@ -77,7 +77,7 @@ test('http get returns null when nothing listens', function () {
 
 	fclose($probe);
 
-	expect(poller_script_http_get('http://' . $addr . '/', 2))->toBeNull();
+	expect(poller_script_http_get('http://' . $addr . '/', 2))->toBeNull(); // NOSONAR loopback port with no listener; the modems serve HTTP only
 });
 
 test('http get returns the body of a 2xx response and refuses other statuses', function () {
@@ -88,7 +88,7 @@ test('http get returns the body of a 2xx response and refuses other statuses', f
 	}
 
 	try {
-		$base = 'http://' . $server['address'];
+		$base = 'http://' . $server['address']; // NOSONAR local plain-HTTP fixture server, as the modems serve HTTP only
 
 		expect(poller_script_http_get($base . '/plain'))->toBe("line one\nline two\n")
 			->and(poller_script_http_get($base . '/missing'))->toBeNull()
