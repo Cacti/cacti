@@ -37,7 +37,7 @@ $snmp_retries   = read_config_option('snmp_retries');
 $model = cacti_snmp_get($hostname, $snmp_community,
 	'.1.3.6.1.4.1.3854.1.1.8.0', $snmp_version, $snmp_auth_username,
 	$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-	$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+	$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 if (preg_match('/^securityProbe/',$model)) {
 	$securityProbe = 1;
@@ -103,7 +103,7 @@ if ($cmd == 'index') {
 			$index_type = cacti_snmp_get($hostname, $snmp_community,
 				$oids['sensorProbeSensorType'] . ".$return_arr[$i]", $snmp_version, $snmp_auth_username,
 				$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 			// The >= 0 should have weeded out all the non-temperature sensors already, but just
 			// just for additional clarity's sake, we check the sensorProbeSensorType table too.
@@ -147,7 +147,7 @@ elseif ($cmd == 'query' && isset($query_field)) {
 			$index_type = cacti_snmp_get($hostname, $snmp_community,
 				$oids['sensorProbeSensorType'] . ".$arr_index[$i]", $snmp_version, $snmp_auth_username,
 				$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 			if ($index_type == '3' || $index_type == 'humidity(3)' || $index_type == '1' || $index_type == 'temperature(1)' || $index_type == '23' || $index_type == 'arraytemp(23)') {
 				// The securityProbe still reports raw temperature values in celsius regardless of whether the
@@ -159,7 +159,7 @@ elseif ($cmd == 'query' && isset($query_field)) {
 					$temp_unit = cacti_snmp_get($hostname, $snmp_community,
 						$oids['sensorTemperatureUnit'] . ".$arr_index[$i]", $snmp_version, $snmp_auth_username,
 						$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-						$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+						$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 					// If the sensor is configured for Fahrenheit, do the conversion
 					if ($temp_unit == 'F') {
@@ -203,7 +203,7 @@ elseif ($cmd == 'get' && isset($query_field) && isset($query_index)) {
 	$value = (cacti_snmp_get($hostname, $snmp_community,
 		$oids[$query_field] . ".$query_index", $snmp_version, $snmp_auth_username,
 		$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-		$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
+		$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER));
 
 	// The securityProbe still reports raw temperature values in celsius regardless of whether the
 	// sensor is configured for fahrenheit or not. The sensorProbe switches the raw reading. It
@@ -214,7 +214,7 @@ elseif ($cmd == 'get' && isset($query_field) && isset($query_index)) {
 		$temp_unit = cacti_snmp_get($hostname, $snmp_community,
 			$oids['sensorTemperatureUnit'] . ".$query_index", $snmp_version, $snmp_auth_username,
 			$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 		// If the sensor is configured for Fahrenheit, do the conversion
 		if ($temp_unit == 'F') {
@@ -245,7 +245,8 @@ function reindex(array $arr) : array {
 	$return_arr = [];
 
 	for ($i = 0; ($i < sizeof($arr)); $i++) {
-		$return_arr[$i] = $arr[$i]['value'];
+		// device values are printed one per line, so a line break must not survive
+		$return_arr[$i] = str_replace(["\r", "\n"], '', (string) $arr[$i]['value']);
 	}
 
 	return $return_arr;
