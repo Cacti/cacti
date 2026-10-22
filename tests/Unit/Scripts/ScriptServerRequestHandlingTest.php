@@ -208,3 +208,66 @@ test('cmd.php log arguments mask the item credentials', function () {
 	expect(poller_redact_snmp_secrets("/x/ss.php f 'h' 'pubpass' 'pub'", $item))->toBe("/x/ss.php f 'h' '********' '********'");
 	expect(poller_redact_snmp_secrets('no secrets here', array()))->toBe('no secrets here');
 });
+
+function ss_request_command($os, array $args, $cmd = false) {
+	$saved = $GLOBALS['config']['cacti_server_os'] ?? null;
+
+	$GLOBALS['config']['cacti_server_os'] = $os;
+
+	$parts = array('/opt/cacti/scripts/ss_x.php', 'ss_x');
+
+	foreach ($args as $arg) {
+		$parts[] = ($cmd ? \cacti_escapeshellarg_cmd($arg) : \cacti_escapeshellarg($arg));
+	}
+
+	$GLOBALS['config']['cacti_server_os'] = $saved;
+
+	return implode(' ', $parts);
+}
+
+$ss_redact_secrets = array(
+	'apostrophe'   => "it's'secret",
+	'double quote' => 'say"secret"',
+	'backslash'    => 'back\\slash\\secret',
+	'space'        => 'secret with spaces',
+	'cmd metachar' => 'a&b|c^d<e>(f)%g',
+);
+
+$ss_redact_forms = array(
+	'unix'      => array('unix', false),
+	'win32'     => array('win32', false),
+	'win32 cmd' => array('win32', true),
+);
+
+foreach ($ss_redact_secrets as $label => $secret) {
+	foreach ($ss_redact_forms as $form => $how) {
+		test("cmd.php log arguments mask a credential with a $label in its $form escaped form", function () use ($secret, $how) {
+			$item    = array('snmp_community' => '', 'snmp_password' => $secret, 'snmp_priv_passphrase' => '');
+			$command = ss_request_command($how[0], array('host1', $secret, "3:161:500:1:10::user:$secret:SHA"), $how[1]);
+			$masked  = poller_redact_snmp_secrets($command, $item);
+
+			expect(substr_count($masked, '********'))->toBe(2);
+			expect($masked)->toContain('host1');
+
+			/* no word of the credential survives, whatever escaping wrapped it */
+			foreach (preg_split('/[^A-Za-z]+/', $secret, -1, PREG_SPLIT_NO_EMPTY) as $word) {
+				if (strlen($word) >= 4) {
+					expect($masked)->not->toContain($word);
+				}
+			}
+		});
+	}
+}
+
+test('cmd.php log arguments mask a credential that contains another credential whole', function () {
+	$item = array('snmp_community' => 'pub', 'snmp_password' => 'pubpubpass', 'snmp_priv_passphrase' => '');
+
+	expect(poller_redact_snmp_secrets("f 'pubpubpass' 'pub'", $item))->toBe("f '********' '********'");
+});
+
+test('cmd.php log arguments ignore empty credentials', function () {
+	$item = array('snmp_community' => '', 'snmp_password' => '', 'snmp_priv_passphrase' => '0');
+
+	expect(poller_redact_snmp_secrets("f '' 'x0y'", $item))->toBe("f '' 'x********y'");
+	expect(poller_redact_snmp_secrets("f '' 'xy'", array('snmp_community' => '')))->toBe("f '' 'xy'");
+});
