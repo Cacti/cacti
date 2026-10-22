@@ -265,7 +265,7 @@ foreach ($secrets as $secret) {
 	foreach ([['unix', false], ['win32', false], ['win32', true]] as $form) {
 		$config['cacti_server_os'] = $form[0];
 		$escaped = ($form[1] ? \cacti_escapeshellarg_cmd($secret) : \cacti_escapeshellarg($secret));
-		$config['cacti_server_os'] = 'unix';
+		$config = array_replace($config, ['cacti_server_os' => 'unix']);
 		$masked = poller_redact_snmp_secrets('/x/ss.php f ' . $escaped, ['snmp_community' => '', 'snmp_password' => $secret]);
 
 		check("escaped credential masked ($form[0])", substr_count($masked, '********') === 1);
