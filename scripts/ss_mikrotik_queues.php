@@ -110,11 +110,12 @@ function ss_mikrotik_queues_getvalue(int $host_id, string $index, string $column
 		AND host_id = ?',
 		[$index, $index2, $host_id]);
 
-	if ($value === false) {
+	// a missing row and a NULL counter both mean no sample
+	if ($value === false || $value === null) {
 		return 'U';
-	} else {
-		return $value;
 	}
+
+	return (string) $value;
 }
 
 function ss_mikrotik_queues_getnames(int $host_id) : array {

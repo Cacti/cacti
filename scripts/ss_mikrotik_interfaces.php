@@ -84,11 +84,12 @@ function ss_mikrotik_interfaces_getvalue(int $host_id, string $index, string $co
 		AND host_id = ?',
 		[$index, $index2, $host_id]);
 
-	if ($value === false) {
+	// a missing row and a NULL counter both mean no sample
+	if ($value === false || $value === null) {
 		return 'U';
-	} else {
-		return $value;
 	}
+
+	return (string) $value;
 }
 
 function ss_mikrotik_interfaces_getnames(int $host_id) : array {
