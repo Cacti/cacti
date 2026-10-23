@@ -65,7 +65,10 @@ WORKDIR /assets
 COPY package.json package-lock.json ./
 COPY build/ build/
 COPY patches/ patches/
-RUN npm ci
+RUN npm ci --ignore-scripts \
+	&& node node_modules/patch-package/index.js \
+	&& node build/sync-js.mjs \
+	&& node build/clean-node-modules.mjs
 
 FROM runtime AS discovery
 WORKDIR /var/www/html
