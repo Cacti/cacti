@@ -203,7 +203,9 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		// The snmp response should contain a numeric counter (NOT the device index)
 		// ------------------------------------------------------------------------------------
 		if (str_contains($snmp_test, 'No Such Instance') || is_numeric($snmp_test) == false || $snmp_test === '') {
-			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS', POLLER_VERBOSITY_MEDIUM);
+			if (is_device_debug_enabled($host_id) || read_config_option('spine_log_level') == 2) {
+				cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
+			}
 
 			return 'U';
 		} else {
@@ -248,7 +250,9 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 			(substr($snmp_array[0]['value'],0,16) == 'No Such Instance') ||
 			(is_numeric($snmp_array[0]['value']) == false) ||
 			(trim((string) $snmp_array[0]['value']) == '')) {
-			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
+			if (is_device_debug_enabled($host_id) || read_config_option('spine_log_level') == 2) {
+				cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
+			}
 
 			return null;
 		}
