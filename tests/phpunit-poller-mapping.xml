@@ -3,6 +3,7 @@
     <testsuites>
         <testsuite name="PollerMapping">
             <file>Unit/PollerMappingCacheTest.php</file>
+            <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

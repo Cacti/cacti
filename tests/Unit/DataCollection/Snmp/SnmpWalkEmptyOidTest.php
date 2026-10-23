@@ -84,13 +84,9 @@ test('a walk with an empty OID never runs the binary', function (string $oid) {
 	->skip(PHP_OS_FAMILY === 'Windows', 'the stub binary is a POSIX shell script');
 
 test('the index count reindex check needs an index OID', function () {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+	require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/SnmpWalkOidGuard.php');
 
-	expect($src)->not->toBeFalse('Failed to read lib/poller.php');
-
-	$start = strpos($src, 'POLLER_ACTION_SNMP_COUNT');
-	$guard = strrpos(substr($src, 0, $start), "elseif (!empty(\$data_query_xml['oid_index']))");
-
-	expect($start)->not->toBeFalse()
-		->and($guard)->not->toBeFalse('the count row must only be stored when oid_index is set');
+	expect($result['walk_cases'])->toBe(3)
+		->and($result['reindex_cases'])->toBe(5);
 });
