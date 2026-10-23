@@ -32,9 +32,13 @@ cleanup() {
 trap cleanup EXIT
 "${DC[@]}" up -d --build --wait --wait-timeout 180
 if [[ "${CACTI_DISCOVERY_COVERAGE:-0}" == 1 ]]; then
-  CACTI_MATCH_DB_DSN='mysql:host=127.0.0.1;port=18279;dbname=cacti' \
-    CACTI_MATCH_DB_USER=cactiuser CACTI_MATCH_DB_PASSWORD=cactiuser \
-    bash tests/tools/run_discovery_request_coverage.sh --native-only
+  if [[ -f "$CACTI_PR_COVERAGE_OUTPUT/discovery-native.xml" ]]; then
+    python3 tests/tools/verify_discovery_coverage.py --native-only "$CACTI_PR_COVERAGE_OUTPUT"
+  else
+    CACTI_MATCH_DB_DSN='mysql:host=127.0.0.1;port=18279;dbname=cacti' \
+      CACTI_MATCH_DB_USER=cactiuser CACTI_MATCH_DB_PASSWORD=cactiuser \
+      bash tests/tools/run_discovery_request_coverage.sh --native-only
+  fi
 fi
 for source in lib/api_automation.php poller_automation.php include/layout.js automation_graph_rules.php; do
   expected="$(node -e 'process.stdout.write(require("node:crypto").createHash("sha256").update(require("node:fs").readFileSync(process.argv[1])).digest("hex"))' "$source")"
