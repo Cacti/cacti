@@ -220,6 +220,9 @@ test('deepness skins jQuery multiselect buttons and menus with its own palette',
 	await page.setContent(multiselectMarkup);
 	await installThemeCss(page, 'include/themes/deepness/jquery.multiselect.css');
 	await installThemeCss(page, 'include/themes/deepness/main.css');
+	// Deepness zeroes the body margin, so #ms-button sits at the origin where
+	// headless Chromium on Linux can leave the pointer and apply :hover.
+	await page.mouse.move(1000, 600);
 	expect(await computedStyles(page, [
 		['#ms-button', 'backgroundColor'], ['#ms-button', 'backgroundImage'], ['#ms-button', 'textTransform'],
 		['#ms-hover', 'backgroundColor'],

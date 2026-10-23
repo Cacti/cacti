@@ -9,11 +9,14 @@ if ! command -v rg >/dev/null 2>&1; then
 	exit 1
 fi
 
+# Third-party plugins are gitignored. Prune the directory itself: a later
+# --glob '*.php' would re-include files that '!plugins/**' excludes.
 EXCLUDE=(
 	--glob '!include/vendor/**'
 	--glob '!vendor/**'
 	--glob '!locales/**'
 	--glob '!tests/**'
+	--glob '!/plugins'
 	--glob '!**/*.min.js'
 )
 
@@ -22,7 +25,11 @@ printf 'category\tlocation\tmatch\n'
 scan() {
 	local category="$1"
 	local pattern="$2"
-	rg -n --pcre2 --no-config --no-ignore --no-ignore-vcs --no-ignore-parent "$pattern" "${EXCLUDE[@]}" --glob '*.php' . 2>/dev/null | grep -v '\/plugins\/' | while IFS= read -r line; do
+	local rg_status=0
+
+	# rg exits 1 when a category has no matches. Anything higher is a failed
+	# scan, which must not produce a short inventory that passes as clean.
+	rg -n --pcre2 --no-config --no-ignore --no-ignore-vcs --no-ignore-parent "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
 		file="${line%%:*}"
 		case "$file" in
 			./*) ;;
@@ -31,7 +38,12 @@ scan() {
 		loc="${file}"
 		match="${line#*:*:}"
 		printf '%s\t%s\t%s\n' "$category" "$loc" "$match"
-	done || true
+	done || rg_status="${PIPESTATUS[0]}"
+
+	if [ "$rg_status" -gt 1 ]; then
+		echo "ERROR: ripgrep failed while scanning $category sinks." >&2
+		exit "$rg_status"
+	fi
 }
 
 # Command execution sinks

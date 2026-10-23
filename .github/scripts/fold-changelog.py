@@ -4,12 +4,23 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import re
 import sys
 from pathlib import Path
 
 FRAGMENT = re.compile(r"^(\d+|GHSA-[0-9A-Za-z-]+)\.(issue|feature|security)$")
 RELEASE_HEADING = re.compile(r"^(?:\d+\.\d+\.\d+(?:-[\w.]+)?|\d+\.\d+\.x)$")
+
+
+def check_fragments(directory: Path) -> list[str]:
+	"""Runs the CI fragment validation so the fold never consumes a bad fragment."""
+	spec = importlib.util.spec_from_file_location(
+		"check_changelog", Path(__file__).with_name("check-changelog.py")
+	)
+	checker = importlib.util.module_from_spec(spec)
+	spec.loader.exec_module(checker)
+	return checker.check_fragments(directory)
 
 
 def load_fragments(directory: Path) -> list[tuple[str, str, str]]:
@@ -27,7 +38,9 @@ def load_fragments(directory: Path) -> list[tuple[str, str, str]]:
 
 def section_bounds(lines: list[str]) -> tuple[int, int]:
 	"""Locates the first release section, which is always the development one."""
-	start = next(i for i, line in enumerate(lines) if RELEASE_HEADING.fullmatch(line))
+	start = next((i for i, line in enumerate(lines) if RELEASE_HEADING.fullmatch(line)), None)
+	if start is None:
+		raise ValueError("CHANGELOG has no release heading to fold into")
 	end = len(lines)
 	for index in range(start + 1, len(lines)):
 		if RELEASE_HEADING.fullmatch(lines[index]):
@@ -50,17 +63,29 @@ def main() -> int:
 		print("changelog.d is missing", file=sys.stderr)
 		return 1
 
+	# Validate everything before writing: the fold deletes the fragments it
+	# consumes, so a skipped or mangled fragment would be lost for good.
+	errors = check_fragments(directory)
+	if errors:
+		print("changelog.d has invalid fragments; nothing was folded:", file=sys.stderr)
+		print("\n".join(f"- {error}" for error in errors), file=sys.stderr)
+		return 1
+
 	fragments = load_fragments(directory)
 	if not fragments:
 		print("no fragments to fold")
 		return 0
 
 	lines = path.read_text(encoding="utf-8").splitlines()
-	start, end = section_bounds(lines)
+	try:
+		start, end = section_bounds(lines)
+	except ValueError as error:
+		print(error, file=sys.stderr)
+		return 1
 
 	# A release section runs security, then issue, then feature. Security and
-	# issue entries are newest first, so they open their block; features run
-	# oldest first, so they close theirs.
+	# issue entries are newest first, so they open their block in descending
+	# order; features run oldest first, so they close theirs in ascending order.
 	order = ("security", "issue", "feature")
 	folded = 0
 
@@ -68,6 +93,7 @@ def main() -> int:
 		group = sorted(
 			((n, t) for n, k, t in fragments if k == kind),
 			key=lambda item: (0, int(item[0])) if item[0].isdigit() else (1, item[0]),
+			reverse=kind != "feature",
 		)
 		if not group:
 			continue
