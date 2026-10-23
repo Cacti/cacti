@@ -29,3 +29,11 @@ test('notification confirmation keeps quoted names inside the hidden input', fun
 		->and($verdict['elements'])->toBe(0)
 		->and($verdict['value'])->toBe($verdict['expected']);
 });
+
+test('notification confirmation preserves quoted action values without adding event attributes', function () {
+	$verdict = cacti_test_isolated_probe(__DIR__ . '/../../../fixtures/Core/ManagersNotificationConfirmationProbe.php', array('action-quoted'));
+
+	expect($verdict['inputs'])->toBe(1)
+		->and($verdict['action'])->toBe($verdict['expected_action'])
+		->and($verdict['event_attributes'])->toBe(0);
+});

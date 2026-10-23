@@ -23,6 +23,7 @@ require_once dirname(__DIR__, 3) . '/include/global_constants.php';
 $rows = array(
 	'plain'  => array('chk_IF-MIB__linkDown' => 'on', 'chk_IF-MIB__linkUp' => 'on'),
 	'quoted' => array("chk_IF-MIB'><b>__linkDown\"</script>\n&amp;" => 'on'),
+	'action-quoted' => array('chk_IF-MIB__linkDown' => 'on'),
 );
 
 $name = $argv[1] ?? '';
@@ -32,12 +33,15 @@ if (!isset($rows[$name])) {
 }
 
 $_POST = $rows[$name];
+$confirmationAction = $name === 'action-quoted' ? "2' onfocus='alert(1)' data-note='&quot;" : '2';
 
 function isset_request_var($name) {
 	return false;
 }
 function get_nfilter_request_var($name, $default = '') {
-	return $name === 'drp_action' ? '2' : ($name === 'id' ? '1' : $default);
+	global $confirmationAction;
+
+	return $name === 'drp_action' ? $confirmationAction : ($name === 'id' ? '1' : $default);
 }
 function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options = array()) {
 	return get_nfilter_request_var($name);
@@ -53,9 +57,6 @@ function __($text, ...$args) {
 }
 function __esc($text, ...$args) {
 	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
-function html_escape($text) {
-	return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8');
 }
 function top_header() {
 }
@@ -75,6 +76,7 @@ function html_end_box(...$args) {
 }
 
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/functions.php', 'cacti_html_context_escape', __NAMESPACE__);
+\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html.php', 'html_escape', __NAMESPACE__);
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/managers.php', 'form_actions', __NAMESPACE__);
 
 ob_start();
@@ -93,10 +95,14 @@ libxml_use_internal_errors(true);
 $document->loadHTML('<!DOCTYPE html><html><body>' . $output . '</body></html>');
 
 $inputs = (new DOMXPath($document))->query("//input[@name='selected_items']");
+$actions = (new DOMXPath($document))->query("//input[@name='drp_action']");
 
 print json_encode(array(
 	'inputs'   => $inputs->length,
 	'elements' => $document->getElementsByTagName('b')->length + $document->getElementsByTagName('script')->length,
 	'value'    => $inputs->length === 1 ? $inputs->item(0)->getAttribute('value') : null,
 	'expected' => serialize($expected),
+	'action' => $actions->length === 1 ? $actions->item(0)->getAttribute('value') : null,
+	'expected_action' => $confirmationAction,
+	'event_attributes' => (new DOMXPath($document))->query("//@*[starts-with(name(), 'on')]")->length,
 ), JSON_THROW_ON_ERROR) . "\n";
