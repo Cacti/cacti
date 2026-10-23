@@ -14,7 +14,7 @@ class RequestDispatchTest(unittest.TestCase):
     def test_package_change_runs_the_signed_archive_probe(self):
         for path in ['lib/package.php', 'tests/fixtures/Core/PackageArchive.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'PackageArchive.php')
+                self.dispatch(path, ['PackageArchive.php', 'library'] if path == 'lib/package.php' else 'PackageArchive.php')
 
     def test_queue_change_runs_the_queue_probe_without_ripgrep(self):
         self.dispatch('cli/queue_worker.php', 'queue')
