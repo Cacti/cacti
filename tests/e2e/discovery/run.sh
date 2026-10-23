@@ -16,6 +16,10 @@ export HOST_PORT="${HOST_PORT:-18093}"
 export DISCOVERY_COMPOSE_PROJECT="${DISCOVERY_COMPOSE_PROJECT:-cacti-discovery-review}"
 [[ "$DISCOVERY_COMPOSE_PROJECT" =~ ^cacti-discovery-[a-z0-9-]+$ ]] || exit 2
 DC=(docker compose -p "$DISCOVERY_COMPOSE_PROJECT" -f "$ROOT/tests/e2e/docker-compose.yml" -f "$ROOT/tests/e2e/discovery/compose.yml")
+if [[ "${CACTI_DISCOVERY_COVERAGE:-0}" == 1 ]]; then
+  : "${CACTI_PR_COVERAGE_OUTPUT:?Discovery coverage needs an evidence directory}"
+  DC+=(-f "$ROOT/tests/e2e/discovery/coverage.yml")
+fi
 cleanup() {
   status=$?
   if ((status)); then
@@ -27,6 +31,11 @@ cleanup() {
 }
 trap cleanup EXIT
 "${DC[@]}" up -d --build --wait --wait-timeout 180
+if [[ "${CACTI_DISCOVERY_COVERAGE:-0}" == 1 ]]; then
+  CACTI_MATCH_DB_DSN='mysql:host=127.0.0.1;port=18279;dbname=cacti' \
+    CACTI_MATCH_DB_USER=cactiuser CACTI_MATCH_DB_PASSWORD=cactiuser \
+    bash tests/tools/run_discovery_request_coverage.sh --native-only
+fi
 for source in lib/api_automation.php poller_automation.php include/layout.js automation_graph_rules.php; do
   expected="$(node -e 'process.stdout.write(require("node:crypto").createHash("sha256").update(require("node:fs").readFileSync(process.argv[1])).digest("hex"))' "$source")"
   # Keep PHP variables literal for the interpreter.
@@ -44,7 +53,11 @@ done
 "${DC[@]}" exec -T cacti snmpget -v3 -l authPriv -u discovery -a SHA -A discovery-auth-fixture -x AES -X discovery-priv-fixture -t 1 -r 1 172.30.252.255:1161 .1.3.6.1.2.1.1.1.0 >/dev/null
 cd tests/e2e
 npm ci --ignore-scripts
-node node_modules/@playwright/test/cli.js install chromium
+if [[ "${CACTI_DISCOVERY_COVERAGE:-0}" == 1 && "${CI:-}" == true && "$(uname -s)" == Linux ]]; then
+  node node_modules/@playwright/test/cli.js install --with-deps chromium
+else
+  node node_modules/@playwright/test/cli.js install chromium
+fi
 CACTI_BASE_URL="http://127.0.0.1:$HOST_PORT" node node_modules/@playwright/test/cli.js test --config=discovery/playwright.config.ts
 # Exit 0 is insufficient if a selector accidentally discovers an empty suite.
 node - <<'JS'
@@ -55,3 +68,8 @@ if (!counts.length || counts.reduce((a,b) => a+b, 0) !== 3 || /(?:skipped|failur
   throw new Error('Discovery E2E must execute all three scenarios without skips');
 }
 JS
+
+if [[ "${CACTI_DISCOVERY_COVERAGE:-0}" == 1 ]]; then
+  "${DC[@]}" cp cacti:/tmp/cacti-discovery-coverage/. "$CACTI_PR_COVERAGE_OUTPUT/"
+  cp test-results/discovery.xml "$CACTI_PR_COVERAGE_OUTPUT/discovery-browser.xml"
+fi

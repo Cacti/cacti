@@ -55,3 +55,5 @@ run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cac
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
+
+run_probe tests/tools/run_discovery_request_coverage.sh '^(poller_automation\.php|automation_graph_rules\.php|lib/api_automation\.php|tests/e2e/discovery/|tests/Unit/Core/Automation/|tests/Coverage/DiscoveryWorkerPingCoverageTest\.php|tests/fixtures/(discovery_|automation_matching_)|tests/Helpers/(SourceSlice|RequestCoverage|IsolatedProbe)\.php|tests/tools/(run_discovery_request_coverage\.sh|verify_discovery_coverage\.py))' 18278
