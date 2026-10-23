@@ -78,6 +78,23 @@ Reports must contain executed tests. An empty report, skipped required
 scenario, failed bootstrap or timeout is a failed verification. Native tests
 and browser results are separate evidence; neither substitutes for the other.
 
+## Measured coverage on develop
+
+The changed-PHP coverage job also profiles the real HTTP requests, master and
+worker processes, plus focused native discovery checks. With Docker and
+Xdebug available to the host PHP, run:
+
+```sh
+CACTI_PR_COVERAGE_OUTPUT="$(mktemp -d /tmp/cacti-discovery-evidence.XXXXXX)" \
+  bash tests/tools/run_discovery_request_coverage.sh
+```
+
+This optional mode uses a disposable database exposed on loopback for native
+SQL checks. It retains the ordinary browser scenarios and verifies source,
+producer and scenario fingerprints before merging coverage. Missing or stale
+evidence, changed scenario files and unsuccessful native or browser reports
+fail verification. The existing changed-line coverage threshold stays in force.
+
 ## Compatibility and limits
 
 The fixes preserve the existing matching operators, rule sequence,

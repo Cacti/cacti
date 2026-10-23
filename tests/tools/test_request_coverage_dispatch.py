@@ -22,6 +22,21 @@ class RequestDispatchTest(unittest.TestCase):
     def test_html_change_runs_the_browser_probe(self):
         self.dispatch('lib/html.php', 'accessibility')
 
+    def test_worker_change_runs_the_discovery_probe(self):
+        self.dispatch('poller_automation.php', 'discovery')
+
+    def test_criteria_change_runs_the_discovery_probe(self):
+        self.dispatch('automation_graph_rules.php', 'discovery')
+
+    def test_discovery_library_change_runs_the_discovery_probe(self):
+        self.dispatch('lib/api_automation.php', 'discovery')
+
+    def test_discovery_fixture_change_runs_the_discovery_probe(self):
+        self.dispatch('tests/fixtures/discovery_worker_ping_coverage.php', 'discovery')
+
+    def test_source_mapping_change_runs_the_discovery_probe(self):
+        self.dispatch('tests/Helpers/SourceSlice.php', 'discovery')
+
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
 
@@ -71,6 +86,9 @@ class RequestDispatchTest(unittest.TestCase):
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
+            path = repository / 'tests/tools/run_discovery_request_coverage.sh'
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('printf "%s\\n" discovery >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
             git('add', '.')
             git('commit', '--quiet', '-m', 'fixture base')
             base = git('rev-parse', 'HEAD')
