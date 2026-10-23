@@ -536,7 +536,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 				case DATA_INPUT_TYPE_SNMP_QUERY:
 					if (isset($data_query_xml['oid_num_indexes'])) { // we have a specific OID for counting indexes
 						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_num_indexes']) . ', 1)';
-					} else { // count all indexes found
+					} elseif (!empty($data_query_xml['oid_index'])) { // count all indexes found
 						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_index']) . ', 1)';
 					}
 

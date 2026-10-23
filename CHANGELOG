@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -security#8055: Harden - Escape the device Location filter option value to stop stored XSS
 -security#8055: Harden - Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
 -security#8346: Pin workflow Actions and isolate release signing from builds
+-security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
 -security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
@@ -204,9 +205,11 @@ Cacti CHANGELOG
 -issue#8420: Correct restrictive graph permission labels for default-deny graph templates
 -issue#8426: Use surrounding samples consistently for windowed spike-removal statistics
 -issue#8438: Preserve form action URLs and configured attributes with context-specific encoding
+-issue#8440: Skip SNMP walks requested without an OID instead of passing an empty OID to snmpbulkwalk
 -issue#8441: Consolidate accessibility fixes and standardize Rows filter labels
 -issue#8441: Share sortable header history and column state while preserving 1.2.x renderer compatibility (backport of #8307)
 -issue#8441: Avoid repeated RRDtool capability checks in graph options and update batches
+-issue#8459: Validate discovery evidence and ranges, preserve overlapping targets and valid .255 hosts, and restore SNMP form controls
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
