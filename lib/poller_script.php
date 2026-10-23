@@ -84,6 +84,11 @@ function poller_script_find($name, $dirs = array()) {
  * @return array{stdout: string, stderr: string, pid: int, timed_out: bool}|null
  */
 function poller_script_exec($name, $args = array(), $timeout = 10, $dirs = array()) {
+	// These ports use Unix utilities and pipe selection, which Windows lacks.
+	if (PHP_OS_FAMILY === 'Windows') {
+		return null;
+	}
+
 	$program = poller_script_find($name, $dirs);
 
 	if ($program === null) {

@@ -74,3 +74,22 @@ test('loadavg_multi reads the running host', function () {
 		->and($value)->toMatch('/^1min:\d+\.\d{2} 5min:\d+\.\d{2} 10min:\d+\.\d{2}$/')
 		->and(ss_loadavg_multi())->toMatch('/^1min:/');
 });
+
+test('missing load average facilities return unknown without terminating the script server', function () {
+	$root = dirname(__DIR__, 4);
+	$probe = '$called_by_script_server = true;'
+		. 'require ' . var_export($root . '/scripts/ss_loadavg.php', true) . ';'
+		. 'require ' . var_export($root . '/scripts/ss_loadavg_multi.php', true) . ';'
+		. 'print json_encode([ss_loadavg_collect(), ss_loadavg_multi_collect(), "alive"]);';
+
+	// Hide /proc and remove the function that PHP does not provide on Windows.
+	$process = proc_open([PHP_BINARY, '-d', 'disable_functions=sys_getloadavg', '-d', 'open_basedir=' . $root, '-r', $probe], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	expect(proc_close($process))->toBe(0)
+		->and($stderr)->toBe('')
+		->and(json_decode($stdout, true))->toBe([['U', 1], ['1min:U 5min:U 10min:U', 1], 'alive']);
+});
