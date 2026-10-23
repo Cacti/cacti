@@ -40,6 +40,9 @@ cleanup() {
 	rm -f "$ENV_FILE"
 
 	if [ "$CONFIG_EXISTED" -eq 1 ] && [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
+		# The entrypoint may have created a container-owned config.php that cp
+		# cannot open for writing; the host user can still unlink it.
+		rm -f "$REPO_DIR/include/config.php"
 		cp "$CONFIG_BACKUP" "$REPO_DIR/include/config.php"
 		rm -f "$CONFIG_BACKUP"
 	elif [ "$CONFIG_EXISTED" -eq 0 ]; then

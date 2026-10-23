@@ -30,11 +30,30 @@ REPO_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 WEB_PORT=18080
 PASS=0
 FAIL=0
+CONFIG_EXISTED=0
+CONFIG_BACKUP=""
+
+# The bind-mounted checkout may hold a developer's real config.php. Set it
+# aside so the entrypoint generates one, and put it back afterwards.
+if [ -f "$REPO_DIR/include/config.php" ]; then
+    CONFIG_EXISTED=1
+    CONFIG_BACKUP="$(mktemp "${TMPDIR:-/tmp}/cacti-config.XXXXXX")"
+    cp "$REPO_DIR/include/config.php" "$CONFIG_BACKUP"
+    rm -f "$REPO_DIR/include/config.php"
+fi
 
 cleanup() {
     cd "$REPO_DIR"
     docker compose -p "$COMPOSE_PROJECT" down -v --remove-orphans 2>/dev/null || true
-    rm -f "$REPO_DIR/.env.test" "$REPO_DIR/include/config.php"
+    rm -f "$REPO_DIR/.env.test"
+
+    if [ "$CONFIG_EXISTED" -eq 1 ] && [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
+        rm -f "$REPO_DIR/include/config.php"
+        cp "$CONFIG_BACKUP" "$REPO_DIR/include/config.php"
+        rm -f "$CONFIG_BACKUP"
+    elif [ "$CONFIG_EXISTED" -eq 0 ]; then
+        rm -f "$REPO_DIR/include/config.php"
+    fi
 }
 trap cleanup EXIT
 
@@ -86,8 +105,10 @@ docker compose -p "$COMPOSE_PROJECT" --env-file .env.test up -d 2>&1
 echo "Waiting for containers..."
 TRIES=0
 while [ $TRIES -lt 24 ]; do
-    DB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | head -1 | cut -d'"' -f4)
-    WEB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | tail -1 | cut -d'"' -f4)
+    # grep returns non-zero before the Health field appears; tolerate it under
+    # pipefail so the poll loop keeps waiting instead of exiting the script
+    DB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
+    WEB_HEALTH=$(docker compose -p "$COMPOSE_PROJECT" ps --format json 2>/dev/null | grep -o '"Health":"[^"]*"' | tail -1 | cut -d'"' -f4 || true)
     if [ "$DB_HEALTH" = "healthy" ] && [ "$WEB_HEALTH" = "healthy" ]; then
         break
     fi
