@@ -59,7 +59,7 @@ function ss_loadavg_multi_collect() {
 	$averages = ($loadavg === false ? null : ss_loadavg_multi_split($loadavg));
 
 	if ($averages === null) {
-		$system = sys_getloadavg();
+		$system = function_exists('sys_getloadavg') ? sys_getloadavg() : false;
 
 		if ($system !== false) {
 			$averages = array_map(function ($average) {

@@ -70,7 +70,7 @@ function ss_loadavg_collect($minutes = '') {
 	$averages = ($loadavg === false ? null : ss_loadavg_split($loadavg));
 
 	if ($averages === null) {
-		$system = sys_getloadavg();
+		$system = function_exists('sys_getloadavg') ? sys_getloadavg() : false;
 
 		if ($system === false) {
 			return array('U', 1);
