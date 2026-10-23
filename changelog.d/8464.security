@@ -1,0 +1,1 @@
+Require a 2048-bit RSA key for Package signatures and stop trusting the legacy 512-bit key
