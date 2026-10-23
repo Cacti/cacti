@@ -3736,8 +3736,6 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
 
 		$params[] = $sysDescr;
 		$params[] = $sysDescr;
-	} else {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "(sysDescr = '' OR sysDescr IS NULL)";
 	}
 
 	if ($sysObject != '') {
@@ -3745,8 +3743,6 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
 
 		$params[] = $sysObject;
 		$params[] = $sysObject;
-	} else {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "(sysOid = '' OR sysOid IS NULL)";
 	}
 
 	if ($sysName != '') {
@@ -3754,8 +3750,6 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
 
 		$params[] = $sysName;
 		$params[] = $sysName;
-	} else {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "(sysName = '' OR sysName IS NULL)";
 	}
 
 	$result = db_fetch_row_prepared("SELECT at.*, ht.name
