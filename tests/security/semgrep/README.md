@@ -13,7 +13,7 @@ rules teach the scanner Cacti's sources, sanitizers and sinks.
 | `cacti-request-var-in-shell-or-rrdtool` | OS/RRDtool cmd (CWE-78) | request var into `shell_exec`/`exec`/`popen`/`proc_open`/`rrdtool_execute` without `cacti_escapeshellarg()`. |
 | `cacti-request-var-echoed-unescaped` | XSS (CWE-79) | request var `print`/`echo`'d without `html_escape()`/`htmle()`/`json_encode()`. |
 
-Modelled: sources `grv`, `gnrv`, `get_nfilter_request_var`; sanitizers
+Modelled: sources `grv`, `gnrv`, `get_request_var`, `get_nfilter_request_var`; sanitizers
 `db_qstr[_rlike]`, `sanitize_sql_column`, `(int)`/`intval`,
 `gfrv`/`get_filter_request_var`, `cacti_escapeshellarg`, `html_escape`/`htmle`,
 `json_encode`; sinks as above.

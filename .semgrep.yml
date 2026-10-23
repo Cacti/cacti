@@ -4,8 +4,9 @@
 # limited to request input that reaches a browser sink without passing through
 # one of them. htmle()/html_escape() run htmlspecialchars(); htmlerv() and
 # html_escape_request_var() are their request-var wrappers; sanitize_uri()
-# cleans redirect targets. get_request_var() and get_nfilter_request_var()
-# both return $_REQUEST values untouched (the filtering variant is
+# and validate_redirect_url() clean redirect targets. get_request_var(),
+# get_nfilter_request_var() and their grv()/gnrv() aliases all return
+# $_REQUEST values untouched (the filtering variant is
 # get_filter_request_var()), so they are unsanitized sources.
 rules:
   - id: cacti-reflected-xss
@@ -27,12 +28,25 @@ rules:
       - pattern: $_REQUEST[...]
       - pattern: get_request_var(...)
       - pattern: get_nfilter_request_var(...)
+      - pattern: grv(...)
+      - pattern: gnrv(...)
+      - pattern: get_request_var_request(...)
+      - pattern: get_request_var_post(...)
     pattern-sanitizers:
       - pattern: htmle(...)
       - pattern: html_escape(...)
       - pattern: html_escape_request_var(...)
       - pattern: htmlerv(...)
       - pattern: sanitize_uri(...)
+      - pattern: htmlspecialchars(...)
+      - pattern: json_encode(...)
+      # These match the vetted sanitizers in tests/security/semgrep/cacti-security.yml.
+      - pattern: filter_value(...)
+      - pattern: html_hidden_input(...)
+      - pattern: html_nav_bar(...)
+      - pattern: clean_up_name(...)
+      - pattern: intval(...)
+      - pattern: (int) $X
     pattern-sinks:
       - pattern: echo $SINK;
       - pattern: print $SINK;
@@ -42,9 +56,10 @@ rules:
     languages: [php]
     severity: ERROR
     message: >-
-      Request input reaches header() without sanitization. Validate or escape
-      the value (e.g. sanitize_uri() for redirect targets) before setting a
-      response header to prevent header injection and open redirects.
+      Request input reaches header() without sanitization. Validate the value
+      (e.g. sanitize_uri() or validate_redirect_url() for redirect targets)
+      before setting a response header to prevent header injection and open
+      redirects.
     metadata:
       cwe: "CWE-113: Improper Neutralization of CRLF Sequences in HTTP Headers (HTTP Response Splitting)"
       owasp: "A03:2021 - Injection"
@@ -59,11 +74,10 @@ rules:
       - pattern: $_GET[...]
       - pattern: $_POST[...]
       - pattern: $_REQUEST[...]
+    # HTML escaping leaves an off-site Location target intact, so only the
+    # redirect validators count here.
     pattern-sanitizers:
-      - pattern: htmle(...)
-      - pattern: html_escape(...)
-      - pattern: html_escape_request_var(...)
-      - pattern: htmlerv(...)
       - pattern: sanitize_uri(...)
+      - pattern: validate_redirect_url(...)
     pattern-sinks:
       - pattern: header(...)
