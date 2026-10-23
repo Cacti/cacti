@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../include/vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+    <testsuites>
+        <testsuite name="Discovery">
+            <directory suffix="Test.php">Unit/Core/Automation</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <file>../lib/api_automation.php</file>
+            <file>../poller_automation.php</file>
+            <file>../automation_graph_rules.php</file>
+        </include>
+    </source>
+</phpunit>
