@@ -112,6 +112,10 @@ jobs:
       working-directory: tests
       run: php vendor/bin/pest --configuration=phpunit.xml Unit/Ui/Html/FormActionEncodingTest.php --colors=never
 
+    - name: Run SNMP walk OID contracts
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php --colors=never
+
   javascript-contracts:
     name: JavaScript contracts
     runs-on: ubuntu-22.04

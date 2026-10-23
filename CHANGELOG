@@ -205,6 +205,7 @@ Cacti CHANGELOG
 -issue#8420: Correct restrictive graph permission labels for default-deny graph templates
 -issue#8426: Use surrounding samples consistently for windowed spike-removal statistics
 -issue#8438: Preserve form action URLs and configured attributes with context-specific encoding
+-issue#8440: Skip SNMP walks requested without an OID instead of passing an empty OID to snmpbulkwalk
 -issue#8441: Consolidate accessibility fixes and standardize Rows filter labels
 -issue#8441: Share sortable header history and column state while preserving 1.2.x renderer compatibility (backport of #8307)
 -issue#8441: Avoid repeated RRDtool capability checks in graph options and update batches
