@@ -491,10 +491,14 @@ function boost_validate_poller_ownership($results, $poller_id, $conn = false) {
  *   The ID of the local data source. - 'rrd_name': The name of the RRD file. - 'time': The
  *   timestamp of the data. - 'output': The output value to be stored.
  *
+ * @param bool|null &$staged True when Boost accepted the batch or redirection owns it.
+ *
  * @return bool Returns `false` if the boost functionality is enabled and processed, or `true` if
  *   the boost functionality is disabled or bypassed.
  */
-function boost_poller_on_demand(&$results) {
+function boost_poller_on_demand(&$results, &$staged = null) {
+	/* Keep the legacy direct-RRD return value separate from staging success. */
+	$staged = false;
 	global $config, $remote_db_cnn_id;
 
 	if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
@@ -522,6 +526,7 @@ function boost_poller_on_demand(&$results) {
 			 * redirection is active; once boost owns the pipeline, results reaching
 			 * here must never fall through to an inline RRD update instead. */
 			if (read_config_option('boost_redirect') == 'on') {
+				$staged = true;
 				$return_value = false;
 			} elseif (cacti_sizeof($results)) {
 				if ($config['poller_id'] > 1 && !boost_validate_poller_ownership($results, $config['poller_id'], $conn)) {
@@ -529,8 +534,7 @@ function boost_poller_on_demand(&$results) {
 					restore_error_handler();
 					error_reporting($previous_error_reporting);
 
-					/* The handoff rows have already been consumed.  Signal the
-					 * caller to perform the safe direct-RRD fallback instead. */
+					/* Signal the caller to perform the safe direct-RRD fallback. */
 					return true;
 				}
 
@@ -546,12 +550,14 @@ function boost_poller_on_demand(&$results) {
 
 				/* a staging failure must not fall through to an inline RRD update; that
 				 * would silently defeat Boost every time the insert fails */
-				if (!boost_flush_output_batch($value_tuples, $conn)) {
+				$staged = boost_flush_output_batch($value_tuples, $conn);
+				if (!$staged) {
 					cacti_log('ERROR: Boost failed to stage poller output into poller_output_boost. Data will be retried, not written inline.', false, 'BOOST');
 				}
 
 				$return_value = false;
 			} else {
+				$staged = true;
 				$return_value = false;
 			}
 		} else {
