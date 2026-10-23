@@ -42,9 +42,9 @@ done
 "${DC[@]}" exec -T cacti snmpget -v2c -c discovery-fixture -t 1 -r 1 172.30.251.13:1161 .1.3.6.1.2.1.1.2.0 >/dev/null
 "${DC[@]}" exec -T cacti snmpget -v3 -l authPriv -u discovery -a SHA -A discovery-auth-fixture -x AES -X discovery-priv-fixture -t 1 -r 1 172.30.250.255:1161 .1.3.6.1.2.1.1.1.0 >/dev/null
 cd tests/e2e
-npm ci
-npx playwright install chromium
-CACTI_BASE_URL="http://127.0.0.1:$HOST_PORT" npx playwright test --config=discovery/playwright.config.ts
+npm ci --ignore-scripts
+node node_modules/@playwright/test/cli.js install chromium
+CACTI_BASE_URL="http://127.0.0.1:$HOST_PORT" node node_modules/@playwright/test/cli.js test --config=discovery/playwright.config.ts
 node - <<'JS'
 const fs = require('node:fs');
 const report = fs.readFileSync('test-results/discovery.xml', 'utf8');
