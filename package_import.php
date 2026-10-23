@@ -656,7 +656,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 
 				$fdata = base64_decode($file['data'], true);
 
-				$ok = openssl_verify((string) $fdata, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+				$ok = import_public_key_meets_minimum($public_key) ? openssl_verify((string) $fdata, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256) : 0;
 
 				if ($ok != 1) {
 					$fdata = false;
@@ -699,7 +699,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 
 					$fdata = base64_decode($file['data'], true);
 
-					$ok = openssl_verify((string) $fdata, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+					$ok = import_public_key_meets_minimum($public_key) ? openssl_verify((string) $fdata, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256) : 0;
 
 					if ($ok != 1) {
 						$fdata = false;
@@ -1025,6 +1025,13 @@ function import_validate_public_key(string $xmlfile, bool $accept = false) : mix
 
 	if ($info !== false) {
 		if ($info['pubkey'] != '') {
+			// A weak key is never stored, and one stored before the floor
+			// existed is no longer reported as accepted.  This also keeps the
+			// legacy 512-bit Cacti key out of the comparison below.
+			if (!import_public_key_meets_minimum($info['pubkey'])) {
+				return false;
+			}
+
 			$insert = false;
 
 			$accepted = db_fetch_cell_prepared('SELECT COUNT(*)
