@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+    <testsuites>
+        <testsuite name="Discovery">
+            <directory suffix="Test.php">Unit/Core/Automation</directory>
+            <file>Unit/Ui/Html/DrawEditFormChangeActionTest.php</file>
+            <file>integration/AutomationMonthlyScheduleIntegrationTest.php</file>
+            <file>integration/AutomationNextHostRangeIntegrationTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

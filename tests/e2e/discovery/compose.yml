@@ -1,0 +1,87 @@
+# Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
+services:
+  mariadb:
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: discovery-root-fixture
+      MARIADB_DATABASE: cacti
+      MARIADB_USER: cactiuser
+      MARIADB_PASSWORD: discovery-db-fixture
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  cacti:
+    build:
+      context: ../../..
+      dockerfile: tests/e2e/discovery/Dockerfile
+    volumes:
+      - ./:/var/www/html/tests/e2e/discovery:ro
+    environment:
+      CACTI_DISCOVERY_FIXTURE: '1'
+      CACTI_DB_HOST: mariadb
+      CACTI_DB_USER: cactiuser
+      CACTI_DB_PASS: discovery-db-fixture
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${HOST_PORT:-18094}:80"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  known:
+    build:
+      context: .
+      dockerfile: agent.Dockerfile
+    volumes:
+      - ./known.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.251.10
+  partial:
+    build:
+      context: .
+      dockerfile: agent.Dockerfile
+    volumes:
+      - ./partial.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.251.11
+  unknown:
+    build:
+      context: .
+      dockerfile: agent.Dockerfile
+    volumes:
+      - ./unknown.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.251.12
+  missing:
+    build:
+      context: .
+      dockerfile: agent.Dockerfile
+    volumes:
+      - ./missing.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.251.13
+  interior255:
+    build:
+      context: .
+      dockerfile: agent.Dockerfile
+    volumes:
+      - ./interior255.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.250.255
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.30.250.0/23

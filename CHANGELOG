@@ -209,6 +209,7 @@ Cacti CHANGELOG
 -issue#8441: Consolidate accessibility fixes and standardize Rows filter labels
 -issue#8441: Share sortable header history and column state while preserving 1.2.x renderer compatibility (backport of #8307)
 -issue#8441: Avoid repeated RRDtool capability checks in graph options and update batches
+-issue#8459: Validate discovery evidence and ranges, preserve overlapping targets and valid .255 hosts, and restore SNMP form controls
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
