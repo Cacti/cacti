@@ -144,14 +144,17 @@ test('LTS UI config drives SNMP discovery, selective graphs and repeat scans', a
 
 	const live = await scan();
 	const hosts = live.hosts.filter((row: any) => row.hostname.startsWith('172.30.25'));
-	expect(hosts.map((row: any) => row.hostname).sort()).toEqual(['172.30.250.255', '172.30.251.10', '172.30.251.11']);
+	// A missing description does not disqualify a rule matched by available fields.
+	expect(hosts.map((row: any) => row.hostname).sort()).toEqual(['172.30.250.255', '172.30.251.10', '172.30.251.11', '172.30.251.13']);
 	expect(Number(hosts.find((row: any) => row.hostname === '172.30.250.255').snmp_version)).toBe(3);
 	const full = hosts.find((row: any) => row.hostname === '172.30.251.10');
 	const partial = hosts.find((row: any) => row.hostname === '172.30.251.11');
 	expect(live.graphs.filter((row: any) => row.host_id === full.id)).toHaveLength(1);
 	expect(live.graphs.filter((row: any) => row.host_id === partial.id)).toHaveLength(0);
 	expect(Number(live.devices.find((row: any) => row.ip === '172.30.251.12').known)).toBe(0);
-	expect(Number(live.devices.find((row: any) => row.ip === '172.30.251.13').known)).toBe(0);
+	const missing = hosts.find((row: any) => row.hostname === '172.30.251.13');
+	expect(Number(missing.host_template_id)).toBe(Number(profile.id));
+	expect(live.devices.some((row: any) => row.ip === '172.30.251.13')).toBe(false);
 	const repeated = await scan();
 	expect(repeated.hosts).toEqual(live.hosts);
 	expect(repeated.graphs).toEqual(live.graphs);

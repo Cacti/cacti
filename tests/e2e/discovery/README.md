@@ -30,9 +30,10 @@ uses an interface rule selecting `eth0`; the partial-view agent exposes system
 identification without interfaces. The `.255` agent uses SNMPv3 authPriv and is
 a valid host within the Docker `/23`. Another agent denies `sysDescr` while
 exposing `sysObjectID` and `sysName`. The observed Cacti discovery row stores
-that unavailable description as an empty string, and the configured description
-rule does not select a template for it. Native SQL tests separately reproduce
-the missing-field defect before the matcher correction.
+that unavailable description as an empty string. Template matching ignores
+the unavailable field and selects the rule using the returned object ID and
+name. Native SQL tests also preserve that behavior and rule precedence when
+one or more fields are unavailable.
 
 Cacti 1.2 has no discovery `--dryrun` or excluded-address form in this branch.
 This suite does not pretend to exercise those development-branch controls.
