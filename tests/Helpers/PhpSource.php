@@ -5,6 +5,62 @@ namespace Cacti\Tests\Helpers;
 
 /** Source contracts ignore formatting, while retaining token kinds and literals. */
 final class PhpSource {
+	/** @return array{source: string, line: int} */
+	public static function functionDefinition(string $source, string $function) : array {
+		$tokens = token_get_all($source);
+		$offset = 0;
+
+		foreach ($tokens as $index => $token) {
+			$text = is_array($token) ? $token[1] : $token;
+
+			if (is_array($token) && $token[0] === T_FUNCTION) {
+				$next = $index + 1;
+
+				while (isset($tokens[$next])) {
+					$part     = $tokens[$next];
+					$partText = is_array($part) ? $part[1] : $part;
+
+					if ((is_array($part) && in_array($part[0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) || $partText === '&') {
+						$next++;
+
+						continue;
+					}
+
+					break;
+				}
+
+				if (isset($tokens[$next]) && is_array($tokens[$next]) && $tokens[$next][0] === T_STRING && strcasecmp($tokens[$next][1], $function) === 0) {
+					$end    = $offset;
+					$depth  = 0;
+					$opened = false;
+
+					for ($cursor = $index, $length = count($tokens); $cursor < $length; $cursor++) {
+						$part = $tokens[$cursor];
+						$end += strlen(is_array($part) ? $part[1] : $part);
+
+						if ($part === '{' || (is_array($part) && in_array($part[0], [T_CURLY_OPEN, T_DOLLAR_OPEN_CURLY_BRACES], true))) {
+							$depth++;
+							$opened = true;
+						} elseif ($part === '}' && $opened) {
+							$depth--;
+
+							if ($depth === 0) {
+								return ['source' => substr($source, $offset, $end - $offset), 'line' => $token[2]];
+							}
+						} elseif ($part === ';' && !$opened) {
+							break;
+						}
+					}
+
+					throw new \RuntimeException('Incomplete source function ' . $function);
+				}
+			}
+			$offset += strlen($text);
+		}
+
+		throw new \RuntimeException('Cannot locate source function ' . $function);
+	}
+
 	public static function normalizeWhitespace(string $source) : string {
 		$output = '';
 
@@ -90,11 +146,13 @@ final class PhpSource {
 	}
 }
 
-expect()->extend('toContainPhp', function (string $fragment) {
-	\PHPUnit\Framework\Assert::assertNotFalse(
-		PhpSource::position($this->value, $fragment),
-		'Expected PHP token sequence: ' . $fragment
-	);
+if (function_exists('expect')) {
+	expect()->extend('toContainPhp', function (string $fragment) {
+		\PHPUnit\Framework\Assert::assertNotFalse(
+			PhpSource::position($this->value, $fragment),
+			'Expected PHP token sequence: ' . $fragment
+		);
 
-	return $this;
-});
+		return $this;
+	});
+}

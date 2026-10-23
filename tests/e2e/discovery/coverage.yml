@@ -1,0 +1,21 @@
+# Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
+# Optional coverage only: ordinary discovery E2E retains its existing image.
+services:
+  cacti:
+    build:
+      target: profiling
+    command: ["apache2-foreground"]
+    entrypoint:
+      - /bin/bash
+      - -c
+      - 'install -d -m 1777 /tmp/cacti-discovery-coverage && exec /usr/local/bin/cacti-entrypoint "$$@"'
+      - --
+    environment:
+      XDEBUG_MODE: coverage
+      CACTI_PR_RAW_COVERAGE: /tmp/cacti-discovery-coverage
+      PHP_INI_SCAN_DIR: /usr/local/etc/php/conf.d:/opt/discovery-coverage
+    volumes:
+      - ./discovery/coverage.ini:/opt/discovery-coverage/coverage.ini:ro
+  mariadb:
+    ports:
+      - "127.0.0.1:18279:3306"
