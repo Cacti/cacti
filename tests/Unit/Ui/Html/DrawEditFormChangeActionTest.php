@@ -158,3 +158,21 @@ test('a form with no handlers emits no binding block', function () {
 
 	expect($html)->not->toContain('<script');
 });
+
+test('field handlers bind after document ready without losing their nonce or actions', function () {
+	$html = _draw_edit_form_render(array(
+		'snmp_version' => _draw_edit_form_dropdown('setSNMP()'),
+		'go' => array('friendly_name' => 'Go', 'method' => 'button', 'value' => 'Go', 'on_click' => 'submitForm()'),
+	));
+	$document = new DOMDocument();
+	$document->loadHTML($html, LIBXML_NOERROR | LIBXML_NOWARNING);
+	$scripts = $document->getElementsByTagName('script');
+	expect($scripts->length)->toBe(1);
+	$script = $scripts->item(0);
+	expect($script->getAttribute('nonce'))->toBe('test');
+	$code = trim($script->textContent);
+	expect($code)->toStartWith('$(function() {')
+		->and($code)->toEndWith('});')
+		->and($code)->toContain("$('#snmp_version').on('change', function() { setSNMP(); });")
+		->and($code)->toContain("$('#go').on('click', function() { submitForm(); });");
+});

@@ -166,6 +166,8 @@ function draw_edit_form($array) {
 		if ((isset($_SESSION['form_change_actions']) && cacti_sizeof($_SESSION['form_change_actions'])) ||
 			(isset($_SESSION['form_click_actions']) && cacti_sizeof($_SESSION['form_click_actions']))) {
 			print PHP_EOL . '<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>' . PHP_EOL;
+			// Bind after the layout's ready callback clears stale control handlers.
+			print '$(function() {' . PHP_EOL;
 
 			if (isset($_SESSION['form_change_actions']) && cacti_sizeof($_SESSION['form_change_actions'])) {
 				foreach($_SESSION['form_change_actions'] as $form_name => $action) {
@@ -179,6 +181,7 @@ function draw_edit_form($array) {
 				}
 			}
 
+			print '});' . PHP_EOL;
 			print '</script>' . PHP_EOL;
 
 			kill_session_var('form_change_actions');
