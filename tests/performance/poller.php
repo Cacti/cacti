@@ -68,7 +68,7 @@ function perf_load(string $path, string $name) : bool {
 
 function perf_cacti_log(...$args) : void {
 }
-function perf_cacti_exec_log_describe($binary, $args) : string {
+function perf_cacti_exec_log_describe($binary, $args, $hostname = '') : string {
 	return $binary;
 }
 function perf_cacti_sizeof($value) : int {
@@ -249,9 +249,9 @@ if ($mode === 'exec') {
 	sort($overheads);
 	perf_assert($overheads[1] < 0.025, 'Median wrapper overhead exceeds 25ms per call; investigate fixed sleeps');
 	$out = [];
-	perf_assert(perf_cacti_exec(PHP_BINARY, ['-r', 'for($i=0;$i<6;$i++){echo "tick\n";usleep(100000);}'], $out, 0.3) === 0 && count($out) === 6, 'Active streaming child timed out');
+	perf_assert(perf_cacti_exec(PHP_BINARY, ['-r', 'for($i=0;$i<6;$i++){echo "tick\n";usleep(100000);}'], $out, '', 0.3) === 0 && count($out) === 6, 'Active streaming child timed out');
 	$start = hrtime(true);
-	perf_assert(perf_cacti_exec(PHP_BINARY, ['-r', 'usleep(3000000);'], $out, 0.2) === 1, 'Silent child did not time out');
+	perf_assert(perf_cacti_exec(PHP_BINARY, ['-r', 'usleep(3000000);'], $out, '', 0.2) === 1, 'Silent child did not time out');
 	perf_assert((hrtime(true) - $start) / 1e9 < 2, 'Silent-child timeout was not bounded');
 	print json_encode(['scenario' => 'exec', 'applicable' => true, 'median_overhead_seconds' => $overheads[1]]) . "\n";
 	exit(0);
