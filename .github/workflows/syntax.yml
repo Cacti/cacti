@@ -161,10 +161,16 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: read
 
     services:
       mysql:
-        image: public.ecr.aws/docker/library/mariadb:10.6@sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98
+        image: ghcr.io/cacti/ci-images/mariadb@sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
