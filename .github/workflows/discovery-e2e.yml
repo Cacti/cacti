@@ -105,7 +105,7 @@ jobs:
     timeout-minutes: 15
     services:
       mariadb:
-        image: mariadb:10.11
+        image: mariadb:10.11@sha256:0d0945c57f75b3a3b9ebe71aedaaad005fa5305054e8fca3d2e42a8c92b43b5e
         env:
           MARIADB_ROOT_PASSWORD: discovery-fixture
           MARIADB_DATABASE: discovery_fixture
@@ -165,6 +165,7 @@ jobs:
       - name: Install Chromium system dependencies
         working-directory: tests/e2e
         run: |
+          set -euo pipefail
           npm ci
           npx playwright install --with-deps chromium
       - name: Actual UI and isolated SNMP discovery
