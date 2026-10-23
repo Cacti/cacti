@@ -938,13 +938,13 @@ function form_actions() {
 			if (is_array($selected_items) && count($selected_items) > 0) {
 				$ids = implode(',', $selected_items);
 
-				if (get_nfilter_request_var('drp_action') == '1') { // delete
+				if (get_filter_request_var('drp_action') == '1') { // delete
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . $ids . ')');
 					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . $ids . ')');
 					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . $ids . ')');
-				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
+				} elseif (get_filter_request_var('drp_action') == '2') { // enable
 					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . $ids . ')');
-				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
+				} elseif (get_filter_request_var('drp_action') == '3') { // disable
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . $ids . ')');
 				}
 			}
@@ -959,7 +959,7 @@ function form_actions() {
 			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_items')));
 
 			if (is_array($selected_items)) {
-				if (get_nfilter_request_var('drp_action') == '1') { // disable
+				if (get_filter_request_var('drp_action') == '1') { // disable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
 							db_execute_prepared('DELETE FROM snmpagent_managers_notifications
@@ -970,7 +970,7 @@ function form_actions() {
 								array(get_nfilter_request_var('id'), $mib, $notification));
 						}
 					}
-				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
+				} elseif (get_filter_request_var('drp_action') == '2') { // enable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
 							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications
@@ -1005,14 +1005,14 @@ function form_actions() {
 
 			form_start('managers.php');
 
-			html_start_box(escape_page_action($manager_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
+			html_start_box(escape_page_action($manager_actions, get_filter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 			if (cacti_sizeof($selected_items)) {
-				if (get_nfilter_request_var('drp_action') == '1') { // delete
+				if (get_filter_request_var('drp_action') == '1') { // delete
 					$msg = __n('Click \'Continue\' to delete the following Notification Receiver', 'Click \'Continue\' to delete following Notification Receiver', cacti_sizeof($selected_items));
-				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
+				} elseif (get_filter_request_var('drp_action') == '2') { // enable
 					$msg = __n('Click \'Continue\' to enable the following Notification Receiver', 'Click \'Continue\' to enable following Notification Receiver', cacti_sizeof($selected_items));
-				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
+				} elseif (get_filter_request_var('drp_action') == '3') { // disable
 					$msg = __n('Click \'Continue\' to disable the following Notification Receiver', 'Click \'Continue\' to disable following Notification Receiver', cacti_sizeof($selected_items));
 				}
 
@@ -1023,7 +1023,7 @@ function form_actions() {
 					</td>
 				</tr>";
 
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_filter_request_var('drp_action')]) . "'>";
 			} else {
 				raise_message(40);
 				header('Location: managers.php?header=false');
@@ -1035,7 +1035,7 @@ function form_actions() {
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receivers' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
+				<input type='hidden' name='drp_action' value='" . get_filter_request_var('drp_action') . "'>
 				$save_html
 				</td>
 			</tr>";
@@ -1070,10 +1070,10 @@ function form_actions() {
 
 			form_start('managers.php');
 
-			html_start_box(escape_page_action($manager_notification_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
+			html_start_box(escape_page_action($manager_notification_actions, get_filter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 			if (cacti_sizeof($selected_items)) {
-				$msg = (get_nfilter_request_var('drp_action') == 2)
+				$msg = (get_filter_request_var('drp_action') == 2)
 					 ? __('Click \'Continue\' to forward the following Notification Objects to this Notification Receiver.')
 					 : __('Click \'Continue\' to disable forwarding the following Notification Objects to this Notification Receiver.');
 
@@ -1094,9 +1094,9 @@ function form_actions() {
 				<td class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receiver_notifications' value='1'>
-				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='id' value='" . get_nfilter_request_var('id') . "'>
-				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
+				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? htmlspecialchars(serialize($selected_items), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '') . "'>
+				<input type='hidden' name='id' value='" . get_filter_request_var('id') . "'>
+				<input type='hidden' name='drp_action' value='" . get_filter_request_var('drp_action') . "'>
 				$save_html
 				</td>
 			</tr>";
