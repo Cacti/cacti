@@ -1418,6 +1418,15 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		return array();
 	}
 
+	/* An empty OID is a caller error.  Net-SNMP rejects it as its own argument
+	 * with 'Unknown Object Identifier (Sub-id not found: (top) -> )', and a
+	 * shell command that dropped it would walk all of MIB-2 instead. */
+	if (trim((string) $oid) === '') {
+		cacti_log("WARNING: SNMP walk requested without an OID, Device:'$hostname'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+
+		return array();
+	}
+
 	$path_snmpbulkwalk = read_config_option('path_snmpbulkwalk');
 
 	if (snmp_get_method('walk', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
