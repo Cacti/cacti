@@ -32,7 +32,7 @@ suite does not require a running Cacti installation or a real device.
 
 | Component | Regression checks |
 | --- | --- |
-| Identification | Missing required fields, nullable criteria, misleading evidence, sequence, unchanged matching operators and unknown devices, using actual MariaDB SQL |
+| Identification | Unavailable device fields, nullable criteria, misleading evidence, sequence, unchanged matching operators and unknown devices, using actual MariaDB SQL |
 | Range parsing | IPv4 addresses, host routes, CIDR, dotted masks, trailing wildcards, malformed prefixes, unsupported IPv6 input and octet carries |
 | Priming | Overlapping ranges, unique targets, repeated calls and preservation of existing job ownership, using the actual MEMORY-table schema |
 | SNMP forms | Reentrant change notifications, exception cleanup, credential retention across version changes and security-level field visibility |
@@ -84,6 +84,11 @@ The fixes preserve the existing matching operators, rule sequence,
 administrator controls, template identities and poller protocols. An unknown
 device remains available for manual handling unless an administrator has
 configured an applicable fallback rule.
+
+Template matching compares only the system fields returned by the device.
+An unavailable description, object ID or name does not add a restriction on
+the corresponding template criterion. With no available fields, the existing
+sequence ordering selects the first rule.
 
 Nontrailing wildcards such as `10.1.*.1` are now rejected instead of silently
 broadening the scan. Use an explicit supported IPv4 range or individual
