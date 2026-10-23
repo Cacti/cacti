@@ -69,6 +69,12 @@ test('SNMP rendering bounds nested DOM0 handlers dispatched by Select2 notificat
 	assert.equal(f.values.get('snmp_priv_passphrase'), 'privacy-fixture');
 });
 
+test('SNMP rendering does not leak locals into the global scope', () => {
+	const f = fixture();
+	f.render();
+	assert.equal('selectmenu' in f.context, false);
+});
+
 test('SNMP rendering releases its reentrancy guard after a refresh exception', () => {
 	const f = fixture();
 	f.failRefresh();
