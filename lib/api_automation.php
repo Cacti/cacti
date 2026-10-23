@@ -3736,6 +3736,8 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
 
 		$params[] = $sysDescr;
 		$params[] = $sysDescr;
+	} else {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "(sysDescr = '' OR sysDescr IS NULL)";
 	}
 
 	if ($sysObject != '') {
@@ -3743,6 +3745,8 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
 
 		$params[] = $sysObject;
 		$params[] = $sysObject;
+	} else {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "(sysOid = '' OR sysOid IS NULL)";
 	}
 
 	if ($sysName != '') {
@@ -3750,6 +3754,8 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
 
 		$params[] = $sysName;
 		$params[] = $sysName;
+	} else {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "(sysName = '' OR sysName IS NULL)";
 	}
 
 	$result = db_fetch_row_prepared("SELECT at.*, ht.name
@@ -3878,7 +3884,7 @@ function automation_get_valid_subnet_cidr(string $range) : array|false {
 function automation_get_valid_mask(string $range) : array|false {
 	$cidr = false;
 
-	if (is_numeric($range)) {
+	if (ctype_digit($range)) {
 		if ($range > 0 && $range < 33) {
 			$cidr = $range;
 			$mask = [
@@ -3921,7 +3927,11 @@ function automation_get_network_info(string $range) : array|false {
 		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
 		$range_parts = explode('/', $range);
 
-		if (!filter_var($range_parts[0], FILTER_VALIDATE_IP)) {
+		if (count($range_parts) !== 2 || $range_parts[0] === '' || $range_parts[1] === '') {
+			return false;
+		}
+
+		if (!filter_var($range_parts[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
 			return false;
 		}
 
@@ -3938,6 +3948,11 @@ function automation_get_network_info(string $range) : array|false {
 			}
 		}
 	} elseif (str_contains($range, '*') && !str_contains($range, '-')) {
+		// Wildcards must be trailing octets; fixed suffixes would broaden the scan.
+		if (preg_match('/\*.*[0-9]/', $range)) {
+			return false;
+		}
+
 		$test = str_replace('*', '0', $range);
 
 		if (!filter_var($test, FILTER_VALIDATE_IP)) {
@@ -4141,14 +4156,14 @@ function automation_primeIPAddressTable(int $network_id) : void {
 
 				if ($ip != '' && !in_array($ip, $ignore_ips, true)) {
 					$sql[] = "('$ip', '', $network_id, '0', '0', '0')";
-
-					$count++;
 				}
 
-				if ($count % 1000 == 0) {
+				$count++;
+
+				if ($count % 1000 == 0 && cacti_sizeof($sql)) {
 					db_execute('INSERT INTO automation_ips
 						(ip_address, hostname, network_id, pid, status, thread)
-						VALUES ' . implode(',', $sql));
+						VALUES ' . implode(',', $sql) . ' ON DUPLICATE KEY UPDATE ip_address = ip_address');
 					$sql = [];
 				}
 			}
@@ -4156,12 +4171,39 @@ function automation_primeIPAddressTable(int $network_id) : void {
 			if (cacti_sizeof($sql)) {
 				db_execute('INSERT INTO automation_ips
 					(ip_address, hostname, network_id, pid, status, thread)
-					VALUES ' . implode(',', $sql));
+					VALUES ' . implode(',', $sql) . ' ON DUPLICATE KEY UPDATE ip_address = ip_address');
 			}
 		}
 	}
 
 	automation_debug("A Total of $total IP Addresses Primed\n");
+}
+
+/**
+ * Preserve scan options when launching a network master or collector worker.
+ *
+ * @return list<string> Arguments passed separately to exec_background().
+ */
+function automation_get_scan_arguments(int $poller_id, int $network_id, int $thread, bool $force, bool $debug, bool $dryrun) : array {
+	$args = ['-q', read_config_option('path_webroot') . '/poller_automation.php', '--poller=' . $poller_id, '--network=' . $network_id];
+
+	if ($thread > 0) {
+		$args[] = '--thread=' . $thread;
+	}
+
+	if ($force) {
+		$args[] = '--force';
+	}
+
+	if ($debug) {
+		$args[] = '--debug';
+	}
+
+	if ($dryrun) {
+		$args[] = '--dryrun';
+	}
+
+	return $args;
 }
 
 /**
