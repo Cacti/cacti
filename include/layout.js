@@ -5861,7 +5861,6 @@ function setSNMP() {
 
 		let snmp_advanced = snmp_version > 2;
 		let snmp_basic = snmp_version > 0 && !snmp_advanced;
-		let snmp_none = !snmp_advanced && !snmp_basic;
 
 		if (snmp_version == 3) {
 			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
@@ -5975,7 +5974,7 @@ function setSNMP() {
 			bulk_walk_size: snmp_basic || snmp_advanced,
 		});
 
-		selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+		const selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
 		if (selectmenu) {
 			$('#snmp_security_level').selectmenu('refresh');
 			$('#snmp_auth_protocol').selectmenu('refresh');
