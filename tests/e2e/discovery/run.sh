@@ -43,9 +43,9 @@ for ip in 10 11 12 13; do
 done
 "${DC[@]}" exec -T cacti snmpget -v3 -l authPriv -u discovery -a SHA -A discovery-auth-fixture -x AES -X discovery-priv-fixture -t 1 -r 1 172.30.252.255:1161 .1.3.6.1.2.1.1.1.0 >/dev/null
 cd tests/e2e
-npm ci
-npx playwright install chromium
-CACTI_BASE_URL="http://127.0.0.1:$HOST_PORT" npx playwright test --config=discovery/playwright.config.ts
+npm ci --ignore-scripts
+node node_modules/@playwright/test/cli.js install chromium
+CACTI_BASE_URL="http://127.0.0.1:$HOST_PORT" node node_modules/@playwright/test/cli.js test --config=discovery/playwright.config.ts
 # Exit 0 is insufficient if a selector accidentally discovers an empty suite.
 node - <<'JS'
 const fs = require('node:fs');

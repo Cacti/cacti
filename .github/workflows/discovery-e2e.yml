@@ -166,8 +166,8 @@ jobs:
         working-directory: tests/e2e
         run: |
           set -euo pipefail
-          npm ci
-          npx playwright install --with-deps chromium
+          npm ci --ignore-scripts
+          node node_modules/@playwright/test/cli.js install --with-deps chromium
       - name: Actual UI and isolated SNMP discovery
         env:
           HOST_PORT: '18093'
