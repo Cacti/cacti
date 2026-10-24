@@ -602,6 +602,7 @@ Cacti CHANGELOG
 -feature#8166: Route SNMPv3 gets through the in-process php-snmp extension when it is available, bypassing the Net-SNMP binaries and their credential cache
 -feature#8166: Collect each device's SNMP data sources in cmd.php in a single max_oids-sized batched request over the persistent session, replacing one SNMP round trip per OID with one per max_get_size OIDs
 -feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, matching hardened (FIPS) PHP and Net-SNMP builds
+-feature#8475: Add an HTTP JSON Data Input Method and poller action that reads JSON Pointer values from HTTP endpoints, sharing one request per Device and endpoint with per-item timeouts and a concurrency cap
 
 1.2.31
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
