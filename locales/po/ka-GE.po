@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-09-24 21:51+0000\n"
+"PO-Revision-Date: 2026-10-24 02:18+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -786,7 +786,7 @@ msgstr "აგრეგირებული შაბლონები"
 #: lib/installer.php:2758 user_admin.php:2894 user_group_admin.php:2479
 #: user_group_admin.php:2482
 msgid "Templates"
-msgstr "შაბლონები"
+msgstr "ნიმუშები"
 
 #: aggregate_templates.php:628 cdef.php:776 color.php:543
 #: color_templates.php:860 gprint_presets.php:266 graph_templates.php:1639
@@ -1363,7 +1363,7 @@ msgstr "ოს-ი"
 
 #: automation_devices.php:343 host.php:1814 include/global_arrays.php:535
 msgid "Uptime"
-msgstr "გაშვებულობის დრო"
+msgstr "ჩართულობის დრო"
 
 #: automation_devices.php:348 automation_devices.php:659
 #: automation_devices.php:662 include/global_arrays.php:1110 utilities.php:1036
@@ -3811,7 +3811,7 @@ msgstr ""
 
 #: data_debug.php:462
 msgid "Started"
-msgstr "გაშვებულია"
+msgstr "გაეშვა"
 
 #: data_debug.php:465
 msgid "The Date that the Debug was Started."
@@ -8087,7 +8087,7 @@ msgstr "Cacti"
 
 #: include/global_arrays.php:1187
 msgid "Database Related"
-msgstr "მონაცემთა ბაზა"
+msgstr "მონაცემთა ბაზის შესახებ"
 
 #: include/global_arrays.php:1188
 msgid "Facilities Related"
@@ -14789,7 +14789,7 @@ msgstr "ზღვარი"
 
 #: lib/clog_webapi.php:607 lib/clog_webapi.php:610 tree.php:844
 msgid "Display"
-msgstr "გამოტანა"
+msgstr "ჩვენება"
 
 #: lib/clog_webapi.php:611 utilities.php:367
 msgid "Newest First"
@@ -21244,7 +21244,7 @@ msgstr ""
 
 #: sites.php:92 sites.php:662
 msgid "State"
-msgstr "შტატი"
+msgstr "მდგომარეობა"
 
 #: sites.php:93
 msgid "The state for the Site."
@@ -23243,7 +23243,7 @@ msgstr ""
 
 #: user_log.php:186
 msgid "Attempts"
-msgstr "ცდები"
+msgstr "მცდელობები"
 
 #: user_log.php:206 utilities.php:340 utilities.php:685 utilities.php:1006
 #: utilities.php:1969 utilities.php:2245 vdef.php:732
