@@ -124,6 +124,7 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 
 	upgrade_boost_process_table();
+	upgrade_aggregate_automation_schema();
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
 	// to HASH unless USING BTREE is specified. Range/ORDER BY access against
@@ -732,6 +733,28 @@ function upgrade_boost_process_table() : void {
 	db_install_execute('DELETE FROM poller_output_boost_processes WHERE run_id = ?', ['']);
 
 	db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
+}
+
+/** Install aggregate automation settings and ownership without enabling existing templates. */
+function upgrade_aggregate_automation_schema() : void {
+	foreach ([
+		['name' => 'automation_enabled', 'type' => 'char(2)', 'default' => ''],
+		['name' => 'automation_pattern', 'type' => 'varchar(512)', 'default' => ''],
+		['name' => 'automation_title', 'type' => 'varchar(255)', 'default' => '|host_description| - |aggregate_template_name|'],
+		['name' => 'automation_host_template_id', 'type' => 'int(10)', 'unsigned' => true, 'default' => '0'],
+		['name' => 'automation_max_members', 'type' => 'int(10)', 'unsigned' => true, 'default' => '1000'],
+	] as $column) {
+		$column['NULL'] = false;
+		db_install_add_column('aggregate_graph_templates', $column);
+	}
+	db_install_execute("CREATE TABLE IF NOT EXISTS automation_aggregate_graphs (
+		aggregate_template_id int(10) unsigned NOT NULL,
+		host_id int(10) unsigned NOT NULL,
+		local_graph_id int(10) unsigned NOT NULL,
+		configuration_hash char(64) NOT NULL,
+		PRIMARY KEY (aggregate_template_id, host_id),
+		UNIQUE KEY local_graph_id (local_graph_id)
+	) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Automation Ownership'");
 }
 
 function upgrade_reports() : void {
