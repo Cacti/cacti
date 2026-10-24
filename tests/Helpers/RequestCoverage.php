@@ -10,6 +10,11 @@ if ($requestCoverageDirectory !== false && $requestCoverageDirectory !== '') {
 	}
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 	register_shutdown_function(static function () use ($requestCoverageDirectory) : void {
+		$contract = $GLOBALS['cacti_fixture_contract'] ?? null;
+
+		if ($contract !== null && ($contract['complete'] !== true || $contract['assertions'] < 1)) {
+			throw new RuntimeException('An incomplete fixture cannot publish request coverage.');
+		}
 		$data = xdebug_get_code_coverage();
 
 		foreach ($GLOBALS['cacti_fixture_source_map'] ?? [] as $temporary => $original) {
@@ -38,9 +43,18 @@ if ($requestCoverageDirectory !== false && $requestCoverageDirectory !== '') {
 				}
 			}
 		}
-		$path = $requestCoverageDirectory . '/' . getmypid() . '-' . bin2hex(random_bytes(8)) . '.json';
 
-		if (file_put_contents($path, json_encode(['root' => $root, 'coverage' => $data, 'hashes' => $hashes, 'html_spans' => $htmlSpans], JSON_THROW_ON_ERROR)) === false) {
+		if ($contract !== null) {
+			$contract['hashes'] = [];
+
+			foreach ($contract['producers'] as $producer) {
+				$contract['hashes'][$producer] = hash_file('sha256', $root . '/' . $producer);
+			}
+		}
+		$prefix = $contract !== null ? $contract['name'] . '-' : '';
+		$path   = $requestCoverageDirectory . '/' . $prefix . getmypid() . '-' . bin2hex(random_bytes(8)) . '.json';
+
+		if (file_put_contents($path, json_encode(['root' => $root, 'coverage' => $data, 'hashes' => $hashes, 'html_spans' => $htmlSpans, 'contract' => $contract], JSON_THROW_ON_ERROR)) === false) {
 			throw new RuntimeException('Could not preserve request coverage.');
 		}
 	});

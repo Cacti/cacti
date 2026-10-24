@@ -14,8 +14,8 @@ WORKDIR /work
 
 COPY . ./
 
-# include/js/htmx.js is generated from package.json rather than committed,
-# and the htmx suites fail without it.
+# Rebuild the front-end libraries from package.json so the suites test the
+# pinned versions rather than whatever copies the build context carried.
 RUN npm_config_cache=/tmp/.npm npm ci --ignore-scripts \
 	&& npm run postinstall --ignore-scripts \
 	&& composer install --prefer-dist --no-progress --no-interaction \

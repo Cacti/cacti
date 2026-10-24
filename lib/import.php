@@ -22,6 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
+// RSA-512 has been factored in public and RSA-1024 is within reach of a well
+// funded attacker, so a signature made with either says nothing about who
+// built the Package.  1.2.x enforces the same floor (GHSA-8w9r-xmpr-5q3v).
+if (!defined('IMPORT_PACKAGE_KEY_MIN_BITS')) {
+	define('IMPORT_PACKAGE_KEY_MIN_BITS', 2048);
+}
+
 function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id,
 	bool $remove_orphans = false, bool $replace_svalues = false, array $import_hashes = []) : mixed {
 	global $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
@@ -343,19 +350,53 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 }
 
 function is_cacti_public_key(string $public_key) : bool {
-	$public_key = trim($public_key);
-	$keys[]     = get_public_key_sha1();
-	$keys[]     = get_public_key_sha256();
-
-	foreach ($keys as $key) {
-		if ($public_key === $key) {
-			return true;
-		}
-	}
-
-	return false;
+	// Only the 2048-bit key is trusted.  The legacy 512-bit key returned by
+	// get_public_key() can be factored, so matching it proves nothing.
+	return trim($public_key) === get_public_key_sha256();
 }
 
+/**
+ * import_public_key_meets_minimum - Report whether a key is strong enough to
+ * verify a Package against, or to be stored as a trusted signer.
+ *
+ * @param string $public_key The PEM encoded public key
+ *
+ * @return bool True for an RSA key of at least IMPORT_PACKAGE_KEY_MIN_BITS
+ */
+function import_public_key_meets_minimum(string $public_key) : bool {
+	$pkey = openssl_pkey_get_public($public_key);
+
+	if ($pkey === false) {
+		cacti_log('SECURITY: Package rejected - public key is invalid or unparseable', false, 'IMPORT');
+
+		return false;
+	}
+
+	$details = openssl_pkey_get_details($pkey);
+
+	// The floor is defined in RSA modulus bits, which do not compare with the
+	// bit size of any other key type.
+	if ($details === false || $details['type'] !== OPENSSL_KEYTYPE_RSA) {
+		cacti_log('SECURITY: Package rejected - signing key is not an RSA key', false, 'IMPORT');
+
+		return false;
+	}
+
+	if ($details['bits'] < IMPORT_PACKAGE_KEY_MIN_BITS) {
+		cacti_log('SECURITY: Package rejected - signing key is ' . $details['bits'] . ' bits (minimum ' . IMPORT_PACKAGE_KEY_MIN_BITS . ' required)', false, 'IMPORT');
+
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * get_public_key_sha1 - The legacy 512-bit Cacti key.  It is no longer
+ * trusted, and the key floor refuses it wherever it is still compared.
+ *
+ * @return string The legacy PEM encoded public key
+ */
 function get_public_key_sha1() : string {
 	return get_public_key();
 }
@@ -366,6 +407,13 @@ function get_public_key_sha256() : string {
 	return $public_key;
 }
 
+/**
+ * get_public_key - The legacy 512-bit Cacti key.  It still names the signer of
+ * a Package that carries no key of its own, so such a Package reaches the key
+ * floor and is refused there with a reason, but it is never trusted.
+ *
+ * @return string The legacy PEM encoded public key
+ */
 function get_public_key() : string {
 	$public_key = "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC\nbk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==\n-----END PUBLIC KEY-----";
 
@@ -454,6 +502,12 @@ function import_validate_signature(string $xmlfile) : bool {
 	// are written without one, and package_public_keys stores whatever the
 	// accepted Package carried.
 	$public_key = trim($info['pubkey']);
+
+	// A weak key is not trusted, whether it is built in or was accepted
+	// before the floor existed.
+	if (!import_public_key_meets_minimum($public_key)) {
+		return false;
+	}
 
 	// Cacti public key first
 	if (is_cacti_public_key($public_key)) {
@@ -572,6 +626,11 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 		return false;
 	}
 
+	// A preview skips the trust gate, so the floor is applied here as well.
+	if (!import_public_key_meets_minimum($public_key)) {
+		return false;
+	}
+
 	// Package signatures use SHA-256 regardless of key representation.
 	$ok = openssl_verify($xml, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 
@@ -661,7 +720,8 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		$binary_signature = base64_decode($f['filesignature'], true);
 		$fdata            = base64_decode($f['data'], true);
 
-		$ok = openssl_verify((string) $fdata, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+		// Each file is verified against the Package key, so the same floor applies.
+		$ok = import_public_key_meets_minimum($public_key) ? openssl_verify((string) $fdata, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256) : 0;
 
 		if ($ok == 1) {
 			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);

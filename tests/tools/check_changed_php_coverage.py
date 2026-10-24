@@ -66,6 +66,21 @@ def prepare_config(config, output, changed):
     tree.write(output, encoding='utf-8', xml_declaration=True)
 
 
+def validate_package_contract(request, path, root):
+    contract = request.get('contract') or {}
+    if not path.name.startswith('package-archive-') and contract.get('name') != 'package-archive':
+        return
+    producers = {'tests/fixtures/Core/PackageArchive.php', 'tests/Helpers/RequestCoverage.php'}
+    if (contract.get('name') != 'package-archive' or contract.get('complete') is not True
+            or type(contract.get('assertions')) is not int or contract['assertions'] != 2):
+        raise ValueError('Package archive coverage requires both completed scenarios')
+    if set(contract.get('producers', [])) != producers or set(contract.get('hashes', {})) != producers:
+        raise ValueError('Package archive coverage is missing producer evidence')
+    for name in producers:
+        if hashlib.sha256((root / name).read_bytes()).hexdigest() != contract['hashes'][name]:
+            raise ValueError(f'Package archive producer does not match {name}')
+
+
 def measure(changed, report, root, request_reports=None):
     # Deletion-only changes leave no source filter, so PHPUnit writes no report.
     if not changed and not Path(report).exists():
@@ -87,6 +102,7 @@ def measure(changed, report, root, request_reports=None):
             raise ValueError('Request coverage directory contains no reports')
         for path in reports:
             request = json.loads(path.read_text())
+            validate_package_contract(request, path, root)
             for file, lines in (request['coverage'] or {}).items():
                 name = str(Path(file).relative_to(request['root']))
                 if name not in changed:

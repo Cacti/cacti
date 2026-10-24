@@ -19,7 +19,7 @@ DB_VOLUME="${RUN_ID}_db"
 CACHE_VOLUME="${RUN_ID}_cache"
 RRA_VOLUME="${RUN_ID}_rra"
 LOG_VOLUME="${RUN_ID}_log"
-OLD_SCHEMA="$(mktemp "${TMPDIR:-/tmp}/cacti-1.2.22.XXXXXX.sql")"
+OLD_SCHEMA="$(mktemp "${TMPDIR:-/tmp}/cacti-1.2.22-sql.XXXXXX")"
 
 cleanup() {
 	docker rm -f "$WEB_CONTAINER" "$DB_CONTAINER" >/dev/null 2>&1 || true

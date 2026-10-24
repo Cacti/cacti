@@ -64,6 +64,7 @@ jobs:
             git show --name-only --format="" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt || true
           else
             git diff --name-only "$BASE" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt || true
+            echo "base=$BASE" >> "$GITHUB_OUTPUT"
           fi
           COUNT=$(grep -c '.' /tmp/changed_po.txt 2>/dev/null || echo 0)
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
@@ -78,6 +79,16 @@ jobs:
         if: steps.changed.outputs.count != '0'
         run: xargs -a /tmp/changed_po.txt msgcheck --error-on-fuzzy --no-lines
 
+      # Audit only entries this change touches, so existing problems elsewhere
+      # in a catalog do not fail an unrelated translation update.
       - name: Run custom HTML and placeholder audit
         if: steps.changed.outputs.count != '0'
-        run: xargs -a /tmp/changed_po.txt python3 tests/tools/audit_po.py
+        env:
+          BASE: ${{ steps.changed.outputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            xargs -a /tmp/changed_po.txt python3 tests/tools/audit_po.py --base "$BASE"
+          else
+            xargs -a /tmp/changed_po.txt python3 tests/tools/audit_po.py
+          fi

@@ -25,14 +25,26 @@ check_php_version() {
     fi
 }
 
+# Staged PHP files, one per line. Paths are read back with `read -r`, so
+# spaces survive; quotePath=false keeps non-ASCII names unescaped.
+staged_php_files() {
+    git -c core.quotePath=false diff --cached --name-only --diff-filter=ACMR -- '*.php'
+}
+
 check_merge_conflicts() {
-    staged=$(git diff --cached --name-only --diff-filter=ACM -- '*.php')
+    staged=$(staged_php_files)
 
     if [ -z "$staged" ]; then
         return 0
     fi
 
-    conflicts=$(echo "$staged" | xargs grep -l '^<<<<<<<\|^=======$\|^>>>>>>>' 2>/dev/null || true)
+    # Inspect the staged blob: a marker resolved only in the working tree is
+    # still committed.
+    conflicts=$(printf '%s\n' "$staged" | while IFS= read -r f; do
+        if git show ":$f" | grep -E -q '^(<<<<<<<|=======$|>>>>>>>)'; then
+            printf '%s\n' "$f"
+        fi
+    done)
 
     if [ -n "$conflicts" ]; then
         echo ""
@@ -86,7 +98,7 @@ check_tool() {
     fi
 
     # Verify the tool can actually load (catches missing Symfony/autoload issues)
-    if [ $($VENDOR_BIN/$tool --version > /dev/null 2>&1) -gt 0 ]; then
+    if ! "$VENDOR_BIN/$tool" --version > /dev/null 2>&1; then
         echo ""
         echo "ERROR: $label exists but failed to load. Autoload may be stale."
         echo ""
@@ -99,36 +111,34 @@ check_tool() {
 
 # ---- Lint / analysis tools ----
 
+# Lint the staged blobs with php -l. The previous phplint branch linted the
+# working tree and its guard could never be true, so it never ran.
 run_lint() {
-    if [ -x "$VENDOR_BIN/phplint" ] && [ $("$VENDOR_BIN/phplint" --version > /dev/null 2>&1) -gt 0 ]; then
-        echo "Running PHP lint (phplint)..."
+    echo "Running php -l on staged files..."
 
-        composer run-script lint
-    else
-        echo "phplint not available or broken, falling back to php -l on staged files..."
+    staged=$(staged_php_files)
 
-        staged=$(git diff --cached --name-only --diff-filter=ACM -- '*.php')
-
-        if [ -z "$staged" ]; then
-            echo "  No staged PHP files to check."
-            return 0
-        fi
-
-        fail=0
-
-        for f in $staged; do
-            if ! php -l "$f" > /dev/null 2>&1; then
-                php -l "$f"
-                fail=1
-            fi
-        done
-
-        if [ "$fail" -eq 1 ]; then
-            exit 1
-        fi
-
-        echo "  All staged PHP files pass syntax check."
+    if [ -z "$staged" ]; then
+        echo "  No staged PHP files to check."
+        return 0
     fi
+
+    failed=$(printf '%s\n' "$staged" | while IFS= read -r f; do
+        if ! git show ":$f" | php -l > /dev/null 2>&1; then
+            printf '%s\n' "$f"
+        fi
+    done)
+
+    if [ -n "$failed" ]; then
+        echo "Syntax errors in staged files:"
+        printf '%s\n' "$failed" | while IFS= read -r f; do
+            printf '  %s\n' "$f"
+            git show ":$f" | php -l 2>&1 || true
+        done
+        exit 1
+    fi
+
+    echo "  All staged PHP files pass syntax check."
 }
 
 run_phpcsfixer() {
@@ -136,7 +146,7 @@ run_phpcsfixer() {
 
     echo "Running PHP CS Fixer (dry-run)..."
 
-    if [ $(composer run-script php-cs-fixer) -gt 0 ]; then
+    if ! composer run-script php-cs-fixer; then
         echo ""
         echo "TIP: To auto-fix formatting issues, run:"
         echo "  composer run-script php-cs-fixit"
