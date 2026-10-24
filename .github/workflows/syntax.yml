@@ -165,22 +165,6 @@ jobs:
       contents: read
       packages: read
 
-    services:
-      mysql:
-        image: ghcr.io/cacti/ci-images/mariadb@sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98
-        credentials:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          MYSQL_DATABASE: cacti
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_USER: cactiuser
-          MYSQL_PASSWORD: cactiuser
-          MYSQL_ROOT_PASSWORD: cactiroot
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     name: PHP 8.3 locked integration
     steps:
     - name: Checkout
@@ -188,6 +172,67 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
+
+    # Service containers start before steps, too early to restore an image cache.
+    - name: Test database image cache contracts
+      run: python3 -m unittest discover -s tests/tools -p 'test_ci_mariadb_image.py'
+
+    - name: Select pinned database image
+      id: database_pin
+      run: python3 tests/tools/ci_mariadb_image.py metadata
+
+    - name: Restore database image archive
+      id: database_cache
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
+      with:
+        path: ${{ runner.temp }}/cacti-mariadb-image/mariadb.tar
+        key: ${{ steps.database_pin.outputs.key }}
+
+    - name: Authenticate to the verified GHCR mirror on a cache miss
+      if: steps.database_cache.outputs.cache-hit != 'true'
+      env:
+        DOCKER_CONFIG: ${{ runner.temp }}/cacti-mariadb-auth
+        GHCR_USER: ${{ github.actor }}
+        GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USER" --password-stdin
+
+    - name: Load or fetch the pinned database image
+      id: database_image
+      env:
+        DOCKER_CONFIG: ${{ runner.temp }}/cacti-mariadb-auth
+        IMAGE_CACHE: ${{ runner.temp }}/cacti-mariadb-image
+      run: python3 tests/tools/ci_mariadb_image.py prepare "$IMAGE_CACHE"
+
+    - name: Save verified database image archive
+      if: steps.database_cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
+      with:
+        path: ${{ runner.temp }}/cacti-mariadb-image/mariadb.tar
+        key: ${{ steps.database_pin.outputs.key }}
+
+    - name: Start the database from the verified local image
+      env:
+        DATABASE_IMAGE: ${{ steps.database_image.outputs.image }}
+        MYSQL_DATABASE: cacti
+        MYSQL_USER: cactiuser
+        MYSQL_PASSWORD: cactiuser
+        MYSQL_ROOT_PASSWORD: cactiroot
+      run: |
+        set -euo pipefail
+        docker run --detach --pull=never --name cacti-ci-mariadb \
+          --publish 127.0.0.1:3306:3306 \
+          --env MYSQL_DATABASE --env MYSQL_USER \
+          --env MYSQL_PASSWORD --env MYSQL_ROOT_PASSWORD \
+          --health-cmd='mariadb --protocol=TCP --host=127.0.0.1 --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE" --execute="SELECT 1"' --health-interval=2s \
+          --health-timeout=5s --health-retries=30 "$DATABASE_IMAGE"
+        for _ in $(seq 1 60); do
+          status=$(docker inspect --format '{{.State.Health.Status}}' cacti-ci-mariadb)
+          if [[ "$status" == healthy ]]; then exit 0; fi
+          if [[ "$status" == unhealthy ]]; then break; fi
+          sleep 2
+        done
+        docker logs cacti-ci-mariadb
+        exit 1
 
     - name: Setup Node
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
@@ -517,6 +562,15 @@ jobs:
         else
           echo "Cacti log was not created"
         fi
+
+    - name: Remove disposable database and registry credentials
+      if: always()
+      env:
+        DOCKER_CONFIG: ${{ runner.temp }}/cacti-mariadb-auth
+      run: |
+        set -euo pipefail
+        docker rm --force --volumes cacti-ci-mariadb 2>/dev/null || true
+        docker logout ghcr.io
 
   changelog:
     name: CHANGELOG format
