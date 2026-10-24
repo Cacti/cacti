@@ -59,7 +59,8 @@ $patterns = [
 	],
 ];
 
-$violations = [];
+$violations   = [];
+$base_sources = [];
 
 foreach ($files as $file) {
 	if (!is_file($file) || pathinfo($file, PATHINFO_EXTENSION) !== 'php') {
@@ -90,6 +91,18 @@ foreach ($files as $file) {
 			}
 
 			if (preg_match($rule['pattern'], $line) === 1) {
+				if ($name === 'serialized-hidden-state' && $changed_lines !== null && $base !== '') {
+					if (!array_key_exists($file, $base_sources)) {
+						$before = [];
+						exec('git show ' . escapeshellarg($base . ':' . $file) . ' 2>/dev/null', $before, $status);
+						$base_sources[$file] = $status === 0 ? $before : [];
+					}
+
+					if (legacy_serialization_escape_only($line, $base_sources[$file], $lines)) {
+						continue;
+					}
+				}
+
 				$violations[] = sprintf('%s:%d: %s: %s', $file, $index + 1, $name, $rule['message']);
 			}
 		}
@@ -104,6 +117,31 @@ if ($violations !== []) {
 }
 
 exit(0);
+
+/**
+ * Permit strong attribute escaping of an existing legacy wire format.
+ * New or duplicated serialized fields still fail; every other byte of the
+ * existing expression must remain identical. A missing base fails closed.
+ *
+ * @param string       $line   Changed source line
+ * @param list<string> $before Base source lines
+ * @param list<string> $after  Current source lines
+ *
+ * @return bool
+ */
+function legacy_serialization_escape_only(string $line, array $before, array $after) : bool {
+	$pattern = '/\bhtml_escape_attr\((serialize\(\$[A-Za-z_][A-Za-z0-9_]*\))\)/';
+	$raw     = preg_replace($pattern, '$1', $line, -1, $count);
+
+	if ($raw === null || $count !== 1 || str_contains($raw, 'html_escape_attr(')) {
+		return false;
+	}
+	$raw       = trim($raw);
+	$old_count = count(array_filter($before, static fn ($source) => trim($source) === $raw));
+	$new_count = count(array_filter($after, static fn ($source) => trim(preg_replace($pattern, '$1', $source) ?? $source) === $raw));
+
+	return $old_count > 0 && $new_count <= $old_count;
+}
 
 function changed_php_lines(string $base, string $head) : array {
 	if ($base === '') {
