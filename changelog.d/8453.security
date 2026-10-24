@@ -1,0 +1,1 @@
+Bind the Docker dev stack to localhost, deny data directories and dotfiles, and run its poller

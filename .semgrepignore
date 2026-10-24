@@ -5,3 +5,5 @@ include/vendor/
 include/fa/
 node_modules/
 tests/e2e/node_modules/
+# Rule fixtures are deliberately vulnerable; semgrep --test reads them directly.
+tests/security/semgrep/

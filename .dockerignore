@@ -40,6 +40,9 @@ include/vendor/composer/*
 !include/vendor/composer/index.php
 node_modules/
 **/node_modules/
+# Nested worktrees and local tool state can hold whole copies of the repository.
+.worktrees/
+.claude/
 **/*.pem
 **/*.key
 **/*.p12

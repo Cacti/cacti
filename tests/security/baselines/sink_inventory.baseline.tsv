@@ -190,7 +190,7 @@ fs_write	./lib/functions.php		$fp = fopen($file_name, 'r');
 fs_write	./lib/import.php							$file = fopen($filename, 'wb');
 fs_write	./lib/import.php		$f   = fopen($filename, 'r');
 fs_write	./lib/installer.php				$file          = fopen($cacheFile, 'r');
-fs_write	./lib/package.php		$f = fopen("compress.zlib://$tmpdir/" . clean_up_name($name) . '.xml.gz','wb');
+fs_write	./lib/package.php		$f = fopen("compress.zlib://$tmpdir/" . $archive_name . '.xml.gz','wb');
 fs_write	./lib/package.php		file_put_contents($xmlfile, $template);
 fs_write	./lib/plugins.php						file_put_contents($restore_path . '/' . $basefile, $output);
 fs_write	./lib/plugins.php				$fh = fopen($file, 'w');

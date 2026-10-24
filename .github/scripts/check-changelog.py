@@ -104,12 +104,16 @@ def main() -> int:
 	base_ref = os.environ.get("GITHUB_BASE_REF")
 	if base_ref:
 		result = subprocess.run(
-			["git", "diff", "--unified=0", f"origin/{base_ref}...HEAD", "--", "CHANGELOG"],
+			["git", "diff", "--no-ext-diff", "--unified=0", f"origin/{base_ref}...HEAD", "--", "CHANGELOG"],
 			capture_output=True,
 			text=True,
 			check=False,
 		)
-		if result.returncode == 0:
+		# A failed diff must not silently skip the numbering check.
+		if result.returncode != 0:
+			detail = result.stderr.strip() or f"exit status {result.returncode}"
+			errors.append(f"cannot diff CHANGELOG against origin/{base_ref}: {detail}")
+		else:
 			for added in result.stdout.splitlines():
 				if added.startswith(("+++", "---")):
 					continue

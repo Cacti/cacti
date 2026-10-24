@@ -569,7 +569,8 @@ function package_template(string &$template, array &$info, array &$files, string
 	}
 
 	// write the template to disk
-	$xmlfile = $tmpdir . '/' . clean_up_name($info['name']) . '.xml';
+	$archive_name = basename((string) clean_up_name($info['name']));
+	$xmlfile      = $tmpdir . '/' . $archive_name . '.xml';
 	file_put_contents($xmlfile, $template);
 
 	// create the package xml file
@@ -744,11 +745,9 @@ function package_template(string &$template, array &$info, array &$files, string
 
 	$xml .= '   <signature>' . $basesig . "</signature>\n</xml>";
 
-	$name = get_item_name(grv('export_type'), grv('export_item_id'));
+	$debug .= 'NOTE: Creating compressed template xml "' . $archive_name . ".xml.gz\"\n";
 
-	$debug .= 'NOTE: Creating compressed template xml "' . clean_up_name($name) . ".xml.gz\"\n";
-
-	$f = fopen("compress.zlib://$tmpdir/" . clean_up_name($name) . '.xml.gz','wb');
+	$f = fopen("compress.zlib://$tmpdir/" . $archive_name . '.xml.gz','wb');
 
 	if (!is_resource($f)) {
 		$debug .= "ERROR: Could not open package file for writing\n";
@@ -759,7 +758,7 @@ function package_template(string &$template, array &$info, array &$files, string
 	fwrite($f, $xml, strlen($xml));
 	fclose($f);
 
-	$package_file = $tmpdir . '/' . clean_up_name($name) . '.xml.gz';
+	$package_file = $tmpdir . '/' . $archive_name . '.xml.gz';
 
 	return true;
 }

@@ -24,7 +24,14 @@ DB_ROOT_PASS="${CACTI_DB_ROOT_PASS:-cactiroot}"
 # MariaDB/MySQL clients default to TLS certificate verification, so a plain
 # ping against the private test container can fail indefinitely. --skip-ssl
 # disables that handshake for this container-to-container link.
+# A bad host or password would otherwise loop forever and look like a hang.
+DB_WAIT_TRIES="${CACTI_DB_WAIT_TRIES:-90}"
 until mysqladmin ping -h "$DB_HOST" -uroot -p"$DB_ROOT_PASS" --skip-ssl --silent; do
+	DB_WAIT_TRIES=$((DB_WAIT_TRIES - 1))
+	if [ "$DB_WAIT_TRIES" -le 0 ]; then
+		echo "mariadb at ${DB_HOST} did not accept connections; giving up" >&2
+		exit 1
+	fi
 	echo "waiting for mariadb at ${DB_HOST}..."
 	sleep 2
 done

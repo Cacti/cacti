@@ -3,7 +3,8 @@
 # Off-the-shelf PHP rules do not know Cacti's own primitives, so they miss the
 # request-variable -> SQL / shell / RRDtool flows that have produced real CVEs
 # and flag htmle()-escaped output as false positives. These rules model:
-#   sources     - grv(), gnrv(), get_nfilter_request_var()   (raw request input)
+#   sources     - grv(), gnrv(), get_request_var(), get_nfilter_request_var()
+#                 (raw request input)
 #   sanitizers  - db_qstr[_rlike](), sanitize_sql_column(), (int) cast,
 #                 gfrv()/get_filter_request_var(), cacti_escapeshellarg(),
 #                 html_escape()/htmle()
@@ -34,6 +35,7 @@ rules:
           - pattern: grv(...)
           - pattern: gnrv(...)
           - pattern: get_nfilter_request_var(...)
+          - pattern: get_request_var(...)
     pattern-sanitizers:
       - pattern: db_qstr(...)
       - pattern: db_qstr_rlike(...)
@@ -98,6 +100,7 @@ rules:
           - pattern: grv(...)
           - pattern: gnrv(...)
           - pattern: get_nfilter_request_var(...)
+          - pattern: get_request_var(...)
     pattern-sanitizers:
       - pattern: cacti_escapeshellarg(...)
       - pattern: cacti_escapeshellcmd(...)
@@ -132,6 +135,7 @@ rules:
           - pattern: grv(...)
           - pattern: gnrv(...)
           - pattern: get_nfilter_request_var(...)
+          - pattern: get_request_var(...)
     pattern-sanitizers:
       - pattern: html_escape(...)
       - pattern: htmle(...)
