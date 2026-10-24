@@ -55,7 +55,7 @@ function ss_request_fixture_ok($a, $b) {
 if (!function_exists(__NAMESPACE__ . '\\parseArgs')) {
 	$root = dirname(__DIR__, 3);
 
-	foreach (array('parseArgs', 'script_server_read_request', 'script_server_drain_line', 'script_server_call', 'script_server_redact_params') as $function) {
+	foreach (array('script_server_path_is_allowed', 'parseArgs', 'script_server_read_request', 'script_server_drain_line', 'script_server_call', 'script_server_redact_params') as $function) {
 		\cacti_fixture_source_function($root . '/script_server.php', $function, __NAMESPACE__);
 	}
 
@@ -357,4 +357,26 @@ test('cmd.php log arguments ignore empty credentials', function () {
 
 	expect(poller_redact_snmp_secrets("f '' 'x0y'", $item))->toBe("f '' 'x********y'");
 	expect(poller_redact_snmp_secrets("f '' 'xy'", array('snmp_community' => '')))->toBe("f '' 'xy'");
+});
+
+test('script roots admit configured custom scripts and reject sibling prefixes', function () {
+	$base = sys_get_temp_dir() . '/cacti-script-roots-' . bin2hex(random_bytes(4));
+
+	foreach (['cacti', 'custom', 'custom-other'] as $name) {
+		mkdir($base . '/' . $name, 0700, true);
+	}
+
+	try {
+		$roots = [$base . '/cacti', $base . '/custom'];
+		expect(script_server_path_is_allowed($base . '/cacti/collector.php', $roots))->toBeTrue();
+		expect(script_server_path_is_allowed($base . '/custom/collector.php', $roots))->toBeTrue();
+		expect(script_server_path_is_allowed($base . '/custom-other/collector.php', $roots))->toBeFalse();
+		expect(script_server_path_is_allowed($base . '/custom/collector.php', [$base . '/cacti']))->toBeFalse();
+		expect(script_server_path_is_allowed(false, $roots))->toBeFalse();
+	} finally {
+		foreach (['cacti', 'custom', 'custom-other'] as $name) {
+			rmdir($base . '/' . $name);
+		}
+		rmdir($base);
+	}
 });
