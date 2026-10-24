@@ -99,3 +99,4 @@ RUN docker-php-ext-enable xdebug \
 	&& printf '%s\n' 'xdebug.mode=off' 'xdebug.use_compression=0' > /usr/local/etc/php/conf.d/zz-profile.ini
 
 FROM runtime AS e2e
+COPY --from=profile-assets /assets/include/js/ /var/www/html/include/js/

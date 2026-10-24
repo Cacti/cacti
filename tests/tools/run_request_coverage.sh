@@ -47,3 +47,5 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
+
+run_probe tests/tools/run_discovery_request_coverage.sh '^(poller_automation\.php|automation_graph_rules\.php|lib/api_automation\.php|tests/e2e/discovery/|tests/Unit/Core/Automation/|tests/Coverage/DiscoveryWorkerPingCoverageTest\.php|tests/fixtures/(discovery_|automation_matching_)|tests/Helpers/(SourceSlice|RequestCoverage|IsolatedProbe)\.php|tests/tools/(run_discovery_request_coverage\.sh|verify_discovery_coverage\.py))' 18278
