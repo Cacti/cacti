@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/CactiHttpPollItem.php';
+
 /** update_replication_crc - update hash stored in settings table to inform
  * remote pollers to replicate tables
  *
@@ -291,6 +293,19 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 				}
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], [], $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
+			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_HTTP) {
+				$http_fields = get_http_input_fields($data_input['data_template_data_id'], $data_input['data_template_id']);
+
+				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+					FROM data_template_rrd
+					WHERE local_data_id = ?',
+					[$data_source['id']]);
+
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], [], $data_source['id'], $data_input['rrd_step'], POLLER_ACTION_HTTP,
+					get_data_source_item_name($data_template_rrd_id), 1,
+					substitute_host_data($http_fields['http_url'] ?? '', '|', '|', (int) $data_source['host_id']),
+					$http_fields['http_json_pointer'] ?? '',
+					CactiHttpPollItem::encodeOptions($http_fields['http_scale'] ?? '', $http_fields['http_timeout'] ?? ''));
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
 				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
@@ -595,6 +610,40 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 	return [];
 }
 
+/**
+ * get_http_input_fields - Return the HTTP item spec of a data source.
+ *
+ * Values set on the data source win; anything left blank there falls back
+ * to the data template, the same precedence the SNMP Get branch uses.
+ *
+ * @param int $data_template_data_id the data source's data_template_data row
+ * @param int $data_template_id      the data template it was created from
+ *
+ * @return array<string, string> values keyed by http_* type_code
+ */
+function get_http_input_fields(int $data_template_data_id, int $data_template_id) : array {
+	$sql = 'SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+		FROM data_input_fields AS dif
+		INNER JOIN data_input_data AS did
+		ON dif.id = did.data_input_field_id
+		WHERE dif.type_code IN ("http_url", "http_json_pointer", "http_scale", "http_timeout")
+		AND did.data_template_data_id = ?
+		AND did.value != ""';
+
+	$fields = array_rekey(db_fetch_assoc_prepared($sql, [$data_template_data_id]), 'type_code', 'value');
+
+	$template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+		FROM data_template_data
+		WHERE data_template_id = ?
+		AND local_data_id = 0',
+		[$data_template_id]);
+
+	if (!empty($template_data_id) && $template_data_id != $data_template_data_id) {
+		$fields += array_rekey(db_fetch_assoc_prepared($sql, [$template_data_id]), 'type_code', 'value');
+	}
+
+	return $fields;
+}
 function push_out_data_input_method(int $data_input_id) : void {
 	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
