@@ -22,7 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-function api_poller_cache_item_add(int $host_id, mixed $host_field_override, int $local_data_id, int $rrd_step, int $poller_action_id,
+function api_poller_cache_item_add(int $host_id,
+	mixed $host_field_override,
+	int $local_data_id,
+	int $rrd_step,
+	int $poller_action_id,
 	string $data_source_item_name, int $num_rrd_items, string $arg1 = '', string $arg2 = '', string $arg3 = '') : mixed {
 	static $hosts = [];
 
@@ -122,7 +126,12 @@ function api_poller_get_rrd_next_step(int $host_id, int $rrd_step, int $local_da
 	}
 
 	if ($rrd_step < $poller_interval && !$warning_issued) {
-		$message = sprintf('WARNING: The Poller Interval is %s and you have a Data Source with a sampling interval of %s.  Change your Poller Interval to %s seconds, and repopulate your poller cache.', $poller_interval, $rrd_step, $rrd_step);
+		$message = sprintf('WARNING: The Poller Interval is %s and you have a Data Source with a ' .
+			'sampling interval of %s.  Change your Poller Interval to %s seconds, ' .
+			'and repopulate your poller cache.',
+			$poller_interval,
+			$rrd_step,
+			$rrd_step);
 
 		admin_email('Cacti Poller Interval Warning', $message);
 		cacti_log($message, false, 'POLLER');

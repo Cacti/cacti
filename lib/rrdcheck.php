@@ -167,7 +167,11 @@ function do_rrdcheck(int $thread_id = 1) : void {
 			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
-				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file), true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
+				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file),
+					true,
+					RRDTOOL_OUTPUT_BOOLEAN,
+					false,
+					'RRDCHECK');
 			} else {
 				clearstatcache();
 				$file_exists = file_exists($file);
@@ -328,7 +332,11 @@ function do_rrdcheck(int $thread_id = 1) : void {
 				$one_hour_limit = ($duration - 3600) / $step;
 
 				if ($use_proxy) {
-					$info_array = rrdtool_execute('fetch ' . cacti_escapeshellarg($file) . " LAST -s $pstart -e $pend", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$info_array = rrdtool_execute('fetch ' . cacti_escapeshellarg($file) . " LAST -s $pstart -e $pend",
+						false,
+						RRDTOOL_OUTPUT_STDOUT,
+						false,
+						'RRDCHECK');
 				} else {
 					$info_array = rrdcheck_rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], $pipes);
 				}
@@ -685,7 +693,16 @@ function rrdcheck_log_statistics(string $type) : void {
 
 		$processes  = read_config_option('rrdcheck_parallel');
 
-		$cacti_stats = sprintf('Time:%01.2f Type:%s Threads:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $end - $start, $type, $processes, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+		$cacti_stats = sprintf('Time:%01.2f Type:%s Threads:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f ' .
+			'RRDSystem:%01.2f RRDReal:%01.2f',
+			$end - $start,
+			$type,
+			$processes,
+			$rrd_files,
+			$dsses,
+			$rrd_user,
+			$rrd_system,
+			$rrd_real);
 
 		db_execute("DELETE FROM settings
 			WHERE name LIKE 'rrdcheck_rrd_%$sub_type%'
@@ -740,7 +757,16 @@ function rrdcheck_log_child_stats(string $type, int $thread_id, float $total_tim
 		WHERE name LIKE ?',
 		['rrdcheck_total_dsses_%' . $type . '_' . $thread_id . '%']);
 
-	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, cacti_strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s ' .
+		'RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f',
+		$total_time,
+		cacti_strtoupper($type),
+		$thread_id,
+		$rrd_files,
+		$dsses,
+		$rrd_user,
+		$rrd_system,
+		$rrd_real);
 
 	cacti_log('RRDCHECK CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
 }
@@ -846,7 +872,12 @@ function rrdcheck_wait_for_children(string $type, int $expected_children) : void
 	}
 
 	if (rrdcheck_processes_running($type) < $expected_children) {
-		cacti_log(sprintf('WARNING: rrdcheck startup barrier timed out; %d of %d %s children registered before draining.', rrdcheck_processes_running($type), $expected_children, $type), false, 'RRDCHECK');
+		cacti_log(sprintf('WARNING: rrdcheck startup barrier timed out; %d of %d %s children registered before draining.',
+			rrdcheck_processes_running($type),
+			$expected_children,
+			$type),
+			false,
+			'RRDCHECK');
 	}
 
 	// Wait for all processes to continue
@@ -987,7 +1018,10 @@ function rrdcheck_rrdtool_execute(array|string $command, mixed &$pipes) : mixed 
 			}
 		}
 	} elseif (!$broken) {
-		cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
+		cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found ' .
+			'or system out of resources.  Blocking subsequent messages.',
+			false,
+			'POLLER');
 
 		$broken = true;
 	}
@@ -1037,9 +1071,15 @@ function rrdcheck_launch_children(string $type) : int {
 	for ($i = 1; $i <= $processes; $i++) {
 		rrdcheck_debug(sprintf('Launching rrdcheck Process Number %s for Type %s', $i, $type));
 
-		cacti_log(sprintf('NOTE: Launching rrdcheck Process Number %s for Type %s', $i, $type), false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
+		cacti_log(sprintf('NOTE: Launching rrdcheck Process Number %s for Type %s',
+			$i,
+			$type),
+			false,
+			'BOOST',
+			POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, CACTI_PATH_BASE . "/poller_rrdcheck.php --type=$sub_type --child=$i" . ($debug ? ' --debug' : ''));
+		exec_background($php_binary,
+			CACTI_PATH_BASE . "/poller_rrdcheck.php --type=$sub_type --child=$i" . ($debug ? ' --debug' : ''));
 	}
 
 	sleep(2);
@@ -1095,7 +1135,11 @@ function rrdcheck_kill_running_processes() : void {
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running((int) $p['pid'])) {
-				cacti_log(sprintf('WARNING: Killing rrdcheck %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+				cacti_log(sprintf('WARNING: Killing rrdcheck %s PID %d due to another due to signal or overrun.',
+					ucfirst($p['taskname']),
+					$p['pid']),
+					false,
+					'BOOST');
 
 				cacti_process_kill((int) $p['pid'], SIGTERM, 'BOOST');
 			}

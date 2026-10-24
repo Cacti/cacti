@@ -6,6 +6,16 @@ on:
       - '**.php'
       - 'tests/phpunit.xml'
       - 'tests/e2e/**'
+      - 'cacti.sql'
+      - 'install/templates/**'
+      - 'resource/snmp_queries/**'
+      - 'tests/fixtures/snmp-coverage/**'
+      - '.dockerignore'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'build/**'
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
@@ -50,6 +60,7 @@ jobs:
           set -euo pipefail
           python3 tests/tools/test_check_changed_php_coverage.py
           python3 tests/tools/test_request_coverage_dispatch.py
+          XDEBUG_MODE=coverage php tests/tools/test_normalize_request_coverage.php
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
             --prepare-config tests/phpunit.xml --output-config phpunit-changed.xml
       - name: Exercise unit and integration contracts with statement coverage
@@ -70,7 +81,9 @@ jobs:
           set -euo pipefail
           request_args=()
           if compgen -G "${{ runner.temp }}/request-coverage/*.json" > /dev/null; then
-            request_args=(--request-reports "${{ runner.temp }}/request-coverage")
+            php tests/tools/normalize_request_coverage.php \
+              "${{ runner.temp }}/request-coverage" "${{ runner.temp }}/request-coverage-normalized" coverage-changed.xml
+            request_args=(--request-reports "${{ runner.temp }}/request-coverage-normalized")
           fi
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
             --report coverage-changed.xml "${request_args[@]}" \
@@ -84,4 +97,5 @@ jobs:
             coverage-changed.xml
             coverage-changed.json
             ${{ runner.temp }}/request-coverage
+            ${{ runner.temp }}/request-coverage-normalized
           if-no-files-found: warn

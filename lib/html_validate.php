@@ -124,7 +124,9 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 	$value    = ($value !== null ? ', Value:' . $func($value) : '');
 
 	if ($message == '') {
-		$message = __esc('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, $value);
+		$message = __esc('Validation error for variable %s with a value of %s.  See backtrace below for more details.',
+			$variable,
+			$value);
 	} elseif (!CACTI_CLI) {
 		$message = htmle($message);
 	}
@@ -139,7 +141,15 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 	}
 
 	if (isrv('json')) {
-		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . $variable . $value . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
+		cacti_debug_backtrace('Validation Error, Event: ' .
+			$event_id .
+			$variable .
+			$value .
+			', Source: ' .
+			get_client_addr() .
+			', Request: ' .
+			json_encode($_REQUEST),
+			false);
 
 		print json_encode(
 			[
@@ -149,7 +159,15 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 			]
 		);
 	} else {
-		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . $variable . $value . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
+		cacti_debug_backtrace('Validation Error, Event: ' .
+			$event_id .
+			$variable .
+			$value .
+			', Source: ' .
+			get_client_addr() .
+			', Request: ' .
+			json_encode($_REQUEST),
+			true);
 
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
 
