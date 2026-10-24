@@ -28,7 +28,7 @@ def parse_po(path: Path) -> List[Entry]:
         nonlocal cur, active_field, active_index
         if cur.msgid is not None or cur.msgstr or cur.comments:
             entries.append(cur)
-        cur.__init__(); active_field = active_index = None
+        cur = Entry(); active_field = active_index = None
     for lineno, line in enumerate(lines, 1):
         line = line.rstrip()
         if not line.strip(): flush(); continue
@@ -54,7 +54,7 @@ def validate_file(path: Path) -> List[str]:
     errors = []
     msgfmt = shutil.which("msgfmt")
     if msgfmt:
-        proc = subprocess.run([msgfmt, "-c", "--check-format", "-o", "/dev/null", str(path)], capture_output=True, text=True)
+        proc = subprocess.run([msgfmt, "-c", "--check-format", "-o", "/dev/null", "--", str(path)], capture_output=True, text=True)
         if proc.returncode != 0: errors.append(f"{path}: msgfmt failed:\n{proc.stderr.strip()}")
     try:
         entries = parse_po(path)
