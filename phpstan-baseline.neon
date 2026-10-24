@@ -1605,7 +1605,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''data_input_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 4
+			count: 5
 			path: data_templates.php
 
 		-
@@ -5079,13 +5079,13 @@ parameters:
 		-
 			message: '#^Cannot access offset ''host_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 6
+			count: 8
 			path: lib/utility.php
 
 		-
 			message: '#^Cannot access offset ''id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 19
+			count: 21
 			path: lib/utility.php
 
 		-
