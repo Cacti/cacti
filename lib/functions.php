@@ -2888,6 +2888,30 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 			return true;
 		}
 
+		if ($data_input['type_id'] == DATA_INPUT_TYPE_HTTP) {
+			include_once(CACTI_PATH_LIBRARY . '/utility.php');
+			include_once(CACTI_PATH_LIBRARY . '/CactiHttpPoller.php');
+
+			$http_fields = get_http_input_fields($data_template_data_id, $data_input['data_template_id']);
+
+			$row = [
+				'host_id'       => $host_id,
+				'local_data_id' => 0,
+				'rrd_name'      => 'test',
+				'arg1'          => substitute_host_data($http_fields['http_url'] ?? '', '|', '|', $host_id),
+				'arg2'          => $http_fields['http_json_pointer'] ?? '',
+				'arg3'          => CactiHttpPollItem::encodeOptions($http_fields['http_scale'] ?? '', $http_fields['http_timeout'] ?? ''),
+			];
+
+			$reasons = [];
+			$outputs = CactiHttpPoller::create((int) read_config_option('http_poller_concurrency'))->collect([$row], $reasons);
+			$output  = $outputs[CactiHttpPoller::rowKey($row)] ?? 'U';
+
+			dsv_log('HTTP output', ['output' => $output, 'reasons' => $reasons]);
+
+			return $output !== 'U';
+		}
+
 		if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
 			// get host fields first
 			$host_fields_sql = 'SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value

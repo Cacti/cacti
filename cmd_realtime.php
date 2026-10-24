@@ -27,6 +27,7 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 require_once(CACTI_PATH_LIBRARY . '/ping.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiHttpPoller.php');
 
 ini_set('max_execution_time', '0');
 
@@ -199,6 +200,12 @@ if (cacti_sizeof($idbyhost)) {
 				[$host_id]);
 
 			if (cacti_sizeof($poller_items)) {
+				$http_rows = array_filter($poller_items, function ($item) {
+					return $item['action'] == POLLER_ACTION_HTTP;
+				});
+
+				$http_outputs = cacti_sizeof($http_rows) ? CactiHttpPoller::create((int) read_config_option('http_poller_concurrency'))->collect($http_rows) : [];
+
 				foreach ($poller_items as $item) {
 					switch ($item['action']) {
 						case POLLER_ACTION_SNMP: // snmp
@@ -269,6 +276,10 @@ if (cacti_sizeof($idbyhost)) {
 							} else {
 								$output = 'U';
 							}
+
+							break;
+						case POLLER_ACTION_HTTP:
+							$output = $http_outputs[CactiHttpPoller::rowKey($item)] ?? 'U';
 
 							break;
 					}
