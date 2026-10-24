@@ -62,6 +62,7 @@
         "symfony/console": "^7.4",
         "symfony/filesystem": "^7.4",
         "symfony/finder": "^6.4 || ^7.4",
+        "symfony/http-client": "^7.4",
         "symfony/http-foundation": "^7.4",
         "symfony/lock": "^7.4",
         "symfony/mailer": "^7.4",
