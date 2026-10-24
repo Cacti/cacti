@@ -1013,20 +1013,21 @@ function collect_device_data(&$item, &$error_ds) {
 
 			break;
 		case POLLER_ACTION_SCRIPT:
-			$output = trim(exec_poll($item['arg1']));
+			$output   = trim(exec_poll($item['arg1']));
+			$log_arg1 = poller_redact_snmp_secrets($item['arg1'], $item);
 
 			if ($output == 'U') {
 				$error_ds[$ds] = $ds;
 
 				if (read_config_option('spine_log_level') == 2) {
-					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ", output: U", $print_data_to_stdout, 'POLLER');
+					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $log_arg1 . ", output: U", $print_data_to_stdout, 'POLLER');
 				}
 			} elseif (!is_numeric($output)) {
 				if (prepare_validate_result($output) == false) {
 					$error_ds[$ds] = $ds;
 
 					if (read_config_option('spine_log_level') == 2) {
-						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
+						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER');
 					}
 
 					$output = 'U';
@@ -1035,24 +1036,25 @@ function collect_device_data(&$item, &$error_ds) {
 
 			$total_time = (microtime(true) - $thread_start) * 1000;
 
-			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time, 2) . "] SCRIPT: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time, 2) . "] SCRIPT: " . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 			break;
 		case POLLER_ACTION_SCRIPT_PHP:
-			$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+			$output   = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+			$log_arg1 = poller_redact_snmp_secrets($item['arg1'], $item);
 
 			if ($output == 'U') {
 				$error_ds[$ds] = $ds;
 
 				if (read_config_option('spine_log_level') == 2) {
-					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ", output: U", $print_data_to_stdout, 'POLLER');
+					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $log_arg1 . ", output: U", $print_data_to_stdout, 'POLLER');
 				}
 			} elseif (!is_numeric($output)) {
 				if (prepare_validate_result($output) == false) {
 					$error_ds[$ds] = $ds;
 
 					if (read_config_option('spine_log_level') == 2) {
-						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
+						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER');
 					}
 
 					$output = 'U';
@@ -1061,7 +1063,7 @@ function collect_device_data(&$item, &$error_ds) {
 
 			$total_time = (microtime(true) - $thread_start) * 1000;
 
-			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time, 2) . "] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time, 2) . "] SERVER: " . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 			break;
 		default:
