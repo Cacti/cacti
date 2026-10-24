@@ -164,7 +164,7 @@ class ChangelogTests(unittest.TestCase):
                 if '--check' in arguments:
                     self.assertEqual(Path('CHANGELOG').read_text(), original)
                     self.assertEqual(len(list(Path('changelog.d').iterdir())), 4)
-            expected = '1.3.0-dev\n-security#GHSA-abc: new security\n-security#1: old security\n-issue#10: earlier issue\n-issue#20: new issue\n-issue#1: old issue\n-feature#1: old feature\n-feature#4: new feature\n\n1.2.0\n-issue#1: historical\n'
+            expected = '1.3.0-dev\n-security#GHSA-abc: new security\n-security#1: old security\n-issue#20: new issue\n-issue#10: earlier issue\n-issue#1: old issue\n-feature#1: old feature\n-feature#4: new feature\n\n1.2.0\n-issue#1: historical\n'
             self.assertEqual(Path('CHANGELOG').read_text(), expected)
             self.assertEqual(list(Path('changelog.d').iterdir()), [])
 
