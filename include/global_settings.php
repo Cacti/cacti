@@ -1760,6 +1760,14 @@ $settings['poller'] = [
 		'max_length'    => '10',
 		'size'          => '5'
 	],
+	'http_poller_concurrency' => [
+		'friendly_name' => __('HTTP Request Concurrency'),
+		'description'   => __('The maximum number of HTTP requests cmd.php keeps in flight for one Device.  Data Sources that read the same endpoint on a Device share one request.  Settings between 1 and 64 are accepted.'),
+		'method'        => 'textbox',
+		'default'       => '8',
+		'max_length'    => '3',
+		'size'          => '5'
+	],
 	'poller_output_debounce' => [
 		'friendly_name' => __('Poller Output Not Empty Debouncing'),
 		'description'   => __('If you are having issues with some data sources, your Email could be flooded with \'Poller Output Not Empty\' warnings.  If this is happening, you can debounce the setting based upon this interval.'),
