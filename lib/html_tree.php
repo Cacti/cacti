@@ -313,6 +313,8 @@ function grow_dhtml_trees() {
 					}
 				},
 				'core' : {
+					// A graph drilldown keeps the device selected; allow returning to its graph list.
+					'allow_reselect' : true,
 					'data' : {
 						'url' : urlPath+'graph_view.php?action=get_node&tree_id=0',
 						'data' : function(node) {

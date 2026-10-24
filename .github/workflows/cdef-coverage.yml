@@ -68,10 +68,17 @@ jobs:
     name: lib/cdef.php 100% coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
 
     services:
       mariadb:
-        image: mariadb@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430 # 11.4
+        # Copied by ci-images.yml on develop; services pull before any step can set a mirror.
+        image: ghcr.io/cacti/ci-images/mariadb:11.4@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           MARIADB_ROOT_PASSWORD: root
           MARIADB_DATABASE: cacti_test
@@ -93,7 +100,7 @@ jobs:
 
 
       - name: Setup PHP 8.2 with Xdebug
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: '8.2'
           coverage: xdebug

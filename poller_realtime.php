@@ -147,7 +147,7 @@ cacti_exec(read_config_option('path_php_binary'), array(
 	$poller_id,
 	(string) (int) $graph_id,
 	(string) (int) $interval
-), $output, false);
+), $output, '', false);
 
 // open a pipe to rrdtool for writing
 $rrdtool_pipe = rrd_init();

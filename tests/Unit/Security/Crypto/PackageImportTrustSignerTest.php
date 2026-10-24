@@ -36,3 +36,10 @@ test('trust_signer is gone from validate_request_vars(), the form, and the JS', 
 
 	expect($src)->not->toContain('trust_signer');
 });
+
+test('maintenance package imports do not query the development-only key table', function () use ($repoRoot) {
+	foreach (['package_import.php', 'lib/import.php'] as $path) {
+		$src = file_get_contents($repoRoot . $path);
+		expect($src)->not->toContain('package_public_keys');
+	}
+});

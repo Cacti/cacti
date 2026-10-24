@@ -1063,10 +1063,13 @@ legend {
 }
 
 .cactiConsoleContentArea {
+	box-sizing: border-box;
 	height: 92vh;
 	overflow-y: auto !important;
 	overflow-x: hidden;
 	padding-left: 10px;
+	padding-right: 15px;
+	padding-bottom: 20px;
 	margin-right: 5px;
 }
 

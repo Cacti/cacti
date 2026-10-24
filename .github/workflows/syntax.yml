@@ -55,7 +55,7 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
     - name: Install PHP 8.2
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
       with:
         php-version: '8.2'
         extensions: pdo_mysql
@@ -83,7 +83,7 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
     - name: Install PHP 8.2
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
       with:
         php-version: '8.2'
         coverage: none
@@ -99,6 +99,22 @@ jobs:
     - name: Run sortable header compatibility contracts
       working-directory: tests
       run: php vendor/bin/pest --configuration=phpunit-sortable-header.xml --colors=never
+
+    - name: Run graph permission display contracts
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit-permission-display.xml --colors=never
+
+    - name: Run spike-removal regression tests
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/Ui/Spikekill/ --colors=never
+
+    - name: Run form action rendering contracts
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/Ui/Html/FormActionEncodingTest.php --colors=never
+
+    - name: Run SNMP walk OID contracts
+      working-directory: tests
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php --colors=never
 
   javascript-contracts:
     name: JavaScript contracts

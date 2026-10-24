@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - 'lib/poller.php'
+      - 'lib/snmp.php'
+      - 'tests/Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php'
+      - 'tests/fixtures/Core/SnmpWalkOidGuard.php'
+      - 'tests/Helpers/IsolatedProbe.php'
       - 'tests/Unit/PollerMappingCacheTest.php'
       - 'tests/fixtures/PollerMappingCache.php'
       - 'tests/Helpers/SourceSlice.php'
@@ -44,7 +48,7 @@ jobs:
           python3 tests/tools/test_check_changed_php_coverage.py
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
             --prepare-config tests/phpunit-poller-mapping.xml --output-config phpunit-changed.xml
-      - name: Exercise empty cache and failed reads
+      - name: Exercise poller cache and SNMP OID guards
         working-directory: tests
         env:
           XDEBUG_MODE: coverage
@@ -61,6 +65,7 @@ jobs:
           set -euo pipefail
           php tests/fixtures/PollerMappingCache.php
           php tests/fixtures/PollerMappingCache.php retry
+          php tests/fixtures/Core/SnmpWalkOidGuard.php
       - name: Require at least 80 percent of changed executable PHP lines
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
@@ -71,7 +76,7 @@ jobs:
             --minimum 80 --json-output coverage-changed.json
       - name: Preserve coverage evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: changed-php-coverage
           path: |

@@ -2030,10 +2030,10 @@ function is_hex_string(&$result) {
 	 * Hex- is considered due to the stripping of 'String:' in
 	 * lib/snmp.php
 	 */
-	if (substr($compare, 0, 4) == 'hex-') {
-		$check = trim(str_ireplace('hex-', '', $result));
-	} elseif (substr($compare, 0, 11) == 'hex-string:') {
+	if (substr($compare, 0, 11) == 'hex-string:') {
 		$check = trim(str_ireplace('hex-string:', '', $result));
+	} elseif (substr($compare, 0, 4) == 'hex-') {
+		$check = trim(str_ireplace('hex-', '', $result));
 	} else {
 		return false;
 	}
@@ -2720,6 +2720,17 @@ function substitute_script_path($template, $escaped_values) {
 				$valLen     = strlen($value);
 				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
 
+				// Backtick substitutions preprocess their contents before parsing
+				// shell quotes. A backtick in a quoted field can close that outer
+				// substitution. Refuse fields anywhere inside it, including $().
+				if ($selfQuoted) {
+					foreach ($stack as $frame) {
+						if ($frame['kind'] === 'backtick') {
+							return '';
+						}
+					}
+				}
+
 				if (!$selfQuoted) {
 					// trusted raw value (path_* config): substitute in place so the
 					// template's own quotes (if any) survive around the value
@@ -2777,6 +2788,26 @@ function substitute_script_path($template, $escaped_values) {
 			$out .= $ch;
 			$stack[$top]['quoteEmpty'] = false;
 			$i++;
+
+			continue;
+		}
+
+		// These constructs change how the shell interprets quoting around a
+		// field. Simple ${name} expansion is safe; its operators and here-docs
+		// need a full shell parser. Line continuations can conceal their syntax.
+		if ($ch === '\\' && ($template[$i + 1] ?? '') === "\n" ||
+			$ch === '\\' && substr($template, $i + 1, 2) === "\r\n" ||
+			$quote === '' && $ch === '<' && ($template[$i + 1] ?? '') === '<') {
+			return '';
+		}
+
+		if ($ch === '$' && ($template[$i + 1] ?? '') === '{') {
+			if (!preg_match('/\G\$\{(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+|[@*?#$!\-])\}/', $template, $variable, 0, $i)) {
+				return '';
+			}
+			$out .= $variable[0];
+			$i += strlen($variable[0]);
+			$stack[$top]['quoteEmpty'] = false;
 
 			continue;
 		}
@@ -5276,7 +5307,7 @@ function validate_relative_path_within($path, $base_dir) {
 	foreach ($parts as $part) {
 		$walk .= '/' . $part;
 
-		if (file_exists($walk) && is_link($walk)) {
+		if (is_link($walk)) {
 			return false;
 		}
 	}
@@ -8523,22 +8554,47 @@ function cacti_input_string_is_safe($input_string) {
 }
 
 /**
+ * Resolve the id of the device whose hostname a cacti_exec() invocation applies to. The binary
+ * SNMP paths bracket an IPv6 address for the Net-SNMP target, so the transport brackets are
+ * stripped from the lookup key, as the device stores the address without them. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname that the exec applies to.
+ *
+ * @return int The device id, or 0 when there is no hostname or no such device.
+ */
+function cacti_exec_host_id(string $hostname): int {
+	$hostname = preg_replace('/^\[([^\]]+)\]$/', '$1', $hostname);
+
+	if ($hostname === '' || !function_exists('db_fetch_cell_prepared')) {
+		return 0;
+	}
+
+	return (int) db_fetch_cell_prepared('SELECT id
+		FROM host
+		WHERE hostname = ?
+		AND deleted = ""
+		LIMIT 1',
+		array($hostname));
+}
+
+/**
  * Build a credential-redacted, human-readable description of a cacti_exec() invocation for
  * logging. The values following -c, -A and -X (SNMP community string and SNMPv3 auth/priv
- * passphrases) are replaced with [REDACTED] so secrets never reach the log. When an argument looks
- * like a Net-SNMP target (host:port or udp6:[addr]:port) and resolves to a device hostname, the
- * line is prefixed with Device[id] so Cacti's log filtering and description resolution work the
- * same way they do for poller output. Used as part of Cacti's lib functionality.
+ * passphrases) are replaced with [REDACTED] so secrets never reach the log. When the hostname
+ * the exec applies to resolves to a device, the line is prefixed with Device[id] so Cacti's log
+ * filtering and description resolution work the same way they do for poller output. Used as part
+ * of Cacti's lib functionality.
  *
  * @param string $binary The executable path.
  * @param array $args The ordered argument list passed to cacti_exec().
+ * @param string $hostname The hostname that the exec applies to, or '' when it applies to none.
  *
  * @return string A single-line, secret-free description safe for cacti_log().
  */
-function cacti_exec_log_describe($binary, array $args) {
+function cacti_exec_log_describe($binary, array $args, string $hostname = '') {
 	$parts       = array();
 	$redact_next = false;
-	$host        = '';
 
 	foreach ($args as $arg) {
 		$arg = (string) $arg;
@@ -8566,24 +8622,10 @@ function cacti_exec_log_describe($binary, array $args) {
 		}
 
 		$parts[] = $arg;
-
-		/* Net-SNMP target: host:port, ipv4:port, or (udp6|tcp6):[ipv6]:port (zone id included) */
-		if ($host === '' &&
-			preg_match('/^(?:(?:udp|tcp)6?:)?(?:\[([^\]]+)\]|([0-9A-Za-z._-]+)):\d+$/', $arg, $m)) {
-			$host = (isset($m[1]) && $m[1] !== '') ? $m[1] : $m[2];
-		}
 	}
 
-	$prefix = '';
-
-	if ($host !== '' && function_exists('db_fetch_cell_prepared')) {
-		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE hostname = ? AND deleted = "" LIMIT 1',
-			array($host));
-
-		if (!empty($host_id)) {
-			$prefix = 'Device[' . $host_id . '] ';
-		}
-	}
+	$host_id = cacti_exec_host_id($hostname);
+	$prefix  = $host_id > 0 ? 'Device[' . $host_id . '] ' : '';
 
 	return $prefix . trim($binary . ' ' . implode(' ', $parts));
 }
@@ -8603,15 +8645,33 @@ function cacti_exec_log_describe($binary, array $args) {
  * @param array $args Ordered argument strings (not shell-escaped).
  * @param array& $output Array &$output Receives stdout lines on success; empty array on empty
  *   output.
+ * @param string $hostname The hostname applied to.
  * @param mixed $timeout False for 4 hour timeout or seconds before the process is killed (default
  *   30).
  *
  * @return int Exit code, or 255 on spawn failure, error with binary or timeout.
  */
-function cacti_exec($binary, array $args = array(), array &$output = array(), $timeout = 30) {
+function cacti_exec($binary, array $args = array(), array &$output = array(), $hostname = '', $timeout = 30) {
+	$log  = true;
+
 	// Ensure buffers flush automatically
 	if (PHP_SAPI === 'cli') {
 		ini_set('implicit_flush', true);
+	}
+
+	// Warnings for a device are only logged when it is debugged or the log level asks for them
+	if ($hostname !== '') {
+		$host_id = cacti_exec_host_id($hostname);
+
+		if ($host_id > 0) {
+			$log_level = read_config_option('spine_log_level') ?? 0;
+
+			if (is_device_debug_enabled($host_id)) {
+				$log = true;
+			} elseif ($log_level < 2) {
+				$log = false;
+			}
+		}
 	}
 
 	// Blocking assumes a timeout of 4 hours
@@ -8639,7 +8699,10 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	$process = proc_open($argv, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
-		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
+		if ($log) {
+			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args, $hostname) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
+		}
+
 		return 255;
 	}
 
@@ -8721,7 +8784,9 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		proc_terminate($process, 9);
 		proc_close($process);
 
-		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
+		if ($log) {
+			cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args, $hostname) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
+		}
 
 		return 1;
 	}
@@ -8736,8 +8801,8 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$exit = $close_exit;
 	}
 
-	if (!empty($stderr)) {
-		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_LOW);
+	if (!empty($stderr) && $log) {
+		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args, $hostname) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_LOW);
 	}
 
 	$stdout  = rtrim($stdout, "\n");
@@ -8752,13 +8817,14 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
  *
  * @param string $binary The binary.
  * @param array $args The args.
+ * @param string $hostname The hostname applied to.
  * @param int $timeout The timeout.
  *
  * @return string|false Stdout on exit code 0, false on failure.
  */
-function cacti_exec_string($binary, array $args = array(), $timeout = 30) {
+function cacti_exec_string($binary, array $args = array(), string $hostname = '', int $timeout = 30) {
 	$output = array();
-	$exit   = cacti_exec($binary, $args, $output, $timeout);
+	$exit   = cacti_exec($binary, $args, $output, $hostname, $timeout);
 
 	return ($exit === 0) ? implode("\n", $output) : false;
 }

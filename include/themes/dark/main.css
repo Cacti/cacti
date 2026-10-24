@@ -723,7 +723,8 @@ label {
 }
 
 .filteredValue {
-	background-color: #F8D93D;
+	background-color: #979D0C;
+	color: black;
 }
 
 .graphItemGr1Alt1 {
@@ -1196,10 +1197,12 @@ legend {
 }
 
 .cactiConsoleContentArea {
+	box-sizing: border-box;
 	background: #161616;
 	padding-top: 5px;
-	padding-right: 5px;
+	padding-right: 15px;
 	padding-left: 5px;
+	padding-bottom: 20px;
 	vertical-align: top;
 	overflow-y: auto !important;
 	overflow-x: hidden;

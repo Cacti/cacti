@@ -47,7 +47,7 @@ function draw_edit_form($array) {
 
 	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">";
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . cacti_html_context_escape((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page(), CACTI_ESC_ATTR) . "'" . ((isset($config_array['form_name'])) ? " name='" . cacti_html_context_escape($config_array['form_name'], CACTI_ESC_ATTR) . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . cacti_html_context_escape($config_array['enctype'], CACTI_ESC_ATTR) . "'" : '') . ">";
 		}
 
 		$i = 0;
@@ -166,6 +166,8 @@ function draw_edit_form($array) {
 		if ((isset($_SESSION['form_change_actions']) && cacti_sizeof($_SESSION['form_change_actions'])) ||
 			(isset($_SESSION['form_click_actions']) && cacti_sizeof($_SESSION['form_click_actions']))) {
 			print PHP_EOL . '<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>' . PHP_EOL;
+			// Bind after the layout's ready callback clears stale control handlers.
+			print '$(function() {' . PHP_EOL;
 
 			if (isset($_SESSION['form_change_actions']) && cacti_sizeof($_SESSION['form_change_actions'])) {
 				foreach($_SESSION['form_change_actions'] as $form_name => $action) {
@@ -179,6 +181,7 @@ function draw_edit_form($array) {
 				}
 			}
 
+			print '});' . PHP_EOL;
 			print '</script>' . PHP_EOL;
 
 			kill_session_var('form_change_actions');
@@ -1634,7 +1637,7 @@ function form_start($action, $id = '', $multipart = false) {
 
 	$form_action = $action;
 
-	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'":'') . ">";
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='" . cacti_html_context_escape($form_action, CACTI_ESC_ATTR) . "' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'":'') . ">";
 }
 
 /**
@@ -1720,7 +1723,7 @@ function form_end($ajax = true) {
 				// Enable the form if it's disabled
 				$(this).find('input, textarea, select').prop('disabled', false);
 
-				strURL  = '<?php print $form_action;?>';
+				strURL  = '<?php print cacti_html_context_escape($form_action, CACTI_ESC_JS_STRING);?>';
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
 
 				json =  $(this).serializeObject();

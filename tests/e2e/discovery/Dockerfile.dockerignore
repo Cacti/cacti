@@ -1,0 +1,14 @@
+.git
+**/node_modules
+**/test-results
+**/playwright-report
+**/coverage
+tests/vendor
+include/config.php
+include/config_local.php
+**/.env
+**/.env.*
+**/.DS_Store
+log/*
+rra/*.rrd
+cache/*

@@ -2645,6 +2645,32 @@ msgstr "Tất cả các sửa chữa RRDfile đã thành công."
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Một hoặc nhiều sửa chữa RRDfile không thành công. Xem nhật ký Cacti cho các lỗi."
 
+#: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Tất cả các sửa chữa RRDfile đã thành công."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "Thông tin điều chỉnh RRDtool"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Các bước sửa chữa [Chạy Fix từ dòng lệnh]"
+
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
 msgstr "Tự động gỡ lỗi nguồn dữ liệu được chạy lại sau khi sửa chữa."

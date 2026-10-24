@@ -2749,10 +2749,10 @@ function html_common_header($title, $selectedTheme = '') {
 	</script>
 <?php if (file_exists($config['base_path'] . '/include/themes/' . $selectedTheme . '/images/favicon.svg')) { ?>
 	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.svg' rel='icon' type='image/svg+xml'>
-<?php } ?>
+<?php } else { ?>
 	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
 	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
-	<?php
+	<?php }
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');

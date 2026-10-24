@@ -130,3 +130,37 @@ test('normalizer behaviour covers drive, UNC and collision cases', function () u
 	expect($within('C:\\cactix\\x', 'C:\\cacti'))->toBeFalse();
 	expect($within('\\\\server\\shareX\\x', '\\\\server\\share'))->toBeFalse();
 });
+
+test('validate_relative_path_within rejects dangling symlinks and keeps plain paths', function () {
+	if (DIRECTORY_SEPARATOR === '\\') {
+		$this->markTestSkipped('Symlink creation is not consistently available on Windows.');
+	}
+
+	$base    = sys_get_temp_dir() . '/cacti_containment_' . bin2hex(random_bytes(6));
+	$outside = $base . '_outside/pwned.txt';
+
+	mkdir($base . '/nested', 0755, true);
+	file_put_contents($base . '/nested/present.txt', 'x');
+
+	try {
+		if (!@symlink($outside, $base . '/nested/dangling.php') || !@symlink($outside, $base . '/dangling') || !@symlink(sys_get_temp_dir(), $base . '/link')) {
+			$this->markTestSkipped('Symlink creation is not permitted in this environment.');
+		}
+
+		expect(validate_relative_path_within('nested/dangling.php', $base))->toBeFalse();
+		expect(validate_relative_path_within('dangling/child.php', $base))->toBeFalse();
+		expect(validate_relative_path_within('link/anything.txt', $base))->toBeFalse();
+		expect(validate_relative_path_within('nested/../nested/present.txt', $base))->toBeFalse();
+		expect(validate_relative_path_within('nested/present.txt', $base))->toBe(realpath($base) . '/nested/present.txt');
+	} finally {
+		foreach (['/nested/present.txt', '/nested/dangling.php', '/dangling', '/link', '/nested', ''] as $leaf) {
+			$path = $base . $leaf;
+
+			if (is_link($path) || is_file($path)) {
+				unlink($path);
+			} elseif (is_dir($path)) {
+				rmdir($path);
+			}
+		}
+	}
+});

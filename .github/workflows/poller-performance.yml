@@ -62,7 +62,7 @@ jobs:
         with:
           ref: ${{ matrix.ref }}
           persist-credentials: false
-      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
         with:
           php-version: ${{ matrix.php }}
           coverage: none
@@ -89,7 +89,7 @@ jobs:
         with:
           ref: ${{ matrix.ref }}
           persist-credentials: false
-      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
         with:
           php-version: '8.4'
           coverage: none
@@ -101,7 +101,7 @@ jobs:
           php -d memory_limit=512M tests/performance/poller.php scale 150000 > performance-results/150000.json
           php -d memory_limit=512M tests/performance/poller.php scale 1000000 > performance-results/1000000.json
           php -d memory_limit=512M tests/performance/poller.php scale 2500000 > performance-results/2500000.json
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: poller-performance-${{ strategy.job-index }}
           path: performance-results

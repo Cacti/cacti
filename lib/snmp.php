@@ -409,7 +409,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 			snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
-		cacti_exec($binary, $args, $snmp_value, cacti_snmp_command_timeout($timeout_s, $retries));
+		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
@@ -525,7 +525,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 			snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
-		cacti_exec($binary, $args, $snmp_value, cacti_snmp_command_timeout($timeout_s, $retries));
+		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
@@ -636,7 +636,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 			snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
-		cacti_exec($binary, $args, $snmp_value, cacti_snmp_command_timeout($timeout_s, $retries));
+		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
@@ -1418,6 +1418,15 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		return array();
 	}
 
+	/* An empty OID is a caller error.  Net-SNMP rejects it as its own argument
+	 * with 'Unknown Object Identifier (Sub-id not found: (top) -> )', and a
+	 * shell command that dropped it would walk all of MIB-2 instead. */
+	if (trim((string) $oid) === '') {
+		cacti_log("WARNING: SNMP walk requested without an OID, Device:'$hostname'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+
+		return array();
+	}
+
 	$path_snmpbulkwalk = read_config_option('path_snmpbulkwalk');
 
 	if (snmp_get_method('walk', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
@@ -1505,7 +1514,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			$args[] = snmp_format_target_arg($hostname, $port);
 			$args[] = $oid;
 			cacti_snmp_debug_command($binary, $args);
-			cacti_exec($binary, $args, $temp_array, cacti_snmp_command_timeout($timeout_s, $retries));
+			cacti_exec($binary, $args, $temp_array, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 		} else {
 			$binary = read_config_option('path_snmpwalk');
 			$args   = array_merge(array('-OQnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')),
@@ -1518,7 +1527,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			$args[] = snmp_format_target_arg($hostname, $port);
 			$args[] = $oid;
 			cacti_snmp_debug_command($binary, $args);
-			cacti_exec($binary, $args, $temp_array, cacti_snmp_command_timeout($timeout_s, $retries));
+			cacti_exec($binary, $args, $temp_array, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
 		}
 
 		if (strpos(implode(' ', $temp_array), 'Timeout') !== false) {

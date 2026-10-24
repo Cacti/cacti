@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="../tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
     <testsuites>
         <testsuite name="PollerMapping">
-            <file>../tests/Unit/PollerMappingCacheTest.php</file>
+            <file>Unit/PollerMappingCacheTest.php</file>
+            <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

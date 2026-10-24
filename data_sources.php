@@ -78,6 +78,9 @@ switch (get_request_var('action')) {
 	case 'ds_enable':
 		ds_enable();
 		break;
+	case 'ds_repair':
+		ds_repair();
+		break;
 	case 'ds_remove':
 		ds_remove();
 
@@ -849,6 +852,89 @@ function ds_enable() {
 }
 
 /**
+ * Repairs the RRDfile for a Data Source so that it matches its Cacti
+ * definition.  The 'Apply Suggested Fixes' link in the Data Source Info mode
+ * invokes this action, which runs the same rrdtool tune recommendations that
+ * the Info mode displays: missing Data Sources are added ('DS:...'), extra Data
+ * Sources are removed ('DEL:...') and the type, heartbeat, minimum and maximum
+ * are corrected.  The repair only runs when the web server can write the
+ * RRDfile; otherwise the Info mode presents the commands to run by hand.
+ *
+ * @return void No value is returned.
+ */
+function ds_repair() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	/* ==================================================== */
+
+	$id = get_request_var('id');
+
+	if (!data_source_authorized($id)) {
+		raise_message('permission_denied');
+		header('Location: data_sources.php');
+
+		return;
+	}
+
+	$rrd_info = rrdtool_function_info($id);
+
+	if (!is_array($rrd_info) || !isset($rrd_info['rra']) || !cacti_sizeof($rrd_info['rra'])) {
+		raise_message('ds_repair', __('The RRDfile could not be read, so no repairs were performed.'), MESSAGE_LEVEL_ERROR);
+		header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
+
+		return;
+	}
+
+	$diff = rrdtool_cacti_compare($id, $rrd_info);
+
+	if (!isset($diff['tune']) || !cacti_sizeof($diff['tune'])) {
+		raise_message('ds_repair', __('No RRDfile repairs were necessary.'), MESSAGE_LEVEL_INFO);
+		header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
+
+		return;
+	}
+
+	$path = get_data_source_path($id, true);
+
+	if (!is_writeable($path)) {
+		raise_message('ds_repair', __('The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead.'), MESSAGE_LEVEL_ERROR);
+		header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
+
+		return;
+	}
+
+	$rrdtool_path = read_config_option('path_rrdtool');
+	$failures     = 0;
+
+	foreach ($diff['tune'] as $options) {
+		/* never execute a recommendation carrying control characters */
+		if (preg_match('/[\x00-\x1f\x7f]/', $options)) {
+			continue;
+		}
+
+		$command = $rrdtool_path . ' tune ' . $options;
+		$output  = rrdtool_execute('tune ' . $options, false, RRDTOOL_OUTPUT_RETURN_STDERR);
+
+		/* local storage returns empty output on success; the RRDtool proxy
+		   returns its raw "OK u:..." status line, so accept either as success */
+		if ($output === '' || (is_string($output) && strpos($output, 'OK u') !== false)) {
+			cacti_log("RRDfile repair command succeeded for DS[$id] Command[$command]", false, 'DSDEBUG');
+		} else {
+			cacti_log("ERROR: RRDfile repair command failed for DS[$id] Command[$command] Output[$output]", false, 'DSDEBUG');
+			$failures++;
+		}
+	}
+
+	if ($failures == 0) {
+		raise_message('ds_repair', __('All RRDfile repairs succeeded.'), MESSAGE_LEVEL_INFO);
+	} else {
+		raise_message('ds_repair', __('One or more RRDfile repairs failed.  See Cacti log for errors.'), MESSAGE_LEVEL_ERROR);
+	}
+
+	header('Location: data_sources.php?header=false&action=ds_edit&id=' . $id);
+}
+
+/**
  * Handles the DS edit. Used as part of Cacti's data sources functionality.
  *
  * @return void No value is returned.
@@ -1264,17 +1350,27 @@ function ds_edit() {
 				<td><?php
 				$rrd_info = rrdtool_function_info(get_request_var('id'));
 
-				if (cacti_sizeof($rrd_info['rra'])) {
+				if (is_array($rrd_info) && isset($rrd_info['rra']) && cacti_sizeof($rrd_info['rra'])) {
 					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
 
 					rrdtool_info2html($rrd_info, $diff);
 
 					if (cacti_sizeof($diff)) {
-						html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
+						$has_tune = isset($diff['tune']) && cacti_sizeof($diff['tune']);
+
+						/* offer a one-click repair when the web server can write
+						 * the RRDfile, otherwise present the commands to run by hand */
+						if ($has_tune && is_writeable(get_data_source_path(get_request_var('id'), true))) {
+							html_start_box(__('RRDtool Tune Info [ %s ]', '<a href="#" class="cactiPostAction linkEditMain" data-url="' . html_escape('data_sources.php?action=ds_repair&id=' . get_request_var('id')) . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '100%', true, '3', 'center', '');
+						} elseif ($has_tune) {
+							html_start_box(__('RRDtool Tune Info [ %s ]', __('Run Fix from Command Line')), '100%', true, '3', 'center', '');
+						} else {
+							html_start_box(__('RRDtool Tune Info'), '100%', true, '3', 'center', '');
+						}
 
 						rrdtool_tune($rrd_info['filename'], $diff, true);
 
-						html_end_box();
+						html_end_box(true, true);
 					}
 				}
 				?></td>

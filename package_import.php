@@ -514,26 +514,7 @@ function import_validate_public_key($xmlfile, $accept = false) {
  * @return bool True on success, false otherwise.
  */
 function package_validate_signature($xmlfile) {
-	global $config;
-
-	// Cacti public key first
-	$cacti_key = get_public_key();
-
-	$package_key = import_package_get_public_key($xmlfile);
-
-	// Other trusted keys next
-	$keys = array_rekey(
-		db_fetch_assoc('SELECT public_key FROM package_public_keys'),
-		'public_key', 'public_key'
-	);
-
-	$keys[$cacti_key] = $cacti_key;
-
-	if (in_array($package_key, $keys, true)) {
-		return true;
-	} else {
-		return false;
-	}
+	return import_validate_signature($xmlfile);
 }
 
 /**

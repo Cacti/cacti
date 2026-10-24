@@ -2647,6 +2647,32 @@ msgstr "모든 RRDfile 복구가 성공했습니다."
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "하나 이상의 RRDfile 복구가 실패했습니다. Cacti 로그에서 오류를 확인하십시오."
 
+#: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "모든 RRDfile 복구가 성공했습니다."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "복구 단계 [명령 줄에서 수정 프로그램 실행]"
+
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
 msgstr "복구 후 자동 데이터 소스 디버그가 다시 실행됩니다."

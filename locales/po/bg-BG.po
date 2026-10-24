@@ -2655,6 +2655,32 @@ msgstr "Всички RRDfile ремонти успяха."
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Един или повече RRDfile ремонти не успяха. Вижте Cacti log за грешки."
 
+#: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Всички RRDfile ремонти успяха."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Ремонтни стъпки [Изпълни Fix от командния ред]"
+
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
 msgstr "Автоматично отстраняване на грешки от източника на данни след повторно изпълнение."

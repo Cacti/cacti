@@ -11,14 +11,15 @@
  * Behavioural coverage for cacti_exec_log_describe(), the credential-redacting
  * formatter used on cacti_exec() failure paths. The contract is that an SNMP
  * secret never reaches the log in either the split (-c secret) or attached
- * (-csecret) form, that non-SNMP argv is passed through verbatim, and that a
- * Net-SNMP target (IPv4 host:port, plain IPv6 and zone-scoped IPv6) is parsed
- * into the Device[id] prefix without being mislabelled.
+ * (-csecret) form, that non-SNMP argv is passed through verbatim, and that the
+ * hostname the exec applies to (IPv4, DNS name, plain IPv6 or zone-scoped IPv6)
+ * is resolved into the Device[id] prefix. The hostname is passed in by the
+ * caller, it is not guessed from the Net-SNMP target argument.
  *
  * This suite's bootstrap is vendor/autoload.php only, so db_fetch_cell_prepared()
  * is not defined by Cacti here. A deterministic stub below maps a handful of
  * known hostnames to device ids, which lets the Device[id] resolution path run
- * without a database and makes a mis-parsed host observable as a missing prefix.
+ * without a database and makes an unresolved host observable as a missing prefix.
  */
 
 if (!function_exists('db_fetch_cell_prepared')) {
@@ -43,7 +44,7 @@ beforeAll(function () {
 test('split-form SNMP community is redacted and the device resolves', function () {
 	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
 		'-OfntevU', '-c', 'public', '-v', '2c', '-t', '1', '-r', '3', '10.1.2.3:161', '.1.3.6.1.2.1.1.3.0'
-	));
+	), '10.1.2.3');
 
 	expect($out)->toStartWith('Device[42] ')
 		->and($out)->toContain('-c [REDACTED]')
@@ -55,7 +56,7 @@ test('split-form SNMP community is redacted and the device resolves', function (
 test('attached-form SNMP community is redacted', function () {
 	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
 		'-cpublic', '-v', '2c', '10.1.2.3:161', '.1.3.6.1.2.1.1.3.0'
-	));
+	), '10.1.2.3');
 
 	expect($out)->toContain('-c[REDACTED]')
 		->and($out)->not->toContain('public')
@@ -86,33 +87,66 @@ test('non-SNMP argv is passed through verbatim with no redaction or device prefi
 		->and($out)->not->toContain('Device[');
 });
 
-test('host:port is disambiguated so the host resolves and the port is not part of the host', function () {
+test('a DNS hostname resolves while its host:port target is logged unchanged', function () {
 	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
 		'-v', '2c', '-c', 'private', 'router.example.com:16161', '.1.3.6.1.2.1.1.1.0'
-	));
+	), 'router.example.com');
 
 	expect($out)->toStartWith('Device[11] ')
 		->and($out)->toContain('router.example.com:16161')
 		->and($out)->not->toContain('private');
 });
 
-test('plain IPv6 targets resolve through the bracketed udp6 form', function () {
+test('a plain IPv6 hostname resolves while its bracketed udp6 target is logged unchanged', function () {
 	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
 		'-v', '2c', '-c', 'public', 'udp6:[2001:db8::1]:161', '.1.3.6.1.2.1.1.3.0'
-	));
+	), '2001:db8::1');
 
 	expect($out)->toStartWith('Device[7] ')
 		->and($out)->toContain('udp6:[2001:db8::1]:161')
 		->and($out)->not->toContain('public');
 });
 
+test('a bracketed IPv6 hostname, as the binary SNMP paths pass it, is looked up without its transport brackets', function () {
+	$hostname = cacti_format_ipv6_colon('2001:db8::1');
+
+	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
+		'-v', '2c', '-c', 'public', 'udp6:[2001:db8::1]:161', '.1.3.6.1.2.1.1.3.0'
+	), $hostname);
+
+	expect($hostname)->toBe('[2001:db8::1]')
+		->and($out)->toStartWith('Device[7] ')
+		->and($out)->toContain('udp6:[2001:db8::1]:161')
+		->and(cacti_exec_host_id('[fe80::1%eth0]'))->toBe(99)
+		->and(cacti_exec_host_id('[2001:db8::99]'))->toBe(0);
+});
+
 test('zone-scoped IPv6 keeps its zone id, resolves and still redacts the secret', function () {
 	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
 		'-cpublic', 'udp6:[fe80::1%eth0]:161', '.1.3.6.1.2.1.1.3.0'
-	));
+	), 'fe80::1%eth0');
 
 	expect($out)->toStartWith('Device[99] ')
 		->and($out)->toContain('udp6:[fe80::1%eth0]:161')
 		->and($out)->toContain('-c[REDACTED]')
 		->and($out)->not->toContain('public');
+});
+
+test('the device is not guessed from the target argument when no hostname is passed', function () {
+	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
+		'-v', '2c', '-c', 'public', '10.1.2.3:161', '.1.3.6.1.2.1.1.3.0'
+	));
+
+	expect($out)->not->toContain('Device[')
+		->and($out)->toStartWith('/usr/bin/snmpget ')
+		->and($out)->not->toContain('public');
+});
+
+test('a hostname that is not a device has no device prefix', function () {
+	$out = cacti_exec_log_describe('/usr/bin/snmpget', array(
+		'-v', '2c', '-c', 'public', '192.0.2.200:161', '.1.3.6.1.2.1.1.3.0'
+	), '192.0.2.200');
+
+	expect($out)->not->toContain('Device[')
+		->and($out)->toStartWith('/usr/bin/snmpget ');
 });

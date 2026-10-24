@@ -28,14 +28,26 @@ jobs:
     name: PHP ${{ matrix.php }} / ${{ matrix.database }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
     strategy:
       fail-fast: false
       matrix:
         php: ['8.2', '8.4']
         database: ['mariadb:10.11', 'mysql:8.4']
+        include:
+          - database: 'mariadb:10.11'
+            digest: '7db29378d4fdab73f8123bbc2b48905c90d1a4b00cf848b028f1e81e623257f2'
+          - database: 'mysql:8.4'
+            digest: '6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242'
     services:
       database:
-        image: ${{ matrix.database }}
+        # Copied by ci-images.yml on develop; services pull before any step can set a mirror.
+        image: ghcr.io/cacti/ci-images/${{ matrix.database }}@sha256:${{ matrix.digest }}
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           MYSQL_DATABASE: cacti_plugin_test
           MYSQL_ROOT_PASSWORD: fixture-password
@@ -51,7 +63,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup PHP
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: ${{ matrix.php }}
           coverage: none

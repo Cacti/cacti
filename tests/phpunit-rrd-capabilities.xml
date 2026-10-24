@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="../tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
     <testsuites>
         <testsuite name="RrdCapabilities">
-            <file>../tests/Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php</file>
-            <file>../tests/Unit/Core/Rrd/RrdVersionCheckReuseTest.php</file>
+            <file>Unit/Core/Rrd/GraphPollTimeTest.php</file>
+            <file>Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php</file>
+            <file>Unit/Core/Rrd/RrdVersionCheckReuseTest.php</file>
+            <file>Unit/Core/Rrd/RrdDataSourceDiffTest.php</file>
+            <file>Unit/Core/Rrd/RrdcheckDataSourceFindingsTest.php</file>
+            <file>Unit/Core/Rrd/RrdTuneRenderTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
