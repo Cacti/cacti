@@ -642,6 +642,16 @@ function data_template_is_stream(int $data_input_id) : bool {
 	return !empty($id) ? true : false;
 }
 
+function data_template_is_http(int $data_input_id) : bool {
+	$id = db_fetch_cell_prepared('SELECT id
+		FROM data_input
+		WHERE hash = "5d4a0c2b7f8e41a69b3c1e07d2f6a8b4"
+		AND id = ?',
+		[$data_input_id]);
+
+	return !empty($id) ? true : false;
+}
+
 function data_template_is_snmp(int $data_input_id) : bool {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM data_input
@@ -661,6 +671,7 @@ function template_edit() : void {
 	// ====================================================
 
 	$isSNMPGet = false;
+	$isHTTPGet = false;
 	$isStream  = false;
 
 	if (!ierv('id')) {
@@ -683,6 +694,7 @@ function template_edit() : void {
 
 		if (cacti_sizeof($template_data)) {
 			$isSNMPGet = data_template_is_snmp($template_data['data_input_id']);
+			$isHTTPGet = data_template_is_http($template_data['data_input_id']);
 			$isStream  = data_template_is_stream($template_data['data_input_id']);
 		}
 
@@ -827,7 +839,8 @@ function template_edit() : void {
 		$readOnly = false;
 	}
 
-	if (!$isSNMPGet && !$readOnly) {
+	// SNMP and HTTP gets write exactly one item per Data Source
+	if (!$isSNMPGet && !$isHTTPGet && !$readOnly) {
 		$add_button = !ierv('id') ? [[
 			'data_url' => 'data_templates.php?action=rrd_add&id=' . grv('id'),
 			'title'    => __('New')
