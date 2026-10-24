@@ -33,7 +33,7 @@ class_alias(\CactiHttpPoller::class, __NAMESPACE__ . '\CactiHttpPoller');
 class_alias(\CactiHttpPollItem::class, __NAMESPACE__ . '\CactiHttpPollItem');
 
 const HTTP_HASH = '5d4a0c2b7f8e41a69b3c1e07d2f6a8b4';
-const REFUSED   = 'http://127.0.0.1:1/stats';
+const REFUSED   = 'https://127.0.0.1:1/stats';
 
 $GLOBALS['fixture_rows']     = [];
 $GLOBALS['fixture_executes'] = [];
@@ -193,7 +193,7 @@ check($fields === ['http_url' => 'https://local.example/', 'http_timeout' => '2'
 // data source test: a refused endpoint fails, so automation does not create the graph
 $GLOBALS['fixture_template_dtd'] = 50;
 $GLOBALS['fixture_fields']       = [
-	50 => [['type_code' => 'http_url', 'value' => 'http://|host_hostname|:1/stats'], ['type_code' => 'http_json_pointer', 'value' => '/in']],
+	50 => [['type_code' => 'http_url', 'value' => 'https://|host_hostname|:1/stats'], ['type_code' => 'http_json_pointer', 'value' => '/in']],
 ];
 
 check(test_data_source(7, 2) === false, 'test_data_source accepted a refused endpoint');
