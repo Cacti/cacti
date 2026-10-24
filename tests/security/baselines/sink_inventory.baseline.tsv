@@ -71,6 +71,7 @@ cmd_exec	./lib/poller.php		$process = proc_open('exec ' . $cmd_full, $descriptor
 cmd_exec	./lib/poller.php	 *                                    of the proc_open() and proc_close() functions (php 4.3+)
 cmd_exec	./lib/poller.php	 * @param array  $pipes               The array of r/w pipes returned from proc_open()
 cmd_exec	./lib/poller.php	 * @param mixed  $proc_fd             The file descriptor returned from proc_open()
+cmd_exec	./lib/poller_script.php		$process = @proc_open($command, $descriptors, $pipes, null, $env);
 cmd_exec	./lib/rrd.php			$process = proc_open([$path, '-'], $descriptors, $pipes, null, null, ['bypass_shell' => true]);
 cmd_exec	./lib/rrdcheck.php		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/snmp.php			// exec() does not capture, so the walk output can never contain either.
@@ -198,6 +199,7 @@ fs_write	./lib/plugins.php				file_put_contents($tmpfile, $file_data);
 fs_write	./lib/poller.php												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php								file_put_contents($mypath, $contents);
+fs_write	./lib/poller_script.php		$stream = @fopen($url, 'rb', false, $context);
 fs_write	./lib/rrd.php			$written = file_put_contents($temporary, $contents, LOCK_EX);
 fs_write	./lib/spikekill.php			return file_put_contents($xmlfile, $output);
 fs_write	./package_import.php							file_put_contents($xmlfile, $data);
@@ -213,6 +215,7 @@ fs_write	./script_server.php		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php		define('STDOUT', fopen('php://stdout', 'w'));
 fs_write	./scripts/ss_net_snmp_disk_bytes.php				file_put_contents("$tmpdir/$tmpfile", $data);
 fs_write	./scripts/ss_net_snmp_disk_io.php				file_put_contents("$tmpdir/$tmpfile", $data);
+fs_write	./scripts/ss_webhits.php		$log = @fopen($log_path, 'rb');
 fs_write	./snmpagent_mibcachechild.php				file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./snmpagent_mibcachechild.php		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./support.php		$fp = @fopen($file, 'rb');
