@@ -124,6 +124,7 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 
 	upgrade_boost_process_table();
+	upgrade_http_data_input();
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
 	// to HASH unless USING BTREE is specified. Range/ORDER BY access against
@@ -712,6 +713,40 @@ function upgrade_to_1_3_0() : void {
  * cannot accept.  A child of an in-flight run records a 32 character run_id
  * and keeps its row.
  */
+/**
+ * upgrade_http_data_input - Add the system Data Input Method behind
+ * POLLER_ACTION_HTTP.  Rows are matched by hash so a re-run is harmless.
+ *
+ * @return void
+ */
+function upgrade_http_data_input() : void {
+	$hash = '5d4a0c2b7f8e41a69b3c1e07d2f6a8b4';
+
+	$fields = [
+		'c820554f5bb571ea8623c537e474d0ba' => ['Endpoint URL', 'url', 1, 'http_url', '^https?:', ''],
+		'f70df4b13a7e8d8a4f5747367f35e4b9' => ['JSON Pointer', 'json_pointer', 2, 'http_json_pointer', '^(|/.*)$', 'on'],
+		'adce4cbc4b8e0cbfa6523aeef61d72ad' => ['Scale Factor', 'scale', 3, 'http_scale', '^(|-?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][-+]?[0-9]+)?)$', 'on'],
+		'c0375ea5153e802f09700bb54cce49b5' => ['Timeout (seconds)', 'timeout', 4, 'http_timeout', '^(|[0-9]+[.]?[0-9]*|[.][0-9]+)$', 'on'],
+	];
+
+	db_install_execute("INSERT INTO data_input (hash, name, input_string, type_id)
+		SELECT ?, 'Get HTTP JSON Data', '', ?
+		FROM DUAL
+		WHERE NOT EXISTS (SELECT 1 FROM data_input WHERE hash = ?)",
+		[$hash, DATA_INPUT_TYPE_HTTP, $hash]);
+
+	$data_input_id = db_fetch_cell_prepared('SELECT id FROM data_input WHERE hash = ?', [$hash]);
+
+	foreach ($fields as $field_hash => [$name, $data_name, $sequence, $type_code, $regexp_match, $allow_nulls]) {
+		db_install_execute("INSERT INTO data_input_fields
+			(hash, data_input_id, name, data_name, input_output, update_rra, sequence, type_code, regexp_match, allow_nulls)
+			SELECT ?, ?, ?, ?, 'in', '', ?, ?, ?, ?
+			FROM DUAL
+			WHERE NOT EXISTS (SELECT 1 FROM data_input_fields WHERE hash = ?)",
+			[$field_hash, $data_input_id, $name, $data_name, $sequence, $type_code, $regexp_match, $allow_nulls, $field_hash]);
+	}
+}
+
 function upgrade_boost_process_table() : void {
 	if (!db_table_exists('poller_output_boost_processes')) {
 		db_install_execute('CREATE TABLE `poller_output_boost_processes` (
