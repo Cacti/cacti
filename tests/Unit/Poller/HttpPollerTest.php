@@ -19,7 +19,12 @@
 
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\HttpClient\Response\ResponseStream;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
+use Symfony\Contracts\HttpClient\ResponseStreamInterface;
 
 require_once dirname(__DIR__, 3) . '/lib/CactiHttpPoller.php';
 
@@ -271,29 +276,29 @@ test('link-local and metadata destinations are refused while private networks st
 	$client = new NoPrivateNetworkHttpClient(new MockHttpClient(fn () => new MockResponse('{"v":1}')), CactiHttpPoller::blockedSubnets());
 
 	$items = [
-		new CactiHttpPollItem(1, 1, 'v', 'http://169.254.169.254/latest/meta-data', '/v'),
-		new CactiHttpPollItem(1, 2, 'v', 'http://[fe80::1]/stats', '/v'),
-		new CactiHttpPollItem(1, 5, 'v', 'http://[::ffff:169.254.169.254]/latest', '/v'),
-		new CactiHttpPollItem(1, 6, 'v', 'http://[64:ff9b::a9fe:a9fe]/latest', '/v'),
-		new CactiHttpPollItem(1, 7, 'v', 'http://100.100.100.200/latest', '/v'),
-		new CactiHttpPollItem(1, 8, 'v', 'http://[::ffff:100.100.100.200]/latest', '/v'),
-		new CactiHttpPollItem(1, 9, 'v', 'http://[64:ff9b::c000:c0]/latest', '/v'),
-		new CactiHttpPollItem(1, 3, 'v', 'http://10.0.0.5/stats', '/v'),
-		new CactiHttpPollItem(1, 4, 'v', 'http://127.0.0.1:9100/stats', '/v'),
+		new CactiHttpPollItem(1, 1, 'v', 'https://169.254.169.254/latest/meta-data', '/v'),
+		new CactiHttpPollItem(1, 2, 'v', 'https://[fe80::1]/stats', '/v'),
+		new CactiHttpPollItem(1, 5, 'v', 'https://[::ffff:169.254.169.254]/latest', '/v'),
+		new CactiHttpPollItem(1, 6, 'v', 'https://[64:ff9b::a9fe:a9fe]/latest', '/v'),
+		new CactiHttpPollItem(1, 7, 'v', 'https://100.100.100.200/latest', '/v'),
+		new CactiHttpPollItem(1, 8, 'v', 'https://[::ffff:100.100.100.200]/latest', '/v'),
+		new CactiHttpPollItem(1, 9, 'v', 'https://[64:ff9b::c000:c0]/latest', '/v'),
+		new CactiHttpPollItem(1, 3, 'v', 'https://10.0.0.5/stats', '/v'),
+		new CactiHttpPollItem(1, 4, 'v', 'https://127.0.0.1:9100/stats', '/v'),
 	];
 
 	$errors    = [];
 	$documents = (new CactiHttpPoller($client))->fetch($items, $errors);
 
-	expect(array_keys($documents))->toBe(['1 http://10.0.0.5/stats', '1 http://127.0.0.1:9100/stats'])
+	expect(array_keys($documents))->toBe(['1 https://10.0.0.5/stats', '1 https://127.0.0.1:9100/stats'])
 		->and(array_keys($errors))->toBe([
-			'1 http://169.254.169.254/latest/meta-data',
-			'1 http://[fe80::1]/stats',
-			'1 http://[::ffff:169.254.169.254]/latest',
-			'1 http://[64:ff9b::a9fe:a9fe]/latest',
-			'1 http://100.100.100.200/latest',
-			'1 http://[::ffff:100.100.100.200]/latest',
-			'1 http://[64:ff9b::c000:c0]/latest',
+			'1 https://169.254.169.254/latest/meta-data',
+			'1 https://[fe80::1]/stats',
+			'1 https://[::ffff:169.254.169.254]/latest',
+			'1 https://[64:ff9b::a9fe:a9fe]/latest',
+			'1 https://100.100.100.200/latest',
+			'1 https://[::ffff:100.100.100.200]/latest',
+			'1 https://[64:ff9b::c000:c0]/latest',
 		]);
 });
 
@@ -316,4 +321,46 @@ test('configured credentials are redacted even when they would end a url match',
 	(new CactiHttpPoller($client))->fetch([new CactiHttpPollItem(1, 1, 'v', $url)], $errors);
 
 	expect($errors["1 $url"])->toBe('Failed for "https://device.example/x".');
+});
+
+test('a scale that is not finite is rejected', function () {
+	expect(fn () => new CactiHttpPollItem(1, 1, 'v', 'https://device.example/', '/v', INF))->toThrow(InvalidArgumentException::class);
+});
+
+test('requests that fail before they start are reported', function () {
+	$client = new MockHttpClient(function () {
+		throw new TransportException('Unsupported option for "https://device.example/x?key=def"');
+	});
+
+	$errors    = [];
+	$documents = (new CactiHttpPoller($client))->fetch([new CactiHttpPollItem(1, 1, 'v', 'https://device.example/x?key=def')], $errors);
+
+	expect($documents)->toBe([])
+		->and($errors)->toBe(['1 https://device.example/x?key=def' => 'Unsupported option for "https://device.example/x"']);
+});
+
+test('a stream that ends without settling a response cannot spin', function () {
+	$inner  = new MockHttpClient(fn () => new MockResponse('{"v":1}'));
+	$client = new class ($inner) implements HttpClientInterface {
+		public function __construct(private readonly HttpClientInterface $inner) {
+		}
+
+		public function request(string $method, string $url, array $options = []) : ResponseInterface {
+			return $this->inner->request($method, $url, $options);
+		}
+
+		public function stream(ResponseInterface|iterable $responses, ?float $timeout = null) : ResponseStreamInterface {
+			return new ResponseStream((static fn () : Generator => yield from [])());
+		}
+
+		public function withOptions(array $options) : static {
+			return $this;
+		}
+	};
+
+	$errors    = [];
+	$documents = (new CactiHttpPoller($client))->fetch([new CactiHttpPollItem(1, 1, 'v', 'https://device.example/x')], $errors);
+
+	expect($documents)->toBe([])
+		->and($errors)->toBe(['1 https://device.example/x' => 'Response did not complete']);
 });
