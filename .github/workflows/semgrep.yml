@@ -83,6 +83,8 @@ jobs:
 
       - name: Advisory differential scan (non-blocking)
         continue-on-error: true
+        env:
+          BASE_SHA: ${{ steps.baseline.outputs.sha }}
         run: |
           set -euo pipefail
 
@@ -97,7 +99,7 @@ jobs:
                 ;;
             esac
           done < <(git diff --name-only --diff-filter=ACMR \
-            "${{ steps.baseline.outputs.sha }}" HEAD -- '*.php')
+            "$BASE_SHA" HEAD -- '*.php')
 
           if (( ${#targets[@]} == 0 )); then
             empty_target="$(mktemp --suffix=.php "${RUNNER_TEMP}/semgrep-empty.XXXXXX")"
@@ -120,7 +122,10 @@ jobs:
 
       - name: Upload findings to code scanning
         uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
-        if: ${{ always() && hashFiles('semgrep.sarif') != '' }}
+        # Fork PRs get a read-only GITHUB_TOKEN without security-events: write,
+        # so the upload would fail. Push and merge-group runs have no
+        # pull_request payload, which this comparison treats as not a fork.
+        if: ${{ always() && hashFiles('semgrep.sarif') != '' && github.event.pull_request.head.repo.fork != true }}
         with:
           sarif_file: semgrep.sarif
           category: cacti-semgrep
