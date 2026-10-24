@@ -157,6 +157,18 @@ function library_forms(): void {
 		$dom                         = library_form_dom(static fn () => form_file('upload', 30, '.xml'));
 		library_expect($dom->evaluate('string(//input/@accept)'), '.xml', 'File picker retains its supported extension');
 		library_expect(str_contains($dom->evaluate('string(//input/@class)'), 'txtErrorTextBox'), true, 'Failed file input exposes validation state');
+		$dom = library_form_dom(static fn () => form_confirm_buttons('host.php?action=delete&id=17', 'host.php'));
+		library_expect($dom->evaluate('count(//button[@value="cancel"])'), 1.0, 'Confirmation retains its cancel control');
+		library_expect($dom->evaluate('count(//button[@value="delete"])'), 1.0, 'Confirmation retains its delete control');
+		library_expect($dom->evaluate('string(//button[@value="cancel"]/@onclick)'), 'cactiReturnTo("' . CACTI_PATH_URL . 'host.php")', 'Cancel returns to the original page');
+		library_expect($dom->evaluate('string(//button[@value="delete"]/@onclick)'), 'cactiReturnTo("' . CACTI_PATH_URL . 'host.php?action=delete&id=17&confirm=true")', 'Confirmation preserves query parameters and adds explicit consent');
+		$missing = 'coverage_missing_control_' . bin2hex(random_bytes(4));
+		$field   = ['method' => 'missing'];
+		$dom     = library_form_dom(static function () use ($missing, &$field): void {
+			draw_edit_control($missing, $field);
+		});
+		library_expect($dom->evaluate('count(//input | //select | //textarea)'), 0.0, 'An invalid field definition does not render a misleading control');
+		library_expect(str_contains(file_get_contents(read_config_option('path_cactilog')), 'Field Name: ' . $missing . ' includes Method: missing does not include a value'), true, 'Invalid field definitions report their name and method in the log');
 		$color = (int) db_fetch_cell('SELECT id FROM colors ORDER BY id LIMIT 1');
 		$dom   = library_form_dom(static fn () => form_color_dropdown('entry', $color, 'None', 0));
 		library_expect($dom->evaluate('string(//option[@selected]/@value)'), (string) $color, 'Color dropdown preserves the stored color identity');
