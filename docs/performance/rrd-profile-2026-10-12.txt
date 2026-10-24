@@ -1,0 +1,42 @@
+RRDtool performance profile, 2026-10-12
+
+The measured improvement is graph-option preparation: 257.90 to 70.65 microseconds per call, 72.6% less time, with PHP CLI OPcache enabled. These timings describe the tested component, not complete graph rendering or production polling throughput.
+
+Problem and change
+
+Graph-option construction included global_arrays.php on every call even though Cacti's normal bootstrap had loaded its image-format map. The include rebuilt unrelated arrays and translated their labels. Reuse the loaded map, with the original include retained for callers whose map is absent.
+
+GraphOptions also configured the same OptionsResolver rules on every call. Retain one configured resolver per PHP process. Symfony clones it for each resolution; input values and plugin options are never cached. Successful, failed and empty resolutions remain independent.
+
+Method
+
+Compare the common develop ancestor d49126df58c8290f8c788537cb2f179cf9e2cd14, PR #8012 at c3019e2b6b6ef07e3280e8298965d2ac0972862a, and the optimized source hashes in the adjacent JSON record. Run five rotating rounds to reduce ordering bias. PHP 8.5.11, RRDtool 1.11.0, macOS arm64, CLI OPcache enabled, JIT disabled. Each checkout uses its own locked Composer dependencies. Timings exclude bootstrap, warm-up and fixture creation.
+
+Median time per operation, microseconds
+
+Operation                      Develop ancestor   Rewrite   Optimized
+Graph options with validation            242.33    257.90       70.65
+Command construction                        0.21      1.39        1.39
+Persistent update                          44.04     45.70       46.55
+Persistent batch, per update               41.67     42.97       42.28
+Local process, per update               12084.62  12140.19    12106.94
+
+Graph timing includes validation only on revisions that contain the typed validator. The graph command digest matches across revisions. Old command construction concatenates a string; the rewrite validates and quotes isolated arguments, so that row includes additional security work. Persistent-update and local-update modes execute the public rrdtool_function_update function against a disposable RRD, verify the successful update count, and confirm the final timestamp and value 42. A batch contains 3,000 timestamps for one fixture RRD.
+
+The isolated graph-options profile records 600 repeated global array includes before the fix and none afterwards, with one bootstrap load in either case. Xdebug 3.5.3 profiling runs are separate from all reported uninstrumented timings. Raw profiles are retained outside the repository at /tmp/cacti-rrd-profile-evidence-20261012.
+
+Persistent and local updates show no established improvement from the graph changes. Keep the existing persistent process in the polling path: a fresh process per update is substantially more expensive in this fixture. LocalRrdTransport is available as a component but is not used by the procedural poller path. Do not substitute its standalone timings for poller measurements.
+
+Command construction was also exercised at 150,000, 1,000,000 and 2,500,000 iterations. Peak PHP allocated memory remains 6 MiB in these bounded synthetic loops. They do not load millions of data sources or measure network, database or production disk throughput. The JSON includes raw samples, ranges, counts and source hashes.
+
+Reproduce from this checkout
+
+mise exec php@8.5.9 -- php -d opcache.enable_cli=1 tests/performance/profile_rrd.php /path/to/checkout graph-options 2000 /path/to/rrdtool
+mise exec php@8.5.9 -- php -d opcache.enable_cli=1 tests/performance/profile_rrd.php /path/to/checkout persistent-update 1000 /path/to/rrdtool
+mise exec php@8.5.9 -- php -d opcache.enable_cli=1 tests/performance/profile_rrd.php /path/to/checkout persistent-batch 3000 /path/to/rrdtool
+
+Install each checkout's locked dependencies first. The benchmark uses test-bootstrap configuration and creates and deletes only its own temporary RRD files. No live database, network poller, proxy latency or complete graph rendering is measured. A representative deployed workload is still required for production throughput claims.
+
+Validation
+
+Full Unit suite: 2,499 passed, four existing skips, 7,533 assertions on PHP 8.5.11. Additional cached/missing-metadata parity cases and independent-resolution regression: seven tests passed. Complete command and reference mutations agree with the existing golden cases across RRDtool 1.3, 1.4 and 1.8 settings. The lib/Rrd component coverage gate remains 100%. Full PHPStan level 8, repository formatter, sink inventory and architectural hotspot guards pass. The procedural graph module is validated by characterization and is excluded from the typed-component coverage percentage.
