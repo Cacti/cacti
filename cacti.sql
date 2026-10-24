@@ -1144,6 +1144,7 @@ INSERT INTO data_input VALUES (9,'cc948e4de13f32b6aea45abaadd287a3','Unix - Get 
 INSERT INTO data_input VALUES (10,'8bd153aeb06e3ff89efc73f35849a7a0','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>',1, 0, 0);
 INSERT INTO data_input VALUES (11,'80e9e4c4191a5da189ae26d0e237f015','Get Script Data (Indexed)','',4, 0, 0);
 INSERT INTO data_input VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script Server Data (Indexed)','',6, 0, 0);
+INSERT INTO data_input VALUES (13,'5d4a0c2b7f8e41a69b3c1e07d2f6a8b4','Get HTTP JSON Data','',9, 0, 0);
 
 --
 -- Table structure for table `data_input_data`
@@ -1292,6 +1293,10 @@ INSERT INTO `data_input_fields` VALUES (43,'feda162701240101bc74148415ef415a',1,
 INSERT INTO `data_input_fields` VALUES (44,'2cf7129ad3ff819a7a7ac189bee48ce8',2,'SNMP Authentication Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','');
 INSERT INTO `data_input_fields` VALUES (45,'6b13ac0a0194e171d241d4b06f913158',2,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','');
 INSERT INTO `data_input_fields` VALUES (46,'3a33d4fc65b8329ab2ac46a36da26b72',2,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','');
+INSERT INTO `data_input_fields` VALUES (47,'c820554f5bb571ea8623c537e474d0ba',13,'Endpoint URL','url','in','',1,'http_url','^https?:','');
+INSERT INTO `data_input_fields` VALUES (48,'f70df4b13a7e8d8a4f5747367f35e4b9',13,'JSON Pointer','json_pointer','in','',2,'http_json_pointer','^(|/.*)$','on');
+INSERT INTO `data_input_fields` VALUES (49,'adce4cbc4b8e0cbfa6523aeef61d72ad',13,'Scale Factor','scale','in','',3,'http_scale','^(|-?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][-+]?[0-9]+)?)$','on');
+INSERT INTO `data_input_fields` VALUES (50,'c0375ea5153e802f09700bb54cce49b5',13,'Timeout (seconds)','timeout','in','',4,'http_timeout','^(|[0-9]+[.]?[0-9]*|[.][0-9]+)$','on');
 
 --
 -- Table structure for table `data_local`
