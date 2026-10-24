@@ -3269,9 +3269,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 				$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', $polling_interval, $cdef_string);
 
-				$cdef_string = str_replace('CURRENT_DATA_SOURCE',
-					generate_graph_def_name($cf_ds_cache[$cf_ds_key] ?? 0),
-					$cdef_string);
+				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name($cf_ds_cache[$cf_ds_key] ?? 0), $cdef_string);
 
 				// allow automatic rate calculations on raw gauge data
 				$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS_PI', $polling_interval, $cdef_string);
