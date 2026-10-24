@@ -6,10 +6,13 @@ name: Security Review
 # blocking the PR.
 #
 # Requires the ANTHROPIC_API_KEY repository secret to be configured.
-# For fork PRs the secret is not available; the job skips gracefully.
+# Fork PRs are excluded explicitly. Head files are read only as Git blobs.
+# The workflow, runner, and prompt always come from the trusted base revision.
 
-on:
-  pull_request:
+# This privileged trigger is needed for the API key and PR comments. Checkout
+# is restricted to the trusted event SHA; PR blobs are never checked out or executed.
+on: # zizmor: ignore[dangerous-triggers] -- trusted base runner, same-repository PRs, no head-code execution
+  pull_request_target:
     branches: [develop]
     types: [opened, synchronize, reopened]
 
@@ -27,156 +30,45 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: read
       issues: write   # security_review.py posts via the issues comments endpoint
     # Skip drafts. The secret check cannot live in a job-level `if:` because the
     # `secrets` context is not available there; it is evaluated per step via env.
-    if: github.event.pull_request.draft == false
+    if: >-
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
     env:
       HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
 
     steps:
-      - name: Checkout
+      - name: Checkout trusted base
         if: env.HAS_KEY == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          # For pull_request_target, github.sha is the trusted target revision.
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Fetch base branch
+      # Fetch objects only. No head checkout, submodules, dependencies, caches,
+      # textconv, external diff drivers, or scripts from the pull request.
+      - name: Collect PR data using the trusted base runner
         if: env.HAS_KEY == 'true'
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git fetch origin "${GITHUB_BASE_REF}" --depth=1
-
-      - name: Collect PR diff
-        if: env.HAS_KEY == 'true'
-        run: |
-          set -euo pipefail
-          umask 077
-          mkdir -m 700 "$RUNNER_TEMP/cacti-security-review"
-          install -m 0600 /dev/null "$RUNNER_TEMP/cacti-security-review/pr.diff"
-          git diff "origin/${GITHUB_BASE_REF}...HEAD" > "$RUNNER_TEMP/cacti-security-review/pr.diff"
-          printf 'Diff: %d bytes\n' "$(wc -c < "$RUNNER_TEMP/cacti-security-review/pr.diff")"
-
-      - name: Collect changed PHP files
-        id: changed
-        if: env.HAS_KEY == 'true'
-        run: |
-          set -euo pipefail
-          git diff --name-only "origin/${GITHUB_BASE_REF}...HEAD" \
-            | grep '\.php$' \
-            | grep -v '^include/vendor/' \
-            | grep -v '^locales/' \
-            > /tmp/changed_php_files.txt || true
-
-          count=$(wc -l < /tmp/changed_php_files.txt)
-          printf 'Changed PHP files: %d\n' "$count"
-          printf 'count=%d\n' "$count" >> "$GITHUB_OUTPUT"
-
-      - name: Run grep patterns on changed files
-        if: env.HAS_KEY == 'true'
-        run: |
-          set -euo pipefail
-          umask 077
-          out="$RUNNER_TEMP/cacti-security-review/grep_hits.txt"
-          install -m 0600 /dev/null "$out"
-
-          if [[ ! -s /tmp/changed_php_files.txt ]]; then
-            printf '(no PHP files changed)\n' > "$out"
-            exit 0
-          fi
-
-          mapfile -t files < /tmp/changed_php_files.txt
-
-          # Keep only files that still exist (deleted files cannot be grepped)
-          existing=()
-          for f in "${files[@]}"; do
-            [[ -f "$f" ]] && existing+=("$f")
-          done
-
-          if [[ "${#existing[@]}" -eq 0 ]]; then
-            printf '(all changed PHP files were deleted)\n' > "$out"
-            exit 0
-          fi
-
-          run_grep() {
-            local label="$1"; shift
-            printf '=== %s ===\n' "$label" >> "$out"
-            grep -nP "$@" "${existing[@]}" >> "$out" 2>/dev/null || true
-            printf '\n' >> "$out"
-          }
-
-          run_grep "SQL sinks (db_query / db_execute / db_fetch_*)" \
-            'db_(query|execute|fetch_assoc|fetch_row|fetch_cell)\s*\('
-
-          # shellcheck disable=SC2016
-          run_grep "String concatenation into SQL keywords" \
-            '"(SELECT|INSERT|UPDATE|DELETE|WHERE|FROM|ORDER BY|LIMIT).*\.\s*\$'
-
-          # shellcheck disable=SC2016
-          run_grep "Direct superglobal access (\$_GET / \$_POST / \$_REQUEST)" \
-            '\$_(GET|POST|REQUEST|COOKIE|FILES)\s*\['
-
-          run_grep "get_nfilter_request_var (unfiltered taint)" \
-            'get_nfilter_request_var\s*\('
-
-          # shellcheck disable=SC2016
-          run_grep "echo / print with apparent variable output" \
-            '(echo|print)\s+\$'
-
-          run_grep "Command execution sinks" \
-            '\b(exec|system|shell_exec|passthru|proc_open|popen)\s*\('
-
-          # shellcheck disable=SC2016
-          run_grep "Dynamic include / require" \
-            '\b(include|require)(_once)?\s+\$'
-
-          run_grep "File write sinks" \
-            '\b(file_put_contents|move_uploaded_file|fopen|rename|copy)\s*\('
-
-          run_grep "Archive extraction" \
-            '\b(extractTo|ZipArchive|PharData)\b'
-
-          # shellcheck disable=SC2016
-          run_grep "Missing realpath / basename on user paths" \
-            '(include|require|fopen|file_get_contents)\s*\(\s*\$(?!real_path|resolved)'
-
-          printf 'Grep complete: %d lines\n' "$(wc -l < "$out")"
-
-      - name: Collect hotspot file excerpts
-        if: env.HAS_KEY == 'true'
-        run: |
-          set -euo pipefail
-          umask 077
-          out="$RUNNER_TEMP/cacti-security-review/hotspot_contents.txt"
-          install -m 0600 /dev/null "$out"
-
-          # Files with a history of security issues in Cacti advisories
-          hotspots=(
-            "auth/auth_login.php"
-            "auth/changepassword.php"
-            "lib/import.php"
-            "lib/package.php"
-            "lib/plugins.php"
-            "lib/auth.php"
-            "managers.php"
-            "help.php"
-            "install/index.php"
-          )
-
-          for f in "${hotspots[@]}"; do
-            if [[ -f "$f" ]]; then
-              {
-                printf '=== %s ===\n' "$f"
-                # First 120 lines is enough to see includes, auth guards, input handling
-                head -n 120 "$f"
-                printf '\n'
-              } >> "$out"
-            fi
-          done
-
-          printf 'Hotspot content: %d bytes\n' "$(wc -c < "$out")"
+          [[ "$PR_BASE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$PR_HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]
+          # Read-only authentication is scoped to this command; checkout does
+          # not leave credentials available to the review runner.
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" \
+            fetch --no-recurse-submodules --no-tags origin "$PR_HEAD_SHA"
+          unset auth GH_TOKEN
+          python3 .github/scripts/collect_security_review.py
 
       - name: Run security review
         if: env.HAS_KEY == 'true'
