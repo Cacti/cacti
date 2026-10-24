@@ -37,6 +37,7 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiHttpPoller.php');
 
 global $remote_db_cnn_id;
 
@@ -404,12 +405,27 @@ function poll_for_data() : mixed {
 		return [];
 	}
 
-	$i = 0;
+	$i            = 0;
+	$http_outputs = [];
 
 	if (cacti_sizeof($local_data_ids)) {
 		foreach ($local_data_ids as $local_data_id) {
 			input_validate_input_number($local_data_id, 'local_data_id');
+		}
 
+		// fetch every HTTP endpoint up front so items sharing one cost one request
+		$http_rows = db_fetch_assoc_prepared('SELECT *
+			FROM poller_item
+			WHERE host_id = ?
+			AND action = ?
+			AND local_data_id IN (' . implode(', ', array_fill(0, cacti_sizeof($local_data_ids), '?')) . ')',
+			array_merge([$host_id, POLLER_ACTION_HTTP], array_values($local_data_ids)));
+
+		if (cacti_sizeof($http_rows)) {
+			$http_outputs = CactiHttpPoller::create((int) read_config_option('http_poller_concurrency'))->collect($http_rows);
+		}
+
+		foreach ($local_data_ids as $local_data_id) {
 			$items = db_fetch_assoc_prepared('SELECT *
 				FROM poller_item
 				WHERE host_id = ?
@@ -539,6 +555,12 @@ function poll_for_data() : mixed {
 
 								$return_value = proc_close($cactiphp);
 							}
+
+							break;
+						case POLLER_ACTION_HTTP:
+							$return[$i]['value']         = $http_outputs[CactiHttpPoller::rowKey($item)] ?? 'U';
+							$return[$i]['rrd_name']      = $item['rrd_name'];
+							$return[$i]['local_data_id'] = $local_data_id;
 
 							break;
 					}
