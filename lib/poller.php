@@ -66,6 +66,15 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
 	// execute using php process
 	if ($using_proc_function == 1) {
 		if (is_resource($proc_fd)) {
+			/* The Script Server reads one line per request. A longer line, or one
+			 * with an embedded line break, would leave a fragment behind that the
+			 * server reads as the next request, so refuse it here. */
+			if (strlen($command) > SCRIPT_SERVER_MAX_REQUEST_LENGTH || strpbrk($command, "\r\n") !== false) {
+				cacti_log('WARNING: Script Server request of ' . strlen($command) . ' bytes exceeds the ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' byte limit or contains a line break, returning U', false, 'POLLER');
+
+				return 'U';
+			}
+
 			/* $pipes now looks like this:
 			 * 0 => writeable handle connected to child stdin
 			 * 1 => readable handle connected to child stdout
