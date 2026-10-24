@@ -296,17 +296,13 @@ function clog_view_logfile() : void {
 			$header  = '';
 
 			if (gnrv('action') == 'purge') {
-				$message = __('Click \'Continue\' to Purge the Log File \'' .
-					htmle(basename($logfile)) .
-					'\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+				$message = __('Click \'Continue\' to Purge the Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
 				$action  = 'purge_continue';
 				$button  = __esc('Purge');
 				$title   = __esc('Purge Log');
 				$header  = $logfile_actions[LOG_ACTION_PURGE];
 			} elseif (gnrv('action') == 'rotate') {
-				$message = __('Click \'Continue\' to Rotate the existing Log File \'' .
-					htmle(basename($logfile)) .
-					'\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+				$message = __('Click \'Continue\' to Rotate the existing Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
 				$action  = 'rotate_continue';
 				$button  = __esc('Rotate');
 				$title   = __esc('Rotate Log');
@@ -325,9 +321,7 @@ function clog_view_logfile() : void {
 			<tr class='saveRow'>
 				<td colspan='2' class='right'>
 					<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __esc('Cancel') . "</button>
-					<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='$title'>" .
-						__esc('Continue') .
-						"</button>
+					<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='$title'>" . __esc('Continue') . "</button>
 					<script type='text/javascript'>
 					$('#pc').click(function() {
 						strURL = location.pathname+'?$action=1&filename=" . basename($logfile) . "';
@@ -368,15 +362,7 @@ function clog_view_logfile() : void {
 
 	$reverse = grv('reverse');
 
-	$logcontents = tail_file($logfile,
-		$number_of_lines,
-		grv('message_type'),
-		grv('rfilter'),
-		$page_nr,
-		$total_rows,
-		grv('matches'),
-		$should_expand,
-		$reverse);
+	$logcontents = tail_file($logfile, $number_of_lines, grv('message_type'), grv('rfilter'), $page_nr, $total_rows, grv('matches'), $should_expand, $reverse);
 
 	if (grv('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
@@ -403,15 +389,7 @@ function clog_view_logfile() : void {
 
 	$base_url = CACTI_PATH_URL . 'clog.php';
 
-	$nav = html_nav_bar($base_url,
-		MAX_DISPLAY_PAGES,
-		$page_nr,
-		$number_of_lines,
-		$total_rows,
-		1,
-		__('Entries'),
-		'page',
-		'main');
+	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 1, __('Entries'), 'page', 'main');
 
 	print $nav;
 
