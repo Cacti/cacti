@@ -943,19 +943,19 @@ function data_query_item_edit() : void {
 					<table role='presentation'>
 						<tr>
 							<td class='nowrap'>
-								<label for='svds_<?php print $data_template['id']; ?>_field'><?php print __('Field Name'); ?></label>
+								<label for='svds_<?php print (int) $data_template['id']; ?>_field'><?php print __('Field Name'); ?></label>
 							</td>
 							<td>
-								<input type='text' class='svds_field ui-state-default ui-corner-all' id='svds_<?php print $data_template['id']; ?>_field' size='15'>
+								<input type='text' class='svds_field ui-state-default ui-corner-all' id='svds_<?php print (int) $data_template['id']; ?>_field' size='15'>
 							</td>
 							<td class='nowrap'>
-								<label for='svds_<?php print $data_template['id']; ?>_text'><?php print __('Suggested Value'); ?></label>
+								<label for='svds_<?php print (int) $data_template['id']; ?>_text'><?php print __('Suggested Value'); ?></label>
 							</td>
 							<td>
-								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print $data_template['id']; ?>_text' size='60'>
+								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print (int) $data_template['id']; ?>_text' size='60'>
 							</td>
 							<td>
-								<button type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print $data_template['id']; ?>_x' value='add' title='<?php print __('Add Data Source Name Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
+								<button type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print (int) $data_template['id']; ?>_x' value='add' title='<?php print __('Add Data Source Name Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
 							</td>
 						</tr>
 					</table>
