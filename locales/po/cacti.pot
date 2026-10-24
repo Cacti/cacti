@@ -243,6 +243,7 @@ msgstr ""
 
 #: aggregate_graphs.php graphs.php host.php lib/html_graph.php
 #: lib/html_reports.php
+#: graph_realtime.php:417
 msgid "Timespan"
 msgstr ""
 
@@ -503,6 +504,7 @@ msgstr ""
 
 #: aggregate_graphs.php graph_templates.php graphs.php host_templates.php
 #: lib/html_graph.php lib/spikekill.php plugins.php
+#: graph_realtime.php:441
 msgid "Size"
 msgstr ""
 
@@ -745,6 +747,7 @@ msgid "Change Password"
 msgstr ""
 
 #: auth_changepassword.php auth_login.php lib/functions.php user_admin.php
+#: auth_resetpassword.php:331
 msgid "Username"
 msgstr ""
 
@@ -24617,6 +24620,7 @@ msgid "Cacti System Utilities"
 msgstr ""
 
 #: utilities.php
+#: graph_realtime.php:427
 msgid "Refresh Interval"
 msgstr ""
 
