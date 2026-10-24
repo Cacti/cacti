@@ -30,6 +30,15 @@ function library_authentication(): void {
 			library_expect($result->user, null, 'Failed authentication does not return an account');
 		}
 
+		set_config_option('secpass_lockfailed', '0');
+		$error     = false;
+		$error_msg = '';
+		library_expect($provider->authenticate('coverage_local', 'wrong password')->success, false, 'Disabling lockout never permits an invalid credential');
+		library_expect($error, true, 'Failed login still sets the authentication error without lockout');
+		library_expect($error_msg, __('Access Denied! Login Failed.'), 'Failed login reports the normal error without lockout');
+		library_expect((int) db_fetch_cell_prepared('SELECT failed_attempts FROM user_auth WHERE id = ?', [$user]), 0, 'Disabled lockout leaves the failure counter unchanged');
+		set_config_option('secpass_lockfailed', '3');
+
 		foreach (['', 'wrong password', 'wrong again'] as $attempt => $credential) {
 			$error     = false;
 			$error_msg = '';
