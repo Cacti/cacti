@@ -18,6 +18,90 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+#: lib/installer.php install/functions.php cli/upgrade_database.php
+msgid "Disabled because plugin files are missing"
+msgstr ""
+
+#: lib/installer.php install/functions.php cli/upgrade_database.php
+msgid "Disabled because the plugin is incompatible"
+msgstr ""
+
+#: lib/installer.php install/functions.php cli/upgrade_database.php
+msgid "Integrated into Cacti"
+msgstr ""
+
+#: lib/installer.php install/functions.php cli/upgrade_database.php
+msgid "The shipped Cacti schema is incomplete. Restore cacti.sql before retrying."
+msgstr ""
+
+#: lib/installer.php install/functions.php cli/upgrade_database.php
+msgid "Unable to read database column metadata after migration."
+msgstr ""
+
+#: lib/installer.php install/functions.php cli/upgrade_database.php
+msgid "Unexpected upgrade failure. Preserve the installer report and follow docs/INSTALLER_RECOVERY.md before retrying."
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+#, php-format
+msgid "Authentication configuration needs recovery: %s"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Backup and recovery"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md."
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+#, php-format
+msgid "Collector synchronization needs attention (%s): IDs %s. Run a manual full synchronization after checking collector status."
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Complete with warnings"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Download installer report"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Migrations"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Plugin compatibility changes"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Remote Data Collectors"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+#, php-format
+msgid "Synchronizing Remote Data Collector ID %d"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+#, php-format
+msgid "The Cacti database schema is incomplete. Missing required columns: %s"
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Unable to read the shipped Cacti schema. Restore cacti.sql before retrying."
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Unable to verify authentication configuration after migration."
+msgstr ""
+
+#: lib/installer.php cli/install_cacti.php install/functions.php
+msgid "Upgrade plan"
+msgstr ""
+
 #: about.php include/global_arrays.php include/top_general_header.php
 #: include/top_header.php lib/html.php
 msgid "About Cacti"
@@ -18101,39 +18185,6 @@ msgid "Get Started"
 msgstr ""
 
 #: lib/installer.php
-msgid "WARNING: Composer could not be executed.  Run 'composer install' from the Cacti directory manually and check its output."
-msgstr ""
-
-#: lib/installer.php
-msgid "Composer dependencies are current, no vendor refresh needed."
-msgstr ""
-
-#: lib/installer.php
-msgid "WARNING: Composer could not determine the vendor state.  Run 'composer install' from the Cacti directory manually and check its output."
-msgstr ""
-
-#: lib/installer.php
-#, php-format
-msgid "NOTE: Composer reports the vendor state as '%s'.  No refresh was attempted."
-msgstr ""
-
-#: lib/installer.php
-msgid "WARNING: Composer reports include/vendor is missing packages, but it is not writable by the web server.  Run 'composer install' from the Cacti directory manually."
-msgstr ""
-
-#: lib/installer.php
-msgid "Refreshing Composer dependencies in include/vendor."
-msgstr ""
-
-#: lib/installer.php
-msgid "WARNING: Composer refresh did not complete.  Run 'composer install' from the Cacti directory manually."
-msgstr ""
-
-#: lib/installer.php
-msgid "Composer dependencies refreshed."
-msgstr ""
-
-#: lib/installer.php
 #, php-format
 msgid "Starting %s Process for v%s"
 msgstr ""
@@ -18305,14 +18356,6 @@ msgstr ""
 
 #: lib/installer.php
 msgid "Unable to execute the configured PHP binary or CLI script"
-msgstr ""
-
-#: lib/installer.php
-msgid "Unable to create a temporary file for CLI errors"
-msgstr ""
-
-#: lib/installer.php
-msgid "Unable to start the Cacti CLI process"
 msgstr ""
 
 #: lib/installer.php
