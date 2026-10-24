@@ -1560,28 +1560,35 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	$sql_params          = [];
 	$locks               = false;
 	$temp_table          = false;
+	$copy_ok             = true;
+	$temp_created        = false;
 
 	if (cacti_count($archive_tables)) {
 		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . random_int(0, PHP_INT_MAX);
 
-		db_execute("CREATE TEMPORARY TABLE `{$temp_table}` LIKE poller_output_boost");
+		$temp_created = db_execute("CREATE TEMPORARY TABLE `{$temp_table}` LIKE poller_output_boost") !== false;
+		$copy_ok      = $temp_created;
 
 		foreach ($archive_tables as $table) {
-			db_execute_prepared("INSERT IGNORE INTO `{$temp_table}`
+			if (!$copy_ok) {
+				break;
+			}
+
+			$copy_ok = db_execute_prepared("INSERT IGNORE INTO `{$temp_table}`
 				SELECT *
 				FROM `{$table}`
 				WHERE local_data_id = ?",
-				[$local_data_id], false);
+				[$local_data_id], false) !== false;
 		}
 	}
 
 	if ($temp_table !== false) {
-		db_execute_prepared("INSERT IGNORE INTO `{$temp_table}`
+		$copy_ok = $copy_ok && db_execute_prepared("INSERT IGNORE INTO `{$temp_table}`
 			SELECT *
 			FROM poller_output_boost
 			WHERE local_data_id = ?
 			AND time < FROM_UNIXTIME(?)",
-			[$local_data_id, $timestamp], false);
+			[$local_data_id, $timestamp], false) !== false;
 
 		$query_string = "SELECT po.local_data_id, dl.data_template_id,
 			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
@@ -1606,12 +1613,13 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	$sql_params[] = $timestamp;
 
 	boost_timer('get_records', BOOST_TIMER_START);
-	$results = db_fetch_assoc_prepared($query_string, $sql_params);
+	// Failed copies use the existing failure and cleanup path.
+	$results = $copy_ok ? db_fetch_assoc_prepared($query_string, $sql_params) : false;
 	boost_timer('get_records', BOOST_TIMER_END);
 
 	$boost_results = cacti_sizeof($results);
 
-	if ($temp_table !== false) {
+	if ($temp_table !== false && $temp_created) {
 		db_execute("DROP TEMPORARY TABLE $temp_table");
 	}
 
@@ -1725,6 +1733,8 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 					if (!str_contains(trim($return_value), 'OK') && $return_value != '') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 						$updates_ok = false;
+
+						break;
 					}
 				}
 
@@ -2000,10 +2010,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	}
 
 	if ($updates_ok && cacti_sizeof($results)) {
-		$updates_ok = db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id = ?
-			AND time < FROM_UNIXTIME(?)',
-			[$local_data_id, $timestamp], false) !== false;
+		$updates_ok = boost_delete_output_keys($local_data_id, $results);
 	}
 
 	boost_timer('delete', BOOST_TIMER_END);
@@ -2021,6 +2028,60 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	error_reporting($previous_error_reporting);
 
 	return $updates_ok ? cacti_sizeof($results) : -1;
+}
+
+/**
+ * Delete exactly the fetched keys so rows that arrived after the fetch survive.
+ *
+ * The keys are staged in a temporary table and removed by one statement, which
+ * is atomic and uses the primary key. A long (rrd_name, time) IN list does not
+ * use the key in that column order and degrades roughly quadratically.
+ *
+ * @param array<int, array{timestamp: int|string, rrd_name: string}> $results
+ */
+function boost_delete_output_keys(int $local_data_id, array $results) : bool {
+	if (!cacti_sizeof($results)) {
+		return true;
+	}
+
+	$table = 'poller_output_boost_acked_' . $local_data_id . '_' . random_int(0, PHP_INT_MAX);
+
+	if (db_execute("CREATE TEMPORARY TABLE `$table` (
+		time timestamp NOT NULL,
+		rrd_name varchar(19) NOT NULL,
+		PRIMARY KEY (time, rrd_name))") === false) {
+		return false;
+	}
+
+	$ok = true;
+
+	foreach (array_chunk($results, 500) as $chunk) {
+		$values = [];
+		$params = [];
+
+		foreach ($chunk as $item) {
+			$values[] = '(FROM_UNIXTIME(?), ?)';
+			$params[] = $item['timestamp'];
+			$params[] = $item['rrd_name'];
+		}
+
+		if (db_execute_prepared("INSERT IGNORE INTO `$table` (time, rrd_name) VALUES " . implode(',', $values), $params, false) === false) {
+			$ok = false;
+
+			break;
+		}
+	}
+
+	if ($ok) {
+		$ok = db_execute_prepared("DELETE FROM poller_output_boost
+			WHERE local_data_id = ?
+			AND (time, rrd_name) IN (SELECT time, rrd_name FROM `$table`)",
+			[$local_data_id], false) !== false;
+	}
+
+	db_execute("DROP TEMPORARY TABLE `$table`");
+
+	return $ok;
 }
 
 /**
@@ -2429,7 +2490,11 @@ function boost_rrdtool_function_update(int $local_data_id, string $rrd_path, str
 	}
 
 	if ($file_exists == false) {
-		$ds_exists = db_fetch_cell_prepared('SELECT id FROM data_local WHERE id = ?', [$local_data_id]);
+		$ds_exists = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE id = ?', [$local_data_id]);
+
+		if ($ds_exists === false) {
+			return 'ERROR: Unable to verify data source';
+		}
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
