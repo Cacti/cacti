@@ -1930,18 +1930,9 @@ $settings = array(
 		),
 		'notify_admin' => array(
 			'friendly_name' => __('Notify Primary Admin of Issues'),
-			'description' => __('In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified?  The Primary Administrator\'s Cacti user account is specified under the Authentication tab on Cacti\'s settings page. It defaults to the \'admin\' account.'),
+			'description' => __('In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator\'s Cacti user account is specified under the Authentication tab on Cacti\'s settings page. It defaults to the \'admin\' account.'),
 			'default' => '',
 			'method' => 'checkbox'
-		),
-		'admin_alert_delivery' => array(
-			'friendly_name' => __('Administrative Alert Delivery'),
-			'description' => __('Alarm Manager acceptance means queued storage, with email fallback only if no handler accepts. Alarm Manager routing and retries own subsequent delivery, including configured email destinations. Missing routing rules do not cause core email fallback.'),
-			'method' => 'drop_array',
-			'default' => 'email',
-			'array' => array('email' => __('Email')) +
-				(function_exists('api_plugin_installed') && api_plugin_installed('alarmmanager')
-					? array('alarmmanager' => __('Alarm Manager')) : array()),
 		),
 		'settings_test_email' => array(
 			'friendly_name' => __('Test Email'),

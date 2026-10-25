@@ -5596,6 +5596,11 @@ function appendHeaderSuppression($url) {
  * @param string $subject The subject.
  * @param string $message The message.
  *
+ * The admin_alert hook receives the original subject/message and a versioned
+ * event envelope. A plugin may return status accepted or already_accepted to
+ * own delivery. Missing handlers, other results and exceptions use email.
+ * Plugins own their delivery settings; core does not select a provider.
+ *
  * @return void
  */
 function admin_email($subject, $message) {
@@ -5611,9 +5616,7 @@ function admin_email($subject, $message) {
 		$dispatching = true;
 
 		try {
-			if (read_config_option('admin_alert_delivery') === 'alarmmanager'
-				&& function_exists('api_plugin_installed') && api_plugin_installed('alarmmanager')
-				&& function_exists('api_plugin_hook_function')
+			if (function_exists('api_plugin_hook_function')
 				&& is_string($subject) && strlen($subject) <= 512
 				&& is_string($message) && strlen($message) <= 16384
 				&& (int) ($config['poller_id'] ?? 1) > 0) {
