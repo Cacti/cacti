@@ -341,7 +341,7 @@ if (isset_request_var('ref')) {
 		<div class='loginArea'>
 			<div class='cactiLogoutLogo'></div>
 			<form name='login' method='post' action='<?php print get_current_page();?>'>
-				<fieldset style='border:0;padding:0;margin:0;min-width:0'>
+				<fieldset style='border:0;padding:0;margin:0;min-width:0;width:100%'>
 				<legend><?php print __('Change Password');?></legend>
 				<input type='hidden' name='action' value='changepassword'>
 				<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
