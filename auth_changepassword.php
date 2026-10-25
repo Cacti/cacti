@@ -334,6 +334,7 @@ if (isset_request_var('ref')) {
 <html lang='<?php print CACTI_LOCALE;?>'>
 <head>
 	<?php html_common_header(api_plugin_hook_function('change_password_title', __('Change Password')));?>
+	<?php print get_md5_include_css('include/css/auth.css');?>
 </head>
 <body class='loginBody'>
 	<div class='loginLeft'></div>
@@ -341,7 +342,7 @@ if (isset_request_var('ref')) {
 		<div class='loginArea'>
 			<div class='cactiLogoutLogo'></div>
 			<form name='login' method='post' action='<?php print get_current_page();?>'>
-				<fieldset style='border:0;padding:0;margin:0;min-width:0;width:100%'>
+				<fieldset class='cactiAuthFieldset'>
 				<legend><?php print __('Change Password');?></legend>
 				<input type='hidden' name='action' value='changepassword'>
 				<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
