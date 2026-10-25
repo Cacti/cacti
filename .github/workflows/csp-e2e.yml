@@ -25,6 +25,7 @@ on:
       - include/themes/sunrise/main.js
       - auth_login.php
       - auth_changepassword.php
+      - include/themes/**
       - install/install.php
       - graph_realtime.php
       - about.php
