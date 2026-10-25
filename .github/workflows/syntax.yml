@@ -171,6 +171,9 @@ jobs:
     - name: Check PHP version
       run: php -v
 
+    - name: Test administrative alert hook and email fallback
+      run: php -d sendmail_path=tests/fixtures/Core/admin-alert-sendmail.sh tests/Unit/Core/AdminAlert/admin_alert_test.php
+
     # Install as the runner before Apache setup transfers ownership to www-data.
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
