@@ -163,10 +163,8 @@ elseif ($cmd == 'query' && isset($query_field)) {
 
 					// If the sensor is configured for Fahrenheit, do the conversion
 					if ($temp_unit == 'F') {
-						// Temperature is always reported in tenths degrees. Divide by 10 first. Then multiply by 9/5.
-						// Then add 32. Then multiply by 10 to re-convert to tenths degrees. Use substr() to strip off
-						// any trailing digits from the final value, we should always return a 3 digit value.
-						print $arr_index[$i] . $xml_delimiter . substr((string) (((($arr[$i] / 10) * (9 / 5)) + 32) * 10), 0, 3) . "\n";
+						// Temperature is always reported in tenths of a degree, so convert to tenths of a degree Fahrenheit.
+						print $arr_index[$i] . $xml_delimiter . akcp_fahrenheit_tenths($arr[$i]) . "\n";
 					}
 
 					// Otherwise if the sensor is not set for "F", just report the value.
@@ -218,10 +216,8 @@ elseif ($cmd == 'get' && isset($query_field) && isset($query_index)) {
 
 		// If the sensor is configured for Fahrenheit, do the conversion
 		if ($temp_unit == 'F') {
-			// Temperature is always reported in tenths degrees. Divide by 10 first. Then multiply by 9/5.
-			// Then add 32. Then multiply by 10 to re-convert to tenths degrees. Use substr() to strip off
-			// any trailing digits from the final value, we should always return a 3 digit value.
-			print substr((string) ((((floatval($value) / 10) * (9 / 5)) + 32) * 10), 0, 3);
+			// Temperature is always reported in tenths of a degree, so convert to tenths of a degree Fahrenheit.
+			print akcp_fahrenheit_tenths($value);
 		}
 		// Otherwise if the sensor is not set for "F", just report the value.
 		else {
@@ -239,6 +235,25 @@ elseif ($cmd == 'get' && isset($query_field) && isset($query_index)) {
 else {
 	print "Invalid use of script query, required parameters:\n\n";
 	print "    <hostname> <cmd>\n";
+}
+
+/**
+ * akcp_fahrenheit_tenths - convert a Celsius reading to Fahrenheit
+ *
+ * Both values are in tenths of a degree. The conversion is done in whole numbers so a
+ * reading of 100.0 F or more keeps all four digits and floating point noise cannot move
+ * the result by a tenth.
+ *
+ * @param mixed $celsius The raw reading in tenths of a degree Celsius
+ *
+ * @return int|string The reading in tenths of a degree Fahrenheit, or 'U' when it is not a number
+ */
+function akcp_fahrenheit_tenths(mixed $celsius) : int|string {
+	if (!is_numeric($celsius)) {
+		return 'U';
+	}
+
+	return (int) ((9 * floatval($celsius) + 1600) / 5);
 }
 
 function reindex(array $arr) : array {
