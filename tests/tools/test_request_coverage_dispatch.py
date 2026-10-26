@@ -24,7 +24,8 @@ class RequestDispatchTest(unittest.TestCase):
 
     def test_sites_change_runs_the_sites_browser_probe(self):
         for path in ['sites.php', 'lib/sites.php', 'lib/Sites/SiteService.php',
-                     'tests/e2e/sites_verify.php', 'tests/e2e/definition_resolution.py']:
+                     'tests/e2e/sites_verify.php', 'tests/e2e/tests/sites-management.spec.ts',
+                     'tests/e2e/definition_resolution.py']:
             with self.subTest(path=path):
                 self.dispatch(path, 'sites')
 
