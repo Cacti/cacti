@@ -14,7 +14,7 @@ export function textContrast(element: Element): number {
 		surfaces = surfaces.map(bg => over(c, bg));
 		// Sample stops and intermediate sRGB colors; raster textures use their fallback color.
 		const image = getComputedStyle(e).backgroundImage;
-		if (image.startsWith('linear-gradient(')) {
+		if (image.startsWith('linear-gradient(') || image.startsWith('-webkit-linear-gradient(')) {
 			const stops = (image.match(/rgba?\([^)]+\)/g) || []).map(rgba);
 			const samples = stops.flatMap((stop, index) => index === 0 ? [stop] :
 				[.25, .5, .75, 1].map(t => stop.map((v, channel) => stops[index - 1][channel] * (1 - t) + v * t)));
