@@ -40,6 +40,7 @@ rules:
       - pattern: sanitize_uri(...)
       - pattern: htmlspecialchars(...)
       - pattern: json_encode(...)
+      - pattern: cacti_js_encode(...)
       # These match the vetted sanitizers in tests/security/semgrep/cacti-security.yml.
       - pattern: filter_value(...)
       - pattern: html_hidden_input(...)

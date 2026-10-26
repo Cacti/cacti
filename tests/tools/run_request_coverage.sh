@@ -46,4 +46,6 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
+run_php_probe tests/fixtures/Core/SelectedItemsCoverage.php '^((automation_(graph_rules|networks|snmp|templates|tree_rules)|data_source_profiles|host_templates)\.php|lib/html_form\.php|tests/fixtures/Core/SelectedItems)'
+
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
