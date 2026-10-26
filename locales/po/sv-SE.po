@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 10:27+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 11:05+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -82,7 +82,7 @@ msgstr "Programmet distribueras i hopp om att det ska vara användbart, men UTAN
 #: sites.php tree.php user_admin.php user_domains.php user_group_admin.php
 #: vdef.php
 msgid "Delete"
-msgstr "Radera"
+msgstr "Ta bort"
 
 #: aggregate_graphs.php
 msgid "Convert to Normal Graph"
@@ -959,7 +959,7 @@ msgstr "SNMP-namn"
 #: automation_devices.php host.php include/global_form.php
 #: include/global_settings.php lib/html.php
 msgid "Location"
-msgstr "Plats"
+msgstr "Placering"
 
 #: automation_devices.php
 msgid "Contact"
@@ -10213,7 +10213,7 @@ msgstr "Balansera processbelastningen"
 
 #: include/global_settings.php
 msgid "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process."
-msgstr "Om du väljer alternativet försöker Cacti balansera belastningen genom att fördela insamlingsobjekten jämnt mellan insamlarprocesserna."
+msgstr "Om du väljer alternativet försöker Cacti balansera belastningen genom att fördela insamlingsobjekten jämnt mellan insamlingsprocesserna."
 
 #: include/global_settings.php
 msgid "Debug Output Width"
@@ -10273,7 +10273,7 @@ msgstr "Aktivera cache för inloggningsuppgifter"
 
 #: include/global_settings.php
 msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
-msgstr "Förhärda och cacha argument för SNMPv3-inloggningsuppgifter en gång per ändring, så att varje pollerprocess återanvänder dem i stället för att bygga om dem vid varje begäran. Det ger en mindre besparing vid insamling med SNMPv3-inloggningsuppgifter via Net-SNMP-binärerna. Tillägget php-snmp hanterar de flesta SNMPv3-hämtningar i processen och går förbi denna cache, men Net-SNMP-binärerna (och därmed denna cache) används fortfarande för SNMP-vandringar, hex-utdata, begäranden som anger kontext eller motor-id samt protokollkombinationer som den körande PHP-versionen inte stöder. Aktivera detta om du samlar in någon av dessa arbetslaster med SNMPv3-inloggningsuppgifter."
+msgstr "Förhärda och cacha argument för SNMPv3-inloggningsuppgifter en gång per ändring, så att varje insamlingsprocess återanvänder dem i stället för att bygga om dem vid varje begäran. Det ger en mindre besparing vid insamling med SNMPv3-inloggningsuppgifter via Net-SNMP-binärerna. Tillägget php-snmp hanterar de flesta SNMPv3-hämtningar i processen och går förbi denna cache, men Net-SNMP-binärerna (och därmed denna cache) används fortfarande för SNMP-vandringar, hex-utdata, begäranden som anger kontext eller motor-id samt protokollkombinationer som den körande PHP-versionen inte stöder. Aktivera detta om du samlar in någon av dessa arbetslaster med SNMPv3-inloggningsuppgifter."
 
 #: include/global_settings.php
 msgid "SNMP Get OID Limit"
@@ -12104,7 +12104,7 @@ msgstr "Värdnamn:"
 
 #: lib/api_device.php
 msgid "Location:"
-msgstr "Plats:"
+msgstr "Placering:"
 
 #: lib/api_device.php
 msgid "Contact:"
@@ -17282,7 +17282,7 @@ msgstr "VARNING: PollerID:%s med namn:%s är i hjärtslagsstatus"
 
 #: poller.php
 msgid "Poller in Heartbeat Mode"
-msgstr "Poller i hjärtslagsläge"
+msgstr "Datainsamlare i hjärtslagsläge"
 
 #: poller.php
 msgid "Cacti System Notification"
@@ -17307,7 +17307,7 @@ msgstr "Cactis automatiseringsrapport kräver en HTML-baserad e-postklient"
 
 #: poller_boost.php
 msgid "WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash"
-msgstr "VARNING: Poller Boost har överskridit sin tid. Boost-insamlaren kan ha kraschat"
+msgstr "VARNING: Boost-processen har överskridit tidsgränsen och kan ha kraschat"
 
 #: pollers.php
 msgid "Full Sync"
@@ -17569,7 +17569,7 @@ msgstr "Processer/trådar"
 
 #: pollers.php
 msgid "The Number of Poller Processes and Threads for this Data Collector."
-msgstr "Antalet insamlarprocesser och trådar för den här datainsamlaren."
+msgstr "Antalet insamlingsprocesser och trådar för den här datainsamlaren."
 
 #: pollers.php
 msgid "Polling Time"
@@ -17874,7 +17874,7 @@ msgstr "Ange stad eller ort"
 
 #: sites.php
 msgid "State"
-msgstr "Delstat eller region"
+msgstr "Tillstånd"
 
 #: sites.php
 msgid "The state for the Site."
@@ -19206,7 +19206,7 @@ msgstr "Totalt: %s"
 
 #: utilities.php
 msgid "Poller Information"
-msgstr "Information om insamlaren"
+msgstr "Information om insamlingsprocessen"
 
 #: utilities.php
 msgid "Different version of Cacti and Spine!"
