@@ -12,7 +12,7 @@ export function verifyRtmRevision() {
 		existsSync(rtmRoot),
 		'Missing RTM checkout; see docs/validation/rtm-theme-compatibility.md',
 	).toBeTruthy();
-	expect(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: rtmRoot, encoding: 'utf8' }).trim()).toBe(
+	expect(execFileSync('/usr/bin/git', ['rev-parse', 'HEAD'], { cwd: rtmRoot, encoding: 'utf8' }).trim()).toBe(
 		fixture.revision,
 	);
 }

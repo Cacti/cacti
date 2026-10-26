@@ -49,7 +49,7 @@ export function registerPluginThemeTests(
 					`Missing pinned ${plugin} checkout: see docs/validation/plugin-theme-compatibility.md`,
 				).toBeTruthy();
 				expect(
-					execFileSync('git', ['rev-parse', 'HEAD'], { cwd: plugins[plugin], encoding: 'utf8' }).trim(),
+					execFileSync('/usr/bin/git', ['rev-parse', 'HEAD'], { cwd: plugins[plugin], encoding: 'utf8' }).trim(),
 				).toBe(revision);
 				const measurements: { version: string; state: string; kind: string; ratio: number }[] = [];
 				await page.route('http://plugin-theme.test/**', async (route) => {
@@ -61,7 +61,7 @@ export function registerPluginThemeTests(
 						try {
 							return route.fulfill({
 								contentType: file.endsWith('.css') ? 'text/css' : undefined,
-								body: execFileSync('git', ['show', `${baseline}:${file}`], { cwd: core }),
+								body: execFileSync('/usr/bin/git', ['show', `${baseline}:${file}`], { cwd: core }),
 							});
 						} catch {
 							return route.abort();
