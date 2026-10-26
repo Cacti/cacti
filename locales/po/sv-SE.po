@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-26 09:55+0000\n"
+"PO-Revision-Date: 2026-10-26 10:20+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -2742,7 +2742,7 @@ msgstr "Automationsobjektet finns inte. Kan inte duplicera."
 
 #: automation_snmp.php:535
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande SNMP-alternativ."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande post i SNMP-alternativet."
 
 #: automation_snmp.php:536
 msgid "SNMP Option:"
@@ -2922,7 +2922,7 @@ msgstr "Inga SNMP-objekt"
 
 #: automation_snmp.php:819
 msgid "Delete SNMP Option Item"
-msgstr "Ta bort SNMP-alternativ"
+msgstr "Ta bort post i SNMP-alternativ"
 
 #: automation_snmp.php:888 automation_snmp.php:891
 msgid "SNMP Rules"
@@ -8020,7 +8020,7 @@ msgstr "Med %d timmars mellanrum"
 #: include/global_arrays.php:771
 #, php-format
 msgid "Every %d Day"
-msgstr "Var %d:e dag"
+msgstr "Intervall: %d dygn"
 
 #: include/global_arrays.php:783
 #, php-format
@@ -9235,7 +9235,7 @@ msgstr "Varje vecka"
 #: include/global_arrays.php:2017 include/global_arrays.php:2018
 #, php-format
 msgid "Every %d Weeks"
-msgstr "Var %d:e vecka"
+msgstr "Intervall: %d veckor"
 
 #: include/global_arrays.php:2049
 msgctxt "A short textual representation of a month, three letters"
@@ -11665,8 +11665,8 @@ msgstr "Expandera loggdetaljer"
 #: include/global_settings.php:324
 msgid "What level of expansion do you want on the log file? Increase expansion can slow search results"
 msgstr ""
-"Hur mycket detaljer ska loggfilen visa? Mer detaljer kan göra sökningar "
-"långsammare."
+"Hur utförligt ska loggdetaljerna visas? Mer utförlig information kan göra "
+"sökningar långsammare."
 
 #: include/global_settings.php:330
 msgid "Log Input Validation Issues"
