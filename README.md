@@ -85,6 +85,14 @@ The Modern fixture checks keyboard focus, wrapped titles, and readable green
 gradients. See [Modern theme validation](docs/validation/modern-theme.md) for
 the narrow details screenshot and browser tests.
 
+## Paw Theme
+
+![Paw inventory with seeded device measurements](docs/validation/images/paw-theme-desktop.png)
+
+The Paw fixture checks wrapped titles and readable links across row states.
+See [Paw theme validation](docs/validation/paw-theme.md) for the narrow details
+screenshot and browser tests.
+
 ---
 
 ## Release Branches

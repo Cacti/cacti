@@ -7,7 +7,7 @@ import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
-for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern', 'paw']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
 			test(`${theme} titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
@@ -37,7 +37,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern']) {
 					expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
 					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
 				}
-				if (theme === 'deepness' || theme === 'hollyberry' || theme === 'modern') {
+				if (theme === 'deepness' || theme === 'hollyberry' || theme === 'modern' || theme === 'paw') {
 					const textBoxes = await page.locator('.cactiTableTitle').evaluate(element => {
 						const range = document.createRange();
 						range.selectNodeContents(element);
@@ -63,7 +63,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern']) {
 }
 
 
-for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern']) {
+for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern', 'paw']) {
 	for (const row of theme !== 'cacti' ? ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'] : ['', 'odd', 'even']) {
 		for (const linkClass of ['', 'linkEditMain']) {
 			test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
@@ -102,7 +102,7 @@ for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable 
 	});
 }
 
-for (const theme of ['carrot', 'hollyberry', 'modern']) {
+for (const theme of ['carrot', 'hollyberry', 'modern', 'paw']) {
 	test(`${theme} titlebars, navigation selections, rows, and active controls retain text contrast`, async ({ page }) => {
 		await page.setContent('<!DOCTYPE html>' +
 			'<div class="cactiTableTitleRow"><div class="cactiTableTitle">Device inventory</div><div class="cactiTableButton"><span>2 alerts</span></div></div>' +
@@ -114,7 +114,7 @@ for (const theme of ['carrot', 'hollyberry', 'modern']) {
 			'<div class="select2-container--default"><ul><li class="select2-results__option--highlighted select2-results__option--selectable">Selected device</li></ul></div>');
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
-		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(theme === 'hollyberry' ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
+		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['hollyberry', 'paw'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
 			for (const element of await page.locator(selector).all()) expect.soft(await element.evaluate(textContrast), selector).toBeGreaterThanOrEqual(4.5);
 		}
 		for (const name of ['Devices', 'Management', ...(theme === 'modern' ? ['Console'] : [])]) {
@@ -166,16 +166,19 @@ for (const theme of ['dark', 'modern']) {
 	}
 }
 
-test('Dark hovered rows retain text contrast across their green gradient', async ({ page }) => {
-	await page.setContent('<!DOCTYPE html><table><tr class="selectable odd"><td>branch-firewall-03 missed three polls</td>' +
-		'<td><a class="linkEditMain" href="#device">Open device</a></td></tr></table>');
-	await installThemeCss(page, 'include/themes/dark/main.css');
-	await page.locator('td').first().hover();
-	expect(await page.locator('td').first().evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
-	await page.locator('a').hover();
-	expect(await page.locator('a').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
-	await expect(page.locator('a')).toHaveCSS('color', 'rgb(255, 250, 250)');
-});
+for (const theme of ['dark', 'paw']) {
+	test(`${theme} hovered rows retain readable text and links`, async ({ page }) => {
+		await page.setContent('<!DOCTYPE html><table><tr class="selectable odd"><td>branch-firewall-03 missed three polls</td>' +
+			'<td><a class="linkEditMain" href="#device">Open device</a></td></tr></table>');
+		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		await page.locator('td').first().hover();
+		expect(await page.locator('td').first().evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+		expect(await page.locator('a').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+		await page.locator('a').hover();
+		expect(await page.locator('a').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+		await expect(page.locator('a')).toHaveCSS('color', theme === 'dark' ? 'rgb(255, 250, 250)' : 'rgb(29, 51, 112)');
+	});
+}
 
 async function prepareInventoryFixture(page: Page, info: TestInfo) {
 	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery.js' });
@@ -200,7 +203,7 @@ async function prepareInventoryFixture(page: Page, info: TestInfo) {
 	};
 }
 
-for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern']) {
+for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern', 'paw']) {
 	test(`${theme} seeded device inventory and details work with desktop and narrow dialogs`, async ({ page }, info) => {
 		await page.setViewportSize({ width: 1100, height: 380 });
 		await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8').replaceAll('Cacti theme', `${theme[0].toUpperCase() + theme.slice(1)} theme`));
