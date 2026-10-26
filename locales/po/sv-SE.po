@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-26 09:08+0000\n"
+"PO-Revision-Date: 2026-10-26 09:13+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -762,7 +762,7 @@ msgstr "Ingen"
 
 #: aggregate_graphs.php:2112
 msgid "The title for the Aggregate Graphs"
-msgstr "Titeln för Aggregatgraferna"
+msgstr "Titeln för aggregatgraferna"
 
 #: aggregate_graphs.php:2118
 msgid "The internal database identifier for this object"
@@ -1716,7 +1716,7 @@ msgstr "Grafregler"
 #: include/global_arrays.php:1502 include/global_arrays.php:3088
 #: include/global_form.php:1791 include/global_form.php:2353
 msgid "Data Query"
-msgstr "Dataförfrågning"
+msgstr "Datafråga"
 
 #: automation_graph_rules.php:992 automation_tree_rules.php:1081
 msgid "Rule Name"
@@ -2225,7 +2225,7 @@ msgstr "Ange insamlingsfrekvensen."
 
 #: automation_networks.php:886
 msgid "Starting Date/Time"
-msgstr "Startdatum / tidpunkt"
+msgstr "Startdatum och starttid"
 
 #: automation_networks.php:887
 msgid "What time will this Network discover item start?"
@@ -2250,41 +2250,41 @@ msgstr "Vilka veckodagar ska nätverksintervallet genomsökas?"
 #: automation_networks.php:914 automation_networks.php:972
 #: include/global_arrays.php:2080
 msgid "Sunday"
-msgstr "Söndag"
+msgstr "söndag"
 
 #: automation_networks.php:915 automation_networks.php:973
 #: include/global_arrays.php:2081
 msgid "Monday"
-msgstr "Måndag"
+msgstr "måndag"
 
 #: automation_networks.php:916 automation_networks.php:974
 #: include/global_arrays.php:2082
 msgid "Tuesday"
-msgstr "Tisdag"
+msgstr "tisdag"
 
 #: automation_networks.php:917 automation_networks.php:975
 #: include/global_arrays.php:2083
 msgid "Wednesday"
-msgstr "Onsdag"
+msgstr "onsdag"
 
 #: automation_networks.php:918 automation_networks.php:976
 #: include/global_arrays.php:2084
 msgid "Thursday"
-msgstr "Torsdag"
+msgstr "torsdag"
 
 #: automation_networks.php:919 automation_networks.php:977
 #: include/global_arrays.php:2085
 msgid "Friday"
-msgstr "Fredag"
+msgstr "fredag"
 
 #: automation_networks.php:920 automation_networks.php:978
 #: include/global_arrays.php:2086
 msgid "Saturday"
-msgstr "Lördag"
+msgstr "lördag"
 
 #: automation_networks.php:927
 msgid "Months of Year"
-msgstr "Månader av året"
+msgstr "Årets månader"
 
 #: automation_networks.php:928
 msgid "What Months(s) of the Year will this Network Range be discovered."
@@ -2292,15 +2292,15 @@ msgstr "Vilka månader ska nätverksintervallet genomsökas?"
 
 #: automation_networks.php:930 include/global_arrays.php:2034
 msgid "January"
-msgstr "Januari"
+msgstr "januari"
 
 #: automation_networks.php:931 include/global_arrays.php:2035
 msgid "February"
-msgstr "Februari"
+msgstr "februari"
 
 #: automation_networks.php:932 include/global_arrays.php:2036
 msgid "March"
-msgstr "Mars"
+msgstr "mars"
 
 #: automation_networks.php:933 include/global_arrays.php:2037
 msgid "April"
@@ -2308,19 +2308,19 @@ msgstr "april"
 
 #: automation_networks.php:934 include/global_arrays.php:2038
 msgid "May"
-msgstr "Maj"
+msgstr "maj"
 
 #: automation_networks.php:935 include/global_arrays.php:2039
 msgid "June"
-msgstr "Juni"
+msgstr "juni"
 
 #: automation_networks.php:936 include/global_arrays.php:2040
 msgid "July"
-msgstr "Juli"
+msgstr "juli"
 
 #: automation_networks.php:937 include/global_arrays.php:2041
 msgid "August"
-msgstr "Augusti"
+msgstr "augusti"
 
 #: automation_networks.php:938 include/global_arrays.php:2042
 msgid "September"
@@ -2328,7 +2328,7 @@ msgstr "september"
 
 #: automation_networks.php:939 include/global_arrays.php:2043
 msgid "October"
-msgstr "Oktober"
+msgstr "oktober"
 
 #: automation_networks.php:940 include/global_arrays.php:2044
 msgid "November"
@@ -4499,8 +4499,8 @@ msgstr "Lägg till ett föreslaget namn för datakällan"
 #, php-format
 msgid "The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue."
 msgstr ""
-"Det dataförfrågnings-ID [%s] som du försöker redigera finns inte.  Kör "
-"Repair_database.php CLI-skriptet för att lösa detta databasproblem."
+"Datafrågan med ID [%s] som du försöker redigera finns inte. Kör "
+"kommandoradsskriptet repair_database.php för att åtgärda databasproblemet."
 
 #: data_queries.php:1102
 #, php-format
@@ -4562,7 +4562,7 @@ msgstr "Datafrågans namn"
 
 #: data_queries.php:1397
 msgid "The name of this Data Query."
-msgstr "Namnet på denna datasökning."
+msgstr "Datafrågans namn."
 
 #: data_queries.php:1403 graph_templates.php:1793
 msgid "The internal ID for this Graph Template.  Useful when performing automation or debugging."
@@ -4578,17 +4578,17 @@ msgstr ""
 
 #: data_queries.php:1414
 msgid "The number of Graphs using this Data Query."
-msgstr "Antalet Grafer som använder denna datasökning."
+msgstr "Antalet grafer som använder datafrågan."
 
 #: data_queries.php:1420
 msgid "The number of Graphs Templates using this Data Query."
-msgstr "Antalet grafmallar som använder denna datasökning."
+msgstr "Antalet grafmallar som använder datafrågan."
 
 #: data_queries.php:1426
 msgid "The Data Input Method used to collect data for Data Sources associated with this Data Query."
 msgstr ""
-"Datainmatningsmetoden används för att samla in data för datakällor som är "
-"associerade med denna datasökning."
+"Datainmatningsmetoden som används för att samla in data till datakällor som "
+"är kopplade till datafrågan."
 
 #: data_queries.php:1459
 msgid "No Data Queries Found"
@@ -6815,7 +6815,7 @@ msgstr "Inga associerade datasökningar."
 
 #: host.php:1009 host_templates.php:548
 msgid "Add Data Query"
-msgstr "Lägg till datasökning"
+msgstr "Lägg till datafråga"
 
 #: host.php:1021
 msgid "Add Data Query to Device"
@@ -7039,7 +7039,7 @@ msgstr ""
 #: host_templates.php:350
 #, php-format
 msgid "Data Query Name: %s"
-msgstr "Datasökningsnamn: %s"
+msgstr "Datafrågans namn: %s"
 
 #: host_templates.php:356
 msgid "Remove Data Query"
@@ -10844,8 +10844,8 @@ msgstr ""
 #: include/global_form.php:1527
 msgid "Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query."
 msgstr ""
-"Välj inmatningsmetod för denna datasökning. Denna inmatningsmetod definierar "
-"hur data samlas in för varje enhet som är associerad med datasökningen."
+"Välj inmatningsmetod för datafrågan. Metoden anger hur data samlas in för "
+"varje enhet som är kopplad till datafrågan."
 
 #: include/global_form.php:1546
 msgid "Choose the Graph Template to use for this Data Query Graph Template item."
@@ -10997,15 +10997,14 @@ msgstr ""
 
 #: include/global_form.php:1846
 msgid "Replace Data Query Suggested Value Patterns"
-msgstr "Ersätt dataförfrågan Föreslagna värdemönster"
+msgstr "Ersätt datafrågans föreslagna värdemönster"
 
 #: include/global_form.php:1848
 msgid "Replace Data Source and Graph Template Suggested Value Records for Data Queries.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
 msgstr ""
-"Ersätt datakälla och grafmall Föreslagna värdeposter för dataförfrågningar.  "
-"Grafer och datakällor kommer att få nya namn efter antingen en omindexering "
-"av dataförfrågningar eller genom att använda den påtvingade processen Ersätt "
-"föreslagna värden."
+"Ersätt föreslagna värden för datakällor och grafmallar för datafrågor. "
+"Grafer och datakällor får nya namn när datafrågan omindexeras eller när "
+"ersättning av föreslagna värden tvingas fram."
 
 #: include/global_form.php:1853 include/global_settings.php:756
 #: package_import.php:1476
@@ -11143,7 +11142,7 @@ msgstr "Ett prefix för alla <strong>totalt</strong> GPRINT-linjer."
 #: include/global_form.php:2010 include/global_form.php:2098
 #: include/global_form.php:2203
 msgid "Reorder Type"
-msgstr "Omordna typ"
+msgstr "Omordningstyp"
 
 #: include/global_form.php:2011 include/global_form.php:2099
 #: include/global_form.php:2204
@@ -11156,11 +11155,11 @@ msgstr "Ange ett namn för aggregatgrafen."
 
 #: include/global_form.php:2038
 msgid "Propagation Enabled"
-msgstr "Förökning aktiverad"
+msgstr "Ärvning aktiverad"
 
 #: include/global_form.php:2039
 msgid "Is this to carry the template?"
-msgstr "Är det här att bära mallen?"
+msgstr "Ska grafen ärva inställningarna från mallen?"
 
 #: include/global_form.php:2045
 msgid "Aggregate Graph Settings"
@@ -11169,8 +11168,9 @@ msgstr "Inställningar för aggregatgrafen"
 #: include/global_form.php:2050 include/global_form.php:2155
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
 msgstr ""
-"Ett prefix för alla GPRINT-linjer för att skilja t.ex. olika värdar. Du kan "
-"använda både värd- och datasökningsbytesvariabler i detta prefix."
+"Ett prefix för alla GPRINT-rader, till exempel för att skilja olika värdar "
+"åt. Du kan använda ersättningsvariabler för både värdar och datafrågor i "
+"prefixet."
 
 #: include/global_form.php:2133
 msgid "Aggregate Template Name"
@@ -11228,7 +11228,7 @@ msgstr "Matchande mönster"
 
 #: include/global_form.php:2287 include/global_form.php:2329
 msgid "The Pattern to be matched against."
-msgstr "Mönstret ska matchas mot."
+msgstr "Mönstret som ska användas vid matchningen."
 
 #: include/global_form.php:2295 include/global_form.php:2337
 #: include/global_form.php:2488
@@ -11257,7 +11257,7 @@ msgstr "Markera den här rutan för att aktivera den här regeln."
 
 #: include/global_form.php:2399
 msgid "Choose a Tree for the new Tree Items."
-msgstr "Välj ett träd för de nya trädämnena."
+msgstr "Välj ett träd för de nya trädobjekten."
 
 #: include/global_form.php:2406
 msgid "Leaf Item Type"
@@ -11762,7 +11762,7 @@ msgstr "Systemets standarddatumformat som ska användas i Cacti."
 
 #: include/global_settings.php:473 include/global_settings.php:2943
 msgid "Date Separator"
-msgstr "DatumavGränsare"
+msgstr "Datumavgränsare"
 
 #: include/global_settings.php:474
 msgid "The System default date separator to be used in Cacti."
@@ -12499,7 +12499,7 @@ msgstr ""
 
 #: include/global_settings.php:1120
 msgid "Graph/Data Source/Data Query Settings"
-msgstr "Graf / Datakälla / Datasökningsinställningar"
+msgstr "Inställningar för grafer, datakällor och datafrågor"
 
 #: include/global_settings.php:1125
 msgid "Maximum Title Length"
@@ -12515,7 +12515,7 @@ msgstr "Datakälla Fältlängd"
 
 #: include/global_settings.php:1134
 msgid "The maximum Data Query field length."
-msgstr "Fältlängden för maximal dataförfrågan."
+msgstr "Den maximala fältlängden för datafrågor."
 
 #: include/global_settings.php:1141
 msgid "Graph Creation"
@@ -12535,7 +12535,7 @@ msgstr "Alla typer"
 
 #: include/global_settings.php:1152
 msgid "By Template/Data Query"
-msgstr "Med mall / datasökning"
+msgstr "Efter mall/datafråga"
 
 #: include/global_settings.php:1156
 msgid "Log Management"
@@ -13105,7 +13105,7 @@ msgstr ""
 #: include/global_settings.php:1632 include/global_settings.php:2317
 #: include/global_settings.php:2442 include/global_settings.php:2549
 msgid "1 Process"
-msgstr "1 Process"
+msgstr "1 process"
 
 #: include/global_settings.php:1633 include/global_settings.php:1634
 #: include/global_settings.php:1635 include/global_settings.php:1636
@@ -13147,7 +13147,7 @@ msgstr "1 Process"
 #: include/global_settings.php:2567 include/global_settings.php:2568
 #, php-format
 msgid "%d Processes"
-msgstr "%d Processer"
+msgstr "%d processer"
 
 #: include/global_settings.php:1655
 msgid "Maintenance Background Generation Timeout"
@@ -13318,7 +13318,7 @@ msgstr "1 försök"
 #: include/global_settings.php:1824
 #, php-format
 msgid "%d Attempts"
-msgstr "%d Försök"
+msgstr "%d försök"
 
 #: include/global_settings.php:1828
 msgid "Auto Unlock"
@@ -14289,7 +14289,7 @@ msgstr ""
 #: include/global_settings.php:2729
 #, php-format
 msgid "%d Standard Deviations"
-msgstr "%d Standardavvikelser"
+msgstr "%d standardavvikelser"
 
 #: include/global_settings.php:2733 lib/html.php:2784
 msgid "Variance Percentage"
@@ -15871,7 +15871,7 @@ msgstr "Hittade index: %s"
 #: lib/data_query.php:735 lib/data_query.php:1233
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "Klicka för att visa utdata från datasökningen för fältet '%s'"
+msgstr "Klicka för att visa datafrågans utdata för fältet ”%s”."
 
 #: lib/data_query.php:741
 #, php-format
@@ -16339,7 +16339,7 @@ msgstr "Pingresultat:"
 
 #: lib/functions.php:5888
 msgid "Bypassed"
-msgstr "Hoppades över"
+msgstr "Överhoppat"
 
 #: lib/functions.php:5898
 msgid "Creating Message Text..."
@@ -17165,7 +17165,7 @@ msgstr "Grafobjekt [mall: %s]"
 #: lib/html_graph.php:725
 #, php-format
 msgid "Data Source [Template: %s]"
-msgstr "Datakälla [Mall: %s]"
+msgstr "Datakälla [mall: %s]"
 
 #: lib/html_graph.php:735
 #, php-format
@@ -20391,7 +20391,7 @@ msgstr "Om den är markerad kommer sidan att vara tillgänglig omedelbart för a
 
 #: links.php:582
 msgid "Automatic Page Refresh"
-msgstr "Automatisk Siduppdatering"
+msgstr "Automatisk siduppdatering"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
@@ -21005,10 +21005,9 @@ msgstr "Byt ut föreslagna värdemönster"
 #: package_import.php:1470
 msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
 msgstr ""
-"Ersätt datakälla och diagrammall Föreslagna värdeposter.  Grafer och "
-"datakällor kommer att få nya namn efter antingen en omindexering av "
-"dataförfrågningar eller genom att använda den påtvingade processen Ersätt "
-"föreslagna värden."
+"Ersätt föreslagna värden för datakällor och grafmallar. Grafer och "
+"datakällor får nya namn när datafrågan omindexeras eller när ersättning av "
+"föreslagna värden tvingas fram."
 
 #: package_import.php:1558
 msgid "Local Package File"
@@ -24472,7 +24471,7 @@ msgstr "Visa standardvyn för grafer"
 
 #: user_group_admin.php:66
 msgid "Restrict Access"
-msgstr "Begränsa Åtkomst"
+msgstr "Begränsa åtkomst"
 
 #: user_group_admin.php:73 user_group_admin.php:1970
 msgid "Group Name"
@@ -25070,7 +25069,7 @@ msgstr "Genomsnittligt antal byte per post:"
 #: utilities.php:1649
 #, php-format
 msgid "%d Bytes"
-msgstr "%d Byte"
+msgstr "%d byte"
 
 #: utilities.php:1649
 msgid "Max Record Length:"
