@@ -15,143 +15,105 @@
 /*
  * Tests for scripts/sql.php and scripts/ss_sql.php.
  *
- * Covers the mysqladmin wrapper hardening:
- * 1. Commands are executed through cacti_exec_string().
- * 2. Arguments are passed as structured argv pieces (no hand-built shell
- *    command strings in these scripts).
+ * Both scripts report 'mysqladmin status' values from the server status
+ * variables over Cacti's own database connection, so the database password
+ * is never placed on a process command line.
  */
+
+namespace CactiSqlScriptsFixture;
+
+require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
+
+$GLOBALS['sql_scripts_status'] = array();
+
+function db_fetch_assoc($sql, $log = true, $db_conn = false) {
+	$GLOBALS['sql_scripts_query'] = $sql;
+
+	return $GLOBALS['sql_scripts_status'];
+}
+
+if (!function_exists(__NAMESPACE__ . '\\ss_sql')) {
+	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/scripts/ss_sql.php', 'ss_sql', __NAMESPACE__);
+}
+
+function sql_scripts_rows(array $status) {
+	$rows = array();
+
+	foreach ($status as $name => $value) {
+		$rows[] = array('Variable_name' => $name, 'Value' => $value);
+	}
+
+	return $rows;
+}
 
 $sqlPhpPath   = __DIR__ . '/../../../scripts/sql.php';
 $ssSqlPhpPath = __DIR__ . '/../../../scripts/ss_sql.php';
 
-// --- scripts/sql.php: no backtick operators remain ---
+test('neither script runs mysqladmin or passes database credentials to a command', function () use ($sqlPhpPath, $ssSqlPhpPath) {
+	foreach (array($sqlPhpPath, $ssSqlPhpPath) as $path) {
+		$contents = file_get_contents($path);
 
-test('sql.php contains no backtick operators', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
+		expect($contents)->not->toContain('cacti_exec_string(');
+		expect($contents)->not->toContain('shell_exec(');
+		expect($contents)->not->toContain('--password=');
+		expect($contents)->not->toContain('$database_password');
+	}
 });
 
-test('sql.php uses cacti_exec_string for command execution', function () use ($sqlPhpPath) {
+test('sql.php reads the Questions status variable and prints U when it is missing', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
-	expect($contents)->toContain("cacti_exec_string('mysqladmin', \$args)");
-});
-
-test('sql.php passes host argument as structured mysqladmin flag', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->toContain("'--host=' . \$database_hostname");
-});
-
-test('sql.php passes user argument as structured mysqladmin flag', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->toContain("'--user=' . \$database_username");
-});
-
-test('sql.php passes password argument as structured mysqladmin flag', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->toContain("'--password=' . \$database_password");
-});
-
-test('sql.php does not call shell_exec directly', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->not->toContain('shell_exec(');
-});
-
-test('sql.php returns U on empty execution output', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	/* Cacti data source scripts must return 'U' on error, never empty string. */
-	expect($contents)->toContain("if (\$output === null || \$output === '')");
+	expect($contents)->toContain("SHOW GLOBAL STATUS LIKE 'Questions'");
 	expect($contents)->toContain("print 'U';");
 });
 
-// --- scripts/ss_sql.php: no backtick operators remain ---
+test('ss_sql() reports the mysqladmin status fields under their existing names', function () {
+	$GLOBALS['sql_scripts_status'] = sql_scripts_rows(array(
+		'Uptime'            => '86400',
+		'Threads_connected' => '7',
+		'Questions'         => '123456',
+		'Slow_queries'      => '3',
+		'Opened_tables'     => '450',
+		'Flush_commands'    => '1',
+		'Open_tables'       => '400',
+	));
 
-test('ss_sql.php contains no backtick operators', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
+	expect(ss_sql())->toBe('Uptime:86400 Threads:7 Questions:123456 SlowQueries:3 Opens:450 FlushTables:1 OpenTables:400 QPS:1.428');
+	expect($GLOBALS['sql_scripts_query'])->toContain('SHOW GLOBAL STATUS');
 });
 
-test('ss_sql.php uses cacti_exec_string for command execution', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+test('ss_sql() truncates QPS to three decimals like mysqladmin', function () {
+	$GLOBALS['sql_scripts_status'] = sql_scripts_rows(array('Uptime' => '3', 'Questions' => '2'));
 
-	expect($contents)->toContain("cacti_exec_string('mysqladmin', \$args)");
+	expect(ss_sql())->toBe('Uptime:3 Questions:2 QPS:0.666');
 });
 
-test('ss_sql.php passes host argument as structured mysqladmin flag', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+test('ss_sql() leaves out Flush tables on MariaDB, matching its mysqladmin', function () {
+	$GLOBALS['sql_scripts_status'] = sql_scripts_rows(array(
+		'Open_tables'       => '10',
+		'Opened_tables'     => '17',
+		'Questions'         => '3',
+		'Slow_queries'      => '0',
+		'Threads_connected' => '1',
+		'Uptime'            => '5',
+	));
 
-	expect($contents)->toContain("'--host=' . \$database_hostname");
+	/* mariadb-admin status: Uptime: 5  Threads: 1  Questions: 3  Slow queries: 0  Opens: 17  Open tables: 10  Queries per second avg: 0.600 */
+	expect(ss_sql())->toBe('Uptime:5 Threads:1 Questions:3 SlowQueries:0 Opens:17 OpenTables:10 QPS:0.600');
 });
 
-test('ss_sql.php passes user argument as structured mysqladmin flag', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+test('ss_sql() reports zero QPS for a server that has just started', function () {
+	$GLOBALS['sql_scripts_status'] = sql_scripts_rows(array('Uptime' => '0', 'Questions' => '5'));
 
-	expect($contents)->toContain("'--user=' . \$database_username");
+	expect(ss_sql())->toContain('QPS:0.000');
 });
 
-test('ss_sql.php passes password argument as structured mysqladmin flag', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+test('ss_sql() returns U when the status query returns nothing', function () {
+	$GLOBALS['sql_scripts_status'] = array();
 
-	expect($contents)->toContain("'--password=' . \$database_password");
-});
-
-test('ss_sql.php does not call shell_exec directly', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->not->toContain('shell_exec(');
-});
-
-test('ss_sql.php returns U on empty/null shell_exec output', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	/* Cacti data source scripts must return 'U' on error, never empty string. */
-	expect($contents)->toContain(": 'U'");
-});
-
-// --- runtime: cacti_exec_string is callable and ss_sql() falls back to 'U' ---
-
-test('ss_sql() returns U when cacti_exec_string produces no output', function () use ($ssSqlPhpPath) {
-	/* Bootstrap cacti_exec_string if global.php has not yet been loaded. */
-	if (!function_exists('cacti_exec_string')) {
-		function cacti_exec_string($binary, array $args = array()) {
-			return '';
-		}
-	}
-
-	/* Provide dummy globals so the function can build its command string. */
-	$GLOBALS['database_hostname'] = '127.0.0.1';
-	$GLOBALS['database_username'] = 'cacti_test_no_such_user';
-	$GLOBALS['database_password'] = '';
-
-	/* Include the script in "called by script server" mode so only the
-	 * function definition is loaded, not the top-level print statement. */
-	$called_by_script_server = true;
-	if (!function_exists('ss_sql')) {
-		require $ssSqlPhpPath;
-	}
-
-	/* mysqladmin will fail (bad credentials / no server), cacti_exec_string returns
-	 * null or empty.  ss_sql() must map that to 'U'. */
 	expect(ss_sql())->toBe('U');
-});
 
-// --- no raw variable interpolation in shell commands ---
+	$GLOBALS['sql_scripts_status'] = false;
 
-test('sql.php does not interpolate variables directly in shell strings', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->not->toMatch('/`[^`]*\$database_/');
-});
-
-test('ss_sql.php does not interpolate variables directly in shell strings', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->not->toMatch('/`[^`]*\$database_/');
+	expect(ss_sql())->toBe('U');
 });
