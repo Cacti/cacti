@@ -126,6 +126,7 @@
     "autoload": {
         "psr-4": {
             "Cacti\\Cdef\\": "lib/Cdef/",
+            "Cacti\\Sites\\": "lib/Sites/",
             "Cacti\\Console\\": "lib/Console/",
             "Cacti\\Auth\\": "lib/Auth/"
         }
