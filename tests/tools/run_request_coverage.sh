@@ -21,7 +21,7 @@ CACTI_AGGREGATE_TEST_BROWSER=1 run_probe tests/e2e/aggregate-automation.sh '^(au
 run_probe tests/e2e/accessibility-coverage.sh '^((about|aggregate_graphs|auth_changepassword|auth_resetpassword|automation_templates|color|data_queries|data_templates|graph_realtime|graph_xport|graphs_new|host|host_templates|index|package|permission_denied|plugins|tree|user_admin|user_group_admin|utilities)\.php|include/top_(general_|graph_)?header\.php|install/install\.php|lib/html(_form|_graph)?\.php|tests/e2e/accessibility)' 18275
 run_probe tests/e2e/queue/run.sh '^(lib/api_queue\.php|cli/queue_(admin|worker)\.php|include/global_settings\.php|install/upgrades/1_3_0\.php|tests/e2e/queue/)' 18276
 
-run_probe tests/e2e/sites-coverage.sh '^(sites\.php|lib/sites\.php|lib/Sites/|tests/e2e/(sites|definition_resolution))' 18278
+run_probe tests/e2e/sites-coverage.sh '^(sites\.php|lib/sites\.php|lib/Sites/|tests/e2e/(sites|tests/sites-management|definition_resolution))' 18278
 
 run_php_probe() {
 	local script="$1" pattern="$2"

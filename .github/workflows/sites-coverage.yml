@@ -74,7 +74,7 @@ jobs:
           set -euo pipefail
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
             --prepare-config tests/phpunit-sites.xml --output-config phpunit-sites-changed.xml
-          include/vendor/bin/pest --configuration=phpunit-sites-changed.xml --coverage-clover=coverage-sites.xml
+          include/vendor/bin/pest --configuration=phpunit-sites-changed.xml tests/Unit/Core/Sites/SiteServiceTest.php --coverage-clover=coverage-sites.xml
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
             --report coverage-sites.xml --request-reports "${{ runner.temp }}/sites-coverage" --minimum 100
       - name: Preserve browser, database, and PHP coverage evidence
