@@ -372,6 +372,9 @@ jobs:
 
     - name: Run Cacti poller
       run: |
+        # The daemon startup was tested above. Avoid overlapping its scheduled
+        # cycle with the forced cycle for the same poller ID.
+        sudo systemctl stop cactid
         sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
         if ! grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log; then
           echo "Cacti poller did not finish successfully"
