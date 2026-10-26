@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 09:57+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 10:23+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -148,7 +148,7 @@ msgstr "Ta bort grafer"
 
 #: aggregate_graphs.php
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
-msgstr "De valda aggregatgraferna innehåller element från mer än en grafmall."
+msgstr "De valda aggregerade graferna innehåller element från mer än en grafmall."
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
@@ -163,7 +163,7 @@ msgstr "Tillbaka"
 
 #: aggregate_graphs.php
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
-msgstr "De valda aggregatgraferna verkar inte ha några matchande aggregatmallar."
+msgstr "De valda aggregerade graferna verkar inte ha några matchande aggregatmallar."
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
@@ -184,7 +184,7 @@ msgstr "Det finns för närvarande inga aggregatmallar för de valda äldre aggr
 #: aggregate_graphs.php
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "För att migrera aggregatgraferna nedan till mallbaserade aggregat måste du först skapa en aggregatmall för grafmallen ”%s”."
+msgstr "För att migrera de aggregerade graferna nedan till mallbaserade aggregat måste du först skapa en aggregatmall för grafmallen ”%s”."
 
 #: aggregate_graphs.php
 msgid "Please press 'Return' to continue."
@@ -269,7 +269,7 @@ msgstr "[redigera: %s]"
 
 #: aggregate_graphs.php
 msgid "Aggregate Graph does not Exist"
-msgstr "Aggregatgrafen finns inte"
+msgstr "Den aggregerade grafen finns inte"
 
 #: aggregate_graphs.php lib/html.php lib/html_reports.php utilities.php
 msgid "Details"
@@ -323,7 +323,7 @@ msgstr "RRDtool säger:"
 #: aggregate_graphs.php
 #, php-format
 msgid "Aggregate Graph %s"
-msgstr "Aggregatgraf %s"
+msgstr "Aggregerad graf %s"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 msgid "Prefix Replacement Values"
@@ -331,7 +331,7 @@ msgstr "Ersättningsvärden för prefix"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
-msgstr "Du kan använda dessa ersättningsvärden för prefixet i aggregatgrafen"
+msgstr "Du kan använda dessa ersättningsvärden för prefixet i den aggregerade grafen"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 #: lib/api_aggregate.php
@@ -497,7 +497,7 @@ msgstr " [ Anpassad graflista används – rensa för att återställa ]"
 
 #: aggregate_graphs.php include/global_arrays.php
 msgid "Aggregate Graphs"
-msgstr "Aggregatgrafer"
+msgstr "Aggregerade grafer"
 
 #: aggregate_graphs.php data_debug.php data_sources.php graph_view.php
 #: graphs.php host.php include/global_arrays.php include/global_settings.php
@@ -526,7 +526,7 @@ msgstr "Ingen"
 
 #: aggregate_graphs.php
 msgid "The title for the Aggregate Graphs"
-msgstr "Titeln för aggregatgraferna"
+msgstr "Titeln för de aggregerade graferna"
 
 #: aggregate_graphs.php
 msgid "The internal database identifier for this object"
@@ -538,11 +538,11 @@ msgstr "Aggregatmall"
 
 #: aggregate_graphs.php
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "Aggregatmallen som aggregatgraferna bygger på"
+msgstr "Aggregatmallen som de aggregerade graferna bygger på"
 
 #: aggregate_graphs.php
 msgid "No Aggregate Graphs Found"
-msgstr "Inga aggregatgrafer hittades"
+msgstr "Inga aggregerade grafer hittades"
 
 #: aggregate_templates.php
 msgid "Aggregate Template not found."
@@ -1817,7 +1817,7 @@ msgstr "Automationsobjektet finns inte. Kan inte duplicera."
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande SNMP-alternativ."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande post i SNMP-alternativet."
 
 #: automation_snmp.php
 msgid "SNMP Option:"
@@ -1957,7 +1957,7 @@ msgstr "Inga SNMP-objekt"
 
 #: automation_snmp.php
 msgid "Delete SNMP Option Item"
-msgstr "Ta bort SNMP-alternativ"
+msgstr "Ta bort post i SNMP-alternativ"
 
 #: automation_snmp.php
 msgid "SNMP Option Sets"
@@ -3802,7 +3802,7 @@ msgstr "Datakällans interna databas-ID. Användbart vid automatisering eller fe
 
 #: data_sources.php
 msgid "The number of Graphs and Aggregate Graphs that are using the Data Source."
-msgstr "Antalet grafer och aggregatgrafer som använder datakällan."
+msgstr "Antalet grafer och aggregerade grafer som använder datakällan."
 
 #: data_sources.php
 msgid "The frequency that data is collected for this Data Source."
@@ -4534,7 +4534,7 @@ msgstr "Ändra grafmall"
 
 #: graphs.php
 msgid "Create Aggregate Graph"
-msgstr "Skapa aggregatgraf"
+msgstr "Skapa aggregerad graf"
 
 #: graphs.php
 msgid "Create Aggregate from Template"
@@ -6137,7 +6137,7 @@ msgstr "Med %d timmars mellanrum"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Day"
-msgstr "Var %d:e dag"
+msgstr "Intervall: %d dygn"
 
 #: include/global_arrays.php
 #, php-format
@@ -7118,7 +7118,7 @@ msgstr "Varje vecka"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Weeks"
-msgstr "Var %d:e vecka"
+msgstr "Intervall: %d veckor"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -8731,7 +8731,7 @@ msgstr "SNMP-traps kvitteras aldrig. För att skicka kvitterade SNMP-aviseringar
 
 #: include/global_form.php
 msgid "The new Title of the aggregated Graph."
-msgstr "Den nya titeln för aggregatgrafen."
+msgstr "Den nya titeln för den aggregerade grafen."
 
 #: include/global_form.php
 msgid "Prefix"
@@ -8747,7 +8747,7 @@ msgstr "Inkludera prefixtext"
 
 #: include/global_form.php
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
-msgstr "Inkludera källgrafernas GPRINT-titeltext i aggregatgraferna."
+msgstr "Inkludera källgrafernas GPRINT-titeltext i de aggregerade graferna."
 
 #: include/global_form.php
 msgid "Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items"
@@ -8787,7 +8787,7 @@ msgstr "Omordning av grafer."
 
 #: include/global_form.php
 msgid "Please name this Aggregate Graph."
-msgstr "Ange ett namn för aggregatgrafen."
+msgstr "Ange ett namn för den aggregerade grafen."
 
 #: include/global_form.php
 msgid "Propagation Enabled"
@@ -8799,7 +8799,7 @@ msgstr "Ska grafen ärva inställningarna från mallen?"
 
 #: include/global_form.php
 msgid "Aggregate Graph Settings"
-msgstr "Inställningar för aggregatgrafen"
+msgstr "Inställningar för den aggregerade grafen"
 
 #: include/global_form.php
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
@@ -11530,7 +11530,7 @@ msgstr "Visa enhetsaggregat"
 
 #: include/global_settings.php
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
-msgstr "Om en enhets datakälla ingår i en aggregatgraf visas grafen tillsammans med enhetens övriga grafer"
+msgstr "Om en enhets datakälla ingår i en aggregerad graf visas grafen tillsammans med enhetens övriga grafer"
 
 #: include/global_settings.php
 msgid "Enable Horizontal Scrolling"
@@ -11879,7 +11879,7 @@ msgstr "Kunde inte skapa aggregatsummor eftersom en refererad CDEF är ogiltig e
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates."
-msgstr "Graferna som valts för aggregatgrafen nedan kommer från flera grafmallar. Det går inte att skapa aggregatgrafer från flera grafmallar."
+msgstr "Graferna som valts för den aggregerade grafen nedan kommer från flera grafmallar. Det går inte att skapa aggregerade grafer från flera grafmallar."
 
 #: lib/api_aggregate.php
 msgid "Press 'Return' to return and select different Graphs"
@@ -11887,7 +11887,7 @@ msgstr "Tryck på ”Tillbaka” för att gå tillbaka och välja andra grafer"
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
-msgstr "Graferna som valts för aggregatgrafen använder inte grafmallar. Det går inte att skapa aggregatgrafer från grafer utan mall."
+msgstr "Graferna som valts för den aggregerade grafen använder inte grafmallar. Det går inte att skapa aggregerade grafer från grafer utan mall."
 
 #: lib/api_aggregate.php lib/html.php
 msgid "Graph Item"
