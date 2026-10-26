@@ -109,6 +109,15 @@ The Sunrise fixture checks wrapped titles and readable highlighted options.
 See [Sunrise theme validation](docs/validation/sunrise-theme.md) for the narrow
 details screenshot and browser tests.
 
+## Paper Plane Theme
+
+![Paper Plane inventory with seeded measurements](docs/validation/images/paper-plane-theme-desktop.png)
+
+The Paper Plane fixture checks wrapped titles and readable text on dark,
+alternating, hovered, and selected rows. See
+[Paper Plane theme validation](docs/validation/paper-plane-theme.md) for screenshots
+and browser tests.
+
 ---
 
 ## Release Branches

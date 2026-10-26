@@ -38,6 +38,7 @@ body, table, tr, td, textarea {
 }
 
 body {
+	color: lightgrey;
 	margin: 0px;
 	background-color: white;
 	background-repeat: repeat-y;
@@ -154,14 +155,14 @@ hr.menu {
 /* links */
 
 a, a:active, a:visited {
-	color: #2d4ca8;
+	color: #93CEFF;
 	text-decoration: none;
 	font-size: 12px;
 }
 
 a:hover {
 	text-decoration: none;
-	color: #333333;
+	color: #ffffff;
 }
 
 th .fa {
@@ -657,6 +658,7 @@ label {
 }
 
 .odd {
+	color: #333333;
 	border: none;
 	background: none repeat scroll 0 0 #e8e8e8;
 }
@@ -673,6 +675,7 @@ label {
 }
 
 .even {
+	color: #333333;
 	border: none;
 	background: none repeat scroll 0 0 #e8e8e8;
 }
@@ -683,6 +686,7 @@ label {
 }
 
 .even-alternate {
+	color: #333333;
 	background: none repeat scroll 0 0 #f0f0f0;
 }
 
@@ -1228,7 +1232,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #1b7a3d;
+	color: #7ee787;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1236,9 +1240,21 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: #333333;
+	color: #ffffff;
 	white-space: nowrap;
 	text-decoration: none;
+}
+
+.ui-widget-content a, .ui-widget-content a:visited {
+	color: #2d4ca8;
+}
+
+.ui-widget-content a:hover {
+	color: #333333;
+}
+
+.ui-widget-content a.linkEditMain, .ui-widget-content a.linkEditMain:hover {
+	color: #145c2e;
 }
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
@@ -1368,7 +1384,7 @@ tr>td.textInfo.right {
 	margin-left: auto;
 	margin-right: auto;
 	border-color: #222;
-	color: #333333;
+	color: inherit;
 }
 
 .cactiInstallLoaderSpinnerTheme {
@@ -1380,9 +1396,11 @@ tr>td.textInfo.right {
 	float: left;
 	text-align: left;
 	padding-left: 3px;
-	display: block;
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
 	width: 100%;
-	height: 25px;
+	min-height: 25px;
 	line-height: 25px;
 	font-size: 13px;
 	font-weight: 600;
@@ -1393,12 +1411,14 @@ tr>td.textInfo.right {
 
 .cactiTableTitle {
 	color: white;
-	float: left;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	text-align: left;
 	padding-left: 3px;
 	vertical-align: middle;
 	display: block;
-	height: 25px;
+	min-height: 25px;
 	line-height: 25px;
 	font-size: 13px;
 	font-weight: 600;
@@ -1408,14 +1428,14 @@ tr>td.textInfo.right {
 }
 
 .cactiTableButton {
-	float: right;
+	flex: 0 0 auto;
 	padding: 0px;
 	display: block;
 	text-align: right;
 	vertical-align: middle;
 	font-size: 13px;
 	color: #FFF;
-	height: 25px;
+	min-height: 25px;
 	line-height: 25px;
 	border-color: #222;
 	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
@@ -1435,6 +1455,10 @@ tr>td.textInfo.right {
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -1829,7 +1853,7 @@ tr>td.textInfo.right {
 }
 
 .tableHeader th, .tableHeader td {
-	color: #9d9d9d;
+	color: #aaaaaa;
 	font-weight: 600;
 	vertical-align: middle;
 	text-align: left;
@@ -2411,12 +2435,29 @@ tr.selected td:first-child {
 	border-left: 10px solid #5CB85C !important;
 }
 
+.odd a, .even a, .even-alternate a {
+	color: #2d4ca8;
+}
+
+.odd a.linkEditMain, .even a.linkEditMain, .even-alternate a.linkEditMain {
+	color: #145c2e;
+}
+
+tr.selected a.linkEditMain, tr.selected a.linkEditMain:hover {
+	color: #00008B;
+}
+
+tr.selectable:hover:not(.selected) a {
+	color: #93CEFF;
+}
+
 tr.selected a.linkEditMain:visited {
 	color: #00008B;
 }
 
-tr:not(.selectable) a.linkEditMain:hover {
-	color: orange;
+tr.odd:not(.selectable):not(.selected) a.linkEditMain:hover,
+tr.even:not(.selectable):not(.selected) a.linkEditMain:hover {
+	color: #145c2e;
 }
 
 tr.selectable {
@@ -2424,8 +2465,8 @@ tr.selectable {
 	white-space: nowrap;
 }
 
-tr.selectable:hover a.linkEditMain,
-tr.selectable a.linkEditMain:hover {
+tr.selectable:hover:not(.selected) a.linkEditMain,
+tr.selectable:not(.selected) a.linkEditMain:hover {
 	color: #7ee787;
 }
 
