@@ -373,3 +373,37 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .filterTable input[type='checkbox']:not(.formCheckbox) + label {
 	cursor: pointer;
 }
+
+/* Details titlebars retain ellipsis without moving their controls onto a second line.
+   Scope these rules to the bar so the relocated console toolbar keeps its layout. */
+.cactiTableTitleRow {
+	height: auto;
+	min-height: 2.5rem;
+}
+
+.cactiTableTitleRow .cactiTableTitle {
+	min-width: 0;
+	color: var(--text-color-light);
+}
+
+.cactiTableTitleRow .cactiTableButton {
+	flex: 0 0 auto;
+}
+
+.cactiTableTitleRow .cactiTableButton > span > a {
+	color: var(--text-color-high-contrast) !important;
+}
+
+tr:not(.selectable) a.linkEditMain:hover {
+	color: var(--text-color-high-contrast);
+}
+
+tr.selected,
+tr.selectable:hover {
+	color: var(--text-color-high-contrast);
+}
+
+tr.selected a,
+tr.selectable:hover a {
+	color: var(--text-color-high-contrast);
+}
