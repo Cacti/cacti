@@ -27,7 +27,13 @@ class RequestDispatchTest(unittest.TestCase):
                      'tests/e2e/sites_verify.php', 'tests/e2e/tests/sites-management.spec.ts',
                      'tests/e2e/definition_resolution.py']:
             with self.subTest(path=path):
-                self.dispatch(path, 'sites')
+                self.dispatch(path, ['sites', 'gprint'] if path == 'tests/e2e/definition_resolution.py' else 'sites')
+
+    def test_gprint_change_runs_the_preset_browser_probe(self):
+        for path in ['gprint_presets.php', 'lib/gprint.php', 'lib/Gprint/GprintPresetService.php',
+                     'tests/e2e/gprint_verify.php', 'tests/e2e/tests/gprint-presets.spec.ts']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'gprint')
 
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
@@ -80,7 +86,8 @@ class RequestDispatchTest(unittest.TestCase):
             git('init', '--quiet')
             (repository / 'README.md').write_text('fixture\n')
             for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh'),
-                                 ('installer', 'installer-coverage.sh'), ('sites', 'sites-coverage.sh')]:
+                                 ('installer', 'installer-coverage.sh'), ('sites', 'sites-coverage.sh'),
+                                 ('gprint', 'gprint-coverage.sh')]:
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
@@ -106,7 +113,7 @@ class RequestDispatchTest(unittest.TestCase):
                 env, BASE_COMMIT=base, CACTI_PR_COVERAGE_OUTPUT=str(output)), check=True)
             probe = output / 'probes'
             self.assertEqual(probe.read_text().splitlines() if probe.exists() else [],
-                             [expected] if expected else [])
+                             expected if isinstance(expected, list) else [expected] if expected else [])
 
 
 if __name__ == '__main__':

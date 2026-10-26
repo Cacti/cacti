@@ -21,7 +21,7 @@ def run(*args, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--kind', choices=['cdef', 'vdef', 'sites'], required=True)
+    parser.add_argument('--kind', choices=['cdef', 'vdef', 'sites', 'gprint'], required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
@@ -90,13 +90,13 @@ def main():
                     else:
                         raise RuntimeError('Cacti web server did not become ready')
                     run('node', str(root / 'tests/e2e/node_modules/playwright/cli.js'), 'test',
-                        ('tests/sites-management.spec.ts' if args.kind == 'sites' else 'tests/definition-resolution.spec.ts'), '--project=chromium', '--workers=1',
+                        {'sites': 'tests/sites-management.spec.ts', 'gprint': 'tests/gprint-presets.spec.ts'}.get(args.kind, 'tests/definition-resolution.spec.ts'), '--project=chromium', '--workers=1',
                         '--reporter=line,json', '--output=' + str(output / 'browser'),
                         cwd=root / 'tests/e2e', env=dict(env, CACTI_BASE_URL=origin,
                         CACTI_DEFINITION_KIND=args.kind,
                         PLAYWRIGHT_JSON_OUTPUT_FILE=str(output / 'browser.json')))
-                    if args.kind == 'sites':
-                        run('php', str(app / 'tests/e2e/sites_verify.php'), env=env)
+                    if args.kind in ('sites', 'gprint'):
+                        run('php', str(app / f'tests/e2e/{args.kind}_verify.php'), env=env)
                 finally:
                     server.terminate()
                     server.wait(timeout=10)
