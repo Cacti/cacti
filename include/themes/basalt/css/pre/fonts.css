@@ -1,0 +1,17 @@
+:root {
+    /* font-family variables, the rest of the type scale comes from the parent theme */
+    --font-sans:    "IBM Plex Sans",
+                    Roboto,
+                    Helvetica,
+                    Arial,
+                    system-ui,
+                    sans-serif;
+
+    --font-mono:    "IBM Plex Mono",
+                    "Roboto Mono",
+                    ui-monospace,
+                    SFMono-Regular,
+                    Menlo,
+                    Consolas,
+                    monospace;
+}

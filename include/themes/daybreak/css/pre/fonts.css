@@ -1,0 +1,17 @@
+:root {
+    /* font-family variables, the rest of the type scale comes from the parent theme */
+    --font-sans:    Barlow,
+                    Roboto,
+                    Helvetica,
+                    Arial,
+                    system-ui,
+                    sans-serif;
+
+    --font-mono:    "Roboto Mono",
+                    ui-monospace,
+                    SFMono-Regular,
+                    "SF Mono",
+                    Menlo,
+                    Consolas,
+                    monospace;
+}
