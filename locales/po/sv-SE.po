@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 10:23+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 10:27+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -115,7 +115,7 @@ msgstr "Placera i ett träd (%s)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande aggregatgrafer."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande aggregerade grafer."
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -152,7 +152,7 @@ msgstr "De valda aggregerade graferna innehåller element från mer än en grafm
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "För att migrera aggregatgraferna nedan till mallbaserade aggregat måste de använda samma grafmall. Klicka på ”Tillbaka” och välj enbart aggregatgrafer som använder samma grafmall."
+msgstr "För att migrera de aggregerade graferna nedan till mallbaserade aggregat måste de använda samma grafmall. Klicka på ”Tillbaka” och välj enbart aggregerade grafer som använder samma grafmall."
 
 #: aggregate_graphs.php auth_changepassword.php auth_profile.php
 #: automation_networks.php automation_snmp.php graphs.php host.php
@@ -167,11 +167,11 @@ msgstr "De valda aggregerade graferna verkar inte ha några matchande aggregatma
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
-msgstr "Det måste finnas en aggregatmall för att migrera aggregatgraferna nedan. Klicka på ”Tillbaka” och skapa en aggregatmall innan du försöker igen."
+msgstr "Det måste finnas en aggregatmall för att migrera de aggregerade graferna nedan. Klicka på ”Tillbaka” och skapa en aggregatmall innan du försöker igen."
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Klicka på ”Fortsätt” för att migrera följande aggregatgrafer till den aggregatmall som du väljer nedan."
+msgstr "Klicka på ”Fortsätt” för att migrera följande aggregerade grafer till den aggregatmall som du väljer nedan."
 
 #: aggregate_graphs.php
 msgid "Aggregate Template:"
@@ -192,7 +192,7 @@ msgstr "Klicka på ”Tillbaka” för att fortsätta."
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Klicka på ”Fortsätt” för att kombinera följande aggregatgrafer till en enda aggregatgraf."
+msgstr "Klicka på ”Fortsätt” för att kombinera följande aggregerade grafer till en enda aggregerad graf."
 
 #: aggregate_graphs.php
 msgid "Aggregate Name:"
@@ -228,7 +228,7 @@ msgstr "Du har inte skapat några rapporter."
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
-msgstr "Klicka på ”Fortsätt” för att konvertera följande aggregatgrafer till vanliga grafer."
+msgstr "Klicka på ”Fortsätt” för att konvertera följande aggregerade grafer till vanliga grafer."
 
 #: aggregate_graphs.php
 msgid "Convert to normal Graph(s)"
@@ -236,7 +236,7 @@ msgstr "Konvertera till vanliga grafer"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Klicka på ”Fortsätt” för att koppla följande grafer till aggregatgrafen."
+msgstr "Klicka på ”Fortsätt” för att koppla följande grafer till den aggregerade grafen."
 
 #: aggregate_graphs.php
 msgid "Associate Graph(s)"
@@ -252,7 +252,7 @@ msgstr "Koppla bort grafer"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
-msgstr "Klicka på ”Fortsätt” för att placera följande aggregatgrafer under trädgrenen."
+msgstr "Klicka på ”Fortsätt” för att placera följande aggregerade grafer under trädgrenen."
 
 #: aggregate_graphs.php host.php
 msgid "Destination Branch:"
@@ -285,7 +285,7 @@ msgstr "Förhandsvisa"
 
 #: aggregate_graphs.php
 msgid "Aggregate Graph Accessed does not Exist"
-msgstr "Den begärda aggregatgrafen finns inte"
+msgstr "Den begärda aggregerade grafen finns inte"
 
 #: aggregate_graphs.php
 msgid "Turn Off Graph Debug Mode"
@@ -4665,7 +4665,7 @@ msgstr "Tillämpa föreslagen namngivning på graferna igen"
 
 #: graphs.php
 msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
-msgstr "Klicka på ”Fortsätt” för att skapa en aggregatgraf från de valda graferna."
+msgstr "Klicka på ”Fortsätt” för att skapa en aggregerad graf från de valda graferna."
 
 #: graphs.php
 msgid "The following Data Sources are in use by these Graphs:"
@@ -4677,11 +4677,11 @@ msgstr "Vänligen bekräfta"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "Välj en aggregatmall och klicka på ”Fortsätt” för att skapa aggregatgrafen. Klicka annars på ”Avbryt” för att gå tillbaka."
+msgstr "Välj en aggregatmall och klicka på ”Fortsätt” för att skapa den aggregerade grafen. Klicka annars på ”Avbryt” för att gå tillbaka."
 
 #: graphs.php
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
-msgstr "Det finns för närvarande inga aggregatmallar för den här grafmallen. Skapa en aggregatmall för de valda grafernas grafmall och försök igen, eller skapa en aggregatgraf utan mall."
+msgstr "Det finns för närvarande inga aggregatmallar för den här grafmallen. Skapa en aggregatmall för de valda grafernas grafmall och försök igen, eller skapa en aggregerad graf utan mall."
 
 #: graphs.php
 msgid "Press 'Return' to return and select different Graphs."
