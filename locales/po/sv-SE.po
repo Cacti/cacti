@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-26 11:04+0000\n"
+"PO-Revision-Date: 2026-10-26 11:30+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -179,7 +179,8 @@ msgstr ""
 #: aggregate_graphs.php:818
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
 msgstr ""
-"De valda aggregerade graferna verkar inte ha några matchande aggregatmallar."
+"De valda aggregerade graferna verkar inte ha några matchande mallar för "
+"aggregerade grafer."
 
 #: aggregate_graphs.php:819
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist."
@@ -190,14 +191,15 @@ msgstr ""
 #: aggregate_graphs.php:844
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
 msgstr ""
-"Det finns för närvarande inga aggregatmallar för de valda äldre aggregaten."
+"Det finns för närvarande inga mallar för aggregerade grafer för de valda "
+"äldre aggregaten."
 
 #: aggregate_graphs.php:845
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
 msgstr ""
 "För att migrera de aggregerade graferna nedan till mallbaserade aggregat "
-"måste du först skapa en aggregatmall för grafmallen ”%s”."
+"måste du först skapa en mall för aggregerad graf för grafmallen ”%s”."
 
 #: aggregate_graphs.php:864
 msgid "You currently have no reports defined."
@@ -241,7 +243,7 @@ msgstr "Migrera till aggregerade grafer"
 
 #: aggregate_graphs.php:900 aggregate_graphs.php:2121 graphs.php:1872
 msgid "Aggregate Template"
-msgstr "Aggregatmall"
+msgstr "Mall för aggregerad graf"
 
 #: aggregate_graphs.php:906
 msgid "Click 'Continue' to Combine the following Aggregates into an Aggregate Graph."
@@ -794,7 +796,7 @@ msgstr "Objektets interna databasidentifierare"
 
 #: aggregate_graphs.php:2124
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "Aggregatmallen som de aggregerade graferna bygger på"
+msgstr "Mallen för aggregerad graf som de aggregerade graferna bygger på"
 
 #: aggregate_graphs.php:2151
 msgid "No Aggregate Graphs Found"
@@ -819,16 +821,16 @@ msgstr "Ta bort aggregatmallar"
 #: aggregate_templates.php:363
 #, php-format
 msgid "Aggregate Template [edit: %s]"
-msgstr "Aggregatmall [redigera: %s]"
+msgstr "Mall för aggregerad graf [redigera: %s]"
 
 #: aggregate_templates.php:365
 msgid "Aggregate Template [new]"
-msgstr "Aggregatmall [ny]"
+msgstr "Mall för aggregerad graf [ny]"
 
 #: aggregate_templates.php:586 aggregate_templates.php:675
 #: include/global_arrays.php:2919
 msgid "Aggregate Templates"
-msgstr "Aggregatmallar"
+msgstr "Mallar för aggregerade grafer"
 
 #: aggregate_templates.php:600 aggregate_templates.php:603
 #: automation_templates.php:1341 automation_templates.php:1344
@@ -852,8 +854,8 @@ msgstr "Mallens titel"
 #: aggregate_templates.php:685
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
 msgstr ""
-"Aggregatmallar som används kan inte tas bort. En mall används om ett "
-"aggregat hänvisar till den."
+"Mallar för aggregerade grafer som används kan inte tas bort. En mall används "
+"om en aggregerad graf hänvisar till den."
 
 #: aggregate_templates.php:685 cdef.php:869 color.php:679
 #: color_templates.php:917 data_input.php:868 data_queries.php:1406
@@ -878,7 +880,7 @@ msgstr "Grafmall"
 
 #: aggregate_templates.php:709
 msgid "No Aggregate Templates Found"
-msgstr "Inga aggregatmallar hittades"
+msgstr "Inga mallar för aggregerade grafer hittades"
 
 #: auth_2fa.php:115
 msgid "Failed to verify token"
@@ -3860,12 +3862,14 @@ msgstr "Färgmall [ny]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Färgmallen ”%s” tillämpades på %d aggregatmallar och %d aggregat utan mall"
+"Färgmallen ”%s” tillämpades på %d mallar för aggregerade grafer och %d "
+"aggregat utan mall"
 
 #: color_templates.php:764
 #, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr "Inga aggregatmallar eller grafer använde färgmallen ”%s”."
+msgstr ""
+"Inga mallar för aggregerade grafer eller grafer använde färgmallen ”%s”."
 
 #: color_templates.php:818 color_templates.php:832 color_templates.php:835
 #: color_templates.php:903 include/global_arrays.php:2895
@@ -3875,8 +3879,8 @@ msgstr "Färgmallar"
 #: color_templates.php:919
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
 msgstr ""
-"Färgmallar som används kan inte tas bort. En färgmall används om en "
-"aggregatmall hänvisar till den."
+"Färgmallar som används kan inte tas bort. En färgmall används om en mall för "
+"aggregerad graf hänvisar till den."
 
 #: color_templates.php:953
 msgid "No Color Templates Found"
@@ -5200,7 +5204,7 @@ msgstr "Datakällor [ inte enhetsbaserade ]"
 #: data_sources.php:1375
 #, php-format
 msgid "Data Sources [ %s ]"
-msgstr "Datakällor [ %s]"
+msgstr "Datakällor [%s]"
 
 #: data_sources.php:1456
 msgid "Bad Indexes"
@@ -5917,7 +5921,7 @@ msgstr "Visa"
 
 #: graph_view.php:728 graph_view.php:1011 include/global_arrays.php:1350
 msgid "View Graphs"
-msgstr "Se grafer"
+msgstr "Visa grafer"
 
 #: graph_view.php:730
 msgid "Add to a Report"
@@ -6097,7 +6101,7 @@ msgstr "Datakällor [Ingen enhet]"
 #: graphs.php:796
 #, php-format
 msgid "Data Sources [%s]"
-msgstr "Datakällor [ %s]"
+msgstr "Datakällor [%s]"
 
 #: graphs.php:811 include/global_arrays.php:1494 include/global_form.php:1786
 msgid "Data Template"
@@ -6391,9 +6395,9 @@ msgstr "Vald grafmall"
 #, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
 msgstr ""
-"Välj en grafmall som ska tillämpas på den här grafen. Observera att du bara "
-"kan ändra grafmallar till en 100 %% kompatibel grafmall, vilket innebär att "
-"den innehåller identiska datakällor."
+"Välj en grafmall som ska tillämpas på den här grafen. Du kan bara byta till "
+"en grafmall som är 100 %% kompatibel, vilket innebär att den innehåller "
+"identiska datakällor."
 
 #: graphs.php:2328
 msgid "Choose the Device that this Graph belongs to."
@@ -11267,11 +11271,11 @@ msgstr ""
 
 #: include/global_form.php:2133
 msgid "Aggregate Template Name"
-msgstr "Aggregatmallens namn"
+msgstr "Namn på mall för aggregerad graf"
 
 #: include/global_form.php:2134
 msgid "Please name this Aggregate Template."
-msgstr "Ange ett namn för aggregatmallen."
+msgstr "Ange ett namn för mallen för aggregerad graf."
 
 #: include/global_form.php:2141
 msgid "Source Graph Template"
@@ -11279,11 +11283,11 @@ msgstr "Källgrafmall"
 
 #: include/global_form.php:2142
 msgid "The Graph Template that this Aggregate Template is based upon."
-msgstr "Grafmallen som aggregatmallen bygger på."
+msgstr "Grafmallen som mallen för aggregerad graf bygger på."
 
 #: include/global_form.php:2150
 msgid "Aggregate Template Settings"
-msgstr "Inställningar för aggregatmallen"
+msgstr "Inställningar för mall för aggregerad graf"
 
 #: include/global_form.php:2227
 msgid "The name of this Color Template."
@@ -11693,8 +11697,8 @@ msgstr "Spårning av datakällor"
 #: include/global_settings.php:338
 msgid "A developer only option to trace the creation of Data Sources mainly around checks for uniqueness"
 msgstr ""
-"Enbart ett utvecklingsalternativ för att spåra skapandet av datakällor, "
-"huvudsakligen kring kontroller av unikhet"
+"Ett alternativ för utvecklare som spårar skapandet av datakällor, främst "
+"kontroller av att de är unika"
 
 #: include/global_settings.php:343
 msgid "Log Ignored General Errors"
@@ -11827,7 +11831,7 @@ msgstr ""
 
 #: include/global_settings.php:449
 msgid "Preferred Language Processor"
-msgstr "Föredragen språkprocessor"
+msgstr "Föredragen språkhanterare"
 
 #: include/global_settings.php:450
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  If none is selected Cacti will attempt to use the first one found."
