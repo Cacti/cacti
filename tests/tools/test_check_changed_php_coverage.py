@@ -50,6 +50,45 @@ class ChangedPhpCoverageTest(unittest.TestCase):
                     GATE.validate_package_contract({'contract': contract}, path, root)
                 (root / name).write_text('fixture source\n')
 
+    def test_library_evidence_requires_completion_and_every_current_producer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            producers = ['tests/fixtures/Core/LibraryBehavior.php',
+                         'tests/e2e/library-behavior.sh', 'tests/Helpers/RequestCoverage.php',
+                         'tests/e2e/Dockerfile', 'tests/e2e/entrypoint.sh',
+                         'tests/e2e/docker-compose.yml', 'tests/fixtures/snmp-coverage/Dockerfile',
+                         'tests/fixtures/snmp-coverage/snmpd.conf', 'cacti.sql', 'composer.lock',
+                         'resource/snmp_queries/interface.xml',
+                         'install/templates/Local_Linux_Machine.xml.gz',
+                         'install/templates/NetSNMP_Device.xml.gz']
+            hashes = {}
+            for name in producers:
+                source = root / name
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_text('fixture source\n')
+                hashes[name] = hashlib.sha256(source.read_bytes()).hexdigest()
+            contract = {'name': 'library-behavior', 'complete': True, 'assertions': 749,
+                        'producers': producers, 'hashes': hashes}
+            path = root / 'library-behavior-test.json'
+            GATE.validate_fixture_contract({'contract': contract}, path, root)
+            for missing in ['name', 'complete', 'assertions', 'producers', 'hashes']:
+                invalid = {key: value for key, value in contract.items() if key != missing}
+                with self.subTest(missing=missing), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': invalid}, path, root)
+            for value in [0, 616, 737, 748, True, '749']:
+                with self.subTest(assertions=value), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': dict(contract, assertions=value)}, path, root)
+            with self.assertRaises(ValueError):
+                GATE.validate_fixture_contract({'contract': dict(contract, complete=False)}, path, root)
+            for name in producers:
+                invalid = dict(contract, hashes={key: value for key, value in hashes.items() if key != name})
+                with self.subTest(producer=name), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': invalid}, path, root)
+                (root / name).write_text('changed fixture source\n')
+                with self.subTest(stale=name), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': contract}, path, root)
+                (root / name).write_text('fixture source\n')
+
     def test_diff_uses_merge_base_and_ignores_deletion_only_files(self):
         diff = ('diff --git a/lib/a.php b/lib/a.php\n+++ b/lib/a.php\n'
                 '@@ -4,0 +5,2 @@\n+return true;\n+}\n'
