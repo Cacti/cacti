@@ -29,7 +29,7 @@ $using_guest_account = false;
 
 if (!$is_request_ajax) { ?>
 <!DOCTYPE html>
-<html lang='<?php print CACTI_LOCALE; ?>'>
+<html<?php print get_html_document_attributes(); ?>>
 <head>
 	<?php html_common_header($page_title); ?>
 </head>
