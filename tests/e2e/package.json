@@ -7,7 +7,9 @@
         "test": "playwright test",
         "test:htmx": "playwright test tests/htmx-loader.spec.ts",
         "test:smoke": "playwright test tests/login-smoke.spec.ts",
-        "install-browsers": "playwright install --with-deps chromium"
+        "install-browsers": "playwright install --with-deps chromium",
+        "test:a11y": "playwright test tests/develop-theme-accessibility.spec.ts",
+        "a11y:summary": "node a11y-summary.mjs"
     },
     "devDependencies": {
         "@axe-core/playwright": "4.13.0",
