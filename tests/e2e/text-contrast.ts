@@ -1,9 +1,16 @@
 /* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
 // Self-contained so Playwright can evaluate it in the browser.
 export function textContrast(element: Element): number {
+	// Computed color-mix() values can use color(srgb ...), not only rgb().
+	const canvas = document.createElement('canvas');
+	canvas.width = canvas.height = 1;
+	const context = canvas.getContext('2d', { willReadFrequently: true })!;
 	const rgba = (value: string) => {
-		const parts = value.match(/[\d.]+/g)!.map(Number);
-		return [parts[0], parts[1], parts[2], parts[3] ?? 1];
+		context.clearRect(0, 0, 1, 1);
+		context.fillStyle = value;
+		context.fillRect(0, 0, 1, 1);
+		const pixel = context.getImageData(0, 0, 1, 1).data;
+		return [pixel[0], pixel[1], pixel[2], pixel[3] / 255];
 	};
 	const over = (fg: number[], bg: number[]) => bg.map((v, i) => fg[i] * fg[3] + v * (1 - fg[3]));
 	let surfaces = [[255, 255, 255]];

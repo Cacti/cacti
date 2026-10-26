@@ -7,7 +7,7 @@ import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
-for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
+for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
 			test(`${theme} titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
@@ -37,7 +37,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern', 'paw',
 					expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
 					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
 				}
-				if (theme === 'deepness' || theme === 'hollyberry' || theme === 'modern' || theme === 'paw' || theme === 'raspberry' || theme === 'sunrise' || theme === 'paper-plane') {
+				if (theme === 'carrot' || theme === 'deepness' || theme === 'hollyberry' || theme === 'modern' || theme === 'paw' || theme === 'raspberry' || theme === 'sunrise' || theme === 'paper-plane') {
 					const textBoxes = await page.locator('.cactiTableTitle').evaluate(element => {
 						const range = document.createRange();
 						range.selectNodeContents(element);
@@ -51,7 +51,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern', 'paw',
 				expect(boxes.title.right).toBeLessThanOrEqual(boxes.tools.left + 1);
 				expect(boxes.content.top).toBeGreaterThanOrEqual(boxes.bar.bottom);
 				if (title === 'Status') {
-					if (theme === 'dark') {
+					if (theme === 'dark' || theme === 'carrot') {
 						expect(boxes.bar.height).toBeGreaterThanOrEqual(22);
 						expect(boxes.bar.height).toBeLessThan(24);
 					} else expect(boxes.bar.height).toBe(['deepness', 'raspberry'].includes(theme) ? 28 : theme === 'sunrise' ? 22 : 25);
@@ -605,3 +605,21 @@ for (const palette of ['dark', 'light']) {
 		await expect(page.getByRole('dialog')).toHaveCount(0);
 	});
 }
+
+for (const state of ['selected', 'selectable selected']) {
+ test(`hollyberry Up status stays readable on ${state} rows`, async ({ page }) => {
+  await page.setContent(`<table><tr class="${state}"><td><span class="deviceStatus deviceUp">Up</span></td></tr></table>`);
+  await installThemeCss(page, 'include/themes/hollyberry/main.css');
+  expect(await page.locator('span').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+  await page.locator('span').hover();
+  expect(await page.locator('span').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+ });
+}
+
+test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
+ await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p><p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
+ const ratios = await page.locator('p').evaluateAll(elements => elements.map(element => element.getAttribute('style')));
+ expect(ratios).toHaveLength(2);
+ expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(await page.locator('p').first().evaluate(textContrast), 2);
+ expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
+});
