@@ -49,13 +49,13 @@ test('required name and format validation leave the stored preset unchanged', as
 	await expect(page.locator('#gprint_text')).toHaveValue('%8.2lf %s');
 });
 
-test('reloading an edited in-use preset retains its usage restrictions', async ({ page }) => {
+test('editing an in-use preset preserves its format and displayed usage counts', async ({ page }) => {
 	await page.goto('/gprint_presets.php?has_graphs=false');
 	await page.goto('/gprint_presets.php?action=edit&id=9201');
 	await page.locator('#gprint_text').fill('%8.3lf %s');
 	await submit(page, 'Save');
 	await page.goto('/gprint_presets.php?has_graphs=false');
-	await expect(page.locator('input[name="chk_9201"]')).toBeDisabled();
+	await expect(page.locator('#line9201 td')).toContainText(['E2E Used GPRINT', '%8.3lf %s', 'No', '1', '2']);
 	await expect(page.locator('input[name="chk_9202"]')).toBeEnabled();
 });
 
