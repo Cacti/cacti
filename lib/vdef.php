@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/Vdef/DatabaseVdefRepository.php';
+require_once __DIR__ . '/Vdef/VdefResolver.php';
+
 /**
  * get_vdef_item_name - resolves a single VDEF item into its text-based representation
  *
@@ -54,29 +57,7 @@ function get_vdef_item_name(int $vdef_item_id) : string {
  * @return string A text-based representation of the vdef
  */
 function get_vdef(int $vdef_id, bool $display = false) : string {
-	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', [$vdef_id]);
-
-	$i           = 0;
-	$vdef_string = '';
-
-	if (cacti_sizeof($vdef_items)) {
-		foreach ($vdef_items as $vdef_item) {
-			if ($i > 0) {
-				$vdef_string .= ($display ? ', ' : ',');
-			}
-
-			if ($vdef_item['type'] == 5) {
-				$current_vdef_id = $vdef_item['value'];
-				$vdef_string .= get_vdef($current_vdef_id, $display);
-			} else {
-				$vdef_string .= get_vdef_item_name($vdef_item['id']);
-			}
-
-			$i++;
-		}
-	}
-
-	return $vdef_string;
+	return (new \Cacti\Vdef\VdefResolver(new \Cacti\Vdef\DatabaseVdefRepository()))->resolve($vdef_id, $display);
 }
 
 function preset_vdef_form_list() : array {
