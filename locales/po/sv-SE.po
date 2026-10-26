@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 11:29+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 12:57+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -94,19 +94,19 @@ msgstr "Placera grafer på rapporten"
 
 #: aggregate_graphs.php
 msgid "Migrate Aggregate to use a Template"
-msgstr "Migrera aggregatet till en mall"
+msgstr "Migrera aggregerad graf till en mall"
 
 #: aggregate_graphs.php
 msgid "Create New Aggregate from Aggregates"
-msgstr "Skapa nytt aggregat från aggregat"
+msgstr "Skapa aggregerad graf från aggregerade grafer"
 
 #: aggregate_graphs.php
 msgid "Associate with Aggregate"
-msgstr "Koppla till aggregat"
+msgstr "Koppla till aggregerad graf"
 
 #: aggregate_graphs.php
 msgid "Disassociate with Aggregate"
-msgstr "Koppla bort från aggregat"
+msgstr "Koppla bort från aggregerad graf"
 
 #: aggregate_graphs.php graphs.php host.php
 #, php-format
@@ -163,28 +163,28 @@ msgstr "Tillbaka"
 
 #: aggregate_graphs.php
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
-msgstr "De valda aggregerade graferna verkar inte ha några matchande aggregatmallar."
+msgstr "De valda aggregerade graferna verkar inte ha några matchande mallar för aggregerade grafer."
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
-msgstr "Det måste finnas en aggregatmall för att migrera de aggregerade graferna nedan. Klicka på ”Tillbaka” och skapa en aggregatmall innan du försöker igen."
+msgstr "Det måste finnas en mall för aggregerad graf för att migrera graferna nedan. Klicka på ”Tillbaka” och skapa en mall innan du försöker igen."
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Klicka på ”Fortsätt” för att migrera följande aggregerade grafer till den aggregatmall som du väljer nedan."
+msgstr "Klicka på ”Fortsätt” för att migrera följande aggregerade grafer till mallen för aggregerad graf som du väljer nedan."
 
 #: aggregate_graphs.php
 msgid "Aggregate Template:"
-msgstr "Aggregatmall:"
+msgstr "Mall för aggregerad graf:"
 
 #: aggregate_graphs.php
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
-msgstr "Det finns för närvarande inga aggregatmallar för de valda äldre aggregaten."
+msgstr "Det finns för närvarande inga mallar för aggregerade grafer för de valda äldre aggregaten."
 
 #: aggregate_graphs.php
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "För att migrera de aggregerade graferna nedan till mallbaserade aggregat måste du först skapa en aggregatmall för grafmallen ”%s”."
+msgstr "För att migrera de aggregerade graferna nedan till mallbaserade aggregat måste du först skapa en mall för aggregerad graf för grafmallen ”%s”."
 
 #: aggregate_graphs.php
 msgid "Please press 'Return' to continue."
@@ -200,7 +200,7 @@ msgstr "Aggregatets namn:"
 
 #: aggregate_graphs.php
 msgid "New Aggregate"
-msgstr "Nytt aggregat"
+msgstr "Ny aggregerad graf"
 
 #: aggregate_graphs.php graphs.php host.php
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
@@ -391,7 +391,7 @@ msgstr "Standard"
 
 #: aggregate_graphs.php
 msgid "Part of Aggregate"
-msgstr "Del av aggregat"
+msgstr "Del av aggregerad graf"
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -461,7 +461,7 @@ msgstr "ID"
 
 #: aggregate_graphs.php
 msgid "Included in Aggregate"
-msgstr "Ingår i aggregatet"
+msgstr "Ingår i den aggregerade grafen"
 
 #: aggregate_graphs.php graph_realtime.php graph_templates.php graph_view.php
 #: graphs.php lib/html_graph.php lib/html_tree.php lib/spikekill.php
@@ -607,7 +607,7 @@ msgstr "Grafmall"
 
 #: aggregate_templates.php
 msgid "No Aggregate Templates Found"
-msgstr "Inga aggregatmallar hittades"
+msgstr "Inga mallar för aggregerade grafer hittades"
 
 #: auth_changepassword.php
 msgid "You cannot use a previously entered password!"
@@ -2512,8 +2512,8 @@ msgstr[1] "Duplicera färgmallar"
 #: color_templates.php
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "Klicka på ”Fortsätt” för att synkronisera alla aggregatgrafer med den valda färgmallen."
-msgstr[1] "Klicka på ”Fortsätt” för att synkronisera alla aggregatgrafer med de valda färgmallarna."
+msgstr[0] "Klicka på ”Fortsätt” för att synkronisera alla aggregerade grafer med den valda färgmallen."
+msgstr[1] "Klicka på ”Fortsätt” för att synkronisera alla aggregerade grafer med de valda färgmallarna."
 
 #: color_templates.php
 msgid "Synchronize Color Template"
@@ -2550,12 +2550,12 @@ msgstr "Färgmall [ny]"
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Färgmallen ”%s” tillämpades på %d aggregatmallar och %d aggregat utan mall"
+msgstr "Färgmallen ”%s” tillämpades på %d mallar för aggregerade grafer och %d aggregat utan mall"
 
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr "Inga aggregatmallar eller grafer använde färgmallen ”%s”."
+msgstr "Inga mallar för aggregerade grafer eller grafer använde färgmallen ”%s”."
 
 #: color_templates.php include/global_arrays.php
 msgid "Color Templates"
@@ -2563,7 +2563,7 @@ msgstr "Färgmallar"
 
 #: color_templates.php
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
-msgstr "Färgmallar som används kan inte tas bort. En färgmall används om en aggregatmall hänvisar till den."
+msgstr "Färgmallar som används kan inte tas bort. En färgmall används om en mall för aggregerad graf hänvisar till den."
 
 #: color_templates.php
 msgid "No Color Templates Found"
@@ -4538,7 +4538,7 @@ msgstr "Skapa aggregerad graf"
 
 #: graphs.php
 msgid "Create Aggregate from Template"
-msgstr "Skapa aggregat från mall"
+msgstr "Skapa aggregerad graf från mall"
 
 #: graphs.php host.php
 msgid "Apply Automation Rules"
@@ -7594,7 +7594,7 @@ msgstr "SNMP-autentiseringsprotokoll (v3)"
 
 #: include/global_form.php
 msgid "Choose the SNMPv3 Authorization Protocol."
-msgstr "Välj auktoriseringsprotokoll för SNMPv3."
+msgstr "Välj autentiseringsprotokoll för SNMPv3."
 
 #: include/global_form.php
 msgid "SNMP Username (v3)"
@@ -7602,7 +7602,7 @@ msgstr "SNMP-användarnamn (v3)"
 
 #: include/global_form.php
 msgid "SNMP v3 username for this device."
-msgstr "SNMP v3-användarnamn för den här enheten."
+msgstr "SNMPv3-användarnamn för den här enheten."
 
 #: include/global_form.php
 msgid "SNMP Password (v3)"
@@ -7610,7 +7610,7 @@ msgstr "SNMP-lösenord (v3)"
 
 #: include/global_form.php
 msgid "SNMP v3 password for this device."
-msgstr "SNMP v3-lösenord för den här enheten."
+msgstr "SNMPv3-lösenord för den här enheten."
 
 #: include/global_form.php
 msgid "SNMP Privacy Protocol (v3)"
@@ -8807,11 +8807,11 @@ msgstr "Ett prefix för alla GPRINT-rader, till exempel för att skilja olika v�
 
 #: include/global_form.php
 msgid "Aggregate Template Name"
-msgstr "Aggregatmallens namn"
+msgstr "Namn på mall för aggregerad graf"
 
 #: include/global_form.php
 msgid "Please name this Aggregate Template."
-msgstr "Ange ett namn för aggregatmallen."
+msgstr "Ange ett namn för mallen för aggregerad graf."
 
 #: include/global_form.php
 msgid "Source Graph Template"
@@ -8819,11 +8819,11 @@ msgstr "Källgrafmall"
 
 #: include/global_form.php
 msgid "The Graph Template that this Aggregate Template is based upon."
-msgstr "Grafmallen som aggregatmallen bygger på."
+msgstr "Grafmallen som mallen för aggregerad graf bygger på."
 
 #: include/global_form.php
 msgid "Aggregate Template Settings"
-msgstr "Inställningar för aggregatmallen"
+msgstr "Inställningar för mall för aggregerad graf"
 
 #: include/global_form.php
 msgid "The name of this Color Template."
@@ -10456,7 +10456,7 @@ msgstr "Trådar per process"
 
 #: include/global_settings.php
 msgid "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well."
-msgstr "Standardantalet tillåtna trådar per process. OBS! Från och med Cacti 1.2+ hanteras denna inställning i datasamlaren och här är den bara en förinställning. Ett högre antal med Spine förbättrar prestandan. Kontrollera dock att du har tillräckligt många MySQL-/MariaDB-anslutningar för ekvationen: connections = data collectors * processes * (threads + script servers). Du behöver också ha tillräckligt med lediga anslutningar för användarinloggningar."
+msgstr "Standardantalet tillåtna trådar per process. OBS! Från och med Cacti 1.2+ hanteras denna inställning i datainsamlaren och här är den bara en förinställning. Ett högre antal med Spine förbättrar prestandan. Kontrollera dock att du har tillräckligt många MySQL-/MariaDB-anslutningar för ekvationen: connections = data collectors * processes * (threads + script servers). Du behöver också ha tillräckligt med lediga anslutningar för användarinloggningar."
 
 #: include/global_settings.php
 msgid "Authentication Method"
@@ -11871,7 +11871,7 @@ msgstr "Funktionerna shell_exec() och/eller exec() är blockerade."
 
 #: lib/aggregate.php
 msgid "Display Graphs from this Aggregate"
-msgstr "Visa grafer från detta aggregat"
+msgstr "Visa grafer från denna aggregerade graf"
 
 #: lib/api_aggregate.php
 msgid "Unable to create aggregate totals because a referenced CDEF is invalid or empty."
@@ -12360,7 +12360,7 @@ msgstr "Cacheuppdateringar"
 
 #: lib/clog_webapi.php
 msgid "Threshold"
-msgstr "Tröskel"
+msgstr "Tröskelvärde"
 
 #: lib/clog_webapi.php tree.php
 msgid "Display"
@@ -17278,7 +17278,7 @@ msgstr "VARNING: Cactis insamlingscykel överskred insamlingsintervallet med "
 #: poller.php
 #, php-format
 msgid "WARNING: PollerID:%s with Name:%s is in Heartbeat Status"
-msgstr "VARNING: PollerID:%s med namn:%s är i hjärtslagsstatus"
+msgstr "VARNING: Datainsamlaren med ID %s och namn %s är i hjärtslagsläge"
 
 #: poller.php
 msgid "Poller in Heartbeat Mode"
@@ -17721,7 +17721,7 @@ msgstr "Radera"
 #: rrdcleaner.php
 msgctxt "dropdown action"
 msgid "Archive"
-msgstr "Arkiv"
+msgstr "Arkivera"
 
 #: rrdcleaner.php
 msgid "RRD Files"
