@@ -266,3 +266,55 @@ test('empty nested definitions and stored items fail closed', function () : void
 		->and(get_cdef(23))->toBeNull()
 		->and(get_cdef(24))->toBeNull();
 });
+
+test('legacy recursive CDEF calls update caller-owned state and reuse its cache', function () : void {
+	$GLOBALS['cdef_test_items'][10] = ['type' => '6', 'value' => '8'];
+	$GLOBALS['cdef_test_lists'][1]  = [['id' => 10, 'type' => '6', 'value' => '8']];
+	$visited                        = [99 => true];
+	$expansion                      = 7;
+	$cache                          = [88 => 'existing'];
+	$cache_bytes                    = 8;
+
+	expect(get_cdef_recursive(1, $visited, $expansion, $cache, $cache_bytes))->toBe('8')
+		->and($visited)->toBe([99 => true])
+		->and($expansion)->toBe(8)
+		->and($cache)->toBe([88 => 'existing', 1 => '8'])
+		->and($cache_bytes)->toBe(9);
+
+	$queries = $GLOBALS['cdef_test_queries'];
+	expect(get_cdef_recursive(1, $visited, $expansion, $cache, $cache_bytes))->toBe('8')
+		->and($GLOBALS['cdef_test_queries'])->toBe($queries)
+		->and($expansion)->toBe(8)
+		->and($cache_bytes)->toBe(9);
+});
+
+test('legacy recursive CDEF failures preserve caller ancestors and safety budgets', function () : void {
+	$visited     = [99 => true];
+	$expansion   = 4096;
+	$cache       = [];
+	$cache_bytes = 0;
+
+	expect(get_cdef_recursive(1, $visited, $expansion, $cache, $cache_bytes))->toBeNull()
+		->and($visited)->toBe([99 => true])
+		->and($expansion)->toBe(4097)
+		->and($GLOBALS['cdef_test_queries'])->toBe([]);
+
+	$expansion                     = 0;
+	$GLOBALS['cdef_test_lists'][1] = [['id' => 0, 'type' => '5', 'value' => 99]];
+	expect(get_cdef_recursive(1, $visited, $expansion, $cache, $cache_bytes))->toBeNull()
+		->and($visited)->toBe([99 => true])
+		->and($cache)->toBe([])
+		->and($cache_bytes)->toBe(0);
+});
+
+test('legacy item dictionaries and definition data remain live between calls', function () : void {
+	$GLOBALS['cdef_test_items'][10] = ['type' => '1', 'value' => 7];
+	$GLOBALS['cdef_test_lists'][1]  = [['id' => 10, 'type' => '1', 'value' => 7]];
+	expect(get_cdef(1))->toBe('Maximum');
+
+	$GLOBALS['cdef_functions'][7] = 'Changed';
+	expect(get_cdef(1))->toBe('Changed');
+
+	$GLOBALS['cdef_test_items'][10] = ['type' => '6', 'value' => '12'];
+	expect(get_cdef(1))->toBe('12');
+});
