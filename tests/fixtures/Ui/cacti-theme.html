@@ -7,7 +7,7 @@
 		<p>Browser E2E fixture · Synthetic monitoring data · 26 October 2026, 09:30 UTC</p>
 		<div class="cactiTableTitleRow"><div class="cactiTableTitle">Device inventory · North campus</div><div class="cactiTableButton"><span>4 devices</span></div></div>
 		<table class="cactiTable" aria-label="Device inventory">
-			<thead><tr><th>Device</th><th>Status</th><th>Last ping</th><th>Traffic</th></tr></thead>
+			<thead><tr><th scope="col">Device</th><th scope="col">Status</th><th scope="col">Last ping</th><th scope="col">Traffic</th></tr></thead>
 			<tbody>
 				<tr class="odd"><td><a class="linkEditMain" href="#edge-router-01">edge-router-01</a></td><td>Up</td><td>1.8 ms</td><td>640 Mb/s</td></tr>
 				<tr class="even"><td><a class="linkEditMain" href="#distribution-switch-02">distribution-switch-02</a></td><td>Recovering</td><td>12.4 ms</td><td>185 Mb/s</td></tr>
@@ -20,6 +20,7 @@
 		<div id="details" style="display:none">
 			<div class="cactiTableTitleRow"><div class="cactiTableTitle">Analyze Cacti Log Details [ Warnings/Errors ]</div><div class="cactiTableButton"><span>2 alerts</span></div></div>
 			<table class="cactiTable" aria-label="Poller alerts">
+				<thead><tr><th scope="col">Time</th><th scope="col">Message</th></tr></thead>
 				<tr class="odd"><td>09:29</td><td>WARNING: distribution-switch-02 recovered after 12.4 ms.</td></tr>
 				<tr class="even"><td>09:30</td><td>ERROR: branch-firewall-03 did not respond to SNMP.</td></tr>
 			</table>
