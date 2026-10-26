@@ -7,17 +7,17 @@ import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
-for (const theme of ['cacti', 'dark']) {
+for (const theme of ['cacti', 'dark', 'deepness']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
 			test(`${theme} titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
 				await page.setViewportSize({ width, height: 800 });
-				await page.setContent(`<!DOCTYPE html><div class="${theme === 'dark' ? 'cactiTable' : ''}" style="width:calc(100vw - 80px)">` +
+				await page.setContent(`<!DOCTYPE html><div class="${theme !== 'cacti' ? 'cactiTable' : ''}" style="width:calc(100vw - 80px)">` +
 					'<div class="cactiTableTitleRow"><div class="cactiTableTitle"></div>' +
 					'<div class="cactiTableButton"><span>Status</span></div></div>' +
 					'<table class="cactiTable"><tr><td>Panel content</td></tr></table></div>');
 				await page.locator('.cactiTableTitle').evaluate((element, { title, theme }) => {
-					if (theme === 'dark') {
+					if (theme !== 'cacti') {
 						const span = document.createElement('span');
 						span.textContent = title;
 						element.append(span);
@@ -37,13 +37,24 @@ for (const theme of ['cacti', 'dark']) {
 					expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
 					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
 				}
+				if (theme === 'deepness') {
+					const textBoxes = await page.locator('.cactiTableTitle').evaluate(element => {
+						const range = document.createRange();
+						range.selectNodeContents(element);
+						return Array.from(range.getClientRects(), rect => ({ right: rect.right, bottom: rect.bottom }));
+					});
+					for (const text of textBoxes) {
+						expect(text.right).toBeLessThanOrEqual(boxes.tools.left + 1);
+						expect(text.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
+					}
+				}
 				expect(boxes.title.right).toBeLessThanOrEqual(boxes.tools.left + 1);
 				expect(boxes.content.top).toBeGreaterThanOrEqual(boxes.bar.bottom);
 				if (title === 'Status') {
 					if (theme === 'dark') {
 						expect(boxes.bar.height).toBeGreaterThanOrEqual(22);
 						expect(boxes.bar.height).toBeLessThan(24);
-					} else expect(boxes.bar.height).toBe(25);
+					} else expect(boxes.bar.height).toBe(theme === 'deepness' ? 28 : 25);
 				}
 			});
 		}
@@ -52,7 +63,7 @@ for (const theme of ['cacti', 'dark']) {
 }
 
 
-for (const theme of ['cacti', 'carrot', 'dark']) {
+for (const theme of ['cacti', 'carrot', 'dark', 'deepness']) {
 	for (const row of theme !== 'cacti' ? ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'] : ['', 'odd', 'even']) {
 		for (const linkClass of ['', 'linkEditMain']) {
 			test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
@@ -70,6 +81,25 @@ for (const theme of ['cacti', 'carrot', 'dark']) {
 			});
 		}
 	}
+}
+
+for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected']) {
+	test(`deepness status and import messages remain readable on ${row || 'page'} rows`, async ({ page }, info) => {
+		const classes = ['deviceUp', 'deviceDown', 'deviceUnknown', 'deviceDisabled', 'deviceRecovering', 'deviceError',
+			'deviceDownMuted', 'deviceThreshold', 'deviceUnmonitored', 'deviceWarning', 'deviceAlert',
+			'newObject', 'updateObject', 'foundDependency', 'textError', 'textWarning', 'txtErrorText', 'failed', 'accessRestricted',
+			'accessRestrictedItem', 'badpassword', 'notAssociated', 'running', 'unmetDependency'];
+		await page.setContent('<!DOCTYPE html><table><tr class="' + row + '"><td>' +
+			classes.map(name => `<span class="${name}" style="display:block">${name}</span>`).join('') + '</td></tr></table>');
+		await installThemeCss(page, 'include/themes/deepness/main.css');
+		for (const state of ['rest', 'hover']) {
+			if (state === 'hover') await page.locator('td').hover();
+			const ratios = [];
+			for (const name of classes) ratios.push({ name, ratio: await page.locator('.' + name).evaluate(textContrast) });
+			await info.attach(state, { body: JSON.stringify(ratios), contentType: 'application/json' });
+			for (const { name, ratio } of ratios) expect.soft(ratio, `${name} ${state}`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
 }
 
 test('Carrot titlebars, navigation selections, rows, and active controls retain text contrast', async ({ page }) => {
@@ -135,7 +165,7 @@ test('Dark hovered rows retain text contrast across their green gradient', async
 	await expect(page.locator('a')).toHaveCSS('color', 'rgb(255, 250, 250)');
 });
 
-for (const theme of ['cacti', 'carrot', 'dark']) {
+for (const theme of ['cacti', 'carrot', 'dark', 'deepness']) {
 	test(`${theme} seeded device inventory and details work with desktop and narrow dialogs`, async ({ page }, info) => {
 		await page.setViewportSize({ width: 1100, height: 380 });
 		await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8').replaceAll('Cacti theme', `${theme[0].toUpperCase() + theme.slice(1)} theme`));

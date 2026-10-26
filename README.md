@@ -51,6 +51,14 @@ The Dark browser fixture exercises keyboard focus, gradient contrast, and
 wrapped details titles using synthetic monitoring data. See
 [Dark theme validation](docs/validation/dark-theme.md) for screenshots and tests.
 
+## Deepness Theme
+
+![Deepness inventory with seeded device measurements](docs/validation/images/deepness-theme-desktop.png)
+
+The Deepness fixture checks wrapped titles and readable status messages on dark
+rows. See [Deepness theme validation](docs/validation/deepness-theme.md) for the
+narrow details screenshot and browser tests.
+
 ---
 
 ## Release Branches
