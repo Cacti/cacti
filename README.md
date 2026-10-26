@@ -26,6 +26,15 @@ Core capabilities include:
 
 ---
 
+## Plugin theme compatibility
+
+![Alarm Manager conditions with synthetic monitoring data](docs/validation/images/plugin-alarmmanager-desktop.png)
+
+The browser matrix covers Thold, MacTrack, Syslog, Alarm Manager, HMIB,
+FlowView, and Monitor across ten theme variants. See
+[plugin theme validation](docs/validation/plugin-theme-compatibility.md)
+for populated screenshots, pinned revisions, test scope, and reproduction.
+
 ## Cacti Theme
 
 ![Cacti theme device inventory with synthetic monitoring data](docs/validation/images/cacti-theme-desktop.png)
