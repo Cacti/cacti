@@ -134,7 +134,7 @@ hr.menu {
 /* links */
 
 a, a:active, a:visited {
-	color: rgba(255,157,0,1);
+	color: #7a287a;
 	text-decoration: none;
 	font-size: 12px;
 }
@@ -1061,7 +1061,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #a84ca8;
+	color: #7a287a;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1069,7 +1069,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #4f004f;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1205,46 +1205,39 @@ legend {
 }
 
 .cactiTableTitleRow {
-	color: white;
+	color: #111111;
 	float: left;
 	text-align: left;
-	height: 25px;
-	display: table-column;
+	min-height: 25px;
+	display: flex;
+	align-items: center;
 	width: 100%;
 	font-size: 1em;
 	font-weight: 700;
-	background: rgba(0, 161, 11,0.9);
-	background: -moz-linear-gradient(top, rgba(255,4,0,0.9) 0%, rgba(3,159,11,0.9) 99%, rgba(0,161,11,0.9) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	background: rgba(0, 161, 11,0.55);
+	background: -moz-linear-gradient(top, rgba(255,4,0,0.55) 0%, rgba(3,159,11,0.55) 99%, rgba(0,161,11,0.55) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,4,0,0.55) 0%,rgba(3,159,11,0.55) 99%,rgba(0,161,11,0.55) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,4,0,0.55) 0%,rgba(3,159,11,0.55) 99%,rgba(0,161,11,0.55) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
 .cactiTableTitle {
-	color: white;
-	float: left;
+	color: #111111;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	text-align: left;
 	line-height: 22px;
-	display: table-column;
+	display: block;
 	font-size: 1em;
 	font-weight: 700;
-	background: rgba(0, 161, 11,0.7);
-	background: -moz-linear-gradient(top, rgba(255,4,0,0.7) 0%, rgba(3,159,11,0.7) 99%, rgba(0,161,11,0.7) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
 .cactiTableButton {
-	float: right;
+	flex: 0 0 auto;
 	line-height: 22px;
-	display: table-column;
+	display: block;
 	text-align: right;
-	background: rgba(0, 161, 11,0.7);
-	background: -moz-linear-gradient(top, rgba(255,4,0,0.7) 0%, rgba(3,159,11,0.7) 99%, rgba(0,161,11,0.7) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 	white-space: nowrap;
 }
 
@@ -1257,10 +1250,14 @@ legend {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	color: white;
+	color: #111111;
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -2129,7 +2126,7 @@ div.submenu span {
 }
 
 .tabs nav a.selected {
-	color: white;
+	color: #111111;
 	border-bottom: 1px solid rgba(162,117,162,0.8);
 	background: rgba(162,117,162,0.8);
 }
@@ -2191,7 +2188,7 @@ tr th:last-child .checkbox {
 	display: block;
 	padding: 2px 4px 2px 5px;
 	background: #ccc;
-	color: rgba(0, 161, 11,0.9);
+	color: #1b5e20;
 	text-decoration: none;
 }
 
@@ -2211,16 +2208,16 @@ th:last-child {
 }
 
 tr.selected {
-	color: white;
-	background: rgba(0, 161, 11,1);
-	background: -moz-linear-gradient(top, rgba(255,4,0,1) 0%, rgba(3,159,11,1) 99%, rgba(0,161,11,1) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,1) 0%,rgba(3,159,11,1) 99%,rgba(0,161,11,1) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,1) 0%,rgba(3,159,11,1) 99%,rgba(0,161,11,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	color: #111111;
+	background: rgba(0, 161, 11,0.55);
+	background: -moz-linear-gradient(top, rgba(255,4,0,0.55) 0%, rgba(3,159,11,0.55) 99%, rgba(0,161,11,0.55) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,4,0,0.55) 0%,rgba(3,159,11,0.55) 99%,rgba(0,161,11,0.55) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,4,0,0.55) 0%,rgba(3,159,11,0.55) 99%,rgba(0,161,11,0.55) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
 tr.selected a.linkEditMain:visited {
-	color: yellow;
+	color: #111111;
 }
 
 tr:not(.selectable) a.linkEditMain:hover {
@@ -2228,7 +2225,11 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable a.linkEditMain:hover {
-	color: yellow;
+	color: #4f004f;
+}
+
+tr.selected a.linkEditMain:hover {
+	color: #111111;
 }
 
 tr.selectable:hover:not(.selected) {
@@ -2244,7 +2245,7 @@ tr.selectable td {
 }
 
 tr.selected a {
-	color: yellow;
+	color: #111111;
 }
 
 #nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
@@ -2256,10 +2257,10 @@ tr.selected a {
 }
 
 #nav li a.selected {
-	color: white;
-	background: -moz-linear-gradient(top, rgba(255,4,0,0.7) 0%, rgba(3,159,11,0.7) 99%, rgba(0,161,11,0.7) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	color: #111111;
+	background: -moz-linear-gradient(top, rgba(255,4,0,0.4) 0%, rgba(3,159,11,0.4) 99%, rgba(0,161,11,0.4) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,4,0,0.4) 0%,rgba(3,159,11,0.4) 99%,rgba(0,161,11,0.4) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,4,0,0.4) 0%,rgba(3,159,11,0.4) 99%,rgba(0,161,11,0.4) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
@@ -2539,11 +2540,11 @@ tr#realtime td:first-child {
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
-	color: white;
-	background: rgba(0, 161, 11,0.9);
-	background: -moz-linear-gradient(top, rgba(255,4,0,0.9) 0%, rgba(3,159,11,0.9) 99%, rgba(0,161,11,0.9) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	color: #111111;
+	background: rgba(0, 161, 11,0.55);
+	background: -moz-linear-gradient(top, rgba(255,4,0,0.55) 0%, rgba(3,159,11,0.55) 99%, rgba(0,161,11,0.55) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,4,0,0.55) 0%,rgba(3,159,11,0.55) 99%,rgba(0,161,11,0.55) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,4,0,0.55) 0%,rgba(3,159,11,0.55) 99%,rgba(0,161,11,0.55) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
@@ -2988,7 +2989,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
 	background: rgba(0, 161, 11,0.9);
-	color: white;
+	color: #111111;
 }
 /* ======================================================================== */
 /* jsTree glyph icons - node type colors, sizing, and open/close carets     */

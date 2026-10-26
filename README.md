@@ -59,6 +59,14 @@ The Deepness fixture checks wrapped titles and readable status messages on dark
 rows. See [Deepness theme validation](docs/validation/deepness-theme.md) for the
 narrow details screenshot and browser tests.
 
+## Hollyberry Theme
+
+![Hollyberry inventory with seeded device measurements](docs/validation/images/hollyberry-theme-desktop.png)
+
+The Hollyberry fixture checks wrapped titles and readable text across its
+red-to-green gradients. See [Hollyberry theme validation](docs/validation/hollyberry-theme.md)
+for the narrow details screenshot and browser tests.
+
 ---
 
 ## Release Branches
