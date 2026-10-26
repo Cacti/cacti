@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-21 18:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 08:24+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -306,7 +306,7 @@ msgstr "Förhandsvisning av sammanställning saknas"
 #: aggregate_graphs.php
 #, php-format
 msgid "Aggregate Preview %s"
-msgstr "Sammanfattning Förhandsgranskning [ %s]"
+msgstr "Förhandsvisning av sammanställning %s"
 
 #: aggregate_graphs.php graph.php graphs.php
 msgid "RRDtool Command:"
@@ -1761,11 +1761,11 @@ msgstr "Senast startad"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Running"
-msgstr "Kör"
+msgstr "Pågår"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Idle"
-msgstr "Sysslolös"
+msgstr "Vilande"
 
 #: automation_networks.php include/global_arrays.php
 #: include/global_settings.php lib/html_reports.php user_admin.php
@@ -1793,7 +1793,7 @@ msgstr "Rensad filtrerad"
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande SNMP-alternativ (er)."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande SNMP-alternativ."
 
 #: automation_snmp.php
 msgid "Click 'Continue' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options."
@@ -1853,20 +1853,20 @@ msgstr "Sekvens"
 
 #: automation_snmp.php lib/html_reports.php
 msgid "Sequence of Item."
-msgstr "Sekvens av föremålet."
+msgstr "Postens ordningsföljd."
 
 #: automation_snmp.php
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr "SNMP Option Set [redigera: %s]"
+msgstr "SNMP-alternativsats [redigera: %s]"
 
 #: automation_snmp.php
 msgid "SNMP Option Set [new]"
-msgstr "SNMP Option Set [ny]"
+msgstr "SNMP-alternativsats [ny]"
 
 #: automation_snmp.php
 msgid "Fill in the name of this SNMP Option Set."
-msgstr "Fyll i namnet på denna SNMP-alternativsats."
+msgstr "Ange namnet på den här uppsättningen SNMP-inställningar."
 
 #: automation_snmp.php
 msgid "Automation SNMP Options"
@@ -1884,7 +1884,7 @@ msgstr "Version"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Community"
-msgstr "Gemenskaphet"
+msgstr "Community-sträng"
 
 #: automation_snmp.php lib/functions.php
 msgid "Port"
@@ -5254,7 +5254,7 @@ msgstr "Odefinierat"
 
 #: host.php include/global_settings.php lib/html.php lib/html_reports.php
 msgid "Site"
-msgstr "Webbplats"
+msgstr "Plats"
 
 #: host.php
 msgid "Export Devices"
@@ -6335,7 +6335,7 @@ msgstr "Hantering"
 
 #: include/global_arrays.php sites.php tree.php
 msgid "Sites"
-msgstr "Webbsidor"
+msgstr "Platser"
 
 #: include/global_arrays.php tree.php user_admin.php user_group_admin.php
 msgid "Trees"
@@ -7053,7 +7053,7 @@ msgstr "slutar inte med"
 
 #: include/global_arrays.php
 msgid "matches"
-msgstr "träffar"
+msgstr "Matchar"
 
 #: include/global_arrays.php
 msgid "is not equal to"
@@ -7578,7 +7578,7 @@ msgstr "SNMP-communitysträng"
 
 #: include/global_form.php
 msgid "Fill in the SNMP read community for this device."
-msgstr "Fyll i SNMP-läsgemenskapen för den här enheten."
+msgstr "Ange SNMP-communitysträngen för läsåtkomst till den här enheten."
 
 #: include/global_form.php
 msgid "SNMP Security Level"
@@ -7710,7 +7710,7 @@ msgstr "SNMP-försök"
 
 #: include/global_form.php
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
-msgstr "Det maximala antalet försök att nå en enhet via en SNMP-läsning innan du ger upp."
+msgstr "Det maximala antalet försök att nå en enhet med SNMP-communitysträngen för läsåtkomst innan försöken avbryts."
 
 #: include/global_form.php
 msgid "A useful name for this Data Storage and Polling Profile."
@@ -9043,11 +9043,11 @@ msgstr "Vägen till din snmpget binära."
 
 #: include/global_settings.php
 msgid "snmpbulkwalk Binary Path"
-msgstr "snmpbulkwalk binär sökväg"
+msgstr "Sökväg till snmpbulkwalk"
 
 #: include/global_settings.php
 msgid "The path to your snmpbulkwalk binary."
-msgstr "Vägen till din snmpbulkwalk binära."
+msgstr "Sökvägen till programmet snmpbulkwalk."
 
 #: include/global_settings.php
 msgid "snmpgetnext Binary Path"
@@ -11014,19 +11014,19 @@ msgstr "DNS-alternativ"
 
 #: include/global_settings.php
 msgid "Primary DNS IP Address"
-msgstr "Primär DNS IP-adress"
+msgstr "Primär DNS-servers IP-adress"
 
 #: include/global_settings.php
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
-msgstr "Ange den primära DNS-IP-adressen för att använda för omvända sökningar."
+msgstr "Ange IP-adressen till den primära DNS-servern för omvända uppslagningar."
 
 #: include/global_settings.php
 msgid "Secondary DNS IP Address"
-msgstr "Sekundär DNS IP-adress"
+msgstr "Sekundär DNS-servers IP-adress"
 
 #: include/global_settings.php
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
-msgstr "Ange den sekundära DNS-IP-adressen för att använda för omvända sökningar."
+msgstr "Ange IP-adressen till den sekundära DNS-servern för omvända uppslagningar."
 
 #: include/global_settings.php
 msgid "DNS Timeout"
@@ -11655,7 +11655,7 @@ msgstr "Miniatyr-höjd"
 
 #: include/global_settings.php
 msgid "The height of Thumbnail graphs in pixels."
-msgstr "Höjden av miniatyrbilderna i pixlar."
+msgstr "Grafminiatyrernas höjd i bildpunkter."
 
 #: include/global_settings.php
 msgid "Thumbnail Width"
@@ -12100,7 +12100,7 @@ msgstr "Upptid:"
 
 #: lib/api_device.php
 msgid "Hostname:"
-msgstr "& Värddatornamn:"
+msgstr "Värdnamn:"
 
 #: lib/api_device.php
 msgid "Location:"
@@ -12376,7 +12376,7 @@ msgstr "Äldsta först"
 
 #: lib/clog_webapi.php
 msgid "Matches"
-msgstr "Matcher"
+msgstr "Matchar"
 
 #: lib/clog_webapi.php
 msgid "Does Not Match"
@@ -12933,7 +12933,7 @@ msgstr "Blad"
 
 #: lib/functions.php lib/html_tree.php
 msgid "Non Query Based"
-msgstr "Icke-frågan baserad"
+msgstr "Inte frågebaserad"
 
 #: lib/functions.php
 #, php-format
@@ -13606,7 +13606,7 @@ msgstr "Till"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "End Date Selector"
-msgstr "Slutdatumväljare"
+msgstr "Slutdatumsväljare"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Shift Time Backward"
@@ -14142,7 +14142,7 @@ msgstr "Träd:"
 
 #: lib/html_tree.php
 msgid "Site:"
-msgstr "Webbplats:"
+msgstr "Plats:"
 
 #: lib/html_tree.php
 msgid "Leaf:"
@@ -14634,7 +14634,7 @@ msgstr "Installerad"
 
 #: lib/installer.php
 msgid "Required"
-msgstr "Obligatorisk"
+msgstr "Krävs"
 
 #: lib/installer.php
 msgid "PHP - Module Support (Optional)"
@@ -15419,7 +15419,7 @@ msgstr "Datainsamlare (er) som inte hittades när du försökte synkronisera"
 
 #: lib/ldap.php
 msgid "Authentication Success"
-msgstr "Autentiseringsframgång"
+msgstr "Autentisering lyckades"
 
 #: lib/ldap.php
 msgid "Authentication Failure"
@@ -17822,7 +17822,7 @@ msgstr "Resultat av testmeddelande"
 
 #: sites.php
 msgid "Site Information"
-msgstr "Sidinformation"
+msgstr "Platsinformation"
 
 #: sites.php
 msgid "The primary name for the Site."
@@ -19684,7 +19684,7 @@ msgstr "Förbättra uppdatering efter behov:"
 
 #: utilities.php
 msgid "Running Processes:"
-msgstr "Löpande processer:"
+msgstr "Körande processer:"
 
 #: utilities.php
 msgid "Total Poller Items:"
