@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 09:13+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 09:25+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -1142,7 +1142,7 @@ msgstr "Grafregler"
 #: automation_graph_rules.php graphs.php include/global_arrays.php
 #: include/global_form.php
 msgid "Data Query"
-msgstr "Dataförfrågning"
+msgstr "Datafråga"
 
 #: automation_graph_rules.php automation_networks.php automation_tree_rules.php
 #: data_debug.php data_sources.php host.php include/global_arrays.php
@@ -3246,7 +3246,7 @@ msgstr "Lägg till ett föreslaget namn för datakällan"
 #: data_queries.php
 #, php-format
 msgid "The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue."
-msgstr "Det dataförfrågnings-ID [%s] som du försöker redigera finns inte.  Kör Repair_database.php CLI-skriptet för att lösa detta databasproblem."
+msgstr "Datafrågan med ID [%s] som du försöker redigera finns inte. Kör kommandoradsskriptet repair_database.php för att åtgärda databasproblemet."
 
 #: data_queries.php
 #, php-format
@@ -3304,7 +3304,7 @@ msgstr "Datafrågans namn"
 
 #: data_queries.php
 msgid "The name of this Data Query."
-msgstr "Namnet på denna datasökning."
+msgstr "Datafrågans namn."
 
 #: data_queries.php graph_templates.php
 msgid "The internal ID for this Graph Template.  Useful when performing automation or debugging."
@@ -3316,15 +3316,15 @@ msgstr "Datafrågor som används kan inte raderas. Används definieras som refer
 
 #: data_queries.php
 msgid "The number of Graphs using this Data Query."
-msgstr "Antalet Grafer som använder denna datasökning."
+msgstr "Antalet grafer som använder datafrågan."
 
 #: data_queries.php
 msgid "The number of Graphs Templates using this Data Query."
-msgstr "Antalet grafmallar som använder denna datasökning."
+msgstr "Antalet grafmallar som använder datafrågan."
 
 #: data_queries.php
 msgid "The Data Input Method used to collect data for Data Sources associated with this Data Query."
-msgstr "Datainmatningsmetoden används för att samla in data för datakällor som är associerade med denna datasökning."
+msgstr "Datainmatningsmetoden som används för att samla in data till datakällor som är kopplade till datafrågan."
 
 #: data_queries.php
 msgid "No Data Queries Found"
@@ -5214,7 +5214,7 @@ msgstr "Inga associerade datasökningar."
 
 #: host.php host_templates.php
 msgid "Add Data Query"
-msgstr "Lägg till datasökning"
+msgstr "Lägg till datafråga"
 
 #: host.php
 msgid "Add Data Query to Device"
@@ -5390,7 +5390,7 @@ msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande data Frågor 
 #: host_templates.php
 #, php-format
 msgid "Data Query Name: %s"
-msgstr "Datasökningsnamn: %s"
+msgstr "Datafrågans namn: %s"
 
 #: host_templates.php
 #, php-format
@@ -8523,7 +8523,7 @@ msgstr "Den fullständiga sökvägen till XML-filen innehåller definitioner fö
 
 #: include/global_form.php
 msgid "Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query."
-msgstr "Välj inmatningsmetod för denna datasökning. Denna inmatningsmetod definierar hur data samlas in för varje enhet som är associerad med datasökningen."
+msgstr "Välj inmatningsmetod för datafrågan. Metoden anger hur data samlas in för varje enhet som är kopplad till datafrågan."
 
 #: include/global_form.php
 msgid "Choose the Graph Template to use for this Data Query Graph Template item."
@@ -8667,11 +8667,11 @@ msgstr "Om rutan är markerad tar Cacti bort de grafobjekt från grafmallen och 
 
 #: include/global_form.php package_import.php
 msgid "Replace Data Query Suggested Value Patterns"
-msgstr "Ersätt dataförfrågan Föreslagna värdemönster"
+msgstr "Ersätt datafrågans föreslagna värdemönster"
 
 #: include/global_form.php
 msgid "Replace Data Source and Graph Template Suggested Value Records for Data Queries.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
-msgstr "Ersätt datakälla och grafmall Föreslagna värdeposter för dataförfrågningar.  Grafer och datakällor kommer att få nya namn efter antingen en omindexering av dataförfrågningar eller genom att använda den påtvingade processen Ersätt föreslagna värden."
+msgstr "Ersätt föreslagna värden för datakällor och grafmallar för datafrågor. Grafer och datakällor får nya namn när datafrågan omindexeras eller när ersättning av föreslagna värden tvingas fram."
 
 #: include/global_form.php include/global_settings.php package_import.php
 msgid "Graph Template Image Format"
@@ -9893,7 +9893,7 @@ msgstr "När du visar rullgardinsmenyerna för enhetsnamnsfilter raderas till do
 
 #: include/global_settings.php
 msgid "Graph/Data Source/Data Query Settings"
-msgstr "Graf / Datakälla / Datasökningsinställningar"
+msgstr "Inställningar för grafer, datakällor och datafrågor"
 
 #: include/global_settings.php
 msgid "Maximum Title Length"
@@ -9909,7 +9909,7 @@ msgstr "Datakälla Fältlängd"
 
 #: include/global_settings.php
 msgid "The maximum Data Query field length."
-msgstr "Fältlängden för maximal dataförfrågan."
+msgstr "Den maximala fältlängden för datafrågor."
 
 #: include/global_settings.php
 msgid "Graph Creation"
@@ -9929,7 +9929,7 @@ msgstr "Alla typer"
 
 #: include/global_settings.php
 msgid "By Template/Data Query"
-msgstr "Med mall / datasökning"
+msgstr "Efter mall/datafråga"
 
 #: include/global_settings.php
 msgid "Log Management"
@@ -12575,7 +12575,7 @@ msgstr "Hittade index: %s"
 #: lib/data_query.php
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "Klicka för att visa utdata från datasökningen för fältet '%s'"
+msgstr "Klicka för att visa datafrågans utdata för fältet ”%s”."
 
 #: lib/data_query.php
 #, php-format
@@ -17032,7 +17032,7 @@ msgstr "Filen *.xml.gz på din dator som ska laddas upp och importeras."
 
 #: package_import.php
 msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
-msgstr "Ersätt datakälla och diagrammall Föreslagna värdeposter.  Grafer och datakällor kommer att få nya namn efter antingen en omindexering av dataförfrågningar eller genom att använda den påtvingade processen Ersätt föreslagna värden."
+msgstr "Ersätt föreslagna värden för datakällor och grafmallar. Grafer och datakällor får nya namn när datafrågan omindexeras eller när ersättning av föreslagna värden tvingas fram."
 
 #: package_import.php
 msgid "Package Import"
