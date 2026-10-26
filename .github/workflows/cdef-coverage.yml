@@ -15,6 +15,9 @@ on:
       - 'lib/cdef.php'
       - 'lib/Cdef/**'
       - 'lib/rrd.php'
+      - 'tests/e2e/definition_resolution.py'
+      - 'tests/e2e/definition_resolution_setup.php'
+      - 'tests/e2e/tests/definition-resolution.spec.ts'
       - 'tests/phpunit-cdef.xml'
       - 'tests/phpunit-cdef-integration.xml'
       - 'tests/phpunit.xml'
@@ -39,6 +42,9 @@ on:
       - 'lib/cdef.php'
       - 'lib/Cdef/**'
       - 'lib/rrd.php'
+      - 'tests/e2e/definition_resolution.py'
+      - 'tests/e2e/definition_resolution_setup.php'
+      - 'tests/e2e/tests/definition-resolution.spec.ts'
       - 'tests/phpunit-cdef.xml'
       - 'tests/phpunit-cdef-integration.xml'
       - 'tests/phpunit.xml'
@@ -125,3 +131,29 @@ jobs:
           CACTI_TEST_DB_USER: cacti
           CACTI_TEST_DB_PASS: cacti
         run: include/vendor/bin/pest --configuration=tests/phpunit-cdef-integration.xml
+
+      - name: Setup browser tooling
+        uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7
+        with:
+          tool_versions: node 22.22.2
+          install_args: node
+
+      - name: Install locked browser dependencies
+        working-directory: tests/e2e
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npx --no-install playwright install --with-deps chromium
+
+      - name: Exercise authenticated CDEF browser flows
+        env:
+          CACTI_DEFINITION_DB_IMAGE: ghcr.io/cacti/ci-images/mariadb:11.4@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430
+        run: python3 tests/e2e/definition_resolution.py --kind cdef --output "${{ runner.temp }}/cdef-browser"
+
+      - name: Preserve browser and PHP request coverage evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: cdef-browser-coverage
+          path: ${{ runner.temp }}/cdef-browser
+          if-no-files-found: warn
