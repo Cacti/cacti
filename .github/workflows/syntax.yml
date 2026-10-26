@@ -172,7 +172,9 @@ jobs:
       run: php -v
 
     - name: Test administrative alert hook and email fallback
-      run: php -d sendmail_path=tests/fixtures/Core/admin-alert-sendmail.sh tests/Unit/Core/AdminAlert/admin_alert_test.php
+      run: |
+        php -d sendmail_path=tests/fixtures/Core/admin-alert-sendmail.sh tests/Unit/Core/AdminAlert/admin_alert_test.php
+        php tests/Unit/Core/AdminAlert/cactid_startup_test.php
 
     # Install as the runner before Apache setup transfers ownership to www-data.
     - name: Validate composer.json and composer.lock
