@@ -125,6 +125,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
+            "Cacti\\Gprint\\": "lib/Gprint/",
             "Cacti\\Console\\": "lib/Console/",
             "Cacti\\Auth\\": "lib/Auth/"
         }
