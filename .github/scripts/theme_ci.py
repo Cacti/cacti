@@ -92,7 +92,7 @@ def summarize(directory, suite, fixture_id, test_outcome, coverage_outcome, root
     elif suite == 'core' and coverage_outcome == 'skipped':
         lines += ['Changed CSS coverage did not run. PR and merge-queue core checks require it; pushes and manual runs have no comparison base.', '']
     if suite == 'rtm':
-        lines += ['Scope: tables, console, filters, settings, and plugin inventory. '
+        lines += ['Scope: tables, console, filters, settings, and plugin inventory. ' +
                   'FusionCharts rendering is not covered because the public fixture omits the runtime assets.', '']
     lines += [f"Core revision: `{metadata['core_revision']}`.", '']
     if 'fixture' in metadata:
