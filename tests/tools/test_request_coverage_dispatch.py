@@ -22,6 +22,12 @@ class RequestDispatchTest(unittest.TestCase):
     def test_html_change_runs_the_browser_probe(self):
         self.dispatch('lib/html.php', 'accessibility')
 
+    def test_sites_change_runs_the_sites_browser_probe(self):
+        for path in ['sites.php', 'lib/sites.php', 'lib/Sites/SiteService.php',
+                     'tests/e2e/sites_verify.php', 'tests/e2e/definition_resolution.py']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'sites')
+
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
 
@@ -73,7 +79,7 @@ class RequestDispatchTest(unittest.TestCase):
             git('init', '--quiet')
             (repository / 'README.md').write_text('fixture\n')
             for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh'),
-                                 ('installer', 'installer-coverage.sh')]:
+                                 ('installer', 'installer-coverage.sh'), ('sites', 'sites-coverage.sh')]:
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')

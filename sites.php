@@ -24,6 +24,7 @@
 
 require('./include/auth.php');
 require_once CACTI_PATH_LIBRARY . '/CactiForm.php';
+require_once CACTI_PATH_LIBRARY . '/sites.php';
 
 $actions = [
 	1 => __('Delete'),
@@ -260,22 +261,7 @@ function form_save() : void {
 		$save['notes']        = form_input_validate(gnrv('notes'), 'notes', '', true, 3);
 
 		if (!is_error_message()) {
-			$site_id = sql_save($save, 'sites');
-
-			if ($site_id) {
-				raise_message(1);
-
-				if (empty($save['id'])) {
-					/**
-					 * Save the last time a device/site was created/updated
-					 * for Caching.
-					 */
-					set_config_option('time_last_change_site', time());
-					set_config_option('time_last_change_site_device', time());
-				}
-			} else {
-				raise_message(2);
-			}
+			$site_id = site_service()->save($save);
 		}
 
 		header('Location: sites.php?action=edit&id=' . (empty($site_id) ? gnrv('id') : $site_id));
@@ -283,81 +269,17 @@ function form_save() : void {
 }
 
 function disable_site(array $sites) : void {
-	if (cacti_sizeof($sites)) {
-		foreach ($sites as $id) {
-			db_execute_prepared('UPDATE sites SET disabled = "on" WHERE id = ?', [$id]);
-		}
-
-		/**
-		 * Save the last time a device/site was created/updated
-		 * for Caching.
-		 */
-		set_config_option('time_last_change_site', time());
-		set_config_option('time_last_change_site_device', time());
-	}
+	site_service()->disable($sites);
 }
 
 function enable_site(array $sites) : void {
-	if (cacti_sizeof($sites)) {
-		foreach ($sites as $id) {
-			db_execute_prepared('UPDATE sites SET disabled = "" WHERE id = ?', [$id]);
-		}
-
-		/**
-		 * Save the last time a device/site was created/updated
-		 * for Caching.
-		 */
-		set_config_option('time_last_change_site', time());
-		set_config_option('time_last_change_site_device', time());
-	}
+	site_service()->enable($sites);
 }
 
 function duplicate_site(mixed $template_id, string $name) : void {
-	if (!is_array($template_id)) {
-		$template_id = [$template_id];
-	}
-
-	foreach ($template_id as $id) {
-		$site = db_fetch_row_prepared('SELECT *
-			FROM sites
-			WHERE id = ?',
-			[$id]);
-
-		if (cacti_sizeof($site)) {
-			$save = [];
-
-			$save['id'] = 0;
-
-			foreach ($site as $column => $value) {
-				if ($column == 'id') {
-					continue;
-				}
-
-				if ($column == 'name') {
-					$save['name'] = str_replace('<site>', $value, $name);
-				} else {
-					$save[$column] = $value;
-				}
-			}
-
-			$site_id = sql_save($save, 'sites');
-
-			if ($site_id > 0) {
-				raise_message(1);
-			} else {
-				raise_message(2);
-			}
-		} else {
-			raise_message('site_error', __('Template Site was not found! Unable to duplicate.'), MESSAGE_LEVEL_ERROR);
-		}
-	}
-
-	/**
-	 * Save the last time a device/site was created/updated
-	 * for Caching.
-	 */
-	set_config_option('time_last_change_site', time());
-	set_config_option('time_last_change_site_device', time());
+	site_service()->duplicate($template_id, $name, static function () : void {
+		raise_message('site_error', __('Template Site was not found! Unable to duplicate.'), MESSAGE_LEVEL_ERROR);
+	});
 }
 
 function form_actions() : void {
@@ -373,15 +295,7 @@ function form_actions() : void {
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
-				db_execute('DELETE FROM sites WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('UPDATE host SET site_id=0 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'site_id'));
-
-				/**
-				 * Save the last time a device/site was created/updated
-				 * for Caching.
-				 */
-				set_config_option('time_last_change_site', time());
-				set_config_option('time_last_change_site_device', time());
+				site_service()->delete($selected_items);
 			} elseif (gnrv('drp_action') == '2') { // Duplicate
 				duplicate_site($selected_items, gnrv('site_name'));
 			} elseif (gnrv('drp_action') == '3') { // Enable
