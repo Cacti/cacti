@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 	await page.goto(`/${kind}.php?action=edit&id=9100`);
 	await expect(page.locator('#login_username')).toBeVisible();
 	await page.locator('#login_username').fill('admin');
-	await page.locator('#login_password').fill('CactiDefinitionFixture!42');
+	await page.locator('#login_password').fill(process.env.CACTI_DEFINITION_LOGIN_PASSWORD!);
 	await page.locator('form#auth input[type="submit"], form#auth button[type="submit"]').click();
 	await page.waitForLoadState('networkidle');
 	await page.goto(`/${kind}.php?action=edit&id=9100`);

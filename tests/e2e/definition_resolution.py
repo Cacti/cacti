@@ -7,6 +7,7 @@ import argparse
 import os
 from pathlib import Path
 import shutil
+import secrets
 import socket
 import subprocess
 import tempfile
@@ -29,12 +30,15 @@ def main():
     (output / 'php').mkdir(exist_ok=True)
     container = f'cacti-{args.kind}-browser-{os.getpid()}'
     server = None
+    db_password = secrets.token_urlsafe(32)
+    login_password = secrets.token_urlsafe(32)
     try:
         run('docker', 'run', '--detach', '--rm', '--name', container,
             '--publish', '127.0.0.1::3306', '--tmpfs', '/var/lib/mysql',
-            '--env', 'MARIADB_ROOT_PASSWORD=definition_fixture',
+            '--env', 'MARIADB_ROOT_PASSWORD',
             '--env', 'MARIADB_DATABASE=cacti_test',
-            os.environ.get('CACTI_DEFINITION_DB_IMAGE', 'mariadb:11.4.13'))
+            os.environ.get('CACTI_DEFINITION_DB_IMAGE', 'mariadb:11.4.13'),
+            env=dict(os.environ, MARIADB_ROOT_PASSWORD=db_password))
         for attempt in range(60):
             ready = subprocess.run(['docker', 'exec', container, 'healthcheck.sh',
                                     '--connect', '--innodb_initialized'],
@@ -46,8 +50,8 @@ def main():
             raise RuntimeError('Disposable MariaDB did not become ready')
         port = subprocess.check_output(['docker', 'port', container, '3306'], text=True).strip().split(':')[-1]
         with (root / 'cacti.sql').open('rb') as schema:
-            run('docker', 'exec', '-i', container, 'mariadb', '-uroot',
-                '-pdefinition_fixture', 'cacti_test', stdin=schema)
+            run('docker', 'exec', '-i', '--env', 'MYSQL_PWD', container, 'mariadb', '-uroot',
+                'cacti_test', stdin=schema, env=dict(os.environ, MYSQL_PWD=db_password))
         with tempfile.TemporaryDirectory(prefix='cacti-definition-browser-') as temporary:
             app = Path(temporary) / 'app'
             shutil.copytree(root, app, ignore=shutil.ignore_patterns(
@@ -56,7 +60,8 @@ def main():
             (app / 'include/vendor').symlink_to(root / 'include/vendor', target_is_directory=True)
             for name in ['log', 'cache', 'rra']:
                 (app / name).mkdir()
-            env = dict(os.environ, CACTI_DEFINITION_APP=str(app), CACTI_DEFINITION_DB_PORT=port)
+            env = dict(os.environ, CACTI_DEFINITION_APP=str(app), CACTI_DEFINITION_DB_PORT=port,
+                       CACTI_DEFINITION_DB_PASSWORD=db_password, CACTI_DEFINITION_LOGIN_PASSWORD=login_password)
             run('php', str(app / 'tests/e2e/definition_resolution_setup.php'), env=env)
             with socket.socket() as listener:
                 listener.bind(('127.0.0.1', 0))
