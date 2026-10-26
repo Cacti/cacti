@@ -1,0 +1,137 @@
+name: VDEF Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/vdef-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'vdef.php'
+      - 'lib/vdef.php'
+      - 'lib/Vdef/**'
+      - 'lib/rrd.php'
+      - 'tests/e2e/definition_resolution.py'
+      - 'tests/e2e/definition_resolution_setup.php'
+      - 'tests/e2e/tests/definition-resolution.spec.ts'
+      - 'tests/phpunit-vdef.xml'
+      - 'tests/phpunit.xml'
+      - 'tests/Unit/Core/Rrd/VdefResolverTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/vdef-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'vdef.php'
+      - 'lib/vdef.php'
+      - 'lib/Vdef/**'
+      - 'lib/rrd.php'
+      - 'tests/e2e/definition_resolution.py'
+      - 'tests/e2e/definition_resolution_setup.php'
+      - 'tests/e2e/tests/definition-resolution.spec.ts'
+      - 'tests/phpunit-vdef.xml'
+      - 'tests/phpunit.xml'
+      - 'tests/Unit/Core/Rrd/VdefResolverTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vdef-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: lib/vdef.php 100% coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
+
+    services:
+      mariadb:
+        # Copied by ci-images.yml; services pull before any step can set a mirror.
+        image: ghcr.io/cacti/ci-images/mariadb:11.4@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: cacti_test
+          MARIADB_USER: cacti
+          MARIADB_PASSWORD: cacti
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked PHP 8.4 with Xdebug
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest \
+            --configuration=tests/phpunit-vdef.xml \
+            --coverage \
+            --coverage-text \
+            --min=100
+
+      - name: Run MariaDB integration coverage
+        env:
+          CACTI_VDEF_REAL_DB: '1'
+          CACTI_TEST_DB_HOST: 127.0.0.1
+          CACTI_TEST_DB_PORT: '3306'
+          CACTI_TEST_DB_NAME: cacti_test
+          CACTI_TEST_DB_USER: cacti
+          CACTI_TEST_DB_PASS: cacti
+        run: include/vendor/bin/pest --configuration=tests/phpunit-vdef.xml
+
+      - name: Setup browser tooling
+        uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7
+        with:
+          tool_versions: node 22.22.2
+          install_args: node
+
+      - name: Install locked browser dependencies
+        working-directory: tests/e2e
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npx --no-install playwright install --with-deps chromium
+
+      - name: Exercise authenticated VDEF browser flows
+        env:
+          CACTI_DEFINITION_DB_IMAGE: ghcr.io/cacti/ci-images/mariadb:11.4@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430
+        run: python3 tests/e2e/definition_resolution.py --kind vdef --output "${{ runner.temp }}/vdef-browser"
+
+      - name: Preserve browser and PHP request coverage evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: vdef-browser-coverage
+          path: ${{ runner.temp }}/vdef-browser
+          if-no-files-found: warn
