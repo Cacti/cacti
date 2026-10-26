@@ -10,6 +10,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[2]
+ARTIFACTS = ROOT / 'tests/e2e/theme-results'
 
 
 def fixtures(root=ROOT):
@@ -115,7 +116,6 @@ def main():
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('matrix')
     summary = sub.add_parser('summary')
-    summary.add_argument('--directory', type=Path, required=True)
     summary.add_argument('--suite', choices=('core', 'plugin', 'rtm'), required=True)
     summary.add_argument('--fixture', default='')
     summary.add_argument('--test-outcome', required=True)
@@ -130,7 +130,7 @@ def main():
         else:
             print(output, end='')
         return 0
-    text, success = summarize(args.directory, args.suite, args.fixture, args.test_outcome, args.coverage_outcome)
+    text, success = summarize(ARTIFACTS, args.suite, args.fixture, args.test_outcome, args.coverage_outcome)
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as handle:
             handle.write(text)

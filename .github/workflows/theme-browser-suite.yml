@@ -109,7 +109,7 @@ jobs:
         env:
           TEST_OUTCOME: ${{ steps.tests.outcome }}
           COVERAGE_OUTCOME: ${{ steps.coverage.outcome }}
-        run: python3 .github/scripts/theme_ci.py summary --directory tests/e2e/theme-results --suite "$SUITE" --fixture "$FIXTURE_ID" --test-outcome "$TEST_OUTCOME" --coverage-outcome "$COVERAGE_OUTCOME"
+        run: python3 .github/scripts/theme_ci.py summary --suite "$SUITE" --fixture "$FIXTURE_ID" --test-outcome "$TEST_OUTCOME" --coverage-outcome "$COVERAGE_OUTCOME"
       - name: Preserve reports, screenshots, traces, and coverage
         id: evidence
         if: always()

@@ -180,14 +180,20 @@ class ThemeCiTest(unittest.TestCase):
 
     def test_cli_publishes_summary_and_failure_exit_status(self):
         summary = self.root / 'github-summary'
-        arguments = ['theme_ci.py', 'summary', '--directory', str(self.output), '--suite', 'core', '--test-outcome', 'success']
+        arguments = ['theme_ci.py', 'summary', '--suite', 'core', '--test-outcome', 'success']
         with patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}, clear=True), \
-             patch.object(sys, 'argv', arguments), redirect_stdout(io.StringIO()):
+             patch.object(CI, 'ARTIFACTS', self.output), patch.object(sys, 'argv', arguments), redirect_stdout(io.StringIO()):
             self.assertEqual(CI.main(), 0)
         self.assertIn('**PASS**', summary.read_text())
         arguments[-1] = 'failure'
-        with patch.dict(os.environ, {}, clear=True), patch.object(sys, 'argv', arguments), redirect_stdout(io.StringIO()):
+        with patch.dict(os.environ, {}, clear=True), patch.object(CI, 'ARTIFACTS', self.output), patch.object(sys, 'argv', arguments), redirect_stdout(io.StringIO()):
             self.assertEqual(CI.main(), 1)
+
+    def test_cli_rejects_configurable_output_paths(self):
+        arguments = ['theme_ci.py', 'summary', '--suite', 'core', '--test-outcome', 'success', '--directory', '/unexpected']
+        with patch.object(sys, 'argv', arguments), patch('sys.stderr', io.StringIO()), self.assertRaises(SystemExit) as result:
+            CI.main()
+        self.assertEqual(result.exception.code, 2)
 
     def test_script_entry_point_runs_the_manifest_command(self):
         with patch.dict(os.environ, {}, clear=True), patch.object(sys, 'argv', ['theme_ci.py', 'matrix']), \
