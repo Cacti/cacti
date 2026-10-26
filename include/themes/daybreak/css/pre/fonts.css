@@ -1,3 +1,6 @@
+/* bundled faces, served locally; each font folder carries its LICENSE */
+@import '../../../../fonts/barlow/barlow.css';
+
 :root {
     /* font-family variables, the rest of the type scale comes from the parent theme */
     --font-sans:    Barlow,

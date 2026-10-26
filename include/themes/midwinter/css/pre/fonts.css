@@ -1,3 +1,7 @@
+/* bundled faces, served locally; each font folder carries its LICENSE */
+@import '../../../../fonts/roboto/roboto.css';
+@import '../../../../fonts/roboto-mono/roboto-mono.css';
+
 :root {
 
     /* font-family variables */

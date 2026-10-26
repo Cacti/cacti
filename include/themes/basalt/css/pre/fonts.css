@@ -1,3 +1,7 @@
+/* bundled faces, served locally; each font folder carries its LICENSE */
+@import '../../../../fonts/ibm-plex-sans/ibm-plex-sans.css';
+@import '../../../../fonts/ibm-plex-mono/ibm-plex-mono.css';
+
 :root {
     /* font-family variables, the rest of the type scale comes from the parent theme */
     --font-sans:    "IBM Plex Sans",
