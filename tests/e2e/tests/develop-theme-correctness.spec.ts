@@ -64,8 +64,10 @@ for (const theme of ['cacti', 'dark', 'deepness', 'hollyberry', 'modern', 'paw',
 
 
 for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
+	const rows = theme === 'cacti' ? ['', 'odd', 'even'] : ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'];
+	if (theme === 'paper-plane') rows.push('even-alternate', 'selectable even-alternate');
 	for (const surface of theme === 'paper-plane' ? ['page', 'dialog'] : ['page']) {
-		for (const row of theme !== 'cacti' ? ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'] : ['', 'odd', 'even']) {
+		for (const row of rows) {
 			for (const linkClass of ['', 'linkEditMain']) {
 				test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'plain'} surfaces${surface === 'dialog' ? ' in a dialog' : ''}`, async ({ page }) => {
 					await page.setContent(`<!DOCTYPE html><div class="${surface === 'dialog' ? 'ui-widget-content' : ''}"><table${theme === 'paper-plane' ? ' class="cactiTable"' : ''}><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a>${theme === 'paper-plane' ? ' · Response 1.8 ms' : ''}</td></tr></table></div>`);
