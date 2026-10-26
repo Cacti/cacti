@@ -31,7 +31,7 @@ def main():
     container = f'cacti-{args.kind}-browser-{os.getpid()}'
     server = None
     db_password = secrets.token_urlsafe(32)
-    login_password = secrets.token_urlsafe(32)
+    login_password = secrets.token_urlsafe(18)  # The login form permits at most 25 characters.
     try:
         run('docker', 'run', '--detach', '--rm', '--name', container,
             '--publish', '127.0.0.1::3306', '--tmpfs', '/var/lib/mysql',
