@@ -90,9 +90,12 @@ git clone --filter=blob:none --sparse https://github.com/TheWitness/ibm-spectrum
 git -C .theme-plugins/rtm sparse-checkout set cacti/plugins
 git -C .theme-plugins/rtm checkout --detach 4b30a11e014805438cca47d13fae6bda8e28d2ac
 cd tests/e2e
-mise exec node@22 -- npx --no-install playwright test tests/develop-rtm-theme-compatibility.spec.ts tests/develop-rtm-surfaces.spec.ts --project=chromium --output rtm-compat-results
+mise exec node@22 -- npx --no-install playwright test --config playwright.theme.config.ts tests/develop-rtm-theme-compatibility.spec.ts tests/develop-rtm-surfaces.spec.ts --project=chromium
 ```
 
 `CACTI_RTM_FIXTURE` may point to the `cacti` directory of an existing pinned
 checkout. CI checks out the same immutable revision and uploads screenshots and
 comparison JSON with the other theme evidence.
+
+See [GitHub Actions evidence](github-actions.md) for per-suite reports, artifact
+retention, and screenshot refresh instructions.

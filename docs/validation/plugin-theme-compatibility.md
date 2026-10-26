@@ -90,7 +90,7 @@ PYTHON
 mise exec node@22 -- npm ci --ignore-scripts --prefix tests/e2e
 cd tests/e2e
 mise exec node@22 -- npx --no-install playwright install chromium
-mise exec node@22 -- npx --no-install playwright test tests/develop-plugin-theme-compatibility.spec.ts --project=chromium --output plugin-compat-results
+mise exec node@22 -- npx --no-install playwright test --config playwright.theme.config.ts tests/develop-plugin-theme-compatibility.spec.ts --project=chromium
 ```
 
 Use `CACTI_PLUGIN_FIXTURES` to select an existing checkout parent directory;
@@ -99,3 +99,6 @@ against the manifest. The baseline commit must exist in the local core history.
 CI uses immutable checkout references and uploads all comparison JSON and
 screenshots alongside the ordinary theme coverage evidence. The existing core
 coverage step still requires 100% of changed executable CSS lines.
+
+See [GitHub Actions evidence](github-actions.md) for per-suite reports, artifact
+retention, and screenshot refresh instructions.

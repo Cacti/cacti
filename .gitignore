@@ -168,3 +168,6 @@ verify_task*.php
 
 # Pinned first-party plugin checkouts for theme browser fixtures
 .theme-plugins/
+
+# Local browser reports and recordings for theme validation
+/tests/e2e/theme-results/

@@ -1,0 +1,126 @@
+name: Theme browser suite
+on:
+  workflow_call:
+    inputs:
+      suite:
+        required: true
+        type: string
+      fixture-id:
+        type: string
+        default: ''
+      fixture-repository:
+        type: string
+        default: ''
+      fixture-revision:
+        type: string
+        default: ''
+      base-commit:
+        type: string
+        default: ''
+permissions:
+  contents: read
+jobs:
+  browser:
+    name: Browser evidence
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    env:
+      SUITE: ${{ inputs.suite }}
+      FIXTURE_ID: ${{ inputs.fixture-id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Load pinned plugin fixture
+        if: inputs.suite == 'plugin'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: ${{ inputs.fixture-repository }}
+          ref: ${{ inputs.fixture-revision }}
+          path: .theme-plugins/${{ inputs.fixture-id }}
+          persist-credentials: false
+      - name: Load pinned RTM fixtures
+        if: inputs.suite == 'rtm'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: ${{ inputs.fixture-repository }}
+          ref: ${{ inputs.fixture-revision }}
+          path: .theme-plugins/rtm
+          sparse-checkout: cacti/plugins
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/e2e/package-lock.json
+      - name: Install locked browser tooling
+        working-directory: tests/e2e
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npx --no-install playwright install --with-deps chromium
+          mkdir -p theme-results
+          node --version > theme-results/runtime.txt
+          npm --version >> theme-results/runtime.txt
+          python3 --version >> theme-results/runtime.txt
+      - name: Run browser suite
+        id: tests
+        working-directory: tests/e2e
+        env:
+          CACTI_THEME_COVERAGE: ${{ inputs.suite == 'core' && '1' || '0' }}
+        run: |
+          set -euo pipefail
+          case "$SUITE" in
+            core)
+              npx --no-install playwright test --config playwright.theme.config.ts tests/develop-theme-correctness.spec.ts tests/develop-theme-cleanup.spec.ts --project=chromium
+              ;;
+            plugin)
+              npx --no-install playwright test --config playwright.theme.config.ts tests/develop-plugin-theme-compatibility.spec.ts --grep "$FIXTURE_ID " --project=chromium
+              ;;
+            rtm)
+              npx --no-install playwright test --config playwright.theme.config.ts tests/develop-rtm-theme-compatibility.spec.ts tests/develop-rtm-surfaces.spec.ts --project=chromium
+              ;;
+            *)
+              echo '::error::Unknown theme suite'
+              exit 1
+              ;;
+          esac
+      - name: Require complete changed CSS line coverage
+        id: coverage
+        if: always() && inputs.suite == 'core' && inputs.base-commit != '' && steps.tests.outcome != 'skipped'
+        env:
+          BASE_COMMIT: ${{ inputs.base-commit }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == 'pull_request' ]] && git rev-parse --verify --quiet 'HEAD^2' >/dev/null; then
+            BASE_COMMIT="$(git rev-parse 'HEAD^1')"
+          fi
+          git merge-base "$BASE_COMMIT" HEAD > tests/e2e/theme-results/coverage-base.txt
+          python3 tests/tools/test_report_changed_coverage.py
+          python3 tests/tools/report_changed_coverage.py --base "$BASE_COMMIT" \
+            --language css --minimum 100 --browser-root tests/e2e/theme-results/test-results \
+            > tests/e2e/theme-results/css-coverage.json
+      - name: Publish test summary and fixture provenance
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+          COVERAGE_OUTCOME: ${{ steps.coverage.outcome }}
+        run: python3 .github/scripts/theme_ci.py summary --directory tests/e2e/theme-results --suite "$SUITE" --fixture "$FIXTURE_ID" --test-outcome "$TEST_OUTCOME" --coverage-outcome "$COVERAGE_OUTCOME"
+      - name: Preserve reports, screenshots, traces, and coverage
+        id: evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: theme-${{ inputs.fixture-id || inputs.suite }}-attempt-${{ github.run_attempt }}
+          path: tests/e2e/theme-results
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Link downloadable evidence
+        if: always() && steps.evidence.outputs.artifact-url != ''
+        env:
+          ARTIFACT_URL: ${{ steps.evidence.outputs.artifact-url }}
+        run: printf '\n[Download browser evidence](%s)\n' "$ARTIFACT_URL" >> "$GITHUB_STEP_SUMMARY"

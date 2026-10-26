@@ -34,6 +34,46 @@ That chains the individual targets, each of which can be run on its own:
 
 Install the pre-commit hook with `composer install-hooks`.
 
+## Theme browser checks
+
+Theme fixtures run without a Cacti database, poller, or web server. From the
+repository root, install the locked browser tooling:
+
+```sh
+cd tests/e2e
+mise exec node@22 -- npm ci --ignore-scripts
+mise exec node@22 -- npx --no-install playwright install chromium
+CACTI_THEME_COVERAGE=1 mise exec node@22 -- npx --no-install playwright test --config playwright.theme.config.ts tests/develop-theme-correctness.spec.ts tests/develop-theme-cleanup.spec.ts --project=chromium
+```
+
+Install the pinned [plugin fixtures](docs/validation/plugin-theme-compatibility.md#reproduce)
+and [RTM fixtures](docs/validation/rtm-theme-compatibility.md#reproduce) before
+running their suites. From `tests/e2e`:
+
+```sh
+mise exec node@22 -- npx --no-install playwright test --config playwright.theme.config.ts tests/develop-plugin-theme-compatibility.spec.ts --project=chromium
+mise exec node@22 -- npx --no-install playwright test --config playwright.theme.config.ts tests/develop-rtm-theme-compatibility.spec.ts tests/develop-rtm-surfaces.spec.ts --project=chromium
+mise exec node@22 -- npx --no-install playwright show-report theme-results/html
+```
+
+Each command replaces `theme-results`; set `THEME_ARTIFACT_DIR` to keep runs
+separate. Use `--grep 'thold '` to run just Thold, as its matrix job does.
+`CACTI_CHROMIUM_EXECUTABLE` can select an existing Chromium executable.
+Tests verify fixture revisions before using their assets.
+
+The [Actions guide](docs/validation/github-actions.md) explains check names,
+100% changed executable CSS coverage, artifacts, failure diagnosis, and manual
+runs. [Validation scope](docs/validation/README.md) distinguishes these browser
+component fixtures from backend E2E and describes the unavailable RTM chart
+runtime. New screenshots must contain populated synthetic monitoring data.
+
+Run the workflow helper checks from the repository root:
+
+```sh
+mise exec python@3.12 -- python tests/tools/test_theme_ci.py
+actionlint .github/workflows/develop-theme-correctness.yml .github/workflows/theme-browser-suite.yml
+```
+
 ## Changelog
 
 Do not edit `CHANGELOG` directly. Add a fragment under `changelog.d/` named for
