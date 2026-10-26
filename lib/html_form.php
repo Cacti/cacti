@@ -1909,10 +1909,10 @@ function form_continue_confirmation(array $form_data, string $plugin_hook = '', 
  */
 function form_confirm(string $title_text, string $body_text, mixed $cancel_url, $action_url) : void { ?>
 	<br>
-	<table style='width:60%;'>
+	<table role='presentation' style='width:60%;'>
 		<tr>
 			<td class='even' colspan='10'>
-				<table>
+				<table role='presentation'>
 					<tr class='cactiTableTitle'>
 						<td class='textHeaderDark'><?php print $title_text; ?></td>
 					</tr>

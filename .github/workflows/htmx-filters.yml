@@ -253,6 +253,30 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: playwright-report
+          path: tests/e2e/playwright-report/
+          retention-days: 7
+
+      - name: Prepare disposable native accessibility fixtures
+        working-directory: tests/e2e
+        run: |
+          set -euo pipefail
+          docker compose exec -T -e CACTI_E2E_DISPOSABLE=1 cacti php tests/fixtures/Ui/DevelopAccessibilitySetup.php
+          docker compose exec -T cacti chown -R www-data:www-data /etc/cacti/pki
+
+      - name: Copy disposable graph identities
+        run: docker compose -f tests/e2e/docker-compose.yml cp cacti:/tmp/cacti-accessibility-fixture.json "${{ runner.temp }}/cacti-accessibility-fixture.json"
+
+      - name: Verify native accessibility and separate confirmation renderers
+        working-directory: tests/e2e
+        env:
+          CACTI_BASE_URL: http://127.0.0.1:8080
+        run: CACTI_ACCESSIBILITY_FIXTURE="${{ runner.temp }}/cacti-accessibility-fixture.json" npx --no-install playwright test tests/develop-accessibility.spec.ts --project=chromium --workers=1
+
+      - name: Upload accessibility report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: playwright-accessibility-report
           path: tests/e2e/playwright-report
           retention-days: 7
 

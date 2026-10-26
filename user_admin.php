@@ -865,7 +865,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			?>
 			<tr class='even'>
-				<td><table><tr>
+				<td><table role='presentation'><tr>
 				<td class='nowrap'><?php print __('Default Graph Policy for this User'); ?></td>
 				<td>
 					<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
@@ -1156,7 +1156,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			?>
 			<tr class='even'>
-				<td><table><tr>
+				<td><table role='presentation'><tr>
 				<td class='nowrap'><?php print __('Default Device Policy for this User'); ?></td>
 				<td>
 					<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
@@ -1326,7 +1326,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			?>
 			<tr class='even'>
-				<td><table><tr>
+				<td><table role='presentation'><tr>
 				<td class='nowrap'><?php print __('Default Graph Template Policy for this User'); ?></td>
 				<td>
 					<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
@@ -1482,7 +1482,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 
 			?>
 			<tr class='even'>
-				<td><table><tr>
+				<td><table role='presentation'><tr>
 				<td class='nowrap'><?php print __('Default Tree Policy for this User'); ?></td>
 				<td>
 					<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>

@@ -404,7 +404,8 @@ $sizes = [
 ];
 
 ?>
-<html>
+<!DOCTYPE html>
+<html lang='<?php print html_escape_attr(CACTI_LOCALE); ?>'>
 <head>
 	<?php html_common_header(__('Cacti Real-time Graphing')); ?>
     <?php require(CACTI_PATH_INCLUDE . '/global_session.php'); ?>
@@ -413,6 +414,7 @@ $sizes = [
 	<form method='post' action='graph_realtime.php' id='gform'>
 		<div id='rtfilter' class='cactiTable center'>
 			<div class='filterTable even'>
+				<label for='graph_start'><?php print __esc('Timespan'); ?></label>
 				<select id='graph_start' onChange='imageOptionsChanged("timespan")'>
 					<?php
 					foreach ($realtime_window as $interval => $text) {
@@ -422,6 +424,7 @@ $sizes = [
 					}
 ?>
 				</select>
+				<label for='ds_step'><?php print __esc('Refresh Interval'); ?></label>
 				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
 $min_refresh = read_config_option('realtime_interval');
@@ -435,6 +438,7 @@ foreach ($realtime_refresh as $interval => $text) {
 }
 ?>
 				</select>
+				<label for='size'><?php print __esc('Size'); ?></label>
 				<select id='size' onChange='imageOptionsChanged("interval")'>
 					<?php
 foreach ($sizes as $key => $value) {
