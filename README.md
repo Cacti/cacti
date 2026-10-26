@@ -35,6 +35,14 @@ FlowView, and Monitor across twelve theme variants. See
 [plugin theme validation](docs/validation/plugin-theme-compatibility.md)
 for populated screenshots, pinned revisions, test scope, and reproduction.
 
+## RTM plugin theme compatibility
+
+![RTM batch hosts with synthetic monitoring data](docs/validation/images/rtm-grid-desktop.png)
+
+The [RTM validation guide](docs/validation/rtm-theme-compatibility.md) inventories
+all eighteen plugin directories and documents tested tables, console tiles,
+filters, settings, populated screenshots, and the missing chart-runtime assets.
+
 ## Cacti Theme
 
 ![Cacti theme device inventory with synthetic monitoring data](docs/validation/images/cacti-theme-desktop.png)
