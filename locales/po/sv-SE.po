@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-26 11:30+0000\n"
+"PO-Revision-Date: 2026-10-26 12:56+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -185,8 +185,8 @@ msgstr ""
 #: aggregate_graphs.php:819
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist."
 msgstr ""
-"För att migrera de aggregerade graferna nedan med en aggregatmall måste en "
-"sådan mall redan finnas."
+"För att migrera de aggregerade graferna nedan med en mall för aggregerad "
+"graf måste en sådan mall redan finnas."
 
 #: aggregate_graphs.php:844
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
@@ -330,11 +330,11 @@ msgstr ""
 
 #: aggregate_graphs.php:953
 msgid "Associate Graph with Aggregate"
-msgstr "Koppla graf till aggregat"
+msgstr "Koppla graf till aggregerad graf"
 
 #: aggregate_graphs.php:954
 msgid "Associate Graphs with  Aggregate"
-msgstr "Koppla grafer till aggregat"
+msgstr "Koppla grafer till aggregerad graf"
 
 #: aggregate_graphs.php:957
 msgid "Click 'Continue' to Disassociate the following Graph from the Aggregate Graph."
@@ -350,11 +350,11 @@ msgstr ""
 
 #: aggregate_graphs.php:959
 msgid "Disassociate Graph with Aggregate"
-msgstr "Koppla bort graf från aggregat"
+msgstr "Koppla bort graf från aggregerad graf"
 
 #: aggregate_graphs.php:960
 msgid "Disassociate Graphs with  Aggregate"
-msgstr "Koppla bort grafer från aggregat"
+msgstr "Koppla bort grafer från aggregerad graf"
 
 #: aggregate_graphs.php:970
 #, php-format
@@ -804,19 +804,20 @@ msgstr "Inga aggregerade grafer hittades"
 
 #: aggregate_templates.php:333
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande aggregatmall."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande mall för aggregerad graf."
 
 #: aggregate_templates.php:334
 msgid "Click 'Continue' to Delete following Aggregate Graph Templates."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande aggregatmallar."
+msgstr ""
+"Klicka på ”Fortsätt” för att ta bort följande mallar för aggregerade grafer."
 
 #: aggregate_templates.php:335
 msgid "Delete Aggregate Graph Template"
-msgstr "Ta bort aggregatmall"
+msgstr "Ta bort mall för aggregerad graf"
 
 #: aggregate_templates.php:336
 msgid "Delete Aggregate Graph Templates"
-msgstr "Ta bort aggregatmallar"
+msgstr "Ta bort mallar för aggregerade grafer"
 
 #: aggregate_templates.php:363
 #, php-format
@@ -6118,7 +6119,7 @@ msgstr "Välj datakällan som ska kopplas till detta grafobjekt."
 
 #: graphs.php:1724
 msgid "There were not Aggregate Templates found for the selected Graphs"
-msgstr "Inga aggregatmallar hittades för de valda graferna."
+msgstr "Inga mallar för aggregerade grafer hittades för de valda graferna."
 
 #: graphs.php:1758
 msgid "Click 'Continue' to Delete the following Graph."
@@ -6297,14 +6298,14 @@ msgstr[1] "Följande datakällor används av dessa grafer."
 #: graphs.php:1864
 msgid "Choose an Aggregate Template and click 'Continue' to Create the Aggregate Graph from the following Graph."
 msgstr ""
-"Välj en aggregatmall och klicka på ”Fortsätt” för att skapa den aggregerade "
-"grafen från följande graf."
+"Välj en mall för aggregerad graf och klicka på ”Fortsätt” för att skapa den "
+"aggregerade grafen från följande graf."
 
 #: graphs.php:1865
 msgid "Choose an Aggregate Template and click 'Continue' to Create the Aggregate Graph from the following Graphs."
 msgstr ""
-"Välj en aggregatmall och klicka på ”Fortsätt” för att skapa den aggregerade "
-"grafen från följande grafer."
+"Välj en mall för aggregerad graf och klicka på ”Fortsätt” för att skapa den "
+"aggregerade grafen från följande grafer."
 
 #: graphs.php:1879
 msgid "Click 'Continue' to Place the following Graph on a Report."
@@ -9762,7 +9763,7 @@ msgstr "SNMP-autentiseringsprotokoll (v3)"
 
 #: include/global_form.php:64
 msgid "Choose the SNMPv3 Authorization Protocol."
-msgstr "Välj auktoriseringsprotokoll för SNMPv3."
+msgstr "Välj autentiseringsprotokoll för SNMPv3."
 
 #: include/global_form.php:72
 msgid "SNMP Username (v3)"
@@ -9770,7 +9771,7 @@ msgstr "SNMP-användarnamn (v3)"
 
 #: include/global_form.php:73
 msgid "SNMP v3 username for this device."
-msgstr "SNMP v3-användarnamn för den här enheten."
+msgstr "SNMPv3-användarnamn för den här enheten."
 
 #: include/global_form.php:81
 msgid "SNMP Password (v3)"
@@ -9778,7 +9779,7 @@ msgstr "SNMP-lösenord (v3)"
 
 #: include/global_form.php:82
 msgid "SNMP v3 password for this device."
-msgstr "SNMP v3-lösenord för den här enheten."
+msgstr "SNMPv3-lösenord för den här enheten."
 
 #: include/global_form.php:90
 msgid "SNMP Privacy Protocol (v3)"
@@ -15795,7 +15796,7 @@ msgstr "Säkerhetsproblem"
 
 #: lib/clog_webapi.php:597
 msgid "Threshold"
-msgstr "Tröskel"
+msgstr "Tröskelvärde"
 
 #: lib/clog_webapi.php:607 lib/clog_webapi.php:610 tree.php:844
 msgid "Display"
@@ -22099,7 +22100,7 @@ msgstr "VARNING: Cacti Polling Cycle överskred pollningsintervall med "
 #: poller.php:970
 #, php-format
 msgid "WARNING: PollerID:%s with Name:%s is in Heartbeat Status"
-msgstr "VARNING: PollerID:%s med namn:%s är i hjärtslagsstatus"
+msgstr "VARNING: Datainsamlaren med ID %s och namn %s är i hjärtslagsläge"
 
 #: poller.php:972
 msgid "Poller in Heartbeat Mode"
@@ -22636,7 +22637,7 @@ msgstr "Radera"
 #: rrdcleaner.php:31
 msgctxt "dropdown action"
 msgid "Archive"
-msgstr "Arkiv"
+msgstr "Arkivera"
 
 #: rrdcleaner.php:373
 msgid "RRD Files"
@@ -23101,7 +23102,7 @@ msgstr "%d tecken"
 
 #: support.php:319 support.php:377
 msgid "Queries"
-msgstr "Databasfrågor"
+msgstr "Frågor"
 
 #: support.php:335 support.php:616
 msgid "Refresh Values"
