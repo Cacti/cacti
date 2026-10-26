@@ -134,7 +134,7 @@ hr.menu {
 /* links */
 
 a, a:active, a:visited {
-	color: rgba(255,157,0,1);
+	color: #8a3900;
 	text-decoration: none;
 	font-size: 12px;
 }
@@ -1045,7 +1045,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #a84ca8;
+	color: #833783;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1053,7 +1053,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #5b2600;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1189,7 +1189,7 @@ legend {
 	width: 100%;
 	font-size: 1em;
 	font-weight: 700;
-	background: rgba(255,57,13,0.7);
+	background: #b34d16;
 }
 
 .cactiTableTitle {
@@ -2130,7 +2130,7 @@ tr th:last-child .checkbox {
 	display: block;
 	padding: 2px 4px 2px 5px;
 	background: #ccc;
-	color: rgba(255,150,98,0.9);
+	color: #8a3900;
 	text-decoration: none;
 }
 
@@ -2150,20 +2150,21 @@ th:last-child {
 }
 
 tr.selected {
-	color: white;
+	color: #3b2100;
 	background: rgba(255,150,98,1);
 }
 
+tr.selected a.linkEditMain,
 tr.selected a.linkEditMain:visited {
-	color: yellow;
+	color: #5b2600;
 }
 
-tr:not(.selectable) a.linkEditMain:hover {
+tr:not(.selectable):not(.selected) a.linkEditMain:hover {
 	color: #2d4ca8;
 }
 
 tr.selectable a.linkEditMain:hover {
-	color: yellow;
+	color: #5b2600;
 }
 
 tr.selectable:hover:not(.selected) {
@@ -2175,21 +2176,21 @@ tr.selectable td {
 }
 
 tr.selected a {
-	color: yellow;
+	color: #5b2600;
 }
 
 #nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
-	color: rgba(255,57,13,0.7);
+	color: #8a3900;
 	background: rgba(224,224,224,1);
 }
 
 #nav li a.selected {
-	color: white;
+	color: #3b2100;
 	background: rgba(246,166,134,1);
 }
 
 #nav li a.active {
-	color: white;
+	color: #3b2100;
 	background: rgba(255,57,13,0.7)
 }
 
@@ -2469,7 +2470,7 @@ tr#realtime td:first-child {
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
-	color: white;
+	color: #3b2100;
 	background: rgba(255,150,98,0.9);
 }
 
@@ -2914,7 +2915,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
 	background: rgba(255,150,98,0.9);
-	color: white;
+	color: #3b2100;
 }
 /* ======================================================================== */
 /* jsTree glyph icons - node type colors, sizing, and open/close carets     */
