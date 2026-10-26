@@ -23,6 +23,7 @@
 */
 
 require('./include/auth.php');
+require_once CACTI_PATH_LIBRARY . '/gprint.php';
 
 $actions = [
 	1 => __('Delete')
@@ -70,13 +71,7 @@ function form_save() : void {
 		$save['gprint_text'] = form_input_validate(gnrv('gprint_text'), 'gprint_text', '', false, 3);
 
 		if (!is_error_message()) {
-			$gprint_preset_id = sql_save($save, 'graph_templates_gprint');
-
-			if ($gprint_preset_id) {
-				raise_message(1);
-			} else {
-				raise_message(2);
-			}
+			$gprint_preset_id = gprint_preset_service()->save($save);
 		} else {
 			$gprint_preset_id = null;
 		}
@@ -106,7 +101,7 @@ function form_actions() : void {
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
-				db_execute('DELETE FROM graph_templates_gprint WHERE ' . array_to_sql_or($selected_items, 'id'));
+				gprint_preset_service()->delete($selected_items);
 			}
 		}
 
@@ -160,7 +155,7 @@ function gprint_presets_edit() : void {
 	// ====================================================
 
 	if (!ierv('id')) {
-		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', [grv('id')]);
+		$gprint_preset = gprint_preset_service()->find(grv('id'));
 		$header_label  = __esc('GPRINT Presets [edit: %s]', $gprint_preset['name']);
 	} else {
 		$header_label = __('GPRINT Presets [new]');

@@ -64,3 +64,14 @@ if (getenv('CACTI_DEFINITION_KIND') === 'sites') {
 	}
 	$conn->exec("INSERT INTO host (id, hostname, description, site_id, deleted) VALUES (9100, '127.0.0.1', 'E2E Active Site Device', 9102, ''), (9101, '127.0.0.2', 'E2E Deleted Site Device', 9102, 'on')");
 }
+
+if (getenv('CACTI_DEFINITION_KIND') === 'gprint') {
+	$gprint = $conn->prepare('INSERT INTO graph_templates_gprint (id, hash, name, gprint_text, graphs, templates) VALUES (?, ?, ?, ?, ?, ?)');
+	$hashes = [];
+
+	foreach ([9200 => 'E2E Validation GPRINT', 9201 => 'E2E Used GPRINT', 9202 => 'E2E Delete GPRINT A', 9203 => 'E2E Delete GPRINT B'] as $id => $name) {
+		$hashes[$id] = bin2hex(random_bytes(16));
+		$gprint->execute([$id, $hashes[$id], $name, '%8.2lf %s', $id === 9201 ? 1 : 0, $id === 9201 ? 2 : 0]);
+	}
+	file_put_contents(__DIR__ . '/gprint_fixture.json', json_encode($hashes, JSON_THROW_ON_ERROR));
+}
