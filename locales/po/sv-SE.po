@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-26 15:20+0000\n"
+"PO-Revision-Date: 2026-10-26 15:38+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -1344,7 +1344,7 @@ msgstr "Lägg till upptäckta enheter"
 #: automation_devices.php:233 include/global_settings.php:43
 #: include/global_settings.php:803
 msgid "Poller"
-msgstr "Insamlare"
+msgstr "Datainsamlare"
 
 #: automation_devices.php:241 automation_templates.php:899
 #: include/global_arrays.php:1503 include/global_form.php:1291
@@ -2103,8 +2103,8 @@ msgstr "Alternativa DNS-servrar"
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
 msgstr ""
 "En mellanslagsavgränsad lista över alternativa DNS-servrar för "
-"namnuppslagning. Om fältet lämnas tomt används insamlarens operativsystem "
-"för att slå upp DNS-namn."
+"namnuppslagning. Om fältet lämnas tomt används datainsamlarens "
+"operativsystem för att slå upp DNS-namn."
 
 #: automation_networks.php:799
 msgid "Enter IPs or FQDNs of DNS Servers"
@@ -3988,7 +3988,7 @@ msgstr "Finns"
 
 #: data_debug.php:489
 msgid "Determines if the Data Source is located in the Poller Cache."
-msgstr "Anger om datakällan finns i insamlarens cache."
+msgstr "Anger om datakällan finns i datainsamlarens cache."
 
 #: data_debug.php:492 data_sources.php:1673 data_templates.php:1330
 msgid "Active"
@@ -4079,15 +4079,15 @@ msgstr "Webbplatsen körs som"
 
 #: data_debug.php:766
 msgid "Poller runs as"
-msgstr "Insamlaren körs som"
+msgstr "Datainsamlaren körs som"
 
 #: data_debug.php:771
 msgid "Is RRA Folder writeable by poller?"
-msgstr "Kan insamlaren skriva till RRA-mappen?"
+msgstr "Kan datainsamlaren skriva till RRA-mappen?"
 
 #: data_debug.php:776
 msgid "Is RRDfile writeable by poller?"
-msgstr "Kan insamlaren skriva till RRD-filen?"
+msgstr "Kan datainsamlaren skriva till RRD-filen?"
 
 #: data_debug.php:781
 msgid "Does the RRDfile Exist?"
@@ -4099,7 +4099,7 @@ msgstr "Är datakällan inställd som aktiv?"
 
 #: data_debug.php:791
 msgid "Did the poller receive valid data?"
-msgstr "Tog insamlaren emot giltiga data?"
+msgstr "Tog datainsamlaren emot giltiga data?"
 
 #: data_debug.php:796
 msgid "Was the RRDfile updated?"
@@ -5308,8 +5308,8 @@ msgstr ""
 #, php-format
 msgid "The Poller Cache operation has been launched in background for Data Template ID %d."
 msgstr ""
-"Åtgärden för insamlarens cache har startats i bakgrunden för datamallens ID "
-"%d."
+"Åtgärden för datainsamlarens cache har startats i bakgrunden för datamallens "
+"ID %d."
 
 #: data_templates.php:490
 msgid "Click 'Continue' to Delete the following Data Template."
@@ -5375,12 +5375,12 @@ msgstr "Uppdatera databasen för befintliga datakällor?"
 msgid "WARNING: This change will not change either the step or the heartbeat of existing RRDfiles.  After this change, a Rebuild Poller Cache operation will take place in background to update the data collection cycle for the impacted Data Sources.  It is strongly suggested that you either delete all the impacted RRDfiles afterwards, or use the splice_rrd.php CLI script to preserve old data and repopulate the new RRDfiles with the legacy data.  Otherwise, this change will have no on the data and may in fact lead to a loss of fidelity if you are increasing the time between data collection cycles."
 msgstr ""
 "VARNING: Den här ändringen påverkar inte steg eller hjärtslagsintervall i "
-"befintliga RRD-filer. Insamlarens cache byggs om i bakgrunden för att "
+"befintliga RRD-filer. Datainsamlarens cache byggs om i bakgrunden för att "
 "uppdatera insamlingscykeln för de berörda datakällorna. Vi rekommenderar "
 "starkt att du antingen tar bort de berörda RRD-filerna efteråt eller "
 "använder kommandoradsskriptet splice_rrd.php för att bevara gamla data och "
 "fylla de nya RRD-filerna med dem. Annars påverkas inte befintliga data av "
-"ändringen, och detaljnivån kan försämras om tiden mellan insamlingarna ökas."
+"ändringen och detaljnivån kan försämras om tiden mellan insamlingarna ökas."
 
 #: data_templates.php:670
 #, php-format
@@ -5495,8 +5495,8 @@ msgstr "Standardprofilen för datakällor i denna datamall."
 #: data_templates.php:1294
 msgid "Data Sources based on Inactive Data Templates will not be updated when the poller runs."
 msgstr ""
-"Datakällor som bygger på inaktiva datamallar uppdateras inte när insamlaren "
-"körs."
+"Datakällor som bygger på inaktiva datamallar uppdateras inte när "
+"datainsamlaren körs."
 
 #: data_templates.php:1336
 msgid "No Data Templates Found"
@@ -5608,7 +5608,7 @@ msgstr "Grafdata"
 
 #: graph_image.php:189 graph_json.php:284 graph_realtime.php:250
 msgid "The Cacti Poller has not run yet."
-msgstr "Cacti-insamlaren har inte körts än."
+msgstr "Cacti-datainsamlaren har inte körts än."
 
 #: graph_realtime.php:355
 msgid "Real-time has been disabled by your administrator."
@@ -6666,7 +6666,7 @@ msgstr "Enhetsfelsökning inaktiverad för enheten."
 
 #: host.php:177
 msgid "Poller Cache for Device Refreshed."
-msgstr "Insamlarens cache för enheten har uppdaterats."
+msgstr "Datainsamlarens cache för enheten har uppdaterats."
 
 #: host.php:179
 msgid "ERROR: Invalid Device ID."
@@ -6829,12 +6829,12 @@ msgstr "Aktivera enhetsfelsökning"
 
 #: host.php:729
 msgid "Repopulate Poller Cache"
-msgstr "Bygg upp insamlarens cache på nytt"
+msgstr "Bygg upp datainsamlarens cache på nytt"
 
 #: host.php:730 include/global_arrays.php:2631 include/global_arrays.php:2643
 #: utilities.php:1236
 msgid "View Poller Cache"
-msgstr "Visa insamlarens cache"
+msgstr "Visa datainsamlarens cache"
 
 #: host.php:733
 #, php-format
@@ -7710,9 +7710,9 @@ msgstr ""
 #: include/global_arrays.php:387
 msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards."
 msgstr ""
-"Insamlarens resurscache har rensats. Huvuddatainsamlaren bygger upp den när "
-"insamlingsprocessen startar nästa gång och de fjärranslutna datainsamlarna "
-"synkroniserar därefter."
+"Datainsamlarens resurscache har rensats. Huvuddatadatainsamlaren bygger upp "
+"den när insamlingsprocessen startar nästa gång och de fjärranslutna "
+"datadatainsamlarna synkroniserar därefter."
 
 #: include/global_arrays.php:390
 msgid "Permission Denied.  You do not have permission to the requested action."
@@ -9910,7 +9910,7 @@ msgstr ""
 "för SNMP Bulk Walk. Standardinställningen är ”Upptäck automatiskt vid "
 "omindexering”. För mycket stora switchar, högpresterande servrar, nätverk "
 "med jumboramar eller WAN-anslutningar med hög fördröjning kan ett högre "
-"värde förbättra insamlarens prestanda. Mer data ryms i varje SNMP-paket, "
+"värde förbättra datainsamlarens prestanda. Mer data ryms i varje SNMP-paket, "
 "vilket kan förkorta datafrågans körtid. Vissa enheter kan dock vägra svara "
 "på paket med ett alltför högt värde, särskilt resurssvaga IoT-enheter eller "
 "mindre inbyggda system. Ta även hänsyn till nätverksvägens MTU, eftersom ett "
@@ -10857,8 +10857,8 @@ msgstr "Antal insamlingstrådar"
 #: include/global_form.php:1301
 msgid "The number of concurrent threads to use for polling this device.  This applies to the Spine poller only."
 msgstr ""
-"Antalet samtidiga trådar för insamling från enheten. Gäller endast Spine-"
-"insamlaren."
+"Antalet samtidiga trådar för insamling från enheten. Gäller endast "
+"datainsamlaren Spine."
 
 #: include/global_form.php:1309
 msgid "Check this box to disable all checks for this host."
@@ -11626,7 +11626,7 @@ msgstr ""
 
 #: include/global_settings.php:234
 msgid "Poller Standard Error Log Path"
-msgstr "Sökväg till insamlarens standardfellogg"
+msgstr "Sökväg till datainsamlarens standardfellogg"
 
 #: include/global_settings.php:235
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
@@ -11646,7 +11646,7 @@ msgstr ""
 
 #: include/global_settings.php:252
 msgid "Alternate Poller Path"
-msgstr "Alternativ sökväg till insamlaren"
+msgstr "Alternativ sökväg till datainsamlaren"
 
 #: include/global_settings.php:257
 msgid "Spine Binary File Location"
@@ -12776,8 +12776,8 @@ msgstr "Cachekatalog"
 msgid "This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder"
 msgstr ""
 "Platsen på webbservern där RRD- och PNG-filerna ska cachas. Cachen hanteras "
-"av insamlaren. Kontrollera att du har rätt läs- och skrivbehörigheter för "
-"mappen."
+"av datainsamlaren. Kontrollera att du har rätt läs- och skrivbehörigheter "
+"för mappen."
 
 #: include/global_settings.php:1229
 msgid "RRDtool Graph Options"
@@ -12985,20 +12985,21 @@ msgstr ""
 
 #: include/global_settings.php:1403
 msgid "Poller Type"
-msgstr "Typ av insamlare"
+msgstr "Typ av datainsamlare"
 
 #: include/global_settings.php:1404
 msgid "The poller type to use.  This setting will take affect at next polling interval."
 msgstr ""
-"Typen av insamlare som ska användas. Inställningen träder i kraft vid nästa "
-"insamlingsintervall."
+"Typen av datainsamlare som ska användas. Inställningen träder i kraft vid "
+"nästa insamlingsintervall."
 
 #: include/global_settings.php:1411
 msgid "The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>"
 msgstr ""
 "Insamlingsintervallet som används. Inställningen styr hur ofta RRD-filer "
 "kontrolleras och uppdateras. <strong><u>OBS! Om du ändrar värdet måste du "
-"fylla insamlarens cache på nytt. Annars kan data gå förlorade.</u></strong>"
+"fylla datainsamlarens cache på nytt. Annars kan data gå "
+"förlorade.</u></strong>"
 
 #: include/global_settings.php:1417
 msgid "Cron/Daemon Interval"
@@ -13070,14 +13071,14 @@ msgstr ""
 
 #: include/global_settings.php:1482
 msgid "Refresh Poller Table Per Cycle"
-msgstr "Uppdatera insamlarens tabell varje cykel"
+msgstr "Uppdatera datainsamlarens tabell varje cykel"
 
 #: include/global_settings.php:1483
 msgid "This setting is for a single poller systems only to rebuild the poller output table on each polling cycle to prevent the memory table from swapping on very large systems with large databases that could use swap."
 msgstr ""
-"Den här inställningen gäller endast system med en insamlare. Den bygger om "
-"insamlarens utdatatabell vid varje insamlingscykel för att förhindra att "
-"minnestabellen växlas ut på mycket stora system med stora databaser."
+"Den här inställningen gäller endast system med en datainsamlare. Den bygger "
+"om datainsamlarens utdatatabell vid varje insamlingscykel för att förhindra "
+"att minnestabellen växlas ut på mycket stora system med stora databaser."
 
 #: include/global_settings.php:1488
 msgid "Data Collector Replication"
@@ -13085,7 +13086,7 @@ msgstr "Replikering av datainsamlare"
 
 #: include/global_settings.php:1493
 msgid "Poller Sync Interval"
-msgstr "Synkroniseringsintervall för insamlare"
+msgstr "Synkroniseringsintervall för datainsamlare"
 
 #: include/global_settings.php:1494
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
@@ -13167,14 +13168,14 @@ msgstr ""
 
 #: include/global_settings.php:1544
 msgid "Poller Output Not Empty Debouncing"
-msgstr "Intervall mellan varningar om insamlarens utdatatabell"
+msgstr "Intervall mellan varningar om datainsamlarens utdatatabell"
 
 #: include/global_settings.php:1545
 msgid "If you are having issues with some data sources, your Email could be flooded with 'Poller Output Not Empty' warnings.  If this is happening, you can debounce the setting based upon this interval."
 msgstr ""
 "Om vissa datakällor har problem kan du få många e-postvarningar om att "
-"insamlarens utdatatabell inte är tom. Ange ett intervall för att begränsa "
-"hur ofta varningarna skickas."
+"datainsamlarens utdatatabell inte är tom. Ange ett intervall för att "
+"begränsa hur ofta varningarna skickas."
 
 #: include/global_settings.php:1551
 msgid "Periodic All Device Re-Index"
@@ -13902,7 +13903,7 @@ msgstr "Maximal storlek på e-postmeddelandet inklusive alla bilagor."
 
 #: include/global_settings.php:2216
 msgid "Poller Logging Level for Cacti Reporting"
-msgstr "Loggningsnivå för insamlaren vid Cacti-rapportering"
+msgstr "Loggningsnivå för datainsamlaren vid Cacti-rapportering"
 
 #: include/global_settings.php:2217
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
@@ -14062,11 +14063,11 @@ msgstr ""
 
 #: include/global_settings.php:2363
 msgid "Memory Limit for Boost and Poller"
-msgstr "Minnesgräns för Boost och insamlaren"
+msgstr "Minnesgräns för Boost och datainsamlaren"
 
 #: include/global_settings.php:2364
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
-msgstr "Maximal minnesmängd för Cactis och Boosts insamlare"
+msgstr "Maximal minnesmängd för Cactis och Boosts datainsamlare"
 
 #: include/global_settings.php:2370
 msgid "Maximum RRD Update Script Run Time"
@@ -14075,7 +14076,7 @@ msgstr "Maximal körtid för RRD-uppdateringsskript"
 #: include/global_settings.php:2371
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr ""
-"Om Boost-insamlaren överskrider denna körtid skrivs en varning till Cactis "
+"Om Boost-processen överskrider denna körtid skrivs en varning till Cactis "
 "logg."
 
 #: include/global_settings.php:2377
@@ -14085,8 +14086,8 @@ msgstr "Aktivera direkt insättning i Boost-tabellen"
 #: include/global_settings.php:2378
 msgid "Enables direct insert of records into poller output boost table with results in a 25% time reduction in each poll cycle."
 msgstr ""
-"Infogar poster direkt i insamlarens Boost-utdatatabell, vilket minskar tiden "
-"för varje insamlingscykel med 25 %."
+"Infogar poster direkt i datainsamlarens Boost-utdatatabell, vilket minskar "
+"tiden för varje insamlingscykel med 25 %."
 
 #: include/global_settings.php:2383
 msgid "Enable Boost Debugging"
@@ -14118,7 +14119,7 @@ msgstr "Plats för bildfiler"
 #: include/global_settings.php:2401
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
 msgstr ""
-"Ange var Boost ska placera bildfilerna. Insamlaren tar automatiskt bort "
+"Ange var Boost ska placera bildfilerna. Datainsamlaren tar automatiskt bort "
 "filerna när de har upphört att gälla."
 
 #: include/global_settings.php:2410
@@ -14207,7 +14208,7 @@ msgstr "Minnesgräns för insamlaren av datakällstatistik"
 #: include/global_settings.php:2488
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr ""
-"Största minnesmängd för Cactis insamlare och statistikinsamlaren för "
+"Största minnesmängd för Cactis datainsamlare och statistikinsamlaren för "
 "datakällor"
 
 #: include/global_settings.php:2494
@@ -15962,13 +15963,13 @@ msgstr ""
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
-msgstr "Uppdateringen av insamlarens cache för frågan är slutförd"
+msgstr "Uppdateringen av datainsamlarens cache för frågan är slutförd"
 
 #: lib/data_query.php:398
 msgid "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
 msgstr ""
 "Inga indexändringar upptäcktes. Återindexering och uppdatering av "
-"insamlarens cache hoppas över"
+"datainsamlarens cache hoppas över"
 
 #: lib/data_query.php:445
 msgid "Automation Executing for Data Query complete"
@@ -16354,15 +16355,15 @@ msgstr "Datakällan är inte markerad som aktiv"
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr ""
-"Insamlaren kan inte skriva till RRD-filmappen (rra). Mappens ägare: %s. "
-"Insamlaren körs som: %s"
+"Datainsamlaren kan inte skriva till RRD-filmappen (rra). Mappens ägare: %s. "
+"Datainsamlaren körs som: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr ""
-"Insamlaren kan inte skriva till RRD-filen. Filens ägare: %s. Insamlaren körs "
-"som %s"
+"Datainsamlaren kan inte skriva till RRD-filen. Filens ägare: %s. "
+"Datainsamlaren körs som %s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -16584,8 +16585,8 @@ msgstr ""
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
 msgstr ""
-"VARNING: Insamlaren med ID %s har ett ogiltigt värdnamn: %s. Kan det inte "
-"nås via DNS?"
+"VARNING: Datainsamlaren med ID %s har ett ogiltigt värdnamn: %s. Kan det "
+"inte nås via DNS?"
 
 #: lib/functions.php:6781
 #, php-format
@@ -18609,7 +18610,7 @@ msgstr ""
 
 #: lib/installer.php:2355
 msgid "Configuration of Poller"
-msgstr "Konfiguration av insamlare"
+msgstr "Konfiguration av datainsamlare"
 
 #: lib/installer.php:2356
 msgid "Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again."
@@ -18766,9 +18767,9 @@ msgstr "Skydd för indatavalidering med tillåtelselista"
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
 msgstr ""
 "Cactis datainmatningsmetoder som anropar ett skript kan utnyttjas så att en "
-"person utan administratörsbehörighet kan skada filer som ägs av insamlarens "
-"konto. Om insamlaren körs som root kan operativsystemet komprometteras, så "
-"att angripare kan utnyttja infrastrukturen."
+"person utan administratörsbehörighet kan skada filer som ägs av "
+"datainsamlarens konto. Om datainsamlaren körs som root kan operativsystemet "
+"komprometteras, så att angripare kan utnyttja infrastrukturen."
 
 #: lib/installer.php:2616
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
@@ -19358,7 +19359,7 @@ msgstr "Kör den första datafrågan för den lokala värden"
 
 #: lib/installer.php:3734
 msgid "Repopulating poller cache"
-msgstr "Fyller insamlarens cache på nytt"
+msgstr "Fyller datainsamlarens cache på nytt"
 
 #: lib/installer.php:3739
 msgid "Repopulating SNMP Agent cache"
@@ -20078,7 +20079,7 @@ msgstr "(anpassad)"
 
 #: lib/rrd.php:4307
 msgid "Failed to open data file, poller may not have run yet"
-msgstr "Kunde inte öppna datafilen. Insamlaren kanske inte har körts ännu"
+msgstr "Kunde inte öppna datafilen. Datainsamlaren kanske inte har körts ännu"
 
 #: lib/rrd.php:4310
 msgid "RRA Folder"
@@ -20827,7 +20828,7 @@ msgstr "Inaktivera vidarebefordran av objekt"
 
 #: managers.php:1083
 msgid "Disable Forwarding Objects"
-msgstr "Inaktivera objekt för vidarebefordran"
+msgstr "Inaktivera vidarebefordran av objekt"
 
 #: managers.php:1086
 msgid "Click 'Continue' to Enable Forwarding the following Notification Object to this Notification Receiver."
@@ -20843,7 +20844,7 @@ msgstr ""
 
 #: managers.php:1088
 msgid "Enable Forwarding Object"
-msgstr "Aktivera objekt för vidarebefordran"
+msgstr "Aktivera vidarebefordran av objekt"
 
 #: managers.php:1089
 msgid "Enable Forwarding Objects"
@@ -22125,37 +22126,36 @@ msgstr "Aktivera insticksmodulen lokalt"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"VARNING: %s är inte synkroniserad med insamlingsintervallet för insamlare "
-"[%d]! Intervallet är %d sekunder, med högst %d sekunder, men %d sekunder har "
-"gått sedan den senaste insamlingen!"
+"VARNING: %s är inte synkroniserad med insamlingsintervallet för "
+"datainsamlare [%d]! Intervallet är %d sekunder, med högst %d sekunder, men "
+"%d sekunder har gått sedan den senaste insamlingen!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
 msgstr ""
 "VARNING: %d processer har upptäckts överskrida en insamlingscykel för "
-"insamlare [%d]. Undersök orsaken."
+"datainsamlare [%d]. Undersök orsaken."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
 msgstr ""
-"VARNING: Insamlarens utdatatabell är inte tom för insamlare [%d]. Problem: "
-"%d, %s."
+"VARNING: Utdatatabellen är inte tom för datainsamlare [%d]. Problem: %d, %s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
 msgstr ""
-"FEL: Sökvägen till Spine, %s, är ogiltig för insamlare [%d]. Insamlaren kan "
-"inte fortsätta!"
+"FEL: Sökvägen till Spine, %s, är ogiltig för datainsamlare [%d]. "
+"Datainsamlaren kan inte fortsätta!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
 msgstr ""
-"Den maximala körtiden på %d sekunder har överskridits för insamlare [%d]. "
-"Avslutar."
+"Den maximala körtiden på %d sekunder har överskridits för datainsamlare [%d]"
+". Avslutar."
 
 #: poller.php:944
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
@@ -22289,7 +22289,7 @@ msgstr "Synkintervall"
 msgid "The polling sync interval in use.  This setting will affect how often this poller is checked and updated."
 msgstr ""
 "Synkroniseringsintervallet som används. Inställningen styr hur ofta "
-"insamlaren kontrolleras och uppdateras."
+"datainsamlaren kontrolleras och uppdateras."
 
 #: pollers.php:136
 msgid "Remote Database Connection"
@@ -23141,7 +23141,7 @@ msgstr "Bakgrundsprocesser"
 
 #: support.php:54
 msgid "Poller Stats"
-msgstr "Insamlarstatistik"
+msgstr "Datainsamlarstatistik"
 
 #: support.php:55
 msgid "PHP Info"
@@ -23158,7 +23158,7 @@ msgstr "Teknisk support [%s]"
 
 #: support.php:288
 msgid "Include Poller"
-msgstr "Inkludera insamlare"
+msgstr "Inkludera datainsamlare"
 
 #: support.php:299
 msgid "Info Length"
@@ -23240,7 +23240,7 @@ msgstr "Inga databasfrågor hittades"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti-insamlare"
+msgstr "Cacti-datainsamlare"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -23280,7 +23280,7 @@ msgstr "Uppgiftstyp"
 
 #: support.php:680 support.php:716 support.php:725
 msgid "Poller:"
-msgstr "Insamlare:"
+msgstr "Datainsamlare:"
 
 #: support.php:698 support.php:707
 msgid "Collector"
@@ -23461,7 +23461,7 @@ msgstr "Totalt: %s"
 
 #: support.php:1268
 msgid "Poller Information"
-msgstr "Information om insamlingsprocessen"
+msgstr "Information om datainsamlaren"
 
 #: support.php:1278
 msgid "Different version of Cacti and Spine!"
@@ -25047,11 +25047,11 @@ msgstr ""
 
 #: utilities.php:47
 msgid "The Poller Cache Rebuild Operation has been started in background"
-msgstr "Ombyggnaden av insamlarens cache har startats i bakgrunden."
+msgstr "Ombyggnaden av datainsamlarens cache har startats i bakgrunden"
 
 #: utilities.php:49
 msgid "The Poller Cache Rebuild Operation has already been started."
-msgstr "Ombyggnaden av insamlarens cache har redan startats."
+msgstr "Ombyggnaden av datainsamlarens cache har redan startats."
 
 #: utilities.php:120
 msgid "Data Source Statistics Purged."
@@ -25113,7 +25113,7 @@ msgstr "Index"
 
 #: utilities.php:942
 msgid "Poller Cache Items"
-msgstr "Objekt i insamlarens cache"
+msgstr "Objekt i datainsamlarens cache"
 
 #: utilities.php:946
 msgid "Poller Cache Items [ <span class=\"blink deviceUp\">Rebuild In Process - Press Go to Check Status</span> ]"
@@ -25124,18 +25124,19 @@ msgstr ""
 #: utilities.php:950
 msgid "Poller Cache Items [ Rebuild Crashed without Unregistering ]"
 msgstr ""
-"Objekt i insamlarens cache [ ombyggnaden kraschade utan att avregistreras ]"
+"Objekt i datainsamlarens cache "
+"[ ombyggnaden kraschade utan att avregistreras ]"
 
 #: utilities.php:954
 msgid "Poller Cache Items [ Rebuild Timed out but is Running ]"
 msgstr ""
-"Objekt i insamlarens cache "
+"Objekt i datainsamlarens cache "
 "[ ombyggnaden överskred tidsgränsen men körs fortfarande ]"
 
 #: utilities.php:958
 msgid "Poller Cache Items [ Rebuild Timed out and Crashed ]"
 msgstr ""
-"Objekt i insamlarens cache "
+"Objekt i datainsamlarens cache "
 "[ ombyggnaden överskred tidsgränsen och kraschade ]"
 
 #: utilities.php:1037
@@ -25191,7 +25192,7 @@ msgstr ""
 
 #: utilities.php:1235
 msgid "Poller Cache Administration"
-msgstr "Administration av insamlarens cache"
+msgstr "Administration av datainsamlarens cache"
 
 #: utilities.php:1238
 msgid "This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display."
@@ -25209,17 +25210,17 @@ msgstr ""
 
 #: utilities.php:1244
 msgid "Rebuild Poller Cache"
-msgstr "Bygg om insamlarens cache"
+msgstr "Bygg om datainsamlarens cache"
 
 #: utilities.php:1247
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
 msgstr ""
-"Om du väljer detta alternativ byggs insamlarens cache om. Använd det bara "
-"efter en databaskrasch om problem kvarstår och du redan har kört databasens "
-"reparationsverktyg. Om du har problem med en enskild enhet kan du i stället "
-"spara om den för att bygga om dess insamlingscache. Det finns också ett "
-"motsvarande kommando för kommandoraden, vilket rekommenderas för stora "
-"system."
+"Om du väljer detta alternativ byggs datainsamlarens cache om. Använd det "
+"bara efter en databaskrasch om problem kvarstår och du redan har kört "
+"databasens reparationsverktyg. Om du har problem med en enskild enhet kan du "
+"i stället spara om den för att bygga om dess insamlingscache. Det finns "
+"också ett motsvarande kommando för kommandoraden, vilket rekommenderas för "
+"stora system."
 
 #: utilities.php:1249
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
@@ -25442,7 +25443,7 @@ msgstr "MB"
 
 #: utilities.php:1699
 msgid "Peak Poller Memory:"
-msgstr "Insamlarens högsta minnesanvändning:"
+msgstr "Datainsamlarens högsta minnesanvändning:"
 
 #: utilities.php:1713
 msgid "Max Poller Memory Allowed:"
