@@ -141,6 +141,15 @@ if (property_exists(spikekill::class, 'dsfilter')) {
 		$result            = spike_matrix_rows($spiker, [['NaN', 20], [100, 10]]);
 		spike_matrix_assert(str_contains($result[0], '<v> NaN</v><v> 20</v>'), 'Absolute mode must preserve unknown and boundary samples');
 	};
+	$cases['absolute-last-boundary'] = static function (): void {
+		$spiker            = spike_matrix_object(SPIKE_METHOD_ABSOLUTE);
+		$spiker->avgnan    = 'last';
+		$spiker->out_start = 1;
+		$spiker->out_end   = 200;
+		$spiker->absmax    = 20;
+		$result            = spike_matrix_rows($spiker, [[20, 0], [100, 100]]);
+		spike_matrix_assert(str_contains($result[1], '<v> 20</v><v> 0</v>'), 'Absolute last-value repair must retain boundary and zero samples');
+	};
 	$cases['gap-fill-zero'] = static function (): void {
 		$spiker            = spike_matrix_object(SPIKE_METHOD_FILL);
 		$spiker->out_start = 1;

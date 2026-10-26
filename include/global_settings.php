@@ -3188,7 +3188,7 @@ $settings_user = [
 		],
 		'page_filter_format' => [
 			'friendly_name' => __('Page Filter Format'),
-			'description'   => __('How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows the classic inline filter. The Layouts selector is available in both.'),
+			'description'   => __('How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows only the classic inline filter. The Layouts selector is available in Modern only.'),
 			'method'        => 'drop_array',
 			'default'       => 'modern',
 			'array'         => [

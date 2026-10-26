@@ -95,9 +95,16 @@ def main():
     parser.add_argument('--base', required=True)
     parser.add_argument('--php-coverage', nargs='*', default=[])
     parser.add_argument('--browser-root', type=Path)
+    parser.add_argument('--minimum', type=float, default=100)
+    parser.add_argument('--language', choices=['php', 'js', 'css'])
     args = parser.parse_args()
+    if not 0 <= args.minimum <= 100:
+        parser.error('--minimum must be between 0 and 100')
     root = Path.cwd().resolve()
     changed = added_lines(args.base)
+    if args.language:
+        changed = {name: lines for name, lines in changed.items()
+                   if Path(name).suffix == '.' + args.language}
     php = {}
     browser = []
     for name in args.php_coverage:
@@ -180,7 +187,13 @@ def main():
             'uncovered': sorted(executable - covered),
         }
     print(json.dumps(report, indent=2))
-    return 0 if report and all(row['instrumented'] and not row['uncovered'] for row in report.values()) else 1
+    covered = sum(row['covered'] for row in report.values())
+    total = sum(row['executable'] for row in report.values())
+    # An empty report means the PR changed no files of this language, so there
+    # is nothing to gate; all() over no rows is already True, so only the
+    # redundant "report and" guard turned that into a failure.
+    complete = all(row['instrumented'] for row in report.values())
+    return 0 if complete and (total == 0 or covered * 100 >= args.minimum * total) else 1
 
 
 if __name__ == '__main__':

@@ -144,6 +144,13 @@ a:hover {
 	color: #333333;
 }
 
+i.ti {
+	font-size: 16px;
+	padding: 0px 3px;
+	text-align: left;
+	vertical-align: middle;
+}
+
 i.fa, i.fas, i.fab, i.far, i.fal {
 	font-size: 15px;
 	padding: 0px 3px;
@@ -175,7 +182,7 @@ label {
 
 .glyph_tab-console:before {
 	content: '\f787';
-	font-family: "Font Awesome 5 Free";
+	font-family: "Font Awesome 5 Free", sans-serif;
 	display: inline-block;
 }
 
@@ -823,11 +830,10 @@ label {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	padding: 15px;
-	background-color: white;
 	top: 30%;
 	width: 360px;
 	max-height: 300px;
-	background: #ffffff;
+	background-color: #ffffff;
 	border: 1px solid #cccccc;
 }
 
@@ -1015,7 +1021,7 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	padding-left: 10px;
-	padding-right: 0px;
+	padding-right: 15px;
 }
 
 .cactiConsoleContentArea>div:last-child {
@@ -1028,9 +1034,6 @@ legend {
 	padding: 3px;
 	cursor: pointer;
 	text-decoration: none;
-}
-
-.iconLink {
 }
 
 .iconLink img {
@@ -1470,9 +1473,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckbox {
@@ -2402,9 +2402,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 }
 
-.menuitem span {
-}
-
 .ui-autocomplete {
 	height: 300px;
 	overflow-y: scroll;
@@ -2426,6 +2423,41 @@ tr#realtime td:first-child {
 
 .ui-multiselect .ui-icon {
 	margin-top: 0px;
+}
+
+/* This theme's stock jquery.multiselect.css predates the bundled
+   jquery.multiselect.js 3.x markup (optgroup wrappers and group labels),
+   so add the rules it lacks here. */
+.ui-multiselect-checkboxes li {
+	list-style: none;
+}
+
+.ui-multiselect-checkboxes li.ui-multiselect-optgroup {
+	font-size: inherit;
+	padding-right: 0;
+}
+
+.ui-multiselect-optgroup > ul {
+	padding: 3px;
+}
+
+.ui-multiselect-checkboxes label {
+	padding: 3px 1px 3px 21px;
+	text-indent: -20px;
+}
+
+.ui-multiselect-single .ui-multiselect-checkboxes label {
+	text-indent: 0;
+}
+
+.ui-multiselect-grouplabel {
+	border-bottom: 1px solid;
+	display: block;
+	font-weight: bold;
+	margin: 1px 0;
+	padding: 3px;
+	text-align: center;
+	text-decoration: none;
 }
 
 .ui-widget {
@@ -2915,7 +2947,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;

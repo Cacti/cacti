@@ -1,0 +1,66 @@
+name: Changed shell coverage
+
+on:
+  pull_request:
+    paths:
+      - '**.sh'
+      - 'tests/tools/test_gettext_scripts.py'
+      - 'tests/tools/test_prepare_install.py'
+      - 'tests/tools/shell_coverage.py'
+      - 'tests/tools/check_changed_shell_coverage.py'
+      - 'tests/tools/test_check_changed_shell_coverage.py'
+      - '.github/workflows/pr-shell-coverage.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    if: contains(fromJSON('["security/develop-sonar-tooling","fix/installer-completion-contracts"]'), github.head_ref)
+    name: Changed shell lines >= 80%
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exercise real gettext builds and checkout preparation
+        env:
+          CACTI_SHELL_COVERAGE: ${{ runner.temp }}/shell-coverage
+        run: |
+          set -euo pipefail
+          python3 tests/tools/test_check_changed_shell_coverage.py
+          mkdir -p "$CACTI_SHELL_COVERAGE"
+          docker run --rm -v "$PWD:/repo:ro" -v "$CACTI_SHELL_COVERAGE:/coverage" \
+            -w /repo -e CACTI_SHELL_COVERAGE=/coverage \
+            kcov/kcov@sha256:481289ae32e55e5b733019515acd10948a4f76dfed381765577db909664fc603 \
+            sh -c '
+              set -eu
+              if [ -f tests/tools/test_gettext_scripts.py ]; then
+                apt-get update -qq
+                apt-get install -y -qq gettext
+                python3 tests/tools/test_gettext_scripts.py
+              fi
+              if [ -f tests/tools/test_prepare_install.py ]; then
+                python3 tests/tools/test_prepare_install.py
+              fi
+            '
+      - name: Require at least 80 percent of changed shell statements
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          python3 tests/tools/check_changed_shell_coverage.py --base "$BASE_COMMIT" \
+            --reports "${{ runner.temp }}/shell-coverage" --minimum 80 \
+            --json-output coverage-shell-changed.json
+      - name: Preserve native shell coverage
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: changed-shell-coverage
+          path: |
+            coverage-shell-changed.json
+            ${{ runner.temp }}/shell-coverage
+          if-no-files-found: warn

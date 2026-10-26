@@ -101,6 +101,7 @@ if [ $WGET_RESULT -eq 127 ]; then
 fi
 
 DEBUG=0
+MIN_CHECKS=25
 VMSTAT=0
 PS=0
 SHUTDOWN=0
@@ -135,6 +136,7 @@ while [ -n "$1" ]; do
       echo "  -vmstat <seconds>   Provide periodic vmstat output at end of the page run"
       echo "  -ps <seconds>       Provide top memory process output periodically at end of the page run"
       echo "  -debug              Enable debug output"
+      echo "  -min <pages>        Fail unless the crawl checks at least this many pages (default: ${MIN_CHECKS})"
       echo "  -df <file>          Use database options file and disable DB sleep (default: ${DBFILE})"
       echo "  -dh <host>          Set database host and disable DB sleep (default: ${DBHOST})"
       echo "  -dn <name>          Set database name (default: ${DBNAME})"
@@ -168,6 +170,14 @@ while [ -n "$1" ]; do
       ;;
     "-debug")
       DEBUG=1
+      ;;
+    "-min")
+      if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+        echo "ERROR: -min value must be a non-negative integer."
+        exit 1
+      fi
+      MIN_CHECKS="$2"
+      shift
       ;;
     "-vmstat")
       if ! [[ "$2" =~ ^[0-9]+$ ]] || [ "$2" -le 0 ]; then
@@ -559,10 +569,13 @@ echo "---------------------------------------------------------------------"
 echo "NOTE: Starting Web Based Page Validation"
 echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
-wget -q --timeout=30 --tries=1 --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php >/dev/null 2>&1
-
-if [ -f "$tmpFile1" ]; then
+# mktemp already created tmpFile1, so test the wget status and the token
+# rather than whether the file exists.
+if wget -q --timeout=30 --tries=1 --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php >/dev/null 2>&1; then
   magic=$(grep "name='__csrf_magic' value=" "$tmpFile1" | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
+fi
+
+if [ -n "${magic:-}" ]; then
 
   if [ "$DEBUG" -eq 1 ]; then
     echo "---------------------------------------------------------------------"
@@ -572,7 +585,7 @@ if [ -f "$tmpFile1" ]; then
   fi
 else
   echo "---------------------------------------------------------------------"
-  echo "FATAL: Unable to locate output file"
+  echo "FATAL: Unable to fetch the login page or its CSRF token from ${WEBHOST}"
   echo "---------------------------------------------------------------------"
   exit 1
 fi
@@ -581,7 +594,17 @@ postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_
 
 echo "NOTE: Logging into the Cacti User Interface"
 # shellcheck disable=SC2086 # $loadSaveCookie is intentionally word-split (multi-word option string)
-wget --timeout=30 --tries=1 $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php >/dev/null 2>&1
+if ! wget --timeout=30 --tries=1 $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php >/dev/null 2>&1; then
+  echo "FATAL: The login request to ${WEBHOST}/index.php failed"
+  exit 1
+fi
+
+# A rejected login returns the login form again; crawling from there would
+# only visit public pages and still report success.
+if grep -q "name='login_username'" "${tmpFile2}"; then
+  echo "FATAL: Login as ${WAUSER} failed; the response is still the login form"
+  exit 1
+fi
 
 if [ "$DEBUG" -eq 1 ]; then
   echo "---------------------------------------------------------------------"
@@ -625,8 +648,13 @@ end_time=$(date +%s)
 total=$((end_time-start_time))
 
 if [ "$error" -eq 8 ]; then
-  errors=$(grep -c "awaiting response... 404" "${logFile1}")
+  errors=$(grep -c "awaiting response... 404" "${logFile1}" || true)
   echo "WARNING: $errors pages not found.  This is not necessarily a bug"
+elif [ "$error" -ne 0 ]; then
+  # 8 is a server error response; anything else means the crawl itself broke.
+  echo "FATAL: The recursive wget crawl failed with exit status ${error}"
+  tail -n 20 "${logFile1}"
+  exit 1
 fi
 
 # ------------------------------------------------------------------------------
@@ -651,7 +679,7 @@ if [ "$DEBUG" -eq 1 ]; then
   cat "${WSACCESS}"
 fi
 
-checks=$(grep -c "HTTP" "$logFile1")
+checks=$(grep -c "HTTP" "$logFile1" || true)
 
 if [ "$total" -gt 0 ]; then
   check_rate=$(echo "scale=2; $checks / $total" | bc)
@@ -665,6 +693,11 @@ memory=$(free -g | grep "Mem:" | awk '{print $2}')
 echo "NOTE: There were ${checks} pages checked through recursion"
 echo "NOTE: Total time was ${total} seconds or ${check_rate} checks per second"
 echo "NOTE: Host/Container has ${cpus} CPUs and ${memory} GB of memory"
+
+if [ "$checks" -lt "$MIN_CHECKS" ]; then
+  echo "FATAL: Only ${checks} pages were checked; expected at least ${MIN_CHECKS}"
+  exit 1
+fi
 
 if [[ "${DEBUG}" -eq 1 ]];then
   echo "---------------------------------------------------------------------"

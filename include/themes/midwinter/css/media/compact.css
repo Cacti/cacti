@@ -12,7 +12,6 @@
 /* kiosk mode */
 [class~=fullscreen],
 [class~=fullscreen] > div {
-    /*height: 100dvh !important;*/
     height: 100% !important;
 }
 
@@ -226,34 +225,10 @@
         }
 
         &:has(.saveRowParent) {
-          /*  & #main {
-                margin-bottom: 4rem;
-            }
-*/
             & #main::-webkit-scrollbar-button {
                 width: 40px;
                 height: 40px;
             }
-/*
-            .saveRowParent & {
-                padding-bottom: 0.5rem;
-            }
-
-            & .saveRowParent {
-                width: 100%;
-                .saveRow {
-                    position: absolute;
-                    top:100%;
-                    width: 100%;
-                    -webkit-transform: translateY(-100%);
-                    -ms-transform: translateY(-100%);
-                    transform: translateY(-100%);
-                    border-top: 1px solid var(--border-color-semilight);
-                    right: 0;
-                }
-            }
-
- */
 
         }
 
@@ -455,18 +430,11 @@
                 .mdw-DockLeft & {
                     margin-right: 4px;
                     margin-left: -4px;
-                };
+                }
                 & > .ui-resizable-handle {
                     height: 0;
                     bottom: 0;
                     border-top: 1px solid var(--border-color);
-                    .mdw-DockRight & {
-                        /*width: calc(100% - 4px);
-                        left: 4px;*/
-                    }
-                    .mdw-DockLeft & {
-                        /*width: calc(100% + 4px);*/
-                    }
                     &::before {
                         display: inline-block;
                         position: relative;
@@ -493,7 +461,7 @@
                 .mdw-DockLeft & {
                     margin-right: 4px;
                     margin-left: -4px;
-                };
+                }
             }
 
 
@@ -635,10 +603,7 @@
     .cactiInstallTable {
         box-shadow: -2px 4px 10px 2px var(--box-shadow-color);
         border-radius: 2px;
-        border: 1px solid var(--border-color);
-        & > div {
-
-        }
+        border: 1px solid var(--border-color)
     }
 
     .cactiAuthLogo {
@@ -685,10 +650,6 @@
 
     .cactiAuthArea {
         padding: 2.5rem;
-    }
-
-    .cactiAuth label {
-        /*display: none;*/
     }
 
     .cactiAuthTitle {
@@ -877,9 +838,6 @@
             grid-area: middle;
 
             justify-content: center;
-            @media screen and (max-width: 1024px) {
-
-            }
             .navBarNavigation {
                 justify-content: center;
             }
@@ -893,7 +851,7 @@
                     }
                     &::before {
                         font-size: var(--fs-semilarge);
-                        font-family: "tabler-icons";
+                        font-family: "tabler-icons", sans-serif;
                         font-weight: 900;
                         content: "\ea64";
                     }
@@ -915,7 +873,7 @@
                     }
                     &::before {
                         font-size: var(--fs-semilarge);
-                        font-family: "tabler-icons";
+                        font-family: "tabler-icons", sans-serif;
                         font-weight: 900;
                         content: "\ea65";
                     }

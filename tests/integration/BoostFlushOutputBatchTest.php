@@ -155,6 +155,80 @@ test('reports a failed database acknowledgement to its caller', function () {
 	expect(boost_flush_output_batch(["(1,'ds','2024-01-01 00:00:00','100')"], $this->conn))->toBeFalse();
 });
 
+/**
+ * Run $callback with cacti_log() pointed at a temporary file and return
+ * what was logged, restoring the cached log options afterwards.
+ */
+function boost_test_capture_log(callable $callback) : string {
+	global $config;
+
+	$log_file = tempnam(sys_get_temp_dir(), 'cacti-boost-log-');
+	$saved    = [];
+
+	foreach (['path_cactilog' => $log_file, 'log_destination' => 1, 'log_verbosity' => POLLER_VERBOSITY_LOW, 'selective_debug' => '', 'selective_plugin_debug' => ''] as $name => $value) {
+		$saved[$name]                    = $config[OPTIONS_CLI][$name] ?? null;
+		$config[OPTIONS_CLI][$name]      = $value;
+	}
+
+	try {
+		$callback();
+
+		return (string) file_get_contents($log_file);
+	} finally {
+		foreach ($saved as $name => $value) {
+			if ($value === null) {
+				unset($config[OPTIONS_CLI][$name]);
+			} else {
+				$config[OPTIONS_CLI][$name] = $value;
+			}
+		}
+
+		@unlink($log_file);
+	}
+}
+
+test('a failed staging write is logged as a BOOST ERROR rather than failing silently', function () {
+	$this->conn->exec('DROP TABLE poller_output_boost');
+
+	$log = boost_test_capture_log(function () {
+		expect(boost_flush_output_batch([
+			"(1,'ds','2024-01-01 00:00:00','100')",
+			"(2,'ds','2024-01-01 00:00:00','200')",
+		], $this->conn))->toBeFalse();
+	});
+
+	expect($log)->toContain('ERROR: Boost staging failed to write 2 sample(s) to poller_output_boost');
+});
+
+test('the poller never re-stages collector output when boost_redirect is on', function () {
+	global $config;
+
+	$saved = [];
+
+	foreach (['boost_rrd_update_enable' => 'on', 'boost_rrd_update_system_enable' => 'on', 'boost_redirect' => 'on'] as $name => $value) {
+		$saved[$name]               = $config[OPTIONS_CLI][$name] ?? null;
+		$config[OPTIONS_CLI][$name] = $value;
+	}
+
+	try {
+		$results = [['local_data_id' => 1, 'rrd_name' => 'ds', 'time' => '2024-01-01 00:00:00', 'output' => '100']];
+		$staged  = false;
+
+		expect(boost_poller_on_demand($results, $staged))->toBeFalse()
+			->and($staged)->toBeTrue()
+			->and($this->conn->insert_attempts)->toBe(0)
+			->and((int) $this->conn->query('SELECT COUNT(*) FROM poller_output_boost')->fetchColumn())->toBe(0);
+	} finally {
+		foreach ($saved as $name => $value) {
+			if ($value === null) {
+				unset($config[OPTIONS_CLI][$name]);
+			} else {
+				$config[OPTIONS_CLI][$name] = $value;
+			}
+		}
+	}
+});
+
 test('publishes a multi-chunk graph cache object without leaving a temporary file', function () {
 	$directory = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
 	mkdir($directory, 0700);

@@ -3174,6 +3174,27 @@ msgstr ""
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr ""
 
+#: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+msgid "No RRDfile repairs were necessary."
+msgstr ""
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
+#, php-format
+msgid "RRDtool Tune Info [ %s ]"
+msgstr ""
+
+#: data_sources.php
+msgid "Run Fix from Command Line"
+msgstr ""
+
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
 msgstr ""
@@ -21202,12 +21223,7 @@ msgstr ""
 msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
 msgstr ""
 
-#: plugins.php
-#, php-format
-msgid "Plugin '%s' has passed it's Configuration Check test and can not be Installed"
-msgstr ""
-
-#: plugins.php
+#: lib/plugins.php
 #, php-format
 msgid "Plugin '%s' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update."
 msgstr ""
@@ -25257,23 +25273,11 @@ msgid "(New Layout)"
 msgstr ""
 
 #: lib/html_filter.php
-msgid "Overwrite the selected layout with the current filter"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Save the current filter as a new layout"
-msgstr ""
-
-#: lib/html_filter.php
 msgid "Rename the selected layout"
 msgstr ""
 
 #: lib/html_filter.php
 msgid "Delete the selected layout"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Publish the selected layout so all users can see it"
 msgstr ""
 
 #: lib/html_filter.php
@@ -25293,22 +25297,6 @@ msgid "The layout operation failed."
 msgstr ""
 
 #: lib/html_filter.php
-msgid "Please select a layout to rename."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Please select a layout to delete."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Please select a layout to publish."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "You are not permitted to modify this layout."
-msgstr ""
-
-#: lib/html_filter.php
 msgid "Delete the selected layout?"
 msgstr ""
 
@@ -25325,7 +25313,7 @@ msgid "Page Filter Format"
 msgstr ""
 
 #: include/global_settings.php
-msgid "How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows the classic inline filter. The Layouts selector is available in both."
+msgid "How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows only the classic inline filter. The Layouts selector is available in Modern only."
 msgstr ""
 
 #: include/global_arrays.php
@@ -25494,4 +25482,19 @@ msgstr ""
 
 #: lib/CactiValidator.php
 msgid "Invalid RRDtool axis option."
+msgstr ""
+
+#: plugins.php
+#, php-format
+msgid "Plugin '%s' passed its configuration check and can be enabled."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
+msgid "Plugin '%s' failed its configuration check. Review the plugin settings before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""

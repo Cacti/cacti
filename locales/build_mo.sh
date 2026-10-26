@@ -20,8 +20,9 @@
 #   | http://www.cacti.net/                                                   |
 #   +-------------------------------------------------------------------------+
 
-for file in `ls -1 po/*.po`;do
-  ofile=$(basename --suffix=.po ${file})
+for file in po/*.po; do
+  [ -f "$file" ] || continue
+  ofile=$(basename "$file" .po)
   echo "Converting $file to LC_MESSAGES/${ofile}.mo"
-  msgfmt ${file} -o LC_MESSAGES/${ofile}.mo
+  msgfmt "$file" -o "LC_MESSAGES/$ofile.mo"
 done

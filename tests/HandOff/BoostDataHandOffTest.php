@@ -109,11 +109,12 @@ test('Boost child completion and archive deletion are scoped to a parent run', f
 	expect($schema)->toContain('`child_id` int(10) unsigned NOT NULL default 0');
 });
 
-test('legacy direct Boost redirection bypasses staging while acknowledgement callers verify storage', function () {
+test('direct Boost redirection never re-stages collector output from the poller', function () {
 	$boost = boostSource('lib/boost.php');
 
-	expect($boost)->toContain("if (!\$track_staging && read_config_option('boost_redirect') == 'on')")
-		->and($boost)->toContain('cmd.php already staged these rows');
+	expect($boost)->toContain("if (read_config_option('boost_redirect') == 'on') {")
+		->and($boost)->not->toContain('$track_staging')
+		->and($boost)->toContain('spine/cmd.php already staged these rows');
 });
 
 test('Archive discovery validates every dynamic table identifier', function () {

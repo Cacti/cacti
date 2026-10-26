@@ -1,0 +1,54 @@
+name: Develop theme correctness
+on:
+  pull_request:
+    branches: [develop]
+  push:
+    branches: [develop]
+permissions:
+  contents: read
+jobs:
+  chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/e2e/package-lock.json
+      - name: Install locked browser tooling
+        working-directory: tests/e2e
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npx --no-install playwright install --with-deps chromium
+      - name: Verify theme parsing and computed rendering
+        working-directory: tests/e2e
+        env:
+          CACTI_THEME_COVERAGE: '1'
+        run: npx --no-install playwright test tests/develop-theme-correctness.spec.ts tests/develop-theme-cleanup.spec.ts --project=chromium
+      - name: Require at least 80 percent of changed CSS lines
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          # The event's base SHA can predate the develop tip this checkout was
+          # merged onto, which counts develop's own lines as the PR's.
+          if git rev-parse --verify --quiet 'HEAD^2' >/dev/null; then
+            BASE_COMMIT="$(git rev-parse 'HEAD^1')"
+          fi
+          python3 tests/tools/test_report_changed_coverage.py
+          python3 tests/tools/report_changed_coverage.py --base "$BASE_COMMIT" \
+            --language css --minimum 80 --browser-root tests/e2e/test-results
+      - name: Preserve stylesheet coverage evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: theme-coverage
+          path: tests/e2e/test-results
+          if-no-files-found: warn

@@ -145,7 +145,6 @@
 }
 
 .daterangepicker .calendar-table th, .daterangepicker .calendar-table td {
-  white-space: nowrap;
   text-align: center;
   vertical-align: middle;
   min-width: 32px;
@@ -294,10 +293,6 @@
 
 .daterangepicker.show-ranges.rtl .drp-calendar.right {
   border-right: 1px solid var(--border-color);
-}
-
-.daterangepicker.show-ranges.ltr .drp-calendar.left {
-
 }
 
 .daterangepicker .ranges {

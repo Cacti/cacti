@@ -752,10 +752,6 @@ class CactiTableFilter {
 			print '</form>' . PHP_EOL;
 		}
 
-		if ($this->render_layouts) {
-			print $this->create_layouts();
-		}
-
 		html_filter_end_box();
 
 		return (string) ob_get_clean();
@@ -1288,8 +1284,6 @@ class CactiTableFilter {
 		if ($this->render_layouts) {
 			if ($this->use_modern_filter()) {
 				$script .= $this->create_modern_javascript($applyFilter, $changeFunction, $clearFunction);
-			} else {
-				$script .= $this->create_layouts_javascript($applyFilter);
 			}
 		}
 
@@ -1359,96 +1353,6 @@ class CactiTableFilter {
 		return '<div class="filterColumnButton"' . ($hidden ? ' style="display:none"' : '') . '>' .
 			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '" title="' . html_escape($title) . '">' . $content . '</button>' .
 			'</div>' . PHP_EOL;
-	}
-
-	private function create_layouts() : string {
-		$page     = filter_layouts_page_key($this->form_action != '' ? $this->form_action : get_current_page());
-		$layouts  = filter_layouts_get_available($page);
-		$can_glob = filter_layouts_can_manage_global();
-
-		ob_start();
-
-		print "<div class='filterTable even cactiFilterLayouts'>";
-		print "<div class='filterRow'>";
-
-		print "<div class='filterColumn'><div class='filterFieldName'>" . __('Layouts') . '</div></div>';
-
-		print "<div class='filterColumn'>";
-		print $this->layout_select($layouts, $can_glob);
-		print '</div>';
-
-		print $this->layout_button('layout_save',   __('Save'),   __('Overwrite the selected layout with the current filter'), false, 'ti ti-device-floppy');
-		print $this->layout_button('layout_new',    __('New'),    __('Save the current filter as a new layout'), false, 'ti ti-file-plus');
-		print $this->layout_button('layout_rename', __('Rename'), __('Rename the selected layout'), false, 'ti ti-forms');
-		print $this->layout_button('layout_delete', __('Delete'), __('Delete the selected layout'), false, 'ti ti-trash');
-
-		if ($can_glob) {
-			print $this->layout_button('layout_publish', __('Publish'), __('Publish the selected layout so all users can see it'), false, 'ti ti-world-up');
-		}
-
-		print '</div>';
-		print '</div>' . PHP_EOL;
-
-		// Hidden name-entry dialog reused by the New and Rename actions.
-		print "<div id='layoutNameDialog' title='" . __esc('Layout Name') . "' style='display:none;'>";
-		print "<form id='layoutNameForm' onsubmit='return false;'>";
-		print "<label for='layout_name'>" . __('Name') . '</label> ';
-		print "<input type='text' id='layout_name' size='40' maxlength='128' class='ui-state-default ui-corner-all'>";
-		print '</form></div>' . PHP_EOL;
-
-		return (string) ob_get_clean();
-	}
-
-	private function create_layouts_javascript(string $applyFilter) : string {
-		$page = filter_layouts_page_key($this->form_action != '' ? $this->form_action : get_current_page());
-
-		$js  = PHP_EOL . "<script type='text/javascript'>" . PHP_EOL;
-		$js .= 'function layoutFilterUrl() {' . PHP_EOL;
-		$js .= "\treturn " . $applyFilter . PHP_EOL;
-		$js .= '}' . PHP_EOL;
-
-		$js .= 'function layoutSelectedId() {' . PHP_EOL;
-		$js .= "\treturn parseInt($('#filter_layout').val()) || 0;" . PHP_EOL;
-		$js .= '}' . PHP_EOL;
-
-		$js .= 'function layoutPost(layoutAction, extra, onDone) {' . PHP_EOL;
-		$js .= "\tvar data = $.extend({ action: layoutAction, page: " . json_encode($page) . ', __csrf_magic: csrfMagicToken }, extra);' . PHP_EOL;
-		$js .= "\t$.post(" . json_encode($page) . ", data, function(result) { if (onDone) { onDone(result); } }, 'json').fail(function() { alert(" . json_encode(__('The layout operation failed.')) . '); });' . PHP_EOL;
-		$js .= '}' . PHP_EOL;
-
-		$js .= 'function layoutNameDialog(title, value, onAccept) {' . PHP_EOL;
-		$js .= "\t$('#layout_name').val(value);" . PHP_EOL;
-		$js .= "\t$('#layoutNameDialog').dialog({ title: title, modal: true, width: 400, resizable: false, buttons: [" . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode(__('OK')) . ", click: function() { var n = $('#layout_name').val(); $(this).dialog('close'); if (n != '') { onAccept(n); } } }," . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
-		$js .= "\t] });" . PHP_EOL;
-		$js .= '}' . PHP_EOL;
-
-		$js .= 'function layoutEditable() {' . PHP_EOL;
-		$js .= "\treturn $('#filter_layout option:selected').attr('data-editable') != '0';" . PHP_EOL;
-		$js .= '}' . PHP_EOL;
-
-		$js .= 'function layoutResultOk(r) {' . PHP_EOL;
-		$js .= "\tif (r && r.ok) { return true; } alert(" . json_encode(__('The layout operation failed.')) . '); return false;' . PHP_EOL;
-		$js .= '}' . PHP_EOL;
-
-		$js .= '$(function() {' . PHP_EOL;
-		$js .= "\t$('#filter_layout').change(function() { var u = $('#filter_layout option:selected').attr('data-url'); if (u != undefined && u != '') { document.location = u; } });" . PHP_EOL;
-
-		$js .= "\t$('#layout_new').click(function() { layoutNameDialog(" . json_encode(__('New Layout')) . ", '', function(name) { layoutPost('layout_save', { name: name, url: layoutFilterUrl() }, function(r) { if (layoutResultOk(r) && r.url) { document.location = r.url; } }); }); });" . PHP_EOL;
-
-		$js .= "\t$('#layout_save').click(function() { var id = layoutSelectedId(); if (id == 0) { $('#layout_new').click(); return; } if (!layoutEditable()) { alert(" . json_encode(__('You are not permitted to modify this layout.')) . "); return; } layoutPost('layout_save', { id: id, url: layoutFilterUrl() }, function(r) { if (layoutResultOk(r)) { if (r.url) { document.location = r.url; } else { window.location.reload(); } } }); });" . PHP_EOL;
-
-		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); }); });" . PHP_EOL;
-
-		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var d = $('<div>').append($('<p>').text(" . json_encode(__('Delete the selected layout?')) . ")); $('body').append(d); d.dialog({ title: " . json_encode(__('Delete Layout')) . ', modal: true, width: 420, resizable: false, buttons: [ { text: ' . json_encode(__('Delete')) . ", click: function() { $(this).dialog('close'); layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . '; } }); } }, { text: ' . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } } ], close: function() { $(this).dialog('destroy').remove(); } }); });" . PHP_EOL;
-
-		$js .= "\t$('#layout_publish').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to publish.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); });" . PHP_EOL;
-
-		$js .= '});' . PHP_EOL;
-		$js .= '</script>' . PHP_EOL;
-
-		return $js;
 	}
 
 	/**

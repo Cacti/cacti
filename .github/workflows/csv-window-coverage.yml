@@ -78,6 +78,7 @@ jobs:
         run: |
           set -euo pipefail
           include/vendor/bin/pest \
+            --configuration=tests/phpunit.xml \
             tests/Unit/Core/Rrd/RrdFetchWindowTest.php \
             tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php \
             tests/Unit/Core/Rrd/CsvWindowResolutionContractTest.php \

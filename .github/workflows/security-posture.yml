@@ -39,7 +39,7 @@ jobs:
           persist-credentials: false
 
       - name: TruffleHog scan
-        uses: trufflesecurity/trufflehog@b2b0a92070f206ab7b5a1105d82a7f2f48d92341 # v3.99.0
+        uses: trufflesecurity/trufflehog@e76dff8a7e57d6df0c60ad8cbf5d5cba505a8fc9 # v3.99.2
         with:
           extra_args: --only-verified
 
@@ -73,7 +73,7 @@ jobs:
         # the upload fails with "Resource not accessible by integration". Skip it
         # there; the SARIF is still kept as an artifact below.
         if: always() && github.event.pull_request.head.repo.fork == false
-        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
         with:
           sarif_file: semgrep.sarif
           category: semgrep
@@ -177,11 +177,12 @@ jobs:
       - name: Install policy checker dependencies
         run: |
           set -euo pipefail
-          python3 -m pip install --disable-pip-version-check pyyaml==6.0.2
+          python3 -m pip install --only-binary=:all: --disable-pip-version-check pyyaml==6.0.2
 
       - name: Enforce workflow policy
         run: |
           set -euo pipefail
+          python3 tests/tools/test_security_review_paths.py
           python3 .github/scripts/check-workflow-policy.py
 
   dependency-review:

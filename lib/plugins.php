@@ -697,14 +697,18 @@ function api_plugin_can_install(string $plugin, string &$message) : bool {
 
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
 		foreach ($dependencies as $dependency => $version) {
-			if (!plugin_valid_version_range($dependency, $version)) {
-				$message .= __('\'%s\' versions \'%s\' above or in range are required to install \'%s\'. ', ucwords($dependency), $version, ucwords($plugin));
-
-				$proceed = false;
-			} elseif (!api_plugin_installed($dependency)) {
+			if (!api_plugin_installed($dependency)) {
 				$message .= __('\'%s\' must first be installed before \'%s\' is installed. ', ucwords($dependency), ucwords($plugin));
 
 				$proceed = false;
+			} elseif ($version !== true) {
+				$installed_version = db_fetch_cell_prepared('SELECT version FROM plugin_config WHERE directory = ?', [$dependency]);
+
+				if (!is_string($installed_version) || !plugin_valid_version_range($version, $installed_version)) {
+					$message .= __('\'%s\' versions \'%s\' above or in range are required to install \'%s\'. ', ucwords($dependency), $version, ucwords($plugin));
+
+					$proceed = false;
+				}
 			}
 		}
 	}
@@ -789,7 +793,28 @@ function api_plugin_install(string $plugin) : bool {
 	$function = 'plugin_' . $plugin . '_install';
 
 	if (function_exists($function)) {
-		$function();
+		try {
+			$installed = $function();
+		} catch (Throwable $e) {
+			cacti_log(sprintf("ERROR: Plugin '%s' install hook threw %s.", $plugin, get_class($e)), false, 'PLUGIN');
+			$installed = false;
+		}
+
+		// Legacy install hooks return null on success. Only strict false or
+		// an exception signals failure; retain tables for diagnosis/recovery.
+		if ($installed === false) {
+			db_execute_prepared('UPDATE plugin_config
+				SET status = 2
+				WHERE directory = ?',
+				[$plugin]);
+
+			api_plugin_disable_hooks_all($plugin);
+			cacti_log(sprintf("ERROR: Plugin '%s' installation failed. Its hooks are disabled and it needs configuration.", $plugin), false, 'PLUGIN');
+			raise_message('install_error', __esc('Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it.', $plugin), MESSAGE_LEVEL_ERROR);
+
+			return false;
+		}
+
 		$ready = api_plugin_check_config($plugin);
 
 		if ($ready) {
@@ -927,7 +952,8 @@ function api_plugin_uninstall(string $plugin, bool $tables = true) : void {
 	}
 }
 
-function api_plugin_check_config(string $plugin) : bool {
+// Null is an invalid legacy hook response diagnosed by the plugin UI.
+function api_plugin_check_config(string $plugin) : ?bool {
 	clearstatcache();
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
@@ -937,7 +963,17 @@ function api_plugin_check_config(string $plugin) : bool {
 		$function = "plugin_{$plugin}_check_config";
 
 		if (function_exists($function)) {
-			return $function();
+			$result = $function();
+
+			if ($result === null) {
+				raise_message('plugin_config', __esc('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
+				cacti_log(sprintf('WARNING: Cacti Plugin %s configuration check returned null', $plugin), false, 'PLUGIN');
+			} elseif (!$result) {
+				raise_message('plugin_config', __esc('Plugin \'%s\' failed its configuration check. Review the plugin settings before enabling it.', $plugin), MESSAGE_LEVEL_ERROR);
+				cacti_log(sprintf('WARNING: Cacti Plugin %s configuration check failed', $plugin), false, 'PLUGIN');
+			}
+
+			return $result;
 		}
 
 		return true;
@@ -1228,15 +1264,14 @@ function api_plugin_disable_hooks_all(string $plugin) : void {
 }
 
 function api_plugin_valid_entrypoint(string $plugin, string $function) : bool {
-	// Check for invalid entrypoint install/upgrade
-	$backtrace = debug_backtrace();
+	// File-scope calls have no third frame and are not install entrypoints.
+	$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+	$caller    = $backtrace[2]['function'] ?? '';
 
-	if (cacti_sizeof($backtrace)) {
-		if (!preg_match('/(install|upgrade|setup)/i', $backtrace[2]['function'])) {
-			cacti_log(sprintf('WARNING: Plugin \'%s\' is attempting to call \'%s\' improperly in function \'%s\'', $plugin, $function, $backtrace[2]['function']), false, 'PLUGIN');
+	if (!preg_match('/(install|upgrade|setup)/i', $caller)) {
+		cacti_log(sprintf('WARNING: Plugin \'%s\' is attempting to call \'%s\' improperly in function \'%s\'', $plugin, $function, $caller !== '' ? $caller : 'file scope'), false, 'PLUGIN');
 
-			return false;
-		}
+		return false;
 	}
 
 	return true;
@@ -1247,14 +1282,16 @@ function api_plugin_register_realm(string $plugin, string $file, string $display
 		return false;
 	}
 
-	$files = explode(',', $file);
-	$i     = 0;
+	$files  = explode(',', $file);
+	$params = [$plugin];
 
 	$sql_where = '(';
 
 	foreach ($files as $tfile) {
 		$sql_where .= ($sql_where != '(' ? ' OR ' : '') .
-			' (file = "' . $tfile . '" OR file LIKE "' . $tfile . ',%" OR file LIKE "%,' . $tfile . ',%" OR file LIKE "%,' . $tfile . '")';
+			' (file = ? OR file LIKE ? ESCAPE \'!\' OR file LIKE ? ESCAPE \'!\' OR file LIKE ? ESCAPE \'!\')';
+		$literal = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $tfile);
+		array_push($params, $tfile, $literal . ',%', '%,' . $literal . ',%', '%,' . $literal);
 	}
 	$sql_where .= ')';
 
@@ -1262,7 +1299,7 @@ function api_plugin_register_realm(string $plugin, string $file, string $display
 		FROM plugin_realms
 		WHERE plugin = ?
 		AND $sql_where",
-		[$plugin]);
+		$params);
 
 	if (cacti_sizeof($realm_ids) == 1) {
 		$realm_id = $realm_ids[0]['id'];
@@ -1815,7 +1852,7 @@ function plugin_is_compatible(string $plugin) : array {
 	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');
 
 	if ($info !== false) {
-		if (!isset($info['compat']) || plugin_valid_version_range($info['compat'], CACTI_VERSION)) {
+		if (!isset($info['compat']) || !plugin_valid_version_range($info['compat'], CACTI_VERSION)) {
 			return ['compat' => false, 'requires' => __('Requires: Cacti >= %s', $info['compat'])];
 		}
 	} else {
@@ -1825,44 +1862,27 @@ function plugin_is_compatible(string $plugin) : array {
 	return ['compat' => true, 'requires' => __('Requires: Cacti >= %s', $info['compat'])];
 }
 
+/**
+ * Match whitespace-separated, attached comparison operators. A bare version
+ * retains the legacy minimum-version meaning. All constraints must match.
+ */
 function plugin_valid_version_range(string $range_string, string $compare_version = CACTI_VERSION) : bool {
-	if (str_contains($range_string, ' ')) {
-		$compares = explode(' ', $range_string);
+	$compares = preg_split('/\s+/', trim($range_string));
 
-		foreach ($compares as $line) {
-			if (str_contains($line, '<=')) {
-				$theversion = str_replace('<=', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '>=')) {
-				$theversion = str_replace('>=', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '<')) {
-				$theversion = str_replace('<', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '>')) {
-				$theversion = str_replace('>', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} elseif (str_contains($line, '=')) {
-				$theversion = str_replace('=', '', $line);
-				$versions[] = ['direction' => '=', 'version' => $theversion];
-			} else {
-				cacti_log('Invalid version comparison');
+	if ($compares === false) {
+		return false;
+	}
 
-				return false;
-			}
+	foreach ($compares as $constraint) {
+		if (!preg_match('/^(<=|>=|<|>|=)?([0-9][0-9A-Za-z._-]*)$/D', $constraint, $parts)) {
+			cacti_log('Invalid version comparison');
+
+			return false;
 		}
 
-		foreach ($versions as $v) {
-			if (!cacti_version_compare($compare_version, $v['version'], $v['direction'])) {
-				return false;
-			}
-		}
-	} else {
-		$versions[] = ['direction' => '>=', 'version' => $range_string];
+		$direction = $parts[1] !== '' ? $parts[1] : '>=';
 
-		if (cacti_version_compare($compare_version, $range_string, '>=')) {
-			return true;
-		} else {
+		if (!cacti_version_compare($compare_version, $parts[2], $direction)) {
 			return false;
 		}
 	}
@@ -1942,7 +1962,7 @@ function plugin_load_info_defaults(string $file, mixed $info, array $defaults = 
 			$result['status'] = -3;
 		} elseif (cacti_strtolower($dir) != cacti_strtolower($result['name'])) {
 			$result['status'] = -2;
-		} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
+		} elseif (!isset($result['compat']) || !plugin_valid_version_range($result['compat'], CACTI_VERSION)) {
 			$result['status'] = -1;
 		}
 	}

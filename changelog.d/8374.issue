@@ -1,0 +1,1 @@
+Stop the main poller from re-inserting samples into poller_output_boost when Boost direct redirection is enabled

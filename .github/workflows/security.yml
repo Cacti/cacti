@@ -41,15 +41,42 @@ jobs:
       - name: Set up Docker with the public registry cache
         uses: ./.github/actions/setup-ci-docker
 
+      # Every event gates on new findings only. The grv()/gnrv() sources also
+      # match request vars that an earlier gfrv() call validated, which Semgrep
+      # cannot see, so a whole-tree result is not a usable pass/fail gate.
       - name: Run Semgrep
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+          MERGE_GROUP_BASE_SHA: ${{ github.event.merge_group.base_sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
         run: |
           set -euo pipefail
-          semgrep_args=(--config .semgrep.yml --error)
-          if [ -n "${BASE_SHA:-}" ]; then
-            semgrep_args+=(--baseline-commit "$BASE_SHA")
+
+          case "$EVENT_NAME" in
+            pull_request)
+              base_sha="$PR_BASE_SHA"
+              ;;
+            push)
+              base_sha="$PUSH_BASE_SHA"
+              ;;
+            merge_group)
+              base_sha="$MERGE_GROUP_BASE_SHA"
+              ;;
+            *)
+              base_sha=""
+              ;;
+          esac
+
+          if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ ]]; then
+            base_sha="$(git rev-parse --verify HEAD^ 2>/dev/null || git rev-parse --verify HEAD)"
           fi
+
+          git cat-file -e "${base_sha}^{commit}"
+          # Parallel jobs hit taint fixpoint timeouts in Cacti's large files,
+          # so the same tree can report different findings run to run. One job
+          # keeps the result stable and still scans the whole tree in seconds.
+          semgrep_args=(--config .semgrep.yml --error -j 1 --baseline-commit "$base_sha")
           docker run --rm \
             --user "$(id -u):$(id -g)" \
             --env HOME=/tmp \
@@ -84,7 +111,7 @@ jobs:
       - name: Download and verify pinned Psalm phar
         run: |
           set -euo pipefail
-          curl -fsSL -o psalm.phar \
+          curl --proto '=https' --proto-redir '=https' -fsSL -o psalm.phar \
             "https://github.com/vimeo/psalm/releases/download/${PSALM_VERSION}/psalm.phar"
           echo "${PSALM_PHAR_SHA256}  psalm.phar" | sha256sum -c -
 

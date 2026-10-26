@@ -889,6 +889,22 @@ class spikekill {
 								$rra[$rra_num][$ds_num]['average'] = 0;
 							}
 
+							// Windowed deviation uses the surrounding samples as its
+							// baseline. Its mean must use that same population.
+							if ($this->method == SPIKE_METHOD_STDDEV && $this->out_start > 0) {
+								$reference = [];
+
+								foreach ($samples[$rra_num][$ds_num] as $timestamp => $value) {
+									if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($value)) {
+										$reference[] = $value;
+									}
+								}
+
+								if (count($reference) > 0) {
+									$rra[$rra_num][$ds_num]['average'] = array_sum($reference) / count($reference);
+								}
+							}
+
 							$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - ($this->stddev * $rra[$rra_num][$ds_num]['stddev']);
 
 							if (is_numeric($this->ds_min[$ds_num]) && $rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
@@ -1275,6 +1291,10 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_ABSOLUTE:
+								if (is_numeric($dsvalue) && $dsvalue <= $this->absmax) {
+									$last_num[$ds_num] = $dsvalue;
+								}
+
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if (is_numeric($dsvalue) && $dsvalue > $this->absmax) {
 										if ($this->avgnan == 'avg') {

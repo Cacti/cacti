@@ -176,6 +176,48 @@ https://github.com/Cacti/documentation
 
 ---
 
+## Development and Validation
+
+Install the locked Composer dependencies before running PHP contracts. From the
+repository root:
+
+```bash
+composer install
+include/vendor/bin/pest --configuration=tests/phpunit.xml --testsuite=Unit,Integration
+composer run-script phpstan -- --memory-limit=2G
+```
+
+Coverage reports for the PRs checked on October 14, 2026 measure changed
+first-party executable statements. Applicable changes exceed 80%; this is not
+whole-project coverage. Formatting-only PHP changes are checked for equivalent
+syntax trees. Documentation, workflow definitions, lockfiles and generated
+vendor bundles are outside this execution metric. The [validation snapshot](docs/validation/pr-coverage-2026-10-14.json)
+records the measured counts and scope.
+
+Run the disposable browser and SQL/RRD profile with Docker and mise installed:
+
+```bash
+bash tests/performance/profile.sh
+```
+
+The runner selects Node 22 and Python 3.12 through mise and seeds 500 disabled
+devices and 50 deterministic RRD graphs. It profiles all shipped themes, AJAX
+navigation, realtime responses, and graph rendering with Boost enabled and
+disabled. Containers are removed after the run; the printed results directory
+retains traces, CPU and memory measurements, SQL counts and Callgrind profiles.
+See [profiling instructions](tests/performance/README.txt) and the
+[measured rendering change](docs/performance/graph-array-reuse-2026-10-14.json).
+The October 14 profile found 400 redundant option-array loads across 200 graph
+renders. Removing those loads reduced median warm PHP CPU use by 70.7% without
+Boost and 46.6% with Boost in the equally instrumented fixture. Browser profiles
+still show retained DOM growth and expensive Midwinter styling.
+
+Timings include Xdebug overhead and use synthetic data; they do not measure live
+SNMP, collector throughput or production fleet capacity. The current fixture
+uses RRDtool 1.7.2 for basic rendering; it does not exercise newer RRDtool features.
+
+---
+
 ## Contributing
 
 Contributions are welcome.
@@ -216,7 +258,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/cigamit"><img src="https://avatars.githubusercontent.com/u/957322?v=4" width="100px;" alt="Jimmy Conner"/><br /><sub><b>Jimmy Conner</b></sub></a><br /><span title="Code">💻</span><span title="Security">🛡️</span><span title="Documentation">📖</span><span title="Infrastructure">🚇</span><span title="Translation">🌍</span><span title="Tests">⚠️</span><span title="Design">🎨</span><span title="Maintenance">🚧</span><span title="Reviewed Pull Requests">👀</span></td>
       </tr>
       <tr>
-        <td align="center" valign="top" width="14.28%"><a href="https://github.com/xmacan"><img src="https://avatars.githubusercontent.com/u/26485719?v=4" width="100px;" alt="Petr Macek"/><br /><sub><b>Petr Macek</b></sub></a><br /><span title="Code">💻</span><span title="Security">🛡️</span><span title="Documentation">📖</span><span title="Reviewed Pull Requests">👀</span></td>
+        <td align="center" valign="top" width="14.28%"><a href="https://github.com/xmacan"><img src="https://avatars.githubusercontent.com/u/26485719?v=4" width="100px;" alt="Petr Macek"/><br /><sub><b>Petr Macek</b></sub></a><br /><span title="Code">💻</span><span title="Security">🛡️</span><span title="Documentation">📖</span><span title="Tests">⚠️</span><span title="Reviewed Pull Requests">👀</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/browniebraun"><img src="https://avatars.githubusercontent.com/u/5182348?v=4" width="100px;" alt="Andreas Braun"/><br /><sub><b>Andreas Braun</b></sub></a><br /><span title="Code">💻</span><span title="Documentation">📖</span><span title="Translation">🌍</span><span title="Design">🎨</span><span title="Reviewed Pull Requests">👀</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/ddb4github"><img src="https://avatars.githubusercontent.com/u/17589018?v=4" width="100px;" alt="Jing Chen"/><br /><sub><b>Jing Chen</b></sub></a><br /><span title="Code">💻</span><span title="Security">🛡️</span><span title="Documentation">📖</span><span title="Reviewed Pull Requests">👀</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/somethingwithproof"><img src="https://avatars.githubusercontent.com/u/341181?v=4" width="100px;" alt="Thomas Vincent"/><br /><sub><b>Thomas Vincent</b></sub></a><br /><span title="Code">💻</span><span title="Security">🛡️</span><span title="Documentation">📖</span><span title="Infrastructure">🚇</span><span title="Translation">🌍</span><span title="Tests">⚠️</span><span title="Maintenance">🚧</span><span title="Reviewed Pull Requests">👀</span></td>

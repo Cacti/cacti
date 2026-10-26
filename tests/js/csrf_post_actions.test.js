@@ -97,3 +97,16 @@ test('the state-action handler survives element-level unbind calls', () => {
 	assert.match(source, /\$\(document\)\.rebind\('click\.cactiPostAction', 'a\.cactiPostAction'/);
 	assert.doesNotMatch(source, /\$\('a\.cactiPostAction'\)\.off\('click\.cactiPostAction'/);
 });
+
+test('plugins.php confirmation Continue navigates the page so repeated confirmations keep opening', () => {
+	const pageSource = fs.readFileSync(path.join(__dirname, '..', '..', 'plugins.php'), 'utf8');
+	const dialog = extractFunction(pageSource, 'displayDialog');
+
+	// Without an inline #dialogForm the Continue button must navigate the whole
+	// page via submitPageUsingPost(). An Ajax loadUrl()/postUrl() here leaves the
+	// jQuery UI dialog detached under <body>, so the second confirmation's
+	// remove().append() builds into a detached node and never opens.
+	assert.match(dialog, /else\s*\{[^}]*submitPageUsingPost\(url\);/);
+	assert.doesNotMatch(dialog, /else\s*\{\s*(?:loadUrl|postUrl)\(/);
+});
+

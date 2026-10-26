@@ -12,11 +12,10 @@ services:
     build:
       context: ./docker
       dockerfile: Dockerfile
-    container_name: cacti_web
     ports:
-      - "${WEB_PORT:-8080}:80"
+      - "127.0.0.1:${WEB_PORT:-8080}:80"
     volumes:
-      # Source code (ro); named volumes overlay cache/rra/log to keep them out of the tree.
+      # Source code (read-write); named volumes overlay cache/rra/log to keep them out of the tree.
       - .:/var/www/html/cacti
       - cacti_cache:/var/www/html/cacti/cache
       - cacti_rra:/var/www/html/cacti/rra
@@ -36,7 +35,6 @@ services:
 
   db:
     image: mariadb:11.8
-    container_name: cacti_db
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: ${DB_NAME:-cacti}

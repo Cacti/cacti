@@ -69,11 +69,18 @@ $url_path          = '/cacti/';
 $cacti_session_name = 'Cacti';
 PHPCONFIG
 
-    chown www-data:www-data /var/www/html/cacti/include/config.php
+    # The file holds the DB password; php-fpm and the poller only need to read it.
+    chown root:www-data /var/www/html/cacti/include/config.php
+    chmod 0640 /var/www/html/cacti/include/config.php
+else
+    echo "NOTICE: include/config.php already exists; DB_* environment variables are ignored" >&2
 fi
 
+# cron runs with PATH=/usr/bin:/bin, which lacks the image's /usr/local/bin/php.
+# The job starts as root so the shell can open PID 1's stdout and stderr for
+# docker logs, then runuser drops to www-data before the poller starts.
 cat > /etc/cron.d/cacti-poller <<CRON
-*/5 * * * * www-data php /var/www/html/cacti/poller.php >> /proc/1/fd/1 2>> /proc/1/fd/2
+*/5 * * * * root /usr/sbin/runuser -u www-data -- /usr/local/bin/php /var/www/html/cacti/poller.php >> /proc/1/fd/1 2>> /proc/1/fd/2
 CRON
 
 chmod 0644 /etc/cron.d/cacti-poller

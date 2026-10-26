@@ -69,7 +69,8 @@ PATH_BADGES = [
     (re.compile(r"^images/"), "design"),
     (re.compile(r"^(\.github/|docker/|Dockerfile|docker-compose)"), "infra"),
     (re.compile(r"^(composer\.json|phpstan|rector\.php|\.php-cs-fixer\.php|\.pre-commit-config\.yaml)"), "maintenance"),
-    (re.compile(r"^docs/|\.md$"), "doc"),
+    (re.compile(r"^docs/"), "doc"),
+    (re.compile(r"\.md$"), "doc"),
 ]
 
 SECURITY_MESSAGE_RE = re.compile(r"CVE-|GHSA|security|XSS|SQLi|vulnerab", re.IGNORECASE)
@@ -182,6 +183,12 @@ def badges_for(activity: dict) -> set[str]:
     return badges
 
 
+def ordered_badges(current: list[str], badges: set[str]) -> list[str]:
+    """Order badges by BADGE_ORDER, keeping curated types it does not list."""
+    known = [b for b in BADGE_ORDER if b in badges]
+    return known + [b for b in current if b in badges and b not in BADGE_ORDER]
+
+
 def refresh_path_badges(config: dict) -> bool:
     by_author = git_log_by_author()
     changed = False
@@ -196,15 +203,19 @@ def refresh_path_badges(config: dict) -> bool:
             if activity is None:
                 activity = alias_activity
             else:
-                activity["paths"] |= alias_activity["paths"]
-                activity["messages"] += alias_activity["messages"]
+                # Merge into a copy: by_author buckets are shared across name
+                # and email keys, so an in-place merge leaks badges to others.
+                activity = {
+                    "paths": activity["paths"] | alias_activity["paths"],
+                    "messages": activity["messages"] + alias_activity["messages"],
+                }
         if activity is None:
             continue
         new_badges = badges_for(activity)
         before = set(contributor["contributions"])
         after = before | new_badges
         if after != before:
-            contributor["contributions"] = [b for b in BADGE_ORDER if b in after]
+            contributor["contributions"] = ordered_badges(contributor["contributions"], after)
             changed = True
     return changed
 
@@ -247,10 +258,9 @@ def refresh_review_badges(config: dict) -> bool:
         if contributor is None:
             continue
         if "review" not in contributor["contributions"]:
-            contributor["contributions"] = [
-                b for b in BADGE_ORDER
-                if b in set(contributor["contributions"]) | {"review"}
-            ]
+            contributor["contributions"] = ordered_badges(
+                contributor["contributions"], set(contributor["contributions"]) | {"review"}
+            )
             changed = True
     return changed
 

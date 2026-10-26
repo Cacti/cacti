@@ -57,7 +57,8 @@ jobs:
     - name: Install managed JavaScript and test contracts
       run: |
         set -euo pipefail
-        npm ci
+        npm ci --ignore-scripts
+        npm run postinstall --ignore-scripts
         npm test
         npm run test:coverage
 
@@ -126,7 +127,10 @@ jobs:
         cache: npm
 
     - name: Build managed JavaScript
-      run: npm ci
+      run: |
+        set -euo pipefail
+        npm ci --ignore-scripts
+        npm run postinstall --ignore-scripts
 
     - name: Setup native PHP dependencies
       uses: ./.github/actions/setup-php-composer
@@ -146,7 +150,10 @@ jobs:
     - name: Resolve native dependencies
       env:
         COMPOSER: composer.compat.json
-      run: composer update --prefer-dist --no-progress --no-interaction
+      run: |
+        set -euo pipefail
+        composer update --no-install --no-scripts --no-plugins --prefer-dist --no-progress --no-interaction
+        composer install --no-scripts --prefer-dist --no-progress --no-interaction
 
     - name: Run unit tests
       run: include/vendor/bin/pest --configuration=tests/phpunit.xml --display-warnings --testsuite=Unit
@@ -154,10 +161,16 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: read
 
     services:
       mysql:
-        image: public.ecr.aws/docker/library/mariadb:10.6@sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98
+        image: ghcr.io/cacti/ci-images/mariadb@sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
@@ -183,7 +196,10 @@ jobs:
         cache: npm
 
     - name: Build managed JavaScript
-      run: npm ci
+      run: |
+        set -euo pipefail
+        npm ci --ignore-scripts
+        npm run postinstall --ignore-scripts
 
     - name: Setup locked PHP 8.3 dependencies
       uses: ./.github/actions/setup-php-composer

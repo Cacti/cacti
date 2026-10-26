@@ -12,6 +12,9 @@ $a = db_fetch_assoc('SELECT * FROM host WHERE id = ' . grv('id'));
 // ruleid: cacti-request-var-in-sql
 $b = db_fetch_cell("SELECT x FROM t WHERE name = '" . gnrv('name') . "'");
 
+// ruleid: cacti-request-var-in-sql
+$b2 = db_fetch_row('SELECT x FROM t WHERE name = ' . get_request_var('name'));
+
 $host_id = grv('host_id');
 // ruleid: cacti-request-var-in-sql
 $c = get_allowed_graph_templates_normalized('gl.host_id=' . $host_id, '', '', $rows);
@@ -43,6 +46,9 @@ $h = shell_exec('snmpget ' . gnrv('community') . ' host');
 // ruleid: cacti-request-var-in-shell-or-rrdtool
 rrdtool_execute('tune ' . grv('max'), false, 1, $pipe, 'POLLER');
 
+// ruleid: cacti-request-var-in-shell-or-rrdtool
+$h2 = exec('snmpwalk ' . get_request_var('community'));
+
 // ok: cacti-request-var-in-shell-or-rrdtool
 $i = shell_exec('snmpget ' . cacti_escapeshellarg(gnrv('community')) . ' host');
 
@@ -53,6 +59,9 @@ $j = exec('rrdtool tune ' . intval(grv('max')));
 
 // ruleid: cacti-request-var-echoed-unescaped
 print "<option value='" . gnrv('location') . "'>";
+
+// ruleid: cacti-request-var-echoed-unescaped
+print '<td>' . get_request_var('name') . '</td>';
 
 // ok: cacti-request-var-echoed-unescaped
 print "<option value='" . html_escape(gnrv('location')) . "'>";

@@ -335,15 +335,14 @@ switch($action) {
 		$response = api_plugin_check_config($plugin);
 
 		if ($response === true) {
-			// set the status as installable again if check passes
+			// A successful recheck makes an installed plugin ready to enable.
 			db_execute_prepared('UPDATE plugin_config
-				SET status = 0
-				WHERE directory = ?',
+				SET status = 4
+				WHERE directory = ?
+				AND status = 2',
 				[$plugin]);
 
-			raise_message('plugin_good', __esc('Plugin \'%s\' has passed it\'s Configuration Check test and can not be Installed', $plugin), MESSAGE_LEVEL_INFO);
-		} elseif ($response === null) {
-			raise_message('plugin_good', __esc('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
+			raise_message('plugin_good', __esc('Plugin \'%s\' passed its configuration check and can be enabled.', $plugin), MESSAGE_LEVEL_INFO);
 		}
 
 		header('Location: plugins.php');
@@ -804,7 +803,10 @@ function update_show_current() : void {
 								post['__csrf_magic'] = csrfMagicToken;
 								postUrl({url: url, noState: true}, post);
 							} else {
-								loadUrl({url: url});
+								// Navigate the whole page so the jQuery UI dialog is cleared; an
+								// Ajax postUrl() would leave #pidialog detached under body and
+								// break the next confirmation.
+								submitPageUsingPost(url);
 							}
 						}
 					}
@@ -873,8 +875,37 @@ function update_show_current() : void {
 
 				$('#latest').click(function() {
 					strURL = 'plugins.php?action=latest';
-					loadUrl({url:strURL});
+					submitPageUsingPost(strURL);
 				});
+
+				// The install, enable, remote enable and load actions are guarded by
+				// csrf_require_post() on the server, so they must be submitted over POST.
+				// A capture-phase listener on the document intercepts these clicks before
+				// the bubble-phase generic anchor handler (which would issue a GET and be
+				// rejected), works for rows added by later Ajax table refreshes, and is
+				// bound only once for the life of the page.
+				if (!window.cactiPluginPostActionsBound) {
+					window.cactiPluginPostActionsBound = true;
+
+					document.addEventListener('click', function(event) {
+						var anchor = event.target.closest('a.piinstall, a.pienable, a.piload');
+
+						if (anchor === null) {
+							return;
+						}
+
+						var url = anchor.getAttribute('href');
+
+						if (url === null || url === '' || url === '#') {
+							return;
+						}
+
+						event.preventDefault();
+						event.stopImmediatePropagation();
+
+						postUrl({ url: url }, { __csrf_magic: csrfMagicToken });
+					}, true);
+				}
 
 				$('#form_plugins').submit(function(event) {
 					event.preventDefault();

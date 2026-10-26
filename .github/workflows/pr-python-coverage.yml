@@ -1,0 +1,54 @@
+name: Changed Python Coverage
+
+on:
+  pull_request:
+    paths:
+      - '**.py'
+      - '.github/workflows/pr-python-coverage.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    name: Changed Python lines >= 80%
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install test instrumentation and gettext
+        run: |
+          set -euo pipefail
+          python -m pip install coverage==7.13.2 pyyaml==6.0.2
+          sudo apt-get update
+          sudo apt-get install -y gettext
+      - name: Exercise maintenance tool contracts
+        run: |
+          set -euo pipefail
+          python -m coverage run -m unittest discover -s tests/tools -p 'test_*.py'
+          python -m coverage json -o coverage-python.json
+      - name: Require at least 80 percent of changed Python statements
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          python tests/tools/check_changed_python_coverage.py --base "$BASE_COMMIT" \
+            --report coverage-python.json --minimum 80 --json-output coverage-python-changed.json
+      - name: Preserve coverage evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: changed-python-coverage
+          path: |
+            coverage-python.json
+            coverage-python-changed.json
+          if-no-files-found: warn

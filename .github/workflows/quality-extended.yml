@@ -101,7 +101,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup PHP 8.4
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
         with:
           php-version: '8.4'
           coverage: none
@@ -121,7 +121,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup PHP 8.4
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
         with:
           php-version: '8.4'
           coverage: none
@@ -147,7 +147,10 @@ jobs:
           cache: npm
 
       - name: Build managed JavaScript
-        run: npm ci
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npm run postinstall --ignore-scripts
 
       - name: Setup locked PHP 8.3 dependencies
         uses: ./.github/actions/setup-php-composer

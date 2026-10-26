@@ -5,87 +5,91 @@
  * billboard.js, JavaScript chart library
  * https://naver.github.io/billboard.js/
  *
- * @version 4.0.3
+ * @version 4.1.1
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("d3-axis"), require("d3-brush"), require("d3-drag"), require("d3-hierarchy"), require("d3-interpolate"), require("d3-scale"), require("d3-selection"), require("d3-shape"), require("d3-time-format"), require("d3-transition"), require("d3-zoom"));
+		module.exports = factory(require("d3-brush"), require("d3-drag"), require("d3-hierarchy"), require("d3-interpolate"), require("d3-scale"), require("d3-selection"), require("d3-shape"), require("d3-time-format"), require("d3-transition"), require("d3-zoom"));
 	else if(typeof define === 'function' && define.amd)
-		define(["d3-axis", "d3-brush", "d3-drag", "d3-hierarchy", "d3-interpolate", "d3-scale", "d3-selection", "d3-shape", "d3-time-format", "d3-transition", "d3-zoom"], factory);
+		define(["d3-brush", "d3-drag", "d3-hierarchy", "d3-interpolate", "d3-scale", "d3-selection", "d3-shape", "d3-time-format", "d3-transition", "d3-zoom"], factory);
 	else {
-		var a = typeof exports === 'object' ? factory(require("d3-axis"), require("d3-brush"), require("d3-drag"), require("d3-hierarchy"), require("d3-interpolate"), require("d3-scale"), require("d3-selection"), require("d3-shape"), require("d3-time-format"), require("d3-transition"), require("d3-zoom")) : factory(root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"]);
+		var a = typeof exports === 'object' ? factory(require("d3-brush"), require("d3-drag"), require("d3-hierarchy"), require("d3-interpolate"), require("d3-scale"), require("d3-selection"), require("d3-shape"), require("d3-time-format"), require("d3-transition"), require("d3-zoom")) : factory(root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"], root["d3"]);
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
-})(this, function(__WEBPACK_EXTERNAL_MODULE__10__, __WEBPACK_EXTERNAL_MODULE__7__, __WEBPACK_EXTERNAL_MODULE__6__, __WEBPACK_EXTERNAL_MODULE__12__, __WEBPACK_EXTERNAL_MODULE__11__, __WEBPACK_EXTERNAL_MODULE__3__, __WEBPACK_EXTERNAL_MODULE__2__, __WEBPACK_EXTERNAL_MODULE__4__, __WEBPACK_EXTERNAL_MODULE__5__, __WEBPACK_EXTERNAL_MODULE__8__, __WEBPACK_EXTERNAL_MODULE__9__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE__7__, __WEBPACK_EXTERNAL_MODULE__6__, __WEBPACK_EXTERNAL_MODULE__11__, __WEBPACK_EXTERNAL_MODULE__10__, __WEBPACK_EXTERNAL_MODULE__3__, __WEBPACK_EXTERNAL_MODULE__2__, __WEBPACK_EXTERNAL_MODULE__4__, __WEBPACK_EXTERNAL_MODULE__5__, __WEBPACK_EXTERNAL_MODULE__8__, __WEBPACK_EXTERNAL_MODULE__9__) {
 return /******/ (function() { // webpackBootstrap
-/******/ 	"use strict";
+/******/ 	// runtime can't be in strict mode because 'output.globalObject' reads 'this'.
 /******/ 	var __webpack_modules__ = ([
 /* 0 */,
 /* 1 */,
 /* 2 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__2__;
 
 /***/ }),
 /* 3 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__3__;
 
 /***/ }),
 /* 4 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__4__;
 
 /***/ }),
 /* 5 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__5__;
 
 /***/ }),
 /* 6 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__6__;
 
 /***/ }),
 /* 7 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__7__;
 
 /***/ }),
 /* 8 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__8__;
 
 /***/ }),
 /* 9 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__9__;
 
 /***/ }),
 /* 10 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__10__;
 
 /***/ }),
 /* 11 */
 /***/ (function(module) {
 
+"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__11__;
-
-/***/ }),
-/* 12 */
-/***/ (function(module) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE__12__;
 
 /***/ })
 /******/ 	]);
@@ -116,57 +120,38 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__12__;
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
-/******/ 		// define getter/value functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
-/******/ 			if(Array.isArray(definition)) {
-/******/ 				var i = 0;
-/******/ 				while(i < definition.length) {
-/******/ 					var key = definition[i++];
-/******/ 					var binding = definition[i++];
-/******/ 					if(!__webpack_require__.o(exports, key)) {
-/******/ 						if(binding === 0) {
-/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
-/******/ 						} else {
-/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
-/******/ 						}
-/******/ 					} else if(binding === 0) { i++; }
-/******/ 				}
-/******/ 			} else {
-/******/ 				for(var key in definition) {
-/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 					}
-/******/ 				}
+/******/ 	// define getter/value functions for harmony exports
+/******/ 	__webpack_require__.d = function(exports, definition) {
+/******/ 		for(var key in definition) {
+/******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 			}
-/******/ 		};
-/******/ 	}();
+/******/ 		}
+/******/ 	};
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
+/******/ 	__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); };
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	}();
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other entry modules.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 !function() {
+"use strict";
 // extracted by mini-css-extract-plugin
 
 }();
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other entry modules.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 !function() {
+"use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
@@ -245,6 +230,7 @@ const API_MODULE_NEEDED = {
   category: "category",
   categories: "category"
 };
+const RESIZE_FRAME_BUDGET = 16;
 const AXIS_DEFAULT_TICK_COUNT = 10;
 const AXIS_TICK_SIZE = 6;
 const AXIS_TICK_PADDING = 3;
@@ -342,7 +328,9 @@ const diffDomain = (d) => d[1] - d[0];
 const isObjectType = (v) => typeof v === "object";
 const isEmptyObject = (obj) => {
   for (const x in obj) {
-    return false;
+    if (Object.prototype.hasOwnProperty.call(obj, x)) {
+      return false;
+    }
   }
   return true;
 };
@@ -1042,7 +1030,7 @@ function getScale(type = "linear", min, max) {
    * @private
    */
   updateScales(isInit, updateXDomain = true) {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i;
     const $$ = this;
     const {
       axis,
@@ -1078,7 +1066,12 @@ function getScale(type = "linear", min, max) {
       format.subXAxisTick = axis.getXAxisTickFormat(true);
       axis.setAxis("x", scale.x, config.axis_x_tick_outer, isInit);
       if (config.subchart_show) {
-        axis.setAxis("subX", scale.subX, config.axis_x_tick_outer, isInit);
+        axis.setAxis(
+          "subX",
+          scale.subX,
+          (_f = config.subchart_axis_x_tick_outer) != null ? _f : config.axis_x_tick_outer,
+          isInit
+        );
       }
       scale.y = $$.getYScale(
         "y",
@@ -1095,7 +1088,13 @@ function getScale(type = "linear", min, max) {
         scale.subY
       );
       axis.setAxis("y", scale.y, config.axis_y_tick_outer, isInit);
-      if (config.axis_y2_show) {
+      config.subchart_show && config.subchart_axis_y_show && axis.setAxis(
+        "subY",
+        scale.subY,
+        (_g = config.subchart_axis_y_tick_outer) != null ? _g : config.axis_y_tick_outer,
+        isInit
+      );
+      if (config.axis_y2_show || config.subchart_axis_y2_show) {
         scale.y2 = $$.getYScale(
           "y2",
           min.y,
@@ -1111,13 +1110,19 @@ function getScale(type = "linear", min, max) {
           scale.subY2
         );
         axis.setAxis("y2", scale.y2, config.axis_y2_tick_outer, isInit);
+        config.subchart_show && config.subchart_axis_y2_show && axis.setAxis(
+          "subY2",
+          scale.subY2,
+          (_h = config.subchart_axis_y2_tick_outer) != null ? _h : config.axis_y2_tick_outer,
+          isInit
+        );
       }
     } else if (hasTreemap) {
       const padding = $$.getCurrentPadding();
       scale.x = (0,external_commonjs_d3_scale_commonjs2_d3_scale_amd_d3_scale_root_d3_.scaleLinear)().rangeRound([padding.left, current.width - padding.right]);
       scale.y = (0,external_commonjs_d3_scale_commonjs2_d3_scale_amd_d3_scale_root_d3_.scaleLinear)().rangeRound([padding.top, current.height - padding.bottom]);
     } else {
-      (_f = $$.updateArc) == null ? void 0 : _f.call($$);
+      (_i = $$.updateArc) == null ? void 0 : _i.call($$);
     }
   },
   /**
@@ -1326,6 +1331,10 @@ function markCanvasPointOccupancy(grid, x, y) {
 
 
 
+function getAxisTickOption(config, id, key, prefix = `axis_${id}`) {
+  const value = config[`${prefix}_tick_${key}`];
+  return value !== void 0 ? value : config[`axis_${id}_tick_${key}`];
+}
 function getOptionTickValues(values, api) {
   const resolved = typeof values === "function" ? values.call(api) : values;
   return (resolved == null ? void 0 : resolved.length) ? resolved : void 0;
@@ -1618,52 +1627,59 @@ function getXTickValues($$, cull = true) {
 function getSubXTickCullMax($$) {
   const { config, state: { height2, width2 } } = $$;
   const size = config.axis_rotated ? height2 : width2;
-  if (config.axis_x_tick_count) {
-    return config.axis_x_tick_count;
+  const count = getAxisTickOption(config, "x", "count", "subchart_axis_x");
+  const culling = getAxisTickOption(config, "x", "culling", "subchart_axis_x");
+  const cullingMax = getAxisTickOption(config, "x", "culling_max", "subchart_axis_x");
+  if (count) {
+    return count;
   }
-  if (config.axis_x_tick_culling !== false) {
+  if (culling !== false) {
     return Math.min(
-      config.axis_x_tick_culling_max || AXIS_DEFAULT_TICK_COUNT,
+      cullingMax || AXIS_DEFAULT_TICK_COUNT,
       Math.max(2, Math.floor(size / 70))
     );
   }
   return void 0;
 }
-function getSubXTickValues($$) {
+function getSubXTickValues($$, culling = true) {
   var _a, _b, _c, _d;
   const { axis, config, scale } = $$;
   const targetScale = scale.subX;
   const targetsToShow = ((_a = $$.getTargetsToShow) == null ? void 0 : _a.call($$)) || $$.filterTargetsToShow();
+  const tickCount = getAxisTickOption(config, "x", "count", "subchart_axis_x");
   const cullMax = getSubXTickCullMax($$);
-  const cull = (ticks) => cullTicks(ticks, cullMax);
+  const cullData = (ticks, sorted = false) => culling ? cullDataTicks($$, ticks, sorted, "subchart_axis_x", cullMax) : ticks;
   if (!targetScale || !(targetsToShow == null ? void 0 : targetsToShow.length)) {
     return [];
   }
-  const explicit = getOptionTickValues(config.axis_x_tick_values, $$.api);
+  const explicit = getOptionTickValues(
+    getAxisTickOption(config, "x", "values", "subchart_axis_x"),
+    $$.api
+  );
   if (explicit) {
-    return cull(normalizeXTickValues($$, explicit));
+    return cullData(normalizeXTickValues($$, explicit));
   }
   if (config.axis_x_tick_fit && $$.mapTargetsToUniqueXs) {
     const generated2 = generateTickValues(
       $$,
       $$.mapTargetsToUniqueXs(targetsToShow),
-      config.axis_x_tick_count,
+      tickCount,
       (_b = axis == null ? void 0 : axis.isTimeSeries) == null ? void 0 : _b.call(axis)
     );
-    return cull(generated2);
+    return cullData(generated2, true);
   }
   if (((_c = axis == null ? void 0 : axis.isCategorized) == null ? void 0 : _c.call(axis)) && ((_d = config.axis_x_categories) == null ? void 0 : _d.length)) {
-    return cull(config.axis_x_categories.map((_, i) => i));
+    return cullData(config.axis_x_categories.map((_, i) => i), true);
   }
   const generated = getScaleTicks(
     targetScale,
-    config.axis_x_tick_count || AXIS_DEFAULT_TICK_COUNT
+    tickCount || AXIS_DEFAULT_TICK_COUNT
   );
-  return cull(generated);
+  return cullData(generated, true);
 }
-function getCategoryXTickLineValues($$) {
+function getCategoryXTickLineValues($$, targetScale = getXScale($$), outerTick = $$.config.axis_x_tick_outer) {
   var _a, _b;
-  const scale = getXScale($$);
+  const scale = targetScale;
   const domain = ((_a = scale.orgDomain) == null ? void 0 : _a.call(scale)) || ((_b = scale.domain) == null ? void 0 : _b.call(scale));
   if (!(domain == null ? void 0 : domain.length)) {
     return [];
@@ -1676,7 +1692,7 @@ function getCategoryXTickLineValues($$) {
   const min = Math.ceil(Math.min(start, end));
   const max = Math.floor(Math.max(start, end));
   const values = Array.from({ length: Math.max(0, max - min + 1) }, (_, i) => min + i);
-  return $$.config.axis_x_tick_outer ? values.slice(1, -1) : values;
+  return outerTick ? values.slice(1, -1) : values;
 }
 function getXTickLinePosition($$, value, targetScale = getXScale($$)) {
   var _a, _b, _c, _d, _e;
@@ -1692,12 +1708,12 @@ function getXTickLinePosition($$, value, targetScale = getXScale($$)) {
   }
   return scale(normalized);
 }
-function hasOverlappedXTickLineIntervals($$, ticks, tickLineWidth) {
+function hasOverlappedXTickLineIntervals($$, ticks, tickLineWidth, targetScale = getXScale($$)) {
   if (ticks.length < 2) {
     return false;
   }
   const halfWidth = Math.max(1, tickLineWidth) / 2;
-  const positions = ticks.map((tick) => getXTickLinePosition($$, tick)).filter(Number.isFinite).sort((a, b) => a - b);
+  const positions = ticks.map((tick) => getXTickLinePosition($$, tick, targetScale)).filter(Number.isFinite).sort((a, b) => a - b);
   if (positions.length < 2) {
     return false;
   }
@@ -1712,10 +1728,10 @@ function hasOverlappedXTickLineIntervals($$, ticks, tickLineWidth) {
   }
   return false;
 }
-function dedupeXTickLineValues($$, ticks) {
+function dedupeXTickLineValues($$, ticks, targetScale = getXScale($$)) {
   const seen = /* @__PURE__ */ new Set();
   return ticks.filter((tick) => {
-    const pos = getXTickLinePosition($$, tick);
+    const pos = getXTickLinePosition($$, tick, targetScale);
     const key = Math.round(pos);
     if (!Number.isFinite(pos) || seen.has(key)) {
       return false;
@@ -1737,13 +1753,35 @@ function getXTickLineValues($$, textTicks, tickLineWidth = 1) {
   const lineTicks = getXTickValues($$, false);
   return hasOverlappedXTickLineIntervals($$, lineTicks, tickLineWidth) ? textTicks : dedupeXTickLineValues($$, lineTicks);
 }
-function getYTickValues($$, id = "y", count, culling = true) {
-  var _a, _b, _c;
+function getSubXTickLineValues($$, textTicks, tickLineWidth = 1) {
+  var _a;
   const { axis, config, scale } = $$;
+  const targetScale = scale.subX;
+  const culling = getAxisTickOption(config, "x", "culling", "subchart_axis_x");
+  const cullingLines = getAxisTickOption(config, "x", "culling_lines", "subchart_axis_x");
+  const outerTick = getAxisTickOption(config, "x", "outer", "subchart_axis_x");
+  if (!targetScale) {
+    return [];
+  }
+  if ((_a = axis == null ? void 0 : axis.isCategorized) == null ? void 0 : _a.call(axis)) {
+    const categoryLineTicks = getCategoryXTickLineValues($$, targetScale, outerTick);
+    return dedupeXTickLineValues($$, categoryLineTicks, targetScale);
+  }
+  if (culling === false || cullingLines === false) {
+    return textTicks;
+  }
+  const lineTicks = getSubXTickValues($$, false);
+  return hasOverlappedXTickLineIntervals($$, lineTicks, tickLineWidth, targetScale) ? textTicks : dedupeXTickLineValues($$, lineTicks, targetScale);
+}
+function getYTickValues($$, id = "y", count, culling = true, targetScale = $$.scale[id], optionPrefix = `axis_${id}`) {
+  var _a, _b, _c;
+  const { axis, config } = $$;
   const prefix = `axis_${id}`;
-  const targetScale = scale[id];
-  const explicit = getOptionTickValues(config[`${prefix}_tick_values`], $$.api);
-  const maybeCull = (ticks) => culling ? cullAxisTicks($$, id, ticks) : ticks;
+  const explicit = getOptionTickValues(
+    getAxisTickOption(config, id, "values", optionPrefix),
+    $$.api
+  );
+  const maybeCull = (ticks) => culling ? cullAxisTicks($$, id, ticks, optionPrefix) : ticks;
   if (explicit) {
     return maybeCull(normalizeYTickValues($$, explicit, id));
   }
@@ -1751,7 +1789,7 @@ function getYTickValues($$, id = "y", count, culling = true) {
   if (stepTicks.length) {
     return maybeCull(stepTicks);
   }
-  const tickCount = count != null ? count : config[`${prefix}_tick_count`];
+  const tickCount = count != null ? count : getAxisTickOption(config, id, "count", optionPrefix);
   if (((_a = axis == null ? void 0 : axis.isTimeSeries) == null ? void 0 : _a.call(axis, id)) && config[`${prefix}_tick_time_value`]) {
     return maybeCull(getScaleTicks(targetScale, config[`${prefix}_tick_time_value`]));
   }
@@ -1805,20 +1843,21 @@ function cullTicks(ticks, count) {
   }
   return ticks;
 }
-function cullAxisTicks($$, id, ticks) {
+function cullAxisTicks($$, id, ticks, optionPrefix = `axis_${id}`) {
   const { config } = $$;
-  const prefix = `axis_${id}_tick_culling`;
-  if (!config[prefix]) {
+  const culling = getAxisTickOption(config, id, "culling", optionPrefix);
+  if (!culling) {
     return ticks;
   }
+  const cullingMax = getAxisTickOption(config, id, "culling_max", optionPrefix) || AXIS_DEFAULT_TICK_COUNT;
+  const reverse = getAxisTickOption(config, id, "culling_reverse", optionPrefix);
   const sortedTicks = ticks.slice().sort((a, b) => {
     const av = +a;
     const bv = +b;
     const order = Number.isFinite(av) && Number.isFinite(bv) ? av - bv : String(a).localeCompare(String(b));
-    return config[`${prefix}_reverse`] ? -order : order;
+    return reverse ? -order : order;
   });
   const tickSize = sortedTicks.length;
-  const cullingMax = config[`${prefix}_max`] || AXIS_DEFAULT_TICK_COUNT;
   let intervalForCulling = 0;
   for (let i = 1; i < tickSize; i++) {
     if (tickSize / i < cullingMax) {
@@ -1834,19 +1873,21 @@ function cullAxisTicks($$, id, ticks) {
   );
   return ticks.filter((tick) => visible.has(tick));
 }
-function cullDataTicks($$, ticks, sorted = false) {
+function cullDataTicks($$, ticks, sorted = false, optionPrefix = "axis_x", max) {
   const { config } = $$;
-  if (config.axis_x_tick_culling === false) {
+  const culling = getAxisTickOption(config, "x", "culling", optionPrefix);
+  if (culling === false) {
     return ticks;
   }
-  const cullingMax = config.axis_x_tick_culling_max || AXIS_DEFAULT_TICK_COUNT;
+  const cullingMax = max || getAxisTickOption(config, "x", "culling_max", optionPrefix) || AXIS_DEFAULT_TICK_COUNT;
+  const reverse = getAxisTickOption(config, "x", "culling_reverse", optionPrefix);
   const sortedTicks = sorted ? ticks : ticks.slice().sort((a, b) => {
     const av = +a;
     const bv = +b;
     if (Number.isFinite(av) && Number.isFinite(bv)) {
-      return config.axis_x_tick_culling_reverse ? bv - av : av - bv;
+      return reverse ? bv - av : av - bv;
     }
-    return config.axis_x_tick_culling_reverse ? String(b).localeCompare(String(a)) : String(a).localeCompare(String(b));
+    return reverse ? String(b).localeCompare(String(a)) : String(a).localeCompare(String(b));
   });
   const tickSize = sortedTicks.length;
   let intervalForCulling = 0;
@@ -1861,7 +1902,7 @@ function cullDataTicks($$, ticks, sorted = false) {
   }
   if (sorted) {
     return ticks.filter(
-      (_, i) => config.axis_x_tick_culling_reverse ? (tickSize - 1 - i) % intervalForCulling === 0 : i % intervalForCulling === 0
+      (_, i) => reverse ? (tickSize - 1 - i) % intervalForCulling === 0 : i % intervalForCulling === 0
     );
   }
   const visible = new Set(
@@ -2323,6 +2364,29 @@ function getXTickTextDirection(isRotated) {
 function getYTickTextDirection(isRotated, isY2) {
   return isRotated ? isY2 ? -1 : 1 : isY2 ? 1 : -1;
 }
+function getSubYTickFormat($$, id) {
+  var _a, _b, _c;
+  const subAxisId = id === "y2" ? "subY2" : "subY";
+  const axisFormat = (_c = (_b = (_a = $$.axis) == null ? void 0 : _a[subAxisId]) == null ? void 0 : _b.tickFormat) == null ? void 0 : _c.call(_b);
+  const configFormat = $$.config[`subchart_axis_${id}_tick_format`] || $$.config[`axis_${id}_tick_format`];
+  if (axisFormat) {
+    return axisFormat;
+  }
+  return typeof configFormat === "function" ? configFormat.bind($$.api) : ((v) => v);
+}
+function getGridLineCanvasStyle(style) {
+  return style ? {
+    stroke: style.lineColor,
+    lineWidth: style.lineWidth,
+    lineDash: style.dashArray
+  } : void 0;
+}
+function getGridTextCanvasStyle(style) {
+  return style ? {
+    fill: style.labelColor,
+    font: style.labelFont
+  } : void 0;
+}
 function getHorizontalXAxisClipRect(margin, width, height) {
   return {
     x: margin.left - X_AXIS_TICK_TEXT_HORIZONTAL_CLIP_PADDING,
@@ -2647,7 +2711,7 @@ class CanvasAxisRenderer {
    * @private
    */
   drawSubXAxis($$) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     const { ctx, painter, theme: { style: { axis } } } = this;
     const {
       config,
@@ -2668,12 +2732,14 @@ class CanvasAxisRenderer {
     const rangeStart = isRotated ? y1 : x1;
     const rangeEnd = isRotated ? y2 : x2;
     const ticks = getSubXTickValues($$);
+    const lineTicks = getSubXTickLineValues($$, ticks, axis.tickWidth);
+    const outerTick = (_a = config.subchart_axis_x_tick_outer) != null ? _a : config.axis_x_tick_outer;
     const tickDirection = isRotated ? config.axis_x_tick_inner ? 1 : -1 : config.axis_x_tick_inner ? -1 : 1;
     const outerTickDirection = getXOuterTickDirection(isRotated);
     const tickTextDirection = getXTickTextDirection(isRotated);
     const tickTextPosition = config.axis_x_tick_text_position;
-    const tickRotate = !isRotated ? ((_a = $$.getAxisTickRotate) == null ? void 0 : _a.call($$, "x")) || 0 : 0;
-    const tickFormat = format.subXAxisTick || ((_c = (_b = $$.axis) == null ? void 0 : _b.getXAxisTickFormat) == null ? void 0 : _c.call(_b, true));
+    const tickRotate = !isRotated ? ((_b = $$.getAxisTickRotate) == null ? void 0 : _b.call($$, "x")) || 0 : 0;
+    const tickFormat = format.subXAxisTick || ((_d = (_c = $$.axis) == null ? void 0 : _c.getXAxisTickFormat) == null ? void 0 : _d.call(_c, true));
     painter.clipRect(
       isRotated ? getRotatedXAxisClipRect(margin2, current.width, height2) : __spreadProps(CanvasAxisRenderer_spreadValues({}, getHorizontalXAxisClipRect(
         margin2,
@@ -2683,15 +2749,17 @@ class CanvasAxisRenderer {
         y: margin2.top
       }),
       () => {
+        ctx.globalAlpha = 1;
         ctx.strokeStyle = axis.lineColor;
         ctx.lineWidth = axis.lineWidth;
+        ctx.setLineDash([]);
         painter.strokePath(() => {
           if (isRotated) {
             painter.traceLine(x, y1, x, y2);
           } else {
             painter.traceLine(x1, y, x2, y);
           }
-          if (config.axis_x_tick_outer) {
+          if (outerTick) {
             if (isRotated) {
               painter.traceLine(x, y1, x + AXIS_TICK_SIZE * outerTickDirection, y1);
               painter.traceLine(x, y2, x + AXIS_TICK_SIZE * outerTickDirection, y2);
@@ -2710,15 +2778,15 @@ class CanvasAxisRenderer {
         ctx.lineWidth = axis.tickWidth;
         const lineHeight = getXTickTextLineHeight(painter, getFontSize(tickFont));
         const tickTextWidth = getXTickTextWidth($$, ticks, isRotated, scale.subX);
-        for (const tick of ticks) {
-          const tickPos = scale.subX(normalizeXValue($$, tick));
-          const tx = margin2.left + tickPos;
-          const ty = margin2.top + tickPos;
-          const pos = isRotated ? ty : tx;
-          if (!isInAxisRange(pos, rangeStart, rangeEnd)) {
-            continue;
-          }
-          if (config.subchart_axis_x_tick_show) {
+        if (config.subchart_axis_x_tick_show) {
+          for (const tick of lineTicks) {
+            const tickPos = scale.subX(normalizeXValue($$, tick));
+            const tx = margin2.left + tickPos;
+            const ty = margin2.top + tickPos;
+            const pos = isRotated ? ty : tx;
+            if (!isInAxisRange(pos, rangeStart, rangeEnd)) {
+              continue;
+            }
             painter.strokePath(() => {
               if (isRotated) {
                 painter.traceLine(x, ty, x + AXIS_TICK_SIZE * tickDirection, ty);
@@ -2726,6 +2794,15 @@ class CanvasAxisRenderer {
                 painter.traceLine(tx, y, tx, y + AXIS_TICK_SIZE * tickDirection);
               }
             });
+          }
+        }
+        for (const tick of ticks) {
+          const tickPos = scale.subX(normalizeXValue($$, tick));
+          const tx = margin2.left + tickPos;
+          const ty = margin2.top + tickPos;
+          const pos = isRotated ? ty : tx;
+          if (!isInAxisRange(pos, rangeStart, rangeEnd)) {
+            continue;
           }
           if (!config.subchart_axis_x_tick_text_show) {
             continue;
@@ -2763,6 +2840,42 @@ class CanvasAxisRenderer {
         }
       }
     );
+  }
+  /**
+   * Draw the canvas subchart y/y2 axes.
+   * @param {object} $$ ChartInternal instance
+   * @private
+   */
+  drawSubYAxes($$) {
+    const {
+      config,
+      scale,
+      state: { margin2, width2, height2 }
+    } = $$;
+    if (!config.subchart_show || width2 <= 0 || height2 <= 0) {
+      return;
+    }
+    ["y", "y2"].forEach((id) => {
+      var _a;
+      const subScale = id === "y2" ? scale.subY2 : scale.subY;
+      if (!config[`subchart_axis_${id}_show`] || !subScale) {
+        return;
+      }
+      this.drawYAxis($$, id, {
+        scale: subScale,
+        ticks: getYTickValues($$, id, void 0, true, subScale, `subchart_axis_${id}`),
+        format: getSubYTickFormat($$, id),
+        index: 0,
+        outerTick: (_a = config[`subchart_axis_${id}_tick_outer`]) != null ? _a : config[`axis_${id}_tick_outer`],
+        margin: margin2,
+        width: width2,
+        height: height2,
+        prefix: `subchart_axis_${id}`,
+        tickShow: config[`subchart_axis_${id}_tick_show`],
+        tickTextShow: config[`subchart_axis_${id}_tick_text_show`],
+        tickTextPosition: config[`axis_${id}_tick_text_position`]
+      });
+    });
   }
   /**
    * Draw chart title.
@@ -2994,14 +3107,21 @@ class CanvasAxisRenderer {
       ctx.fillStyle = grid.labelColor;
       ctx.textBaseline = "middle";
       ctx.setLineDash([]);
-      const drawLabel = (text, x, y, rotated = false) => {
+      const drawLabel = (text, x, y, rotated = false, style) => {
         if (!text) {
           return;
         }
-        painter.text(text, x, y, {
+        painter.text(text, x, y, __spreadProps(CanvasAxisRenderer_spreadValues({}, style), {
           angle: rotated ? -90 : 0
-        });
+        }));
       };
+      const drawLine = (line, axisId, draw) => {
+        const style = getGridLineCanvasStyle(
+          this.theme.getGridLineStyle(axisId, line, "line")
+        );
+        painter.strokePath(draw, style);
+      };
+      const getTextStyle = (axisId, line) => getGridTextCanvasStyle(this.theme.getGridLineStyle(axisId, line, "text"));
       const drawXLine = (line) => {
         if (line.value === void 0 || !scale.x) {
           return;
@@ -3012,18 +3132,20 @@ class CanvasAxisRenderer {
         }
         if (isRotated) {
           const y = margin.top + pos;
-          painter.strokePath(() => {
+          drawLine(line, "x", () => {
             painter.traceLine(x1, y, x2, y);
           });
           ctx.textAlign = line.position === "start" ? "left" : line.position === "middle" ? "center" : "right";
           drawLabel(
             line.text,
             getLineTextPosition(line.position, x1, x2),
-            y - 5
+            y - 5,
+            false,
+            getTextStyle("x", line)
           );
         } else {
           const x = margin.left + pos;
-          painter.strokePath(() => {
+          drawLine(line, "x", () => {
             painter.traceLine(x, y1, x, y2);
           });
           ctx.textAlign = line.position === "start" ? "left" : line.position === "middle" ? "center" : "right";
@@ -3031,7 +3153,8 @@ class CanvasAxisRenderer {
             line.text,
             x - 5,
             getRotatedLineTextPosition(line.position, y1, y2),
-            true
+            true,
+            getTextStyle("x", line)
           );
         }
       };
@@ -3048,7 +3171,7 @@ class CanvasAxisRenderer {
         }
         if (isRotated) {
           const x = margin.left + pos;
-          painter.strokePath(() => {
+          drawLine(line, "y", () => {
             painter.traceLine(x, y1, x, y2);
           });
           ctx.textAlign = line.position === "start" ? "left" : line.position === "middle" ? "center" : "right";
@@ -3056,18 +3179,21 @@ class CanvasAxisRenderer {
             line.text,
             x - 5,
             getRotatedLineTextPosition(line.position, y1, y2),
-            true
+            true,
+            getTextStyle("y", line)
           );
         } else {
           const y = margin.top + pos;
-          painter.strokePath(() => {
+          drawLine(line, "y", () => {
             painter.traceLine(x1, y, x2, y);
           });
           ctx.textAlign = line.position === "start" ? "left" : line.position === "middle" ? "center" : "right";
           drawLabel(
             line.text,
             getLineTextPosition(line.position, x1, x2),
-            y - 5
+            y - 5,
+            false,
+            getTextStyle("y", line)
           );
         }
       };
@@ -3458,31 +3584,37 @@ class CanvasAxisRenderer {
    * @private
    */
   drawYAxis($$, id = "y", axisOptions) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const { ctx, painter, theme: { style: { axis } } } = this;
-    const { config, scale, state: { margin, width, height } } = $$;
-    const prefix = `axis_${id}`;
+    const { config, scale, state } = $$;
+    const { margin, width, height } = state;
+    const plotMargin = (axisOptions == null ? void 0 : axisOptions.margin) || margin;
+    const plotWidth = (_a = axisOptions == null ? void 0 : axisOptions.width) != null ? _a : width;
+    const plotHeight = (_b = axisOptions == null ? void 0 : axisOptions.height) != null ? _b : height;
+    const prefix = (axisOptions == null ? void 0 : axisOptions.prefix) || `axis_${id}`;
     const targetScale = (axisOptions == null ? void 0 : axisOptions.scale) || scale[id];
     const isY2 = id === "y2";
     const isRotated = config.axis_rotated;
     const axisOffset = (axisOptions == null ? void 0 : axisOptions.index) ? $$.getAxisSize(id) * axisOptions.index : 0;
     const x = painter.crisp(
-      margin.left + (isY2 ? width + (isRotated ? 0 : axisOffset) : -axisOffset),
+      plotMargin.left + (isY2 ? plotWidth + (isRotated ? 0 : axisOffset) : -axisOffset),
       axis.lineWidth
     );
-    const y = painter.crisp(margin.top + (isRotated ? isY2 ? -axisOffset - 1 : height + axisOffset : 0), axis.lineWidth);
-    const x1 = margin.left;
-    const x2 = margin.left + width;
-    const y1 = margin.top;
-    const y2 = margin.top + height;
+    const y = painter.crisp(plotMargin.top + (isRotated ? isY2 ? -axisOffset - 1 : plotHeight + axisOffset : 0), axis.lineWidth);
+    const x1 = plotMargin.left;
+    const x2 = plotMargin.left + plotWidth;
+    const y1 = plotMargin.top;
+    const y2 = plotMargin.top + plotHeight;
     const ticks = (axisOptions == null ? void 0 : axisOptions.ticks) || getYTickValues($$, id);
     const lineTicks = (axisOptions == null ? void 0 : axisOptions.ticks) || (config[`${prefix}_tick_culling`] && config[`${prefix}_tick_culling_lines`] !== false ? getYTickValues($$, id, void 0, false) : ticks);
-    const format = (axisOptions == null ? void 0 : axisOptions.format) || ((_c = (_b = (_a = $$.axis) == null ? void 0 : _a[id]) == null ? void 0 : _b.tickFormat) == null ? void 0 : _c.call(_b)) || ((_d = config[`${prefix}_tick_format`]) == null ? void 0 : _d.bind($$.api)) || ((v) => v);
+    const format = (axisOptions == null ? void 0 : axisOptions.format) || ((_e = (_d = (_c = $$.axis) == null ? void 0 : _c[id]) == null ? void 0 : _d.tickFormat) == null ? void 0 : _e.call(_d)) || ((_f = config[`${prefix}_tick_format`]) == null ? void 0 : _f.bind($$.api)) || ((v) => v);
     const outerTick = axisOptions ? axisOptions.outerTick : config[`${prefix}_tick_outer`];
     const tickDirection = isRotated ? isY2 ? config.axis_y2_tick_inner ? 1 : -1 : config.axis_y_tick_inner ? -1 : 1 : isY2 ? config.axis_y2_tick_inner ? -1 : 1 : config.axis_y_tick_inner ? 1 : -1;
     const outerTickDirection = getYOuterTickDirection(config, isRotated, isY2);
     const tickTextDirection = getYTickTextDirection(isRotated, isY2);
-    const tickTextPosition = config[`${prefix}_tick_text_position`];
+    const tickTextPosition = (axisOptions == null ? void 0 : axisOptions.tickTextPosition) || config[`${prefix}_tick_text_position`] || config[`axis_${id}_tick_text_position`];
+    const tickShow = (_g = axisOptions == null ? void 0 : axisOptions.tickShow) != null ? _g : axisOptions ? true : config[`${prefix}_tick_show`];
+    const tickTextShow = (_h = axisOptions == null ? void 0 : axisOptions.tickTextShow) != null ? _h : axisOptions ? true : config[`${prefix}_tick_text_show`];
     painter.withState(() => {
       ctx.strokeStyle = axis.lineColor;
       ctx.lineWidth = axis.lineWidth;
@@ -3513,8 +3645,8 @@ class CanvasAxisRenderer {
       const drawableLineTicks = [];
       const addDrawableTick = (tick, target) => {
         const value = normalizeYValue($$, tick, id);
-        const tx = margin.left + targetScale(value);
-        const ty = margin.top + targetScale(value);
+        const tx = plotMargin.left + targetScale(value);
+        const ty = plotMargin.top + targetScale(value);
         const pos = isRotated ? tx : ty;
         if (!isDrawable(pos)) {
           return;
@@ -3527,7 +3659,7 @@ class CanvasAxisRenderer {
       for (const tick of lineTicks) {
         addDrawableTick(tick, drawableLineTicks);
       }
-      if (axisOptions || config[`${prefix}_tick_show`]) {
+      if (tickShow) {
         painter.strokePath(() => {
           for (const { tx, ty } of drawableLineTicks) {
             if (isRotated) {
@@ -3538,7 +3670,7 @@ class CanvasAxisRenderer {
           }
         });
       }
-      if (axisOptions || config[`${prefix}_tick_text_show`]) {
+      if (tickTextShow) {
         for (const { tick, tx, ty } of drawableTicks) {
           if (isRotated) {
             painter.text(
@@ -3730,8 +3862,112 @@ class CanvasEngine {
   }
 }
 
+;// ./src/ChartInternal/internals/subchart.util.ts
+function isContinuousGridFocusEnabled($$) {
+  const { config, state } = $$;
+  return !!(config.subchart_grid_focus_continuous && config.subchart_grid_focus !== false && config.subchart_show && config.subchart_brush_enabled === false && state.width2 > 0 && state.height2 > 0);
+}
+function getMainCoordFromSubchartCoord($$, subCoord) {
+  var _a;
+  const { config, scale, state } = $$;
+  const mainX = scale.zoom || scale.x;
+  const subX = scale.subX;
+  if (!mainX || !subX) {
+    return null;
+  }
+  const subLength = config.axis_rotated ? state.height2 : state.width2;
+  const mainLength = config.axis_rotated ? state.height : state.width;
+  const domainValue = (_a = subX.invert) == null ? void 0 : _a.call(subX, subCoord);
+  let mainCoord = domainValue == null ? NaN : mainX(domainValue);
+  if (!Number.isFinite(mainCoord) && subLength > 0) {
+    mainCoord = Math.max(0, Math.min(1, subCoord / subLength)) * mainLength;
+  }
+  return Number.isFinite(mainCoord) ? Math.max(0, Math.min(mainLength, mainCoord)) : null;
+}
+
 ;// ./src/ChartInternal/shape/core/barRadius.ts
 
+const RE_PATH_NUMBER = /[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g;
+const RE_PATH_TOKEN = /([aAcChHlLmMqQsStTvVzZ])|([-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?)/g;
+function getArcFlagTokenIndexes(path) {
+  const flags = /* @__PURE__ */ new Set();
+  let numIndex = -1;
+  let argIndex = 0;
+  let inArc = false;
+  let token;
+  RE_PATH_TOKEN.lastIndex = 0;
+  while (token = RE_PATH_TOKEN.exec(path)) {
+    if (token[1]) {
+      inArc = token[1] === "a" || token[1] === "A";
+      argIndex = 0;
+    } else {
+      numIndex++;
+      if (inArc) {
+        const pos = argIndex % 7;
+        if (pos === 2 || pos === 3 || pos === 4) {
+          flags.add(numIndex);
+        }
+        argIndex++;
+      }
+    }
+  }
+  return flags;
+}
+function getBarPathInterpolator(a, b) {
+  const flagSet = getArcFlagTokenIndexes(b);
+  const segments = [];
+  const interpolators = [];
+  let bIndex = 0;
+  let segIndex = -1;
+  let numIndex = -1;
+  let am;
+  let bm;
+  const append = (text) => {
+    if (segments[segIndex]) {
+      segments[segIndex] += text;
+    } else {
+      segments[++segIndex] = text;
+    }
+  };
+  RE_PATH_NUMBER.lastIndex = 0;
+  const reA = RE_PATH_NUMBER;
+  const reB = new RegExp(RE_PATH_NUMBER.source, "g");
+  a += "";
+  b += "";
+  while ((am = reA.exec(a)) && (bm = reB.exec(b))) {
+    numIndex++;
+    if (bm.index > bIndex) {
+      append(b.slice(bIndex, bm.index));
+    }
+    if (am[0] === bm[0]) {
+      append(bm[0]);
+    } else {
+      const from = +am[0];
+      const to = +bm[0];
+      const isFlag = flagSet.has(numIndex);
+      segments[++segIndex] = null;
+      interpolators.push({
+        index: segIndex,
+        fn: isFlag ? (t) => Math.round(from + (to - from) * t) : (t) => from + (to - from) * t
+      });
+    }
+    bIndex = reB.lastIndex;
+  }
+  if (bIndex < b.length) {
+    append(b.slice(bIndex));
+  }
+  if (!interpolators.length) {
+    const result = segments.join("");
+    return () => result;
+  }
+  return (t) => {
+    for (let i = 0, len = interpolators.length; i < len; i++) {
+      const { index, fn } = interpolators[i];
+      segments[index] = String(fn(t));
+    }
+    return segments.join("");
+  };
+}
 function getBarRadiusResolver($$) {
   const { bar_radius: radius, bar_radius_ratio: ratio } = $$.config;
   return isNumber(radius) && radius > 0 ? () => radius : isNumber(ratio) ? (width) => width * ratio : null;
@@ -3969,6 +4205,26 @@ var path_spreadValues = (a, b) => {
 };
 var path_spreadProps = (a, b) => path_defProps(a, path_getOwnPropDescs(b));
 
+function getPathValueFn($$, isSub) {
+  if (!isSub) {
+    return (d) => $$.getBaseValue(d);
+  }
+  return (d) => {
+    var _a;
+    const value = (_a = $$.getSubchartCandlestickShapeValue) == null ? void 0 : _a.call($$, d, true);
+    return value === void 0 ? $$.getBaseValue(d) : value;
+  };
+}
+function getProjectedValues($$, values, isSub) {
+  if (!isSub) {
+    return values;
+  }
+  return values.map((d) => {
+    var _a;
+    const value = (_a = $$.getSubchartCandlestickShapeValue) == null ? void 0 : _a.call($$, d, isSub);
+    return value === void 0 ? d : path_spreadProps(path_spreadValues({}, d), { value });
+  });
+}
 function getLineValues($$, d, values) {
   return $$.isStepType(d) ? $$.convertValuesToStep(values) : values;
 }
@@ -3978,13 +4234,16 @@ function generateDrawLinePath($$, lineIndices, isSub, context) {
   const isRotated = config.axis_rotated;
   const getPoints = $$.generateGetLinePoints(lineIndices, isSub);
   const yScale = $$.getYScaleById.bind($$);
+  const pathValue = getPathValueFn($$, isSub);
   const xValue = (d) => (isSub ? $$.subxx : $$.xx).call($$, d);
-  const yValue = (d, i) => $$.isGrouped(d.id) ? getPoints(d, i)[0][1] : yScale(d.id, isSub)($$.getBaseValue(d));
+  const yValue = (d, i) => $$.isGrouped(d.id) ? getPoints(d, i)[0][1] : yScale(d.id, isSub)(
+    pathValue(d)
+  );
   let line = (0,external_commonjs_d3_shape_commonjs2_d3_shape_amd_d3_shape_root_d3_.line)();
   line = isRotated ? line.x(yValue).y(xValue) : line.x(xValue).y(yValue);
   context && (line = line.context(context));
   if (!lineConnectNull) {
-    line = line.defined((d) => $$.getBaseValue(d) !== null);
+    line = line.defined((d) => pathValue(d) !== null);
   }
   const x = isSub ? scale.subX : scale.x;
   return (d) => {
@@ -3996,6 +4255,7 @@ function generateDrawLinePath($$, lineIndices, isSub, context) {
     if ($$.isLineType(d)) {
       const regions = config.data_regions[d.id];
       if (regions && !context && $$.lineWithRegions) {
+        values = getProjectedValues($$, values, isSub);
         if ($$.isAreaRangeType(d)) {
           values = values.map((dv) => path_spreadProps(path_spreadValues({}, dv), { value: $$.getRangedData(dv, "mid") }));
         }
@@ -4009,7 +4269,7 @@ function generateDrawLinePath($$, lineIndices, isSub, context) {
     } else {
       if (values[0]) {
         x0 = x(values[0].x);
-        y0 = y(values[0].value);
+        y0 = y(pathValue(values[0]));
       }
       path = isRotated ? `M ${y0} ${x0}` : `M ${x0} ${y0}`;
     }
@@ -4022,12 +4282,22 @@ function generateDrawAreaPath($$, areaIndices, isSub, context) {
   const isRotated = config.axis_rotated;
   const getPoints = $$.generateGetAreaPoints(areaIndices, isSub);
   const yScale = $$.getYScaleById.bind($$);
+  const pathValue = getPathValueFn($$, isSub);
+  const shapeYMin = /* @__PURE__ */ new Map();
+  const getShapeYMin = (id) => {
+    let min = shapeYMin.get(id);
+    if (min === void 0) {
+      min = $$.getShapeYMin(id, isSub);
+      shapeYMin.set(id, min);
+    }
+    return min;
+  };
   const xValue = (d) => (isSub ? $$.subxx : $$.xx).call($$, d);
   const value0 = (d, i) => $$.isGrouped(d.id) ? getPoints(d, i)[0][1] : yScale(d.id, isSub)(
-    $$.isAreaRangeType(d) ? $$.getRangedData(d, "high") : $$.getShapeYMin(d.id)
+    $$.isAreaRangeType(d) ? $$.getRangedData(d, "high") : getShapeYMin(d.id)
   );
   const value1 = (d, i) => $$.isGrouped(d.id) ? getPoints(d, i)[1][1] : yScale(d.id, isSub)(
-    $$.isAreaRangeType(d) ? $$.getRangedData(d, "low") : d.value
+    $$.isAreaRangeType(d) ? $$.getRangedData(d, "low") : pathValue(d)
   );
   return (d) => {
     let values = lineConnectNull ? $$.filterRemoveNull(d.values) : d.values;
@@ -4036,19 +4306,20 @@ function generateDrawAreaPath($$, areaIndices, isSub, context) {
     let path;
     if ($$.isAreaType(d)) {
       let area = (0,external_commonjs_d3_shape_commonjs2_d3_shape_amd_d3_shape_root_d3_.area)();
-      area = isRotated ? area.y(xValue).x0(value0).x1(value1) : area.x(xValue).y0(config.area_above ? 0 : config.area_below ? $$.state.height : value0).y1(value1);
+      area = isRotated ? area.y(xValue).x0(value0).x1(value1) : area.x(xValue).y0(config.area_above ? 0 : config.area_below ? isSub ? $$.state.height2 : $$.state.height : value0).y1(value1);
       context && (area = area.context(context));
       if (!lineConnectNull) {
-        area = area.defined((d2) => $$.getBaseValue(d2) !== null);
+        area = area.defined((d2) => pathValue(d2) !== null);
       }
+      values = getProjectedValues($$, values, isSub);
       if ($$.isStepType(d)) {
         values = $$.convertValuesToStep(values);
       }
       path = area.curve($$.getCurve(d))(values);
     } else {
       if (values[0]) {
-        x0 = $$.scale.x(values[0].x);
-        y0 = $$.getYScaleById(d.id)(values[0].value);
+        x0 = (isSub ? $$.scale.subX : $$.scale.x)(values[0].x);
+        y0 = $$.getYScaleById(d.id, isSub)(pathValue(values[0]));
       }
       path = isRotated ? `M ${y0} ${x0}` : `M ${x0} ${y0}`;
     }
@@ -4908,6 +5179,7 @@ var CanvasRenderer_publicField = (obj, key, value) => CanvasRenderer_defNormalPr
 
 
 
+
 const RENDERER_GROUPED_TYPE_FILTERS = [
   isCanvasAreaType,
   isCanvasBarType,
@@ -5589,165 +5861,175 @@ class CanvasRenderer {
   /**
    * Draw the canvas subchart overview and brush selection.
    * @param {object} $$ ChartInternal instance
-   * @param {object} shape Cached draw shape object
+   * @param {object} _shape Cached main shape object
    * @private
    */
-  drawSubchart($$, shape) {
+  drawSubchart($$, _shape) {
     const { config, state } = $$;
+    void _shape;
     if (!config.subchart_show || !state.hasAxis || state.width2 <= 0 || state.height2 <= 0) {
       return;
     }
     const { ctx, painter, theme: { style } } = this;
     const { margin2, width2, height2 } = state;
     const rect = { x: margin2.left, y: margin2.top, w: width2, h: height2 };
-    const targets = $$.filterTargetsToShow().filter(isCanvasRenderableTarget.bind(null, $$));
-    painter.withState(() => {
-      ctx.strokeStyle = style.axis.lineColor;
-      ctx.lineWidth = style.axis.lineWidth;
-      painter.strokePath(() => {
-        if (config.axis_rotated) {
-          painter.traceLine(rect.x, rect.y, rect.x, rect.y + rect.h);
-        } else {
-          painter.traceLine(rect.x, rect.y + rect.h, rect.x + rect.w, rect.y + rect.h);
-        }
-      });
-      painter.clipRect(rect, () => {
-        painter.withTranslation(rect.x, rect.y, () => {
-          var _a, _b, _c, _d, _e, _f;
-          const areaTargets = targets.filter(isCanvasAreaType.bind(null, $$));
-          const areaIndices = getCanvasShapeIndices(
-            $$,
-            shape,
-            TYPE.AREA,
-            isCanvasAreaType.bind(null, $$)
-          );
-          ctx.globalAlpha = style.shape.areaOpacity;
-          for (const target of areaTargets) {
-            if (!target.values.some(hasCanvasDrawableValue.bind(null, $$))) {
-              continue;
-            }
-            ctx.fillStyle = $$.color(target.id);
-            drawCanvasArea($$, target, areaIndices, painter, true);
-          }
-          ctx.globalAlpha = 1;
-          const barTargets = targets.filter(isCanvasBarType.bind(null, $$));
-          const barIndices = getCanvasShapeIndices(
-            $$,
-            shape,
-            TYPE.BAR,
-            isCanvasBarType.bind(null, $$)
-          );
-          const getBarPoints = (_a = $$.generateGetBarPoints) == null ? void 0 : _a.call($$, barIndices, true);
-          if (getBarPoints) {
-            ctx.globalAlpha = style.shape.barOpacity;
-            for (const target of barTargets) {
+    $$.withSubchartTypeContext(() => {
+      var _a;
+      const targets = $$.filterTargetsToShow().filter(isCanvasRenderableTarget.bind(null, $$));
+      const shape = $$.getDrawShape();
+      (_a = $$.updateSubchartYDomain) == null ? void 0 : _a.call($$, targets);
+      painter.withState(() => {
+        painter.clipRect(rect, () => {
+          painter.withTranslation(rect.x, rect.y, () => {
+            var _a2, _b, _c, _d, _e, _f;
+            const areaTargets = targets.filter(isCanvasAreaType.bind(null, $$));
+            const areaIndices = getCanvasShapeIndices(
+              $$,
+              shape,
+              TYPE.AREA,
+              isCanvasAreaType.bind(null, $$)
+            );
+            for (const target of areaTargets) {
+              if (!target.values.some(hasCanvasDrawableValue.bind(null, $$))) {
+                continue;
+              }
+              ctx.globalAlpha = style.shape.areaOpacity * getCanvasTargetFocusOpacity($$, target);
               ctx.fillStyle = $$.color(target.id);
-              target.values.forEach((d, i) => {
-                if (!hasCanvasDrawableValue($$, d)) {
-                  return;
-                }
-                const geometry = getCanvasBarGeometry($$, getBarPoints, d, i);
-                geometry && painter.fillRect(geometry.rect, { fill: ctx.fillStyle });
-              });
+              drawCanvasArea($$, target, areaIndices, painter, true);
             }
             ctx.globalAlpha = 1;
-          }
-          const candlestickTargets = targets.filter(
-            isCanvasCandlestickType.bind(null, $$)
-          );
-          const candlestickIndices = getCanvasShapeIndices(
-            $$,
-            shape,
-            TYPE.CANDLESTICK,
-            isCanvasCandlestickType.bind(null, $$)
-          );
-          const getCandlestickPoints = (_b = $$.generateGetCandlestickPoints) == null ? void 0 : _b.call(
-            $$,
-            candlestickIndices,
-            true
-          );
-          if (getCandlestickPoints) {
-            ctx.lineWidth = style.shape.candlestickLineWidth;
-            for (const target of candlestickTargets) {
-              target.values.forEach((d, i) => {
-                var _a2;
-                const value = (_a2 = $$.getCandlestickData) == null ? void 0 : _a2.call($$, d);
-                const geometry = value && getCanvasCandlestickGeometry(
-                  $$,
-                  getCandlestickPoints,
-                  d,
-                  i
-                );
-                if (!geometry) {
-                  return;
-                }
-                const color = getCandlestickColor($$, { id: target.id }, value);
-                ctx.strokeStyle = color;
-                ctx.fillStyle = color;
-                painter.strokePath(() => {
-                  painter.traceLine(
-                    geometry.wickStart[0],
-                    geometry.wickStart[1],
-                    geometry.wickEnd[0],
-                    geometry.wickEnd[1]
-                  );
-                });
-                painter.fillRect(geometry.body, { fill: ctx.fillStyle });
-              });
-            }
-          }
-          const lineTargets = targets.filter(isCanvasLineType.bind(null, $$));
-          const lineIndices = getCanvasShapeIndices(
-            $$,
-            shape,
-            TYPE.LINE,
-            isCanvasLineType.bind(null, $$)
-          );
-          ctx.globalAlpha = 1;
-          ctx.lineWidth = style.shape.lineWidth;
-          for (const target of lineTargets) {
-            if (!target.values.some(hasCanvasDrawableValue.bind(null, $$))) {
-              continue;
-            }
-            ctx.strokeStyle = $$.color(target.id);
-            drawCanvasLine($$, target, lineIndices, painter, true);
-          }
-          if (config.point_show && !((_c = $$.isPointFocusOnly) == null ? void 0 : _c.call($$))) {
-            const cy = (_d = $$.updateCircleY) == null ? void 0 : _d.call($$, true);
-            const cx = (_e = $$.subxx) == null ? void 0 : _e.bind($$);
-            if (cx && cy) {
-              for (const target of targets) {
-                if (!isCanvasScatterType($$, target) && !isCanvasBubbleType($$, target)) {
-                  continue;
-                }
-                const color = $$.color(target.id);
-                const pointFill = style.shape.pointFillColor || color;
-                const pointStroke = style.shape.pointStrokeColor || color;
-                const pointLineWidth = pointStroke ? (_f = style.shape.pointLineWidth) != null ? _f : 1 : 0;
-                const pointStyle = pointStroke && pointLineWidth > 0 ? {
-                  fill: pointFill,
-                  stroke: pointStroke,
-                  lineWidth: pointLineWidth
-                } : { fill: pointFill };
-                ctx.globalAlpha = getPointOpacity($$, target);
+            const barTargets = targets.filter(isCanvasBarType.bind(null, $$));
+            const barIndices = getCanvasShapeIndices(
+              $$,
+              shape,
+              TYPE.BAR,
+              isCanvasBarType.bind(null, $$)
+            );
+            const getBarPoints = (_a2 = $$.generateGetBarPoints) == null ? void 0 : _a2.call($$, barIndices, true);
+            if (getBarPoints) {
+              for (const target of barTargets) {
+                ctx.globalAlpha = style.shape.barOpacity * getCanvasTargetFocusOpacity($$, target);
+                ctx.fillStyle = $$.color(target.id);
                 target.values.forEach((d, i) => {
+                  var _a3;
                   if (!hasCanvasDrawableValue($$, d)) {
                     return;
                   }
-                  const x = config.axis_rotated ? cy(d, i) : cx(d);
-                  const y = config.axis_rotated ? cx(d) : cy(d, i);
-                  const r = Math.min(getTargetPointRadius($$, target, d), 3);
-                  if (isFiniteCanvasCoordinate(x, y)) {
-                    drawPointPattern(painter, "circle", x, y, r, pointStyle);
-                  }
+                  const geometry = getCanvasBarGeometry($$, getBarPoints, d, i);
+                  const fill = ((_a3 = $$.getSubchartCandlestickBarColor) == null ? void 0 : _a3.call($$, d, true)) || ctx.fillStyle;
+                  geometry && painter.fillRect(geometry.rect, { fill });
                 });
               }
               ctx.globalAlpha = 1;
             }
-          }
+            const candlestickTargets = targets.filter(
+              isCanvasCandlestickType.bind(null, $$)
+            );
+            const candlestickIndices = getCanvasShapeIndices(
+              $$,
+              shape,
+              TYPE.CANDLESTICK,
+              isCanvasCandlestickType.bind(null, $$)
+            );
+            const getCandlestickPoints = (_b = $$.generateGetCandlestickPoints) == null ? void 0 : _b.call(
+              $$,
+              candlestickIndices,
+              true
+            );
+            if (getCandlestickPoints) {
+              ctx.lineWidth = style.shape.candlestickLineWidth;
+              for (const target of candlestickTargets) {
+                const targetOpacity = getCanvasTargetFocusOpacity($$, target);
+                ctx.globalAlpha = targetOpacity;
+                target.values.forEach((d, i) => {
+                  var _a3;
+                  const value = (_a3 = $$.getCandlestickData) == null ? void 0 : _a3.call($$, d);
+                  const geometry = value && getCanvasCandlestickGeometry(
+                    $$,
+                    getCandlestickPoints,
+                    d,
+                    i
+                  );
+                  if (!geometry) {
+                    return;
+                  }
+                  const color = getCandlestickColor($$, { id: target.id }, value);
+                  ctx.strokeStyle = color;
+                  ctx.fillStyle = color;
+                  painter.strokePath(() => {
+                    painter.traceLine(
+                      geometry.wickStart[0],
+                      geometry.wickStart[1],
+                      geometry.wickEnd[0],
+                      geometry.wickEnd[1]
+                    );
+                  });
+                  painter.fillRect(geometry.body, { fill: ctx.fillStyle });
+                });
+              }
+            }
+            const lineTargets = targets.filter(isCanvasLineType.bind(null, $$));
+            const lineIndices = getCanvasShapeIndices(
+              $$,
+              shape,
+              TYPE.LINE,
+              isCanvasLineType.bind(null, $$)
+            );
+            ctx.globalAlpha = 1;
+            for (const target of lineTargets) {
+              if (!target.values.some(hasCanvasDrawableValue.bind(null, $$))) {
+                continue;
+              }
+              ctx.globalAlpha = getCanvasTargetFocusOpacity($$, target);
+              ctx.lineWidth = isCanvasTargetFocused($$, target) ? style.shape.lineFocusedWidth : style.shape.lineWidth;
+              ctx.strokeStyle = $$.color(target.id);
+              drawCanvasLine($$, target, lineIndices, painter, true);
+            }
+            ctx.globalAlpha = 1;
+            if (config.point_show && !((_c = $$.isPointFocusOnly) == null ? void 0 : _c.call($$))) {
+              const cy = (_d = $$.updateCircleY) == null ? void 0 : _d.call($$, true);
+              const cx = (_e = $$.subxx) == null ? void 0 : _e.bind($$);
+              if (cx && cy) {
+                for (const target of targets) {
+                  if (!isCanvasScatterType($$, target) && !isCanvasBubbleType($$, target)) {
+                    continue;
+                  }
+                  const color = $$.color(target.id);
+                  const pointFill = style.shape.pointFillColor || color;
+                  const pointStroke = style.shape.pointStrokeColor || color;
+                  const pointLineWidth = pointStroke ? (_f = style.shape.pointLineWidth) != null ? _f : 1 : 0;
+                  const pointStyle = pointStroke && pointLineWidth > 0 ? {
+                    fill: pointFill,
+                    stroke: pointStroke,
+                    lineWidth: pointLineWidth
+                  } : { fill: pointFill };
+                  ctx.globalAlpha = getPointOpacity($$, target) * getCanvasTargetFocusOpacity($$, target);
+                  target.values.forEach((d, i) => {
+                    if (!hasCanvasDrawableValue($$, d)) {
+                      return;
+                    }
+                    const x = config.axis_rotated ? cy(d, i) : cx(d);
+                    const y = config.axis_rotated ? cx(d) : cy(d, i);
+                    const r = Math.min(getTargetPointRadius($$, target, d), 3);
+                    if (isFiniteCanvasCoordinate(x, y)) {
+                      drawPointPattern(
+                        painter,
+                        "circle",
+                        x,
+                        y,
+                        r,
+                        pointStyle
+                      );
+                    }
+                  });
+                }
+                ctx.globalAlpha = 1;
+              }
+            }
+          });
         });
+        this.drawSubchartBrush($$);
       });
-      this.drawSubchartBrush($$);
     });
   }
   /**
@@ -5759,7 +6041,7 @@ class CanvasRenderer {
     var _a, _b;
     const { config, scale, state } = $$;
     const domain = state.domain;
-    if (!config.subchart_show || !(domain == null ? void 0 : domain.length) || !scale.subX) {
+    if (!config.subchart_show || config.subchart_brush_enabled === false || !(domain == null ? void 0 : domain.length) || !scale.subX) {
       return;
     }
     const { margin2, width2, height2 } = state;
@@ -6220,7 +6502,7 @@ class CanvasRenderer {
     const stackingRadiusSet = getRadius ? getStackingBarRadiusSet($$) : /* @__PURE__ */ new Set();
     painter.withTranslation(margin.left, margin.top, () => {
       selectedData.forEach((d) => {
-        var _a2, _b2, _c, _d, _e, _f;
+        var _a2, _b2, _c, _d, _e, _f, _g;
         const color = $$.color(d.id);
         if (isBar(d) && barPoints) {
           const geometry = getCanvasBarGeometry($$, barPoints, d, d.index);
@@ -6264,11 +6546,13 @@ class CanvasRenderer {
             lineWidth: style.selectedPoint.lineWidth,
             stroke: style.selectedPoint.stroke || color
           });
-          drawPointPattern(painter, pointType, x, y, r, {
-            fill: style.shape.pointFillColor || color,
-            stroke: style.shape.pointStrokeColor || color,
-            lineWidth: (_f = style.shape.pointLineWidth) != null ? _f : 1
-          });
+          if (!((_f = $$.isPointFocusOnly) == null ? void 0 : _f.call($$))) {
+            drawPointPattern(painter, pointType, x, y, r, {
+              fill: style.shape.pointFillColor || color,
+              stroke: style.shape.pointStrokeColor || color,
+              lineWidth: (_g = style.shape.pointLineWidth) != null ? _g : 1
+            });
+          }
         }
       });
       ctx.globalAlpha = 1;
@@ -6513,6 +6797,37 @@ class CanvasRenderer {
     });
   }
   /**
+   * Draw synchronized focus grid on the canvas subchart.
+   * @param {object} $$ ChartInternal instance
+   * @param {Array} selectedData Focused data rows
+   * @private
+   */
+  drawSubchartFocus($$, selectedData) {
+    const { config, scale, state } = $$;
+    const focus = selectedData == null ? void 0 : selectedData.find(
+      (d) => d && hasCanvasDrawableValue($$, d)
+    );
+    if (!focus || !config.subchart_show || config.subchart_grid_focus_continuous || config.subchart_brush_enabled !== false || config.grid_focus_show === false || config.subchart_grid_focus === false || !config.tooltip_show || config.axis_tooltip || !scale.subX || state.width2 <= 0 || state.height2 <= 0) {
+      return;
+    }
+    const { margin2, width2, height2 } = state;
+    const pos = scale.subX(focus.x);
+    if (!Number.isFinite(pos)) {
+      return;
+    }
+    const { painter, theme: { style } } = this;
+    const lineWidth = style.axis.lineWidth;
+    const x = painter.crisp(margin2.left + pos, lineWidth);
+    const y = painter.crisp(margin2.top + pos, lineWidth);
+    painter.strokePath(() => {
+      config.axis_rotated ? painter.traceLine(margin2.left, y, margin2.left + width2, y) : painter.traceLine(x, margin2.top, x, margin2.top + height2);
+    }, {
+      lineDash: style.focusGrid.dashArray,
+      lineWidth: style.focusGrid.lineWidth,
+      stroke: style.focusGrid.lineColor
+    });
+  }
+  /**
    * Draw focus grid and focused points on canvas.
    * @param {object} $$ ChartInternal instance
    * @param {Array} selectedData Focused data rows
@@ -6528,6 +6843,7 @@ class CanvasRenderer {
     const focus = selectedData.find(
       (d) => d && hasCanvasDrawableValue($$, d)
     );
+    $$.config.subchart_grid_focus !== false && !isContinuousGridFocusEnabled($$) && this.drawSubchartFocus($$, selectedData);
     painter.withTranslation(margin.left, margin.top, () => {
       if ($$.config.tooltip_show && $$.config.grid_focus_show !== false && !$$.config.axis_tooltip && focus) {
         const { x, y } = getRenderDataPoint($$, focus);
@@ -6538,6 +6854,9 @@ class CanvasRenderer {
         const crispEdgeX = (value) => painter.crisp(margin.left + value, axisLineWidth) - margin.left;
         const crispEdgeY = (value) => painter.crisp(margin.top + value, axisLineWidth) - margin.top;
         const isEdge = $$.config.grid_focus_edge && !$$.config.tooltip_grouped;
+        const continuousFocus = isContinuousGridFocusEnabled($$);
+        const focusEndX = continuousFocus ? $$.state.margin2.left - margin.left + $$.state.width2 : $$.state.width;
+        const focusEndY = continuousFocus ? $$.state.margin2.top - margin.top + $$.state.height2 : $$.state.height;
         if (hasIndexCoordinate) {
           painter.strokePath(() => {
             var _a, _b;
@@ -6545,7 +6864,7 @@ class CanvasRenderer {
               painter.traceLine(
                 crispEdgeX(0),
                 y,
-                isEdge && hasValueCoordinate ? x : crispEdgeX($$.state.width),
+                isEdge && hasValueCoordinate ? x : crispEdgeX(focusEndX),
                 y
               );
               if (hasValueCoordinate && $$.config.grid_focus_y && !$$.config.tooltip_grouped) {
@@ -6562,7 +6881,7 @@ class CanvasRenderer {
                 x,
                 isEdge && hasValueCoordinate ? y : crispEdgeY(0),
                 x,
-                crispEdgeY($$.state.height)
+                crispEdgeY(focusEndY)
               );
               if (hasValueCoordinate && $$.config.grid_focus_y && !$$.config.tooltip_grouped) {
                 const isY2 = ((_b = $$.axis) == null ? void 0 : _b.getId(focus.id)) === "y2";
@@ -6759,6 +7078,77 @@ function normalizeThemeSelectors(selector) {
   return selector.split(",").map(
     (value) => value.trim().replace(/\s*>\s*/g, " ").replace(/\s+/g, " ").replace(/^(?:svg)?\.bb\s+/, "").replace(/(^|\s)(?:g|path|rect|line|text|circle)\./g, "$1.")
   ).filter(Boolean);
+}
+function getDefinedKeys(values) {
+  return Object.keys(values).filter((key) => values[key] !== void 0);
+}
+function assignDefined(target, source, skip) {
+  getDefinedKeys(source).forEach((key) => {
+    if (!(skip == null ? void 0 : skip.has(key))) {
+      target[key] = source[key];
+    }
+  });
+  return target;
+}
+function isSimpleGridLineSelector(selector) {
+  const tokens = selector.split(" ");
+  return tokens.every(
+    (token, index) => token === "line" || token === "text" ? index === tokens.length - 1 : /^(\.[A-Za-z_-][\w-]*)+$/.test(token)
+  );
+}
+function getGridLineSelectorTarget(selector) {
+  const tokens = selector.split(" ");
+  const target = tokens[tokens.length - 1];
+  return target === "line" || target === "text" ? target : null;
+}
+function getClassNames(className) {
+  return (className || "").split(/\s+/).filter(Boolean);
+}
+function getGridLineSelectorStyle(style, target) {
+  const values = target === "text" ? {
+    labelColor: readColorValue(style, "fill"),
+    labelFont: readFontValue(style)
+  } : {
+    lineColor: readColorValue(style, "stroke"),
+    lineWidth: readNumberValue(style, "stroke-width"),
+    dashArray: readDashArrayValue(style)
+  };
+  return assignDefined({}, values);
+}
+function getGridLineSelectorOverrides(selectors) {
+  const overrides = [];
+  Object.keys(selectors != null ? selectors : {}).forEach((selector) => {
+    normalizeThemeSelectors(selector).forEach((normalizedSelector) => {
+      const target = getGridLineSelectorTarget(normalizedSelector) || "line";
+      const style = getGridLineSelectorStyle(selectors[selector], target);
+      if (isSimpleGridLineSelector(normalizedSelector) && getDefinedKeys(style).length) {
+        overrides.push({ selector: normalizedSelector, target, style });
+      }
+    });
+  });
+  return overrides;
+}
+function matchesGridLineSelector(selector, axis, className, target) {
+  if (!isSimpleGridLineSelector(selector)) {
+    return false;
+  }
+  const selectorTarget = getGridLineSelectorTarget(selector);
+  if (selectorTarget && selectorTarget !== target) {
+    return false;
+  } else if (!selectorTarget && target === "text") {
+    return false;
+  }
+  const customClasses = getClassNames(className);
+  const axisLineClass = `bb-${axis}grid-line`;
+  const availableClasses = /* @__PURE__ */ new Set([
+    "bb-grid",
+    "bb-grid-lines",
+    `bb-${axis}grid-lines`,
+    axisLineClass,
+    ...customClasses
+  ]);
+  const selectorClasses = (selector.match(/\.[A-Za-z_-][\w-]*/g) || []).map((match) => match.slice(1));
+  return !!selectorClasses.length && selectorClasses.every((cls) => availableClasses.has(cls)) && (selectorClasses.includes(axisLineClass) || customClasses.some((cls) => selectorClasses.includes(cls)));
 }
 function applySelectorStyle(target, selector, style) {
   switch (selector) {
@@ -7036,6 +7426,8 @@ class CanvasTheme {
     CanvasTheme_publicField(this, "style");
     CanvasTheme_publicField(this, "cacheContainer", null);
     CanvasTheme_publicField(this, "cacheKey", null);
+    CanvasTheme_publicField(this, "gridLineSelectorOverrides", []);
+    CanvasTheme_publicField(this, "directGridOverrideKeys", /* @__PURE__ */ new Set());
   }
   /**
    * Read theme values from temporary SVG probes.
@@ -7044,8 +7436,12 @@ class CanvasTheme {
    * @private
    */
   load(container, userOverride) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     const svg = browser_doc.createElementNS(SVG_NS, "svg");
+    this.gridLineSelectorOverrides = getGridLineSelectorOverrides(userOverride == null ? void 0 : userOverride.selectors);
+    this.directGridOverrideKeys = new Set(
+      Object.keys((_a = userOverride == null ? void 0 : userOverride.grid) != null ? _a : {})
+    );
     svg.setAttribute("class", "bb");
     svg.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;width:0;height:0;overflow:hidden";
     container.appendChild(svg);
@@ -7210,7 +7606,7 @@ class CanvasTheme {
       subchartBrushSelection.fill,
       toColor(subchartBrushExtent.fill, zoomBrushFill)
     );
-    const subchartBrushOpacity = (_d = (_c = (_b = (_a = toOptionalNumber(subchartBrushSelection["fill-opacity"], 1)) != null ? _a : toOptionalNumber(subchartBrushSelection.opacity, 1)) != null ? _b : toOptionalNumber(subchartBrushExtent["fill-opacity"], 1)) != null ? _c : toOptionalNumber(subchartBrushExtent.opacity, 1)) != null ? _d : zoomBrushOpacity;
+    const subchartBrushOpacity = (_e = (_d = (_c = (_b = toOptionalNumber(subchartBrushSelection["fill-opacity"], 1)) != null ? _b : toOptionalNumber(subchartBrushSelection.opacity, 1)) != null ? _c : toOptionalNumber(subchartBrushExtent["fill-opacity"], 1)) != null ? _d : toOptionalNumber(subchartBrushExtent.opacity, 1)) != null ? _e : zoomBrushOpacity;
     const subchartBrushHandleStroke = toColor(subchartBrushHandle.stroke, "transparent");
     const defaultStyle = {
       axis: {
@@ -7435,6 +7831,25 @@ class CanvasTheme {
       return;
     }
     this.load(container, userOverride);
+  }
+  /**
+   * Resolve selector based style for one configured optional grid line.
+   * @param {string} axis Grid axis
+   * @param {object} line Grid line options
+   * @param {string} line.class Grid line custom class
+   * @param {string} target Draw target
+   * @returns {object|undefined} Grid line style override
+   * @private
+   */
+  getGridLineStyle(axis, line = {}, target = "line") {
+    const style = {};
+    for (const override of this.gridLineSelectorOverrides) {
+      if (!matchesGridLineSelector(override.selector, axis, line.class, target)) {
+        continue;
+      }
+      assignDefined(style, override.style, this.directGridOverrideKeys);
+    }
+    return getDefinedKeys(style).length ? style : void 0;
   }
 }
 
@@ -7973,6 +8388,7 @@ const $FOCUS = {
   defocused: "bb-defocused",
   legendItemFocused: "bb-legend-item-focused",
   xgridFocus: "bb-xgrid-focus",
+  xgridFocusContinuous: "bb-xgrid-focus-continuous",
   ygridFocus: "bb-ygrid-focus"
 };
 const $GRID = {
@@ -8050,19 +8466,79 @@ const $ZOOM = {
    * - **NOTE:**
    *   - Will append &lt;style> to the head tag and will add shpes' CSS rules dynamically.
    *   - For now, covers colors related properties (fill, stroke, etc.) only.
-   * @property {boolean} [boost.useWorker=false] Use Web Worker as possible for processing.
+   * @property {boolean|string} [boost.useWorker=false] Use Web Worker as possible for processing.
+   * - **Available values:**
+   *   - `false`: never offload.
+   *   - `true`: always offload when a Worker can be created.
+   *   - `"auto"`: offload only when the given data exceeds ~5,000 cells, since smaller
+   *     payloads lose more to structured cloning than they gain.
    * - **NOTE:**
    *   - For now, only applies for data conversion at the initial time.
-   *   - As of Web Worker's async nature, handling chart instance synchrously is not recommended.
+   *   - As of Web Worker's async nature, handling chart instance synchronously is not recommended.
+   *   - When Worker isn't available, fails or times out, data conversion falls back to main thread.
    *   - When given data is empty, useWorker will be ignored.
+   * @property {string} [boost.workerUrl=undefined] Use a custom static worker script URL instead of an inline Blob worker.
+   * - **NOTE:**
+   *   - **Requires `boost.useWorker` to be enabled** — this option only selects where the
+   *     worker source comes from, it does not turn offloading on by itself.
+   *   - Useful for strict CSP environments that disallow `blob:` workers. Without it under
+   *     such a policy, worker creation throws and each conversion waits out the 5s timeout
+   *     before falling back, so the chart still renders but the initial draw is delayed.
+   *   - Point it at `dist/billboard.worker.js`, shipped in the package, or any script
+   *     implementing the same protocol: receive `{id, op, args}` and post back
+   *     `{id, result}` or `{id, error}`. No `eval()` is involved.
+   *   - With a bundler, make sure the file is emitted as a **real asset**, not inlined:
+   *     it is ~1.5KB, and inlining turns it into a `data:` URI, which a strict CSP
+   *     blocks exactly like `blob:`. Copying it into the static/public directory is the
+   *     option that works everywhere.
+   *   - Any failure (load error, unknown op, timeout, result mismatch) falls back to the main thread.
    * @example
+   * // offload data conversion on a Worker, using the inline Blob worker
    *  boost: {
    *      useCssRule: true,
-   *      useWorker: false
+   *      useWorker: true
    *  }
+   * @example
+   * // offload only past ~5,000 cells
+   *  boost: {
+   *      useWorker: "auto"
+   *  }
+   * @example
+   * // strict CSP: serve the shipped script and point at it.
+   * // 'useWorker' still has to be on - 'workerUrl' alone offloads nothing.
+   *  boost: {
+   *      useWorker: true,
+   *      workerUrl: "$YOUR_PATH/dist/billboard.worker.js"
+   *  }
+   * @example
+   * // ESM: the file is reachable as a package subpath.
+   * // Vite - '?url' resolves it, but assets under 4KB are inlined as a 'data:' URI,
+   * // which a strict CSP rejects. Opt that one file out of inlining:
+   * //
+   * //   // vite.config.js
+   * //   export default {
+   * //     build: {
+   * //       assetsInlineLimit: path => /billboard\.worker\.js$/.test(path) ? false : undefined
+   * //     }
+   * //   };
+   * import bb, {bar} from "billboard.js";
+   * import workerUrl from "billboard.js/dist/billboard.worker.js?url";
+   *
+   * bb.generate({
+   *     boost: {useWorker: true, workerUrl},
+   *     data: {columns: [["data1", 30, 200, 100]], type: bar()}
+   * });
+   * @example
+   * // ESM, bundler-agnostic: copy the file into the served static directory
+   * //   cp node_modules/billboard.js/dist/billboard.worker.js public/
+   * bb.generate({
+   *     boost: {useWorker: true, workerUrl: "/billboard.worker.js"},
+   *     data: {columns: [["data1", 30, 200, 100]]}
+   * });
    */
   boost_useCssRule: false,
-  boost_useWorker: false
+  boost_useWorker: false,
+  boost_workerUrl: void 0
 });
 
 ;// ./src/config/Options/common/color.ts
@@ -8073,9 +8549,9 @@ const $ZOOM = {
    * @memberof Options
    * @type {object}
    * @property {object} color color object
-   * @property {string|object|((this: Chart, d: DataItem) => string)} [color.onover] Set the color value for each data point when mouse/touch onover event occurs.
+   * @property {string|object|function(DataItem): string} [color.onover] Set the color value for each data point when mouse/touch onover event occurs.
    * @property {Array|null} [color.pattern=[]] Set custom color pattern. Passing `null` will not set a color for these elements, which requires the usage of custom CSS-based theming to work.
-   * @property {(this: Chart) => SVGPathElement[]} [color.tiles] if defined, allows use svg's patterns to fill data area. It should return an array of [SVGPatternElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGPatternElement).
+   * @property {function(): Array.<SVGPatternElement>} [color.tiles] if defined, allows use svg's patterns to fill data area. It should return an array of [SVGPatternElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGPatternElement).
    *  - **NOTE:** The pattern element's id will be defined as `bb-colorize-pattern-$COLOR-VALUE`.<br>
    *    ex. When color pattern value is `['red', '#fff']` and defined 2 patterns,then ids for pattern elements are:<br>
    *    - `bb-colorize-pattern-red`
@@ -8477,12 +8953,50 @@ const $ZOOM = {
    *   - false: Disables automatic resize.
    *   - "parent": Enables automatic resize when the parent node is resized.
    *   - "viewBox": Enables automatic resize, and size will be fixed based on the viewbox.
+   * - **NOTE:** `true` listens to the window's resize event, so a container resized by anything
+   *   else(a splitter drag, a sibling element growing, a CSS resize handle) is not detected.
+   *   Use `"parent"`, which observes the parent node itself, for those.
    * @property {boolean|number} [resize.timer=true] Set resize timer option.
    * - **NOTE:** Available options
    *   - The resize function will be called using:
    *     - true: `setTimeout()`
    *     - false: `requestIdleCallback()`
    *   - Given number(delay in ms) value, resize function will be triggered using `setTimeout()` with given delay.
+   * - **NOTE:** With `resize.live`, this no longer decides when the size is reflected(every
+   *   animation frame does), but when the resize is treated as finished:
+   *   - `onresize`/`onresized` are called then, as they are without it.
+   *   - When the rendering is being stretched, this is also when it's redrawn to the exact
+   *     size. The stretched rendering stays on screen for this long after the resize stops,
+   *     so keep the delay short for charts large enough to be stretched.
+   *   - When every frame is redrawn, the last frame already drew the final size, so the
+   *     delayed call changes nothing on screen.
+   * @property {boolean} [resize.live=false] Follow the container size while resizing, instead of
+   * only when the delayed resize(`resize.timer`) runs.
+   * - **NOTE:** Applies only when `resize.auto` is `true` or `"parent"`.
+   * - **Strategy:** How the size is followed is measured, not configured. Two of them are used:
+   *   - **Redraw**: while a resize redraw fits in one animation frame(16ms), the chart is
+   *     redrawn on every frame, giving an exact rendering at every size.
+   *   - **Stretch**: once a redraw misses that budget, the rendering is stretched to the new
+   *     size for the rest of the resize, and redrawn when the resize settles. Stretching runs
+   *     no redraw at all: for SVG the `viewBox` is set to the drawn size and the width/height
+   *     attributes to the new one, and for canvas only the element's CSS box is resized, with
+   *     the backing store left as is. The size keeps following the container at any data amount.
+   * - **Switching:** within a resize the strategy only goes from redraw to stretch, never back,
+   *   so frames can't alternate between an exact and a stretched rendering. The measured time
+   *   outlives the resize, so a chart already known to be expensive stretches from the first
+   *   frame of the next one.
+   * - **While stretched:** text and stroke width are scaled with the box(SVG) and the drawn
+   *   bitmap is upscaled(canvas). Interaction is unaffected, as pointer coordinates are mapped
+   *   back through the element's transform. The redraw on settle restores the exact rendering.
+   * - **Cost:** resize redraws skip the shape data join and the axis tick measurement, so they
+   *   are far cheaper than an initial render. A 5x1,000 line chart redraws in about 6ms(SVG)
+   *   and 3ms(canvas), a 10x10,000 one in about 78ms and 53ms. Ordinary charts therefore redraw
+   *   on every frame, and only the large ones fall back to stretching.
+   * - **Several charts on a page:** the budget is measured per chart, and charts don't know
+   *   about each other. Eight charts of 2,000 points each spend about 75ms per frame together
+   *   while each one measures about 9ms and keeps redrawing. Turn it on for the charts the user
+   *   actually watches while resizing, rather than for every chart on a dense page.
+   * - `onrendered` is called on every redrawn frame while resizing, not once per resize.
    * @see [Demo: resize "parent"](https://naver.github.io/billboard.js/demo/#ChartOptions.resizeParent)
    * @see [Demo: resize "viewBox"](https://naver.github.io/billboard.js/demo/#ChartOptions.resizeViewBox)
    * @example
@@ -8502,11 +9016,15 @@ const $ZOOM = {
    *      timer: false,
    *
    *      // set resize function will be triggered using `setTimeout()` with a delay of `100ms`.
-   *      timer: 100
+   *      timer: 100,
+   *
+   *      // follow the container size while resizing
+   *      live: true
    *  }
    */
   resize_auto: true,
   resize_timer: true,
+  resize_live: false,
   /**
    * Set a callback to execute when the chart is clicked.
    * @name onclick
@@ -10138,7 +10656,9 @@ class Element {
         x: null,
         y: null,
         y2: null,
-        subX: null
+        subX: null,
+        subY: null,
+        subY2: null
       },
       axisTooltip: {
         x: null,
@@ -10253,6 +10773,7 @@ class State {
       loading: void 0,
       // Zoom/subchart domain (different from current.domain which is for rendering)
       domain: void 0,
+      subchartSourceTypes: void 0,
       current: {
         // current domain value. Assigned when is zoom is called
         domain: void 0,
@@ -10350,6 +10871,12 @@ class State {
       // if redraw() is on process
       resizing: false,
       // resize event called
+      resizePreview: false,
+      // rendered surface is stretched, pending an exact redraw
+      resizeRedrawTime: 0,
+      // ms the last resize redraw took, decides resize.live strategy
+      // stretch instead of redrawing for the rest of this resize; null until decided
+      resizeLiveScale: null,
       toggling: false,
       // legend toggle
       zooming: false,
@@ -10441,9 +10968,9 @@ const KEY = {
   dataMinMax: "$dataMinMax",
   dataTotalSum: "$dataTotalSum",
   dataTotalPerIndex: "$totalPerIndex",
+  visibleTotalPerIndex: "$visibleTotalPerIndex",
   domainMinMax: "$domainMinMax",
   filteredTargets: "$filteredTargets",
-  filteredNullish: "$filteredNullish",
   svgLeft: "$svgLeft",
   valuesByX: "$valuesByX",
   legendItemTextBox: "legendItemTextBox",
@@ -10862,11 +11389,18 @@ const emulateEvent = {
 
 
 const { setTimeout: generator_setTimeout, clearTimeout: generator_clearTimeout } = win;
-function generateResize(option) {
+function generateResize(option, live) {
   const fn = [];
   let timeout;
+  let rafId = null;
   const callResizeFn = function() {
     callResizeFn.clear();
+    if (live && rafId === null) {
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        live();
+      });
+    }
     if (option === false) {
       timeout = requestIdleCallback(() => {
         timeout = null;
@@ -10883,6 +11417,12 @@ function generateResize(option) {
     if (timeout) {
       (option === false ? cancelIdleCallback : generator_clearTimeout)(timeout);
       timeout = null;
+    }
+  };
+  callResizeFn.clearLive = () => {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
     }
   };
   callResizeFn.add = (f) => fn.push(f);
@@ -10928,28 +11468,148 @@ function generateWait() {
 ;// ./src/module/worker.ts
 
 const cache = {};
+const disabledKeys = /* @__PURE__ */ new Set();
+const verifiedOps = /* @__PURE__ */ new Map();
+const DEFAULT_WORKER_TIMEOUT = 5e3;
+const VERIFY_SAMPLE_SIZE = 3;
 let messageId = 0;
-function getOrCreateWorkerResources(fn, depsFn) {
-  var _a;
-  const fnString = fn.toString();
-  const depsString = (_a = depsFn == null ? void 0 : depsFn.map(String).join(";")) != null ? _a : "";
-  const key = (fnString + depsString).replace(/(function|[\s\W\n])/g, "").substring(0, 30);
+function getWorkerSrc() {
+  try {
+    return "var bbWorker=(function(e){Object.defineProperty(e,Symbol.toStringTag,{value:`Module`});function t(e){let t=[];return e.forEach(function(e,n){let r=e[0];e.forEach(function(e,i){if(i>0){if(t[i-1]===void 0&&(t[i-1]={}),e===void 0)throw Error(`Source data is missing a component at (${n}, ${i})!`);t[i-1][r]=e}})}),t}function n(e){let t=e[0],n=[];return e.forEach(function(e,r){if(r>0){let i={};e.forEach(function(e,n){if(e===void 0)throw Error(`Source data is missing a component at (${r}, ${n})!`);i[t[n]]=e}),n.push(i)}}),n}function r(e,r){let i=[],a,o;if(Array.isArray(e)){let t=function(e,t){if(e[t]!==void 0)return e[t];let n=t.replace(/\\[(\\w+)\\]/g,`.$1`).replace(/^\\./,``).split(`.`),r=e;return n.some(function(e){return!(r=r&&typeof r==`object`&&e in r?r[e]:void 0)}),r};a=r.x?r.value.concat(r.x):r.value,i.push(a),e.forEach(function(e){let n=a.map(function(n){let r=t(e,n);return r===void 0&&(r=null),r});i.push(n)}),o=n(i)}else Object.keys(e).forEach(function(t){let n=[].concat(e[t]);n.unshift?.(t),i.push(n)}),o=t(i);return o}let i={columns:t,json:r,rows:n},a=self;function o({data:e}){let{args:t,id:n,op:r}=e;try{let e=i[r];if(!e)throw Error(`Unknown worker op: ${r}`);a.postMessage({id:n,result:e(...t)})}catch(e){a.postMessage({id:n,error:e&&(e.message||e.name)||String(e)})}}return typeof window>`u`&&(a.onmessage=o),e.handleMessage=o,e.ops=i,e})({});";
+  } catch (e) {
+    return "";
+  }
+}
+function getWorkerAPI() {
+  const { Blob, Worker, URL } = win;
+  return Worker && Blob && (URL == null ? void 0 : URL.createObjectURL) && (URL == null ? void 0 : URL.revokeObjectURL) ? { Blob, Worker, URL } : null;
+}
+function getWorkerConstructor() {
+  return win.Worker || null;
+}
+function normalizeWorkerOptions(options) {
+  var _a, _b;
+  return typeof options === "number" ? { timeout: options, workerUrl: "" } : {
+    timeout: (_a = options == null ? void 0 : options.timeout) != null ? _a : DEFAULT_WORKER_TIMEOUT,
+    workerUrl: (_b = options == null ? void 0 : options.workerUrl) != null ? _b : ""
+  };
+}
+function releaseWorker(key, disable = false) {
+  var _a, _b;
+  const cached = cache[key];
+  if (disable) {
+    disabledKeys.add(key);
+  }
+  if (cached) {
+    (_a = cached.worker) == null ? void 0 : _a.terminate();
+    cached.revoke && ((_b = getWorkerAPI()) == null ? void 0 : _b.URL.revokeObjectURL(cached.src));
+    delete cache[key];
+  }
+  for (const verified of verifiedOps.keys()) {
+    if (verified.startsWith(`${key}:`)) {
+      verifiedOps.delete(verified);
+    }
+  }
+}
+function isSameResult(actual, expected) {
+  if (actual === expected) {
+    return true;
+  }
+  try {
+    return JSON.stringify(actual) === JSON.stringify(expected);
+  } catch (e) {
+    return true;
+  }
+}
+function getVerifySample(args) {
+  const [data, ...rest] = args;
+  if (!Array.isArray(data)) {
+    return args;
+  }
+  return [
+    data.slice(0, VERIFY_SAMPLE_SIZE).map(
+      (entry) => (
+        // +1: a column/row entry leads with its name, which the values follow
+        Array.isArray(entry) ? entry.slice(0, VERIFY_SAMPLE_SIZE + 1) : entry
+      )
+    ),
+    ...rest
+  ];
+}
+function request(worker, op, args, timeout) {
+  const id = ++messageId;
+  let settled = false;
+  let cleanup;
+  const promise = new Promise((resolve, reject) => {
+    const settle = (fn, value) => {
+      if (!settled) {
+        settled = true;
+        cleanup();
+        fn(value);
+      }
+    };
+    const handler = function(e) {
+      var _a;
+      if (((_a = e.data) == null ? void 0 : _a.id) === id) {
+        e.data.error ? settle(reject, new Error(e.data.error)) : settle(resolve, e.data.result);
+      }
+    };
+    const errorHandler = function() {
+      settle(reject, new Error("worker error"));
+    };
+    const timer = setTimeout(() => settle(reject, new Error("worker timeout")), timeout);
+    cleanup = () => {
+      clearTimeout(timer);
+      worker.removeEventListener("message", handler);
+      worker.removeEventListener("error", errorHandler);
+    };
+    worker.addEventListener("message", handler);
+    worker.addEventListener("error", errorHandler);
+  });
+  try {
+    worker.postMessage({ args, id, op });
+  } catch (error) {
+    settled = true;
+    cleanup();
+    throw error;
+  }
+  return promise;
+}
+function startVerify(worker, verifyKey, op, fn, args, timeout) {
+  const sample = getVerifySample(args);
+  const check = request(worker, op, sample, timeout).then((result) => isSameResult(result, fn(...sample)), () => false).then((matched) => {
+    matched ? verifiedOps.set(verifyKey, true) : verifiedOps.delete(verifyKey);
+    return matched;
+  });
+  verifiedOps.set(verifyKey, check);
+  return check;
+}
+function getOrCreateWorkerResources(op, workerUrl = "") {
+  const hasWorker = !!getWorkerConstructor();
+  const api = workerUrl ? null : getWorkerAPI();
+  const src = workerUrl ? "" : getWorkerSrc();
+  const key = workerUrl || "blob";
+  if (!hasWorker || !workerUrl && (!api || !src) || disabledKeys.has(key)) {
+    return null;
+  }
   if (!(key in cache)) {
     try {
-      const blob = new win.Blob([
-        `${depsString}
-
-				self.onmessage=function({data}) {
-					const result = (${fnString}).apply(null, data.args);
-					self.postMessage({id: data.id, result});
-				};`
-      ], {
-        type: "text/javascript"
-      });
-      cache[key] = {
-        src: win.URL.createObjectURL(blob),
-        worker: null
-      };
+      if (workerUrl) {
+        cache[key] = {
+          revoke: false,
+          src: workerUrl,
+          worker: null
+        };
+      } else if (api) {
+        const blob = new api.Blob([src], {
+          type: "text/javascript"
+        });
+        cache[key] = {
+          revoke: true,
+          src: api.URL.createObjectURL(blob),
+          worker: null
+        };
+      }
     } catch (e) {
       return null;
     }
@@ -10958,59 +11618,71 @@ function getOrCreateWorkerResources(fn, depsFn) {
 }
 function getWorker(key, src) {
   const cached = cache[key];
-  if (!cached) {
+  const Worker = getWorkerConstructor();
+  if (!cached || !Worker || disabledKeys.has(key)) {
     return null;
   }
   if (!cached.worker) {
     try {
-      cached.worker = new win.Worker(src);
+      cached.worker = new Worker(src);
     } catch (e) {
+      releaseWorker(key, true);
       return null;
-    }
-    if (cached.worker) {
-      cached.worker.onerror = function(e) {
-        console.error ? console.error(e) : console.log(e);
-      };
     }
   }
   return cached.worker;
 }
-function runWorker(useWorker = true, fn, callback, depsFn) {
-  let runFn = function(...args) {
+function runWorker(useWorker = true, op, fn, callback, options) {
+  const { timeout, workerUrl } = normalizeWorkerOptions(options);
+  const runSync = function(...args) {
     const res = fn(...args);
     callback(res);
   };
-  if (win.Worker && useWorker) {
-    const workerResources = getOrCreateWorkerResources(fn, depsFn);
-    const worker = workerResources && getWorker(workerResources.key, workerResources.src);
-    if (worker) {
+  let runFn = runSync;
+  if (useWorker) {
+    const workerResources = getOrCreateWorkerResources(op, workerUrl);
+    const worker = workerResources ? getWorker(workerResources.key, workerResources.src) : null;
+    if (worker && workerResources) {
+      const { key } = workerResources;
       runFn = function(...args) {
-        const id = ++messageId;
-        const handler = function(e) {
-          var _a;
-          if (((_a = e.data) == null ? void 0 : _a.id) === id) {
-            worker.removeEventListener("message", handler);
-            callback(e.data.result);
-          }
+        var _a;
+        const fallback = () => {
+          releaseWorker(key, true);
+          runFn = runSync;
+          runSync(...args);
         };
-        worker.addEventListener("message", handler);
-        worker.postMessage({ id, args });
+        try {
+          const verifyKey = `${key}:${op}`;
+          const verified = (_a = verifiedOps.get(verifyKey)) != null ? _a : startVerify(worker, verifyKey, op, fn, args, timeout);
+          request(worker, op, args, timeout).then((result) => {
+            if (verified === true) {
+              callback(result);
+            } else {
+              verified.then((matched) => matched ? callback(result) : fallback());
+            }
+          }, fallback);
+        } catch (e) {
+          fallback();
+        }
       };
     }
   }
   return runFn;
 }
 function cleanupWorkers() {
+  const api = getWorkerAPI();
   for (const key in cache) {
     const cached = cache[key];
     if (cached.worker) {
       cached.worker.terminate();
     }
     if (cached.src) {
-      win.URL.revokeObjectURL(cached.src);
+      cached.revoke && (api == null ? void 0 : api.URL.revokeObjectURL(cached.src));
     }
     delete cache[key];
   }
+  disabledKeys.clear();
+  verifiedOps.clear();
 }
 
 ;// ./src/module/dsv.ts
@@ -11249,6 +11921,19 @@ function convert_helper_tsv(tsv2) {
 
 
 
+const WORKER_CELL_THRESHOLD = 5e3;
+function _getCellCount(data) {
+  var _a, _b;
+  const first = data[0];
+  if (isArray(first)) {
+    let count = 0;
+    for (let i = 0, len = data.length; i < len; i++) {
+      count += (_b = (_a = data[i]) == null ? void 0 : _a.length) != null ? _b : 0;
+    }
+    return count;
+  }
+  return data.length * Object.keys(first != null ? first : {}).length;
+}
 function _getDataKeyForJson(keysParam, config) {
   const keys = keysParam || (config == null ? void 0 : config.data_keys);
   if (keys == null ? void 0 : keys.x) {
@@ -11294,7 +11979,15 @@ function _setXS(ids, data, params) {
    */
   convertData(args, callback) {
     const { config } = this;
-    const useWorker = (d) => (d == null ? void 0 : d.length) && !isEmpty(d[0]) ? config.boost_useWorker : false;
+    const useWorker = (d) => {
+      if (!(d == null ? void 0 : d.length) || isEmpty(d[0])) {
+        return false;
+      }
+      return config.boost_useWorker === "auto" ? _getCellCount(d) >= WORKER_CELL_THRESHOLD : !!config.boost_useWorker;
+    };
+    const workerOptions = config.boost_workerUrl ? {
+      workerUrl: config.boost_workerUrl
+    } : void 0;
     let data = args;
     if (args.bindto) {
       data = {};
@@ -11314,14 +12007,16 @@ function _setXS(ids, data, params) {
         callback
       );
     } else if (data.json) {
-      runWorker(useWorker(data.json), json, callback, [columns, rows])(
+      runWorker(useWorker(data.json), "json", json, callback, workerOptions)(
         data.json,
         _getDataKeyForJson(data.keys, config)
       );
     } else if (data.rows) {
-      runWorker(useWorker(data.rows), rows, callback)(data.rows);
+      runWorker(useWorker(data.rows), "rows", rows, callback, workerOptions)(data.rows);
     } else if (data.columns) {
-      runWorker(useWorker(data.columns), columns, callback)(data.columns);
+      runWorker(useWorker(data.columns), "columns", columns, callback, workerOptions)(
+        data.columns
+      );
     } else if (args.bindto) {
       throw Error("url or json or rows or columns is required.");
     }
@@ -11434,6 +12129,7 @@ function _setXS(ids, data, params) {
 });
 
 ;// ./src/ChartInternal/data/data.ts
+
 
 
 
@@ -11703,7 +12399,8 @@ function normalizeTargetIds(targetIds) {
     const $$ = this;
     const { config } = $$;
     const cacheKey = targetId ? `${KEY.dataTotalPerIndex}-${targetId}` : KEY.dataTotalPerIndex;
-    let sum = $$.cache.get(cacheKey);
+    const cached = $$.cache.get(cacheKey);
+    let sum = (cached == null ? void 0 : cached.generation) === $$.state.dataGeneration ? cached.value : null;
     if (($$.config.data_groups.length || $$.isStackNormalized()) && !sum) {
       sum = [];
       let { targets } = $$.data;
@@ -11723,9 +12420,54 @@ function normalizeTargetIds(targetIds) {
           sum[i] += isNumber(v.value) ? v.value : 0;
         });
       });
-      $$.cache.add(cacheKey, sum);
+      $$.cache.add(cacheKey, { generation: $$.state.dataGeneration, value: sum });
     }
     return sum;
+  },
+  /**
+   * Get per-index totals excluding hidden series, cached until data or visibility changes.
+   * @param {string} targetId Target ID for per-group normalization
+   * @returns {Array|null} Visible totals, or null for an ungrouped target
+   * @private
+   */
+  getVisibleTotalPerIndex(targetId) {
+    const $$ = this;
+    const { api, config, state, cache } = $$;
+    let cached = cache.get(KEY.visibleTotalPerIndex);
+    if (!cached || cached.generation !== state.dataGeneration) {
+      cached = cache.add(KEY.visibleTotalPerIndex, {
+        generation: state.dataGeneration,
+        values: /* @__PURE__ */ new Map()
+      });
+    }
+    if (cached.values.has(targetId)) {
+      return cached.values.get(targetId);
+    }
+    const dataValues = api.data.values.bind(api);
+    const { hiddenTargetIds } = state;
+    let total = $$.getTotalPerIndex(targetId);
+    if (total === null) {
+      cached.values.set(targetId, total);
+      return total;
+    }
+    if (hiddenTargetIds.size) {
+      let hiddenIds = [...hiddenTargetIds];
+      if (targetId) {
+        const group = config.data_groups.find((g) => g.indexOf(targetId) >= 0);
+        if (group) {
+          hiddenIds = hiddenIds.filter((id) => group.indexOf(id) >= 0);
+        }
+      }
+      if (hiddenIds.length) {
+        let hiddenSum = dataValues(hiddenIds, false);
+        if (hiddenSum.length) {
+          hiddenSum = hiddenSum.reduce((acc, curr) => acc.map((v, i) => (isNumber(v) ? v : 0) + curr[i]));
+          total = total.map((v, i) => v - hiddenSum[i]);
+        }
+      }
+    }
+    cached.values.set(targetId, total);
+    return total;
   },
   /**
    * Get total data sum
@@ -11895,9 +12637,11 @@ function normalizeTargetIds(targetIds) {
   },
   addHiddenTargetIds(targetIds) {
     this.addTargetIds("hiddenTargetIds", targetIds);
+    this.cache.remove(KEY.visibleTotalPerIndex);
   },
   removeHiddenTargetIds(targetIds) {
     this.removeTargetIds("hiddenTargetIds", targetIds);
+    this.cache.remove(KEY.visibleTotalPerIndex);
   },
   addHiddenLegendIds(targetIds) {
     this.addTargetIds("hiddenLegendIds", targetIds);
@@ -12407,31 +13151,11 @@ function normalizeTargetIds(targetIds) {
           ratio = (d.endAngle - d.startAngle) / arcLength;
         }
       } else if (type === "index") {
-        const dataValues = api.data.values.bind(api);
-        const { hiddenTargetIds } = state;
-        let total = this.getTotalPerIndex(
+        const total = $$.getVisibleTotalPerIndex(
           $$.isStackNormalizedPerGroup() ? d.id : void 0
         );
         if (total === null) {
           return ratio;
-        }
-        if (hiddenTargetIds.size) {
-          let hiddenIds = [...hiddenTargetIds];
-          if ($$.isStackNormalizedPerGroup() && d.id) {
-            const group = config.data_groups.find((g) => g.indexOf(d.id) >= 0);
-            if (group) {
-              hiddenIds = hiddenIds.filter((id) => group.indexOf(id) >= 0);
-            }
-          }
-          if (hiddenIds.length) {
-            let hiddenSum = dataValues(hiddenIds, false);
-            if (hiddenSum.length) {
-              hiddenSum = hiddenSum.reduce(
-                (acc, curr) => acc.map((v, i) => (isNumber(v) ? v : 0) + curr[i])
-              );
-              total = total.map((v, i) => v - hiddenSum[i]);
-            }
-          }
         }
         const divisor = total[d.index];
         d.ratio = isNumber(d.value) && total && divisor ? d.value / divisor : 0;
@@ -12488,9 +13212,10 @@ function normalizeTargetIds(targetIds) {
    * @private
    */
   isBarRangeType(d) {
+    var _a;
     const $$ = this;
     const { value } = d;
-    return $$.isBarType(d) && isArray(value) && value.length >= 2 && value.every(isNumber);
+    return $$.isBarType(d) && !((_a = $$.isSubchartSourceTypeOf) == null ? void 0 : _a.call($$, d, TYPE.CANDLESTICK)) && isArray(value) && value.length >= 2 && value.every(isNumber);
   },
   /**
    * Get data object by id
@@ -13015,7 +13740,6 @@ const RE_SELECTOR_SUFFIX = /[\x00-\x20\x7F-\xA0\s?!@#$%^&*()_=+,.<>'":;\[\]\/|~`
 
 
 
-
 const _colorizePattern = (pattern, color, id) => {
   const node = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(pattern.cloneNode(true));
   node.attr("id", id).insert("rect", ":first-child").attr("width", node.attr("width")).attr("height", node.attr("height")).style("fill", color);
@@ -13057,7 +13781,7 @@ const schemeCategory10 = [
     const { $el, config } = $$;
     const ids = [];
     const hasGradient = config.area_linearGradient || config.bar_linearGradient || config.point_radialGradient;
-    let pattern = notEmpty(config.color_pattern) ? config.color_pattern : (0,external_commonjs_d3_scale_commonjs2_d3_scale_amd_d3_scale_root_d3_.scaleOrdinal)(_getColorFromCss($el.chart) || schemeCategory10).range();
+    let pattern = notEmpty(config.color_pattern) ? config.color_pattern : [..._getColorFromCss($el.chart) || schemeCategory10];
     const originalColorPattern = pattern;
     if (isFunction(config.color_tiles)) {
       const tiles = config.color_tiles.bind($$.api)();
@@ -13270,13 +13994,15 @@ function brushEmpty(ctx) {
 
 function getTargetDomainCacheKey($$, targets) {
   return targets.map((target) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i;
     const { values } = target;
     const first = values[0];
     const last = values[values.length - 1];
     const firstX = first ? (_b = (_a = $$.getXCacheKey) == null ? void 0 : _a.call($$, first.x)) != null ? _b : first.x : "";
     const lastX = last ? (_d = (_c = $$.getXCacheKey) == null ? void 0 : _c.call($$, last.x)) != null ? _d : last.x : "";
-    return `${target.id}:${values.length}:${firstX}:${lastX}`;
+    const targetType = (_f = (_e = $$.getTargetType) == null ? void 0 : _e.call($$, target)) != null ? _f : "";
+    const sourceType = (_i = (_h = (_g = $$.state) == null ? void 0 : _g.subchartSourceTypes) == null ? void 0 : _h[target.id]) != null ? _i : "";
+    return `${target.id}:${targetType}:${sourceType}:${values.length}:${firstX}:${lastX}`;
   }).join("|");
 }
 function canCacheTargetDomain($$, targets) {
@@ -13311,12 +14037,13 @@ function updateMinMaxFromValues(minMax, values) {
   }
 }
 function getTargetValueMinMax($$, targets) {
-  var _a, _b;
+  var _a, _b, _c, _d;
   const minMax = { min: void 0, max: void 0 };
   const hasAxis = $$.state.hasAxis;
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i];
     const isCandlestick = (_a = $$.isCandlestickType) == null ? void 0 : _a.call($$, target);
+    const isSubchartCandlestick = !isCandlestick && !!((_b = $$.isSubchartSourceTypeOf) == null ? void 0 : _b.call($$, target, TYPE.CANDLESTICK));
     const { values } = target;
     for (let j = 0; j < values.length; j++) {
       const row = values[j];
@@ -13324,14 +14051,17 @@ function getTargetValueMinMax($$, targets) {
       if (!(isValue(value) || value === null)) {
         continue;
       }
-      if (value !== null && isCandlestick) {
+      const subchartCandlestickValue = isSubchartCandlestick ? (_c = $$.getSubchartCandlestickShapeValue) == null ? void 0 : _c.call($$, row, true) : void 0;
+      if (isNumber(subchartCandlestickValue)) {
+        value = subchartCandlestickValue;
+      } else if (value !== null && (isCandlestick || isSubchartCandlestick)) {
         value = Array.isArray(value) ? value.slice(0, 4) : [value.open, value.high, value.low, value.close];
       }
       if (Array.isArray(value)) {
         updateMinMaxFromValues(minMax, value);
       } else if (isObject(value) && "high" in value) {
         updateMinMaxFromValues(minMax, Object.values(value));
-      } else if ((_b = $$.isBubbleZType) == null ? void 0 : _b.call($$, row)) {
+      } else if ((_d = $$.isBubbleZType) == null ? void 0 : _d.call($$, row)) {
         updateMinMax(minMax, hasAxis && $$.getBubbleZData(value, "y"));
       } else {
         updateMinMax(minMax, value);
@@ -13358,7 +14088,7 @@ function getTargetXMinMax(targets, type) {
    * Get both min and max Y domain values in a single pass.
    * Avoids calling getValuesAsIdKeyed twice.
    * @param {Array} targets Target data
-   * @returns {[number|Date|undefined, number|Date|undefined]} [min, max]
+   * @returns {Array.<number|Date|undefined>} [min, max]
    * @private
    */
   getYDomainMinMaxBoth(targets) {
@@ -14664,7 +15394,9 @@ var external_commonjs_d3_transition_commonjs2_d3_transition_amd_d3_transition_ro
       if (needShapeUpdate) {
         state._cachedDrawShape = shape;
       }
-      (_d = $$.updateHtmlLegend) == null ? void 0 : _d.call($$);
+      if (config.legend_show && $el.legend && !(config.legend_contents_bindto && config.legend_contents_template)) {
+        (_d = $$.positionHtmlLegend) == null ? void 0 : _d.call($$);
+      }
       (_e = $$.resizeCanvas) == null ? void 0 : _e.call($$);
       state.canvasFocusKey = null;
       $$.renderCanvasFrame(shape, null, true);
@@ -14857,9 +15589,22 @@ var external_commonjs_d3_transition_commonjs2_d3_transition_amd_d3_transition_ro
     return $$.config.size_width || $$.getParentRectValue("width");
   },
   getCurrentHeight() {
+    var _a, _b;
     const $$ = this;
-    const { config } = $$;
-    const h = config.size_height || $$.getParentHeight();
+    const { config, state, $el } = $$;
+    let h = config.size_height;
+    if (!h) {
+      const chartNode = state.isCanvasMode ? (_a = $el.chart) == null ? void 0 : _a.node() : null;
+      const minHeight = chartNode == null ? void 0 : chartNode.style.minHeight;
+      minHeight && (chartNode.style.minHeight = "");
+      h = $$.getParentHeight();
+      minHeight && (chartNode.style.minHeight = minHeight);
+      const surface = chartNode ? parseFloat((_b = $$.canvasEngine) == null ? void 0 : _b.canvas.style.height) || 0 : 0;
+      const reserve = state.current.height - surface;
+      if (reserve > 0 && Math.round(h) === Math.round(surface)) {
+        h += reserve;
+      }
+    }
     return h > 0 ? h : 320 / ($$.hasType("gauge") && !config.gauge_fullCircle ? 2 : 1);
   },
   /**
@@ -14927,6 +15672,52 @@ var external_commonjs_d3_transition_commonjs2_d3_transition_amd_d3_transition_ro
     cache.add(KEY.svgLeft, result);
     return result;
   },
+  /**
+   * Stretch the rendered surface to the container's current size, without redrawing.
+   * Gives an immediate size feedback while the delayed resize is pending.
+   * The drawn content keeps its previous geometry until the redraw takes place.
+   * @private
+   */
+  previewResize() {
+    var _a, _b, _c;
+    const $$ = this;
+    const { state, $el } = $$;
+    const { current } = state;
+    const width = $$.getCurrentWidth();
+    const height = $$.getCurrentHeight();
+    if (!width || !height || !current.width || !current.height || width === current.width && height === current.height) {
+      return;
+    }
+    if (state.isCanvasMode) {
+      const canvas = (_a = $$.canvasEngine) == null ? void 0 : _a.canvas;
+      if (!canvas) {
+        return;
+      }
+      $el.chart.style("min-height", `${height}px`);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${Math.max(0, height - ((_c = (_b = $$.getCanvasBottomLegendHeight) == null ? void 0 : _b.call($$)) != null ? _c : 0))}px`;
+    } else if ($el.svg) {
+      $el.svg.attr("viewBox", `0 0 ${current.width} ${current.height}`).attr("preserveAspectRatio", "none").attr("width", width).attr("height", height);
+    } else {
+      return;
+    }
+    state.resizePreview = true;
+  },
+  /**
+   * Drop the stretched state set by previewResize(), to render on exact pixels again.
+   * @private
+   */
+  clearResizePreview() {
+    const $$ = this;
+    const { config, state, $el } = $$;
+    if (!state.resizePreview) {
+      return;
+    }
+    state.resizePreview = false;
+    if (!state.isCanvasMode && $el.svg && config.resize_auto !== "viewBox") {
+      $el.svg.attr("viewBox", null).attr("preserveAspectRatio", null);
+    }
+  },
   updateDimension(withoutAxis) {
     var _a, _b;
     const $$ = this;
@@ -14950,6 +15741,7 @@ var external_commonjs_d3_transition_commonjs2_d3_transition_amd_d3_transition_ro
       (_a = $$.resizeCanvas) == null ? void 0 : _a.call($$);
       return;
     }
+    $$.clearResizePreview();
     if (config.resize_auto === "viewBox") {
       svg.attr("viewBox", `0 0 ${current.width} ${current.height}`);
     } else {
@@ -15804,13 +16596,23 @@ function batchGetBBox(elements) {
     const textNode = textNodes.filter((node) => node.data.id === id);
     const translate = getTranslation(textNode.node());
     const calcHypo = (x, y) => Math.sqrt(x * x + y * y);
-    textNode.node() && filteredTextNodes.each(function() {
+    if (!textNode.node()) {
+      return;
+    }
+    const fontSize = parseInt(textNode.style("font-size"), 10);
+    const overlapStates = [];
+    filteredTextNodes.each(function() {
       const coordinate = getTranslation(this);
-      const filteredTextNode = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
-      const nodeForWidth = calcHypo(translate.e, translate.f) > calcHypo(coordinate.e, coordinate.f) ? textNode : filteredTextNode;
+      const nodeForWidth = calcHypo(translate.e, translate.f) > calcHypo(coordinate.e, coordinate.f) ? textNode : (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
       const overlapsX = Math.ceil(Math.abs(translate.e - coordinate.e)) < Math.ceil(nodeForWidth.node().getComputedTextLength());
-      const overlapsY = Math.ceil(Math.abs(translate.f - coordinate.f)) < parseInt(textNode.style("font-size"), 10);
-      filteredTextNode.classed($TEXT.TextOverlapping, overlapsX && overlapsY);
+      const overlapsY = Math.ceil(Math.abs(translate.f - coordinate.f)) < fontSize;
+      overlapStates.push({
+        node: this,
+        overlaps: overlapsX && overlapsY
+      });
+    });
+    overlapStates.forEach(({ node, overlaps }) => {
+      (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(node).classed($TEXT.TextOverlapping, overlaps);
     });
   },
   /**
@@ -16494,6 +17296,12 @@ const RE_TOOLTIP_TPL = /{{(.*)}}/;
     } else if (target === "subX") {
       x = 0;
       y = isRotated ? 0 : state.height2;
+    } else if (target === "subY") {
+      x = 0;
+      y = isRotated ? state.height2 : 0;
+    } else if (target === "subY2") {
+      x = isRotated ? 0 : state.width2;
+      y = isRotated ? -1 : 0;
     } else if (target === "arc") {
       x = state.arcWidth / 2;
       y = state.arcHeight / 2;
@@ -16563,6 +17371,96 @@ const INTERPOLATION_TYPES = /* @__PURE__ */ new Set([
    */
   isValidChartType(type) {
     return !!(type && Object.values(TYPE).indexOf(type) > -1);
+  },
+  /**
+   * Get the chart type to use for the subchart target.
+   * subchart.types > subchart.type > data.types > data.type > line
+   * @param {object|string} d Target data or id
+   * @returns {string}
+   * @private
+   */
+  getSubchartTargetType(d) {
+    const $$ = this;
+    const { config } = $$;
+    const id = isString(d) ? d : d == null ? void 0 : d.id;
+    const subchartTypes = config.subchart_types || {};
+    const subchartType = config.subchart_type;
+    const dataTypes = config.data_types || {};
+    const targetSubchartType = id && subchartTypes[id];
+    if (targetSubchartType && $$.isValidChartType(targetSubchartType)) {
+      return targetSubchartType;
+    } else if (subchartType && $$.isValidChartType(subchartType)) {
+      return subchartType;
+    }
+    return id && dataTypes[id] || config.data_type || TYPE.LINE;
+  },
+  /**
+   * Get the regular chart type configured for the target.
+   * @param {object|string} d Target data or id
+   * @returns {string}
+   * @private
+   */
+  getTargetType(d) {
+    var _a;
+    const { config } = this;
+    const id = isString(d) ? d : d == null ? void 0 : d.id;
+    return id && ((_a = config.data_types) == null ? void 0 : _a[id]) || config.data_type || TYPE.LINE;
+  },
+  /**
+   * Get the target's original chart type while subchart.type context is active.
+   * @param {object|string} d Target data or id
+   * @returns {string}
+   * @private
+   */
+  getSubchartSourceTargetType(d) {
+    const { state } = this;
+    const id = isString(d) ? d : d == null ? void 0 : d.id;
+    const sourceTypes = state.subchartSourceTypes;
+    return id && (sourceTypes == null ? void 0 : sourceTypes[id]) || this.getTargetType(d);
+  },
+  /**
+   * Check whether a target had the given source type before subchart.type remapping.
+   * @param {object|string} d Target data or id
+   * @param {string|Array} type chart type
+   * @returns {boolean}
+   * @private
+   */
+  isSubchartSourceTypeOf(d, type) {
+    const sourceType = this.getSubchartSourceTargetType(d);
+    return isArray(type) ? type.indexOf(sourceType) >= 0 : sourceType === type;
+  },
+  /**
+   * Run a callback while regular type helpers resolve using subchart.type/types.
+   * @param {function(): unknown} callback Callback to run
+   * @returns {unknown} Callback return value
+   * @private
+   */
+  withSubchartTypeContext(callback) {
+    const $$ = this;
+    const { config, data, state } = $$;
+    const dataType = config.data_type;
+    const dataTypes = config.data_types;
+    const currentTypes = state.current.types;
+    const sourceTypes = state.subchartSourceTypes;
+    const subchartTypes = {};
+    const subchartSourceTypes = {};
+    const subchartType = config.subchart_type;
+    $$.mapToIds(data.targets).forEach((id) => {
+      subchartSourceTypes[id] = $$.getTargetType(id);
+      subchartTypes[id] = $$.getSubchartTargetType(id);
+    });
+    config.data_type = subchartType && $$.isValidChartType(subchartType) ? subchartType : dataType;
+    config.data_types = subchartTypes;
+    state.current.types = [];
+    state.subchartSourceTypes = subchartSourceTypes;
+    try {
+      return callback();
+    } finally {
+      config.data_type = dataType;
+      config.data_types = dataTypes;
+      state.current.types = currentTypes;
+      state.subchartSourceTypes = sourceTypes;
+    }
   },
   setTargetType(targetIds, type) {
     const $$ = this;
@@ -16642,9 +17540,8 @@ const INTERPOLATION_TYPES = /* @__PURE__ */ new Set([
    * @private
    */
   isTypeOf(d, type) {
-    var _a;
     const id = isString(d) ? d : d.id;
-    const dataType = this.config && (((_a = this.config.data_types) == null ? void 0 : _a[id]) || this.config.data_type);
+    const dataType = this.config && this.getTargetType(id);
     return isArray(type) ? type.indexOf(dataType) >= 0 : dataType === type;
   },
   hasPointType() {
@@ -16752,6 +17649,7 @@ const INTERPOLATION_TYPES = /* @__PURE__ */ new Set([
 
 
 
+
 const CURVE_MAP = {
   basis: external_commonjs_d3_shape_commonjs2_d3_shape_amd_d3_shape_root_d3_.curveBasis,
   "basis-closed": external_commonjs_d3_shape_commonjs2_d3_shape_amd_d3_shape_root_d3_.curveBasisClosed,
@@ -16779,12 +17677,47 @@ function isLinePointGroupType($$, d) {
 function getLinePointGroupTypeFilter($$) {
   return (d) => isLinePointGroupType($$, d);
 }
-function getShapeOffsetValue($$, d) {
+function getShapeOffsetValue($$, d, isSub) {
   var _a, _b, _c;
+  const subchartCandlestickValue = isSub ? getSubchartCandlestickShapeValue($$, d, isSub) : void 0;
+  if (isNumber(subchartCandlestickValue)) {
+    return subchartCandlestickValue;
+  }
   if ((_a = $$.isCandlestickType) == null ? void 0 : _a.call($$, d)) {
     return (_c = (_b = $$.getCandlestickData) == null ? void 0 : _b.call($$, d)) == null ? void 0 : _c.close;
   }
   return $$.getBaseValue(d);
+}
+function getSubchartCandlestickShapeValue($$, d, isSub) {
+  var _a, _b, _c;
+  if (!isSub || ((_a = $$.isCandlestickType) == null ? void 0 : _a.call($$, d)) || !((_b = $$.isSubchartSourceTypeOf) == null ? void 0 : _b.call($$, d, TYPE.CANDLESTICK))) {
+    return void 0;
+  }
+  const value = (_c = $$.getCandlestickData) == null ? void 0 : _c.call($$, d);
+  if (!value) {
+    return void 0;
+  }
+  if ($$.isBarType(d)) {
+    return isNumber(value.open) && isNumber(value.close) ? value._isUp ? value.close : value.open : void 0;
+  }
+  return isNumber(value.close) ? value.close : void 0;
+}
+function isSubchartCandlestickBarValue($$, d, isSub) {
+  const value = getSubchartCandlestickShapeValue($$, d, isSub);
+  return isNumber(value) && $$.isBarType(d);
+}
+function getSubchartCandlestickBarColor($$, d, isSub) {
+  var _a;
+  if (!isSubchartCandlestickBarValue($$, d, isSub)) {
+    return null;
+  }
+  const value = (_a = $$.getCandlestickData) == null ? void 0 : _a.call($$, d);
+  if (value == null ? void 0 : value._isUp) {
+    return $$.color(d);
+  }
+  const downColor = $$.config.candlestick_color_down;
+  const color = downColor && typeof downColor === "object" ? downColor[d.id] : downColor;
+  return color || $$.color(d);
 }
 function _getGroupedDataPointsFn(d) {
   var _a, _b;
@@ -17014,8 +17947,11 @@ function updateTargetsForShape(targets, config) {
     const isStackNormalized = $$.isStackNormalized();
     return (d) => {
       let { value } = d;
+      const subchartCandlestickValue = isSub ? getSubchartCandlestickShapeValue($$, d, isSub) : void 0;
       if (isNumber(d)) {
         value = d;
+      } else if (isNumber(subchartCandlestickValue)) {
+        value = subchartCandlestickValue;
       } else if ($$.isAreaRangeType(d)) {
         value = $$.getBaseValue(d, "mid");
       } else if (isStackNormalized) {
@@ -17031,13 +17967,14 @@ function updateTargetsForShape(targets, config) {
   /**
    * Get shape based y Axis min value
    * @param {string} id Data id
+   * @param {boolean} isSub Whether to use subchart scale
    * @returns {number}
    * @private
    */
-  getShapeYMin(id) {
+  getShapeYMin(id, isSub = false) {
     const $$ = this;
     const axisId = $$.axis.getId(id);
-    const scale = $$.scale[axisId];
+    const scale = $$.getYScaleById(id, isSub);
     const [yMin] = scale.domain();
     const inverted = $$.config[`axis_${axisId}_inverted`];
     return !$$.isGrouped(id) && !inverted && yMin > 0 ? yMin : 0;
@@ -17045,17 +17982,18 @@ function updateTargetsForShape(targets, config) {
   /**
    * Get Shape's offset data
    * @param {function} typeFilter Type filter function
+   * @param {boolean} isSub Whether coordinates are for the subchart
    * @returns {object}
    * @private
    */
-  getShapeOffsetData(typeFilter) {
+  getShapeOffsetData(typeFilter, isSub) {
     const $$ = this;
     const targets = $$.orderTargets(
       $$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$))
     );
     const dataGeneration = $$.state.dataGeneration;
     const targetIds = targets.map((t) => t.id).join("_");
-    const cacheKey = `${KEY.shapeOffset}_${targetIds}`;
+    const cacheKey = `${KEY.shapeOffset}_${isSub ? "sub" : "main"}_${targetIds}`;
     const cachedData = $$.cache.get(cacheKey);
     if ((cachedData == null ? void 0 : cachedData.generation) === dataGeneration) {
       return cachedData;
@@ -17069,7 +18007,7 @@ function updateTargetsForShape(targets, config) {
       }
       const rowValueMapByXValue = rowValues.reduce((out, d) => {
         const key = Number(d.x);
-        const value = getShapeOffsetValue($$, d);
+        const value = getShapeOffsetValue($$, d, isSub);
         out[key] = d;
         values[key] = isStackNormalized ? $$.getRatio("index", d, true) : value;
         return out;
@@ -17092,7 +18030,8 @@ function updateTargetsForShape(targets, config) {
   getShapeOffset(typeFilter, indices, isSub) {
     const $$ = this;
     const { shapeOffsetTargets, indexMapByTargetId } = $$.getShapeOffsetData(
-      typeFilter
+      typeFilter,
+      isSub
     );
     const groupsZeroAs = $$.config.data_groupsZeroAs;
     let sameGroupByTargetId = null;
@@ -17111,14 +18050,14 @@ function updateTargetsForShape(targets, config) {
     return (d, idx) => {
       var _a;
       const { id, value, x } = d;
-      const baseValue = getShapeOffsetValue($$, d);
+      const baseValue = getShapeOffsetValue($$, d, isSub);
       const ind = $$.getIndices(indices, d);
       const scale = $$.getYScaleById(id, isSub);
       if ($$.isBarRangeType(d)) {
         return scale(value[0]);
       }
       const dataXAsNumber = Number(x);
-      const y0 = scale(groupsZeroAs === "zero" ? 0 : $$.getShapeYMin(id));
+      const y0 = scale(groupsZeroAs === "zero" ? 0 : $$.getShapeYMin(id, isSub));
       let offset = y0;
       const sameGroupTargets = (_a = sameGroupByTargetId == null ? void 0 : sameGroupByTargetId.get(id)) != null ? _a : shapeOffsetTargets.filter((t) => t.id !== id && ind[t.id] === ind[id]);
       for (const t of sameGroupTargets) {
@@ -17134,7 +18073,7 @@ function updateTargetsForShape(targets, config) {
           if (!row || Number(row.x) !== dataXAsNumber) {
             row = rowValueMapByXValue[dataXAsNumber];
           }
-          const rowValue = row && getShapeOffsetValue($$, row);
+          const rowValue = row && getShapeOffsetValue($$, row, isSub);
           if (isNumber(rowValue) && isNumber(baseValue) && rowValue * baseValue >= 0 && isNumber(rValue)) {
             const addOffset = baseValue === 0 ? groupsZeroAs === "positive" && rValue > 0 || groupsZeroAs === "negative" && rValue < 0 : true;
             if (addOffset) {
@@ -17161,8 +18100,13 @@ function updateTargetsForShape(targets, config) {
     const y = $$.getShapeY(isSub);
     const lineOffset = $$.getShapeOffset(typeFilter || $$.isLineType, lineIndices, isSub);
     const yScale = $$.getYScaleById.bind($$);
+    const y0Cache = /* @__PURE__ */ new Map();
     return (d, i) => {
-      const y0 = yScale.call($$, d.id, isSub)($$.getShapeYMin(d.id));
+      let y0 = y0Cache.get(d.id);
+      if (y0 === void 0) {
+        y0 = yScale.call($$, d.id, isSub)($$.getShapeYMin(d.id, isSub));
+        y0Cache.set(d.id, y0);
+      }
       const offset = lineOffset(d, i) || y0;
       const posX = x(d);
       let posY = y(d);
@@ -17196,7 +18140,7 @@ function updateTargetsForShape(targets, config) {
     return function(d, i) {
       let y0 = y0Cache.get(d.id);
       if (y0 === void 0) {
-        y0 = yScale.call($$, d.id, isSub)($$.getShapeYMin(d.id));
+        y0 = yScale.call($$, d.id, isSub)($$.getShapeYMin(d.id, isSub));
         y0Cache.set(d.id, y0);
       }
       const offset = areaOffset(d, i) || y0;
@@ -17237,7 +18181,7 @@ function updateTargetsForShape(targets, config) {
       let idInfo = idCache.get(id);
       if (!idInfo) {
         idInfo = {
-          y0: yScale.call($$, id, isSub)($$.getShapeYMin(id)),
+          y0: yScale.call($$, id, isSub)($$.getShapeYMin(id, isSub)),
           isInverted: config[`axis_${$$.axis.getId(id)}_inverted`]
         };
         idCache.set(id, idInfo);
@@ -17302,10 +18246,41 @@ function updateTargetsForShape(targets, config) {
       isSub,
       typeFilter
     );
+    const y = $$.getShapeY(isSub);
     return (d, i) => {
       const id = d.id;
-      return $$.isGrouped(id) && isLinePointGroupType($$, d) ? getPoints(d, i)[0][1] : $$.getYScaleById(id, isSub)($$.getBaseValue(d));
+      return $$.isGrouped(id) && isLinePointGroupType($$, d) ? getPoints(d, i)[0][1] : y(d);
     };
+  },
+  /**
+   * Get candlestick data projected for alternate subchart shapes.
+   * @param {object} d Data row
+   * @param {boolean} isSub Whether coordinates are for the subchart
+   * @returns {number|undefined} Projected value
+   * @private
+   */
+  getSubchartCandlestickShapeValue(d, isSub) {
+    return getSubchartCandlestickShapeValue(this, d, isSub);
+  },
+  /**
+   * Check whether the row should be drawn as a candlestick-derived subchart bar.
+   * @param {object} d Data row
+   * @param {boolean} isSub Whether coordinates are for the subchart
+   * @returns {boolean}
+   * @private
+   */
+  isSubchartCandlestickBarValue(d, isSub) {
+    return isSubchartCandlestickBarValue(this, d, isSub);
+  },
+  /**
+   * Get subchart bar color projected from candlestick up/down state.
+   * @param {object} d Data row
+   * @param {boolean} isSub Whether coordinates are for the subchart
+   * @returns {string|null} Bar color
+   * @private
+   */
+  getSubchartCandlestickBarColor(d, isSub) {
+    return getSubchartCandlestickBarColor(this, d, isSub);
   },
   /**
    * Get point radius.
@@ -17544,6 +18519,11 @@ var ChartInternal_publicField = (obj, key, value) => ChartInternal_defNormalProp
 
 
 
+
+function getTime() {
+  var _a, _b, _c;
+  return (_c = (_b = (_a = win.performance) == null ? void 0 : _a.now) == null ? void 0 : _b.call(_a)) != null ? _c : Date.now();
+}
 function getUnsupportedCanvasRenderType($$) {
   if ($$.hasArcType()) {
     return "arc charts";
@@ -18111,30 +19091,50 @@ class ChartInternal {
     var _a, _b;
     const $$ = this;
     const { $el, config, state } = $$;
-    const resizeFunction = generateResize(config.resize_timer);
-    const { resize_auto } = config;
+    const { resize_auto, resize_live } = config;
+    const isAutoResize = /^(true|parent)$/.test(resize_auto);
     const list = [];
+    const redrawOnResize = () => {
+      var _a2;
+      const prevWidth = state.current.width;
+      const prevHeight = state.current.height;
+      $$.setContainerSize();
+      if (!state.resizePreview && prevWidth === state.current.width && prevHeight === state.current.height) {
+        return false;
+      }
+      state.resizing = true;
+      state.dirty.size = true;
+      if (config.legend_show) {
+        $$.updateSizes();
+        state.isCanvasMode ? (_a2 = $$.updateHtmlLegend) == null ? void 0 : _a2.call($$) : $$.updateLegend();
+      }
+      $$.api.flush(false);
+      return true;
+    };
+    const liveResize = () => {
+      if (state.resizeLiveScale === null) {
+        state.resizeLiveScale = state.resizeRedrawTime > RESIZE_FRAME_BUDGET;
+      }
+      if (state.resizeLiveScale) {
+        $$.previewResize();
+        return;
+      }
+      const start = getTime();
+      if (redrawOnResize()) {
+        state.resizeRedrawTime = getTime() - start;
+        state.resizeLiveScale = state.resizeRedrawTime > RESIZE_FRAME_BUDGET;
+      }
+    };
+    const resizeFunction = generateResize(
+      config.resize_timer,
+      isAutoResize && resize_live ? liveResize : void 0
+    );
     list.push(() => callFn(config.onresize, $$.api));
-    if (/^(true|parent)$/.test(resize_auto)) {
-      list.push(() => {
-        var _a2;
-        const prevWidth = state.current.width;
-        const prevHeight = state.current.height;
-        $$.setContainerSize();
-        if (prevWidth === state.current.width && prevHeight === state.current.height) {
-          return;
-        }
-        state.resizing = true;
-        if (config.legend_show) {
-          $$.updateSizes();
-          state.isCanvasMode ? (_a2 = $$.updateHtmlLegend) == null ? void 0 : _a2.call($$) : $$.updateLegend();
-        }
-        $$.api.flush(false);
-      });
-    }
+    isAutoResize && list.push(redrawOnResize);
     list.push(() => {
       callFn(config.onresized, $$.api);
       state.resizing = false;
+      state.resizeLiveScale = null;
     });
     list.forEach((v) => resizeFunction.add(v));
     $$.resizeFunction = resizeFunction;
@@ -18193,6 +19193,7 @@ extend(ChartInternal.prototype, [
 ]);
 
 ;// ./src/config/resolver/canvas.ts
+
 
 
 
@@ -18515,6 +19516,21 @@ function isCanvasSubchartPoint($$, point) {
   const rect = getCanvasSubchartRect($$);
   return !!rect && point[0] >= rect.x && point[0] <= rect.x + rect.w && point[1] >= rect.y && point[1] <= rect.y + rect.h;
 }
+function getCanvasMainPointFromSubchart($$, point) {
+  const { config, state } = $$;
+  const rect = getCanvasSubchartRect($$);
+  if (config.subchart_brush_enabled !== false || !rect || !isCanvasSubchartPoint($$, point)) {
+    return null;
+  }
+  const mainCoord = getMainCoordFromSubchartCoord(
+    $$,
+    config.axis_rotated ? point[1] - rect.y : point[0] - rect.x
+  );
+  if (mainCoord === null) {
+    return null;
+  }
+  return config.axis_rotated ? [state.margin.left + state.width / 2, state.margin.top + mainCoord] : [state.margin.left + mainCoord, state.margin.top + state.height / 2];
+}
 function getCanvasSubchartBrushExtent($$) {
   var _a, _b;
   const rect = getCanvasSubchartRect($$);
@@ -18706,15 +19722,17 @@ function getCanvasFlowValueCount($$) {
   return $$.data.targets.reduce((sum, target) => sum + target.values.length, 0);
 }
 function syncCanvasFlowYDomains($$) {
-  var _a, _b;
   const { scale } = $$;
   const targetsToShow = $$.filterTargetsToShow($$.data.targets);
   ["y", "y2"].forEach((key) => {
-    var _a2;
-    (_a2 = scale[key]) == null ? void 0 : _a2.domain($$.getYDomain(targetsToShow, key));
+    var _a;
+    (_a = scale[key]) == null ? void 0 : _a.domain($$.getYDomain(targetsToShow, key));
   });
-  (_a = scale.subY) == null ? void 0 : _a.domain($$.getYDomain(targetsToShow, "y"));
-  (_b = scale.subY2) == null ? void 0 : _b.domain($$.getYDomain(targetsToShow, "y2"));
+  $$.withSubchartTypeContext(() => {
+    var _a, _b;
+    (_a = scale.subY) == null ? void 0 : _a.domain($$.getYDomain(targetsToShow, "y"));
+    (_b = scale.subY2) == null ? void 0 : _b.domain($$.getYDomain(targetsToShow, "y2"));
+  });
 }
 const canvasInternal = {
   /**
@@ -19391,10 +20409,23 @@ const canvasInternal = {
     const { config, state } = $$;
     const selected = state.canvasSelection;
     const selectionGrouped = config.data_selection_grouped;
-    const targetIds = getCanvasSelectionIds(ids);
+    let targetIds = getCanvasSelectionIds(ids);
     let changed = false;
+    const singleSelection = isSelection && !config.data_selection_multiple;
+    let resetDone = !singleSelection;
     if (!config.data_selection_enabled) {
       return;
+    }
+    if (singleSelection) {
+      indices = (indices == null ? void 0 : indices.length) ? [indices[0]] : [0];
+      if (!selectionGrouped) {
+        if (targetIds) {
+          targetIds = targetIds.slice(0, 1);
+        } else {
+          const [firstTarget] = $$.filterTargetsToShow($$.data.targets);
+          targetIds = firstTarget ? [firstTarget.id] : [];
+        }
+      }
     }
     eachCanvasSelectableData($$, (d) => {
       const key = getCanvasDataKey(d);
@@ -19402,11 +20433,18 @@ const canvasInternal = {
       const isTargetIndex = !indices || indices.indexOf(d.index) >= 0;
       const isSelected = selected.has(key);
       if (isSelection) {
-        if (isTargetId && isTargetIndex && !isSelected) {
+        if (isTargetId && isTargetIndex && (!isSelected || singleSelection)) {
+          if (!resetDone) {
+            $$.setCanvasSelection(false);
+            resetDone = true;
+          }
+          if (selected.has(key)) {
+            return;
+          }
           selected.add(key);
           callFn(config.data_onselected, $$.api, d, $$.canvasEngine.canvas);
           changed = true;
-        } else if (resetOther && isSelected) {
+        } else if ((!singleSelection || resetDone) && resetOther && isSelected) {
           selected.delete(key);
           callFn(config.data_onunselected, $$.api, d, $$.canvasEngine.canvas);
           changed = true;
@@ -19653,12 +20691,12 @@ const canvasInternal = {
   updateCanvasSubchartBrush(event) {
     var _a, _b;
     const $$ = this;
-    const { state } = $$;
+    const { config, state } = $$;
     const start = state.canvasSubchartBrushStart;
     const origin = state.canvasSubchartBrushOrigin;
     const mode = state.canvasSubchartBrushMode;
     const coord = getCanvasSubchartBrushCoord($$, event, true);
-    if (!state.canvasSubchartBrushDragging || start === null || coord === null || !mode) {
+    if (config.subchart_brush_enabled === false || !state.canvasSubchartBrushDragging || start === null || coord === null || !mode) {
       return false;
     }
     const delta = coord - start;
@@ -19709,6 +20747,10 @@ const canvasInternal = {
   updateCanvasSubchartCursor(event) {
     const $$ = this;
     const canvas2 = $$.$el.canvas.node();
+    if ($$.config.subchart_brush_enabled === false) {
+      canvas2.style.cursor = "";
+      return false;
+    }
     const coord = getCanvasSubchartBrushCoord($$, event);
     if (coord === null) {
       canvas2.style.cursor = "";
@@ -19728,6 +20770,9 @@ const canvasInternal = {
     var _a;
     const $$ = this;
     const { state } = $$;
+    if ($$.config.subchart_brush_enabled === false) {
+      return false;
+    }
     const coord = getCanvasSubchartBrushCoord($$, event);
     if (coord === null) {
       return false;
@@ -20087,7 +21132,8 @@ const canvasInternal = {
       (_b = $$.hideTooltip) == null ? void 0 : _b.call($$);
       return;
     }
-    const point = getCanvasEventPoint($$, event);
+    const rawPoint = getCanvasEventPoint($$, event);
+    const point = rawPoint && (getCanvasMainPointFromSubchart($$, rawPoint) || rawPoint);
     const d = point ? getCanvasHoverDatumFromPoint($$, point) : null;
     if (!d) {
       $$.dispatchCanvasDataOut(canvas2);
@@ -20095,8 +21141,8 @@ const canvasInternal = {
         state.canvasFocusKey = null;
         $$.clearCanvasFocus();
       }
-      if (point && config.axis_tooltip && isCanvasAxisTooltipArea($$, point)) {
-        $$.renderCanvasAxisTooltip(point);
+      if (rawPoint && config.axis_tooltip && isCanvasAxisTooltipArea($$, rawPoint)) {
+        $$.renderCanvasAxisTooltip(rawPoint);
         (_c = $$.hideTooltip) == null ? void 0 : _c.call($$);
         return;
       }
@@ -20227,6 +21273,7 @@ const canvasInternal = {
       state.hasAxis && $$.config.grid_lines_front && $$.canvasAxisRenderer.drawGridLines($$);
       $$.canvasRenderer.drawSubchart($$, drawShape);
       state.hasAxis && $$.canvasAxisRenderer.drawSubXAxis($$);
+      state.hasAxis && $$.canvasAxisRenderer.drawSubYAxes($$);
       $$.canvasRenderer.drawEmptyLabel($$);
       rebuildHit && $$.hitDetector.rebuild($$, drawShape);
     } finally {
@@ -20258,6 +21305,7 @@ const canvasInternal = {
         state.hasAxis && $$.config.grid_lines_front && $$.canvasAxisRenderer.drawGridLines($$);
         $$.canvasRenderer.drawSubchart($$, drawShape);
         state.hasAxis && $$.canvasAxisRenderer.drawSubXAxis($$);
+        state.hasAxis && $$.canvasAxisRenderer.drawSubYAxes($$);
         $$.canvasRenderer.drawEmptyLabel($$);
       } finally {
         $$.canvasEngine.endFrame();
@@ -20310,6 +21358,7 @@ const canvasInternal = {
     const $$ = this;
     const { config, state, $el } = $$;
     const container = $el.chart.node();
+    $$.clearResizePreview();
     $el.chart.style("min-height", `${state.current.height}px`);
     (_a = $$.canvasEngine) == null ? void 0 : _a.resize(state.current.width, $$.getCanvasSurfaceHeight());
     (_b = $$.canvasTheme) == null ? void 0 : _b.reload(container, config.canvas_theme);
@@ -20495,7 +21544,7 @@ function loadConfig(config) {
    * chart.destroy();
    */
   destroy() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
     const $$ = this.internal;
     const { state, $el: { chart, style, svg } } = $$;
     if (notEmpty($$)) {
@@ -20513,7 +21562,8 @@ function loadConfig(config) {
       (_f = $$.canvasRenderer) == null ? void 0 : _f.destroy();
       (_g = $$.canvasEngine) == null ? void 0 : _g.destroy();
       (_h = $$.resizeFunction) == null ? void 0 : _h.clear();
-      (_j = (_i = $$.resizeFunction) == null ? void 0 : _i.resizeObserver) == null ? void 0 : _j.disconnect();
+      (_j = (_i = $$.resizeFunction) == null ? void 0 : _i.clearLive) == null ? void 0 : _j.call(_i);
+      (_l = (_k = $$.resizeFunction) == null ? void 0 : _k.resizeObserver) == null ? void 0 : _l.disconnect();
       $$.resizeFunction && win.removeEventListener("resize", $$.resizeFunction);
       chart.classed("bb", false).style("position", null);
       if (state.isCanvasMode) {
@@ -20659,8 +21709,11 @@ extend(api_data_data, {
       if (isArray(targets)) {
         values = [];
         targets.forEach((v) => {
-          const dataValue = v.values.map((d) => d.value);
-          flat ? values = values.concat(dataValue) : values.push(dataValue);
+          if (flat) {
+            v.values.forEach((d) => values.push(d.value));
+          } else {
+            values.push(v.values.map((d) => d.value));
+          }
         });
       }
     }
@@ -22344,7 +23397,7 @@ extend(ygrids, {
 
 
 
-const GRID_FOCUS_SELECTOR = `line.${$FOCUS.xgridFocus}, line.${$FOCUS.ygridFocus}`;
+const GRID_FOCUS_SELECTOR = `line.${$FOCUS.xgridFocus}:not(.${$FOCUS.xgridFocusContinuous}), line.${$FOCUS.ygridFocus}`;
 const _getGridTextAnchor = (d) => isValue(d.position) || "end";
 const _getGridTextDx = (d) => d.position === "start" ? 4 : d.position === "middle" ? 0 : -4;
 function _getGridFocusEl($$) {
@@ -22354,6 +23407,9 @@ function _getGridFocusEl($$) {
   const mainNode = main.node();
   const cachedNodes = ((_a = cached == null ? void 0 : cached.nodes) == null ? void 0 : _a.call(cached)) || [];
   return cachedNodes.length && cachedNodes.every((node) => mainNode == null ? void 0 : mainNode.contains(node)) ? cached : state._gridFocusEl = main.selectAll(GRID_FOCUS_SELECTOR);
+}
+function _hideContinuousGridFocus($$) {
+  $$.$el.main.select(`line.${$FOCUS.xgridFocusContinuous}`).style("visibility", "hidden");
 }
 function _getGridTextX(isX, width, height) {
   return (d) => {
@@ -22433,7 +23489,8 @@ function _smoothLines(el, type) {
     const { axis, config, scale, state, $el: { grid, main } } = $$;
     const isRotated = config.axis_rotated;
     const pos = (d) => scale.y(d);
-    const gridValues = axis.y.getGeneratedTicks(config.grid_y_ticks) || $$.scale.y.ticks(config.grid_y_ticks);
+    const generated = axis.y.getGeneratedTicks(config.grid_y_ticks);
+    const gridValues = (generated == null ? void 0 : generated.length) ? generated : $$.scale.y.ticks(config.grid_y_ticks);
     grid.y = main.select(`.${$GRID.ygrids}`).selectAll(`.${$GRID.ygrid}`).data(gridValues);
     grid.y.exit().remove();
     grid.y = grid.y.enter().append("line").attr("class", $GRID.ygrid).merge(grid.y);
@@ -22525,6 +23582,7 @@ function _smoothLines(el, type) {
       if (config.grid_focus_y && !config.tooltip_grouped) {
         grid.append("g").attr("class", $FOCUS.ygridFocus).append("line").attr("class", $FOCUS.ygridFocus);
       }
+      config.subchart_grid_focus_continuous && config.subchart_grid_focus !== false && $el.main.insert("g", className).attr("class", $FOCUS.xgridFocusContinuous).append("line").attr("class", `${$FOCUS.xgridFocus} ${$FOCUS.xgridFocusContinuous}`).style("visibility", "hidden");
     }
   },
   showAxisGridFocus() {
@@ -22633,6 +23691,7 @@ function _smoothLines(el, type) {
     if (force || inputType === "mouse" || !resizing) {
       const focusEl = _getGridFocusEl($$);
       focusEl.style("visibility", "hidden");
+      _hideContinuousGridFocus($$);
       (_a = $$.hideCircleFocus) == null ? void 0 : _a.call($$);
     }
   },
@@ -22650,6 +23709,7 @@ function _smoothLines(el, type) {
     } else {
       const isRotated = $$.config.axis_rotated;
       xgridFocus.attr("x1", isRotated ? 0 : -10).attr("x2", isRotated ? width : -10).attr("y1", isRotated ? -10 : 0).attr("y2", isRotated ? -10 : height);
+      _hideContinuousGridFocus($$);
     }
     return true;
   },
@@ -22788,28 +23848,85 @@ let grid_grid = () => {
 
 
 
-function setSelection(isSelection = false, ids, indices, resetOther) {
+function setSelectionForFocusOnly(isSelection, ids, indices, resetOther) {
   const $$ = this;
   const { config, $el: { main } } = $$;
   const selectionGrouped = config.data_selection_grouped;
   const isSelectable = config.data_selection_isselectable.bind($$.api);
+  const targetIds = isDefined(ids) ? [].concat(ids) : null;
+  const singleSelection = isSelection && !config.data_selection_multiple;
+  let resetDone = !singleSelection;
+  const unselect = (circle, d, index) => {
+    $$.unselectPoint(circle, d, index);
+    circle.interrupt().remove();
+  };
+  $$.getTargetsToShow().forEach((target) => {
+    const { id } = target;
+    const isTargetId = selectionGrouped || !targetIds || targetIds.indexOf(id) >= 0;
+    const selectedCircles = main.select(
+      `.${$SELECT.selectedCircles}${$$.getTargetSelectorSuffix(id)}`
+    );
+    target.values.forEach((d) => {
+      const { index } = d;
+      const isTargetIndex = !indices || indices.indexOf(index) >= 0;
+      const circle = selectedCircles.selectAll(`.${$SELECT.selectedCircle}-${index}`);
+      const isSelected = !circle.empty();
+      if (isSelection) {
+        if (isTargetId && isTargetIndex && isSelectable(d) && (!isSelected || singleSelection)) {
+          if (!resetDone) {
+            setSelectionForFocusOnly.call($$, false);
+            resetDone = true;
+          }
+          $$.selectPoint(null, d, index);
+        } else if ((!singleSelection || resetDone) && isDefined(resetOther) && resetOther && isSelected) {
+          unselect(circle, d, index);
+        }
+      } else if (isTargetId && isTargetIndex && isSelected) {
+        unselect(circle, d, index);
+      }
+    });
+  });
+}
+function setSelection(isSelection = false, ids, indices, resetOther) {
+  var _a;
+  const $$ = this;
+  const { config, $el: { main } } = $$;
+  const selectionGrouped = config.data_selection_grouped;
+  const isSelectable = config.data_selection_isselectable.bind($$.api);
+  const singleSelection = isSelection && !config.data_selection_multiple;
+  let resetDone = !singleSelection;
   if (!config.data_selection_enabled) {
+    return;
+  }
+  if (singleSelection) {
+    indices = (indices == null ? void 0 : indices.length) ? [indices[0]] : [0];
+    if (!selectionGrouped) {
+      const targetIds = isDefined(ids) ? [].concat(ids) : $$.getTargetsToShow().map((t) => t.id);
+      ids = targetIds.slice(0, 1);
+    }
+  }
+  if ((_a = $$.isPointFocusOnly) == null ? void 0 : _a.call($$)) {
+    setSelectionForFocusOnly.call($$, isSelection, ids, indices, resetOther);
     return;
   }
   main.selectAll(`.${$SHAPE.shapes}`).selectAll(`.${$SHAPE.shape}`).each(function(d) {
     const shape = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
     const { id, index } = d.data ? d.data : d;
-    const toggle = $$.getToggle(this, d).bind($$);
     const isTargetId = selectionGrouped || !ids || ids.indexOf(id) >= 0;
     const isTargetIndex = !indices || indices.indexOf(index) >= 0;
-    const isSelected = shape.classed($SELECT.SELECTED);
     if (shape.classed($LINE.line) || shape.classed($AREA.area)) {
       return;
     }
+    const toggle = $$.getToggle(this, d).bind($$);
+    const isSelected = shape.classed($SELECT.SELECTED);
     if (isSelection) {
-      if (isTargetId && isTargetIndex && isSelectable(d) && !isSelected) {
-        toggle(true, shape.classed($SELECT.SELECTED, true), d, index);
-      } else if (isDefined(resetOther) && resetOther && isSelected) {
+      if (isTargetId && isTargetIndex && isSelectable(d) && (!isSelected || singleSelection)) {
+        if (!resetDone) {
+          setSelection.call($$, false);
+          resetDone = true;
+        }
+        !shape.classed($SELECT.SELECTED) && toggle(true, shape.classed($SELECT.SELECTED, true), d, index);
+      } else if ((!singleSelection || resetDone) && isDefined(resetOther) && resetOther && isSelected) {
         toggle(false, shape.classed($SELECT.SELECTED, false), d, index);
       }
     } else {
@@ -22837,11 +23954,15 @@ function setSelection(isSelection = false, ids, indices, resetOther) {
    *  chart.selected("data1");
    */
   selected(targetId) {
-    var _a;
+    var _a, _b;
     const $$ = this.internal;
     const dataPoint = [];
     if ($$.state.isCanvasMode) {
       return ((_a = $$.getCanvasSelectedData) == null ? void 0 : _a.call($$, targetId)) || dataPoint;
+    }
+    if ((_b = $$.isPointFocusOnly) == null ? void 0 : _b.call($$)) {
+      $$.$el.main.selectAll(`.${$SELECT.selectedCircles + $$.getTargetSelectorSuffix(targetId)}`).selectAll(`.${$SELECT.selectedCircle}`).each((d) => dataPoint.push(d));
+      return dataPoint;
     }
     $$.$el.main.selectAll(`.${$SHAPE.shapes + $$.getTargetSelectorSuffix(targetId)}`).selectAll(`.${$SHAPE.shape}`).filter(function() {
       return (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).classed($SELECT.SELECTED);
@@ -23040,7 +24161,7 @@ var selection_spreadProps = (a, b) => selection_defProps(a, selection_getOwnProp
     const cx = (isRotated ? $$.circleY : $$.circleX).bind($$);
     const cy = (isRotated ? $$.circleX : $$.circleY).bind($$);
     const r = $$.pointSelectR.bind($$);
-    callFn(config.data_onselected, $$.api, d, target.node());
+    callFn(config.data_onselected, $$.api, d, target == null ? void 0 : target.node());
     $T(main.select(`.${$SELECT.selectedCircles}${$$.getTargetSelectorSuffix(d.id)}`).selectAll(`.${$SELECT.selectedCircle}-${i}`).data([d]).enter().append("circle").attr("class", () => $$.generateClass($SELECT.selectedCircle, i)).attr("cx", cx).attr("cy", cy).attr("stroke", $$.color).attr("r", (d2) => $$.pointSelectR(d2) * 1.4)).attr("r", r);
   },
   /**
@@ -23469,7 +24590,134 @@ extend(subchart, {
 
 
 
+
+
+const SUBCHART_TYPES = ["bar", "line", "bubble", "candlestick", "scatter"];
+const FOCUS_GRID_STYLE_PROPS = [
+  "opacity",
+  "stroke",
+  "stroke-dasharray",
+  "stroke-dashoffset",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "stroke-miterlimit",
+  "stroke-opacity",
+  "stroke-width"
+];
+function syncSubchartGridFocusStyle($$, line) {
+  var _a, _b;
+  const source = (_b = (_a = $$.$el.grid) == null ? void 0 : _a.main) == null ? void 0 : _b.select(`line.${config_classes.xgridFocus}`).node();
+  if (!source || !win.getComputedStyle) {
+    return;
+  }
+  const style = win.getComputedStyle(source);
+  FOCUS_GRID_STYLE_PROPS.forEach((prop) => {
+    const value = style.getPropertyValue(prop);
+    value && line.style(prop, value);
+  });
+}
+function getFiniteAttr(value, fallback) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+function showContinuousSubchartGridFocus($$) {
+  var _a, _b;
+  if (!isContinuousGridFocusEnabled($$)) {
+    return false;
+  }
+  const { config, state, $el } = $$;
+  const mainLine = (_b = (_a = $el.grid) == null ? void 0 : _a.main) == null ? void 0 : _b.select(
+    `line.${config_classes.xgridFocus}:not(.${config_classes.xgridFocusContinuous})`
+  );
+  const line = $el.main.select(`line.${config_classes.xgridFocusContinuous}`);
+  if (!(mainLine == null ? void 0 : mainLine.node()) || !line.node()) {
+    return false;
+  }
+  const x2 = state.margin2.left - state.margin.left + state.width2;
+  const y2 = state.margin2.top - state.margin.top + state.height2;
+  syncSubchartGridFocusStyle($$, line);
+  config.axis_rotated ? line.attr("x1", getFiniteAttr(mainLine.attr("x1"), 0)).attr("x2", x2).attr("y1", getFiniteAttr(mainLine.attr("y1"), -10)).attr("y2", getFiniteAttr(mainLine.attr("y2"), -10)) : line.attr("x1", getFiniteAttr(mainLine.attr("x1"), -10)).attr("x2", getFiniteAttr(mainLine.attr("x2"), -10)).attr("y1", getFiniteAttr(mainLine.attr("y1"), 0)).attr("y2", y2);
+  line.style("visibility", null);
+  mainLine.style("visibility", "hidden");
+  return true;
+}
+function hideContinuousSubchartGridFocus($$) {
+  var _a;
+  (_a = $$.$el.main) == null ? void 0 : _a.select(`line.${config_classes.xgridFocusContinuous}`).style("visibility", "hidden");
+}
+function getMainPointFromSubchartEvent($$, event, context) {
+  const { config, state } = $$;
+  const [x, y] = getPointer(event, context);
+  const mainCoord = getMainCoordFromSubchartCoord($$, config.axis_rotated ? y : x);
+  if (mainCoord === null) {
+    return null;
+  }
+  return config.axis_rotated ? [state.width / 2, mainCoord] : [mainCoord, state.height / 2];
+}
+function dispatchSubchartEvent($$, type, event, context) {
+  var _a, _b;
+  const mainEventRect = (_b = (_a = $$.$el.eventRect) == null ? void 0 : _a.node) == null ? void 0 : _b.call(_a);
+  if (!mainEventRect) {
+    return;
+  }
+  const point = getMainPointFromSubchartEvent($$, event, context) || [0, 0];
+  const rect = getBoundingRect(mainEventRect, true);
+  const clientX = rect.left + point[0];
+  const clientY = rect.top + point[1];
+  const params = {
+    bubbles: true,
+    cancelable: true,
+    screenX: clientX,
+    screenY: clientY,
+    clientX,
+    clientY
+  };
+  /^touch/.test(type) ? emulateEvent.touch(mainEventRect, type, params) : emulateEvent.mouse(mainEventRect, type, params);
+}
 /* harmony default export */ var interactions_subchart = ({
+  /**
+   * Whether subchart brush interaction is enabled.
+   * @returns {boolean}
+   * @private
+   */
+  isSubchartBrushEnabled() {
+    const { config } = this;
+    return config.subchart_show && config.subchart_brush_enabled !== false;
+  },
+  /**
+   * Bind event rect handlers for subchart hover interactions.
+   * @param {d3Selection} eventRect Subchart event rect selection
+   * @private
+   */
+  bindSubchartEventRect(eventRect) {
+    const $$ = this;
+    const { config, state } = $$;
+    eventRect.on("mouseover mousemove mouseout touchstart touchmove touchend", null);
+    if (!config.interaction_enabled) {
+      return;
+    }
+    if (state.inputType === "mouse") {
+      eventRect.on("mouseover mousemove", function(event) {
+        if ($$.isSubchartBrushEnabled()) {
+          return;
+        }
+        dispatchSubchartEvent($$, event.type, event, this);
+      }).on("mouseout", function(event) {
+        if ($$.isSubchartBrushEnabled()) {
+          return;
+        }
+        dispatchSubchartEvent($$, "mouseout", event, this);
+      });
+    } else if (state.inputType === "touch") {
+      eventRect.on("touchstart touchmove touchend", function(event) {
+        var _a;
+        if ($$.isSubchartBrushEnabled() || ((_a = event.touches) == null ? void 0 : _a.length) > 1) {
+          return;
+        }
+        dispatchSubchartEvent($$, event.type, event, this);
+      });
+    }
+  },
   /**
    * Initialize the brush.
    * @private
@@ -23563,19 +24811,26 @@ extend(subchart, {
     const { main } = subchart;
     main.style("visibility", visibility);
     main.append("g").attr("clip-path", clipPath).attr("class", config_classes.chart);
-    ["bar", "line", "bubble", "candlestick", "scatter"].forEach((v) => {
-      const type = capitalize(/^(bubble|scatter)$/.test(v) ? "circle" : v);
-      if ($$.hasType(v) || $$.hasTypeOf(type)) {
-        const chart = main.select(`.${config_classes.chart}`);
-        const chartClassName = config_classes[`chart${type}s`];
-        if (chart.select(`.${chartClassName}`).empty()) {
-          chart.append("g").attr("class", chartClassName);
+    $$.withSubchartTypeContext(() => {
+      SUBCHART_TYPES.forEach((v) => {
+        const type = capitalize(/^(bubble|scatter)$/.test(v) ? "circle" : v);
+        if ($$.hasType(v) || $$.hasTypeOf(type)) {
+          const chart = main.select(`.${config_classes.chart}`);
+          const chartClassName = config_classes[`chart${type}s`];
+          if (chart.select(`.${chartClassName}`).empty()) {
+            chart.append("g").attr("class", chartClassName);
+          }
         }
-      }
+      });
     });
-    const brush = main.append("g").attr("clip-path", clipPath).attr("class", config_classes.brush).call($$.brush);
+    const brush = main.append("g").attr("clip-path", clipPath).attr("class", config_classes.brush).style("pointer-events", $$.isSubchartBrushEnabled() ? null : "none").call($$.brush);
     config.subchart_showHandle && $$.addBrushHandle(brush);
+    subchart.eventRect = main.append("g").attr("clip-path", clipPath).attr("class", `${config_classes.eventRects} ${config_classes.eventRects}-subchart`).style("fill-opacity", "0").style("pointer-events", $$.isSubchartBrushEnabled() ? "none" : "all").append("rect").attr("class", `${config_classes.eventRect} ${config_classes.eventRect}-subchart`).attr("width", $$.state.width2).attr("height", $$.state.height2);
+    $$.bindSubchartEventRect(subchart.eventRect);
+    main.append("g").attr("clip-path", clipPath).attr("class", config_classes.xgridFocus).append("line").attr("class", config_classes.xgridFocus).style("visibility", "hidden");
     axis.subX = main.append("g").attr("class", config_classes.axisX).attr("transform", $$.getTranslate("subX")).attr("clip-path", config.axis_rotated ? "" : clip.pathXAxis).style("visibility", config.subchart_axis_x_show ? visibility : "hidden");
+    axis.subY = main.append("g").attr("class", config_classes.axisY).attr("transform", $$.getTranslate("subY")).style("visibility", config.subchart_axis_y_show ? visibility : "hidden");
+    axis.subY2 = main.append("g").attr("class", config_classes.axisY2).attr("transform", $$.getTranslate("subY2")).style("visibility", config.subchart_axis_y2_show ? visibility : "hidden");
   },
   /**
    * Add brush handle
@@ -23598,64 +24853,89 @@ extend(subchart, {
    * @private
    */
   updateTargetsForSubchart(targets) {
+    var _a;
     const $$ = this;
     const { config, state, $el: { subchart: { main } } } = $$;
     if (config.subchart_show) {
-      ["bar", "line", "bubble", "candlestick", "scatter"].filter((v) => $$.hasType(v) || $$.hasTypeOf(capitalize(v))).forEach((v) => {
-        const isPointType = /^(bubble|scatter)$/.test(v);
-        const name = capitalize(isPointType ? "circle" : v);
-        const chartClass = $$.getChartClass(name, true);
-        const shapeClass = $$.getClass(isPointType ? "circles" : `${v}s`, true);
-        const shapeChart = main.select(`.${config_classes[`chart${`${name}s`}`]}`);
-        if (isPointType) {
-          const circle = shapeChart.selectAll(`.${config_classes.circles}`).data(targets.filter($$[`is${capitalize(v)}Type`].bind($$))).attr("class", shapeClass);
-          circle.exit().remove();
-          circle.enter().append("g").attr("class", shapeClass);
-        } else {
-          const shapeUpdate = shapeChart.selectAll(`.${config_classes[`chart${name}`]}`).attr("class", chartClass).data(targets.filter($$[`is${name}Type`].bind($$)));
-          const shapeEnter = shapeUpdate.enter().append("g").style("opacity", "0").attr("class", chartClass).append("g").attr("class", shapeClass);
-          shapeUpdate.exit().remove();
-          v === "line" && $$.hasTypeOf("Area") && shapeEnter.append("g").attr("class", $$.getClass("areas", true));
-        }
+      $$.withSubchartTypeContext(() => {
+        SUBCHART_TYPES.filter((v) => $$.hasType(v) || $$.hasTypeOf(capitalize(v))).forEach((v) => {
+          const isPointType = /^(bubble|scatter)$/.test(v);
+          const name = capitalize(isPointType ? "circle" : v);
+          const chartClass = $$.getChartClass(name, true);
+          const shapeClass = $$.getClass(isPointType ? "circles" : `${v}s`, true);
+          const shapeChart = main.select(`.${config_classes[`chart${`${name}s`}`]}`);
+          if (isPointType) {
+            const circle = shapeChart.selectAll(`.${config_classes.circles}`).data(targets.filter($$[`is${capitalize(v)}Type`].bind($$))).attr("class", shapeClass);
+            circle.exit().remove();
+            circle.enter().append("g").attr("class", shapeClass);
+          } else {
+            const shapeUpdate = shapeChart.selectAll(`.${config_classes[`chart${name}`]}`).attr("class", chartClass).data(targets.filter($$[`is${name}Type`].bind($$)));
+            const shapeEnter = shapeUpdate.enter().append("g").style("opacity", "0").attr("class", chartClass).append("g").attr("class", shapeClass);
+            shapeUpdate.exit().remove();
+            v === "line" && $$.hasTypeOf("Area") && shapeEnter.append("g").attr("class", $$.getClass("areas", true));
+          }
+        });
       });
       main.selectAll(`.${config_classes.brush} rect`).attr(
         config.axis_rotated ? "width" : "height",
         config.axis_rotated ? state.width2 : state.height2
       );
+      (_a = $$.$el.subchart.eventRect) == null ? void 0 : _a.attr("width", state.width2).attr("height", state.height2).style("pointer-events", $$.isSubchartBrushEnabled() ? "none" : "all");
     }
+  },
+  /**
+   * Update subchart y domains using subchart type options.
+   * @param {object} targets Targets to show
+   * @private
+   */
+  updateSubchartYDomain(targets) {
+    var _a, _b;
+    const $$ = this;
+    const { scale } = $$;
+    const targetsToShow = targets || $$.filterTargetsToShow($$.data.targets);
+    (_a = scale.subY) == null ? void 0 : _a.domain($$.getYDomain(targetsToShow, "y"));
+    (_b = scale.subY2) == null ? void 0 : _b.domain($$.getYDomain(targetsToShow, "y2"));
   },
   /**
    * Redraw subchart.
    * @private
    * @param {boolean} withSubchart whether or not to show subchart
    * @param {number} duration duration
-   * @param {object} shape Shape's info
    */
-  redrawSubchart(withSubchart, duration, shape) {
-    var _a;
+  redrawSubchart(withSubchart, duration) {
+    var _a, _b, _c, _d;
     const $$ = this;
     const { config, $el: { subchart: { main } }, state } = $$;
     const withTransition = !!duration;
     main.style("visibility", config.subchart_show ? null : "hidden");
+    main.select(`.${config_classes.brush}`).style("pointer-events", $$.isSubchartBrushEnabled() ? null : "none");
+    (_a = $$.$el.subchart.eventRect) == null ? void 0 : _a.style("pointer-events", $$.isSubchartBrushEnabled() ? "none" : "all");
+    (_b = $$.$el.axis.subY) == null ? void 0 : _b.style("visibility", config.subchart_axis_y_show ? null : "hidden");
+    (_c = $$.$el.axis.subY2) == null ? void 0 : _c.style("visibility", config.subchart_axis_y2_show ? null : "hidden");
     if (config.subchart_show) {
-      if (((_a = state.event) == null ? void 0 : _a.type) === "zoom") {
+      if (((_d = state.event) == null ? void 0 : _d.type) === "zoom") {
         $$.brush.update();
       }
       if (withSubchart) {
         const initRange = config.subchart_init_range;
         !brushEmpty($$) && $$.brush.update();
-        Object.keys(shape.type).forEach((v) => {
-          const name = capitalize(v);
-          const drawFn = $$[`generateDraw${name}`](shape.indices[v], true);
-          $$[`update${name}`](withTransition, true);
-          $$[`redraw${name}`](drawFn, withTransition, true);
+        $$.withSubchartTypeContext(() => {
+          const targetsToShow = state._targetsToShow || $$.filterTargetsToShow($$.data.targets);
+          $$.updateSubchartYDomain(targetsToShow);
+          const subchartShape = $$.getDrawShape();
+          Object.keys(subchartShape.type).forEach((v) => {
+            const name = capitalize(v);
+            const drawFn = $$[`generateDraw${name}`](subchartShape.indices[v], true);
+            $$[`update${name}`](withTransition, true);
+            $$[`redraw${name}`](drawFn, withTransition, true);
+          });
+          if ($$.hasType("bubble") || $$.hasType("scatter")) {
+            const { cx } = subchartShape.pos;
+            const cy = $$.updateCircleY(true);
+            $$.updateCircle(true);
+            $$.redrawCircle(cx, cy, withTransition, void 0, true);
+          }
         });
-        if ($$.hasType("bubble") || $$.hasType("scatter")) {
-          const { cx } = shape.pos;
-          const cy = $$.updateCircleY(true);
-          $$.updateCircle(true);
-          $$.redrawCircle(cx, cy, withTransition, void 0, true);
-        }
         if (!state.rendered && initRange) {
           state.domain = initRange;
           $$.brush.move(
@@ -23665,6 +24945,46 @@ extend(subchart, {
         }
       }
     }
+  },
+  /**
+   * Show a focus grid line on subchart following main chart focus.
+   * @param {Array} data Selected data
+   * @private
+   */
+  showSubchartGridFocus(data) {
+    const $$ = this;
+    const { config, state, $el: { subchart: { main } } } = $$;
+    if (!main || !config.subchart_show || $$.isSubchartBrushEnabled() || config.grid_focus_show === false || config.subchart_grid_focus === false || !config.tooltip_show || config.axis_tooltip) {
+      return;
+    }
+    const focusData = Array.isArray(data) ? data : [data];
+    const focus = focusData.find((d) => d && $$.getBaseValue(d) != null);
+    if (!focus) {
+      $$.hideSubchartGridFocus();
+      return;
+    }
+    const pos = $$.scale.subX(focus.x);
+    if (!Number.isFinite(pos)) {
+      $$.hideSubchartGridFocus();
+      return;
+    }
+    const line = main.select(`g.${config_classes.xgridFocus} line.${config_classes.xgridFocus}`);
+    if (showContinuousSubchartGridFocus($$)) {
+      line.style("visibility", "hidden");
+      return;
+    }
+    syncSubchartGridFocusStyle($$, line);
+    config.axis_rotated ? line.attr("x1", 0).attr("x2", state.width2).attr("y1", pos).attr("y2", pos) : line.attr("x1", pos).attr("x2", pos).attr("y1", 0).attr("y2", state.height2);
+    line.style("visibility", null);
+  },
+  /**
+   * Hide subchart focus grid line.
+   * @private
+   */
+  hideSubchartGridFocus() {
+    var _a;
+    hideContinuousSubchartGridFocus(this);
+    (_a = this.$el.subchart.main) == null ? void 0 : _a.select(`g.${config_classes.xgridFocus} line.${config_classes.xgridFocus}`).style("visibility", "hidden");
   },
   /**
    * Redraw the brush.
@@ -23701,8 +25021,12 @@ extend(subchart, {
     const $$ = this;
     const { $el: { subchart }, $T } = $$;
     const subXAxis = (transitions == null ? void 0 : transitions.axisSubX) ? transitions.axisSubX : $T(subchart.main.select(`.${config_classes.axisX}`), withTransition);
+    const subYAxis = (transitions == null ? void 0 : transitions.axisSubY) ? transitions.axisSubY : $T(subchart.main.select(`.${config_classes.axisY}`), withTransition);
+    const subY2Axis = (transitions == null ? void 0 : transitions.axisSubY2) ? transitions.axisSubY2 : $T(subchart.main.select(`.${config_classes.axisY2}`), withTransition);
     subchart.main.attr("transform", $$.getTranslate("context"));
     subXAxis.attr("transform", $$.getTranslate("subX"));
+    subYAxis.attr("transform", $$.getTranslate("subY"));
+    subY2Axis.attr("transform", $$.getTranslate("subY2"));
   }
 });
 
@@ -23710,7 +25034,7 @@ extend(subchart, {
 /* harmony default export */ var interaction_subchart = ({
   /**
    * Set subchart options.
-   * - **NOTE:** Not supported for `bubble`, `scatter` and non-Axis based(pie, donut, gauge, radar) types.
+   * - **NOTE:** Not supported for non-Axis based(pie, donut, gauge, radar) types.
    * @name subchart
    * @memberof Options
    * @type {object}
@@ -23718,11 +25042,45 @@ extend(subchart, {
    * @property {boolean} [subchart.show=false] Show sub chart on the bottom of the chart.
    *  - **NOTE:** for ESM imports, needs to import 'subchart' exports and instantiate it by calling `subchart()`.
    *    - `show: subchart()`
+   * @property {string} [subchart.type] Set chart type for the subchart. Defaults to data.type.
+   * @property {object} [subchart.types] Set chart type for each data in the subchart. Defaults to data.types.
+   * @property {boolean} [subchart.brush.enabled=true] Enable subchart brush interaction.
    * @property {boolean} [subchart.showHandle=false] Show sub chart's handle.
+   * @property {boolean|object} [subchart.grid.focus=true] Show x focus grid line in subchart when subchart brush is disabled.
+   * @property {boolean} [subchart.grid.focus.continuous=false] Render x focus grid line as one continuous line across main chart and subchart when subchart brush is disabled.
    * @property {boolean} [subchart.axis.x.show=true] Show or hide x axis.
    * @property {boolean} [subchart.axis.x.tick.show=true] Show or hide x axis tick line.
+   * @property {number} [subchart.axis.x.tick.count] Set the number of x axis ticks.
+   * @property {Array|function} [subchart.axis.x.tick.values] Set x axis tick values manually.
+   * @property {boolean|object} [subchart.axis.x.tick.culling] Setting for culling x axis ticks.
+   * @property {number} [subchart.axis.x.tick.culling.max] The number of x axis tick texts will be adjusted to less than this value.
+   * @property {boolean} [subchart.axis.x.tick.culling.lines=true] Control x axis tick line visibility within culling option.
+   * @property {boolean} [subchart.axis.x.tick.culling.reverse=false] Control x axis culling start point to be reversed.
+   * @property {boolean} [subchart.axis.x.tick.outer] Show or hide x axis outer tick.
    * @property {function|string} [subchart.axis.x.tick.format] Use custom format for x axis ticks - see [axis.x.tick.format](#.axis․x․tick․format) for details.
    * @property {boolean} [subchart.axis.x.tick.text.show=true] Show or hide x axis tick text.
+   * @property {boolean} [subchart.axis.y.show=false] Show or hide y axis.
+   * @property {boolean} [subchart.axis.y.tick.show=true] Show or hide y axis tick line.
+   * @property {number} [subchart.axis.y.tick.count] Set the number of y axis ticks.
+   * @property {Array|function} [subchart.axis.y.tick.values] Set y axis tick values manually.
+   * @property {boolean|object} [subchart.axis.y.tick.culling] Setting for culling y axis ticks.
+   * @property {number} [subchart.axis.y.tick.culling.max] The number of y axis tick texts will be adjusted to less than this value.
+   * @property {boolean} [subchart.axis.y.tick.culling.lines=true] Control y axis tick line visibility within culling option.
+   * @property {boolean} [subchart.axis.y.tick.culling.reverse=false] Control y axis culling start point to be reversed.
+   * @property {boolean} [subchart.axis.y.tick.outer] Show or hide y axis outer tick.
+   * @property {function|string} [subchart.axis.y.tick.format] Use custom format for y axis ticks - see [axis.y.tick.format](#.axis․y․tick․format) for details.
+   * @property {boolean} [subchart.axis.y.tick.text.show=true] Show or hide y axis tick text.
+   * @property {boolean} [subchart.axis.y2.show=false] Show or hide y2 axis.
+   * @property {boolean} [subchart.axis.y2.tick.show=true] Show or hide y2 axis tick line.
+   * @property {number} [subchart.axis.y2.tick.count] Set the number of y2 axis ticks.
+   * @property {Array|function} [subchart.axis.y2.tick.values] Set y2 axis tick values manually.
+   * @property {boolean|object} [subchart.axis.y2.tick.culling] Setting for culling y2 axis ticks.
+   * @property {number} [subchart.axis.y2.tick.culling.max] The number of y2 axis tick texts will be adjusted to less than this value.
+   * @property {boolean} [subchart.axis.y2.tick.culling.lines=true] Control y2 axis tick line visibility within culling option.
+   * @property {boolean} [subchart.axis.y2.tick.culling.reverse=false] Control y2 axis culling start point to be reversed.
+   * @property {boolean} [subchart.axis.y2.tick.outer] Show or hide y2 axis outer tick.
+   * @property {function|string} [subchart.axis.y2.tick.format] Use custom format for y2 axis ticks - see [axis.y2.tick.format](#.axis․y2․tick․format) for details.
+   * @property {boolean} [subchart.axis.y2.tick.text.show=true] Show or hide y2 axis tick text.
    * @property {Array} [subchart.init.range] Set initial selection domain range.
    * @property {number} [subchart.size.height] Change the height of the subchart.
    * @property {function} [subchart.onbrush] Set callback for brush event.<br>
@@ -23732,8 +25090,28 @@ extend(subchart, {
    *  subchart: {
    *      show: true,
    *      showHandle: true,
+   *
+   *      // render the overview with a different chart type than the main chart
+   *      type: "bar",
+   *
+   *      // override the type per data series
+   *      types: {
+   *      	data2: "area"
+   *      },
    *      size: {
    *          height: 20
+   *      },
+   *      brush: {
+   *      	// disable brush(zoom) interaction, rendering the subchart as a static overview
+   *      	enabled: false
+   *      },
+   *      grid: {
+   *      	// set false to hide focus grid line in subchart
+   *      	// focus: false,
+   *      	focus: {
+   *      		// NOTE: works only when 'brush.enabled=false'
+   *      		continuous: true
+   *      	}
    *      },
    *      init: {
    *          // specify initial range domain selection
@@ -23749,6 +25127,12 @@ extend(subchart, {
    *      	        show: false
    *      	      }
    *      	    }
+   *      	},
+   *      	y: {
+   *      	  show: true,
+   *      	    tick: {
+   *      	      count: 3
+   *      	    }
    *      	}
    *      },
    *      onbrush: function(domain) { ... }
@@ -23763,12 +25147,46 @@ extend(subchart, {
    * }
    */
   subchart_show: false,
+  subchart_type: void 0,
+  subchart_types: {},
+  subchart_brush_enabled: true,
   subchart_showHandle: false,
   subchart_size_height: 60,
+  subchart_grid_focus: true,
+  subchart_grid_focus_continuous: false,
   subchart_axis_x_show: true,
   subchart_axis_x_tick_show: true,
+  subchart_axis_x_tick_count: void 0,
+  subchart_axis_x_tick_values: void 0,
+  subchart_axis_x_tick_culling: void 0,
+  subchart_axis_x_tick_culling_max: void 0,
+  subchart_axis_x_tick_culling_lines: void 0,
+  subchart_axis_x_tick_culling_reverse: void 0,
+  subchart_axis_x_tick_outer: void 0,
   subchart_axis_x_tick_format: void 0,
   subchart_axis_x_tick_text_show: true,
+  subchart_axis_y_show: false,
+  subchart_axis_y_tick_show: true,
+  subchart_axis_y_tick_count: void 0,
+  subchart_axis_y_tick_values: void 0,
+  subchart_axis_y_tick_culling: void 0,
+  subchart_axis_y_tick_culling_max: void 0,
+  subchart_axis_y_tick_culling_lines: void 0,
+  subchart_axis_y_tick_culling_reverse: void 0,
+  subchart_axis_y_tick_outer: void 0,
+  subchart_axis_y_tick_format: void 0,
+  subchart_axis_y_tick_text_show: true,
+  subchart_axis_y2_show: false,
+  subchart_axis_y2_tick_show: true,
+  subchart_axis_y2_tick_count: void 0,
+  subchart_axis_y2_tick_values: void 0,
+  subchart_axis_y2_tick_culling: void 0,
+  subchart_axis_y2_tick_culling_max: void 0,
+  subchart_axis_y2_tick_culling_lines: void 0,
+  subchart_axis_y2_tick_culling_reverse: void 0,
+  subchart_axis_y2_tick_outer: void 0,
+  subchart_axis_y2_tick_format: void 0,
+  subchart_axis_y2_tick_text_show: true,
   subchart_init_range: void 0,
   subchart_onbrush: () => {
   }
@@ -26102,8 +27520,6 @@ const axis = {
   }
 });
 
-// EXTERNAL MODULE: external {"commonjs":"d3-axis","commonjs2":"d3-axis","amd":"d3-axis","root":"d3"}
-var external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_ = __webpack_require__(10);
 ;// ./src/ChartInternal/Axis/AxisRendererHelper.ts
 var AxisRendererHelper_defProp = Object.defineProperty;
 var AxisRendererHelper_defNormalProp = (obj, key, value) => key in obj ? AxisRendererHelper_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -26159,7 +27575,7 @@ class AxisRendererHelper {
   /**
    * Get tick transform setter function
    * @param {string} id Axis id
-   * @returns {(selection: d3Selection, scale) => void} transfrom setter function
+   * @returns {function(d3Selection, d3Scale): void} transform setter function
    * @private
    */
   getTickTransformSetter(id) {
@@ -26241,6 +27657,13 @@ var AxisRenderer_publicField = (obj, key, value) => AxisRenderer_defNormalProp(o
 
 
 
+function getBaseAxisId(id) {
+  return id === "subX" ? "x" : id === "subY" ? "y" : id === "subY2" ? "y2" : id;
+}
+function getAxisOptionPrefix(id) {
+  const type = getBaseAxisId(id);
+  return /^sub/.test(id) ? `subchart_axis_${type}` : `axis_${type}`;
+}
 class AxisRenderer {
   constructor(params = {}) {
     AxisRenderer_publicField(this, "helper");
@@ -26273,8 +27696,8 @@ class AxisRenderer {
     const { config, params } = this;
     const { config: chartConfig, id, owner } = params;
     const isX = /^(x|subX)$/.test(id);
-    const type = id === "subX" ? "x" : id;
-    const customTickFormat = id === "subX" ? chartConfig.subchart_axis_x_tick_format || chartConfig.axis_x_tick_format : chartConfig[`axis_${type}_tick_format`];
+    const type = getBaseAxisId(id);
+    const customTickFormat = /^sub/.test(id) ? chartConfig[`subchart_axis_${type}_tick_format`] || chartConfig[`axis_${type}_tick_format`] : chartConfig[`axis_${type}_tick_format`];
     const categoryAutoWrap = params.tickMultiline && params.isCategory && !isLeftRight && !(params.tickWidth > 0);
     return !!(owner.state.resizing && !owner.state.flowing && !isFunction(chartConfig.axis_evalTextSize) && !customTickFormat && !params.tickTitle && !(isX && chartConfig.axis_x_tick_autorotate) && !categoryAutoWrap && config.withoutTransition);
   }
@@ -26316,10 +27739,12 @@ class AxisRenderer {
     this.config.range = scale.rangeExtent ? scale.rangeExtent() : helper.scaleExtent((params.orgXScale || scale).range());
     const { innerTickSize, tickLength, range } = config;
     const id = params.id;
-    const tickTextPos = id && /^(x|y|y2)$/.test(id) ? params.config[`axis_${id}_tick_text_position`] : { x: 0, y: 0 };
-    const prefix = id === "subX" ? `subchart_axis_x` : `axis_${id}`;
+    const type = getBaseAxisId(id);
+    const { isSubAxes } = params;
+    const tickTextPos = !isSubAxes && type && /^(x|y|y2)$/.test(type) ? params.config[`axis_${type}_tick_text_position`] : { x: 0, y: 0 };
+    const prefix = getAxisOptionPrefix(id);
     const axisShow = params.config[`${prefix}_show`];
-    const tickShow = {
+    const tickShow = isSubAxes ? { tick: true, text: true } : {
       tick: axisShow ? params.config[`${prefix}_tick_show`] : false,
       text: axisShow ? params.config[`${prefix}_tick_text_show`] : false
     };
@@ -26518,7 +27943,7 @@ class AxisRenderer {
         axis_x_tick_text_inner: inner
       }
     } = this.params.owner;
-    const tickLineInner = this.params.config[`axis_${axisId}_tick_inner`];
+    const tickLineInner = this.params.config[`axis_${getBaseAxisId(axisId)}_tick_inner`];
     switch (orient) {
       case "bottom":
         lineUpdate.attr("x1", tickPos.x).attr("x2", tickPos.x).attr("y2", (d) => this.getTickSize.bind(this)(d) * (tickLineInner ? -1 : 1));
@@ -26713,7 +28138,17 @@ var Axis_publicField = (obj, key, value) => Axis_defNormalProp(obj, typeof key !
 
 
 
-
+function Axis_getBaseAxisId(id) {
+  return id === "subX" ? "x" : id === "subY" ? "y" : id === "subY2" ? "y2" : id;
+}
+function isSubAxis(id) {
+  return /^sub/.test(id);
+}
+function Axis_getAxisTickOption(config, id, key) {
+  const type = Axis_getBaseAxisId(id);
+  const subValue = config[`subchart_axis_${type}_tick_${key}`];
+  return isSubAxis(id) && subValue !== void 0 ? subValue : config[`axis_${type}_tick_${key}`];
+}
 function _sampleTickNodes(nodes) {
   var _a, _b;
   const sampled = [nodes[0], nodes[nodes.length - 1]];
@@ -26917,6 +28352,8 @@ class Axis_Axis {
     Axis_publicField(this, "owner");
     Axis_publicField(this, "x");
     Axis_publicField(this, "subX");
+    Axis_publicField(this, "subY");
+    Axis_publicField(this, "subY2");
     Axis_publicField(this, "y");
     Axis_publicField(this, "y2");
     Axis_publicField(this, "axesList", {});
@@ -26930,7 +28367,9 @@ class Axis_Axis {
       x: "bottom",
       y: "left",
       y2: "right",
-      subX: "bottom"
+      subX: "bottom",
+      subY: "left",
+      subY2: "right"
     });
     this.owner = owner;
     this.setOrient();
@@ -27021,7 +28460,9 @@ class Axis_Axis {
       x: isRotated ? "left" : "bottom",
       y: isRotated ? yInner ? "top" : "bottom" : yInner ? "right" : "left",
       y2: isRotated ? y2Inner ? "bottom" : "top" : y2Inner ? "left" : "right",
-      subX: isRotated ? "left" : "bottom"
+      subX: isRotated ? "left" : "bottom",
+      subY: isRotated ? yInner ? "top" : "bottom" : yInner ? "right" : "left",
+      subY2: isRotated ? y2Inner ? "bottom" : "top" : y2Inner ? "left" : "right"
     };
   }
   /**
@@ -27036,24 +28477,32 @@ class Axis_Axis {
     const axes = [];
     const axesConfig = config[`axis_${id}_axes`];
     const isRotated = config.axis_rotated;
-    let d3Axis;
+    let orient;
     if (id === "x") {
-      d3Axis = isRotated ? external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_.axisLeft : external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_.axisBottom;
+      orient = isRotated ? "left" : "bottom";
     } else if (id === "y") {
-      d3Axis = isRotated ? external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_.axisBottom : external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_.axisLeft;
+      orient = isRotated ? "bottom" : "left";
     } else if (id === "y2") {
-      d3Axis = isRotated ? external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_.axisTop : external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_.axisRight;
+      orient = isRotated ? "top" : "right";
     }
     if (axesConfig.length) {
       axesConfig.forEach((v) => {
         const tick = v.tick || {};
         const scale = $$.scale[id].copy();
         v.domain && scale.domain(v.domain);
-        axes.push(
-          d3Axis(scale).ticks(tick.count).tickFormat(
-            isFunction(tick.format) ? tick.format.bind($$.api) : ((x) => x)
-          ).tickValues(tick.values).tickSizeOuter(tick.outer === false ? 0 : AXIS_TICK_SIZE)
+        const axis = new AxisRenderer({
+          outerTick: tick.outer !== false,
+          noTransition: false,
+          config,
+          id,
+          isSubAxes: true,
+          owner: $$
+        }).scale(scale).orient(orient).tickFormat(
+          isFunction(tick.format) ? tick.format.bind($$.api) : ((x) => x)
         );
+        isValue(tick.count) && axis.ticks(tick.count);
+        tick.values && axis.tickValues(tick.values);
+        axes.push(axis);
       });
     }
     this.axesList[id] = axes;
@@ -27077,10 +28526,11 @@ class Axis_Axis {
         const className = `${this.getAxisClassName(id)}-${i + 1}`;
         let g = main.select(`.${className.replace(/\s/, ".")}`);
         if (g.empty()) {
-          g = main.append("g").attr("class", className).style("visibility", config[`axis_${id}_show`] ? null : "hidden").call(v);
+          g = main.append("g").attr("class", className).style("visibility", config[`axis_${id}_show`] ? null : "hidden");
+          v.create(g);
         } else {
           axesConfig[i].domain && scale.domain(axesConfig[i].domain);
-          $T(g).call(v.scale(scale));
+          v.scale(scale).create($T(g));
         }
         g.attr("transform", $$.getTranslate(id, i + 1));
       });
@@ -27097,8 +28547,9 @@ class Axis_Axis {
    */
   setAxis(id, scale, outerTick, noTransition) {
     const $$ = this.owner;
-    if (id !== "subX") {
-      this.tick[id] = this.getTickValues(id);
+    const type = Axis_getBaseAxisId(id);
+    if (!isSubAxis(id)) {
+      this.tick[type] = this.getTickValues(type);
     }
     this[id] = this.getAxis(
       id,
@@ -27114,7 +28565,7 @@ class Axis_Axis {
     const $$ = this.owner;
     const { config } = $$;
     const isX = /^(x|subX)$/.test(id);
-    const type = isX ? "x" : id;
+    const type = Axis_getBaseAxisId(id);
     const isCategory = isX && this.isCategorized();
     const orient = this.orient[id];
     const tickTextRotate = noTickTextRotate ? 0 : $$.getAxisTickRotate(type);
@@ -27122,12 +28573,12 @@ class Axis_Axis {
     if (isX) {
       tickFormat = id === "subX" ? $$.format.subXAxisTick : $$.format.xAxisTick;
     } else {
-      const fn = config[`axis_${id}_tick_format`];
+      const fn = isSubAxis(id) ? config[`subchart_axis_${type}_tick_format`] || config[`axis_${type}_tick_format`] : config[`axis_${type}_tick_format`];
       if (isFunction(fn)) {
         tickFormat = fn.bind($$.api);
       }
     }
-    let tickValues = this.tick[type];
+    let tickValues = isSubAxis(id) ? this.getTickValues(type, true) : this.tick[type];
     const axisParams = mergeObj({
       outerTick,
       noTransition,
@@ -27156,7 +28607,7 @@ class Axis_Axis {
     }
     tickValues && axis.tickValues(tickValues);
     axis.tickFormat(
-      tickFormat || !isX && ($$.isStackNormalized() && $$.hasAxisGroupedData(id) && ((x) => `${x}%`))
+      tickFormat || !isX && ($$.isStackNormalized() && $$.hasAxisGroupedData(type) && ((x) => `${x}%`))
     );
     if (isCategory) {
       axis.tickCentered(config.axis_x_tick_centered);
@@ -27164,7 +28615,7 @@ class Axis_Axis {
         config.axis_x_tick_culling = false;
       }
     }
-    const tickCount = config[`axis_${type}_tick_count`];
+    const tickCount = Axis_getAxisTickOption(config, id, "count");
     tickCount && axis.ticks(tickCount);
     return axis;
   }
@@ -27173,24 +28624,31 @@ class Axis_Axis {
     const $$ = this.owner;
     const { config } = $$;
     const fit = config.axis_x_tick_fit;
-    let count = config.axis_x_tick_count;
-    let values;
-    if (fit) {
-      values = $$.mapTargetsToUniqueXs(targets);
-      if (this.isCategorized() && count > values.length) {
-        count = values.length;
+    const generateValues = (countOption = config.axis_x_tick_count) => {
+      let count = countOption;
+      let values2;
+      if (fit) {
+        values2 = $$.mapTargetsToUniqueXs(targets);
+        if (this.isCategorized() && count > values2.length) {
+          count = values2.length;
+        }
+        values2 = this.generateTickValues(
+          values2,
+          count,
+          this.isTimeSeries()
+        );
       }
-      values = this.generateTickValues(
-        values,
-        count,
-        this.isTimeSeries()
-      );
-    }
+      return values2;
+    };
+    const values = generateValues();
     if (axis) {
       axis.tickValues(values);
     } else if (this.x) {
+      const subTickValues = this.getTickValues("x", true);
+      const subTickCount = Axis_getAxisTickOption(config, "subX", "count");
+      const subValues = subTickValues != null ? subTickValues : subTickCount !== config.axis_x_tick_count ? generateValues(subTickCount) : values;
       this.x.tickValues(values);
-      (_a = this.subX) == null ? void 0 : _a.tickValues(values);
+      (_a = this.subX) == null ? void 0 : _a.tickValues(subValues);
     }
     return values;
   }
@@ -27220,11 +28678,12 @@ class Axis_Axis {
     }
     return isFunction(currFormat) ? (v) => currFormat.apply($$, isCategorized ? [v, $$.categoryName(v)] : [v]) : currFormat;
   }
-  getTickValues(id) {
+  getTickValues(id, isSub = false) {
     const $$ = this.owner;
-    const tickValues = $$.config[`axis_${id}_tick_values`];
+    const tickValues = isSub ? Axis_getAxisTickOption($$.config, `sub${capitalize(id)}`, "values") : $$.config[`axis_${id}_tick_values`];
+    const values = isFunction(tickValues) ? tickValues.call($$.api) : tickValues;
     const axis = $$[`${id}Axis`];
-    return (isFunction(tickValues) ? tickValues.call($$.api) : tickValues) || (axis ? axis.tickValues() : void 0);
+    return isSub ? values != null ? values : void 0 : values || (axis ? axis.tickValues() : void 0);
   }
   getLabelOptionByAxisId(id) {
     return this.owner.config[`axis_${id}_label`];
@@ -27659,14 +29118,21 @@ class Axis_Axis {
   generateTransitions(withTransition) {
     const $$ = this.owner;
     const { $el: { axis }, $T } = $$;
-    const [axisX, axisY, axisY2, axisSubX] = ["x", "y", "y2", "subX"].map((v) => $T(axis[v], withTransition));
-    return { axisX, axisY, axisY2, axisSubX };
+    const [axisX, axisY, axisY2, axisSubX, axisSubY, axisSubY2] = [
+      "x",
+      "y",
+      "y2",
+      "subX",
+      "subY",
+      "subY2"
+    ].map((v) => $T(axis[v], withTransition));
+    return { axisX, axisY, axisY2, axisSubX, axisSubY, axisSubY2 };
   }
   redraw(transitions, isHidden, isInit) {
     const $$ = this.owner;
     const { config, state, $el } = $$;
     const opacity = isHidden ? "0" : null;
-    ["x", "y", "y2", "subX"].forEach((id) => {
+    ["x", "y", "y2", "subX", "subY", "subY2"].forEach((id) => {
       const axis = this[id];
       const $axis = $el.axis[id];
       if (axis && $axis) {
@@ -27688,7 +29154,7 @@ class Axis_Axis {
    * @private
    */
   syncAxisDomains(targetsToShow, wth, flow) {
-    var _a, _b, _c;
+    var _a;
     const $$ = this.owner;
     const { config, scale, $el } = $$;
     const hasZoom = !!scale.zoom;
@@ -27734,8 +29200,30 @@ class Axis_Axis {
       }
     });
     if (wth.Y) {
-      (_b = scale.subY) == null ? void 0 : _b.domain($$.getYDomain(targetsToShow, "y"));
-      (_c = scale.subY2) == null ? void 0 : _c.domain($$.getYDomain(targetsToShow, "y2"));
+      const updateSubDomain = () => {
+        var _a2, _b;
+        (_a2 = scale.subY) == null ? void 0 : _a2.domain($$.getYDomain(targetsToShow, "y"));
+        (_b = scale.subY2) == null ? void 0 : _b.domain($$.getYDomain(targetsToShow, "y2"));
+        ["y", "y2"].forEach((key) => {
+          const subAxisId = key === "y2" ? "subY2" : "subY";
+          const axisScale = scale[subAxisId];
+          const axis = $$.axis[subAxisId];
+          const tickValues = this.getTickValues(key, true);
+          const tickCount = Axis_getAxisTickOption(config, subAxisId, "count");
+          if (!axisScale || !axis || tickValues || !tickCount) {
+            return;
+          }
+          const domain = axisScale.domain();
+          axis.tickValues(
+            this.generateTickValues(
+              domain,
+              domain.every((v) => v === 0) ? 1 : tickCount,
+              this.isTimeSeriesY()
+            )
+          );
+        });
+      };
+      config.subchart_show ? $$.withSubchartTypeContext(updateSubDomain) : updateSubDomain();
     }
   }
   /**
@@ -27763,20 +29251,18 @@ class Axis_Axis {
   setCulling() {
     const $$ = this.owner;
     const { config, state: { clip, current }, $el } = $$;
-    ["subX", "x", "y", "y2"].forEach((type) => {
+    ["subX", "x", "y", "y2", "subY", "subY2"].forEach((type) => {
       const axis = $el.axis[type];
-      const id = type === "subX" ? "x" : type;
-      const cullingOptionPrefix = `axis_${id}_tick_culling`;
-      const toCull = config[cullingOptionPrefix];
+      const toCull = Axis_getAxisTickOption(config, type, "culling");
       if (axis && toCull) {
         const tickNodes = axis.selectAll(".tick");
         const tickValues = sortValue(
           tickNodes.data(),
-          !config[`${cullingOptionPrefix}_reverse`]
+          !Axis_getAxisTickOption(config, type, "culling_reverse")
         );
         const tickSize = tickValues.length;
-        const cullingMax = config[`${cullingOptionPrefix}_max`];
-        const lines = config[`${cullingOptionPrefix}_lines`];
+        const cullingMax = Axis_getAxisTickOption(config, type, "culling_max");
+        const lines = Axis_getAxisTickOption(config, type, "culling_lines");
         const cullTickLine = !lines || _hasOverlappedTickLineIntervals(
           this[type],
           tickValues,
@@ -28096,7 +29582,7 @@ var __pow = Math.pow;
    * @private
    */
   selectRectForSingle(context, index) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f, _g;
     const $$ = this;
     const { config, state, $el: { main, circle } } = $$;
     const isSelectionEnabled = config.data_selection_enabled;
@@ -28107,6 +29593,7 @@ var __pow = Math.pow;
     if (isTooltipGrouped) {
       $$.showTooltip(selectedData, context);
       (_a = $$.showGridFocus) == null ? void 0 : _a.call($$, selectedData);
+      (_b = $$.showSubchartGridFocus) == null ? void 0 : _b.call($$, selectedData);
       if (!isSelectionEnabled || isSelectionGrouped) {
         return;
       }
@@ -28119,7 +29606,7 @@ var __pow = Math.pow;
       return $$.isWithinShape(this, d);
     });
     shapeAtIndex.call((selected) => {
-      var _a2, _b2;
+      var _a2, _b2, _c2;
       const d = selected.data();
       if (isSelectionEnabled && (isSelectionGrouped || (isSelectable == null ? void 0 : isSelectable.bind($$.api)(d)))) {
         context.style.cursor = "pointer";
@@ -28127,7 +29614,8 @@ var __pow = Math.pow;
       if (!isTooltipGrouped) {
         $$.showTooltip(d, context);
         (_a2 = $$.showGridFocus) == null ? void 0 : _a2.call($$, d);
-        (_b2 = $$.unexpandCircles) == null ? void 0 : _b2.call($$);
+        (_b2 = $$.showSubchartGridFocus) == null ? void 0 : _b2.call($$, d);
+        (_c2 = $$.unexpandCircles) == null ? void 0 : _c2.call($$);
         selected.each((d2) => $$.setExpand(index, d2.id));
       }
     });
@@ -28152,14 +29640,16 @@ var __pow = Math.pow;
           }
         }
         $$.showTooltip([closest], context);
-        (_b = $$.showGridFocus) == null ? void 0 : _b.call($$, [closest]);
-        (_c = $$.unexpandCircles) == null ? void 0 : _c.call($$);
+        (_c = $$.showGridFocus) == null ? void 0 : _c.call($$, [closest]);
+        (_d = $$.showSubchartGridFocus) == null ? void 0 : _d.call($$, [closest]);
+        (_e = $$.unexpandCircles) == null ? void 0 : _e.call($$);
         $$.setExpand(index, closest.id, true);
         if (isSelectionEnabled && (isSelectionGrouped || (isSelectable == null ? void 0 : isSelectable.bind($$.api)(closest)))) {
           context.style.cursor = "pointer";
         }
       } else if (config.interaction_onout) {
-        (_d = $$.hideGridFocus) == null ? void 0 : _d.call($$);
+        (_f = $$.hideGridFocus) == null ? void 0 : _f.call($$);
+        (_g = $$.hideSubchartGridFocus) == null ? void 0 : _g.call($$);
         $$.hideTooltip();
         !isSelectionGrouped && $$.setExpand(index);
       }
@@ -28172,7 +29662,7 @@ var __pow = Math.pow;
    * @private
    */
   selectRectForMultipleXs(context, triggerEvent = true) {
-    var _a;
+    var _a, _b;
     const $$ = this;
     const { config, state } = $$;
     const targetsToShow = $$.getTargetsToShow();
@@ -28194,6 +29684,7 @@ var __pow = Math.pow;
     $$.showTooltip(selectedData, context);
     $$.setExpand(closest.index, closest.id, true);
     (_a = $$.showGridFocus) == null ? void 0 : _a.call($$, selectedData);
+    (_b = $$.showSubchartGridFocus) == null ? void 0 : _b.call($$, selectedData);
     const dist = $$.dist(closest, mouse);
     if ($$.isBarType(closest.id) || dist < $$.getPointSensitivity(closest)) {
       $$.$el.eventRect.style("cursor", "pointer");
@@ -28208,7 +29699,7 @@ var __pow = Math.pow;
    * @private
    */
   unselectRect() {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     const $$ = this;
     const { state, $el: { circle, tooltip } } = $$;
     state._lastTooltipMouse = null;
@@ -28219,6 +29710,7 @@ var __pow = Math.pow;
     }
     (_b = $$.$el.eventRect) == null ? void 0 : _b.style("cursor", null);
     (_c = $$.hideGridFocus) == null ? void 0 : _c.call($$);
+    (_d = $$.hideSubchartGridFocus) == null ? void 0 : _d.call($$);
     if (tooltip) {
       $$.hideTooltip();
       $$._handleLinkedCharts(false);
@@ -28256,6 +29748,7 @@ var __pow = Math.pow;
         $$.updateEventRect();
         Object.values($$.$el.axisTooltip).forEach((v) => v == null ? void 0 : v.style("display", null));
       }).on("mousemove", function(event) {
+        var _a;
         const d = getData(event);
         state.event = event;
         if (!d) {
@@ -28273,7 +29766,7 @@ var __pow = Math.pow;
             index += 1;
           }
         }
-        $$.showAxisGridFocus();
+        (_a = $$.showAxisGridFocus) == null ? void 0 : _a.call($$);
         const eventOnSameIdx = config.tooltip_grouped && index === eventReceiver.currentIdx;
         if (state.dragging || state.flowing || $$.hasArcType() || eventOnSameIdx) {
           if (config.tooltip_show && eventOnSameIdx) {
@@ -28293,11 +29786,12 @@ var __pow = Math.pow;
         index === -1 ? $$.unselectRect() : $$.selectRectForSingle(this, index);
         $$.setOverOut(index !== -1, index);
       }).on("mouseout", (event) => {
+        var _a;
         state.event = event;
         if (!$$.config || $$.hasArcType() || eventReceiver.currentIdx === -1 || !config.interaction_onout) {
           return;
         }
-        $$.hideAxisGridFocus();
+        (_a = $$.hideAxisGridFocus) == null ? void 0 : _a.call($$);
         $$.unselectRect();
         $$.setOverOut(false, eventReceiver.currentIdx);
         eventReceiver.currentIdx = -1;
@@ -30781,28 +32275,51 @@ function _getConnectLineType(id) {
     const { bar } = isSub ? $$.$el.subchart : $$.$el;
     const barPath = [];
     const connectLineCache = /* @__PURE__ */ new Map();
+    const getRadius = getBarRadiusResolver($$);
+    const barColor = $$.generateUpdateBarColor();
+    const getBarPath = function(d, i, arr) {
+      var _a;
+      const isDrawable = isNumber(d.value) || $$.isBarRangeType(d) || ((_a = $$.isSubchartCandlestickBarValue) == null ? void 0 : _a.call($$, d, isSub));
+      const path = isDrawable ? drawFn(d, i) : [""];
+      let connectLineType = connectLineCache.get(d.id);
+      if (connectLineType === void 0) {
+        connectLineType = _getConnectLineType.call($$, d.id);
+        connectLineCache.set(d.id, connectLineType);
+      }
+      if (path.length > 1) {
+        barPath.push(path[1]);
+      }
+      if (i === arr.length - 1 && barPath.length) {
+        const barConnectLineNode = $$.$T(
+          (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(
+            this.parentNode.querySelector(`.${$BAR.barConnectLine}`)
+          ),
+          withTransition,
+          getRandom()
+        );
+        $$.updateConnectLine(barConnectLineNode, connectLineType, barPath);
+        barPath.splice(0);
+      }
+      return path[0];
+    };
+    const barTransition = $$.$T(bar, withTransition, getRandom());
+    if (getRadius && typeof barTransition.attrTween === "function") {
+      barTransition.attrTween(
+        "d",
+        function(d, i, arr) {
+          var _a;
+          const target = getBarPath.call(this, d, i, arr);
+          return getBarPathInterpolator((_a = this.getAttribute("d")) != null ? _a : "", target);
+        }
+      );
+    } else {
+      barTransition.attr("d", getBarPath);
+    }
     return [
-      $$.$T(bar, withTransition, getRandom()).attr("d", function(d, i, arr) {
-        const path = (isNumber(d.value) || $$.isBarRangeType(d)) && drawFn(d, i);
-        let connectLineType = connectLineCache.get(d.id);
-        if (connectLineType === void 0) {
-          connectLineType = _getConnectLineType.call($$, d.id);
-          connectLineCache.set(d.id, connectLineType);
-        }
-        if (path.length > 1) {
-          barPath.push(path[1]);
-        }
-        if (i === arr.length - 1 && barPath.length) {
-          const barConnectLineNode = $$.$T(
-            (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this.parentNode.querySelector(`.${$BAR.barConnectLine}`)),
-            withTransition,
-            getRandom()
-          );
-          $$.updateConnectLine(barConnectLineNode, connectLineType, barPath);
-          barPath.splice(0);
-        }
-        return path[0];
-      }).style("fill", $$.generateUpdateBarColor()).style("clip-path", (d) => d.clipPath).style("opacity", null)
+      barTransition.style("fill", (d) => {
+        var _a;
+        return ((_a = $$.getSubchartCandlestickBarColor) == null ? void 0 : _a.call($$, d, isSub)) || barColor(d);
+      }).style("clip-path", (d) => d.clipPath).style("opacity", null)
     ];
   },
   /**
@@ -31236,7 +32753,7 @@ var candlestick_spreadValues = (a, b) => {
     const shapeOffset = $$.getShapeOffset($$.isCandlestickType, indices, !!isSub);
     const yScale = $$.getYScaleById.bind($$);
     return (d, i) => {
-      const y0 = yScale.call($$, d.id, isSub)($$.getShapeYMin(d.id));
+      const y0 = yScale.call($$, d.id, isSub)($$.getShapeYMin(d.id, isSub));
       const offset = shapeOffset(d, i) || y0;
       const width = isNumber(barW) ? barW : barW[d.id] || barW._$width;
       const value = $$.getCandlestickData(d);
@@ -31817,7 +33334,7 @@ let candlestick_candlestick = () => (extendAxis(
 });
 
 // EXTERNAL MODULE: external {"commonjs":"d3-interpolate","commonjs2":"d3-interpolate","amd":"d3-interpolate","root":"d3"}
-var external_commonjs_d3_interpolate_commonjs2_d3_interpolate_amd_d3_interpolate_root_d3_ = __webpack_require__(11);
+var external_commonjs_d3_interpolate_commonjs2_d3_interpolate_amd_d3_interpolate_root_d3_ = __webpack_require__(10);
 ;// ./src/ChartInternal/internals/text.arc.ts
 
 
@@ -32925,7 +34442,6 @@ var funnel_spreadValues = (a, b) => {
 
 
 
-
 function _getSize(checkNeck = false) {
   const $$ = this;
   const { config, state: { current: { width, height } } } = $$;
@@ -33158,7 +34674,7 @@ function _getSplineClipPath() {
   },
   /**
    * Generate funnel coordinate points data for text labels
-   * @returns {(d: IDataRow) => [number, number][]} Point getter function
+   * @returns {function(IDataRow): Array.<Array.<number>>} Point getter function
    * @private
    */
   generateGetFunnelPoints() {
@@ -33309,7 +34825,7 @@ let funnel_funnel = () => (extendArc([funnel], [shape_funnel]), (funnel_funnel =
         y = Math.sin(linePositioningAngle) * arcInnerRadius;
         transform = `rotate(${lineAngle * 180 / Math.PI}, ${x}, ${y})`;
       }
-      (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).attr("x", x).attr("y", y).attr("width", lineLength).attr("height", lineThickness).attr("transform", transform).style("stroke-dasharray", `0, ${lineLength + lineThickness}, 0`);
+      ;(0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).attr("x", x).attr("y", y).attr("width", lineLength).attr("height", lineThickness).attr("transform", transform).style("stroke-dasharray", `0, ${lineLength + lineThickness}, 0`);
     });
   },
   textForGaugeMinMax(value, isMax) {
@@ -33374,7 +34890,7 @@ let funnel_funnel = () => (extendArc([funnel], [shape_funnel]), (funnel_funnel =
    * @property {number} [gauge.expand.rate=0.98] Set expand rate.
    * @property {number} [gauge.expand.duration=50] Set the expand transition time in milliseconds.
    * @property {boolean} [gauge.enforceMinMax=false] Enforce to given min/max value.
-   * - **Note:** Only works for single data series.
+   * - **Note:** Applies only to unstacked/multi-arc gauges; stacked gauge data is not supported.
    * 	- When `gauge.min=50` and given value is `30`, gauge will render as empty value.
    * 	- When `gauge.max=100` and given value is `120`, gauge will render till 100, not surpassing max value.
    * @property {number} [gauge.min=0] Set min value of the gauge.
@@ -34404,7 +35920,7 @@ let scatter_scatter = () => (extendAxis(
 ), (scatter_scatter = () => TYPE.SCATTER)());
 
 // EXTERNAL MODULE: external {"commonjs":"d3-hierarchy","commonjs2":"d3-hierarchy","amd":"d3-hierarchy","root":"d3"}
-var external_commonjs_d3_hierarchy_commonjs2_d3_hierarchy_amd_d3_hierarchy_root_d3_ = __webpack_require__(12);
+var external_commonjs_d3_hierarchy_commonjs2_d3_hierarchy_amd_d3_hierarchy_root_d3_ = __webpack_require__(11);
 ;// ./src/ChartInternal/shape/core/treemap.ts
 
 function convertDataToTreemapData(data) {
@@ -34678,7 +36194,7 @@ ${percentValue}%`;
    * 	- dice ([d3.treemapDice](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapDice))
    * 	- slice ([d3.treemapSlice](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapSlice))
    * 	- sliceDice ([d3.treemapSliceDice](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapSliceDice))
-   * 	- squrify ([d3.treemapSquarify](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapSquarify))
+   * 	- squarify ([d3.treemapSquarify](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapSquarify))
    * 	- resquarify ([d3.treemapResquarify](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapResquarify))
    * @property {function} [treemap.label.format] Set formatter for the label text.<br>
    * - **Arguments:**
@@ -34691,7 +36207,7 @@ ${percentValue}%`;
    * @see [Demo: treemap](https://naver.github.io/billboard.js/demo/#Chart.TreemapChart)
    * @example
    *  treemap: {
-   *      // "binary", "dice", "slice", "sliceDice", "squrify", "resquarify"
+   *      // "binary", "dice", "slice", "sliceDice", "squarify", "resquarify"
    *      tile: "dice",
    *
    *      label: {
@@ -34772,7 +36288,7 @@ const bb = {
    *    bb.version;  // "1.0.0"
    * @memberof bb
    */
-  version: "4.0.3",
+  version: "4.1.1",
   /**
    * Generate chart
    * - **NOTE:** Bear in mind for the possibility of ***throwing an error***, during the generation when:

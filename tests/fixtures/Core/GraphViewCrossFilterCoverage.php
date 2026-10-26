@@ -105,7 +105,7 @@ if (!str_contains($where, 'gl.graph_template_id IN (5)')) {
 }
 
 foreach (['create_graphs_preview_filter', 'create_listview_filter'] as $builder) {
-	$filters   = __NAMESPACE__ . '\\' . $builder;
+	$filters    = __NAMESPACE__ . '\\' . $builder;
 	$definition = $filters('sess_probe');
 	$host_field = $definition['rows'][0]['host_id'];
 

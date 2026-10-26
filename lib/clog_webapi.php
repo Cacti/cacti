@@ -402,7 +402,7 @@ function clog_view_logfile() : void {
 		}
 
 		// respect the exclusion filter
-		if ($exclude_regex != '' && !$clogAdmin) {
+		if ($exclude_regex != '') {
 			if (validate_is_regex($exclude_regex)) {
 				if (preg_match($exclude_regex, $new_item)) {
 					continue;

@@ -87,6 +87,13 @@ img {
 	vertical-align: middle;
 }
 
+i.ti {
+	font-size: 16px;
+	padding: 0px 3px;
+	text-align: left;
+	vertical-align: middle;
+}
+
 i.fa, i.fas, i.fab, i.far, i.fal {
 	font-size: 15px;
 	padding: 0px 3px;
@@ -1224,6 +1231,7 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden;
 	border-left: 1px solid #000000;
+	padding-right: 15px;
 }
 
 #graph_view_preview2 table.cactiTable {

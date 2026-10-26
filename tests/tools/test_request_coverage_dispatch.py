@@ -11,6 +11,11 @@ import unittest
 
 
 class RequestDispatchTest(unittest.TestCase):
+    def test_package_change_runs_the_signed_archive_probe(self):
+        for path in ['lib/package.php', 'tests/fixtures/Core/PackageArchive.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'PackageArchive.php')
+
     def test_queue_change_runs_the_queue_probe_without_ripgrep(self):
         self.dispatch('cli/queue_worker.php', 'queue')
 
@@ -70,7 +75,7 @@ class RequestDispatchTest(unittest.TestCase):
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
-                           'Core/PackageSaveMatrix.php']:
+                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')

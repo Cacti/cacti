@@ -62,10 +62,17 @@ jobs:
     name: lib/cdef.php 100% coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
 
     services:
       mariadb:
-        image: public.ecr.aws/docker/library/mariadb@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430 # 11.4
+        # Copied by ci-images.yml; services pull before any step can set a mirror.
+        image: ghcr.io/cacti/ci-images/mariadb:11.4@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           MARIADB_ROOT_PASSWORD: root
           MARIADB_DATABASE: cacti_test

@@ -16,10 +16,13 @@ fi
 
 MODE="${1:---summary}"
 
+# Third-party plugins are gitignored. Prune the directory itself: a later
+# --glob '*.php' would re-include files that '!plugins/**' excludes.
 EXCLUDE=(
 	--glob '!include/vendor/**'
 	--glob '!locales/**'
 	--glob '!tests/**'
+	--glob '!/plugins'
 	--glob '!**/*.min.js'
 )
 RG_COMMON=(--no-config --no-ignore --no-ignore-vcs --no-ignore-parent)

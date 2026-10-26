@@ -113,6 +113,13 @@ img {
 	vertical-align: middle;
 }
 
+i.ti {
+	font-size: 16px;
+	padding: 0px 3px;
+	text-align: left;
+	vertical-align: middle;
+}
+
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
 	font-size: 15px;
@@ -825,7 +832,8 @@ label {
 }
 
 .filteredValue {
-	background-color: #F8D93D;
+	background-color: #e3b341;
+	color: var(--dp-page);
 }
 
 .graphItemGr1Alt1 {
@@ -834,10 +842,6 @@ label {
 
 .graphItemGr1Alt2 {
 	background-color: var(--dp-panel);
-}
-
-.graphItemGr1Cust {
-	background-color: var(--dp-panel-alt);
 }
 
 .graphItemGr2Alt1 {
@@ -1178,6 +1182,7 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden;
 	padding-left: 10px;
+	padding-right: 15px;
 	margin-right: 5px;
 }
 
@@ -1628,9 +1633,6 @@ legend {
 	vertical-align: -10%;
 }
 
-.formSubCheckbox label {
-}
-
 .formCheckbox {
 	vertical-align: -15%;
 }
@@ -1845,7 +1847,7 @@ th.sortable {
 }
 
 .graphSubHeaderColumn {
-	color: #white;
+	color: white;
 	font-size: 12px;
 	vertical-align: middle;
 	text-align: left;
@@ -2625,7 +2627,10 @@ tr#realtime td:first-child {
 }
 
 .ui-multiselect-header {
-	background-color: var(--dp-row-even);
+	background: var(--dp-row-even);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
 	margin-bottom: 5px;
 }
 
@@ -2651,6 +2656,66 @@ tr#realtime td:first-child {
 .ui-multiselect-filter-label > input {
 	padding: 2px;
 	margin-left: 4px;
+}
+
+/* jQuery multiselect - jquery.multiselect.css is stock, so repaint the button
+   and popup menu onto this theme's palette here to match the select2
+   controls instead of the jquery-ui.css surfaces. */
+.ui-multiselect.ui-state-default {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+	text-transform: none;
+}
+
+.ui-multiselect.ui-state-default:hover,
+.ui-multiselect.ui-state-hover,
+.ui-multiselect.ui-state-focus,
+.ui-multiselect.ui-state-active {
+	background: var(--dp-panel-alt);
+	background-image: none;
+	border-color: var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-multiselect.ui-state-disabled {
+	background: var(--dp-panel-alt);
+	color: var(--dp-text-muted);
+}
+
+.ui-multiselect-menu.ui-widget-content {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label {
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label.ui-state-hover {
+	background: var(--dp-header);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label.ui-state-active {
+	background: var(--dp-panel-alt);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
+.ui-multiselect-checkboxes label.ui-state-disabled {
+	color: var(--dp-text-muted);
+}
+
+.ui-multiselect-grouplabel {
+	border-bottom-color: var(--dp-border);
+	color: var(--dp-text);
 }
 
 .ui-widget {
@@ -3067,7 +3132,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* open/close carets as glyphs, centered to match the node glyphs */
 .jstree-default .jstree-ocl {
 	background: none !important;
-	font-family: 'Font Awesome 5 Free';
+	font-family: 'Font Awesome 5 Free', sans-serif;
 	font-weight: 900;
 	font-size: 14px;
 	line-height: 20px;

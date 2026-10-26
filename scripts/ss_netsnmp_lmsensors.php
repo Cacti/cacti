@@ -203,7 +203,9 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		// The snmp response should contain a numeric counter (NOT the device index)
 		// ------------------------------------------------------------------------------------
 		if (str_contains($snmp_test, 'No Such Instance') || is_numeric($snmp_test) == false || $snmp_test === '') {
-			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS', POLLER_VERBOSITY_MEDIUM);
+			if (is_device_debug_enabled($host_id) || read_config_option('spine_log_level') == 2) {
+				cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
+			}
 
 			return 'U';
 		} else {
@@ -248,7 +250,9 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 			(substr($snmp_array[0]['value'],0,16) == 'No Such Instance') ||
 			(is_numeric($snmp_array[0]['value']) == false) ||
 			(trim((string) $snmp_array[0]['value']) == '')) {
-			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
+			if (is_device_debug_enabled($host_id) || read_config_option('spine_log_level') == 2) {
+				cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
+			}
 
 			return null;
 		}
@@ -275,7 +279,11 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 
 				return null;
 			} else {
-				$sensor_array[$sensor_count]['index'] = $scratch[1];
+				$sensor_array[$sensor_count] = [
+					'index'   => $scratch[1],
+					'name'    => '',
+					'reading' => ''
+				];
 			}
 
 			$sensor_count++;
@@ -285,9 +293,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		// requests for data other than index values require additional processing
 		//
 		if ($data_request != 'sensordevice' && cacti_sizeof($sensor_array)) {
-			$sensor_count = 0;
-
-			foreach ($sensor_array as $sensor) {
+			foreach ($sensor_array as $sensor_key => $sensor) {
 				switch ($data_request) {
 					case 'sensordevice':
 						//
@@ -337,7 +343,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						//
 						// store the sensor name
 						//
-						$sensor_array[$sensor_count]['name'] = $scratch;
+						$sensor['name'] = $scratch;
 
 						break;
 					case 'sensorreading':
@@ -378,15 +384,12 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						//
 						// store the sensor reading
 						//
-						$sensor_array[$sensor_count]['reading'] = $scratch;
+						$sensor['reading'] = $scratch;
 
 						break;
 				}
 
-				//
-				// increment the sensor counter
-				//
-				$sensor_count++;
+				$sensor_array[$sensor_key] = $sensor;
 			}
 		}
 
