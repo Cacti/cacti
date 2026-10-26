@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 11:05+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 11:29+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -534,11 +534,11 @@ msgstr "Objektets interna databasidentifierare"
 
 #: aggregate_graphs.php graphs.php
 msgid "Aggregate Template"
-msgstr "Aggregatmall"
+msgstr "Mall för aggregerad graf"
 
 #: aggregate_graphs.php
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "Aggregatmallen som de aggregerade graferna bygger på"
+msgstr "Mallen för aggregerad graf som de aggregerade graferna bygger på"
 
 #: aggregate_graphs.php
 msgid "No Aggregate Graphs Found"
@@ -546,11 +546,11 @@ msgstr "Inga aggregerade grafer hittades"
 
 #: aggregate_templates.php
 msgid "Aggregate Template not found."
-msgstr "Aggregatmallen hittades inte."
+msgstr "Mallen för aggregerad graf hittades inte."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande aggregatmallar."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande mallar för aggregerade grafer."
 
 #: aggregate_templates.php
 msgid "Delete Color Template(s)"
@@ -559,15 +559,15 @@ msgstr "Radera färgmallar"
 #: aggregate_templates.php
 #, php-format
 msgid "Aggregate Template [edit: %s]"
-msgstr "Aggregatmall [redigera: %s]"
+msgstr "Mall för aggregerad graf [redigera: %s]"
 
 #: aggregate_templates.php
 msgid "Aggregate Template [new]"
-msgstr "Aggregatmall [ny]"
+msgstr "Mall för aggregerad graf [ny]"
 
 #: aggregate_templates.php include/global_arrays.php
 msgid "Aggregate Templates"
-msgstr "Aggregatmallar"
+msgstr "Mallar för aggregerade grafer"
 
 #: aggregate_templates.php automation_templates.php color_templates.php
 #: include/global_arrays.php lib/installer.php
@@ -585,7 +585,7 @@ msgstr "Mallens titel"
 
 #: aggregate_templates.php
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
-msgstr "Aggregatmallar som används kan inte tas bort. En mall används om ett aggregat hänvisar till den."
+msgstr "Mallar för aggregerade grafer som används kan inte tas bort. En mall används om en aggregerad graf hänvisar till den."
 
 #: aggregate_templates.php cdef.php color.php color_templates.php
 #: data_input.php data_queries.php data_source_profiles.php data_sources.php
@@ -3774,7 +3774,7 @@ msgstr "Datakällor [ inte enhetsbaserade ]"
 #: data_sources.php
 #, php-format
 msgid "Data Sources [ %s ]"
-msgstr "Datakällor [ %s]"
+msgstr "Datakällor [%s]"
 
 #: data_sources.php
 msgid "Bad Indexes"
@@ -4054,7 +4054,7 @@ msgstr "GRAFEN FINNS INTE"
 
 #: graph.php
 msgid "Viewing Graph"
-msgstr "Visa graf"
+msgstr "Visar graf"
 
 #: graph.php
 msgid "The Graph you requested does not exist."
@@ -4399,7 +4399,7 @@ msgstr "Visa"
 
 #: graph_view.php include/global_arrays.php
 msgid "View Graphs"
-msgstr "Se grafer"
+msgstr "Visa grafer"
 
 #: graph_view.php
 msgid "Add to a Report"
@@ -4677,11 +4677,11 @@ msgstr "Vänligen bekräfta"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "Välj en aggregatmall och klicka på ”Fortsätt” för att skapa den aggregerade grafen. Klicka annars på ”Avbryt” för att gå tillbaka."
+msgstr "Välj en mall för aggregerad graf och klicka på ”Fortsätt” för att skapa grafen. Klicka annars på ”Avbryt” för att gå tillbaka."
 
 #: graphs.php
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
-msgstr "Det finns för närvarande inga aggregatmallar för den här grafmallen. Skapa en aggregatmall för de valda grafernas grafmall och försök igen, eller skapa en aggregerad graf utan mall."
+msgstr "Det finns för närvarande inga mallar för aggregerade grafer för den här grafmallen. Skapa en mall för aggregerad graf för de valda grafernas grafmall och försök igen, eller skapa en aggregerad graf utan mall."
 
 #: graphs.php
 msgid "Press 'Return' to return and select different Graphs."
@@ -4732,7 +4732,7 @@ msgstr "Lås upp grafen."
 
 #: graphs.php
 msgid "Lock Graph."
-msgstr "Lås graf."
+msgstr "Lås grafen."
 
 #: graphs.php
 msgid "Selected Graph Template"
@@ -4741,7 +4741,7 @@ msgstr "Vald grafmall"
 #: graphs.php
 #, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "Välj en grafmall som ska tillämpas på den här grafen. Observera att du bara kan ändra grafmallar till en 100 %% kompatibel grafmall, vilket innebär att den innehåller identiska datakällor."
+msgstr "Välj en grafmall som ska tillämpas på den här grafen. Du kan bara byta till en grafmall som är 100 %% kompatibel, vilket innebär att den innehåller identiska datakällor."
 
 #: graphs.php
 msgid "Choose the Device that this Graph belongs to."
@@ -4799,7 +4799,7 @@ msgstr "Datakällor [Ingen enhet]"
 #: graphs_items.php
 #, php-format
 msgid "Data Sources [%s]"
-msgstr "Datakällor [ %s]"
+msgstr "Datakällor [%s]"
 
 #: graphs_items.php include/global_arrays.php include/global_form.php
 msgid "Data Template"
@@ -9207,7 +9207,7 @@ msgstr "Spårning av datakällor"
 
 #: include/global_settings.php
 msgid "A developer only option to trace the creation of Data Sources mainly around checks for uniqueness"
-msgstr "Enbart ett utvecklingsalternativ för att spåra skapandet av datakällor, huvudsakligen kring kontroller av unikhet"
+msgstr "Ett alternativ för utvecklare som spårar skapandet av datakällor, främst kontroller av att de är unika"
 
 #: include/global_settings.php
 msgid "Selective File Debug"
@@ -9299,7 +9299,7 @@ msgstr "Identifiera användarens standardspråk automatiskt och använd det vid 
 
 #: include/global_settings.php
 msgid "Preferred Language Processor"
-msgstr "Föredragen språkprocessor"
+msgstr "Föredragen språkhanterare"
 
 #: include/global_settings.php
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  If none is selected Cacti will attempt to use the first one found."
