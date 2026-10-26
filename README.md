@@ -51,6 +51,16 @@ The Deepness fixture checks wrapped titles and readable status messages on dark
 rows. See [Deepness theme validation](docs/validation/deepness-theme.md) for the
 narrow details screenshot and browser tests.
 
+## Midwinter Theme
+
+![Midwinter dark inventory with seeded measurements](docs/validation/images/midwinter-dark-theme-desktop.png)
+
+![Midwinter light inventory with seeded measurements](docs/validation/images/midwinter-light-theme-desktop.png)
+
+Both Midwinter palettes have browser coverage for details controls and row-state
+contrast. See [Midwinter theme validation](docs/validation/midwinter-theme.md) for
+narrow-screen screenshots and reproduction commands.
+
 ---
 
 ## Release Branches
