@@ -18,6 +18,7 @@
 */
 
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once __DIR__ . '/RequestCoverage.php';
 
 $GLOBALS['cdef_test_items']          = [];
 $GLOBALS['cdef_test_lists']          = [];

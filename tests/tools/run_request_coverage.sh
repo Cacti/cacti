@@ -33,6 +33,8 @@ run_php_probe() {
 	fi
 }
 
+run_php_probe include/vendor/bin/pest '^(lib/cdef\.php|lib/Cdef/|tests/(phpunit-cdef\.xml|Coverage/CdefCoverageTest\.php|Helpers/CdefCoverageBootstrap\.php|Unit/Core/Rrd/CdefResolverTest\.php))' --configuration=tests/phpunit-cdef.xml
+
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'
