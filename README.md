@@ -30,11 +30,25 @@ Core capabilities include:
 
 ![Cacti device inventory with synthetic monitoring data](docs/validation/images/cacti-theme-desktop.png)
 
-This browser fixture uses shipped theme styles and synthetic device measurements.
-See the [theme validation guides](docs/validation/README.md) for all themes,
-plugin and RTM screenshots, test scope, and reproduction commands. See
-[contributor browser checks](CONTRIBUTING.md#theme-browser-checks) to run the
-same suites as GitHub Actions.
+The screenshot is a browser fixture using Cacti's theme styles and synthetic
+device measurements. This branch's theme validation covers three groups:
+
+- **Core Cacti themes:** layout, keyboard focus, and text contrast.
+- **Cacti plugins:** theme compatibility for Thold, MacTrack, Syslog,
+  Alarm Manager, HMIB, FlowView, and Monitor.
+- **RTM plugins:** an additional compatibility suite using styles from a pinned
+  external RTM source revision. RTM is a test fixture, not a requirement for
+  installing or running Cacti. These checks do not change RTM application code.
+
+These are browser component tests, not a running monitoring installation.
+They do not exercise authentication, database requests, pollers, or schedulers.
+RTM chart rendering is outside scope because the public source omits
+FusionCharts runtime assets.
+
+See the [theme validation guides](docs/validation/README.md) for screenshots,
+fixture revisions, limitations, and reproduction commands. The
+[contributor browser checks](CONTRIBUTING.md#theme-browser-checks) explain how
+to run the same suites as GitHub Actions.
 
 ---
 
