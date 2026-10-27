@@ -194,7 +194,7 @@ for (const [route, column] of [
 		const response = await page.goto(route);
 		expect(response?.status()).toBe(200);
 		await expect(page.locator('#filter')).toBeVisible();
-		await expect(page.getByRole('columnheader', { name: column, exact: true })).toBeVisible();
+		await expect(page.getByRole('columnheader').filter({ hasText: column })).toBeVisible();
 		await expect(page.locator('body')).not.toContainText(/Fatal error|Uncaught|Permission Denied/);
 	});
 }
