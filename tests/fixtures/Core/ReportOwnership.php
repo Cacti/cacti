@@ -48,6 +48,9 @@ foreach (['reports_owner_authorized', 'reports_generate_history_html', 'reports_
 }
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html_reports.php', 'reports_item_authorized', __NAMESPACE__);
 
+function generate_report(...$arguments): void {
+	throw new \RuntimeException('Unauthorized report send reached generation.');
+}
 function reports_log(...$arguments): void {
 }
 function isrv($name) {
@@ -73,7 +76,7 @@ foreach (['duplicate_reports', 'reports_add_devices', 'reports_add_graphs'] as $
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/reports.php', $function, __NAMESPACE__);
 }
 
-foreach (['reports_form_save', 'reports_item_edit', 'reports_item_moveup', 'reports_item_movedown', 'reports_item_remove', 'reports_item_dnd', 'reports_form_actions'] as $function) {
+foreach (['reports_send', 'reports_form_save', 'reports_item_edit', 'reports_item_moveup', 'reports_item_movedown', 'reports_item_remove', 'reports_item_dnd', 'reports_form_actions'] as $function) {
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html_reports.php', $function, __NAMESPACE__);
 }
 
@@ -97,6 +100,8 @@ function input_validate_input_number($value, $name) {
 
 $_SESSION[SESS_USER_ID] = 1;
 duplicate_reports(2, 'Fixture');
+reports_send(2);
+reports_send(999);
 
 if (reports_add_devices(2, [], [], '') !== false || reports_add_graphs(2, 1, [], '') !== false) {
 	throw new \RuntimeException('Direct report operation bypassed ownership.');
