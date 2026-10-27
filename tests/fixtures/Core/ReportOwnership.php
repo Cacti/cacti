@@ -43,6 +43,46 @@ foreach (['reports_owner_authorized', 'reports_generate_history_html', 'reports_
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/reports.php', $function, __NAMESPACE__);
 }
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html_reports.php', 'reports_item_authorized', __NAMESPACE__);
+
+function reports_log(...$arguments): void {
+}
+function isrv($name) {
+	return isset($GLOBALS['report_post'][$name]);
+}
+function gnrv($name) {
+	return $GLOBALS['report_post'][$name] ?? '';
+}
+function gfrv($name) {
+	return (int) ($GLOBALS['report_post'][$name] ?? 0);
+}
+function ierv($name) {
+	return empty($GLOBALS['report_post'][$name]);
+}
+function form_input_validate($value, ...$arguments) {
+	return $value;
+}
+function get_reports_page() {
+	return 'reports.php';
+}
+
+foreach (['duplicate_reports', 'reports_add_devices', 'reports_add_graphs'] as $function) {
+	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/reports.php', $function, __NAMESPACE__);
+}
+\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html_reports.php', 'reports_form_save', __NAMESPACE__);
+$_SESSION[SESS_USER_ID] = 1;
+duplicate_reports(2, 'Fixture');
+
+if (reports_add_devices(2, [], [], '') !== false || reports_add_graphs(2, 1, [], '') !== false) {
+	throw new \RuntimeException('Direct report operation bypassed ownership.');
+}
+
+if (($argv[1] ?? '') === 'form') {
+	$GLOBALS['report_post'] = $argv[2] === 'parent' ? ['save_component_report' => true, 'id' => 2] : ['save_component_report_item' => true, 'id' => 0, 'report_id' => 2];
+	register_shutdown_function(function () { print json_encode(['reports' => (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports'), 'items' => (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items')]); });
+	reports_form_save();
+
+	throw new \RuntimeException('Cross-owner form save did not stop.');
+}
 $cases = 0;
 
 foreach ([false, true] as $admin) {
