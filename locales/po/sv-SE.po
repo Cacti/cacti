@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-26 12:57+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-10-11 16:07-0700\nPO-Revision-Date: 2026-10-27 13:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -94,19 +94,19 @@ msgstr "Placera grafer på rapporten"
 
 #: aggregate_graphs.php
 msgid "Migrate Aggregate to use a Template"
-msgstr "Migrera aggregerad graf till en mall"
+msgstr "Migrera grafaggregation till att använda en mall"
 
 #: aggregate_graphs.php
 msgid "Create New Aggregate from Aggregates"
-msgstr "Skapa aggregerad graf från aggregerade grafer"
+msgstr "Skapa ny grafaggregation av befintliga grafaggregeringar"
 
 #: aggregate_graphs.php
 msgid "Associate with Aggregate"
-msgstr "Koppla till aggregerad graf"
+msgstr "Koppla till grafaggregation"
 
 #: aggregate_graphs.php
 msgid "Disassociate with Aggregate"
-msgstr "Koppla bort från aggregerad graf"
+msgstr "Koppla bort från grafaggregation"
 
 #: aggregate_graphs.php graphs.php host.php
 #, php-format
@@ -115,7 +115,7 @@ msgstr "Placera i ett träd (%s)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande aggregerade grafer."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande grafaggregeringar."
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -148,11 +148,11 @@ msgstr "Ta bort grafer"
 
 #: aggregate_graphs.php
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
-msgstr "De valda aggregerade graferna innehåller element från mer än en grafmall."
+msgstr "De valda grafaggregeringarna innehåller element från mer än en grafmall."
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "För att migrera de aggregerade graferna nedan till mallbaserade aggregat måste de använda samma grafmall. Klicka på ”Tillbaka” och välj enbart aggregerade grafer som använder samma grafmall."
+msgstr "För att migrera grafaggregeringarna nedan till mallbaserade grafaggregeringar måste de använda samma grafmall. Klicka på ”Tillbaka” och välj enbart grafaggregeringar som använder samma grafmall."
 
 #: aggregate_graphs.php auth_changepassword.php auth_profile.php
 #: automation_networks.php automation_snmp.php graphs.php host.php
@@ -163,28 +163,28 @@ msgstr "Tillbaka"
 
 #: aggregate_graphs.php
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
-msgstr "De valda aggregerade graferna verkar inte ha några matchande mallar för aggregerade grafer."
+msgstr "De valda grafaggregeringarna verkar inte ha några matchande mallar för grafaggregeringar."
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
-msgstr "Det måste finnas en mall för aggregerad graf för att migrera graferna nedan. Klicka på ”Tillbaka” och skapa en mall innan du försöker igen."
+msgstr "Det måste finnas en mall för grafaggregation för att migrera graferna nedan. Klicka på ”Tillbaka” och skapa en mall innan du försöker igen."
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Klicka på ”Fortsätt” för att migrera följande aggregerade grafer till mallen för aggregerad graf som du väljer nedan."
+msgstr "Klicka på ”Fortsätt” för att migrera följande grafaggregeringar till mallen för grafaggregation som du väljer nedan."
 
 #: aggregate_graphs.php
 msgid "Aggregate Template:"
-msgstr "Mall för aggregerad graf:"
+msgstr "Mall för grafaggregation:"
 
 #: aggregate_graphs.php
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
-msgstr "Det finns för närvarande inga mallar för aggregerade grafer för de valda äldre aggregaten."
+msgstr "Det finns för närvarande inga mallar för grafaggregeringar för de valda äldre aggregaten."
 
 #: aggregate_graphs.php
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "För att migrera de aggregerade graferna nedan till mallbaserade aggregat måste du först skapa en mall för aggregerad graf för grafmallen ”%s”."
+msgstr "För att migrera grafaggregeringarna nedan till mallbaserade grafaggregeringar måste du först skapa en mall för grafaggregation för grafmallen ”%s”."
 
 #: aggregate_graphs.php
 msgid "Please press 'Return' to continue."
@@ -192,15 +192,15 @@ msgstr "Klicka på ”Tillbaka” för att fortsätta."
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Klicka på ”Fortsätt” för att kombinera följande aggregerade grafer till en enda aggregerad graf."
+msgstr "Klicka på ”Fortsätt” för att kombinera följande grafaggregeringar till en enda grafaggregation."
 
 #: aggregate_graphs.php
 msgid "Aggregate Name:"
-msgstr "Aggregatets namn:"
+msgstr "Den aggregerade grafens namn:"
 
 #: aggregate_graphs.php
 msgid "New Aggregate"
-msgstr "Ny aggregerad graf"
+msgstr "Ny grafaggregation"
 
 #: aggregate_graphs.php graphs.php host.php
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
@@ -228,7 +228,7 @@ msgstr "Du har inte skapat några rapporter."
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
-msgstr "Klicka på ”Fortsätt” för att konvertera följande aggregerade grafer till vanliga grafer."
+msgstr "Klicka på ”Fortsätt” för att konvertera följande grafaggregeringar till vanliga grafer."
 
 #: aggregate_graphs.php
 msgid "Convert to normal Graph(s)"
@@ -236,7 +236,7 @@ msgstr "Konvertera till vanliga grafer"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Klicka på ”Fortsätt” för att koppla följande grafer till den aggregerade grafen."
+msgstr "Klicka på ”Fortsätt” för att koppla följande grafer till grafaggregationen."
 
 #: aggregate_graphs.php
 msgid "Associate Graph(s)"
@@ -252,7 +252,7 @@ msgstr "Koppla bort grafer"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
-msgstr "Klicka på ”Fortsätt” för att placera följande aggregerade grafer under trädgrenen."
+msgstr "Klicka på ”Fortsätt” för att placera följande grafaggregeringar under trädgrenen."
 
 #: aggregate_graphs.php host.php
 msgid "Destination Branch:"
@@ -301,12 +301,12 @@ msgstr "Visa objektdetaljer"
 
 #: aggregate_graphs.php
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Förhandsvisningen av aggregatet finns inte"
+msgstr "Förhandsvisningen av den aggregerade grafen finns inte"
 
 #: aggregate_graphs.php
 #, php-format
 msgid "Aggregate Preview %s"
-msgstr "Förhandsvisning av aggregat %s"
+msgstr "Förhandsvisning av aggregerad graf %s"
 
 #: aggregate_graphs.php graph.php graphs.php
 msgid "RRDtool Command:"
@@ -331,7 +331,7 @@ msgstr "Ersättningsvärden för prefix"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
-msgstr "Du kan använda dessa ersättningsvärden för prefixet i den aggregerade grafen"
+msgstr "Du kan använda dessa ersättningsvärden för prefixet i grafaggregationen"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 #: lib/api_aggregate.php
@@ -391,7 +391,7 @@ msgstr "Standard"
 
 #: aggregate_graphs.php
 msgid "Part of Aggregate"
-msgstr "Del av aggregerad graf"
+msgstr "Del av grafaggregation"
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -461,7 +461,7 @@ msgstr "ID"
 
 #: aggregate_graphs.php
 msgid "Included in Aggregate"
-msgstr "Ingår i den aggregerade grafen"
+msgstr "Ingår i grafaggregationen"
 
 #: aggregate_graphs.php graph_realtime.php graph_templates.php graph_view.php
 #: graphs.php lib/html_graph.php lib/html_tree.php lib/spikekill.php
@@ -526,7 +526,7 @@ msgstr "Ingen"
 
 #: aggregate_graphs.php
 msgid "The title for the Aggregate Graphs"
-msgstr "Titeln för de aggregerade graferna"
+msgstr "Titeln för grafaggregeringarna"
 
 #: aggregate_graphs.php
 msgid "The internal database identifier for this object"
@@ -534,23 +534,23 @@ msgstr "Objektets interna databasidentifierare"
 
 #: aggregate_graphs.php graphs.php
 msgid "Aggregate Template"
-msgstr "Mall för aggregerad graf"
+msgstr "Mall för grafaggregation"
 
 #: aggregate_graphs.php
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "Mallen för aggregerad graf som de aggregerade graferna bygger på"
+msgstr "Mallen för grafaggregation som grafaggregeringarna bygger på"
 
 #: aggregate_graphs.php
 msgid "No Aggregate Graphs Found"
-msgstr "Inga aggregerade grafer hittades"
+msgstr "Inga grafaggregeringar hittades"
 
 #: aggregate_templates.php
 msgid "Aggregate Template not found."
-msgstr "Mallen för aggregerad graf hittades inte."
+msgstr "Mallen för grafaggregation hittades inte."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande mallar för aggregerade grafer."
+msgstr "Klicka på ”Fortsätt” för att ta bort följande mallar för grafaggregeringar."
 
 #: aggregate_templates.php
 msgid "Delete Color Template(s)"
@@ -559,15 +559,15 @@ msgstr "Radera färgmallar"
 #: aggregate_templates.php
 #, php-format
 msgid "Aggregate Template [edit: %s]"
-msgstr "Mall för aggregerad graf [redigera: %s]"
+msgstr "Mall för grafaggregation [redigera: %s]"
 
 #: aggregate_templates.php
 msgid "Aggregate Template [new]"
-msgstr "Mall för aggregerad graf [ny]"
+msgstr "Mall för grafaggregation [ny]"
 
 #: aggregate_templates.php include/global_arrays.php
 msgid "Aggregate Templates"
-msgstr "Mallar för aggregerade grafer"
+msgstr "Mallar för grafaggregeringar"
 
 #: aggregate_templates.php automation_templates.php color_templates.php
 #: include/global_arrays.php lib/installer.php
@@ -585,7 +585,7 @@ msgstr "Mallens titel"
 
 #: aggregate_templates.php
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
-msgstr "Mallar för aggregerade grafer som används kan inte tas bort. En mall används om en aggregerad graf hänvisar till den."
+msgstr "Mallar för grafaggregeringar som används kan inte tas bort. En mall används om en grafaggregation hänvisar till den."
 
 #: aggregate_templates.php cdef.php color.php color_templates.php
 #: data_input.php data_queries.php data_source_profiles.php data_sources.php
@@ -607,7 +607,7 @@ msgstr "Grafmall"
 
 #: aggregate_templates.php
 msgid "No Aggregate Templates Found"
-msgstr "Inga mallar för aggregerade grafer hittades"
+msgstr "Inga mallar för grafaggregeringar hittades"
 
 #: auth_changepassword.php
 msgid "You cannot use a previously entered password!"
@@ -894,7 +894,7 @@ msgstr "Uppe"
 
 #: automation_devices.php
 msgid "Added manually through device automation interface."
-msgstr "Tillagd manuellt via enhetens automationsgränssnitt."
+msgstr "Tillagd manuellt via automatiseringsgränssnittet för enheter."
 
 #: automation_devices.php
 #, php-format
@@ -916,7 +916,7 @@ msgstr "Klicka på ”Fortsätt” för att lägga till följande upptäckta enh
 
 #: automation_devices.php pollers.php
 msgid "Pollers"
-msgstr "Insamlare"
+msgstr "Datainsamlare"
 
 #: automation_devices.php
 msgid "Select Template"
@@ -932,7 +932,7 @@ msgstr "Lägg till enheter"
 
 #: automation_devices.php
 msgid "Click 'Continue' to Delete the following Discovered device(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande upptäckta enheter."
+msgstr "Klicka på ”Fortsätt” för att ta bort urvalet av upptäckta enheter nedan."
 
 #: automation_devices.php host.php
 msgid "Delete Device(s)"
@@ -1217,7 +1217,7 @@ msgstr "FEL: Du måste ange månader, veckor i månaderna och veckodagar. Nätve
 #: automation_networks.php
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
-msgstr "FEL: Nätverket '%s' är ogiltigt."
+msgstr "FEL: Nätverket ”%s” är ogiltigt."
 
 #: automation_networks.php
 msgid "Click 'Continue' to delete the following Network(s)."
@@ -1339,7 +1339,7 @@ msgstr "Alternativa DNS-servrar"
 
 #: automation_networks.php
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
-msgstr "En mellanslagsavgränsad lista över alternativa DNS-servrar för namnuppslagning. Om fältet lämnas tomt används insamlarens operativsystem för att slå upp DNS-namn."
+msgstr "En mellanslagsavgränsad lista över alternativa DNS-servrar för namnuppslagning. Om fältet lämnas tomt används datainsamlarens operativsystem för att slå upp DNS-namn."
 
 #: automation_networks.php
 msgid "Enter IPs or FQDNs of DNS Servers"
@@ -1657,7 +1657,7 @@ msgstr "Tidsgräns för ping"
 
 #: automation_networks.php include/global_form.php
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
-msgstr "Tidsgränsen för ICMP- och UDP-pingning av värdar. Den här SNMP-tidsgränsen gäller för SNMP-pingningar."
+msgstr "Tidsgränsen för ICMP- och UDP-pingning av värdar. Värdens SNMP-tidsgräns används för SNMP-pingningar."
 
 #: automation_networks.php include/global_form.php include/global_settings.php
 msgid "Ping Retry Count"
@@ -1665,7 +1665,7 @@ msgstr "Antal pingförsök"
 
 #: automation_networks.php include/global_form.php
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
-msgstr "Efter ett första misslyckande är detta antalet pingförsök som Cacti gör innan kontrollen markeras som misslyckad."
+msgstr "Antalet nya pingförsök som Cacti gör efter ett misslyckat första försök innan kontrollen markeras som misslyckad."
 
 #: automation_networks.php
 msgid "Select the days(s) of the week"
@@ -1884,7 +1884,7 @@ msgstr "Version"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Community"
-msgstr "Community-sträng"
+msgstr "Communitysträng"
 
 #: automation_snmp.php lib/functions.php
 msgid "Port"
@@ -2294,7 +2294,7 @@ msgstr "Objekt nr %d"
 
 #: cdef.php
 msgid "Delete CDEF Item"
-msgstr "Radera CDEF-objektet"
+msgstr "Ta bort CDEF-objektet"
 
 #: cdef.php include/global_arrays.php
 msgid "CDEFs"
@@ -2391,7 +2391,7 @@ msgstr "<strong>name</strong> – färgnamnet"
 
 #: color.php
 msgid "<strong>hex</strong> - The Hex Value"
-msgstr "<strong>hex</strong> - hexvärdet"
+msgstr "<strong>hex</strong> – hexvärdet"
 
 #: color.php
 #, php-format
@@ -2469,7 +2469,7 @@ msgstr "Inga färger hittades"
 
 #: color_templates.php
 msgid "Sync Aggregates"
-msgstr "Synkronisera aggregat"
+msgstr "Synkronisera aggregerade grafer"
 
 #: color_templates.php
 msgid "Color Item"
@@ -2550,12 +2550,12 @@ msgstr "Färgmall [ny]"
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Färgmallen ”%s” tillämpades på %d mallar för aggregerade grafer och %d aggregat utan mall"
+msgstr "Färgmallen ”%s” tillämpades på %d mallar för grafaggregeringar och %d grafaggregeringar utan mall"
 
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr "Inga mallar för aggregerade grafer eller grafer använde färgmallen ”%s”."
+msgstr "Inga mallar för grafaggregeringar eller grafer använde färgmallen ”%s”."
 
 #: color_templates.php include/global_arrays.php
 msgid "Color Templates"
@@ -2563,7 +2563,7 @@ msgstr "Färgmallar"
 
 #: color_templates.php
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
-msgstr "Färgmallar som används kan inte tas bort. En färgmall används om en mall för aggregerad graf hänvisar till den."
+msgstr "Färgmallar som används kan inte tas bort. En färgmall används om en mall för grafaggregation hänvisar till den."
 
 #: color_templates.php
 msgid "No Color Templates Found"
@@ -2700,7 +2700,7 @@ msgstr "Finns"
 
 #: data_debug.php
 msgid "Determines if the Data Source is located in the Poller Cache."
-msgstr "Anger om datakällan finns i insamlarens cache."
+msgstr "Anger om datakällan finns i datainsamlarens cache."
 
 #: data_debug.php data_sources.php data_templates.php plugins.php
 msgid "Active"
@@ -2769,7 +2769,7 @@ msgstr "Problem hittades! Väntar på uppdatering av RRD-filen"
 
 #: data_debug.php
 msgid "No Initial found!  Waiting on RRDfile update"
-msgstr "Inga initiala hittades! Väntar på RRDfile-uppdatering"
+msgstr "Inga problem hittades vid den första kontrollen. Väntar på uppdatering av RRD-filen"
 
 #: data_debug.php
 msgid "Waiting on analysis and RRDfile update"
@@ -2785,15 +2785,15 @@ msgstr "Webbplatsen körs som"
 
 #: data_debug.php
 msgid "Poller runs as"
-msgstr "Insamlaren körs som"
+msgstr "Datainsamlaren körs som"
 
 #: data_debug.php
 msgid "Is RRA Folder writeable by poller?"
-msgstr "Kan insamlaren skriva till RRA-mappen?"
+msgstr "Kan datainsamlaren skriva till RRA-mappen?"
 
 #: data_debug.php
 msgid "Is RRDfile writeable by poller?"
-msgstr "Kan insamlaren skriva till RRD-filen?"
+msgstr "Kan datainsamlaren skriva till RRD-filen?"
 
 #: data_debug.php
 msgid "Does the RRDfile Exist?"
@@ -2805,7 +2805,7 @@ msgstr "Är datakällan inställd som aktiv?"
 
 #: data_debug.php
 msgid "Did the poller receive valid data?"
-msgstr "Tog insamlaren emot giltiga data?"
+msgstr "Tog datainsamlaren emot giltiga data?"
 
 #: data_debug.php
 msgid "Was the RRDfile updated?"
@@ -2937,7 +2937,7 @@ msgstr "Alla"
 
 #: data_debug.php utilities.php
 msgid "Failed"
-msgstr "Misslyckad"
+msgstr "MISSLYCKADES"
 
 #: data_debug.php
 msgid "Debugging"
@@ -3194,7 +3194,7 @@ msgstr "Kopplade graf- och datamallar [ny]"
 
 #: data_queries.php
 msgid "Associated Data Templates"
-msgstr "Associerade datamallar"
+msgstr "Kopplade datamallar"
 
 #: data_queries.php
 #, php-format
@@ -3267,7 +3267,7 @@ msgstr "Det gick inte att hitta XML-filen."
 
 #: data_queries.php host.php host_templates.php include/global_arrays.php
 msgid "Associated Graph Templates"
-msgstr "Associerade grafmallar"
+msgstr "Kopplade grafmallar"
 
 #: data_queries.php graph_templates.php graphs_new.php host.php
 #: lib/api_automation.php
@@ -3292,7 +3292,7 @@ msgstr "Inga grafmallar definierade."
 
 #: data_queries.php
 msgid "Delete Associated Graph"
-msgstr "Ta bort associerad graf"
+msgstr "Ta bort kopplad graf"
 
 #: data_queries.php include/global_arrays.php
 msgid "Data Queries"
@@ -3407,7 +3407,7 @@ msgstr "Datakällprofilens RRA:er (skrivskyddade)"
 
 #: data_source_profiles.php include/global_form.php
 msgid "Data Retention"
-msgstr "Datalagring"
+msgstr "Lagringstid"
 
 #: data_source_profiles.php include/global_settings.php lib/html_reports.php
 msgid "Graph Timespan"
@@ -3802,7 +3802,7 @@ msgstr "Datakällans interna databas-ID. Användbart vid automatisering eller fe
 
 #: data_sources.php
 msgid "The number of Graphs and Aggregate Graphs that are using the Data Source."
-msgstr "Antalet grafer och aggregerade grafer som använder datakällan."
+msgstr "Antalet grafer och grafaggregeringar som använder datakällan."
 
 #: data_sources.php
 msgid "The frequency that data is collected for this Data Source."
@@ -3834,11 +3834,11 @@ msgstr "Inga grafer"
 
 #: data_sources.php include/global_arrays.php
 msgid "Aggregates"
-msgstr "Aggregat"
+msgstr "Aggregerade grafer"
 
 #: data_sources.php
 msgid "No Aggregates"
-msgstr "Inga aggregat"
+msgstr "Inga aggregerade grafer"
 
 #: data_templates.php
 msgid "Change Profile"
@@ -3981,7 +3981,7 @@ msgstr "Standardprofilen för datakällor i denna datamall."
 
 #: data_templates.php
 msgid "Data Sources based on Inactive Data Templates will not be updated when the poller runs."
-msgstr "Datakällor som bygger på inaktiva datamallar uppdateras inte när insamlaren körs."
+msgstr "Datakällor som bygger på inaktiva datamallar uppdateras inte när datainsamlaren körs."
 
 #: data_templates.php
 msgid "No Data Templates Found"
@@ -3989,7 +3989,7 @@ msgstr "Inga datamallar hittades"
 
 #: gprint_presets.php
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande GPRINT-förinställningar."
+msgstr "Klicka på ”Fortsätt” för att ta bort urvalet av GPRINT-förinställningar nedan."
 
 #: gprint_presets.php
 msgid "Delete GPRINT Preset(s)"
@@ -4133,7 +4133,7 @@ msgstr "RRDtool-grafsyntax"
 
 #: graph_image.php graph_json.php graph_realtime.php lib/rrd.php
 msgid "The Cacti Poller has not run yet."
-msgstr "Cacti-insamlaren har inte körts än."
+msgstr "Cacti-datainsamlaren har inte körts än."
 
 #: graph_realtime.php
 msgid "Real-time has been disabled by your administrator."
@@ -4329,7 +4329,7 @@ msgstr "Grafobjektets indata [redigera graf: %s]"
 
 #: graph_templates_inputs.php
 msgid "Associated Graph Items"
-msgstr "Associerade grafobjekt"
+msgstr "Kopplade grafobjekt"
 
 #: graph_templates_inputs.php
 #, php-format
@@ -4534,11 +4534,11 @@ msgstr "Ändra grafmall"
 
 #: graphs.php
 msgid "Create Aggregate Graph"
-msgstr "Skapa aggregerad graf"
+msgstr "Skapa grafaggregation"
 
 #: graphs.php
 msgid "Create Aggregate from Template"
-msgstr "Skapa aggregerad graf från mall"
+msgstr "Skapa grafaggregation från mall"
 
 #: graphs.php host.php
 msgid "Apply Automation Rules"
@@ -4665,7 +4665,7 @@ msgstr "Tillämpa föreslagen namngivning på graferna igen"
 
 #: graphs.php
 msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
-msgstr "Klicka på ”Fortsätt” för att skapa en aggregerad graf från de valda graferna."
+msgstr "Klicka på ”Fortsätt” för att skapa en grafaggregation från de valda graferna."
 
 #: graphs.php
 msgid "The following Data Sources are in use by these Graphs:"
@@ -4677,11 +4677,11 @@ msgstr "Vänligen bekräfta"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "Välj en mall för aggregerad graf och klicka på ”Fortsätt” för att skapa grafen. Klicka annars på ”Avbryt” för att gå tillbaka."
+msgstr "Välj en mall för grafaggregation och klicka på ”Fortsätt” för att skapa grafen. Klicka annars på ”Avbryt” för att gå tillbaka."
 
 #: graphs.php
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
-msgstr "Det finns för närvarande inga mallar för aggregerade grafer för den här grafmallen. Skapa en mall för aggregerad graf för de valda grafernas grafmall och försök igen, eller skapa en aggregerad graf utan mall."
+msgstr "Det finns för närvarande inga mallar för grafaggregeringar för den här grafmallen. Skapa en mall för grafaggregation för de valda grafernas grafmall och försök igen, eller skapa en grafaggregation utan mall."
 
 #: graphs.php
 msgid "Press 'Return' to return and select different Graphs."
@@ -4741,7 +4741,7 @@ msgstr "Vald grafmall"
 #: graphs.php
 #, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "Välj en grafmall som ska tillämpas på den här grafen. Du kan bara byta till en grafmall som är 100 %% kompatibel, vilket innebär att den innehåller identiska datakällor."
+msgstr "Välj en grafmall som ska tillämpas på den här grafen. Du kan bara byta till en helt kompatibel grafmall, vilket innebär att den innehåller identiska datakällor."
 
 #: graphs.php
 msgid "Choose the Device that this Graph belongs to."
@@ -4905,7 +4905,7 @@ msgstr "Du kan köra denna datafråga i felsökningsläge"
 
 #: graphs_new.php
 msgid "The index is disabled due to the Data Query having no associated Graph Templates."
-msgstr "Indexet är inaktiverat på grund av att datafrågan inte har några associerade grafmallar."
+msgstr "Indexet är inaktiverat eftersom datafrågan inte har några kopplade grafmallar."
 
 #: graphs_new.php
 msgid "Search Returned no Rows."
@@ -4913,7 +4913,7 @@ msgstr "Sökningen returnerade inga rader."
 
 #: graphs_new.php
 msgid "Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file."
-msgstr "Fel i datafrågan. Detta kan bero på följande: Filbehörigheter eller en saknad eller felaktigt formaterad XML-fil för datafråga."
+msgstr "Fel i datafrågan. Det kan bero på filbehörigheterna eller på att datafrågans XML-fil saknas eller har fel format."
 
 #: graphs_new.php
 msgid "Select a Graph Type to Create"
@@ -4981,7 +4981,7 @@ msgstr "Enhetens datafråga har indexerats om. Utförliga resultat visas."
 
 #: host.php
 msgid "Device Debugging Enabled for Device."
-msgstr "Enhetsfelsökning aktiverad för enhet."
+msgstr "Enhetsfelsökning aktiverad för enheten."
 
 #: host.php
 msgid "Device Debugging Disabled for Device."
@@ -4989,7 +4989,7 @@ msgstr "Enhetsfelsökning inaktiverad för enheten."
 
 #: host.php
 msgid "Poller Cache for Device Refreshed."
-msgstr "Insamlarens cache för enheten har uppdaterats."
+msgstr "Datainsamlarens cache för enheten har uppdaterats."
 
 #: host.php
 msgid "ERROR: Invalid Device ID."
@@ -5007,7 +5007,7 @@ msgstr "Det gick inte att lägga till vissa enheter i rapporten ”%s”"
 
 #: host.php
 msgid "Click 'Continue' to enable the following Device(s)."
-msgstr "Klicka på ”Fortsätt” för att aktivera följande enheter."
+msgstr "Klicka på ”Fortsätt” för att aktivera urvalet av enheter nedan."
 
 #: host.php
 msgid "Enable Device(s)"
@@ -5015,7 +5015,7 @@ msgstr "Aktivera enheter"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
-msgstr "Klicka på ”Fortsätt” för att inaktivera följande enheter."
+msgstr "Klicka på ”Fortsätt” för att inaktivera urvalet av enheter nedan."
 
 #: host.php
 msgid "Disable Device(s)"
@@ -5051,7 +5051,7 @@ msgstr "Synkronisera enheter"
 
 #: host.php
 msgid "Click 'Continue' to delete the following Device(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande enheter."
+msgstr "Klicka på ”Fortsätt” för att ta bort urvalet av enheter nedan."
 
 #: host.php
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
@@ -5104,11 +5104,11 @@ msgstr "Aktivera enhetsfelsökning"
 
 #: host.php
 msgid "Repopulate Poller Cache"
-msgstr "Bygg upp insamlarens cache på nytt"
+msgstr "Bygg upp datainsamlarens cache på nytt"
 
 #: host.php include/global_arrays.php utilities.php
 msgid "View Poller Cache"
-msgstr "Visa insamlarens cache"
+msgstr "Visa datainsamlarens cache"
 
 #: host.php
 msgid "Create Graphs for this Device"
@@ -5148,7 +5148,7 @@ msgstr "Ta bort koppling till grafmall"
 
 #: host.php host_templates.php
 msgid "No associated graph templates."
-msgstr "Inga associerade grafmallar."
+msgstr "Inga kopplade grafmallar."
 
 #: host.php host_templates.php
 msgid "Add Graph Template"
@@ -5275,7 +5275,7 @@ msgstr "Enhetsbeskrivning"
 
 #: host.php
 msgid "The name by which this Device will be referred to."
-msgstr "Det namn som denna enhet kommer att hänvisas till."
+msgstr "Namnet som används för att identifiera enheten."
 
 #: host.php include/global_form.php lib/api_automation.php managers.php
 #: pollers.php user_admin.php user_group_admin.php
@@ -5288,7 +5288,7 @@ msgstr "En IP-adress eller ett värdnamn. Värdnamn måste kunna slås upp via D
 
 #: host.php
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
-msgstr "Det interna databas-ID:t för den här enheten.  Användbart vid automatisering eller felsökning."
+msgstr "Enhetens interna databas-ID. Användbart vid automatisering eller felsökning."
 
 #: host.php
 msgid "The total number of Graphs generated from this Device."
@@ -5308,7 +5308,7 @@ msgstr "I status"
 
 #: host.php
 msgid "The amount of time that this Device has been in its current state."
-msgstr "Den tid som den här enheten har varit i sitt nuvarande tillstånd."
+msgstr "Hur länge enheten har haft sin aktuella status."
 
 #: host.php
 msgid "The current amount of time that the host has been up."
@@ -5320,7 +5320,7 @@ msgstr "Insamlingstid"
 
 #: host.php
 msgid "The amount of time it takes to collect data from this Device."
-msgstr "Den tid det tar att samla data från den här enheten."
+msgstr "Tiden det tar att samla in data från enheten."
 
 #: host.php
 msgid "Current (ms)"
@@ -5344,7 +5344,7 @@ msgstr "Tillgänglighet"
 
 #: host.php
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
-msgstr "Tillgänglighetsprocenten baserad på pingresultat sedan räknarna rensades för den här enheten."
+msgstr "Tillgänglighet i procent utifrån pingresultaten sedan enhetens räknare nollställdes."
 
 #: host_templates.php
 msgid "Sync Devices"
@@ -5447,7 +5447,7 @@ msgstr "Enhetsklass"
 
 #: host_templates.php
 msgid "The Class of this Device Template.  The Class Name should be representative of it's function."
-msgstr "Klass för denna enhetsmall.  Klassnamnet ska vara representativt för dess funktion."
+msgstr "Enhetsmallens klass. Klassnamnet bör beskriva dess funktion."
 
 #: host_templates.php
 msgid "The internal database ID for this Device Template.  Useful when performing automation or debugging."
@@ -5696,7 +5696,7 @@ msgstr "Enhetsmallen har uppdaterats. Synkronisera enheterna för att tillämpa 
 
 #: include/global_arrays.php
 msgid "Save Successful. Settings replicated to Remote Data Collectors."
-msgstr "Sparades. Inställningarna har kopierats till fjärrdatainsamlarna."
+msgstr "Sparades. Inställningarna har kopierats till de fjärranslutna datainsamlarna."
 
 #: include/global_arrays.php
 msgid "Save Failed.  Minimum Values must be less than Maximum Value."
@@ -5788,7 +5788,7 @@ msgstr "Datainsamlarna hittades inte vid synkroniseringsförsöket"
 
 #: include/global_arrays.php
 msgid "Unable to establish MySQL connection with Remote Data Collector."
-msgstr "Det går inte att upprätta en MySQL-anslutning till fjärrdatainsamlaren."
+msgstr "Det går inte att upprätta en MySQL-anslutning till den fjärranslutna datainsamlaren."
 
 #: include/global_arrays.php
 msgid "Data Collector synchronization must be initiated from the main Cacti server."
@@ -5800,11 +5800,11 @@ msgstr "Synkroniseringen omfattar inte den centrala Cacti-databasservern."
 
 #: include/global_arrays.php
 msgid "When saving a Remote Data Collector, the Database Hostname must be unique from all others."
-msgstr "När en fjärrdatainsamlare sparas måste databasens värdnamn vara unikt."
+msgstr "När en fjärransluten datainsamlare sparas måste databasens värdnamn vara unikt."
 
 #: include/global_arrays.php
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr "Fjärrdatabasens värdnamn måste vara något annat än ”localhost” för varje fjärrdatainsamlare."
+msgstr "Fjärrdatabasens värdnamn måste vara något annat än ”localhost” för varje fjärransluten datainsamlare."
 
 #: include/global_arrays.php
 msgid "Path variables on this page were only saved locally."
@@ -5848,7 +5848,7 @@ msgstr "Alla grafer har lagts till i rapporten. Dubbla grafer med samma tidsperi
 
 #: include/global_arrays.php
 msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards."
-msgstr "Insamlarens resurscache har rensats. Den primära datainsamlaren bygger upp den vid nästa start och fjärrdatainsamlarna synkroniserar därefter."
+msgstr "Datainsamlarens resurscache har rensats. Huvuddatadatainsamlaren bygger upp den när insamlingsprocessen startar nästa gång och de fjärranslutna datadatainsamlarna synkroniserar därefter."
 
 #: include/global_arrays.php
 msgid "Permission Denied.  You do not have permission to the requested action."
@@ -5964,7 +5964,7 @@ msgstr "Justerad"
 
 #: include/global_arrays.php lib/html.php
 msgid "Center"
-msgstr "Centrerad"
+msgstr "mitten"
 
 #: include/global_arrays.php
 msgid "Top -> Down"
@@ -6351,7 +6351,7 @@ msgstr "Datainsamlare"
 
 #: include/global_arrays.php
 msgid "Aggregate"
-msgstr "Aggregat"
+msgstr "Aggregerad graf"
 
 #: include/global_arrays.php include/global_settings.php
 msgid "Automation"
@@ -6921,7 +6921,7 @@ msgstr "vänster"
 
 #: include/global_arrays.php
 msgid "center"
-msgstr "Centrerad"
+msgstr "mitten"
 
 #: include/global_arrays.php
 msgid "right"
@@ -7482,7 +7482,7 @@ msgstr "VDEF-objekt"
 
 #: include/global_arrays.php
 msgid "View SNMP Notification Receivers"
-msgstr "Visa mottagare av SNMP-aviseringar"
+msgstr "Visa SNMP-aviseringsmottagare"
 
 #: include/global_arrays.php
 msgid "Cacti Settings"
@@ -7684,7 +7684,7 @@ msgstr "Maximalt antal upprepningar för Bulk Walk"
 
 #: include/global_form.php
 msgid "For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to 'Auto Detect on Re-Index'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation."
-msgstr "För SNMPv2- och SNMPv3-enheter anger detta det maximala antalet upprepningar för SNMP Bulk Walk. Standardinställningen är ”Upptäck automatiskt vid omindexering”. För mycket stora switchar, högpresterande servrar, nätverk med jumboramar eller WAN-anslutningar med hög fördröjning kan ett högre värde förbättra insamlarens prestanda. Mer data ryms i varje SNMP-paket, vilket kan förkorta datafrågans körtid. Vissa enheter kan dock vägra svara på paket med ett alltför högt värde, särskilt resurssvaga IoT-enheter eller mindre inbyggda system. Ta även hänsyn till nätverksvägens MTU, eftersom ett för högt värde kan leda till paketfragmentering."
+msgstr "För SNMPv2- och SNMPv3-enheter anger detta det maximala antalet upprepningar för SNMP Bulk Walk. Standardinställningen är ”Upptäck automatiskt vid omindexering”. För mycket stora switchar, högpresterande servrar, nätverk med jumboramar eller WAN-anslutningar med hög fördröjning kan ett högre värde förbättra datainsamlarens prestanda. Mer data ryms i varje SNMP-paket, vilket kan förkorta datafrågans körtid. Vissa enheter kan dock vägra svara på paket med ett alltför högt värde, särskilt resurssvaga IoT-enheter eller mindre inbyggda system. Ta även hänsyn till nätverksvägens MTU, eftersom ett för högt värde kan leda till paketfragmentering."
 
 #: include/global_form.php
 msgid "Auto Detect on Re-Index"
@@ -7946,7 +7946,7 @@ msgstr "Minsta värdet på data som får samlas in."
 
 #: include/global_form.php
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "Maximalt värde (&quot;U&quot; för inget maximalt)"
+msgstr "Högsta värde (&quot;U&quot; för ingen övre gräns)"
 
 #: include/global_form.php
 msgid "The maximum value of data that is allowed to be collected."
@@ -7962,7 +7962,7 @@ msgstr "Hur data representeras i RRA."
 
 #: include/global_form.php
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr "Den maximala tiden som kan passera före data anges som &quot;okänd&quot;. (Vanligen 2x300 = 600)"
+msgstr "Den längsta tid som får gå innan data registreras som &quot;okända&quot;. (Vanligen 2 × 300 = 600)"
 
 #: include/global_form.php lib/html_utility.php
 msgid "Not Selected"
@@ -8199,7 +8199,7 @@ msgstr "Högeraxelns formaterare (--right-axis-formatter &lt;formatname&gt;)"
 
 #: include/global_form.php
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "När du konfigurerar högeraxelns märkning ska du tillämpa en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%Y-%m-%d %H:%M:%S\").  Se även --units-length och --right-axis-format.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
+msgstr "När du konfigurerar högeraxelns etiketter kan du ange en regel för dataformatet. Formaten som stöds är ”numeric” för numeriska värden, ”timestamp” för UNIX-tidsstämplar (antal sekunder sedan januari 1970), formaterade med strftime (standard är ”%Y-%m-%d %H:%M:%S”), och ”duration” för varaktighet i millisekunder. Se även --units-length och --right-axis-format. Formateringen följer reglerna för PRINT/GPRINT med valstrfduration."
 
 #: include/global_form.php
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
@@ -8207,7 +8207,7 @@ msgstr "Vänsteraxelns formaterare (--left-axis-formatter &lt;formatname&gt;)"
 
 #: include/global_form.php
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "När du konfigurerar märkningen av vänster axel tillämpar du en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%Y-%m-%d %H:%M:%S\").  Se även --units-length.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
+msgstr "När du konfigurerar vänsteraxelns etiketter kan du ange en regel för dataformatet. Formaten som stöds är ”numeric” för numeriska värden, ”timestamp” för UNIX-tidsstämplar (antal sekunder sedan januari 1970), formaterade med strftime (standard är ”%Y-%m-%d %H:%M:%S”), och ”duration” för varaktighet i millisekunder. Se även --units-length. Formateringen följer reglerna för PRINT/GPRINT med valstrfduration."
 
 #: include/global_form.php
 msgid "Legend Options"
@@ -8267,7 +8267,7 @@ msgstr "Grafobjektets typ"
 
 #: include/global_form.php
 msgid "How data for this item is represented visually on the graph."
-msgstr "Hur data för detta objekt representeras visuellt i diagrammet."
+msgstr "Hur data för detta objekt representeras visuellt i grafen."
 
 #: include/global_form.php
 msgid "The data source to use for this graph item."
@@ -8291,7 +8291,7 @@ msgstr "Konsolideringsfunktion"
 
 #: include/global_form.php
 msgid "How data for this item is represented statistically on the graph."
-msgstr "Hur data för detta objekt representeras statistiskt i diagrammet."
+msgstr "Hur data för detta objekt representeras statistiskt i grafen."
 
 #: include/global_form.php
 msgid "CDEF Function"
@@ -8387,7 +8387,7 @@ msgstr "Flera instanser"
 
 #: include/global_form.php
 msgid "Check this checkbox if there can be more than one Graph of this type per Device."
-msgstr "Markera kryssrutan om det finns mer än en graf av denna typ per enhet."
+msgstr "Markera kryssrutan om det kan finnas mer än en graf av denna typ per enhet."
 
 #: include/global_form.php
 msgid "Test Data Sources"
@@ -8411,7 +8411,7 @@ msgstr "Fälttyp"
 
 #: include/global_form.php
 msgid "How data is to be represented on the graph."
-msgstr "Hur data ska representeras i diagrammet."
+msgstr "Hur data ska representeras i grafen."
 
 #: include/global_form.php
 msgid "General Device Options"
@@ -8431,7 +8431,7 @@ msgstr "Den fysiska platsen för enheten. Denna fria formulärtext kan vara ett 
 
 #: include/global_form.php
 msgid "Poller Association"
-msgstr "Koppling till insamlare"
+msgstr "Koppling till datainsamlare"
 
 #: include/global_form.php
 msgid "Device Site Association"
@@ -8451,7 +8451,7 @@ msgstr "Antal insamlingstrådar"
 
 #: include/global_form.php
 msgid "The number of concurrent threads to use for polling this device.  This applies to the Spine poller only."
-msgstr "Antalet samtidiga trådar för insamling från enheten. Gäller endast Spine-insamlaren."
+msgstr "Antalet samtidiga trådar för insamling från enheten. Gäller endast datainsamlaren Spine."
 
 #: include/global_form.php
 msgid "Disable Device"
@@ -8531,7 +8531,7 @@ msgstr "Välj grafmallen som ska användas för detta grafmallsobjekt i datafrå
 
 #: include/global_form.php
 msgid "A name for this associated graph."
-msgstr "Ett namn för den här associerade grafen."
+msgstr "Ett namn för den här kopplade grafen."
 
 #: include/global_form.php
 msgid "A useful name for this graph tree."
@@ -8707,7 +8707,7 @@ msgstr "Ge denna SNMP-enhet en meningsfull beskrivning."
 
 #: include/global_form.php
 msgid "Disable SNMP Notification Receiver"
-msgstr "Inaktivera mottagare av SNMP-aviseringar"
+msgstr "Inaktivera SNMP-aviseringsmottagare"
 
 #: include/global_form.php
 msgid "Check this box if you temporary do not want to send SNMP notifications to this host."
@@ -8731,7 +8731,7 @@ msgstr "SNMP-traps kvitteras aldrig. För att skicka kvitterade SNMP-aviseringar
 
 #: include/global_form.php
 msgid "The new Title of the aggregated Graph."
-msgstr "Den nya titeln för den aggregerade grafen."
+msgstr "Den nya titeln för grafaggregationen."
 
 #: include/global_form.php
 msgid "Prefix"
@@ -8747,7 +8747,7 @@ msgstr "Inkludera prefixtext"
 
 #: include/global_form.php
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
-msgstr "Inkludera källgrafernas GPRINT-titeltext i de aggregerade graferna."
+msgstr "Inkludera källgrafernas GPRINT-titeltext i grafaggregeringarna."
 
 #: include/global_form.php
 msgid "Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items"
@@ -8787,7 +8787,7 @@ msgstr "Omordning av grafer."
 
 #: include/global_form.php
 msgid "Please name this Aggregate Graph."
-msgstr "Ange ett namn för den aggregerade grafen."
+msgstr "Ange ett namn för grafaggregationen."
 
 #: include/global_form.php
 msgid "Propagation Enabled"
@@ -8799,7 +8799,7 @@ msgstr "Ska grafen ärva inställningarna från mallen?"
 
 #: include/global_form.php
 msgid "Aggregate Graph Settings"
-msgstr "Inställningar för den aggregerade grafen"
+msgstr "Inställningar för grafaggregationen"
 
 #: include/global_form.php
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
@@ -8807,11 +8807,11 @@ msgstr "Ett prefix för alla GPRINT-rader, till exempel för att skilja olika v�
 
 #: include/global_form.php
 msgid "Aggregate Template Name"
-msgstr "Namn på mall för aggregerad graf"
+msgstr "Namn på mall för grafaggregation"
 
 #: include/global_form.php
 msgid "Please name this Aggregate Template."
-msgstr "Ange ett namn för mallen för aggregerad graf."
+msgstr "Ange ett namn för mallen för grafaggregation."
 
 #: include/global_form.php
 msgid "Source Graph Template"
@@ -8819,11 +8819,11 @@ msgstr "Källgrafmall"
 
 #: include/global_form.php
 msgid "The Graph Template that this Aggregate Template is based upon."
-msgstr "Grafmallen som mallen för aggregerad graf bygger på."
+msgstr "Grafmallen som mallen för grafaggregation bygger på."
 
 #: include/global_form.php
 msgid "Aggregate Template Settings"
-msgstr "Inställningar för mall för aggregerad graf"
+msgstr "Inställningar för mall för grafaggregation"
 
 #: include/global_form.php
 msgid "The name of this Color Template."
@@ -8963,11 +8963,11 @@ msgstr "Sökvägar"
 
 #: include/global_settings.php
 msgid "Device Defaults"
-msgstr "Enhetsinställningar"
+msgstr "Standardinställningar för enheter"
 
 #: include/global_settings.php
 msgid "Poller"
-msgstr "Insamlare"
+msgstr "Datainsamlare"
 
 #: include/global_settings.php
 msgid "Data"
@@ -9095,7 +9095,7 @@ msgstr "Sökvägen till Cactis loggfil (om fältet är tomt används &lt;path_ca
 
 #: include/global_settings.php
 msgid "Poller Standard Error Log Path"
-msgstr "Sökväg till insamlarens standardfellogg"
+msgstr "Sökväg till datainsamlarens standardfellogg"
 
 #: include/global_settings.php
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
@@ -9127,7 +9127,7 @@ msgstr "Hur många loggfiler vill du behålla? Använd 0 för att aldrig ta bort
 
 #: include/global_settings.php
 msgid "Alternate Poller Path"
-msgstr "Alternativ sökväg till insamlaren"
+msgstr "Alternativ sökväg till datainsamlaren"
 
 #: include/global_settings.php
 msgid "Spine Binary File Location"
@@ -9335,11 +9335,11 @@ msgstr "Andra inställningar"
 
 #: include/global_settings.php
 msgid "Show only site specific locations"
-msgstr "Visa endast platsspecifika platser"
+msgstr "Visa endast placeringar för vald plats"
 
 #: include/global_settings.php
 msgid "Show only locations that are available at a devices selected site."
-msgstr "Visa endast platser som är tillgängliga på den plats som valts för enheten."
+msgstr "Visa endast placeringar som är tillgängliga på den plats som valts för enheten."
 
 #: include/global_settings.php
 msgid "Has Graphs/Data Sources Checked"
@@ -9415,7 +9415,7 @@ msgstr "Endast lokal sidhjälp"
 
 #: include/global_settings.php
 msgid "By default Cacti page help is located at docs.cacti.net.  However, if your system does not have access to the Internet, you may download the documentation locally in HTML format and host it in the 'docs' location of you Cacti server.  If you choose only to leverage the local location for page help documentation, check this checkbox."
-msgstr "Som standard finns Cacti page-hjälpen på docs.cacti.net.  Men om ditt system inte har tillgång till Internet kan du ladda ner dokumentationen lokalt i HTML-format och vara värd för den på \"docs\" -platsen på din Cacti-server.  Om du bara väljer att utnyttja den lokala platsen för hjälpdokumentation för sidan, markera den här kryssrutan."
+msgstr "Som standard finns Cactis sidhjälp på docs.cacti.net. Om systemet saknar internetåtkomst kan du ladda ner dokumentationen i HTML-format och lägga den i katalogen ”docs” på Cacti-servern. Markera kryssrutan om endast den lokala sidhjälpen ska användas."
 
 #: include/global_settings.php
 msgid "Deletion Verification"
@@ -9467,7 +9467,7 @@ msgstr "Tvinga anslutningar över HTTPS"
 
 #: include/global_settings.php
 msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security."
-msgstr "När alternativet är markerat omdirigeras försök att nå Cacti till HTTPS."
+msgstr "När alternativet är markerat omdirigeras försök att nå Cacti till HTTPS för ökad säkerhet."
 
 #: include/global_settings.php
 msgid "Allow Unsafe Remote Data Collector HTTPS"
@@ -9603,7 +9603,7 @@ msgstr "Standardplatsen för alla nya enheter."
 
 #: include/global_settings.php
 msgid "The default Poller for all new Devices."
-msgstr "Standardinsamlaren för alla nya enheter."
+msgstr "Standarddatainsamlaren för alla nya enheter."
 
 #: include/global_settings.php
 msgid "Device Threads"
@@ -9693,7 +9693,7 @@ msgstr "Autentiseringsprotokoll (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMPv3 Authorization Protocol for all new Devices."
-msgstr "Standardprotokoll för SNMPv3-auktorisering för alla nya enheter."
+msgstr "Standardprotokoll för SNMPv3-autentisering för alla nya enheter."
 
 #: include/global_settings.php
 msgid "Auth User (v3)"
@@ -9701,7 +9701,7 @@ msgstr "Autentiseringsanvändare (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMP v3 Authorization User for all new Devices."
-msgstr "Standardanvändare för SNMPv3-auktorisering för alla nya enheter."
+msgstr "Standardanvändare för SNMPv3-autentisering för alla nya enheter."
 
 #: include/global_settings.php
 msgid "Auth Passphrase (v3)"
@@ -10001,7 +10001,7 @@ msgstr "Cachekatalog"
 
 #: include/global_settings.php
 msgid "This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder"
-msgstr "Platsen på webbservern där RRD- och PNG-filerna ska cachas. Cachen hanteras av insamlaren. Kontrollera att du har rätt läs- och skrivbehörigheter för mappen."
+msgstr "Platsen på webbservern där RRD- och PNG-filerna ska cachas. Cachen hanteras av datainsamlaren. Kontrollera att du har rätt läs- och skrivbehörigheter för mappen."
 
 #: include/global_settings.php
 msgid "RRDtool Graph Options"
@@ -10069,7 +10069,7 @@ msgstr "Teckensnittsinställning för titel"
 
 #: include/global_settings.php
 msgid "The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value."
-msgstr "Teckensnittet som ska användas för graftitlar. Ange antingen en giltig True Type-fontfil eller ett giltigt Pango font-config-värde."
+msgstr "Teckensnittet som ska användas för graftitlar. Ange antingen en giltig TrueType-typsnittsfil eller ett giltigt Pango fontconfig-värde."
 
 #: include/global_settings.php
 msgid "Legend Font Size"
@@ -10169,7 +10169,7 @@ msgstr "Maximalt antal dagar som öppettider visas"
 
 #: include/global_settings.php
 msgid "After this number of days, the business hours will not be added to the graph. <br/>Recommended: 62 days"
-msgstr "Efter detta antal dagar kommer öppettiderna inte att läggas till i diagrammet. <br/>Rekommenderas: 62 dagar"
+msgstr "Efter detta antal dagar läggs öppettiderna inte till i grafen. <br/>Rekommenderas: 62 dagar"
 
 #: include/global_settings.php
 msgid "Data Collection Enabled"
@@ -10181,23 +10181,23 @@ msgstr "Avmarkera rutan om du vill stoppa datainsamlingen helt."
 
 #: include/global_settings.php
 msgid "Poller Type"
-msgstr "Typ av insamlare"
+msgstr "Typ av datainsamlare"
 
 #: include/global_settings.php
 msgid "The poller type to use.  This setting will take affect at next polling interval."
-msgstr "Typen av insamlare som ska användas. Inställningen träder i kraft vid nästa insamlingsintervall."
+msgstr "Typen av datainsamlare som ska användas. Inställningen träder i kraft vid nästa insamlingsintervall."
 
 #: include/global_settings.php
 msgid "Poller Sync Interval"
-msgstr "Synkroniseringsintervall för insamlare"
+msgstr "Synkroniseringsintervall för datainsamlare"
 
 #: include/global_settings.php
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
-msgstr "Det förvalda synkroniseringsintervallet när en insamlare skapas. Inställningen styr hur ofta fjärrinsamlare kontrolleras och uppdateras."
+msgstr "Det förvalda synkroniseringsintervallet när en datainsamlare skapas. Inställningen styr hur ofta fjärranslutna datainsamlare kontrolleras och uppdateras."
 
 #: include/global_settings.php
 msgid "The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>"
-msgstr "Insamlingsintervallet som används. Inställningen styr hur ofta RRD-filer kontrolleras och uppdateras. <strong><u>OBS! Om du ändrar värdet måste du fylla insamlarens cache på nytt. Annars kan data gå förlorade.</u></strong>"
+msgstr "Insamlingsintervallet som används. Inställningen styr hur ofta RRD-filer kontrolleras och uppdateras. <strong><u>OBS! Om du ändrar värdet måste du fylla datainsamlarens cache på nytt. Annars kan data gå förlorade.</u></strong>"
 
 #: include/global_settings.php
 msgid "Cron/Daemon Interval"
@@ -10229,15 +10229,15 @@ msgstr "Tidsgräns för fjärragent"
 
 #: include/global_settings.php
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
-msgstr "Hur länge, i sekunder, den centrala Cacti-webbservern väntar på svar från fjärrdatainsamlaren för att hämta enhetsinformation innan begäran avbryts. För enheter som är kopplade till andra datainsamlare än den centrala Cacti-datainsamlaren måste fjärragenten användas för att hämta enhetsinformation."
+msgstr "Hur länge, i sekunder, den centrala Cacti-webbservern väntar på svar från den fjärranslutna datainsamlaren för att hämta enhetsinformation innan begäran avbryts. För enheter som är kopplade till andra datainsamlare än den centrala Cacti-datainsamlaren måste fjärragenten användas för att hämta enhetsinformation."
 
 #: include/global_settings.php
 msgid "Refresh Poller Table Per Cycle"
-msgstr "Uppdatera insamlarens tabell varje cykel"
+msgstr "Uppdatera datainsamlarens tabell varje cykel"
 
 #: include/global_settings.php
 msgid "This setting is for a single poller systems only to rebuild the poller output table on each polling cycle to prevent the memory table from swapping on very large systems with large databases that could use swap."
-msgstr "Den här inställningen gäller endast system med en insamlare. Den bygger om insamlarens utdatatabell vid varje insamlingscykel för att förhindra att minnestabellen växlas ut på mycket stora system med stora databaser."
+msgstr "Den här inställningen gäller endast system med en datainsamlare. Den bygger om datainsamlarens utdatatabell vid varje insamlingscykel för att förhindra att minnestabellen växlas ut på mycket stora system med stora databaser."
 
 #: include/global_settings.php
 msgid "Disable Resource Cache Replication"
@@ -10245,7 +10245,7 @@ msgstr "Inaktivera replikering av resurscache"
 
 #: include/global_settings.php
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
-msgstr "Som standard cachar den primära Cacti-datainsamlaren hela webbplatsen och dess insticksmoduler i en resurscache. Fjärrdatainsamlarna hämtar sedan regelbundet uppdateringar från den primära Cacti-datainsamlaren. Resurscachen gör det möjligt för fjärrdatainsamlarna att uppdatera sig själva. Om du inte vill använda funktionen kan du inaktivera den med denna inställning."
+msgstr "Som standard cachar Cactis huvuddatainsamlare hela webbplatsen och dess insticksmoduler i en resurscache. De fjärranslutna datainsamlarna hämtar sedan regelbundet uppdateringar från huvuddatainsamlaren. Resurscachen gör det möjligt för dem att uppdatera sig själva. Om du inte vill använda funktionen kan du inaktivera den med denna inställning."
 
 #: include/global_settings.php
 msgid "SNMP Behavior"
@@ -10399,7 +10399,7 @@ msgstr "Tidsgräns för insammarkommandon"
 
 #: include/global_settings.php
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed.  This script will perform tasks such as re-indexing Devices and pruning devices from Remote Data Collectors."
-msgstr "Den längsta tid som Cactis skript för bakgrundskommandon får köras innan det avbryts med ett tidsgränsfel. Skriptet utför uppgifter som att återindexera enheter och ta bort enheter från fjärrinsamlare."
+msgstr "Den längsta tid som Cactis skript för bakgrundskommandon får köras innan det avbryts med ett tidsgränsfel. Skriptet utför uppgifter som att indexera om enheter och ta bort enheter från fjärranslutna datainsamlare."
 
 #: include/global_settings.php
 msgid "Poller Command Concurrent Processes"
@@ -10496,7 +10496,7 @@ msgstr "Gästanvändare"
 
 #: include/global_settings.php
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr "Namnet på gästanvändaren som kan visa grafer. Standardvärdet är ”Ingen användare”."
+msgstr "Namnet på gästanvändaren som kan visa grafer. Standardvärdet är ”Ingen användare kopplad”."
 
 #: include/global_settings.php user_domains.php
 msgid "User Template"
@@ -10994,11 +10994,11 @@ msgstr "Maximal storlek på e-postmeddelandet inklusive alla bilagor."
 
 #: include/global_settings.php
 msgid "Poller Logging Level for Cacti Reporting"
-msgstr "Loggningsnivå för insamlaren vid Cacti-rapportering"
+msgstr "Loggningsnivå för datainsamlaren vid Cacti-rapportering"
 
 #: include/global_settings.php
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
-msgstr "Detaljnivån för loggfilen. VARNING: Andra nivåer än NONE eller LOW kan snabbt fylla diskutrymmet."
+msgstr "Vilken detaljnivå ska skickas till loggfilen? VARNING: Om du använder någon annan nivå än INGEN eller LÅG kan diskutrymmet snabbt ta slut."
 
 #: include/global_settings.php
 msgid "Enable Lotus Notes (R) tweak"
@@ -11046,7 +11046,7 @@ msgstr "Aktivera RRD-uppdatering på begäran"
 
 #: include/global_settings.php
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
-msgstr "Ska Boost aktivera RRD-uppdatering på begäran i Cacti? Om du inaktiverar detta träder ändringen i kraft först efter nästa insamlingscykel. Inställningen måste vara aktiverad om du har fjärrinsamlare."
+msgstr "Ska Boost aktivera RRD-uppdatering på begäran i Cacti? Om du inaktiverar detta träder ändringen i kraft först efter nästa insamlingscykel. Inställningen måste vara aktiverad om du har fjärranslutna datainsamlare."
 
 #: include/global_settings.php
 msgid "System Level RRD Updater"
@@ -11098,11 +11098,11 @@ msgstr "När Boost skickar uppdateringskommandon till RRDtool får den maximala 
 
 #: include/global_settings.php
 msgid "Memory Limit for Boost and Poller"
-msgstr "Minnesgräns för Boost och insamlaren"
+msgstr "Minnesgräns för Boost och datainsamlaren"
 
 #: include/global_settings.php
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
-msgstr "Maximal minnesmängd för Cactis och Boosts insamlare"
+msgstr "Maximal minnesmängd för Cactis och Boosts datainsamlare"
 
 #: include/global_settings.php
 msgid "Maximum RRD Update Script Run Time"
@@ -11110,7 +11110,7 @@ msgstr "Maximal körtid för RRD-uppdateringsskript"
 
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
-msgstr "Om Boost-insamlaren överskrider denna körtid skrivs en varning till Cactis logg."
+msgstr "Om Boost-processen överskrider denna körtid skrivs en varning till Cactis logg."
 
 #: include/global_settings.php
 msgid "Enable direct population of poller_output_boost table"
@@ -11146,7 +11146,7 @@ msgstr "Plats för bildfiler"
 
 #: include/global_settings.php
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
-msgstr "Ange var Boost ska placera bildfilerna. Insamlaren tar automatiskt bort filerna när de har upphört att gälla."
+msgstr "Ange var Boost ska placera bildfilerna. Datainsamlaren tar automatiskt bort filerna när de har upphört att gälla."
 
 #: include/global_settings.php
 msgid "Data Sources Statistics"
@@ -11198,7 +11198,7 @@ msgstr "Minnesgräns för insamlaren av datakällstatistik"
 
 #: include/global_settings.php
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
-msgstr "Största minnesmängd för Cactis insamlare och statistikinsamlaren för datakällor"
+msgstr "Största minnesmängd för Cactis datainsamlare och statistikinsamlaren för datakällor"
 
 #: include/global_settings.php
 msgid "RRDfile Check"
@@ -11418,7 +11418,7 @@ msgstr "Högsta antalet toppar som ska tas bort från en grafs RRA."
 #: include/global_settings.php
 #, php-format
 msgid "%d Spikes"
-msgstr "%d toppar"
+msgstr "Antal toppar: %d"
 
 #: include/global_settings.php
 msgid "RRDfile Backup Directory"
@@ -11426,7 +11426,7 @@ msgstr "Säkerhetskopieringskatalog för RRD-filer"
 
 #: include/global_settings.php
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
-msgstr "Om den här katalogen inte är tom, kommer dina ursprungliga RRD-filer att säkerhetskopieras till den här platsen."
+msgstr "Ange katalogen där de ursprungliga RRD-filerna ska säkerhetskopieras."
 
 #: include/global_settings.php
 msgid "Batch Spike Kill Settings"
@@ -11526,11 +11526,11 @@ msgstr "Döljer inaktiverade enheter och grafer utanför konsolfliken."
 
 #: include/global_settings.php
 msgid "Show Device Aggregates"
-msgstr "Visa enhetsaggregat"
+msgstr "Visa enhetens aggregerade grafer"
 
 #: include/global_settings.php
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
-msgstr "Om en enhets datakälla ingår i en aggregerad graf visas grafen tillsammans med enhetens övriga grafer"
+msgstr "Om en enhets datakälla ingår i en grafaggregation visas grafen tillsammans med enhetens övriga grafer"
 
 #: include/global_settings.php
 msgid "Enable Horizontal Scrolling"
@@ -11799,7 +11799,7 @@ msgstr "Återställning"
 
 #: index.php
 msgid "Remote Data Collector Status:"
-msgstr "Status för fjärrdatainsamlare:"
+msgstr "Status för fjärransluten datainsamlare:"
 
 #: index.php
 msgid "Number of Offline Records:"
@@ -11807,11 +11807,11 @@ msgstr "Antal poster i frånkopplat läge:"
 
 #: index.php
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>OBS!</strong> Du är inloggad i en fjärrdatainsamlare. När den är <b>'online'</b> kan du se och styra stora delar av Cactis huvudwebbplats, som om du vore inloggad där. Fjärrdatainsamlare måste använda funktionen <b>'On Demand Updating'</b> i Cactis tjänster för prestandaförbättring och vi rekommenderar alltid Spine. När fjärrdatainsamlaren är <b>'offline'</b> innehåller dess webbplats betydligt mindre information. Den cachelagrar dock alla uppdateringar tills Cactis huvudsakliga databas och webbserver kan nås. Därefter skriver den tillbaka utdata från sin Boost-tabell till Cactis huvuddatabas för uppdatering."
+msgstr "<strong>OBS!</strong> Du är inloggad i en fjärransluten datainsamlare. När den är <b>ansluten</b> kan du se och styra stora delar av Cactis huvudwebbplats som om du vore inloggad där. Fjärranslutna datainsamlare måste använda funktionen <b>uppdatering på begäran</b> i Cactis prestandatjänster och vi rekommenderar Spine. När den fjärranslutna datainsamlaren är <b>frånkopplad</b> innehåller dess webbplats betydligt mindre information. Den cachelagrar dock alla uppdateringar tills Cactis huvuddatabas och webbserver kan nås. Därefter skickas utdata från Boost-tabellen tillbaka till huvuddatabasen för uppdatering."
 
 #: index.php
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
-msgstr "<strong>OBS!</strong> Cactis grundläggande insticksmoduler har ännu inte anpassats för fjärrdatainsamlare. Insticksmoduler som MacTrack och HMIB, som behöver direkt åtkomst till enheter, fungerar därför inte med fjärrdatainsamlare för närvarande. Insticksmoduler som Thold fungerar däremot så länge fjärrdatainsamlaren är i <b>”online”</b>-läge."
+msgstr "<strong>OBS!</strong> Cactis grundläggande insticksmoduler har ännu inte anpassats för fjärranslutna datainsamlare. Insticksmoduler som MacTrack och HMIB, som behöver direkt åtkomst till enheter, fungerar därför inte med fjärranslutna datainsamlare för närvarande. Insticksmoduler som Thold fungerar däremot så länge den fjärranslutna datainsamlaren är <b>ansluten</b>."
 
 #: install/functions.php
 #, php-format
@@ -11820,7 +11820,7 @@ msgstr "Sökväg för %s"
 
 #: install/functions.php
 msgid "New Poller"
-msgstr "Ny insamlare"
+msgstr "Ny datainsamlare"
 
 #: install/install.php
 msgid "Cacti Install Help"
@@ -11879,7 +11879,7 @@ msgstr "Kunde inte skapa aggregatsummor eftersom en refererad CDEF är ogiltig e
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates."
-msgstr "Graferna som valts för den aggregerade grafen nedan kommer från flera grafmallar. Det går inte att skapa aggregerade grafer från flera grafmallar."
+msgstr "Graferna som valts för grafaggregationen nedan kommer från flera grafmallar. Det går inte att skapa grafaggregeringar från flera grafmallar."
 
 #: lib/api_aggregate.php
 msgid "Press 'Return' to return and select different Graphs"
@@ -11887,7 +11887,7 @@ msgstr "Tryck på ”Tillbaka” för att gå tillbaka och välja andra grafer"
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
-msgstr "Graferna som valts för den aggregerade grafen använder inte grafmallar. Det går inte att skapa aggregerade grafer från grafer utan mall."
+msgstr "Graferna som valts för grafaggregationen använder inte grafmallar. Det går inte att skapa grafaggregeringar från grafer utan mall."
 
 #: lib/api_aggregate.php lib/html.php
 msgid "Graph Item"
@@ -12048,7 +12048,7 @@ msgstr "FEL: IP-intervall på formen intervall1-intervall2 stöds inte längre."
 #: lib/api_device.php lib/utility.php
 #, php-format
 msgid "Remote Poller %s is Down, you will need to perform a FullSync once it is up again"
-msgstr "Fjärrinsamlaren %s är otillgänglig. Utför en fullständig synkronisering när den är tillgänglig igen."
+msgstr "Den fjärranslutna datainsamlaren %s är otillgänglig. Utför en fullständig synkronisering när den är tillgänglig igen."
 
 #: lib/api_device.php
 msgid "ERROR: Device ID is Blank"
@@ -12060,7 +12060,7 @@ msgstr "FEL: Enhet ["
 
 #: lib/api_device.php
 msgid "ERROR: Failed to connect to remote collector."
-msgstr "FEL: Kunde inte ansluta till fjärrinsamlaren."
+msgstr "FEL: Det gick inte att ansluta till den fjärranslutna datainsamlaren."
 
 #: lib/api_device.php
 msgid "Device is Disabled"
@@ -12470,11 +12470,11 @@ msgstr "Uppdateringen av återindexeringscachen är klar. Antal indexändringar:
 
 #: lib/data_query.php
 msgid "Update Poller Cache for Query complete"
-msgstr "Uppdateringen av insamlarens cache för frågan är slutförd"
+msgstr "Uppdateringen av datainsamlarens cache för frågan är slutförd"
 
 #: lib/data_query.php
 msgid "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
-msgstr "Inga indexändringar upptäcktes. Återindexering och uppdatering av insamlarens cache hoppas över"
+msgstr "Inga indexändringar upptäcktes. Återindexering och uppdatering av datainsamlarens cache hoppas över"
 
 #: lib/data_query.php
 msgid "Automation Executing for Data Query complete"
@@ -12840,12 +12840,12 @@ msgstr "Datakällan är inte markerad som aktiv"
 #: lib/dsdebug.php
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
-msgstr "Insamlaren kan inte skriva till RRD-filmappen (rra). Mappens ägare: %s. Insamlaren körs som: %s"
+msgstr "Datainsamlaren kan inte skriva till RRD-filmappen (rra). Mappens ägare: %s. Datainsamlaren körs som: %s"
 
 #: lib/dsdebug.php
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Insamlaren kan inte skriva till RRD-filen. Filens ägare: %s. Insamlaren körs som %s"
+msgstr "Datainsamlaren kan inte skriva till RRD-filen. Filens ägare: %s. Datainsamlaren körs som %s"
 
 #: lib/dsdebug.php
 msgid "RRDfile does not match Data Source"
@@ -12874,7 +12874,7 @@ msgstr "RRD-filen har inte skapats ännu"
 #: lib/functions.php settings.php
 #, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
-msgstr "Inställningarna sparades inte till datainsamlaren %d på grund av dess hjärtslag."
+msgstr "Inställningarna sparades inte till datainsamlaren %d eftersom den inte har rapporterat sin status i tid."
 
 #: lib/functions.php settings.php
 #, php-format
@@ -13031,7 +13031,7 @@ msgstr "Cacti inaktiverade insticksmodulen %s på grund av följande fel: %s! Me
 #: lib/functions.php
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr "VARNING: Insamlaren med ID %s har ett ogiltigt värdnamn: %s. Kan det inte nås via DNS?"
+msgstr "VARNING: Datainsamlaren med ID %s har ett ogiltigt värdnamn: %s. Kan det inte nås via DNS?"
 
 #: lib/functions.php
 #, php-format
@@ -13167,7 +13167,7 @@ msgstr "Intervall för att fylla luckor"
 
 #: lib/html.php lib/spikekill.php
 msgid "Float Range"
-msgstr "Flyttalsintervall"
+msgstr "Ersätt värden i intervall"
 
 #: lib/html.php
 msgid "Dry Run StdDev"
@@ -13175,11 +13175,11 @@ msgstr "Simulerad borttagning med standardavvikelse"
 
 #: lib/html.php
 msgid "Dry Run Gap Fill Range"
-msgstr "Intervall för simulerad luckfyllning"
+msgstr "Simulera luckfyllning i intervall"
 
 #: lib/html.php
 msgid "Dry Run Float Range"
-msgstr "Intervall för simulerade flyttal"
+msgstr "Simulera ersättning av värden i intervall"
 
 #: lib/html.php
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
@@ -13844,7 +13844,7 @@ msgstr "Datum och tid flyttades till samma tid i morgon"
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to delete the following Report(s)."
-msgstr "Klicka på ”Fortsätt” för att ta bort följande rapporter."
+msgstr "Klicka på ”Fortsätt” för att ta bort urvalet av rapporter nedan."
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to take ownership of the following Report(s)."
@@ -13856,7 +13856,7 @@ msgstr "Klicka på ”Fortsätt” för att duplicera följande rapporter. Du ka
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to enable the following Report(s)."
-msgstr "Klicka på ”Fortsätt” för att aktivera följande rapporter."
+msgstr "Klicka på ”Fortsätt” för att aktivera urvalet av rapporter nedan."
 
 #: lib/html_reports.php
 msgid "Please be certain that those Report(s) have successfully been tested first!"
@@ -13868,7 +13868,7 @@ msgstr "Klicka på ”Fortsätt” för att inaktivera följande rapporter."
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to send the following Report(s) now."
-msgstr "Klicka på ”Fortsätt” för att skicka följande rapporter nu."
+msgstr "Klicka på ”Fortsätt” för att skicka urvalet av rapporter nedan nu."
 
 #: lib/html_reports.php
 #, php-format
@@ -14728,11 +14728,11 @@ msgstr "Ny primär server"
 
 #: lib/installer.php
 msgid "New Remote Poller"
-msgstr "Ny fjärrinsamlare"
+msgstr "Ny fjärransluten datainsamlare"
 
 #: lib/installer.php
 msgid "Remote Pollers are used to access networks that are not readily accessible to the Primary site."
-msgstr "Fjärrinsamlare används för att nå nätverk som den primära platsen inte har direkt åtkomst till."
+msgstr "Fjärranslutna datainsamlare används för att nå nätverk som den primära platsen inte har direkt åtkomst till."
 
 #: lib/installer.php
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
@@ -14777,19 +14777,19 @@ msgstr "Konfigurationen är skrivskyddad!"
 
 #: lib/installer.php
 msgid "Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues."
-msgstr "Webbservern måste kunna skriva till config.php under installationen för att konfigurera fjärrinsamlaren. När installationen är klar måste du skrivskydda filen för att förhindra säkerhetsproblem."
+msgstr "Webbservern måste kunna skriva till config.php under installationen för att konfigurera den fjärranslutna datainsamlaren. När installationen är klar måste du skrivskydda filen för att förhindra säkerhetsproblem."
 
 #: lib/installer.php
 msgid "Configuration of Poller"
-msgstr "Konfiguration av insamlare"
+msgstr "Konfiguration av datainsamlare"
 
 #: lib/installer.php
 msgid "Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again."
-msgstr "Informationen om Cactis fjärrinsamlare saknas i config.php. Granska config.php.dist och ställ in variablerna <i>$rdatabase_default, $rdatabase_username</i> med flera. Variablerna måste vara inställda och peka på den primära Cacti-databasservern. Rätta detta och försök igen."
+msgstr "Informationen om Cactis fjärranslutna datainsamlare saknas i config.php. Granska config.php.dist och ställ in variablerna <i>$rdatabase_default, $rdatabase_username</i> med flera. Variablerna måste vara inställda och peka på den primära Cacti-databasservern. Rätta detta och försök igen."
 
 #: lib/installer.php
 msgid "Remote Poller Variables"
-msgstr "Variabler för fjärrinsamlare"
+msgstr "Variabler för fjärranslutna datainsamlare"
 
 #: lib/installer.php
 msgid "The variables that must be set in the config.php file include the following:"
@@ -14809,7 +14809,7 @@ msgstr "Ytterligare steg efter installationen"
 
 #: lib/installer.php
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
-msgstr "Det är viktigt att den centrala Cacti-servern kan kommunicera via MySQL med varje fjärransluten Cacti-databasserver. När installationen är klar måste du redigera fjärrinsamlaren och kontrollera inställningarna. Du kan använda ”Testa anslutning” när du redigerar fjärrinsamlaren."
+msgstr "Det är viktigt att den centrala Cacti-servern kan kommunicera via MySQL med varje fjärransluten Cacti-databasserver. När installationen är klar måste du redigera den fjärranslutna datainsamlaren och kontrollera inställningarna. Du kan använda ”Testa anslutning” när du redigerar den fjärranslutna datainsamlaren."
 
 #: lib/installer.php
 msgid "Critical Binary Locations and Versions"
@@ -14845,7 +14845,7 @@ msgstr "Om du installerar paket bör du skrivskydda skriptkatalogen igen när pa
 
 #: lib/installer.php
 msgid "For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content."
-msgstr "För fjärrinsamlare är det viktigt att sökvägar som uppdateras ofta, inklusive sökvägarna för insticksmoduler, skript och resurser, har läs- och skrivbehörighet. Datainsamlaren behöver uppdatera innehållet från den primära webbservern."
+msgstr "För fjärranslutna datainsamlare är det viktigt att sökvägar som uppdateras ofta, inklusive sökvägarna för insticksmoduler, skript och resurser, har läs- och skrivbehörighet. Datainsamlaren behöver uppdatera innehållet från den primära webbservern."
 
 #: lib/installer.php
 msgid "Required Writable at Install Time Only"
@@ -14898,7 +14898,7 @@ msgstr "Skydd för indatavalidering med tillåtelselista"
 
 #: lib/installer.php
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
-msgstr "Cactis datainmatningsmetoder som anropar ett skript kan utnyttjas så att en person utan administratörsbehörighet kan skada filer som ägs av insamlarens konto. Om insamlaren körs som root kan operativsystemet komprometteras, så att angripare kan utnyttja infrastrukturen."
+msgstr "Cactis datainmatningsmetoder som anropar ett skript kan utnyttjas så att en person utan administratörsbehörighet kan skada filer som ägs av datainsamlarens konto. Om datainsamlaren körs som root kan operativsystemet komprometteras, så att angripare kan utnyttja infrastrukturen."
 
 #: lib/installer.php
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
@@ -15247,7 +15247,7 @@ msgstr "Det gick inte att hitta den valda profilen (%s), inga ändringar gjordes
 #: lib/installer.php
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
-msgstr "Uppdaterar automatiseringsnätverket (%s), läge ”%s” => ”%s”, undernät ”%s” => %s”"
+msgstr "Uppdaterar automatiseringsnätverket (%s), läge ”%s” => ”%s”, undernät ”%s” => %s"
 
 #: lib/installer.php
 msgid "Failed to find automation network, no changes were made"
@@ -15313,7 +15313,7 @@ msgstr "Kör den första datafrågan för den lokala värden"
 
 #: lib/installer.php
 msgid "Repopulating poller cache"
-msgstr "Fyller insamlarens cache på nytt"
+msgstr "Fyller datainsamlarens cache på nytt"
 
 #: lib/installer.php
 msgid "Repopulating SNMP Agent cache"
@@ -15415,7 +15415,7 @@ msgstr "Kunde inte ange PHP-alternativet %s. Värdet är %s (ska vara %s)"
 
 #: lib/installer.php
 msgid "No Remote Data Collectors found for full synchronization"
-msgstr "Inga fjärrdatainsamlare hittades för fullständig synkronisering"
+msgstr "Inga fjärranslutna datainsamlare hittades för fullständig synkronisering"
 
 #: lib/ldap.php
 msgid "Authentication Success"
@@ -15858,7 +15858,7 @@ msgstr "(anpassad)"
 
 #: lib/rrd.php
 msgid "Failed to open data file, poller may not have run yet"
-msgstr "Kunde inte öppna datafilen. Insamlaren kanske inte har körts ännu"
+msgstr "Kunde inte öppna datafilen. Datainsamlaren kanske inte har körts ännu"
 
 #: lib/rrd.php
 msgid "RRA Folder"
@@ -16434,7 +16434,7 @@ msgstr "En större tabellcache minskar antalet filöppningar och filstängningar
 
 #: lib/utility.php
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
-msgstr "Vid fjärrinsamling synkroniseras stora mängder data från huvudservern till fjärrinsamlarna. Använd därför värdet 16M eller högre."
+msgstr "Vid fjärrinsamling synkroniseras stora mängder data från huvudservern till de fjärranslutna datainsamlarna. Använd därför värdet 16M eller högre."
 
 #: lib/utility.php
 #, php-format
@@ -17278,11 +17278,11 @@ msgstr "VARNING: Cactis insamlingscykel överskred insamlingsintervallet med "
 #: poller.php
 #, php-format
 msgid "WARNING: PollerID:%s with Name:%s is in Heartbeat Status"
-msgstr "VARNING: Datainsamlaren med ID %s och namn %s är i hjärtslagsläge"
+msgstr "VARNING: Datainsamlaren med ID %s och namn %s har inte rapporterat sin status i tid"
 
 #: poller.php
 msgid "Poller in Heartbeat Mode"
-msgstr "Datainsamlare i hjärtslagsläge"
+msgstr "Datainsamlarens statusrapport har uteblivit"
 
 #: poller.php
 msgid "Cacti System Notification"
@@ -17335,7 +17335,7 @@ msgstr "Datainsamlarens värdnamn"
 
 #: pollers.php
 msgid "The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote Pollers to contact it for activities such as re-indexing, Real-time graphing, etc."
-msgstr "Datainsamlarens värdnamn. Det kan behöva vara ett fullständigt domännamn för att fjärrinsamlare ska kunna kontakta den för exempelvis återindexering och realtidsgrafer."
+msgstr "Datainsamlarens värdnamn. Det kan behöva vara ett fullständigt domännamn för att fjärranslutna datainsamlare ska kunna kontakta den för exempelvis återindexering och realtidsgrafer."
 
 #: pollers.php sites.php
 msgid "TimeZone"
@@ -17371,7 +17371,7 @@ msgstr "Synkintervall"
 
 #: pollers.php
 msgid "The polling sync interval in use.  This setting will affect how often this poller is checked and updated."
-msgstr "Synkroniseringsintervallet som används. Inställningen styr hur ofta insamlaren kontrolleras och uppdateras."
+msgstr "Synkroniseringsintervallet som används. Inställningen styr hur ofta datainsamlaren kontrolleras och uppdateras."
 
 #: pollers.php
 msgid "Remote Database Connection"
@@ -17537,7 +17537,7 @@ msgstr "Plats [ny]"
 
 #: pollers.php
 msgid "Remote Data Collectors must be able to communicate to the Main Data Collector, and vice versa.  Use this button to verify that the Main Data Collector can communicate to this Remote Data Collector."
-msgstr "Fjärrdatainsamlarna måste kunna kommunicera med huvuddatainsamlaren och omvänt. Använd knappen för att kontrollera att huvuddatainsamlaren kan kommunicera med den här fjärrdatainsamlaren."
+msgstr "Fjärranslutna datainsamlare måste kunna kommunicera med huvuddatainsamlaren och tvärtom. Använd knappen för att kontrollera att huvuddatainsamlaren kan kommunicera med den här fjärranslutna datainsamlaren."
 
 #: pollers.php
 msgid "Test Database Connection"
@@ -17769,7 +17769,7 @@ msgstr "Tid sedan uppdatering"
 
 #: rrdcleaner.php
 msgid "Rescan"
-msgstr "Sök igen"
+msgstr "Skanna igen"
 
 #: rrdcleaner.php
 msgid "Delete All"
@@ -17874,7 +17874,7 @@ msgstr "Ange stad eller ort"
 
 #: sites.php
 msgid "State"
-msgstr "Tillstånd"
+msgstr "Delstat/region"
 
 #: sites.php
 msgid "The state for the Site."
@@ -17942,7 +17942,7 @@ msgstr "exempel -77.0374678"
 
 #: sites.php
 msgid "Zoom"
-msgstr "Zooma"
+msgstr "Zoomnivå"
 
 #: sites.php
 msgid "The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15."
@@ -18122,7 +18122,7 @@ msgstr "Se cacti.log för mer information och kontrollera syntaxen i XML-filen. 
 #: templates_import.php
 #, php-format
 msgid "The Template XML file \"%s\" validation failed"
-msgstr "Valideringen av mallens XML-fil \"%s\" misslyckades"
+msgstr "Valideringen av mallens XML-fil ”%s” misslyckades"
 
 #: templates_import.php
 msgid "Import Files [ If Files are missing, locate and install before using ]"
@@ -19206,7 +19206,7 @@ msgstr "Totalt: %s"
 
 #: utilities.php
 msgid "Poller Information"
-msgstr "Information om insamlingsprocessen"
+msgstr "Information om datainsamlaren"
 
 #: utilities.php
 msgid "Different version of Cacti and Spine!"
@@ -19508,7 +19508,7 @@ msgstr "Index"
 
 #: utilities.php
 msgid "Poller Cache Items"
-msgstr "Objekt i insamlarens cache"
+msgstr "Objekt i datainsamlarens cache"
 
 #: utilities.php
 msgid "Script"
@@ -19556,7 +19556,7 @@ msgstr "Administratörer kan bläddra i användarloggen samt filtrera och export
 
 #: utilities.php
 msgid "Poller Cache Administration"
-msgstr "Administration av insamlarens cache"
+msgstr "Administration av datainsamlarens cache"
 
 #: utilities.php
 msgid "This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display."
@@ -19568,11 +19568,11 @@ msgstr "Datafrågecachen lagrar information som samlats in från datafrågornas 
 
 #: utilities.php
 msgid "Rebuild Poller Cache"
-msgstr "Bygg om insamlarens cache"
+msgstr "Bygg om datainsamlarens cache"
 
 #: utilities.php
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr "Om du väljer detta alternativ byggs insamlarens cache om. Använd det bara efter en databaskrasch om problem kvarstår och du redan har kört databasens reparationsverktyg. Om du har problem med en enskild enhet kan du i stället spara om den för att bygga om dess insamlingscache. Det finns också ett motsvarande kommando för kommandoraden, vilket rekommenderas för stora system."
+msgstr "Om du väljer detta alternativ byggs datainsamlarens cache om. Använd det bara efter en databaskrasch om problem kvarstår och du redan har kört databasens reparationsverktyg. Om du har problem med en enskild enhet kan du i stället spara om den för att bygga om dess insamlingscache. Det finns också ett motsvarande kommando för kommandoraden, vilket rekommenderas för stora system."
 
 #: utilities.php
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
@@ -19584,7 +19584,7 @@ msgstr "Bygg om resurscachen"
 
 #: utilities.php
 msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency."
-msgstr "När flera datainsamlare används försöker Cacti hålla reda på tillståndet för viktiga filer på alla insamlare. Detta gäller alla webbplatsens och insticksmodulernas kärnfiler som inte hör till installationen. När du tvingar fram en ombyggnad av resurscachen tömmer Cacti den lokala cachen och bygger om den nästa gång insamlaren startas enligt schemat. Då kontrollerar alla fjärrinsamlare åter att deras webbplats- och insticksmodulfiler är konsekventa."
+msgstr "När flera datainsamlare används försöker Cacti hålla reda på tillståndet för viktiga filer på alla datainsamlare. Detta gäller alla webbplatsens och insticksmodulernas kärnfiler som inte hör till installationen. När du tvingar fram en ombyggnad av resurscachen tömmer Cacti den lokala resurscachen och bygger om den nästa gång insamlingsprocessen startas enligt schemat. Då kontrollerar alla fjärranslutna datainsamlare på nytt att deras webbplats- och insticksmodulfiler är konsekventa."
 
 #: utilities.php
 msgid "Boost Utilities"
@@ -19792,7 +19792,7 @@ msgstr "MB"
 
 #: utilities.php
 msgid "Peak Poller Memory:"
-msgstr "Insamlarens högsta minnesanvändning:"
+msgstr "Datainsamlarens högsta minnesanvändning:"
 
 #: utilities.php
 msgid "Max Poller Memory Allowed:"
