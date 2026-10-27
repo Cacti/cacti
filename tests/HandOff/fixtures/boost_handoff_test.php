@@ -3,6 +3,8 @@
  * Run: php tests/HandOff/fixtures/boost_handoff_test.php
  * This does not substitute for testing on MariaDB with live Spine writers.
  */
+require dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+
 error_reporting(E_ALL);
 set_error_handler(function($severity, $message, $file, $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
