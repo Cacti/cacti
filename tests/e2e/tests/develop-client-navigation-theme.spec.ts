@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
 			</div></div><main id="mdw-Main"></main>`,
 	}));
 	await page.goto('http://cacti.test/host.php');
-	for (const file of ['jquery.js', 'jquery-ui.js', 'js.storage.js', 'navigationBox.js']) {
+	for (const file of ['jquery.js', 'jquery-ui.js', 'js.storage.js', 'purify.js', 'navigationBox.js']) {
 		await page.addScriptTag({ path: resolve(root, 'include/js', file) });
 	}
 	await page.addScriptTag({ content: functions });
