@@ -72,3 +72,17 @@ test('cancelled navigation sends nothing and read-only navigation still uses GET
 	read.env.loadUrl({url:'/cacti/utilities.php?action=view_logfile'});
 	assert.equal(read.calls[0].method, 'GET');
 });
+
+
+test('Reports item navigation sends both parent and item in a token-bearing POST', () => {
+	const {env, calls} = transportFixture();
+	env.loadUrl({url:'/cacti/reports.php?action=item_moveup&id=1&item_id=12'});
+	assert.equal(calls.length, 1);
+	assert.equal(calls[0].method, 'POST');
+	assert.equal(calls[0].url, '/cacti/reports.php');
+	const fields = new URLSearchParams(calls[0].data);
+	assert.equal(fields.get('action'), 'item_moveup');
+	assert.equal(fields.get('id'), '1');
+	assert.equal(fields.get('item_id'), '12');
+	assert.equal(fields.get('__csrf_magic'), 'trusted-token');
+});
