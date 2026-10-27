@@ -48,8 +48,8 @@ try {
         window.handleConsole = () => {};
         window.Pace = {stop: () => {}};
         window.applySkin = () => {};
-        handleAjaxResponse('<title>Fixture</title><div id="breadcrumbs"><a href="/safe">Keep</a><img src="x" onerror="void 0"></div><div id="main"><button id="page-widget">Page widget</button></div>', {url: '/reports.php'});
-        check($('#breadcrumbs a').text() === 'Keep' && $('#breadcrumbs [onerror]').length === 0 && $('#page-widget').length === 1, 'Page or breadcrumb rendering failed.');
+        handleAjaxResponse('<title>Fixture</title><div id="breadcrumbs"><a href="/safe">Keep</a><img src="x" onerror="void 0"></div><div id="main"><button id="page-widget">Page widget</button><script nonce="fixture">window.pageInitialization = true;</script></div>', {url: '/reports.php'});
+        check($('#breadcrumbs a').text() === 'Keep' && $('#breadcrumbs [onerror]').length === 0 && $('#page-widget').length === 1 && window.pageInitialization === true, 'Page or breadcrumb rendering failed.');
         handleAjaxResponse('<div id="main">Foreign</div>', {url: 'https://example.invalid/page'});
         check($('#page-widget').length === 1, 'Foreign executable page response was accepted.');
         window.MESSAGE_LEVEL_ERROR = 1; window.MESSAGE_LEVEL_MIXED = 2; window.MESSAGE_LEVEL_CSRF = 3;
