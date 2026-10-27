@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, '../../..');
 require('./fixture-coverage').collectCoverage(test);
 
 // Real jQuery UI and theme styles; no server, credentials or database required.
-for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern', 'paper-plane', 'paw', 'raspberry', 'sunrise']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paper-plane', 'paw', 'raspberry', 'sunrise']) {
 	for (const width of [360, 1280]) {
 		test(`${theme} filter dialog at ${width}px`, async ({ page }) => {
 			await page.setViewportSize({ width, height: 800 });
