@@ -9,7 +9,7 @@ require dirname(__DIR__) . '/Helpers/SourceSlice.php';
 $root = dirname(__DIR__, 2);
 require $root . '/include/global_constants.php';
 require $root . '/lib/functions.php';
-$config = ['library_path' => $root . '/lib', 'is_web' => false, 'config_options_array' => ['storage_location' => '']];
+$config = ['library_path' => $root . '/lib', 'is_web' => false, 'poller_id' => 1, 'config_options_array' => ['storage_location' => '']];
 $debug  = false;
 $reads  = 0;
 $retry  = ($argv[1] ?? '') === 'retry';
@@ -20,14 +20,22 @@ function db_fetch_assoc($sql) {
 }
 function db_fetch_assoc_prepared($sql) {
 	global $reads, $retry;
+	if (str_contains($sql, 'poller output housekeeping')) {
+		return [];
+	}
 	$reads++;
 
 	return $retry && $reads === 1 ? false : [];
 }
+function db_fetch_cell($sql) {
+	return 0; // No workers or backlog in this empty-output fixture.
+}
 function cacti_log(...$arguments) {
 }
 
-cacti_fixture_source_function($root . '/lib/poller.php', 'process_poller_output', __NAMESPACE__);
+foreach (['poller_cleanup_idle_output', 'poller_delete_staged_samples', 'process_poller_output'] as $function) {
+	cacti_fixture_source_function($root . '/lib/poller.php', $function, __NAMESPACE__);
+}
 $pipe = null;
 
 for ($pass = 0; $pass < 5; $pass++) {

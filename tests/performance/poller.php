@@ -41,7 +41,7 @@ function perf_load(string $path, string $name) : bool {
 	$end      = strpos($source, "\nfunction ", $start + 1);
 	$function = substr($source, $start, $end === false ? null : $end - $start);
 	$map      = [
-		'process_poller_output', 'process_poller_output_batch', 'poller_acknowledge_output', 'poller_prefetch_source_fields', 'boost_load_unused_data_source_names', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names',
+		'poller_cleanup_idle_output', 'poller_delete_staged_samples', 'process_poller_output', 'process_poller_output_batch', 'poller_acknowledge_output', 'poller_prefetch_source_fields', 'boost_load_unused_data_source_names', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names',
 		'db_fetch_assoc', 'db_fetch_assoc_prepared', 'db_fetch_cell', 'db_execute', 'db_execute_prepared', 'db_in_clause', 'array_rekey',
 		'cacti_sizeof', 'is_hexadecimal', 'cacti_log', 'dsstats_poller_output', 'dsdebug_poller_output',
 		'api_plugin_hook_function', 'boost_poller_on_demand', 'rrdtool_function_update',
@@ -123,6 +123,10 @@ function perf_db_fetch_assoc($sql, ...$args) : array {
 function perf_db_fetch_assoc_prepared($sql, $params = [], ...$args) : array|false {
 	$GLOBALS['state']['queries'][] = ['sql' => $sql, 'params' => $params];
 
+	if (str_contains($sql, 'poller output housekeeping')) {
+		return []; // This fixture has no idle orphan or incomplete backlog.
+	}
+
 	if (str_contains($sql, 'FROM poller_output AS po')) {
 		return $GLOBALS['state']['rows'];
 	}
@@ -199,7 +203,7 @@ function perf_row(int $id, string $output, int $template = 1, int $fields = 1) :
 		'rrd_name'      => 'a', 'rrd_num' => $fields];
 }
 function perf_metadata_count() : int {
-	return count(array_filter($GLOBALS['state']['queries'], fn ($query) => !str_contains($query['sql'], 'poller_output') && !str_contains($query['sql'], 'FROM settings WHERE name = ?')));
+	return count(array_filter($GLOBALS['state']['queries'], fn ($query) => !str_contains($query['sql'], 'poller_output') && !str_contains($query['sql'], 'FROM poller_time') && !str_contains($query['sql'], 'FROM settings WHERE name = ?')));
 }
 function perf_sample(int $id) : array {
 	return $GLOBALS['state']['updates']['source-' . $id]['times'][1767225600] ?? [];
@@ -260,13 +264,13 @@ if ($mode === 'exec') {
 foreach (['SQL_NO_CACHE' => '', 'POLLER_VERBOSITY_HIGH' => 4, 'POLLER_VERBOSITY_NONE' => 0, 'CACTI_PATH_LIBRARY' => __DIR__ . '/fixtures'] as $name => $value) {
 	define($name, $value);
 }
-$config = ['library_path' => __DIR__ . '/fixtures'];
+$config = ['library_path' => __DIR__ . '/fixtures', 'poller_id' => 1];
 $debug  = false;
 perf_assert(perf_load($root . '/lib/functions.php', 'is_hexadecimal'), 'Production hex parser is missing');
 
 perf_load($root . '/lib/boost.php', 'boost_load_unused_data_source_names');
 
-foreach (['poller_prefetch_source_fields', 'process_poller_output_batch', 'poller_acknowledge_output', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names', 'process_poller_output'] as $name) {
+foreach (['poller_cleanup_idle_output', 'poller_delete_staged_samples', 'poller_prefetch_source_fields', 'process_poller_output_batch', 'poller_acknowledge_output', 'poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names', 'process_poller_output'] as $name) {
 	$loaded = perf_load($root . '/lib/poller.php', $name);
 	perf_assert($loaded || $name !== 'process_poller_output', 'Production poller function is missing');
 }
@@ -308,6 +312,8 @@ if (in_array($mode, ['recovery', 'recovery-empty'], true)) {
 		perf_assert(perf_sample(4) === ['a' => 'U', 'b' => 'U'], 'Invalid output must remain unknown');
 		perf_assert(perf_sample(5) === ['a' => 255], 'Hex conversion changed');
 		perf_assert(perf_sample(6) === ['a' => 'U'], 'Unknown value changed');
+		perf_assert(count(array_filter($state['queries'], fn ($query) => str_contains($query['sql'], 'FROM poller_time'))) === 1, 'Idle worker status was reloaded across repeated passes');
+		perf_assert(count(array_filter($state['queries'], fn ($query) => str_contains($query['sql'], 'poller output housekeeping'))) === 1, 'Idle cleanup was repeated across passes');
 		$cold_metadata_queries ??= perf_metadata_count();
 		perf_assert($cold_metadata_queries <= 5, 'Metadata lookups grew beyond the cold-cache budget');
 		perf_assert(perf_metadata_count() === $cold_metadata_queries, 'Metadata lookups grew across repeated passes');
