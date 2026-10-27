@@ -4786,14 +4786,18 @@ function removeSpikes(method, dryrun, local_graph_id) {
 
 	closeDateFilters();
 
-	var href = urlPath + 'spikekill.php' +
-		'?method=' + method +
-		(dryrun ? '&dryrun=true':'') +
-		'&local_graph_id=' + local_graph_id +
-		'&outlier-start='  + graph_start +
-		'&outlier-end='    + graph_end;
+	var postData = {
+		method: method,
+		local_graph_id: local_graph_id,
+		'outlier-start': graph_start,
+		'outlier-end': graph_end,
+		__csrf_magic: csrfMagicToken
+	};
+	if (dryrun) {
+		postData.dryrun = true;
+	}
 
-	$.getJSON(href)
+	$.post(urlPath + 'spikekill.php', postData, null, 'json')
 		.done(function(data) {
 			checkForRedirects(data, href);
 
