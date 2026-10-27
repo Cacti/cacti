@@ -1492,6 +1492,12 @@ function displayMessages() {
 			buttons: sessionMessageButtons
 		});
 
+		const messageUrl = new URL(document.location.href);
+		if (messageUrl.searchParams.has('csrf_timeout')) {
+			messageUrl.searchParams.delete('csrf_timeout');
+			window.history.replaceState(window.history.state, '', messageUrl.href);
+		}
+
 		sessionMessage = null;
 	}
 }
