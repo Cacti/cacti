@@ -51,9 +51,17 @@ cd "$BASE_PATH" || exit 1
 
 find . -maxdepth 2 -name '*.php' -print | "$XGETTEXT_BIN" --add-location=file --no-wrap --copyright-holder="The Cacti Group" --package-name="Cacti" --package-version="$(cat include/cacti_version)" --msgid-bugs-address="developers@cacti.net" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot --files-from=-
 
-sed -i 's/FULL NAME <EMAIL@ADDRESS\>/Cacti Developers <developers@cacti.net>/g' locales/po/cacti.pot
-sed -i 's/LANGUAGE <LL@li.org>/Cacti Developers <developers@cacti.net>/g' locales/po/cacti.pot
-sed -i 's/CHARSET/UTF-8/g' locales/po/cacti.pot
+# BSD sed and GNU sed disagree on -i; write a separate file instead.
+POT_TMP=$(mktemp "$BASE_PATH/locales/po/cacti.pot.XXXXXX") || exit 1
+trap 'rm -f "$POT_TMP"' 0
+if ! sed -e 's/FULL NAME <EMAIL@ADDRESS>/Cacti Developers <developers@cacti.net>/g' \
+	-e 's/LANGUAGE <LL@li.org>/Cacti Developers <developers@cacti.net>/g' \
+	-e 's/CHARSET/UTF-8/g' locales/po/cacti.pot > "$POT_TMP"; then
+	exit 1
+fi
+chmod 644 "$POT_TMP" || exit 1
+mv "$POT_TMP" locales/po/cacti.pot || exit 1
+
 
 # Merge any changes to POT file into language files
 echo "Merging updates to language files..."
