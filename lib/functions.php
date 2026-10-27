@@ -5616,8 +5616,7 @@ function admin_email($subject, $message) {
 		$dispatching = true;
 
 		try {
-			if (function_exists('api_plugin_hook_function')
-				&& is_string($subject) && strlen($subject) <= 512
+			if (is_string($subject) && strlen($subject) <= 512
 				&& is_string($message) && strlen($message) <= 16384
 				&& (int) ($config['poller_id'] ?? 1) > 0) {
 				$alert = array(

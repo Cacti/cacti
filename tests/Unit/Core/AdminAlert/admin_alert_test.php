@@ -54,18 +54,15 @@ function reset_case() {
 function email_count() {
 	return substr_count(file_get_contents($GLOBALS['mailbox']), 'CACTI-END-MESSAGE');
 }
+function api_plugin_hook_function($name, $alert) {
+	$GLOBALS['hooks'][] = array($name, $alert);
+	return ($GLOBALS['handler'])($alert);
+}
 
 try {
 	reset_case();
 	check(admin_email('subject', 'message') === null, 'return remains void');
-	check(email_count() === 1, 'missing plugin API uses real email fallback');
-	// Conditional declaration models a caller before plugins.php is loaded.
-	if (!function_exists('api_plugin_hook_function')) {
-		function api_plugin_hook_function($name, $alert) {
-			$GLOBALS['hooks'][] = array($name, $alert);
-			return ($GLOBALS['handler'])($alert);
-		}
-	}
+	check(email_count() === 1, 'unhandled hook uses real email fallback');
 	foreach (array('accepted', 'already_accepted', 'unhandled', 'failed', null, true, 1, new stdClass(), array(), array('status' => true), array('status' => 1), array('status' => 'ACCEPTED')) as $result) {
 		reset_case();
 		$GLOBALS['handler'] = static function ($alert) use ($result) { return is_string($result) ? array('status' => $result) : $result; };
