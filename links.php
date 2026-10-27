@@ -375,7 +375,7 @@ function pages() {
 
 	form_start('links.php', 'chk');
 
-	$nav = html_nav_bar('links.php', MAX_DISPLAY_PAGES, get_fitler_request_var('page'), $rows, $total_rows, 8, __('External Links'), 'page', 'main');
+	$nav = html_nav_bar('links.php', MAX_DISPLAY_PAGES, get_filter_request_var('page'), $rows, $total_rows, 8, __('External Links'), 'page', 'main');
 
 	print $nav;
 

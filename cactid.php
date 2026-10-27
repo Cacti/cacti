@@ -133,9 +133,6 @@ if (!$foreground) {
 		} elseif ($pid == 0) {
 			// We are the child
 		} else {
-			cacti_log('NOTE: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']');
-			admin_email(__('Cacti System Notice'), __('Notice: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']', true, 'CACTID'));
-
 			print '[OK]' . PHP_EOL;
 
 			exit(0);
@@ -146,6 +143,13 @@ if (!$foreground) {
 	}
 } else {
 	print  '[OK]' . PHP_EOL . '[NOTE] The Cacti Daemon is running in foreground mode.' . PHP_EOL;
+}
+
+// Only the continuing process notifies, after restoring the pre-fork connection.
+$reconnect_conn = false;
+if (db_check_reconnect($reconnect_conn, false)) {
+	cacti_log('NOTE: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']');
+	admin_email(__('Cacti System Notice'), __('Notice: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']', true, 'CACTID'));
 }
 
 sleep(2);
