@@ -6,7 +6,7 @@ require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 3) . '/include/global_constants.php';
 if (!defined('CACTI_LOCALE')) { define('CACTI_LOCALE', 'en-US'); }
 $GLOBALS['config'] = ['cacti_server_os' => PHP_OS_FAMILY === 'Windows' ? 'win32' : 'unix', 'library_path' => dirname(__DIR__, 3) . '/lib'];
-$GLOBALS['ack_binary'] = getenv('RRDTOOL_BINARY') ?: '/opt/homebrew/bin/rrdtool';
+$GLOBALS['ack_binary'] = getenv('RRDTOOL_BINARY') ?: (is_executable('/usr/bin/rrdtool') ? '/usr/bin/rrdtool' : '/opt/homebrew/bin/rrdtool');
 function read_config_option($name) { return $name === 'path_rrdtool' ? $GLOBALS['ack_binary'] : ($name === 'boost_rrd_update_string_length' ? 10000 : ''); }
 function cacti_log(...$args) {}
 function boost_timer(...$args) {}
