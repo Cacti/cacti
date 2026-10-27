@@ -83,6 +83,15 @@ if (($argv[1] ?? '') === 'form') {
 
 	throw new \RuntimeException('Cross-owner form save did not stop.');
 }
+require_once dirname(__DIR__, 2) . '/Helpers/IsolatedProbe.php';
+
+foreach (['parent', 'item'] as $mode) {
+	$result = \cacti_test_isolated_probe(__FILE__, ['form', $mode]);
+
+	if ($result['reports'] !== 3 || $result['items'] !== 2) {
+		throw new \RuntimeException('Cross-owner form changed stored reports.');
+	}
+}
 $cases = 0;
 
 foreach ([false, true] as $admin) {
