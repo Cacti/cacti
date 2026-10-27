@@ -71,6 +71,7 @@ cmd_exec	./lib/poller.php:65	 * @param array $pipes The array of r/w pipes retur
 cmd_exec	./lib/poller.php:66	 * @param resource $proc_fd The file descriptor returned from proc_open().
 cmd_exec	./lib/rrd.php:1194					$fp = popen($rrdtool_cmd, 'r');
 cmd_exec	./lib/rrd.php:126		return popen($command, 'w');
+cmd_exec	./lib/rrd.php:145		$process = proc_open(array($binary, '-'), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('redirect', 1)), $pipes);
 cmd_exec	./lib/rrd.php:452				$process = proc_open(cacti_escapeshellarg(read_config_option('path_rrdtool')) . ' - ' . $debug, $descriptorspec, $pipes);
 cmd_exec	./lib/rrdcheck.php:805		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/snmpagent.php:766		/* add pollers of a distributed system (future) */

@@ -87,12 +87,15 @@ function rrdtool_reset_language() {
  *
  * @return mixed The result of the operation, or false on failure.
  */
-function rrd_init($output_to_term = true) {
+function rrd_init($output_to_term = true, $read_response = false) {
 	global $config;
 
-	$args = func_get_args();
+	$args = func_num_args() ? array($output_to_term) : array();
 	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true ) ? true : false;
 	$function = ($force_storage_location_local === false && read_config_option('storage_location')) ? '__rrd_proxy_init' : '__rrd_init';
+	if ($read_response && $function === '__rrd_init') {
+		return __rrd_init_acknowledged();
+	}
 	return call_user_func_array($function, $args);
 }
 
@@ -124,6 +127,78 @@ function __rrd_init($output_to_term = true) {
 	}
 
 	return popen($command, 'w');
+}
+
+/** Open a reusable RRDtool worker with a response stream for acknowledged updates. */
+function __rrd_init_acknowledged() {
+	$binary = read_config_option('path_rrdtool');
+
+	if (!is_file($binary) || !is_executable($binary)) {
+		return false;
+	}
+
+	if (read_config_option('path_rrdtool_default_font')) {
+		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
+	}
+
+	rrdtool_set_language();
+	$process = proc_open(array($binary, '-'), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('redirect', 1)), $pipes);
+
+	if (!is_resource($process)) {
+		return false;
+	}
+
+	stream_set_blocking($pipes[1], false);
+	stream_context_set_option($pipes[0], 'cacti', 'rrd_output', $pipes[1]);
+	stream_context_set_option($pipes[0], 'cacti', 'rrd_process', $process);
+
+	return $pipes[0];
+}
+
+/** Read one RRDtool response without launching another process or polling sleeps. */
+function __rrd_read_acknowledgement($input, $timeout = 30) {
+	$options = stream_context_get_options($input);
+	$output = $options['cacti']['rrd_output'];
+	$deadline = hrtime(true) / 1e9 + $timeout;
+	$buffer = '';
+
+	while (strlen($buffer) <= 65536) {
+		$remaining = $deadline - hrtime(true) / 1e9;
+		if ($remaining <= 0 || feof($output)) {
+			break;
+		}
+
+		$read = array($output);
+		$write = null;
+		$except = null;
+		$seconds = (int) $remaining;
+		$ready = stream_select($read, $write, $except, $seconds, (int) (($remaining - $seconds) * 1000000));
+		if ($ready === false || $ready === 0) {
+			break;
+		}
+
+		$chunk = stream_get_contents($output);
+		if ($chunk === false) {
+			break;
+		}
+		$buffer .= $chunk;
+		if (strlen($buffer) > 65536) {
+			break;
+		}
+		foreach (explode("\n", $buffer) as $line) {
+			$line = rtrim($line, "\r");
+			if (str_ends_with($buffer, "\n") && (str_starts_with($line, 'OK ') || $line === 'OK' || str_starts_with($line, 'ERROR:'))) {
+				return $buffer;
+			}
+		}
+	}
+
+	// Keep the resource marked failed until its owner closes it. Retrying a
+	// write-only fallback would lose acknowledgement and spawn extra workers.
+	stream_context_set_option($input, 'cacti', 'rrd_failed', true);
+	proc_terminate($options['cacti']['rrd_process'], 9);
+
+	return false;
 }
 
 /**
@@ -244,7 +319,14 @@ function rrd_close() {
 function __rrd_close($rrdtool_pipe) {
 	/* close the rrdtool file descriptor */
 	if (is_resource($rrdtool_pipe)) {
-		pclose($rrdtool_pipe);
+		$options = stream_context_get_options($rrdtool_pipe);
+		if (isset($options['cacti']['rrd_process'])) {
+			fclose($rrdtool_pipe);
+			fclose($options['cacti']['rrd_output']);
+			proc_close($options['cacti']['rrd_process']);
+		} else {
+			pclose($rrdtool_pipe);
+		}
 	}
 
 	rrdtool_reset_language();
@@ -396,6 +478,12 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	}
 
 	static $last_command;
+	$pipe_options = is_resource($rrdtool_pipe) ? stream_context_get_options($rrdtool_pipe) : array();
+	$read_response = isset($pipe_options['cacti']['rrd_output']);
+	if (!empty($pipe_options['cacti']['rrd_failed'])) {
+		return false;
+	}
+
 
 	if (!is_numeric($output_flag)) {
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
@@ -469,6 +557,11 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") === false) {
 				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'");
 
+				if ($read_response) {
+					stream_context_set_option($rrdtool_pipe, 'cacti', 'rrd_failed', true);
+					return false;
+				}
+
 				/* close the invalid pipe */
 				rrd_close($rrdtool_pipe);
 
@@ -494,6 +587,21 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 	/* store the last command to provide rrdtool segfault diagnostics */
 	$last_command = $command_line;
+
+	if ($read_response) {
+		$response = __rrd_read_acknowledgement($rrdtool_pipe);
+		if ($response === false || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) {
+			return $response;
+		}
+		if ($output_flag == RRDTOOL_OUTPUT_BOOLEAN) {
+			return preg_match('/(?:^|\n)OK(?: |\r?\n)/', $response) === 1;
+		}
+		if ($output_flag == RRDTOOL_OUTPUT_NULL) {
+			return;
+		}
+		rrdtool_trim_output($response);
+		return $response;
+	}
 
 	if (!isset($fp)) {
 		return;
