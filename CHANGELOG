@@ -416,7 +416,6 @@ Cacti CHANGELOG
 -feature#7634: Add indexes for host-template and session lookup queries
 -feature#7681: Add fail2ban support with a stable authentication-failure log line and a bundled filter
 -feature#8281: Log user actions (create, delete, ...)
--feature#NNNN: Set the html lang and dir attributes from the active language so Arabic and Hebrew render right-to-left
 
 1.2.32
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line

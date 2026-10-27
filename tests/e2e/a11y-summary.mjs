@@ -52,7 +52,7 @@ const top = [...rules.values()]
 		impact: r.impact,
 		help: r.help,
 		nodes: r.nodes,
-		themes: [...r.themes].sort(),
+		themes: [...r.themes].sort((a, b) => Number(a > b) - Number(a < b)),
 		selectors: [...r.targets.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([s]) => s),
 	}));
 
