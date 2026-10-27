@@ -29,13 +29,32 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/installer.php', 'installer')
 
     def test_graph_change_runs_the_native_graph_probe(self):
-        self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
+        self.dispatch('lib/rrd.php', ['FallbackSourceIdentity.php', 'library'])
 
     def test_account_change_runs_the_native_audit_probe(self):
         self.dispatch('lib/functions.php', 'UserAdministrationAuditCoverage.php')
 
     def test_auth_change_runs_the_native_auth_probe(self):
-        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+        self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'library'])
+
+    def test_device_library_runs_the_database_contracts(self):
+        self.dispatch('lib/api_device.php', 'library')
+
+    def test_library_fixture_changes_run_the_database_contracts(self):
+        self.dispatch('tests/fixtures/Core/LibraryBehavior.php', 'library')
+
+    def test_library_runtime_changes_run_the_database_contracts(self):
+        self.dispatch('tests/e2e/Dockerfile', 'library')
+
+    def test_library_schema_changes_run_the_database_contracts(self):
+        self.dispatch('cacti.sql', 'library')
+
+    def test_library_dependencies_run_the_database_contracts(self):
+        for changed in ['lib/api_tree.php', 'lib/api_aggregate.php', 'lib/data_query.php',
+                        'resource/snmp_queries/interface.xml', 'composer.lock',
+                        'tests/fixtures/snmp-coverage/snmpd.conf']:
+            with self.subTest(changed=changed):
+                self.dispatch(changed, 'library')
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
@@ -62,7 +81,7 @@ class RequestDispatchTest(unittest.TestCase):
             git('init', '--quiet')
             (repository / 'README.md').write_text('fixture\n')
             for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh'),
-                                 ('installer', 'installer-coverage.sh')]:
+                                 ('installer', 'installer-coverage.sh'), ('library', 'library-behavior.sh')]:
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
@@ -85,7 +104,7 @@ class RequestDispatchTest(unittest.TestCase):
                 env, BASE_COMMIT=base, CACTI_PR_COVERAGE_OUTPUT=str(output)), check=True)
             probe = output / 'probes'
             self.assertEqual(probe.read_text().splitlines() if probe.exists() else [],
-                             [expected] if expected else [])
+                             expected if isinstance(expected, list) else [expected] if expected else [])
 
 
 if __name__ == '__main__':
