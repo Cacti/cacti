@@ -1,5 +1,6 @@
 """Exercise the repository scripts with real gettext tools in disposable trees."""
 import os
+import sys
 import json
 from pathlib import Path
 import shutil
@@ -31,11 +32,11 @@ class GettextScriptsTest(unittest.TestCase):
         for name in ['update-pot.sh', 'build_gettext.sh', 'build_mo.sh']:
             shutil.copyfile(ROOT / 'locales' / name, self.locales / name)
         self.env = {**os.environ, 'LC_ALL': 'C'}
-        # The build script already requires GNU sed. Homebrew names it gsed.
-        if shutil.which('gsed'):
+        # Exercise BSD sed on macOS even when GNU tools are first in PATH.
+        if sys.platform == 'darwin':
             tools = self.root / 'tools'
             tools.mkdir()
-            (tools / 'sed').symlink_to(shutil.which('gsed'))
+            (tools / 'sed').symlink_to('/usr/bin/sed')
             self.env['PATH'] = str(tools) + os.pathsep + self.env['PATH']
 
     def run_script(self, name, cwd=None, env=None):
@@ -52,6 +53,10 @@ class GettextScriptsTest(unittest.TestCase):
     def test_build_gettext_preserves_translations_and_compiles_spaced_names(self):
         result = self.run_script('build_gettext.sh')
         self.assertEqual(result.returncode, 0, result.stderr)
+        pot = (self.locales / 'po/cacti.pot').read_text()
+        self.assertIn('Cacti Developers <developers@cacti.net>', pot)
+        self.assertIn('charset=UTF-8', pot)
+        self.assertNotIn('FULL NAME <EMAIL@ADDRESS>', pot)
         self.assertIn('Fixture translation', (self.locales / 'po/language with spaces.po').read_text())
         self.assertTrue((self.locales / 'LC_MESSAGES/language with spaces.mo').is_file())
 
