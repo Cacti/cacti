@@ -508,7 +508,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: aggregate_graphs.php aggregate_templates.php automation_templates.php
+#: src/Controller/PackageRepositoriesController.php aggregate_graphs.php aggregate_templates.php automation_templates.php
 #: automation_tree_rules.php cdef.php color.php color_templates.php
 #: data_input.php data_queries.php data_source_profiles.php data_sources.php
 #: data_templates.php gprint_presets.php graph_templates.php host_templates.php
@@ -518,7 +518,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: aggregate_graphs.php aggregate_templates.php automation_templates.php
+#: src/Controller/PackageRepositoriesController.php aggregate_graphs.php aggregate_templates.php automation_templates.php
 #: automation_tree_rules.php cdef.php color.php color_templates.php
 #: data_debug.php data_input.php data_queries.php data_source_profiles.php
 #: data_sources.php data_templates.php gprint_presets.php graph_templates.php
@@ -1229,7 +1229,7 @@ msgstr ""
 msgid "Discovered Devices"
 msgstr ""
 
-#: automation_devices.php automation_networks.php automation_snmp.php
+#: src/Controller/PackageRepositoriesController.php src/Controller/UserLogController.php automation_devices.php automation_networks.php automation_snmp.php
 #: data_debug.php data_source_profiles.php host.php lib/functions.php
 #: lib/html_reports.php lib/spikekill.php package_repos.php plugins.php
 #: pollers.php support.php user_admin.php user_log.php utilities.php
@@ -3468,7 +3468,7 @@ msgstr ""
 msgid "Deleted/Invalid"
 msgstr ""
 
-#: data_debug.php user_log.php
+#: src/Controller/UserLogController.php data_debug.php user_log.php
 msgid "Failed"
 msgstr ""
 
@@ -18607,7 +18607,7 @@ msgstr ""
 msgid "Destination address not specified"
 msgstr ""
 
-#: lib/ping.php package_repos.php
+#: src/Controller/PackageRepositoriesController.php lib/ping.php package_repos.php
 msgid "default"
 msgstr ""
 
@@ -20949,7 +20949,7 @@ msgstr ""
 msgid "Key Type"
 msgstr ""
 
-#: package_keys.php
+#: src/Controller/PublicKeysController.php package_keys.php
 msgid "No Package Public Keys Found"
 msgstr ""
 
@@ -21074,7 +21074,7 @@ msgstr ""
 msgid "Repos"
 msgstr ""
 
-#: package_repos.php
+#: src/Controller/PackageRepositoriesController.php package_repos.php
 msgid "No Package Repositories Found"
 msgstr ""
 
@@ -22259,11 +22259,11 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: rrdcheck.php rrdcleaner.php
+#: src/Controller/RrdCheckController.php rrdcheck.php rrdcleaner.php
 msgid "Deleted"
 msgstr ""
 
-#: rrdcheck.php
+#: src/Controller/RrdCheckController.php rrdcheck.php
 msgid "No RRDcheck Problems Found"
 msgstr ""
 
@@ -24390,19 +24390,19 @@ msgstr ""
 msgid "Login Attempts"
 msgstr ""
 
-#: user_log.php
+#: src/Controller/UserLogController.php user_log.php
 msgid "(User Removed)"
 msgstr ""
 
-#: user_log.php
+#: src/Controller/UserLogController.php user_log.php
 msgid "Success - Password"
 msgstr ""
 
-#: user_log.php
+#: src/Controller/UserLogController.php user_log.php
 msgid "Success - Password Change"
 msgstr ""
 
-#: user_log.php
+#: src/Controller/UserLogController.php user_log.php
 msgid "Success - Token"
 msgstr ""
 

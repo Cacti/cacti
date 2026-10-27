@@ -502,24 +502,8 @@ function repos() : void {
 
 	html_header_sort_checkbox($display_text, $filter->sortColumn(), $filter->sortDirection(), false);
 
-	if (cacti_sizeof($repos)) {
-		foreach ($repos as $repo) {
-			form_alternate_row('line' . $repo['id'], true);
-
-			form_selectable_cell(filter_value($repo['name'], $filter->filter(), 'package_repos.php?action=edit&id=' . $repo['id']), $repo['id']);
-			form_selectable_cell($types[$repo['repo_type']], $repo['id']);
-			form_selectable_cell(filter_value($repo['repo_location'], $filter->filter()), $repo['id']);
-			form_selectable_ecell($repo['repo_type'] == 0 ? ($repo['repo_branch'] != '' ? $repo['repo_branch'] : __('default')) : __('N/A'), $repo['id'], '', 'center');
-			form_selectable_cell($repo['enabled'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
-			form_selectable_cell($repo['default'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
-
-			form_checkbox_cell($repo['name'], $repo['id']);
-
-			form_end_row();
-		}
-	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Package Repositories Found') . '</em></td></tr>';
-	}
+	(new \Cacti\Controller\PackageRepositoriesController(\Cacti\View\TemplateRenderer::create()))
+		->show($repos, $filter->filter(), $types)->sendContent();
 
 	html_end_box(false);
 

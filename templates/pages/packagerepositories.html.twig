@@ -1,0 +1,13 @@
+{% for item in rows %}
+	{{ cacti_row(item.id, true) }}
+	{{ cacti_cell(cacti_filter(item.name, search, 'package_repos.php?action=edit&id=' ~ item.id), item.id) }}
+	{{ cacti_cell(types[item.repo_type], item.id) }}
+	{{ cacti_cell(cacti_filter(item.repo_location, search), item.id) }}
+	{{ cacti_cell(item.repo_type == 0 ? (item.repo_branch != '' ? item.repo_branch : labels.default_branch) : labels.na, item.id, 'center') }}
+	{{ cacti_cell(item.enabled == 'on' ? labels.yes : labels.no, item.id, 'center') }}
+	{{ cacti_cell(item.default == 'on' ? labels.yes : labels.no, item.id, 'center') }}
+	{{ cacti_checkbox(item.name, item.id) }}
+	</tr>
+{% else %}
+	<tr class="tableRow odd"><td colspan="7"><em>{{ labels.empty }}</em></td></tr>
+{% endfor %}

@@ -56,8 +56,6 @@ function rrdcheck_purge() : void {
 
 // Display all rrdcheck entries
 function rrdcheck_display_problems() : void {
-	global $item_rows;
-
 	// suppress warnings
 	error_reporting(0);
 
@@ -155,29 +153,8 @@ function rrdcheck_display_problems() : void {
 
 	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'));
 
-	if (cacti_sizeof($problems)) {
-		foreach ($problems as $p) {
-			form_alternate_row('line' . $p['local_data_id'], true);
-
-			if ($p['description'] == '') {
-				$p['description'] = __('Deleted');
-			}
-
-			if ($p['name_cache'] == '') {
-				$p['name_cache'] = __('Deleted');
-			}
-
-			form_selectable_cell(filter_value($p['description'], grv('filter')), $p['local_data_id']);
-			form_selectable_cell(filter_value($p['name_cache'], grv('filter')), $p['local_data_id']);
-			form_selectable_cell(filter_value($p['local_data_id'], grv('filter')), $p['local_data_id'], '', 'center');
-			form_selectable_cell(filter_value($p['message'], grv('filter')), $p['local_data_id']);
-			form_selectable_cell($p['test_date'], $p['local_data_id'], '', 'right');
-
-			form_end_row();
-		}
-	} else {
-		print '<tr class="tableRow odd"><td colspan="5"><em>' . __('No RRDcheck Problems Found') . '</em></td></tr>';
-	}
+	(new \Cacti\Controller\RrdCheckController(\Cacti\View\TemplateRenderer::create()))
+		->show($problems, grv('filter'))->sendContent();
 
 	html_end_box(false);
 

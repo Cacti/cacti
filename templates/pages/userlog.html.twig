@@ -1,0 +1,11 @@
+{% for item in rows %}
+	{% set id = loop.index0 %}
+	{{ cacti_row(id, true) }}
+	{{ cacti_cell(cacti_filter(item.username, search), id, 'nowrap') }}
+	{{ cacti_cell(cacti_filter(item.full_name ?? labels.removed, search), id) }}
+	{{ cacti_cell(cacti_filter(realms[item.realm].name ?? labels.na, search), id) }}
+	{{ cacti_cell(cacti_filter(item.time, search), id) }}
+	{{ cacti_cell(item.result == 0 ? labels.failed : (item.result == 1 ? labels.password : (item.result == 3 ? labels.changed : labels.token)), id) }}
+	{{ cacti_cell(cacti_filter(item.ip, search), id) }}
+	</tr>
+{% endfor %}

@@ -125,7 +125,7 @@ function package_key_remove(int $id) : void {
 }
 
 function public_keys() : void {
-	global $actions, $item_rows, $types;
+	global $actions;
 
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Public Keys'), 'package_keys.php', 'fors', 'sess_package_keys');
@@ -197,27 +197,8 @@ function public_keys() : void {
 
 	html_header_sort_checkbox($display_text, $filter->sortColumn(), $filter->sortDirection(), false);
 
-	$i = 0;
-
-	if (cacti_sizeof($keys)) {
-		foreach ($keys as $key) {
-			form_alternate_row('line' . $key['id'], true);
-
-			$pkey = $key['public_key'];
-
-			form_selectable_cell(filter_value($key['author'], $filter->filter()), $key['id']);
-			form_selectable_cell($key['id'], $key['id']);
-			form_selectable_cell(filter_value($key['homepage'], $filter->filter()), $key['id']);
-			form_selectable_cell(filter_value($key['email_address'], $filter->filter()), $key['id']);
-			form_selectable_cell(strlen($pkey) < 200 ? 'SHA1' : 'SHA256', $key['id']);
-
-			form_checkbox_cell($key['author'], $key['id']);
-
-			form_end_row();
-		}
-	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Package Public Keys Found') . '</em></td></tr>';
-	}
+	(new \Cacti\Controller\PublicKeysController(\Cacti\View\TemplateRenderer::create()))
+		->show($keys, $filter->filter())->sendContent();
 
 	html_end_box(false);
 
