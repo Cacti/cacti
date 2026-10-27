@@ -21,6 +21,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_html_change_runs_the_browser_probe(self):
         self.dispatch('lib/html.php', 'accessibility')
 
+    def test_locale_change_runs_the_document_shell_probe(self):
+        self.dispatch('include/global_languages.php', 'document_direction_probe.php')
+
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
 
@@ -42,7 +45,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
-        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+        self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'document_direction_probe.php'])
 
     def test_script_server_change_runs_the_log_masking_probe(self):
         for path in ['script_server.php', 'lib/poller.php', 'tests/fixtures/ScriptServerLogMaskingCoverage.php']:
@@ -106,6 +109,8 @@ class RequestDispatchTest(unittest.TestCase):
                 path.write_text('<?php // dispatch fixture\n')
             probe = repository / 'tests/Unit/fixtures/graph_group_probe.php'
             probe.parent.mkdir(parents=True, exist_ok=True)
+            probe.write_text('<?php // dispatch fixture\n')
+            probe = repository / 'tests/Unit/fixtures/document_direction_probe.php'
             probe.write_text('<?php // dispatch fixture\n')
             git('add', '.')
             git('commit', '--quiet', '-m', 'fixture base')
