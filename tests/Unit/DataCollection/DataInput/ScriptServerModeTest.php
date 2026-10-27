@@ -70,9 +70,48 @@ test('the parameterless ports return a value under the script server', function 
 
 	[$printed, $value] = json_decode((string) $stdout, true);
 
+	if (PHP_OS_FAMILY === 'Windows') {
+		$pattern = $function === 'ss_loadavg_multi' ? '/^1min:U 5min:U 10min:U$/'
+			: ($function === 'ss_diskfree' ? '/^megabytes:U percent:U$/' : '/^U$/');
+	}
+
 	expect($printed)->toBe('')->and($value)->toMatch($pattern);
 })->with([
 	['ss_loadavg_multi.php', 'ss_loadavg_multi', '/^1min:\S+ 5min:\S+ 10min:\S+$/'],
 	['ss_unix_processes.php', 'ss_unix_processes', '/^\d+$/'],
 	['ss_diskfree.php', 'ss_diskfree', '/^(megabytes:\d+ percent:\d+)+$/']
 ]);
+
+test('Windows collectors return unavailable and leave subsequent script server calls usable', function () {
+	$called_by_script_server = true;
+	$root = dirname(__DIR__, 4);
+	$collectors = [
+		['ss_linux_memory', ['MemFree'], 'U'],
+		['ss_loadavg', ['5'], 'U'],
+		['ss_loadavg_multi', [], '1min:U 5min:U 10min:U'],
+		['ss_diskfree', [], 'megabytes:U percent:U'],
+		['ss_unix_processes', [], 'U'],
+		['ss_unix_users', [], 'U'],
+		['ss_unix_tcp_connections', [], 'U'],
+		['ss_ping', ['127.0.0.1'], 'U'],
+		['ss_query_unix_partitions', ['index'], 'U'],
+	];
+
+	ob_start();
+	foreach ($collectors as [$function, $args, $expected]) {
+		require_once $root . '/scripts/' . $function . '.php';
+		for ($i = 0; $i < 2; $i++) {
+			expect($function(...$args))->toBe($expected);
+		}
+	}
+	require_once $root . '/scripts/ss_webhits.php';
+	$printed = ob_get_clean();
+	$log = tempnam(sys_get_temp_dir(), 'webhits');
+	try {
+		file_put_contents($log, "GET /\nGET /again\n");
+		expect($printed)->toBe('')
+			->and(ss_webhits($log))->toBe('2');
+	} finally {
+		unlink($log);
+	}
+})->skip(PHP_OS_FAMILY !== 'Windows', 'Requires native Windows facilities.');

@@ -23,8 +23,14 @@ or using Unix pipe selection. Load averages return `U`, or
 do not terminate the Script Server. Use Windows-specific data input methods
 for those counters.
 
-The log and HTTP scripts use portable PHP operations, but native Windows
-execution has not been validated. Linux Docker tests cover the parsers,
-HTTP fixtures, subprocess behavior and Script Server lifecycle. A subprocess
-regression disables `sys_getloadavg()` and denies access to `/proc` to verify
-the unavailable-data path; it is not a Windows runtime test.
+The Windows PHP data input scripts workflow runs on native Windows Server
+2022 with PHP 8.2, 8.3 and 8.4. It checks log reads, modem HTTP fixtures,
+response parsers, silent Script Server loading, and repeated unavailable
+Unix collector calls followed by a successful log read. Skipped tests fail
+the Windows job. This checks these scripts, not a complete Windows Cacti
+installation or native Windows performance counters.
+
+Linux Docker tests cover the parsers, HTTP fixtures, subprocess behavior
+and Script Server lifecycle. A separate subprocess regression disables
+`sys_getloadavg()` and denies access to `/proc` to verify the unavailable-data
+path without a Windows runtime.
