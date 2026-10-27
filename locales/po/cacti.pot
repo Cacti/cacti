@@ -23,69 +23,69 @@ msgstr ""
 msgid "About Cacti"
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Active Developers"
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Honorable Mentions"
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Contributors to Documentation, QA, Packaging, the Forums and our YouTube page."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Emeritus Members"
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Thanks"
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "The users of Cacti"
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "License"
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "Cacti is licensed under the GNU GPL:"
 msgstr ""
 
-#: about.php lib/installer.php
+#: src/Controller/AboutController.php lib/installer.php
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr ""
 
-#: about.php
+#: src/Controller/AboutController.php
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 msgstr ""
 
@@ -2887,7 +2887,7 @@ msgstr ""
 msgid "Change Log [%s]"
 msgstr ""
 
-#: changelog.php support.php
+#: src/Controller/ChangelogController.php support.php
 #, php-format
 msgid "Version %s"
 msgstr ""

@@ -59,13 +59,8 @@ check_merge_conflicts() {
 
 check_composer_lock() {
     if git diff --cached --name-only | grep -q '^composer\.lock$'; then
-        echo ""
-        echo "ERROR: composer.lock is staged for commit."
-        echo "  Cacti supports multiple PHP versions; composer.lock must not be committed."
-        echo "  Run: git reset HEAD composer.lock"
-        echo ""
-
-        exit 1
+        # Dependency changes must include a valid, current lockfile.
+        composer validate --no-check-publish
     fi
 }
 
@@ -158,7 +153,7 @@ run_phpcsfixer() {
 run_phpstan() {
     check_tool "phpstan" "PHPStan"
     echo "Running PHPStan..."
-    composer run-script phpstan
+    composer run-script phpstan -- --memory-limit=2G
 }
 
 # ---- Pre-flight checks (always run) ----

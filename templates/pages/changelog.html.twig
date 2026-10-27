@@ -1,0 +1,19 @@
+{% for version in versions %}
+	{% if full or loop.first %}
+		{{ cacti_box(version.label) }}
+		{% for type, details in version.groups %}
+			{% if full or type != 'issue' %}
+				{{ cacti_section(type, 4) }}
+				{% for detail in details %}
+					{{ cacti_row() }}
+					<td><i class="ti {{ type == 'issue' ? 'ti-tool' : (type == 'feature' ? 'ti-rocket' : 'ti-shield-half') }}"></i></td>
+					<td>{{ type }}</td>
+					<td>{% if detail.issue %}<a target="_blank" href="https://github.com/cacti/cacti/issues/{{ detail.issue }}">{{ detail.issue }}</a>{% endif %}</td>
+					<td>{{ detail.desc }}</td>
+					</tr>
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+		{{ cacti_end_box() }}
+	{% endif %}
+{% endfor %}

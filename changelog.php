@@ -45,8 +45,6 @@ switch (grv('action')) {
 }
 
 function changelog_view() : void {
-	global $database_default, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
-
 	// ================= input validation =================
 	gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
 	// ====================================================
@@ -98,121 +96,8 @@ function changelog_view() : void {
 	}
 	$header_label = __esc('Change Log [%s]', $tabs[$tab]);
 
-	// Display tech information
-	$changelog = file(CACTI_PATH_BASE . '/CHANGELOG');
-
-	$full = $current_tab == 'full';
-
-	array_shift($changelog);
-	array_shift($changelog);
-
-	$ver     = '';
-	$vers    = [];
-	$details = [];
-	$first   = '';
-
-	foreach ($changelog as $line) {
-		$line = trim($line);
-
-		if (isset($line[0]) && ($line[0] == '*' || $line[0] == '-')) {
-			$detail = false;
-
-			if (preg_match('/-(issue|feature|security): (.*)/i', $line, $parts)) {
-				$detail = ['desc' => $parts[2]];
-			} elseif (preg_match('/-(issue|feature|security)#(\d+)\: (.*)/i', $line, $parts)) {
-				$detail = ['desc' => $parts[3], 'issue' => $parts[2]];
-			}
-
-			$type = 'unknown';
-
-			if (isset($parts[1])) {
-				$type = cacti_strtolower($parts[1]);
-
-				if ($type == 'security') {
-					$type = ' security';
-				}
-			}
-
-			if (!empty($detail)) {
-				if (empty($details[$type])) {
-					$details[$type] = [];
-				}
-				$details[$type][] = $detail;
-			}
-		} elseif (!empty($line)) {
-			if (!empty($ver)) {
-				$vers[$ver] = $details;
-				$first      = true;
-				$details    = [];
-			}
-
-			if (count($vers) > 4) {
-				break;
-			}
-			$ver = $line;
-		}
-	}
-
-	krsort($vers);
-
-	foreach ($vers as $ver => $changelog) {
-		if ($ver != '') {
-			html_start_box(__('Version %s', $ver), '100%', false, 3, 'center', '');
-			ksort($changelog);
-
-			foreach ($changelog as $type => $details) {
-				$output = false;
-
-				foreach ($details as $detail) {
-					$highlight = false;
-
-					switch ($type) {
-						case 'issue':
-							$icon = '<i class="ti ti-tool"></i>';
-
-							break;
-						case 'feature':
-							$icon      = '<i class="ti ti-rocket"></i>';
-							$highlight = true;
-
-							break;
-						case ' security':
-							$icon      = '<i class="ti ti-shield-half"></i>';
-							$highlight = true;
-
-							break;
-						default:
-							$icon = '<i class="ti ti-help"></i>';
-
-							break;
-					}
-
-					if ($current_tab == 'full' || $highlight) {
-						if (!$output) {
-							html_section_header(htmle($type), 4);
-							$output = true;
-						}
-
-						form_alternate_row();
-
-						print '<td>' . $icon . '</td><td>' . htmle($type) . '</td><td>';
-
-						if (!empty($detail['issue'])) {
-							print '<a target="_blank" href="https://github.com/cacti/cacti/issues/' . htmle($detail['issue']) . '">' . htmle($detail['issue']) . '</a>';
-						}
-						print '</td><td>' . htmle($detail['desc']) . '</td>';
-
-						form_end_row();
-					}
-				}
-			}
-			html_end_box();
-
-			if ($current_tab !== 'full') {
-				break;
-			}
-		}
-	}
+	(new \Cacti\Controller\ChangelogController(\Cacti\View\TemplateRenderer::create(), CACTI_PATH_BASE . '/CHANGELOG'))
+		->show($current_tab === 'full')->sendContent();
 
 	?>
 	<script type='text/javascript'>

@@ -1,0 +1,73 @@
+<tr class='tableHeader'>
+	<td class='tableSubHeaderColumn' colspan='2'>
+		<span class='textSubHeaderDark'>{{ version }}</span>
+	</td>
+</tr>
+<tr>
+	<td style='vertical-align:top;' class='odd textArea'>
+		<div style='float:right;'>
+			<a href='http://www.cacti.net/' target='_blank'><img class='right' alt='cactiHome' src='images/cacti_about_logo.gif'></a>
+		</div>
+
+		<p>{{ description }}</p>
+
+		<p>{{ website }}</p>
+
+		<div class='flexContainer'>
+		<div class='flexChild' style='min-width:300px;'>
+		<p><strong>{{ active_title }}</strong></p>
+		<p style='min-height:45px'>{{ active_description }}</p>
+		<ul style='list-style-type:disc'>
+			<li>Larry Adams <i>(TheWitness)</i></li>
+			<li>Mark Brugnoli-Vinten <i>(netniV)</i></li>
+			<li>Jimmy Conner <i>(cigamit)</i></li>
+			<li>Petr Macek <i>(xmacan)</i></li>
+			<li>Andreas Braun <i>(browniebraun)</i></li>
+			<li>Thomas Urban <i>(phalek)</i></li>
+			<li>Jing Chen <i>(ddb4github)</i></li>
+			<li>Thomas Vincent <i>(somethingwithproof)</i></li>
+		</ul>
+		</div>
+		<div class='flexChild' style='min-width:300px;'>
+		<p><strong>{{ mentions_title }}</strong></p>
+		<p style='min-height:45px'>{{ mentions_description }}</p>
+		<ul style='list-style-type:disc'>
+			<li>Sean Mancini <i>(bmfmancini)</i></li>
+			<li>J.P. Pasnak, CD <i>(Linegod)</i></li>
+			<li>Chris Bell (Windows) <i>(BSOD2600)</i></li>
+			<li>Paul Gevers (Debian) <i>(paulgevers)</i></li>
+			<li>Morten Stevens (Fedora) <i>(mortenstevens)</i></li>
+		</ul>
+		</div>
+		<div class='flexChild' style='min-width:300px;'>
+		<p><strong>{{ emeritus_title }}</strong></p>
+		<p style='min-height:45px'>{{ emeritus_description }}</p>
+		<ul style='list-style-type:disc'>
+			<li>Ian Berry <i>(raX)</i></li>
+			<li>Reinhard Scheck <i>(gandalf)</i></li>
+			<li>Tony Roman <i>(rony)</i></li>
+			<li>Andy Blyler <i>(ablyler)</i></li>
+		</ul>
+		</div>
+		</div>
+
+		<p><strong>{{ thanks_title }}</strong></p>
+		<ul style='list-style-type:disc'>
+			<li>
+				{{ thanks_links }}
+			</li>
+			<li>
+				<strong>{{ users_title }}</strong>
+				{{ users_description }}
+			</li>
+		</ul>
+
+		<strong>{{ license_title }}</strong><br>
+
+		<p>{{ license_intro }}</p>
+
+		<p><span style='font-family:monospace;'>{{ license_terms }}</span></p>
+
+		<p><span style='font-family:monospace;'>{{ license_warranty }}</span></p>
+	</td>
+</tr>
