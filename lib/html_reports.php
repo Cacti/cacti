@@ -221,6 +221,14 @@ function reports_item_dnd() : void {
 	gfrv('id');
 	// ================= Input validation =================
 
+	$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [(int) grv('id')]);
+
+	if (!reports_owner_authorized($owner_id)) {
+		raise_message('permission_denied');
+
+		return;
+	}
+
 	$continue = true;
 
 	if (isrv('report_item') && is_array(gnrv('report_item'))) {
@@ -366,7 +374,7 @@ function reports_form_save() : void {
 			exit;
 		}
 
-		if ((int) $save['id'] > 0 && !reports_item_authorized((int) $save['id'])) {
+		if ((int) $save['id'] > 0 && !reports_item_authorized((int) $save['id'], (int) $save['report_id'])) {
 			raise_message('reports_idor', __('You do not have permission to modify this Report Item.'), MESSAGE_LEVEL_ERROR);
 			header('Location: ' . get_reports_page());
 
@@ -447,18 +455,14 @@ function reports_form_actions() : void {
 	$reportit_exists = db_table_exists('plugin_reportit_reports');
 
 	$can_manage_report = static function (string $type, int $report_id) use ($current_user_id, $reports_admin, $reportit_exists) : bool {
-		if ($reports_admin) {
-			return true;
+		if ($type === 'reports') {
+			$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$report_id]);
+
+			return reports_owner_authorized($owner_id);
 		}
 
-		if ($type === 'reports') {
-			$owner_id = db_fetch_cell_prepared('SELECT user_id
-				FROM reports
-				WHERE id = ?',
-				[$report_id]
-			);
-
-			return ((int) $owner_id === $current_user_id);
+		if ($reports_admin) {
+			return true;
 		}
 
 		if ($type === 'reportit' && $reportit_exists) {
@@ -811,9 +815,10 @@ function reports_item_moveup() : void {
 function reports_item_remove() : void {
 	// ================= input validation =================
 	gfrv('item_id');
+	gfrv('id');
 
 	// ====================================================
-	if (!reports_item_authorized((int) grv('item_id'))) {
+	if (!reports_item_authorized((int) grv('item_id'), (int) grv('id'))) {
 		raise_message('permission_denied');
 
 		return;
@@ -1072,6 +1077,8 @@ function reports_item_validate() : string {
 function reports_item_edit() : void {
 	global $item_types, $graph_timespans, $alignment;
 
+	gfrv('id');
+
 	$trees    = [];
 	$branches = [];
 
@@ -1087,7 +1094,7 @@ function reports_item_edit() : void {
 	$report_item['tree_id']           = -1;
 
 	if (isrv('item_id') && gfrv('item_id') > 0) {
-		if (!reports_item_authorized((int) grv('item_id'))) {
+		if (!reports_item_authorized((int) grv('item_id'), (int) grv('id'))) {
 			raise_message('reports_idor', __('You do not have permission to view this Report Item.'), MESSAGE_LEVEL_ERROR);
 			header('Location: ' . get_reports_page());
 
