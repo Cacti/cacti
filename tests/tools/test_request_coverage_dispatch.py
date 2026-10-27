@@ -28,6 +28,14 @@ class RequestDispatchTest(unittest.TestCase):
     def test_installer_change_runs_the_installer_probe(self):
         self.dispatch('lib/installer.php', 'installer')
 
+    def test_retired_theme_cleanup_runs_for_upgrade_and_pruning_changes(self):
+        for path, expected in [
+                ('install/functions.php', ['installer', 'RetiredThemeCleanup.php']),
+                ('install/upgrades/1_3_0.php', ['queue', 'RetiredThemeCleanup.php']),
+                ('tests/fixtures/Installer/RetiredThemeCleanup.php', ['RetiredThemeCleanup.php'])]:
+            with self.subTest(path=path):
+                self.dispatch(path, expected)
+
     def test_graph_change_runs_the_native_graph_probe(self):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
@@ -67,7 +75,8 @@ class RequestDispatchTest(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
-                           'UserAdministrationAuditCoverage.php', 'Core/PackageArchive.php']:
+                           'UserAdministrationAuditCoverage.php', 'Core/PackageArchive.php',
+                           'Installer/RetiredThemeCleanup.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
@@ -85,7 +94,7 @@ class RequestDispatchTest(unittest.TestCase):
                 env, BASE_COMMIT=base, CACTI_PR_COVERAGE_OUTPUT=str(output)), check=True)
             probe = output / 'probes'
             self.assertEqual(probe.read_text().splitlines() if probe.exists() else [],
-                             [expected] if expected else [])
+                             expected if isinstance(expected, list) else [expected] if expected else [])
 
 
 if __name__ == '__main__':
