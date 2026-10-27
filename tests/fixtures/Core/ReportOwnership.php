@@ -27,7 +27,11 @@ function db_execute_prepared($sql, $args = []) {
 
 	return $s->execute($args);
 }
-function is_reports_admin() {
+function is_realm_allowed($realm) {
+	if ($realm !== 21) {
+		throw new \RuntimeException('Unexpected report administrator realm.');
+	}
+
 	return $GLOBALS['reports_admin'];
 }
 function raise_message(...$args) {
