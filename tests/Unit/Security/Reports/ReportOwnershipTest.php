@@ -9,5 +9,5 @@ test('report history and items enforce the same owner/admin policy and actual pa
 
 test('report and item saves refuse another owner before writes', function (string $mode) {
 	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ReportOwnership.php', ['form', $mode]);
-	expect($result['reports'])->toBe(3)->and($result['items'])->toBe(2);
+	expect($result['reports'])->toBe(3)->and($result['items'])->toBe(4);
 })->with(['parent', 'item']);
