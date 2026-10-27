@@ -198,7 +198,7 @@ function public_keys() : void {
 	html_header_sort_checkbox($display_text, $filter->sortColumn(), $filter->sortDirection(), false);
 
 	(new \Cacti\Controller\PublicKeysController(\Cacti\View\TemplateRenderer::create()))
-		->show($keys, $filter->filter())->sendContent();
+		->show(is_array($keys) ? array_values($keys) : [], $filter->filter())->sendContent();
 
 	html_end_box(false);
 

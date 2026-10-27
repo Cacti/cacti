@@ -503,7 +503,7 @@ function repos() : void {
 	html_header_sort_checkbox($display_text, $filter->sortColumn(), $filter->sortDirection(), false);
 
 	(new \Cacti\Controller\PackageRepositoriesController(\Cacti\View\TemplateRenderer::create()))
-		->show($repos, $filter->filter(), $types)->sendContent();
+		->show(is_array($repos) ? array_values($repos) : [], $filter->filter(), $types)->sendContent();
 
 	html_end_box(false);
 

@@ -154,7 +154,7 @@ function rrdcheck_display_problems() : void {
 	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'));
 
 	(new \Cacti\Controller\RrdCheckController(\Cacti\View\TemplateRenderer::create()))
-		->show($problems, grv('filter'))->sendContent();
+		->show(is_array($problems) ? array_values($problems) : [], grv('filter'))->sendContent();
 
 	html_end_box(false);
 

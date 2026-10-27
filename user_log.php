@@ -126,7 +126,7 @@ function view_user_log() : void {
 	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), 1, 'user_log.php');
 
 	(new \Cacti\Controller\UserLogController(\Cacti\View\TemplateRenderer::create()))
-		->show($user_log, grv('filter'), $auth_realms)->sendContent();
+		->show(is_array($user_log) ? array_values($user_log) : [], grv('filter'), $auth_realms)->sendContent();
 
 	html_end_box();
 
