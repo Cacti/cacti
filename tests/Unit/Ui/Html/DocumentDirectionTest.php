@@ -80,3 +80,9 @@ test('every html emitter prints the document attributes', function () {
 		expect(str_contains($src, 'get_html_document_attributes()'))->toBeTrue($file);
 	}
 });
+
+test('general and authentication error shells render document attributes', function () {
+	foreach (document_direction_verdict()['shells'] as $html) {
+		expect($html)->toContain("<html lang='en-US' dir='ltr'>");
+	}
+});
