@@ -28,5 +28,6 @@ jobs:
       - name: Verify client behavior in Chromium
         working-directory: tests/e2e
         run: |
+          set -euo pipefail
           npx --no-install playwright test tests/develop-client-*.spec.ts tests/develop-menu-state.spec.ts tests/table-column-widths.spec.ts --project=chromium
           node dom_dynamic_boundaries.mjs
