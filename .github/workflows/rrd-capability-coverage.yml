@@ -30,10 +30,12 @@ jobs:
         with:
           php-version: '8.3'
           coverage: xdebug
-          extensions: curl, dom, mbstring, xml
+          extensions: curl, dom, mbstring, pdo_sqlite, xml
           ini-values: memory_limit=2G
           dependency-mode: locked-maintenance-pr-coverage
           cache-dependency-path: tests/composer.lock
+      - name: Install RRDtool for acknowledgement contracts
+        run: sudo apt-get update && sudo apt-get install -y rrdtool
       - name: Install locked test dependencies
         run: composer install --working-dir=tests --prefer-dist --no-progress --no-interaction
       - name: Validate the gate and include every changed production PHP file
