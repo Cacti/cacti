@@ -65,6 +65,7 @@ jobs:
           set -euo pipefail
           php tests/fixtures/PollerMappingCache.php
           php tests/fixtures/PollerMappingCache.php retry
+          php -d memory_limit=512M tests/HandOff/fixtures/boost_handoff_test.php
           php tests/fixtures/Core/SnmpWalkOidGuard.php
       - name: Require at least 80 percent of changed executable PHP lines
         env:
