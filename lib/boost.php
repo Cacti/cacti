@@ -2232,6 +2232,10 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 		}
 	}
 
+	if (!is_resource($rrdtool_pipe) && !is_array($rrdtool_pipe)) {
+		return 'ERROR: RRDtool worker is unavailable';
+	}
+
 	if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
 		$update_options = '--skip-past-updates';
 	} else {

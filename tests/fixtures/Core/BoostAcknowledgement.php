@@ -35,6 +35,7 @@ foreach (['boost_process_poller_output', 'boost_limit_complete_timestamp_page'] 
 cacti_fixture_source_function(dirname(__DIR__, 3) . '/poller_boost.php', 'boost_process_local_data_ids', '');
 $GLOBALS['ack_db'] = new \PDO('sqlite::memory:');
 $GLOBALS['ack_db']->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+$GLOBALS['ack_db']->sqliteCreateFunction('CONCAT', fn (...$parts) => implode('', $parts), -1);
 $GLOBALS['ack_db']->sqliteCreateFunction('UNIX_TIMESTAMP', fn($value) => (int) $value);
 $GLOBALS['ack_db']->sqliteCreateFunction('FROM_UNIXTIME', fn($value) => (string) $value);
 $GLOBALS['ack_db']->exec('CREATE TABLE poller_output_boost (local_data_id INTEGER, time TEXT, rrd_name TEXT, output TEXT); CREATE TABLE data_local (id INTEGER, data_template_id INTEGER); INSERT INTO data_local VALUES (1,1); CREATE TABLE poller_output_boost_local_data_ids (local_data_id INTEGER, run_id TEXT, process_handler INTEGER, cursor_time TEXT, cursor_rrd_name TEXT); INSERT INTO poller_output_boost_local_data_ids VALUES (1,"fixture",1,NULL,NULL); CREATE TABLE poller_data_template_field_mappings (data_template_id INTEGER, data_name TEXT, data_source_names TEXT); INSERT INTO poller_data_template_field_mappings VALUES (1,"value","value")');
@@ -50,6 +51,9 @@ $pid = proc_get_status($context['rrd_process'])['pid'];
 try {
     $create = rrdtool_execute('create ' . $file . ' --start 1700000000 --step 1 DS:value:GAUGE:600:U:U RRA:AVERAGE:0.5:1:2000', false, RRDTOOL_OUTPUT_RETURN_STDERR, $pipe);
     if (!str_starts_with($create, 'OK ')) { throw new \RuntimeException('RRD fixture creation failed: ' . $create); }
+    $missing = false;
+    $sample = '1700000001:1';
+    if (!str_starts_with(boost_rrdtool_function_update(1, $file, 'value', $sample, $missing), 'ERROR:')) { throw new \RuntimeException('Missing worker used a per-update process fallback.'); }
     $bad = '1700000001:1';
     $refused = boost_rrdtool_function_update(1, $file, 'unknown', $bad, $pipe);
     if (!str_starts_with($refused, 'ERROR:')) { throw new \RuntimeException('An RRDtool refusal was acknowledged.'); }
