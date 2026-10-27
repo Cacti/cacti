@@ -45,3 +45,29 @@ for (const [theme, expected] of Object.entries(palettes)) {
 		});
 	}
 }
+
+// Every shipped weight, so each bundled @font-face is fetched at least once.
+const bundled = {
+	daybreak:  { sans: 'Barlow', mono: 'Roboto Mono', weights: [400, 600] },
+	midwinter: { sans: 'Roboto', mono: 'Roboto Mono', weights: [400, 500, 700] },
+};
+
+for (const [theme, expected] of Object.entries(bundled)) {
+	test(`${theme} loads its bundled faces from the local font folder`, async ({ page }) => {
+		const fonts: string[] = [];
+		page.on('request', request => {
+			if (request.resourceType() === 'font') fonts.push(new URL(request.url()).href);
+		});
+		await render(page, theme, 'light');
+		const loaded = await page.evaluate(async ({ sans, mono, weights }) => {
+			await Promise.all(weights.map(weight => document.fonts.load(`${weight} 16px "${sans}"`, 'AĀ')));
+			await document.fonts.load(`400 16px "${mono}"`, 'AĀ');
+			await document.fonts.ready;
+			return [...document.fonts].filter(face => face.status === 'loaded').map(face => `${face.family.replace(/"/g, '')} ${face.weight}`);
+		}, expected);
+		for (const weight of expected.weights) expect(loaded).toContain(`${expected.sans} ${weight}`);
+		expect(loaded).toContain(`${expected.mono} 400`);
+		expect(fonts.some(font => font.includes('-latin-ext-'))).toBe(true);
+		for (const font of fonts) expect(font).toMatch(/^http:\/\/cacti-theme\.test\/include\/fonts\/[a-z-]+\/[a-z0-9-]+\.woff2$/);
+	});
+}
