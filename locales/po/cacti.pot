@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.32\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-02 21:09-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5525,6 +5525,14 @@ msgstr ""
 #: include/csrf.php
 #, php-format
 msgid "Return to Cacti: %s"
+msgstr ""
+
+#: include/csrf.php
+msgid "Session Expired"
+msgstr ""
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
 msgstr ""
 
 #: include/global.php
@@ -19326,7 +19334,6 @@ msgid "Max Total Memory Possible"
 msgstr ""
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
