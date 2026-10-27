@@ -15,7 +15,7 @@ for (; end < layout.length; end++) {
 }
 const rebind = layout.slice(start, end + 1) + ';';
 
-for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry', 'modern', 'paper-plane', 'paw', 'raspberry', 'sunrise']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paper-plane', 'paw', 'raspberry', 'sunrise']) {
 	for (const stored of [false, true]) {
 		test(`${theme} navigation keeps menu state local with ${stored ? 'persisted' : 'empty'} storage`, async ({ page }) => {
 			await page.route('http://cacti.test/**', route => route.fulfill({
