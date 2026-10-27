@@ -1,12 +1,120 @@
 /* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
 import { test, expect, type Page } from '@playwright/test';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { mkdirSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { installThemeCss, collectThemeCoverage } from '../theme-css';
 
 collectThemeCoverage();
 
+for (const width of [320, 390, 1280]) {
+	for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
+		test(`Cacti titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
+			await page.setViewportSize({ width, height: 800 });
+			await page.setContent('<!DOCTYPE html><div style="width:calc(100vw - 80px)">' +
+				'<div class="cactiTableTitleRow"><div class="cactiTableTitle"></div>' +
+				'<div class="cactiTableButton"><span>Status</span></div></div>' +
+				'<table class="cactiTable"><tr><td>Panel content</td></tr></table></div>');
+			await page.locator('.cactiTableTitle').evaluate((element, title) => element.textContent = title, title);
+			await installThemeCss(page, 'include/themes/cacti/main.css');
+			const boxes = await page.evaluate(() => {
+				const box = (selector: string) => {
+					const r = document.querySelector(selector)!.getBoundingClientRect();
+					return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, height: r.height };
+				};
+				return { bar: box('.cactiTableTitleRow'), title: box('.cactiTableTitle'), tools: box('.cactiTableButton'), content: box('table') };
+			});
+			for (const child of [boxes.title, boxes.tools]) {
+				expect(child.left).toBeGreaterThanOrEqual(boxes.bar.left);
+				expect(child.right).toBeLessThanOrEqual(boxes.bar.right + 1);
+				expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
+				expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
+			}
+			expect(boxes.title.right).toBeLessThanOrEqual(boxes.tools.left + 1);
+			expect(boxes.content.top).toBeGreaterThanOrEqual(boxes.bar.bottom);
+			if (title === 'Status') expect(boxes.bar.height).toBe(25);
+		});
+	}
+}
+
+for (const row of ['', 'odd', 'even']) {
+	for (const linkClass of ['', 'linkEditMain']) {
+		test(`Cacti ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
+			await page.setContent(`<!DOCTYPE html><table><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a></td></tr></table>`);
+			await installThemeCss(page, 'include/themes/cacti/main.css');
+			for (const state of ['rest', 'focus', 'hover', 'active']) {
+				const link = page.locator('a');
+				if (state === 'focus') await link.focus();
+				if (state === 'hover' || state === 'active') await link.hover();
+				if (state === 'active') await page.mouse.down();
+				const ratio = await link.evaluate(element => {
+					const rgba = (value: string) => {
+						const parts = value.match(/[\d.]+/g)!.map(Number);
+						return [parts[0], parts[1], parts[2], parts[3] ?? 1];
+					};
+					let bg = [255, 255, 255];
+					const ancestors: Element[] = [];
+					for (let e: Element | null = element; e; e = e.parentElement) ancestors.unshift(e);
+					for (const e of ancestors) {
+						const c = rgba(getComputedStyle(e).backgroundColor);
+						bg = bg.map((v, i) => c[i] * c[3] + v * (1 - c[3]));
+					}
+					const lum = (c: number[]) => c.slice(0, 3).map(v => {
+						v /= 255;
+						return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;
+					}).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
+					const fg = lum(rgba(getComputedStyle(element).color)), surface = lum(bg);
+					return (Math.max(fg, surface) + .05) / (Math.min(fg, surface) + .05);
+				});
+				expect(ratio, state).toBeGreaterThanOrEqual(4.5);
+				if (state === 'active') await page.mouse.up();
+			}
+		});
+	}
+}
+
 const root = resolve(__dirname, '../../..');
+
+test('Cacti seeded device inventory and details work with desktop and narrow dialogs', async ({ page }, info) => {
+	await page.setViewportSize({ width: 1100, height: 380 });
+	await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8'));
+	await installThemeCss(page, 'include/themes/cacti/jquery-ui.css');
+	await installThemeCss(page, 'include/themes/cacti/main.css');
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery.js' });
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery-ui.js' });
+	await page.evaluate(() => {
+		document.getElementById('open-details')!.addEventListener('click', () => {
+			(window as any).jQuery('#details').dialog({
+				modal: true, width: Math.min(650, innerWidth - 50), title: 'Poller details',
+				buttons: [{ text: 'Close', click() { (window as any).jQuery(this).dialog('destroy'); } }],
+			});
+		});
+	});
+	await expect(page.getByRole('table', { name: 'Device inventory' }).locator('tbody tr')).toHaveCount(4);
+	await page.getByRole('link', { name: 'edge-router-01' }).click();
+	await expect(page).toHaveURL(/#edge-router-01$/);
+	const capture = async (name: string) => {
+		const path = process.env.UPDATE_THEME_SCREENSHOTS === '1'
+			? resolve(root, `docs/validation/images/${name}.png`) : info.outputPath(`${name}.png`);
+		mkdirSync(dirname(path), { recursive: true });
+		await page.screenshot({ path, fullPage: true });
+		await info.attach(name, { path, contentType: 'image/png' });
+	};
+	await capture('cacti-theme-desktop');
+	await page.setViewportSize({ width: 320, height: 680 });
+	await page.getByRole('button', { name: 'Open poller details' }).click();
+	await expect(page.getByRole('dialog')).toBeVisible();
+	await expect(page.getByRole('table', { name: 'Poller alerts' }).getByText(/branch-firewall-03/)).toBeVisible();
+	const boxes = await page.locator('#details .cactiTableTitleRow').evaluate(element => {
+		const row = element.getBoundingClientRect(), title = element.querySelector('.cactiTableTitle')!.getBoundingClientRect();
+		return { rowBottom: row.bottom, titleBottom: title.bottom, rowRight: row.right };
+	});
+	expect(boxes.titleBottom).toBeLessThanOrEqual(boxes.rowBottom);
+	expect(boxes.rowRight).toBeLessThanOrEqual(320);
+	await capture('cacti-theme-mobile-details');
+	await page.locator('.ui-dialog-buttonpane').getByRole('button', { name: 'Close', exact: true }).click();
+	await expect(page.getByRole('dialog')).toHaveCount(0);
+});
+
 const files: string[] = JSON.parse(readFileSync(resolve(__dirname, '../../fixtures/Ui/theme-correctness-files.json'), 'utf8'));
 
 for (const file of files) {
