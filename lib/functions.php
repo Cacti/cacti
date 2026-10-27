@@ -10900,3 +10900,36 @@ function log_user_action($user, $action) {
 
 	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'AUTHC' : 'AUTH');
 }
+
+/** Validate a stored data-input command while retaining quoted paths and field markers. */
+function cacti_input_string_is_safe(mixed $input_string) : bool {
+	if ($input_string === '' || $input_string === null) {
+		return true;
+	}
+
+	if (!is_string($input_string)) {
+		return false;
+	}
+	$bare = preg_replace('/<[a-zA-Z0-9_]+>/', '', $input_string);
+
+	if ($bare === null || preg_match('/[\x00-\x1f\x7f;&|`$<>(){}]/', $bare)) {
+		return false;
+	}
+	$quote = '';
+
+	for ($index = 0, $length = strlen($bare); $index < $length; $index++) {
+		$character = $bare[$index];
+
+		if ($character === '\\' && $quote !== "'") {
+			if (++$index === $length) {
+				return false;
+			}
+		} elseif ($quote !== '' && $character === $quote) {
+			$quote = '';
+		} elseif ($quote === '' && ($character === '"' || $character === "'")) {
+			$quote = $character;
+		}
+	}
+
+	return $quote === '';
+}
