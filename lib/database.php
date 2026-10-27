@@ -2715,6 +2715,50 @@ function db_switch_main_to_local() {
 }
 
 /**
+ * Write MySQL client credentials to a private option file instead of argv.
+ * The caller must unlink the file after the client exits.
+ */
+function db_client_defaults_file(string $username, string $password, string $hostname = '', int $port = 0) : string|false {
+	foreach ([$username, $password, $hostname] as $value) {
+		if (strpbrk($value, "\r\n\0") !== false) {
+			return false;
+		}
+	}
+
+	$path = tempnam(sys_get_temp_dir(), 'cacti_mysql_');
+
+	if ($path === false) {
+		return false;
+	}
+
+	// Restrict access before writing any credential.
+	if (!chmod($path, 0600)) {
+		unlink($path);
+
+		return false;
+	}
+
+	$quote    = static fn (string $value) : string => '"' . addcslashes($value, '\\"') . '"';
+	$contents = '[client]' . PHP_EOL . 'user=' . $quote($username) . PHP_EOL . 'password=' . $quote($password) . PHP_EOL;
+
+	if ($hostname !== '') {
+		$contents .= 'host=' . $quote($hostname) . PHP_EOL;
+	}
+
+	if ($port > 0 && $hostname !== 'localhost') {
+		$contents .= 'port=' . $port . PHP_EOL;
+	}
+
+	if (file_put_contents($path, $contents) !== strlen($contents)) {
+		unlink($path);
+
+		return false;
+	}
+
+	return $path;
+}
+
+/**
  * Dump data into a file by mysqldump, minimize password be caught. Used as part of Cacti's lib
  * functionality.
  *

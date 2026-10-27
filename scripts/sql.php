@@ -6,23 +6,25 @@ include(dirname(__FILE__) . '/../include/cli_check.php');
 
 global $database_hostname, $database_username, $database_password;
 
-$args = array(
-	'--host=' . $database_hostname,
-	'--user=' . $database_username
-);
+$defaults_file = db_client_defaults_file($database_username, $database_password, $database_hostname);
 
-if ($database_password != '') {
-	$args[] = '--password=' . $database_password;
+if ($defaults_file === false) {
+	print 'U';
+	exit;
 }
 
-$args[] = 'status';
+$args = array('--defaults-file=' . $defaults_file, 'status');
 
-$output = cacti_exec_string('mysqladmin', $args);
+try {
+	$output = cacti_exec_string('mysqladmin', $args);
+} finally {
+	unlink($defaults_file);
+}
 
 if ($output === null || $output === '') {
 	print 'U';
 } else {
-	// Extract the 6th field (Queries per second avg), matching original awk '{print $6}'
+	// Retain the original sixth-field polling output.
 	$parts = preg_split('/\s+/', trim($output));
 	print isset($parts[5]) ? $parts[5] : 'U';
 }
