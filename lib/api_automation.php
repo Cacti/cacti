@@ -5719,6 +5719,41 @@ function automation_network_import(mixed $json_data) : array {
 	return $debug_data;
 }
 
+/** Validate imported match identifiers before any rule or child item is saved. */
+function automation_validate_import_match_fields(mixed $rules, string $item_key, array &$debug_data) : bool {
+	$valid = is_array($rules);
+
+	foreach ($valid ? $rules : [] as $rule) {
+		if (!is_array($rule) || (isset($rule[$item_key]) && !is_array($rule[$item_key]))) {
+			$valid = false;
+
+			break;
+		}
+
+		foreach ($rule[$item_key] ?? [] as $item) {
+			$field = is_array($item) ? ($item['field'] ?? null) : null;
+
+			if ($field === '' && in_array($item['operation'] ?? null, [AUTOMATION_OPER_LEFT_BRACKET, AUTOMATION_OPER_RIGHT_BRACKET, (string) AUTOMATION_OPER_LEFT_BRACKET, (string) AUTOMATION_OPER_RIGHT_BRACKET], true)) {
+				continue;
+			}
+
+			// SNMP query field names may be imported before any device has polled.
+			if (!is_string($field) || strlen($field) > 255 || preg_match('/\A(?:(?:h|ht|gl|gt|gtg)\.)?[a-zA-Z_][a-zA-Z0-9_]*\z/', $field) !== 1) {
+				$valid = false;
+
+				break 2;
+			}
+		}
+	}
+
+	if (!$valid) {
+		$debug_data['errors'][] = __('Automation import contains an invalid match field.');
+		cacti_log('Automation import rejected an invalid match field.', false, 'AUTOM8');
+	}
+
+	return $valid;
+}
+
 /**
  * Imports automation graph rules from JSON data.
  *
@@ -5738,6 +5773,10 @@ function automation_graph_rule_import(mixed $json_data) : array {
 	 * top to bottom in the JSON array.
 	 */
 	if (cacti_sizeof($json_data) && isset($json_data['graph_rules'])) {
+		if (!automation_validate_import_match_fields($json_data['graph_rules'], 'graph_match_items', $debug_data)) {
+			return $debug_data;
+		}
+
 		$error   = false;
 		$save    = [];
 		$sqids   = [];
@@ -5893,6 +5932,10 @@ function automation_tree_rule_import(mixed $json_data, bool $tree_branches = fal
 	 * top to bottom in the JSON array.
 	 */
 	if (cacti_sizeof($json_data) && isset($json_data['tree_rules'])) {
+		if (!automation_validate_import_match_fields($json_data['tree_rules'], 'tree_match_items', $debug_data)) {
+			return $debug_data;
+		}
+
 		$error   = false;
 		$save    = [];
 
@@ -6026,6 +6069,13 @@ function automation_template_import(mixed $json_data, bool $tree_branches = fals
 	 * top to bottom in the JSON array.
 	 */
 	if (cacti_sizeof($json_data) && isset($json_data['device'])) {
+		foreach ($json_data['device'] as $device) {
+			if (!automation_validate_import_match_fields($device['graph_rules'] ?? [], 'graph_match_items', $debug_data) ||
+				!automation_validate_import_match_fields($device['tree_rules'] ?? [], 'tree_match_items', $debug_data)) {
+				return $debug_data;
+			}
+		}
+
 		$error   = false;
 		$save    = [];
 		$htids   = [];
