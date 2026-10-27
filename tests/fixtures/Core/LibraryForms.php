@@ -86,7 +86,7 @@ function library_aggregate_editor(int $template, array $aggregate): void {
 }
 
 function library_forms(): void {
-	global $form_id;
+	global $form_id, $tableCount, $_CACTI_REQUEST;
 	require_once CACTI_PATH_LIBRARY . '/html_form.php';
 	$session      = $_SESSION;
 	$autocomplete = read_config_option('autocomplete');
@@ -108,7 +108,23 @@ function library_forms(): void {
 			library_expect($dom->evaluate('string(//textarea/@aria-multiline)'), 'true', 'Textarea exposes multiline semantics');
 			library_expect($dom->evaluate('count(//tag)'), 0.0, 'Textarea data never becomes markup');
 		}
-		$_SESSION[SESS_FIELD_VALUES] = [];
+		$_SESSION[SESS_FIELD_VALUES]     = [];
+		$requests                        = [$_REQUEST, $_CACTI_REQUEST];
+		$_REQUEST                        = ['action' => 'coverage_tooltip_' . bin2hex(random_bytes(6))];
+		$_CACTI_REQUEST                  = [];
+		$tableCount[form_get_table_id()] = 0;
+
+		foreach (['form_selectable_cell', 'form_selectable_vcell'] as $renderer) {
+			$dom = library_form_dom(static function () use ($renderer): void {
+				print '<table><tr>';
+				$renderer('Series value', '', '', '', 'A "quoted" tooltip');
+				print '</tr></table>';
+			});
+			library_expect($dom->evaluate('string(//td/span/@title)'), 'A quoted tooltip', $renderer . ' tooltip strips quote delimiters: ' . $dom->document->saveHTML());
+			library_expect($dom->evaluate('string(//td/span)'), 'Series value', 'Tooltip wrapping preserves the displayed cell value');
+		}
+
+		[$_REQUEST, $_CACTI_REQUEST] = $requests;
 
 		foreach ([[null, 0, true], ['', 12, false], ['on', 12, true]] as [$stored, $id, $checked]) {
 			$dom = library_form_dom(static fn () => form_checkbox('entry', $stored, $value, 'on', $id, 'fixture', '', $value, true));

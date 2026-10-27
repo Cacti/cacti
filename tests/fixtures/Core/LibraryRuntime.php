@@ -15,8 +15,28 @@ function library_runtime(): void {
 	$setting         = 'coverage_runtime_' . bin2hex(random_bytes(8));
 	$log             = sys_get_temp_dir() . '/cacti-option.log';
 	$ownedLog        = !file_exists($log);
+	$validation      = read_config_option('log_validation');
+	$remember        = read_config_option('auth_cache_enabled');
 
 	try {
+		foreach (['in:12 out:34' => true, 'in:12 out:34 extra' => false] as $input => $valid) {
+			$result = $input;
+			library_expect(prepare_validate_result($result), $valid, 'Multi-value poller output requires one field per space-delimited value');
+			library_expect($result, $input, 'Validation preserves the original multi-value output');
+		}
+		set_config_option('log_validation', 'on');
+		$_SERVER['SCRIPT_NAME'] = '/coverage-runtime.php';
+		$_REQUEST               = ['action' => ['edit', 'remove']];
+		$_CACTI_REQUEST         = [];
+		set_default_action('view');
+		library_expect(get_request_var('action'), 'edit', 'Array-shaped action uses its first submitted operation');
+		library_expect(str_contains(file_get_contents(read_config_option('path_cactilog')), 'action\' was passed as array in /coverage-runtime.php'), true, 'Action normalization is visible when validation logging is enabled');
+		set_config_option('auth_cache_enabled', 'on');
+		$_SESSION['cacti_remembers'] = true;
+		$_SESSION['refresh']         = [];
+		set_page_refresh(['seconds' => 30, 'logout' => true, 'page' => 'host.php']);
+		library_expect($_SESSION['refresh'], ['seconds' => 30, 'logout' => 'false', 'page' => 'host.php'], 'Remembered sessions preserve refresh settings without scheduling logout');
+
 		$config['DEBUG_SET_CONFIG_OPTION']  = true;
 		$config['DEBUG_READ_CONFIG_OPTION'] = true;
 		set_config_option($setting, '0');
@@ -77,6 +97,8 @@ function library_runtime(): void {
 			library_expect(str_contains($order, $column === 'ip_address' ? 'INET_ATON(ip_address)' : ($column === 'host.description' ? '`host`.`description`' : 'hostname')), true, 'Sort clause preserves qualified column identity and address semantics');
 		}
 	} finally {
+		set_config_option('log_validation', $validation);
+		set_config_option('auth_cache_enabled', $remember);
 		db_execute_prepared('DELETE FROM settings WHERE name = ?', [$setting]);
 		db_execute_prepared('DELETE FROM settings_user WHERE name = ?', [$setting]);
 		db_execute_prepared('DELETE FROM settings WHERE name = ?', ['proxy_alert']);

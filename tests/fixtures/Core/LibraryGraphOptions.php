@@ -17,6 +17,26 @@ function library_graph_options(int $graph, array $options): void {
 	$series           = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', [$item['task_item_id']]);
 
 	try {
+		// An unnamed series gets a valid RRD name before graph compilation.
+		db_execute_prepared('UPDATE data_template_rrd SET data_source_name = ? WHERE id = ?', ['', $series['id']]);
+		$generated = get_data_source_item_name((int) $series['id']);
+		library_expect(strlen($generated) <= 19 && str_ends_with($generated, (string) $series['id']), true, 'Generated series name fits RRDtool and retains its unique identity');
+		library_expect((bool) preg_match('/^[a-z0-9_]+$/', $generated), true, 'Generated series name contains only RRD name characters');
+		sql_save($series, 'data_template_rrd');
+
+		$parent   = array_replace($item, ['id' => 0, 'local_graph_id' => 0, 'sequence' => 500000, 'graph_type_id' => GRAPH_ITEM_TYPE_LINE1]);
+		$parentId = (int) sql_save($parent, 'graph_templates_item');
+		$extra[]  = $parentId;
+		$child    = array_replace($item, ['id' => 0, 'local_graph_id' => 0, 'sequence' => 500001, 'graph_type_id' => GRAPH_ITEM_TYPE_COMMENT, 'hard_return' => '']);
+		$childId  = (int) sql_save($child, 'graph_templates_item');
+		$extra[]  = $childId;
+
+		foreach (['|95:bytes:0:current:2|', '|sum:0:current:2:auto|', 'Unrelated legend'] as $legend) {
+			db_execute_prepared('UPDATE graph_templates_item SET text_format = ? WHERE id = ?', [$legend, $childId]);
+			library_expect(array_values(get_graph_group($parentId)), $legend === 'Unrelated legend' ? [$parentId] : [$parentId, $childId], 'Graph grouping includes calculated legends and stops before unrelated comments');
+		}
+		db_execute_prepared('DELETE FROM graph_templates_item WHERE id IN (?, ?)', [$parentId, $childId]);
+
 		db_execute_prepared('UPDATE data_template_rrd SET rrd_maximum = ? WHERE id = ?', ['100', $series['id']]);
 
 		foreach (['CURRENT_DATA_SOURCE', 'CURRENT_DS_MINIMUM_VALUE', 'CURRENT_DS_MAXIMUM_VALUE',
