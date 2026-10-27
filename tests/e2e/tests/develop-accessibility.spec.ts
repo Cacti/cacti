@@ -177,3 +177,15 @@ test('example iframe keeps its name and border using CSS', async ({ page }) => {
 	await expect(page.locator('iframe')).toHaveCSS('border-top-width', '0px');
 	await expect(page.locator('[frameborder]')).toHaveCount(0);
 });
+
+test('permission denied keeps the active document language and direction', async ({ page }) => {
+	await page.goto('/');
+	await page.locator('[name="login_username"]').fill('direction-reader');
+	await page.locator('[name="login_password"]').fill('admin');
+	await page.locator('form#auth [type="submit"]').click();
+	await expect(page.locator('form#auth')).toHaveCount(0);
+	await page.goto('/user_admin.php');
+	await expect(page.getByText('You are not permitted to access this section of Cacti.', { exact: true })).toBeVisible();
+	await expect(page.locator('html')).toHaveAttribute('lang', 'en-US');
+	await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+});
