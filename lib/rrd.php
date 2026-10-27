@@ -168,16 +168,21 @@ function __rrd_read_acknowledgement($input, $timeout = 30) {
 			break;
 		}
 
-		$read = array($output);
-		$write = null;
-		$except = null;
-		$seconds = (int) $remaining;
-		$ready = stream_select($read, $write, $except, $seconds, (int) (($remaining - $seconds) * 1000000));
-		if ($ready === false || $ready === 0) {
-			break;
+		if (PHP_OS_FAMILY === 'Windows') {
+			// Windows cannot select process pipes. Read a complete protocol line;
+			// proc_open's default non-forced-blocking pipe bounds a missing reply.
+			$chunk = fgets($output, 65537);
+		} else {
+			$read = array($output);
+			$write = null;
+			$except = null;
+			$seconds = (int) $remaining;
+			$ready = stream_select($read, $write, $except, $seconds, (int) (($remaining - $seconds) * 1000000));
+			if ($ready === false || $ready === 0) {
+				break;
+			}
+			$chunk = stream_get_contents($output);
 		}
-
-		$chunk = stream_get_contents($output);
 		if ($chunk === false) {
 			break;
 		}
