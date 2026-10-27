@@ -710,7 +710,7 @@ function cdef_edit() : void {
 }
 
 function cdef() : void {
-	global $actions, $item_rows;
+	global $actions;
 
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('CDEFs'), 'cdef.php', 'form_cdef', 'sess_cdef', 'cdef.php?action=edit');
@@ -785,31 +785,8 @@ function cdef() : void {
 
 	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
-	if (cacti_sizeof($cdef_list)) {
-		foreach ($cdef_list as $cdef) {
-			if ($cdef['graphs'] == 0 && $cdef['templates'] == 0) {
-				$disabled = false;
-			} else {
-				$disabled = true;
-			}
-
-			$graphs_url    = 'graphs.php?reset=1&cdef_id=' . $cdef['id'];
-			$templates_url = 'graph_templates.php?reset=1&cdef_id=' . $cdef['id'];
-
-			form_alternate_row('line' . $cdef['id'], false, $disabled);
-
-			form_selectable_cell(filter_value($cdef['name'], grv('filter'), 'cdef.php?action=edit&id=' . $cdef['id']), $cdef['id']);
-			form_selectable_cell($disabled ? __('No') : __('Yes'), $cdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($cdef['graphs'], -1), '', $graphs_url), $cdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($cdef['templates'], -1), '', $templates_url), $cdef['id'], '', 'right');
-
-			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
-
-			form_end_row();
-		}
-	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No CDEFs') . '</em></td></tr>';
-	}
+	(new \Cacti\Controller\CdefController(\Cacti\View\TemplateRenderer::create()))
+		->show(is_array($cdef_list) ? array_values($cdef_list) : [], grv('filter'))->sendContent();
 
 	html_end_box(false);
 

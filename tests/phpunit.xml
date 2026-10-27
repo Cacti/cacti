@@ -21,6 +21,7 @@
     <source>
         <include>
             <directory>../lib</directory>
+            <directory>../src</directory>
         </include>
     </source>
 </phpunit>

@@ -16,6 +16,8 @@ for (const [name, html] of Object.entries(fixtures)) {
 
 		if (name === 'about') {
 			await expect(page.getByRole('link', { name: 'Tobi Oetiker' })).toHaveAttribute('href', 'http://tobi.oetiker.ch/');
+		} else if (name === 'changelog') {
+			await expect(page.getByRole('link', { name: '12', exact: true })).toHaveAttribute('href', 'https://github.com/cacti/cacti/issues/12');
 		} else {
 			await expect(page.locator('.filteredValue').first()).toHaveText('img');
 			await expect(page.locator('tr')).toHaveCount(1);

@@ -42,6 +42,7 @@ final class CactiTableExtension extends AbstractExtension {
 			new TwigFunction('cacti_checkbox', $this->checkbox(...)),
 			new TwigFunction('cacti_filter', $this->filter(...)),
 			new TwigFunction('cacti_number', 'number_format_i18n'),
+			new TwigFunction('cacti_url', 'cacti_url'),
 		];
 	}
 

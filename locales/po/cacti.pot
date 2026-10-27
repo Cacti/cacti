@@ -508,7 +508,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: src/Controller/PackageRepositoriesController.php aggregate_graphs.php aggregate_templates.php automation_templates.php
+#: src/Controller/CdefController.php src/Controller/GprintPresetsController.php src/Controller/SitesController.php src/Controller/VdefController.php src/Controller/PackageRepositoriesController.php aggregate_graphs.php aggregate_templates.php automation_templates.php
 #: automation_tree_rules.php cdef.php color.php color_templates.php
 #: data_input.php data_queries.php data_source_profiles.php data_sources.php
 #: data_templates.php gprint_presets.php graph_templates.php host_templates.php
@@ -518,7 +518,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: src/Controller/PackageRepositoriesController.php aggregate_graphs.php aggregate_templates.php automation_templates.php
+#: src/Controller/CdefController.php src/Controller/GprintPresetsController.php src/Controller/SitesController.php src/Controller/VdefController.php src/Controller/PackageRepositoriesController.php aggregate_graphs.php aggregate_templates.php automation_templates.php
 #: automation_tree_rules.php cdef.php color.php color_templates.php
 #: data_debug.php data_input.php data_queries.php data_source_profiles.php
 #: data_sources.php data_templates.php gprint_presets.php graph_templates.php
@@ -964,7 +964,7 @@ msgstr ""
 msgid "Verify the 2FA App token entered above"
 msgstr ""
 
-#: auth_profile.php automation_graph_rules.php automation_networks.php
+#: src/Controller/SitesController.php auth_profile.php automation_graph_rules.php automation_networks.php
 #: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
 #: host.php include/global_arrays.php include/global_form.php
 #: include/global_settings.php lib/api_automation.php lib/html.php
@@ -974,7 +974,7 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#: auth_profile.php automation_graph_rules.php automation_networks.php
+#: src/Controller/SitesController.php auth_profile.php automation_graph_rules.php automation_networks.php
 #: automation_tree_rules.php data_debug.php data_sources.php host.php
 #: include/global_arrays.php include/global_form.php
 #: include/global_settings.php lib/api_automation.php lib/html_reports.php
@@ -2870,7 +2870,7 @@ msgstr ""
 msgid "The number of Graphs Templates using this CDEF."
 msgstr ""
 
-#: cdef.php
+#: src/Controller/CdefController.php cdef.php
 msgid "No CDEFs"
 msgstr ""
 
@@ -4854,7 +4854,7 @@ msgstr ""
 msgid "The number of Graphs Templates using this GPRINT."
 msgstr ""
 
-#: gprint_presets.php
+#: src/Controller/GprintPresetsController.php gprint_presets.php
 msgid "No GPRINT Presets"
 msgstr ""
 
@@ -22710,7 +22710,7 @@ msgstr ""
 msgid "The Country associated with this Site."
 msgstr ""
 
-#: sites.php
+#: src/Controller/SitesController.php sites.php
 msgid "No Sites Found"
 msgstr ""
 
@@ -24988,7 +24988,7 @@ msgstr ""
 msgid "The number of Graphs Templates using this VDEF."
 msgstr ""
 
-#: vdef.php
+#: src/Controller/VdefController.php vdef.php
 msgid "No VDEFs"
 msgstr ""
 

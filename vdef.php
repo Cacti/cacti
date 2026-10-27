@@ -789,31 +789,8 @@ function vdef(bool $refresh = true) : void {
 
 	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
-	if (cacti_sizeof($vdefs)) {
-		foreach ($vdefs as $vdef) {
-			if ($vdef['graphs'] == 0 && $vdef['templates'] == 0) {
-				$disabled = false;
-			} else {
-				$disabled = true;
-			}
-
-			$graphs_url    = 'graphs.php?reset=1&vdef_id=' . $vdef['id'];
-			$templates_url = 'graph_templates.php?reset=1&vdef_id=' . $vdef['id'];
-
-			form_alternate_row('line' . $vdef['id'], false, $disabled);
-
-			form_selectable_cell(filter_value($vdef['name'], grv('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
-			form_selectable_cell($disabled ? __('No') : __('Yes'), $vdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($vdef['graphs'], -1), '', $graphs_url), $vdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($vdef['templates'], -1), '', $templates_url), $vdef['id'], '', 'right');
-
-			form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
-
-			form_end_row();
-		}
-	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No VDEFs') . '</em></td></tr>';
-	}
+	(new \Cacti\Controller\VdefController(\Cacti\View\TemplateRenderer::create()))
+		->show(is_array($vdefs) ? array_values($vdefs) : [], grv('filter'))->sendContent();
 
 	html_end_box(false);
 

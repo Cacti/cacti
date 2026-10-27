@@ -1,0 +1,12 @@
+{% for item in rows %}
+	{% set disabled = item.graphs != 0 or item.templates != 0 %}
+	{{ cacti_row(item.id, false, disabled) }}
+	{{ cacti_cell(cacti_filter(item.name, search, cacti_url(kind ~ '.php', {action: 'edit', id: item.id})), item.id) }}
+	{{ cacti_cell(disabled ? labels.no : labels.yes, item.id, 'right') }}
+	{{ cacti_cell(cacti_filter(cacti_number(item.graphs, -1), '', cacti_url('graphs.php', {reset: 1, (kind ~ '_id'): item.id})), item.id, 'right') }}
+	{{ cacti_cell(cacti_filter(cacti_number(item.templates, -1), '', cacti_url('graph_templates.php', {reset: 1, (kind ~ '_id'): item.id})), item.id, 'right') }}
+	{{ cacti_checkbox(item.name, item.id, disabled) }}
+	</tr>
+{% else %}
+	<tr class="tableRow odd"><td colspan="5"><em>{{ labels.empty }}</em></td></tr>
+{% endfor %}

@@ -487,7 +487,7 @@ function site_edit() : void {
 }
 
 function sites() : void {
-	global $actions, $item_rows;
+	global $actions;
 
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Sites'), 'sites.php', 'form_site', 'sess_site', 'sites.php?action=edit');
@@ -582,28 +582,8 @@ function sites() : void {
 
 	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
-	$i = 0;
-
-	if (cacti_sizeof($site_list)) {
-		foreach ($site_list as $site) {
-			$devices_url = CACTI_PATH_URL . 'host.php?reset=1&site_id=' . $site['id'];
-
-			form_alternate_row('line' . $site['id'], true);
-
-			form_selectable_cell(filter_value($site['name'], grv('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
-			form_selectable_cell($site['id'], $site['id'], '', 'right');
-			form_selectable_cell($site['disabled'] == 'on' ? __('Disabled') : __('Enabled'), $site['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($site['hosts'], -1), '', $devices_url), $site['id'], '', 'right');
-			form_selectable_ecell($site['city'], $site['id'], '', 'left');
-			form_selectable_ecell($site['state'], $site['id'], '', 'left');
-			form_selectable_ecell($site['country'], $site['id'], '', 'left');
-			form_checkbox_cell($site['name'], $site['id']);
-
-			form_end_row();
-		}
-	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Sites Found') . "</em></td></tr>\n";
-	}
+	(new \Cacti\Controller\SitesController(\Cacti\View\TemplateRenderer::create()))
+		->show(is_array($site_list) ? array_values($site_list) : [], grv('filter'))->sendContent();
 
 	html_end_box(false);
 

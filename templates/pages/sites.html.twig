@@ -1,0 +1,14 @@
+{% for item in rows %}
+	{{ cacti_row(item.id, true) }}
+	{{ cacti_cell(cacti_filter(item.name, search, cacti_url('sites.php', {action: 'edit', id: item.id})), item.id) }}
+	{{ cacti_cell(item.id, item.id, 'right') }}
+	{{ cacti_cell(item.disabled == 'on' ? labels.disabled : labels.enabled, item.id, 'right') }}
+	{{ cacti_cell(cacti_filter(cacti_number(item.hosts, -1), '', cacti_url(devices_path, {reset: 1, site_id: item.id})), item.id, 'right') }}
+	{{ cacti_cell(item.city, item.id, 'left') }}
+	{{ cacti_cell(item.state, item.id, 'left') }}
+	{{ cacti_cell(item.country, item.id, 'left') }}
+	{{ cacti_checkbox(item.name, item.id) }}
+	</tr>
+{% else %}
+	<tr class="tableRow odd"><td colspan="8"><em>{{ labels.empty }}</em></td></tr>
+{% endfor %}

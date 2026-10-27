@@ -183,7 +183,7 @@ function gprint_presets_edit() : void {
 }
 
 function gprint_presets() : void {
-	global $actions, $item_rows;
+	global $actions;
 
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('GRPRINT Presets'), 'gprint_presets.php', 'form_gprint', 'sess_gp', 'gprint_presets.php?action=edit');
@@ -264,30 +264,8 @@ function gprint_presets() : void {
 
 	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
-	$i = 0;
-
-	if (cacti_sizeof($gprint_list)) {
-		foreach ($gprint_list as $gp) {
-			if ($gp['graphs'] == 0 && $gp['templates'] == 0) {
-				$disabled = false;
-			} else {
-				$disabled = true;
-			}
-
-			form_alternate_row('line' . $gp['id'], false, $disabled);
-
-			form_selectable_cell(filter_value($gp['name'], grv('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
-			form_selectable_ecell($gp['gprint_text'], $gp['id'], '', 'right');
-			form_selectable_cell($disabled ? __('No') : __('Yes'), $gp['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($gp['graphs'], -1), $gp['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($gp['templates'], -1), $gp['id'], '', 'right');
-			form_checkbox_cell($gp['name'], $gp['id'], $disabled);
-
-			form_end_row();
-		}
-	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
-	}
+	(new \Cacti\Controller\GprintPresetsController(\Cacti\View\TemplateRenderer::create()))
+		->show(is_array($gprint_list) ? array_values($gprint_list) : [], grv('filter'))->sendContent();
 
 	html_end_box(false);
 
