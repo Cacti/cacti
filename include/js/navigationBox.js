@@ -73,7 +73,11 @@ midwinter.navigationBox = {
                 if (typeof plugin.content === 'function') {
                     const content = plugin.content($box);
                     if (content !== null && content !== undefined) {
-                        $box.children('.navBox-content').empty().append(content);
+                        // Plugins may return live widgets; sanitize string markup without
+                        // rebuilding DOM objects or losing their event handlers.
+                        $box.children('.navBox-content').empty().append(
+                            typeof content === 'string' ? DOMPurify.sanitize(content) : content
+                        );
                     }
                 }
                 if (typeof plugin.init === 'function') {
