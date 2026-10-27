@@ -2244,6 +2244,10 @@ tr.selectable td {
 	height: 25px;
 }
 
+tr.selected .deviceUp {
+	color: #111111 !important;
+}
+
 tr.selected a {
 	color: #111111;
 }

@@ -165,3 +165,6 @@ verify_task*.php
 /include/js/lzjs.js
 /include/js/screenfull.js
 /include/js/select2.js
+
+# Pinned first-party plugin checkouts for theme browser fixtures
+.theme-plugins/

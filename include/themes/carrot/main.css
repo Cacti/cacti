@@ -1185,7 +1185,9 @@ legend {
 	float: left;
 	text-align: left;
 	line-height: 22px;
-	display: table-column;
+	display: flex;
+	align-items: center;
+	min-height: 22px;
 	width: 100%;
 	font-size: 1em;
 	font-weight: 700;
@@ -1194,18 +1196,20 @@ legend {
 
 .cactiTableTitle {
 	color: white;
-	float: left;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	text-align: left;
 	line-height: 22px;
-	display: table-column;
+	display: block;
 	font-size: 1em;
 	font-weight: 700;
 }
 
 .cactiTableButton {
-	float: right;
+	flex: 0 0 auto;
 	line-height: 22px;
-	display: table-column;
+	display: block;
 	text-align: right;
 	white-space: nowrap;
 }
@@ -1223,6 +1227,10 @@ legend {
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
