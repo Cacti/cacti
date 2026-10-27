@@ -31,11 +31,12 @@ function data_input_http_server_start() : ?array {
 
 	fclose($probe);
 
+	$null    = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
 	$router  = dirname(__DIR__) . '/fixtures/DataInput/http_router.php';
 	$process = proc_open([PHP_BINARY, '-S', $address, $router], [
-		0 => ['file', '/dev/null', 'r'],
-		1 => ['file', '/dev/null', 'w'],
-		2 => ['file', '/dev/null', 'w']
+		0 => ['file', $null, 'r'],
+		1 => ['file', $null, 'w'],
+		2 => ['file', $null, 'w']
 	], $pipes);
 
 	if (!is_resource($process)) {
