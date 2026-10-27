@@ -93,6 +93,14 @@ The Paw fixture checks wrapped titles and readable links across row states.
 See [Paw theme validation](docs/validation/paw-theme.md) for the narrow details
 screenshot and browser tests.
 
+## Raspberry Theme
+
+![Raspberry inventory with seeded device measurements](docs/validation/images/raspberry-theme-desktop.png)
+
+The Raspberry fixture checks wrapped titles and readable links on light and
+selected rows. See [Raspberry theme validation](docs/validation/raspberry-theme.md)
+for the narrow details screenshot and browser tests.
+
 ---
 
 ## Release Branches
