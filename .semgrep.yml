@@ -35,6 +35,7 @@ rules:
     pattern-sanitizers:
       - pattern: htmle(...)
       - pattern: html_escape(...)
+      - pattern: html_escape_attr(...)
       - pattern: html_escape_request_var(...)
       - pattern: htmlerv(...)
       - pattern: sanitize_uri(...)

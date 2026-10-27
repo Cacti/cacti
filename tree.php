@@ -921,10 +921,10 @@ function tree_edit(bool $partial = false) : void {
 		<tr class='even noprint'>
 			<td>
 			<form id='form_tree_sites' action='tree.php'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
-							<?php print __('Search'); ?>
+							<label for='sfilter'><?php print __('Search'); ?></label>
 						</td>
 						<td>
 							<input type='text' class='ui-state-default ui-corner-all' id='sfilter' name='sfilter' size='25' value='<?php print htmlerv('sfilter'); ?>'>
@@ -957,10 +957,10 @@ function tree_edit(bool $partial = false) : void {
 		<tr class='even noprint'>
 			<td>
 			<form id='form_tree_devices' action='tree.php'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
-							<?php print __('Search'); ?>
+							<label for='hfilter'><?php print __('Search'); ?></label>
 						</td>
 						<td>
 							<input type='text' class='ui-state-default ui-corner-all' id='hfilter' name='hfilter' size='25' value='<?php print htmlerv('hfilter'); ?>'>
@@ -993,10 +993,10 @@ function tree_edit(bool $partial = false) : void {
 		<tr class='even noprint'>
 			<td>
 			<form id='form_tree_graphs' action='tree.php'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
-							<?php print __('Search'); ?>
+							<label for='gfilter'><?php print __('Search'); ?></label>
 						</td>
 						<td>
 							<input type='text'  class='ui-state-default ui-corner-all' id='gfilter' name='gfilter' size='25' value='<?php print htmlerv('gfilter'); ?>'>

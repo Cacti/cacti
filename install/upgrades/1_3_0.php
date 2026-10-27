@@ -465,6 +465,8 @@ function upgrade_to_1_3_0() : void {
 	// remove legacy files from old cacti releases
 	prune_deprecated_files();
 
+	upgrade_retired_themes_1_3_0();
+
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
 	$data['columns'][]  = ['name' => 'name', 'type' => 'varchar(32)', 'NULL' => false, 'default' => ''];
@@ -1254,4 +1256,20 @@ function upgrade_dsstats() : void {
 	}
 
 	db_install_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
+}
+
+/**
+ * Moves anyone using a theme removed in 1.3.0 onto the shipped default.
+ *
+ * get_selected_theme() would otherwise fall back to the first theme
+ * directory in alphabetical order, which is an accident rather than a choice.
+ *
+ * @return void
+ */
+function upgrade_retired_themes_1_3_0() : void {
+	$retired = ['carrot', 'hollyberry'];
+	$params  = array_merge(['modern', 'selected_theme'], $retired);
+
+	db_install_execute('UPDATE settings SET value = ? WHERE name = ? AND value IN (?, ?)', $params);
+	db_install_execute('UPDATE settings_user SET value = ? WHERE name = ? AND value IN (?, ?)', $params);
 }

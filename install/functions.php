@@ -179,6 +179,8 @@ function prune_deprecated_files() : void {
 		'include/themes/hollyberry/billboard.css',
 		'include/themes/raspberry/billboard.css',
 		'include/themes/midwinter/billboard.css',
+		'include/themes/carrot',
+		'include/themes/hollyberry',
 		'include/js/c3.js',
 		'include/js/c3.js',
 	];

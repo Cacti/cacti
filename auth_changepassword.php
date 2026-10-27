@@ -384,16 +384,16 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 		<td><?php print __('Username'); ?></td>
 		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username']; ?></td>
 <?php } else { ?>
-		<td><?php print __('Current password'); ?></td>
+		<td><label for='current'><?php print __('Current password'); ?></label></td>
 		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='15' maxlength='25' placeholder='********'></td><td></td>
 <?php } ?>
 	</tr>
 	<tr>
-		<td><?php print __('New password'); ?></td>
+		<td><label for='password'><?php print __('New password'); ?></label></td>
 		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25' placeholder='********'></td><td id='pass_details'><div id='pass' style='float:left;'></div><?php print display_tooltip($secpass_tooltip); ?></td>
 	</tr>
 	<tr>
-		<td><?php print __('Confirm password'); ?></td>
+		<td><label for='password_confirm'><?php print __('Confirm password'); ?></label></td>
 		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='15' maxlength='25' placeholder='********'></td><td id='pass_details_conf'><div id='passconfirm' style='float:left;'></div></td>
 	</tr>
 	<tr>

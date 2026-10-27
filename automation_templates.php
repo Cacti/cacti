@@ -1543,7 +1543,7 @@ function create_add_form_dropdown(string $field_label, string $field_name, array
 	?>
 	<tr class='odd'>
 		<td colspan='2'>
-			<table>
+			<table role='presentation'>
 				<tr style='line-height:10px'>
 					<td class='nowrap templateAdd'>
 						<?php print $field_label; ?>

@@ -32,11 +32,11 @@ html_start_box(__('About Cacti'), '100%', false, 3, 'center', '');
 
 <tr class='tableHeader'>
 	<td class='tableSubHeaderColumn' colspan='2'>
-		<font class='textSubHeaderDark'><?php print CACTI_VERSION_TEXT_FULL; ?></font>
+		<span class='textSubHeaderDark'><?php print CACTI_VERSION_TEXT_FULL; ?></span>
 	</td>
 </tr>
 <tr>
-	<td valign='top' class='odd' class='textArea'>
+	<td style='vertical-align:top;' class='odd textArea'>
 		<div style='float:right;'>
 			<a href='http://www.cacti.net/' target='_blank'><img class='right' alt='cactiHome' src='images/cacti_about_logo.gif'></a>
 		</div>
@@ -98,9 +98,9 @@ html_start_box(__('About Cacti'), '100%', false, 3, 'center', '');
 
 		<p><?php print __('Cacti is licensed under the GNU GPL:'); ?></p>
 
-		<p><tt><?php print __('This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.'); ?></tt></p>
+		<p><span style='font-family:monospace;'><?php print __('This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.'); ?></span></p>
 
-		<p><tt><?php print __('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.'); ?></tt></p>
+		<p><span style='font-family:monospace;'><?php print __('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.'); ?></span></p>
 	</td>
 </tr>
 

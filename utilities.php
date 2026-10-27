@@ -1065,10 +1065,10 @@ function boost_display_run_status() : void {
 	<tr class='even'>
 		<form id='form_boost_utilities_stats' method='post'>
 		<td>
-			<table>
+			<table role='presentation'>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Refresh Interval'); ?>
+						<label for='refresh'><?php print __('Refresh Interval'); ?></label>
 					</td>
 					<td>
 						<select id='refresh' name='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __('Refresh Interval'); ?>'>

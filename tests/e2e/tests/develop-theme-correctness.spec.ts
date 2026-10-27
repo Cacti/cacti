@@ -44,7 +44,6 @@ for (const file of files) {
 for (const [file, selector, expected] of [
 	['include/themes/deepness/main.css', '.graphSubHeaderColumn', 'rgb(255, 255, 255)'],
 	['include/themes/midwinter/css/media/core.css', '.graphSubHeaderColumn', 'rgb(255, 255, 255)'],
-	['include/themes/hollyberry/main.css', '.cactiPageHead', 'rgb(0, 161, 11)'],
 ]) {
 	test(`${file} graph headings retain white text and gradients retain fallback colors`, async ({ page }) => {
 		await page.setContent('<!DOCTYPE html><div class="graphSubHeaderColumn"></div><div class="cactiPageHead"></div>');
@@ -65,10 +64,8 @@ for (const [file, html, selector, pseudo, property, expected] of [
 	['include/themes/midwinter/css/media/compact-landscape.css', '<div class="navBox-header-dropdown-content"><a href="#item">Item</a></div>', 'a', '', 'textDecorationLine', /^none$/],
 	['include/themes/midwinter/css/media/compact-landscape.css', '<div class="navBox-content"><div class="mdw-jstree-wrapper"><ul><li class="jstree-node jstree-closed"><i class="jstree-ocl"></i></li></ul></div></div>', '.jstree-ocl', '::before', 'fontFamily', /^tabler-icons, sans-serif$/],
 	['include/themes/cacti/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
-	['include/themes/carrot/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
 	['include/themes/dark/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
 	['include/themes/deepness/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
-	['include/themes/hollyberry/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
 	['include/themes/modern/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
 	['include/themes/paper-plane/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
 	['include/themes/paw/main.css', '<i class="ti"></i>', 'i.ti', '', 'fontSize', /^16px$/],
@@ -77,10 +74,8 @@ for (const [file, html, selector, pseudo, property, expected] of [
 	['include/themes/deepness/main.css', '<span class="filteredValue">match</span>', '.filteredValue', '', 'backgroundColor', /^rgb\(227, 179, 65\)$/],
 	['include/themes/deepness/main.css', '<span class="filteredValue">match</span>', '.filteredValue', '', 'color', /^rgb\(11, 14, 19\)$/],
 	['include/themes/cacti/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
-	['include/themes/carrot/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
 	['include/themes/dark/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
 	['include/themes/deepness/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
-	['include/themes/hollyberry/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
 	['include/themes/modern/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
 	['include/themes/paper-plane/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
 	['include/themes/paw/main.css', '<div class="cactiConsoleContentArea"></div>', '.cactiConsoleContentArea', '', 'paddingRight', /^15px$/],
@@ -137,7 +132,7 @@ test('Cacti context menu fallbacks override package fonts and preserve Midwinter
 	}
 });
 
-for (const theme of ['cacti', 'carrot', 'dark', 'hollyberry', 'midwinter', 'modern', 'paper-plane', 'paw', 'raspberry', 'sunrise']) {
+for (const theme of ['cacti', 'dark', 'midwinter', 'modern', 'paper-plane', 'paw', 'raspberry', 'sunrise']) {
 	test(`${theme} visible zoom markers retain icon font fallbacks`, async ({ page }) => {
 		await page.setContent('<!DOCTYPE html><div class="zoom-marker" style="display:block"><span class="zoom-marker-tooltip" id="marker-1">Start</span></div>');
 		await installThemeCss(page, `include/themes/${theme}/jquery.zoom.css`);
@@ -151,7 +146,7 @@ for (const theme of ['cacti', 'carrot', 'dark', 'hollyberry', 'midwinter', 'mode
 	});
 }
 
-for (const theme of ['carrot', 'dark', 'deepness', 'hollyberry', 'midwinter', 'modern', 'paw', 'raspberry']) {
+for (const theme of ['dark', 'deepness', 'midwinter', 'modern', 'paw', 'raspberry']) {
 	test(`${theme} console icons, authentication panel, and graph navigation retain their styles`, async ({ page }) => {
 		await page.setContent('<!DOCTYPE html><span class="glyph_tab-console"></span><div class="cactiAuthArea">Login</div>' +
 			'<div class="jstree-default"><ul><li class="jstree-node"><i class="jstree-ocl"></i></li></ul></div>' +
@@ -167,30 +162,6 @@ for (const theme of ['carrot', 'dark', 'deepness', 'hollyberry', 'midwinter', 'm
 		}
 	});
 }
-
-test('Hollyberry menu and footer gradients retain solid fallback colors', async ({ page }) => {
-	await page.setContent('<!DOCTYPE html><div class="submenuoptions">Menu</div><div class="cactiPageBottom">Footer</div>' +
-		'<div class="beingGraphed">Visible graph</div><div class="notBeingGraphed">Hidden graph</div>');
-	await installThemeCss(page, 'include/themes/hollyberry/main.css');
-	for (const selector of ['.submenuoptions', '.cactiPageBottom']) {
-		expect(await page.locator(selector).evaluate(element => getComputedStyle(element).backgroundImage)).toContain('linear-gradient(');
-		expect(await page.locator(selector).evaluate(element => getComputedStyle(element).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-	}
-	expect(await page.locator('.beingGraphed').evaluate(element => getComputedStyle(element).color)).toBe('rgba(148, 179, 107, 0.8)');
-	expect(await page.locator('.notBeingGraphed').evaluate(element => getComputedStyle(element).color)).toBe('rgb(72, 72, 72)');
-});
-
-test('Hollyberry checked radio sliders retain their gradient and solid fallback', async ({ page }) => {
-	await page.setContent('<!DOCTYPE html><input type="radio" checked><span class="radioSlider"></span>');
-	await installThemeCss(page, 'include/themes/hollyberry/main.css');
-	await expect(page.locator('.radioSlider')).toHaveCSS('background-color', 'rgba(0, 161, 11, 0.9)');
-	const styles = await page.locator('.radioSlider').evaluate(element => {
-		const style = getComputedStyle(element);
-		return { color: style.backgroundColor, image: style.backgroundImage };
-	});
-	expect(styles.color).toBe('rgba(0, 161, 11, 0.9)');
-	expect(styles.image).toContain('linear-gradient(');
-});
 
 // Mirrors the button and menu markup that include/js/jquery.multiselect.js 3.x builds.
 const multiselectMarkup = '<!DOCTYPE html><div style="font-size:20px">' +
@@ -246,7 +217,7 @@ test('deepness skins jQuery multiselect buttons and menus with its own palette',
 	]);
 });
 
-for (const theme of ['cacti', 'carrot', 'hollyberry', 'raspberry']) {
+for (const theme of ['cacti', 'raspberry']) {
 	test(`${theme} lays out jQuery multiselect 3.x option groups`, async ({ page }) => {
 		await page.setContent(multiselectMarkup);
 		await installThemeCss(page, `include/themes/${theme}/jquery.multiselect.css`);

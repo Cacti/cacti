@@ -35,11 +35,11 @@ if (!$is_request_ajax) {?>
 </head>
 <body>
 	<a class='skip-link' href='#main' style='display:none'>Skip to main</a>
-	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
+	<header id='cactiPageHead' class='cactiPageHead'>
 		<div id='tabs'><?php html_show_tabs_left(); ?></div>
 		<div class='cactiGraphHeaderBackground' style='display:none'><div id='gtabs'><?php html_graph_tabs_right(); ?></div></div>
 		<div class='cactiConsolePageHeadBackdrop'></div>
-	</div>
+	</header>
 	<div id='breadCrumbBar' class='breadCrumbBar'>
 		<div id='navBar' class='navBar'><?php print draw_navigation_text(); ?></div>
 		<div class='scrollBar'></div>

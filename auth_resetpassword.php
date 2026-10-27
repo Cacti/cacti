@@ -328,6 +328,7 @@ html_auth_header('reset_password', __('Reset Password'), __('Reset Password'), $
 <?php if ($action == 'formidentity') { ?>
 		<tr>
 		<td class='nowrap' colspan='2'>
+			<label for='identity'><?php print __esc('Username'); ?></label>
 			<input type='text' class='ui-state-default ui-corner-all' id='identity' name='identity' size='25' maxlength='50'></td>
 		</tr>
 	<tr>
@@ -346,13 +347,13 @@ html_auth_header('reset_password', __('Reset Password'), __('Reset Password'), $
 
 if ($action == 'formreset') {?>
 	<tr>
-		<td><?php print __('New password'); ?></td>
+		<td><label for='password'><?php print __('New password'); ?></label></td>
 		<td class='nowrap'>
 			<input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25' placeholder='********'><?php print display_tooltip($secpass_tooltip); ?>
 		</td>
 	</tr>
 	<tr>
-		<td><?php print __('Confirm password'); ?></td>
+		<td><label for='password_confirm'><?php print __('Confirm password'); ?></label></td>
 		<td class='nowrap'>
 			<input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='15' maxlength='25' placeholder='********'>
 		</td>

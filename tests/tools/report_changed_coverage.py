@@ -21,12 +21,14 @@ def added_lines(base):
     name = None
     line = 0
     for record in diff.splitlines():
-        if record.startswith('+++ b/'):
+        if record.startswith('diff --git '):
+            name = None
+        elif record.startswith('+++ b/'):
             name = record[6:]
             files[name] = set()
         elif record.startswith('@@'):
             line = int(re.search(r'\+(\d+)', record).group(1))
-        elif record.startswith('+'):
+        elif record.startswith('+') and name is not None:
             files[name].add(line)
             line += 1
         elif not record.startswith(('-', '\\')):

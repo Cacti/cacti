@@ -79,7 +79,7 @@ jobs:
             --volume "${PWD}:/src" \
             --workdir /src \
             semgrep/semgrep@sha256:e04d2cb132288d90035db8791d64f610cb255b21e727b94db046243b30c01ae9 \
-            semgrep --test tests/security/semgrep/
+            sh -c 'semgrep --test tests/security/semgrep/ && semgrep --test --config .semgrep.yml tests/security/semgrep/runtime-taint.php'
 
       - name: Advisory differential scan (non-blocking)
         continue-on-error: true

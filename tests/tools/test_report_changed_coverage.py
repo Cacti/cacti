@@ -24,6 +24,16 @@ class CoverageEvidenceTest(unittest.TestCase):
         with patch.object(GATE.subprocess, 'check_output', side_effect=['base', diff]):
             self.assertEqual(GATE.added_lines('HEAD^'), {})
 
+    def test_deleted_file_headers_do_not_become_added_source_lines(self):
+        diff = ('diff --git a/old.css b/old.css\n--- a/old.css\n+++ /dev/null\n'
+                '@@ -1 +0,0 @@\n-body { color: red; }\n'
+                'diff --git a/current.css b/current.css\n--- a/current.css\n'
+                '+++ b/current.css\n@@ -0,0 +1 @@\n+body { color: blue; }\n'
+                'diff --git a/last.css b/last.css\n--- a/last.css\n'
+                '+++ /dev/null\n@@ -1 +0,0 @@\n-body { color: red; }\n')
+        with patch.object(GATE.subprocess, 'check_output', side_effect=['base', diff]):
+            self.assertEqual(GATE.added_lines('HEAD^'), {'current.css': {1}})
+
     def evaluate(self, evidence, added=(3,), minimum=None):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
