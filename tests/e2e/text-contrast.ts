@@ -12,11 +12,13 @@ export function textContrast(element: Element): number {
 	for (const e of ancestors) {
 		const c = rgba(getComputedStyle(e).backgroundColor);
 		surfaces = surfaces.map(bg => over(c, bg));
-		// Check every linear-gradient stop; raster textures use their fallback color.
+		// Sample stops and intermediate sRGB colors; raster textures use their fallback color.
 		const image = getComputedStyle(e).backgroundImage;
 		if (image.startsWith('linear-gradient(')) {
 			const stops = (image.match(/rgba?\([^)]+\)/g) || []).map(rgba);
-			surfaces = surfaces.flatMap(bg => stops.map(stop => over(stop, bg)));
+			const samples = stops.flatMap((stop, index) => index === 0 ? [stop] :
+				[.25, .5, .75, 1].map(t => stop.map((v, channel) => stops[index - 1][channel] * (1 - t) + v * t)));
+			surfaces = surfaces.flatMap(bg => samples.map(stop => over(stop, bg)));
 		}
 	}
 	const lum = (c: number[]) => c.slice(0, 3).map(v => {
