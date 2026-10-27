@@ -134,7 +134,7 @@ hr.menu {
 /* links */
 
 a, a:active, a:visited {
-	color: #2da84c;
+	color: #1b6e31;
 	text-decoration: none;
 	font-size: 12px;
 }
@@ -1043,7 +1043,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #2da84c;
+	color: #1b6e31;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1051,7 +1051,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #164f25;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1182,8 +1182,9 @@ legend {
 	color: white;
 	float: left;
 	text-align: left;
-	height: 25px;
-	display: table-column;
+	min-height: 25px;
+	display: flex;
+	align-items: center;
 	width: 100%;
 	font-size: 1em;
 	font-weight: 700;
@@ -1191,6 +1192,9 @@ legend {
 }
 
 .cactiTableTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	color: white;
 	float: left;
 	text-align: left;
@@ -1201,6 +1205,7 @@ legend {
 }
 
 .cactiTableButton {
+	flex: 0 0 auto;
 	float: right;
 	line-height: 22px;
 	display: table-column;
