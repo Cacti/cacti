@@ -59,6 +59,11 @@ const top = [...rules.values()]
 const table = [...groups.values()];
 writeFileSync(join(dir, 'summary.json'), JSON.stringify({ cases: cases.length, groups: table, rules: top }, null, '\t'));
 
+function selectorCode(selector) {
+	const text = selector.replace(/[\\`|&<>*_~\[\]\r\n]/g, (character) => `&#${character.codePointAt(0)};`);
+	return `<code>${text}</code>`;
+}
+
 const lines = [
 	'# Theme accessibility baseline',
 	'',
@@ -72,7 +77,7 @@ const lines = [
 	'',
 	'| Rule | Impact | Nodes | Themes | Common selectors |',
 	'| --- | --- | --- | --- | --- |',
-	...top.map((r) => `| ${r.id} | ${r.impact} | ${r.nodes} | ${r.themes.join(', ')} | ${r.selectors.map((s) => '`' + s.replace(/\|/g, '\\|') + '`').join('<br>')} |`),
+	...top.map((r) => `| ${r.id} | ${r.impact} | ${r.nodes} | ${r.themes.join(', ')} | ${r.selectors.map(selectorCode).join('<br>')} |`),
 	'',
 ];
 writeFileSync(join(dir, 'summary.md'), lines.join('\n'));
