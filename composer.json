@@ -70,7 +70,8 @@
         "symfony/process": "^7.4",
         "symfony/security-core": "^7.4",
         "symfony/security-csrf": "^7.4",
-        "symfony/validator": "^7.4"
+        "symfony/validator": "^7.4",
+        "twig/twig": "^3.30"
     },
     "require-dev": {
         "composer/xdebug-handler": "^3.0",
@@ -126,7 +127,9 @@
     "autoload": {
         "psr-4": {
             "Cacti\\Console\\": "lib/Console/",
-            "Cacti\\Auth\\": "lib/Auth/"
+            "Cacti\\Auth\\": "lib/Auth/",
+            "Cacti\\View\\": "src/View/",
+            "Cacti\\Controller\\": "src/Controller/"
         }
     },
     "config": {

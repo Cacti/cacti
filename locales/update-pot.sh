@@ -49,4 +49,7 @@ fi
 echo "Updating Cacti language gettext language files"
 
 cd "$BASE_PATH" || exit 1
-find . -maxdepth 2 -name '*.php' -print | "$XGETTEXT_BIN" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot --files-from=-
+{
+	find . -maxdepth 2 -name '*.php' -print
+	find ./src -name '*.php' -type f -print
+} | "$XGETTEXT_BIN" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot --files-from=-
