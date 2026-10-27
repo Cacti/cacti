@@ -59,6 +59,9 @@ try {
         $value = (1700000000 + $i) . ':1';
         if (boost_rrdtool_function_update(1, $file, 'value', $value, $pipe) !== 'OK') { throw new \RuntimeException('Valid update was refused.'); }
     }
+    if (rrdtool_execute('last ' . $file, false, RRDTOOL_OUTPUT_BOOLEAN, $pipe) !== true) { throw new \RuntimeException('Boolean response mode lost acknowledgement.'); }
+    rrdtool_execute('last ' . $file, false, RRDTOOL_OUTPUT_NULL, $pipe);
+    if (trim(rrdtool_execute('last ' . $file, false, RRDTOOL_OUTPUT_STDOUT, $pipe)) !== '1700001000') { throw new \RuntimeException('Output modes desynchronized the worker.'); }
     $elapsed = (hrtime(true) - $start) / 1e9;
     if (proc_get_status($context['rrd_process'])['pid'] !== $pid) { throw new \RuntimeException('RRDtool worker was replaced during updates.'); }
     if (!boost_process_output(1, [[1700001001, 2]], $file, ['value' => 0], $pipe)) { throw new \RuntimeException('Scheduled valid flush failed.'); }
