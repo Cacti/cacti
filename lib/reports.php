@@ -55,7 +55,7 @@ function reports_unserialize_selected_items(mixed $items) : array|false {
 function reports_owner_authorized(mixed $owner_id) : bool {
 	$user_id = (int) ($_SESSION[SESS_USER_ID] ?? 0);
 
-	return $user_id > 0 && (int) $owner_id > 0 && (is_reports_admin() || (int) $owner_id === $user_id);
+	return $user_id > 0 && (int) $owner_id > 0 && ((int) $owner_id === $user_id || is_realm_allowed(21));
 }
 
 /**
