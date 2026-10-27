@@ -106,7 +106,7 @@ foreach ([false, true] as $admin) {
 
 		foreach ([1, 2, 3] as $report) {
 			$owner   = [1 => 1, 2 => 2, 3 => 0][$report];
-			$allowed = $user > 0 && $owner > 0 && ($admin || $user === $owner);
+			$allowed = $user > 0 && ($admin || $user === $owner);
 			$GLOBALS['reports_db']->exec('DELETE FROM reports_log');
 			db_execute_prepared('INSERT INTO reports_log VALUES (10,?,?,?,?)', ['reports', $report, '<p>Fixture</p>', base64_encode('[]')]);
 
@@ -132,6 +132,14 @@ foreach ([false, true] as $admin) {
 			}
 			$cases++;
 		}
+	}
+}
+$_SESSION[SESS_USER_ID]   = 1;
+$GLOBALS['reports_admin'] = true;
+
+foreach ([false, null, '', [], 'missing'] as $missing_owner) {
+	if (reports_owner_authorized($missing_owner)) {
+		throw new \RuntimeException('A missing report owner was treated as an existing resource.');
 	}
 }
 $GLOBALS['reports_admin'] = true;

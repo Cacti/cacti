@@ -1709,7 +1709,7 @@ function reports_edit() : void {
 	if (gfrv('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [grv('id')]);
 
-		if (!reports_owner_authorized($report['user_id'] ?? 0)) {
+		if (!reports_owner_authorized($report['user_id'] ?? null)) {
 			raise_message('reports_idor', __('You do not have permission to view this Report.'), MESSAGE_LEVEL_ERROR);
 			header('Location: ' . get_reports_page());
 
