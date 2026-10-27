@@ -26,7 +26,7 @@ $GLOBALS['i18n_support'] = $i18n_support;
 $config = ['base_path' => $root, 'include_path' => $root . '/include'];
 
 function read_config_option($name, $force = false) {
-	return $name === 'i18n_language_support' ? $GLOBALS['i18n_support'] : '';
+	return $name === 'i18n_language_support' ? $GLOBALS['i18n_support'] : ($GLOBALS['i18n_probe_options'][$name] ?? '');
 }
 
 function cacti_sizeof($array) {

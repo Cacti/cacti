@@ -47,3 +47,5 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
+
+run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'

@@ -22,6 +22,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_html_change_runs_the_browser_probe(self):
         self.dispatch('lib/html.php', 'accessibility')
 
+    def test_locale_change_runs_the_document_shell_probe(self):
+        self.dispatch('include/global_languages.php', 'document_direction_probe.php')
+
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
 
@@ -35,7 +38,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/functions.php', 'UserAdministrationAuditCoverage.php')
 
     def test_auth_change_runs_the_native_auth_probe(self):
-        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+        self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'document_direction_probe.php'])
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
@@ -71,6 +74,9 @@ class RequestDispatchTest(unittest.TestCase):
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
+            probe = repository / 'tests/Unit/fixtures/document_direction_probe.php'
+            probe.parent.mkdir(parents=True, exist_ok=True)
+            probe.write_text('<?php // dispatch fixture\n')
             git('add', '.')
             git('commit', '--quiet', '-m', 'fixture base')
             base = git('rev-parse', 'HEAD')
@@ -85,7 +91,7 @@ class RequestDispatchTest(unittest.TestCase):
                 env, BASE_COMMIT=base, CACTI_PR_COVERAGE_OUTPUT=str(output)), check=True)
             probe = output / 'probes'
             self.assertEqual(probe.read_text().splitlines() if probe.exists() else [],
-                             [expected] if expected else [])
+                             (expected if isinstance(expected, list) else [expected]) if expected else [])
 
 
 if __name__ == '__main__':
