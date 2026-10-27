@@ -1,120 +1,81 @@
 name: Develop theme correctness
 on:
   pull_request:
-    branches: [develop, 'fix/*-theme-*']
+  merge_group:
+    types: [checks_requested]
   push:
     branches: [develop]
+  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: theme-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
-  chromium:
+  fixtures:
+    name: Pinned theme fixtures
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 5
+    outputs:
+      plugins: ${{ steps.matrix.outputs.plugins }}
+      rtm_repository: ${{ steps.matrix.outputs.rtm_repository }}
+      rtm_revision: ${{ steps.matrix.outputs.rtm_revision }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-          fetch-depth: 0
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
-      - name: Install locked browser tooling
-        working-directory: tests/e2e
+      - name: Validate fixture and summary behavior
+        run: python3 tests/tools/test_theme_ci.py
+      - name: Read immutable fixture manifests
+        id: matrix
+        run: python3 .github/scripts/theme_ci.py matrix
+  core:
+    name: Core theme rendering and CSS coverage
+    uses: ./.github/workflows/theme-browser-suite.yml
+    with:
+      suite: core
+      base-commit: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || '' }}
+  plugins:
+    name: Plugin compatibility (${{ matrix.id }})
+    needs: fixtures
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.fixtures.outputs.plugins) }}
+    uses: ./.github/workflows/theme-browser-suite.yml
+    with:
+      suite: plugin
+      fixture-id: ${{ matrix.id }}
+      fixture-repository: ${{ matrix.repository }}
+      fixture-revision: ${{ matrix.revision }}
+  rtm:
+    name: RTM plugin compatibility
+    needs: fixtures
+    uses: ./.github/workflows/theme-browser-suite.yml
+    with:
+      suite: rtm
+      fixture-id: rtm
+      fixture-repository: ${{ needs.fixtures.outputs.rtm_repository }}
+      fixture-revision: ${{ needs.fixtures.outputs.rtm_revision }}
+  validation:
+    name: Theme validation
+    if: always()
+    needs: [fixtures, core, plugins, rtm]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require every suite to complete successfully
+        env:
+          RESULTS: ${{ toJSON(needs) }}
         run: |
           set -euo pipefail
-          npm ci --ignore-scripts
-          npx --no-install playwright install --with-deps chromium
-      - name: Verify theme parsing and computed rendering
-        working-directory: tests/e2e
-        env:
-          CACTI_THEME_COVERAGE: '1'
-        run: npx --no-install playwright test tests/develop-theme-correctness.spec.ts tests/develop-theme-cleanup.spec.ts --project=chromium
-      - name: Require complete changed CSS line coverage
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
-        run: |
-          set -euo pipefail
-          # The event's base SHA can predate the develop tip this checkout was
-          # merged onto, which counts develop's own lines as the PR's.
-          if git rev-parse --verify --quiet 'HEAD^2' >/dev/null; then
-            BASE_COMMIT="$(git rev-parse 'HEAD^1')"
-          fi
-          python3 tests/tools/test_report_changed_coverage.py
-          python3 tests/tools/report_changed_coverage.py --base "$BASE_COMMIT" \
-            --language css --minimum 100 --browser-root tests/e2e/test-results
-      - name: Load pinned thold styles and scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Cacti/plugin_thold
-          ref: 98ab70f31fe6bda7b91f5fa2baed82274caba0bb
-          path: .theme-plugins/thold
-          persist-credentials: false
-      - name: Load pinned mactrack styles and scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Cacti/plugin_mactrack
-          ref: d412b87460babebee573d2da973346d0dba8e94e
-          path: .theme-plugins/mactrack
-          persist-credentials: false
-      - name: Load pinned syslog styles and scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Cacti/plugin_syslog
-          ref: e0ed9443b90c500d01232c93e5db8ae375f98afd
-          path: .theme-plugins/syslog
-          persist-credentials: false
-      - name: Load pinned alarmmanager styles and scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Cacti/plugin_alarmmanager
-          ref: 92cf2c13d8e14d3606bf9018025f07c22e4dc879
-          path: .theme-plugins/alarmmanager
-          persist-credentials: false
-      - name: Load pinned hmib styles and scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Cacti/plugin_hmib
-          ref: 4a22705d021b11e1960377dfade5af601966c337
-          path: .theme-plugins/hmib
-          persist-credentials: false
-      - name: Load pinned flowview styles and scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Cacti/plugin_flowview
-          ref: be20ab796c619465e78ce07d15e2babcb5d749c1
-          path: .theme-plugins/flowview
-          persist-credentials: false
-      - name: Load pinned monitor styles and scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Cacti/plugin_monitor
-          ref: 564a17c7ea169ec24df3b869d7c44626db34ce2d
-          path: .theme-plugins/monitor
-          persist-credentials: false
-      - name: Check plugin theme compatibility
-        working-directory: tests/e2e
-        run: npx --no-install playwright test tests/develop-plugin-theme-compatibility.spec.ts --project=chromium --output plugin-compat-results
-      - name: Load pinned RTM plugins
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: TheWitness/ibm-spectrum-lsf-rtm-server
-          ref: 4b30a11e014805438cca47d13fae6bda8e28d2ac
-          path: .theme-plugins/rtm
-          sparse-checkout: cacti/plugins
-          persist-credentials: false
-      - name: Check every RTM plugin surface and inventory
-        working-directory: tests/e2e
-        run: npx --no-install playwright test tests/develop-rtm-theme-compatibility.spec.ts tests/develop-rtm-surfaces.spec.ts --project=chromium --output rtm-compat-results
-      - name: Preserve stylesheet coverage evidence
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
-        with:
-          name: theme-coverage
-          path: |
-            tests/e2e/test-results
-            tests/e2e/plugin-compat-results
-            tests/e2e/rtm-compat-results
-          if-no-files-found: warn
+          python3 - <<'PY'
+          import json, os, sys
+          results = json.loads(os.environ['RESULTS'])
+          failed = [name for name, job in results.items() if job['result'] != 'success']
+          for name, job in results.items():
+              print(f"{name}: {job['result']}")
+          if failed:
+              print('::error::Theme validation failed or did not finish: ' + ', '.join(failed))
+          sys.exit(bool(failed))
+          PY
