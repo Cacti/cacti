@@ -49,3 +49,5 @@ run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/f
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
 
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
+
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/api_aggregate\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
