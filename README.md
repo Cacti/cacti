@@ -77,6 +77,14 @@ Both Midwinter palettes have browser coverage for details controls and row-state
 contrast. See [Midwinter theme validation](docs/validation/midwinter-theme.md) for
 narrow-screen screenshots and reproduction commands.
 
+## Modern Theme
+
+![Modern inventory with seeded device measurements](docs/validation/images/modern-theme-desktop.png)
+
+The Modern fixture checks keyboard focus, wrapped titles, and readable green
+gradients. See [Modern theme validation](docs/validation/modern-theme.md) for
+the narrow details screenshot and browser tests.
+
 ---
 
 ## Release Branches

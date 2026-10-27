@@ -224,8 +224,9 @@ select {
 	font-size: 12px;
 }
 
-*:focus {
-	outline: none;
+:focus-visible {
+	outline: 2px solid #006400;
+	outline-offset: 2px;
 }
 
 label {
@@ -1197,7 +1198,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: rgba(44,130,29,1);
+	color: #006400;
 	text-decoration: none;
 	font-size: 12px;
 	font-weight: normal;
@@ -1362,48 +1363,51 @@ legend {
 .cactiTableTitleRow {
 	float: left;
 	text-align: left;
-	height: 25px;
+	min-height: 25px;
 	line-height: 25px;
-	display: block;
+	display: flex;
+	align-items: center;
 	width: 100%;
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
 }
 
 .cactiTableTitle {
-	float: left;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	text-align: left;
 	padding-left: 5px;
-	height: 25px;
+	min-height: 25px;
 	line-height: 25px;
 	display: block;
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
 }
 
 .cactiTableButton {
-	float: right;
+	flex: 0 0 auto;
 	padding-left: 5px;
-	height: 25px;
+	min-height: 25px;
 	line-height: 25px;
 	display: block;
 	text-align: right;
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
 	white-space: nowrap;
 }
@@ -1419,6 +1423,10 @@ legend {
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -2423,13 +2431,17 @@ tr th:last-child .checkbox {
 
 #nav li a.active {
 	color: snow;
-	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
-	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(63,117,15,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: linear-gradient(to bottom, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5b7546', endColorstr='#3f750f', GradientType=0 );
+}
+
+#nav li a.active.pic:hover {
+	color: #000000;
 }
 
 th {
@@ -2797,12 +2809,12 @@ tr#realtime td:first-child {
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
 }
 
