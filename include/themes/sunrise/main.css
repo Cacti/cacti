@@ -1417,9 +1417,11 @@ table.cactiTable {
 	float: left;
 	text-align: left;
 	padding-left: 3px;
-	display: block;
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
 	width: 100%;
-	height: 22px;
+	min-height: 22px;
 	line-height: 22px;
 	font-size: 13px;
 	font-weight: 600;
@@ -1430,11 +1432,13 @@ table.cactiTable {
 
 .cactiTableTitle {
 	color: #FFAA00;
-	float: left;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	text-align: left;
 	padding-left: 3px;
 	display: block;
-	height: 22px;
+	min-height: 22px;
 	line-height: 22px;
 	font-size: 13px;
 	font-weight: 600;
@@ -1444,12 +1448,12 @@ table.cactiTable {
 }
 
 .cactiTableButton {
-	float: right;
+	flex: 0 0 auto;
 	padding: 0px;
 	display: block;
 	text-align: right;
 	font-size: 13px;
-	height: 22px;
+	min-height: 22px;
 	line-height: 22px;
 	border-color: rgba(255,255,255,0.2);
 	background-image: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0));
@@ -1466,7 +1470,11 @@ table.cactiTable {
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
-	vertical-align: middle;
+	vertical-align: top;
+}
+
+.cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -3581,7 +3589,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-	background: #3C8A3C;
+	background: #348034;
 	color: #ffffff;
 }
 /* ======================================================================== */

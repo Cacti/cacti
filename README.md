@@ -101,6 +101,14 @@ The Raspberry fixture checks wrapped titles and readable links on light and
 selected rows. See [Raspberry theme validation](docs/validation/raspberry-theme.md)
 for the narrow details screenshot and browser tests.
 
+## Sunrise Theme
+
+![Sunrise inventory with seeded device measurements](docs/validation/images/sunrise-theme-desktop.png)
+
+The Sunrise fixture checks wrapped titles and readable highlighted options.
+See [Sunrise theme validation](docs/validation/sunrise-theme.md) for the narrow
+details screenshot and browser tests.
+
 ---
 
 ## Release Branches
