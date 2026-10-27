@@ -200,6 +200,7 @@ Cacti CHANGELOG
 -issue#8325: Fit the installer layout to narrow screens and restore heading font sizes
 -issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
 -issue#8390: Reject dangling symlinks in validate_relative_path_within
+-issue#8411: Compile gettext catalogs with portable basename arguments on FreeBSD
 -issue#8414: Restore tree-device and breadcrumb navigation from Time Graph View
 -issue#8415: Refresh the last-poll timestamp when selecting an automatic graph end time
 -issue#8420: Correct restrictive graph permission labels for default-deny graph templates
