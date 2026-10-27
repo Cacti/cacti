@@ -50,7 +50,8 @@ ini_set('max_execution_time', '300');
 set_default_action();
 
 if (in_array(grv('action'), [
-	'send', 'remove_history', 'ajax_dnd',
+	'save', 'actions', 'send', 'remove_history', 'ajax_dnd',
+	'item_moveup', 'item_movedown', 'item_remove',
 ], true)) {
 	csrf_require_post();
 }
