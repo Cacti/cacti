@@ -44,7 +44,8 @@ function reset_identity_env(array $server, array $trusted): void {
 		$_SERVER[$key] = $value;
 	}
 
-	$GLOBALS['config']['trusted_proxies'] = $trusted;
+	$GLOBALS['config']['trusted_proxies']      = $trusted;
+	$GLOBALS['auth_basic_allow_php_auth_user'] = false;
 }
 
 test('is_trusted_proxy is false when the trusted list is empty', function () {
@@ -139,4 +140,22 @@ test('an untrusted client cannot override the web-server REMOTE_USER via a forwa
 		'HTTP_X_FORWARDED_USER' => 'attacker',
 	], []);
 	expect(get_basic_auth_username())->toBe('svcaccount');
+});
+
+test('PHP_AUTH_USER is rejected until upstream password verification is explicitly configured', function () {
+	reset_identity_env(['REMOTE_ADDR' => '203.0.113.9', 'PHP_AUTH_USER' => 'admin'], []);
+	expect(get_basic_auth_username())->toBeFalse();
+	$GLOBALS['auth_basic_allow_php_auth_user'] = true;
+	expect(get_basic_auth_username())->toBe('admin');
+});
+
+test('a decoded Basic header cannot replace a verified server identity', function () {
+	reset_identity_env(['REMOTE_USER' => 'verified', 'PHP_AUTH_USER' => 'unverified'], []);
+	$GLOBALS['auth_basic_allow_php_auth_user'] = true;
+	expect(get_basic_auth_username())->toBe('verified');
+});
+
+test('malformed server identity arrays are rejected', function () {
+	reset_identity_env(['REMOTE_USER' => ['admin']], []);
+	expect(get_basic_auth_username())->toBeFalse();
 });
