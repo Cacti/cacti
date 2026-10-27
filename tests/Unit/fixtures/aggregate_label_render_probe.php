@@ -12,6 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+
 // Exercise the production aggregate renderer and HTML escaping helpers without a database.
 require_once dirname(__DIR__, 3) . '/lib/html.php';
 require_once dirname(__DIR__, 3) . '/lib/api_aggregate.php';
@@ -20,7 +22,7 @@ define('POLLER_ID', 1);
 define('POLLER_VERBOSITY_DEVDBG', 5);
 $graph_item_types        = [1 => 'GPRINT'];
 $consolidation_functions = [1 => 'AVERAGE'];
-$label                   = $argv[1] === 'empty' ? null : $argv[2];
+$label                   = ($argv[1] ?? '') === 'empty' ? null : ($argv[2] ?? '<em>Literal label</em>');
 
 function db_fetch_assoc(string $sql): array {
 	global $label;
@@ -78,5 +80,9 @@ $names = [];
 
 foreach ([4, 5, 6] as $index) {
 	$names[] = $cells->item($index)->textContent;
+}
+
+if ($names !== array_fill(0, 3, $label ?? '') || $xpath->query('//td//em')->length !== 0) {
+	throw new RuntimeException('Aggregate definition names were interpreted as markup or changed.');
 }
 print json_encode(['names' => $names, 'elements' => $xpath->query('//td//em')->length]);
