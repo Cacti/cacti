@@ -51,7 +51,7 @@ switch (grv('action')) {
 }
 
 function view_user_log() : void {
-	global $auth_realms, $item_rows;
+	global $auth_realms;
 
 	draw_user_log_filter(true);
 
@@ -125,35 +125,8 @@ function view_user_log() : void {
 
 	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), 1, 'user_log.php');
 
-	$i = 0;
-
-	if (cacti_sizeof($user_log)) {
-		foreach ($user_log as $item) {
-			form_alternate_row('line' . $i, true);
-
-			form_selectable_cell(filter_value($item['username'], grv('filter')), $i, '', 'nowrap');
-
-			if (isset($item['full_name'])) {
-				form_selectable_cell(filter_value($item['full_name'], grv('filter')), $i);
-			} else {
-				form_selectable_cell(__('(User Removed)'), $i);
-			}
-
-			if (isset($auth_realms[$item['realm']]['name'])) {
-				form_selectable_cell(filter_value($auth_realms[$item['realm']]['name'], grv('filter')), $i);
-			} else {
-				form_selectable_cell(__('N/A'), $i);
-			}
-
-			form_selectable_cell(filter_value($item['time'], grv('filter')), $i);
-
-			form_selectable_cell(($item['result'] == 0 ? __('Failed') : ($item['result'] == 1 ? __('Success - Password') : ($item['result'] == 3 ? __('Success - Password Change') : __('Success - Token')))), $i);
-
-			form_selectable_cell(filter_value($item['ip'], grv('filter')), $i);
-
-			$i++;
-		}
-	}
+	(new \Cacti\Controller\UserLogController(\Cacti\View\TemplateRenderer::create()))
+		->show(is_array($user_log) ? array_values($user_log) : [], grv('filter'), $auth_realms)->sendContent();
 
 	html_end_box();
 

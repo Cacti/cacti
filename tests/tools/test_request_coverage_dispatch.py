@@ -22,6 +22,12 @@ class RequestDispatchTest(unittest.TestCase):
     def test_html_change_runs_the_browser_probe(self):
         self.dispatch('lib/html.php', 'accessibility')
 
+    def test_twig_list_changes_run_the_existing_browser_probe(self):
+        for path in ['package_keys.php', 'package_repos.php', 'rrdcheck.php', 'user_log.php',
+                     'gprint_presets.php', 'cdef.php', 'vdef.php', 'sites.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'accessibility')
+
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
 

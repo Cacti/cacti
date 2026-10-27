@@ -177,3 +177,24 @@ test('example iframe keeps its name and border using CSS', async ({ page }) => {
 	await expect(page.locator('iframe')).toHaveCSS('border-top-width', '0px');
 	await expect(page.locator('[frameborder]')).toHaveCount(0);
 });
+
+// Exercise the legacy page-to-controller boundary with real auth and queries.
+for (const [route, column] of [
+	['/package_keys.php', 'Author'],
+	['/package_repos.php', 'Name'],
+	['/rrdcheck.php', 'Host Description'],
+	['/user_log.php', 'Full Name'],
+	['/gprint_presets.php', 'GPRINT Preset Name'],
+	['/cdef.php', 'CDEF Name'],
+	['/vdef.php', 'VDEF Name'],
+	['/sites.php', 'Site Name'],
+]) {
+	test(`${route} retains its filter and list after Twig dispatch`, async ({ page }) => {
+		await login(page);
+		const response = await page.goto(route);
+		expect(response?.status()).toBe(200);
+		await expect(page.locator('#filter')).toBeVisible();
+		await expect(page.getByRole('columnheader').filter({ hasText: column })).toBeVisible();
+		await expect(page.locator('body')).not.toContainText(/Fatal error|Uncaught|Permission Denied/);
+	});
+}

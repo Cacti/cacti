@@ -1,0 +1,12 @@
+{% for item in rows %}
+	{{ cacti_row(item.id, true) }}
+	{{ cacti_cell(cacti_filter(item.author, search), item.id) }}
+	{{ cacti_cell(item.id, item.id) }}
+	{{ cacti_cell(cacti_filter(item.homepage, search), item.id) }}
+	{{ cacti_cell(cacti_filter(item.email_address, search), item.id) }}
+	{{ cacti_cell(item.public_key|length < 200 ? 'SHA1' : 'SHA256', item.id) }}
+	{{ cacti_checkbox(item.author, item.id) }}
+	</tr>
+{% else %}
+	<tr class="tableRow odd"><td colspan="6"><em>{{ labels.empty }}</em></td></tr>
+{% endfor %}

@@ -1,0 +1,11 @@
+{% for item in rows %}
+	{{ cacti_row(item.local_data_id, true) }}
+	{{ cacti_cell(cacti_filter(item.description == '' ? labels.deleted : item.description, search), item.local_data_id) }}
+	{{ cacti_cell(cacti_filter(item.name_cache == '' ? labels.deleted : item.name_cache, search), item.local_data_id) }}
+	{{ cacti_cell(cacti_filter(item.local_data_id, search), item.local_data_id, 'center') }}
+	{{ cacti_cell(cacti_filter(item.message, search), item.local_data_id) }}
+	{{ cacti_cell(item.test_date, item.local_data_id, 'right') }}
+	</tr>
+{% else %}
+	<tr class="tableRow odd"><td colspan="5"><em>{{ labels.empty }}</em></td></tr>
+{% endfor %}
