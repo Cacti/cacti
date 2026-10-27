@@ -9058,6 +9058,61 @@ function get_include_relpath(string $path, mixed $basePath = null) : string {
 }
 
 /**
+ * Returns the theme specific search locations for a file, in lookup order.
+ *
+ * @param string $path  The base path, with a trailing slash
+ * @param string $theme The theme directory name
+ *
+ * @return array<int, string> Path + theme, include/themes + theme + path, include/themes + theme
+ */
+function get_theme_candidate_paths(string $path, string $theme) : array {
+	$themePath = rtrim($theme, '/') . '/';
+
+	return [
+		$path . $themePath,
+		'include/themes/' . $themePath . $path,
+		'include/themes/' . $themePath
+	];
+}
+
+/**
+ * Returns the parent theme named in a theme's `parent` file.
+ *
+ * A child theme ships only the files it changes and inherits the rest from
+ * its parent. The name read from disk builds include paths, so it must be a
+ * plain theme directory name with a main.css and must not be the child
+ * itself. Inheritance is a single level; a parent's own `parent` file is
+ * never followed, which rules out chains and cycles.
+ *
+ * @param string $theme The child theme directory name
+ *
+ * @return string The parent theme name, or '' when there is none or it is invalid
+ */
+function get_theme_parent(string $theme) : string {
+	static $parents = [];
+
+	if (isset($parents[$theme])) {
+		return $parents[$theme];
+	}
+
+	$parent     = '';
+	$themes_dir = CACTI_PATH_INCLUDE . '/themes/';
+
+	if (preg_match('/^[a-z0-9_-]+$/', $theme) && is_file($themes_dir . $theme . '/parent')) {
+		$name = file_get_contents($themes_dir . $theme . '/parent', false, null, 0, 64);
+		$name = trim($name === false ? '' : $name);
+
+		if ($name !== $theme && preg_match('/^[a-z0-9_-]+$/', $name) && is_file($themes_dir . $name . '/main.css')) {
+			$parent = $name;
+		}
+	}
+
+	$parents[$theme] = $parent;
+
+	return $parent;
+}
+
+/**
  * Returns a formatted output based on found paths.  If no paths are found
  * output will be blank
  *
@@ -9103,20 +9158,40 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
 		}
 
 		if (!empty($theme)) {
-			$themePath = rtrim($theme, '/') . '/';
+			$themePaths = get_theme_candidate_paths($path, $theme);
+			$parent     = get_theme_parent($theme);
+
+			// The output loop below emits every candidate that exists, so the
+			// parent is consulted only when the child ships no copy of the file.
+			// Otherwise both copies would load and the parent's would cascade
+			// over the child's.
+			if ($parent !== '') {
+				$childHasFile = false;
+
+				foreach ($themePaths as $themePath) {
+					if (!empty(get_include_relpath($themePath . $file))) {
+						$childHasFile = true;
+
+						break;
+					}
+				}
+
+				if (!$childHasFile) {
+					$themePaths = get_theme_candidate_paths($path, $parent);
+				}
+			}
+
 			// Add path + theme to see if there is a themed version
-			$paths[] = $path . $themePath;
+			$paths[] = $themePaths[0];
 
 			// If we aren't expliciting include themes, check them
 			if ($path !== 'include/themes/') {
 				// Add default theme include location
 				$paths[] = 'include/themes/';
 
-				// Add include + theme + path to see if there is a themed version
-				$paths[] = 'include/themes/' . $themePath . $path;
-
-				// Add include + theme to see if there is a themed version
-				$paths[] = 'include/themes/' . $themePath;
+				// Add include + theme + path, then include + theme
+				$paths[] = $themePaths[1];
+				$paths[] = $themePaths[2];
 			}
 		}
 	}
