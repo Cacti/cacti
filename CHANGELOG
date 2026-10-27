@@ -161,6 +161,7 @@ Cacti CHANGELOG
 -issue#7868: Apply Boost process-table columns on the 1.2.32 upgrade path
 -issue#7907: Reject CLI RLIKE patterns, remove the unused remove_graphs --graph-type option, and improve cli argument handling and exit status
 -issue#7930: Commit transactions on MySQL as well as MariaDB
+-issue#7934: Retry stale installer CSRF tokens once and preserve disabled automation settings
 -issue#7954: Guard applySkin when cactiNonce is not defined
 -issue#7957: Stop treating every PID in a container as a reserved system PID
 -issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing

@@ -20051,3 +20051,11 @@ msgstr ""
 #: user_domains.php
 msgid "Domains"
 msgstr ""
+
+#: include/csrf.php
+msgid "Session Expired"
+msgstr ""
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""

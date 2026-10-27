@@ -256,7 +256,27 @@ function csrf_error_callback() {
 
 	// Resolve session fixation for PHP 5.4
 	if (session_status() === PHP_SESSION_ACTIVE) {
-		session_regenerate_id();
+		session_regenerate_id(true);
+	}
+
+	if (defined('IN_CACTI_INSTALL') && isset($GLOBALS['auth_json']) && $GLOBALS['auth_json'] === true) {
+		$response = json_encode(array(
+			'error' => 'csrf_timeout',
+			'title' => __('Session Expired'),
+			'message' => __('Your installer session expired due to inactivity. Reload the installer and try again.'),
+			'csrfMagicToken' => csrf_get_tokens(),
+		), JSON_INVALID_UTF8_SUBSTITUTE);
+
+		while (ob_get_level()) {
+			ob_end_clean();
+		}
+		http_response_code(403);
+		header('Content-Type: application/json');
+		header('Cache-Control: no-store');
+		header('X-Content-Type-Options: nosniff');
+		print $response;
+		csrf_log(__FUNCTION__, 'Timeout, returning JSON response for the installer');
+		exit;
 	}
 
 	raise_message('csrf_timeout');
