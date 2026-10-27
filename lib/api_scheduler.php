@@ -110,7 +110,38 @@ function api_scheduler_form() : array {
 			'method'        => 'drop_multi',
 			'friendly_name' => __('Days of Month'),
 			'description'   => __('What Day(s) of the Month will this Network Range be discovered.'),
-			'array'         => [1 => '1', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 => __('Last')],
+			'array'         => [1 => '1',
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32 => __('Last')],
 			'value'         => '|arg1:day_of_month|',
 			'class'         => 'multiselect days_of_month'
 		],
@@ -230,7 +261,8 @@ function api_scheduler_javascript() : void {
 			stepMinute: 5,
 			timeFormat: 'HH:mm',
 			dateFormat: 'yy-mm-dd',
-			minDateTime: new Date(<?php print date('Y') . ', ' . (date('m') - 1) . ', ' . date('d, H') . ', ' . date('i', intval(ceil(time() / 300)) * 300) . ', 0, 0'; ?>)
+			minDateTime: new Date(<?php print date('Y') . ', ' . (date('m') - 1) . ', ' . date('d, H') . ', ' . date('i',
+				intval(ceil(time() / 300)) * 300) . ', 0, 0'; ?>)
 		});
 
 		$('#sched_type').change(function() {
@@ -352,19 +384,28 @@ function api_scheduler_augment_save(array $save, array $post) : array {
 		if ($save['day_of_week'] == '') {
 			$save['enabled'] = '';
 
-			raise_message('sched_err',  __esc('ERROR: You must specify the day of the week.  Disabling Network %s!.', $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('sched_err',
+				__esc('ERROR: You must specify the day of the week.  Disabling Network %s!.',
+					$save['name']),
+				MESSAGE_LEVEL_ERROR);
 		}
 	} elseif ($save['sched_type'] == SCHEDULE_MONTHLY) {
 		if ($save['month'] == '' || $save['day_of_month'] == '') {
 			$save['enabled'] = '';
 
-			raise_message('sched_err',  __esc('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!', $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('sched_err',
+				__esc('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!',
+					$save['name']),
+				MESSAGE_LEVEL_ERROR);
 		}
 	} elseif ($save['sched_type'] == SCHEDULE_MONTHLY_ON_DAY) {
 		if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
 			$save['enabled'] = '';
 
-			raise_message('sched_err', __esc('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('sched_err',
+				__esc('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!',
+					$save['name']),
+				MESSAGE_LEVEL_ERROR);
 		}
 	}
 
@@ -793,7 +834,10 @@ function api_scheduler_calculate_next_start_for_year(array $schedule, int $year,
 			$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($schedule['start_at']));
 			$ntime = strtotime($ndate);
 
-			cacti_log('Start At: ' . $schedule['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime, false, 'SCHEDULER', POLLER_VERBOSITY_DEBUG);
+			cacti_log('Start At: ' . $schedule['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime,
+				false,
+				'SCHEDULER',
+				POLLER_VERBOSITY_DEBUG);
 
 			if ($ntime > $now) {
 				return $ntime;

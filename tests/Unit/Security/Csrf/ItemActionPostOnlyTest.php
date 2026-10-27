@@ -23,6 +23,8 @@
  * neither half can land alone.
  */
 
+require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
+
 /**
  * Every GET reachable action whose handler mutates state. Read-only actions are
  * deliberately absent: item_edit, readme, changelog, latest, avail and the
@@ -181,7 +183,7 @@ test('state action URLs use attribute-safe escaping and the page handler posts',
 	expect($data_queries)->not->toBeFalse()
 		->and($html)->not->toBeFalse()
 		->and(substr_count($data_queries, "data-url='<?php print html_escape_url("))->toBeGreaterThanOrEqual(6)
-		->and(substr_count($html, "data-url='\" . html_escape_url("))->toBeGreaterThanOrEqual(3)
+		->and(substr_count(\Cacti\Tests\Helpers\PhpSource::normalizeWhitespace($html), "data-url='\" . html_escape_url("))->toBeGreaterThanOrEqual(3)
 		->and($data_queries)->toContain("$('.remover').on('click'")
 		->and($data_queries)->toContain('cactiPreparePostRequestFromUrl(href)')
 		->and($data_queries)->toContain('$.post(request.url, request.data)');
@@ -220,5 +222,5 @@ test('the data template add button submits its guarded action by POST', function
 	expect($data_templates)->toContain("'data_url' => 'data_templates.php?action=rrd_add&id='")
 		->and($html)->toContain("isset(\$icon['data_url'])")
 		->and($html)->toContain("html_escape_url(\$icon['data_url'])")
-		->and($html)->toContain("linkOverDark cactiPostAction");
+		->and($html)->toContain('linkOverDark cactiPostAction');
 });
