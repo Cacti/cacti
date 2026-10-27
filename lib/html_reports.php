@@ -1817,7 +1817,7 @@ function reports_edit() : void {
 				print '</td></tr>';
 			} else {
 				print '<tr><td>';
-				print reports_generate_history_html(grv('rdate'), REPORTS_OUTPUT_STDOUT, (int) grv('id'));
+				print reports_generate_history_html((int) grv('rdate'), REPORTS_OUTPUT_STDOUT, (int) grv('id'));
 				print '</td></tr>';
 			}
 
