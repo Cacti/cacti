@@ -1,7 +1,7 @@
 name: Develop theme correctness
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop, 'fix/*-theme-*']
   push:
     branches: [develop]
 permissions:

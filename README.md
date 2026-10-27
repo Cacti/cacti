@@ -35,6 +35,14 @@ measurements, and alert states. It uses the shipped Cacti theme stylesheets.
 See [theme validation](docs/validation/cacti-theme.md) for the narrow-screen
 details screenshot and reproduction commands.
 
+## Carrot Theme
+
+![Carrot theme device inventory with synthetic monitoring data](docs/validation/images/carrot-theme-desktop.png)
+
+The same seeded browser fixture exercises Carrot's links and titlebars.
+See [Carrot theme validation](docs/validation/carrot-theme.md) for the
+narrow-screen screenshot, coverage checks, and reproduction commands.
+
 ---
 
 ## Release Branches
