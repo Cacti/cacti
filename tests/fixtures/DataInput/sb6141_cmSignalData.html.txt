@@ -1,0 +1,43 @@
+<HTML><HEAD><TITLE>Signal</TITLE></HEAD>
+<BODY bgColor=#ffffff>
+<CENTER>
+<TABLE align=center border=1 cellPadding=3 cellSpacing=0 width=600>
+<TBODY>
+<TR><TH colSpan=9><FONT color=#ffffff>Downstream </FONT></TH></TR>
+<TR><TD>Channel ID</TD><TD>14&nbsp; </TD><TD>9&nbsp; </TD><TD>10&nbsp; </TD><TD>11&nbsp; </TD><TD>12&nbsp; </TD><TD>13&nbsp; </TD><TD>15&nbsp; </TD><TD>16&nbsp; </TD></TR>
+<TR><TD>Frequency</TD><TD>597000000 Hz&nbsp;</TD><TD>567000000 Hz&nbsp;</TD><TD>573000000 Hz&nbsp;</TD><TD>579000000 Hz&nbsp;</TD><TD>585000000 Hz&nbsp;</TD><TD>591000000 Hz&nbsp;</TD><TD>603000000 Hz&nbsp;</TD><TD>609000000 Hz&nbsp;</TD></TR>
+<TR><TD>Signal to Noise Ratio</TD><TD>38 dB&nbsp;</TD><TD>37 dB&nbsp;</TD><TD>38 dB&nbsp;</TD><TD>38 dB&nbsp;</TD><TD>37 dB&nbsp;</TD><TD>38 dB&nbsp;</TD><TD>38 dB&nbsp;</TD><TD>&nbsp;</TD></TR>
+<TR><TD>Downstream Modulation</TD><TD>QAM256&nbsp;</TD><TD>QAM256&nbsp;</TD><TD>QAM256&nbsp;</TD><TD>QAM256&nbsp;</TD><TD>QAM256&nbsp;</TD><TD>QAM256&nbsp;</TD><TD>QAM256&nbsp;</TD><TD>QAM256&nbsp;</TD></TR>
+<TR><TD>Power Level<TABLE border=0 cellPadding=0 cellSpacing=0 width=300><TBODY><TR><TD align=left><SMALL>The Downstream Power Level reading is a snapshot taken at the time this page was requested. Please Reload/Refresh this Page for a new reading</SMALL></TD></TR></TBODY></TABLE></TD><TD>-1 dBmV&nbsp;</TD><TD>0 dBmV&nbsp;</TD><TD>-1 dBmV&nbsp;</TD><TD>1 dBmV&nbsp;</TD><TD>-2 dBmV&nbsp;</TD><TD>0 dBmV&nbsp;</TD><TD>-3 dBmV&nbsp;</TD><TD>2 dBmV&nbsp;</TD></TR>
+</TBODY>
+</TABLE>
+</CENTER>
+<P>
+<CENTER>
+<TABLE align=center border=1 cellPadding=3 cellSpacing=0 width=600>
+<TBODY>
+<TR><TH colSpan=5><FONT color=#ffffff>Upstream </FONT></TH></TR>
+<TR><TD>Channel ID</TD><TD>6&nbsp; </TD><TD>5&nbsp; </TD><TD>7&nbsp; </TD><TD>8&nbsp; </TD></TR>
+<TR><TD>Frequency</TD><TD>30600000 Hz&nbsp;</TD><TD>23700000 Hz&nbsp;</TD><TD>36400000 Hz&nbsp;</TD><TD>17300000 Hz&nbsp;</TD></TR>
+<TR><TD>Ranging Service ID</TD><TD>1918&nbsp;</TD><TD>1918&nbsp;</TD><TD>1918&nbsp;</TD><TD>1918&nbsp;</TD></TR>
+<TR><TD>Symbol Rate</TD><TD>5.120 Msym/sec&nbsp;</TD><TD>5.120 Msym/sec&nbsp;</TD><TD>5.120 Msym/sec&nbsp;</TD><TD>2.560 Msym/sec&nbsp;</TD></TR>
+<TR><TD>Power Level</TD><TD>44 dBmV&nbsp;</TD><TD>43 dBmV&nbsp;</TD><TD>45 dBmV&nbsp;</TD></TR>
+<TR><TD>Upstream Modulation</TD><TD>[3] QPSK<BR>[3] 64QAM<BR></TD><TD>[3] QPSK<BR>[2] 64QAM<BR></TD><TD>[3] QPSK<BR>[2] 64QAM<BR></TD><TD>[3] QPSK<BR></TD></TR>
+<TR><TD>Ranging Status</TD><TD>Success&nbsp;</TD><TD>Success&nbsp;</TD><TD>Success&nbsp;</TD><TD>Success&nbsp;</TD></TR>
+</TBODY>
+</TABLE>
+</CENTER>
+<P>
+<CENTER>
+<TABLE align=center border=1 cellPadding=3 cellSpacing=0 width=600>
+<TBODY>
+<TR><TH colSpan=9><FONT color=#ffffff>Signal Stats (Codewords)</FONT></TH></TR>
+<TR><TD>Channel ID</TD><TD>14&nbsp;</TD><TD>9&nbsp;</TD><TD>10&nbsp;</TD><TD>11&nbsp;</TD><TD>12&nbsp;</TD><TD>13&nbsp;</TD><TD>15&nbsp;</TD><TD>16&nbsp;</TD></TR>
+<TR><TD>Total Unerrored Codewords</TD><TD>1428813546&nbsp;</TD><TD>1428813672&nbsp;</TD><TD>1428813723&nbsp;</TD><TD>1428813745&nbsp;</TD><TD>1428813789&nbsp;</TD><TD>1428813801&nbsp;</TD><TD>1428813812&nbsp;</TD><TD>1428813833&nbsp;</TD></TR>
+<TR><TD>Total Correctable Codewords</TD><TD>42&nbsp;</TD><TD>7&nbsp;</TD><TD>11&nbsp;</TD><TD>9&nbsp;</TD><TD>4&nbsp;</TD><TD>6&nbsp;</TD><TD>15&nbsp;</TD><TD>21&nbsp;</TD></TR>
+<TR><TD>Total Uncorrectable Codewords</TD><TD>512&nbsp;</TD><TD>498&nbsp;</TD><TD>501&nbsp;</TD><TD>530&nbsp;</TD><TD>477&nbsp;</TD><TD>489&nbsp;</TD><TD>495&nbsp;</TD></TR>
+</TBODY>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
