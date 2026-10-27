@@ -2824,32 +2824,16 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 		$extra_arguments = '';
 	}
 
-	/* SECURITY: the base script path must be sanitized to prevent command
-	 * injection from malicious templates. cacti_escapeshellcmd() cannot be
-	 * used here: on Windows it replaces every backslash (the path separator)
-	 * with a space, so 'C:\path\script.php' becomes 'C: path script.php',
-	 * which the script server then truncates at the first space to 'C:' and
-	 * the path containment check rejects as outside the base path. */
+	// Match the maintenance branch boundary for imported script commands.
 	$parsed_script_path = substitute_script_query_path($script_path);
 
-	if (strpos($parsed_script_path, '..') !== false) {
-		cacti_log('FATAL: Malicious path traversal detected in Data Query script path: ' . $parsed_script_path, true, 'REINDEX');
+	if (str_contains($parsed_script_path, '..') || preg_match('/[\x00-\x1f\x7f]/', $parsed_script_path)) {
+		cacti_log('ERROR: Invalid Data Query script path rejected.', false, 'REINDEX');
 
 		return '';
 	}
 
-	/* On Windows a script path never legitimately contains shell
-	 * metacharacters, so strip them while preserving the backslash path
-	 * separator. On other platforms escapeshellcmd() is safe for the
-	 * forward-slash paths used there. */
-	if (CACTI_SERVER_OS == 'win32') {
-		$safe_script_path = str_replace(['#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$'], '', $parsed_script_path);
-	} else {
-		$safe_script_path = cacti_escapeshellcmd($parsed_script_path);
-	}
-
-	// get a complete path for out target script
-	return $safe_script_path . ' ' . $extra_arguments;
+	return cacti_escapeshellcmd($parsed_script_path) . ' ' . $extra_arguments;
 }
 
 /**
