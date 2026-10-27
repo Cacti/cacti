@@ -25502,3 +25502,7 @@ msgstr ""
 #, php-format
 msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""
+
+#: data_input.php
+msgid "Input string contains unsafe shell syntax."
+msgstr ""
