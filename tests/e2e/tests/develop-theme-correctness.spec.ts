@@ -1,5 +1,5 @@
 /* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type TestInfo } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { installThemeCss, collectThemeCoverage } from '../theme-css';
@@ -173,32 +173,36 @@ test('Dark hovered rows retain text contrast across their green gradient', async
 	await expect(page.locator('a')).toHaveCSS('color', 'rgb(255, 250, 250)');
 });
 
+async function prepareInventoryFixture(page: Page, info: TestInfo) {
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery.js' });
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery-ui.js' });
+	await page.evaluate(() => {
+		document.getElementById('open-details')!.addEventListener('click', () => {
+			(window as any).jQuery('#details').dialog({
+				modal: true, width: Math.min(650, innerWidth - 50), title: 'Poller details',
+				buttons: [{ text: 'Close', click() { (window as any).jQuery(this).dialog('destroy'); } }],
+			});
+		});
+	});
+	await expect(page.getByRole('table', { name: 'Device inventory' }).locator('tbody tr')).toHaveCount(4);
+	await page.getByRole('link', { name: 'edge-router-01' }).click();
+	await expect(page).toHaveURL(/#edge-router-01$/);
+	return async (name: string) => {
+		const path = process.env.UPDATE_THEME_SCREENSHOTS === '1'
+			? resolve(root, `docs/validation/images/${name}.png`) : info.outputPath(`${name}.png`);
+		mkdirSync(dirname(path), { recursive: true });
+		await page.screenshot({ path, fullPage: true });
+		await info.attach(name, { path, contentType: 'image/png' });
+	};
+}
+
 for (const theme of ['cacti', 'carrot', 'dark', 'deepness', 'hollyberry']) {
 	test(`${theme} seeded device inventory and details work with desktop and narrow dialogs`, async ({ page }, info) => {
 		await page.setViewportSize({ width: 1100, height: 380 });
 		await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8').replaceAll('Cacti theme', `${theme[0].toUpperCase() + theme.slice(1)} theme`));
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
-		await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery.js' });
-		await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery-ui.js' });
-		await page.evaluate(() => {
-			document.getElementById('open-details')!.addEventListener('click', () => {
-				(window as any).jQuery('#details').dialog({
-					modal: true, width: Math.min(650, innerWidth - 50), title: 'Poller details',
-					buttons: [{ text: 'Close', click() { (window as any).jQuery(this).dialog('destroy'); } }],
-				});
-			});
-		});
-		await expect(page.getByRole('table', { name: 'Device inventory' }).locator('tbody tr')).toHaveCount(4);
-		await page.getByRole('link', { name: 'edge-router-01' }).click();
-		await expect(page).toHaveURL(/#edge-router-01$/);
-		const capture = async (name: string) => {
-			const path = process.env.UPDATE_THEME_SCREENSHOTS === '1'
-				? resolve(root, `docs/validation/images/${name}.png`) : info.outputPath(`${name}.png`);
-			mkdirSync(dirname(path), { recursive: true });
-			await page.screenshot({ path, fullPage: true });
-			await info.attach(name, { path, contentType: 'image/png' });
-		};
+		const capture = await prepareInventoryFixture(page, info);
 		await capture(`${theme}-theme-desktop`);
 		await page.setViewportSize({ width: 320, height: 680 });
 		await page.getByRole('button', { name: 'Open poller details' }).click();
@@ -473,5 +477,107 @@ for (const theme of ['cacti', 'carrot', 'hollyberry', 'raspberry']) {
 			'0px',
 			'block', '700', 'center', 'solid',
 		]);
+	});
+}
+
+// Midwinter imports its palette and layout and initializes these root attributes at startup.
+for (const palette of ['dark', 'light']) {
+	const prepare = async (page: Page, html: string) => {
+		await page.setContent(html);
+		await page.evaluate(palette => {
+			document.documentElement.setAttribute('data-theme-color', palette);
+			document.documentElement.setAttribute('data-theme-state', 'ready');
+			document.documentElement.setAttribute('data-animations', 'off');
+			document.body.style.backgroundColor = 'var(--background-content)';
+		}, palette);
+		await installThemeCss(page, 'include/themes/midwinter/jquery-ui.css');
+		await installThemeCss(page, 'include/themes/midwinter/main.css');
+		await expect(page.locator('body')).toHaveCSS('opacity', '1');
+	};
+	for (const width of [320, 390, 1280]) {
+		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
+			test(`midwinter ${palette} title and native controls stay in the bar at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
+				await page.setViewportSize({ width, height: 680 });
+				await prepare(page, '<!DOCTYPE html><main style="width:calc(100vw - 80px)">' +
+					'<div class="cactiTableTitleRow"><div class="cactiTableTitle"><span></span></div>' +
+					'<div class="cactiTableButton"><span><a href="#tools" aria-label="Panel tools">+</a></span></div></div>' +
+					'<table class="cactiTable"><tr><td>Panel data</td></tr></table></main>');
+				await page.locator('.cactiTableTitle span').evaluate((element, title) => element.textContent = title, title);
+				for (const item of await page.locator('.cactiTableTitle, .cactiTableButton a').all()) expect.soft(await item.evaluate(textContrast), 'title/control contrast').toBeGreaterThanOrEqual(4.5);
+				const boxes = await page.evaluate(() => {
+					const rect = (selector: string) => {
+						const r = document.querySelector(selector)!.getBoundingClientRect();
+						return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, height: r.height };
+					};
+					return { bar: rect('.cactiTableTitleRow'), title: rect('.cactiTableTitle'), tools: rect('.cactiTableButton'), span: rect('.cactiTableTitle span') };
+				});
+				for (const child of [boxes.title, boxes.tools]) {
+					expect(child.right).toBeLessThanOrEqual(boxes.bar.right + 1);
+					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
+				}
+				expect(boxes.bar.right).toBeLessThanOrEqual(width - 79);
+				expect(boxes.title.right).toBeLessThanOrEqual(boxes.tools.left + 1);
+				expect(boxes.span.right).toBeLessThanOrEqual(boxes.title.right + 1);
+				await expect(page.locator('.cactiTableTitle span')).toHaveCSS('text-overflow', 'ellipsis');
+				const tools = page.getByRole('link', { name: 'Panel tools' });
+				await tools.hover();
+				expect(await tools.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+				await tools.focus();
+				expect(await tools.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+			});
+		}
+	}
+	for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected']) {
+		test(`midwinter ${palette} row text and links remain readable on ${row || 'plain'} rows`, async ({ page }) => {
+			await prepare(page, '<!DOCTYPE html><div class="cactiConsoleContentArea"><main id="main"><div class="cactiTable">' +
+				`<table class="cactiTable"><tr class="${row}"><td><span>Device response</span></td>` +
+				'<td><a href="#device">Device</a></td><td><a class="linkEditMain" href="#edit">Edit device</a></td></tr></table></div></main></div>');
+			for (const state of ['rest', 'hover', 'focus', 'active']) {
+				await page.mouse.move(1200, 700);
+				await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+				if (state === 'hover') await page.locator('td').first().hover();
+				for (const selector of ['td span', 'td a']) {
+					for (const item of await page.locator(selector).all()) {
+						if (selector === 'td a' && state === 'hover') await item.hover();
+						if (selector === 'td a' && state === 'focus') await item.focus();
+						if (selector === 'td a' && state === 'active') { await item.hover(); await page.mouse.down(); }
+						const ratio = await item.evaluate(textContrast);
+						expect.soft(ratio, `${selector} ${state}`).toBeGreaterThanOrEqual(4.5);
+						if (selector === 'td a' && state === 'active') await page.mouse.up();
+					}
+				}
+			}
+		});
+	}
+	test(`midwinter ${palette} seeded inventory opens and closes narrow details`, async ({ page }, info) => {
+		await page.setViewportSize({ width: 1100, height: 420 });
+		let html = readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8')
+			.replaceAll('Cacti theme', `Midwinter ${palette} theme`);
+		// Midwinter's native toolbar spans contain links; plain labels are hidden by design.
+		html = html.replace('<span>4 devices</span>', '<span><a href="#devices" aria-label="Four devices">4</a></span>')
+			.replace('<span>2 alerts</span>', '<span><a href="#alerts" aria-label="Two alerts">2</a></span>');
+		await prepare(page, html);
+		await page.locator('.cactiTableTitle').evaluateAll(elements => {
+			for (const element of elements) {
+				const span = document.createElement('span');
+				span.textContent = element.textContent;
+				element.replaceChildren(span);
+			}
+		});
+		const capture = await prepareInventoryFixture(page, info);
+		await capture(`midwinter-${palette}-theme-desktop`);
+		await page.setViewportSize({ width: 320, height: 680 });
+		await page.getByRole('button', { name: 'Open poller details' }).click();
+		await expect(page.getByRole('dialog')).toBeVisible();
+		await expect(page.getByRole('table', { name: 'Poller alerts' }).getByText(/branch-firewall-03/)).toBeVisible();
+		const bounds = await page.locator('#details .cactiTableTitleRow').evaluate(element => {
+			const bar = element.getBoundingClientRect(), tools = element.querySelector('.cactiTableButton')!.getBoundingClientRect();
+			return { right: bar.right, bottom: bar.bottom, toolsBottom: tools.bottom };
+		});
+		expect(bounds.right).toBeLessThanOrEqual(320);
+		expect(bounds.toolsBottom).toBeLessThanOrEqual(bounds.bottom + 1);
+		await capture(`midwinter-${palette}-theme-mobile-details`);
+		await page.locator('.ui-dialog-buttonpane').getByRole('button', { name: 'Close', exact: true }).click();
+		await expect(page.getByRole('dialog')).toHaveCount(0);
 	});
 }
