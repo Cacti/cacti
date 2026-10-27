@@ -4,17 +4,22 @@ error_reporting(0);
 
 include(__DIR__ . '/../include/cli_check.php');
 
-global $database_hostname, $database_username, $database_password;
+global $database_hostname, $database_username, $database_password, $database_port;
 
-$cmd = 'mysqladmin -h ' . cacti_escapeshellarg($database_hostname) . ' -u ' . cacti_escapeshellarg($database_username);
+$defaults_file = db_client_defaults_file($database_username, $database_password, $database_hostname, (int) $database_port);
 
-if ($database_password != '') {
-	$cmd .= ' -p' . cacti_escapeshellarg($database_password);
+if ($defaults_file === false) {
+	print 'U';
+
+	exit;
 }
 
-$cmd .= " status | awk '{print \$6 }'";
-
-$sql = shell_exec($cmd);
+try {
+	$cmd = 'mysqladmin --defaults-file=' . cacti_escapeshellarg($defaults_file) . " status | awk '{print \$6 }'";
+	$sql = shell_exec($cmd);
+} finally {
+	unlink($defaults_file);
+}
 
 // Cacti expects 'U' on error, not empty string or 0.
 print trim((string) $sql) ?: 'U';
