@@ -76,3 +76,11 @@ db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', ['auth_
 db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', [1, 'hide_disabled', '']);
 db_execute_prepared('REPLACE INTO user_auth_reset_hashes (user_id, hash, expiry) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))', [1, 'sonarbrowserfixture20261010']);
 print "Disposable native accessibility fixtures prepared.\n";
+
+// A graph-only account reaches the permission-denied document shell.
+db_execute_prepared('INSERT INTO user_auth (username, password, realm, enabled, must_change_password, login_opts, lastchange)
+	SELECT ?, password, 0, ?, ?, 3, UNIX_TIMESTAMP() FROM user_auth
+	WHERE id = 1 AND NOT EXISTS (SELECT 1 FROM user_auth WHERE username = ?)',
+	['direction-reader', 'on', '', 'direction-reader']);
+$reader_id = (int) db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', ['direction-reader']);
+db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', [$reader_id, 7]);

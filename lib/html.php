@@ -3464,7 +3464,7 @@ function html_auth_header(string $section, string $browser_title, string $legend
 
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html<?php print get_html_document_attributes(); ?>>
 <head>
 	<!-- <?php print "{$section}_title"; ?> -->
 	<?php html_common_header(api_plugin_hook_function("{$section}_title", $browser_title)); ?>
