@@ -160,6 +160,7 @@ Cacti CHANGELOG
 -issue#7829: Report a missing session cookie instead of redirecting into a login loop
 -issue#7868: Apply Boost process-table columns on the 1.2.32 upgrade path
 -issue#7907: Reject CLI RLIKE patterns, remove the unused remove_graphs --graph-type option, and improve cli argument handling and exit status
+-issue#7925: Keep mysqladmin poller credentials out of process arguments
 -issue#7930: Commit transactions on MySQL as well as MariaDB
 -issue#7954: Guard applySkin when cactiNonce is not defined
 -issue#7957: Stop treating every PID in a container as a reserved system PID

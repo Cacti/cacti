@@ -41,16 +41,20 @@ function ss_sql() {
 	global $database_password;
 	global $database_hostname;
 
-	$args = array(
-		'--host=' . $database_hostname,
-		'--user=' . $database_username
-	);
+	$defaults_file = db_client_defaults_file($database_username, $database_password, $database_hostname);
 
-	if ($database_password != '') {
-		$args[] = '--password=' . $database_password;
+	if ($defaults_file === false) {
+		return 'U';
 	}
 
-	$result = cacti_exec_string('mysqladmin', $args);
+	$args = array('--defaults-file=' . $defaults_file, 'status');
+
+	try {
+		$result = cacti_exec_string('mysqladmin', $args);
+	} finally {
+		unlink($defaults_file);
+	}
+	$result = (string) $result;
 	
 	$result = preg_replace('/: /', ':', $result);
 	$result = preg_replace('/  /', ' ', $result);
