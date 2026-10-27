@@ -97,6 +97,17 @@ jobs:
       - name: Check plugin theme compatibility
         working-directory: tests/e2e
         run: npx --no-install playwright test tests/develop-plugin-theme-compatibility.spec.ts --project=chromium --output plugin-compat-results
+      - name: Load pinned RTM plugins
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: TheWitness/ibm-spectrum-lsf-rtm-server
+          ref: 4b30a11e014805438cca47d13fae6bda8e28d2ac
+          path: .theme-plugins/rtm
+          sparse-checkout: cacti/plugins
+          persist-credentials: false
+      - name: Check every RTM plugin surface and inventory
+        working-directory: tests/e2e
+        run: npx --no-install playwright test tests/develop-rtm-theme-compatibility.spec.ts tests/develop-rtm-surfaces.spec.ts --project=chromium --output rtm-compat-results
       - name: Preserve stylesheet coverage evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -105,4 +116,5 @@ jobs:
           path: |
             tests/e2e/test-results
             tests/e2e/plugin-compat-results
+            tests/e2e/rtm-compat-results
           if-no-files-found: warn

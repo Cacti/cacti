@@ -1,0 +1,213 @@
+{
+  "repository": "TheWitness/ibm-spectrum-lsf-rtm-server",
+  "revision": "4b30a11e014805438cca47d13fae6bda8e28d2ac",
+  "tables": {
+    "benchmark": {
+      "title": "Benchmark Management \u00b7 Research cluster \u00b7 Nightly solver runtime comparisons",
+      "status": "<span style=\"color:green;font-weight:bold\">Done</span>",
+      "metric": "42.8 s",
+      "caption": "Runtime",
+      "row": "odd tableRow selectable",
+      "link": "linkEditMain",
+      "names": [
+        "research-cluster",
+        "batch-cluster"
+      ],
+      "selectable": true,
+      "add": true,
+      "source": "benchmark/benchmark.php"
+    },
+    "disku": {
+      "title": "Disk Monitoring Applications \u00b7 Research storage \u00b7 Project capacity allocation",
+      "status": "<span>Enabled</span>",
+      "metric": "2.4 TiB",
+      "caption": "Allocated",
+      "row": "odd tableRow selectable",
+      "link": "linkEditMain",
+      "names": [
+        "solver-output",
+        "simulation-cache"
+      ],
+      "selectable": true,
+      "add": true,
+      "source": "disku/disku_applications.php"
+    },
+    "exlist": {
+      "title": "Job Detail Exception Lists \u00b7 Research cluster \u00b7 Batch job filtering rules",
+      "status": "<span>Yes</span>",
+      "metric": "queue = research",
+      "caption": "SQL condition",
+      "row": "odd tableRow selectable",
+      "link": "linkEditMain",
+      "names": [
+        "Research workloads",
+        "Interactive jobs"
+      ],
+      "selectable": true,
+      "add": true,
+      "source": "exlist/exlists.php"
+    },
+    "grid": {
+      "title": "Batch Hosts \u00b7 Research cluster \u00b7 Scheduler host availability and running slots",
+      "status": "<span>Ok:Ok</span>",
+      "metric": "48 slots",
+      "caption": "Running",
+      "row": "odd tableRow selectable",
+      "link": "linkEditMain",
+      "names": [
+        "compute-01",
+        "compute-02"
+      ],
+      "selectable": true,
+      "source": "grid/grid_bhosts.php"
+    },
+    "gridalarms": {
+      "title": "Alert Logs \u00b7 Research cluster \u00b7 Host memory pressure and threshold notifications",
+      "status": "<span>Warning</span>",
+      "metric": "91%",
+      "caption": "Memory",
+      "row": "odd tableRow",
+      "link": "linkEditMain",
+      "names": [
+        "Host memory pressure",
+        "Queue saturation"
+      ],
+      "statusCellClass": "gridalarmsWarning",
+      "source": "gridalarms/lib/gridalarms_functions.php"
+    },
+    "gridblstat": {
+      "title": "License Scheduler Collectors \u00b7 Research cluster \u00b7 Entitlement collection status",
+      "status": "<span>Enabled</span>",
+      "metric": "60 seconds",
+      "caption": "Interval",
+      "row": "odd tableRow selectable",
+      "link": "linkEditMain",
+      "names": [
+        "ls-collector-01",
+        "ls-collector-02"
+      ],
+      "selectable": true,
+      "add": true,
+      "source": "gridblstat/blstat_collectors.php"
+    },
+    "gridcstat": {
+      "title": "Cluster Stats \u00b7 Research and batch clusters \u00b7 CPU time and completed workload",
+      "status": "<span>86.2%</span>",
+      "metric": "128 jobs",
+      "caption": "Completed",
+      "row": "odd tableRow",
+      "link": "linkEditMain",
+      "names": [
+        "research-cluster",
+        "batch-cluster"
+      ],
+      "plainName": true,
+      "source": "gridcstat/gridcstat.php"
+    },
+    "gridlimits": {
+      "title": "Resource Limits \u00b7 Research cluster \u00b7 User and host slot allocation",
+      "status": "<span>48 / 64</span>",
+      "metric": "512 GiB",
+      "caption": "Memory",
+      "row": "odd tableRow",
+      "link": "linkEditMain",
+      "names": [
+        "research-slot-limit",
+        "batch-slot-limit"
+      ],
+      "source": "gridlimits/grid_limits.php"
+    },
+    "heuristics": {
+      "title": "Job Heuristics [ Runtime Statistics ] [ History: 7 days ] \u00b7 Research workloads",
+      "status": "<span>Completed</span>",
+      "metric": "42.8 s",
+      "caption": "Runtime",
+      "row": "odd tableRow",
+      "link": "hyper",
+      "names": [
+        "solver-a",
+        "solver-b"
+      ],
+      "source": "heuristics/grid_heuristics.php"
+    },
+    "license": {
+      "title": "License Applications \u00b7 Research cluster \u00b7 Shared solver entitlement inventory",
+      "status": "<span>Enabled</span>",
+      "metric": "64 features",
+      "caption": "Features",
+      "row": "odd tableRow selectable",
+      "link": "linkEditMain",
+      "names": [
+        "Solver Suite",
+        "Simulation Toolkit"
+      ],
+      "selectable": true,
+      "source": "license/lic_applications.php"
+    },
+    "lichist": {
+      "title": "Historical License Usage \u00b7 Research cluster \u00b7 Solver checkout durations",
+      "status": "<span>ACTIVE</span>",
+      "metric": "8 tokens",
+      "caption": "Tokens",
+      "row": "odd tableRow",
+      "link": "hyper",
+      "names": [
+        "compute-01",
+        "compute-02"
+      ],
+      "source": "lichist/grid_lichist.php"
+    },
+    "meta": {
+      "title": "Metadata Filters \u00b7 Research cluster \u00b7 Project ownership and workload annotations",
+      "status": "<span>Enabled</span>",
+      "metric": "team-research",
+      "caption": "Owner",
+      "row": "odd tableRow selectable",
+      "link": "linkEditMain",
+      "names": [
+        "project-solver",
+        "project-simulation"
+      ],
+      "selectable": true,
+      "add": true,
+      "source": "meta/metadata.php"
+    },
+    "syslog": {
+      "title": "Syslog Message Filters \u00b7 Research compute nodes \u00b7 Scheduler and interface alerts",
+      "status": "<span>Warning</span>",
+      "metric": "ifDown eth0",
+      "caption": "Message",
+      "row": "tableRow selectable logWarning syslogRow",
+      "link": "linkEditMain",
+      "names": [
+        "compute-01",
+        "compute-02"
+      ],
+      "selectable": true,
+      "source": "syslog/syslog.php"
+    },
+    "thold": {
+      "title": "Threshold Management \u00b7 Research compute nodes \u00b7 CPU and memory alerts",
+      "status": "<span>Warning</span>",
+      "metric": "91%",
+      "caption": "CPU load",
+      "row": "selectable tholdWarning",
+      "link": "linkEditMain",
+      "names": [
+        "compute-01 CPU load",
+        "compute-02 CPU load"
+      ],
+      "selectable": true,
+      "add": true,
+      "source": "thold/thold.php"
+    }
+  },
+  "special": {
+    "RTM": "RTM/console.php",
+    "gridpend": "gridpend/grid_pend.php",
+    "lsfenh": "lsfenh/setup.php"
+  },
+  "demoOnly": {
+    "projmap": "projmap/setup.php.demo"
+  }
+}
