@@ -51,6 +51,13 @@ function reports_unserialize_selected_items(mixed $items) : array|false {
 	return is_array($items) ? $items : false;
 }
 
+/** Whether an existing report owner may be accessed by the current session. */
+function reports_owner_authorized(mixed $owner_id) : bool {
+	$user_id = (int) ($_SESSION[SESS_USER_ID] ?? 0);
+
+	return $user_id > 0 && (int) $owner_id > 0 && (is_reports_admin() || (int) $owner_id === $user_id);
+}
+
 /**
  * duplicate_reports - duplicates a report and all items
  *
@@ -67,6 +74,10 @@ function duplicate_reports(int $_id, string $_title) : void {
 		FROM reports
 		WHERE id = ?',
 		[$_id]);
+
+	if (!reports_owner_authorized($report['user_id'] ?? 0)) {
+		return;
+	}
 
 	$reports_items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
@@ -109,7 +120,7 @@ function reports_add_devices(int $report_id, array $device_ids, array $timespan,
 		WHERE id = ?',
 		[$report_id]);
 
-	if ($report_user != $_SESSION[SESS_USER_ID]) {
+	if (!reports_owner_authorized($report_user)) {
 		raise_message('reports_not_owner');
 
 		return false;
@@ -197,7 +208,7 @@ function reports_add_graphs(int $report_id, int $local_graph_id, array $timespan
 		WHERE id = ?',
 		[$report_id]);
 
-	if ($report_user != $_SESSION[SESS_USER_ID]) {
+	if (!reports_owner_authorized($report_user)) {
 		raise_message('reports_not_owner');
 
 		return false;
@@ -803,18 +814,14 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 	return cacti_sizeof($graphs);
 }
 
-function reports_generate_history_html(int $history_id, int $output = REPORTS_OUTPUT_STDOUT) : string {
-	$data   = db_fetch_row_prepared('SELECT *
-		FROM reports_log
-		WHERE id = ?',
-		[$history_id]);
+function reports_generate_history_html(int $history_id, int $output = REPORTS_OUTPUT_STDOUT, ?int $report_id = null) : string {
+	$data = db_fetch_row_prepared('SELECT rl.*, r.user_id
+		FROM reports_log AS rl
+		INNER JOIN reports AS r ON r.id = rl.source_id
+		WHERE rl.id = ? AND rl.source = ?', [$history_id, 'reports']);
 
-	if (cacti_sizeof($data)) {
-		$oreport = db_fetch_row_prepared('SELECT *
-			FROM reports
-			WHERE id = ?',
-			[$data['source_id']]);
-
+	if (is_array($data) && cacti_sizeof($data) && reports_owner_authorized($data['user_id']) &&
+		($report_id === null || (int) $data['source_id'] === $report_id)) {
 		// here is the report html as sent to the user
 		$report = $data['report_html_output'];
 
@@ -870,14 +877,14 @@ function reports_generate_history_html(int $history_id, int $output = REPORTS_OU
 }
 
 function reports_remove_history(int $history_id, int $report_id = 0) : void {
-	if ($report_id == 0) {
-		$report_id = db_fetch_cell_prepared('SELECT source_id FROM reports_log WHERE id = ?', [$history_id]);
-	}
+	$report = db_fetch_row_prepared('SELECT r.*, rl.source_id
+		FROM reports_log AS rl
+		INNER JOIN reports AS r ON r.id = rl.source_id
+		WHERE rl.id = ? AND rl.source = ?', [$history_id, 'reports']);
 
-	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [$report_id]);
-
-	if (is_reports_admin() || $report['user_id'] == SESS_USER_ID) {
-		db_execute_prepared('DELETE FROM reports_log WHERE id = ?', [$history_id]);
+	if (is_array($report) && cacti_sizeof($report) && reports_owner_authorized($report['user_id']) &&
+		($report_id === 0 || (int) $report['source_id'] === $report_id)) {
+		db_execute_prepared('DELETE FROM reports_log WHERE id = ? AND source = ? AND source_id = ?', [$history_id, 'reports', $report['source_id']]);
 
 		raise_message('remove_message', __esc('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.', $report['name'], get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_INFO);
 	} else {
