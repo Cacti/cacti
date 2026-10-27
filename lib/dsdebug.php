@@ -286,12 +286,16 @@ function dsdebug_poller_bottom() : bool {
 
 					// File Permissions
 					if ((!$info['rrd_exists'] || !$info['rrd_writable']) && !$info['rrd_folder_writable']) {
-						$c['issue'][] = __('RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s', $info['owner'], $info['runas_poller']);
+						$c['issue'][] = __('RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s',
+							$info['owner'],
+							$info['runas_poller']);
 						$c['done']    = 1;
 
 						$total_issues++;
 					} elseif (!$info['rrd_writable']) {
-						$c['issue'][] = __('RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s', $info['owner'], $info['runas_poller']);
+						$c['issue'][] = __('RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s',
+							$info['owner'],
+							$info['runas_poller']);
 						$c['done']    = 1;
 
 						$total_issues++;
@@ -384,10 +388,14 @@ function dsdebug_run_repair(int $id) : bool {
 				cacti_log("ERROR: RRDfile Repair Command Failed for DS[$id] Output[Unable to write RRDfile]", false, 'DSDEBUG');
 			}
 		} else {
-			cacti_log("ERROR: RRDfile Repair Command Could not be run for DS[$id] Output[No tune recommendation found]", false, 'DSDEBUG');
+			cacti_log("ERROR: RRDfile Repair Command Could not be run for DS[$id] Output[No tune recommendation found]",
+				false,
+				'DSDEBUG');
 		}
 	} else {
-		cacti_log("ERROR: RRDfile Repair Command Could not be run for DS[$id] Output[No Data Source debug information found]", false, 'DSDEBUG');
+		cacti_log("ERROR: RRDfile Repair Command Could not be run for DS[$id] Output[No Data Source debug information found]",
+			false,
+			'DSDEBUG');
 	}
 
 	return false;

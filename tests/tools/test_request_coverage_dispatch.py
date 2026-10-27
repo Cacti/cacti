@@ -14,13 +14,13 @@ class RequestDispatchTest(unittest.TestCase):
     def test_package_change_runs_the_signed_archive_probe(self):
         for path in ['lib/package.php', 'tests/fixtures/Core/PackageArchive.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'PackageArchive.php')
+                self.dispatch(path, ['PackageArchive.php', 'library'] if path == 'lib/package.php' else 'PackageArchive.php')
 
     def test_queue_change_runs_the_queue_probe_without_ripgrep(self):
         self.dispatch('cli/queue_worker.php', 'queue')
 
     def test_html_change_runs_the_browser_probe(self):
-        self.dispatch('lib/html.php', 'accessibility')
+        self.dispatch('lib/html.php', ['accessibility', 'library'])
 
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
@@ -32,7 +32,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/rrd.php', ['FallbackSourceIdentity.php', 'library'])
 
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', 'UserAdministrationAuditCoverage.php')
+        self.dispatch('lib/functions.php', ['UserAdministrationAuditCoverage.php', 'library'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'library'])
@@ -41,10 +41,21 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/api_device.php', 'library')
 
     def test_library_fixture_changes_run_the_database_contracts(self):
-        self.dispatch('tests/fixtures/Core/LibraryBehavior.php', 'library')
+        for name in ['LibraryBehavior', 'LibraryCollection', 'LibraryAuthentication',
+                     'LibraryStorage', 'LibraryForms', 'LibraryDatabase', 'LibraryPlugins',
+                     'LibraryReports', 'LibraryDevices', 'LibraryAccess', 'LibraryWeb', 'LibraryLogs', 'LibraryPluginCatalog', 'LibraryUtilities', 'LibraryLdap', 'LibraryRemote', 'LibraryGraphOptions', 'LibraryProfiles', 'LibraryPropagation', 'LibraryGraphCache', 'LibraryBoundaries', 'LibraryValidation', 'LibraryRrdStorage', 'LibraryLoginRouting', 'LibraryAdministration', 'LibraryResources', 'LibraryProbe', 'LibraryTransfer', 'LibraryRemoval', 'LibraryQueues', 'LibraryErrorHandling', 'LibraryReindex', 'LibraryRuntime', 'LibraryProvider', 'LibraryMib', 'LibraryLifecycle', 'LibraryReportDelivery', 'LibraryDiagnostics', 'LibraryNotifications', 'LibraryMaintenance', 'LibraryWorkers', 'LibraryWorker',
+                     'QueryProducer', 'PluginProducer']:
+            with self.subTest(producer=name):
+                self.dispatch(f'tests/fixtures/Core/{name}.php', 'library')
 
     def test_library_runtime_changes_run_the_database_contracts(self):
-        self.dispatch('tests/e2e/Dockerfile', 'library')
+        for path in ['tests/e2e/Dockerfile', 'tests/e2e/ldap/50-e2e.ldif',
+                     'tests/Helpers/SourceSlice.php', 'tests/Helpers/PhpSource.php',
+                     'lib/ldap.php', 'lib/mib_parser.php', 'lib/mib_cache.php',
+                     'lib/dsdebug.php', 'lib/snmpagent.php', 'lib/cacti_dispatch.php',
+                     'cli/fetch_plugins.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'library')
 
     def test_library_schema_changes_run_the_database_contracts(self):
         self.dispatch('cacti.sql', 'library')
@@ -52,9 +63,18 @@ class RequestDispatchTest(unittest.TestCase):
     def test_library_dependencies_run_the_database_contracts(self):
         for changed in ['lib/api_tree.php', 'lib/api_aggregate.php', 'lib/data_query.php',
                         'resource/snmp_queries/interface.xml', 'composer.lock',
-                        'tests/fixtures/snmp-coverage/snmpd.conf']:
+                        'tests/fixtures/snmp-coverage/snmpd.conf', 'lib/boost.php',
+                        'lib/spikekill.php', 'lib/database.php', 'lib/dbparallel.php',
+                        'lib/clog_webapi.php', 'lib/dsstats.php', 'lib/remote_agent_transport.php',
+                        'lib/html_validate.php', 'lib/html_utility.php', 'lib/html.php',
+                        'host.php', 'clog.php', 'graph_templates.php', 'include/global_constants.php',
+                        'include/global.php', 'user_admin.php', 'lib/plugins.php',
+                        'lib/Auth/LocalAuthLoginProvider.php']:
             with self.subTest(changed=changed):
-                self.dispatch(changed, 'library')
+                additional = {'lib/html.php': ['accessibility'], 'host.php': ['accessibility'],
+                              'include/global.php': ['BoundaryContracts.php'],
+                              'user_admin.php': ['accessibility', 'UserAdministrationAuditCoverage.php']}
+                self.dispatch(changed, additional.get(changed, []) + ['library'])
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:

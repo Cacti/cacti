@@ -116,7 +116,10 @@ function check_get_author_info() : mixed {
 		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found'); ?>';
 
 		sessionMessage = {
-			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.'); ?>',
+			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i ' .
+				'class="deviceUp">genkey.php</i></b> script in the cli directory.  ' .
+				'Once that is complete, you will have a public and private key used to ' .
+				'sign your packages.'); ?>',
 			level: MESSAGE_LEVEL_MIXED
 		};
 
@@ -161,7 +164,10 @@ function open_packager_metadata_table() : mixed {
 
 		return $cnn;
 	} else {
-		raise_message('package_nowrite', __('The Web Server must have write access to the \'%s\' directory', CACTI_PATH_PKI), MESSAGE_LEVEL_ERROR);
+		raise_message('package_nowrite',
+			__('The Web Server must have write access to the \'%s\' directory',
+				CACTI_PATH_PKI),
+			MESSAGE_LEVEL_ERROR);
 	}
 
 	return false;
@@ -344,7 +350,10 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 		foreach ($queries as $q) {
 			$file   = str_replace('<path_cacti>', CACTI_PATH_BASE, $q['xml_path']);
 			$exists = file_exists($file);
-			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle(basename($file)) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
+			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' .
+				htmle(basename($file)) .
+				($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') .
+				'</div></div>';
 		}
 
 		$output .= '</div>';
@@ -360,7 +369,10 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 			if (array_search($file, $found, true) === false) {
 				if (!str_contains($file['file'], '/resource/')) {
 					$exists = file_exists($file['file']);
-					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle(basename($file['file'])) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
+					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' .
+						htmle(basename($file['file'])) .
+						($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') .
+						'</div></div>';
 				}
 
 				$found[] = $file;
@@ -444,7 +456,10 @@ function process_paths(string $line, array $files, bool $raise_message) : array 
 	if (cacti_sizeof($paths['missing_paths'])) {
 		if ($raise_message) {
 			foreach ($paths['missing_paths'] as $p) {
-				raise_message('missing_' . $p['file'], __esc('A Critical Template file \'%s\' is missing.  Please locate this file before packaging', $p['file']), MESSAGE_LEVEL_ERROR);
+				raise_message('missing_' . $p['file'],
+					__esc('A Critical Template file \'%s\' is missing.  Please locate this file before packaging',
+						$p['file']),
+					MESSAGE_LEVEL_ERROR);
 			}
 		}
 	}

@@ -66,6 +66,83 @@ def prepare_config(config, output, changed):
     tree.write(output, encoding='utf-8', xml_declaration=True)
 
 
+def validate_fixture_contract(request, path, root):
+    """Reject stale or incomplete native library fixture evidence."""
+    contract = request.get('contract') or {}
+    if not path.name.startswith('library-behavior-') and contract.get('name') != 'library-behavior':
+        return
+    producers = {
+        'tests/fixtures/Core/LibraryBehavior.php',
+        'tests/fixtures/Core/LibraryCollection.php',
+        'tests/fixtures/Core/LibraryAuthentication.php',
+        'tests/fixtures/Core/LibraryStorage.php',
+        'tests/fixtures/Core/LibraryForms.php',
+        'tests/fixtures/Core/LibraryDatabase.php',
+        'tests/fixtures/Core/LibraryPlugins.php',
+        'tests/fixtures/Core/LibraryReports.php',
+        'tests/fixtures/Core/LibraryDevices.php',
+        'tests/fixtures/Core/LibraryAccess.php',
+        'tests/fixtures/Core/LibraryWeb.php',
+        'tests/fixtures/Core/LibraryLogs.php',
+        'tests/fixtures/Core/LibraryPluginCatalog.php',
+        'tests/fixtures/Core/LibraryUtilities.php',
+        'tests/fixtures/Core/LibraryLdap.php',
+        'tests/fixtures/Core/LibraryRemote.php',
+        'tests/fixtures/Core/LibraryGraphOptions.php',
+        'tests/fixtures/Core/LibraryProfiles.php',
+        'tests/fixtures/Core/LibraryPropagation.php',
+        'tests/fixtures/Core/LibraryGraphCache.php',
+        'tests/fixtures/Core/LibraryBoundaries.php',
+        'tests/fixtures/Core/LibraryValidation.php',
+        'tests/fixtures/Core/LibraryRrdStorage.php',
+        'tests/fixtures/Core/LibraryLoginRouting.php',
+        'tests/fixtures/Core/LibraryAdministration.php',
+        'tests/fixtures/Core/LibraryResources.php',
+        'tests/fixtures/Core/LibraryProbe.php',
+        'tests/fixtures/Core/LibraryTransfer.php',
+        'tests/fixtures/Core/LibraryRemoval.php',
+        'tests/fixtures/Core/LibraryQueues.php',
+        'tests/fixtures/Core/LibraryErrorHandling.php',
+        'tests/fixtures/Core/LibraryReindex.php',
+        'tests/fixtures/Core/LibraryRuntime.php',
+        'tests/fixtures/Core/LibraryProvider.php',
+        'tests/fixtures/Core/LibraryMib.php',
+        'tests/fixtures/Core/LibraryLifecycle.php',
+        'tests/fixtures/Core/LibraryReportDelivery.php',
+        'tests/fixtures/Core/LibraryDiagnostics.php',
+        'tests/fixtures/Core/LibraryNotifications.php',
+        'tests/fixtures/Core/LibraryMaintenance.php',
+        'tests/fixtures/Core/LibraryWorkers.php',
+        'tests/fixtures/Core/LibraryWorker.php',
+        'tests/fixtures/Core/PluginProducer.php',
+        'tests/fixtures/Core/QueryProducer.php',
+        'tests/e2e/library-behavior.sh',
+        'tests/Helpers/RequestCoverage.php',
+        'tests/Helpers/SourceSlice.php',
+        'tests/Helpers/PhpSource.php',
+        'cli/fetch_plugins.php',
+        'tests/e2e/Dockerfile',
+        'tests/e2e/entrypoint.sh',
+        'tests/e2e/docker-compose.yml',
+        'tests/e2e/ldap/50-e2e.ldif',
+        'tests/fixtures/snmp-coverage/Dockerfile',
+        'tests/fixtures/snmp-coverage/snmpd.conf',
+        'cacti.sql',
+        'composer.lock',
+        'resource/snmp_queries/interface.xml',
+        'install/templates/Local_Linux_Machine.xml.gz',
+        'install/templates/NetSNMP_Device.xml.gz',
+    }
+    if (contract.get('name') != 'library-behavior' or contract.get('complete') is not True
+            or type(contract.get('assertions')) is not int or contract['assertions'] < 5600):
+        raise ValueError('Library behavior coverage requires its completed assertions')
+    if set(contract.get('producers', [])) != producers or set(contract.get('hashes', {})) != producers:
+        raise ValueError('Library behavior coverage is missing producer evidence')
+    for name in producers:
+        if hashlib.sha256((root / name).read_bytes()).hexdigest() != contract['hashes'][name]:
+            raise ValueError(f'Library behavior producer does not match {name}')
+
+
 def validate_package_contract(request, path, root):
     contract = request.get('contract') or {}
     if not path.name.startswith('package-archive-') and contract.get('name') != 'package-archive':
@@ -79,36 +156,6 @@ def validate_package_contract(request, path, root):
     for name in producers:
         if hashlib.sha256((root / name).read_bytes()).hexdigest() != contract['hashes'][name]:
             raise ValueError(f'Package archive producer does not match {name}')
-
-
-def validate_fixture_contract(request, path, root):
-    """Reject stale or incomplete native library fixture evidence."""
-    contract = request.get('contract') or {}
-    if not path.name.startswith('library-behavior-') and contract.get('name') != 'library-behavior':
-        return
-    producers = {
-        'tests/fixtures/Core/LibraryBehavior.php',
-        'tests/e2e/library-behavior.sh',
-        'tests/Helpers/RequestCoverage.php',
-        'tests/e2e/Dockerfile',
-        'tests/e2e/entrypoint.sh',
-        'tests/e2e/docker-compose.yml',
-        'tests/fixtures/snmp-coverage/Dockerfile',
-        'tests/fixtures/snmp-coverage/snmpd.conf',
-        'cacti.sql',
-        'composer.lock',
-        'resource/snmp_queries/interface.xml',
-        'install/templates/Local_Linux_Machine.xml.gz',
-        'install/templates/NetSNMP_Device.xml.gz',
-    }
-    if (contract.get('name') != 'library-behavior' or contract.get('complete') is not True
-            or type(contract.get('assertions')) is not int or contract['assertions'] < 749):
-        raise ValueError('Library behavior coverage requires its completed assertions')
-    if set(contract.get('producers', [])) != producers or set(contract.get('hashes', {})) != producers:
-        raise ValueError('Library behavior coverage is missing producer evidence')
-    for name in producers:
-        if hashlib.sha256((root / name).read_bytes()).hexdigest() != contract['hashes'][name]:
-            raise ValueError(f'Library behavior producer does not match {name}')
 
 
 def measure(changed, report, root, request_reports=None):
@@ -132,8 +179,20 @@ def measure(changed, report, root, request_reports=None):
             raise ValueError('Request coverage directory contains no reports')
         for path in reports:
             request = json.loads(path.read_text())
-            validate_package_contract(request, path, root)
+            if 'normalization' in request:
+                normalization = request['normalization']
+                if not isinstance(normalization, dict):
+                    raise ValueError('Invalid request coverage normalization evidence')
+                for key, name in [('normalizer_sha256', 'tests/tools/normalize_request_coverage.php'),
+                                  ('composer_lock_sha256', 'composer.lock')]:
+                    if normalization.get(key) != hashlib.sha256((root / name).read_bytes()).hexdigest():
+                        raise ValueError(f'Request coverage normalizer does not match {name}')
+                raw_hash = normalization.get('input_sha256')
+                if not isinstance(raw_hash, str) or not re.fullmatch(r'[0-9a-f]{64}', raw_hash):
+                    raise ValueError('Normalized coverage is missing its raw evidence hash')
+
             validate_fixture_contract(request, path, root)
+            validate_package_contract(request, path, root)
             for file, lines in (request['coverage'] or {}).items():
                 name = str(Path(file).relative_to(request['root']))
                 if name not in changed:

@@ -20,6 +20,92 @@ SPEC.loader.exec_module(GATE)
 
 
 class ChangedPhpCoverageTest(unittest.TestCase):
+    def test_library_evidence_requires_completion_and_every_current_producer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            producers = ['tests/fixtures/Core/LibraryBehavior.php',
+                         'tests/fixtures/Core/LibraryCollection.php',
+                         'tests/fixtures/Core/LibraryAuthentication.php',
+                         'tests/fixtures/Core/LibraryStorage.php',
+                         'tests/fixtures/Core/LibraryForms.php',
+                         'tests/fixtures/Core/LibraryDatabase.php',
+                         'tests/fixtures/Core/LibraryPlugins.php',
+                         'tests/fixtures/Core/LibraryReports.php',
+                         'tests/fixtures/Core/LibraryDevices.php',
+                         'tests/fixtures/Core/LibraryAccess.php',
+                         'tests/fixtures/Core/LibraryWeb.php',
+                         'tests/fixtures/Core/LibraryLogs.php',
+        'tests/fixtures/Core/LibraryPluginCatalog.php',
+        'tests/fixtures/Core/LibraryUtilities.php',
+        'tests/fixtures/Core/LibraryLdap.php',
+        'tests/fixtures/Core/LibraryRemote.php',
+        'tests/fixtures/Core/LibraryGraphOptions.php',
+        'tests/fixtures/Core/LibraryProfiles.php',
+        'tests/fixtures/Core/LibraryPropagation.php',
+        'tests/fixtures/Core/LibraryGraphCache.php',
+        'tests/fixtures/Core/LibraryBoundaries.php',
+        'tests/fixtures/Core/LibraryValidation.php',
+        'tests/fixtures/Core/LibraryRrdStorage.php',
+        'tests/fixtures/Core/LibraryLoginRouting.php',
+        'tests/fixtures/Core/LibraryAdministration.php',
+        'tests/fixtures/Core/LibraryResources.php',
+        'tests/fixtures/Core/LibraryProbe.php',
+        'tests/fixtures/Core/LibraryTransfer.php',
+        'tests/fixtures/Core/LibraryRemoval.php',
+        'tests/fixtures/Core/LibraryQueues.php',
+        'tests/fixtures/Core/LibraryErrorHandling.php',
+        'tests/fixtures/Core/LibraryReindex.php',
+        'tests/fixtures/Core/LibraryRuntime.php',
+        'tests/fixtures/Core/LibraryProvider.php',
+        'tests/fixtures/Core/LibraryMib.php',
+        'tests/fixtures/Core/LibraryLifecycle.php',
+        'tests/fixtures/Core/LibraryReportDelivery.php',
+        'tests/fixtures/Core/LibraryDiagnostics.php',
+        'tests/fixtures/Core/LibraryNotifications.php',
+        'tests/fixtures/Core/LibraryMaintenance.php',
+        'tests/fixtures/Core/LibraryWorkers.php',
+        'tests/fixtures/Core/LibraryWorker.php',
+                         'tests/fixtures/Core/PluginProducer.php',
+                         'tests/fixtures/Core/QueryProducer.php',
+                         'tests/e2e/library-behavior.sh', 'tests/Helpers/RequestCoverage.php',
+        'tests/Helpers/SourceSlice.php',
+        'tests/Helpers/PhpSource.php',
+        'cli/fetch_plugins.php',
+                         'tests/e2e/Dockerfile', 'tests/e2e/entrypoint.sh',
+                         'tests/e2e/docker-compose.yml', 'tests/e2e/ldap/50-e2e.ldif',
+        'tests/fixtures/snmp-coverage/Dockerfile',
+                         'tests/fixtures/snmp-coverage/snmpd.conf', 'cacti.sql', 'composer.lock',
+                         'resource/snmp_queries/interface.xml',
+                         'install/templates/Local_Linux_Machine.xml.gz',
+                         'install/templates/NetSNMP_Device.xml.gz']
+            hashes = {}
+            for name in producers:
+                source = root / name
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_text('fixture source\n')
+                hashes[name] = hashlib.sha256(source.read_bytes()).hexdigest()
+            contract = {'name': 'library-behavior', 'complete': True, 'assertions': 5600,
+                        'producers': producers, 'hashes': hashes}
+            path = root / 'library-behavior-test.json'
+            GATE.validate_fixture_contract({'contract': contract}, path, root)
+            for missing in ['name', 'complete', 'assertions', 'producers', 'hashes']:
+                invalid = {key: value for key, value in contract.items() if key != missing}
+                with self.subTest(missing=missing), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': invalid}, path, root)
+            for value in [0, 616, 737, 748, 749, 940, 1252, 1264, 1310, 1358, 1453, 1454, 1738, 1739, 2707, 2708, 2932, 2933, 3129, 5599, True, '5600']:
+                with self.subTest(assertions=value), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': dict(contract, assertions=value)}, path, root)
+            with self.assertRaises(ValueError):
+                GATE.validate_fixture_contract({'contract': dict(contract, complete=False)}, path, root)
+            for name in producers:
+                invalid = dict(contract, hashes={key: value for key, value in hashes.items() if key != name})
+                with self.subTest(producer=name), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': invalid}, path, root)
+                (root / name).write_text('changed fixture source\n')
+                with self.subTest(stale=name), self.assertRaises(ValueError):
+                    GATE.validate_fixture_contract({'contract': contract}, path, root)
+                (root / name).write_text('fixture source\n')
+
     def test_package_evidence_requires_both_scenarios_and_current_producers(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -48,45 +134,6 @@ class ChangedPhpCoverageTest(unittest.TestCase):
                 (root / name).write_text('changed source\n')
                 with self.subTest(stale=name), self.assertRaises(ValueError):
                     GATE.validate_package_contract({'contract': contract}, path, root)
-                (root / name).write_text('fixture source\n')
-
-    def test_library_evidence_requires_completion_and_every_current_producer(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            producers = ['tests/fixtures/Core/LibraryBehavior.php',
-                         'tests/e2e/library-behavior.sh', 'tests/Helpers/RequestCoverage.php',
-                         'tests/e2e/Dockerfile', 'tests/e2e/entrypoint.sh',
-                         'tests/e2e/docker-compose.yml', 'tests/fixtures/snmp-coverage/Dockerfile',
-                         'tests/fixtures/snmp-coverage/snmpd.conf', 'cacti.sql', 'composer.lock',
-                         'resource/snmp_queries/interface.xml',
-                         'install/templates/Local_Linux_Machine.xml.gz',
-                         'install/templates/NetSNMP_Device.xml.gz']
-            hashes = {}
-            for name in producers:
-                source = root / name
-                source.parent.mkdir(parents=True, exist_ok=True)
-                source.write_text('fixture source\n')
-                hashes[name] = hashlib.sha256(source.read_bytes()).hexdigest()
-            contract = {'name': 'library-behavior', 'complete': True, 'assertions': 749,
-                        'producers': producers, 'hashes': hashes}
-            path = root / 'library-behavior-test.json'
-            GATE.validate_fixture_contract({'contract': contract}, path, root)
-            for missing in ['name', 'complete', 'assertions', 'producers', 'hashes']:
-                invalid = {key: value for key, value in contract.items() if key != missing}
-                with self.subTest(missing=missing), self.assertRaises(ValueError):
-                    GATE.validate_fixture_contract({'contract': invalid}, path, root)
-            for value in [0, 616, 737, 748, True, '749']:
-                with self.subTest(assertions=value), self.assertRaises(ValueError):
-                    GATE.validate_fixture_contract({'contract': dict(contract, assertions=value)}, path, root)
-            with self.assertRaises(ValueError):
-                GATE.validate_fixture_contract({'contract': dict(contract, complete=False)}, path, root)
-            for name in producers:
-                invalid = dict(contract, hashes={key: value for key, value in hashes.items() if key != name})
-                with self.subTest(producer=name), self.assertRaises(ValueError):
-                    GATE.validate_fixture_contract({'contract': invalid}, path, root)
-                (root / name).write_text('changed fixture source\n')
-                with self.subTest(stale=name), self.assertRaises(ValueError):
-                    GATE.validate_fixture_contract({'contract': contract}, path, root)
                 (root / name).write_text('fixture source\n')
 
     def test_diff_uses_merge_base_and_ignores_deletion_only_files(self):
@@ -198,6 +245,47 @@ class ChangedPhpCoverageTest(unittest.TestCase):
             report.write_text('<coverage/>')
             with self.assertRaisesRegex(ValueError, 'contains no reports'):
                 GATE.measure({}, report, root, root)
+
+    def test_normalized_reports_require_current_tool_and_lock_without_changing_denominator(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'library.php'
+            source.write_text('<?php\nreturn true;\n')
+            (root / 'tests/tools').mkdir(parents=True)
+            normalizer = root / 'tests/tools/normalize_request_coverage.php'
+            lock = root / 'composer.lock'
+            normalizer.write_text('normalizer fixture')
+            lock.write_text('locked dependencies fixture')
+            report = root / 'coverage.xml'
+            report.write_text(f'<coverage><project><file name="{source}">'
+                              '<line num="2" type="stmt" count="0"/>'
+                              '<line num="3" type="stmt" count="0"/>'
+                              '</file></project></coverage>')
+            requests = root / 'requests'
+            requests.mkdir()
+            metadata = {'normalizer_sha256': hashlib.sha256(normalizer.read_bytes()).hexdigest(),
+                        'composer_lock_sha256': hashlib.sha256(lock.read_bytes()).hexdigest(),
+                        'input_sha256': 'a' * 64}
+            snapshot = {'root': '/app', 'coverage': {'/app/library.php': {'2': 1}},
+                        'hashes': {'/app/library.php': hashlib.sha256(source.read_bytes()).hexdigest()},
+                        'normalization': metadata}
+            path = requests / 'one.json'
+            path.write_text(json.dumps(snapshot))
+            result = GATE.measure({'library.php': {2, 3}}, report, root, requests)
+            self.assertEqual((result['covered'], result['executable']), (1, 2))
+            self.assertFalse(GATE.passes(result, 80))
+            for field in metadata:
+                for value in ['', '0' * 63, None, True]:
+                    with self.subTest(field=field, value=value):
+                        snapshot['normalization'] = dict(metadata, **{field: value})
+                        path.write_text(json.dumps(snapshot))
+                        with self.assertRaises(ValueError):
+                            GATE.measure({'library.php': {2, 3}}, report, root, requests)
+            for value in [None, [], True]:
+                snapshot['normalization'] = value
+                path.write_text(json.dumps(snapshot))
+                with self.assertRaises(ValueError):
+                    GATE.measure({'library.php': {2, 3}}, report, root, requests)
 
     def test_bootstrap_instructions_remain_in_the_coverage_denominator(self):
         with tempfile.TemporaryDirectory() as directory:
