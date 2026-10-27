@@ -32,19 +32,19 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_sql() : string {
-	global $database_username;
-	global $database_password;
-	global $database_hostname;
+	global $database_username, $database_password, $database_hostname, $database_port;
 
-	$cmd = 'mysqladmin --host=' . cacti_escapeshellarg($database_hostname) . ' --user=' . cacti_escapeshellarg($database_username);
+	$defaults_file = db_client_defaults_file($database_username, $database_password, $database_hostname, (int) $database_port);
 
-	if ($database_password != '') {
-		$cmd .= ' --password=' . cacti_escapeshellarg($database_password);
+	if ($defaults_file === false) {
+		return 'U';
 	}
 
-	$cmd .= ' status';
-
-	$result = shell_exec($cmd) ?? '';
+	try {
+		$result = shell_exec('mysqladmin --defaults-file=' . cacti_escapeshellarg($defaults_file) . ' status') ?? '';
+	} finally {
+		unlink($defaults_file);
+	}
 
 	$result = preg_replace('/: /', ':', (string) $result);
 	$result = preg_replace('/  /', ' ', (string) $result);
