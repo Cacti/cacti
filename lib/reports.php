@@ -53,9 +53,13 @@ function reports_unserialize_selected_items(mixed $items) : array|false {
 
 /** Whether an existing report owner may be accessed by the current session. */
 function reports_owner_authorized(mixed $owner_id) : bool {
+	if (!is_int($owner_id) && !(is_string($owner_id) && ctype_digit($owner_id))) {
+		return false;
+	}
+
 	$user_id = (int) ($_SESSION[SESS_USER_ID] ?? 0);
 
-	return $user_id > 0 && (int) $owner_id > 0 && ((int) $owner_id === $user_id || is_realm_allowed(21));
+	return $user_id > 0 && (int) $owner_id >= 0 && ((int) $owner_id === $user_id || is_realm_allowed(21));
 }
 
 /**
@@ -75,7 +79,7 @@ function duplicate_reports(int $_id, string $_title) : void {
 		WHERE id = ?',
 		[$_id]);
 
-	if (!reports_owner_authorized($report['user_id'] ?? 0)) {
+	if (!reports_owner_authorized($report['user_id'] ?? null)) {
 		return;
 	}
 
