@@ -831,7 +831,7 @@ function boost_output_rrd_data($child) {
 
 	$rrd_updates       = 0;
 	$processed_rows    = 0;
-	$rrdtool_pipe      = rrd_init();
+	$rrdtool_pipe      = rrd_init(true, true);
 	$runtime_exceeded  = false;
 
 	/* let's set and track memory usage will we */

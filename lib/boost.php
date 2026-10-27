@@ -637,7 +637,7 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 
 		/* process input parameters */
 		if (!is_resource($rrdtool_pipe)) {
-			$rrdtool_pipe = rrd_init();
+			$rrdtool_pipe = rrd_init(true, true);
 			$close_pipe = true;
 		} else {
 			$close_pipe = false;
@@ -1484,7 +1484,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		$rrdp_auto_close = false;
 
 		if (!$rrdtool_pipe) {
-			$rrdtool_pipe    = rrd_init();
+			$rrdtool_pipe    = rrd_init(true, true);
 			$rrdp_auto_close = true;
 		}
 
@@ -2248,7 +2248,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_RETURN_STDERR, $rrdtool_pipe, 'BOOST');
 		} else {
 			if (cacti_has_control_chars($rrd_update_values)) {
 				cacti_log("ERROR: Invalid RRD update value set for local_data_id: $local_data_id.", false, 'BOOST');
@@ -2258,10 +2258,10 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 			cacti_log("update $rrd_path $update_options $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_RETURN_STDERR, $rrdtool_pipe, 'BOOST');
 		}
 
-		if ($result === false || preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim((string) $result))) {
+		if (!is_string($result) || preg_match('/(?:^|\n)OK(?: |\r?\n|$)/', $result) !== 1 || preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', $result)) {
 			return is_string($result) && $result !== '' ? $result : 'ERROR: RRDtool did not acknowledge the update';
 		}
 
