@@ -8,6 +8,7 @@
             <file>Unit/Core/Rrd/RrdDataSourceDiffTest.php</file>
             <file>Unit/Core/Rrd/RrdcheckDataSourceFindingsTest.php</file>
             <file>Unit/Core/Rrd/RrdTuneRenderTest.php</file>
+            <file>Unit/Core/Boost/BoostAcknowledgementTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
