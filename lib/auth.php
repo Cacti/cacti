@@ -376,35 +376,29 @@ function is_trusted_proxy() : bool {
  * @return string|false The username if found and processed, or false if no username is found.
  */
 function get_basic_auth_username() : string|false {
-	/* Headers arriving with an HTTP_ prefix are client-supplied and spoofable.
-	 * Only honor a forwarded identity when the request comes from a trusted
-	 * reverse proxy. The unprefixed REMOTE_USER / REDIRECT_REMOTE_USER vars are
-	 * set by the web server's own auth module and are always honored. */
-	$trusted = is_trusted_proxy();
+	global $auth_basic_allow_php_auth_user;
 
-	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		$raw      = is_array($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'][0] ?? '') : $_SERVER['PHP_AUTH_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} elseif (isset($_SERVER['REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['REMOTE_USER']) ? ($_SERVER['REMOTE_USER'][0] ?? '') : $_SERVER['REMOTE_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['REDIRECT_REMOTE_USER']) ? ($_SERVER['REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['REDIRECT_REMOTE_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} elseif ($trusted && isset($_SERVER['HTTP_X_FORWARDED_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_X_FORWARDED_USER']) ? ($_SERVER['HTTP_X_FORWARDED_USER'][0] ?? '') : $_SERVER['HTTP_X_FORWARDED_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} elseif ($trusted && isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_PHP_AUTH_USER']) ? ($_SERVER['HTTP_PHP_AUTH_USER'][0] ?? '') : $_SERVER['HTTP_PHP_AUTH_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} elseif ($trusted && isset($_SERVER['HTTP_REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_REMOTE_USER']) ? ($_SERVER['HTTP_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REMOTE_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} elseif ($trusted && isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} else {
-		$username = false;
+	// Unprefixed server identities take precedence over forwarded/client data.
+	$keys = ['REMOTE_USER', 'REDIRECT_REMOTE_USER'];
+
+	if (is_trusted_proxy()) {
+		$keys = array_merge($keys, ['HTTP_X_FORWARDED_USER', 'HTTP_PHP_AUTH_USER', 'HTTP_REMOTE_USER', 'HTTP_REDIRECT_REMOTE_USER']);
+	}
+
+	// PHP may populate PHP_AUTH_USER by decoding a client Authorization header
+	// without verifying its password. Require an explicit upstream-auth opt-in.
+	if (($auth_basic_allow_php_auth_user ?? false) === true) {
+		$keys[] = 'PHP_AUTH_USER';
+	}
+
+	$username = false;
+
+	foreach ($keys as $key) {
+		if (isset($_SERVER[$key]) && is_string($_SERVER[$key]) && $_SERVER[$key] !== '') {
+			$username = str_replace('\\', '\\\\', $_SERVER[$key]);
+
+			break;
+		}
 	}
 
 	if ($username !== false && is_string($username)) {

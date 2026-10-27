@@ -250,6 +250,15 @@ $proxy_headers = null;
 $trusted_proxies = [];
 
 /*
+ * PHP_AUTH_USER can come directly from an unverified client Authorization header.
+ * Enable this compatibility option only when the web server verifies the password
+ * before passing every request to PHP. Prefer the server's REMOTE_USER identity.
+ * Trusted proxies must replace client identity headers before forwarding them.
+ */
+$auth_basic_allow_php_auth_user = false;
+
+
+/*
  * Set this to define the default i18n handler if not set
  * in the database.  For valid values, see CACTI_LANGUAGE_HANDLER
  * constants but only use the value not the constant name
