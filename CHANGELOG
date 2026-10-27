@@ -198,6 +198,7 @@ Cacti CHANGELOG
 -issue#8314: Stop flagging a not-yet-created RRA subdirectory as a data_source_path escape
 -issue#8316: Keep graph drilldown controls fixed and keyboard focus intact, bind SpikeKill requests to their graph, clean up submenu state, and require CSRF-protected POSTs for SpikeKill writes, enforce RRA kill limits, preserve missing samples, and report RRD failures
 -issue#8325: Fit the installer layout to narrow screens and restore heading font sizes
+-issue#8342: Wait for RRDtool acknowledgement before advancing Boost cursors or deleting queued samples
 -issue#8371: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
 -issue#8390: Reject dangling symlinks in validate_relative_path_within
 -issue#8414: Restore tree-device and breadcrumb navigation from Time Graph View
