@@ -43,6 +43,14 @@ The same seeded browser fixture exercises Carrot's links and titlebars.
 See [Carrot theme validation](docs/validation/carrot-theme.md) for the
 narrow-screen screenshot, coverage checks, and reproduction commands.
 
+## Dark Theme
+
+![Dark theme inventory with seeded device measurements](docs/validation/images/dark-theme-desktop.png)
+
+The Dark browser fixture exercises keyboard focus, gradient contrast, and
+wrapped details titles using synthetic monitoring data. See
+[Dark theme validation](docs/validation/dark-theme.md) for screenshots and tests.
+
 ---
 
 ## Release Branches

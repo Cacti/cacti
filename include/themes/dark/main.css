@@ -217,8 +217,9 @@ select {
 	font-size: 12px;
 }
 
-*:focus {
-	outline: none;
+:focus-visible {
+	outline: 2px solid #a7d986;
+	outline-offset: 2px;
 }
 
 label {
@@ -1235,7 +1236,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: show;
+	color: snow;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1386,9 +1387,11 @@ legend {
 }
 
 .cactiTableTitleRow {
-	display: table-row;
+	display: flex;
+	align-items: center;
+	width: 100%;
 	text-align: left;
-	height: 22px;
+	min-height: 22px;
 	line-height: 22px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1408,10 +1411,13 @@ legend {
 }
 
 .cactiTableTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	float: left;
 	text-align: left;
 	padding-left: 5px;
-	height: 22px;
+	min-height: 22px;
 	line-height: 22px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1422,6 +1428,7 @@ legend {
 }
 
 .cactiTableButton {
+	flex: 0 0 auto;
 	float: right;
 	padding: 0px;
 	text-align: right;
@@ -1448,6 +1455,10 @@ legend {
 	padding: 0px;
 	white-space: nowrap;
 	vertical-align: middle;
+}
+
+.cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -2365,6 +2376,7 @@ tr.selected {
 }
 
 tr.selectable:hover:not(.selected) {
+	color: snow;
 	background: rgba(167,217,134,0.4);
 	background: -moz-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,0.4)), color-stop(100%, rgba(148,179,107,0.2)));
