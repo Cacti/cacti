@@ -84,3 +84,5 @@ run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(funct
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
+
+run_php_probe tests/fixtures/Core/MysqlClientCredentials.php '^(lib/database\.php|scripts/(ss_sql|sql)\.php|tests/fixtures/Core/MysqlClientCredentials\.php)'
