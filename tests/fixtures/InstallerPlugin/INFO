@@ -1,0 +1,6 @@
+[info]
+name = Installer compatible fixture
+version = 0.1
+author = Cacti tests
+compat = 1.2.0
+homepage = https://www.cacti.net/
