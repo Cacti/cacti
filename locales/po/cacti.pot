@@ -25502,3 +25502,60 @@ msgstr ""
 #, php-format
 msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""
+
+
+#: aggregate_templates.php:135
+msgid ""
+"Check the aggregate automation pattern, title, device template and member "
+"limit."
+msgstr ""
+
+#: aggregate_templates.php:651 include/global_form.php:2267
+msgid "Aggregate Automation"
+msgstr ""
+
+#: include/global_form.php:2269
+msgid "Enable Aggregate Automation"
+msgstr ""
+
+#: include/global_form.php:2270
+msgid ""
+"Create one aggregate per matching device after its graph automation rules "
+"run."
+msgstr ""
+
+#: include/global_form.php:2274
+msgid "Data Source Name Pattern"
+msgstr ""
+
+#: include/global_form.php:2275
+msgid ""
+"PCRE expression with delimiters, for example /QoS.*(Gold|Silver)/i. A graph "
+"matches when any bound data source name matches."
+msgstr ""
+
+#: include/global_form.php:2280
+msgid ""
+"Limit this aggregate rule to a device template, or select None for all "
+"devices."
+msgstr ""
+
+#: include/global_form.php:2285
+msgid "Automated Aggregate Title"
+msgstr ""
+
+#: include/global_form.php:2286
+msgid ""
+"Supported variables: |host_description|, |host_hostname|, |host_id| and "
+"|aggregate_template_name|."
+msgstr ""
+
+#: include/global_form.php:2291
+msgid "Maximum Aggregate Members"
+msgstr ""
+
+#: include/global_form.php:2292
+msgid ""
+"Maximum matching graphs per device (1-5000). Exceeding this limit leaves the"
+" aggregate unchanged."
+msgstr ""
