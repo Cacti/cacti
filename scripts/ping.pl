@@ -19,10 +19,15 @@ if (($host_copy =~ tr/://) == 0) {
 }
 
 # Addition2
-($host) = $host =~ /^([\w.:-]+)$/;
+# A leading '-' would be parsed by ping as an option rather than a host.
+($host) = $host =~ /^([\w.:][\w.:-]*)$/;
+if (!defined $host) {
+	print 'U';
+	exit 1;
+}
 
-# always have the language in english
-$ENV{LANG}='en_US.UTF-8';
+# always have the language in english; LC_ALL overrides any inherited LANG
+$ENV{LC_ALL}='C';
 
 #
 # Get the OS name
@@ -49,7 +54,7 @@ if ($osname =~ /solaris/i) {
 my $output = run_ping(@ping_cmd);
 my $ping = '';
 for my $line (split /\n/, $output) {
-	if ($line =~ /(icmp_[s|r]eq.*t(ime|emps)|unknown host|Unknown host|not supported|Name or service not known|No address associated with name)/) {
+	if ($line =~ /((?:icmp_)?[sr]eq=.*t(ime|emps)|unknown host|Unknown host|not supported|Name or service not known|No address associated with name)/) {
 		$ping = $line;
 		last;
 	}
@@ -60,7 +65,7 @@ if (($ping =~ 'unknown host') || ($ping =~ 'Unknown host') || ($ping =~ 'not sup
 	if ((-f '/bin/ping6') || (-f '/sbin/ping6')) {
 		my $output6 = run_ping('ping6', '-c', '1', $host);
 		for my $line (split /\n/, $output6) {
-			if ($line =~ /(icmp_[s|r]eq.*t(ime|emps))/) {
+			if ($line =~ /((?:icmp_)?[sr]eq=.*t(ime|emps))/) {
 				$ping = $line;
 				last;
 			}
