@@ -159,7 +159,7 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 		WHERE id = ?',
 		[$host_id]);
 
-	if (!cacti_sizeof($host)) {
+	if (!is_array($host) || !cacti_sizeof($host)) {
 		return 'reads:0 writes:0';
 	}
 
@@ -194,6 +194,7 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 		$host['snmp_port'],
 		$host['snmp_timeout'],
 		$host['snmp_retries'],
+		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
@@ -210,6 +211,8 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 	}
 
 	$reads = $writes = 0;
+
+	$reads_invalid = $writes_invalid = false;
 
 	if (cacti_sizeof($indexes)) {
 		$iops = cacti_snmp_walk($host['hostname'],
@@ -240,12 +243,19 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 					$reads = 'U';
 				} elseif (!isset($previous["dr$index"])) {
 					$reads = 'U';
+				} elseif (!ctype_digit((string) $measure['value']) || !ctype_digit((string) $previous["dr$index"])) {
+					// a non-counter value from the device fails this measure rather than gmp_init()
+					$reads_invalid = true;
 				} else {
 					$reads = ss_counter_step($reads, (string) $measure['value'], (string) $previous["dr$index"], '4294967296');
 				}
 
 				$current["dr$index"] = $measure['value'];
 			}
+		}
+
+		if ($reads_invalid) {
+			$reads = 'U';
 		}
 
 		$iops = cacti_snmp_walk($host['hostname'],
@@ -276,12 +286,19 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 					$writes = 'U';
 				} elseif (!isset($previous["dw$index"])) {
 					$writes = 'U';
+				} elseif (!ctype_digit((string) $measure['value']) || !ctype_digit((string) $previous["dw$index"])) {
+					// a non-counter value from the device fails this measure rather than gmp_init()
+					$writes_invalid = true;
 				} else {
 					$writes = ss_counter_step($writes, (string) $measure['value'], (string) $previous["dw$index"], '4294967296');
 				}
 
 				$current["dw$index"] = $measure['value'];
 			}
+		}
+
+		if ($writes_invalid) {
+			$writes = 'U';
 		}
 
 		if (!db_table_exists('host_value_cache')) {
