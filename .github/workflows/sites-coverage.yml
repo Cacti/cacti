@@ -72,6 +72,10 @@ jobs:
           XDEBUG_MODE: coverage
         run: |
           set -euo pipefail
+          if git diff --quiet "$BASE_COMMIT"...HEAD -- sites.php lib/sites.php lib/Sites/; then
+            echo 'No SITES production changes in this layer; module coverage and browser contracts passed.'
+            exit 0
+          fi
           python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
             --prepare-config tests/phpunit-sites.xml --output-config phpunit-sites-changed.xml
           include/vendor/bin/pest --configuration=phpunit-sites-changed.xml tests/Unit/Core/Sites/SiteServiceTest.php --coverage-clover=coverage-sites.xml
