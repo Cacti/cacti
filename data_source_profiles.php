@@ -1213,7 +1213,7 @@ function profile_edit() : void {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Data Source Profile Item'); ?>',
+						title: <?php print json_encode(__('Delete Data Source Profile Item')); ?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

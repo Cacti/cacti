@@ -695,7 +695,7 @@ function cdef_edit() : void {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete CDEF Item'); ?>',
+						title: <?php print json_encode(__('Delete CDEF Item')); ?>,
 						minHeight: 80,
 						minWidth: 500
 					});
