@@ -1496,10 +1496,10 @@ function graph_edit() : bool {
 			$('#toggle_items').click(function() {
 				if ($('#toggle_items').is(":contains('<?php print __('Show'); ?>')")) {
 					$('#local_graph_template_graph_id').next('table').css('display', '');
-					$('#toggle_items').text('<?php print __('Hide Item Details'); ?>');
+					$('#toggle_items').text(<?php print json_encode(__('Hide Item Details')); ?>);
 				} else {
 					$('#local_graph_template_graph_id').next('table').css('display', 'none');
-					$('#toggle_items').text('<?php print __('Show Item Details'); ?>');
+					$('#toggle_items').text(<?php print json_encode(__('Show Item Details')); ?>);
 				}
 			});
 

@@ -725,7 +725,7 @@ function template_edit() : void {
 	<script type='text/javascript'>
 		function deleteFinalize(options, data) {
 			$('#cdialog').dialog({
-				title: '<?php print __('Delete Item from Device Template'); ?>',
+				title: <?php print json_encode(__('Delete Item from Device Template')); ?>,
 				close: function() {
 					$('.delete').blur();
 					$('.selectable').removeClass('selected');
