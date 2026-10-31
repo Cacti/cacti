@@ -72,6 +72,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Set up Docker with the public registry cache
+        uses: ./.github/actions/setup-ci-docker
+
       - name: Make docker smoke script executable
         run: chmod +x tests/tools/check_docker.sh
 
