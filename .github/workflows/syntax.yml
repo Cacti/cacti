@@ -535,12 +535,13 @@ jobs:
   required:
     name: CI / required
     if: always()
-    needs: [runtime-compatibility, native-dependencies, check, changelog]
+    needs: [javascript-contracts, runtime-compatibility, native-dependencies, check, changelog]
     runs-on: ubuntu-slim
     timeout-minutes: 5
     steps:
       - name: Verify required jobs
         env:
+          JAVASCRIPT_RESULT: ${{ needs.javascript-contracts.result }}
           RUNTIME_RESULT: ${{ needs.runtime-compatibility.result }}
           NATIVE_RESULT: ${{ needs.native-dependencies.result }}
           INTEGRATION_RESULT: ${{ needs.check.result }}
@@ -548,6 +549,7 @@ jobs:
         run: |
           set -euo pipefail
           for result in \
+            "$JAVASCRIPT_RESULT" \
             "$RUNTIME_RESULT" \
             "$NATIVE_RESULT" \
             "$INTEGRATION_RESULT" \

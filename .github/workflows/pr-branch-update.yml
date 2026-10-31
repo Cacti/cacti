@@ -2,13 +2,18 @@ name: Update stale pull request branches
 
 # Open PRs drift behind develop/1.2.x the longer they sit unreviewed, and a
 # large gap turns an otherwise clean PR into a merge conflict once someone
-# finally looks at it. This walks every open PR and, for any that GitHub
-# reports as BEHIND its base, calls the same update-branch endpoint behind
-# the PR page's "Update branch" button (a merge, not a rebase, so it never
-# needs a force-push). PRs that are DIRTY (a real conflict) or already
-# current are left alone; fork PRs whose author hasn't enabled "Allow edits
-# from maintainers" will fail the API call, which is expected and logged,
-# not treated as a job failure.
+# finally looks at it. This walks every open PR and, for any that the compare
+# API reports as behind its base, calls the same update-branch endpoint behind
+# the PR page's "Update branch" button, with update_method=rebase. A rebase
+# rewrites the head branch, and branch protection dismisses stale approvals
+# on push, so PRs whose review decision is APPROVED are skipped rather than
+# sent back for review. PRs with a real conflict make the API call fail; fork
+# PRs whose author hasn't enabled "Allow edits from maintainers" fail the same
+# way. Both are expected and logged, not treated as a job failure.
+#
+# The rebase is pushed with GITHUB_TOKEN, and GitHub does not start workflow
+# runs for events caused by that token, so a rebased PR keeps the checks from
+# its previous head until someone pushes or re-runs them.
 
 on:
   schedule:
@@ -53,6 +58,7 @@ jobs:
           updated=0
           skipped=0
           failed=0
+          errored=0
 
           for number in $(echo "$pr_numbers" | jq -r '.[]'); do
             # mergeStateStatus reports CLEAN for branches the compare API still
@@ -62,12 +68,27 @@ jobs:
             base_ref=$(printf '%s' "$refs" | cut -f1)
             head_ref=$(printf '%s' "$refs" | cut -f2)
 
-            behind=$(gh api \
-              "repos/${GITHUB_REPOSITORY}/compare/${base_ref}...${head_ref}" \
-              --jq '.behind_by' 2>/dev/null || echo 0)
+            # Count a failed compare on its own so an API error is not reported
+            # as a branch that is already current.
+            if ! behind=$(gh api \
+                "repos/${GITHUB_REPOSITORY}/compare/${base_ref}...${head_ref}" \
+                --jq '.behind_by'); then
+              echo "error #$number: compare ${base_ref}...${head_ref} failed"
+              errored=$((errored + 1))
+              continue
+            fi
 
             if [ "${behind:-0}" -eq 0 ]; then
               echo "skip #$number: not behind"
+              skipped=$((skipped + 1))
+              continue
+            fi
+
+            review=$(gh pr view "$number" --repo "$GITHUB_REPOSITORY" \
+              --json reviewDecision --jq '.reviewDecision')
+
+            if [ "$review" = "APPROVED" ]; then
+              echo "skip #$number: approved, a rebase would dismiss the approval"
               skipped=$((skipped + 1))
               continue
             fi
@@ -89,4 +110,4 @@ jobs:
             sleep 2
           done
 
-          echo "updated=$updated skipped=$skipped failed=$failed"
+          echo "updated=$updated skipped=$skipped failed=$failed errored=$errored"
