@@ -12,18 +12,26 @@ on:
       - 'cacti.sql'
       - 'cli/convert_tables.php'
       - 'cli/install_cacti.php'
+      - 'cli/prepare_install.sh'
       - 'cli/upgrade_database.php'
       - 'docker/**'
       - 'install/**'
       - 'lib/import.php'
       - 'lib/installer.php'
+      - 'lib/Installer/**'
       - 'lib/utility.php'
       - 'tests/phpunit-installer.xml'
       - 'tests/Unit/Installer/**'
       - 'tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php'
       - 'tests/e2e/installer_resilience_docker.sh'
       - 'tests/e2e/installer_failure_paths.php'
+      - 'tests/e2e/installer_populated_fixture.sql'
+      - 'tests/e2e/installer_application_check.sh'
+      - 'tests/e2e/tests/installer-upgrade.spec.ts'
+      - 'tests/e2e/package-lock.json'
+      - 'tests/e2e/ldap/**'
       - 'tests/fixtures/InstallerCliProbe.php'
+      - 'tests/fixtures/InstallerPlugin/**'
       - 'tests/integration/Installer*.php'
   pull_request:
     branches: [develop]
@@ -36,18 +44,26 @@ on:
       - 'cacti.sql'
       - 'cli/convert_tables.php'
       - 'cli/install_cacti.php'
+      - 'cli/prepare_install.sh'
       - 'cli/upgrade_database.php'
       - 'docker/**'
       - 'install/**'
       - 'lib/import.php'
       - 'lib/installer.php'
+      - 'lib/Installer/**'
       - 'lib/utility.php'
       - 'tests/phpunit-installer.xml'
       - 'tests/Unit/Installer/**'
       - 'tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php'
       - 'tests/e2e/installer_resilience_docker.sh'
       - 'tests/e2e/installer_failure_paths.php'
+      - 'tests/e2e/installer_populated_fixture.sql'
+      - 'tests/e2e/installer_application_check.sh'
+      - 'tests/e2e/tests/installer-upgrade.spec.ts'
+      - 'tests/e2e/package-lock.json'
+      - 'tests/e2e/ldap/**'
       - 'tests/fixtures/InstallerCliProbe.php'
+      - 'tests/fixtures/InstallerPlugin/**'
       - 'tests/integration/Installer*.php'
   workflow_dispatch:
 
@@ -113,7 +129,12 @@ jobs:
           if-no-files-found: error
 
   docker-integration:
-    name: installer Docker integration matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        source: ['1.2.22', '1.2.31']
+        database: ['mariadb:10.11', 'mariadb:11.8']
+    name: installer PHP 8.4 / ${{ matrix.database }} / upgrade from ${{ matrix.source }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
 
@@ -127,5 +148,35 @@ jobs:
       - name: Set up Docker with the public registry cache
         uses: ./.github/actions/setup-ci-docker
 
-      - name: Run fresh, upgrade, CLI, and background scenarios
+      - name: Set up the frontend test runtime
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/e2e/package-lock.json
+
+      - name: Prepare the locked browser test dependencies
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run postinstall
+          npm --prefix tests/e2e ci --ignore-scripts --no-audit --no-fund
+          cd tests/e2e
+          npx --no-install playwright install --with-deps chromium
+
+      - name: Run fresh, populated upgrade, CLI, and background scenarios
+        env:
+          INSTALLER_SOURCE_VERSION: ${{ matrix.source }}
+          INSTALLER_DB_IMAGE: ${{ matrix.database }}
         run: tests/e2e/installer_resilience_docker.sh
+
+      - name: Upload browser upgrade diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: installer-browser-${{ matrix.source }}-${{ strategy.job-index }}
+          path: |
+            tests/e2e/test-results/
+            tests/e2e/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1433,6 +1433,7 @@ $user_auth_realm_filenames = [
 	'index.php'                  => 8,
 	'install.php'                => 26,
 	'step_json.php'              => 26,
+	'report.php'                 => 26,
 	'managers.php'               => 15,
 	'rrdcleaner.php'             => 15,
 	'rrdcheck.php'               => 15,
