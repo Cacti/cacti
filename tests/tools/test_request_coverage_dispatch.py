@@ -45,6 +45,14 @@ class RequestDispatchTest(unittest.TestCase):
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
 
+    def test_cdef_change_runs_the_isolated_suite(self):
+        for path in ['lib/cdef.php', 'lib/Cdef/CdefResolver.php',
+                     'tests/phpunit-cdef.xml', 'tests/Coverage/CdefCoverageTest.php',
+                     'tests/Helpers/CdefCoverageBootstrap.php',
+                     'tests/Unit/Core/Rrd/CdefResolverTest.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'pest --configuration=tests/phpunit-cdef.xml')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -56,8 +64,11 @@ class RequestDispatchTest(unittest.TestCase):
                 (tools / command).symlink_to(shutil.which(command))
             php = tools / 'php'
             php.write_text('#!' + shutil.which('bash') + '\n'
-                           'script="${!#}"\n'
-                           'printf "%s\\n" "${script##*/}" >> "$CACTI_PR_RAW_COVERAGE/probes"\n')
+                           'while [[ "$1" == "-d" ]]; do shift 2; done\n'
+                           'script="$1"; shift\n'
+                           'printf "%s" "${script##*/}" >> "$CACTI_PR_RAW_COVERAGE/probes"\n'
+                           'if (( $# )); then printf " %s" "$@" >> "$CACTI_PR_RAW_COVERAGE/probes"; fi\n'
+                           'printf "\\n" >> "$CACTI_PR_RAW_COVERAGE/probes"\n')
             php.chmod(0o700)
             env = dict(os.environ, PATH=str(tools))
 
@@ -80,6 +91,9 @@ class RequestDispatchTest(unittest.TestCase):
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
+            pest = repository / 'include/vendor/bin/pest'
+            pest.parent.mkdir(parents=True)
+            pest.write_text('<?php // isolated suite dispatch fixture\n')
             git('add', '.')
             git('commit', '--quiet', '-m', 'fixture base')
             base = git('rev-parse', 'HEAD')
