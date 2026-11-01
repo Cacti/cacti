@@ -382,6 +382,9 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		# generate output
 		#
 		foreach ($sensor_array as $sensor) {
+			# a device value with a line break would start a new output record
+			$sensor = str_replace(array("\r", "\n"), '', $sensor);
+
 			switch ($cacti_request) {
 				case 'index':
 					if (trim($sensor['index']) != '') {

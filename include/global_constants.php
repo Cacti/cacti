@@ -117,6 +117,12 @@ define('POLLER_ACTION_SNMP_COUNT', 10);
 define('POLLER_ACTION_SCRIPT_COUNT', 11);
 define('POLLER_ACTION_SCRIPT_PHP_COUNT', 12);
 
+/* longest script server request, excluding the CR LF terminator. spine pads
+ * each request into a 1024 byte buffer with snprintf(), so a longer request
+ * reaches the server truncated and unterminated. cmd.php and the script
+ * server share this limit. */
+define('SCRIPT_SERVER_MAX_REQUEST_LENGTH', 1021);
+
 define('POLLER_COMMAND_REINDEX', 1);
 define('POLLER_COMMAND_RRDPURGE', 2);
 define('POLLER_COMMAND_PURGE', 3);
