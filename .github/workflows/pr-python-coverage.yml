@@ -28,7 +28,7 @@ jobs:
       - name: Install test instrumentation and gettext
         run: |
           set -euo pipefail
-          python -m pip install coverage==7.13.2 pyyaml==6.0.2
+          python -m pip install coverage==7.13.2 pyyaml==6.0.2 polib==1.2.0
           sudo apt-get update
           sudo apt-get install -y gettext
       - name: Exercise maintenance tool contracts
