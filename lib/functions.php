@@ -9811,7 +9811,15 @@ function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 
 
 	$body = @file_get_contents($url, false, $ctx);
 
-	if (isset($http_response_header) && is_array($http_response_header) && count($http_response_header) > 0) {
+	if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
+		$headers = http_get_last_response_headers();
+
+		if ($headers !== null && is_array($headers) && count($headers)) {
+			if (preg_match('#HTTP/\S+\s+(\d+)#', $headers[0], $m)) {
+				$status = (int) $m[1];
+			}
+		}
+	} elseif (isset($http_response_header) && is_array($http_response_header) && count($http_response_header) > 0) {
 		if (preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
 			$status = (int) $m[1];
 		}
