@@ -101,6 +101,11 @@ function form_save() : void {
 		$save['input_string'] = CactiValidator::validateInput(gnrv('input_string'), 'input_string', [], 3);
 		$save['type_id']      = CactiValidator::validateInput(gnrv('type_id'), 'type_id', [new Assert\Regex('/^[0-9]+$/')], 3);
 
+		if (!cacti_input_string_is_safe($save['input_string'])) {
+			raise_message('input_string', __('Input string contains unsafe shell syntax.'), MESSAGE_LEVEL_ERROR);
+			$_SESSION[SESS_ERROR_FIELDS]['input_string'] = 'input_string';
+		}
+
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
 
