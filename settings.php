@@ -691,8 +691,6 @@ default:
 			if (dataCollectors > 1) {
 				$('#boost_rrd_update_enable').prop('checked', true);
 				$('#boost_rrd_update_enable').prop('disabled', true);
-				$('#boost_redirect').prop('checked', true);
-				$('#boost_redirect').prop('disabled', true);
 			}
 
 			initBoostOD();
@@ -778,7 +776,6 @@ default:
 			$('#row_boost_rrd_update_string_length').show();
 			$('#row_boost_poller_mem_limit').show();
 			$('#row_boost_rrd_update_max_runtime').show();
-			$('#row_boost_redirect').show();
 		} else {
 			$('#row_boost_rrd_update_interval').hide();
 			$('#row_boost_parallel').hide();
@@ -788,7 +785,6 @@ default:
 			$('#row_boost_rrd_update_string_length').hide();
 			$('#row_boost_poller_mem_limit').hide();
 			$('#row_boost_rrd_update_max_runtime').hide();
-			$('#row_boost_redirect').hide();
 		}
 	}
 
