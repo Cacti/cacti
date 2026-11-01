@@ -810,12 +810,8 @@ if ($config['is_web']) {
 	}
 
 	if (isrv('newtheme')) {
-		$newtheme     = gnrv('newtheme');
-		$newtheme_css = __DIR__ . "/themes/$newtheme/main.css";
-
-		if (is_valid_theme($newtheme)) {
-			$_SESSION['selected_theme'] = $newtheme;
-		}
+		$newtheme                   = gnrv('newtheme');
+		$_SESSION['selected_theme'] = cacti_validate_theme(is_string($newtheme) ? $newtheme : '');
 	}
 
 	if (isrv('csrf_timeout')) {
