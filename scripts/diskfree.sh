@@ -20,4 +20,14 @@
 #   | http://www.cacti.net/                                                   |
 #   +-------------------------------------------------------------------------+
 
-df -k "$1" | grep -v Filesystem| awk '{printf "megabytes:" $4 " percent:" int($5)}'
+# An empty partition would report every filesystem and a leading '-' would be
+# read by df as an option, so both fail closed with an unknown result.
+case "$1" in
+	''|-*)
+		printf 'megabytes:U percent:U'
+		exit 1
+		;;
+esac
+
+# -P keeps each filesystem on one line when the device name is long.
+df -k -P -- "$1" | grep -v Filesystem| awk '{printf "megabytes:" $4 " percent:" int($5)}'
