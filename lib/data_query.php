@@ -2824,8 +2824,16 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 		$extra_arguments = '';
 	}
 
-	// get a complete path for out target script
-	return substitute_script_query_path($script_path) . ' ' . $extra_arguments;
+	// Match the maintenance branch boundary for imported script commands.
+	$parsed_script_path = substitute_script_query_path($script_path);
+
+	if (str_contains($parsed_script_path, '..') || preg_match('/[\x00-\x1f\x7f]/', $parsed_script_path)) {
+		cacti_log('ERROR: Invalid Data Query script path rejected.', false, 'REINDEX');
+
+		return '';
+	}
+
+	return cacti_escapeshellcmd($parsed_script_path) . ' ' . $extra_arguments;
 }
 
 /**
