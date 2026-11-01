@@ -79,7 +79,7 @@ function ss_juniper_operating(string $hostname = '', int $host_id = 0, mixed $sn
 	$oids = ss_juniper_operating_oids();
 
 	if ($walker === null) {
-		$walker = ss_juniper_operating_snmp_walker($hostname, explode(':', (string) $snmp_auth));
+		$walker = ss_juniper_operating_snmp_walker($hostname, snmp_script_auth_fields($host_id, (string) $snmp_auth));
 	}
 
 	if ($cmd == 'index') {

@@ -168,7 +168,8 @@ function reindex(array $arr) : array {
 	$return_arr = [];
 
 	for ($i = 0; ($i < sizeof($arr)); $i++) {
-		$return_arr[$i] = $arr[$i]['value'];
+		// device values are printed one per line, so a line break must not survive
+		$return_arr[$i] = str_replace(["\r", "\n"], '', (string) $arr[$i]['value']);
 	}
 
 	return $return_arr;

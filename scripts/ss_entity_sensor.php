@@ -114,7 +114,7 @@ function ss_entity_sensor(string $hostname = '', int $host_id = 0, mixed $snmp_a
 	$oids = ss_entity_sensor_oids();
 
 	if ($walker === null) {
-		$walker = ss_entity_sensor_snmp_walker($hostname, explode(':', (string) $snmp_auth));
+		$walker = ss_entity_sensor_snmp_walker($hostname, snmp_script_auth_fields($host_id, (string) $snmp_auth));
 	}
 
 	if ($cmd == 'index') {
