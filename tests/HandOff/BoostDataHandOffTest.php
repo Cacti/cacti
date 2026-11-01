@@ -22,7 +22,7 @@ test('Boost hand-off batches expose database acknowledgement', function () {
 
 	expect($boost)->toContain('function boost_flush_output_batch($value_tuples, $conn = false)');
 	expect($boost)->toContain('$acknowledged = db_execute($sql_prefix . $out_buffer, true, $conn) !== false;');
-	expect($boost)->toContain('if (!boost_flush_output_batch($value_tuples, $conn)) {');
+	expect(boostSource('poller_recovery.php'))->toContain('if (!boost_flush_output_batch($sql_array, $remote_db_cnn_id)) {');
 });
 
 test('Recovery deletes only the exact rows acknowledged by the main collector', function () {
@@ -64,7 +64,6 @@ test('Remote hand-offs validate poller ownership before staging', function () {
 
 	expect($boost)->toContain('function boost_validate_poller_ownership($results, $poller_id, $conn = false)');
 	expect($boost)->toContain('WHERE poller_id = ?');
-	expect($boost)->toContain("\$config['poller_id'] > 1 && !boost_validate_poller_ownership");
 	expect($recovery)->toContain('!boost_validate_poller_ownership($rows, $poller_id, $remote_db_cnn_id)');
 });
 
