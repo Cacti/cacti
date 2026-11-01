@@ -310,6 +310,7 @@ $selectedTheme = get_selected_theme();
 <html lang='<?php print CACTI_LOCALE;?>'>
 <head>
 	<?php html_common_header(api_plugin_hook_function('login_title', __('Login to Cacti')));?>
+	<?php print get_md5_include_css('include/css/auth.css');?>
 </head>
 <body class='loginBody'>
 	<div class='loginLeft'></div>
@@ -317,7 +318,7 @@ $selectedTheme = get_selected_theme();
 	<div class='loginArea'>
 		<div class='cactiLoginLogo'></div>
 			<form id='login' name='login' method='post' action='<?php print get_current_page();?>'>
-				<fieldset style='border:0;padding:0;margin:0;min-width:0'>
+				<fieldset class='cactiAuthFieldset'>
 				<legend><?php print __('User Login');?></legend>
 				<input type='hidden' name='action' value='login'>
 				<?php api_plugin_hook_function('login_before',
