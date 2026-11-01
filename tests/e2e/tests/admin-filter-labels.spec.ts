@@ -43,6 +43,14 @@ for (const [route, labels] of lists) {
     });
 }
 
+test('external links renders its listing after pagination', async ({ page }) => {
+    const response = await page.goto('/links.php?rows=10&page=1');
+    expect(response?.status()).toBe(200);
+    for (const name of ['Actions', 'Page', 'Title', 'Style', 'Enabled', 'Order']) {
+        await expect(page.getByRole('columnheader', { name: new RegExp('^' + name + '\\b') })).toBeVisible();
+    }
+});
+
 for (const route of ['clog.php', 'clog_user.php']) {
     test(`${route} log filter labels follow newest/oldest display mode`, async ({ page }) => {
         for (const [reverse, lines] of [[1, 'Tail Lines'], [2, 'Head Lines']] as const) {
