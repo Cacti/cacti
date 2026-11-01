@@ -5596,9 +5596,51 @@ function appendHeaderSuppression($url) {
  * @param string $subject The subject.
  * @param string $message The message.
  *
- * @return bool True on success, false otherwise.
+ * The admin_alert hook receives the original subject/message and a versioned
+ * event envelope. A plugin may return status accepted or already_accepted to
+ * own delivery. Missing handlers, other results and exceptions use email.
+ * Plugins own their delivery settings; core does not select a provider.
+ *
+ * @return void
  */
 function admin_email($subject, $message) {
+	global $config;
+	static $dispatching = false;
+
+	if (read_config_option('notify_admin') != 'on') {
+		cacti_log('WARNING: Primary Admin account notifications disabled!  Unable to send administrative Email.', false, 'SYSTEM');
+		return;
+	}
+
+	if (!$dispatching) {
+		$dispatching = true;
+
+		try {
+			if (is_string($subject) && strlen($subject) <= 512
+				&& is_string($message) && strlen($message) <= 16384
+				&& (int) ($config['poller_id'] ?? 1) > 0) {
+				$alert = array(
+					'contract_version' => 1,
+					'status'           => 'unhandled',
+					'event_id'         => bin2hex(random_bytes(16)),
+					'occurred_at'      => gmdate('Y-m-d\TH:i:s\Z'),
+					'collector_id'     => (int) ($config['poller_id'] ?? 1),
+					'subject'          => $subject,
+					'message'          => $message,
+				);
+				$result = api_plugin_hook_function('admin_alert', $alert);
+
+				if (is_array($result) && in_array($result['status'] ?? null, array('accepted', 'already_accepted'), true)) {
+					return;
+				}
+			}
+		} catch (Throwable $error) {
+			// Keep email fallback available without logging another administrative alert.
+		} finally {
+			$dispatching = false;
+		}
+	}
+
 	if (read_config_option('admin_user') > 0) {
 		if (read_config_option('notify_admin') == 'on') {
 			$admin_details = db_fetch_row_prepared('SELECT full_name, email_address
