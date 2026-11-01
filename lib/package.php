@@ -112,7 +112,7 @@ function check_get_author_info() : mixed {
 	} else {
 		?>
 		<script type='text/javascript'>
-		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Tool'); ?>';
+		var mixedReasonTitle = <?php print json_encode(__('Key Generation Required to Use Tool')); ?>;
 		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found'); ?>';
 
 		sessionMessage = {
