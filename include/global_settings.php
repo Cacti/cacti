@@ -2192,12 +2192,6 @@ $settings = array(
 			'default' => '1200',
 			'array' => $boost_max_runtime
 		),
-		'boost_redirect' => array(
-			'friendly_name' => __('Enable direct population of poller_output_boost table'),
-			'description' => __('Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle.'),
-			'method' => 'checkbox',
-			'default' => ''
-		),
 		'path_boost_log' => array(
 			'friendly_name' => __('Boost Debug Log'),
 			'description' => __('If this field is non-blank, Boost will log RRDUpdate output from the boost	poller process.'),
