@@ -1,0 +1,19 @@
+<phpunit bootstrap="tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+    <source>
+        <include>
+            <directory suffix=".php">lib/Rrd</directory>
+        </include>
+    </source>
+    <testsuites>
+        <testsuite name="RRDtool component coverage">
+            <file>tests/Unit/Core/Rrd/RrdCommandTest.php</file>
+            <file>tests/Unit/Core/Rrd/LocalRrdTransportTest.php</file>
+            <file>tests/Unit/Core/Rrd/DataSourceCommandBuilderTest.php</file>
+            <file>tests/Unit/Core/Rrd/GraphOptionsTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
