@@ -951,7 +951,7 @@ function get_format_message_instance($current_message) {
 		case MESSAGE_LEVEL_CSRF:
 			$message = '<span class="deviceDown">' . $fmessage . '</span>';
 			break;
-		default;
+		default:
 			$message = '<span class="deviceUnknown">' . $fmessage . '</span>';
 			break;
 	}
@@ -8490,8 +8490,8 @@ function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 
 
 	$body = @file_get_contents($url, false, $ctx);
 
-	if (isset($http_response_header) && is_array($http_response_header) && count($http_response_header) > 0) {
-		if (preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
+	if ( null != http_get_last_response_headers() && is_array(http_get_last_response_headers()) && count(http_get_last_response_headers()) > 0) {
+		if (preg_match('#HTTP/\S+\s+(\d+)#', http_get_last_response_headers()[0], $m)) {
 			$status = (int) $m[1];
 		}
 	}
