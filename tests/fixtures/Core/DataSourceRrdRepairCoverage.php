@@ -22,14 +22,16 @@ require dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 if (!defined('MESSAGE_LEVEL_INFO')) {
 	define('MESSAGE_LEVEL_INFO', 3);
 }
+
 if (!defined('MESSAGE_LEVEL_ERROR')) {
 	define('MESSAGE_LEVEL_ERROR', 1);
 }
+
 if (!defined('RRDTOOL_OUTPUT_BOOLEAN')) {
 	define('RRDTOOL_OUTPUT_BOOLEAN', 4);
 }
 
-/* Mutable boundary state the stubs read, reset per scenario below. */
+// Mutable boundary state the stubs read, reset per scenario below.
 $GLOBALS['ds_repair_state'] = [
 	'authorized'  => true,
 	'rrd_info'    => ['rra' => [0 => []], 'filename' => '/tmp/fixture.rrd', 'ds' => []],
@@ -103,28 +105,28 @@ function run_scenario(array $overrides) : void {
 	ds_repair();
 }
 
-/* unauthorized -> permission_denied, no repair */
+// unauthorized -> permission_denied, no repair
 run_scenario(['authorized' => false]);
 
-/* RRDfile unreadable (rrdtool info returns false) */
+// RRDfile unreadable (rrdtool info returns false)
 run_scenario(['rrd_info' => false]);
 
-/* RRDfile present but no RRA data */
+// RRDfile present but no RRA data
 run_scenario(['rrd_info' => ['rra' => [], 'filename' => '/tmp/fixture.rrd']]);
 
-/* nothing to tune */
+// nothing to tune
 run_scenario(['diff' => []]);
 
-/* tune needed but the RRDfile is not writable by the web server */
+// tune needed but the RRDfile is not writable by the web server
 run_scenario(['writable' => false]);
 
-/* writable: one control-character recommendation is skipped, one succeeds */
+// writable: one control-character recommendation is skipped, one succeeds
 run_scenario([
-	'diff' => ['tune' => ["/tmp/fixture.rrd DEL:control\x01", '/tmp/fixture.rrd DS:traffic_in:COUNTER:600:0:U']],
+	'diff'        => ['tune' => ["/tmp/fixture.rrd DEL:control\x01", '/tmp/fixture.rrd DS:traffic_in:COUNTER:600:0:U']],
 	'exec_result' => true,
 ]);
 
-/* writable: the tune command fails, so the repair is reported as failed */
+// writable: the tune command fails, so the repair is reported as failed
 run_scenario(['exec_result' => false]);
 
 $messages = $GLOBALS['ds_repair_messages'];

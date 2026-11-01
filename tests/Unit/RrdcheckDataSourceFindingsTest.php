@@ -21,7 +21,7 @@ test('rrdcheck_ds_findings reports an extra RRDfile data source with a DEL spec'
 
 	expect($findings[0]['message'])->toContain('includes 2');
 
-	$del = array_values(array_filter($findings, fn($f) => $f['spec'] === 'DEL:legacy'));
+	$del = array_values(array_filter($findings, fn ($f) => $f['spec'] === 'DEL:legacy'));
 	expect($del)->toHaveCount(1);
 	expect($del[0]['message'])->toContain('no longer requires');
 });
@@ -32,7 +32,7 @@ test('rrdcheck_ds_findings reports a missing data source with a DS add spec', fu
 
 	expect($findings[0]['message'])->toContain('only includes 1');
 
-	$add = array_values(array_filter($findings, fn($f) => $f['spec'] === 'DS:out:COUNTER:600:0:U'));
+	$add = array_values(array_filter($findings, fn ($f) => $f['spec'] === 'DS:out:COUNTER:600:0:U'));
 	expect($add)->toHaveCount(1);
 	expect($add[0]['message'])->toContain('missing from the RRDfile');
 });
@@ -40,7 +40,7 @@ test('rrdcheck_ds_findings reports a missing data source with a DS add spec', fu
 test('rrdcheck_ds_findings falls back to a plain message when no Cacti definition exists', function () {
 	$findings = rrdcheck_ds_findings(['out' => 'out'], [], [], '/rra/x.rrd');
 
-	$miss = array_values(array_filter($findings, fn($f) => str_contains($f['message'], 'exists in the Database')));
+	$miss = array_values(array_filter($findings, fn ($f) => str_contains($f['message'], 'exists in the Database')));
 	expect($miss)->toHaveCount(1);
 	expect($miss[0]['spec'])->toBe('');
 });
@@ -48,7 +48,7 @@ test('rrdcheck_ds_findings falls back to a plain message when no Cacti definitio
 test('rrdcheck_ds_findings flags an empty data source name', function () {
 	$findings = rrdcheck_ds_findings(['' => ''], [], [], '/rra/x.rrd');
 
-	$empty = array_values(array_filter($findings, fn($f) => str_contains($f['message'], 'is empty')));
+	$empty = array_values(array_filter($findings, fn ($f) => str_contains($f['message'], 'is empty')));
 	expect($empty)->toHaveCount(1);
 	expect($empty[0]['spec'])->toBe('');
 });
@@ -56,13 +56,13 @@ test('rrdcheck_ds_findings flags an empty data source name', function () {
 test('rrdcheck_ds_findings is quiet for matching names with equal counts', function () {
 	$findings = rrdcheck_ds_findings(['keep' => 'keep', 'a' => 'a'], ['keep' => [], 'b' => []], [], '/rra/x.rrd');
 
-	$counts = array_values(array_filter($findings, fn($f) => str_contains($f['message'], 'Graph requires')));
+	$counts = array_values(array_filter($findings, fn ($f) => str_contains($f['message'], 'Graph requires')));
 	expect($counts)->toHaveCount(0);
 
-	$del = array_values(array_filter($findings, fn($f) => $f['spec'] === 'DEL:b'));
+	$del = array_values(array_filter($findings, fn ($f) => $f['spec'] === 'DEL:b'));
 	expect($del)->toHaveCount(1);
 
-	$miss = array_values(array_filter($findings, fn($f) => str_contains($f['message'], "'a' exists in the Database")));
+	$miss = array_values(array_filter($findings, fn ($f) => str_contains($f['message'], "'a' exists in the Database")));
 	expect($miss)->toHaveCount(1);
 });
 
