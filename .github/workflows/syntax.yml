@@ -92,6 +92,9 @@ jobs:
       working-directory: tests
       run: composer install --no-interaction --no-progress --prefer-dist
 
+    - name: Install RRDtool for acknowledgement contracts
+      run: sudo apt-get update && sudo apt-get install -y rrdtool
+
     - name: Run Boost contracts
       working-directory: tests
       run: php vendor/bin/pest --configuration=phpunit-boost.xml --colors=never
