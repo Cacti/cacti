@@ -12,3 +12,30 @@ uidNumber: 10001
 gidNumber: 10001
 homeDirectory: /home/ldapuser
 userPassword: ldap-e2e-pass
+
+dn: cn=claimuser,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+cn: claimuser
+sn: User
+uid: claimuser
+displayName: Claim User
+mail: claimuser@example.org
+userPassword: ldap-e2e-pass
+
+dn: cn=outsideuser,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+cn: outsideuser
+sn: User
+uid: outsideuser
+displayName: Outside User
+mail: outsideuser@example.org
+userPassword: ldap-e2e-pass
+
+dn: ou=groups,dc=example,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=cacti-operators,ou=groups,dc=example,dc=org
+objectClass: groupOfNames
+cn: cacti-operators
+member: cn=claimuser,ou=users,dc=example,dc=org
