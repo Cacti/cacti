@@ -9853,6 +9853,10 @@ function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 
 
 	$body = @file_get_contents($url, false, $ctx);
 
+	if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
+		$http_response_header = http_get_last_response_headers();
+	}
+
 	if (isset($http_response_header) && is_array($http_response_header) && count($http_response_header) > 0) {
 		if (preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
 			$status = (int) $m[1];
