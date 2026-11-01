@@ -25502,3 +25502,7 @@ msgstr ""
 #, php-format
 msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""
+
+#: lib/api_automation.php
+msgid "Automation import contains an invalid match field."
+msgstr ""
