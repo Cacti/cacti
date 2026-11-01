@@ -18,14 +18,11 @@
 $src = file_get_contents(__DIR__ . '/../../../../include/csrf.php');
 
 test('csrf timeout handler uses validate_redirect_url not sanitize_uri for Location header', function () use ($src) {
-    $timeoutPos = strpos($src, 'function csrf_timeout_handler(');
-    if ($timeoutPos === false) {
-        // Alternative: the fix may be in a non-function block
-        $timeoutPos = strpos($src, 'csrf_timeout');
-    }
+    $timeoutPos = strpos($src, 'function csrf_error_callback(');
     expect($timeoutPos)->not->toBeFalse();
-
-    $body = substr($src, $timeoutPos, 600);
+    $end = strpos($src, "\n}", $timeoutPos);
+    expect($end)->not->toBeFalse();
+    $body = substr($src, $timeoutPos, $end - $timeoutPos);
     expect($body)->toContain('validate_redirect_url(');
     expect($body)->not->toContain("sanitize_uri(\$_SERVER['REQUEST_URI'])");
 });
