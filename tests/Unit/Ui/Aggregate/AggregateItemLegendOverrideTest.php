@@ -1,5 +1,17 @@
 <?php
-// Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
 namespace CactiTests\AggregateItemLegend;
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 \cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/api_aggregate.php', 'aggregate_apply_item_legend', __NAMESPACE__);
