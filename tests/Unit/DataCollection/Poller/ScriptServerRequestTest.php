@@ -76,6 +76,28 @@ test('a request one byte over the limit whose LF fits the buffer is still refuse
 	expect($overlong)->toBeTrue();
 });
 
+test('draining a request restores the socket blocking mode', function (bool $blocking) {
+	$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+	stream_set_blocking($pair[1], $blocking);
+	fwrite($pair[0], "discard this line\nkeep this line\n");
+
+	script_server_drain_line($pair[1], 0.1);
+
+	expect(stream_get_meta_data($pair[1])['blocked'])->toBe($blocking)
+		->and(fgets($pair[1]))->toBe("keep this line\n");
+
+	fclose($pair[0]);
+	fclose($pair[1]);
+})->with([true, false])
+	->skip(!function_exists('stream_socket_pair') || DIRECTORY_SEPARATOR === '\\', 'needs a unix socket pair');
+
+test('an unsupported select fallback never switches to a blocking read', function () {
+	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/script_server.php');
+
+	expect($source)->toContain('$ready === false && !$nonblocking')
+		->not->toContain("if (\$ready === false) {\n\t\t\tstream_set_blocking(\$stream, true);");
+});
+
 test('an unterminated overlong request does not wait for a line ending that never comes', function () {
 	// spine truncates an overlong request without CR LF and then waits for the reply
 	$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
