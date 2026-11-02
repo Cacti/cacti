@@ -43,6 +43,7 @@ use phpseclib4\Exception\{
     InvalidModeException,
     InvalidStateException,
     ServiceUnavailableException,
+    SSHChannelExitSignalException,
     TimeoutException,
     UnexpectedSFTPPacketException,
     UnexpectedValueException,
@@ -626,9 +627,9 @@ class SFTP extends SSH2
 
         if ($this->version > 2) {
             [$message] = Strings::unpackSSH2('s', $response);
-            $this->sftp_errors[] = isset($filename) ? "$filename ($error): $message" : "$error: $message";
+            $this->sftp_errors[] = "$filename ($error): $message";
         } else {
-            $this->sftp_errors[] = isset($filename) ? "$filename ($error)" : $error;
+            $this->sftp_errors[] = "$filename ($error)";
         }
     }
 
@@ -756,6 +757,8 @@ class SFTP extends SSH2
 
     /**
      * Returns a list of files in the given directory
+     *
+     * @return list<string>
      */
     public function nlist(string $dir = '.', bool $recursive = false): array
     {
@@ -764,6 +767,8 @@ class SFTP extends SSH2
 
     /**
      * Helper method for nlist
+     *
+     * @return list<string>
      */
     private function nlist_helper(string $dir, bool $recursive, string $relativeDir): array
     {
@@ -781,7 +786,13 @@ class SFTP extends SSH2
             }
 
             $path = $this->realpath($dir . '/' . $value);
-            if (is_array($this->query_stat_cache($path))) {
+            if ($this->use_stat_cache) {
+                $is_directory = is_array($this->query_stat_cache($path));
+            } else {
+                $stat = $this->lstat($dir . '/' . $value);
+                $is_directory = $stat && $stat['type'] === FileType::DIRECTORY;
+            }
+            if ($is_directory) {
                 try {
                     $temp = $this->nlist_helper($dir . '/' . $value, true, $relativeDir . $value . '/');
                 } catch (FileSystemException $e) {
@@ -805,6 +816,16 @@ class SFTP extends SSH2
      */
     public function rawlist(string $dir = '.', bool $recursive = false, ?\Closure $onFile = null): array
     {
+        return $this->rawlist_helper($dir, $recursive, $onFile, 0);
+    }
+
+    /**
+     * Helper method for rawlist
+     *
+     * @param ?\Closure(string, string, array):void $onFile Callback invoked for each file found. The parameters are: directory, filename, attributes.
+     */
+    private function rawlist_helper(string $dir, bool $recursive, ?\Closure $onFile, int $depth): array
+    {
         try {
             $files = $this->readlist($dir, true, $onFile);
         } catch (FileSystemException $e) {
@@ -817,8 +838,6 @@ class SFTP extends SSH2
         if (!$recursive) {
             return $files;
         }
-
-        static $depth = 0;
 
         foreach ($files as $key => $value) {
             if ($depth != 0 && $key == '..') {
@@ -836,9 +855,7 @@ class SFTP extends SSH2
             }
 
             if ($is_directory) {
-                $depth++;
-                $files[$key] = $this->rawlist($dir . '/' . $key, true, $onFile);
-                $depth--;
+                $files[$key] = $this->rawlist_helper($dir . '/' . $key, true, $onFile, $depth + 1);
             } else {
                 $files[$key] = (object) $value;
             }
@@ -851,6 +868,7 @@ class SFTP extends SSH2
      * Reads a list, be it detailed or not, of files in the given directory
      *
      * @param null|\Closure(string, string, array):void $onFile Callback invoked for each file found. The parameters are: directory, filename, attributes.
+     * @return ($raw is true ? array<array-key, array<array-key, mixed>> : list<string>)
      */
     private function readlist(string $dir, bool $raw = true, ?\Closure $onFile = null): array
     {
@@ -1317,8 +1335,6 @@ class SFTP extends SSH2
      * would be of the form "user@dns_domain" but it does not need to be.
      * `$sftp->getSupportedVersions()['version']` will return the specific version
      * that's being used.
-     *
-     * Returns true on success or false on error.
      */
     public function chgrp(string $filename, int|string $gid, bool $recursive = false): void
     {
@@ -1648,7 +1664,7 @@ class SFTP extends SSH2
         } elseif ($mode & (self::RESUME | self::RESUME_START)) {
             // if OpenFlag::APPEND worked as it should _size() wouldn't need to be called
             $stat = $this->stat($remote_file);
-            $offset = $stat !== false && $stat['size'] ? $stat['size'] : 0;
+            $offset = $stat['size'] ? $stat['size'] : 0;
         } else {
             $offset = 0;
             if ($this->version >= 5) {
@@ -1829,11 +1845,12 @@ class SFTP extends SSH2
      * Downloads a file from the SFTP server.
      *
      * Returns a string containing the contents of $remote_file if $local_file is left undefined.
-     * If $local_file is defined, returns true on success.
+     * If $local_file is defined, writes the file locally and returns null.
      *
      * $offset and $length can be used to download files in chunks.
      *
      * @param string|null|resource|\Closure $local_file
+     * @return ($local_file is null ? string : null)
      */
     public function get(string $remote_file, mixed $local_file = null, int $offset = 0, int $length = -1, ?\Closure $progressCallback = null): ?string
     {
@@ -1850,17 +1867,13 @@ class SFTP extends SSH2
         $response = $this->get_sftp_packet_or_error([SFTPPacketType::HANDLE, SFTPPacketType::STATUS]);
         $handle = substr($response, 4);
 
-        if (is_resource($local_file)) {
+        if (!isset($local_file)) {
+            $content = '';
+        } elseif (is_resource($local_file)) {
+            /** @psalm-suppress NoValue */
             $fp = $local_file;
-            //$stat = fstat($fp);
-            //$res_offset = $stat['size'];
-        } else {
-            //$res_offset = 0;
-            if (is_string($local_file)) {
-                $fp = Files::open($local_file, 'wb');
-            } else {
-                $content = '';
-            }
+        } elseif (is_string($local_file)) {
+            $fp = Files::open($local_file, 'wb');
         }
 
         $fclose_check = isset($local_file) && (!$local_file instanceof \Closure) && !is_resource($local_file);
@@ -1903,7 +1916,14 @@ class SFTP extends SSH2
                     $this->get_sftp_packet($packets_sent - $i);
                     continue;
                 } else {
-                    $response = $this->get_sftp_packet($packets_sent - $i);
+                    try {
+                        $response = $this->get_sftp_packet($packets_sent - $i);
+                    } catch (SSHChannelExitSignalException $e) {
+                        if (!isset($local_file)) {
+                            $e->partialOutput = $content;
+                        }
+                        throw $e;
+                    }
                 }
 
                 switch ($this->packet_type) {
@@ -1936,9 +1956,14 @@ class SFTP extends SSH2
                             $this->init_sftp_connection();
                             throw new ConnectionClosedException('Connection closed while downloading file');
                         } else {
+                            try {
+                                $type = 'SSH_FXP_' . SFTPPacketType::getConstantNameByValue($this->packet_type);
+                            } catch (InvalidArgumentException) {
+                                $type = '# ' . $this->packet_type;
+                            }
                             throw new UnexpectedSFTPPacketException(
                                 'Expected SSH_FXP_DATA or SSH_FXP_STATUS. ' .
-                                'Got packet type: SSH_FXP_' . SFTPPacketType::getConstantNameByValue($this->packet_type)
+                                "Got packet type: $type"
                             );
                         }
                 }
@@ -2063,8 +2088,7 @@ class SFTP extends SSH2
             $result = $this->query_stat_cache($path);
 
             if (isset($result)) {
-                // return true if $result is an array or if it's an stdClass object
-                return $result !== false;
+                return true;
             }
         }
 
@@ -2314,8 +2338,6 @@ class SFTP extends SSH2
 
     /**
      * Renames a file or a directory on the SFTP server.
-     *
-     * If the file already exists this will return false
      */
     public function rename(string $oldname, string $newname): void
     {
@@ -2582,7 +2604,7 @@ class SFTP extends SSH2
     {
         // in SSH2.php the timeout is cumulative per function call. eg. exec() will
         // timeout after 10s. but for SFTP.php it's cumulative per packet
-        $this->curTimeout = $this->timeout;
+        $this->curTimeout = $this->timeout ?: false;
         $this->is_timeout = false;
 
         $packet = $this->use_request_id ?
@@ -2645,7 +2667,7 @@ class SFTP extends SSH2
 
         // in SSH2.php the timeout is cumulative per function call. eg. exec() will
         // timeout after 10s. but for SFTP.php it's cumulative per packet
-        $this->curTimeout = $this->timeout;
+        $this->curTimeout = $this->timeout ?: false;
         $this->is_timeout = false;
 
         $start = microtime(true);
@@ -3081,9 +3103,12 @@ class SFTP extends SSH2
                 $expected[] = 'SSH_FXP_' . SFTPPacketType::getConstantNameByValue($packet_type);
             }
             $expected = implode(' or ', $expected);
-            throw new UnexpectedSFTPPacketException(
-                "Expected $expected. Got packet type: SSH_FXP_" . SFTPPacketType::getConstantNameByValue($this->packet_type)
-            );
+            try {
+                $type = 'SSH_FXP_' . SFTPPacketType::getConstantNameByValue($this->packet_type);
+            } catch (InvalidArgumentException) {
+                $type = '# ' . $this->packet_type;
+            }
+            throw new UnexpectedSFTPPacketException("Expected $expected. Got packet type: $type");
         }
         if ($this->packet_type == SFTPPacketType::STATUS) {
             if (is_null($expectedStatus)) {

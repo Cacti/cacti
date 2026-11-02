@@ -43,8 +43,8 @@ use phpseclib4\Crypt\EC\{Parameters, PrivateKey, PublicKey};
 use phpseclib4\Exception\{
     BadConfigurationException,
     BadMethodCallException,
-    InvalidStateException,
     LengthException,
+    UnexpectedValueException,
     UnsupportedCurveException
 };
 use phpseclib4\File\ASN1;
@@ -144,7 +144,6 @@ abstract class EC extends AsymmetricKey
             ],
             // OPENSSL_KEYTYPE_X448 introduced in PHP 8.4.0
             'Curve448' => ['OpenSSL' => defined('OPENSSL_KEYTYPE_X448')],
-            // openssl_get_curve_names() was introduced in PHP 7.1.0
             // exclude curve25519 and curve448 from testing
             default => ['OpenSSL' => function_exists('openssl_get_curve_names') && substr($curveEngineName, 0, 5) != 'curve' && in_array($curveEngineName, openssl_get_curve_names())]
         };
@@ -301,6 +300,11 @@ abstract class EC extends AsymmetricKey
             $new = new Parameters();
             $new->curve = $components['curve'];
             return $new;
+        }
+
+        // SEC1 3.2.2: a public key is not the point at infinity, which the encoding 00 stands for
+        if (isset($components['QA']) && !count($components['QA'])) {
+            throw new UnexpectedValueException('The public key is the point at infinity');
         }
 
         if (isset($components['dA'])) {

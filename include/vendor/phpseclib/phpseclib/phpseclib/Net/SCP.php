@@ -12,7 +12,7 @@
  * <?php
  *    include 'vendor/autoload.php';
  *
- *    $scp = new \phpseclib3\Net\SCP('www.domain.tld');
+ *    $scp = new \phpseclib4\Net\SCP('www.domain.tld');
  *    if (!$scp->login('username', 'password')) {
  *        exit('Login Failed');
  *    }
@@ -36,6 +36,7 @@ use phpseclib4\Exception\{
     FileSystemException,
     InvalidArgumentException,
     InvalidStateException,
+    SSHChannelExitSignalException,
     TimeoutException,
     UnexpectedSSHMessageException,
     UnexpectedValueException
@@ -51,13 +52,13 @@ class SCP extends SSH2
     /**
      * Reads data from a local file.
      *
-     * @see \phpseclib3\Net\SCP::put()
+     * @see \phpseclib4\Net\SCP::put()
      */
     public const SOURCE_LOCAL_FILE = 1;
     /**
      * Reads data from a string.
      *
-     * @see \phpseclib3\Net\SCP::put()
+     * @see \phpseclib4\Net\SCP::put()
      */
     // this value isn't really used anymore but i'm keeping it reserved for historical reasons
     public const SOURCE_STRING = 2;
@@ -161,9 +162,8 @@ class SCP extends SSH2
     /**
      * Downloads a file from the SCP server.
      *
-     * Returns a string containing the contents of $remote_file if $local_file is left undefined or a boolean false if
-     * the operation was unsuccessful.  If $local_file is defined, returns true or false depending on the success of the
-     * operation
+     * Returns a string containing the contents of $remote_file if $local_file is left undefined.
+     * If $local_file is defined, writes the file locally and returns null.
      *
      * @param string|resource|null $local_file
      * @psalm-suppress PossiblyUnusedMethod
@@ -204,7 +204,14 @@ class SCP extends SSH2
 
         $size = 0;
         while (true) {
-            $data = $this->get_scp_response(false);
+            try {
+                $data = $this->get_scp_response(false);
+            } catch (SSHChannelExitSignalException $e) {
+                if (is_null($local_file)) {
+                    $e->partialOutput = $content;
+                }
+                throw $e;
+            }
             // SCP usually seems to split stuff out into 16k chunks
             $length = strlen($data);
             $size += $length;
