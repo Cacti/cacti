@@ -110,6 +110,28 @@ test('end of input is reported as false', function () {
 	expect(script_server_read_request($stream))->toBeFalse();
 });
 
+test('draining a request restores the socket blocking mode', function ($blocking) {
+	list($writer, $stream) = ss_request_pipe();
+	stream_set_blocking($stream, $blocking);
+	fwrite($writer, "discard this line\nkeep this line\n");
+
+	script_server_drain_line($stream, 0.1);
+
+	expect(stream_get_meta_data($stream)['blocked'])->toBe($blocking)
+		->and(fgets($stream))->toBe("keep this line\n");
+
+	fclose($writer);
+	fclose($stream);
+})->with([true, false])
+	->skip(!function_exists('stream_socket_pair') || DIRECTORY_SEPARATOR === '\\', 'needs a unix socket pair');
+
+test('an unsupported select fallback never switches to a blocking read', function () {
+	$source = file_get_contents(dirname(__DIR__, 3) . '/script_server.php');
+
+	expect($source)->toContain('$ready === false && !$nonblocking')
+		->not->toContain("if (\$ready === false) {\n\t\t\tstream_set_blocking(\$stream, true);");
+});
+
 /* what spine's php_cmd() writes: snprintf(command, BUFSIZE = 1024, "%s\r\n") */
 function ss_request_spine_write($payload) {
 	return substr($payload . "\r\n", 0, 1023);

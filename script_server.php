@@ -581,45 +581,47 @@ function script_server_read_request($stream, $drain_wait = 0.5) {
  * @return void No value is returned.
  */
 function script_server_drain_line($stream, $wait) {
-	$seconds = (int) floor($wait);
-	$micro   = (int) (($wait - $seconds) * 1000000);
+	$seconds      = (int) floor($wait);
+	$micro        = (int) (($wait - $seconds) * 1000000);
+	$metadata     = stream_get_meta_data($stream);
+	$was_blocking = $metadata['blocked'];
+	$nonblocking  = @stream_set_blocking($stream, false);
 
-	stream_set_blocking($stream, false);
+	try {
+		while (true) {
+			$read   = array($stream);
+			$write  = null;
+			$except = null;
 
-	while (true) {
-		$read   = array($stream);
-		$write  = null;
-		$except = null;
+			/* stream_select() cannot watch every stream type (notably Windows
+			 * pipes). Keep the fallback non-blocking so a truncated request
+			 * cannot deadlock the script server while its caller waits. */
+			try {
+				$ready = @stream_select($read, $write, $except, $seconds, $micro);
+			} catch (Throwable $e) {
+				$ready = false;
+			}
 
-		/* stream_select() cannot watch every stream type (Windows pipes,
-		 * memory streams); those are read until a line feed or end of input */
-		try {
-			$ready = @stream_select($read, $write, $except, $seconds, $micro);
-		} catch (Throwable $e) {
-			$ready = false;
+			if ($ready === 0 || ($ready === false && !$nonblocking)) {
+				break;
+			}
+
+			/* non-blocking fgets() stops at the line feed, leaving the next request */
+			$chunk = fgets($stream, 8192);
+
+			if ($chunk !== false && substr($chunk, -1) == "\n") {
+				break;
+			}
+
+			if ($chunk === false && (feof($stream) || $ready === false)) {
+				break;
+			}
 		}
-
-		if ($ready === 0) {
-			break;
-		}
-
-		if ($ready === false) {
-			stream_set_blocking($stream, true);
-		}
-
-		/* non-blocking fgets() stops at the line feed, leaving the next request */
-		$chunk = fgets($stream, 8192);
-
-		if ($chunk !== false && substr($chunk, -1) == "\n") {
-			break;
-		}
-
-		if ($chunk === false && (feof($stream) || $ready === false)) {
-			break;
+	} finally {
+		if ($nonblocking) {
+			@stream_set_blocking($stream, $was_blocking);
 		}
 	}
-
-	stream_set_blocking($stream, true);
 }
 
 /**

@@ -151,3 +151,28 @@ test('a counter that is not an unsigned integer yields U instead of an error', f
 	expect(ss_counter_step('U', '-5', '100', '4294967296'))->toBe('U');
 	expect(ss_counter_step('U', '105', '100', '4294967296'))->toBe('5');
 });
+
+test('real-time state identifiers preserve distinct validated request tokens', function () {
+	expect(ss_net_snmp_realtime_state_id('preview-A'))->toBe('preview-A')
+		->and(ss_net_snmp_realtime_state_id('preview-B'))->toBe('preview-B')
+		->and(ss_net_snmp_realtime_state_id(42))->toBe('42');
+});
+
+test('unsafe real-time state identifiers are rejected', function ($poller_id) {
+	expect(ss_net_snmp_realtime_state_id($poller_id))->toBeFalse();
+})->with([
+	'',
+	'../preview',
+	'preview/one',
+	str_repeat('a', 65),
+	[['preview']],
+]);
+
+test('both disk scripts use the validated request token in real-time state files', function () {
+	foreach (array('ss_net_snmp_disk_io.php', 'ss_net_snmp_disk_bytes.php') as $script) {
+		$source = file_get_contents(__DIR__ . '/../../../scripts/' . $script);
+
+		expect($source)->toContain('ss_net_snmp_realtime_state_id($poller_id)')
+			->not->toContain('(int) $poller_id');
+	}
+});

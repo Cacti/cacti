@@ -1,5 +1,17 @@
 <?php
-// Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
 
 /*
  * Exercises the script server request handling, the poller writer limit and
@@ -327,21 +339,29 @@ check('ss_webseer strips line breaks from names', ob_get_clean() === '1!linebrea
 // Disk counters kept in a private state directory between polls.
 $disk     = __NAMESPACE__ . '\\ss_net_snmp_disk_' . $mode;
 $zero     = ($mode === 'io' ? 'reads:0 writes:0' : 'bytesread:0 byteswritten:0');
+$unknown  = ($mode === 'io' ? 'reads:U writes:U' : 'bytesread:U byteswritten:U');
 $host_row = array_merge($host_row, ['id' => 7]);
 
 check('disk script refuses an unknown device', $disk('unknown.example') === $zero);
 check('disk script refuses a device id of zero', $disk('0.0') === $zero);
 
 foreach (['cmd', 'realtime'] as $environ) {
+	$poller_id = $environ === 'realtime' ? 'preview-A' : 1;
 	$poll = 1;
 	check("first $environ poll has no previous state", $disk('known.example') === $zero);
 	$poll = 2;
 	check("second $environ poll reports a delta", $disk(7) !== $zero);
 }
+$environ   = 'realtime';
+$poller_id = '../preview';
+check('unsafe real-time state identifier yields unknown data', $disk(7) === $unknown);
+$poller_id = 1;
 
 $state = $base . '/cacti/net-snmp-devio';
 check('state directory is private', (fileperms($state) & 0777) === 0700 && (fileperms($base . '/cacti') & 0777) === 0700);
 check('state file written without leftovers', is_file("$state/7_$mode") && glob("$state/state*") === []);
+$realtime_state = $base . '/cacti-rt/net-snmp-devio';
+check('real-time state file preserves the request token', is_file("$realtime_state/7_preview-A_{$mode}_rt"));
 
 chmod($state, 0770);
 clearstatcache();

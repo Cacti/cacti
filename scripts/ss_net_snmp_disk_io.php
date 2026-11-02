@@ -88,6 +88,25 @@ if (!function_exists('ss_counter_step')) {
 	}
 }
 
+if (!function_exists('ss_net_snmp_realtime_state_id')) {
+	/**
+	 * Validate the real-time request identifier before using it in a state file.
+	 *
+	 * @param mixed $poller_id The real-time request identifier.
+	 *
+	 * @return string|false The safe identifier, or false when it is invalid.
+	 */
+	function ss_net_snmp_realtime_state_id($poller_id) {
+		if (!is_string($poller_id) && !is_int($poller_id)) {
+			return false;
+		}
+
+		$poller_id = (string) $poller_id;
+
+		return preg_match('/^[a-zA-Z0-9_-]{1,64}$/D', $poller_id) ? $poller_id : false;
+	}
+}
+
 if (!function_exists('ss_net_snmp_state_dir')) {
 	/**
 	 * Return a state directory private to the poller user, creating it when it
@@ -222,7 +241,13 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		$tmpfile = $host_id . '_io';
 	} else {
 		$tmpdir = $tmpdir . '/cacti-rt/net-snmp-devio';
-		$tmpfile = $host_id . '_' . (int) $poller_id . '_io_rt';
+		$state_id = ss_net_snmp_realtime_state_id($poller_id);
+
+		if ($state_id === false) {
+			return 'reads:U writes:U';
+		}
+
+		$tmpfile = $host_id . '_' . $state_id . '_io_rt';
 	}
 
 	$tmpdir = ss_net_snmp_state_dir($tmpdir);
