@@ -797,6 +797,29 @@ function rrdcheck_error_handler(int $errno, string $errmsg, string $filename, in
 }
 
 /**
+ * rrdcheck_purge_old_findings - prune rrdcheck findings older than the retention
+ * window so the table does not grow without bound. The cutoff is computed in PHP
+ * and compared against the stored test_date, which keeps the statement portable
+ * and lets it be exercised directly in tests.
+ *
+ * @param int $retention_days Number of days of findings to keep. Values below 1
+ *                            fall back to the 7 day default.
+ *
+ * @return string The cutoff datetime (Y-m-d H:i:s) used for the purge.
+ */
+function rrdcheck_purge_old_findings(int $retention_days = 7) : string {
+	if ($retention_days < 1) {
+		$retention_days = 7;
+	}
+
+	$cutoff = date('Y-m-d H:i:s', time() - ($retention_days * 86400));
+
+	db_execute_prepared('DELETE FROM rrdcheck WHERE test_date < ?', [$cutoff]);
+
+	return $cutoff;
+}
+
+/**
  * rrdcheck_boost_bottom - this routine accommodates rrdcheck after the boost process
  * has completed.  The use of boost will require boost version 2.5 or above.  The idea
  * if that rrdcheck will be started on the boost cycle.
@@ -814,6 +837,9 @@ function rrdcheck_boost_bottom() : void {
 		$expected_children = rrdcheck_launch_children('bmaster');
 
 		rrdcheck_wait_for_children('bmaster', $expected_children);
+
+		// delete old data
+		rrdcheck_purge_old_findings();
 
 		rrdcheck_log_statistics('BOOST');
 	}
