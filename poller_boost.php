@@ -176,9 +176,9 @@ if ($child == false) {
 		 * Check to see if there are any poller items to process and if not
 		 * exit cleanly
 		 */
-		$poller_items = db_fetch_row('SELECT * FROM poller_output_boost LIMIT 1');
-		if (!cacti_sizeof($poller_items)) {
-			cacti_log('INFO: Boost has no items in poller_output_boost to process during this cycle.', true, 'BOOST');
+		$poller_items = boost_get_total_rows(1);
+		if (!$poller_items) {
+			cacti_log('INFO: Boost has no queued or archived items to process during this cycle.', true, 'BOOST');
 			exit(0);
 		}
 
@@ -243,25 +243,39 @@ if ($child == false) {
 			$completed_children = boost_completed_children($run_id);
 			$failed_children    = boost_failed_children($run_id);
 
-			/**
-			 * Only a single Boost master runs at a time (enforced by the poller
-			 * process registration), so a run is complete once every launched
-			 * child has recorded a completion, regardless of whether any child
-			 * reported an RRD update failure. Failures are logged for visibility
-			 * but no longer block the archive cleanup below.
-			 */
-			$run_complete       = $completed_children >= $expected_children;
+			$children_complete  = $completed_children >= $expected_children;
+			$archives_requeued  = true;
+
+			if ($children_complete && $failed_children > 0) {
+				$archives_requeued = boost_requeue_unprocessed_rows($run_id);
+			}
+
+			$archives_safe_to_drop = $children_complete && $archives_requeued;
+			$run_succeeded         = $children_complete && $failed_children == 0;
 			$rrd_updates        = (int) db_fetch_cell_prepared('SELECT COALESCE(SUM(CAST(status AS SIGNED)), 0)
 				FROM poller_output_boost_processes
 				WHERE run_id = ?
 				AND CAST(status AS SIGNED) >= 0', array($run_id));
 
-			if (!$run_complete) {
+			if (!$children_complete) {
 				set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
 				$exit_code = 1;
 				boost_log_statistics($rrd_updates);
 				set_config_option('boost_last_run_time', $last_run_time);
 				cacti_log('WARNING: Boost retained archive tables because not all child processes recorded completion.', true, 'BOOST');
+			} elseif (!$archives_requeued) {
+				set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
+				$exit_code = 1;
+				boost_log_statistics($rrd_updates);
+				set_config_option('boost_last_run_time', $last_run_time);
+				cacti_log('ERROR: Boost retained archive tables because unprocessed samples could not be returned to the live queue.', true, 'BOOST');
+			} elseif ($failed_children > 0) {
+				set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
+				$exit_code = 1;
+				boost_log_statistics($rrd_updates);
+				$next_run_time = $current_time + $seconds_offset;
+				set_config_option('boost_next_run_time', $next_run_time);
+				cacti_log(sprintf('WARNING: Boost completed with %d child process(es) reporting an RRD update failure; unprocessed samples were returned to the live queue for retry.', $failed_children), true, 'BOOST');
 			} elseif ($rrd_updates > 0) {
 				boost_log_statistics($rrd_updates);
 				$next_run_time = $current_time + $seconds_offset;
@@ -272,17 +286,13 @@ if ($child == false) {
 				set_config_option('boost_last_run_time', $last_run_time);
 			}
 
-			if ($run_complete) {
+			if ($run_succeeded) {
 				set_config_option('boost_poller_status', 'complete - end time:' . date('Y-m-d H:i:s'));
 			}
 
 			set_config_option('boost_poller_started', 0);
 
-			if ($run_complete) {
-				if ($failed_children > 0) {
-					cacti_log(sprintf('WARNING: Boost completed with %d child process(es) reporting an RRD update failure; their unprocessed samples are discarded along with the archive tables. Only one Boost master runs at a time, so retaining archives on failure would let a persistently failing data source accumulate archive tables indefinitely.', $failed_children), true, 'BOOST');
-				}
-
+			if ($archives_safe_to_drop) {
 				cacti_log('INFO: Boost removing archive tables ...', true, 'BOOST');
 
 				/**
@@ -302,7 +312,7 @@ if ($child == false) {
 				}
 			}
 
-			if ($rrd_updates > 0 && $run_complete) {
+			if ($rrd_updates > 0 && $run_succeeded) {
 				dsstats_boost_bottom();
 				rrdcheck_boost_bottom();
 
@@ -519,6 +529,53 @@ function boost_failed_children($run_id) {
 		FROM poller_output_boost_processes
 		WHERE run_id = ?
 		AND CAST(status AS SIGNED) < 0', array($run_id));
+}
+
+/**
+ * Copies every unacknowledged archive row back to the live Boost queue before archive cleanup.
+ * The progress cursor is advanced only after RRDtool acknowledges an update, so rows after that
+ * cursor are safe to retry. INSERT IGNORE keeps samples already collected into the live queue.
+ *
+ * @param string $run_id The run ID whose remaining work should be requeued.
+ *
+ * @return bool True when every archive was copied successfully, false otherwise.
+ */
+function boost_requeue_unprocessed_rows($run_id) {
+	if (!preg_match('/^[a-f0-9]{32}$/D', $run_id)) {
+		return false;
+	}
+
+	$archive_tables = boost_get_arch_table_names();
+
+	if (!is_array($archive_tables)) {
+		return false;
+	}
+
+	foreach($archive_tables as $table) {
+		if (!boost_is_valid_archive_table($table)) {
+			cacti_log("ERROR: Boost refused to requeue rows from invalid archive table '$table'.", true, 'BOOST');
+
+			return false;
+		}
+
+		if (db_execute_prepared("INSERT IGNORE INTO poller_output_boost
+			(local_data_id, rrd_name, time, output)
+			SELECT archived.local_data_id, archived.rrd_name, archived.time, archived.output
+			FROM `$table` AS archived
+			INNER JOIN poller_output_boost_local_data_ids AS progress
+			ON archived.local_data_id = progress.local_data_id
+			WHERE progress.run_id = ?
+			AND (progress.cursor_time IS NULL
+				OR archived.time > progress.cursor_time
+				OR (archived.time = progress.cursor_time AND archived.rrd_name > progress.cursor_rrd_name))",
+			array($run_id), false) === false) {
+			cacti_log("ERROR: Boost could not requeue unprocessed rows from archive table '$table'.", true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	return true;
 }
 
 /**
@@ -1079,6 +1136,8 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 		}
 	}
 
+	$failed_data_ids = array();
+
 	if (cacti_sizeof($results)) {
 		$updates_ok = true;
 		/* create an array keyed off of each .rrd file */
@@ -1121,8 +1180,8 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 					$outarray       = array();
 
 					if (!$flush_ok) {
-						$updates_ok = false;
-						break;
+						$updates_ok                       = false;
+						$failed_data_ids[$local_data_id] = true;
 					}
 				}
 
@@ -1231,8 +1290,8 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 					$outarray       = array();
 
 					if (!$flush_ok) {
-						$updates_ok = false;
-						break;
+						$updates_ok                       = false;
+						$failed_data_ids[$local_data_id] = true;
 					}
 				}
 
@@ -1396,7 +1455,8 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 			$outarray[] = $tv_tmpl;
 
 			if (!boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe)) {
-				$updates_ok = false;
+				$updates_ok                       = false;
+				$failed_data_ids[$local_data_id] = true;
 			}
 		}
 
@@ -1417,11 +1477,13 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 		$updates_ok = $results !== false;
 	}
 
-	if ($updates_ok && $results !== false) {
+	if ($results !== false) {
 		$cursors = array();
 
 		foreach($results as $item) {
-			$cursors[$item['local_data_id']] = array($item['sample_time'], $item['rrd_name']);
+			if (!isset($failed_data_ids[$item['local_data_id']])) {
+				$cursors[$item['local_data_id']] = array($item['sample_time'], $item['rrd_name']);
+			}
 		}
 
 		foreach($cursors as $local_data_id => $cursor) {
@@ -1435,8 +1497,10 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 				break;
 			}
 		}
-	} else {
-		cacti_log("WARNING: Boost retained the current page for shard $child because one or more RRD updates failed.", true, 'BOOST');
+	}
+
+	if (!$updates_ok) {
+		cacti_log("WARNING: Boost retained unacknowledged rows for shard $child because one or more RRD updates or cursor writes failed.", true, 'BOOST');
 	}
 
 	boost_timer('delete', BOOST_TIMER_END);

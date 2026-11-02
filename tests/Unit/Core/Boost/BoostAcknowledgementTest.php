@@ -6,5 +6,7 @@ test('Boost requires RRDtool acknowledgement before advancing cursors or deletin
     expect($result['refused'])->toBeTrue()
         ->and($result['updates'])->toBe(1000)
         ->and($result['worker_processes'])->toBe(1)
+		->and($result['create_error'])->toStartWith('ERROR:')
+		->and($result['partial_progress'])->toBeTrue()
         ->and($result['timeout_closed'])->toBeTrue();
 });

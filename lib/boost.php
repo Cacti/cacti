@@ -2076,43 +2076,19 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
-		} elseif (!is_dir(dirname($data_source_path))) {
-			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775, true)) {
-					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-						$success  = true;
-						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
-						$spath    = '';
+		} else {
+			$structured_path = dirname($data_source_path);
 
-						foreach($paths as $path) {
-							if ($path == '') {
-								continue;
-							}
-
-							$spath .= '/' . $path;
-
-							$powner_id = fileowner($config['rra_path'] . $spath);
-							$pgroup_id = fileowner($config['rra_path'] . $spath);
-
-							if ($powner_id != $owner_id) {
-								$success = chown($config['rra_path'] . $spath, $owner_id);
-							}
-
-							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp($config['rra_path'] . $spath, $group_id);
-							}
-
-							if (!$success) {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
-								break;
-							}
-						}
-					}
-				} else {
+			if (!is_dir($structured_path) && ($config['is_web'] == false || is_writable($config['rra_path']))) {
+				if (!mkdir($structured_path, 0775, true) && !is_dir($structured_path)) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
-			} else {
+			} elseif (!is_dir($structured_path)) {
 				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
+			}
+
+			if (is_dir($structured_path)) {
+				rrdtool_set_structured_path_permissions($structured_path, 'BOOST');
 			}
 		}
 	}
@@ -2120,9 +2096,9 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
 	} else {
-		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_RETURN_STDERR, $rrdtool_pipe, 'BOOST');
 
-		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0 && file_exists($data_source_path)) {
 			if (!chown($data_source_path, (int) $owner_id)) {
 				cacti_log("WARNING: Unable to set owner for '" . $data_source_path . "'", false, 'BOOST');
 			}
@@ -2183,7 +2159,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
-			boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
+			$create_result = boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
 
 			if (read_config_option('storage_location')) {
 				$valid_entry = rrdtool_execute_path_command('file_exists', $rrd_path, '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
@@ -2195,6 +2171,10 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 		}
 
 		if (!$valid_entry) {
+			if (is_string($create_result) && preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', $create_result)) {
+				return trim($create_result);
+			}
+
 			return 'ERROR: Unable to create RRD file';
 		}
 	}

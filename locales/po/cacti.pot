@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.32\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-02 19:05-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19326,7 +19326,6 @@ msgid "Max Total Memory Possible"
 msgstr ""
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -19681,6 +19680,22 @@ msgid "Cacti System Utilities"
 msgstr ""
 
 #: utilities.php
+msgid "Boost is still running. Wait for the active process to finish before retrying queued data."
+msgstr ""
+
+#: utilities.php
+msgid "Boost has no queued or archived data to retry."
+msgstr ""
+
+#: utilities.php
+msgid "Queued Boost data will be retried during the next poller cycle."
+msgstr ""
+
+#: utilities.php
+msgid "Retry Scheduled"
+msgstr ""
+
+#: utilities.php
 msgid "Overrun Warning"
 msgstr ""
 
@@ -19710,6 +19725,18 @@ msgstr ""
 
 #: utilities.php
 msgid "Running Processes:"
+msgstr ""
+
+#: utilities.php
+msgid "Boost Recovery:"
+msgstr ""
+
+#: utilities.php
+msgid "Preserve and retry all queued and archived Boost samples"
+msgstr ""
+
+#: utilities.php
+msgid "Retry Queued Data"
 msgstr ""
 
 #: utilities.php
@@ -19845,6 +19872,11 @@ msgstr ""
 #: utilities.php
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
+msgstr ""
+
+#: utilities.php
+#, php-format
+msgid "Status: <span class=\"deviceDown\"><b>Interrupted</b></span>, Retained: %s (dses), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
 
 #: utilities.php

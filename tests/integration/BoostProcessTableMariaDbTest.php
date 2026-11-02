@@ -86,6 +86,16 @@ function boostMariaDbExecute($sql) {
 	}
 }
 
+function boostMariaDbExecutePrepared($sql, $params = array(), $log = true) {
+	try {
+		$statement = $GLOBALS['boost_mariadb_pdo']->prepare($sql);
+
+		return $statement->execute($params);
+	} catch (PDOException $e) {
+		return false;
+	}
+}
+
 function boostMariaDbLog($message, $output = false, $facility = '') {
 	$GLOBALS['boost_mariadb_logs'][] = $message;
 }
@@ -128,16 +138,61 @@ function boostMariaDbLoadProductionFunctions($root) {
 	eval($functions);
 }
 
+function boostMariaDbLoadRequeueFunction($root) {
+	if (function_exists('boostMariaDbRequeueUnprocessedRows')) {
+		return;
+	}
+
+	$source = file_get_contents($root . '/poller_boost.php');
+	$start  = strpos($source, 'function boost_requeue_unprocessed_rows(');
+	$end    = strpos($source, "\nfunction ", $start + 1);
+
+	expect($start)->not->toBeFalse()
+		->and($end)->not->toBeFalse();
+
+	$function = substr($source, $start, $end - $start);
+	$function = str_replace(array(
+		'boost_requeue_unprocessed_rows',
+		'boost_get_arch_table_names',
+		'boost_is_valid_archive_table',
+		'db_execute_prepared',
+		'cacti_log',
+	), array(
+		'boostMariaDbRequeueUnprocessedRows',
+		'boostMariaDbArchiveTableNames',
+		'boostMariaDbValidArchiveTable',
+		'boostMariaDbExecutePrepared',
+		'boostMariaDbLog',
+	), $function);
+
+	eval($function);
+}
+
+function boostMariaDbArchiveTableNames() {
+	return $GLOBALS['boost_mariadb_archives'];
+}
+
+function boostMariaDbValidArchiveTable($table) {
+	return preg_match('/^poller_output_boost_arch_\d+$/D', $table) === 1;
+}
+
 beforeEach(function () use ($root) {
 	boostMariaDbLoadProductionFunctions($root);
+	boostMariaDbLoadRequeueFunction($root);
 	boostMariaDbReset();
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_processes');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_local_data_ids');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_100');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_200');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost');
 });
 
 afterEach(function () {
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_processes');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_local_data_ids');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_100');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_200');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost');
 });
 
 test('run-scoped Boost cursor table executes on MariaDB and advances monotonically', function () {
@@ -223,6 +278,48 @@ test('run-scoped cursor predicate pages archive rows in primary-key order', func
 
 	expect($second_page)->toHaveCount(2)
 		->and(array_column($second_page, 'rrd_name'))->toBe(array('a', 'b'));
+});
+
+test('failed shard rows are requeued after the last acknowledged primary key', function () {
+	$schema = '(local_data_id int unsigned NOT NULL, rrd_name varchar(19) NOT NULL,
+		time timestamp NOT NULL, output varchar(512) NOT NULL,
+		PRIMARY KEY (local_data_id, time, rrd_name)) ENGINE=InnoDB';
+
+	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost $schema");
+	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost_arch_100 $schema");
+	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost_arch_200 $schema");
+	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost_local_data_ids (
+		run_id char(32) NOT NULL,
+		local_data_id int unsigned NOT NULL,
+		process_handler int unsigned NOT NULL,
+		cursor_time timestamp NULL default NULL,
+		cursor_rrd_name varchar(19) NOT NULL default '',
+		PRIMARY KEY (run_id, local_data_id)) ENGINE=MEMORY");
+
+	$run_id = str_repeat('c', 32);
+	$statement = $GLOBALS['boost_mariadb_pdo']->prepare('INSERT INTO poller_output_boost_local_data_ids
+		(run_id, local_data_id, process_handler, cursor_time, cursor_rrd_name)
+		VALUES (?, 42, 1, ?, ?), (?, 43, 1, NULL, \'\')');
+	$statement->execute(array($run_id, '2026-09-05 12:00:00', 'a', $run_id));
+
+	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost VALUES
+		(42, 'a', '2026-09-05 12:02:00', 'live')");
+	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost_arch_100 VALUES
+		(42, 'a', '2026-09-05 12:00:00', 'acknowledged'),
+		(42, 'a', '2026-09-05 12:01:00', 'retry-1'),
+		(42, 'a', '2026-09-05 12:02:00', 'archive-old'),
+		(43, 'value', '2026-09-05 12:00:00', 'retry-2')");
+	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost_arch_200 VALUES
+		(42, 'a', '2026-09-05 12:03:00', 'retry-3')");
+	$GLOBALS['boost_mariadb_archives'] = array('poller_output_boost_arch_100', 'poller_output_boost_arch_200');
+
+	expect(boostMariaDbRequeueUnprocessedRows($run_id))->toBeTrue();
+
+	$rows = $GLOBALS['boost_mariadb_pdo']->query('SELECT local_data_id, rrd_name, time, output
+		FROM poller_output_boost ORDER BY local_data_id, time, rrd_name')->fetchAll(PDO::FETCH_ASSOC);
+
+	expect($rows)->toHaveCount(4)
+		->and(array_column($rows, 'output'))->toBe(array('retry-1', 'live', 'retry-3', 'retry-2'));
 });
 
 test('runtime repair executes valid process-table DDL on MariaDB', function () {

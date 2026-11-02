@@ -9,6 +9,13 @@
             <file>Unit/Core/Rrd/RrdcheckDataSourceFindingsTest.php</file>
             <file>Unit/Core/Rrd/RrdTuneRenderTest.php</file>
             <file>Unit/Core/Boost/BoostAcknowledgementTest.php</file>
+            <file>Unit/Core/Boost/BoostStructuredPathPermissionsTest.php</file>
+            <file>Unit/Core/Boost/BoostRecoveryUiTest.php</file>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <file>../lib/rrd.php</file>
+        </include>
+    </source>
 </phpunit>

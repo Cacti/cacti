@@ -879,6 +879,86 @@ function rrdtool_function_interface_speed($data_local) {
 }
 
 /**
+ * Restores the ownership and inherited group permissions expected below a structured RRA path.
+ * Changing a directory owner or group can clear its set-group-ID bit, so apply the parent RRA
+ * directory's group mode after ownership changes. Existing directories are checked as well as
+ * newly created ones so an interrupted or older run can repair the path on its next use.
+ *
+ * @param string $directory The structured directory to repair.
+ * @param string $logopt The Cacti log facility.
+ *
+ * @return bool True when the complete path has the expected permissions, false otherwise.
+ */
+function rrdtool_set_structured_path_permissions($directory, $logopt = 'POLLER') {
+	global $config;
+
+	if ($config['cacti_server_os'] == 'win32' || !function_exists('posix_getuid') || posix_getuid() != 0) {
+		return true;
+	}
+
+	$rra_path  = realpath($config['rra_path']);
+	$directory = realpath($directory);
+
+	if ($rra_path === false || $directory === false ||
+		($directory != $rra_path && !str_starts_with($directory, $rra_path . DIRECTORY_SEPARATOR))) {
+		cacti_log("ERROR: Structured RRA path is outside the configured RRA directory: '$directory'", false, $logopt);
+
+		return false;
+	}
+
+	$owner_id = fileowner($rra_path);
+	$group_id = filegroup($rra_path);
+	$rra_mode = fileperms($rra_path);
+
+	if ($owner_id === false || $group_id === false || $rra_mode === false) {
+		cacti_log("ERROR: Unable to read ownership or permissions for RRA directory '$rra_path'", false, $logopt);
+
+		return false;
+	}
+
+	$required_mode = ($rra_mode & 02000) ? ($rra_mode & 02070) : 0;
+	$relative_path = substr($directory, strlen($rra_path));
+	$path          = $rra_path;
+	$success       = true;
+
+	foreach(preg_split('~[\\\\/]~', $relative_path, -1, PREG_SPLIT_NO_EMPTY) as $part) {
+		$path .= DIRECTORY_SEPARATOR . $part;
+
+		$path_owner = fileowner($path);
+		$path_group = filegroup($path);
+
+		if ($path_owner === false || $path_group === false) {
+			cacti_log("ERROR: Unable to read directory ownership for '$path'", false, $logopt);
+			$success = false;
+			continue;
+		}
+
+		if ($path_owner != $owner_id && !chown($path, $owner_id)) {
+			cacti_log("ERROR: Unable to set directory owner for '$path'", false, $logopt);
+			$success = false;
+		}
+
+		if ($path_group != $group_id && !chgrp($path, $group_id)) {
+			cacti_log("ERROR: Unable to set directory group for '$path'", false, $logopt);
+			$success = false;
+		}
+
+		$path_mode = fileperms($path);
+
+		if ($path_mode === false) {
+			cacti_log("ERROR: Unable to read directory permissions for '$path'", false, $logopt);
+			$success = false;
+		} elseif ($required_mode && (($path_mode & $required_mode) != $required_mode) &&
+			!chmod($path, ($path_mode & 07777) | $required_mode)) {
+			cacti_log("ERROR: Unable to restore inherited group permissions for '$path'", false, $logopt);
+			$success = false;
+		}
+	}
+
+	return $success;
+}
+
+/**
  * Handles the rrdtool function create. Used as part of Cacti's lib functionality.
  *
  * @param int $local_data_id The local data ID.
@@ -1058,43 +1138,19 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
-		} elseif (!is_dir(dirname($data_source_path))) {
-			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775, true)) {
-					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-						$success  = true;
-						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
-						$spath    = '';
+		} else {
+			$structured_path = dirname($data_source_path);
 
-						foreach($paths as $path) {
-							if ($path == '') {
-								continue;
-							}
-
-							$spath .= '/' . $path;
-
-							$powner_id = fileowner($config['rra_path'] . $spath);
-							$pgroup_id = fileowner($config['rra_path'] . $spath);
-
-							if ($powner_id != $owner_id) {
-								$success = chown($config['rra_path'] . $spath, $owner_id);
-							}
-
-							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp($config['rra_path'] . $spath, $group_id);
-							}
-
-							if (!$success) {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
-								break;
-							}
-						}
-					}
-				} else {
+			if (!is_dir($structured_path) && ($config['is_web'] == false || is_writable($config['rra_path']))) {
+				if (!mkdir($structured_path, 0775, true) && !is_dir($structured_path)) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
-			} else {
+			} elseif (!is_dir($structured_path)) {
 				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
+			}
+
+			if (is_dir($structured_path)) {
+				rrdtool_set_structured_path_permissions($structured_path, 'POLLER');
 			}
 		}
 	}

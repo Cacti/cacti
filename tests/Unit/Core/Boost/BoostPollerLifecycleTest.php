@@ -42,12 +42,13 @@ test('the parent waits for both process exit and run-scoped completion', functio
 
 	expect($source)->toContain('boost_processes_running() > 0 || boost_completed_children($run_id) < $expected_children')
 		->and($source)->toContain('boost_failed_children($run_id)')
-		->and($source)->toContain('$run_complete       = $completed_children >= $expected_children;');
+		->and($source)->toContain('$children_complete  = $completed_children >= $expected_children;')
+		->and($source)->toContain('$run_succeeded         = $children_complete && $failed_children == 0;');
 });
 
-test('archive tables are dropped once every child completes', function () use ($root) {
+test('archive tables are dropped only after failed work is safely requeued', function () use ($root) {
 	$source = file_get_contents($root . '/poller_boost.php');
-	$start  = strpos($source, '$run_complete       =');
+	$start  = strpos($source, '$children_complete  =');
 	$drop   = strpos($source, 'DROP TABLE IF EXISTS `$table`', $start);
 
 	expect($start)->not->toBeFalse()
@@ -55,10 +56,11 @@ test('archive tables are dropped once every child completes', function () use ($
 
 	$segment = substr($source, $start, $drop - $start);
 
-	expect($source)->toContain('$run_complete       = $completed_children >= $expected_children;')
+	expect($source)->toContain('$archives_requeued = boost_requeue_unprocessed_rows($run_id);')
+		->and($source)->toContain('$archives_safe_to_drop = $children_complete && $archives_requeued;')
 		->and($source)->not->toContain('boost_run_arch_tables')
-		->and($segment)->toContain('if (!$run_complete)')
-		->and($segment)->toContain('if ($run_complete) {')
+		->and($segment)->toContain('if (!$children_complete)')
+		->and($segment)->toContain('if ($archives_safe_to_drop) {')
 		->and($segment)->toContain('$arch_tables = boost_get_arch_table_names();')
 		->and($segment)->toContain("set_config_option('boost_last_run_time', \$last_run_time)");
 });
@@ -77,8 +79,10 @@ test('failed RRD updates retain both scheduled shards and on-demand rows', funct
 	$poller = file_get_contents($root . '/poller_boost.php');
 	$boost  = file_get_contents($root . '/lib/boost.php');
 
-	expect($poller)->toContain('if ($updates_ok && $results !== false)')
+	expect($poller)->toContain('$failed_data_ids[$local_data_id] = true;')
+		->and($poller)->toContain("if (!isset(\$failed_data_ids[\$item['local_data_id']]))")
 		->and($poller)->toContain('return $updates_ok && $results !== false ? cacti_sizeof($results) : -1;')
+		->and($poller)->toContain('function boost_requeue_unprocessed_rows($run_id)')
 		->and($boost)->toContain('if ($updates_ok && cacti_sizeof($results))')
 		->and($boost)->toContain('return $updates_ok ? cacti_sizeof($results) : -1;');
 });

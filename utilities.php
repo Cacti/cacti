@@ -86,6 +86,12 @@ switch (get_request_var('action')) {
 		boost_display_run_status();
 		bottom_footer();
 		break;
+	case 'retry_boost':
+		csrf_require_post();
+
+		boost_retry_queued_data();
+		header('Location: utilities.php?action=view_boost_status');exit;
+		break;
 	case 'view_snmpagent_cache':
 		top_header();
 		snmpagent_utilities_run_cache();
@@ -2497,6 +2503,40 @@ function purge_data_source_statistics() {
 }
 
 /**
+ * Schedules queued and archived Boost samples for retry without deleting any work tables.
+ *
+ * @return void No value is returned.
+ */
+function boost_retry_queued_data() {
+	$processes = db_fetch_assoc('SELECT tasktype, taskname, taskid, pid
+		FROM processes
+		WHERE tasktype = \'boost\'');
+
+	if (cacti_sizeof($processes)) {
+		raise_message('boost_retry_running', __('Boost is still running. Wait for the active process to finish before retrying queued data.'), MESSAGE_LEVEL_WARN);
+
+		return;
+	}
+
+	if (boost_get_total_rows(1) < 1) {
+		raise_message('boost_retry_empty', __('Boost has no queued or archived data to retry.'), MESSAGE_LEVEL_INFO);
+
+		return;
+	}
+
+	$interval   = max(1, (int) read_config_option('boost_rrd_update_interval')) * 60;
+	$retry_time = time();
+
+	set_config_option('boost_poller_started', 0);
+	set_config_option('boost_poller_status', 'retry scheduled - time:' . date('Y-m-d H:i:s', $retry_time));
+	set_config_option('boost_last_run_time', $retry_time - $interval);
+	set_config_option('boost_next_run_time', $retry_time);
+
+	cacti_log('NOTE: Queued Boost data retry scheduled by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+	raise_message('boost_retry_scheduled', __('Queued Boost data will be retried during the next poller cycle.'), MESSAGE_LEVEL_INFO);
+}
+
+/**
  * Handles the boost display run status. Used as part of Cacti's utilities functionality.
  *
  * @return void No value is returned.
@@ -2647,6 +2687,10 @@ function boost_display_run_status() {
 			$status = '<span class="deviceRecovering">' . __('Idle') . '</span>';
 		} elseif (substr_count($boost_status_array[0], 'running')) {
 			$status = '<span class="deviceUp">' . __('Running') . '</span>';
+		} elseif (substr_count($boost_status_array[0], 'retry scheduled')) {
+			$status = '<span class="deviceRecovering">' . __('Retry Scheduled') . '</span>';
+		} elseif (substr_count($boost_status_array[0], 'failed')) {
+			$status = '<span class="deviceDown">' . __('Failed') . '</span>';
 		} elseif (substr_count($boost_status_array[0], 'overrun')) {
 			$status = '<span class="deviceDown">' . __('Overrun Warning') . '</span>';
 		} elseif (substr_count($boost_status_array[0], 'timeout')) {
@@ -2716,7 +2760,8 @@ function boost_display_run_status() {
 		$cache_files    = '<strong>' . __('WARNING:') . '</strong> ' . __('N/A');
 	}
 
-	$running = db_fetch_cell('SELECT COUNT(*) FROM processes WHERE tasktype="boost" AND taskname="child"');
+	$running         = db_fetch_cell("SELECT COUNT(*) FROM processes WHERE tasktype = 'boost' AND taskname = 'child'");
+	$has_queued_data = boost_get_total_rows(1) > 0;
 
 	$i = 0;
 
@@ -2730,6 +2775,16 @@ function boost_display_run_status() {
 		if ($running > 0) {
 			form_alternate_row();
 			print '<td>' . __('Running Processes:') . '</td><td>' . ($running) . '</td>';
+		}
+
+		if ($has_queued_data) {
+			form_alternate_row();
+			print '<td>' . __('Boost Recovery:') . '</td><td>';
+			form_start('utilities.php', 'form_boost_retry');
+			print "<input type='hidden' name='action' value='retry_boost'>";
+			print "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Retry Queued Data') . "' title='" . __esc('Preserve and retry all queued and archived Boost samples') . "'>";
+			form_end(false);
+			print '</td>';
 		}
 	}
 
@@ -2921,15 +2976,17 @@ function boost_display_run_status() {
 
 				$runtime = db_fetch_cell_prepared('SELECT UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started)
 					FROM processes
-					WHERE tasktype = "boost"
-					AND taskname = "child"
+					WHERE tasktype = \'boost\'
+					AND taskname = \'child\'
 					AND taskid = ?',
 					array($process));
 
 				form_alternate_row();
 
-				if ($rows_to_process > 0) {
+				if ($rows_to_process > 0 && is_numeric($runtime)) {
 					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceUp"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n((int) $rows_to_process), number_format_i18n((float) $runtime), number_format_i18n((float) $time), number_format_i18n((int) $rrds)) . '</td>';
+				} elseif ($rows_to_process > 0) {
+					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceDown"><b>Interrupted</b></span>, Retained: %s (dses), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n((int) $rows_to_process), number_format_i18n((float) $time), number_format_i18n((int) $rrds)) . '</td>';
 				} else {
 					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceRecovering"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n((float) $time), number_format_i18n((int) $rrds)) . '</td>';
 				}
