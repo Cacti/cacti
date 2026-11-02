@@ -128,7 +128,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
-			$object_hash = spl_object_hash($cnn_id);
+			$object_hash = cacti_object_hash($cnn_id);
 
 			$database_details[$object_hash] = array(
 				'database_conn'     => $cnn_id,
@@ -257,7 +257,7 @@ function db_check_reconnect(&$db_conn = false, $log = true) {
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach($database_details as $det) {
-			if (spl_object_hash($det['database_conn']) == spl_object_hash($db_conn)) {
+			if (cacti_object_hash($det['database_conn']) == cacti_object_hash($db_conn)) {
 				$database_hostname = $det['database_hostname'];
 				$database_username = $det['database_username'];
 				$database_password = $det['database_password'];
@@ -422,7 +422,7 @@ function db_close(&$db_conn = false) {
 		}
 	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
 		$id   = spl_object_id($db_conn);
-		$hash = spl_object_hash($db_conn);
+		$hash = cacti_object_hash($db_conn);
 		if (isset($database_details[$hash])) {
 			$det = $database_details[$hash];
 
@@ -499,7 +499,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		}
 	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
 		$id   = spl_object_id($db_conn);
-		$hash = spl_object_hash($db_conn);
+		$hash = cacti_object_hash($db_conn);
 
 		if (!isset($error_logged[$id])) {
 			if (isset($database_details[$hash])) {
@@ -522,7 +522,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 	$errors = 0;
 
-	$affected_rows[spl_object_hash($db_conn)] = 0;
+	$affected_rows[cacti_object_hash($db_conn)] = 0;
 
 	while (true) {
 		$query = $db_conn->prepare($sql);
@@ -568,7 +568,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		}
 
 		if ($en == '') {
-			$affected_rows[spl_object_hash($db_conn)] = $query->rowCount();
+			$affected_rows[cacti_object_hash($db_conn)] = $query->rowCount();
 
 			$return_value = $default_value;
 			if (function_exists($return_func)) {
@@ -902,7 +902,7 @@ function db_affected_rows($db_conn = false) {
 		}
 	}
 
-	return $affected_rows[spl_object_hash($db_conn)];
+	return $affected_rows[cacti_object_hash($db_conn)];
 }
 
 /**
