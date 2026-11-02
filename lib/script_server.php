@@ -65,29 +65,38 @@ function script_server_read_request(mixed $stream, int $max_length = SCRIPT_SERV
  * @return void
  */
 function script_server_drain_line(mixed $stream, float $wait) : void {
-	$seconds = (int) floor($wait);
-	$micro   = (int) (($wait - $seconds) * 1000000);
+	$seconds      = (int) floor($wait);
+	$micro        = (int) (($wait - $seconds) * 1000000);
+	$metadata     = stream_get_meta_data($stream);
+	$was_blocking = $metadata['blocked'];
+	$nonblocking  = @stream_set_blocking($stream, false);
 
-	while (true) {
-		$read   = [$stream];
-		$write  = null;
-		$except = null;
+	try {
+		while (true) {
+			$read   = [$stream];
+			$write  = null;
+			$except = null;
 
-		// stream_select() is unsupported for pipes on Windows, fall back to blocking reads there
-		try {
-			$ready = @stream_select($read, $write, $except, $seconds, $micro);
-		} catch (ValueError $e) {
-			$ready = false;
+			// Windows pipes cannot be selected; their fallback must remain non-blocking.
+			try {
+				$ready = @stream_select($read, $write, $except, $seconds, $micro);
+			} catch (Throwable $e) {
+				$ready = false;
+			}
+
+			if ($ready === 0 || ($ready === false && !$nonblocking)) {
+				return;
+			}
+
+			$chunk = fgets($stream, 8192);
+
+			if ($chunk === false || str_ends_with($chunk, "\n")) {
+				return;
+			}
 		}
-
-		if ($ready === 0) {
-			return;
-		}
-
-		$chunk = fgets($stream, 8192);
-
-		if ($chunk === false || str_ends_with($chunk, "\n")) {
-			return;
+	} finally {
+		if ($nonblocking) {
+			@stream_set_blocking($stream, $was_blocking);
 		}
 	}
 }
