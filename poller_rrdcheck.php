@@ -151,6 +151,12 @@ switch ($type) {
 			sleep(2);
 		}
 
+
+		// delete old data
+		db_execute('DELETE FROM rrdcheck WHERE test_date < DATE_SUB(NOW(), INTERVAL 7 DAY)');
+
+		rrdcheck_log_statistics('HOURLY');
+
 		break;
 	case 'child':  // Launched by the master process
 	case 'bchild': // Launched by the boost process
