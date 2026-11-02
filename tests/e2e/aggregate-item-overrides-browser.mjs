@@ -66,6 +66,7 @@ try {
 		for (const invalid of [
 			{t_graph_type_id: 'on', graph_type_id: '10'},
 			{t_graph_type_id: 'on', graph_type_id: '999'},
+			{t_graph_type_id: 'on', 'graph_type_id[]': '4'},
 			{t_cdef_id: 'on', cdef_id: '987654'},
 			{t_text_format: 'on', text_format: 'x'.repeat(256)},
 			{t_legend: 'on', legend: 'x'.repeat(31)},
@@ -75,10 +76,10 @@ try {
 				const form = document.querySelector('#aggregate_item_form');
 				const data = new FormData(form);
 				data.set('action', 'save');
-				if ('text_format[]' in invalid) {
-					data.delete('text_format');
-				}
 				for (const [name, value] of Object.entries(invalid)) {
+					if (name.endsWith('[]')) {
+						data.delete(name.slice(0, -2));
+					}
 					data.set(name, value);
 				}
 				const response = await fetch(form.getAttribute('action'), {method: 'POST', body: data});

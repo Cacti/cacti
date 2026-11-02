@@ -425,7 +425,8 @@ function form_save_aggregate() : mixed {
 	// only some properties can be saved here
 	$save                    = [];
 	$save['t_graph_type_id'] = isrv('t_graph_type_id') ? 'on' : '';
-	$save['graph_type_id']   = form_input_validate((($save['t_graph_type_id']) ? gfrv('graph_type_id') : 0), 'graph_type_id', '', true, 3);
+	$graph_type_id_is_array  = $save['t_graph_type_id'] && is_array(gnrv('graph_type_id'));
+	$save['graph_type_id']   = form_input_validate((($save['t_graph_type_id'] && !$graph_type_id_is_array) ? gfrv('graph_type_id') : 0), 'graph_type_id', '', true, 3);
 	$save['t_cdef_id']       = isrv('t_cdef_id') ? 'on' : '';
 	$save['cdef_id']         = form_input_validate((($save['t_cdef_id']) ? gfrv('cdef_id') : 0), 'cdef_id', '', true, 3);
 
@@ -440,7 +441,7 @@ function form_save_aggregate() : mixed {
 		}
 	}
 
-	if ($save['t_graph_type_id'] && (!isset($graph_item_types[$save['graph_type_id']]) || in_array($save['graph_type_id'], [GRAPH_ITEM_TYPE_LEGEND, GRAPH_ITEM_TYPE_LEGEND_CAMM], true))) {
+	if ($save['t_graph_type_id'] && ($graph_type_id_is_array || !isset($graph_item_types[$save['graph_type_id']]) || in_array($save['graph_type_id'], [GRAPH_ITEM_TYPE_LEGEND, GRAPH_ITEM_TYPE_LEGEND_CAMM], true))) {
 		$_SESSION[SESS_ERROR_FIELDS]['graph_type_id'] = 2;
 		raise_message(2);
 	}
