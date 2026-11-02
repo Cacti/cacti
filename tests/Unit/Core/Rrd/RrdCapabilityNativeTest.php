@@ -81,7 +81,11 @@ test('native updates retain timestamp order and acknowledgement across two RRD f
 		expect($commands)->toHaveCount(6);
 
 		foreach ($commands as $index => $command) {
-			expect($command)->toContain('--template value ' . [1700000060, 1700000120, 1700000180][$index % 3] . ':' . [42, 43, 44][$index % 3]);
+			$timestamp = [1700000060, 1700000120, 1700000180][$index % 3];
+			$value     = [42, 43, 44][$index % 3];
+			$template  = sprintf('"--template" "value" "%d:%d"', $timestamp, $value);
+
+			expect($command)->toContain($template);
 			expect(str_contains($command, '--skip-past-updates'))->toBe(version_compare(get_rrdtool_version(), '1.5', '>='));
 		}
 
