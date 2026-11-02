@@ -9632,7 +9632,6 @@ function cacti_temp_file($prefix, $callback) {
 	return $result;
 }
 
-
 /**
  * Returns the requested theme name iff it names a real directory under include/themes/ that
  * contains an rrdtheme.php file. Otherwise returns the configured default theme. Root-cause
@@ -9903,6 +9902,21 @@ function cacti_plugin_path($plugin, $relative = '') {
 	$resolved = validate_relative_path_within((string) $relative, $plugin_base);
 
 	return $resolved !== false ? $resolved : false;
+}
+
+/**
+ * Replacement for the deprecated spl_object_hash starting in php 8.6
+ *
+ * @param object $object The object to hash
+ *
+ * @return string|bool A hash of the object
+ */
+function cacti_object_hash($object) {
+	if (is_object($object)) {
+		return (string) sprintf('%016x0000000000000000', spl_object_id($object));
+	} else {
+		return false;
+	}
 }
 
 /**
