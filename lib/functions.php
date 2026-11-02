@@ -4011,7 +4011,7 @@ function get_graph_group($graph_template_item_id) {
 		$params[] = $graph_item['graph_template_id'];
 		$sql_where = 'graph_template_id = ? AND local_graph_id = 0';
 	} else {
-		$params[] = $graph_item['sequence'];
+		$params[] = $graph_item['local_graph_id'];
 		$sql_where = 'local_graph_id = ?';
 	}
 
