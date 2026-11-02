@@ -12895,14 +12895,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr ""
 
 #: include/global_settings.php
-msgid "Enable Direct Population of Boost Table"
-msgstr ""
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost table with results in a 25% time reduction in each poll cycle."
-msgstr ""
-
-#: include/global_settings.php
 msgid "Enable Boost Debugging"
 msgstr ""
 
