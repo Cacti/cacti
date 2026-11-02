@@ -10900,3 +10900,18 @@ function log_user_action($user, $action) {
 
 	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'AUTHC' : 'AUTH');
 }
+
+/**
+ * Replacement for the deprecated spl_object_hash starting in php 8.6
+ *
+ * @param object $object The object to hash
+ *
+ * @return string|bool A hash of the object
+ */
+function cacti_object_hash($object) {
+	if (is_object($object)) {
+		return (string) sprintf('%016x0000000000000000', spl_object_id($object));
+	} else {
+		return false;
+	}
+}

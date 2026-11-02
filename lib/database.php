@@ -145,7 +145,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
-			$object_hash = spl_object_hash($cnn_id);
+			$object_hash = cacti_object_hash($cnn_id);
 
 			$database_details[$object_hash] = [
 				'database_conn'                     => $cnn_id,
@@ -305,7 +305,7 @@ function db_check_reconnect(mixed &$db_conn = false, bool $log = true) : bool {
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach ($database_details as $det) {
-			if (spl_object_hash($det['database_conn']) == spl_object_hash($db_conn)) {
+			if (cacti_object_hash($det['database_conn']) == cacti_object_hash($db_conn)) {
 				$database_hostname               = $det['database_hostname'];
 				$database_username               = $det['database_username'];
 				$database_password               = $det['database_password'];
@@ -474,7 +474,7 @@ function db_close(mixed &$db_conn = false) : bool {
 		}
 	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
 		$id   = spl_object_id($db_conn);
-		$hash = spl_object_hash($db_conn);
+		$hash = cacti_object_hash($db_conn);
 
 		if (isset($database_details[$hash])) {
 			$det = $database_details[$hash];
@@ -604,7 +604,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 		}
 	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
 		$id   = spl_object_id($db_conn);
-		$hash = spl_object_hash($db_conn);
+		$hash = cacti_object_hash($db_conn);
 
 		if (!isset($error_logged[$id])) {
 			if (isset($database_details[$hash])) {
@@ -622,7 +622,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 	$sql = db_strip_control_chars($sql);
 
 	if ($timeout > 0) {
-		$timeout_hash    = spl_object_hash($db_conn);
+		$timeout_hash    = cacti_object_hash($db_conn);
 		$timeout_server  = $database_details[$timeout_hash]['database_server'] ?? '';
 		$timeout_version = $database_details[$timeout_hash]['database_version'] ?? '';
 		$timeout_sql     = db_sql_apply_timeout($sql, $timeout, $timeout_server, $timeout_version);
@@ -642,7 +642,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 
 	$errors = 0;
 
-	$affected_rows[spl_object_hash($db_conn)] = 0;
+	$affected_rows[cacti_object_hash($db_conn)] = 0;
 
 	while (true) {
 		$code  = 0;
@@ -690,7 +690,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 		}
 
 		if ($en == '') {
-			$affected_rows[spl_object_hash($db_conn)] = $query->rowCount();
+			$affected_rows[cacti_object_hash($db_conn)] = $query->rowCount();
 
 			$return_value = $default_value;
 
@@ -1029,7 +1029,7 @@ function db_affected_rows(mixed $db_conn = false) : mixed {
 		}
 	}
 
-	return $affected_rows[spl_object_hash($db_conn)];
+	return $affected_rows[cacti_object_hash($db_conn)];
 }
 
 /**
