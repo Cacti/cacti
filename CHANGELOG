@@ -95,6 +95,7 @@ Cacti CHANGELOG
 -security#8055: Harden - Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
 -security#8346: Pin workflow Actions and isolate release signing from builds
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
+-security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
 -issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata

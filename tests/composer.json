@@ -4,16 +4,16 @@
     "description": "Test-runner dependencies for the Cacti 1.2 test suites.",
     "type": "project",
     "license": "GPL-2.0-or-later",
-    "require-dev": {
-        "pestphp/pest": "^1.23"
-    },
     "config": {
         "platform": {
-            "php": "8.1.0"
+            "php": "8.2.0"
         },
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require": {
+        "pestphp/pest": "^3"
+    }
 }
