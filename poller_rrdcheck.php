@@ -151,6 +151,12 @@ switch ($type) {
 			sleep(2);
 		}
 
+
+		// delete old data
+		db_execute('DELETE FROM rrdcheck WHERE test_date < DATE_SUB(NOW(), INTERVAL 7 DAY)');
+
+		rrdcheck_log_statistics('HOURLY');
+
 		break;
 	case 'child':  // Launched by the master process
 	case 'bchild': // Launched by the boost process
@@ -216,7 +222,6 @@ function rrdcheck_master_handler($forcerun) {
 
 		// if it's time to check, do so now
 		if ((!empty($last_run) && (($last_run + ($run_interval * 60)) < $current_time)) || $forcerun) {
-
 			rrdcheck_launch_children($type);
 
 			// Wait for all processes to continue
