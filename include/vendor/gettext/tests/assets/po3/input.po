@@ -1,0 +1,39 @@
+msgid "Dielen"
+msgstr "timber piling floor"
+
+msgid "Doppelboden"
+msgstr "double floor"
+
+msgid "Estrich"
+msgstr "screed floor"
+
+msgid "Fliesen"
+msgstr "flagging"
+
+msgid "Kunststoffboden"
+msgstr "synthetic floor"
+
+# duplicate singular
+msgid "1 child"
+msgstr ""
+
+msgid "1 child"
+msgstr "1 fillo"
+
+# duplicate singular - plural
+msgid "1 comment"
+msgstr "1 comentario"
+
+msgid "1 comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+# duplicate plural - singular
+msgid "1 star"
+msgid_plural "%s stars"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "1 star"
+msgstr "1 estrela"

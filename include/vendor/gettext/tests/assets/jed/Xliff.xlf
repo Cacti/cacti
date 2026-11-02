@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="bs" trgLang="bs">
+  <file id="testingdomain.bs">
+    <notes>
+      <note id="Content-Transfer-Encoding">8bit</note>
+      <note id="Content-Type">text/plain; charset=UTF-8</note>
+      <note id="Language">bs</note>
+      <note id="Language-Team"></note>
+      <note id="Last-Translator"></note>
+      <note id="MIME-Version">1.0</note>
+      <note id="Plural-Forms"><![CDATA[nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);]]></note>
+      <note id="Project-Id-Version"></note>
+      <note id="Report-Msgid-Bugs-To"></note>
+      <note id="X-Domain">testingdomain</note>
+    </notes>
+    <unit id="717a652ad994962dbab9a82b7b90ea5b">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Ensure this value has at least %(limit_value)d character (it has %sd).</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="125dfab5f665bfbdda1520b496fd7b0c">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Ensure this value has at most %(limit_value)d character (it has %sd).</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="d6378b702c0b80432e7cb9a48006e75a">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>%ss must be unique for %ss %ss.</source>
+        <target>%ss mora da bude jedinstven za %ss %ss.</target>
+      </segment>
+    </unit>
+    <unit id="be5d5d37542d75f93a87094459f76678">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>and</source>
+        <target>i</target>
+      </segment>
+    </unit>
+    <unit id="5d5820525a89f94e4c2884469d630b60">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Value %sr is not a valid choice.</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="99a9106e7d72e6c62a7e2a0cc4abf7dd">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>This field cannot be null.</source>
+        <target>Ovo polje ne može ostati prazno.</target>
+      </segment>
+    </unit>
+    <unit id="d77310f7a04aa39b9ed9afc3bedb15c1">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>This field cannot be blank.</source>
+        <target>Ovo polje ne može biti prazno.</target>
+      </segment>
+    </unit>
+    <unit id="551bd35f290cbb1820da8a535eb0bf5d">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Field of type: %ss</source>
+        <target>Polje tipa: %ss</target>
+      </segment>
+    </unit>
+    <unit id="a0faef0851b4294c06f2b94bb1cb2044">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Integer</source>
+        <target>Cijeo broj</target>
+      </segment>
+    </unit>
+    <unit id="1196bfe9987fbb806c4a8cb239ea8d55">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>{test1}</source>
+        <target><![CDATA[test1
+<div>
+ test2
+</div>
+test3]]></target>
+      </segment>
+    </unit>
+    <unit id="0cc3344a5d6e924f9f5af5bf76b26013">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>{test2}</source>
+        <target><![CDATA[test1
+<div>
+ test2
+</div>
+test3]]></target>
+      </segment>
+    </unit>
+    <unit id="f3052e787945a4858a0e7632a2134bc6">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Multibyte test</source>
+        <target>日本人は日本で話される言語です！</target>
+      </segment>
+    </unit>
+    <unit id="8c8595b17270e069d604862a0cc2a2a1">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Tabulation test</source>
+        <target>FIELD	FIELD</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

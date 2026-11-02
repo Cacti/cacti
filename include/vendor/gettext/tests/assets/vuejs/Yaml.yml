@@ -1,0 +1,43 @@
+domain: null
+plural-forms: null
+messages:
+  '':
+    '':
+      - "Content-Transfer-Encoding: 8bit\nContent-Type: text/plain; charset=UTF-8\nLanguage: \nLanguage-Team: \nLast-Translator: \nMIME-Version: 1.0\nProject-Id-Version: \nReport-Msgid-Bugs-To: \n"
+    js-expr1: ''
+    js-expr2: ''
+    js-alert: ''
+    js-single: ''
+    js-obj-single: ''
+    '<span>js-return</span><br>': ''
+    t-cond-attribute: ''
+    t-attribute: ''
+    t-same-line-s: ''
+    multi-occurrence: ''
+    t-singular2: ''
+    t-v-bind: ''
+    back-tick-in-tag: ''
+    t-v-text: ''
+    t-text: ''
+    t-singular: ''
+    t-tag: ''
+    t-tag-sibling: ''
+    t-expr1: ''
+    t-expr2: ''
+    't-"quotes"': ''
+    't-"quotes"-2': ''
+    't-''quotes''': ''
+    't-''quotes''-2': ''
+    t-spaces-expr: ''
+    t-spaces-expr2: ''
+    t-p1(parentheses): ''
+    back-tick-in-mustache: ''
+    t-tag-2: ''
+    v-translate-attribute: ''
+    v-translate-attribute-single: ''
+  some-context:
+    js-action: ''
+  context:
+    t-action: ''
+  context2:
+    t-action2: ''
