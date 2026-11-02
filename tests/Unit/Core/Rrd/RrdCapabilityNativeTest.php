@@ -16,12 +16,14 @@ require_once dirname(__DIR__, 4) . '/lib/rrd.php';
 
 test('native graph options apply capabilities consistently to every formatter', function () {
 	global $config;
-	$savedConfig   = $config;
-	$savedSession  = $_SESSION;
-	$savedDatechar = $GLOBALS['datechar'] ?? null;
+	$savedConfig     = $config;
+	$savedSession    = $_SESSION;
+	$savedDatechar   = $GLOBALS['datechar'] ?? null;
+	$savedImageTypes = $GLOBALS['image_types'] ?? null;
 
 	try {
 		$GLOBALS['datechar']    = [1 => '/'];
+		$GLOBALS['image_types'] = [1 => 'PNG', 3 => 'SVG'];
 		$options                = ['storage_location' => '', 'path_rrdtool_default_font' => '', 'font_method' => 0, 'rrdtool_watermark' => '', 'default_date_format' => GD_Y_MO_D, 'default_datechar' => 1, 'graph_watermark' => '', 'graph_watermark_rrd' => ''];
 		$config[OPTIONS_CLI]    = array_replace($config[OPTIONS_CLI] ?? [], $options);
 		$_SESSION[OPTIONS_WEB]  = array_replace($_SESSION[OPTIONS_WEB] ?? [], $options);
@@ -37,6 +39,12 @@ test('native graph options apply capabilities consistently to every formatter', 
 		$config              = $savedConfig;
 		$_SESSION            = $savedSession;
 		$GLOBALS['datechar'] = $savedDatechar;
+
+		if ($savedImageTypes === null) {
+			unset($GLOBALS['image_types']);
+		} else {
+			$GLOBALS['image_types'] = $savedImageTypes;
+		}
 	}
 });
 
