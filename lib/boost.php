@@ -382,7 +382,8 @@ function boost_flush_output_batch($value_tuples, $conn = false) {
 	}
 
 	static $packet_limits = array();
-	$conn_key = is_object($conn) ? spl_object_hash($conn) : 'default';
+
+	$conn_key = is_object($conn) ? cacti_object_hash($conn) : 'default';
 
 	if (!isset($packet_limits[$conn_key])) {
 		$row = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'", true, $conn);
