@@ -190,7 +190,6 @@ $total_pollers = db_fetch_cell('SELECT COUNT(*) FROM poller');
 
 if ($total_pollers > 1) {
 	set_config_option('boost_rrd_update_system_enable', 'on');
-	set_config_option('boost_redirect', 'on');
 }
 
 // check to see if the poller is disabled

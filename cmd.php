@@ -389,7 +389,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 						(local_data_id, rrd_name, time, output)
 						VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
-					if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+					if (read_config_option('boost_rrd_update_enable') == 'on') {
 						boost_flush_output_batch($output_array, $poller_db_cnn_id);
 					}
 
@@ -498,7 +498,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 					(local_data_id, rrd_name, time, output)
 					VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
-				if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+				if (read_config_option('boost_rrd_update_enable') == 'on') {
 					boost_flush_output_batch($output_array, $poller_db_cnn_id);
 				}
 
@@ -534,7 +534,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			(local_data_id, rrd_name, time, output)
 			VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
-		if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+		if (read_config_option('boost_rrd_update_enable') == 'on') {
 			boost_flush_output_batch($output_array, $poller_db_cnn_id);
 		}
 	}
