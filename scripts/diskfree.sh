@@ -20,4 +20,12 @@
 #   | http://www.cacti.net/                                                   |
 #   +-------------------------------------------------------------------------+
 
-df -k $1 | grep -v Filesystem| awk '{printf "megabytes:" $4 " percent:" int($5)}'
+# df reads a leading '-' as an option, and no argument lists every filesystem
+case "$1" in
+	''|-*)
+		printf 'megabytes:U percent:U'
+		exit 1
+		;;
+esac
+
+df -k -P -- "$1" | grep -v Filesystem| awk '{printf "megabytes:" $4 " percent:" int($5)}'

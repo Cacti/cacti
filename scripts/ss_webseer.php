@@ -70,7 +70,8 @@ function ss_webseer($cmd = 'index', $arg1 = '', $arg2 = '') {
 
 				if (cacti_sizeof($arr)) {
 					foreach ($arr as $item) {
-						print $item['id'] . '!' . $item['name'] . PHP_EOL;
+						/* a line break in the name would start a new output record */
+						print $item['id'] . '!' . str_replace(array("\r", "\n"), '', $item['name']) . PHP_EOL;
 					}
 				}
 			}
