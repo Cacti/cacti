@@ -121,7 +121,7 @@ final class Differ
      * The constructor.
      *
      * @param string[] $old     array containing the lines of the old string to compare
-     * @param string[] $new     array containing the lines for the new string to compare
+     * @param string[] $new     array containing the lines of the new string to compare
      * @param array    $options the options
      */
     public function __construct(array $old, array $new, array $options = [])
@@ -315,20 +315,20 @@ final class Differ
         $old = $this->old;
         $new = $this->new;
 
+        $this->getGroupedOpcodesPre($old, $new);
+
         if ($this->oldNewComparison === 0 && $this->options['fullContextIfIdentical']) {
-            return [
+            $opcodes = [
                 [
                     [SequenceMatcher::OP_EQ, 0, \count($old), 0, \count($new)],
                 ],
             ];
+        } else {
+            $opcodes = $this->sequenceMatcher
+                ->setSequences($old, $new)
+                ->getGroupedOpcodes($this->options['context'])
+            ;
         }
-
-        $this->getGroupedOpcodesPre($old, $new);
-
-        $opcodes = $this->sequenceMatcher
-            ->setSequences($old, $new)
-            ->getGroupedOpcodes($this->options['context'])
-        ;
 
         $this->getGroupedOpcodesPost($opcodes);
 
@@ -351,20 +351,20 @@ final class Differ
         $old = $this->old;
         $new = $this->new;
 
+        $this->getGroupedOpcodesGnuPre($old, $new);
+
         if ($this->oldNewComparison === 0 && $this->options['fullContextIfIdentical']) {
-            return [
+            $opcodes = [
                 [
                     [SequenceMatcher::OP_EQ, 0, \count($old), 0, \count($new)],
                 ],
             ];
+        } else {
+            $opcodes = $this->sequenceMatcher
+                ->setSequences($old, $new)
+                ->getGroupedOpcodes($this->options['context'])
+            ;
         }
-
-        $this->getGroupedOpcodesGnuPre($old, $new);
-
-        $opcodes = $this->sequenceMatcher
-            ->setSequences($old, $new)
-            ->getGroupedOpcodes($this->options['context'])
-        ;
 
         $this->getGroupedOpcodesGnuPost($opcodes);
 
@@ -498,7 +498,7 @@ final class Differ
 
             $this->oldNoEolAtEofIdx = $this->getOld(-1) === [''] ? -1 : \count($this->old);
             $this->newNoEolAtEofIdx = $this->getNew(-1) === [''] ? -1 : \count($this->new);
-            $this->oldNewComparison = $this->old <=> $this->new;
+            $this->oldNewComparison = $this->old === $this->new ? 0 : ($this->old <=> $this->new ?: 1);
 
             $this->sequenceMatcher->setOptions($this->options);
         }

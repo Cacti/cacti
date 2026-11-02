@@ -1,0 +1,23 @@
+,,"Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Language: 
+Language-Team: 
+Last-Translator: 
+MIME-Version: 1.0
+Project-Id-Version: 
+Report-Msgid-Bugs-To: 
+"
+,plain,
+,"DATE \a\t TIME",
+,"FIELD	FIELD",
+,"text concatenated with 'comments'",
+,"Stop at the variable",
+,"No comments",
+my-context,"All comments",
+,"i18n Tagged comment",
+,"i18n Tagged comment inside",
+,"One comment",
+,"i18n tagged %s",
+,foo,
+,bar,
+,"foo bar",

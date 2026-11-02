@@ -1,0 +1,25 @@
+{
+    "domain": "domain1",
+    "plural-forms": null,
+    "messages": {
+        "": {
+            "": [
+                "Content-Transfer-Encoding: 8bit\nContent-Type: text\/plain; charset=UTF-8\nLanguage: \nLanguage-Team: \nLast-Translator: \nMIME-Version: 1.0\nProject-Id-Version: \nReport-Msgid-Bugs-To: \nX-Domain: domain1\n"
+            ],
+            "matching 1": [
+                ""
+            ],
+            "matching 2 singular": [
+                ""
+            ],
+            "matching 4": [
+                ""
+            ]
+        },
+        "context": {
+            "matching 3 context singular": [
+                ""
+            ]
+        }
+    }
+}

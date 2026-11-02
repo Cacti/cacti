@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="" trgLang="">
+  <file id=".">
+    <notes>
+      <note id="Content-Transfer-Encoding">8bit</note>
+      <note id="Content-Type">text/plain; charset=UTF-8</note>
+      <note id="Language"></note>
+      <note id="Language-Team"></note>
+      <note id="Last-Translator"></note>
+      <note id="MIME-Version">1.0</note>
+      <note id="Plural-Forms"><![CDATA[nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);]]></note>
+      <note id="Project-Id-Version"></note>
+      <note id="Report-Msgid-Bugs-To"></note>
+    </notes>
+    <unit id="45df2a09e924431b93f90f0d40554cd3">
+      <notes>
+        <note category="context"></note>
+        <note category="comment">Taken from http://www.gnu.org/savannah-checkouts/gnu/gettext/manual/html_node/Plural-forms.html</note>
+      </notes>
+      <segment>
+        <source>one file</source>
+        <target>1 plik</target>
+        <target>2,3,4 pliki</target>
+        <target>5-21 plików</target>
+      </segment>
+    </unit>
+    <unit id="f97c5d29941bfb1b2fdab0874906ab82">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>one</source>
+        <target>1</target>
+        <target>*</target>
+      </segment>
+    </unit>
+    <unit id="dd5c07036f2975ff4bce568b6511d3bc">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>single</source>
+        <target>test</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

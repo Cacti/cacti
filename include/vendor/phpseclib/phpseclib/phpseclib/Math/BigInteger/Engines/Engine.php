@@ -286,6 +286,9 @@ abstract class Engine implements \JsonSerializable
         if ($this->compare(static::$zero[static::class]) < 0) {
             $temp = $this->abs();
             $temp = $temp->modInverse($n);
+            if ($temp === null) {
+                return null;
+            }
             return $this->normalize($n->subtract($temp));
         }
 
@@ -572,6 +575,10 @@ abstract class Engine implements \JsonSerializable
     protected function powModOuter(Engine $e, Engine $n): ?Engine
     {
         $n = isset($this->bitmask) && $this->bitmask->compare($n) < 0 ? $this->bitmask : $n->abs();
+
+        if ($n->equals(static::$one[static::class])) {
+            return $this->normalize(new static());
+        }
 
         if ($e->compare(new static()) < 0) {
             $e = $e->abs();
@@ -977,7 +984,7 @@ abstract class Engine implements \JsonSerializable
             }
         }
 
-        if ($comp == 1) {
+        if ($g->pow($n)->compare($this) > 0) {
             $g = $g->subtract($step);
         }
 
