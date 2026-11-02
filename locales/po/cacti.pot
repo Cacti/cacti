@@ -6951,6 +6951,10 @@ msgid "Stream Data Query"
 msgstr ""
 
 #: include/global_arrays.php
+msgid "HTTP JSON Get"
+msgstr ""
+
+#: include/global_arrays.php
 msgid "Index Count"
 msgstr ""
 
@@ -12047,6 +12051,14 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and valid for both cmd.php and spine Data Collectors."
+msgstr ""
+
+#: include/global_settings.php
+msgid "HTTP Request Concurrency"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The maximum number of HTTP requests cmd.php keeps in flight for one Device.  Data Sources that read the same endpoint on a Device share one request.  Settings between 1 and 64 are accepted."
 msgstr ""
 
 #: include/global_settings.php
