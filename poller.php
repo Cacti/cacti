@@ -192,6 +192,13 @@ if ($total_pollers > 1) {
 	set_config_option('boost_rrd_update_system_enable', 'on');
 }
 
+/* Boost redirection is permanent whenever Boost is enabled, but supported Spine
+ * versions still read the hidden boost_redirect flag to stage poller output into
+ * poller_output_boost.  Keep the flag unconditionally enabled before launching
+ * collectors so those producers continue to redirect and the on-demand handoff
+ * never acknowledges unstaged samples. */
+set_config_option('boost_redirect', 'on');
+
 // check to see if the poller is disabled
 poller_enabled_check($poller_id);
 
