@@ -40,17 +40,9 @@ test('large incomplete backlogs return without recursion and advance past the fi
 	$r = poller_output_probe('backlog');
 	expect($r['first'])->toBe(0)->and($r['second'])->toBe(0)->and($r['remaining'])->toBe(40001)->and($r['queries'])->toBe(2);
 });
-test('successful Boost staging acknowledges queue rows without inline RRD writes', function () {
-	$r = poller_output_probe('boost-success');
-	expect($r['remaining'])->toBe(0)->and($r['boost_calls'])->toBe(1)->and($r['rrd_calls'])->toBe(0);
-});
-test('redirected polling never re-inserts collector-staged samples into poller_output_boost', function () {
+test('boost polling acknowledges collector-staged samples without re-inserting or inline RRD writes', function () {
 	$r = poller_output_probe('boost-redirect');
 	expect($r['remaining'])->toBe(0)->and($r['boost_calls'])->toBe(0)->and($r['rrd_calls'])->toBe(0);
-});
-test('failed Boost staging and failed RRD fallback retain queue rows', function () {
-	$r = poller_output_probe('boost-failure');
-	expect($r['remaining'])->toBe(1)->and($r['boost_calls'])->toBe(1)->and($r['rrd_calls'])->toBe(1);
 });
 test('failed acknowledgement leaves stored samples available for a safe retry', function () {
 	$r = poller_output_probe('delete-failure');

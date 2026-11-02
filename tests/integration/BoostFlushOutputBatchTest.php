@@ -200,12 +200,12 @@ test('a failed staging write is logged as a BOOST ERROR rather than failing sile
 	expect($log)->toContain('ERROR: Boost staging failed to write 2 sample(s) to poller_output_boost');
 });
 
-test('the poller never re-stages collector output when boost_redirect is on', function () {
+test('the poller never re-stages collector output that cmd.php already staged', function () {
 	global $config;
 
 	$saved = [];
 
-	foreach (['boost_rrd_update_enable' => 'on', 'boost_rrd_update_system_enable' => 'on', 'boost_redirect' => 'on'] as $name => $value) {
+	foreach (['boost_rrd_update_enable' => 'on', 'boost_rrd_update_system_enable' => 'on'] as $name => $value) {
 		$saved[$name]               = $config[OPTIONS_CLI][$name] ?? null;
 		$config[OPTIONS_CLI][$name] = $value;
 	}

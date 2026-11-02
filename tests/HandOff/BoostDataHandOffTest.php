@@ -48,8 +48,7 @@ test('Boost hand-off batches expose database acknowledgement', function () {
 
 	expect($boost)->toContain('function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bool');
 	expect($boost)->toContain('$acknowledged = db_execute($sql_prefix . $out_buffer, true, $conn) !== false;');
-	expect($boost)->toContain('$acknowledged = boost_flush_output_batch($value_tuples, $conn);');
-	expect($boost)->toContain('$return_value = !$acknowledged;');
+	expect(boostSource('poller_recovery.php'))->toContain('if (!boost_flush_output_batch($sql_array, $remote_conn)) {');
 });
 
 test('Recovery deletes only the exact rows acknowledged by the main collector', function () {
@@ -112,8 +111,13 @@ test('Boost child completion and archive deletion are scoped to a parent run', f
 test('direct Boost redirection never re-stages collector output from the poller', function () {
 	$boost = boostSource('lib/boost.php');
 
-	expect($boost)->toContain("if (read_config_option('boost_redirect') == 'on') {")
-		->and($boost)->not->toContain('$track_staging')
+	$func_pos  = strpos($boost, 'function boost_poller_on_demand(');
+	$func_end  = strpos($boost, "\nfunction ", $func_pos + 1);
+	$func_body = substr($boost, $func_pos, $func_end - $func_pos);
+
+	expect($func_body)->toContain('$staged = true;')
+		->and($func_body)->not->toContain('boost_flush_output_batch')
+		->and($func_body)->not->toContain('$track_staging')
 		->and($boost)->toContain('spine/cmd.php already staged these rows');
 });
 
