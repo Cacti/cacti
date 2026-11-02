@@ -42,10 +42,10 @@ test('the parent waits for both process exit and run-scoped completion', functio
 
 	expect($source)->toContain('boost_processes_running() > 0 || boost_completed_children($run_id) < $expected_children')
 		->and($source)->toContain('boost_failed_children($run_id)')
-		->and($source)->toContain('$run_complete       = $failed_children == 0 && $completed_children >= $expected_children;');
+		->and($source)->toContain('$run_complete       = $completed_children >= $expected_children;');
 });
 
-test('archive tables are dropped only after every child succeeds', function () use ($root) {
+test('archive tables are dropped once every child completes', function () use ($root) {
 	$source = file_get_contents($root . '/poller_boost.php');
 	$start  = strpos($source, '$run_complete       =');
 	$drop   = strpos($source, 'DROP TABLE IF EXISTS `$table`', $start);
@@ -55,8 +55,11 @@ test('archive tables are dropped only after every child succeeds', function () u
 
 	$segment = substr($source, $start, $drop - $start);
 
-	expect($segment)->toContain('if (!$run_complete)')
-		->and($segment)->toContain('if ($rrd_updates > 0 && $run_complete)')
+	expect($source)->toContain('$run_complete       = $completed_children >= $expected_children;')
+		->and($source)->not->toContain('boost_run_arch_tables')
+		->and($segment)->toContain('if (!$run_complete)')
+		->and($segment)->toContain('if ($run_complete) {')
+		->and($segment)->toContain('$arch_tables = boost_get_arch_table_names();')
 		->and($segment)->toContain("set_config_option('boost_last_run_time', \$last_run_time)");
 });
 

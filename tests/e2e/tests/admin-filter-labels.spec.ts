@@ -30,6 +30,9 @@ const lists: Array<[string, Array<[string, string]>]> = [
 for (const [route, labels] of lists) {
     test(`${route} associates its existing visible text with native controls`, async ({ page }) => {
         await page.goto('/' + route);
+        // A PHP error after the filters can leave their markup present while
+        // preventing the footer and session initialization from rendering.
+        expect(await page.evaluate(() => typeof Reflect.get(window, 'cactiVersion'))).toBe('string');
         for (const [id, text] of labels) await expectLabel(page, id, text);
         const tables = page.locator('table.filterTable');
         expect(await tables.count()).toBeGreaterThan(0);
@@ -42,6 +45,14 @@ for (const [route, labels] of lists) {
         }
     });
 }
+
+test('external links renders its listing after pagination', async ({ page }) => {
+    const response = await page.goto('/links.php?rows=10&page=1');
+    expect(response?.status()).toBe(200);
+    for (const name of ['Actions', 'Page', 'Title', 'Style', 'Enabled', 'Order']) {
+        await expect(page.getByRole('columnheader', { name: new RegExp('^' + name + '\\b') })).toBeVisible();
+    }
+});
 
 for (const route of ['clog.php', 'clog_user.php']) {
     test(`${route} log filter labels follow newest/oldest display mode`, async ({ page }) => {
