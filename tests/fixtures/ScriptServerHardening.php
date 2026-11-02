@@ -217,17 +217,17 @@ check('one byte over with a bare newline', script_server_read_request($stream, 0
 check('end of input', script_server_read_request($stream, 0.1) === false);
 check('unterminated tail at end of input', script_server_read_request(memory_stream(str_repeat('d', 2000)), 0.1) === null);
 
-list($spine, $server) = spine_pipe($limit);
+[$spine, $server] = spine_pipe($limit);
 check('full length spine request', script_server_read_request($server, 0.1) === $limit . "\r\n");
 
-list($spine, $server) = spine_pipe(str_repeat('e', 1500));
+[$spine, $server] = spine_pipe(str_repeat('e', 1500));
 $start = microtime(true);
 check('truncated spine request refused', script_server_read_request($server, 0.1) === null);
 check('truncated spine request does not block', microtime(true) - $start < 1.0);
 fwrite($spine, "after\r\n");
 check('request after a truncated one', script_server_read_request($server, 0.1) === "after\r\n");
 
-list($spine, $server) = spine_pipe(str_repeat('f', 1500));
+[$spine, $server] = spine_pipe(str_repeat('f', 1500));
 fwrite($spine, str_repeat('g', 500));
 fwrite($spine, "tail\r\nnext\r\n");
 check('pieces of an over-length line drained', script_server_read_request($server, 0.1) === null);
@@ -235,7 +235,7 @@ check('next request after drained pieces', script_server_read_request($server, 0
 fclose($spine);
 check('closed pipe reports end of input', script_server_read_request($server, 0.1) === false);
 
-list($spine, $server) = spine_pipe(str_repeat('h', 1500));
+[$spine, $server] = spine_pipe(str_repeat('h', 1500));
 fclose($spine);
 check('truncated request before the writer exits', script_server_read_request($server, 0.1) === null);
 

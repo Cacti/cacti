@@ -45,7 +45,7 @@ $filter  = '';
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg = $parameter;
 			$value = '';
@@ -101,7 +101,7 @@ if ($where === false) {
 	exit(1);
 }
 
-list($sql_where, $sql_params) = $where;
+[$sql_where, $sql_params] = $where;
 
 $graph_list = db_fetch_assoc_prepared("SELECT
 	graph_templates_graph.id,

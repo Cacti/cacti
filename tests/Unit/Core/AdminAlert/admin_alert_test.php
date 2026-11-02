@@ -106,7 +106,7 @@ try {
 	check(email_count() === 0, 'invalid admin does not receive email');
 	reset_case();
 	admin_email('original subject', "body\nunaltered");
-	list($name, $alert) = $GLOBALS['hooks'][0];
+	[$name, $alert] = $GLOBALS['hooks'][0];
 	check($name === 'admin_alert' && $alert['subject'] === 'original subject' && $alert['message'] === "body\nunaltered" && $alert['collector_id'] === 7, 'original payload and local collector');
 	$mail = file_get_contents($mailbox);
 	check(strpos($mail, 'Subject: original subject') !== false && strpos($mail, base64_encode("body\r\nunaltered")) !== false, 'real fallback preserves subject and body');

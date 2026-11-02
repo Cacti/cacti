@@ -29,7 +29,7 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../include/cli_check.php');
 	include_once(dirname(__FILE__) . '/../lib/poller_script.php');
 
-	list($output, $status) = ss_unix_processes_collect();
+	[$output, $status] = ss_unix_processes_collect();
 
 	print $output;
 

@@ -1272,7 +1272,7 @@ function cacti_build_https_redirect_url(string $server_name, string $request_uri
 			$port = substr($server_name, $close + 2);
 		}
 	} elseif (substr_count($server_name, ':') === 1) {
-		list($host, $port) = explode(':', $server_name, 2);
+		[$host, $port] = explode(':', $server_name, 2);
 	} else {
 		$host = $server_name;
 		$port = '';

@@ -62,7 +62,7 @@ foreach ($diskfree_scripts as $name => $script) {
 		$argument = '/';
 
 		if ($script[0] == 'perl') {
-			list(, $df) = diskfree_run(array('df', '-k', '-P', '/'));
+			[, $df] = diskfree_run(array('df', '-k', '-P', '/'));
 			$lines    = explode("\n", trim($df));
 			$argument = strtok((string) end($lines), ' ');
 
@@ -71,7 +71,7 @@ foreach ($diskfree_scripts as $name => $script) {
 			}
 		}
 
-		list($status, $output) = diskfree_run(array($interpreter, $script[1], $argument));
+		[$status, $output] = diskfree_run(array($interpreter, $script[1], $argument));
 
 		expect($status)->toBe(0);
 		expect($output)->toMatch('/^megabytes:[0-9]+ percent:[0-9]+$/');
@@ -85,7 +85,7 @@ foreach ($diskfree_scripts as $name => $script) {
 				$this->markTestSkipped($script[0] . ' is not installed');
 			}
 
-			list($status, $output) = diskfree_run(array($interpreter, $script[1], $argument));
+			[$status, $output] = diskfree_run(array($interpreter, $script[1], $argument));
 
 			expect($status)->toBe(1);
 			expect($output)->toBe('megabytes:U percent:U');
@@ -101,7 +101,7 @@ test('diskfree.pl refuses a path with characters outside the device name set', f
 	}
 
 	foreach (array('/ /', '/tmp;', '/$HOME', "/\n") as $argument) {
-		list($status, $output) = diskfree_run(array($perl, __DIR__ . '/../../../scripts/diskfree.pl', $argument));
+		[$status, $output] = diskfree_run(array($perl, __DIR__ . '/../../../scripts/diskfree.pl', $argument));
 
 		expect($status)->toBe(1);
 		expect($output)->toBe('megabytes:U percent:U');

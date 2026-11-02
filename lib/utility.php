@@ -2408,7 +2408,7 @@ function utilities_get_system_memory() {
 			$data = explode("\n", file_get_contents($file));
 			foreach ($data as $l) {
 				if (trim($l) != '') {
-					list($key, $val) = explode(':', $l);
+					[$key, $val] = explode(':', $l);
 					$val = trim($val, " kBb\r\n");
 					$memInfo[$key] = round($val * 1000,0);
 				}

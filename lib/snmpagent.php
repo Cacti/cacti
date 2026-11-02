@@ -604,7 +604,7 @@ function snmpagent_poller_bottom() {
 		WHERE name = 'stats_recache'");
 
 	if ($recache_stats) {
-		list($time, $hosts) = explode(' ', $recache_stats);
+		[$time, $hosts] = explode(' ', $recache_stats);
 		$time  = str_replace('RecacheTime:', '', $time);
 		$hosts = str_replace('HostsRecached:', '', $hosts);
 

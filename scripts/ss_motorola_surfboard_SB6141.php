@@ -30,7 +30,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	list($output, $status, $error) = call_user_func_array('ss_motorola_surfboard_SB6141_collect', $_SERVER['argv']);
+	[$output, $status, $error] = call_user_func_array('ss_motorola_surfboard_SB6141_collect', $_SERVER['argv']);
 
 	if ($error !== '') {
 		fwrite(STDERR, $error . PHP_EOL);
@@ -309,15 +309,15 @@ function ss_motorola_surfboard_SB6141_format($data, $category) {
 	$results = array();
 
 	if ($category === 'Downstream') {
-		foreach (ss_motorola_surfboard_SB6141_channel_values($data, 'Downstream', 'Power Level', ' dBmV') as list($channel, $value)) {
+		foreach (ss_motorola_surfboard_SB6141_channel_values($data, 'Downstream', 'Power Level', ' dBmV') as [$channel, $value]) {
 			$results[] = 'DownstreamPower' . $channel . ':' . $value;
 		}
 
-		foreach (ss_motorola_surfboard_SB6141_channel_values($data, 'Downstream', 'Signal to Noise Ratio', ' dB') as list($channel, $value)) {
+		foreach (ss_motorola_surfboard_SB6141_channel_values($data, 'Downstream', 'Signal to Noise Ratio', ' dB') as [$channel, $value]) {
 			$results[] = 'DownstreamNoiseRatio' . $channel . ':' . $value;
 		}
 	} elseif ($category === 'Upstream') {
-		foreach (ss_motorola_surfboard_SB6141_channel_values($data, 'Upstream', 'Power Level', ' dBmV') as list($channel, $value)) {
+		foreach (ss_motorola_surfboard_SB6141_channel_values($data, 'Upstream', 'Power Level', ' dBmV') as [$channel, $value]) {
 			$results[] = 'UpstreamPower' . $channel . ':' . $value;
 		}
 	} elseif ($category === 'Stats') {
