@@ -190,8 +190,11 @@ if ($dbhostname == '' || $dbhostname == 'localhost' || $dbhostname == '127.0.0.1
 $total_pollers = db_fetch_cell('SELECT COUNT(*) FROM poller');
 if ($total_pollers > 1) {
 	set_config_option('boost_rrd_update_system_enable', 'on');
-	set_config_option('boost_redirect', 'on');
 }
+
+// Boost redirect must always be on.  Making this change
+// unconfitionally until after 1.2.32 is released
+set_config_option('boost_redirect', 'on');
 
 // check to see if the poller is disabled
 poller_enabled_check($poller_id);
