@@ -20,7 +20,7 @@
  * callers never index a cache with a bogus key.
  */
 
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once dirname(__DIR__, 3) . '/lib/functions.php';
 
 test('a hash is a 32 character lowercase hex string derived from spl_object_id', function () {
 	$object = new stdClass();
