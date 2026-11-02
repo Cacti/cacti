@@ -20,7 +20,7 @@ export const assetMap = Object.freeze({
 	'node_modules/dompurify/dist/purify.js.map':                      'include/js/purify.js.map',
 	'node_modules/jquery-ui/dist/jquery-ui.js':                       'include/js/jquery-ui.js',
 	'node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.js':     'include/js/jquery.ui.touch.punch.js',
-	'node_modules/chart.js/dist/Chart.js':                            'include/js/Chart.js',
+	'node_modules/chart.js/dist/chart.umd.js':                        'include/js/Chart.js',
 	'node_modules/moment/min/moment.min.js':                          'include/js/vendor/moment/moment.min.js',
 	'node_modules/moment/LICENSE':                                   'include/js/vendor/moment/LICENSE',
 	'node_modules/daterangepicker/daterangepicker.js':               'include/js/vendor/daterangepicker/daterangepicker.js',
