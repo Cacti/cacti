@@ -2017,11 +2017,11 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 			$base = realpath($repo['repo_location']);
 			$file = ($base === false || str_contains($filename, "\0")) ? false : realpath($base . '/' . $filename);
 
-			if ($file !== false && !str_starts_with($file, rtrim($base, '/') . '/')) {
+			if ($file !== false && !cacti_path_is_within($file, $base)) {
 				$file = false;
 			}
 
-			if ($file !== false && file_exists($file)) {
+			if ($file !== false && is_file($file)) {
 				$data = file_get_contents($file);
 
 				if ($data != '') {
