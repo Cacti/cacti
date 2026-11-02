@@ -1639,7 +1639,7 @@ function sessionMessageDisplay() {
 							sessionMessageTimer = null;
 						}
 						$('#btnSessionMessagePause').remove();
-						$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + '</span>');
+						$('#btnSessionMessageOk').empty().append($('<span>').addClass('ui-button-text').text(sessionMessageOk));
 					}
 				},
 				'Ok': {
@@ -1658,13 +1658,11 @@ function sessionMessageDisplay() {
 			}
 		}
 
-		var returnStr = '<div id="messageContainer" style="display:none">' +
-			'<h4>' + header + '</h4>' +
-			'<p style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</p>' +
-			'</div>';
-
 		$('#messageContainer').remove();
-		$('body').append(returnStr);
+		$('<div>').attr('id', 'messageContainer').hide()
+			.append($('<h4>').text(header))
+			.append($('<p>').css({display: 'table-cell', overflow: 'auto'}).html(DOMPurify.sanitize(sessionMessage.message)))
+			.appendTo('body');
 
 		var messageWidth = $(window).width();
 		if (messageWidth > 600) {
@@ -1692,12 +1690,12 @@ function sessionMessageDisplay() {
 function sessionMessageCountdown(time) {
 	var sessionMessageTimeLeft = (time / 1000);
 
-	$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+	$('#btnSessionMessageOk').empty().append($('<span>').addClass('ui-button-text').text(sessionMessageOk + ' (' + sessionMessageTimeLeft + ')'));
 
 	sessionMessageTimer = setInterval(function () {
 		sessionMessageTimeLeft--;
 
-		$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+		$('#btnSessionMessageOk').empty().append($('<span>').addClass('ui-button-text').text(sessionMessageOk + ' (' + sessionMessageTimeLeft + ')'));
 
 		if (sessionMessageTimeLeft <= 0) {
 			clearInterval(sessionMessageTimer);
@@ -3174,6 +3172,13 @@ function handleAjaxResponse(html, options) {
 	options = sanitizeAjaxOptions(options);
 
 	if (!options.json || options.json == false) {
+		// Full-page fragments are executable application responses, so only
+		// accept them from this Cacti origin before parsing any markup.
+		try {
+			if (new URL(options.url, window.location.href).origin !== window.location.origin) return false;
+		} catch (error) {
+			return false;
+		}
 		if (html.indexOf('cactiAuthArea') > 0) {
 			document.location = 'index.php';
 		}
@@ -3199,7 +3204,7 @@ function handleAjaxResponse(html, options) {
 				var htmlContent = findElement(htmlObject, elementId).html();
 
 				$('title').text(htmlTitle);
-				$('#breadcrumbs').html(breadCrumbs);
+				$('#breadcrumbs').html(DOMPurify.sanitize(breadCrumbs || ''));
 
 				myTitle = htmlTitle;
 			}
@@ -3224,6 +3229,9 @@ function handleAjaxResponse(html, options) {
 					const content = $(elementId);
 					content.data('cactiContentVersion', (content.data('cactiContentVersion') || 0) + 1);
 					$(elementId).hide().empty().hide();
+					// Full Cacti pages contain nonce-bearing initialization scripts. Keep
+					// this authenticated server-rendered page contract; PHP renderers must
+					// escape dynamic values. Data-only fragments use DOMPurify or DOM nodes.
 					$(elementId).html(htmlContent);
 					$(elementId).show();
 				}
@@ -4800,14 +4808,33 @@ function removeSpikes(method, dryrun, local_graph_id) {
 			redrawGraph(local_graph_id);
 
 			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
+			$('body').append($('<div>').attr({id: 'spikeresults', title: spikeKillResults}).css('overflow-y', 'scroll'));
+			$('#spikeresults').html(DOMPurify.sanitize(data.results));
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
 		}
 	);
+}
+
+// Graph JSON is data: set attributes on one image instead of parsing HTML.
+function cactiGraphImage(data, rawData) {
+	const image = $('<img>').attr({
+		class: 'graphimage', id: 'graph_' + data.local_graph_id,
+		src: 'data:image/' + data.type + ';base64,' + data.image,
+		rra_id: data.rra_id, graph_type: data.type, graph_id: data.local_graph_id,
+		graph_start: data.graph_start, graph_end: data.graph_end,
+		graph_left: data.graph_left, graph_top: data.graph_top,
+		graph_width: data.graph_width, graph_height: data.graph_height,
+		width: data.image_width, height: data.image_height,
+		image_width: data.image_width, image_height: data.image_height,
+		canvas_top: data.graph_top, canvas_left: data.graph_left,
+		canvas_width: data.graph_width, canvas_height: data.graph_height,
+		value_min: data.value_min, value_max: data.value_max
+	});
+	if (rawData !== undefined) image.attr('data-raw', rawData);
+	return image;
 }
 
 function redrawGraph(graph_id) {
@@ -4860,29 +4887,7 @@ function redrawGraph(graph_id) {
 				data.graph_left = Number.parseInt(data.graph_left * ratio);
 			}
 
-			$('#wrapper_' + data.local_graph_id).empty().html(
-				"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
-				" src='data:image/" + data.type + ";base64," + data.image + "'" +
-				" rra_id='" + data.rra_id + "'" +
-				" graph_type='" + data.type + "'" +
-				" graph_id='" + data.local_graph_id + "'" +
-				" graph_start='" + data.graph_start + "'" +
-				" graph_end='" + data.graph_end + "'" +
-				" graph_left='" + data.graph_left + "'" +
-				" graph_top='" + data.graph_top + "'" +
-				" graph_width='" + data.graph_width + "'" +
-				" graph_height='" + data.graph_height + "'" +
-				" width='" + data.image_width + "'" +
-				" height='" + data.image_height + "'" +
-				" image_width='" + data.image_width + "'" +
-				" image_height='" + data.image_height + "'" +
-				" canvas_top='" + data.graph_top + "'" +
-				" canvas_left='" + data.graph_left + "'" +
-				" canvas_width='" + data.graph_width + "'" +
-				" canvas_height='" + data.graph_height + "'" +
-				" value_min='" + data.value_min + "'" +
-				" value_max='" + data.value_max + "'>"
-			);
+			$('#wrapper_' + data.local_graph_id).empty().append(cactiGraphImage(data));
 
 			$('#graph_' + data.local_graph_id).zoom({
 				inputfieldStartTime: 'date1',
@@ -5225,30 +5230,7 @@ function initializeGraphs(disable_cache) {
 				if(data.meta !== undefined) raw_data_compressed.meta = data.meta;
 				raw_data_compressed = lzjs.compressToBase64(JSON.stringify(raw_data_compressed));
 
-				$(wrapper_id).empty().html(
-					"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
-					" src='data:image/" + data.type + ";base64," + data.image + "'" +
-					" data-raw='" + raw_data_compressed + "'" +
-					" rra_id='" + data.rra_id + "'" +
-					" graph_type='" + data.type + "'" +
-					" graph_id='" + data.local_graph_id + "'" +
-					" graph_start='" + data.graph_start + "'" +
-					" graph_end='" + data.graph_end + "'" +
-					" graph_left='" + data.graph_left + "'" +
-					" graph_top='" + data.graph_top + "'" +
-					" graph_width='" + data.graph_width + "'" +
-					" graph_height='" + data.graph_height + "'" +
-					" width='" + data.image_width + "'" +
-					" height='" + data.image_height + "'" +
-					" image_width='" + data.image_width + "'" +
-					" image_height='" + data.image_height + "'" +
-					" canvas_top='" + data.graph_top + "'" +
-					" canvas_left='" + data.graph_left + "'" +
-					" canvas_width='" + data.graph_width + "'" +
-					" canvas_height='" + data.graph_height + "'" +
-					" value_min='" + data.value_min + "'" +
-					" value_max='" + data.value_max + "'>"
-				);
+				$(wrapper_id).empty().append(cactiGraphImage(data, raw_data_compressed));
 
 				var graph_id = '#graph_' + data.local_graph_id;
 				if (rra_id > 0) {
