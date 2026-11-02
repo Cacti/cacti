@@ -256,10 +256,6 @@ if ($child == false) {
 				WHERE run_id = ?
 				AND CAST(status AS SIGNED) >= 0', array($run_id));
 
-			if ($failed_children > 0) {
-				cacti_log(sprintf('WARNING: Boost observed %d child process(es) reporting an RRD update failure; archive tables will still be removed because every child completed.', $failed_children), true, 'BOOST');
-			}
-
 			if (!$run_complete) {
 				set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
 				$exit_code = 1;
@@ -283,6 +279,10 @@ if ($child == false) {
 			set_config_option('boost_poller_started', 0);
 
 			if ($run_complete) {
+				if ($failed_children > 0) {
+					cacti_log(sprintf('WARNING: Boost completed with %d child process(es) reporting an RRD update failure; their unprocessed samples are discarded along with the archive tables. Only one Boost master runs at a time, so retaining archives on failure would let a persistently failing data source accumulate archive tables indefinitely.', $failed_children), true, 'BOOST');
+				}
+
 				cacti_log('INFO: Boost removing archive tables ...', true, 'BOOST');
 
 				/**
