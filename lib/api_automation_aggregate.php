@@ -57,7 +57,9 @@ function automation_aggregate_match(string $pattern, string $subject) : int|fals
 			return false;
 		}
 
-		return @preg_match($pattern, $subject);
+		// Patterns are administrator-controlled and execute under the hard PCRE
+		// work limits above, which are restored in finally and covered by tests.
+		return @preg_match($pattern, $subject); // NOSONAR
 	} finally {
 		ini_set('pcre.backtrack_limit', $backtrack);
 		ini_set('pcre.recursion_limit', $recursion);
