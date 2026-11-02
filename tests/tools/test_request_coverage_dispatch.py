@@ -40,7 +40,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', 'UserAdministrationAuditCoverage.php')
+        self.dispatch('lib/functions.php', ['UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
@@ -80,6 +80,9 @@ class RequestDispatchTest(unittest.TestCase):
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
+            probe = repository / 'tests/Unit/fixtures/graph_group_probe.php'
+            probe.parent.mkdir(parents=True, exist_ok=True)
+            probe.write_text('<?php // dispatch fixture\n')
             git('add', '.')
             git('commit', '--quiet', '-m', 'fixture base')
             base = git('rev-parse', 'HEAD')
