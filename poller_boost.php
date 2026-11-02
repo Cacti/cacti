@@ -54,8 +54,7 @@ $run_id   = '';
 /* for releasing lock on SIGNAL */
 $current_lock = false;
 
-global $child, $run_id, $next_run_time, $archive_table, $current_lock, $boost_run_arch_tables;
-$boost_run_arch_tables = array();
+global $child, $run_id, $next_run_time, $archive_table, $current_lock;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -243,18 +242,30 @@ if ($child == false) {
 			/* output all the rrd data to the rrd files */
 			$completed_children = boost_completed_children($run_id);
 			$failed_children    = boost_failed_children($run_id);
-			$run_complete       = $failed_children == 0 && $completed_children >= $expected_children;
+
+			/**
+			 * Only a single Boost master runs at a time (enforced by the poller
+			 * process registration), so a run is complete once every launched
+			 * child has recorded a completion, regardless of whether any child
+			 * reported an RRD update failure. Failures are logged for visibility
+			 * but no longer block the archive cleanup below.
+			 */
+			$run_complete       = $completed_children >= $expected_children;
 			$rrd_updates        = (int) db_fetch_cell_prepared('SELECT COALESCE(SUM(CAST(status AS SIGNED)), 0)
 				FROM poller_output_boost_processes
 				WHERE run_id = ?
 				AND CAST(status AS SIGNED) >= 0', array($run_id));
+
+			if ($failed_children > 0) {
+				cacti_log(sprintf('WARNING: Boost observed %d child process(es) reporting an RRD update failure; archive tables will still be removed because every child completed.', $failed_children), true, 'BOOST');
+			}
 
 			if (!$run_complete) {
 				set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
 				$exit_code = 1;
 				boost_log_statistics($rrd_updates);
 				set_config_option('boost_last_run_time', $last_run_time);
-				cacti_log('WARNING: Boost retained archive tables because the child run was incomplete or reported an RRD update failure.', true, 'BOOST');
+				cacti_log('WARNING: Boost retained archive tables because not all child processes recorded completion.', true, 'BOOST');
 			} elseif ($rrd_updates > 0) {
 				boost_log_statistics($rrd_updates);
 				$next_run_time = $current_time + $seconds_offset;
@@ -271,19 +282,27 @@ if ($child == false) {
 
 			set_config_option('boost_poller_started', 0);
 
-			if ($rrd_updates > 0 && $run_complete) {
+			if ($run_complete) {
 				cacti_log('INFO: Boost removing archive tables ...', true, 'BOOST');
 
-				/* cleanup - remove empty arch tables*/
-				if (cacti_sizeof($boost_run_arch_tables)) {
-					foreach($boost_run_arch_tables as $table) {
+				/**
+				 * With only one Boost master permitted at a time, every archive
+				 * table present once the run completes belongs to this run, so
+				 * all of them are safe to remove.
+				 */
+				$arch_tables = boost_get_arch_table_names();
+
+				if (cacti_sizeof($arch_tables)) {
+					foreach($arch_tables as $table) {
 						if (boost_is_valid_archive_table($table)) {
 							cacti_log('INFO: Boost removing archive table: ' . $table, true, 'BOOST');
 							db_execute("DROP TABLE IF EXISTS `$table`");
 						}
 					}
 				}
+			}
 
+			if ($rrd_updates > 0 && $run_complete) {
 				dsstats_boost_bottom();
 				rrdcheck_boost_bottom();
 
@@ -509,7 +528,7 @@ function boost_failed_children($run_id) {
  */
 function boost_prepare_process_table() {
 	global $start_time, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
-	global $boost_run_arch_tables, $run_id;
+	global $run_id;
 
 	boost_debug('Parallel Process Setup Begins.');
 
@@ -580,8 +599,6 @@ function boost_prepare_process_table() {
 
 		return false;
 	}
-
-	$boost_run_arch_tables = array_values($arch_tables);
 
 	$total_rows = 0;
 

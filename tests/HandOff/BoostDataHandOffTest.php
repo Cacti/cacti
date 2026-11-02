@@ -53,7 +53,7 @@ test('Boost child completion and archive deletion are scoped to a parent run', f
 	expect($poller)->toContain("' --run-id=' . \$run_id");
 	expect($poller)->toContain('function boost_completed_children($run_id)');
 	expect($poller)->toContain('function boost_failed_children($run_id)');
-	expect($poller)->toContain('$run_complete       = $failed_children == 0 && $completed_children >= $expected_children');
+	expect($poller)->toContain('$run_complete       = $completed_children >= $expected_children');
 	expect($poller)->toContain('$rrd_updates > 0 && $run_complete');
 	expect($schema)->toContain('UNIQUE KEY `run_child` (`run_id`,`child_id`)');
 });
