@@ -515,8 +515,8 @@ function boost_log_ignored_sample_keys(array $tuples, int $attempted, int $inser
 
 /**
  * Log a poller_output_boost batch the database did not acknowledge, so a
- * failed write (including cmd.php's boost_redirect staging, which has no
- * other failure path) is never silent.
+ * failed write (including cmd.php's boost staging, which has no other
+ * failure path) is never silent.
  */
 function boost_log_failed_staging(int $attempted) : void {
 	cacti_log(sprintf('ERROR: Boost staging failed to write %d sample(s) to poller_output_boost; the database did not acknowledge the batch.', $attempted), false, 'BOOST');
@@ -525,8 +525,8 @@ function boost_log_failed_staging(int $attempted) : void {
 /**
  * boost_flush_output_batch - writes a batch of pre-built poller_output_boost
  * VALUE tuples, chunking on max_allowed_packet so a single INSERT statement
- * never exceeds it. Shared by cmd.php's boost_redirect writes and
- * boost_poller_on_demand() so the batched-insert logic and the duplicate-key
+ * never exceeds it. Shared by cmd.php's boost writes and poller_recovery.php's
+ * recovery transfers so the batched-insert logic and the duplicate-key
  * handling live in exactly one place.
  *
  * Duplicate (local_data_id, rrd_name, time) keys are ignored (first write
@@ -641,9 +641,9 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
  * Additionally, it manages error handling and configuration options related to
  * the boost functionality.
  *
- * When boost_redirect is enabled, spine/cmd.php have already written these
- * samples to `poller_output_boost`, so nothing is inserted here and the rows
- * are reported as staged. poller_recovery.php writes recovered remote rows
+ * When boost is enabled, spine/cmd.php have already written these samples
+ * to `poller_output_boost`, so nothing is inserted here and the rows are
+ * reported as staged. poller_recovery.php writes recovered remote rows
  * through boost_flush_output_batch() directly and is not affected.
  *
  * @param array $results An array of poller results, where each result contains:
@@ -658,15 +658,7 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
  *              or `true` if the boost functionality is disabled or bypassed.
  */
 function boost_poller_on_demand(array &$results, ?bool &$staged = null) : bool {
-	global $remote_db_cnn_id;
-
 	$staged = false;
-
-	if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') { // @phpstan-ignore-line
-		$conn = $remote_db_cnn_id;
-	} else {
-		$conn = false;
-	}
 
 	if (read_config_option('boost_rrd_update_enable') == 'on' || POLLER_ID > 1) {
 		$previous_error_reporting = error_reporting();
@@ -683,37 +675,11 @@ function boost_poller_on_demand(array &$results, ?bool &$staged = null) : bool {
 		set_error_handler('boost_error_handler');
 
 		if (boost_check_correct_enabled()) {
-			// spine/cmd.php already staged these rows when direct redirection is active,
-			// so the poller must never insert them into poller_output_boost again.
-			if (read_config_option('boost_redirect') == 'on') {
-				$staged = true;
+			// spine/cmd.php already staged these rows directly into
+			// poller_output_boost, so the poller must never insert them again.
+			$staged = true;
 
-				restore_error_handler();
-				error_reporting($previous_error_reporting);
-
-				return false;
-			}
-
-			if (cacti_sizeof($results)) {
-				$value_tuples = [];
-
-				foreach ($results as $result) {
-					$value_tuples[] =
-						'(' .
-						(int) $result['local_data_id'] . ',' .
-						db_qstr($result['rrd_name'], $conn) . ',' .
-						db_qstr($result['time'], $conn) . ',' .
-						db_qstr($result['output'], $conn) .
-						')';
-				}
-
-				$acknowledged = boost_flush_output_batch($value_tuples, $conn);
-
-				$staged       = $acknowledged;
-				$return_value = !$acknowledged;
-			} else {
-				$return_value = false;
-			}
+			$return_value = false;
 		} else {
 			$return_value = true;
 		}

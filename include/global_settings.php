@@ -2712,12 +2712,6 @@ $settings['boost'] = [
 		'default'       => '1200',
 		'array'         => $boost_max_runtime
 	],
-	'boost_redirect' => [
-		'friendly_name' => __('Enable Direct Population of Boost Table'),
-		'description'   => __('Enables direct insert of records into poller output boost table with results in a 25% time reduction in each poll cycle.'),
-		'method'        => 'checkbox',
-		'default'       => ''
-	],
 	'boost_debug_enabled' => [
 		'friendly_name' => __('Enable Boost Debugging'),
 		'description'   => __('If set, Boost will log debug information directly to the Boost log file.  Please note, enabling can cause a high I/O rate on the local file system.'),
