@@ -187,6 +187,17 @@ foreach($parms as $parameter) {
 			$overrides['external_id']  = $value;
 			break;
 
+		case '--security-level':
+			$converted = convert_override_value('security-level', trim($value));
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['snmp_security_level'] = $converted;
+			break;
+
 		case '--username':
 			$overrides['snmp_username'] = trim($value);
 			break;
@@ -409,7 +420,9 @@ foreach ($device_list as $entry) {
 		continue;
 	}
 
-	if (!device_has_requested_changes($original, $merged)) {
+	/* a security level can change fields that were not given explicitly */
+	if (!device_has_requested_changes($original, $merged) &&
+		!(isset($merged['snmp_security_level']) && device_has_changes($original, $host))) {
 		$no_change_devices[] = $device_id;
 		continue;
 	}
@@ -560,6 +573,19 @@ function load_and_validate_device($device_id, $overrides, $host_templates, $sour
 		return false;
 	}
 
+	/* the security level is not a host column, it only adjusts the SNMPv3 fields */
+	$security_level = '';
+
+	if (isset($host['snmp_security_level'])) {
+		$security_level = $host['snmp_security_level'];
+		unset($host['snmp_security_level']);
+	}
+
+	if ($security_level != '' && $host['snmp_version'] != 3) {
+		print "ERROR: --security-level is only valid with SNMP version 3\n";
+		return false;
+	}
+
 	/* api_device_save clears SNMPv3-only fields for lower SNMP versions */
 	if (cacti_sizeof($overrides) && $host['snmp_version'] < 3) {
 		$snmpv3_fields = array(
@@ -604,8 +630,45 @@ function load_and_validate_device($device_id, $overrides, $host_templates, $sour
 	if ($host['snmp_version'] < 3) {
 		/* snmp community can be blank */
 	} else {
-		if ($host['snmp_username'] == "" || $host['snmp_password'] == "") {
-			print "ERROR: When using snmpv3 you must supply an username and password\n";
+		/* an explicit security level overrides any protocols retained from the existing device */
+		switch ($security_level) {
+			case '':
+				break;
+
+			case 'noauthnopriv':
+				$host['snmp_auth_protocol']   = '[None]';
+				$host['snmp_password']        = '';
+				$host['snmp_priv_protocol']   = '[None]';
+				$host['snmp_priv_passphrase'] = '';
+				break;
+
+			case 'authnopriv':
+				if ($host['snmp_auth_protocol'] == '' || $host['snmp_auth_protocol'] == '[None]') {
+					print "ERROR: For SNMP security level authNoPriv, you must supply an auth protocol other than [None]\n";
+					return false;
+				}
+
+				$host['snmp_priv_protocol']   = '[None]';
+				$host['snmp_priv_passphrase'] = '';
+				break;
+
+			case 'authpriv':
+				if ($host['snmp_auth_protocol'] == '' || $host['snmp_auth_protocol'] == '[None]' ||
+					$host['snmp_priv_protocol'] == '' || $host['snmp_priv_protocol'] == '[None]' ||
+					$host['snmp_priv_passphrase'] == '') {
+					print "ERROR: For SNMP security level authPriv, you must supply an auth protocol, priv protocol and priv passphrase\n";
+					return false;
+				}
+				break;
+		}
+
+		if ($host['snmp_username'] == '') {
+			print "ERROR: When using snmpv3 you must supply an username\n";
+			return false;
+		}
+
+		if ($host['snmp_auth_protocol'] != '[None]' && $host['snmp_password'] == '') {
+			print "ERROR: When using snmpv3 with an auth protocol you must supply a password\n";
 			return false;
 		}
 	}
@@ -703,12 +766,12 @@ function validate_device_field_values($host) {
 		$priv_protocols = array('[None]', 'DES', 'AES', 'AES128', 'AES192', 'AES192C', 'AES256', 'AES256C');
 
 		if (!in_array($host['snmp_auth_protocol'], $auth_protocols, true)) {
-			print "ERROR: Invalid SNMP authentication protocol ({$host['snmp_auth_protocol']}).\n";
+			print "ERROR: Invalid SNMP authentication protocol ({$host['snmp_auth_protocol']}).  Valid values are " . implode(', ', $auth_protocols) . ".\n";
 			return false;
 		}
 
 		if (!in_array($host['snmp_priv_protocol'], $priv_protocols, true)) {
-			print "ERROR: Invalid SNMP privacy protocol ({$host['snmp_priv_protocol']}).\n";
+			print "ERROR: Invalid SNMP privacy protocol ({$host['snmp_priv_protocol']}).  Valid values are " . implode(', ', $priv_protocols) . ".\n";
 			return false;
 		}
 	}
@@ -948,6 +1011,7 @@ function device_override_definitions() {
 		'poller'       => array('key' => 'poller_id', 'min' => 0),
 		'disable'      => array('key' => 'disabled'),
 		'external-id'  => array('key' => 'external_id'),
+		'security-level' => array('key' => 'snmp_security_level'),
 		'username'     => array('key' => 'snmp_username'),
 		'password'     => array('key' => 'snmp_password'),
 		'authproto'    => array('key' => 'snmp_auth_protocol'),
@@ -1057,6 +1121,17 @@ function convert_override_value($column, $value) {
 					return false;
 			}
 			break;
+
+		case 'security-level':
+			switch (strtolower($value)) {
+				case 'noauthnopriv':
+				case 'authnopriv':
+				case 'authpriv':
+					return strtolower($value);
+				default:
+					print "ERROR: Invalid security level ($value). Valid values are noAuthNoPriv, authNoPriv, or authPriv.\n";
+					return false;
+			}
 
 		case 'disable':
 			switch (strtolower($value)) {
@@ -1254,7 +1329,7 @@ function display_help() {
 	print "    [--poller=[id]] [--site=[id]] [--external-id=[S]] [--threads=[1]]\n";
 	print "    [--avail=[ping]] [--ping_method=[icmp]] [--ping_port=[N/A, 1-65534]] [--ping_timeout=[N]] [--ping_retries=[2]]\n";
 	print "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
-	print "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
+	print "    [--security-level=] [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
 	print "    [--file=<path>] [--force] [--quiet]\n\n";
 	print "Required (one of):\n";
 	print "    --id           the id for a device, that is field id in table host\n";
@@ -1283,17 +1358,37 @@ function display_help() {
 	print "    --community    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
 	print "    --port         161\n";
 	print "    --timeout      500\n";
+	print "    --security-level '', noAuthNoPriv|authNoPriv|authPriv, security level for snmpv3\n";
 	print "    --username     '', snmp username for snmpv3\n";
-	print "    --password     '', snmp password for snmpv3\n";
-	print "    --authproto    '', snmp authentication protocol for snmpv3\n";
+	print "    --password     '', snmp auth password for snmpv3, minimum 8 characters\n";
+	print "    --authproto    '', [None]|MD5|SHA|SHA224|SHA256|SHA384|SHA512, snmp authentication protocol for snmpv3\n";
 	print "    --privpass     '', snmp privacy passphrase for snmpv3\n";
-	print "    --privproto    '', snmp privacy protocol for snmpv3\n";
+	print "    --privproto    '', [None]|DES|AES|AES128|AES192|AES192C|AES256|AES256C, snmp privacy protocol for snmpv3\n";
 	print "    --context      '', snmp context for snmpv3\n";
 	print "    --engineid     '', snmp engineid for snmpv3\n";
 	print "    --max_oids     10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request\n\n";
 	print "    --bulk_walk    -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.\n\n";
 	print "    --force        skip CSV confirmation (for automated use)\n";
 	print "    --quiet        suppress normal output and skip CSV confirmation\n\n";
+	print "SNMPv3 security level:\n";
+	print "    Options not given keep the value already stored for the device.  Without\n";
+	print "    --security-level, the level follows the resulting protocols: an auth\n";
+	print "    protocol of [None] is noAuthNoPriv, a priv protocol of [None] is\n";
+	print "    authNoPriv, and otherwise authPriv.  To lower the level of a device that\n";
+	print "    is currently authPriv, pass --security-level, or --privproto=[None].\n";
+	print "    --security-level=noAuthNoPriv clears the password and priv passphrase;\n";
+	print "    authNoPriv clears the priv passphrase.\n\n";
+	print "Examples:\n";
+	print "    SNMPv3 authPriv with SHA-256 and AES-128:\n";
+	print "      change_device.php --id=5 --version=3 --security-level=authPriv --username=monitor \\\n";
+	print "        --password='authSecret1' --authproto=SHA256 --privpass='privSecret1' --privproto=AES128\n\n";
+	print "    SNMPv3 authNoPriv with SHA (removes any existing privacy settings):\n";
+	print "      change_device.php --id=5 --version=3 --security-level=authNoPriv --username=monitor \\\n";
+	print "        --password='authSecret1' --authproto=SHA\n\n";
+	print "    SNMPv3 noAuthNoPriv:\n";
+	print "      change_device.php --id=5 --version=3 --security-level=noAuthNoPriv --username=monitor\n\n";
+	print "    SNMPv2c:\n";
+	print "      change_device.php --id=5 --version=2 --community='public'\n\n";
 	print "CSV File Format (--file):\n";
 	print "    The file must be a CSV with a header row.  The first column must be 'id'.\n";
 	print "    Column names must be unique and every row must contain the same number of fields.\n";
