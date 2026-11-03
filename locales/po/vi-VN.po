@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-01 19:17-0500\n"
 "PO-Revision-Date: 2023-03-07 13:33+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Vietnamese <http://translate.cacti.net/projects/cacti/core-v1-2-x/vi/>\n"
@@ -2637,39 +2637,13 @@ msgstr "Gỡ lỗi nguồn dữ liệu"
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "Gỡ lỗi nguồn dữ liệu nhận được ID nguồn dữ liệu không hợp lệ."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "Tất cả các sửa chữa RRDfile đã thành công."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Một hoặc nhiều sửa chữa RRDfile không thành công. Xem nhật ký Cacti cho các lỗi."
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "Tất cả các sửa chữa RRDfile đã thành công."
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "Thông tin điều chỉnh RRDtool"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "Các bước sửa chữa [Chạy Fix từ dòng lệnh]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2906,7 +2880,7 @@ msgstr "Ban hành"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "Đối với attrbitute ' %s', vấn đề được tìm thấy ' %s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "Tên được đề xuất lại"
 
@@ -3665,6 +3639,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "Không có trường đầu vào cho nguồn đầu vào dữ liệu được chọn"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Tất cả các sửa chữa RRDfile đã thành công."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "Lựa chọn mẫu dữ liệu [chỉnh sửa: %s]"
@@ -3756,6 +3744,18 @@ msgstr "Mới"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "Gỡ lỗi nguồn dữ liệu"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "Thông tin điều chỉnh RRDtool"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Các bước sửa chữa [Chạy Fix từ dòng lệnh]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4096,7 +4096,7 @@ msgstr[0] "1 Phút"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Chi tiết đồ thị, thu phóng và gỡ lỗi tiện ích"
 
@@ -4104,29 +4104,11 @@ msgstr "Chi tiết đồ thị, thu phóng và gỡ lỗi tiện ích"
 msgid "CSV Export"
 msgstr "Xuất CSV"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "Xem dạng sơ đồ cây"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Realm"
-msgid "Realtime"
-msgstr "Địa hạt:"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "Gai"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "Chỉnh sửa mẫu biểu đồ."
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "Nhấp để xem Biểu đồ này trong thời gian thực"
 
@@ -11172,14 +11154,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "Nếu trình tăng tốc đẩy ra thời gian chạy này, một cảnh báo sẽ được đặt trong nhật ký xương rồng,"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "Cho phép dân số trực tiếp của bảng pollerDefput_boost"
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "Cho phép chèn trực tiếp các bản ghi vào tăng đầu ra của pug với kết quả giảm 25% thời gian trong mỗi chu kỳ thăm dò ý kiến."
-
-#: include/global_settings.php
 msgid "Boost Debug Log"
 msgstr "Tăng nhật ký gỡ lỗi"
 
@@ -13139,20 +13113,32 @@ msgid "Data Query:"
 msgstr "Truy vấn dữ liệu:"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "Xuất dữ liệu CSV"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Tùy chọn đồ thị"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "Chế độ xem biểu đồ thời gian"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Xem dạng sơ đồ cây"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "Chỉnh sửa thiết bị"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "Tiêu diệt gai trong đồ thị"
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "Địa hạt:"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "Gai"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13257,6 +13243,10 @@ msgstr "Nhập một biểu thức chính quy"
 #: lib/html.php
 msgid "No file selected"
 msgstr "Không có tệp tin nào được chọn"
+
+#: lib/html.php
+msgid "Time Graph View"
+msgstr "Chế độ xem biểu đồ thời gian"
 
 #: lib/html.php
 msgid "SpikeKill Results"
@@ -15675,6 +15665,11 @@ msgstr ""
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
 
@@ -15775,6 +15770,26 @@ msgstr "LRI: RRDfile %s không thể ghi"
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "Kích thước bước RRD bắt buộc là &#39; %s&#39;"
 
@@ -15792,11 +15807,6 @@ msgstr "Nhịp tim cho Nguồn dữ liệu &#39; %s&#39; phải là &#39; %s&#39
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD tối thiểu cho Nguồn dữ liệu &#39; %s&#39; phải là &#39; %s&#39;"
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "DS &#39; %s&#39; bị thiếu trong định nghĩa Cacti"
 
 #: lib/rrd.php
 #, php-format
@@ -15882,17 +15892,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Điểm dữ liệu không xác định (0)"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "đổi tên %s thành %s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "Không %s Tìm thấy"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "Trường nguồn dữ liệu"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "đổi tên %s thành %s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19423,6 +19433,7 @@ msgid "Max Total Memory Possible"
 msgstr "Bộ nhớ Max Poller được phép:"
 
 #: utilities.php
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -20132,32 +20143,33 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 msgid "No VDEFs"
 msgstr "Không có VDEF"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "Tùy chọn đồ thị"
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "Cho phép dân số trực tiếp của bảng pollerDefput_boost"
 
-#: lib/plugins.php:835
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "Cho phép chèn trực tiếp các bản ghi vào tăng đầu ra của pug với kết quả giảm 25% thời gian trong mỗi chu kỳ thăm dò ý kiến."
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "Xuất dữ liệu CSV"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "Tiêu diệt gai trong đồ thị"
+
 #, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "DS &#39; %s&#39; bị thiếu trong định nghĩa Cacti"
 
-#: links.php
-msgid "Links"
-msgstr "Liên kết"
+#~ msgid "Links"
+#~ msgstr "Liên kết"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "Người sưu tầm"
+#~ msgid "Collectors"
+#~ msgstr "Người sưu tầm"
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRDfiles"
+#~ msgid "RRDfiles"
+#~ msgstr "RRDfiles"
 
-#: user_domains.php
-msgid "Domains"
-msgstr "Miền"
+#~ msgid "Domains"
+#~ msgstr "Miền"
 
 #~ msgid "SNMP Rules"
 #~ msgstr "Quy tắc SNMP"
