@@ -9,17 +9,19 @@
 
 /*
  * Regression tests for the poller_output_boost insert consolidation
- * (issue#7536).
+ * (issue#7536) and the permanent Boost redirection (issue#8470).
  *
- * The insert was hand-written four times: three in cmd.php (behind the
- * boost_redirect == 'on' && boost_rrd_update_enable == 'on' guard) using
- * INSERT IGNORE, and once in boost_poller_on_demand() (lib/boost.php)
- * using ON DUPLICATE KEY UPDATE -- a real data-integrity inconsistency
- * (silently-drop vs last-write-wins) between two paths writing the same
- * shape of data, not just a style/DRY issue. All four now go through the
- * shared boost_flush_output_batch() helper (lib/boost.php), standardized
- * on INSERT IGNORE. See BoostFlushOutputBatchTest.php (tests/integration)
- * for the executing proof of the chosen duplicate-key behavior.
+ * The insert was hand-written four times: three in cmd.php and once in
+ * boost_poller_on_demand() (lib/boost.php), using mismatched duplicate-key
+ * behavior (INSERT IGNORE vs ON DUPLICATE KEY UPDATE) -- a real
+ * data-integrity inconsistency (silently-drop vs last-write-wins) between
+ * two paths writing the same shape of data, not just a style/DRY issue.
+ * The cmd.php writes now go through the shared boost_flush_output_batch()
+ * helper (lib/boost.php), standardized on INSERT IGNORE. With Boost
+ * redirection permanent, cmd.php stages collector output directly, so
+ * boost_poller_on_demand() no longer stages inline at all. See
+ * BoostFlushOutputBatchTest.php (tests/integration) for the executing proof
+ * of the chosen duplicate-key behavior.
  */
 
 $root = dirname(__DIR__, 4);
@@ -37,7 +39,7 @@ test('lib/boost.php declares the shared boost_flush_output_batch helper', functi
 	expect($src)->not->toMatch('/INSERT\s+INTO\s+poller_output_boost[^;]*ON\s+DUPLICATE\s+KEY\s+UPDATE/is');
 });
 
-test('boost_poller_on_demand delegates to boost_flush_output_batch instead of hand-rolling the insert', function () use ($root) {
+test('boost_poller_on_demand no longer stages poller output inline', function () use ($root) {
 	$src = file_get_contents($root . '/lib/boost.php');
 
 	$func_pos = strpos($src, 'function boost_poller_on_demand(');
@@ -46,9 +48,13 @@ test('boost_poller_on_demand delegates to boost_flush_output_batch instead of ha
 	$func_end  = strpos($src, "\nfunction ", $func_pos + 1);
 	$func_body = substr($src, $func_pos, $func_end - $func_pos);
 
-	expect($func_body)->toContain('boost_flush_output_batch($value_tuples, $conn)');
-	expect($func_body)->not->toContain('ON DUPLICATE KEY UPDATE');
-	expect($func_body)->not->toContain("SHOW VARIABLES LIKE 'max_allowed_packet'");
+	// Boost redirection is permanent (issue#8470): cmd.php stages collector
+	// output directly, so the on-demand path must never (re-)insert into
+	// poller_output_boost itself.
+	expect($func_body)->not->toContain('boost_flush_output_batch')
+		->and($func_body)->not->toContain('INSERT IGNORE INTO poller_output_boost')
+		->and($func_body)->not->toContain('ON DUPLICATE KEY UPDATE')
+		->and($func_body)->not->toContain("SHOW VARIABLES LIKE 'max_allowed_packet'");
 });
 
 test('all three cmd.php call sites use boost_flush_output_batch, none hand-roll the insert', function () use ($root) {

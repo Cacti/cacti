@@ -178,6 +178,9 @@ avoid introducing repeated includes, launches or network requests per sample.
   - Before deciding CVE vs. no-CVE, verify the claim against both branches' actual current source rather than trusting the reporter's stated affected-version range — it can be wrong (e.g. describing a bug already fixed on `1.2.x` that only regressed on `develop`).
   - If a `develop`-only advisory is later found to also affect a released `1.2.x` version, request a CVE at that point.
 
+## Anti-patterns (reject these)
+- **Twig**: Twig (PHP templating engine) is NOT to be used in Cacti. Any PR that adds or introduces Twig code (`twig/twig` dependency, `.twig` templates, `Twig\` classes, `{{ }}` / `{% %}` template syntax) must be **rejected**. Use Cacti's existing HTML output helpers (`top_header()`/`bottom_footer()`, `html_*` functions in `lib/html.php`) instead.
+
 ## Clean-as-you-code
 - While implementing a change, do small, behavior-preserving refactors in the *touched area* (dedupe logic, extract helpers, simplify conditions).
 - **Formatting**: Enforce tabs for indentation (no spaces for indentation).

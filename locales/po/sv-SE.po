@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-26 15:38+0000\n"
+"PO-Revision-Date: 2026-10-26 23:19+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -138,19 +138,19 @@ msgstr "Placera grafer på rapporten"
 
 #: aggregate_graphs.php:45
 msgid "Migrate Aggregate to use a Template"
-msgstr "Migrera aggregerad graf till en mall"
+msgstr "Migrera grafaggregation till att använda en mall"
 
 #: aggregate_graphs.php:46
 msgid "Create New Aggregate from Aggregates"
-msgstr "Skapa aggregerad graf från aggregerade grafer"
+msgstr "Skapa ny grafaggregation av befintliga grafaggregeringar"
 
 #: aggregate_graphs.php:50
 msgid "Associate with Aggregate"
-msgstr "Koppla till aggregerad graf"
+msgstr "Koppla till grafaggregation"
 
 #: aggregate_graphs.php:51
 msgid "Disassociate with Aggregate"
-msgstr "Koppla bort från aggregerad graf"
+msgstr "Koppla bort från grafaggregation"
 
 #: aggregate_graphs.php:114 graphs.php:280 host.php:228
 #, php-format
@@ -168,7 +168,7 @@ msgstr "Åsidosätt detta värde"
 #: aggregate_graphs.php:809
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
 msgstr ""
-"De valda aggregerade graferna innehåller element från mer än en grafmall."
+"De valda grafaggregeringarna innehåller element från mer än en grafmall."
 
 #: aggregate_graphs.php:810
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template."
@@ -179,8 +179,8 @@ msgstr ""
 #: aggregate_graphs.php:818
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
 msgstr ""
-"De valda aggregerade graferna verkar inte ha några matchande mallar för "
-"aggregerade grafer."
+"De valda grafaggregeringarna verkar inte ha några matchande mallar för "
+"grafaggregeringar."
 
 #: aggregate_graphs.php:819
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist."
@@ -191,15 +191,16 @@ msgstr ""
 #: aggregate_graphs.php:844
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
 msgstr ""
-"Det finns för närvarande inga mallar för aggregerade grafer för de valda "
-"äldre aggregerade graferna."
+"Det finns för närvarande inga mallar för grafaggregeringar för de valda "
+"äldre aggregaten."
 
 #: aggregate_graphs.php:845
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
 msgstr ""
-"För att migrera de aggregerade graferna nedan till mallbaserade aggregerade "
-"grafer måste du först skapa en mall för aggregerad graf för grafmallen ”%s”."
+"För att migrera grafaggregeringarna nedan till mallbaserade "
+"grafaggregeringar måste du först skapa en mall för grafaggregation för "
+"grafmallen ”%s”."
 
 #: aggregate_graphs.php:864
 msgid "You currently have no reports defined."
@@ -243,7 +244,7 @@ msgstr "Migrera till aggregerade grafer"
 
 #: aggregate_graphs.php:900 aggregate_graphs.php:2121 graphs.php:1872
 msgid "Aggregate Template"
-msgstr "Mall för aggregerad graf"
+msgstr "Mall för grafaggregation"
 
 #: aggregate_graphs.php:906
 msgid "Click 'Continue' to Combine the following Aggregates into an Aggregate Graph."
@@ -261,7 +262,7 @@ msgstr "Namn på aggregerad graf"
 
 #: aggregate_graphs.php:912
 msgid "New Aggregate"
-msgstr "Ny aggregerad graf"
+msgstr "Ny grafaggregation"
 
 #: aggregate_graphs.php:919
 msgid "Click 'Continue' to Place the following Aggregate Graph on a Report."
@@ -454,8 +455,7 @@ msgstr "Ersättningsvärden för prefix"
 
 #: aggregate_graphs.php:1239 aggregate_templates.php:406 graphs.php:1683
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
-msgstr ""
-"Du kan använda dessa ersättningsvärden för prefixet i den aggregerade grafen"
+msgstr "Du kan använda dessa ersättningsvärden för prefixet i grafaggregationen"
 
 #: aggregate_graphs.php:1397 aggregate_templates.php:525 graphs.php:1998
 #: lib/api_aggregate.php:1789
@@ -557,7 +557,7 @@ msgstr "Standard"
 
 #: aggregate_graphs.php:1715
 msgid "Part of Aggregate"
-msgstr "Del av aggregerad graf"
+msgstr "Del av grafaggregation"
 
 #: aggregate_graphs.php:1720 aggregate_graphs.php:2042
 #: aggregate_templates.php:633 automation_devices.php:606
@@ -662,7 +662,7 @@ msgstr "ID"
 
 #: aggregate_graphs.php:1757
 msgid "Included in Aggregate"
-msgstr "Ingår i den aggregerade grafen"
+msgstr "Ingår i grafaggregationen"
 
 #: aggregate_graphs.php:1762 aggregate_graphs.php:2127 graph_templates.php:1831
 #: graph_view.php:896 graph_view.php:909 graphs.php:3087 plugins.php:1103
@@ -788,7 +788,7 @@ msgstr "Ingen"
 
 #: aggregate_graphs.php:2112
 msgid "The title for the Aggregate Graphs"
-msgstr "Titeln för de aggregerade graferna"
+msgstr "Titeln för grafaggregeringarna"
 
 #: aggregate_graphs.php:2118
 msgid "The internal database identifier for this object"
@@ -796,11 +796,11 @@ msgstr "Objektets interna databasidentifierare"
 
 #: aggregate_graphs.php:2124
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "Mallen för aggregerad graf som de aggregerade graferna bygger på"
+msgstr "Mallen för grafaggregation som grafaggregeringarna bygger på"
 
 #: aggregate_graphs.php:2151
 msgid "No Aggregate Graphs Found"
-msgstr "Inga aggregerade grafer hittades"
+msgstr "Inga grafaggregeringar hittades"
 
 #: aggregate_templates.php:333
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template."
@@ -822,16 +822,16 @@ msgstr "Ta bort mallar för aggregerade grafer"
 #: aggregate_templates.php:363
 #, php-format
 msgid "Aggregate Template [edit: %s]"
-msgstr "Mall för aggregerad graf [redigera: %s]"
+msgstr "Mall för grafaggregation [redigera: %s]"
 
 #: aggregate_templates.php:365
 msgid "Aggregate Template [new]"
-msgstr "Mall för aggregerad graf [ny]"
+msgstr "Mall för grafaggregation [ny]"
 
 #: aggregate_templates.php:586 aggregate_templates.php:675
 #: include/global_arrays.php:2919
 msgid "Aggregate Templates"
-msgstr "Mallar för aggregerade grafer"
+msgstr "Mallar för grafaggregeringar"
 
 #: aggregate_templates.php:600 aggregate_templates.php:603
 #: automation_templates.php:1341 automation_templates.php:1344
@@ -855,8 +855,8 @@ msgstr "Mallens titel"
 #: aggregate_templates.php:685
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
 msgstr ""
-"Mallar för aggregerade grafer som används kan inte tas bort. En mall används "
-"om en aggregerad graf hänvisar till den."
+"Mallar för grafaggregeringar som används kan inte tas bort. En mall används "
+"om en grafaggregation hänvisar till den."
 
 #: aggregate_templates.php:685 cdef.php:869 color.php:679
 #: color_templates.php:917 data_input.php:868 data_queries.php:1406
@@ -881,7 +881,7 @@ msgstr "Grafmall"
 
 #: aggregate_templates.php:709
 msgid "No Aggregate Templates Found"
-msgstr "Inga mallar för aggregerade grafer hittades"
+msgstr "Inga mallar för grafaggregeringar hittades"
 
 #: auth_2fa.php:115
 msgid "Failed to verify token"
@@ -3879,14 +3879,13 @@ msgstr "Färgmall [ny]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Färgmallen ”%s” tillämpades på %d mallar för aggregerade grafer och %d "
-"aggregerade grafer utan mall"
+"Färgmallen ”%s” tillämpades på %d mallar för grafaggregeringar och %d "
+"grafaggregeringar utan mall"
 
 #: color_templates.php:764
 #, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr ""
-"Inga mallar för aggregerade grafer eller grafer använde färgmallen ”%s”."
+msgstr "Inga mallar för grafaggregeringar eller grafer använde färgmallen ”%s”."
 
 #: color_templates.php:818 color_templates.php:832 color_templates.php:835
 #: color_templates.php:903 include/global_arrays.php:2895
@@ -3897,7 +3896,7 @@ msgstr "Färgmallar"
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
 msgstr ""
 "Färgmallar som används kan inte tas bort. En färgmall används om en mall för "
-"aggregerad graf hänvisar till den."
+"grafaggregation hänvisar till den."
 
 #: color_templates.php:953
 msgid "No Color Templates Found"
@@ -5255,7 +5254,7 @@ msgstr ""
 
 #: data_sources.php:1658
 msgid "The number of Graphs and Aggregate Graphs that are using the Data Source."
-msgstr "Antalet grafer och aggregerade grafer som använder datakällan."
+msgstr "Antalet grafer och grafaggregeringar som använder datakällan."
 
 #: data_sources.php:1664
 msgid "The frequency that data is collected for this Data Source."
@@ -6097,11 +6096,11 @@ msgstr "Använd automationsregler"
 
 #: graphs.php:68 graphs.php:1855 graphs.php:1866
 msgid "Create Aggregate Graph"
-msgstr "Skapa aggregerad graf"
+msgstr "Skapa grafaggregation"
 
 #: graphs.php:69
 msgid "Create Aggregate from Template"
-msgstr "Skapa aggregerad graf från mall"
+msgstr "Skapa grafaggregation från mall"
 
 #: graphs.php:234 graphs.php:249
 msgid "No Device - "
@@ -11220,7 +11219,7 @@ msgstr ""
 
 #: include/global_form.php:1956
 msgid "The new Title of the aggregated Graph."
-msgstr "Den nya titeln för den aggregerade grafen."
+msgstr "Den nya titeln för grafaggregationen."
 
 #: include/global_form.php:1963 include/global_form.php:2049
 #: include/global_form.php:2154
@@ -11241,7 +11240,7 @@ msgstr "Inkludera prefixtext"
 #: include/global_form.php:1972 include/global_form.php:2058
 #: include/global_form.php:2163
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
-msgstr "Inkludera källgrafernas GPRINT-titeltext i de aggregerade graferna."
+msgstr "Inkludera källgrafernas GPRINT-titeltext i grafaggregeringarna."
 
 #: include/global_form.php:1979 include/global_form.php:2065
 #: include/global_form.php:2170
@@ -11296,7 +11295,7 @@ msgstr "Omordning av grafer."
 
 #: include/global_form.php:2031
 msgid "Please name this Aggregate Graph."
-msgstr "Ange ett namn för den aggregerade grafen."
+msgstr "Ange ett namn för grafaggregationen."
 
 #: include/global_form.php:2038
 msgid "Propagation Enabled"
@@ -11308,7 +11307,7 @@ msgstr "Ska grafen ärva inställningarna från mallen?"
 
 #: include/global_form.php:2045
 msgid "Aggregate Graph Settings"
-msgstr "Inställningar för den aggregerade grafen"
+msgstr "Inställningar för grafaggregationen"
 
 #: include/global_form.php:2050 include/global_form.php:2155
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
@@ -11319,11 +11318,11 @@ msgstr ""
 
 #: include/global_form.php:2133
 msgid "Aggregate Template Name"
-msgstr "Namn på mall för aggregerad graf"
+msgstr "Namn på mall för grafaggregation"
 
 #: include/global_form.php:2134
 msgid "Please name this Aggregate Template."
-msgstr "Ange ett namn för mallen för aggregerad graf."
+msgstr "Ange ett namn för mallen för grafaggregation."
 
 #: include/global_form.php:2141
 msgid "Source Graph Template"
@@ -11331,11 +11330,11 @@ msgstr "Källgrafmall"
 
 #: include/global_form.php:2142
 msgid "The Graph Template that this Aggregate Template is based upon."
-msgstr "Grafmallen som mallen för aggregerad graf bygger på."
+msgstr "Grafmallen som mallen för grafaggregation bygger på."
 
 #: include/global_form.php:2150
 msgid "Aggregate Template Settings"
-msgstr "Inställningar för mall för aggregerad graf"
+msgstr "Inställningar för mall för grafaggregation"
 
 #: include/global_form.php:2227
 msgid "The name of this Color Template."
@@ -12159,7 +12158,8 @@ msgstr "Tvinga anslutningar över HTTPS"
 #: include/global_settings.php:644
 msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security."
 msgstr ""
-"När alternativet är markerat omdirigeras försök att nå Cacti till HTTPS."
+"När alternativet är markerat omdirigeras försök att nå Cacti till HTTPS för "
+"ökad säkerhet."
 
 #: include/global_settings.php:650
 msgid "Content-Security Allow Unsafe JavaScript eval() calls"
@@ -14735,7 +14735,7 @@ msgstr "Visa enhetens aggregerade grafer"
 #: include/global_settings.php:2925
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
 msgstr ""
-"Om en enhets datakälla ingår i en aggregerad graf visas grafen tillsammans "
+"Om en enhets datakälla ingår i en grafaggregation visas grafen tillsammans "
 "med enhetens övriga grafer"
 
 #: include/global_settings.php:2930
@@ -15130,14 +15130,14 @@ msgstr "Visa grafer från denna aggregerade graf"
 #: lib/api_aggregate.php:1654
 msgid "The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates."
 msgstr ""
-"Graferna som valts för den aggregerade grafen nedan kommer från flera "
-"grafmallar. Det går inte att skapa aggregerade grafer från flera grafmallar."
+"Graferna som valts för grafaggregationen nedan kommer från flera grafmallar. "
+"Det går inte att skapa grafaggregeringar från flera grafmallar."
 
 #: lib/api_aggregate.php:1660
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
 msgstr ""
-"Graferna som valts för den aggregerade grafen använder inte grafmallar. Det "
-"går inte att skapa aggregerade grafer från grafer utan mall."
+"Graferna som valts för grafaggregationen använder inte grafmallar. Det går "
+"inte att skapa grafaggregeringar från grafer utan mall."
 
 #: lib/api_aggregate.php:1669
 msgid "There was some error in MySQL/MariaDB.  Can not continue."
@@ -22759,7 +22759,7 @@ msgstr "RRD-filer"
 
 #: rrdcleaner.php:556
 msgid "Rescan"
-msgstr "Sök igen"
+msgstr "Skanna igen"
 
 #: rrdcleaner.php:561
 msgid "Delete All"

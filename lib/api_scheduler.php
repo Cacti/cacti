@@ -187,7 +187,7 @@ function api_scheduler_javascript() : void {
 
 		$('#month').multiselect({
 			selectedList: 7,
-			noneSelectedText: '<?php print __('Select the month(s) of the year'); ?>',
+			noneSelectedText: <?php print json_encode(__('Select the month(s) of the year')); ?>,
 			header: false,
 			height: 82,
 			groupColumns: true,

@@ -96,7 +96,6 @@ function display_settings() : void {
 
 	if ($data_collectors > 1) {
 		set_config_option('boost_rrd_update_enable', 'on');
-		set_config_option('boost_redirect', 'on');
 	}
 
 	$system_tabs = [
@@ -466,8 +465,6 @@ function display_settings() : void {
 			if (dataCollectors > 1) {
 				$('#boost_rrd_update_enable').prop('checked', true);
 				$('#boost_rrd_update_enable').prop('disabled', true);
-				$('#boost_redirect').prop('checked', true);
-				$('#boost_redirect').prop('disabled', true);
 			}
 
 			initBoostOD();
@@ -667,7 +664,6 @@ function display_settings() : void {
 			$('#row_boost_rrd_update_string_length').show();
 			$('#row_boost_poller_mem_limit').show();
 			$('#row_boost_rrd_update_max_runtime').show();
-			$('#row_boost_redirect').show();
 		} else {
 			$('#row_boost_rrd_update_interval').hide();
 			$('#row_boost_parallel').hide();
@@ -677,7 +673,6 @@ function display_settings() : void {
 			$('#row_boost_rrd_update_string_length').hide();
 			$('#row_boost_poller_mem_limit').hide();
 			$('#row_boost_rrd_update_max_runtime').hide();
-			$('#row_boost_redirect').hide();
 		}
 	}
 

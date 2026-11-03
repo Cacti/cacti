@@ -80,3 +80,86 @@ print html_nav_bar('graphs.php', 10, grv('page'), 30, 300);
 
 // ok: cacti-request-var-echoed-unescaped
 print "<div id='" . clean_up_name(gnrv('tab')) . "'>";
+
+// ---- cacti-stored-value-echoed-unescaped ----
+
+$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$id]);
+
+// ruleid: cacti-stored-value-echoed-unescaped
+print '<td>' . $host['description'] . '</td>';
+
+// ok: cacti-stored-value-echoed-unescaped
+print '<td>' . html_escape($host['description']) . '</td>';
+
+// ok: cacti-stored-value-echoed-unescaped
+print '<td>' . $host['id'] . '</td>';
+
+$graphs = db_fetch_assoc('SELECT title_cache FROM graph_templates_graph');
+foreach ($graphs as $graph) {
+	// ruleid: cacti-stored-value-echoed-unescaped
+	print "<option value='1'>" . $graph['title_cache'] . '</option>';
+}
+
+$notes = db_fetch_cell_prepared('SELECT notes FROM host WHERE id = ?', [$id]);
+// ruleid: cacti-stored-value-echoed-unescaped
+print "<div class='notes'>$notes</div>";
+
+$sysdescr = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
+// ruleid: cacti-stored-value-echoed-unescaped
+print '<span>' . $sysdescr . '</span>';
+
+// ok: cacti-stored-value-echoed-unescaped
+print '<span>' . __esc('System: %s', $sysdescr) . '</span>';
+
+$extra = api_plugin_hook_function('device_table_cell', $host);
+// ruleid: cacti-stored-value-echoed-unescaped
+print $extra;
+
+$lines = tail_file($logfile, 100);
+foreach ($lines as $line) {
+	// ruleid: cacti-stored-value-echoed-unescaped
+	print '<td>' . $line . '</td>';
+}
+
+// ok: cacti-stored-value-echoed-unescaped
+print '<td>' . number_format_i18n($host['value']) . '</td>';
+
+// ---- cacti-unescaped-form-selectable-cell ----
+
+foreach ($graphs as $graph) {
+	// ruleid: cacti-unescaped-form-selectable-cell
+	form_selectable_cell($graph['title_cache'], $graph['id']);
+
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_ecell($graph['title_cache'], $graph['id']);
+
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_cell(html_escape($graph['title_cache']), $graph['id']);
+
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_cell(filter_value($graph['title_cache'], grv('filter'), 'graphs.php?id=1'), $graph['id']);
+
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_cell($graph['id'], $graph['id']);
+}
+
+// ruleid: cacti-unescaped-form-selectable-cell
+form_selectable_cell("<a href='host.php?id=1'>" . gnrv('name') . '</a>', 1);
+
+// ruleid: cacti-request-var-in-sql
+$groups = db_fetch_assoc('SELECT * FROM user_auth_group WHERE user_id = ' . grv('id'));
+foreach ($groups as $g) {
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_cell($g['id'], $g['id']);
+
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_cell($status_labels[$g['enabled']], $g['id']);
+
+	// ruleid: cacti-unescaped-form-selectable-cell
+	form_selectable_cell($g['description'], $g['id']);
+}
+
+$total_rows = db_fetch_cell('SELECT COUNT(*) FROM host');
+$nav = html_nav_bar('host.php', MAX_DISPLAY_PAGES, grv('page'), 30, $total_rows, 10, 'Devices');
+// ok: cacti-stored-value-echoed-unescaped
+print $nav;

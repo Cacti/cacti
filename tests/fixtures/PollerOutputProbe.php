@@ -120,7 +120,7 @@ function db_execute($sql, ...$args) : bool {
 	if (str_contains($sql, 'INSERT IGNORE INTO poller_output_boost')) {
 		$state['boost_calls']++;
 
-		return $scenario !== 'boost-failure';
+		return true;
 	}
 
 	if (preg_match('/local_data_id IN\s*\(([^)]+)\)/', $sql, $matches)) {
@@ -155,7 +155,7 @@ function read_config_option($key) : string {
 		return str_starts_with($GLOBALS['scenario'], 'boost-') ? 'on' : '';
 	}
 
-	return $key === 'boost_redirect' && $GLOBALS['scenario'] === 'boost-redirect' ? 'on' : '';
+	return '';
 }
 function set_config_option(...$args) : void {
 }
@@ -202,7 +202,7 @@ function rrdtool_execute($command, ...$args) : string|false {
 		$state['arrived'] = true;
 	}
 
-	if (($scenario === 'retry-failed' && $state['rrd_calls'] === 1) || ($scenario === 'boundary-failure' && str_contains($command, 'source-40000') && str_contains($command, '1700000000:')) || in_array($scenario, ['failed', 'boost-failure'], true) || ($scenario === 'mixed' && str_contains($command, 'source-1'))) {
+	if (($scenario === 'retry-failed' && $state['rrd_calls'] === 1) || ($scenario === 'boundary-failure' && str_contains($command, 'source-40000') && str_contains($command, '1700000000:')) || $scenario === 'failed' || ($scenario === 'mixed' && str_contains($command, 'source-1'))) {
 		return false;
 	}
 

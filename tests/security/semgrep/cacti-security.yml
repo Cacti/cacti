@@ -5,12 +5,16 @@
 # and flag htmle()-escaped output as false positives. These rules model:
 #   sources     - grv(), gnrv(), get_request_var(), get_nfilter_request_var()
 #                 (raw request input)
+#                 stored text: db_fetch_cell*(), text columns of fetched rows,
+#                 SNMP responses, plugin hook returns, tail_file() log lines
 #   sanitizers  - db_qstr[_rlike](), sanitize_sql_column(), (int) cast,
 #                 gfrv()/get_filter_request_var(), cacti_escapeshellarg(),
-#                 html_escape()/htmle()
+#                 html_escape()/htmle()/__esc*()
 #   sinks       - non-prepared db_fetch_*/db_execute, the get_allowed_* WHERE
 #                 builders, shell_exec/exec/popen/proc_open/rrdtool_execute,
-#                 and print/echo (output).
+#                 print/echo, and the contents of form_selectable_cell(), which
+#                 writes its first argument verbatim (form_selectable_ecell()
+#                 is the escaping variant).
 #
 # Run:   semgrep --config tests/security/semgrep/cacti-security.yml .
 # Test:  semgrep --test    tests/security/semgrep/
@@ -155,3 +159,145 @@ rules:
       - pattern-either:
           - pattern: print $X;
           - pattern: echo $X;
+
+  - id: cacti-stored-value-echoed-unescaped
+    mode: taint
+    options:
+      # $labels[$row['status']] is a lookup in a static table, not stored text.
+      taint_assume_safe_indexes: true
+    paths:
+      # CLI tools and data-input scripts write plain text, not HTML.
+      exclude:
+        - cli/
+        - scripts/
+    languages: [php]
+    severity: WARNING
+    message: >
+      A stored value (database text column, SNMP response, plugin hook return,
+      or log line) is written to the response without html_escape()/htmle().
+      Device descriptions, graph titles, notes and sysDescr strings are set by
+      lower-privileged users or by the monitored device, so this is stored XSS
+      against whoever views the page.
+    metadata:
+      cwe: "CWE-79: Improper Neutralization of Input During Web Page Generation"
+      category: security
+      confidence: LOW
+    pattern-sources:
+      - pattern-either:
+          - pattern: db_fetch_cell(...)
+          - pattern: db_fetch_cell_prepared(...)
+          # Rows are matched by column name rather than by db_fetch_*() call so
+          # that numeric columns (id, host_id, status) do not drown the signal.
+          - patterns:
+              - pattern: $ROW[$KEY]
+              - metavariable-regex:
+                  metavariable: $KEY
+                  regex: ^['"](description|hostname|name|name_cache|title|title_cache|notes|message|location|external_id|snmp_sys(Descr|Name|Location|Contact|ObjectID)|snmp_community|username|full_name|email_address|status_last_error|data_source_name|field_value|value)['"]$
+          - pattern: cacti_snmp_get(...)
+          - pattern: cacti_snmp_get_raw(...)
+          - pattern: cacti_snmp_getnext(...)
+          - pattern: cacti_snmp_walk(...)
+          - pattern: cacti_snmp_get_multi(...)
+          - pattern: cacti_snmp_session_get(...)
+          - pattern: cacti_snmp_session_getnext(...)
+          - pattern: cacti_snmp_session_walk(...)
+          - pattern: api_plugin_hook_function(...)
+          - pattern: tail_file(...)
+    pattern-sanitizers:
+      - pattern: html_escape(...)
+      - pattern: htmle(...)
+      - pattern: htmlspecialchars(...)
+      - pattern: __esc(...)
+      - pattern: __esc_n(...)
+      - pattern: __esc_x(...)
+      - pattern: json_encode(...)
+      - pattern: filter_value(...)
+      - pattern: html_hidden_input(...)
+      - pattern: clean_up_name(...)
+      - pattern: number_format_i18n(...)
+      - pattern: html_nav_bar(...)
+      - pattern: round(...)
+      - pattern: floatval(...)
+      - pattern: cacti_sizeof(...)
+      # Whole rows are not sources; their text columns are matched by name
+      # above. Without this, a request variable in the WHERE clause taints
+      # every column, numeric ones included.
+      - pattern: db_fetch_assoc(...)
+      - pattern: db_fetch_assoc_prepared(...)
+      - pattern: db_fetch_row(...)
+      - pattern: db_fetch_row_prepared(...)
+      - pattern: intval(...)
+      - pattern: (int) $X
+      - pattern: (float) $X
+    pattern-sinks:
+      - pattern-either:
+          - pattern: print $X;
+          - pattern: echo $X;
+
+  - id: cacti-unescaped-form-selectable-cell
+    mode: taint
+    options:
+      # $labels[$row['status']] is a lookup in a static table, not stored text.
+      taint_assume_safe_indexes: true
+    paths:
+      # CLI tools and data-input scripts write plain text, not HTML.
+      exclude:
+        - cli/
+        - scripts/
+    languages: [php]
+    severity: WARNING
+    message: >
+      form_selectable_cell() writes its first argument into the table cell
+      without escaping. Pass request or stored text through
+      form_selectable_ecell(), or html_escape() it before adding markup.
+    metadata:
+      cwe: "CWE-79: Improper Neutralization of Input During Web Page Generation"
+      category: security
+      confidence: MEDIUM
+    pattern-sources:
+      - pattern-either:
+          - pattern: grv(...)
+          - pattern: gnrv(...)
+          - pattern: get_request_var(...)
+          - pattern: get_nfilter_request_var(...)
+          - pattern: db_fetch_cell(...)
+          - pattern: db_fetch_cell_prepared(...)
+          - patterns:
+              - pattern: $ROW[$KEY]
+              - metavariable-regex:
+                  metavariable: $KEY
+                  regex: ^['"](description|hostname|name|name_cache|title|title_cache|notes|message|location|external_id|snmp_sys(Descr|Name|Location|Contact|ObjectID)|snmp_community|username|full_name|email_address|status_last_error|data_source_name|field_value|value)['"]$
+          - pattern: cacti_snmp_get(...)
+          - pattern: cacti_snmp_getnext(...)
+          - pattern: cacti_snmp_walk(...)
+          - pattern: cacti_snmp_session_get(...)
+          - pattern: cacti_snmp_session_walk(...)
+          - pattern: api_plugin_hook_function(...)
+    pattern-sanitizers:
+      - pattern: html_escape(...)
+      - pattern: htmle(...)
+      - pattern: htmlspecialchars(...)
+      - pattern: __esc(...)
+      - pattern: __esc_n(...)
+      - pattern: __esc_x(...)
+      - pattern: filter_value(...)
+      - pattern: clean_up_name(...)
+      - pattern: number_format_i18n(...)
+      - pattern: html_nav_bar(...)
+      - pattern: round(...)
+      - pattern: floatval(...)
+      - pattern: cacti_sizeof(...)
+      # Whole rows are not sources; their text columns are matched by name
+      # above. Without this, a request variable in the WHERE clause taints
+      # every column, numeric ones included.
+      - pattern: db_fetch_assoc(...)
+      - pattern: db_fetch_assoc_prepared(...)
+      - pattern: db_fetch_row(...)
+      - pattern: db_fetch_row_prepared(...)
+      - pattern: intval(...)
+      - pattern: (int) $X
+      - pattern: (float) $X
+    pattern-sinks:
+      - patterns:
+          - pattern: form_selectable_cell($CONTENTS, ...)
+          - focus-metavariable: $CONTENTS

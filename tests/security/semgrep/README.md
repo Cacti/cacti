@@ -12,11 +12,20 @@ rules teach the scanner Cacti's sources, sanitizers and sinks.
 | `cacti-request-var-in-sql` | SQLi (CWE-89) | `grv()`/`gnrv()` into a non-prepared `db_*`/`get_allowed_*` string. Independently flags `lib/html_graph.php:176` (GHSA-4899, `host_id`). |
 | `cacti-request-var-in-shell-or-rrdtool` | OS/RRDtool cmd (CWE-78) | request var into `shell_exec`/`exec`/`popen`/`proc_open`/`rrdtool_execute` without `cacti_escapeshellarg()`. |
 | `cacti-request-var-echoed-unescaped` | XSS (CWE-79) | request var `print`/`echo`'d without `html_escape()`/`htmle()`/`json_encode()`. |
+| `cacti-stored-value-echoed-unescaped` | Stored XSS (CWE-79) | stored text `print`/`echo`'d without escaping: `db_fetch_cell*()` results, text columns of fetched rows (`description`, `hostname`, `title_cache`, `notes`, `message`, `snmp_sysDescr`, ...), SNMP responses, `api_plugin_hook_function()` returns and `tail_file()` lines. |
+| `cacti-unescaped-form-selectable-cell` | XSS (CWE-79) | request or stored text passed as the contents of `form_selectable_cell()`, which prints it verbatim. `form_selectable_ecell()` is the escaping variant. |
 
 Modelled: sources `grv`, `gnrv`, `get_request_var`, `get_nfilter_request_var`; sanitizers
 `db_qstr[_rlike]`, `sanitize_sql_column`, `(int)`/`intval`,
 `gfrv`/`get_filter_request_var`, `cacti_escapeshellarg`, `html_escape`/`htmle`,
 `json_encode`; sinks as above.
+
+The stored-text rules match fetched rows by column name rather than tainting
+every `db_fetch_assoc()`/`db_fetch_row()` result, because a request variable in
+the `WHERE` clause would otherwise taint numeric columns too. They also treat
+array indexes as safe (`$labels[$row['status']]` is a static lookup) and skip
+`cli/` and `scripts/`, which write plain text. A text column that is not in the
+name list is not reported.
 
 ## Running
 

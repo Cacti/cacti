@@ -1450,7 +1450,7 @@ function template_edit() : void {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Item from Device Rule'); ?>',
+						title: <?php print json_encode(__('Delete Item from Device Rule')); ?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
