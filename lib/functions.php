@@ -5394,6 +5394,25 @@ function cacti_escapeshellcmd($string) {
 }
 
 /**
+ * Parses a single CLI argument of the form 'name' or 'name=value' into a
+ * two element [name, value] pair. When no '=' is present the value is
+ * returned as an empty string. Shared by Cacti's CLI and poller entry-point
+ * scripts so the standard argument-parsing preamble is not duplicated across
+ * them.
+ *
+ * @param string $parameter The raw CLI argument, e.g. '--type=boost' or '--force'.
+ *
+ * @return array A two element array of [name, value].
+ */
+function cacti_cli_parse_argument($parameter) {
+	if (strpos($parameter, '=')) {
+		return explode('=', $parameter, 2);
+	}
+
+	return array($parameter, '');
+}
+
+/**
  * Mimics escapeshellarg, even for windows. Used as part of Cacti's lib functionality.
  *
  * @param string $string The string to be escaped.

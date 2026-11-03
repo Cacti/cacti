@@ -44,12 +44,7 @@ $filter  = '';
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter, 2);
-		} else {
-			$arg = $parameter;
-			$value = '';
-		}
+		[$arg, $value] = cacti_cli_parse_argument($parameter);
 
 		switch ($arg) {
 			case '-id':
