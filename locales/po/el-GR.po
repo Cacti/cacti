@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-01 19:17-0500\n"
 "PO-Revision-Date: 2024-04-20 18:31-0400\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Greek <http://translate.cacti.net/projects/cacti/core-v1-2-x/el/>\n"
@@ -2652,39 +2652,13 @@ msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομέ�
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "Η επιδιόρθωση πηγής δεδομένων έλαβε ένα μη έγκυρο αναγνωριστικό προέλευσης δεδομένων."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "Όλες οι επισκευές RRDfile πέτυχαν."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Μία ή περισσότερες επισκευές RRDfile απέτυχαν. Δείτε το αρχείο καταγραφής Cacti για σφάλματα."
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "Όλες οι επισκευές RRDfile πέτυχαν."
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool Tune Info"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "Βήματα επιδιόρθωσης [Εκτέλεση επιδιόρθωσης από γραμμή εντολών]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2921,7 +2895,7 @@ msgstr "Πρόβλημα"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "Για το attrbitute ' %s', βρέθηκε το θέμα ' %s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "Επαναπροσδιορισμός προτεινόμενων ονομάτων"
 
@@ -3704,6 +3678,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "Δεν υπάρχουν πεδία εισαγωγής για την επιλεγμένη πηγή εισόδου δεδομένων"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Όλες οι επισκευές RRDfile πέτυχαν."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "Επιλογή προτύπου δεδομένων [επεξεργασία: %s]"
@@ -3795,6 +3783,18 @@ msgstr "Νέο"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Βήματα επιδιόρθωσης [Εκτέλεση επιδιόρθωσης από γραμμή εντολών]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4138,7 +4138,7 @@ msgstr[1] "1 λεπτό"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Λεπτομέρειες γραφήματος, βοηθητικά προγράμματα μεγέθυνσης και εντοπισμός σφαλμάτων"
 
@@ -4146,29 +4146,11 @@ msgstr "Λεπτομέρειες γραφήματος, βοηθητικά προ
 msgid "CSV Export"
 msgstr "Εξαγωγή CSV"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "Προβολή δέντρου"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Realm"
-msgid "Realtime"
-msgstr "Περιοχή"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "Ακίδες"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "Επεξεργασία προτύπου γραφήματος."
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
 
@@ -11216,14 +11198,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "Εάν ο ενισχυτής ενίσχυσης ωθεί αυτό το χρόνο εκτέλεσης, θα τοποθετηθεί μια προειδοποίηση στο αρχείο καταγραφής κακί,"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "Ενεργοποιήστε τον άμεσο πληθυσμό του πίνακα poller_output_boost"
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "Επιτρέπει την άμεση εισαγωγή των εγγραφών στην ενίσχυση της εξόδου των poller με αποτέλεσμα τη μείωση του χρόνου κατά 25% σε κάθε κύκλο ψηφοφορίας."
-
-#: include/global_settings.php
 msgid "Boost Debug Log"
 msgstr "Ενεργοποιήστε το αρχείο εντοπισμού σφαλμάτων"
 
@@ -13183,20 +13157,32 @@ msgid "Data Query:"
 msgstr "Ερώτημα δεδομένων:"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "CSV Εξαγωγή δεδομένων γραφήματος"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Επιλογές γραφήματος"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "Προβολή χρονικού γραφήματος"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Προβολή δέντρου"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "Επεξεργασία συσκευής"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "Kill Spikes σε γραφήματα"
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "Περιοχή"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "Ακίδες"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13301,6 +13287,10 @@ msgstr "Εισαγάγετε μια κανονική έκφραση"
 #: lib/html.php
 msgid "No file selected"
 msgstr "Δεν επιλέχθηκε αρχείο"
+
+#: lib/html.php
+msgid "Time Graph View"
+msgstr "Προβολή χρονικού γραφήματος"
 
 #: lib/html.php
 msgid "SpikeKill Results"
@@ -15721,6 +15711,11 @@ msgstr "Το πρόσθετο στον κατάλογο '%s' δεν περιλα
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "Το πρόσθετο στον κατάλογο '%s' δεν περιλαμβάνει μια συνάρτηση εγκατάστασης '%s()'.  Αυτή η λειτουργία πρέπει να υπάρχει για να εγκατασταθεί το πρόσθετο."
 
@@ -15821,6 +15816,26 @@ msgstr "ΣΦΆΛΜΑ: ΤΟ αρχείο RRD %s δεν μπορεί να εγγρ
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "Το απαιτούμενο μέγεθος βήματος αρχείου RRD είναι '%s' αλλά το βήμα που παρατηρήθηκε είναι '%s'"
 
@@ -15838,11 +15853,6 @@ msgstr "Καρδιά για την προέλευση δεδομένων &#39; %
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "Το ελάχιστο RRD για την προέλευση δεδομένων &#39; %s&#39; θα πρέπει να είναι &#39; %s&#39;"
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "Το DS &#39; %s&#39; λείπει από τον ορισμό του Cacti"
 
 #: lib/rrd.php
 #, php-format
@@ -15928,17 +15938,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Άγνωστα Σημεία δεδομένων (0)"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "μετονομάστε %s σε %s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "Δεν βρέθηκαν %s"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "Πεδία προέλευσης δεδομένων"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "μετονομάστε %s σε %s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19508,6 +19518,7 @@ msgid "Max Total Memory Possible"
 msgstr "Μέγιστη χωρητικότητα μνήμης:"
 
 #: utilities.php
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "Μειώστε τη μνήμη MySQL/MariaDB σε λιγότερο από 80% of μνήμη συστήματος.  Διατηρήστε πρόσθετη μνήμη προσωρινής μνήμης για αρχεία RRD εάν η βάση δεδομένων βρίσκεται στο ίδιο σύστημα με τα αρχεία RRD.  Δείτε τα βασικά σύνολα και τα σύνολα πελατών παρακάτω για επεξήγηση της μεθόδου υπολογισμού."
 
@@ -20222,32 +20233,33 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "Επιλογές γραφήματος"
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "Ενεργοποιήστε τον άμεσο πληθυσμό του πίνακα poller_output_boost"
 
-#: lib/plugins.php:835
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "Επιτρέπει την άμεση εισαγωγή των εγγραφών στην ενίσχυση της εξόδου των poller με αποτέλεσμα τη μείωση του χρόνου κατά 25% σε κάθε κύκλο ψηφοφορίας."
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "CSV Εξαγωγή δεδομένων γραφήματος"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "Kill Spikes σε γραφήματα"
+
 #, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "Το DS &#39; %s&#39; λείπει από τον ορισμό του Cacti"
 
-#: links.php
-msgid "Links"
-msgstr "Σύνδεσμοι"
+#~ msgid "Links"
+#~ msgstr "Σύνδεσμοι"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "Συλλέκτες"
+#~ msgid "Collectors"
+#~ msgstr "Συλλέκτες"
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRDfiles"
+#~ msgid "RRDfiles"
+#~ msgstr "RRDfiles"
 
-#: user_domains.php
-msgid "Domains"
-msgstr "Domains"
+#~ msgid "Domains"
+#~ msgstr "Domains"
 
 #~ msgid "SNMP Rules"
 #~ msgstr "Κανόνες SNMP"
