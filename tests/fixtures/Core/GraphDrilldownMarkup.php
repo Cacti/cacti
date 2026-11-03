@@ -44,6 +44,21 @@ $GLOBALS['graph_markup_realms'] = [25, 1043];
 $GLOBALS['graph_markup_config'] = ['realtime_enabled' => 'on'];
 $GLOBALS['graph_markup_user']   = ['realtime_mode' => '1'];
 $GLOBALS['graph_markup_theme']  = 'modern';
+
+if (($argv[1] ?? '') === 'browser') {
+	$GLOBALS['graph_markup_config'] = [];
+	$GLOBALS['graph_markup_realms'] = [1043];
+	print '<!DOCTYPE html>';
+
+	foreach ([1, 2] as $id) {
+		print "<div class='graphWrapperOuter' id='g$id'><div><div class='graphimage' id='graph_$id' graph_start='100' graph_end='200'></div><div class='graphDrillDownToggle'>";
+		graph_drilldown_icons($id);
+		print '</div></div></div>';
+	}
+	print '<button id="outside">Outside</button>';
+	exit;
+}
+
 ob_start();
 graph_drilldown_icons(7);
 $html     = ob_get_clean();
