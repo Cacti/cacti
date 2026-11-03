@@ -16,7 +16,10 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 final class CactiMd5FileFinder {
-	public function findHashes(string $basePath, string $ignoreRegex, array $excludedDirectories = [], ?Closure $debug = null) : array {
+	public function findHashes(string $basePath,
+		string $ignoreRegex,
+		array $excludedDirectories = [],
+		?Closure $debug = null) : array {
 		if (!is_dir($basePath) || !is_readable($basePath)) {
 			throw new DirectoryNotFoundException("The directory '$basePath' does not exist or is not readable.");
 		}

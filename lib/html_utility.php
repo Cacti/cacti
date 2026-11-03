@@ -41,8 +41,21 @@ require_once __DIR__ . '/CactiValidator.php';
  *
  * @return array The processed form array with injected variables.
  */
-function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2 = [], mixed $arg3 = [], mixed $arg4 = []) : array {
-	$check_fields = ['id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id'];
+function inject_form_variables(array &$form_array,
+	mixed $arg1 = [],
+	mixed $arg2 = [],
+	mixed $arg3 = [],
+	mixed $arg4 = []) : array {
+	$check_fields = ['id',
+		'value',
+		'array',
+		'friendly_name',
+		'description',
+		'sql',
+		'sql_print',
+		'form_id',
+		'items',
+		'tree_id'];
 
 	// loop through each available field
 	if (cacti_sizeof($form_array)) {
@@ -51,7 +64,8 @@ function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2
 			foreach ($check_fields as $field_to_check) {
 				if (isset($field_array[$field_to_check]) && is_array($form_array[$field_name][$field_to_check])) {
 					// if the field/sub-field combination is an array, resolve it recursively
-					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
+					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check],
+						$arg1);
 				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check])) {
 					$count = 0;
 
@@ -76,7 +90,9 @@ function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2
 									$form_array[$field_name][$field_to_check] = ${$matches1};
 								} else {
 									// the existing value is probably a single variable
-									$form_array[$field_name][$field_to_check] = str_replace($matches0, ${$matches1}, $field_array[$field_to_check]);
+									$form_array[$field_name][$field_to_check] = str_replace($matches0,
+										${$matches1},
+										$field_array[$field_to_check]);
 								}
 							} else {
 								/* copy the value down from the array/key specified in the variable
@@ -162,7 +178,10 @@ function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2
  *
  * @return string The current color used for the row.
  */
-function form_alternate_row_color(string $row_color1, string $row_color2, int $row_value, string $row_id = '') : string {
+function form_alternate_row_color(string $row_color1,
+	string $row_color2,
+	int $row_value,
+	string $row_id = '') : string {
 	if ($row_value % 2 == 1) {
 		$class         = 'odd';
 		$current_color = $row_color1;
@@ -231,7 +250,11 @@ function form_alternate_row(string $row_id = '', bool $light = false, bool $disa
  *
  * @return bool
  */
-function form_selectable_ecell(mixed $contents, mixed $id, mixed $width = '', string $styleclass = '', string $title = '') : bool {
+function form_selectable_ecell(mixed $contents,
+	mixed $id,
+	mixed $width = '',
+	string $styleclass = '',
+	string $title = '') : bool {
 	return form_selectable_cell(htmle($contents), $id, $width, $styleclass, $title);
 }
 
@@ -248,7 +271,11 @@ function form_selectable_ecell(mixed $contents, mixed $id, mixed $width = '', st
  *
  * @return bool False if an error is encountered
  */
-function form_selectable_cell(mixed $contents, mixed $id, mixed $width = '', string $styleclass = '', string $title = '') : bool {
+function form_selectable_cell(mixed $contents,
+	mixed $id,
+	mixed $width = '',
+	string $styleclass = '',
+	string $title = '') : bool {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -256,7 +283,8 @@ function form_selectable_cell(mixed $contents, mixed $id, mixed $width = '', str
 	$table_id = form_get_table_id();
 
 	if (!isset($tableColumns[$table_id])) {
-		$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+		$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"),
+			true);
 	}
 
 	static $col_num = null;
@@ -318,7 +346,10 @@ function form_selectable_cell(mixed $contents, mixed $id, mixed $width = '', str
 	}
 
 	if ($title != '') {
-		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(['"', "'"], '', $title) . "'>" . $contents . '</span>';
+		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(['"',
+			"'"],
+			'',
+			$title) . "'>" . $contents . '</span>';
 	} else {
 		$wrapper = $contents;
 	}
@@ -335,12 +366,24 @@ function form_get_table_id(mixed $increment = false) : string {
 		$table_count++;
 	}
 
-	if (isset_request_var('action') && get_nfilter_request_var('action') != '' && isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
-		return basename(get_current_page(), '.php') . ':' . $table_count . ':action-tab-' . get_nfilter_request_var('action') . '-' . get_nfilter_request_var('tab') . ':';
+	if (isset_request_var('action') &&
+		get_nfilter_request_var('action') != '' &&
+		isset_request_var('tab') &&
+		get_nfilter_request_var('tab') != '') {
+		return basename(get_current_page(),
+			'.php') .
+				':' .
+				$table_count .
+				':action-tab-' .
+				get_nfilter_request_var('action') .
+				'-' .
+				get_nfilter_request_var('tab') .
+				':';
 	}
 
 	if (isset_request_var('action') && get_nfilter_request_var('action') != '') {
-		return basename(get_current_page(), '.php') . ':' . $table_count . ':action-' . get_nfilter_request_var('action') . ':';
+		return basename(get_current_page(),
+			'.php') . ':' . $table_count . ':action-' . get_nfilter_request_var('action') . ':';
 	}
 
 	if (isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
@@ -363,7 +406,11 @@ function form_get_table_id(mixed $increment = false) : string {
  *
  * @return bool False if errors are encountered
  */
-function form_selectable_vcell(mixed $contents, string $table_id = '', string $columnid = '', string $styleclass = '', string $title = '') : bool {
+function form_selectable_vcell(mixed $contents,
+	string $table_id = '',
+	string $columnid = '',
+	string $styleclass = '',
+	string $title = '') : bool {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -373,7 +420,8 @@ function form_selectable_vcell(mixed $contents, string $table_id = '', string $c
 	}
 
 	if (!isset($tableColumns[$table_id])) {
-		$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+		$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"),
+			true);
 	}
 
 	if (isset($tableColumns[$table_id]) && cacti_sizeof($tableColumns[$table_id])) {
@@ -409,7 +457,10 @@ function form_selectable_vcell(mixed $contents, string $table_id = '', string $c
 	}
 
 	if ($title != '') {
-		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(['"', "'"], '', $title) . "'>" . $contents . '</span>';
+		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(['"',
+			"'"],
+			'',
+			$title) . "'>" . $contents . '</span>';
 	} else {
 		$wrapper = $contents;
 	}
@@ -442,7 +493,8 @@ function form_process_visible_display_text(string $table_id, array $display_text
 
 			$tableColumns[$table_id] = [];
 		} else {
-			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"),
+				true);
 		}
 	} else {
 		$tableCount[$table_id]++;
@@ -455,7 +507,8 @@ function form_process_visible_display_text(string $table_id, array $display_text
 
 			$tableColumns[$table_id] = [];
 		} else {
-			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"),
+				true);
 		}
 	}
 
@@ -583,7 +636,20 @@ function form_process_visible_display_text(string $table_id, array $display_text
  */
 function form_checkbox_cell(string $title, mixed $id, bool $disabled = false, bool $checked = false) : void {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
-	print "\t\t<input type='checkbox' title='" . htmle($title) . "' class='checkbox" . ($disabled ? ' disabled' : '') . "' " . ($disabled ? " disabled='disabled'" : '') . ($checked ? " checked='checked'" : '') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
+	print "\t\t<input type='checkbox' title='" .
+		htmle($title) .
+		"' class='checkbox" .
+		($disabled ? ' disabled' : '') .
+		"' " .
+		($disabled ? " disabled='disabled'" : '') .
+		($checked ? " checked='checked'" : '') .
+		" id='chk_" .
+		$id .
+		"' name='chk_" .
+		$id .
+		"'><label class='formCheckboxLabel' for='chk_" .
+		$id .
+		"'></label>\n";
 	print "\t</td>\n";
 }
 
@@ -651,7 +717,9 @@ function set_default_action(string $default = '') : void {
 		set_request_var('action', $default);
 	} elseif (is_array(get_nfilter_request_var('action'))) {
 		if (read_config_option('log_validation') == 'on') {
-			cacti_log('WARNING: Request variable \'action\' was passed as array in ' . $_SERVER['SCRIPT_NAME'] . '.', false, 'WEBUI');
+			cacti_log('WARNING: Request variable \'action\' was passed as array in ' . $_SERVER['SCRIPT_NAME'] . '.',
+				false,
+				'WEBUI');
 		}
 
 		set_request_var('action', $_REQUEST['action'][0]);
@@ -956,7 +1024,11 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				raise_message('custom', __esc('The regular expression "%s" is not valid. Error is %s', (string) get_nfilter_request_var($name), (string) $custom_error), MESSAGE_LEVEL_ERROR);
+				raise_message('custom',
+					__esc('The regular expression "%s" is not valid. Error is %s',
+						(string) get_nfilter_request_var($name),
+						(string) $custom_error),
+					MESSAGE_LEVEL_ERROR);
 				set_request_var($name, '');
 			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
@@ -1341,9 +1413,13 @@ function update_order_string(bool $inplace = false) : void {
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ') ' . $direction;
+				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del,
+					explode('.',
+						$sort_column)) . $del . ') ' . $direction;
 			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $direction;
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del,
+					explode('.',
+						$sort_column)) . $del . ' ' . $direction;
 			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
@@ -1383,9 +1459,13 @@ function update_order_string(bool $inplace = false) : void {
 				if ($column == 'ip' || $column == 'ip_address') {
 					$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
 				} elseif ($column == 'hostname' && $natural) {
-					$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ') ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del,
+						explode('.',
+							$column)) . $del . ') ' . $direction;
 				} else {
-					$order .= ($order != '' ? ', ' : '') . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . $del . implode($del . '.' . $del,
+						explode('.',
+							$column)) . $del . ' ' . $direction;
 				}
 			}
 
@@ -1459,7 +1539,8 @@ const DSSTATS_MEASURE_DEFAULT = 'average';
  * @return string The 'ORDER BY rs.<measure> <ASC|DESC>' clause.
  */
 function get_dsstats_order_string(array $sql_order) : string {
-	$measure = isset($sql_order['measure']) && is_scalar($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'], [new Assert\Choice(choices: DSSTATS_MEASURES)])
+	$measure = isset($sql_order['measure']) && is_scalar($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'],
+		[new Assert\Choice(choices: DSSTATS_MEASURES)])
 		? $sql_order['measure']
 		: DSSTATS_MEASURE_DEFAULT;
 
@@ -1806,7 +1887,10 @@ function load_current_session_value(string $request_var_name, string $session_va
  *
  * @return string The HTML span element with the appropriate class and status text.
  */
-function get_colored_device_status(bool $disabled, int $status, int $thold_failure_count = -1, int $status_event_count = -1) : string {
+function get_colored_device_status(bool $disabled,
+	int $status,
+	int $thold_failure_count = -1,
+	int $status_event_count = -1) : string {
 	if ($disabled) {
 		return "<span class='deviceStatus deviceDisabled'>" . __('Disabled') . '</span>';
 	} else {
@@ -1904,7 +1988,13 @@ function display_tooltip(string $text) : string {
  *
  * @return string The HTML for the pagination control.
  */
-function get_page_list(int $current_page, int $pages_per_screen, int $rows_per_page, int $total_rows, string $url, string $page_var = 'page', string $return_to = '') : string {
+function get_page_list(int $current_page,
+	int $pages_per_screen,
+	int $rows_per_page,
+	int $total_rows,
+	string $url,
+	string $page_var = 'page',
+	string $return_to = '') : string {
 	if (!preg_match('/^[A-Za-z_$][A-Za-z0-9_$]*$/', $page_var)) {
 		$page_var = 'page';
 	}

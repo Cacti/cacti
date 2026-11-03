@@ -5,6 +5,72 @@ namespace Cacti\Tests\Helpers;
 
 /** Source contracts ignore formatting, while retaining token kinds and literals. */
 final class PhpSource {
+	/** @return array{code: string, line: int} */
+	public static function functionDefinition(string $source, string $name): array {
+		$tokens  = \PhpToken::tokenize($source, TOKEN_PARSE);
+		$matches = [];
+
+		foreach ($tokens as $index => $token) {
+			if ($token->id !== T_FUNCTION) {
+				continue;
+			}
+			$next = $index + 1;
+
+			while (isset($tokens[$next]) && ($tokens[$next]->isIgnorable() || $tokens[$next]->text === '&')) {
+				$next++;
+			}
+
+			if (!isset($tokens[$next]) || $tokens[$next]->id !== T_STRING || $tokens[$next]->text !== $name) {
+				continue;
+			}
+			$parentheses = 0;
+			$body        = null;
+
+			for ($next++; isset($tokens[$next]); $next++) {
+				$text = $tokens[$next]->text;
+
+				if ($text === '(') {
+					$parentheses++;
+				} elseif ($text === ')') {
+					$parentheses--;
+				} elseif ($text === '{' && $parentheses === 0) {
+					$body = $next;
+
+					break;
+				} elseif ($text === ';' && $parentheses === 0) {
+					break;
+				}
+			}
+
+			if ($body === null) {
+				throw new \RuntimeException('Function has no executable body: ' . $name);
+			}
+			$depth = 0;
+
+			for ($next = $body; isset($tokens[$next]); $next++) {
+				$current = $tokens[$next];
+
+				if ($current->text === '{' || $current->id === T_CURLY_OPEN || $current->id === T_DOLLAR_OPEN_CURLY_BRACES) {
+					$depth++;
+				} elseif ($current->text === '}') {
+					$depth--;
+
+					if ($depth === 0) {
+						$matches[] = ['code' => substr($source, $token->pos, $current->pos + 1 - $token->pos), 'line' => $token->line];
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (count($matches) !== 1) {
+			throw new \RuntimeException('Expected one source function ' . $name . ', found ' . count($matches));
+		}
+
+		return $matches[0];
+	}
+
 	public static function normalizeWhitespace(string $source) : string {
 		$output = '';
 
@@ -90,11 +156,13 @@ final class PhpSource {
 	}
 }
 
-expect()->extend('toContainPhp', function (string $fragment) {
-	\PHPUnit\Framework\Assert::assertNotFalse(
-		PhpSource::position($this->value, $fragment),
-		'Expected PHP token sequence: ' . $fragment
-	);
+if (function_exists('expect')) {
+	expect()->extend('toContainPhp', function (string $fragment) {
+		\PHPUnit\Framework\Assert::assertNotFalse(
+			PhpSource::position($this->value, $fragment),
+			'Expected PHP token sequence: ' . $fragment
+		);
 
-	return $this;
-});
+		return $this;
+	});
+}

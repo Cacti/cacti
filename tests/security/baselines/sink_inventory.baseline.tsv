@@ -21,10 +21,10 @@ cmd_exec	./graph_realtime.php			shell_exec($php_binary . ' -q ' . $script_path .
 cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 cmd_exec	./install/functions.php				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
-cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
-cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string " .
+cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string --user=" .
+cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " .
+cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1',
 cmd_exec	./lib/dsstats.php		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/functions.php							$output = shell_exec($script_path);
 cmd_exec	./lib/functions.php						$output = shell_exec("$php -q $script");
@@ -78,8 +78,8 @@ cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmpagent.php		// add pollers of a distributed system (future)
-cmd_exec	./lib/spikekill.php			$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile));
-cmd_exec	./lib/spikekill.php			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
+cmd_exec	./lib/spikekill.php			$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) .
+cmd_exec	./lib/spikekill.php			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) .
 cmd_exec	./lib/utility.php							$nproc = system('nproc');
 cmd_exec	./lib/utility.php				exec('/usr/bin/free', $output, $exit_code);
 cmd_exec	./lib/utility.php			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
@@ -181,8 +181,8 @@ fs_write	./lib/functions.php					file_put_contents(sys_get_temp_dir() . '/cacti-
 fs_write	./lib/functions.php				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/functions.php				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 fs_write	./lib/functions.php			$fp = @fopen($logfile, 'a');
-fs_write	./lib/functions.php			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
-fs_write	./lib/functions.php			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+fs_write	./lib/functions.php			file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
+fs_write	./lib/functions.php			file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/functions.php			if ($f = @fopen($path, 'a')) {
 fs_write	./lib/functions.php			if ($f = @fopen($path, 'w')) {
 fs_write	./lib/functions.php		$f = fopen($file, 'r');
