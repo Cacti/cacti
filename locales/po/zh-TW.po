@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-01 19:17-0500\n"
 "PO-Revision-Date: 2026-10-07 06:18+0000\n"
 "Last-Translator: YU HAO HUANG <mix@b51.tw>\n"
 "Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\n"
@@ -3056,38 +3056,15 @@ msgstr "數據源調試"
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "數據源調試收到無效的數據源ID。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 #, fuzzy
 msgid "All RRDfile repairs succeeded."
 msgstr "所有RRDfile修復成功。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 #, fuzzy
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "一個或多個RRDfile修復失敗。有關錯誤，請參閱仙人掌日誌。"
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-msgid "No RRDfile repairs were necessary."
-msgstr "所有RRDfile修復成功。"
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool Tune Info"
-
-#: data_sources.php
-#, fuzzy
-msgid "Run Fix from Command Line"
-msgstr "修復步驟[從命令行運行修復]"
 
 #: data_debug.php
 #, fuzzy
@@ -3374,7 +3351,7 @@ msgstr "問題"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "對於attrbitute'%s'，問題發現'%s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 #, fuzzy
 msgid "Apply Suggested Fixes"
 msgstr "重新申請建議的名稱"
@@ -4245,6 +4222,19 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "所選數據輸入源沒有輸入字段"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+msgid "No RRDfile repairs were necessary."
+msgstr "所有RRDfile修復成功。"
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, fuzzy, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "數據模板選擇[編輯：%s]"
@@ -4355,6 +4345,16 @@ msgstr "新增"
 #, fuzzy
 msgid "Data Source Debug"
 msgstr "數據源調試"
+
+#: data_sources.php
+#, fuzzy, php-format
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+msgid "Run Fix from Command Line"
+msgstr "修復步驟[從命令行運行修復]"
 
 #: data_sources.php
 #, fuzzy
@@ -4740,7 +4740,7 @@ msgstr[0] "1 分鐘"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 #, fuzzy
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "圖形詳細信息，縮放和調試實用程序"
@@ -4750,26 +4750,11 @@ msgstr "圖形詳細信息，縮放和調試實用程序"
 msgid "CSV Export"
 msgstr "CSV匯出"
 
-#: lib/html.php
-#, fuzzy
-msgid "Time View"
-msgstr "樹狀圖"
-
-#: lib/html.php
-#, fuzzy
-msgid "Realtime"
-msgstr "領域"
-
-#: lib/html.php
-#, fuzzy
-msgid "Kill Spikes"
-msgstr "釘鞋"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "編輯圖表模板。"
 
-#: graph.php lib/html.php
+#: graph.php
 #, fuzzy
 msgid "Click to view just this Graph in Real-time"
 msgstr "單擊以實時查看此圖表"
@@ -13190,14 +13175,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "如果boost poller刪除了此運行時，則會在cacti日誌中發出警告，"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "啟用poller_output_boost表的直接填充"
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
-
-#: include/global_settings.php
 #, fuzzy
 msgid "Boost Debug Log"
 msgstr "提升調試日誌"
@@ -15460,13 +15437,13 @@ msgstr "數據查詢："
 
 #: lib/html.php
 #, fuzzy
-msgid "CSV Export of Graph Data"
-msgstr "圖形數據的CSV導出"
+msgid "Graph Actions"
+msgstr "圖表選項"
 
 #: lib/html.php
 #, fuzzy
-msgid "Time Graph View"
-msgstr "時間圖表視圖"
+msgid "Time View"
+msgstr "樹狀圖"
 
 #: lib/html.php
 #, fuzzy
@@ -15475,8 +15452,13 @@ msgstr "編輯設備"
 
 #: lib/html.php
 #, fuzzy
-msgid "Kill Spikes in Graphs"
-msgstr "殺死圖表中的尖峰"
+msgid "Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
+msgid "Kill Spikes"
+msgstr "釘鞋"
 
 #: lib/html.php lib/installer.php
 #, fuzzy
@@ -15599,6 +15581,11 @@ msgstr "輸入正則表達式"
 #, fuzzy
 msgid "No file selected"
 msgstr "尚未選取檔案"
+
+#: lib/html.php
+#, fuzzy
+msgid "Time Graph View"
+msgstr "時間圖表視圖"
 
 #: lib/html.php
 #, fuzzy
@@ -18413,6 +18400,11 @@ msgstr ""
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
 
@@ -18521,6 +18513,26 @@ msgid "ERROR: RRD file does not exist: %s"
 msgstr "錯誤：RRDfile%s不可寫"
 
 #: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
 #, fuzzy, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "必需的RRD步長為&#39;%s&#39;"
@@ -18539,11 +18551,6 @@ msgstr "數據源&#39;%s&#39;的心跳應為&#39;%s&#39;"
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "數據源&#39;%s&#39;的RRD最小值應為&#39;%s&#39;"
-
-#: lib/rrd.php
-#, fuzzy, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "Cacti定義中缺少DS&#39;%s&#39;"
 
 #: lib/rrd.php
 #, fuzzy, php-format
@@ -18641,17 +18648,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP未知數據點（0）"
 
 #: lib/rrd.php
+#, fuzzy, php-format
+msgid "rename %s to %s"
+msgstr "將%s重命名為%s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "沒有 %s 找到"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "數據源字段"
-
-#: lib/rrd.php
-#, fuzzy, php-format
-msgid "rename %s to %s"
-msgstr "將%s重命名為%s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -22601,6 +22608,7 @@ msgid "Max Total Memory Possible"
 msgstr "允許的最大輪詢內存："
 
 #: utilities.php
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -23438,35 +23446,39 @@ msgstr "使用此VDEF的圖表模板數。"
 msgid "No VDEFs"
 msgstr "沒有VDEF"
 
-#: lib/html.php
-#, fuzzy
-msgid "Graph Actions"
-msgstr "圖表選項"
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "啟用poller_output_boost表的直接填充"
 
-#: lib/plugins.php:835
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
 
-#: links.php
 #, fuzzy
-msgid "Links"
-msgstr "連結"
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "圖形數據的CSV導出"
 
-#: pollers.php
 #, fuzzy
-msgid "Collectors"
-msgstr "收藏家"
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "殺死圖表中的尖峰"
 
-#: rrdcleaner.php
-#, fuzzy
-msgid "RRDfiles"
-msgstr "RRDfiles"
+#, fuzzy, php-format
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "Cacti定義中缺少DS&#39;%s&#39;"
 
-#: user_domains.php
 #, fuzzy
-msgid "Domains"
-msgstr "網域"
+#~ msgid "Links"
+#~ msgstr "連結"
+
+#, fuzzy
+#~ msgid "Collectors"
+#~ msgstr "收藏家"
+
+#, fuzzy
+#~ msgid "RRDfiles"
+#~ msgstr "RRDfiles"
+
+#, fuzzy
+#~ msgid "Domains"
+#~ msgstr "網域"
 
 #, fuzzy
 #~ msgid "SNMP Rules"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-01 19:17-0500\n"
 "PO-Revision-Date: 2024-06-23 04:09+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
@@ -2639,39 +2639,13 @@ msgstr "数据源调试."
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "数据源调试收到无效的数据源ID。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "所有RRDfile修复成功。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "一个或多个RRDfile修复失败。有关错误，请参阅仙人掌日志。"
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "所有RRDfile修复成功。"
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool调谐信息"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "修复步骤[从命令行运行修复]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2908,7 +2882,7 @@ msgstr "问题"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "对于attrbitute'%s'，问题发现'%s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "重新使用建议的名称"
 
@@ -3667,6 +3641,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "所选数据输入源没有输入字段"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "所有RRDfile修复成功。"
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "数据模板选择 [编辑: %s]"
@@ -3758,6 +3746,18 @@ msgstr "新"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "数据源调试"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool调谐信息"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "修复步骤[从命令行运行修复]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4098,7 +4098,7 @@ msgstr[0] "1 分钟"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "图形细节,缩放和调试工具"
 
@@ -4106,29 +4106,11 @@ msgstr "图形细节,缩放和调试工具"
 msgid "CSV Export"
 msgstr "CSV 导出"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "树形视图"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Realm"
-msgid "Realtime"
-msgstr "域"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "尖峰"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "编辑图形模板"
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "点击查看此图的实时情况"
 
@@ -11174,14 +11156,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "如果boost poller删除了此运行时间,则会在Cacti 日志中发出警告,"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "开启poller_output_boost 表的直接填充"
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "允许将记录直接插入到poller 输出Boost 中,从而使每个采集周期的时间缩短25%."
-
-#: include/global_settings.php
 msgid "Boost Debug Log"
 msgstr "Boost 调试日志"
 
@@ -13141,20 +13115,32 @@ msgid "Data Query:"
 msgstr "数据查询:"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "CSV 数据导出"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "图形操作"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "时间图形视图"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "树形视图"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "编辑设备"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "杀死图中的尖峰"
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "域"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "尖峰"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13259,6 +13245,10 @@ msgstr "输入正则表达式"
 #: lib/html.php
 msgid "No file selected"
 msgstr "没有选择文件"
+
+#: lib/html.php
+msgid "Time Graph View"
+msgstr "时间图形视图"
 
 #: lib/html.php
 msgid "SpikeKill Results"
@@ -15679,6 +15669,11 @@ msgstr "目录“%s”中的插件不包含版本函数“%s（）”。 要安�
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "目录“%s”中的插件不包含安装函数“%s（）”。 要安装插件的插件必须存在此函数。"
 
@@ -15779,6 +15774,26 @@ msgstr "ERROR: RRD 文件 %s 不可写入"
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "所需的RRD文件步长为'%s'，但观察到的步长为'%s'"
 
@@ -15796,11 +15811,6 @@ msgstr "数据源'%s' 的心跳应该是'%s'"
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "数据源'%s'的RRD最小值应为'%s'"
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "DS'%s' 在Cacti 定义中缺失"
 
 #: lib/rrd.php
 #, php-format
@@ -15886,17 +15896,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP 未知数据点(0)"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "将 %s 重命名为 %s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "未找到 %s"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "数据源字段"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "将 %s 重命名为 %s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19429,6 +19439,7 @@ msgid "Max Total Memory Possible"
 msgstr "poller 允许使用的的最大内存"
 
 #: utilities.php
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "将 MySQL/MariaDB 内存减少到小于 80% of 系统内存。 如果数据库与 RRDfiles 位于同一系统上，请为 RRDfiles 保留额外的缓存内存。 有关计算方法的说明，请参阅下面的核心和客户端总计。"
 
@@ -20138,32 +20149,33 @@ msgstr "使用此VDEF 的图形模板的数量."
 msgid "No VDEFs"
 msgstr "没有VDEF"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "图形操作"
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "开启poller_output_boost 表的直接填充"
 
-#: lib/plugins.php:835
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "允许将记录直接插入到poller 输出Boost 中,从而使每个采集周期的时间缩短25%."
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "CSV 数据导出"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "杀死图中的尖峰"
+
 #, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "DS'%s' 在Cacti 定义中缺失"
 
-#: links.php
-msgid "Links"
-msgstr "链接"
+#~ msgid "Links"
+#~ msgstr "链接"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "采集器"
+#~ msgid "Collectors"
+#~ msgstr "采集器"
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRD 文件"
+#~ msgid "RRDfiles"
+#~ msgstr "RRD 文件"
 
-#: user_domains.php
-msgid "Domains"
-msgstr "域"
+#~ msgid "Domains"
+#~ msgstr "域"
 
 #~ msgid "SNMP Rules"
 #~ msgstr "SNMP 规则"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-01 19:17-0500\n"
 "PO-Revision-Date: 2025-12-23 22:54+0000\n"
 "Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
 "Language-Team: Spanish <https://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\n"
@@ -2648,39 +2648,13 @@ msgstr "Depuraración de Data Source iniciada."
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "La depuradorión del Data Source recibió un ID de Data Source inválido."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "Todas las reparaciones de archivos RRD tuvieron éxito."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Una o más reparaciones de archivos RRD fallaron.  Consulte el registro de Cacti para ver los errores."
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "Todas las reparaciones de archivos RRD tuvieron éxito."
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool Tune Info"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "Pasos de reparación [ Ejecutar Fix desde la línea de comandos ]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2918,7 +2892,7 @@ msgstr "Problema"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "Para los `%s' atractivos, se encontró un problema `` %s''."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "Volver a aplicar los nombres sugeridos"
 
@@ -3700,6 +3674,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "No hay campos de entrada para la fuente de entrada de datos seleccionada"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Todas las reparaciones de archivos RRD tuvieron éxito."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "Selección de Plantilla de datos [editar: %s]"
@@ -3791,6 +3779,18 @@ msgstr "Nuevo"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "Depurar de Data Source"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Pasos de reparación [ Ejecutar Fix desde la línea de comandos ]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4134,7 +4134,7 @@ msgstr[1] "1 Minuto"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Detalles de gráficos, Zoom y utilidades de depuración"
 
@@ -4142,29 +4142,11 @@ msgstr "Detalles de gráficos, Zoom y utilidades de depuración"
 msgid "CSV Export"
 msgstr "Exportar CSV"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "Vista de árbol"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Realm"
-msgid "Realtime"
-msgstr "Permisos"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "Spikes"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "Editar plantilla de gráfico."
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "Haga click para ver este gráfico en tiempo real"
 
@@ -11210,14 +11192,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "Si la Sonda de Boost excede este tiempo de ejecución, se registrará una advertencia en el log de Cacti,"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "Permite la populación directa de la tabla poller_output_boost"
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "Permite la inserción directa de registros a los resultados de Sondeo de boost, con una reducción de tiempo del 25% en cada ciclo de sondeo."
-
-#: include/global_settings.php
 msgid "Boost Debug Log"
 msgstr "Log de depuración de Boost"
 
@@ -13178,20 +13152,32 @@ msgid "Data Query:"
 msgstr "Consulta de datos:"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "Exportar datos de Grafico a CSV"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Opciones de Grafico"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "Gráficos basados en intervalos de tiempo"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Vista de árbol"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "Editar dispositivo"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "Eliminar spikes del gráfico"
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "Permisos"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "Spikes"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13296,6 +13282,10 @@ msgstr "Ingrese una expresión regular"
 #: lib/html.php
 msgid "No file selected"
 msgstr "Ningún archivo seleccionado"
+
+#: lib/html.php
+msgid "Time Graph View"
+msgstr "Gráficos basados en intervalos de tiempo"
 
 #: lib/html.php
 msgid "SpikeKill Results"
@@ -15716,6 +15706,11 @@ msgstr "El complemento en el directorio '%s' no incluye una función de versión
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "El complemento en el directorio '%s' no incluye una función de instalación '%s()'.  Esta función debe existir para que el plugin se instale."
 
@@ -15816,6 +15811,26 @@ msgstr "ERROR: archivo RRD %s no es escribible"
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "El tamaño de paso de archivo RRD requerido es '%s' pero el paso observado es '%s'"
 
@@ -15833,11 +15848,6 @@ msgstr "Señal de vida para Data Source '%s' deberia ser '%s'"
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD minimo para Data Source '%s' deberia ser '%s'"
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "DS '%s' ausente en la definición de Cacti"
 
 #: lib/rrd.php
 #, php-format
@@ -15924,17 +15934,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Puntos de datos desconocidos (0)"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "renombrar %s a %s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "No se encontraron %s"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "Descripción del Data Source:"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "renombrar %s a %s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19504,6 +19514,7 @@ msgid "Max Total Memory Possible"
 msgstr "Memoria máxima de Sonda permitida:"
 
 #: utilities.php
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "Reduzca la memoria MySQL/MariaDB a menos de 80% of de memoria del sistema.  Conserve la memoria caché adicional para los archivos RRD si la base de datos está en el mismo sistema que los archivos RRD.  Consulte los totales principales y del cliente a continuación para obtener una explicación del método de cálculo."
 
@@ -20217,32 +20228,33 @@ msgstr "Número de Plantillas de gráficos usando este VDEF."
 msgid "No VDEFs"
 msgstr "No VDEFs"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "Opciones de Grafico"
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "Permite la populación directa de la tabla poller_output_boost"
 
-#: lib/plugins.php:835
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "Permite la inserción directa de registros a los resultados de Sondeo de boost, con una reducción de tiempo del 25% en cada ciclo de sondeo."
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "Exportar datos de Grafico a CSV"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "Eliminar spikes del gráfico"
+
 #, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "DS '%s' ausente en la definición de Cacti"
 
-#: links.php
-msgid "Links"
-msgstr "Enlaces"
+#~ msgid "Links"
+#~ msgstr "Enlaces"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "Recolectores de datos"
+#~ msgid "Collectors"
+#~ msgstr "Recolectores de datos"
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "Archivos RRD"
+#~ msgid "RRDfiles"
+#~ msgstr "Archivos RRD"
 
-#: user_domains.php
-msgid "Domains"
-msgstr "Dominios"
+#~ msgid "Domains"
+#~ msgstr "Dominios"
 
 #~ msgid "SNMP Rules"
 #~ msgstr "Reglas de SNMP"
