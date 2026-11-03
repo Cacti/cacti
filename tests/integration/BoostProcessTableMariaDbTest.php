@@ -13,6 +13,8 @@
 
 $root = dirname(__DIR__, 2);
 
+require_once dirname(__DIR__) . '/Helpers/BoostMariaDbRequeue.php';
+
 function boostMariaDbReset() {
 	$host     = getenv('BOOST_DB_HOST') ?: '127.0.0.1';
 	$port     = getenv('BOOST_DB_PORT') ?: '3306';
@@ -138,36 +140,6 @@ function boostMariaDbLoadProductionFunctions($root) {
 	eval($functions);
 }
 
-function boostMariaDbLoadRequeueFunction($root) {
-	if (function_exists('boostMariaDbRequeueUnprocessedRows')) {
-		return;
-	}
-
-	$source = file_get_contents($root . '/poller_boost.php');
-	$start  = strpos($source, 'function boost_requeue_unprocessed_rows(');
-	$end    = strpos($source, "\nfunction ", $start + 1);
-
-	expect($start)->not->toBeFalse()
-		->and($end)->not->toBeFalse();
-
-	$function = substr($source, $start, $end - $start);
-	$function = str_replace(array(
-		'boost_requeue_unprocessed_rows',
-		'boost_get_arch_table_names',
-		'boost_is_valid_archive_table',
-		'db_execute_prepared',
-		'cacti_log',
-	), array(
-		'boostMariaDbRequeueUnprocessedRows',
-		'boostMariaDbArchiveTableNames',
-		'boostMariaDbValidArchiveTable',
-		'boostMariaDbExecutePrepared',
-		'boostMariaDbLog',
-	), $function);
-
-	eval($function);
-}
-
 function boostMariaDbArchiveTableNames() {
 	return $GLOBALS['boost_mariadb_archives'];
 }
@@ -178,7 +150,6 @@ function boostMariaDbValidArchiveTable($table) {
 
 beforeEach(function () use ($root) {
 	boostMariaDbLoadProductionFunctions($root);
-	boostMariaDbLoadRequeueFunction($root);
 	boostMariaDbReset();
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_processes');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_local_data_ids');
@@ -313,7 +284,7 @@ test('failed shard rows are requeued after the last acknowledged primary key', f
 		(42, 'a', '2026-09-05 12:03:00', 'retry-3')");
 	$GLOBALS['boost_mariadb_archives'] = array('poller_output_boost_arch_100', 'poller_output_boost_arch_200');
 
-	expect(boostMariaDbRequeueUnprocessedRows($run_id))->toBeTrue();
+	expect(\CactiBoostMariaDbFixture\boost_requeue_unprocessed_rows($run_id))->toBeTrue();
 
 	$rows = $GLOBALS['boost_mariadb_pdo']->query('SELECT local_data_id, rrd_name, time, output
 		FROM poller_output_boost ORDER BY local_data_id, time, rrd_name')->fetchAll(PDO::FETCH_ASSOC);

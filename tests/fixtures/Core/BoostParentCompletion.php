@@ -4,7 +4,7 @@
 namespace CactiBoostParentCompletionFixture;
 
 require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
-require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__, 2) . '/Helpers/BlockSourceSlice.php';
 
 function completion_reset($completed, $failed, $requeued, $updates) {
 	$GLOBALS['boost_completion_state'] = array(

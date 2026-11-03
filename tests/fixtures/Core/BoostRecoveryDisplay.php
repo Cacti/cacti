@@ -4,7 +4,7 @@
 namespace CactiBoostRecoveryDisplayFixture;
 
 require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
-require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__, 2) . '/Helpers/BlockSourceSlice.php';
 
 function __($message) {
 	return $message;
