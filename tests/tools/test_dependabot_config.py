@@ -51,6 +51,31 @@ class DependabotConfigTest(unittest.TestCase):
             with self.subTest(update=name):
                 self.assertFalse(self.ignores_all_major_updates(update))
 
+    def test_1_2_x_keeps_composer_updates_enabled(self) -> None:
+        release_jobs = {
+            (update['package-ecosystem'], update['directory'])
+            for update in self.updates
+            if update.get('target-branch') == '1.2.x'
+        }
+
+        self.assertIn(('composer', '/'), release_jobs)
+        self.assertIn(('composer', '/tests'), release_jobs)
+
+    def test_symfony_stays_on_7_x_on_develop(self) -> None:
+        symfony_rules = [
+            (update, rule)
+            for update in self.updates
+            for rule in update.get('ignore', [])
+            if rule.get('dependency-name') == 'symfony/*'
+        ]
+
+        self.assertEqual(len(symfony_rules), 1)
+        update, rule = symfony_rules[0]
+        self.assertNotIn('target-branch', update)
+        self.assertEqual(update['package-ecosystem'], 'composer')
+        self.assertEqual(update['directory'], '/')
+        self.assertEqual(rule.get('versions'), ['>= 8.0.0'])
+
 
 if __name__ == '__main__':
     unittest.main()
