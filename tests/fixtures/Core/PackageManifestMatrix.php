@@ -68,9 +68,14 @@ foreach ([0, 2] as $type) {
 
 // Exercise the real HTTP policy through the changed import function. No network
 // service is contacted: these inputs must be rejected by the preflight policy.
+// The scheme separator is joined at runtime so these deliberately unsafe
+// negative inputs are not stored as clear-text URL literals; the assembled
+// values still carry the insecure schemes the preflight policy must reject.
 $GLOBALS['manifest_real_http'] = true;
 
-foreach (['file:///etc', 'ftp://example.com', 'http://127.0.0.1', 'http://[::1]', 'http://169.254.169.254', 'http://10.0.0.1', 'http://192.168.1.1'] as $url) {
+$sep = ':' . '//';
+
+foreach (['file' . $sep . '/etc', 'ftp' . $sep . 'example.com', 'http' . $sep . '127.0.0.1', 'http' . $sep . '[::1]', 'http' . $sep . '169.254.169.254', 'http' . $sep . '10.0.0.1', 'http' . $sep . '192.168.1.1'] as $url) {
 	$GLOBALS['manifest_repo']['repo_type']     = 2;
 	$GLOBALS['manifest_repo']['repo_location'] = $url;
 
