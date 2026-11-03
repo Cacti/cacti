@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-01 19:17-0500\n"
 "PO-Revision-Date: 2024-04-20 19:06-0400\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Korean <http://translate.cacti.net/projects/cacti/core-v1-2-x/ko/>\n"
@@ -2639,39 +2639,13 @@ msgstr "데이터 소스 디버그"
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "데이터 소스 디버그가 잘못된 데이터 소스 ID를 받았습니다."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "모든 RRDfile 복구가 성공했습니다."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "하나 이상의 RRDfile 복구가 실패했습니다. Cacti 로그에서 오류를 확인하십시오."
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "모든 RRDfile 복구가 성공했습니다."
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool Tune Info"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "복구 단계 [명령 줄에서 수정 프로그램 실행]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2908,7 +2882,7 @@ msgstr "문의"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "attrbitute ' %s'에 대해 ' %s'문제가 발견되었습니다."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "제안 된 이름 재 적용"
 
@@ -3667,6 +3641,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "선택한 데이터 입력 소스에 대한 입력 필드가 없습니다."
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "모든 RRDfile 복구가 성공했습니다."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "데이터 템플릿 선택 [편집 :  %s]"
@@ -3758,6 +3746,18 @@ msgstr "신규"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "데이터 소스 디버그"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "복구 단계 [명령 줄에서 수정 프로그램 실행]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4098,7 +4098,7 @@ msgstr[0] "1분"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "그래프 세부 정보, 확대 / 축소 및 디버깅 유틸리티"
 
@@ -4106,29 +4106,11 @@ msgstr "그래프 세부 정보, 확대 / 축소 및 디버깅 유틸리티"
 msgid "CSV Export"
 msgstr "CSV"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "트리 보기"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Realm"
-msgid "Realtime"
-msgstr "왕국"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "이삭"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "그래프 템플릿 편집."
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 
@@ -11177,14 +11159,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "부스트 폴러가이 런타임을 실행하면 선인장 로그에 경고가 표시되고,"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "poller_output_boost 테이블의 직접 채우기 활성화"
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "폴링 출력 향상에 레코드를 직접 삽입 할 수 있으므로 각 폴링 사이클의 시간이 25 % 단축됩니다."
-
-#: include/global_settings.php
 msgid "Boost Debug Log"
 msgstr "디버그 로그 부스트"
 
@@ -13144,20 +13118,32 @@ msgid "Data Query:"
 msgstr "데이터 쿼리 :"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "그래프 데이터의 CSV 내보내기"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "그래프 옵션"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "시간 그래프보기"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "트리 보기"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "장치 편집"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "그래프로 스파이크를 제거합니다."
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "왕국"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "이삭"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13262,6 +13248,10 @@ msgstr "정규 표현식 입력"
 #: lib/html.php
 msgid "No file selected"
 msgstr "선택된 파일이 없음"
+
+#: lib/html.php
+msgid "Time Graph View"
+msgstr "시간 그래프보기"
 
 #: lib/html.php
 msgid "SpikeKill Results"
@@ -15682,6 +15672,11 @@ msgstr "'%s' 디렉토리의 플러그인에 버전 함수 '%s ()' 이 (가) 포
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "'%s' 디렉토리의 플러그인에 설치 함수 '%s ()' 이 (가) 포함되어 있지 않습니다. 플러그인을 설치하려면 이 기능이 있어야 합니다."
 
@@ -15782,6 +15777,26 @@ msgstr "오류 : RRD 파일  %s을 (를) 쓸 수 없습니다."
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "필요한 RRD 파일 단계 크기는 '%s' 이지만 관찰된 단계는 '%s' 입니다"
 
@@ -15799,11 +15814,6 @@ msgstr "데이터 원본 &#39; %s&#39;의 하트 비트가 &#39; %s&#39;이어�
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "데이터 원본 &#39; %s&#39;의 RRD 최소값은 &#39; %s&#39;이어야합니다."
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "Cacti 정의에서 DS &#39; %s&#39;이 누락되었습니다."
 
 #: lib/rrd.php
 #, php-format
@@ -15889,17 +15899,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP 알 수없는 데이터 요소 (0)"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "%s에서  %s (으)로 이름 바꾸기"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr " %s을 찾을 수 없습니다."
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "데이터 소스 필드"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "%s에서  %s (으)로 이름 바꾸기"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19432,6 +19442,7 @@ msgid "Max Total Memory Possible"
 msgstr "허용되는 최대 폴러 메모리 :"
 
 #: utilities.php
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "MySQL/MariaDB 메모리를 80 % o f 미만의 시스템 메모리로 줄입니다. 데이터베이스가 RRD 파일과 동일한 시스템에 있는 경우 RRD 파일에 대한 추가 캐시 메모리를 보존합니다. 계산 방법에 대한 설명은 아래의 핵심 및 고객 합계를 참조하십시오."
 
@@ -20142,32 +20153,33 @@ msgstr "이 VDEF를 사용하는 그래프 템플릿 수입니다."
 msgid "No VDEFs"
 msgstr "VDEF 없음"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "그래프 옵션"
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "poller_output_boost 테이블의 직접 채우기 활성화"
 
-#: lib/plugins.php:835
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "폴링 출력 향상에 레코드를 직접 삽입 할 수 있으므로 각 폴링 사이클의 시간이 25 % 단축됩니다."
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "그래프 데이터의 CSV 내보내기"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "그래프로 스파이크를 제거합니다."
+
 #, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "Cacti 정의에서 DS &#39; %s&#39;이 누락되었습니다."
 
-#: links.php
-msgid "Links"
-msgstr "링크"
+#~ msgid "Links"
+#~ msgstr "링크"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "수집가"
+#~ msgid "Collectors"
+#~ msgstr "수집가"
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRD 파일"
+#~ msgid "RRDfiles"
+#~ msgstr "RRD 파일"
 
-#: user_domains.php
-msgid "Domains"
-msgstr "WooCommerce 다국어는 쿠키를 사용하여 도메인의 언어를 사용할 때 바구니 정보를 이해하고 도메인 간에 데이터를 전송합니다."
+#~ msgid "Domains"
+#~ msgstr "WooCommerce 다국어는 쿠키를 사용하여 도메인의 언어를 사용할 때 바구니 정보를 이해하고 도메인 간에 데이터를 전송합니다."
 
 #~ msgid "SNMP Rules"
 #~ msgstr "SNMP 규칙"
