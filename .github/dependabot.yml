@@ -1,13 +1,13 @@
 # GitHub reads this configuration from develop, including updates for 1.2.x.
-# Group routine releases; unmatched major upgrades get individual PRs.
-# Cooldowns apply to version updates, not security fixes.
+# Group routine releases; unmatched major upgrades on develop get individual PRs.
+# Major version updates carry a 7-day cooldown; minor, patch, and security updates run immediately.
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule: {interval: weekly, day: friday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       github-actions: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, github_actions]
@@ -16,17 +16,24 @@ updates:
     directory: /
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       composer: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
+    ignore:
+      # Symfony 8+ requires PHP 8.4+; composer.json pins platform.php to 8.3.0.
+      - dependency-name: "symfony/*"
+        versions: [">= 8.0.0"]
+      # Pest 4+ requires coordinated plugin/PHPUnit 12 unlocking that single-package checks skip.
+      - dependency-name: "pestphp/*"
+        versions: [">= 4.0.0"]
   - package-ecosystem: github-actions
     directory: /
     target-branch: 1.2.x
     schedule: {interval: weekly, day: friday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       github-actions-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, github_actions, 1.2.x]
@@ -35,7 +42,8 @@ updates:
     directory: /api
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    versioning-strategy: increase
+    cooldown: {semver-major-days: 7}
     groups:
       composer-api: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer]
@@ -45,17 +53,20 @@ updates:
     target-branch: 1.2.x
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       composer-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
-    labels: [dependencies, composer]
+    labels: [dependencies, composer, 1.2.x]
     commit-message: {prefix: deps, include: scope}
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: npm
     directory: /
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       npm: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, "area:ui"]
@@ -66,13 +77,13 @@ updates:
     target-branch: 1.2.x
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       npm-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, "area:ui", 1.2.x]
     commit-message: {prefix: deps, include: scope}
     ignore:
-      - dependency-name: jquery
+      - dependency-name: "*"
         update-types: ["version-update:semver-major"]
       # 1.2.x loads screenfull's classic script; v6+ only ships ESM.
       - dependency-name: screenfull
@@ -82,7 +93,7 @@ updates:
     directory: /tests/e2e
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       npm-e2e: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, "area:ui"]
@@ -93,28 +104,38 @@ updates:
     target-branch: 1.2.x
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       npm-e2e-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, "area:ui", 1.2.x]
     commit-message: {prefix: deps, include: scope}
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: composer
     directory: /tests
     target-branch: 1.2.x
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       composer-tests-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer, 1.2.x]
     commit-message: {prefix: deps, include: scope}
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: composer
     directory: /tests/tools/plugin-harness
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
-    cooldown: {default-days: 7}
+    cooldown: {semver-major-days: 7}
     groups:
       plugin-harness: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
+    ignore:
+      # plugin-harness pins platform.php to 8.2.0; Pest 4+ requires PHP 8.3+.
+      - dependency-name: "pestphp/*"
+        versions: [">= 4.0.0"]
