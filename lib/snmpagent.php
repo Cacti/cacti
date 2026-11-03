@@ -106,7 +106,7 @@ function snmpagent_global_settings_update(){
 	$mc->object('boostApplRrdUpdateMaxStringLength')->set( read_config_option('boost_rrd_update_string_length', true) );
 	$mc->object('boostApplRrdUpdatePollerMemLimit')->set( read_config_option('boost_poller_mem_limit', true) );
 	$mc->object('boostApplRrdUpdateMaxRunTime')->set( read_config_option('boost_rrd_update_max_runtime', true) );
-	$mc->object('boostApplRrdUpdateRedirect')->set( (read_config_option('boost_redirect', true) == 'on') ? 1 : 2 );
+	$mc->object('boostApplRrdUpdateRedirect')->set( 1 );
 	$mc->object('boostApplImageCacheEnabled')->set( (read_config_option('boost_png_cache_enable', true) == 'on') ? 1 : 2 );
 	$mc->object('boostApplLoggingEnabled')->set( (read_config_option('path_boost_log', true) == true) ? 1 : 2 );
 	$mc->object('boostApplLastUpdate')->set( time() );
