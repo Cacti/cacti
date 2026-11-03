@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <source>
+        <include>
+            <file>../lib/rrd.php</file>
+        </include>
+    </source>
     <testsuites>
         <testsuite name="RrdCapabilities">
             <file>Unit/Core/Rrd/GraphPollTimeTest.php</file>
@@ -8,6 +13,7 @@
             <file>Unit/Core/Rrd/RrdDataSourceDiffTest.php</file>
             <file>Unit/Core/Rrd/RrdcheckDataSourceFindingsTest.php</file>
             <file>Unit/Core/Rrd/RrdTuneRenderTest.php</file>
+            <file>Unit/Core/Rrd/RrdErrorImageAndFetchParseTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

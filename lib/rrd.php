@@ -1246,7 +1246,7 @@ function rrdtool_parse_fetch_output($output, $normalized_end_time, $show_unknown
 			continue;
 		}
 
-		list($raw_timestamp, $raw_data) = explode(':', $line, 2);
+		[$raw_timestamp, $raw_data] = explode(':', $line, 2);
 
 		if (!is_numeric(trim($raw_timestamp))) {
 			continue;
@@ -4795,17 +4795,17 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	imagefill($image, 0, 0, $transparent);
 
 	/* background the entire image with the frame */
-	list($red, $green, $blue) = sscanf($shadeb, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($shadeb, '%02x%02x%02x');
 	$shadeb = imagecolorallocate($image, $red, $green, $blue);
 	imagefill($image, 0, 0, $shadeb);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($shadea, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($shadea, '%02x%02x%02x');
 	$shadea = imagecolorallocate($image, $red, $green, $blue);
 	imagefilledrectangle($image, 1, 1, 448, 198, $shadea);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($back_color, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($back_color, '%02x%02x%02x');
 	$back_color = imagecolorallocate($image, $red, $green, $blue);
 	imagefilledrectangle($image, 2, 2, 447, 197, $back_color);
 
@@ -4816,7 +4816,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	imagecopy($image, $logo, 0, 0, 0, 0, 450, 200);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($font_color, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($font_color, '%02x%02x%02x');
 	$text_color = imagecolorallocate($image, $red, $green, $blue);
 
 	/* see the size of the string */
