@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-01 19:17-0500\n"
 "PO-Revision-Date: 2023-07-27 15:11+0000\n"
 "Last-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\n"
 "Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\n"
@@ -2659,39 +2659,13 @@ msgstr "Відлагодження Джерела Даних запущено."
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "Відлагодженням Джерела Даних отримало невірний  ID Джерела Даних."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "Усі ремонти RRD файлу успішно завершено."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Один чи декілька ремонтів RRD файлу провалились. Перегляньте лог Cacti що до помилок."
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "Усі ремонти RRD файлу успішно завершено."
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "Інформація налаштувань RRDtool"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "Кроки Виправлення [ Запустіть з командного рядка ]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2928,7 +2902,7 @@ msgstr "Проблема"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "Для атрибуту '%s' виявлено проблему '%s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "Застосувати Запропоновані Виправлення"
 
@@ -3733,6 +3707,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "Немає Полів Введення для вибраного Джерела Введення Даних"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Усі ремонти RRD файлу успішно завершено."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "Вибір Шаблону Даних [редагування: %s]"
@@ -3824,6 +3812,18 @@ msgstr "Новий"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "Відлагодження Джерела Даних"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "Інформація налаштувань RRDtool"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Кроки Виправлення [ Запустіть з командного рядка ]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4170,7 +4170,7 @@ msgstr[2] "1 Хвилина"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Деталі Графіку, Збільшення та Засоби Відлагодження"
 
@@ -4178,25 +4178,11 @@ msgstr "Деталі Графіку, Збільшення та Засоби Ві
 msgid "CSV Export"
 msgstr "Експорт CSV"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "Перегляд Дерева"
-
-#: lib/html.php
-msgid "Realtime"
-msgstr ""
-
-#: lib/html.php
-msgid "Kill Spikes"
-msgstr ""
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "Редагувати Шаблон Графіків."
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "Клацніть для перегляду цього Графіку в Реальному часі"
 
@@ -11214,14 +11200,6 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr ""
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr ""
-
-#: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr ""
-
-#: include/global_settings.php
 msgid "Boost Debug Log"
 msgstr ""
 
@@ -13181,19 +13159,27 @@ msgid "Data Query:"
 msgstr ""
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr ""
+#, fuzzy
+#| msgid "Actions"
+msgid "Graph Actions"
+msgstr "Дії"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr ""
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Перегляд Дерева"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr ""
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
+msgid "Realtime"
+msgstr ""
+
+#: lib/html.php
+msgid "Kill Spikes"
 msgstr ""
 
 #: lib/html.php lib/installer.php
@@ -13298,6 +13284,10 @@ msgstr ""
 
 #: lib/html.php
 msgid "No file selected"
+msgstr ""
+
+#: lib/html.php
+msgid "Time Graph View"
 msgstr ""
 
 #: lib/html.php
@@ -15704,6 +15694,11 @@ msgstr ""
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
 
@@ -15803,6 +15798,26 @@ msgstr ""
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr ""
 
@@ -15819,11 +15834,6 @@ msgstr ""
 #: lib/rrd.php
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr ""
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
 msgstr ""
 
 #: lib/rrd.php
@@ -15910,17 +15920,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr ""
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr ""
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "Кольорів Не Знайдено"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "Поради що до Ремонту Джерела Даних"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr ""
 
 #: lib/rrd.php
 #, fuzzy
@@ -19480,6 +19490,7 @@ msgid "Max Total Memory Possible"
 msgstr ""
 
 #: utilities.php
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -20191,33 +20202,6 @@ msgstr ""
 
 #: vdef.php
 msgid "No VDEFs"
-msgstr ""
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Actions"
-msgid "Graph Actions"
-msgstr "Дії"
-
-#: lib/plugins.php:835
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
-
-#: links.php
-msgid "Links"
-msgstr ""
-
-#: pollers.php
-msgid "Collectors"
-msgstr ""
-
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr ""
-
-#: user_domains.php
-msgid "Domains"
 msgstr ""
 
 #~ msgid "SNMP Rules"
