@@ -10,6 +10,8 @@ test('structured RRA paths preserve inherited owner group and setgid permissions
 
 	expect($result['repaired'])->toBeTrue()
 		->and($result['outside'])->toBeFalse()
+		->and($result['skipped'])->toBeTrue()
+		->and(array_values(array_unique($result['failures'])))->toBe(array(false))
 		->and($result['owners']['/rra/36'])->toBe(33)
 		->and($result['groups']['/rra/36'])->toBe(33)
 		->and($result['groups']['/rra/36/88'])->toBe(33)

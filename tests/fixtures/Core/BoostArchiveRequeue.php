@@ -42,6 +42,10 @@ $run_id  = str_repeat('a', 32);
 $success = boost_requeue_unprocessed_rows($run_id);
 $calls   = $GLOBALS['boost_requeue_state']['calls'];
 
+$GLOBALS['boost_requeue_state']['archives'] = false;
+$GLOBALS['boost_requeue_state']['calls']    = array();
+$missing_archives = boost_requeue_unprocessed_rows($run_id);
+
 $GLOBALS['boost_requeue_state']['archives'] = array('poller_output_boost_arch_bad');
 $GLOBALS['boost_requeue_state']['calls']    = array();
 $invalid_table = boost_requeue_unprocessed_rows($run_id);
@@ -53,10 +57,11 @@ $failed_copy = boost_requeue_unprocessed_rows($run_id);
 $failed_calls = $GLOBALS['boost_requeue_state']['calls'];
 
 print json_encode(array(
-	'success'       => $success,
-	'calls'         => $calls,
-	'invalid_run'   => boost_requeue_unprocessed_rows('invalid'),
-	'invalid_table' => $invalid_table,
-	'failed_copy'   => $failed_copy,
-	'failed_calls'  => $failed_calls,
+	'success'          => $success,
+	'calls'            => $calls,
+	'invalid_run'      => boost_requeue_unprocessed_rows('invalid'),
+	'missing_archives' => $missing_archives,
+	'invalid_table'    => $invalid_table,
+	'failed_copy'      => $failed_copy,
+	'failed_calls'     => $failed_calls,
 ), JSON_THROW_ON_ERROR);

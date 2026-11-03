@@ -7,7 +7,7 @@ require_once dirname(__DIR__, 3) . '/include/global_constants.php';
 if (!defined('CACTI_LOCALE')) { define('CACTI_LOCALE', 'en-US'); }
 $GLOBALS['config'] = ['cacti_server_os' => PHP_OS_FAMILY === 'Windows' ? 'win32' : 'unix', 'library_path' => dirname(__DIR__, 3) . '/lib', 'include_path' => dirname(__DIR__, 3) . '/include', 'is_web' => false];
 $GLOBALS['ack_binary'] = getenv('RRDTOOL_BINARY') ?: (is_executable('/usr/bin/rrdtool') ? '/usr/bin/rrdtool' : '/opt/homebrew/bin/rrdtool');
-function read_config_option($name) { if ($name === 'path_rrdtool') { return $GLOBALS['ack_binary']; } if ($name === 'boost_rrd_update_string_length') { return 10000; } if ($name === 'extended_paths') { return $GLOBALS['ack_extended_paths'] ?? ''; } return ''; }
+function read_config_option($name) { if ($name === 'path_rrdtool') { return $GLOBALS['ack_binary']; } if ($name === 'path_rrdtool_default_font') { return $GLOBALS['ack_default_font'] ?? ''; } if ($name === 'boost_rrd_update_string_length') { return 10000; } if ($name === 'extended_paths') { return $GLOBALS['ack_extended_paths'] ?? ''; } return ''; }
 function __($message) { return $message; }
 function cacti_log(...$args) {}
 function boost_timer(...$args) {}
@@ -32,8 +32,9 @@ function get_data_source_item_name($id) { return 'value'; }
 function get_installed_rrdtool_version() { return '1.7'; }
 function array_rekey($rows, $key, $value) { $result = []; foreach ($rows as $row) { $result[$row[$key]] = is_array($value) ? array_intersect_key($row, array_flip($value)) : $row[$value]; } return $result; }
 function db_fetch_assoc_prepared($sql, $params = []) { $statement = $GLOBALS['ack_db']->prepare($sql); $statement->execute($params); return $statement->fetchAll(\PDO::FETCH_ASSOC); }
+function db_fetch_row_prepared($sql, $params = []) { $statement = $GLOBALS['ack_db']->prepare($sql); $statement->execute($params); return $statement->fetch(\PDO::FETCH_ASSOC); }
 function db_fetch_cell($sql) { if (str_contains($sql, 'poller_time')) { return 1800000000; } return $GLOBALS['ack_db']->query($sql)->fetchColumn(); }
-function db_fetch_cell_prepared($sql, $params = []) { $statement = $GLOBALS['ack_db']->prepare($sql); $statement->execute($params); return $statement->fetchColumn(); }
+function db_fetch_cell_prepared($sql, $params = []) { if (str_contains($sql, 'host_snmp_cache')) { return false; } $statement = $GLOBALS['ack_db']->prepare($sql); $statement->execute($params); return $statement->fetchColumn(); }
 function db_execute_prepared($sql, $params = [], ...$arguments) { $statement = $GLOBALS['ack_db']->prepare($sql); return $statement->execute($params); }
 if (!defined('SQL_NO_CACHE')) { define('SQL_NO_CACHE', ''); }
 foreach (['boost_process_poller_output', 'boost_limit_complete_timestamp_page'] as $function) { cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/boost.php', $function, ''); }
@@ -43,7 +44,7 @@ $GLOBALS['ack_db']->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 $GLOBALS['ack_db']->sqliteCreateFunction('CONCAT', fn (...$parts) => implode('', $parts), -1);
 $GLOBALS['ack_db']->sqliteCreateFunction('UNIX_TIMESTAMP', fn($value) => (int) $value);
 $GLOBALS['ack_db']->sqliteCreateFunction('FROM_UNIXTIME', fn($value) => (string) $value);
-$GLOBALS['ack_db']->exec('CREATE TABLE poller_output_boost (local_data_id INTEGER, time TEXT, rrd_name TEXT, output TEXT); CREATE TABLE data_local (id INTEGER, data_template_id INTEGER); INSERT INTO data_local VALUES (1,1),(2,1); CREATE TABLE data_template_data (local_data_id INTEGER, data_source_profile_id INTEGER, rrd_step INTEGER); INSERT INTO data_template_data VALUES (1,1,60); CREATE TABLE data_source_profiles (id INTEGER, x_files_factor REAL); INSERT INTO data_source_profiles VALUES (1,0.5); CREATE TABLE data_source_profiles_rra (data_source_profile_id INTEGER, steps INTEGER, rows INTEGER); INSERT INTO data_source_profiles_rra VALUES (1,1,100); CREATE TABLE data_source_profiles_cf (data_source_profile_id INTEGER, consolidation_function_id INTEGER); INSERT INTO data_source_profiles_cf VALUES (1,1); CREATE TABLE data_template_rrd (id INTEGER, data_source_name TEXT, rrd_heartbeat INTEGER, rrd_minimum TEXT, rrd_maximum TEXT, data_source_type_id INTEGER, local_data_id INTEGER, local_data_template_rrd_id INTEGER); INSERT INTO data_template_rrd VALUES (1,"value",120,"0","U",1,1,1); CREATE TABLE graph_templates_item (task_item_id INTEGER); INSERT INTO graph_templates_item VALUES (1); CREATE TABLE poller_output_boost_local_data_ids (local_data_id INTEGER, run_id TEXT, process_handler INTEGER, cursor_time TEXT, cursor_rrd_name TEXT); INSERT INTO poller_output_boost_local_data_ids VALUES (1,"fixture",1,NULL,NULL); CREATE TABLE poller_data_template_field_mappings (data_template_id INTEGER, data_name TEXT, data_source_names TEXT); INSERT INTO poller_data_template_field_mappings VALUES (1,"value","value")');
+$GLOBALS['ack_db']->exec('CREATE TABLE poller_output_boost (local_data_id INTEGER, time TEXT, rrd_name TEXT, output TEXT); CREATE TABLE data_local (id INTEGER, data_template_id INTEGER, host_id INTEGER, snmp_query_id INTEGER, snmp_index TEXT); INSERT INTO data_local VALUES (1,1,0,0,""),(2,1,0,0,""); CREATE TABLE data_template_data (local_data_id INTEGER, data_source_profile_id INTEGER, rrd_step INTEGER); INSERT INTO data_template_data VALUES (1,1,60); CREATE TABLE data_source_profiles (id INTEGER, x_files_factor REAL); INSERT INTO data_source_profiles VALUES (1,0.5); CREATE TABLE data_source_profiles_rra (data_source_profile_id INTEGER, steps INTEGER, rows INTEGER); INSERT INTO data_source_profiles_rra VALUES (1,1,100); CREATE TABLE data_source_profiles_cf (data_source_profile_id INTEGER, consolidation_function_id INTEGER); INSERT INTO data_source_profiles_cf VALUES (1,1); CREATE TABLE data_template_rrd (id INTEGER, data_source_name TEXT, rrd_heartbeat INTEGER, rrd_minimum TEXT, rrd_maximum TEXT, data_source_type_id INTEGER, local_data_id INTEGER, local_data_template_rrd_id INTEGER); INSERT INTO data_template_rrd VALUES (1,"value",120,"0","U",1,1,1); CREATE TABLE graph_templates_item (task_item_id INTEGER); INSERT INTO graph_templates_item VALUES (1); CREATE TABLE poller_output_boost_local_data_ids (local_data_id INTEGER, run_id TEXT, process_handler INTEGER, cursor_time TEXT, cursor_rrd_name TEXT); INSERT INTO poller_output_boost_local_data_ids VALUES (1,"fixture",1,NULL,NULL); CREATE TABLE poller_data_template_field_mappings (data_template_id INTEGER, data_name TEXT, data_source_names TEXT); INSERT INTO poller_data_template_field_mappings VALUES (1,"value","value")');
 $GLOBALS['ack_archives'] = ['poller_output_boost'];
 $GLOBALS['run_id'] = 'fixture';
 $GLOBALS['current_lock'] = false;
@@ -56,7 +57,13 @@ mkdir($fixture_include, 0775);
 file_put_contents($fixture_include . '/global_arrays.php', '<?php $data_source_types = array(1 => "GAUGE"); $consolidation_functions = array(1 => "AVERAGE");');
 $GLOBALS['config']['rra_path'] = $create_directory;
 $GLOBALS['config']['include_path'] = $fixture_include;
+$ack_binary_path = $GLOBALS['ack_binary'];
+$GLOBALS['ack_binary'] = $create_directory . '/missing-rrdtool';
+if (__rrd_init_acknowledged() !== false) { throw new \RuntimeException('Invalid RRDtool binary started a worker.'); }
+$GLOBALS['ack_binary'] = $ack_binary_path;
+$GLOBALS['ack_default_font'] = 'DejaVu Sans';
 $pipe = rrd_init(true, true);
+$GLOBALS['ack_default_font'] = '';
 if (!is_resource($pipe)) { throw new \RuntimeException('RRDtool worker did not start.'); }
 $context = stream_context_get_options($pipe)['cacti'];
 $pid = proc_get_status($context['rrd_process'])['pid'];
@@ -66,6 +73,9 @@ try {
 	$create_sample = '1700000001:1';
 	$create_result = boost_rrdtool_function_update(1, $GLOBALS['ack_create_path'], 'value', $create_sample, $pipe);
 	if ($create_result !== 'OK' || !is_file($GLOBALS['ack_create_path'])) { throw new \RuntimeException('Boost did not create and update a missing structured RRD.'); }
+	$GLOBALS['ack_create_path'] = $create_directory . '/normal/1.rrd';
+	$normal_create = rrdtool_function_create(1, false, $pipe);
+	if (!is_file($GLOBALS['ack_create_path'])) { throw new \RuntimeException('Normal RRD creation did not repair and use a structured path: ' . $normal_create); }
 	$GLOBALS['ack_extended_paths'] = '';
 	$GLOBALS['ack_create_path'] = $create_directory . '/missing/1.rrd';
 	$create_error_sample = '1700000002:2';
@@ -73,6 +83,8 @@ try {
 	if (!str_starts_with($create_error, 'ERROR:') || $create_error === 'ERROR: Unable to create RRD file') { throw new \RuntimeException('Boost hid the RRDtool create failure: ' . $create_error); }
     $create = rrdtool_execute('create ' . $file . ' --start 1700000000 --step 1 DS:value:GAUGE:600:U:U RRA:AVERAGE:0.5:1:2000', false, RRDTOOL_OUTPUT_RETURN_STDERR, $pipe);
     if (!str_starts_with($create, 'OK ')) { throw new \RuntimeException('RRD fixture creation failed: ' . $create); }
+	$without_template = '1700000001:1';
+	if (boost_rrdtool_function_update(1, $file, '', $without_template, $pipe) !== 'OK') { throw new \RuntimeException('Template-free RRD update was refused.'); }
     $missing = false;
     $sample = '1700000001:1';
     if (!str_starts_with(boost_rrdtool_function_update(1, $file, 'value', $sample, $missing), 'ERROR:')) { throw new \RuntimeException('Missing worker used a per-update process fallback.'); }
@@ -118,6 +130,8 @@ try {
     if (is_file($file)) { unlink($file); }
 	if (is_file($create_directory . '/created/1.rrd')) { unlink($create_directory . '/created/1.rrd'); }
 	if (is_dir($create_directory . '/created')) { rmdir($create_directory . '/created'); }
+	if (is_file($create_directory . '/normal/1.rrd')) { unlink($create_directory . '/normal/1.rrd'); }
+	if (is_dir($create_directory . '/normal')) { rmdir($create_directory . '/normal'); }
 	if (is_file($fixture_include . '/global_arrays.php')) { unlink($fixture_include . '/global_arrays.php'); }
 	if (is_dir($fixture_include)) { rmdir($fixture_include); }
 	if (is_dir($create_directory)) { rmdir($create_directory); }
