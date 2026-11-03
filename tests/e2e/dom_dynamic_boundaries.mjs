@@ -67,10 +67,10 @@ try {
         window.setInterval = () => 1;
         sessionMessageCountdown(5000);
         check($('#btnSessionMessageOk').text() === sessionMessageOk + ' (5)' && $('#btnSessionMessageOk em').length === 0, 'Countdown label became markup.');
-        window.urlPath = '/'; window.spikeKillResults = 'Results';
+        window.urlPath = '/'; window.spikeKillResults = 'Results'; window.csrfMagicToken = 'fixture-token';
         window.closeDateFilters = () => {}; window.checkForRedirects = () => {}; window.redrawGraph = () => {};
         image.attr('id', 'graph_1');
-        $.getJSON = () => ({done(callback) {callback({results: '<table><tr><td>Keep result</td></tr></table><img src="x" onerror="void 0">'}); return this;}, fail() {return this;}});
+        $.post = () => ({done(callback) {callback({results: '<table><tr><td>Keep result</td></tr></table><img src="x" onerror="void 0">'}); return this;}, fail() {return this;}});
         removeSpikes('test', true, 1);
         check($('#spikeresults td').text() === 'Keep result' && $('#spikeresults [onerror]').length === 0, 'Spike results were not sanitized.');
         return {graph_attributes: true, plugin_markup: true, live_widgets: true, breadcrumbs: true, same_origin: true, session_messages: true, countdown: true, spike_results: true};

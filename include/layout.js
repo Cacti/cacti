@@ -4807,7 +4807,7 @@ function removeSpikes(method, dryrun, local_graph_id) {
 
 	$.post(urlPath + 'spikekill.php', postData, null, 'json')
 		.done(function(data) {
-			checkForRedirects(data, href);
+			checkForRedirects(data);
 
 			redrawGraph(local_graph_id);
 
