@@ -1,0 +1,56 @@
+"""Verify the release and development branch dependency update policy."""
+
+import unittest
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[2]
+CONFIG = ROOT / '.github/dependabot.yml'
+MAJOR_UPDATE = 'version-update:semver-major'
+
+
+class DependabotConfigTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.updates = yaml.safe_load(CONFIG.read_text())['updates']
+
+    @staticmethod
+    def ignores_all_major_updates(update: dict[str, object]) -> bool:
+        return any(
+            rule.get('dependency-name') == '*'
+            and MAJOR_UPDATE in rule.get('update-types', [])
+            for rule in update.get('ignore', [])
+        )
+
+    def test_1_2_x_accepts_only_minor_and_patch_version_updates(self) -> None:
+        release_updates = [
+            update
+            for update in self.updates
+            if update.get('target-branch') == '1.2.x'
+        ]
+
+        self.assertTrue(release_updates)
+        for update in release_updates:
+            name = f"{update['package-ecosystem']}:{update['directory']}"
+            with self.subTest(update=name):
+                self.assertTrue(self.ignores_all_major_updates(update))
+                for group in update['groups'].values():
+                    self.assertEqual(
+                        set(group['update-types']),
+                        {'minor', 'patch'},
+                    )
+
+    def test_develop_keeps_major_version_updates_enabled(self) -> None:
+        develop_updates = [
+            update for update in self.updates if 'target-branch' not in update
+        ]
+
+        self.assertTrue(develop_updates)
+        for update in develop_updates:
+            name = f"{update['package-ecosystem']}:{update['directory']}"
+            with self.subTest(update=name):
+                self.assertFalse(self.ignores_all_major_updates(update))
+
+
+if __name__ == '__main__':
+    unittest.main()

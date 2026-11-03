@@ -9,6 +9,7 @@ on:
     paths:
       - '.github/dependabot.yml'
       - '.github/workflows/released-dependency-audit.yml'
+      - 'tests/tools/test_dependabot_config.py'
       - 'tests/tools/test_released_dependency_audit.py'
 
 permissions:
@@ -34,6 +35,8 @@ jobs:
           python3 -m pip install --only-binary=:all: --disable-pip-version-check pyyaml==6.0.2
       - name: Verify audit reporting and failure handling
         run: python3 tests/tools/test_released_dependency_audit.py
+      - name: Verify Dependabot branch policy
+        run: python3 tests/tools/test_dependabot_config.py
 
   audit:
     name: Audit 1.2.x ${{ matrix.name }}

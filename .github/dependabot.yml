@@ -1,6 +1,6 @@
 # GitHub reads this configuration from develop, including updates for 1.2.x.
-# Group routine releases; unmatched major upgrades on develop get individual PRs.
-# Major version updates carry a 7-day cooldown; minor, patch, and security updates run immediately.
+# Group minor and patch releases. Major upgrades get individual PRs on develop
+# and are disabled on 1.2.x. Security updates are not subject to cooldowns.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -38,6 +38,9 @@ updates:
       github-actions-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, github_actions, 1.2.x]
     commit-message: {prefix: ci, include: scope}
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: composer
     directory: /api
     schedule: {interval: weekly, day: monday}
