@@ -818,6 +818,9 @@ function rrdcheck_boost_bottom() {
 			sleep(2);
 		}
 
+		// delete old data
+		db_execute('DELETE FROM rrdcheck WHERE test_date < DATE_SUB(NOW(), INTERVAL 7 DAY)');
+
 		rrdcheck_log_statistics('BOOST');
 	}
 }

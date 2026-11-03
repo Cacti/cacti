@@ -216,7 +216,6 @@ function rrdcheck_master_handler($forcerun) {
 
 		// if it's time to check, do so now
 		if ((!empty($last_run) && (($last_run + ($run_interval * 60)) < $current_time)) || $forcerun) {
-
 			rrdcheck_launch_children($type);
 
 			// Wait for all processes to continue
