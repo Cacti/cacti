@@ -1,6 +1,7 @@
 # GitHub reads this configuration from develop, including updates for 1.2.x.
 # Group minor and patch releases. Major upgrades get individual PRs on develop
-# and are disabled on 1.2.x. Security updates are not subject to cooldowns.
+# and are disabled on 1.2.x. Hosted security PRs target develop; the released
+# dependency audit opens compatibility-tested draft remediations for 1.2.x.
 version: 2
 updates:
   - package-ecosystem: github-actions

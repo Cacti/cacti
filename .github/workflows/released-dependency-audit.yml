@@ -2,12 +2,13 @@ name: Released branch dependency audit
 
 on:
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: '17 6 * * *'
   workflow_dispatch:
   pull_request:
     branches: [develop]
     paths:
       - '.github/dependabot.yml'
+      - '.github/scripts/released_dependency_remediation.py'
       - '.github/workflows/released-dependency-audit.yml'
       - 'tests/tools/test_dependabot_config.py'
       - 'tests/tools/test_released_dependency_audit.py'
@@ -17,11 +18,15 @@ permissions:
 
 concurrency:
   group: released-dependency-audit-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+env:
+  DEPENDABOT_CLI_VERSION: '1.97.0'
+  DEPENDABOT_CLI_SHA256: e8a383018fa44b1cbbbd543c9add601a187f962983e4c9fe3f55cd518f93cfa9
 
 jobs:
   audit-contracts:
-    name: Audit reporting contracts
+    name: Audit and remediation contracts
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -33,38 +38,65 @@ jobs:
       - name: Install workflow parser
         run: >-
           python3 -m pip install --only-binary=:all: --disable-pip-version-check pyyaml==6.0.2
-      - name: Verify audit reporting and failure handling
+      - name: Verify audit reporting and remediation isolation
         run: python3 tests/tools/test_released_dependency_audit.py
       - name: Verify Dependabot branch policy
         run: python3 tests/tools/test_dependabot_config.py
 
   audit:
     name: Audit 1.2.x ${{ matrix.name }}
+    permissions:
+      contents: read
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {name: runtime-php, ecosystem: composer, directory: '.'}
-          - {name: test-php, ecosystem: composer, directory: tests}
-          - {name: frontend, ecosystem: npm, directory: '.'}
-          - {name: browser-tests, ecosystem: npm, directory: tests/e2e}
+          - id: runtime-php
+            name: runtime PHP
+            ecosystem: composer
+            directory: '/'
+            workdir: '.'
+          - id: test-php
+            name: test PHP
+            ecosystem: composer
+            directory: '/tests'
+            workdir: tests
+          - id: frontend
+            name: frontend
+            ecosystem: npm
+            directory: '/'
+            workdir: '.'
+          - id: browser-tests
+            name: browser tests
+            ecosystem: npm
+            directory: '/tests/e2e'
+            workdir: tests/e2e
     steps:
-      # Dependabot security PRs target develop; audit the released branch explicitly.
+      # Scheduled workflows run from develop. Keep its trusted automation code
+      # separate from the released branch being inspected and updated.
+      - name: Checkout automation source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: automation
+          persist-credentials: false
+
       - name: Checkout released branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: 1.2.x
+          path: released
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Cacti Composer toolchain
         if: matrix.ecosystem == 'composer'
-        uses: ./.github/actions/setup-php-composer
+        uses: ./automation/.github/actions/setup-php-composer
         with:
           php-version: '8.3'
           dependency-mode: audit
-          cache-dependency-path: ${{ matrix.directory }}/composer.lock
+          cache-dependency-path: released/${{ matrix.workdir }}/composer.lock
 
       - name: Set up Node
         if: matrix.ecosystem == 'npm'
@@ -72,27 +104,39 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Prepare remediation output
+        if: github.event_name != 'pull_request'
+        env:
+          REMEDIATION_DIR: ${{ runner.temp }}/remediation/${{ matrix.id }}
+          RESULT_FILE: ${{ runner.temp }}/dependabot-result.jsonl
+        run: |
+          set -euo pipefail
+          mkdir -p "$REMEDIATION_DIR"
+          : > "$RESULT_FILE"
+
       - name: Audit committed dependencies
-        working-directory: ${{ matrix.directory }}
+        id: audit
+        working-directory: released/${{ matrix.workdir }}
         env:
           PACKAGE_ECOSYSTEM: ${{ matrix.ecosystem }}
         run: |
           set -euo pipefail
-          report="$GITHUB_WORKSPACE/dependency-audit.json"
+          report="$RUNNER_TEMP/dependency-audit.json"
           audit_rc=0
           if [ "$PACKAGE_ECOSYSTEM" = composer ]; then
             composer --no-plugins --no-scripts audit --locked --no-interaction --format=json > "$report" || audit_rc=$?
             jq -e 'has("advisories") and has("abandoned")' "$report" > /dev/null
-            count="$(jq '(.advisories | map(length) | add // 0) + (.abandoned | length)' "$report")"
+            security_count="$(jq 'if (.advisories | type) == "object" then (.advisories | map(length) | add // 0) elif .advisories == [] then 0 else error("invalid Composer advisories") end' "$report")"
+            count="$(jq '((if (.advisories | type) == "object" then (.advisories | map(length) | add // 0) else 0 end) + (.abandoned | length))' "$report")"
           else
             npm audit --package-lock-only --ignore-scripts --json > "$report" || audit_rc=$?
             jq -e '.metadata.vulnerabilities.total | type == "number"' "$report" > /dev/null
-            count="$(jq '.metadata.vulnerabilities.total' "$report")"
+            security_count="$(jq '.metadata.vulnerabilities.total' "$report")"
+            count="$security_count"
           fi
+          echo "security_count=$security_count" >> "$GITHUB_OUTPUT"
           if [ "$count" -gt 0 ]; then
-            # Match Cacti's existing advisory reporting policy: keep findings
-            # visible without failing unrelated PRs for a newly published CVE.
-            echo "::warning title=Released branch dependency audit::1.2.x $PACKAGE_ECOSYSTEM has $count advisory or abandoned-package records; see the audit artifact and prepare a compatibility-tested update PR."
+            echo "::warning title=Released branch dependency audit::1.2.x $PACKAGE_ECOSYSTEM has $count advisory or abandoned-package records; the scheduled run will attempt a draft remediation PR for public security advisories."
           elif [ "$audit_rc" -ne 0 ]; then
             echo 'Dependency audit failed without a valid finding; investigate the audit service or lockfile.' >&2
             exit "$audit_rc"
@@ -102,6 +146,141 @@ jobs:
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: dependency-audit-1.2-${{ matrix.name }}
-          path: dependency-audit.json
+          name: dependency-audit-1.2-${{ matrix.id }}
+          path: ${{ runner.temp }}/dependency-audit.json
           if-no-files-found: error
+
+      - name: Build security-only Dependabot job
+        if: github.event_name != 'pull_request' && steps.audit.outputs.security_count != '0'
+        env:
+          PACKAGE_ECOSYSTEM: ${{ matrix.ecosystem }}
+          PACKAGE_DIRECTORY: ${{ matrix.directory }}
+        run: |
+          set -euo pipefail
+          BASE_COMMIT="$(git -C released rev-parse HEAD)"
+          python3 automation/.github/scripts/released_dependency_remediation.py build-job \
+            --ecosystem "$PACKAGE_ECOSYSTEM" \
+            --directory "$PACKAGE_DIRECTORY" \
+            --report "$RUNNER_TEMP/dependency-audit.json" \
+            --repository "${{ github.repository }}" \
+            --commit "$BASE_COMMIT" \
+            --output "$RUNNER_TEMP/dependabot-job.json"
+
+      - name: Download pinned Dependabot CLI
+        if: github.event_name != 'pull_request' && steps.audit.outputs.security_count != '0'
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dependabot.tar.gz"
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            "https://github.com/dependabot/cli/releases/download/v${DEPENDABOT_CLI_VERSION}/dependabot-v${DEPENDABOT_CLI_VERSION}-linux-amd64.tar.gz" \
+            --output "$archive"
+          echo "${DEPENDABOT_CLI_SHA256}  $archive" | sha256sum --check --strict
+          tar -xzf "$archive" -C "$RUNNER_TEMP"
+          "$RUNNER_TEMP/dependabot" --version
+
+      # This job intentionally has read-only repository permissions. Dependabot
+      # may execute package-manager code, so it must never receive the token
+      # used later to push the reviewed patch artifact.
+      - name: Generate security remediation
+        id: updater
+        if: github.event_name != 'pull_request' && steps.audit.outputs.security_count != '0'
+        continue-on-error: true
+        run: >-
+          "$RUNNER_TEMP/dependabot" update
+          --file "$RUNNER_TEMP/dependabot-job.json"
+          --local "$GITHUB_WORKSPACE/released"
+          --timeout 20m
+          > "$RUNNER_TEMP/dependabot-result.jsonl"
+
+      - name: Materialize allowlisted remediation patch
+        id: materialize
+        if: always() && github.event_name != 'pull_request' && steps.audit.outcome == 'success'
+        continue-on-error: true
+        env:
+          PACKAGE_ECOSYSTEM: ${{ matrix.ecosystem }}
+          PACKAGE_DIRECTORY: ${{ matrix.directory }}
+          REMEDIATION_DIR: ${{ runner.temp }}/remediation/${{ matrix.id }}
+        run: |
+          set -euo pipefail
+          BASE_COMMIT="$(git -C released rev-parse HEAD)"
+          count="$(python3 automation/.github/scripts/released_dependency_remediation.py materialize \
+            --results "$RUNNER_TEMP/dependabot-result.jsonl" \
+            --repository-root "$GITHUB_WORKSPACE/released" \
+            --base-commit "$BASE_COMMIT" \
+            --ecosystem "$PACKAGE_ECOSYSTEM" \
+            --directory "$PACKAGE_DIRECTORY" \
+            --output "$REMEDIATION_DIR")"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Upload remediation artifact
+        if: always() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: released-remediation-${{ matrix.id }}
+          path: ${{ runner.temp }}/remediation
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Require remediation for security findings
+        if: always() && github.event_name != 'pull_request' && steps.audit.outputs.security_count != '0'
+        env:
+          MATERIALIZE_COUNT: ${{ steps.materialize.outputs.count }}
+          MATERIALIZE_OUTCOME: ${{ steps.materialize.outcome }}
+          UPDATER_OUTCOME: ${{ steps.updater.outcome }}
+        run: |
+          set -euo pipefail
+          if [ "$UPDATER_OUTCOME" != success ]; then
+            echo '::error title=Released branch remediation::Dependabot could not resolve every 1.2.x security finding.'
+            exit 1
+          fi
+          if [ "$MATERIALIZE_OUTCOME" != success ] || [ "${MATERIALIZE_COUNT:-0}" -eq 0 ]; then
+            echo '::error title=Released branch remediation::No safe allowlisted remediation patch was produced.'
+            exit 1
+          fi
+
+  publish-remediation:
+    name: Open 1.2.x draft remediation PRs
+    needs: audit
+    if: always() && github.event_name != 'pull_request' && github.repository == 'Cacti/cacti'
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout trusted publisher
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: automation
+          persist-credentials: false
+
+      - name: Checkout released branch for publication
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 1.2.x
+          path: released
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Download read-only remediation artifacts
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: released-remediation-*
+          path: ${{ runner.temp }}/released-remediation
+          merge-multiple: true
+
+      # No package-manager or released-branch code executes in this
+      # write-enabled job. The trusted publisher revalidates every path.
+      - name: Open or refresh draft remediation pull requests
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: >-
+          python3 automation/.github/scripts/released_dependency_remediation.py publish
+          --artifacts "$RUNNER_TEMP/released-remediation"
+          --repository-root "$GITHUB_WORKSPACE/released"
+          --repository "${{ github.repository }}"
+          --base-branch 1.2.x
+          --assignee TheWitness
+          --issue 8577
+          --run-url "$RUN_URL"
