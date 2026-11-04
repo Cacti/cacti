@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2023-03-07 13:33+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Vietnamese <http://translate.cacti.net/projects/cacti/core-v1-2-x/vi/>\n"
@@ -2196,8 +2196,8 @@ msgstr "Root"
 msgid "No Tree Rules Found"
 msgstr "Không tìm thấy quy tắc cây"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "Cảnh báo hệ thống Cacti"
 
@@ -11122,12 +11122,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "Nếu bảng đầu ra tăng vượt quá kích thước này, trong các bản ghi, một bản cập nhật sẽ diễn ra."
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "Mục nguồn dữ liệu tối đa trên mỗi lượt"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "Để tối ưu hóa hiệu suất, trình cập nhật RRD tăng cần biết có bao nhiêu Mục nguồn dữ liệu nên được truy xuất trong một lần. Hãy cẩn thận không đặt quá cao vì hiệu suất đồ thị trong các bản cập nhật lớn có thể bị tổn hại. Nếu bạn gặp phải biểu đồ hoặc bỏ phiếu chậm trong quá trình cập nhật, hãy hạ thấp con số này. Giá trị mặc định là 50000."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11152,6 +11152,44 @@ msgstr "Thời gian chạy cập nhật RRD tối đa"
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr "Nếu trình tăng tốc đẩy ra thời gian chạy này, một cảnh báo sẽ được đặt trong nhật ký xương rồng,"
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "Thời gian chạy tối đa được phép:"
+
+#: include/global_settings.php
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "Thời gian chạy tối đa được phép:"
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "Kích thước E-Mail tối đa"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12282,6 +12320,10 @@ msgstr "Mật khẩu của bạn phải chứa ít nhất 1 ký tự đặc bi�
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "Nhật ký xương rồng đã bị xóa"
+
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
 
 #: lib/boost.php utilities.php
 #, php-format
@@ -19433,7 +19475,6 @@ msgid "Max Total Memory Possible"
 msgstr "Bộ nhớ Max Poller được phép:"
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -19818,8 +19859,51 @@ msgid "Boost On-demand Updating:"
 msgstr "Tăng cường cập nhật theo yêu cầu:"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "Tăng trạng thái"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "Quy trình đồng thời"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "Hồ sơ Boost đang chờ xử lý:"
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "Đã tạo: %s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "Cũ nhất"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "Làm mới trang tự động"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20142,6 +20226,12 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "Không có VDEF"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "Mục nguồn dữ liệu tối đa trên mỗi lượt"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "Để tối ưu hóa hiệu suất, trình cập nhật RRD tăng cần biết có bao nhiêu Mục nguồn dữ liệu nên được truy xuất trong một lần. Hãy cẩn thận không đặt quá cao vì hiệu suất đồ thị trong các bản cập nhật lớn có thể bị tổn hại. Nếu bạn gặp phải biểu đồ hoặc bỏ phiếu chậm trong quá trình cập nhật, hãy hạ thấp con số này. Giá trị mặc định là 50000."
 
 #~ msgid "Enable direct population of poller_output_boost table"
 #~ msgstr "Cho phép dân số trực tiếp của bảng pollerDefput_boost"
