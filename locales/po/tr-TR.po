@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2024-04-20 19:24-0400\n"
 "Last-Translator: San IPE <sanipe1949@krunsea.com>\n"
 "Language-Team: Turkish <http://translate.cacti.net/projects/cacti/core-v1-2-x/tr/>\n"
@@ -2199,8 +2199,8 @@ msgstr "KÖK"
 msgid "No Tree Rules Found"
 msgstr "Ağaç Kuralı Bulunamadı"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "Kaktüsler Sistemi Uyarısı"
 
@@ -11167,12 +11167,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "Takviye çıktı tablosu bu boyutu aşarsa, kayıtlarda bir güncelleme gerçekleşir."
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "Geçiş Başına Maksimum Veri Kaynağı Öğesi"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "Performansı iyileştirmek için, artırıcı RRD güncelleyicisinin bir seferde kaç Veri Kaynağı Öğesi alınması gerektiğini bilmesi gerekir. Lütfen büyük güncellemeler sırasındaki grafik performansı tehlikeye girebileceğinden çok yüksek ayarlarda bulunmamaya dikkat edin. Güncellemeler sırasında grafik çizme veya yoklama yavaşlığıyla karşılaşırsanız, bu sayıyı azaltın. Varsayılan değer 50000&#39;dür."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11197,6 +11197,44 @@ msgstr "Maksimum RRD Güncelleme Komut Dosyası Çalışma Süresi"
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr "Destekleyici yoklayıcı bu çalışma zamanını hariç tutarsa, kaktüsler günlüğüne bir uyarı verilir,"
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "İzin Verilen Maksimum Çalışma Zamanı:"
+
+#: include/global_settings.php
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "İzin Verilen Maksimum Çalışma Zamanı:"
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "Maksimum E-Posta Boyutu"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12327,6 +12365,10 @@ msgstr "Şifreniz en az 1 özel karakter içermelidir!"
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "Kaktüs Günlüğü Temizlendi"
+
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
 
 #: lib/boost.php utilities.php
 #, fuzzy, php-format
@@ -19519,7 +19561,6 @@ msgid "Max Total Memory Possible"
 msgstr "İzin Verilen Maksimum Poller Belleği:"
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -19904,8 +19945,51 @@ msgid "Boost On-demand Updating:"
 msgstr "İsteğe Bağlı Güncellemeyi Artırma:"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "Yükseltme Durumu"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "Çalışan İşlemler"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "Bekleyen Yükseltme Kayıtları:"
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "Oluşturuldu: %s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "Eskiden Yeniye"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "Otomatik Sayfa Yenileme"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20232,6 +20316,12 @@ msgstr "Bu VDEF&#39;i kullanan Grafik Şablonları sayısı."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "VDEF yok"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "Geçiş Başına Maksimum Veri Kaynağı Öğesi"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "Performansı iyileştirmek için, artırıcı RRD güncelleyicisinin bir seferde kaç Veri Kaynağı Öğesi alınması gerektiğini bilmesi gerekir. Lütfen büyük güncellemeler sırasındaki grafik performansı tehlikeye girebileceğinden çok yüksek ayarlarda bulunmamaya dikkat edin. Güncellemeler sırasında grafik çizme veya yoklama yavaşlığıyla karşılaşırsanız, bu sayıyı azaltın. Varsayılan değer 50000&#39;dür."
 
 #~ msgid "Enable direct population of poller_output_boost table"
 #~ msgstr "Poller_output_boost tablosunun doğrudan popülasyonunu etkinleştir"
