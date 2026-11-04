@@ -139,8 +139,16 @@ if ($help) {
 /* record the script start time */
 $start     = microtime(true);
 
-/* store the log level in a local variable */
-$log_level = read_config_option('poller_verbosity');
+/* store the effective log level in a local variable so that expensive debug
+ * strings are only built when debug logging is actually enabled.  This mirrors
+ * the level resolution that cacti_log() performs: a selective (per-file or
+ * per-plugin) override takes precedence, otherwise the global log_verbosity
+ * setting is used. */
+$log_level = get_selective_log_level();
+
+if ($log_level == '') {
+	$log_level = read_config_option('log_verbosity');
+}
 
 if ($config['cacti_server_os'] == 'win32') {
 	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),"\\",'/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
@@ -280,6 +288,16 @@ while (1) {
 					"'", false, 'PHPSVR');
 			}
 
+			/* The allowed script roots are needed both to validate the include
+			 * file (when the function still has to be loaded) and to validate
+			 * the resolved source file of an already-loaded function below, so
+			 * build them unconditionally. */
+			$allowed_roots = [$config['base_path']];
+
+			if (!empty($config['scripts_path'])) {
+				$allowed_roots[] = $config['scripts_path'];
+			}
+
 			if (!function_exists($function)) {
 				/* Validate the include path unconditionally. Built-ins like system,
 				 * passthru, exec satisfy function_exists() without ever loading a
@@ -289,11 +307,6 @@ while (1) {
 				 * explicitly configured Cacti script root and may live outside the
 				 * web root, so it is an allowed containment root as well. */
 				$real_include = realpath($include_file);
-				$allowed_roots = [$config['base_path']];
-
-				if (!empty($config['scripts_path'])) {
-					$allowed_roots[] = $config['scripts_path'];
-				}
 
 				$path_ok = script_server_path_is_allowed($real_include, $allowed_roots);
 
