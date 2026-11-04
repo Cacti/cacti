@@ -30,7 +30,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	list($output, $status) = call_user_func_array('ss_webhits_collect', $_SERVER['argv']);
+	[$output, $status] = call_user_func_array('ss_webhits_collect', $_SERVER['argv']);
 
 	print $output;
 

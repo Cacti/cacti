@@ -1107,7 +1107,7 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 
 	foreach ($origlocales as $locale_setting) {
 		if (strpos($locale_setting, '=') !== false) {
-			list($category, $locale) = explode('=', $locale_setting);
+			[$category, $locale] = explode('=', $locale_setting);
   		} else {
 			$category = LC_ALL;
 			$locale   = $locale_setting;

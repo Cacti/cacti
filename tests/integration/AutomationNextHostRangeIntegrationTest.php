@@ -35,7 +35,7 @@ function assert_valid_quad($ip, $context) {
 }
 
 function ip_to_long($ip) {
-	list($a, $b, $c, $d) = array_map('intval', explode('.', $ip));
+	[$a, $b, $c, $d] = array_map('intval', explode('.', $ip));
 
 	return (($a * 256 + $b) * 256 + $c) * 256 + $d;
 }

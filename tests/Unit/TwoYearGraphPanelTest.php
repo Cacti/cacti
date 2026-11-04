@@ -51,7 +51,7 @@ $twoYearPanelFor = function ($date, $requested, $interval, $rows) {
 };
 
 test('AddsTwoYearPanelOnlyWhenRetentionCoversCalendarRange', function ($date, $rows, $expectedCount) use ($twoYearPanelFor) {
-	list($rras, $span) = $twoYearPanelFor($date, 'all', 86400, $rows);
+	[$rras, $span] = $twoYearPanelFor($date, 'all', 86400, $rows);
 	expect($rras)->toHaveCount($expectedCount);
 	if ($expectedCount == 2) {
 		expect($rras[1]['timespan'])->toBe($span)
@@ -65,13 +65,13 @@ test('AddsTwoYearPanelOnlyWhenRetentionCoversCalendarRange', function ($date, $r
 ));
 
 test('KeepsSelectedArchiveViewUnchanged', function () use ($twoYearPanelFor) {
-	list($rras) = $twoYearPanelFor('2026-10-04', '4', 86400, 731);
+	[$rras] = $twoYearPanelFor('2026-10-04', '4', 86400, 731);
 	expect($rras)->toHaveCount(1)
 		->and($rras[0]['id'])->toBe(4);
 });
 
 test('LabelsTwoYearPanelWithArchiveAveragingInterval', function ($interval, $heading) use ($twoYearPanelFor) {
-	list($rras) = $twoYearPanelFor('2026-10-04', 'all', $interval, (int) ceil(731 * 86400 / $interval));
+	[$rras] = $twoYearPanelFor('2026-10-04', 'all', $interval, (int) ceil(731 * 86400 / $interval));
 	expect($rras)->toHaveCount(2)
 		->and($rras[1]['name'])->toBe($heading);
 })->with(array(

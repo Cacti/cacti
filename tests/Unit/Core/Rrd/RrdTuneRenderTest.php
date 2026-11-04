@@ -97,7 +97,7 @@ test('rrdtool_tune_print_html renders self contained, balanced div boxes', funct
 	$titles = array();
 	$opened = 0;
 	$closed = 0;
-	list($open, $close) = rrd_tune_box_recorders($titles, $opened, $closed);
+	[$open, $close] = rrd_tune_box_recorders($titles, $opened, $closed);
 
 	$output = rrd_tune_capture(function () use ($diff, $open, $close) {
 		rrdtool_tune_print_html('/rra/x.rrd', $diff, $open, $close);
@@ -120,7 +120,7 @@ test('rrdtool_tune_print_html is empty when there is nothing to report', functio
 	$titles = array();
 	$opened = 0;
 	$closed = 0;
-	list($open, $close) = rrd_tune_box_recorders($titles, $opened, $closed);
+	[$open, $close] = rrd_tune_box_recorders($titles, $opened, $closed);
 
 	$output = rrd_tune_capture(function () use ($open, $close) {
 		rrdtool_tune_print_html('/rra/x.rrd', array(), $open, $close);

@@ -1058,7 +1058,7 @@ function form_actions() {
 					/* grep mib and notification name */
 					$row_id = substr($key, 4);
 
-					list($mib, $name) = explode('__', $row_id);
+					[$mib, $name] = explode('__', $row_id);
 
 					$list .= '<li>' . html_escape($name) . ' (' . html_escape($mib) .')</li>';
 

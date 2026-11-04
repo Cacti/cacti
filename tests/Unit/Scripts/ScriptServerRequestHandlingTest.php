@@ -111,7 +111,7 @@ test('end of input is reported as false', function () {
 });
 
 test('draining a request restores the socket blocking mode', function ($blocking) {
-	list($writer, $stream) = ss_request_pipe();
+	[$writer, $stream] = ss_request_pipe();
 	stream_set_blocking($stream, $blocking);
 	fwrite($writer, "discard this line\nkeep this line\n");
 
@@ -148,7 +148,7 @@ test('the limit is the longest payload spine sends with its CR LF intact', funct
 });
 
 test('a full length request from spine is read whole from a pipe', function () {
-	list($spine, $server) = ss_request_pipe();
+	[$spine, $server] = ss_request_pipe();
 	$payload = str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH);
 
 	fwrite($spine, ss_request_spine_write($payload));
@@ -158,7 +158,7 @@ test('a full length request from spine is read whole from a pipe', function () {
 
 foreach (array(1022, 1023, 5000) as $length) {
 	test("a $length byte request truncated by spine is refused without waiting for a line feed", function () use ($length) {
-		list($spine, $server) = ss_request_pipe();
+		[$spine, $server] = ss_request_pipe();
 
 		/* spine keeps the pipe open and waits for the reply */
 		fwrite($spine, ss_request_spine_write(str_repeat('a', $length)));
@@ -177,7 +177,7 @@ foreach (array(1022, 1023, 5000) as $length) {
 }
 
 test('the default wait for a missing line feed is half a second', function () {
-	list($spine, $server) = ss_request_pipe();
+	[$spine, $server] = ss_request_pipe();
 
 	fwrite($spine, ss_request_spine_write(str_repeat('a', 2000)));
 
@@ -188,7 +188,7 @@ test('the default wait for a missing line feed is half a second', function () {
 });
 
 test('the rest of an over-length line is drained when it arrives in pieces', function () {
-	list($writer, $server) = ss_request_pipe();
+	[$writer, $server] = ss_request_pipe();
 
 	fwrite($writer, str_repeat('a', 1500));
 

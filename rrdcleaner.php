@@ -234,7 +234,7 @@ function get_files() {
 		if($scan){
 			$files = explode("\r\n", $scan);
 			foreach($files as $file) {
-				list($pathname, $size, $mtime) = explode(',', $file);
+				[$pathname, $size, $mtime] = explode(',', $file);
 				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
 				$size++;
 

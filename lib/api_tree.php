@@ -599,7 +599,7 @@ function api_tree_parse_node_data($variable) {
 		$ndata   = explode('_', $variable);
 		if (cacti_sizeof($ndata)) {
 			foreach($ndata as $data) {
-				list($type, $tid) = explode(':', $data);
+				[$type, $tid] = explode(':', $data);
 
 				/* watch out for monkey business */
 				input_validate_input_number($tid);
@@ -687,7 +687,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 				return;
 			}
 
-			list($type, $tid) = explode(':', $data);
+			[$type, $tid] = explode(':', $data);
 
 			/* watch out for monkey business */
 			input_validate_input_number($tid);

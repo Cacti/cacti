@@ -28,7 +28,7 @@ error_reporting(0);
 if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../include/cli_check.php');
 
-	list($output, $status) = ss_weatherbug_collect();
+	[$output, $status] = ss_weatherbug_collect();
 
 	print $output;
 

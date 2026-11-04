@@ -1792,7 +1792,7 @@ function html_show_tabs_left() {
 							if (isset($parsed_url['query'])) {
 								$queries = explode('&', $parsed_url['query']);
 								foreach($queries as $q) {
-									list($var, $value) = explode('=', $q);
+									[$var, $value] = explode('=', $q);
 									if ($var == 'id') {
 										if ($value == $tab['id']) {
 											$down = true;
