@@ -1370,25 +1370,25 @@ function display_help() {
 	print "    --bulk_walk    -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.\n\n";
 	print "    --force        skip CSV confirmation (for automated use)\n";
 	print "    --quiet        suppress normal output and skip CSV confirmation\n\n";
-	print "SNMPv3 security level:\n";
-	print "    Options not given keep the value already stored for the device.  Without\n";
-	print "    --security-level, the level follows the resulting protocols: an auth\n";
-	print "    protocol of [None] is noAuthNoPriv, a priv protocol of [None] is\n";
-	print "    authNoPriv, and otherwise authPriv.  To lower the level of a device that\n";
-	print "    is currently authPriv, pass --security-level, or --privproto=[None].\n";
-	print "    --security-level=noAuthNoPriv clears the password and priv passphrase;\n";
-	print "    authNoPriv clears the priv passphrase.\n\n";
-	print "Examples:\n";
-	print "    SNMPv3 authPriv with SHA-256 and AES-128:\n";
-	print "      change_device.php --id=5 --version=3 --security-level=authPriv --username=monitor \\\n";
-	print "        --password='authSecret1' --authproto=SHA256 --privpass='privSecret1' --privproto=AES128\n\n";
-	print "    SNMPv3 authNoPriv with SHA (removes any existing privacy settings):\n";
-	print "      change_device.php --id=5 --version=3 --security-level=authNoPriv --username=monitor \\\n";
-	print "        --password='authSecret1' --authproto=SHA\n\n";
-	print "    SNMPv3 noAuthNoPriv:\n";
-	print "      change_device.php --id=5 --version=3 --security-level=noAuthNoPriv --username=monitor\n\n";
-	print "    SNMPv2c:\n";
-	print "      change_device.php --id=5 --version=2 --community='public'\n\n";
+	print "SNMPv3 security level:\n" .
+		"    Options not given keep the value already stored for the device.  Without\n" .
+		"    --security-level, the level follows the resulting protocols: an auth\n" .
+		"    protocol of [None] is noAuthNoPriv, a priv protocol of [None] is\n" .
+		"    authNoPriv, and otherwise authPriv.  To lower the level of a device that\n" .
+		"    is currently authPriv, pass --security-level, or --privproto=[None].\n" .
+		"    --security-level=noAuthNoPriv clears the password and priv passphrase;\n" .
+		"    authNoPriv clears the priv passphrase.\n\n";
+	print "Examples:\n" .
+		"    SNMPv3 authPriv with SHA-256 and AES-128:\n" .
+		"      change_device.php --id=5 --version=3 --security-level=authPriv --username=monitor \\\n" .
+		"        --password='authSecret1' --authproto=SHA256 --privpass='privSecret1' --privproto=AES128\n\n" .
+		"    SNMPv3 authNoPriv with SHA (removes any existing privacy settings):\n" .
+		"      change_device.php --id=5 --version=3 --security-level=authNoPriv --username=monitor \\\n" .
+		"        --password='authSecret1' --authproto=SHA\n\n" .
+		"    SNMPv3 noAuthNoPriv:\n" .
+		"      change_device.php --id=5 --version=3 --security-level=noAuthNoPriv --username=monitor\n\n" .
+		"    SNMPv2c:\n" .
+		"      change_device.php --id=5 --version=2 --community='public'\n\n";
 	print "CSV File Format (--file):\n";
 	print "    The file must be a CSV with a header row.  The first column must be 'id'.\n";
 	print "    Column names must be unique and every row must contain the same number of fields.\n";
