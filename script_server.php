@@ -137,7 +137,18 @@ if ($help) {
 }
 
 /* record the script start time */
-$start = microtime(true);
+$start     = microtime(true);
+
+/* store the effective log level in a local variable so that expensive debug
+ * strings are only built when debug logging is actually enabled.  This mirrors
+ * the level resolution that cacti_log() performs: a selective (per-file or
+ * per-plugin) override takes precedence, otherwise the global log_verbosity
+ * setting is used. */
+$log_level = get_selective_log_level();
+
+if ($log_level == '') {
+	$log_level = read_config_option('log_verbosity');
+}
 
 if ($config['cacti_server_os'] == 'win32') {
 	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),"\\",'/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
@@ -169,6 +180,7 @@ fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
 require_once(__DIR__ . '/lib/snmp.php');
+
 snmp_auth_cache_load();
 
 /* process waits for input and then calls functions as required */
@@ -270,65 +282,74 @@ while (1) {
 				continue;
 			}
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
-				"' FUNC: '$function' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) .
-				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			if ($log_level == POLLER_VERBOSITY_DEBUG) {
+				cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
+					"' FUNC: '$function' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) .
+					"'", false, 'PHPSVR');
+			}
 
-			/* Validate the include path unconditionally. Built-ins like system,
-			 * passthru, exec satisfy function_exists() without ever loading a
-			 * script file, so the path guard cannot be gated on the function
-			 * being undefined. include_once() is idempotent, so re-running it
-			 * on cached entries is a no-op. The scripts_path setting is an
-			 * explicitly configured Cacti script root and may live outside the
-			 * web root, so it is an allowed containment root as well. */
-			$real_include = realpath($include_file);
+			/* The allowed script roots are needed both to validate the include
+			 * file (when the function still has to be loaded) and to validate
+			 * the resolved source file of an already-loaded function below, so
+			 * build them unconditionally. */
 			$allowed_roots = [$config['base_path']];
 
 			if (!empty($config['scripts_path'])) {
 				$allowed_roots[] = $config['scripts_path'];
 			}
 
-			$path_ok = script_server_path_is_allowed($real_include, $allowed_roots);
+			if (!function_exists($function)) {
+				/* Validate the include path unconditionally. Built-ins like system,
+				 * passthru, exec satisfy function_exists() without ever loading a
+				 * script file, so the path guard cannot be gated on the function
+				 * being undefined. include_once() is idempotent, so re-running it
+				 * on cached entries is a no-op. The scripts_path setting is an
+				 * explicitly configured Cacti script root and may live outside the
+				 * web root, so it is an allowed containment root as well. */
+				$real_include = realpath($include_file);
 
-			if (!$path_ok) {
-				if ($real_include !== false) {
-					cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
-				} else {
-					cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
+				$path_ok = script_server_path_is_allowed($real_include, $allowed_roots);
+
+				if (!$path_ok) {
+					if ($real_include !== false) {
+						cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
+					} else {
+						cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
+					}
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
 				}
 
-				fputs(STDOUT, "U\n");
-				fflush(STDOUT);
+				$include_file = $real_include;
 
-				continue;
+				if (!file_exists($include_file)) {
+					cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
+				}
+
+				/* quirk in php on Windows, believe it or not....path must be lower case */
+				if ($config['cacti_server_os'] == 'win32') {
+					$include_file = strtolower($include_file);
+				}
+
+				/* set this variable so the calling script can determine if it was
+				 * called by the script server or stand-alone */
+				$called_by_script_server = true;
+
+				/* turn on output buffering to avoid problems with nasty scripts */
+				ob_start();
+				include_once($include_file);
+				ob_end_clean();
+
+				error_reporting(0);
 			}
-
-			$include_file = $real_include;
-
-			if (!file_exists($include_file)) {
-				cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
-
-				fputs(STDOUT, "U\n");
-				fflush(STDOUT);
-
-				continue;
-			}
-
-			/* quirk in php on Windows, believe it or not....path must be lower case */
-			if ($config['cacti_server_os'] == 'win32') {
-				$include_file = strtolower($include_file);
-			}
-
-			/* set this variable so the calling script can determine if it was
-			 * called by the script server or stand-alone */
-			$called_by_script_server = true;
-
-			/* turn on output buffering to avoid problems with nasty scripts */
-			ob_start();
-			include_once($include_file);
-			ob_end_clean();
-
-			error_reporting(0);
 
 			if (!function_exists($function)) {
 				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) . "'", false, 'PHPSVR');
@@ -394,7 +415,9 @@ while (1) {
 			fputs(STDOUT, trim($result) . "\n");
 			fflush(STDOUT);
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			if ($log_level == POLLER_VERBOSITY_DEBUG) {
+				cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR');
+			}
 
 			$ctr++;
 		}
