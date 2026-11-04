@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2026-10-07 06:18+0000\n"
 "Last-Translator: YU HAO HUANG <mix@b51.tw>\n"
 "Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\n"
@@ -2548,8 +2548,8 @@ msgstr "根部"
 msgid "No Tree Rules Found"
 msgstr "找不到樹規則"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "仙人掌系統警告"
@@ -13136,14 +13136,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "如果boost輸出表超過此大小，則在記錄中將進行更新。"
 
 #: include/global_settings.php
-#, fuzzy
-msgid "Maximum Data Source Items Per Pass"
-msgstr "每次傳遞的最大數據源項目"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-#, fuzzy
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "為了優化性能，boost RRD更新程序需要知道應該在一次傳遞中檢索多少數據源項。請注意不要設置太高，因為主要更新期間的圖形性能可能會受到影響。如果在更新期間遇到圖形或輪詢緩慢，請降低此數字。默認值為50000。"
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 #, fuzzy
@@ -13173,6 +13171,41 @@ msgstr "最大RRD更新腳本運行時間"
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr "如果boost poller刪除了此運行時，則會在cacti日誌中發出警告，"
+
+#: include/global_settings.php
+#, fuzzy
+msgid "Maximum Failed RRDs Queued"
+msgstr "最大允許運行時間："
+
+#: include/global_settings.php
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+msgid "Maximum Failed RRD Retries"
+msgstr "最大允許運行時間："
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+msgid "Maximum Failed RRD Age"
+msgstr "最大電子郵件大小"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 #, fuzzy
@@ -14514,6 +14547,10 @@ msgstr "您的密碼必須包含至少1個特殊字符！"
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "Cacti Log清除"
+
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
 
 #: lib/boost.php utilities.php
 #, fuzzy, php-format
@@ -22608,7 +22645,6 @@ msgid "Max Total Memory Possible"
 msgstr "允許的最大輪詢內存："
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -23068,8 +23104,46 @@ msgstr "提升按需更新："
 
 #: utilities.php
 #, fuzzy
+msgid "Boost Lifecycle Status:"
+msgstr "提升狀態"
+
+#: utilities.php
+#, fuzzy
 msgid "Running Processes:"
 msgstr "並發進程"
+
+#: utilities.php
+#, fuzzy
+msgid "Sealed Boost Archives:"
+msgstr "等待提升記錄："
+
+#: utilities.php
+#, fuzzy, php-format
+msgid "oldest created: %s"
+msgstr "已建立%s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+msgid "Oldest Failed RRD:"
+msgstr "最舊優先"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+msgid "Last Automatic Failure Retry:"
+msgstr "自動頁面刷新"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 #, fuzzy
@@ -23445,6 +23519,14 @@ msgstr "使用此VDEF的圖表模板數。"
 #, fuzzy
 msgid "No VDEFs"
 msgstr "沒有VDEF"
+
+#, fuzzy
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "每次傳遞的最大數據源項目"
+
+#, fuzzy
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "為了優化性能，boost RRD更新程序需要知道應該在一次傳遞中檢索多少數據源項。請注意不要設置太高，因為主要更新期間的圖形性能可能會受到影響。如果在更新期間遇到圖形或輪詢緩慢，請降低此數字。默認值為50000。"
 
 #~ msgid "Enable direct population of poller_output_boost table"
 #~ msgstr "啟用poller_output_boost表的直接填充"
