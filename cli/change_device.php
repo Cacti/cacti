@@ -412,6 +412,8 @@ if ($host['snmp_version'] < 3) {
 		exit(1);
 	}
 } else {
+	global $snmp_auth_protocols, $snmp_priv_protocols;
+
 	if ($host['snmp_auth_protocol'] != '' && !array_key_exists($host['snmp_auth_protocol'], $snmp_auth_protocols)) {
 		print "ERROR: Invalid SNMP auth protocol ({$host['snmp_auth_protocol']}).  Valid values are " . implode(', ', array_keys($snmp_auth_protocols)) . PHP_EOL;
 
