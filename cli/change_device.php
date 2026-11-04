@@ -595,24 +595,24 @@ function display_help() : void {
 		'used for bulk walks.  Use -1 for auto-tune.') . PHP_EOL;
 	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
 
-	print 'SNMPv3 security level:' . PHP_EOL;
-	print '    Options not given keep the value already stored for the device.  Without' . PHP_EOL;
-	print '    --security-level, the level follows the resulting protocols: an auth' . PHP_EOL;
-	print '    protocol of [None] is noAuthNoPriv, a priv protocol of [None] is' . PHP_EOL;
-	print '    authNoPriv, and otherwise authPriv.  To lower the level of a device that' . PHP_EOL;
-	print '    is currently authPriv, pass --security-level, or --privproto=[None].' . PHP_EOL;
-	print '    --security-level=noAuthNoPriv clears the password and priv passphrase;' . PHP_EOL;
-	print '    authNoPriv clears the priv passphrase.' . PHP_EOL . PHP_EOL;
+	print 'SNMPv3 security level:' . PHP_EOL .
+		'    Options not given keep the value already stored for the device.  Without' . PHP_EOL .
+		'    --security-level, the level follows the resulting protocols: an auth' . PHP_EOL .
+		'    protocol of [None] is noAuthNoPriv, a priv protocol of [None] is' . PHP_EOL .
+		'    authNoPriv, and otherwise authPriv.  To lower the level of a device that' . PHP_EOL .
+		'    is currently authPriv, pass --security-level, or --privproto=[None].' . PHP_EOL .
+		'    --security-level=noAuthNoPriv clears the password and priv passphrase;' . PHP_EOL .
+		'    authNoPriv clears the priv passphrase.' . PHP_EOL . PHP_EOL;
 
-	print 'Examples:' . PHP_EOL;
-	print '    SNMPv3 authPriv with SHA-256 and AES-128:' . PHP_EOL;
-	print '      change_device.php --id=5 --version=3 --security-level=authPriv --username=monitor \\' . PHP_EOL;
-	print "        --password='authSecret1' --authproto=SHA256 --privpass='privSecret1' --privproto=AES128" . PHP_EOL . PHP_EOL;
-	print '    SNMPv3 authNoPriv with SHA (removes any existing privacy settings):' . PHP_EOL;
-	print '      change_device.php --id=5 --version=3 --security-level=authNoPriv --username=monitor \\' . PHP_EOL;
-	print "        --password='authSecret1' --authproto=SHA" . PHP_EOL . PHP_EOL;
-	print '    SNMPv3 noAuthNoPriv:' . PHP_EOL;
-	print '      change_device.php --id=5 --version=3 --security-level=noAuthNoPriv --username=monitor' . PHP_EOL . PHP_EOL;
-	print '    SNMPv2c:' . PHP_EOL;
-	print "      change_device.php --id=5 --version=2 --community='public'" . PHP_EOL . PHP_EOL;
+	print 'Examples:' . PHP_EOL .
+		'    SNMPv3 authPriv with SHA-256 and AES-128:' . PHP_EOL .
+		'      change_device.php --id=5 --version=3 --security-level=authPriv --username=monitor \\' . PHP_EOL .
+		"        --password='authSecret1' --authproto=SHA256 --privpass='privSecret1' --privproto=AES128" . PHP_EOL . PHP_EOL .
+		'    SNMPv3 authNoPriv with SHA (removes any existing privacy settings):' . PHP_EOL .
+		'      change_device.php --id=5 --version=3 --security-level=authNoPriv --username=monitor \\' . PHP_EOL .
+		"        --password='authSecret1' --authproto=SHA" . PHP_EOL . PHP_EOL .
+		'    SNMPv3 noAuthNoPriv:' . PHP_EOL .
+		'      change_device.php --id=5 --version=3 --security-level=noAuthNoPriv --username=monitor' . PHP_EOL . PHP_EOL .
+		'    SNMPv2c:' . PHP_EOL .
+		"      change_device.php --id=5 --version=2 --community='public'" . PHP_EOL . PHP_EOL;
 }
