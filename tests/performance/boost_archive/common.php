@@ -30,11 +30,16 @@ function boostBenchPdo($buffered = false, $native_prepares = true): PDO {
 		? "mysql:unix_socket=$socket;dbname=$name;charset=utf8mb4"
 		: "mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4";
 
-	return new PDO($dsn, $user, $pass, array(
+	$options = array(
 		PDO::ATTR_ERRMODE                  => PDO::ERRMODE_EXCEPTION,
 		PDO::ATTR_EMULATE_PREPARES         => !$native_prepares,
-		PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $buffered,
-	));
+	);
+	$buffered_attribute = defined('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY') ?
+		constant('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY') :
+		constant('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY');
+	$options[$buffered_attribute] = $buffered;
+
+	return new PDO($dsn, $user, $pass, $options);
 }
 
 /**

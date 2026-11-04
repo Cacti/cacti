@@ -102,3 +102,33 @@ test('structured RRD paths preserve inherited group and setgid through a restric
 		boostProbeRemoveTree($root);
 	}
 });
+
+test('structured RRD validation rejects traversal prefix confusion and symlink pivots', function () {
+	$root  = sys_get_temp_dir() . '/cacti-boost-path-' . bin2hex(random_bytes(8));
+	$probe = dirname(__DIR__, 3) . '/fixtures/Core/BoostRrdPathValidationProbe.php';
+	mkdir($root, 0700);
+
+	try {
+		$result = boostProbeRun(array(PHP_BINARY, $probe, $root));
+		$state = json_decode($result['stdout'], true, 512, JSON_THROW_ON_ERROR);
+
+		expect($result['status'])->toBe(0, $result['stderr'])
+			->and($state['invalid_empty'])->toBeFalse()
+			->and($state['missing_base'])->toBeFalse()
+			->and($state['must_exist'])->toBeFalse()
+			->and($state['existing_base'])->toBeTrue()
+			->and($state['valid_missing'])->toBeTrue()
+			->and($state['dotdot'])->toBeFalse()
+			->and($state['prefix'])->toBeFalse()
+			->and($state['create_outside'])->toBeFalse()
+			->and($state['create_existing'])->toBeTrue()
+			->and($state['file_missing'])->toBeFalse()
+			->and($state['file_no_base'])->toBeFalse();
+
+		if ($state['symlink'] !== null) {
+			expect($state['symlink'])->toBeFalse();
+		}
+	} finally {
+		boostProbeRemoveTree($root);
+	}
+});

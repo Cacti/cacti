@@ -173,12 +173,14 @@ $options = getopt('', array(
 	'sources::',
 	'samples::',
 	'broken-source::',
+	'php-binary::',
 ));
 $action = $options['action'] ?? '';
 $rra_dir = rtrim($options['rra-dir'] ?? '', '/');
 $sources = max(8, (int) ($options['sources'] ?? 12));
 $samples = max(1, (int) ($options['samples'] ?? 4));
 $broken_source = max(1, min($sources, (int) ($options['broken-source'] ?? $sources)));
+$php_binary = $options['php-binary'] ?? PHP_BINARY;
 
 if ($rra_dir === '' || !is_dir($rra_dir) || !is_writable($rra_dir)) {
 	fwrite(STDERR, "--rra-dir must be an existing writable disposable directory\n");
@@ -207,7 +209,7 @@ if ($action === 'setup-isolated-failure') {
 	db_execute('DELETE FROM data_local');
 
 	boostE2eSetting('path_rrdtool', '/usr/bin/rrdtool');
-	boostE2eSetting('path_php_binary', '/usr/local/bin/php');
+	boostE2eSetting('path_php_binary', $php_binary);
 	boostE2eSetting('path_cactilog', '/tmp/cacti-boost-e2e.log');
 	boostE2eSetting('path_boost_log', '');
 	boostE2eSetting('rrdtool_version', '1.7.0');
@@ -411,7 +413,7 @@ if ($action === 'setup-isolated-failure') {
 	db_execute('TRUNCATE TABLE poller_output_boost_processes');
 	db_execute("DELETE FROM processes WHERE tasktype = 'boost'");
 	boostE2eSetting('boost_parallel', 1);
-	boostE2eSetting('path_rrdtool', '/repo/tests/fixtures/Core/BoostSlowRrdtool.php');
+	boostE2eSetting('path_rrdtool', $config['base_path'] . '/tests/fixtures/Core/BoostSlowRrdtool.php');
 	boostE2eSetting('rrdtool_version', '1.7.2');
 	boostE2eSetting('boost_poller_started', 0);
 	boostE2eSetting('boost_poller_status', 'not started');
@@ -432,8 +434,29 @@ if ($action === 'setup-isolated-failure') {
 		'sources'        => $sources,
 		'rows'           => $rows,
 		'expected_last'  => $crash_time,
-		'rrdtool_proxy'  => '/repo/tests/fixtures/Core/BoostSlowRrdtool.php',
+		'rrdtool_proxy'  => $config['base_path'] . '/tests/fixtures/Core/BoostSlowRrdtool.php',
 	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+} elseif ($action === 'kill-worker') {
+	$deadline = microtime(true) + 15;
+	$pid      = 0;
+
+	do {
+		$pid = (int) db_fetch_cell("SELECT pid FROM processes
+			WHERE tasktype = 'boost' AND taskname = 'child'
+			ORDER BY pid LIMIT 1");
+
+		if ($pid > 1) {
+			break;
+		}
+
+		usleep(100000);
+	} while (microtime(true) < $deadline);
+
+	if ($pid <= 1 || !function_exists('posix_kill') || !posix_kill($pid, SIGKILL)) {
+		throw new RuntimeException('Unable to locate and kill the disposable Boost worker.');
+	}
+
+	print json_encode(array('action' => $action, 'killed_pid' => $pid), JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } elseif ($action === 'status') {
 	$rrds = array();
 
@@ -468,6 +491,6 @@ if ($action === 'setup-isolated-failure') {
 		'rrds'               => $rrds,
 	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } else {
-	fwrite(STDERR, "--action must be setup-isolated-failure, repair-isolated-failure, setup-permanent-failures, setup-backend-outage, retry-backend-outage, repair-backend-outage, setup-shared-path, setup-worker-crash, or status\n");
+	fwrite(STDERR, "--action must be setup-isolated-failure, repair-isolated-failure, setup-permanent-failures, setup-backend-outage, retry-backend-outage, repair-backend-outage, setup-shared-path, setup-worker-crash, kill-worker, or status\n");
 	exit(64);
 }

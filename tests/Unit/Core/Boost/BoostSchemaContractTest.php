@@ -32,7 +32,8 @@ test('Boost distribution ownership is run scoped without a durable cursor', func
 
 	expect($schema)->toContain('`run_id` char(32) NOT NULL DEFAULT \'\'')
 		->and($schema)->toContain('PRIMARY KEY (`run_id`,`local_data_id`)')
-		->and($schema)->toContain('KEY `process_handler` (`run_id`,`process_handler`,`local_data_id`)')
+		->and($schema)->toContain('KEY `process_handler` (`run_id`,`process_handler`,`range_handler`,`local_data_id`)')
+		->and($schema)->toContain('`range_handler` bigint(20) unsigned NOT NULL DEFAULT 0')
 		->and($schema)->toContain('`archive_rows` bigint(20) unsigned NOT NULL DEFAULT 0')
 		->and($schema)->not->toContain('`cursor_time`')
 		->and($schema)->not->toContain('`cursor_rrd_name`')

@@ -2164,8 +2164,8 @@ $settings = array(
 			'size' => '10'
 		),
 		'boost_rrd_update_max_records_per_select' => array(
-			'friendly_name' => __('Maximum Data Source Items Per Pass'),
-			'description' => __('To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000.'),
+			'friendly_name' => __('Target Archive Rows Per Range'),
+			'description' => __('The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000.'),
 			'method' => 'drop_array',
 			'default' => '50000',
 			'array' => $boost_max_rows_per_select

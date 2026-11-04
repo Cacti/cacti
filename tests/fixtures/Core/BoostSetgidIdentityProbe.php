@@ -51,7 +51,7 @@ if (!rrdtool_create_structured_directory($base, $directory, 'BOOST', $permission
 	exit(65);
 }
 
-if (file_put_contents($file, 'first-writer') === false || !rrdtool_apply_file_permissions($file, 'BOOST')) {
+if (file_put_contents($file, 'first-writer') === false || !rrdtool_apply_file_permissions($file, 'BOOST', $base)) {
 	exit(66);
 }
 

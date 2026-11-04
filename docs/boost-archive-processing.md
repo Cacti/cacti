@@ -1,191 +1,189 @@
 # Boost bounded archive drain
 
-Status: proposed and implemented in the isolated benchmark worktree, 2026-11-04.
+Status: implemented in draft pull request #8582 and validated on disposable infrastructure. It is
+not a claim about production performance on every database or RRD storage backend.
 
 ## Decision
 
-Boost treats every rotated output table as a sealed, single-owner partition:
+Boost treats each rotated output table as a sealed, single-owner partition:
 
-1. The scheduled master takes a database advisory lease.
-2. `RENAME TABLE` atomically replaces `poller_output_boost` and seals the old table.
-3. Archives are drained in numeric suffix order, one table at a time.
-4. A table is read in bounded primary-key pages. Each page reads the remainder of its current
-   source, then fills from later source IDs; optional workers own contiguous, non-overlapping
-   `local_data_id` ranges within that table.
-5. RRDtool commands must return an acknowledgement. Destination-specific failures are moved to a
-   bounded, coalescing database retry queue and do not fail the archive.
-6. The master drops the sealed table only after every expected child recorded completion and no
-   child process can still access it.
+1. The scheduled master takes a database advisory lock.
+2. One `RENAME TABLE` transaction moves `poller_output_boost` to a uniquely named archive and
+   installs an empty replacement, so collection continues immediately.
+3. Archives are processed oldest first, one table at a time.
+4. The master counts rows per `local_data_id` once and stages contiguous ranges near the configured
+   50,000-row target. A source is never split across ranges.
+5. Each range uses one clustered-primary-key query:
 
-The production default remains one worker and 50,000 input rows per page. More workers are an
-operator-controlled option, not an automatic default. The benchmark evidence and commands are in
-[`tests/performance/boost_archive/README.md`](../tests/performance/boost_archive/README.md).
+   ```sql
+   WHERE archive.local_data_id BETWEEN ? AND ?
+   ORDER BY archive.local_data_id, archive.time, archive.rrd_name
+   ```
 
-On the measured 40 x 8-million uniform workload, the old first page took 1,241.94 seconds and the
-final adjacent-keyset page took 73.1 ms. Complete final database-only drains took 449.9 seconds
-with one worker, 285.3 seconds with two, and 241.0 seconds for the adaptive four-worker candidate
-while 10,000 live rows/s continued to arrive. A separate 320.04-million-sample, 60,000-file real-RRD
-write stage sustained 594,873 samples/s with one writer and 942,095 with two using 3.24 million
-acknowledged commands. The adaptive database run increased page latency, aggregate worker time,
-and temporary-table activity. The operational recommendation is therefore 50,000 rows and one
-worker by default, test two workers under site telemetry, and do not use four merely because the
-database-only scan was faster. Full measurements and claim limits are recorded in
-[`2026-11-03-digitalocean.md`](../tests/performance/boost_archive/results/2026-11-03-digitalocean.md).
+   The query has no cursor, `OFFSET`, `LIMIT`, cross-archive `UNION`, or global sort.
+6. Workers batch samples by actual RRD destination and preserve timestamp order. Every local
+   RRDtool command must return a terminal acknowledgement.
+7. Destination-specific failures move to a bounded, coalescing retry table. They do not retain the
+   archive. A database-wide, disk-wide, or otherwise ambiguous backend outage opens a bounded
+   circuit and retains the archive instead of silently discarding the backlog.
+8. The master drops the sealed table after all expected children record completion and the worker
+   barrier proves that no child can still access it.
 
-## What the old path did
+The existing `boost_parallel` setting remains operator controlled from 1 through 20. The default
+remains 1 for compatibility. The target workload uses 8 to 15 workers, but the correct setting
+depends on database capacity and RRD storage latency. The range-row target defaults to 50,000.
 
-The previous scheduled query constructed one globally ordered `UNION ALL` over every archive for
-each page. It joined the source-assignment table in every branch, sorted the union, and repeated
-that work as cursors advanced. Source staging and exact counting could scan the same large tables
-again. A single failed RRDtool update could prevent acknowledgement, while stale process rows made
-archive ownership ambiguous.
+## Why the cursor was removed
 
-The schema confirms that an archive's clustered primary key is
-`(local_data_id, time, rrd_name)`. A single OR continuation looked correct on broad ranges but
-caused MariaDB to filesort and repeatedly scan a four-million-row exact source range. The final
-reader therefore uses at most two adjacent statements: an equality/range scan over the current
-source's `(time, rrd_name)` suffix, followed by a range scan over later source IDs. An exact
-one-source start also uses equality so the optimizer cannot sort the whole source. Together the
-statements return at most one look-ahead row beyond the page. There is no OFFSET, cross-archive
-union, or global archive sort. Deleted data sources are left in sealed archives; missing metadata
-becomes an explicit discard during drain. Data-query cleanup no longer issues a DELETE against
-every archive. API deletion likewise leaves the live Boost queue untouched while Boost is enabled;
-the scheduled owner later treats missing metadata as an explicit discard. When Boost is disabled,
-both paths retain the legacy live-table cleanup.
+The previous scheduled query joined archive rows to per-source cursor columns and globally ordered
+a derived result across every archive. The cursor bound was not constant from the optimizer's
+perspective. MariaDB materialized and filesorted the result before returning the first page, then
+repeated that work as the cursor advanced.
+
+The archive primary key is `(local_data_id, time, rrd_name)`. The replacement stages complete
+source ranges and uses `BETWEEN` on the leading key column. The range itself is the bound, so the
+production read does not need an inner `LIMIT`. A single source can exceed the target; it still
+stays intact to preserve ordering.
+
+On a disposable MariaDB 10.11 host, the requested 60-million-row, 2.5-million-source uniform
+fixture produced these database-only results:
+
+| Query | Rows returned | Time to first row | Total time | Disk temporary tables | Sort rows |
+|---|---:|---:|---:|---:|---:|
+| Joined cursor baseline | 50,001 | 72.276 s | 72.754 s | 1 | 50,001 |
+| Test-only limited cursor over one range | 50,001 | 0.000398 s | 0.031981 s | 0 | 0 |
+| Production limit-less range | 50,016 | 0.000405 s | 0.032971 s | 0 | 0 |
+
+The production range used source IDs 1 through 2,084. Its plan used `PRIMARY` range access for the
+archive and `eq_ref` for `data_local`, with no filesort or temporary table. The joined cursor read
+62.5 million next records, read about 60.3 million temporary/random-next records, and performed 291
+sort merge passes for one 50,001-row result.
+
+The complete uniform scan, with collection continuing at 10,000 rows per second, measured:
+
+| Workers | Staging | Range drain | Total | Throughput | Range p95 | Live rows persisted |
+|---:|---:|---:|---:|---:|---:|---:|
+| 8 | 13.398 s | 23.792 s | 37.191 s | 1,613,304 rows/s | 185.9 ms | 372,000 |
+| 15 | 13.285 s | 26.271 s | 39.556 s | 1,516,845 rows/s | 372.7 ms | 396,000 |
+
+Both scans returned exactly 60 million rows in 1,200 source-complete ranges between 49,992 and
+50,016 rows. Eight workers were faster on this database-only host. Fifteen workers increased
+aggregate worker time and range latency. This does not establish the best RRD writer count on
+NFSv3, where more writers may be needed to overlap network latency. The reproducible commands,
+plans, Performance Schema evidence, and limitations are in
+[`tests/performance/boost_archive/README.md`](../tests/performance/boost_archive/README.md) and the
+[dated 60-million-row result](../tests/performance/boost_archive/results/2026-11-04-digitalocean-60m.md).
 
 ## Research translated into Boost mechanisms
 
-The cited systems guide the control boundaries; they do not validate this Cacti workload.
+The cited systems guide the control boundaries. They do not validate this Cacti workload.
 
 | Reference | Boost mechanism |
 |---|---|
-| [SEDA](https://people.eecs.berkeley.edu/~brewer/papers/SEDA-sosp.pdf) | Logical read, prepare, and write stages; bounded pages and output strings; explicit outcome counters. No new framework is introduced. |
-| [Adaptive overload control](https://www.usenix.org/legacy/publications/library/proceedings/usits03/tech/full_papers/welsh/welsh_html/usits.html) | Page latency, backlog, incoming rate, and database pressure are benchmarked. Concurrency is capped and the adaptive candidate reduces concurrency when latency or buffer-pool waits rise. |
-| [Queues Are Databases](https://www.microsoft.com/en-us/research/publication/queues-are-databases/) | Archive ownership, child completion, retry state, limits, and recovery remain in the existing transactional database. |
-| [RRDCached](https://oss.oetiker.ch/rrdtool/doc/rrdcached.en.html) | Batch by actual RRD destination, serialize writers per path, require protocol responses, and make pending/retry state observable. RRDCached itself is not added. |
+| [SEDA](https://people.eecs.berkeley.edu/~brewer/papers/SEDA-sosp.pdf) | Logical read, prepare, and write stages; bounded staged ranges and output buffers; explicit outcome counters. No framework is added. |
+| [Adaptive overload control](https://www.usenix.org/legacy/publications/library/proceedings/usits03/tech/full_papers/welsh/welsh_html/usits.html) | Measure range latency, backlog, incoming rate, and database pressure. Keep concurrency operator controlled and stop probing a failed backend after a bounded window. |
+| [Queues Are Databases](https://www.microsoft.com/en-us/research/publication/queues-are-databases/) | Keep archive ownership, child completion, retry state, limits, and recovery in the existing transactional database. |
+| [RRDCached](https://oss.oetiker.ch/rrdtool/doc/rrdcached.en.html) | Batch by destination, serialize each path, and define acknowledgement and replay boundaries. RRDCached itself is not added. |
 
 ## Ownership and ordering
 
-The master owns the archive lifecycle advisory lock and a unique `run_id`. A child owns exactly one
-range in exactly one named archive. Completion is keyed by `(run_id, child_id)`. A successful
-completion record is necessary but not sufficient for cleanup: the master also verifies that all
-registered children have exited. Dead and Linux zombie registrations are removed; a missing or
-negative completion retains the archive.
+The master owns the archive lifecycle lock and a unique `run_id`. Staging maps every complete
+`local_data_id` to one range and one child. Completion is keyed by `(run_id, child_id)`. A completion
+row is necessary but not sufficient for cleanup: the master also verifies that all registered
+children have exited. Dead and Linux zombie registrations are removed. Missing or negative child
+completion retains the current archive and stops newer archives from starting.
 
-Rows are ordered by the complete primary key. All data sources belonging to one normal Cacti RRD
-share a `local_data_id`, so they remain in one worker and are assembled by timestamp. Path-level
-advisory locks serialize normal writes and retry writes. If distinct local data IDs resolve to the
-same actual RRD path, range partitioning cannot guarantee timestamp order; preparation therefore
-fails closed, sends an administrator warning, and retains the archive rather than permitting
-competing writers.
+Rows are returned in full primary-key order. A normal multi-field RRD uses one `local_data_id`, so
+its samples remain in one worker. Path-level advisory locks serialize normal writes and automatic
+retries. If metadata shows distinct local data IDs targeting one actual RRD path, preparation
+fails closed, sends an administrator warning, and retains the archive. This prevents two ranges
+from competing for one file or applying timestamps out of order.
 
-There is no row-by-row deletion or durable cursor inside a sealed archive. After an unexpected
-exit, the whole table is replayed. RRDtool 1.5 and newer use `--skip-past-updates`, so already
-applied samples are idempotent. A temporary binary outage cannot downgrade the stored RRDtool
-capability. The table remains the recovery record until the worker barrier succeeds, after which
-it is dropped as one partition.
+There is no durable row cursor and no row-by-row archive deletion. After an unexpected exit, the
+sealed table is replayed. RRDtool 1.5 and newer use `--skip-past-updates`, making already-applied
+timestamps safe to replay. A temporary binary outage does not downgrade the stored RRDtool
+capability. The table remains the recovery record until the barrier succeeds, then it is dropped
+in one operation.
 
 ## Acknowledgement boundary
 
 For local storage, Boost writes one command to a long-lived `rrdtool -` process and waits for that
 command's complete terminal `OK` response. `ERROR`, EOF, a response larger than 64 KiB, or a
-30-second response timeout poisons that worker and cannot advance the archive cursor. With Cacti's
-RRDtool proxy enabled, the existing proxy protocol likewise waits for the remote RRDtool response;
-an empty, malformed, or error response is not success. The end-to-end tests exercise the local
-protocol with real RRD files; proxy deployment remains a separate integration boundary.
+30-second response timeout poisons the worker. With the existing RRDtool proxy, an empty,
+malformed, or error response is also not success.
 
 This is command acknowledgement, not a distributed transaction with MariaDB. Direct RRDtool
-success means the update completed at the RRDtool/file-system interface, but it does not add an
-`fsync` guarantee beyond RRDtool and the operating system. If RRDCached is added later, its normal
-update response means the daemon accepted the update; it does not prove the target RRD file was
-flushed. RRDCached journal configuration and an explicit flush would define stronger recovery
-boundaries and must be tested before archive deletion relies on them.
-
-The full write-stage benchmark used 60,000 real RRD files and 320.04 million samples. With 100
-samples per command, one writer completed 3.24 million acknowledged commands in 538.0 seconds
-(594,873 samples/s); two disjoint writers completed them in 339.7 seconds (942,095 samples/s).
-Both had zero failures and verified destination timestamps. Database reading and RRD writing were
-measured separately, so these rates are not presented as a full end-to-end pipeline measurement.
+success means the update completed at the RRDtool and filesystem interface; it does not add an
+`fsync` guarantee beyond RRDtool and the operating system. If RRDCached is introduced later, its
+normal response means the daemon accepted the update. Journal configuration and explicit flush
+semantics would need separate validation before archive cleanup could rely on a stronger guarantee.
 
 ## Failure and cleanup semantics
 
 | Condition | Result |
 |---|---|
-| Actual RRD write succeeds but owner/group adjustment fails | Preserve the successful write, emit a visible permission warning, and continue. |
-| Permanent destination or payload failure | Keep the latest complete failed command for that RRD in the bounded retry table; count older coalesced samples as discarded; continue and drop the completed archive. |
-| Temporary destination failure | Apply bounded automatic retries with exponential backoff. |
-| Unexpected worker exit | Missing completion retains the current and newer archives. The next scheduled run starts automatically from the oldest table. |
+| RRD write succeeds but ownership adjustment fails | Preserve the acknowledged write, emit a visible permission warning, and continue. |
+| Permanent destination or payload failure | Keep the latest complete failed command for that RRD in the bounded retry table, count replaced history as explicitly discarded, and allow archive cleanup. |
+| Temporary destination failure | Retry out of band with a bounded budget and exponential backoff. |
+| Deleted or repointed data source | Explicitly discard the stale destination retry. Archive processing does not depend on deletion-time archive cleanup. |
+| Unexpected worker exit | Retain the current archive. The next scheduled run starts automatically from the oldest archive. |
 | Database or completion-record failure | Fail closed and retain the archive. |
-| Ambiguous backend-wide or disk-wide failure | Open the child circuit after eight failures before progress or 32 consecutive failures after progress; retain the archive. Known permanent per-RRD diagnostics do not feed this circuit. |
+| Ambiguous backend-wide or disk-wide failure | Open the circuit after eight failures before progress or 32 consecutive failures after progress; retain the archive. |
 | Failure queue cannot be mutated | Retain the archive because the failed samples were not durably isolated. |
-| Failure queue reaches its configured destination limit | Explicitly discard the new failed command, persist and email a warning, and continue. This is the deliberate overload escape hatch. |
+| Failure queue reaches its destination limit | Explicitly discard the new failed command, persist and email a warning, and continue. |
 | Retry reaches its age or attempt limit | Explicitly discard the coalesced command, persist and email a warning, and remove it from pending state. |
 
-The queue contains at most one command per `local_data_id`, has a strict admission lock and a hard
-100,000-destination code ceiling, and defaults to 10,000 destinations. It is not a historical
-sample backlog. Defaults are 100 retry destinations per run, eight attempts, seven days, and an
-exponential delay capped at one hour. Every warning replaces the persisted operator diagnostic;
-email is flood-controlled to five minutes for urgent state changes and one day for routine
-coalescing warnings.
-
-The out-of-band retry worker uses the same outage window. In the real-RRD Docker scenario, a
-`/bin/false` backend attempted exactly eight due destinations, recovered zero, retained all eight,
-and placed each on a 60-second backoff. Restoring RRDtool let normal archive replay supersede those
-coalesced retries; all 24 input rows were acknowledged, the archive dropped, the retry table
-emptied, and all 12 destination timestamps matched the expected value.
+The retry table contains at most one complete command per `local_data_id`. It is not a second
+historical archive. Admission is serialized, the default limit is 10,000 destinations, and the
+code ceiling is 100,000. Defaults are 100 retry destinations per run, eight attempts, seven days,
+and an exponential delay capped at one hour. Status and warning state are persisted because an
+administrator may not inspect logs for days.
 
 ## Filesystem collaboration
 
-Structured RRD directory creation copies the nearest existing ancestor's owner, group, permission
-bits, and setgid bit after `mkdir`, so a restrictive umask cannot silently remove the intended
-group policy. Existing directories and administrator-managed ACLs are not rewritten. New RRD files
-inherit the directory group and become group-readable/group-writable when the parent is group
-writable. Root applies the ancestor owner and group with `chown`/`chgrp`; a non-root writer relies
-on setgid inheritance. Permission-adjustment failure is reported independently from the RRDtool
-write acknowledgement.
+Structured RRD directory creation copies the nearest existing ancestor's owner, group, mode, and
+setgid bit after `mkdir`, so a restrictive umask cannot silently remove the intended group policy.
+Existing directories and administrator-managed ACLs are not rewritten. New RRD files inherit the
+directory group and become group-readable and group-writable when the parent is group writable.
+Root applies owner and group with `chown` and `chgrp`; a non-root writer relies on setgid
+inheritance. Permission-adjustment failure remains separate from the actual write result.
 
-The Linux test created directories as root and as a non-root group member under umask-restricted
-setgid parents, verified owner/group/mode, demonstrated a visible real-RRD rejection for a
-different owner without group write, applied the production helper, and then completed the same
-RRDtool update as that different owner.
+The Linux tests create directories as root and as a non-root group member under restrictive
+umasks. They verify owner, group, setgid, and file mode; demonstrate a visible real-RRD rejection
+without group write; apply the production helper; and complete the same update as a writer whose
+identity differs from the file owner.
 
-## Operations and observability
+## Operations and overload
 
-The Boost status page exposes the lifecycle state, sealed archive count and oldest creation time,
-pending failed destinations, oldest failure, last persistent warning, and last automatic retry
-accounting. Per-run detail separates written, failed, queued, and explicitly discarded samples.
-The archive suffix and creation time, time to first write, oldest pending sample age, incoming and
-drain rates, page latency, database temporary/sort work, and host CPU/memory/disk pressure are the
-minimum operational measurements.
+The Boost status page exposes lifecycle state, sealed archive count and oldest creation time,
+pending failed destinations, oldest failure, last persistent warning, and the last retry outcome.
+Per-run accounting separates written, failed, queued, explicitly discarded, and pending samples.
 
-If sustained acknowledged writes do not exceed incoming work, concurrency is not a recovery
-strategy. The operator must add RRD/database I/O capacity, reduce incoming work, or deliberately
-discard archived/failure-queue data with a visible warning. Retaining and repeatedly requeueing an
-unbounded backlog is not supported.
+Operators should watch incoming and acknowledged sample rates, oldest backlog age, staging and
+range latency, database temporary/sort work, RRD write latency, memory, CPU, and disk or NFS
+pressure. Recovery is sustainable only when acknowledged RRD throughput exceeds incoming work.
+If it does not, the operator must add capacity, reduce incoming work, or deliberately discard
+archives with a visible warning. Requeueing an unbounded backlog is not a recovery policy.
 
-On the measured host, both the one- and two-writer full RRD stages exceeded the 10,000-sample/s
-incoming benchmark by more than 59 times. This establishes sustainable write-stage capacity for
-that fixture, not for every deployment. The database-only and write-only results must both be
-repeated on a site's actual storage before raising `boost_parallel` from one to two.
+For a comparable 60-million-row database, 50,000-row ranges and 8 workers are the measured starting
+point. Test 8 through 15 on the site's real RRD backend. Stop increasing concurrency when
+acknowledged throughput stops improving or polling, database, memory, disk, or NFS latency exceeds
+the site's budget.
 
 ## Verification limits
 
-The Boost-focused contract run passes 123 tests with 546 assertions. The production SQL contract
-passes eight tests and 46 assertions on both MariaDB 10.6 and MySQL 8.4. Real-RRD scenarios cover
-acknowledgement, isolated and backend-wide failures, restart, cleanup, and Linux setgid/different-
-owner writes. The 320-million-row database scan and 320.04-million-sample RRD write stage were
-measured separately; this is not a claimed full-scale end-to-end pass.
+The database reader was measured at full requested row and source cardinality for uniform and
+skewed distributions. Database-only scans do not perform RRD writes or archive drops. The earlier
+40 by 8-million benchmark and 60,000-file, 320.04-million-sample real-RRD stage remain useful
+separate stress evidence, but they are not a full 1.3-million-file end-to-end run.
 
-This is not full line coverage. An Xdebug run attributed 5.6% of the complete legacy
-`lib/boost.php` file because most existing Boost tests deliberately extract and rename individual
-functions for isolation; `poller_boost.php` is also a CLI entry point rather than an includable
-unit. Windows pipe timing, RRDtool proxy deployments, MariaDB 10.5, MySQL 8.0, and RRDCached are
-not covered by the measured environments and remain explicit integration boundaries.
+Real-RRD scenarios cover acknowledged success, permanent failure, backend outage, automatic
+retry, worker death and restart, shared-path refusal, cleanup, and Linux setgid/different-owner
+writes. Production schema contracts run against MariaDB 10.6 and MySQL 8.4. Windows pipe timing,
+RRDtool proxy deployments, NFSv3, RRDCached, MariaDB 10.5, and MySQL 8.0 remain explicit integration
+boundaries.
 
-## Rejected additions
-
-Redis or another broker is not justified by the measurements. It would duplicate durable queue,
-recovery, monitoring, and ordering state already required in MariaDB/MySQL, while adding a second
-failure domain. RRDCached remains a useful future write service when journal durability and its
-acceptance-versus-disk acknowledgement boundary are explicitly configured and tested, but it does
-not solve archive selection, ownership, or overload policy by itself.
+Redis or another broker is not justified by the measurements. It would duplicate durable
+ownership, retry, ordering, and monitoring state while adding another failure domain. RRDCached is
+a possible future write service when its journal and acknowledgement boundaries are configured and
+measured, but it does not solve archive selection, ownership, or overload policy.

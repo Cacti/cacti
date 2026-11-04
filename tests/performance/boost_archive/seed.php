@@ -37,7 +37,13 @@ if ($distribution === 'single-hot' && $source_count < 2) {
 }
 
 $pdo = boostBenchPdo(true);
-$pdo->exec('SET SESSION sql_log_bin = 0');
+
+try {
+	$pdo->exec('SET SESSION sql_log_bin = 0');
+} catch (PDOException $e) {
+	/* A disposable non-replicating database account does not need BINLOG ADMIN. */
+}
+
 $pdo->exec('SET SESSION unique_checks = 0');
 $pdo->exec('SET SESSION foreign_key_checks = 0');
 

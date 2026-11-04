@@ -36,6 +36,7 @@ if (!count($archives)) {
 	exit(65);
 }
 
+$range_end_supplied = array_key_exists('range-end', $options);
 $range_end = max($range_start, (int) ($options['range-end'] ??
 	$observer->query('SELECT MAX(id) FROM data_local')->fetchColumn()));
 $params = array();
@@ -65,7 +66,7 @@ if ($mode === 'baseline') {
 
 	$sql = 'SELECT * FROM (' . implode(' UNION ALL ', $branches) .
 		') AS archive_union ORDER BY local_data_id, sample_time, rrd_name LIMIT ' . ($page_size + 1);
-} elseif ($mode === 'candidate') {
+} elseif ($mode === 'cursor' || $mode === 'candidate') {
 	$table = $archives[0];
 	$cursor_id = max($range_start - 1, (int) ($options['cursor-id'] ?? ($range_start - 1)));
 	$cursor_epoch = max(86400, (int) ($options['cursor-epoch'] ?? 86400));
@@ -78,7 +79,7 @@ if ($mode === 'baseline') {
 		LEFT JOIN data_local AS dl ON archive.local_data_id = dl.id ";
 
 	if ($cursor_id >= $range_start && $cursor_id <= $range_end) {
-		$candidate_stage = 'current-source remainder';
+		$query_shape = 'constant-key cursor remainder';
 		$sql = $columns . "WHERE archive.local_data_id = ?
 			AND (archive.time > ? OR (archive.time = ? AND archive.rrd_name > ?))
 			ORDER BY archive.time, archive.rrd_name
@@ -86,26 +87,66 @@ if ($mode === 'baseline') {
 		$params = array($cursor_id, $cursor_time, $cursor_time, $cursor_name);
 	} else {
 		if ($range_start === $range_end) {
-			$candidate_stage = 'single-source start';
+			$query_shape = 'constant-key cursor single-source start';
 			$sql = $columns . "WHERE archive.local_data_id = ?
 				ORDER BY archive.time, archive.rrd_name
 				LIMIT " . ($page_size + 1);
 			$params = array($range_start);
 		} else {
-			$candidate_stage = 'later-source range';
+			$query_shape = 'constant-key cursor later-source range';
 			$sql = $columns . "WHERE archive.local_data_id BETWEEN ? AND ?
 				ORDER BY archive.local_data_id, archive.time, archive.rrd_name
 				LIMIT " . ($page_size + 1);
 			$params = array($range_start, $range_end);
 		}
 	}
+} elseif ($mode === 'range') {
+	$table = $archives[0];
+
+	if (!$range_end_supplied) {
+		$bounds = $observer->query("WITH source_rows AS (
+			SELECT local_data_id, COUNT(*) AS archive_rows
+			FROM `$table` FORCE INDEX (PRIMARY)
+			GROUP BY local_data_id
+		), cumulative AS (
+			SELECT local_data_id, archive_rows,
+				SUM(archive_rows) OVER (ORDER BY local_data_id) AS running_rows
+			FROM source_rows
+		), assigned AS (
+			SELECT local_data_id,
+				FLOOR((running_rows - archive_rows) / $page_size) + 1 AS range_handler
+			FROM cumulative
+		)
+		SELECT MIN(local_data_id) AS range_start, MAX(local_data_id) AS range_end
+		FROM assigned
+		WHERE range_handler = 1")->fetch(PDO::FETCH_ASSOC);
+
+		if (!is_array($bounds) || $bounds['range_start'] === null || $bounds['range_end'] === null) {
+			fwrite(STDERR, "unable to derive a bounded range\n");
+			exit(65);
+		}
+
+		$range_start = (int) $bounds['range_start'];
+		$range_end   = (int) $bounds['range_end'];
+	}
+
+	$query_shape = 'limit-less contiguous local-data-ID range';
+	$sql = "SELECT STRAIGHT_JOIN archive.local_data_id, dl.data_template_id,
+		UNIX_TIMESTAMP(archive.time) AS timestamp, archive.time AS sample_time,
+		archive.rrd_name, archive.output
+		FROM `$table` AS archive FORCE INDEX (PRIMARY)
+		LEFT JOIN data_local AS dl ON archive.local_data_id = dl.id
+		WHERE archive.local_data_id BETWEEN ? AND ?
+		ORDER BY archive.local_data_id, archive.time, archive.rrd_name";
+	$params = array($range_start, $range_end);
 } else {
-	fwrite(STDERR, "--mode must be baseline or candidate\n");
+	fwrite(STDERR, "--mode must be baseline, cursor, or range\n");
 	exit(64);
 }
 
 $benchmark_sql = boostBenchRenderSql($observer, $sql, $params);
 $plan = json_decode($observer->query('EXPLAIN FORMAT=JSON ' . $benchmark_sql)->fetchColumn(), true);
+$tabular_plan = $observer->query('EXPLAIN ' . $benchmark_sql)->fetchAll(PDO::FETCH_ASSOC);
 
 try {
 	$observer->exec('TRUNCATE TABLE performance_schema.events_statements_summary_by_digest');
@@ -146,12 +187,16 @@ $result = array(
 	'archive_count'           => count($archives),
 	'oldest_archive'          => $archives[0],
 	'page_size'               => $page_size,
-	'cursor'                  => $mode === 'candidate' ? array(
+	'cursor'                  => in_array($mode, array('cursor', 'candidate'), true) ? array(
 		'local_data_id' => $cursor_id,
 		'time'          => $cursor_time,
 		'rrd_name'      => $cursor_name,
 	) : null,
-	'candidate_stage'         => $mode === 'candidate' ? $candidate_stage : null,
+	'query_shape'             => $mode === 'baseline' ? 'cross-archive joined cursor' : $query_shape,
+	'range'                   => $mode === 'range' ? array(
+		'start' => $range_start,
+		'end'   => $range_end,
+	) : null,
 	'rows_returned'           => $rows,
 	'time_to_execute_seconds' => $executed - $started,
 	'time_to_first_row_seconds' => $first_row_seconds,
@@ -159,6 +204,7 @@ $result = array(
 	'peak_php_bytes'          => memory_get_peak_usage(true),
 	'session_status_delta'    => boostBenchStatusDelta($before, $after),
 	'query_plan_summary'      => boostBenchPlanSummary($plan),
+	'query_plan_tabular'      => $tabular_plan,
 	'performance_schema'      => boostBenchDigests($observer),
 	'statement_history'       => boostBenchStatementHistory($observer),
 );

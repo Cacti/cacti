@@ -233,7 +233,7 @@ function __rrd_read_acknowledgement($input, $timeout = 30) {
 			break;
 		}
 
-		if (preg_match('/(?:^|\n)(?:OK(?: |\r?$)|ERROR:.*\r?$)/m', $buffer) === 1 &&
+		if (preg_match('/(?:^|\n)(?:OK(?:[ \t][^\r\n]*)?|ERROR:[^\r\n]*)\r?$/m', $buffer) === 1 &&
 			preg_match('/\r?\n$/', $buffer) === 1) {
 			return $buffer;
 		}
@@ -275,6 +275,80 @@ function __rrd_write_all($stream, $payload) {
 }
 
 /**
+ * Validate a local RRD path against a configured storage root.
+ *
+ * Missing descendants are allowed only when every lexical component is ordinary and their
+ * nearest existing ancestor resolves inside the configured root. Existing symlink pivots that
+ * leave the root are rejected.
+ *
+ * @param string $base_path Configured RRA root.
+ * @param string $path Existing or proposed path below the root.
+ * @param bool $must_exist Whether the complete path must already exist.
+ *
+ * @return bool True when the path is contained by the configured root.
+ */
+function rrdtool_local_path_is_valid($base_path, $path, $must_exist = false) {
+	if (!is_string($base_path) || !is_string($path) || $base_path === '' || $path === '' ||
+		strpos($base_path, "\0") !== false || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	$base_input = rtrim(str_replace('\\', '/', $base_path), '/');
+	$path_input = rtrim(str_replace('\\', '/', $path), '/');
+	$comparison_base = PHP_OS_FAMILY === 'Windows' ? strtolower($base_input) : $base_input;
+	$comparison_path = PHP_OS_FAMILY === 'Windows' ? strtolower($path_input) : $path_input;
+
+	if ($comparison_path !== $comparison_base &&
+		strpos($comparison_path . '/', $comparison_base . '/') !== 0) {
+		return false;
+	}
+
+	$relative = ltrim(substr($path_input, strlen($base_input)), '/');
+
+	foreach(preg_split('~[\\\\/]+~', $relative, -1, PREG_SPLIT_NO_EMPTY) as $component) {
+		if ($component === '.' || $component === '..') {
+			return false;
+		}
+	}
+
+	$base_real = realpath($base_path);
+
+	if ($base_real === false || !is_dir($base_real)) {
+		return false;
+	}
+
+	$candidate = $must_exist ? realpath($path) : false;
+
+	if ($must_exist && $candidate === false) {
+		return false;
+	}
+
+	if ($candidate === false) {
+		$candidate = $path;
+
+		while (!file_exists($candidate) && dirname($candidate) !== $candidate) {
+			$candidate = dirname($candidate);
+		}
+
+		$candidate = realpath($candidate);
+	}
+
+	if ($candidate === false) {
+		return false;
+	}
+
+	$base_real = rtrim(str_replace('\\', '/', $base_real), '/');
+	$candidate = rtrim(str_replace('\\', '/', $candidate), '/');
+
+	if (PHP_OS_FAMILY === 'Windows') {
+		$base_real = strtolower($base_real);
+		$candidate = strtolower($candidate);
+	}
+
+	return $candidate === $base_real || strpos($candidate . '/', $base_real . '/') === 0;
+}
+
+/**
  * Create a local structured RRD directory while preserving inherited group collaboration.
  *
  * The nearest existing ancestor supplies owner, group, permission bits, and setgid. An explicit
@@ -294,15 +368,14 @@ function rrdtool_create_structured_directory($base_path, $directory, $logopt = '
 	$base_path      = rtrim($base_path, DIRECTORY_SEPARATOR);
 	$directory      = rtrim($directory, DIRECTORY_SEPARATOR);
 
-	if (is_dir($directory)) {
-		return true;
-	}
-
-	if ($base_path === '' || !is_dir($base_path) ||
-		($directory !== $base_path && strpos($directory . DIRECTORY_SEPARATOR, $base_path . DIRECTORY_SEPARATOR) !== 0)) {
+	if (!rrdtool_local_path_is_valid($base_path, $directory, is_dir($directory))) {
 		cacti_log("ERROR: Refusing to create structured RRD path outside '$base_path': '$directory'", false, $logopt);
 
 		return false;
+	}
+
+	if (is_dir($directory)) {
+		return true;
 	}
 
 	$ancestor = $directory;
@@ -323,15 +396,9 @@ function rrdtool_create_structured_directory($base_path, $directory, $logopt = '
 		return false;
 	}
 
-	$owner_id = fileowner($ancestor);
-	$group_id = filegroup($ancestor);
-	$mode     = fileperms($ancestor) & 07777;
-
-	if (!mkdir($directory, $mode & 0777, true) && !is_dir($directory)) {
-		cacti_log("ERROR: Unable to create structured RRD path '$directory'", false, $logopt);
-
-		return false;
-	}
+	$owner_id = fileowner($ancestor); // NOSONAR existing ancestor containment was validated above
+	$group_id = filegroup($ancestor); // NOSONAR existing ancestor containment was validated above
+	$mode     = fileperms($ancestor) & 07777; // NOSONAR existing ancestor containment was validated above
 
 	$new_paths = array();
 	$path      = $directory;
@@ -348,16 +415,32 @@ function rrdtool_create_structured_directory($base_path, $directory, $logopt = '
 	}
 
 	foreach(array_reverse($new_paths) as $path) {
+		$parent = dirname($path);
+
+		if (!rrdtool_local_path_is_valid($base_path, $parent, true) ||
+			(!is_dir($path) && !mkdir($path, $mode & 0777)) || // NOSONAR parent containment is validated immediately before creation
+			!rrdtool_local_path_is_valid($base_path, $path, true)) { // NOSONAR validated parent and post-create containment
+			cacti_log("ERROR: Unable to safely create structured RRD path '$path'", false, $logopt);
+
+			return false;
+		}
+
+		$path = realpath($path);
+
+		if ($path === false) {
+			return false;
+		}
+
 		$path_ok = true;
 
 		if (function_exists('posix_getuid') && posix_getuid() == 0) {
-			$path_ok = chown($path, $owner_id) && chgrp($path, $group_id);
+			$path_ok = chown($path, $owner_id) && chgrp($path, $group_id); // NOSONAR canonical path validated above
 		}
 
-		$path_ok = chmod($path, $mode) && $path_ok;
-		clearstatcache(true, $path);
-		$actual_mode  = fileperms($path) & 07777;
-		$actual_group = filegroup($path);
+		$path_ok = chmod($path, $mode) && $path_ok; // NOSONAR canonical path validated above
+		clearstatcache(true, $path); // NOSONAR canonical path validated above
+		$actual_mode  = fileperms($path) & 07777; // NOSONAR canonical path validated above
+		$actual_group = filegroup($path); // NOSONAR canonical path validated above
 		$expected_setgid = $mode & 02000;
 
 		if (($actual_mode & 02000) !== $expected_setgid || $actual_group !== $group_id) {
@@ -382,21 +465,29 @@ function rrdtool_create_structured_directory($base_path, $directory, $logopt = '
  *
  * @param string $file Newly created RRD file.
  * @param string $logopt Cacti log facility.
+ * @param string $base_path Configured RRA root.
  *
  * @return bool True when owner/group/mode verification succeeds.
  */
-function rrdtool_apply_file_permissions($file, $logopt = 'POLLER') {
-	if (!is_file($file)) {
+function rrdtool_apply_file_permissions($file, $logopt = 'POLLER', $base_path = '') {
+	if ($base_path === '' || is_link($file) ||
+		!rrdtool_local_path_is_valid($base_path, $file, true) || !is_file($file)) {
 		cacti_log("WARNING: RRD file '$file' does not exist for permission assignment.", false, $logopt);
 
 		return false;
 	}
 
+	$file = realpath($file);
+
+	if ($file === false) {
+		return false;
+	}
+
 	$directory = dirname($file);
-	$owner_id  = fileowner($directory);
-	$group_id  = filegroup($directory);
-	$dir_mode  = fileperms($directory) & 07777;
-	$file_mode = fileperms($file) & 0777;
+	$owner_id  = fileowner($directory); // NOSONAR canonical file path is contained by base_path
+	$group_id  = filegroup($directory); // NOSONAR canonical file path is contained by base_path
+	$dir_mode  = fileperms($directory) & 07777; // NOSONAR canonical file path is contained by base_path
+	$file_mode = fileperms($file) & 0777; // NOSONAR canonical file path is contained by base_path
 	$mode      = $file_mode;
 	$success   = true;
 
@@ -405,12 +496,13 @@ function rrdtool_apply_file_permissions($file, $logopt = 'POLLER') {
 	}
 
 	if (function_exists('posix_getuid') && posix_getuid() == 0) {
-		$success = chown($file, $owner_id) && chgrp($file, $group_id);
+		$success = chown($file, $owner_id) && chgrp($file, $group_id); // NOSONAR canonical path validated above
 	}
 
-	$success = chmod($file, $mode) && $success;
-	clearstatcache(true, $file);
-	$success = filegroup($file) === $group_id && ((fileperms($file) & 0060) === ($mode & 0060)) && $success;
+	$success = chmod($file, $mode) && $success; // NOSONAR canonical path validated above
+	clearstatcache(true, $file); // NOSONAR canonical path validated above
+	$success = filegroup($file) === $group_id && // NOSONAR canonical path validated above
+		((fileperms($file) & 0060) === ($mode & 0060)) && $success;
 
 	if (!$success) {
 		cacti_log("WARNING: RRD file '$file' was created but its collaborative owner/group/mode arrangement could not be fully applied.", false, $logopt);
@@ -1292,7 +1384,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 		if ($config['cacti_server_os'] != 'win32' && !read_config_option('storage_location')) {
-			rrdtool_apply_file_permissions($data_source_path, 'POLLER');
+			rrdtool_apply_file_permissions($data_source_path, 'POLLER', $config['rra_path']);
 		}
 
 		return $success;

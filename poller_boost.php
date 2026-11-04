@@ -725,16 +725,22 @@ function boost_prepare_process_table($table) {
 		return false;
 	}
 
-	$processes = max(1, min(20, (int) read_config_option('boost_parallel')));
+	$processes  = max(1, min(20, (int) read_config_option('boost_parallel')));
+	$target_rows = (int) read_config_option('boost_rrd_update_max_records_per_select');
+
+	if ($target_rows < 1) {
+		$target_rows = 50000;
+	}
 
 	if (db_execute('DROP TABLE IF EXISTS poller_output_boost_local_data_ids') === false ||
 		db_execute('CREATE TABLE poller_output_boost_local_data_ids (
 			run_id char(32) NOT NULL,
 			local_data_id int unsigned NOT NULL default 0,
 			process_handler int unsigned NOT NULL default 0,
+			range_handler bigint unsigned NOT NULL default 0,
 			archive_rows bigint unsigned NOT NULL default 0,
 			PRIMARY KEY (run_id, local_data_id),
-			INDEX process_handler(run_id, process_handler, local_data_id))
+			INDEX process_handler(run_id, process_handler, range_handler, local_data_id))
 			ENGINE=InnoDB ROW_FORMAT=Dynamic') === false) {
 		cacti_log('ERROR: Boost failed to create its process-distribution table.', true, 'BOOST');
 
@@ -742,9 +748,10 @@ function boost_prepare_process_table($table) {
 	}
 
 	$sql = "INSERT INTO poller_output_boost_local_data_ids
-		(run_id, local_data_id, process_handler, archive_rows)
+		(run_id, local_data_id, process_handler, range_handler, archive_rows)
 		SELECT ?, local_data_id,
 			LEAST(?, FLOOR((cumulative_rows - source_rows) * ? / total_rows) + 1),
+			FLOOR((cumulative_rows - source_rows) / ?) + 1,
 			source_rows
 		FROM (
 			SELECT local_data_id, source_rows,
@@ -757,7 +764,7 @@ function boost_prepare_process_table($table) {
 			) AS source_counts
 		) AS assignments";
 
-	if (db_execute_prepared($sql, array($run_id, $processes, $processes), false) === false) {
+	if (db_execute_prepared($sql, array($run_id, $processes, $processes, $target_rows), false) === false) {
 		cacti_log('ERROR: Boost failed to stage archive data-source ranges.', true, 'BOOST');
 
 		return false;
@@ -812,10 +819,25 @@ function boost_prepare_process_table($table) {
 		return false;
 	}
 
-	cacti_log(sprintf('INFO: Boost staged archive %s with %d rows across %d data sources and %d configured workers.',
+	$range_count = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM (
+			SELECT process_handler, range_handler
+			FROM poller_output_boost_local_data_ids
+			WHERE run_id = ?
+			GROUP BY process_handler, range_handler
+		) AS staged_ranges', array($run_id));
+
+	if ($range_count === false) {
+		cacti_log('ERROR: Boost could not verify its staged archive windows.', true, 'BOOST');
+
+		return false;
+	}
+
+	cacti_log(sprintf('INFO: Boost staged archive %s with %d rows across %d data sources, %d bounded ranges, and %d configured workers.',
 		$table,
 		$total_rows,
 		$data_ids,
+		$range_count,
 		$processes), true, 'BOOST');
 
 	return true;
@@ -1186,18 +1208,12 @@ function boost_output_rrd_data($child) {
 
 	boost_debug("Process:$child, Archive:$archive_table, Range:$range_start-$range_end");
 
-	$max_per_select = read_config_option('boost_rrd_update_max_records_per_select');
-
-	if (empty($max_per_select) || $max_per_select < 1) {
-		$max_per_select = 50000;
-	}
-
 	$curpass = 1;
 
 	while (true) {
-		boost_debug("Processing bounded page $curpass for Boost Process $child");
+		boost_debug("Processing bounded range $curpass for Boost Process $child");
 
-		$pass_rows = boost_process_local_data_ids($child, $rrdtool_pipe, $max_per_select);
+		$pass_rows = boost_process_local_data_ids($child, $rrdtool_pipe);
 
 		if ($pass_rows < 0) {
 			rrd_close($rrdtool_pipe);
@@ -1235,81 +1251,35 @@ function boost_output_rrd_data($child) {
 }
 
 /**
- * Fetch one bounded archive page without an OR across different primary-key prefixes.
+ * Fetch one staged archive range in clustered primary-key order.
  *
- * MariaDB can filesort and repeatedly rescan a large single-source range when a full keyset
- * predicate combines `local_data_id > cursor` with the current source's time predicate. Read the
- * remainder of the current source first, then fill the page from later source IDs. The two
- * results are naturally adjacent in primary-key order and together never exceed max_rows + 1.
+ * Range construction accounts for all rows belonging to each complete local data ID before any
+ * child starts. This query therefore needs neither a cross-archive union nor a cursor or LIMIT.
+ * A source is never divided between workers or staged ranges.
  *
  * @param string $table Validated archive table.
- * @param int $range_start First local data ID owned by this worker.
- * @param int $range_end Last local data ID owned by this worker.
- * @param int $cursor_id Last local data ID consumed by this worker.
- * @param string $cursor_time Last timestamp consumed for cursor_id.
- * @param string $cursor_rrd_name Last RRD field name consumed at cursor_time.
- * @param int $max_rows Maximum complete page size, excluding the look-ahead row.
+ * @param int $range_start First local data ID in the staged range.
+ * @param int $range_end Last local data ID in the staged range.
  *
  * @return array<int, array<string, mixed>>|false Ordered rows, or false on validation/database
  *   failure.
  */
-function boost_fetch_archive_page($table, $range_start, $range_end, $cursor_id, $cursor_time, $cursor_rrd_name, $max_rows) {
-	if (!boost_is_valid_archive_table($table) || $range_start < 1 || $range_end < $range_start || $max_rows < 1) {
+function boost_fetch_archive_range($table, $range_start, $range_end) {
+	if (!boost_is_valid_archive_table($table) || $range_start < 1 || $range_end < $range_start) {
 		return false;
 	}
 
-	$limit   = (int) $max_rows + 1;
-	$results = array();
-	$columns = 'SELECT STRAIGHT_JOIN archive.local_data_id, dl.data_template_id,
+	return db_fetch_assoc_prepared('SELECT STRAIGHT_JOIN archive.local_data_id, dl.data_template_id,
 		UNIX_TIMESTAMP(archive.time) AS timestamp, archive.time AS sample_time,
 		archive.rrd_name, archive.output
 		FROM `' . $table . '` AS archive FORCE INDEX (PRIMARY)
 		LEFT JOIN data_local AS dl
-		ON archive.local_data_id = dl.id ';
-
-	if ($cursor_id >= $range_start && $cursor_id <= $range_end) {
-		$current = db_fetch_assoc_prepared($columns . '
-			WHERE archive.local_data_id = ?
-			AND (archive.time > ? OR (archive.time = ? AND archive.rrd_name > ?))
-			ORDER BY archive.time ASC, archive.rrd_name ASC
-			LIMIT ' . $limit, array(
-				$cursor_id,
-				$cursor_time,
-				$cursor_time,
-				$cursor_rrd_name,
-			));
-
-		if ($current === false) {
-			return false;
-		}
-
-		$results = $current;
-	}
-
-	$remaining = $limit - cacti_sizeof($results);
-	$next_id   = max($range_start, $cursor_id + 1);
-
-	if ($remaining > 0 && $next_id <= $range_end) {
-		if ($next_id === $range_end) {
-			$later = db_fetch_assoc_prepared($columns . '
-				WHERE archive.local_data_id = ?
-				ORDER BY archive.time ASC, archive.rrd_name ASC
-				LIMIT ' . $remaining, array($next_id));
-		} else {
-			$later = db_fetch_assoc_prepared($columns . '
-				WHERE archive.local_data_id BETWEEN ? AND ?
-				ORDER BY archive.local_data_id ASC, archive.time ASC, archive.rrd_name ASC
-				LIMIT ' . $remaining, array($next_id, $range_end));
-		}
-
-		if ($later === false) {
-			return false;
-		}
-
-		$results = array_merge($results, $later);
-	}
-
-	return $results;
+		ON archive.local_data_id = dl.id
+		WHERE archive.local_data_id BETWEEN ? AND ?
+		ORDER BY archive.local_data_id ASC, archive.time ASC, archive.rrd_name ASC', array(
+			$range_start,
+			$range_end,
+		));
 }
 
 /**
@@ -1318,20 +1288,16 @@ function boost_fetch_archive_page($table, $range_start, $range_end, $cursor_id, 
  *
  * @param int $child The current process.
  * @param mixed $rrdtool_pipe The socket that has been opened for the RRDtool operation.
- * @param mixed $max_rows Maximum rows to materialize in one page.
  *
  * @return int The number of processed local_data_ids.
  */
-function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
+function boost_process_local_data_ids($child, $rrdtool_pipe) {
 	global $config, $archive_table, $range_start, $range_end, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 	global $run_id, $max_run_duration;
 
 	/* cache this call as it takes time */
 	static $rrdtool_version = null;
 	static $rrd_field_names = array();
-	static $cursor_id       = null;
-	static $cursor_time     = '1970-01-02 00:00:00';
-	static $cursor_rrd_name = '';
 
 	include_once($config['library_path'] . '/rrd.php');
 	$previous_error_reporting = error_reporting();
@@ -1354,7 +1320,6 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 	/* load system variables needed */
 	$upd_string_len		 = read_config_option('boost_rrd_update_string_length');
 	$rrd_update_interval = read_config_option('boost_rrd_update_interval');
-	$max_rows = max(1, (int) $max_rows);
 
 	if (!boost_is_valid_archive_table($archive_table) || $range_start <= 0 || $range_end < $range_start) {
 		cacti_log('ERROR: Boost child lost its archive ownership or data-source range.', true, 'BOOST');
@@ -1362,10 +1327,6 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 		error_reporting($previous_error_reporting);
 
 		return -1;
-	}
-
-	if ($cursor_id === null) {
-		$cursor_id = $range_start - 1;
 	}
 
 	if (!cacti_sizeof($rrd_field_names)) {
@@ -1376,16 +1337,46 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 			'keyname', array('data_source_name'));
 	}
 
+	$range = db_fetch_row_prepared('SELECT range_handler,
+		MIN(local_data_id) AS range_start, MAX(local_data_id) AS range_end,
+		SUM(archive_rows) AS expected_rows
+		FROM poller_output_boost_local_data_ids
+		WHERE run_id = ?
+		AND process_handler = ?
+		GROUP BY range_handler
+		ORDER BY range_handler
+		LIMIT 1', array($run_id, $child));
+
+	if ($range === false) {
+		restore_error_handler();
+		error_reporting($previous_error_reporting);
+
+		return -1;
+	}
+
+	if (!cacti_sizeof($range)) {
+		restore_error_handler();
+		error_reporting($previous_error_reporting);
+
+		return 0;
+	}
+
+	$staged_range = (int) $range['range_handler'];
+	$staged_start = (int) $range['range_start'];
+	$staged_end   = (int) $range['range_end'];
+	$expected_rows = (int) $range['expected_rows'];
+
+	if ($staged_range < 1 || $staged_start < $range_start || $staged_end > $range_end ||
+		$staged_end < $staged_start || $expected_rows < 1) {
+		cacti_log('ERROR: Boost rejected invalid staged range ownership.', true, 'BOOST');
+		restore_error_handler();
+		error_reporting($previous_error_reporting);
+
+		return -1;
+	}
+
 	boost_timer('get_records', BOOST_TIMER_START);
-	$results = boost_fetch_archive_page(
-		$archive_table,
-		$range_start,
-		$range_end,
-		$cursor_id,
-		$cursor_time,
-		$cursor_rrd_name,
-		$max_rows
-	);
+	$results = boost_fetch_archive_range($archive_table, $staged_start, $staged_end);
 	boost_timer('get_records', BOOST_TIMER_END);
 
 	if ($results === false) {
@@ -1395,66 +1386,21 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 		return -1;
 	}
 
-	if (!cacti_sizeof($results)) {
-		db_execute_prepared('DELETE FROM poller_output_boost_local_data_ids
-			WHERE run_id = ?
-			AND process_handler = ?', array($run_id, $child));
+	if (cacti_sizeof($results) !== $expected_rows) {
+		cacti_log(sprintf('ERROR: Boost range %d returned %d rows but staging expected %d; the archive was retained.',
+			$staged_range,
+			cacti_sizeof($results),
+			$expected_rows), true, 'BOOST');
 		restore_error_handler();
 		error_reporting($previous_error_reporting);
 
-		return 0;
+		return -1;
 	}
-
-	$bounded_results = boost_limit_complete_timestamp_page($results, $max_rows);
-
-	if ($bounded_results === false) {
-		global $boost_worker_accounting;
-
-		/* The fetched look-ahead page already contains the authoritative first pending key. */
-		$first_result = reset($results);
-
-		if (!is_array($first_result) || !cacti_sizeof($first_result)) {
-			restore_error_handler();
-			error_reporting($previous_error_reporting);
-
-			return -1;
-		}
-
-		$oversized = db_fetch_row_prepared("SELECT COUNT(*) AS sample_rows, MAX(rrd_name) AS last_rrd_name
-			FROM `$archive_table`
-			WHERE local_data_id = ? AND time = ?", array($first_result['local_data_id'], $first_result['sample_time']));
-
-		if (!cacti_sizeof($oversized) || (int) $oversized['sample_rows'] < 1) {
-			restore_error_handler();
-			error_reporting($previous_error_reporting);
-
-			return -1;
-		}
-
-		$cursor_id       = (int) $first_result['local_data_id'];
-		$cursor_time     = $first_result['sample_time'];
-		$cursor_rrd_name = $oversized['last_rrd_name'];
-		$discarded       = (int) $oversized['sample_rows'];
-		$boost_worker_accounting['discarded_samples'] += $discarded;
-		$message = sprintf('WARNING: Boost explicitly discarded an oversized %d-row timestamp group for Local Data ID %d at %s because the configured page limit is %d.',
-			$discarded,
-			$cursor_id,
-			$cursor_time,
-			$max_rows);
-		cacti_log($message, true, 'BOOST');
-		boost_alert_failure_queue($message);
-		restore_error_handler();
-		error_reporting($previous_error_reporting);
-
-		return $discarded;
-	}
-
-	$results = $bounded_results;
 
 	boost_reset_rrd_metadata_page_cache();
 
 	if (!boost_prime_rrd_metadata_cache(array_column($results, 'local_data_id'))) {
-		cacti_log('ERROR: Boost could not load bounded RRD metadata for the current page; the archive was retained.', true, 'BOOST');
+		cacti_log('ERROR: Boost could not load bounded RRD metadata for the current range; the archive was retained.', true, 'BOOST');
 		restore_error_handler();
 		error_reporting($previous_error_reporting);
 
@@ -1802,7 +1748,7 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 		boost_timer('results_cycle', BOOST_TIMER_END);
 	}
 
-	/* Advance one in-memory full-primary-key cursor after acknowledged page handling. */
+	/* Remove only the acknowledged staged range; the sealed archive remains the recovery record. */
 	boost_timer('delete', BOOST_TIMER_START);
 
 	if (!isset($updates_ok)) {
@@ -1810,12 +1756,17 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 	}
 
 	if ($updates_ok && $results !== false) {
-		$last_result    = end($results);
-		$cursor_id      = (int) $last_result['local_data_id'];
-		$cursor_time    = $last_result['sample_time'];
-		$cursor_rrd_name = $last_result['rrd_name'];
+		$range_deleted = db_execute_prepared('DELETE FROM poller_output_boost_local_data_ids
+			WHERE run_id = ?
+			AND process_handler = ?
+			AND range_handler = ?', array($run_id, $child, $staged_range));
+
+		if ($range_deleted === false) {
+			$updates_ok = false;
+			cacti_log("WARNING: Boost could not acknowledge staged range $staged_range for archive $archive_table.", true, 'BOOST');
+		}
 	} else {
-		cacti_log("WARNING: Boost stopped archive $archive_table at the current page because one or more RRD updates failed systemically.", true, 'BOOST');
+		cacti_log("WARNING: Boost stopped archive $archive_table at the current range because one or more RRD updates failed systemically.", true, 'BOOST');
 	}
 
 	boost_timer('delete', BOOST_TIMER_END);

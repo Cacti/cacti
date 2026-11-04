@@ -11,7 +11,7 @@
  +-------------------------------------------------------------------------+
 */
 
-if ($argc !== 2) {
+if ($argc !== 3) {
 	exit(64);
 }
 
@@ -41,4 +41,4 @@ function cacti_log($message) {
 
 require dirname(__DIR__, 3) . '/lib/rrd.php';
 
-exit(rrdtool_apply_file_permissions($argv[1], 'BOOST') ? 0 : 65);
+exit(rrdtool_apply_file_permissions($argv[2], 'BOOST', $argv[1]) ? 0 : 65);

@@ -11,7 +11,13 @@
  +-------------------------------------------------------------------------+
 */
 
+namespace BoostMariaDbFixture;
+
+use PDO;
+use PDOException;
+
 $root = dirname(__DIR__, 2);
+require_once $root . '/tests/Helpers/SourceSlice.php';
 
 function boostMariaDbReset() {
 	$host     = getenv('BOOST_DB_HOST') ?: '127.0.0.1';
@@ -105,83 +111,74 @@ function boostMariaDbLog($message, $output = false, $facility = '') {
 	$GLOBALS['boost_mariadb_logs'][] = $message;
 }
 
+function db_fetch_cell_prepared($sql, $params = array()) {
+	return boostMariaDbFetchCellPrepared($sql, $params);
+}
+
+function db_fetch_assoc_prepared($sql, $params = array()) {
+	return boostMariaDbFetchAssocPrepared($sql, $params);
+}
+
+function boost_is_valid_archive_table($table) {
+	return boostMariaDbValidArchiveTable($table);
+}
+
+function cacti_sizeof($value) {
+	return boostMariaDbSizeof($value);
+}
+
+function db_table_exists($table) {
+	return boostMariaDbTableExists($table);
+}
+
+function db_column_exists($table, $column) {
+	return boostMariaDbColumnExists($table, $column);
+}
+
+function db_index_exists($table, $index) {
+	return boostMariaDbIndexExists($table, $index);
+}
+
+function db_execute($sql) {
+	return boostMariaDbExecute($sql);
+}
+
+function cacti_log($message, $output = false, $facility = '') {
+	boostMariaDbLog($message, $output, $facility);
+}
+
 function boostMariaDbLoadProductionFunctions($root) {
-	if (function_exists('boostMariaDbEnsureProcessTable')) {
+	if (function_exists(__NAMESPACE__ . '\\boost_ensure_process_table')) {
 		return;
 	}
 
-	$source = file_get_contents($root . '/lib/boost.php');
-	$start  = strpos($source, 'function boost_process_table_exists_uncached(');
-	$end    = strpos($source, "\nfunction boost_array_orderby(", $start);
-
-	expect($start)->not->toBeFalse()
-		->and($end)->not->toBeFalse();
-
-	$functions = substr($source, $start, $end - $start);
-	$functions = str_replace(array(
+	foreach(array(
 		'boost_process_table_exists_uncached',
 		'boost_process_column_exists_uncached',
 		'boost_ensure_process_table',
-		'db_fetch_cell_prepared',
-		'db_table_exists',
-		'db_column_exists',
-		'db_index_exists',
-		'db_execute',
-		'cacti_log',
-	), array(
-		'boostMariaDbProcessTableExistsUncached',
-		'boostMariaDbProcessColumnExistsUncached',
-		'boostMariaDbEnsureProcessTable',
-		'boostMariaDbFetchCellPrepared',
-		'boostMariaDbTableExists',
-		'boostMariaDbColumnExists',
-		'boostMariaDbIndexExists',
-		'boostMariaDbExecute',
-		'boostMariaDbLog',
-	), $functions);
-
-	eval($functions);
-
-	$start = strpos($source, 'function boost_dynamic_table_exists_uncached(');
-	$end   = strpos($source, "\nfunction boost_compare_archive_tables(", $start);
-
-	expect($start)->not->toBeFalse()
-		->and($end)->not->toBeFalse();
-
-	$function = substr($source, $start, $end - $start);
-	$function = str_replace(array(
 		'boost_dynamic_table_exists_uncached',
-		'db_fetch_cell_prepared',
-	), array(
-		'boostMariaDbDynamicTableExistsUncached',
-		'boostMariaDbFetchCellPrepared',
-	), $function);
+		'boost_fetch_archive_range',
+	) as $function) {
+		$file = $function === 'boost_fetch_archive_range' ?
+			$root . '/poller_boost.php' : $root . '/lib/boost.php';
+		\cacti_fixture_source_function($file, $function, __NAMESPACE__);
+	}
+}
 
-	eval($function);
+function boostMariaDbProcessColumnExistsUncached($column) {
+	return boost_process_column_exists_uncached($column);
+}
 
-	$poller = file_get_contents($root . '/poller_boost.php');
-	$start  = strpos($poller, 'function boost_fetch_archive_page(');
-	$end    = strpos($poller, "\nfunction boost_process_local_data_ids(", $start);
+function boostMariaDbEnsureProcessTable($repair_key = false) {
+	return boost_ensure_process_table($repair_key);
+}
 
-	expect($start)->not->toBeFalse()
-		->and($end)->not->toBeFalse();
+function boostMariaDbDynamicTableExistsUncached($table) {
+	return boost_dynamic_table_exists_uncached($table);
+}
 
-	$function = substr($poller, $start, $end - $start);
-	$function = str_replace(array(
-		'boost_fetch_archive_page',
-		'boost_is_valid_archive_table',
-		'db_fetch_assoc_prepared',
-		'cacti_sizeof',
-		'data_local AS dl',
-	), array(
-		'boostMariaDbFetchArchivePage',
-		'boostMariaDbValidArchiveTable',
-		'boostMariaDbFetchAssocPrepared',
-		'boostMariaDbSizeof',
-		'boost_test_data_local AS dl',
-	), $function);
-
-	eval($function);
+function boostMariaDbFetchArchiveRange($table, $range_start, $range_end) {
+	return boost_fetch_archive_range($table, $range_start, $range_end);
 }
 
 beforeEach(function () use ($root) {
@@ -191,7 +188,7 @@ beforeEach(function () use ($root) {
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_local_data_ids');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_failures');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_100');
-	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS boost_test_data_local');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS data_local');
 });
 
 afterEach(function () {
@@ -199,55 +196,37 @@ afterEach(function () {
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_local_data_ids');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_failures');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_100');
-	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS boost_test_data_local');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS data_local');
 });
 
-test('one-archive pages join adjacent primary-key reads without a cross-archive union', function () {
+test('one archive range uses one ordered primary-key read without a limit', function () {
 	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE poller_output_boost_arch_100 (
 		local_data_id int unsigned NOT NULL,
 		rrd_name varchar(19) NOT NULL,
 		time timestamp NOT NULL,
 		output varchar(512) NOT NULL,
 		PRIMARY KEY (local_data_id, time, rrd_name)) ENGINE=InnoDB');
-	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE boost_test_data_local (
+	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE data_local (
 		id int unsigned NOT NULL PRIMARY KEY,
 		data_template_id int unsigned NOT NULL) ENGINE=InnoDB');
-	$GLOBALS['boost_mariadb_pdo']->exec('INSERT INTO boost_test_data_local VALUES (42, 7), (43, 7)');
+	$GLOBALS['boost_mariadb_pdo']->exec('INSERT INTO data_local VALUES (42, 7), (43, 7)');
 	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost_arch_100 VALUES
 		(42, 'a', '2026-09-05 12:00:00', '1'),
 		(42, 'b', '2026-09-05 12:00:00', '2'),
 		(42, 'a', '2026-09-05 12:01:00', '3'),
 		(43, 'a', '2026-09-05 12:00:00', '4'),
 		(44, 'a', '2026-09-05 12:00:00', '5')");
-	$first_page = boostMariaDbFetchArchivePage(
+	$range = boostMariaDbFetchArchiveRange(
 		'poller_output_boost_arch_100',
 		42,
-		44,
-		41,
-		'1970-01-02 00:00:00',
-		'',
-		2
+		44
 	);
 
-	expect($first_page)->toHaveCount(3)
-		->and(array_column($first_page, 'rrd_name'))->toBe(array('a', 'b', 'a'));
-
-	$cursor = end($first_page);
-	$second_page = boostMariaDbFetchArchivePage(
-		'poller_output_boost_arch_100',
-		42,
-		44,
-		(int) $cursor['local_data_id'],
-		$cursor['sample_time'],
-		$cursor['rrd_name'],
-		2
-	);
-
-	expect($second_page)->toHaveCount(2)
-		->and(array_map('intval', array_column($second_page, 'local_data_id')))->toBe(array(43, 44))
-		->and($second_page[1]['data_template_id'])->toBeNull()
-		->and(boostMariaDbFetchArchivePage('invalid_archive', 42, 44, 41,
-			'1970-01-02 00:00:00', '', 2))->toBeFalse();
+	expect($range)->toHaveCount(5)
+		->and(array_map('intval', array_column($range, 'local_data_id')))->toBe(array(42, 42, 42, 43, 44))
+		->and(array_column($range, 'rrd_name'))->toBe(array('a', 'b', 'a', 'a', 'a'))
+		->and($range[4]['data_template_id'])->toBeNull()
+		->and(boostMariaDbFetchArchiveRange('invalid_archive', 42, 44))->toBeFalse();
 });
 
 test('a newly created archive bypasses a cached negative existence check', function () {
@@ -284,27 +263,30 @@ test('row-balanced staging assigns every source once within one sealed archive',
 		run_id char(32) NOT NULL,
 		local_data_id int unsigned NOT NULL,
 		process_handler int unsigned NOT NULL,
+		range_handler bigint unsigned NOT NULL,
 		archive_rows bigint unsigned NOT NULL,
 		PRIMARY KEY (run_id, local_data_id),
-		INDEX process_handler(run_id, process_handler, local_data_id)) ENGINE=InnoDB");
+		INDEX process_handler(run_id, process_handler, range_handler, local_data_id)) ENGINE=InnoDB");
 	$run_id = str_repeat('c', 32);
 	$sql = 'INSERT INTO poller_output_boost_local_data_ids
-		(run_id, local_data_id, process_handler, archive_rows)
+		(run_id, local_data_id, process_handler, range_handler, archive_rows)
 		SELECT ?, local_data_id,
-			LEAST(?, FLOOR((cumulative_rows - source_rows) * ? / total_rows) + 1), source_rows
+			LEAST(?, FLOOR((cumulative_rows - source_rows) * ? / total_rows) + 1),
+			FLOOR((cumulative_rows - source_rows) / ?) + 1, source_rows
 		FROM (SELECT local_data_id, source_rows,
 			SUM(source_rows) OVER (ORDER BY local_data_id ROWS UNBOUNDED PRECEDING) AS cumulative_rows,
 			SUM(source_rows) OVER () AS total_rows
 			FROM (SELECT local_data_id, COUNT(*) AS source_rows
 				FROM poller_output_boost_arch_100 GROUP BY local_data_id) AS source_counts) AS assignments';
 	$statement = $GLOBALS['boost_mariadb_pdo']->prepare($sql);
-	$statement->execute(array($run_id, 2, 2));
-	$rows = $GLOBALS['boost_mariadb_pdo']->query('SELECT local_data_id, process_handler, archive_rows
+	$statement->execute(array($run_id, 2, 2, 3));
+	$rows = $GLOBALS['boost_mariadb_pdo']->query('SELECT local_data_id, process_handler, range_handler, archive_rows
 		FROM poller_output_boost_local_data_ids ORDER BY local_data_id')->fetchAll(PDO::FETCH_ASSOC);
 
 	expect($rows)->toHaveCount(4)
 		->and(array_sum(array_map(fn($row) => (int) $row['archive_rows'], $rows)))->toBe(6)
-		->and(array_column($rows, 'process_handler'))->toBe(array(1, 2, 2, 2));
+		->and(array_column($rows, 'process_handler'))->toBe(array(1, 2, 2, 2))
+		->and(array_column($rows, 'range_handler'))->toBe(array(1, 2, 2, 2));
 });
 
 test('archive lifecycle locks exclude on-demand ownership and release cleanly', function () {

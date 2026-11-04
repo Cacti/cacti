@@ -63,7 +63,7 @@ $permissions_ok = null;
 $created = rrdtool_create_structured_directory($base, $nested, 'BOOST', $permissions_ok);
 file_put_contents($file, 'rrd');
 chmod($file, 0600);
-$file_ok = rrdtool_apply_file_permissions($file, 'BOOST');
+$file_ok = rrdtool_apply_file_permissions($file, 'BOOST', $base);
 umask($old_umask);
 clearstatcache(true);
 

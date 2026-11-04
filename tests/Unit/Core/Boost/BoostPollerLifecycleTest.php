@@ -216,6 +216,14 @@ test('a temporary RRDtool outage cannot downgrade replay capability', function (
 		->and(substr_count($poller, 'boost_refresh_rrdtool_version()'))->toBe(2);
 });
 
+test('the RRDtool capability fallback uses the supported 1.5 floor', function () use ($root) {
+	$source = file_get_contents($root . '/lib/functions.php');
+	$body   = boostLifecycleFunctionBody($source, 'function get_rrdtool_version(');
+
+	expect($body)->toContain("?: '1.5.0'")
+		->and($body)->not->toContain("?: '1.4.0'");
+});
+
 test('pre-1.5 replay treats the last acknowledged timestamp as already applied', function () use ($root) {
 	$boost  = file_get_contents($root . '/lib/boost.php');
 	$poller = file_get_contents($root . '/poller_boost.php');
@@ -275,22 +283,20 @@ test('database errors cannot be cast to an empty archive and dropped', function 
 		->and($body)->toContain("return array('complete' => false, 'updates' => 0, 'failed_children' => 0);");
 });
 
-test('scheduled Boost pages use bounded adjacent primary-key reads', function () use ($root) {
+test('scheduled Boost ranges use one bounded primary-key read without a cursor', function () use ($root) {
 	$source = file_get_contents($root . '/poller_boost.php');
-	$page   = boostLifecycleFunctionBody($source, 'function boost_fetch_archive_page(');
+	$range  = boostLifecycleFunctionBody($source, 'function boost_fetch_archive_range(');
 	$worker = boostLifecycleFunctionBody($source, 'function boost_process_local_data_ids(');
 
-	expect($page)->toContain('$limit   = (int) $max_rows + 1;')
-		->and($page)->toContain('WHERE archive.local_data_id = ?')
-		->and($page)->toContain('archive.time > ?')
-		->and($page)->toContain('archive.rrd_name > ?')
-		->and($page)->toContain('if ($next_id === $range_end)')
-		->and($page)->toContain('WHERE archive.local_data_id BETWEEN ? AND ?')
-		->and($page)->toContain('FORCE INDEX (PRIMARY)')
-		->and($page)->toContain('LEFT JOIN data_local AS dl')
-		->and($page)->not->toContain('UNION ALL')
-		->and($worker)->toContain('boost_fetch_archive_page(')
-		->and($worker)->toContain('boost_limit_complete_timestamp_page($results, $max_rows)');
+	expect($range)->toContain('WHERE archive.local_data_id BETWEEN ? AND ?')
+		->and($range)->toContain('FORCE INDEX (PRIMARY)')
+		->and($range)->toContain('LEFT JOIN data_local AS dl')
+		->and($range)->not->toContain('LIMIT')
+		->and($range)->not->toContain('UNION ALL')
+		->and($worker)->toContain('GROUP BY range_handler')
+		->and($worker)->toContain('boost_fetch_archive_range(')
+		->and($worker)->toContain('cacti_sizeof($results) !== $expected_rows')
+		->and($worker)->not->toContain('$cursor_');
 });
 
 test('worker partitioning fails closed when distinct local data IDs share one RRD file', function () use ($root) {
@@ -310,6 +316,7 @@ test('worker launch includes only staged non-empty ranges', function () use ($ro
 	$launch = boostLifecycleFunctionBody($source, 'function boost_launch_children(');
 
 	expect($stage)->toContain('cumulative_rows - source_rows')
+		->and($stage)->toContain('FLOOR((cumulative_rows - source_rows) / ?) + 1')
 		->and($launch)->toContain('GROUP BY process_handler')
 		->and($launch)->toContain('foreach($ranges as $range)')
 		->and($launch)->toContain('$launched++')

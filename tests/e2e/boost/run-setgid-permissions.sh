@@ -13,7 +13,8 @@ useradd --uid 29103 --gid rrdwriters --no-create-home writertwo
 
 mkdir -p "$work_path/nonroot" "$work_path/root"
 chown rrdowner:rrdwriters "$work_path/nonroot" "$work_path/root"
-chmod 2770 "$work_path/nonroot" "$work_path/root"
+# Group write and setgid are the behavior under test; no access is granted to other users.
+chmod 2770 "$work_path/nonroot" "$work_path/root" # NOSONAR intentional setgid fixture
 
 runuser -u writerone -- php "$probe" \
 	"$work_path/nonroot" \
@@ -51,7 +52,7 @@ if runuser -u writertwo -- rrdtool update "$actual_rrd" 1700000060:1 2>/dev/null
 	exit 1
 fi
 
-php "$apply_probe" "$actual_rrd"
+php "$apply_probe" "$work_path/root" "$actual_rrd"
 runuser -u writertwo -- rrdtool update "$actual_rrd" 1700000060:1
 
 printf '%s\n' 'PASS: setgid, chown/chgrp, restrictive umask, visible permission failure, and different-owner RRDtool writers'

@@ -18,35 +18,34 @@ require __DIR__ . '/common.php';
  *
  * @param PDO $pdo Database connection.
  * @param string $table Validated archive table.
- * @param int $shards Requested maximum number of ranges.
+ * @param int $target_rows Approximate rows per range.
  *
  * @return array<int, array{start: int, end: int, expected_rows: int}> Ranges.
  */
-function boostBenchRanges(PDO $pdo, $table, $shards): array {
+function boostBenchRanges(PDO $pdo, $table, $target_rows): array {
 	if (!preg_match('/^poller_output_boost_arch_\d+$/D', $table)) {
 		throw new InvalidArgumentException('Invalid archive table name.');
 	}
 
-	$shards = max(1, (int) $shards);
+	$target_rows = max(1, (int) $target_rows);
 	$sql = "WITH source_rows AS (
 		SELECT local_data_id, COUNT(*) AS archive_rows
 		FROM `$table` FORCE INDEX (PRIMARY)
 		GROUP BY local_data_id
 	), cumulative AS (
 		SELECT local_data_id, archive_rows,
-			SUM(archive_rows) OVER (ORDER BY local_data_id) AS running_rows,
-			SUM(archive_rows) OVER () AS total_rows
+			SUM(archive_rows) OVER (ORDER BY local_data_id) AS running_rows
 		FROM source_rows
 	), assigned AS (
 		SELECT local_data_id, archive_rows,
-			LEAST($shards, FLOOR((running_rows - archive_rows) * $shards / total_rows) + 1) AS shard
+			FLOOR((running_rows - archive_rows) / $target_rows) + 1 AS range_handler
 		FROM cumulative
 	)
 	SELECT MIN(local_data_id) AS range_start, MAX(local_data_id) AS range_end,
 		SUM(archive_rows) AS expected_rows
 	FROM assigned
-	GROUP BY shard
-	ORDER BY shard";
+	GROUP BY range_handler
+	ORDER BY range_handler";
 	$rows = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 	$ranges = array();
 
@@ -62,101 +61,42 @@ function boostBenchRanges(PDO $pdo, $table, $shards): array {
 }
 
 /**
- * Scan one non-overlapping range using bounded full-primary-key pages.
+ * Scan one non-overlapping range with one LIMIT-less clustered-primary-key query.
  *
  * This is a synthetic database-only consumer. It deliberately performs no RRD writes and does
  * not delete the archive.
  *
  * @param string $table Validated archive table.
  * @param array{start: int, end: int, expected_rows: int} $range Source range.
- * @param int $page_size Maximum input rows per page.
- *
  * @return array<string, mixed> Worker measurements.
  */
-function boostBenchDrainRange($table, array $range, $page_size): array {
+function boostBenchDrainRange($table, array $range): array {
 	$pdo = boostBenchPdo(false, false);
-	$page_size = max(1, (int) $page_size);
-	$cursor_id = $range['start'] - 1;
-	$cursor_time = '1970-01-02 00:00:00';
-	$cursor_name = '';
-	$page_durations = array();
+	$query_durations = array();
 	$rows = 0;
-	$pages = 0;
 	$first_row_seconds = null;
 	$started = microtime(true);
+	$query_started = microtime(true);
+	$sql = "SELECT STRAIGHT_JOIN archive.local_data_id, dl.data_template_id,
+		UNIX_TIMESTAMP(archive.time) AS timestamp, archive.time AS sample_time,
+		archive.rrd_name, archive.output
+		FROM `$table` AS archive FORCE INDEX (PRIMARY)
+		LEFT JOIN data_local AS dl ON archive.local_data_id = dl.id
+		WHERE archive.local_data_id BETWEEN ? AND ?
+		ORDER BY archive.local_data_id, archive.time, archive.rrd_name";
+	$params = array($range['start'], $range['end']);
+	$statement = $pdo->query(boostBenchRenderSql($pdo, $sql, $params));
 
-	while (true) {
-		$page_started = microtime(true);
-		$page_rows = 0;
-		$last = null;
-		$columns = "SELECT STRAIGHT_JOIN archive.local_data_id, dl.data_template_id,
-			UNIX_TIMESTAMP(archive.time) AS timestamp, archive.time AS sample_time,
-			archive.rrd_name, archive.output
-			FROM `$table` AS archive FORCE INDEX (PRIMARY)
-			LEFT JOIN data_local AS dl ON archive.local_data_id = dl.id ";
-
-		if ($cursor_id >= $range['start'] && $cursor_id <= $range['end']) {
-			$sql = $columns . "WHERE archive.local_data_id = ?
-				AND (archive.time > ? OR (archive.time = ? AND archive.rrd_name > ?))
-				ORDER BY archive.time, archive.rrd_name
-				LIMIT $page_size";
-			$params = array($cursor_id, $cursor_time, $cursor_time, $cursor_name);
-			$statement = $pdo->query(boostBenchRenderSql($pdo, $sql, $params));
-
-			while (($row = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
-				if ($first_row_seconds === null) {
-					$first_row_seconds = microtime(true) - $started;
-				}
-
-				$page_rows++;
-				$last = $row;
-			}
-
-			$statement->closeCursor();
+	while ($statement->fetch(PDO::FETCH_ASSOC) !== false) {
+		if ($first_row_seconds === null) {
+			$first_row_seconds = microtime(true) - $started;
 		}
 
-		$remaining = $page_size - $page_rows;
-		$next_id   = max($range['start'], $cursor_id + 1);
-
-		if ($remaining > 0 && $next_id <= $range['end']) {
-			if ($next_id === $range['end']) {
-				$sql = $columns . "WHERE archive.local_data_id = ?
-					ORDER BY archive.time, archive.rrd_name
-					LIMIT $remaining";
-				$params = array($next_id);
-			} else {
-				$sql = $columns . "WHERE archive.local_data_id BETWEEN ? AND ?
-					ORDER BY archive.local_data_id, archive.time, archive.rrd_name
-					LIMIT $remaining";
-				$params = array($next_id, $range['end']);
-			}
-
-			$statement = $pdo->query(boostBenchRenderSql($pdo, $sql, $params));
-
-			while (($row = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
-				if ($first_row_seconds === null) {
-					$first_row_seconds = microtime(true) - $started;
-				}
-
-				$page_rows++;
-				$last = $row;
-			}
-
-			$statement->closeCursor();
-		}
-
-		$page_durations[] = microtime(true) - $page_started;
-		$rows += $page_rows;
-		$pages++;
-
-		if ($page_rows < $page_size || $last === null) {
-			break;
-		}
-
-		$cursor_id   = (int) $last['local_data_id'];
-		$cursor_time = $last['sample_time'];
-		$cursor_name = $last['rrd_name'];
+		$rows++;
 	}
+
+	$statement->closeCursor();
+	$query_durations[] = microtime(true) - $query_started;
 
 	return array(
 		'pid'                       => getmypid(),
@@ -164,10 +104,10 @@ function boostBenchDrainRange($table, array $range, $page_size): array {
 		'range_end'                 => $range['end'],
 		'expected_rows'             => $range['expected_rows'],
 		'rows'                      => $rows,
-		'pages'                     => $pages,
+		'pages'                     => 1,
 		'seconds'                   => microtime(true) - $started,
 		'time_to_first_row_seconds' => $first_row_seconds,
-		'page_seconds'              => $page_durations,
+		'page_seconds'              => $query_durations,
 		'peak_php_bytes'            => memory_get_peak_usage(true),
 	);
 }
@@ -177,11 +117,9 @@ function boostBenchDrainRange($table, array $range, $page_size): array {
  *
  * @param string $table Archive table.
  * @param array{start: int, end: int, expected_rows: int} $range Source range.
- * @param int $page_size Page size.
- *
  * @return array{pid: int, socket: resource, range: array<string, int>} Worker state.
  */
-function boostBenchStartWorker($table, array $range, $page_size): array {
+function boostBenchStartWorker($table, array $range): array {
 	$sockets = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
 
 	if ($sockets === false) {
@@ -198,7 +136,7 @@ function boostBenchStartWorker($table, array $range, $page_size): array {
 		fclose($sockets[0]);
 
 		try {
-			$result = boostBenchDrainRange($table, $range, $page_size);
+			$result = boostBenchDrainRange($table, $range);
 			fwrite($sockets[1], json_encode($result, JSON_UNESCAPED_SLASHES));
 			fclose($sockets[1]);
 			exit(0);
@@ -324,19 +262,18 @@ function boostBenchRunProducer($socket, $rate, $sources): void {
 
 $options = getopt('', array(
 	'mode:',
+	'target-rows::',
 	'page-size::',
 	'workers::',
 	'max-workers::',
-	'adaptive-shards::',
 	'target-p95-ms::',
 	'archives::',
 	'incoming-rate::',
 ));
 $mode = $options['mode'] ?? '';
-$page_size = max(1, (int) ($options['page-size'] ?? 50000));
+$target_rows = max(1, (int) ($options['target-rows'] ?? ($options['page-size'] ?? 50000)));
 $workers = max(1, min(32, (int) ($options['workers'] ?? 1)));
 $max_workers = max(1, min(32, (int) ($options['max-workers'] ?? 8)));
-$adaptive_shards = max($max_workers, min(1024, (int) ($options['adaptive-shards'] ?? ($max_workers * 8))));
 $target_p95 = max(0.001, (float) ($options['target-p95-ms'] ?? 250) / 1000);
 $archive_limit = max(1, (int) ($options['archives'] ?? 1));
 $incoming_rate = max(0, (int) ($options['incoming-rate'] ?? 0));
@@ -397,8 +334,7 @@ $observed_concurrency = 0;
 foreach($archives as $table) {
 	$observer = boostBenchPdo(true, false);
 	$staging_started = microtime(true);
-	$shards = $mode === 'serial' ? 1 : ($mode === 'parallel' ? $workers : $adaptive_shards);
-	$ranges = boostBenchRanges($observer, $table, $shards);
+	$ranges = boostBenchRanges($observer, $table, $target_rows);
 	$staging_seconds = microtime(true) - $staging_started;
 	$observer = null;
 	$queue = $ranges;
@@ -410,7 +346,7 @@ foreach($archives as $table) {
 	while (count($queue) || count($active)) {
 		while (count($queue) && count($active) < $current_limit) {
 			$range = array_shift($queue);
-			$worker = boostBenchStartWorker($table, $range, $page_size);
+			$worker = boostBenchStartWorker($table, $range);
 			$active[$worker['pid']] = $worker;
 			$observed_concurrency = max($observed_concurrency, count($active));
 		}
@@ -488,7 +424,7 @@ $result = array(
 	'mode'                        => $mode,
 	'engine'                      => $engine,
 	'archives_processed'          => count($archives),
-	'page_size'                   => $page_size,
+	'target_range_rows'           => $target_rows,
 	'configured_workers'          => $mode === 'adaptive' ? $max_workers : ($mode === 'parallel' ? $workers : 1),
 	'observed_max_concurrency'     => $observed_concurrency,
 	'rows'                        => $total_rows,

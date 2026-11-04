@@ -588,7 +588,7 @@ function boost_clear_superseded_rrd_failure($local_data_id, $latest_sample) {
  * @return string|false Lock name on success, false on timeout.
  */
 function boost_acquire_rrd_path_lock($rrd_path, $timeout = 5) {
-	$lock_name = 'boost.rrd.' . sha1($rrd_path);
+	$lock_name = 'boost.rrd.' . substr(hash('sha256', $rrd_path), 0, 54);
 	$locked    = db_fetch_cell_prepared('SELECT GET_LOCK(?, ?)', array($lock_name, max(0, (int) $timeout)));
 
 	return $locked ? $lock_name : false;
@@ -936,49 +936,6 @@ function boost_file_size_display($file_size, $digits = 2) {
 	} else {
 		return __('%s Bytes', number_format_i18n($file_size, $digits));
 	}
-}
-
-/**
- * Return a bounded page without splitting the fields belonging to one RRD timestamp. The caller
- * must fetch max_rows + 1 ordered rows so this function can prove whether the final timestamp is
- * complete. Used as part of Cacti's lib functionality.
- *
- * @param mixed $rows The rows.
- * @param mixed $max_rows The max rows.
- *
- * @return array|false A safe page, or false when one timestamp alone exceeds the configured bound.
- */
-function boost_limit_complete_timestamp_page($rows, $max_rows) {
-	$max_rows = max(1, (int) $max_rows);
-
-	if (!is_array($rows) || count($rows) <= $max_rows) {
-		return $rows;
-	}
-
-	$overflow = $rows[$max_rows];
-	$rows     = array_slice($rows, 0, $max_rows);
-	$last     = end($rows);
-
-	if ($last['local_data_id'] == $overflow['local_data_id'] && $last['timestamp'] == $overflow['timestamp']) {
-		$split_id   = $last['local_data_id'];
-		$split_time = $last['timestamp'];
-
-		while (count($rows)) {
-			$last = end($rows);
-
-			if ($last['local_data_id'] != $split_id || $last['timestamp'] != $split_time) {
-				break;
-			}
-
-			array_pop($rows);
-		}
-
-		if (!count($rows)) {
-			return false;
-		}
-	}
-
-	return $rows;
 }
 
 /**
@@ -3096,7 +3053,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 
 		if ($config['cacti_server_os'] != 'win32' && !read_config_option('storage_location')) {
-			rrdtool_apply_file_permissions($data_source_path, 'BOOST');
+			rrdtool_apply_file_permissions($data_source_path, 'BOOST', $config['rra_path']);
 		}
 
 		return $success;

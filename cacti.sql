@@ -2250,9 +2250,10 @@ CREATE TABLE `poller_output_boost_local_data_ids` (
 	`run_id` char(32) NOT NULL DEFAULT '',
 	`local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
 	`process_handler` int(10) unsigned NOT NULL DEFAULT 0,
+	`range_handler` bigint(20) unsigned NOT NULL DEFAULT 0,
 	`archive_rows` bigint(20) unsigned NOT NULL DEFAULT 0,
 	PRIMARY KEY (`run_id`,`local_data_id`),
-	KEY `process_handler` (`run_id`,`process_handler`,`local_data_id`)
+	KEY `process_handler` (`run_id`,`process_handler`,`range_handler`,`local_data_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
