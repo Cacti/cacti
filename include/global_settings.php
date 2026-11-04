@@ -2192,6 +2192,38 @@ $settings = array(
 			'default' => '1200',
 			'array' => $boost_max_runtime
 		),
+		'boost_failure_queue_max_records' => array(
+			'friendly_name' => __('Maximum Failed RRDs Queued'),
+			'description' => __('Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination.'),
+			'method' => 'textbox',
+			'default' => '10000',
+			'max_length' => '6',
+			'size' => '8'
+		),
+		'boost_failure_retry_budget' => array(
+			'friendly_name' => __('Failed RRD Retry Budget'),
+			'description' => __('Maximum queued RRD destinations retried by one scheduled Boost run.'),
+			'method' => 'textbox',
+			'default' => '100',
+			'max_length' => '4',
+			'size' => '8'
+		),
+		'boost_failure_max_retries' => array(
+			'friendly_name' => __('Maximum Failed RRD Retries'),
+			'description' => __('Queued RRD updates are explicitly discarded after this many failed automatic attempts.'),
+			'method' => 'textbox',
+			'default' => '8',
+			'max_length' => '3',
+			'size' => '8'
+		),
+		'boost_failure_max_age_days' => array(
+			'friendly_name' => __('Maximum Failed RRD Age'),
+			'description' => __('Days to retain the latest failed RRD update before explicit discard.'),
+			'method' => 'textbox',
+			'default' => '7',
+			'max_length' => '2',
+			'size' => '8'
+		),
 		'path_boost_log' => array(
 			'friendly_name' => __('Boost Debug Log'),
 			'description' => __('If this field is non-blank, Boost will log RRDUpdate output from the boost	poller process.'),

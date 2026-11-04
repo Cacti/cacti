@@ -35,11 +35,12 @@ test('Recovery deletes only the exact rows acknowledged by the main collector', 
 	expect($recovery)->not->toContain('DELETE FROM poller_output_boost WHERE time <=');
 });
 
-test('Scheduled Boost retains shard ownership after an RRD update failure', function () {
+test('Scheduled Boost durably isolates individual RRD failures and retains systemic failures', function () {
 	$poller = boostSource('poller_boost.php');
 
 	expect($poller)->toContain('function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe)');
-	expect($poller)->toContain('if ($updates_ok && $results !== false)');
+	expect($poller)->toContain('boost_queue_rrd_failure(');
+	expect($poller)->toContain("if (!\$disposition['handled'])");
 	expect($poller)->toContain('return $updates_ok && $results !== false ? cacti_sizeof($results) : -1;');
 	expect($poller)->toContain('if ($pass_rows < 0)');
 	expect(boostSource('lib/boost.php'))->toContain("return is_string(\$result) && \$result !== '' ? \$result : 'ERROR: RRDtool did not acknowledge the update';");
@@ -53,8 +54,10 @@ test('Boost child completion and archive deletion are scoped to a parent run', f
 	expect($poller)->toContain("' --run-id=' . \$run_id");
 	expect($poller)->toContain('function boost_completed_children($run_id)');
 	expect($poller)->toContain('function boost_failed_children($run_id)');
-	expect($poller)->toContain('$run_complete       = $completed_children >= $expected_children');
-	expect($poller)->toContain('$rrd_updates > 0 && $run_complete');
+	expect($poller)->toContain('$complete = $completed_children >= $expected_children && $failed_children === 0;');
+	expect($poller)->toContain('$running_children = boost_processes_running();');
+	expect($poller)->toContain('if ($running_children === false || $running_children > 0)');
+	expect($poller)->toContain('boost_release_archive_lifecycle_lock($archive_lifecycle_lock)');
 	expect($schema)->toContain('UNIQUE KEY `run_child` (`run_id`,`child_id`)');
 });
 

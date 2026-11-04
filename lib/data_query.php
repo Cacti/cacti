@@ -494,22 +494,14 @@ function data_query_remove_disabled_items($orphaned_ids) {
 		db_execute_prepared('DELETE FROM poller_item
 			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
 
-		db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
-
-		$archive_tables = array_rekey(
-			db_fetch_assoc('SELECT TABLE_NAME
-				FROM information_schema.TABLES
-				WHERE TABLE_NAME LIKE "poller_output_boost_arch%"'),
-			'TABLE_NAME', 'TABLE_NAME'
-		);
-
-		if (cacti_sizeof($archive_tables)) {
-			foreach($archive_tables as $table) {
-				db_execute_prepared("DELETE FROM $table
-					WHERE local_data_id IN (" . implode(', ', $orphaned_ids) . ')', false);
-			}
+		if (read_config_option('boost_rrd_update_enable') != 'on') {
+			db_execute_prepared('DELETE FROM poller_output_boost
+				WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
 		}
+
+		/* Enabled Boost owns its live and sealed rows until scheduled processing. Missing data-source
+		 * metadata is handled as an explicit discard there, and the child barrier drops the archive.
+		 * Disabled Boost retains the legacy live-table delete above. */
 	}
 }
 

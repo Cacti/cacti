@@ -84,15 +84,21 @@ function rrdtool_reset_language() {
  * Handles the RRD init. Used as part of Cacti's lib functionality.
  *
  * @param bool $output_to_term The output to term.
+ * @param bool $read_response Whether the caller requires one RRDtool response per command.
  *
  * @return mixed The result of the operation, or false on failure.
  */
-function rrd_init($output_to_term = true) {
+function rrd_init($output_to_term = true, $read_response = false) {
 	global $config;
 
-	$args = func_get_args();
+	$args = array($output_to_term);
 	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true ) ? true : false;
 	$function = ($force_storage_location_local === false && read_config_option('storage_location')) ? '__rrd_proxy_init' : '__rrd_init';
+
+	if ($read_response && $function === '__rrd_init') {
+		return __rrd_init_acknowledged();
+	}
+
 	return call_user_func_array($function, $args);
 }
 
@@ -124,6 +130,293 @@ function __rrd_init($output_to_term = true) {
 	}
 
 	return popen($command, 'w');
+}
+
+/**
+ * Open a reusable local RRDtool process whose command pipe carries response metadata.
+ *
+ * RRDtool emits exactly one terminal OK or ERROR line for each command written to its
+ * standard input. Keeping stdout and stderr together lets Boost acknowledge a command
+ * before it advances an archive cursor without launching a process per update.
+ *
+ * @return resource|false Writable RRDtool command pipe, or false when startup fails.
+ */
+function __rrd_init_acknowledged() {
+	$binary = read_config_option('path_rrdtool');
+
+	if (!is_file($binary) || !is_executable($binary)) {
+		return false;
+	}
+
+	if (read_config_option('path_rrdtool_default_font')) {
+		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
+	}
+
+	rrdtool_set_language();
+
+	$descriptors = array(
+		0 => array('pipe', 'r'),
+		1 => array('pipe', 'w'),
+		2 => array('redirect', 1),
+	);
+	$process = proc_open(array($binary, '-'), $descriptors, $pipes);
+
+	if (!is_resource($process)) {
+		rrdtool_reset_language();
+
+		return false;
+	}
+
+	if (PHP_OS_FAMILY !== 'Windows') {
+		stream_set_blocking($pipes[1], false);
+	}
+
+	stream_context_set_option($pipes[0], 'cacti', 'rrd_output', $pipes[1]);
+	stream_context_set_option($pipes[0], 'cacti', 'rrd_process', $process);
+
+	return $pipes[0];
+}
+
+/**
+ * Read one bounded response from an acknowledged RRDtool worker.
+ *
+ * A timed-out or oversized response permanently poisons the worker. The caller must close it;
+ * silently falling back to a write-only process would acknowledge data that RRDtool may reject.
+ *
+ * @param resource $input Writable command pipe returned by __rrd_init_acknowledged().
+ * @param int $timeout Maximum seconds to wait for one complete response.
+ *
+ * @return string|false Complete RRDtool response, or false on protocol/worker failure.
+ */
+function __rrd_read_acknowledgement($input, $timeout = 30) {
+	$options = stream_context_get_options($input);
+
+	if (!isset($options['cacti']['rrd_output'], $options['cacti']['rrd_process'])) {
+		return false;
+	}
+
+	$output   = $options['cacti']['rrd_output'];
+	$deadline = microtime(true) + max(1, (int) $timeout);
+	$buffer   = '';
+
+	while (strlen($buffer) <= 65536) {
+		$remaining = $deadline - microtime(true);
+
+		if ($remaining <= 0 || feof($output)) {
+			break;
+		}
+
+		if (PHP_OS_FAMILY === 'Windows') {
+			$chunk = fgets($output, 65537);
+		} else {
+			$read    = array($output);
+			$write   = null;
+			$except  = null;
+			$seconds = (int) $remaining;
+			$micros  = (int) (($remaining - $seconds) * 1000000);
+			$ready   = stream_select($read, $write, $except, $seconds, $micros);
+
+			if ($ready === false || $ready === 0) {
+				break;
+			}
+
+			$chunk = stream_get_contents($output);
+		}
+
+		if ($chunk === false || $chunk === '') {
+			break;
+		}
+
+		$buffer .= $chunk;
+
+		if (strlen($buffer) > 65536) {
+			break;
+		}
+
+		if (preg_match('/(?:^|\n)(?:OK(?: |\r?$)|ERROR:.*\r?$)/m', $buffer) === 1 &&
+			preg_match('/\r?\n$/', $buffer) === 1) {
+			return $buffer;
+		}
+	}
+
+	stream_context_set_option($input, 'cacti', 'rrd_failed', true);
+	proc_terminate($options['cacti']['rrd_process'], 9);
+
+	return false;
+}
+
+/**
+ * Write a complete RRDtool protocol frame to a pipe.
+ *
+ * A blocking pipe may still accept fewer bytes than requested. Treating any positive partial
+ * write as success can leave RRDtool waiting for the rest of a command while Boost waits for an
+ * acknowledgement that can never arrive.
+ *
+ * @param resource $stream Writable RRDtool pipe.
+ * @param string $payload Complete newline-terminated protocol frame.
+ *
+ * @return bool True only when every byte was written.
+ */
+function __rrd_write_all($stream, $payload) {
+	$length = strlen($payload);
+	$offset = 0;
+
+	while ($offset < $length) {
+		$written = @fwrite($stream, substr($payload, $offset));
+
+		if ($written === false || $written === 0) {
+			return false;
+		}
+
+		$offset += $written;
+	}
+
+	return true;
+}
+
+/**
+ * Create a local structured RRD directory while preserving inherited group collaboration.
+ *
+ * The nearest existing ancestor supplies owner, group, permission bits, and setgid. An explicit
+ * chmod after mkdir restores bits that the process umask may remove. Existing directories are
+ * never rewritten, so administrator-managed ACLs and modes remain authoritative.
+ *
+ * @param string $base_path Configured RRA root.
+ * @param string $directory Structured directory to create below the root.
+ * @param string $logopt Cacti log facility.
+ * @param bool|null &$permissions_ok Set false when creation succeeds but ownership/mode repair
+ *   or verification fails.
+ *
+ * @return bool True when the directory exists after the operation, false on creation failure.
+ */
+function rrdtool_create_structured_directory($base_path, $directory, $logopt = 'POLLER', &$permissions_ok = null) {
+	$permissions_ok = true;
+	$base_path      = rtrim($base_path, DIRECTORY_SEPARATOR);
+	$directory      = rtrim($directory, DIRECTORY_SEPARATOR);
+
+	if (is_dir($directory)) {
+		return true;
+	}
+
+	if ($base_path === '' || !is_dir($base_path) ||
+		($directory !== $base_path && strpos($directory . DIRECTORY_SEPARATOR, $base_path . DIRECTORY_SEPARATOR) !== 0)) {
+		cacti_log("ERROR: Refusing to create structured RRD path outside '$base_path': '$directory'", false, $logopt);
+
+		return false;
+	}
+
+	$ancestor = $directory;
+
+	while (!is_dir($ancestor) && $ancestor !== $base_path) {
+		$parent = dirname($ancestor);
+
+		if ($parent === $ancestor) {
+			break;
+		}
+
+		$ancestor = $parent;
+	}
+
+	if (!is_dir($ancestor)) {
+		cacti_log("ERROR: Unable to find an existing parent for structured RRD path '$directory'", false, $logopt);
+
+		return false;
+	}
+
+	$owner_id = fileowner($ancestor);
+	$group_id = filegroup($ancestor);
+	$mode     = fileperms($ancestor) & 07777;
+
+	if (!mkdir($directory, $mode & 0777, true) && !is_dir($directory)) {
+		cacti_log("ERROR: Unable to create structured RRD path '$directory'", false, $logopt);
+
+		return false;
+	}
+
+	$new_paths = array();
+	$path      = $directory;
+
+	while ($path !== $ancestor && strpos($path . DIRECTORY_SEPARATOR, $ancestor . DIRECTORY_SEPARATOR) === 0) {
+		$new_paths[] = $path;
+		$parent = dirname($path);
+
+		if ($parent === $path) {
+			break;
+		}
+
+		$path = $parent;
+	}
+
+	foreach(array_reverse($new_paths) as $path) {
+		$path_ok = true;
+
+		if (function_exists('posix_getuid') && posix_getuid() == 0) {
+			$path_ok = chown($path, $owner_id) && chgrp($path, $group_id);
+		}
+
+		$path_ok = chmod($path, $mode) && $path_ok;
+		clearstatcache(true, $path);
+		$actual_mode  = fileperms($path) & 07777;
+		$actual_group = filegroup($path);
+		$expected_setgid = $mode & 02000;
+
+		if (($actual_mode & 02000) !== $expected_setgid || $actual_group !== $group_id) {
+			$path_ok = false;
+		}
+
+		if (!$path_ok) {
+			$permissions_ok = false;
+			cacti_log("WARNING: Structured RRD path '$path' was created but its inherited owner/group/setgid arrangement could not be fully applied.", false, $logopt);
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Apply the structured directory's collaborative group policy to a newly created RRD file.
+ *
+ * A group-writable parent makes the file group-readable and group-writable so a writer whose
+ * identity differs from the file owner can update it. Failure is reported separately and does
+ * not rewrite the RRDtool create acknowledgement.
+ *
+ * @param string $file Newly created RRD file.
+ * @param string $logopt Cacti log facility.
+ *
+ * @return bool True when owner/group/mode verification succeeds.
+ */
+function rrdtool_apply_file_permissions($file, $logopt = 'POLLER') {
+	if (!is_file($file)) {
+		cacti_log("WARNING: RRD file '$file' does not exist for permission assignment.", false, $logopt);
+
+		return false;
+	}
+
+	$directory = dirname($file);
+	$owner_id  = fileowner($directory);
+	$group_id  = filegroup($directory);
+	$dir_mode  = fileperms($directory) & 07777;
+	$file_mode = fileperms($file) & 0777;
+	$mode      = $file_mode;
+	$success   = true;
+
+	if ($dir_mode & 0020) {
+		$mode |= 0060;
+	}
+
+	if (function_exists('posix_getuid') && posix_getuid() == 0) {
+		$success = chown($file, $owner_id) && chgrp($file, $group_id);
+	}
+
+	$success = chmod($file, $mode) && $success;
+	clearstatcache(true, $file);
+	$success = filegroup($file) === $group_id && ((fileperms($file) & 0060) === ($mode & 0060)) && $success;
+
+	if (!$success) {
+		cacti_log("WARNING: RRD file '$file' was created but its collaborative owner/group/mode arrangement could not be fully applied.", false, $logopt);
+	}
+
+	return $success;
 }
 
 /**
@@ -244,7 +537,15 @@ function rrd_close() {
 function __rrd_close($rrdtool_pipe) {
 	/* close the rrdtool file descriptor */
 	if (is_resource($rrdtool_pipe)) {
-		pclose($rrdtool_pipe);
+		$options = stream_context_get_options($rrdtool_pipe);
+
+		if (isset($options['cacti']['rrd_process'], $options['cacti']['rrd_output'])) {
+			fclose($rrdtool_pipe);
+			fclose($options['cacti']['rrd_output']);
+			proc_close($options['cacti']['rrd_process']);
+		} else {
+			pclose($rrdtool_pipe);
+		}
 	}
 
 	rrdtool_reset_language();
@@ -396,6 +697,12 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	}
 
 	static $last_command;
+	$pipe_options = is_resource($rrdtool_pipe) ? stream_context_get_options($rrdtool_pipe) : array();
+	$read_response = isset($pipe_options['cacti']['rrd_output']);
+
+	if (!empty($pipe_options['cacti']['rrd_failed'])) {
+		return false;
+	}
 
 	if (!is_numeric($output_flag)) {
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
@@ -454,7 +761,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			if (!is_resource($process)) {
 				unset($process);
 			} else {
-				fwrite($pipes[0], escape_command($command_line) . "\r\nquit\r\n");
+				__rrd_write_all($pipes[0], escape_command($command_line) . "\r\nquit\r\n");
 				fclose($pipes[0]);
 				$fp = $pipes[1];
 			}
@@ -466,8 +773,14 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	} else {
 		$i = 0;
 		while (1) {
-			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") === false) {
+			if (!__rrd_write_all($rrdtool_pipe, escape_command(" $command_line") . "\r\n")) {
 				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'");
+
+				if ($read_response) {
+					stream_context_set_option($rrdtool_pipe, 'cacti', 'rrd_failed', true);
+
+					return false;
+				}
 
 				/* close the invalid pipe */
 				rrd_close($rrdtool_pipe);
@@ -494,6 +807,26 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 	/* store the last command to provide rrdtool segfault diagnostics */
 	$last_command = $command_line;
+
+	if ($read_response) {
+		$response = __rrd_read_acknowledgement($rrdtool_pipe);
+
+		if ($response === false || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) {
+			return $response;
+		}
+
+		if ($output_flag == RRDTOOL_OUTPUT_BOOLEAN) {
+			return preg_match('/(?:^|\n)OK(?: |\r?\n|$)/', $response) === 1;
+		}
+
+		if ($output_flag == RRDTOOL_OUTPUT_NULL) {
+			return;
+		}
+
+		rrdtool_trim_output($response);
+
+		return $response;
+	}
 
 	if (!isset($fp)) {
 		return;
@@ -929,11 +1262,6 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	if ($config['cacti_server_os'] != 'win32') {
-		$owner_id = fileowner($config['rra_path']);
-		$group_id = filegroup($config['rra_path']);
-	}
-
 	/**
 	 * check for structured path configuration, if in place verify directory
 	 * exists and if not create it.
@@ -947,37 +1275,9 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
 			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775, true)) {
-					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-						$success  = true;
-						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
-						$spath    = '';
+				$permissions_ok = true;
 
-						foreach($paths as $path) {
-							if ($path == '') {
-								continue;
-							}
-
-							$spath .= '/' . $path;
-
-							$powner_id = fileowner($config['rra_path'] . $spath);
-							$pgroup_id = fileowner($config['rra_path'] . $spath);
-
-							if ($powner_id != $owner_id) {
-								$success = chown($config['rra_path'] . $spath, $owner_id);
-							}
-
-							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp($config['rra_path'] . $spath, $group_id);
-							}
-
-							if (!$success) {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
-								break;
-							}
-						}
-					}
-				} else {
+				if (!rrdtool_create_structured_directory($config['rra_path'], dirname($data_source_path), 'POLLER', $permissions_ok)) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			} else {
@@ -991,17 +1291,8 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	} else {
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
-		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-			if (file_exists($data_source_path)) {
-				if (!chown($data_source_path, $owner_id)) {
-					cacti_log("ERROR: Unable to set ownership for '$data_source_path'", false, 'POLLER');
-				}
-				if (!chgrp($data_source_path, $group_id)) {
-					cacti_log("ERROR: Unable to set group for '$data_source_path'", false, 'POLLER');
-				}
-			} else {
-				cacti_log("ERROR: RRD file '$data_source_path' does not exist for ownership assignment", false, 'POLLER');
-			}
+		if ($config['cacti_server_os'] != 'win32' && !read_config_option('storage_location')) {
+			rrdtool_apply_file_permissions($data_source_path, 'POLLER');
 		}
 
 		return $success;

@@ -138,12 +138,23 @@ test('Windows cache replacement preserves the new payload and removes its backup
 			->and(file_exists($temp_file))->toBeFalse()
 			->and(glob($directory . '/.boost-old-*'))->toBe(array());
 	} finally {
-		@unlink($temp_file);
-		@unlink($cache_file);
-		foreach (glob($directory . '/.boost-old-*') ?: array() as $backup) {
-			@unlink($backup);
+		if (file_exists($temp_file)) {
+			unlink($temp_file);
 		}
-		@rmdir($directory);
+
+		if (file_exists($cache_file)) {
+			unlink($cache_file);
+		}
+
+		foreach (glob($directory . '/.boost-old-*') ?: array() as $backup) {
+			if (file_exists($backup)) {
+				unlink($backup);
+			}
+		}
+
+		if (is_dir($directory)) {
+			rmdir($directory);
+		}
 	}
 });
 
