@@ -23,11 +23,18 @@ function boostScheduleTestReset(array $overrides = array()) {
 		),
 		'rows'    => 0,
 		'pollers' => 1,
+		'archives' => array(),
+		'failure_table' => false,
+		'due_failure' => false,
 		'writes'  => array(),
 	), $overrides);
 }
 
 function boostScheduleTestDebug($message) {
+}
+
+function boostScheduleTestSizeof($value) {
+	return is_countable($value) ? count($value) : 0;
 }
 
 function boostScheduleTestRead($name) {
@@ -44,7 +51,19 @@ function boostScheduleTestRows() {
 }
 
 function boostScheduleTestFetchCell($sql) {
+	if (strpos($sql, 'poller_output_boost_failures') !== false) {
+		return $GLOBALS['boost_schedule_test_state']['due_failure'];
+	}
+
 	return $GLOBALS['boost_schedule_test_state']['pollers'];
+}
+
+function boostScheduleTestArchives() {
+	return $GLOBALS['boost_schedule_test_state']['archives'];
+}
+
+function boostScheduleTestFailureTable() {
+	return $GLOBALS['boost_schedule_test_state']['failure_table'];
 }
 
 function boostScheduleTestLoadFunction($root) {
@@ -63,17 +82,23 @@ function boostScheduleTestLoadFunction($root) {
 	$function = substr($source, $start, $end - $start);
 	$function = str_replace(array(
 		'boost_time_to_run',
+		'cacti_sizeof',
 		'boost_debug',
 		'read_config_option',
 		'set_config_option',
 		'boost_get_total_rows',
+		'boost_get_arch_table_names',
+		'boost_failure_table_exists_uncached',
 		'db_fetch_cell',
 	), array(
 		'boostScheduleTestTimeToRun',
+		'boostScheduleTestSizeof',
 		'boostScheduleTestDebug',
 		'boostScheduleTestRead',
 		'boostScheduleTestSet',
 		'boostScheduleTestRows',
+		'boostScheduleTestArchives',
+		'boostScheduleTestFailureTable',
 		'boostScheduleTestFetchCell',
 	), $function);
 
@@ -190,6 +215,24 @@ test('disabled Boost still drains queued rows', function () {
 		'rows'    => 1,
 		'pollers' => 1,
 		'writes'  => array(),
+	));
+
+	expect(boostScheduleTestTimeToRun(false, 200000, 190000, 0))->toBeTrue();
+});
+
+test('disabled Boost still retries due isolated RRD failures', function () {
+	boostScheduleTestReset(array(
+		'config' => array(
+			'boost_rrd_update_enable'        => '',
+			'boost_rrd_update_system_enable' => '',
+			'boost_rrd_update_interval'      => 60,
+			'boost_rrd_update_max_records'   => 1000,
+		),
+		'rows'          => 0,
+		'pollers'       => 1,
+		'failure_table' => true,
+		'due_failure'   => true,
+		'writes'        => array(),
 	));
 
 	expect(boostScheduleTestTimeToRun(false, 200000, 190000, 0))->toBeTrue();

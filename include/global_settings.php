@@ -2164,8 +2164,8 @@ $settings = array(
 			'size' => '10'
 		),
 		'boost_rrd_update_max_records_per_select' => array(
-			'friendly_name' => __('Maximum Data Source Items Per Pass'),
-			'description' => __('To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000.'),
+			'friendly_name' => __('Target Archive Rows Per Range'),
+			'description' => __('The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000.'),
 			'method' => 'drop_array',
 			'default' => '50000',
 			'array' => $boost_max_rows_per_select
@@ -2191,6 +2191,38 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '1200',
 			'array' => $boost_max_runtime
+		),
+		'boost_failure_queue_max_records' => array(
+			'friendly_name' => __('Maximum Failed RRDs Queued'),
+			'description' => __('Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination.'),
+			'method' => 'textbox',
+			'default' => '10000',
+			'max_length' => '6',
+			'size' => '8'
+		),
+		'boost_failure_retry_budget' => array(
+			'friendly_name' => __('Failed RRD Retry Budget'),
+			'description' => __('Maximum queued RRD destinations retried by one scheduled Boost run.'),
+			'method' => 'textbox',
+			'default' => '100',
+			'max_length' => '4',
+			'size' => '8'
+		),
+		'boost_failure_max_retries' => array(
+			'friendly_name' => __('Maximum Failed RRD Retries'),
+			'description' => __('Queued RRD updates are explicitly discarded after this many failed automatic attempts.'),
+			'method' => 'textbox',
+			'default' => '8',
+			'max_length' => '3',
+			'size' => '8'
+		),
+		'boost_failure_max_age_days' => array(
+			'friendly_name' => __('Maximum Failed RRD Age'),
+			'description' => __('Days to retain the latest failed RRD update before explicit discard.'),
+			'method' => 'textbox',
+			'default' => '7',
+			'max_length' => '2',
+			'size' => '8'
 		),
 		'path_boost_log' => array(
 			'friendly_name' => __('Boost Debug Log'),
