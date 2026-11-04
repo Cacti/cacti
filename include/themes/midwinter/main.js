@@ -540,18 +540,20 @@ function setupDefaultElements() {
 		$('<div class="cactiTableFilter"><span><i class="far fa fa-sliders-h"></i></span></div>').prependTo('#filterTableOnTop .cactiTableTitle');
 	}
 
-	// Add nice search filter to filters
-	if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
-	}
+	// Add the search filter icon once the filter inputs are visible
+	setTimeout(function() {
+		if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').is(':visible') && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
+			$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+		}
 
-	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
-	}
+		if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').is(':visible') && $('input[id="filterd"] > i[class="fa fa-search filter"]').length < 1) {
+			$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+		}
 
-	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
-	}
+		if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').is(':visible') && $('input[id="rfilter"] > i[class="fa fa-search filter"]').length < 1) {
+			$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+		}
+	}, 0);
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
