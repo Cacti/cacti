@@ -16,6 +16,7 @@ if ($argc !== 2) {
 }
 
 define('CACTI_LOCALE', 'en-US');
+define('POLLER_VERBOSITY_MEDIUM', 3);
 
 /**
  * Return an empty setting for the isolated path-validation probe.
