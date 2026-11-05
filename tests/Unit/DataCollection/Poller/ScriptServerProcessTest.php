@@ -253,6 +253,41 @@ test('canonical traversal and symlink aliases stay bound to the same script', fu
 	}
 });
 
+test('a cached callable binding fails closed when a symlink target changes', function () {
+	if (DIRECTORY_SEPARATOR === '\\' || !function_exists('symlink')) {
+		$this->markTestSkipped('requires symbolic links');
+	}
+
+	$token                = bin2hex(random_bytes(8));
+	$alias                = CACTI_PATH_SCRIPTS . '/.script-server-retarget-' . $token . '.php';
+	$replacement          = CACTI_PATH_SCRIPTS . '/.script-server-replacement-' . $token . '.php';
+	$marker               = sys_get_temp_dir() . '/script-server-retarget-marker-' . $token;
+	$replacement_function = 'ss_replacement_' . $token;
+	$source               = '<?php file_put_contents(' . var_export($marker, true) . ", 'loaded'); function $replacement_function() : string { return 'replacement'; }";
+
+	file_put_contents($replacement, $source);
+
+	try {
+		expect(symlink($this->script, $alias))->toBeTrue();
+		[$this->process, $this->pipes] = ss_process_test_start();
+		$healthy                       = true;
+
+		expect(exec_poll_php($alias . ' ' . $this->prefix . '_echo original', true, $this->pipes, $this->process, 3.0, $healthy))->toBe('original');
+
+		unlink($alias);
+		expect(symlink($replacement, $alias))->toBeTrue()
+			->and(exec_poll_php($alias . ' ' . $this->prefix . '_echo rebound', true, $this->pipes, $this->process, 3.0, $healthy))->toBe('U')
+			->and(file_exists($marker))->toBeFalse()
+			->and(exec_poll_php($alias . ' ' . $replacement_function, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('replacement')
+			->and(file_exists($marker))->toBeTrue()
+			->and($healthy)->toBeTrue();
+	} finally {
+		@unlink($alias);
+		@unlink($replacement);
+		@unlink($marker);
+	}
+});
+
 test('outside and escaping symlink scripts are rejected before include side effects', function () {
 	if (DIRECTORY_SEPARATOR === '\\' || !function_exists('symlink')) {
 		$this->markTestSkipped('requires symbolic links');
