@@ -61,7 +61,9 @@ The accepted language has these limits and rules:
 - The script path is resolved with `realpath()` on every request. Its canonical
   path must be a regular `.php` file below the configured `scripts` or plugin
   root. Lexical traversal and symbolic-link aliases therefore receive the
-  decision for their canonical target.
+  decision for their canonical target. Alias resolution clears PHP's cached
+  path entry first so a retargeted symbolic link is checked against its current
+  target. Direct canonical paths rely on the trusted-root assumption above.
 - A complete overlong line is drained through LF and receives `U`. If the line
   cannot be drained within 0.5 seconds, framing is uncertain and the worker
   exits instead of interpreting a suffix as another request.
@@ -75,16 +77,19 @@ loading or invoking a script.
 ## Dispatch mediation
 
 After the whole request is validated, the worker loads only the canonical
-script path. Before every invocation it reflects the requested user function
-and compares the function's canonical source filename with that exact script.
-PHP internal functions, preloaded application functions, methods, undefined
-functions, and functions previously loaded from another script fail closed
-with `U`.
+script path. The first successful invocation reflects the requested user
+function and binds its canonical source filename to that exact script. PHP
+cannot redefine a loaded function in the same process, so later invocations
+compare the current request's validated canonical path with that immutable
+binding instead of repeating reflection. PHP internal functions, preloaded
+application functions, methods, undefined functions, and functions previously
+loaded from another script fail closed with `U`.
 
-Every invocation repeats the reflection and source-file comparison. Rejected,
-attacker-controlled paths are not retained in the long-lived path cache. A
-script that throws while loading is marked failed for the remainder of that
-worker's life.
+Every invocation repeats canonical path validation and the source binding
+comparison. Only successful script/function bindings are cached. Rejected,
+attacker-controlled paths and mismatches are not retained in the long-lived
+caches. A script that throws while loading is marked failed for the remainder
+of that worker's life.
 
 This mediation prevents a function already present in shared process state
 from being rebound to a different requested script. It does not reset all PHP

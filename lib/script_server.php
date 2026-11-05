@@ -29,36 +29,40 @@
  * its line is discarded, so the tail can never be dispatched as a request of
  * its own.
  *
- * @param mixed $stream     The input stream, normally STDIN
- * @param int   $max_length The longest accepted request, excluding CR LF
- * @param float $drain_wait Seconds to wait for the remainder of a started line
+ * @param mixed $stream                 The input stream, normally STDIN
+ * @param int   $max_length             The longest accepted request, excluding CR LF
+ * @param float $drain_wait             Seconds to wait for the remainder of a started line
+ * @param bool  $persistent_nonblocking Whether the caller already keeps the stream non-blocking
  *
  * @return array{0: string|false, 1: bool, 2: bool} The line, whether it was overlong, and whether framing remains healthy
  */
-function script_server_read_request(mixed $stream, int $max_length = SCRIPT_SERVER_MAX_REQUEST_LENGTH, float $drain_wait = 0.5) : array {
-	$read   = [$stream];
-	$write  = null;
-	$except = null;
+function script_server_read_request(mixed $stream, int $max_length = SCRIPT_SERVER_MAX_REQUEST_LENGTH, float $drain_wait = 0.5, bool $persistent_nonblocking = false) : array {
+	$restore_blocking = false;
+	$was_blocking     = true;
 
-	try {
-		$ready = @stream_select($read, $write, $except, null);
-	} catch (Throwable $e) {
-		$ready = false;
-	}
+	if (!$persistent_nonblocking) {
+		$metadata = stream_get_meta_data($stream);
 
-	$metadata     = stream_get_meta_data($stream);
-	$was_blocking = $metadata['blocked'];
-	$selectable   = $ready !== false;
+		foreach ($metadata as $metadata_key => $metadata_value) {
+			if ($metadata_key === 'blocked') {
+				$was_blocking = (bool) $metadata_value;
 
-	// Windows anonymous pipes and some in-memory streams cannot be selected,
-	// but they can normally be polled in non-blocking mode. Retain the legacy
-	// bounded read only for a stream that cannot be made non-blocking at all.
-	if (!@stream_set_blocking($stream, false)) {
-		return script_server_read_request_blocking($stream, $max_length, $drain_wait);
+				break;
+			}
+		}
+
+		// Windows anonymous pipes and some in-memory streams cannot be selected,
+		// but they can normally be polled in non-blocking mode. Retain the legacy
+		// bounded read only for a stream that cannot be made non-blocking at all.
+		if (!@stream_set_blocking($stream, false)) {
+			return script_server_read_request_blocking($stream, $max_length, $drain_wait);
+		}
+
+		$restore_blocking = true;
 	}
 
 	$line     = '';
-	$deadline = $selectable ? hrtime(true) + (int) ($drain_wait * 1000000000) : 0;
+	$deadline = 0;
 
 	try {
 		while (true) {
@@ -88,25 +92,22 @@ function script_server_read_request(mixed $stream, int $max_length = SCRIPT_SERV
 				return $line === '' ? [false, false, true] : [$line, true, false];
 			}
 
-			// An unselectable pipe waits indefinitely for its first byte. Once
-			// a request starts, the line-completion deadline above applies.
-			if ($deadline === 0) {
-				usleep(10000);
-
-				continue;
-			}
-
-			$remaining = $deadline - hrtime(true);
-
-			if ($remaining <= 0) {
-				return [$line, true, false];
-			}
-
 			$read         = [$stream];
 			$write        = null;
 			$except       = null;
-			$seconds      = intdiv($remaining, 1000000000);
-			$microseconds = intdiv($remaining % 1000000000, 1000);
+			$seconds      = null;
+			$microseconds = 0;
+
+			if ($deadline !== 0) {
+				$remaining = $deadline - hrtime(true);
+
+				if ($remaining <= 0) {
+					return [$line, true, false];
+				}
+
+				$seconds      = intdiv($remaining, 1000000000);
+				$microseconds = intdiv($remaining % 1000000000, 1000);
+			}
 
 			try {
 				$ready = @stream_select($read, $write, $except, $seconds, $microseconds);
@@ -115,15 +116,25 @@ function script_server_read_request(mixed $stream, int $max_length = SCRIPT_SERV
 			}
 
 			if ($ready === 0) {
-				return [$line, true, false];
+				if ($deadline !== 0) {
+					return [$line, true, false];
+				}
+
+				usleep(10000);
 			}
 
 			if ($ready === false) {
-				usleep((int) min(10000, max(1, intdiv($remaining, 1000))));
+				if ($deadline === 0) {
+					usleep(10000);
+				} else {
+					usleep((int) min(10000, max(1, intdiv($remaining, 1000))));
+				}
 			}
 		}
 	} finally {
-		@stream_set_blocking($stream, $was_blocking);
+		if ($restore_blocking) {
+			@stream_set_blocking($stream, $was_blocking);
+		}
 	}
 }
 
@@ -247,46 +258,31 @@ function script_server_drain_line(mixed $stream, float $wait) : bool {
  * @return array{0: string, 1: string, 2: string} The include file, function and parameter string
  */
 function script_server_split_request(string $input_string) : array {
-	$include_file = '';
-	$function     = '';
-	$parameters   = '';
+	$first_space = strpos($input_string, ' ');
 
-	// pull off the parameters
-	$i = 0;
+	if ($first_space === false || $first_space === 0) {
+		return ['', '', ''];
+	}
 
-	while (true) {
-		$pos = strpos($input_string, ' ');
+	$include_file = substr($input_string, 0, $first_space);
+	$remainder    = ltrim(substr($input_string, $first_space + 1), ' ');
 
-		if ($pos > 0) {
-			switch ($i) {
-				case 0:
-					// cut off include file as first part of input string and keep rest for further parsing
-					$include_file = trim(substr($input_string,0,$pos));
-					$input_string = trim((string) strchr($input_string, ' ')) . ' ';
+	if ($remainder === '') {
+		return [$include_file, '', ''];
+	}
 
-					break;
-				case 1:
-					// cut off function as second part of input string and keep rest for further parsing
-					$function     = trim(substr($input_string,0,$pos));
+	$second_space = strpos($remainder, ' ');
 
-					if (strlen($function) >= 2 && str_starts_with($function, "'") && str_ends_with($function, "'")) {
-						$function = substr($function, 1, -1);
-					}
+	if ($second_space === false) {
+		$function   = $remainder;
+		$parameters = '';
+	} else {
+		$function   = substr($remainder, 0, $second_space);
+		$parameters = trim(substr($remainder, $second_space + 1));
+	}
 
-					$input_string = trim((string) strchr($input_string, ' ')) . ' ';
-
-					break;
-				case 2:
-					// take the rest as parameter(s) to the function stripped off previously
-					$parameters = trim($input_string);
-
-					break 2;
-			}
-		} else {
-			break;
-		}
-
-		$i++;
+	if (strlen($function) >= 2 && str_starts_with($function, "'") && str_ends_with($function, "'")) {
+		$function = substr($function, 1, -1);
 	}
 
 	return [$include_file, $function, $parameters];
@@ -363,6 +359,18 @@ function script_server_log_token(string $value) : string {
  * @return string|false The resolved path, or false when it is missing or outside the roots
  */
 function script_server_resolve_include(string $include_file, array $roots) : string|false {
+	static $direct_paths = [];
+
+	// Canonical paths have one stable spelling and are inside trusted install
+	// roots. Lexical and symlink aliases are refreshed on every request so a
+	// retargeted alias cannot inherit an earlier callable binding.
+	$direct_key    = DIRECTORY_SEPARATOR === '\\' ? strtolower(str_replace('\\', '/', $include_file)) : $include_file;
+	$cached_direct = isset($direct_paths[$direct_key]);
+
+	if (!$cached_direct) {
+		clearstatcache(true, $include_file);
+	}
+
 	$real_include = realpath($include_file);
 
 	if ($real_include === false || !is_file($real_include) || strtolower(pathinfo($real_include, PATHINFO_EXTENSION)) !== 'php' || !script_server_path_is_allowed($real_include, $roots)) {
@@ -374,6 +382,24 @@ function script_server_resolve_include(string $include_file, array $roots) : str
 	// quirk in php on Windows, believe it or not.... path must be lower case
 	if (CACTI_SERVER_OS == 'win32') {
 		$real_include = cacti_strtolower($real_include);
+	}
+
+	if ($cached_direct) {
+		$is_direct = DIRECTORY_SEPARATOR                         === '\\'
+			? strcasecmp($direct_paths[$direct_key], $real_include) === 0
+			: $direct_paths[$direct_key]                            === $real_include;
+	} else {
+		$normalized_request = rtrim(str_replace('\\', '/', $include_file), '/');
+		$normalized_real    = rtrim(str_replace('\\', '/', $real_include), '/');
+		$is_direct          = DIRECTORY_SEPARATOR            === '\\'
+			? strcasecmp($normalized_request, $normalized_real) === 0
+			: $normalized_request                               === $normalized_real;
+	}
+
+	if ($is_direct) {
+		$direct_paths[$direct_key] = $real_include;
+	} else {
+		unset($direct_paths[$direct_key]);
 	}
 
 	return $real_include;
@@ -641,12 +667,31 @@ function script_server_path_is_allowed(string|false $resolved_path, array $roots
  * The Script Server only runs a function defined by the requested script.
  * PHP internals and functions loaded by Cacti or another script are refused.
  *
- * @param string $function     The requested function name
- * @param string $include_file The resolved script file named by the request
+ * @param string $function          The requested function name
+ * @param string $include_file      The script file named by the request
+ * @param bool   $canonical_include Whether include_file is already the validated canonical path for this request
  *
  * @return string An empty string when allowed, otherwise the reason it was refused
  */
-function script_server_function_rejection(string $function, string $include_file) : string {
+function script_server_function_rejection(string $function, string $include_file, bool $canonical_include = false) : string {
+	static $bound_functions = [];
+
+	$binding_key = strtolower(ltrim($function, '\\'));
+
+	if (isset($bound_functions[$binding_key])) {
+		$resolved_include = $canonical_include ? $include_file : realpath($include_file);
+
+		if ($resolved_include === false) {
+			return 'does not have a resolvable source file';
+		}
+
+		$matches = DIRECTORY_SEPARATOR                                   === '\\'
+			? strcasecmp($bound_functions[$binding_key], $resolved_include) === 0
+			: $bound_functions[$binding_key]                                === $resolved_include;
+
+		return $matches ? '' : 'is not defined by the requested script file';
+	}
+
 	if (!function_exists($function)) {
 		return 'is not defined';
 	}
@@ -663,7 +708,7 @@ function script_server_function_rejection(string $function, string $include_file
 
 	$file             = $ref->getFileName();
 	$resolved_file    = ($file === false ? false : realpath($file));
-	$resolved_include = realpath($include_file);
+	$resolved_include = $canonical_include ? $include_file : realpath($include_file);
 
 	if ($resolved_file === false || $resolved_include === false) {
 		return 'does not have a resolvable source file';
@@ -678,6 +723,8 @@ function script_server_function_rejection(string $function, string $include_file
 	if (!$matches) {
 		return 'is not defined by the requested script file';
 	}
+
+	$bound_functions[$binding_key] = $resolved_file;
 
 	return '';
 }
@@ -788,36 +835,47 @@ function script_server_reset_output_guard(int $guard_level) : bool {
 		return false;
 	}
 
-	while (ob_get_level() > $guard_level) {
+	$current_level = ob_get_level();
+
+	while ($current_level > $guard_level) {
 		if (!@ob_end_clean()) {
 			return false;
 		}
+
+		$current_level = ob_get_level();
 	}
 
-	if (ob_get_level() !== $guard_level) {
+	if ($current_level !== $guard_level) {
 		return false;
 	}
 
-	if (ob_get_length() !== 0) {
+	$buffer_length = ob_get_length();
+
+	if ($buffer_length === false) {
+		return false;
+	}
+
+	if ($buffer_length !== 0) {
 		@ob_clean();
 	}
 
-	return ob_get_level() === $guard_level && ob_get_length() === 0;
+	return $buffer_length === 0 || ob_get_length() === 0;
 }
 
 /**
  * script_server_run - check and dispatch one Script Server request
  *
- * @param string $function         The requested function
- * @param array  $parameters       The parsed arguments, empty to call without arguments
- * @param string $include_file     The script file the request named
- * @param bool   $response_healthy Set false when the result cannot be safely framed
+ * @param string $function          The requested function
+ * @param array  $parameters        The parsed arguments, empty to call without arguments
+ * @param string $include_file      The script file the request named
+ * @param bool   $response_healthy  Set false when the result cannot be safely framed
+ * @param bool   $canonical_include Whether include_file is already the validated canonical path for this request
  *
  * @return string The function result, or 'U' when refused or failed
  */
-function script_server_run(string $function, array $parameters, string $include_file, bool &$response_healthy = true) : string {
+function script_server_run(string $function, array $parameters, string $include_file, bool &$response_healthy = true, bool $canonical_include = false) : string {
 	$response_healthy = true;
-	$rejection        = script_server_function_rejection($function, $include_file);
+	$rejection        = script_server_function_rejection($function, $include_file, $canonical_include);
 
 	if ($rejection != '') {
 		$safe_function = script_server_log_token($function);
