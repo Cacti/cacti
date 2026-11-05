@@ -96,6 +96,7 @@ Cacti CHANGELOG
 -security#8346: Pin workflow Actions and isolate release signing from builds
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
+-issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
 -issue#8584: Only add the theme search filter icon when the filter input is visible
 -issue#8574: RRDcheck does not delete old data when boost is enabled
 -issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback

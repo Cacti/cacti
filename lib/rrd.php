@@ -472,7 +472,7 @@ function rrdtool_create_structured_directory($base_path, $directory, $logopt = '
 function rrdtool_apply_file_permissions($file, $logopt = 'POLLER', $base_path = '') {
 	if ($base_path === '' || is_link($file) ||
 		!rrdtool_local_path_is_valid($base_path, $file, true) || !is_file($file)) {
-		cacti_log("WARNING: RRD file '$file' does not exist for permission assignment.", false, $logopt);
+		cacti_log("WARNING: RRD file '$file' does not exist for permission assignment.", false, $logopt, POLLER_VERBOSITY_MEDIUM);
 
 		return false;
 	}
