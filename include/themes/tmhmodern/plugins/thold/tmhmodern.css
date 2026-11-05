@@ -1,0 +1,394 @@
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
+
+.deviceUpFull {
+	background-color: rgba(25, 142, 50, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.deviceDownFull {
+	background-color: rgba(255, 0, 0, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #FFFFFF;
+}
+
+.deviceDownFull td {
+	color: #FFFFFF;
+}
+
+.deviceUnknownFull {
+	background-color: rgba(0, 0, 255, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #FFFFFF;
+}
+
+.deviceDisabledFull {
+	background-color: rgba(161, 161, 161, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.deviceRecoveringFull {
+	background-color: rgba(255, 143, 30, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.deviceErrorFull {
+	background-color: rgba(117, 15, 125, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #FFFFFF;
+}
+
+.deviceNotMonFull {
+	background-color: rgba(250, 253, 158, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdAlertNotify {
+	background-color: rgba(242, 25, 36, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdAlert2Warn {
+	background-color: rgba(200, 25, 36, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdWarningNotify {
+	background-color: rgba(251, 74, 20, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdReTriggerNotify {
+	background-color: rgba(200, 125, 88, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdReTriggerEvent {
+	background-color: rgba(255, 122, 48, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdTriggerEvent {
+	background-color: rgba(250, 253, 158, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdWarnTrigger {
+	background-color: rgba(210, 223, 128, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdRestoralNotify {
+	background-color: rgba(204, 255, 204, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdRestoralEvent {
+	background-color: rgba(205, 207, 196, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.tholdRestore {
+	background-color: rgba(204, 255, 204, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdAlertTrigger {
+	background-color: rgba(242, 23, 33, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdReTrigger {
+	background-color: rgba(250, 116, 32, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdWarning {
+	background-color: rgba(255, 122, 48, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdWarning .linkEditMain {
+	color: #000000;
+}
+
+.tholdAlert {
+	background-color: rgba(242, 25, 36, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdAlert .linkEditMain {
+	color: #000000;
+}
+
+.tholdAckCol {
+	background-color: rgba(138, 43, 226, 0.4);
+}
+
+.tholdAcknowledgment {
+	background-color: rgba(138, 43, 226, 0.4);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdAcknowledgment .linkEditMain {
+	color: #000000;
+}
+
+.tholdBaseAlert {
+	background-color: rgba(251, 74, 20, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdBaseAlert .linkEditMain {
+	color: #000000;
+}
+
+.tholdNotice {
+	background-color: rgba(250, 253, 158, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdOk {
+	background-color: rgba(204, 255, 204, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdDisabled {
+	background-color: rgba(205, 207, 196, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.tholdGlyphEdit {
+	color: #666666;
+}
+
+.tholdGlyphDisable {
+	color: #990000;
+}
+
+.tholdGlyphEnable {
+	color: #006600;
+}
+
+.tholdGlyphChart {
+	color: #996600;
+}
+
+.tholdGlyphLog {
+	color: #999900;
+}
+
+.tholdGlyphAcknowledge {
+	color: #336600;
+}
+
+.tholdGlyphAcknowledgeResume {
+	color: #336600;
+}
+
+.tholdGlyphAcknowledgeSuspend {
+	color: #336600;
+}
+
+/* Graph view action glyphs (toggle threshold VRULEs, create threshold) */
+.tholdVRules {
+	color: #1b6ca8;
+}
+
+.tholdEdit {
+	color: #666666;
+}
+
+.tholdLog {
+	white-space: pre-wrap !important;
+}
+
+/*
+ * Status legend. Laid out as a wrapping CSS grid whose columns share one
+ * width (seeded from the longest label via --thold-chip-min) so every chip is
+ * equal width across all rows, with rounded corners and spacing between chips. A legend is a colour key, so the chips use their own solid, opaque
+ * colours with white text so they stay legible on every theme rather than
+ * inheriting the subtle row tints.
+ */
+.tholdLegend {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(var(--thold-chip-min, 8ch), 1fr));
+	gap: 4px;
+	width: 100%;
+}
+
+/* Legend footer: keeps the legend centered beneath the list in normal
+   document flow, so it never overlays the final rows or action controls. */
+.tholdLegendFooter {
+	display: table;
+	width: 100%;
+	margin: 8px auto 0;
+}
+
+.tholdLegend .tholdLegendItem {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 0;
+	text-align: center;
+	white-space: nowrap;
+	padding: 4px 6px;
+	border-radius: 3px;
+	color: #ffffff;
+}
+
+.tholdLegend .tholdAlert,
+.tholdLegend .tholdAlertNotify,
+.tholdLegend .deviceDownFull {
+	background-color: #a12820;
+}
+
+.tholdLegend .tholdBaseAlert,
+.tholdLegend .tholdAlert2Warn {
+	background-color: #93302a;
+}
+
+.tholdLegend .tholdWarning,
+.tholdLegend .tholdWarningNotify,
+.tholdLegend .tholdReTriggerEvent {
+	background-color: #a85712;
+}
+
+.tholdLegend .deviceRecoveringFull {
+	background-color: #9a6a1a;
+}
+
+.tholdLegend .tholdNotice,
+.tholdLegend .tholdWarnTrigger,
+.tholdLegend .tholdTriggerEvent {
+	background-color: #7d6f18;
+}
+
+.tholdLegend .tholdOk,
+.tholdLegend .deviceUpFull,
+.tholdLegend .tholdRestoralNotify {
+	background-color: #2f8f3a;
+}
+
+.tholdLegend .tholdRestoralEvent {
+	background-color: #3f7a4a;
+}
+
+.tholdLegend .tholdAcknowledgment {
+	background-color: #6a4a9c;
+}
+
+.tholdLegend .deviceErrorFull {
+	background-color: #86407a;
+}
+
+.tholdLegend .tholdDisabled,
+.tholdLegend .deviceDisabledFull,
+.tholdLegend .deviceUnknownFull,
+.tholdLegend .deviceNotMonFull {
+	background-color: #5f5f57;
+}
+
+.thold-pill.tholdAlert,
+.thold-pill.tholdBaseAlert,
+.thold-pill.tholdWarning,
+.thold-pill.tholdAcknowledgment,
+.thold-pill.tholdNotice,
+.thold-pill.tholdOk,
+.thold-pill.tholdDisabled {
+	color: #202020;
+}

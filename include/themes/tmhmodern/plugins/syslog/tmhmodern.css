@@ -1,0 +1,52 @@
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
+
+/* Syslog status-legend palette for the modern (light surface) theme. */
+
+.syslogLegend {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(var(--syslog-chip-min, 8ch), 1fr));
+	gap: 4px;
+	width: 100%;
+}
+
+.syslogLegend .syslogLegendItem {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 0;
+	text-align: center;
+	white-space: nowrap;
+	padding: 4px 6px;
+	border-radius: 3px;
+	color: #ffffff;
+	font-size: 11px;
+}
+
+.syslogLegend .logEmergency { background-color: #8e1f18; }
+.syslogLegend .logCritical  { background-color: #a5281f; }
+.syslogLegend .logAlert     { background-color: #b23a2f; }
+.syslogLegend .logError     { background-color: #c0483c; }
+.syslogLegend .logWarning   { background-color: #9c5d0a; }
+.syslogLegend .logNotice    { background-color: #2f6fa8; }
+.syslogLegend .logInfo      { background-color: #2f7d3a; }
+.syslogLegend .logDebug     { background-color: #6c7a72; }
