@@ -16,6 +16,7 @@ if ($argc !== 3) {
 }
 
 define('CACTI_LOCALE', 'en-US');
+define('POLLER_VERBOSITY_MEDIUM', 3);
 
 /**
  * Return an empty setting for the isolated permission probe.

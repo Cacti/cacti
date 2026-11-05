@@ -16,6 +16,7 @@ if ($argc !== 2) {
 }
 
 define('CACTI_LOCALE', 'en-US');
+define('POLLER_VERBOSITY_MEDIUM', 3);
 
 $probe_root = $argv[1];
 $probe_logs = array();
