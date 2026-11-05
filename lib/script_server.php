@@ -31,25 +31,152 @@
  *
  * @param mixed $stream     The input stream, normally STDIN
  * @param int   $max_length The longest accepted request, excluding CR LF
- * @param float $drain_wait Seconds to wait for more of an overlong line
+ * @param float $drain_wait Seconds to wait for the remainder of a started line
  *
- * @return array{0: string|false, 1: bool} The line as read, and whether it was overlong
+ * @return array{0: string|false, 1: bool, 2: bool} The line, whether it was overlong, and whether framing remains healthy
  */
 function script_server_read_request(mixed $stream, int $max_length = SCRIPT_SERVER_MAX_REQUEST_LENGTH, float $drain_wait = 0.5) : array {
-	// Room for the request and its CR LF, so a full buffer without LF means overlong.
+	$read   = [$stream];
+	$write  = null;
+	$except = null;
+
+	try {
+		$ready = @stream_select($read, $write, $except, null);
+	} catch (Throwable $e) {
+		$ready = false;
+	}
+
+	$metadata     = stream_get_meta_data($stream);
+	$was_blocking = $metadata['blocked'];
+	$selectable   = $ready !== false;
+
+	// Windows anonymous pipes and some in-memory streams cannot be selected,
+	// but they can normally be polled in non-blocking mode. Retain the legacy
+	// bounded read only for a stream that cannot be made non-blocking at all.
+	if (!@stream_set_blocking($stream, false)) {
+		return script_server_read_request_blocking($stream, $max_length, $drain_wait);
+	}
+
+	$line     = '';
+	$deadline = $selectable ? hrtime(true) + (int) ($drain_wait * 1000000000) : 0;
+
+	try {
+		while (true) {
+			// Room for the request and its CR LF. fgets() stops at one LF, so
+			// it cannot consume bytes belonging to the following request.
+			$chunk = fgets($stream, max(2, $max_length + 3 - strlen($line)));
+
+			if ($chunk !== false && $chunk !== '') {
+				$line .= $chunk;
+
+				if ($deadline === 0) {
+					$deadline = hrtime(true) + (int) ($drain_wait * 1000000000);
+				}
+
+				if (str_ends_with($line, "\n")) {
+					return [$line, strlen(rtrim($line, "\r\n")) > $max_length, true];
+				}
+
+				if (strlen($line) >= $max_length + 2) {
+					return [$line, true, script_server_drain_line($stream, $drain_wait)];
+				}
+
+				continue;
+			}
+
+			if (feof($stream)) {
+				return $line === '' ? [false, false, true] : [$line, true, false];
+			}
+
+			// An unselectable pipe waits indefinitely for its first byte. Once
+			// a request starts, the line-completion deadline above applies.
+			if ($deadline === 0) {
+				usleep(10000);
+
+				continue;
+			}
+
+			$remaining = $deadline - hrtime(true);
+
+			if ($remaining <= 0) {
+				return [$line, true, false];
+			}
+
+			$read         = [$stream];
+			$write        = null;
+			$except       = null;
+			$seconds      = intdiv($remaining, 1000000000);
+			$microseconds = intdiv($remaining % 1000000000, 1000);
+
+			try {
+				$ready = @stream_select($read, $write, $except, $seconds, $microseconds);
+			} catch (Throwable $e) {
+				$ready = false;
+			}
+
+			if ($ready === 0) {
+				return [$line, true, false];
+			}
+
+			if ($ready === false) {
+				usleep((int) min(10000, max(1, intdiv($remaining, 1000))));
+			}
+		}
+	} finally {
+		@stream_set_blocking($stream, $was_blocking);
+	}
+}
+
+/**
+ * Fall back for stream types that cannot use stream_select().
+ *
+ * @param mixed $stream     The input stream
+ * @param int   $max_length The longest accepted request
+ * @param float $drain_wait Seconds to drain an overlong request
+ *
+ * @return array{0: string|false, 1: bool, 2: bool}
+ */
+function script_server_read_request_blocking(mixed $stream, int $max_length, float $drain_wait) : array {
 	$line = fgets($stream, max(1, $max_length + 3));
 
 	if ($line === false) {
-		return [false, false];
+		return [false, false, true];
+	}
+
+	if (!str_ends_with($line, "\n") && feof($stream)) {
+		return [$line, true, false];
 	}
 
 	if (str_ends_with($line, "\n") || strlen($line) < $max_length + 2) {
-		return [$line, strlen(rtrim($line, "\r\n")) > $max_length];
+		return [$line, strlen(rtrim($line, "\r\n")) > $max_length, true];
 	}
 
-	script_server_drain_line($stream, $drain_wait);
+	$framing_healthy = script_server_drain_line($stream, $drain_wait);
 
-	return [$line, true];
+	return [$line, true, $framing_healthy];
+}
+
+/**
+ * script_server_normalize_request - validate and remove one line terminator
+ *
+ * @param string $request The raw request read from the protocol stream
+ *
+ * @return string|false The trimmed request, or false when it contains controls
+ */
+function script_server_normalize_request(string $request) : string|false {
+	if (str_ends_with($request, "\n")) {
+		$request = substr($request, 0, -1);
+
+		if (str_ends_with($request, "\r")) {
+			$request = substr($request, 0, -1);
+		}
+	}
+
+	if (preg_match('/[\x00-\x1F\x7F]/', $request)) {
+		return false;
+	}
+
+	return trim($request);
 }
 
 /**
@@ -62,20 +189,27 @@ function script_server_read_request(mixed $stream, int $max_length = SCRIPT_SERV
  * @param mixed $stream The input stream
  * @param float $wait   Seconds to wait for each further chunk
  *
- * @return void
+ * @return bool True when the rest of the line was consumed through LF
  */
-function script_server_drain_line(mixed $stream, float $wait) : void {
-	$seconds      = (int) floor($wait);
-	$micro        = (int) (($wait - $seconds) * 1000000);
+function script_server_drain_line(mixed $stream, float $wait) : bool {
 	$metadata     = stream_get_meta_data($stream);
 	$was_blocking = $metadata['blocked'];
 	$nonblocking  = @stream_set_blocking($stream, false);
+	$deadline     = hrtime(true) + (int) ($wait * 1000000000);
 
 	try {
 		while (true) {
-			$read   = [$stream];
-			$write  = null;
-			$except = null;
+			$remaining = $deadline - hrtime(true);
+
+			if ($remaining <= 0) {
+				return false;
+			}
+
+			$read    = [$stream];
+			$write   = null;
+			$except  = null;
+			$seconds = intdiv($remaining, 1000000000);
+			$micro   = intdiv($remaining % 1000000000, 1000);
 
 			// Windows pipes cannot be selected; their fallback must remain non-blocking.
 			try {
@@ -85,13 +219,17 @@ function script_server_drain_line(mixed $stream, float $wait) : void {
 			}
 
 			if ($ready === 0 || ($ready === false && !$nonblocking)) {
-				return;
+				return false;
 			}
 
 			$chunk = fgets($stream, 8192);
 
-			if ($chunk === false || str_ends_with($chunk, "\n")) {
-				return;
+			if ($chunk === false) {
+				return false;
+			}
+
+			if (str_ends_with($chunk, "\n")) {
+				return true;
 			}
 		}
 	} finally {
@@ -129,7 +267,12 @@ function script_server_split_request(string $input_string) : array {
 					break;
 				case 1:
 					// cut off function as second part of input string and keep rest for further parsing
-					$function     = trim(substr($input_string,0,$pos), "' ");
+					$function     = trim(substr($input_string,0,$pos));
+
+					if (strlen($function) >= 2 && str_starts_with($function, "'") && str_ends_with($function, "'")) {
+						$function = substr($function, 1, -1);
+					}
+
 					$input_string = trim((string) strchr($input_string, ' ')) . ' ';
 
 					break;
@@ -150,6 +293,64 @@ function script_server_split_request(string $input_string) : array {
 }
 
 /**
+ * script_server_function_name_is_valid - validate a PHP function token
+ *
+ * Namespaced user functions and the legacy leading namespace separator are
+ * accepted.  Method syntax and malformed tokens are rejected before a script
+ * is loaded, so an invalid request cannot trigger top-level script code.
+ *
+ * @param string $function The requested function name
+ *
+ * @return bool True when the token can name a PHP function
+ */
+function script_server_function_name_is_valid(string $function) : bool {
+	return preg_match('/^\\\\?(?:[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*\\\\)*[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$/D', $function) === 1;
+}
+
+/**
+ * script_server_validate_request - validate one complete request before load
+ *
+ * @param string $request The normalized request line
+ * @param array  $roots   Canonical roots from which scripts may be loaded
+ *
+ * @return array{0: string, 1: string, 2: array}|false Canonical script, function, and arguments
+ */
+function script_server_validate_request(string $request, array $roots) : array|false {
+	[$include_file, $function, $parameters] = script_server_split_request($request);
+
+	if ($include_file === '' || !script_server_function_name_is_valid($function)) {
+		return false;
+	}
+
+	$parameter_array = [];
+
+	if ($parameters !== '' && !parseArgs($parameters, $parameter_array)) {
+		return false;
+	}
+
+	$include_file = script_server_resolve_include($include_file, $roots);
+
+	if ($include_file === false) {
+		return false;
+	}
+
+	return [$include_file, $function, $parameter_array];
+}
+
+/**
+ * script_server_log_token - bound and sanitize one value used in a log context
+ *
+ * @param string $value The untrusted value
+ *
+ * @return string A single safe log token
+ */
+function script_server_log_token(string $value) : string {
+	$value = preg_replace('/[^A-Za-z0-9_.:@+\\\\-]/', '?', $value);
+
+	return substr($value ?? '', 0, 128);
+}
+
+/**
  * script_server_resolve_include - resolve and check a requested script file
  *
  * The path is checked on every request. PHP internals satisfy function_exists()
@@ -164,8 +365,8 @@ function script_server_split_request(string $input_string) : array {
 function script_server_resolve_include(string $include_file, array $roots) : string|false {
 	$real_include = realpath($include_file);
 
-	if ($real_include === false || !script_server_path_is_allowed($real_include, $roots)) {
-		cacti_log("WARNING: Script file '" . basename($include_file) . "' is missing or outside the allowed script roots. Rejected.", false, 'PHPSVR');
+	if ($real_include === false || !is_file($real_include) || strtolower(pathinfo($real_include, PATHINFO_EXTENSION)) !== 'php' || !script_server_path_is_allowed($real_include, $roots)) {
+		cacti_log("WARNING: Script file '" . script_server_log_token(basename($include_file)) . "' is missing or outside the allowed script roots. Rejected.", false, 'PHPSVR');
 
 		return false;
 	}
@@ -199,6 +400,14 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 		print "String: '" . $string . "'\n";
 	}
 
+	if (str_contains($string, '`')) {
+		if ($debug) {
+			print "ERROR: Backtick (`) characters not allowed\n";
+		}
+
+		return false;
+	}
+
 	// process the simple case
 	if (!str_contains($string, "'") && !str_contains($string, '"')) {
 		$str_list = explode(' ', $string);
@@ -219,12 +428,6 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 
 	for ($i = 0; $i < $length; $i++) {
 		$char = $string[$i];
-
-		if ($char == '`') {
-			$msg = 'Backtick (`) characters not allowed';
-
-			break;
-		}
 
 		if ($escaping) {
 			// outside quotes only a quote or a backslash may be escaped
@@ -362,9 +565,7 @@ function script_server_redact_command(string $command, array $secrets = []) : st
  */
 function script_server_allowed_roots() : array {
 	return array_values(array_unique([
-		CACTI_PATH_BASE,
 		CACTI_PATH_SCRIPTS,
-		CACTI_PATH_RESOURCE,
 		CACTI_PATH_PLUGINS
 	]));
 }
@@ -380,6 +581,8 @@ function script_server_allowed_roots() : array {
 function script_server_path_is_allowed(string|false $resolved_path, array $roots) : bool {
 	static $normalized_roots = [];
 	static $resolved_paths   = [];
+	static $last_roots       = [];
+	static $last_cache_key   = '';
 
 	if ($resolved_path === false || $resolved_path === '') {
 		return false;
@@ -388,7 +591,14 @@ function script_server_path_is_allowed(string|false $resolved_path, array $roots
 	$opath            = $resolved_path;
 	$resolved_path    = rtrim(str_replace('\\', '/', $resolved_path), '/');
 	$case_insensitive = (DIRECTORY_SEPARATOR === '\\');
-	$cache_key        = implode("\0", $roots);
+
+	if ($roots === $last_roots) {
+		$cache_key = $last_cache_key;
+	} else {
+		$last_roots     = $roots;
+		$last_cache_key = implode("\0", $roots);
+		$cache_key      = $last_cache_key;
+	}
 
 	// the decision depends on the root set too, so key the result by both
 	$result_key = $cache_key . "\0" . $opath;
@@ -421,21 +631,22 @@ function script_server_path_is_allowed(string|false $resolved_path, array $roots
 		}
 	}
 
-	return $resolved_paths[$result_key] = false;
+	// Do not retain rejected attacker-controlled paths in a long-lived worker.
+	return false;
 }
 
 /**
  * script_server_function_rejection - decide whether a function may be dispatched
  *
- * The Script Server only runs functions defined by script files in the Cacti
- * tree. PHP internals and functions declared anywhere else are refused.
+ * The Script Server only runs a function defined by the requested script.
+ * PHP internals and functions loaded by Cacti or another script are refused.
  *
- * @param string $function The requested function name
- * @param array  $roots    The allowed roots
+ * @param string $function     The requested function name
+ * @param string $include_file The resolved script file named by the request
  *
  * @return string An empty string when allowed, otherwise the reason it was refused
  */
-function script_server_function_rejection(string $function, array $roots) : string {
+function script_server_function_rejection(string $function, string $include_file) : string {
 	if (!function_exists($function)) {
 		return 'is not defined';
 	}
@@ -450,10 +661,22 @@ function script_server_function_rejection(string $function, array $roots) : stri
 		return 'is a PHP internal function';
 	}
 
-	$file = $ref->getFileName();
+	$file             = $ref->getFileName();
+	$resolved_file    = ($file === false ? false : realpath($file));
+	$resolved_include = realpath($include_file);
 
-	if ($file === false || !script_server_path_is_allowed(realpath($file), $roots)) {
-		return 'is defined outside the allowed script roots';
+	if ($resolved_file === false || $resolved_include === false) {
+		return 'does not have a resolvable source file';
+	}
+
+	if (DIRECTORY_SEPARATOR === '\\') {
+		$matches = strcasecmp($resolved_file, $resolved_include) === 0;
+	} else {
+		$matches = $resolved_file === $resolved_include;
+	}
+
+	if (!$matches) {
+		return 'is not defined by the requested script file';
 	}
 
 	return '';
@@ -466,53 +689,139 @@ function script_server_function_rejection(string $function, array $roots) : stri
  * Throwable becomes 'U'. The message is not logged because it may quote the
  * request parameters.
  *
- * @param string $function   The function to call
- * @param array  $parameters The arguments, empty to call without arguments
+ * @param string $function         The function to call
+ * @param array  $parameters       The arguments, empty to call without arguments
+ * @param bool   $response_healthy Set false when the result cannot be safely framed
  *
  * @return string The trimmed result, or 'U' on failure
  */
-function script_server_dispatch(string $function, array $parameters) : string {
+function script_server_dispatch(string $function, array $parameters, bool &$response_healthy = true) : string {
+	$response_healthy = true;
+
 	if (!is_callable($function)) {
 		return 'U';
 	}
 
 	try {
-		if (!cacti_sizeof($parameters)) {
-			$result = call_user_func($function);
-		} else {
-			$result = call_user_func_array($function, $parameters);
-		}
+		$result = $function(...$parameters);
 	} catch (Throwable $e) {
 		cacti_log(sprintf("WARNING: Script Server function '%s' raised %s at %s:%d, returning U", $function, get_class($e), basename($e->getFile()), $e->getLine()), false, 'PHPSVR');
 
 		return 'U';
 	}
 
-	if (is_array($result) || is_object($result)) {
+	return script_server_normalize_response($result, $response_healthy);
+}
+
+/**
+ * script_server_normalize_response - enforce the one-line response contract
+ *
+ * @param mixed $result           The script function result
+ * @param bool  $response_healthy Set false for a framing or length violation
+ *
+ * @return string A bounded response, or U when the result cannot be framed
+ */
+function script_server_normalize_response(mixed $result, bool &$response_healthy = true) : string {
+	$response_healthy = true;
+
+	if (is_array($result) || is_object($result) || is_resource($result)) {
 		return 'U';
 	}
 
-	return trim((string) $result);
+	$result = (string) $result;
+
+	if (preg_match('/[\x00-\x1F\x7F]/', $result)) {
+		$response_healthy = false;
+
+		return 'U';
+	}
+
+	$result = trim($result);
+
+	if ($result === '') {
+		return 'U';
+	}
+
+	if (strlen($result) > SCRIPT_SERVER_MAX_RESPONSE_LENGTH) {
+		$response_healthy = false;
+
+		return 'U';
+	}
+
+	return $result;
+}
+
+/**
+ * script_server_start_output_guard - discard output outside framed replies
+ *
+ * Script functions may print, flush, or create nested output buffers. A
+ * persistent non-removable buffer keeps that output off the protocol stream;
+ * replies use fwrite(STDOUT) and bypass PHP output buffering.
+ *
+ * @return int The guard's output-buffer level, or zero when it could not start
+ */
+function script_server_start_output_guard() : int {
+	static $guard_level = 0;
+
+	if ($guard_level > 0) {
+		return $guard_level;
+	}
+
+	$flags = PHP_OUTPUT_HANDLER_CLEANABLE | PHP_OUTPUT_HANDLER_FLUSHABLE;
+
+	if (!ob_start(static fn (string $buffer) : string => '', 4096, $flags)) {
+		return 0;
+	}
+
+	return $guard_level = ob_get_level();
+}
+
+/**
+ * script_server_reset_output_guard - discard script-created output buffers
+ *
+ * @param int $guard_level The persistent guard's output-buffer level
+ *
+ * @return bool True when only the clean guard remains
+ */
+function script_server_reset_output_guard(int $guard_level) : bool {
+	if ($guard_level <= 0) {
+		return false;
+	}
+
+	while (ob_get_level() > $guard_level) {
+		if (!@ob_end_clean()) {
+			return false;
+		}
+	}
+
+	if (ob_get_level() !== $guard_level) {
+		return false;
+	}
+
+	return ob_get_length() === 0 || @ob_clean();
 }
 
 /**
  * script_server_run - check and dispatch one Script Server request
  *
- * @param string $function     The requested function
- * @param array  $parameters   The parsed arguments, empty to call without arguments
- * @param array  $roots        The allowed roots
- * @param string $include_file The script file the request named
+ * @param string $function         The requested function
+ * @param array  $parameters       The parsed arguments, empty to call without arguments
+ * @param string $include_file     The script file the request named
+ * @param bool   $response_healthy Set false when the result cannot be safely framed
  *
  * @return string The function result, or 'U' when refused or failed
  */
-function script_server_run(string $function, array $parameters, array $roots, string $include_file) : string {
-	$rejection = script_server_function_rejection($function, $roots);
+function script_server_run(string $function, array $parameters, string $include_file, bool &$response_healthy = true) : string {
+	$response_healthy = true;
+	$rejection        = script_server_function_rejection($function, $include_file);
 
 	if ($rejection != '') {
-		cacti_log("WARNING: Function '$function' $rejection. Rejected.  INC: '" . basename($include_file) . "'", false, 'PHPSVR');
+		$safe_function = script_server_log_token($function);
+		$safe_include  = script_server_log_token(basename($include_file));
+		cacti_log("WARNING: Function '$safe_function' $rejection. Rejected.  INC: '$safe_include'", false, 'PHPSVR');
 
 		return 'U';
 	}
 
-	return script_server_dispatch($function, $parameters);
+	return script_server_dispatch($function, $parameters, $response_healthy);
 }

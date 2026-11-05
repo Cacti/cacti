@@ -45,10 +45,11 @@ if (function_exists('pcntl_signal')) {
 
 error_reporting(0);
 
-// define STDOUT/STDIN file descriptors if not running under CLI
+// define standard file descriptors if not running under CLI
 if (php_sapi_name() != 'cli') {
 	define('STDIN', fopen('php://stdin', 'r'));
 	define('STDOUT', fopen('php://stdout', 'w'));
+	define('STDERR', fopen('php://stderr', 'w'));
 }
 
 // make sure data is flushed immediately
@@ -63,8 +64,6 @@ $ctr         = 0;
 $poller_id   = 1;
 $environ     = 'cmd';
 $conn_mode   = 'online';
-$legacy      = true;
-$options     = [];
 $help        = false;
 $version     = false;
 
@@ -73,21 +72,39 @@ $called_by_script_server = false;
 $shortopts = 'VvHh';
 
 $longopts = [
-	'environ::',
-	'poller::',
-	'mode::',
+	'environ:',
+	'poller:',
+	'mode:',
 	'version',
 	'help'
 ];
 
-$options = getopt($shortopts, $longopts);
+$options         = getopt($shortopts, $longopts);
+$arguments_valid = is_array($options);
+$modern_options  = $arguments_valid && $options !== [];
 
-if (sizeof($options)) {
+if ($modern_options) {
+	for ($index = 1; $index < $_SERVER['argc']; $index++) {
+		$argument = $_SERVER['argv'][$index];
+
+		if (preg_match('/^-[VvHh]+$/D', $argument) || in_array($argument, ['--help', '--version'], true) || preg_match('/^--(?:environ|poller|mode)=.*$/D', $argument)) {
+			continue;
+		}
+
+		if (in_array($argument, ['--environ', '--poller', '--mode'], true) && isset($_SERVER['argv'][$index + 1]) && !str_starts_with($_SERVER['argv'][$index + 1], '-')) {
+			$index++;
+
+			continue;
+		}
+
+		$arguments_valid = false;
+
+		break;
+	}
+
 	foreach ($options as $arg => $value) {
-		$allow_multi = false;
-
 		switch($arg) {
-			case 'enviorn':
+			case 'environ':
 				$environ = $value;
 
 				break;
@@ -99,10 +116,14 @@ if (sizeof($options)) {
 				$conn_mode = $value;
 
 				break;
+			case 'h':
+			case 'H':
 			case 'help':
 				$help = true;
 
 				break;
+			case 'v':
+			case 'V':
 			case 'version':
 				$version = true;
 
@@ -110,14 +131,12 @@ if (sizeof($options)) {
 		}
 	}
 } elseif ($_SERVER['argc'] >= 2) {
-	if (in_array('spine', $_SERVER['argv'], true)) {
-		$environ = 'spine';
-	} elseif (in_array('realtime', $_SERVER['argv'], true)) {
-		$environ = 'realtime';
-	} elseif (in_array('cmd', $_SERVER['argv'], true) || in_array('cmd.php', $_SERVER['argv'], true)) {
-		$environ = 'cmd';
+	$legacy_environment = $_SERVER['argv'][1] == 'cmd.php' ? 'cmd' : $_SERVER['argv'][1];
+
+	if ($_SERVER['argc'] > 3 || !in_array($legacy_environment, ['cmd', 'spine', 'realtime', 'other'], true)) {
+		$arguments_valid = false;
 	} else {
-		$environ = 'other';
+		$environ = $legacy_environment;
 	}
 
 	if ($_SERVER['argc'] == 3) {
@@ -125,6 +144,32 @@ if (sizeof($options)) {
 	} else {
 		$poller_id = 1;
 	}
+}
+
+if (!$arguments_valid) {
+	fwrite(STDERR, "Invalid Script Server arguments\n");
+
+	exit(1);
+}
+
+if (!in_array($environ, ['cmd', 'spine', 'realtime', 'other'], true)) {
+	fwrite(STDERR, "Invalid Script Server environment\n");
+
+	exit(1);
+}
+
+if ((!is_string($poller_id) && !is_int($poller_id)) || !preg_match('/^(?:[1-9][0-9]*|[A-Fa-f0-9]{64})$/D', (string) $poller_id)) {
+	fwrite(STDERR, "Invalid Script Server poller id\n");
+
+	exit(1);
+}
+
+$poller_id = (string) $poller_id;
+
+if (!in_array($conn_mode, ['online', 'offline'], true)) {
+	fwrite(STDERR, "Invalid Script Server connection mode\n");
+
+	exit(1);
 }
 
 require(__DIR__ . '/include/cli_check.php');
@@ -172,30 +217,61 @@ if (!empty($polling_interval)) {
 // Let PHP only run 1 second longer than the max runtime
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
-// send status back to the server
+require_once(__DIR__ . '/lib/snmp.php');
+require_once(__DIR__ . '/lib/script_server.php');
+$output_guard_level = script_server_start_output_guard();
+
+if ($output_guard_level === 0) {
+	cacti_log('ERROR: Script Server could not establish its output guard', false, 'PHPSVR');
+	db_close();
+
+	exit(1);
+}
+
+snmp_auth_cache_load();
+
+$allowed_roots   = script_server_allowed_roots();
+$failed_includes = [];
+
+// send status only after every part of the worker is ready
 cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 
 fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
-require_once(__DIR__ . '/lib/snmp.php');
-require_once(__DIR__ . '/lib/script_server.php');
-snmp_auth_cache_load();
-
-$allowed_roots = script_server_allowed_roots();
-
 // process waits for input and then calls functions as required
 while (1) {
 	$result = '';
 
-	[$input_string, $overlong] = script_server_read_request(STDIN);
-
-	$function        = '';
-	$parameters      = '';
-	$parameter_array = [];
+	[$input_string, $overlong, $framing_healthy] = script_server_read_request(STDIN);
 
 	if ($overlong) {
 		cacti_log('WARNING: Script Server request exceeds ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' bytes and was discarded', false, 'PHPSVR');
+
+		if (!$framing_healthy) {
+			cacti_log('WARNING: Script Server request framing could not be recovered, replacing worker', false, 'PHPSVR');
+			db_close();
+
+			exit(1);
+		}
+
+		fputs(STDOUT, "U\n");
+		fflush(STDOUT);
+
+		continue;
+	}
+
+	if ($input_string === false) {
+		cacti_log('DEBUG: Script Server input closed, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+		db_close();
+
+		exit(0);
+	}
+
+	$input_string = script_server_normalize_request($input_string);
+
+	if ($input_string === false) {
+		cacti_log('WARNING: Script Server request contains an invalid control character and was discarded', false, 'PHPSVR');
 		fputs(STDOUT, "U\n");
 		fflush(STDOUT);
 
@@ -236,72 +312,83 @@ while (1) {
 	}
 
 	if (!empty($input_string)) {
-		$input_string = trim($input_string);
-
-		if (substr($input_string,0,4) == 'quit') {
-			if (!$called_by_script_server) {
-				fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
-				fflush(STDOUT);
-				cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
-			}
+		if ($input_string == 'quit') {
+			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
+			fflush(STDOUT);
+			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 			db_close();
 
 			exit(0);
 		}
 
 		if ($input_string != '') {
-			[$include_file, $function, $parameters] = script_server_split_request($input_string);
+			$validated_request = script_server_validate_request($input_string, $allowed_roots);
 
-			if (!parseArgs($parameters, $parameter_array)) {
-				cacti_log("WARNING: Script Server could not parse the parameters for $function", false, 'PHPSVR');
+			if ($validated_request === false) {
+				cacti_log('WARNING: Script Server rejected an invalid request before loading a script', false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 
 				continue;
 			}
 
-			script_server_log_request((int) $pid, $ctr, $include_file, $function, $parameter_array);
+			[$include_file, $function, $parameter_array] = $validated_request;
+			$script_ready                                = true;
 
-			$real_include = script_server_resolve_include($include_file, $allowed_roots);
+			$debug_logging = script_server_debug_logging_enabled();
+			script_server_log_request((int) $pid, $ctr, $include_file, $function, $parameter_array, $debug_logging);
+			$script_ready = !isset($failed_includes[$include_file]);
 
-			if ($real_include === false) {
-				fputs(STDOUT, "U\n");
-				fflush(STDOUT);
-
-				continue;
-			}
-
-			$include_file = $real_include;
-
-			if (!function_exists($function)) {
+			if ($script_ready && !function_exists($function)) {
 				/**
 				 * set this variable so the calling script can determine if it was called
 				 * by the script server or stand-alone
 				 */
 				$called_by_script_server = true;
 
-				// turn on output buffering to avoid problems with nasty scripts
-				ob_start();
-
 				try {
 					require_once($include_file);
 				} catch (Throwable $e) {
-					cacti_log("WARNING: Script file '" . basename($include_file) . "' raised " . get_class($e) . ' while loading', false, 'PHPSVR');
+					$failed_includes[$include_file] = true;
+					$script_ready                   = false;
+					cacti_log("WARNING: Script file '" . script_server_log_token(basename($include_file)) . "' raised " . get_class($e) . ' while loading', false, 'PHPSVR');
 				}
 
-				ob_end_clean();
+				if (!script_server_reset_output_guard($output_guard_level)) {
+					cacti_log('WARNING: Script Server output buffering was corrupted while loading a script, replacing worker', false, 'PHPSVR');
+					db_close();
+
+					exit(1);
+				}
 
 				error_reporting(0);
 			}
 
 			error_reporting(0);
 
-			$result = script_server_run($function, ($parameters == '' ? [] : $parameter_array), $allowed_roots, $include_file);
+			$response_healthy = true;
+			$result           = $script_ready
+				? script_server_run($function, $parameter_array, $include_file, $response_healthy)
+				: 'U';
+
+			if (!script_server_reset_output_guard($output_guard_level)) {
+				cacti_log('WARNING: Script Server output buffering was corrupted while dispatching a request, replacing worker', false, 'PHPSVR');
+				db_close();
+
+				exit(1);
+			}
+
+			if (!$response_healthy) {
+				cacti_log('WARNING: Script Server response violated the framing or output limit, replacing worker', false, 'PHPSVR');
+				db_close();
+
+				exit(1);
+			}
 
 			fputs(STDOUT, $result . "\n");
 			fflush(STDOUT);
 
-			script_server_log_response((int) $pid, $ctr, $result);
+			script_server_log_response((int) $pid, $ctr, $result, $debug_logging);
 
 			$ctr++;
 		}
@@ -325,17 +412,13 @@ while (1) {
  * @return void
  */
 function sig_handler(int $signo) : void {
-	global $include_file, $function;
-
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
 		case SIGABRT:
 		case SIGQUIT:
 		case SIGSEGV:
-			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" .
-				basename($include_file) .
-				"', function:'$function'",
+			cacti_log("WARNING: Script Server terminated with signal '$signo'",
 				false,
 				'PHPSVR',
 				POLLER_VERBOSITY_MEDIUM);
@@ -343,7 +426,7 @@ function sig_handler(int $signo) : void {
 
 			exit;
 		default:
-			cacti_log("WARNING: Script Server received signal '$signo' in file:'" . basename((string) $include_file) . "', function:'$function'",
+			cacti_log("WARNING: Script Server received signal '$signo'",
 				false,
 				'PHPSVR',
 				POLLER_VERBOSITY_HIGH);
@@ -371,8 +454,8 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print ('usage: script_server.php [environ poller_id] | [ --environ=S ' .
-		'--poller=N --mode [--force-level=N] ]') . PHP_EOL . PHP_EOL;
+	print ('usage: script_server.php [environ poller_id] | [--environ=S ' .
+		'--poller=N --mode=S] | [-hH] | [-vV]') . PHP_EOL . PHP_EOL;
 	print 'Cacti\'s Script Server.  The Script Server provides a memory resident server for executing php' . PHP_EOL;
 	print ('scripts saving reducing the time to process the scripts through ' .
 		'pre-compiling them for all consumers.') . PHP_EOL;
@@ -386,9 +469,10 @@ function display_help() : void {
 
 	print '  --environ=S      The default being \'cmd\', and options being \'spine\', \'cmd\', and \'realtime\'' . PHP_EOL;
 	print '  --poller=N       The poller id for the Data Collector in use' . PHP_EOL;
-	print '  --force-level=N  Force the logging at the level specified.' . PHP_EOL;
 	print '  --mode=S         Force a Database mode \'online\' or \'offline\'.  This is only relevant for' . PHP_EOL;
 	print '                   Remote Data Collectors.' . PHP_EOL . PHP_EOL;
+	print '  -h, -H, --help   Display this help text.' . PHP_EOL;
+	print '  -v, -V, --version Display the Script Server version.' . PHP_EOL . PHP_EOL;
 
 	print ('If no options are passed to the Script Server, it assumes that the ' .
 		'environ is \'cmd\' and the poller id') . PHP_EOL;

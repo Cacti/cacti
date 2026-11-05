@@ -40,11 +40,12 @@ if (cacti_count($_SERVER['argv']) < 4) {
 	exit(-1);
 }
 
-$poller_id = $_SERVER['argv'][1];
-$graph_id  = (int)$_SERVER['argv'][2];
-$interval  = (int)$_SERVER['argv'][3];
+$poller_id      = $_SERVER['argv'][1];
+$graph_id       = (int)$_SERVER['argv'][2];
+$interval       = (int)$_SERVER['argv'][3];
+$script_timeout = (float) read_config_option('script_timeout');
 
-if (!preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', $poller_id)) {
+if (!preg_match('/^(?:[1-9][0-9]*|[A-Fa-f0-9]{64})$/D', $poller_id)) {
 	print "Invalid poller_id specified.\n\n";
 
 	exit(-1);
@@ -114,35 +115,17 @@ if (cacti_sizeof($idbyhost)) {
 		AND local_data_id IN (' . implode(',', $ids) . ')');
 
 	$cactiphp = false;
+	$pipes    = false;
 
 	// startup Cacti php polling server and include the include file for script processing
 	if ($script_server_calls > 0) {
-		$cactides = [
-			0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
-			1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
-			2 => ['pipe', 'w']  // stderr is a pipe to write to
-		];
+		[$cactiphp, $pipes, $using_proc_function] = script_server_open('realtime', $poller_id, CACTI_CONNECTION, $script_timeout);
 
-		if (function_exists('proc_open')) {
-			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
-
-			// proc_open returns false if the child could not be spawned; fall back to
-			// the non-proc path rather than reading from non-existent pipes
-			if (!is_resource($cactiphp)) {
-				cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution',
-					false,
-					'POLLER',
-					POLLER_VERBOSITY_LOW);
-
-				$using_proc_function = false;
-				$pipes               = false;
-			} else {
-				$output              = fgets($pipes[1], 1024);
-				$using_proc_function = true;
-			}
-		} else {
-			$using_proc_function = false;
-			$pipes               = false;
+		if (!$using_proc_function) {
+			cacti_log('WARNING: Unable to start PHP Script Server',
+				false,
+				'POLLER',
+				POLLER_VERBOSITY_LOW);
 		}
 	} else {
 		$using_proc_function = false;
@@ -255,7 +238,12 @@ if (cacti_sizeof($idbyhost)) {
 							break;
 						case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
 							if ($using_proc_function == true) {
-								$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+								$worker_healthy = true;
+								$output         = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp, $script_timeout, $worker_healthy)));
+
+								if (!$worker_healthy) {
+									script_server_replace($cactiphp, $pipes, $using_proc_function, 'realtime', $poller_id, CACTI_CONNECTION, $script_timeout);
+								}
 
 								if (prepare_validate_result($output) === false) {
 									if (strlen($output) > 20) {
@@ -286,16 +274,6 @@ if (cacti_sizeof($idbyhost)) {
 	}
 
 	if (($using_proc_function == true) && ($script_server_calls > 0)) {
-		if ($cactiphp) {
-			// close php server process
-			if (cacti_sizeof($pipes)) {
-				fwrite($pipes[0], "quit\r\n");
-				fclose($pipes[0]);
-				fclose($pipes[1]);
-				fclose($pipes[2]);
-			}
-
-			$return_value = proc_close($cactiphp);
-		}
+		script_server_close($cactiphp, $pipes);
 	}
 }

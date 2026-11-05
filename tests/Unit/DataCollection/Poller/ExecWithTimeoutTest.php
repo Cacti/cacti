@@ -145,6 +145,37 @@ test('multi-line stdout populates output array and returns last line', function 
 		->and($return_code)->toBe(0);
 });
 
+test('argument-array commands bypass shell interpretation', function () {
+	$output      = [];
+	$return_code = -1;
+	$value       = 'literal; $(echo not-a-command)';
+	$result      = exec_with_timeout([
+		PHP_BINARY,
+		'-r',
+		'fwrite(STDOUT, $argv[1]);',
+		$value,
+	], $output, $return_code, 5);
+
+	expect($result)->toBe($value)
+		->and($return_code)->toBe(0);
+});
+
+test('an explicit stdout limit terminates the command without retaining excess output', function () {
+	$output      = [];
+	$return_code = 0;
+	$start       = hrtime(true);
+	$result      = exec_with_timeout([
+		PHP_BINARY,
+		'-r',
+		'fwrite(STDOUT, str_repeat("x", 65536)); sleep(2);',
+	], $output, $return_code, 5, 128);
+
+	expect($result)->toBeFalse()
+		->and($output)->toBe([])
+		->and($return_code)->not->toBe(0)
+		->and((hrtime(true) - $start) / 1000000000)->toBeLessThan(1.0);
+});
+
 test('operator precedence inline: cast-after-multiply preserves microseconds', function () {
 	/*
 	 * Pure arithmetic check, independent of process execution.
