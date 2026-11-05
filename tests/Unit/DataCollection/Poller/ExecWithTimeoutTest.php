@@ -160,6 +160,15 @@ test('argument-array commands bypass shell interpretation', function () {
 		->and($return_code)->toBe(0);
 });
 
+test('an empty argument-array command fails closed', function () {
+	$output      = [];
+	$return_code = 0;
+
+	expect(exec_with_timeout([], $output, $return_code))->toBeFalse()
+		->and($output)->toBe([])
+		->and($return_code)->toBe(1);
+});
+
 test('an explicit stdout limit terminates the command without retaining excess output', function () {
 	$output      = [];
 	$return_code = 0;
