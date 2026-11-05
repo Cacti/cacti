@@ -230,8 +230,10 @@ if ($output_guard_level === 0) {
 
 snmp_auth_cache_load();
 
-$allowed_roots   = script_server_allowed_roots();
-$failed_includes = [];
+$allowed_roots     = script_server_allowed_roots();
+$failed_includes   = [];
+$input_nonblocking = @stream_set_blocking(STDIN, false);
+$debug_logging     = script_server_debug_logging_enabled();
 
 // send status only after every part of the worker is ready
 cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
@@ -243,7 +245,12 @@ fflush(STDOUT);
 while (1) {
 	$result = '';
 
-	[$input_string, $overlong, $framing_healthy] = script_server_read_request(STDIN);
+	[$input_string, $overlong, $framing_healthy] = script_server_read_request(
+		STDIN,
+		SCRIPT_SERVER_MAX_REQUEST_LENGTH,
+		0.5,
+		$input_nonblocking
+	);
 
 	if ($overlong) {
 		cacti_log('WARNING: Script Server request exceeds ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' bytes and was discarded', false, 'PHPSVR');
@@ -335,8 +342,10 @@ while (1) {
 			[$include_file, $function, $parameter_array] = $validated_request;
 			$script_ready                                = true;
 
-			$debug_logging = script_server_debug_logging_enabled();
-			script_server_log_request((int) $pid, $ctr, $include_file, $function, $parameter_array, $debug_logging);
+			if ($debug_logging) {
+				script_server_log_request((int) $pid, $ctr, $include_file, $function, $parameter_array, true);
+			}
+
 			$script_ready = !isset($failed_includes[$include_file]);
 
 			if ($script_ready && !function_exists($function)) {
@@ -368,7 +377,7 @@ while (1) {
 
 			$response_healthy = true;
 			$result           = $script_ready
-				? script_server_run($function, $parameter_array, $include_file, $response_healthy)
+					? script_server_run($function, $parameter_array, $include_file, $response_healthy, true)
 				: 'U';
 
 			if (!script_server_reset_output_guard($output_guard_level)) {
@@ -388,7 +397,9 @@ while (1) {
 			fputs(STDOUT, $result . "\n");
 			fflush(STDOUT);
 
-			script_server_log_response((int) $pid, $ctr, $result, $debug_logging);
+			if ($debug_logging) {
+				script_server_log_response((int) $pid, $ctr, $result, true);
+			}
 
 			$ctr++;
 		}

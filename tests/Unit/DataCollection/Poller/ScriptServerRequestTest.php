@@ -93,6 +93,34 @@ test('draining a request restores the socket blocking mode', function (bool $blo
 })->with([true, false])
 	->skip(!function_exists('stream_socket_pair') || DIRECTORY_SEPARATOR === '\\', 'needs a unix socket pair');
 
+test('a persistent nonblocking reader stays aligned and enforces line completion', function () {
+	$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+	stream_set_blocking($pair[1], false);
+	fwrite($pair[0], "first request\nsecond request\n");
+
+	[$first, $first_overlong, $first_healthy]    = script_server_read_request($pair[1], SCRIPT_SERVER_MAX_REQUEST_LENGTH, 0.1, true);
+	[$second, $second_overlong, $second_healthy] = script_server_read_request($pair[1], SCRIPT_SERVER_MAX_REQUEST_LENGTH, 0.1, true);
+
+	expect($first)->toBe("first request\n")
+		->and($first_overlong)->toBeFalse()
+		->and($first_healthy)->toBeTrue()
+		->and($second)->toBe("second request\n")
+		->and($second_overlong)->toBeFalse()
+		->and($second_healthy)->toBeTrue()
+		->and(stream_get_meta_data($pair[1])['blocked'])->toBeFalse();
+
+	fwrite($pair[0], 'partial request');
+	[$partial, $partial_overlong, $partial_healthy] = script_server_read_request($pair[1], SCRIPT_SERVER_MAX_REQUEST_LENGTH, 0.05, true);
+
+	expect($partial)->toBe('partial request')
+		->and($partial_overlong)->toBeTrue()
+		->and($partial_healthy)->toBeFalse()
+		->and(stream_get_meta_data($pair[1])['blocked'])->toBeFalse();
+
+	fclose($pair[0]);
+	fclose($pair[1]);
+})->skip(!function_exists('stream_socket_pair') || DIRECTORY_SEPARATOR === '\\', 'needs a unix socket pair');
+
 test('an unterminated request does not wait forever for a line ending that never comes', function (int $length) {
 	// spine truncates an overlong request without CR LF and then waits for the reply
 	$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
