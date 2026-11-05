@@ -1,0 +1,248 @@
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
+
+.mtChart {
+	color: #CC6633 !important;
+}
+
+.mtChartDisabled {
+	color: #9999CC !important;
+}
+
+.mtEdit {
+	color: #333333 !important;
+}
+
+.mtSync {
+	color: #66FF66 !important;
+}
+
+.mtRanges {
+	color: #006633 !important;
+}
+
+.mtInterfaces {
+	color: #993300 !important;
+}
+
+.mtNetwork {
+	color: #660033 !important;
+}
+
+.mtMacs {
+	color: #FF9999 !important;
+}
+
+.mtServer {
+	color: #336600 !important;
+}
+
+.mtPorts {
+	color: #993300 !important;
+}
+
+.mtIps {
+	color: #3399FF !important;
+}
+
+/*
+ * Status legend chips: solid, opaque colours with white text (consistent with
+ * the Thold/Monitor/Syslog legends), sized to the longest label via
+ * --mactrack-chip-min so they stay equal width as the legend wraps. The plain
+ * row-highlight classes below still tint the list rows.
+ */
+.mactrackLegend {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(var(--mactrack-chip-min, 8ch), 1fr));
+	gap: 4px;
+	width: 100%;
+}
+
+/* Legend footer: keeps the legend centered beneath the list in normal
+   document flow, so it never overlays the final rows or action controls. */
+.mactrackLegendFooter {
+	display: table;
+	width: 100%;
+	margin: 8px auto 0;
+}
+
+.mactrackLegend .mactrackLegendItem {
+	text-align: center;
+	white-space: nowrap;
+	padding: 4px 6px;
+	border-radius: 3px;
+	color: #ffffff;
+}
+
+.mactrackLegend .int_up { background-color: #2b8435; }
+.mactrackLegend .int_up_wo_alias { background-color: #a85712; }
+.mactrackLegend .int_errors { background-color: #93302a; }
+.mactrackLegend .int_discards { background-color: #9a6a1a; }
+.mactrackLegend .int_no_graph { background-color: #5f5f57; }
+.mactrackLegend .int_down { background-color: #a12820; }
+
+.mactrackLegend .authn_success { background-color: #2b8435; }
+.mactrackLegend .auth_success { background-color: #3f7a4a; }
+.mactrackLegend .authn_failed { background-color: #a12820; }
+.mactrackLegend .auth_failed { background-color: #a85712; }
+.mactrackLegend .running { background-color: #93302a; }
+.mactrackLegend .idle { background-color: #9a6a1a; }
+
+.int_up {
+	background-color: rgba(100, 120, 222, 0.8);
+	color: #eeeeee;
+}
+
+.int_up_wo_alias {
+	background-color: rgba(255, 122, 48, 0.8);
+	color: #eeeeee;
+}
+
+.int_errors {
+	background-color: rgba(251, 74, 20, 0.8);
+	color: #eeeeee;
+}
+
+.int_discards {
+	background-color: rgba(250, 253, 158, 0.8);
+	color: #eeeeee;
+}
+
+.int_no_graph {
+	background-color: rgba(205, 207, 196, 0.8);
+	color: #eeeeee;
+}
+
+.int_no_device {
+	background-color: rgba(250, 253, 158, 0.8);
+	color: #eeeeee;
+}
+
+.int_changed {
+	background-color: rgba(242, 25, 36, 0.8);
+	color: #eeeeee;
+}
+
+.int_down {
+	background-color: rgba(242, 23, 33, 0.8);
+	color: #eeeeee;
+}
+
+.dot1x_authn_success {
+	background-color: rgba(100, 120, 222, 0.8);
+	color: #eeeeee;
+}
+
+.dot1x_auth_success {
+	background-color: rgba(100, 120, 222, 0.8);
+	color: #eeeeee;
+}
+
+.dot1x_authn_failed {
+	background-color: rgba(242, 23, 33, 0.8);
+	color: #eeeeee;
+}
+
+.dot1x_auth_failed {
+	background-color: rgba(255, 122, 48, 0.8);
+	color: #eeeeee;
+}
+
+.dot1x_running {
+	background-color: rgba(251, 74, 20, 0.8);
+	color: #eeeeee;
+}
+
+.dot1x_idle {
+	background-color: rgba(250, 253, 158, 0.8);
+	color: #eeeeee;
+}
+
+.dot1x_auth_no_method {
+	background-color: rgba(205, 207, 196, 0.8);
+	color: #000000;
+}
+
+/*
+ * Status pills for the interfaces "Issues" column and the 802.1x status
+ * column. Outlined when inactive and solid when active; each pill takes
+ * its colour from the --pill custom property defined below so it matches
+ * this theme's status legend chips.
+ */
+.mactrackPills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+	align-items: center;
+}
+
+.mactrackPill {
+	appearance: none;
+	-webkit-appearance: none;
+	display: inline-block;
+	margin: 0;
+	padding: 1px 7px;
+	border-radius: 10px;
+	font: inherit;
+	font-size: 0.85em;
+	line-height: 1.5;
+	white-space: nowrap;
+	cursor: pointer;
+	user-select: none;
+	color: inherit;
+	background-color: transparent;
+	border: 1px solid var(--pill, #b5b5b5);
+}
+
+.mactrackPill:hover {
+	background-color: var(--pill, #666666);
+	color: #ffffff;
+}
+
+.mactrackPill:focus-visible {
+	outline: 2px solid var(--pill, #666666);
+	outline-offset: 1px;
+}
+
+.mactrackPillActive {
+	color: #ffffff;
+	background-color: var(--pill, #666666);
+	border-color: var(--pill, #666666);
+}
+
+.mactrackPill.int_up { --pill: #2b8435; }
+.mactrackPill.int_up_wo_alias { --pill: #a85712; }
+.mactrackPill.int_errors { --pill: #93302a; }
+.mactrackPill.int_discards { --pill: #9a6a1a; }
+.mactrackPill.int_no_graph { --pill: #5f5f57; }
+.mactrackPill.int_down { --pill: #a12820; }
+
+.mactrackPill.dot1x_authn_success { --pill: #2b8435; }
+.mactrackPill.dot1x_auth_success { --pill: #3f7a4a; }
+.mactrackPill.dot1x_authn_failed { --pill: #a12820; }
+.mactrackPill.dot1x_auth_failed { --pill: #a85712; }
+.mactrackPill.dot1x_running { --pill: #93302a; }
+.mactrackPill.dot1x_idle { --pill: #9a6a1a; }
+.mactrackPill.dot1x_auth_no_method { --pill: #5f5f57; }
+.mactrackPill.mac_authorized { --pill: #2b8435; }
+.mactrackPill.mac_unauthorized { --pill: #a12820; }

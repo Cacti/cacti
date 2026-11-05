@@ -1,0 +1,380 @@
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
+
+.monitorHover {
+	color: #030303 !important;
+}
+
+.monitor a, .monitor a:active, .monitor a:visited,
+.monitorHover a, .monitorHover a:active, .monitorHover a:visited {
+	color: #030303 !important;
+}
+
+.monitor a:hover {
+	color: #030303 !important;
+}
+
+.monitorHover a:hover {
+	color: #030303 !important;
+}
+
+.monitorFooterText {
+	color: #030303;
+	font-size: 10px;
+}
+
+.monitorFooterTextBold {
+	color: #636363;
+	font-size: 10px;
+	padding-bottom: 120px;
+}
+
+.deviceThresholdFull {
+	background-color: rgba(242, 25, 36, 0.4);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	padding: 3px;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceDownMutedFull {
+	background-color: rgba(205, 207, 196, 0.2);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	padding: 3px;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceUnmonitoredFull {
+	background-color: rgba(20, 20, 196, 0.2);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	padding: 3px;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceWarningFull {
+	background-color: rgba(200, 86, 225, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	padding: 3px;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceAlertFull {
+	background-color: rgba(177, 20, 212, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	padding: 3px;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceThresholdMutedFull {
+	background-color: rgba(255, 207, 196, 0.2);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceUpFull {
+	background-color: rgba(25, 142, 50, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceDownFull {
+	background-color: rgba(255, 0, 0, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #FFFFFF;
+}
+
+.deviceUnknownFull {
+	background-color: rgba(0, 0, 255, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #FFFFFF;
+}
+
+.deviceDisabledFull {
+	background-color: rgba(161, 161, 161, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceRecoveringFull {
+	background-color: rgba(255, 143, 30, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceErrorFull {
+	background-color: rgba(117, 15, 125, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.deviceNotMonFull {
+	background-color: rgba(250, 253, 158, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	line-height: 20px;
+	color: #0A0A0A;
+}
+
+.monitorAlertNotify {
+	background-color: rgba(242, 25, 36, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorAlert2Warn {
+	background-color: rgba(200, 25, 36, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorWarningNotify {
+	background-color: rgba(251, 74, 20, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorReTriggerNotify {
+	background-color: rgba(200, 125, 88, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorReTriggerEvent {
+	background-color: rgba(255, 122, 48, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorTriggerEvent {
+	background-color: rgba(250, 253, 158, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorWarnTrigger {
+	background-color: rgba(210, 223, 128, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorRestoralNotify {
+	background-color: rgba(204, 255, 204, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorRestoralEvent {
+	background-color: rgba(205, 207, 196, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 11.11%;
+	color: #0A0A0A;
+}
+
+.monitorRestore {
+	background-color: rgba(204, 255, 204, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorAlertTrigger {
+	background-color: rgba(242, 23, 33, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorReTrigger {
+	background-color: rgba(250, 116, 32, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorWarning {
+	background-color: rgba(255, 122, 48, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorWarning .linkEditMain {
+	color: #000000;
+}
+
+.monitorAlert {
+	background-color: rgba(242, 25, 36, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorAlert .linkEditMain {
+	color: #000000;
+}
+
+.monitorAckCol {
+	background-color: rgba(138, 43, 226, 0.4);
+}
+
+.monitorAcknowledgment {
+	background-color: rgba(138, 43, 226, 0.4);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorAcknowledgment .linkEditMain {
+	color: #000000;
+}
+
+.monitorBaseAlert {
+	background-color: rgba(251, 74, 20, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorBaseAlert .linkEditMain {
+	color: #000000;
+}
+
+.monitorNotice {
+	background-color: rgba(250, 253, 158, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorOk {
+	background-color: rgba(204, 255, 204, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorDisabled {
+	background-color: rgba(205, 207, 196, 0.6);
+	text-align: center;
+	white-space: nowrap;
+	width: 14%;
+	color: #0A0A0A;
+}
+
+.monitorGlyphEdit {
+	color: #666666;
+}
+
+.monitorGlyphDisable {
+	color: #990000;
+}
+
+.monitorGlyphEnable {
+	color: #006600;
+}
+
+.monitorGlyphChart {
+	color: #996600;
+}
+
+.monitorGlyphLog {
+	color: #999900;
+}
+
+.monitorGlyphAcknowledge {
+	color: #336600;
+}
+
+.monitorGlyphAcknowledge {
+	color: #336600;
+}
+
+.monitorGlyphAcknowledgeSuspend {
+	color: #336600;
+}
+
+.monitorLog {
+	white-space: pre-wrap !important;
+}
