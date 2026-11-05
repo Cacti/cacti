@@ -97,7 +97,10 @@ test('the pre-check follows remote poller and selective logging precedence', fun
 		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, POLLER_VERBOSITY_DEBUG, -1, POLLER_VERBOSITY_LOW))->toBeFalse()
 		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, POLLER_VERBOSITY_DEBUG, POLLER_VERBOSITY_NONE))->toBeTrue()
 		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, -1, POLLER_VERBOSITY_DEBUG))->toBeTrue()
-		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, -1, POLLER_VERBOSITY_LOW))->toBeFalse();
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, -1, POLLER_VERBOSITY_LOW))->toBeFalse()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEVDBG, -1, -1, POLLER_VERBOSITY_DEVDBG))->toBeTrue()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, -1, POLLER_VERBOSITY_DEVDBG))->toBeFalse()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_LOW, -1, -1, POLLER_VERBOSITY_DEVDBG))->toBeTrue();
 });
 
 test('script_server_log_response logs only at debug verbosity', function () {

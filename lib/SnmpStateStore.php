@@ -81,7 +81,7 @@ final class CactiSnmpStateStore {
 			return false;
 		}
 
-		$data = file_get_contents($file, false, null, 0, self::MAX_STATE_BYTES + 1);
+		$data = @file_get_contents($file, false, null, 0, self::MAX_STATE_BYTES + 1);
 
 		if ($data === false || strlen($data) > self::MAX_STATE_BYTES) {
 			return false;
