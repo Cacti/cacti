@@ -394,15 +394,22 @@ function ping_device() : void {
 }
 
 function poll_for_data() : mixed {
-	$local_data_ids = gnrv('local_data_ids');
-	$host_id        = gfrv('host_id');
-	$poller_id      = gnrv('poller_id');
-	$return         = [];
+	$local_data_ids                = gnrv('local_data_ids');
+	$host_id                       = gfrv('host_id');
+	$poller_id                     = gnrv('poller_id');
+	$return                        = [];
+	$script_timeout                = (float) read_config_option('script_timeout');
+	$cactiphp                      = false;
+	$pipes                         = false;
+	$using_proc_function           = false;
+	$script_server_start_attempted = false;
 
 	// ensure we have a valid poller_id
-	if (!preg_match('/^[a-z0-9]+$/i', $poller_id)) {
+	if ((!is_string($poller_id) && !is_int($poller_id)) || !preg_match('/^(?:[1-9][0-9]*|[A-Fa-f0-9]{64})$/D', (string) $poller_id)) {
 		return [];
 	}
+
+	$poller_id = (string) $poller_id;
 
 	$i = 0;
 
@@ -414,13 +421,6 @@ function poll_for_data() : mixed {
 				FROM poller_item
 				WHERE host_id = ?
 				AND local_data_id = ?',
-				[$host_id, $local_data_id]);
-
-			$script_server_calls = db_fetch_cell_prepared('SELECT COUNT(*)
-				FROM poller_item
-				WHERE host_id = ?
-				AND local_data_id = ?
-				AND action = 2',
 				[$host_id, $local_data_id]);
 
 			if (cacti_sizeof($items)) {
@@ -479,39 +479,22 @@ function poll_for_data() : mixed {
 
 							break;
 						case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
-							$cactides = [
-								0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
-								1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
-								2 => ['pipe', 'w']  // stderr is a pipe to write to
-							];
+							if (!$script_server_start_attempted) {
+								[$cactiphp, $pipes, $using_proc_function] = script_server_open('realtime', $poller_id, CACTI_CONNECTION, $script_timeout);
+								$script_server_start_attempted            = true;
 
-							$cactiphp = false;
-							$pipes    = false;
-
-							if (function_exists('proc_open')) {
-								$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
-
-								// proc_open returns false if the child could not be spawned; fall back to
-								// the non-proc path rather than reading from non-existent pipes
-								if (!is_resource($cactiphp)) {
-									cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution',
-										false,
-										'POLLER',
-										POLLER_VERBOSITY_LOW);
-
-									$using_proc_function = false;
-									$pipes               = false;
-								} else {
-									$output = fgets($pipes[1], 1024);
-
-									$using_proc_function = true;
+								if (!$using_proc_function) {
+									cacti_log('WARNING: Unable to start PHP Script Server', false, 'POLLER', POLLER_VERBOSITY_LOW);
 								}
-							} else {
-								$using_proc_function = false;
 							}
 
 							if ($using_proc_function == true) {
-								$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+								$worker_healthy = true;
+								$output         = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp, $script_timeout, $worker_healthy)));
+
+								if (!$worker_healthy) {
+									script_server_replace($cactiphp, $pipes, $using_proc_function, 'realtime', $poller_id, CACTI_CONNECTION, $script_timeout);
+								}
 
 								if (prepare_validate_result($output) === false) {
 									if (strlen($output) > 20) {
@@ -530,16 +513,6 @@ function poll_for_data() : mixed {
 							$return[$i]['rrd_name']      = $item['rrd_name'];
 							$return[$i]['local_data_id'] = $local_data_id;
 
-							if (($using_proc_function == true) && ($script_server_calls > 0)) {
-								// close php server process
-								fwrite($pipes[0], "quit\r\n");
-								fclose($pipes[0]);
-								fclose($pipes[1]);
-								fclose($pipes[2]);
-
-								$return_value = proc_close($cactiphp);
-							}
-
 							break;
 					}
 
@@ -547,6 +520,10 @@ function poll_for_data() : mixed {
 				}
 			}
 		}
+	}
+
+	if ($script_server_start_attempted) {
+		script_server_close($cactiphp, $pipes);
 	}
 
 	print json_encode($return);

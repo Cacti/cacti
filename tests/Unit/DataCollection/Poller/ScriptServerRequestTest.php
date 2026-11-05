@@ -31,16 +31,18 @@ function ss_request_stream(string $contents) : mixed {
 
 test('the reader and writer share one request limit that matches the spine buffer', function () {
 	// spine formats "%s\r\n" into a 1024 byte buffer, leaving 1021 bytes of request
-	expect(SCRIPT_SERVER_MAX_REQUEST_LENGTH)->toBe(1021);
+	expect(SCRIPT_SERVER_MAX_REQUEST_LENGTH)->toBe(1021)
+		->and(SCRIPT_SERVER_MAX_RESPONSE_LENGTH)->toBe(8190);
 });
 
 test('a request within the limit is returned whole', function () {
 	$stream = ss_request_stream("/path/script.php ss_func 'a'\r\nquit\r\n");
 
-	[$line, $overlong] = script_server_read_request($stream);
+	[$line, $overlong, $framing_healthy] = script_server_read_request($stream);
 
 	expect($line)->toBe("/path/script.php ss_func 'a'\r\n")
-		->and($overlong)->toBeFalse();
+		->and($overlong)->toBeFalse()
+		->and($framing_healthy)->toBeTrue();
 
 	[$line, $overlong] = script_server_read_request($stream);
 
@@ -59,9 +61,9 @@ test('a request of exactly the limit is accepted', function () {
 test('an overlong request is discarded through its line ending and the next request survives', function () {
 	$stream = ss_request_stream(str_repeat('x', 5000) . "\r\nnext request\r\n");
 
-	[, $overlong] = script_server_read_request($stream);
+	[, $overlong, $framing_healthy] = script_server_read_request($stream);
 
-	expect($overlong)->toBeTrue();
+	expect($overlong)->toBeTrue()->and($framing_healthy)->toBeTrue();
 
 	[$line, $overlong] = script_server_read_request($stream);
 
@@ -91,31 +93,37 @@ test('draining a request restores the socket blocking mode', function (bool $blo
 })->with([true, false])
 	->skip(!function_exists('stream_socket_pair') || DIRECTORY_SEPARATOR === '\\', 'needs a unix socket pair');
 
-test('an unsupported select fallback never switches to a blocking read', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/script_server.php');
-
-	expect($source)->toContain('$ready === false && !$nonblocking')
-		->not->toContain("if (\$ready === false) {\n\t\t\tstream_set_blocking(\$stream, true);");
-});
-
-test('an unterminated overlong request does not wait for a line ending that never comes', function () {
+test('an unterminated request does not wait forever for a line ending that never comes', function (int $length) {
 	// spine truncates an overlong request without CR LF and then waits for the reply
 	$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
 
-	fwrite($pair[0], str_repeat('z', 1023));
+	fwrite($pair[0], str_repeat('z', $length));
 
 	$start = microtime(true);
 
-	[, $overlong] = script_server_read_request($pair[1], SCRIPT_SERVER_MAX_REQUEST_LENGTH, 0.1);
+	[, $overlong, $framing_healthy] = script_server_read_request($pair[1], SCRIPT_SERVER_MAX_REQUEST_LENGTH, 0.1);
 
 	expect($overlong)->toBeTrue()
+		->and($framing_healthy)->toBeFalse()
+		->and(stream_get_meta_data($pair[1])['blocked'])->toBeTrue()
 		->and(microtime(true) - $start)->toBeLessThan(2.0);
 
-	fwrite($pair[0], "after\r\n");
+	fclose($pair[0]);
+	fclose($pair[1]);
+})->with([
+	'one byte over the request limit' => [SCRIPT_SERVER_MAX_REQUEST_LENGTH + 1],
+	'full protocol buffer'            => [SCRIPT_SERVER_MAX_REQUEST_LENGTH + 2],
+])->skip(!function_exists('stream_socket_pair') || DIRECTORY_SEPARATOR === '\\', 'needs a unix socket pair');
 
-	[$line] = script_server_read_request($pair[1]);
+test('an incomplete bounded request is framing corruption', function () {
+	$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+	fwrite($pair[0], 'partial request');
 
-	expect($line)->toBe("after\r\n");
+	[$line, $overlong, $framing_healthy] = script_server_read_request($pair[1], SCRIPT_SERVER_MAX_REQUEST_LENGTH, 0.1);
+
+	expect($line)->toBe('partial request')
+		->and($overlong)->toBeTrue()
+		->and($framing_healthy)->toBeFalse();
 
 	fclose($pair[0]);
 	fclose($pair[1]);
@@ -125,6 +133,19 @@ test('end of input is reported as no request', function () {
 	[$line, $overlong] = script_server_read_request(ss_request_stream(''));
 
 	expect($line)->toBeFalse()->and($overlong)->toBeFalse();
+
+	[$line, $overlong, $framing_healthy] = script_server_read_request(ss_request_stream('partial'));
+
+	expect($line)->toBe('partial')
+		->and($overlong)->toBeTrue()
+		->and($framing_healthy)->toBeFalse();
+});
+
+test('one line terminator is removed and embedded controls are refused', function () {
+	expect(script_server_normalize_request("  script.php function 'arg'\r\n"))->toBe("script.php function 'arg'")
+		->and(script_server_normalize_request("script.php function a\rb\n"))->toBeFalse()
+		->and(script_server_normalize_request("script.php\tfunction\n"))->toBeFalse()
+		->and(script_server_normalize_request("quit\r\r\n"))->toBeFalse();
 });
 
 test('exec_poll_php refuses a command longer than the reader accepts', function () {
@@ -153,6 +174,102 @@ test('exec_poll_php refuses a command with an embedded line break', function () 
 	fclose($pipes[2]);
 	proc_close($proc);
 });
+
+test('exec_poll_php preserves the legacy ERROR response mapping', function () {
+	$proc    = proc_open(['cat'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$healthy = true;
+
+	expect(exec_poll_php('ERROR from script', true, $pipes, $proc, 1.0, $healthy))->toBe('U')
+		->and($healthy)->toBeTrue();
+
+	script_server_close($proc, $pipes, false);
+});
+
+test('the direct fallback executes an allowed script without a command shell', function () {
+	$script = CACTI_PATH_SCRIPTS . '/.script-server-direct-' . bin2hex(random_bytes(8)) . '.php';
+	$marker = sys_get_temp_dir() . '/script-server-direct-' . bin2hex(random_bytes(8));
+	$value  = 'literal; $(echo not-a-command)';
+
+	file_put_contents($script, '<?php file_put_contents(' . var_export($marker, true) . ", 'loaded'); if (\$argv[1] === 'oversized') { fwrite(STDOUT, str_repeat('x', " . (SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 3) . ')); } else { fwrite(STDOUT, $argv[2]); }');
+
+	try {
+		$command = escapeshellarg($script) . ' Class::method ' . escapeshellarg($value);
+
+		expect(exec_poll_php($command, false, false, false, 2.0))->toBe('U')
+			->and(file_exists($marker))->toBeFalse();
+
+		$command = escapeshellarg($script) . ' ignored ' . escapeshellarg($value);
+
+		expect(exec_poll_php($command, false, false, false, 2.0))->toBe($value)
+			->and(file_exists($marker))->toBeTrue();
+
+		$command = escapeshellarg($script) . ' oversized';
+
+		expect(exec_poll_php($command, false, false, false, 2.0))->toBe('U');
+
+		$command = escapeshellarg($script) . ' ignored ' . escapeshellarg("first\nsecond");
+
+		expect(exec_poll_php($command, false, false, false, 2.0))->toBe('U');
+	} finally {
+		@unlink($script);
+		@unlink($marker);
+	}
+});
+
+test('exec_poll_php drains stderr while waiting for a framed response', function () {
+	$code    = 'fwrite(STDERR, str_repeat("x", 1048576)); while (($line = fgets(STDIN)) !== false) { fwrite(STDOUT, $line); }';
+	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$healthy = true;
+
+	expect(exec_poll_php('ping', true, $pipes, $proc, 3.0, $healthy))->toBe('ping')
+		->and($healthy)->toBeTrue();
+
+	script_server_close($proc, $pipes, false);
+});
+
+test('exec_poll_php terminates a worker that misses its deadline', function () {
+	$code    = 'while (($line = fgets(STDIN)) !== false) { usleep(500000); fwrite(STDOUT, "late\\n"); }';
+	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$healthy = true;
+	$start   = hrtime(true);
+
+	expect(exec_poll_php('slow', true, $pipes, $proc, 0.05, $healthy))->toBe('U')
+		->and($healthy)->toBeFalse()
+		->and((hrtime(true) - $start) / 1000000000)->toBeLessThan(1.0);
+
+	script_server_close($proc, $pipes, false);
+});
+
+test('deadline termination escalates when a worker ignores the first signal', function () {
+	$code = 'pcntl_async_signals(true); pcntl_signal(SIGTERM, static function () : void {}); ' .
+		'while (($line = fgets(STDIN)) !== false) { sleep(10); }';
+	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$healthy = true;
+	$start   = hrtime(true);
+
+	expect(exec_poll_php('slow', true, $pipes, $proc, 0.05, $healthy))->toBe('U')
+		->and($healthy)->toBeFalse()
+		->and((hrtime(true) - $start) / 1000000000)->toBeLessThan(1.0);
+
+	script_server_close($proc, $pipes, false);
+})->skip(DIRECTORY_SEPARATOR === '\\' || !function_exists('pcntl_signal'), 'requires Unix signals');
+
+test('exec_poll_php replaces workers that emit invalid responses', function (string $body) {
+	$code    = 'while (($line = fgets(STDIN)) !== false) { ' . $body . ' }';
+	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$healthy = true;
+
+	expect(exec_poll_php('probe', true, $pipes, $proc, 1.0, $healthy))->toBe('U')
+		->and($healthy)->toBeFalse();
+
+	script_server_close($proc, $pipes, false);
+})->with([
+	'oversized' => ['fwrite(STDOUT, str_repeat("x", ' . (SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 1) . ') . "\\n");'],
+	'multiple'  => ['fwrite(STDOUT, "first\\nsecond\\n");'],
+	'empty'     => ['fwrite(STDOUT, "\\n");'],
+	'bad CR'    => ['fwrite(STDOUT, "first\\r\\r\\n");'],
+	'control'   => ['fwrite(STDOUT, "first\\tsecond\\n");'],
+]);
 
 /*
  * parseArgs() must undo cacti_escapeshellarg(), which on Unix produces POSIX
@@ -208,6 +325,7 @@ test('malformed parameter strings are refused without writing to stdout', functi
 })->with([
 	'unterminated' => ["'open"],
 	'backtick'     => ["'a' `b`"],
+	'plain tick'   => ['a `b`'],
 	'bad escape'   => ["'a' \\x"],
 	'dangling'     => ["'a' \\"],
 ]);
