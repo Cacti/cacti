@@ -141,6 +141,24 @@ test('end of input is reported as no request', function () {
 		->and($framing_healthy)->toBeFalse();
 });
 
+test('the bounded blocking fallback reports complete incomplete and overlong input', function () {
+	[$line, $overlong, $healthy] = script_server_read_request_blocking(ss_request_stream(''), 8, 0.01);
+
+	expect($line)->toBeFalse()->and($overlong)->toBeFalse()->and($healthy)->toBeTrue();
+
+	[$line, $overlong, $healthy] = script_server_read_request_blocking(ss_request_stream('partial'), 8, 0.01);
+
+	expect($line)->toBe('partial')->and($overlong)->toBeTrue()->and($healthy)->toBeFalse();
+
+	[$line, $overlong, $healthy] = script_server_read_request_blocking(ss_request_stream("valid\n"), 8, 0.01);
+
+	expect($line)->toBe("valid\n")->and($overlong)->toBeFalse()->and($healthy)->toBeTrue();
+
+	[, $overlong, $healthy] = script_server_read_request_blocking(ss_request_stream(str_repeat('x', 32)), 8, 0.01);
+
+	expect($overlong)->toBeTrue()->and($healthy)->toBeFalse();
+});
+
 test('one line terminator is removed and embedded controls are refused', function () {
 	expect(script_server_normalize_request("  script.php function 'arg'\r\n"))->toBe("script.php function 'arg'")
 		->and(script_server_normalize_request("script.php function a\rb\n"))->toBeFalse()
@@ -185,14 +203,47 @@ test('exec_poll_php preserves the legacy ERROR response mapping', function () {
 	script_server_close($proc, $pipes, false);
 });
 
+test('response handling rejects invalid worker handles and an unframed oversized body', function () {
+	$healthy = true;
+
+	expect(script_server_read_response([], false, $healthy, 0.1))->toBeFalse()
+		->and($healthy)->toBeFalse();
+
+	$healthy = true;
+
+	expect(exec_poll_php('probe', true, false, false, 0.1, $healthy))->toBe('U')
+		->and($healthy)->toBeFalse();
+
+	$process = proc_open(['cat'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	fclose($pipes[0]);
+	$healthy = true;
+
+	expect(exec_poll_php('probe', true, $pipes, $process, 0.1, $healthy))->toBe('U')
+		->and($healthy)->toBeFalse();
+
+	script_server_close($process, $pipes, false);
+
+	$code    = 'while (($line = fgets(STDIN)) !== false) { fwrite(STDOUT, str_repeat("x", ' . (SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 2) . ')); usleep(500000); }';
+	$process = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$healthy = true;
+
+	expect(exec_poll_php('probe', true, $pipes, $process, 1.0, $healthy))->toBe('U')
+		->and($healthy)->toBeFalse();
+
+	script_server_close($process, $pipes, false);
+});
+
 test('the direct fallback executes an allowed script without a command shell', function () {
 	$script = CACTI_PATH_SCRIPTS . '/.script-server-direct-' . bin2hex(random_bytes(8)) . '.php';
 	$marker = sys_get_temp_dir() . '/script-server-direct-' . bin2hex(random_bytes(8));
 	$value  = 'literal; $(echo not-a-command)';
 
-	file_put_contents($script, '<?php file_put_contents(' . var_export($marker, true) . ", 'loaded'); if (\$argv[1] === 'oversized') { fwrite(STDOUT, str_repeat('x', " . (SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 3) . ')); } else { fwrite(STDOUT, $argv[2]); }');
+	file_put_contents($script, '<?php file_put_contents(' . var_export($marker, true) . ", 'loaded'); if (\$argv[1] === 'oversized') { fwrite(STDOUT, str_repeat('x', " . (SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 3) . ")); } elseif (\$argv[1] === 'multiple') { fwrite(STDOUT, \"first\\nsecond\\n\"); } elseif (\$argv[1] === 'line') { fwrite(STDOUT, \"line\\n\"); } elseif (\$argv[1] === 'crlf') { fwrite(STDOUT, \"crlf\\r\\n\"); } else { fwrite(STDOUT, \$argv[2]); }");
 
 	try {
+		expect(exec_poll_php(escapeshellarg($script), false, false, false, 2.0))->toBe('U')
+			->and(file_exists($marker))->toBeFalse();
+
 		$command = escapeshellarg($script) . ' Class::method ' . escapeshellarg($value);
 
 		expect(exec_poll_php($command, false, false, false, 2.0))->toBe('U')
@@ -210,6 +261,13 @@ test('the direct fallback executes an allowed script without a command shell', f
 		$command = escapeshellarg($script) . ' ignored ' . escapeshellarg("first\nsecond");
 
 		expect(exec_poll_php($command, false, false, false, 2.0))->toBe('U');
+
+		$missing = CACTI_PATH_SCRIPTS . '/.script-server-missing-' . bin2hex(random_bytes(8)) . '.php';
+
+		expect(exec_poll_php(escapeshellarg($missing) . ' ignored', false, false, false, 2.0))->toBe('U')
+			->and(exec_poll_php(escapeshellarg($script) . ' multiple', false, false, false, 2.0))->toBe('U')
+			->and(exec_poll_php(escapeshellarg($script) . ' line', false, false, false, 2.0))->toBe('line')
+			->and(exec_poll_php(escapeshellarg($script) . ' crlf', false, false, false, 2.0))->toBe('crlf');
 	} finally {
 		@unlink($script);
 		@unlink($marker);

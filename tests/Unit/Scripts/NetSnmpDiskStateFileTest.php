@@ -131,6 +131,40 @@ test('symbolic-link state files are not read or followed on replacement', functi
 		->and(is_link("$dir/5_io"))->toBeFalse();
 })->skip(DIRECTORY_SEPARATOR === '\\', 'symbolic links require Unix semantics');
 
+test('non-regular state targets are refused', function () {
+	$dir    = CactiSnmpStateStore::directory($this->base . '/cacti/net-snmp-devio');
+	$target = "$dir/5_io";
+
+	mkdir($target, 0700);
+
+	expect(CactiSnmpStateStore::write($dir, $target, '{}'))->toBeFalse();
+});
+
+test('unreadable state files and unwritable state directories fail closed', function () {
+	$dir  = CactiSnmpStateStore::directory($this->base . '/cacti/net-snmp-devio');
+	$file = "$dir/5_io";
+
+	file_put_contents($file, '{}');
+	chmod($file, 0000);
+
+	try {
+		expect(CactiSnmpStateStore::read($file))->toBeFalse();
+	} finally {
+		chmod($file, 0600);
+	}
+
+	chmod($dir, 0500);
+
+	try {
+		expect(CactiSnmpStateStore::write($dir, "$dir/6_io", '{}'))->toBeFalse();
+	} finally {
+		chmod($dir, 0700);
+	}
+})->skip(
+	DIRECTORY_SEPARATOR === '\\' || (function_exists('posix_geteuid') && posix_geteuid() === 0),
+	'requires non-root Unix file permission semantics'
+);
+
 test('real-time state identifiers are bounded and path safe', function () {
 	expect(CactiSnmpStateStore::realtimeId(42))->toBe('42')
 		->and(CactiSnmpStateStore::realtimeId(str_repeat('a', 64)))->toBe(str_repeat('a', 64))

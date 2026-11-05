@@ -387,9 +387,9 @@ function script_server_resolve_include(string $include_file, array $roots) : str
  * sequence '\'' inside a single quoted argument yields an apostrophe. Inside
  * double quotes \" yields a quote, which is the Windows escaping form.
  *
- * @param string $string   The parameter string
- * @param array  $str_list The parsed arguments
- * @param bool   $debug    Print the input and output
+ * @param string $string The parameter string
+ * @param-out list<string> $str_list The parsed arguments
+ * @param bool $debug Print the input and output
  *
  * @return bool True when the string parsed cleanly
  */

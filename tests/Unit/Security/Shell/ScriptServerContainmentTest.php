@@ -68,6 +68,15 @@ test('undefined and non-function names are refused', function () {
 		->and(script_server_function_rejection('ReflectionClass::export', $file))->toBe('is not defined');
 });
 
+test('dispatch and log redaction reject non-callables and preserve non-string values', function () {
+	$healthy = true;
+	$value   = ['nested'];
+
+	expect(script_server_dispatch('ss_no_such_function', [], $healthy))->toBe('U')
+		->and($healthy)->toBeTrue()
+		->and(script_server_redact_args([$value, 'secret'], ['secret']))->toBe([$value, '<redacted>']);
+});
+
 test('a function declared by a different file is refused', function () {
 	$name = 'ss_outside_' . bin2hex(random_bytes(8));
 	$file = sys_get_temp_dir() . '/' . $name . '.php';
