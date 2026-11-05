@@ -23,6 +23,20 @@ function ss_process_test_command(array $arguments) : array {
 	], $arguments);
 }
 
+function ss_process_test_php_wrapper() : string {
+	$wrapper   = sys_get_temp_dir() . '/script-server-php-' . bin2hex(random_bytes(8));
+	$bootstrap = dirname(__DIR__, 3) . '/fixtures/script_server_bootstrap.php';
+	$source    = "#!/bin/sh\nexec " . escapeshellarg(PHP_BINARY) . ' -d ' . escapeshellarg('auto_prepend_file=' . $bootstrap) . " \"\$@\"\n";
+
+	if (file_put_contents($wrapper, $source) === false || !chmod($wrapper, 0700)) {
+		@unlink($wrapper);
+
+		throw new RuntimeException('Unable to create the Script Server PHP wrapper');
+	}
+
+	return $wrapper;
+}
+
 function ss_process_test_start(array $arguments = []) : array {
 	if (!$arguments) {
 		$arguments = ['--environ=cmd', '--poller=1', '--mode=online'];
@@ -71,6 +85,32 @@ function ss_process_test_run(array $arguments) : array {
 	return [$status, $stdout, $stderr];
 }
 
+function ss_process_test_run_php(string $script) : array {
+	$process = proc_open([
+		PHP_BINARY,
+		'-d',
+		'auto_prepend_file=' . dirname(__DIR__, 3) . '/fixtures/script_server_bootstrap.php',
+		$script
+	], [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w']
+	], $pipes);
+
+	if (!is_resource($process)) {
+		throw new RuntimeException('Unable to start PHP fixture');
+	}
+
+	fclose($pipes[0]);
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	$status = proc_close($process);
+
+	return [$status, $stdout, $stderr];
+}
+
 function ss_process_test_script() : array {
 	$token  = bin2hex(random_bytes(8));
 	$prefix = 'ss_runtime_' . $token;
@@ -86,7 +126,10 @@ function ss_process_test_script() : array {
 		"function {$prefix}_control() : string { return \"first\\tsecond\"; }\n" .
 		"function {$prefix}_long() : string { return str_repeat('x', SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 1); }\n" .
 		"function {$prefix}_slow() : string { usleep(250000); return 'late'; }\n" .
-		"function {$prefix}_throws() : string { throw new RuntimeException('fixture failure'); }\n";
+		"function {$prefix}_throws() : string { throw new RuntimeException('fixture failure'); }\n" .
+		"function {$prefix}_guard_level() : string { return (string) script_server_start_output_guard(); }\n" .
+		"function {$prefix}_guard_zero() : string { return script_server_reset_output_guard(0) ? 'bad' : 'guarded'; }\n" .
+		"function {$prefix}_guard_mismatch() : string { return script_server_reset_output_guard(999) ? 'bad' : 'guarded'; }\n";
 
 	file_put_contents($file, $source);
 	file_put_contents($failed, "<?php\nfunction {$prefix}_partial() : string { return 'partial'; }\nthrow new RuntimeException('load failed');\n");
@@ -102,7 +145,7 @@ beforeEach(function () {
 
 afterEach(function () {
 	if (is_resource($this->process) || is_array($this->pipes)) {
-		script_server_close($this->process, $this->pipes, false);
+		script_server_close($this->process, $this->pipes);
 	}
 
 	if (is_file($this->script)) {
@@ -123,6 +166,9 @@ test('the live server emits one bounded response and remains aligned', function 
 		[$this->prefix . '_prints', '', 'printed-result'],
 		[$this->prefix . '_buffers', '', 'buffered-result'],
 		[$this->prefix . '_throws', '', 'U'],
+		[$this->prefix . '_guard_level', '', '1'],
+		[$this->prefix . '_guard_zero', '', 'guarded'],
+		[$this->prefix . '_guard_mismatch', '', 'guarded'],
 		['get_cacti_version', '', 'U'],
 		[$this->prefix . '_echo', escapeshellarg('after'), 'after'],
 	];
@@ -146,6 +192,44 @@ test('the live server emits one bounded response and remains aligned', function 
 	expect(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('U')
 		->and(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('U')
 		->and($healthy)->toBeTrue();
+});
+
+test('the output guard is stable and rejects invalid reset levels', function () {
+	$fixture = dirname(__DIR__, 3) . '/fixtures/script_server_invariant_probe.php';
+
+	[$status, $stdout, $stderr] = ss_process_test_run_php($fixture);
+
+	expect($status)->toBe(0)
+		->and($stdout)->toBe('')
+		->and($stderr)->toBe('');
+});
+
+test('complete invalid frames remain aligned and incomplete overlong frames retire the worker', function () {
+	[$this->process, $this->pipes] = ss_process_test_start();
+	$healthy                       = true;
+
+	fwrite($this->pipes[0], str_repeat('x', SCRIPT_SERVER_MAX_REQUEST_LENGTH + 1) . "\n");
+	fflush($this->pipes[0]);
+
+	expect(script_server_read_response($this->pipes, $this->process, $healthy, 1.0))->toBe('U')
+		->and($healthy)->toBeTrue();
+
+	fwrite($this->pipes[0], $this->script . ' ' . $this->prefix . "_echo\x01bad\n");
+	fflush($this->pipes[0]);
+
+	expect(script_server_read_response($this->pipes, $this->process, $healthy, 1.0))->toBe('U')
+		->and($healthy)->toBeTrue()
+		->and(exec_poll_php($this->script . ' ' . $this->prefix . '_echo aligned', true, $this->pipes, $this->process, 1.0, $healthy))->toBe('aligned');
+
+	script_server_close($this->process, $this->pipes);
+	[$this->process, $this->pipes] = ss_process_test_start();
+	$healthy                       = true;
+
+	fwrite($this->pipes[0], str_repeat('x', SCRIPT_SERVER_MAX_REQUEST_LENGTH + 2));
+	fflush($this->pipes[0]);
+
+	expect(script_server_read_response($this->pipes, $this->process, $healthy, 1.0))->toBeFalse()
+		->and($healthy)->toBeFalse();
 });
 
 test('canonical traversal and symlink aliases stay bound to the same script', function () {
@@ -255,7 +339,7 @@ test('a framing or output limit violation retires the worker before a fresh work
 	expect(exec_poll_php($request, true, $this->pipes, $this->process, 1.0, $healthy))->toBe('U')
 		->and($healthy)->toBeFalse();
 
-	script_server_close($this->process, $this->pipes, false);
+	script_server_close($this->process, $this->pipes);
 	[$this->process, $this->pipes] = ss_process_test_start();
 	$healthy                       = true;
 	$request                       = $this->script . ' ' . $this->prefix . '_echo ' . escapeshellarg('fresh');
@@ -281,7 +365,7 @@ test('a timed out worker is discarded before a fresh worker serves requests', fu
 	expect(exec_poll_php($request, true, $this->pipes, $this->process, 0.05, $healthy))->toBe('U')
 		->and($healthy)->toBeFalse();
 
-	script_server_close($this->process, $this->pipes, false);
+	script_server_close($this->process, $this->pipes);
 	[$this->process, $this->pipes] = ss_process_test_start();
 	$healthy                       = true;
 	$request                       = $this->script . ' ' . $this->prefix . '_echo ' . escapeshellarg('fresh');
@@ -337,6 +421,53 @@ test('the reserved shutdown request is framed and the caller retires the exited 
 	expect($status['running'])->toBeFalse();
 });
 
+test('the worker lifecycle helpers open replace and close a live server', function () {
+	if (DIRECTORY_SEPARATOR === '\\') {
+		$this->markTestSkipped('requires an executable test wrapper');
+	}
+
+	global $config;
+
+	$wrapper       = ss_process_test_php_wrapper();
+	$had_binary    = array_key_exists('path_php_binary', $config[OPTIONS_CLI]);
+	$original      = $config[OPTIONS_CLI]['path_php_binary'] ?? null;
+	$process       = false;
+	$pipes         = false;
+	$using_process = false;
+
+	$config[OPTIONS_CLI]['path_php_binary'] = $wrapper;
+
+	try {
+		[$process, $pipes, $using_process] = script_server_open('cmd', 1, 'online', 3.0);
+
+		expect($using_process)->toBeTrue();
+
+		$healthy = true;
+		$request = $this->script . ' ' . $this->prefix . '_echo first';
+
+		expect(exec_poll_php($request, true, $pipes, $process, 1.0, $healthy))->toBe('first')
+			->and(script_server_replace($process, $pipes, $using_process, 'cmd', 1, 'online', 3.0))->toBeTrue();
+
+		$healthy = true;
+		$request = $this->script . ' ' . $this->prefix . '_echo replacement';
+
+		expect(exec_poll_php($request, true, $pipes, $process, 1.0, $healthy))->toBe('replacement');
+
+		script_server_close($process, $pipes);
+
+		expect($process)->toBeFalse()->and($pipes)->toBeFalse();
+	} finally {
+		script_server_close($process, $pipes, false);
+		@unlink($wrapper);
+
+		if ($had_binary) {
+			$config[OPTIONS_CLI]['path_php_binary'] = $original;
+		} else {
+			unset($config[OPTIONS_CLI]['path_php_binary']);
+		}
+	}
+});
+
 test('short and long CLI options select help version and environment', function () {
 	[$status, $stdout, $stderr] = ss_process_test_run(['-h']);
 
@@ -354,11 +485,11 @@ test('short and long CLI options select help version and environment', function 
 	[$this->process, $this->pipes, $banner] = ss_process_test_start(['--environ=spine', '--poller=1', '--mode=online']);
 
 	expect($banner)->toBe('PHP Script Server has Started - Parent is spine');
-	script_server_close($this->process, $this->pipes, false);
+	script_server_close($this->process, $this->pipes);
 	[$this->process, $this->pipes, $banner] = ss_process_test_start(['--environ', 'realtime', '--poller', str_repeat('a', 64), '--mode', 'online']);
 
 	expect($banner)->toBe('PHP Script Server has Started - Parent is realtime');
-	script_server_close($this->process, $this->pipes, false);
+	script_server_close($this->process, $this->pipes);
 	[$this->process, $this->pipes, $banner] = ss_process_test_start(['cmd.php', '1']);
 
 	expect($banner)->toBe('PHP Script Server has Started - Parent is cmd');

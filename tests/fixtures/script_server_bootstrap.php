@@ -18,3 +18,7 @@ if (!defined('PHP_TESTING')) {
 
 putenv('CACTI_TEST_BOOTSTRAP=1');
 $_ENV['CACTI_TEST_BOOTSTRAP'] = '1';
+
+if (getenv('CACTI_PR_RAW_COVERAGE')) {
+	require_once dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+}

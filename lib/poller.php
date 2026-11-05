@@ -515,6 +515,7 @@ function exec_poll_php(string $command, bool $using_proc_function, array|false $
 	} else {
 		require_once __DIR__ . '/script_server.php';
 
+		/** @var list<string> $arguments */
 		$arguments = [];
 
 		if (!parseArgs($command, $arguments) || count($arguments) < 2 || !is_string($arguments[1]) || !script_server_function_name_is_valid($arguments[1])) {
