@@ -33,6 +33,12 @@ function boostProbeRun(array $arguments): array {
 }
 
 function boostProbeRemoveTree($path): void {
+	if (is_link($path) || is_file($path)) {
+		unlink($path);
+
+		return;
+	}
+
 	if (!is_dir($path)) {
 		return;
 	}
@@ -43,11 +49,91 @@ function boostProbeRemoveTree($path): void {
 	);
 
 	foreach($iterator as $entry) {
-		$entry->isDir() ? rmdir($entry->getPathname()) : unlink($entry->getPathname());
+		if ($entry->isLink() || !$entry->isDir()) {
+			unlink($entry->getPathname());
+		} else {
+			rmdir($entry->getPathname());
+		}
 	}
 
 	rmdir($path);
 }
+
+test('probe cleanup unlinks symlink pivots without traversing their targets', function () {
+	if (PHP_OS_FAMILY === 'Windows') {
+		$this->markTestSkipped('POSIX symlink semantics are required');
+	}
+
+	$root = sys_get_temp_dir() . '/cacti-boost-clean-' . bin2hex(random_bytes(8));
+	$outside = sys_get_temp_dir() . '/cacti-boost-clean-outside-' . bin2hex(random_bytes(8));
+	mkdir($root, 0700);
+	mkdir($outside, 0700);
+	file_put_contents($outside . '/keep', 'outside');
+
+	try {
+		if (!symlink($outside, $root . '/pivot')) {
+			$this->markTestSkipped('Unable to create a symlink fixture');
+		}
+
+		boostProbeRemoveTree($root);
+
+		expect(file_exists($root))->toBeFalse()
+			->and(is_link($root))->toBeFalse()
+			->and(file_get_contents($outside . '/keep'))->toBe('outside');
+	} finally {
+		boostProbeRemoveTree($root);
+		boostProbeRemoveTree($outside);
+	}
+});
+
+test('real RRD benchmark rejects stale timestamps instead of counting skipped samples', function () {
+	$rrdtool = trim((string) shell_exec('command -v rrdtool 2>/dev/null'));
+
+	if ($rrdtool === '' || !extension_loaded('pcntl')) {
+		$this->markTestSkipped('rrdtool and pcntl are required');
+	}
+
+	$root = sys_get_temp_dir() . '/cacti-boost-bench-' . bin2hex(random_bytes(8));
+	$script = dirname(__DIR__, 3) . '/performance/boost_archive/rrd_write.php';
+	$arguments = array(
+		'/usr/bin/env',
+		'BOOST_BENCH_RRDTOOL=' . $rrdtool,
+		PHP_BINARY,
+		$script,
+		'--rrd-dir=' . $root,
+		'--sources=2',
+		'--samples=2',
+		'--samples-per-command=2',
+		'--workers=1',
+		'--base-time=1800000000',
+	);
+
+	try {
+		$first = boostProbeRun(array_merge($arguments, array('--prepare')));
+		$first_result = json_decode($first['stdout'], true, 512, JSON_THROW_ON_ERROR);
+
+		expect($first['status'])->toBe(0, $first['stderr'])
+			->and($first_result['valid'])->toBeTrue()
+			->and($first_result['successful_samples'])->toBe(4)
+			->and($first_result['failed_commands'])->toBe(0);
+
+		$marker_path = $root . '/.cacti-boost-rrd-benchmark';
+		$marker = json_decode((string) file_get_contents($marker_path), true, 512, JSON_THROW_ON_ERROR);
+		$marker['last_update'] = 1799999940;
+		file_put_contents($marker_path, json_encode($marker, JSON_THROW_ON_ERROR));
+
+		$stale = boostProbeRun($arguments);
+		$stale_result = json_decode($stale['stdout'], true, 512, JSON_THROW_ON_ERROR);
+
+		expect($stale['status'])->toBe(1)
+			->and($stale['stderr'])->toContain('stale, overlapping, or failed')
+			->and($stale_result['valid'])->toBeFalse()
+			->and($stale_result['successful_samples'])->toBe(0)
+			->and($stale_result['failed_commands'])->toBe(2);
+	} finally {
+		boostProbeRemoveTree($root);
+	}
+});
 
 test('the reusable RRDtool worker acknowledges successes and exposes rejected updates', function () {
 	$rrdtool = trim((string) shell_exec('command -v rrdtool 2>/dev/null'));

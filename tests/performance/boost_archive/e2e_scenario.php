@@ -167,6 +167,201 @@ function boostE2eLastUpdate($path) {
 	return (int) boostE2eRrdtool(array('last', $path));
 }
 
+/**
+ * Capture the complete observable state used by end-to-end assertions.
+ *
+ * @param int $sources Source count.
+ * @param int $expected_last Expected final RRD timestamp.
+ *
+ * @return array<string, mixed> Current archive, queue, worker, and RRD state.
+ */
+function boostE2eState($sources, $expected_last) {
+	$rrds = array();
+
+	for ($source = 1; $source <= $sources; $source++) {
+		$path = (string) db_fetch_cell_prepared('SELECT rrd_path FROM poller_item
+			WHERE local_data_id = ? ORDER BY rrd_name LIMIT 1', array($source));
+		$last_update = null;
+		$error = null;
+
+		if ($path !== '' && is_file($path)) {
+			try {
+				$last_update = boostE2eLastUpdate($path);
+			} catch (Throwable $e) {
+				$error = $e->getMessage();
+			}
+		}
+
+		$rrds[$source] = array('path' => $path, 'last_update' => $last_update, 'error' => $error);
+	}
+
+	return array(
+		'archives'           => boostE2eArchives(),
+		'live_rows'          => (int) db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost'),
+		'failure_queue'      => db_fetch_assoc('SELECT local_data_id, latest_sample, sample_count,
+			retry_count, last_error FROM poller_output_boost_failures ORDER BY local_data_id'),
+		'process_completions' => db_fetch_assoc('SELECT run_id, child_id, status
+			FROM poller_output_boost_processes ORDER BY sock_int_value'),
+		'active_processes'   => (int) db_fetch_cell("SELECT COUNT(*) FROM processes WHERE tasktype = 'boost'"),
+		'boost_status'       => read_config_option('boost_poller_status'),
+		'failure_depth'      => (int) read_config_option('boost_failure_queue_depth'),
+		'expected_last'      => $expected_last,
+		'rrds'               => $rrds,
+	);
+}
+
+/**
+ * Fail one end-to-end assertion with an actionable diagnostic.
+ *
+ * @param bool $condition Assertion result.
+ * @param string $message Failure detail.
+ *
+ * @return void No value is returned.
+ */
+function boostE2eAssert($condition, $message) {
+	if (!$condition) {
+		throw new RuntimeException('Boost end-to-end assertion failed: ' . $message);
+	}
+}
+
+/**
+ * Return whether every recorded child completed with positive progress.
+ *
+ * @param array<int, array<string, mixed>> $completions Child completion rows.
+ *
+ * @return bool True when at least one child completed successfully.
+ */
+function boostE2eCompletionsSucceeded(array $completions) {
+	if (!count($completions)) {
+		return false;
+	}
+
+	foreach($completions as $completion) {
+		if (!is_numeric($completion['status']) || (int) $completion['status'] <= 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Assert that selected RRD destinations reached one exact timestamp.
+ *
+ * @param array<string, mixed> $state Captured end-to-end state.
+ * @param int $expected Expected RRD timestamp.
+ * @param array<int, int> $excluded_sources Sources intentionally excluded from this assertion.
+ *
+ * @return void No value is returned.
+ */
+function boostE2eAssertRrdTimestamps(array $state, $expected, array $excluded_sources = array()) {
+	foreach($state['rrds'] as $source => $rrd) {
+		if (in_array((int) $source, $excluded_sources, true)) {
+			continue;
+		}
+
+		boostE2eAssert($rrd['error'] === null, "source $source has an RRD error");
+		boostE2eAssert($rrd['last_update'] === $expected,
+			"source $source last update {$rrd['last_update']} does not equal $expected");
+	}
+}
+
+/**
+ * Validate one named recovery checkpoint before the next fixture resets its state.
+ *
+ * @param string $checkpoint Checkpoint name.
+ * @param array<string, mixed> $state Captured end-to-end state.
+ * @param int $base_time Original fixture base timestamp.
+ * @param int $expected_last Scenario's expected final timestamp.
+ * @param int $broken_source Source intentionally assigned a corrupt RRD.
+ * @param int $sources Source count.
+ *
+ * @return void No value is returned.
+ */
+function boostE2eAssertState($checkpoint, array $state, $base_time, $expected_last, $broken_source, $sources) {
+	boostE2eAssert($state['active_processes'] === 0, "$checkpoint left registered Boost processes");
+
+	if ($checkpoint === 'isolated-failure') {
+		boostE2eAssert(count($state['archives']) === 0, 'isolated failure retained an archive');
+		boostE2eAssert($state['live_rows'] === 0, 'isolated failure left live rows');
+		boostE2eAssert(count($state['failure_queue']) === 1, 'isolated failure did not queue one destination');
+		boostE2eAssert((int) $state['failure_queue'][0]['local_data_id'] === $broken_source,
+			'isolated failure queued the wrong destination');
+		boostE2eAssert($state['failure_depth'] === 1, 'isolated failure depth is not one');
+		boostE2eAssert(boostE2eCompletionsSucceeded($state['process_completions']),
+			'healthy isolated-failure work did not complete');
+		boostE2eAssertRrdTimestamps($state, $expected_last, array($broken_source));
+		boostE2eAssert($state['rrds'][$broken_source]['error'] !== null,
+			'corrupt isolated destination unexpectedly became readable');
+	} elseif ($checkpoint === 'isolated-recovered') {
+		boostE2eAssert(count($state['archives']) === 0 && $state['live_rows'] === 0,
+			'isolated recovery left queued archive rows');
+		boostE2eAssert(count($state['failure_queue']) === 0 && $state['failure_depth'] === 0,
+			'isolated recovery left a retry queued');
+		boostE2eAssertRrdTimestamps($state, $expected_last);
+	} elseif ($checkpoint === 'permanent-failures') {
+		boostE2eAssert(count($state['archives']) === 0 && $state['live_rows'] === 0,
+			'permanent destination failures retained the archive');
+		boostE2eAssert(count($state['failure_queue']) === $sources,
+			'permanent destination queue depth does not match the source count');
+		boostE2eAssert($state['failure_depth'] === $sources,
+			'persisted permanent-failure depth does not match the source count');
+		boostE2eAssert(boostE2eCompletionsSucceeded($state['process_completions']),
+			'permanent destination isolation did not complete the archive');
+
+		$queue_ids = array_map('intval', array_column($state['failure_queue'], 'local_data_id'));
+		sort($queue_ids, SORT_NUMERIC);
+		boostE2eAssert($queue_ids === range(1, $sources), 'permanent failure queue omitted a destination');
+
+		foreach($state['rrds'] as $source => $rrd) {
+			boostE2eAssert($rrd['error'] !== null, "permanent destination $source unexpectedly became readable");
+		}
+	} elseif ($checkpoint === 'backend-outage') {
+		boostE2eAssert(count($state['archives']) === 1 && $state['live_rows'] === 0,
+			'backend outage did not retain exactly one sealed archive');
+		boostE2eAssert(count($state['failure_queue']) === 8 && $state['failure_depth'] === 8,
+			'backend circuit did not stop after eight queued probes');
+
+		$failed_completion = false;
+
+		foreach($state['process_completions'] as $completion) {
+			$failed_completion = $failed_completion || (int) $completion['status'] < 0;
+		}
+
+		boostE2eAssert($failed_completion, 'backend outage did not record a fatal child completion');
+		boostE2eAssertRrdTimestamps($state, $base_time - 60);
+	} elseif ($checkpoint === 'backend-recovered' || $checkpoint === 'final') {
+		boostE2eAssert(count($state['archives']) === 0 && $state['live_rows'] === 0,
+			"$checkpoint left archive rows");
+		boostE2eAssert(count($state['failure_queue']) === 0 && $state['failure_depth'] === 0,
+			"$checkpoint left failed destinations queued");
+		boostE2eAssert(boostE2eCompletionsSucceeded($state['process_completions']),
+			"$checkpoint did not record successful child completion");
+		boostE2eAssertRrdTimestamps($state, $expected_last);
+	} elseif ($checkpoint === 'shared-path') {
+		boostE2eAssert(count($state['archives']) === 1 && $state['live_rows'] === 0,
+			'shared-path refusal did not retain exactly one sealed archive');
+		boostE2eAssert(count($state['failure_queue']) === 0 && $state['failure_depth'] === 0,
+			'shared-path refusal unexpectedly queued a destination failure');
+		boostE2eAssert(count($state['process_completions']) === 0,
+			'shared-path refusal launched a child');
+
+		foreach($state['rrds'] as $source => $rrd) {
+			boostE2eAssert($rrd['last_update'] !== $expected_last,
+				"shared-path refusal wrote source $source");
+		}
+	} elseif ($checkpoint === 'worker-crash') {
+		boostE2eAssert(count($state['archives']) === 1 && $state['live_rows'] === 0,
+			'worker crash did not retain exactly one sealed archive');
+		boostE2eAssert(count($state['failure_queue']) === 0 && $state['failure_depth'] === 0,
+			'worker crash unexpectedly queued a destination failure');
+		boostE2eAssert(count($state['process_completions']) === 0,
+			'killed worker unexpectedly recorded completion');
+	} else {
+		throw new InvalidArgumentException("Unknown Boost end-to-end checkpoint: $checkpoint");
+	}
+}
+
 $options = getopt('', array(
 	'action:',
 	'rra-dir:',
@@ -282,6 +477,12 @@ if ($action === 'setup-isolated-failure') {
 } elseif ($action === 'repair-isolated-failure') {
 	$broken_path = $rra_dir . '/broken.rrd';
 	boostE2eCreateRrd($broken_path, $base_time - 60);
+	$retry_ready = db_execute_prepared('UPDATE poller_output_boost_failures
+		SET next_retry = NOW() WHERE local_data_id = ?', array($broken_source), false);
+
+	if ($retry_ready === false || db_affected_rows() !== 1) {
+		throw new RuntimeException('Unable to make the isolated failure immediately retryable.');
+	}
 
 	print json_encode(array('action' => $action, 'path' => $broken_path), JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } elseif ($action === 'setup-permanent-failures') {
@@ -355,7 +556,7 @@ if ($action === 'setup-isolated-failure') {
 	boostE2eSetting('path_rrdtool', '/usr/bin/rrdtool');
 
 	print json_encode(array('action' => $action, 'rrdtool_binary' => '/usr/bin/rrdtool'), JSON_UNESCAPED_SLASHES) . PHP_EOL;
-} elseif ($action === 'retry-backend-outage') {
+} elseif ($action === 'retry-backend-outage' || $action === 'retry-failures') {
 	require_once($config['base_path'] . '/lib/boost.php');
 	require_once($config['base_path'] . '/lib/rrd.php');
 
@@ -439,6 +640,7 @@ if ($action === 'setup-isolated-failure') {
 } elseif ($action === 'kill-worker') {
 	$deadline = microtime(true) + 15;
 	$pid      = 0;
+	$signal   = defined('SIGKILL') ? constant('SIGKILL') : 9;
 
 	do {
 		$pid = (int) db_fetch_cell("SELECT pid FROM processes
@@ -452,45 +654,23 @@ if ($action === 'setup-isolated-failure') {
 		usleep(100000);
 	} while (microtime(true) < $deadline);
 
-	if ($pid <= 1 || !function_exists('posix_kill') || !posix_kill($pid, SIGKILL)) {
+	if ($pid <= 1 || !function_exists('posix_kill') || !posix_kill($pid, $signal)) {
 		throw new RuntimeException('Unable to locate and kill the disposable Boost worker.');
 	}
 
 	print json_encode(array('action' => $action, 'killed_pid' => $pid), JSON_UNESCAPED_SLASHES) . PHP_EOL;
-} elseif ($action === 'status') {
-	$rrds = array();
+} elseif ($action === 'status' || strpos($action, 'assert-') === 0) {
+	$state = boostE2eState($sources, $expected_last);
+	$state['action'] = $action;
 
-	for ($source = 1; $source <= $sources; $source++) {
-		$path = db_fetch_cell_prepared('SELECT rrd_path FROM poller_item
-			WHERE local_data_id = ? ORDER BY rrd_name LIMIT 1', array($source));
-		$last_update = null;
-		$error = null;
-
-		if (is_file($path)) {
-			try {
-				$last_update = boostE2eLastUpdate($path);
-			} catch (Throwable $e) {
-				$error = $e->getMessage();
-			}
-		}
-
-		$rrds[$source] = array('path' => $path, 'last_update' => $last_update, 'error' => $error);
+	if ($action !== 'status') {
+		boostE2eAssertState(substr($action, strlen('assert-')), $state, $base_time,
+			$expected_last, $broken_source, $sources);
+		$state['assertion'] = 'passed';
 	}
 
-	print json_encode(array(
-		'action'             => $action,
-		'archives'           => boostE2eArchives(),
-		'live_rows'          => (int) db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost'),
-		'failure_queue'      => db_fetch_assoc('SELECT local_data_id, latest_sample, sample_count,
-			retry_count, last_error FROM poller_output_boost_failures ORDER BY local_data_id'),
-		'process_completions' => db_fetch_assoc('SELECT run_id, child_id, status
-			FROM poller_output_boost_processes ORDER BY sock_int_value'),
-		'boost_status'       => read_config_option('boost_poller_status'),
-		'failure_depth'      => (int) read_config_option('boost_failure_queue_depth'),
-		'expected_last'      => $expected_last,
-		'rrds'               => $rrds,
-	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+	print json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } else {
-	fwrite(STDERR, "--action must be setup-isolated-failure, repair-isolated-failure, setup-permanent-failures, setup-backend-outage, retry-backend-outage, repair-backend-outage, setup-shared-path, setup-worker-crash, kill-worker, or status\n");
+	fwrite(STDERR, "--action must be a setup, repair, retry, status, or documented assert action\n");
 	exit(64);
 }
