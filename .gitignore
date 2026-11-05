@@ -86,6 +86,7 @@ include/themes/custom.css
 !include/themes/raspberry
 !include/themes/sunrise
 !include/themes/midwinter
+!include/themes/tmhmodern
 
 # Ignore any mac DS_Store files
 .DS_Store
