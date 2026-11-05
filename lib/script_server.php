@@ -798,7 +798,11 @@ function script_server_reset_output_guard(int $guard_level) : bool {
 		return false;
 	}
 
-	return ob_get_length() === 0 || @ob_clean();
+	if (ob_get_length() !== 0) {
+		@ob_clean();
+	}
+
+	return ob_get_level() === $guard_level && ob_get_length() === 0;
 }
 
 /**
