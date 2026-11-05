@@ -1,0 +1,47 @@
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * Weathermap - tmhmodern theme overrides.
+ *
+ * css/weathermap.css hardcodes a couple of accent colours to the modern
+ * theme's olive palette; repaint them onto the tmhmodern (TMH) blue so the
+ * plugin matches the rest of the theme. Everything else in weathermap.css is
+ * already driven by the theme's CSS variables / currentColor.
+ */
+
+/* Fullscreen map-cycle control box (modern olive -> TMH blue). */
+#wmcyclecontrolbox.fullscreen {
+	background: #0c1b63;
+	border-color: #6478de;
+}
+
+/* Map-list group header: match this theme's title-bar gradient. */
+td.groupheader {
+	background-color: #0f2075;
+	background: -moz-linear-gradient(top, rgba(50,74,194,1) 0%, rgba(3,21,107,1) 100%);
+	background: -webkit-linear-gradient(top, rgba(50,74,194,1) 0%, rgba(3,21,107,1) 100%);
+	background: -o-linear-gradient(top, rgba(50,74,194,1) 0%, rgba(3,21,107,1) 100%);
+	background: -ms-linear-gradient(top, rgba(50,74,194,1) 0%, rgba(3,21,107,1) 100%);
+	background: linear-gradient(to bottom, rgba(50,74,194,1) 0%, rgba(3,21,107,1) 100%);
+}
