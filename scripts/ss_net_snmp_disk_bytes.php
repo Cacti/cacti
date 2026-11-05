@@ -27,14 +27,10 @@ global $config;
 
 if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../include/cli_check.php');
-	include_once(__DIR__ . '/../lib/snmp.php');
-
-	array_shift($_SERVER['argv']);
-
-	print call_user_func_array('ss_net_snmp_disk_bytes', $_SERVER['argv']);
-} else {
-	include_once(__DIR__ . '/../lib/snmp.php');
 }
+
+include_once(__DIR__ . '/../lib/snmp.php');
+require_once(__DIR__ . '/../lib/SnmpStateStore.php');
 
 if (!function_exists('ss_counter_step')) {
 	/**
@@ -96,20 +92,34 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 		$host_id = $host_id_or_hostname;
 	}
 
-	$tmpdir = sys_get_temp_dir();
+	$host_id = (int) $host_id;
 
-	if (!db_table_exists('host_value_cache')) {
+	if ($host_id <= 0) {
+		return 'bytesread:0 byteswritten:0';
+	}
+
+	$use_state_files  = !db_table_exists('host_value_cache');
+	$tmpdir           = sys_get_temp_dir();
+	$tmpfile          = '';
+	$dimension        = '';
+	$ttl              = 0;
+
+	if ($use_state_files) {
 		if ($environ != 'realtime') {
 			$tmpdir .= '/cacti/net-snmp-devio';
 			$tmpfile = $host_id . '_bytes';
 		} else {
 			$tmpdir .= '/cacti-rt/net-snmp-devio';
-			$tmpfile = $host_id . '_' . $poller_id . '_bytes_rt';
+			$state_id = CactiSnmpStateStore::realtimeId($poller_id);
+
+			if ($state_id === false) {
+				return 'bytesread:U byteswritten:U';
+			}
+
+			$tmpfile = $host_id . '_' . $state_id . '_bytes_rt';
 		}
 
-		if (!is_dir($tmpdir)) {
-			mkdir($tmpdir, 0755, true);
-		}
+		$tmpdir = CactiSnmpStateStore::directory($tmpdir);
 	} else {
 		if ($environ != 'realtime') {
 			$dimension = $host_id . '_bytes';
@@ -123,10 +133,14 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 	$found    = false;
 	$previous = [];
 
-	if (!db_table_exists('host_value_cache')) {
-		if (is_file("$tmpdir/$tmpfile")) {
-			$previous = json_decode((string) file_get_contents("$tmpdir/$tmpfile"), true);
-			$found    = true;
+	if ($use_state_files) {
+		if ($tmpdir !== false) {
+			$previous = CactiSnmpStateStore::read("$tmpdir/$tmpfile");
+			$found    = $previous !== false;
+
+			if (!$found) {
+				$previous = [];
+			}
 		}
 	} else {
 		$previous = json_decode(
@@ -301,15 +315,18 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 			$byteswritten = 'U';
 		}
 
-		if (!db_table_exists('host_value_cache')) {
-			$data = json_encode($current);
-			file_put_contents("$tmpdir/$tmpfile", $data);
-		} else {
-			$data = json_encode($current);
+		$data = json_encode($current);
 
-			db_execute_prepared('REPLACE INTO host_value_cache (host_id, dimension, value, time_to_live)
+		if ($data !== false) {
+			if ($use_state_files) {
+				if ($tmpdir !== false) {
+					CactiSnmpStateStore::write($tmpdir, "$tmpdir/$tmpfile", $data);
+				}
+			} else {
+				db_execute_prepared('REPLACE INTO host_value_cache (host_id, dimension, value, time_to_live)
 				VALUES (?, ?, ?, ?)',
-				[$host_id, $dimension, $data, $ttl]);
+					[$host_id, $dimension, $data, $ttl]);
+			}
 		}
 	}
 
@@ -318,4 +335,10 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 	} else {
 		return 'bytesread:0 byteswritten:0';
 	}
+}
+
+if (!isset($called_by_script_server)) {
+	array_shift($_SERVER['argv']);
+
+	print call_user_func_array('ss_net_snmp_disk_bytes', $_SERVER['argv']);
 }

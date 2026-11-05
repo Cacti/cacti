@@ -29,3 +29,11 @@ function ss_fixture_typed(int $value) : string {
 function ss_fixture_array() : array {
 	return ['not', 'scalar'];
 }
+
+function ss_fixture_multiline() : string {
+	return "first\nsecond";
+}
+
+function ss_fixture_long() : string {
+	return str_repeat('x', SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 1);
+}
