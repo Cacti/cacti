@@ -1516,7 +1516,16 @@ function reports_edit() {
 		$report['mailtime'] = date('Y-m-d H:i', strtotime(date('Y-m-d H:i:00', $report['mailtime'])));
 		$header_label = __('[edit: %s]', $report['name']);
 	} else {
-		$report['mailtime'] = date('Y-m-d H:i', strtotime(date('Y-m-d H:i:00', floor(time() / read_config_option('poller_interval')) * read_config_option('poller_interval'))));
+		/* an unset poller_interval reads back empty, and rounding the current
+		   time to it divides by that. PHP 8 makes it fatal, so fall back to the
+		   default interval the setting itself declares. */
+		$interval = (int) read_config_option('poller_interval');
+
+		if ($interval < 1) {
+			$interval = 300;
+		}
+
+		$report['mailtime'] = date('Y-m-d H:i', strtotime(date('Y-m-d H:i:00', floor(time() / $interval) * $interval)));
 		$header_label = __('[new]');
 	}
 

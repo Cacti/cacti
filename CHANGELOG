@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue: Guard three divisors that are fatal on PHP 8 (aggregate color templates, report mail time, MySQL recommendations)
 -issue: #7212: Address a few small memory leaks in realtime graphing
 
 1.2.31
