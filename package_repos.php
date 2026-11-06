@@ -74,6 +74,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	global $registered_cacti_names;
 
 	if (isrv('save_component_repo')) {
