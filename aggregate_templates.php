@@ -222,7 +222,7 @@ function aggregate_form_save() : void {
 			FROM aggregate_graph_templates_item
 			WHERE aggregate_template_id = ?', [$id]),
 		'graph_templates_item_id',
-		['sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total']
+		['sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 't_text_format', 'text_format', 't_legend', 'legend', 'item_skip', 'item_total']
 	);
 
 	// update graph template item values with posted values
@@ -434,7 +434,7 @@ function aggregate_template_edit() : void {
 			}
 
 			var showField = $('#graph_template_id').val() != 0;
-			toggleField({
+			toggleFields({
 				name: showField,
 				spacer1: showField,
 				gprint_prefix: showField,
@@ -509,7 +509,7 @@ function aggregate_template_edit() : void {
 		function changeTotals() {
 			var showField = $('#total').val() == '<?php print AGGREGATE_TOTAL_NONE; ?>';
 
-			toggleField({
+			toggleFields({
 				total_type: showField,
 				total_prefix: showField,
 				order_type: showField,
