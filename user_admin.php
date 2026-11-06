@@ -243,6 +243,8 @@ function form_actions() : void {
 	}
 
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		if (gnrv('drp_action') == '2') { // copy
 			// ================= input validation =================
 			gfrv('selected_items');
