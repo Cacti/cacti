@@ -63,3 +63,5 @@ run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cac
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
+
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/api_aggregate\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
