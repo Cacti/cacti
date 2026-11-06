@@ -88,6 +88,8 @@ switch (grv('action')) {
  * form_save - Saves the data input method
  */
 function form_save() : void {
+	csrf_require_post();
+
 	global $registered_cacti_names;
 
 	if (isrv('save_component_data_input')) {
