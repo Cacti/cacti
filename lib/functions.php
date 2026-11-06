@@ -2187,7 +2187,10 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 	$ping_failure_count  = read_config_option('ping_failure_count');
 	$ping_recovery_count = read_config_option('ping_recovery_count');
 
-	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
+	// Device read routed through the typed repository: the query is identical
+	// to the former db_fetch_row_prepared() call, but the parameterization is
+	// now guaranteed by construction (see Cacti\Repository\DeviceRepository).
+	$host = \Cacti\Repository\DeviceRepository::instance()->find($host_id);
 
 	if (!is_array($host)) {
 		return;
