@@ -722,7 +722,7 @@ class CactiTableFilter {
 		}
 
 		if (isset($this->filter_array['rows'])) {
-			print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
+			print "<form id='" . $this->form_id . "' action='" . html_escape_attr($this->form_action) . "' method='" . $this->form_method . "' class='cactiFilter'>";
 
 			foreach ($this->filter_array['rows'] as $index => $row) {
 				if ($index > 0 && !$text_appended) {
@@ -911,7 +911,7 @@ class CactiTableFilter {
 		$title = $this->form_header != '' ? $this->form_header : __('Edit Filter');
 
 		print "<div id='" . $this->form_id . "_dialog' class='cactiFilterEditDialog' title='" . html_escape_attr($title) . "' style='display:none;'>";
-		print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
+		print "<form id='" . $this->form_id . "' action='" . html_escape_attr($this->form_action) . "' method='" . $this->form_method . "' class='cactiFilter'>";
 
 		// One filter variable per row in a single table so the label column
 		// aligns across rows via the existing table-cell layout, in every theme.
@@ -1056,20 +1056,10 @@ class CactiTableFilter {
 	}
 
 	private function create_javascript() : string {
-		$applyFilter   = "'" . $this->form_action;
-		$clearFilter   = $applyFilter;
-		$defaultFilter = $applyFilter;
-
-		if (!str_contains($applyFilter, '?')) {
-			$separator = '?';
-		} else {
-			$separator = '&';
-		}
-
-		$applyFilter .= $separator;
-
-		$clearFilter .= $separator . "clear=true'";
-		$defaultFilter .= $separator . "action=noaction'";
+		$separator     = str_contains($this->form_action, '?') ? '&' : '?';
+		$applyFilter   = cacti_js_encode($this->form_action . $separator);
+		$clearFilter   = cacti_js_encode($this->form_action . $separator . 'clear=true');
+		$defaultFilter = cacti_js_encode($this->form_action . $separator . 'action=noaction');
 
 		$changeChain   = '';
 		$clickChain    = '';
@@ -1122,7 +1112,7 @@ class CactiTableFilter {
 								$clickChain .= ($clickChain != '' ? ', ' : '') . '#' . $field_name;
 							}
 
-							$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+$('#" . $field_name . "').is(':checked')";
+							$applyFilter .= ' + ' . cacti_js_encode(($filterLength == 0 ? '' : '&') . $field_name . '=') . " + $('#" . $field_name . "').is(':checked')";
 							$filterLength++;
 
 							break;
@@ -1178,9 +1168,9 @@ class CactiTableFilter {
 							}
 
 							if ($field_name != 'rfilter') {
-								$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+$('#" . $field_name . "').val()";
+								$applyFilter .= ' + ' . cacti_js_encode(($filterLength == 0 ? '' : '&') . $field_name . '=') . " + $('#" . $field_name . "').val()";
 							} else {
-								$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+base64_encode($('#" . $field_name . "').val())";
+								$applyFilter .= ' + ' . cacti_js_encode(($filterLength == 0 ? '' : '&') . $field_name . '=') . " + base64_encode($('#" . $field_name . "').val())";
 							}
 							$filterLength++;
 
@@ -1197,11 +1187,7 @@ class CactiTableFilter {
 				}
 			}
 
-			if ($filterLength == 0) {
-				$applyFilter .= "';";
-			} else {
-				$applyFilter .= ';';
-			}
+			$applyFilter .= ';';
 		}
 
 		if (isset($this->filter_array['javascript']['ready']) && $this->filter_array['javascript']['ready'] != '') {
