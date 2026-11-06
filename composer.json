@@ -127,6 +127,7 @@
         "psr-4": {
             "Cacti\\Cdef\\": "lib/Cdef/",
             "Cacti\\Sites\\": "lib/Sites/",
+            "Cacti\\Gprint\\": "lib/Gprint/",
             "Cacti\\Console\\": "lib/Console/",
             "Cacti\\Auth\\": "lib/Auth/"
         }

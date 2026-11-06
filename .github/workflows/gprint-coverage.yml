@@ -1,0 +1,92 @@
+name: GPRINT Coverage
+
+on:
+  pull_request:
+    paths:
+      - 'gprint_presets.php'
+      - 'lib/gprint.php'
+      - 'lib/Gprint/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'tests/phpunit-gprint.xml'
+      - 'tests/Unit/Core/Rrd/GprintPresetServiceTest.php'
+      - 'tests/e2e/definition_resolution*'
+      - 'tests/e2e/gprint*'
+      - 'tests/e2e/tests/gprint-presets.spec.ts'
+      - '.github/workflows/gprint-coverage.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'gprint_presets.php'
+      - 'lib/gprint.php'
+      - 'lib/Gprint/**'
+      - 'tests/phpunit-gprint.xml'
+      - 'tests/Unit/Core/Rrd/GprintPresetServiceTest.php'
+      - 'tests/e2e/definition_resolution*'
+      - 'tests/e2e/gprint*'
+      - 'tests/e2e/tests/gprint-presets.spec.ts'
+      - '.github/workflows/gprint-coverage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gprint-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: GPRINT 100% PHP coverage and browser contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+      - name: Enforce 100 percent GPRINT service line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: include/vendor/bin/pest --configuration=tests/phpunit-gprint.xml --coverage --min=100
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7
+        with:
+          tool_versions: node 22.22.2
+          install_args: node
+      - name: Exercise authenticated browser and MariaDB contracts
+        env:
+          CACTI_PR_COVERAGE_OUTPUT: ${{ runner.temp }}/gprint-coverage
+        run: bash tests/e2e/gprint-coverage.sh
+      - name: Include controller changes in the coverage gate
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          if git diff --quiet "$BASE_COMMIT"...HEAD -- gprint_presets.php lib/gprint.php lib/Gprint/; then
+            echo 'No GPRINT production changes in this layer; module coverage and browser contracts passed.'
+            exit 0
+          fi
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --prepare-config tests/phpunit-gprint.xml --output-config phpunit-gprint-changed.xml
+          include/vendor/bin/pest --configuration=phpunit-gprint-changed.xml tests/Unit/Core/Rrd/GprintPresetServiceTest.php --coverage-clover=coverage-gprint.xml
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --report coverage-gprint.xml --request-reports "${{ runner.temp }}/gprint-coverage" --minimum 100
+      - name: Preserve browser, database, and PHP coverage evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: gprint-coverage
+          path: |
+            coverage-gprint.xml
+            ${{ runner.temp }}/gprint-coverage
+          if-no-files-found: warn
