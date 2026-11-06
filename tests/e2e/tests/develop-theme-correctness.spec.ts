@@ -7,7 +7,7 @@ import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
-for (const theme of ['cacti', 'dark', 'deepness']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
 			test(`${theme} titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
@@ -37,7 +37,7 @@ for (const theme of ['cacti', 'dark', 'deepness']) {
 					expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
 					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
 				}
-				if (theme === 'deepness') {
+				if (theme === 'deepness' || theme === 'modern') {
 					const textBoxes = await page.locator('.cactiTableTitle').evaluate(element => {
 						const range = document.createRange();
 						range.selectNodeContents(element);
@@ -61,7 +61,7 @@ for (const theme of ['cacti', 'dark', 'deepness']) {
 	}
 }
 
-for (const theme of ['cacti', 'dark', 'deepness']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern']) {
 	for (const row of theme !== 'cacti' ? ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'] : ['', 'odd', 'even']) {
 		for (const linkClass of ['', 'linkEditMain']) {
 			test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
@@ -100,6 +100,29 @@ for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable 
 	});
 }
 
+for (const theme of ['modern']) {
+	test(`${theme} titlebars, navigation selections, rows, and active controls retain text contrast`, async ({ page }) => {
+		await page.setContent('<!DOCTYPE html>' +
+			'<div class="cactiTableTitleRow"><div class="cactiTableTitle">Device inventory</div><div class="cactiTableButton"><span>2 alerts</span></div></div>' +
+			'<table><tr class="selected"><td id="selected-text">branch-firewall-03</td></tr></table>' +
+			'<ul id="nav"><li><a class="pic" href="#devices">Devices</a></li><li><a class="menu_parent" href="#management">Management</a></li>' +
+			'<li><a class="selected" href="#graphs">Graphs</a></li><li><a class="active pic" href="#console">Console</a></li></ul>' +
+			'<div class="tabs"><nav><a class="selected" href="#tab">Selected tab</a></nav></div>' +
+			'<div class="ui-widget-content"><button class="ui-button ui-state-active">Active control</button></div>' +
+			'<div class="select2-container--default"><ul><li class="select2-results__option--highlighted select2-results__option--selectable">Selected device</li></ul></div>');
+		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
+		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', 'button', '.select2-results__option--highlighted']) {
+			for (const element of await page.locator(selector).all()) expect.soft(await element.evaluate(textContrast), selector).toBeGreaterThanOrEqual(4.5);
+		}
+		for (const name of ['Devices', 'Management', 'Console']) {
+			const link = page.getByRole('link', { name, exact: true });
+			await link.hover();
+			expect(await link.evaluate(textContrast), `${name} hover`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
+}
+
 const root = resolve(__dirname, '../../..');
 
 test('contrast checks include translucent foregrounds and every gradient stop', async ({ page }) => {
@@ -109,32 +132,36 @@ test('contrast checks include translucent foregrounds and every gradient stop', 
 	expect(await page.locator('span').evaluate(textContrast)).toBeLessThan(1.3);
 });
 
-test('contrast checks sample the darker middle of a red-to-green gradient', async ({ page }) => {
-	await page.setContent('<!DOCTYPE html><div style="background:linear-gradient(rgb(255,4,0),rgb(0,161,11));color:black">Selected row</div>');
-	expect(await page.locator('div').evaluate(textContrast)).toBeLessThan(4.5);
-});
-
-for (const forcedColors of ['none', 'active'] as const) {
-	test(`Dark keyboard focus remains visible with forced colors ${forcedColors}`, async ({ page }) => {
-		await page.emulateMedia({ forcedColors });
-		await page.setContent('<!DOCTYPE html><a href="#devices">Devices</a><label>Search devices<input type="text"></label>' +
-			'<label>State filter<select><option>All devices</option></select></label><button>Apply filter</button>');
-		await installThemeCss(page, 'include/themes/dark/jquery-ui.css');
-		await installThemeCss(page, 'include/themes/dark/main.css');
-		for (const selector of ['a', 'input', 'select', 'button']) {
-			await page.keyboard.press('Tab');
-			const control = page.locator(selector);
-			await expect(control).toBeFocused();
-			const focus = await control.evaluate(element => {
-				const style = getComputedStyle(element);
-				return { visible: element.matches(':focus-visible'), width: parseFloat(style.outlineWidth), style: style.outlineStyle, color: style.outlineColor };
-			});
-			expect(focus.visible).toBe(true);
-			expect(focus.width).toBeGreaterThanOrEqual(2);
-			expect(focus.style).toBe('solid');
-			expect(focus.color).not.toBe('rgba(0, 0, 0, 0)');
-		}
+for (const gradient of ['linear-gradient(rgb(255,4,0),rgb(0,161,11))', '-webkit-linear-gradient(top,rgb(255,4,0),rgb(0,161,11))']) {
+	test(`contrast checks sample the darker middle of ${gradient}`, async ({ page }) => {
+		await page.setContent(`<!DOCTYPE html><div style="background:white;background-image:${gradient};color:black">Selected row</div>`);
+		expect(await page.locator('div').evaluate(textContrast)).toBeLessThan(4.5);
 	});
+}
+
+for (const theme of ['dark', 'modern']) {
+	for (const forcedColors of ['none', 'active'] as const) {
+		test(`${theme} keyboard focus remains visible with forced colors ${forcedColors}`, async ({ page }) => {
+			await page.emulateMedia({ forcedColors });
+			await page.setContent('<!DOCTYPE html><a href="#devices">Devices</a><label>Search devices<input type="text"></label>' +
+				'<label>State filter<select><option>All devices</option></select></label><button>Apply filter</button>');
+			await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
+			await installThemeCss(page, `include/themes/${theme}/main.css`);
+			for (const selector of ['a', 'input', 'select', 'button']) {
+				await page.keyboard.press('Tab');
+				const control = page.locator(selector);
+				await expect(control).toBeFocused();
+				const focus = await control.evaluate(element => {
+					const style = getComputedStyle(element);
+					return { visible: element.matches(':focus-visible'), width: parseFloat(style.outlineWidth), style: style.outlineStyle, color: style.outlineColor };
+				});
+				expect(focus.visible).toBe(true);
+				expect(focus.width).toBeGreaterThanOrEqual(2);
+				expect(focus.style).toBe('solid');
+				expect(focus.color).not.toBe('rgba(0, 0, 0, 0)');
+			}
+		});
+	}
 }
 
 test('Dark hovered rows retain text contrast across their green gradient', async ({ page }) => {
@@ -171,7 +198,7 @@ async function prepareInventoryFixture(page: Page, info: TestInfo) {
 	};
 }
 
-for (const theme of ['cacti', 'dark', 'deepness']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern']) {
 	test(`${theme} seeded device inventory and details work with desktop and narrow dialogs`, async ({ page }, info) => {
 		await page.setViewportSize({ width: 1100, height: 380 });
 		await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8').replaceAll('Cacti theme', `${theme[0].toUpperCase() + theme.slice(1)} theme`));
