@@ -80,6 +80,7 @@ class ReleasedDependencyAuditTest(unittest.TestCase):
         step = "Checkout released branch for publication"
         writer = {"permissions": {"contents": "write"}}
         self.assertTrue(module.checkout_may_write(path, "publish-remediation", step, writer))
+        self.assertTrue(module.checkout_may_write(".github/workflows/update-contributors.yml", "update", "Checkout", writer))
         self.assertFalse(module.checkout_may_write(path, "audit", step, writer))
         self.assertFalse(module.checkout_may_write(path, "publish-remediation", "Other checkout", writer))
         self.assertFalse(module.checkout_may_write(path, "publish-remediation", step, {}))
