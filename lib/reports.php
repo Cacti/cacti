@@ -1790,7 +1790,7 @@ function png2jpeg ($png_data) {
 		$ImageData = ob_get_contents(); // fetch image from buffer
 		$ImageDataLength = ob_get_length();
 		ob_end_clean(); // stop this output buffer
-		imagedestroy($im); //clean up
+		unset($im); //clean up
 
 		unlink($fn); // delete scratch file
 	}
@@ -1832,7 +1832,7 @@ function png2gif ($png_data) {
 		$ImageData = ob_get_contents(); // fetch image from buffer
 		$ImageDataLength = ob_get_length();
 		ob_end_clean(); // stop this output buffer
-		imagedestroy($im); //clean up
+		unset($im); //clean up
 
 		unlink($fn); // delete scratch file
 	}
