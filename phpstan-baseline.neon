@@ -216,23 +216,8 @@ parameters:
 			count: 1
 			path: api/include/db_functions.php
 
-		-
-			message: '#^Cannot access offset ''login_opts'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: auth_2fa.php
 
-		-
-			message: '#^Cannot access offset ''tfa_secret'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: auth_2fa.php
 
-		-
-			message: '#^Cannot access offset ''username'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 6
-			path: auth_2fa.php
 
 		-
 			message: '#^Cannot access offset ''password'' on array\|bool\.$#'
