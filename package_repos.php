@@ -149,6 +149,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = PackageListFilter::decodeSelectedIds(gnrv('selected_items'));
 
 		if ($selected_items != false) {
