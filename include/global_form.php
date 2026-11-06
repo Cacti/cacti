@@ -385,7 +385,10 @@ $fields_color_edit = [
 		'description'   => __('The name of this Color.'),
 		'value'         => '|arg1:name|',
 		'max_length'    => '40',
-		'size'          => '40'
+		'size'          => '40',
+		// Cacti permits unnamed colors (they display as 'Unnamed #<hex>'), so
+		// the name is optional; the derived constraint is Length(max 40) only.
+		'optional'      => true
 	],
 	'hex' => [
 		'method'        => 'textbox',
@@ -393,7 +396,19 @@ $fields_color_edit = [
 		'description'   => __('The hex value for this color; valid range: 000000-FFFFFF.'),
 		'value'         => '|arg1:hex|',
 		'max_length'    => '6',
-		'size'          => '5'
+		'size'          => '5',
+		// Required (NotBlank) + Length(max 6) are derived from the metadata
+		// above; the explicit Regex enforces the documented 6-digit hex range.
+		// Declared as a lazy [name, options] spec (not a constructed Constraint
+		// object) because this file is parsed before the Composer autoloader is
+		// registered; lib/form_validate.php builds the Symfony object only at
+		// validation time.
+		'constraints'   => [
+			['Regex', [
+				'pattern' => '/^[0-9A-Fa-f]{6}$/',
+				'message' => __('Hex Value must be exactly 6 hexadecimal digits (000000-FFFFFF).')
+			]]
+		]
 	],
 	'read_only' => [
 		'method'        => 'hidden',
