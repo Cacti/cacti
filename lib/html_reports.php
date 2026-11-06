@@ -2301,6 +2301,17 @@ function reports() : void {
 
 	$reports_list = [];
 
+	/* Strict allowlist of the columns this report list may be sorted by. Mirrors
+	 * the sortable keys of $display_text below (the UI's sort headers); 'name' is
+	 * the default sort column (see the 'sort' block in create_reports_filter()).
+	 * Passed to sanitize_sql_column() so a crafted sort_column falls back to the
+	 * default rather than relying on the character-class filter alone. */
+	$report_sort_columns = [
+		'name', 'report.name', 'type', 'report.full_name', 'sched_type',
+		'report.enabled', 'next_start', 'report.last_started',
+		'report.run_limit', 'report.last_runtime'
+	];
+
 	if (db_table_exists('plugin_reportit_reports')) {
 		if (grv('report_type') == '-1') {
 			$total_rows = db_fetch_cell("SELECT SUM(row_count)
@@ -2330,7 +2341,7 @@ function reports() : void {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+				ORDER BY " . sanitize_sql_column((string) grv('sort_column'), 'name', $report_sort_columns) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		} elseif (grv('report_type') == 'reports') {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2345,7 +2356,7 @@ function reports() : void {
 				FROM reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+				ORDER BY " . sanitize_sql_column((string) grv('sort_column'), 'name', $report_sort_columns) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		} else {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2360,7 +2371,7 @@ function reports() : void {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+				ORDER BY " . sanitize_sql_column((string) grv('sort_column'), 'name', $report_sort_columns) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		}
 	} else {
@@ -2376,7 +2387,7 @@ function reports() : void {
 			FROM reports AS report
 			$sql_join
 			$sql_where
-			ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+			ORDER BY " . sanitize_sql_column((string) grv('sort_column'), 'name', $report_sort_columns) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 			' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 	}
 
