@@ -42,6 +42,10 @@ $actions = [
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['rrd_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -74,6 +78,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (isrv('save_component_template')) {
 		// ================= input validation =================
 		gfrv('data_input_id');
