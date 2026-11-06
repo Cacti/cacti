@@ -98,6 +98,8 @@ function add_tree_names_to_actions_array() {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	if (!isset_request_var('save_component_graph')) {
 		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
@@ -281,6 +283,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
