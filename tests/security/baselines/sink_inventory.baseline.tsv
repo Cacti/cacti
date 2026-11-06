@@ -244,6 +244,7 @@ header_redirect	./aggregate_templates.php			header('Location: aggregate_template
 header_redirect	./aggregate_templates.php			header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
 header_redirect	./aggregate_templates.php		header('Location: aggregate_templates.php?action=edit&id=' . $id);
 header_redirect	./auth_2fa.php		header('Location: logout.php');
+header_redirect	./auth_2fa.php		header('Location: logout.php');
 header_redirect	./auth_changepassword.php				header("Location: $referer");
 header_redirect	./auth_changepassword.php				header('Location: logout.php');
 header_redirect	./auth_changepassword.php			header('Location:index.php');
