@@ -362,7 +362,7 @@ set_user_setting('realtime_size', grv('size'));
 set_user_setting('realtime_nolegend', grv('graph_nolegend'));
 
 if (read_config_option('realtime_enabled') == '') {
-	print "<html>\n";
+	print '<html' . get_html_document_attributes() . ">\n";
 	print "<body>\n";
 	print '	<p><strong>' . __('Real-time has been disabled by your administrator.') . "</strong></p>\n";
 	print "</body>\n";
@@ -372,7 +372,7 @@ if (read_config_option('realtime_enabled') == '') {
 }
 
 if (!is_dir(read_config_option('realtime_cache_path'))) {
-	print "<html>\n";
+	print '<html' . get_html_document_attributes() . ">\n";
 	print "<body>\n";
 	print '	<p><strong>' . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
@@ -382,7 +382,7 @@ if (!is_dir(read_config_option('realtime_cache_path'))) {
 }
 
 if (!is_writable(read_config_option('realtime_cache_path'))) {
-	print "<html>\n";
+	print '<html' . get_html_document_attributes() . ">\n";
 	print "<body>\n";
 	print '	<p><strong>' . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
@@ -405,7 +405,7 @@ $sizes = [
 
 ?>
 <!DOCTYPE html>
-<html lang='<?php print html_escape_attr(CACTI_LOCALE); ?>'>
+<html<?php print get_html_document_attributes(); ?>>
 <head>
 	<?php html_common_header(__('Cacti Real-time Graphing')); ?>
     <?php require(CACTI_PATH_INCLUDE . '/global_session.php'); ?>

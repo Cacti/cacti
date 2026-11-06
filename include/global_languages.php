@@ -1014,6 +1014,41 @@ function get_installed_locales() {
 }
 
 /**
+ * get_locale_direction - returns the text direction of a locale
+ *
+ * Unknown locales fall back to left-to-right so a bad session value can never
+ * mirror the whole interface.
+ *
+ * @param string|null $locale The locale code, e.g. 'he-IL'.  Defaults to the active locale.
+ *
+ * @return string 'rtl' or 'ltr'
+ */
+function get_locale_direction(string|null $locale = null) : string {
+	if ($locale === null) {
+		$locale = defined('CACTI_LOCALE') ? CACTI_LOCALE : '';
+	}
+
+	$locales = get_list_of_locales();
+
+	if (isset($locales[$locale]['direction']) && $locales[$locale]['direction'] === 'rtl') {
+		return 'rtl';
+	}
+
+	return 'ltr';
+}
+
+/**
+ * get_html_document_attributes - returns the lang and dir attributes for the <html> element
+ *
+ * @return string The escaped attribute string, starting with a space.
+ */
+function get_html_document_attributes() : string {
+	$locale = defined('CACTI_LOCALE') ? CACTI_LOCALE : 'en-US';
+
+	return " lang='" . htmlspecialchars($locale, ENT_QUOTES, 'UTF-8') . "' dir='" . get_locale_direction($locale) . "'";
+}
+
+/**
  * read_user_i18n_setting - finds the current value of a i18n configuration setting
  *
  * @param string $config_name The name of the configuration setting to retrieve.
