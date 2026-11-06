@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2024-11-22 08:46+0000\n"
 "Last-Translator: Nakayama Kito <nakayamakito@icloud.com>\n"
 "Language-Team: Japanese <http://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\n"
@@ -2193,8 +2193,8 @@ msgstr "根(植物)"
 msgid "No Tree Rules Found"
 msgstr "ツリールールが見つかりません"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "サボテンシステム警告"
 
@@ -11121,12 +11121,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "ブースト出力テーブルがこのサイズを超えると（レコード単位）、更新が行われます。"
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "1パスあたりの最大データソース項目"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "パフォーマンスを最適化するために、ブーストRRDアップデータは、1回のパスで取得できるデータソースアイテム数を知る必要があります。メジャーアップデート中のグラフ作成のパフォーマンスが低下する可能性があるため、高く設定しすぎないように注意してください。更新中にグラフ化やポーリングが遅くなる場合は、この数を減らしてください。デフォルト値は50000です。"
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11151,6 +11151,44 @@ msgstr "RRD更新スクリプトの最大実行時間"
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr "ブーストポーラーがこのランタイムを削除すると、警告がサボテンログに書き込まれます"
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "最大許容ランタイム："
+
+#: include/global_settings.php
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "最大許容ランタイム："
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "最大Eメールサイズ"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12281,6 +12319,10 @@ msgstr "パスワードには少なくとも1つの特殊文字を含める必�
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "サボテンログをクリアしました"
+
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
 
 #: lib/boost.php utilities.php
 #, php-format
@@ -19436,7 +19478,6 @@ msgid "Max Total Memory Possible"
 msgstr "許可される最大ポーラーメモリ："
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "MySQL/MariaDBメモリを80 % o f以下のシステムメモリに削減します。データベースがRRDファイルと同じシステム上にある場合は、RRDファイル用の追加のキャッシュメモリを保持します。計算方法の説明については、以下のコアとクライアントの合計を参照してください。"
 
@@ -19821,8 +19862,51 @@ msgid "Boost On-demand Updating:"
 msgstr "オンデマンドの強化"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "ブーストステータス"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "並行プロセス"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "保留中のブーストレコード："
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "作成日：%s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "古い順"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "自動ページ更新"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20145,6 +20229,12 @@ msgstr "このVDEFを使用しているグラフテンプレートの数。"
 #: vdef.php
 msgid "No VDEFs"
 msgstr "VDEFなし"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "1パスあたりの最大データソース項目"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "パフォーマンスを最適化するために、ブーストRRDアップデータは、1回のパスで取得できるデータソースアイテム数を知る必要があります。メジャーアップデート中のグラフ作成のパフォーマンスが低下する可能性があるため、高く設定しすぎないように注意してください。更新中にグラフ化やポーリングが遅くなる場合は、この数を減らしてください。デフォルト値は50000です。"
 
 #~ msgid "Enable direct population of poller_output_boost table"
 #~ msgstr "poller_output_boostテーブルの直接作成を有効にする"

@@ -91,12 +91,12 @@ switch (get_request_var('action')) {
 		snmpagent_utilities_run_cache();
 		bottom_footer();
 		break;
-	case 'purge_data_source_statistics';
+	case 'purge_data_source_statistics':
 		purge_data_source_statistics();
 		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
 		header('Location: utilities.php');
 		break;
-	case 'rebuild_snmpagent_cache';
+	case 'rebuild_snmpagent_cache':
 		snmpagent_cache_rebuilt();
 		header('Location: utilities.php?action=view_snmpagent_cache');exit;
 		break;
@@ -2521,6 +2521,10 @@ function boost_display_run_status() {
 	$update_interval = read_config_option('boost_rrd_update_interval', true);
 	$peak_memory     = read_config_option('boost_peak_memory', true);
 	$detail_stats    = read_config_option('stats_detail_boost', true);
+	$failure_depth   = (int) read_config_option('boost_failure_queue_depth', true);
+	$failure_oldest  = (int) read_config_option('boost_failure_queue_oldest', true);
+	$failure_error   = read_config_option('boost_failure_last_error', true);
+	$failure_retry   = json_decode((string) read_config_option('boost_failure_last_retry', true), true);
 
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['page']    = 'utilities.php?action=view_boost_status&header=false';
@@ -2590,12 +2594,20 @@ function boost_display_run_status() {
 	$data_length     = 0;
 	$engine          = '';
 	$max_data_length = 0;
+	$archive_count   = 0;
+	$oldest_archive_created = 0;
 
 	foreach($boost_table_status as $table) {
 		if ($table['TABLE_NAME'] == 'poller_output_boost') {
 			$pending_records += $table['TABLE_ROWS'];
-		} else {
+		} elseif (preg_match('/^poller_output_boost_arch_\d+$/D', $table['TABLE_NAME'])) {
 			$arch_records += $table['TABLE_ROWS'];
+			$archive_count++;
+			$created = isset($table['CREATE_TIME']) ? strtotime($table['CREATE_TIME']) : false;
+
+			if ($created !== false) {
+				$oldest_archive_created = $oldest_archive_created === 0 ? $created : min($oldest_archive_created, $created);
+			}
 		}
 
 		$data_length    += $table['DATA_LENGTH'];
@@ -2727,10 +2739,45 @@ function boost_display_run_status() {
 		form_alternate_row();
 		print '<td>' . __('Boost On-demand Updating:') . '</td><td><b>' . $status . '</b></td>';
 
+		form_alternate_row();
+		print '<td>' . __('Boost Lifecycle Status:') . '</td><td>' . html_escape($boost_status) . '</td>';
+
 		if ($running > 0) {
 			form_alternate_row();
 			print '<td>' . __('Running Processes:') . '</td><td>' . ($running) . '</td>';
 		}
+	}
+
+	form_alternate_row();
+	print '<td>' . __('Sealed Boost Archives:') . '</td><td>' . number_format_i18n($archive_count);
+
+	if ($oldest_archive_created > 0) {
+		print ' (' . __('oldest created: %s', date('Y-m-d H:i:s', $oldest_archive_created)) . ')';
+	}
+
+	print '</td>';
+
+	form_alternate_row();
+	print '<td>' . __('Failed RRD Destinations Pending:') . '</td><td>' . number_format_i18n($failure_depth) . '</td>';
+
+	if ($failure_depth > 0 && $failure_oldest > 0) {
+		form_alternate_row();
+		print '<td>' . __('Oldest Failed RRD:') . '</td><td>' . html_escape(date('Y-m-d H:i:s', $failure_oldest)) . '</td>';
+	}
+
+	if ($failure_error !== '') {
+		form_alternate_row();
+		print '<td>' . __('Last Boost Failure Warning:') . '</td><td>' . html_escape($failure_error) . '</td>';
+	}
+
+	if (is_array($failure_retry)) {
+		form_alternate_row();
+		print '<td>' . __('Last Automatic Failure Retry:') . '</td><td>' .
+			__('attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d',
+				(int) ($failure_retry['attempted'] ?? 0),
+				(int) ($failure_retry['recovered'] ?? 0),
+				(int) ($failure_retry['discarded'] ?? 0),
+				(int) ($failure_retry['pending'] ?? 0)) . '</td>';
 	}
 
 	form_alternate_row();

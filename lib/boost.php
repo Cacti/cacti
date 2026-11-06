@@ -126,6 +126,759 @@ function boost_ensure_process_table($repair_key = false) {
 }
 
 /**
+ * Check failure-queue existence without the process-local schema cache.
+ *
+ * @return bool True when the table exists.
+ */
+function boost_failure_table_exists_uncached() {
+	return (bool) db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = ?', array('poller_output_boost_failures'));
+}
+
+/**
+ * Ensure the bounded, coalescing Boost RRD failure queue exists.
+ *
+ * The table stores at most one latest complete RRDtool command per local data ID. It does not
+ * retain an unbounded history of samples and is intentionally separate from archive ownership.
+ *
+ * @return bool True when the queue is available, false on database failure.
+ */
+function boost_ensure_failure_queue() {
+	if (boost_failure_table_exists_uncached()) {
+		return true;
+	}
+
+	$created = db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_failures` (
+		`local_data_id` int(10) unsigned NOT NULL,
+		`generation` char(32) NOT NULL default '',
+		`rrd_path` varchar(255) NOT NULL default '',
+		`rrd_template` text NOT NULL,
+		`update_values` mediumtext NOT NULL,
+		`latest_sample` bigint(20) unsigned NOT NULL default '0',
+		`sample_count` int(10) unsigned NOT NULL default '0',
+		`retry_count` smallint(5) unsigned NOT NULL default '0',
+		`first_failed` timestamp NOT NULL default CURRENT_TIMESTAMP,
+		`last_failed` timestamp NOT NULL default CURRENT_TIMESTAMP,
+		`next_retry` timestamp NOT NULL default CURRENT_TIMESTAMP,
+		`last_error` varchar(512) NOT NULL default '',
+		PRIMARY KEY (`local_data_id`),
+		KEY `next_retry` (`next_retry`))
+		ENGINE=InnoDB ROW_FORMAT=Dynamic") !== false;
+
+	if (!$created && !boost_failure_table_exists_uncached()) {
+		cacti_log('ERROR: Boost could not create its bounded RRD failure queue.', true, 'BOOST');
+
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Read a bounded integer Boost failure-recovery setting.
+ *
+ * @param string $name Settings-table option name.
+ * @param int $default Default value when no positive value is configured.
+ * @param int $maximum Hard safety ceiling.
+ *
+ * @return int Validated positive setting.
+ */
+function boost_failure_limit($name, $default, $maximum) {
+	$value = (int) read_config_option($name);
+
+	if ($value < 1) {
+		$value = $default;
+	}
+
+	return min($maximum, $value);
+}
+
+/**
+ * Load the bounded failure queue's local data IDs once for the current process.
+ *
+ * Healthy archive drains must not issue a point query after every acknowledged RRD write. The
+ * queue is capped at 100,000 destinations, so retaining only its integer primary keys provides a
+ * bounded negative lookup cache. A failed load is treated as an empty cache; stale retry rows are
+ * safe because RRDtool rejects or skips updates older than the destination's last update.
+ *
+ * @return bool True when the queue IDs were loaded, false when cleanup must be deferred.
+ */
+function boost_load_failure_queue_id_cache() {
+	global $boost_failure_queue_ids;
+
+	if (isset($boost_failure_queue_ids)) {
+		return true;
+	}
+
+	$boost_failure_queue_ids = array();
+
+	if (!boost_ensure_failure_queue()) {
+		return false;
+	}
+
+	$rows = db_fetch_assoc('SELECT local_data_id
+		FROM poller_output_boost_failures
+		LIMIT 100001');
+
+	if (!is_array($rows)) {
+		cacti_log('WARNING: Boost could not preload failure queue IDs; superseded retry cleanup is deferred.', true, 'BOOST');
+
+		return false;
+	}
+
+	foreach($rows as $row) {
+		$local_data_id = (int) $row['local_data_id'];
+
+		if ($local_data_id > 0) {
+			$boost_failure_queue_ids[$local_data_id] = true;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Return whether a queued retry may exist for a local data ID.
+ *
+ * @param int $local_data_id Local data ID identifying the target RRD.
+ *
+ * @return bool True when a point lookup is required.
+ */
+function boost_failure_queue_id_may_exist($local_data_id) {
+	global $boost_failure_queue_ids;
+
+	if (!boost_load_failure_queue_id_cache()) {
+		return false;
+	}
+
+	return isset($boost_failure_queue_ids[(int) $local_data_id]);
+}
+
+/**
+ * Keep a previously loaded failure-ID cache synchronized with queue mutations.
+ *
+ * Mutating the cache must not trigger its initial database load. Failure handling is already a
+ * cold path, while the first successful write performs the single bounded preload.
+ *
+ * @param int $local_data_id Local data ID identifying the target RRD.
+ * @param bool $present Whether the queue contains this ID after the mutation.
+ *
+ * @return void No value is returned.
+ */
+function boost_update_failure_queue_id_cache($local_data_id, $present) {
+	global $boost_failure_queue_ids;
+
+	if (!isset($boost_failure_queue_ids)) {
+		return;
+	}
+
+	$local_data_id = (int) $local_data_id;
+
+	if ($present) {
+		$boost_failure_queue_ids[$local_data_id] = true;
+	} else {
+		unset($boost_failure_queue_ids[$local_data_id]);
+	}
+}
+
+/**
+ * Persist current failure-queue depth and oldest age for status pages and automation.
+ *
+ * @return void No value is returned.
+ */
+function boost_update_failure_status() {
+	if (!boost_failure_table_exists_uncached()) {
+		return;
+	}
+
+	$status = db_fetch_row('SELECT COUNT(*) AS queue_depth,
+		COALESCE(UNIX_TIMESTAMP(MIN(first_failed)), 0) AS oldest_failure
+		FROM poller_output_boost_failures');
+
+	if (is_array($status)) {
+		set_config_option('boost_failure_queue_depth', (int) $status['queue_depth']);
+		set_config_option('boost_failure_queue_oldest', (int) $status['oldest_failure']);
+	}
+}
+
+/**
+ * Send a rate-limited administrator warning for persistent Boost data loss or retry state.
+ *
+ * @param string $message Warning text.
+ * @param bool $immediate Use the five-minute urgent interval instead of the one-day interval.
+ *
+ * @return void No value is returned.
+ */
+function boost_alert_failure_queue($message, $immediate = false) {
+	$last_alert = (int) read_config_option('boost_failure_last_alert');
+	$interval   = $immediate ? 300 : 86400;
+	$diagnostic = substr($message, 0, 512);
+
+	/* Persist every new diagnostic even when email is rate limited. */
+	if ((string) read_config_option('boost_failure_last_error') !== $diagnostic) {
+		set_config_option('boost_failure_last_error', $diagnostic);
+	}
+
+	if ($last_alert > time() - $interval) {
+		return;
+	}
+
+	set_config_option('boost_failure_last_alert', time());
+	admin_email(__('Cacti System Warning'), $message);
+}
+
+/**
+ * Coalesce one failed RRDtool command into a bounded per-RRD recovery row.
+ *
+ * Newer complete commands replace older commands for the same local data ID. This deliberately
+ * preserves only the latest failed state, not every historical sample; overwritten history is
+ * counted as discarded by the caller and RRDtool's stale-update protection prevents an old retry
+ * from overtaking a newer normal write.
+ *
+ * @param int $local_data_id Local data ID identifying the target RRD.
+ * @param string $rrd_path Absolute RRD path.
+ * @param string $rrd_template RRDtool update template.
+ * @param string $update_values Complete RRDtool update values.
+ * @param int $latest_sample Latest timestamp represented by the command.
+ * @param int $sample_count Number of timestamp updates represented by the command.
+ * @param string $error RRDtool error text.
+ *
+ * @return array{handled: bool, queued_samples: int, discarded_samples: int} Failure disposition.
+ */
+function boost_queue_rrd_failure($local_data_id, $rrd_path, $rrd_template, $update_values, $latest_sample, $sample_count, $error) {
+	if (!boost_ensure_failure_queue()) {
+		return array('handled' => false, 'queued_samples' => 0, 'discarded_samples' => 0);
+	}
+
+	$queue_lock = boost_acquire_failure_queue_lock();
+
+	if ($queue_lock === false) {
+		cacti_log('ERROR: Boost could not serialize a failure-queue mutation; the current archive will be retained.', true, 'BOOST');
+
+		return array('handled' => false, 'queued_samples' => 0, 'discarded_samples' => 0);
+	}
+
+	try {
+		return boost_queue_rrd_failure_locked(
+			$local_data_id,
+			$rrd_path,
+			$rrd_template,
+			$update_values,
+			$latest_sample,
+			$sample_count,
+			$error
+		);
+	} finally {
+		boost_release_failure_queue_lock($queue_lock);
+	}
+}
+
+/**
+ * Mutate the bounded per-RRD failure queue while the caller holds its global admission lock.
+ *
+ * @param int $local_data_id Local data ID identifying the target RRD.
+ * @param string $rrd_path Absolute RRD path.
+ * @param string $rrd_template RRDtool update template.
+ * @param string $update_values Complete RRDtool update values.
+ * @param int $latest_sample Latest timestamp represented by the command.
+ * @param int $sample_count Number of timestamp updates represented by the command.
+ * @param string $error RRDtool error text.
+ *
+ * @return array{handled: bool, queued_samples: int, discarded_samples: int} Failure disposition.
+ */
+function boost_queue_rrd_failure_locked($local_data_id, $rrd_path, $rrd_template, $update_values, $latest_sample, $sample_count, $error) {
+
+	$local_data_id = (int) $local_data_id;
+	$latest_sample = max(0, (int) $latest_sample);
+	$sample_count  = max(1, (int) $sample_count);
+	$max_records   = boost_failure_limit('boost_failure_queue_max_records', 10000, 100000);
+	$existing      = db_fetch_row_prepared('SELECT latest_sample, sample_count
+		FROM poller_output_boost_failures
+		WHERE local_data_id = ?', array($local_data_id));
+
+	if ($existing === false) {
+		return array('handled' => false, 'queued_samples' => 0, 'discarded_samples' => 0);
+	}
+
+	$exists = cacti_sizeof($existing) > 0;
+
+	if (!$exists) {
+		$depth = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost_failures');
+
+		if ($depth === false) {
+			return array('handled' => false, 'queued_samples' => 0, 'discarded_samples' => 0);
+		}
+
+		$depth = (int) $depth;
+
+		if ($depth >= $max_records) {
+			$message = sprintf('WARNING: Boost failure queue reached its %d-RRD limit. The failed update for Local Data ID %d was explicitly discarded.',
+				$max_records,
+				$local_data_id);
+			$alert = sprintf('WARNING: Boost failure queue reached its %d-RRD limit. Additional failed updates are being explicitly discarded.',
+				$max_records);
+
+			cacti_log($message, true, 'BOOST');
+			boost_alert_failure_queue($alert, true);
+
+			return array('handled' => true, 'queued_samples' => 0, 'discarded_samples' => $sample_count);
+		}
+	} elseif ($latest_sample < (int) $existing['latest_sample']) {
+		cacti_log(sprintf('WARNING: Boost explicitly discarded %d stale failed sample update(s) for Local Data ID %d because a newer retry payload is already queued.',
+			$sample_count,
+			$local_data_id), true, 'BOOST');
+
+		return array('handled' => true, 'queued_samples' => 0, 'discarded_samples' => $sample_count);
+	}
+
+	$generation = bin2hex(random_bytes(16));
+	$discarded  = $exists ? (int) $existing['sample_count'] : 0;
+	$queued = db_execute_prepared('INSERT INTO poller_output_boost_failures
+		(local_data_id, generation, rrd_path, rrd_template, update_values, latest_sample,
+		sample_count, retry_count, first_failed, last_failed, next_retry, last_error)
+		VALUES (?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW(), NOW(), ?)
+		ON DUPLICATE KEY UPDATE
+		generation = IF(VALUES(latest_sample) >= latest_sample, VALUES(generation), generation),
+		rrd_path = IF(VALUES(latest_sample) >= latest_sample, VALUES(rrd_path), rrd_path),
+		rrd_template = IF(VALUES(latest_sample) >= latest_sample, VALUES(rrd_template), rrd_template),
+		update_values = IF(VALUES(latest_sample) >= latest_sample, VALUES(update_values), update_values),
+		sample_count = IF(VALUES(latest_sample) >= latest_sample, VALUES(sample_count), sample_count),
+		retry_count = IF(VALUES(latest_sample) >= latest_sample, 0, retry_count),
+		latest_sample = GREATEST(latest_sample, VALUES(latest_sample)),
+		last_failed = NOW(),
+		next_retry = IF(VALUES(latest_sample) >= latest_sample, NOW(), next_retry),
+		last_error = VALUES(last_error)', array(
+			$local_data_id,
+			$generation,
+			$rrd_path,
+			$rrd_template,
+			$update_values,
+			$latest_sample,
+			$sample_count,
+			substr((string) $error, 0, 512),
+		), false) !== false;
+
+	if (!$queued) {
+		return array('handled' => false, 'queued_samples' => 0, 'discarded_samples' => 0);
+	}
+
+	boost_update_failure_queue_id_cache($local_data_id, true);
+
+	boost_update_failure_status();
+	$depth = (int) read_config_option('boost_failure_queue_depth');
+
+	if ($depth === 1) {
+		boost_alert_failure_queue(__('WARNING: Boost queued an RRD write failure for automatic bounded retry.'), true);
+	}
+
+	if ($discarded > 0) {
+		boost_alert_failure_queue(sprintf('WARNING: Boost explicitly discarded %d older failed sample update(s) while coalescing the bounded per-RRD retry queue.', $discarded));
+	}
+
+	return array('handled' => true, 'queued_samples' => $sample_count, 'discarded_samples' => $discarded);
+}
+
+/**
+ * Acquire the admission lock that makes the configured failure-queue limit strict across workers.
+ *
+ * @param int $timeout Maximum seconds to wait.
+ *
+ * @return string|false Lock name on success, false on timeout.
+ */
+function boost_acquire_failure_queue_lock($timeout = 5) {
+	$lock_name = 'boost.failure.queue';
+	$locked    = db_fetch_cell_prepared('SELECT GET_LOCK(?, ?)', array($lock_name, max(0, (int) $timeout)));
+
+	return $locked ? $lock_name : false;
+}
+
+/**
+ * Release the global failure-queue admission lock.
+ *
+ * @param string|false $lock_name Lock returned by boost_acquire_failure_queue_lock().
+ *
+ * @return void No value is returned.
+ */
+function boost_release_failure_queue_lock($lock_name) {
+	if ($lock_name !== false) {
+		db_fetch_cell_prepared('SELECT RELEASE_LOCK(?)', array($lock_name));
+	}
+}
+
+/**
+ * Refresh the configured RRDtool capability without downgrading it during a backend outage.
+ *
+ * Binary detection returns false when RRDtool is temporarily unavailable. Retaining the last
+ * configured capability is essential for idempotent archive replay after recovery; otherwise a
+ * repaired RRDtool 1.5+ backend can lose --skip-past-updates for its first recovery run.
+ *
+ * @return string Configured or newly detected RRDtool capability version.
+ */
+function boost_refresh_rrdtool_version() {
+	$configured = get_rrdtool_version();
+	$installed  = get_installed_rrdtool_version();
+
+	if ($installed === false) {
+		cacti_log('WARNING: Boost could not detect the RRDtool binary version; retaining the configured capability.', true, 'BOOST');
+
+		return $configured;
+	}
+
+	if ($installed !== $configured) {
+		boost_debug('NOTE: Updating stored RRDtool version to installed version ' . $installed);
+		cacti_log('NOTE: Updating stored RRDtool version to installed version ' . $installed, true, 'BOOST');
+		set_config_option('rrdtool_version', $installed);
+
+		return get_rrdtool_version(true);
+	}
+
+	return $configured;
+}
+
+/**
+ * Remove a queued retry that has been superseded by a newer acknowledged normal write.
+ *
+ * @param int $local_data_id Local data ID identifying the target RRD.
+ * @param int $latest_sample Latest timestamp acknowledged by the normal write.
+ *
+ * @return int Number of older queued sample updates explicitly discarded.
+ */
+function boost_clear_superseded_rrd_failure($local_data_id, $latest_sample) {
+	if ($latest_sample < 1 || !boost_failure_queue_id_may_exist($local_data_id)) {
+		return 0;
+	}
+
+	$row = db_fetch_row_prepared('SELECT generation, sample_count
+		FROM poller_output_boost_failures
+		WHERE local_data_id = ?
+		AND latest_sample <= ?', array((int) $local_data_id, (int) $latest_sample));
+
+	if (!cacti_sizeof($row)) {
+		return 0;
+	}
+
+	$deleted = db_execute_prepared('DELETE FROM poller_output_boost_failures
+		WHERE local_data_id = ?
+		AND generation = ?
+		AND latest_sample <= ?', array(
+			(int) $local_data_id,
+			$row['generation'],
+			(int) $latest_sample,
+		), false);
+
+	if ($deleted === false || db_affected_rows() < 1) {
+		return 0;
+	}
+
+	boost_update_failure_queue_id_cache($local_data_id, false);
+
+	boost_update_failure_status();
+
+	return (int) $row['sample_count'];
+}
+
+/**
+ * Acquire the cross-process lock shared by normal Boost writes and failure retries.
+ *
+ * @param string $rrd_path Actual RRD destination path.
+ * @param int $timeout Maximum seconds to wait.
+ *
+ * @return string|false Lock name on success, false on timeout.
+ */
+function boost_acquire_rrd_path_lock($rrd_path, $timeout = 5) {
+	$lock_name = 'boost.rrd.' . substr(hash('sha256', $rrd_path), 0, 54);
+	$locked    = db_fetch_cell_prepared('SELECT GET_LOCK(?, ?)', array($lock_name, max(0, (int) $timeout)));
+
+	return $locked ? $lock_name : false;
+}
+
+/**
+ * Release a lock returned by boost_acquire_rrd_path_lock().
+ *
+ * @param string|false $lock_name Lock name, or false when acquisition failed.
+ *
+ * @return void No value is returned.
+ */
+function boost_release_rrd_path_lock($lock_name) {
+	if ($lock_name !== false) {
+		db_fetch_cell_prepared('SELECT RELEASE_LOCK(?)', array($lock_name));
+	}
+}
+
+/**
+ * Acquire exclusive ownership of archive rotation, draining, and on-demand deletion.
+ *
+ * The lock is connection scoped, so an unexpected process exit releases it automatically. Live
+ * collectors do not acquire this lock and continue inserting into poller_output_boost.
+ *
+ * @param int $timeout Maximum seconds to wait.
+ *
+ * @return string|false Lock name on success, false on timeout.
+ */
+function boost_acquire_archive_lifecycle_lock($timeout = 0) {
+	$lock_name = 'boost.archive.lifecycle';
+	$locked    = db_fetch_cell_prepared('SELECT GET_LOCK(?, ?)', array($lock_name, max(0, (int) $timeout)));
+
+	return $locked ? $lock_name : false;
+}
+
+/**
+ * Release exclusive archive lifecycle ownership.
+ *
+ * @param string|false $lock_name Lock returned by boost_acquire_archive_lifecycle_lock().
+ *
+ * @return void No value is returned.
+ */
+function boost_release_archive_lifecycle_lock($lock_name) {
+	if ($lock_name !== false) {
+		db_fetch_cell_prepared('SELECT RELEASE_LOCK(?)', array($lock_name));
+	}
+}
+
+/**
+ * Verify that a queued retry still targets the data source's current RRD path.
+ *
+ * A data source can be removed or repointed while its failed command waits. Replaying that command
+ * into the old file would race normal writes to the new destination and retain stale state. An
+ * aggregate path query distinguishes an empty current path from a database error.
+ *
+ * @param int $local_data_id Local data ID recorded in the failure queue.
+ * @param string $rrd_path RRD path recorded with the failed command.
+ *
+ * @return bool|null True when the destination is current, false when it is stale, or null when
+ *   database state could not be verified.
+ */
+function boost_failure_retry_destination_is_current($local_data_id, $rrd_path) {
+	$exists = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_local WHERE id = ?',
+		array((int) $local_data_id));
+
+	if ($exists === false) {
+		return null;
+	}
+
+	if ((int) $exists === 0) {
+		return false;
+	}
+
+	$current_path = db_fetch_cell_prepared('SELECT COALESCE(MAX(NULLIF(rrd_path, \'\')), \'\')
+		FROM poller_item
+		WHERE local_data_id = ?', array((int) $local_data_id));
+
+	if ($current_path === false) {
+		return null;
+	}
+
+	return (string) $current_path === (string) $rrd_path;
+}
+
+/**
+ * Return whether one RRDtool diagnostic is confined to a destination or payload.
+ *
+ * Known permanent errors remain visible and enter bounded per-RRD retry handling, but they must
+ * not make a run of bad files look like a backend-wide outage. Ambiguous resource and permission
+ * failures remain circuit inputs so a site-wide disk or mount failure stops after a bounded probe.
+ *
+ * @param string $error RRDtool diagnostic.
+ *
+ * @return bool True for a permanent or stale destination-specific failure.
+ */
+function boost_is_isolated_rrd_failure($error) {
+	$error = strtolower((string) $error);
+	$patterns = array(
+		'not an rrd file',
+		'while loading header',
+		'illegal attempt to update',
+		'unknown ds name',
+		'unknown data source',
+		'invalid rrd path',
+		'invalid rrd update',
+		'is not a simple integer or float',
+		'expected data source',
+	);
+
+	foreach($patterns as $pattern) {
+		if (strpos($error, $pattern) !== false) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Decide whether an ambiguous RRDtool failure window represents a backend-wide outage.
+ *
+ * @param int $successes Successful commands in the current worker or retry pass.
+ * @param int $failures Ambiguous failures in the current worker or retry pass.
+ * @param int $consecutive_failures Consecutive ambiguous failures since the last success or
+ *   isolated destination failure.
+ *
+ * @return bool True when the caller must stop probing the backend.
+ */
+function boost_backend_failure_window_open($successes, $failures, $consecutive_failures) {
+	return ((int) $successes === 0 && (int) $failures >= 8) ||
+		(int) $consecutive_failures >= 32;
+}
+
+/**
+ * Retry a bounded number of coalesced RRD failures with exponential backoff.
+ *
+ * Rows older than the configured age or beyond the retry limit are explicitly discarded and an
+ * administrator warning is persisted and mailed. A generation-qualified delete prevents a retry
+ * from erasing a newer failure recorded concurrently by normal Boost processing.
+ *
+ * @param mixed $rrdtool_pipe Acknowledged RRDtool worker or proxy connection.
+ *
+ * @return array{attempted: int, recovered: int, pending: int, discarded: int} Retry accounting.
+ */
+function boost_retry_rrd_failures(&$rrdtool_pipe) {
+	$stats = array('attempted' => 0, 'recovered' => 0, 'pending' => 0, 'discarded' => 0);
+	$stale_discarded = 0;
+	$backend_successes = 0;
+	$backend_failures = 0;
+	$consecutive_backend_failures = 0;
+
+	if (!boost_ensure_failure_queue()) {
+		return $stats;
+	}
+
+	$budget      = boost_failure_limit('boost_failure_retry_budget', 100, 1000);
+	$max_retries = boost_failure_limit('boost_failure_max_retries', 8, 100);
+	$max_age     = boost_failure_limit('boost_failure_max_age_days', 7, 30) * 86400;
+	$expired     = db_fetch_assoc_prepared('SELECT local_data_id, generation, sample_count
+		FROM poller_output_boost_failures
+		WHERE retry_count >= ?
+		OR first_failed < FROM_UNIXTIME(?)
+		LIMIT ' . $budget, array($max_retries, time() - $max_age));
+
+	if (is_array($expired)) {
+		foreach($expired as $row) {
+			if (db_execute_prepared('DELETE FROM poller_output_boost_failures
+				WHERE local_data_id = ? AND generation = ?',
+				array($row['local_data_id'], $row['generation']), false) !== false && db_affected_rows() > 0) {
+				$stats['discarded'] += (int) $row['sample_count'];
+				boost_update_failure_queue_id_cache($row['local_data_id'], false);
+			}
+		}
+	}
+
+	if ($stats['discarded'] > 0) {
+		$message = sprintf('WARNING: Boost explicitly discarded %d coalesced failed sample updates after reaching the retry age or attempt limit.',
+			$stats['discarded']);
+
+		cacti_log($message, true, 'BOOST');
+		boost_alert_failure_queue($message, true);
+	}
+
+	$rows = db_fetch_assoc('SELECT *
+		FROM poller_output_boost_failures
+		WHERE next_retry <= NOW()
+		ORDER BY next_retry, local_data_id
+		LIMIT ' . $budget);
+
+	if (is_array($rows)) {
+		foreach($rows as $row) {
+			$stats['attempted']++;
+			$lock_name = boost_acquire_rrd_path_lock($row['rrd_path']);
+
+			if ($lock_name === false) {
+				continue;
+			}
+
+			$destination_current = boost_failure_retry_destination_is_current(
+				$row['local_data_id'],
+				$row['rrd_path']
+			);
+
+			if ($destination_current !== true) {
+				boost_release_rrd_path_lock($lock_name);
+
+				if ($destination_current === false &&
+					db_execute_prepared('DELETE FROM poller_output_boost_failures
+						WHERE local_data_id = ? AND generation = ?',
+						array($row['local_data_id'], $row['generation']), false) !== false &&
+					db_affected_rows() > 0) {
+					$discarded = (int) $row['sample_count'];
+					$stats['discarded'] += $discarded;
+					$stale_discarded += $discarded;
+					boost_update_failure_queue_id_cache($row['local_data_id'], false);
+				}
+
+				continue;
+			}
+
+			$values = $row['update_values'];
+			$result = boost_rrdtool_function_update(
+				(int) $row['local_data_id'],
+				$row['rrd_path'],
+				$row['rrd_template'],
+				$values,
+				$rrdtool_pipe
+			);
+			boost_release_rrd_path_lock($lock_name);
+
+			if (trim((string) $result) === 'OK') {
+				$backend_successes++;
+				$consecutive_backend_failures = 0;
+
+				if (db_execute_prepared('DELETE FROM poller_output_boost_failures
+					WHERE local_data_id = ? AND generation = ?',
+					array($row['local_data_id'], $row['generation']), false) !== false && db_affected_rows() > 0) {
+					$stats['recovered'] += (int) $row['sample_count'];
+					boost_update_failure_queue_id_cache($row['local_data_id'], false);
+				}
+			} else {
+				$retry_count = (int) $row['retry_count'] + 1;
+				$backoff     = min(3600, 60 * (2 ** min(6, $retry_count - 1)));
+
+				db_execute_prepared('UPDATE poller_output_boost_failures
+					SET retry_count = ?, last_failed = NOW(),
+					next_retry = DATE_ADD(NOW(), INTERVAL ? SECOND), last_error = ?
+					WHERE local_data_id = ? AND generation = ?', array(
+						$retry_count,
+						$backoff,
+						substr((string) $result, 0, 512),
+						$row['local_data_id'],
+						$row['generation'],
+					), false);
+
+				if (boost_is_isolated_rrd_failure($result)) {
+					$consecutive_backend_failures = 0;
+				} else {
+					$backend_failures++;
+					$consecutive_backend_failures++;
+
+					if (boost_backend_failure_window_open(
+						$backend_successes,
+						$backend_failures,
+						$consecutive_backend_failures
+					)) {
+						$message = 'WARNING: Boost stopped automatic RRD failure retries after detecting a backend-wide outage; pending destinations remain queued.';
+						cacti_log($message, true, 'BOOST');
+						boost_alert_failure_queue($message, true);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	if ($stale_discarded > 0) {
+		$message = sprintf('WARNING: Boost explicitly discarded %d queued failed sample updates because their data sources were removed or moved to different RRD paths.',
+			$stale_discarded);
+		cacti_log($message, true, 'BOOST');
+		boost_alert_failure_queue($message, true);
+	}
+
+	boost_update_failure_status();
+	$stats['pending'] = (int) read_config_option('boost_failure_queue_depth');
+
+	return $stats;
+}
+
+/**
  * Performs a multicolumn sort of an array. Used as part of Cacti's lib functionality.
  *
  * @return array The sorted array.
@@ -183,49 +936,6 @@ function boost_file_size_display($file_size, $digits = 2) {
 	} else {
 		return __('%s Bytes', number_format_i18n($file_size, $digits));
 	}
-}
-
-/**
- * Return a bounded page without splitting the fields belonging to one RRD timestamp. The caller
- * must fetch max_rows + 1 ordered rows so this function can prove whether the final timestamp is
- * complete. Used as part of Cacti's lib functionality.
- *
- * @param mixed $rows The rows.
- * @param mixed $max_rows The max rows.
- *
- * @return array|false A safe page, or false when one timestamp alone exceeds the configured bound.
- */
-function boost_limit_complete_timestamp_page($rows, $max_rows) {
-	$max_rows = max(1, (int) $max_rows);
-
-	if (!is_array($rows) || count($rows) <= $max_rows) {
-		return $rows;
-	}
-
-	$overflow = $rows[$max_rows];
-	$rows     = array_slice($rows, 0, $max_rows);
-	$last     = end($rows);
-
-	if ($last['local_data_id'] == $overflow['local_data_id'] && $last['timestamp'] == $overflow['timestamp']) {
-		$split_id   = $last['local_data_id'];
-		$split_time = $last['timestamp'];
-
-		while (count($rows)) {
-			$last = end($rows);
-
-			if ($last['local_data_id'] != $split_id || $last['timestamp'] != $split_time) {
-				break;
-			}
-
-			array_pop($rows);
-		}
-
-		if (!count($rows)) {
-			return false;
-		}
-	}
-
-	return $rows;
 }
 
 /**
@@ -604,7 +1314,7 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 
 		/* process input parameters */
 		if (!is_resource($rrdtool_pipe)) {
-			$rrdtool_pipe = rrd_init();
+			$rrdtool_pipe = rrd_init(true, true);
 			$close_pipe = true;
 		} else {
 			$close_pipe = false;
@@ -1161,6 +1871,52 @@ function boost_is_valid_archive_table($table) {
 }
 
 /**
+ * Check a dynamically rotated Boost table without db_table_exists()'s process cache.
+ *
+ * The master probes a candidate archive name before RENAME TABLE creates it. Reusing the cached
+ * negative result would make that same table appear absent when its drain begins later in the
+ * process.
+ *
+ * @param string $table Validated archive or interim table name.
+ *
+ * @return bool True when the table currently exists.
+ */
+function boost_dynamic_table_exists_uncached($table) {
+	if (!is_string($table) ||
+		preg_match('/^poller_output_boost_(?:arch_)?\d+$/D', $table) !== 1) {
+		return false;
+	}
+
+	return (bool) db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = ?', array($table));
+}
+
+/**
+ * Compare validated Boost archive names by their numeric rotation sequence.
+ *
+ * Lexical ordering puts suffix 10 before suffix 2. Processing the numeric suffix first keeps
+ * older samples ahead of newer archives without inspecting or globally sorting their rows.
+ *
+ * @param string $left First archive table name.
+ * @param string $right Second archive table name.
+ *
+ * @return int Negative, zero, or positive according to oldest-first order.
+ */
+function boost_compare_archive_tables($left, $right) {
+	$prefix = 'poller_output_boost_arch_';
+	$left_sequence  = substr($left, strlen($prefix));
+	$right_sequence = substr($right, strlen($prefix));
+
+	if (strlen($left_sequence) !== strlen($right_sequence)) {
+		return strlen($left_sequence) <=> strlen($right_sequence);
+	}
+
+	return strcmp($left_sequence, $right_sequence);
+}
+
+/**
  * Retrieves the names of the archive tables related to poller output boost. Used as part of
  * Cacti's lib functionality.
  *
@@ -1203,7 +1959,7 @@ function boost_get_arch_table_names($latest_table = '') {
 	}
 
 	if (!cacti_sizeof($tableNames)) {
-		if (boost_is_valid_archive_table($latest_table) && db_table_exists($latest_table)) {
+		if (boost_is_valid_archive_table($latest_table) && boost_dynamic_table_exists_uncached($latest_table)) {
 			$tableNames[$latest_table] = $latest_table;
 
 			return $tableNames;
@@ -1211,20 +1967,22 @@ function boost_get_arch_table_names($latest_table = '') {
 			return false;
 		}
 	} else {
+		uksort($tableNames, 'boost_compare_archive_tables');
+
 		return $tableNames;
 	}
 }
 
 /**
- * Cache metadata reused when a hot data source spans multiple bounded pages. Used as part of
- * Cacti's lib functionality.
+ * Cache unused data-source metadata within one bounded input page. Used as part of Cacti's lib
+ * functionality.
  *
- * @param mixed $local_data_id The local data ID.
+ * @param int $local_data_id The local data ID.
  *
  * @return array An array of results.
  */
 function boost_get_unused_data_source_names($local_data_id) {
-	static $cache = array();
+	global $boost_unused_data_source_cache;
 
 	$local_data_id = (int) $local_data_id;
 
@@ -1232,8 +1990,12 @@ function boost_get_unused_data_source_names($local_data_id) {
 		return array();
 	}
 
-	if (!isset($cache[$local_data_id])) {
-		$cache[$local_data_id] = array_rekey(
+	if (!isset($boost_unused_data_source_cache) || !is_array($boost_unused_data_source_cache)) {
+		$boost_unused_data_source_cache = array();
+	}
+
+	if (!isset($boost_unused_data_source_cache[$local_data_id])) {
+		$boost_unused_data_source_cache[$local_data_id] = array_rekey(
 			db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 				FROM data_template_rrd AS dtr
 				LEFT JOIN graph_templates_item AS gti
@@ -1244,19 +2006,19 @@ function boost_get_unused_data_source_names($local_data_id) {
 		);
 	}
 
-	return $cache[$local_data_id];
+	return $boost_unused_data_source_cache[$local_data_id];
 }
 
 /**
  * Handles the boost get input field names. Used as part of Cacti's lib functionality.
  *
- * @param mixed $local_data_id The local data ID.
- * @param mixed $templated The templated.
+ * @param int $local_data_id The local data ID.
+ * @param bool $templated Whether the data source is templated.
  *
  * @return array An array of results.
  */
 function boost_get_input_field_names($local_data_id, $templated) {
-	static $cache = array();
+	global $boost_input_field_cache;
 
 	$local_data_id = (int) $local_data_id;
 	$key           = $local_data_id . ':' . ($templated ? '1' : '0');
@@ -1265,7 +2027,11 @@ function boost_get_input_field_names($local_data_id, $templated) {
 		return array();
 	}
 
-	if (!isset($cache[$key])) {
+	if (!isset($boost_input_field_cache) || !is_array($boost_input_field_cache)) {
+		$boost_input_field_cache = array();
+	}
+
+	if (!isset($boost_input_field_cache[$key])) {
 		if ($templated) {
 			$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
 				FROM graph_templates_item AS gti
@@ -1282,10 +2048,10 @@ function boost_get_input_field_names($local_data_id, $templated) {
 				WHERE dtr.local_data_id = ?', array($local_data_id));
 		}
 
-		$cache[$key] = array_rekey($rows, 'data_name', 'data_source_name');
+		$boost_input_field_cache[$key] = array_rekey($rows, 'data_name', 'data_source_name');
 	}
 
-	return $cache[$key];
+	return $boost_input_field_cache[$key];
 }
 
 /**
@@ -1314,12 +2080,65 @@ function boost_get_input_field_names($local_data_id, $templated) {
  * 4) Merge the results together 5) Process the entire result set. Used as part of Cacti's lib
  * functionality.
  *
- * @param int $local_data_id Local_data_id - the local data id to update.
- * @param resource $rrdtool_pipe Rrdtool_pipe - a pointer to the rrdtool process.
+ * @param int $local_data_id Local data ID to update.
+ * @param mixed $rrdtool_pipe Optional RRDtool worker or proxy connection.
  *
- * @return void Int.
+ * @return int Number of handled rows, or -1 when processing is deferred or fails.
  */
 function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
+	$local_data_id = (int) $local_data_id;
+
+	if ($local_data_id < 1) {
+		return -1;
+	}
+
+	$archive_lock = boost_acquire_archive_lifecycle_lock(0);
+
+	if ($archive_lock === false) {
+		cacti_log("NOTICE: On-demand Boost processing for Local Data ID '$local_data_id' deferred while the scheduled archive owner is active.", false, 'BOOST');
+
+		return -1;
+	}
+
+	if ((int) read_config_option('boost_poller_started') > 0) {
+		boost_release_archive_lifecycle_lock($archive_lock);
+		cacti_log("NOTICE: On-demand Boost processing for Local Data ID '$local_data_id' deferred because a scheduled owner lease remains active.", false, 'BOOST');
+
+		return -1;
+	}
+
+	boost_reset_rrd_metadata_page_cache();
+	$metadata  = boost_get_rrd_filename_and_template($local_data_id);
+	$path_lock = false;
+
+	if ($metadata['rrd_path'] !== '') {
+		$path_lock = boost_acquire_rrd_path_lock($metadata['rrd_path']);
+
+		if ($path_lock === false) {
+			boost_release_archive_lifecycle_lock($archive_lock);
+			cacti_log("NOTICE: On-demand Boost processing for Local Data ID '$local_data_id' deferred behind an active writer for the same RRD file.", false, 'BOOST');
+
+			return -1;
+		}
+	}
+
+	try {
+		return boost_process_poller_output_unlocked($local_data_id, $rrdtool_pipe);
+	} finally {
+		boost_release_rrd_path_lock($path_lock);
+		boost_release_archive_lifecycle_lock($archive_lock);
+	}
+}
+
+/**
+ * Process one on-demand RRD while the caller owns the archive lifecycle lock.
+ *
+ * @param int $local_data_id The local data ID to process.
+ * @param mixed $rrdtool_pipe Optional RRDtool worker or proxy connection.
+ *
+ * @return int Number of handled rows, or -1 when the handoff was not acknowledged.
+ */
+function boost_process_poller_output_unlocked($local_data_id, $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
 	$local_data_id = (int) $local_data_id;
@@ -1451,7 +2270,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		$rrdp_auto_close = false;
 
 		if (!$rrdtool_pipe) {
-			$rrdtool_pipe    = rrd_init();
+			$rrdtool_pipe    = rrd_init(true, true);
 			$rrdp_auto_close = true;
 		}
 
@@ -1513,8 +2332,8 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 			}
 
 			/* don't generate error messages if the RRD has already been updated */
-			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
+			if ($item['timestamp'] <= $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $item['timestamp'] . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
 				$value = 'DNP';
 			} else {
 				$value = trim($item['output']);
@@ -1831,6 +2650,135 @@ function boost_determine_caching_state() {
 }
 
 /**
+ * Reset metadata retained by the current bounded input page.
+ *
+ * Both scheduled and on-demand Boost can process very high-cardinality sites in one PHP process.
+ * Clearing these caches between pages bounds memory by the configured page size while preserving
+ * reuse for every row and output field within the page.
+ *
+ * @return void No value is returned.
+ */
+function boost_reset_rrd_metadata_page_cache() {
+	global $boost_rrd_metadata_cache, $boost_unused_data_source_cache, $boost_input_field_cache;
+
+	$boost_rrd_metadata_cache       = array();
+	$boost_unused_data_source_cache = array();
+	$boost_input_field_cache        = array();
+}
+
+/**
+ * Prime a bounded process-local cache of RRD destinations and templates.
+ *
+ * Scheduled Boost calls this once per bounded archive page. Fetching metadata in chunks avoids
+ * two or more database round trips per data source while keeping the IN list and result memory
+ * bounded. Templated sources retain the historical graph-item filter; non-templated sources do
+ * not require a graph association.
+ *
+ * @param array $local_data_ids Local data IDs needed by the current page.
+ * @param int $chunk_size Maximum IDs in one metadata query.
+ *
+ * @return bool True when all requested metadata was cached, false on a database failure.
+ */
+function boost_prime_rrd_metadata_cache($local_data_ids, $chunk_size = 500) {
+	global $boost_rrd_metadata_cache, $boost_unused_data_source_cache;
+
+	if (!isset($boost_rrd_metadata_cache) || !is_array($boost_rrd_metadata_cache)) {
+		$boost_rrd_metadata_cache = array();
+	}
+
+	if (!isset($boost_unused_data_source_cache) || !is_array($boost_unused_data_source_cache)) {
+		$boost_unused_data_source_cache = array();
+	}
+
+	$ids = array();
+
+	foreach((array) $local_data_ids as $local_data_id) {
+		$local_data_id = (int) $local_data_id;
+
+		if ($local_data_id > 0 && !array_key_exists($local_data_id, $boost_rrd_metadata_cache)) {
+			$ids[$local_data_id] = $local_data_id;
+		}
+	}
+
+	if (!cacti_sizeof($ids)) {
+		return true;
+	}
+
+	$chunk_size = max(1, min(1000, (int) $chunk_size));
+
+	foreach(array_chunk(array_values($ids), $chunk_size) as $chunk) {
+		$placeholders = implode(',', array_fill(0, cacti_sizeof($chunk), '?'));
+		$rows = db_fetch_assoc_prepared("SELECT DISTINCT dl.id AS local_data_id,
+			dl.data_template_id, dtr.data_source_name, pi.rrd_name, pi.rrd_path,
+			CASE WHEN gti.task_item_id IS NULL THEN 1 ELSE 0 END AS unused
+			FROM data_local AS dl
+			INNER JOIN data_template_rrd AS dtr
+			ON dtr.local_data_id = dl.id
+			INNER JOIN poller_item AS pi
+			ON pi.local_data_id = dtr.local_data_id
+			AND (pi.rrd_name = dtr.data_source_name OR pi.rrd_name = '')
+			LEFT JOIN graph_templates_item AS gti
+			ON gti.task_item_id = dtr.id
+			WHERE dl.id IN ($placeholders)
+			ORDER BY dl.id, dtr.data_source_name", $chunk);
+
+		if ($rows === false) {
+			return false;
+		}
+
+		$build = array();
+
+		foreach($chunk as $local_data_id) {
+			$build[$local_data_id] = array(
+				'rrd_path' => '',
+				'ds_null'  => array(),
+				'ds_nnull' => array(),
+				'unused'   => array(),
+			);
+		}
+
+		if (is_array($rows)) {
+			foreach($rows as $row) {
+				$local_data_id = (int) $row['local_data_id'];
+
+				if (!isset($build[$local_data_id])) {
+					continue;
+				}
+
+				if ((int) $row['unused'] === 1) {
+					$build[$local_data_id]['unused'][$row['data_source_name']] = $row['data_source_name'];
+				}
+
+				if ((int) $row['data_template_id'] > 0 && (int) $row['unused'] === 1) {
+					continue;
+				}
+
+				if ($build[$local_data_id]['rrd_path'] === '') {
+					$build[$local_data_id]['rrd_path'] = $row['rrd_path'];
+				}
+
+				if ($row['rrd_name'] === '') {
+					$build[$local_data_id]['ds_null'][] = $row['data_source_name'];
+				} elseif ($row['rrd_name'] === $row['data_source_name']) {
+					$build[$local_data_id]['ds_nnull'][] = $row['data_source_name'];
+				}
+			}
+		}
+
+		foreach($build as $local_data_id => $metadata) {
+			$template = cacti_sizeof($metadata['ds_nnull']) ? $metadata['ds_nnull'] : $metadata['ds_null'];
+			$boost_rrd_metadata_cache[$local_data_id] = array(
+				'rrd_path'     => $metadata['rrd_path'],
+				'rrd_template' => implode(':', $template),
+			);
+			$boost_unused_data_source_cache[$local_data_id] = $metadata['unused'];
+		}
+	}
+
+	return true;
+}
+
+/**
  * Pulls 1) the rrd_update template from the database in form of update decisions for multi-output
  * RRDs 2) rrd filename. Used as part of Cacti's lib functionality.
  *
@@ -1840,6 +2788,18 @@ function boost_determine_caching_state() {
  *   - 'rrd_template' (string): The RRD template constructed from the data source names.
  */
 function boost_get_rrd_filename_and_template($local_data_id) {
+	global $boost_rrd_metadata_cache;
+
+	$local_data_id = (int) $local_data_id;
+
+	if ($local_data_id < 1) {
+		return array('rrd_path' => '', 'rrd_template' => '');
+	}
+
+	if (isset($boost_rrd_metadata_cache[$local_data_id])) {
+		return $boost_rrd_metadata_cache[$local_data_id];
+	}
+
 	$rrd_path     = '';
 	$all_nulls    = true;
 	$ds_null      = array();
@@ -1893,7 +2853,10 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 		$rrd_template = implode(':', $ds_nnull);
 	}
 
-	return array('rrd_path' => $rrd_path, 'rrd_template' => trim($rrd_template));
+	$metadata = array('rrd_path' => $rrd_path, 'rrd_template' => trim($rrd_template));
+	$boost_rrd_metadata_cache[$local_data_id] = $metadata;
+
+	return $metadata;
 }
 
 /**
@@ -2060,11 +3023,6 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	if ($config['cacti_server_os'] != 'win32') {
-		$owner_id = fileowner($config['rra_path']);
-		$group_id = filegroup($config['rra_path']);
-	}
-
 	/**
 	 * check for structured path configuration, if in place verify directory
 	 * exists and if not create it.
@@ -2078,37 +3036,9 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
 			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775, true)) {
-					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-						$success  = true;
-						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
-						$spath    = '';
+				$permissions_ok = true;
 
-						foreach($paths as $path) {
-							if ($path == '') {
-								continue;
-							}
-
-							$spath .= '/' . $path;
-
-							$powner_id = fileowner($config['rra_path'] . $spath);
-							$pgroup_id = fileowner($config['rra_path'] . $spath);
-
-							if ($powner_id != $owner_id) {
-								$success = chown($config['rra_path'] . $spath, $owner_id);
-							}
-
-							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp($config['rra_path'] . $spath, $group_id);
-							}
-
-							if (!$success) {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
-								break;
-							}
-						}
-					}
-				} else {
+				if (!rrdtool_create_structured_directory($config['rra_path'], dirname($data_source_path), 'BOOST', $permissions_ok)) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			} else {
@@ -2122,14 +3052,8 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	} else {
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 
-		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-			if (!chown($data_source_path, (int) $owner_id)) {
-				cacti_log("WARNING: Unable to set owner for '" . $data_source_path . "'", false, 'BOOST');
-			}
-
-			if (!chgrp($data_source_path, (int) $group_id)) {
-				cacti_log("WARNING: Unable to set group for '" . $data_source_path . "'", false, 'BOOST');
-			}
+		if ($config['cacti_server_os'] != 'win32' && !read_config_option('storage_location')) {
+			rrdtool_apply_file_permissions($data_source_path, 'BOOST', $config['rra_path']);
 		}
 
 		return $success;
@@ -2146,7 +3070,8 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
  * @param mixed &$rrd_update_values Values to include in the database.
  * @param mixed &$rrdtool_pipe Optional. The RRDTool pipe resource for communication.
  *
- * @return string Returns 'OK' on successful update or if the RRD file is invalid or missing.
+ * @return string 'OK' after an acknowledged update or removed data source; otherwise an error
+ *   diagnostic that remains visible to Boost failure isolation.
  */
 function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
 	global $debug;
@@ -2165,10 +3090,14 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 		return 'OK';
 	}
 
+	if (!is_resource($rrdtool_pipe) && !is_array($rrdtool_pipe)) {
+		return 'ERROR: RRDtool worker is unavailable';
+	}
+
 	if (!cacti_rrdtool_valid_path($rrd_path)) {
 		cacti_log("ERROR: Invalid RRD file path in boost update cache for local_data_id: $local_data_id.", false, 'BOOST');
 
-		return 'ERROR';
+		return 'ERROR: Invalid RRD path';
 	}
 
 	// create the rrd if one does not already exist
@@ -2210,25 +3139,27 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 			if (!cacti_rrdtool_valid_ds_template($rrd_update_template) || cacti_has_control_chars($rrd_update_values)) {
 				cacti_log("ERROR: Invalid RRD update template or value set for local_data_id: $local_data_id.", false, 'BOOST');
 
-				return 'ERROR';
+				return 'ERROR: Invalid RRD update template or value';
 			}
 
 			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_RETURN_STDERR, $rrdtool_pipe, 'BOOST');
 		} else {
 			if (cacti_has_control_chars($rrd_update_values)) {
 				cacti_log("ERROR: Invalid RRD update value set for local_data_id: $local_data_id.", false, 'BOOST');
 
-				return 'ERROR';
+				return 'ERROR: Invalid RRD update value';
 			}
 
 			cacti_log("update $rrd_path $update_options $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
-			$result = rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_RETURN_STDERR, $rrdtool_pipe, 'BOOST');
 		}
 
-		if ($result === false || preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim((string) $result))) {
+		if (!is_string($result) ||
+			preg_match('/(?:^|\n)OK(?: |\r?\n|$)/', $result) !== 1 ||
+			preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim($result))) {
 			return is_string($result) && $result !== '' ? $result : 'ERROR: RRDtool did not acknowledge the update';
 		}
 

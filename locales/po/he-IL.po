@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2024-04-20 18:53-0400\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Hebrew (Israel) <http://translate.cacti.net/projects/cacti/core-v1-2-x/he_IL/>\n"
@@ -2201,8 +2201,8 @@ msgstr "‫Root"
 msgid "No Tree Rules Found"
 msgstr "לא נמצאו כללי עץ"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "אזהרת מערכת Cacti"
 
@@ -11243,12 +11243,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "אם הטבלה להגביר את הפלט עולה על גודל זה, ברשומות, עדכון יתקיים."
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "פריטי מקור נתונים מקסימליים למעבר"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "כדי לייעל את הביצועים, המעלה RRD Updater צריך לדעת כמה פריטים מקור נתונים צריך להיות מאוחזר במעבר אחד. אנא היזהר לא להגדיר גבוה מדי כמו ביצועי גרפים במהלך עדכונים מרכזיים יכול להיות בסכנה. אם אתה נתקל גרף או איטיות הקצב במהלך עדכונים, להקטין את המספר הזה. ערך ברירת המחדל הוא 50000."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11273,6 +11273,44 @@ msgstr "זמן ריצה מקסימלי של זמן ריצה של סקריפט RR
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr "אם אבזר להגביר excceds זה זמן ריצה, אזהרה תוצב ביומן קקטוסים,"
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "זמן ריצה מקסימלי:"
+
+#: include/global_settings.php
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "זמן ריצה מקסימלי:"
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "גודל דואר אלקטרוני מרבי"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12403,6 +12441,10 @@ msgstr "על הסיסמה שלך להכיל לפחות תו אחד מיוחד!"
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "Cacti יומן מסומנת"
+
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
 
 #: lib/boost.php utilities.php
 #, fuzzy, php-format
@@ -19672,7 +19714,6 @@ msgid "Max Total Memory Possible"
 msgstr "זיכרון מקסימלי לפולרים מותרים:"
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "צמצם את זיכרון MySQL/MariaDB לפחות מ -80% of זיכרון מערכת.  שמור זיכרון מטמון נוסף עבור קבצי RRD אם מסד הנתונים נמצא באותה מערכת כמו קבצי RRD.  ראה סיכומי ליבה ולקוחות להלן להסבר על שיטת החישוב."
 
@@ -20057,8 +20098,51 @@ msgid "Boost On-demand Updating:"
 msgstr "שפר על פי דרישה עדכון:"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "מצב Boost"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "תהליכים מקבילים"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "רשומות Boost בהמתנה:"
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "נוצר: %s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "הישן ראשון"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "רענון אוטומטי של דף"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20393,6 +20477,12 @@ msgstr "מספר תבניות גרפים באמצעות VDEF זה."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "אין VDEFs"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "פריטי מקור נתונים מקסימליים למעבר"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "כדי לייעל את הביצועים, המעלה RRD Updater צריך לדעת כמה פריטים מקור נתונים צריך להיות מאוחזר במעבר אחד. אנא היזהר לא להגדיר גבוה מדי כמו ביצועי גרפים במהלך עדכונים מרכזיים יכול להיות בסכנה. אם אתה נתקל גרף או איטיות הקצב במהלך עדכונים, להקטין את המספר הזה. ערך ברירת המחדל הוא 50000."
 
 #~ msgid "Enable direct population of poller_output_boost table"
 #~ msgstr "הפעל אוכלוסייה ישירה של tableer_ruput_boost"

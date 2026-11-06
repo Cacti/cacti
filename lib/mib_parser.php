@@ -166,7 +166,7 @@ class MibParser extends MibCache {
 						}
 
 						break;
-					case '"';
+					case '"':
 						$in_quote = true;
 
 						break;

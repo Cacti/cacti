@@ -7,6 +7,7 @@
     </source>
     <testsuites>
         <testsuite name="RrdCapabilities">
+            <file>Unit/Core/Php85CompatibilityTest.php</file>
             <file>Unit/Core/Rrd/GraphPollTimeTest.php</file>
             <file>Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php</file>
             <file>Unit/Core/Rrd/RrdVersionCheckReuseTest.php</file>

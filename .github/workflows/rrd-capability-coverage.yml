@@ -3,11 +3,19 @@ name: RRDtool capability coverage
 on:
   pull_request:
     paths:
+      - 'lib/api_data_source.php'
+      - 'lib/boost.php'
+      - 'lib/data_query.php'
       - 'lib/rrd.php'
+      - 'poller_boost.php'
+      - 'tests/Unit/Core/Boost/**'
       - 'tests/Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php'
       - 'tests/Unit/Core/Rrd/RrdVersionCheckReuseTest.php'
+      - 'tests/e2e/boost/**'
+      - 'tests/fixtures/Core/Boost*'
       - 'tests/fixtures/Core/Rrd/**'
       - 'tests/Helpers/RequestCoverage.php'
+      - 'tests/integration/BoostProcessTableMariaDbTest.php'
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
       - 'tests/phpunit-rrd-capabilities.xml'
@@ -20,7 +28,18 @@ jobs:
   coverage:
     name: Changed PHP lines >= 80%
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mariadb:10.6
+        env:
+          MARIADB_DATABASE: cacti
+          MARIADB_USER: cactiuser
+          MARIADB_PASSWORD: cactiuser
+          MARIADB_ROOT_PASSWORD: cactiroot
+        ports:
+          - 3306:3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -30,12 +49,25 @@ jobs:
         with:
           php-version: '8.3'
           coverage: xdebug
-          extensions: curl, dom, mbstring, xml
+          extensions: curl, dom, gd, mbstring, pdo_mysql, pcntl, xml
           ini-values: memory_limit=2G
           dependency-mode: locked-maintenance-pr-coverage
           cache-dependency-path: tests/composer.lock
       - name: Install locked test dependencies
         run: composer install --working-dir=tests --prefer-dist --no-progress --no-interaction
+      - name: Install RRDtool and database client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y mariadb-client rrdtool
+      - name: Prepare disposable Boost database
+        env:
+          MYSQL_PWD: cactiroot
+        run: |
+          set -euo pipefail
+          mariadb --host=127.0.0.1 --user=root cacti < cacti.sql
+          mariadb --host=127.0.0.1 --user=root -e 'CREATE DATABASE cacti_boost_contract'
+          cp include/config.php.dist include/config.php
+          sed -i "s/\$database_hostname = 'localhost';/\$database_hostname = '127.0.0.1';/" include/config.php
       - name: Validate the gate and include every changed production PHP file
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
@@ -49,10 +81,33 @@ jobs:
         env:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          BOOST_DB_HOST: 127.0.0.1
+          BOOST_DB_PORT: 3306
+          BOOST_DB_NAME: cacti_boost_contract
+          BOOST_DB_USER: root
+          BOOST_DB_PASSWORD: cactiroot
         run: |
           set -euo pipefail
           mkdir -p "$CACTI_PR_RAW_COVERAGE"
           vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+          php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest \
+            Unit/Core/Boost/BoostArchiveDeletionOwnershipBehaviorTest.php \
+            Unit/Core/Boost/BoostFailureAlertBehaviorTest.php \
+            Unit/Core/Boost/BoostFailureQueueBehaviorTest.php \
+            Unit/Core/Boost/BoostFailureQueueCacheTest.php \
+            Unit/Core/Boost/BoostFailureRetryBehaviorTest.php \
+            Unit/Core/Boost/BoostFailureRetryDestinationTest.php \
+            Unit/Core/Boost/BoostMetadataCacheTest.php \
+            Unit/Core/Boost/BoostOnDemandOwnershipBehaviorTest.php \
+            Unit/Core/Boost/BoostPollerCoordinationBehaviorTest.php \
+            Unit/Core/Boost/BoostPollerDrainBehaviorTest.php \
+            Unit/Core/Boost/BoostPollerOutputBehaviorTest.php \
+            integration/BoostProcessTableMariaDbTest.php
+      - name: Exercise Boost lifecycle and failure recovery
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: tests/e2e/boost/run-coverage.sh "$PWD"
       - name: Require at least 80 percent of changed executable PHP lines
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}

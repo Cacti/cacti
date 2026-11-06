@@ -250,6 +250,8 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		if (get_nfilter_request_var('drp_action') == '2') { /* copy */
 			/* ================= input validation ================= */
 			get_filter_request_var('selected_items');
@@ -504,6 +506,8 @@ function form_actions() {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	global $settings_user;
 
 	/* graph permissions */

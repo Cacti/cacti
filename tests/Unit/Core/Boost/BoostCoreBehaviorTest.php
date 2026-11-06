@@ -54,39 +54,6 @@ test('multi-column ordering honors each requested direction', function () {
 	expect(array_column($sorted, 'id'))->toBe(array('first', 'second', 'third'));
 });
 
-test('bounded Boost pages never split one data-source timestamp', function () {
-	$rows = array(
-		array('local_data_id' => 1, 'timestamp' => 100, 'rrd_name' => 'a'),
-		array('local_data_id' => 1, 'timestamp' => 100, 'rrd_name' => 'b'),
-		array('local_data_id' => 1, 'timestamp' => 101, 'rrd_name' => 'a'),
-		array('local_data_id' => 1, 'timestamp' => 101, 'rrd_name' => 'b'),
-	);
-
-	$page = boost_limit_complete_timestamp_page($rows, 3);
-
-	expect($page)->toHaveCount(2)
-		->and(array_unique(array_column($page, 'timestamp')))->toBe(array(100));
-});
-
-test('a timestamp wider than the configured Boost page fails closed', function () {
-	$rows = array(
-		array('local_data_id' => 1, 'timestamp' => 100, 'rrd_name' => 'a'),
-		array('local_data_id' => 1, 'timestamp' => 100, 'rrd_name' => 'b'),
-		array('local_data_id' => 1, 'timestamp' => 100, 'rrd_name' => 'c'),
-	);
-
-	expect(boost_limit_complete_timestamp_page($rows, 2))->toBeFalse();
-});
-
-test('a complete page at the configured limit is retained intact', function () {
-	$rows = array(
-		array('local_data_id' => 1, 'timestamp' => 100, 'rrd_name' => 'a'),
-		array('local_data_id' => 1, 'timestamp' => 100, 'rrd_name' => 'b'),
-	);
-
-	expect(boost_limit_complete_timestamp_page($rows, 2))->toBe($rows);
-});
-
 test('atomic cache publication writes all bytes replaces an old file and leaves no temporary files', function () {
 	$directory  = sys_get_temp_dir() . '/cacti-boost-core-' . bin2hex(random_bytes(8));
 	$cache_file = $directory . '/cache.png';
@@ -138,12 +105,23 @@ test('Windows cache replacement preserves the new payload and removes its backup
 			->and(file_exists($temp_file))->toBeFalse()
 			->and(glob($directory . '/.boost-old-*'))->toBe(array());
 	} finally {
-		@unlink($temp_file);
-		@unlink($cache_file);
-		foreach (glob($directory . '/.boost-old-*') ?: array() as $backup) {
-			@unlink($backup);
+		if (file_exists($temp_file)) {
+			unlink($temp_file);
 		}
-		@rmdir($directory);
+
+		if (file_exists($cache_file)) {
+			unlink($cache_file);
+		}
+
+		foreach (glob($directory . '/.boost-old-*') ?: array() as $backup) {
+			if (file_exists($backup)) {
+				unlink($backup);
+			}
+		}
+
+		if (is_dir($directory)) {
+			rmdir($directory);
+		}
 	}
 });
 

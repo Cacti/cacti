@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.32\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-02 21:09-0800\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2185,8 +2185,8 @@ msgstr ""
 msgid "No Tree Rules Found"
 msgstr ""
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr ""
 
@@ -11094,11 +11094,11 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr ""
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
+msgid "Target Archive Rows Per Range"
 msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
 msgstr ""
 
 #: include/global_settings.php
@@ -11123,6 +11123,38 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum Failed RRDs Queued"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum Failed RRD Retries"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum Failed RRD Age"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
 msgstr ""
 
 #: include/global_settings.php
@@ -12251,6 +12283,10 @@ msgstr ""
 
 #: lib/auth.php
 msgid "Cacti Login Failure"
+msgstr ""
+
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
 msgstr ""
 
 #: lib/boost.php utilities.php
@@ -19716,7 +19752,41 @@ msgid "Boost On-demand Updating:"
 msgstr ""
 
 #: utilities.php
+msgid "Boost Lifecycle Status:"
+msgstr ""
+
+#: utilities.php
 msgid "Running Processes:"
+msgstr ""
+
+#: utilities.php
+msgid "Sealed Boost Archives:"
+msgstr ""
+
+#: utilities.php
+#, php-format
+msgid "oldest created: %s"
+msgstr ""
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+msgid "Oldest Failed RRD:"
+msgstr ""
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+msgid "Last Automatic Failure Retry:"
+msgstr ""
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
 msgstr ""
 
 #: utilities.php

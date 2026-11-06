@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-01 19:17-0500\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2024-04-20 19:11-0400\n"
 "Last-Translator: Edwin Lankamp <edwin.lankamp@gmail.com>\n"
 "Language-Team: Dutch <http://translate.cacti.net/projects/cacti/core-v1-2-x/nl/>\n"
@@ -2199,8 +2199,8 @@ msgstr "ROOT"
 msgid "No Tree Rules Found"
 msgstr "Geen boomstructuur regels gevonden"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "Cactus Systeem Waarschuwing"
 
@@ -11164,12 +11164,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "Als de boost output tabel deze grootte overschrijdt, zal er in records een update plaatsvinden."
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "Maximale gegevensbron-items per pass"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "Om de prestaties te optimaliseren, moet de boost RRD updater weten hoeveel Data Source Items in één keer moeten worden opgehaald.  Zorg ervoor dat u de grafische prestaties tijdens grote updates niet te hoog instelt, omdat dit ten koste kan gaan van de grafische prestaties tijdens grote updates.  Als u tijdens het bijwerken van een update te maken krijgt met grafieken of enquêtes, verlaagt u dit aantal.  De standaardwaarde is 50000."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11194,6 +11194,44 @@ msgstr "Maximale RRD Update Script Looptijd"
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr "Als de boost poller deze runtime verlaat, wordt er een waarschuwing in het cactielogboek geplaatst,"
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "Maximaal toegestande runtime:"
+
+#: include/global_settings.php
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "Maximaal toegestande runtime:"
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "Maximale e-mail grootte"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12324,6 +12362,10 @@ msgstr "Het wachtwoord moet tenminste 1 vreemd teken bevatten!"
 #: lib/auth.php
 msgid "Cacti Login Failure"
 msgstr "Cacti log leeggemaakt"
+
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
 
 #: lib/boost.php utilities.php
 #, fuzzy, php-format
@@ -19517,7 +19559,6 @@ msgid "Max Total Memory Possible"
 msgstr "Maximaal toegestaan Pollergeheugen:"
 
 #: utilities.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "Verminder het MySQL/MariaDB-geheugen tot minder dan 80% of systeemgeheugen.  Bewaar extra cachegeheugen voor RRD-bestanden als de database zich op hetzelfde systeem bevindt als de RRD-bestanden.  Zie Kern- en klanttotalen hieronder voor uitleg van de berekeningsmethode."
 
@@ -19903,8 +19944,51 @@ msgid "Boost On-demand Updating:"
 msgstr "Boost On-demand Updating:"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "Verhoog de status"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "Lopende processen"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "In afwachting van Boost Records:"
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "Gemaakt: %s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "Oudste eerst"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "Automatisch pagina verversen"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20231,6 +20315,12 @@ msgstr "Het aantal grafiektemplates die deze VDEF gebruiken."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "Geen VDEF's"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "Maximale gegevensbron-items per pass"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "Om de prestaties te optimaliseren, moet de boost RRD updater weten hoeveel Data Source Items in één keer moeten worden opgehaald.  Zorg ervoor dat u de grafische prestaties tijdens grote updates niet te hoog instelt, omdat dit ten koste kan gaan van de grafische prestaties tijdens grote updates.  Als u tijdens het bijwerken van een update te maken krijgt met grafieken of enquêtes, verlaagt u dit aantal.  De standaardwaarde is 50000."
 
 #~ msgid "Enable direct population of poller_output_boost table"
 #~ msgstr "Directe populatie van poller_output_boost tabel inschakelen"
