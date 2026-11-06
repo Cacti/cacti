@@ -135,6 +135,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('host_template_id');
