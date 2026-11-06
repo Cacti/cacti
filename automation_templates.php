@@ -599,7 +599,7 @@ function form_actions() : void {
 
 					$(function() {
 						//debugger;
-						DownloadStart(\'automation_templates.php?action=export&selected_items=' . gnrv('selected_items') . '\');
+						DownloadStart(\'automation_templates.php?action=export&selected_items=' . rawurlencode(gnrv('selected_items')) . '\');
 					});
 				</script>
 				<iframe id="download_iframe" style="display:none;"></iframe>';
