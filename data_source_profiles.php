@@ -554,6 +554,8 @@ function profile_export_execute(mixed $profile_ids) : array {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	// make sure ids are numeric
 	if (isrv('id') && ! is_numeric(gfrv('id'))) {
 		srv('id', 0);
