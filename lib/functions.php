@@ -3254,6 +3254,18 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 					$out .= $value;
 				} elseif ($quote === '') {
 					// outside any template quote the value stands on its own quotes.
+					// A $ glued directly before those quotes (e.g. $<arg> resolving
+					// to a self-quoted 'x;id') would form $'...'/$"..." ANSI-C/locale
+					// quoting, re-reading the span the scanner cannot model. An even
+					// (zero counts) backslash run leaves the $ literal; refuse it.
+					if (substr($out, -1) === '$') {
+						$b = substr($out, 0, -1);
+
+						if ((strlen($b) - strlen(rtrim($b, '\\'))) % 2 === 0) {
+							return '';
+						}
+					}
+
 					// A dangling (odd) run of backslashes right before it would escape
 					// its opening quote (\'x' -> literal quote + unmatched quote); shed
 					// one so the run is even and the quote still opens
@@ -3266,6 +3278,18 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 					// template wrapped the token exactly ("<arg>"): drop the pair
 					// so the already-escaped value stands on its own
 					$out   = substr($out, 0, -1);
+
+					// same ANSI-C/locale guard once the wrapping quote is shed and the
+					// self-quoted value abuts whatever preceded it (defence in depth:
+					// the quote-open guard already blocks a $ before this pair)
+					if (substr($out, -1) === '$') {
+						$b = substr($out, 0, -1);
+
+						if ((strlen($b) - strlen(rtrim($b, '\\'))) % 2 === 0) {
+							return '';
+						}
+					}
+
 					$out .= $value;
 					$i    += 1;
 					$stack[$top]['quote'] = '';
@@ -3375,6 +3399,20 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 
 		if ($quote === '') {
 			if ($ch === '"' || $ch === "'") {
+				// an unescaped $ glued directly before a quote turns the quoted
+				// span into ANSI-C ($'...') or locale ($"...") quoting, which this
+				// scanner does not model - $'\x3b' would decode to a live ';'. The
+				// run of backslashes before the $ is even (zero counts), so the $
+				// is literal shell text, not an escaped \$. Refuse, matching the
+				// function's stance on constructs it cannot faithfully track.
+				if (substr($out, -1) === '$') {
+					$b = substr($out, 0, -1);
+
+					if ((strlen($b) - strlen(rtrim($b, '\\'))) % 2 === 0) {
+						return '';
+					}
+				}
+
 				$stack[$top]['quote']      = $ch;
 				$stack[$top]['quoteEmpty'] = true;
 				$out .= $ch;
