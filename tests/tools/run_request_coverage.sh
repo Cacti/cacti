@@ -100,4 +100,5 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
 
+run_php_probe tests/fixtures/CoreBulkActionPostGuardCoverage.php '^(aggregate_graphs\.php|aggregate_templates\.php|cdef\.php|color\.php|color_templates\.php|data_input\.php|data_queries\.php|data_source_profiles\.php|data_sources\.php|data_templates\.php|gprint_presets\.php|graph_templates\.php|graphs\.php|host_templates\.php|pollers\.php|sites\.php|vdef\.php|tests/fixtures/(CoreBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'
