@@ -167,7 +167,7 @@ function boost_test_capture_log(callable $callback) : string {
 
 	foreach (['path_cactilog' => $log_file, 'log_destination' => 1, 'log_verbosity' => POLLER_VERBOSITY_LOW, 'selective_debug' => '', 'selective_plugin_debug' => ''] as $name => $value) {
 		$saved[$name]                    = $config[OPTIONS_CLI][$name] ?? null;
-		$config[OPTIONS_CLI][$name] = $value;
+		$config[OPTIONS_CLI][$name]      = $value;
 	}
 
 	try {

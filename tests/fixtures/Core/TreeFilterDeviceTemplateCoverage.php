@@ -21,9 +21,9 @@ require dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 $root = dirname(__DIR__, 3);
 require $root . '/include/global_constants.php';
 
-$GLOBALS['item_rows']  = ['-1' => 'All', '15' => '15', '30' => '30'];
-$GLOBALS['_SESSION']   = ['sess_user_id' => 1];
-$GLOBALS['_REQUEST']   = ['host_id' => '-1', 'host_template_id' => '7', 'site_id' => '3', 'graph_template_id' => '-1'];
+$GLOBALS['item_rows']                     = ['-1' => 'All', '15' => '15', '30' => '30'];
+$GLOBALS['_SESSION']                      = ['sess_user_id' => 1];
+$GLOBALS['_REQUEST']                      = ['host_id' => '-1', 'host_template_id' => '7', 'site_id' => '3', 'graph_template_id' => '-1'];
 $GLOBALS['captured_graph_template_where'] = null;
 
 function __($text, ...$args) {
@@ -58,7 +58,7 @@ function srv($name, $value) {
 }
 function get_allowed_graph_templates_normalized($sql_where = '', $order = 'name', $limit = '', &$total_rows = 0) {
 	$GLOBALS['captured_graph_template_where'] = $sql_where;
-	$total_rows = 0;
+	$total_rows                               = 0;
 
 	return [];
 }

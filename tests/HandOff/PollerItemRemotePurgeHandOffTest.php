@@ -256,7 +256,7 @@ beforeEach(function () {
 	// db_connect_real() checks this cache by "$device:$port:$db_name" before
 	// building a DSN or opening a socket -- see file header.
 	$database_sessions = [
-		"$database_hostname:$database_port:$database_default"                             => $this->central,
+		"$database_hostname:$database_port:$database_default"                                         => $this->central,
 		HANDOFF_OLD_POLLER_DBHOST . ':' . HANDOFF_OLD_POLLER_DBPORT . ':' . HANDOFF_OLD_POLLER_DBNAME => $this->oldRemote,
 	];
 });

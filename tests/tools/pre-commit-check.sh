@@ -58,14 +58,9 @@ check_merge_conflicts() {
 }
 
 check_composer_lock() {
-    if git diff --cached --name-only | grep -q '^composer\.lock$'; then
-        echo ""
-        echo "ERROR: composer.lock is staged for commit."
-        echo "  Cacti supports multiple PHP versions; composer.lock must not be committed."
-        echo "  Run: git reset HEAD composer.lock"
-        echo ""
-
-        exit 1
+    # Cacti tracks its lockfile so installs use reviewed dependency versions.
+    if git diff --cached --name-only | grep -Eq '^composer\.(json|lock)$'; then
+        composer validate --strict --no-check-publish
     fi
 }
 

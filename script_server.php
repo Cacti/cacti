@@ -279,9 +279,7 @@ while (1) {
 				continue;
 			}
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . basename($include_file) .
-				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
-				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			script_server_log_request((int) $pid, $ctr, $include_file, $function, $parameter_array);
 
 			// validate the existence of the function, and include if applicable
 			if (!function_exists($function)) {
@@ -323,7 +321,7 @@ while (1) {
 				fputs(STDOUT, trim($result) . "\n");
 				fflush(STDOUT);
 
-				cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+				script_server_log_response((int) $pid, $ctr, $result);
 
 				$ctr++;
 			} else {
