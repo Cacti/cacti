@@ -748,6 +748,7 @@ require_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
 require_once(CACTI_PATH_INCLUDE . '/global_settings.php');
 require_once(CACTI_PATH_INCLUDE . '/global_form.php');
 require_once(CACTI_PATH_LIBRARY . '/html_form.php');
+require_once(CACTI_PATH_LIBRARY . '/form_validate.php');
 require_once(CACTI_PATH_LIBRARY . '/html_filter.php');
 require_once(CACTI_PATH_LIBRARY . '/variables.php');
 require_once(CACTI_PATH_LIBRARY . '/mib_cache.php');
