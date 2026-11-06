@@ -2636,6 +2636,14 @@ function xml_to_data_input_method(string $hash, array &$xml_array, array &$hash_
 		}
 	}
 
+	if (isset($save['input_string']) && !cacti_input_string_is_safe($save['input_string'])) {
+		cacti_log('ERROR: Refusing to import a data input method with unsafe command syntax.', false, 'IMPORT');
+		$import_debug_info['type']   = 'fail';
+		$import_debug_info['unsafe'] = true;
+
+		return false;
+	}
+
 	// check for status changes
 	$status += compare_data($save, $previous_data, 'data_input');
 
