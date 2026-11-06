@@ -156,6 +156,7 @@ Cacti CHANGELOG
 -issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 4
 -issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
 -issue#7810: Stop using null as a graph CF cache offset on PHP 8.5
+-issue#7810: Remove PHP 8.5 deprecations in database options, image cleanup, casts and case labels
 -issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
 -issue#7819: Remove obsolete pre-PHP 8 compatibility branches
 -issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)

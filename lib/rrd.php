@@ -5261,12 +5261,11 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	/* get the image from the buffer */
 	$image_data = ob_get_contents();
 
-	/* destroy the image object */
-	imagedestroy($image);
-	imagedestroy($logo);
+	/* Release GD objects without the deprecated no-op imagedestroy(). */
+	unset($image, $logo);
 
 	if (isset($nimage)) {
-		imagedestroy($nimage);
+		unset($nimage);
 	}
 
 	/* flush the buffer */
