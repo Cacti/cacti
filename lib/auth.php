@@ -4548,6 +4548,13 @@ function is_user_perms_valid(int $user_id) : bool {
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
 function compat_password_verify(string $password, string $hash) : bool {
+	// Route through the Symfony-backed manager when available; it verifies
+	// argon2id, bcrypt, and the legacy unsalted md5/sha256 formats below.
+	if (class_exists('\Cacti\Auth\PasswordManager')) {
+		return \Cacti\Auth\PasswordManager::verify($password, $hash);
+	}
+
+	// Fallback (manager/component unavailable): original behavior.
 	if (password_verify($password, $hash)) {
 		return true;
 	}
@@ -4576,6 +4583,14 @@ function compat_password_verify(string $password, string $hash) : bool {
  * @return string The hashed password.
  */
 function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
+	// Route the default-algorithm path (the only case any Cacti caller uses)
+	// through the Symfony-backed manager so new/changed passwords get a modern
+	// hash (argon2id where libsodium is present, else bcrypt). An explicit
+	// algo/options request keeps the native behavior.
+	if ($algo === PASSWORD_DEFAULT && cacti_sizeof($options) == 0 && class_exists('\Cacti\Auth\PasswordManager')) {
+		return \Cacti\Auth\PasswordManager::hash($password);
+	}
+
 	// Check if options array has anything, only pass when required
 	return (cacti_sizeof($options) > 0) ?
 		password_hash($password, $algo, $options) :
@@ -4593,6 +4608,14 @@ function compat_password_hash(string $password, string|int $algo, array $options
  * @return bool Returns true if the password needs to be rehashed, false otherwise.
  */
 function compat_password_needs_rehash(string $password, string|int $algo, array $options = []) : bool {
+	// $password is the stored hash here (matching the original signature).
+	// Route the default-algorithm path through the Symfony-backed manager so
+	// legacy md5/sha256 hashes - and bcrypt once argon2id is available - are
+	// reported for transparent upgrade on the next successful login.
+	if ($algo === PASSWORD_DEFAULT && cacti_sizeof($options) == 0 && class_exists('\Cacti\Auth\PasswordManager')) {
+		return \Cacti\Auth\PasswordManager::needsRehash($password);
+	}
+
 	// Check if options array has anything, only pass when required
 	return (cacti_sizeof($options) > 0) ?
 		password_needs_rehash($password, $algo, $options) :
