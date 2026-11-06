@@ -138,12 +138,17 @@ class spikekill {
 			$this->absmax = $absmax;
 		}
 
-		$this->dmethod   = read_config_option('spikekill_method', true);
-		$this->davgnan   = read_config_option('spikekill_avgnan', true);
-		$this->ddsfilter = read_config_option('spikekill_dsfilter', true);
-		$this->dnumspike = intval(read_config_option('spikekill_number', true));
-		$this->dstddev   = intval(read_config_option('spikekill_deviations', true));
-		$this->dabsmax   = intval(read_config_option('spikekill_absmax', true));
+		// Typed Settings API (lib/config_api.php). Each accessor builds on
+		// read_config_option(), so the $force re-read and caching are identical;
+		// the defaults below match include/global_settings.php, and the coercion
+		// matches the previous inline intval()/string reads for every value these
+		// drop_array/textbox settings can hold.
+		$this->dmethod   = cacti_setting_string('spikekill_method', '1', true);
+		$this->davgnan   = cacti_setting_enum('spikekill_avgnan', ['avg', 'nan', 'last'], 'last', true);
+		$this->ddsfilter = cacti_setting_string('spikekill_dsfilter', '', true);
+		$this->dnumspike = cacti_setting_int('spikekill_number', 5, true);
+		$this->dstddev   = cacti_setting_int('spikekill_deviations', 10, true);
+		$this->dabsmax   = cacti_setting_int('spikekill_absmax', 12500000000, true);
 	}
 
 	public function __destruct() {
