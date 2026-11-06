@@ -52,6 +52,7 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 fi
 
 run_probe ../CoreBulkActionPostGuardCoverage.php core-bulk-post
+run_probe ../AdministrationBulkActionPostGuardCoverage.php administration-bulk-post
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
