@@ -164,7 +164,7 @@ function draw_edit_form($array) {
 			$i++;
 		}
 
-		if ((isset($_SESSION['form_change_action']) && cacti_sizeof($_SESSION['form_change_actions'])) ||
+		if ((isset($_SESSION['form_change_actions']) && cacti_sizeof($_SESSION['form_change_actions'])) ||
 			(isset($_SESSION['form_click_actions']) && cacti_sizeof($_SESSION['form_click_actions']))) {
 			print PHP_EOL . '<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>' . PHP_EOL;
 
