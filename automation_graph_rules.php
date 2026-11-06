@@ -292,7 +292,7 @@ function form_save() : void {
 
 		$save              = [];
 		$save['id']        = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['hash']      = get_hash_automation(grv('id_item'), 'automation_graph_rule_items');
+		$save['hash']      = get_hash_automation((int) $save['id'], 'automation_graph_rule_items');
 		$save['rule_id']   = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['operation'] = CactiValidator::validateInput(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')]);
@@ -350,7 +350,7 @@ function form_save() : void {
 		$save = [];
 
 		$save['id']        = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['hash']      = get_hash_automation(grv('item_idid'), 'automation_match_rule_items');
+		$save['hash']      = get_hash_automation((int) $save['id'], 'automation_match_rule_items');
 		$save['rule_id']   = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_GRAPH_MATCH;
 		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
