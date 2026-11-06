@@ -76,6 +76,8 @@ if (!empty($_SESSION[SESS_USER_2FA]) && $_SESSION[SESS_USER_2FA] < $tfaTime) {
 
 // Are we being asked to login with a 2FA token?
 if (gnrv('action') == 'login_2fa') {
+	csrf_require_post();
+
 	// Auth token from Form
 	$token = gnrv('token');
 
