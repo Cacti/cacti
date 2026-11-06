@@ -20,7 +20,7 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 require dirname(__DIR__) . '/Helpers/SourceSlice.php';
-require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 $root = dirname(__DIR__, 2);
 require $root . '/include/global_constants.php';
 define('CACTI_PATH_LIBRARY', $root . '/lib');
@@ -67,17 +67,17 @@ function db_table_exists($table) {
 }
 class HandlerReached extends RuntimeException {
 }
-function sanitize_unserialize_selected_items($items) {
+function sanitize_unserialize_selected_items($items) : never {
 	$GLOBALS['reached'] = true;
 
 	throw new HandlerReached('The protected handler was reached');
 }
 function reports_unserialize_selected_items($items) {
-	return sanitize_unserialize_selected_items($items);
+	sanitize_unserialize_selected_items($items);
 }
 class PackageListFilter {
 	static function decodeSelectedIds($items) {
-		return sanitize_unserialize_selected_items($items);
+		sanitize_unserialize_selected_items($items);
 	}
 }
 register_shutdown_function(static function () {
