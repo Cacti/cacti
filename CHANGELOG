@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.x
+-issue: #7212: Address a few small memory leaks in realtime graphing
+
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
 -security#GHSA-273r-qr93-wgcp: CVE-2026-40082 Session Fixation via missing session_regenerate_id() after login
