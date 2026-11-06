@@ -2926,9 +2926,14 @@ function cactiIsPostActionUrl(href) {
 		"ajax_dnd"
 	],
 	"reports.php": [
+		"save",
+		"actions",
 		"send",
 		"remove_history",
-		"ajax_dnd"
+		"ajax_dnd",
+		"item_moveup",
+		"item_movedown",
+		"item_remove"
 	],
 	"plugins.php": [
 		"load",
