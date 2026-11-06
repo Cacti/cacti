@@ -358,9 +358,14 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	$setsid = '';
 
 	if (CACTI_SERVER_OS != 'win32') {
-		$setsid_path = trim((string) shell_exec('which setsid 2>/dev/null'));
+		// Resolve setsid via a shell-free argv run (no user input here, but this
+		// is the reference conversion to cacti_process_run()). stderr is
+		// discarded by capturing it separately rather than a '2>/dev/null'
+		// shell redirect.
+		$which       = cacti_process_run(['which', 'setsid'], null, 5);
+		$setsid_path = trim($which['stdout']);
 
-		if ($setsid_path !== '') {
+		if ($which['exit_code'] === 0 && $setsid_path !== '') {
 			$setsid = 'setsid -- ';
 		}
 	}
