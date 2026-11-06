@@ -71,6 +71,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	global $fields_color_edit;
+
 	if (isrv('save_component_color')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -80,7 +82,21 @@ function form_save() : void {
 
 		if (gnrv('read_only') == '') {
 			$save['name']      = gfrv('name', FILTER_SANITIZE_SPECIAL_CHARS);
-			$save['hex']       = form_input_validate(gnrv('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
+			$save['hex']       = gnrv('hex');
+
+			// Opt-in symfony/validator layer (lib/form_validate.php): validate the
+			// posted values against the constraints declared on $fields_color_edit
+			// and round-trip per-field errors to the edit form.  is_error_message()
+			// below then skips sql_save() and the existing redirect returns the user
+			// to the form with red fields and inline messages.  Falls back to the
+			// legacy regex check when symfony/validator is not autoloaded.
+			if (form_validate_available()) {
+				$posted = ['name' => $save['name'], 'hex' => $save['hex']];
+
+				form_validate_stash(form_validate_fields($fields_color_edit, $posted), $posted);
+			} else {
+				$save['hex'] = form_input_validate($save['hex'], 'hex', '^[a-fA-F0-9]+$', false, 3);
+			}
 		} else {
 			$save['name']      = gfrv('hidden_name', FILTER_SANITIZE_SPECIAL_CHARS);
 			$save['read_only'] = 'on';
