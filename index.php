@@ -43,13 +43,15 @@ function render_external_links(string $style = 'FRONT') : void {
 				} else {
 					print '<div id="content">';
 
-					// Confine the include to include/content, the same way link.php
-					// does. contentfile comes from the external_links table; without
-					// this a '../' value would include an arbitrary local file.
-					$basepath = realpath(CACTI_PATH_INCLUDE . '/content');
-					$file     = ($basepath !== false) ? realpath($basepath . '/' . $page['contentfile']) : false;
+					// Confine the include to include/content. contentfile comes
+					// from the external_links table; without this a '../' value
+					// would include an arbitrary local file. cacti_path_within()
+					// resolves the name against the content directory and returns
+					// false for anything that escapes it (traversal, absolute
+					// path, or a symlinked segment).
+					$file = cacti_path_within(CACTI_PATH_INCLUDE . '/content', $page['contentfile']);
 
-					if ($file !== false && is_file($file) && str_starts_with($file, $basepath . DIRECTORY_SEPARATOR)) {
+					if ($file !== false && is_file($file)) {
 						require_once($file);
 					} else {
 						print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
