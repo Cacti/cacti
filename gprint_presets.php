@@ -59,6 +59,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (isrv('save_component_gprint_presets')) {
 		// ================= input validation =================
 		gfrv('id');
