@@ -574,3 +574,15 @@ for (const palette of ['dark', 'light']) {
 		await expect(page.getByRole('dialog')).toHaveCount(0);
 	});
 }
+
+test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
+	await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p>' +
+		'<p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
+	const ratios = await page.locator('p').evaluateAll(elements => elements.map(element => element.getAttribute('style')));
+	expect(ratios).toHaveLength(2);
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(
+		await page.locator('p').first().evaluate(textContrast),
+		2,
+	);
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
+});
