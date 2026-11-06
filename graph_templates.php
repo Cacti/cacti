@@ -194,6 +194,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	// sanitize ids
 	if (isrv('graph_template_id') && !is_numeric(gnrv('graph_template_id'))) {
 		$graph_template_id = 0;
