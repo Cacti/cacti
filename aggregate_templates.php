@@ -24,6 +24,7 @@
 
 require_once('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_aggregate.php');
 require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 $actions = [
@@ -34,6 +35,8 @@ $actions = [
 set_default_action();
 
 if (grv('action') == 'save') {
+	csrf_require_post();
+
 	if (isrv('id') && gfrv('id') == 0 && isrv('graph_template_id_prev') && gfrv('graph_template_id_prev') == 0) {
 		srv('action', 'edit');
 	}
@@ -113,6 +116,25 @@ function aggregate_form_save() : void {
 	$save1['order_type']        = form_input_validate(gnrv('order_type'), 'order_type', '', false, 3);
 	$save1['user_id']           = $_SESSION[SESS_USER_ID];
 
+	$settings = [];
+
+	try {
+		$settings = automation_aggregate_settings([
+			'automation_enabled'          => isrv('automation_enabled') ? 'on' : '',
+			'automation_pattern'          => gnrv('automation_pattern', ''),
+			'automation_title'            => gnrv('automation_title', '|host_description| - |aggregate_template_name|'),
+			'automation_host_template_id' => gnrv('automation_host_template_id', 0),
+			'automation_max_members'      => gnrv('automation_max_members', 1000),
+		]);
+
+		if ($settings['automation_host_template_id'] > 0 && !db_fetch_cell_prepared('SELECT id FROM host_template WHERE id = ?', [$settings['automation_host_template_id']])) {
+			throw new InvalidArgumentException('Invalid device template.');
+		}
+		$save1 = array_replace($save1, $settings);
+	} catch (InvalidArgumentException $error) {
+		raise_message('aggregate_automation_invalid', __('Check the aggregate automation pattern, title, device template and member limit.'), MESSAGE_LEVEL_ERROR);
+	}
+
 	// form validation failed
 	if (is_error_message()) {
 		header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
@@ -130,6 +152,11 @@ function aggregate_form_save() : void {
 			[$save1['id']]
 		);
 
+		if (!is_array($old) || !$old) {
+			raise_message(2);
+			cacti_redirect('aggregate_templates.php');
+		}
+
 		$save_me = 0;
 
 		$save_me += ($old['name']          != $save1['name']);
@@ -140,6 +167,10 @@ function aggregate_form_save() : void {
 		$save_me += ($old['total_type']    != $save1['total_type']);
 		$save_me += ($old['total_prefix']  != $save1['total_prefix']);
 		$save_me += ($old['order_type']    != $save1['order_type']);
+
+		foreach ($settings as $field => $value) {
+			$save_me += ($old[$field] != $value);
+		}
 	} else {
 		$save_me = 1;
 	}
@@ -297,6 +328,7 @@ function aggregate_form_actions() : void {
 				db_execute('DELETE FROM aggregate_graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM aggregate_graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
 				db_execute('DELETE FROM aggregate_graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
+				db_execute('DELETE FROM automation_aggregate_graphs WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
 				db_execute("UPDATE aggregate_graphs SET aggregate_template_id=0, template_propogation='' WHERE " . array_to_sql_or($selected_items, 'aggregate_template_id'));
 			}
 		}
@@ -434,7 +466,7 @@ function aggregate_template_edit() : void {
 			}
 
 			var showField = $('#graph_template_id').val() != 0;
-			toggleField({
+			toggleFields({
 				name: showField,
 				spacer1: showField,
 				gprint_prefix: showField,
@@ -444,6 +476,12 @@ function aggregate_template_edit() : void {
 				total_type: showField,
 				total_prefix: showField,
 				order_type: showField,
+				automation_spacer: showField,
+				automation_enabled: showField,
+				automation_pattern: showField,
+				automation_host_template_id: showField,
+				automation_title: showField,
+				automation_max_members: showField,
 			});
 
 			if ($('#graph_template_id').val() == 0) {
@@ -509,7 +547,7 @@ function aggregate_template_edit() : void {
 		function changeTotals() {
 			var showField = $('#total').val() == '<?php print AGGREGATE_TOTAL_NONE; ?>';
 
-			toggleField({
+			toggleFields({
 				total_type: showField,
 				total_prefix: showField,
 				order_type: showField,
@@ -608,6 +646,11 @@ function aggregate_template() : void {
 			'display' => __('Graph Template'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
+		],
+		'automation_enabled' => [
+			'display' => __('Aggregate Automation'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
 		]
 	];
 
@@ -631,6 +674,7 @@ function aggregate_template() : void {
 			form_selectable_cell(filter_value(number_format_i18n($template['graphs'], -1), '', $url), $template['id'], '', 'right');
 
 			form_selectable_cell(filter_value($template['graph_template_name'], grv('filter')), $template['id']);
+			form_selectable_cell($template['automation_enabled'] === 'on' ? __('Enabled') : __('Disabled'), $template['id'], '', 'right');
 
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 
