@@ -589,21 +589,7 @@ function form_actions() : void {
 				top_header();
 				$download_url = cacti_url('automation_templates.php', ['action' => 'export', 'selected_items' => gnrv('selected_items')]);
 
-				print '<script text="text/javascript">
-					function DownloadStart(url) {
-						document.getElementById("download_iframe").src = url;
-						setTimeout(function() {
-							loadUrl({ url: "automation_templates.php" });
-							Pace.stop();
-						}, 500);
-					}
-
-					$(function() {
-						//debugger;
-						DownloadStart(' . json_encode($download_url, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR) . ');
-					});
-				</script>
-				<iframe id="download_iframe" style="display:none;"></iframe>';
+				html_download_start($download_url, 'automation_templates.php');
 
 				bottom_footer();
 

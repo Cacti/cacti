@@ -64,4 +64,4 @@ run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(funct
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
 
-run_php_probe tests/fixtures/AutomationExportLinkCoverage.php '^(automation_(graph_rules|networks|snmp|templates|tree_rules)\.php|tests/fixtures/AutomationExportLink(Coverage|Probe)\.php)'
+run_php_probe tests/fixtures/AutomationExportLinkCoverage.php '^(automation_(graph_rules|networks|snmp|templates|tree_rules)\.php|lib/html\.php|tests/fixtures/AutomationExportLink(Coverage|Probe)\.php)'

@@ -19,7 +19,7 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 require dirname(__DIR__) . '/Helpers/SourceSlice.php';
-require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 $root = dirname(__DIR__,2);
 require $root . '/include/global_constants.php';
 $file   = $argv[1];
@@ -56,6 +56,7 @@ foreach (['cacti_url', 'sanitize_unserialize_selected_items'] as $function) {
 $function = match ($file) {
 	'automation_graph_rules.php'=> 'automation_graph_rules_form_actions','automation_tree_rules.php'=>'automation_tree_rules_form_actions',default=>'form_actions'
 };
+cacti_fixture_source_function($root . '/lib/html.php', 'html_download_start', __NAMESPACE__);
 cacti_fixture_source_function($root . '/' . $file,$function,__NAMESPACE__);
 ob_start();
 register_shutdown_function(static function () {print json_encode(['html'=>ob_get_clean()],JSON_THROW_ON_ERROR) . "\n"; });

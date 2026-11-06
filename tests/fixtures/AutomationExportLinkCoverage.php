@@ -11,32 +11,25 @@
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
 */
+
 if (PHP_SAPI !== 'cli') {
 	http_response_code(404);
 	exit;
 }
-
+require dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
+require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 $files = ['automation_graph_rules.php', 'automation_networks.php', 'automation_snmp.php', 'automation_templates.php', 'automation_tree_rules.php'];
 
 foreach ($files as $file) {
-	$process = proc_open([PHP_BINARY, __DIR__ . '/AutomationExportLinkProbe.php', $file],[1=>['pipe', 'w'], 2=>['pipe', 'w']],$pipes);
-	$output  = stream_get_contents($pipes[1]);
-	$error   = stream_get_contents($pipes[2]);
-	fclose($pipes[1]);
-	fclose($pipes[2]);
+	$r = cacti_test_isolated_probe(__DIR__ . '/AutomationExportLinkProbe.php', [$file], true);
 
-	if (proc_close($process) !== 0 || $error !== '') {
-		throw new RuntimeException($file . ': ' . $error);
-	}
-	$r = json_decode($output,true,512,JSON_THROW_ON_ERROR);
-
-	if (preg_match('/DownloadStart\(("[^\n]*")\);/',$r['html'],$match) !== 1) {
+	if (preg_match('/DownloadStart\(("[^\n]*")\);/', $r['html'], $match) !== 1) {
 		throw new RuntimeException('Download call absent');
 	}
-	$url = json_decode($match[1],true,512,JSON_THROW_ON_ERROR);
-	parse_str(parse_url($url,PHP_URL_QUERY),$query);
+	$url = json_decode($match[1], true, 512, JSON_THROW_ON_ERROR);
+	parse_str(parse_url($url, PHP_URL_QUERY), $query);
 
-	if (parse_url($url,PHP_URL_PATH) !== $file || $query !== ['action'=>'export', 'selected_items'=>serialize([1, 2])]) {
+	if (parse_url($url, PHP_URL_PATH) !== $file || $query !== ['action' => 'export', 'selected_items' => serialize([1, 2])]) {
 		throw new RuntimeException('Export selection changed');
 	}
 }
