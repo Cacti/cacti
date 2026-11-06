@@ -23,6 +23,17 @@ CHECKOUT_WRITE_WORKFLOWS = {
 }
 
 
+def checkout_may_write(path: str, job_name: str, step_name: str, job: dict) -> bool:
+    if path in CHECKOUT_WRITE_WORKFLOWS:
+        return True
+    return (
+        path == ".github/workflows/released-dependency-audit.yml"
+        and job_name == "publish-remediation"
+        and step_name == "Checkout released branch for publication"
+        and job.get("permissions", {}).get("contents") == "write"
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -186,7 +197,7 @@ def main() -> int:
                     check_uses(rel, step_name, uses_value.strip(), violations)
                     if (
                         uses_value.startswith("actions/checkout@")
-                        and rel not in CHECKOUT_WRITE_WORKFLOWS
+                        and not checkout_may_write(rel, job_name, step_name, job)
                     ):
                         checkout_with = step.get("with")
                         persisted = (
