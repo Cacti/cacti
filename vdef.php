@@ -32,6 +32,10 @@ $actions = [
 
 set_default_action();
 
+if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'item_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		vdef_form_save();
