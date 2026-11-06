@@ -24,13 +24,23 @@ Description=Cacti Daemon Main Poller Service
 After=network.target
 
 [Service]
+# cactid.php forks once and its parent logs the start notice and exits, so
+# systemd tracks the single child as the main process without a PID file.
 Type=forking
 User=apache
 Group=apache
-EnvironmentFile=/etc/sysconfig/cactid
+# Optional: the leading '-' lets the unit start when the file does not exist,
+# as on Debian and Ubuntu, which use /etc/default instead of /etc/sysconfig.
+EnvironmentFile=-/etc/sysconfig/cactid
+EnvironmentFile=-/etc/default/cactid
 ExecStart=/var/www/html/cacti/cactid.php
 Restart=always
 RestartSec=5s
+# NoNewPrivileges= and ProtectSystem= are deliberately not set. The first
+# stops the setuid spine binary and capability-based ping from opening raw
+# ICMP sockets; the second makes /usr read-only, where packaged installs keep
+# the paths the poller writes to.
+PrivateTmp=yes
 
 [Install]
 WantedBy=multi-user.target
