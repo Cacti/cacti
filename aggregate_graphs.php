@@ -117,6 +117,8 @@ function add_tree_names_to_actions_array() : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (!isrv('save_component_graph') && !isrv('save_component_input') && !isrv('save_component_item')) {
 		header('Location: aggregate_graphs.php?action=edit&id=' . gfrv('id'));
 
