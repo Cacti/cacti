@@ -102,29 +102,42 @@ if ($auth_method != AUTH_METHOD_BASIC) {
  * but their user_id is not set, include the auth_login.php script to
  * process their log in.
  */
-if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
-	$username = get_basic_auth_username();
+if ($auth_method == AUTH_METHOD_BASIC) {
+	$username     = get_basic_auth_username();
+	$current_user = $username !== false ? db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE realm = 2
+		AND username = ?',
+		[$username]) : [];
+	$current_user = is_array($current_user) ? $current_user : [];
+	$basic_error  = '';
 
-	if ($username !== false) {
-		$current_user = db_fetch_row_prepared('SELECT *
-			FROM user_auth
-			WHERE realm = 2
-			AND username = ?',
-			[$username]);
+	if ($username === false) {
+		$basic_error = __('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.');
+	} elseif (cacti_sizeof($current_user)) {
+		if ($current_user['enabled'] != 'on') {
+			$basic_error = __('Access Denied!  User account disabled.');
+		} elseif (($current_user['locked'] ?? '') === 'on') {
+			$basic_error = __('Access Denied! User account locked.');
+		} elseif (!auth_user_has_access($current_user)) {
+			$basic_error = __('You do not have access to any area of Cacti.  Contact your administrator.');
+		}
+	}
 
-		if (cacti_sizeof($current_user)) {
-			if ($current_user['enabled'] != 'on') {
-				auth_display_custom_error_message(__('Access Denied!  User account disabled.'));
+	// A Cacti session cannot outlive or replace the verified upstream identity.
+	if (isset($_SESSION[SESS_USER_ID]) && ($basic_error !== '' || !cacti_sizeof($current_user) || (int) $_SESSION[SESS_USER_ID] !== (int) $current_user['id'])) {
+		cacti_session_destroy();
+		cacti_session_start();
+	}
 
-				exit;
-			}
+	if ($basic_error !== '') {
+		auth_display_custom_error_message($basic_error);
 
-			if (!auth_user_has_access($current_user)) {
-				auth_display_custom_error_message(__('You do not have access to any area of Cacti.  Contact your administrator.'));
+		exit;
+	}
 
-				exit;
-			}
-
+	if (cacti_sizeof($current_user)) {
+		if (!isset($_SESSION[SESS_USER_ID])) {
 			if (!cacti_auth_transition((int) $current_user['id'], 'basic_auth')) {
 				auth_display_custom_error_message(__('Access Denied! User account locked.'));
 
@@ -143,14 +156,12 @@ if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 				(username, user_id, result, ip, time)
 				VALUES (?, ?, 1, ?, NOW())',
 				[$username, $current_user['id'], $_SESSION[SESS_CLIENT_ADDR]]);
-
-			// GHSA-4rmr-wvjq-qxc2: fall through to the per-page realm check below
-			// instead of returning, so a Basic Auth login still has its
-			// authorization verified for the requested page.
-		} else {
-			require_once(CACTI_PATH_BASE . '/auth_login.php');
 		}
+	} else {
+		require_once(CACTI_PATH_BASE . '/auth_login.php');
 	}
+
+	// GHSA-4rmr-wvjq-qxc2: retain the per-page realm check below.
 }
 
 /**
