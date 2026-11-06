@@ -683,6 +683,8 @@ function manager_logs(int $id, string $header_label) : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (!isrv('tab')) {
 		srv('tab', 'general');
 	}
