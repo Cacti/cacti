@@ -109,6 +109,11 @@ test('contrast checks include translucent foregrounds and every gradient stop', 
 	expect(await page.locator('span').evaluate(textContrast)).toBeLessThan(1.3);
 });
 
+test('contrast checks sample the darker middle of a red-to-green gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:linear-gradient(rgb(255,4,0),rgb(0,161,11));color:black">Selected row</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeLessThan(4.5);
+});
+
 for (const forcedColors of ['none', 'active'] as const) {
 	test(`Dark keyboard focus remains visible with forced colors ${forcedColors}`, async ({ page }) => {
 		await page.emulateMedia({ forcedColors });
