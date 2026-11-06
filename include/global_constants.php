@@ -573,6 +573,7 @@ define('SESS_TREE_PERMS', 'sess_tree_perms');
 
 define('SESS_ERROR_FIELDS', 'sess_error_fields');
 define('SESS_FIELD_VALUES', 'sess_field_values');
+define('SESS_FIELD_ERRORS', 'sess_field_errors');
 define('SESS_MESSAGES', 'sess_messages');
 
 define('SESS_BROWSER_PHP_TZ', 'sess_browser_php_tz');
