@@ -898,7 +898,13 @@ function package_accept_key() : void {
 	// Trusting a new signer is a Package Management (realm 29) decision,
 	// distinct from the Import Templates (realm 17) permission that gates
 	// this page as a whole.
-	if (!is_realm_allowed(29)) {
+	//
+	// RFC: this realm check is routed through the CactiAccessVoter chokepoint
+	// (lib/cacti_access.php) instead of calling is_realm_allowed() directly.
+	// cacti_realm_allowed() is a behavior-preserving drop-in: same allow/deny
+	// outcome, same raise_message()/redirect below, and it falls back to the
+	// legacy function when symfony/security-core is not autoloaded.
+	if (!cacti_realm_allowed(29)) {
 		raise_message('permission_denied');
 		header('Location: package_import.php');
 
