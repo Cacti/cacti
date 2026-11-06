@@ -742,6 +742,7 @@ define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true, CACTI_VERSION_FUL
 define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true, CACTI_VERSION_FULL));
 
 require_once(CACTI_PATH_LIBRARY . '/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/cacti_access.php');
 require_once(CACTI_PATH_LIBRARY . '/plugins.php');
 require_once(CACTI_PATH_INCLUDE . '/plugins.php');
 require_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
