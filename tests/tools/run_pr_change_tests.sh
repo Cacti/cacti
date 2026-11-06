@@ -51,6 +51,8 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+run_probe ../AdministrationBulkActionPostGuardCoverage.php administration-bulk-post
+
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
