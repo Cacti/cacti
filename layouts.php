@@ -40,7 +40,14 @@ if (filter_layouts_can_manage_global()) {
 
 set_default_action();
 
-switch (get_nfilter_request_var('action')) {
+// Typed, validated request access (RFC: Cacti\Http\Request). Only 'actions' is a
+// recognised bulk-action dispatch; any other value falls through to the default
+// management view, exactly as the previous get_nfilter_request_var('action')
+// switch did. set_default_action() is retained so downstream consumers still see
+// a normalised $_REQUEST['action'].
+$request = \Cacti\Http\Request::createFromGlobals();
+
+switch ($request->enum('action', ['actions'], '')) {
 	case 'actions':
 		layouts_form_actions();
 
@@ -64,19 +71,25 @@ switch (get_nfilter_request_var('action')) {
 function layouts_form_actions() : void {
 	global $actions;
 
+	$request = \Cacti\Http\Request::createFromGlobals();
+
 	// ================= input validation =================
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	// Equivalent to get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP,
+	// ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]). A valid action string
+	// is accepted unchanged; invalid input fails closed to '' (no bulk action is
+	// applied) instead of a fatal input error.
+	$drp_action = $request->string('drp_action', '', '/^([a-zA-Z0-9_]+)$/');
 	// ====================================================
 
 	$user_id = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
 
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	if ($request->has('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items($request->string('selected_items', ''));
 
 		if ($selected_items != false) {
 			$selected_items = array_values(array_map('intval', $selected_items));
 
-			switch (get_nfilter_request_var('drp_action')) {
+			switch ($drp_action) {
 				case '1': // delete
 					foreach ($selected_items as $id) {
 						filter_layouts_delete($id);
