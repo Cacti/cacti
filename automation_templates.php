@@ -40,6 +40,10 @@ $actions = [
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'movedown', 'moveup', 'item_add_agr', 'item_add_atr', 'item_add_ttr', 'item_remove_agr', 'item_remove_atr', 'item_remove_ttr'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		if (isrv('save_component_import')) {
@@ -580,6 +584,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
@@ -658,6 +664,8 @@ function form_actions() : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (isrv('save_component_template')) {
 		$redirect_back = false;
 
