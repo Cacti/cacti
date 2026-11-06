@@ -69,3 +69,5 @@ run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(funct
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
 
 run_php_probe tests/fixtures/CoreBulkActionPostGuardCoverage.php '^(aggregate_graphs\.php|aggregate_templates\.php|cdef\.php|color\.php|color_templates\.php|data_input\.php|data_queries\.php|data_source_profiles\.php|data_sources\.php|data_templates\.php|gprint_presets\.php|graph_templates\.php|graphs\.php|host_templates\.php|pollers\.php|sites\.php|vdef\.php|tests/fixtures/(CoreBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
+
+run_php_probe tests/fixtures/AdministrationBulkActionPostGuardCoverage.php '^(host\.php|layouts\.php|lib/html_reports\.php|links\.php|login_providers\.php|managers\.php|package_keys\.php|package_repos\.php|tree\.php|user_admin\.php|user_group_admin\.php|tests/fixtures/(AdministrationBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
