@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Cacti theme regression fixture</title></head>
+<body>
+	<main style="padding:20px;max-width:1000px;margin:auto">
+		<h1>Cacti theme</h1>
+		<p>Browser E2E fixture · Synthetic monitoring data · 26 October 2026, 09:30 UTC</p>
+		<div class="cactiTableTitleRow"><div class="cactiTableTitle">Device inventory · North campus</div><div class="cactiTableButton"><span>4 devices</span></div></div>
+		<table class="cactiTable" aria-label="Device inventory">
+			<thead><tr><th scope="col">Device</th><th scope="col">Status</th><th scope="col">Last ping</th><th scope="col">Traffic</th></tr></thead>
+			<tbody>
+				<tr class="odd"><td><a class="linkEditMain" href="#edge-router-01">edge-router-01</a></td><td>Up</td><td>1.8 ms</td><td>640 Mb/s</td></tr>
+				<tr class="even"><td><a class="linkEditMain" href="#distribution-switch-02">distribution-switch-02</a></td><td>Recovering</td><td>12.4 ms</td><td>185 Mb/s</td></tr>
+				<tr class="odd"><td><a class="linkEditMain" href="#branch-firewall-03">branch-firewall-03</a></td><td>Down</td><td>No response</td><td>0 Mb/s</td></tr>
+				<tr class="even"><td><a class="linkEditMain" href="#lab-sensor-04">lab-sensor-04</a></td><td>Unknown</td><td>Not polled</td><td>No sample</td></tr>
+			</tbody>
+		</table>
+		<p><button id="open-details" type="button">Open poller details</button></p>
+		<p>Last poll: 09:30 UTC · Duration: 18.2 s · Collected: 1,248 data sources</p>
+		<div id="details" style="display:none">
+			<div class="cactiTableTitleRow"><div class="cactiTableTitle">Analyze Cacti Log Details [ Warnings/Errors ]</div><div class="cactiTableButton"><span>2 alerts</span></div></div>
+			<table class="cactiTable" aria-label="Poller alerts">
+				<thead><tr><th scope="col">Time</th><th scope="col">Message</th></tr></thead>
+				<tr class="odd"><td>09:29</td><td>WARNING: distribution-switch-02 recovered after 12.4 ms.</td></tr>
+				<tr class="even"><td>09:30</td><td>ERROR: branch-firewall-03 did not respond to SNMP.</td></tr>
+			</table>
+		</div>
+	</main>
+</body>
+</html>
