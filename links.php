@@ -34,6 +34,7 @@ set_default_action();
 
 if (in_array(grv('action'), [
 	'delete_page', 'ajax_dnd',
+	'move_page_up', 'move_page_down',
 ], true)) {
 	csrf_require_post();
 }
