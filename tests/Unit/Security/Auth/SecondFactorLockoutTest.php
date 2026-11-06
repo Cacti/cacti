@@ -25,3 +25,9 @@ test('a missing second-factor account cannot authenticate', function () {
 	$r = cacti_test_isolated_probe(dirname(__DIR__,3) . '/fixtures/AuthSecondFactorProbe.php',['missing']);
 	expect($r['authenticated'])->toBeFalse()->and($r['user'])->toBeFalse()->and($r['token_checks'])->toBe(0);
 });
+
+test('second-factor submissions reject non-POST and invalid-token requests before changing account state', function ($mode, $status) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/AuthSecondFactorProbe.php', [$mode]);
+	expect($r['status'])->toBe($status)->and($r['authenticated'])->toBeFalse()->and($r['token_checks'])->toBe(0);
+	expect($r['user']['failed_attempts'])->toBe(1)->and($r['user']['locked'])->toBe('');
+})->with([['get', 405], ['tokenless', 403]]);

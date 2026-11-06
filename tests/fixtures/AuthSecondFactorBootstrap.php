@@ -31,9 +31,10 @@ namespace {
 	require $root . '/include/global_constants.php';
 	require $root . '/tests/Helpers/SourceSlice.php';
 	require $root . '/tests/Helpers/FixtureCoverage.php';
-	$mode  = $argv[1] ?? 'valid';
-	$realm = str_starts_with($mode,'external') ? 2 : 0;
-	$pdo   = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+	$mode                      = $argv[1] ?? 'valid';
+	$_SERVER['REQUEST_METHOD'] = $mode === 'get' ? 'GET' : 'POST';
+	$realm                     = str_starts_with($mode,'external') ? 2 : 0;
+	$pdo                       = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
 	$pdo->exec('CREATE TABLE user_auth(id INTEGER PRIMARY KEY, username TEXT, realm INTEGER, tfa_enabled TEXT, tfa_secret TEXT, login_opts INTEGER, enabled TEXT, lastfail INTEGER, failed_attempts INTEGER, locked TEXT, password TEXT)');
 	$pdo->exec('CREATE TABLE user_log(username TEXT, user_id INTEGER, result INTEGER, ip TEXT, time TEXT)');
 
@@ -45,6 +46,11 @@ namespace {
 	$_COOKIE                    = [];
 	$_SERVER['HTTP_USER_AGENT'] = 'Fixture';
 	$token_checks               = 0;
+	function csrf_check(bool $fatal = true) : bool {
+		return $GLOBALS['mode'] !== 'tokenless';
+	}
+	cacti_fixture_source_function($root . '/include/csrf.php', 'csrf_require_post', '');
+
 	function db_fetch_row_prepared($sql, $params = []) {
 		$s = $GLOBALS['pdo']->prepare($sql);
 		$s->execute($params);
@@ -100,6 +106,6 @@ namespace {
 	}
 	register_shutdown_function(static function () {
 		$user = $GLOBALS['pdo']->query('SELECT realm,failed_attempts,locked FROM user_auth')->fetch(PDO::FETCH_ASSOC);
-		print json_encode(['user'=>$user, 'token_checks'=>$GLOBALS['token_checks'], 'authenticated'=>!empty($_SESSION[SESS_USER_2FA])],JSON_THROW_ON_ERROR) . "\n";
+		print json_encode(['status'=>http_response_code() ?: 200, 'user'=>$user, 'token_checks'=>$GLOBALS['token_checks'], 'authenticated'=>!empty($_SESSION[SESS_USER_2FA])],JSON_THROW_ON_ERROR) . "\n";
 	});
 }
