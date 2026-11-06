@@ -82,7 +82,7 @@ if (gnrv('action') == 'login_2fa') {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 
-			if ($g->checkCode($user['tfa_secret'],  $token)) {
+			if (!auth_process_lockout_check($user['username'], (int) ($user['realm'] ?? 0)) && $g->checkCode($user['tfa_secret'],  $token)) {
 				$_SESSION[SESS_USER_2FA] = time();
 
 				// About using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
@@ -119,6 +119,10 @@ if (gnrv('action') == 'login_2fa') {
 		// Structured failure line for fail2ban, at normal verbosity (the human line
 		// above is DEBUG-only). A failed second factor is a brute-force signal too.
 		auth_log_failure($user['username'], auth_realm_token((int) ($user['realm'] ?? 0)), '2fa');
+
+		// Count the failed second factor toward the account lockout threshold so
+		// repeated wrong tokens lock the account (enforced by the gate above).
+		auth_process_lockout($user['username'], (int) ($user['realm'] ?? 0));
 
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
