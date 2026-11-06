@@ -134,8 +134,15 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 
 		if (cacti_sizeof($user)) {
 			if ($user['enabled'] != 'on') {
+				// Return the generic failure (the real reason stays in the log) and pay
+				// the same bcrypt cost as the unknown-user path below, so a disabled
+				// account is not distinguishable from an unknown one by message or timing.
+				if (trim($password) != '') {
+					compat_password_verify((string) $password, '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.');
+				}
+
 				$error     = true;
-				$error_msg = __('Access Denied!  Login failed, account disabled.');
+				$error_msg = __('Access Denied!  Login Failed.');
 
 				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s, account disabled.', $username, get_client_addr()), false, 'AUTH');
 
