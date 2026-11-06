@@ -310,6 +310,7 @@ define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_
 require_once(CACTI_PATH_LIBRARY . '/htmx.php');
 require_once(CACTI_PATH_LIBRARY . '/html.php');
 require_once(CACTI_PATH_LIBRARY . '/html_utility.php');
+require_once(CACTI_PATH_LIBRARY . '/Http/Request.php');
 require_once(CACTI_PATH_LIBRARY . '/html_validate.php');
 require_once(CACTI_PATH_LIBRARY . '/html_filter.php');
 
