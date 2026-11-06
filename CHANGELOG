@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue: Restore RRDproxy encryption with the bundled phpseclib 3
 -issue: #7212: Address a few small memory leaks in realtime graphing
 
 1.2.31
