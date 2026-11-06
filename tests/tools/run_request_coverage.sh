@@ -65,3 +65,5 @@ run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cac
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
+
+run_php_probe tests/fixtures/AdministrationBulkActionPostGuardCoverage.php '^(host\.php|layouts\.php|lib/html_reports\.php|links\.php|login_providers\.php|managers\.php|package_keys\.php|package_repos\.php|tree\.php|user_admin\.php|user_group_admin\.php|tests/fixtures/(AdministrationBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
