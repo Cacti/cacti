@@ -755,6 +755,8 @@ function form_actions() : void {
 	global $actions, $mactions;
 
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		if (isrv('action_receivers')) {
 			$selected_items = sanitize_unserialize_selected_items(gnrv('selected_graphs_array'));
 
