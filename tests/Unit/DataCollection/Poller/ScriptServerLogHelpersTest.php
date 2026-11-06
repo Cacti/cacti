@@ -12,6 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once dirname(__DIR__, 4) . '/lib/script_server.php';
+
 /*
  * Covers the Script Server logging helpers that assemble debug strings only
  * when debug logging is enabled, keeping the Script Server hot path cheap on a
@@ -64,6 +66,41 @@ test('script_server_log_request logs only at debug verbosity', function () {
 	expect($logged)->toContain("PID[1234] CTR[2] INC: 'ss_example.php'")
 		->and($logged)->toContain("FUNC: 'ss_example'")
 		->and($logged)->toContain("PARMS: 'one', 'two'");
+});
+
+test('script_server_log_request redacts credential-bearing arguments', function () {
+	global $config;
+
+	$config[OPTIONS_CLI]['log_verbosity'] = POLLER_VERBOSITY_DEBUG;
+	script_server_log_request(1234, 3, '/scripts/ss_example.php', 'ss_example', ['3:161:500:1:10:public:user:secret:SHA:private:AES:ctx']);
+
+	$logged = file_get_contents($this->logfile);
+	expect($logged)->toContain('3:161:500:1:10:<redacted>')
+		->and($logged)->not->toContain('secret')
+		->and($logged)->not->toContain('private');
+});
+
+test('request log identifiers cannot inject another log line', function () {
+	global $config;
+
+	$config[OPTIONS_CLI]['log_verbosity'] = POLLER_VERBOSITY_DEBUG;
+	script_server_log_request(1234, 4, "/scripts/bad\nname.php", "bad\rfunction", ['safe']);
+
+	$logged = file_get_contents($this->logfile);
+	expect($logged)->toContain("INC: 'bad?name.php'")
+		->and($logged)->toContain("FUNC: 'bad?function'")
+		->and(substr_count(trim($logged), "\n"))->toBe(0);
+});
+
+test('the pre-check follows remote poller and selective logging precedence', function () {
+	expect(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, POLLER_VERBOSITY_LOW, -1, POLLER_VERBOSITY_LOW))->toBeTrue()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, POLLER_VERBOSITY_DEBUG, -1, POLLER_VERBOSITY_LOW))->toBeFalse()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, POLLER_VERBOSITY_DEBUG, POLLER_VERBOSITY_NONE))->toBeTrue()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, -1, POLLER_VERBOSITY_DEBUG))->toBeTrue()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, -1, POLLER_VERBOSITY_LOW))->toBeFalse()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEVDBG, -1, -1, POLLER_VERBOSITY_DEVDBG))->toBeTrue()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_DEBUG, -1, -1, POLLER_VERBOSITY_DEVDBG))->toBeFalse()
+		->and(script_server_log_level_enabled(POLLER_VERBOSITY_LOW, -1, -1, POLLER_VERBOSITY_DEVDBG))->toBeTrue();
 });
 
 test('script_server_log_response logs only at debug verbosity', function () {

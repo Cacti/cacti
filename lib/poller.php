@@ -38,10 +38,60 @@ function cacti_effective_log_level() : mixed {
 	$level = get_selective_log_level();
 
 	if ($level == -1) {
-		$level = read_config_option('log_verbosity');
+		if (defined('POLLER_LOG_LEVEL') && POLLER_LOG_LEVEL != -1) { // @phpstan-ignore-line
+			$level = POLLER_LOG_LEVEL;
+		} else {
+			$level = read_config_option('log_verbosity');
+		}
 	}
 
 	return $level;
+}
+
+/**
+ * Returns whether a Script Server debug line reaches cacti_log().
+ *
+ * @return bool True when the logger accepts the line
+ */
+function script_server_debug_logging_enabled() : bool {
+	$poller_level = -1;
+
+	if (defined('POLLER_LOG_LEVEL') && POLLER_LOG_LEVEL != -1) { // @phpstan-ignore-line
+		$poller_level = POLLER_LOG_LEVEL;
+	}
+
+	return script_server_log_level_enabled(
+		POLLER_VERBOSITY_DEBUG,
+		$poller_level,
+		get_selective_log_level(),
+		read_config_option('log_verbosity')
+	);
+}
+
+/**
+ * Apply cacti_log() level precedence without constructing a log message.
+ *
+ * @param mixed $level           Requested message level
+ * @param mixed $poller_level    Remote poller override, or -1
+ * @param mixed $selective_level Selective debug override, or -1
+ * @param mixed $verbosity       Global log verbosity
+ *
+ * @return bool True when the logger accepts the message
+ */
+function script_server_log_level_enabled(mixed $level, mixed $poller_level, mixed $selective_level, mixed $verbosity) : bool {
+	if ($selective_level != -1) {
+		return true;
+	}
+
+	if ($poller_level != -1) {
+		$level = $poller_level;
+	}
+
+	if ($verbosity == POLLER_VERBOSITY_DEVDBG) {
+		return $level == POLLER_VERBOSITY_DEVDBG || $level <= POLLER_VERBOSITY_LOW;
+	}
+
+	return $level <= $verbosity;
 }
 
 /**
@@ -51,22 +101,27 @@ function cacti_effective_log_level() : mixed {
  * actually enabled, which keeps the Script Server's hot path cheap on a normal
  * production installation.
  *
- * @param int    $pid             The Script Server process id.
- * @param int    $ctr             The request counter.
- * @param string $include_file    The script file named by the request.
- * @param string $function        The function named by the request.
- * @param array  $parameter_array The parsed function parameters.
+ * @param int       $pid             The Script Server process id.
+ * @param int       $ctr             The request counter.
+ * @param string    $include_file    The script file named by the request.
+ * @param string    $function        The function named by the request.
+ * @param array     $parameter_array The parsed function parameters.
+ * @param bool|null $enabled         A logging decision already made for this request.
  *
  * @return void
  */
-function script_server_log_request(int $pid, int $ctr, string $include_file, string $function, array $parameter_array) : void {
-	if (cacti_effective_log_level() != POLLER_VERBOSITY_DEBUG) {
+function script_server_log_request(int $pid, int $ctr, string $include_file, string $function, array $parameter_array, ?bool $enabled = null) : void {
+	if (!($enabled ?? script_server_debug_logging_enabled())) {
 		return;
 	}
 
-	cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . basename($include_file) .
+	$parameter_array = script_server_redact_args($parameter_array);
+	$include_file    = script_server_log_token(basename($include_file));
+	$function        = script_server_log_token($function);
+
+	cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . $include_file .
 		"' FUNC: '$function' PARMS: '" . implode('\', \'', $parameter_array) .
-		"'", false, 'PHPSVR');
+		"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 }
 
 /**
@@ -75,18 +130,296 @@ function script_server_log_request(int $pid, int $ctr, string $include_file, str
  * As with script_server_log_request(), the debug string is only assembled when
  * DEBUG logging is actually enabled.
  *
- * @param int    $pid    The Script Server process id.
- * @param int    $ctr    The request counter.
- * @param string $result The function result returned to the poller.
+ * @param int       $pid     The Script Server process id.
+ * @param int       $ctr     The request counter.
+ * @param string    $result  The function result returned to the poller.
+ * @param bool|null $enabled A logging decision already made for this request.
  *
  * @return void
  */
-function script_server_log_response(int $pid, int $ctr, string $result) : void {
-	if (cacti_effective_log_level() != POLLER_VERBOSITY_DEBUG) {
+function script_server_log_response(int $pid, int $ctr, string $result, ?bool $enabled = null) : void {
+	if (!($enabled ?? script_server_debug_logging_enabled())) {
 		return;
 	}
 
-	cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR');
+	cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+}
+
+/**
+ * Resolve the per-request Script Server deadline.
+ *
+ * @param float $timeout Explicit timeout, or zero to use script_timeout
+ *
+ * @return float Timeout in seconds
+ */
+function script_server_timeout(float $timeout = 0.0) : float {
+	if (is_finite($timeout) && $timeout > 0) {
+		return $timeout;
+	}
+
+	$timeout = (float) read_config_option('script_timeout');
+
+	return is_finite($timeout) && $timeout > 0 ? $timeout : 25.0;
+}
+
+/**
+ * Terminate a Script Server, escalating when it does not stop promptly.
+ *
+ * @param mixed $process Script Server process
+ *
+ * @return void
+ */
+function script_server_terminate(mixed $process) : void {
+	if (!is_resource($process)) {
+		return;
+	}
+
+	@proc_terminate($process);
+	$deadline = hrtime(true) + 100000000;
+
+	do {
+		$status = proc_get_status($process);
+
+		if ($status === false || !$status['running']) {
+			return;
+		}
+
+		usleep(10000);
+	} while (hrtime(true) < $deadline);
+
+	// SIGKILL on Unix; an immediate nonzero termination code on Windows.
+	@proc_terminate($process, 9);
+}
+
+/**
+ * Read one response while draining stderr and enforcing a deadline.
+ *
+ * @param array $pipes          Script Server pipes
+ * @param mixed $proc_fd        Script Server process
+ * @param bool  $worker_healthy Set false when the worker must be replaced
+ * @param float $timeout        Deadline in seconds, or zero for script_timeout
+ *
+ * @return string|false A complete response without its line ending
+ */
+function script_server_read_response(array $pipes, mixed $proc_fd, bool &$worker_healthy, float $timeout = 0.0) : string|false {
+	$worker_healthy = true;
+
+	if (!is_resource($proc_fd) || !isset($pipes[1], $pipes[2]) || !is_resource($pipes[1]) || !is_resource($pipes[2])) {
+		$worker_healthy = false;
+
+		return false;
+	}
+
+	stream_set_blocking($pipes[1], false);
+	stream_set_blocking($pipes[2], false);
+
+	$buffer   = '';
+	$deadline = hrtime(true) + (int) (script_server_timeout($timeout) * 1000000000);
+
+	while (true) {
+		$newline = strpos($buffer, "\n");
+
+		if ($newline !== false) {
+			$line     = substr($buffer, 0, $newline);
+			$trailing = substr($buffer, $newline + 1);
+
+			if ($trailing !== '') {
+				$worker_healthy = false;
+				script_server_terminate($proc_fd);
+				cacti_log('WARNING: Script Server returned more than one response line, replacing worker', false, 'POLLER');
+
+				return false;
+			}
+
+			if (str_ends_with($line, "\r")) {
+				$line = substr($line, 0, -1);
+			}
+
+			if ($line === '' || strlen($line) > SCRIPT_SERVER_MAX_RESPONSE_LENGTH || preg_match('/[\x00-\x1F\x7F]/', $line)) {
+				$worker_healthy = false;
+				script_server_terminate($proc_fd);
+				cacti_log('WARNING: Script Server response violated the framing limit, replacing worker', false, 'POLLER');
+
+				return false;
+			}
+
+			return $line;
+		}
+
+		if (strlen($buffer) > SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 1) {
+			$worker_healthy = false;
+			script_server_terminate($proc_fd);
+			cacti_log('WARNING: Script Server response exceeded the framing limit, replacing worker', false, 'POLLER');
+
+			return false;
+		}
+
+		$remaining = $deadline - hrtime(true);
+
+		if ($remaining <= 0) {
+			$worker_healthy = false;
+			script_server_terminate($proc_fd);
+			cacti_log('WARNING: Script Server request timed out, replacing worker', false, 'POLLER');
+
+			return false;
+		}
+
+		$read         = [$pipes[1], $pipes[2]];
+		$write        = null;
+		$except       = null;
+		$seconds      = intdiv($remaining, 1000000000);
+		$microseconds = intdiv($remaining % 1000000000, 1000);
+
+		try {
+			$ready = @stream_select($read, $write, $except, $seconds, $microseconds);
+		} catch (ValueError $e) {
+			$ready = false;
+		}
+
+		if ($ready === false) {
+			// Windows cannot select() anonymous pipes. Both streams remain
+			// non-blocking, so polling here cannot deadlock the worker.
+			$read = [$pipes[1], $pipes[2]];
+			usleep((int) min(10000, max(1, intdiv($remaining, 1000))));
+		} elseif ($ready === 0) {
+			continue;
+		}
+
+		foreach ($read as $stream) {
+			$read_length = ($stream === $pipes[1])
+				? max(1, SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 2 - strlen($buffer))
+				: 8192;
+			$chunk = stream_get_contents($stream, $read_length);
+
+			if ($stream === $pipes[1] && $chunk !== false && $chunk !== '') {
+				$buffer .= $chunk;
+			}
+		}
+
+		$status = proc_get_status($proc_fd);
+
+		if (($status === false || !$status['running']) && feof($pipes[1]) && !str_contains($buffer, "\n")) {
+			$worker_healthy = false;
+			cacti_log('WARNING: Script Server exited before completing a response, replacing worker', false, 'POLLER');
+
+			return false;
+		}
+	}
+}
+
+/**
+ * Start a Script Server and validate its framed startup response.
+ *
+ * @param string     $environment     cmd, spine, realtime, or other
+ * @param int|string $poller_id       Data collector or real-time request identifier
+ * @param string     $connection_mode online or offline
+ * @param float      $timeout         Startup deadline, or zero for script_timeout
+ *
+ * @return array{0: mixed, 1: array|false, 2: bool} Process, pipes, and ready state
+ */
+function script_server_open(string $environment, int|string $poller_id, string $connection_mode = 'online', float $timeout = 0.0) : array {
+	if (!function_exists('proc_open')) {
+		return [false, false, false];
+	}
+
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w']
+	];
+	$command = [
+		poller_php_binary(read_config_option('path_php_binary')),
+		'-q',
+		CACTI_PATH_BASE . '/script_server.php',
+		'--environ=' . $environment,
+		'--poller=' . $poller_id,
+		'--mode=' . $connection_mode
+	];
+	$process = @proc_open($command, $descriptors, $pipes, null, null, ['bypass_shell' => true]);
+
+	if (!is_resource($process)) {
+		return [false, false, false];
+	}
+
+	$healthy = true;
+	$banner  = script_server_read_response($pipes, $process, $healthy, $timeout);
+
+	$expected_banner = 'PHP Script Server has Started - Parent is ' . $environment;
+
+	if (!$healthy || $banner !== $expected_banner) {
+		script_server_close($process, $pipes, false);
+
+		return [false, false, false];
+	}
+
+	return [$process, $pipes, true];
+}
+
+/**
+ * Stop a Script Server and release all process resources.
+ *
+ * @param mixed       $process  Script Server process
+ * @param array|false $pipes    Script Server pipes
+ * @param bool        $graceful Send the protocol shutdown request first
+ *
+ * @param-out false $pipes
+ *
+ * @return void
+ */
+function script_server_close(mixed &$process, array|false &$pipes, bool $graceful = true) : void {
+	if (is_array($pipes) && $graceful && isset($pipes[0]) && is_resource($pipes[0])) {
+		@fwrite($pipes[0], "quit\r\n");
+		@fflush($pipes[0]);
+
+		if (is_resource($process) && isset($pipes[1], $pipes[2])) {
+			$healthy = true;
+			script_server_read_response($pipes, $process, $healthy, 1.0);
+		}
+	}
+
+	if (is_resource($process)) {
+		$status = proc_get_status($process);
+
+		if ($status !== false && $status['running']) {
+			script_server_terminate($process);
+		}
+	}
+
+	if (is_array($pipes)) {
+		foreach ($pipes as $pipe) {
+			if (is_resource($pipe)) {
+				fclose($pipe);
+			}
+		}
+	}
+
+	if (is_resource($process)) {
+		proc_close($process);
+	}
+
+	$process = false;
+	$pipes   = false;
+}
+
+/**
+ * Replace a worker whose response timed out or violated the protocol.
+ *
+ * @param mixed       $process         Script Server process
+ * @param array|false $pipes           Script Server pipes
+ * @param bool        $using_process   Whether the replacement is ready
+ * @param string      $environment     cmd, spine, realtime, or other
+ * @param int|string  $poller_id       Data collector or real-time request identifier
+ * @param string      $connection_mode online or offline
+ * @param float       $timeout         Startup deadline, or zero for script_timeout
+ *
+ * @return bool True when the replacement worker is ready
+ */
+function script_server_replace(mixed &$process, array|false &$pipes, bool &$using_process, string $environment, int|string $poller_id, string $connection_mode = 'online', float $timeout = 0.0) : bool {
+	script_server_close($process, $pipes, false);
+
+	[$process, $pipes, $using_process] = script_server_open($environment, $poller_id, $connection_mode, $timeout);
+
+	return $using_process;
 }
 
 /**
@@ -117,63 +450,119 @@ function exec_poll(string $command, int $timeout = 5) : string {
 /**
  * exec_poll_php - sends a command to the php script server and returns the output
  *
- * @param string $command             The command to send to the php script server
- * @param bool   $using_proc_function Whether or not this version of php is making use
- *                                    of the proc_open() and proc_close() functions (php 4.3+)
- * @param array  $pipes               The array of r/w pipes returned from proc_open()
- * @param mixed  $proc_fd             The file descriptor returned from proc_open()
+ * @param string      $command             The command to send to the php script server
+ * @param bool        $using_proc_function Whether or not this version of php is making use
+ *                                         of the proc_open() and proc_close() functions (php 4.3+)
+ * @param array|false $pipes               The array of r/w pipes returned from proc_open()
+ * @param mixed       $proc_fd             The file descriptor returned from proc_open()
+ *
+ * @param float $timeout        Per-request deadline, or zero for script_timeout
+ * @param bool  $worker_healthy Set false when the worker must be replaced
  *
  * @return string The output of $command after execution against the php script server
  */
-function exec_poll_php(string $command, bool $using_proc_function, array $pipes, mixed $proc_fd) : string {
-	$output = '';
+function exec_poll_php(string $command, bool $using_proc_function, array|false $pipes, mixed $proc_fd, float $timeout = 0.0, bool &$worker_healthy = true) : string {
+	$output         = '';
+	$worker_healthy = true;
+
+	/* Every execution path shares the Script Server language boundary.
+	 * Refuse data that cannot be represented as one bounded request. */
+	if (strlen($command) > SCRIPT_SERVER_MAX_REQUEST_LENGTH || strpbrk($command, "\r\n") !== false) {
+		cacti_log('WARNING: Script Server request of ' . strlen($command) . ' bytes exceeds the ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' byte limit or contains a line break, returning U', false, 'POLLER');
+
+		return 'U';
+	}
 
 	// execute using php process
-	if ($using_proc_function == 1) {
-		if (is_resource($proc_fd)) {
+	if ($using_proc_function) {
+		if (is_resource($proc_fd) && is_array($pipes)) {
 			/* $pipes now looks like this:
 			 * 0 => writeable handle connected to child stdin
 			 * 1 => readable handle connected to child stdout
 			 * 2 => any error output will be sent to child stderr */
 
 			// send command to the php server
-			fwrite($pipes[0], $command . "\r\n");
-			fflush($pipes[0]);
+			$request = $command . "\r\n";
 
-			$output = fgets($pipes[1], 8192);
-
-			if (substr_count((string) $output, 'ERROR') > 0) {
-				$output = 'U';
-			}
-		}
-		// execute the old fashion way
-	} else {
-		// formulate command
-		$command = read_config_option('path_php_binary') . ' ' . $command;
-
-		if (function_exists('popen')) {
-			if (CACTI_SERVER_OS == 'unix') {
-				$fp = popen($command, 'r');
-			} else {
-				$fp = popen($command, 'rb');
-			}
-
-			// return if the popen command was not successful
-			if (!is_resource($fp)) {
-				cacti_log('WARNING; Problem with POPEN command.', false, 'POLLER');
+			if (!isset($pipes[0]) || !is_resource($pipes[0]) || fwrite($pipes[0], $request) !== strlen($request) || !fflush($pipes[0])) {
+				$worker_healthy = false;
+				script_server_terminate($proc_fd);
 
 				return 'U';
 			}
 
-			$output = fgets($fp, 8192);
+			$output = script_server_read_response($pipes, $proc_fd, $worker_healthy, $timeout);
 
-			pclose($fp);
+			if ($output === false) {
+				return 'U';
+			}
+
+			if ($output === 'PHP Script Server Shutdown request received, exiting') {
+				$worker_healthy = false;
+
+				return 'U';
+			}
+
+			if (str_contains($output, 'ERROR')) {
+				return 'U';
+			}
 		} else {
-			$output = shell_exec($command);
+			$worker_healthy = false;
+
+			return 'U';
 		}
+		// execute the old fashion way
+	} else {
+		require_once __DIR__ . '/script_server.php';
+
+		/** @var list<string> $arguments */
+		$arguments = [];
+
+		if (!parseArgs($command, $arguments) || count($arguments) < 2 || !is_string($arguments[1]) || !script_server_function_name_is_valid($arguments[1])) {
+			return 'U';
+		}
+
+		$script = script_server_resolve_include($arguments[0], script_server_allowed_roots());
+
+		if ($script === false) {
+			return 'U';
+		}
+
+		$arguments[0] = $script;
+		$command      = array_merge([
+			poller_php_binary(read_config_option('path_php_binary')),
+			'-q'
+		], $arguments);
+		$return_code = 0;
+		$lines       = [];
+		$output      = exec_with_timeout(
+			$command,
+			$lines,
+			$return_code,
+			(int) ceil(script_server_timeout($timeout)),
+			SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 2
+		);
+
+		if ($return_code != 0 || $output === null || $output === false) {
+			return 'U';
+		}
+
+		if ($lines !== [] && end($lines) === '') {
+			array_pop($lines);
+		}
+
+		if (count($lines) !== 1) {
+			return 'U';
+		}
+
+		if (str_ends_with($lines[0], "\r")) {
+			$lines[0] = substr($lines[0], 0, -1);
+		}
+
+		$output = script_server_normalize_response($lines[0]);
 	}
 
-	return $output;
+	return (string) $output;
 }
 
 /**
@@ -337,14 +726,21 @@ function poller_cactid_arguments(string $base_path, bool $debug) : array {
  * exec_with_timeout - Execute a command and return it's output. Either wait until the
  * command exits or the timeout has expired.
  *
- * @param string $cmd         Command to execute.
- * @param array  $output      A return array of output.
- * @param int    $return_code The return code from the script
- * @param int    $timeout     Timeout in seconds.
+ * @param string|array $cmd              Command to execute. Array commands bypass the shell.
+ * @param array        $output           A return array of output.
+ * @param int          $return_code      The return code from the script
+ * @param int          $timeout          Timeout in seconds.
+ * @param int          $max_output_bytes Maximum stdout bytes, or zero for unlimited.
  *
  * @return mixed Either the last line of output or false on error
  */
-function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $timeout = 5) : mixed {
+function exec_with_timeout(string|array $cmd, array &$output, int &$return_code, int $timeout = 5, int $max_output_bytes = 0) : mixed {
+	if (!function_exists('proc_open')) {
+		$return_code = 1;
+
+		return false;
+	}
+
 	// File descriptors passed to the process.
 	$descriptors = [
 		0 => ['pipe', 'r'],  // stdin
@@ -355,22 +751,36 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	// Use setsid when available (Linux) so the child becomes a process-group leader,
 	// allowing posix_kill(-pid, 9) to reliably kill the entire subtree on timeout.
 	// Falls back to plain exec on systems without setsid (macOS, BSD).
-	$setsid = '';
+	$setsid_path = '';
 
 	if (CACTI_SERVER_OS != 'win32') {
 		$setsid_path = trim((string) shell_exec('which setsid 2>/dev/null'));
-
-		if ($setsid_path !== '') {
-			$setsid = 'setsid -- ';
-		}
 	}
 
-	$cmd_full = $setsid . $cmd;
+	if (is_array($cmd)) {
+		$cmd = array_values(array_map('strval', $cmd));
+
+		if ($cmd === []) {
+			$return_code = 1;
+
+			return false;
+		}
+
+		$display_cmd = basename($cmd[0]);
+		$command     = $setsid_path === '' ? $cmd : array_merge([$setsid_path, '--'], $cmd);
+		$options     = ['bypass_shell' => true];
+	} else {
+		$display_cmd = $cmd;
+		$command     = 'exec ' . ($setsid_path === '' ? '' : cacti_escapeshellcmd($setsid_path) . ' -- ') . $cmd;
+		$options     = [];
+	}
 
 	// Start the process.
-	$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
+	$process = proc_open($command, $descriptors, $pipes, null, null, $options);
 
 	if (!is_resource($process)) {
+		$return_code = 1;
+
 		return false;
 	}
 
@@ -383,15 +793,19 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	// Turn the timeout into microseconds.
 	$timeout = (int) $timeout * 1000000;
 
-	// Output buffer.
-	$buffer = '';
+	// Output buffers. Stderr is drained concurrently and retained only up to
+	// the amount useful for one diagnostic line.
+	$buffer          = '';
+	$errors          = '';
+	$output_exceeded = false;
+	$status          = proc_get_status($process);
 
 	// While we have time to wait.
 	while ($timeout > 0) {
 		$start = microtime(true);
 
 		// Wait until we have output or the timer expired.
-		$read  = [$pipes[1]];
+		$read  = [$pipes[1], $pipes[2]];
 		$write = [];
 		$other = [];
 		stream_select($read, $write, $other, 0, $timeout);
@@ -401,11 +815,32 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		// this way we can't lose the last bit of output if the process dies between these functions.
 		$status = proc_get_status($process);
 
-		// Read the contents from the buffer.
-		// This function will always return immediately as the stream is non-blocking.
-		$buffer .= stream_get_contents($pipes[1]);
+		// Read ready streams. Both are non-blocking, and stderr is drained so a
+		// diagnostic burst cannot deadlock an otherwise valid command.
+		foreach ($read as $stream) {
+			if ($stream === $pipes[1]) {
+				$read_length = $max_output_bytes > 0
+					? max(1, $max_output_bytes + 1 - strlen($buffer))
+					: -1;
+				$chunk = stream_get_contents($stream, $read_length);
 
-		if (!$status['running']) {
+				if ($chunk !== false && $chunk !== '') {
+					$buffer .= $chunk;
+				}
+
+				if ($max_output_bytes > 0 && strlen($buffer) > $max_output_bytes) {
+					$output_exceeded = true;
+				}
+			} else {
+				$chunk = stream_get_contents($stream);
+
+				if ($chunk !== false && $chunk !== '' && strlen($errors) < 8192) {
+					$errors .= substr($chunk, 0, 8192 - strlen($errors));
+				}
+			}
+		}
+
+		if ($output_exceeded || !$status['running']) {
 			// Break from this loop if the process exited before the timeout.
 			break;
 		}
@@ -414,25 +849,29 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		$timeout -= (int) ((microtime(true) - $start) * 1000000);
 	}
 
-	// Check if there were any errors.
-	$errors = stream_get_contents($pipes[2]);
+	// Capture a final bounded stderr chunk after the process exits.
+	$remaining_errors = stream_get_contents($pipes[2], max(1, 8192 - strlen($errors)));
 
-	if (isset($status['exitcode'])) {
-		$return_code = $status['exitcode'];
-	} else {
-		$return_code = 1;
+	if ($remaining_errors !== false && $remaining_errors !== '' && strlen($errors) < 8192) {
+		$errors .= substr($remaining_errors, 0, 8192 - strlen($errors));
 	}
+
+	$return_code = $output_exceeded ? 1 : $status['exitcode'];
 
 	// Only surface stderr noise when the command actually failed; successful
 	// commands may write informational output to stderr that isn't actionable.
 	if ($return_code != 0 && !empty($errors)) {
-		cacti_log("WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+		cacti_log("WARNING: Command '$display_cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+	}
+
+	if ($output_exceeded) {
+		cacti_log("WARNING: Command '$display_cmd' exceeded its output limit", false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.
 	// If the process already exited this won't do anything.
 	// Use negative PID to kill the entire process group (setsid makes child the group leader).
-	if (isset($status['pid']) && $status['running'] && function_exists('posix_kill')) {
+	if ($status['running'] && function_exists('posix_kill')) {
 		posix_kill(-$status['pid'], 9);
 	}
 
@@ -444,6 +883,12 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	fclose($pipes[2]);
 
 	proc_close($process);
+
+	if ($output_exceeded) {
+		$output = [];
+
+		return false;
+	}
 
 	if ($buffer != '') {
 		$output = explode("\n", $buffer);

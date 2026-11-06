@@ -15,8 +15,6 @@ cmd_exec	./cli/splice_rrd.php	$response = shell_exec(cacti_escapeshellcmd($rrdto
 cmd_exec	./cli/splice_rrd.php	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
 cmd_exec	./cli/splice_rrd.php	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
 cmd_exec	./cli/update_heartbeat.php				$result = exec($command, $output, $return_code);
-cmd_exec	./cmd.php			$cactiphp = proc_open($command, $cactides, $pipes);
-cmd_exec	./cmd_realtime.php				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 cmd_exec	./install/functions.php				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
@@ -60,17 +58,15 @@ cmd_exec	./lib/ping.php					$result = shell_exec(cacti_escapeshellarg($fping) . 
 cmd_exec	./lib/poller.php										$output = system(cacti_escapeshellcmd($php_path) . ' -l ' . cacti_escapeshellarg($tmpfile), $exit);
 cmd_exec	./lib/poller.php						pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 cmd_exec	./lib/poller.php						pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
-cmd_exec	./lib/poller.php					$fp = popen($command, 'r');
-cmd_exec	./lib/poller.php					$fp = popen($command, 'rb');
 cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
-cmd_exec	./lib/poller.php				$output = shell_exec($command);
 cmd_exec	./lib/poller.php			$setsid_path = trim((string) shell_exec('which setsid 2>/dev/null'));
 cmd_exec	./lib/poller.php		$process = @proc_open($command, $descriptors, $pipes, null, null, ['bypass_shell' => true]);
-cmd_exec	./lib/poller.php		$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
-cmd_exec	./lib/poller.php	 *                                    of the proc_open() and proc_close() functions (php 4.3+)
-cmd_exec	./lib/poller.php	 * @param array  $pipes               The array of r/w pipes returned from proc_open()
-cmd_exec	./lib/poller.php	 * @param mixed  $proc_fd             The file descriptor returned from proc_open()
+cmd_exec	./lib/poller.php		$process = @proc_open($command, $descriptors, $pipes, null, null, ['bypass_shell' => true]);
+cmd_exec	./lib/poller.php		$process = proc_open($command, $descriptors, $pipes, null, null, $options);
+cmd_exec	./lib/poller.php	 *                                         of the proc_open() and proc_close() functions (php 4.3+)
+cmd_exec	./lib/poller.php	 * @param array|false $pipes               The array of r/w pipes returned from proc_open()
+cmd_exec	./lib/poller.php	 * @param mixed       $proc_fd             The file descriptor returned from proc_open()
 cmd_exec	./lib/rrd.php			$process = proc_open([$path, '-'], $descriptors, $pipes, null, null, ['bypass_shell' => true]);
 cmd_exec	./lib/rrdcheck.php		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/snmp.php			// exec() does not capture, so the walk output can never contain either.
@@ -93,11 +89,7 @@ cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_spikekill.php				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./remote_agent.php									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./script_server.php					exec("TASKLIST /FO LIST /FI \"PID eq $ppid\"", $out);
-cmd_exec	./scripts/sql.php	$sql = shell_exec($cmd);
-cmd_exec	./scripts/ss_netsnmp_lmsensors.php			$virtual = intval(shell_exec('/usr/bin/hostnamectl 2> /dev/null | grep -i virtual | wc -l'));
-cmd_exec	./scripts/ss_sql.php		$result = shell_exec($cmd) ?? '';
 cmd_exec	./snmpagent_mibcache.php			exec($php . ' ' . $extra_args . ' > /dev/null &');
 cmd_exec	./snmpagent_mibcache.php			popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
 cmd_exec	./snmpagent_persist.php			exec($php . ' ' . $extra_args . ' > /dev/null &');
@@ -168,6 +160,7 @@ fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/' . $log
 fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 fs_write	./lib/CactiFilesystem.php			$this->filesystem->dumpFile($filename, $content);
 fs_write	./lib/CactiFilesystem.php			self::default()->writeFile($filename, $content);
+fs_write	./lib/SnmpStateStore.php			$written = file_put_contents($temp, $data, LOCK_EX);
 fs_write	./lib/api_device.php							if (file_put_contents($new_xmlfile, $data) === false) {
 fs_write	./lib/boost.php								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php		$fileptr = fopen($temp_file, 'wb');
@@ -209,10 +202,9 @@ fs_write	./package_import.php				file_put_contents($xmlfile, $data);
 fs_write	./package_import.php			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 fs_write	./package_import.php			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 fs_write	./package_import.php			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
+fs_write	./script_server.php		define('STDERR', fopen('php://stderr', 'w'));
 fs_write	./script_server.php		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php		define('STDOUT', fopen('php://stdout', 'w'));
-fs_write	./scripts/ss_net_snmp_disk_bytes.php				file_put_contents("$tmpdir/$tmpfile", $data);
-fs_write	./scripts/ss_net_snmp_disk_io.php				file_put_contents("$tmpdir/$tmpfile", $data);
 fs_write	./snmpagent_mibcachechild.php				file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./snmpagent_mibcachechild.php		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./support.php		$fp = @fopen($file, 'rb');

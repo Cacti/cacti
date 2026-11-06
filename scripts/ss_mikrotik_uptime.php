@@ -37,5 +37,9 @@ function ss_mikrotik_uptime(int $host_id = 0) : string {
 		WHERE host_id = ?',
 		[$host_id]);
 
-	return $cpu;
+	if ($cpu === false || $cpu === null) {
+		return 'U';
+	}
+
+	return (string) $cpu;
 }
