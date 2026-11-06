@@ -470,6 +470,8 @@ function form_actions() : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	global $settings_user;
 
 	// graph permissions
