@@ -436,6 +436,7 @@ function automation_graph_rules_form_actions() : void {
 				}
 			} elseif (gnrv('drp_action') == AUTOMATION_ACTION_GRAPH_EXPORT) { // export
 				top_header();
+				$download_url = cacti_url('automation_graph_rules.php', ['action' => 'export', 'selected_items' => gnrv('selected_items')]);
 
 				print '<script text="text/javascript">
 					function DownloadStart(url) {
@@ -448,7 +449,7 @@ function automation_graph_rules_form_actions() : void {
 
 					$(function() {
 						//debugger;
-						DownloadStart(\'automation_graph_rules.php?action=export&selected_items=' . rawurlencode(gnrv('selected_items')) . '\');
+						DownloadStart(' . json_encode($download_url, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR) . ');
 					});
 				</script>
 				<iframe id="download_iframe" style="display:none;"></iframe>';
