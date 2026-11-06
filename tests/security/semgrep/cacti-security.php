@@ -61,7 +61,7 @@ $j = exec('rrdtool tune ' . intval(grv('max')));
 print "<option value='" . gnrv('location') . "'>";
 
 // ruleid: cacti-request-var-echoed-unescaped
-echo '<td>' . get_request_var('name') . '</td>';
+print '<td>' . get_request_var('name') . '</td>';
 
 // ok: cacti-request-var-echoed-unescaped
 print "<option value='" . html_escape(gnrv('location')) . "'>";

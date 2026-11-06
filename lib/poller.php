@@ -25,6 +25,71 @@
 require_once __DIR__ . '/CactiProcessLock.php';
 
 /**
+ * Resolves the effective logging verbosity for the current request.
+ *
+ * This mirrors the level resolution that cacti_log() performs: a selective
+ * (per-file or per-plugin) debug override takes precedence, otherwise the
+ * configured log_verbosity setting is used.  Callers can use the result to
+ * skip assembling expensive debug strings when debug logging is not enabled.
+ *
+ * @return mixed The effective POLLER_VERBOSITY_* level.
+ */
+function cacti_effective_log_level() : mixed {
+	$level = get_selective_log_level();
+
+	if ($level == -1) {
+		$level = read_config_option('log_verbosity');
+	}
+
+	return $level;
+}
+
+/**
+ * Logs a Script Server request line at debug verbosity.
+ *
+ * The (potentially large) debug string is only assembled when DEBUG logging is
+ * actually enabled, which keeps the Script Server's hot path cheap on a normal
+ * production installation.
+ *
+ * @param int    $pid             The Script Server process id.
+ * @param int    $ctr             The request counter.
+ * @param string $include_file    The script file named by the request.
+ * @param string $function        The function named by the request.
+ * @param array  $parameter_array The parsed function parameters.
+ *
+ * @return void
+ */
+function script_server_log_request(int $pid, int $ctr, string $include_file, string $function, array $parameter_array) : void {
+	if (cacti_effective_log_level() != POLLER_VERBOSITY_DEBUG) {
+		return;
+	}
+
+	cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . basename($include_file) .
+		"' FUNC: '$function' PARMS: '" . implode('\', \'', $parameter_array) .
+		"'", false, 'PHPSVR');
+}
+
+/**
+ * Logs a Script Server response line at debug verbosity.
+ *
+ * As with script_server_log_request(), the debug string is only assembled when
+ * DEBUG logging is actually enabled.
+ *
+ * @param int    $pid    The Script Server process id.
+ * @param int    $ctr    The request counter.
+ * @param string $result The function result returned to the poller.
+ *
+ * @return void
+ */
+function script_server_log_response(int $pid, int $ctr, string $result) : void {
+	if (cacti_effective_log_level() != POLLER_VERBOSITY_DEBUG) {
+		return;
+	}
+
+	cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR');
+}
+
+/**
  * exec_poll - executes a command and returns its output
  *
  * @param string $command The command to execute

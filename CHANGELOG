@@ -1,6 +1,10 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security#GHSA-4qx8-jj2h-p7q2: Use hash_equals() for the 2FA bypass-cookie and password-reset token comparisons (timing side-channel)
+-security#GHSA-54fg-q9h9-88mm: Route package repository manifest fetches through cacti_http() to close the Direct-URL/GitHub SSRF
+-security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
+-security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
 -security: Use a shared locked plugin test harness and cache Composer downloads in coverage jobs
 -security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary before the resource-cache PHP syntax-check shell command
@@ -42,6 +46,8 @@ Cacti CHANGELOG
 -security#8158: Harden - Confine automation sorting and pagination before SQL and HTML rendering
 -security#8158: Harden - Replace sibling password-reset links and revoke authentication state after reset
 -security#GHSA-3jj2-v5ch-wmq5: Fail closed on a posted LDAP realm that is not a configured domain
+-issue#8583: Only add the theme search filter icon when the filter input is visible
+-issue#8583: Match trusted proxies by IP family so an IPv4-mapped address never matches a bare IPv4 proxy entry regardless of the Symfony IpUtils version
 -issue#8574: RRDcheck does not delete old data when boost is enabled
 -issue#8221: Align the Deepness theme console menu icon sizing and alignment with the Modern theme and remove the sub-menu indentation
 -issue#8219: Fix the Deepness theme rendering the modern filter bar controls stacked vertically by porting the missing .filterRow/.filterColumn table-display rules from the other themes

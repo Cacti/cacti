@@ -78,8 +78,8 @@ cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmpagent.php		// add pollers of a distributed system (future)
-cmd_exec	./lib/spikekill.php			$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile));
-cmd_exec	./lib/spikekill.php			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
+cmd_exec	./lib/spikekill.php			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile), $dump_output, $dump_status);
+cmd_exec	./lib/spikekill.php			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile) . ' 2>&1', $response, $status);
 cmd_exec	./lib/utility.php							$nproc = system('nproc');
 cmd_exec	./lib/utility.php				exec('/usr/bin/free', $output, $exit_code);
 cmd_exec	./lib/utility.php			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
@@ -199,7 +199,7 @@ fs_write	./lib/poller.php												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php								file_put_contents($mypath, $contents);
 fs_write	./lib/rrd.php			$written = file_put_contents($temporary, $contents, LOCK_EX);
-fs_write	./lib/spikekill.php			return file_put_contents($xmlfile, $output);
+fs_write	./lib/spikekill.php			return @file_put_contents($xmlfile, $output);
 fs_write	./package_import.php							file_put_contents($xmlfile, $data);
 fs_write	./package_import.php						file_put_contents($xmlfile, $data);
 fs_write	./package_import.php						file_put_contents($xmlfile, $data);
