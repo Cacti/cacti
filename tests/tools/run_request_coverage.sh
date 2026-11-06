@@ -100,6 +100,7 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
 
+run_php_probe tests/fixtures/Core/AuthHardeningMatrix.php '^(auth_2fa\.php|lib/Auth/(LocalAuthLoginProvider|SamlLoginProvider)\.php|tests/fixtures/(Core/AuthHardeningMatrix|AuthProviderHardeningProbe|AuthSecondFactorBootstrap|AuthSecondFactorProbe)\.php)'
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'
 
 user_settings_realtime_files='^(auth_profile\.php|graph_realtime\.php|lib/(functions|html_tree|user_setting_validation)\.php|tests/fixtures/Core/UserSettingsAndRealtimeHardening\.php)$'

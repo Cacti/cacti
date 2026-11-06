@@ -134,7 +134,7 @@ if ($help) {
 	exit;
 }
 
-global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function, $pipes;
+global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function;
 global $poller_id, $sessions, $downhosts, $print_data_to_stdout;
 
 $maxwidth   = get_max_column_width();
