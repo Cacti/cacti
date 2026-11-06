@@ -53,6 +53,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'rrd_remove':
+		csrf_require_post();
 		template_rrd_remove();
 
 		break;
@@ -88,6 +89,8 @@ switch (get_request_var('action')) {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_template')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('data_input_id');
@@ -374,6 +377,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
