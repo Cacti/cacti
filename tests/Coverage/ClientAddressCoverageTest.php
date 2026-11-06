@@ -43,6 +43,11 @@ test('trusted match does not let an IPv4-mapped entry match bare IPv4', function
 	expect(cacti_trusted_proxy_match('127.0.0.1', ['::ffff:127.0.0.1']))->toBeFalse();
 });
 
+test('trusted match skips a non IP entry but still matches a later IP entry', function () : void {
+	expect(cacti_trusted_proxy_match('10.0.0.1', ['proxy.local']))->toBeFalse();
+	expect(cacti_trusted_proxy_match('10.0.0.1', ['proxy.local', '10.0.0.1']))->toBeTrue();
+});
+
 test('trusted match supports CIDR', function () : void {
 	expect(cacti_trusted_proxy_match('10.1.2.3', ['10.0.0.0/8']))->toBeTrue();
 	expect(cacti_trusted_proxy_match('10.1.2.3', ['192.168.0.0/16']))->toBeFalse();

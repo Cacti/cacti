@@ -73,6 +73,13 @@ class ChangedPhpCoverageTest(unittest.TestCase):
         self.assertFalse(GATE.passes({'covered': 0, 'executable': 0, 'files': {
             'plugins.php': {'missing': True}}}, 80))
 
+    def test_configuration_only_change_needs_no_clover_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = GATE.measure({}, root / 'not-created.xml', root)
+            self.assertTrue(GATE.passes(result, 80))
+            self.assertEqual(result['files'], {})
+
     def test_deletion_only_changes_pass_without_a_coverage_report(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

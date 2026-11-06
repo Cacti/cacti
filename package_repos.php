@@ -98,25 +98,14 @@ function form_save() : void {
 					$file = $repoloc . '/' . $save['repo_branch'] . '/package.manifest';
 
 					if ($save['repo_api_key'] != '') {
-						$options = [
-							'https' => [
-								'method' => 'GET',
-								'header' => 'Authorization: Bearer ' . $save['repo_api_key']
-							]
-						];
-
-						$context  = stream_context_create($options);
+						$http_options = ['headers' => ['Authorization: Bearer ' . $save['repo_api_key']]];
 					} else {
-						$options = [
-							'https' => [
-								'method'  => 'GET',
-							]
-						];
-
-						$context  = stream_context_create($options);
+						$http_options = [];
 					}
 
-					$data = file_get_contents($file, false, $context);
+					$result = cacti_http('GET', $file, $http_options);
+
+					$data = ($result['success'] ? $result['body'] : '');
 
 					if ($data != '') {
 						raise_message('repo_exists', __esc('The Repo \'%s\' is Reachable on GitHub.', $save['name']), MESSAGE_LEVEL_INFO);
@@ -126,14 +115,9 @@ function form_save() : void {
 				} elseif ($save['repo_type'] == 2) {
 					$file = $save['repo_location'] . '/package.manifest';
 
-					$context = [
-						'ssl' => [
-							'verify_peer'      => false,
-							'verify_peer_name' => false,
-						],
-					];
+					$result = cacti_http('GET', $file);
 
-					$data = file_get_contents($file, false, stream_context_create($context));
+					$data = ($result['success'] ? $result['body'] : '');
 
 					if ($data != '') {
 						raise_message('repo_exists', __esc('The Repo \'%s\' is Reachable at the URL Location.', $save['name']), MESSAGE_LEVEL_INFO);
