@@ -4132,20 +4132,23 @@ function automation_primeIPAddressTable(int $network_id) : void {
 				continue;
 			}
 
-			if ($start != '' && !in_array($start, $ignore_ips, true)) {
+			if ($start != '' && !cacti_ip_in_ranges($start, $ignore_ips)) {
 				$sql[] = "('$start', '', $network_id, '0', '0', '0')";
 			}
 
 			while ($count < $subNetTotal) {
 				$ip = automation_get_next_host($start, $subNetTotal, $count, $subNet);
 
-				if ($ip != '' && !in_array($ip, $ignore_ips, true)) {
-					$sql[] = "('$ip', '', $network_id, '0', '0', '0')";
+				/* Advance the offset on every pass. automation_get_next_host()
+				 * derives the address from $count, so an ignored address must
+				 * be skipped rather than retried or the walk never terminates. */
+				$count++;
 
-					$count++;
+				if ($ip != '' && !cacti_ip_in_ranges($ip, $ignore_ips)) {
+					$sql[] = "('$ip', '', $network_id, '0', '0', '0')";
 				}
 
-				if ($count % 1000 == 0) {
+				if ($count % 1000 == 0 && cacti_sizeof($sql)) {
 					db_execute('INSERT INTO automation_ips
 						(ip_address, hostname, network_id, pid, status, thread)
 						VALUES ' . implode(',', $sql));
