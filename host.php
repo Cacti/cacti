@@ -277,6 +277,8 @@ function get_site_locations() : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (isrv('save_component_host')) {
 		if (gnrv('snmp_version') == 3 && (gnrv('snmp_password') != gnrv('snmp_password_confirm'))) {
 			raise_message(14);
