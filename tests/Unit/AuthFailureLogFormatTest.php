@@ -53,7 +53,7 @@ test('the failure line fires from the universal choke point and the 2FA branch',
 	// one emission per login attempt, at auth_login.php's generic failure exit
 	expect($loginSrc)->toContain("auth_log_failure(\$username, auth_realm_token((int) \$frv_realm), !empty(\$id) ? 'bad_password' : 'no_such_user')");
 	// a failed second factor is a brute-force signal too
-	expect($twofaSrc)->toContain("auth_log_failure(\$user['username'], auth_realm_token((int) (\$user['realm'] ?? 0)), '2fa')");
+	expect($twofaSrc)->toContain("auth_log_failure(\$user['username'], auth_realm_token((int) \$user['realm']), '2fa')");
 });
 
 test('auth_process_lockout does not emit its own structured line (no double count)', function () use ($authSrc) {
