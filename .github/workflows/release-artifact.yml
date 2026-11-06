@@ -73,6 +73,7 @@ jobs:
             --no-dev --optimize-autoloader \
             --prefer-dist --no-progress --no-interaction
           composer --working-dir="$package_dir" check-platform-reqs --no-dev
+          php "$package_dir/install/preflight.php"
 
           source_epoch="$(git show -s --format=%ct HEAD)"
           artifact="dist/cacti-$safe_version.tar.gz"

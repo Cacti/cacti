@@ -116,7 +116,7 @@ test('installer command-line adapters propagate failures and release locks', fun
 		->and($background)->toContain('finally {')
 		->and($background)->toContain('exit($completed ? 0 : 1);')
 		->and($conversion)->toContain('exit($conversion_failed ? 1 : 0);')
-		->and($installer)->toContain("['bypass_shell' => true]")
+		->and($installer)->toContain('new \\Cacti\\Installer\\CommandRunner()')
 		->and($import)->toContain('if (file_exists($filename) && !unlink($filename)) {')
 		->and($utility)->toContain('is_file($config_file) && is_readable($config_file)')
 		->and(substr_count($installer, 'shell_exec('))->toBe(2)
