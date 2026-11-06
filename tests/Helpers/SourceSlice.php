@@ -18,7 +18,7 @@ function cacti_fixture_source_function(string $file, string $function, string $n
 	$definition = \Cacti\Tests\Helpers\PhpSource::functionDefinition($source, $function);
 	$line       = $definition['line'];
 	$temporary  = tempnam(sys_get_temp_dir(), 'cacti-source-slice-');
-	file_put_contents($temporary, '<?php namespace ' . $namespace . ';' . str_repeat("\n", $line - 1) . $definition['source']);
+	file_put_contents($temporary, '<?php ' . ($namespace !== '' ? 'namespace ' . $namespace . ';' : '') . str_repeat("\n", $line - 1) . $definition['source']);
 	$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($file);
 
 	try {

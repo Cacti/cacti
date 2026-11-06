@@ -54,6 +54,8 @@ $quietMode            = false;
 
 $overrides = [];
 
+$snmp_security_level = '';
+
 foreach ($parms as $parameter) {
 	if (str_contains($parameter, '=')) {
 		[$arg, $value] = explode('=', $parameter, 2);
@@ -129,6 +131,10 @@ foreach ($parms as $parameter) {
 			break;
 		case '--external-id':
 			$overrides['external_id']  = $value;
+
+			break;
+		case '--security-level':
+			$snmp_security_level = cacti_strtolower(trim($value));
 
 			break;
 		case '--username':
@@ -400,16 +406,94 @@ if ($host['snmp_version'] > 0) {
 // community/user/password verification
 if ($host['snmp_version'] < 3) {
 	// snmp community can be blank
+	if ($snmp_security_level != '') {
+		print 'ERROR: --security-level is only valid with SNMP version 3' . PHP_EOL;
+
+		exit(1);
+	}
 } else {
-	if ($host['snmp_username'] == '' || $host['snmp_password'] == '') {
-		print 'ERROR: When using snmpv3 you must supply an username and password' . PHP_EOL;
+	global $snmp_auth_protocols, $snmp_priv_protocols;
+
+	if ($host['snmp_auth_protocol'] != '' && !array_key_exists($host['snmp_auth_protocol'], $snmp_auth_protocols)) {
+		print "ERROR: Invalid SNMP auth protocol ({$host['snmp_auth_protocol']}).  Valid values are " . implode(', ', array_keys($snmp_auth_protocols)) . PHP_EOL;
+
+		exit(1);
+	}
+
+	if ($host['snmp_priv_protocol'] != '' && !array_key_exists($host['snmp_priv_protocol'], $snmp_priv_protocols)) {
+		print "ERROR: Invalid SNMP priv protocol ({$host['snmp_priv_protocol']}).  Valid values are " . implode(', ', array_keys($snmp_priv_protocols)) . PHP_EOL;
+
+		exit(1);
+	}
+
+	// an explicit security level overrides any protocols retained from the existing device
+	switch ($snmp_security_level) {
+		case '':
+			break;
+		case 'noauthnopriv':
+			$host['snmp_auth_protocol']   = '[None]';
+			$host['snmp_password']        = '';
+			$host['snmp_priv_protocol']   = '[None]';
+			$host['snmp_priv_passphrase'] = '';
+
+			break;
+		case 'authnopriv':
+			if ($host['snmp_auth_protocol'] == '' || $host['snmp_auth_protocol'] == '[None]') {
+				print 'ERROR: For SNMP security level authNoPriv, you must supply an auth protocol other than [None]' . PHP_EOL;
+
+				exit(1);
+			}
+
+			$host['snmp_priv_protocol']   = '[None]';
+			$host['snmp_priv_passphrase'] = '';
+
+			break;
+		case 'authpriv':
+			if ($host['snmp_auth_protocol'] == '' || $host['snmp_auth_protocol'] == '[None]' ||
+				$host['snmp_priv_protocol'] == '' || $host['snmp_priv_protocol'] == '[None]' ||
+				$host['snmp_priv_passphrase'] == '') {
+				print ('ERROR: For SNMP security level authPriv, you must supply an auth protocol, ' .
+					'priv protocol and priv passphrase') . PHP_EOL;
+
+				exit(1);
+			}
+
+			break;
+		default:
+			print 'ERROR: SNMP security level incorrect. Correct values are noAuthNoPriv, authNoPriv or authPriv.' . PHP_EOL;
+
+			exit(1);
+	}
+
+	if ($host['snmp_username'] == '') {
+		print 'ERROR: When using snmpv3 you must supply an username' . PHP_EOL;
+
+		exit(1);
+	}
+
+	if ($host['snmp_auth_protocol'] != '[None]' && $host['snmp_password'] == '') {
+		print 'ERROR: When using snmpv3 with an auth protocol you must supply a password' . PHP_EOL;
 
 		exit(1);
 	}
 }
 
 if (!$quietMode) {
-	print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']} with community \"{$host['snmp_community']}\"" .
+	if ($host['snmp_version'] == 3) {
+		if ($host['snmp_auth_protocol'] == '[None]') {
+			$level = 'noAuthNoPriv';
+		} elseif ($host['snmp_priv_protocol'] == '[None]' || $host['snmp_priv_protocol'] == '') {
+			$level = "authNoPriv, {$host['snmp_auth_protocol']}";
+		} else {
+			$level = "authPriv, {$host['snmp_auth_protocol']}/{$host['snmp_priv_protocol']}";
+		}
+
+		$credentials = "with user \"{$host['snmp_username']}\" ($level)";
+	} else {
+		$credentials = "with community \"{$host['snmp_community']}\"";
+	}
+
+	print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']} $credentials" .
 		PHP_EOL;
 }
 
@@ -469,7 +553,7 @@ function display_help() : void {
 	print ('    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] ' .
 		'--ping_timeout=[N] --ping_retries=[2]') . PHP_EOL;
 	print '    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500] [--retries=3] [--options=0]' . PHP_EOL;
-	print '    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]' . PHP_EOL;
+	print '    [--security-level=] [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]' . PHP_EOL;
 	print '    [--quiet]' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
@@ -500,15 +584,37 @@ function display_help() : void {
 	print '    --timeout      500, The default snmp timeout' . PHP_EOL;
 	print '    --retries      3, The number of snmp retries' . PHP_EOL;
 	print '    --options      0, The SNMP Recovery Template Options set to use' . PHP_EOL;
+	print "    --security-level '', noAuthNoPriv|authNoPriv|authPriv, security level for snmpv3" . PHP_EOL;
 	print "    --username     '', snmp username for snmpv3" . PHP_EOL;
-	print "    --password     '', snmp password for snmpv3" . PHP_EOL;
-	print "    --authproto    '', snmp authentication protocol for snmpv3" . PHP_EOL;
+	print "    --password     '', snmp auth password for snmpv3, minimum 8 characters" . PHP_EOL;
+	print "    --authproto    '', [None]|MD5|SHA|SHA224|SHA256|SHA384|SHA512, snmp authentication protocol for snmpv3" . PHP_EOL;
 	print "    --privpass     '', snmp privacy passphrase for snmpv3" . PHP_EOL;
-	print "    --privproto    '', snmp privacy protocol for snmpv3" . PHP_EOL;
+	print "    --privproto    '', [None]|DES|AES|AES128|AES192|AES192C|AES256|AES256C, snmp privacy protocol for snmpv3" . PHP_EOL;
 	print "    --context      '', snmp context for snmpv3" . PHP_EOL;
 	print "    --engineid     '', snmp engineid for snmpv3" . PHP_EOL;
 	print '    --max_oids     10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request' . PHP_EOL;
 	print ('    --bulk_walk    -1, 1-60, the bulk walk chunk size that will be ' .
 		'used for bulk walks.  Use -1 for auto-tune.') . PHP_EOL;
 	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
+
+	print 'SNMPv3 security level:' . PHP_EOL .
+		'    Options not given keep the value already stored for the device.  Without' . PHP_EOL .
+		'    --security-level, the level follows the resulting protocols: an auth' . PHP_EOL .
+		'    protocol of [None] is noAuthNoPriv, a priv protocol of [None] is' . PHP_EOL .
+		'    authNoPriv, and otherwise authPriv.  To lower the level of a device that' . PHP_EOL .
+		'    is currently authPriv, pass --security-level, or --privproto=[None].' . PHP_EOL .
+		'    --security-level=noAuthNoPriv clears the password and priv passphrase;' . PHP_EOL .
+		'    authNoPriv clears the priv passphrase.' . PHP_EOL . PHP_EOL;
+
+	print 'Examples:' . PHP_EOL .
+		'    SNMPv3 authPriv with SHA-256 and AES-128:' . PHP_EOL .
+		'      change_device.php --id=5 --version=3 --security-level=authPriv --username=monitor \\' . PHP_EOL .
+		"        --password='authSecret1' --authproto=SHA256 --privpass='privSecret1' --privproto=AES128" . PHP_EOL . PHP_EOL .
+		'    SNMPv3 authNoPriv with SHA (removes any existing privacy settings):' . PHP_EOL .
+		'      change_device.php --id=5 --version=3 --security-level=authNoPriv --username=monitor \\' . PHP_EOL .
+		"        --password='authSecret1' --authproto=SHA" . PHP_EOL . PHP_EOL .
+		'    SNMPv3 noAuthNoPriv:' . PHP_EOL .
+		'      change_device.php --id=5 --version=3 --security-level=noAuthNoPriv --username=monitor' . PHP_EOL . PHP_EOL .
+		'    SNMPv2c:' . PHP_EOL .
+		"      change_device.php --id=5 --version=2 --community='public'" . PHP_EOL . PHP_EOL;
 }

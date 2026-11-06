@@ -34,6 +34,25 @@ use Symfony\Component\HttpFoundation\IpUtils;
  */
 
 /**
+ * cacti_ip_family - returns the IP family of an address
+ *
+ * @param string $ip The address to classify, without any CIDR suffix
+ *
+ * @return int 4 for IPv4, 6 for IPv6, or 0 when the value is not an IP address
+ */
+function cacti_ip_family(string $ip) : int {
+	if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+		return 4;
+	}
+
+	if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+		return 6;
+	}
+
+	return 0;
+}
+
+/**
  * cacti_trusted_proxy_match - tests an address against the trusted proxy list
  *
  * Matching is IP normalized, so equivalent spellings of the same address match
@@ -59,8 +78,18 @@ function cacti_trusted_proxy_match(string $address, array $trusted) : bool {
 			continue;
 		}
 
-		if (filter_var($address, FILTER_VALIDATE_IP) && IpUtils::checkIp($address, $entry)) {
-			return true;
+		if (filter_var($address, FILTER_VALIDATE_IP)) {
+			$slash       = strpos($entry, '/');
+			$entry_ip    = ($slash !== false) ? substr($entry, 0, $slash) : $entry;
+			$address_fam = cacti_ip_family($address);
+
+			/* An IPv4-mapped IPv6 address (::ffff:a.b.c.d) must never silently match a
+			 * bare IPv4 entry, so only consult IpUtils when both sides are the same IP
+			 * family.  Newer Symfony releases normalize the mapped form inside checkIp(),
+			 * and this family gate keeps the match deterministic regardless of version. */
+			if ($address_fam !== 0 && $address_fam === cacti_ip_family($entry_ip) && IpUtils::checkIp($address, $entry)) {
+				return true;
+			}
 		}
 
 		if (hash_equals($entry, $address)) {
