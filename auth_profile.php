@@ -264,6 +264,8 @@ function api_auth_update_user_setting(string $name, string $value) : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	global $errors, $settings_user;
 
 	// Save the users profile information
