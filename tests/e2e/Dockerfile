@@ -45,6 +45,7 @@ RUN apt-get update \
 	# can't build it standalone; pdo_sqlite stays since libsqlite3-dev backs it.
 	&& docker-php-ext-install -j"$(nproc)" \
 		gd \
+		gettext \
 		gmp \
 		intl \
 		ldap \
