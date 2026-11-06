@@ -852,6 +852,8 @@ function manager_logs($id, $header_label) {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	if (!isset_request_var('tab')) {
 		set_request_var('tab', 'general');
 	}
@@ -928,6 +930,8 @@ function form_actions() {
 	global $manager_actions, $manager_notification_actions;
 
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		if (isset_request_var('action_receivers')) {
 			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 

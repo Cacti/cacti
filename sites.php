@@ -234,6 +234,8 @@ switch (get_request_var('action')) {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_site')) {
 		$save['id']           = get_filter_request_var('id');
 		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
@@ -346,6 +348,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

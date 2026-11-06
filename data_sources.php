@@ -58,10 +58,12 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'rrd_add':
+		csrf_require_post();
 		ds_rrd_add();
 
 		break;
 	case 'rrd_remove':
+		csrf_require_post();
 		ds_rrd_remove();
 
 		break;
@@ -79,6 +81,7 @@ switch (get_request_var('action')) {
 		ds_enable();
 		break;
 	case 'ds_repair':
+		csrf_require_post();
 		ds_repair();
 		break;
 	case 'ds_remove':
@@ -129,6 +132,8 @@ switch (get_request_var('action')) {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	if ((isset_request_var('save_component_data_source_new')) && (!isempty_request_var('data_template_id'))) {
 		$save['id']               = get_filter_request_var('local_data_id');
 		$save['host_id']          = get_filter_request_var('host_id');
@@ -390,6 +395,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

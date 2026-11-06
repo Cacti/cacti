@@ -47,11 +47,13 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_remove':
+		csrf_require_post();
 		cdef_item_remove();
 
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_movedown':
+		csrf_require_post();
 		get_filter_request_var('cdef_id');
 
 		item_movedown();
@@ -59,6 +61,7 @@ switch (get_request_var('action')) {
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_moveup':
+		csrf_require_post();
 		get_filter_request_var('cdef_id');
 
 		item_moveup();
@@ -126,6 +129,7 @@ function draw_cdef_preview($cdef_id) {
  */
 
 function form_save() {
+	csrf_require_post();
 
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
@@ -252,6 +256,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

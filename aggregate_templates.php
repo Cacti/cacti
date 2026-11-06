@@ -68,6 +68,8 @@ switch (get_request_var('action')) {
  * @return void No value is returned.
  */
 function aggregate_form_save() {
+	csrf_require_post();
+
 	/* make sure we are saving aggregate template */
 	if (!isset_request_var('save_component_template')) {
 		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
@@ -290,6 +292,8 @@ function aggregate_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
