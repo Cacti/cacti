@@ -84,7 +84,15 @@ for the individual `snmpget` command. Other SNMP queries keep their usual format
 Explicit unsupported columns allow the documented memory fallback; timeouts and
 authentication failures remain unknown values.
 
-If upgrading an earlier test package that used the direct SNMP cellular query,
-re-import the updated Cisco Router package, reload the Cellular Radio data query
-on each device, and rebuild its poller cache. Existing RRD names and raw units
-are unchanged. Previously mis-scaled samples are not rewritten.
+Earlier development packages used a direct SNMP cellular query. The current
+package uses a Script Server query so installed MIB display hints cannot change
+the stored scale. Re-importing updates the templates, but does **not** convert
+existing cellular data sources to the new input method. Reloading the query and
+rebuilding the poller cache alone is not sufficient.
+
+For a clean trial, import into a separate test installation and create the
+cellular graphs there. An installation with earlier test graphs needs a separate
+data-source migration before using this package; automatic migration is not
+included. Back up its database and RRD files, and retain the old graphs until
+their replacement or migration has been verified. RRD field names and raw units
+are unchanged, but previously mis-scaled samples are not rewritten.
