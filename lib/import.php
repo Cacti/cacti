@@ -346,6 +346,13 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 		repair_system_data_input_methods();
 	}
 
+	if (!$preview_only
+		&& in_array('cae6a879f86edacb2471055783bec6d0', array_column($dep_hash_cache['host_template'] ?? [], 'hash'), true)
+		&& isset($hash_cache['host_template']['cae6a879f86edacb2471055783bec6d0'])) {
+		require_once __DIR__ . '/cisco_health_graphs.php';
+		cisco_health_graph_install_rules();
+	}
+
 	return $info_array;
 }
 

@@ -379,6 +379,11 @@ function form_save() : void {
 				srv('host_id', '0');
 			}
 
+			if (!cisco_health_graph_host_change_allowed((int)grv('local_graph_id'), (int)grv('host_id'))) {
+				raise_message('combined_health_move', __('Combined Cisco health graphs cannot be moved to another device. Create the health graphs on the target device instead.'), MESSAGE_LEVEL_ERROR);
+				cacti_redirect('graphs.php', ['action' => 'graph_edit', 'id' => grv('local_graph_id')]);
+			}
+
 			if (grv('host_id') > 0) {
 				object_cache_get_totals('device_state', grv('host_id'));
 			}

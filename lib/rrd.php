@@ -2672,17 +2672,18 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		]
 	];
 
-	$i               = 0;
-	$j               = 0;
-	$nth             = 0;
-	$sum             = 0;
-	$last_graph_cf   = [];
-	$legends         = [];
-	$defs            = [];
-	$graph_variables = [];
-	$cf_ds_cache     = [];
-	$cdef_cache      = [];
-	$vdef_cache      = [];
+	$i                       = 0;
+	$j                       = 0;
+	$nth                     = 0;
+	$sum                     = 0;
+	$last_graph_cf           = [];
+	$legends                 = [];
+	$defs                    = [];
+	$graph_variables         = [];
+	$cf_ds_cache             = [];
+	$cisco_health_pool_items = null;
+	$cdef_cache              = [];
+	$vdef_cache              = [];
 
 	if (cacti_sizeof($graph_items)) {
 		// we need to add a new column 'cf_reference', so unless PHP 5 is used, this foreach syntax is required
@@ -2988,6 +2989,11 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			if ($graph_item['cdef_id'] > 0 && !isset($cdef_cache[$cdef_cache_key])) {
 				/** @var string $cdef_string */
 				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
+
+				if ($cdef_string === 'CISCO_HEALTH_USED_PERCENT') {
+					require_once __DIR__ . '/cisco_health_graphs.php';
+					$cdef_string = cisco_health_graph_percentage($graph_item, $graph_items, $cf_ds_cache, (int)$cf_id, $cisco_health_pool_items);
+				}
 
 				$magic_item   = [];
 				$already_seen = [];
