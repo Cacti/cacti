@@ -2921,11 +2921,15 @@ function cactiIsPostActionUrl(href) {
 		"lock",
 		"unlock",
 		"set_host_sort",
-		"set_branch_sort"
+		"set_branch_sort",
+		"tree_up",
+		"tree_down"
 	],
 	"links.php": [
 		"delete_page",
-		"ajax_dnd"
+		"ajax_dnd",
+		"move_page_up",
+		"move_page_down"
 	],
 	"reports.php": [
 		"send",
