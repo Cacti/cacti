@@ -205,3 +205,55 @@ test('memory percentage uses the selected DEF consolidation rather than a GPRINT
 	$source = file_get_contents(dirname(__DIR__,4) . '/lib/rrd.php');
 	expect($source)->toContain("(int)explode(':', \$cf_ds_key)[1], \$cisco_health_pool_items");
 });
+
+
+test('successful retry publishes a newly created graph once but not an existing graph', function () {
+	$state = \CactiTests\CiscoHealthRetry\State::class;
+	$state::$events = [];
+	$state::$exists = false;
+	$state::$fail = true;
+	$state::$created = true;
+	$attempted = false;
+	$query = ['snmp_query_id'=>5,'snmp_index'=>'1.1','snmp_query_graph_id'=>9];
+	\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,7,$query,$attempted);
+	expect($state::$events)->toBe([]);
+	$state::$fail = false;
+	$attempted = false;
+	\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,7,$query,$attempted);
+	expect(array_column($state::$events,0))->toBe(['cache','tree','plugin']);
+	expect($state::$events[1][1])->toBe(['id'=>55,'host_id'=>1,'graph_template_id'=>7]+$query);
+	$attempted = false;
+	\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,7,$query,$attempted);
+	expect($state::$events)->toHaveCount(3);
+	$state::$exists = false;
+	$state::$created = false;
+	$attempted = false;
+	\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,7,$query,$attempted);
+	expect($state::$events)->toHaveCount(3);
+	$state::$created = true;
+});
+
+
+test('builder reports new creation separately from updating existing graph items', function () {
+	$state = \CactiTests\CiscoHealthTransaction\State::class;
+	$state::$normal = true;
+	$state::$identity = true;
+	$state::$begin = true;
+	$state::$rows = [['id'=>7,'snmp_index'=>'5','data_source_name'=>'temperature','label'=>'Sensor']];
+	$state::$items = [];
+	try {
+		$state::$newGraph = true;
+		expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1,'temperature',true)['created'])->toBeTrue();
+		$state::$newGraph = false;
+		expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1,'temperature',true)['created'])->toBeFalse();
+	} finally {
+		$state::$newGraph = false;
+		$state::$normal = false;
+	}
+});
+
+
+test('VDEF cache uses the complete effective CDEF identity', function () {
+	$source = file_get_contents(dirname(__DIR__,4) . '/lib/rrd.php');
+	expect($source)->toContain('"{$graph_item[\'vdef_id\']}:{$cdef_cache_key}"');
+});

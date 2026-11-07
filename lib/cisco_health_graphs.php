@@ -228,6 +228,8 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 			throw new RuntimeException('Import the Cisco health graph templates first.');
 		}
 
+		$created = !$id;
+
 		if (!$id) {
 			$id = cisco_health_graph_save(['id' => 0, 'host_id' => $host_id, 'graph_template_id' => (int)$base['graph_template_id']], 'graph_local');
 		}
@@ -363,6 +365,7 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 		$transaction_started = false;
 		$result['graph_id']  = $id;
 		$result['applied']   = true;
+		$result['created']   = $created;
 
 		return $result;
 	} catch (Throwable $error) {
@@ -430,7 +433,20 @@ function cisco_health_graph_retry_existing(int $host_id, int $template_id, array
 
 	try {
 		// No component ID: rebuild from existing sources without deleting graphs.
-		cisco_health_graph_build($host_id, $kind, true);
+		$result = cisco_health_graph_build($host_id, $kind, true);
+
+		if (!empty($result['created'])) {
+			set_config_option('time_last_change_graph', time());
+			$save = [
+				'id'                  => (int)$result['graph_id'], 'host_id' => $host_id,
+				'graph_template_id'   => $template_id,
+				'snmp_query_id'       => $query['snmp_query_id'] ?? 0,
+				'snmp_index'          => $query['snmp_index'] ?? 0,
+				'snmp_query_graph_id' => $query['snmp_query_graph_id'] ?? 0,
+			];
+			automation_hook_graph_create_tree($save);
+			api_plugin_hook_function('create_complete_graph_from_template', $save);
+		}
 	} catch (\Throwable $error) {
 		cacti_log('Combined Cisco health graph retry failed: ' . $error->getMessage(), false, 'GRAPH');
 	}
@@ -624,6 +640,24 @@ function cisco_health_graph_host_change_allowed(int $graph_id, int $host_id) : b
 				AND s.name = CONCAT(?, managed.host_id, ?)
 			WHERE source_item.local_graph_id = ? AND source_rrd.local_data_id > 0
 			AND gt.hash = ? LIMIT 1', ['cisco_health_combined_', '_' . $kind, $graph_id, $definition['graph']])) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/** Protect combined graph samples when Data Sources changes their device directly. */
+function cisco_health_source_host_change_allowed(int $source_id, int $host_id) : bool {
+	foreach (cisco_health_graph_kinds() as $kind => $definition) {
+		if (db_fetch_cell_prepared('SELECT 1 FROM data_template_rrd AS source_rrd
+			INNER JOIN graph_templates_item AS item ON item.task_item_id = source_rrd.id
+			INNER JOIN graph_local AS managed ON managed.id = item.local_graph_id
+			INNER JOIN graph_templates AS gt ON gt.id = managed.graph_template_id
+			INNER JOIN settings AS s ON s.value = managed.id
+				AND s.name = CONCAT(?, managed.host_id, ?)
+			WHERE source_rrd.local_data_id = ? AND managed.host_id != ?
+			AND gt.hash = ? LIMIT 1', ['cisco_health_combined_', '_' . $kind, $source_id, $host_id, $definition['graph']])) {
 			return false;
 		}
 	}

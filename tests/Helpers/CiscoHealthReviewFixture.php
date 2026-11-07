@@ -30,6 +30,8 @@ function db_fetch_row_prepared($sql, $args) {
 		'snmp_priv_protocol'=> '', 'snmp_context'=>'', 'snmp_port'=>161, 'snmp_timeout'=>500, 'ping_retries'=>1];
 }
 function db_fetch_cell_prepared($sql, $args) {
+	if (str_contains($sql, 'WHERE source_rrd.local_data_id')) { return $args[2] === 77 && $args[3] !== 1 ? 1 : 0; }
+
 	if (str_contains($sql, 'source_item')) {
 		return State::$shared ? 1 : 0;
 	}
