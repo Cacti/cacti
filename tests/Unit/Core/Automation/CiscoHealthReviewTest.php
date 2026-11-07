@@ -92,3 +92,32 @@ test('copies and ordinary graphs sharing managed data cannot move through API or
 		}
 	} finally { $state::$shared = false; $state::$template = 7; }
 });
+
+
+test('all memory gauge fallbacks use the numeric reader', function () {
+	$state = \CactiTests\CiscoHealthReview\State::class;
+	$state::$rawOids = [];
+	$state::$values = ['.1.3.6.1.4.1.9.9.48.1.1.1.4.1'=>'1'];
+	$state::$clock += 6000000000;
+	foreach (['used', 'free'] as $field) {
+		\CactiTests\CiscoHealthReview\ss_cisco_health(1, 'memory', 'get', $field, '1');
+	}
+	foreach ([5,6] as $col) {
+		expect($state::$rawOids)->toContain('.1.3.6.1.4.1.9.9.48.1.1.1.' . $col . '.1');
+	}
+	$base = '.1.3.6.1.4.1.9.9.221.1.1.1.1.';
+	$state::$values = [$base . '18.1.1'=>'No Such Object', $base . '20.1.1'=>'No Such Object'];
+	$state::$clock += 6000000000;
+	foreach (['used','free'] as $field) {
+		\CactiTests\CiscoHealthReview\ss_cisco_health(1, 'memory', 'get', $field, '1.1');
+	}
+	foreach ([7,8] as $col) { expect($state::$rawOids)->toContain($base . $col . '.1.1'); }
+	$base = '.1.3.6.1.4.1.9.9.715.1.1.7.1.';
+	$state::$values = [$base . '11.1.1'=>'No Such Object', $base . '13.1.1'=>'No Such Object'];
+	$state::$clock += 6000000000;
+	foreach (['used','free'] as $field) {
+		\CactiTests\CiscoHealthReview\ss_cisco_health(1, 'qfp_memory', 'get', $field, '1.1');
+	}
+	foreach ([3,4] as $col) { expect($state::$rawOids)->toContain($base . $col . '.1.1'); }
+	$state::$values = [];
+});
