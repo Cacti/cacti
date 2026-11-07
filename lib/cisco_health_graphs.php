@@ -55,14 +55,14 @@ function cisco_health_graph_percentage(array $item, array $items, array $defs, i
 	$sources = [];
 	foreach ($items as $candidate) {
 		if (!empty($item['local_data_id']) && $candidate['local_data_id'] == $item['local_data_id']) {
-			$key = $candidate['data_template_rrd_id'] . ':' . $cf;
-			if (isset($defs[$key])) {
-				$sources[$candidate['data_source_name']] = generate_graph_def_name($defs[$key]);
+			$key = $candidate['data_template_rrd_id'];
+			if (isset($defs[$key][$cf])) {
+				$sources[$candidate['data_source_name']] = generate_graph_def_name($defs[$key][$cf]);
 			}
 		}
 	}
 	if (!isset($sources['used'], $sources['free'])) {
-		return 'UNKN';
+		return ($sources['used'] ?? $sources['free'] ?? 'CURRENT_DATA_SOURCE') . ',UNKN,*';
 	}
 	$used = $sources['used'];
 	$free = $sources['free'];
