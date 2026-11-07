@@ -50,10 +50,20 @@ function cisco_health_graph_kind(int $template_id) : ?string {
 	return $kinds[$template_id];
 }
 
-/** Resolve the internal percentage token against this RRD, never graph item positions. */
-function cisco_health_graph_percentage(array $item, array $items, array $defs, int $cf) : string {
+/**
+ * Resolve the internal percentage token against this RRD, never graph item positions.
+ * @param-out array $pool_items
+ */
+function cisco_health_graph_percentage(array $item, array $items, array $defs, int $cf, ?array &$pool_items = null) : string {
 	$sources = [];
-	foreach ($items as $candidate) {
+	// Build once per render, then inspect only this pool for each CDEF.
+	if ($pool_items === null) {
+		$pool_items = [];
+		foreach ($items as $candidate) {
+			$pool_items[$candidate['local_data_id']][] = $candidate;
+		}
+	}
+	foreach ($pool_items[$item['local_data_id']] ?? [] as $candidate) {
 		if (!empty($item['local_data_id']) && $candidate['local_data_id'] == $item['local_data_id']) {
 			$key = $candidate['data_template_rrd_id'];
 			if (isset($defs[$key][$cf])) {
@@ -99,9 +109,17 @@ function cisco_health_graph_plan(array $rows, bool $temperature) : array {
 }
 
 function cisco_health_graph_save(array $record, string $table) : int {
+	global $database_last_error;
+	// 1.2 sql_save can return the existing ID even when its UPDATE failed.
+	$previous_error = $database_last_error;
+	$database_last_error = '';
 	$id = (int)sql_save($record, $table);
+	$error = $database_last_error;
+	if (!$error) {
+		$database_last_error = $previous_error;
+	}
 
-	if (!$id) {
+	if (!$id || $error) {
 		throw new RuntimeException('Could not save ' . $table . '.');
 	}
 

@@ -27,6 +27,7 @@ function db_fetch_cell_prepared($sql, $args) {
 	return 55;
 }
 function cacti_snmp_get(...$args) {
+	if ($args[12] !== 0) { throw new \RuntimeException('Used ping retries instead of SNMP defaults'); }
 	$oid = $args[2];
 	State::$oids[$oid] = (State::$oids[$oid] ?? 0) + 1;
 	return str_contains($oid, '.1.1.1.1.6.') ? '1' : '100';
@@ -55,3 +56,6 @@ function api_plugin_hook_function(...$args) { State::$events[] = 'hook'; }
 function api_graph_remove_aggregate_items(...$args) { State::$events[] = 'aggregate'; }
 function db_execute_prepared(...$args) { State::$events[] = 'delete'; }
 function set_config_option(...$args) { State::$events[] = 'invalidate'; }
+
+function cacti_snmp_get_raw(...$args) { return cacti_snmp_get(...$args); }
+function cisco_health_unit_response($raw) { return $raw; }

@@ -9,6 +9,7 @@ use Throwable;
 final class State {
 	public static array $rows = [];
 	public static bool $normal = false;
+	public static bool $failSave = false;
 	public static bool $identity = true;
 	public static array $items = [];
 	public static array $base = [];
@@ -38,6 +39,7 @@ function db_fetch_cell_prepared($sql, $args) {
 }
 function db_execute_prepared($sql, $args) { return true; }
 function sql_save($record, $table) {
+	if (State::$failSave) { $GLOBALS['database_last_error'] = 'Simulated failed UPDATE'; return 1; }
 	if ($table === 'graph_templates_item') { State::$items[] = $record; State::$writes++; }
 	if ($table === 'graph_templates_graph') { State::$base = $record; }
 	return 1;
