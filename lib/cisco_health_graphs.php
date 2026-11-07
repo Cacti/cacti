@@ -69,7 +69,7 @@ function cisco_health_graph_percentage(array $item, array $items, array $defs, i
 	}
 
 	if (!isset($sources['used'], $sources['free'])) {
-		return 'UNKN';
+		return ($sources['used'] ?? $sources['free'] ?? 'CURRENT_DATA_SOURCE') . ',UNKN,*';
 	}
 	$used = $sources['used'];
 	$free = $sources['free'];
