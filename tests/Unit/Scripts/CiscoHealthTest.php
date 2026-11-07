@@ -148,3 +148,29 @@ test('enhanced memory falls back to legacy gauges only for missing HC columns', 
 		expect(cisco_health_query('memory', 'get', 'used', '7.1', $get, $walk))->toBe($expected);
 	}
 });
+
+test('both sensor tables discover numeric and named Celsius without including other types', function () {
+	foreach (['.1.3.6.1.2.1.99.1.1.1.', '.1.3.6.1.4.1.9.9.91.1.1.1.1.'] as $base) {
+		[$get, $walk] = ciscoHealthFixture([], [$base . '1' => ['1'=>8, '2'=>'celsius(8)', '3'=>'celsius', '4'=>'voltsAC(3)', '5'=>'U']]);
+		expect(cisco_health_query('temperature', 'index', '', '', $get, $walk))->toBe("1\n2\n3\n");
+		expect(cisco_health_query('temperature', 'num_indexes', '', '', $get, $walk))->toBe('3');
+	}
+});
+
+test('original QFP gauges are discoverable and poll with overflow without masking failures', function () {
+	$base = '.1.3.6.1.4.1.9.9.715.1.1.7.1.';
+
+	foreach (['No Such Object'=>true, 'U'=>false, ''=>false] as $hc => $supported) {
+		[$get, $walk] = ciscoHealthFixture([$base . '9.7.1'=> $hc, $base . '2.7.1'=>1024], [$base . '2'=>['7.1'=>1024]]);
+		expect(cisco_health_query('qfp_memory', 'index', '', '', $get, $walk))->toBe($supported ? "7.1\n" : '');
+	}
+
+	foreach (['used'=>[11, 3, 10], 'free'=>[13, 4, 12]] as $field => [$hc, $low, $high]) {
+		foreach (['No Such Object'=>'2048', '1'=>'4398046513152', 'U'=>'U'] as $overflow => $expected) {
+			[$get, $walk] = ciscoHealthFixture([$base . $low . '.7.1'=> 2, $base . $high . '.7.1'=>$overflow]);
+			expect(cisco_health_query('qfp_memory', 'get', $field, '7.1', $get, $walk))->toBe($expected);
+		}
+		[$get, $walk] = ciscoHealthFixture([$base . $hc . '.7.1'=> 'U', $base . $low . '.7.1'=>2]);
+		expect(cisco_health_query('qfp_memory', 'get', $field, '7.1', $get, $walk))->toBe('U');
+	}
+});

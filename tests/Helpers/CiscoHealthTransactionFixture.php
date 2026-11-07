@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Throwable;
 
 final class State {
+	public static int $loaded    = 0;
 	public static array $rows    = [];
 	public static bool $normal   = false;
 	public static bool $identity = true;
@@ -29,9 +30,25 @@ function db_fetch_row_prepared($sql, $args) {
 	return [];
 }
 function db_fetch_assoc_prepared($sql, $args) {
-	return str_contains($sql, 'SELECT task_item_id, sequence') ? State::$items : State::$rows;
+	$rows = str_contains($sql, 'SELECT task_item_id, sequence') ? State::$items : State::$rows;
+
+	if (str_contains($sql, 'selected.snmp_index')) {
+		$rows = array_values(array_filter($rows, fn ($row) => (int)$row['snmp_index'] === $args[4]));
+	}
+
+	if (preg_match('/task_item_id IN \(([0-9,]+)\)/', $sql, $matches)) {
+		$ids  = array_map('intval', explode(',', $matches[1]));
+		$rows = array_values(array_filter($rows, fn ($row) => in_array($row['task_item_id'], $ids, true)));
+	}
+	State::$loaded += count($rows);
+
+	return $rows;
 }
 function db_fetch_cell_prepared($sql, $args) {
+	if (str_contains($sql, 'ORDER BY sequence DESC')) {
+		return State::$items ? max(array_column(State::$items, 'sequence')) : 0;
+	}
+
 	if (str_contains($sql, 'RELEASE_LOCK')) {
 		State::$releases++;
 	}

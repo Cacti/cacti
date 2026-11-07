@@ -27,6 +27,10 @@ if (!isset($called_by_script_server)) {
 require_once __DIR__ . '/../lib/snmp.php';
 
 function cisco_health_number(mixed $value) : int|float|null {
+	if (is_string($value) && strtolower(trim($value)) === 'celsius') {
+		return 8;
+	}
+
 	// Net-SNMP may retain an enum label when MIBs are installed.
 	if (is_string($value) && preg_match('/^[A-Za-z][A-Za-z0-9_-]*\((-?[0-9]+)\)$/D', $value, $match)) {
 		$value = $match[1];
@@ -61,6 +65,27 @@ function cisco_health_qfp_factor(int|float|null $unit) : ?int {
 	}
 
 	return $unit == 4 ? 1 : null;
+}
+/** Read HC QFP gauges, falling back only on explicit unsupported responses. */
+function cisco_health_qfp_memory(string $base, string $index, string $field, callable $get) : int|float|null {
+	$columns           = ['total' => [9, 2, 8], 'used' => [11, 3, 10], 'free' => [13, 4, 12]];
+	[$hc, $low, $high] = $columns[$field];
+	$raw               = $get($base . $hc . '.' . $index);
+	$value             = cisco_health_number($raw);
+
+	if ($value !== null || stripos((string)$raw, 'No Such') === false) {
+		return $value;
+	}
+	$low  = cisco_health_number($get($base . $low . '.' . $index));
+	$raw  = $get($base . $high . '.' . $index);
+	$high = cisco_health_number($raw);
+
+	if ($high === null && stripos((string)$raw, 'No Such') !== false) {
+		$high = 0;
+	}
+
+	return $low !== null && $high !== null && $low >= 0 && $low <= 4294967295 && $high >= 0 && $high <= 4294967295
+		? $high * 4294967296 + $low : null;
 }
 function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd = 'index', string $field = '', string $index = '') : string {
 	if (!ctype_digit((string)$host_id) || !in_array($kind, ['memory', 'qfp_memory', 'temperature'], true)) {
@@ -103,7 +128,7 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 			$a[]          = $engine;
 
 			// Preserve missing columns for memory fallbacks and legacy QFP units.
-			if (str_starts_with($oid, '.1.3.6.1.4.1.9.9.715.1.1.7.1.16.')
+			if (preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.715\.1\.1\.7\.1\.(8|9|10|11|12|13|16)\./', $oid)
 				|| preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.221\.1\.1\.1\.1\.(17|18|19|20)\./', $oid)) {
 				$raw          = cacti_snmp_get_raw(...$a);
 				$values[$oid] = cisco_health_unit_response((string)$raw);
@@ -229,7 +254,7 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 			return 'U';
 		}
 		$factor = cisco_health_qfp_factor($unit);
-		$v      = cisco_health_number($get($qfp . ($field === 'used' ? '11.' : '13.') . $index));
+		$v      = cisco_health_qfp_memory($qfp, $index, $field, $get);
 
 		return $factor !== null && $v !== null && $v >= 0 ? (string)($v * $factor) : 'U';
 	}
@@ -254,7 +279,17 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 			}
 		}
 	} elseif ($kind === 'qfp_memory') {
-		foreach ($walk($qfp . '9') as $idx=>$total) {
+		$totals = $walk($qfp . '9');
+
+		// Original gauges also identify resources on pre-HC implementations.
+		// Confirm a missing HC value by GET; an empty/partial walk may be a timeout.
+		foreach ($walk($qfp . '2') as $idx => $total) {
+			if (!array_key_exists($idx, $totals)) {
+				$totals[$idx] = cisco_health_qfp_memory($qfp, (string)$idx, 'total', $get);
+			}
+		}
+
+		foreach ($totals as $idx=>$total) {
 			if (!is_numeric($total) || $total <= 0) {
 				continue;
 			}
@@ -268,7 +303,7 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 		$types = $walk($temp . '1') + $walk($ciscoTemp . '1');
 
 		foreach ($types as $idx=>$type) {
-			if ((int)$type === 8) {
+			if (cisco_health_number($type) === 8) {
 				$name         = $resolve_names ? $get($names . $idx) : '';
 				$labels[$idx] = $name ?: 'Sensor ' . $idx;
 			}
