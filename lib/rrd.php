@@ -3314,7 +3314,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			// +++++++++++++++++++++++ GRAPH ITEMS: VDEFs START +++++++++++++++++++++++
 
 			$vdef_graph_defs = '';
-			$vdef_cache_key  = "{$graph_item['vdef_id']}:{$graph_item['cdef_id']}:{$graph_item['data_template_rrd_id']}:{$cf_id}";
+			$vdef_cache_key  = "{$graph_item['vdef_id']}:{$cdef_cache_key}";
 
 			if ($graph_item['vdef_id'] > 0 && !isset($vdef_cache[$vdef_cache_key])) {
 				$vdef_string = $graph_variables['vdef_cache'][$graph_item['graph_templates_item_id']];
