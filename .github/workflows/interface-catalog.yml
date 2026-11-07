@@ -1,0 +1,106 @@
+name: Interface catalog contracts
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/interface-catalog.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'cacti.sql'
+      - 'install/templates/Generic_SNMP_Device.xml.gz'
+      - 'resource/catalogs/**'
+      - 'resource/snmp_queries/interface.xml'
+      - 'lib/import.php'
+      - 'lib/database.php'
+      - 'lib/xml.php'
+      - 'lib/rrd.php'
+      - 'lib/utility.php'
+      - 'lib/functions.php'
+      - 'include/global*.php'
+      - 'tests/bootstrap-unit.php'
+      - 'tests/Pest.php'
+      - 'tests/Helpers/**'
+      - 'tests/Unit/DataCollection/DataQuery/InterfaceCatalogNativeTest.php'
+      - 'tests/fixtures/interface_catalog_native.php'
+      - 'tests/phpunit-interface-catalog.xml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: interface-catalog-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native:
+    name: Interface import and RRD / ${{ matrix.database }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        database: ['mariadb:10.11', 'mysql:8.4']
+        include:
+          - database: 'mariadb:10.11'
+            digest: '7db29378d4fdab73f8123bbc2b48905c90d1a4b00cf848b028f1e81e623257f2'
+          - database: 'mysql:8.4'
+            digest: '6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242'
+    services:
+      database:
+        # Reuse the immutable mirrors already registered by ci-images.yml.
+        image: ghcr.io/cacti/ci-images/${{ matrix.database }}@sha256:${{ matrix.digest }}
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          MYSQL_DATABASE: cacti_interface_catalog_ci
+          MYSQL_ROOT_PASSWORD: fixture-password
+          MYSQL_ROOT_HOST: '%'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pfixture-password"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup locked PHP at the supported floor
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: pdo_mysql, mbstring, gd, intl, gmp, ldap, sockets, xml, sqlite3
+          install-args: --no-interaction --prefer-dist --no-progress
+      - name: Install RRDtool for temporary RRD contracts
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y rrdtool
+      - name: Verify native imports and existing counter behavior
+        env:
+          CACTI_INTERFACE_CATALOG_REAL_DB: '1'
+          CACTI_TEST_DB_HOST: '127.0.0.1'
+          CACTI_TEST_DB_PORT: '3306'
+          CACTI_TEST_DB_NAME: cacti_interface_catalog_ci
+          CACTI_TEST_DB_USER: root
+          CACTI_TEST_DB_PASS: fixture-password
+          RRDTOOL_TEST_BINARY: /usr/bin/rrdtool
+        run: >-
+          include/vendor/bin/pest --configuration=tests/phpunit-interface-catalog.xml
+          --fail-on-skipped --fail-on-empty-test-suite --colors=never
+          --log-junit=interface-catalog-junit.xml
+      - name: Preserve native test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: interface-catalog-${{ strategy.job-index }}
+          path: interface-catalog-junit.xml
+          if-no-files-found: error
