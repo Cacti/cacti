@@ -3272,7 +3272,13 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule) : bool 
 				AND gl.snmp_index = ?',
 				[$rule['graph_type_id'], $host_id, $rule['snmp_query_id'], $snmp_query_array['snmp_index']]);
 
-			if (isset($existsAlready) && $existsAlready > 0) {
+			if (!$existsAlready) {
+				require_once __DIR__ . '/cisco_health_graphs.php';
+				$combined = cisco_health_graph_existing($host_id, $graph_template_id, $snmp_query_array);
+				$existsAlready = $combined['local_graph_id'] ?? 0;
+			}
+
+			if ($existsAlready > 0) {
 				cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - Graph[$existsAlready]", false, 'AUTOM8', POLLER_VERBOSITY_HIGH);
 
 				continue;
