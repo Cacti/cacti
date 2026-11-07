@@ -37,7 +37,7 @@ test('signed package contains current sources', function () {
 	));
 	$expected = [
 		'scripts/ss_cisco_health.php',
-		'resource/snmp_queries/cisco_cellular_radio.xml',
+		'resource/script_server/cisco_cellular_radio.xml',
 		'resource/snmp_queries/cisco_qfp_processors.xml',
 		'resource/script_server/cisco_memory.xml',
 		'resource/script_server/cisco_qfp_memory.xml',

@@ -2990,9 +2990,10 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				/** @var string $cdef_string */
 				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
 
-				if ($cdef_string === 'CISCO_HEALTH_USED_PERCENT') {
+				if (in_array('CISCO_HEALTH_USED_PERCENT', explode(',', $cdef_string), true)) {
 					require_once __DIR__ . '/cisco_health_graphs.php';
-					$cdef_string = cisco_health_graph_percentage($graph_item, $graph_items, $cf_ds_cache, (int)$cf_id, $cisco_health_pool_items);
+					$replacement = cisco_health_graph_percentage($graph_item, $graph_items, $cf_ds_cache, (int)$cf_id, $cisco_health_pool_items);
+					$cdef_string = cisco_health_graph_expand_percentage($cdef_string, $replacement);
 				}
 
 				$magic_item   = [];
