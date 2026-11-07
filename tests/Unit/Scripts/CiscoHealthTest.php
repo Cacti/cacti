@@ -103,3 +103,26 @@ test('qfp units are explicit and transport errors do not become kilobytes', func
 		$this->assertSame($expected, cisco_health_query('qfp_memory', 'get', 'used', '1.1', $get, $walk));
 	}
 });
+
+test('raw QFP reader preserves missing columns without treating empty replies as legacy units', function () {
+	$base = '.1.3.6.1.4.1.9.9.715.1.1.7.1.';
+	foreach (['No Such Object available on this agent at this OID' => '1048576', 'No Such Instance currently exists at this OID' => '1048576', '' => 'U', 'U' => 'U', 'INTEGER: 4' => '1024'] as $raw => $expected) {
+		[$get, $walk] = ciscoHealthFixture([$base . '16.1.1' => cisco_health_unit_response($raw), $base . '11.1.1' => 1024]);
+		expect(cisco_health_query('qfp_memory', 'get', 'used', '1.1', $get, $walk))->toBe($expected);
+	}
+});
+
+test('index discovery never fetches entity names', function () {
+	$walks = [
+		'.1.3.6.1.4.1.9.9.221.1.1.1.1.3' => ['7.1' => 'Processor'],
+		'.1.3.6.1.4.1.9.9.715.1.1.7.1.9' => ['7.1' => '1024'],
+		'.1.3.6.1.2.1.99.1.1.1.1' => ['7' => '8'],
+	];
+	$get = static function ($oid) { throw new RuntimeException('Unnecessary GET: ' . $oid); };
+	$walk = static fn ($oid) => $walks[$oid] ?? [];
+	foreach (['memory', 'qfp_memory', 'temperature'] as $kind) {
+		expect(cisco_health_query($kind, 'num_indexes', '', '', $get, $walk))->toBe('1');
+		expect(cisco_health_query($kind, 'index', '', '', $get, $walk))->not->toBe('');
+		expect(cisco_health_query($kind, 'query', 'index', '', $get, $walk))->not->toBe('');
+	}
+});
