@@ -54,6 +54,8 @@ namespace Cacti\Test\ManifestSave {
 
 		return $GLOBALS['save_result'];
 	}
+	function csrf_require_post() {
+	}
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/package_repos.php', 'form_save', __NAMESPACE__);
 	$count = 0;
 	$token = bin2hex(random_bytes(16));
