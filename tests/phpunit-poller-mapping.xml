@@ -2,6 +2,8 @@
 <phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
     <testsuites>
         <testsuite name="PollerMapping">
+            <file>Unit/Core/ManagementSaveTest.php</file>
+            <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>
             <file>Unit/PollerMappingCacheTest.php</file>
             <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
         </testsuite>

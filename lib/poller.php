@@ -781,7 +781,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 		AND po.rrd_name = pi.rrd_name
 		INNER JOIN data_local AS dl
 		ON dl.id = po.local_data_id
-		ORDER BY po.local_data_id
+		ORDER BY po.local_data_id, po.rrd_name, po.time
 		$limit");
 
 	if (!$rrd_field_names_loaded) {
@@ -798,6 +798,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 
 	if (cacti_sizeof($results)) {
 		/* create an array keyed off of each .rrd file */
+		$rrd_update_array = array();
 		foreach ($results as $item) {
 			/* trim the default characters, but add single and double quotes */
 			$value            = $item['output'];
@@ -991,8 +992,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 		}
 
 		/* make sure each .rrd file has complete data */
-		$k        = 0;
-		$data_ids = array();
+		$complete = array();
 
 		foreach ($results as $item) {
 			$unix_time = $item['unix_time'];
@@ -1006,21 +1006,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 				 * those data sources from the $rrd_update_array yet.
 				 */
 				if ($item['rrd_num'] <= cacti_sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
-					$data_ids[] = $item['local_data_id'];
-					$k++;
-					if ($k % 10000 == 0) {
-						db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
-						$data_ids = array();
-						$k = 0;
-					}
+					$complete[$item['local_data_id']][$unix_time] = true;
 				} else {
 					unset($rrd_update_array[$rrd_path]['times'][$unix_time]);
 				}
 			}
-		}
-
-		if ($k > 0) {
-			db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
 		}
 
 		/* process dsstats information */
@@ -1030,7 +1020,44 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 		api_plugin_hook_function('poller_output', $rrd_update_array);
 
 		if (boost_poller_on_demand($results)) {
-			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe, $unused_cache);
+			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe, $unused_cache, $updated);
+		} else {
+			// Boost owns a separate copy of these samples.
+			$updated = $complete;
+		}
+
+		// Delete only selected samples whose write succeeded; newer samples may have arrived.
+		$delete_params = array();
+		$deleted_rows  = 0;
+		$retry_pending = false;
+		foreach ($results as $item) {
+			if (isset($updated[$item['local_data_id']][$item['unix_time']])) {
+				$delete_params[] = $item['local_data_id'];
+				$delete_params[] = $item['rrd_name'];
+				$delete_params[] = $item['time'];
+			} elseif (isset($complete[$item['local_data_id']][$item['unix_time']])) {
+				$retry_pending = true;
+			}
+
+			if (cacti_sizeof($delete_params) == 3000) {
+				if (db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' .
+					implode(',', array_fill(0, 1000, '(?, ?, ?)')) . ')', $delete_params)) {
+					$deleted_rows += 1000;
+				} else {
+					$retry_pending = true;
+				}
+				$delete_params = array();
+			}
+		}
+
+		if (cacti_sizeof($delete_params)) {
+			$delete_count = intdiv(cacti_sizeof($delete_params), 3);
+			if (db_execute_prepared('DELETE FROM poller_output WHERE (local_data_id, rrd_name, time) IN (' .
+				implode(',', array_fill(0, $delete_count, '(?, ?, ?)')) . ')', $delete_params)) {
+				$deleted_rows += $delete_count;
+			} else {
+				$retry_pending = true;
+			}
 		}
 
 		$results = NULL;
@@ -1041,12 +1068,14 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			FROM poller_output');
 
 		/* to much records in poller_output, process in chunks */
-		if ($rows && $remainder == $max_rows) {
+		if ($rows && $remainder == $max_rows && !$retry_pending) {
 			$running = db_fetch_cell('SELECT COUNT(*)
 				FROM poller_time
 				WHERE end_time = "0000-00-00"');
 
-			$rrds_processed += process_poller_output($rrdtool_pipe, $rows < $max_rows ? $rows : $max_rows);
+			if ($deleted_rows > 0) {
+				$rrds_processed += process_poller_output($rrdtool_pipe, $rows < $max_rows ? $rows : $max_rows);
+			}
 
 			if ($running == 0 && !$checked_bad) {
 				// Remove recently deleted items from the poller_output table
@@ -1074,9 +1103,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 						if ($prevName != $item['name']) {
 							cacti_log(sprintf('WARNING: Data Template \'%s\' is impacted by lack of complete information', $item['name']), false, 'POLLER');
 							$prevName = $item['name'];
-
-							db_execute('DELETE FROM poller_output WHERE local_data_id IN(' . $item['local_data_ids'] . ')');
 						}
+
+						db_execute('DELETE FROM poller_output WHERE local_data_id IN(' . $item['local_data_ids'] . ')');
 					}
 				}
 
