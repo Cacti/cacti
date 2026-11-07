@@ -401,7 +401,13 @@ function do_rrdcheck($thread_id = 1) {
 							$dsses += cacti_sizeof($data_source_names);
 							$first  = false;
 						} else {
-							$parts = explode(':', $line);
+							$parts = explode(':', $line, 2);
+
+							if (!isset($parts[1])) {
+								// Not a 'timestamp: value value ...' data line, skip it
+								continue;
+							}
+
 							$data  = explode(' ', trim($parts[1]));
 
 							foreach($data as $index=>$number) {
