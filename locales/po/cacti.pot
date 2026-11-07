@@ -20104,3 +20104,11 @@ msgstr ""
 #: vdef.php
 msgid "No VDEFs"
 msgstr ""
+
+#: lib/cisco_health_graphs.php
+msgid "The individual graph was kept because the combined graph could not be built. See the Cacti log."
+msgstr ""
+
+#: lib/cisco_health_graphs.php
+msgid "Another health graph creation is running for this device. Please try again."
+msgstr ""
