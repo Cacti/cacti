@@ -168,3 +168,40 @@ test('nested CDEFs expand every complete memory token without changing surroundi
 	expect(cisco_health_graph_expand_percentage('OTHER_' . $token . ',100,*',$rpn))->toBe('OTHER_' . $token . ',100,*');
 	expect(cisco_health_graph_expand_percentage($token . ',100,*','a,UNKN,*'))->toBe('a,UNKN,*,100,*');
 });
+
+
+require_once dirname(__DIR__, 3) . '/Helpers/CiscoHealthRetryFixture.php';
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/cisco_health_graphs.php', 'cisco_health_graph_retry_existing', 'CactiTests\\CiscoHealthRetry');
+
+test('automation retries a failed combined view on a later pass without deleting individual graphs', function () {
+	$state = \CactiTests\CiscoHealthRetry\State::class;
+	$state::$exists = false;
+	$state::$fail = true;
+	$state::$builds = [];
+	$attempted = false;
+	for ($i=0; $i<100; $i++) {
+		\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,7,[],$attempted);
+	}
+	expect($state::$builds)->toBe([[1,'memory',true]]);
+	$state::$fail = false;
+	$attempted = false;
+	\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,7,[],$attempted);
+	expect($state::$exists)->toBeTrue();
+	expect($state::$builds)->toHaveCount(2);
+	$attempted = false;
+	\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,7,[],$attempted);
+	\CactiTests\CiscoHealthRetry\cisco_health_graph_retry_existing(1,900,[],$attempted);
+	expect($state::$builds)->toHaveCount(2);
+});
+
+test('memory percentage uses the selected DEF consolidation rather than a GPRINT requested function', function () {
+	$used = ['local_data_id'=>20,'data_template_rrd_id'=>30,'data_source_name'=>'used','consolidation_function_id'=>3];
+	$free = ['local_data_id'=>20,'data_template_rrd_id'=>31,'data_source_name'=>'free'];
+	foreach (['30:1','30:2'] as $selected) {
+		$cf = (int)explode(':',$selected)[1];
+		$defs = ['30:' . $cf=>0,'31:' . $cf=>1];
+		expect(cisco_health_graph_percentage($used,[$used,$free],$defs,$cf))->toBe('a,b,+,0,GT,a,a,b,+,/,100,*,UNKN,IF');
+	}
+	$source = file_get_contents(dirname(__DIR__,4) . '/lib/rrd.php');
+	expect($source)->toContain("(int)explode(':', \$cf_ds_key)[1], \$cisco_health_pool_items");
+});
