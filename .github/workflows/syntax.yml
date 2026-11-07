@@ -171,12 +171,48 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
     - name: Install PHP ${{ matrix.php }}
+      if: matrix.php != '8.6'
       uses: ./.github/actions/setup-php-composer
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring #optional
         ini-values: "post_max_size=256M, max_execution_time=60, date.timezone=America/New_York" #optional
         dependency-mode: locked-integration
+
+    # PHP 8.6 is still pre-release. shivammathur/setup-php ships a nightly
+    # 8.6.0-dev build whose bundled extensions are ABI-skewed against their own
+    # core (undefined symbol: smart_str_ferealloc / _safe_femalloc), so every
+    # extension fails to load and the CLI install dies. Ondřej Surý's PPA
+    # provides a coherent 8.6 RC build - the very same one the Apache mod_php
+    # handler below installs - so this experimental leg provisions the CLI from
+    # there instead, keeping the CLI and Apache on one ABI-matched PHP build.
+    - name: Install PHP 8.6 toolchain from Ondřej Surý's PPA
+      if: matrix.php == '8.6'
+      run: |
+        set -euo pipefail
+        sudo add-apt-repository -y ppa:ondrej/php
+        sudo apt-get update
+        sudo apt-get install -y \
+          php8.6-cli php8.6-common \
+          php8.6-intl php8.6-mysql php8.6-gd php8.6-ldap \
+          php8.6-gmp php8.6-xml php8.6-curl php8.6-mbstring php8.6-snmp
+        # Make the Ondřej 8.6 CLI the default `php` so composer and the tests
+        # run under the same ABI-coherent build as Apache mod_php.
+        sudo update-alternatives --install /usr/bin/php php /usr/bin/php8.6 86
+        sudo update-alternatives --set php /usr/bin/php8.6
+        # Mirror the ini values the other legs receive via setup-php.
+        printf '%s\n' \
+          'post_max_size=256M' \
+          'max_execution_time=60' \
+          'date.timezone=America/New_York' \
+          | sudo tee /etc/php/8.6/cli/conf.d/99-cacti-ci.ini >/dev/null
+        # setup-php normally provides Composer; it is skipped for this leg, so
+        # make sure a Composer binary is available for the dependency steps.
+        if ! command -v composer >/dev/null 2>&1; then
+          sudo apt-get install -y composer
+        fi
+        php -v
+        composer --version
 
     - name: Check PHP version
       run: php -v
