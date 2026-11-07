@@ -134,6 +134,7 @@ jobs:
 
   check:
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     timeout-minutes: 40
     strategy:
       fail-fast: false
@@ -141,6 +142,15 @@ jobs:
         os: [ubuntu-24.04]
         php: ['8.2', '8.3', '8.4']
         experimental: [false]
+        include:
+          # PHP 8.5 and 8.6 run as non-blocking (experimental) legs because
+          # their packages can lag on the runners and in Ondřej Surý's PPA.
+          - os: ubuntu-24.04
+            php: '8.5'
+            experimental: true
+          - os: ubuntu-24.04
+            php: '8.6'
+            experimental: true
         
     services:
       mysql:
@@ -266,6 +276,26 @@ jobs:
 
     - name: Install Apache and Tools
       run: sudo apt-get install snmp snmpd rrdtool fping
+
+    - name: Install and enable the Apache PHP ${{ matrix.php }} handler
+      run: |
+        # Make sure Ondřej Surý's PHP repository is available so the versioned
+        # Apache module and MySQL extension resolve for every matrix PHP
+        # version, including 8.5/8.6 which are not in the base Ubuntu archive.
+        sudo add-apt-repository -y ppa:ondrej/php
+        sudo apt-get update
+        sudo apt-get install -y \
+          libapache2-mod-php${{ matrix.php }} \
+          php${{ matrix.php }}-mysql
+        # mod_php is only loadable under the prefork MPM.
+        sudo a2dismod mpm_event mpm_worker 2>/dev/null || true
+        sudo a2enmod mpm_prefork
+        # Ensure Apache executes the matrix PHP version and no other.
+        for mod in /etc/apache2/mods-enabled/php*.load; do
+          [ -e "$mod" ] || continue
+          sudo a2dismod "$(basename "$mod" .load)" 2>/dev/null || true
+        done
+        sudo a2enmod php${{ matrix.php }}
 
     - name: Start SNMPD Agent and Test Agent
       run: |
