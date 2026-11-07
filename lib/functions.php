@@ -7212,10 +7212,6 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR NOTICE', false, true, 0, 1);
 			break;
-		case E_STRICT:
-			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR STRICT', false, true, 0, 1);
-			break;
 		default:
 			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);

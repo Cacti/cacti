@@ -768,9 +768,13 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 			E_COMPILE_WARNING   => 'Compile Warning',
 			E_USER_ERROR        => 'User Error',
 			E_USER_WARNING      => 'User Warning',
-			E_USER_NOTICE       => 'User Notice',
-			E_STRICT            => 'Runtime Notice'
+			E_USER_NOTICE       => 'User Notice'
 		);
+
+		/* E_STRICT was deprecated in PHP 8.4 and is never emitted on 8.4+ */
+		if (version_compare(PHP_VERSION, '8.4', '<')) {
+			$errortype[E_STRICT] = 'Runtime Notice';
+		}
 
 		if (defined('E_RECOVERABLE_ERROR')) {
 			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
