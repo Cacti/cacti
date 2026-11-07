@@ -1,11 +1,21 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
-test('CSRF recovery warns once and does not replay a rejected profile update', async ({ page }) => {
+const WARNING_TEXT = 'CSRF Timeout occurred due to inactivity, page refreshed.';
+
+async function login(page: Page) {
 	await page.goto('/');
 	await page.locator('#login_username').fill('admin');
 	await page.locator('#login_password').fill('admin');
 	await page.locator('form#login input[type="submit"]').click();
 	await expect(page).toHaveURL(/index\.php/);
+}
+
+function warningText(page: Page) {
+	return page.getByText(WARNING_TEXT, { exact: true });
+}
+
+test('CSRF recovery warns once and does not replay a rejected profile update', async ({ page }) => {
+	await login(page);
 	await page.goto('/auth_profile.php?tab=general&keep=a%26b');
 	const originalName = await page.locator('#full_name').inputValue();
 	const token = await page.evaluate(() => (window as any).csrfMagicToken);
@@ -26,7 +36,7 @@ test('CSRF recovery warns once and does not replay a rejected profile update', a
 		});
 	});
 	expect((await rejected).status()).toBe(302);
-	const warning = page.getByText('CSRF Timeout occurred due to inactivity, page refreshed.', { exact: true });
+	const warning = warningText(page);
 	await expect(warning).toBeVisible();
 	await expect.poll(() => new URL(page.url()).searchParams.has('csrf_timeout')).toBe(false);
 	expect(new URL(page.url()).searchParams.get('tab')).toBe('general');
@@ -38,31 +48,23 @@ test('CSRF recovery warns once and does not replay a rejected profile update', a
 });
 
 test('timeout URL cleanup preserves the fragment and existing history state', async ({ page }) => {
-	await page.goto('/');
-	await page.locator('#login_username').fill('admin');
-	await page.locator('#login_password').fill('admin');
-	await page.locator('form#login input[type="submit"]').click();
-	await expect(page).toHaveURL(/index\.php/);
+	await login(page);
 	await page.addInitScript(() => {
 		history.replaceState({ csrfRecoveryTest: true }, '', location.href);
 	});
 	await page.goto('/index.php?keep=a%26b&csrf_timeout=true#details');
-	await expect(page.getByText('CSRF Timeout occurred due to inactivity, page refreshed.', { exact: true })).toBeVisible();
+	await expect(warningText(page)).toBeVisible();
 	await expect(page).toHaveURL(/index\.php\?keep=a%26b#details$/);
 	expect(await page.evaluate(() => history.state)).toEqual({ csrfRecoveryTest: true });
 });
 
 test('graph filter refresh does not resurrect the timeout warning from myHref', async ({ page }) => {
-	await page.goto('/');
-	await page.locator('#login_username').fill('admin');
-	await page.locator('#login_password').fill('admin');
-	await page.locator('form#login input[type="submit"]').click();
-	await expect(page).toHaveURL(/index\.php/);
+	await login(page);
 
 	// Land on the recovered graph page exactly as the production redirect does:
 	// the csrf_timeout GET marker raises the one-shot warning.
 	await page.goto('/graph_view.php?action=preview&csrf_timeout=true');
-	const warning = page.getByText('CSRF Timeout occurred due to inactivity, page refreshed.', { exact: true });
+	const warning = warningText(page);
 	await expect(warning).toBeVisible();
 
 	// The address bar is cleaned and the cached filter href (myHref) is kept in
@@ -79,15 +81,10 @@ test('graph filter refresh does not resurrect the timeout warning from myHref', 
 });
 
 test('tree auto-refresh target drops the timeout marker', async ({ page }) => {
-	await page.goto('/');
-	await page.locator('#login_username').fill('admin');
-	await page.locator('#login_password').fill('admin');
-	await page.locator('form#login input[type="submit"]').click();
-	await expect(page).toHaveURL(/index\.php/);
+	await login(page);
 
 	await page.goto('/graph_view.php?action=tree&csrf_timeout=true');
-	const warning = page.getByText('CSRF Timeout occurred due to inactivity, page refreshed.', { exact: true });
-	await expect(warning).toBeVisible();
+	await expect(warningText(page)).toBeVisible();
 	await expect.poll(() => new URL(page.url()).searchParams.has('csrf_timeout')).toBe(false);
 
 	// The refresh timer re-requests refreshPage; it must not carry the marker or
