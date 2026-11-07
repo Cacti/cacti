@@ -245,7 +245,7 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_syslog
-        ref: 84d22bb482a91f935cfb8ffc98cf7ac180942407
+        ref: 31e70d82a2b59cd2fa030a966ebdcd3cb01834c9
         path: plugins/syslog
         persist-credentials: false
 
