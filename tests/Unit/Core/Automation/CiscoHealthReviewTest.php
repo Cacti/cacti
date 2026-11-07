@@ -8,7 +8,7 @@ foreach (['cisco_health_graph_kinds', 'cisco_health_graph_kind', 'cisco_health_g
 }
 cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/api_graph.php', 'api_graph_change_device', 'CactiTests\\CiscoHealthReview');
 
-foreach (['cisco_health_number', 'cisco_health_query', 'ss_cisco_health'] as $name) {
+foreach (['cisco_health_number', 'cisco_health_qfp_memory', 'cisco_health_query', 'ss_cisco_health'] as $name) {
 	cacti_fixture_source_function(dirname(__DIR__, 4) . '/scripts/ss_cisco_health.php', $name, 'CactiTests\\CiscoHealthReview');
 }
 
@@ -84,4 +84,35 @@ test('internal graph cleanup retains hooks without consuming enclosing counter s
 	$state::$events = [];
 	\CactiTests\CiscoHealthReview\api_graph_remove(55);
 	expect($state::$events)->toBe(['snapshot', 'hook', 'aggregate', 'delete', 'delete', 'delete', 'delete', 'delete', 'counters', 'invalidate']);
+});
+
+test('copies and ordinary graphs sharing managed data cannot move through API or editor', function () {
+	$state = \CactiTests\CiscoHealthReview\State::class;
+
+	try {
+		foreach ([7, 0] as $template) {
+			$state::$template = $template;
+			$state::$shared   = true;
+			$state::$events   = [];
+			expect(\CactiTests\CiscoHealthReview\api_graph_change_device(56, 2))->toBeFalse();
+			expect($state::$events)->toBe([]);
+			$state::$request = ['save_component_graph'=> '1', 'local_graph_id'=>56, 'host_id'=>2,
+				'host_id_prev'                           => 2, 'graph_template_id'=>0, 'graph_template_id_prev'=>0];
+			$state::$messages = [];
+
+			try {
+				\CactiTests\CiscoHealthReview\form_save();
+			} catch (RuntimeException $e) {
+				expect($e->getMessage())->toBe('Test redirect');
+			}
+			expect($state::$messages[0][0])->toBe('combined_health_move');
+			expect($state::$events)->toBe([]);
+			expect(\CactiTests\CiscoHealthReview\cisco_health_graph_host_change_allowed(56, 1))->toBeTrue();
+			$state::$shared = false;
+			expect(\CactiTests\CiscoHealthReview\cisco_health_graph_host_change_allowed(56, 2))->toBeTrue();
+		}
+	} finally {
+		$state::$shared   = false;
+		$state::$template = 7;
+	}
 });

@@ -129,7 +129,7 @@ function cisco_health_graph_save(array $record, string $table) : int {
 }
 
 /** Create/update one combined health graph. No data sources or RRD files are created or removed. */
-function cisco_health_graph_build(int $host_id, string $kind, bool $apply = false) : array {
+function cisco_health_graph_build(int $host_id, string $kind, bool $apply = false, int $component_id = 0) : array {
 	$definition = cisco_health_graph_kinds()[$kind] ?? null;
 
 	if (!$definition || $host_id < 1) {
@@ -168,6 +168,23 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 	$transaction_started = false;
 
 	try {
+		// Normal creation appends just the new component. A missing combined graph
+		// still rebuilds from every active source, as does an explicit CLI rebuild.
+		$incremental = $component_id > 0 && (bool)db_fetch_cell_prepared(
+			'SELECT gl.id FROM settings AS s INNER JOIN graph_local AS gl ON gl.id = s.value
+			INNER JOIN graph_templates AS gt ON gt.id = gl.graph_template_id
+			WHERE s.name = ? AND gl.host_id = ? AND gt.hash = ?', [$key, $host_id, $definition['graph']]);
+		$source_filter = $incremental ? ' AND (dl.snmp_query_id, dl.snmp_index) IN (SELECT selected.snmp_query_id, selected.snmp_index
+			FROM graph_templates_item AS i INNER JOIN data_template_rrd AS r ON r.id = i.task_item_id
+			INNER JOIN data_local AS selected ON selected.id = r.local_data_id
+			INNER JOIN graph_local AS component ON component.id = i.local_graph_id
+			WHERE component.id = ? AND component.host_id = ?)' : '';
+		$source_args = ['healthName', $host_id, $definition['data'], 'on'];
+
+		if ($incremental) {
+			$source_args[] = $component_id;
+			$source_args[] = $host_id;
+		}
 		$rows = db_fetch_assoc_prepared('SELECT dtr.id, dtr.data_source_name, dl.snmp_index,
 			(SELECT hsc.field_value FROM host_snmp_cache AS hsc
 			WHERE hsc.host_id = dl.host_id AND hsc.snmp_query_id = dl.snmp_query_id
@@ -176,8 +193,8 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 			INNER JOIN data_template AS dt ON dt.id = dl.data_template_id
 			INNER JOIN data_template_rrd AS dtr ON dtr.local_data_id = dl.id
 			INNER JOIN data_template_data AS dtd ON dtd.local_data_id = dl.id
-			WHERE dl.host_id = ? AND dt.hash = ? AND dtd.active = ?
-			ORDER BY dl.id, dtr.id', ['healthName', $host_id, $definition['data'], 'on']);
+			WHERE dl.host_id = ? AND dt.hash = ? AND dtd.active = ?' . $source_filter . '
+			ORDER BY dl.id, dtr.id', $source_args);
 		$temperature = $kind === 'temperature';
 		$pools       = cisco_health_graph_plan($rows, $temperature);
 		$result      = ['graph_id' => 0, 'pools' => $pools, 'applied' => false];
@@ -239,10 +256,12 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 		}
 		cisco_health_graph_save($base, 'graph_templates_graph');
 
-		// Append new members without rewriting every previously discovered sensor/pool.
-		$members  = db_fetch_assoc_prepared('SELECT task_item_id, sequence FROM graph_templates_item WHERE local_graph_id = ?', [$id]);
-		$counts   = [];
-		$sequence = 1;
+		// Load only candidate members on the append path, not every previous pool.
+		$source_ids    = array_map('intval', array_column($rows, 'id'));
+		$member_filter = $incremental ? ' AND task_item_id IN (' . implode(',', $source_ids) . ')' : '';
+		$members       = db_fetch_assoc_prepared('SELECT task_item_id, sequence FROM graph_templates_item WHERE local_graph_id = ?' . $member_filter, [$id]);
+		$counts        = [];
+		$sequence      = $incremental ? 1 + (int)db_fetch_cell_prepared('SELECT sequence FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence DESC LIMIT 1', [$id]) : 1;
 
 		foreach ($members as $member) {
 			$counts[$member['task_item_id']] = ($counts[$member['task_item_id']] ?? 0) + 1;
@@ -267,7 +286,7 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 				$formats[$name] = cisco_health_graph_save(['id' => 0, 'hash' => md5('cisco-health-' . $text), 'name' => 'Cisco Health - ' . $text, 'gprint_text' => $text], 'graph_templates_gprint');
 			}
 		}
-		$rank     = 0;
+		$rank     = $incremental ? intdiv($sequence - 1, 4) : 0;
 		$palette  = $temperature ? ['0072B2', '009E73', 'CC79A7', 'E69F00', 'D55E00', '56B4E9'] : ['E69F00', 'CC6600', 'A65E00', 'F5B041', 'D35400', '804000'];
 
 		$cdef = 0;
@@ -283,7 +302,7 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 			}
 
 			// Upgrade earlier positional CDEFs once, without replacing graph items.
-			if (!db_execute_prepared('UPDATE graph_templates_item SET cdef_id = ? WHERE local_graph_id = ? AND cdef_id > 0 AND cdef_id <> ?', [$cdef, $id, $cdef])) {
+			if (!db_execute_prepared('UPDATE graph_templates_item SET cdef_id = ? WHERE local_graph_id = ? AND cdef_id > 0 AND cdef_id <> ?' . $member_filter, [$cdef, $id, $cdef])) {
 				throw new RuntimeException('Cannot upgrade combined percentage calculations.');
 			}
 		}
@@ -424,7 +443,7 @@ function cisco_health_graph_after_create(int $host_id, int $graph_template_id, i
 		}
 
 		try {
-			$result = cisco_health_graph_build($host_id, $kind, true);
+			$result = cisco_health_graph_build($host_id, $kind, true, $component_id);
 
 			if ($result['applied']) {
 				cisco_health_graph_remove_components($host_id, $graph_template_id, (int)$result['graph_id'], $component_id);
@@ -562,5 +581,26 @@ function cisco_health_graph_host_change_allowed(int $graph_id, int $host_id) : b
 		return true;
 	}
 
-	return !cisco_health_graph_is_managed($graph_id, (int)$graph['graph_template_id']);
+	if (cisco_health_graph_is_managed($graph_id, (int)$graph['graph_template_id'])) {
+		return false;
+	}
+
+	// Moving any graph also moves its data_local rows. A copy or an unrelated
+	// graph can share those rows with a managed graph, including a different DS.
+	foreach (cisco_health_graph_kinds() as $kind => $definition) {
+		if (db_fetch_cell_prepared('SELECT 1 FROM graph_templates_item AS source_item
+			INNER JOIN data_template_rrd AS source_rrd ON source_rrd.id = source_item.task_item_id
+			INNER JOIN data_template_rrd AS shared_rrd ON shared_rrd.local_data_id = source_rrd.local_data_id
+			INNER JOIN graph_templates_item AS shared_item ON shared_item.task_item_id = shared_rrd.id
+			INNER JOIN graph_local AS managed ON managed.id = shared_item.local_graph_id
+			INNER JOIN graph_templates AS gt ON gt.id = managed.graph_template_id
+			INNER JOIN settings AS s ON s.value = managed.id
+				AND s.name = CONCAT(?, managed.host_id, ?)
+			WHERE source_item.local_graph_id = ? AND source_rrd.local_data_id > 0
+			AND gt.hash = ? LIMIT 1', ['cisco_health_combined_', '_' . $kind, $graph_id, $definition['graph']])) {
+			return false;
+		}
+	}
+
+	return true;
 }
