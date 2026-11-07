@@ -52,6 +52,8 @@ function get_nfilter_request_var($key) {
 function isrv($key) {
 	return isset($GLOBALS['request'][$key]);
 }
+function csrf_require_post() {
+}
 function is_error_message() {
 	return $GLOBALS['messages'] !== [];
 }
