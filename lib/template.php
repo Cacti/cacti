@@ -1048,6 +1048,12 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
 
 	$template_data     = parse_graph_template_id($graph_template_id);
 	$graph_template_id = $template_data['graph_template_id'];
+	// Combined health graphs retain template permissions, but own their generated items.
+	require_once __DIR__ . '/cisco_health_graphs.php';
+
+	if (cisco_health_graph_is_managed($local_graph_id, (int)$graph_template_id)) {
+		return true;
+	}
 
 	// get information about both the graph and the graph template we're using
 	$graph_list = db_fetch_row_prepared('SELECT *
@@ -1368,6 +1374,12 @@ function update_graph_template_items(int $graph_template_id, int $graph_template
 
 		if (cacti_sizeof($graphs)) {
 			foreach ($graphs as $local_graph_id) {
+				require_once __DIR__ . '/cisco_health_graphs.php';
+
+				if (cisco_health_graph_is_managed((int)$local_graph_id, (int)$graph_template_id)) {
+					continue;
+				}
+
 				$graph_items_list = db_fetch_assoc_prepared('SELECT *
 					FROM graph_templates_item
 					WHERE local_graph_id = ?
@@ -1739,6 +1751,15 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
  * @return mixed False if failing, otherwise the local_data_id data in a cache array
  */
 function create_complete_graph_from_template(int $graph_template_id, int $host_id, array $snmp_query_array, mixed &$suggested_vals) : mixed {
+	require_once __DIR__ . '/cisco_health_graphs.php';
+
+	return cisco_health_graph_with_creation_lock((int)$host_id, (int)$graph_template_id,
+		function () use ($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
+			return create_complete_graph_from_template_unlocked($graph_template_id, $host_id, $snmp_query_array, $suggested_vals);
+		});
+}
+
+function create_complete_graph_from_template_unlocked(int $graph_template_id, int $host_id, array $snmp_query_array, mixed &$suggested_vals) : mixed {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
@@ -1766,6 +1787,13 @@ function create_complete_graph_from_template(int $graph_template_id, int $host_i
 		cacti_log('Attempting to Create Graph from Removed Graph Template ' . $graph_template_id, false, 'AUTOM8');
 
 		return false;
+	}
+
+	require_once __DIR__ . '/cisco_health_graphs.php';
+	$combined = cisco_health_graph_existing($host_id, $graph_template_id, $snmp_query_array);
+
+	if ($combined) {
+		return $combined;
 	}
 
 	// create the graph
@@ -2083,6 +2111,8 @@ function create_complete_graph_from_template(int $graph_template_id, int $host_i
 	}
 
 	update_graph_title_cache($cache_array['local_graph_id']);
+
+	$cache_array['local_graph_id'] = cisco_health_graph_after_create($host_id, $graph_template_id, (int)$cache_array['local_graph_id']);
 
 	// now that we have the id of the new host, we may plugin postprocessing code
 	if (isset($cache_array['local_graph_id'])) {

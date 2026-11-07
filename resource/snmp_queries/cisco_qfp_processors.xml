@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<query>
+	<name>Cisco QFP Processors</name>
+	<description>Discover QFP physical entities and their five-minute processing load.</description>
+	<oid_index>.1.3.6.1.4.1.9.9.715.1.1.1.1.1</oid_index>
+	<oid_index_parse>OID/REGEXP:.*\.([0-9]+)$</oid_index_parse>
+	<index_order>qfpName:qfpIndex</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	<fields>
+		<qfpIndex>
+			<name>QFP Index</name>
+			<method>walk</method>
+			<source>OID/REGEXP:.*\.([0-9]+)$</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.9.9.715.1.1.1.1.1</oid>
+		</qfpIndex>
+		<qfpName>
+			<name>QFP Processor</name>
+			<method>get</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.47.1.1.1.1.7</oid>
+		</qfpName>
+		<qfpDescription>
+			<name>Description</name>
+			<method>get</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.47.1.1.1.1.2</oid>
+		</qfpDescription>
+		<load5min>
+			<name>Processing Load (5 minute average)</name>
+			<method>get</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.9.9.715.1.1.6.1.14</oid>
+			<oid_suffix>3</oid_suffix>
+		</load5min>
+	</fields>
+</query>

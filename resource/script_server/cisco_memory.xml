@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+	<name>Cisco - Memory Usage</name>
+	<script_path>|path_cacti|/scripts/ss_cisco_health.php</script_path>
+	<script_function>ss_cisco_health</script_function>
+	<script_server>php</script_server>
+	<arg_prepend>|host_id| memory</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<arg_num_indexes>num_indexes</arg_num_indexes>
+	<output_delimiter>!</output_delimiter>
+	<index_order>healthIndex</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	<fields>
+		<healthIndex>
+			<name>Index</name>
+			<direction>input</direction>
+			<query_name>index</query_name>
+		</healthIndex>
+		<healthName>
+			<name>Pool / Sensor</name>
+			<direction>input</direction>
+			<query_name>name</query_name>
+		</healthName>
+		<used>
+			<name>Used</name>
+			<direction>output</direction>
+			<query_name>used</query_name>
+		</used>
+		<free>
+			<name>Free</name>
+			<direction>output</direction>
+			<query_name>free</query_name>
+		</free>
+	</fields>
+</interface>
