@@ -151,3 +151,27 @@ test('failed updates returning an existing ID roll back combined graph creation'
 		$GLOBALS['database_last_error'] = '';
 	}
 });
+
+
+test('incremental creation loads only the arriving sensor and preserves existing item sequences', function () {
+	$state = \CactiTests\CiscoHealthTransaction\State::class;
+	$state::$normal = true;
+	$state::$identity = true;
+	$state::$begin = true;
+	$state::$rows = [];
+	$state::$items = [];
+	$state::$writes = 0;
+	$state::$loaded = 0;
+	try {
+		for ($sensor = 1; $sensor <= 100; $sensor++) {
+			$state::$rows[] = ['id'=>$sensor, 'snmp_index'=>(string)$sensor, 'data_source_name'=>'temperature', 'label'=>'Sensor ' . $sensor];
+			\CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1, 'temperature', true, $sensor);
+		}
+		expect($state::$writes)->toBe(400);
+		expect($state::$loaded)->toBe(100);
+		expect(array_column($state::$items, 'sequence'))->toBe(range(1, 400));
+		\CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1, 'temperature', true, 100);
+		expect($state::$writes)->toBe(400);
+		expect($state::$loaded)->toBe(105);
+	} finally { $state::$normal = false; }
+});

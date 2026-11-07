@@ -69,3 +69,7 @@ The plain XML accompanies the contributor-signed `Cisco_Router.xml.gz` for revie
 Additional isolated checks covered simultaneous creation (three combined graphs and ten unique sources), user/group template allow and deny policies in permissive and restrictive modes, and preservation of generated items when the template is reapplied or its items are updated. These checks passed on both branches.
 
 For scalar memory polling, only an immediately adjacent used/free pair shares the device settings and pool metadata. The cache holds one pair, is consumed by its complementary request, and expires after five seconds. Repeated fields, another resource or discovery start fresh; failed readings remain unknown. Credentials stay in the database rather than being copied into command arguments.
+
+Legacy QFP memory tables are discovered through their original total gauge when the HC value is explicitly unsupported. Used/free reads likewise combine the original gauge and any available overflow column; transport failures remain unknown. Both numeric and named Celsius sensor types are accepted.
+
+Combined graphs and other graphs sharing their data sources cannot be moved to another device. Create the health graphs on the destination instead. During indexed creation, an existing combined graph loads only the arriving resource; an explicit rebuild or recreation after deletion still reads all active resources.

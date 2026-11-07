@@ -2,6 +2,8 @@
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 namespace CactiTests\CiscoHealthReview;
 final class State {
+	public static bool $shared = false;
+	public static int $template = 7;
 	public static array $request = [];
 	public static array $messages = [];
 	public static string $redirect = '';
@@ -15,7 +17,7 @@ final class State {
 function hrtime($numeric) { return State::$clock; }
 function db_fetch_row_prepared($sql, $args) {
 	if (str_contains($sql, 'FROM graph_local')) {
-		return ['id'=>55, 'host_id'=>1, 'graph_template_id'=>7, 'hash'=>'d0e843dee0462653833556d6eafa87d3', 'snmp_query_id'=>0];
+		return ['id'=>55, 'host_id'=>1, 'graph_template_id'=>State::$template, 'hash'=>'d0e843dee0462653833556d6eafa87d3', 'snmp_query_id'=>0];
 	}
 	State::$reads++;
 	return ['hostname'=>'test', 'snmp_community'=>'test', 'snmp_version'=>2,
@@ -23,6 +25,7 @@ function db_fetch_row_prepared($sql, $args) {
 		'snmp_priv_protocol'=>'', 'snmp_context'=>'', 'snmp_port'=>161, 'snmp_timeout'=>500, 'ping_retries'=>1];
 }
 function db_fetch_cell_prepared($sql, $args) {
+	if (str_contains($sql, 'source_item')) { return State::$shared ? 1 : 0; }
 	if (str_contains($sql, 'SELECT hash')) { State::$hashReads++; return State::$hashes[$args[0]] ?? ''; }
 	return 55;
 }
