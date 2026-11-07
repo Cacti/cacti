@@ -58,7 +58,7 @@ test('combined temperature handles missing names and ignores unrelated metrics',
 
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 3) . '/Helpers/CiscoHealthTransactionFixture.php';
-foreach (['cisco_health_graph_kinds', 'cisco_health_graph_plan', 'cisco_health_graph_build'] as $function) {
+foreach (['cisco_health_graph_kinds', 'cisco_health_graph_plan', 'cisco_health_graph_save', 'cisco_health_graph_build'] as $function) {
 	cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/cisco_health_graphs.php', $function, 'CactiTests\\CiscoHealthTransaction; use InvalidArgumentException');
 }
 
@@ -79,4 +79,44 @@ test('combined validation preserves the original error and releases its lock', f
 		expect(\CactiTests\CiscoHealthTransaction\State::$rollbacks)->toBe($rollbacks);
 		expect(\CactiTests\CiscoHealthTransaction\State::$releases)->toBe(1);
 	}
+});
+
+
+test('combined creation preserves display settings and inserts four items per new sensor', function () {
+	$state = \CactiTests\CiscoHealthTransaction\State::class;
+	$state::$normal = true;
+	$state::$identity = true;
+	$state::$begin = true;
+	$state::$items = [];
+	$state::$rows = [];
+	$state::$writes = 0;
+	try {
+		for ($sensor = 1; $sensor <= 100; $sensor++) {
+			$state::$rows[] = ['id'=>$sensor, 'snmp_index'=>(string)$sensor, 'data_source_name'=>'temperature', 'label'=>'Sensor ' . $sensor];
+			\CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1, 'temperature', true);
+		}
+		expect($state::$writes)->toBe(400);
+		expect($state::$base['image_format_id'])->toBe(1);
+		expect($state::$base['width'])->toBe(500);
+		expect($state::$base['height'])->toBe(150);
+		$state::$identity = false;
+		expect(fn () => \CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1, 'temperature', true))->toThrow(RuntimeException::class, 'refusing to overwrite');
+		expect($state::$writes)->toBe(400);
+	} finally {
+		$state::$normal = false;
+		$state::$identity = true;
+	}
+});
+
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/cisco_health_graphs.php', 'cisco_health_graph_percentage', 'CactiTests\\CiscoHealthTransaction');
+
+test('memory percentages follow their own sources after earlier pools are deleted', function () {
+	$used = ['local_data_id'=>20, 'data_template_rrd_id'=>30, 'data_source_name'=>'used'];
+	$free = ['local_data_id'=>20, 'data_template_rrd_id'=>31, 'data_source_name'=>'free'];
+	$other = ['local_data_id'=>10, 'data_template_rrd_id'=>10, 'data_source_name'=>'used'];
+	$before = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used, $free], ['10:1'=>0, '30:1'=>2, '31:1'=>3], 1);
+	$after = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$used, $free], ['30:1'=>0, '31:1'=>1], 1);
+	expect($before)->toBe('c,d,+,0,GT,c,c,d,+,/,100,*,UNKN,IF');
+	expect($after)->toBe('a,b,+,0,GT,a,a,b,+,/,100,*,UNKN,IF');
+	expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used], ['10:1'=>0, '30:1'=>1], 1))->toBe('UNKN');
 });

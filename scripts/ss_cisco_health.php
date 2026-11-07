@@ -60,11 +60,24 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 	if (!ctype_digit((string)$host_id) || !in_array($kind, ['memory', 'qfp_memory', 'temperature'], true)) {
 		return 'U';
 	}
-	$h = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version,
+	// Share only the immediately adjacent complementary used/free request. A repeat,
+	// another resource, discovery, or a delay expires the pair; readings never persist
+	// into the next polling pass. Keep at most one host and one pool in memory.
+	static $pair = null;
+	$key = (int)$host_id . ':' . $kind . ':' . $index;
+	$paired = $cmd === 'get' && $kind !== 'temperature' && in_array($field, ['used', 'free'], true);
+	$reuse = $paired && $pair !== null && $pair['key'] === $key
+		&& $pair['field'] !== $field && hrtime(true) - $pair['time'] < 5000000000;
+	$values = $reuse ? $pair['values'] : [];
+	$h = $reuse ? $pair['host'] : null;
+	$pair = null;
+	if (!$reuse) {
+		$h = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version,
 		snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase,
 		snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout, ping_retries,
 		snmp_engine_id, bulk_walk_size
 		FROM host WHERE id = ?', [(int)$host_id]);
+	}
 
 	if (!is_array($h) || !$h) {
 		return 'U';
@@ -74,8 +87,7 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 		$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], $h['ping_retries']];
 	$engine   = $h['snmp_engine_id'] ?? '';
 	$walkSize = max(1, (int)($h['bulk_walk_size'] ?? 10));
-	$get      = function ($oid) use ($args, $engine) {
-		static $values = [];
+	$get      = function ($oid) use ($args, $engine, &$values) {
 
 		if (!array_key_exists($oid, $values)) {
 			$a            = $args;
@@ -114,7 +126,11 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 		return $out;
 	};
 
-	return cisco_health_query($kind, $cmd, $field, $index, $get, $walk);
+	$result = cisco_health_query($kind, $cmd, $field, $index, $get, $walk);
+	if ($paired && !$reuse) {
+		$pair = ['key' => $key, 'field' => $field, 'time' => hrtime(true), 'host' => $h, 'values' => $values];
+	}
+	return $result;
 }
 
 /** Execute one query using injectable SNMP readers; no database state is required here. */
