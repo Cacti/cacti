@@ -25502,3 +25502,7 @@ msgstr ""
 #: lib/cisco_health_graphs.php
 msgid "Another health graph creation is running for this device. Please try again."
 msgstr ""
+
+#: graphs.php
+msgid "Combined Cisco health graphs cannot be moved to another device. Create the health graphs on the target device instead."
+msgstr ""
