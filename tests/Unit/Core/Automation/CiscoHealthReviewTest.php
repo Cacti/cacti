@@ -46,3 +46,24 @@ test('adjacent used free reads share metadata but repeats and delays refresh it'
 	\CactiTests\CiscoHealthReview\ss_cisco_health(2, 'memory', 'get', 'used', '1.1');
 	expect($state::$reads)->toBe(5);
 });
+
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/cisco_health_graphs.php', 'cisco_health_graph_host_change_allowed', 'CactiTests\\CiscoHealthReview');
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/graphs.php', 'form_save', 'CactiTests\\CiscoHealthReview');
+
+test('editor rejects a device change using stored ownership before any write', function () {
+	$state = \CactiTests\CiscoHealthReview\State::class;
+	$state::$request = ['save_component_graph'=>'1', 'local_graph_id'=>55, 'host_id'=>2,
+		'host_id_prev'=>2, 'graph_template_id'=>0, 'graph_template_id_prev'=>0];
+	$state::$hashes[7] = 'd0e843dee0462653833556d6eafa87d3';
+	$state::$events = [];
+	$state::$messages = [];
+	try {
+		\CactiTests\CiscoHealthReview\form_save();
+	} catch (RuntimeException $e) {
+		expect($e->getMessage())->toBe('Test redirect');
+	}
+	expect($state::$messages[0][0])->toBe('combined_health_move');
+	expect($state::$redirect)->toContain('graphs.php');
+	expect($state::$events)->toBe([]);
+	expect(\CactiTests\CiscoHealthReview\cisco_health_graph_host_change_allowed(55, 1))->toBeTrue();
+});
