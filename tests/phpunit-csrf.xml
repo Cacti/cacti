@@ -3,6 +3,7 @@
 	<testsuites>
 		<testsuite name="CSRF action coverage">
 			<file>Unit/Security/Csrf/ItemActionPostOnlyTest.php</file>
+			<file>Unit/Installer/InstallerRetryStateTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
