@@ -244,6 +244,7 @@ Cacti CHANGELOG
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path
+-issue#8460: Fix Cisco HSRP discovery and polling for interface/group indexes
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
