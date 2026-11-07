@@ -7720,7 +7720,7 @@ function date_time_format() {
 	$date_fmt        = read_config_option('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
 
-	if (!isset($datechar[$dateCharSetting])) {
+	if ($dateCharSetting === null || !isset($datechar[$dateCharSetting])) {
 		$dateCharSetting = GDC_SLASH;
 	}
 
