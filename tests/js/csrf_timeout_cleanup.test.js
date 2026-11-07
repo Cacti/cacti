@@ -13,15 +13,11 @@ const layout = fs.readFileSync(path.join(root, 'include/layout.js'), 'utf8');
 /* Extract the stripCsrfTimeoutMarker helper and the displayMessages() cleanup
  * block straight from the shipped source so the contract tracks production. */
 const helperStart = layout.indexOf('function stripCsrfTimeoutMarker');
-assert.notEqual(helperStart, -1, 'stripCsrfTimeoutMarker helper must exist in layout.js');
 const helperEnd = layout.indexOf('\nfunction ', helperStart);
-assert.notEqual(helperEnd, -1, 'stripCsrfTimeoutMarker helper must be followed by another function');
 const helperSrc = layout.slice(helperStart, helperEnd);
 
 const cleanupStart = layout.indexOf("if (document.location.href.indexOf('csrf_timeout')");
-assert.notEqual(cleanupStart, -1, 'displayMessages() must clean the csrf_timeout marker');
 const cleanupEnd = layout.indexOf('sessionMessage = null;', cleanupStart);
-assert.notEqual(cleanupEnd, -1, 'csrf_timeout cleanup must precede the sessionMessage reset');
 const cleanupSrc = layout.slice(cleanupStart, cleanupEnd);
 
 function runHelper(url) {
@@ -32,30 +28,39 @@ function runHelper(url) {
 
 function runCleanup({ locationHref, myHref, refreshPage, historyState, includeRefreshPage = true }) {
 	const replaced = { called: false };
-	const context = {
-		URLSearchParams,
-		document: { location: { href: locationHref } },
-		window: {
-			history: {
-				state: historyState,
-				replaceState(state, title, url) {
-					replaced.called = true;
-					replaced.state = state;
-					replaced.url = url;
-				},
+	const window = {
+		history: {
+			state: historyState,
+			replaceState(state, title, url) {
+				replaced.called = true;
+				replaced.state = state;
+				replaced.url = url;
 			},
 		},
-		myHref,
 	};
 
 	if (includeRefreshPage) {
-		context.refreshPage = refreshPage;
+		window.refreshPage = refreshPage;
 	}
+
+	const context = {
+		URLSearchParams,
+		document: { location: { href: locationHref } },
+		window,
+		myHref,
+	};
 
 	vm.runInNewContext(helperSrc + '\n' + cleanupSrc, context);
 
-	return { replaced, myHref: context.myHref, refreshPage: context.refreshPage };
+	return { replaced, myHref: context.myHref, refreshPage: context.window.refreshPage };
 }
+
+test('layout.js exposes the csrf cleanup source anchors', () => {
+	assert.notEqual(helperStart, -1, 'stripCsrfTimeoutMarker helper must exist in layout.js');
+	assert.notEqual(helperEnd, -1, 'stripCsrfTimeoutMarker helper must be followed by another function');
+	assert.notEqual(cleanupStart, -1, 'displayMessages() must clean the csrf_timeout marker');
+	assert.notEqual(cleanupEnd, -1, 'csrf_timeout cleanup must precede the sessionMessage reset');
+});
 
 test('stripCsrfTimeoutMarker removes the marker and preserves other parameters and the fragment', () => {
 	assert.equal(

@@ -1501,8 +1501,8 @@ function displayMessages() {
 		 * tree/page auto-refresh (refreshPage) do not request the warning again. */
 		myHref = stripCsrfTimeoutMarker(myHref);
 
-		if (typeof refreshPage != 'undefined') {
-			refreshPage = stripCsrfTimeoutMarker(refreshPage);
+		if (typeof window.refreshPage != 'undefined') {
+			window.refreshPage = stripCsrfTimeoutMarker(window.refreshPage);
 		}
 
 		sessionMessage = null;
