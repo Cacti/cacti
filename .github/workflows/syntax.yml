@@ -195,7 +195,8 @@ jobs:
         sudo apt-get install -y \
           php8.6-cli php8.6-common \
           php8.6-intl php8.6-mysql php8.6-gd php8.6-ldap \
-          php8.6-gmp php8.6-xml php8.6-curl php8.6-mbstring php8.6-snmp
+          php8.6-gmp php8.6-xml php8.6-curl php8.6-mbstring \
+          php8.6-snmp php8.6-sqlite3
         # Make the Ondřej 8.6 CLI the default `php` so composer and the tests
         # run under the same ABI-coherent build as Apache mod_php.
         sudo update-alternatives --install /usr/bin/php php /usr/bin/php8.6 86
