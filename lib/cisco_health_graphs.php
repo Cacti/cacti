@@ -398,7 +398,7 @@ function cisco_health_graph_remove_components(int $host_id, int $template_id, in
 			}
 		}
 		// This API removes graph definitions/references, never data sources or RRD files.
-		api_graph_remove((int)$graph['id']);
+		api_graph_remove((int)$graph['id'], false);
 	}
 }
 
@@ -540,4 +540,15 @@ function cisco_health_graph_is_managed(int $graph_id, int $template_id) : bool {
 	}
 
 	return false;
+}
+
+/** Check persisted ownership before the editor can replace host or template IDs. */
+function cisco_health_graph_host_change_allowed(int $graph_id, int $host_id) : bool {
+	$graph = db_fetch_row_prepared('SELECT host_id, graph_template_id FROM graph_local WHERE id = ?', [$graph_id]);
+
+	if (!is_array($graph) || !$graph || (int)$graph['host_id'] === $host_id) {
+		return true;
+	}
+
+	return !cisco_health_graph_is_managed($graph_id, (int)$graph['graph_template_id']);
 }

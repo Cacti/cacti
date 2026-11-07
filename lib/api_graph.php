@@ -134,11 +134,12 @@ function api_delete_graphs(array &$local_graph_ids, int $delete_type, bool $upda
 /**
  * Removes a graph and its associated items from the database.
  *
- * @param int $local_graph_id The ID of the local graph to be removed.
+ * @param int  $local_graph_id The ID of the local graph to be removed.
+ * @param bool $update_totals  Update standalone deletion counts; false when an enclosing operation owns the before/after snapshot.
  *
  * @return void
  */
-function api_graph_remove(int $local_graph_id) : void {
+function api_graph_remove(int $local_graph_id, bool $update_totals = true) : void {
 	if (empty($local_graph_id)) {
 		$local_graph_ids = [$local_graph_id];
 		api_graph_remove_bad_graphs($local_graph_ids);
@@ -146,7 +147,9 @@ function api_graph_remove(int $local_graph_id) : void {
 		return;
 	}
 
-	object_cache_get_totals('graph_leave', $local_graph_id);
+	if ($update_totals) {
+		object_cache_get_totals('graph_leave', $local_graph_id);
+	}
 
 	api_plugin_hook_function('graphs_remove', [$local_graph_id]);
 
@@ -158,7 +161,9 @@ function api_graph_remove(int $local_graph_id) : void {
 	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', [$local_graph_id]);
 	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', [$local_graph_id]);
 
-	object_cache_update_totals('delete');
+	if ($update_totals) {
+		object_cache_update_totals('delete');
+	}
 
 	/**
 	 * Save the last time a graph was created/updated
