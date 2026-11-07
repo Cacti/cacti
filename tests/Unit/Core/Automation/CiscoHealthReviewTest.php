@@ -6,7 +6,7 @@ foreach (['cisco_health_graph_kinds', 'cisco_health_graph_kind', 'cisco_health_g
 	cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/cisco_health_graphs.php', $name, 'CactiTests\\CiscoHealthReview');
 }
 cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/api_graph.php', 'api_graph_change_device', 'CactiTests\\CiscoHealthReview');
-foreach (['cisco_health_number', 'cisco_health_qfp_memory', 'cisco_health_query', 'ss_cisco_health'] as $name) {
+foreach (['cisco_health_number', 'cisco_health_qfp_factor', 'cisco_health_qfp_memory', 'cisco_health_query', 'ss_cisco_health'] as $name) {
 	cacti_fixture_source_function(dirname(__DIR__, 4) . '/scripts/ss_cisco_health.php', $name, 'CactiTests\\CiscoHealthReview');
 }
 
@@ -120,4 +120,20 @@ test('all memory gauge fallbacks use the numeric reader', function () {
 	}
 	foreach ([3,4] as $col) { expect($state::$rawOids)->toContain($base . $col . '.1.1'); }
 	$state::$values = [];
+});
+
+
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/cisco_health_graphs.php', 'cisco_health_source_host_change_allowed', 'CactiTests\\CiscoHealthReview');
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/api_data_source.php', 'api_data_source_change_host', 'CactiTests\\CiscoHealthReview');
+
+test('direct data source moves reject the whole selection before any mutation', function () {
+	$state = \CactiTests\CiscoHealthReview\State::class;
+	$state::$events = [];
+	$state::$messages = [];
+	expect(\CactiTests\CiscoHealthReview\cisco_health_source_host_change_allowed(77,1))->toBeTrue();
+	expect(\CactiTests\CiscoHealthReview\cisco_health_source_host_change_allowed(78,2))->toBeTrue();
+	expect(\CactiTests\CiscoHealthReview\cisco_health_source_host_change_allowed(77,2))->toBeFalse();
+	\CactiTests\CiscoHealthReview\api_data_source_change_host([78,77],2);
+	expect($state::$events)->toBe([]);
+	expect($state::$messages[0][0])->toBe('combined_health_move');
 });
