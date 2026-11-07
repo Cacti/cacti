@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<query>
+	<name>Cisco Cellular Radio</name>
+	<description>LTE radio signal measurements indexed by ENTITY-MIB physical entity.</description>
+	<oid_index>.1.3.6.1.4.1.9.9.817.1.1.1.1.1.1</oid_index>
+	<oid_index_parse>OID/REGEXP:.*\.([0-9]+)$</oid_index_parse>
+	<index_order>radioName:radioIndex</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	<fields>
+		<radioIndex>
+			<name>Radio Index</name>
+			<method>walk</method>
+			<source>OID/REGEXP:.*\.([0-9]+)$</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.9.9.817.1.1.1.1.1.1</oid>
+		</radioIndex>
+		<radioName>
+			<name>Radio</name>
+			<method>get</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.47.1.1.1.1.7</oid>
+		</radioName>
+		<radioBand>
+			<name>LTE Band</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.9.9.817.1.1.1.1.1.6</oid>
+		</radioBand>
+		<rssi>
+			<name>RSSI (dBm)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.9.9.661.1.3.4.1.1.1</oid>
+		</rssi>
+		<rsrp>
+			<name>RSRP (dBm)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.9.9.817.1.1.1.1.1.1</oid>
+		</rsrp>
+		<rsrq>
+			<name>RSRQ (tenths of dB)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.9.9.817.1.1.1.1.1.2</oid>
+		</rsrq>
+		<snr>
+			<name>SNR (tenths of dB)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.9.9.817.1.1.1.1.1.3</oid>
+		</snr>
+	</fields>
+</query>
