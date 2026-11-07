@@ -174,6 +174,13 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Validate PO catalogs
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y gettext
+          python3 tests/tools/test_po_validator.py
+
       - name: Install policy checker dependencies
         run: |
           set -euo pipefail
@@ -182,6 +189,7 @@ jobs:
       - name: Enforce workflow policy
         run: |
           set -euo pipefail
+          python3 tests/tools/test_ci_maintenance_tools.py
           python3 tests/tools/test_security_review_paths.py
           python3 .github/scripts/check-workflow-policy.py
 
