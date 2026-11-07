@@ -452,7 +452,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $environ = SNMP_POLLER,
-	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
+	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS, $numeric_value = false) {
 
 	global $config, $snmp_error;
 
@@ -473,6 +473,22 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 
 		if (function_exists('snmp_set_enum_print')) {
 			snmp_set_enum_print(true);
+		}
+
+		// Numeric callers need wire values, not MIB DISPLAY-HINT or UNITS formatting.
+		// Preserve explicit unsupported-OID warnings; false alone also means timeout.
+		$retrieval = null;
+		if ($numeric_value) {
+			$retrieval = snmp_get_valueretrieval();
+			snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+			$previous_handler = null;
+			$previous_handler = set_error_handler(static function ($severity, $message, $file, $line) use (&$snmp_error, &$previous_handler) {
+				if (preg_match('/^snmp(?:2_|3_)?get\(/', $message)) {
+					$snmp_error = $message;
+					return true;
+				}
+				return $previous_handler ? $previous_handler($severity, $message, $file, $line) : false;
+			});
 		}
 
 		try {
@@ -498,6 +514,15 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		} catch (\Throwable $ex) {
 			$snmp_error = $ex->getMessage();
 			$snmp_value = false;
+		} finally {
+			if ($numeric_value) {
+				restore_error_handler();
+				snmp_set_valueretrieval($retrieval);
+			}
+		}
+
+		if ($snmp_value === false && $numeric_value && preg_match('/No Such (?:Object|Instance)|noSuchName/i', $snmp_error)) {
+			$snmp_value = 'No Such Object';
 		}
 
 		if ($snmp_value === false) {
@@ -523,6 +548,10 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		$args   = array_merge(array('-Ofntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')),
 			$snmp_auth, array('-v', $version, '-t', (string) $timeout_s, '-r', (string) $retries,
 			snmp_format_target_arg($hostname, $port), $oid));
+
+		if ($numeric_value) {
+			$args = array_merge(['-m', '', '-OU'], $args);
+		}
 
 		cacti_snmp_debug_command($binary, $args);
 		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));

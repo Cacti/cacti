@@ -175,3 +175,13 @@ test('incremental creation loads only the arriving sensor and preserves existing
 		expect($state::$loaded)->toBe(105);
 	} finally { $state::$normal = false; }
 });
+
+
+test('nested CDEFs expand every complete memory token without changing surrounding RPN', function () {
+ $token='CISCO_HEALTH_USED_PERCENT';
+ $rpn='a,a,b,+,/,100,*';
+ expect(cisco_health_graph_expand_percentage($token.',100,*',$rpn))->toBe($rpn.',100,*');
+ expect(cisco_health_graph_expand_percentage($token.','.$token.',+',$rpn))->toBe($rpn.','.$rpn.',+');
+ expect(cisco_health_graph_expand_percentage('OTHER_'.$token.',100,*',$rpn))->toBe('OTHER_'.$token.',100,*');
+ expect(cisco_health_graph_expand_percentage($token.',100,*','a,UNKN,*'))->toBe('a,UNKN,*,100,*');
+});

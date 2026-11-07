@@ -73,3 +73,18 @@ For scalar memory polling, only an immediately adjacent used/free pair shares th
 Legacy QFP memory tables are discovered through their original total gauge when the HC value is explicitly unsupported. Used/free reads likewise combine the original gauge and any available overflow column; transport failures remain unknown. Both numeric and named Celsius sensor types are accepted.
 
 Combined graphs and other graphs sharing their data sources cannot be moved to another device. Create the health graphs on the destination instead. During indexed creation, an existing combined graph loads only the arriving resource; an explicit rebuild or recreation after deletion still reads all active resources.
+
+### Numeric SNMP readings
+
+Cellular radio uses the PHP script-server query so both Cacti pollers collect the
+same raw MIB values. RSRQ and SNR are stored in tenths of dB; their graph CDEF
+divides by ten once. Installing Cisco MIB files does not change that scale.
+The numeric reader uses PHP SNMP's plain-value mode or disables MIB formatting
+for the individual `snmpget` command. Other SNMP queries keep their usual formatting.
+Explicit unsupported columns allow the documented memory fallback; timeouts and
+authentication failures remain unknown values.
+
+If upgrading an earlier test package that used the direct SNMP cellular query,
+re-import the updated Cisco Router package, reload the Cellular Radio data query
+on each device, and rebuild its poller cache. Existing RRD names and raw units
+are unchanged. Previously mis-scaled samples are not rewritten.

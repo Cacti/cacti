@@ -106,6 +106,7 @@ test('qfp units are explicit and transport errors do not become kilobytes', func
 
 test('raw QFP reader preserves missing columns without treating empty replies as legacy units', function () {
 	$base = '.1.3.6.1.4.1.9.9.715.1.1.7.1.';
+
 	foreach (['No Such Object available on this agent at this OID' => '1048576', 'No Such Instance currently exists at this OID' => '1048576', '' => 'U', 'U' => 'U', 'INTEGER: 4' => '1024'] as $raw => $expected) {
 		[$get, $walk] = ciscoHealthFixture([$base . '16.1.1' => cisco_health_unit_response($raw), $base . '11.1.1' => 1024]);
 		expect(cisco_health_query('qfp_memory', 'get', 'used', '1.1', $get, $walk))->toBe($expected);
@@ -116,17 +117,17 @@ test('index discovery never fetches entity names', function () {
 	$walks = [
 		'.1.3.6.1.4.1.9.9.221.1.1.1.1.3' => ['7.1' => 'Processor'],
 		'.1.3.6.1.4.1.9.9.715.1.1.7.1.9' => ['7.1' => '1024'],
-		'.1.3.6.1.2.1.99.1.1.1.1' => ['7' => '8'],
+		'.1.3.6.1.2.1.99.1.1.1.1'        => ['7' => '8'],
 	];
-	$get = static function ($oid) { throw new RuntimeException('Unnecessary GET: ' . $oid); };
+	$get  = static function ($oid) { throw new RuntimeException('Unnecessary GET: ' . $oid); };
 	$walk = static fn ($oid) => $walks[$oid] ?? [];
+
 	foreach (['memory', 'qfp_memory', 'temperature'] as $kind) {
 		expect(cisco_health_query($kind, 'num_indexes', '', '', $get, $walk))->toBe('1');
 		expect(cisco_health_query($kind, 'index', '', '', $get, $walk))->not->toBe('');
 		expect(cisco_health_query($kind, 'query', 'index', '', $get, $walk))->not->toBe('');
 	}
 });
-
 
 test('memory validity accepts Net-SNMP enum values without accepting error text', function () {
 	foreach (['true(1)' => '123', 'false(2)' => 'U', 'timeout' => 'U'] as $valid => $expected) {
@@ -138,16 +139,15 @@ test('memory validity accepts Net-SNMP enum values without accepting error text'
 	}
 });
 
-
 test('enhanced memory falls back to legacy gauges only for missing HC columns', function () {
 	$base = '.1.3.6.1.4.1.9.9.221.1.1.1.1.';
+
 	foreach ([['No Such Object', 'No Such Object', '123'], ['No Such Object', '2', '8589934715'], ['U', '2', 'U'], ['No Such Object', 'U', 'U']] as [$hc, $high, $expected]) {
 		[$get, $walk] = ciscoHealthFixture([$base . '6.7.1' => 1, $base . '18.7.1' => $hc,
-			$base . '7.7.1' => 123, $base . '17.7.1' => $high]);
+			$base . '7.7.1'                                    => 123, $base . '17.7.1' => $high]);
 		expect(cisco_health_query('memory', 'get', 'used', '7.1', $get, $walk))->toBe($expected);
 	}
 });
-
 
 test('both sensor tables discover numeric and named Celsius without including other types', function () {
 	foreach (['.1.3.6.1.2.1.99.1.1.1.', '.1.3.6.1.4.1.9.9.91.1.1.1.1.'] as $base) {
@@ -159,16 +159,37 @@ test('both sensor tables discover numeric and named Celsius without including ot
 
 test('original QFP gauges are discoverable and poll with overflow without masking failures', function () {
 	$base = '.1.3.6.1.4.1.9.9.715.1.1.7.1.';
+
 	foreach (['No Such Object'=>true, 'U'=>false, ''=>false] as $hc => $supported) {
-		[$get, $walk] = ciscoHealthFixture([$base . '9.7.1'=>$hc, $base . '2.7.1'=>1024], [$base . '2'=>['7.1'=>1024]]);
+		[$get, $walk] = ciscoHealthFixture([$base . '9.7.1'=> $hc, $base . '2.7.1'=>1024], [$base . '2'=>['7.1'=>1024]]);
 		expect(cisco_health_query('qfp_memory', 'index', '', '', $get, $walk))->toBe($supported ? "7.1\n" : '');
 	}
-	foreach (['used'=>[11,3,10], 'free'=>[13,4,12]] as $field => [$hc, $low, $high]) {
+
+	foreach (['used'=>[11, 3, 10], 'free'=>[13, 4, 12]] as $field => [$hc, $low, $high]) {
 		foreach (['No Such Object'=>'2048', '1'=>'4398046513152', 'U'=>'U'] as $overflow => $expected) {
-			[$get, $walk] = ciscoHealthFixture([$base . $low . '.7.1'=>2, $base . $high . '.7.1'=>$overflow]);
+			[$get, $walk] = ciscoHealthFixture([$base . $low . '.7.1'=> 2, $base . $high . '.7.1'=>$overflow]);
 			expect(cisco_health_query('qfp_memory', 'get', $field, '7.1', $get, $walk))->toBe($expected);
 		}
-		[$get, $walk] = ciscoHealthFixture([$base . $hc . '.7.1'=>'U', $base . $low . '.7.1'=>2]);
+		[$get, $walk] = ciscoHealthFixture([$base . $hc . '.7.1'=> 'U', $base . $low . '.7.1'=>2]);
 		expect(cisco_health_query('qfp_memory', 'get', $field, '7.1', $get, $walk))->toBe('U');
 	}
+});
+
+test('memory units from binary SNMP remain in their original scale', function () {
+	foreach (['Gauge32: 4096 bytes'=>'4096', 'Counter64: 8589934592 kilo bytes'=>'8589934592', 'Gauge32: 0 bytes'=>'0'] as $raw=>$expected) {
+		expect(cisco_health_unit_response($raw))->toBe($expected);
+	}
+	expect(cisco_health_number(cisco_health_unit_response('4096 unknown')))->toBeNull();
+});
+
+test('cellular query discovers radios and keeps raw tenths for a single graph conversion', function () {
+	$base        = '.1.3.6.1.4.1.9.9.817.1.1.1.1.1.';
+	[$get,$walk] = ciscoHealthFixture([$base . '2.7'=> '-95', $base . '3.7'=>'46', '.1.3.6.1.2.1.47.1.1.1.1.7.7'=>'Cellular0/2/0'],[$base . '1'=>['7'=>'-103']]);
+	expect(cisco_health_query('cellular','index','','',$get,$walk))->toBe("7\n");
+	expect(cisco_health_query('cellular','query','name','',$get,$walk))->toBe("7!Cellular0/2/0\n");
+	expect(cisco_health_query('cellular','get','rsrq','7',$get,$walk))->toBe('-95');
+	expect(cisco_health_query('cellular','get','snr','7',$get,$walk))->toBe('46');
+	expect(cisco_health_query('cellular','get','rsrq','8',$get,$walk))->toBe('U');
+	[$get,$walk] = ciscoHealthFixture();
+	expect(cisco_health_query('cellular','index','','',$get,$walk))->toBe('');
 });
