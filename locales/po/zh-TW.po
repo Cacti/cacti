@@ -6393,6 +6393,15 @@ msgstr ""
 msgid "Return to Cacti: %s"
 msgstr "需要：Cacti&gt; =%s"
 
+#: include/csrf.php
+#, fuzzy
+msgid "Session Expired"
+msgstr "課堂"
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
+
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr "此數據收集器最後一次與主Cacti站點完全同步。"
