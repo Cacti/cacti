@@ -8814,8 +8814,8 @@
 	<hash_0401042d5c00c1e9d4cf7e0a469b1c7f488eca>
 		<name>Cisco - Cellular Radio</name>
 		<description>Discover LTE modems and collect RSSI, RSRP, RSRQ and SNR.</description>
-		<xml_path>&lt;path_cacti&gt;/resource/snmp_queries/cisco_cellular_radio.xml</xml_path>
-		<data_input_id>hash_030104bf566c869ac6443b0c75d1c32b5a350e</data_input_id>
+		<xml_path>&lt;path_cacti&gt;/resource/script_server/cisco_cellular_radio.xml</xml_path>
+		<data_input_id>hash_030104332111d8b54ac8ce939af87a7eac0c06</data_input_id>
 		<graphs>
 			<hash_110104c20d35f3aba333f6050c55b28798031a>
 				<graph_template_id>hash_000104f8367ab8a5fa4196da4a8f5b2f3c1828</graph_template_id>
@@ -9433,7 +9433,7 @@
 			<t_name />
 			<name>|host_description| - Cellular Signal Quality - |query_radioName|</name>
 			<data_source_path />
-			<data_input_id>hash_030104bf566c869ac6443b0c75d1c32b5a350e</data_input_id>
+			<data_input_id>hash_030104332111d8b54ac8ce939af87a7eac0c06</data_input_id>
 			<t_data_source_profile_id />
 			<data_source_profile_id>hash_200104d62c52891f4f9688729a5bc9fad91b18</data_source_profile_id>
 			<t_rrd_step />
@@ -9448,7 +9448,7 @@
 				<rrd_maximum>0</rrd_maximum>
 				<data_source_type_id>1</data_source_type_id>
 				<rrd_heartbeat>600</rrd_heartbeat>
-				<data_input_field_id>0</data_input_field_id>
+				<data_input_field_id>hash_0701045be8fa85472d89c621790b43510b5043</data_input_field_id>
 			</hash_080104141d79af2b18853b6f81570a7e226757>
 			<hash_0801041fb4b37146aa13dc95c0ed34f08fbb44>
 				<data_source_name>snr</data_source_name>
@@ -9456,85 +9456,25 @@
 				<rrd_maximum>500</rrd_maximum>
 				<data_source_type_id>1</data_source_type_id>
 				<rrd_heartbeat>600</rrd_heartbeat>
-				<data_input_field_id>0</data_input_field_id>
+				<data_input_field_id>hash_0701045be8fa85472d89c621790b43510b5043</data_input_field_id>
 			</hash_0801041fb4b37146aa13dc95c0ed34f08fbb44>
 		</items>
 		<data>
 			<item_000>
-				<data_input_field_id>hash_07010492f5906c8dc0f964b41f4253df582c38</data_input_field_id>
+				<data_input_field_id>hash_070104172b4b0eacee4948c6479f587b62e512</data_input_field_id>
 				<t_value />
 				<value />
 			</item_000>
 			<item_001>
-				<data_input_field_id>hash_07010432285d5bf16e56c478f5e83f32cda9ef</data_input_field_id>
+				<data_input_field_id>hash_07010430fb5d5bcf3d66bb5abe88596f357c26</data_input_field_id>
 				<t_value />
 				<value />
 			</item_001>
 			<item_002>
-				<data_input_field_id>hash_070104ad14ac90641aed388139f6ba86a2e48b</data_input_field_id>
+				<data_input_field_id>hash_07010431112c85ae4ff821d3b288336288818c</data_input_field_id>
 				<t_value />
 				<value />
 			</item_002>
-			<item_003>
-				<data_input_field_id>hash_070104617cdc8a230615e59f06f361ef6e7728</data_input_field_id>
-				<t_value />
-				<value />
-			</item_003>
-			<item_004>
-				<data_input_field_id>hash_070104acb449d1451e8a2a655c2c99d31142c7</data_input_field_id>
-				<t_value />
-				<value />
-			</item_004>
-			<item_005>
-				<data_input_field_id>hash_070104f4facc5e2ca7ebee621f09bc6d9fc792</data_input_field_id>
-				<t_value />
-				<value />
-			</item_005>
-			<item_006>
-				<data_input_field_id>hash_0701041cc1493a6781af2c478fa4de971531cf</data_input_field_id>
-				<t_value />
-				<value />
-			</item_006>
-			<item_007>
-				<data_input_field_id>hash_070104b5c23f246559df38662c255f4aa21d6b</data_input_field_id>
-				<t_value />
-				<value />
-			</item_007>
-			<item_008>
-				<data_input_field_id>hash_0701046027a919c7c7731fbe095b6f53ab127b</data_input_field_id>
-				<t_value>on</t_value>
-				<value />
-			</item_008>
-			<item_009>
-				<data_input_field_id>hash_070104cbbe5c1ddfb264a6e5d509ce1c78c95f</data_input_field_id>
-				<t_value>on</t_value>
-				<value />
-			</item_009>
-			<item_010>
-				<data_input_field_id>hash_070104e6deda7be0f391399c5130e7c4a48b28</data_input_field_id>
-				<t_value>on</t_value>
-				<value />
-			</item_010>
-			<item_011>
-				<data_input_field_id>hash_070104c1f36ee60c3dc98945556d57f26e475b</data_input_field_id>
-				<t_value />
-				<value />
-			</item_011>
-			<item_012>
-				<data_input_field_id>hash_0701042cf7129ad3ff819a7a7ac189bee48ce8</data_input_field_id>
-				<t_value />
-				<value />
-			</item_012>
-			<item_013>
-				<data_input_field_id>hash_0701046b13ac0a0194e171d241d4b06f913158</data_input_field_id>
-				<t_value />
-				<value />
-			</item_013>
-			<item_014>
-				<data_input_field_id>hash_0701043a33d4fc65b8329ab2ac46a36da26b72</data_input_field_id>
-				<t_value />
-				<value />
-			</item_014>
 		</data>
 	</hash_0101046fc56251235107043714b103a1c7f894>
 	<hash_200104d62c52891f4f9688729a5bc9fad91b18>
@@ -10886,7 +10826,7 @@
 			<t_name />
 			<name>|host_description| - Cellular Signal Strength - |query_radioName|</name>
 			<data_source_path />
-			<data_input_id>hash_030104bf566c869ac6443b0c75d1c32b5a350e</data_input_id>
+			<data_input_id>hash_030104332111d8b54ac8ce939af87a7eac0c06</data_input_id>
 			<t_data_source_profile_id />
 			<data_source_profile_id>hash_200104d62c52891f4f9688729a5bc9fad91b18</data_source_profile_id>
 			<t_rrd_step />
@@ -10901,7 +10841,7 @@
 				<rrd_maximum>-1</rrd_maximum>
 				<data_source_type_id>1</data_source_type_id>
 				<rrd_heartbeat>600</rrd_heartbeat>
-				<data_input_field_id>0</data_input_field_id>
+				<data_input_field_id>hash_0701045be8fa85472d89c621790b43510b5043</data_input_field_id>
 			</hash_080104123b1b0ac50b2dee932eb5b3de2c217d>
 			<hash_080104b239401a784cf7bfb01c1e0bb05cb84a>
 				<data_source_name>rsrp</data_source_name>
@@ -10909,85 +10849,25 @@
 				<rrd_maximum>-1</rrd_maximum>
 				<data_source_type_id>1</data_source_type_id>
 				<rrd_heartbeat>600</rrd_heartbeat>
-				<data_input_field_id>0</data_input_field_id>
+				<data_input_field_id>hash_0701045be8fa85472d89c621790b43510b5043</data_input_field_id>
 			</hash_080104b239401a784cf7bfb01c1e0bb05cb84a>
 		</items>
 		<data>
 			<item_000>
-				<data_input_field_id>hash_07010492f5906c8dc0f964b41f4253df582c38</data_input_field_id>
+				<data_input_field_id>hash_070104172b4b0eacee4948c6479f587b62e512</data_input_field_id>
 				<t_value />
 				<value />
 			</item_000>
 			<item_001>
-				<data_input_field_id>hash_07010432285d5bf16e56c478f5e83f32cda9ef</data_input_field_id>
+				<data_input_field_id>hash_07010430fb5d5bcf3d66bb5abe88596f357c26</data_input_field_id>
 				<t_value />
 				<value />
 			</item_001>
 			<item_002>
-				<data_input_field_id>hash_070104ad14ac90641aed388139f6ba86a2e48b</data_input_field_id>
+				<data_input_field_id>hash_07010431112c85ae4ff821d3b288336288818c</data_input_field_id>
 				<t_value />
 				<value />
 			</item_002>
-			<item_003>
-				<data_input_field_id>hash_070104617cdc8a230615e59f06f361ef6e7728</data_input_field_id>
-				<t_value />
-				<value />
-			</item_003>
-			<item_004>
-				<data_input_field_id>hash_070104acb449d1451e8a2a655c2c99d31142c7</data_input_field_id>
-				<t_value />
-				<value />
-			</item_004>
-			<item_005>
-				<data_input_field_id>hash_070104f4facc5e2ca7ebee621f09bc6d9fc792</data_input_field_id>
-				<t_value />
-				<value />
-			</item_005>
-			<item_006>
-				<data_input_field_id>hash_0701041cc1493a6781af2c478fa4de971531cf</data_input_field_id>
-				<t_value />
-				<value />
-			</item_006>
-			<item_007>
-				<data_input_field_id>hash_070104b5c23f246559df38662c255f4aa21d6b</data_input_field_id>
-				<t_value />
-				<value />
-			</item_007>
-			<item_008>
-				<data_input_field_id>hash_0701046027a919c7c7731fbe095b6f53ab127b</data_input_field_id>
-				<t_value>on</t_value>
-				<value />
-			</item_008>
-			<item_009>
-				<data_input_field_id>hash_070104cbbe5c1ddfb264a6e5d509ce1c78c95f</data_input_field_id>
-				<t_value>on</t_value>
-				<value />
-			</item_009>
-			<item_010>
-				<data_input_field_id>hash_070104e6deda7be0f391399c5130e7c4a48b28</data_input_field_id>
-				<t_value>on</t_value>
-				<value />
-			</item_010>
-			<item_011>
-				<data_input_field_id>hash_070104c1f36ee60c3dc98945556d57f26e475b</data_input_field_id>
-				<t_value />
-				<value />
-			</item_011>
-			<item_012>
-				<data_input_field_id>hash_0701042cf7129ad3ff819a7a7ac189bee48ce8</data_input_field_id>
-				<t_value />
-				<value />
-			</item_012>
-			<item_013>
-				<data_input_field_id>hash_0701046b13ac0a0194e171d241d4b06f913158</data_input_field_id>
-				<t_value />
-				<value />
-			</item_013>
-			<item_014>
-				<data_input_field_id>hash_0701043a33d4fc65b8329ab2ac46a36da26b72</data_input_field_id>
-				<t_value />
-				<value />
-			</item_014>
 		</data>
 	</hash_01010458a187552a8d10ab2124203eb3702509>
 </cacti>

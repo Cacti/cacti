@@ -174,3 +174,22 @@ test('original QFP gauges are discoverable and poll with overflow without maskin
 		expect(cisco_health_query('qfp_memory', 'get', $field, '7.1', $get, $walk))->toBe('U');
 	}
 });
+
+test('memory units from binary SNMP remain in their original scale', function () {
+	foreach (['Gauge32: 4096 bytes'=>'4096', 'Counter64: 8589934592 kilo bytes'=>'8589934592', 'Gauge32: 0 bytes'=>'0'] as $raw=>$expected) {
+		expect(cisco_health_unit_response($raw))->toBe($expected);
+	}
+	expect(cisco_health_number(cisco_health_unit_response('4096 unknown')))->toBeNull();
+});
+
+test('cellular query discovers radios and keeps raw tenths for a single graph conversion', function () {
+	$base        = '.1.3.6.1.4.1.9.9.817.1.1.1.1.1.';
+	[$get,$walk] = ciscoHealthFixture([$base . '2.7'=> '-95', $base . '3.7'=>'46', '.1.3.6.1.2.1.47.1.1.1.1.7.7'=>'Cellular0/2/0'],[$base . '1'=>['7'=>'-103']]);
+	expect(cisco_health_query('cellular','index','','',$get,$walk))->toBe("7\n");
+	expect(cisco_health_query('cellular','query','name','',$get,$walk))->toBe("7!Cellular0/2/0\n");
+	expect(cisco_health_query('cellular','get','rsrq','7',$get,$walk))->toBe('-95');
+	expect(cisco_health_query('cellular','get','snr','7',$get,$walk))->toBe('46');
+	expect(cisco_health_query('cellular','get','rsrq','8',$get,$walk))->toBe('U');
+	[$get,$walk] = ciscoHealthFixture();
+	expect(cisco_health_query('cellular','index','','',$get,$walk))->toBe('');
+});
