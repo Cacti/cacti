@@ -114,9 +114,9 @@ test('memory percentages follow their own sources after earlier pools are delete
 	$used = ['local_data_id'=>20, 'data_template_rrd_id'=>30, 'data_source_name'=>'used'];
 	$free = ['local_data_id'=>20, 'data_template_rrd_id'=>31, 'data_source_name'=>'free'];
 	$other = ['local_data_id'=>10, 'data_template_rrd_id'=>10, 'data_source_name'=>'used'];
-	$before = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used, $free], ['10:1'=>0, '30:1'=>2, '31:1'=>3], 1);
-	$after = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$used, $free], ['30:1'=>0, '31:1'=>1], 1);
+	$before = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used, $free], [10=>[1=>0], 30=>[1=>2], 31=>[1=>3]], 1);
+	$after = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$used, $free], [30=>[1=>0], 31=>[1=>1]], 1);
 	expect($before)->toBe('c,d,+,0,GT,c,c,d,+,/,100,*,UNKN,IF');
 	expect($after)->toBe('a,b,+,0,GT,a,a,b,+,/,100,*,UNKN,IF');
-	expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used], ['10:1'=>0, '30:1'=>1], 1))->toBe('UNKN');
+	expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used], [10=>[1=>0], 30=>[1=>1]], 1))->toBe('b,UNKN,*');
 });
