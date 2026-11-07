@@ -193,3 +193,13 @@ test('cellular query discovers radios and keeps raw tenths for a single graph co
 	[$get,$walk] = ciscoHealthFixture();
 	expect(cisco_health_query('cellular','index','','',$get,$walk))->toBe('');
 });
+
+
+test('unit-labelled QFP totals remain discoverable without scaling discovery values', function () {
+	$base = '.1.3.6.1.4.1.9.9.715.1.1.7.1.';
+	foreach (['4096 bytes', '4096 kilo bytes', 'Gauge32: 4096 kilo bytes'] as $total) {
+		[$get, $walk] = ciscoHealthFixture([], [$base . '9'=>['1.1'=>$total], $base . '2'=>['1.1'=>'4096']]);
+		expect(cisco_health_query('qfp_memory','index','','',$get,$walk))->toBe("1.1\n");
+		expect(cisco_health_query('qfp_memory','num_indexes','','',$get,$walk))->toBe('1');
+	}
+});

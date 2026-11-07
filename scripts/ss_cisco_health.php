@@ -132,8 +132,9 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 			$a[]          = $engine;
 
 			// Preserve missing columns for memory fallbacks and legacy QFP units.
-			if ($kind === 'cellular' && !str_starts_with($oid, '.1.3.6.1.2.1.47.') || preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.715\.1\.1\.7\.1\.(8|9|10|11|12|13|16)\./', $oid)
-				|| preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.221\.1\.1\.1\.1\.(17|18|19|20)\./', $oid)) {
+			if ($kind === 'cellular' && !str_starts_with($oid, '.1.3.6.1.2.1.47.') || preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.715\.1\.1\.7\.1\.(2|3|4|8|9|10|11|12|13|16)\./', $oid)
+				|| preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.48\.1\.1\.1\.(5|6)\./', $oid)
+				|| preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.221\.1\.1\.1\.1\.(7|8|17|18|19|20)\./', $oid)) {
 				$raw          = cacti_snmp_get_raw(...$a, numeric_value: true);
 				$values[$oid] = cisco_health_unit_response((string)$raw);
 			} else {
@@ -298,6 +299,7 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 		}
 
 		foreach ($totals as $idx=>$total) {
+			$total = cisco_health_unit_response((string)$total);
 			if (!is_numeric($total) || $total <= 0) {
 				continue;
 			}

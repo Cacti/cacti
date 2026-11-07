@@ -406,6 +406,26 @@ function cisco_health_graph_existing(int $host_id, int $template_id, array $quer
 	return [];
 }
 
+/** Retry once per automation rule, keeping all existing individual graphs. */
+function cisco_health_graph_retry_existing(int $host_id, int $template_id, array $query, bool &$attempted) : void {
+	$kind = cisco_health_graph_kind($template_id);
+	if ($attempted || $kind === null) {
+		return;
+	}
+
+	if (cisco_health_graph_existing($host_id, $template_id, $query)) {
+		return;
+	}
+
+	$attempted = true;
+	try {
+		// No component ID: rebuild from existing sources without deleting graphs.
+		cisco_health_graph_build($host_id, $kind, true);
+	} catch (\Throwable $error) {
+		cacti_log('Combined Cisco health graph retry failed: ' . $error->getMessage(), false, 'GRAPH');
+	}
+}
+
 /** Remove graph definitions only after all their data items exist in the combined view. */
 function cisco_health_graph_remove_components(int $host_id, int $template_id, int $combined_id, int $component_id) : void {
 	require_once __DIR__ . '/api_graph.php';
