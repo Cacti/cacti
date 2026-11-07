@@ -5601,6 +5601,16 @@ msgstr ""
 msgid "Return to Cacti: %s"
 msgstr "Вхід в Cacti"
 
+#: include/csrf.php
+#, fuzzy
+#| msgid "User Sessions Cleared"
+msgid "Session Expired"
+msgstr "Користувацькі Сесії Очищено"
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
+
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr ""
