@@ -134,6 +134,7 @@ jobs:
 
   check:
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     timeout-minutes: 40
     strategy:
       fail-fast: false
@@ -141,6 +142,15 @@ jobs:
         os: [ubuntu-24.04]
         php: ['8.2', '8.3', '8.4']
         experimental: [false]
+        include:
+          # PHP 8.5 and 8.6 run as non-blocking (experimental) legs because
+          # their packages can lag on the runners and in Ondřej Surý's PPA.
+          - os: ubuntu-24.04
+            php: '8.5'
+            experimental: true
+          - os: ubuntu-24.04
+            php: '8.6'
+            experimental: true
         
     services:
       mysql:
@@ -161,12 +171,49 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
     - name: Install PHP ${{ matrix.php }}
+      if: matrix.php != '8.6'
       uses: ./.github/actions/setup-php-composer
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring #optional
         ini-values: "post_max_size=256M, max_execution_time=60, date.timezone=America/New_York" #optional
         dependency-mode: locked-integration
+
+    # PHP 8.6 is still pre-release. shivammathur/setup-php ships a nightly
+    # 8.6.0-dev build whose bundled extensions are ABI-skewed against their own
+    # core (undefined symbol: smart_str_ferealloc / _safe_femalloc), so every
+    # extension fails to load and the CLI install dies. Ondřej Surý's PPA
+    # provides a coherent 8.6 RC build - the very same one the Apache mod_php
+    # handler below installs - so this experimental leg provisions the CLI from
+    # there instead, keeping the CLI and Apache on one ABI-matched PHP build.
+    - name: Install PHP 8.6 toolchain from Ondřej Surý's PPA
+      if: matrix.php == '8.6'
+      run: |
+        set -euo pipefail
+        sudo add-apt-repository -y ppa:ondrej/php
+        sudo apt-get update
+        sudo apt-get install -y \
+          php8.6-cli php8.6-common \
+          php8.6-intl php8.6-mysql php8.6-gd php8.6-ldap \
+          php8.6-gmp php8.6-xml php8.6-curl php8.6-mbstring \
+          php8.6-snmp php8.6-sqlite3
+        # Make the Ondřej 8.6 CLI the default `php` so composer and the tests
+        # run under the same ABI-coherent build as Apache mod_php.
+        sudo update-alternatives --install /usr/bin/php php /usr/bin/php8.6 86
+        sudo update-alternatives --set php /usr/bin/php8.6
+        # Mirror the ini values the other legs receive via setup-php.
+        printf '%s\n' \
+          'post_max_size=256M' \
+          'max_execution_time=60' \
+          'date.timezone=America/New_York' \
+          | sudo tee /etc/php/8.6/cli/conf.d/99-cacti-ci.ini >/dev/null
+        # setup-php normally provides Composer; it is skipped for this leg, so
+        # make sure a Composer binary is available for the dependency steps.
+        if ! command -v composer >/dev/null 2>&1; then
+          sudo apt-get install -y composer
+        fi
+        php -v
+        composer --version
 
     - name: Check PHP version
       run: php -v
@@ -187,7 +234,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_thold
-        ref: 5b41aa07c97a8d7c44b841cf3cdaa74b9bbbec94
         path: plugins/thold
         persist-credentials: false
 
@@ -195,7 +241,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_monitor
-        ref: 03ee6e9d23d57f2af3322c4a90ed8a819c799299
         path: plugins/monitor
         persist-credentials: false
 
@@ -203,7 +248,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_mactrack
-        ref: c0cadecc5e3e026cab32d74328d649cdbc82d386
         path: plugins/mactrack
         persist-credentials: false
 
@@ -211,7 +255,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_intropage
-        ref: 3496e4d6f7ce43f0e6c5f278cb4098f7e984c95a
         path: plugins/intropage
         persist-credentials: false
 
@@ -219,7 +262,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_flowview
-        ref: 9d337039d53ca10a918c9875a83c84b983db72a5
         path: plugins/flowview
         persist-credentials: false
 
@@ -227,7 +269,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_audit
-        ref: 668a6a91f1e560dab495b70686d73e9f8c460e5e
         path: plugins/audit
         persist-credentials: false
 
@@ -235,7 +276,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_syslog
-        ref: 84d22bb482a91f935cfb8ffc98cf7ac180942407
         path: plugins/syslog
         persist-credentials: false
 
@@ -266,6 +306,26 @@ jobs:
 
     - name: Install Apache and Tools
       run: sudo apt-get install snmp snmpd rrdtool fping
+
+    - name: Install and enable the Apache PHP ${{ matrix.php }} handler
+      run: |
+        # Make sure Ondřej Surý's PHP repository is available so the versioned
+        # Apache module and MySQL extension resolve for every matrix PHP
+        # version, including 8.5/8.6 which are not in the base Ubuntu archive.
+        sudo add-apt-repository -y ppa:ondrej/php
+        sudo apt-get update
+        sudo apt-get install -y \
+          libapache2-mod-php${{ matrix.php }} \
+          php${{ matrix.php }}-mysql
+        # mod_php is only loadable under the prefork MPM.
+        sudo a2dismod mpm_event mpm_worker 2>/dev/null || true
+        sudo a2enmod mpm_prefork
+        # Ensure Apache executes the matrix PHP version and no other.
+        for mod in /etc/apache2/mods-enabled/php*.load; do
+          [ -e "$mod" ] || continue
+          sudo a2dismod "$(basename "$mod" .load)" 2>/dev/null || true
+        done
+        sudo a2enmod php${{ matrix.php }}
 
     - name: Start SNMPD Agent and Test Agent
       run: |
