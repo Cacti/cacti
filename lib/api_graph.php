@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/cisco_health_graphs.php';
+
 /**
  * Deletes graphs based on the provided local graph IDs and delete type.
  *
@@ -763,6 +765,13 @@ function api_graph_change_device(int $local_graph_id, int $host_id) : bool {
 		FROM graph_local
 		WHERE id = ?',
 		[$local_graph_id]);
+
+	// Pool indexes and ownership belong to the original device. Recreate on the target.
+	if (is_array($graph) && $graph && (int)$graph['host_id'] !== $host_id && cisco_health_graph_is_managed($local_graph_id, (int)$graph['graph_template_id'])) {
+		cacti_log('Cannot move a managed Cisco health graph; create its discovered health graphs on the target device instead.', false, 'GRAPH');
+
+		return false;
+	}
 
 	if (cacti_sizeof($graph)) {
 		if ($graph['snmp_query_id'] > 0) {

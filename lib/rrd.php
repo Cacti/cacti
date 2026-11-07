@@ -2989,6 +2989,11 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				/** @var string $cdef_string */
 				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
 
+				if ($cdef_string === 'CISCO_HEALTH_USED_PERCENT') {
+					require_once __DIR__ . '/cisco_health_graphs.php';
+					$cdef_string = cisco_health_graph_percentage($graph_item, $graph_items, $cf_ds_cache, (int)$cf_id);
+				}
+
 				$magic_item   = [];
 				$already_seen = [];
 				$sources_seen = [];
