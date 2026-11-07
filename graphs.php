@@ -303,6 +303,12 @@ function form_save() {
 			set_request_var('host_id', '0');
 		}
 
+		if (!cisco_health_graph_host_change_allowed((int)get_request_var('local_graph_id'), (int)get_request_var('host_id'))) {
+			raise_message('combined_health_move', __('Combined Cisco health graphs cannot be moved to another device. Create the health graphs on the target device instead.'), MESSAGE_LEVEL_ERROR);
+			header('Location: graphs.php?action=graph_edit&header=false&id=' . (int)get_request_var('local_graph_id'));
+			return;
+		}
+
 		$save1['id']                   = get_nfilter_request_var('local_graph_id');
 		$save1['host_id']              = get_request_var('host_id');
 		$save1['graph_template_id']    = get_nfilter_request_var('graph_template_id');
