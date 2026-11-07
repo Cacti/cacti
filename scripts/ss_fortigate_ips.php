@@ -77,7 +77,7 @@ function ss_fortigate_ips ($host_id = '') {
 		if (is_numeric($x)) {
 			$result .= $name . ':' . $x . ' ';
 		} else {
-		$result .= $name . ':0 ';
+			$result .= $name . ':U ';
 		}
 	}
 	return $result;

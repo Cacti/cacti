@@ -67,8 +67,12 @@ function ss_mikrotik_interfaces_getvalue($host_id, $index, $column) {
 
 	$column = 'cur' . $column;
 
+	if (!db_is_safe_identifier($column)) {
+		return '0';
+	}
+
 	$value = db_fetch_cell_prepared("SELECT
-		$column AS value
+		`$column` AS value
 		FROM plugin_mikrotik_interfaces
 		WHERE `index` = ?
 		AND host_id = ?",

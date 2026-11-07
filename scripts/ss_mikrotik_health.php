@@ -32,7 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_health($host_id = '', $column = 'no') {
-	$value = db_fetch_cell_prepared("SELECT $column
+	if (!db_is_safe_identifier($column)) {
+		return 'U';
+	}
+
+	$value = db_fetch_cell_prepared("SELECT `$column`
 		FROM plugin_mikrotik_system_health
 		WHERE host_id = ?",
 		array($host_id));

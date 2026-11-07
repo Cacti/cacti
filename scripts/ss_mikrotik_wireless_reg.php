@@ -64,6 +64,10 @@ function ss_mikrotik_wireless_reg($host_id, $cmd, $object = '', $index = '') {
 			}
 		}
 	} elseif ($cmd == 'get') {
+		if (!db_is_safe_identifier($object)) {
+			return;
+		}
+
 		return db_fetch_cell_prepared("SELECT `$object`
 			FROM plugin_mikrotik_wireless_registrations
 			WHERE host_id = ?

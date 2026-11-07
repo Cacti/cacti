@@ -65,6 +65,8 @@ function ss_mikrotik_qtrees_getvalue($host_id, $index, $column) {
 	case 'qtPackets':
 		$column = 'curPackets';
 		break;
+	default:
+		return 'U';
 	}
 
 	$value = db_fetch_cell_prepared("SELECT

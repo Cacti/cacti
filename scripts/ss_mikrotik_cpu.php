@@ -38,10 +38,9 @@ function ss_mikrotik_cpu($host_id = '') {
 		WHERE host_id = ?',
 		array($host_id));
 
-	if (cacti_sizeof($cpu)) {
-		return 'cpu:' . $cpu['avgCPU'] . ' max:' . $cpu['maxCPU'];
-	} else {
-		return 'cpu:U max:U';
-	}
+	$avg = (isset($cpu['avgCPU']) && is_numeric($cpu['avgCPU'])) ? $cpu['avgCPU'] : 'U';
+	$max = (isset($cpu['maxCPU']) && is_numeric($cpu['maxCPU'])) ? $cpu['maxCPU'] : 'U';
+
+	return 'cpu:' . $avg . ' max:' . $max;
 }
 

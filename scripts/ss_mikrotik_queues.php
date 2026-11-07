@@ -47,6 +47,11 @@ function ss_mikrotik_queues($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
 				print $arr_index[$i] . '!' . $arr[$arr_index[$i]] . "\n";
 			}
 		}
+	} elseif ($cmd == 'num_indexes') {
+		print db_fetch_cell_prepared("SELECT COUNT(DISTINCT REPLACE(name, ' ', '_'))
+			FROM plugin_mikrotik_queues
+			WHERE host_id = ?",
+			array($host_id));
 	} elseif ($cmd == 'get') {
 		$arg = $arg1;
 		$index = $arg2;
@@ -83,6 +88,8 @@ function ss_mikrotik_queues_getvalue($host_id, $index, $column) {
 	case 'qsOutDropped':
 		$column = 'curDroppedOut';
 		break;
+	default:
+		return '0';
 	}
 
 	$index2 = str_replace('_', ' ', $index);
@@ -90,9 +97,9 @@ function ss_mikrotik_queues_getvalue($host_id, $index, $column) {
 	$value = db_fetch_cell_prepared("SELECT
 		$column AS value
 		FROM plugin_mikrotik_queues
-		WHERE name IN ('$index', '$index2')
+		WHERE name IN (?, ?)
 		AND host_id = ?",
-		array($host_id));
+		array($index, $index2, $host_id));
 
 	if ($value === false) {
 		return '0';

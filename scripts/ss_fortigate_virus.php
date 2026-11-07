@@ -77,7 +77,7 @@ function ss_fortigate_virus ($host_id = 0) {
 		if (is_numeric($x)) {
 			$result .= $name . ':' . $x . ' ';
 		} else {
-			$result .= $name . ':0 ';
+			$result .= $name . ':U ';
 		}
 
 	}
@@ -88,7 +88,8 @@ function ss_fortigate_virus ($host_id = 0) {
 		'vir_det_imap' => '.1.3.6.1.4.1.12356.101.8.2.1.1.9.1'
 	);
 
-	$email = 0;
+	$email         = 0;
+	$email_unknown = false;
 
 	foreach ($oids as $name => $oid) {
 		$x = cacti_snmp_get($host['hostname'],
@@ -109,10 +110,12 @@ function ss_fortigate_virus ($host_id = 0) {
 
 		if (is_numeric($x)) {
 			$email += $x;
+		} else {
+			$email_unknown = true;
 		}
 	}
 
-	$result .= 'vir_det_mail:' . $email . PHP_EOL;
+	$result .= 'vir_det_mail:' . ($email_unknown ? 'U' : $email) . PHP_EOL;
 
 	return $result;
 }
