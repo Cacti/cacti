@@ -34,6 +34,14 @@ class CoverageEvidenceTest(unittest.TestCase):
         with patch.object(GATE.subprocess, 'check_output', side_effect=['base', diff]):
             self.assertEqual(GATE.added_lines('HEAD^'), {'current.css': {1}})
 
+    def test_php_lexer_excludes_multiline_literals(self):
+        source = "<?php\nprint 'text\nsetTimeout(function() {\n$(function() {\n';\nreturn true;\n"
+        self.assertEqual(GATE.php_code_lines(source), {6})
+
+    def test_php_lexer_retains_calls_and_control_flow(self):
+        source = "<?php\nif ($ready) {\nwork();\nreturn true;\n}\n"
+        self.assertEqual(GATE.php_code_lines(source), {2, 3, 4})
+
     def evaluate(self, evidence, added=(3,), minimum=None):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

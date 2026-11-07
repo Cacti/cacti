@@ -36,6 +36,21 @@ def added_lines(base):
     return {name: lines for name, lines in files.items() if lines}
 
 
+def php_code_lines(source):
+    """Use PHP's lexer so literal text cannot become a missing statement."""
+    script = r'''$lines = [];
+foreach (token_get_all(stream_get_contents(STDIN)) as $token) {
+    if (is_array($token) && in_array($token[0], [T_VARIABLE, T_RETURN,
+        T_THROW, T_IF, T_ELSEIF, T_FOREACH, T_WHILE, T_FOR, T_STRING,
+        T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_NAME_RELATIVE], true)) {
+        $lines[$token[2]] = true;
+    }
+}
+print json_encode(array_keys($lines), JSON_THROW_ON_ERROR);'''
+    return set(json.loads(subprocess.check_output(
+        ['php', '-r', script], input=source, text=True)))
+
+
 def inline_script_lines(source):
     """Select static script lines outside PHP; never credit PHP via Chromium."""
     result = set()
@@ -132,8 +147,9 @@ def main():
             executable = {n for n in added if n in evidence and evidence[n] != -2}
             # Source slices may instrument only one function in an entry point.
             # Missing statements elsewhere in that same file must fail closed.
+            code_lines = php_code_lines(source)
             for number in added:
-                if number not in evidence and re.match(r'^\s*(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
+                if number in code_lines and number not in evidence and re.match(r'^\s*(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
                     executable.add(number)
             covered = {n for n in executable if evidence.get(n, -1) > 0}
             script = inline_script_lines(source) & added

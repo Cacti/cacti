@@ -587,22 +587,9 @@ function form_actions() : void {
 				db_execute('DELETE FROM automation_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
 			} elseif (gnrv('drp_action') == '2') { // export
 				top_header();
+				$download_url = cacti_url('automation_templates.php', ['action' => 'export', 'selected_items' => gnrv('selected_items')]);
 
-				print '<script text="text/javascript">
-					function DownloadStart(url) {
-						document.getElementById("download_iframe").src = url;
-						setTimeout(function() {
-							loadUrl({ url: "automation_templates.php" });
-							Pace.stop();
-						}, 500);
-					}
-
-					$(function() {
-						//debugger;
-						DownloadStart(\'automation_templates.php?action=export&selected_items=' . gnrv('selected_items') . '\');
-					});
-				</script>
-				<iframe id="download_iframe" style="display:none;"></iframe>';
+				html_download_start($download_url, 'automation_templates.php');
 
 				bottom_footer();
 

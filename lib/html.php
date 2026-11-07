@@ -3548,3 +3548,26 @@ function html_auth_footer(string $section, string $error = '', string $html = ''
 </html>
 <?php
 }
+
+/**
+ * Render an export download and return to its list page after starting it.
+ */
+function html_download_start(string $download_url, string $return_page) : void {
+	$flags                = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR;
+	$encoded_download_url = json_encode($download_url, $flags);
+	$encoded_return_page  = json_encode($return_page, $flags);
+
+	print '<script type="text/javascript">
+        function DownloadStart(url) {
+            document.getElementById("download_iframe").src = url;
+            setTimeout(function() {
+                loadUrl({ url: ' . $encoded_return_page . ' });
+                Pace.stop();
+            }, 500);
+        }
+        $(function() {
+            DownloadStart(' . $encoded_download_url . ');
+        });
+    </script>
+    <iframe id="download_iframe" style="display:none;"></iframe>';
+}

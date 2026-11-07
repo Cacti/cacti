@@ -400,22 +400,9 @@ function form_actions() : void {
 				}
 			} elseif (gnrv('drp_action') == '6') { // export
 				top_header();
+				$download_url = cacti_url('automation_networks.php', ['action' => 'export', 'selected_items' => gnrv('selected_items')]);
 
-				print '<script text="text/javascript">
-					function DownloadStart(url) {
-						document.getElementById("download_iframe").src = url;
-						setTimeout(function() {
-							loadUrl({ url: "automation_networks.php" });
-							Pace.stop();
-						}, 500);
-					}
-
-					$(function() {
-						//debugger;
-						DownloadStart(\'automation_networks.php?action=export&selected_items=' . gnrv('selected_items') . '\');
-					});
-				</script>
-				<iframe id="download_iframe" style="display:none;"></iframe>';
+				html_download_start($download_url, 'automation_networks.php');
 
 				bottom_footer();
 

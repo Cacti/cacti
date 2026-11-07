@@ -443,22 +443,9 @@ function automation_tree_rules_form_actions() : void {
 				}
 			} elseif (gnrv('drp_action') == AUTOMATION_ACTION_TREE_EXPORT) { // export
 				top_header();
+				$download_url = cacti_url('automation_tree_rules.php', ['action' => 'export', 'selected_items' => gnrv('selected_items')]);
 
-				print '<script text="text/javascript">
-					function DownloadStart(url) {
-						document.getElementById("download_iframe").src = url;
-						setTimeout(function() {
-							loadUrl({ url: "automation_tree_rules.php" });
-							Pace.stop();
-						}, 500);
-					}
-
-					$(function() {
-						//debugger;
-						DownloadStart(\'automation_tree_rules.php?action=export&selected_items=' . gnrv('selected_items') . '\');
-					});
-				</script>
-				<iframe id="download_iframe" style="display:none;"></iframe>';
+				html_download_start($download_url, 'automation_tree_rules.php');
 
 				bottom_footer();
 

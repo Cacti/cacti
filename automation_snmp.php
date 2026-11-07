@@ -361,22 +361,9 @@ function form_actions() : void {
 				}
 			} elseif (gnrv('drp_action') == '3') { // export
 				top_header();
+				$download_url = cacti_url('automation_snmp.php', ['action' => 'export', 'selected_items' => gnrv('selected_items')]);
 
-				print '<script text="text/javascript">
-					function DownloadStart(url) {
-						document.getElementById("download_iframe").src = url;
-						setTimeout(function() {
-							loadUrl({ url: "automation_snmp.php" });
-							Pace.stop();
-						}, 500);
-					}
-
-					$(function() {
-						//debugger;
-						DownloadStart(\'automation_snmp.php?action=export&selected_items=' . gnrv('selected_items') . '\');
-					});
-				</script>
-				<iframe id="download_iframe" style="display:none;"></iframe>';
+				html_download_start($download_url, 'automation_snmp.php');
 
 				bottom_footer();
 
