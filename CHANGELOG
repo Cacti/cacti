@@ -214,6 +214,13 @@ Cacti CHANGELOG
 -issue#8442: Skin jQuery multiselect buttons and menus in the Deepness theme with its own palette so they match the select2 and selectmenu controls
 -issue#8459: Validate discovery evidence and ranges, preserve overlapping targets and valid .255 hosts, and restore SNMP form controls
 -issue#8470: Remove the setting boost_redirect from the settings page.  Make it permanent when boost is enabled
+-issue#8485: Restore Dark keyboard focus, contain wrapped titlebars, and keep hovered text readable
+-issue#8490: Contain Deepness titlebars and improve status and import message contrast
+-issue#8495: Keep Midwinter details controls beside truncated titles and preserve row contrast in both palettes
+-issue#8502: Restore Modern keyboard focus and improve titlebar, link, and active control contrast
+-issue#8504: Contain Paw titlebars and keep selected tabs and row links readable
+-issue#8508: Contain wrapped Sunrise titles beside their controls
+-issue#8510: Contain Paper Plane titlebars and improve link and table text contrast across surfaces
 -issue#8581: Bound Boost archive draining, isolate RRD failures, and make cleanup predictable
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path

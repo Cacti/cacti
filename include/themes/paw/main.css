@@ -1237,16 +1237,17 @@ legend {
 
 .cactiTableTitleRow {
 	color: white;
-	float: left;
 	padding-left: 3px;
 	text-align: left;
-	display: block;
+	display: flex;
 	width: 100%;
-	height: 28px;
+	min-height: 28px;
 	line-height: 28px;
 	font-size: 1em;
 	font-weight: 700;
 	background: rgba(0,0,0,0.9);
+	align-items: center;
+	box-sizing: border-box;
 }
 
 /* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
@@ -1385,6 +1386,28 @@ legend {
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.cactiTableTitleRow > .cactiTableTitle,
+.cactiTableTitleRow > .cactiTableButton {
+	float: none;
+	width: auto;
+	height: auto;
+	min-height: 28px;
+}
+
+.cactiTableTitleRow > .cactiTableTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.cactiTableTitleRow > .cactiTableButton {
+	flex: 0 0 auto;
+}
+
+.cactiTableTitleRow > .cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -2043,8 +2066,8 @@ div.submenu span {
 
 .tabs nav a.selected {
 	color: white;
-	border-bottom: 1px solid rgba(63,117,162,0.8);
-	background: rgba(63,117,162,0.8);
+	border-bottom: 1px solid #3f75a2;
+	background: #3f75a2;
 }
 
 .tabs li {
@@ -2120,20 +2143,25 @@ tr.selected {
 	background: rgba(0,0,0,1);
 }
 
-tr.selected a.linkEditMain:visited {
+tr.selected a.linkEditMain:visited,
+tr.selected a.linkEditMain:hover {
 	color: #a9c7ff;
 }
 
-tr:not(.selectable) a.linkEditMain:hover {
+tr:not(.selectable):not(.selected) a.linkEditMain:hover {
 	color: #2d4ca8;
 }
 
-tr.selectable a.linkEditMain:hover {
+tr.selectable:not(.selected) a.linkEditMain:hover {
 	color: #15307a;
 }
 
 tr.selectable:hover:not(.selected) {
 	background: rgba(0,0,0,0.3);
+}
+
+tr.selectable:hover:not(.selected) a {
+	color: #1d3370;
 }
 
 tr.selectable td {
