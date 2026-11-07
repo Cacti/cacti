@@ -120,5 +120,5 @@ test('memory percentages follow their own sources after earlier pools are delete
 	$after  = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$used, $free], ['30:1'=>0, '31:1'=>1], 1);
 	expect($before)->toBe('c,d,+,0,GT,c,c,d,+,/,100,*,UNKN,IF');
 	expect($after)->toBe('a,b,+,0,GT,a,a,b,+,/,100,*,UNKN,IF');
-	expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used], ['10:1'=>0, '30:1'=>1], 1))->toBe('UNKN');
+	expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used], ['10:1'=>0, '30:1'=>1], 1))->toBe('b,UNKN,*');
 });
