@@ -1029,12 +1029,6 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 	 * not disabled = '' => no regexp, but allow nulls */
 	$save['disabled']             = form_input_validate($disabled, 'disabled', '^on$', true, 3);
 
-	if ($save['disabled'] == 'on') {
-		if ($save['id'] > 0) {
-			api_device_disable_devices(array($save['id']));
-		}
-	}
-
 	$quick_save = api_device_quick_save($save);
 
 	$save['availability_method']  = form_input_validate($availability_method, 'availability_method', '^[0-9]+$', false, 3);
@@ -1054,6 +1048,10 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 		$device_id = sql_save($save, 'host');
 
 		if ($device_id) {
+			if ($save['disabled'] == 'on') {
+				api_device_disable_devices(array($device_id));
+			}
+
 			if ($previous_poller > 1 && $poller_id != $previous_poller) {
 				if (remote_poller_up($previous_poller)) {
 					api_device_purge_from_remote($device_id, $previous_poller);
@@ -1121,6 +1119,10 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 			/* push out relevant fields to data sources using this host */
 			if (!$quick_save) {
 				push_out_host($device_id, 0);
+			}
+
+			if ($id > 0 && $poller_id > 1 && $poller_id != $previous_poller) {
+				api_device_replicate_out($device_id, $poller_id);
 			}
 
 			/* the host substitution cache is now stale; purge it */

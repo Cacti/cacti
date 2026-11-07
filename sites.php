@@ -23,6 +23,8 @@
 */
 
 include('./include/auth.php');
+include_once($config['library_path'] . '/api_tree.php');
+include_once($config['library_path'] . '/variables.php');
 
 $site_actions = array(
 	1 => __('Delete'),
@@ -253,19 +255,22 @@ function form_save() {
 		$save['notes']        = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 		if (!is_error_message()) {
+			$previous_name = db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($save['id']));
 			$site_id = sql_save($save, 'sites');
 
 			if ($site_id) {
 				raise_message(1);
 
-				if (empty($save['id'])) {
-					/**
-				 	 * Save the last time a device/site was created/updated
-					 * for Caching.
-					 */
-					set_config_option('time_last_change_site', time());
-					set_config_option('time_last_change_site_device', time());
+				if ($previous_name !== $save['name']) {
+					$devices = db_fetch_assoc_prepared('SELECT id FROM host WHERE site_id = ? AND deleted = ""', array($site_id));
+					foreach ($devices as $device) {
+						update_data_source_title_cache_from_host($device['id']);
+						update_graph_title_cache_from_host($device['id']);
+					}
 				}
+
+				set_config_option('time_last_change_site', time());
+				set_config_option('time_last_change_site_device', time());
 			} else {
 				raise_message(2);
 			}
@@ -354,8 +359,24 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				db_execute('DELETE FROM sites WHERE ' . array_to_sql_or($selected_items, 'id'));
+				$devices = db_fetch_assoc('SELECT id FROM host WHERE deleted = "" AND ' . array_to_sql_or($selected_items, 'site_id'));
+				$branches = db_fetch_assoc('SELECT id, graph_tree_id, site_id FROM graph_tree_items WHERE site_id > 0 AND ' . array_to_sql_or($selected_items, 'site_id'));
+
+				if (!db_execute('DELETE FROM sites WHERE ' . array_to_sql_or($selected_items, 'id'))) {
+					raise_message(2);
+					header('Location: sites.php?header=false');
+					exit;
+				}
+
+				foreach ($branches as $branch) {
+					api_tree_delete_node($branch['graph_tree_id'], 'tbranch:' . $branch['id'] . '_tsite:' . $branch['site_id']);
+				}
+
 				db_execute('UPDATE host SET site_id=0 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'site_id'));
+				foreach ($devices as $device) {
+					update_data_source_title_cache_from_host($device['id']);
+					update_graph_title_cache_from_host($device['id']);
+				}
 
 				/**
 			 	 * Save the last time a device/site was created/updated
