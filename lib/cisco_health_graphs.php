@@ -50,6 +50,10 @@ function cisco_health_graph_kind(int $template_id) : ?string {
 	return $kinds[$template_id];
 }
 
+function cisco_health_graph_expand_percentage(string $expression, string $replacement) : string {
+	return implode(',', array_map(static fn ($token) => $token === 'CISCO_HEALTH_USED_PERCENT' ? $replacement : $token, explode(',', $expression)));
+}
+
 /**
  * Resolve the internal percentage token against this RRD, never graph item positions.
  * @param-out array $pool_items
