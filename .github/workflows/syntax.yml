@@ -197,7 +197,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_thold
-        ref: 5b41aa07c97a8d7c44b841cf3cdaa74b9bbbec94
         path: plugins/thold
         persist-credentials: false
 
@@ -205,7 +204,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_monitor
-        ref: 03ee6e9d23d57f2af3322c4a90ed8a819c799299
         path: plugins/monitor
         persist-credentials: false
 
@@ -213,7 +211,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_mactrack
-        ref: c0cadecc5e3e026cab32d74328d649cdbc82d386
         path: plugins/mactrack
         persist-credentials: false
 
@@ -221,7 +218,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_intropage
-        ref: 3496e4d6f7ce43f0e6c5f278cb4098f7e984c95a
         path: plugins/intropage
         persist-credentials: false
 
@@ -229,7 +225,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_flowview
-        ref: 9d337039d53ca10a918c9875a83c84b983db72a5
         path: plugins/flowview
         persist-credentials: false
 
@@ -237,7 +232,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_audit
-        ref: 668a6a91f1e560dab495b70686d73e9f8c460e5e
         path: plugins/audit
         persist-credentials: false
 
@@ -245,7 +239,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Cacti/plugin_syslog
-        ref: 31e70d82a2b59cd2fa030a966ebdcd3cb01834c9
         path: plugins/syslog
         persist-credentials: false
 
