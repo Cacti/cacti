@@ -27,6 +27,10 @@ if (!isset($called_by_script_server)) {
 require_once __DIR__ . '/../lib/snmp.php';
 
 function cisco_health_number(mixed $value) : int|float|null {
+	// Net-SNMP may retain an enum label when MIBs are installed.
+	if (is_string($value) && preg_match('/^[A-Za-z][A-Za-z0-9_-]*\((-?[0-9]+)\)$/D', $value, $match)) {
+		$value = $match[1];
+	}
 	return is_numeric($value) ? 0 + $value : null;
 }
 function cisco_health_temperature(mixed $value, mixed $scale, mixed $precision, mixed $status, bool $cisco = false) : string {
@@ -74,7 +78,7 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 	if (!$reuse) {
 		$h = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version,
 		snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase,
-		snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout, ping_retries,
+		snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout,
 		snmp_engine_id, bulk_walk_size
 		FROM host WHERE id = ?', [(int)$host_id]);
 	}
@@ -82,9 +86,10 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 	if (!is_array($h) || !$h) {
 		return 'U';
 	}
+	// Zero delegates retries to Cacti's SNMP setting, not ICMP availability checks.
 	$args = [$h['hostname'], $h['snmp_community'], '', $h['snmp_version'], $h['snmp_username'],
 		$h['snmp_password'], $h['snmp_auth_protocol'], $h['snmp_priv_passphrase'], $h['snmp_priv_protocol'],
-		$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], $h['ping_retries']];
+		$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], 0];
 	$engine   = $h['snmp_engine_id'] ?? '';
 	$walkSize = max(1, (int)($h['bulk_walk_size'] ?? 10));
 	$get      = function ($oid) use ($args, $engine, &$values) {
@@ -94,8 +99,9 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 			$a[2]         = $oid;
 			$a[]          = SNMP_POLLER;
 			$a[]          = $engine;
-			// Keep missing-column replies distinct from timeouts for legacy QFP units.
-			if (str_starts_with($oid, '.1.3.6.1.4.1.9.9.715.1.1.7.1.16.')) {
+			// Preserve missing columns for memory fallbacks and legacy QFP units.
+			if (str_starts_with($oid, '.1.3.6.1.4.1.9.9.715.1.1.7.1.16.')
+				|| preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.221\.1\.1\.1\.1\.(17|18|19|20)\./', $oid)) {
 				$raw = cacti_snmp_get_raw(...$a);
 				$values[$oid] = cisco_health_unit_response((string)$raw);
 			} else {
@@ -189,7 +195,21 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 			if (cisco_health_number($get($mem . '6.' . $index))!=1) {
 				return 'U';
 			}
-			$v = cisco_health_number($get($mem . ($field === 'used' ? '18.' : '20.') . $index));
+			$raw = $get($mem . ($field === 'used' ? '18.' : '20.') . $index);
+			$v = cisco_health_number($raw);
+			// Older enhanced tables expose 32-bit gauges without the HC columns.
+			// Fall back only on an explicit missing OID, never on a timeout.
+			if ($v === null && stripos((string)$raw, 'No Such') !== false) {
+				$low = cisco_health_number($get($mem . ($field === 'used' ? '7.' : '8.') . $index));
+				$rawHigh = $get($mem . ($field === 'used' ? '17.' : '19.') . $index);
+				$high = cisco_health_number($rawHigh);
+				if ($high === null && stripos((string)$rawHigh, 'No Such') !== false) {
+					$high = 0;
+				}
+				if ($low !== null && $high !== null && $low >= 0 && $low <= 4294967295 && $high >= 0 && $high <= 4294967295) {
+					$v = $high * 4294967296 + $low;
+				}
+			}
 
 			return $v !== null && $v >= 0 ? (string)$v : 'U';
 		}

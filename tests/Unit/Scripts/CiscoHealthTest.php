@@ -126,3 +126,24 @@ test('index discovery never fetches entity names', function () {
 		expect(cisco_health_query($kind, 'query', 'index', '', $get, $walk))->not->toBe('');
 	}
 });
+
+
+test('memory validity accepts Net-SNMP enum values without accepting error text', function () {
+	foreach (['true(1)' => '123', 'false(2)' => 'U', 'timeout' => 'U'] as $valid => $expected) {
+		[$get, $walk] = ciscoHealthFixture([
+			'.1.3.6.1.4.1.9.9.48.1.1.1.4.1' => $valid,
+			'.1.3.6.1.4.1.9.9.48.1.1.1.5.1' => '123',
+		]);
+		expect(cisco_health_query('memory', 'get', 'used', '1', $get, $walk))->toBe($expected);
+	}
+});
+
+
+test('enhanced memory falls back to legacy gauges only for missing HC columns', function () {
+	$base = '.1.3.6.1.4.1.9.9.221.1.1.1.1.';
+	foreach ([['No Such Object', 'No Such Object', '123'], ['No Such Object', '2', '8589934715'], ['U', '2', 'U'], ['No Such Object', 'U', 'U']] as [$hc, $high, $expected]) {
+		[$get, $walk] = ciscoHealthFixture([$base . '6.7.1' => 1, $base . '18.7.1' => $hc,
+			$base . '7.7.1' => 123, $base . '17.7.1' => $high]);
+		expect(cisco_health_query('memory', 'get', 'used', '7.1', $get, $walk))->toBe($expected);
+	}
+});

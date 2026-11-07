@@ -120,3 +120,34 @@ test('memory percentages follow their own sources after earlier pools are delete
 	expect($after)->toBe('a,b,+,0,GT,a,a,b,+,/,100,*,UNKN,IF');
 	expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$other, $used], [10=>[1=>0], 30=>[1=>1]], 1))->toBe('b,UNKN,*');
 });
+
+
+test('percentage lookup reuses a render-local pool index', function () {
+	$used = ['local_data_id'=>3, 'data_template_rrd_id'=>30, 'data_source_name'=>'used'];
+	$free = ['local_data_id'=>3, 'data_template_rrd_id'=>31, 'data_source_name'=>'free'];
+	$index = null;
+	$defs = [30=>[1=>0], 31=>[1=>1]];
+	$first = \CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [$used, $free], $defs, 1, $index);
+	// Once built, subsequent CDEFs resolve without rescanning the supplied list.
+	expect(\CactiTests\CiscoHealthTransaction\cisco_health_graph_percentage($used, [], $defs, 1, $index))->toBe($first);
+	expect($index[3])->toHaveCount(2);
+});
+
+
+test('failed updates returning an existing ID roll back combined graph creation', function () {
+	$state = \CactiTests\CiscoHealthTransaction\State::class;
+	$state::$normal = true;
+	$state::$identity = true;
+	$state::$begin = true;
+	$state::$failSave = true;
+	$state::$rollbacks = 0;
+	$state::$rows = [['id'=>1, 'snmp_index'=>'1', 'data_source_name'=>'temperature', 'label'=>'CPU']];
+	try {
+		expect(fn () => \CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1, 'temperature', true))->toThrow(RuntimeException::class, 'Could not save');
+		expect($state::$rollbacks)->toBe(1);
+	} finally {
+		$state::$failSave = false;
+		$state::$normal = false;
+		$GLOBALS['database_last_error'] = '';
+	}
+});
