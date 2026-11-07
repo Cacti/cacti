@@ -2986,13 +2986,19 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 			$cdef_cache_key = "{$graph_item['cdef_id']}:{$graph_item['data_template_rrd_id']}:{$cf_id}";
 
+			// A GPRINT can request MAX while using the preceding AVERAGE DEF.
+			// Keep health CDEFs for different effective DEFs distinct in the cache.
+			if ($graph_item['cdef_id'] > 0 && in_array('CISCO_HEALTH_USED_PERCENT', explode(',', $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']] ?? ''), true)) {
+				$cdef_cache_key .= ':' . $cf_ds_key;
+			}
+
 			if ($graph_item['cdef_id'] > 0 && !isset($cdef_cache[$cdef_cache_key])) {
 				/** @var string $cdef_string */
 				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
 
 				if (in_array('CISCO_HEALTH_USED_PERCENT', explode(',', $cdef_string), true)) {
 					require_once __DIR__ . '/cisco_health_graphs.php';
-					$replacement = cisco_health_graph_percentage($graph_item, $graph_items, $cf_ds_cache, (int)$cf_id, $cisco_health_pool_items);
+					$replacement = cisco_health_graph_percentage($graph_item, $graph_items, $cf_ds_cache, (int)explode(':', $cf_ds_key)[1], $cisco_health_pool_items);
 					$cdef_string = cisco_health_graph_expand_percentage($cdef_string, $replacement);
 				}
 

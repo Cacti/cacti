@@ -2,6 +2,8 @@
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 namespace CactiTests\CiscoHealthReview;
 final class State {
+	public static array $rawOids = [];
+	public static array $values = [];
 	public static bool $shared     = false;
 	public static int $template    = 7;
 	public static array $request   = [];
@@ -45,6 +47,7 @@ function cacti_snmp_get(...$args) {
 		throw new \RuntimeException('Used ping retries instead of SNMP defaults');
 	}
 	$oid               = $args[2];
+	if (array_key_exists($oid, State::$values)) { return State::$values[$oid]; }
 	State::$oids[$oid] = (State::$oids[$oid] ?? 0) + 1;
 
 	return str_contains($oid, '.1.1.1.1.6.') ? '1' : '100';
@@ -120,6 +123,7 @@ function set_config_option(...$args) {
 }
 
 function cacti_snmp_get_raw(...$args) {
+	State::$rawOids[] = $args[2];
 	return cacti_snmp_get(...$args);
 }
 function cisco_health_unit_response($raw) {
