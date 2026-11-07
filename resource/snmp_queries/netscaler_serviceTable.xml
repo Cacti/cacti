@@ -1,0 +1,114 @@
+<serviceTable>
+  <name>Get NetScaler SERVICES stats</name>
+  <description>Queries a NetScaler for all SERVICES stats (serviceTable)</description>
+  <oid_index>.1.3.6.1.4.1.5951.4.1.2.1.1.54</oid_index>
+  <oid_index_parse>OID/REGEXP:^.*\.5951\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.(.*)</oid_index_parse>
+
+  <fields>
+    <svcServiceFullName>
+      <name>Service Name</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.54</oid>
+    </svcServiceFullName>
+    <svcIPAddress>
+      <name>Service IP Address</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.2</oid>
+    </svcIPAddress>
+    <svcPort>
+      <name>Service Port number</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.3</oid>
+    </svcPort>
+    <svcEstablishedConn>
+      <name>Established Connections for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.8</oid>
+    </svcEstablishedConn>
+    <svcAvgTransactionTime>
+      <name>Established Connections for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.7</oid>
+    </svcAvgTransactionTime>
+    <svcActiveConn>
+      <name>Average transaction time between netscaler and the service behind it.</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.9</oid>
+    </svcActiveConn>
+    <svcSurgeCount>
+      <name>Surge Queue for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.10</oid>
+    </svcSurgeCount>
+    <svcTotalRequests>
+    <name>Total Requests for the Service</name>
+    <method>walk</method>
+    <source>value</source>
+    <direction>output</direction>
+    <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.30</oid>
+    </svcTotalRequests>
+    <svcTotalResponses>
+      <name>Total Responses for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.32</oid>
+    </svcTotalResponses>
+    <svcTotalRequestsBytes>
+      <name>Total Requests in bytes for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.31</oid>
+    </svcTotalRequestsBytes>
+    <svcTotalResponsesBytes>
+      <name>Total Responses in bytes for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.33</oid>
+    </svcTotalResponsesBytes>
+    <svcTotalPktsRecvd>
+      <name>Total Packets Received for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.34</oid>
+    </svcTotalPktsRecvd>
+    <svcTotalPktsSent>
+      <name>Total Packets Sent for the Service</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.35</oid>
+    </svcTotalPktsSent>
+    <svcAvgSvrTTFB>
+      <name>Average TTFB between NetScaler appliance and the server</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.38</oid>
+    </svcAvgSvrTTFB>
+    <svcTicksSinceLastStateChange>
+      <name>Time (in 10 milliseconds) since the last state change</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.1.1.47</oid>
+    </svcTicksSinceLastStateChange>
+  </fields>
+</serviceTable>
