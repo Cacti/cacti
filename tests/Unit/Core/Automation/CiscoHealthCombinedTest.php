@@ -55,3 +55,28 @@ test('combined temperature handles missing names and ignores unrelated metrics',
 	expect($pools)->toBe([5=>['name'=>'Index 5', 'sources'=>['temperature'=>7]]]);
 	expect(cisco_health_graph_plan([],false))->toBe([]);
 });
+
+require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CiscoHealthTransactionFixture.php';
+foreach (['cisco_health_graph_kinds', 'cisco_health_graph_plan', 'cisco_health_graph_build'] as $function) {
+	cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/cisco_health_graphs.php', $function, 'CactiTests\\CiscoHealthTransaction; use InvalidArgumentException');
+}
+
+test('combined validation preserves the original error and releases its lock', function () {
+	$used = ['id'=>1, 'snmp_index'=>'7.1', 'data_source_name'=>'used', 'label'=>'Processor'];
+	$free = ['id'=>2, 'snmp_index'=>'7.1', 'data_source_name'=>'free', 'label'=>'Processor'];
+	foreach ([
+		[[$used, $used], true, 'Multiple data sources', 0],
+		[[$used], true, 'missing its used/free pair', 0],
+		[[$used, $free], false, 'Cannot begin graph transaction', 0],
+		[[$used, $free], true, 'Import the Cisco health graph templates first', 1],
+	] as [$rows, $begin, $message, $rollbacks]) {
+		\CactiTests\CiscoHealthTransaction\State::$rows = $rows;
+		\CactiTests\CiscoHealthTransaction\State::$begin = $begin;
+		\CactiTests\CiscoHealthTransaction\State::$rollbacks = 0;
+		\CactiTests\CiscoHealthTransaction\State::$releases = 0;
+		expect(fn () => \CactiTests\CiscoHealthTransaction\cisco_health_graph_build(1, 'memory', true))->toThrow(RuntimeException::class, $message);
+		expect(\CactiTests\CiscoHealthTransaction\State::$rollbacks)->toBe($rollbacks);
+		expect(\CactiTests\CiscoHealthTransaction\State::$releases)->toBe(1);
+	}
+});

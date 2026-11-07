@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+// MD5 values below are stable 32-character Cacti object identifiers, not security hashes.
+// Preserve them so existing imports reuse their CDEFs and GPRINT formats.
+
 /** Definitions are identified by portable template hashes, never installation IDs. */
 function cisco_health_graph_kinds() : array {
 	return [
@@ -109,6 +112,7 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 		throw new RuntimeException('Another combined-graph update is running for this device.');
 	}
 
+	$transaction_started = false;
 	try {
 		$rows = db_fetch_assoc_prepared('SELECT dtr.id, dtr.data_source_name, dl.snmp_index,
 			(SELECT hsc.field_value FROM host_snmp_cache AS hsc
@@ -130,6 +134,7 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 		if (!db_begin_transaction()) {
 			throw new RuntimeException('Cannot begin graph transaction.');
 		}
+		$transaction_started = true;
 		$id = (int)db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', [$key]);
 
 		if ($id && !db_fetch_cell_prepared('SELECT id FROM graph_local WHERE id = ?', [$id])) {
@@ -163,7 +168,7 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 		}
 		$base = array_replace($base, [
 			'local_graph_id'  => $id, 'local_graph_template_graph_id' => 0, 'graph_template_id' => (int)$base['graph_template_id'],
-			'title'           => $host['description'] . ' - ' . $definition['title'],
+			'title'           => '|host_description| - ' . $definition['title'],
 			'title_cache'     => $host['description'] . ' - ' . $definition['title'],
 			'image_format_id' => 3, 'height' => 200, 'width' => 700, 'base_value' => 1000,
 			'auto_scale'      => $temperature ? 'on' : '', 'auto_scale_opts' => 1, 'auto_scale_rigid' => $temperature ? '' : 'on',
@@ -255,12 +260,15 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 		if (!db_commit_transaction()) {
 			throw new RuntimeException('Cannot commit graph changes.');
 		}
+		$transaction_started = false;
 		$result['graph_id'] = $id;
 		$result['applied']  = true;
 
 		return $result;
 	} catch (Throwable $error) {
-		db_rollback_transaction();
+		if ($transaction_started) {
+			db_rollback_transaction();
+		}
 
 		throw $error;
 	} finally {
@@ -409,7 +417,6 @@ function cisco_health_graph_install_rules_unlocked() : void {
 			$record         = ['id' => 0, 'name' => $name, 'snmp_query_id' => $query_id, 'graph_type_id' => $graph_id, 'enabled' => 'on'];
 			$id             = cisco_health_graph_save($record, 'automation_graph_rules');
 			$match          = ['id' => 0, 'rule_id' => $id, 'rule_type' => 1, 'sequence' => 1, 'operation' => 0, 'field' => 'ht.hash', 'operator' => 7, 'pattern' => 'cae6a879f86edacb2471055783bec6d0'];
-			$match['hash']  = md5('cisco-health-match-' . $hash);
 			cisco_health_graph_save($match, 'automation_match_rule_items');
 
 			if (!db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$key, (string)$id]) || !db_commit_transaction()) {

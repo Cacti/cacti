@@ -40,6 +40,13 @@ function cisco_health_temperature(mixed $value, mixed $scale, mixed $precision, 
 
 	return is_finite($result) ? (string)$result : 'U';
 }
+/** Preserve explicit missing OIDs before Cacti normalizes them to an empty string. */
+function cisco_health_unit_response(string $raw) : string {
+	if (stripos($raw, 'No Such') !== false) {
+		return 'No Such Object';
+	}
+	return format_snmp_string($raw, false);
+}
 function cisco_health_qfp_factor(int|float|null $unit) : ?int {
 	// Unit 4 is bytes on the verified IOS XE C1100 implementations.
 	// Unknown unit codes are not guessed. Legacy MIBs without this column use kB.
@@ -75,7 +82,13 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 			$a[2]         = $oid;
 			$a[]          = SNMP_POLLER;
 			$a[]          = $engine;
-			$values[$oid] = cacti_snmp_get(...$a);
+			// Keep missing-column replies distinct from timeouts for legacy QFP units.
+			if (str_starts_with($oid, '.1.3.6.1.4.1.9.9.715.1.1.7.1.16.')) {
+				$raw = cacti_snmp_get_raw(...$a);
+				$values[$oid] = cisco_health_unit_response((string)$raw);
+			} else {
+				$values[$oid] = cacti_snmp_get(...$a);
+			}
 		}
 
 		return $values[$oid];
@@ -177,13 +190,14 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 		return $factor !== null && $v !== null && $v >= 0 ? (string)($v * $factor) : 'U';
 	}
 	$labels = [];
+	$resolve_names = $cmd === 'query' && $field === 'name';
 
 	if ($kind === 'memory') {
 		$enhanced = $walk($mem . '3');
 
 		foreach ($enhanced as $idx=>$name) {
 			$entity       = explode('.', $idx)[0];
-			$entityName   = $get($names . $entity);
+			$entityName   = $resolve_names ? $get($names . $entity) : '';
 			$labels[$idx] = trim($entityName . ' / ' . $name, ' /');
 		}
 
@@ -203,7 +217,7 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 			$parts        = explode('.', $idx);
 			$type         = end($parts);
 			$resource     = $type == 1 ? 'DRAM' : 'Resource ' . $type;
-			$labels[$idx] = $get($names . $parts[0]) . ' / ' . $resource;
+			$labels[$idx] = $resolve_names ? $get($names . $parts[0]) . ' / ' . $resource : '';
 		}
 	} else {
 		// Both sensor tables use entPhysicalIndex, so union by index avoids duplicates.
@@ -211,7 +225,7 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 
 		foreach ($types as $idx=>$type) {
 			if ((int)$type === 8) {
-				$name         = $get($names . $idx);
+				$name         = $resolve_names ? $get($names . $idx) : '';
 				$labels[$idx] = $name ?: 'Sensor ' . $idx;
 			}
 		}

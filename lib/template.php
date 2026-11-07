@@ -1636,7 +1636,7 @@ function create_complete_graph_from_template_unlocked($graph_template_id, $host_
 	}
 
 	require_once __DIR__ . '/cisco_health_graphs.php';
-	$combined = cisco_health_graph_existing($host_id, $graph_template_id, $snmp_query_array);
+	$combined = cisco_health_graph_existing($host_id, $graph_template_id, $snmp_query_array ?? []);
 	if ($combined) {
 		return $combined;
 	}
