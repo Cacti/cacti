@@ -34,6 +34,41 @@ function cisco_health_graph_kinds() : array {
 	];
 }
 
+/** Template classification is request-local, including non-health templates. */
+function cisco_health_graph_kind(int $template_id) : ?string {
+	static $kinds = [];
+	if (!array_key_exists($template_id, $kinds)) {
+		$kinds[$template_id] = null;
+		$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', [$template_id]);
+		foreach (cisco_health_graph_kinds() as $kind => $definition) {
+			if ($hash === $definition['graph']) {
+				$kinds[$template_id] = $kind;
+				break;
+			}
+		}
+	}
+	return $kinds[$template_id];
+}
+
+/** Resolve the internal percentage token against this RRD, never graph item positions. */
+function cisco_health_graph_percentage(array $item, array $items, array $defs, int $cf) : string {
+	$sources = [];
+	foreach ($items as $candidate) {
+		if (!empty($item['local_data_id']) && $candidate['local_data_id'] == $item['local_data_id']) {
+			$key = $candidate['data_template_rrd_id'] . ':' . $cf;
+			if (isset($defs[$key])) {
+				$sources[$candidate['data_source_name']] = generate_graph_def_name($defs[$key]);
+			}
+		}
+	}
+	if (!isset($sources['used'], $sources['free'])) {
+		return 'UNKN';
+	}
+	$used = $sources['used'];
+	$free = $sources['free'];
+	return "$used,$free,+,0,GT,$used,$used,$free,+,/,100,*,UNKN,IF";
+}
+
 /** Group existing data sources; duplicate pool indexes are ambiguous and must be resolved first. */
 function cisco_health_graph_plan(array $rows, bool $temperature) : array {
 	$pools = [];
@@ -141,7 +176,7 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 			$id = 0; // A user deleted the managed graph; rebuild it using existing sources.
 		}
 
-		if ($id && !db_fetch_cell_prepared('SELECT id FROM graph_local WHERE id = ? AND host_id = ? AND graph_template_id IN (0, (SELECT id FROM graph_templates WHERE hash = ?))', [$id, $host_id, $definition['graph']])) {
+		if ($id && !db_fetch_cell_prepared('SELECT id FROM graph_local WHERE id = ? AND host_id = ? AND graph_template_id = (SELECT id FROM graph_templates WHERE hash = ?)', [$id, $host_id, $definition['graph']])) {
 			throw new RuntimeException('The recorded combined graph was removed or changed; refusing to overwrite another graph.');
 		}
 		$base = db_fetch_row_prepared('SELECT gtg.* FROM graph_templates_graph AS gtg
@@ -170,7 +205,6 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 			'local_graph_id'  => $id, 'local_graph_template_graph_id' => 0, 'graph_template_id' => (int)$base['graph_template_id'],
 			'title'           => '|host_description| - ' . $definition['title'],
 			'title_cache'     => $host['description'] . ' - ' . $definition['title'],
-			'image_format_id' => 3, 'height' => 200, 'width' => 700, 'base_value' => 1000,
 			'auto_scale'      => $temperature ? 'on' : '', 'auto_scale_opts' => 1, 'auto_scale_rigid' => $temperature ? '' : 'on',
 			'lower_limit'     => $temperature ? '' : '0', 'upper_limit' => $temperature ? '' : '100',
 			'vertical_label'  => $temperature ? 'Temperature (°C)' : 'Memory used (%)',
@@ -184,8 +218,13 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 		}
 		cisco_health_graph_save($base, 'graph_templates_graph');
 
-		if (!db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ?', [$id])) {
-			throw new RuntimeException('Cannot replace combined graph items.');
+		// Append new members without rewriting every previously discovered sensor/pool.
+		$members = db_fetch_assoc_prepared('SELECT task_item_id, sequence FROM graph_templates_item WHERE local_graph_id = ?', [$id]);
+		$counts = [];
+		$sequence = 1;
+		foreach ($members as $member) {
+			$counts[$member['task_item_id']] = ($counts[$member['task_item_id']] ?? 0) + 1;
+			$sequence = max($sequence, (int)$member['sequence'] + 1);
 		}
 		$vdefs = [];
 
@@ -206,33 +245,46 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 				$formats[$name] = cisco_health_graph_save(['id' => 0, 'hash' => md5('cisco-health-' . $text), 'name' => 'Cisco Health - ' . $text, 'gprint_text' => $text], 'graph_templates_gprint');
 			}
 		}
-		$sequence = 1;
 		$rank     = 0;
 		$palette  = $temperature ? ['0072B2', '009E73', 'CC79A7', 'E69F00', 'D55E00', '56B4E9'] : ['E69F00', 'CC6600', 'A65E00', 'F5B041', 'D35400', '804000'];
 
+		$cdef = 0;
+
+		if (!$temperature) {
+			// One shared token is resolved to the pool's own used/free DEFs at render time.
+			$hash = md5('cisco-health-percentage-v2');
+			$cdef = (int)db_fetch_cell_prepared('SELECT id FROM cdef WHERE hash = ?', [$hash]);
+			if (!$cdef) {
+				$cdef = cisco_health_graph_save(['id' => 0, 'hash' => $hash, 'name' => 'Cisco Health - Memory Percentage'], 'cdef');
+				cisco_health_graph_save(['id' => 0, 'hash' => md5($hash . 'item'), 'cdef_id' => $cdef, 'sequence' => 1, 'type' => 6, 'value' => 'CISCO_HEALTH_USED_PERCENT'], 'cdef_items');
+			}
+			// Upgrade earlier positional CDEFs once, without replacing graph items.
+			if (!db_execute_prepared('UPDATE graph_templates_item SET cdef_id = ? WHERE local_graph_id = ? AND cdef_id > 0 AND cdef_id <> ?', [$cdef, $id, $cdef])) {
+				throw new RuntimeException('Cannot upgrade combined percentage calculations.');
+			}
+		}
+
 		foreach ($pools as $pool) {
+
+			$source = $pool['sources'][$temperature ? 'temperature' : 'used'];
+			if (($counts[$source] ?? 0) === ($temperature ? 4 : 3)
+				&& ($temperature || ($counts[$pool['sources']['free']] ?? 0) === 1)) {
+				$rank++;
+				continue;
+			}
 			$hex   = $palette[$rank % count($palette)];
 			$color = (int)db_fetch_cell_prepared('SELECT id FROM colors WHERE hex = ? LIMIT 1', [$hex]);
 
 			if (!$color) {
 				$color = cisco_health_graph_save(['id' => 0, 'hex' => $hex], 'colors');
 			}
-			$cdef = 0;
 
-			if (!$temperature) {
-				// Every item uses AVERAGE; each pool introduces used then free exactly once.
-				$used_def   = generate_graph_def_name(2 * $rank);
-				$free_def   = generate_graph_def_name(2 * $rank + 1);
-				$expression = "$used_def,$free_def,+,0,GT,$used_def,$used_def,$free_def,+,/,100,*,UNKN,IF";
-				$hash       = md5('cisco-health-percentage-v1-' . $rank);
-				$cdef       = (int)db_fetch_cell_prepared('SELECT id FROM cdef WHERE hash = ?', [$hash]);
-
-				if (!$cdef) {
-					$cdef = cisco_health_graph_save(['id' => 0, 'hash' => $hash, 'name' => 'Cisco Health - Pool ' . ($rank + 1) . ' Percentage'], 'cdef');
-					cisco_health_graph_save(['id' => 0, 'hash' => md5($hash . 'item'), 'cdef_id' => $cdef, 'sequence' => 1, 'type' => 6, 'value' => $expression], 'cdef_items');
+			// Repair only an incomplete member; retain unrelated members and their IDs.
+			foreach ($pool['sources'] as $source_id) {
+				if (!empty($counts[$source_id]) && !db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ? AND task_item_id = ?', [$id, $source_id])) {
+					throw new RuntimeException('Cannot repair combined graph member.');
 				}
 			}
-			$source = $pool['sources'][$temperature ? 'temperature' : 'used'];
 			$items  = [
 				['graph_type_id' => 4, 'task_item_id' => $source, 'color_id' => $color, 'cdef_id' => $cdef, 'text_format' => str_replace(['\\', ':', '|'], ['/', '-', '/'], $pool['name']), 'dashes' => $rank >= count($palette) ? '5,3' : ''],
 				['graph_type_id' => 9, 'task_item_id' => $source, 'cdef_id' => $cdef, 'vdef_id' => $last, 'gprint_id' => $formats['value'], 'text_format' => 'Current:', 'hard_return' => ''],
@@ -278,10 +330,10 @@ function cisco_health_graph_build(int $host_id, string $kind, bool $apply = fals
 
 /** Return a combined graph only when it already contains every source for this index. */
 function cisco_health_graph_existing(int $host_id, int $template_id, array $query) : array {
-	$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', [$template_id]);
+	$health_kind = cisco_health_graph_kind($template_id);
 
 	foreach (cisco_health_graph_kinds() as $kind => $definition) {
-		if ($hash !== $definition['graph'] || empty($query['snmp_query_id']) || !isset($query['snmp_index'])) {
+		if ($health_kind !== $kind || empty($query['snmp_query_id']) || !isset($query['snmp_index'])) {
 			continue;
 		}
 		$id = (int)db_fetch_cell_prepared('SELECT gl.id FROM settings AS s INNER JOIN graph_local AS gl ON gl.id = s.value WHERE s.name = ? AND gl.host_id = ? AND gl.graph_template_id = ?', ['cisco_health_combined_' . $host_id . '_' . $kind, $host_id, $template_id]);
@@ -339,10 +391,10 @@ function cisco_health_graph_remove_components(int $host_id, int $template_id, in
 
 /** Called only after the normal indexed Create Graphs workflow has created its data sources. */
 function cisco_health_graph_after_create(int $host_id, int $graph_template_id, int $component_id) : int {
-	$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', [$graph_template_id]);
+	$health_kind = cisco_health_graph_kind($graph_template_id);
 
 	foreach (cisco_health_graph_kinds() as $kind => $definition) {
-		if ($hash !== $definition['graph']) {
+		if ($health_kind !== $kind) {
 			continue;
 		}
 
@@ -432,14 +484,8 @@ function cisco_health_graph_install_rules_unlocked() : void {
 
 /** Serialize source creation as well as combination: two requests must not create the same pool twice. */
 function cisco_health_graph_with_creation_lock(int $host_id, int $template_id, callable $create) : mixed {
-	$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', [$template_id]);
-	$kind = null;
-	foreach (cisco_health_graph_kinds() as $name => $definition) {
-		if ($definition['graph'] === $hash) {
-			$kind = $name;
-			break;
-		}
-	}
+	$kind = cisco_health_graph_kind($template_id);
+
 	if ($kind === null) {
 		return $create();
 	}
@@ -457,6 +503,10 @@ function cisco_health_graph_with_creation_lock(int $host_id, int $template_id, c
 
 /** Managed graph items are generated from all discovered pools, not one template instance. */
 function cisco_health_graph_is_managed(int $graph_id, int $template_id) : bool {
+	if (cisco_health_graph_kind($template_id) === null) {
+		return false;
+	}
+
 	$graph = db_fetch_row_prepared('SELECT gl.host_id, gt.hash FROM graph_local AS gl INNER JOIN graph_templates AS gt ON gt.id = gl.graph_template_id WHERE gl.id = ? AND gl.graph_template_id = ?', [$graph_id, $template_id]);
 	if (!is_array($graph) || !$graph) {
 		return false;
