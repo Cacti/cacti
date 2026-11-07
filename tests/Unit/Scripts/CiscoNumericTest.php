@@ -1,5 +1,6 @@
 <?php
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
+require_once dirname(__DIR__, 3) . '/lib/snmp.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 2) . '/Helpers/CiscoNumericFixture.php';
 cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/snmp.php', 'cacti_snmp_get_raw', 'CactiTests\\CiscoNumeric');

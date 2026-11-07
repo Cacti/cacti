@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Throwable;
 
 final class State {
+	public static bool $newGraph = false;
 	public static int $loaded = 0;
 	public static array $rows = [];
 	public static bool $normal = false;
@@ -39,6 +40,8 @@ function db_fetch_assoc_prepared($sql, $args) {
 	return $rows;
 }
 function db_fetch_cell_prepared($sql, $args) {
+	if (State::$newGraph && str_contains($sql, 'SELECT value FROM settings')) { return 0; }
+
 	if (str_contains($sql, 'ORDER BY sequence DESC')) { return State::$items ? max(array_column(State::$items, 'sequence')) : 0; }
 	if (str_contains($sql, 'RELEASE_LOCK')) { State::$releases++; }
 	if (str_contains($sql, 'GET_LOCK')) { return 1; }
