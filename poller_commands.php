@@ -199,7 +199,7 @@ if ($host_id === false) {
 	/**
 	 * Get the poller command records for the host
 	 */
-	$poller_commands = db_fetch_assoc_prepared('SELECT action, command,
+	$poller_commands = db_fetch_assoc_prepared('SELECT action, command, time, last_updated,
 		SUBSTRING_INDEX(command, ":", 1) AS host_id
 		FROM poller_command
 		WHERE poller_id = ?
@@ -209,6 +209,7 @@ if ($host_id === false) {
 
 	if (cacti_sizeof($poller_commands)) {
 		foreach ($poller_commands as $command) {
+			$completed = false;
 			switch ($command['action']) {
 			case POLLER_COMMAND_REINDEX:
 				[$device_id, $data_query_id] = explode(':', $command['command']);
@@ -225,14 +226,19 @@ if ($host_id === false) {
 				}
 
 				cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recache for Device started.", true, 'PCOMMAND', $verbosity);
-				run_data_query($device_id, $data_query_id);
-				cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
+				$completed = run_data_query($device_id, $data_query_id);
+				if ($completed) {
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
+				} else {
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Failed, retaining command for retry.", true, 'PCOMMAND');
+				}
 
 				break;
 			case POLLER_COMMAND_PURGE:
 				$device_id = $command['command'];
 
 				api_device_purge_from_remote($device_id, $poller_id);
+				$completed = true;
 				cacti_log("Device[$device_id] PURGE: Purged successfully.", true, 'PCOMMAND', $verbosity);
 
 				break;
@@ -240,21 +246,24 @@ if ($host_id === false) {
 				cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
 			}
 
+			if ($completed) {
+				// Leave failed, unprocessed and newer commands available to the next worker.
+				db_execute_prepared('DELETE FROM poller_command
+					WHERE poller_id = ? AND action = ? AND command = ?
+					AND time = ? AND last_updated = ?',
+					array($poller_id, $command['action'], $command['command'], $command['time'], $command['last_updated']),
+					true, $poller_db_cnn_id);
+			}
+
 			/* record current_time */
 			$current = microtime(true);
 
 			/* end if runtime has been exceeded */
 			if (($current-$start) > MAX_RECACHE_RUNTIME) {
-				cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
+				cacti_log("ERROR: Poller Command processing timed out after processing '" . $command['command'] . "'", true, 'PCOMMAND');
 				break;
 			}
 		}
-
-		db_execute_prepared('DELETE FROM poller_command
-			WHERE poller_id = ?
-			AND SUBSTRING_INDEX(command, ":", 1) = ?
-			AND last_updated <= FROM_UNIXTIME(?)',
-			array($poller_id, $host_id, $max_updated), true, $poller_db_cnn_id);
 	}
 
 	unregister_process('commands', 'child', $host_id + 1000);

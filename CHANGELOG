@@ -239,6 +239,7 @@ Cacti CHANGELOG
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
 -issue#8596: Keep device credentials out of cmd.php recache log messages
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
+-issue#8642: Preserve data-query caches and retries after failed discovery and bound reindex identity lookups
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
