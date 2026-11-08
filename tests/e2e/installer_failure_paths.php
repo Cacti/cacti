@@ -139,6 +139,11 @@ try {
 			$report = json_decode(read_config_option('maintenance_lastrun_installer_report', true), true, flags: JSON_THROW_ON_ERROR);
 			installer_fixture_check(array_column($report['operations'], 'version') === ($scenario === 'upgrade-report' ? ['1.2.29', '1.2.30'] : ['1.2.29']), 'Installer report omitted the migration versions');
 			installer_fixture_check($report['operations'][0]['succeeded'] === ($scenario === 'upgrade-report'), 'Installer report lost the failed migration');
+
+			if ($scenario === 'upgrade-report') {
+				// the final version is only written after the schema and authentication checks
+				installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === '1.2.30', 'Migrations advanced the version past their last step before verification');
+			}
 		} else {
 			$output = [];
 			exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(CACTI_PATH_CLI . '/upgrade_database.php') . ' --forcever=1.2.28 2>&1', $output, $status);
