@@ -17,16 +17,9 @@
  +-------------------------------------------------------------------------+
  */
 
-use Symfony\Component\HttpClient\MockHttpClient;
-use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
-use Symfony\Component\HttpClient\Exception\TransportException;
-use Symfony\Component\HttpClient\Response\MockResponse;
-use Symfony\Component\HttpClient\Response\ResponseStream;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
-use Symfony\Contracts\HttpClient\ResponseStreamInterface;
-
+require_once dirname(__DIR__, 3) . '/lib/functions.php';
 require_once dirname(__DIR__, 3) . '/lib/CactiHttpPoller.php';
+require_once dirname(__DIR__, 2) . '/Helpers/HttpTestServer.php';
 
 /**
  * Build a poller item row the way update_poller_cache() stores it.
@@ -126,137 +119,150 @@ test('log urls drop credentials and query strings', function () {
 });
 
 test('items sharing a device and endpoint share one request', function () {
-	$requests = [];
-
-	$client = new MockHttpClient(function (string $method, string $url, array $options) use (&$requests) {
-		$requests[] = [$url, $options['timeout']];
-
-		return new MockResponse('{"in":5,"out":7}');
-	});
-
+	$base  = cacti_http_test_server()['url'];
+	$seen  = count(cacti_http_test_requests());
 	$items = [
-		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 1, 'arg2' => '/in', 'arg3' => '{"timeout":2}'])),
-		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 2, 'arg2' => '/out', 'arg3' => '{"timeout":4}'])),
-		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 3, 'host_id' => 2, 'arg2' => '/in'])),
+		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 1, 'arg1' => "$base/stats", 'arg2' => '/in'])),
+		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 2, 'arg1' => "$base/stats", 'arg2' => '/out'])),
+		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 3, 'arg1' => "$base/stats", 'arg2' => '/in', 'host_id' => 2])),
 	];
 
 	$errors    = [];
-	$documents = (new CactiHttpPoller($client))->fetch($items, $errors);
+	$documents = (new CactiHttpPoller())->fetch($items, $errors);
 
-	expect($requests)->toHaveCount(2)
-		->and($requests[0][1])->toBe(4.0)
+	expect(array_slice(cacti_http_test_requests(), $seen))->toBe(['/stats', '/stats'])
 		->and($errors)->toBe([])
 		->and($items[0]->resolve($documents[$items[0]->endpointKey]))->toBe('5')
 		->and($items[1]->resolve($documents[$items[1]->endpointKey]))->toBe('7')
 		->and($items[2]->resolve($documents[$items[2]->endpointKey]))->toBe('5');
 });
 
+test('a shared endpoint gets the longest timeout of its items', function () {
+	$base  = cacti_http_test_server()['url'];
+	$items = [
+		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 1, 'arg1' => "$base/slow", 'arg2' => '/v', 'arg3' => '{"timeout":0.2}'])),
+		CactiHttpPollItem::fromPollerItem(http_poller_row(['local_data_id' => 2, 'arg1' => "$base/slow", 'arg2' => '/v', 'arg3' => '{"timeout":5}'])),
+	];
+
+	$errors    = [];
+	$documents = (new CactiHttpPoller())->fetch($items, $errors);
+
+	expect($errors)->toBe([])
+		->and($items[0]->resolve($documents[$items[0]->endpointKey]))->toBe('1');
+});
+
 test('no more than the configured number of requests are in flight', function () {
-	$events = [];
-
-	$client = new MockHttpClient(function (string $method, string $url) use (&$events) {
-		$events[] = ['start', $url];
-
-		$body = (function () use (&$events, $url) {
-			yield '{"v":';
-
-			yield '1}';
-
-			$events[] = ['end', $url];
-		})();
-
-		return new MockResponse($body);
-	});
-
+	$base  = cacti_http_test_server()['url'];
 	$items = [];
 
-	for ($i = 1; $i <= 7; $i++) {
-		$items[] = new CactiHttpPollItem(1, $i, 'v', "https://device.example/$i", '/v');
+	for ($i = 1; $i <= 6; $i++) {
+		$items[] = new CactiHttpPollItem(1, $i, 'v', "$base/inflight/$i", '/v');
 	}
 
 	$errors    = [];
-	$documents = (new CactiHttpPoller($client, 2))->fetch($items, $errors);
-
-	$inflight = 0;
-	$peak     = 0;
-
-	foreach ($events as [$event]) {
-		$inflight += $event === 'start' ? 1 : -1;
-		$peak      = max($peak, $inflight);
-	}
+	$documents = (new CactiHttpPoller(2))->fetch($items, $errors);
+	$peak      = json_decode(file_get_contents("$base/peak"), true)['peak'];
 
 	expect($errors)->toBe([])
-		->and($documents)->toHaveCount(7)
-		->and(array_filter($events, fn ($e) => $e[0] === 'start'))->toHaveCount(7)
+		->and($documents)->toHaveCount(6)
 		->and($peak)->toBe(2);
 });
 
 test('failed endpoints are reported without stopping the others', function () {
-	$client = new MockHttpClient(function (string $method, string $url) {
-		return match (parse_url($url, PHP_URL_PATH)) {
-			'/ok'      => new MockResponse('{"v":1}'),
-			'/missing' => new MockResponse('{}', ['http_code' => 404]),
-			'/html'    => new MockResponse('<html>'),
-			'/slow'    => new MockResponse((function () {
-				yield '';
-			})()),
-			'/big'     => new MockResponse(str_repeat(' ', 64) . '{}'),
-			'/down'    => new MockResponse('', ['error' => 'Could not resolve host: https://device.example/down?token=secret']),
-		};
-	});
-
-	$paths = ['ok', 'missing', 'html', 'slow', 'big', 'down'];
-	$items = [];
-
-	foreach ($paths as $i => $path) {
-		$query   = $path === 'down' ? '?token=secret' : '';
-		$items[] = new CactiHttpPollItem(1, $i, 'v', "https://device.example/$path$query", '/v');
-	}
+	$base  = cacti_http_test_server()['url'];
+	$items = [
+		new CactiHttpPollItem(1, 1, 'v', "$base/stats", '/in'),
+		new CactiHttpPollItem(1, 2, 'v', "$base/missing", '/v'),
+		new CactiHttpPollItem(1, 3, 'v', "$base/html", '/v'),
+		new CactiHttpPollItem(1, 4, 'v', "$base/slow", '/v', 1.0, 0.2),
+		new CactiHttpPollItem(1, 5, 'v', "$base/big", '/v'),
+		new CactiHttpPollItem(1, 6, 'v', 'http://127.0.0.1:1/down?token=secret', '/v'),
+		new CactiHttpPollItem(1, 7, 'v', "$base/loop", '/v'),
+	];
 
 	$errors    = [];
-	$documents = (new CactiHttpPoller($client, 3, 32))->fetch($items, $errors);
+	$documents = (new CactiHttpPoller(3, 32))->fetch($items, $errors);
 
-	expect(array_keys($documents))->toBe(['1 https://device.example/ok'])
-		->and($errors['1 https://device.example/missing'])->toBe('HTTP status 404')
-		->and($errors['1 https://device.example/html'])->toStartWith('Invalid JSON')
-		->and($errors['1 https://device.example/slow'])->toBe('Timed out')
-		->and($errors['1 https://device.example/big'])->toBe('Response exceeds 32 bytes')
-		->and($errors['1 https://device.example/down?token=secret'])->toContain('https://device.example/down')
-		->and($errors['1 https://device.example/down?token=secret'])->not->toContain('secret');
+	expect(array_keys($documents))->toBe(["1 $base/stats"])
+		->and($errors["1 $base/missing"])->toBe('HTTP 404')
+		->and($errors["1 $base/html"])->toStartWith('Invalid JSON')
+		->and($errors["1 $base/slow"])->toBe('Timed out')
+		->and($errors["1 $base/big"])->toBe('Response exceeds 32 bytes')
+		->and($errors["1 $base/loop"])->toBe('Too many redirects')
+		->and($errors['1 http://127.0.0.1:1/down?token=secret'])->not->toBe('')
+		->and($errors['1 http://127.0.0.1:1/down?token=secret'])->not->toContain('secret');
 });
 
 test('concurrency outside the supported range is rejected or clamped', function () {
-	expect(fn () => new CactiHttpPoller(new MockHttpClient(), 0))->toThrow(InvalidArgumentException::class)
-		->and(fn () => new CactiHttpPoller(new MockHttpClient(), CactiHttpPoller::MAX_CONCURRENCY + 1))->toThrow(InvalidArgumentException::class)
+	expect(fn () => new CactiHttpPoller(0))->toThrow(InvalidArgumentException::class)
+		->and(fn () => new CactiHttpPoller(CactiHttpPoller::MAX_CONCURRENCY + 1))->toThrow(InvalidArgumentException::class)
 		->and(CactiHttpPoller::create(0))->toBeInstanceOf(CactiHttpPoller::class)
 		->and(CactiHttpPoller::create(1000))->toBeInstanceOf(CactiHttpPoller::class);
 });
 
 test('collect returns one output per row with a reason for each failure', function () {
-	$requests = 0;
-
-	$client = new MockHttpClient(function (string $method, string $url) use (&$requests) {
-		$requests++;
-
-		return str_ends_with($url, '/down') ? new MockResponse('', ['http_code' => 503]) : new MockResponse('{"in":5,"label":"eth0"}');
-	});
+	$base = cacti_http_test_server()['url'];
+	$seen = count(cacti_http_test_requests());
 
 	$rows = [
-		http_poller_row(['local_data_id' => 1, 'arg2' => '/in']),
-		http_poller_row(['local_data_id' => 2, 'arg2' => '/label']),
-		http_poller_row(['local_data_id' => 3, 'arg1' => 'https://device.example/down']),
+		http_poller_row(['local_data_id' => 1, 'arg1' => "$base/stats", 'arg2' => '/in']),
+		http_poller_row(['local_data_id' => 2, 'arg1' => "$base/stats", 'arg2' => '/label']),
+		http_poller_row(['local_data_id' => 3, 'arg1' => "$base/down"]),
 		http_poller_row(['local_data_id' => 4, 'arg1' => 'ftp://device.example/']),
 	];
 
 	$reasons = [];
-	$outputs = (new CactiHttpPoller($client))->collect($rows, $reasons);
+	$outputs = (new CactiHttpPoller())->collect($rows, $reasons);
 
-	expect($requests)->toBe(2)
+	$served = array_slice(cacti_http_test_requests(), $seen);
+
+	sort($served);
+
+	expect($served)->toBe(['/down', '/stats'])
 		->and($outputs)->toBe(['4:value' => 'U', '1:value' => '5', '2:value' => 'U', '3:value' => 'U'])
 		->and(array_keys($reasons))->toBe(['4:value', '2:value', '3:value'])
 		->and($reasons['2:value'])->toBe('JSON Pointer did not select a number')
-		->and($reasons['3:value'])->toBe('HTTP status 503')
+		->and($reasons['3:value'])->toBe('HTTP 503')
 		->and($reasons['4:value'])->toContain('http or https');
+});
+
+test('link-local and metadata destinations are refused while loopback and private networks stay reachable', function () {
+	$base     = cacti_http_test_server()['url'];
+	$port     = parse_url($base, PHP_URL_PORT);
+	$refused  = 'Target host resolves to a disallowed address';
+	$items    = [
+		new CactiHttpPollItem(1, 1, 'v', 'http://169.254.169.254/latest/meta-data', '/v'),
+		new CactiHttpPollItem(1, 2, 'v', 'http://[fe80::1]/stats', '/v'),
+		new CactiHttpPollItem(1, 3, 'v', 'http://[::ffff:169.254.169.254]/latest', '/v'),
+		new CactiHttpPollItem(1, 4, 'v', 'http://[64:ff9b::a9fe:a9fe]/latest', '/v'),
+		new CactiHttpPollItem(1, 5, 'v', 'http://100.100.100.200/latest', '/v'),
+		new CactiHttpPollItem(1, 6, 'v', 'http://[::ffff:100.100.100.200]/latest', '/v'),
+		new CactiHttpPollItem(1, 7, 'v', 'http://[64:ff9b::c000:c0]/latest', '/v'),
+		new CactiHttpPollItem(1, 8, 'v', "$base/redirect?to=" . rawurlencode('http://169.254.169.254/latest'), '/v'),
+		new CactiHttpPollItem(1, 9, 'v', "http://localhost:$port/stats", '/in'),
+		new CactiHttpPollItem(1, 10, 'v', "$base/stats", '/in'),
+		new CactiHttpPollItem(1, 11, 'v', 'http://10.255.255.1/stats', '/v', 1.0, 0.2),
+	];
+
+	$errors    = [];
+	$documents = (new CactiHttpPoller(16))->fetch($items, $errors);
+
+	expect(array_keys($documents))->toBe(["1 http://localhost:$port/stats", "1 $base/stats"])
+		->and(array_count_values($errors)[$refused])->toBe(8)
+		->and($errors['1 http://10.255.255.1/stats'])->not->toBe($refused);
+});
+
+test('redirects are followed relative to the endpoint and decoded', function () {
+	$base      = cacti_http_test_server()['url'];
+	$errors    = [];
+	$documents = (new CactiHttpPoller())->fetch([
+		new CactiHttpPollItem(1, 1, 'v', "$base/relative", '/in'),
+		new CactiHttpPollItem(1, 2, 'v', "$base/gzip", '/v'),
+	], $errors);
+
+	expect($errors)->toBe([])
+		->and($documents["1 $base/relative"]['in'])->toBe(5)
+		->and($documents["1 $base/gzip"]['v'])->toBe(3);
 });
 
 test('redact handles urls that do not parse', function () {
@@ -272,95 +278,6 @@ test('options with invalid utf-8 still encode and are then rejected', function (
 		->and(fn () => CactiHttpPollItem::fromPollerItem(http_poller_row(['arg3' => $encoded])))->toThrow(InvalidArgumentException::class);
 });
 
-test('link-local and metadata destinations are refused while private networks stay reachable', function () {
-	$client = new NoPrivateNetworkHttpClient(new MockHttpClient(fn () => new MockResponse('{"v":1}')), CactiHttpPoller::blockedSubnets());
-
-	$items = [
-		new CactiHttpPollItem(1, 1, 'v', 'https://169.254.169.254/latest/meta-data', '/v'),
-		new CactiHttpPollItem(1, 2, 'v', 'https://[fe80::1]/stats', '/v'),
-		new CactiHttpPollItem(1, 5, 'v', 'https://[::ffff:169.254.169.254]/latest', '/v'),
-		new CactiHttpPollItem(1, 6, 'v', 'https://[64:ff9b::a9fe:a9fe]/latest', '/v'),
-		new CactiHttpPollItem(1, 7, 'v', 'https://100.100.100.200/latest', '/v'),
-		new CactiHttpPollItem(1, 8, 'v', 'https://[::ffff:100.100.100.200]/latest', '/v'),
-		new CactiHttpPollItem(1, 9, 'v', 'https://[64:ff9b::c000:c0]/latest', '/v'),
-		new CactiHttpPollItem(1, 3, 'v', 'https://10.0.0.5/stats', '/v'),
-		new CactiHttpPollItem(1, 4, 'v', 'https://127.0.0.1:9100/stats', '/v'),
-	];
-
-	$errors    = [];
-	$documents = (new CactiHttpPoller($client))->fetch($items, $errors);
-
-	expect(array_keys($documents))->toBe(['1 https://10.0.0.5/stats', '1 https://127.0.0.1:9100/stats'])
-		->and(array_keys($errors))->toBe([
-			'1 https://169.254.169.254/latest/meta-data',
-			'1 https://[fe80::1]/stats',
-			'1 https://[::ffff:169.254.169.254]/latest',
-			'1 https://[64:ff9b::a9fe:a9fe]/latest',
-			'1 https://100.100.100.200/latest',
-			'1 https://[::ffff:100.100.100.200]/latest',
-			'1 https://[64:ff9b::c000:c0]/latest',
-		]);
-});
-
-test('every url in a transport error is redacted, not only the configured one', function () {
-	$client = new MockHttpClient(fn () => new MockResponse('', ['error' => 'Redirected to "https://login.example/cb?token=abc" from https://device.example/x?key=def failed']));
-
-	$errors = [];
-
-	(new CactiHttpPoller($client))->fetch([new CactiHttpPollItem(1, 1, 'v', 'https://device.example/x?key=def')], $errors);
-
-	expect($errors['1 https://device.example/x?key=def'])->toBe('Redirected to "https://login.example/cb" from https://device.example/x failed');
-});
-
-test('configured credentials are redacted even when they would end a url match', function () {
-	$url    = 'https://user:pa"ss word@device.example/x?key=def';
-	$client = new MockHttpClient(fn () => new MockResponse('', ['error' => "Failed for \"$url\"."]));
-
-	$errors = [];
-
-	(new CactiHttpPoller($client))->fetch([new CactiHttpPollItem(1, 1, 'v', $url)], $errors);
-
-	expect($errors["1 $url"])->toBe('Failed for "https://device.example/x".');
-});
-
 test('a scale that is not finite is rejected', function () {
 	expect(fn () => new CactiHttpPollItem(1, 1, 'v', 'https://device.example/', '/v', INF))->toThrow(InvalidArgumentException::class);
-});
-
-test('requests that fail before they start are reported', function () {
-	$client = new MockHttpClient(function () {
-		throw new TransportException('Unsupported option for "https://device.example/x?key=def"');
-	});
-
-	$errors    = [];
-	$documents = (new CactiHttpPoller($client))->fetch([new CactiHttpPollItem(1, 1, 'v', 'https://device.example/x?key=def')], $errors);
-
-	expect($documents)->toBe([])
-		->and($errors)->toBe(['1 https://device.example/x?key=def' => 'Unsupported option for "https://device.example/x"']);
-});
-
-test('a stream that ends without settling a response cannot spin', function () {
-	$inner  = new MockHttpClient(fn () => new MockResponse('{"v":1}'));
-	$client = new class ($inner) implements HttpClientInterface {
-		public function __construct(private readonly HttpClientInterface $inner) {
-		}
-
-		public function request(string $method, string $url, array $options = []) : ResponseInterface {
-			return $this->inner->request($method, $url, $options);
-		}
-
-		public function stream(ResponseInterface|iterable $responses, ?float $timeout = null) : ResponseStreamInterface {
-			return new ResponseStream((static fn () : Generator => yield from [])());
-		}
-
-		public function withOptions(array $options) : static {
-			return $this;
-		}
-	};
-
-	$errors    = [];
-	$documents = (new CactiHttpPoller($client))->fetch([new CactiHttpPollItem(1, 1, 'v', 'https://device.example/x')], $errors);
-
-	expect($documents)->toBe([])
-		->and($errors)->toBe(['1 https://device.example/x' => 'Response did not complete']);
 });

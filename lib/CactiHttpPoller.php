@@ -17,12 +17,6 @@
  +-------------------------------------------------------------------------+
  */
 
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
-use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
-
 require_once __DIR__ . '/CactiHttpPollItem.php';
 
 /**
@@ -31,12 +25,14 @@ require_once __DIR__ . '/CactiHttpPollItem.php';
  * Items are grouped by device and endpoint so one request serves every data
  * source that reads from the same document, the same way Spine packs the
  * OIDs of one device into a single SNMP get.  At most $concurrency requests
- * are in flight at once.
+ * are in flight at once.  Transport, redirect and destination checks are
+ * cacti_http_multi()'s, so lib/functions.php must be loaded.
  */
 final class CactiHttpPoller {
 	public const int DEFAULT_CONCURRENCY = 8;
 	public const int MAX_CONCURRENCY     = 64;
 	public const int MAX_RESPONSE_BYTES  = 4194304;
+	public const int MAX_REDIRECTS       = 3;
 
 	/**
 	 * Destinations no item may reach, on the first request or after a redirect.
@@ -56,12 +52,10 @@ final class CactiHttpPoller {
 	];
 
 	/**
-	 * @param HttpClientInterface $client      transport for the requests
-	 * @param int                 $concurrency upper bound on requests in flight
-	 * @param int                 $maxBytes    responses larger than this are abandoned
+	 * @param int $concurrency upper bound on requests in flight
+	 * @param int $maxBytes    responses larger than this are abandoned
 	 */
 	public function __construct(
-		private readonly HttpClientInterface $client,
 		private readonly int $concurrency = self::DEFAULT_CONCURRENCY,
 		private readonly int $maxBytes = self::MAX_RESPONSE_BYTES,
 	) {
@@ -71,24 +65,14 @@ final class CactiHttpPoller {
 	}
 
 	/**
-	 * Build a poller on the best transport available to this PHP.
+	 * Build a poller from the configured concurrency.
 	 *
 	 * A configured value of 0 or less means the default.  Values above the
 	 * maximum are clamped rather than rejected so a typo in Settings cannot
 	 * stop collection.
 	 */
 	public static function create(int $concurrency) : self {
-		$concurrency = $concurrency < 1 ? self::DEFAULT_CONCURRENCY : min($concurrency, self::MAX_CONCURRENCY);
-
-		$client = HttpClient::create([
-			'headers' => [
-				'Accept'     => 'application/json',
-				'User-Agent' => 'Cacti/' . (defined('CACTI_VERSION') ? CACTI_VERSION : 'unknown'),
-			],
-			'max_redirects' => 3,
-		]);
-
-		return new self(new NoPrivateNetworkHttpClient($client, self::blockedSubnets()), $concurrency);
+		return new self($concurrency < 1 ? self::DEFAULT_CONCURRENCY : min($concurrency, self::MAX_CONCURRENCY));
 	}
 
 	/**
@@ -128,95 +112,40 @@ final class CactiHttpPoller {
 	 * @return array<string, mixed> decoded documents keyed by CactiHttpPollItem::$endpointKey
 	 */
 	public function fetch(array $items, array &$errors = []) : array {
-		$queue = [];
-		$urls  = [];
+		$requests = [];
+		$options  = [
+			'max_redirects'   => self::MAX_REDIRECTS,
+			'max_bytes'       => $this->maxBytes,
+			'blocked_subnets' => self::blockedSubnets(),
+			'headers'         => [
+				'Accept: application/json',
+				'User-Agent: Cacti/' . (defined('CACTI_VERSION') ? CACTI_VERSION : 'unknown'),
+			],
+		];
 
 		foreach ($items as $item) {
 			$key = $item->endpointKey;
 
-			if (!isset($queue[$key]) || $queue[$key]['timeout'] < $item->timeout) {
-				$queue[$key] = ['url' => $item->url, 'timeout' => $item->timeout];
+			if (!isset($requests[$key]) || $requests[$key]['options']['timeout'] < $item->timeout) {
+				$requests[$key] = ['method' => 'GET', 'url' => $item->url, 'options' => ['timeout' => $item->timeout] + $options];
 			}
-
-			$urls[$key] = $item->url;
 		}
 
 		$documents = [];
-		$active    = [];
-		$keys      = [];
-		$received  = [];
 
-		while ($queue !== [] || $active !== []) {
-			while (count($active) < $this->concurrency && $queue !== []) {
-				$key     = array_key_first($queue);
-				$request = $queue[$key];
+		foreach (cacti_http_multi($requests, $this->concurrency) as $key => $result) {
+			$key = (string) $key;
 
-				unset($queue[$key]);
+			if (!$result['success']) {
+				$errors[$key] = self::scrub($result['error'] !== '' ? $result['error'] : 'Request failed', $requests[$key]['url']);
 
-				try {
-					$response = $this->client->request('GET', $request['url'], [
-						'timeout'      => $request['timeout'],
-						'max_duration' => $request['timeout'],
-					]);
-				} catch (ExceptionInterface $e) {
-					$errors[$key] = self::scrub($e->getMessage(), $urls[$key]);
-
-					continue;
-				}
-
-				$id = spl_object_id($response);
-
-				$active[$id]   = $response;
-				$keys[$id]     = $key;
-				$received[$id] = 0;
+				continue;
 			}
 
-			if ($active === []) {
-				break;
-			}
-
-			$finished = false;
-
-			// leave the stream after every finished response so the next queued
-			// endpoint starts straight away instead of after the whole window
-			foreach ($this->client->stream($active) as $response => $chunk) {
-				$id  = spl_object_id($response);
-				$key = $keys[$id];
-
-				try {
-					if ($chunk->isTimeout()) {
-						$this->abandon($response, $key, 'Timed out', $errors);
-					} elseif ($chunk->isFirst() && ($response->getStatusCode() < 200 || $response->getStatusCode() > 299)) {
-						$this->abandon($response, $key, 'HTTP status ' . $response->getStatusCode(), $errors);
-					} elseif (($received[$id] += strlen($chunk->getContent())) > $this->maxBytes) {
-						$this->abandon($response, $key, 'Response exceeds ' . $this->maxBytes . ' bytes', $errors);
-					} elseif ($chunk->isLast()) {
-						$documents[$key] = json_decode($response->getContent(false), true, 512, JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING);
-					} else {
-						continue;
-					}
-				} catch (ExceptionInterface $e) {
-					$response->cancel();
-					$errors[$key] = self::scrub($e->getMessage(), $urls[$key]);
-				} catch (JsonException $e) {
-					$errors[$key] = 'Invalid JSON: ' . $e->getMessage();
-				}
-
-				unset($active[$id], $keys[$id], $received[$id]);
-
-				$finished = true;
-
-				break;
-			}
-
-			// a stream that ends without settling a response would spin forever
-			if (!$finished) {
-				foreach ($active as $id => $response) {
-					$this->abandon($response, $keys[$id], 'Response did not complete', $errors);
-				}
-
-				$active = [];
-				$keys   = [];
+			try {
+				$documents[$key] = json_decode($result['body'], true, 512, JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING);
+			} catch (JsonException $e) {
+				$errors[$key] = 'Invalid JSON: ' . $e->getMessage();
 			}
 		}
 
@@ -291,14 +220,5 @@ final class CactiHttpPoller {
 		$message = str_replace($url, CactiHttpPollItem::redact($url), $message);
 
 		return preg_replace_callback('~https?://[^\s"\'<>]+~i', static fn (array $match) : string => CactiHttpPollItem::redact($match[0]), $message) ?? 'Request failed';
-	}
-
-	/**
-	 * @param array<string, string> $errors
-	 */
-	private function abandon(ResponseInterface $response, string $key, string $reason, array &$errors) : void {
-		$response->cancel();
-
-		$errors[$key] = $reason;
 	}
 }
