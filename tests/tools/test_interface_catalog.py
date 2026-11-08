@@ -15,6 +15,7 @@ import sys
 import unittest
 
 from jsonschema import ValidationError
+from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('interface_catalog', ROOT / '.github/scripts/catalog/interface_catalog.py')
@@ -131,6 +132,54 @@ class InterfaceCatalogTest(unittest.TestCase):
     def test_counter_width_must_match_actual_native_field(self):
         self.catalog['metrics'][0]['query_fields'][0]['counter_width'] = 64
         self.rejected(self.catalog)
+
+    def test_counter_fields_are_pinned_to_octet_columns_and_direction(self):
+        # ifInMulticastPkts sits in ifXTable but is a Counter32 packet counter.
+        for index, name in [(1, 'ifInMulticastPkts'), (0, 'ifOutOctets')]:
+            catalog = copy.deepcopy(self.catalog)
+            catalog['metrics'][0]['query_fields'][index]['name'] = name
+            with self.subTest(field=name):
+                with self.assertRaisesRegex(ValueError, 'IF-MIB octet counter'):
+                    MODULE.validate(catalog, ROOT)
+
+    def mutated_bindings(self, mutate):
+        package = self.catalog['package']
+        files = MODULE.package_files((ROOT / package['path']).read_bytes())
+        document = MODULE.parse_xml(files[package['template_file']])
+        query = next(node for node in document if node.tag in self.catalog['identities'] and node.tag.startswith('hash_04'))
+        associations = {node.findtext('name'): node.find('rrd') for node in query.findall('./graphs/*')}
+        mutate(associations)
+        files[package['template_file']] = ElementTree.tostring(document)
+        return unittest.mock.patch.object(MODULE, 'package_files', return_value=files)
+
+    def test_bindings_must_be_exclusive_per_metric_field(self):
+        def relation(rrd, name, field, rrd_item=None):
+            # Copy an existing relation so only the bound field (and RRD item) changes.
+            node = copy.deepcopy(next(item for item in rrd if item.findtext('snmp_field_name') == name))
+            node.tag = 'item_999'
+            node.find('snmp_field_name').text = field
+            if rrd_item is not None:
+                node.find('data_template_rrd_id').text = rrd_item
+            rrd.append(node)
+
+        def drop(rrd, field):
+            rrd.remove(next(item for item in rrd if item.findtext('snmp_field_name') == field))
+
+        for label, mutate, message in [
+            ('crossed direction', lambda graphs: relation(graphs['In/Out Bits (64-bit)'], 'ifHCInOctets', 'ifHCOutOctets'), 'different RRD item'),
+            ('rrd bound twice', lambda graphs: relation(graphs['In/Out Bits (64-bit)'], 'ifHCInOctets', 'ifInOctets'), 'more than once'),
+            ('field missing', lambda graphs: drop(graphs['In/Out Bits'], 'ifInOctets'), 'exactly once'),
+        ]:
+            with self.subTest(change=label), self.mutated_bindings(mutate):
+                with self.assertRaisesRegex(ValueError, message):
+                    MODULE.validate(self.catalog, ROOT)
+        def unrelated(graphs):
+            # Relations between undeclared fields and other RRD items are not metric bindings.
+            unicast = next(iter(graphs['In/Out (Unicast)']))
+            relation(graphs['In/Out Bits'], 'ifInOctets', unicast.findtext('snmp_field_name'), unicast.findtext('data_template_rrd_id'))
+
+        with self.mutated_bindings(unrelated):
+            self.assertEqual(MODULE.validate(self.catalog, ROOT)['metrics'], 2)
 
     def test_explicit_bindings_do_not_depend_on_list_order(self):
         self.catalog['metrics'][0]['query_fields'].reverse()
