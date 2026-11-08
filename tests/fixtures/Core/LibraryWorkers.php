@@ -9,7 +9,9 @@ function library_worker(string $scenario): void {
 	library_expect(mkdir($temporary, 0700), true, 'Worker owns its coverage directory');
 
 	try {
-		$process = new Symfony\Component\Process\Process([PHP_BINARY, '-d', 'memory_limit=1G', __DIR__ . '/LibraryWorker.php', $scenario], CACTI_PATH_BASE,
+		// The coverage image prepends RequestCoverage.php to every PHP process, and the worker
+		// also requires it, so clear the prepend or each worker publishes two reports.
+		$process = new Symfony\Component\Process\Process([PHP_BINARY, '-d', 'memory_limit=1G', '-d', 'auto_prepend_file=', __DIR__ . '/LibraryWorker.php', $scenario], CACTI_PATH_BASE,
 			['CACTI_PR_RAW_COVERAGE' => $temporary, 'XDEBUG_MODE' => 'coverage'], null, 120);
 		$process->run();
 		library_expect($process->getExitCode(), 0, 'Worker completed: ' . $process->getErrorOutput() . $process->getOutput());
