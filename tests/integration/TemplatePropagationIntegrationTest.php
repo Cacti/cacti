@@ -40,6 +40,12 @@ test('propagation uses exact source ancestry and preserves graph-input overrides
 	expect($r['changed_text'])->toBe('Changed')->and($r['local_label'])->toBe('Local label')->and($r['ambiguous_binding'])->toBe(0)->and($r['errors'])->toBe([]);
 });
 
+test('items for sources with stale template ancestry still bind by data source name', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/template_propagation_probe.php', ['stale']);
+	expect($r['stale_binding'])->toBe(101)->and($r['retemplate_stale_binding'])->toBe(101)
+		->and($r['unmatched_binding'])->toBe(0)->and($r['errors'])->toBe([]);
+});
+
 test('resequence repairs correct-count graphs and follows later template edits across all graphs', function () {
 	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/template_propagation_probe.php', ['resequence']);
 	expect(array_map('intval', array_column($r['actual'], 'sequence')))->toBe([1,2]);

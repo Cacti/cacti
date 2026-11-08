@@ -90,6 +90,24 @@ if ($mode == 'binding' || $mode == 'resequence') {
 		$result['duplicates'] = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id=1 AND local_graph_template_item_id=1')->fetchColumn();
 
 	}
+} elseif ($mode == 'stale') {
+	// A data source retemplated by an earlier release keeps the ancestry of its old template.
+	seed_graph_template();
+	$pdo->exec("INSERT INTO data_template (id,hash,name) VALUES (2,'second','Second template')");
+	$pdo->exec("INSERT INTO data_template_rrd (id,data_template_id,data_source_name) VALUES (2,2,'traffic'),(3,2,'other')");
+	$pdo->exec('INSERT INTO data_local (id,host_id,data_template_id) VALUES (101,1,2)');
+	$pdo->exec("INSERT INTO data_template_rrd (id,local_data_id,local_data_template_rrd_id,data_template_id,data_source_name) VALUES (101,101,1,2,'traffic'),(102,101,1,2,'traffic_copy')");
+	$pdo->exec('INSERT INTO graph_local (id,host_id,graph_template_id) VALUES (1,1,1)');
+	$pdo->exec("INSERT INTO graph_templates_graph (id,local_graph_id,local_graph_template_graph_id,graph_template_id,title) VALUES (101,1,1,1,'Local graph')");
+	$pdo->exec('INSERT INTO graph_templates_item (id,local_graph_id,local_graph_template_item_id,graph_template_id,task_item_id,sequence) VALUES (101,1,1,1,101,1)');
+	$pdo->exec('INSERT INTO graph_templates_item (id,graph_template_id,task_item_id,sequence) VALUES (2,1,2,2),(3,1,3,3)');
+	push_out_graph_item(2, true);
+	$result['stale_binding'] = (int)$pdo->query('SELECT task_item_id FROM graph_templates_item WHERE local_graph_id=1 AND local_graph_template_item_id=2')->fetchColumn();
+	push_out_graph_item(3, true);
+	$result['unmatched_binding'] = (int)$pdo->query('SELECT task_item_id FROM graph_templates_item WHERE local_graph_id=1 AND local_graph_template_item_id=3')->fetchColumn();
+	$pdo->exec('DELETE FROM graph_templates_item WHERE local_graph_id=1 AND local_graph_template_item_id IN (2,3)');
+	change_graph_template(1, 1, true);
+	$result['retemplate_stale_binding'] = (int)$pdo->query('SELECT task_item_id FROM graph_templates_item WHERE local_graph_id=1 AND local_graph_template_item_id=2')->fetchColumn();
 } elseif ($mode == 'switch' || $mode == 'duplicate-failure') {
 	seed_graph_template();
 	$values = [];

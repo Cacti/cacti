@@ -140,6 +140,14 @@ if ($mode == 'graph' || $mode == 'graph-failure' || $mode == 'graph-interruption
 	api_tree_sort_branch(0,1);
 	$result['repeat_position_updates'] = 0;
 	foreach ($pdo->query_counts as $sql=>$count) if (str_starts_with($sql, 'UPDATE graph_tree_items SET position')) $result['repeat_position_updates'] += $count;
+} elseif ($mode == 'nested') {
+	seed_graph_template();
+	$suggested = array();
+	$pdo->beginTransaction();
+	$result['failed'] = create_complete_graph_from_template(1, 1, array(), $suggested);
+	$pdo->rollBack();
+	$result['graphs'] = (int) $pdo->query('SELECT COUNT(*) FROM graph_local')->fetchColumn();
+	$result['errors'] = $review_logs;
 } else {
 	throw new RuntimeException('Unknown fixture scenario');
 }
