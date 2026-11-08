@@ -704,8 +704,10 @@ function discoverDevices(int $network_id, int $thread) : bool {
 									addSNMPDevice($network_id, (int) getmypid());
 								}
 
-								// Rerun data queries if specified
-								rerunDataQueries($exists['id'], $network);
+								// A dry run must not reindex, graph or tree existing devices
+								if (!$dryrun) {
+									rerunDataQueries($exists['id'], $network);
+								}
 							}
 
 							automation_debug(' Device is in Cacti!');
@@ -945,8 +947,10 @@ function discoverDevices(int $network_id, int $thread) : bool {
 							addSNMPDevice($network_id, (int) getmypid());
 						}
 
-						// Rerun data queries if specified
-						rerunDataQueries($exists['id'], $network);
+						// A dry run must not reindex, graph or tree existing devices
+						if (!$dryrun) {
+							rerunDataQueries($exists['id'], $network);
+						}
 					}
 
 					automation_debug(", Status: Already in Cacti\n");

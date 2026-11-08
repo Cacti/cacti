@@ -13,12 +13,18 @@ declare(strict_types = 1);
 
 $scenario = json_decode($argv[1], true, 512, JSON_THROW_ON_ERROR);
 $queries  = [];
+$logs     = [];
 $debug    = false;
 define('POLLER_VERBOSITY_MEDIUM', 3);
 define('POLLER_VERBOSITY_NONE', 0);
 define('CACTI_WEB', false);
 
 function db_fetch_cell_prepared(string $sql, array $params = []) : string {
+	if (str_contains($sql, 'COUNT(*)')) {
+		// Rows this network owns after priming; by default every queued address.
+		return (string) ($GLOBALS['scenario']['owned'] ?? preg_match_all("/\\('[^']+', '', 7,/", implode(' ', $GLOBALS['queries'])));
+	}
+
 	return str_contains($sql, 'ignore_ips') ? $GLOBALS['scenario']['ignore'] : $GLOBALS['scenario']['range'];
 }
 
@@ -33,6 +39,10 @@ function cacti_sizeof(mixed $value) : int {
 }
 
 function cacti_log(mixed ...$args) : void {
+	// automation_debug() also logs; keep only operator notes.
+	if (str_starts_with($args[0], 'NOTE:')) {
+		$GLOBALS['logs'][] = $args[0];
+	}
 }
 
 require dirname(__DIR__, 2) . '/lib/api_automation.php';
@@ -54,7 +64,7 @@ try {
 		preg_match_all("/\('([^']+)', '', 7, '0', '0', '0'\)/", $query, $matches);
 		array_push($addresses, ...$matches[1]);
 	}
-	$result = ['completed' => true, 'addresses' => $addresses, 'writes' => count($queries)];
+	$result = ['completed' => true, 'addresses' => $addresses, 'writes' => count($queries), 'logs' => $logs];
 } catch (RuntimeException $error) {
 	$result = ['completed' => false, 'error' => $error->getMessage()];
 } finally {
