@@ -2203,7 +2203,17 @@ function draw_aggregate_template_graph_config(int $aggregate_template_id, int $g
 	<?php
 }
 
-/** Fetch legend settings once per aggregate rebuild, keyed by source-template item ID. */
+/**
+ * Fetches legend overrides once per aggregate rebuild.
+ *
+ * A templated aggregate reads its template's items; a standalone aggregate
+ * reads its own.
+ *
+ * @param int $template_id  The aggregate template ID, or 0 for a standalone aggregate.
+ * @param int $aggregate_id The aggregate graph ID used when there is no template.
+ *
+ * @return array|false Override rows keyed by source graph template item ID, or false when the read fails.
+ */
 function aggregate_item_legend_overrides(int $template_id, int $aggregate_id) : array|false {
 	if ($template_id > 0) {
 		$table = 'aggregate_graph_templates_item';
@@ -2222,7 +2232,16 @@ function aggregate_item_legend_overrides(int $template_id, int $aggregate_id) : 
 	return is_array($rows) ? array_column($rows, null, 'graph_templates_item_id') : false;
 }
 
-/** Empty strings are valid overrides: they remove the inherited legend text. */
+/**
+ * Applies enabled text format and legend overrides to one graph item.
+ *
+ * Empty strings are valid overrides: they remove the inherited legend text.
+ *
+ * @param array $item      The graph item being copied into the aggregate.
+ * @param array $overrides The item's override row, or an empty array.
+ *
+ * @return array The item with its enabled overrides applied.
+ */
 function aggregate_apply_item_legend(array $item, array $overrides) : array {
 	foreach (['text_format', 'legend'] as $field) {
 		if (($overrides['t_' . $field] ?? '') === 'on') {
