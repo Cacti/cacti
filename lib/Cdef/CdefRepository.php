@@ -24,12 +24,34 @@
 
 namespace Cacti\Cdef;
 
+/**
+ * Read access to stored CDEF definitions for CdefResolver.
+ */
 interface CdefRepository {
-	/** @return array<array{id: int, type: string, value: mixed}>|false */
+	/**
+	 * Return a CDEF's items in sequence order.
+	 *
+	 * @param int $cdef_id The CDEF whose items are read.
+	 *
+	 * @return array<array{id: int, type: string, value: mixed}>|false The items, or false on a database error.
+	 */
 	public function items(int $cdef_id) : array|false;
 
-	/** Returns null on a database error. */
+	/**
+	 * Report whether a CDEF row exists, so an empty CDEF can be told apart from a missing one.
+	 *
+	 * @param int $cdef_id The CDEF to look up.
+	 *
+	 * @return bool|null Whether the CDEF exists, or null on a database error.
+	 */
 	public function exists(int $cdef_id) : ?bool;
 
+	/**
+	 * Return the text form of one non-nested CDEF item.
+	 *
+	 * @param int $cdef_item_id The cdef_items row id.
+	 *
+	 * @return string|null The item text, or null when the item is missing or invalid.
+	 */
 	public function itemName(int $cdef_item_id) : ?string;
 }

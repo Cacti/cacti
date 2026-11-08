@@ -18,7 +18,8 @@
 */
 
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once __DIR__ . '/RequestCoverage.php';
+// FixtureCoverage feeds both changed-line gates; it loads RequestCoverage for the 80% gate.
+require_once __DIR__ . '/FixtureCoverage.php';
 
 $GLOBALS['cdef_test_items']          = [];
 $GLOBALS['cdef_test_lists']          = [];

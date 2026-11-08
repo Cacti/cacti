@@ -26,13 +26,15 @@ namespace Cacti\Cdef;
 
 /** Mutable state for one resolution, also shared with legacy reference parameters. */
 final class CdefResolutionState {
-	/** @var array<int, true> */
+	/** @var array<int, true> CDEF ids on the active reference chain. */
 	public array $visited = [];
 
+	/** CDEF expansions performed so far. */
 	public int $expansion = 0;
 
-	/** @var array<int, string> */
+	/** @var array<int, string> Resolved CDEFs keyed by id. */
 	public array $cache = [];
 
+	/** Bytes held in $cache, bounded by the resolver's cache budget. */
 	public int $cache_bytes = 0;
 }

@@ -29,16 +29,37 @@ use Closure;
 require_once __DIR__ . '/CdefRepository.php';
 require_once __DIR__ . '/CdefResolutionState.php';
 
+/**
+ * Resolves a CDEF and its nested type 5 references into an RPN string,
+ * rejecting cycles, excessive nesting and oversized output.
+ */
 final class CdefResolver {
-	/** @param Closure(string): void $log */
+	/**
+	 * @param CdefRepository        $repository Source of CDEF rows and item names.
+	 * @param Closure(string): void $log        Receives each rejection reason.
+	 */
 	public function __construct(private readonly CdefRepository $repository, private readonly Closure $log) {
 	}
 
+	/**
+	 * Resolve a CDEF with fresh state.
+	 *
+	 * @param int $cdef_id The CDEF to resolve.
+	 *
+	 * @return string|null The RPN string, or null when the CDEF is missing or rejected.
+	 */
 	public function resolve(int $cdef_id) : ?string {
 		return $this->resolveWithState($cdef_id, new CdefResolutionState());
 	}
 
-	/** The caller owns the state; resolve() always starts a fresh operation. */
+	/**
+	 * Resolve a CDEF using caller-owned state; resolve() always starts a fresh operation.
+	 *
+	 * @param int                 $cdef_id The CDEF to resolve.
+	 * @param CdefResolutionState $state   Cycle, budget and cache state shared across calls.
+	 *
+	 * @return string|null The RPN string, or null when the CDEF is missing or rejected.
+	 */
 	public function resolveWithState(int $cdef_id, CdefResolutionState $state) : ?string {
 		if (isset($state->visited[$cdef_id])) {
 			($this->log)(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id));
