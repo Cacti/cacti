@@ -114,3 +114,95 @@ test('legacy VDEF functions load before Composer is available', function () : vo
 	$process->run();
 	expect($process->getExitCode())->toBe(0, $process->getErrorOutput());
 });
+
+/**
+ * Build a VDEF resolver over in-memory rows that records every logged error.
+ *
+ * @param array<int, array<array<string, mixed>>> $vdefs  Items keyed by VDEF id.
+ * @param array<string>                           $errors Receives the logged messages.
+ *
+ * @return VdefResolver
+ */
+function vdef_guard_resolver(array $vdefs, array &$errors) : VdefResolver {
+	$repository = new class($vdefs) implements VdefRepository {
+		/** @param array<int, array<array<string, mixed>>> $vdefs Items keyed by VDEF id. */
+		public function __construct(private readonly array $vdefs) {
+		}
+
+		/** @return array<array<string, mixed>> */
+		public function items(int $vdef_id) : array|false {
+			return $this->vdefs[$vdef_id] ?? [];
+		}
+
+		/** @return string The fixture item id as text. */
+		public function itemName(int $vdef_item_id) : string {
+			return 'item' . $vdef_item_id;
+		}
+	};
+
+	return new VdefResolver($repository, static function (string $message) use (&$errors) : void {
+		$errors[] = $message;
+	});
+}
+
+test('a self-referencing imported VDEF fails closed instead of recursing', function () : void {
+	$errors   = [];
+	$resolver = vdef_guard_resolver([1 => [['id' => 1, 'type' => 6, 'value' => '1'], ['id' => 2, 'type' => 5, 'value' => '1']]], $errors);
+
+	expect($resolver->resolve(1))->toBe('')
+		->and($errors)->toBe(['ERROR: VDEF 1 contains a recursive cycle.']);
+});
+
+test('mutually referencing VDEFs fail closed from either entry point', function () : void {
+	$errors   = [];
+	$resolver = vdef_guard_resolver([
+		1 => [['id' => 1, 'type' => 5, 'value' => '2']],
+		2 => [['id' => 2, 'type' => 6, 'value' => '2'], ['id' => 3, 'type' => 5, 'value' => '1']],
+	], $errors);
+
+	expect($resolver->resolve(1))->toBe('')
+		->and($resolver->resolve(2, true))->toBe('')
+		->and($errors)->toBe(['ERROR: VDEF 1 contains a recursive cycle.', 'ERROR: VDEF 2 contains a recursive cycle.']);
+});
+
+test('VDEF nesting depth and shared-reference expansion are bounded', function () : void {
+	$chain = [];
+
+	for ($id = 1; $id <= 70; $id++) {
+		$chain[$id] = [['id' => $id, 'type' => 5, 'value' => (string) ($id + 1)]];
+	}
+
+	$errors = [];
+	expect(vdef_guard_resolver($chain, $errors)->resolve(1))->toBe('')
+		->and($errors)->toBe(['ERROR: VDEF 65 exceeds the resolver nesting depth.']);
+
+	// Each level names the next twice, so an unbounded walk would expand 2^20 times.
+	$fan = [];
+
+	for ($id = 1; $id <= 20; $id++) {
+		$fan[$id] = [['id' => $id, 'type' => 5, 'value' => (string) ($id + 1)], ['id' => $id, 'type' => 5, 'value' => (string) ($id + 1)]];
+	}
+
+	$errors = [];
+	expect(vdef_guard_resolver($fan, $errors)->resolve(1))->toBe('')
+		->and($errors)->toHaveCount(1)
+		->and($errors[0])->toEndWith('exceeds the resolver expansion budget.');
+
+	$errors = [];
+	expect(vdef_guard_resolver([1 => [['id' => 1, 'type' => 5, 'value' => '2'], ['id' => 2, 'type' => 5, 'value' => '2']], 2 => [['id' => 3, 'type' => 6, 'value' => '7']]], $errors)->resolve(1, true))
+		->toBe('item3, item3')
+		->and($errors)->toBe([]);
+});
+
+test('the default VDEF guard logger is silent when cacti_log is not loaded', function () : void {
+	$path    = var_export(dirname(__DIR__, 4) . '/lib/Vdef/VdefResolver.php', true);
+	$process = new Process([PHP_BINARY, '-n', '-r', 'require ' . $path . ';
+		$repository = new class implements \Cacti\Vdef\VdefRepository {
+			public function items(int $vdef_id) : array|false { return [["id" => 1, "type" => 5, "value" => "1"]]; }
+			public function itemName(int $vdef_item_id) : string { return ""; }
+		};
+		exit((new \Cacti\Vdef\VdefResolver($repository))->resolve(1) === "" ? 0 : 1);
+	']);
+	$process->run();
+	expect($process->getExitCode())->toBe(0, $process->getErrorOutput());
+});

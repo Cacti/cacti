@@ -1,0 +1,1 @@
+Stop the VDEF editor submitting a duplicate id field that made new VDEFs fail validation
