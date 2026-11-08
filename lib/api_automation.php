@@ -4087,15 +4087,62 @@ function automation_get_next_host(string $start, int $total, int $count, string 
 }
 
 /**
+ * Returns the largest number of addresses one Automation Network may scan.
+ *
+ * Every address of a network is primed into the MEMORY table automation_ips
+ * before any worker starts, so an unbounded range (a /8 is 16.7M rows) would
+ * exhaust max_heap_table_size and stall the master instead of scanning.
+ *
+ * @return int The configured limit, or 65536 when the setting is not a positive integer.
+ */
+function automation_max_network_ips() : int {
+	$limit = read_config_option('automation_max_network_ips');
+
+	if (is_numeric($limit) && (int) $limit > 0) {
+		return (int) $limit;
+	}
+
+	return 65536;
+}
+
+/**
+ * Inserts one batch of primed addresses into automation_ips.
+ *
+ * @param array $ips        The IP addresses to insert.
+ * @param int   $network_id The Automation Network the addresses belong to.
+ *
+ * @return bool True when the batch is empty or was inserted, false on a database error.
+ */
+function automation_insert_ip_batch(array $ips, int $network_id) : bool {
+	if (!cacti_sizeof($ips)) {
+		return true;
+	}
+
+	$params = [];
+
+	foreach ($ips as $ip) {
+		$params[] = $ip;
+		$params[] = $network_id;
+	}
+
+	return (bool) db_execute_prepared('INSERT INTO automation_ips
+		(ip_address, hostname, network_id, pid, status, thread)
+		VALUES ' . implode(',', array_fill(0, cacti_sizeof($ips), "(?, '', ?, 0, 0, 0)")),
+		$params);
+}
+
+/**
  * Primes the IP address table for a given network.
  *
  * This function initializes or updates the IP address table associated with the specified network ID.
+ * Nothing is primed when the network exceeds automation_max_network_ips(), so a range saved
+ * before the limit existed cannot fill the MEMORY table.
  *
  * @param int $network_id The ID of the network for which the IP address table is to be primed.
  *
- * @return void
+ * @return bool True when every address was primed, false when the network is too large or an insert failed.
  */
-function automation_primeIPAddressTable(int $network_id) : void {
+function automation_primeIPAddressTable(int $network_id) : bool {
 	$subNets = db_fetch_cell_prepared('SELECT subnet_range
 		FROM automation_networks
 		WHERE id = ?',
@@ -4106,62 +4153,75 @@ function automation_primeIPAddressTable(int $network_id) : void {
 		WHERE id = ?',
 		[$network_id]);
 
-	$subNets    = explode(',', trim($subNets));
-	$total      = 0;
+	$subNets = explode(',', trim($subNets));
+	$total   = 0;
+	$ignored = [];
 
 	if ($ignore_ips != '') {
-		$ignore_ips = explode(',', $ignore_ips);
-
-		foreach ($ignore_ips as $index => $ip) {
-			$ignore_ips[$index] = trim($ip);
+		// keyed lookup: in_array() per address made priming O(addresses * ignored)
+		foreach (explode(',', $ignore_ips) as $ip) {
+			$ignored[trim($ip)] = true;
 		}
-	} else {
-		$ignore_ips = [];
 	}
 
-	if (cacti_sizeof($subNets)) {
-		foreach ($subNets as $subNet) {
-			$count       = 1;
-			$sql         = [];
-			$subNetTotal = automation_calculate_total_ips($subNet);
-			$total += $subNetTotal;
+	foreach ($subNets as $subNet) {
+		$total += (int) automation_calculate_total_ips($subNet);
+	}
 
-			$start = automation_calculate_start($subNet);
+	$limit = automation_max_network_ips();
 
-			if ($start === false) {
-				continue;
+	if ($total > $limit) {
+		cacti_log("ERROR: Network ID $network_id has $total IP Addresses, more than the Automation limit of $limit.  Nothing was scanned.", false, 'AUTOM8');
+
+		return false;
+	}
+
+	foreach ($subNets as $subNet) {
+		$count       = 1;
+		$sql         = [];
+		$subNetTotal = automation_calculate_total_ips($subNet);
+
+		$start = automation_calculate_start($subNet);
+
+		if ($start === false || $subNetTotal === false) {
+			continue;
+		}
+
+		if ($start != '' && !isset($ignored[$start])) {
+			$sql[] = $start;
+		}
+
+		while ($count < $subNetTotal) {
+			$ip = automation_get_next_host($start, $subNetTotal, $count, $subNet);
+
+			// advance past ignored addresses too, or the loop never ends
+			$count++;
+
+			if ($ip != '' && !isset($ignored[$ip])) {
+				$sql[] = $ip;
 			}
 
-			if ($start != '' && !in_array($start, $ignore_ips, true)) {
-				$sql[] = "('$start', '', $network_id, '0', '0', '0')";
-			}
+			if (cacti_sizeof($sql) >= 1000) {
+				if (!automation_insert_ip_batch($sql, $network_id)) {
+					cacti_log("ERROR: Unable to prime IP Addresses for Network ID $network_id.  Nothing was scanned.", false, 'AUTOM8');
 
-			while ($count < $subNetTotal) {
-				$ip = automation_get_next_host($start, $subNetTotal, $count, $subNet);
-
-				if ($ip != '' && !in_array($ip, $ignore_ips, true)) {
-					$sql[] = "('$ip', '', $network_id, '0', '0', '0')";
-
-					$count++;
+					return false;
 				}
 
-				if ($count % 1000 == 0) {
-					db_execute('INSERT INTO automation_ips
-						(ip_address, hostname, network_id, pid, status, thread)
-						VALUES ' . implode(',', $sql));
-					$sql = [];
-				}
+				$sql = [];
 			}
+		}
 
-			if (cacti_sizeof($sql)) {
-				db_execute('INSERT INTO automation_ips
-					(ip_address, hostname, network_id, pid, status, thread)
-					VALUES ' . implode(',', $sql));
-			}
+		if (!automation_insert_ip_batch($sql, $network_id)) {
+			cacti_log("ERROR: Unable to prime IP Addresses for Network ID $network_id.  Nothing was scanned.", false, 'AUTOM8');
+
+			return false;
 		}
 	}
 
 	automation_debug("A Total of $total IP Addresses Primed\n");
+
+	return true;
 }
 
 /**
@@ -6567,6 +6627,11 @@ function api_networks_save(array $post) : mixed {
 					break;
 				}
 			}
+		}
+
+		if ($continue && $total_ips > automation_max_network_ips()) {
+			$continue = false;
+			raise_message('automation_message', __esc('ERROR: The Subnet Ranges contain %s IP Addresses, more than the Automation limit of %s.  Split the Network or raise \'Maximum Addresses per Network\' under Configuration > Settings > General.', $total_ips, automation_max_network_ips()), MESSAGE_LEVEL_ERROR);
 		}
 
 		if ($continue) {
