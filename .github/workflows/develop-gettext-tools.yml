@@ -24,3 +24,6 @@ jobs:
           set -euo pipefail
           sh -n locales/update-pot.sh locales/build_gettext.sh locales/build_mo.sh
           python3 tests/tools/test_gettext_scripts.py
+          # The PO validator needs msgfmt, which this job already installs, so
+          # an apt outage cannot fail the workflow policy gate.
+          python3 tests/tools/test_po_validator.py
