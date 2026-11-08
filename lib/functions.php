@@ -3292,17 +3292,6 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 					// so the already-escaped value stands on its own
 					$out   = substr($out, 0, -1);
 
-					// same ANSI-C/locale guard once the wrapping quote is shed and the
-					// self-quoted value abuts whatever preceded it (defence in depth:
-					// the quote-open guard already blocks a $ before this pair)
-					if (substr($out, -1) === '$') {
-						$b = substr($out, 0, -1);
-
-						if ((strlen($b) - strlen(rtrim($b, '\\'))) % 2 === 0) {
-							return '';
-						}
-					}
-
 					$out .= $value;
 					$i    += 1;
 					$stack[$top]['quote'] = '';
