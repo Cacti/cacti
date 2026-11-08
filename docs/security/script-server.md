@@ -68,7 +68,9 @@ The accepted language has these limits and rules:
   cannot be drained within 0.5 seconds, framing is uncertain and the worker
   exits instead of interpreting a suffix as another request.
 
-An empty line retains its legacy liveness behavior. The exact token `quit`
+An empty line retains its legacy liveness behavior and receives no reply, so
+the parent refuses to send an empty request and maps it to `U` instead of
+waiting for a reply that never comes. The exact token `quit`
 retains the legacy shutdown behavior and emits one final framed response. A
 normal poller request that sends this reserved token retires the exited worker.
 Every other malformed but completely framed request receives `U` without
@@ -101,8 +103,10 @@ A successful response is one non-empty line of at most 8190 bytes, excluding
 LF. Scalar values are converted to strings and trimmed. C0 control bytes, DEL,
 embedded line endings, and oversized values are not valid responses.
 
-The worker maintains a non-removable output buffer around script loading and
-dispatch so incidental `print` output cannot become protocol data. Removable
+The worker maintains a non-removable output buffer from before the Cacti
+bootstrap through script loading and dispatch, so incidental output from
+configuration, plugins, or scripts cannot precede the startup banner or become
+protocol data. Removable
 nested buffers are discarded after each request. If a script leaves an
 unremovable buffer or otherwise corrupts this guard, the worker exits.
 

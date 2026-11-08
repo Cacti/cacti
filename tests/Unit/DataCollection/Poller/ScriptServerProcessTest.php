@@ -14,11 +14,19 @@
 
 require_once dirname(__DIR__, 4) . '/lib/poller.php';
 
-function ss_process_test_command(array $arguments) : array {
+/**
+ * Builds the command line that starts script_server.php under a test bootstrap.
+ *
+ * @param array<int,string> $arguments Script Server arguments
+ * @param string            $bootstrap Fixture prepended to the worker
+ *
+ * @return array<int,string>
+ */
+function ss_process_test_command(array $arguments, string $bootstrap = 'script_server_bootstrap.php') : array {
 	return array_merge([
 		PHP_BINARY,
 		'-d',
-		'auto_prepend_file=' . dirname(__DIR__, 3) . '/fixtures/script_server_bootstrap.php',
+		'auto_prepend_file=' . dirname(__DIR__, 3) . '/fixtures/' . $bootstrap,
 		dirname(__DIR__, 4) . '/script_server.php'
 	], $arguments);
 }
@@ -37,12 +45,20 @@ function ss_process_test_php_wrapper() : string {
 	return $wrapper;
 }
 
-function ss_process_test_start(array $arguments = []) : array {
+/**
+ * Starts a live Script Server and reads its startup banner.
+ *
+ * @param array<int,string> $arguments Script Server arguments, or empty for a cmd worker
+ * @param string            $bootstrap Fixture prepended to the worker
+ *
+ * @return array{0: resource, 1: array<int,resource>, 2: string} Process, pipes, and banner
+ */
+function ss_process_test_start(array $arguments = [], string $bootstrap = 'script_server_bootstrap.php') : array {
 	if (!$arguments) {
 		$arguments = ['--environ=cmd', '--poller=1', '--mode=online'];
 	}
 
-	$process = proc_open(ss_process_test_command($arguments), [
+	$process = proc_open(ss_process_test_command($arguments, $bootstrap), [
 		0 => ['pipe', 'r'],
 		1 => ['pipe', 'w'],
 		2 => ['pipe', 'w']
@@ -408,6 +424,31 @@ test('a timed out worker is discarded before a fresh worker serves requests', fu
 	expect(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('fresh')
 		->and($healthy)->toBeTrue();
 });
+
+test('output during the bootstrap does not reach stdout ahead of the banner', function () {
+	[$this->process, $this->pipes, $banner] = ss_process_test_start([], 'script_server_noisy_bootstrap.php');
+	$healthy                                = true;
+	$request                                = $this->script . ' ' . $this->prefix . '_echo ' . escapeshellarg('aligned');
+
+	expect($banner)->toBe('PHP Script Server has Started - Parent is cmd')
+		->and(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('aligned')
+		->and($healthy)->toBeTrue();
+});
+
+test('an empty request is refused without retiring a healthy worker', function (string $command) {
+	[$this->process, $this->pipes] = ss_process_test_start();
+	$healthy                       = true;
+	$start                         = hrtime(true);
+
+	expect(exec_poll_php($command, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('U')
+		->and($healthy)->toBeTrue()
+		->and((hrtime(true) - $start) / 1e9)->toBeLessThan(1.0);
+
+	$request = $this->script . ' ' . $this->prefix . '_echo ' . escapeshellarg('still-aligned');
+
+	expect(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('still-aligned')
+		->and($healthy)->toBeTrue();
+})->with(['empty' => [''], 'blank' => ['   ']]);
 
 test('the server exits promptly when its input closes', function () {
 	[$this->process, $this->pipes] = ss_process_test_start();
