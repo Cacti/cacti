@@ -125,7 +125,6 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Cacti\\Cdef\\": "lib/Cdef/",
             "Cacti\\Console\\": "lib/Console/",
             "Cacti\\Auth\\": "lib/Auth/"
         }

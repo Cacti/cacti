@@ -26,18 +26,45 @@ namespace Cacti\Cdef;
 
 require_once __DIR__ . '/CdefRepository.php';
 
-/** Keeps the existing database helpers and item dictionaries at the legacy boundary. */
+/**
+ * CDEF repository backed by the cdef and cdef_items tables.
+ *
+ * Keeps the existing database helpers and the global $cdef_functions and
+ * $cdef_operators dictionaries at the legacy boundary.
+ */
 final class DatabaseCdefRepository implements CdefRepository {
+	/**
+	 * Read a CDEF's items in sequence order.
+	 *
+	 * @param int $cdef_id The CDEF whose items are read.
+	 *
+	 * @return array<array{id: int, type: string, value: mixed}>|false The rows, or false on a database error.
+	 */
 	public function items(int $cdef_id) : array|false {
 		return db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
 	}
 
+	/**
+	 * Report whether a CDEF row exists.
+	 *
+	 * @param int $cdef_id The CDEF to look up.
+	 *
+	 * @return bool|null Whether the CDEF exists, or null on a database error.
+	 */
 	public function exists(int $cdef_id) : ?bool {
 		$rows = db_fetch_assoc_prepared('SELECT id FROM cdef WHERE id = ?', [$cdef_id]);
 
 		return $rows === false ? null : cacti_sizeof($rows) > 0;
 	}
 
+	/**
+	 * Resolve one item to its function, operator, special data source,
+	 * nested CDEF name or literal value, logging why an item is rejected.
+	 *
+	 * @param int $cdef_item_id The cdef_items row id.
+	 *
+	 * @return string|null The item text, or null when the item is missing or invalid.
+	 */
 	public function itemName(int $cdef_item_id) : ?string {
 		global $cdef_functions, $cdef_operators;
 
