@@ -151,6 +151,11 @@ switch (true) {
 		print '{"v":1}';
 
 		break;
+	case $path === '/reset-peak':
+		file_put_contents($state . '/inflight', '0 0', LOCK_EX);
+		print '{}';
+
+		break;
 	case $path === '/peak':
 		print json_encode(['peak' => (int) (explode(' ', (string) @file_get_contents($state . '/inflight'))[1] ?? 0)]);
 

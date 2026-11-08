@@ -159,6 +159,8 @@ test('no more than the configured number of requests are in flight', function ()
 		$items[] = new CactiHttpPollItem(1, $i, 'v', "$base/inflight/$i", '/v');
 	}
 
+	file_get_contents("$base/reset-peak");
+
 	$errors    = [];
 	$documents = (new CactiHttpPoller(2))->fetch($items, $errors);
 	$peak      = json_decode(file_get_contents("$base/peak"), true)['peak'];
