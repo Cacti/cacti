@@ -3217,6 +3217,17 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Describe what an upgrade from the installed version will do.
+	 *
+	 * Lists the migrations that have an upgrade file, the plugins the upgrade
+	 * will disable or integrate, the selected templates and table conversions,
+	 * and the remote data collectors that will be synchronized.
+	 *
+	 * @throws RuntimeException when any part of the plan cannot be read
+	 *
+	 * @return \Cacti\Installer\UpgradePlan
+	 */
 	public function getUpgradePlan() : \Cacti\Installer\UpgradePlan {
 		global $cacti_version_codes, $plugins_integrated;
 
@@ -3258,9 +3269,9 @@ class Installer implements JsonSerializable {
 		}
 
 		return new \Cacti\Installer\UpgradePlan($this->old_cacti_version, CACTI_VERSION, $versions,
-			array_column(is_array($templates) ? $templates : [], 'value'),
-			array_column(is_array($tables) ? $tables : [], 'value'), $changes,
-			array_map('intval', array_column(is_array($collectors) ? $collectors : [], 'id')));
+			array_column($templates, 'value'),
+			array_column($tables, 'value'), $changes,
+			array_map('intval', array_column($collectors, 'id')));
 	}
 
 	public function processStepInstallConfirm() : string {
@@ -3714,7 +3725,14 @@ class Installer implements JsonSerializable {
 
 	// The following functions perform the leg work for installation
 
-	/** @return list<string> */
+	/**
+	 * Messages for the problems an otherwise successful run left behind.
+	 *
+	 * The installer records them in the install_warnings setting, for now
+	 * only remote data collectors that could not be synchronized.
+	 *
+	 * @return list<string> translated messages, empty when there is nothing to report
+	 */
 	public static function getCompletionWarnings() : array {
 		$report   = \Cacti\Installer\CompletionWarnings::decode((string) read_config_option('install_warnings', true));
 		$messages = [];
@@ -3726,9 +3744,18 @@ class Installer implements JsonSerializable {
 		return $messages;
 	}
 
-	/** @template T
-	 * @param  callable(): T $operation
-	 * @return T
+	/**
+	 * Run one installer step and record its duration and outcome in the run report.
+	 *
+	 * A step fails when it returns false or a non-empty string, or throws; a
+	 * thrown error is recorded and then rethrown.
+	 *
+	 * @template T
+	 *
+	 * @param string        $name      operation name shown in the run report
+	 * @param callable(): T $operation the step to run
+	 *
+	 * @return T whatever the step returned
 	 */
 	private function runOperation(string $name, callable $operation) : mixed {
 		$started = hrtime(true);
@@ -4386,9 +4413,14 @@ class Installer implements JsonSerializable {
 					$ver_status = DB_STATUS_WARNING;
 				}
 
-				// Only update database version if database successfully upgraded
+				/*
+				 * Only update database version if database successfully upgraded.
+				 * The target version is left to writeInstalledVersion(), which
+				 * runs once the schema and authentication checks pass, so a
+				 * failed check leaves the migration to be retried.
+				 */
 				if ($ver_status == DB_STATUS_SUCCESS || $ver_status == DB_STATUS_SKIPPED) {
-					if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+					if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<') && !cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
 						if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
 							$ver_status = DB_STATUS_ERROR;
 						} else {
@@ -4420,12 +4452,6 @@ class Installer implements JsonSerializable {
 
 		if ($failure <= DB_STATUS_WARNING) {
 			return __('One or more database upgrades failed or completed with warnings; the database version was not advanced');
-		}
-
-		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<=') &&
-			!db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL])
-		) {
-			return __('Unable to persist the upgraded database version');
 		}
 
 		return '';

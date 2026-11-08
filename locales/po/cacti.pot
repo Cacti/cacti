@@ -18402,10 +18402,6 @@ msgid "One or more database upgrades failed or completed with warnings; the data
 msgstr ""
 
 #: lib/installer.php
-msgid "Unable to persist the upgraded database version"
-msgstr ""
-
-#: lib/installer.php
 msgid "Install aborted due to no EULA acceptance"
 msgstr ""
 
