@@ -116,7 +116,7 @@ class DeviceRepository {
 		'current_errors'         => true,
 		'total_polls'            => true,
 		'failed_polls'           => true,
-		'availability'          => true,
+		'availability'           => true,
 		'last_updated'           => true,
 		'created'                => true,
 	];
@@ -179,16 +179,16 @@ class DeviceRepository {
 	 * all - load devices matching an equality criteria set.
 	 *
 	 * @param array<string,mixed> $criteria Column => value equality filters.
-	 *                                       Each key must be a known `host`
-	 *                                       column; each value is bound, never
-	 *                                       interpolated.  An empty set selects
-	 *                                       all devices.
+	 *                                      Each key must be a known `host`
+	 *                                      column; each value is bound, never
+	 *                                      interpolated.  An empty set selects
+	 *                                      all devices.
 	 * @param string|null         $order    Optional ORDER BY expression, e.g.
-	 *                                       "description" or "poller_id DESC,
-	 *                                       description ASC".  Every term is
-	 *                                       validated against the column
-	 *                                       allowlist; direction must be ASC or
-	 *                                       DESC.
+	 *                                      "description" or "poller_id DESC,
+	 *                                      description ASC".  Every term is
+	 *                                      validated against the column
+	 *                                      allowlist; direction must be ASC or
+	 *                                      DESC.
 	 * @param int|null            $limit    Optional row cap (>= 1).
 	 *
 	 * @return array<int,array<string,mixed>> The matching device rows.
