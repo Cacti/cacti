@@ -27,6 +27,11 @@ require_once __DIR__ . '/TemplateExchangeFixture.php';
 require_once dirname(__DIR__, 4) . '/lib/export.php';
 require_once dirname(__DIR__, 4) . '/lib/vdef.php';
 
+/**
+ * Creates the tables the template exporter reads.
+ *
+ * @return TemplateExchangePDO The seeded connection
+ */
 function template_export_seed() : TemplateExchangePDO {
 	$conn = new TemplateExchangePDO();
 
@@ -56,6 +61,13 @@ function template_export_seed() : TemplateExchangePDO {
 	return $conn;
 }
 
+/**
+ * Creates the form-driven tables the exporter reads, from their edit field lists.
+ *
+ * @param PDO $conn The seeded connection
+ *
+ * @return void
+ */
 function template_export_form_tables(PDO $conn) : void {
 	global $fields_cdef_edit, $fields_data_query_edit, $fields_data_query_item_edit;
 

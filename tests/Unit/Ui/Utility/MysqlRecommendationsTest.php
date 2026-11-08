@@ -39,6 +39,14 @@ require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
  * get_mysql_info() issues that sqlite cannot run.
  */
 class MysqlRecommendationsPDO extends FakeMySQLPDO {
+	/**
+	 * Maps SHOW GLOBAL VARIABLES to the seeded table and prepares the query.
+	 *
+	 * @param string              $query   The SQL statement
+	 * @param array<string,mixed> $options Driver options
+	 *
+	 * @return PDOStatement|false The prepared statement
+	 */
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
 		if (preg_match('/^\s*SHOW\s+GLOBAL\s+VARIABLES\s*$/i', $query)) {
 			$query = 'SELECT Variable_name, Value FROM global_variables ORDER BY Variable_name';

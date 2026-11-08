@@ -15,7 +15,16 @@
 
 use Cacti\Auth\OpenIdLoginProvider;
 
+/**
+ * OpenID provider with fixed discovery whose token endpoint cannot be reached,
+ * so the code exchange fails without network access.
+ */
 class OpenIdTokenExchangeFailureProvider extends OpenIdLoginProvider {
+	/**
+	 * Returns fixed discovery metadata instead of fetching it.
+	 *
+	 * @return array<string,string> The provider endpoints and issuer
+	 */
 	protected function discover(): array {
 		return [
 			'authorization_endpoint' => 'https://idp.example.test/authorize',
@@ -26,6 +35,13 @@ class OpenIdTokenExchangeFailureProvider extends OpenIdLoginProvider {
 	}
 }
 
+/**
+ * Builds the test provider with the given debug setting.
+ *
+ * @param string $debug The provider debug flag, 'on' or ''
+ *
+ * @return OpenIdTokenExchangeFailureProvider The provider
+ */
 function oidc_exchange_provider(string $debug) : OpenIdTokenExchangeFailureProvider {
 	return new OpenIdTokenExchangeFailureProvider([
 		'id'                 => 4,
@@ -44,6 +60,13 @@ function oidc_exchange_provider(string $debug) : OpenIdTokenExchangeFailureProvi
 	]);
 }
 
+/**
+ * Stores a matching login session and callback request for the provider.
+ *
+ * @param OpenIdTokenExchangeFailureProvider $provider The provider under test
+ *
+ * @return void
+ */
 function oidc_exchange_callback(OpenIdTokenExchangeFailureProvider $provider) : void {
 	$_SESSION['sess_oidc_' . $provider->getId()] = [
 		'state'    => 'expected-state',
@@ -56,6 +79,11 @@ function oidc_exchange_callback(OpenIdTokenExchangeFailureProvider $provider) : 
 	$_REQUEST['code']  = 'auth-code';
 }
 
+/**
+ * Reads the log file the test points Cacti at.
+ *
+ * @return string The log contents, or an empty string when nothing was logged
+ */
 function oidc_exchange_log() : string {
 	clearstatcache();
 
