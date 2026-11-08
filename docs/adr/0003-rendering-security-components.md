@@ -45,7 +45,7 @@ The manifest, lockfile, and representative callers were inspected at the
 revision above. This is a component assessment, not a completed audit of every
 core and plugin caller.
 
-- **Validator 7.4.17: reuse selectively.** Cacti already wraps it in
+- **Validator 7.4: reuse selectively.** Cacti already wraps it in
   [CactiValidator](../../lib/CactiValidator.php). Its `isValid()` and `validate()`
   methods can check documented option contracts with constraints such as
   `Choice`, `Type`, and `Length`. `lib/html_utility.php` already uses `Choice`.
@@ -56,12 +56,12 @@ core and plugin caller.
   values and errors in the session and raises messages. Do not invoke it from a
   renderer. Preserve Cacti's gettext messages, request cache, and sentinel
   rules. A generic numeric constraint is not an integer-ID grammar.
-- **HttpFoundation 7.4.17: limited relevance.** `JsonResponse` is suitable for a
+- **HttpFoundation 7.4: limited relevance.** `JsonResponse` is suitable for a
   dedicated JSON response when an endpoint migration is otherwise justified.
   It is not an HTML attribute escaper or a replacement for embedding script
   data. Preserve existing status, headers, response shape, and authorization;
   do not convert filter endpoints merely to adopt this class.
-- **OptionsResolver 7.4.8: development-only today.** It is in `packages-dev`,
+- **OptionsResolver 7.4: development-only today.** It is in `packages-dev`,
   not a direct production requirement. Using it for renderer configuration
   would require an explicit runtime dependency change and verification with
   `composer install --no-dev`. Defer it unless option normalization warrants
