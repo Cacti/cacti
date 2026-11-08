@@ -161,3 +161,43 @@ test('spikekill reads its defaults through the typed accessors', function () {
 		}
 	}
 });
+
+test('spikekill call-site fallbacks match the registered setting defaults', function () {
+	global $settings;
+
+	// read_config_option() already returns the registered default for a missing
+	// setting; the call-site fallbacks only replace an invalid stored value. They
+	// still duplicate include/global_settings.php, so pin them to it.
+	$source  = (string) file_get_contents(dirname(__DIR__, 3) . '/include/global_settings.php');
+	$columns = [
+		'dmethod'   => 'spikekill_method',
+		'davgnan'   => 'spikekill_avgnan',
+		'ddsfilter' => 'spikekill_dsfilter',
+		'dnumspike' => 'spikekill_number',
+		'dstddev'   => 'spikekill_deviations',
+		'dabsmax'   => 'spikekill_absmax',
+	];
+
+	$saved     = $settings ?? null;
+	$settings  = [];
+	$savedUser = $_SESSION[SESS_USER_ID] ?? null;
+	unset($_SESSION[SESS_USER_ID]);
+
+	try {
+		$spiker = new spikekill();
+
+		foreach ($columns as $property => $name) {
+			expect(preg_match("/'" . $name . "' => \\[.*?'default'\\s*=> '([^']*)'/s", $source, $match))->toBe(1);
+
+			$fallback = (new ReflectionProperty(spikekill::class, $property))->getValue($spiker);
+
+			expect((string) $fallback)->toBe($match[1], $name);
+		}
+	} finally {
+		$settings = $saved;
+
+		if ($savedUser !== null) {
+			$_SESSION[SESS_USER_ID] = $savedUser;
+		}
+	}
+});
