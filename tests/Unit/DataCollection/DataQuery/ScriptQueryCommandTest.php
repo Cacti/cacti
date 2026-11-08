@@ -32,3 +32,14 @@ test('script query base commands keep Windows paths intact and refuse cmd.exe me
 		->and($result['rejected'])->toBe(array_fill(0, 7, ''))
 		->and($result['logs'])->toBe(7);
 });
+
+test('a rejected script query path is never executed by test_data_source()', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ScriptQueryRejectedPath.php');
+
+	foreach (['script_server', 'script'] as $type) {
+		expect($result[$type]['rejected'])->toBe(['result' => false, 'commands' => []]);
+	}
+
+	expect($result['script_server']['accepted']['commands'])->toBe(['/usr/bin/php -q /opt/cacti/scripts/query.php get index "1"'])
+		->and($result['script']['accepted']['commands'])->toBe(['/opt/cacti/scripts/query.php get index "1"']);
+});
