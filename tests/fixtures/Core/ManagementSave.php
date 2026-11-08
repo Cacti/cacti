@@ -11,6 +11,7 @@ require $root . '/lib/functions.php';
 require $root . '/lib/html_validate.php';
 $config = ['base_path' => $root, 'library_path' => $root . '/lib', 'is_web' => false, 'config_options_array' => ['storage_location' => 0, 'extended_paths' => '']];
 $_SESSION = [];
+$_SERVER['REQUEST_METHOD'] = 'POST';
 $db = new \PDO('sqlite::memory:');
 $remote = new \PDO('sqlite::memory:');
 $scenario = $argv[1];
@@ -124,30 +125,34 @@ function check($condition, $message) {
 foreach (['form_input_validate', 'is_error_message', 'sanitize_unserialize_selected_items'] as $function) {
 	cacti_fixture_source_function($root . '/lib/functions.php', $function, __NAMESPACE__);
 }
+cacti_fixture_source_function($root . '/include/csrf.php', 'csrf_require_post', __NAMESPACE__);
 foreach (['update_data_source_title_cache_from_host', 'update_graph_title_cache_from_host'] as $function) {
 	cacti_fixture_source_function($root . '/lib/variables.php', $function, __NAMESPACE__);
 }
 
 $host = ['id' => 7, 'host_template_id' => 0, 'poller_id' => 1, 'site_id' => 1, 'description' => 'Device', 'hostname' => 'router.example', 'disabled' => '', 'deleted' => '', 'status' => 3, 'snmp_version' => 2, 'snmp_community' => '', 'snmp_username' => '', 'snmp_password' => '', 'snmp_auth_protocol' => '', 'snmp_priv_passphrase' => '', 'snmp_priv_protocol' => '', 'snmp_context' => '', 'snmp_engine_id' => '', 'snmp_port' => 161, 'snmp_timeout' => 500, 'external_id' => '', 'notes' => '', 'location' => '', 'availability_method' => 1, 'ping_method' => 3, 'ping_port' => 23, 'ping_timeout' => 500, 'ping_retries' => 1, 'max_oids' => 5, 'bulk_walk_size' => -1, 'device_threads' => 1];
-$schema = [
-	'host' => implode(',', array_map(static fn($column) => $column === 'id' ? 'id INTEGER PRIMARY KEY' : $column . ' TEXT', array_keys($host))),
-	'data_local' => 'id INTEGER PRIMARY KEY, host_id INTEGER, snmp_query_id INTEGER',
-	'graph_local' => 'id INTEGER PRIMARY KEY, host_id INTEGER, snmp_query_id INTEGER',
-	'data_template_rrd' => 'id INTEGER PRIMARY KEY, local_data_id INTEGER',
-	'graph_templates_item' => 'id INTEGER PRIMARY KEY, local_graph_id INTEGER, task_item_id INTEGER',
-	'data_template_data' => 'id INTEGER PRIMARY KEY, local_data_id INTEGER',
-	'data_input_data' => 'id INTEGER PRIMARY KEY, data_template_data_id INTEGER',
-	'poller_item' => 'local_data_id INTEGER PRIMARY KEY, host_id INTEGER, poller_id INTEGER, action INTEGER',
-	'host_snmp_query' => 'host_id INTEGER, snmp_query_id INTEGER, reindex_method INTEGER',
-	'host_snmp_cache' => 'host_id INTEGER, snmp_query_id INTEGER, field_name TEXT, field_value TEXT',
-	'poller_reindex' => 'host_id INTEGER, data_query_id INTEGER, action INTEGER',
-	'poller' => 'id INTEGER PRIMARY KEY, snmp INTEGER, script INTEGER, server INTEGER'
-];
 foreach ([$db, $remote] as $connection) {
 	$connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-	foreach ($schema as $table => $columns) {
-		$connection->exec('CREATE TABLE ' . $table . ' (' . $columns . ')');
-	}
+	$connection->exec('CREATE TABLE host (
+		id INTEGER PRIMARY KEY, host_template_id TEXT, poller_id TEXT, site_id TEXT,
+		description TEXT, hostname TEXT, disabled TEXT, deleted TEXT, status TEXT,
+		snmp_version TEXT, snmp_community TEXT, snmp_username TEXT, snmp_password TEXT,
+		snmp_auth_protocol TEXT, snmp_priv_passphrase TEXT, snmp_priv_protocol TEXT,
+		snmp_context TEXT, snmp_engine_id TEXT, snmp_port TEXT, snmp_timeout TEXT,
+		external_id TEXT, notes TEXT, location TEXT, availability_method TEXT,
+		ping_method TEXT, ping_port TEXT, ping_timeout TEXT, ping_retries TEXT,
+		max_oids TEXT, bulk_walk_size TEXT, device_threads TEXT)');
+	$connection->exec('CREATE TABLE data_local (id INTEGER PRIMARY KEY, host_id INTEGER, snmp_query_id INTEGER)');
+	$connection->exec('CREATE TABLE graph_local (id INTEGER PRIMARY KEY, host_id INTEGER, snmp_query_id INTEGER)');
+	$connection->exec('CREATE TABLE data_template_rrd (id INTEGER PRIMARY KEY, local_data_id INTEGER)');
+	$connection->exec('CREATE TABLE graph_templates_item (id INTEGER PRIMARY KEY, local_graph_id INTEGER, task_item_id INTEGER)');
+	$connection->exec('CREATE TABLE data_template_data (id INTEGER PRIMARY KEY, local_data_id INTEGER)');
+	$connection->exec('CREATE TABLE data_input_data (id INTEGER PRIMARY KEY, data_template_data_id INTEGER)');
+	$connection->exec('CREATE TABLE poller_item (local_data_id INTEGER PRIMARY KEY, host_id INTEGER, poller_id INTEGER, action INTEGER)');
+	$connection->exec('CREATE TABLE host_snmp_query (host_id INTEGER, snmp_query_id INTEGER, reindex_method INTEGER)');
+	$connection->exec('CREATE TABLE host_snmp_cache (host_id INTEGER, snmp_query_id INTEGER, field_name TEXT, field_value TEXT)');
+	$connection->exec('CREATE TABLE poller_reindex (host_id INTEGER, data_query_id INTEGER, action INTEGER)');
+	$connection->exec('CREATE TABLE poller (id INTEGER PRIMARY KEY, snmp INTEGER, script INTEGER, server INTEGER)');
 }
 $db->prepare('INSERT INTO host VALUES (' . implode(',', array_fill(0, count($host), '?')) . ')')->execute(array_values($host));
 $db->exec('INSERT INTO data_local VALUES (101,7,1),(102,7,1),(103,7,2),(104,8,1)');
@@ -195,8 +200,10 @@ if (str_starts_with($scenario, 'device-')) {
 		cacti_fixture_source_function($root . '/lib/api_tree.php', $function, __NAMESPACE__);
 	}
 	$request = ['save_component_site' => 1, 'id' => 1, 'name' => 'New Site', 'address1' => '', 'address2' => '', 'city' => '', 'state' => '', 'postal_code' => '', 'country' => '', 'timezone' => 'UTC', 'latitude' => '', 'longitude' => '', 'zoom' => '12', 'alternate_id' => '', 'notes' => 'Updated'];
-	$columns = array_diff(array_keys($request), ['save_component_site', 'id']);
-	$db->exec('CREATE TABLE sites (id INTEGER PRIMARY KEY,' . implode(',', array_map(static fn($column) => $column . ' TEXT', $columns)) . ')');
+	$db->exec('CREATE TABLE sites (
+		id INTEGER PRIMARY KEY, name TEXT, address1 TEXT, address2 TEXT, city TEXT,
+		state TEXT, postal_code TEXT, country TEXT, timezone TEXT, latitude TEXT,
+		longitude TEXT, zoom TEXT, alternate_id TEXT, notes TEXT)');
 	$db->exec("INSERT INTO sites (id,name) VALUES (1,'Old Site'),(2,'Other Site')");
 	$db->exec('CREATE TABLE graph_tree_items (id INTEGER PRIMARY KEY, graph_tree_id INTEGER, site_id INTEGER, parent INTEGER)');
 	$db->exec('INSERT INTO graph_tree_items VALUES (1,1,1,0),(2,2,1,0),(3,1,2,0),(4,1,0,0)');

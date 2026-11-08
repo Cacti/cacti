@@ -100,7 +100,7 @@ $db->exec('CREATE TABLE data_template (id INTEGER PRIMARY KEY, name TEXT)');
 $db->exec("INSERT INTO data_template VALUES (0, 'Fixture')");
 $db->exec('CREATE TABLE poller_data_template_field_mappings (data_template_id INTEGER, data_name TEXT, data_source_names TEXT)');
 $db->exec('CREATE TABLE poller_time (end_time TEXT)');
-$db->exec("INSERT INTO poller_time VALUES ('" . ($scenario === 'housekeeping' ? '2026-11-07' : '0000-00-00') . "')");
+$db->prepare('INSERT INTO poller_time VALUES (?)')->execute([$scenario === 'housekeeping' ? '2026-11-07' : '0000-00-00']);
 $sources = in_array($scenario, ['batch', 'drain'], true) ? 13334 : ($scenario === 'batch-delete-failure' ? 334 : 2);
 $insert = $db->prepare("INSERT INTO poller_output VALUES (?, 'value', ?, '42')");
 $item = $db->prepare("INSERT INTO poller_item VALUES (?, 'value', ?, ?)");
