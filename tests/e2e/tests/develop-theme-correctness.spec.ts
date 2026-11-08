@@ -7,6 +7,13 @@ import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
+// Sunrise paints its body over a radial glow whose color depends on where
+// text sits on the page, which textContrast refuses to guess. These fixtures
+// measure against the glow's #000 base color and leave the glow unmeasured.
+async function measureSunriseOnBaseColor(page: Page, theme: string) {
+	if (theme === 'sunrise') await page.addStyleTag({ content: 'body { background-image: none !important; }' });
+}
+
 for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
@@ -71,6 +78,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 
 					await page.setContent(`<!DOCTYPE html><div class="${surface === 'dialog' ? 'ui-widget-content' : ''}"><table${theme === 'paper-plane' ? ' class="cactiTable"' : ''}><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a>${theme === 'paper-plane' ? ' · Response 1.8 ms' : ''}</td></tr></table></div>`);
 					if (surface === 'dialog') await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 					await installThemeCss(page, `include/themes/${theme}/main.css`);
+					await measureSunriseOnBaseColor(page, theme);
 					for (const state of ['rest', 'focus', 'hover', 'active']) {
 						const link = page.locator('a');
 						if (state === 'focus') await link.focus();
@@ -118,6 +126,7 @@ for (const theme of ['modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
 			'<div class="select2-container--default"><ul><li class="select2-results__option--highlighted select2-results__option--selectable">Selected device</li></ul></div>');
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		await measureSunriseOnBaseColor(page, theme);
 		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['paw', 'raspberry', 'sunrise', 'paper-plane'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
 			for (const element of await page.locator(selector).all()) expect.soft(await element.evaluate(textContrast), selector).toBeGreaterThanOrEqual(4.5);
 		}
@@ -134,12 +143,60 @@ for (const theme of ['raspberry', 'sunrise', 'paper-plane']) {
 		test(`${theme} table headings remain readable in ${state || 'normal'} state`, async ({ page }) => {
 			await page.setContent(`<!DOCTYPE html><table class="cactiTable"><thead><tr class="tableHeader"><th class="${state}">Device</th></tr></thead></table>`);
 			await installThemeCss(page, `include/themes/${theme}/main.css`);
+			await measureSunriseOnBaseColor(page, theme);
 			expect(await page.locator('th').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
 		});
 	}
 }
 
+// Paper Plane gives body light text for its dark page, so every light surface
+// that sits directly on the page must carry its own dark text and link colors.
+const paperPlaneLightSurfaces: Record<string, string> = {
+	'textArea cell': '<table class="cactiTable"><tr><td class="textArea" data-surface>%s</td></tr></table>',
+	'tableConfirmation': '<table class="tableConfirmation"><tr><td data-surface>%s</td></tr></table>',
+	'messageBox': '<div class="messageBox" data-surface>%s</div>',
+	'tree editor panel': '<form id="tree_edit"><div data-surface>%s</div></form>',
+	'graphItem row': '<table><tr class="graphItem"><td data-surface>%s</td></tr></table>',
+	'graphItemAlternate row': '<table><tr class="graphItemAlternate"><td data-surface>%s</td></tr></table>',
+	'hostInfoHeader': '<div class="hostInfoHeader" data-surface>%s</div>',
+	'filteredValue': '<span class="filteredValue" data-surface>%s</span>',
+	'spikekillMenu': '<ul class="spikekillMenu"><li data-surface>%s</li></ul>',
+	'installArea': '<div class="installArea" data-surface>%s</div>',
+	'cactiInstallArea': '<div class="cactiInstallArea" data-surface>%s</div>',
+	'textMenuItem': '<div class="textMenuItem" data-surface>%s</div>',
+	'multiselect header': '<div class="ui-multiselect-header" data-surface>%s</div>',
+	'menuoptions': '<ul class="menuoptions"><li data-surface>%s</li></ul>',
+	'submenuoptions': '<ul class="submenuoptions"><li data-surface>%s</li></ul>',
+	...Object.fromEntries(['clogError', 'clogWarning', 'clogSQL', 'clogDebug', 'clogStats', 'clogLimit'].map(name =>
+		[`${name} log row`, `<table class="cactiTable"><tr class="${name}"><td data-surface>%s</td></tr></table>`])),
+};
+
+for (const [name, markup] of Object.entries(paperPlaneLightSurfaces)) {
+	test(`paper-plane text and links remain readable on the ${name} light surface`, async ({ page }) => {
+		const content = '<span class="surface-text">Purge the Cacti log?</span> <a href="#device">Device</a> <a class="linkEditMain" href="#edit">Edit</a>';
+		await page.setContent('<!DOCTYPE html>' + markup.replace('%s', content));
+		await installThemeCss(page, 'include/themes/paper-plane/jquery-ui.css');
+		await installThemeCss(page, 'include/themes/paper-plane/main.css');
+		expect(await page.locator('.surface-text').evaluate(textContrast), 'text').toBeGreaterThanOrEqual(4.5);
+		for (const link of await page.locator('[data-surface] a').all()) {
+			expect(await link.evaluate(textContrast), `${await link.textContent()} rest`).toBeGreaterThanOrEqual(4.5);
+			await link.hover();
+			expect(await link.evaluate(textContrast), `${await link.textContent()} hover`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
+}
+
 const root = resolve(__dirname, '../../..');
+
+test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
+	await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p>' +
+		'<p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(
+		await page.locator('p').first().evaluate(textContrast),
+		2,
+	);
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
+});
 
 test('contrast checks include translucent foregrounds and every gradient stop', async ({ page }) => {
 	await page.setContent('<!DOCTYPE html><div style="background-color:black;background-image:linear-gradient(black, white);color:white">Gradient</div>' +
@@ -149,9 +206,32 @@ test('contrast checks include translucent foregrounds and every gradient stop', 
 });
 
 for (const gradient of ['linear-gradient(rgb(255,4,0),rgb(0,161,11))', '-webkit-linear-gradient(top,rgb(255,4,0),rgb(0,161,11))']) {
-	test(`contrast checks sample the darker middle of ${gradient}`, async ({ page }) => {
+	test(`contrast checks find the darker middle of ${gradient}`, async ({ page }) => {
 		await page.setContent(`<!DOCTYPE html><div style="background:white;background-image:${gradient};color:black">Selected row</div>`);
-		expect(await page.locator('div').evaluate(textContrast)).toBeLessThan(4.5);
+		// The darkest color sits at t = 0.46, between any fixed grid of samples.
+		expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(3.1176, 3);
+	});
+}
+
+test('contrast checks report text whose luminance falls inside a gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:linear-gradient(black,white);color:rgb(119,119,119)">Status</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+test('contrast checks measure every layer of a layered background', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:black url(about:blank), linear-gradient(black, white);color:white">Layers</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+for (const [name, style] of [
+	['a radial gradient', 'background:black radial-gradient(circle at top, #ffa254, black)'],
+	['legacy -webkit-gradient', 'background:-webkit-gradient(linear, left top, left bottom, from(black), to(white))'],
+	['non-sRGB interpolation', 'background:linear-gradient(in oklab, black, white)'],
+	['group opacity', 'background:black;opacity:.5'],
+]) {
+	test(`contrast checks refuse to measure ${name}`, async ({ page }) => {
+		await page.setContent(`<!DOCTYPE html><div style="${style};color:white">Unmeasured</div>`);
+		await expect(page.locator('div').evaluate(textContrast)).rejects.toThrow('textContrast cannot measure');
 	});
 }
 
@@ -179,6 +259,21 @@ for (const theme of ['dark', 'modern']) {
 		});
 	}
 }
+
+test('modern titlebar focus outline contrasts with the titlebar gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div class="cactiTableTitleRow"><div class="cactiTableTitle"><span>Devices</span></div>' +
+		'<div class="cactiTableButton"><span><a href="#add" aria-label="Add device"><i>+</i></a></span></div></div>' +
+		'<a id="body-link" href="#devices">Devices</a>');
+	await installThemeCss(page, 'include/themes/modern/main.css');
+	for (const selector of ['.cactiTableButton a', '#body-link']) {
+		const link = page.locator(selector);
+		await link.focus();
+		await expect(link).toHaveCSS('outline-style', 'solid');
+		// Measure the outline color as text over the same surfaces; WCAG 1.4.11 asks 3:1.
+		await link.evaluate(element => { (element as HTMLElement).style.color = getComputedStyle(element).outlineColor; });
+		expect(await link.evaluate(textContrast), selector).toBeGreaterThanOrEqual(3);
+	}
+});
 
 for (const theme of ['dark', 'paw']) {
 	test(`${theme} hovered rows retain readable text and links`, async ({ page }) => {
@@ -574,15 +669,3 @@ for (const palette of ['dark', 'light']) {
 		await expect(page.getByRole('dialog')).toHaveCount(0);
 	});
 }
-
-test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
-	await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p>' +
-		'<p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
-	const ratios = await page.locator('p').evaluateAll(elements => elements.map(element => element.getAttribute('style')));
-	expect(ratios).toHaveLength(2);
-	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(
-		await page.locator('p').first().evaluate(textContrast),
-		2,
-	);
-	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
-});
