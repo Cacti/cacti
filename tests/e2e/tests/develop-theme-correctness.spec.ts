@@ -139,6 +139,43 @@ for (const theme of ['raspberry', 'sunrise', 'paper-plane']) {
 	}
 }
 
+// Paper Plane gives body light text for its dark page, so every light surface
+// that sits directly on the page must carry its own dark text and link colors.
+const paperPlaneLightSurfaces: Record<string, string> = {
+	'textArea cell': '<table class="cactiTable"><tr><td class="textArea" data-surface>%s</td></tr></table>',
+	'tableConfirmation': '<table class="tableConfirmation"><tr><td data-surface>%s</td></tr></table>',
+	'messageBox': '<div class="messageBox" data-surface>%s</div>',
+	'tree editor panel': '<form id="tree_edit"><div data-surface>%s</div></form>',
+	'graphItem row': '<table><tr class="graphItem"><td data-surface>%s</td></tr></table>',
+	'graphItemAlternate row': '<table><tr class="graphItemAlternate"><td data-surface>%s</td></tr></table>',
+	'hostInfoHeader': '<div class="hostInfoHeader" data-surface>%s</div>',
+	'filteredValue': '<span class="filteredValue" data-surface>%s</span>',
+	'spikekillMenu': '<ul class="spikekillMenu"><li data-surface>%s</li></ul>',
+	'installArea': '<div class="installArea" data-surface>%s</div>',
+	'cactiInstallArea': '<div class="cactiInstallArea" data-surface>%s</div>',
+	'textMenuItem': '<div class="textMenuItem" data-surface>%s</div>',
+	'multiselect header': '<div class="ui-multiselect-header" data-surface>%s</div>',
+	'menuoptions': '<ul class="menuoptions"><li data-surface>%s</li></ul>',
+	'submenuoptions': '<ul class="submenuoptions"><li data-surface>%s</li></ul>',
+	...Object.fromEntries(['clogError', 'clogWarning', 'clogSQL', 'clogDebug', 'clogStats', 'clogLimit'].map(name =>
+		[`${name} log row`, `<table class="cactiTable"><tr class="${name}"><td data-surface>%s</td></tr></table>`])),
+};
+
+for (const [name, markup] of Object.entries(paperPlaneLightSurfaces)) {
+	test(`paper-plane text and links remain readable on the ${name} light surface`, async ({ page }) => {
+		const content = '<span class="surface-text">Purge the Cacti log?</span> <a href="#device">Device</a> <a class="linkEditMain" href="#edit">Edit</a>';
+		await page.setContent('<!DOCTYPE html>' + markup.replace('%s', content));
+		await installThemeCss(page, 'include/themes/paper-plane/jquery-ui.css');
+		await installThemeCss(page, 'include/themes/paper-plane/main.css');
+		expect(await page.locator('.surface-text').evaluate(textContrast), 'text').toBeGreaterThanOrEqual(4.5);
+		for (const link of await page.locator('[data-surface] a').all()) {
+			expect(await link.evaluate(textContrast), `${await link.textContent()} rest`).toBeGreaterThanOrEqual(4.5);
+			await link.hover();
+			expect(await link.evaluate(textContrast), `${await link.textContent()} hover`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
+}
+
 const root = resolve(__dirname, '../../..');
 
 test('contrast checks include translucent foregrounds and every gradient stop', async ({ page }) => {

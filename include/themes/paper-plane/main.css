@@ -552,7 +552,7 @@ label {
 .submenuoptions li a:hover {
 	display: block;
 	color: white;
-	background: #5CB85C;
+	background: #2e7d32;
 }
 
 .menuoptions {
@@ -584,7 +584,7 @@ label {
 .menuoptions li a:hover {
 	display: block;
 	color: white;
-	background: #5CB85C;
+	background: #2e7d32;
 }
 
 .import_label {
@@ -2539,6 +2539,48 @@ ul#nav {
 
 .clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
 	padding: 3px;
+}
+
+/*
+ * body and a use light colors for the dark page. These light surfaces sit on
+ * that page without a text color of their own, so they need dark text and
+ * links, or confirmations, log lines and menus fall to about 1.5:1.
+ */
+form#tree_edit>div, .submenuoptions, .menuoptions, .filteredValue,
+.graphItem, .graphItemAlternate, .spikekillMenu, .messageBox,
+.tableConfirmation, .textArea, .installArea, .cactiInstallArea,
+.textMenuItem, .hostInfoHeader, .ui-multiselect-header,
+.clogError, .clogWarning, .clogSQL, .clogDebug, .clogStats, .clogLimit {
+	color: #1d1f21;
+}
+
+form#tree_edit>div a, .filteredValue a, .graphItem a, .graphItemAlternate a,
+.spikekillMenu a, .messageBox a, .tableConfirmation a, .textArea a,
+.installArea a, .cactiInstallArea a, .textMenuItem a, .hostInfoHeader a,
+.ui-multiselect-header a {
+	color: #2d4ca8;
+}
+
+form#tree_edit>div a.linkEditMain, .graphItem a.linkEditMain, .graphItemAlternate a.linkEditMain,
+.messageBox a.linkEditMain, .tableConfirmation a.linkEditMain, .textArea a.linkEditMain,
+.hostInfoHeader a.linkEditMain {
+	color: #145c2e;
+}
+
+form#tree_edit>div a:hover, .filteredValue a:hover, .graphItem a:hover, .graphItemAlternate a:hover,
+.spikekillMenu a:hover, .messageBox a:hover, .tableConfirmation a:hover, .textArea a:hover,
+.installArea a:hover, .cactiInstallArea a:hover, .textMenuItem a:hover, .hostInfoHeader a:hover,
+.ui-multiselect-header a:hover, form#tree_edit>div a.linkEditMain:hover, .graphItem a.linkEditMain:hover,
+.graphItemAlternate a.linkEditMain:hover, .messageBox a.linkEditMain:hover,
+.tableConfirmation a.linkEditMain:hover, .textArea a.linkEditMain:hover, .hostInfoHeader a.linkEditMain:hover {
+	color: #1d1f21;
+}
+
+/* Blue fails on the red and blue log rows, so log links keep the row text color and an underline. */
+.clogError a, .clogWarning a, .clogSQL a, .clogDebug a, .clogStats a, .clogLimit a,
+.clogError a:hover, .clogWarning a:hover, .clogSQL a:hover, .clogDebug a:hover, .clogStats a:hover, .clogLimit a:hover {
+	color: inherit;
+	text-decoration: underline;
 }
 
 @media print {
