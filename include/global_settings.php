@@ -568,7 +568,7 @@ $settings['general'] = [
 		'friendly_name' => __('RRDtool Version'),
 		'description'   => __('The version of RRDtool that you have installed.'),
 		'method'        => 'drop_array',
-		'default'       => '1.4.0',
+		'default'       => '1.5.0',
 		'array'         => $rrdtool_versions,
 	],
 	'enable_rrdtool_gradient_support' => [

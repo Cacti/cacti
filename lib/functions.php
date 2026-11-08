@@ -9210,7 +9210,7 @@ function get_rrdtool_version() : string {
 	static $version = '';
 
 	if ($version == '') {
-		$version = str_replace('rrd-', '', str_replace('.x', '.0', (read_config_option('rrdtool_version') ?: read_default_config_option('rrdtool_version')) ?: '1.4.0'));
+		$version = str_replace('rrd-', '', str_replace('.x', '.0', (read_config_option('rrdtool_version') ?: read_default_config_option('rrdtool_version')) ?: '1.5.0'));
 	}
 
 	return $version;

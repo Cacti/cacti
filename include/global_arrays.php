@@ -566,13 +566,10 @@ $data_source_types = [
 	2 => 'COUNTER',
 	3 => 'DERIVE',
 	4 => 'ABSOLUTE',
-	5 => 'COMPUTE'
+	5 => 'COMPUTE',
+	6 => 'DCOUNTER',
+	7 => 'DDERIVE'
 ];
-
-if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
-	$data_source_types[6] = 'DCOUNTER';
-	$data_source_types[7] = 'DDERIVE';
-}
 
 $rrd_font_render_modes = [
 	RRD_FONT_RENDER_NORMAL  => __('Normal'),
