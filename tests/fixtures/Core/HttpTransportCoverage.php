@@ -210,6 +210,15 @@ namespace CactiHttpTransportFixture {
 	check(array_column($results, 'success') === [true, true, false, true], 'multi results were ' . json_encode($results));
 	check(cacti_http_multi([['method' => 'GET', 'url' => '']])[0]['error'] === 'Invalid URL', 'multi with only refused requests');
 
+	// a group at its limit waits while another group's transfer starts
+	$grouped = cacti_http_multi([
+		'a1' => ['method' => 'GET', 'url' => "$base/inflight/a1", 'group' => 'a', 'options' => $opts],
+		'a2' => ['method' => 'GET', 'url' => "$base/inflight/a2", 'group' => 'a', 'options' => $opts],
+		'b1' => ['method' => 'GET', 'url' => "$base/inflight/b1", 'group' => 'b', 'options' => $opts],
+	], 3, 1);
+
+	check(array_column($grouped, 'success') === [true, true, true], 'grouped results were ' . json_encode($grouped));
+
 	// names go through the system resolver as well as DNS
 	check(cacti_http_resolve_safe_ips('localhost') === [], 'localhost passed the default policy');
 	check(in_array('127.0.0.1', cacti_http_resolve_safe_ips('localhost', METADATA), true), 'localhost not resolved');
