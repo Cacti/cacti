@@ -229,6 +229,11 @@ select {
 	outline-offset: 2px;
 }
 
+/* The green outline is about 1.4:1 on the green titlebar gradient. */
+.cactiTableTitleRow :focus-visible {
+	outline-color: snow;
+}
+
 label {
 	white-space: nowrap;
 }
