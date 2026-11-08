@@ -58,13 +58,11 @@ jobs:
             ecosystem: composer
             directory: '/'
             workdir: '.'
-            lockfile: composer.lock
           - id: test-php
             name: test PHP
             ecosystem: composer
             directory: '/tests'
             workdir: tests
-            lockfile: tests/composer.lock
           - id: frontend
             name: frontend
             ecosystem: npm
@@ -95,12 +93,10 @@ jobs:
       - name: Set up Cacti Composer toolchain
         if: matrix.ecosystem == 'composer'
         uses: ./automation/.github/actions/setup-php-composer
-        env:
-          COMPOSER: ${{ github.workspace }}/released/${{ matrix.workdir }}/composer.json
         with:
           php-version: '8.3'
           dependency-mode: audit
-          cache-dependency-path: released/${{ matrix.lockfile }}
+          cache-dependency-path: released/${{ matrix.workdir }}/composer.lock
 
       - name: Set up Node
         if: matrix.ecosystem == 'npm'
@@ -264,13 +260,7 @@ jobs:
           ref: 1.2.x
           path: released
           fetch-depth: 0
-          persist-credentials: false
-
-      - name: Authenticate trusted publisher
-        working-directory: released
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh auth setup-git
+          persist-credentials: true
 
       - name: Download read-only remediation artifacts
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
