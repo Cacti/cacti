@@ -14,6 +14,7 @@ class LoginProviderFactory {
 		return $GLOBALS['library_provider'];
 	}
 }
+/** Credential provider that records each call and returns the scenario's LoginResult. */
 class Provider implements \Cacti\Auth\CredentialLoginProviderInterface {
 	public int $template = 0;
 	public \Cacti\Auth\LoginResult $result;

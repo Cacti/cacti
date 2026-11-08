@@ -12,11 +12,14 @@ function rrdtool_execute(string $command, bool $print, int $format, mixed $pipe 
 			$path = trim(substr($command, strlen($operation) + 1), "'");
 			\library_expect(str_starts_with($path . '/', $GLOBALS['library_storage_root'] . '/'), true, 'Remote filesystem command remains inside the owned fixture directory');
 
-			return match ($operation) {
-				'file_exists' => file_exists($path),
-				'is_dir'      => is_dir($path),
-				'mkdir'       => mkdir($path, 0775, true),
-			};
+			switch ($operation) {
+				case 'file_exists':
+					return file_exists($path);
+				case 'is_dir':
+					return is_dir($path);
+				default:
+					return mkdir($path, 0775, true);
+			}
 		}
 	}
 	$prior                              = $GLOBALS['config']['local_storage'] ?? null;

@@ -149,11 +149,19 @@ function library_remote_failures(int $poller, int $device, PDO $remote, string $
 				db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', [$device, $query, 0], true, $connection);
 			}
 			unset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]);
-			match ($operation) {
-				'add'    => api_device_dq_add($device, $query, '1'),
-				'change' => api_device_dq_change($device, $query, '2'),
-				'remove' => api_device_dq_remove($device, $query),
-			};
+
+			switch ($operation) {
+				case 'add':
+					api_device_dq_add($device, $query, '1');
+
+					break;
+				case 'change':
+					api_device_dq_change($device, $query, '2');
+
+					break;
+				default:
+					api_device_dq_remove($device, $query);
+			}
 			library_expect(isset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]), true, 'Query mutation warns about ' . $failure . ' propagation');
 			library_expect((int) db_fetch_cell_prepared('SELECT reindex_method FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$device, $query], '', false, $remote), 0, 'Unreachable collector retains its query settings');
 			$local = db_fetch_cell_prepared('SELECT reindex_method FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$device, $query]);
