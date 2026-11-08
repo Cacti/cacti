@@ -11,6 +11,7 @@ require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
 class GprintTestRepository implements GprintPresetRepository {
 	public mixed $result   = 12;
 	public array|bool $row = ['id' => 1, 'name' => 'Existing', 'gprint_text' => '%8.2lf %s'];
+	public array $inUse    = [];
 	public function __construct(public readonly ArrayObject $events) {
 	}
 	public function find(mixed $id): array|bool {
@@ -22,6 +23,11 @@ class GprintTestRepository implements GprintPresetRepository {
 		$this->events[] = ['save', $values];
 
 		return $this->result;
+	}
+	public function isInUse(mixed $id) : bool {
+		$this->events[] = ['inUse', $id];
+
+		return in_array($id, $this->inUse, true);
 	}
 	public function delete(array $ids): void {
 		$this->events[] = ['delete', $ids];
@@ -76,9 +82,15 @@ test('GPRINT lookups retain missing rows and deletion preserves the selected IDs
 	expect($this->service->find(999))->toBeFalse();
 	$this->repository->row = [];
 	expect($this->service->find(998))->toBe([]);
-	$this->service->delete([]);
-	$this->service->delete([1, '2']);
-	expect($this->events->getArrayCopy())->toBe([['find', '1'], ['find', 999], ['find', 998], ['delete', [1, '2']]]);
+	expect($this->service->delete([]))->toBeTrue()
+		->and($this->service->delete([1, '2']))->toBeTrue()
+		->and($this->events->getArrayCopy())->toBe([['find', '1'], ['find', 999], ['find', 998], ['inUse', 1], ['inUse', '2'], ['delete', [1, '2']]]);
+});
+
+test('GPRINT deletion refuses the whole selection when any preset is still in use', function () : void {
+	$this->repository->inUse = ['2'];
+	expect($this->service->delete([1, '2', 3]))->toBeFalse()
+		->and($this->events->getArrayCopy())->toBe([['inUse', 1], ['inUse', '2']]);
 });
 
 test('GPRINT database storage and the legacy factory round-trip values and preserve unselected presets', function (): void {
@@ -99,6 +111,16 @@ test('GPRINT database storage and the legacy factory round-trip values and prese
 	$row = gprint_preset_service()->find(1);
 	expect($row['name'])->toBe('Renamed')->and($row['gprint_text'])->toBe('%8.4lf %s\\n')
 		->and($row['hash'])->toBe($hash)->and((int) $row['graphs'])->toBe(3)->and((int) $row['templates'])->toBe(2);
-	gprint_preset_service()->delete([2]);
+	$conn->exec('CREATE TABLE graph_templates_item (id INTEGER PRIMARY KEY, gprint_id INTEGER)');
+	$conn->exec('INSERT INTO graph_templates_item VALUES (1, 1)');
+	expect($repo->isInUse(1))->toBeTrue()->and($repo->isInUse(2))->toBeFalse()
+		->and(gprint_preset_service()->delete([1, 2]))->toBeFalse()
+		->and($repo->find(1)['name'])->toBe('Renamed')->and($repo->find(2)['name'])->toBe('Delete');
+	expect(gprint_preset_service()->delete([2]))->toBeTrue();
 	expect($repo->find(2))->toBe([])->and($repo->find(3)['name'])->toBe('Keep');
+
+	// Ids are bound, so a crafted value matches nothing instead of widening the WHERE clause.
+	$repo->delete([]);
+	$repo->delete(['3 OR 1=1']);
+	expect($repo->find(3)['name'])->toBe('Keep')->and($repo->find(1)['name'])->toBe('Renamed');
 });

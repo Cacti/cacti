@@ -28,25 +28,64 @@ use Closure;
 
 require_once __DIR__ . '/GprintPresetRepository.php';
 
+/**
+ * GPRINT preset actions behind gprint_presets.php: lookup, save and delete.
+ */
 final class GprintPresetService {
-	/** @param Closure(int): void $message */
+	/**
+	 * @param GprintPresetRepository $repository Preset storage.
+	 * @param Closure(int): void     $message    Raises a Cacti message by id.
+	 */
 	public function __construct(private readonly GprintPresetRepository $repository, private readonly Closure $message) {
 	}
 
-	public function find(mixed $id): array|bool {
+	/**
+	 * Read one GPRINT preset for the edit page.
+	 *
+	 * @param mixed $id The preset id.
+	 *
+	 * @return array|bool The row, an empty array when it is missing, or false on a database error.
+	 */
+	public function find(mixed $id) : array|bool {
 		return $this->repository->find($id);
 	}
 
-	public function save(array $values): mixed {
+	/**
+	 * Save a GPRINT preset and raise message 1 on success or 2 on failure.
+	 *
+	 * @param array<string, mixed> $values Column values; an empty id creates a preset.
+	 *
+	 * @return mixed The saved preset id, or a falsy value on failure.
+	 */
+	public function save(array $values) : mixed {
 		$id = $this->repository->save($values);
 		($this->message)($id ? 1 : 2);
 
 		return $id;
 	}
 
-	public function delete(array $ids): void {
+	/**
+	 * Delete the selected presets unless any of them is still in use.
+	 *
+	 * The list page disables the checkbox of a preset in use, but a stale
+	 * confirmation page or a direct POST can still name one. Deleting it would
+	 * leave graph items pointing at a missing preset, so nothing is deleted.
+	 *
+	 * @param array<mixed> $ids The preset ids; an empty list changes nothing.
+	 *
+	 * @return bool False when a selected preset is in use and nothing was deleted.
+	 */
+	public function delete(array $ids) : bool {
+		foreach ($ids as $id) {
+			if ($this->repository->isInUse($id)) {
+				return false;
+			}
+		}
+
 		if (count($ids)) {
 			$this->repository->delete($ids);
 		}
+
+		return true;
 	}
 }

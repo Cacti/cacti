@@ -26,16 +26,63 @@ namespace Cacti\Gprint;
 
 require_once __DIR__ . '/GprintPresetRepository.php';
 
+/**
+ * GPRINT preset repository backed by the graph_templates_gprint table.
+ */
 final class DatabaseGprintPresetRepository implements GprintPresetRepository {
-	public function find(mixed $id): array|bool {
+	/**
+	 * Read one GPRINT preset row.
+	 *
+	 * @param mixed $id The preset id.
+	 *
+	 * @return array<string, mixed>|bool The row, an empty array when it is missing, or false on a database error.
+	 */
+	public function find(mixed $id) : array|bool {
 		return db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', [$id]);
 	}
 
-	public function save(array $values): mixed {
+	/**
+	 * Insert or update a GPRINT preset through sql_save().
+	 *
+	 * @param array<string, mixed> $values Column values; an empty id inserts a new preset.
+	 *
+	 * @return mixed The saved preset id, or a falsy value on failure.
+	 */
+	public function save(array $values) : mixed {
 		return sql_save($values, 'graph_templates_gprint');
 	}
 
-	public function delete(array $ids): void {
-		db_execute('DELETE FROM graph_templates_gprint WHERE ' . array_to_sql_or($ids, 'id'));
+	/**
+	 * Report whether any graph or graph template item still uses a preset.
+	 *
+	 * Reads graph_templates_item directly rather than the cached graphs and
+	 * templates counters, which can be stale. A failed query counts as in use.
+	 *
+	 * @param mixed $id The preset id.
+	 *
+	 * @return bool True when the preset is referenced or the check fails.
+	 */
+	public function isInUse(mixed $id) : bool {
+		$references = db_fetch_assoc_prepared('SELECT id FROM graph_templates_item WHERE gprint_id = ? LIMIT 1', [$id]);
+
+		return $references === false || count($references) > 0;
+	}
+
+	/**
+	 * Delete GPRINT presets.
+	 *
+	 * @param array<mixed> $ids The preset ids; an empty list deletes nothing.
+	 *
+	 * @return void
+	 */
+	public function delete(array $ids) : void {
+		// Bind the ids so callers of this public method cannot inject SQL.
+		$ids = array_values($ids);
+
+		if (!count($ids)) {
+			return;
+		}
+
+		db_execute_prepared('DELETE FROM graph_templates_gprint WHERE id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')', $ids);
 	}
 }

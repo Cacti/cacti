@@ -101,7 +101,9 @@ function form_actions() : void {
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
-				gprint_preset_service()->delete($selected_items);
+				if (!gprint_preset_service()->delete($selected_items)) {
+					raise_message('gprint_in_use', __('One or more GPRINT Presets are in use and cannot be deleted.'), MESSAGE_LEVEL_ERROR);
+				}
 			}
 		}
 

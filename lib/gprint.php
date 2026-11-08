@@ -25,9 +25,13 @@
 require_once __DIR__ . '/Gprint/DatabaseGprintPresetRepository.php';
 require_once __DIR__ . '/Gprint/GprintPresetService.php';
 
-/** Assemble the legacy database and notification dependencies. */
-function gprint_preset_service(): \Cacti\Gprint\GprintPresetService {
-	return new \Cacti\Gprint\GprintPresetService(new \Cacti\Gprint\DatabaseGprintPresetRepository(), static function (int $id): void {
+/**
+ * Assemble the legacy database and notification dependencies.
+ *
+ * @return \Cacti\Gprint\GprintPresetService The service gprint_presets.php uses for every action.
+ */
+function gprint_preset_service() : \Cacti\Gprint\GprintPresetService {
+	return new \Cacti\Gprint\GprintPresetService(new \Cacti\Gprint\DatabaseGprintPresetRepository(), static function (int $id) : void {
 		raise_message($id);
 	});
 }
