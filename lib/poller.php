@@ -590,6 +590,14 @@ function exec_poll_php(string $command, bool $using_proc_function, array|false $
 		return 'U';
 	}
 
+	/* The worker treats a blank line as an idle liveness check and sends no
+	 * reply, so waiting for one would time out and retire a healthy worker. */
+	if (trim($command) === '') {
+		cacti_log('WARNING: Script Server request is empty, returning U', false, 'POLLER');
+
+		return 'U';
+	}
+
 	// execute using php process
 	if ($using_proc_function) {
 		if (is_resource($proc_fd) && is_array($pipes)) {
