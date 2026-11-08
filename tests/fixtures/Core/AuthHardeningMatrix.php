@@ -27,7 +27,7 @@ foreach ($cases as $case) {
 	$scenarios[] = ['AuthSecondFactorProbe.php', $case[0], $case];
 }
 
-foreach (['disabled', 'missing', 'saml-default', 'saml-assertion', 'saml-message'] as $mode) {
+foreach (['disabled', 'missing', 'wrong', 'saml-default', 'saml-assertion', 'saml-message'] as $mode) {
 	$scenarios[] = ['AuthProviderHardeningProbe.php', $mode, null];
 }
 
@@ -41,7 +41,7 @@ foreach ($scenarios as [$fixture, $mode, $expected]) {
 			throw new RuntimeException('Second-factor contract mismatch');
 		}
 	} elseif (str_starts_with($mode,'saml')) {
-		if ($result['wantAssertionsSigned'] !== ($mode !== 'saml-message') || $result['wantMessagesSigned'] !== ($mode === 'saml-message')) {
+		if ($result['wantAssertionsSigned'] !== ($mode !== 'saml-message') || ($result['wantMessagesSigned'] ?? false) !== false) {
 			throw new RuntimeException('SAML settings mismatch');
 		}
 	} elseif ($result !== ['result'=>[], 'message'=>'Access Denied!  Login Failed.', 'verifications'=>1]) {
