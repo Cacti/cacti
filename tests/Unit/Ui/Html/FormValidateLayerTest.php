@@ -66,5 +66,5 @@ test('the color editor validates through the layer and falls back without it', f
 	fclose($pipes[1]);
 	fclose($pipes[2]);
 	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
-	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR))->toBe(['passed' => 34]);
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR))->toBe(['passed' => 35]);
 });

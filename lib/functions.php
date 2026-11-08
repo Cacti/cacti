@@ -6250,6 +6250,10 @@ function bottom_footer() : void {
 	*/
 	kill_session_var(SESS_FIELD_VALUES);
 
+	// Validator messages are per field name, so one left unrendered here
+	// would otherwise appear beneath a same-named field on a later form.
+	kill_session_var(SESS_FIELD_ERRORS);
+
 	// make sure the debug log doesn't get too big
 	debug_log_clear();
 

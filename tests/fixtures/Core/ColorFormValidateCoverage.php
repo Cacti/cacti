@@ -229,6 +229,54 @@ namespace Cacti\Test\ColorSave {
 	\color_expect(in_array('Hex Value must be exactly 6 hexadecimal digits (000000-FFFFFF).', $_SESSION[SESS_FIELD_ERRORS]['hex'], true), 'The declared hex message must be stashed');
 }
 
+namespace Cacti\Test\FieldErrorLifetime {
+	/* bottom_footer() includes two page files; point it at empty stand-ins.
+	 * The unqualified constant resolves to this namespace before the global one. */
+	const CACTI_PATH_INCLUDE = __DIR__ . '/FieldErrorLifetime';
+
+	/**
+	 * Removes a session variable, as the real helper does.
+	 *
+	 * @param string $name The session key.
+	 */
+	function kill_session_var(string $name) : void {
+		unset($_SESSION[$name]);
+	}
+
+	/**
+	 * Debug log maintenance stand-in.
+	 */
+	function debug_log_clear() : void {
+	}
+
+	/**
+	 * Names a page that does not write its session back.
+	 */
+	function get_current_page() : string {
+		return 'probe.php';
+	}
+
+	/**
+	 * Session close stand-in.
+	 */
+	function cacti_session_close() : void {
+	}
+
+	/**
+	 * Database close stand-in.
+	 */
+	function db_close() : void {
+	}
+
+	$GLOBALS['no_session_write'] = ['probe.php'];
+	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/functions.php', 'bottom_footer', __NAMESPACE__);
+
+	$_SESSION = [SESS_FIELD_ERRORS => ['name' => ['left over']], SESS_FIELD_VALUES => ['name' => 'x']];
+	bottom_footer();
+	\color_expect(!isset($_SESSION[SESS_FIELD_ERRORS]) && !isset($_SESSION[SESS_FIELD_VALUES]), 'Unrendered field messages must not outlive the page');
+	$_SESSION = [];
+}
+
 namespace Cacti\Test\FormControl {
 	// The color form never declares a choice field, a non-array entry or a
 	// malformed constraint, and its edit page (where draw_edit_control()
