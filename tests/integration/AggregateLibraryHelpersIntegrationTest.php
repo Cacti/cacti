@@ -32,14 +32,37 @@ require_once dirname(__DIR__, 2) . '/lib/aggregate.php';
  * when sqlite reports the type as INTEGER, for new rows), and an UPDATE may qualify its SET column with the table name.
  */
 class AggregateHelpersPDO extends FakeMySQLPDO {
+	/**
+	 * Applies the MySQL semantics, then prepares the query.
+	 *
+	 * @param string              $query   The SQL statement
+	 * @param array<string,mixed> $options Driver options
+	 *
+	 * @return PDOStatement|false The prepared statement
+	 */
 	public function prepare(string $query, array $options = []): PDOStatement|false {
 		return parent::prepare($this->mysqlSemantics($query), $options);
 	}
 
+	/**
+	 * Applies the MySQL semantics, then executes the statement.
+	 *
+	 * @param string $statement The SQL statement
+	 *
+	 * @return int|false The affected row count
+	 */
 	public function exec(string $statement): int|false {
 		return parent::exec($this->mysqlSemantics($statement));
 	}
 
+	/**
+	 * Turns a zero AUTO_INCREMENT key into NULL and drops the table qualifier
+	 * from a graph_templates_item SET column.
+	 *
+	 * @param string $sql The SQL statement
+	 *
+	 * @return string The rewritten statement
+	 */
 	private function mysqlSemantics(string $sql): string {
 		$sql = preg_replace('/^(\s*INSERT INTO \w+ \(`(?:id|color_template_id|color_template_item_id)`[^)]*\)\s*VALUES\s*\()\x27?0\x27?([,)])/i', '$1NULL$2', $sql);
 
@@ -47,6 +70,11 @@ class AggregateHelpersPDO extends FakeMySQLPDO {
 	}
 }
 
+/**
+ * Creates the tables the aggregate helpers read and write.
+ *
+ * @return AggregateHelpersPDO The seeded connection
+ */
 function aggregate_helpers_seed() : AggregateHelpersPDO {
 	$conn = new AggregateHelpersPDO();
 
@@ -70,6 +98,13 @@ function aggregate_helpers_seed() : AggregateHelpersPDO {
 	return $conn;
 }
 
+/**
+ * Makes the connection the default Cacti database session.
+ *
+ * @param PDO $conn The seeded connection
+ *
+ * @return void
+ */
 function aggregate_helpers_wire(PDO $conn) : void {
 	global $database_hostname, $database_port, $database_default, $database_sessions;
 
@@ -79,6 +114,11 @@ function aggregate_helpers_wire(PDO $conn) : void {
 	$database_sessions["$database_hostname:$database_port:$database_default"] = $conn;
 }
 
+/**
+ * Reads the log file the test points Cacti at.
+ *
+ * @return string The log contents, or an empty string when nothing was logged
+ */
 function aggregate_helpers_log() : string {
 	clearstatcache();
 
