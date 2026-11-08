@@ -4661,11 +4661,11 @@ msgstr "Додати Шаблон Графіків до Пристрою"
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 msgid "Unable to start the aggregate graph update."
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 msgid "Unable to commit the aggregate graph update."
 msgstr ""
 

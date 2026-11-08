@@ -8,6 +8,7 @@
 		<testsuite name="CDEF MariaDB integration">
 			<file>integration/CdefDatabaseIntegrationTest.php</file>
 			<file>integration/CdefConsumerIntegrationTest.php</file>
+			<file>integration/AggregateCreationIntegrationTest.php</file>
 			<file>integration/CdefRepairContractTest.php</file>
 		</testsuite>
 	</testsuites>

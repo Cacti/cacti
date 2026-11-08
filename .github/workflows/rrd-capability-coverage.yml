@@ -3,6 +3,12 @@ name: RRDtool capability coverage
 on:
   pull_request:
     paths:
+      - 'aggregate_graphs.php'
+      - 'aggregate_templates.php'
+      - 'graphs.php'
+      - 'lib/aggregate.php'
+      - 'lib/api_aggregate.php'
+      - 'lib/cdef.php'
       - 'lib/api_data_source.php'
       - 'lib/api_automation.php'
       - 'lib/api_tree.php'
@@ -25,6 +31,9 @@ on:
       - 'tests/fixtures/Core/Rrd/**'
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/integration/BoostProcessTableMariaDbTest.php'
+      - 'tests/integration/AggregateCreationIntegrationTest.php'
+      - 'tests/fixtures/aggregate_creation_*.php'
+      - 'tests/Unit/Ui/Aggregate/**'
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
       - 'tests/phpunit-rrd-capabilities.xml'
@@ -68,14 +77,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y mariadb-client rrdtool
-      - name: Prepare disposable Boost database
+      - name: Prepare disposable test databases
         env:
           MYSQL_PWD: cactiroot
         run: |
           set -euo pipefail
           mariadb --host=127.0.0.1 --user=root cacti < cacti.sql
-          mariadb --host=127.0.0.1 --user=root -e 'CREATE DATABASE cacti_boost_contract; CREATE DATABASE cacti_automation_test'
+          mariadb --host=127.0.0.1 --user=root -e 'CREATE DATABASE cacti_boost_contract; CREATE DATABASE cacti_automation_test; CREATE DATABASE cacti_aggregate_test'
           mariadb --host=127.0.0.1 --user=root cacti_automation_test < cacti.sql
+          mariadb --host=127.0.0.1 --user=root cacti_aggregate_test < cacti.sql
           cp include/config.php.dist include/config.php
           sed -i "s/\$database_hostname = 'localhost';/\$database_hostname = '127.0.0.1';/" include/config.php
       - name: Validate the gate and include every changed production PHP file
@@ -94,6 +104,9 @@ jobs:
           CACTI_AUTOMATION_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=cacti_automation_test;charset=utf8mb4'
           CACTI_AUTOMATION_TEST_USER: root
           CACTI_AUTOMATION_TEST_PASSWORD: cactiroot
+          CACTI_AGGREGATE_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=cacti_aggregate_test;charset=utf8mb4'
+          CACTI_AGGREGATE_TEST_USER: root
+          CACTI_AGGREGATE_TEST_PASSWORD: cactiroot
           BOOST_DB_HOST: 127.0.0.1
           BOOST_DB_PORT: 3306
           BOOST_DB_NAME: cacti_boost_contract

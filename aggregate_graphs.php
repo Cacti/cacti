@@ -105,6 +105,16 @@ function form_save() {
 		return null;
 	}
 
+	$success = aggregate_transaction(function () {
+		return aggregate_graph_form_save();
+	});
+	raise_message($success ? 1 : 2);
+	header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('local_graph_id', 0));
+}
+
+/** Save graph settings and generated items as one operation. */
+function aggregate_graph_form_save() {
+
 	/* remember some often used values */
 	$local_graph_id        = get_nfilter_request_var('local_graph_id', 0);
 	$graph_template_id     = get_nfilter_request_var('graph_template_id', 0);
@@ -112,8 +122,11 @@ function form_save() {
 	$graph_title           = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', false, 3);
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
-		return null;
+		return false;
+	}
+
+	if (!db_fetch_cell_prepared('SELECT id FROM graph_local WHERE id = ? FOR UPDATE', array($local_graph_id))) {
+		return false;
 	}
 
 	/* get the aggregate graph id */
@@ -131,8 +144,7 @@ function form_save() {
 
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
-		return null;
+		return false;
 	}
 
 	/* save graph data to cacti tables */
@@ -144,11 +156,17 @@ function form_save() {
 		$new_data
 	);
 
+	if (!$graph_templates_graph_id) {
+		return false;
+	}
+
 	/* update title in aggregate graphs table */
-	db_execute_prepared('UPDATE aggregate_graphs
+	if (!db_execute_prepared('UPDATE aggregate_graphs
 		SET title_format = ?
 		WHERE id = ?',
-		array($graph_title, $aggregate_graph_id));
+		array($graph_title, $aggregate_graph_id))) {
+		return false;
+	}
 
 	/* next lets see if any of the aggregate has changed and save as applicable
 	 * if the graph is templates, we can simply ignore.  A simple check will
@@ -189,7 +207,10 @@ function form_save() {
 			$save_me += ($old['order_type']            != $save['order_type']);
 
 			if ($save_me) {
-				$aggregate_graph_id = sql_save($save, 'aggregate_graphs');
+				$aggregate_graph_id = aggregate_sql_save(array_merge($old, $save), 'aggregate_graphs');
+				if (!$aggregate_graph_id) {
+					return false;
+				}
 			}
 
 			/* save the template items now */
@@ -247,23 +268,23 @@ function form_save() {
 			}
 
 			if ($items_changed) {
-				aggregate_graph_items_save($items_to_save, 'aggregate_graphs_graph_item');
+				if (!aggregate_graph_items_save($items_to_save, 'aggregate_graphs_graph_item', false)) {
+					return false;
+				}
 			}
 
 			if ($save_me || $items_changed) {
-				push_out_aggregates(0, $local_graph_id);
+				if (!push_out_aggregates(0, $local_graph_id, false)) {
+					return false;
+				}
 			}
 		}
 	}
 
-	raise_message(1);
-
-	header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+	return true;
 }
 
-/* ------------------------
-    The "actions" function
-   ------------------------ */
+
 /**
  * ------------------------ The "actions" function ------------------------. Used as part of
  * Cacti's aggregate graphs functionality.

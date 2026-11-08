@@ -4410,7 +4410,18 @@ function initGraphDrilldown() {
 	}
 
 	function graphDrilldownStillHovered(toggle) {
-		return toggle.is(':hover') || toggle.closest('.graphWrapperOuter').find('.graphimage').is(':hover');
+		// A pending close timer can run after the graph area has been reloaded
+		// (Details/Time View), leaving the toggle or its image detached.  Use the
+		// native Element.matches(':hover') instead of jQuery's :hover, which
+		// delegates to Sizzle for a node outside the document and throws
+		// "unsupported pseudo: hover"; a detached node is treated as not hovered.
+		function hovered($el) {
+			var node = $el && $el.length ? $el[0] : null;
+
+			return node != null && node.isConnected && node.matches(':hover');
+		}
+
+		return hovered(toggle) || hovered(toggle.closest('.graphWrapperOuter').find('.graphimage'));
 	}
 
 	function graphDrilldownHide(toggle) {
