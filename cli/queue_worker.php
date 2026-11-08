@@ -94,15 +94,42 @@ foreach ($parameters as $parameter) {
 	}
 }
 
+// Register in the processes table so administrators can see running workers.
+// Several workers may consume one queue, so the pid is the task id. The table
+// column holds 40 characters of the queue name.
+$task_name = substr($queue, 0, 40);
+$task_id   = (int) getmypid();
+
 try {
 	api_queue_validate_name($queue, 'queue');
 	api_queue_set_lease_seconds($lease);
-	$worker = new CactiQueueWorker(new CactiQueueReceiver($queue, api_queue_transport($queue)));
+	$worker = new CactiQueueWorker(
+		new CactiQueueReceiver($queue, api_queue_transport($queue)),
+		static function () use ($task_name, $task_id) : void {
+			heartbeat_process('queue', $task_name, $task_id);
+		}
+	);
 } catch (Throwable $e) {
 	print 'ERROR: ' . clean_up_lines($e->getMessage()) . PHP_EOL;
 
 	exit(1);
 }
+
+/* The registry times a process out from its start, not its last heartbeat.
+ * A worker without --time-limit runs until stopped, so give it the largest
+ * timeout the column holds; a limited worker gets its limit plus one lease
+ * and poll interval to finish the delivery in hand. */
+$task_timeout = $time_limit > 0 ? $time_limit + $lease + $sleep : 2147483647;
+
+if (!register_process_start('queue', $task_name, $task_id, $task_timeout)) {
+	print 'ERROR: Unable to register the queue worker process.' . PHP_EOL;
+
+	exit(1);
+}
+
+register_shutdown_function(static function () use ($task_name, $task_id) : void {
+	unregister_process('queue', $task_name, $task_id);
+});
 
 if (function_exists('pcntl_async_signals') && function_exists('pcntl_signal')) {
 	pcntl_async_signals(true);
