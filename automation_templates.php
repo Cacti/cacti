@@ -40,7 +40,7 @@ $actions = [
 // set default action
 set_default_action();
 
-if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'movedown', 'moveup', 'item_add_agr', 'item_add_atr', 'item_add_ttr', 'item_remove_agr', 'item_remove_atr', 'item_remove_ttr'], true)) {
+if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'movedown', 'moveup', 'item_add_agr', 'item_add_atr', 'item_add_ttr', 'item_remove_agr', 'item_remove_atr', 'item_remove_ttr', 'ajax_dnd', 'graph_dnd', 'tree_dnd', 'exitonchange'], true)) {
 	csrf_require_post();
 }
 
