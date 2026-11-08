@@ -101,7 +101,7 @@ function form_validate_get_validator(): ?ValidatorInterface {
  * @return array A list of Symfony\Component\Validator\Constraint objects.
  */
 function form_validate_constraints_for(array $def): array {
-	$constraints = array();
+	$constraints = [];
 	$label       = (string) ($def['friendly_name'] ?? __('This value'));
 
 	// Required: Cacti marks optional fields with 'optional' => true.  A field
@@ -110,25 +110,25 @@ function form_validate_constraints_for(array $def): array {
 	$optional = !empty($def['optional']) || (isset($def['default']) && $def['default'] !== '');
 
 	if (!$optional) {
-		$constraints[] = new Assert\NotBlank(array('message' => __('%s is required.', $label)));
+		$constraints[] = new Assert\NotBlank(['message' => __('%s is required.', $label)]);
 	}
 
 	// max_length -> Assert\Length(max)
 	if (!empty($def['max_length'])) {
-		$constraints[] = new Assert\Length(array(
+		$constraints[] = new Assert\Length([
 			'max'        => (int) $def['max_length'],
 			'maxMessage' => __('%s must be {{ limit }} characters or fewer.', $label),
-		));
+		]);
 	}
 
 	// drop_array / radio -> Assert\Choice against the declared keys
 	$method = (string) ($def['method'] ?? '');
 
-	if (in_array($method, array('drop_array', 'radio'), true) && !empty($def['array']) && is_array($def['array'])) {
-		$constraints[] = new Assert\Choice(array(
+	if (in_array($method, ['drop_array', 'radio'], true) && !empty($def['array']) && is_array($def['array'])) {
+		$constraints[] = new Assert\Choice([
 			'choices' => array_map('strval', array_keys($def['array'])),
 			'message' => __('%s is not a valid selection.', $label),
-		));
+		]);
 	}
 
 	// Explicit, caller-supplied constraints for anything richer (Regex, Email,
@@ -176,7 +176,7 @@ function form_validate_build_constraint($spec) {
 	}
 
 	$name    = $spec[0];
-	$options = $spec[1] ?? array();
+	$options = $spec[1] ?? [];
 
 	$class = (strpos($name, '\\') !== false) ? $name : 'Symfony\\Component\\Validator\\Constraints\\' . $name;
 
@@ -208,11 +208,11 @@ function form_validate_fields(array $fields, array $input): array {
 	$validator = form_validate_get_validator();
 
 	if ($validator === null) {
-		return array();
+		return [];
 	}
 
 	$skip   = explode(',', FORM_VALIDATE_NON_VALUE_METHODS);
-	$errors = array();
+	$errors = [];
 
 	foreach ($fields as $name => $def) {
 		if (!is_array($def)) {
@@ -227,7 +227,7 @@ function form_validate_fields(array $fields, array $input): array {
 
 		$constraints = form_validate_constraints_for($def);
 
-		if ($constraints === array()) {
+		if ($constraints === []) {
 			continue;
 		}
 
@@ -260,7 +260,7 @@ function form_validate_fields(array $fields, array $input): array {
  * @return bool true when at least one error was stashed, false otherwise.
  */
 function form_validate_stash(array $errors, array $input): bool {
-	if ($errors === array()) {
+	if ($errors === []) {
 		return false;
 	}
 
@@ -305,7 +305,7 @@ function form_validate_field_block(string $field_name): string {
 
 	unset($_SESSION[SESS_FIELD_ERRORS][$field_name]);
 
-	if (!is_array($messages) || $messages === array()) {
+	if (!is_array($messages) || $messages === []) {
 		return '';
 	}
 
