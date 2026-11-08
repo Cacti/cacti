@@ -26,6 +26,9 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
+// Start coverage before the sliced function is compiled so both gates see it.
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
+
 $root = dirname(__DIR__, 3);
 
 define('CACTI_SERVER_OS', 'win32');

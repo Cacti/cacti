@@ -14,7 +14,7 @@
 
 namespace CactiScriptQueryFixture;
 
-require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 3) . '/include/global.php';
