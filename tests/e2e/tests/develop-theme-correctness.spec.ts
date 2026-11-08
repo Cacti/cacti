@@ -72,6 +72,16 @@ for (const theme of ['cacti', 'dark']) {
 
 const root = resolve(__dirname, '../../..');
 
+test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
+	await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p>' +
+		'<p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(
+		await page.locator('p').first().evaluate(textContrast),
+		2,
+	);
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
+});
+
 test('contrast checks include translucent foregrounds and every gradient stop', async ({ page }) => {
 	await page.setContent('<!DOCTYPE html><div style="background-color:black;background-image:linear-gradient(black, white);color:white">Gradient</div>' +
 		'<span style="background:black;color:rgba(255,255,255,0.1)">Translucent text</span>');
