@@ -110,25 +110,28 @@ function form_validate_constraints_for(array $def): array {
 	$optional = !empty($def['optional']) || (isset($def['default']) && $def['default'] !== '');
 
 	if (!$optional) {
-		$constraints[] = new Assert\NotBlank(['message' => __('%s is required.', $label)]);
+		$constraints[] = new Assert\NotBlank(message: __('%s is required.', $label));
 	}
 
-	// max_length -> Assert\Length(max)
-	if (!empty($def['max_length'])) {
-		$constraints[] = new Assert\Length([
-			'max'        => (int) $def['max_length'],
-			'maxMessage' => __('%s must be {{ limit }} characters or fewer.', $label),
-		]);
+	// max_length -> Assert\Length(max).  Length rejects a maximum below 1, so
+	// a zero or malformed max_length adds no constraint instead of throwing.
+	$max_length = (int) ($def['max_length'] ?? 0);
+
+	if ($max_length > 0) {
+		$constraints[] = new Assert\Length(
+			max: $max_length,
+			maxMessage: __('%s must be {{ limit }} characters or fewer.', $label),
+		);
 	}
 
 	// drop_array / radio -> Assert\Choice against the declared keys
 	$method = (string) ($def['method'] ?? '');
 
 	if (in_array($method, ['drop_array', 'radio'], true) && !empty($def['array']) && is_array($def['array'])) {
-		$constraints[] = new Assert\Choice([
-			'choices' => array_map('strval', array_keys($def['array'])),
-			'message' => __('%s is not a valid selection.', $label),
-		]);
+		$constraints[] = new Assert\Choice(
+			choices: array_map('strval', array_keys($def['array'])),
+			message: __('%s is not a valid selection.', $label),
+		);
 	}
 
 	// Explicit, caller-supplied constraints for anything richer (Regex, Email,
@@ -158,9 +161,11 @@ function form_validate_constraints_for(array $def): array {
  *
  * Accepts an already-constructed Constraint object (returned as-is) or a lazy
  * spec [$name, $options] where $name is a short constraint name ('Regex',
- * 'Email', ...) or a fully qualified class name.  Returns null when the entry
- * cannot be resolved (unknown/unavailable class), so a bad spec is skipped
- * rather than fatal.
+ * 'Email', ...) or a fully qualified class name, and $options maps the
+ * constraint's named constructor arguments (for example ['pattern' => ...,
+ * 'message' => ...]).  Returns null when the entry cannot be resolved
+ * (unknown/unavailable class, or options that are not an array), so a bad
+ * spec is skipped rather than fatal.
  *
  * @param mixed $spec A Constraint object or an [name, options] array.
  *
@@ -184,7 +189,13 @@ function form_validate_build_constraint($spec) {
 		return null;
 	}
 
-	return new $class($options);
+	if (!is_array($options)) {
+		return null;
+	}
+
+	// The options are named constructor arguments.  Passing them as a single
+	// array is deprecated since symfony/validator 7.3 and removed in 8.0.
+	return new $class(...$options);
 }
 
 /**
