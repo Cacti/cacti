@@ -172,6 +172,14 @@ if (!in_array($conn_mode, ['online', 'offline'], true)) {
 	exit(1);
 }
 
+/* Start the output guard before the bootstrap. Output while Cacti and its
+ * plugins load, such as a plugin print or text after a closing tag in
+ * config.php, would otherwise reach stdout ahead of the startup banner, and the
+ * poller would reject every worker. Help and version print on purpose. */
+require_once(__DIR__ . '/lib/script_server.php');
+
+$output_guard_level = ($help || $version) ? 0 : script_server_start_output_guard();
+
 require(__DIR__ . '/include/cli_check.php');
 
 if ($help) {
@@ -218,8 +226,6 @@ if (!empty($polling_interval)) {
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
 require_once(__DIR__ . '/lib/snmp.php');
-require_once(__DIR__ . '/lib/script_server.php');
-$output_guard_level = script_server_start_output_guard();
 
 if ($output_guard_level === 0) {
 	cacti_log('ERROR: Script Server could not establish its output guard', false, 'PHPSVR');
