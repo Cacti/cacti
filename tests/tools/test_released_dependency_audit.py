@@ -132,6 +132,20 @@ class ReleasedDependencyAuditTest(unittest.TestCase):
         publisher = self.workflow["jobs"]["publish-remediation"]
         self.assertIn("github.repository == 'Cacti/cacti'", publisher["if"])
 
+    def test_checkout_credentials_are_not_persisted_and_publisher_authenticates(self):
+        for job in self.workflow["jobs"].values():
+            for step in job["steps"]:
+                if step.get("uses", "").startswith("actions/checkout@"):
+                    self.assertIs(step["with"]["persist-credentials"], False)
+
+        publisher = self.workflow["jobs"]["publish-remediation"]["steps"]
+        auth = next(step for step in publisher if step.get("run") == "gh auth setup-git")
+        self.assertEqual(auth["working-directory"], "released")
+        self.assertEqual(auth["env"], {"GH_TOKEN": "${{ secrets.GITHUB_TOKEN }}"})
+        publish = next(step for step in publisher if " publish " in step.get("run", ""))
+        self.assertLess(publisher.index(auth), publisher.index(publish))
+        self.assertEqual(publish["env"]["GH_TOKEN"], auth["env"]["GH_TOKEN"])
+
     def test_cli_download_is_versioned_and_hash_pinned(self):
         environment = self.workflow["env"]
         self.assertRegex(environment["DEPENDABOT_CLI_VERSION"], r"^\d+\.\d+\.\d+$")
