@@ -637,7 +637,7 @@ function upgrade_to_1_3_0() : void {
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'bigint(20)', 'NULL' => false, 'auto_increment' => true];
-	$data['columns'][]  = ['name' => 'message_id', 'type' => 'char(36)', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'message_id', 'type' => 'char(32)', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'queue_name', 'type' => 'varchar(64)', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'topic', 'type' => 'varchar(128)', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'message_type', 'type' => 'varchar(191)', 'NULL' => false];

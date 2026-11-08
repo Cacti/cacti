@@ -7,8 +7,18 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -41,9 +51,12 @@ beforeEach(function () {
 		throw new RuntimeException('CACTI_QUEUE_TEST_DSN must name a dedicated test database.');
 	}
 
-	$username = (string) (getenv('CACTI_QUEUE_TEST_USER') ?: 'root');
-	$password = (string) (getenv('CACTI_QUEUE_TEST_PASSWORD') ?: '');
-	$this->db = new PDO($dsn, $username, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+	$username       = (string) (getenv('CACTI_QUEUE_TEST_USER') ?: 'root');
+	$password       = (string) (getenv('CACTI_QUEUE_TEST_PASSWORD') ?: '');
+	$this->db       = new PDO($dsn, $username, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+	$this->dsn      = $dsn;
+	$this->username = $username;
+	$this->password = $password;
 
 	$GLOBALS['database_hostname']                          = $host;
 	$GLOBALS['database_port']                              = $port;
@@ -55,6 +68,10 @@ beforeEach(function () {
 	$GLOBALS['error_logged']                               = [];
 	$GLOBALS['affected_rows']                              = [];
 	$GLOBALS['database_details']                           = [];
+	$GLOBALS['cacti_queue_test_log']                       = [];
+	$GLOBALS['cacti_queue_log_writer']                     = static function (string $message) : void {
+		$GLOBALS['cacti_queue_test_log'][] = $message;
+	};
 
 	$table_exists = $this->db->query("SHOW TABLES LIKE 'queue_messages'")->fetchColumn();
 
@@ -70,7 +87,7 @@ beforeEach(function () {
 
 	$this->db->exec("CREATE TABLE queue_messages (
 		id bigint unsigned NOT NULL AUTO_INCREMENT,
-		message_id char(36) NOT NULL,
+		message_id char(32) NOT NULL,
 		queue_name varchar(64) NOT NULL,
 		topic varchar(128) NOT NULL,
 		message_type varchar(191) NOT NULL,
@@ -96,6 +113,12 @@ beforeEach(function () {
 });
 
 afterEach(function () {
+	unset($GLOBALS['cacti_queue_log_writer'], $GLOBALS['cacti_queue_test_log']);
+
+	if (isset($this->other) && $this->other instanceof PDO && $this->other->inTransaction()) {
+		$this->other->rollBack();
+	}
+
 	if (isset($this->db) && $this->db instanceof PDO) {
 		$this->db->exec('DROP TABLE IF EXISTS queue_messages');
 	}
@@ -174,16 +197,17 @@ it('dead-letters exhausted and corrupt messages and can requeue them', function 
 	$this->db->exec('DELETE FROM queue_messages');
 	$this->db->exec("INSERT INTO queue_messages
 		(message_id, queue_name, topic, message_type, payload, metadata, status, available_at)
-		VALUES ('550e8400-e29b-41d4-a716-446655440002', 'reports', 'reports.generate', 'CactiQueueMessage', '{', '{}', 'pending', NOW())");
-	expect(fn () => $transport->get())->toThrow(CactiQueueMessageException::class);
-	expect($this->db->query('SELECT status FROM queue_messages')->fetchColumn())->toBe('dead');
+		VALUES ('550e8400e29b41d4a716446655440002', 'reports', 'reports.generate', 'CactiQueueMessage', '{', '{}', 'pending', NOW())");
+	expect(queue_test_messages($transport->get()))->toBe([])
+		->and($this->db->query('SELECT status FROM queue_messages')->fetchColumn())->toBe('dead')
+		->and($GLOBALS['cacti_queue_test_log'][0])->toContain('550e8400e29b41d4a716446655440002');
 });
 
 it('rejects invalid and missing dead-letter identifiers', function () {
 	$transport = new CactiDatabaseQueueTransport('reports');
 
-	expect(fn () => $transport->requeue('not-a-uuid'))->toThrow(InvalidArgumentException::class, 'canonical UUID')
-		->and(fn () => $transport->requeue('550e8400-e29b-41d4-a716-446655440000'))->toThrow(RuntimeException::class, 'not found');
+	expect(fn () => $transport->requeue('not-a-uuid'))->toThrow(InvalidArgumentException::class, 'hexadecimal')
+		->and(fn () => $transport->requeue('550e8400e29b41d4a716446655440000'))->toThrow(RuntimeException::class, 'not found');
 });
 
 it('dead-letters invalid delivery metadata instead of leaving a poison reservation', function () {
@@ -191,9 +215,9 @@ it('dead-letters invalid delivery metadata instead of leaving a poison reservati
 	$transport->send(queue_test_envelope([]));
 	$this->db->exec("UPDATE queue_messages SET metadata = '{'");
 
-	expect(fn () => $transport->get())->toThrow(CactiQueueMessageException::class);
-	expect($this->db->query('SELECT status FROM queue_messages')->fetchColumn())->toBe('dead');
-	expect(queue_test_messages($transport->get()))->toBe([]);
+	expect(queue_test_messages($transport->get()))->toBe([])
+		->and($this->db->query('SELECT status, last_error FROM queue_messages')->fetch(PDO::FETCH_ASSOC))->toMatchArray(['status' => 'dead', 'last_error' => 'Stored queue data is not valid JSON. Syntax error'])
+		->and(queue_test_messages($transport->get()))->toBe([]);
 });
 
 it('fails closed when persistence or claim database operations fail', function () {
@@ -231,7 +255,7 @@ it('fails closed when queue diagnostics cannot be read', function () {
 it('fails closed when terminal purges are refused', function () {
 	$transport = new CactiDatabaseQueueTransport('reports');
 	$this->db->exec("INSERT INTO queue_messages (message_id, queue_name, topic, message_type, payload, metadata, status, completed_at)
-		VALUES ('550e8400-e29b-41d4-a716-446655440010', 'reports', 'reports.generate', 'CactiQueueMessage', '{}', '{}', 'completed', DATE_SUB(NOW(), INTERVAL 8 DAY))");
+		VALUES ('550e8400e29b41d4a716446655440010', 'reports', 'reports.generate', 'CactiQueueMessage', '{}', '{}', 'completed', DATE_SUB(NOW(), INTERVAL 8 DAY))");
 	$this->db->exec("CREATE TRIGGER queue_fail_completed_delete BEFORE DELETE ON queue_messages FOR EACH ROW
 		BEGIN IF OLD.status = 'completed' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'completed purge refused'; END IF; END");
 	expect(fn () => $transport->purge(7, 90))->toThrow(RuntimeException::class, 'completed');
@@ -260,8 +284,8 @@ it('purges terminal rows across queues in bounded maintenance batches', function
 	$this->db->exec("INSERT INTO queue_messages
 		(message_id, queue_name, topic, message_type, payload, metadata, status, completed_at)
 		VALUES
-		('550e8400-e29b-41d4-a716-446655440004', 'reports', 'reports.generate', 'CactiQueueMessage', '{}', '{}', 'completed', DATE_SUB(NOW(), INTERVAL 8 DAY)),
-		('550e8400-e29b-41d4-a716-446655440005', 'discovery', 'discovery.run', 'CactiQueueMessage', '{}', '{}', 'dead', DATE_SUB(NOW(), INTERVAL 91 DAY))");
+		('550e8400e29b41d4a716446655440004', 'reports', 'reports.generate', 'CactiQueueMessage', '{}', '{}', 'completed', DATE_SUB(NOW(), INTERVAL 8 DAY)),
+		('550e8400e29b41d4a716446655440005', 'discovery', 'discovery.run', 'CactiQueueMessage', '{}', '{}', 'dead', DATE_SUB(NOW(), INTERVAL 91 DAY))");
 
 	expect(api_queue_purge_all())->toBe(['completed' => 1, 'dead' => 1])
 		->and((int) $this->db->query('SELECT COUNT(*) FROM queue_messages')->fetchColumn())->toBe(0);
@@ -270,7 +294,7 @@ it('purges terminal rows across queues in bounded maintenance batches', function
 it('caps each retention purge so maintenance yields to other work', function () {
 	$this->db->exec("INSERT INTO queue_messages
 		(message_id, queue_name, topic, message_type, payload, metadata, status, completed_at)
-		SELECT CONCAT('00000000-0000-4000-8000-', LPAD(sequence_number, 12, '0')),
+		SELECT CONCAT('0000000000000000', LPAD(sequence_number, 16, '0')),
 			'reports', 'reports.generate', 'CactiQueueMessage', '{}', '{}', 'completed', DATE_SUB(NOW(), INTERVAL 8 DAY)
 		FROM (
 			SELECT ones.d + tens.d * 10 + hundreds.d * 100 + thousands.d * 1000 + ten_thousands.d * 10000 AS sequence_number
@@ -291,12 +315,117 @@ it('caps each retention purge so maintenance yields to other work', function () 
 		->and((int) $this->db->query('SELECT COUNT(*) FROM queue_messages')->fetchColumn())->toBe(1);
 });
 
+it('skips a row another worker holds instead of waiting for its lock', function () {
+	$transport = new CactiDatabaseQueueTransport('reports', 60);
+	$transport->send(queue_test_envelope(['n' => 1], 10));
+	$transport->send(queue_test_envelope(['n' => 2], 20));
+
+	// Without SKIP LOCKED the claim would wait on the locked first row and
+	// fail with a lock wait timeout instead of taking the second row.
+	$this->db->exec('SET SESSION innodb_lock_wait_timeout = 1');
+	$this->other = new PDO($this->dsn, $this->username, $this->password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+	$this->other->beginTransaction();
+	// Lock by primary key so only that one row is locked, as a worker's claim does.
+	$first = (int) $this->db->query('SELECT id FROM queue_messages WHERE priority = 10')->fetchColumn();
+	$this->other->query("SELECT id FROM queue_messages WHERE id = $first FOR UPDATE")->fetchAll();
+
+	$started  = microtime(true);
+	$messages = queue_test_messages($transport->get());
+
+	expect($messages)->toHaveCount(1)
+		->and($messages[0]->getMessage()->payload())->toBe(['n' => 2])
+		->and(microtime(true) - $started)->toBeLessThan(1.0);
+
+	$this->other->rollBack();
+	$next = queue_test_messages($transport->get());
+
+	expect($next)->toHaveCount(1)
+		->and($next[0]->getMessage()->payload())->toBe(['n' => 1])
+		->and($next[0]->last(CactiQueueReceiptStamp::class)->redeliveryCount())->toBe(0);
+});
+
+it('does not leave a transaction open after a claim', function () {
+	$transport = new CactiDatabaseQueueTransport('reports', 60);
+
+	queue_test_messages($transport->get());
+	$transport->send(queue_test_envelope([]));
+	queue_test_messages($transport->get());
+
+	expect($this->db->inTransaction())->toBeFalse();
+});
+
+it('retries with exponential backoff and reports redeliveries', function () {
+	$transport = new CactiDatabaseQueueTransport('reports', 60);
+	$transport->send(queue_test_envelope([], 50, 3));
+	$transport->reject(queue_test_messages($transport->get())[0]);
+
+	$delay = (int) $this->db->query('SELECT TIMESTAMPDIFF(SECOND, NOW(), available_at) FROM queue_messages')->fetchColumn();
+	expect($delay)->toBeGreaterThanOrEqual(1)->toBeLessThanOrEqual(2)
+		->and($this->db->query('SELECT last_error FROM queue_messages')->fetchColumn())->toBe('Queue handler rejected the message.');
+
+	$this->db->exec('UPDATE queue_messages SET available_at = NOW()');
+	$again = queue_test_messages($transport->get())[0];
+	expect($again->last(CactiQueueReceiptStamp::class)->redeliveryCount())->toBe(1);
+});
+
+it('stores delayed messages until they become available', function () {
+	$transport = new CactiDatabaseQueueTransport('reports', 60);
+	$transport->send(queue_test_envelope([])->with(new CactiQueueDelayStamp(3600)));
+
+	expect(queue_test_messages($transport->get()))->toBe([]);
+
+	$this->db->exec('UPDATE queue_messages SET available_at = NOW()');
+	expect(queue_test_messages($transport->get()))->toHaveCount(1);
+});
+
+it('drives a worker through claim, handling, retry and dead-lettering', function () {
+	$transport = new CactiDatabaseQueueTransport('reports', 60);
+	$calls     = 0;
+	api_queue_register_handler('reports.generate', static function (CactiQueueMessage $message) use (&$calls) : void {
+		$calls++;
+		api_queue_renew($message, 120);
+
+		throw new RuntimeException('always fails');
+	});
+	api_queue_register_transport('integration', static fn () => $transport);
+	api_queue_route('reports', 'integration');
+	$transport->send(queue_test_envelope([], 50, 2));
+
+	(new CactiQueueWorker($transport))->run(true);
+	$this->db->exec('UPDATE queue_messages SET available_at = NOW()');
+	(new CactiQueueWorker($transport))->run(true);
+
+	expect($calls)->toBe(2)
+		->and($this->db->query('SELECT status, attempts, last_error FROM queue_messages')->fetch(PDO::FETCH_ASSOC))
+		->toMatchArray(['status' => 'dead', 'attempts' => 2, 'last_error' => 'always fails']);
+
+	unset($GLOBALS['cacti_queue_handlers'], $GLOBALS['cacti_queue_transport_factories'], $GLOBALS['cacti_queue_transport_routes'], $GLOBALS['cacti_queue_transport_instances']);
+});
+
+it('fails closed and rolls back when the claim query fails', function () {
+	$transport = new CactiDatabaseQueueTransport('reports');
+	$transport->send(queue_test_envelope([]));
+	// The reaper does not read priority, so only the claim SELECT fails.
+	$this->db->exec('ALTER TABLE queue_messages DROP INDEX queue_ready, DROP COLUMN priority');
+
+	expect(fn () => $transport->get())->toThrow(RuntimeException::class, 'claim')
+		->and($this->db->inTransaction())->toBeFalse();
+});
+
+it('ignores a rollback when no claim transaction is open', function () {
+	expect($this->db->inTransaction())->toBeFalse();
+
+	api_queue_rollback();
+
+	expect($this->db->inTransaction())->toBeFalse();
+});
+
 function queue_test_messages(iterable $messages) : array {
 	return is_array($messages) ? $messages : iterator_to_array($messages);
 }
 
-function queue_test_envelope(array $payload, int $priority = 50, int $max_attempts = 5) : Symfony\Component\Messenger\Envelope {
-	return new Symfony\Component\Messenger\Envelope(
+function queue_test_envelope(array $payload, int $priority = 50, int $max_attempts = 5) : CactiQueueEnvelope {
+	return new CactiQueueEnvelope(
 		new CactiQueueMessage('reports.generate', $payload),
 		[new CactiQueueStamp('reports', $priority, $max_attempts)]
 	);
