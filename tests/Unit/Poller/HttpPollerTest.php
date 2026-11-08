@@ -238,7 +238,7 @@ test('link-local and metadata destinations are refused while loopback and privat
 		new CactiHttpPollItem(1, 5, 'v', 'http://100.100.100.200/latest', '/v'),
 		new CactiHttpPollItem(1, 6, 'v', 'http://[::ffff:100.100.100.200]/latest', '/v'),
 		new CactiHttpPollItem(1, 7, 'v', 'http://[64:ff9b::c000:c0]/latest', '/v'),
-		new CactiHttpPollItem(1, 8, 'v', "$base/redirect?to=" . rawurlencode('http://169.254.169.254/latest'), '/v'),
+		new CactiHttpPollItem(1, 8, 'v', "$base/redirect?to=metadata", '/v'),
 		new CactiHttpPollItem(1, 9, 'v', "http://localhost:$port/stats", '/in'),
 		new CactiHttpPollItem(1, 10, 'v', "$base/stats", '/in'),
 		new CactiHttpPollItem(1, 11, 'v', 'http://10.255.255.1/stats', '/v', 1.0, 0.2),

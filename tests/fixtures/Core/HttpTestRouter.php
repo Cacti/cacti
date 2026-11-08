@@ -93,7 +93,43 @@ switch (true) {
 
 		break;
 	case $path === '/redirect':
-		header('Location: ' . $_GET['to'], true, 302);
+		// fixed targets only, so the router is not an open redirect
+		$other = 'http://localhost:' . (int) $_SERVER['SERVER_PORT'];
+
+		switch ($_GET['to'] ?? '') {
+			case 'auth':
+				$location = '/auth';
+
+				break;
+			case 'headers':
+				$location = '/headers';
+
+				break;
+			case 'other-auth':
+				$location = $other . '/auth';
+
+				break;
+			case 'other-headers':
+				$location = $other . '/headers';
+
+				break;
+			case 'metadata':
+				$location = 'http://169.254.169.254/latest';
+
+				break;
+			case 'ftp':
+				$location = 'ftp://example.com/x';
+
+				break;
+			default:
+				$location = '';
+		}
+
+		if ($location !== '') {
+			header('Location: ' . $location, true, 302);
+		} else {
+			http_response_code(400);
+		}
 
 		break;
 	case $path === '/auth':
