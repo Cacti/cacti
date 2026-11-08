@@ -260,3 +260,30 @@ test('empty nested definitions and stored items fail closed', function () : void
 		->and(get_cdef(23))->toBeNull()
 		->and(get_cdef(24))->toBeNull();
 });
+
+
+test('CDEF operation snapshots preserve resolver semantics without database calls', function () : void {
+	$definitions = [
+		1 => [['id' => 1, 'type' => 6, 'value' => 'CURRENT_DATA_SOURCE,8,*']],
+		2 => [['id' => 2, 'type' => 5, 'value' => '1'], ['id' => 3, 'type' => 6, 'value' => '2,*']],
+		3 => [],
+		4 => [['id' => 4, 'type' => 5, 'value' => '4']],
+		5 => [['id' => 5, 'type' => 5, 'value' => '999']],
+	];
+	expect(get_cdef(2, $definitions))->toBe('CURRENT_DATA_SOURCE,8,*,2,*')
+		->and(get_cdef(3, $definitions))->toBe('')
+		->and(get_cdef(4, $definitions))->toBeNull()
+		->and(get_cdef(5, $definitions))->toBeNull()
+		->and($GLOBALS['cdef_test_queries'])->toBe([]);
+});
+
+
+test('CDEF snapshots retain depth and output budgets', function () : void {
+	$definitions = [66 => [['id' => 66, 'type' => 6, 'value' => '1']]];
+	for ($i = 65; $i > 0; $i--) {
+		$definitions[$i] = [['id' => $i, 'type' => 5, 'value' => $i + 1]];
+	}
+	expect(get_cdef(1, $definitions))->toBeNull();
+	$definitions = [1 => [['id' => 1, 'type' => 6, 'value' => str_repeat('x', 1048577)]]];
+	expect(get_cdef(1, $definitions))->toBeNull()->and($GLOBALS['cdef_test_queries'])->toBe([]);
+});

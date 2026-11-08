@@ -27,13 +27,16 @@
  * functionality.
  *
  * @param int $cdef_item_id The id of the individual cdef item.
+ * @param array|null $cdef_item Optional item row from the operation snapshot.
  *
  * @return string|null A text-based representation of the cdef item, or null when the item is missing, corrupt, or references an unknown function/operator.
  */
-function get_cdef_item_name($cdef_item_id) 	{
+function get_cdef_item_name($cdef_item_id, $cdef_item = null) 	{
 	global $cdef_functions, $cdef_operators;
 
-	$cdef_item = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', array($cdef_item_id));
+	if ($cdef_item === null) {
+		$cdef_item = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', array($cdef_item_id));
+	}
 
 	if (!is_array($cdef_item) || !array_key_exists('type', $cdef_item) || !array_key_exists('value', $cdef_item)) {
 		cacti_log(sprintf('ERROR: CDEF item %d is missing or corrupt.', $cdef_item_id), false, 'CDEF');
@@ -85,16 +88,17 @@ function get_cdef_item_name($cdef_item_id) 	{
  * functionality.
  *
  * @param int $cdef_id The id of the cdef to resolve.
+ * @param array|null $definitions Optional operation snapshot, keyed by existing CDEF ID with ordered item rows.
  *
  * @return string A text-based representation of the cdef.
  */
-function get_cdef($cdef_id) {
+function get_cdef($cdef_id, $definitions = null) {
 	$visited   = array();
 	$expansion = 0;
 	$cache     = array();
 	$cache_bytes = 0;
 
-	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache, $cache_bytes);
+	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache, $cache_bytes, $definitions);
 }
 
 /**
@@ -106,10 +110,11 @@ function get_cdef($cdef_id) {
  * @param int &$expansion The expansion.
  * @param array &$cache The cache.
  * @param int &$cache_bytes The cache bytes.
+ * @param array|null $definitions Optional operation snapshot of ordered item rows.
  *
  * @return mixed The result of the operation, or false on failure.
  */
-function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_bytes) {
+function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_bytes, $definitions = null) {
 	if (isset($visited[$cdef_id])) {
 		cacti_log(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id), false, 'CDEF');
 
@@ -133,7 +138,9 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_b
 	}
 
 	$visited[$cdef_id] = true;
-	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+	$cdef_items = $definitions === null
+		? db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id))
+		: ($definitions[$cdef_id] ?? false);
 
 	if ($cdef_items === false) {
 		unset($visited[$cdef_id]);
@@ -143,7 +150,9 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_b
 	}
 
 	if (cacti_sizeof($cdef_items) == 0) {
-		$cdef_exists = db_fetch_assoc_prepared('SELECT id FROM cdef WHERE id = ?', array($cdef_id));
+		$cdef_exists = $definitions === null
+			? db_fetch_assoc_prepared('SELECT id FROM cdef WHERE id = ?', array($cdef_id))
+			: array(array('id' => $cdef_id));
 
 		unset($visited[$cdef_id]);
 
@@ -170,7 +179,7 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_b
 	foreach ($cdef_items as $cdef_item) {
 		if ($cdef_item['type'] == 5) {
 			$current_cdef_id = $cdef_item['value'];
-			$nested          = get_cdef_recursive($current_cdef_id, $visited, $expansion, $cache, $cache_bytes);
+			$nested          = get_cdef_recursive($current_cdef_id, $visited, $expansion, $cache, $cache_bytes, $definitions);
 
 			if ($nested === null) {
 				unset($visited[$cdef_id]);
@@ -196,7 +205,7 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_b
 
 			$parts[] = $nested;
 		} else {
-			$item_name = get_cdef_item_name($cdef_item['id']);
+			$item_name = get_cdef_item_name($cdef_item['id'], $definitions === null ? null : $cdef_item);
 
 			if ($item_name === null || $item_name === false) {
 				unset($visited[$cdef_id]);
