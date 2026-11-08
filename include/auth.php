@@ -120,6 +120,13 @@ if ($auth_method == AUTH_METHOD_BASIC) {
 
 	if ($username === false) {
 		$basic_error = __('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.');
+
+		// Upgraded sites whose web server only sets PHP_AUTH_USER land here, because
+		// that value is no longer trusted by default. Point the administrator at the
+		// opt-in in the log rather than on the page, and never log the client value.
+		if (!empty($_SERVER['PHP_AUTH_USER']) && ($config['auth_basic_allow_php_auth_user'] ?? false) !== true) {
+			cacti_log('AUTH: Web Basic Authentication ignored PHP_AUTH_USER. If the web server verifies the password and sets only PHP_AUTH_USER, set $auth_basic_allow_php_auth_user = true in include/config.php', false, 'AUTH');
+		}
 	} elseif (cacti_sizeof($current_user)) {
 		if ($current_user['enabled'] != 'on') {
 			$basic_error = __('Access Denied!  User account disabled.');

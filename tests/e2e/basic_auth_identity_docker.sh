@@ -78,6 +78,9 @@ SH
 echo '[basic-e2e] decoded client credentials do not authenticate by default'
 request basic-unverified.php -u basic_one:anything >/dev/null
 assert_denied 'no username was passed'
+"${DC[@]}" exec -T cacti grep -qF 'set $auth_basic_allow_php_auth_user = true' /var/www/html/log/cacti.log || {
+	echo 'FAIL: an ignored PHP_AUTH_USER did not log the opt-in hint' >&2; exit 1;
+}
 code=$(request basic-verified.php -u basic_one:wrong)
 [ "$code" = 401 ] || { echo 'FAIL: Apache accepted a wrong password' >&2; exit 1; }
 
