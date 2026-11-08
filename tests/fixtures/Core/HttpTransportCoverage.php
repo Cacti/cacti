@@ -202,7 +202,7 @@ namespace CactiHttpTransportFixture {
 	$results = cacti_http_multi([
 		'a'  => ['method' => 'GET', 'url' => "$base/inflight/a", 'options' => $opts],
 		'b'  => ['method' => 'GET', 'url' => "$base/inflight/b", 'options' => $opts],
-		7    => ['method' => 'GET', 'url' => 'http://169.254.169.254/', 'options' => $opts],
+		7    => ['method' => 'GET', 'url' => 'https://169.254.169.254/', 'options' => $opts],
 		'ok' => ['method' => 'GET', 'url' => "$base/stats", 'options' => $opts],
 	], 4);
 
@@ -289,7 +289,7 @@ namespace CactiHttpTransportFixture {
 		new CactiHttpPollItem(1, 4, 'v', "$base/slow", '/v', 1.0, 5.0),
 		new CactiHttpPollItem(1, 5, 'v', "$base/html", '/v'),
 		new CactiHttpPollItem(1, 6, 'v', 'http://127.0.0.1:1/down?token=secret', '/v'),
-		new CactiHttpPollItem(1, 7, 'v', 'http://169.254.169.254/latest', '/v'),
+		new CactiHttpPollItem(1, 7, 'v', 'https://169.254.169.254/latest', '/v'),
 	];
 
 	$errors    = [];
@@ -299,7 +299,7 @@ namespace CactiHttpTransportFixture {
 	check(count(array_keys(array_slice(cacti_http_test_requests(), $seen), '/stats', true)) === 1, 'shared endpoint fetched twice');
 	check(str_starts_with($errors["1 $base/html"], 'Invalid JSON'), 'html accepted as JSON');
 	check($errors['1 http://127.0.0.1:1/down?token=secret'] !== '' && !str_contains($errors['1 http://127.0.0.1:1/down?token=secret'], 'secret'), 'error kept the token');
-	check($errors['1 http://169.254.169.254/latest'] === REFUSED, 'metadata service reached');
+	check($errors['1 https://169.254.169.254/latest'] === REFUSED, 'metadata service reached');
 
 	$reasons = [];
 	$outputs = (new CactiHttpPoller())->collect([

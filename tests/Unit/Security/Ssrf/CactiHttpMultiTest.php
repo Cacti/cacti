@@ -34,7 +34,7 @@ test('the default policy still refuses loopback and does not follow redirects', 
 	$base = cacti_http_test_server()['url'];
 
 	expect(cacti_http('GET', "$base/stats"))->toBe(['success' => false, 'status' => 0, 'body' => '', 'error' => 'Target host resolves to a disallowed address'])
-		->and(cacti_http('GET', 'http://[::ffff:127.0.0.1]/'))->toMatchArray(['success' => false, 'error' => 'Target host resolves to a disallowed address'])
+		->and(cacti_http('GET', 'https://[::ffff:127.0.0.1]/'))->toMatchArray(['success' => false, 'error' => 'Target host resolves to a disallowed address'])
 		->and(cacti_http('GET', 'ftp://example.com/'))->toMatchArray(['error' => 'Unsupported URL scheme'])
 		->and(cacti_http('GET', ''))->toMatchArray(['error' => 'Invalid URL']);
 
@@ -108,7 +108,7 @@ test('multi keeps request keys and isolates failures', function () {
 		'a'  => ['method' => 'GET', 'url' => "$base/inflight/a", 'options' => $opts],
 		'b'  => ['method' => 'GET', 'url' => "$base/inflight/b", 'options' => $opts],
 		'c'  => ['method' => 'GET', 'url' => "$base/inflight/c", 'options' => $opts],
-		7    => ['method' => 'GET', 'url' => 'http://169.254.169.254/', 'options' => $opts],
+		7    => ['method' => 'GET', 'url' => 'https://169.254.169.254/', 'options' => $opts],
 		'ok' => ['method' => 'GET', 'url' => "$base/stats", 'options' => $opts],
 	], 4);
 
