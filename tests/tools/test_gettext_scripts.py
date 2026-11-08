@@ -57,6 +57,8 @@ class GettextScriptsTest(unittest.TestCase):
         self.assertIn('Cacti Developers <developers@cacti.net>', pot)
         self.assertIn('charset=UTF-8', pot)
         self.assertNotIn('FULL NAME <EMAIL@ADDRESS>', pot)
+        # A GNU-only word-boundary anchor once left the closing bracket behind.
+        self.assertNotIn('>>', pot)
         self.assertIn('Fixture translation', (self.locales / 'po/language with spaces.po').read_text())
         self.assertTrue((self.locales / 'LC_MESSAGES/language with spaces.mo').is_file())
 

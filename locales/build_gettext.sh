@@ -54,6 +54,9 @@ find . -maxdepth 2 -name '*.php' -print | "$XGETTEXT_BIN" --add-location=file --
 # BSD sed and GNU sed disagree on -i; write a separate file instead.
 POT_TMP=$(mktemp "$BASE_PATH/locales/po/cacti.pot.XXXXXX") || exit 1
 trap 'rm -f "$POT_TMP"' 0
+# dash runs the EXIT trap on exit but not when a signal kills the shell, so
+# turn INT and TERM into an exit to keep an interrupted run from leaving the file.
+trap 'exit 1' INT TERM
 if ! sed -e 's/FULL NAME <EMAIL@ADDRESS>/Cacti Developers <developers@cacti.net>/g' \
 	-e 's/LANGUAGE <LL@li.org>/Cacti Developers <developers@cacti.net>/g' \
 	-e 's/CHARSET/UTF-8/g' locales/po/cacti.pot > "$POT_TMP"; then
