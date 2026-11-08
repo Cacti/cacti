@@ -79,9 +79,9 @@ test('boost_launch_children declares $archive_table as global', function () use 
 
 	// The global declaration inside boost_launch_children must include $archive_table
 	// so the parent-set value is visible when building the child command line.
-	$func_pos   = strpos($contents, 'function boost_launch_children()');
-	$global_pos = strpos($contents, 'global', $func_pos);
-	$line_end   = strpos($contents, ';', $global_pos);
+	$func_pos    = strpos($contents, 'function boost_launch_children()');
+	$global_pos  = strpos($contents, 'global', $func_pos);
+	$line_end    = strpos($contents, ';', $global_pos);
 	$global_line = substr($contents, $global_pos, $line_end - $global_pos);
 
 	expect($global_line)->toContain('$archive_table');
@@ -103,8 +103,8 @@ test('boost_get_arch_table_names does not filter by TABLE_ROWS in information_sc
 	// immediately after RENAME TABLE even for non-empty tables. Filtering on
 	// TABLE_ROWS > 0 caused spurious "Failed to retrieve archive table name"
 	// errors when the estimate had not yet updated.
-	$func_pos = strpos($contents, 'function boost_get_arch_table_names');
-	$func_end = strpos($contents, "\nfunction ", $func_pos + 1);
+	$func_pos  = strpos($contents, 'function boost_get_arch_table_names');
+	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
 	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
 
 	expect($func_body)->not->toContain('TABLE_ROWS > 0');
@@ -239,7 +239,7 @@ test('non-templated data source query joins graph_templates_item before filterin
 
 	// Both fixed sites must have the LEFT JOIN so gti is defined.
 	$join_needle = 'LEFT JOIN graph_templates_item AS gti';
-	$count = substr_count($contents, $join_needle);
+	$count       = substr_count($contents, $join_needle);
 
 	// Three occurrences: the pre-existing correct one (templated path) plus the two fixes.
 	expect($count)->toBeGreaterThanOrEqual(3);
@@ -307,7 +307,7 @@ test('the orphan-name query is issued only for templated data sources', function
 	foreach ([__DIR__ . '/../../../../lib/poller.php', $boostPollerPath] as $path) {
 		$contents = file_get_contents($path);
 
-		expect($contents)->not->toContain("\$unused_data_source_names = poller_get_unused_data_source_names(");
+		expect($contents)->not->toContain('$unused_data_source_names = poller_get_unused_data_source_names(');
 	}
 });
 
