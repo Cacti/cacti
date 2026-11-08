@@ -33,11 +33,6 @@ require_once(__DIR__ . '/rrd_graph_axis.php');
 function rrdtool_build_graph_options(int $graph_start, int $graph_end, array &$graph, array &$graph_data_array) : string {
 	global $image_types;
 
-	// Normal bootstrapping already loads this shared format map.
-	if (!isset($image_types)) {
-		include(CACTI_PATH_INCLUDE . '/global_arrays.php');
-	}
-
 	// define some variables
 	$scale               = '';
 	$rigid               = '';

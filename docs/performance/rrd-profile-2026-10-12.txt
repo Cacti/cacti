@@ -4,7 +4,7 @@ The measured improvement is graph-option preparation: 257.90 to 70.65 microsecon
 
 Problem and change
 
-Graph-option construction included global_arrays.php on every call even though Cacti's normal bootstrap had loaded its image-format map. The include rebuilt unrelated arrays and translated their labels. Reuse the loaded map, with the original include retained for callers whose map is absent.
+Graph-option construction included global_arrays.php on every call even though Cacti's normal bootstrap had loaded its image-format map. The include rebuilt unrelated arrays and translated their labels. Reuse the loaded map, as develop's graph-option code already did.
 
 GraphOptions also configured the same OptionsResolver rules on every call. Retain one configured resolver per PHP process. Symfony clones it for each resolution; input values and plugin options are never cached. Successful, failed and empty resolutions remain independent.
 

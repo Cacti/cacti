@@ -18,9 +18,23 @@ namespace Cacti\Rrd\DataSource;
 
 use Cacti\Rrd\RrdCommand;
 
+/**
+ * Builds the RRDtool update command for one data source.
+ */
 final class UpdateCommandBuilder {
+	/**
+	 * Build an update that writes the given values through a data source template.
+	 *
+	 * Every supported RRDtool (1.5.0 and later) accepts --skip-past-updates, so a
+	 * replayed batch is skipped rather than rejected.
+	 *
+	 * @param string $path     the RRD file path, unescaped
+	 * @param string $template the colon-separated data source names
+	 * @param string $values   the space-separated timestamp:value tuples
+	 *
+	 * @return RrdCommand the update command
+	 */
 	public function build(string $path, string $template, string $values): RrdCommand {
-		// Every supported RRDtool (1.5.0 and later) accepts --skip-past-updates.
 		return new RrdCommand('update', [$path, '--skip-past-updates', '--template', $template, $values]);
 	}
 }

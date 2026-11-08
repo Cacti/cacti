@@ -20,6 +20,9 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Validates the graph options owned by the RRD graph service.
+ */
 final class GraphOptions {
 	private static ?OptionsResolver $resolver = null;
 
@@ -68,6 +71,11 @@ final class GraphOptions {
 	/**
 	 * Values the legacy graph code accepted and ignored: null or empty strings, non-positive
 	 * sizes, and relative time expressions such as 'now-1d' for the window bounds.
+	 *
+	 * @param string $name  the option name
+	 * @param mixed  $value the caller's value
+	 *
+	 * @return bool true when the value bypasses validation
 	 */
 	private static function isTolerated(string $name, mixed $value): bool {
 		if ($value === null || $value === '') {
@@ -85,6 +93,11 @@ final class GraphOptions {
 		return false;
 	}
 
+	/**
+	 * Configure the fixed type and value rules for the known options.
+	 *
+	 * @return OptionsResolver the configured resolver
+	 */
 	private static function createResolver(): OptionsResolver {
 		$resolver = new OptionsResolver();
 		$known    = array_merge(self::FLAG_OPTIONS, self::PATH_OPTIONS, [
@@ -127,6 +140,16 @@ final class GraphOptions {
 		return $resolver;
 	}
 
+	/**
+	 * Accept an int, or a string or float that holds an exact integer.
+	 *
+	 * @param string $name  the option name, for the exception message
+	 * @param mixed  $value the value to normalize
+	 *
+	 * @throws InvalidOptionsException when the value is not an exact integer
+	 *
+	 * @return int the integer value
+	 */
 	private static function normalizeInteger(string $name, mixed $value): int {
 		if (is_int($value)) {
 			return $value;
@@ -139,6 +162,16 @@ final class GraphOptions {
 		throw new InvalidOptionsException("The '$name' option must be an integer.");
 	}
 
+	/**
+	 * Accept a finite, positive number given as a number or a numeric string.
+	 *
+	 * @param string $name  the option name, for the exception message
+	 * @param mixed  $value the value to normalize
+	 *
+	 * @throws InvalidOptionsException when the value is not finite or not positive
+	 *
+	 * @return float|int the number, kept as an int when it is integral
+	 */
 	private static function normalizeNumber(string $name, mixed $value): int|float {
 		if ((is_int($value) || is_float($value)) && is_finite((float) $value)) {
 			$number = $value;

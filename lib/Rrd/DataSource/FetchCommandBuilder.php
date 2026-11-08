@@ -18,9 +18,24 @@ namespace Cacti\Rrd\DataSource;
 
 use Cacti\Rrd\RrdCommand;
 
+/**
+ * Builds the RRDtool fetch command for one RRD file.
+ */
 final class FetchCommandBuilder {
 	private const CONSOLIDATION_FUNCTIONS = ['AVERAGE', 'MIN', 'MAX', 'LAST'];
 
+	/**
+	 * Build a fetch for a time window, falling back to AVERAGE for an unknown
+	 * consolidation function as the procedural fetch did.
+	 *
+	 * @param string $path                  the RRD file path, unescaped
+	 * @param string $consolidationFunction AVERAGE, MIN, MAX or LAST, any case
+	 * @param int    $start                 the window start epoch
+	 * @param int    $end                   the window end epoch
+	 * @param int    $resolution            the step in seconds, or 0 for RRDtool's choice
+	 *
+	 * @return RrdCommand the fetch command
+	 */
 	public function build(string $path, string $consolidationFunction, int $start, int $end, int $resolution = 0): RrdCommand {
 		$cf = strtoupper($consolidationFunction);
 

@@ -15,11 +15,17 @@ declare(strict_types = 1);
 
 namespace Cacti\Rrd;
 
+/**
+ * Serializes structured commands for transports that speak RRDtool's line protocol.
+ */
 final class RrdCommandSerializer {
 	/**
 	 * Serialize a command for RRDtool's line-oriented stdin/proxy protocol.
 	 *
-	 * @param callable(string): string $escapeArgument
+	 * @param RrdCommand               $command        the command to serialize
+	 * @param callable(string): string $escapeArgument quotes one argument for the protocol
+	 *
+	 * @return string the operation followed by the escaped arguments
 	 */
 	public function forLineProtocol(RrdCommand $command, callable $escapeArgument): string {
 		if ($command->arguments === []) {

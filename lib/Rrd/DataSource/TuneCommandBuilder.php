@@ -18,9 +18,17 @@ namespace Cacti\Rrd\DataSource;
 
 use Cacti\Rrd\RrdCommand;
 
+/**
+ * Builds the RRDtool tune command for one RRD file.
+ */
 final class TuneCommandBuilder {
 	/**
-	 * @param array<string, string> $options RRDtool option => unescaped value
+	 * Build a tune from the options that carry a value.
+	 *
+	 * @param string                $path    the RRD file path, unescaped
+	 * @param array<string, string> $options RRDtool option => unescaped value; empty values are skipped
+	 *
+	 * @return RrdCommand|null the tune command, or null when no option has a value
 	 */
 	public function build(string $path, array $options): ?RrdCommand {
 		$arguments = [$path];

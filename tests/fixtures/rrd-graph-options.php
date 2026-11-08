@@ -87,11 +87,6 @@ $cases = [
 	]],
 ];
 
-// Exercise callers whose shared image-format metadata has not been loaded.
-if (($argv[2] ?? '') === 'cold') {
-	unset($GLOBALS['image_types']);
-}
-
 $results = [];
 
 foreach ($cases as $name => [$values, $options]) {
