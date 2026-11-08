@@ -174,15 +174,27 @@ function poller_script_exec(string $name, array $args = [], int $timeout = 10, a
  * host. The devices these scripts read sit on private addresses, which is why
  * cacti_http() and its private-range refusal do not fit here.
  *
- * @param string $url     An http:// URL.
- * @param int    $timeout Seconds allowed for the connection and each read.
+ * These scripts run inside the long-lived script server, so the body is read
+ * against a byte cap and a deadline as well as the per-read timeout: a device
+ * that sends an endless body would otherwise exhaust memory_limit, and one
+ * that drips a byte at a time would hold the worker indefinitely. The limits
+ * match the Python SB6141 script. The deadline covers the connection and the
+ * body; while PHP waits for the response headers only $timeout applies.
  *
- * @return string|null The body, or null on a transport error or non-2xx status.
+ * @param string $url       An http:// URL.
+ * @param int    $timeout   Seconds allowed for the connection and each read.
+ * @param int    $max_bytes Largest body accepted, in bytes.
+ * @param int    $deadline  Seconds allowed for the whole request.
+ *
+ * @return string|null The body, or null on a transport error, a non-2xx
+ *                     status, a body over $max_bytes or a missed deadline.
  */
-function poller_script_http_get(string $url, int $timeout = 10) : ?string {
+function poller_script_http_get(string $url, int $timeout = 10, int $max_bytes = 1048576, int $deadline = 20) : ?string {
 	if (!str_starts_with($url, 'http://')) {
 		return null;
 	}
+
+	$expires = hrtime(true) + $deadline * 1000000000;
 
 	$context = stream_context_create([
 		'http' => [
@@ -199,9 +211,38 @@ function poller_script_http_get(string $url, int $timeout = 10) : ?string {
 		return null;
 	}
 
-	stream_set_timeout($stream, $timeout);
+	$body = '';
+	$ok   = true;
 
-	$body = stream_get_contents($stream);
+	while (!feof($stream)) {
+		$remaining = min($expires - hrtime(true), $timeout * 1000000000);
+
+		if ($remaining <= 0) {
+			$ok = false;
+
+			break;
+		}
+
+		// Each read may wait no longer than the time left before the deadline.
+		stream_set_timeout($stream, intdiv($remaining, 1000000000), intdiv($remaining % 1000000000, 1000));
+
+		$chunk = fread($stream, 65536);
+
+		if ($chunk === false || stream_get_meta_data($stream)['timed_out']) {
+			$ok = false;
+
+			break;
+		}
+
+		$body .= $chunk;
+
+		if (strlen($body) > $max_bytes) {
+			$ok = false;
+
+			break;
+		}
+	}
+
 	$meta = stream_get_meta_data($stream);
 
 	fclose($stream);
@@ -214,7 +255,7 @@ function poller_script_http_get(string $url, int $timeout = 10) : ?string {
 		}
 	}
 
-	if ($body === false || $meta['timed_out'] || $status < 200 || $status > 299) {
+	if (!$ok || $status < 200 || $status > 299) {
 		return null;
 	}
 

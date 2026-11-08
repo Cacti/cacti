@@ -57,7 +57,11 @@ if (!isset($called_by_script_server)) {
  * @return string megabytes:N percent:N, or megabytes:U percent:U.
  */
 function ss_diskfree(string $path = '') : string {
-	return ss_diskfree_collect($path)[0];
+	$output = ss_diskfree_collect($path)[0];
+
+	// The command line prints nothing when df reports no filesystem, as the
+	// originals do, but the script server still needs a value to return.
+	return ($output === '' ? 'megabytes:U percent:U' : $output);
 }
 
 /**
@@ -66,6 +70,10 @@ function ss_diskfree(string $path = '') : string {
  *
  * A path that fails validation returns U rather than listing every
  * filesystem. A leading '-' is rejected because df would read it as an option.
+ * Any other path is accepted, as diskfree.sh, which the stock data input
+ * method calls, accepts it: df gets it as an argument, never through a shell.
+ * When df is missing or reports no filesystem for the path, the output is
+ * empty, because diskfree.sh and diskfree.pl print nothing in that case.
  *
  * @param string $path The path.
  *
@@ -74,7 +82,8 @@ function ss_diskfree(string $path = '') : string {
 function ss_diskfree_collect(string $path = '') : array {
 	$unknown = 'megabytes:U percent:U';
 
-	if ($path !== '' && !preg_match('/^[\w.\/][\w.\/-]*$/', $path)) {
+	// a NUL byte cannot be passed in an argument vector
+	if ($path !== '' && (str_starts_with($path, '-') || str_contains($path, "\0"))) {
 		return [$unknown, 1];
 	}
 
@@ -89,13 +98,13 @@ function ss_diskfree_collect(string $path = '') : array {
 	$df = poller_script_exec('df', $args);
 
 	if ($df === null || $df['timed_out']) {
-		return [$unknown, 1];
+		return ['', 1];
 	}
 
 	$output = ss_diskfree_parse($df['stdout'], $path !== '');
 
 	if ($output === '') {
-		return [$unknown, 1];
+		return ['', 1];
 	}
 
 	return [$output, 0];

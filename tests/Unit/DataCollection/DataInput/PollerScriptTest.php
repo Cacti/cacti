@@ -97,3 +97,39 @@ test('http get returns the body of a 2xx response and refuses other statuses', f
 		data_input_http_server_stop($server);
 	}
 });
+
+test('http get abandons a body over the byte cap', function () {
+	$server = data_input_http_server_start();
+
+	if ($server === null) {
+		$this->markTestSkipped('the PHP built-in web server could not start');
+	}
+
+	try {
+		$base = 'http://' . $server['address']; // NOSONAR local plain-HTTP fixture server, as the modems serve HTTP only
+
+		expect(poller_script_http_get($base . '/large'))->toBeNull()
+			->and(poller_script_http_get($base . '/plain', 10, 8))->toBeNull()
+			->and(poller_script_http_get($base . '/plain', 10, 18))->toBe("line one\nline two\n");
+	} finally {
+		data_input_http_server_stop($server);
+	}
+});
+
+test('http get abandons a response that outlives the deadline', function () {
+	$server = data_input_http_server_start();
+
+	if ($server === null) {
+		$this->markTestSkipped('the PHP built-in web server could not start');
+	}
+
+	try {
+		$start = hrtime(true);
+		$body  = poller_script_http_get('http://' . $server['address'] . '/drip', 5, 1048576, 1); // NOSONAR local plain-HTTP fixture server, as the modems serve HTTP only
+
+		expect($body)->toBeNull()
+			->and((hrtime(true) - $start) / 1e9)->toBeLessThan(3);
+	} finally {
+		data_input_http_server_stop($server);
+	}
+});
