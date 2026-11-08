@@ -59,12 +59,12 @@ use Symfony\Component\Process\Process;
  *                             inherit the current environment.
  *
  * @return array {
- *     'stdout'    => string Captured standard output.
- *     'stderr'    => string Captured standard error.
- *     'exit_code' => int    Process exit status (-1 if it could not be spawned).
- *     'timed_out' => bool   True when the command was killed on timeout.
- *     'via'       => string 'symfony' or 'proc_open', the backend that ran it.
- * }
+ *               'stdout'    => string Captured standard output.
+ *               'stderr'    => string Captured standard error.
+ *               'exit_code' => int    Process exit status (-1 if it could not be spawned).
+ *               'timed_out' => bool   True when the command was killed on timeout.
+ *               'via'       => string 'symfony' or 'proc_open', the backend that ran it.
+ *               }
  */
 function cacti_process_run(array $argv, ?string $input = null, ?int $timeout = 60, ?string $cwd = null, ?array $env = null): array {
 	// Normalise the argument vector to a list of strings. A command with no
@@ -88,6 +88,7 @@ function cacti_process_run(array $argv, ?string $input = null, ?int $timeout = 6
 
 		if (is_scalar($arg) || $arg instanceof Stringable) {
 			$argv[$i] = (string) $arg;
+
 			continue;
 		}
 
@@ -213,6 +214,7 @@ function cacti_process_run_proc_open(array $argv, ?string $input, ?int $timeout,
 		if ($deadline !== null && microtime(true) >= $deadline) {
 			$timed_out = true;
 			proc_terminate($process, 9);
+
 			break;
 		}
 
