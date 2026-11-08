@@ -1,0 +1,114 @@
+<serviceGroupMemberTable>
+  <name>Get NetScaler SERVICE GROUP MEMBERS stats</name>
+  <description>Queries a NetScaler for all SERVICE GROUP MEMBERS stats (serviceGroupMemberTable)</description>
+  <oid_index>.1.3.6.1.4.1.5951.4.1.2.7.1.33</oid_index>
+  <oid_index_parse>OID/REGEXP:^.*\.5951\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.(.*)</oid_index_parse>
+
+  <fields>
+    <svcGrpMemberFullName>
+      <name>ServiceGroup Member Name</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.33</oid>
+    </svcGrpMemberFullName>
+    <svcGrpMemberPrimaryIPAddress>
+      <name>ServiceGroup Member IP Address</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.3</oid>
+    </svcGrpMemberPrimaryIPAddress>
+    <svcGrpMemberPrimaryPort>
+      <name>ServiceGroup Member Port number</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.4</oid>
+    </svcGrpMemberPrimaryPort>
+    <svcGrpMemberAvgTransactionTime>
+      <name>svcGrpMemberAvgTransactionTime</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.9</oid>
+    </svcGrpMemberAvgTransactionTime>
+    <svcGrpMemberEstablishedConn>
+      <name>Established Connections for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.10</oid>
+    </svcGrpMemberEstablishedConn>
+    <svcGrpMemberActiveConn>
+      <name>Active Connections for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.11</oid>
+    </svcGrpMemberActiveConn>
+    <svcGrpMemberSurgeCount>
+      <name>Surge Queue for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.12</oid>
+    </svcGrpMemberSurgeCount>
+    <svcGrpMemberTotalRequests>
+      <name>Total Requests for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.13</oid>
+    </svcGrpMemberTotalRequests>
+    <svcGrpMemberTotalRequestsBytes>
+      <name>Total Requests in bytes for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.14</oid>
+    </svcGrpMemberTotalRequestsBytes>
+    <svcGrpMemberTotalResponses>
+      <name>Total Responses for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.15</oid>
+    </svcGrpMemberTotalResponses>
+    <svcGrpMemberTotalResponsesBytes>
+      <name>Total Responses in bytes for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.16</oid>
+      </svcGrpMemberTotalResponsesBytes>
+    <svcGrpMemberTotalPktsRecvd>
+      <name>Total Packets Received for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.17</oid>
+    </svcGrpMemberTotalPktsRecvd>
+    <svcGrpMemberTotalPktsSent>
+      <name>Total Packets Sent for the ServiceGroup Member</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.18</oid>
+    </svcGrpMemberTotalPktsSent>
+    <svcGrpMemberAvgSvrTTFB>
+      <name>Average TTFB between the NetScaler appliance and the server</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.21</oid>
+    </svcGrpMemberAvgSvrTTFB>
+    <svcGrpMemberTicksSinceLastStateChange>
+      <name>svcGrpMemberTicksSinceLastStateChange</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.2.7.1.31</oid>
+    </svcGrpMemberTicksSinceLastStateChange>
+  </fields>
+</serviceGroupMemberTable>

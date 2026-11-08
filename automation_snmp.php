@@ -52,6 +52,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_movedown':
+		csrf_require_post();
 		get_filter_request_var('id');
 
 		automation_snmp_item_movedown();
@@ -59,6 +60,7 @@ switch (get_request_var('action')) {
 		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_moveup':
+		csrf_require_post();
 		get_filter_request_var('id');
 
 		automation_snmp_item_moveup();
@@ -70,6 +72,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_remove':
+		csrf_require_post();
 		get_filter_request_var('id');
 
 		automation_snmp_item_remove();
@@ -105,6 +108,8 @@ switch (get_request_var('action')) {
  * @return void No value is returned.
  */
 function form_automation_snmp_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_automation_snmp')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -188,6 +193,8 @@ function form_automation_snmp_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

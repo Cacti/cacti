@@ -1492,6 +1492,19 @@ function displayMessages() {
 			buttons: sessionMessageButtons
 		});
 
+		if (document.location.href.indexOf('csrf_timeout') >= 0) {
+			window.history.replaceState(window.history.state, '', stripCsrfTimeoutMarker(document.location.href));
+		}
+
+		/* The csrf_timeout marker is a one-shot signal to raise the warning. Strip
+		 * it from any cached navigation target so the graph filter (myHref) and the
+		 * tree/page auto-refresh (refreshPage) do not request the warning again. */
+		myHref = stripCsrfTimeoutMarker(myHref);
+
+		if (typeof window.refreshPage != 'undefined') {
+			window.refreshPage = stripCsrfTimeoutMarker(window.refreshPage);
+		}
+
 		sessionMessage = null;
 	}
 }
@@ -3991,6 +4004,32 @@ function cleanHeader(href) {
 	href = href.replace('?nostate=true', '?').replace('&nostate=true', '').replace('?&', '?');
 
 	return href;
+}
+
+/* Remove the one-shot csrf_timeout marker from a URL while preserving the path,
+ * remaining query parameters, and the fragment. Accepts absolute or relative
+ * URLs and returns non-string/markerless input unchanged. */
+function stripCsrfTimeoutMarker(url) {
+	if (typeof url != 'string' || url.indexOf('csrf_timeout') < 0) {
+		return url;
+	}
+
+	var hashIndex       = url.indexOf('#');
+	var fragment        = hashIndex >= 0 ? url.slice(hashIndex) : '';
+	var withoutFragment = hashIndex >= 0 ? url.slice(0, hashIndex) : url;
+
+	var queryIndex = withoutFragment.indexOf('?');
+	if (queryIndex < 0) {
+		return url;
+	}
+
+	var path   = withoutFragment.slice(0, queryIndex);
+	var params = new URLSearchParams(withoutFragment.slice(queryIndex + 1));
+	params.delete('csrf_timeout');
+
+	var query = params.toString();
+
+	return path + (query !== '' ? '?' + query : '') + fragment;
 }
 
 function pushState(myTitle, myHref) {

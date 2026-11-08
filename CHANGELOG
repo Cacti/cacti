@@ -96,6 +96,7 @@ Cacti CHANGELOG
 -security#8346: Pin workflow Actions and isolate release signing from builds
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
+-issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
 -issue#8584: Only add the theme search filter icon when the filter input is visible
 -issue#8574: RRDcheck does not delete old data when boost is enabled
 -issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback
@@ -155,6 +156,7 @@ Cacti CHANGELOG
 -issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 4
 -issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
 -issue#7810: Stop using null as a graph CF cache offset on PHP 8.5
+-issue#7810: Remove PHP 8.5 deprecations in database options, image cleanup, casts and case labels
 -issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
 -issue#7819: Remove obsolete pre-PHP 8 compatibility branches
 -issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)
@@ -162,6 +164,7 @@ Cacti CHANGELOG
 -issue#7868: Apply Boost process-table columns on the 1.2.32 upgrade path
 -issue#7907: Reject CLI RLIKE patterns, remove the unused remove_graphs --graph-type option, and improve cli argument handling and exit status
 -issue#7930: Commit transactions on MySQL as well as MariaDB
+-issue#7934: Retry stale installer CSRF tokens once and preserve disabled automation settings
 -issue#7954: Guard applySkin when cactiNonce is not defined
 -issue#7957: Stop treating every PID in a container as a reserved system PID
 -issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing

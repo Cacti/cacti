@@ -157,8 +157,9 @@ function boostRrdBenchPrepare($root, $sources, $base_time): array {
 	}
 
 	$marker_written = file_put_contents($root . '/.cacti-boost-rrd-benchmark', json_encode(array(
-		'sources'   => $sources,
-		'base_time' => $base_time,
+			'sources'     => $sources,
+			'base_time'   => $base_time,
+			'last_update' => $base_time - 60,
 	), JSON_THROW_ON_ERROR));
 
 	if ($marker_written === false) {
@@ -210,7 +211,7 @@ function boostRrdBenchWorker($root, array $sources, $samples, $samples_per_comma
 			}
 
 			$response = rrdtool_execute('update ' . escapeshellarg($path) .
-				' --skip-past-updates --template value ' . implode(' ', $values),
+				' --template value ' . implode(' ', $values),
 				false, RRDTOOL_OUTPUT_RETURN_STDERR, $pipe, 'BOOST');
 
 			if (!is_string($response) || preg_match('/(?:^|\n)OK(?: |\r?\n|$)/', $response) !== 1) {
@@ -289,6 +290,13 @@ if (!is_array($metadata) || (int) ($metadata['sources'] ?? 0) !== $sources) {
 	exit(66);
 }
 
+$last_update = (int) ($metadata['last_update'] ?? ((int) ($metadata['base_time'] ?? 0) - 60));
+
+if ($base_time <= $last_update) {
+	fwrite(STDERR, "requested timestamps overlap the last completed benchmark; choose a later --base-time\n");
+	exit(67);
+}
+
 $order = range(1, $sources);
 mt_srand(1701);
 shuffle($order);
@@ -351,10 +359,26 @@ $failed_commands = array_sum(array_column($results, 'failed_commands'));
 $first_acks = array_filter(array_column($results, 'time_to_first_ack_seconds'), static fn($value) => $value !== null);
 $first_ack = count($first_acks) ? min($first_acks) : null;
 $expected_last = $base_time + (($samples - 1) * 60);
+$expected_commands = $sources * (int) ceil($samples / $samples_per_command);
 $verification = array();
 
 foreach (array(1, max(1, intdiv($sources, 2)), $sources) as $source) {
 	$verification[$source] = (int) boostRrdBenchCommand(array('last', boostRrdBenchPath($root, $source)));
+}
+
+$valid = $failed_commands === 0 &&
+	$successful_commands === $expected_commands &&
+	$successful_samples === $sources * $samples &&
+	count(array_filter($verification, static function($last) use ($expected_last) {
+		return $last !== $expected_last;
+	})) === 0;
+
+if ($valid) {
+	$metadata['last_update'] = $expected_last;
+
+	if (file_put_contents($marker, json_encode($metadata, JSON_THROW_ON_ERROR)) === false) {
+		throw new RuntimeException('Unable to update the benchmark ownership marker.');
+	}
 }
 
 print json_encode(array(
@@ -375,7 +399,13 @@ print json_encode(array(
 	'samples_per_second'         => $successful_samples / max(0.000001, $elapsed),
 	'expected_last'              => $expected_last,
 	'verified_last'              => $verification,
+	'valid'                      => $valid,
 	'peak_php_bytes_per_process' => max(array_column($results, 'peak_php_bytes')),
 	'workers_detail'             => $results,
-	'claim_scope'                => 'real acknowledged RRDtool write-stage benchmark; no database read or Cacti metadata preparation',
+	'claim_scope'                => 'real acknowledged RRDtool write-stage benchmark; stale timestamps are rejected; no database read or Cacti metadata preparation',
 ), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL;
+
+if (!$valid) {
+	fwrite(STDERR, "RRD benchmark rejected stale, overlapping, or failed updates\n");
+	exit(1);
+}

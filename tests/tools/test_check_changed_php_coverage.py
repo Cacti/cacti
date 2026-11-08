@@ -50,6 +50,16 @@ class ChangedPhpCoverageTest(unittest.TestCase):
             self.assertTrue(GATE.passes(result, 80))
             self.assertEqual(result['files'], {})
 
+    def test_test_only_change_needs_request_evidence_but_no_clover_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            requests = root / 'requests'
+            requests.mkdir()
+            (requests / 'one.json').write_text('{}')
+            result = GATE.measure({}, root / 'not-created.xml', root, requests)
+            self.assertTrue(GATE.passes(result, 80))
+            self.assertEqual(result['files'], {})
+
     def test_clover_counts_only_statements_on_changed_lines(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

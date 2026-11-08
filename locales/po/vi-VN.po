@@ -5533,6 +5533,16 @@ msgstr ""
 msgid "Return to Cacti: %s"
 msgstr "Yêu cầu: Cacti&gt; = %s"
 
+#: include/csrf.php
+#, fuzzy
+#| msgid "Session"
+msgid "Session Expired"
+msgstr "Kỳ học"
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
+
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr "Lần cuối cùng Bộ thu thập dữ liệu này được đồng bộ hóa hoàn toàn với trang web chính của Cacti."

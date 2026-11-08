@@ -36,12 +36,20 @@ coverage_php "$repo_path/tests/fixtures/Core/BoostRrdPathValidationProbe.php" \
 coverage_php "$scenario" --action=setup-isolated-failure --rra-dir="$rra_path" \
 	--sources=12 --samples=2 --php-binary="$php_wrapper"
 run_poller
+coverage_php "$scenario" --action=assert-isolated-failure --rra-dir="$rra_path" \
+	--sources=12 --samples=2
 coverage_php "$scenario" --action=repair-isolated-failure --rra-dir="$rra_path" \
+	--sources=12 --samples=2
+coverage_php "$scenario" --action=retry-failures --rra-dir="$rra_path" \
+	--sources=12 --samples=2
+coverage_php "$scenario" --action=assert-isolated-recovered --rra-dir="$rra_path" \
 	--sources=12 --samples=2
 
 coverage_php "$scenario" --action=setup-permanent-failures --rra-dir="$rra_path" \
 	--sources=12 --samples=1
 run_poller
+coverage_php "$scenario" --action=assert-permanent-failures --rra-dir="$rra_path" \
+	--sources=12 --samples=1
 
 coverage_php "$scenario" --action=setup-backend-outage --rra-dir="$rra_path" \
 	--sources=12 --samples=1
@@ -49,11 +57,17 @@ if run_poller; then
 	printf '%s\n' 'ERROR: backend-wide outage unexpectedly completed' >&2
 	exit 1
 fi
+coverage_php "$scenario" --action=assert-backend-outage --rra-dir="$rra_path" \
+	--sources=12 --samples=1
 coverage_php "$scenario" --action=retry-backend-outage --rra-dir="$rra_path" \
+	--sources=12 --samples=1
+coverage_php "$scenario" --action=assert-backend-outage --rra-dir="$rra_path" \
 	--sources=12 --samples=1
 coverage_php "$scenario" --action=repair-backend-outage --rra-dir="$rra_path" \
 	--sources=12 --samples=1
 run_poller
+coverage_php "$scenario" --action=assert-backend-recovered --rra-dir="$rra_path" \
+	--sources=12 --samples=1
 
 coverage_php "$scenario" --action=setup-shared-path --rra-dir="$rra_path" \
 	--sources=12 --samples=1
@@ -61,6 +75,8 @@ if run_poller; then
 	printf '%s\n' 'ERROR: shared-path ownership violation unexpectedly completed' >&2
 	exit 1
 fi
+coverage_php "$scenario" --action=assert-shared-path --rra-dir="$rra_path" \
+	--sources=12 --samples=1
 
 coverage_php "$scenario" --action=setup-worker-crash --rra-dir="$rra_path" \
 	--sources=12 --samples=1
@@ -72,10 +88,12 @@ if wait "$master_pid"; then
 	printf '%s\n' 'ERROR: killed worker unexpectedly allowed archive cleanup' >&2
 	exit 1
 fi
+coverage_php "$scenario" --action=assert-worker-crash --rra-dir="$rra_path" \
+	--sources=12 --samples=1
 coverage_php "$scenario" --action=repair-backend-outage --rra-dir="$rra_path" \
 	--sources=12 --samples=1
 run_poller
 
-coverage_php "$scenario" --action=status --rra-dir="$rra_path" --sources=12 --samples=1
+coverage_php "$scenario" --action=assert-final --rra-dir="$rra_path" --sources=12 --samples=1
 
-printf '%s\n' 'PASS: Boost coverage scenarios exercised success, isolated failure, outage, crash recovery, and ownership refusal'
+printf '%s\n' 'PASS: Boost coverage scenarios asserted success, isolated failure, outage, crash recovery, ownership refusal, and exact RRD timestamps'

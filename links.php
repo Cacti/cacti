@@ -46,6 +46,7 @@ case 'delete_page':
 
 	break;
 case 'move_page_up':
+	csrf_require_post();
 	if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
 		page_move(get_request_var('id'), get_request_var('order'), '-1');
 	}
@@ -54,6 +55,7 @@ case 'move_page_up':
 
 	break;
 case 'move_page_down':
+	csrf_require_post();
 	if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
 		page_move(get_request_var('id'), get_request_var('order'), '1');
 	}
@@ -148,6 +150,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

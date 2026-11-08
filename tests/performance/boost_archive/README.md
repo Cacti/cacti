@@ -153,6 +153,8 @@ php tests/performance/boost_archive/e2e_scenario.php \
 
 # Expected to fail after eight ambiguous destination probes and retain the archive.
 php poller_boost.php --force
+php tests/performance/boost_archive/e2e_scenario.php \
+  --action=assert-backend-outage --rra-dir=/tmp/boost-e2e-rrd --sources=12 --samples=1
 
 # Expected: attempted=8, recovered=0, pending=8, discarded=0.
 php tests/performance/boost_archive/e2e_scenario.php \
@@ -162,13 +164,14 @@ php tests/performance/boost_archive/e2e_scenario.php \
   --action=repair-backend-outage --rra-dir=/tmp/boost-e2e-rrd --sources=12 --samples=1
 php poller_boost.php --force
 php tests/performance/boost_archive/e2e_scenario.php \
-  --action=status --rra-dir=/tmp/boost-e2e-rrd --sources=12 --samples=1
+  --action=assert-final --rra-dir=/tmp/boost-e2e-rrd --sources=12 --samples=1
 ```
 
-The final status must contain no archives, live rows, or failure rows; its completion status must
-equal 24 and every destination's `last_update` must equal `expected_last`. The Docker run used the
-same actions with `BoostE2eConfig.php` mounted over `include/config.php` and the checkout and RRD
-directory bind-mounted into an expendable PHP container.
+Every `assert-*` action exits unsuccessfully on a mismatch. The automated sequence checks state
+before each later setup can reset it: archive and live rows, failure queue and persisted depth,
+child completion, stale process registration, and every destination's exact RRD timestamp. The
+Docker run uses the same actions with `BoostE2eConfig.php` mounted over `include/config.php` and
+the checkout and RRD directory bind-mounted into an expendable PHP container.
 
 `rrd_write.php` measures the write boundary independently with real files and the production
 acknowledgement helper. The full workload uses 60,000 destinations, 5,334 samples per destination
@@ -189,7 +192,11 @@ php tests/performance/boost_archive/rrd_write.php \
 
 Every run uses a deterministic Mersenne Twister destination shuffle with seed 1701 and verifies
 the first, middle, and final RRD timestamps. `--prepare` refuses an existing directory and writes a
-marker; subsequent runs require the marker and the same destination count.
+marker; subsequent runs require the marker, the same destination count, and a `--base-time` after
+the last completed run. The write benchmark deliberately rejects stale timestamps instead of
+using `--skip-past-updates`, so an interrupted or manually altered fixture cannot inflate measured
+throughput with acknowledged but skipped samples. A run exits unsuccessfully unless every command
+and requested sample was accepted and the sampled final timestamps match.
 
 ## Interpretation
 

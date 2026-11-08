@@ -497,7 +497,7 @@ class Ldap {
 	/**
 	 * Handles the construct. Used as part of Cacti's lib functionality.
 	 *
-	 * @return bool True on success, false otherwise.
+	 * @return void No value is returned.
 	 */
 	public function __construct() {
 		/* Initialize LDAP parameters for Authenticate */
@@ -532,17 +532,14 @@ class Ldap {
 		$this->search_filter     = read_config_option('ldap_search_filter');
 		$this->specific_dn       = read_config_option('ldap_specific_dn');
 		$this->specific_password = read_config_option('ldap_specific_password');
-
-		return true;
 	}
 
 	/**
 	 * Handles the destruct. Used as part of Cacti's lib functionality.
 	 *
-	 * @return bool True on success, false otherwise.
+	 * @return void No value is returned.
 	 */
 	public function __destruct() {
-		return true;
 	}
 
 	/**
