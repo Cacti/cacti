@@ -26,15 +26,23 @@ test('snmp_escape_string always wraps Windows strings', function () use ($snmpSo
 	expect($body)->not->toContain('if (substr_count($string, SNMP_ESCAPE_CHARACTER))');
 });
 
-test('get_script_query_path uses cacti_escapeshellcmd on script path', function () use ($dqSource) {
+test('get_script_query_path sanitizes the script path without corrupting Windows separators', function () use ($dqSource) {
 	$start = strpos($dqSource, 'function get_script_query_path(');
-	$body = substr($dqSource, $start, 800);
-	expect($body)->toContain('cacti_escapeshellcmd($parsed_script_path)');
+	$body  = substr($dqSource, $start, 2400);
+
+	/* On Windows the path is stripped of shell metacharacters but the
+	 * backslash separator is preserved; cacti_escapeshellcmd() would replace
+	 * backslashes with spaces and corrupt the path to just 'C:'. On other
+	 * platforms escapeshellcmd() remains in use. */
+	expect($body)->toContain("\$config['cacti_server_os'] == 'win32'")
+		->and($body)->toContain("str_replace(array('#', '&', ';'")
+		->and($body)->toContain("), '', \$parsed_script_path)")
+		->and($body)->toContain('cacti_escapeshellcmd($parsed_script_path)');
 });
 
 test('get_script_query_path rejects path traversal', function () use ($dqSource) {
 	$start = strpos($dqSource, 'function get_script_query_path(');
-	$body = substr($dqSource, $start, 800);
+	$body = substr($dqSource, $start, 2400);
 	expect(str_contains($body, "strpos(\$parsed_script_path, '..')"))->toBeTrue();
 });
 
