@@ -130,14 +130,13 @@ test('contrast checks report text whose luminance falls inside a gradient', asyn
 	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
 });
 
-test('contrast checks measure radial gradients and layered backgrounds', async ({ page }) => {
-	await page.setContent('<!DOCTYPE html><div id="radial" style="background:black radial-gradient(circle at top, #ffa254, black);color:white">Glow</div>' +
-		'<div id="layers" style="background:black url(about:blank), linear-gradient(black, white);color:white">Layers</div>');
-	expect(await page.locator('#radial').evaluate(textContrast)).toBeCloseTo(1.99, 2);
-	expect(await page.locator('#layers').evaluate(textContrast)).toBeCloseTo(1, 3);
+test('contrast checks measure every layer of a layered background', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:black url(about:blank), linear-gradient(black, white);color:white">Layers</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
 });
 
 for (const [name, style] of [
+	['a radial gradient', 'background:black radial-gradient(circle at top, #ffa254, black)'],
 	['legacy -webkit-gradient', 'background:-webkit-gradient(linear, left top, left bottom, from(black), to(white))'],
 	['non-sRGB interpolation', 'background:linear-gradient(in oklab, black, white)'],
 	['group opacity', 'background:black;opacity:.5'],
