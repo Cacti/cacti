@@ -1,1 +1,1 @@
-Keep SQL poller and database dump credentials in private client option files
+Read SQL poller status over Cacti's database connection and pass database dump credentials in a private client option file

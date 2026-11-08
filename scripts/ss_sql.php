@@ -31,27 +31,62 @@ if (!isset($called_by_script_server)) {
 	print call_user_func('ss_sql');
 }
 
+/**
+ * ss_sql - report the fields of 'mysqladmin status'
+ *
+ * The values come from the server status variables over Cacti's own
+ * database connection, so no client process is started and the database
+ * password is never placed on a command line or in a file.
+ *
+ * @return string space separated name:value pairs, or 'U' when the status cannot be read
+ */
 function ss_sql() : string {
-	global $database_username, $database_password, $database_hostname, $database_port;
+	global $local_db_cnn_id;
 
-	$defaults_file = db_client_defaults_file($database_username, $database_password, $database_hostname, (int) $database_port);
+	$rows = db_fetch_assoc("SHOW GLOBAL STATUS WHERE Variable_name IN
+		('Uptime', 'Threads_connected', 'Questions', 'Slow_queries', 'Opened_tables', 'Flush_commands', 'Open_tables')",
+		false, (is_object($local_db_cnn_id) ? $local_db_cnn_id : false));
 
-	if ($defaults_file === false) {
+	if (!is_array($rows) || !cacti_sizeof($rows)) {
 		return 'U';
 	}
 
-	try {
-		$result = shell_exec('mysqladmin --defaults-file=' . cacti_escapeshellarg($defaults_file) . ' status') ?? '';
-	} finally {
-		unlink($defaults_file);
+	$status = array_column($rows, 'Value', 'Variable_name');
+
+	if (!isset($status['Uptime'], $status['Questions'])) {
+		return 'U';
 	}
 
-	$result = preg_replace('/: /', ':', (string) $result);
-	$result = preg_replace('/  /', ' ', (string) $result);
-	$result = preg_replace('/Slow queries/', 'SlowQueries', (string) $result);
-	$result = preg_replace('/Open tables/', 'OpenTables', (string) $result);
-	$result = preg_replace('/Queries per second avg/', 'QPS', (string) $result);
-	$result = preg_replace('/Flush tables/', 'FlushTables', (string) $result);
+	// mysqladmin prints Questions / Uptime truncated to three decimals
+	$uptime = (int) $status['Uptime'];
 
-	return trim((string) $result) ?: 'U';
+	if ($uptime > 0) {
+		$qps = intdiv((int) $status['Questions'] * 1000, $uptime);
+		$qps = intdiv($qps, 1000) . '.' . sprintf('%03d', $qps % 1000);
+	} else {
+		$qps = '0.000';
+	}
+
+	$fields = [
+		'Uptime'      => 'Uptime',
+		'Threads'     => 'Threads_connected',
+		'Questions'   => 'Questions',
+		'SlowQueries' => 'Slow_queries',
+		'Opens'       => 'Opened_tables',
+		'FlushTables' => 'Flush_commands',
+		'OpenTables'  => 'Open_tables',
+	];
+
+	$result = [];
+
+	// MariaDB has no Flush_commands and mysqladmin leaves the field out there
+	foreach ($fields as $name => $variable) {
+		if (isset($status[$variable])) {
+			$result[] = $name . ':' . $status[$variable];
+		}
+	}
+
+	$result[] = 'QPS:' . $qps;
+
+	return implode(' ', $result);
 }
