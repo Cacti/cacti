@@ -33,8 +33,18 @@ function auth_process_lockout_check(string $username,int $realm):bool {
 function db_column_exists($table,$column) {
 	return false;
 }
+function auth_process_lockout(string $username,int $realm):void {
+}
 function db_fetch_row_prepared($sql,$params = []) {
-	return $GLOBALS['mode'] === 'disabled' ? ['id'=>1, 'username'=>'fixture', 'password'=>'', 'enabled'=>''] : [];
+	if ($GLOBALS['mode'] === 'disabled') {
+		return ['id'=>1, 'username'=>'fixture', 'password'=>'', 'enabled'=>''];
+	}
+
+	if ($GLOBALS['mode'] === 'wrong') {
+		return ['id'=>1, 'username'=>'fixture', 'password'=>password_hash('another password', PASSWORD_BCRYPT, ['cost'=>4]), 'enabled'=>'on'];
+	}
+
+	return [];
 }
 function cacti_sizeof($value) {
 	return is_array($value) ? count($value) : false;
@@ -60,9 +70,13 @@ if (str_starts_with($mode,'saml')) {
 	require $root . '/lib/Auth/RedirectLoginProviderInterface.php';
 	require $root . '/lib/Auth/AbstractLoginProvider.php';
 	require $root . '/lib/Auth/SamlLoginProvider.php';
-	$parameters = match ($mode) {
-		'saml-message'=> ['want_assertions_signed'=>''],'saml-assertion'=>['want_assertions_signed'=>'on'],default=>[]
-	};
+	$parameters = [];
+
+	if ($mode === 'saml-message') {
+		$parameters = ['want_assertions_signed'=>''];
+	} elseif ($mode === 'saml-assertion') {
+		$parameters = ['want_assertions_signed'=>'on'];
+	}
 	$provider = new Cacti\Auth\SamlLoginProvider(['id'=>1, 'parameters'=>json_encode($parameters)]);
 	$settings = (new ReflectionMethod($provider,'buildSettings'))->invoke($provider);
 	print json_encode($settings['security'],JSON_THROW_ON_ERROR) . "\n";

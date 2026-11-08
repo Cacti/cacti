@@ -260,13 +260,11 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			],
 			'security' => [
 				'authnRequestsSigned'  => (bool) $this->param('sign_authn_requests', false),
+				// wantMessagesSigned would additionally require the outer SAML Response
+				// message itself to be signed - stricter than what the "Require Signed
+				// Assertions" checkbox promises, and would reject IdPs that only sign
+				// the assertion. Leave it off; wantAssertionsSigned alone covers the UI setting.
 				'wantAssertionsSigned' => (bool) $this->param('want_assertions_signed', true),
-				// Never accept a fully-unsigned SAML Response. When the admin does not
-				// require signed assertions, require the outer message to be signed
-				// instead, so at least one signature is always verified - an unsigned
-				// assertion AND unsigned message would allow NameID forgery. (This also
-				// supports IdPs that sign only the message.)
-				'wantMessagesSigned'   => !((bool) $this->param('want_assertions_signed', true)),
 				'signatureAlgorithm'   => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
 				'digestAlgorithm'      => 'http://www.w3.org/2001/04/xmlenc#sha256',
 			],
