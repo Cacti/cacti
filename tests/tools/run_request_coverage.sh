@@ -69,3 +69,5 @@ run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(funct
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptQueryCommand.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommand\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryCommandWin32.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommandWin32\.php)'
