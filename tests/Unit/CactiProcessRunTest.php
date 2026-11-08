@@ -22,100 +22,100 @@
  +-------------------------------------------------------------------------+
 */
 
-/**
- * Standalone test for cacti_process_run(). Runs without the Cacti bootstrap or
- * a database: it stubs the one Cacti helper the unit references (cacti_sizeof),
- * registers the composer autoloader so Symfony Process resolves, and then loads
- * lib/process.php directly.
- *
- * Run: php tests/Unit/CactiProcessRunTest.php
+/*
+ * cacti_process_run() and both of its backends. Runs real child processes;
+ * the unit bootstrap loads lib/process.php through include/global.php.
  */
 
-if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof($a): int {
-		return is_array($a) || $a instanceof Countable ? count($a) : 0;
-	}
-}
+require_once CACTI_PATH_LIBRARY . '/process.php';
 
-require_once __DIR__ . '/../../include/vendor/autoload.php';
-require_once __DIR__ . '/../../lib/process.php';
+// A payload that would create a file, run id, or chain commands if any shell
+// ever parsed it. The marker path is unique per run so a stale file from an
+// earlier run cannot mask or fake the result.
+$marker  = sys_get_temp_dir() . '/cacti-process-run-' . bin2hex(random_bytes(4));
+$payload = '$(touch ' . $marker . '); `id`; a&&b || c; x|y > /dev/null; *';
 
-$failures = 0;
-$total    = 0;
+test('Symfony Process is available, so cacti_process_run() uses it', function () {
+	expect(class_exists(Symfony\Component\Process\Process::class))->toBeTrue();
 
-function check(string $name, bool $cond, string $detail = ''): void {
-	global $failures, $total;
-	$total++;
+	$r = cacti_process_run(['printf', '%s', 'hello']);
 
-	if ($cond) {
-		fwrite(STDOUT, "PASS: $name\n");
-	} else {
-		$failures++;
-		fwrite(STDOUT, "FAIL: $name" . ($detail !== '' ? " -- $detail" : '') . "\n");
-	}
-}
+	expect($r['stdout'])->toBe('hello')
+		->and($r['exit_code'])->toBe(0)
+		->and($r['via'])->toBe('symfony')
+		->and($r['timed_out'])->toBeFalse();
+});
 
-// Guard: these assertions only mean anything if the primary (Symfony) backend
-// is the one under test. The reference conversion ships with Symfony Process as
-// a hard dependency, so a missing class is a test-environment failure.
-check('Symfony Process backend is available',
-	class_exists(Symfony\Component\Process\Process::class));
+test('cacti_process_run passes shell metacharacters through as one literal argument', function () use ($marker, $payload) {
+	$r = cacti_process_run(['printf', '%s', $payload]);
 
-// 1. Basic argv exec: stdout, exit code, and backend identity.
-$r = cacti_process_run(['printf', '%s', 'hello']);
-check('printf returns exact stdout', $r['stdout'] === 'hello', var_export($r['stdout'], true));
-check('printf exit code is 0', $r['exit_code'] === 0, (string) $r['exit_code']);
-check('ran via symfony backend', $r['via'] === 'symfony', $r['via']);
-check('not timed out', $r['timed_out'] === false);
+	expect($r['stdout'])->toBe($payload)
+		->and(file_exists($marker))->toBeFalse();
+});
 
-// 2. The core security property: a shell metacharacter payload passed as ONE
-//    argv entry must reach the program as a literal string, never be split or
-//    interpreted. If a shell were involved, 'echo' / command substitution /
-//    redirection would fire and the literal would not survive.
-$payload = '$(touch /tmp/cacti_pwned); `id`; a&&b || c; x|y > /dev/null; *';
-$r = cacti_process_run(['printf', '%s', $payload]);
-check('metachars survive verbatim (no shell interpretation)',
-	$r['stdout'] === $payload, var_export($r['stdout'], true));
-check('injection side effect did NOT occur',
-	!file_exists('/tmp/cacti_pwned'));
+test('cacti_process_run keeps each argv entry as a separate argument', function () {
+	expect(cacti_process_run(['printf', '%s', 'a; id'])['stdout'])->toBe('a; id')
+		->and(cacti_process_run(['printf', '[%s]', 'one two', 'three'])['stdout'])->toBe('[one two][three]')
+		->and(cacti_process_run(['printf', '[%s]', 7])['stdout'])->toBe('[7]');
+});
 
-// 3. Semicolon/pipe do not chain a second command: the whole string is argv[1].
-$r = cacti_process_run(['printf', '%s', 'a; id']);
-check('command separators are literal, not chained',
-	$r['stdout'] === 'a; id', var_export($r['stdout'], true));
+test('cacti_process_run pipes stdin and reports exit code and stderr', function () {
+	$r = cacti_process_run(['cat'], "line1\nline2\n");
 
-// 4. Multiple args stay distinct (argv, not a re-split string).
-$r = cacti_process_run(['printf', '[%s]', 'one two', 'three']);
-check('each argv entry is one argument',
-	$r['stdout'] === '[one two][three]', var_export($r['stdout'], true));
+	expect($r['stdout'])->toBe("line1\nline2\n");
 
-// 5. stdin payload is delivered and read back unchanged.
-$r = cacti_process_run(['cat'], "line1\nline2\n");
-check('stdin payload is piped to the child',
-	$r['stdout'] === "line1\nline2\n", var_export($r['stdout'], true));
+	$r = cacti_process_run(['sh', '-c', 'echo oops >&2; exit 3']);
 
-// 6. Non-zero exit is reported, stderr is captured.
-$r = cacti_process_run(['sh', '-c', 'echo oops >&2; exit 3']);
-check('non-zero exit code is reported', $r['exit_code'] === 3, (string) $r['exit_code']);
-check('stderr is captured', trim($r['stderr']) === 'oops', var_export($r['stderr'], true));
+	expect($r['exit_code'])->toBe(3)
+		->and(trim($r['stderr']))->toBe('oops');
+});
 
-// 7. Unknown program fails cleanly rather than fataling.
-$r = cacti_process_run(['this-binary-does-not-exist-cacti']);
-check('missing binary yields non-zero exit', $r['exit_code'] !== 0, (string) $r['exit_code']);
+test('cacti_process_run rejects an empty or non-string argv without spawning', function () {
+	$empty = cacti_process_run([]);
+	$bad   = cacti_process_run(['printf', ['nested']]);
 
-// 8. Empty argv is rejected.
-$r = cacti_process_run([]);
-check('empty argv is rejected', $r['exit_code'] === -1 && $r['via'] === 'none');
+	expect($empty['exit_code'])->toBe(-1)
+		->and($empty['via'])->toBe('none')
+		->and($bad['exit_code'])->toBe(-1)
+		->and($bad['via'])->toBe('none')
+		->and($bad['stderr'])->toContain('argument 1');
+});
 
-// 9. Timeout is enforced and flagged.
-$r = cacti_process_run(['sleep', '5'], null, 1);
-check('timeout is flagged', $r['timed_out'] === true, var_export($r, true));
+test('cacti_process_run reports a missing binary and flags a timeout', function () {
+	expect(cacti_process_run(['this-binary-does-not-exist-cacti'])['exit_code'])->not->toBe(0);
 
-// 10. The proc_open fallback honours the SAME no-shell contract.
-$r = cacti_process_run_proc_open(['printf', '%s', $payload], null, 5, null, null);
-check('fallback backend reports proc_open', $r['via'] === 'proc_open', $r['via']);
-check('fallback keeps metachars literal too',
-	$r['stdout'] === $payload, var_export($r['stdout'], true));
+	$r = cacti_process_run(['sleep', '5'], null, 1);
 
-fwrite(STDOUT, "\n$total checks, $failures failure(s)\n");
-exit($failures === 0 ? 0 : 1);
+	expect($r['timed_out'])->toBeTrue()
+		->and($r['exit_code'])->toBe(-1);
+});
+
+test('the proc_open fallback keeps the same no-shell contract', function () use ($marker, $payload) {
+	$r = cacti_process_run_proc_open(['printf', '%s', $payload], null, 5, null, null);
+
+	expect($r['via'])->toBe('proc_open')
+		->and($r['stdout'])->toBe($payload)
+		->and($r['exit_code'])->toBe(0)
+		->and($r['timed_out'])->toBeFalse()
+		->and(file_exists($marker))->toBeFalse();
+});
+
+test('the proc_open fallback pipes stdin and captures stderr and exit code', function () {
+	$r = cacti_process_run_proc_open(['cat'], "in\n", 5, null, null);
+
+	expect($r['stdout'])->toBe("in\n");
+
+	$r = cacti_process_run_proc_open(['sh', '-c', 'echo err >&2; exit 4'], null, 5, null, null);
+
+	expect($r['exit_code'])->toBe(4)
+		->and(trim($r['stderr']))->toBe('err');
+});
+
+test('the proc_open fallback kills the child on timeout', function () {
+	$start = microtime(true);
+	$r     = cacti_process_run_proc_open(['sleep', '5'], null, 1, null, null);
+
+	expect($r['timed_out'])->toBeTrue()
+		->and($r['exit_code'])->toBe(-1)
+		->and(microtime(true) - $start)->toBeLessThan(4.0);
+});

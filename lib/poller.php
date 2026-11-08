@@ -479,11 +479,16 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		// Resolve setsid via a shell-free argv run (no user input here, but this
 		// is the reference conversion to cacti_process_run()). stderr is
 		// discarded by capturing it separately rather than a '2>/dev/null'
-		// shell redirect.
-		$which       = cacti_process_run(['which', 'setsid'], null, 5);
-		$setsid_path = trim($which['stdout']);
+		// shell redirect. The answer cannot change while this process runs, so
+		// it is cached to avoid one extra spawn per call.
+		static $setsid_found = null;
 
-		if ($which['exit_code'] === 0 && $setsid_path !== '') {
+		if ($setsid_found === null) {
+			$which        = cacti_process_run(['which', 'setsid'], null, 5);
+			$setsid_found = $which['exit_code'] === 0 && trim($which['stdout']) !== '';
+		}
+
+		if ($setsid_found) {
 			$setsid = 'setsid -- ';
 		}
 	}
