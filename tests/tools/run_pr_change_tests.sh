@@ -39,6 +39,9 @@ if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
 fi
+if [[ -f tests/fixtures/Core/Boost/FailedDataSourceIsolation.php ]]; then
+	run_probe Boost/FailedDataSourceIsolation.php boost-failed-data-source-isolation
+fi
 if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	case_number=0
 	for request in '{}' '{"action":"go"}' '{"action":"change","tab":"devices"}' '{"action":"reset","report":"summary"}' '{"action":"edit"}'; do
