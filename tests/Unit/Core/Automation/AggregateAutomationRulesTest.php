@@ -106,3 +106,14 @@ it('preserves stricter caller limits', function () {
 		ini_set('pcre.backtrack_limit', $previous);
 	}
 });
+
+it('leaves a managed aggregate alone once template propagation is turned off', function () {
+	require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
+
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/AggregateAutomationDetachProbe.php');
+
+	expect($result['states'])->toBe(['created', 'unchanged', 'updated', 'detached', 'detached'])
+		->and($result['builds'])->toBe([500, 500])
+		->and($result['aggregates'])->toBe(1)
+		->and($result['mapping'])->toBe([['local_graph_id' => 500]]);
+});

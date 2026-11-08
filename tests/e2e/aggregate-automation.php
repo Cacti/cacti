@@ -180,6 +180,18 @@ try {
 }
 aggregate_fixture_check(automation_execute_device_aggregates(900001)[800001] === 'unchanged', 'Metadata failure poisoned the process cache.');
 
+// Turning off template propagation (aggregate_graphs.php) hands the graph to the user.
+$aggregates = (int) db_fetch_cell('SELECT COUNT(*) FROM aggregate_graphs');
+db_execute_prepared("UPDATE aggregate_graphs SET aggregate_template_id = 0, template_propogation = '' WHERE local_graph_id = ?", [$first]);
+db_execute("UPDATE aggregate_graph_templates SET automation_title = 'Detached |host_description|' WHERE id = 800001");
+aggregate_fixture_check(automation_execute_device_aggregates(900001, true)[800001] === 'detached', 'Detached aggregate was rebuilt.');
+aggregate_fixture_check(automation_execute_device_aggregates(900001)[800001] === 'detached', 'Detached aggregate was not left alone on rerun.');
+aggregate_fixture_check((int) db_fetch_cell('SELECT COUNT(*) FROM aggregate_graphs') === $aggregates, 'Detached aggregate was duplicated.');
+aggregate_fixture_check((int) db_fetch_cell('SELECT local_graph_id FROM automation_aggregate_graphs WHERE host_id = 900001') === $first, 'Ownership moved off the detached aggregate.');
+db_execute_prepared("UPDATE aggregate_graphs SET aggregate_template_id = 800001, template_propogation = 'on' WHERE local_graph_id = ?", [$first]);
+db_execute("UPDATE aggregate_graph_templates SET automation_title = 'Changed |host_description|' WHERE id = 800001");
+automation_execute_device_aggregates(900001, true);
+
 api_aggregate_remove_multi([$first]);
 aggregate_fixture_check(automation_execute_device_aggregates(900001)[800001] === 'created', 'Deleted managed graph was not recreated.');
 aggregate_fixture_check((int) db_fetch_cell('SELECT COUNT(*) FROM automation_aggregate_graphs WHERE host_id = 900001') === 1, 'Stale ownership row created duplicates.');
