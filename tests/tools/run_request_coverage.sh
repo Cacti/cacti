@@ -54,6 +54,8 @@ run_php_probe tests/fixtures/Core/ConstantTimeGuardMatrix.php '^(auth_2fa\.php|a
 run_php_probe tests/fixtures/Core/PackageManifestMatrix.php '^(package_import\.php|package_repos\.php|lib/import\.php|tests/fixtures/Core/PackageManifestMatrix\.php)'
 run_php_probe tests/fixtures/Core/PackageSaveMatrix.php '^(package_repos\.php|tests/fixtures/Core/PackageSaveMatrix\.php)'
 run_php_probe tests/fixtures/Core/GraphDrilldownMarkup.php '^(lib/html\.php|tests/fixtures/Core/GraphDrilldownMarkup\.php)'
+run_php_probe tests/fixtures/Core/RrdInfoHtmlEscape.php '^(lib/rrd\.php|tests/fixtures/Core/RrdInfoHtmlEscape\.php)'
+run_php_probe tests/fixtures/Core/GraphItemsListMarkup.php '^(lib/html\.php|tests/fixtures/Core/GraphItemsListMarkup\.php)'
 run_php_probe tests/fixtures/Core/SpikekillMutationMatrix.php '^(lib/spikekill\.php|tests/fixtures/Core/SpikekillMutationMatrix\.php)'
 run_php_probe tests/fixtures/Core/RemoveSpikesHelp.php '^(cli/removespikes\.php|tests/fixtures/Core/RemoveSpikesHelp\.php)$'
 run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tests/fixtures/Core/SpikekillRequestGate\.php)'
@@ -100,5 +102,6 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
 
-run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/api_aggregate\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)' graph '<em>Literal label</em>'
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'

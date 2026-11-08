@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
+for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix RrdInfoHtmlEscape GraphItemsListMarkup; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -91,6 +91,11 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 			done
 		done
 	done
+fi
+
+if [[ -f tests/fixtures/Core/GraphItemLabelMarkup.php ]]; then
+	run_probe GraphItemLabelMarkup.php graph-item-label-aggregate label '<em>Literal label</em>'
+	run_probe GraphItemLabelMarkup.php graph-item-label-graph graph '<em>Literal label</em>'
 fi
 
 run_probe ConfiguredCommands.php configured-commands
