@@ -85,7 +85,9 @@ switch (true) {
 
 		break;
 	case $path === '/relative':
+		// a body the client must drop when it follows the redirect
 		header('Location: /stats', true, 302);
+		print '{"moved":true}';
 
 		break;
 	case $path === '/loop':

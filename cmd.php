@@ -973,20 +973,13 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 				$error_ds[$ds] = $ds;
 
 				if (read_config_option('spine_log_level') == 2) {
-					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] HTTP: $target, pointer: " . $item['arg2'] . ', reason: ' . ($http_reasons[$key] ?? 'Item was not fetched'),
-						$print_data_to_stdout,
-						'POLLER');
+					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] HTTP: $target, pointer: " . $item['arg2'] . ', reason: ' . ($http_reasons[$key] ?? 'Item was not fetched'), $print_data_to_stdout, 'POLLER');
 				}
 			}
 
 			$total_time = (microtime(true) - $thread_start) * 1000;
 
-			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time,
-				2) . "] HTTP: $target, pointer: " . $item['arg2'] . ", output: $output",
-				$print_data_to_stdout,
-				'POLLER',
-				debug_level($host_id,
-					POLLER_VERBOSITY_MEDIUM));
+			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time, 2) . "] HTTP: $target, pointer: " . $item['arg2'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 			break;
 		default:
@@ -1020,14 +1013,9 @@ function http_prefetch_device(CactiHttpPoller $poller, int $host_id, array $item
 	$http_outputs = $poller->collect($items, $reasons);
 	$http_reasons = $reasons;
 
-	cacti_log(sprintf('Device[%d] TT[%0.2f] HTTP: Polled %d item(s), %d failed',
-		$host_id,
-		(microtime(true) - $start) * 1000,
-		cacti_sizeof($items),
-		cacti_sizeof($reasons)),
-		$print_data_to_stdout,
-		'POLLER',
-		debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+	$message = sprintf('Device[%d] TT[%0.2f] HTTP: Polled %d item(s), %d failed', $host_id, (microtime(true) - $start) * 1000, cacti_sizeof($items), cacti_sizeof($reasons));
+
+	cacti_log($message, $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 }
 
 function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) : bool {
