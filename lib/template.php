@@ -739,15 +739,15 @@ function graph_template_has_override($graph_template_id) {
 				FROM data_template_data AS dtd
 				INNER JOIN data_template AS dt
 				ON dt.id = dtd.data_template_id
-				INNER JOIN data_input_data AS did
-				ON did.data_template_data_id = dtd.id
+			INNER JOIN data_input_data AS did
+			ON did.data_template_data_id = dtd.id
 				INNER JOIN data_input_fields AS dif
 				ON dif.id = did.data_input_field_id
 				WHERE dt.hash != ""
 				AND dtd.id = ?
 				AND dtd.local_data_id = 0
 				AND dif.input_output = "in"
-				AND did.t_value = "on"',
+			AND did.t_value = "on"',
 				array($dtd['id']));
 
 			if (cacti_sizeof($input_fields)) {
@@ -1585,9 +1585,70 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
  *   $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name]
  *   = $value // data template item (w/ data query).
  *
+ * @param int $local_graph_id Existing empty graph shell to resume, or zero for a new graph.
+ *
  * @return mixed False if failing, otherwise the local_data_id data in a cache array.
  */
-function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
+function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals, $local_graph_id = 0) {
+	global $database_sessions, $database_hostname, $database_port, $database_default, $database_last_error;
+
+	$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	// Hooks publish tree/cache changes. They must run only after our transaction commits.
+	if ($db_conn->inTransaction()) {
+		cacti_log('ERROR: Graph creation requires its own transaction.', false, 'AUTOM8');
+		return false;
+	}
+
+	$previous_error = isset($database_last_error) ? $database_last_error : '';
+	$database_last_error = '';
+	$committed = false;
+	$created_graph = array();
+	$created_data_sources = array();
+
+	try {
+		if (!db_begin_transaction($db_conn)) {
+			return false;
+		}
+
+		$result = create_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_vals, $local_graph_id, $created_graph, $created_data_sources);
+		// Legacy template helpers report failed SQL through database_last_error.
+		// Checking it here also catches failed writes in their nested calls.
+		if ($result === false || $database_last_error != '' || !$db_conn->inTransaction()) {
+			return false;
+		}
+
+		$committed = db_commit_transaction($db_conn);
+		if (!$committed) {
+			return false;
+		}
+	} catch (Throwable $e) {
+		cacti_log('ERROR: Graph creation failed for Device[' . $host_id . '], GT[' . $graph_template_id . ']: ' . $e->getMessage(), false, 'AUTOM8');
+		return false;
+	} finally {
+		if (!$committed && $db_conn->inTransaction()) {
+			db_rollback_transaction($db_conn);
+		}
+		if ($database_last_error == '') {
+			$database_last_error = $previous_error;
+		}
+	}
+
+	foreach ($created_data_sources as $data_source_id) {
+		api_plugin_hook_function('update_data_source_title_cache', $data_source_id);
+	}
+
+	if (cacti_sizeof($created_graph)) {
+		automation_hook_graph_create_tree($created_graph);
+		api_plugin_hook_function('create_complete_graph_from_template', $created_graph);
+	}
+
+	return $result;
+}
+
+/**
+ * Write graph records inside create_complete_graph_from_template's transaction.
+ */
+function create_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals, $local_graph_id, &$created_graph, &$created_data_sources) {
 	global $config;
 
 	include_once($config['library_path'] . '/data_query.php');
@@ -1617,7 +1678,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	}
 
 	/* create the graph */
-	$save['id']                  = 0;
+	$save['id']                  = $local_graph_id;
 	$save['graph_template_id']   = $graph_template_id;
 	$save['host_id']             = $host_id;
 
@@ -1641,6 +1702,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	}
 
 	$cache_array['local_graph_id'] = sql_save($save, 'graph_local');
+	if (empty($cache_array['local_graph_id'])) {
+		return false;
+	}
 
 	/**
 	 * Save the last time a graph was created/deleted
@@ -1649,7 +1713,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	set_config_option('time_last_change_graph', time());
 
 	/* apply graph items */
-	change_graph_template($cache_array['local_graph_id'], $graph_template_id, true);
+	if (!change_graph_template($cache_array['local_graph_id'], $graph_template_id, true)) {
+		return false;
+	}
 
 	/* perform graph replacement based upon suggested values */
 	if (cacti_sizeof($snmp_query_array)) {
@@ -1740,6 +1806,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				}
 
 				$cache_array['local_data_id'][$data_template['id']] = sql_save($save, 'data_local');
+				if (empty($cache_array['local_data_id'][$data_template['id']])) {
+					return false;
+				}
 
 				/**
 				 * Save the last time a data_source was created/deleted
@@ -1837,7 +1906,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					api_reapply_suggested_data_source_data($cache_array['local_data_id'][$data_template['id']]);
 
 					/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
-					update_data_source_data_query_cache($cache_array['local_data_id'][$data_template['id']]);
+					update_data_source_data_query_cache($cache_array['local_data_id'][$data_template['id']], '', '', '', false);
 				}
 
 				/* suggested values: data source, passed from parent */
@@ -1878,7 +1947,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					}
 				}
 
-				update_data_source_title_cache($cache_array['local_data_id'][$data_template['id']]);
+				update_data_source_title_cache($cache_array['local_data_id'][$data_template['id']], false);
+				$created_data_sources[] = $cache_array['local_data_id'][$data_template['id']];
 			}
 		}
 	}
@@ -1912,12 +1982,14 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					AND local_data_id = ?',
 					array($template_item['data_template_rrd_id'], $local_data_id));
 
-				if (!empty($data_template_rrd_id)) {
-					db_execute_prepared('UPDATE graph_templates_item
-						SET task_item_id = ?
-						WHERE id = ?',
-						array($data_template_rrd_id, $graph_template_item_id));
+				if (empty($graph_template_item_id) || empty($data_template_rrd_id)) {
+					return false;
 				}
+
+				db_execute_prepared('UPDATE graph_templates_item
+					SET task_item_id = ?
+					WHERE id = ?',
+					array($data_template_rrd_id, $graph_template_item_id));
 			}
 		}
 	}
@@ -1946,10 +2018,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			$save['snmp_query_graph_id'] = 0;
 		}
 
-		/* provide automation services */
-		automation_hook_graph_create_tree($save);
-
-		api_plugin_hook_function('create_complete_graph_from_template', $save);
+		$created_graph = $save;
 	}
 
 	return $cache_array;
@@ -2338,17 +2407,19 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 		$input_fields = db_fetch_cell_prepared('SELECT
 			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
 			FROM snmp_query_graph_rrd
-			WHERE snmp_query_graph_id = ?',
-			array($snmp_query_array['snmp_query_graph_id']));
+			WHERE snmp_query_graph_id = ? AND data_template_id = ?',
+			array($snmp_query_array['snmp_query_graph_id'], $data_template['id']));
 
 		$find_data_source_names = db_fetch_cell_prepared('SELECT
 			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
 			FROM data_template_rrd AS dtr
 			INNER JOIN snmp_query_graph_rrd AS sqgr
-			ON sqgr.data_template_id = dtr.data_template_id
-			WHERE dtr.data_template_id = ?
+			ON sqgr.data_template_rrd_id = dtr.id
+			AND sqgr.data_template_id = dtr.data_template_id
+			WHERE sqgr.snmp_query_graph_id = ?
+			AND dtr.data_template_id = ?
 			AND dtr.local_data_id = 0',
-			array($data_template['id']));
+			array($snmp_query_array['snmp_query_graph_id'], $data_template['id']));
 
 		// Interfaces are a special case where we can change from 32 to 64 bits on the fly
 		if (strpos($input_fields, 'ifHCInOctets,ifHCOutOctets') !== false ||
@@ -2357,13 +2428,14 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 				cacti_log('Data Source Exists Special Case "' . $input_fields . '"', false, 'DSTRACE');
 			}
 
-			$case_where = "AND input_fields LIKE ?";
+			// Counter width may change without creating a second traffic data source.
+			$case_where = "AND REPLACE(REPLACE(input_fields, 'ifHCInOctets', 'ifInOctets'), 'ifHCOutOctets', 'ifOutOctets') LIKE ?";
 			$case_array = array(
 				$host_id,
 				$data_template['id'],
 				$snmp_query_array['snmp_query_id'],
 				$snmp_query_array['snmp_index'],
-				'%' . $input_fields . '%',
+				'%' . str_replace(array('ifHCInOctets', 'ifHCOutOctets'), array('ifInOctets', 'ifOutOctets'), $input_fields) . '%',
 				$find_data_source_names
 			);
 		} else {
@@ -2392,8 +2464,13 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			ON dtd.local_data_id = dtr.local_data_id
 			INNER JOIN data_input_fields AS dif
 			ON dif.data_input_id = dtd.data_input_id
+			INNER JOIN data_input_data AS did
+			ON did.data_template_data_id = dtd.id
+			AND did.data_input_field_id = dif.id
 			INNER JOIN snmp_query_graph_rrd AS sqgr
 			ON sqgr.data_template_id = dtd.data_template_id
+			AND sqgr.snmp_query_graph_id = did.value
+			AND sqgr.data_template_rrd_id = dtr.local_data_template_rrd_id
 			WHERE input_output = 'in'
 			AND type_code = 'output_type'
 			AND dl.host_id = ?

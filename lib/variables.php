@@ -110,9 +110,11 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
  *
  * @param int $local_data_id (int) the ID of the data source to update the title cache for.
  *
+ * @param bool $notify Whether to notify plugins after updating the title.
+ *
  * @return void No value is returned.
  */
-function update_data_source_title_cache($local_data_id) {
+function update_data_source_title_cache($local_data_id, $notify = true) {
 	$old_title = db_fetch_cell_prepared('SELECT name_cache
 		FROM data_template_data
 		WHERE local_data_id = ?',
@@ -127,7 +129,9 @@ function update_data_source_title_cache($local_data_id) {
 				WHERE local_data_id = ?',
 				array($data_source, $local_data_id));
 
-			api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+			if ($notify) {
+				api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+			}
 		}
 	} else {
 		db_execute_prepared('UPDATE data_template_data
@@ -135,7 +139,9 @@ function update_data_source_title_cache($local_data_id) {
 			WHERE local_data_id = ?',
 			array($data_source, $local_data_id));
 
-		api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+		if ($notify) {
+			api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+		}
 	}
 }
 
