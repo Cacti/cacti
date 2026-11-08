@@ -198,9 +198,7 @@ namespace CactiHttpTransportFixture {
 
 	check(cacti_http_start(curl_multi_init(), $late) === 'Timed out', 'hop started after its deadline');
 
-	// multi keeps request keys, runs requests together and isolates failures
-	file_get_contents("$base/reset-peak");
-
+	// multi keeps request keys and isolates failures; HttpPollerTest asserts concurrency
 	$results = cacti_http_multi([
 		'a'  => ['method' => 'GET', 'url' => "$base/inflight/a", 'options' => $opts],
 		'b'  => ['method' => 'GET', 'url' => "$base/inflight/b", 'options' => $opts],
@@ -210,7 +208,6 @@ namespace CactiHttpTransportFixture {
 
 	check(array_keys($results) === ['a', 'b', 7, 'ok'], 'multi reordered its results');
 	check(array_column($results, 'success') === [true, true, false, true], 'multi results were ' . json_encode($results));
-	check(json_decode(file_get_contents("$base/peak"), true)['peak'] === 2, 'multi did not overlap requests');
 	check(cacti_http_multi([['method' => 'GET', 'url' => '']])[0]['error'] === 'Invalid URL', 'multi with only refused requests');
 
 	// names go through the system resolver as well as DNS
