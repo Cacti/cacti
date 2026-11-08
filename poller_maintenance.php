@@ -234,6 +234,14 @@ function purge_host_value_cache() : void {
 	}
 }
 
+/**
+ * queue_messages_purge - remove old completed and dead queue messages
+ *
+ * A failure is logged rather than thrown so the remaining maintenance tasks
+ * still run.
+ *
+ * @return void
+ */
 function queue_messages_purge() : void {
 	try {
 		$purged = api_queue_purge_all();
