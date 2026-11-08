@@ -154,7 +154,13 @@ foreach ([$db, $remote] as $connection) {
 	$connection->exec('CREATE TABLE poller_reindex (host_id INTEGER, data_query_id INTEGER, action INTEGER)');
 	$connection->exec('CREATE TABLE poller (id INTEGER PRIMARY KEY, snmp INTEGER, script INTEGER, server INTEGER)');
 }
-$db->prepare('INSERT INTO host VALUES (' . implode(',', array_fill(0, count($host), '?')) . ')')->execute(array_values($host));
+$db->prepare('INSERT INTO host VALUES (
+	:id, :host_template_id, :poller_id, :site_id, :description, :hostname,
+	:disabled, :deleted, :status, :snmp_version, :snmp_community, :snmp_username,
+	:snmp_password, :snmp_auth_protocol, :snmp_priv_passphrase, :snmp_priv_protocol,
+	:snmp_context, :snmp_engine_id, :snmp_port, :snmp_timeout, :external_id,
+	:notes, :location, :availability_method, :ping_method, :ping_port,
+	:ping_timeout, :ping_retries, :max_oids, :bulk_walk_size, :device_threads)')->execute($host);
 $db->exec('INSERT INTO data_local VALUES (101,7,1),(102,7,1),(103,7,2),(104,8,1)');
 $db->exec('INSERT INTO graph_local VALUES (201,7,1),(202,7,1),(203,7,2),(204,8,1)');
 $db->exec('INSERT INTO data_template_rrd VALUES (301,101),(302,102),(303,103),(304,104)');
