@@ -18,7 +18,9 @@ while IFS= read -r command; do
 	fi
 
 	if [ -n "$FAKE_RRD_STDOUT_BYTES" ]; then
+		# Real RRDtool text output always ends with a newline before the status.
 		head -c "$FAKE_RRD_STDOUT_BYTES" /dev/zero | tr '\0' 'A'
+		printf '\n'
 	fi
 
 	printf 'OK u:0.00 0.00\n'
