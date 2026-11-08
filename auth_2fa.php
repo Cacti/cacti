@@ -78,6 +78,8 @@ if (!empty($_SESSION[SESS_USER_2FA]) && $_SESSION[SESS_USER_2FA] < $tfaTime) {
 if (gnrv('action') == 'login_2fa') {
 	csrf_require_post();
 
+	$tfa_locked = false;
+
 	// Auth token from Form
 	$token = gnrv('token');
 
@@ -91,7 +93,9 @@ if (gnrv('action') == 'login_2fa') {
 
 			auth_checkclear_lockout($user['username'], (int) $user['realm']);
 
-			if (!auth_process_lockout_check($user['username'], (int) $user['realm']) && $g->checkCode($user['tfa_secret'],  $token)) {
+			$tfa_locked = auth_process_lockout_check($user['username'], (int) $user['realm']);
+
+			if (!$tfa_locked && $g->checkCode($user['tfa_secret'],  $token)) {
 				$_SESSION[SESS_USER_2FA] = time();
 
 				// About using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
@@ -129,16 +133,22 @@ if (gnrv('action') == 'login_2fa') {
 		// above is DEBUG-only). A failed second factor is a brute-force signal too.
 		auth_log_failure($user['username'], auth_realm_token((int) $user['realm']), '2fa');
 
-		// Count the failed second factor toward the account lockout threshold so
-		// repeated wrong tokens lock the account (enforced by the gate above).
-		auth_process_lockout($user['username'], (int) $user['realm']);
-
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, 0, 3, ?, NOW())',
 			[$user['username'], get_client_addr()]);
 
-		$message = __('Failed to verify token');
+		if ($tfa_locked) {
+			// The token was never checked. Counting this attempt would reset
+			// lastfail and restart the automatic unlock timer on every retry.
+			$message = __('Your account has been locked.  Please contact your Administrator.');
+		} else {
+			// Count the failed second factor toward the account lockout threshold so
+			// repeated wrong tokens lock the account (enforced by the gate above).
+			auth_process_lockout($user['username'], (int) $user['realm']);
+
+			$message = __('Failed to verify token');
+		}
 	}
 }
 
