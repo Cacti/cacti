@@ -8,3 +8,7 @@ COPY tests/e2e/queue/mysql-init.sh /docker-entrypoint-initdb.d/10-cacti-schema.s
 # initializers, which makes their docker_process_sql helper available.
 RUN chmod 0644 /docker-entrypoint-initdb.d/10-cacti-schema.sh \
     /docker-entrypoint-initdb.d/cacti.sql.source
+
+# Both official images ship a mysql account that owns the data directory, and
+# their entrypoints initialize the database without root when started as it.
+USER mysql
