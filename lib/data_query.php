@@ -2833,7 +2833,25 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 		return '';
 	}
 
-	return cacti_escapeshellcmd($parsed_script_path) . ' ' . $extra_arguments;
+	if (CACTI_SERVER_OS == 'win32') {
+		/* clean_up_path() has already turned every / into \, and the Windows
+		 * cacti_escapeshellcmd() replaces \ ( ) with spaces, which would break
+		 * every path, including "C:\Program Files (x86)\...". cmd.exe only
+		 * treats & | < > ^ and %VAR% specially, and an unpaired " would flip
+		 * the quoting of the arguments that follow, so refuse those and keep
+		 * the path intact. */
+		if (preg_match('/[&|<>^%]/', $parsed_script_path) || substr_count($parsed_script_path, '"') % 2 !== 0) {
+			cacti_log('ERROR: Invalid Data Query script path rejected.', false, 'REINDEX');
+
+			return '';
+		}
+
+		$base_command = $parsed_script_path;
+	} else {
+		$base_command = cacti_escapeshellcmd($parsed_script_path);
+	}
+
+	return $base_command . ' ' . $extra_arguments;
 }
 
 /**
