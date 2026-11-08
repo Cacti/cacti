@@ -8,8 +8,18 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -87,10 +97,7 @@ foreach ($parameters as $parameter) {
 try {
 	api_queue_validate_name($queue, 'queue');
 	api_queue_set_lease_seconds($lease);
-	$transport = api_queue_transport($queue);
-	$events    = new Symfony\Component\EventDispatcher\EventDispatcher();
-	$receiver  = new CactiQueueReceiver($queue, $transport);
-	$worker    = new Symfony\Component\Messenger\Worker([$queue => $receiver], api_queue_worker_bus(), $events);
+	$worker = new CactiQueueWorker(new CactiQueueReceiver($queue, api_queue_transport($queue)));
 } catch (Throwable $e) {
 	print 'ERROR: ' . clean_up_lines($e->getMessage()) . PHP_EOL;
 
@@ -107,41 +114,30 @@ if (function_exists('pcntl_async_signals') && function_exists('pcntl_signal')) {
 	});
 }
 
-$events->addListener(Symfony\Component\Messenger\Event\WorkerMessageFailedEvent::class,
-	static function (Symfony\Component\Messenger\Event\WorkerMessageFailedEvent $event) use (&$failed) : void {
-		$failed = true;
-		$event->addStamps(new CactiQueueFailureStamp($event->getThrowable()->getMessage()));
-		queue_worker_log('Queue message failed: ' . $event->getThrowable()->getMessage());
-	}
-);
-
-if ($once) {
-	$events->addListener(Symfony\Component\Messenger\Event\WorkerRunningEvent::class,
-		static function (Symfony\Component\Messenger\Event\WorkerRunningEvent $event) : void {
-			$event->getWorker()->stop();
-		}
-	);
-}
-
 try {
-	$options = ['sleep' => $sleep * 1000000];
-
-	if ($time_limit > 0) {
-		$options['time_limit'] = $time_limit;
-	}
-	$worker->run($options);
+	$worker->run($once, $sleep, $time_limit);
 } catch (Throwable $e) {
-	queue_worker_log('Queue worker failed: ' . $e->getMessage());
+	api_queue_log('Queue worker failed: ' . $e->getMessage());
 	$failed = true;
 }
 
-exit($failed ? 1 : 0);
+exit($failed || $worker->failed() ? 1 : 0);
 
+/**
+ * Print the worker version banner.
+ *
+ * @return void
+ */
 function queue_worker_display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Queue Worker, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * Print the worker usage.
+ *
+ * @return void
+ */
 function queue_worker_display_help() : void {
 	queue_worker_display_version();
 
@@ -150,10 +146,16 @@ function queue_worker_display_help() : void {
 	print 'Consumes registered handlers from a configured queue transport.' . PHP_EOL;
 }
 
-function queue_worker_log(string $message) : void {
-	cacti_log((string) clean_up_lines($message), false, 'QUEUE');
-}
-
+/**
+ * Parse a bounded integer option, or print usage and exit.
+ *
+ * @param string $argument The option name, for messages
+ * @param string $value    The supplied value
+ * @param int    $minimum  The smallest accepted value
+ * @param int    $maximum  The largest accepted value
+ *
+ * @return int The parsed value
+ */
 function queue_worker_parse_int(string $argument, string $value, int $minimum, int $maximum) : int {
 	if (filter_var($value, FILTER_VALIDATE_INT) === false) {
 		print "ERROR: $argument requires an integer value." . PHP_EOL;

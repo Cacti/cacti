@@ -1,8 +1,8 @@
 # Queue API
 
-Cacti's queue API is a small Cacti-facing wrapper around Symfony Messenger. The built-in database transport works without another service; plugins can provide RabbitMQ, Apache Kafka, Redis Streams, Amazon SQS, or another broker without changing producers and handlers.
+Cacti's queue API is a small, self-contained queue interface in `lib/api_queue.php`. It has no Composer dependency. The built-in database transport works without another service; plugins can provide RabbitMQ, Apache Kafka, Redis Streams, Amazon SQS, or another broker without changing producers and handlers.
 
-The API requires Cacti develop and PHP 8.3 or later, matching Cacti's Composer requirement. Provider plugins use Symfony Messenger's standard `TransportInterface`; Cacti supplies routing, safe serialization, handler registration, database defaults, and worker lifecycle management.
+The API requires Cacti develop and PHP 8.3 or later. Provider plugins implement `CactiQueueTransportInterface` (`send`, `get`, `ack`, `reject`); Cacti supplies routing, safe serialization, handler registration, database defaults, and worker lifecycle management. Cacti does not load the file on every page: require it where it is used.
 
 ## Publishing and handling messages
 
@@ -34,7 +34,7 @@ php cli/queue_worker.php --queue=reports
 php cli/queue_worker.php --queue=reports --once
 ```
 
-Without `--once` or a positive `--time-limit`, the worker runs until it receives SIGTERM or SIGINT. Run it under the operating system's service manager and restart it on failure. The worker is Symfony Messenger's `Worker`, with Cacti logging, signal handling, and database visibility leases around it.
+Without `--once` or a positive `--time-limit`, the worker runs until it receives SIGTERM or SIGINT. Run it under the operating system's service manager and restart it on failure. The worker is `CactiQueueWorker`: it claims a delivery, runs its handler, then acknowledges or rejects it, with Cacti logging, signal handling, and database visibility leases around it. A message that cannot be decoded is dead-lettered and logged, and a stale receipt after a lease expiry is logged as a duplicate delivery; neither stops the worker.
 
 The repository includes `service/cacti-queue@.service` as a hardened systemd template. It runs as `apache:apache`, matching the existing Cacti daemon service. Adjust the literal PHP and Cacti paths and override the account for installations that use another Cacti service user, then enable one instance per queue (for example, `cacti-queue@reports.service`).
 
@@ -42,7 +42,7 @@ A worker only decodes a message whose class is already loaded in that process an
 
 The consumer, not the message, sets the payload limit. Every raw body is checked against `queue_max_payload_bytes` (default 262144, minimum 1024, maximum 67108864) before it is decoded, for the database and provider transports alike. A message header can lower that limit for its own body but cannot raise it.
 
-Workers acknowledge successful handling. Exceptions cause exponential retries until `max_attempts`, after which the database transport records the message as `dead`. Expired leases are reclaimed only while delivery attempts remain; exhausted messages are moved to the dead-letter state. Delivery is at least once, so handlers must be idempotent.
+Workers acknowledge successful handling. Exceptions cause retries with exponential backoff (2^attempts seconds, at most one hour) until `max_attempts`, after which the database transport records the message as `dead`. A received envelope's `CactiQueueReceiptStamp` reports the attempt number and `redeliveryCount()`. Database workers claim with `SELECT ... FOR UPDATE SKIP LOCKED` inside a transaction, so concurrent workers take different messages without waiting on each other. Expired leases are reclaimed only while delivery attempts remain; exhausted messages are moved to the dead-letter state. Delivery is at least once, so handlers must be idempotent.
 
 The database visibility lease defaults to 3600 seconds and can be changed with `queue_lease_seconds` or `--lease=seconds`. Set it above the longest normal handler duration. A long-running handler must call `api_queue_renew($message)` periodically (typically before one third of the lease elapses); stale acknowledgements, retries, and renewals fail instead of silently changing a reclaimed message.
 
@@ -51,17 +51,17 @@ Primary-poller maintenance removes completed messages after 7 days and dead mess
 ```console
 php cli/queue_admin.php --queue=reports --health
 php cli/queue_admin.php --queue=reports --dead --limit=50
-php cli/queue_admin.php --queue=reports --requeue=550e8400-e29b-41d4-a716-446655440000
+php cli/queue_admin.php --queue=reports --requeue=550e8400e29b41d4a716446655440000
 php cli/queue_admin.php --queue=reports --purge
 ```
 
 ## Provider plugins
 
-A plugin registers a named factory through the `queue_transports` hook. The resulting object must implement Symfony Messenger's `TransportInterface`. Configure the provider with `CactiQueueSerializer` or an equivalently strict JSON serializer; do not enable native PHP object serialization for broker data.
+A plugin registers a named factory through the `queue_transports` hook. The resulting object must implement `CactiQueueTransportInterface`. Encode and decode broker data with `CactiQueueSerializer` or an equivalently strict JSON serializer implementing `CactiQueueSerializerInterface`; do not use native PHP object serialization for broker data.
 
 ```php
 function rabbitmq_queue_transports(array $transports) : array {
-	$transports['rabbitmq'] = static function (string $queue) : Symfony\Component\Messenger\Transport\TransportInterface {
+	$transports['rabbitmq'] = static function (string $queue) : CactiQueueTransportInterface {
 		return create_rabbitmq_transport($queue, new CactiQueueSerializer());
 	};
 
@@ -101,7 +101,7 @@ One installation may route different queues to different providers at the same t
 
 The PHP 8.3 CI job runs the queue unit and MySQL 8.4 integration suites with Xdebug, publishes a text report, and enforces 100% line coverage for `lib/api_queue.php`.
 
-Run the full producer-to-worker path in disposable PHP 8.3 and MySQL 8.4 containers with:
+Run the full producer-to-worker path in disposable PHP and MySQL 8.4 containers with:
 
 ```console
 tests/e2e/queue/run.sh

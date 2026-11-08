@@ -7,12 +7,23 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
 require dirname(__DIR__, 3) . '/include/cli_check.php';
+require_once CACTI_PATH_LIBRARY . '/api_queue.php';
 
 if ($database_default !== 'cacti_queue_e2e') {
 	throw new RuntimeException('Queue contracts require the disposable E2E database.');
@@ -33,7 +44,7 @@ function queue_e2e_command(string $script, array $arguments, int $status, string
 queue_e2e_command('queue_admin.php', ['--help'], 0, 'usage:');
 queue_e2e_command('queue_admin.php', ['--version'], 0, 'Version');
 queue_e2e_command('queue_admin.php', ['--invalid'], 1, 'Invalid parameter');
-queue_e2e_command('queue_admin.php', ['--requeue=invalid'], 1, 'canonical lowercase UUID');
+queue_e2e_command('queue_admin.php', ['--requeue=invalid'], 1, 'lowercase hexadecimal message ID');
 queue_e2e_command('queue_admin.php', ['--queue=invalid queue'], 1, 'ERROR:');
 queue_e2e_command('queue_admin.php', ['--queue=queue-e2e', '--dead', '--limit=500'], 0, '[]');
 queue_e2e_command('queue_admin.php', ['--queue=queue-e2e', '--purge'], 0, '"completed":0');

@@ -3,8 +3,6 @@ services:
     build:
       context: ../../../docker
       dockerfile: Dockerfile
-      args:
-        PHP_VERSION: '8.3'
     volumes:
       - ../../..:/var/www/html/cacti
       - ./config.php:/var/www/html/cacti/include/config.php:ro
@@ -24,7 +22,7 @@ services:
       - '127.0.0.1::3306'
     build:
       context: ../../..
-      dockerfile: docker/Database.Dockerfile
+      dockerfile: tests/e2e/queue/Database.Dockerfile
       args:
         DATABASE_IMAGE: mysql:8.4
     environment:
