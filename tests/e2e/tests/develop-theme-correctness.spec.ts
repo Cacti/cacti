@@ -7,6 +7,13 @@ import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
+// Sunrise paints its body over a radial glow whose color depends on where
+// text sits on the page, which textContrast refuses to guess. These fixtures
+// measure against the glow's #000 base color and leave the glow unmeasured.
+async function measureSunriseOnBaseColor(page: Page, theme: string) {
+	if (theme === 'sunrise') await page.addStyleTag({ content: 'body { background-image: none !important; }' });
+}
+
 for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
@@ -67,6 +74,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 
 			test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
 				await page.setContent(`<!DOCTYPE html><table><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a></td></tr></table>`);
 				await installThemeCss(page, `include/themes/${theme}/main.css`);
+				await measureSunriseOnBaseColor(page, theme);
 				for (const state of ['rest', 'focus', 'hover', 'active']) {
 					const link = page.locator('a');
 					if (state === 'focus') await link.focus();
@@ -112,6 +120,7 @@ for (const theme of ['modern', 'paw', 'raspberry', 'sunrise']) {
 			'<div class="select2-container--default"><ul><li class="select2-results__option--highlighted select2-results__option--selectable">Selected device</li></ul></div>');
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		await measureSunriseOnBaseColor(page, theme);
 		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['paw', 'raspberry', 'sunrise'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
 			for (const element of await page.locator(selector).all()) expect.soft(await element.evaluate(textContrast), selector).toBeGreaterThanOrEqual(4.5);
 		}
@@ -128,6 +137,7 @@ for (const theme of ['raspberry', 'sunrise']) {
 		test(`${theme} table headings remain readable in ${state || 'normal'} state`, async ({ page }) => {
 			await page.setContent(`<!DOCTYPE html><table class="cactiTable"><thead><tr class="tableHeader"><th class="${state}">Device</th></tr></thead></table>`);
 			await installThemeCss(page, `include/themes/${theme}/main.css`);
+			await measureSunriseOnBaseColor(page, theme);
 			expect(await page.locator('th').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
 		});
 	}
