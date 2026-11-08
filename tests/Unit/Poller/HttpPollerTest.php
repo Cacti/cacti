@@ -233,17 +233,17 @@ test('link-local and metadata destinations are refused while loopback and privat
 	$port     = parse_url($base, PHP_URL_PORT);
 	$refused  = 'Target host resolves to a disallowed address';
 	$items    = [
-		new CactiHttpPollItem(1, 1, 'v', 'http://169.254.169.254/latest/meta-data', '/v'),
-		new CactiHttpPollItem(1, 2, 'v', 'http://[fe80::1]/stats', '/v'),
-		new CactiHttpPollItem(1, 3, 'v', 'http://[::ffff:169.254.169.254]/latest', '/v'),
-		new CactiHttpPollItem(1, 4, 'v', 'http://[64:ff9b::a9fe:a9fe]/latest', '/v'),
-		new CactiHttpPollItem(1, 5, 'v', 'http://100.100.100.200/latest', '/v'),
-		new CactiHttpPollItem(1, 6, 'v', 'http://[::ffff:100.100.100.200]/latest', '/v'),
-		new CactiHttpPollItem(1, 7, 'v', 'http://[64:ff9b::c000:c0]/latest', '/v'),
+		new CactiHttpPollItem(1, 1, 'v', 'https://169.254.169.254/latest/meta-data', '/v'),
+		new CactiHttpPollItem(1, 2, 'v', 'https://[fe80::1]/stats', '/v'),
+		new CactiHttpPollItem(1, 3, 'v', 'https://[::ffff:169.254.169.254]/latest', '/v'),
+		new CactiHttpPollItem(1, 4, 'v', 'https://[64:ff9b::a9fe:a9fe]/latest', '/v'),
+		new CactiHttpPollItem(1, 5, 'v', 'https://100.100.100.200/latest', '/v'),
+		new CactiHttpPollItem(1, 6, 'v', 'https://[::ffff:100.100.100.200]/latest', '/v'),
+		new CactiHttpPollItem(1, 7, 'v', 'https://[64:ff9b::c000:c0]/latest', '/v'),
 		new CactiHttpPollItem(1, 8, 'v', "$base/redirect?to=metadata", '/v'),
 		new CactiHttpPollItem(1, 9, 'v', "http://localhost:$port/stats", '/in'),
 		new CactiHttpPollItem(1, 10, 'v', "$base/stats", '/in'),
-		new CactiHttpPollItem(1, 11, 'v', 'http://10.255.255.1/stats', '/v', 1.0, 0.2),
+		new CactiHttpPollItem(1, 11, 'v', 'https://10.255.255.1/stats', '/v', 1.0, 0.2),
 	];
 
 	$errors    = [];
@@ -251,7 +251,7 @@ test('link-local and metadata destinations are refused while loopback and privat
 
 	expect(array_keys($documents))->toBe(["1 http://localhost:$port/stats", "1 $base/stats"])
 		->and(array_count_values($errors)[$refused])->toBe(8)
-		->and($errors['1 http://10.255.255.1/stats'])->not->toBe($refused);
+		->and($errors['1 https://10.255.255.1/stats'])->not->toBe($refused);
 });
 
 test('redirects are followed relative to the endpoint and decoded', function () {
