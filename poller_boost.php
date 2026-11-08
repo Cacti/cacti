@@ -981,7 +981,9 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		error_reporting(E_ALL);
 	}
 
-	// gather, repair if required and cache the rrdtool version
+	// Nothing below gates on the version any more. The block stays, once per
+	// process, to repair a stored rrdtool_version option that no longer matches
+	// the installed binary, because the 1.8 graph gates in lib/rrd.php read it.
 	if ($rrdtool_version === null) {
 		$rrdtool_ins_version = get_installed_rrdtool_version();
 		$rrdtool_version     = get_rrdtool_version();
