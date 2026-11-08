@@ -38,7 +38,26 @@ test('df output without a filesystem line yields nothing', function () {
 test('rejected paths return U instead of listing every filesystem', function (string $path) {
 	expect(ss_diskfree_collect($path))->toBe(['megabytes:U percent:U', 1])
 		->and(ss_diskfree($path))->toBe('megabytes:U percent:U');
-})->with(['-h', '--total', '/ /etc', '/;id', '$(id)', '/tmp/a b']);
+})->with(['-h', '--total', '-', "/\0etc"]);
+
+test('shell metacharacters reach df as a plain path and match nothing', function (string $path) {
+	expect(ss_diskfree_collect($path))->toBe(['', 1])
+		->and(ss_diskfree($path))->toBe('megabytes:U percent:U');
+})->with(['/nonexistent/;id', '/nonexistent/$(id)', '/nonexistent/a b', '/nonexistent/`id`']);
+
+test('a path with a space or colon is reported, as diskfree.sh reports it', function () {
+	$dir = sys_get_temp_dir() . '/cacti df:' . getmypid() . ' +@';
+
+	mkdir($dir);
+
+	try {
+		[$output, $status] = ss_diskfree_collect($dir);
+
+		expect($status)->toBe(0)->and($output)->toMatch('/^megabytes:\d+ percent:\d+$/');
+	} finally {
+		rmdir($dir);
+	}
+});
 
 test('the root filesystem is reported on the running host', function () {
 	[$output, $status] = ss_diskfree_collect('/');
@@ -46,6 +65,7 @@ test('the root filesystem is reported on the running host', function () {
 	expect($status)->toBe(0)->and($output)->toMatch('/^megabytes:\d+ percent:\d+$/');
 });
 
-test('a path that does not exist returns U', function () {
-	expect(ss_diskfree_collect('/nonexistent/cacti/path'))->toBe(['megabytes:U percent:U', 1]);
+test('a path that does not exist prints nothing, as the originals do', function () {
+	expect(ss_diskfree_collect('/nonexistent/cacti/path'))->toBe(['', 1])
+		->and(ss_diskfree('/nonexistent/cacti/path'))->toBe('megabytes:U percent:U');
 });

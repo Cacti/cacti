@@ -21,6 +21,24 @@ if ($path === '/cmSignalData.htm') {
 } elseif ($path === '/plain') {
 	header('Content-Type: text/plain');
 	print "line one\nline two\n";
+} elseif ($path === '/large') {
+	// one byte over the 1 MiB body cap
+	header('Content-Type: text/plain');
+	print str_repeat('x', 1048577);
+} elseif ($path === '/drip') {
+	// a device that keeps the connection busy without ever finishing
+	header('Content-Type: text/plain');
+
+	// without this the built-in server holds the body until the script ends
+	while (ob_get_level() > 0) {
+		ob_end_flush();
+	}
+
+	for ($i = 0; $i < 30; $i++) {
+		print 'x';
+		flush();
+		usleep(200000);
+	}
 } elseif ($path === '/redirect') {
 	header('Location: /plain', true, 302);
 } else {

@@ -38,8 +38,11 @@ if (!isset($called_by_script_server)) {
 		fwrite(STDERR, $error . PHP_EOL);
 	}
 
-	// motorola_surfboard_SB6141.py ends its output with a newline
-	print $output . PHP_EOL;
+	// motorola_surfboard_SB6141.py ends its output with a newline, and on an
+	// error prints nothing on stdout
+	if ($status === 0) {
+		print $output . PHP_EOL;
+	}
 
 	exit($status);
 } else {
