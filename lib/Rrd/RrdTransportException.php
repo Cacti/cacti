@@ -17,5 +17,8 @@ namespace Cacti\Rrd;
 
 use RuntimeException;
 
+/**
+ * Raised when a transport cannot start or talk to RRDtool.
+ */
 final class RrdTransportException extends RuntimeException {
 }

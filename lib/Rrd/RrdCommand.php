@@ -26,7 +26,12 @@ use InvalidArgumentException;
  */
 final class RrdCommand {
 	/**
-	 * @param list<string> $arguments
+	 * Create a command, rejecting control characters in every token.
+	 *
+	 * @param string       $operation the RRDtool operation, such as update or fetch
+	 * @param list<string> $arguments the unescaped argument values
+	 *
+	 * @throws InvalidArgumentException when a token is empty, malformed or contains a control character
 	 */
 	public function __construct(
 		public readonly string $operation,
@@ -44,7 +49,13 @@ final class RrdCommand {
 	}
 
 	/**
-	 * @param array<array-key, scalar|null> $tokens
+	 * Create a command from a flat token list whose first token is the operation.
+	 *
+	 * @param array<array-key, scalar|null> $tokens the operation followed by its arguments
+	 *
+	 * @throws InvalidArgumentException when the list is empty or a token is invalid
+	 *
+	 * @return self the command
 	 */
 	public static function fromList(array $tokens): self {
 		$tokens = array_values(array_map(
@@ -62,7 +73,13 @@ final class RrdCommand {
 	}
 
 	/**
-	 * @return non-empty-list<string>
+	 * Build the argument vector for a shell-free process launch.
+	 *
+	 * @param string $binary the RRDtool executable path
+	 *
+	 * @throws InvalidArgumentException when the binary path is empty or contains a control character
+	 *
+	 * @return non-empty-list<string> the binary, the operation and the arguments
 	 */
 	public function toArgv(string $binary): array {
 		$this->assertValidToken($binary, 'binary path', false, true);
@@ -70,6 +87,16 @@ final class RrdCommand {
 		return [$binary, $this->operation, ...$this->arguments];
 	}
 
+	/**
+	 * Reject a token that RRDtool's argument or line protocol cannot carry safely.
+	 *
+	 * @param string $token           the token to check
+	 * @param string $description     the token's role, for the exception message
+	 * @param bool   $allowEmpty      whether an empty token is valid; it also permits whitespace
+	 * @param bool   $allowWhitespace whether a non-empty token may contain whitespace
+	 *
+	 * @throws InvalidArgumentException when the token is not allowed
+	 */
 	private function assertValidToken(string $token, string $description, bool $allowEmpty, bool $allowWhitespace = false): void {
 		if (!$allowEmpty && $token === '') {
 			throw new InvalidArgumentException("RRDtool $description cannot be empty.");

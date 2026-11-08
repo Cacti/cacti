@@ -23,11 +23,23 @@ use Throwable;
  * shell. Symfony owns process lifecycle and concurrent output collection.
  */
 final class LocalRrdTransport implements RrdTransport {
+	/**
+	 * @param string $binary the RRDtool executable path
+	 */
 	public function __construct(
 		private readonly string $binary,
 	) {
 	}
 
+	/**
+	 * Run the command as a child process with no shell.
+	 *
+	 * @param RrdCommand $command the command to run
+	 *
+	 * @throws RrdTransportException when the process cannot be started
+	 *
+	 * @return RrdProcessResult the captured output and exit status
+	 */
 	public function execute(RrdCommand $command): RrdProcessResult {
 		try {
 			$process = new Process($command->toArgv($this->binary));

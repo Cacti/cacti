@@ -36,7 +36,7 @@ test('native graph option construction preserves recorded commands', function ()
 		$_SESSION[OPTIONS_WEB]  = array_replace($_SESSION[OPTIONS_WEB] ?? [], $options);
 		$_SESSION[OPTIONS_USER] = ['default_date_format' => GD_Y_MO_D, 'default_datechar' => 1, 'custom_fonts' => ''];
 		$version                = get_rrdtool_version();
-		$fixtureVersion         = version_compare($version, '1.8', '>=') ? '1.8.0' : (version_compare($version, '1.4', '>=') ? '1.4.0' : '1.3.0');
+		$fixtureVersion         = version_compare($version, '1.8', '>=') ? '1.8.0' : '1.4.0';
 		$cases                  = json_decode(file_get_contents(dirname(__DIR__, 3) . '/fixtures/rrd-graph-options/' . $fixtureVersion . '.json'), true, 512, JSON_THROW_ON_ERROR);
 
 		foreach ($cases as $case) {

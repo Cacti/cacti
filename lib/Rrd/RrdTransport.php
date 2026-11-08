@@ -15,6 +15,18 @@ declare(strict_types = 1);
 
 namespace Cacti\Rrd;
 
+/**
+ * Runs a structured RRDtool command.
+ */
 interface RrdTransport {
+	/**
+	 * Execute a command and capture its result.
+	 *
+	 * @param RrdCommand $command the command to run
+	 *
+	 * @throws RrdTransportException when the command cannot be started
+	 *
+	 * @return RrdProcessResult the captured output and exit status
+	 */
 	public function execute(RrdCommand $command): RrdProcessResult;
 }
