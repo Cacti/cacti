@@ -24,6 +24,9 @@
 
 require_once dirname(__DIR__, 4) . '/lib/api_queue.php';
 
+/**
+ * In-memory transport that records what the queue API sends and settles.
+ */
 class CactiTestQueueTransport implements CactiQueueTransportInterface {
 	/** @var CactiQueueEnvelope[] */
 	public array $sent         = [];
@@ -31,12 +34,24 @@ class CactiTestQueueTransport implements CactiQueueTransportInterface {
 	public array $acknowledged = [];
 	public array $rejected     = [];
 
+	/**
+	 * Record the envelope and stamp it with a new message id.
+	 *
+	 * @param CactiQueueEnvelope $envelope
+	 *
+	 * @return CactiQueueEnvelope
+	 */
 	public function send(CactiQueueEnvelope $envelope) : CactiQueueEnvelope {
 		$this->sent[] = $envelope;
 
 		return $envelope->with(new CactiQueueMessageIdStamp(api_queue_message_id()));
 	}
 
+	/**
+	 * Hand out the queued deliveries once.
+	 *
+	 * @return iterable<CactiQueueEnvelope>
+	 */
 	public function get() : iterable {
 		$received       = $this->received;
 		$this->received = [];
@@ -44,38 +59,85 @@ class CactiTestQueueTransport implements CactiQueueTransportInterface {
 		return $received;
 	}
 
+	/**
+	 * Record an acknowledged delivery.
+	 *
+	 * @param CactiQueueEnvelope $envelope
+	 *
+	 * @return void
+	 */
 	public function ack(CactiQueueEnvelope $envelope) : void {
 		$this->acknowledged[] = $envelope;
 	}
 
+	/**
+	 * Record a rejected delivery.
+	 *
+	 * @param CactiQueueEnvelope $envelope
+	 *
+	 * @return void
+	 */
 	public function reject(CactiQueueEnvelope $envelope) : void {
 		$this->rejected[] = $envelope;
 	}
 }
 
+/**
+ * Test transport that also records lease renewals.
+ */
 final class CactiTestLeaseQueueTransport extends CactiTestQueueTransport implements CactiQueueLeaseAwareTransportInterface {
 	public array $touched = [];
 
+	/**
+	 * Record a lease renewal.
+	 *
+	 * @param CactiQueueEnvelope $envelope
+	 * @param int                $lease_seconds
+	 *
+	 * @return void
+	 */
 	public function touch(CactiQueueEnvelope $envelope, int $lease_seconds) : void {
 		$this->touched[] = [$envelope, $lease_seconds];
 	}
 }
 
+/**
+ * A class with no handler method, for handler registration tests.
+ */
 final class InvalidCactiQueueHandlerTarget {
 }
 
+/**
+ * A message class the serializer may rebuild from its payload.
+ */
 final class RegisteredCactiQueueMessage implements CactiQueueMessageInterface {
+	/**
+	 * @param array $payload
+	 */
 	public function __construct(private array $payload) {
 	}
 
+	/**
+	 * @return string
+	 */
 	public function queueTopic() : string {
 		return 'registered.message';
 	}
 
+	/**
+	 * @return array
+	 */
 	public function toQueuePayload() : array {
 		return $this->payload;
 	}
 
+	/**
+	 * Rebuild the message from its payload.
+	 *
+	 * @param array $payload
+	 *
+	 * @return static
+	 */
 	public static function fromQueuePayload(array $payload) : static {
 		return new static($payload);
 	}
@@ -752,6 +814,11 @@ it('has no Composer dependency and is not loaded on every page', function () {
 		->and(file_get_contents("$root/include/global.php"))->not->toContain('api_queue.php');
 });
 
+/**
+ * Clear the queue API's process globals so each test starts from defaults.
+ *
+ * @return void
+ */
 function queue_api_test_reset_runtime() : void {
 	unset(
 		$GLOBALS['cacti_queue_transport_factories'],

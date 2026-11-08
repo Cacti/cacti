@@ -420,10 +420,26 @@ it('ignores a rollback when no claim transaction is open', function () {
 	expect($this->db->inTransaction())->toBeFalse();
 });
 
+/**
+ * Collect deliveries returned by get() into an array.
+ *
+ * @param iterable<CactiQueueEnvelope> $messages
+ *
+ * @return CactiQueueEnvelope[]
+ */
 function queue_test_messages(iterable $messages) : array {
 	return is_array($messages) ? $messages : iterator_to_array($messages);
 }
 
+/**
+ * Build a reports.generate envelope for the reports queue.
+ *
+ * @param array $payload
+ * @param int   $priority
+ * @param int   $max_attempts
+ *
+ * @return CactiQueueEnvelope
+ */
 function queue_test_envelope(array $payload, int $priority = 50, int $max_attempts = 5) : CactiQueueEnvelope {
 	return new CactiQueueEnvelope(
 		new CactiQueueMessage('reports.generate', $payload),
