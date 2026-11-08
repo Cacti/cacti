@@ -13,8 +13,9 @@
 */
 
 require_once dirname(__DIR__, 4) . '/lib/rrd.php';
+require_once dirname(__DIR__, 4) . '/lib/boost.php';
 
-test('native graph options apply capabilities consistently to every formatter', function () {
+test('native graph options always emit the legend and axis formatter options', function () {
 	global $config;
 	$savedConfig     = $config;
 	$savedSession    = $_SESSION;
@@ -33,7 +34,7 @@ test('native graph options apply capabilities consistently to every formatter', 
 		$command                = rrd_function_process_graph_options(1700000000, 1700003600, $graph, $data);
 
 		foreach (['legend-position', 'legend-direction', 'left-axis-formatter', 'right-axis-formatter'] as $flag) {
-			expect(str_contains($command, '--' . $flag))->toBe(version_compare(get_rrdtool_version(), '1.4', '>='));
+			expect($command)->toContain('--' . $flag);
 		}
 	} finally {
 		$config              = $savedConfig;
@@ -82,7 +83,7 @@ test('native updates retain timestamp order and acknowledgement across two RRD f
 
 		foreach ($commands as $index => $command) {
 			expect($command)->toContain('--template value ' . [1700000060, 1700000120, 1700000180][$index % 3] . ':' . [42, 43, 44][$index % 3]);
-			expect(str_contains($command, '--skip-past-updates'))->toBe(version_compare(get_rrdtool_version(), '1.5', '>='));
+			expect($command)->toContain('--skip-past-updates');
 		}
 
 		foreach ($acknowledged as $timestamps) {
@@ -97,6 +98,47 @@ test('native updates retain timestamp order and acknowledgement across two RRD f
 
 		foreach (glob($directory . '/*') as $path) {
 			unlink($path);
+		}
+		rmdir($directory);
+	}
+});
+
+test('Boost updates always skip past samples and report a rejected update', function () {
+	global $config;
+	$savedConfig  = $config;
+	$savedSession = $_SESSION;
+	$directory    = sys_get_temp_dir() . '/cacti-boost-update-' . bin2hex(random_bytes(8));
+	mkdir($directory, 0700);
+	$binary = $directory . '/rrdtool';
+	$log    = $directory . '/commands';
+	$path   = $directory . '/ds.rrd';
+	$pipe   = null;
+
+	try {
+		// The fake binary rejects every update the way rrdtool does without --skip-past-updates.
+		file_put_contents($binary, '#!' . PHP_BINARY . "\n<?php\nwhile ((\$line = fgets(STDIN)) !== false) { file_put_contents(" . var_export($log, true) . ", \$line, FILE_APPEND); echo \"ERROR: ds.rrd: illegal attempt to update using time 1700000060 when last update time is 1700000060 (minimum one second step)\\n\"; flush(); }\n");
+		chmod($binary, 0700);
+		touch($path);
+		$options               = ['path_rrdtool' => $binary, 'storage_location' => '', 'path_rrdtool_default_font' => ''];
+		$config[OPTIONS_CLI]   = array_replace($config[OPTIONS_CLI] ?? [], $options);
+		$_SESSION[OPTIONS_WEB] = array_replace($_SESSION[OPTIONS_WEB] ?? [], $options);
+		$pipe                  = __rrd_init(false);
+		$values                = '1700000060:1 1700000120:2';
+
+		// A rejected multi-value update stops at the first bad timestamp, so
+		// reporting it as OK would delete the newer samples unwritten.
+		expect(boost_rrdtool_function_update(1, $path, 'value', $values, $pipe))->toStartWith('ERROR');
+		expect(file($log, FILE_IGNORE_NEW_LINES))->toHaveCount(1)
+			->and(file($log, FILE_IGNORE_NEW_LINES)[0])->toContain('--skip-past-updates --template value 1700000060:1 1700000120:2');
+	} finally {
+		if ($pipe !== null) {
+			rrd_close($pipe);
+		}
+		$config   = $savedConfig;
+		$_SESSION = $savedSession;
+
+		foreach (glob($directory . '/*') as $file) {
+			unlink($file);
 		}
 		rmdir($directory);
 	}

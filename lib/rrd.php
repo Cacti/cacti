@@ -1740,8 +1740,7 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 	$successful_updates = [];
 
 	// lets count the number of rrd files processed
-	$rrds_processed             = 0;
-	$supports_skip_past_updates = null;
+	$rrds_processed = 0;
 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		if (cacti_sizeof($rrd_fields['times'])) {
@@ -1779,13 +1778,7 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 					$rrd_update_values .= $value;
 				}
 
-				if (($supports_skip_past_updates ??= cacti_version_compare(get_rrdtool_version(), '1.5', '>='))) {
-					$update_options = '--skip-past-updates';
-				} else {
-					$update_options = '';
-				}
-
-				$update_result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				$update_result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " --skip-past-updates --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 				if ($update_result !== false) {
 					$rrds_processed++;
@@ -2040,12 +2033,11 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 	global $image_types;
 
 	// define some variables
-	$scale                     = '';
-	$rigid                     = '';
-	$unit_value                = '';
-	$version                   = get_rrdtool_version();
-	$supports_graph_formatters = null;
-	$unit_exponent_value       = '';
+	$scale               = '';
+	$rigid               = '';
+	$unit_value          = '';
+	$version             = get_rrdtool_version();
+	$unit_exponent_value = '';
 
 	if ($graph['auto_scale'] == 'on') {
 		switch ($graph['auto_scale_opts']) {
@@ -2306,34 +2298,26 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 
 				break;
 			case 'legend_position':
-				if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
-					if (!empty($value)) {
-						$graph_opts .= '--legend-position ' . cacti_escapeshellarg($value) . RRD_NL;
-					}
+				if (!empty($value)) {
+					$graph_opts .= '--legend-position ' . cacti_escapeshellarg($value) . RRD_NL;
 				}
 
 				break;
 			case 'legend_direction':
-				if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
-					if (!empty($value)) {
-						$graph_opts .= '--legend-direction ' . cacti_escapeshellarg($value) . RRD_NL;
-					}
+				if (!empty($value)) {
+					$graph_opts .= '--legend-direction ' . cacti_escapeshellarg($value) . RRD_NL;
 				}
 
 				break;
 			case 'left_axis_formatter':
-				if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
-					if (!empty($value)) {
-						$graph_opts .= '--left-axis-formatter ' . cacti_escapeshellarg($value) . RRD_NL;
-					}
+				if (!empty($value)) {
+					$graph_opts .= '--left-axis-formatter ' . cacti_escapeshellarg($value) . RRD_NL;
 				}
 
 				break;
 			case 'right_axis_formatter':
-				if (($supports_graph_formatters ??= cacti_version_compare($version, '1.4', '>='))) {
-					if (!empty($value)) {
-						$graph_opts .= '--right-axis-formatter ' . cacti_escapeshellarg($value) . RRD_NL;
-					}
+				if (!empty($value)) {
+					$graph_opts .= '--right-axis-formatter ' . cacti_escapeshellarg($value) . RRD_NL;
 				}
 
 				break;
@@ -3972,6 +3956,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 	$themefonts  = [];
 	$themecolors = 'rrdcolors';
 	$themeborder = 'rrdborder';
+	$theme_found = false;
 
 	if (isset($graph_data_array['graph_theme'])) {
 		$theme = cacti_validate_theme((string) $graph_data_array['graph_theme']);
@@ -3982,7 +3967,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 	$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/rrdtheme.php';
 
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
-		$rrdversion = get_rrdtool_version();
+		$theme_found = true;
 		include($rrdtheme);
 
 		if (isset($_COOKIE['CactiColorMode']) && in_array($_COOKIE['CactiColorMode'], ['dark', 'light', 'dark-dimmed'], true)) {
@@ -4001,7 +3986,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 			}
 		}
 
-		if (isset(${$themeborder}) && cacti_version_compare($rrdversion, '1.4', '>=')) {
+		if (isset(${$themeborder})) {
 			$graph_opts .= '--border ' . ${$themeborder} . RRD_NL; // @phpstan-ignore-line
 		}
 
@@ -4022,8 +4007,8 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 	// unit fonts
 	$graph_opts .= rrdtool_function_set_font('unit', '', $themefonts);
 
-	// watermark fonts
-	if (isset($rrdversion) && cacti_version_compare($rrdversion, '1.3', '>')) {
+	// watermark fonts, only when a theme was loaded
+	if ($theme_found) {
 		$graph_opts .= rrdtool_function_set_font('watermark', '', $themefonts);
 	}
 

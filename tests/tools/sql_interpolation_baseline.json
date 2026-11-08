@@ -28,7 +28,7 @@
     "lib/api_device.php": 21,
     "lib/api_graph.php": 8,
     "lib/auth.php": 2,
-    "lib/boost.php": 3,
+    "lib/boost.php": 1,
     "lib/data_query.php": 2,
     "lib/database.php": 8,
     "lib/dsstats.php": 2,

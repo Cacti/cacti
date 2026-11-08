@@ -1483,7 +1483,6 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used, $archive_table;
 
 	static $warning_issued;
-	static $rrdtool_version = null;
 
 	cacti_system_zone_set();
 
@@ -1500,12 +1499,6 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 
 	// install the boost error handler
 	set_error_handler('boost_error_handler');
-
-	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
-			usleep(50000);
-		}
-	}
 
 	$data_ids_to_get = read_config_option('boost_rrd_update_max_records_per_select');
 
@@ -1605,7 +1598,6 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 		// create an array keyed off of each .rrd file
 		$time           = -1;
 		$outbuf         = '';
-		$last_update    = -1;
 		$multi_vals_set = false;
 
 		$last_item = [
@@ -1669,13 +1661,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 				continue;
 			}
 
-			// don't generate error messages if the RRD has already been updated
-			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
-				$value = 'DNP';
-			} else {
-				$value = trim($item['output']);
-			}
+			$value = trim($item['output']);
 
 			if ($time != $item['timestamp']) {
 				if ($outlen > $upd_string_len) {
@@ -1694,19 +1680,15 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 					}
 				}
 
-				if (!str_contains($value, 'DNP')) {
-					$output  = ' ' . $item['timestamp'];
-					$outbuf .= $output;
-					$outlen += strlen($output);
-				}
+				$output  = ' ' . $item['timestamp'];
+				$outbuf .= $output;
+				$outlen += strlen($output);
 
 				$time = $item['timestamp'];
 			}
 
 			// single one value output
-			if (str_contains($value, 'DNP')) {
-				// continue, bad time
-			} elseif ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] != '')) {
+			if ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] != '')) {
 				$output  = ':' . $value;
 				$outbuf .= $output;
 				$outlen += strlen($output);
@@ -1978,53 +1960,11 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 		cacti_log("WARNING: Boost retained staged rows for Local Data ID '$local_data_id' because the handoff was not fully acknowledged.", false, 'BOOST');
 	}
 
-	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-		db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
-	}
-
 	// restore original error handler
 	restore_error_handler();
 	error_reporting($previous_error_reporting);
 
 	return $updates_ok ? cacti_sizeof($results) : -1;
-}
-
-/**
- * Retrieves the last update time of an RRD file using rrdtool.
- *
- * This function checks if the provided RRD file path is valid and exists.
- * If the file exists, it uses rrdtool to fetch the last update time.
- * If the file path is empty, it returns the current system time.
- *
- * @param string $rrd_path     The path to the RRD file.
- * @param mixed  $rrdtool_pipe The rrdtool pipe resource for executing commands.
- *
- * @return int|string The last update time of the RRD file as a timestamp, or the current time if the path is empty.
- */
-function boost_rrdtool_get_last_update_time(string $rrd_path, mixed $rrdtool_pipe) : int|string {
-	$return_value = 0;
-
-	/* check if the rrd_path is empty
-	 * It can become empty if someone has removed
-	 * a Data Source while boost is running, or a Re-Index
-	 * found the Data Source invalid, so it was removed
-	 * from the poller_item table
-	 */
-	if ($rrd_path == '') {
-		return time();
-	}
-
-	if (read_config_option('storage_location')) {
-		$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($rrd_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
-	} else {
-		$file_exists = file_exists($rrd_path);
-	}
-
-	if ($file_exists == true) {
-		$return_value = rrdtool_execute('last ' . cacti_escapeshellarg($rrd_path), true, RRDTOOL_OUTPUT_STDOUT, false, 'BOOST');
-	}
-
-	return trim($return_value);
 }
 
 /**
@@ -2405,35 +2345,20 @@ function boost_rrdtool_function_update(int $local_data_id, string $rrd_path, str
 		}
 	}
 
-	if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
-		$update_options = '--skip-past-updates';
-	} else {
-		$update_options = '';
-	}
-
 	if ($valid_entry) {
 		if ($rrd_update_template != '') {
-			boost_debug("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values");
+			boost_debug("update $rrd_path --skip-past-updates --template $rrd_update_template $rrd_update_values");
 
-			$result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " --skip-past-updates --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		} else {
-			boost_debug("update $rrd_path $update_options $rrd_update_values");
+			boost_debug("update $rrd_path --skip-past-updates $rrd_update_values");
 
-			$result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+			$result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " --skip-past-updates $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		}
 
+		// --skip-past-updates already accepts samples at or behind the last
+		// update, so a retried shard succeeds and any error here is real.
 		if ($result === false || preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim((string) $result))) {
-			// A timestamp at or behind the last update means the sample is already
-			// in the RRD, which is what a retried shard looks like. Reporting that
-			// as a failure would retain the shard and reprocess it forever, so the
-			// same rows would fail again on every pass and boost would never drain.
-			// rrdtool 1.5 and later avoid this with --skip-past-updates; older
-			// releases raise it, and a retry after a partial pass raises it on any
-			// version.
-			if (is_string($result) && preg_match('/illegal attempt to update using time|minimum one second step/i', $result)) {
-				return 'OK';
-			}
-
 			return is_string($result) && $result !== '' ? $result : 'ERROR: RRDtool did not acknowledge the update';
 		}
 
