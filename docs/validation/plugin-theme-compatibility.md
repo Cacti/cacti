@@ -64,7 +64,10 @@ plugin measurements must not regress below their baseline or the applicable
 4.5:1 text / 3:1 icon threshold. Existing plugin palette failures below those
 thresholds remain visible in each `contrast-comparison.json`; passing this
 matrix does not certify every existing plugin color as accessible. Raster
-textures use their CSS fallback color in the contrast calculation.
+textures use their CSS fallback color in the contrast calculation. Sunrise's
+radial body glow changes color with position, so both versions are measured
+on its `#000` base color. A theme stylesheet missing at the baseline commit
+fails the test instead of measuring an unstyled page.
 
 ## Reproduce
 

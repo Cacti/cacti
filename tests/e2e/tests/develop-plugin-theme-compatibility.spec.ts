@@ -111,6 +111,8 @@ for (const [plugin, revision] of Object.entries(revisions))
 				execFileSync('git', ['rev-parse', 'HEAD'], { cwd: plugins[plugin], encoding: 'utf8' }).trim(),
 			).toBe(revision);
 			const measurements: { version: string; state: string; kind: string; ratio: number }[] = [];
+			// An aborted baseline stylesheet would measure an unstyled page and move the floor.
+			const missingBaseline: string[] = [];
 			await page.route('http://plugin-theme.test/**', async (route) => {
 				const path = new URL(route.request().url()).pathname.slice(1);
 				if (path === 'blank') return route.fulfill({ contentType: 'text/html', body: '<!DOCTYPE html>' });
@@ -123,6 +125,7 @@ for (const [plugin, revision] of Object.entries(revisions))
 							body: execFileSync('git', ['show', `${baseline}:${file}`], { cwd: core }),
 						});
 					} catch {
+						missingBaseline.push(file);
 						return route.abort();
 					}
 				}
@@ -166,6 +169,10 @@ for (const [plugin, revision] of Object.entries(revisions))
 				await page.addStyleTag({
 					url: `http://plugin-theme.test/${version}/include/themes/${theme}/main.css`,
 				});
+				// Sunrise's radial body glow depends on position, which textContrast
+				// refuses to guess; both versions are measured on its #000 base color.
+				if (theme === 'sunrise')
+					await page.addStyleTag({ content: 'body { background-image: none !important; }' });
 				const themed = existsSync(resolve(plugins[plugin], `css/${theme}.css`));
 				const pluginStyles: Record<string, string[]> = {
 					thold: [`css/${theme}.css`, 'css/pills.css'],
@@ -268,6 +275,7 @@ for (const [plugin, revision] of Object.entries(revisions))
 				}
 			}
 			writeFileSync(info.outputPath('contrast-comparison.json'), JSON.stringify(measurements, null, 2));
+			expect(missingBaseline, `baseline ${baseline} files`).toEqual([]);
 			for (const row of measurements.filter((r) => r.version === 'core')) {
 				const before = measurements.find(
 					(r) => r.version === 'baseline' && r.state === row.state && r.kind === row.kind,
