@@ -1945,13 +1945,13 @@ parameters:
 			path: include/auth.php
 
 		-
-			message: '#^Offset ''base_path'' does not exist on array\{cacti_server_os\: ''unix''\|''win32'', is_web\: bool, proxy_headers\: mixed, trusted_proxies\: mixed, poller_id\: mixed, path_csrf_secret\: mixed, php_snmp_support\: bool, php_path\?\: mixed, \.\.\.\}\.$#'
+			message: '#^Offset ''base_path'' does not exist on array\{cacti_server_os\: ''unix''\|''win32'', is_web\: bool, proxy_headers\: mixed, trusted_proxies\: mixed, auth_basic_allow_php_auth_user\: bool, poller_id\: mixed, path_csrf_secret\: mixed, php_snmp_support\: bool, \.\.\.\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
 			path: include/global.php
 
 		-
-			message: '#^Offset ''cache_dir'' on array\{cacti_server_os\: ''unix''\|''win32'', is_web\: bool, proxy_headers\: mixed, trusted_proxies\: mixed, poller_id\: mixed, path_csrf_secret\: mixed, php_snmp_support\: bool, php_path\?\: mixed, \.\.\.\} in empty\(\) does not exist\.$#'
+			message: '#^Offset ''cache_dir'' on array\{cacti_server_os\: ''unix''\|''win32'', is_web\: bool, proxy_headers\: mixed, trusted_proxies\: mixed, auth_basic_allow_php_auth_user\: bool, poller_id\: mixed, path_csrf_secret\: mixed, php_snmp_support\: bool, \.\.\.\} in empty\(\) does not exist\.$#'
 			identifier: empty.offset
 			count: 1
 			path: include/global.php
