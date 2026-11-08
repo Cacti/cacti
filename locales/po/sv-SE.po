@@ -4583,11 +4583,11 @@ msgstr "Grafen %s flyttades till ny enhet"
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr "Grafen %s flyttades inte. Enheten saknar datafråga"
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 msgid "Unable to start the aggregate graph update."
 msgstr "Kunde inte starta uppdateringen av den aggregerade grafen."
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 msgid "Unable to commit the aggregate graph update."
 msgstr "Kunde inte verkställa uppdateringen av den aggregerade grafen."
 
