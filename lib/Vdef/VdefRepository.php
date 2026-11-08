@@ -24,13 +24,25 @@
 
 namespace Cacti\Vdef;
 
+/**
+ * Read access to stored VDEF definitions for VdefResolver.
+ */
 interface VdefRepository {
 	/**
 	 * Return existing database rows without normalizing their stored values.
 	 *
-	 * @return array<array<string, mixed>>|false
+	 * @param int $vdef_id The VDEF whose items are read.
+	 *
+	 * @return array<array<string, mixed>>|false The items in sequence order, or false when the read fails.
 	 */
 	public function items(int $vdef_id) : array|false;
 
+	/**
+	 * Return the text form of one non-nested VDEF item.
+	 *
+	 * @param int $vdef_item_id The vdef_items row id.
+	 *
+	 * @return string The item's function name, special data source or literal value.
+	 */
 	public function itemName(int $vdef_item_id) : string;
 }
