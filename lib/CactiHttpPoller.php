@@ -76,8 +76,9 @@ final class CactiHttpPoller {
 	}
 
 	/**
-	 * BLOCKED_SUBNETS with each IPv4 range also written as an IPv4-mapped and
-	 * a well-known-prefix NAT64 range, which reach the same host over IPv6.
+	 * BLOCKED_SUBNETS with each IPv4 range also written as an IPv4-mapped, a
+	 * well-known-prefix NAT64 and a local-use NAT64 (RFC 8215) range, which
+	 * reach the same host over IPv6.
 	 *
 	 * @return list<string>
 	 */
@@ -92,6 +93,7 @@ final class CactiHttpPoller {
 			if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
 				$subnets[] = '::ffff:' . $address . '/' . (96 + (int) $bits);
 				$subnets[] = '64:ff9b::' . $address . '/' . (96 + (int) $bits);
+				$subnets[] = '64:ff9b:1::' . $address . '/' . (96 + (int) $bits);
 			}
 		}
 

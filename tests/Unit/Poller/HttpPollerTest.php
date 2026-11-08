@@ -70,7 +70,10 @@ test('resolve scales numbers and keeps unscaled counters exact', function () {
 
 	$huge = new CactiHttpPollItem(1, 10, 'value', 'https://device.example/', '/v', 1e308);
 
-	expect($huge->resolve(['v' => 1e308]))->toBeNull();
+	expect($huge->resolve(['v' => 1e308]))->toBeNull()
+		->and($item->resolve(json_decode('{"v":1e400}', true)))->toBeNull()
+		->and($item->resolve(json_decode('{"v":-1e400}', true)))->toBeNull()
+		->and($item->resolve(['v' => '1e400']))->toBeNull();
 });
 
 test('poller rows decode the item spec from the argument columns', function () {
@@ -155,19 +158,27 @@ test('no more than the configured number of requests are in flight', function ()
 	$base  = cacti_http_test_server()['url'];
 	$items = [];
 
+	// the router holds each request until two are in flight, so a poller that
+	// overlaps reaches exactly 2 and one that exceeds the cap shows above it
 	for ($i = 1; $i <= 6; $i++) {
-		$items[] = new CactiHttpPollItem(1, $i, 'v', "$base/inflight/$i", '/v');
+		$items[] = new CactiHttpPollItem(1, $i, 'v', "$base/inflight/$i?wait=2", '/v');
 	}
 
-	file_get_contents("$base/reset-peak");
+	$overlap = cacti_http_test_server_overlap(2);
 
 	$errors    = [];
 	$documents = (new CactiHttpPoller(2))->fetch($items, $errors);
-	$peak      = json_decode(file_get_contents("$base/peak"), true)['peak'];
+	$peak      = cacti_http_test_peak();
 
 	expect($errors)->toBe([])
 		->and($documents)->toHaveCount(6)
-		->and($peak)->toBe(2);
+		->and($peak)->toBeLessThanOrEqual(2);
+
+	if ($overlap < 2) {
+		$this->markTestSkipped("the test server held $overlap of 2 plain curl requests together, so poller overlap cannot be measured");
+	}
+
+	expect($peak)->toBe(2);
 });
 
 test('failed endpoints are reported without stopping the others', function () {
@@ -244,13 +255,14 @@ test('link-local and metadata destinations are refused while loopback and privat
 		new CactiHttpPollItem(1, 9, 'v', "http://localhost:$port/stats", '/in'),
 		new CactiHttpPollItem(1, 10, 'v', "$base/stats", '/in'),
 		new CactiHttpPollItem(1, 11, 'v', 'https://10.255.255.1/stats', '/v', 1.0, 0.2),
+		new CactiHttpPollItem(1, 12, 'v', 'https://[64:ff9b:1::a9fe:a9fe]/latest', '/v'),
 	];
 
 	$errors    = [];
 	$documents = (new CactiHttpPoller(16))->fetch($items, $errors);
 
 	expect(array_keys($documents))->toBe(["1 http://localhost:$port/stats", "1 $base/stats"])
-		->and(array_count_values($errors)[$refused])->toBe(8)
+		->and(array_count_values($errors)[$refused])->toBe(9)
 		->and($errors['1 https://10.255.255.1/stats'])->not->toBe($refused);
 });
 

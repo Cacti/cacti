@@ -66,14 +66,15 @@ test('credentials and authorization headers stay on the original origin', functi
 	$same  = cacti_http('GET', "$auth/redirect?to=auth", $opts);
 	$cross = cacti_http('GET', "$auth/redirect?to=other-auth", $opts);
 
-	$header = ['headers' => ['Authorization: Bearer abc', 'Accept: application/json']] + $opts;
+	// a secret can travel under any header name, so only Accept survives a new origin
+	$header = ['headers' => ['Authorization: Bearer abc', 'Accept: application/json', 'X-Api-Key: secret', 'Proxy-Authorization: Basic eDp5']] + $opts;
 	$kept   = json_decode(cacti_http('GET', "$base/redirect?to=headers", $header)['body'], true);
 	$moved  = json_decode(cacti_http('GET', "$base/redirect?to=other-headers", $header)['body'], true);
 
 	expect($same['success'])->toBeTrue()
 		->and($cross['status'])->toBe(401)
-		->and($kept)->toBe(['authorization' => 'Bearer abc', 'accept' => 'application/json'])
-		->and($moved)->toBe(['authorization' => '', 'accept' => 'application/json']);
+		->and($kept)->toBe(['authorization' => 'Bearer abc', 'accept' => 'application/json', 'x-api-key' => 'secret', 'proxy-authorization' => 'Basic eDp5'])
+		->and($moved)->toBe(['authorization' => '', 'accept' => 'application/json', 'x-api-key' => '', 'proxy-authorization' => '']);
 });
 
 test('bodies over max_bytes are abandoned, and compression is only accepted under a cap that counts decoded bytes', function () {
@@ -101,9 +102,6 @@ test('multi keeps request keys and isolates failures', function () {
 	$base = cacti_http_test_server()['url'];
 	$opts = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
 
-	// Concurrency and the in-flight cap are asserted in HttpPollerTest, which drives
-	// this function. Overlap of the built-in server's workers is not reliable on CI
-	// runners, so it is not asserted twice here.
 	$results = cacti_http_multi([
 		'a'  => ['method' => 'GET', 'url' => "$base/inflight/a", 'options' => $opts],
 		'b'  => ['method' => 'GET', 'url' => "$base/inflight/b", 'options' => $opts],
@@ -115,6 +113,40 @@ test('multi keeps request keys and isolates failures', function () {
 	expect(array_keys($results))->toBe(['a', 'b', 'c', 7, 'ok'])
 		->and(array_column($results, 'success'))->toBe([true, true, true, false, true])
 		->and($results[7]['error'])->toBe('Target host resolves to a disallowed address');
+});
+
+test('multi runs requests together up to the concurrency limit', function () {
+	$base = cacti_http_test_server()['url'];
+	$opts = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
+
+	// measured first with plain curl_multi, so a server that serves requests one
+	// at a time skips this test instead of failing it as a client fault
+	$overlap = cacti_http_test_server_overlap(3);
+
+	if ($overlap < 3) {
+		$this->markTestSkipped("the test server held $overlap of 3 plain curl requests together, so client overlap cannot be measured");
+	}
+
+	$requests = [];
+
+	// each request is held until $wait are in flight: a client below the limit
+	// reaches only 1, and one above the cap of 2 lets a third in beside the pair
+	foreach ([3 => 'together', 2 => 'capped'] as $wait => $batch) {
+		foreach (['a', 'b', 'c'] as $key) {
+			$requests[$batch][$key] = ['method' => 'GET', 'url' => "$base/inflight/$key?wait=$wait", 'options' => $opts];
+		}
+	}
+
+	$together = cacti_http_multi($requests['together'], 4);
+	$peak     = cacti_http_test_peak();
+
+	$capped   = cacti_http_multi($requests['capped'], 2);
+	$cappedAt = cacti_http_test_peak();
+
+	expect(array_column($together, 'success'))->toBe([true, true, true])
+		->and($peak)->toBe(3)
+		->and(array_column($capped, 'success'))->toBe([true, true, true])
+		->and($cappedAt)->toBe(2);
 });
 
 test('names are checked through the system resolver as well as DNS', function () {

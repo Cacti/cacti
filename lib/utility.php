@@ -644,6 +644,7 @@ function get_http_input_fields(int $data_template_data_id, int $data_template_id
 
 	return $fields;
 }
+
 function push_out_data_input_method(int $data_input_id) : void {
 	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl

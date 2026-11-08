@@ -54,12 +54,22 @@ $GLOBALS['fixture_rows']     = [];
 $GLOBALS['fixture_executes'] = [];
 $GLOBALS['fixture_request']  = [];
 
+/**
+ * Fail the probe with $message unless $condition holds.
+ *
+ * @return void
+ */
 function check(bool $condition, string $message) : void {
 	if (!$condition) {
 		throw new RuntimeException($message);
 	}
 }
 
+/**
+ * Build a poller_item row for the HTTP action.
+ *
+ * @return array<string, int|string>
+ */
 function http_row(int $local_data_id, string $url, string $pointer, string $options = '') : array {
 	return [
 		'host_id'       => 2,
@@ -72,76 +82,309 @@ function http_row(int $local_data_id, string $url, string $pointer, string $opti
 	];
 }
 
+/**
+ * Stub: logging is not part of the behaviour under test.
+ *
+ * @param mixed $message
+ * @param mixed $print
+ * @param mixed $type
+ * @param mixed $level
+ *
+ * @return void
+ */
 function cacti_log($message, $print = false, $type = '', $level = 0) {
 }
+
+/**
+ * Stub: data source debug logging is discarded.
+ *
+ * @param mixed      $message
+ * @param null|mixed $data
+ * @param mixed      $level
+ *
+ * @return void
+ */
 function dsv_log($message, $data = null, $level = 0) {
 }
+
+/**
+ * Stub: report every message as enabled at its own level.
+ *
+ * @param mixed $host_id
+ * @param mixed $level
+ *
+ * @return int
+ */
 function debug_level($host_id, $level) {
 	return $level;
 }
+
+/**
+ * Stub: spine_log_level is 2 and every other setting is '4'.
+ *
+ * @param mixed $name
+ * @param mixed $force
+ *
+ * @return int|string
+ */
 function read_config_option($name, $force = false) {
 	return $name === 'spine_log_level' ? 2 : '4';
 }
+
+/**
+ * Stub: count() that tolerates non-countable values.
+ *
+ * @param mixed $value
+ *
+ * @return int
+ */
 function cacti_sizeof($value) {
 	return is_countable($value) ? count($value) : 0;
 }
+
+/**
+ * Stub: map rows to $key => $key_value.
+ *
+ * @param mixed $array
+ * @param mixed $key
+ * @param mixed $key_value
+ *
+ * @return array<array-key, mixed>
+ */
 function array_rekey($array, $key, $key_value) {
 	return array_column($array, $key_value, $key);
 }
+
+/**
+ * Stub: replace |host_hostname| with the loopback test server.
+ *
+ * @param mixed $string
+ * @param mixed $l_escape
+ * @param mixed $r_escape
+ * @param mixed $host_id
+ *
+ * @return string
+ */
 function substitute_host_data($string, $l_escape, $r_escape, $host_id) {
 	return str_replace($l_escape . 'host_hostname' . $r_escape, '127.0.0.1', $string);
 }
+
+/**
+ * Stub: fail the probe on a non-numeric request value.
+ *
+ * @param mixed $value
+ * @param mixed $name
+ *
+ * @return void
+ */
 function input_validate_input_number($value, $name = '') {
 	check(is_numeric($value), "$name is not numeric");
 }
+
+/**
+ * Stub: read an unfiltered request value from the fixture request.
+ *
+ * @param mixed $name
+ * @param mixed $default
+ *
+ * @return mixed
+ */
 function gnrv($name, $default = '') {
 	return $GLOBALS['fixture_request'][$name] ?? $default;
 }
+
+/**
+ * Stub: read a filtered request value from the fixture request.
+ *
+ * @param mixed $name
+ * @param mixed $filter
+ * @param mixed $options
+ *
+ * @return mixed
+ */
 function gfrv($name, $filter = FILTER_VALIDATE_INT, $options = []) {
 	return $GLOBALS['fixture_request'][$name] ?? 0;
 }
+
+/**
+ * Stub: untranslated text with sprintf arguments applied.
+ *
+ * @param mixed $text
+ *
+ * @return string
+ */
 function __($text, ...$args) {
 	return $args === [] ? $text : vsprintf($text, $args);
 }
+
+/**
+ * Stub: HTML-escape a value.
+ *
+ * @param mixed $string
+ *
+ * @return string
+ */
 function htmle($string) {
 	return htmlspecialchars((string) $string);
 }
+
+/**
+ * Stub: whether a request value is missing from the fixture request.
+ *
+ * @param mixed $name
+ *
+ * @return bool
+ */
 function ierv($name) {
 	return !isset($GLOBALS['fixture_request'][$name]);
 }
+
+/**
+ * Stub: read a request value from the fixture request.
+ *
+ * @param mixed $name
+ * @param mixed $default
+ *
+ * @return mixed
+ */
 function grv($name, $default = '') {
 	return $GLOBALS['fixture_request'][$name] ?? $default;
 }
+
+/**
+ * Stub: record the box header text the editor would print.
+ *
+ * @param mixed $title
+ * @param mixed $width
+ * @param mixed $div
+ * @param mixed $cell_padding
+ * @param mixed $align
+ * @param mixed $add_text
+ * @param mixed $add_label
+ *
+ * @return void
+ */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text = '', $add_label = '') {
 	$GLOBALS['fixture_boxes'][] = $add_text;
 }
+
+/**
+ * Stub: no fixture method is SNMP.
+ *
+ * @param mixed $data_input_id
+ *
+ * @return bool
+ */
 function data_template_is_snmp($data_input_id) {
 	return false;
 }
+
+/**
+ * Stub: no fixture method is a stream.
+ *
+ * @param mixed $data_input_id
+ *
+ * @return bool
+ */
 function data_template_is_stream($data_input_id) {
 	return false;
 }
+
+/**
+ * Stub: every fixture method is allowed.
+ *
+ * @param mixed $data_input_id
+ *
+ * @return bool
+ */
 function data_input_whitelist_check($data_input_id) {
 	return true;
 }
+
+/**
+ * Stub: every fixture data source item is named value.
+ *
+ * @param mixed $data_template_rrd_id
+ *
+ * @return string
+ */
 function get_data_source_item_name($data_template_rrd_id) {
 	return 'value';
 }
+
+/**
+ * Stub: return the poller cache row instead of building its SQL.
+ *
+ * @param mixed $host_id
+ * @param mixed $host_field_override
+ * @param mixed $local_data_id
+ * @param mixed $rrd_step
+ * @param mixed $poller_action_id
+ * @param mixed $data_source_item_name
+ * @param mixed $num_rrd_items
+ * @param mixed $arg1
+ * @param mixed $arg2
+ * @param mixed $arg3
+ *
+ * @return array<string, mixed>
+ */
 function api_poller_cache_item_add($host_id, $host_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = '', $arg2 = '', $arg3 = '') {
 	return compact('host_id', 'local_data_id', 'poller_action_id', 'data_source_item_name', 'arg1', 'arg2', 'arg3');
 }
+
+/**
+ * Stub: a script server reply of 42.
+ *
+ * @param mixed $command
+ * @param mixed $using_proc_function
+ * @param mixed $pipes
+ * @param mixed $proc_fd
+ *
+ * @return string
+ */
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 	return "42\n";
 }
-// the remote agent starts the script server itself; refusing it takes the fallback path
+
+/**
+ * Stub: refuse to start a process.
+ *
+ * The remote agent starts the script server itself; refusing it takes the fallback path.
+ *
+ * @param mixed $command
+ * @param mixed $descriptors
+ * @param mixed $pipes
+ *
+ * @return false
+ */
 function proc_open($command, $descriptors, &$pipes) {
 	return false;
 }
+
+/**
+ * Stub: record an upgrade statement instead of running it.
+ *
+ * @param mixed $sql
+ * @param mixed $params
+ * @param mixed $log
+ *
+ * @return bool
+ */
 function db_install_execute($sql, $params = [], $log = true) {
 	$GLOBALS['fixture_executes'][] = [$sql, $params];
 
 	return true;
 }
+
+/**
+ * Stub: the data template row, or the test device.
+ *
+ * @param mixed $sql
+ * @param mixed $params
+ * @param mixed $log
+ *
+ * @return array<string, int|string>
+ */
 function db_fetch_row_prepared($sql, $params = [], $log = true) {
 	if (str_contains($sql, 'FROM data_template_data AS dtd')) {
 		return ['id'        => 13, 'type_id' => DATA_INPUT_TYPE_HTTP, 'data_template_data_id' => 50,
@@ -150,6 +393,17 @@ function db_fetch_row_prepared($sql, $params = [], $log = true) {
 
 	return ['id' => 2, 'hostname' => '127.0.0.1'];
 }
+
+/**
+ * Stub: the HTTP method id, the template data id, or 0.
+ *
+ * @param mixed $sql
+ * @param mixed $params
+ * @param mixed $col_name
+ * @param mixed $log
+ *
+ * @return int|string
+ */
 function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true) {
 	if (str_contains($sql, 'FROM data_input WHERE hash = ?')) {
 		return 13;
@@ -165,6 +419,16 @@ function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true)
 
 	return 0;
 }
+
+/**
+ * Stub: input fields or poller items from the fixture globals.
+ *
+ * @param mixed $sql
+ * @param mixed $params
+ * @param mixed $log
+ *
+ * @return array<int, array<string, mixed>>
+ */
 function db_fetch_assoc_prepared($sql, $params = [], $log = true) {
 	if (str_contains($sql, 'dif.type_code IN')) {
 		return $GLOBALS['fixture_fields'][$params[0]] ?? [];
