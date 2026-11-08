@@ -10,7 +10,15 @@ $ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 $ENV{LC_ALL} = 'C';
 
 my $val1 = $ARGV[0] // '';
-($val1) = $val1 =~ /^([\d]+)$/ if $val1 ne '';
+if ($val1 ne '') {
+  # An argument that fails validation must not fall through to printing all
+  # three averages, which a single-value data source would store as garbage.
+  ($val1) = $val1 =~ /^(\d+)$/;
+  if (!defined $val1) {
+    print 'U';
+    exit 1;
+  }
+}
 
 #get load avg for 5;15;30 min
 open(PROCESS, '-|', 'uptime');
