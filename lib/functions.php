@@ -71,9 +71,10 @@ function cacti_http(string $method, string $url, array $options = []) : array {
  * Each request takes the cacti_http() options and is checked the same way.
  * Redirects are only followed when 'max_redirects' is above 0 and the method
  * is GET or HEAD; every hop repeats the scheme, allowed_hosts and destination
- * checks before it connects, and URL credentials plus Authorization and
- * Cookie headers are only sent while the hop stays on the original scheme,
- * host and port.  'blocked_subnets' is for callers such as the HTTP poller
+ * checks before it connects.  URL credentials and caller headers are only
+ * sent while the hop stays on the original scheme, host and port; a hop to
+ * another origin keeps only the Accept, Accept-Language and User-Agent
+ * headers.  'blocked_subnets' is for callers such as the HTTP poller
  * that must reach private networks: only addresses inside those ranges are
  * refused, so the list has to spell out IPv4-mapped and NAT64 forms itself.
  *
@@ -243,9 +244,11 @@ function cacti_http_start(CurlMultiHandle $multi, stdClass $transfer) : string {
 	$sameOrigin = cacti_http_origin($url) === $transfer->origin;
 	$headers    = $options['headers'] ?? [];
 
+	// a caller header can carry a secret under any name (X-Api-Key, Private-Token,
+	// Proxy-Authorization), so a new origin only gets the content-negotiation ones
 	if (!$sameOrigin) {
 		$headers = array_values(array_filter($headers, static function ($header) {
-			return !preg_match('/^\s*(authorization|cookie)\s*:/i', $header);
+			return preg_match('/^\s*(accept|accept-language|user-agent)\s*:/i', $header) === 1;
 		}));
 	}
 

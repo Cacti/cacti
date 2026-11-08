@@ -89,3 +89,57 @@ function cacti_http_test_requests() : array {
 
 	return is_file($log) ? file($log, FILE_IGNORE_NEW_LINES) : [];
 }
+
+/**
+ * Reset the router's in-flight peak and return the peak reached since the previous reset.
+ *
+ * @return int the highest number of /inflight requests the router held together
+ */
+function cacti_http_test_peak() : int {
+	$base = cacti_http_test_server()['url'];
+	$peak = json_decode(file_get_contents("$base/peak"), true)['peak'];
+
+	file_get_contents("$base/reset-peak");
+
+	return $peak;
+}
+
+/**
+ * How many requests the test server holds together when a plain curl_multi client sends $count at once.
+ *
+ * This bypasses cacti_http_multi(), so a test can tell a server that serves
+ * one request at a time (a single worker, or a runner that schedules them
+ * serially) apart from a client that fails to overlap its transfers.
+ *
+ * @param int $count requests to send together; the router holds each until $count are in flight
+ *
+ * @return int the peak the router observed
+ */
+function cacti_http_test_server_overlap(int $count) : int {
+	$base    = cacti_http_test_server()['url'];
+	$multi   = curl_multi_init();
+	$handles = [];
+
+	cacti_http_test_peak();
+
+	for ($i = 0; $i < $count; $i++) {
+		$handles[$i] = curl_init("$base/inflight/probe-$i?wait=$count");
+
+		curl_setopt($handles[$i], CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($handles[$i], CURLOPT_TIMEOUT, 5);
+		curl_multi_add_handle($multi, $handles[$i]);
+	}
+
+	do {
+		curl_multi_exec($multi, $running);
+		curl_multi_select($multi, 0.05);
+	} while ($running > 0);
+
+	foreach ($handles as $handle) {
+		curl_multi_remove_handle($multi, $handle);
+	}
+
+	curl_multi_close($multi);
+
+	return cacti_http_test_peak();
+}
