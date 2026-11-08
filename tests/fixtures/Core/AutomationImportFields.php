@@ -37,10 +37,28 @@ $GLOBALS['import_writes'] = [];
 $GLOBALS['import_reads']  = 0;
 function cacti_log(...$arguments): void {
 }
+$GLOBALS['export_rows'] = [];
 function db_fetch_cell_prepared($sql, $parameters = []) {
 	$GLOBALS['import_reads']++;
 
+	if (str_contains($sql, 'SELECT hash')) {
+		return str_contains($sql, 'snmp_query_graph') ? 'graph-hash' : 'query-hash';
+	}
+
+	if (str_starts_with($sql, 'SELECT CONCAT')) {
+		return 'fixture';
+	}
+
 	return str_contains($sql, 'snmp_query') ? 1 : 0;
+}
+function db_fetch_row_prepared($sql, $parameters = []) {
+	return $GLOBALS['export_rows']['rule'];
+}
+function db_fetch_assoc_prepared($sql, $parameters = []) {
+	return str_contains($sql, 'automation_match_rule_items') ? $GLOBALS['export_rows']['match'] : [];
+}
+function db_fetch_assoc($sql) {
+	return str_contains($sql, 'host_snmp_cache') ? [['field_name' => 'ifAlias']] : [['Field' => 'id', 'Type' => 'int'], ['Field' => 'name', 'Type' => 'varchar(100)']];
 }
 function db_execute_prepared(...$arguments): bool {
 	$GLOBALS['import_writes'][] = $arguments;
@@ -53,7 +71,7 @@ function sql_save($data, $table): int {
 	return 10;
 }
 
-foreach (['automation_validate_import_match_fields', 'automation_graph_rule_import', 'automation_tree_rule_import', 'automation_template_import'] as $function) {
+foreach (['automation_query_field_table_aliases', 'get_query_fields', 'array_minus', 'automation_validate_import_match_fields', 'automation_graph_rule_import', 'automation_tree_rule_import', 'automation_template_import', 'automation_graph_rule_export', 'automation_tree_rule_export'] as $function) {
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/api_automation.php', $function, __NAMESPACE__);
 }
 $cases = 0;
@@ -98,4 +116,54 @@ foreach ([AUTOMATION_OPER_LEFT_BRACKET, AUTOMATION_OPER_RIGHT_BRACKET, (string) 
 	}
 	$cases++;
 }
+
+// Every prefix the rule editor offers must survive import, so the two cannot drift.
+foreach (['host_template', 'host', 'sites', 'host_snmp_cache', 'graph_templates'] as $table) {
+	$debug = [];
+
+	foreach (array_keys(get_query_fields($table, ['id'])) as $field) {
+		if (!automation_validate_import_match_fields([['items' => [['field' => $field, 'operation' => '1']]]], 'items', $debug)) {
+			throw new \RuntimeException('Rule editor field ' . $field . ' was rejected on import.');
+		}
+		$cases++;
+	}
+}
+
+/* Rows as automation_match_rule_items returns them for ht.name = Linux AND
+ * (s.name = HQ OR hsc.ifAlias = uplink). The AND before the bracket has no
+ * field because the bracket item cannot carry its own conjunction. */
+$match_rows = [];
+
+foreach ([['0', 'ht.name', 'Linux'], ['1', '', ''], ['3', 's.name', 'HQ'], ['2', 'hsc.ifAlias', 'uplink'], ['4', '', '']] as $sequence => [$operation, $field, $pattern]) {
+	$match_rows[] = ['id' => (string) ($sequence + 20), 'hash' => 'match-hash-' . $sequence, 'rule_id' => '7', 'rule_type' => '1', 'sequence' => (string) ($sequence + 1), 'operation' => $operation, 'field' => $field, 'operator' => '1', 'pattern' => $pattern];
+}
+
+$exports = [
+	'graph' => [['id' => '7', 'hash' => 'graph-rule-hash', 'name' => 'Fixture', 'snmp_query_id' => '1', 'graph_type_id' => '2', 'enabled' => 'on'], fn () => automation_graph_rule_export(7), fn ($json) => automation_graph_rule_import($json)],
+	'tree'  => [['id' => '7', 'hash' => 'tree-rule-hash', 'name' => 'Fixture', 'tree_id' => '1', 'tree_item_id' => '0', 'leaf_type' => '2', 'host_grouping_type' => '1', 'enabled' => 'on'], fn () => automation_tree_rule_export(7), fn ($json) => automation_tree_rule_import($json)],
+];
+
+foreach ($exports as [$rule_row, $export, $import]) {
+	$GLOBALS['export_rows']   = ['rule' => $rule_row, 'match' => $match_rows];
+	$json                     = json_decode(json_encode($export()), true);
+	$GLOBALS['import_writes'] = [];
+	$result                   = $import($json);
+	$fields                   = array_map(fn ($write) => $write[1]['field'], array_slice($GLOBALS['import_writes'], 1));
+
+	if (!empty($result['errors']) || $fields !== array_column($match_rows, 'field')) {
+		throw new \RuntimeException('Exported rule with site, SNMP cache and conjunction items did not round trip.');
+	}
+	$cases++;
+}
+
+// A field-less item is only meaningful as a conjunction or bracket; unknown aliases stay rejected.
+foreach ([['', '0'], ['', 0], ['', '5'], ['', null], ['', '1 '], ['x.name', '1'], ['hscx.ifAlias', '1'], ['s.name.extra', '1']] as [$field, $operation]) {
+	$debug = [];
+
+	if (automation_validate_import_match_fields([['items' => [['field' => $field, 'operation' => $operation]]]], 'items', $debug) || empty($debug['errors'])) {
+		throw new \RuntimeException('Invalid match item was accepted.');
+	}
+	$cases++;
+}
+
 print json_encode(['cases' => $cases]);
