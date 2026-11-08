@@ -40,6 +40,11 @@
  * default instead of a silent zero or false. They build directly on
  * read_config_option(), so caching, remote-poller behaviour, and the optional
  * $force re-read are identical to reading the option by hand.
+ *
+ * That cache lives in the session on the web and in $config for a CLI
+ * process, not in the request. A value another admin or a remote poller
+ * changes stays stale in an existing session until a $force read or a new
+ * login, so pass $force where a current value matters.
  */
 
 /**
@@ -52,7 +57,7 @@
  *
  * @param string $name    Setting name.
  * @param int    $default Value returned when the setting is missing or not numeric.
- * @param bool   $force   Re-read from the database, bypassing the request cache.
+ * @param bool   $force   Re-read from the database, bypassing the settings cache.
  *
  * @return int The coerced integer value.
  */
@@ -82,7 +87,7 @@ function cacti_setting_int(string $name, int $default = 0, bool $force = false) 
  *
  * @param string $name    Setting name.
  * @param bool   $default Value returned when the setting is missing or unrecognised.
- * @param bool   $force   Re-read from the database, bypassing the request cache.
+ * @param bool   $force   Re-read from the database, bypassing the settings cache.
  *
  * @return bool The coerced boolean value.
  */
@@ -119,7 +124,7 @@ function cacti_setting_bool(string $name, bool $default = false, bool $force = f
  *
  * @param string $name    Setting name.
  * @param string $default Value returned when the setting is absent or non-scalar.
- * @param bool   $force   Re-read from the database, bypassing the request cache.
+ * @param bool   $force   Re-read from the database, bypassing the settings cache.
  *
  * @return string The string value.
  */
@@ -146,7 +151,7 @@ function cacti_setting_string(string $name, string $default = '', bool $force = 
  * @param string   $name    Setting name.
  * @param string[] $allowed The permitted values.
  * @param string   $default Value returned when the stored value is not in $allowed.
- * @param bool     $force   Re-read from the database, bypassing the request cache.
+ * @param bool     $force   Re-read from the database, bypassing the settings cache.
  *
  * @return string One of $allowed, or $default.
  */
