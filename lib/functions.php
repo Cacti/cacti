@@ -3254,23 +3254,25 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 					$out .= $value;
 				} elseif ($quote === '') {
 					// outside any template quote the value stands on its own quotes.
+					// A dangling (odd) run of backslashes right before it would escape
+					// its opening quote (\'x' -> literal quote + unmatched quote); shed
+					// one so the run is even and the quote still opens
+					if ((strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+						$out = substr($out, 0, -1);
+					}
+
 					// A $ glued directly before those quotes (e.g. $<arg> resolving
 					// to a self-quoted 'x;id') would form $'...'/$"..." ANSI-C/locale
 					// quoting, re-reading the span the scanner cannot model. An even
 					// (zero counts) backslash run leaves the $ literal; refuse it.
+					// This must run after the shed above: for $\<arg> the shed removes
+					// the backslash and leaves the $ directly before the value.
 					if (substr($out, -1) === '$') {
 						$b = substr($out, 0, -1);
 
 						if ((strlen($b) - strlen(rtrim($b, '\\'))) % 2 === 0) {
 							return '';
 						}
-					}
-
-					// A dangling (odd) run of backslashes right before it would escape
-					// its opening quote (\'x' -> literal quote + unmatched quote); shed
-					// one so the run is even and the quote still opens
-					if ((strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
-						$out = substr($out, 0, -1);
 					}
 
 					$out .= $value;
