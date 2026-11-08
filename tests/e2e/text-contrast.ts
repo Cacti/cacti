@@ -1,9 +1,24 @@
 /* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
 // Self-contained so Playwright can evaluate it in the browser.
 export function textContrast(element: Element): number {
+	// Canvas parsing normalizes every computed form, including the color(srgb ...)
+	// that color-mix() produces, which a numeric regex would read as 0-1 channels.
+	const canvas = document.createElement('canvas');
+	canvas.width = canvas.height = 1;
+	const context = canvas.getContext('2d', { willReadFrequently: true })!;
 	const rgba = (value: string) => {
-		const parts = value.match(/[\d.]+/g)!.map(Number);
-		return [parts[0], parts[1], parts[2], parts[3] ?? 1];
+		// Canvas ignores an invalid fillStyle, so a value that does not replace
+		// both sentinels would otherwise be measured as the previous color.
+		context.fillStyle = '#000';
+		context.fillStyle = value;
+		const first = context.fillStyle;
+		context.fillStyle = '#fff';
+		context.fillStyle = value;
+		if (context.fillStyle !== first) throw new Error(`textContrast cannot parse color: ${value}`);
+		context.clearRect(0, 0, 1, 1);
+		context.fillRect(0, 0, 1, 1);
+		const pixel = context.getImageData(0, 0, 1, 1).data;
+		return [pixel[0], pixel[1], pixel[2], pixel[3] / 255];
 	};
 	const over = (fg: number[], bg: number[]) => bg.map((v, i) => fg[i] * fg[3] + v * (1 - fg[3]));
 	let surfaces = [[255, 255, 255]];
