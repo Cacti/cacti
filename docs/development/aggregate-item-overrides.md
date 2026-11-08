@@ -11,6 +11,11 @@ prefix. A nonempty override follows the prefix even when the aggregate normally
 uses prefix-only labels. Unchecking the override restores inheritance. Export
 and hover legends are independent of the rendered text.
 
+A checked **CDEF Function** override set to None removes the inherited CDEF;
+leave the override unchecked to keep it. Earlier releases ignored a checked
+None, so the upgrade resets those older rows to inherit once, and upgraded
+graphs keep their CDEFs.
+
 For graphs linked to an aggregate template, edit the template's items. Changes
 propagate to its aggregates. For standalone aggregates, changes affect that
 aggregate only. Existing graphs inherit their original settings until an override

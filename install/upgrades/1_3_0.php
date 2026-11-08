@@ -1300,9 +1300,23 @@ function upgrade_retired_themes_1_3_0() : void {
 	db_install_execute('UPDATE settings_user SET value = ? WHERE name = ? AND value IN (?, ?)', $params);
 }
 
-/** Add persistent legend overrides to both aggregate item editors. */
+/**
+ * Adds persistent legend overrides to both aggregate item editors.
+ *
+ * Earlier releases stored a checked CDEF override set to None as cdef_id 0 and
+ * the rebuild ignored it, so the item kept the template CDEF. The rebuild now
+ * applies a checked None as no CDEF, which is what the editor label says. Rows
+ * saved before the override columns existed are reset to inherit once, so
+ * upgraded graphs render as before; later rows keep an explicit None.
+ *
+ * @return void
+ */
 function upgrade_aggregate_item_overrides() : void {
 	foreach (['aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
+		if (!db_column_exists($table, 't_text_format')) {
+			db_install_execute("UPDATE $table SET t_cdef_id = '' WHERE t_cdef_id = 'on' AND (cdef_id = 0 OR cdef_id IS NULL)");
+		}
+
 		db_install_add_column($table, ['name' => 't_text_format', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'cdef_id']);
 		db_install_add_column($table, ['name' => 'text_format', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 't_text_format']);
 		db_install_add_column($table, ['name' => 't_legend', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'text_format']);
