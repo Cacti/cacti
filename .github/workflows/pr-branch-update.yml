@@ -12,8 +12,9 @@ name: Update stale pull request branches
 # way. Both are expected and logged, not treated as a job failure.
 #
 # The rebase is pushed with GITHUB_TOKEN, and GitHub does not start workflow
-# runs for events caused by that token, so a rebased PR keeps the checks from
-# its previous head until someone pushes or re-runs them.
+# runs for events caused by that token. Checks belong to a commit, and the
+# rebase creates a new head commit, so a rebased PR shows no checks at all
+# until someone pushes to it or closes and reopens it.
 
 on:
   schedule:
@@ -63,8 +64,14 @@ jobs:
           for number in $(echo "$pr_numbers" | jq -r '.[]'); do
             # mergeStateStatus reports CLEAN for branches the compare API still
             # counts as behind, so ask compare directly.
-            refs=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${number}" \
-              --jq '[.base.ref, .head.label] | @tsv')
+            # Count API failures and move on, so one transient error does not
+            # abort the sweep under set -e.
+            if ! refs=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${number}" \
+                --jq '[.base.ref, .head.label] | @tsv'); then
+              echo "error #$number: pull request lookup failed"
+              errored=$((errored + 1))
+              continue
+            fi
             base_ref=$(printf '%s' "$refs" | cut -f1)
             head_ref=$(printf '%s' "$refs" | cut -f2)
 
@@ -84,8 +91,12 @@ jobs:
               continue
             fi
 
-            review=$(gh pr view "$number" --repo "$GITHUB_REPOSITORY" \
-              --json reviewDecision --jq '.reviewDecision')
+            if ! review=$(gh pr view "$number" --repo "$GITHUB_REPOSITORY" \
+                --json reviewDecision --jq '.reviewDecision'); then
+              echo "error #$number: review decision lookup failed"
+              errored=$((errored + 1))
+              continue
+            fi
 
             if [ "$review" = "APPROVED" ]; then
               echo "skip #$number: approved, a rebase would dismiss the approval"
