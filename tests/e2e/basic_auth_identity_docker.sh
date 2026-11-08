@@ -45,7 +45,7 @@ sql "REPLACE INTO settings(name,value) VALUES('auth_method','2'),('guest_user','
 	INSERT INTO user_auth_realm(user_id,realm_id) SELECT 1002,realm_id FROM user_auth_realm WHERE user_id=1;"
 "${DC[@]}" exec -T cacti bash -s <<'SH'
 set -euo pipefail
-php -r 'file_put_contents("/tmp/cacti-basic-passwords", "basic_one:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nbasic_two:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\n");'
+php -r 'file_put_contents("/tmp/cacti-basic-passwords", "basic_one:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nbasic_two:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nbasic_three:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\n");'
 chmod 644 /tmp/cacti-basic-passwords
 cp /var/www/html/include/config.php /tmp/basic-original-config.php
 cat > /var/www/html/basic-auth-endpoint.php <<'PHP'
@@ -55,6 +55,8 @@ cat > /var/www/html/basic-auth-endpoint.php <<'PHP'
 if (function_exists('opcache_invalidate')) { opcache_invalidate(__DIR__ . '/include/config.php', true); }
 $_SERVER['PHP_SELF'] = '/index.php';
 $_SERVER['SCRIPT_NAME'] = '/index.php';
+// Pages that admit the guest account (graph_view.php and friends) set this first.
+if (isset($_GET['guest_page'])) { $guest_account = true; }
 require __DIR__ . '/include/auth.php';
 header('Content-Type: application/json');
 print json_encode(['user_id' => (int) $_SESSION[SESS_USER_ID]]);
@@ -91,6 +93,22 @@ echo '[basic-e2e] changing verified identity replaces and rotates the session'
 request basic-verified.php -u basic_two:fixture-pass >/dev/null
 assert_user 1002
 [ "$first" != "$(cookie_id)" ] || { echo 'FAIL: identity change reused the old session ID' >&2; exit 1; }
+
+echo '[basic-e2e] a verified identity without a user row keeps its guest session'
+sql "INSERT INTO user_auth(id,username,password,realm,full_name,enabled) VALUES(1003,'basic_guest','!',0,'Basic Guest','on');
+	INSERT INTO user_auth_realm(user_id,realm_id) SELECT 1003,realm_id FROM user_auth_realm WHERE user_id=1;
+	REPLACE INTO settings(name,value) VALUES('guest_user','1003'),('user_template','0');"
+code=$(request 'basic-verified.php?guest_page=1' -u basic_three:fixture-pass)
+[ "$code" = 302 ] || { echo "FAIL: guest login did not redirect once (HTTP $code)" >&2; exit 1; }
+request 'basic-verified.php?guest_page=1' -u basic_three:fixture-pass >/dev/null
+assert_user 1003
+guest=$(cookie_id)
+request 'basic-verified.php?guest_page=1' -u basic_three:fixture-pass >/dev/null
+assert_user 1003
+[ "$guest" = "$(cookie_id)" ] || { echo 'FAIL: guest session was rebuilt on every request' >&2; exit 1; }
+request basic-verified.php -u basic_two:fixture-pass >/dev/null
+assert_user 1002
+sql "REPLACE INTO settings(name,value) VALUES('guest_user','0')"
 
 echo '[basic-e2e] disabled, locked and access-less accounts cannot restore sessions'
 sql "UPDATE user_auth SET enabled='' WHERE id=1002"
@@ -138,4 +156,4 @@ if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 ]]; then
 	mkdir -p "$CACTI_PR_COVERAGE_OUTPUT"
 	"${DC[@]}" cp cacti:/tmp/cacti-pr-coverage/. "$CACTI_PR_COVERAGE_OUTPUT"
 fi
-echo 'PASS: Basic identity, upstream verification, eligibility and session transitions'
+echo 'PASS: Basic identity, upstream verification, eligibility, guest and session transitions'
