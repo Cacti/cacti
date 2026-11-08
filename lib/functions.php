@@ -262,7 +262,6 @@ function cacti_http_start(CurlMultiHandle $multi, stdClass $transfer) : string {
 		CURLOPT_TIMEOUT_MS        => $remaining,
 		CURLOPT_CONNECTTIMEOUT_MS => min($remaining, 5000),
 		CURLOPT_NOSIGNAL          => true,
-		CURLOPT_ENCODING          => '',
 		CURLOPT_PROTOCOLS         => CURLPROTO_HTTP | CURLPROTO_HTTPS,
 		CURLOPT_REDIR_PROTOCOLS   => CURLPROTO_HTTP | CURLPROTO_HTTPS,
 		CURLOPT_WRITEFUNCTION     => static function ($ch, string $data) use ($transfer) : int {
@@ -287,6 +286,12 @@ function cacti_http_start(CurlMultiHandle $multi, stdClass $transfer) : string {
 
 	if ($transfer->redirects > 0 && $sameOrigin && $transfer->credentials !== null) {
 		curl_setopt($ch, CURLOPT_USERPWD, $transfer->credentials);
+	}
+
+	// compressed bodies are only accepted under a size cap, which counts decoded bytes,
+	// so a small gzip reply cannot expand without limit in a caller that set none
+	if (isset($options['max_bytes'])) {
+		curl_setopt($ch, CURLOPT_ENCODING, '');
 	}
 
 	if (isset($options['body']) && $transfer->redirects === 0) {

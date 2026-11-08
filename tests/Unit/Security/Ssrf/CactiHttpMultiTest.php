@@ -51,8 +51,8 @@ test('redirects are followed only when asked and each hop is checked again', fun
 
 	expect(cacti_http('GET', "$base/relative", $opts))->toMatchArray(['success' => true, 'status' => 200, 'body' => '{"in":5,"out":7,"label":"eth0"}'])
 		->and(cacti_http('GET', "$base/loop", $opts)['error'])->toBe('Too many redirects')
-		->and(cacti_http('GET', "$base/redirect?to=" . rawurlencode('http://169.254.169.254/'), $opts)['error'])->toBe('Target host resolves to a disallowed address')
-		->and(cacti_http('GET', "$base/redirect?to=" . rawurlencode('ftp://example.com/x'), $opts)['error'])->toBe('Unsupported URL scheme')
+		->and(cacti_http('GET', "$base/redirect?to=metadata", $opts)['error'])->toBe('Target host resolves to a disallowed address')
+		->and(cacti_http('GET', "$base/redirect?to=ftp", $opts)['error'])->toBe('Unsupported URL scheme')
 		->and(cacti_http('GET', "$base/relative", $opts + ['allowed_hosts' => ['localhost']])['error'])->toBe('Host not allowed')
 		->and(cacti_http('POST', "$base/relative", $opts + ['body' => 'x'])['error'])->toBe('HTTP 302');
 });
@@ -63,12 +63,12 @@ test('credentials and authorization headers stay on the original origin', functi
 	$auth = 'http://user:' . rawurlencode('p@ss:word') . "@127.0.0.1:$port";
 	$opts = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA, 'max_redirects' => 1];
 
-	$same  = cacti_http('GET', "$auth/redirect?to=/auth", $opts);
-	$cross = cacti_http('GET', "$auth/redirect?to=" . rawurlencode("http://localhost:$port/auth"), $opts);
+	$same  = cacti_http('GET', "$auth/redirect?to=auth", $opts);
+	$cross = cacti_http('GET', "$auth/redirect?to=other-auth", $opts);
 
 	$header = ['headers' => ['Authorization: Bearer abc', 'Accept: application/json']] + $opts;
-	$kept   = json_decode(cacti_http('GET', "$base/redirect?to=/headers", $header)['body'], true);
-	$moved  = json_decode(cacti_http('GET', "$base/redirect?to=" . rawurlencode("http://localhost:$port/headers"), $header)['body'], true);
+	$kept   = json_decode(cacti_http('GET', "$base/redirect?to=headers", $header)['body'], true);
+	$moved  = json_decode(cacti_http('GET', "$base/redirect?to=other-headers", $header)['body'], true);
 
 	expect($same['success'])->toBeTrue()
 		->and($cross['status'])->toBe(401)
@@ -76,14 +76,15 @@ test('credentials and authorization headers stay on the original origin', functi
 		->and($moved)->toBe(['authorization' => '', 'accept' => 'application/json']);
 });
 
-test('bodies over max_bytes are abandoned and the cap applies after decompression', function () {
+test('bodies over max_bytes are abandoned, and compression is only accepted under a cap that counts decoded bytes', function () {
 	$base = cacti_http_test_server()['url'];
 	$opts = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
 
 	expect(cacti_http('GET', "$base/big", $opts + ['max_bytes' => 32]))->toMatchArray(['success' => false, 'error' => 'Response exceeds 32 bytes'])
 		->and(cacti_http('GET', "$base/big", $opts + ['max_bytes' => 66])['success'])->toBeTrue()
 		->and(cacti_http('GET', "$base/gzip", $opts + ['max_bytes' => 32])['error'])->toBe('Response exceeds 32 bytes')
-		->and(json_decode(cacti_http('GET', "$base/gzip", $opts)['body'], true))->toBe(['v' => 3]);
+		->and(json_decode(cacti_http('GET', "$base/gzip", $opts + ['max_bytes' => 1024])['body'], true))->toBe(['v' => 3])
+		->and(json_decode(cacti_http('GET', "$base/headers", $opts)['body'], true)['accept'])->toBe('*/*');
 });
 
 test('the timeout covers the whole request and fractions are honoured', function () {
