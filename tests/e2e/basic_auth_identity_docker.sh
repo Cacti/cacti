@@ -45,7 +45,7 @@ sql "REPLACE INTO settings(name,value) VALUES('auth_method','2'),('guest_user','
 	INSERT INTO user_auth_realm(user_id,realm_id) SELECT 1002,realm_id FROM user_auth_realm WHERE user_id=1;"
 "${DC[@]}" exec -T cacti bash -s <<'SH'
 set -euo pipefail
-php -r 'file_put_contents("/tmp/cacti-basic-passwords", "basic_one:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nbasic_two:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nbasic_three:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\n");'
+php -r 'file_put_contents("/tmp/cacti-basic-passwords", "basic_one:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nbasic_two:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nbasic_three:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\no\x27brien:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\nobrien:" . password_hash("fixture-pass", PASSWORD_BCRYPT) . "\n");'
 chmod 644 /tmp/cacti-basic-passwords
 cp /var/www/html/include/config.php /tmp/basic-original-config.php
 cat > /var/www/html/basic-auth-endpoint.php <<'PHP'
@@ -93,6 +93,21 @@ echo '[basic-e2e] changing verified identity replaces and rotates the session'
 request basic-verified.php -u basic_two:fixture-pass >/dev/null
 assert_user 1002
 [ "$first" != "$(cookie_id)" ] || { echo 'FAIL: identity change reused the old session ID' >&2; exit 1; }
+
+echo '[basic-e2e] a name that login sanitization rewrites keeps its session'
+sql "INSERT INTO user_auth(id,username,password,realm,full_name,enabled) VALUES(1004,'obrien','!',2,'O Brien','on');
+	INSERT INTO user_auth_realm(user_id,realm_id) SELECT 1004,realm_id FROM user_auth_realm WHERE user_id=1;"
+request basic-verified.php -u "o'brien:fixture-pass" >/dev/null
+assert_user 1004
+apostrophe=$(cookie_id)
+request basic-verified.php -u "o'brien:fixture-pass" >/dev/null
+assert_user 1004
+[ "$apostrophe" = "$(cookie_id)" ] || { echo 'FAIL: sanitized identity rebuilt its session on every request' >&2; exit 1; }
+
+echo '[basic-e2e] another upstream name for the same account still rotates the session'
+request basic-verified.php -u obrien:fixture-pass >/dev/null
+assert_user 1004
+[ "$apostrophe" != "$(cookie_id)" ] || { echo 'FAIL: a different upstream identity reused the session ID' >&2; exit 1; }
 
 echo '[basic-e2e] a verified identity without a user row keeps its guest session'
 sql "INSERT INTO user_auth(id,username,password,realm,full_name,enabled) VALUES(1003,'basic_guest','!',0,'Basic Guest','on');

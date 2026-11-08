@@ -103,12 +103,18 @@ if ($auth_method != AUTH_METHOD_BASIC) {
  * process their log in.
  */
 if ($auth_method == AUTH_METHOD_BASIC) {
-	$username     = get_basic_auth_username();
-	$current_user = $username !== false ? db_fetch_row_prepared('SELECT *
+	$username = get_basic_auth_username();
+
+	// auth_login.php resolves and creates the realm 2 account from the
+	// sanitize_search_string() form of the upstream name (auth_get_username()),
+	// so look the row up by that same form. A raw lookup misses names such as
+	// o'brien and would rebuild the session on every request.
+	$login_username = $username !== false ? sanitize_search_string($username) : false;
+	$current_user   = $login_username !== false ? db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE realm = 2
 		AND username = ?',
-		[$username]) : [];
+		[$login_username]) : [];
 	$current_user = is_array($current_user) ? $current_user : [];
 	$basic_error  = '';
 
@@ -124,19 +130,29 @@ if ($auth_method == AUTH_METHOD_BASIC) {
 		}
 	}
 
+	// Sanitization maps several upstream names to one account, so every session
+	// is also bound to the raw upstream name recorded when it was created. A
+	// different upstream identity on the same browser session starts over.
+	$same_identity = isset($_SESSION[SESS_BASIC_AUTH_USER]) && $_SESSION[SESS_BASIC_AUTH_USER] === $username;
+
 	// An upstream identity with no realm 2 row is logged in as the guest account
 	// by auth_login.php, so the session row id cannot be compared with a user row.
 	// Bind that session to the upstream username recorded at login instead;
 	// otherwise every request would destroy the guest session and loop through
 	// auth_login.php's redirect.
 	$guest_session = $basic_error === '' && !cacti_sizeof($current_user)
-		&& isset($_SESSION[SESS_USER_ID], $_SESSION[SESS_BASIC_AUTH_USER])
-		&& $_SESSION[SESS_BASIC_AUTH_USER] === $username
+		&& isset($_SESSION[SESS_USER_ID])
+		&& $same_identity
 		&& get_guest_account() > 0
 		&& (int) $_SESSION[SESS_USER_ID] === get_guest_account();
 
+	$user_session = cacti_sizeof($current_user)
+		&& isset($_SESSION[SESS_USER_ID])
+		&& $same_identity
+		&& (int) $_SESSION[SESS_USER_ID] === (int) $current_user['id'];
+
 	// A Cacti session cannot outlive or replace the verified upstream identity.
-	if (isset($_SESSION[SESS_USER_ID]) && ($basic_error !== '' || (!cacti_sizeof($current_user) && !$guest_session) || (cacti_sizeof($current_user) && (int) $_SESSION[SESS_USER_ID] !== (int) $current_user['id']))) {
+	if (isset($_SESSION[SESS_USER_ID]) && ($basic_error !== '' || (!$guest_session && !$user_session))) {
 		cacti_session_destroy();
 		cacti_session_start();
 	}
@@ -159,6 +175,9 @@ if ($auth_method == AUTH_METHOD_BASIC) {
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
 			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 
+			// Bind the session to the raw upstream name, as auth_login.php does.
+			$_SESSION[SESS_BASIC_AUTH_USER] = $username;
+
 			$client_addr = get_client_addr();
 
 			cacti_log("LOGIN: User '" . $current_user['username'] . "' authenticated via Basic Authentication from IP Address '" . $client_addr . "'", false, 'AUTH');
@@ -166,7 +185,7 @@ if ($auth_method == AUTH_METHOD_BASIC) {
 			db_execute_prepared('INSERT IGNORE INTO user_log
 				(username, user_id, result, ip, time)
 				VALUES (?, ?, 1, ?, NOW())',
-				[$username, $current_user['id'], $_SESSION[SESS_CLIENT_ADDR]]);
+				[$current_user['username'], $current_user['id'], $_SESSION[SESS_CLIENT_ADDR]]);
 		}
 	} elseif (!$guest_session) {
 		require_once(CACTI_PATH_BASE . '/auth_login.php');

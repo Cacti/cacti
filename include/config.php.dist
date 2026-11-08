@@ -257,7 +257,6 @@ $trusted_proxies = [];
  */
 $auth_basic_allow_php_auth_user = false;
 
-
 /*
  * Set this to define the default i18n handler if not set
  * in the database.  For valid values, see CACTI_LANGUAGE_HANDLER
