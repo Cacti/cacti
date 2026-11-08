@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise password policy, lockout and expiry handling with temporarily overridden security options. */
 function library_authentication(): void {
 	global $error, $error_msg, $_CACTI_REQUEST;
 	$session  = $_SESSION;

@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Duplicate, export and remove a device template, restoring packaging globals afterwards. */
 function library_device_templates(int $templateId): void {
 	global $export_errors;
 	$packagingState = [$export_errors, $GLOBALS['debug'] ?? false, $GLOBALS['package_file'] ?? ''];

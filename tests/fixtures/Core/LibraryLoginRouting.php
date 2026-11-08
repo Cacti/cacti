@@ -10,6 +10,7 @@ function header(string $value): void {
 	throw new Redirect($value);
 }
 
+/** Exercise auth_login_redirect() for allowed, disallowed, disabled and unknown accounts. */
 function run(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/auth.php', 'auth_login_redirect', __NAMESPACE__);

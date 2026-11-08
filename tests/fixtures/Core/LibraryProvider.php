@@ -7,6 +7,7 @@ class_alias(\Cacti\Auth\CredentialLoginProviderInterface::class, __NAMESPACE__ .
 
 /** Supply provider outcomes at the protocol boundary while retaining real account persistence. */
 class LoginProviderFactory {
+	/** Return the fixture provider after checking the realm that authentication requested. */
 	public static function fromRealm(int $realm): \Cacti\Auth\LoginProviderInterface {
 		\library_expect($realm, 1000 + $GLOBALS['library_provider_id'], 'Authentication selects the requested enabled provider');
 
@@ -18,33 +19,42 @@ class Provider implements \Cacti\Auth\CredentialLoginProviderInterface {
 	public \Cacti\Auth\LoginResult $result;
 	public array $calls       = [];
 	public array $assignments = [];
+	/** Identify the fixture as an LDAP provider. */
 	public function getType(): int {
 		return PROVIDER_TYPE_LDAP;
 	}
+	/** Return the provider id selected for the current scenario. */
 	public function getId(): int {
 		return $GLOBALS['library_provider_id'];
 	}
+	/** Return the fixture provider's display name. */
 	public function getName(): string {
 		return 'Fixture provider';
 	}
+	/** Report the fixture provider as enabled. */
 	public function isEnabled(): bool {
 		return true;
 	}
+	/** Refuse remember-me cookies for the fixture provider. */
 	public function allowsAuthCookies(): bool {
 		return false;
 	}
+	/** Return the template user configured for the current scenario. */
 	public function getTemplateUserId(): int {
 		return $this->template;
 	}
+	/** Record the credentials and return the scenario's configured login result. */
 	public function authenticate(string $username, string $password): \Cacti\Auth\LoginResult {
 		$this->calls[] = [$username, $password];
 
 		return $this->result;
 	}
+	/** Record the group assignments the login process requested. */
 	public function applyAutoAssignments(int $id, string $username, array $groups): void {
 		$this->assignments[] = [$id, $username, $groups];
 	}
 }
+/** Exercise login_providers_login_process() for each provider outcome against real account storage. */
 function run(): void {
 	global $_CACTI_REQUEST, $realm, $error, $error_msg;
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';

@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise template export and import failures for missing dependencies and unknown types. */
 function library_transfer(): void {
 	global $export_errors, $import_debug_info, $import_messages, $legacy_template, $ignorable_hashes;
 	$state = [$export_errors, $import_debug_info, $import_messages, $legacy_template, $ignorable_hashes, $_SESSION];

@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise resource replication and its source cache against a fixture-owned plugin directory. */
 function library_resources(): void {
 	global $remote_db_cnn_id, $database_sessions, $database_hostname, $database_port, $database_default;
 	$type             = 'cov_' . bin2hex(random_bytes(6));

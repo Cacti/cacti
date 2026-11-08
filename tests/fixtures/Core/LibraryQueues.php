@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Queue a report and run it through the report worker with a private output directory. */
 function library_report_queue(): void {
 	require_once CACTI_PATH_LIBRARY . '/html_reports.php';
 	$session   = $_SESSION;

@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise color template duplication and canonical SNMP field repair. */
 function library_maintenance(): void {
 	$original = (int) sql_save(['color_template_id' => 0, 'name' => 'Coverage source colors'], 'color_templates', 'color_template_id');
 	library_expect($original > 0, true, 'Color duplication owns its source template');
