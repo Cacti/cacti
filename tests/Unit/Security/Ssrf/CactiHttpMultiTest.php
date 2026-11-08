@@ -98,22 +98,26 @@ test('the timeout covers the whole request and fractions are honoured', function
 });
 
 test('multi keeps request keys, runs requests together and isolates failures', function () {
-	$base  = cacti_http_test_server()['url'];
-	$opts  = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
-	$start = microtime(true);
+	$base = cacti_http_test_server()['url'];
+	$opts = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
+
+	file_get_contents("$base/reset-peak");
 
 	$results = cacti_http_multi([
-		'a'  => ['method' => 'GET', 'url' => "$base/slow", 'options' => $opts],
-		'b'  => ['method' => 'GET', 'url' => "$base/slow", 'options' => $opts],
-		'c'  => ['method' => 'GET', 'url' => "$base/slow", 'options' => $opts],
+		'a'  => ['method' => 'GET', 'url' => "$base/inflight/a", 'options' => $opts],
+		'b'  => ['method' => 'GET', 'url' => "$base/inflight/b", 'options' => $opts],
+		'c'  => ['method' => 'GET', 'url' => "$base/inflight/c", 'options' => $opts],
 		7    => ['method' => 'GET', 'url' => 'http://169.254.169.254/', 'options' => $opts],
 		'ok' => ['method' => 'GET', 'url' => "$base/stats", 'options' => $opts],
 	], 4);
 
+	// the server counts requests it holds open together, which wall-clock time on a busy runner cannot show reliably
+	$peak = json_decode(file_get_contents("$base/peak"), true)['peak'];
+
 	expect(array_keys($results))->toBe(['a', 'b', 'c', 7, 'ok'])
 		->and(array_column($results, 'success'))->toBe([true, true, true, false, true])
 		->and($results[7]['error'])->toBe('Target host resolves to a disallowed address')
-		->and(microtime(true) - $start)->toBeLessThan(2.5);
+		->and($peak)->toBe(3);
 });
 
 test('names are checked through the system resolver as well as DNS', function () {
