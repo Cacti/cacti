@@ -2822,7 +2822,7 @@ CREATE TABLE `reports_queued` (
 
 CREATE TABLE `queue_messages` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `message_id` char(36) NOT NULL,
+  `message_id` char(32) NOT NULL,
   `queue_name` varchar(64) NOT NULL,
   `topic` varchar(128) NOT NULL,
   `message_type` varchar(191) NOT NULL,

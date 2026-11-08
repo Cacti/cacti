@@ -8,8 +8,18 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -64,7 +74,7 @@ foreach ($parameters as $parameter) {
 			break;
 		case '--requeue':
 			if (!api_queue_is_message_id($value)) {
-				queue_admin_error('--requeue requires a canonical lowercase UUID.');
+				queue_admin_error('--requeue requires a 32 character lowercase hexadecimal message ID.');
 			}
 
 			$action  = 'requeue';
@@ -114,20 +124,37 @@ try {
 	queue_admin_error((string) clean_up_lines($e->getMessage()));
 }
 
+/**
+ * Print an error and exit with status 1.
+ *
+ * @param string $message The error description
+ *
+ * @return never
+ */
 function queue_admin_error(string $message) : never {
 	print 'ERROR: ' . $message . PHP_EOL;
 
 	exit(1);
 }
 
+/**
+ * Print the administrator usage.
+ *
+ * @return void
+ */
 function queue_admin_help() : void {
 	queue_admin_display_version();
 
 	print PHP_EOL;
-	print 'usage: queue_admin.php [--queue=name] [--health|--dead|--requeue=uuid|--purge] [--limit=50]' . PHP_EOL . PHP_EOL;
+	print 'usage: queue_admin.php [--queue=name] [--health|--dead|--requeue=id|--purge] [--limit=50]' . PHP_EOL . PHP_EOL;
 	print 'Checks queue health and administers dead or completed messages.' . PHP_EOL;
 }
 
+/**
+ * Print the administrator version banner.
+ *
+ * @return void
+ */
 function queue_admin_display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Queue Administrator, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;

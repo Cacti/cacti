@@ -7,24 +7,34 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
 require_once dirname(__DIR__, 4) . '/lib/api_queue.php';
 
-class CactiTestQueueTransport implements Symfony\Component\Messenger\Transport\TransportInterface {
-	/** @var Symfony\Component\Messenger\Envelope[] */
+class CactiTestQueueTransport implements CactiQueueTransportInterface {
+	/** @var CactiQueueEnvelope[] */
 	public array $sent         = [];
 	public array $received     = [];
 	public array $acknowledged = [];
 	public array $rejected     = [];
 
-	public function send(Symfony\Component\Messenger\Envelope $envelope) : Symfony\Component\Messenger\Envelope {
+	public function send(CactiQueueEnvelope $envelope) : CactiQueueEnvelope {
 		$this->sent[] = $envelope;
 
-		return $envelope->with(new Symfony\Component\Messenger\Stamp\TransportMessageIdStamp(api_queue_message_id()));
+		return $envelope->with(new CactiQueueMessageIdStamp(api_queue_message_id()));
 	}
 
 	public function get() : iterable {
@@ -34,11 +44,11 @@ class CactiTestQueueTransport implements Symfony\Component\Messenger\Transport\T
 		return $received;
 	}
 
-	public function ack(Symfony\Component\Messenger\Envelope $envelope) : void {
+	public function ack(CactiQueueEnvelope $envelope) : void {
 		$this->acknowledged[] = $envelope;
 	}
 
-	public function reject(Symfony\Component\Messenger\Envelope $envelope) : void {
+	public function reject(CactiQueueEnvelope $envelope) : void {
 		$this->rejected[] = $envelope;
 	}
 }
@@ -46,7 +56,7 @@ class CactiTestQueueTransport implements Symfony\Component\Messenger\Transport\T
 final class CactiTestLeaseQueueTransport extends CactiTestQueueTransport implements CactiQueueLeaseAwareTransportInterface {
 	public array $touched = [];
 
-	public function touch(Symfony\Component\Messenger\Envelope $envelope, int $lease_seconds) : void {
+	public function touch(CactiQueueEnvelope $envelope, int $lease_seconds) : void {
 		$this->touched[] = [$envelope, $lease_seconds];
 	}
 }
@@ -79,6 +89,10 @@ beforeEach(function () {
 
 		return is_callable($callback) ? $callback($value) : $value;
 	};
+	$GLOBALS['cacti_queue_test_log']   = [];
+	$GLOBALS['cacti_queue_log_writer'] = static function (string $message) : void {
+		$GLOBALS['cacti_queue_test_log'][] = $message;
+	};
 	$this->transport = new CactiTestQueueTransport();
 	api_queue_register_transport('test', fn (string $queue) => $this->transport);
 	api_queue_route('reports', 'test');
@@ -102,7 +116,7 @@ it('publishes a portable JSON envelope to the routed transport', function () {
 		->and($message->payload())->toBe(['report_id' => 42])
 		->and($stamp->queue())->toBe('reports')
 		->and($stamp->priority())->toBe(75)
-		->and(api_queue_message_id_from_envelope($envelope))->toMatch('/^[0-9a-f-]{36}$/');
+		->and(api_queue_message_id_from_envelope($envelope))->toMatch('/^[0-9a-f]{32}$/');
 });
 
 it('preserves delivery policy across broker serialization and reception', function () {
@@ -139,9 +153,9 @@ it('enforces serialized broker payload limits before publishing and after recept
 	$serializer = new CactiQueueSerializer();
 	$message    = new CactiQueueMessage('reports.generate', ['value' => str_repeat('x', 2048)]);
 	$stamp      = new CactiQueueStamp('reports', max_payload_bytes: 1024);
-	$envelope   = new Symfony\Component\Messenger\Envelope($message, [$stamp]);
+	$envelope   = new CactiQueueEnvelope($message, [$stamp]);
 	expect(fn () => $serializer->encode($envelope))->toThrow(LengthException::class);
-	$encoded                           = $serializer->encode(new Symfony\Component\Messenger\Envelope($message));
+	$encoded                           = $serializer->encode(new CactiQueueEnvelope($message));
 	$encoded['headers']['cacti_queue'] = json_encode([
 		'queue'          => 'reports', 'priority' => 50, 'max_attempts' => 5,
 		'correlation_id' => '', 'max_payload_bytes' => 1024,
@@ -150,17 +164,17 @@ it('enforces serialized broker payload limits before publishing and after recept
 });
 
 it('enforces database payload limits when a custom serializer bypasses the broker guard', function () {
-	$serializer = new class implements Symfony\Component\Messenger\Transport\Serialization\SerializerInterface {
-		public function encode(Symfony\Component\Messenger\Envelope $envelope) : array {
+	$serializer = new class implements CactiQueueSerializerInterface {
+		public function encode(CactiQueueEnvelope $envelope) : array {
 			return ['body' => str_repeat('x', 2048), 'headers' => []];
 		}
 
-		public function decode(array $encodedEnvelope) : Symfony\Component\Messenger\Envelope {
-			return new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', []));
+		public function decode(array $encodedEnvelope) : CactiQueueEnvelope {
+			return new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', []));
 		}
 	};
 	$transport = new CactiDatabaseQueueTransport('reports', 60, $serializer);
-	$envelope  = new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', []),
+	$envelope  = new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', []),
 		[new CactiQueueStamp('reports', max_payload_bytes: 1024)]);
 	expect(fn () => $transport->send($envelope))->toThrow(LengthException::class);
 });
@@ -185,9 +199,10 @@ it('routes different queues to different transports in one installation', functi
 it('caps delayed delivery at one year', function () {
 	$envelope = api_queue_publish('reports.generate', [], ['delay' => PHP_INT_MAX]);
 
-	$delay = $envelope->last(Symfony\Component\Messenger\Stamp\DelayStamp::class);
-	expect($delay)->toBeInstanceOf(Symfony\Component\Messenger\Stamp\DelayStamp::class)
-		->and($delay->getDelay())->toBe(31536000000);
+	$delay = $envelope->last(CactiQueueDelayStamp::class);
+	expect($delay)->toBeInstanceOf(CactiQueueDelayStamp::class)
+		->and($delay->seconds())->toBe(31536000)
+		->and((new CactiQueueDelayStamp(-5))->seconds())->toBe(0);
 });
 
 it('clamps delivery policy and rejects oversized correlation identifiers', function () {
@@ -204,7 +219,7 @@ it('clamps delivery policy and rejects oversized correlation identifiers', funct
 
 it('validates and round trips safe queue messages', function () {
 	$serializer = new CactiQueueSerializer();
-	$encoded    = $serializer->encode(new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', ['id' => 4])));
+	$encoded    = $serializer->encode(new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', ['id' => 4])));
 	$message    = $serializer->decode($encoded)->getMessage();
 
 	expect($message)->toBeInstanceOf(CactiQueueMessage::class)
@@ -258,7 +273,7 @@ it('rejects untrusted message types without invoking an autoloader', function (m
 ]);
 
 it('decodes only message classes registered with a handler', function () {
-	$encoded = (new CactiQueueSerializer())->encode(new Symfony\Component\Messenger\Envelope(new RegisteredCactiQueueMessage(['a' => 1])));
+	$encoded = (new CactiQueueSerializer())->encode(new CactiQueueEnvelope(new RegisteredCactiQueueMessage(['a' => 1])));
 	expect(fn () => (new CactiQueueSerializer())->decode($encoded))->toThrow(CactiQueueMessageException::class);
 
 	api_queue_register_handler(RegisteredCactiQueueMessage::class, static function () : void {
@@ -293,7 +308,7 @@ it('applies the consumer payload limit to the raw body regardless of the message
 	$GLOBALS['cacti_queue_test_settings']['queue_max_payload_bytes'] = '2048';
 	$serializer                                                      = new CactiQueueSerializer();
 	$message                                                         = new CactiQueueMessage('reports.generate', ['value' => str_repeat('x', 4096)]);
-	$encoded                                                         = $serializer->encode(new Symfony\Component\Messenger\Envelope($message, [new CactiQueueStamp('reports', max_payload_bytes: 1048576)]));
+	$encoded                                                         = $serializer->encode(new CactiQueueEnvelope($message, [new CactiQueueStamp('reports', max_payload_bytes: 1048576)]));
 	expect(json_decode($encoded['headers']['cacti_queue'], true)['max_payload_bytes'])->toBe(1048576)
 		->and(fn () => $serializer->decode($encoded))->toThrow(CactiQueueMessageException::class);
 
@@ -337,19 +352,19 @@ it('rejects malformed broker envelopes without emitting a warning', function () 
 });
 
 it('rejects objects without an explicit queue message contract', function () {
-	(new CactiQueueSerializer())->encode(new Symfony\Component\Messenger\Envelope(new stdClass()));
+	(new CactiQueueSerializer())->encode(new CactiQueueEnvelope(new stdClass()));
 })->throws(InvalidArgumentException::class, 'CactiQueueMessageInterface');
 
 it('validates database transport envelopes before persistence', function () {
 	$transport = new CactiDatabaseQueueTransport('reports');
-	$invalid   = new Symfony\Component\Messenger\Envelope(new stdClass(), [new CactiQueueStamp('reports')]);
-	$wrong     = new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', []), [new CactiQueueStamp('poller')]);
-	$large     = new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', ['value' => str_repeat('x', 2048)]), [new CactiQueueStamp('reports', max_payload_bytes: 1024)]);
+	$invalid   = new CactiQueueEnvelope(new stdClass(), [new CactiQueueStamp('reports')]);
+	$wrong     = new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', []), [new CactiQueueStamp('poller')]);
+	$large     = new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', ['value' => str_repeat('x', 2048)]), [new CactiQueueStamp('reports', max_payload_bytes: 1024)]);
 
 	expect(fn () => $transport->send($invalid))->toThrow(InvalidArgumentException::class, 'CactiQueueMessageInterface')
 		->and(fn () => $transport->send($wrong))->toThrow(InvalidArgumentException::class, 'cannot be sent')
 		->and(fn () => $transport->send($large))->toThrow(LengthException::class, 'exceeds')
-		->and(fn () => $transport->ack(new Symfony\Component\Messenger\Envelope(new stdClass())))->toThrow(InvalidArgumentException::class, 'received queue envelope');
+		->and(fn () => $transport->ack(new CactiQueueEnvelope(new stdClass())))->toThrow(InvalidArgumentException::class, 'received queue envelope');
 });
 
 it('dispatches only to a registered topic handler', function () {
@@ -357,7 +372,7 @@ it('dispatches only to a registered topic handler', function () {
 	api_queue_register_handler('reports.generate', function (CactiQueueMessage $message) use (&$handled) : void {
 		$handled = $message->payload();
 	});
-	$envelope = new Symfony\Component\Messenger\Envelope(
+	$envelope = new CactiQueueEnvelope(
 		new CactiQueueMessage('reports.generate', ['report_id' => 42]),
 		[new CactiQueueStamp('reports')]
 	);
@@ -371,10 +386,10 @@ it('registers handlers by message class and clears active handler state', functi
 	$handled = false;
 	api_queue_register_handler(CactiQueueMessage::class, function (CactiQueueMessage $message) use (&$handled) : void {
 		$handled = true;
-		expect($GLOBALS['cacti_queue_active_envelopes'][spl_object_id($message)] ?? null)->toBeInstanceOf(Symfony\Component\Messenger\Envelope::class);
+		expect($GLOBALS['cacti_queue_active_envelopes'][spl_object_id($message)] ?? null)->toBeInstanceOf(CactiQueueEnvelope::class);
 	});
 	$message  = new CactiQueueMessage('reports.generate', []);
-	$envelope = new Symfony\Component\Messenger\Envelope($message, [new CactiQueueStamp('reports')]);
+	$envelope = new CactiQueueEnvelope($message, [new CactiQueueStamp('reports')]);
 
 	api_queue_dispatch($envelope);
 
@@ -390,7 +405,7 @@ it('prefers a topic handler over a class handler', function () {
 	api_queue_register_handler('reports.generate', function () use (&$handled) : void {
 		$handled[] = 'topic';
 	});
-	$envelope = new Symfony\Component\Messenger\Envelope(
+	$envelope = new CactiQueueEnvelope(
 		new CactiQueueMessage('reports.generate', []),
 		[new CactiQueueStamp('reports')]
 	);
@@ -449,7 +464,7 @@ it('accepts transport and handler providers contributed by plugin hooks', functi
 
 it('adapts broker receivers and restores missing Cacti routing stamps', function () {
 	$message                     = new CactiQueueMessage('reports.generate', []);
-	$envelope                    = new Symfony\Component\Messenger\Envelope($message);
+	$envelope                    = new CactiQueueEnvelope($message);
 	$this->transport->received[] = $envelope;
 	$receiver                    = new CactiQueueReceiver('reports', $this->transport);
 	$received                    = iterator_to_array($receiver->get())[0];
@@ -477,39 +492,41 @@ it('rejects non-finite floating point payload values', function () {
 })->throws(InvalidArgumentException::class, 'Queue data must contain only JSON-compatible');
 
 it('fails closed when no handler is registered', function () {
-	$envelope = new Symfony\Component\Messenger\Envelope(
+	$envelope = new CactiQueueEnvelope(
 		new CactiQueueMessage('reports.unknown', []),
 		[new CactiQueueStamp('reports')]
 	);
 	api_queue_dispatch($envelope);
-})->throws(Symfony\Component\Messenger\Exception\NoHandlerForMessageException::class);
+})->throws(CactiQueueNoHandlerException::class);
 
-it('uses unique UUID message identifiers', function () {
+it('uses unique random message identifiers', function () {
 	expect(api_queue_message_id())->not->toBe(api_queue_message_id());
 });
 
 it('fails closed for invalid renewal and envelope helpers', function () {
 	expect(fn () => api_queue_renew(new stdClass()))->toThrow(InvalidArgumentException::class, 'while handling')
-		->and(fn () => api_queue_renew(new Symfony\Component\Messenger\Envelope(new stdClass(), [new CactiQueueStamp('reports')])))->toThrow(LogicException::class, 'does not support')
-		->and(fn () => api_queue_stamp(new Symfony\Component\Messenger\Envelope(new stdClass())))->toThrow(InvalidArgumentException::class, 'missing')
-		->and(fn () => api_queue_message_id_from_envelope(new Symfony\Component\Messenger\Envelope(new stdClass())))->toThrow(InvalidArgumentException::class, 'no transport');
+		->and(fn () => api_queue_renew(new CactiQueueEnvelope(new stdClass(), [new CactiQueueStamp('reports')])))->toThrow(LogicException::class, 'does not support')
+		->and(fn () => api_queue_stamp(new CactiQueueEnvelope(new stdClass())))->toThrow(InvalidArgumentException::class, 'missing')
+		->and(fn () => api_queue_message_id_from_envelope(new CactiQueueEnvelope(new stdClass())))->toThrow(InvalidArgumentException::class, 'no transport');
 });
 
 it('renews leases through the optional Cacti transport capability', function () {
 	$transport = new CactiTestLeaseQueueTransport();
 	api_queue_register_transport('lease', static fn () => $transport);
 	api_queue_route('reports', 'lease');
-	$envelope = new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', []), [new CactiQueueStamp('reports')]);
+	$envelope = new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', []), [new CactiQueueStamp('reports')]);
 
 	api_queue_renew($envelope, 90);
 
 	expect($transport->touched)->toBe([[$envelope, 90]]);
 });
 
-it('recognizes canonical UUID message identifiers', function () {
-	expect(api_queue_is_message_id('550e8400-e29b-41d4-a716-446655440000'))->toBeTrue()
+it('recognizes 32 character lowercase hexadecimal message identifiers', function () {
+	expect(api_queue_is_message_id('550e8400e29b41d4a716446655440000'))->toBeTrue()
 		->and(api_queue_is_message_id(api_queue_message_id()))->toBeTrue()
-		->and(api_queue_is_message_id("550e8400-e29b-41d4-a716-446655440000\n"))->toBeFalse();
+		->and(api_queue_is_message_id("550e8400e29b41d4a716446655440000\n"))->toBeFalse()
+		->and(api_queue_is_message_id('550E8400E29B41D4A716446655440000'))->toBeFalse()
+		->and(api_queue_is_message_id('550e8400-e29b-41d4-a716-446655440000'))->toBeFalse();
 });
 
 it('validates metadata and stored JSON edge cases', function () {
@@ -582,6 +599,148 @@ it('guards queue command entry points against web execution', function () {
 	}
 });
 
+it('keeps envelopes immutable and returns the most recent stamp', function () {
+	$first    = new CactiQueueStamp('reports', 10);
+	$second   = new CactiQueueStamp('reports', 20);
+	$envelope = new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', []), [$first]);
+	$updated  = $envelope->with($second);
+
+	expect($envelope->last(CactiQueueStamp::class))->toBe($first)
+		->and($updated->last(CactiQueueStamp::class))->toBe($second)
+		->and($updated->withoutAll(CactiQueueStamp::class)->last(CactiQueueStamp::class))->toBeNull()
+		->and($updated->last(CactiQueueStamp::class))->toBe($second)
+		->and($updated->last(CactiQueueReceiptStamp::class))->toBeNull();
+});
+
+it('reports the redelivery count of a receipt', function () {
+	expect((new CactiQueueReceiptStamp(1, 'token', 1))->redeliveryCount())->toBe(0)
+		->and((new CactiQueueReceiptStamp(1, 'token', 4))->redeliveryCount())->toBe(3);
+});
+
+it('acknowledges handled deliveries and rejects failed ones with the failure reason', function () {
+	api_queue_register_handler('reports.generate', static function () : void {
+	});
+	api_queue_register_handler('reports.fail', static function () : void {
+		throw new RuntimeException("handler\nbroke");
+	});
+	$ok                        = new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', []), [new CactiQueueStamp('reports')]);
+	$bad                       = new CactiQueueEnvelope(new CactiQueueMessage('reports.fail', []), [new CactiQueueStamp('reports')]);
+	$this->transport->received = [$ok, $bad];
+	$worker                    = new CactiQueueWorker(new CactiQueueReceiver('reports', $this->transport));
+
+	$worker->run(true);
+
+	expect($this->transport->acknowledged)->toBe([$ok])
+		->and($this->transport->rejected)->toHaveCount(1)
+		->and($this->transport->rejected[0]->last(CactiQueueFailureStamp::class)->reason())->toBe("handler\nbroke")
+		->and($worker->failed())->toBeTrue()
+		->and($GLOBALS['cacti_queue_test_log'])->toBe(['Queue message failed: handler broke']);
+});
+
+it('rejects a delivery that has no handler instead of stopping the worker', function () {
+	$this->transport->received = [new CactiQueueEnvelope(new CactiQueueMessage('reports.unknown', []), [new CactiQueueStamp('reports')])];
+	$worker                    = new CactiQueueWorker($this->transport);
+
+	$worker->run(true);
+
+	expect($this->transport->rejected)->toHaveCount(1)
+		->and($worker->failed())->toBeTrue();
+});
+
+it('logs a stale receipt as a duplicate delivery and keeps consuming', function () {
+	$transport = new class extends CactiTestQueueTransport {
+		public function ack(CactiQueueEnvelope $envelope) : void {
+			parent::ack($envelope);
+
+			throw new CactiQueueStaleReceiptException('lease expired');
+		}
+	};
+	api_queue_register_handler('reports.generate', static function () : void {
+	});
+	$transport->received = [
+		new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', ['n' => 1]), [new CactiQueueStamp('reports')]),
+		new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', ['n' => 2]), [new CactiQueueStamp('reports')]),
+	];
+	$worker = new CactiQueueWorker($transport);
+
+	$worker->run(true);
+
+	expect($transport->acknowledged)->toHaveCount(2)
+		->and($worker->failed())->toBeFalse()
+		->and($GLOBALS['cacti_queue_test_log'][0])->toContain('reclaimed before it was settled');
+});
+
+it('survives an undecodable provider delivery and keeps polling', function () {
+	$receiver = new class implements CactiQueueReceiverInterface {
+		public int $polls = 0;
+
+		public function get() : iterable {
+			$this->polls++;
+
+			if ($this->polls === 1) {
+				throw new CactiQueueMessageException('poison');
+			}
+
+			return [];
+		}
+
+		public function ack(CactiQueueEnvelope $envelope) : void {
+		}
+
+		public function reject(CactiQueueEnvelope $envelope) : void {
+		}
+	};
+	$worker = new CactiQueueWorker($receiver);
+
+	$worker->run(false, 1, 1);
+
+	expect($receiver->polls)->toBeGreaterThan(1)
+		->and($worker->failed())->toBeTrue()
+		->and($GLOBALS['cacti_queue_test_log'][0])->toContain('could not be decoded: poison');
+});
+
+it('stops after the current delivery when asked to stop', function () {
+	$worker   = null;
+	$receiver = new class implements CactiQueueReceiverInterface {
+		public array $acknowledged = [];
+
+		public function get() : iterable {
+			return [
+				new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', ['n' => 1]), [new CactiQueueStamp('reports')]),
+				new CactiQueueEnvelope(new CactiQueueMessage('reports.generate', ['n' => 2]), [new CactiQueueStamp('reports')]),
+			];
+		}
+
+		public function ack(CactiQueueEnvelope $envelope) : void {
+			$this->acknowledged[] = $envelope;
+		}
+
+		public function reject(CactiQueueEnvelope $envelope) : void {
+		}
+	};
+	api_queue_register_handler('reports.generate', static function () use (&$worker) : void {
+		$worker->stop();
+	});
+	$worker = new CactiQueueWorker($receiver);
+
+	$worker->run();
+
+	expect($receiver->acknowledged)->toHaveCount(1);
+});
+
+it('writes single-line queue log entries through cacti_log by default', function () {
+	unset($GLOBALS['cacti_queue_log_writer']);
+
+	expect(fn () => api_queue_log("line one\nline two"))->not->toThrow(Throwable::class);
+});
+
+it('has no Composer dependency and is not loaded on every page', function () {
+	$root = dirname(__DIR__, 4);
+
+	expect(file_get_contents("$root/lib/api_queue.php"))->not->toContain('Symfony\\')
+		->and(file_get_contents("$root/include/global.php"))->not->toContain('api_queue.php');
+});
+
 function queue_api_test_reset_runtime() : void {
 	unset(
 		$GLOBALS['cacti_queue_transport_factories'],
@@ -594,6 +753,8 @@ function queue_api_test_reset_runtime() : void {
 		$GLOBALS['cacti_queue_config_reader'],
 		$GLOBALS['cacti_queue_hook_provider'],
 		$GLOBALS['cacti_queue_handlers'],
-		$GLOBALS['cacti_queue_lease_seconds']
+		$GLOBALS['cacti_queue_lease_seconds'],
+		$GLOBALS['cacti_queue_log_writer'],
+		$GLOBALS['cacti_queue_test_log']
 	);
 }
