@@ -43,7 +43,9 @@ function cacti_http_test_server() : array {
 
 	mkdir($state);
 
-	$process = proc_open([PHP_BINARY, '-S', '127.0.0.1:' . $port, dirname(__DIR__) . '/fixtures/Core/HttpTestRouter.php'],
+	// -n keeps php.ini out of the server, so coverage drivers and auto_prepend_file
+	// hooks configured for the test run do not slow or serialize its requests
+	$process = proc_open([PHP_BINARY, '-n', '-S', '127.0.0.1:' . $port, dirname(__DIR__) . '/fixtures/Core/HttpTestRouter.php'],
 		[0 => ['pipe', 'r'], 1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']],
 		$pipes, null, ['PHP_CLI_SERVER_WORKERS' => '8', 'CACTI_HTTP_TEST_STATE' => $state]);
 
