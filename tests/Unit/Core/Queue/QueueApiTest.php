@@ -637,6 +637,17 @@ it('acknowledges handled deliveries and rejects failed ones with the failure rea
 		->and($GLOBALS['cacti_queue_test_log'])->toBe(['Queue message failed: handler broke']);
 });
 
+it('heartbeats its registered process once per poll', function () {
+	$beats  = 0;
+	$worker = new CactiQueueWorker($this->transport, static function () use (&$beats) : void {
+		$beats++;
+	});
+
+	$worker->run(true);
+
+	expect($beats)->toBe(1);
+});
+
 it('rejects a delivery that has no handler instead of stopping the worker', function () {
 	$this->transport->received = [new CactiQueueEnvelope(new CactiQueueMessage('reports.unknown', []), [new CactiQueueStamp('reports')])];
 	$worker                    = new CactiQueueWorker($this->transport);

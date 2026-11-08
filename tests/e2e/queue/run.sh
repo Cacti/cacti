@@ -47,6 +47,35 @@ fi
 
 echo "Queue admin health passed: $health"
 
+# A running worker is visible in the processes table and removes its row on exit.
+queue_processes() {
+	"${compose[@]}" exec --no-TTY db mysql --user=root --skip-column-names \
+		--execute="SELECT COUNT(*) FROM cacti_queue_e2e.processes WHERE tasktype = 'queue' AND taskname = 'queue-e2e'"
+}
+"${compose[@]}" exec --no-TTY app php cli/queue_worker.php --queue=queue-e2e --sleep=1 --time-limit=4 &
+worker_three=$!
+registered=0
+for _ in $(seq 1 20); do
+	if [[ "$(queue_processes)" == 1 ]]; then
+		registered=1
+		break
+	fi
+	sleep 0.5
+done
+wait "$worker_three"
+
+if [[ "$registered" != 1 ]]; then
+	echo 'queue_worker.php did not register its process.' >&2
+	exit 1
+fi
+
+if [[ "$(queue_processes)" != 0 ]]; then
+	echo 'queue_worker.php left its process registered after exiting.' >&2
+	exit 1
+fi
+
+echo 'Queue worker process registration passed'
+
 "${compose[@]}" exec --no-TTY app php tests/e2e/queue/contracts.php
 
 if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 ]]; then
