@@ -22,7 +22,19 @@ define('POLLER_ID', 1);
 define('POLLER_VERBOSITY_DEVDBG', 5);
 $graph_item_types        = [1 => 'GPRINT'];
 $consolidation_functions = [1 => 'AVERAGE'];
-$label                   = ($argv[1] ?? '') === 'empty' ? null : ($argv[2] ?? '<em>Literal label</em>');
+$mode                    = $argv[1] ?? '';
+$label                   = $mode === 'empty' ? null : ($argv[2] ?? '<em>Literal label</em>');
+
+// draw_graph_items_list() includes global_arrays.php, which needs a full install; an empty
+// stand-in keeps the item type and consolidation arrays defined above.
+$include_dir = sys_get_temp_dir() . '/cacti-label-probe-' . getmypid();
+@mkdir($include_dir);
+file_put_contents($include_dir . '/global_arrays.php', '<?php' . PHP_EOL);
+register_shutdown_function(function () use ($include_dir) : void {
+	@unlink($include_dir . '/global_arrays.php');
+	@rmdir($include_dir);
+});
+define('CACTI_PATH_INCLUDE', $include_dir);
 
 function db_fetch_assoc(string $sql): array {
 	global $label;
@@ -40,6 +52,9 @@ function db_fetch_assoc(string $sql): array {
 function cacti_log(...$args): void {
 }
 function cacti_sizeof($value): int {
+	return count($value);
+}
+function cacti_count($value): int {
 	return count($value);
 }
 function __(string $value, ...$args): string {
@@ -68,9 +83,25 @@ function form_alternate_row(): void {
 }
 function form_hidden_box(...$args): void {
 }
+function form_get_table_id(mixed $increment = false): string {
+	return 'graph_templates:0';
+}
+function form_process_visible_display_text(string $table_id, array $display_text): array {
+	return $display_text;
+}
 
 ob_start();
-draw_aggregate_graph_items_list(1);
+
+if ($mode === 'graph') {
+	// The regular graph item list puts its GPRINT, CDEF and VDEF names in the same columns.
+	draw_graph_items_list([[
+		'id'            => 1, 'sequence' => 1, 'text_format' => 'Traffic', 'value' => '', 'hard_return' => '', 'legend' => '',
+		'graph_type_id' => 1, 'consolidation_function_id' => 1, 'data_source_name' => 'traffic_in',
+		'gprint_name'   => $label, 'cdef_name' => $label, 'vdef_name' => $label, 'hex' => ''
+	]], 'graph_templates.php', 'graph_template_id=1', true);
+} else {
+	draw_aggregate_graph_items_list(1);
+}
 $html     = ob_get_clean();
 $document = new DOMDocument();
 @$document->loadHTML($html);
@@ -78,11 +109,12 @@ $xpath = new DOMXPath($document);
 $cells = $xpath->query('//tr[td]/td');
 $names = [];
 
-foreach ([4, 5, 6] as $index) {
+// The regular list has an extra Legend column ahead of the definition names.
+foreach ($mode === 'graph' ? [5, 6, 7] : [4, 5, 6] as $index) {
 	$names[] = $cells->item($index)->textContent;
 }
 
 if ($names !== array_fill(0, 3, $label ?? '') || $xpath->query('//td//em')->length !== 0) {
-	throw new RuntimeException('Aggregate definition names were interpreted as markup or changed.');
+	throw new RuntimeException('Graph item definition names were interpreted as markup or changed.');
 }
 print json_encode(['names' => $names, 'elements' => $xpath->query('//td//em')->length]);
