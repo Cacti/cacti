@@ -181,8 +181,8 @@ class DeviceRepository {
 	 * @param array<string,mixed> $criteria Column => value equality filters.
 	 *                                      Each key must be a known `host`
 	 *                                      column; each value is bound, never
-	 *                                      interpolated.  An empty set selects
-	 *                                      all devices.
+	 *                                      interpolated; null matches IS NULL.
+	 *                                      An empty set selects all devices.
 	 * @param string|null         $order    Optional ORDER BY expression, e.g.
 	 *                                      "description" or "poller_id DESC,
 	 *                                      description ASC".  Every term is
@@ -207,7 +207,14 @@ class DeviceRepository {
 				// Identifier: allowlisted before it can enter SQL text.
 				$this->assertColumn((string) $column);
 
-				// Value: always a bound parameter, never interpolated.
+				// Value: always a bound parameter, never interpolated. A null
+				// criterion means IS NULL; "= NULL" would match no row at all.
+				if ($value === null) {
+					$clauses[] = '`' . $column . '` IS NULL';
+
+					continue;
+				}
+
 				$clauses[] = '`' . $column . '` = ?';
 				$params[]  = $value;
 			}
@@ -248,7 +255,8 @@ class DeviceRepository {
 	 * @param array<string,mixed> $fields Column => value pairs to persist.
 	 *
 	 * @return int The device id (existing id on update, new auto-increment id
-	 *             on insert); 0 when the write failed.
+	 *             on insert); 0 when the write failed or the id to update
+	 *             does not exist.
 	 *
 	 * @throws InvalidArgumentException When $fields is empty or names a column
 	 *                                  outside the allowlist.
@@ -308,7 +316,7 @@ class DeviceRepository {
 	 * @param int                 $id     The host.id to update.
 	 * @param array<string,mixed> $fields Already-allowlisted column => value.
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool True on success, false on failure or when no row has $id.
 	 */
 	private function update(int $id, array $fields): bool {
 		// id identifies the row via the bound WHERE; it is not itself an
@@ -316,8 +324,8 @@ class DeviceRepository {
 		unset($fields['id']);
 
 		if (!cacti_sizeof($fields)) {
-			// Nothing to change; treat as a successful no-op.
-			return true;
+			// Nothing to change, but a missing row is still a failure.
+			return $this->exists($id);
 		}
 
 		$assignments = [];
@@ -334,7 +342,25 @@ class DeviceRepository {
 			. ' SET ' . implode(', ', $assignments)
 			. ' WHERE id = ?';
 
-		return db_execute_prepared($sql, $params) !== false;
+		if (db_execute_prepared($sql, $params) === false) {
+			return false;
+		}
+
+		// Unlike sql_save(), this never inserts, so an update of a missing id
+		// must fail. MySQL also reports zero affected rows for a matched row
+		// whose values did not change, so only then check that the row exists.
+		return db_affected_rows() > 0 || $this->exists($id);
+	}
+
+	/**
+	 * exists - whether a device row with this id is present.
+	 *
+	 * @param int $id The host.id to look up.
+	 *
+	 * @return bool True when the row exists.
+	 */
+	private function exists(int $id): bool {
+		return db_fetch_cell_prepared('SELECT 1 FROM ' . self::TABLE . ' WHERE id = ?', [$id]) !== false;
 	}
 
 	/**

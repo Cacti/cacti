@@ -84,9 +84,16 @@ require_once dirname(__DIR__, 3) . '/lib/ping.php';
 		$check($repo->save(['id' => $second, 'description' => 'Updated router', 'disabled' => 'on']), $second, 'update identity');
 		$check($repo->find($second)['description'], 'Updated router', 'updated value');
 		$check($repo->find($first)['description'], "West's router", 'same-hostname sibling unchanged');
+		$check($repo->save(['id' => $second, 'description' => 'Updated router']), $second, 'unchanged values still update');
+		$check($repo->save(['id' => 99, 'description' => 'Ghost']), 0, 'update of a missing identity');
+		$check($repo->find(99), null, 'missing identity is not created');
+		$check($repo->save(['id' => 99]), 0, 'identity-only update of a missing identity');
+		$conn->exec('UPDATE host SET description = NULL WHERE id = ' . $third);
+		$check(array_column($repo->all(['description' => null]), 'id'), [$third], 'null criteria match IS NULL');
 		$queries = $GLOBALS['database_total_queries'];
 		$check($repo->save(['id' => $second]), $second, 'identity-only update');
-		$check($GLOBALS['database_total_queries'], $queries, 'no query for unchanged fields');
+		$check($GLOBALS['database_total_queries'], $queries + 1, 'identity-only update only checks existence');
+		$queries = $GLOBALS['database_total_queries'];
 
 		$invalid = [
 			static fn () => $repo->all(['unknown_column' => 'value']),

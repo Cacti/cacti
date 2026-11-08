@@ -77,6 +77,13 @@ if (!function_exists('db_execute_prepared')) {
 	}
 }
 
+if (!function_exists('db_affected_rows')) {
+	function db_affected_rows(...$rest): int {
+		// Every simulated UPDATE matches its row.
+		return 1;
+	}
+}
+
 if (!function_exists('db_fetch_insert_id')) {
 	function db_fetch_insert_id(...$rest) {
 		return 4584;
