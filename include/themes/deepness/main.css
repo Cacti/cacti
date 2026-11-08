@@ -336,7 +336,7 @@ label {
 
 .badpassword {
 	padding: 4px;
-	color: red;
+	color: #ff6b6b;
 	font-size: 1.5em !important;
 	vertical-align: bottom;
 }
@@ -354,7 +354,7 @@ label {
 }
 
 .notAssociated {
-	color: red;
+	color: #ff6b6b;
 	font-weight: bold;
 }
 
@@ -373,24 +373,24 @@ label {
 }
 
 .running {
-	color: red;
+	color: #ff6b6b;
 	font-weight: bold;
 }
 
 .newObject {
-	color: blue;
+	color: #8fb6e8;
 }
 
 .updateObject {
-	color: grey;
+	color: var(--dp-text-muted);
 }
 
 .unmetDependency {
-	color: red;
+	color: #ff6b6b;
 }
 
 .foundDependency {
-	color: navy;
+	color: #8fb6e8;
 }
 
 .success {
@@ -398,7 +398,7 @@ label {
 }
 
 .failed {
-	color: red;
+	color: #ff6b6b;
 }
 
 .accessGranted {
@@ -411,12 +411,12 @@ label {
 }
 
 .accessRestricted {
-	color: red;
+	color: #ff6b6b;
 	font-weight: bold;
 }
 
 .accessRestrictedItem {
-	color: red;
+	color: #ff6b6b;
 }
 
 .deleteIcon {
@@ -494,11 +494,11 @@ label {
 }
 
 .deviceDown {
-	color: #ff0000 !important;
+	color: #ff6b6b !important;
 }
 
 .deviceUnknown {
-	color: #0000ff !important;
+	color: #8fb6e8 !important;
 }
 
 .deviceDisabled {
@@ -510,7 +510,7 @@ label {
 }
 
 .deviceError {
-	color: #750F7D !important;
+	color: #c792ea !important;
 }
 
 .deviceDownMuted {
@@ -526,11 +526,11 @@ label {
 }
 
 .deviceWarning {
-	color: #aa7807 !important;
+	color: #ffab52 !important;
 }
 
 .deviceAlert {
-	color: #660000 !important;
+	color: #ff6b6b !important;
 }
 
 /* Device status pills - rounded translucent badges per state (get_colored_device_status) */
@@ -1284,7 +1284,7 @@ legend {
 
 .textError {
 	font-size: 12px;
-	color: red;
+	color: #ff6b6b;
 }
 
 .textWarning {
@@ -1380,16 +1380,17 @@ legend {
 
 .cactiTableTitleRow {
 	color: var(--dp-text);
-	float: left;
 	padding-left: 3px;
 	text-align: left;
-	display: block;
+	display: flex;
 	width: 100%;
-	height: 28px;
+	min-height: 28px;
 	line-height: 28px;
 	font-size: 1em;
 	font-weight: 700;
 	background: var(--dp-header);
+	align-items: center;
+	box-sizing: border-box;
 }
 
 .cactiTableTitle {
@@ -1431,6 +1432,28 @@ legend {
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.cactiTableTitleRow > .cactiTableTitle,
+.cactiTableTitleRow > .cactiTableButton {
+	float: none;
+	width: auto;
+	height: auto;
+	min-height: 28px;
+}
+
+.cactiTableTitleRow > .cactiTableTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.cactiTableTitleRow > .cactiTableButton {
+	flex: 0 0 auto;
+}
+
+.cactiTableTitleRow > .cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -2036,7 +2059,7 @@ th.sortable {
 }
 
 .txtErrorText {
-	color: #FF0000;
+	color: #ff6b6b;
 	font-size: 12px;
 	font-weight: bold;
 }
