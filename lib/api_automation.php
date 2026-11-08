@@ -2295,7 +2295,7 @@ function make_host_snnp_cache_sql() : string|false {
  * @return array<string, string> Table name keyed to its alias in the matching SQL.
  */
 function automation_query_field_table_aliases() : array {
-	return [
+	$aliases = [
 		'graph_local'           => 'gl',
 		'graph_templates'       => 'gt',
 		'graph_templates_graph' => 'gtg',
@@ -2304,6 +2304,8 @@ function automation_query_field_table_aliases() : array {
 		'host_template'         => 'ht',
 		'sites'                 => 's',
 	];
+
+	return $aliases;
 }
 
 /**
