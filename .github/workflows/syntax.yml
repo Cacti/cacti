@@ -203,6 +203,14 @@ jobs:
         IMAGE_CACHE: ${{ runner.temp }}/cacti-mariadb-image
       run: python3 tests/tools/ci_mariadb_image.py prepare "$IMAGE_CACHE"
 
+    # The registry login is only needed for the pull above. Drop it before any
+    # pull request controlled step runs, so the token is not left on disk.
+    - name: Remove registry credentials after the image is loaded
+      if: always() && steps.database_cache.outputs.cache-hit != 'true'
+      env:
+        DOCKER_CONFIG: ${{ runner.temp }}/cacti-mariadb-auth
+      run: docker logout ghcr.io
+
     - name: Save verified database image archive
       if: steps.database_cache.outputs.cache-hit != 'true'
       uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
@@ -563,14 +571,11 @@ jobs:
           echo "Cacti log was not created"
         fi
 
-    - name: Remove disposable database and registry credentials
+    - name: Remove disposable database
       if: always()
-      env:
-        DOCKER_CONFIG: ${{ runner.temp }}/cacti-mariadb-auth
       run: |
         set -euo pipefail
         docker rm --force --volumes cacti-ci-mariadb 2>/dev/null || true
-        docker logout ghcr.io
 
   changelog:
     name: CHANGELOG format

@@ -120,5 +120,15 @@ class ImageCacheTests(unittest.TestCase):
             image.main()
 
 
+class PinContractTests(unittest.TestCase):
+    def test_index_matches_the_mirrored_image_list(self):
+        # Dependabot and the mirror workflow update ci-images.txt, not this
+        # module, so a digest bump there must fail here until IMAGE_ID follows.
+        images = Path(__file__).resolve().parents[2] / '.github' / 'ci-images.txt'
+        pins = [line.split() for line in images.read_text(encoding='utf-8').splitlines()
+                if line and not line.startswith('#')]
+        self.assertIn(['docker.io/library/mariadb@' + image.INDEX, 'mariadb:10.6'], pins)
+
+
 if __name__ == '__main__':
     unittest.main()
