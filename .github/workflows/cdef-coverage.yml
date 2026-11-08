@@ -24,6 +24,8 @@ on:
       - 'tests/Helpers/CdefDatabaseProbe.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/integration/CdefConsumerIntegrationTest.php'
+      - 'tests/integration/AggregateCreationIntegrationTest.php'
+      - 'tests/fixtures/aggregate_creation_*.php'
       - 'tests/integration/CdefRepairContractTest.php'
       - 'tests/integration/AggregateTotallingGuardContractTest.php'
   pull_request:
@@ -49,6 +51,8 @@ on:
       - 'tests/Helpers/CdefDatabaseProbe.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/integration/CdefConsumerIntegrationTest.php'
+      - 'tests/integration/AggregateCreationIntegrationTest.php'
+      - 'tests/fixtures/aggregate_creation_*.php'
       - 'tests/integration/CdefRepairContractTest.php'
       - 'tests/integration/AggregateTotallingGuardContractTest.php'
   workflow_dispatch:
@@ -127,9 +131,20 @@ jobs:
             --coverage-text \
             --min=100
 
+      - name: Prepare disposable aggregate database
+        env:
+          AGGREGATE_DB_PASSWORD: root
+        run: |
+          # PHP variables must reach PHP unchanged.
+          # shellcheck disable=SC2016
+          php -r '$db = new PDO("mysql:host=127.0.0.1;port=3306", "root", getenv("AGGREGATE_DB_PASSWORD"), [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]); $db->exec("CREATE DATABASE cacti_aggregate_test"); $db->exec("USE cacti_aggregate_test"); $db->exec(file_get_contents("cacti.sql"));'
+
       - name: Run MariaDB integration coverage
         working-directory: tests
         env:
+          CACTI_AGGREGATE_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=cacti_aggregate_test;charset=utf8mb4'
+          CACTI_AGGREGATE_TEST_USER: root
+          CACTI_AGGREGATE_TEST_PASSWORD: root
           CACTI_CDEF_REAL_DB: '1'
           CACTI_TEST_DB_HOST: 127.0.0.1
           CACTI_TEST_DB_PORT: '3306'

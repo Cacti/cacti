@@ -779,7 +779,13 @@ function form_actions() {
 				);
 
 				$ag_data['local_graph_id'] = $local_graph_id;
-				$aggregate_graph_id = sql_save($ag_data, 'aggregate_graphs');
+				$aggregate_graph_id = $local_graph_id ? aggregate_sql_save($ag_data, 'aggregate_graphs') : false;
+				if (!$aggregate_graph_id) {
+					db_rollback_transaction();
+					raise_message(2);
+					header('Location: aggregate_graphs.php');
+					exit;
+				}
 				$ag_data['aggregate_graph_id'] = $aggregate_graph_id;
 
 				// 	/* save member graph info */
@@ -822,7 +828,12 @@ function form_actions() {
 						$aggregate_graph_items[]             = $item_new;
 					}
 
-					aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item');
+					if (!aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item', false)) {
+						db_rollback_transaction();
+						raise_message(2);
+						header('Location: aggregate_graphs.php');
+						exit;
+					}
 				} else {
 					$aggregate_graph_items = db_fetch_assoc_prepared('SELECT *
 						FROM aggregate_graph_templates_item
