@@ -54,12 +54,14 @@ test('derived and lazy-spec constraints are built without deprecations', functio
 				'friendly_name' => 'Hex Value',
 				'method'        => 'textbox',
 				'max_length'    => 6,
+				'required'      => true,
 				'constraints'   => [['Regex', ['pattern' => '/^[0-9A-Fa-f]{6}$/', 'message' => 'bad hex']]],
 			]),
 			form_validate_constraints_for([
 				'friendly_name' => 'Mode',
 				'method'        => 'drop_array',
 				'array'         => [1 => 'One', 2 => 'Two'],
+				'required'      => true,
 			])
 		);
 	});
@@ -90,4 +92,15 @@ test('named-argument constraints keep their configured limits and messages', fun
 
 test('a lazy spec whose options are not an array is skipped', function () : void {
 	expect(form_validate_build_constraint(['Regex', 'not-an-array']))->toBeNull();
+});
+
+test('a field is only required when it says so', function () : void {
+	$fields = [
+		'name' => ['friendly_name' => 'Name', 'method' => 'textbox', 'max_length' => 40],
+		'hex'  => ['friendly_name' => 'Hex Value', 'method' => 'textbox', 'required' => true],
+	];
+
+	expect(array_map('get_class', form_validate_constraints_for($fields['name'])))->toBe([Symfony\Component\Validator\Constraints\Length::class])
+		->and(form_validate_fields($fields, ['name' => '', 'hex' => '00FF00']))->toBe([])
+		->and(array_keys(form_validate_fields($fields, ['name' => '', 'hex' => ''])))->toBe(['hex']);
 });

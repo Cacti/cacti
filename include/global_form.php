@@ -385,10 +385,7 @@ $fields_color_edit = [
 		'description'   => __('The name of this Color.'),
 		'value'         => '|arg1:name|',
 		'max_length'    => '40',
-		'size'          => '40',
-		// Cacti permits unnamed colors (they display as 'Unnamed #<hex>'), so
-		// the name is optional; the derived constraint is Length(max 40) only.
-		'optional'      => true
+		'size'          => '40'
 	],
 	'hex' => [
 		'method'        => 'textbox',
@@ -397,8 +394,9 @@ $fields_color_edit = [
 		'value'         => '|arg1:hex|',
 		'max_length'    => '6',
 		'size'          => '5',
-		// Required (NotBlank) + Length(max 6) are derived from the metadata
-		// above; the explicit Regex enforces the documented 6-digit hex range.
+		'required'      => true,
+		// NotBlank (from 'required') and Length(max 6) are derived from the
+		// metadata; the explicit Regex enforces the documented 6-digit range.
 		// Declared as a lazy [name, options] spec (not a constructed Constraint
 		// object) because this file is parsed before the Composer autoloader is
 		// registered; lib/form_validate.php builds the Symfony object only at

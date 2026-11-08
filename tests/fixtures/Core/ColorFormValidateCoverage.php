@@ -343,7 +343,7 @@ namespace Cacti\Test\FormControl {
 	$fields = [
 		'header'  => 'not a field definition',
 		'id'      => ['method' => 'hidden'],
-		'comment' => ['method' => 'textarea', 'optional' => true],
+		'comment' => ['method' => 'textarea'],
 		'mode'    => ['method' => 'drop_array', 'default' => '1', 'array' => [1 => 'One', 2 => 'Two']],
 	];
 	\color_expect(\form_validate_fields($fields, ['mode' => '2']) === [], 'A declared choice must be valid');

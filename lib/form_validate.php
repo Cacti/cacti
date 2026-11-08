@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * For each field it DERIVES constraints from the metadata Cacti already
  * carries in the $fields array (max_length, the drop_array/radio allowed
- * values, a 'required'/'optional' flag), and also honours an explicit
+ * values, an explicit 'required' => true flag), and also honours an explicit
  * 'constraints' entry (an array of Symfony\Component\Validator\Constraint
  * objects) for anything the metadata cannot express (Regex, Email, Range,
  * Ip, ...).  A form opts in to richer validation field-by-field; legacy
@@ -91,9 +91,7 @@ function form_validate_get_validator(): ?ValidatorInterface {
  * single Cacti field definition.
  *
  * Derivation rules (all opt-in via metadata the field already carries):
- *   - a field that is not 'optional' and has no non-empty 'default' => NotBlank
- *     (never for checkbox, checkbox_group, template_checkbox, drop_multi or
- *     custom controls, which can legitimately submit nothing)
+ *   - 'required' => true                                            => NotBlank
  *   - 'max_length'                                                  => Length(max)
  *   - 'drop_array'/'radio' with an 'array' of choices               => Choice
  *     (plus '0' when 'none_value' adds a None option)
@@ -106,22 +104,12 @@ function form_validate_get_validator(): ?ValidatorInterface {
 function form_validate_constraints_for(array $def): array {
 	$constraints = [];
 	$label       = (string) ($def['friendly_name'] ?? __('This value'));
+	$method      = (string) ($def['method'] ?? '');
 
-	// Required: Cacti marks optional fields with 'optional' => true.  A field
-	// that carries a non-empty 'default' is effectively optional too, because
-	// the renderer substitutes the default for an empty submission.
-	$optional = !empty($def['optional']) || (isset($def['default']) && $def['default'] !== '');
-
-	// An unticked checkbox or an empty multi-select submits nothing, and a
-	// custom control owns its own value, so none of them can be derived as
-	// required from a missing 'optional' flag alone.
-	$method = (string) ($def['method'] ?? '');
-
-	if (in_array($method, ['checkbox', 'checkbox_group', 'template_checkbox', 'drop_multi', 'custom'], true)) {
-		$optional = true;
-	}
-
-	if (!$optional) {
+	// Required is opt-in. Cacti $fields carry no optional flag, and most of
+	// them may legitimately be left blank because form_input_validate()
+	// decides that at save time, so a missing flag must not mean NotBlank.
+	if (!empty($def['required'])) {
 		$constraints[] = new Assert\NotBlank(message: __('%s is required.', $label));
 	}
 

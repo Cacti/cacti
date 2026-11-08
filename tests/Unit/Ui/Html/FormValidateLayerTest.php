@@ -26,7 +26,7 @@ test('fields without a user value or a constraint are not validated', function (
 		'header'  => 'not a field definition',
 		'id'      => ['method' => 'hidden'],
 		'save'    => ['method' => 'submit'],
-		'comment' => ['method' => 'textarea', 'optional' => true],
+		'comment' => ['method' => 'textarea'],
 		'mode'    => ['method' => 'drop_array', 'default' => '1', 'array' => [1 => 'One']],
 	];
 
