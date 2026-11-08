@@ -4731,35 +4731,35 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 
 			form_selectable_ecell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
 			form_selectable_ecell(($value['type'] ?? ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
-			form_selectable_cell(($value['minimal_heartbeat'] ?? ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
+			form_selectable_ecell(($value['minimal_heartbeat'] ?? ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
 
 			if (isset($value['min'])) {
 				if ($value['min'] == 'U') {
-					form_selectable_cell($value['min'], 'min', '', 'right');
+					form_selectable_ecell($value['min'], 'min', '', 'right');
 				} elseif (is_numeric($value['min'])) {
-					form_selectable_cell(number_format_i18n($value['min']), 'min', '', 'right');
+					form_selectable_ecell(number_format_i18n($value['min']), 'min', '', 'right');
 				} else {
 					form_selectable_ecell($value['min'], 'min', '', 'color:red;text-align:right');
 				}
 			} else {
-				form_selectable_cell(__('Unknown'), 'min', '', 'color:red;text-align:right');
+				form_selectable_ecell(__('Unknown'), 'min', '', 'color:red;text-align:right');
 			}
 
 			if (isset($value['max'])) {
 				if ($value['max'] == 'U' || $value['max'] == 'NaN') {
-					form_selectable_cell($value['max'], 'max', '', 'right');
+					form_selectable_ecell($value['max'], 'max', '', 'right');
 				} elseif (is_numeric($value['max'])) {
-					form_selectable_cell(number_format_i18n($value['max']), 'max', '', 'right');
+					form_selectable_ecell(number_format_i18n($value['max']), 'max', '', 'right');
 				} else {
 					form_selectable_ecell($value['max'], 'max', '', 'color:red;text-align:right');
 				}
 			} else {
-				form_selectable_cell(__('Unknown'), 'max', '', 'color:red;text-align:right');
+				form_selectable_ecell(__('Unknown'), 'max', '', 'color:red;text-align:right');
 			}
 
 			form_selectable_ecell(((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : ($value['last_ds'] ?? ''))), 'last_ds', '', 'text-align:right');
 			form_selectable_ecell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')), 'value', '', 'text-align:right');
-			form_selectable_cell(((isset($value['unknown_sec']) && is_numeric($value['unknown_sec']) ? number_format_i18n($value['unknown_sec']) : ($value['unknown_sec'] ?? ''))), 'unknown_sec', '', 'text-align:right');
+			form_selectable_ecell(((isset($value['unknown_sec']) && is_numeric($value['unknown_sec']) ? number_format_i18n($value['unknown_sec']) : ($value['unknown_sec'] ?? ''))), 'unknown_sec', '', 'text-align:right');
 
 			form_end_row();
 		}
@@ -4789,12 +4789,12 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 
 			form_selectable_ecell($key, 'name', '', (isset($diff['rra'][$key]['error']) ? 'color:red' : ''));
 			form_selectable_ecell(($value['cf'] ?? ''), 'cf');
-			form_selectable_cell(($value['rows'] ?? ''), 'rows', '', (isset($diff['rra'][$key]['rows']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell(($value['cur_row'] ?? ''), 'cur_row', '', 'text-align:right');
-			form_selectable_cell(($value['pdp_per_row'] ?? ''), 'pdp_per_row', '', 'text-align:right');
-			form_selectable_cell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((cacti_strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
-			form_selectable_cell(($value['cdp_prep'][0]['unknown_datapoints'] ?? ''), 	'unknown_datapoints', '', 'text-align:right');
+			form_selectable_ecell(($value['rows'] ?? ''), 'rows', '', (isset($diff['rra'][$key]['rows']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_ecell(($value['cur_row'] ?? ''), 'cur_row', '', 'text-align:right');
+			form_selectable_ecell(($value['pdp_per_row'] ?? ''), 'pdp_per_row', '', 'text-align:right');
+			form_selectable_ecell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_ecell((isset($value['cdp_prep'][0]['value']) ? ((cacti_strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
+			form_selectable_ecell(($value['cdp_prep'][0]['unknown_datapoints'] ?? ''), 	'unknown_datapoints', '', 'text-align:right');
 
 			form_end_row();
 		}
