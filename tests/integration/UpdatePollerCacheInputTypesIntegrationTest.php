@@ -39,6 +39,14 @@ require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
  * a full run can hand sqlite a MySQL modifier in the middle of a SELECT list.
  */
 class InputTypesPDO extends FakeMySQLPDO {
+	/**
+	 * Strips SQL_NO_CACHE, then prepares the query.
+	 *
+	 * @param string              $query   The SQL statement
+	 * @param array<string,mixed> $options Driver options
+	 *
+	 * @return PDOStatement|false The prepared statement
+	 */
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
 		return parent::prepare(preg_replace('/\bSQL_NO_CACHE\b/', '', $query), $options);
 	}
@@ -105,6 +113,13 @@ function input_types_seed(int $host_id) : InputTypesPDO {
 	return $conn;
 }
 
+/**
+ * Makes the connection the default Cacti database session and clears cached CLI options.
+ *
+ * @param PDO $conn The seeded connection
+ *
+ * @return void
+ */
 function input_types_wire(PDO $conn) : void {
 	$GLOBALS['database_hostname']      = 'inputtypes';
 	$GLOBALS['database_port']          = 0;
@@ -246,6 +261,11 @@ function input_types_seed_remote() : InputTypesPDO {
 	return $conn;
 }
 
+/**
+ * Returns the VALUES tuple of the poller item the remote poller reports.
+ *
+ * @return string The SQL tuple
+ */
 function input_types_remote_item() : string {
 	return "(851, 2, 85, 1, 'router.example.net', 'public', '2', '500', '3', '', '', '', '', '', '', '', " .
 		"'161', 'load', '/rra/load.rrd', '1', '300', '0', '/usr/bin/uptime.sh', '', '', '1')";

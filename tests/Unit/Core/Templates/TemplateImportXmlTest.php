@@ -30,6 +30,11 @@ require_once dirname(__DIR__, 4) . '/lib/xml.php';
 // a data query import bumps the replication CRC defined here
 require_once dirname(__DIR__, 4) . '/lib/utility.php';
 
+/**
+ * Creates the tables import_xml_data() reads into its hash cache.
+ *
+ * @return TemplateExchangePDO The seeded connection
+ */
 function template_import_seed() : TemplateExchangePDO {
 	$conn = new TemplateExchangePDO();
 
@@ -49,6 +54,13 @@ function template_import_seed() : TemplateExchangePDO {
 	return $conn;
 }
 
+/**
+ * Creates the form-driven tables the importer writes, from their edit field lists.
+ *
+ * @param PDO $conn The seeded connection
+ *
+ * @return void
+ */
 function template_import_form_tables(PDO $conn) : void {
 	global $fields_cdef_edit, $fields_data_query_edit, $fields_data_query_item_edit;
 	global $fields_grprint_presets_edit, $fields_host_template_edit, $fields_profile_edit;
