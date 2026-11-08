@@ -26,5 +26,5 @@ test('device repository preserves reads, writes and failure contracts through th
 	} finally {
 		ob_end_clean();
 	}
-	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR))->toBe(['passed' => 35]);
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR))->toBe(['passed' => 40]);
 });
