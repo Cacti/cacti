@@ -28,14 +28,28 @@ use Closure;
 
 require_once __DIR__ . '/SiteRepository.php';
 
+/**
+ * Site management actions behind sites.php: save, enable, disable,
+ * duplicate and delete, with the legacy messages and change timestamps.
+ */
 final class SiteService {
 	/**
-	 * @param Closure(): void    $changed
-	 * @param Closure(int): void $message
+	 * @param SiteRepository     $repository Site storage.
+	 * @param Closure(): void    $changed    Records that sites changed (the time_last_change_site settings).
+	 * @param Closure(int): void $message    Raises a Cacti message by id.
 	 */
 	public function __construct(private readonly SiteRepository $repository, private readonly Closure $changed, private readonly Closure $message) {
 	}
 
+	/**
+	 * Save a site and raise message 1 on success or 2 on failure.
+	 *
+	 * Only a newly created site records a change.
+	 *
+	 * @param array<string, mixed> $values Column values; an empty id creates a site.
+	 *
+	 * @return mixed The saved site id, or a falsy value on failure.
+	 */
 	public function save(array $values) : mixed {
 		$id = $this->repository->save($values);
 
@@ -52,14 +66,36 @@ final class SiteService {
 		return $id;
 	}
 
+	/**
+	 * Enable the selected sites.
+	 *
+	 * @param array<mixed> $ids The site ids.
+	 *
+	 * @return void
+	 */
 	public function enable(array $ids) : void {
 		$this->setDisabled($ids, false);
 	}
 
+	/**
+	 * Disable the selected sites.
+	 *
+	 * @param array<mixed> $ids The site ids.
+	 *
+	 * @return void
+	 */
 	public function disable(array $ids) : void {
 		$this->setDisabled($ids, true);
 	}
 
+	/**
+	 * Apply one disabled state to every selected site and record a single change.
+	 *
+	 * @param array<mixed> $ids      The site ids; an empty list changes nothing.
+	 * @param bool         $disabled True to disable, false to enable.
+	 *
+	 * @return void
+	 */
 	private function setDisabled(array $ids, bool $disabled) : void {
 		if (count($ids)) {
 			foreach ($ids as $id) {
@@ -70,7 +106,15 @@ final class SiteService {
 		}
 	}
 
-	/** @param Closure(): void $missingTemplate */
+	/**
+	 * Copy each template site, substituting <site> in the new name.
+	 *
+	 * @param mixed           $template_id     One site id or a list of them.
+	 * @param string          $name            The new name; <site> is replaced with the template's name.
+	 * @param Closure(): void $missingTemplate Called for each template id that does not exist.
+	 *
+	 * @return void
+	 */
 	public function duplicate(mixed $template_id, string $name, Closure $missingTemplate) : void {
 		if (!is_array($template_id)) {
 			$template_id = [$template_id];
@@ -104,6 +148,13 @@ final class SiteService {
 		($this->changed)();
 	}
 
+	/**
+	 * Delete the selected sites and record a change.
+	 *
+	 * @param array<mixed> $ids The site ids; an empty list changes nothing.
+	 *
+	 * @return void
+	 */
 	public function delete(array $ids) : void {
 		if (count($ids)) {
 			$this->repository->delete($ids);

@@ -137,4 +137,13 @@ test('production site storage and factory preserve settings and active-device as
 		->and((int) $conn->query('SELECT site_id FROM host WHERE id=11')->fetchColumn())->toBe(0)
 		->and((int) $conn->query('SELECT site_id FROM host WHERE id=12')->fetchColumn())->toBe(1)
 		->and((int) $conn->query('SELECT site_id FROM host WHERE id=13')->fetchColumn())->toBe(2);
+
+	// Ids are bound, so a crafted value matches nothing instead of widening the WHERE clause.
+	$repo->delete([]);
+	$repo->delete(['2 OR 1=1']);
+	expect($repo->find(2)['name'])->toBe('Other')
+		->and((int) $conn->query('SELECT site_id FROM host WHERE id=13')->fetchColumn())->toBe(2);
+	$repo->delete(['2']);
+	expect($repo->find(2))->toBe([])
+		->and((int) $conn->query('SELECT site_id FROM host WHERE id=13')->fetchColumn())->toBe(0);
 });
