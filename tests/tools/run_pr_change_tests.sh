@@ -51,6 +51,11 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+if [[ -f tests/fixtures/Core/GraphItemLabelMarkup.php ]]; then
+	run_probe GraphItemLabelMarkup.php graph-item-label-aggregate label '<em>Literal label</em>'
+	run_probe GraphItemLabelMarkup.php graph-item-label-graph graph '<em>Literal label</em>'
+fi
+
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then

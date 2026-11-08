@@ -1565,7 +1565,7 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 			print "<td class='prewrap' style='$this_row_style'>";
 
 			if ($item['cdef_name'] != '') {
-				print $item['cdef_name'];
+				print htmle($item['cdef_name']);
 			} else {
 				print '-';
 			}
@@ -1575,7 +1575,7 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 			print "<td class='prewrap' style='$this_row_style'>";
 
 			if ($item['vdef_name'] != '') {
-				print $item['vdef_name'];
+				print htmle($item['vdef_name']);
 			} else {
 				print '-';
 			}

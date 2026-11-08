@@ -23,12 +23,13 @@ run_probe tests/e2e/queue/run.sh '^(lib/api_queue\.php|cli/queue_(admin|worker)\
 
 run_php_probe() {
 	local script="$1" pattern="$2"
+	shift 2
 	local php_args=(-d memory_limit=2G)
 	if [[ -n "${CACTI_PR_XDEBUG_EXTENSION:-}" ]]; then
 		php_args+=(-d "zend_extension=$CACTI_PR_XDEBUG_EXTENSION")
 	fi
 	if [[ -f "$script" ]] && grep -Eq "$pattern" <<< "$changed_paths"; then
-		CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT" XDEBUG_MODE=coverage php "${php_args[@]}" "$script"
+		CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT" XDEBUG_MODE=coverage php "${php_args[@]}" "$script" "$@"
 	fi
 }
 
@@ -68,4 +69,5 @@ run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(funct
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
 
-run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/api_aggregate\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)' graph '<em>Literal label</em>'
