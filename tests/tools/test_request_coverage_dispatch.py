@@ -40,7 +40,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
+        self.dispatch('lib/functions.php', ['BoundaryContracts.php', 'ScriptSubstitutionMatrix.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')

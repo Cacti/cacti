@@ -1048,6 +1048,23 @@ function cacti_validate_theme(string $requested) : string {
 }
 
 /**
+ * Store a theme requested through the newtheme request variable in the
+ * session, reduced to an installed theme name.
+ *
+ * include/global.php calls this once per web request. A non-string value
+ * (newtheme[]) validates like an empty request, so the session receives the
+ * default theme rather than an array or a path.
+ *
+ * @return void
+ */
+function cacti_apply_newtheme_request() : void {
+	if (isrv('newtheme')) {
+		$newtheme                   = gnrv('newtheme');
+		$_SESSION['selected_theme'] = cacti_validate_theme(is_string($newtheme) ? $newtheme : '');
+	}
+}
+
+/**
  * Returns true if a theme is valid
  *
  * @param mixed $theme

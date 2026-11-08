@@ -809,10 +809,7 @@ if ($config['is_web']) {
 		}
 	}
 
-	if (isrv('newtheme')) {
-		$newtheme                   = gnrv('newtheme');
-		$_SESSION['selected_theme'] = cacti_validate_theme(is_string($newtheme) ? $newtheme : '');
-	}
+	cacti_apply_newtheme_request();
 
 	if (isrv('csrf_timeout')) {
 		raise_message('csrf_ptimeout');

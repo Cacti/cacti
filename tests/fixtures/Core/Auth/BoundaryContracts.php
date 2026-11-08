@@ -88,33 +88,24 @@ try {
 		throw new RuntimeException('Native package metadata rendering did not escape its homepage.');
 	}
 
-	$source = file_get_contents($root . '/include/global.php');
-
-	if (!preg_match("/\tif \(isrv\('newtheme'\)\) \{.*?\n\t\}/s", $source, $block, PREG_OFFSET_CAPTURE)) {
-		throw new RuntimeException('The theme selection block is missing.');
-	}
-	$line = substr_count(substr($source, 0, $block[0][1]), "\n") + 1;
-
-	foreach (['modern', '../themes/modern', '../../../tmp/modern', ['modern']] as $requested) {
-		$_REQUEST['newtheme'] = $requested;
-		$temporary            = tempnam(sys_get_temp_dir(), 'cacti-theme-source-');
-		file_put_contents($temporary, '<?php' . str_repeat("\n", $line - 1) . $block[0][0]);
-		$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($root . '/include/global.php');
-
-		try {
-			require $temporary;
-		} finally {
-			unlink($temporary);
-		}
+	foreach (['modern' => 'modern', '../themes/modern' => null, '../../../tmp/modern' => null, 'array' => null] as $requested => $expected) {
+		$_REQUEST['newtheme'] = $requested === 'array' ? ['modern'] : $requested;
+		cacti_apply_newtheme_request();
 		$theme = $_SESSION['selected_theme'];
 
-		if ($newtheme !== $requested) {
-			throw new RuntimeException('Native theme selection did not receive the requested value.');
+		if (!is_string($theme) || str_contains($theme, '/') || !is_dir($root . '/include/themes/' . $theme)
+			|| ($expected !== null && $theme !== $expected)) {
+			throw new RuntimeException('Native theme selection stored an unsafe or unexpected theme.');
 		}
+	}
 
-		if (!is_string($theme) || str_contains($theme, '/') || !is_dir($root . '/include/themes/' . $theme)) {
-			throw new RuntimeException('Native theme selection stored an unsafe path.');
-		}
+	// Without a newtheme request the stored theme is left alone.
+	unset($_REQUEST['newtheme']);
+	$_SESSION['selected_theme'] = 'kept';
+	cacti_apply_newtheme_request();
+
+	if ($_SESSION['selected_theme'] !== 'kept') {
+		throw new RuntimeException('Native theme selection changed the theme without a request.');
 	}
 
 	print "Native authentication, repository, metadata, and theme contracts passed.\n";
