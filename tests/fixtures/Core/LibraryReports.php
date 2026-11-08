@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise report queueing and generation, restoring the stored report afterwards. */
 function library_reports(int $reportId, int $graphId, int $deviceId): void {
 	$session  = $_SESSION;
 	$request  = [$_REQUEST, $_GET, $_POST, $GLOBALS['_CACTI_REQUEST'] ?? []];
@@ -120,6 +121,7 @@ function library_reports(int $reportId, int $graphId, int $deviceId): void {
 	}
 }
 
+/** Check that a tree branch report finds and renders its stored graph. */
 function library_report_tree(int $tree, int $branch, int $graph): void {
 	$report = ['user_id' => 1, 'graph_columns' => 2, 'graph_width' => 500, 'graph_height' => 200,
 		'graph_linked'      => '', 'thumbnails' => '', 'attachment_type' => REPORTS_TYPE_INLINE_PNG];

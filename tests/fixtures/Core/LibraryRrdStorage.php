@@ -33,6 +33,7 @@ function rrdtool_execute(string $command, bool $print, int $format, mixed $pipe 
 	}
 }
 
+/** Exercise remote RRD creation from source with the storage handoff adapted to owned files. */
 function run(int $template): void {
 	require_once CACTI_PATH_LIBRARY . '/boost.php';
 	require_once CACTI_PATH_LIBRARY . '/dsstats.php';

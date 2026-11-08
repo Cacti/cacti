@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise the log viewer API against a private log file, restoring request state afterwards. */
 function library_logs(): void {
 	global $_CACTI_REQUEST;
 	require_once CACTI_PATH_LIBRARY . '/clog_webapi.php';

@@ -2,11 +2,13 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Register the fixture plugin's notify and transform hooks. */
 function library_plugins_setup(): void {
 	library_expect(api_plugin_register_hook('coveragefixture', 'coveragefixture_notify', 'coveragefixture_notify', 'setup.php', true), true, 'Plugin registers a notification hook');
 	library_expect(api_plugin_register_hook('coveragefixture', 'coveragefixture_transform', 'coveragefixture_transform', 'setup.php', true), true, 'Plugin registers a transforming hook');
 }
 
+/** Install, run and remove the producer plugin from a fixture-owned plugin directory. */
 function library_plugins(): void {
 	$directory = CACTI_PATH_PLUGINS . '/coveragefixture';
 	library_expect(file_exists($directory), false, 'Plugin fixture never replaces an installed plugin');
@@ -74,6 +76,7 @@ function library_plugins(): void {
 	}
 }
 
+/** Check that invalid plugin directories, versions and installers are refused. */
 function library_plugin_install_errors(): void {
 	foreach (['plugin_cov_' => 'directory_error', 'cov_version_' => 'version_error', 'cov_install_' => 'install_error'] as $prefix => $message) {
 		$name = $prefix . bin2hex(random_bytes(5));

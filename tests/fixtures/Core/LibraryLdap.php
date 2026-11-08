@@ -7,12 +7,14 @@ require_once CACTI_PATH_LIBRARY . '/ldap.php';
 
 /** Capture the wrapper's handoff using the real transport's property contract. */
 class Ldap extends \Ldap {
+	/** Record the properties the wrapper handed to the transport and return the configured result. */
 	public function Getcn(): array {
 		$GLOBALS['library_ldap_handoff'] = get_object_vars($this);
 
 		return $GLOBALS['library_ldap_result'];
 	}
 }
+/** Exercise cacti_ldap_search_cn() from source with the transport replaced by the capturing class. */
 function run(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/ldap.php', 'cacti_ldap_search_cn', __NAMESPACE__);

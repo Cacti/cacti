@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise Boost RRD creation and storage for a data template on an owned device. */
 function library_storage(int $template): void {
 	global $archive_table, $get_memory, $memory_used;
 	require_once CACTI_PATH_LIBRARY . '/boost.php';
@@ -230,6 +231,7 @@ function library_rrd_diagnostics(int $id): void {
 	}
 }
 
+/** Exercise business-hours graph options with temporarily overridden settings and time zone. */
 function library_business_hours(int $graph): void {
 	global $_CACTI_REQUEST;
 	$requests = [$_CACTI_REQUEST ?? [], $_REQUEST, $_GET, $_POST];
@@ -310,6 +312,7 @@ function library_rrd_command(array $arguments): string {
 	return $output;
 }
 
+/** Run spike repair on a private RRD copy with or without the windowed standard deviation. */
 function library_spike_repair(bool $windowedStddev = true): void {
 	$directory = tempnam(sys_get_temp_dir(), 'cacti-spike-');
 	library_expect(is_string($directory) && unlink($directory) && mkdir($directory, 0700), true, 'Spike fixture owns a private directory');

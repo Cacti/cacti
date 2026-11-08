@@ -9,6 +9,7 @@ function mailer(...$arguments): string {
 
 	return $GLOBALS['library_mail_failure'] ?? '';
 }
+/** Exercise reports_log_and_notify() delivery and history against a real queue record. */
 function run(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/reports.php', 'reports_log_and_notify', __NAMESPACE__);
@@ -51,6 +52,7 @@ function run(): void {
 	}
 }
 
+/** Exercise generate_report() failure handling for a disposable report. */
 function failures(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/reports.php', 'generate_report', __NAMESPACE__);

@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise schedule validation and the generated editor forms, restoring session and form state. */
 function library_administration(): void {
 	global $form_id;
 	$session   = $_SESSION;

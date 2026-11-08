@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise native rediscovery of a renumbered interface and its data-source identity. */
 function library_reindex(int $device, int $query): void {
 	$mapping = db_fetch_row_prepared('SELECT id, graph_template_id FROM snmp_query_graph WHERE snmp_query_id = ? ORDER BY id LIMIT 1', [$query]);
 	library_expect(!empty($mapping), true, 'Installed interface query has a graph mapping');
