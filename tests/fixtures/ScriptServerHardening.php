@@ -128,6 +128,9 @@ function cacti_snmp_get(...$arguments) {
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, ...$arguments) {
+	/* $arguments[9] is the retries parameter of the real cacti_snmp_walk() */
+	$GLOBALS['walk_retries'][] = $arguments[9] ?? null;
+
 	if ($oid === '.1.3.6.1.4.1.2021.13.15.1.1.2') {
 		return [
 			['oid' => '.1.3.6.1.4.1.2021.13.15.1.1.2.1', 'value' => 'sda'],
@@ -318,7 +321,7 @@ $host_row     = [];
 check('ss_count_oids refuses an option-like OID', ss_count_oids(1, '-Cc') === '0' && $db_row_reads === 0);
 $host_row = ['hostname' => 'h', 'snmp_community' => 'c', 'snmp_version' => 2, 'snmp_username' => '', 'snmp_password' => '',
 	'snmp_auth_protocol' => '', 'snmp_priv_passphrase' => '', 'snmp_priv_protocol' => '', 'snmp_context' => '',
-	'snmp_port' => 161, 'snmp_timeout' => 500, 'max_oids' => 10, 'snmp_engine_id' => '', 'ping_retries' => 1];
+	'snmp_port' => 161, 'snmp_timeout' => 500, 'max_oids' => 10, 'snmp_engine_id' => '', 'ping_retries' => 1, 'snmp_retries' => 2];
 check('ss_count_oids walks a valid OID', ss_count_oids(1, '.1.3.6.1.2.1.2.2.1.1') === 2);
 
 // Status read over Cacti's own connection.
@@ -363,6 +366,9 @@ $environ  = 'cmd';
 $poll     = 3;
 $new_disk = true;
 check('a disk without a previous sample leaves the total unknown', $disk(7) === $unknown);
+$walk_retries = [];
+$disk(7);
+check('disk script walks with the SNMP retries, not the ping retries', $walk_retries !== [] && array_unique($walk_retries) === [2]);
 $new_disk = false;
 $environ   = 'realtime';
 $poller_id = '../preview';
