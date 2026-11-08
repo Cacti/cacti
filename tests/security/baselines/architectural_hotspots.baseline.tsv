@@ -1,6 +1,6 @@
 class	location	match
 cmd_exec	./cactid.php		exec('pgrep -a php | grep cactid.php', $output);
-cmd_exec	./cli/audit_database.php								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old,
+cmd_exec	./cli/audit_database.php								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
 cmd_exec	./cli/audit_database.php				$db_shell = trim((string) shell_exec('which mysql'));
 cmd_exec	./cli/audit_database.php				exec($cmd, $output, $error);
 cmd_exec	./cli/audit_database.php		exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
@@ -21,10 +21,10 @@ cmd_exec	./graph_realtime.php			shell_exec($php_binary . ' -q ' . $script_path .
 cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 cmd_exec	./install/functions.php				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
-cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string " .
-cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string --user=" .
-cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " .
-cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1',
+cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+cmd_exec	./lib/database.php				exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
+cmd_exec	./lib/database.php			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/dsstats.php		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/functions.php							$output = shell_exec($script_path);
 cmd_exec	./lib/functions.php						$output = shell_exec("$php -q $script");
@@ -42,9 +42,9 @@ cmd_exec	./lib/functions.php			$processExists   = trim((string) shell_exec($chec
 cmd_exec	./lib/functions.php		exec($command_line, $out, $return_code);
 cmd_exec	./lib/functions.php		return exec('whoami') ?: '';
 cmd_exec	./lib/functions.php	 * On Windows, exec()/shell_exec()/popen() route through cmd.exe, which ignores
-cmd_exec	./lib/installer.php						$output = shell_exec(
+cmd_exec	./lib/installer.php						$output = shell_exec( cacti_escapeshellcmd($path) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_test.php') . ' ' . $input );
 cmd_exec	./lib/installer.php						$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
-cmd_exec	./lib/installer.php			$process = proc_open(
+cmd_exec	./lib/installer.php			$process = proc_open( $command, [ 1 => ['pipe', 'w'], 2 => $errorFile, ], $pipes, null, null, ['bypass_shell' => true] );
 cmd_exec	./lib/ping.php							$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 cmd_exec	./lib/ping.php							$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true) . ' 2>&1');
 cmd_exec	./lib/ping.php							$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
@@ -78,8 +78,8 @@ cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmpagent.php		// add pollers of a distributed system (future)
-cmd_exec	./lib/spikekill.php			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' .
-cmd_exec	./lib/spikekill.php			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' .
+cmd_exec	./lib/spikekill.php			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile), $dump_output, $dump_status);
+cmd_exec	./lib/spikekill.php			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile) . ' 2>&1', $response, $status);
 cmd_exec	./lib/utility.php							$nproc = system('nproc');
 cmd_exec	./lib/utility.php				exec('/usr/bin/free', $output, $exit_code);
 cmd_exec	./lib/utility.php			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
@@ -92,7 +92,7 @@ cmd_exec	./lib/utility.php		$json       = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php	shell_exec("$command_string $extra_args");
-cmd_exec	./poller_spikekill.php				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./poller_spikekill.php				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/removespikes.php') . ' --rrdfile=' . cacti_escapeshellarg($f) . ($debug ? ' --debug' : ''));
 cmd_exec	./remote_agent.php									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./script_server.php					exec("TASKLIST /FO LIST /FI \"PID eq $ppid\"", $out);
 cmd_exec	./scripts/sql.php	$sql = shell_exec($cmd);

@@ -5011,7 +5011,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 				'last_ds',
 				'',
 				'text-align:right');
-			form_selectable_cell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')),
+			form_selectable_ecell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')),
 				'value',
 				'',
 				'text-align:right');
@@ -5059,7 +5059,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 				'xff',
 				'',
 				(isset($diff['rra'][$key]['xff']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((cacti_strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''),
+			form_selectable_ecell((isset($value['cdp_prep'][0]['value']) ? ((cacti_strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''),
 				'value',
 				'',
 				'text-align:right');

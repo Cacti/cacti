@@ -8,6 +8,7 @@ set -uo pipefail
 
 ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." &> /dev/null && pwd)"
 cd "$ROOT_DIR" || exit 1
+JOIN_AWK="${ROOT_DIR}/tests/security/join_wrapped_statement.awk"
 
 if ! command -v rg >/dev/null 2>&1; then
 	echo "ERROR: ripgrep (rg) is required." >&2
@@ -32,7 +33,9 @@ emit_hotspot_matches() {
 	local pattern="$2"
 	local rg_status
 
-	rg -n --pcre2 "${RG_COMMON[@]}" "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
+	# Join wrapped calls the same way as the sink inventory, so a hotspot on
+	# a continuation line is part of the recorded signature.
+	rg -n --pcre2 "${RG_COMMON[@]}" "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | awk -f "$JOIN_AWK" | while IFS= read -r line; do
 		file="${line%%:*}"
 		case "$file" in
 			./*) ;;

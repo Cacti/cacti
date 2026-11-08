@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." &> /dev/null && pwd)"
 cd "$ROOT_DIR"
+JOIN_AWK="${ROOT_DIR}/tests/security/join_wrapped_statement.awk"
 
 if ! command -v rg >/dev/null 2>&1; then
 	echo "ERROR: ripgrep (rg) is required." >&2
@@ -29,7 +30,9 @@ scan() {
 
 	# rg exits 1 when a category has no matches. Anything higher is a failed
 	# scan, which must not produce a short inventory that passes as clean.
-	rg -n --pcre2 --no-config --no-ignore --no-ignore-vcs --no-ignore-parent "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
+	# The joiner appends the continuation lines of a wrapped call, so the
+	# inventory records every argument and not only the line holding the name.
+	rg -n --pcre2 --no-config --no-ignore --no-ignore-vcs --no-ignore-parent "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | awk -f "$JOIN_AWK" | while IFS= read -r line; do
 		file="${line%%:*}"
 		case "$file" in
 			./*) ;;
