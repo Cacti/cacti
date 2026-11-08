@@ -29,7 +29,7 @@
  */
 
 namespace CactiAutomationImportFixture;
-require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 3) . '/include/global.php';
@@ -162,6 +162,16 @@ foreach ([['', '0'], ['', 0], ['', '5'], ['', null], ['', '1 '], ['x.name', '1']
 
 	if (automation_validate_import_match_fields([['items' => [['field' => $field, 'operation' => $operation]]]], 'items', $debug) || empty($debug['errors'])) {
 		throw new \RuntimeException('Invalid match item was accepted.');
+	}
+	$cases++;
+}
+
+// A rule list, rule or match item list of the wrong shape is refused before any field is read.
+foreach (['not-a-list', ['not-a-rule'], [['items' => 'not-a-list']]] as $rules) {
+	$debug = [];
+
+	if (automation_validate_import_match_fields($rules, 'items', $debug) || empty($debug['errors'])) {
+		throw new \RuntimeException('Malformed rule structure was accepted.');
 	}
 	$cases++;
 }
