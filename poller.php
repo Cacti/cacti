@@ -774,7 +774,7 @@ while ($poller_runs_completed < $poller_runs) {
 				set_config_option('date', date('Y-m-d H:i:s'));
 
 				// open a pipe to rrdtool for writing
-				$rrdtool_pipe = rrd_init();
+				$rrdtool_pipe = rrd_init(true, true);
 			}
 
 			$rrds_processed = 0;

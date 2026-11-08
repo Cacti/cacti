@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <source>
+        <include>
+            <file>../lib/poller.php</file>
+            <file>../lib/snmp.php</file>
+        </include>
+    </source>
     <testsuites>
         <testsuite name="PollerMapping">
+            <file>Unit/Core/ManagementSaveTest.php</file>
+            <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>
             <file>Unit/PollerMappingCacheTest.php</file>
             <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
         </testsuite>

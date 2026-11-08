@@ -89,8 +89,8 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
 			FROM data_local
 			WHERE host_id = ?
 			AND snmp_query_id = ?
-			AND id IN (?)',
-			array($host_id, $query_id, implode(',', $ids)));
+			AND id IN (' . implode(',', array_fill(0, cacti_sizeof($ids), '?')) . ')',
+			array_merge(array($host_id, $query_id), array_values($ids)));
 	} else {
 		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM data_local
@@ -210,8 +210,8 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = arra
 			ON gti.task_item_id = dtr.id
 			WHERE host_id = ?
 			AND snmp_query_id = ?
-			AND dtr.local_data_id IN(?)',
-			array($host_id, $query_id, implode(',', $ids)));
+			AND dtr.local_data_id IN (' . implode(',', array_fill(0, cacti_sizeof($ids), '?')) . ')',
+			array_merge(array($host_id, $query_id), array_values($ids)));
 	} else {
 		$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM graph_local

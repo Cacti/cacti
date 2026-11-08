@@ -1401,13 +1401,15 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
  *   process_poller_output(). Avoids a per-item query for the common case where the caller
  *   already resolved this; falls back to a live per-item query for any local_data_id not
  *   present in the map (e.g. a caller that didn't prefetch).
+ * @param array|null &$updated Acknowledged timestamps, keyed by local_data_id.
  *
  * @return int The resulting integer value.
  */
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array()) {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array(), &$updated = null) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed            = 0;
 	$supports_skip_past_updates = null;
+	$updated                   = array();
 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		$create_rrd_file = false;
@@ -1525,7 +1527,17 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 					continue;
 				}
 
-				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_RETURN_STDERR, $rrdtool_pipe, 'POLLER');
+				if (!is_string($result) ||
+					preg_match('/(?:^|\n)OK(?: |\r?\n|$)/', $result) !== 1 ||
+					preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim($result))) {
+					cacti_log('ERROR: RRDtool did not acknowledge the update for local_data_id: ' . $rrd_fields['local_data_id'], false, 'POLLER');
+
+					// Do not advance this RRD past a sample that must be retried.
+					break;
+				}
+
+				$updated[$rrd_fields['local_data_id']][$update_time] = true;
 				$rrds_processed++;
 			}
 		}
