@@ -11168,7 +11168,22 @@ function cacti_object_hash($object) {
 	}
 }
 
-/** Validate a stored data-input command while retaining quoted paths and field markers. */
+/**
+ * cacti_input_string_is_safe - check that a data input method command uses
+ * only the shell grammar that substitute_script_path() can quote safely.
+ *
+ * Field markers such as <hostname> are removed first. The remaining text may
+ * not contain control characters, command separators, pipes, backticks,
+ * redirections or braces anywhere. Parentheses are allowed only inside quotes,
+ * where sh reads them literally, so a quoted Windows path such as
+ * "C:\Program Files (x86)\PHP\php.exe" is accepted. A dollar sign is allowed
+ * only inside single quotes, because sh still expands it inside double quotes.
+ * Quotes must be balanced and a trailing backslash is refused.
+ *
+ * @param mixed $input_string The stored or submitted input_string value.
+ *
+ * @return bool True when the command is empty or uses only the allowed grammar.
+ */
 function cacti_input_string_is_safe(mixed $input_string) : bool {
 	if ($input_string === '' || $input_string === null) {
 		return true;
@@ -11177,11 +11192,13 @@ function cacti_input_string_is_safe(mixed $input_string) : bool {
 	if (!is_string($input_string)) {
 		return false;
 	}
+
 	$bare = preg_replace('/<[a-zA-Z0-9_]+>/', '', $input_string);
 
-	if ($bare === null || preg_match('/[\x00-\x1f\x7f;&|`$<>(){}]/', $bare)) {
+	if ($bare === null || preg_match('/[\x00-\x1f\x7f;&|`<>{}]/', $bare)) {
 		return false;
 	}
+
 	$quote = '';
 
 	for ($index = 0, $length = strlen($bare); $index < $length; $index++) {
@@ -11191,10 +11208,26 @@ function cacti_input_string_is_safe(mixed $input_string) : bool {
 			if (++$index === $length) {
 				return false;
 			}
+
+			// An escaped character is still checked, so the relaxed rules
+			// below only ever apply to characters sh reads as quoted text.
+			$character = $bare[$index];
 		} elseif ($quote !== '' && $character === $quote) {
 			$quote = '';
+
+			continue;
 		} elseif ($quote === '' && ($character === '"' || $character === "'")) {
 			$quote = $character;
+
+			continue;
+		}
+
+		if ($character === '$' && $quote !== "'") {
+			return false;
+		}
+
+		if (($character === '(' || $character === ')') && $quote === '') {
+			return false;
 		}
 	}
 

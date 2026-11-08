@@ -50,6 +50,11 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 		done
 	done
 fi
+if [[ -f tests/fixtures/Core/DataInputCommand.php ]]; then
+	run_probe DataInputCommand.php data-input-import
+	run_probe DataInputCommand.php data-input-form-safe form "$(printf '%s' '<path_php_binary> <path_cacti>/scripts/query.php <hostname>' | base64 | tr -d '\n')"
+	run_probe DataInputCommand.php data-input-form-unsafe form "$(printf '%s' 'echo alpha; label' | base64 | tr -d '\n')"
+fi
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
