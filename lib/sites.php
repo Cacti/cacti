@@ -25,7 +25,11 @@
 require_once __DIR__ . '/Sites/DatabaseSiteRepository.php';
 require_once __DIR__ . '/Sites/SiteService.php';
 
-/** Assemble the legacy database, notification, and timestamp dependencies. */
+/**
+ * Assemble the legacy database, notification, and timestamp dependencies.
+ *
+ * @return \Cacti\Sites\SiteService The service sites.php uses for every action.
+ */
 function site_service() : \Cacti\Sites\SiteService {
 	return new \Cacti\Sites\SiteService(new \Cacti\Sites\DatabaseSiteRepository(), static function () : void {
 		set_config_option('time_last_change_site', time());
