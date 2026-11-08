@@ -101,6 +101,8 @@ function cacti_process_run(array $argv, ?string $input = null, ?int $timeout = 6
 		];
 	}
 
+	/** @var list<string> $argv every element was checked or cast to a string above */
+
 	// Primary path: Symfony Process with an explicit argv. class_exists() is
 	// probed at call time (not include time) so a site whose vendor tree is not
 	// yet autoloadable cannot be fataled by merely loading this file.
@@ -117,11 +119,11 @@ function cacti_process_run(array $argv, ?string $input = null, ?int $timeout = 6
 /**
  * cacti_process_run_symfony - cacti_process_run() backend using Symfony Process.
  *
- * @param array       $argv    Normalised list of string arguments.
- * @param string|null $input   stdin payload or null.
- * @param int|null    $timeout Timeout in seconds or null.
- * @param string|null $cwd     Working directory or null.
- * @param array|null  $env     Extra environment or null.
+ * @param list<string> $argv    Normalised list of string arguments.
+ * @param string|null  $input   stdin payload or null.
+ * @param int|null     $timeout Timeout in seconds or null.
+ * @param string|null  $cwd     Working directory or null.
+ * @param array|null   $env     Extra environment or null.
  *
  * @return array See cacti_process_run().
  */
@@ -159,11 +161,11 @@ function cacti_process_run_symfony(array $argv, ?string $input, ?int $timeout, ?
  * in list form. Kept shell-free: proc_open() accepts an argv array and spawns
  * the program directly, so this preserves the no-shell guarantee.
  *
- * @param array       $argv    Normalised list of string arguments.
- * @param string|null $input   stdin payload or null.
- * @param int|null    $timeout Timeout in seconds or null.
- * @param string|null $cwd     Working directory or null.
- * @param array|null  $env     Extra environment or null.
+ * @param list<string> $argv    Normalised list of string arguments.
+ * @param string|null  $input   stdin payload or null.
+ * @param int|null     $timeout Timeout in seconds or null.
+ * @param string|null  $cwd     Working directory or null.
+ * @param array|null   $env     Extra environment or null.
  *
  * @return array See cacti_process_run().
  */
