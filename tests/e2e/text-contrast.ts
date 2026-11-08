@@ -44,7 +44,9 @@ export function textContrast(element: Element): number {
 	const white = [255, 255, 255];
 	let surfaces: Segment[] = [[white, white]];
 	const color = /(?:color-mix|color|rgba?|hsla?|hwb|lab|lch|oklab|oklch)\((?:[^()]|\([^()]*\))*\)/;
-	const gradient = /^(?:-webkit-)?(?:repeating-)?(?:linear|radial|conic)-gradient\((.*)\)$/;
+	// Radial and conic colors depend on where the element sits inside the
+	// gradient box, so only linear gradients have a position-free color range.
+	const gradient = /^(?:-webkit-)?(?:repeating-)?linear-gradient\((.*)\)$/;
 	const hint = /^-?[\d.]+(?:%|[a-z]+)?$/;
 	const ancestors: Element[] = [];
 	for (let e: Element | null = element; e; e = e.parentElement) ancestors.unshift(e);
@@ -64,12 +66,12 @@ export function textContrast(element: Element): number {
 			// Interpolating in another color space leaves the sRGB segment between stops.
 			if (/^in\s|\sin\s/.test(args[0])) throw unmeasurable(`gradient color space ${args[0]}`);
 			const stops: number[][] = [];
-			args.forEach((arg, index) => {
+			for (const arg of args) {
 				const stop = color.exec(arg);
 				if (stop) stops.push(rgba(stop[0]));
-				// Only the leading geometry and position-only hints may omit a color.
-				else if (index > 0 && !hint.test(arg)) throw unmeasurable(`gradient stop ${arg}`);
-			});
+				// Only the leading direction and position-only hints may omit a color.
+				else if (stops.length > 0 && !hint.test(arg)) throw unmeasurable(`gradient stop ${arg}`);
+			}
 			if (stops.length === 0) throw unmeasurable(`gradient without color stops ${layer}`);
 			if (stops.length === 1) stops.push(stops[0]);
 			// Browsers interpolate premultiplied colors, so each segment composited
