@@ -140,11 +140,19 @@ function cacti_snmp_walk($hostname, $community, $oid, ...$arguments) {
 		return $GLOBALS['cpu_loads'];
 	}
 
-	/* disk counters: index 3 reports a value that is not an unsigned integer */
-	return [
+	/* disk counters: index 2, a partition the disk scripts skip, reports a
+	 * value that is not an unsigned integer */
+	$counters = [
 		['oid' => $oid . '.1', 'value' => (string) (5000 + 10 * $GLOBALS['poll'])],
-		['oid' => $oid . '.3', 'value' => $GLOBALS['poll'] > 1 ? '12abc' : '40'],
+		['oid' => $oid . '.2', 'value' => $GLOBALS['poll'] > 1 ? '12abc' : '40'],
 	];
+
+	/* a whole disk that appears between polls, walked before index 1 */
+	if (!empty($GLOBALS['new_disk'])) {
+		array_unshift($counters, ['oid' => $oid . '.3', 'value' => '700']);
+	}
+
+	return $counters;
 }
 
 class Net_Ping {
@@ -338,20 +346,24 @@ check('ss_webseer strips line breaks from names', ob_get_clean() === '1!linebrea
 
 // Disk counters kept in a private state directory between polls.
 $disk     = __NAMESPACE__ . '\\ss_net_snmp_disk_' . $mode;
-$zero     = ($mode === 'io' ? 'reads:0 writes:0' : 'bytesread:0 byteswritten:0');
 $unknown  = ($mode === 'io' ? 'reads:U writes:U' : 'bytesread:U byteswritten:U');
 $host_row = array_merge($host_row, ['id' => 7]);
 
-check('disk script refuses an unknown device', $disk('unknown.example') === $zero);
-check('disk script refuses a device id of zero', $disk('0.0') === $zero);
+check('disk script refuses an unknown device', $disk('unknown.example') === $unknown);
+check('disk script refuses a device id of zero', $disk('0.0') === $unknown);
 
 foreach (['cmd', 'realtime'] as $environ) {
 	$poller_id = $environ === 'realtime' ? 'preview-A' : 1;
 	$poll = 1;
-	check("first $environ poll has no previous state", $disk('known.example') === $zero);
+	check("first $environ poll has no previous state", $disk('known.example') === $unknown);
 	$poll = 2;
-	check("second $environ poll reports a delta", $disk(7) !== $zero);
+	check("second $environ poll reports a delta", $disk(7) !== $unknown);
 }
+$environ  = 'cmd';
+$poll     = 3;
+$new_disk = true;
+check('a disk without a previous sample leaves the total unknown', $disk(7) === $unknown);
+$new_disk = false;
 $environ   = 'realtime';
 $poller_id = '../preview';
 check('unsafe real-time state identifier yields unknown data', $disk(7) === $unknown);
