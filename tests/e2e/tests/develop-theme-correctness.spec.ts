@@ -198,6 +198,21 @@ for (const theme of ['dark', 'modern']) {
 	}
 }
 
+test('modern titlebar focus outline contrasts with the titlebar gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div class="cactiTableTitleRow"><div class="cactiTableTitle"><span>Devices</span></div>' +
+		'<div class="cactiTableButton"><span><a href="#add" aria-label="Add device"><i>+</i></a></span></div></div>' +
+		'<a id="body-link" href="#devices">Devices</a>');
+	await installThemeCss(page, 'include/themes/modern/main.css');
+	for (const selector of ['.cactiTableButton a', '#body-link']) {
+		const link = page.locator(selector);
+		await link.focus();
+		await expect(link).toHaveCSS('outline-style', 'solid');
+		// Measure the outline color as text over the same surfaces; WCAG 1.4.11 asks 3:1.
+		await link.evaluate(element => { (element as HTMLElement).style.color = getComputedStyle(element).outlineColor; });
+		expect(await link.evaluate(textContrast), selector).toBeGreaterThanOrEqual(3);
+	}
+});
+
 test('Dark hovered rows retain text contrast across their green gradient', async ({ page }) => {
 	await page.setContent('<!DOCTYPE html><table><tr class="selectable odd"><td>branch-firewall-03 missed three polls</td>' +
 		'<td><a class="linkEditMain" href="#device">Open device</a></td></tr></table>');
