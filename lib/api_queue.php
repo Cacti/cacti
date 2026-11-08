@@ -994,9 +994,11 @@ final class CactiQueueWorker {
 	private bool $failed = false;
 
 	/**
-	 * @param CactiQueueReceiverInterface $receiver The queue to consume
+	 * @param CactiQueueReceiverInterface $receiver  The queue to consume
+	 * @param Closure|null                $heartbeat Called once per poll so a
+	 *                                               registered process stays current
 	 */
-	public function __construct(private CactiQueueReceiverInterface $receiver) {
+	public function __construct(private CactiQueueReceiverInterface $receiver, private ?Closure $heartbeat = null) {
 	}
 
 	/**
@@ -1030,6 +1032,10 @@ final class CactiQueueWorker {
 
 		while (!$this->stopped) {
 			$busy = false;
+
+			if ($this->heartbeat !== null) {
+				($this->heartbeat)();
+			}
 
 			try {
 				foreach ($this->receiver->get() as $envelope) {
