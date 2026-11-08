@@ -25,11 +25,6 @@
 
 require __DIR__ . '/automation_creation_bootstrap.php';
 
-// Load maintained definitions needed by template and graph-input propagation.
-$forms = file_get_contents($root . '/include/global_form.php');
-$start = strpos($forms, "if (!defined('VALID_HOST_FIELDS'))");
-$end = strpos($forms, '$valid_host_fields =', $start);
-eval(substr($forms, $start, $end - $start));
 require_once $root . '/lib/graph_template_input.php';
 load_actual_functions($root . '/lib/functions.php', ['array_to_sql_or', 'get_hash_data_template', 'generate_hash']);
 

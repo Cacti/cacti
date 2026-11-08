@@ -23,12 +23,12 @@
 */
 
 $root = dirname(__DIR__, 2);
-$config = ['base_path' => $root, 'library_path' => "$root/lib", 'is_web' => false, 'poller_id' => 1];
+$config = ['base_path' => $root, 'library_path' => "$root/lib", 'is_web' => false, 'poller_id' => 1, 'url_path' => '/', 'cacti_server_os' => 'unix'];
 $no_http_headers = true;
 $_SESSION = [];
 $messages = [];
 $review_logs = [];
-$review_options = ['automation_tree_enabled' => 'on'];
+$review_options = ['automation_tree_enabled' => 'on', 'poller_interval' => '300', 'rrdtool_version' => '1.8.0'];
 
 require_once dirname(__DIR__) . '/Helpers/RequestCoverage.php';
 require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
@@ -42,6 +42,12 @@ function load_actual_functions($path, $names) {
 }
 
 function __($text, ...$args) { return $args ? vsprintf($text, $args) : $text; }
+function __x() {
+	$args = func_get_args();
+	array_shift($args);
+	return __(...$args);
+}
+
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	if ($level === '' || str_contains($string, 'ERROR:') || str_contains($string, 'WARNING:')) $GLOBALS['review_logs'][] = $string;
 }
@@ -49,14 +55,9 @@ function cacti_debug_backtrace($message = '', $output = false, $log = true, $lev
 function read_config_option($name, $force = false) { return $GLOBALS['review_options'][$name] ?? ''; }
 function set_config_option($name, $value, $remote = false) { $GLOBALS['review_options'][$name] = $value; }
 require "$root/include/global_constants.php";
-load_actual_functions("$root/lib/functions.php", ['cacti_sizeof', 'cacti_count', 'array_rekey', 'cacti_object_hash', 'clean_up_lines', 'sanitize_sql_column', 'form_input_validate', 'is_error_message', 'raise_message', 'get_message_level', 'test_data_sources', 'get_graph_title', 'get_data_source_title']);
+load_actual_functions("$root/lib/functions.php", ['cacti_sizeof', 'cacti_count', 'array_rekey', 'cacti_object_hash', 'clean_up_lines', 'sanitize_sql_column', 'form_input_validate', 'is_error_message', 'raise_message', 'get_message_level', 'test_data_sources', 'get_graph_title', 'get_data_source_title', 'cacti_version_compare', 'version_to_decimal', 'get_rrdtool_version']);
+load_actual_functions("$root/lib/auth.php", ['get_auth_realms']);
 load_actual_functions("$root/lib/html_validate.php", ['input_validate_input_number']);
-$arrays = file_get_contents("$root/include/global_arrays.php");
-$begin = strpos($arrays, '$automation_op_array =');
-if ($begin === false) $begin = strpos($arrays, '$automation_op_array');
-$end = strpos($arrays, '$automation_tree_item_types', $begin);
-eval(substr($arrays, $begin, $end - $begin));
-$automation_tree_header_types = [AUTOMATION_TREE_ITEM_TYPE_STRING => 'Fixed String'];
 
 class ReviewPDO extends PDO {
 	public array $query_counts = [];
@@ -113,19 +114,15 @@ function push_out_host($host_id, $local_data_id = 0) {
 }
 function __esc($text, ...$args) { return __($text, ...$args); }
 
-// Load the real field definitions; dropdown contents do not affect copying template fields.
-$forms = file_get_contents("$root/include/global_form.php");
-foreach (array('struct_data_source', 'struct_data_source_item', 'struct_graph', 'struct_graph_item') as $name) {
-	$start = strpos($forms, '$' . $name . ' =');
-	$end = strpos($forms, "\n\t);", $start) + 4;
-	$definition = substr($forms, $start, $end - $start);
-	preg_match_all('/=> (\$[a-z_]+)/', $definition, $references);
-	foreach ($references[1] as $reference) {
-		$variable = substr($reference, 1);
-		if (!isset($$variable)) $$variable = array();
-	}
-	eval($definition);
+function api_plugin_hook($name) {
+	$GLOBALS['review_hooks'][] = array($name, $GLOBALS['pdo']->inTransaction());
 }
+
+// Include maintained definitions directly, after the isolated database is ready.
+require "$root/include/global_arrays.php";
+require "$root/include/global_form.php";
+// Bootstrap hooks are outside the graph/template operations measured by the probes.
+$review_hooks = array();
 
 function seed_graph_template() {
 	global $pdo;
