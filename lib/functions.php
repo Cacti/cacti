@@ -6036,9 +6036,12 @@ function sanitize_cdef(string $cdef) : string {
 /**
  * verifies all selected items are numeric to guard against injection
  *
+ * The input must be exactly the serialization of a list: trailing bytes after
+ * the array and non-sequential keys are rejected.
+ *
  * @param mixed $items An array of serialized items from a post
  *
- * @return mixed The sanitized selected items array
+ * @return mixed The sanitized selected items array, or false when invalid
  */
 function sanitize_unserialize_selected_items(mixed $items) : mixed {
 	$return_items = false;
@@ -6050,7 +6053,9 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
 			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
-			if (is_array($items)) {
+			/* unserialize() ignores bytes after the array, so require the
+			 * canonical round trip; callers index the result 0..n-1 */
+			if (is_array($items) && array_is_list($items) && serialize($items) === $unstripped) {
 				$return_items = $items;
 
 				foreach ($items as $item) {
