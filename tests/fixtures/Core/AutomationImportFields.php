@@ -76,11 +76,19 @@ foreach (['automation_query_field_table_aliases', 'get_query_fields', 'array_min
 }
 $cases = 0;
 
+// Rule items reach build_rule_item_filter() and create_all_header_nodes() the same way match items do.
 foreach (['h.hostname;label', 'h..hostname', 'h.hostname+1', ['hostname'], null] as $field) {
-	$graph = ['graph_rules' => [['graph_match_items' => [['field' => $field]]]]];
-	$tree  = ['tree_rules' => [['tree_match_items' => [['field' => $field]]]]];
+	$imports = [];
 
-	foreach ([fn () => automation_graph_rule_import($graph), fn () => automation_tree_rule_import($tree), fn () => automation_template_import(['device' => [['graph_rules' => $graph['graph_rules']]]]), fn () => automation_template_import(['device' => [['tree_rules' => $tree['tree_rules']]]])] as $import) {
+	foreach (['graph' => ['graph_match_items', 'graph_rule_items'], 'tree' => ['tree_match_items', 'tree_rule_items']] as $type => $item_keys) {
+		foreach ($item_keys as $item_key) {
+			$rules     = [[$item_key => [['field' => $field]]]];
+			$imports[] = $type === 'graph' ? fn () => automation_graph_rule_import(['graph_rules' => $rules]) : fn () => automation_tree_rule_import(['tree_rules' => $rules]);
+			$imports[] = fn () => automation_template_import(['device' => [[$type . '_rules' => $rules]]]);
+		}
+	}
+
+	foreach ($imports as $import) {
 		$GLOBALS['import_writes'] = [];
 		$GLOBALS['import_reads']  = 0;
 		$result                   = $import();
@@ -113,6 +121,30 @@ foreach ([AUTOMATION_OPER_LEFT_BRACKET, AUTOMATION_OPER_RIGHT_BRACKET, (string) 
 
 	if (!automation_validate_import_match_fields([['items' => [['field' => '', 'operation' => $operation]]]], 'items', $debug)) {
 		throw new \RuntimeException('Exported grouping item was rejected.');
+	}
+	$cases++;
+}
+
+// The fixed string header type is a tree rule item value only.
+foreach ([['tree_rule_items', true], ['graph_rule_items', false], ['tree_match_items', false]] as [$item_key, $accepted]) {
+	$debug = [];
+
+	if (automation_validate_import_match_fields([[$item_key => [['field' => AUTOMATION_TREE_ITEM_TYPE_STRING]]]], $item_key, $debug) !== $accepted) {
+		throw new \RuntimeException('String header type handling changed for ' . $item_key . '.');
+	}
+	$cases++;
+}
+
+// Valid rule items are written unchanged after the rule itself.
+foreach ([['graph_rule_items', 'ifName', fn ($rule) => automation_graph_rule_import(['graph_rules' => [$rule]])], ['tree_rule_items', AUTOMATION_TREE_ITEM_TYPE_STRING, fn ($rule) => automation_tree_rule_import(['tree_rules' => [$rule]])], ['tree_rule_items', 'ht.name', fn ($rule) => automation_tree_rule_import(['tree_rules' => [$rule]])]] as [$item_key, $field, $import]) {
+	$rule = ['hash' => 'rule-hash', 'name' => 'Fixture', 'snmp_query_id' => 'query-hash', 'graph_type_id' => 'graph-hash', 'graph_rule_items' => [], 'graph_match_items' => [], 'tree_rule_items' => [], 'tree_match_items' => []];
+
+	$rule[$item_key]          = [['hash' => 'rule-item-hash', 'field' => $field, 'operation' => '1']];
+	$GLOBALS['import_writes'] = [];
+	$result                   = $import($rule);
+
+	if (!empty($result['errors']) || count($GLOBALS['import_writes']) !== 2 || $GLOBALS['import_writes'][1][1]['field'] !== $field) {
+		throw new \RuntimeException('Valid imported rule item field changed or was rejected.');
 	}
 	$cases++;
 }

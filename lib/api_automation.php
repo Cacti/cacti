@@ -5719,16 +5719,17 @@ function automation_network_import(mixed $json_data) : array {
 }
 
 /**
- * Validates imported match identifiers before any rule or child item is saved.
+ * Validates imported item identifiers before any rule or child item is saved.
  *
  * A field is either empty or an optional table alias from the rule editor
  * followed by one column name. An empty field is accepted only on AND, OR and
  * bracket items: the editor stores a conjunction ahead of a bracket as an
  * AND or OR item whose field is None, and build_rule_item_filter() skips the
- * field of such items.
+ * field of such items. Tree rule items may also carry the fixed string type,
+ * which create_all_header_nodes() handles without reading a column.
  *
  * @param mixed  $rules      The imported rule list.
- * @param string $item_key   The key holding each rule's match items.
+ * @param string $item_key   The key holding each rule's match or rule items.
  * @param array  $debug_data The import result, which receives the error on failure.
  *
  * @return bool True when every match field is acceptable.
@@ -5748,6 +5749,10 @@ function automation_validate_import_match_fields(mixed $rules, string $item_key,
 		foreach ($rule[$item_key] ?? [] as $item) {
 			$field     = is_array($item) ? ($item['field'] ?? null) : null;
 			$operation = is_array($item) ? ($item['operation'] ?? null) : null;
+
+			if ($item_key === 'tree_rule_items' && $field === AUTOMATION_TREE_ITEM_TYPE_STRING) {
+				continue;
+			}
 
 			// Exports carry database values as strings, so compare the operation numerically.
 			if ($field === '' && (is_int($operation) || (is_string($operation) && ctype_digit($operation))) && in_array((int) $operation, $no_field, true)) {
@@ -5790,7 +5795,8 @@ function automation_graph_rule_import(mixed $json_data) : array {
 	 * top to bottom in the JSON array.
 	 */
 	if (cacti_sizeof($json_data) && isset($json_data['graph_rules'])) {
-		if (!automation_validate_import_match_fields($json_data['graph_rules'], 'graph_match_items', $debug_data)) {
+		if (!automation_validate_import_match_fields($json_data['graph_rules'], 'graph_match_items', $debug_data) ||
+			!automation_validate_import_match_fields($json_data['graph_rules'], 'graph_rule_items', $debug_data)) {
 			return $debug_data;
 		}
 
@@ -5949,7 +5955,8 @@ function automation_tree_rule_import(mixed $json_data, bool $tree_branches = fal
 	 * top to bottom in the JSON array.
 	 */
 	if (cacti_sizeof($json_data) && isset($json_data['tree_rules'])) {
-		if (!automation_validate_import_match_fields($json_data['tree_rules'], 'tree_match_items', $debug_data)) {
+		if (!automation_validate_import_match_fields($json_data['tree_rules'], 'tree_match_items', $debug_data) ||
+			!automation_validate_import_match_fields($json_data['tree_rules'], 'tree_rule_items', $debug_data)) {
 			return $debug_data;
 		}
 
@@ -6088,7 +6095,9 @@ function automation_template_import(mixed $json_data, bool $tree_branches = fals
 	if (cacti_sizeof($json_data) && isset($json_data['device'])) {
 		foreach ($json_data['device'] as $device) {
 			if (!automation_validate_import_match_fields($device['graph_rules'] ?? [], 'graph_match_items', $debug_data) ||
-				!automation_validate_import_match_fields($device['tree_rules'] ?? [], 'tree_match_items', $debug_data)) {
+				!automation_validate_import_match_fields($device['graph_rules'] ?? [], 'graph_rule_items', $debug_data) ||
+				!automation_validate_import_match_fields($device['tree_rules'] ?? [], 'tree_match_items', $debug_data) ||
+				!automation_validate_import_match_fields($device['tree_rules'] ?? [], 'tree_rule_items', $debug_data)) {
 				return $debug_data;
 			}
 		}
