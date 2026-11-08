@@ -214,14 +214,29 @@ function automation_aggregate_reconcile(array $rule, array $host, array $attribu
 			throw new RuntimeException('Unable to start aggregate automation transaction.');
 		}
 		$transaction = true;
+		/* Ownership follows the mapped graph, not its template link. Turning off
+		 * template propagation saves aggregate_template_id = 0 on the aggregate,
+		 * and requiring the link here would make every later pass build a
+		 * duplicate and move the mapping onto it. */
 		$mapping     = automation_aggregate_rows('SELECT aam.local_graph_id, aam.configuration_hash,
-			ag.id AS aggregate_id FROM automation_aggregate_graphs AS aam
-			LEFT JOIN aggregate_graphs AS ag ON ag.local_graph_id = aam.local_graph_id
-			AND ag.aggregate_template_id = aam.aggregate_template_id
+			ag.id AS aggregate_id, ag.aggregate_template_id
+			FROM automation_aggregate_graphs AS aam
 			INNER JOIN graph_local AS gl ON gl.id = aam.local_graph_id
+			LEFT JOIN aggregate_graphs AS ag ON ag.local_graph_id = aam.local_graph_id
 			WHERE aam.aggregate_template_id = ? AND aam.host_id = ? FOR UPDATE', [$rule['id'], $host['id']]);
-		$mapping        = $mapping[0] ?? [];
-		$local_graph_id = !empty($mapping['aggregate_id']) ? (int) $mapping['local_graph_id'] : 0;
+		$mapping = $mapping[0] ?? [];
+
+		// A surviving graph that no longer follows this template belongs to the user.
+		// Keep the mapping so reruns stay idempotent and never rebuild or replace it.
+		if ($mapping && (int) ($mapping['aggregate_template_id'] ?? 0) !== (int) $rule['id']) {
+			if (!db_commit_transaction()) {
+				throw new RuntimeException('Unable to commit aggregate automation transaction.');
+			}
+			$transaction = false;
+
+			return 'detached';
+		}
+		$local_graph_id = $mapping ? (int) $mapping['local_graph_id'] : 0;
 
 		if ($local_graph_id > 0 && $mapping['configuration_hash'] === $hash) {
 			if (!db_commit_transaction()) {

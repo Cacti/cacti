@@ -37,8 +37,10 @@ php cli/apply_automation_rules.php --ids="101 102 103"
 
 Each template/device pair owns a separate aggregate. Later passes update its
 members and title, and unchanged passes avoid rebuilding it. A deleted managed
-aggregate is recreated on the next matching pass. Use separate aggregate
-templates for different groups of QoS classes on the same device.
+aggregate is recreated on the next matching pass. Turning off template
+propagation on a managed aggregate hands it to the user: later passes leave it
+untouched and do not create a replacement. Use separate aggregate templates for
+different groups of QoS classes on the same device.
 
 Concurrent runs use a database advisory lock for each template/device pair.
 Graph updates and ownership are committed together. Metadata or persistence
