@@ -15,7 +15,9 @@ import tempfile
 
 # The amd64 config digest comes from the platform manifest inside this pinned
 # upstream index (amd64 manifest 5c6923b063c9c429e314b65e0a9363f31d64b68a83efabb45506b0f745facd9a).
-# ci-images.yml copies the index to GHCR with preserved digests.
+# ci-images.yml copies the index to GHCR with preserved digests. INDEX must
+# match the mariadb:10.6 line in .github/ci-images.txt (a contract test checks
+# it); when that pin moves, update IMAGE_ID from the new amd64 manifest too.
 INDEX = 'sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98'
 IMAGE_ID = 'sha256:8858f1021dff59974c9a9964407c85e23d424ba49ecbd515d9d121781e029d37'
 MIRROR = 'ghcr.io/cacti/ci-images/mariadb@' + INDEX
@@ -62,6 +64,9 @@ def prepare(cache_directory):
     else:
         # No mutable tag, Docker Hub fallback, or registry call on a cache hit.
         docker('pull', '--platform', PLATFORM, MIRROR)
+        # .Id is the config digest only under the classic image store. With the
+        # containerd image store it is the manifest or index digest, so this
+        # check fails closed there and needs the config digest read another way.
         if docker('image', 'inspect', '--format={{.Id}}', MIRROR, capture=True) != IMAGE_ID:
             raise ValueError('GHCR image does not match the pinned MariaDB config')
         docker('image', 'tag', MIRROR, TAG)
