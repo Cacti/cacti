@@ -15,95 +15,32 @@
 /*
  * Tests for scripts/sql.php and scripts/ss_sql.php.
  *
- * Covers two hardening steps:
- * 1. Backtick-to-shell_exec migration (PHP 8.4 deprecates the backtick
- *    operator; the fix replaces backticks with shell_exec()).
- * 2. cacti_escapeshellarg() wrapper (Cacti's internal contract; bare
- *    escapeshellarg() bypasses any future Cacti-level escaping hooks).
+ * Both scripts report server status from SHOW GLOBAL STATUS over Cacti's own
+ * database connection, so neither may start a client process or touch the
+ * database password.  Their output is checked in
+ * tests/fixtures/Core/MysqlClientCredentials.php.
  */
 
-$sqlPhpPath   = __DIR__ . '/../../../scripts/sql.php';
-$ssSqlPhpPath = __DIR__ . '/../../../scripts/ss_sql.php';
+dataset('sql scripts', [
+	'sql.php'    => __DIR__ . '/../../../scripts/sql.php',
+	'ss_sql.php' => __DIR__ . '/../../../scripts/ss_sql.php',
+]);
 
-// --- scripts/sql.php: no backtick operators remain ---
+test('the script starts no client process', function (string $path) {
+	$contents = file_get_contents($path);
 
-test('sql.php contains no backtick operators', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	expect($contents)->not->toMatch('/`[^`]*`/')
+		->and(preg_match('/\b(shell_exec|exec|passthru|system|proc_open|popen)\s*\(/', $contents))->toBe(0)
+		->and($contents)->not->toContain('mysqladmin --');
+})->with('sql scripts');
 
-	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
-});
+test('the script never reads the database password', function (string $path) {
+	expect(file_get_contents($path))->not->toContain('$database_password');
+})->with('sql scripts');
 
-test('sql.php uses shell_exec for command execution', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+test('the script reads server status over the database connection', function (string $path) {
+	$contents = file_get_contents($path);
 
-	expect($contents)->toContain('shell_exec(');
-});
-
-test('sql.php uses no bare escapeshellarg calls', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	// Negative lookbehind: match escapeshellarg( NOT preceded by cacti_
-	expect(preg_match('/(?<!cacti_)escapeshellarg\(/', $contents))->toBe(0);
-});
-
-test('sql.php handles null return from shell_exec', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	// (string) cast coerces both null and false from shell_exec() to ''.
-	expect($contents)->toContain('(string) $sql');
-});
-
-test('sql.php returns U on empty/null shell_exec output', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	// Cacti data source scripts must return 'U' on error, never empty string.
-	expect($contents)->toContain(": 'U'");
-});
-
-// --- scripts/ss_sql.php: no backtick operators remain ---
-
-test('ss_sql.php contains no backtick operators', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
-});
-
-test('ss_sql.php uses shell_exec for command execution', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->toContain('shell_exec(');
-});
-
-test('ss_sql.php uses no bare escapeshellarg calls', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	// Negative lookbehind: match escapeshellarg( NOT preceded by cacti_
-	expect(preg_match('/(?<!cacti_)escapeshellarg\(/', $contents))->toBe(0);
-});
-
-test('ss_sql.php handles null return from shell_exec', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->toContain("?? ''");
-});
-
-test('ss_sql.php returns U on empty/null shell_exec output', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	// Cacti data source scripts must return 'U' on error, never empty string.
-	expect($contents)->toContain(": 'U'");
-});
-
-// --- no raw variable interpolation in shell commands ---
-
-test('sql.php does not interpolate variables directly in shell strings', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->not->toMatch('/`[^`]*\$database_/');
-});
-
-test('ss_sql.php does not interpolate variables directly in shell strings', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->not->toMatch('/`[^`]*\$database_/');
-});
+	expect($contents)->toContain('SHOW GLOBAL STATUS')
+		->and($contents)->toContain("return 'U';");
+})->with('sql scripts');

@@ -2715,12 +2715,27 @@ function db_switch_main_to_local() : bool {
 }
 
 /**
- * Write MySQL client credentials to a private option file instead of argv.
- * The caller must unlink the file after the client exits.
+ * db_client_defaults_file - write MySQL client credentials to a private option file
+ *
+ * Pass the file with --defaults-extra-file, as the client's first option, so
+ * the credentials stay off argv while the system and user option files
+ * (socket, TLS settings) are still read.  The caller must unlink the file
+ * after the client exits.
+ *
+ * An option file cannot hold a line break or NUL, and the client strips
+ * trailing whitespace even inside quotes, so such values are refused rather
+ * than written in a form that would connect with a different password.
+ *
+ * @param string $username client user
+ * @param string $password client password
+ * @param string $hostname server host, '' for the client default
+ * @param int    $port     server port, 0 for the client default; ignored for localhost
+ *
+ * @return string|false path of the option file, or false when it could not be written
  */
 function db_client_defaults_file(string $username, string $password, string $hostname = '', int $port = 0) : string|false {
 	foreach ([$username, $password, $hostname] as $value) {
-		if (strpbrk($value, "\r\n\0") !== false) {
+		if (strpbrk($value, "\r\n\0") !== false || rtrim($value, " \t") !== $value) {
 			return false;
 		}
 	}
@@ -2770,7 +2785,7 @@ function db_client_defaults_file(string $username, string $password, string $hos
  * @return int Return status of the executed command
  */
 function db_dump_data(string $database = '', string $tables = '', array $credentials = [], mixed $output_file = false, string $options = '--extended-insert=FALSE') : int {
-	global $database_default, $database_username, $database_password;
+	global $database_default, $database_username, $database_password, $database_hostname, $database_port;
 
 	$credentials_string = '';
 
@@ -2818,6 +2833,9 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 		$username = $database_username;
 	}
 
+	// without a host the client dumps whatever server is local, not Cacti's
+	$host_given = cacti_sizeof(array_intersect(array_map('trim', array_keys($credentials)), ['--host', '-h', 'host', '--socket', '-S', 'socket'])) > 0;
+
 	if (file_exists('/usr/bin/mariadb-dump')) {
 		$dump = '/usr/bin/mariadb-dump';
 	} else {
@@ -2831,13 +2849,14 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 	$defaults_file = false;
 
 	if (!str_contains($options, '--defaults-extra-file') && !str_contains($options, '--defaults-file')) {
-		$defaults_file = db_client_defaults_file((string) $username, (string) $password);
+		$defaults_file = $host_given ? db_client_defaults_file((string) $username, (string) $password) : db_client_defaults_file((string) $username, (string) $password, (string) $database_hostname, (int) $database_port);
 
 		if ($defaults_file === false) {
 			return 1;
 		}
 
-		$options = '--defaults-file=' . cacti_escapeshellarg($defaults_file) . ' ' . $options;
+		// --defaults-file would also drop the system and user option files
+		$options = '--defaults-extra-file=' . cacti_escapeshellarg($defaults_file) . ' ' . $options;
 	}
 
 	try {
