@@ -32,14 +32,15 @@ if ($osname =~ 'solaris') {
 
 # old linux version use 'icmp_seq'
 # newer use 'icmp_req' instead
-open(PROCESS, "$pingcmd 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host|Unknown host|not supported|Name or service not known|No address associated with name)' 2>/dev/null |");
+# BusyBox ping prints 'seq=' without the 'icmp_' prefix
+open(PROCESS, "$pingcmd 2>&1 | grep -E '((icmp_req|seq=).*time|unknown host|Unknown host|not supported|Name or service not known|No address associated with name)' 2>/dev/null |");
 $ping = <PROCESS>;
 close(PROCESS);
 chomp($ping);
 
 if (($ping =~ 'unknown host') || ($ping =~ 'Unknown host') || ($ping =~ 'not supported') || ($ping =~ 'Name or service not known') || ($ping =~ 'No address associated with name')) {
 	if ((-f '/bin/ping6') || (-f '/sbin/ping6')) {
-		open(PROCESS, "ping6 -c 1 $host 2>&1 | grep 'icmp_[s|r]eq.*time' 2>/dev/null |");
+		open(PROCESS, "ping6 -c 1 $host 2>&1 | grep -E '(icmp_req|seq=).*time' 2>/dev/null |");
 		$ping = <PROCESS>;
 		close(PROCESS);
 		chomp($ping);
