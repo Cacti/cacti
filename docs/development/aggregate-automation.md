@@ -28,8 +28,10 @@ failure aborts that rule's update and retains the previous aggregate. Simplify
 the expression before retrying. These limits apply to validation and matching;
 the caller's PHP settings are restored afterward.
 
-Device discovery and `cli/apply_automation_rules.php` run these rules after
-ordinary graph automation. Apply rules to existing devices with, for example:
+Device discovery, `cli/apply_automation_rules.php` and data query reindexing
+run these rules after ordinary graph automation, so a graph that a reindex
+creates joins its aggregate on the same pass. Apply rules to existing devices
+with, for example:
 
 ```sh
 php cli/apply_automation_rules.php --ids="101 102 103"
@@ -40,7 +42,9 @@ members and title, and unchanged passes avoid rebuilding it. A deleted managed
 aggregate is recreated on the next matching pass. Turning off template
 propagation on a managed aggregate hands it to the user: later passes leave it
 untouched and do not create a replacement. Use separate aggregate templates for
-different groups of QoS classes on the same device.
+different groups of QoS classes on the same device. Deleting a device removes
+its ownership rows; the aggregate graph itself stays until it is removed
+through the normal aggregate management page.
 
 Concurrent runs use a database advisory lock for each template/device pair.
 Graph updates and ownership are committed together. Metadata or persistence

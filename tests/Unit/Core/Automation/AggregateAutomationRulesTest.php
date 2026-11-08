@@ -67,6 +67,24 @@ it('drops automation ownership when its template or aggregate graph is removed',
 	expect(substr_count(file_get_contents($root . '/lib/aggregate.php'), 'DELETE FROM automation_aggregate_graphs'))->toBe(2);
 });
 
+it('drops automation ownership when its device is removed', function () {
+	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/api_device.php');
+	$single = substr($source, strpos($source, 'function api_device_remove('), strpos($source, 'function api_device_purge_from_remote(') - strpos($source, 'function api_device_remove('));
+	$batch  = substr($source, strpos($source, 'function api_device_remove_multi('));
+
+	expect($single)->toContain("'DELETE FROM automation_aggregate_graphs WHERE host_id = ?', [\$device_id]")
+		->and($batch)->toContain("'DELETE FROM automation_aggregate_graphs WHERE ' . db_in_clause('host_id', \$int_device_ids)");
+});
+
+it('reconciles automated aggregates after every data query reindex', function () {
+	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/data_query.php');
+
+	// Each reindex path that runs graph automation must also reconcile aggregates for the device.
+	expect(preg_match_all('/automation_execute_data_query\(\$host_id, \$snmp_query_id\);\s+automation_reconcile_device_aggregates\(\$host_id\);/', $source))
+		->toBe(substr_count($source, 'automation_execute_data_query('))
+		->and(substr_count($source, 'automation_execute_data_query('))->toBe(3);
+});
+
 it('bounds runaway aggregate patterns and restores caller PCRE settings', function () {
 	$backtrack = ini_get('pcre.backtrack_limit');
 	$recursion = ini_get('pcre.recursion_limit');

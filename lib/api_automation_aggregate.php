@@ -12,7 +12,15 @@
  +-------------------------------------------------------------------------+
 */
 
-/** Validate both the template editor and the automation execution contract. */
+/**
+ * Validates aggregate automation settings for the template editor and for execution.
+ *
+ * @param array $values The submitted or stored template values.
+ *
+ * @throws InvalidArgumentException When a setting is malformed or out of range.
+ *
+ * @return array The normalised automation settings.
+ */
 function automation_aggregate_settings(array $values) : array {
 	if (isset($values['automation_pattern']) && !is_string($values['automation_pattern']) ||
 		isset($values['automation_title']) && !is_string($values['automation_title'])) {
@@ -46,7 +54,16 @@ function automation_aggregate_settings(array $values) : array {
 	return $settings;
 }
 
-/** Bound operator-supplied patterns without changing their delimiters or flags. */
+/**
+ * Matches an administrator-supplied pattern under bounded PCRE work limits.
+ *
+ * The pattern keeps its own delimiters and flags.
+ *
+ * @param string $pattern The delimited PCRE pattern.
+ * @param string $subject The data source name to test.
+ *
+ * @return int|false 1 on a match, 0 on no match, or false when the pattern fails or hits a limit.
+ */
 function automation_aggregate_match(string $pattern, string $subject) : int|false {
 	$backtrack = ini_get('pcre.backtrack_limit');
 	$recursion = ini_get('pcre.recursion_limit');
@@ -66,6 +83,17 @@ function automation_aggregate_match(string $pattern, string $subject) : int|fals
 	}
 }
 
+/**
+ * Expands the aggregate title template for one device.
+ *
+ * Each placeholder is replaced once, so a device description that contains a
+ * placeholder is not expanded again.
+ *
+ * @param array $rule The aggregate template with its automation title.
+ * @param array $host The device row with id, description and hostname.
+ *
+ * @return string The title, bounded to 255 bytes without splitting a UTF-8 character.
+ */
 function automation_aggregate_title(array $rule, array $host) : string {
 	return mb_strcut(strtr($rule['automation_title'], [
 		'|host_description|'        => (string) $host['description'],
@@ -75,13 +103,30 @@ function automation_aggregate_title(array $rule, array $host) : string {
 	]), 0, 255, 'UTF-8');
 }
 
-/** db_fetch_* helpers can return an empty result on SQL failure. Never treat it as no matches. */
+/**
+ * Returns the last database error recorded by the db_* helpers.
+ *
+ * db_fetch_* helpers can return an empty result on SQL failure, so callers
+ * check this instead of treating an empty result as no matches.
+ *
+ * @return string The last database error, or an empty string.
+ */
 function automation_aggregate_database_error() : string {
 	global $database_last_error;
 
 	return (string) ($database_last_error ?? '');
 }
 
+/**
+ * Fetches rows and fails loudly instead of returning an empty set on SQL errors.
+ *
+ * @param string $sql    The prepared query.
+ * @param array  $params The bound parameters.
+ *
+ * @throws RuntimeException When the query fails.
+ *
+ * @return array The fetched rows.
+ */
 function automation_aggregate_rows(string $sql, array $params = []) : array {
 	global $database_last_error;
 	$previous_error      = $database_last_error ?? '';
@@ -96,7 +141,20 @@ function automation_aggregate_rows(string $sql, array $params = []) : array {
 	return $rows;
 }
 
-/** Read candidates in graph-ID batches; match any bound data source, never aggregate outputs. */
+/**
+ * Collects the device graphs whose bound data sources match the rule pattern.
+ *
+ * Candidates are read in batches of 200 graph IDs. Aggregate graphs are never
+ * members, and a graph with several matching data sources is included once.
+ *
+ * @param array $rule    The compiled aggregate template rule.
+ * @param int   $host_id The device whose graphs are matched.
+ *
+ * @throws LengthException  When a batch or the member limit is exceeded.
+ * @throws RuntimeException When matching or a metadata read fails.
+ *
+ * @return list<int> Matching graph IDs in ascending order.
+ */
 function automation_aggregate_members(array $rule, int $host_id) : array {
 	$members = [];
 	$cursor  = 0;
@@ -147,6 +205,15 @@ function automation_aggregate_members(array $rule, int $host_id) : array {
 	return $members;
 }
 
+/**
+ * Builds the aggregate_create_update() attributes from an aggregate template.
+ *
+ * @param array $template The aggregate template row.
+ *
+ * @throws RuntimeException When the template items cannot be read.
+ *
+ * @return array The graph attributes, including per-sequence item settings.
+ */
 function automation_aggregate_attributes(array $template) : array {
 	$items = automation_aggregate_rows('SELECT sequence, item_skip, item_total, color_template,
 		t_graph_type_id, graph_type_id, t_cdef_id, cdef_id
@@ -189,7 +256,20 @@ function automation_aggregate_attributes(array $template) : array {
 	return $attributes;
 }
 
-/** Own only the graph recorded for this template/device. Locks and transactions prevent duplicates. */
+/**
+ * Creates or updates the aggregate this template owns for one device.
+ *
+ * Only the graph recorded for the template and device is managed. An advisory
+ * lock and a transaction prevent concurrent passes from creating duplicates.
+ *
+ * @param array $rule       The compiled aggregate template rule.
+ * @param array $host       The device row.
+ * @param array $attributes The attributes from automation_aggregate_attributes().
+ *
+ * @throws Throwable When matching, rebuilding or persisting fails; the transaction is rolled back.
+ *
+ * @return string One of busy, empty, detached, unchanged, created or updated.
+ */
 function automation_aggregate_reconcile(array $rule, array $host, array $attributes) : string {
 	global $database_last_error;
 	$lock = 'aggregate_automation_' . $rule['id'] . '_' . $host['id'];
@@ -276,7 +356,17 @@ function automation_aggregate_reconcile(array $rule, array $host, array $attribu
 	}
 }
 
-/** Called once after a device's ordinary graph rules, never once per graph or polling sample. */
+/**
+ * Runs every enabled aggregate automation template against one device.
+ *
+ * Called after a device's ordinary graph rules or a data query reindex,
+ * never once per graph or polling sample.
+ *
+ * @param int  $host_id The device to reconcile.
+ * @param bool $reload  Whether to reload the per-process template cache.
+ *
+ * @return array<int, string> Reconcile state keyed by aggregate template ID.
+ */
 function automation_execute_device_aggregates(int $host_id, bool $reload = false) : array {
 	static $rules = null;
 
