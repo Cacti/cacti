@@ -2,7 +2,7 @@
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
 namespace CactiInputCommandFixture;
-require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 3) . '/include/global.php';
@@ -59,8 +59,8 @@ foreach (['xml_to_data_input_method', 'import_is_base64_encoded', 'xml_character
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/import.php', $function, __NAMESPACE__);
 }
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/data_input.php', 'form_save', __NAMESPACE__);
-$valid   = ['<path_php_binary> -q <path_cacti>/scripts/query.php <hostname>', '"<path_php_binary>" "<path_cacti>/scripts/query file.php" "<hostname>"', '"C:\\Program Files\\PHP\\php.exe" "<path_cacti>/scripts/query.php" <hostname>', "<path_php_binary> '<path_cacti>/scripts/query file.php' '<hostname>'", ''];
-$invalid = ['echo alpha; label', 'echo alpha | label', 'echo $(label)', 'echo `label`', "echo alpha\nlabel", "echo alpha\0label", 'echo > output', 'echo "unclosed', 'echo <broken-field>'];
+$valid   = ['<path_php_binary> -q <path_cacti>/scripts/query.php <hostname>', '"<path_php_binary>" "<path_cacti>/scripts/query file.php" "<hostname>"', '"C:\\Program Files\\PHP\\php.exe" "<path_cacti>/scripts/query.php" <hostname>', "<path_php_binary> '<path_cacti>/scripts/query file.php' '<hostname>'", '"C:\\Program Files (x86)\\PHP\\php.exe" -q "<path_cacti>/scripts/query.php" <hostname>', "<path_php_binary> -q <path_cacti>/scripts/query.php '\$literal (x)' <hostname>", ''];
+$invalid = ['echo alpha; label', 'echo alpha | label', 'echo $(label)', 'echo `label`', "echo alpha\nlabel", "echo alpha\0label", 'echo > output', 'echo "unclosed', 'echo <broken-field>', 'echo "$HOME"', 'echo (label)', 'echo \\$label', 'echo \\(label', 'echo alpha\\'];
 
 if (($argv[1] ?? '') === 'form') {
 	$command = base64_decode($argv[2], true);
@@ -69,6 +69,11 @@ if (($argv[1] ?? '') === 'form') {
 	form_save();
 	exit;
 }
+
+if (\cacti_input_string_is_safe(['echo alpha'])) {
+	throw new \RuntimeException('Command syntax validator accepted a non-string value.');
+}
+
 $GLOBALS['fields_data_input_edit']         = ['input_string' => [], 'name' => []];
 $GLOBALS['fields_data_input_field_edit']   = [];
 $GLOBALS['fields_data_input_field_edit_1'] = [];
@@ -97,7 +102,14 @@ foreach ([true => $valid, false => $invalid] as $allowed => $commands) {
 }
 
 foreach (['<path_php_binary> <path_cacti>/scripts/query.php <hostname>', 'echo alpha; label'] as $command) {
-	$process = proc_open([PHP_BINARY, __FILE__, 'form', base64_encode($command)], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	// The child inherits the coverage file, so it also needs the parent's
+	// memory limit and Xdebug mode, which were set with -d on its command line.
+	$child = [PHP_BINARY, '-d', 'memory_limit=' . ini_get('memory_limit')];
+
+	if (extension_loaded('xdebug')) {
+		array_push($child, '-d', 'xdebug.mode=' . ini_get('xdebug.mode'));
+	}
+	$process = proc_open(array_merge($child, [__FILE__, 'form', base64_encode($command)]), [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 
 	if (!is_resource($process)) {
 		throw new \RuntimeException('Cannot start form request.');
