@@ -29,6 +29,18 @@ if ($database_default !== 'cacti_queue_e2e') {
 	throw new RuntimeException('Queue contracts require the disposable E2E database.');
 }
 
+/**
+ * Run a queue CLI script and require its exit status and output.
+ *
+ * @param string   $script    script name under cli/
+ * @param string[] $arguments command-line arguments
+ * @param int      $status    expected exit status
+ * @param string   $expected  text the output must contain
+ *
+ * @throws RuntimeException when the status or output differs
+ *
+ * @return string the script's output
+ */
 function queue_e2e_command(string $script, array $arguments, int $status, string $expected = '') : string {
 	$process = new Symfony\Component\Process\Process([PHP_BINARY, CACTI_PATH_BASE . '/cli/' . $script, ...$arguments]);
 	$process->setTimeout(15);
