@@ -699,145 +699,206 @@ function api_reapply_suggested_data_source_data($local_data_id) {
  */
 function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
 	global $struct_data_source, $struct_data_source_item;
+	global $database_sessions, $database_hostname, $database_port, $database_default, $database_last_error;
 
-	if (!empty($_local_data_id)) {
-		$data_local = db_fetch_row_prepared('SELECT *
-			FROM data_local
-			WHERE id = ?',
-			array($_local_data_id));
-
-		if (!cacti_sizeof($data_local)) {
-			return false;
-		}
-
-		$data_template_data = db_fetch_row_prepared('SELECT *
-			FROM data_template_data
-			WHERE local_data_id = ?',
-			array($_local_data_id));
-
-		$data_template_rrds = db_fetch_assoc_prepared('SELECT *
-			FROM data_template_rrd
-			WHERE local_data_id = ?',
-			array($_local_data_id));
-
-		$data_input_datas   = db_fetch_assoc_prepared('SELECT *
-			FROM data_input_data
-			WHERE data_template_data_id = ?',
-			array($data_template_data['id']));
-
-		/* create new entry: data_local */
-		$save['id']               = 0;
-		$save['data_template_id'] = $data_local['data_template_id'];
-		$save['host_id']          = $data_local['host_id'];
-		$save['snmp_query_id']    = $data_local['snmp_query_id'];
-		$save['snmp_index']       = $data_local['snmp_index'];
-
-		$local_data_id = sql_save($save, 'data_local');
-
-		$data_template_data['name'] = str_replace('<ds_title>', $data_template_data['name'], $data_source_title);
-	} elseif (!empty($_data_template_id)) {
-		$data_template = db_fetch_row_prepared('SELECT *
-			FROM data_template
-			WHERE id = ?',
-			array($_data_template_id));
-
-		if (!cacti_sizeof($data_template)) {
-			return false;
-		}
-
-		$data_template_data = db_fetch_row_prepared('SELECT *
-			FROM data_template_data
-			WHERE data_template_id = ?
-			AND local_data_id = 0',
-			array($_data_template_id));
-
-		$data_template_rrds = db_fetch_assoc_prepared('SELECT *
-			FROM data_template_rrd
-			WHERE data_template_id = ?
-			AND local_data_id = 0',
-			array($_data_template_id));
-
-		$data_input_datas = db_fetch_assoc_prepared('SELECT *
-			FROM data_input_data
-			WHERE data_template_data_id = ?',
-			array($data_template_data['id']));
-
-		/* create new entry: data_template */
-		$save['id']   = 0;
-		$save['hash'] = get_hash_data_template(0);
-		$save['name'] = str_replace('<template_title>', $data_template['name'], $data_source_title);
-
-		$data_template_id = sql_save($save, 'data_template');
+	$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	$nested = $db_conn->inTransaction();
+	$complete = false;
+	$previous_error = isset($database_last_error) ? $database_last_error : '';
+	$database_last_error = '';
+	if ($nested ? !db_execute('SAVEPOINT duplicate_data_source') : !db_begin_transaction($db_conn)) {
+		return false;
 	}
 
-	unset($save);
-	unset($struct_data_source['data_source_path']);
+	try {
+		if (!empty($_local_data_id)) {
+			$data_local = db_fetch_row_prepared('SELECT *
+				FROM data_local
+				WHERE id = ?',
+				array($_local_data_id));
 
-	/* create new entry: data_template_data */
-	$save['id']                          = 0;
-	$save['local_data_id']               = (isset($local_data_id) ? $local_data_id : 0);
-	$save['local_data_template_data_id'] = (isset($data_template_data['local_data_template_data_id']) ? $data_template_data['local_data_template_data_id'] : 0);
-	$save['data_template_id']            = (!empty($_local_data_id) ? $data_template_data['data_template_id'] : $data_template_id);
-	$save['name_cache']                  = $data_template_data['name_cache'];
-
-	foreach ($struct_data_source as $field => $array) {
-		$save[$field] = $data_template_data[$field];
-
-		if ($array['flags'] != 'ALWAYSTEMPLATE') {
-			$save['t_' . $field] = $data_template_data['t_' . $field];
-		}
-	}
-
-	$data_template_data_id = sql_save($save, 'data_template_data');
-
-	/* create new entry(s): data_template_rrd */
-	if (cacti_sizeof($data_template_rrds)) {
-		foreach ($data_template_rrds as $data_template_rrd) {
-			unset($save);
-
-			$save['id']                         = 0;
-			$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
-			$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
-			$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
-
-			if ($save['local_data_id'] == 0) {
-				$save['hash'] = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
-			} else {
-				$save['hash'] = '';
+			if (!cacti_sizeof($data_local)) {
+				return false;
 			}
 
-			foreach ($struct_data_source_item as $field => $array) {
-				$save[$field] = $data_template_rrd[$field];
+			$data_template_data = db_fetch_row_prepared('SELECT *
+				FROM data_template_data
+				WHERE local_data_id = ?',
+				array($_local_data_id));
 
-				if (isset($data_template_rrd['t_' . $field])) {
-					$save['t_' . $field] = $data_template_rrd['t_' . $field];
+			if (!cacti_sizeof($data_template_data)) {
+				return false;
+			}
+
+			$data_template_rrds = db_fetch_assoc_prepared('SELECT *
+				FROM data_template_rrd
+				WHERE local_data_id = ?',
+				array($_local_data_id));
+
+			$data_input_datas   = db_fetch_assoc_prepared('SELECT *
+				FROM data_input_data
+				WHERE data_template_data_id = ?',
+				array($data_template_data['id']));
+
+			/* create new entry: data_local */
+			$save['id']               = 0;
+			$save['data_template_id'] = $data_local['data_template_id'];
+			$save['host_id']          = $data_local['host_id'];
+			$save['snmp_query_id']    = $data_local['snmp_query_id'];
+			$save['snmp_index']       = $data_local['snmp_index'];
+
+			$local_data_id = sql_save($save, 'data_local');
+			if ($local_data_id === false) {
+				return false;
+			}
+
+			$data_template_data['name'] = str_replace('<ds_title>', $data_template_data['name'], $data_source_title);
+		} elseif (!empty($_data_template_id)) {
+			$data_template = db_fetch_row_prepared('SELECT *
+				FROM data_template
+				WHERE id = ?',
+				array($_data_template_id));
+
+			if (!cacti_sizeof($data_template)) {
+				return false;
+			}
+
+			$data_template_data = db_fetch_row_prepared('SELECT *
+				FROM data_template_data
+				WHERE data_template_id = ?
+				AND local_data_id = 0',
+				array($_data_template_id));
+
+			if (!cacti_sizeof($data_template_data)) {
+				return false;
+			}
+
+			$data_template_rrds = db_fetch_assoc_prepared('SELECT *
+				FROM data_template_rrd
+				WHERE data_template_id = ?
+				AND local_data_id = 0',
+				array($_data_template_id));
+
+			$data_input_datas = db_fetch_assoc_prepared('SELECT *
+				FROM data_input_data
+				WHERE data_template_data_id = ?',
+				array($data_template_data['id']));
+
+			/* create new entry: data_template */
+			$save['id']   = 0;
+			$save['hash'] = get_hash_data_template(0);
+			$save['name'] = str_replace('<template_title>', $data_template['name'], $data_source_title);
+
+			$data_template_id = sql_save($save, 'data_template');
+			if ($data_template_id === false) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+
+		unset($save);
+
+		/* create new entry: data_template_data */
+		$save['id']                          = 0;
+		$save['local_data_id']               = (isset($local_data_id) ? $local_data_id : 0);
+		$save['local_data_template_data_id'] = (isset($data_template_data['local_data_template_data_id']) ? $data_template_data['local_data_template_data_id'] : 0);
+		$save['data_template_id']            = (!empty($_local_data_id) ? $data_template_data['data_template_id'] : $data_template_id);
+		$save['name_cache']                  = $data_template_data['name_cache'];
+
+		foreach ($struct_data_source as $field => $array) {
+			if ($field == 'data_source_path') {
+				continue;
+			}
+			$save[$field] = $data_template_data[$field];
+
+			if ($array['flags'] != 'ALWAYSTEMPLATE') {
+				$save['t_' . $field] = $data_template_data['t_' . $field];
+			}
+		}
+
+		$data_template_data_id = sql_save($save, 'data_template_data');
+		if ($data_template_data_id === false) {
+			return false;
+		}
+
+		/* create new entry(s): data_template_rrd */
+		if (cacti_sizeof($data_template_rrds)) {
+			foreach ($data_template_rrds as $data_template_rrd) {
+				unset($save);
+
+				$save['id']                         = 0;
+				$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
+				$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
+				$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
+
+				if ($save['local_data_id'] == 0) {
+					$save['hash'] = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
+				} else {
+					$save['hash'] = '';
+				}
+
+				foreach ($struct_data_source_item as $field => $array) {
+					$save[$field] = $data_template_rrd[$field];
+
+					if (isset($data_template_rrd['t_' . $field])) {
+						$save['t_' . $field] = $data_template_rrd['t_' . $field];
+					}
+				}
+
+				$data_template_rrd_id = sql_save($save, 'data_template_rrd');
+				if ($data_template_rrd_id === false) {
+					return false;
 				}
 			}
-
-			$data_template_rrd_id = sql_save($save, 'data_template_rrd');
 		}
-	}
 
-	/* create new entry(s): data_input_data */
-	if (cacti_sizeof($data_input_datas)) {
-		foreach ($data_input_datas as $data_input_data) {
-			db_execute_prepared('INSERT IGNORE INTO data_input_data
-				(data_input_field_id, data_template_data_id, t_value, value)
-				VALUES (?, ?, ?, ?)',
-				array($data_input_data['data_input_field_id'], $data_template_data_id, $data_input_data['t_value'], $data_input_data['value']));
+		/* create new entry(s): data_input_data */
+		if (cacti_sizeof($data_input_datas)) {
+			foreach ($data_input_datas as $data_input_data) {
+				if (!db_execute_prepared('INSERT INTO data_input_data
+					(data_input_field_id, data_template_data_id, t_value, value)
+					VALUES (?, ?, ?, ?)',
+					array($data_input_data['data_input_field_id'], $data_template_data_id, $data_input_data['t_value'], $data_input_data['value']))) {
+					return false;
+				}
+			}
 		}
-	}
 
-	if (!empty($_local_data_id)) {
-		update_data_source_title_cache($local_data_id);
-	}
+		if (!empty($_local_data_id)) {
+			update_data_source_title_cache($local_data_id, false);
+		}
 
-	if ($_local_data_id > 0) {
-		return $local_data_id;
-	} elseif ($_data_template_id > 0) {
+		// sql_save can return an id after a failed write on this branch.
+		if ($database_last_error != '') {
+			return false;
+		}
+		$complete = $nested ? db_execute('RELEASE SAVEPOINT duplicate_data_source') : db_commit_transaction($db_conn);
+		if (!$complete) {
+			return false;
+		}
+		if (!empty($_local_data_id)) {
+			if (!$nested) {
+				api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+			}
+			return $local_data_id;
+		}
 		return $data_template_id;
-	} else {
+	} catch (Throwable $error) {
+		cacti_log('ERROR: duplicate_data_source failed: ' . $error->getMessage(), false, 'WEBUI');
 		return false;
+	} finally {
+		if ($database_last_error == '') {
+			$database_last_error = $previous_error;
+		}
+		if (!$complete && $db_conn->inTransaction()) {
+			if ($nested) {
+				db_execute('ROLLBACK TO SAVEPOINT duplicate_data_source');
+				db_execute('RELEASE SAVEPOINT duplicate_data_source');
+			} else {
+				db_rollback_transaction($db_conn);
+			}
+		}
 	}
 }
 

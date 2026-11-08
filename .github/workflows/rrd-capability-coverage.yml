@@ -4,6 +4,15 @@ on:
   pull_request:
     paths:
       - 'lib/api_data_source.php'
+      - 'lib/api_automation.php'
+      - 'lib/api_tree.php'
+      - 'lib/template.php'
+      - 'lib/variables.php'
+      - 'data_sources.php'
+      - 'tests/fixtures/automation_*'
+      - 'tests/fixtures/template_propagation_probe.php'
+      - 'tests/integration/AutomationCreationIntegrationTest.php'
+      - 'tests/integration/TemplatePropagationIntegrationTest.php'
       - 'lib/boost.php'
       - 'lib/data_query.php'
       - 'lib/rrd.php'
@@ -65,7 +74,8 @@ jobs:
         run: |
           set -euo pipefail
           mariadb --host=127.0.0.1 --user=root cacti < cacti.sql
-          mariadb --host=127.0.0.1 --user=root -e 'CREATE DATABASE cacti_boost_contract'
+          mariadb --host=127.0.0.1 --user=root -e 'CREATE DATABASE cacti_boost_contract; CREATE DATABASE cacti_automation_test'
+          mariadb --host=127.0.0.1 --user=root cacti_automation_test < cacti.sql
           cp include/config.php.dist include/config.php
           sed -i "s/\$database_hostname = 'localhost';/\$database_hostname = '127.0.0.1';/" include/config.php
       - name: Validate the gate and include every changed production PHP file
@@ -81,6 +91,9 @@ jobs:
         env:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          CACTI_AUTOMATION_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=cacti_automation_test;charset=utf8mb4'
+          CACTI_AUTOMATION_TEST_USER: root
+          CACTI_AUTOMATION_TEST_PASSWORD: cactiroot
           BOOST_DB_HOST: 127.0.0.1
           BOOST_DB_PORT: 3306
           BOOST_DB_NAME: cacti_boost_contract

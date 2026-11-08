@@ -58,7 +58,8 @@ check($duplicates===0,'existing graphs must be filtered in bulk');
 $count=(int)$pdo->query('SELECT COUNT(*) FROM graph_local')->fetchColumn();
 check($count===$n+($mixed?3:0),'discovery creates only missing matching indexes: ' . json_encode($review_logs));
 if ($mixed) {
-	create_dq_graphs(1,1,['id'=>1,'name'=>'allinterfaces','snmp_query_id'=>1,'graph_type_id'=>1]);
+	$pdo->exec("INSERT INTO automation_match_rule_items (rule_id,rule_type,sequence,field,operator,pattern) VALUES (1," . AUTOMATION_RULE_TYPE_GRAPH_MATCH . ",1,'h.hostname'," . AUTOMATION_OP_MATCHES . ",'router-a')");
+	automation_update_device(1);
 	check((int)$pdo->query('SELECT COUNT(*) FROM graph_local')->fetchColumn()===$count, 'retry preserves graph identity');
 	check((int)$pdo->query('SELECT COUNT(*) FROM data_local')->fetchColumn()===3, 'three distinct string indexes have three sources');
 	check(!array_filter($review_hooks, fn($hook)=>$hook[1]),'DQ hooks run after commit');

@@ -30,26 +30,15 @@ $messages = [];
 $review_logs = [];
 $review_options = ['automation_tree_enabled' => 'on'];
 
+require_once dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
+
 function load_actual_functions($path, $names) {
-	$tokens = token_get_all(file_get_contents($path));
-	for ($i = 0; $i < count($tokens); $i++) {
-		if (!is_array($tokens[$i]) || $tokens[$i][0] !== T_FUNCTION) continue;
-		$j = $i + 1;
-		while (is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE) $j++;
-		if (!is_array($tokens[$j]) || !in_array($tokens[$j][1], $names, true)) continue;
-		$name = $tokens[$j][1];
-		$code = '';
-		$depth = 0;
-		$started = false;
-		for (; $i < count($tokens); $i++) {
-			$t = $tokens[$i];
-			$code .= is_array($t) ? $t[1] : $t;
-			if ($t === '{' || (is_array($t) && in_array($t[0], [T_CURLY_OPEN, T_DOLLAR_OPEN_CURLY_BRACES], true))) { $depth++; $started = true; }
-			if ($t === '}' && --$depth === 0 && $started) break;
+	foreach ($names as $name) {
+		if (!function_exists($name)) {
+			cacti_fixture_source_function($path, $name, '');
 		}
-		eval($code);
 	}
-	foreach ($names as $name) if (!function_exists($name)) throw new RuntimeException("Missing actual function $name");
 }
 
 function __($text, ...$args) { return $args ? vsprintf($text, $args) : $text; }

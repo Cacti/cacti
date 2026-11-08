@@ -99,14 +99,24 @@ if ($mode == 'graph' || $mode == 'graph-failure' || $mode == 'graph-interruption
 	$pdo->exec("INSERT INTO graph_tree (id,name,sort_type) VALUES (1,'immediate',$style),(2,'batched',$style)");
 	$insert=$pdo->prepare('INSERT INTO graph_templates_graph (local_graph_id,title_cache) VALUES (?,?)');
 	foreach (array('20', '3', '10', '2', '1') as $i=>$title) $insert->execute(array($i+1,$title));
+	$pdo->exec('DELETE FROM sites');
+	foreach (array('20', '3', '10', '2', '1') as $i=>$title) {
+		$pdo->exec("INSERT INTO host (id,hostname,description) VALUES (" . ($i+1) . ",'host', '$title')");
+		$pdo->exec("INSERT INTO sites (id,name) VALUES (" . ($i+1) . ",'$title')");
+	}
 	foreach (array(1,2) as $tree) {
 		$rule=array('tree_id'=>$tree, 'host_grouping_type'=>1);
 		$parent=create_header_node('Inherited', $rule, array('sort_type'=>0, 'propagate_changes'=>''),0);
 		create_graph_node(1,$parent,$rule);
 		if ($tree==2) { api_tree_sort_batch('begin'); api_tree_sort_batch('begin'); }
 		for ($id=2; $id<=5; $id++) create_graph_node($id,$parent,$rule);
+		for ($id=1; $id<=5; $id++) {
+			create_site_node($id,$parent,$rule);
+			create_device_node($id,$parent,$rule);
+		}
 		if ($tree==2) { api_tree_sort_batch('end'); api_tree_sort_batch('end'); }
-		$result[$tree==1?'immediate':'batched']=array_map('intval',$pdo->query("SELECT local_graph_id FROM graph_tree_items WHERE graph_tree_id=$tree AND local_graph_id>0 ORDER BY position")->fetchAll(PDO::FETCH_COLUMN));
+		$result[$tree==1?'immediate':'batched']=$pdo->query("SELECT local_graph_id,host_id,site_id,position FROM graph_tree_items WHERE graph_tree_id=$tree AND parent=$parent ORDER BY position")->fetchAll(PDO::FETCH_ASSOC);
+		check(count($result[$tree==1?'immediate':'batched'])===15,'all graph, site and device leaves survive sorting');
 	}
 } elseif ($mode == 'tree-scale') {
 	$n = (int) ($argv[2] ?? 200);

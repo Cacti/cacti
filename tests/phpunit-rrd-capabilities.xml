@@ -9,6 +9,8 @@
         <testsuite name="RrdCapabilities">
             <file>Unit/Core/Php85CompatibilityTest.php</file>
             <file>Unit/Core/ManagementSaveTest.php</file>
+            <file>integration/AutomationCreationIntegrationTest.php</file>
+            <file>integration/TemplatePropagationIntegrationTest.php</file>
             <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>
             <file>Unit/Core/Rrd/GraphPollTimeTest.php</file>
             <file>Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php</file>

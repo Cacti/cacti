@@ -33,6 +33,10 @@ function db_fetch_row_prepared($sql, $params = [], $log = true, $db_conn = false
 	return $rows[0] ?? [];
 }
 function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true, $db_conn = false) {
+	// SQLite has no connection advisory locks; concurrency is covered by the MariaDB suite.
+	if (str_contains($sql, 'GET_LOCK(') || str_contains($sql, 'RELEASE_LOCK(')) {
+		return 1;
+	}
 	$row = db_fetch_row_prepared($sql, $params, $log, $db_conn);
 
 	return $row ? ($col_name === '' ? reset($row) : $row[$col_name]) : false;
@@ -202,7 +206,7 @@ if (str_starts_with($scenario, 'device-')) {
 	foreach (['form_save', 'form_actions'] as $function) {
 		cacti_fixture_source_function($root . '/sites.php', $function, __NAMESPACE__);
 	}
-	foreach (['api_tree_delete_node', 'api_tree_parse_node_data'] as $function) {
+	foreach (['api_tree_delete_node', 'api_tree_parse_node_data', 'api_tree_acquire_write_lock', 'api_tree_release_write_lock'] as $function) {
 		cacti_fixture_source_function($root . '/lib/api_tree.php', $function, __NAMESPACE__);
 	}
 	$request = ['save_component_site' => 1, 'id' => 1, 'name' => 'New Site', 'address1' => '', 'address2' => '', 'city' => '', 'state' => '', 'postal_code' => '', 'country' => '', 'timezone' => 'UTC', 'latitude' => '', 'longitude' => '', 'zoom' => '12', 'alternate_id' => '', 'notes' => 'Updated'];

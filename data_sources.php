@@ -232,6 +232,20 @@ function form_save() {
 		get_filter_request_var('_data_template_id');
 		/* ==================================================== */
 
+		global $database_last_error;
+		$template_transaction = false;
+		$change_template = get_request_var('data_template_id') != get_request_var('_data_template_id');
+		if ($change_template) {
+			// The form saves metadata and RRD items before applying template ancestry.
+			// Keep those writes together if compatibility validation or propagation fails.
+			$database_last_error = '';
+			$template_transaction = db_begin_transaction();
+			if (!$template_transaction) {
+				$_SESSION['sess_error_fields']['data_template_id'] = 'data_template_id';
+				raise_message(2);
+			}
+		}
+
 		$save1['id']               = get_filter_request_var('local_data_id');
 		$save1['data_template_id'] = get_filter_request_var('data_template_id');
 		$save1['host_id']          = get_filter_request_var('host_id');
@@ -339,11 +353,30 @@ function form_save() {
 		if (!is_error_message()) {
 			if (get_request_var('data_template_id') != get_request_var('_data_template_id')) {
 				/* update all necessary template information */
-				change_data_template($local_data_id, get_request_var('data_template_id'));
+				if (!change_data_template($local_data_id, get_request_var('data_template_id'))) {
+					$_SESSION['sess_error_fields']['data_template_id'] = 'data_template_id';
+					raise_message(2);
+				}
 			} elseif (!isempty_request_var('data_template_id')) {
 				update_data_source_data_query_cache($local_data_id);
 			}
 
+		}
+
+		if ($template_transaction) {
+			if (is_error_message() || $database_last_error != '') {
+				db_rollback_transaction();
+				unset($_SESSION['sess_messages'][1]);
+				$_SESSION['sess_error_fields']['data_template_id'] = 'data_template_id';
+				raise_message(2);
+			} elseif (!db_commit_transaction()) {
+				unset($_SESSION['sess_messages'][1]);
+				$_SESSION['sess_error_fields']['data_template_id'] = 'data_template_id';
+				raise_message(2);
+			}
+		}
+
+		if (!is_error_message()) {
 			if (get_request_var('host_id') != get_request_var('_host_id')) {
 				/* push out all necessary host information */
 				push_out_host(get_request_var('host_id'), $local_data_id);

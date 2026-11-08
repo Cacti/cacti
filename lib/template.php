@@ -85,79 +85,25 @@ function push_out_data_source_custom_data($data_template_id) {
 		'id', array('type_code', 'value', 't_value')
 	);
 
-	/* which data_input_fields are templated? */
-	if (cacti_sizeof($template_input_fields)) {
-		$dif_in_str = ' AND dif.id IN (' . implode(', ', array_keys($template_input_fields)) . ')';
-	} else {
-		$dif_in_str = '';
+	if (!cacti_sizeof($template_input_fields)) {
+		return;
 	}
 
-	/**
-	 * pull out all templated 'input' values from all related data sources
-	 * unfortunately, you can't simply provide the same test as above
-	 * all input fields not related to a template ALWAYS are marked with t_value = NULL
-	 * so we will verify against the list of data_input_field id's taken from above
-	 */
-	$input_fields = db_fetch_assoc_prepared("SELECT dtd.id AS data_template_data_id,
-		dif.id, dif.type_code, did.value, did.t_value
-		FROM data_input_fields AS dif
-		INNER JOIN data_input_data AS did
-		ON dif.id = did.data_input_field_id
-		INNER JOIN data_template_data AS dtd
-		ON dtd.id = did.data_template_data_id
-		WHERE (dif.input_output = 'in')
-		$dif_in_str
-		$exclude_sql_where
-		AND (did.t_value='' OR did.t_value IS NULL)
-		AND (dtd.local_data_template_data_id = ?)",
-		array($data_template_data['id']));
-
-	$ds_cnt    = 0;
-	$did_cnt   = 0;
-	$ds_in_str = '';
-	$did_vals  = '';
-	if (cacti_sizeof($data_sources)) {
-		foreach ($data_sources as $data_source) {
-			if (cacti_sizeof($input_fields)) {
-				foreach ($input_fields as $input_field) {
-					if ($data_source['id'] == $input_field['data_template_data_id'] &&
-						isset($template_input_fields[$input_field['id']])) {
-						/**
-						 * do not push out 'host fields'.  This list should never match as we have already
-						 * excluded these special types codes.  However, we will maintain for reference.
-						 */
-						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
-							/* this is not a 'host field', so we should either push out the value if it is templated */
-							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
-							$did_cnt++;
-						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
-							/* templated input field deviates from current data source, so update required */
-							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
-							$did_cnt++;
-						}
-					}
-				}
-			}
-
-			/* create large inserts to reduce turns */
-			$ds_in_str .= ($ds_cnt == 0 ? '(':',') . $data_source['id'];
-			$ds_cnt++;
-
-			/* per 1000 data source, update rows */
-			if ($ds_cnt % 1000 == 0) {
-				$ds_in_str .= ')';
-				push_out_data_source_templates($did_vals, $ds_in_str);
-				$ds_cnt    = 0;
-				$did_cnt   = 0;
-				$ds_in_str = '';
-				$did_vals  = '';
-			}
-		}
-	}
-
-	if ($ds_cnt > 0) {
-		$ds_in_str .= ')';
-		push_out_data_source_templates($did_vals, $ds_in_str);
+	// The parent's flags own inheritance. A child may be missing a row or still
+	// carry the override flag from an earlier version of the template.
+	$field_ids = implode(',', array_map('intval', array_keys($template_input_fields)));
+	foreach (array_chunk($data_sources, 1000) as $sources) {
+		$source_ids = implode(',', array_map('intval', array_column($sources, 'id')));
+		db_execute_prepared("INSERT INTO data_input_data
+			(data_input_field_id, data_template_data_id, t_value, value)
+			SELECT parent.data_input_field_id, child.id, '', parent.value
+			FROM data_template_data AS child
+			CROSS JOIN data_input_data AS parent
+			WHERE child.id IN ($source_ids)
+			AND parent.data_template_data_id = ?
+			AND parent.data_input_field_id IN ($field_ids)
+			ON DUPLICATE KEY UPDATE t_value = VALUES(t_value), value = VALUES(value)",
+			array($data_template_data['id']));
 	}
 }
 
@@ -299,131 +245,208 @@ function data_input_field_always_checked($data_input_field_id = 0, $return_ids =
  * @param int $data_template_id Id the of the data template to change to. specify '0' for no.
  * @param array $profile A structure of data source profile attributes data template.
  *
- * @return void No value is returned.
+ * @return bool True on success, false if the template is incompatible or a write fails.
  */
 function change_data_template($local_data_id, $data_template_id, $profile = array()) {
 	global $struct_data_source, $struct_data_source_item;
+	global $database_sessions, $database_hostname, $database_port, $database_default, $database_last_error;
 
-	/* always update tables to new data template (or no data template) */
-	db_execute_prepared('UPDATE data_local
-		SET data_template_id = ? WHERE id = ?',
-		array($data_template_id, $local_data_id));
+	$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	$nested = $db_conn->inTransaction();
+	$complete = false;
+	$previous_error = isset($database_last_error) ? $database_last_error : '';
+	$database_last_error = '';
+	if ($nested ? !db_execute('SAVEPOINT change_data_template') : !db_begin_transaction($db_conn)) {
+		return false;
+	}
 
-	/* get data about the template and the data source */
-	$data = db_fetch_row_prepared('SELECT *
-		FROM data_template_data
-		WHERE local_data_id = ?' ,
-		array($local_data_id));
-
-	if ($data_template_id == 0) {
-		$template_data = $data;
-	} else {
-		$template_data = db_fetch_row_prepared('SELECT *
+	try {
+		/* get data about the template and the data source */
+		$data = db_fetch_row_prepared('SELECT *
 			FROM data_template_data
-			WHERE local_data_id = 0
-			AND data_template_id = ?',
-			array($data_template_id));
-	}
+			WHERE local_data_id = ?' ,
+			array($local_data_id));
 
-	/* determine if we are here for the first time, or coming back */
-	$exists = db_fetch_cell_prepared('SELECT local_data_template_data_id
-		FROM data_template_data
-		WHERE local_data_id = ?',
-		array($local_data_id));
+		if ($data_template_id == 0) {
+			$template_data = $data;
+		} else {
+			$template_data = db_fetch_row_prepared('SELECT *
+				FROM data_template_data
+				WHERE local_data_id = 0
+				AND data_template_id = ?',
+				array($data_template_id));
+		}
 
-	if (empty($exists)) {
-		$new_save = true;
-	} else {
-		$new_save = false;
-	}
+		$data_rrds_list = db_fetch_assoc_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE local_data_id = ?',
+			array($local_data_id));
 
-	/* some basic field values that ALL data sources should have */
-	$save['id']                          = (isset($data['id']) ? $data['id'] : 0);
-	$save['local_data_template_data_id'] = $template_data['id'];
-	$save['local_data_id']               = $local_data_id;
-	$save['data_template_id']            = $data_template_id;
+		if ($data_template_id == 0) {
+			$template_rrds_list = $data_rrds_list;
+		} else {
+			$template_rrds_list = db_fetch_assoc_prepared('SELECT *
+				FROM data_template_rrd
+				WHERE local_data_id = 0
+				AND data_template_id = ?',
+				array($data_template_id));
+		}
 
-	/* loop through the 'templated field names' to find to the rest... */
-	foreach ($struct_data_source as $field_name => $field_array) {
-		/* handle the data source profile */
-		if ($field_name == 'rrd_step' && cacti_sizeof($profile)) {
-			$save[$field_name] = $profile['step'];
-		} elseif ((isset($data[$field_name])) || (isset($template_data[$field_name]))) {
-			if ((!empty($template_data['t_' . $field_name])) && ($new_save == false)) {
-				$save[$field_name] = $data[$field_name];
-			} else {
-				$save[$field_name] = $template_data[$field_name];
+		if (!cacti_sizeof($template_data)) {
+			return false;
+		}
+
+		$template_rrds = array();
+		foreach ($template_rrds_list as $item) {
+			if (isset($template_rrds[$item['data_source_name']])) {
+				return false;
+			}
+			$template_rrds[$item['data_source_name']] = $item;
+		}
+		if (cacti_sizeof($data_rrds_list)) {
+			$names = array_column($data_rrds_list, 'data_source_name');
+			if (count(array_unique($names)) != count($names) ||
+				count($names) != count($template_rrds) || array_diff($names, array_keys($template_rrds))) {
+				return false;
 			}
 		}
-	}
 
-	/* these fields should never be overwritten by the template */
-	$save['data_source_path'] = (isset($data['data_source_path']) ? $data['data_source_path']:'');;
+		if (!db_execute_prepared('UPDATE data_local SET data_template_id = ? WHERE id = ?',
+			array($data_template_id, $local_data_id))) {
+			return false;
+		}
 
-	$data_template_data_id = sql_save($save, 'data_template_data');
+		/* determine if we are here for the first time, or coming back */
+		$exists = db_fetch_cell_prepared('SELECT local_data_template_data_id
+			FROM data_template_data
+			WHERE local_data_id = ?',
+			array($local_data_id));
 
-	$data_rrds_list = db_fetch_assoc_prepared('SELECT *
-		FROM data_template_rrd
-		WHERE local_data_id = ?',
-		array($local_data_id));
+		if (empty($exists)) {
+			$new_save = true;
+		} else {
+			$new_save = false;
+		}
 
-	if ($data_template_id == 0) {
-		$template_rrds_list = $data_rrds_list;
-	} else {
-		$template_rrds_list = db_fetch_assoc_prepared('SELECT *
-			FROM data_template_rrd
-			WHERE local_data_id = 0
-			AND data_template_id = ?',
-			array($data_template_id));
-	}
+		/* some basic field values that ALL data sources should have */
+		$save['id']                          = (isset($data['id']) ? $data['id'] : 0);
+		$save['local_data_template_data_id'] = $data_template_id == 0 ? 0 : $template_data['id'];
+		$save['local_data_id']               = $local_data_id;
+		$save['data_template_id']            = $data_template_id;
 
-	if (cacti_sizeof($data_rrds_list)) {
-		/* this data source already has 'child' items */
-	} else {
-		/* this data source does NOT have 'child' items; loop through each item in the template
-		and write it exactly to each item */
-		if (cacti_sizeof($template_rrds_list)) {
-			foreach ($template_rrds_list as $template_rrd) {
-				unset($save);
+		/* loop through the 'templated field names' to find to the rest... */
+		foreach ($struct_data_source as $field_name => $field_array) {
+			/* handle the data source profile */
+			if ($field_name == 'rrd_step' && cacti_sizeof($profile)) {
+				$save[$field_name] = $profile['step'];
+			} elseif ((isset($data[$field_name])) || (isset($template_data[$field_name]))) {
+				if ((!empty($template_data['t_' . $field_name])) && ($new_save == false)) {
+					$save[$field_name] = $data[$field_name];
+				} else {
+					$save[$field_name] = $template_data[$field_name];
+				}
+			}
+		}
 
-				$save['id'] = 0;
-				$save['local_data_template_rrd_id'] = $template_rrd['id'];
-				$save['local_data_id']              = $local_data_id;
-				$save['data_template_id']           = $template_rrd['data_template_id'];
+		/* these fields should never be overwritten by the template */
+		$save['data_source_path'] = (isset($data['data_source_path']) ? $data['data_source_path']:'');
 
+		$data_template_data_id = sql_save($save, 'data_template_data');
+		if ($data_template_data_id === false) {
+			return false;
+		}
+
+		if (cacti_sizeof($data_rrds_list)) {
+			foreach ($data_rrds_list as $item) {
+				$template_rrd = $template_rrds[$item['data_source_name']];
+				$save = array(
+					'id' => $item['id'],
+					'data_template_id' => $data_template_id,
+					'local_data_template_rrd_id' => $data_template_id == 0 ? 0 : $template_rrd['id']
+				);
 				foreach ($struct_data_source_item as $field_name => $field_array) {
-					/* handle the data source profile */
 					if ($field_name == 'rrd_heartbeat' && cacti_sizeof($profile)) {
 						$save[$field_name] = $profile['heartbeat'];
-					} else {
+					} elseif (isset($template_rrd[$field_name]) && empty($template_rrd['t_' . $field_name])) {
 						$save[$field_name] = $template_rrd[$field_name];
 					}
 				}
+				if (sql_save($save, 'data_template_rrd') === false) {
+					return false;
+				}
+			}
+		} else {
+			/* this data source does NOT have 'child' items; loop through each item in the template
+			and write it exactly to each item */
+			if (cacti_sizeof($template_rrds_list)) {
+				foreach ($template_rrds_list as $template_rrd) {
+					unset($save);
 
-				sql_save($save, 'data_template_rrd');
+					$save['id'] = 0;
+					$save['local_data_template_rrd_id'] = $template_rrd['id'];
+					$save['local_data_id']              = $local_data_id;
+					$save['data_template_id']           = $template_rrd['data_template_id'];
+
+					foreach ($struct_data_source_item as $field_name => $field_array) {
+						/* handle the data source profile */
+						if ($field_name == 'rrd_heartbeat' && cacti_sizeof($profile)) {
+							$save[$field_name] = $profile['heartbeat'];
+						} else {
+							$save[$field_name] = $template_rrd[$field_name];
+						}
+					}
+
+					if (sql_save($save, 'data_template_rrd') === false) {
+						return false;
+					}
+				}
 			}
 		}
-	}
 
-	/* make sure to copy down script data (data_input_data) as well */
-	$data_input_data = db_fetch_assoc_prepared('SELECT data_input_field_id, t_value, value
-		FROM data_input_data
-		WHERE data_template_data_id = ?',
-		array($template_data['id']));
+		/* make sure to copy down script data (data_input_data) as well */
+		$data_input_data = db_fetch_assoc_prepared('SELECT data_input_field_id, t_value, value
+			FROM data_input_data
+			WHERE data_template_data_id = ?',
+			array($template_data['id']));
 
-	/* this section is before most everything else so we can determine if this is a new save, by checking
-	the status of the 'local_data_template_data_id' column */
-	if (cacti_sizeof($data_input_data)) {
-		foreach ($data_input_data as $item) {
-			/**
-			 * always propagate on a new save, only propagate templated fields thereafter
-			 * noting that always checked should not be propagated after the initial save.
-			 */
-			if ($new_save == true || (empty($item['t_value']) && !data_input_field_always_checked($item['data_input_field_id']))) {
-				db_execute_prepared('REPLACE INTO data_input_data
-					(data_input_field_id, data_template_data_id, t_value, value)
-					VALUES (?, ?, ?, ?)',
-					array($item['data_input_field_id'], $data_template_data_id, $item['t_value'], $item['value']));
+		/* this section is before most everything else so we can determine if this is a new save, by checking
+		the status of the 'local_data_template_data_id' column */
+		if (cacti_sizeof($data_input_data)) {
+			foreach ($data_input_data as $item) {
+				/**
+				 * always propagate on a new save, only propagate templated fields thereafter
+				 * noting that always checked should not be propagated after the initial save.
+				 */
+				if ($new_save == true || (empty($item['t_value']) && !data_input_field_always_checked($item['data_input_field_id']))) {
+					if (!db_execute_prepared('REPLACE INTO data_input_data
+						(data_input_field_id, data_template_data_id, t_value, value)
+						VALUES (?, ?, ?, ?)',
+						array($item['data_input_field_id'], $data_template_data_id, $item['t_value'], $item['value']))) {
+						return false;
+					}
+				}
+			}
+		}
+
+		// sql_save can return an id after a failed write on this branch.
+		if ($database_last_error != '') {
+			return false;
+		}
+		$complete = $nested ? db_execute('RELEASE SAVEPOINT change_data_template') : db_commit_transaction($db_conn);
+		return $complete;
+	} catch (Throwable $error) {
+		cacti_log('ERROR: change_data_template failed: ' . $error->getMessage(), false, 'WEBUI');
+		return false;
+	} finally {
+		if ($database_last_error == '') {
+			$database_last_error = $previous_error;
+		}
+		if (!$complete && $db_conn->inTransaction()) {
+			if ($nested) {
+				db_execute('ROLLBACK TO SAVEPOINT change_data_template');
+				db_execute('RELEASE SAVEPOINT change_data_template');
+			} else {
+				db_rollback_transaction($db_conn);
 			}
 		}
 	}
@@ -825,125 +848,50 @@ function resequence_graphs_simple($graph_template_id) {
  * @return bool True on success, false otherwise.
  */
 function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = false) {
-	static $repairs = 0;
-	static $template_item_ids = array();
-
-	$template_items = db_fetch_assoc_prepared('SELECT *
-		FROM graph_templates_item
-		WHERE graph_template_id = ?
-		AND local_graph_id = 0
-		ORDER BY id',
-		array($graph_template_id));
-
-	$local_graphs = array();
-
-	// If force is enabled, we are also doing a repair
+	$template_items = array_rekey(db_fetch_assoc_prepared('SELECT id, sequence
+		FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0',
+		array($graph_template_id)), 'id', 'sequence');
+	$params = array($graph_template_id);
+	$where = '';
 	if ($local_graph_id > 0) {
-		$local_graphs[$local_graph_id] = $local_graph_id;
-	} elseif ($local_graph_id == 0) {
-		$local_graphs = array_rekey(
-			db_fetch_assoc_prepared('SELECT id
-				FROM graph_local
-				WHERE graph_template_id = ?',
-				array($graph_template_id)),
-			'id', 'id'
-		);
+		$where = ' AND local_graph_id = ?';
+		$params[] = $local_graph_id;
+	}
+	$items = db_fetch_assoc_prepared('SELECT id, local_graph_id, local_graph_template_item_id, sequence
+		FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id > 0' . $where . '
+		ORDER BY local_graph_id, id', $params);
+	$seen = array();
+	$deletes = array();
+	$repairs = 0;
+	foreach ($items as $item) {
+		$parent = $item['local_graph_template_item_id'];
+		$graph = $item['local_graph_id'];
+		if ($force && (!isset($template_items[$parent]) || isset($seen[$graph][$parent]))) {
+			$deletes[] = $item['id'];
+			$repairs++;
+		} elseif (isset($template_items[$parent]) && $item['sequence'] != $template_items[$parent]) {
+			$repairs++;
+		}
+		$seen[$graph][$parent] = true;
+	}
+	foreach (array_chunk($deletes, 1000) as $ids) {
+		db_execute('DELETE FROM graph_templates_item WHERE id IN (' . implode(',', array_map('intval', $ids)) . ')');
 	}
 
-	if (cacti_sizeof($local_graphs)) {
-		// Put all the template item ids into an array
-		if (!isset($template_item_ids[$graph_template_id])) {
-			foreach($template_items as $item) {
-				$template_item_ids[$graph_template_id][] = $item['id'];
-			}
-		}
-
-		foreach($local_graphs as $local_graph_id) {
-			if ($local_graph_id > 0 && $force) {
-				$graph_items = db_fetch_assoc_prepared('SELECT *
-					FROM graph_templates_item
-					WHERE local_graph_id = ?
-					ORDER BY sequence, id',
-					array($local_graph_id));
-
-				$deletes = array();
-
-				if (cacti_sizeof($graph_items) != cacti_sizeof($template_items)) {
-					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $local_graph_id, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
-
-					// First search the graph_items list for items that don't exist in the template
-					foreach($graph_items as $gitem) {
-						$found = false;
-
-						if (!in_array($gitem['local_graph_template_item_id'], $template_item_ids[$graph_template_id], true)) {
-							$deletes[] = $gitem['id'];
-							$repairs++;
-						}
-					}
-
-					// Next search for duplicated local_graph_template_item_id's and remove the most
-					// recent one basically repairing the graph
-					foreach($template_items as $item) {
-						$found  = false;
-						$search = $item['id'];
-
-						// If we find a duplicate of any local_graph_template_item_id delete
-						// the most recent
-						foreach($graph_items as $gitem) {
-							// If we have a match, mark 'found'.  If we have a second or more
-							// matches, then remove that one
-							if ($gitem['local_graph_template_item_id'] == $search) {
-								if ($found) {
-									$deletes[] = $gitem['id'];
-									$repairs++;
-								}
-
-								$found = true;
-							}
-						}
-					}
-
-					if (cacti_sizeof($deletes)) {
-						db_execute_prepared('DELETE FROM graph_templates_item
-							WHERE id IN (' . implode(',', $deletes) . ')
-							AND local_graph_id = ?',
-							array($local_graph_id));
-					}
-				}
-			}
-		}
+	$params = array($graph_template_id);
+	$where = '';
+	if ($local_graph_id > 0) {
+		$where = ' AND child.local_graph_id = ?';
+		$params[] = $local_graph_id;
 	}
+	db_execute_prepared('UPDATE graph_templates_item AS child
+		INNER JOIN graph_templates_item AS parent ON parent.id = child.local_graph_template_item_id
+		AND parent.graph_template_id = child.graph_template_id AND parent.local_graph_id = 0
+		SET child.sequence = parent.sequence
+		WHERE child.graph_template_id = ? AND child.local_graph_id > 0
+		AND child.sequence <> parent.sequence' . $where, $params);
 
-	if (cacti_sizeof($template_items)) {
-		foreach($template_items as $item) {
-			if ($local_graph_id == -1) {
-				// Everything including the template
-				db_execute_prepared('UPDATE graph_templates_item
-					SET sequence = ?
-					WHERE graph_template_id = ?
-					AND local_graph_template_item_id = ?',
-					array($item['sequence'], $graph_template_id, $item['id']));
-			} elseif ($local_graph_id == 0) {
-				// Everything except the template
-				db_execute_prepared('UPDATE graph_templates_item
-					SET sequence = ?
-					WHERE graph_template_id = ?
-					AND local_graph_id > 0
-					AND local_graph_template_item_id = ?',
-					array($item['sequence'], $graph_template_id, $item['id']));
-			} else {
-				// Just the graph itself
-				db_execute_prepared('UPDATE graph_templates_item
-					SET sequence = ?
-					WHERE graph_template_id = ?
-					AND local_graph_id = ?
-					AND local_graph_template_item_id = ?',
-					array($item['sequence'], $graph_template_id, $local_graph_id, $item['id']));
-			}
-		}
-	}
-
-	$_SESSION['sess_gt_repairs'] = $repairs;
+	$_SESSION['sess_gt_repairs'] = (isset($_SESSION['sess_gt_repairs']) ? $_SESSION['sess_gt_repairs'] : 0) + $repairs;
 
 	return true;
 }
@@ -961,6 +909,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
  * @return void No value is returned.
  */
 function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_only = false) {
+	$_SESSION['sess_gt_repairs'] = 0;
 	if (!$sequence_only || $local_graph_id > 0) {
 		if ($local_graph_id == 0) {
 			$graphs = db_fetch_assoc_prepared('SELECT id
@@ -981,29 +930,33 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_on
 			}
 		}
 	} else {
-		$items = db_fetch_cell_prepared('SELECT COUNT(*)
-			FROM graph_templates_item
-			WHERE local_graph_id = 0
-			AND graph_template_id = ?',
-			array($graph_template_id));
-
-		$graphs = array_rekey(
-			db_fetch_assoc_prepared('SELECT local_graph_id, COUNT(*) AS items
-				FROM graph_templates_item
-				WHERE graph_template_id = ?
-				AND local_graph_id > 0
-				GROUP BY local_graph_id
-				HAVING items != ?',
-				array($graph_template_id, $items)),
-			'local_graph_id', 'local_graph_id'
-		);
-
-		if (cacti_sizeof($graphs)) {
-			foreach($graphs as $graph) {
-				resequence_graphs($graph_template_id, $graph, true);
-			}
-		}
+		// Correct counts do not imply correct order or unique template ancestry.
+		resequence_graphs($graph_template_id, 0, true);
 	}
+}
+
+/**
+ * Resolve a template RRD item only within sources already used by this graph.
+ * Multiple local instances of the same template require an explicit graph input.
+ */
+function graph_template_item_sources($local_graph_id) {
+	$items = db_fetch_assoc_prepared('SELECT DISTINCT child.id, parent.id AS template_item_id
+		FROM data_template_rrd AS child
+		INNER JOIN data_template_rrd AS parent
+		ON parent.id = child.local_data_template_rrd_id
+		AND parent.data_template_id = child.data_template_id
+		WHERE parent.local_data_id = 0 AND child.local_data_id > 0
+		AND child.local_data_id IN (
+			SELECT used.local_data_id FROM data_template_rrd AS used
+			INNER JOIN graph_templates_item AS gti ON gti.task_item_id = used.id
+			WHERE gti.local_graph_id = ?)', array($local_graph_id));
+	$sources = array();
+	foreach ($items as $item) {
+		$parent = $item['template_item_id'];
+		$sources[$parent] = isset($sources[$parent]) ? 0 : $item['id'];
+	}
+
+	return $sources;
 }
 
 /**
@@ -1114,6 +1067,14 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 		ORDER BY id',
 		array($local_graph_id));
 
+	$existing_items = array();
+	foreach ($graph_items_list as $item) {
+		if (!isset($existing_items[$item['local_graph_template_item_id']])) {
+			$existing_items[$item['local_graph_template_item_id']] = $item;
+		}
+	}
+	$source_items = graph_template_item_sources($local_graph_id);
+
 	if ($graph_template_id == 0) {
 		$template_items_list = $graph_items_list;
 	} else {
@@ -1139,15 +1100,9 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 			$save['sequence']                     = $template_item['sequence'];
 
 			/* go through the existing graph_items and look for the matching local_graph_template_item_id */
-			$found = false;
-			if (cacti_sizeof($graph_items_list) && $new_save == false) {
-				foreach($graph_items_list as $item) {
-					if ($item['local_graph_template_item_id'] == $template_item['id']) {
-						$found_item = $item;
-						$found = true;
-						break;
-					}
-				}
+			$found = !$new_save && isset($existing_items[$template_item['id']]);
+			if ($found) {
+				$found_item = $existing_items[$template_item['id']];
 			}
 
 			if ($found) {
@@ -1180,36 +1135,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 				/* no graph item at this position, tack it on */
 				$save['id'] = 0;
 
-				/* attempt to discover the task_item_id */
-				$local_data_ids = db_fetch_cell_prepared('SELECT
-					GROUP_CONCAT(DISTINCT local_data_id) AS ids
-					FROM data_template_rrd
-					WHERE id IN (
-						SELECT DISTINCT task_item_id
-						FROM graph_templates_item
-						WHERE local_graph_id = ?
-					)',
-					array($local_graph_id));
-
-				$data_source_name = db_fetch_cell_prepared('SELECT data_source_name
-					FROM data_template_rrd WHERE id = ?',
-					array($template_item['task_item_id']));
-
-				if ($data_source_name != '' && $local_data_ids != '') {
-					$task_item_id = db_fetch_cell_prepared('SELECT DISTINCT id
-						FROM data_template_rrd
-						WHERE local_data_id IN (' . $local_data_ids . ')
-						AND data_source_name = ?
-						LIMIT 1', array($data_source_name));
-
-					if (!empty($task_item_id)) {
-						$save['task_item_id'] = $task_item_id;
-					} else {
-						$save['task_item_id'] = 0;
-					}
-				} else {
-					$save['task_item_id'] = 0;
-				}
+				$save['task_item_id'] = isset($source_items[$template_item['task_item_id']]) ? $source_items[$template_item['task_item_id']] : 0;
 
 				foreach($template_item as $column => $value) {
 					switch($column) {
@@ -1281,38 +1207,46 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 		ORDER BY id',
 		array($graph_template_id, $graph_template_item_id));
 
-	if (!$task_item_changed) {
-		if (cacti_sizeof($template_items_list)) {
-			foreach ($template_items_list as $template_item) {
-				foreach($template_item as $column => $value) {
-					switch($column) {
-						case 'color_id':
-						case 'alpha':
-						case 'graph_type_id':
-						case 'line_width':
-						case 'dashes':
-						case 'dash_offset':
-						case 'cdef_id':
-						case 'vdef_id':
-						case 'shift':
-						case 'consolidation_function_id':
-						case 'textalign':
-						case 'text_format':
-						case 'value':
-						case 'hard_return':
-						case 'gprint_id':
-							db_execute_prepared("UPDATE graph_templates_item
-								SET $column = ?
-								WHERE local_graph_template_item_id = ?",
-								array($value, $graph_template_item_id));
+	$input_columns = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT gti.column_name
+		FROM graph_template_input AS gti
+		INNER JOIN graph_template_input_defs AS defs ON defs.graph_template_input_id = gti.id
+		WHERE defs.graph_template_item_id = ?', array($graph_template_item_id)), 'column_name', 'column_name');
+
+	if (cacti_sizeof($template_items_list)) {
+		foreach ($template_items_list as $template_item) {
+			foreach($template_item as $column => $value) {
+				switch($column) {
+					case 'color_id':
+					case 'alpha':
+					case 'graph_type_id':
+					case 'line_width':
+					case 'dashes':
+					case 'dash_offset':
+					case 'cdef_id':
+					case 'vdef_id':
+					case 'shift':
+					case 'consolidation_function_id':
+					case 'textalign':
+					case 'text_format':
+					case 'value':
+					case 'hard_return':
+					case 'gprint_id':
+						if (isset($input_columns[$column])) {
 							break;
-						default:
-							break;
-					}
+						}
+						db_execute_prepared("UPDATE graph_templates_item
+							SET $column = ?
+							WHERE local_graph_template_item_id = ?",
+							array($value, $graph_template_item_id));
+						break;
+					default:
+						break;
 				}
 			}
 		}
-	} else {
+	}
+
+	if ($task_item_changed) {
 		if (!cacti_sizeof($cols)) {
 			$cols = db_get_table_column_types('graph_templates_item');
 		}
@@ -1327,6 +1261,7 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 
 		if (cacti_sizeof($graphs)) {
 			foreach($graphs as $local_graph_id) {
+				$source_items = graph_template_item_sources($local_graph_id);
 				$graph_items_list = db_fetch_assoc_prepared('SELECT *
 					FROM graph_templates_item
 					WHERE local_graph_id = ?
@@ -1384,36 +1319,7 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 							/* no graph item at this position, tack it on */
 							$save['id'] = 0;
 
-							/* attempt to discover the task_item_id */
-							$local_data_ids = db_fetch_cell_prepared('SELECT
-								GROUP_CONCAT(DISTINCT local_data_id) AS ids
-								FROM data_template_rrd
-								WHERE id IN (
-									SELECT DISTINCT task_item_id
-									FROM graph_templates_item
-									WHERE local_graph_id = ?
-								)',
-								array($local_graph_id));
-
-							$data_source_name = db_fetch_cell_prepared('SELECT data_source_name
-								FROM data_template_rrd WHERE id = ?',
-								array($template_item['task_item_id']));
-
-							if ($data_source_name != '' && $local_data_ids != '') {
-								$task_item_id = db_fetch_cell_prepared('SELECT DISTINCT id
-									FROM data_template_rrd
-									WHERE local_data_id IN (' . $local_data_ids . ')
-									AND data_source_name = ?
-									LIMIT 1', array($data_source_name));
-
-								if (!empty($task_item_id)) {
-									$save['task_item_id'] = $task_item_id;
-								} else {
-									$save['task_item_id'] = 0;
-								}
-							} else {
-								$save['task_item_id'] = 0;
-							}
+							$save['task_item_id'] = isset($source_items[$template_item['task_item_id']]) ? $source_items[$template_item['task_item_id']] : 0;
 
 							foreach($template_item as $column => $value) {
 								switch($column) {
@@ -1776,7 +1682,7 @@ function create_graph_from_template($graph_template_id, $host_id, $snmp_query_ar
 			}
 
 			if (cacti_sizeof($previous_data_source)) {
-				$use_previous_data = create_graph_custom_data_compatible($suggested_vals, $previous_data_source);
+				$use_previous_data = create_graph_custom_data_compatible(isset($suggested_vals[$graph_template_id]) ? array($graph_template_id => $suggested_vals[$graph_template_id]) : array(), $previous_data_source);
 			} else {
 				$use_previous_data = false;
 			}
@@ -1841,7 +1747,9 @@ function create_graph_from_template($graph_template_id, $host_id, $snmp_query_ar
 					$profile    = array();
 				}
 
-				change_data_template($cache_array['local_data_id'][$data_template['id']], $data_template['id'], $profile);
+				if (!change_data_template($cache_array['local_data_id'][$data_template['id']], $data_template['id'], $profile)) {
+					return false;
+				}
 
 				$data_template_data_id = db_fetch_cell_prepared('SELECT id
 					FROM data_template_data
@@ -2050,232 +1958,66 @@ function create_graph_from_template($graph_template_id, $host_id, $snmp_query_ar
  * @return bool Bool.
  */
 function create_graph_custom_data_compatible($suggested_vals, $previous_data_source) {
-	$compatible = true;
-
 	if (!cacti_sizeof($suggested_vals)) {
-		return $compatible;
+		return true;
 	}
 
-	foreach($suggested_vals as $template => $items) {
-		if (cacti_sizeof($items)) {
-			foreach($items as $type => $item) {
-				if (read_config_option('data_source_trace') == 'on') {
-					cacti_log('Type: "' . $type . '"', false, 'DSTRACE');
-					cacti_log('Item Keys: "' . implode('", "', array_keys($item)) . '"', false, 'DSTRACE');
+	$data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id = ?',
+		array($previous_data_source['id']));
+	if (!cacti_sizeof($data)) {
+		return false;
+	}
+	$rrds = array_column(db_fetch_assoc_prepared('SELECT parent.id AS template_item_id, child.*
+		FROM data_template_rrd AS parent
+		LEFT JOIN data_template_rrd AS child
+		ON child.local_data_template_rrd_id = parent.id AND child.local_data_id = ?
+		WHERE parent.data_template_id = ? AND parent.local_data_id = 0',
+		array($previous_data_source['id'], $data['data_template_id'])), null, 'template_item_id');
+	$custom = array_rekey(db_fetch_assoc_prepared('SELECT data_input_field_id, value
+		FROM data_input_data WHERE data_template_data_id = ?', array($data['id'])), 'data_input_field_id', 'value');
+
+	foreach ($suggested_vals as $items) {
+		// Older callers group overrides by template/item id before the type.
+		$groups = array();
+		foreach ($items as $type => $item) {
+			if (is_numeric($type)) {
+				foreach ($item as $kind => $values) {
+					$groups[] = array($kind, $type, $values);
 				}
-
-				foreach($item as $key => $values) {
-					if ($type == 'data_template') {
-						if (read_config_option('data_source_trace') == 'on') {
-							cacti_log('Item Element Key1: "' . $key . '"', false, 'DSTRACE');
-						}
-
-						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
-								if (read_config_option('data_source_trace') == 'on') {
-									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
-									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
-								}
-
-								$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
-									FROM data_template_data
-									WHERE local_data_id = ?
-									AND `$vkey` = ?",
-									array($previous_data_source['id'], $vvalue));
-
-								if (read_config_option('data_source_trace') == 'on') {
-									cacti_log('Previous Sub Element Value: "' . $previous_value . '"', false, 'DSTRACE');
-								}
-
-								if ($previous_value != $vvalue) {
-									if (read_config_option('data_source_trace') == 'on') {
-										cacti_log('Not Compatible', false, 'DSTRACE');
-									}
-
-									return false;
-								}
-							}
-						}
-					} elseif ($type == 'data_template_item') {
-						if (read_config_option('data_source_trace') == 'on') {
-							cacti_log('Item Element Key2: "' . $key . '"', false, 'DSTRACE');
-						}
-
-						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
-								if (read_config_option('data_source_trace') == 'on') {
-									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
-									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
-								}
-
-								$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
-									FROM data_template_rrd
-									WHERE local_data_id = ?
-									AND `$vkey` = ?",
-									array($previous_data_source['id'], $vvalue));
-
-								if (read_config_option('data_source_trace') == 'on') {
-									cacti_log('Previous Sub Element Value: "' . $previous_value . '"', false, 'DSTRACE');
-								}
-
-								if ($previous_value != $vvalue) {
-									if (read_config_option('data_source_trace') == 'on') {
-										cacti_log('Not Compatible', false, 'DSTRACE');
-									}
-
-									return false;
-								}
-							}
-						}
-					} elseif ($type == 'custom_data') {
-						if (read_config_option('data_source_trace') == 'on') {
-							cacti_log('Item Element Key3: "' . $key . '"', false, 'DSTRACE');
-						}
-
-						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
-								if (read_config_option('data_source_trace') == 'on') {
-									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
-									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
-								}
-
-								$data_template_data_id = db_fetch_cell_prepared('SELECT id
-									FROM data_template_data
-									WHERE local_data_id = ?',
-									array($previous_data_source['id']));
-
-								$previous_value = db_fetch_cell_prepared("SELECT value
-									FROM data_input_data
-									WHERE data_template_data_id = ?
-									AND data_input_field_id = ?
-									AND value = ?",
-									array($data_template_data_id, $vkey, $vvalue));
-
-								if (read_config_option('data_source_trace') == 'on') {
-									cacti_log('Previous Sub Element Value: "' . $previous_value . '"', false, 'DSTRACE');
-								}
-
-								if ($previous_value != $vvalue) {
-									if (read_config_option('data_source_trace') == 'on') {
-										cacti_log('Not Compatible', false, 'DSTRACE');
-									}
-
-									return false;
-								}
-							}
-						}
-					} elseif (is_numeric($type)) {
-						if (cacti_sizeof($item)) {
-							foreach($item as $ftype => $fitem) {
-								if ($ftype == 'data_template') {
-									if (read_config_option('data_source_trace') == 'on') {
-										cacti_log('Item Element Key4: "' . $key . '"', false, 'DSTRACE');
-									}
-
-									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
-											if (read_config_option('data_source_trace') == 'on') {
-												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
-												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
-											}
-
-											$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
-												FROM data_template_data
-												WHERE local_data_id = ?
-												AND `$vkey` = ?",
-												array($previous_data_source['id'], $vvalue));
-
-											if (read_config_option('data_source_trace') == 'on') {
-												cacti_log('Previous Sub Element Value: "' . $previous_value . '"', false, 'DSTRACE');
-											}
-
-											if ($previous_value != $vvalue) {
-												if (read_config_option('data_source_trace') == 'on') {
-													cacti_log('Not Compatible', false, 'DSTRACE');
-												}
-
-												return false;
-											}
-										}
-									}
-								} elseif ($ftype == 'data_template_item') {
-									if (read_config_option('data_source_trace') == 'on') {
-										cacti_log('Item Element Key5: "' . $key . '"', false, 'DSTRACE');
-									}
-
-									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
-											if (read_config_option('data_source_trace') == 'on') {
-												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
-												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
-											}
-
-											$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
-												FROM data_template_rrd
-												WHERE local_data_id = ?
-												AND `$vkey` = ?",
-												array($previous_data_source['id'], $vvalue));
-
-											if (read_config_option('data_source_trace') == 'on') {
-												cacti_log('Previous Sub Element Value: "' . $previous_value . '"', false, 'DSTRACE');
-											}
-
-											if ($previous_value != $vvalue) {
-												if (read_config_option('data_source_trace') == 'on') {
-													cacti_log('Not Compatible', false, 'DSTRACE');
-												}
-
-												return false;
-											}
-										}
-									}
-								} elseif ($ftype == 'custom_data') {
-									if (read_config_option('data_source_trace') == 'on') {
-										cacti_log('Item Element Key6: "' . $key . '"', false, 'DSTRACE');
-									}
-
-									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
-											if (read_config_option('data_source_trace') == 'on') {
-												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
-												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
-											}
-
-											$data_template_data_id = db_fetch_cell_prepared('SELECT id
-												FROM data_template_data
-												WHERE local_data_id = ?',
-												array($previous_data_source['id']));
-
-											$previous_value = db_fetch_cell_prepared("SELECT value
-												FROM data_input_data
-												WHERE data_template_data_id = ?
-												AND data_input_field_id = ?
-												AND value = ?",
-												array($data_template_data_id, $vkey, $vvalue));
-
-											if (read_config_option('data_source_trace') == 'on') {
-												cacti_log('Previous Sub Element Value: "' . $previous_value . '"', false, 'DSTRACE');
-											}
-
-											if ($previous_value != $vvalue) {
-												if (read_config_option('data_source_trace') == 'on') {
-													cacti_log('Not Compatible', false, 'DSTRACE');
-												}
-
-												return false;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+			} else {
+				foreach ($item as $id => $values) {
+					$groups[] = array($type, $id, $values);
+				}
+			}
+		}
+		foreach ($groups as $group) {
+			list($type, $id, $values) = $group;
+			if ($type == 'data_template' || $type == 'custom_data') {
+				if ($id != $data['data_template_id']) {
+					continue;
+				}
+				$previous = $type == 'data_template' ? $data : $custom;
+			} elseif ($type == 'data_template_item') {
+				if (!isset($rrds[$id])) {
+					continue;
+				}
+				if (empty($rrds[$id]['id'])) {
+					return false;
+				}
+				$previous = $rrds[$id];
+			} else {
+				continue;
+			}
+			foreach ($values as $field => $value) {
+				// A missing row must not compare equal to a requested empty string or zero.
+				if (!array_key_exists($field, $previous) || (string)$previous[$field] !== (string)$value) {
+					return false;
 				}
 			}
 		}
 	}
 
-	return $compatible;
+	return true;
 }
 
 /**
