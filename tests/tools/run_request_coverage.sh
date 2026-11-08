@@ -48,6 +48,8 @@ run_php_probe tests/fixtures/SnmpAgentGlobalSettingsCoverage.php '^(lib/snmpagen
 
 run_php_probe tests/fixtures/Core/BoostSkipPastUpdates.php '^(lib/boost\.php|poller_boost\.php|tests/fixtures/Core/BoostSkipPastUpdates\.php)'
 
+run_php_probe tests/fixtures/Core/RrdVersionFallback.php '^(include/global_(arrays|settings)\.php|lib/functions\.php|tests/fixtures/Core/RrdVersionFallback\.php)'
+
 run_php_probe tests/fixtures/CmdBoostFlushRedirectCoverage.php '^(cmd\.php|tests/fixtures/CmdBoostFlushRedirectCoverage\.php)'
 
 run_php_probe tests/fixtures/ScriptServerLogMaskingCoverage.php '^(cmd\.php|script_server\.php|lib/poller\.php|tests/fixtures/ScriptServerLogMaskingCoverage\.php)'
