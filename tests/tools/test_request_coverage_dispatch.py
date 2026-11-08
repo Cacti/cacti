@@ -56,6 +56,11 @@ class RequestDispatchTest(unittest.TestCase):
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
+    def test_boost_flush_change_runs_the_skip_past_updates_probe(self):
+        for path in ['lib/boost.php', 'poller_boost.php', 'tests/fixtures/Core/BoostSkipPastUpdates.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'BoostSkipPastUpdates.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -89,7 +94,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'Core/BoostSkipPastUpdates.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
