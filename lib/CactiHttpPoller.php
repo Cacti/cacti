@@ -25,8 +25,10 @@ require_once __DIR__ . '/CactiHttpPollItem.php';
  * Items are grouped by device and endpoint so one request serves every data
  * source that reads from the same document, the same way Spine packs the
  * OIDs of one device into a single SNMP get.  At most $concurrency requests
- * are in flight at once.  Transport, redirect and destination checks are
- * cacti_http_multi()'s, so lib/functions.php must be loaded.
+ * are in flight to any one device, and MAX_CONCURRENCY across all of them,
+ * so one slow device does not hold up the rest.  Transport, redirect and
+ * destination checks are cacti_http_multi()'s, so lib/functions.php must be
+ * loaded.
  */
 final class CactiHttpPoller {
 	public const int DEFAULT_CONCURRENCY = 8;
@@ -38,7 +40,11 @@ final class CactiHttpPoller {
 	 * Destinations no item may reach, on the first request or after a redirect.
 	 *
 	 * Monitored devices live on private and loopback networks, so those stay
-	 * reachable.  The cloud instance metadata services hand out credentials
+	 * reachable.  That includes services on the Cacti host itself: anyone who
+	 * may edit a Device hostname or an HTTP Data Source can point the poller,
+	 * and the Data Source test in the web server, at them and read back any
+	 * numeric field they return.  Grant those permissions with that in mind.
+	 * The cloud instance metadata services hand out credentials
 	 * and no device is managed at their addresses.  blockedSubnets() adds the
 	 * IPv4-mapped and NAT64 spelling of every IPv4 entry.
 	 */
@@ -52,7 +58,7 @@ final class CactiHttpPoller {
 	];
 
 	/**
-	 * @param int $concurrency upper bound on requests in flight
+	 * @param int $concurrency upper bound on requests in flight to one device
 	 * @param int $maxBytes    responses larger than this are abandoned
 	 */
 	public function __construct(
@@ -129,13 +135,13 @@ final class CactiHttpPoller {
 			$key = $item->endpointKey;
 
 			if (!isset($requests[$key]) || $requests[$key]['options']['timeout'] < $item->timeout) {
-				$requests[$key] = ['method' => 'GET', 'url' => $item->url, 'options' => ['timeout' => $item->timeout] + $options];
+				$requests[$key] = ['method' => 'GET', 'url' => $item->url, 'group' => $item->hostId, 'options' => ['timeout' => $item->timeout] + $options];
 			}
 		}
 
 		$documents = [];
 
-		foreach (cacti_http_multi($requests, $this->concurrency) as $key => $result) {
+		foreach (cacti_http_multi($requests, self::MAX_CONCURRENCY, $this->concurrency) as $key => $result) {
 			$key = (string) $key;
 
 			if (!$result['success']) {

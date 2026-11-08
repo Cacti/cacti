@@ -312,12 +312,12 @@ if ($active_profiles != 1) {
 	}));
 }
 
-// one request per device and endpoint, issued before that device's items are walked
+// one request per device and endpoint, all issued together before the device walk
 $http_items = [];
 
 foreach ($poller_items as $item) {
 	if ($item['action'] == POLLER_ACTION_HTTP) {
-		$http_items[$item['host_id']][] = $item;
+		$http_items[] = $item;
 	}
 }
 
@@ -380,7 +380,16 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		$cactiphp            = false;
 	}
 
-	$http_poller = cacti_sizeof($http_items) ? CactiHttpPoller::create((int) read_config_option('http_poller_concurrency')) : null;
+	/*
+	 * Fetching device by device would add each slow endpoint's timeout to the
+	 * walk, and the overrun check only runs between items, so a few dead
+	 * endpoints could push the process past its polling interval.  Fetched
+	 * together, the HTTP items cost about their longest timeout.  Items of a
+	 * device found down below are fetched but never read.
+	 */
+	if (cacti_sizeof($http_items)) {
+		http_prefetch_items(CactiHttpPoller::create((int) read_config_option('http_poller_concurrency')), $http_items);
+	}
 
 	foreach ($poller_items as $item) {
 		$ds      = $item['local_data_id'];
@@ -473,10 +482,6 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		// ping host, find out if there are re-index checks required
 		if ($new_host && !empty($host_id)) {
 			$host_down = ping_and_reindex_check($item, $mibs, $script_timeout);
-		}
-
-		if ($new_host && !$host_down && $http_poller !== null && isset($http_items[$host_id])) {
-			http_prefetch_device($http_poller, $host_id, $http_items[$host_id]);
 		}
 
 		$new_host  = false;
@@ -994,18 +999,18 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 }
 
 /**
- * http_prefetch_device - poll every HTTP item of one device
+ * http_prefetch_items - poll every HTTP item of this process
  *
- * Items that share an endpoint are served by one request.  The outputs and
- * failure reasons are left in globals for collect_device_data().
+ * Items that share a device and endpoint are served by one request, and
+ * the http_poller_concurrency limit applies to each device.  The outputs
+ * and failure reasons are left in globals for collect_device_data().
  *
  * @param CactiHttpPoller             $poller
- * @param int                         $host_id
- * @param array<array<string, mixed>> $items   the device's HTTP poller items
+ * @param array<array<string, mixed>> $items  HTTP poller items of any number of devices
  *
  * @return void
  */
-function http_prefetch_device(CactiHttpPoller $poller, int $host_id, array $items) : void {
+function http_prefetch_items(CactiHttpPoller $poller, array $items) : void {
 	global $http_outputs, $http_reasons, $print_data_to_stdout;
 
 	$reasons      = [];
@@ -1013,9 +1018,9 @@ function http_prefetch_device(CactiHttpPoller $poller, int $host_id, array $item
 	$http_outputs = $poller->collect($items, $reasons);
 	$http_reasons = $reasons;
 
-	$message = sprintf('Device[%d] TT[%0.2f] HTTP: Polled %d item(s), %d failed', $host_id, (microtime(true) - $start) * 1000, cacti_sizeof($items), cacti_sizeof($reasons));
+	$message = sprintf('Devices[%d] TT[%0.2f] HTTP: Polled %d item(s), %d failed', cacti_sizeof(array_unique(array_column($items, 'host_id'))), (microtime(true) - $start) * 1000, cacti_sizeof($items), cacti_sizeof($reasons));
 
-	cacti_log($message, $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+	cacti_log($message, $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 }
 
 function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) : bool {
