@@ -1115,10 +1115,20 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		$nt_rrd_field_names = [];
 		$tv_tmpl            = [];
 
+		// The data source whose mid-stream flush was rejected. Its remaining rows
+		// are not written: a later timestamp would advance the RRD past the
+		// rejected samples, and --skip-past-updates would then drop them when
+		// the retained shard is retried.
+		$failed_local_data_id = -1;
+
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
 		// go through each poller_output_boost entries and process
 		foreach ($results as $item) {
+			if ($item['local_data_id'] == $failed_local_data_id) {
+				continue;
+			}
+
 			if ($local_data_id == $item['local_data_id'] &&
 				cacti_sizeof($unused_data_source_names) &&
 				isset($unused_data_source_names[$item['rrd_name']])) {
@@ -1261,13 +1271,19 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 				if ($buflen > $upd_string_len) {
 					// new process output function
-					if (!boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe)) {
-						$updates_ok = false;
-					}
+					$flushed = boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe);
 
 					$buflen         = 0;
 					$vals_in_buffer = 0;
 					$outarray       = [];
+
+					if (!$flushed) {
+						$updates_ok           = false;
+						$failed_local_data_id = $local_data_id;
+						$tv_tmpl              = [];
+
+						continue;
+					}
 				}
 
 				$time    = $item['timestamp'];

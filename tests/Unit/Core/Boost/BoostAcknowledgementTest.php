@@ -10,6 +10,11 @@ require_once dirname(__DIR__, 4) . '/lib/boost.php';
  * 2026-11-01 fall-back hour as the same local time and stores that local time
  * back into a TIMESTAMP as the first (EDT) instant. SQLite has no session time
  * zone, so the lossy round trip is modeled here on the bound epoch values.
+ *
+ * Only int parameters are shifted, and the fall-back test binds ints on
+ * purpose. Production rows carry UNIX_TIMESTAMP() back from PDO as strings, so
+ * changing the test keys to strings would stop the fixture from shifting and
+ * hide a reintroduced FROM_UNIXTIME(?) instead of catching it.
  */
 class BoostAcknowledgementStatement extends PDOStatement {
 	/** First second of the repeated (EST) 01:00 hour on 2026-11-01. */

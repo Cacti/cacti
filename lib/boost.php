@@ -1696,7 +1696,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 					$vals_in_buffer = 0;
 
 					// check return status for delete operation
-					if (!str_contains(trim($return_value), 'OK') && $return_value != '') {
+					if (trim($return_value) !== 'OK' && $return_value != '') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 						$updates_ok = false;
 
@@ -1915,7 +1915,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 			boost_timer('rrdupdate', BOOST_TIMER_END);
 
 			// check return status for delete operation
-			if (!str_contains(trim($return_value), 'OK') && $return_value != '') {
+			if (trim($return_value) !== 'OK' && $return_value != '') {
 				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 				$updates_ok = false;
 			}
@@ -2000,8 +2000,10 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
  * Delete exactly the fetched keys so rows that arrived after the fetch survive.
  *
  * The keys are staged in a temporary table and removed by one statement, which
- * is atomic and uses the primary key. A long (rrd_name, time) IN list does not
- * use the key in that column order and degrades roughly quadratically.
+ * is atomic. It narrows on the local_data_id prefix of the primary key and
+ * probes the staging table's primary key once per candidate row. A long
+ * (rrd_name, time) IN list does not use the key in that column order and
+ * degrades roughly quadratically.
  *
  * The keys are staged as epoch integers and matched against UNIX_TIMESTAMP(time),
  * which reads a TIMESTAMP column's stored UTC value directly. Converting them

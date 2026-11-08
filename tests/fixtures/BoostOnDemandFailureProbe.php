@@ -46,6 +46,12 @@ function boost_get_rrd_filename_and_template(...$args) {
 function boost_rrdtool_function_update(...$args) {
 	$call = ++$GLOBALS['writes'];
 
+	// An error that merely contains OK (here in the RRD file name) must still
+	// count as a rejection, so the acknowledgement test is an exact match.
+	if ($GLOBALS['scenario'] === 'ok-substring') {
+		return $call === 1 ? "ERROR: opening '/var/rra/BOOK_7.rrd': Permission denied" : 'OK';
+	}
+
 	return $call === ($GLOBALS['scenario'] === 'first' ? 1 : 2) ? 'ERROR: rejected' : 'OK';
 }
 function read_config_option($key) {
