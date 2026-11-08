@@ -5309,12 +5309,12 @@ msgstr "將圖形模板添加到設備"
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 msgid "Unable to start the aggregate graph update."
 msgstr "聚合圖的新標題。"
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 msgid "Unable to commit the aggregate graph update."
 msgstr "聚合圖的新標題。"
