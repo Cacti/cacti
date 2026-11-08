@@ -40,7 +40,7 @@ function aggregate_transaction($operation, $manage_transaction = true) {
 			return false;
 		}
 
-		if (!$operation() || $database_last_error !== '') {
+		if (!$operation() || !empty($database_last_error)) {
 			return false;
 		}
 
@@ -71,7 +71,7 @@ function aggregate_sql_save($values, $table, $key = 'id', $autoinc = true) {
 	$previous_error = $database_last_error;
 	$database_last_error = '';
 	$id = sql_save($values, $table, $key, $autoinc);
-	$failed = $database_last_error !== '';
+	$failed = !empty($database_last_error);
 	if (!$failed) {
 		$database_last_error = $previous_error;
 	}
@@ -228,7 +228,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 	/* update title cache */
 	if (!empty($graph_templates_graph_id)) {
 		update_graph_title_cache($local_graph_id);
-		if ($database_last_error !== '') {
+		if (!empty($database_last_error)) {
 			return false;
 		}
 	}

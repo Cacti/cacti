@@ -598,9 +598,7 @@ fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<
 fs_write	./templates_import.php:73				$fp = fopen($_FILES['import_file']['tmp_name'],'r');
 fs_write	./utilities.php:1654				$log_fh = fopen($logfile, 'w');
 header_redirect	./aggregate_graphs.php:102			header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
-header_redirect	./aggregate_graphs.php:113			header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
-header_redirect	./aggregate_graphs.php:132			header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
-header_redirect	./aggregate_graphs.php:259		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+header_redirect	./aggregate_graphs.php:112		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('local_graph_id', 0));
 header_redirect	./aggregate_graphs.php:310					header('Location: aggregate_graphs.php?header=false');
 header_redirect	./aggregate_graphs.php:316					header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php:322					header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
@@ -608,10 +606,10 @@ header_redirect	./aggregate_graphs.php:333			header('Location: aggregate_graphs.
 header_redirect	./aggregate_graphs.php:547			header('Location: aggregate_graphs.php?header=false');
 header_redirect	./aggregate_templates.php:108			header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 header_redirect	./aggregate_templates.php:161			header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
-header_redirect	./aggregate_templates.php:258		header('Location: aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 header_redirect	./aggregate_templates.php:305			header('Location: aggregate_templates.php?header=false');
 header_redirect	./aggregate_templates.php:342			header('Location: aggregate_templates.php?header=false');
 header_redirect	./aggregate_templates.php:73			header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+header_redirect	./aggregate_templates.php:84		header('Location: aggregate_templates.php?header=false&action=edit&id=' . ($success ? $id : get_nfilter_request_var('id')));
 header_redirect	./auth_changepassword.php:110		header('Location: graph_view.php');
 header_redirect	./auth_changepassword.php:234			header('Location: logout.php');
 header_redirect	./auth_changepassword.php:327			header('Location:index.php');
@@ -801,6 +799,7 @@ header_redirect	./graphs.php:495			header('Location: graphs.php?action=graph_edi
 header_redirect	./graphs.php:497			header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
 header_redirect	./graphs.php:499			header('Location: graphs.php?header=false');
 header_redirect	./graphs.php:764						header('Location: aggregate_graphs.php');
+header_redirect	./graphs.php:834							header('Location: aggregate_graphs.php');
 header_redirect	./graphs.php:865						header('Location: aggregate_graphs.php');
 header_redirect	./graphs.php:874						header('Location: aggregate_graphs.php');
 header_redirect	./graphs.php:879					header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");

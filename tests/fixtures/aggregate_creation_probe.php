@@ -404,6 +404,9 @@ if ($mode === 'failure') {
 	$_REQUEST = $_POST = ['selected_items' => serialize([102, 101]), 'drp_action' => '9', 'title_format' => 'Action aggregate', 'graph_template_id' => 1, 'gprint_prefix' => '', 'aggregate_graph_type' => 0, 'aggregate_total' => 1, 'aggregate_total_type' => 2, 'aggregate_total_prefix' => '', 'aggregate_order_type' => 1, 'item_no' => 1, 'agg_color_1' => 0];
 	$before = snapshot_aggregate_tables();
 	$stage = $argv[2];
+	if ($stage === 'fresh-connection') {
+		unset($GLOBALS['database_last_error']);
+	}
 	$tables = ['metadata' => 'aggregate_graphs', 'settings' => 'aggregate_graphs_graph_item', 'items' => 'graph_templates_item'];
 	if (isset($tables[$stage])) {
 		$pdo->exec('CREATE TRIGGER aggregate_fail BEFORE INSERT ON ' . $tables[$stage] . " FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='graph action failure'");
