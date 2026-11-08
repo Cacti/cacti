@@ -2003,7 +2003,16 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
  * is atomic and uses the primary key. A long (rrd_name, time) IN list does not
  * use the key in that column order and degrades roughly quadratically.
  *
- * @param array<int, array{timestamp: int|string, rrd_name: string}> $results
+ * The keys are staged as epoch integers and matched against UNIX_TIMESTAMP(time),
+ * which reads a TIMESTAMP column's stored UTC value directly. Converting them
+ * back with FROM_UNIXTIME() goes through the session time zone, and on MySQL
+ * the two instants of a DST fall-back hour resolve to the same local time, so
+ * one of them would never be deleted and would be replayed on every run.
+ *
+ * @param int                                                        $local_data_id the data source whose rows were fetched
+ * @param array<int, array{timestamp: int|string, rrd_name: string}> $results       the fetched rows to acknowledge
+ *
+ * @return bool true when every fetched key was deleted, false when nothing was
  */
 function boost_delete_output_keys(int $local_data_id, array $results) : bool {
 	if (!cacti_sizeof($results)) {
@@ -2013,9 +2022,9 @@ function boost_delete_output_keys(int $local_data_id, array $results) : bool {
 	$table = 'poller_output_boost_acked_' . $local_data_id . '_' . random_int(0, PHP_INT_MAX);
 
 	if (db_execute("CREATE TEMPORARY TABLE `$table` (
-		time timestamp NOT NULL,
+		timestamp int unsigned NOT NULL,
 		rrd_name varchar(19) NOT NULL,
-		PRIMARY KEY (time, rrd_name))") === false) {
+		PRIMARY KEY (timestamp, rrd_name))") === false) {
 		return false;
 	}
 
@@ -2026,12 +2035,12 @@ function boost_delete_output_keys(int $local_data_id, array $results) : bool {
 		$params = [];
 
 		foreach ($chunk as $item) {
-			$values[] = '(FROM_UNIXTIME(?), ?)';
+			$values[] = '(?, ?)';
 			$params[] = $item['timestamp'];
 			$params[] = $item['rrd_name'];
 		}
 
-		if (db_execute_prepared("INSERT IGNORE INTO `$table` (time, rrd_name) VALUES " . implode(',', $values), $params, false) === false) {
+		if (db_execute_prepared("INSERT IGNORE INTO `$table` (timestamp, rrd_name) VALUES " . implode(',', $values), $params, false) === false) {
 			$ok = false;
 
 			break;
@@ -2041,7 +2050,7 @@ function boost_delete_output_keys(int $local_data_id, array $results) : bool {
 	if ($ok) {
 		$ok = db_execute_prepared("DELETE FROM poller_output_boost
 			WHERE local_data_id = ?
-			AND (time, rrd_name) IN (SELECT time, rrd_name FROM `$table`)",
+			AND (UNIX_TIMESTAMP(time), rrd_name) IN (SELECT timestamp, rrd_name FROM `$table`)",
 			[$local_data_id], false) !== false;
 	}
 
