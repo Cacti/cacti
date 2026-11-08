@@ -5,7 +5,14 @@ name: Security Review
 # findings as a PR comment and fails the job when the review recommends
 # blocking the PR.
 #
-# Requires the ANTHROPIC_API_KEY repository secret to be configured.
+# Requires the ANTHROPIC_API_KEY secret to be configured. As a repository
+# secret it is still readable by any workflow pushed to a same-repository
+# branch, which is the population this job serves. To isolate it, move the key
+# to an Environment whose deployment branch policy allows only develop and set
+# `environment:` on this job; pull_request_target evaluates that policy against
+# the base branch, so this job keeps the key and feature branches do not. The
+# job does not reference an environment yet because naming one that does not
+# exist makes GitHub create it unprotected on the first run.
 # Fork PRs are excluded explicitly. Head files are read only as Git blobs.
 # The workflow, runner, and prompt always come from the trusted base revision.
 
@@ -43,7 +50,7 @@ jobs:
     steps:
       - name: Checkout trusted base
         if: env.HAS_KEY == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # For pull_request_target, github.sha is the trusted target revision.
           ref: ${{ github.sha }}

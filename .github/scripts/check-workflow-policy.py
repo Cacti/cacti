@@ -203,6 +203,10 @@ def main() -> int:
                             violations.append(
                                 f"{rel}:{step_name}: read-only checkout must set persist-credentials: false"
                             )
+                    # A narrow lint: it checks only actions/checkout refs. A run:
+                    # step that checks out or executes head content (git checkout
+                    # of the head SHA, gh pr checkout, a fetched script) still
+                    # passes, so review those steps by hand.
                     if privileged_pr and uses_value.startswith("actions/checkout@"):
                         checkout_with = step.get("with", {})
                         ref = str(checkout_with.get("ref", "")).replace(" ", "")
