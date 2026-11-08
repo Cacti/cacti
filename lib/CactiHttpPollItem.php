@@ -148,6 +148,11 @@ final readonly class CactiHttpPollItem {
 			return null;
 		}
 
+		// a JSON number such as 1e400 decodes to INF, which RRDtool would store as a real sample
+		if (!is_finite((float) $value)) {
+			return null;
+		}
+
 		if ($this->scale == 1.0) {
 			return is_float($value) ? var_export($value, true) : trim((string) $value);
 		}

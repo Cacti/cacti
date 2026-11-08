@@ -704,18 +704,6 @@ function upgrade_to_1_3_0() : void {
 }
 
 /**
- * Bring poller_output_boost_processes up to the 1.3.0 layout.
- *
- * Nothing stops cron from starting poller_boost.php while the installer runs,
- * so boost can be mid-run here.  Emptying the table would discard the
- * completion rows the parent counts to decide whether every child finished,
- * leaving it to drain early, warn about a crashed child and hold the run's
- * archive tables.  Only the rows written before run_id existed have to go:
- * the two ALTERs default all of them to ('', 0), which the new UNIQUE key
- * cannot accept.  A child of an in-flight run records a 32 character run_id
- * and keeps its row.
- */
-/**
  * upgrade_http_data_input - Add the system Data Input Method behind
  * POLLER_ACTION_HTTP.  Rows are matched by hash so a re-run is harmless.
  *
@@ -749,6 +737,18 @@ function upgrade_http_data_input() : void {
 	}
 }
 
+/**
+ * Bring poller_output_boost_processes up to the 1.3.0 layout.
+ *
+ * Nothing stops cron from starting poller_boost.php while the installer runs,
+ * so boost can be mid-run here.  Emptying the table would discard the
+ * completion rows the parent counts to decide whether every child finished,
+ * leaving it to drain early, warn about a crashed child and hold the run's
+ * archive tables.  Only the rows written before run_id existed have to go:
+ * the two ALTERs default all of them to ('', 0), which the new UNIQUE key
+ * cannot accept.  A child of an in-flight run records a 32 character run_id
+ * and keeps its row.
+ */
 function upgrade_boost_process_table() : void {
 	if (!db_table_exists('poller_output_boost_processes')) {
 		db_install_execute('CREATE TABLE `poller_output_boost_processes` (

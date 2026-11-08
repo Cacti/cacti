@@ -171,12 +171,12 @@ namespace CactiHttpTransportFixture {
 	// credentials and authorization headers stay on the original scheme, host and port
 	$auth  = 'http://user:' . rawurlencode('p@ss:word') . "@127.0.0.1:$port";
 	$once  = $opts + ['max_redirects' => 1];
-	$moved = $once + ['headers' => ['Authorization: Bearer abc', 'Accept: application/json']];
+	$moved = $once + ['headers' => ['Authorization: Bearer abc', 'Accept: application/json', 'X-Api-Key: secret']];
 
 	check(cacti_http('GET', "$auth/redirect?to=auth", $once)['success'], 'credentials lost on a same-origin redirect');
 	check(cacti_http('GET', "$auth/redirect?to=other-auth", $once)['status'] === 401, 'credentials sent to another origin');
-	check(json_decode(cacti_http('GET', "$base/redirect?to=headers", $moved)['body'], true) === ['authorization' => 'Bearer abc', 'accept' => 'application/json'], 'headers lost on a same-origin redirect');
-	check(json_decode(cacti_http('GET', "$base/redirect?to=other-headers", $moved)['body'], true) === ['authorization' => '', 'accept' => 'application/json'], 'authorization sent to another origin');
+	check(json_decode(cacti_http('GET', "$base/redirect?to=headers", $moved)['body'], true) === ['authorization' => 'Bearer abc', 'accept' => 'application/json', 'x-api-key' => 'secret', 'proxy-authorization' => ''], 'headers lost on a same-origin redirect');
+	check(json_decode(cacti_http('GET', "$base/redirect?to=other-headers", $moved)['body'], true) === ['authorization' => '', 'accept' => 'application/json', 'x-api-key' => '', 'proxy-authorization' => ''], 'caller headers sent to another origin');
 
 	// bodies over max_bytes are abandoned; compression is accepted only under a cap that counts decoded bytes
 	check(cacti_http('GET', "$base/big", $opts + ['max_bytes' => 32])['error'] === 'Response exceeds 32 bytes', 'oversized body accepted');
@@ -253,6 +253,7 @@ namespace CactiHttpTransportFixture {
 	check($halved->resolve(['v' => 3]) === '1.5', 'scaled output');
 	check($item->resolve(['v' => 'up']) === null, 'text accepted');
 	check($huge->resolve(['v' => 1e308]) === null, 'infinite output accepted');
+	check($item->resolve(json_decode('{"v":1e400}', true)) === null, 'unscaled infinite value accepted');
 
 	$spec = CactiHttpPollItem::fromPollerItem(row(['arg3' => '{"scale":0.001,"timeout":2.5}']));
 

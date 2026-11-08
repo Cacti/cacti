@@ -642,6 +642,13 @@ function data_template_is_stream(int $data_input_id) : bool {
 	return !empty($id) ? true : false;
 }
 
+/**
+ * Whether a Data Input Method is the system HTTP JSON method.
+ *
+ * @param int $data_input_id the data_input id to check
+ *
+ * @return bool true when the id belongs to the method added by upgrade_http_data_input()
+ */
 function data_template_is_http(int $data_input_id) : bool {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM data_input
