@@ -73,3 +73,5 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 run_php_probe tests/fixtures/Core/ScriptQueryCommand.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommand\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptQueryCommandWin32.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommandWin32\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryRejectedPath.php '^(lib/functions\.php|tests/fixtures/Core/ScriptQueryRejectedPath\.php)'
