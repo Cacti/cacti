@@ -15,8 +15,6 @@
 namespace CactiHttpPollerActionFixture;
 
 use RuntimeException;
-use Symfony\Component\HttpClient\MockHttpClient;
-use Symfony\Component\HttpClient\Response\MockResponse;
 
 /*
  * Request-coverage probe for the HTTP poller action.
@@ -25,9 +23,9 @@ use Symfony\Component\HttpClient\Response\MockResponse;
  * the poller cache helper, the data template editor and the 1.3.0 upgrade.
  * Those entry points run as CLI or web scripts that Pest cannot include, so
  * each function is loaded in isolation with its database and logging
- * boundaries stubbed.  The HTTP client is real: Symfony's MockHttpClient where
- * the function accepts a poller, and a refused loopback port where the
- * function builds its own.
+ * boundaries stubbed.  The HTTP client is real: cacti_http_multi() against the
+ * loopback test server where the function accepts a poller, and a refused
+ * loopback port where the function builds its own.
  */
 
 $root = dirname(__DIR__, 3);
@@ -36,7 +34,9 @@ require $root . '/tests/Helpers/RequestCoverage.php';
 require $root . '/tests/Helpers/SourceSlice.php';
 require $root . '/include/vendor/autoload.php';
 require $root . '/include/global_constants.php';
+require $root . '/lib/functions.php';
 require $root . '/lib/CactiHttpPoller.php';
+require $root . '/tests/Helpers/HttpTestServer.php';
 
 define('CACTI_PATH_LIBRARY', $root . '/lib');
 
@@ -146,17 +146,14 @@ cacti_fixture_source_function($root . '/data_templates.php', 'data_template_is_h
 cacti_fixture_source_function($root . '/install/upgrades/1_3_0.php', 'upgrade_http_data_input', __NAMESPACE__);
 
 // cmd.php: one request serves both items on /stats, the third endpoint fails
-$requests = 0;
-$poller   = new CactiHttpPoller(new MockHttpClient(function (string $method, string $url) use (&$requests) {
-	$requests++;
-
-	return str_ends_with($url, '/down') ? new MockResponse('', ['http_code' => 503]) : new MockResponse('{"in":5,"out":7}');
-}));
+$base   = cacti_http_test_server()['url'];
+$seen   = count(cacti_http_test_requests());
+$poller = new CactiHttpPoller();
 
 $items = [
-	http_row(9, 'https://device.example/stats', '/in'),
-	http_row(10, 'https://device.example/stats', '/out', '{"scale":8}'),
-	http_row(11, 'https://device.example/down', '/in'),
+	http_row(9, "$base/stats", '/in'),
+	http_row(10, "$base/stats", '/out', '{"scale":8}'),
+	http_row(11, "$base/down", '/in'),
 ];
 
 http_prefetch_device($poller, 2, $items);
@@ -168,13 +165,15 @@ foreach ($items as $item) {
 	$outputs[] = collect_device_data($item, $error_ds, 25);
 }
 
+$requests = count(cacti_http_test_requests()) - $seen;
+
 check($requests === 2, "cmd.php made $requests requests for two endpoints");
 check($outputs === ['5', '56.0', 'U'], 'cmd.php outputs were ' . json_encode($outputs));
 check($error_ds === [11 => 11], 'cmd.php error list was ' . json_encode($error_ds));
 
 // an item that was never prefetched reports U instead of reusing stale output
 $error_ds = [];
-$item     = http_row(12, 'https://device.example/stats', '/in');
+$item     = http_row(12, "$base/stats", '/in');
 
 check(collect_device_data($item, $error_ds, 25) === 'U', 'unfetched item was not U');
 check($error_ds === [12 => 12], 'unfetched item was not counted as an error');
