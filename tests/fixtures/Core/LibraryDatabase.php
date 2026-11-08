@@ -134,7 +134,7 @@ function library_database_driver_failures(string $table): void {
 		$database_sessions[$key] = $primary;
 		library_expect($closing instanceof PDO, true, 'Close fixture owns a separately registered native connection');
 		library_expect($closing !== $primary, true, 'Closing fixture never owns the primary connection');
-		$closingHash = spl_object_hash($closing);
+		$closingHash = cacti_object_hash($closing);
 		library_expect(db_close($closing), true, 'Registered connection closes successfully');
 		unset($GLOBALS['database_details'][$closingHash]);
 		library_expect($closing, null, 'Close clears the caller connection reference');
