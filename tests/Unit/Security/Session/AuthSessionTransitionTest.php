@@ -93,7 +93,8 @@ test('every authenticated transition is covered', function () use ($includeSourc
 		$lines = explode("\n", $source);
 
 		foreach ($lines as $i => $line) {
-			if (!preg_match('/\$_SESSION\[SESS_USER_ID\]\s*=/', $line)) {
+			// an assignment, not a == or === comparison
+			if (!preg_match('/\$_SESSION\[SESS_USER_ID\]\s*=(?!=)/', $line)) {
 				continue;
 			}
 
