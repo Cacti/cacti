@@ -125,6 +125,16 @@ for (const theme of ['modern']) {
 
 const root = resolve(__dirname, '../../..');
 
+test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
+	await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p>' +
+		'<p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(
+		await page.locator('p').first().evaluate(textContrast),
+		2,
+	);
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
+});
+
 test('contrast checks include translucent foregrounds and every gradient stop', async ({ page }) => {
 	await page.setContent('<!DOCTYPE html><div style="background-color:black;background-image:linear-gradient(black, white);color:white">Gradient</div>' +
 		'<span style="background:black;color:rgba(255,255,255,0.1)">Translucent text</span>');
@@ -133,9 +143,33 @@ test('contrast checks include translucent foregrounds and every gradient stop', 
 });
 
 for (const gradient of ['linear-gradient(rgb(255,4,0),rgb(0,161,11))', '-webkit-linear-gradient(top,rgb(255,4,0),rgb(0,161,11))']) {
-	test(`contrast checks sample the darker middle of ${gradient}`, async ({ page }) => {
+	test(`contrast checks find the darker middle of ${gradient}`, async ({ page }) => {
 		await page.setContent(`<!DOCTYPE html><div style="background:white;background-image:${gradient};color:black">Selected row</div>`);
-		expect(await page.locator('div').evaluate(textContrast)).toBeLessThan(4.5);
+		// The darkest color sits at t = 0.46, between any fixed grid of samples.
+		expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(3.1176, 3);
+	});
+}
+
+test('contrast checks report text whose luminance falls inside a gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:linear-gradient(black,white);color:rgb(119,119,119)">Status</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+test('contrast checks measure radial gradients and layered backgrounds', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div id="radial" style="background:black radial-gradient(circle at top, #ffa254, black);color:white">Glow</div>' +
+		'<div id="layers" style="background:black url(about:blank), linear-gradient(black, white);color:white">Layers</div>');
+	expect(await page.locator('#radial').evaluate(textContrast)).toBeCloseTo(1.99, 2);
+	expect(await page.locator('#layers').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+for (const [name, style] of [
+	['legacy -webkit-gradient', 'background:-webkit-gradient(linear, left top, left bottom, from(black), to(white))'],
+	['non-sRGB interpolation', 'background:linear-gradient(in oklab, black, white)'],
+	['group opacity', 'background:black;opacity:.5'],
+]) {
+	test(`contrast checks refuse to measure ${name}`, async ({ page }) => {
+		await page.setContent(`<!DOCTYPE html><div style="${style};color:white">Unmeasured</div>`);
+		await expect(page.locator('div').evaluate(textContrast)).rejects.toThrow('textContrast cannot measure');
 	});
 }
 
