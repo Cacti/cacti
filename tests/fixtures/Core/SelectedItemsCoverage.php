@@ -22,8 +22,23 @@ foreach (['automation_graph_rules', 'automation_networks', 'automation_snmp', 'a
 	}
 }
 
-foreach ($scenarios as [$probe, $args]) {
-	$process = proc_open(array_merge([PHP_BINARY], $arguments, [__DIR__ . '/' . $probe], $args), [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+// run_pr_change_tests.sh collects one coverage file per runner. Each probe
+// process writes its own file and the runner merges them into that one.
+$coverageFile  = getenv('CACTI_COVERAGE_FILE');
+$coverageParts = [];
+$environment   = null;
+
+if ($coverageFile !== false && $coverageFile !== '') {
+	$environment                = getenv();
+	$environment['XDEBUG_MODE'] = 'coverage';
+}
+
+foreach ($scenarios as $index => [$probe, $args]) {
+	if ($environment !== null) {
+		$coverageParts[]                    = $coverageFile . '.' . $index;
+		$environment['CACTI_COVERAGE_FILE'] = $coverageFile . '.' . $index;
+	}
+	$process = proc_open(array_merge([PHP_BINARY], $arguments, [__DIR__ . '/' . $probe], $args), [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, null, $environment);
 	$output  = stream_get_contents($pipes[1]);
 	$error   = stream_get_contents($pipes[2]);
 	fclose($pipes[1]);
@@ -32,5 +47,21 @@ foreach ($scenarios as [$probe, $args]) {
 	if (proc_close($process) !== 0 || !is_array(json_decode($output, true))) {
 		throw new RuntimeException($probe . ' ' . implode(' ', $args) . ': ' . $error);
 	}
+}
+
+if ($environment !== null) {
+	$merged = [];
+
+	foreach ($coverageParts as $part) {
+		foreach (json_decode((string) file_get_contents($part), true, 512, JSON_THROW_ON_ERROR) as $file => $entry) {
+			$merged[$file]['functions'] = array_merge($merged[$file]['functions'] ?? [], $entry['functions'] ?? []);
+
+			foreach ($entry['lines'] as $line => $hits) {
+				$merged[$file]['lines'][$line] = max($hits, $merged[$file]['lines'][$line] ?? -2);
+			}
+		}
+		unlink($part);
+	}
+	file_put_contents($coverageFile, json_encode($merged, JSON_THROW_ON_ERROR));
 }
 print "PASS: selected items export and confirmation scenarios\n";
