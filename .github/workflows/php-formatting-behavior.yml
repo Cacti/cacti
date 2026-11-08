@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   behavior:
-    if: contains(fromJSON('["fix/develop-sonar-web-lines","fix/develop-sonar-library-lines","fix/develop-sonar-poller-lines"]'), github.head_ref)
+    if: contains(fromJSON('["fix/develop-sonar-web-lines","fix/develop-sonar-library-lines","fix/develop-sonar-library-lines-1","fix/develop-sonar-poller-lines"]'), github.head_ref)
     name: Formatting preserves PHP behavior
     runs-on: ubuntu-24.04
     timeout-minutes: 10

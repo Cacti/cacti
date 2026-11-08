@@ -58,6 +58,15 @@ foreach (['xml', 'rrd', 'poller', 'data_query', 'utility', 'api_device', 'api_gr
 
 $assertions = 0;
 
+/**
+ * Counts one assertion and throws when the values are not identical.
+ *
+ * @param mixed  $actual   The observed value
+ * @param mixed  $expected The required value
+ * @param string $message  What the assertion checks
+ *
+ * @return void
+ */
 function library_expect(mixed $actual, mixed $expected, string $message): void {
 	global $assertions;
 	$assertions++;
@@ -67,6 +76,13 @@ function library_expect(mixed $actual, mixed $expected, string $message): void {
 	}
 }
 
+/**
+ * Saves a device through api_device_save() with fixture defaults.
+ *
+ * @param array<string,mixed> $overrides Arguments that replace the defaults
+ *
+ * @return int The saved device id
+ */
 function library_save_device(array $overrides = []): int {
 	$_SESSION[SESS_ERROR_FIELDS] = [];
 	$_SESSION['sess_messages']   = [];
@@ -83,6 +99,13 @@ function library_save_device(array $overrides = []): int {
 	], $overrides));
 }
 
+/**
+ * Normalizes template XML so two exports compare by content.
+ *
+ * @param string $xml The exported XML
+ *
+ * @return string The normalized XML
+ */
 function library_xml_content(string $xml): string {
 	$document                     = new DOMDocument();
 	$document->preserveWhiteSpace = false;

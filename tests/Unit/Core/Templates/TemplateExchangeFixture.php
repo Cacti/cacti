@@ -22,12 +22,27 @@ require_once dirname(__DIR__, 3) . '/Helpers/BufferedPDOStatement.php';
 require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
 require_once dirname(__DIR__, 4) . '/include/global.php';
 
+/**
+ * sqlite connection for the template exchange tests that buffers SELECT
+ * results and rewrites the MySQL statements the exporter and importer issue.
+ */
 class TemplateExchangePDO extends FakeMySQLPDO {
+	/**
+	 * Opens the connection with buffered statements so rowCount() works for SELECT.
+	 */
 	public function __construct() {
 		parent::__construct();
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [BufferedPDOStatement::class, []]);
 	}
 
+	/**
+	 * Rewrites MySQL-only syntax into a form sqlite accepts, then prepares it.
+	 *
+	 * @param string              $query   The SQL statement
+	 * @param array<string,mixed> $options Driver options
+	 *
+	 * @return PDOStatement|false The prepared statement
+	 */
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
 		// global_constants.php may define SQL_NO_CACHE for MySQL before this runs.
 		$query = preg_replace('/\bSQL_NO_CACHE\b/', '', $query);
