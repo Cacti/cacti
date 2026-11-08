@@ -230,7 +230,7 @@ if ($host_id === false) {
 				if ($completed) {
 					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
 				} else {
-					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Failed, retaining command for retry.", true, 'PCOMMAND');
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Failed, retaining command for retry.", true, 'PCOMMAND', $verbosity);
 				}
 
 				break;

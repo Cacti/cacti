@@ -12,6 +12,9 @@ on:
       - 'tests/fixtures/PollerMappingCache.php'
       - 'tests/Helpers/SourceSlice.php'
       - 'tests/Helpers/RequestCoverage.php'
+      - 'tests/Helpers/DataQueryHarness.php'
+      - 'tests/Unit/DataCollection/DataQuery/**'
+      - 'tests/integration/DataQueryReindexTest.php'
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
       - 'tests/phpunit-poller-mapping.xml'
@@ -25,6 +28,15 @@ jobs:
     name: Changed PHP lines >= 80%
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    services:
+      mysql:
+        image: mariadb:10.6
+        env:
+          MARIADB_DATABASE: cacti_dq_test
+          MARIADB_ROOT_PASSWORD: cactiroot
+        ports:
+          - 3306:3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -34,7 +46,7 @@ jobs:
         with:
           php-version: '8.3'
           coverage: xdebug
-          extensions: curl, dom, mbstring, xml
+          extensions: curl, dom, mbstring, pdo_mysql, xml
           ini-values: memory_limit=2G
           dependency-mode: locked-maintenance-pr-coverage
           cache-dependency-path: tests/composer.lock
@@ -57,6 +69,22 @@ jobs:
           set -euo pipefail
           mkdir -p "$CACTI_PR_RAW_COVERAGE"
           vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+      - name: Exercise data query discovery and reindex contracts
+        working-directory: tests
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          CACTI_DQ_DB_HOST: 127.0.0.1
+          CACTI_DQ_DB_PORT: 3306
+          CACTI_DQ_DB_NAME: cacti_dq_test
+          CACTI_DQ_DB_USER: root
+          CACTI_DQ_DB_PASSWORD: cactiroot
+        run: |
+          set -euo pipefail
+          mkdir -p "$CACTI_PR_RAW_COVERAGE"
+          php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest \
+            integration/DataQueryReindexTest.php \
+            Unit/DataCollection/DataQuery/DataQueryIndexLookupTest.php
       - name: Capture native poller mapping coverage
         env:
           XDEBUG_MODE: coverage

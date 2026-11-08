@@ -53,7 +53,9 @@ load_functions($root . '/lib/data_query.php', [
 	'data_query_remove_disabled_items', 'rewrite_snmp_enum_value',
 	'data_query_local_data', 'data_query_identity_complete', 'data_query_index_key',
 	'data_query_index_lookup', 'data_query_index_exists',
+	'data_query_cache_collations', 'data_query_cache_compare',
 ]);
+load_functions($root . '/lib/api_device.php', ['api_device_dq_remove']);
 load_functions($root . '/lib/poller.php', ['update_reindex_cache', 'poller_update_poller_reindex_from_buffer']);
 load_functions($root . '/lib/functions.php', ['cacti_sizeof', 'cacti_count', 'array_rekey']);
 
@@ -244,6 +246,9 @@ function reset_fixture($count = 2) {
 			$inserts[$table] = array();
 		}
 	}
+	// A production cache carries index statistics; a freshly bulk-loaded table has none until
+	// InnoDB samples it, so the optimizer would plan the identity lookups against an empty table.
+	sql('ANALYZE TABLE host_snmp_cache')->fetchAll();
 	$GLOBALS['dq_calls'] = $GLOBALS['database_total_queries'] = 0;
 }
 

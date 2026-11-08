@@ -221,6 +221,85 @@ test('batched identity matching preserves database collation and overrides', fun
 		->and(array_column($rows, 'index_type', 'local_data_id'))->toBe(array(1 => 'ifName', 2 => 'ifDescr'));
 });
 
+/**
+ * Converts host_snmp_cache and data_input_data to different collations of one character set,
+ * as a partially converted upgrade leaves them, runs the callback, and drops both tables so the
+ * next fixture reset recreates them from cacti.sql.
+ *
+ * @param callable $callback The assertions to run against the mixed-collation schema.
+ *
+ * @return void
+ */
+function with_mixed_collations($callback) {
+	try {
+		sql('ALTER TABLE host_snmp_cache CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+		sql('ALTER TABLE data_input_data CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci');
+		$callback();
+	} finally {
+		sql('DROP TABLE IF EXISTS host_snmp_cache, data_input_data');
+	}
+}
+
+test('identity matching works when the cache and input tables use different collations', function () {
+	with_mixed_collations(function () {
+		sql("UPDATE data_input_data SET value='PORT1   ' WHERE data_template_data_id=1 AND data_input_field_id=1");
+		$rows = data_query_local_data(1, 1, 'ifName', 'ifName');
+		expect($rows)->toBeArray()
+			->and(array_column($rows, 'current_index', 'local_data_id'))->toBe(array(1 => '1', 2 => '2'));
+		sql("UPDATE data_input_data SET value='port1' WHERE data_template_data_id=1 AND data_input_field_id=1");
+		expect(run_data_query(1, 1))->toBeTrue()
+			->and(sql('SELECT id,snmp_index,orphan FROM data_local ORDER BY id')->fetchAll(\PDO::FETCH_NUM))->toBe(array(array(1, '1', 0), array(2, '2', 0)));
+	});
+});
+
+test('identity matching works when the field_value index is missing', function () {
+	try {
+		sql('ALTER TABLE host_snmp_cache DROP INDEX field_value');
+		$rows = data_query_local_data(1, 1, 'ifName', 'ifName');
+		expect($rows)->toBeArray()
+			->and(array_column($rows, 'current_index', 'local_data_id'))->toBe(array(1 => '1', 2 => '2'));
+	} finally {
+		sql('DROP TABLE IF EXISTS host_snmp_cache');
+	}
+});
+
+test('an unreadable cache collation falls back to the plain comparison', function () {
+	expect(data_query_cache_compare('did.value', 'field_value', array()))->toBe('did.value')
+		->and(data_query_cache_compare('did.value', 'field_value', array('field_value' => array('charset' => 'utf8mb4', 'collation' => 'utf8mb4_bin'))))
+		->toBe('CONVERT(did.value USING utf8mb4) COLLATE utf8mb4_bin');
+	$GLOBALS['dq_failure'] = '/information_schema/';
+	expect(data_query_cache_collations())->toBe(array())
+		->and(data_query_local_data(1, 1, 'ifName', 'ifName'))->toHaveCount(2);
+});
+
+test('a new index without an identity value does not block discovery', function () {
+	$GLOBALS['script']['index'][] = '3';
+	$GLOBALS['script']['count'] = array('3');
+	$GLOBALS['script']['query ifDescr'][] = '3!description3';
+	expect(run_data_query(1, 1))->toBeTrue()
+		->and((int) sql("SELECT COUNT(*) FROM host_snmp_cache WHERE snmp_index='3'")->fetchColumn())->toBe(1)
+		->and(sql('SELECT id,snmp_index,orphan FROM data_local ORDER BY id')->fetchAll(\PDO::FETCH_NUM))->toBe(array(array(1, '1', 0), array(2, '2', 0)))
+		->and($GLOBALS['dq_logs'])->not->toContain('ERROR: Device[1] DQ[1] identity field [ifName] is missing for index [3]. Retaining the previous data query cache.');
+});
+
+test('a field the data query no longer collects does not block discovery', function () {
+	sql("UPDATE data_input_data SET value='ifAlias' WHERE data_template_data_id=2 AND data_input_field_id=2");
+	expect(query_script_host(1, 1))->toBeTrue();
+});
+
+test('an orphaned source does not block discovery of its old index', function () {
+	sql('UPDATE data_local SET orphan=1 WHERE id=2');
+	$GLOBALS['script']['query ifName'] = array('1!port1');
+	expect(query_script_host(1, 1))->toBeTrue();
+});
+
+test('removing a data query from a device drops its queued reindex', function () {
+	sql("INSERT INTO poller_command (poller_id,time,action,command) VALUES (1,NOW(),1,'1:1'),(1,NOW(),1,'1:2'),(1,NOW(),2,'1')");
+	api_device_dq_remove(1, 1);
+	expect(sql('SELECT action,command FROM poller_command ORDER BY action,command')->fetchAll(\PDO::FETCH_NUM))->toBe(array(array(1, '1:2'), array(2, '1')))
+		->and((int) sql('SELECT COUNT(*) FROM host_snmp_query')->fetchColumn())->toBe(0);
+});
+
 test('unchanged reindex database calls stay bounded as sources increase', function () {
 	reset_fixture(1000);
 	expect(run_data_query(1, 1))->toBeTrue()->and($GLOBALS['dq_calls'])->toBeLessThan(40);

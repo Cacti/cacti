@@ -370,15 +370,37 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 }
 
 /**
- * Match source identities in SQL so database collation and NULL semantics are preserved.
- * Fetch all source matches together. The value index prevents a full identity-column
- * scan per source; MIN selects one stable match when cached identities are duplicated.
+ * Fetches every data source of a device and data query with the cached index that currently
+ * holds its identity value. Used as part of Cacti's lib functionality.
+ *
+ * The identity match runs in SQL so the comparison keeps the database collation and NULL
+ * semantics of the previous per-source lookups, which compared host_snmp_cache columns with a
+ * bound value. Comparing two columns directly fails with "Illegal mix of collations" when
+ * data_input_data and host_snmp_cache differ, as they can after a partial character set
+ * conversion, so the data source side is converted to the cache column's character set and
+ * collation. The cache column stays bare, so its field_value index remains usable, and no index
+ * hint is given because upgraded installs can lack that index. MIN() selects one stable match
+ * when cached identities are duplicated.
+ *
+ * @param int    $host_id        The id of the device that owns the data sources.
+ * @param int    $snmp_query_id  The id of the data query that owns the data sources.
+ * @param string $old_sort_field The sort field used for data sources that have no index type.
+ * @param string $new_sort_field The sort field whose value is returned for remapping.
+ *
+ * @return array|false One row per data source with its current_index and new_field_value,
+ *   or false when the query fails.
  */
 function data_query_local_data($host_id, $snmp_query_id, $old_sort_field, $new_sort_field) {
+	$collations = data_query_cache_collations();
+
+	$index_type     = 'CASE WHEN type_field.id IS NULL THEN ? ELSE index_type.value END';
+	$cache_type     = data_query_cache_compare($index_type, 'field_name', $collations);
+	$cache_identity = data_query_cache_compare('did.value', 'field_value', $collations);
+
 	return db_fetch_assoc_prepared('SELECT dl.id AS local_data_id, dl.host_id,
 		dl.snmp_query_id, dl.snmp_index, dl.orphan,
 		did.data_input_field_id, did.data_template_data_id, did.value AS query_index,
-		CASE WHEN type_field.id IS NULL THEN ? ELSE index_type.value END AS index_type,
+		' . $index_type . ' AS index_type,
 		index_type.data_input_field_id AS previous_field_id,
 		index_type.data_template_data_id AS previous_template_id,
 		COALESCE(cache.snmp_index, "") AS current_index,
@@ -394,19 +416,74 @@ function data_query_local_data($host_id, $snmp_query_id, $old_sort_field, $new_s
 		ON index_type.data_template_data_id = dtd.id AND index_type.data_input_field_id = type_field.id
 		LEFT JOIN host_snmp_cache AS cache
 		ON cache.host_id = dl.host_id AND cache.snmp_query_id = dl.snmp_query_id
-		AND cache.field_name = CASE WHEN type_field.id IS NULL THEN ? ELSE index_type.value END
+		AND cache.field_name = ' . $cache_type . '
 		AND cache.snmp_index = (
 			SELECT MIN(identity_cache.snmp_index)
-			FROM host_snmp_cache AS identity_cache FORCE INDEX (field_value)
+			FROM host_snmp_cache AS identity_cache
 			WHERE identity_cache.host_id = dl.host_id AND identity_cache.snmp_query_id = dl.snmp_query_id
-			AND identity_cache.field_name = CASE WHEN type_field.id IS NULL THEN ? ELSE index_type.value END
-			AND identity_cache.field_value = did.value
+			AND identity_cache.field_name = ' . $cache_type . '
+			AND identity_cache.field_value = ' . $cache_identity . '
 		)
 		LEFT JOIN host_snmp_cache AS new_cache
 		ON new_cache.host_id = dl.host_id AND new_cache.snmp_query_id = dl.snmp_query_id
 		AND new_cache.field_name = ? AND new_cache.snmp_index = cache.snmp_index
 		WHERE dif.data_name = "index_value" AND dl.snmp_query_id = ? AND dl.host_id = ?',
 		array($old_sort_field, $old_sort_field, $old_sort_field, $new_sort_field, $snmp_query_id, $host_id));
+}
+
+/**
+ * Returns the character set and collation of the host_snmp_cache columns that data source
+ * identities are matched against. Used as part of Cacti's lib functionality.
+ *
+ * The names are read from the live schema rather than assumed, because upgraded installs can
+ * carry a different collation than cacti.sql. Only plain identifiers are returned, since the
+ * names are placed in SQL text.
+ *
+ * @return array A map of column name to an array with 'charset' and 'collation' keys. A column
+ *   whose names cannot be read is left out.
+ */
+function data_query_cache_collations() {
+	$columns = db_fetch_assoc_prepared('SELECT COLUMN_NAME AS column_name,
+		CHARACTER_SET_NAME AS charset_name, COLLATION_NAME AS collation_name
+		FROM information_schema.COLUMNS
+		WHERE TABLE_SCHEMA = DATABASE()
+		AND TABLE_NAME = "host_snmp_cache"
+		AND COLUMN_NAME IN ("field_name", "field_value")');
+
+	$collations = array();
+
+	if (cacti_sizeof($columns)) {
+		foreach ($columns as $column) {
+			if (preg_match('/^[A-Za-z0-9_]+$/', (string) $column['charset_name']) &&
+				preg_match('/^[A-Za-z0-9_]+$/', (string) $column['collation_name'])) {
+				$collations[$column['column_name']] = array(
+					'charset'   => $column['charset_name'],
+					'collation' => $column['collation_name']
+				);
+			}
+		}
+	}
+
+	return $collations;
+}
+
+/**
+ * Wraps an SQL expression so it compares with a host_snmp_cache column the way a bound value
+ * does: in that column's character set and collation. Used as part of Cacti's lib functionality.
+ *
+ * @param string $expression The SQL expression on the data source side of the comparison.
+ * @param string $column     The host_snmp_cache column it is compared with.
+ * @param array  $collations The map returned by data_query_cache_collations().
+ *
+ * @return string The converted expression, or the expression unchanged when the column's
+ *   collation is unknown.
+ */
+function data_query_cache_compare($expression, $column, $collations) {
+	if (!isset($collations[$column])) {
+		return $expression;
+	}
+
+	return 'CONVERT(' . $expression . ' USING ' . $collations[$column]['charset'] . ') COLLATE ' . $collations[$column]['collation'];
 }
 
 /**
@@ -761,7 +838,7 @@ function query_script_host($host_id, $snmp_query_id) {
 		}
 	}
 
-	if (!cacti_sizeof($output_array) || !data_query_identity_complete($host_id, $snmp_query_id, $script_index_array, $sort_field)) {
+	if (!cacti_sizeof($output_array) || !data_query_identity_complete($host_id, $snmp_query_id, $script_index_array, $sort_field, $script_queries['fields'])) {
 		return false;
 	}
 
@@ -1515,7 +1592,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	$session->close();
 
-	if (!cacti_sizeof($output_array) || !data_query_identity_complete($host_id, $snmp_query_id, $snmp_indexes, $sort_field)) {
+	if (!cacti_sizeof($output_array) || !data_query_identity_complete($host_id, $snmp_query_id, $snmp_indexes, $sort_field, $snmp_queries['fields'])) {
 		return false;
 	}
 
@@ -1556,7 +1633,15 @@ function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrit
 	return "($host_id, $snmp_query_id, " . db_qstr($field_name) . ', ' . db_qstr($value) . ', ' . db_qstr($snmp_index) . ', ' . db_qstr($oid) . ', 1)';
 }
 
-/** Build buckets for the loose numeric comparisons used by SNMP index filters. */
+/**
+ * Groups SNMP indexes into lookup buckets that reproduce the loose comparison of in_array(), so
+ * index membership can be checked without a linear scan. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $indexes The indexes to group.
+ *
+ * @return array A map of bucket key to an index, or to an array of indexes that share the key.
+ */
 function data_query_index_lookup($indexes) {
 	$lookup = array();
 	foreach ($indexes as $index) {
@@ -1574,7 +1659,15 @@ function data_query_index_lookup($indexes) {
 	return $lookup;
 }
 
-/** Numeric spellings share a bucket; nonnumeric, multi-part indexes remain exact. */
+/**
+ * Returns the lookup bucket key for an SNMP index. Numeric spellings that compare equal, such
+ * as "1" and "1.0", share a bucket; nonnumeric and multi-part indexes remain exact. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param mixed $index The index to classify.
+ *
+ * @return string The bucket key.
+ */
 function data_query_index_key($index) {
 	if (is_numeric($index)) {
 		$number = (float) $index;
@@ -1584,6 +1677,15 @@ function data_query_index_key($index) {
 	return 's:' . $index;
 }
 
+/**
+ * Checks whether an SNMP index is present in a lookup built by data_query_index_lookup(), using
+ * the same loose comparison as in_array(). Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $index  The index to look for.
+ * @param array $lookup The lookup buckets.
+ *
+ * @return bool True when the index is present.
+ */
 function data_query_index_exists($index, $lookup) {
 	$key = data_query_index_key($index);
 	if (!isset($lookup[$key])) {
@@ -1594,43 +1696,76 @@ function data_query_index_exists($index, $lookup) {
 	return is_array($lookup[$key]) ? in_array($index, $lookup[$key]) : $index == $lookup[$key];
 }
 
-/** Refuse a partial identity column before it can orphan existing data sources. */
-function data_query_identity_complete($host_id, $snmp_query_id, $indexes, $sort_field) {
+/**
+ * Checks that a new walk collected the identity of every data source whose index is still
+ * present, before the walk replaces the previous host_snmp_cache. Used as part of Cacti's lib
+ * functionality.
+ *
+ * A partial walk of an identity column, such as an ifXTable timeout, would otherwise orphan
+ * data sources whose index still exists. Only the indexes that existing, non-orphaned data
+ * sources reference are checked. A newly discovered index without the field, an index that is
+ * gone, and a field that the data query XML no longer collects do not block the refresh, so
+ * discovery and the sort field remap can continue.
+ *
+ * @param int    $host_id       The id of the device being queried.
+ * @param int    $snmp_query_id The id of the data query being refreshed.
+ * @param array  $indexes       The indexes returned by the current walk or script.
+ * @param string $sort_field    The sort field used for data sources that have no index type.
+ * @param array  $xml_fields    The field definitions of the data query XML.
+ *
+ * @return bool True when the new cache may replace the previous one, false to retain it.
+ */
+function data_query_identity_complete($host_id, $snmp_query_id, $indexes, $sort_field, $xml_fields) {
 	global $data_query_rewrite_indexes_cache;
 
 	if (!cacti_sizeof($indexes)) {
 		return false;
 	}
 
-	$fields = db_fetch_assoc_prepared('SELECT DISTINCT COALESCE(did.value, ?) AS field_name
+	$sources = db_fetch_assoc_prepared('SELECT DISTINCT COALESCE(did.value, ?) AS field_name, dl.snmp_index
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd ON dtd.local_data_id = dl.id
 		LEFT JOIN data_input_fields AS dif
 		ON dif.data_input_id = dtd.data_input_id AND dif.data_name = "index_type"
 		LEFT JOIN data_input_data AS did
 		ON did.data_template_data_id = dtd.id AND did.data_input_field_id = dif.id
-		WHERE dl.host_id = ? AND dl.snmp_query_id = ?',
+		WHERE dl.host_id = ? AND dl.snmp_query_id = ? AND dl.orphan = 0 AND dl.snmp_index != ""',
 		array($sort_field, $host_id, $snmp_query_id));
 
-	if ($fields === false) {
+	if ($sources === false) {
 		return false;
 	}
 
-	foreach ($fields as $field) {
-		$name = $field['field_name'];
-		$values = $data_query_rewrite_indexes_cache["$host_id@$snmp_query_id@$name"] ?? array();
-		$valid_indexes = array();
-		foreach ($values as $index => $value) {
-			if ($value !== false && $value !== null) {
-				$valid_indexes[] = $index;
-			}
+	$walked    = data_query_index_lookup($indexes);
+	$collected = array();
+
+	foreach ($sources as $source) {
+		$name = $source['field_name'];
+
+		// No walk can supply a field the XML does not collect; the remap and orphan logic owns it.
+		if (!isset($xml_fields[$name]['direction']) ||
+			($xml_fields[$name]['direction'] != 'input' && $xml_fields[$name]['direction'] != 'input-output')) {
+			continue;
 		}
-		$lookup = data_query_index_lookup($valid_indexes);
-		foreach ($indexes as $index) {
-			if (!data_query_index_exists($index, $lookup)) {
-				cacti_log("ERROR: Device[$host_id] DQ[$snmp_query_id] incomplete identity field [$name]. Retaining the previous data query cache.", false, 'REINDEX');
-				return false;
+
+		if (!data_query_index_exists($source['snmp_index'], $walked)) {
+			continue;
+		}
+
+		if (!isset($collected[$name])) {
+			$values = $data_query_rewrite_indexes_cache["$host_id@$snmp_query_id@$name"] ?? array();
+			$valid_indexes = array();
+			foreach ($values as $index => $value) {
+				if ($value !== false && $value !== null) {
+					$valid_indexes[] = $index;
+				}
 			}
+			$collected[$name] = data_query_index_lookup($valid_indexes);
+		}
+
+		if (!data_query_index_exists($source['snmp_index'], $collected[$name])) {
+			cacti_log("ERROR: Device[$host_id] DQ[$snmp_query_id] identity field [$name] is missing for index [" . $source['snmp_index'] . ']. Retaining the previous data query cache.', false, 'REINDEX');
+			return false;
 		}
 	}
 
