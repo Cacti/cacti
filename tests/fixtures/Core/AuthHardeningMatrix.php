@@ -20,7 +20,7 @@ require dirname(__DIR__, 2) . '/Helpers/IsolatedProbe.php';
 require dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 $root       = dirname(__DIR__, 3);
 $assertions = 0;
-$cases      = [['valid', true, 1, '', 1], ['invalid', false, 1, 'on', 2], ['locked', false, 0, 'on', 2], ['expired', true, 1, '', 0], ['external-valid', true, 1, '', 1], ['external-invalid', false, 1, 'on', 2], ['external-locked', false, 0, 'on', 2], ['external-expired', true, 1, '', 0], ['missing', false, 0, false, 0], ['get', false, 0, '', 1], ['tokenless', false, 0, '', 1]];
+$cases      = [['valid', true, 1, '', 1], ['invalid', false, 1, 'on', 2], ['locked', false, 0, 'on', 1], ['expired', true, 1, '', 0], ['external-valid', true, 1, '', 1], ['external-invalid', false, 1, 'on', 2], ['external-locked', false, 0, 'on', 1], ['external-expired', true, 1, '', 0], ['missing', false, 0, false, 0], ['get', false, 0, '', 1], ['tokenless', false, 0, '', 1]];
 $scenarios  = [];
 
 foreach ($cases as $case) {

@@ -135,10 +135,10 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 		if (cacti_sizeof($user)) {
 			if ($user['enabled'] != 'on') {
 				// Return the generic failure (the real reason stays in the log) and pay
-				// the same bcrypt cost as the unknown-user path below, so a disabled
+				// the same hash cost as the unknown-user path below, so a disabled
 				// account is not distinguishable from an unknown one by message or timing.
 				if (trim($password) != '') {
-					compat_password_verify((string) $password, '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.');
+					compat_password_verify((string) $password, self::decoyHash());
 				}
 
 				$error     = true;
@@ -243,6 +243,20 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 				AND enabled = 'on'",
 				[time(), $username]);
 		}
+	}
+
+	/**
+	 * The hash the disabled-account path verifies against so it costs the
+	 * same as a real verification. Where PasswordManager is installed its
+	 * decoy follows the algorithm and cost real hashes use, which is also what
+	 * the unknown-user path verifies against there. Otherwise local hashes are
+	 * native PASSWORD_DEFAULT bcrypt at cost 10, matching the fixed hash, which
+	 * is tied to no account.
+	 *
+	 * @return string A hash no password is expected to match.
+	 */
+	private static function decoyHash() : string {
+		return class_exists(PasswordManager::class) ? PasswordManager::dummyHash() : '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.';
 	}
 
 	/**

@@ -38,9 +38,12 @@ namespace {
 	$pdo->exec('CREATE TABLE user_auth(id INTEGER PRIMARY KEY, username TEXT, realm INTEGER, tfa_enabled TEXT, tfa_secret TEXT, login_opts INTEGER, enabled TEXT, lastfail INTEGER, failed_attempts INTEGER, locked TEXT, password TEXT)');
 	$pdo->exec('CREATE TABLE user_log(username TEXT, user_id INTEGER, result INTEGER, ip TEXT, time TEXT)');
 
+	// Inside the one-minute unlock window, but never equal to a fresh time().
+	$lastfail_before = str_contains($mode,'expired') ? time() - 120 : time() - 30;
+
 	if ($mode !== 'missing') {
 		$statement = $pdo->prepare('INSERT INTO user_auth VALUES (1,?,?,?,?,?,?,?,?,?,?)');
-		$statement->execute(['fixture', $realm, 'on', 'fixture', 1, 'on', str_contains($mode,'expired') ? time() - 120 : time(), 1, str_contains($mode,'locked') || str_contains($mode,'expired') ? 'on' : '', '']);
+		$statement->execute(['fixture', $realm, 'on', 'fixture', 1, 'on', $lastfail_before, 1, str_contains($mode,'locked') || str_contains($mode,'expired') ? 'on' : '', '']);
 	}
 	$_SESSION                   = [SESS_USER_ID=>1];
 	$_COOKIE                    = [];
@@ -105,7 +108,11 @@ namespace {
 		cacti_fixture_source_function($root . '/lib/auth.php',$function,'');
 	}
 	register_shutdown_function(static function () {
-		$user = $GLOBALS['pdo']->query('SELECT realm,failed_attempts,locked FROM user_auth')->fetch(PDO::FETCH_ASSOC);
-		print json_encode(['status'=>http_response_code() ?: 200, 'user'=>$user, 'token_checks'=>$GLOBALS['token_checks'], 'authenticated'=>!empty($_SESSION[SESS_USER_2FA])],JSON_THROW_ON_ERROR) . "\n";
+		$user = $GLOBALS['pdo']->query('SELECT realm,failed_attempts,locked,lastfail FROM user_auth')->fetch(PDO::FETCH_ASSOC);
+
+		if (is_array($user)) {
+			$user['lastfail_before'] = $GLOBALS['lastfail_before'];
+		}
+		print json_encode(['status'=>http_response_code() ?: 200, 'user'=>$user, 'token_checks'=>$GLOBALS['token_checks'], 'authenticated'=>!empty($_SESSION[SESS_USER_2FA]), 'message'=>$GLOBALS['message'] ?? ''],JSON_THROW_ON_ERROR) . "\n";
 	});
 }
