@@ -21,5 +21,5 @@ test('script substitution rejects unsupported dollar quotes and preserves escape
 		$output = ob_get_clean();
 	}
 
-	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(21);
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(37);
 });
