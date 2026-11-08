@@ -5831,6 +5831,29 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
 }
 
 /**
+ * Returns $column when it exactly matches an entry in $allowed, otherwise
+ * $default, or the first allowlist entry when $default is empty.
+ *
+ * sanitize_sql_column() only blocks SQL syntax, so any column reachable in the
+ * query's joins can still be sorted on. Pages that join sensitive tables pass
+ * the columns they display here instead. Matching is strict (===), so case or
+ * whitespace variants of an allowed entry fall back to the default.
+ *
+ * @param string $column  Requested sort column.
+ * @param array  $allowed Allowlist of acceptable SQL fragments.
+ * @param string $default Fallback when $column is not in $allowed.
+ *
+ * @return string An entry of $allowed, $default, or 'id' when both are empty.
+ */
+function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
+	if (in_array($column, $allowed, true)) {
+		return $column;
+	}
+
+	return $default !== '' ? $default : (count($allowed) > 0 ? (string) reset($allowed) : 'id');
+}
+
+/**
  * cacti_csv_cell - encode a single value for safe inclusion in a CSV file.
  * Doubles embedded double-quotes (RFC 4180) and prefixes a single quote when
  * the value opens with a spreadsheet formula trigger (= + - @ and the tab/CR

@@ -2298,9 +2298,67 @@ function reports() : void {
 	if (is_reports_admin()) {
 		$sql_join = 'LEFT JOIN user_auth AS ua ON ua.id = report.user_id';
 	} else {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' user_auth.id=' . $_SESSION[SESS_USER_ID];
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' ua.id=' . (int) $_SESSION[SESS_USER_ID];
 		$sql_join = 'INNER JOIN user_auth AS ua ON ua.id = report.user_id';
 	}
+
+	$display_text = [
+		'name' => [
+			'display' => __('Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'type' => [
+			'display' => __('Report Type'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'full_name' => [
+			'display' => __('Owner'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'sched_type' => [
+			'display' => __('Schedule'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'nosort' => [
+			'display' => __('Notification Detail'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('Email options in use: To, BCC, and Notification List')
+		],
+		'enabled' => [
+			'display' => __('Enabled'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		],
+		'next_start' => [
+			'display' => __('Next Start'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		],
+		'last_started' => [
+			'display' => __('Last Started'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		],
+		'run_limit' => [
+			'display' => __('Run Limit'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		],
+		'last_runtime' => [
+			'display' => __('Last Runtime'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		],
+	];
+
+	// sort only by a displayed column: the query joins user_auth
+	$sort_column    = reports_sort_column(grv('sort_column'), $display_text);
+	$sort_direction = strtoupper((string) grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 
 	$reports_list = [];
 
@@ -2333,7 +2391,7 @@ function reports() : void {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+				ORDER BY $sort_column $sort_direction" .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		} elseif (grv('report_type') == 'reports') {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2348,7 +2406,7 @@ function reports() : void {
 				FROM reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+				ORDER BY $sort_column $sort_direction" .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		} else {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2363,7 +2421,7 @@ function reports() : void {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+				ORDER BY $sort_column $sort_direction" .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		}
 	} else {
@@ -2379,63 +2437,9 @@ function reports() : void {
 			FROM reports AS report
 			$sql_join
 			$sql_where
-			ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+			ORDER BY $sort_column $sort_direction" .
 			' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 	}
-
-	$display_text = [
-		'report.name' => [
-			'display' => __('Name'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'type' => [
-			'display' => __('Report Type'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'report.full_name' => [
-			'display' => __('Owner'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'sched_type' => [
-			'display' => __('Schedule'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'nosort' => [
-			'display' => __('Notification Detail'),
-			'align'   => 'left',
-			'sort'    => 'ASC',
-			'tip'     => __('Email options in use: To, BCC, and Notification List')
-		],
-		'report.enabled' => [
-			'display' => __('Enabled'),
-			'align'   => 'right',
-			'sort'    => 'ASC'
-		],
-		'next_start' => [
-			'display' => __('Next Start'),
-			'align'   => 'right',
-			'sort'    => 'ASC'
-		],
-		'report.last_started' => [
-			'display' => __('Last Started'),
-			'align'   => 'right',
-			'sort'    => 'ASC'
-		],
-		'report.run_limit' => [
-			'display' => __('Run Limit'),
-			'align'   => 'right',
-			'sort'    => 'DESC'
-		],
-		'report.last_runtime' => [
-			'display' => __('Last Runtime'),
-			'align'   => 'right',
-			'sort'    => 'DESC'
-		],
-	];
 
 	$nav = html_nav_bar(get_reports_page() . 'filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, (cacti_sizeof($display_text) + 1), __('Reports'), 'page', 'main');
 
@@ -2445,7 +2449,7 @@ function reports() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
+	html_header_sort_checkbox($display_text, $sort_column, $sort_direction, false);
 
 	$i = 0;
 
