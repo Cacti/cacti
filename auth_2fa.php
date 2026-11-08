@@ -91,6 +91,10 @@ if (gnrv('action') == 'login_2fa') {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 
+			// Wrong tokens share the password path's account lockout. That bound
+			// only exists when Lock Accounts (secpass_lockfailed) is enabled; its
+			// default is Disabled, in which case these calls never lock and the
+			// number of token guesses per first-factor session is not limited here.
 			auth_checkclear_lockout($user['username'], (int) $user['realm']);
 
 			$tfa_locked = auth_process_lockout_check($user['username'], (int) $user['realm']);

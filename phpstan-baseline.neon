@@ -216,9 +216,6 @@ parameters:
 			count: 1
 			path: api/include/db_functions.php
 
-
-
-
 		-
 			message: '#^Cannot access offset ''password'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
