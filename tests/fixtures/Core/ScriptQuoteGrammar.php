@@ -36,6 +36,14 @@ foreach (["'", '"'] as $quote) {
 		$expected = $slashes % 2 === 0 ? '' : $prefix . $value;
 		$cases[]  = [$prefix . '<field>', ['field' => $value], $expected];
 		$cases[]  = [$prefix . $quote . '<field>' . $quote, ['field' => $value], $expected];
+
+		// Backslashes between the $ and the token: the odd-run shed drops one,
+		// so a single backslash must not leave the $ glued to the value.
+		foreach ([1, 3] as $inner) {
+			$kept     = str_repeat('\\', $inner - 1);
+			$refused  = $kept === '' && $slashes % 2 === 0;
+			$cases[]  = [$prefix . str_repeat('\\', $inner) . '<field>', ['field' => $value], $refused ? '' : $prefix . $kept . $value];
+		}
 	}
 }
 
