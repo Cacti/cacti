@@ -23,6 +23,14 @@ ROOT = Path(__file__).resolve().parents[3]
 CATALOG = Path('resource/catalogs/interface.json')
 SCHEMA = Path('resource/catalogs/interface.schema.json')
 HASH = re.compile(r'hash_[a-f0-9]{38}')
+# IF-MIB octet counter columns. Other ifXTable columns, such as the multicast and
+# broadcast packet counters .2 through .5, are Counter32 despite their table.
+OCTET_COUNTERS = {
+    ('traffic_in', 32): '.1.3.6.1.2.1.2.2.1.10',
+    ('traffic_in', 64): '.1.3.6.1.2.1.31.1.1.1.6',
+    ('traffic_out', 32): '.1.3.6.1.2.1.2.2.1.16',
+    ('traffic_out', 64): '.1.3.6.1.2.1.31.1.1.1.10',
+}
 
 
 def unique_pairs(pairs: list[tuple[str, object]]) -> dict:
@@ -103,6 +111,32 @@ def package_files(raw: bytes) -> dict[str, bytes]:
     return files
 
 
+def validate_bindings(metrics: list[dict], associations: list) -> None:
+    """Require each declared field to feed only its own RRD item, exactly once.
+
+    Presence alone would let a regenerated package also bind a field to the
+    other direction's RRD item, or bind one RRD item twice in a graph.
+    """
+    field_metric = {binding['name']: metric for metric in metrics for binding in metric['query_fields']}
+    rrd_metric = {metric['rrd_item']: metric for metric in metrics}
+    bound = dict.fromkeys(field_metric, 0)
+    for association in associations:
+        seen = set()
+        for relation in association.findall('./rrd/*'):
+            field, rrd = relation.findtext('snmp_field_name'), relation.findtext('data_template_rrd_id')
+            owner, target = field_metric.get(field), rrd_metric.get(rrd)
+            if owner is None and target is None:
+                continue
+            if owner is not target or relation.findtext('data_template_id') != owner['data_template']:
+                raise ValueError('Native query binds a metric field to a different RRD item')
+            if rrd in seen:
+                raise ValueError('Native query binds an RRD item more than once in one graph')
+            seen.add(rrd)
+            bound[field] += 1
+    if any(count != 1 for count in bound.values()):
+        raise ValueError('Native query must bind each metric field exactly once')
+
+
 def validate(catalog: dict, root: Path = ROOT) -> dict[str, int]:
     schema_validate(catalog, load_json(root / SCHEMA))
     query = catalog['query']
@@ -178,11 +212,9 @@ def validate(catalog: dict, root: Path = ROOT) -> dict[str, int]:
             field, width = binding['name'], binding['counter_width']
             if field not in fields or fields[field]['direction'] != 'output':
                 raise ValueError('Metric references an absent output field')
-            prefix = '.1.3.6.1.2.1.31.1.1.1.' if width == 64 else '.1.3.6.1.2.1.2.2.1.'
-            if not fields[field]['oid'].startswith(prefix):
-                raise ValueError('Counter width differs from the IF-MIB table')
-            if not any(relation.findtext('snmp_field_name') == field and relation.findtext('data_template_rrd_id') == metric['rrd_item'] and relation.findtext('data_template_id') == metric['data_template'] for association in associations for relation in association.findall('./rrd/*')):
-                raise ValueError('Native query does not bind this metric field')
+            if fields[field]['oid'] != OCTET_COUNTERS[(metric['name'], width)]:
+                raise ValueError('Counter width or direction differs from the IF-MIB octet counter')
+    validate_bindings(catalog['metrics'], associations)
     return {'fields': len(fields), 'identities': len(catalog['identities']), 'dependencies': len(dependencies), 'metrics': len(catalog['metrics'])}
 
 
