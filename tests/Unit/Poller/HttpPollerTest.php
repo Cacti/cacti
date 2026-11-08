@@ -181,6 +181,35 @@ test('no more than the configured number of requests are in flight', function ()
 	expect($peak)->toBe(2);
 });
 
+test('devices are fetched together, each under its own concurrency limit', function () {
+	$base  = cacti_http_test_server()['url'];
+	$items = [];
+
+	// held until two are in flight: one request per device overlaps at 2, while
+	// a poller that ignores the per-device limit lets all four in together
+	foreach ([1, 2] as $host) {
+		foreach (['a', 'b'] as $endpoint) {
+			$items[] = new CactiHttpPollItem($host, count($items) + 1, 'v', "$base/inflight/$host$endpoint?wait=2", '/v');
+		}
+	}
+
+	$overlap = cacti_http_test_server_overlap(2);
+
+	$errors    = [];
+	$documents = (new CactiHttpPoller(1))->fetch($items, $errors);
+	$peak      = cacti_http_test_peak();
+
+	expect($errors)->toBe([])
+		->and($documents)->toHaveCount(4)
+		->and($peak)->toBeLessThanOrEqual(2);
+
+	if ($overlap < 2) {
+		$this->markTestSkipped("the test server held $overlap of 2 plain curl requests together, so device overlap cannot be measured");
+	}
+
+	expect($peak)->toBe(2);
+});
+
 test('failed endpoints are reported without stopping the others', function () {
 	$base  = cacti_http_test_server()['url'];
 	$items = [

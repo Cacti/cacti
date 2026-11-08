@@ -78,14 +78,22 @@ function cacti_http(string $method, string $url, array $options = []) : array {
  * that must reach private networks: only addresses inside those ranges are
  * refused, so the list has to spell out IPv4-mapped and NAT64 forms itself.
  *
- * @param array<array-key, array{method: string, url: string, options?: array<string, mixed>}> $requests
- * @param int                                                                                  $concurrency upper bound on transfers in flight
+ * A request may name a 'group', such as the device it polls.  When
+ * $group_concurrency is above 0 no group has more than that many transfers
+ * in flight, so one caller can fetch for many devices at once without
+ * sending any single device more requests than it would get on its own.
+ * Requests without a group share one.
+ *
+ * @param array<array-key, array{method: string, url: string, options?: array<string, mixed>, group?: array-key}> $requests
+ * @param int                                                                                                     $concurrency       upper bound on transfers in flight
+ * @param int                                                                                                     $group_concurrency upper bound on transfers in flight per group, 0 for none
  *
  * @return array<array-key, array{success: bool, status: int, body: string, error: string}> results keyed like $requests
  */
-function cacti_http_multi(array $requests, int $concurrency = 1) : array {
-	$results = [];
-	$queue   = [];
+function cacti_http_multi(array $requests, int $concurrency = 1, int $group_concurrency = 0) : array {
+	$results  = [];
+	$queue    = [];
+	$in_group = [];
 
 	foreach ($requests as $key => $request) {
 		$options = $request['options'] ?? [];
@@ -103,8 +111,9 @@ function cacti_http_multi(array $requests, int $concurrency = 1) : array {
 		$transfer->handle      = null;
 		$transfer->body        = '';
 		$transfer->error       = '';
+		$transfer->group       = $request['group'] ?? '';
 
-		$queue[$key] = $transfer;
+		$queue[$transfer->group][] = $transfer;
 	}
 
 	$multi  = curl_multi_init();
@@ -113,13 +122,32 @@ function cacti_http_multi(array $requests, int $concurrency = 1) : array {
 	try {
 		while ($queue !== [] || $active !== []) {
 			while (count($active) < max(1, $concurrency) && $queue !== []) {
-				$transfer = array_shift($queue);
-				$error    = cacti_http_start($multi, $transfer);
+				$transfer = null;
+
+				foreach (array_keys($queue) as $group) {
+					if ($group_concurrency < 1 || ($in_group[$group] ?? 0) < $group_concurrency) {
+						$transfer = array_shift($queue[$group]);
+
+						if ($queue[$group] === []) {
+							unset($queue[$group]);
+						}
+
+						break;
+					}
+				}
+
+				// every group that still has work queued is at its limit
+				if ($transfer === null) {
+					break;
+				}
+
+				$error = cacti_http_start($multi, $transfer);
 
 				if ($error !== '') {
 					$results[$transfer->key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => $error];
 				} else {
 					$active[spl_object_id($transfer->handle)] = $transfer;
+					$in_group[$transfer->group]               = ($in_group[$transfer->group] ?? 0) + 1;
 				}
 			}
 
@@ -147,6 +175,8 @@ function cacti_http_multi(array $requests, int $concurrency = 1) : array {
 					$active[spl_object_id($transfer->handle)] = $transfer;
 				} else {
 					$results[$transfer->key] = $result;
+
+					$in_group[$transfer->group]--;
 				}
 			}
 
@@ -158,7 +188,8 @@ function cacti_http_multi(array $requests, int $concurrency = 1) : array {
 					$results[$transfer->key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Request did not complete'];
 				}
 
-				$active = [];
+				$active   = [];
+				$in_group = [];
 			} elseif (!$settled) {
 				curl_multi_select($multi, 0.25);
 			}

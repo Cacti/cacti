@@ -444,7 +444,7 @@ function db_fetch_assoc_prepared($sql, $params = [], $log = true) {
 }
 
 cacti_fixture_source_function($root . '/cmd.php', 'collect_device_data', __NAMESPACE__);
-cacti_fixture_source_function($root . '/cmd.php', 'http_prefetch_device', __NAMESPACE__);
+cacti_fixture_source_function($root . '/cmd.php', 'http_prefetch_items', __NAMESPACE__);
 cacti_fixture_source_function($root . '/remote_agent.php', 'poll_for_data', __NAMESPACE__);
 cacti_fixture_source_function($root . '/lib/utility.php', 'get_http_input_fields', __NAMESPACE__);
 cacti_fixture_source_function($root . '/lib/functions.php', 'test_data_source', __NAMESPACE__);
@@ -481,7 +481,7 @@ $items = [
 	http_row(11, "$base/down", '/in'),
 ];
 
-http_prefetch_device($poller, 2, $items);
+http_prefetch_items($poller, $items);
 
 $error_ds = [];
 $outputs  = [];
@@ -508,17 +508,13 @@ $item     = http_row(12, "$base/stats", '/in');
 check(collect_device_data($item, $error_ds, 25) === 'U', 'unfetched item was not U');
 check($error_ds === [12 => 12], 'unfetched item was not counted as an error');
 
-// cmd.php's poller loop groups HTTP items by device and prefetches them when it reaches a new, live device
+// cmd.php's poller loop prefetches the HTTP items of every device before it walks them
 $poller_items = [http_row(9, "$base/stats", '/in'), $script, http_row(10, "$base/stats", '/out')];
-$new_host     = true;
-$host_down    = false;
-$host_id      = 2;
 $loop         = source_blocks($root . '/cmd.php', [
 	["~^require_once\(CACTI_PATH_LIBRARY \. '/CactiHttpPoller\.php'\);$~", '~~'],
 	['~^\$http_outputs = \[\];$~', '~^\$http_reasons = \[\];$~'],
 	['~^// one request per device and endpoint~', '~^}$~'],
-	['~^\t\$http_poller = ~', '~~'],
-	['~^\t\tif \(\$new_host && !\$host_down && \$http_poller~', '~^\t\t}$~'],
+	['~^\tif \(cacti_sizeof\(\$http_items\)\) \{$~', '~^\t}$~'],
 ]);
 
 try {
@@ -527,8 +523,7 @@ try {
 	unlink($loop);
 }
 
-check(array_keys($http_items) === [2] && count($http_items[2]) === 2, 'cmd.php grouped ' . json_encode($http_items));
-check($http_poller instanceof CactiHttpPoller, 'cmd.php built no HTTP poller');
+check(array_column($http_items, 'local_data_id') === [9, 10], 'cmd.php selected ' . json_encode($http_items));
 check($http_outputs === ['9:value' => '5', '10:value' => '7'], 'cmd.php prefetched ' . json_encode($http_outputs));
 
 // cmd_realtime.php fetches a device's HTTP rows once, then reads each item's output
