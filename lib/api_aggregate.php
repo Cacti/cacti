@@ -2216,16 +2216,16 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 						"'>";
 				print '</td>';
 			} else {
-				print ("<td style='width:1%;text-align:center;'><input class='checkbox' " .
-					"id='dummy_") .
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' " .
+					"id='dummy_" .
 						$item['id'] .
 						"' disabled='disabled' type='checkbox' name='dummy_" .
 						$item['id'] .
 						"'" .
 						($is_edit ? 'checked' : '') .
 						'></td>';
-				print ("<td style='width:1%;text-align:center;'><input class='checkbox' " .
-					"id='dummy1_") . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' " .
+					"id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
 				print "<input style='display:none;' class='checkbox' id='agg_skip_" .
 					$item['id'] .
 					"' type='checkbox' name='agg_skip_" .

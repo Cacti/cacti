@@ -109,6 +109,7 @@ function library_remote(): void {
 	}
 }
 
+/** Exercise local persistence and failure reporting when propagation to a collector fails. */
 function library_remote_failures(int $poller, int $device, PDO $remote, string $hostname): void {
 	$query         = (int) db_fetch_cell('SELECT id FROM snmp_query ORDER BY id LIMIT 1');
 	$graphTemplate = (int) db_fetch_cell('SELECT id FROM graph_templates ORDER BY id LIMIT 1');

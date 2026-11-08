@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Capture the output of a render callback and return it as an XPath-queryable document. */
 function library_form_dom(callable $render): DOMXPath {
 	ob_start();
 
@@ -24,6 +25,7 @@ function library_form_dom(callable $render): DOMXPath {
 	return new DOMXPath($document);
 }
 
+/** Render and submit the aggregate graph item editor for an installed template. */
 function library_aggregate_editor(int $template, array $aggregate): void {
 	$items = db_fetch_assoc_prepared('SELECT id, graph_type_id FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence', [$template]);
 	library_expect(count($items) > 0, true, 'Aggregate editor uses installed template items');
@@ -85,6 +87,7 @@ function library_aggregate_editor(int $template, array $aggregate): void {
 	}
 }
 
+/** Render the generic form helpers with hostile values and check escaping and attributes. */
 function library_forms(): void {
 	global $form_id;
 	require_once CACTI_PATH_LIBRARY . '/html_form.php';
@@ -180,6 +183,7 @@ function library_forms(): void {
 	}
 }
 
+/** Render the graph and data template forms for a stored graph and its data source. */
 function library_template_forms(int $graph): void {
 	global $struct_graph_item;
 	require_once CACTI_PATH_LIBRARY . '/html_form_template.php';

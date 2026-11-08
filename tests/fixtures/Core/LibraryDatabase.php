@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise schema creation and prepared statements against a disposable table. */
 function library_database(): void {
 	global $database_hostname, $database_username, $database_password, $database_default, $database_port;
 

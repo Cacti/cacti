@@ -7,6 +7,7 @@ namespace CactiLibraryLifecycleFixture;
 function time(): int {
 	return $GLOBALS['library_lifecycle_clock'];
 }
+/** Advance the fixture clock instead of sleeping and fail when the barrier exceeds its deadline. */
 function sleep(int $seconds): int {
 	$GLOBALS['library_lifecycle_sleeps'][] = $seconds;
 	$GLOBALS['library_lifecycle_clock'] += $seconds;
@@ -17,12 +18,15 @@ function sleep(int $seconds): int {
 
 	return 0;
 }
+/** Report the scheduled dsstats worker count for the fixture clock. */
 function dsstats_processes_running(string $type): int {
 	return running($type);
 }
+/** Report the scheduled rrdcheck worker count for the fixture clock. */
 function rrdcheck_processes_running(string $type): int {
 	return running($type);
 }
+/** Return the number of workers registered at or before the fixture clock. */
 function running(string $type): int {
 	\library_expect($type, 'bmaster', 'Barrier observes the requested worker family');
 	$count = 0;
@@ -35,12 +39,15 @@ function running(string $type): int {
 
 	return $count;
 }
+/** Record a background launch instead of starting a process. */
 function exec_background(string $command, string $arguments): void {
 	$GLOBALS['library_lifecycle_launches'][] = [$command, $arguments];
 }
+/** Record a log message and category instead of writing to the Cacti log. */
 function cacti_log(string $message, bool $print = false, string $category = '', int $level = -1): void {
 	$GLOBALS['library_lifecycle_logs'][] = [$message, $category];
 }
+/** Exercise the dsstats and rrdcheck launch and wait loops against the substituted clock. */
 function run(): void {
 	global $debug;
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';

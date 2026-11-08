@@ -51,6 +51,42 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+# Library code is exercised by the Docker request probes (library-behavior and
+# friends). Reuse the 80 percent gate's dispatcher so both gates select the same
+# probes, then rebase each container report onto this checkout. Evidence for a
+# file whose hash differs from the local copy is dropped, so the file stays
+# uninstrumented and the gate fails closed instead of trusting stale lines.
+request_raw="$coverage_dir/request-coverage"
+BASE_COMMIT="$base_commit" CACTI_TEST_COVERAGE=1 CACTI_PR_RAW_COVERAGE="${CACTI_PR_RAW_COVERAGE:-/tmp/cacti-pr-coverage}" \
+	CACTI_PR_COVERAGE_OUTPUT="$request_raw" bash tests/tools/run_request_coverage.sh
+if compgen -G "$request_raw/*.json" > /dev/null; then
+	"$python_binary" - "$request_raw" "$coverage_dir/request-coverage.json" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+root = Path.cwd().resolve()
+merged = {}
+for report_path in sorted(Path(sys.argv[1]).glob('*.json')):
+    report = json.loads(report_path.read_text())
+    prefix = report['root'].rstrip('/') + '/'
+    for file, lines in report['coverage'].items():
+        if not file.startswith(prefix):
+            continue
+        local = (root / file[len(prefix):]).resolve()
+        if not local.is_relative_to(root) or not local.is_file():
+            continue
+        if hashlib.sha256(local.read_bytes()).hexdigest() != report['hashes'].get(file):
+            continue
+        target = merged.setdefault(str(local), {})
+        for number, hits in lines.items():
+            target[number] = max(hits, target.get(number, -2))
+Path(sys.argv[2]).write_text(json.dumps(merged))
+PY
+	php_coverage+=("$coverage_dir/request-coverage.json")
+fi
+
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then

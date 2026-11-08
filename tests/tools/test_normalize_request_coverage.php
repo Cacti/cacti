@@ -13,6 +13,7 @@ $fixture    = $root . '/tests/fixtures/Core/RequestCoverageNormalization.php';
 $temporary  = sys_get_temp_dir() . '/cacti-normalize-' . bin2hex(random_bytes(8));
 $assertions = 0;
 
+/** Count one assertion and throw with the message when the condition is false. */
 function normalization_expect(bool $condition, string $message): void {
 	global $assertions;
 	$assertions++;
@@ -22,6 +23,7 @@ function normalization_expect(bool $condition, string $message): void {
 	}
 }
 
+/** Run the normalizer in a child process and return its exit status. */
 function normalization_run(string $input, string $output): int {
 	global $temporary;
 	$process = proc_open([PHP_BINARY, __DIR__ . '/normalize_request_coverage.php', $input, $output, $temporary . '/coverage.xml'],

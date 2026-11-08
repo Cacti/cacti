@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Run native SNMP data queries against the fixture agent and check discovery and bulk-walk sizing. */
 function library_collection_queries(int $snmpDevice, int $interfaceQuery): void {
 	global $data_query_xml_arrays;
 	library_snmp_multi();
@@ -86,6 +87,7 @@ function library_collection_queries(int $snmpDevice, int $interfaceQuery): void 
 	api_device_remove($scriptDevice);
 }
 
+/** Check that multi-OID SNMP gets keep OID association for each SNMP version and batch size. */
 function library_snmp_multi(): void {
 	$values = ['.1.3.6.1.2.1.1.6.0' => 'Cacti coverage fixture', '.1.3.6.1.2.1.1.4.0' => 'cacti@example.invalid'];
 
@@ -108,6 +110,7 @@ function library_snmp_multi(): void {
 	library_expect(cacti_snmp_get_multi('127.0.0.1', 'public', array_keys($values), 2, port: 9, timeout_ms: 10), array_fill_keys(array_keys($values), 'U'), 'A failed batch marks each requested sample unknown');
 }
 
+/** Run a temporary SNMP query XML against the loopback interface to exercise each output format. */
 function library_snmp_query_formats(int $device, int $interfaceQuery): void {
 	global $data_query_xml_arrays;
 	$loopback = db_fetch_cell_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? AND field_value = ?', [$device, $interfaceQuery, 'ifDescr', 'lo']);

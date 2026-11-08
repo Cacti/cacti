@@ -5,14 +5,17 @@ declare(strict_types = 1);
 /** Fail only transaction acknowledgement; SQL still uses the disposable MariaDB. */
 final class LibraryRemovalConnection extends PDO {
 	public string $failure = '';
+	/** Fail the transaction start when the scenario asks for it. */
 	public function beginTransaction(): bool {
 		return $this->failure === 'begin' ? false : parent::beginTransaction();
 	}
+	/** Fail the commit when the scenario asks for it. */
 	public function commit(): bool {
 		return $this->failure === 'commit' ? false : parent::commit();
 	}
 }
 
+/** Exercise template removal when the transaction start or commit fails. */
 function library_removal(int $template): void {
 	global $database_sessions, $database_hostname, $database_port, $database_default, $database_username, $database_password;
 	$key        = "$database_hostname:$database_port:$database_default";

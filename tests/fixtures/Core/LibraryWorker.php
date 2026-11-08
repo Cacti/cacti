@@ -13,6 +13,7 @@ require __DIR__ . '/../../../include/global.php';
 date_default_timezone_set('UTC');
 $_SESSION['sess_user_id'] = 1;
 $assertions               = 0;
+/** Count one assertion and throw when the actual value is not identical to the expected value. */
 function library_expect(mixed $actual, mixed $expected, string $message): void {
 	global $assertions;
 	$assertions++;

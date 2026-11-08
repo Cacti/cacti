@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
+/** Exercise graph, device, template and tree permission checks for a disposable user under each policy. */
 function library_access(int $graph, int $device, int $template, int $tree, int $branch): void {
 	global $settings_user;
 	$session  = $_SESSION;
@@ -128,6 +129,7 @@ function library_access(int $graph, int $device, int $template, int $tree, int $
 	}
 }
 
+/** Render the user menu for each realm and password-change combination and check the offered links. */
 function library_user_menu(int $user): void {
 	foreach ([[0, 'on', true], [1, 'on', false], [0, '', false]] as [$realm, $change, $passwordLink]) {
 		db_execute_prepared('UPDATE user_auth SET realm = ?, password_change = ? WHERE id = ?', [$realm, $change, $user]);

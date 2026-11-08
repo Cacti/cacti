@@ -105,6 +105,7 @@ foreach (['xml', 'rrd', 'poller', 'data_query', 'utility', 'api_device', 'api_gr
 
 $assertions = 0;
 
+/** Count one assertion and throw when the actual value is not identical to the expected value. */
 function library_expect(mixed $actual, mixed $expected, string $message): void {
 	global $assertions;
 	$assertions++;
@@ -131,6 +132,7 @@ function library_import_coverage(array $reports): void {
 	}
 }
 
+/** Save a device through api_device_save() using fixture defaults merged with the given overrides. */
 function library_save_device(array $overrides = []): int {
 	$_SESSION[SESS_ERROR_FIELDS] = [];
 	$_SESSION['sess_messages']   = [];
@@ -147,6 +149,7 @@ function library_save_device(array $overrides = []): int {
 	], $overrides));
 }
 
+/** Parse template XML and return it normalized so exports compare by content, not indentation. */
 function library_xml_content(string $xml): string {
 	$document                     = new DOMDocument();
 	$document->preserveWhiteSpace = false;

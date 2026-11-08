@@ -9,11 +9,13 @@ function admin_email(string $subject, string $message): bool {
 
 	return true;
 }
+/** Record the outbound mail call and return the configured transport result. */
 function mailer(...$arguments): string {
 	$GLOBALS['library_error_mail'][] = $arguments;
 
 	return $GLOBALS['library_error_mail_result'];
 }
+/** Register the fixture plugin's error event hook through the production API. */
 function fixture_setup(string $plugin): bool {
 	return \api_plugin_register_hook($plugin, 'coverage_error_event', 'coverage_error_event', 'setup.php', true);
 }
@@ -23,6 +25,7 @@ function gethostbyname(string $host): string {
 	return $host === 'collector.coverage.invalid' ? $host : \gethostbyname($host);
 }
 
+/** Exercise call_remote_data_collector() failure notification against an unresolvable collector. */
 function remote(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 	class_alias(\ErrorException::class, __NAMESPACE__ . '\\ErrorException');
@@ -72,6 +75,7 @@ function remote(): void {
 		unset($GLOBALS['library_error_notifications']);
 	}
 }
+/** Exercise the production error handler with an owned plugin hook, using source slices. */
 function run(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 

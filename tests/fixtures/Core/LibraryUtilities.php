@@ -9,14 +9,17 @@ function get_mysql_info($poller): array {
 
 	return $GLOBALS['library_utility_metadata'];
 }
+/** Return the configured system memory instead of reading the host. */
 function utilities_get_system_memory(): array {
 	return $GLOBALS['library_utility_memory'];
 }
+/** Return the configured CPU count after checking the discovery command. */
 function system(string $command): string {
 	\library_expect($command, 'nproc', 'CPU discovery uses the established command');
 
 	return (string) $GLOBALS['library_utility_cpus'];
 }
+/** Exercise utilities_get_mysql_recommendations() from source with substituted host metadata. */
 function run(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/utility.php', 'utilities_get_mysql_recommendations', __NAMESPACE__);
