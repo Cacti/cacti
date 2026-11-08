@@ -2644,12 +2644,6 @@ function get_script_query_path($args, $script_path, $host_id) {
 	/* SECURITY: The base script path MUST be sanitized to prevent RCE from malicious templates */
 	$parsed_script_path = substitute_script_query_path($script_path);
 
-	if (strpos($parsed_script_path, '..') !== false) {
-		cacti_log('FATAL: Malicious path traversal detected in Data Query script path: ' . $parsed_script_path, true, 'REINDEX');
-
-		return false;
-	}
-
 	/* cacti_escapeshellcmd() neutralizes shell metacharacters by replacing
 	 * each one with a space. On Windows that replacement set includes the
 	 * backslash path separator, so a path such as
@@ -2665,6 +2659,13 @@ function get_script_query_path($args, $script_path, $host_id) {
 		$safe_script_path = str_replace(array('#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$'), '', $parsed_script_path);
 	} else {
 		$safe_script_path = cacti_escapeshellcmd($parsed_script_path);
+	}
+
+	// Validate the final path because removing metacharacters can join path components.
+	if (strpos($safe_script_path, '..') !== false) {
+		cacti_log('FATAL: Malicious path traversal detected in Data Query script path: ' . $parsed_script_path, true, 'REINDEX');
+
+		return false;
 	}
 
 	/* get a complete path for our target script */
