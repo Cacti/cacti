@@ -92,8 +92,11 @@ function form_validate_get_validator(): ?ValidatorInterface {
  *
  * Derivation rules (all opt-in via metadata the field already carries):
  *   - a field that is not 'optional' and has no non-empty 'default' => NotBlank
+ *     (never for checkbox, checkbox_group, template_checkbox, drop_multi or
+ *     custom controls, which can legitimately submit nothing)
  *   - 'max_length'                                                  => Length(max)
  *   - 'drop_array'/'radio' with an 'array' of choices               => Choice
+ *     (plus '0' when 'none_value' adds a None option)
  *   - an explicit 'constraints' array (Constraint objects)          => appended verbatim
  *
  * @param array $def A single Cacti $fields[...] definition.
@@ -108,6 +111,15 @@ function form_validate_constraints_for(array $def): array {
 	// that carries a non-empty 'default' is effectively optional too, because
 	// the renderer substitutes the default for an empty submission.
 	$optional = !empty($def['optional']) || (isset($def['default']) && $def['default'] !== '');
+
+	// An unticked checkbox or an empty multi-select submits nothing, and a
+	// custom control owns its own value, so none of them can be derived as
+	// required from a missing 'optional' flag alone.
+	$method = (string) ($def['method'] ?? '');
+
+	if (in_array($method, ['checkbox', 'checkbox_group', 'template_checkbox', 'drop_multi', 'custom'], true)) {
+		$optional = true;
+	}
 
 	if (!$optional) {
 		$constraints[] = new Assert\NotBlank(message: __('%s is required.', $label));
@@ -124,12 +136,17 @@ function form_validate_constraints_for(array $def): array {
 		);
 	}
 
-	// drop_array / radio -> Assert\Choice against the declared keys
-	$method = (string) ($def['method'] ?? '');
-
+	// drop_array / radio -> Assert\Choice against the declared keys. A
+	// 'none_value' makes form_dropdown() offer an extra option posting '0'.
 	if (in_array($method, ['drop_array', 'radio'], true) && !empty($def['array']) && is_array($def['array'])) {
+		$choices = array_map('strval', array_keys($def['array']));
+
+		if (!empty($def['none_value'])) {
+			$choices[] = '0';
+		}
+
 		$constraints[] = new Assert\Choice(
-			choices: array_map('strval', array_keys($def['array'])),
+			choices: $choices,
 			message: __('%s is not a valid selection.', $label),
 		);
 	}

@@ -349,6 +349,12 @@ namespace Cacti\Test\FormControl {
 	\color_expect(\form_validate_fields($fields, ['mode' => '2']) === [], 'A declared choice must be valid');
 	\color_expect(\form_validate_fields($fields, ['mode' => '9']) === ['mode' => ['This value is not a valid selection.']], 'An undeclared choice must be rejected');
 	\color_expect(\form_validate_stash([], ['mode' => '9']) === false, 'No errors must stash nothing');
+	$fields = [
+		'enabled' => ['method' => 'checkbox'],
+		'owner'   => ['method' => 'drop_array', 'none_value' => 'None', 'array' => [5 => 'Five']],
+	];
+	\color_expect(\form_validate_fields($fields, ['enabled' => '', 'owner' => '0']) === [], 'An unticked checkbox and the None option must be valid');
+	\color_expect(\form_validate_fields($fields, ['enabled' => '', 'owner' => '7']) === ['owner' => ['This value is not a valid selection.']], 'A None option must not admit undeclared choices');
 
 	$_SESSION                    = [];
 	$_SESSION[SESS_FIELD_ERRORS] = ['hex' => ['<b>bad</b> hex', 'too long'], 'name' => 'not a list'];
