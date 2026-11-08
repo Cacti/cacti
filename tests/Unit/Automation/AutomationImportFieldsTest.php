@@ -31,5 +31,19 @@
 require_once dirname(__DIR__, 2) . '/Helpers/IsolatedProbe.php';
 test('automation imports reject malformed fields before writes and preserve exported identifiers (#7470)', function () {
 	$result = cacti_test_isolated_probe(dirname(__DIR__, 2) . '/fixtures/Core/AutomationImportFields.php');
-	expect($result['cases'])->toBe(53);
+	expect($result['cases'])->toBe(56);
+});
+
+test('every import field alias is the alias the matching SQL joins that table under (#7470)', function () {
+	require_once dirname(__DIR__, 3) . '/lib/api_automation.php';
+
+	$source  = file_get_contents(dirname(__DIR__, 3) . '/lib/api_automation.php');
+	$aliases = automation_query_field_table_aliases();
+
+	expect($aliases)->toHaveCount(7)
+		->and(array_unique($aliases))->toBe($aliases);
+
+	foreach ($aliases as $table => $alias) {
+		expect($source)->toContain($table . ' AS ' . $alias . "\n");
+	}
 });
