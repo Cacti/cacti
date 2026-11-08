@@ -46,7 +46,7 @@ run_php_probe tests/fixtures/Core/Rrd/FallbackSourceIdentity.php '^(lib/rrd\.php
 
 run_php_probe tests/fixtures/SnmpAgentGlobalSettingsCoverage.php '^(lib/snmpagent\.php|tests/fixtures/SnmpAgentGlobalSettingsCoverage\.php)'
 
-run_php_probe tests/fixtures/ColorFormValidateCoverage.php '^(color\.php|include/global(_constants|_form)?\.php|lib/form_validate\.php|tests/fixtures/ColorFormValidateCoverage\.php)'
+run_php_probe tests/fixtures/Core/ColorFormValidateCoverage.php '^(color\.php|include/global(_constants|_form)?\.php|lib/form_validate\.php|tests/fixtures/Core/ColorFormValidateCoverage\.php)'
 
 run_php_probe tests/fixtures/CmdBoostFlushRedirectCoverage.php '^(cmd\.php|tests/fixtures/CmdBoostFlushRedirectCoverage\.php)'
 

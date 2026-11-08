@@ -15,10 +15,10 @@ namespace {
 		http_response_code(404);
 		exit;
 	}
-	require_once dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
-	require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
+	require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
+	require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 
-	$root = dirname(__DIR__, 2);
+	$root = dirname(__DIR__, 3);
 
 	/**
 	 * Compile the checked-in statements matching $pattern at their original
@@ -227,6 +227,91 @@ namespace Cacti\Test\ColorSave {
 	}
 	// Regex skips empty values, so the last case (a malformed hex) carries it.
 	\color_expect(in_array('Hex Value must be exactly 6 hexadecimal digits (000000-FFFFFF).', $_SESSION[SESS_FIELD_ERRORS]['hex'], true), 'The declared hex message must be stashed');
+}
+
+namespace Cacti\Test\FormControl {
+	// The color form never declares a choice field, a non-array entry or a
+	// malformed constraint, and its edit page (where draw_edit_control()
+	// renders the stashed messages) is not part of the save request. These
+	// cases drive the rest of the layer against the real validator.
+	use Symfony\Component\Validator\Constraints\Email;
+
+	/**
+	 * Escape like htmle() without depending on the full html library.
+	 *
+	 * @param mixed $value The value to escape.
+	 */
+	function htmle($value) : string {
+		return \html_escape((string) $value);
+	}
+
+	/**
+	 * Record the hidden input the default branch renders.
+	 *
+	 * @param string $name  The field name.
+	 * @param mixed  $value The field value.
+	 */
+	function form_hidden_box($name, $value, ...$args) : void {
+		$GLOBALS['control_hidden'][] = [$name, $value];
+	}
+
+	/**
+	 * The default branch only logs when a field carries no value.
+	 *
+	 * @param string $message The log line.
+	 */
+	function cacti_log($message, ...$args) : void {
+		throw new \LogicException('Unexpected log: ' . $message);
+	}
+
+	/**
+	 * Render one control and return its markup.
+	 *
+	 * @param string $name  The field name.
+	 * @param array  $field The field definition.
+	 */
+	function control_markup(string $name, array $field) : string {
+		ob_start();
+
+		try {
+			draw_edit_control($name, $field);
+		} finally {
+			$markup = ob_get_clean();
+		}
+
+		return $markup;
+	}
+
+	\cacti_fixture_source_function($root . '/lib/html.php', 'html_escape', '');
+	\cacti_fixture_source_function($root . '/lib/html_form.php', 'draw_edit_control', __NAMESPACE__);
+
+	$email = new Email();
+	\color_expect(\form_validate_build_constraint($email) === $email, 'A constraint object must be used as given');
+	\color_expect(\form_validate_build_constraint(new \stdClass()) === null, 'A non-constraint object must be skipped');
+	\color_expect(\form_validate_build_constraint('Regex') === null && \form_validate_build_constraint([42]) === null, 'A malformed spec must be skipped');
+	\color_expect(\form_validate_build_constraint(['NoSuchConstraint', []]) === null && \form_validate_build_constraint([\stdClass::class, []]) === null, 'A spec naming no constraint class must be skipped');
+	\color_expect(\form_validate_build_constraint(['Email', 'not options']) === null, 'Spec options that are not an array must be skipped');
+
+	$fields = [
+		'header'  => 'not a field definition',
+		'id'      => ['method' => 'hidden'],
+		'comment' => ['method' => 'textarea', 'optional' => true],
+		'mode'    => ['method' => 'drop_array', 'default' => '1', 'array' => [1 => 'One', 2 => 'Two']],
+	];
+	\color_expect(\form_validate_fields($fields, ['mode' => '2']) === [], 'A declared choice must be valid');
+	\color_expect(\form_validate_fields($fields, ['mode' => '9']) === ['mode' => ['This value is not a valid selection.']], 'An undeclared choice must be rejected');
+	\color_expect(\form_validate_stash([], ['mode' => '9']) === false, 'No errors must stash nothing');
+
+	$_SESSION                    = [];
+	$_SESSION[SESS_FIELD_ERRORS] = ['hex' => ['<b>bad</b> hex', 'too long'], 'name' => 'not a list'];
+	$GLOBALS['control_hidden']   = [];
+	\color_expect(control_markup('hex', ['method' => 'other', 'value' => 'zz']) === "<em>zz</em><div class='formError txtErrorTextBox' role='alert'><ul><li>&lt;b&gt;bad&lt;/b&gt; hex</li><li>too long</li></ul></div>", 'Stashed messages must render escaped beneath the control');
+	\color_expect(control_markup('hex', ['method' => 'other', 'value' => 'zz']) === '<em>zz</em>', 'Stashed messages must render only once');
+	\color_expect(control_markup('name', ['method' => 'other', 'value' => 'Lime']) === '<em>Lime</em>' && $_SESSION[SESS_FIELD_ERRORS] === [], 'A malformed message entry must be dropped silently');
+	\color_expect(control_markup('missing', ['method' => 'other', 'value' => '1']) === '<em>1</em>' && count($GLOBALS['control_hidden']) === 4, 'A field without messages must render only the control');
+
+	unset($_SESSION[SESS_FIELD_ERRORS]);
+	\color_expect(\form_validate_field_block('hex') === '', 'A form that never stashed must render no block');
 
 	print json_encode(['passed' => $GLOBALS['color_count']], JSON_THROW_ON_ERROR) . "\n";
 }
