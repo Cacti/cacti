@@ -11,7 +11,7 @@ require dirname(__DIR__, 2) . '/include/global_constants.php';
 
 $address     = $argv[1];
 $scenario    = $argv[2] ?? 'probe';
-$dryrun      = true;
+$dryrun      = ($argv[3] ?? 'dryrun') !== 'live';
 $running     = [];
 $snmp        = [];
 $claims      = 0;
@@ -27,6 +27,11 @@ $hosts       = [];
 if (in_array($scenario, ['managed-ip', 'managed-dns', 'deleted'], true)) {
 	$hosts[] = ['id' => 41, 'hostname' => $scenario              === 'managed-dns' ? 'managed.example' : $address,
 		'snmp_version'  => 2, 'status' => 3, 'deleted' => $scenario === 'deleted' ? 'on' : ''];
+}
+
+if ($scenario === 'managed-sysname') {
+	// Known only by the sysName SNMP reports, so the IP and DNS lookup misses it.
+	$hosts[] = ['id' => 41, 'hostname' => 'shared.example', 'snmp_version' => 2, 'status' => 3, 'deleted' => ''];
 }
 
 require dirname(__DIR__) . '/Helpers/SourceSlice.php';
@@ -120,7 +125,7 @@ function markIPDone(string $address, int $network_id): void {
 function automation_valid_snmp_device(array &$device): bool {
 	$GLOBALS['snmp'][] = $device['ip_address'];
 
-	if (str_starts_with($GLOBALS['scenario'], 'duplicate-')) {
+	if (str_starts_with($GLOBALS['scenario'], 'duplicate-') || $GLOBALS['scenario'] === 'managed-sysname') {
 		$device['snmp_sysName'] = 'shared.example';
 
 		return true;
