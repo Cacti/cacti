@@ -155,6 +155,9 @@ $config['proxy_headers'] = $proxy_headers ?? [];
 // Reverse proxies allowed to assert a forwarded, pre-authenticated user
 $config['trusted_proxies'] = $trusted_proxies ?? [];
 
+// Whether Web Basic Authentication may trust PHP_AUTH_USER (see config.php.dist)
+$config['auth_basic_allow_php_auth_user'] = ($auth_basic_allow_php_auth_user ?? false) === true;
+
 // Set the poller_id
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;

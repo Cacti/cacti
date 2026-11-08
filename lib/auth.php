@@ -376,7 +376,7 @@ function is_trusted_proxy() : bool {
  * @return string|false The username if found and processed, or false if no username is found.
  */
 function get_basic_auth_username() : string|false {
-	global $auth_basic_allow_php_auth_user;
+	global $config;
 
 	// Unprefixed server identities take precedence over forwarded/client data.
 	$keys = ['REMOTE_USER', 'REDIRECT_REMOTE_USER'];
@@ -387,7 +387,7 @@ function get_basic_auth_username() : string|false {
 
 	// PHP may populate PHP_AUTH_USER by decoding a client Authorization header
 	// without verifying its password. Require an explicit upstream-auth opt-in.
-	if (($auth_basic_allow_php_auth_user ?? false) === true) {
+	if (($config['auth_basic_allow_php_auth_user'] ?? false) === true) {
 		$keys[] = 'PHP_AUTH_USER';
 	}
 
