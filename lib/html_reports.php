@@ -2301,15 +2301,22 @@ function reports() : void {
 
 	$reports_list = [];
 
-	/* Strict allowlist of the columns this report list may be sorted by. Mirrors
-	 * the sortable keys of $display_text below (the UI's sort headers); 'name' is
-	 * the default sort column (see the 'sort' block in create_reports_filter()).
-	 * Passed to sanitize_sql_column() so a crafted sort_column falls back to the
-	 * default rather than relying on the character-class filter alone. */
+	/* Strict allowlist of the columns this report list may be sorted by. It is
+	 * the set of sortable keys of $display_text below (the UI's sort headers),
+	 * and 'name' is also the default sort column (see the 'sort' block in
+	 * create_reports_filter()). Passed to sanitize_sql_column() so a crafted
+	 * sort_column falls back to the default rather than relying on the
+	 * character-class filter alone.
+	 *
+	 * The entries are unqualified result-column names, not table.column. The
+	 * combined view is a UNION, and MySQL/MariaDB only accept result columns in
+	 * a UNION's ORDER BY. In the single-table queries an unqualified name
+	 * resolves to the select list first, so 'enabled' still means
+	 * report.enabled there and not the joined ua.enabled. The owner comes from
+	 * ua.full_name; the report tables have no full_name column. */
 	$report_sort_columns = [
-		'name', 'report.name', 'type', 'report.full_name', 'sched_type',
-		'report.enabled', 'next_start', 'report.last_started',
-		'report.run_limit', 'report.last_runtime'
+		'name', 'type', 'full_name', 'sched_type', 'enabled',
+		'next_start', 'last_started', 'run_limit', 'last_runtime'
 	];
 
 	if (db_table_exists('plugin_reportit_reports')) {
@@ -2392,7 +2399,7 @@ function reports() : void {
 	}
 
 	$display_text = [
-		'report.name' => [
+		'name' => [
 			'display' => __('Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
@@ -2402,7 +2409,7 @@ function reports() : void {
 			'align'   => 'left',
 			'sort'    => 'ASC'
 		],
-		'report.full_name' => [
+		'full_name' => [
 			'display' => __('Owner'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
@@ -2418,7 +2425,7 @@ function reports() : void {
 			'sort'    => 'ASC',
 			'tip'     => __('Email options in use: To, BCC, and Notification List')
 		],
-		'report.enabled' => [
+		'enabled' => [
 			'display' => __('Enabled'),
 			'align'   => 'right',
 			'sort'    => 'ASC'
@@ -2428,17 +2435,17 @@ function reports() : void {
 			'align'   => 'right',
 			'sort'    => 'ASC'
 		],
-		'report.last_started' => [
+		'last_started' => [
 			'display' => __('Last Started'),
 			'align'   => 'right',
 			'sort'    => 'ASC'
 		],
-		'report.run_limit' => [
+		'run_limit' => [
 			'display' => __('Run Limit'),
 			'align'   => 'right',
 			'sort'    => 'DESC'
 		],
-		'report.last_runtime' => [
+		'last_runtime' => [
 			'display' => __('Last Runtime'),
 			'align'   => 'right',
 			'sort'    => 'DESC'

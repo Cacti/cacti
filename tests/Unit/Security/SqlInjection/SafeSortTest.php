@@ -223,3 +223,53 @@ test('read path: poisoned stored direction yields a safe ORDER BY clause', funct
 	expect($clause)->not->toContain(';');
 	expect($clause)->not->toContain('--');
 });
+
+// --- Strict allowlist: the real sanitize_sql_column() and its reports() caller ---
+
+test('sanitize_sql_column: an allowlisted column passes unchanged', function () {
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+
+	expect(sanitize_sql_column('full_name', 'name', ['name', 'full_name']))->toBe('full_name');
+});
+
+test('sanitize_sql_column: a clean column outside the allowlist falls back to the default', function () {
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+
+	// passes the character-class filter, so only the allowlist rejects it
+	expect(sanitize_sql_column('ua.password', 'name', ['name', 'full_name']))->toBe('name')
+		->and(sanitize_sql_column('ua.password', 'name'))->toBe('ua.password');
+});
+
+test('sanitize_sql_column: the allowlist is matched after stripping, exactly and case-sensitively', function () {
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+
+	expect(sanitize_sql_column("full_name'", 'name', ['full_name']))->toBe('full_name')
+		->and(sanitize_sql_column('FULL_NAME', 'name', ['full_name']))->toBe('name')
+		->and(sanitize_sql_column('full_name2', 'name', ['full_name']))->toBe('name');
+});
+
+test('reports(): every sort header is allowlisted and names a UNION result column', function () {
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/html_reports.php');
+
+	expect(preg_match('/\$report_sort_columns = \[(.*?)\];/s', $src, $m))->toBe(1);
+	preg_match_all("/'([^']+)'/", $m[1], $allowed);
+	$allowed = $allowed[1];
+
+	expect(preg_match('/function reports\(\).*?\$display_text = \[(.*?)\n\t\];/s', $src, $d))->toBe(1);
+	preg_match_all("/^\t\t'([^']+)' => \[/m", $d[1], $headers);
+	$sortable = array_values(array_diff($headers[1], ['nosort']));
+
+	expect($sortable)->not->toBeEmpty()
+		->and(array_values(array_diff($sortable, $allowed)))->toBe([])
+		->and($allowed)->toContain('name');
+
+	/* the combined view orders a UNION, which only accepts result columns:
+	   a table-qualified entry fails there with error 1250 */
+	foreach ($allowed as $column) {
+		expect($column)->not->toContain('.');
+	}
+
+	// the reports tables have no owner column; the owner is ua.full_name
+	expect($allowed)->not->toContain('report.full_name')
+		->and($src)->toContain('ua.full_name, ua.username');
+});
