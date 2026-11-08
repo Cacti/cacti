@@ -58,11 +58,13 @@ jobs:
             ecosystem: composer
             directory: '/'
             workdir: '.'
+            lockfile: composer.lock
           - id: test-php
             name: test PHP
             ecosystem: composer
             directory: '/tests'
             workdir: tests
+            lockfile: tests/composer.lock
           - id: frontend
             name: frontend
             ecosystem: npm
@@ -93,10 +95,12 @@ jobs:
       - name: Set up Cacti Composer toolchain
         if: matrix.ecosystem == 'composer'
         uses: ./automation/.github/actions/setup-php-composer
+        env:
+          COMPOSER: ${{ github.workspace }}/released/${{ matrix.workdir }}/composer.json
         with:
           php-version: '8.3'
           dependency-mode: audit
-          cache-dependency-path: released/${{ matrix.workdir }}/composer.lock
+          cache-dependency-path: released/${{ matrix.lockfile }}
 
       - name: Set up Node
         if: matrix.ecosystem == 'npm'
