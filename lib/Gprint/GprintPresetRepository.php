@@ -24,8 +24,43 @@
 
 namespace Cacti\Gprint;
 
+/**
+ * Storage operations GprintPresetService needs for GPRINT preset management.
+ */
 interface GprintPresetRepository {
-	public function find(mixed $id): array|bool;
-	public function save(array $values): mixed;
-	public function delete(array $ids): void;
+	/**
+	 * Read one GPRINT preset row.
+	 *
+	 * @param mixed $id The preset id.
+	 *
+	 * @return array<string, mixed>|bool The row, an empty array when it is missing, or false on a database error.
+	 */
+	public function find(mixed $id) : array|bool;
+
+	/**
+	 * Insert or update a GPRINT preset.
+	 *
+	 * @param array<string, mixed> $values Column values; an empty id inserts a new preset.
+	 *
+	 * @return mixed The saved preset id, or a falsy value on failure.
+	 */
+	public function save(array $values) : mixed;
+
+	/**
+	 * Report whether any graph or graph template item still uses a preset.
+	 *
+	 * @param mixed $id The preset id.
+	 *
+	 * @return bool True when the preset is referenced or the check fails.
+	 */
+	public function isInUse(mixed $id) : bool;
+
+	/**
+	 * Delete GPRINT presets.
+	 *
+	 * @param array<mixed> $ids The preset ids.
+	 *
+	 * @return void
+	 */
+	public function delete(array $ids) : void;
 }
