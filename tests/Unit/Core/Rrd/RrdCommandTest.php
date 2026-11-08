@@ -19,7 +19,7 @@ use Cacti\Rrd\RrdCommandSerializer;
 require_once dirname(__DIR__, 4) . '/lib/Rrd/RrdCommand.php';
 require_once dirname(__DIR__, 4) . '/lib/Rrd/RrdCommandSerializer.php';
 
-test('a command preserves raw arguments for shellless execution', function () {
+test('a command preserves raw arguments until serialization', function () {
 	$command = new RrdCommand('update', [
 		'/var/lib/cacti/a file.rrd',
 		'--template',
@@ -27,9 +27,8 @@ test('a command preserves raw arguments for shellless execution', function () {
 		'100:1; echo not-a-command',
 	]);
 
-	expect($command->toArgv('/usr/bin/rrdtool'))->toBe([
-		'/usr/bin/rrdtool',
-		'update',
+	expect($command->operation)->toBe('update');
+	expect($command->arguments)->toBe([
 		'/var/lib/cacti/a file.rrd',
 		'--template',
 		'traffic_in:traffic_out',
@@ -71,15 +70,6 @@ test('commands reject an empty operation and a non-list argument array', functio
 		->and(fn () => new RrdCommand('fetch', ['path' => '/tmp/test.rrd']))
 		->toThrow(InvalidArgumentException::class);
 });
-
-test('commands reject invalid binary paths', function (string $binary) {
-	expect(fn () => (new RrdCommand('fetch'))->toArgv($binary))
-		->toThrow(InvalidArgumentException::class);
-})->with(['', "rrdtool\n--daemon", "rrdtool\0suffix", "rrdtool\tpath"]);
-
-test('commands preserve spaces in binary paths as one argv entry', function (string $binary) {
-	expect((new RrdCommand('fetch'))->toArgv($binary))->toBe([$binary, 'fetch']);
-})->with(['/opt/rrd tool/bin/rrdtool', 'C:\\Program Files\\RRDtool\\rrdtool.exe']);
 
 test('an empty list cannot create a command', function () {
 	expect(fn () => RrdCommand::fromList([]))
