@@ -38,7 +38,7 @@ test('discovery skips fully excluded batches without empty inserts', function ()
 	}
 	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/discovery_address_probe.php', [json_encode(['range' => '192.0.0.0/22', 'ignore' => implode(',', $excluded)], JSON_THROW_ON_ERROR)]);
 
-	expect($result)->toBe(['completed' => true, 'addresses' => [], 'writes' => 0]);
+	expect($result)->toBe(['completed' => true, 'addresses' => [], 'writes' => 0, 'logs' => []]);
 });
 
 test('discovery batches a subnet without per-address writes or duplicate indices', function () : void {
@@ -52,3 +52,19 @@ test('discovery batches a subnet without per-address writes or duplicate indices
 		->and($result['addresses'])->toContain('192.0.0.255', '192.0.1.0')
 		->and($result['writes'])->toBe(2);
 });
+
+test('discovery reports addresses another network already queued', function (?int $owned, array $logs) : void {
+	$scenario = ['range' => '192.0.2.0/29', 'ignore' => ''];
+
+	if ($owned !== null) {
+		$scenario['owned'] = $owned;
+	}
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/discovery_address_probe.php', [json_encode($scenario, JSON_THROW_ON_ERROR)]);
+
+	expect($result['completed'])->toBeTrue()
+		->and($result['addresses'])->toHaveCount(6)
+		->and($result['logs'])->toBe($logs);
+})->with([
+	'every address owned'  => [null, []],
+	'two owned elsewhere'  => [4, ['NOTE: Discovery Network 7 queued 4 of 6 addresses; the rest repeat an overlapping range of this network or are already queued by another network']],
+]);
