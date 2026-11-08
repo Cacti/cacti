@@ -43,6 +43,10 @@ gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['qedit'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		if (isrv('save_component_import')) {
