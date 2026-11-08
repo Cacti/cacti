@@ -564,6 +564,7 @@ define('SESS_USER_REALMS', 'sess_user_realms');
 define('SESS_AUTH_NAMES', 'sess_auth_names');
 define('SESS_CLIENT_ADDR', 'sess_client_addr');
 define('SESS_CHANGE_PASSWORD', 'sess_change_password');
+define('SESS_BASIC_AUTH_USER', 'sess_basic_auth_user');
 
 /** Session Permission Constants */
 define('SESS_USER_PERMS_KEY', 'sess_user_perms_key');

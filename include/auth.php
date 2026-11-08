@@ -124,8 +124,19 @@ if ($auth_method == AUTH_METHOD_BASIC) {
 		}
 	}
 
+	// An upstream identity with no realm 2 row is logged in as the guest account
+	// by auth_login.php, so the session row id cannot be compared with a user row.
+	// Bind that session to the upstream username recorded at login instead;
+	// otherwise every request would destroy the guest session and loop through
+	// auth_login.php's redirect.
+	$guest_session = $basic_error === '' && !cacti_sizeof($current_user)
+		&& isset($_SESSION[SESS_USER_ID], $_SESSION[SESS_BASIC_AUTH_USER])
+		&& $_SESSION[SESS_BASIC_AUTH_USER] === $username
+		&& get_guest_account() > 0
+		&& (int) $_SESSION[SESS_USER_ID] === get_guest_account();
+
 	// A Cacti session cannot outlive or replace the verified upstream identity.
-	if (isset($_SESSION[SESS_USER_ID]) && ($basic_error !== '' || !cacti_sizeof($current_user) || (int) $_SESSION[SESS_USER_ID] !== (int) $current_user['id'])) {
+	if (isset($_SESSION[SESS_USER_ID]) && ($basic_error !== '' || (!cacti_sizeof($current_user) && !$guest_session) || (cacti_sizeof($current_user) && (int) $_SESSION[SESS_USER_ID] !== (int) $current_user['id']))) {
 		cacti_session_destroy();
 		cacti_session_start();
 	}
@@ -157,7 +168,7 @@ if ($auth_method == AUTH_METHOD_BASIC) {
 				VALUES (?, ?, 1, ?, NOW())',
 				[$username, $current_user['id'], $_SESSION[SESS_CLIENT_ADDR]]);
 		}
-	} else {
+	} elseif (!$guest_session) {
 		require_once(CACTI_PATH_BASE . '/auth_login.php');
 	}
 
