@@ -75,3 +75,5 @@ run_php_probe tests/fixtures/Core/ScriptQueryCommand.php '^(lib/data_query\.php|
 run_php_probe tests/fixtures/Core/ScriptQueryCommandWin32.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommandWin32\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptQueryRejectedPath.php '^(lib/functions\.php|tests/fixtures/Core/ScriptQueryRejectedPath\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryRejectedCallers.php '^(lib/(data_query|poller|utility)\.php|tests/fixtures/Core/ScriptQueryRejectedCallers\.php)'

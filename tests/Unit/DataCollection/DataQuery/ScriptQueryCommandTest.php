@@ -43,3 +43,20 @@ test('a rejected script query path is never executed by test_data_source()', fun
 	expect($result['script_server']['accepted']['commands'])->toBe(['/usr/bin/php -q /opt/cacti/scripts/query.php get index "1"'])
 		->and($result['script']['accepted']['commands'])->toBe(['/opt/cacti/scripts/query.php get index "1"']);
 });
+
+test('a rejected script query path is never run or queued by the reindex and poller cache builders', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ScriptQueryRejectedCallers.php');
+
+	expect($result['query']['NUM'])->toBe(['result' => false, 'commands' => []])
+		->and($result['query']['IDX'])->toBe(['result' => false, 'commands' => ['/opt/cacti/scripts/query.php NUM']])
+		->and($result['query']['QRY'])->toBe(['result' => false, 'commands' => ['/opt/cacti/scripts/query.php NUM', '/opt/cacti/scripts/query.php IDX']]);
+
+	foreach (['script_num', 'script_count', 'server_num', 'field_verify_get'] as $case) {
+		expect($result['reindex'][$case])->toBe(['rejected' => 0, 'accepted' => 1]);
+	}
+
+	foreach (['script', 'server'] as $type) {
+		expect($result['poller'][$type]['rejected'])->toBe([])
+			->and($result['poller'][$type]['accepted'])->toBe(['/opt/cacti/scripts/query.php GET ifIndex "1"']);
+	}
+});

@@ -551,6 +551,11 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 								$action      = POLLER_ACTION_SCRIPT;
 								$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'], $data_source['host_id']);
 							}
+
+							// A rejected script path comes back as ''; add no poller item for it.
+							if ($script_path === '') {
+								unset($script_path);
+							}
 						}
 
 						if (isset($script_path)) {

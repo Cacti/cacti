@@ -857,6 +857,11 @@ function query_script_host(int $host_id, int $snmp_query_id) : bool {
 	if (isset($script_queries['arg_num_indexes'])) {
 		$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ' : '') . $script_queries['arg_num_indexes'], $script_queries['script_path'], $host_id);
 
+		// A rejected script path comes back as '', and exec('') throws on PHP 8.
+		if ($script_path === '') {
+			return false;
+		}
+
 		// fetch specified index at specified OID
 		$script_num_index_array = exec_into_array($script_path);
 
@@ -881,6 +886,10 @@ function query_script_host(int $host_id, int $snmp_query_id) : bool {
 
 	// provide data for index, mandatory
 	$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ' : '') . $script_queries['arg_index'], $script_queries['script_path'], $host_id);
+
+	if ($script_path === '') {
+		return false;
+	}
 
 	// fetch specified index
 	$script_index_array = exec_into_array($script_path);
@@ -910,6 +919,10 @@ function query_script_host(int $host_id, int $snmp_query_id) : bool {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 			$rewrite_value = $field_array['rewrite_value'] ?? null;
 			$script_path   = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ' : '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
+
+			if ($script_path === '') {
+				return false;
+			}
 
 			debug_log_insert_section_start('data_query', __esc('Click to show Data Query output for field \'%s\'', $field_name), true);
 
@@ -2788,7 +2801,9 @@ function get_best_data_query_index_type(int $host_id, int $data_query_id) : mixe
  * @param string $script_path The path to the script that will be executed.
  * @param int    $host_id     The ID of the host for which the script is being executed.
  *
- * @return string The complete script path with substituted arguments, ready for execution.
+ * @return string The complete script path with substituted arguments, ready for
+ *                execution, or '' when the script path is rejected. Callers
+ *                must not run or store an empty command.
  */
 function get_script_query_path(string $args, string $script_path, int $host_id) : string {
 	include_once(CACTI_PATH_LIBRARY . '/variables.php');
