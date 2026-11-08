@@ -341,7 +341,7 @@ check('ss_sql without status', ss_sql() === 'U');
 $cpu_loads = [['value' => '10'], ['value' => 'n/a'], ['value' => '30']];
 check('ss_multicpu_avg skips a non-numeric load', ss_multicpu_avg(1) === "load:20\n");
 $cpu_loads = [['value' => 'n/a']];
-check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:0\n");
+check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:U\n");
 
 ob_start();
 ss_webseer('query', 'webseerName');
