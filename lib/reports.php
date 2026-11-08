@@ -51,7 +51,18 @@ function reports_unserialize_selected_items(mixed $items) : array|false {
 	return is_array($items) ? $items : false;
 }
 
-/** Whether an existing report owner may be accessed by the current session. */
+/**
+ * reports_owner_authorized - whether the current session may act on a report
+ *
+ * The owner of a report and report administrators (realm 21) are authorized.
+ * An owner id that is not a whole number, such as the null returned when the
+ * report row does not exist, is never authorized; reports.user_id is NOT NULL,
+ * so that only happens for a missing report.
+ *
+ * @param mixed $owner_id The reports.user_id of the existing report
+ *
+ * @return bool True if the current session may access the report
+ */
 function reports_owner_authorized(mixed $owner_id) : bool {
 	if (!is_int($owner_id) && !(is_string($owner_id) && ctype_digit($owner_id))) {
 		return false;
