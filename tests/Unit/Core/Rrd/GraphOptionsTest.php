@@ -97,6 +97,7 @@ test('graph option constraints reject invalid boundary values', function (array 
 	[['graph_height' => 'not-a-number']],
 	[['image_format' => 'gif']],
 	[['output_flag' => 6]],
+	[['graph_start' => '1700000000.5']],
 ])->throws(InvalidOptionsException::class);
 
 test('graph dimensions preserve scientific notation and large finite numeric strings', function ($value, $expected) {

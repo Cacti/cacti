@@ -20,9 +20,8 @@ use InvalidArgumentException;
 /**
  * An RRDtool operation and its unescaped argument values.
  *
- * Keeping arguments separate allows local execution to bypass the shell. A
- * transport that uses RRDtool's line protocol can serialize the same command
- * with the quoting rules required by that protocol.
+ * Keeping arguments separate until serialization lets a transport that uses
+ * RRDtool's line protocol apply the quoting rules required by that protocol.
  */
 final class RrdCommand {
 	/**
@@ -73,36 +72,20 @@ final class RrdCommand {
 	}
 
 	/**
-	 * Build the argument vector for a shell-free process launch.
-	 *
-	 * @param string $binary the RRDtool executable path
-	 *
-	 * @throws InvalidArgumentException when the binary path is empty or contains a control character
-	 *
-	 * @return non-empty-list<string> the binary, the operation and the arguments
-	 */
-	public function toArgv(string $binary): array {
-		$this->assertValidToken($binary, 'binary path', false, true);
-
-		return [$binary, $this->operation, ...$this->arguments];
-	}
-
-	/**
 	 * Reject a token that RRDtool's argument or line protocol cannot carry safely.
 	 *
-	 * @param string $token           the token to check
-	 * @param string $description     the token's role, for the exception message
-	 * @param bool   $allowEmpty      whether an empty token is valid; it also permits whitespace
-	 * @param bool   $allowWhitespace whether a non-empty token may contain whitespace
+	 * @param string $token       the token to check
+	 * @param string $description the token's role, for the exception message
+	 * @param bool   $allowEmpty  whether an empty token is valid; it also permits whitespace
 	 *
 	 * @throws InvalidArgumentException when the token is not allowed
 	 */
-	private function assertValidToken(string $token, string $description, bool $allowEmpty, bool $allowWhitespace = false): void {
+	private function assertValidToken(string $token, string $description, bool $allowEmpty): void {
 		if (!$allowEmpty && $token === '') {
 			throw new InvalidArgumentException("RRDtool $description cannot be empty.");
 		}
 
-		if (!$allowEmpty && !$allowWhitespace && preg_match('/\s/', $token) === 1) {
+		if (!$allowEmpty && preg_match('/\s/', $token) === 1) {
 			throw new InvalidArgumentException("RRDtool $description cannot contain whitespace.");
 		}
 

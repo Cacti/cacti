@@ -11,7 +11,6 @@
     <testsuites>
         <testsuite name="RRDtool component coverage">
             <file>tests/Unit/Core/Rrd/RrdCommandTest.php</file>
-            <file>tests/Unit/Core/Rrd/LocalRrdTransportTest.php</file>
             <file>tests/Unit/Core/Rrd/DataSourceCommandBuilderTest.php</file>
             <file>tests/Unit/Core/Rrd/GraphOptionsTest.php</file>
         </testsuite>

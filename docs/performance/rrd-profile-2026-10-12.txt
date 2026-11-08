@@ -25,7 +25,7 @@ Graph timing includes validation only on revisions that contain the typed valida
 
 The isolated graph-options profile records 600 repeated global array includes before the fix and none afterwards, with one bootstrap load in either case. Xdebug 3.5.3 profiling runs are separate from all reported uninstrumented timings. Raw profiles are retained outside the repository at /tmp/cacti-rrd-profile-evidence-20261012.
 
-Persistent and local updates show no established improvement from the graph changes. Keep the existing persistent process in the polling path: a fresh process per update is substantially more expensive in this fixture. LocalRrdTransport is available as a component but is not used by the procedural poller path. Do not substitute its standalone timings for poller measurements.
+Persistent and local updates show no established improvement from the graph changes. Keep the existing persistent process in the polling path: a fresh process per update is substantially more expensive in this fixture. Do not substitute the standalone local-update timings for poller measurements.
 
 Command construction was also exercised at 150,000, 1,000,000 and 2,500,000 iterations. Peak PHP allocated memory remains 6 MiB in these bounded synthetic loops. They do not load millions of data sources or measure network, database or production disk throughput. The JSON includes raw samples, ranges, counts and source hashes.
 

@@ -163,12 +163,15 @@ final class GraphOptions {
 	}
 
 	/**
-	 * Accept a finite, positive number given as a number or a numeric string.
+	 * Accept a finite number given as a number or a numeric string.
+	 *
+	 * Non-positive sizes never reach this normalizer: isTolerated() passes them
+	 * through unvalidated, as the legacy graph code did.
 	 *
 	 * @param string $name  the option name, for the exception message
 	 * @param mixed  $value the value to normalize
 	 *
-	 * @throws InvalidOptionsException when the value is not finite or not positive
+	 * @throws InvalidOptionsException when the value is not a finite number
 	 *
 	 * @return float|int the number, kept as an int when it is integral
 	 */
@@ -180,10 +183,6 @@ final class GraphOptions {
 			$number  = $integer !== false ? $integer : (float) $value;
 		} else {
 			throw new InvalidOptionsException("The '$name' option must be a finite number.");
-		}
-
-		if ($number <= 0) {
-			throw new InvalidOptionsException("The '$name' option must be greater than zero.");
 		}
 
 		return $number;
