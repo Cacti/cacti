@@ -3,6 +3,7 @@ declare(strict_types = 1);
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 namespace CactiLibraryLoginRoutingFixture;
 
+/** Carries the header auth_login_redirect() sends out of the call so the fixture can inspect it. */
 final class Redirect extends \RuntimeException {
 }
 /** Intercept only the response header before the production function exits. */

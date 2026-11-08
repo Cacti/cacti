@@ -52,12 +52,15 @@ function library_notifications(): void {
 			library_expect(is_file($directory . '/arguments.json'), true, 'Notification child supplies its actual arguments before deadline');
 			$args = json_decode(file_get_contents($directory . '/arguments.json'), true, 512, JSON_THROW_ON_ERROR);
 			unlink($directory . '/arguments.json');
-			$expected = match ($version) {
-				1 => ['-v', '1', '-c', $base['snmp_community'], '127.0.0.1:1162', $oid, '', '6', '99', ''],
-				2 => array_merge(['-v', '2c', '-c', $base['snmp_community']], $message === 2 ? ['-Ci'] : [], ['127.0.0.1:1162', '', $oid]),
-				3 => array_merge(['-v', '3', '-e', '8000000005060708'], $message === 2 ? ['-Ci'] : [], ['-u', 'fixture user', '-l', $level],
-					$authentication !== '' ? ['-a', 'SHA', '-A', $authentication] : [], $privacy !== '' ? ['-x', 'AES', '-X', $privacy] : [], ['127.0.0.1:1162', '', $oid]),
-			};
+
+			if ($version === 1) {
+				$expected = ['-v', '1', '-c', $base['snmp_community'], '127.0.0.1:1162', $oid, '', '6', '99', ''];
+			} elseif ($version === 2) {
+				$expected = array_merge(['-v', '2c', '-c', $base['snmp_community']], $message === 2 ? ['-Ci'] : [], ['127.0.0.1:1162', '', $oid]);
+			} else {
+				$expected = array_merge(['-v', '3', '-e', '8000000005060708'], $message === 2 ? ['-Ci'] : [], ['-u', 'fixture user', '-l', $level],
+					$authentication !== '' ? ['-a', 'SHA', '-A', $authentication] : [], $privacy !== '' ? ['-x', 'AES', '-X', $privacy] : [], ['127.0.0.1:1162', '', $oid]);
+			}
 			library_expect($args, array_merge($expected, [$oid . '.1', 's', $expectedValue]), 'Protocol arguments retain positional empties and literal payload bytes');
 			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM snmpagent_notifications_log WHERE manager_id = ?', [$manager]), $before + 1, 'Dispatched notification records exactly one receiver event');
 		}
