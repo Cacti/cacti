@@ -2286,6 +2286,27 @@ function make_host_snnp_cache_sql() : string|false {
 }
 
 /**
+ * Returns the SQL alias that rule matching uses for each table a match field may name.
+ *
+ * The rule editor prefixes every offered field with these aliases and the
+ * matching queries join the tables under the same names, so rule import
+ * derives its identifier allowlist from this map rather than a copy of it.
+ *
+ * @return array<string, string> Table name keyed to its alias in the matching SQL.
+ */
+function automation_query_field_table_aliases() : array {
+	return [
+		'graph_local'           => 'gl',
+		'graph_templates'       => 'gt',
+		'graph_templates_graph' => 'gtg',
+		'host'                  => 'h',
+		'host_snmp_cache'       => 'hsc',
+		'host_template'         => 'ht',
+		'sites'                 => 's',
+	];
+}
+
+/**
  * Retrieves the fields of a given table, excluding specified fields.
  *
  * @param string $table           The name of the table to retrieve fields from.
@@ -2315,35 +2336,11 @@ function get_query_fields(string $table, array $excluded_fields) : array {
 	}
 
 	// now reformat entries for use with draw_edit_form
+	$aliases = automation_query_field_table_aliases();
+	$table   = $aliases[$table] ?? $table;
+
 	if (cacti_sizeof($fields)) {
 		foreach ($fields as $key => $value) {
-			switch($table) {
-				case 'graph_templates_graph':
-					$table = 'gtg';
-
-					break;
-				case 'host':
-					$table = 'h';
-
-					break;
-				case 'host_template':
-					$table = 'ht';
-
-					break;
-				case 'graph_templates':
-					$table = 'gt';
-
-					break;
-				case 'sites':
-					$table = 's';
-
-					break;
-				case 'host_snmp_cache':
-					$table = 'hsc';
-
-					break;
-			}
-
 			// we want to know later which table was selected
 			$new_key = $table . '.' . $key;
 			// give the user a hint about the data type of the column
@@ -5719,9 +5716,25 @@ function automation_network_import(mixed $json_data) : array {
 	return $debug_data;
 }
 
-/** Validate imported match identifiers before any rule or child item is saved. */
+/**
+ * Validates imported match identifiers before any rule or child item is saved.
+ *
+ * A field is either empty or an optional table alias from the rule editor
+ * followed by one column name. An empty field is accepted only on AND, OR and
+ * bracket items: the editor stores a conjunction ahead of a bracket as an
+ * AND or OR item whose field is None, and build_rule_item_filter() skips the
+ * field of such items.
+ *
+ * @param mixed  $rules      The imported rule list.
+ * @param string $item_key   The key holding each rule's match items.
+ * @param array  $debug_data The import result, which receives the error on failure.
+ *
+ * @return bool True when every match field is acceptable.
+ */
 function automation_validate_import_match_fields(mixed $rules, string $item_key, array &$debug_data) : bool {
-	$valid = is_array($rules);
+	$valid    = is_array($rules);
+	$prefixes = implode('|', array_map(fn ($alias) => preg_quote($alias, '/'), automation_query_field_table_aliases()));
+	$no_field = [AUTOMATION_OPER_AND, AUTOMATION_OPER_OR, AUTOMATION_OPER_LEFT_BRACKET, AUTOMATION_OPER_RIGHT_BRACKET];
 
 	foreach ($valid ? $rules : [] as $rule) {
 		if (!is_array($rule) || (isset($rule[$item_key]) && !is_array($rule[$item_key]))) {
@@ -5731,14 +5744,16 @@ function automation_validate_import_match_fields(mixed $rules, string $item_key,
 		}
 
 		foreach ($rule[$item_key] ?? [] as $item) {
-			$field = is_array($item) ? ($item['field'] ?? null) : null;
+			$field     = is_array($item) ? ($item['field'] ?? null) : null;
+			$operation = is_array($item) ? ($item['operation'] ?? null) : null;
 
-			if ($field === '' && in_array($item['operation'] ?? null, [AUTOMATION_OPER_LEFT_BRACKET, AUTOMATION_OPER_RIGHT_BRACKET, (string) AUTOMATION_OPER_LEFT_BRACKET, (string) AUTOMATION_OPER_RIGHT_BRACKET], true)) {
+			// Exports carry database values as strings, so compare the operation numerically.
+			if ($field === '' && (is_int($operation) || (is_string($operation) && ctype_digit($operation))) && in_array((int) $operation, $no_field, true)) {
 				continue;
 			}
 
 			// SNMP query field names may be imported before any device has polled.
-			if (!is_string($field) || strlen($field) > 255 || preg_match('/\A(?:(?:h|ht|gl|gt|gtg)\.)?[a-zA-Z_][a-zA-Z0-9_]*\z/', $field) !== 1) {
+			if (!is_string($field) || strlen($field) > 255 || preg_match('/\A(?:(?:' . $prefixes . ')\.)?[a-zA-Z_][a-zA-Z0-9_]*\z/', $field) !== 1) {
 				$valid = false;
 
 				break 2;
