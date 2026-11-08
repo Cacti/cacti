@@ -97,6 +97,7 @@ function run_data_query(int $host_id, int $snmp_query_id, bool $automation = fal
 				unset($_SESSION['debug_log']['response']);
 
 				automation_execute_data_query($host_id, $snmp_query_id);
+				automation_reconcile_device_aggregates($host_id);
 				query_debug_timer_offset('data_query', __esc('Automation Execution for Data Query complete'));
 
 				api_plugin_hook_function('run_data_query', ['host_id' => $host_id, 'snmp_query_id' => $snmp_query_id]);
@@ -485,6 +486,7 @@ function run_data_query(int $host_id, int $snmp_query_id, bool $automation = fal
 	if (POLLER_ID == 1) {
 		// perform any automation on reindex
 		automation_execute_data_query($host_id, $snmp_query_id);
+		automation_reconcile_device_aggregates($host_id);
 		query_debug_timer_offset('data_query', __esc('Automation Executing for Data Query complete'));
 
 		api_plugin_hook_function('run_data_query', ['host_id' => $host_id, 'snmp_query_id' => $snmp_query_id]);
@@ -493,6 +495,7 @@ function run_data_query(int $host_id, int $snmp_query_id, bool $automation = fal
 		poller_push_reindex_data_to_poller($host_id, $snmp_query_id);
 
 		automation_execute_data_query($host_id, $snmp_query_id);
+		automation_reconcile_device_aggregates($host_id);
 		query_debug_timer_offset('data_query', __esc('Automation Execution for Data Query complete'));
 
 		api_plugin_hook_function('run_data_query', ['host_id' => $host_id, 'snmp_query_id' => $snmp_query_id]);
