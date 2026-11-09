@@ -272,7 +272,7 @@ while (1) {
 			}
 
 			if (!parseArgs($parameters, $parameter_array)) {
-				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
+				script_server_log_parse_failure($function, $parameters);
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 
@@ -391,28 +391,16 @@ while (1) {
 
 				error_reporting(0);
 
-				if ($parameters == '') {
-					$result = call_user_func($function);
-				} else {
-					$result = call_user_func_array($function, $parameter_array);
-				}
+				$result = script_server_call($function, $parameters, $parameter_array);
 
-				fputs(STDOUT, trim($result) . "\n");
+				fputs(STDOUT, script_server_response($result) . "\n");
 				fflush(STDOUT);
 
 				script_server_log_response((int) $pid, $ctr, $result);
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '" .
-					basename($include_file) .
-					"' FUNC: '" .
-					$function .
-					"' PARMS: '" .
-					$parameters .
-					"'",
-					false,
-					'PHPSVR');
+				script_server_log_missing_function($include_file, $function, $parameter_array);
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 			}
@@ -538,7 +526,11 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 	}
 
 	if (!$parse_ok) {
-		print 'ERROR: ' . $msg . " '" . $string . "'\n";
+		// the caller answers U on STDOUT; an extra line here would be read as
+		// the reply to the next request
+		if ($debug) {
+			print 'ERROR: ' . $msg . " '" . $string . "'\n";
+		}
 	} elseif ($curstr != '') {
 		$str_list[] = $curstr;
 	}
@@ -551,6 +543,103 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 }
 
 /**
+ * script_server_log_parse_failure - logs a request whose arguments could not be parsed
+ *
+ * The arguments can carry device credentials, so only their size is logged.
+ *
+ * @param string $function   The function named by the request.
+ * @param string $parameters The raw parameter string.
+ *
+ * @return void
+ */
+function script_server_log_parse_failure(string $function, string $parameters) : void {
+	cacti_log('WARNING: Script Server could not parse the ' . strlen($parameters) . " byte argument list for $function", false, 'PHPSVR');
+}
+
+/**
+ * script_server_log_missing_function - logs a request for a function that does not exist
+ *
+ * The arguments can carry device credentials, so device credentials are masked.
+ *
+ * @param string $include_file    The script file named by the request.
+ * @param string $function        The function named by the request.
+ * @param array  $parameter_array The parsed parameters.
+ *
+ * @return void
+ */
+function script_server_log_missing_function(string $include_file, string $function, array $parameter_array) : void {
+	cacti_log("WARNING: Function does not exist  INC: '" .
+		basename($include_file) .
+		"' FUNC: '" .
+		$function .
+		"' PARMS: '" .
+		implode('\', \'', script_server_redact_params($parameter_array)) .
+		"'",
+		false,
+		'PHPSVR');
+}
+
+/**
+ * script_server_call - calls a script function and discards anything it prints
+ *
+ * Anything the function prints would reach the poller ahead of its result and
+ * be read as the reply to this request, shifting every later reply by one line.
+ *
+ * @param callable-string $function        The function name, already checked to exist.
+ * @param string          $parameters      The raw parameter string.
+ * @param array           $parameter_array The parsed parameters.
+ *
+ * @return mixed The function result.
+ */
+function script_server_call(string $function, string $parameters, array $parameter_array) : mixed {
+	$ob_level = ob_get_level();
+	ob_start();
+
+	try {
+		if ($parameters == '') {
+			$result = call_user_func($function);
+		} else {
+			$result = call_user_func_array($function, $parameter_array);
+		}
+	} finally {
+		// also closes any buffer the function left open; the output can carry
+		// credentials, so only its size is logged
+		$stray = 0;
+
+		while (ob_get_level() > $ob_level) {
+			$output = ob_get_clean();
+
+			if ($output === false) {
+				break;
+			}
+
+			$stray += strlen($output);
+		}
+
+		if ($stray > 0) {
+			cacti_log("DEBUG: Function '$function' wrote $stray bytes of output, discarded", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+		}
+	}
+
+	return $result;
+}
+
+/**
+ * script_server_response - formats a script function result as one response line
+ *
+ * The poller reads one line per request, so a line break inside the result
+ * would be read as the reply to the next request.  Multipart results are space
+ * separated name:value pairs, so a line break becomes a space.
+ *
+ * @param mixed $result The function result.
+ *
+ * @return string The result without line breaks or surrounding white space.
+ */
+function script_server_response(mixed $result) : string {
+	return trim(str_replace(["\r\n", "\r", "\n"], ' ', (string) $result));
+}
+
+/**
  * sig_handler - properly handle signals and shutdown
  *
  * @param int $signo
@@ -558,7 +647,10 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
  * @return void
  */
 function sig_handler(int $signo) : void {
-	global $include_file, $function, $parameters;
+	global $include_file, $function, $parameter_array;
+
+	// argument values can carry device credentials, so only their count is logged
+	$parameters = (is_array($parameter_array) ? cacti_count($parameter_array) : 0) . ' argument(s)';
 
 	switch ($signo) {
 		case SIGTERM:
