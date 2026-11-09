@@ -147,6 +147,54 @@ function script_server_log_response(int $pid, int $ctr, string $result) : void {
 }
 
 /**
+ * Masks a device's SNMP credentials in a poller command before it is logged.
+ *
+ * @param string $string The command or argument string.
+ * @param array  $item   A poller_item or host row carrying the SNMP credential columns.
+ *
+ * @return string The string with each non-empty credential masked.
+ */
+function poller_redact_snmp_secrets(string $string, array $item) : string {
+	$secrets = [];
+
+	foreach (['snmp_community', 'snmp_password', 'snmp_priv_passphrase'] as $column) {
+		if (!isset($item[$column]) || $item[$column] == '') {
+			continue;
+		}
+
+		// the command line carries each credential as cacti_escapeshellarg()
+		// or cacti_escapeshellarg_cmd() wrote it, so mask every form either
+		// can produce on unix and win32, not just the stored value
+		$value   = (string) $item[$column];
+		$bases   = [$value, str_replace(["\n", "\r"], '', $value)];
+		$cmd     = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $bases[1]);
+		$bases[] = $cmd;
+		$bases[] = str_replace('%', '', $cmd);
+
+		foreach ($bases as $base) {
+			$secrets[] = $base;
+			$secrets[] = str_replace("'", "'\\''", $base);
+			$secrets[] = str_replace(CACTI_ESCAPE_CHARACTER, '\\' . CACTI_ESCAPE_CHARACTER, $base);
+		}
+	}
+
+	$secrets = array_unique(array_filter($secrets, function (string $secret) : bool {
+		return $secret !== '';
+	}));
+
+	if (!cacti_sizeof($secrets)) {
+		return $string;
+	}
+
+	// longest first, so a credential that contains another is masked whole
+	usort($secrets, function (string $a, string $b) : int {
+		return strlen($b) - strlen($a);
+	});
+
+	return str_replace($secrets, '********', $string);
+}
+
+/**
  * exec_poll - executes a command and returns its output
  *
  * @param string $command The command to execute

@@ -901,13 +901,14 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 
 			break;
 		case POLLER_ACTION_SCRIPT:
-			$output = trim(exec_poll($item['arg1'], $script_timeout));
+			$output   = trim(exec_poll($item['arg1'], $script_timeout));
+			$log_arg1 = poller_redact_snmp_secrets($item['arg1'], $item);
 
 			if ($output == 'U') {
 				$error_ds[$ds] = $ds;
 
 				if (read_config_option('spine_log_level') == 2) {
-					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ', output: U',
+					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $log_arg1 . ', output: U',
 						$print_data_to_stdout,
 						'POLLER');
 				}
@@ -916,7 +917,7 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 					$error_ds[$ds] = $ds;
 
 					if (read_config_option('spine_log_level') == 2) {
-						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ", output: $output",
+						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $log_arg1 . ", output: $output",
 							$print_data_to_stdout,
 							'POLLER');
 					}
@@ -926,7 +927,7 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 			$total_time = (microtime(true) - $thread_start) * 1000;
 
 			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time,
-				2) . '] SCRIPT: ' . $item['arg1'] . ", output: $output",
+				2) . '] SCRIPT: ' . $log_arg1 . ", output: $output",
 				$print_data_to_stdout,
 				'POLLER',
 				debug_level($host_id,
@@ -934,13 +935,14 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 
 			break;
 		case POLLER_ACTION_SCRIPT_PHP:
-			$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+			$output   = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+			$log_arg1 = poller_redact_snmp_secrets($item['arg1'], $item);
 
 			if ($output == 'U') {
 				$error_ds[$ds] = $ds;
 
 				if (read_config_option('spine_log_level') == 2) {
-					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ', output: U',
+					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $log_arg1 . ', output: U',
 						$print_data_to_stdout,
 						'POLLER');
 				}
@@ -949,7 +951,7 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 					$error_ds[$ds] = $ds;
 
 					if (read_config_option('spine_log_level') == 2) {
-						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ", output: $output",
+						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $log_arg1 . ", output: $output",
 							$print_data_to_stdout,
 							'POLLER');
 					}
@@ -959,7 +961,7 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 			$total_time = (microtime(true) - $thread_start) * 1000;
 
 			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time,
-				2) . '] SERVER: ' . $item['arg1'] . ", output: $output",
+				2) . '] SERVER: ' . $log_arg1 . ", output: $output",
 				$print_data_to_stdout,
 				'POLLER',
 				debug_level($host_id,
