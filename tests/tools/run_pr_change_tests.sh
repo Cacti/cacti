@@ -23,7 +23,8 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup SpikekillMutationMatrix SpikekillFloatDebug; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup SpikekillMutationMatrix SpikekillFloatDebug \
+	LibraryHelpersCoverage AggregateLibraryCoverage SchedulerLibraryCoverage ExportLibraryCoverage ImportLibraryCoverage UtilityLibraryCoverage; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -34,6 +35,9 @@ if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-post POST '' mutation
 	run_probe SpikekillRequestGate.php spike-setting-get GET '' settings
 	run_probe SpikekillRequestGate.php spike-setting-post POST '' settings
+fi
+if [[ -f tests/fixtures/Core/LibraryHelpersCoverage.php ]]; then
+	run_probe LibraryHelpersCoverage.php library-helpers-no-vendor no-vendor
 fi
 if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
