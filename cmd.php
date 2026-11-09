@@ -1043,6 +1043,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 
 			foreach ($reindex as $index_item) {
 				$assert_fail = false;
+				$log_arg1    = poller_redact_snmp_secrets($index_item['arg1'], $item);
 
 				switch ($index_item['action']) {
 					case POLLER_ACTION_SNMP:
@@ -1076,7 +1077,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE OID: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							', (assert:' .
 							$index_item['assert_value'] .
 							' ' .
@@ -1115,7 +1116,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE SCRIPT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',
@@ -1153,7 +1154,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE SERVER: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',
@@ -1173,7 +1174,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE OID COUNT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							', output: ' .
 							$output,
 							$print_data_to_stdout,
@@ -1190,7 +1191,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE CMD COUNT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',
@@ -1205,7 +1206,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE SERVER COUNT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',
