@@ -272,7 +272,7 @@ while (1) {
 			}
 
 			if (!parseArgs($parameters, $parameter_array)) {
-				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
+				script_server_log_parse_failure($function, $parameters);
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 
@@ -281,8 +281,42 @@ while (1) {
 
 			script_server_log_request((int) $pid, $ctr, $include_file, $function, $parameter_array);
 
+			/* The allowed script roots are needed to validate both the include
+			 * file (when the function still has to be loaded) and the resolved
+			 * source file of an already-loaded function below, so build them
+			 * unconditionally. The scripts_path setting is an explicitly
+			 * configured Cacti script root that may live outside the web root,
+			 * so it is an allowed containment root as well. */
+			$allowed_roots = [CACTI_PATH_BASE];
+
+			if (defined('CACTI_PATH_SCRIPTS') && CACTI_PATH_SCRIPTS != '') {
+				$allowed_roots[] = CACTI_PATH_SCRIPTS;
+			}
+
 			// validate the existence of the function, and include if applicable
 			if (!function_exists($function)) {
+				/* Validate the include path unconditionally. Built-ins like
+				 * system, passthru, exec satisfy function_exists() without ever
+				 * loading a script file, so the path guard cannot be gated on
+				 * the function being undefined. require_once() is idempotent,
+				 * so re-running it on cached entries is a no-op. */
+				$real_include = realpath($include_file);
+
+				if ($real_include === false || !script_server_path_is_allowed($real_include, $allowed_roots)) {
+					if ($real_include !== false) {
+						cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
+					} else {
+						cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
+					}
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
+				}
+
+				$include_file = $real_include;
+
 				if (file_exists($include_file)) {
 					/**
 					 * quirk in php on Windows, believe it or not....
@@ -310,30 +344,63 @@ while (1) {
 			}
 
 			if (function_exists($function)) {
-				error_reporting(0);
+				/* Refuse to call PHP internals (system, passthru, exec, ...)
+				 * and any function whose source file lives outside the allowed
+				 * script roots. The script-server contract is to dispatch into
+				 * user scripts in the Cacti tree; anything else is a
+				 * containment failure. */
+				try {
+					$ref = new ReflectionFunction($function);
+				} catch (ReflectionException $e) {
+					cacti_log("WARNING: Function '$function' not introspectable. Rejected.", false, 'PHPSVR');
 
-				if ($parameters == '') {
-					$result = call_user_func($function);
-				} else {
-					$result = call_user_func_array($function, $parameter_array);
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
 				}
 
-				fputs(STDOUT, trim($result) . "\n");
+				if ($ref->isInternal()) {
+					cacti_log("WARNING: Refusing to dispatch PHP internal function '$function' from script server.", false, 'PHPSVR');
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
+				}
+
+				$fn_file = $ref->getFileName();
+
+				if ($fn_file === false) {
+					cacti_log("WARNING: Function '$function' has no source file. Rejected.", false, 'PHPSVR');
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
+				}
+
+				if (!script_server_path_is_allowed(realpath($fn_file), $allowed_roots)) {
+					cacti_log("WARNING: Function '$function' defined outside the allowed script roots ('$fn_file'). Rejected.", false, 'PHPSVR');
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
+				}
+
+				error_reporting(0);
+
+				$result = script_server_call($function, $parameters, $parameter_array);
+
+				fputs(STDOUT, script_server_response($result) . "\n");
 				fflush(STDOUT);
 
 				script_server_log_response((int) $pid, $ctr, $result);
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '" .
-					basename($include_file) .
-					"' FUNC: '" .
-					$function .
-					"' PARMS: '" .
-					$parameters .
-					"'",
-					false,
-					'PHPSVR');
+				script_server_log_missing_function($include_file, $function, $parameter_array);
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 			}
@@ -459,7 +526,11 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 	}
 
 	if (!$parse_ok) {
-		print 'ERROR: ' . $msg . " '" . $string . "'\n";
+		// the caller answers U on STDOUT; an extra line here would be read as
+		// the reply to the next request
+		if ($debug) {
+			print 'ERROR: ' . $msg . " '" . $string . "'\n";
+		}
 	} elseif ($curstr != '') {
 		$str_list[] = $curstr;
 	}
@@ -472,6 +543,103 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 }
 
 /**
+ * script_server_log_parse_failure - logs a request whose arguments could not be parsed
+ *
+ * The arguments can carry device credentials, so only their size is logged.
+ *
+ * @param string $function   The function named by the request.
+ * @param string $parameters The raw parameter string.
+ *
+ * @return void
+ */
+function script_server_log_parse_failure(string $function, string $parameters) : void {
+	cacti_log('WARNING: Script Server could not parse the ' . strlen($parameters) . " byte argument list for $function", false, 'PHPSVR');
+}
+
+/**
+ * script_server_log_missing_function - logs a request for a function that does not exist
+ *
+ * The arguments can carry device credentials, so device credentials are masked.
+ *
+ * @param string $include_file    The script file named by the request.
+ * @param string $function        The function named by the request.
+ * @param array  $parameter_array The parsed parameters.
+ *
+ * @return void
+ */
+function script_server_log_missing_function(string $include_file, string $function, array $parameter_array) : void {
+	cacti_log("WARNING: Function does not exist  INC: '" .
+		basename($include_file) .
+		"' FUNC: '" .
+		$function .
+		"' PARMS: '" .
+		implode('\', \'', script_server_redact_params($parameter_array)) .
+		"'",
+		false,
+		'PHPSVR');
+}
+
+/**
+ * script_server_call - calls a script function and discards anything it prints
+ *
+ * Anything the function prints would reach the poller ahead of its result and
+ * be read as the reply to this request, shifting every later reply by one line.
+ *
+ * @param callable-string $function        The function name, already checked to exist.
+ * @param string          $parameters      The raw parameter string.
+ * @param array           $parameter_array The parsed parameters.
+ *
+ * @return mixed The function result.
+ */
+function script_server_call(string $function, string $parameters, array $parameter_array) : mixed {
+	$ob_level = ob_get_level();
+	ob_start();
+
+	try {
+		if ($parameters == '') {
+			$result = call_user_func($function);
+		} else {
+			$result = call_user_func_array($function, $parameter_array);
+		}
+	} finally {
+		// also closes any buffer the function left open; the output can carry
+		// credentials, so only its size is logged
+		$stray = 0;
+
+		while (ob_get_level() > $ob_level) {
+			$output = ob_get_clean();
+
+			if ($output === false) {
+				break;
+			}
+
+			$stray += strlen($output);
+		}
+
+		if ($stray > 0) {
+			cacti_log("DEBUG: Function '$function' wrote $stray bytes of output, discarded", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+		}
+	}
+
+	return $result;
+}
+
+/**
+ * script_server_response - formats a script function result as one response line
+ *
+ * The poller reads one line per request, so a line break inside the result
+ * would be read as the reply to the next request.  Multipart results are space
+ * separated name:value pairs, so a line break becomes a space.
+ *
+ * @param mixed $result The function result.
+ *
+ * @return string The result without line breaks or surrounding white space.
+ */
+function script_server_response(mixed $result) : string {
+	return trim(str_replace(["\r\n", "\r", "\n"], ' ', (string) $result));
+}
+
+/**
  * sig_handler - properly handle signals and shutdown
  *
  * @param int $signo
@@ -479,7 +647,10 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
  * @return void
  */
 function sig_handler(int $signo) : void {
-	global $include_file, $function, $parameters;
+	global $include_file, $function, $parameter_array;
+
+	// argument values can carry device credentials, so only their count is logged
+	$parameters = (is_array($parameter_array) ? cacti_count($parameter_array) : 0) . ' argument(s)';
 
 	switch ($signo) {
 		case SIGTERM:
@@ -553,4 +724,65 @@ function display_help() : void {
 	print 'one Data Source, start the Script Server, and then copy the Poller Cache entry into a running' . PHP_EOL;
 	print 'Script Server.  When doing so you should see the output you expect printed to standard output.  When' . PHP_EOL;
 	print 'running the Script Server, simply enter \'quit\' to exit.' . PHP_EOL . PHP_EOL;
+}
+
+/**
+ * Check whether a resolved script path is below one of the configured roots.
+ * Used by the script server to contain both the include file and the resolved
+ * source file of a dispatched function to the allowed Cacti script roots.
+ *
+ * @param mixed $resolved_path The realpath() result for the candidate file.
+ * @param array $roots         Configured Cacti path roots.
+ *
+ * @return bool True when $resolved_path sits under one of $roots.
+ */
+function script_server_path_is_allowed($resolved_path, array $roots) : bool {
+	static $normalized_roots = [];
+	static $resolved_paths   = [];
+
+	// quick short circuit based upon prior checks
+	if ($resolved_path === false || !is_string($resolved_path)) {
+		return false;
+	}
+
+	$opath            = $resolved_path;
+	$resolved_path    = rtrim(str_replace('\\', '/', $resolved_path), '/');
+	$case_insensitive = (DIRECTORY_SEPARATOR === '\\');
+	$cache_key        = implode("\0", $roots);
+
+	/* The allow/deny result depends on both the candidate path and the root
+	 * set, so the result cache must be keyed by both. Keying by path alone
+	 * would leak a decision made under one set of roots into a later call
+	 * using a different, possibly more restrictive, set of roots. */
+	$result_key = $cache_key . "\0" . $opath;
+
+	if (isset($resolved_paths[$result_key])) {
+		return $resolved_paths[$result_key];
+	}
+
+	if (!isset($normalized_roots[$cache_key])) {
+		$normalized_roots[$cache_key] = [];
+
+		foreach ($roots as $root) {
+			$root = realpath($root);
+
+			if ($root !== false) {
+				$normalized_roots[$cache_key][] = rtrim(str_replace('\\', '/', $root), '/');
+			}
+		}
+	}
+
+	foreach ($normalized_roots[$cache_key] as $root) {
+		$prefix = $root . '/';
+
+		if ($case_insensitive) {
+			if (stripos($resolved_path, $prefix) === 0) {
+				return $resolved_paths[$result_key] = true;
+			}
+		} elseif (strpos($resolved_path, $prefix) === 0) {
+			return $resolved_paths[$result_key] = true;
+		}
+	}
+
+	return $resolved_paths[$result_key] = false;
 }
