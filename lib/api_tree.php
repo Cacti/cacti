@@ -452,14 +452,19 @@ function api_tree_delete_node(int $tree_id, int|string $node_id) : void {
  * @return void
  */
 function api_tree_delete_node_content(int $tree_id, int $leaf_id) : void {
-	$children = db_fetch_assoc_prepared('SELECT *
-		FROM graph_tree_items
-		WHERE graph_tree_id = ? AND parent = ?', [$tree_id, $leaf_id]);
+	// the visited set keeps a stored parent cycle from being walked forever
+	$pending = [$leaf_id];
+	$visited = [$leaf_id => true];
 
-	if (cacti_sizeof($children)) {
+	while (cacti_sizeof($pending)) {
+		$children = db_fetch_assoc_prepared('SELECT *
+			FROM graph_tree_items
+			WHERE graph_tree_id = ? AND parent = ?', [$tree_id, array_pop($pending)]);
+
 		foreach ($children as $child) {
-			if ($child['host_id'] == 0 && $child['local_graph_id'] == 0) {
-				api_tree_delete_node_content($tree_id, $child['id']);
+			if ($child['host_id'] == 0 && $child['local_graph_id'] == 0 && !isset($visited[$child['id']])) {
+				$visited[$child['id']] = true;
+				$pending[]             = $child['id'];
 			}
 
 			db_execute_prepared('DELETE
@@ -519,6 +524,12 @@ function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_p
 
 	$data  = api_tree_parse_node_data($node_id);
 
+	if (!api_tree_move_allowed($tree_id, (int) $data['leaf_id'], (int) $pdata['leaf_id'])) {
+		cacti_log("ERROR: Invalid Parent Node '$new_parent' for NodeID: '$node_id' in TreeID: '$tree_id', Function move_node", false);
+
+		return;
+	}
+
 	if ($data['parent'] != $pdata['leaf_id']) {
 		db_execute_prepared('UPDATE graph_tree_items
 			SET parent = ?, position = ?
@@ -576,6 +587,56 @@ function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_p
 	}
 
 	return;
+}
+
+/**
+ * Checks that a tree item may be placed under a new parent: the item belongs to
+ * the tree, and the new parent is the tree root or an item of the same tree
+ * whose ancestors are neither the item itself nor part of a parent cycle.
+ *
+ * @param int $tree_id   The ID of the tree.
+ * @param int $leaf_id   The ID of the item being moved.
+ * @param int $parent_id The ID of the new parent item, 0 for the tree root.
+ *
+ * @return bool True if the move keeps the tree a tree, false otherwise.
+ */
+function api_tree_move_allowed(int $tree_id, int $leaf_id, int $parent_id) : bool {
+	if ($tree_id <= 0 || $leaf_id <= 0 || $parent_id < 0) {
+		return false;
+	}
+
+	$leaf_tree = db_fetch_cell_prepared('SELECT graph_tree_id
+		FROM graph_tree_items
+		WHERE id = ?',
+		[$leaf_id]);
+
+	if ($leaf_tree != $tree_id) {
+		return false;
+	}
+
+	$visited = [];
+
+	while ($parent_id > 0) {
+		if ($parent_id == $leaf_id || isset($visited[$parent_id])) {
+			return false;
+		}
+
+		$visited[$parent_id] = true;
+
+		$parent = db_fetch_cell_prepared('SELECT parent
+			FROM graph_tree_items
+			WHERE id = ?
+			AND graph_tree_id = ?',
+			[$parent_id, $tree_id]);
+
+		if (!is_numeric($parent)) {
+			return false;
+		}
+
+		$parent_id = (int) $parent;
+	}
+
+	return true;
 }
 
 /**
@@ -973,22 +1034,26 @@ function naturally_sort_graphs(array $a, array $b) : int {
  * @return int The branch ordering type. Returns 1 if the leaf node is not found.
  */
 function api_tree_get_branch_ordering(int $leaf_id) : int {
-	$leaf = db_fetch_row_prepared('SELECT sort_children_type, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', [$leaf_id]);
+	$visited = [];
 
-	if (cacti_sizeof($leaf)) {
-		if ($leaf['sort_children_type'] == 0) {
-			$parent = $leaf['parent'];
+	while (true) {
+		$leaf = db_fetch_row_prepared('SELECT sort_children_type, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', [$leaf_id]);
 
-			if ($parent > 0) {
-				return api_tree_get_branch_ordering($parent);
-			} else {
-				return (int) db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', [$leaf['graph_tree_id']]);
-			}
-		} else {
-			return $leaf['sort_children_type'];
+		if (!cacti_sizeof($leaf)) {
+			return 1;
 		}
-	} else {
-		return 1;
+
+		if ($leaf['sort_children_type'] != 0) {
+			return (int) $leaf['sort_children_type'];
+		}
+
+		$visited[$leaf_id] = true;
+		$leaf_id           = (int) $leaf['parent'];
+
+		// inherit from the tree at the root, or when the parents loop
+		if ($leaf_id <= 0 || isset($visited[$leaf_id])) {
+			return (int) db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', [$leaf['graph_tree_id']]);
+		}
 	}
 }
 
@@ -1029,7 +1094,8 @@ function api_tree_get_branch_id(int $tree_id, int $parent, string $title) : int|
  * @return void
  */
 function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock = true) : void {
-	static $level = 1;
+	static $level   = 1;
+	static $sorting = [];
 
 	if ($lock) {
 		// api_tree_get_lock('tree-lock', 10);
@@ -1059,6 +1125,16 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 
 		return;
 	}
+
+	// a parent already being sorted further up the call stack means the
+	// stored parents loop; sorting it again would never finish
+	$sorting_key = $tree_id . ':' . $parent;
+
+	if (isset($sorting[$sorting_key])) {
+		return;
+	}
+
+	$sorting[$sorting_key] = true;
 
 	if ($parent > 0) {
 		$sort_style = api_tree_get_branch_ordering($parent);
@@ -1270,6 +1346,8 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 			$sequence++;
 		}
 	}
+
+	unset($sorting[$sorting_key]);
 
 	if ($lock) {
 		// api_tree_release_lock('tree-lock');

@@ -1154,12 +1154,19 @@ function is_view_allowed(string $view = 'show_tree') : bool {
 /**
  * Given a tree id and a branch id, check if it's empty
  *
- * @param int $tree_id The ID of the tree to check.
- * @param int $parent  The parent ID of the branch to check. Default is 0.
+ * @param int   $tree_id The ID of the tree to check.
+ * @param int   $parent  The parent ID of the branch to check. Default is 0.
+ * @param array $visited Branches already checked by this walk, so a stored parent cycle ends.
  *
  * @return bool Returns true if the branch is empty, false otherwise.
  */
-function is_tree_branch_empty(int $tree_id, int $parent = 0) : bool {
+function is_tree_branch_empty(int $tree_id, int $parent = 0, array &$visited = []) : bool {
+	if (isset($visited[$parent])) {
+		return true;
+	}
+
+	$visited[$parent] = true;
+
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id
 			FROM graph_tree_items
@@ -1231,7 +1238,7 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0) : bool {
 
 	if (cacti_sizeof($branches)) {
 		foreach ($branches as $b) {
-			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
+			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'], $visited)) {
 				return false;
 			}
 		}
