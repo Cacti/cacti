@@ -1,0 +1,298 @@
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * cacti-cards vX.Y - shared "card chrome" (presentation layer).
+ *
+ * This file is bundled per-plugin (no cross-plugin or core dependency) and is
+ * kept byte-identical between the plugins that use it. It styles a grid of
+ * cards with a draggable header, per-card tools and optional expand/resize.
+ * All colours come from CSS custom properties the host sets, so it inherits
+ * the active Cacti theme without baking any palette in.
+ *
+ * HTML contract (emitted by the host's PHP):
+ *
+ *   <div class="ccGrid" style="--cc-cols:4">
+ *     <section class="ccCard ccW2 ccH1" data-card="ID"
+ *              data-severity="none|up|warn|down"
+ *              data-size-model="expand|steps"
+ *              data-expandable="0|1" data-expanded="0|1"
+ *              data-height="1" data-height-max="3"
+ *              data-maximize="body|details">
+ *       <header class="ccCardHeader">
+ *         <button class="ccDrag" ...><i class="fa fa-bars"></i></button>
+ *         <h2 class="ccTitle">Title</h2>
+ *         <span class="ccTools">
+ *           <button class="ccTool" data-tool="expand|collapse|shrink|grow|maximize|refresh|remove">...</button>
+ *         </span>
+ *       </header>
+ *       <div class="ccCardBody">...</div>
+ *     </section>
+ *   </div>
+ *
+ * Host theme variables (all optional, sensible fallbacks provided):
+ *   --cc-cols          grid column count (default 4)
+ *   --cc-surface       page surface behind the cards
+ *   --cc-card          card background
+ *   --cc-text          card foreground
+ *   --cc-border        card / divider border
+ *   --cc-header-bg     header background colour
+ *   --cc-header-image  header background image (gradient themes)
+ *   --cc-header-fg     header foreground
+ *   --cc-sev-up/-warn/-down/-none  severity hues (used as a translucent wash
+ *                                  over the header + its bottom border)
+ */
+
+.ccGrid {
+	display: grid;
+	grid-template-columns: repeat(var(--cc-cols, 4), minmax(0, 1fr));
+	align-items: start;
+	gap: 14px;
+	margin: 10px 4px;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Column span (width). */
+.ccW1 { grid-column: span 1; }
+.ccW2 { grid-column: span 2; }
+.ccW3 { grid-column: span 3; }
+.ccW4 { grid-column: span 4; }
+.ccW5 { grid-column: span 5; }
+.ccW6 { grid-column: span 6; }
+.ccW7 { grid-column: span 7; }
+.ccW8 { grid-column: span 8; }
+
+/* Row span (height) for the "steps" size model. */
+.ccH1 { grid-row: span 1; }
+.ccH2 { grid-row: span 2; }
+.ccH3 { grid-row: span 3; }
+
+.ccCard {
+	box-sizing: border-box;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid var(--cc-border, #cbd8d1);
+	/* lift the card off the page surface on both light and dark themes */
+	background: color-mix(in srgb, var(--cc-text, #23362f) 4%, var(--cc-card, #fff));
+	color: var(--cc-text, #23362f);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+	overflow: hidden;
+}
+
+.ccCardDragging {
+	opacity: 0.5;
+}
+
+.ccCardHeader {
+	box-sizing: border-box;
+	/* fixed row height so a tool/handle hover highlight never reflows the header */
+	min-height: 34px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 10px;
+	border-bottom: 1px solid var(--cc-border, #cbd8d1);
+	/* paint like the active theme's native html_start_box title bar */
+	background-color: var(--cc-header-bg, #e5ece8);
+	background-image: var(--cc-header-image, none);
+	background-repeat: repeat-x;
+	color: var(--cc-header-fg, var(--cc-text, #23362f));
+}
+
+/* Drag handle: lives on the LEFT of the header; grab it to reorder the card. */
+.ccDrag {
+	order: -1;
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	padding: 2px 5px;
+	/* reserve the border so a hover/focus highlight recolours it instead of resizing the header */
+	border: 1px solid transparent;
+	border-radius: 4px;
+	background: transparent;
+	color: color-mix(in srgb, currentColor 50%, transparent);
+	font-size: 13px;
+	line-height: 1;
+	cursor: grab;
+}
+
+.ccDrag:hover,
+.ccDrag:focus-visible {
+	color: currentColor;
+	border-color: transparent;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+	outline: none;
+}
+
+.ccDrag:active {
+	cursor: grabbing;
+}
+
+/* Host toggle to lock reordering (e.g. a "select text" mode): hide the handles. */
+.ccNoDrag .ccDrag {
+	display: none;
+}
+
+.ccTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.3;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.ccTools {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 1px;
+}
+
+.ccTool {
+	box-sizing: border-box;
+	padding: 2px 5px;
+	/* reserve the border so a hover/focus highlight recolours it instead of resizing the header */
+	border: 1px solid transparent;
+	border-radius: 4px;
+	background: transparent;
+	color: color-mix(in srgb, currentColor 50%, transparent);
+	font-size: 12px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.ccTool:hover,
+.ccTool:focus-visible {
+	color: currentColor;
+	border-color: transparent;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+	outline: none;
+}
+
+/* Only the control matching the card's current state is shown. */
+.ccCard:not(.ccCardExpanded) .ccTool[data-tool="collapse"],
+.ccCardExpanded .ccTool[data-tool="expand"] {
+	display: none;
+}
+
+/* Expand/collapse is only meaningful on expandable cards. */
+.ccCard:not([data-expandable="1"]) .ccTool[data-tool="expand"],
+.ccCard:not([data-expandable="1"]) .ccTool[data-tool="collapse"] {
+	display: none;
+}
+
+/* Resize tools only apply to the "steps" size model, and clamp at the ends. */
+.ccCard:not([data-size-model="steps"]) .ccTool[data-tool="shrink"],
+.ccCard:not([data-size-model="steps"]) .ccTool[data-tool="grow"] {
+	display: none;
+}
+
+.ccCardBody {
+	padding: 4px 12px 10px;
+	overflow-x: auto;
+}
+
+/* Expandable cards clip to a fixed height until "show more"; a fade hints at the
+   clipped content. */
+.ccCardExpandable:not(.ccCardExpanded) .ccCardBody {
+	position: relative;
+	max-height: 210px;
+	overflow: hidden;
+}
+
+.ccCardExpandable:not(.ccCardExpanded) .ccCardBody::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 30px;
+	pointer-events: none;
+	background: linear-gradient(transparent, color-mix(in srgb, var(--cc-text, #23362f) 4%, var(--cc-card, #fff)));
+}
+
+/*
+ * Severity wash. Every card carries exactly one data-severity. A single
+ * translucent colour layer is drawn over the sampled native theme header so the
+ * strength stays consistent on solid and gradient themes, light and dark. The
+ * hue comes from a host variable so it follows the theme's colour family.
+ */
+.ccCard[data-severity="none"] .ccCardHeader {
+	background-image:
+		linear-gradient(var(--cc-sev-none, rgba(140, 149, 159, 0.20)), var(--cc-sev-none, rgba(140, 149, 159, 0.20))),
+		var(--cc-header-image, none);
+	border-bottom-color: color-mix(in srgb, var(--cc-sev-none-border, #8c959f) 45%, transparent);
+}
+
+.ccCard[data-severity="up"] .ccCardHeader {
+	background-image:
+		linear-gradient(var(--cc-sev-up, rgba(148, 179, 107, 0.32)), var(--cc-sev-up, rgba(148, 179, 107, 0.32))),
+		var(--cc-header-image, none);
+	border-bottom-color: color-mix(in srgb, var(--cc-sev-up-border, #94b36b) 60%, transparent);
+}
+
+.ccCard[data-severity="warn"] .ccCardHeader {
+	background-image:
+		linear-gradient(var(--cc-sev-warn, rgba(255, 143, 30, 0.32)), var(--cc-sev-warn, rgba(255, 143, 30, 0.32))),
+		var(--cc-header-image, none);
+	border-bottom-color: color-mix(in srgb, var(--cc-sev-warn-border, #ff8f1e) 60%, transparent);
+}
+
+.ccCard[data-severity="down"] .ccCardHeader {
+	background-image:
+		linear-gradient(var(--cc-sev-down, rgba(204, 0, 0, 0.34)), var(--cc-sev-down, rgba(204, 0, 0, 0.34))),
+		var(--cc-header-image, none);
+	border-bottom-color: color-mix(in srgb, var(--cc-sev-down-border, #cc0000) 60%, transparent);
+}
+
+/* "Add card" toolbar above the grid. */
+.ccToolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 10px 4px 0;
+}
+
+.ccToolbarLabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--cc-text, #23362f);
+}
+
+.ccAdd,
+.ccRefreshInterval {
+	box-sizing: border-box;
+	padding: 4px 8px;
+	border: 1px solid var(--cc-border, #cbd8d1);
+	border-radius: 7px;
+	background: var(--cc-card, #fff);
+	color: var(--cc-text, #23362f);
+	font-size: 12px;
+}
+
+.ccAdd {
+	min-width: 220px;
+}
+
+.ccRefresh {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: auto;
+}
+
+/* Maximize dialog: reuse the card body typography on the themed dialog surface. */
+.ccDialogBody {
+	color: var(--cc-text, #23362f);
+	font-variant-numeric: tabular-nums;
+}
