@@ -857,7 +857,7 @@ function query_script_host(int $host_id, int $snmp_query_id) : bool {
 	if (isset($script_queries['arg_num_indexes'])) {
 		$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ' : '') . $script_queries['arg_num_indexes'], $script_queries['script_path'], $host_id);
 
-		// A rejected script path comes back as '', and exec('') throws on PHP 8.
+		// A rejected script path comes back as '', and running an empty command throws on PHP 8.
 		if ($script_path === '') {
 			return false;
 		}
