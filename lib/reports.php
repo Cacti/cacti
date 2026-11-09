@@ -74,26 +74,21 @@ function reports_owner_authorized(mixed $owner_id) : bool {
 }
 
 /**
- * Resolves the requested Reports list sort column against the displayed
+ * Resolves the requested Reports list sort column against the sortable list
  * columns.
  *
- * The list query joins user_auth, so only the sortable header keys are
- * accepted. Every key is an unqualified alias from the select list, which
- * MySQL also requires for ORDER BY in the combined reports/reportit UNION.
+ * The list query joins user_auth, so only the sortable header keys of
+ * reports() are accepted. Every key is an unqualified alias from the select
+ * list, which MySQL also requires for ORDER BY in the combined reports/reportit
+ * UNION. The query runs before reports() builds its header, so the keys are
+ * listed here; the reports list fixture checks them against the header.
  *
- * @param mixed $column       The requested sort column.
- * @param array $display_text The list header definition keyed by sort column.
+ * @param mixed $column The requested sort column.
  *
  * @return string A sortable header key, or 'name' when the request is not one.
  */
-function reports_sort_column(mixed $column, array $display_text) : string {
-	$allowed = [];
-
-	foreach (array_keys($display_text) as $key) {
-		if (is_string($key) && !str_starts_with($key, 'nosort')) {
-			$allowed[] = $key;
-		}
-	}
+function reports_sort_column(mixed $column) : string {
+	$allowed = ['name', 'type', 'full_name', 'sched_type', 'enabled', 'next_start', 'last_started', 'run_limit', 'last_runtime'];
 
 	return cacti_validate_sort_column(is_string($column) ? $column : '', $allowed, 'name');
 }

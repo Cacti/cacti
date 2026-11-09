@@ -123,18 +123,13 @@ it('cacti_validate_sort_column: falls back to the first entry of a keyed allowli
 });
 
 it('reports_sort_column: accepts only the sortable list headers', function () {
-	$display_text = [
-		'name'      => ['display' => 'Name'],
-		'full_name' => ['display' => 'Owner'],
-		'nosort'    => ['display' => 'Notification Detail'],
-		'enabled'   => ['display' => 'Enabled'],
-	];
-
-	expect(reports_sort_column('full_name', $display_text))->toBe('full_name')
-		->and(reports_sort_column('enabled', $display_text))->toBe('enabled')
-		->and(reports_sort_column('ua.password', $display_text))->toBe('name')
-		->and(reports_sort_column('ua.full_name', $display_text))->toBe('name')
-		->and(reports_sort_column('nosort', $display_text))->toBe('name')
-		->and(reports_sort_column(['name'], $display_text))->toBe('name')
-		->and(reports_sort_column(null, $display_text))->toBe('name');
+	expect(reports_sort_column('full_name'))->toBe('full_name')
+		->and(reports_sort_column('enabled'))->toBe('enabled')
+		->and(reports_sort_column('last_runtime'))->toBe('last_runtime')
+		->and(reports_sort_column('ua.password'))->toBe('name')
+		->and(reports_sort_column('ua.full_name'))->toBe('name')
+		->and(reports_sort_column('report.name'))->toBe('name')
+		->and(reports_sort_column('nosort'))->toBe('name')
+		->and(reports_sort_column(['name']))->toBe('name')
+		->and(reports_sort_column(null))->toBe('name');
 });

@@ -162,8 +162,16 @@ if (cacti_validate_sort_column('ua.password', ['name', 'full_name'], 'name') !==
 	throw new RuntimeException('cacti_validate_sort_column accepted a joined user_auth column');
 }
 
-if (reports_sort_column('nosort', $admin_header[0]) !== 'name') {
+if (reports_sort_column('nosort') !== 'name') {
 	throw new RuntimeException('reports_sort_column treated a nosort header as sortable');
+}
+
+// The allowlist is fixed because the query runs before the header is built;
+// it must accept every sortable header key and refuse the nosort columns.
+foreach (array_keys($admin_header[0]) as $key) {
+	if ((reports_sort_column($key) === $key) === str_starts_with($key, 'nosort')) {
+		throw new RuntimeException('reports_sort_column and the list header disagree on ' . $key);
+	}
 }
 
 $classic_sql = implode("\n", cacti_reports_run_list([
