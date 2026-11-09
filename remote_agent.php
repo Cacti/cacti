@@ -461,7 +461,7 @@ function poll_for_data() : mixed {
 
 							break;
 						case POLLER_ACTION_SCRIPT: // script (popen)
-							$output = trim(exec_poll($item['arg1']));
+							$output = trim(exec_poll($item['arg1'], 5, $item));
 
 							if (prepare_validate_result($output) === false) {
 								if (strlen($output) > 20) {
