@@ -1112,16 +1112,33 @@ function dsstats_rrdtool_execute($command, &$pipes) {
 	$return_code = fwrite($pipes[0], $command);
 
 	if (is_resource($pipes[1])) {
+		/**
+		 * Each response ends with a status line that begins 'OK u:' or
+		 * 'ERROR:'.  Output such as 'ds[LOOKUPS].index' also contains 'OK',
+		 * so only a complete line may end the read.  Stopping early leaves
+		 * the rest of the response for the next command to read.
+		 */
+		$line = '';
+
 		while (!feof($pipes[1])) {
-			$stdout .= fgets($pipes[1], 4096);
+			$chunk = fgets($pipes[1], 4096);
 
-			if (substr_count($stdout, 'OK')) {
+			if ($chunk === false) {
+				continue;
+			}
+
+			$stdout .= $chunk;
+			$line .= $chunk;
+
+			if (substr($line, -1) != "\n") {
+				continue;
+			}
+
+			if (strpos($line, 'OK u:') === 0 || strpos($line, 'ERROR:') === 0) {
 				break;
 			}
 
-			if (substr_count($stdout, 'ERROR')) {
-				break;
-			}
+			$line = '';
 		}
 	} elseif (!$broken) {
 		cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
