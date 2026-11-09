@@ -11,6 +11,7 @@ $conn   = new PDO("mysql:host=127.0.0.1;port=$port;dbname=cacti_test", 'root', g
 $hashes = json_decode(file_get_contents(__DIR__ . '/gprint_fixture.json'), true, 512, JSON_THROW_ON_ERROR);
 $checks = [
 	'SELECT COUNT(*) FROM graph_templates_gprint WHERE id IN (9202, 9203)'                                                         => 0,
+	'SELECT COUNT(*) FROM graph_templates_gprint WHERE id = 9204'                                                                  => 1,
 	'SELECT COUNT(*) FROM graph_templates_gprint WHERE id = 9201 AND graphs = 1 AND templates = 2'                                 => 1,
 	"SELECT COUNT(*) FROM graph_templates_gprint WHERE name = 'E2E Renamed GPRINT' AND gprint_text = '%8.4lf %s\\\\n'"             => 1,
 	"SELECT COUNT(*) FROM graph_templates_gprint WHERE id = 9200 AND name = 'E2E Validation GPRINT' AND gprint_text = '%8.2lf %s'" => 1,
