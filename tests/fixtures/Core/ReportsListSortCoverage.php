@@ -35,8 +35,9 @@ $GLOBALS['cacti_reports_request'] = [
 	'page'           => 1,
 	'report_type'    => '-1',
 ];
-$GLOBALS['cacti_reports_header'] = null;
-$GLOBALS['cacti_reports_sql']    = [];
+$GLOBALS['cacti_reports_header']   = null;
+$GLOBALS['cacti_reports_sql']      = [];
+$GLOBALS['cacti_reports_reportit'] = true;
 
 function __($text, ...$args) {
 	return $args !== [] ? vsprintf($text, $args) : $text;
@@ -56,7 +57,21 @@ function is_reports_admin() {
 	return $GLOBALS['cacti_reports_admin'];
 }
 function db_table_exists($table) {
-	return $table === 'plugin_reportit_reports';
+	return $table === 'plugin_reportit_reports' && $GLOBALS['cacti_reports_reportit'];
+}
+
+function cacti_reports_run_list(array $request, bool $admin, bool $reportit) : array {
+	$GLOBALS['cacti_reports_admin']    = $admin;
+	$GLOBALS['cacti_reports_reportit'] = $reportit;
+	$GLOBALS['cacti_reports_request']  = array_merge($GLOBALS['cacti_reports_request'], $request);
+	$GLOBALS['cacti_reports_sql']      = [];
+	$GLOBALS['cacti_reports_header']   = null;
+
+	ob_start();
+	reports();
+	ob_end_clean();
+
+	return $GLOBALS['cacti_reports_sql'];
 }
 function db_fetch_cell($sql, ...$args) {
 	$GLOBALS['cacti_reports_sql'][] = $sql;
@@ -151,4 +166,34 @@ if (reports_sort_column('nosort', $admin_header[0]) !== 'name') {
 	throw new RuntimeException('reports_sort_column treated a nosort header as sortable');
 }
 
-print json_encode(['passed' => 2], JSON_THROW_ON_ERROR) . "\n";
+$classic_sql = implode("\n", cacti_reports_run_list([
+	'report_type'    => 'reports',
+	'sort_column'    => 'name',
+	'sort_direction' => 'ASC',
+], true, true));
+
+if (!str_contains($classic_sql, 'ORDER BY name ASC') || str_contains($classic_sql, 'UNION')) {
+	throw new RuntimeException('Classic reports() list did not sort the reports table alone');
+}
+
+$reportit_sql = implode("\n", cacti_reports_run_list([
+	'report_type'    => 'reportit',
+	'sort_column'    => 'next_start',
+	'sort_direction' => 'DESC',
+], true, true));
+
+if (!str_contains($reportit_sql, 'ORDER BY next_start DESC') || !str_contains($reportit_sql, 'plugin_reportit_reports') || str_contains($reportit_sql, 'UNION')) {
+	throw new RuntimeException('ReportIt reports() list did not sort plugin_reportit_reports alone');
+}
+
+$legacy_sql = implode("\n", cacti_reports_run_list([
+	'report_type'    => '-1',
+	'sort_column'    => 'enabled',
+	'sort_direction' => 'ASC',
+], false, false));
+
+if (!str_contains($legacy_sql, 'ORDER BY enabled ASC') || str_contains($legacy_sql, 'plugin_reportit')) {
+	throw new RuntimeException('reports() without ReportIt did not sort the reports table');
+}
+
+print json_encode(['passed' => 5], JSON_THROW_ON_ERROR) . "\n";
