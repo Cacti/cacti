@@ -57,10 +57,7 @@ final class RrdCommand {
 	 * @return self the command
 	 */
 	public static function fromList(array $tokens): self {
-		$tokens = array_values(array_map(
-			static fn (mixed $token): string => (string) $token,
-			$tokens
-		));
+		$tokens = array_values(array_map(static fn (mixed $token): string => (string) $token, $tokens));
 
 		$operation = array_shift($tokens);
 

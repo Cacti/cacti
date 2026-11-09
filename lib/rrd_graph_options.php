@@ -148,10 +148,9 @@ function rrdtool_build_graph_options(int $graph_start, int $graph_end, array &$g
 	}
 
 	// basic graph options
-	$graph_opts .=
-		'--imgformat=' . $image_types[$graph['image_format_id']] . RRD_NL .
-		'--start=' . $graph_start . RRD_NL .
-		'--end=' . $graph_end . RRD_NL;
+	$graph_opts .= '--imgformat=' . $image_types[$graph['image_format_id']] . RRD_NL;
+	$graph_opts .= '--start=' . $graph_start . RRD_NL;
+	$graph_opts .= '--end=' . $graph_end . RRD_NL;
 
 	$graph_opts .= '--pango-markup ' . RRD_NL;
 

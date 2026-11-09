@@ -21,11 +21,14 @@ test('native graph option construction preserves recorded commands', function ()
 	$savedSession  = $_SESSION;
 	$savedTimezone = date_default_timezone_get();
 	$savedDatechar = $GLOBALS['datechar'];
+	$savedImages   = $GLOBALS['image_types'] ?? null;
 
 	try {
 		date_default_timezone_set('UTC');
-		$GLOBALS['datechar'] = [1 => '/'];
-		$options             = ['rrdtool_watermark' => 'on', 'graph_watermark' => 'Cacti graph', 'graph_watermark_rrd' => '', 'default_date_format' => GD_Y_MO_D, 'default_datechar' => 1, 'font_method' => 0];
+		// Set the image types here so the result does not depend on which test loaded global_arrays.php.
+		$GLOBALS['datechar']    = [1 => '/'];
+		$GLOBALS['image_types'] = [1 => 'PNG', 3 => 'SVG'];
+		$options                = ['rrdtool_watermark' => 'on', 'graph_watermark' => 'Cacti graph', 'graph_watermark_rrd' => '', 'default_date_format' => GD_Y_MO_D, 'default_datechar' => 1, 'font_method' => 0];
 
 		foreach (['title', 'axis', 'legend', 'unit', 'watermark'] as $type) {
 			$options[$type . '_font'] = 'DejaVu Sans';
@@ -58,5 +61,11 @@ test('native graph option construction preserves recorded commands', function ()
 		$_SESSION            = $savedSession;
 		$GLOBALS['datechar'] = $savedDatechar;
 		date_default_timezone_set($savedTimezone);
+
+		if ($savedImages === null) {
+			unset($GLOBALS['image_types']);
+		} else {
+			$GLOBALS['image_types'] = $savedImages;
+		}
 	}
 });
