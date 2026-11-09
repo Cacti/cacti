@@ -24,3 +24,29 @@ function cacti_fixture_source_function(string $file, string $function, string $n
 		unlink($temporary);
 	}
 }
+
+/**
+ * Run an unchanged top-level region of a production file in the caller's
+ * scope, for document shells that live outside any function. Group 1 of
+ * $pattern selects the region; it must match exactly once so a reshaped shell
+ * fails the fixture instead of silently testing nothing. The same line-number
+ * mapping as cacti_fixture_source_function() credits the original file.
+ */
+function cacti_fixture_source_region(string $file, string $pattern, string $namespace) : string {
+	$source = file_get_contents($file);
+
+	if (preg_match_all($pattern, $source, $matches, PREG_OFFSET_CAPTURE) !== 1) {
+		throw new RuntimeException('Cannot locate a unique source region in ' . basename($file));
+	}
+	$line      = substr_count(substr($source, 0, $matches[1][0][1]), "\n") + 1;
+	$temporary = tempnam(sys_get_temp_dir(), 'cacti-source-region-');
+	file_put_contents($temporary, '<?php ' . ($namespace !== '' ? 'namespace ' . $namespace . ';' : '') . str_repeat("\n", $line - 1) . $matches[1][0][0]);
+	$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($file);
+	register_shutdown_function(static function () use ($temporary) : void {
+		if (is_file($temporary)) {
+			unlink($temporary);
+		}
+	});
+
+	return $temporary;
+}
