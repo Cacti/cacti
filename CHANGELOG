@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.2.x
+-feature: Add a shared dashboarding card-widget library to the Card API: include/css/card-widgets.css plus the card_gauge(), card_bar(), card_bullet(), card_stackbar() and card_stat() helpers in lib/html.php render JS-free chart primitives (gauge, usage/distribution bars, min/avg/max bullet, stacked proportion bar, stat tiles) from the themeable .cc* contract, so any plugin - including third-party panels surfaced inside another plugin such as Intropage - can draw rich card bodies without its own stylesheet or JavaScript
+-feature: Add a shared dashboarding card chrome (Card API) in include/js/cards.js and include/css/cards.css, loaded by the common page header, so plugins can render a draggable, reorderable grid of cards (the window.CactiCards controller plus the themeable .cc* markup contract) without bundling their own copy
 -security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
 -security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
