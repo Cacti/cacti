@@ -39,8 +39,9 @@ test.beforeAll(async ({ browser }) => {
     let aggregate = page.getByRole('link', { name: 'E2E aggregate', exact: true });
     if (!await aggregate.count()) {
         await page.goto('/graphs.php');
+        await page.waitForLoadState('networkidle');
         const checkbox = page.locator('tr[id^="line"] input[type="checkbox"]').first();
-        await expect(checkbox).toBeVisible();
+        await expect(checkbox).toBeVisible({ timeout: 15000 });
         await checkbox.check();
         await page.locator('#drp_action').selectOption('9');
         await page.getByRole('button', { name: 'Go', exact: true }).last().click();
@@ -50,11 +51,24 @@ test.beforeAll(async ({ browser }) => {
         if (await total.count()) {
             await total.check();
         }
+        const created = page.waitForResponse(response => response.url().includes('graphs.php') && response.request().method() === 'POST');
         await page.getByRole('button', { name: 'Continue', exact: true }).click();
+        expect((await created).status()).toBeLessThan(400);
+        await page.waitForLoadState('networkidle');
         await page.goto('/aggregate_graphs.php');
+        await page.waitForLoadState('networkidle');
+        const search = page.locator('#filter').first();
+        if (await search.count()) {
+            await search.fill('E2E aggregate');
+            const apply = page.getByRole('button', { name: 'Go', exact: true }).first();
+            if (await apply.count()) {
+                await apply.click();
+                await page.waitForLoadState('networkidle');
+            }
+        }
         aggregate = page.getByRole('link', { name: 'E2E aggregate', exact: true });
     }
-    await expect(aggregate).toBeVisible();
+    await expect(aggregate).toBeVisible({ timeout: 15000 });
     aggregateId = new URL((await aggregate.getAttribute('href'))!, page.url()).searchParams.get('id')!;
     await page.close();
 });
