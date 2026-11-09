@@ -143,6 +143,7 @@ namespace CactiHttpTransportFixture {
 	}
 
 	$base = cacti_http_test_server()['url'];
+	$held = cacti_http_test_server()['inflight'];
 	$port = parse_url($base, PHP_URL_PORT);
 	$opts = ['blocked_subnets' => METADATA];
 
@@ -200,8 +201,8 @@ namespace CactiHttpTransportFixture {
 
 	// multi keeps request keys and isolates failures; HttpPollerTest asserts concurrency
 	$results = cacti_http_multi([
-		'a'  => ['method' => 'GET', 'url' => "$base/inflight/a", 'options' => $opts],
-		'b'  => ['method' => 'GET', 'url' => "$base/inflight/b", 'options' => $opts],
+		'a'  => ['method' => 'GET', 'url' => "$held/inflight/a", 'options' => $opts],
+		'b'  => ['method' => 'GET', 'url' => "$held/inflight/b", 'options' => $opts],
 		7    => ['method' => 'GET', 'url' => 'https://169.254.169.254/', 'options' => $opts],
 		'ok' => ['method' => 'GET', 'url' => "$base/stats", 'options' => $opts],
 	], 4);
@@ -212,9 +213,9 @@ namespace CactiHttpTransportFixture {
 
 	// a group at its limit waits while another group's transfer starts
 	$grouped = cacti_http_multi([
-		'a1' => ['method' => 'GET', 'url' => "$base/inflight/a1", 'group' => 'a', 'options' => $opts],
-		'a2' => ['method' => 'GET', 'url' => "$base/inflight/a2", 'group' => 'a', 'options' => $opts],
-		'b1' => ['method' => 'GET', 'url' => "$base/inflight/b1", 'group' => 'b', 'options' => $opts],
+		'a1' => ['method' => 'GET', 'url' => "$held/inflight/a1", 'group' => 'a', 'options' => $opts],
+		'a2' => ['method' => 'GET', 'url' => "$held/inflight/a2", 'group' => 'a', 'options' => $opts],
+		'b1' => ['method' => 'GET', 'url' => "$held/inflight/b1", 'group' => 'b', 'options' => $opts],
 	], 3, 1);
 
 	check(array_column($grouped, 'success') === [true, true, true], 'grouped results were ' . json_encode($grouped));

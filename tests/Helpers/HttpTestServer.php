@@ -18,14 +18,15 @@
  */
 
 /**
- * Start the HTTP test router on a free loopback port, once per process.
+ * Start the HTTP test servers on free loopback ports, once per process.
  *
- * The router is PHP's built-in server with several workers so requests can
- * overlap.  Its state directory records every request path and the peak
- * number of requests that were in flight together.  The server is stopped
- * when the process exits.
+ * The router is PHP's built-in server with several workers, for the device
+ * behaviours under 'url'.  Its state directory records every request path.
+ * Requests that measure client concurrency go to 'inflight', a single-process
+ * server that holds /inflight requests and counts how many are in flight
+ * together (see HttpInflightServer.php).  Both stop when the process exits.
  *
- * @return array{url: string, state: string} base URL without a trailing slash and the state directory
+ * @return array{url: string, state: string, inflight: string} base URLs without a trailing slash and the state directory
  */
 function cacti_http_test_server() : array {
 	static $server = null;
@@ -49,16 +50,29 @@ function cacti_http_test_server() : array {
 		[0 => ['pipe', 'r'], 1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']],
 		$pipes, null, ['PHP_CLI_SERVER_WORKERS' => '8', 'CACTI_HTTP_TEST_STATE' => $state]);
 
+	// the inflight server prints its address once it listens, and exits when its stdin closes
+	$counter = proc_open([PHP_BINARY, '-n', dirname(__DIR__) . '/fixtures/Core/HttpInflightServer.php'],
+		[0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['file', '/dev/null', 'w']],
+		$counterPipes);
+
+	$inflight = trim((string) fgets($counterPipes[1]));
+
+	if ($inflight === '') {
+		throw new RuntimeException('HTTP inflight test server did not start');
+	}
+
 	$owner = getmypid();
 
-	// suites fork children that run shutdown functions too; only the starting process may stop the server
-	register_shutdown_function(static function () use ($process, $state, $owner) : void {
+	// suites fork children that run shutdown functions too; only the starting process may stop the servers
+	register_shutdown_function(static function () use ($process, $counter, $state, $owner) : void {
 		if (getmypid() !== $owner) {
 			return;
 		}
 
-		proc_terminate($process);
-		proc_close($process);
+		foreach ([$process, $counter] as $child) {
+			proc_terminate($child);
+			proc_close($child);
+		}
 
 		array_map('unlink', glob($state . '/*') ?: []);
 		rmdir($state);
@@ -70,7 +84,7 @@ function cacti_http_test_server() : array {
 		if ($socket !== false) {
 			fclose($socket);
 
-			return $server = ['url' => 'http://127.0.0.1:' . $port, 'state' => $state];
+			return $server = ['url' => 'http://127.0.0.1:' . $port, 'state' => $state, 'inflight' => 'http://' . $inflight];
 		}
 
 		usleep(50000);
@@ -91,55 +105,15 @@ function cacti_http_test_requests() : array {
 }
 
 /**
- * Reset the router's in-flight peak and return the peak reached since the previous reset.
+ * Start a new in-flight measurement and return the peak reached since the previous one.
  *
- * @return int the highest number of /inflight requests the router held together
+ * @return int the highest number of /inflight requests the inflight server held together
  */
 function cacti_http_test_peak() : int {
-	$base = cacti_http_test_server()['url'];
+	$base = cacti_http_test_server()['inflight'];
 	$peak = json_decode(file_get_contents("$base/peak"), true)['peak'];
 
 	file_get_contents("$base/reset-peak");
 
 	return $peak;
-}
-
-/**
- * How many requests the test server holds together when a plain curl_multi client sends $count at once.
- *
- * This bypasses cacti_http_multi(), so a test can tell a server that serves
- * one request at a time (a single worker, or a runner that schedules them
- * serially) apart from a client that fails to overlap its transfers.
- *
- * @param int $count requests to send together; the router holds each until $count are in flight
- *
- * @return int the peak the router observed
- */
-function cacti_http_test_server_overlap(int $count) : int {
-	$base    = cacti_http_test_server()['url'];
-	$multi   = curl_multi_init();
-	$handles = [];
-
-	cacti_http_test_peak();
-
-	for ($i = 0; $i < $count; $i++) {
-		$handles[$i] = curl_init("$base/inflight/probe-$i?wait=$count");
-
-		curl_setopt($handles[$i], CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($handles[$i], CURLOPT_TIMEOUT, 5);
-		curl_multi_add_handle($multi, $handles[$i]);
-	}
-
-	do {
-		curl_multi_exec($multi, $running);
-		curl_multi_select($multi, 0.05);
-	} while ($running > 0);
-
-	foreach ($handles as $handle) {
-		curl_multi_remove_handle($multi, $handle);
-	}
-
-	curl_multi_close($multi);
-
-	return cacti_http_test_peak();
 }
