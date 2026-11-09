@@ -73,13 +73,7 @@ final class RunReport {
 
 		// settings.value is varchar(4096). Trim whole entries, never JSON bytes,
 		// and retain the newest operation, including the migration that failed.
-		do {
-			$encoded = json_encode($data, JSON_THROW_ON_ERROR);
-
-			if (strlen($encoded) <= 4096) {
-				return $encoded;
-			}
-
+		for ($encoded = json_encode($data, JSON_THROW_ON_ERROR); strlen($encoded) > 4096; $encoded = json_encode($data, JSON_THROW_ON_ERROR)) {
 			if (count($data['operations']) > 1) {
 				array_shift($data['operations']);
 				$data['operations_omitted']++;
@@ -97,6 +91,8 @@ final class RunReport {
 			}
 
 			throw new \LogicException('Installer report exceeds its storage limit');
-		} while (true);
+		}
+
+		return $encoded;
 	}
 }
