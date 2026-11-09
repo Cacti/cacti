@@ -32,7 +32,7 @@ TreeSqliteFixture::install(__NAMESPACE__);
 
 $root = dirname(__DIR__, 2);
 
-foreach (['api_tree_move_node', 'api_tree_move_allowed', 'api_tree_parse_node_data', 'api_tree_sort_branch', 'api_tree_get_branch_ordering', 'api_tree_delete_node_content'] as $function) {
+foreach (['api_tree_move_node', 'api_tree_move_allowed', 'api_tree_parse_node_data', 'api_tree_sort_branch', 'api_tree_sort_children', 'api_tree_get_branch_ordering', 'api_tree_delete_node_content'] as $function) {
 	cacti_fixture_source_function($root . '/lib/api_tree.php', $function, __NAMESPACE__);
 }
 
