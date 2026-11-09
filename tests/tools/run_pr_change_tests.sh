@@ -28,6 +28,9 @@ for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix 
 		run_probe "$fixture.php" "$fixture"
 	fi
 done
+if [[ -f tests/fixtures/Core/Auth/BoundaryContracts.php ]]; then
+	run_probe Auth/BoundaryContracts.php AuthBoundaryContracts
+fi
 if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-get GET '' mutation
 	run_probe SpikekillRequestGate.php spike-dry GET dryrun mutation
