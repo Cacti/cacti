@@ -58,6 +58,7 @@ function db_fetch_assoc_prepared(string $sql, array $params = []) : array {
 			['local_data_id' => 1, 'data_source_name' => "g'au", 'data_source_type_id' => 1, 'rrd_step' => 60, 'rrd_maximum' => 'U'],
 			['local_data_id' => 2, 'data_source_name' => 'ctr', 'data_source_type_id' => 2, 'rrd_step' => 2, 'rrd_maximum' => 'U'],
 			['local_data_id' => 3, 'data_source_name' => 'dctr', 'data_source_type_id' => 6, 'rrd_step' => 60, 'rrd_maximum' => 'U'],
+			['local_data_id' => 4, 'data_source_name' => 'drv', 'data_source_type_id' => 3, 'rrd_step' => 300, 'rrd_maximum' => 'U'],
 		];
 	}
 
@@ -137,4 +138,26 @@ test('poller output batches reads and keeps metadata and last values per data so
 		->toContain("2, 'ctr', 14, 2")
 		->toContain("2, 'ctr', 18, 2")
 		->toContain("3, 'dctr', NULL, NULL");
+});
+
+test('a DERIVE sample after an unknown sample is unknown rather than a TypeError', function () {
+	$GLOBALS['dsstats_prepared_queries'] = [];
+	$GLOBALS['dsstats_writes']           = [];
+
+	// The unknown sample is remembered as 'NULL' for the next timestamp,
+	// which arithmetic on PHP 8 rejects.
+	$updates = [
+		['local_data_id' => 4, 'times' => [1000 => ['drv' => 'U'], 1300 => ['drv' => 1600], 1600 => ['drv' => 2200]]],
+	];
+
+	dsstats_poller_output_under_test($updates);
+
+	$first  = date('Y-m-d H:i:s', 1000);
+	$second = date('Y-m-d H:i:s', 1300);
+	$third  = date('Y-m-d H:i:s', 1600);
+
+	expect($GLOBALS['dsstats_writes'][0])
+		->toContain("4, 'drv', '$first', NULL")
+		->toContain("4, 'drv', '$second', NULL")
+		->toContain("4, 'drv', '$third', 2)");
 });

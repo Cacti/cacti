@@ -247,6 +247,12 @@ function dsstats_write_buffer(array &$stats_array, string $interval, int $mode) 
 			peak=VALUES(peak)';
 	}
 
+	if ($mode == 1) {
+		$metrics = ['avg', 'peak', 'p95n', 'p90n', 'p75n', 'p50n', 'p25n', 'sum', 'stddev', 'lslslope', 'lslint', 'lslcorrel'];
+	} else {
+		$metrics = ['avg', 'peak'];
+	}
+
 	$overhead = strlen($sql_prefix) + strlen($sql_suffix);
 
 	// don't attempt to process an empty array
@@ -262,31 +268,17 @@ function dsstats_write_buffer(array &$stats_array, string $interval, int $mode) 
 					}
 
 					foreach ($cf_stats as $rrd_name => $stats) {
-						if ($mode == 0) {
-							$outbuf .= ($i == 1 ? ' ' : ', ') . "('" .
-								$local_data_id . "','" .
-								$rrd_name . "','" .
-								$mycf . "','" .
-								$stats['avg'] . "','" .
-								$stats['peak'] . "')";
-						} else {
-							$outbuf .= ($i == 1 ? ' ' : ', ') . "('" .
-								$local_data_id . "','" .
-								$rrd_name . "','" .
-								$mycf . "','" .
-								$stats['avg'] . "','" .
-								$stats['peak'] . "','" .
-								$stats['p95n'] . "','" .
-								$stats['p90n'] . "','" .
-								$stats['p75n'] . "','" .
-								$stats['p50n'] . "','" .
-								$stats['p25n'] . "','" .
-								$stats['sum'] . "','" .
-								$stats['stddev'] . "','" .
-								$stats['lslslope'] . "','" .
-								$stats['lslint'] . "','" .
-								$stats['lslcorrel'] . "')";
+						$values = [];
+
+						foreach ($metrics as $metric) {
+							$values[] = dsstats_sql_value($stats[$metric] ?? 'NULL');
 						}
+
+						$outbuf .= ($i == 1 ? ' ' : ', ') . "('" .
+							$local_data_id . "','" .
+							$rrd_name . "','" .
+							$mycf . "'," .
+							implode(',', $values) . ')';
 
 						$out_length += strlen($outbuf);
 
@@ -316,6 +308,23 @@ function dsstats_write_buffer(array &$stats_array, string $interval, int $mode) 
 			db_execute($sql_prefix . $outbuf . $sql_suffix);
 		}
 	}
+}
+
+/**
+ * dsstats_sql_value - formats one statistic for the bulk insert.  Unknown
+ * values must be written as SQL NULL.  A quoted 'NULL' or '' is coerced to 0
+ * by MySQL outside of strict mode, which records a false zero.
+ *
+ * @param mixed $value The parsed RRDtool value, or 'NULL' for unknown
+ *
+ * @return string An unquoted number or NULL
+ */
+function dsstats_sql_value(mixed $value) : string {
+	if (is_numeric($value)) {
+		return trim((string) $value);
+	}
+
+	return 'NULL';
 }
 
 /**
@@ -363,7 +372,7 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 			WHERE local_data_id = ?',
 			[$local_data_id]);
 
-		if ($stats_command == '') {
+		if (trim((string) $stats_command) == '') {
 			$stats_command = dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, $peak, $rrd_process);
 		}
 
@@ -440,12 +449,13 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 								break;
 							} else {
 								// Get the rrd_name and the remainder
-								$parts    = explode('-', $line);
+								// RRD names cannot contain '-', but negative values do
+								$parts    = explode('-', $line, 2);
 								$rrd_name = $parts[0];
 								$namvalpt = $parts[1];
 
 								// Get the combined variable and value
-								$parts    = explode('=', $namvalpt);
+								$parts    = explode('=', $namvalpt, 2);
 								$variable = $parts[0];
 								$value    = $parts[1];
 
@@ -618,6 +628,11 @@ function dsstats_get_stats_command(int $local_data_id, string $rrdfile, bool $us
 					$i = 0;
 				}
 			}
+		}
+
+		// an info response without data sources is not cacheable
+		if (!cacti_sizeof($dsnames)) {
+			return false;
 		}
 
 		$command = trim($def) . ' ' . $command;
@@ -1013,7 +1028,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 									// get the last values from the database for COUNTER and DERIVE data sources
 									$ds_last = $last_values[(int) $result['local_data_id']][$result['rrd_name']] ?? false;
 
-									if ($ds_last == '') {
+									if ($ds_last == '' || $ds_last == 'NULL') {
 										$currentval = 'NULL';
 									} elseif ($result['output'] != 'NULL') {
 										$currentval = ($result['output'] - $ds_last) / $polling_interval;
@@ -1346,16 +1361,33 @@ function dsstats_rrdtool_execute(string $command, array $rrd_process) : string {
 		$return_code = fwrite($pipes[0], $command);
 
 		if (is_resource($pipes[1])) {
+			/**
+			 * Each response ends with a status line that begins 'OK u:' or
+			 * 'ERROR:'.  Output such as 'ds[LOOKUPS].index' also contains 'OK',
+			 * so only a complete line may end the read.  Stopping early leaves
+			 * the rest of the response for the next command to read.
+			 */
+			$line = '';
+
 			while (!feof($pipes[1])) {
-				$stdout .= fgets($pipes[1], 4096);
+				$chunk = fgets($pipes[1], 4096);
 
-				if (str_contains($stdout, 'OK')) {
+				if ($chunk === false) {
+					continue;
+				}
+
+				$stdout .= $chunk;
+				$line .= $chunk;
+
+				if (!str_ends_with($line, "\n")) {
+					continue;
+				}
+
+				if (str_starts_with($line, 'OK u:') || str_starts_with($line, 'ERROR:')) {
 					break;
 				}
 
-				if (str_contains($stdout, 'ERROR')) {
-					break;
-				}
+				$line = '';
 			}
 		} elseif (!$broken) {
 			cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
