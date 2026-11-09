@@ -991,20 +991,13 @@ function dsstats_poller_output(&$rrd_update_array) {
 function dsstats_boost_bottom() {
 	global $config;
 
-	global $total_user, $total_system, $total_real, $total_dsses;
-
-	$total_user   = 0;
-	$total_system = 0;
-	$total_real   = 0;
-	$total_dsses  = 0;
-
 	if (read_config_option('dsstats_enable') == 'on') {
 		include_once($config['base_path'] . '/lib/rrd.php');
 
 		/* run the daily stats. log to database to prevent secondary runs */
 		set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', time()));
 
-		/* run the daily stats */
+		/* run the daily stats, one bchild per thread collects each slice */
 		dsstats_launch_children('bmaster');
 
 		/* Wait for all processes to continue */
@@ -1012,8 +1005,6 @@ function dsstats_boost_bottom() {
 			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 			sleep(2);
 		}
-
-		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 0);
 
 		dsstats_log_statistics('DAILY');
 	}
