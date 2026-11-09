@@ -23,6 +23,8 @@
 
 namespace CactiAggregateAutomationDetachProbe;
 
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureStubs.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 
 $GLOBALS['database_last_error'] = '';
@@ -160,9 +162,16 @@ $GLOBALS['probe_members'][] = 104;
 $states[]                   = automation_aggregate_reconcile($rule, $host, $attributes);
 $states[]                   = automation_aggregate_reconcile($rule, $host, $attributes);
 
-print json_encode([
+$result = [
 	'states'     => $states,
 	'builds'     => $GLOBALS['probe_builds'],
 	'aggregates' => (int) db_fetch_assoc_prepared('SELECT COUNT(*) AS total FROM aggregate_graphs')[0]['total'],
 	'mapping'    => db_fetch_assoc_prepared('SELECT local_graph_id FROM automation_aggregate_graphs'),
-]);
+];
+
+// The changed-line coverage job runs this probe directly, so it asserts too.
+\cacti_fixture_assert($result['states'] === ['created', 'unchanged', 'updated', 'detached', 'detached'], 'detached aggregate keeps its state');
+\cacti_fixture_assert($result['builds'] === [500, 500] && $result['aggregates'] === 1, 'detached aggregate is never rebuilt or duplicated');
+\cacti_fixture_assert($result['mapping'] === [['local_graph_id' => 500]], 'ownership stays on the detached aggregate');
+
+print json_encode($result);
