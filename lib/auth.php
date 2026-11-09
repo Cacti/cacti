@@ -1279,8 +1279,8 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 	);
 
 	if ($tree_id > 0) {
-		if (cacti_sizeof($trees)) {
-			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
+		if (!isset($trees[$tree_id])) {
+			return array();
 		}
 
 		$hierarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, gti.site_id,
