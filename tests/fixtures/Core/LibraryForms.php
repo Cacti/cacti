@@ -252,9 +252,46 @@ function library_template_forms(int $graph): void {
 				library_expect($dom->query('//select[starts-with(@name,"task_item_id")]')->length > 0, $local !== 0 && !$hidden, 'Data-source selection is available only for existing unlocked graphs');
 			}
 		}
+		library_template_query_forms($graph, $rrds, (int) $dataValues['data_template_id'], (int) $dataValues['id']);
 	} finally {
 		sql_save($graphTemplate, 'graph_templates_graph');
 		sql_save($dataTemplate, 'data_template_data');
 		$struct_graph_item = $structure;
+	}
+}
+
+/** Query-owned fields are hidden or replaced with guidance when the editor has no query context to fill them. */
+function library_template_query_forms(int $graph, array $rrds, int $dataTemplate, int $dataTemplateData): void {
+	$templateRrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', [$rrds[0]['local_data_template_rrd_id']]);
+	$device      = (int) db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', [$graph]);
+	$missing     = (int) db_fetch_cell('SELECT COALESCE(MAX(id), 0) + 1000 FROM snmp_query');
+	$local       = $definition = 0;
+
+	try {
+		library_expect(db_execute_prepared('UPDATE data_template_rrd SET t_rrd_maximum = ? WHERE id = ?', ['on', $templateRrd['id']]), true, 'Series maximum is editable per data source');
+		$dom = library_form_dom(static fn () => draw_nontemplated_fields_data_source_item($dataTemplate, $rrds, 'r_|field|_|id|', 'Series fields', true, true, false, $missing));
+		library_expect($dom->evaluate('count(//div[contains(@class,"tableSubHeaderColumn")][contains(., "Series fields [' . $rrds[0]['data_source_name'] . ']")])') > 0, true, 'Per-series header names the data source');
+		library_expect($dom->query('//input[@name="r_rrd_maximum_' . $rrds[0]['id'] . '"]')->length, 1, 'A query graph without suggested values leaves the series field editable');
+
+		$input = (int) db_fetch_cell("SELECT data_input_id FROM data_input_fields WHERE type_code = 'index_type' ORDER BY id LIMIT 1");
+		$local = (int) sql_save(['id' => 0, 'host_id' => $device, 'data_template_id' => $dataTemplate, 'snmp_query_id' => $missing, 'snmp_index' => '1'], 'data_local');
+		library_expect($local > 0, true, 'Fixture owns a data source of an undiscovered query');
+		$definition = (int) sql_save(['id' => 0, 'local_data_id' => $local, 'data_template_id' => $dataTemplate, 'data_input_id' => $input, 'name' => 'Undiscovered query source'], 'data_template_data');
+		library_expect($definition > 0, true, 'Undiscovered query source has metadata');
+		$custom = library_form_dom(static fn () => draw_nontemplated_fields_custom_data($definition, 'c_|id|', 'Custom fields', true, true, $missing));
+		$index  = (int) db_fetch_cell_prepared("SELECT id FROM data_input_fields WHERE data_input_id = ? AND type_code = 'index_type'", [$input]);
+		library_expect($custom->query('//input[@name="c_' . $index . '"][@type="hidden"]')->length, 1, 'Query-owned index fields are carried hidden');
+
+		foreach (['index_type', 'output_type'] as $type) {
+			$field = (int) db_fetch_cell_prepared('SELECT id FROM data_input_fields WHERE type_code = ? ORDER BY id LIMIT 1', [$type]);
+			library_expect($field > 0, true, 'Installed query input supplies ' . $type);
+			$dom = library_form_dom(static fn () => draw_custom_data_row('c_' . $type, $field, $definition, ''));
+			library_expect(str_contains($dom->document->textContent, 'Data Query Data Sources must be created through'), true, 'Undiscovered ' . $type . ' points the operator at graph creation');
+			library_expect($dom->query('//select')->length, 0, 'Undiscovered ' . $type . ' offers no stale choices');
+		}
+	} finally {
+		db_execute_prepared('UPDATE data_template_rrd SET t_rrd_maximum = ? WHERE id = ?', [$templateRrd['t_rrd_maximum'], $templateRrd['id']]);
+		db_execute_prepared('DELETE FROM data_template_data WHERE id = ?', [$definition]);
+		db_execute_prepared('DELETE FROM data_local WHERE id = ?', [$local]);
 	}
 }

@@ -34,6 +34,16 @@ function library_probe(): void {
 				library_expect(test_data_sources($graph, $device, $query, (string) $index), $expected, 'Graph preflight preserves the actual data-source probe outcome');
 			}
 		}
+		// A graph request for an index whose probe fails creates nothing and explains why.
+		$queryGraph = (int) sql_save(['id' => 0, 'hash' => bin2hex(random_bytes(16)), 'snmp_query_id' => $query, 'graph_template_id' => $graph, 'name' => 'Probe graph'], 'snmp_query_graph');
+		library_expect($queryGraph > 0, true, 'Probe query maps its graph template');
+		library_expect(db_execute_prepared('INSERT INTO host_snmp_cache (host_id, snmp_query_id, field_name, field_value, snmp_index) VALUES (?, ?, ?, ?, ?)', [$device, $query, 'value', 'missing', 'missing']), true, 'Discovered index has no collectable sample');
+		$_SESSION['debug_log']['new_graphs'] = [];
+		$values                              = ['sg' => [$query => []]];
+		create_save_graph($device, 'sg', $query, [$queryGraph => [encode_data_query_index('missing') => true]], $values);
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_local WHERE host_id = ?', [$device]), 0, 'Failed probe creates no graph');
+		library_expect(str_contains(implode(' ', $_SESSION['debug_log']['new_graphs']), 'Data Source verification failure'), true, 'Failed probe explains the skipped graph');
+		db_execute_prepared('DELETE FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', [$device, $query]);
 		// Reindexing must retain the script-server function and count argument.
 		$invalid = '<query><name>Invalid index query</name><script_path>|path_cacti|/tests/fixtures/Core/QueryProducer.php</script_path><index_order>value</index_order><fields><value><direction>output</direction></value></fields></query>';
 		file_put_contents($xmlPath, $invalid);
@@ -78,7 +88,7 @@ function library_probe(): void {
 			unset($data_query_xml_arrays[$query]);
 		}
 	} finally {
-		foreach (['graph_templates_item' => 'graph_template_id', 'graph_templates' => 'id'] as $table => $column) {
+		foreach (['graph_templates_item' => 'graph_template_id', 'snmp_query_graph' => 'graph_template_id', 'graph_templates' => 'id'] as $table => $column) {
 			db_execute_prepared("DELETE FROM $table WHERE $column = ?", [$graph]);
 		}
 
