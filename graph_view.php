@@ -53,55 +53,84 @@ initialize_realtime_step_and_window();
  */
 function get_matching_nodes() {
 	$my_matches = array();
-	$match = array();
+	$str        = (string) get_nfilter_request_var('str');
 
-	$filter = '%' . get_nfilter_request_var('str') . '%';
+	header('Content-Type: application/json; charset=utf-8');
 
-	if (get_nfilter_request_var('str') != '') {
-		$matching = db_fetch_assoc_prepared("SELECT gti.parent, gti.graph_tree_id
-			FROM graph_tree_items AS gti
-			LEFT JOIN host AS h
-			ON h.id = gti.host_id
-			LEFT JOIN (
-				SELECT DISTINCT site_id
-				FROM host
-				WHERE description LIKE ?
-				OR hostname LIKE ?
-			) AS h2
-			ON h2.site_id = gti.site_id
-			LEFT JOIN (
-				SELECT local_graph_id
-				FROM graph_templates_graph
-				WHERE local_graph_id > 0
-				AND title_cache LIKE ?
-			) AS gtg
-			ON gtg.local_graph_id = gti.local_graph_id
-			LEFT JOIN (
-				SELECT id
-				FROM sites
-				WHERE name LIKE ?
-			) AS site
-			ON site.id = gti.site_id
-			WHERE (gti.title LIKE ?)
-			OR (h.description LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
-			OR (h.hostname LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
-			OR (h2.site_id > 0)
-			OR (gtg.local_graph_id > 0)
-			OR (site.id > 0)",
-			array($filter, $filter, $filter, $filter, $filter, $filter, $filter));
-	} else {
-		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
+	// the tree filter only searches from three characters on
+	if (strlen($str) < 3) {
+		print json_encode(array());
+
+		return;
 	}
+
+	$filter = '%' . $str . '%';
+
+	$matching = db_fetch_assoc_prepared("SELECT gti.parent, gti.graph_tree_id
+		FROM graph_tree_items AS gti
+		LEFT JOIN host AS h
+		ON h.id = gti.host_id
+		LEFT JOIN (
+			SELECT DISTINCT site_id
+			FROM host
+			WHERE description LIKE ?
+			OR hostname LIKE ?
+		) AS h2
+		ON h2.site_id = gti.site_id
+		LEFT JOIN (
+			SELECT local_graph_id
+			FROM graph_templates_graph
+			WHERE local_graph_id > 0
+			AND title_cache LIKE ?
+		) AS gtg
+		ON gtg.local_graph_id = gti.local_graph_id
+		LEFT JOIN (
+			SELECT id
+			FROM sites
+			WHERE name LIKE ?
+		) AS site
+		ON site.id = gti.site_id
+		WHERE (gti.title LIKE ?)
+		OR (h.description LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
+		OR (h.hostname LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
+		OR (h2.site_id > 0)
+		OR (gtg.local_graph_id > 0)
+		OR (site.id > 0)",
+		array($filter, $filter, $filter, $filter, $filter, $filter, $filter));
+
+	$allowed = array();
 
 	if (cacti_sizeof($matching)) {
 		foreach($matching as $row) {
-			while ($row['parent'] != '0') {
+			$tree_id = (int) $row['graph_tree_id'];
+
+			if (!isset($allowed[$tree_id])) {
+				$allowed[$tree_id] = is_tree_allowed($tree_id);
+			}
+
+			if (!$allowed[$tree_id]) {
+				continue;
+			}
+
+			$match   = array();
+			$visited = array();
+
+			// a path that loops, leaves the tree, or ends at a missing item is dropped
+			while ($row['parent'] != 0) {
+				if (isset($visited[$row['parent']])) {
+					$row = array();
+					break;
+				}
+
+				$visited[$row['parent']] = true;
+
 				$match[] = 'tbranch-' . $row['parent'];
 
-				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id
+				$row = db_fetch_row_prepared('SELECT parent
 					FROM graph_tree_items
-					WHERE id = ?',
-					array($row['parent']));
+					WHERE id = ?
+					AND graph_tree_id = ?',
+					array($row['parent'], $tree_id));
 
 				if (!cacti_sizeof($row)) {
 				    break;
@@ -109,9 +138,8 @@ function get_matching_nodes() {
 			}
 
 			if (cacti_sizeof($row)) {
-				$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
+				$match[]      = 'tree_anchor-' . $tree_id;
 				$my_matches[] = array_reverse($match);
-				$match        = array();
 			}
 		}
 
@@ -147,9 +175,9 @@ function get_matching_nodes() {
 			}
 		}
 
-		header('Content-Type: application/json; charset=utf-8');
-
 		print json_encode($fa);
+	} else {
+		print json_encode(array());
 	}
 }
 
