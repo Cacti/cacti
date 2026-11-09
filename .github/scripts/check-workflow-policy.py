@@ -17,6 +17,7 @@ DEFAULT_WORKFLOW_GLOB = ".github/workflows/*"
 DEFAULT_ACTION_GLOB = ".github/actions/**/action.y*ml"
 ALLOWED_RUNNERS = {"ubuntu-24.04", "ubuntu-slim"}
 CHECKOUT_WRITE_WORKFLOWS = {
+    ".github/workflows/released-dependency-audit.yml",
     ".github/workflows/security-baseline-refresh.yml",
     ".github/workflows/update-contributors.yml",
 }
