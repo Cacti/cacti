@@ -1736,9 +1736,6 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 				}
 			}
 
-			// load the archive into memory
-			Phar::loadPhar($tmpfile, 'my.tgz');
-
 			/**
 			 * put yourself into the base directory in order to
 			 * be able to use basenames to create things like
@@ -1747,7 +1744,8 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 			chdir($restore_path);
 
 			foreach ($archive_files as $basefile => $pharpath) {
-				$output = file_get_contents("phar://my.tgz{$pharpath}");
+				// read through this archive's own path; a fixed alias stays bound to the first archive loaded
+				$output = file_get_contents("{$pharfile}{$pharpath}");
 
 				if (strlen((string) $output)) {
 					$rfile = ltrim($basefile, '/');

@@ -42,6 +42,15 @@ function library_plugins(): void {
 		file_put_contents($directory . '/payload.txt', 'changed plugin payload');
 		library_expect(api_plugin_archive_restore('coveragefixture', (string) $archive['id']), true, 'Plugin archive restores successfully');
 		library_expect(file_get_contents($directory . '/payload.txt'), 'original plugin payload', 'Restore recovers the original bytes');
+		// A later restore in the same process must read its own archive, not the one restored first.
+		file_put_contents($directory . '/payload.txt', 'second plugin payload');
+		api_plugin_archive('coveragefixture', 'Second fixture backup');
+		$second = db_fetch_row_prepared('SELECT id FROM plugin_archive WHERE plugin = ? ORDER BY id DESC LIMIT 1', ['coveragefixture']);
+		library_expect((int) $second['id'] > (int) $archive['id'], true, 'Second plugin backup persists separately');
+		file_put_contents($directory . '/payload.txt', 'changed plugin payload');
+		library_expect(api_plugin_archive_restore('coveragefixture', (string) $second['id']), true, 'Second plugin archive restores in the same process');
+		library_expect(file_get_contents($directory . '/payload.txt'), 'second plugin payload', 'Second restore writes the bytes of its own archive');
+		api_plugin_archive_remove('coveragefixture', (string) $second['id']);
 		api_plugin_archive_remove('coveragefixture', (string) $archive['id']);
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_archive WHERE plugin = ?', ['coveragefixture']), 0, 'Archive removal deletes only the owned backup');
 		library_plugin_archive_failures($directory);
@@ -153,7 +162,7 @@ function library_plugin_archive_failures(string $directory): void {
 		library_expect(file_put_contents($directory . '/blocked', 'not a directory'), 15, 'Restore fixture blocks the nested directory');
 		library_expect(db_execute_prepared('INSERT INTO plugin_archive (plugin, archive, last_updated) VALUES (?, ?, NOW())', ['coveragefixture', $archives['archive']]), true, 'Blocked archive persists');
 		$id = (int) db_fetch_insert_id();
-		// Every restore loads its archive under one fixed phar alias, so each request restores once.
+		// Each restore runs in its own request so the restore_failed message it reports is its own.
 		$restore = 'var_export(api_plugin_archive_restore($argv[1], $argv[2], $argv[3])); print isset($_SESSION[SESS_MESSAGES]["restore_failed"]) ? "|failed" : "|ok";';
 		library_expect(library_child($restore, ['coveragefixture', (string) $id, 'archive']), 'false|failed', 'An archive restore that cannot create its directory reports failure');
 
