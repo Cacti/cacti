@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.2.x
+-feature: Add a shared dashboarding card-widget library to the Card API: include/css/card-widgets.css plus the card_gauge(), card_bar(), card_bullet(), card_stackbar() and card_stat() helpers in lib/html.php render JS-free chart primitives (gauge, usage/distribution bars, min/avg/max bullet, stacked proportion bar, stat tiles) from the themeable .cc* contract, so any plugin - including third-party panels surfaced inside another plugin such as Intropage - can draw rich card bodies without its own stylesheet or JavaScript
+-feature: Add a shared dashboarding card chrome (Card API) in include/js/cards.js and include/css/cards.css, loaded by the common page header, so plugins can render a draggable, reorderable grid of cards (the window.CactiCards controller plus the themeable .cc* markup contract) without bundling their own copy
 -security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
 -security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
@@ -226,10 +228,13 @@ Cacti CHANGELOG
 -issue#8508: Contain wrapped Sunrise titles beside their controls
 -issue#8510: Contain Paper Plane titlebars and improve link and table text contrast across surfaces
 -issue#8581: Bound Boost archive draining, isolate RRD failures, and make cleanup predictable
+-issue#8596: Discard stray output from Script Server functions and keep each response on one line
+-issue#8596: Keep device credentials out of cmd.php recache log messages
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
 -issue#8644: Correct automation graph and tree creation recovery, source reuse and scaling
 -issue#8644: Preserve template ancestry, atomic copies and graph bindings while scaling custom input propagation
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
+-issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query

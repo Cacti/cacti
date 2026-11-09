@@ -1136,6 +1136,8 @@ function ping_and_reindex_check(&$item, $mibs) {
 				 * sentinel keeps trim($output) safe under PHP 8. */
 				$output = '';
 
+				$log_arg1 = poller_redact_snmp_secrets($index_item['arg1'], $item);
+
 				switch ($index_item['action']) {
 					case POLLER_ACTION_SNMP:
 						$session = open_snmp_session($host_id, $item);
@@ -1165,7 +1167,7 @@ function ping_and_reindex_check(&$item, $mibs) {
 							$output = 'U';
 						}
 
-						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE OID: ' . $index_item['arg1'] . ', (assert:' . $index_item['assert_value'] . ' ' . $index_item['op'] . ' output:' . $output . ')', $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE OID: ' . $log_arg1 . ', (assert:' . $index_item['assert_value'] . ' ' . $index_item['op'] . ' output:' . $output . ')', $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 						break;
 					case POLLER_ACTION_SCRIPT:
@@ -1183,7 +1185,7 @@ function ping_and_reindex_check(&$item, $mibs) {
 							}
 						}
 
-						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SCRIPT: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SCRIPT: ' . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 						break;
 					case POLLER_ACTION_SCRIPT_PHP:
@@ -1201,7 +1203,7 @@ function ping_and_reindex_check(&$item, $mibs) {
 							}
 						}
 
-						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SERVER: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SERVER: ' . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 						break;
 					case POLLER_ACTION_SNMP_COUNT:
@@ -1213,7 +1215,7 @@ function ping_and_reindex_check(&$item, $mibs) {
 							$output = 'U';
 						}
 
-						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE OID COUNT: ' . $index_item['arg1'] . ', output: ' . $output, $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE OID COUNT: ' . $log_arg1 . ', output: ' . $output, $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 						break;
 					case POLLER_ACTION_SCRIPT_COUNT:
@@ -1221,14 +1223,14 @@ function ping_and_reindex_check(&$item, $mibs) {
 						$script_index_array = exec_into_array($index_item['arg1']);
 						$output = cacti_sizeof($script_index_array);
 
-						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE CMD COUNT: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE CMD COUNT: ' . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 						break;
 					case POLLER_ACTION_SCRIPT_PHP_COUNT:
 						$output = exec_into_array($index_item['arg1']);
 						$output = cacti_sizeof($output);
 
-						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SERVER COUNT: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+						cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SERVER COUNT: ' . $log_arg1 . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 						break;
 					default:

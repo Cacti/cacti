@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2026-10-27 13:18+0000\n"
-"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
-"Language: sv-SE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-09 22:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -416,7 +404,7 @@ msgstr "Del av grafaggregation"
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php sites.php tree.php user_admin.php
 msgid "Go"
-msgstr "Start"
+msgstr "Gå"
 
 #: aggregate_graphs.php automation_devices.php automation_snmp.php
 #: automation_templates.php cdef.php color.php data_debug.php data_input.php
@@ -524,7 +512,7 @@ msgstr "Mall"
 #: lib/api_automation.php lib/auth.php lib/html.php lib/html_reports.php
 #: managers.php user_admin.php user_group_admin.php utilities.php
 msgid "Any"
-msgstr "Vilken som helst"
+msgstr "Valfri"
 
 #: aggregate_graphs.php automation_graph_rules.php automation_networks.php
 #: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
@@ -5523,14 +5511,12 @@ msgid "Return to Cacti: %s"
 msgstr "Återgå till Cacti: %s"
 
 #: include/csrf.php
-#, fuzzy
-#| msgid "Session"
 msgid "Session Expired"
-msgstr "Session"
+msgstr "Sessionen har upphört"
 
 #: include/csrf.php
 msgid "Your installer session expired due to inactivity. Reload the installer and try again."
-msgstr ""
+msgstr "Installationssessionen har upphört på grund av inaktivitet. Läs in installationsprogrammet på nytt och försök igen."
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
@@ -6142,7 +6128,7 @@ msgstr "Varje timme"
 #: include/global_arrays.php include/global_settings.php
 #, php-format
 msgid "Every %d Hours"
-msgstr "Med %d timmars mellanrum"
+msgstr "Var %d:e timme"
 
 #: include/global_arrays.php
 #, php-format
@@ -11092,11 +11078,11 @@ msgstr "En uppdatering sker om antalet poster i Boosts utdatatabell överstiger 
 
 #: include/global_settings.php
 msgid "Target Archive Rows Per Range"
-msgstr ""
+msgstr "Målantal arkivrader per intervall"
 
 #: include/global_settings.php
 msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
-msgstr ""
+msgstr "Boost-uppdateraren tilldelar kompletta lokala data-ID:n till sammanhängande intervall nära detta radantal. Ett enskilt lokalt data-ID delas aldrig, så ett intervall kan överskrida målet. Sänk värdet för att minska uppdaterarens minnesanvändning och frågetid. Standardvärdet är 50 000."
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11123,42 +11109,36 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "Om Boost-processen överskrider denna körtid skrivs en varning till Cactis logg."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Maximum Allowed Runtime:"
 msgid "Maximum Failed RRDs Queued"
-msgstr "Högsta tillåtna körtid:"
+msgstr "Maximalt antal misslyckade RRD:er i kö"
 
 #: include/global_settings.php
 msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
-msgstr ""
+msgstr "Maximalt antal RRD-mål som behålls för automatiska Boost-omförsök. Endast den senaste fullständigt misslyckade uppdateringen behålls per mål."
 
 #: include/global_settings.php
 msgid "Failed RRD Retry Budget"
-msgstr ""
+msgstr "Budget för omförsök efter misslyckade RRD-skrivningar"
 
 #: include/global_settings.php
 msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
-msgstr ""
+msgstr "Maximalt antal RRD-mål i kön som försöks igen av en schemalagd Boost-körning."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Maximum Allowed Runtime:"
 msgid "Maximum Failed RRD Retries"
-msgstr "Högsta tillåtna körtid:"
+msgstr "Maximalt antal omförsök efter misslyckade RRD-skrivningar"
 
 #: include/global_settings.php
 msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
-msgstr ""
+msgstr "RRD-uppdateringar i kö kasseras uttryckligen efter så här många misslyckade automatiska försök."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Maximum E-Mail Size"
 msgid "Maximum Failed RRD Age"
-msgstr "Maximal e-poststorlek"
+msgstr "Högsta ålder för misslyckade RRD-skrivningar"
 
 #: include/global_settings.php
 msgid "Days to retain the latest failed RRD update before explicit discard."
-msgstr ""
+msgstr "Antal dagar som den senaste misslyckade RRD-uppdateringen behålls innan den uttryckligen kasseras."
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12290,7 +12270,7 @@ msgstr "Misslyckad Cacti-inloggning"
 
 #: lib/boost.php
 msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
-msgstr ""
+msgstr "VARNING: Boost har lagt ett RRD-skrivfel i kö för automatiskt omförsök med begränsat antal."
 
 #: lib/boost.php utilities.php
 #, php-format
@@ -15754,22 +15734,22 @@ msgstr "FEL: RRD-filen finns inte: %s"
 #: lib/rrd.php
 #, php-format
 msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
-msgstr ""
+msgstr "Grafen kräver %d datakällor, men RRD-filen innehåller bara %d. De saknade datakällorna läggs till."
 
 #: lib/rrd.php
 #, php-format
 msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
-msgstr ""
+msgstr "Grafen kräver %d datakällor, men RRD-filen innehåller %d. De extra datakällorna tas bort."
 
 #: lib/rrd.php
 #, php-format
 msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
-msgstr ""
+msgstr "Datakällan '%s' krävs av grafen men saknas i RRD-filen och kommer att läggas till."
 
 #: lib/rrd.php
 #, php-format
 msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
-msgstr ""
+msgstr "Datakällan '%s' finns i RRD-filen men krävs inte av grafen och kommer att tas bort."
 
 #: lib/rrd.php
 #, php-format
@@ -19373,10 +19353,8 @@ msgid "Max Total Memory Possible"
 msgstr "Största möjliga totala minne"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
-msgstr "Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera ytterligare cacheminne för RRD-filer om databasen och RRD-filerna finns på samma system. Se de totala värdena för kärna och klienter nedan för en förklaring av beräkningen."
+msgstr "Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera ytterligare cacheminne för RRD-filer om databasen och RRD-filerna finns på samma system. Se de totala värdena för kärna och klienter nedan för en förklaring av beräkningsmetoden."
 
 #: utilities.php
 msgid "Max Core Memory Possible"
@@ -19757,51 +19735,42 @@ msgid "Boost On-demand Updating:"
 msgstr "Boost-uppdatering på begäran:"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Boost Status"
 msgid "Boost Lifecycle Status:"
-msgstr "Boost-status"
+msgstr "Boost-livscykelstatus:"
 
 #: utilities.php
 msgid "Running Processes:"
 msgstr "Körande processer:"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Queued Boost Records:"
 msgid "Sealed Boost Archives:"
-msgstr "Boost-poster i kö:"
+msgstr "Förseglade Boost-arkiv:"
 
 #: utilities.php
-#, fuzzy, php-format
-#| msgid "Created: %s"
+#, php-format
 msgid "oldest created: %s"
-msgstr "Skapat: %s"
+msgstr "äldst skapad: %s"
 
 #: utilities.php
 msgid "Failed RRD Destinations Pending:"
-msgstr ""
+msgstr "Väntande misslyckade RRD-mål:"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Oldest First"
 msgid "Oldest Failed RRD:"
-msgstr "Äldsta först"
+msgstr "Äldsta misslyckade RRD-skrivning:"
 
 #: utilities.php
 msgid "Last Boost Failure Warning:"
-msgstr ""
+msgstr "Senaste Boost-varning om misslyckande:"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Automatic Page Refresh"
 msgid "Last Automatic Failure Retry:"
-msgstr "Automatisk siduppdatering"
+msgstr "Senaste automatiska omförsöket efter fel:"
 
 #: utilities.php
 #, php-format
 msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
-msgstr ""
+msgstr "försök: %d, återställda provvärden: %d, kasserade provvärden: %d, väntande mål: %d"
 
 #: utilities.php
 msgid "Total Poller Items:"

@@ -29,6 +29,8 @@ on:
       - 'tests/e2e/boost/**'
       - 'tests/fixtures/Core/Boost*'
       - 'tests/fixtures/Core/Rrd/**'
+      - 'tests/fixtures/Core/ScriptQueryPath.php'
+      - 'tests/Unit/Core/ScriptQueryPathTest.php'
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/integration/BoostProcessTableMariaDbTest.php'
       - 'tests/integration/AggregateCreationIntegrationTest.php'

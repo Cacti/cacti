@@ -202,9 +202,10 @@ test('item overrides apply while totals-only member suppression remains intact',
 
 test('graph action creation owns and rolls back its entire transaction', function ($stage) {
 	$r = aggregate_probe('graph-action', $stage);
-	expect($r['transaction_open'])->toBeFalse()->and($r['unchanged'])->toBe($stage !== 'success')
-		->and($r['graphs'])->toBe($stage === 'success' ? 2 : 1);
-})->with(['success', 'metadata', 'settings', 'items']);
+	$success = in_array($stage, ['success', 'fresh-connection']);
+	expect($r['transaction_open'])->toBeFalse()->and($r['unchanged'])->toBe(!$success)
+		->and($r['graphs'])->toBe($success ? 2 : 1);
+})->with(['success', 'fresh-connection', 'metadata', 'settings', 'items']);
 
 test('failed derived graph operations preserve all stored rows', function ($stage) {
 	$r = aggregate_probe('query-failure', $stage);
