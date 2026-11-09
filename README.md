@@ -26,6 +26,17 @@ Core capabilities include:
 
 ---
 
+## Cacti Theme
+
+![Cacti theme device inventory with synthetic monitoring data](docs/validation/images/cacti-theme-desktop.png)
+
+This browser E2E fixture contains four demo devices with response times, traffic
+measurements, and alert states. It uses the shipped Cacti theme stylesheets.
+See [theme validation](docs/validation/cacti-theme.md) for the narrow-screen
+details screenshot and reproduction commands.
+
+---
+
 ## Release Branches
 
 Cacti maintains two primary branches:
