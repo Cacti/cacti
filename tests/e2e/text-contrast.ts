@@ -64,7 +64,7 @@ export function textContrast(element: Element): number {
 			if (!match) throw unmeasurable(`background-image ${layer}`);
 			const args = split(match[1]);
 			// Interpolating in another color space leaves the sRGB segment between stops.
-			if (/^in\s|\sin\s/.test(args[0])) throw unmeasurable(`gradient color space ${args[0]}`);
+			if (/(?:^|\s)in\s/.test(args[0])) throw unmeasurable(`gradient color space ${args[0]}`);
 			const stops: number[][] = [];
 			for (const arg of args) {
 				const stop = color.exec(arg);
