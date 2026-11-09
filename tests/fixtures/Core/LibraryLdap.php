@@ -53,7 +53,7 @@ function run(): void {
 		}
 		$GLOBALS['library_ldap_result'] = [];
 		\library_expect(cacti_ldap_search_cn(''), [], 'Omitted LDAP options preserve an empty transport result');
-		\library_expect($GLOBALS['library_ldap_handoff'], get_object_vars(new Ldap()), 'Omitted LDAP options preserve constructor defaults and uninitialized properties');
+		\library_expect($GLOBALS['library_ldap_handoff'], get_object_vars(new Ldap()), 'Omitted LDAP options keep the transport defaults');
 	} finally {
 		unset($GLOBALS['library_ldap_handoff'], $GLOBALS['library_ldap_result']);
 	}
@@ -89,6 +89,10 @@ function native(): void {
 		\library_expect($ldap->Search()['dn'], $dn, 'Directory search returns the actual account identity');
 		$ldap = $factory();
 		\library_expect($ldap->Getcn()['cn'], ['CN' => 'ldapuser', 'mail' => ''], 'Attribute search preserves requested casing and absent optional mail');
+		// The legacy wrapper only sets the options it is given; the rest must fall back to transport defaults.
+		$found = \cacti_ldap_search_cn('claimuser', ['displayName', 'mail'], host: 'openldap', mode: 2, search_base: 'ou=users,' . $base,
+			search_filter: '(uid=<username>)', specific_dn: 'cn=admin,' . $base, specific_password: 'adminpassword');
+		\library_expect([$found['error_num'] ?? null, $found['cn'] ?? null], [\LdapError::Success, ['displayName' => 'Claim User', 'mail' => 'claimuser@example.org']], 'Legacy attribute search connects with default port, protocol and timeouts');
 
 		foreach ([false, true] as $requireGroup) {
 			$ldap                = $factory();

@@ -474,33 +474,38 @@ abstract class LdapError {
 	}
 }
 
+/**
+ * Property defaults match LdapLoginProvider::buildLdap() so the legacy
+ * cacti_ldap_*() wrappers, which only set the options they are given,
+ * never read an uninitialized property.
+ */
 class Ldap {
-	public string $dn;
-	private array $connection = [];
-	public array  $cn;
+	public string $dn                = '';
+	private array $connection        = [];
+	public array  $cn                = [];
 	public string $host;
-	public mixed $username   = '';
-	public mixed $password   = '';
-	public int    $port;
-	public int    $port_ssl;
-	public int    $version;
-	public int    $encryption;
-	public int    $referrals;
-	public int    $tls_certificate;
-	public int    $network_timeout;
-	public int    $bind_timeout;
+	public mixed  $username          = '';
+	public mixed  $password          = '';
+	public int    $port              = 389;
+	public int    $port_ssl          = 636;
+	public int    $version           = 3;
+	public int    $encryption        = 0;
+	public int    $referrals         = 0;
+	public int    $tls_certificate   = LDAP_OPT_X_TLS_DEMAND;
+	public int    $network_timeout   = 2;
+	public int    $bind_timeout      = 2;
 	public int    $debug;
-	public bool   $group_require;
-	public string $group_dn;
-	public string $group_attrib;
-	public int    $group_member_type;
-	public int    $mode;
-	public string $search_base;
-	public string $search_filter;
-	public string $specific_dn;
-	public string $specific_password;
-	public string $cn_full_name;
-	public string $cn_email;
+	public bool   $group_require     = false;
+	public string $group_dn          = '';
+	public string $group_attrib      = '';
+	public int    $group_member_type = 1;
+	public int    $mode              = 0;
+	public string $search_base       = '';
+	public string $search_filter     = '';
+	public string $specific_dn       = '';
+	public string $specific_password = '';
+	public string $cn_full_name      = '';
+	public string $cn_email          = '';
 
 	public function __construct() {
 		// No DB lookup here: Cacti\Auth\LdapLoginProvider::buildLdap() is the
