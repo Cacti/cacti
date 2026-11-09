@@ -97,7 +97,7 @@ function library_mail_delivery(): void {
 	$directory = sys_get_temp_dir() . '/cacti-mail-' . bin2hex(random_bytes(8));
 	library_expect(mkdir($directory, 0700), true, 'Mail fixture owns its message recorder');
 	$names    = ['settings_how', 'settings_sendmail_path', 'settings_smtp_host', 'settings_smtp_port', 'settings_smtp_timeout',
-		'settings_smtp_username', 'settings_smtp_password', 'settings_ping_mail', 'settings_test_email'];
+		'settings_smtp_username', 'settings_smtp_password', 'settings_ping_mail', 'settings_test_email', 'settings_from_name'];
 	$previous = [];
 
 	foreach ($names as $name) {
@@ -122,6 +122,11 @@ function library_mail_delivery(): void {
 		library_expect(preg_match("/<img src='cid:([^']+)' >/", quoted_printable_decode($message), $cid), 1, 'Graph placeholder becomes an inline image reference');
 		library_expect(str_contains($message, '<GRAPH:7:1>'), false, 'Graph placeholder is not delivered literally');
 		library_expect(str_contains($message, 'Content-ID: <' . $cid[1] . '>'), true, 'Inline image part carries the referenced content ID');
+		// With no From Name configured, a bare sender address must still be delivered.
+		db_execute_prepared('DELETE FROM settings WHERE name = ?', ['settings_from_name']);
+		unset($GLOBALS['config'][OPTIONS_CLI]['settings_from_name']);
+		library_expect(mailer('sender@example.invalid', 'recipient@example.invalid', subject: 'Unnamed sender', body: 'Body'), '', 'A sender without a name is accepted by the transport');
+		library_expect(preg_match('/^From: sender@example\.invalid\r?$/m', (string) file_get_contents($directory . '/message.eml')), 1, 'A sender without a name is delivered as a bare address');
 
 		$socket = stream_socket_server('tcp://127.0.0.1:0', $errorNumber, $errorMessage);
 		library_expect(is_resource($socket), true, 'Mail fixture reserves a closed SMTP port');

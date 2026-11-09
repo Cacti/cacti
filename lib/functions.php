@@ -6911,9 +6911,9 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	 */
 	$from = parse_email_details($from, 1);
 
-	// from name was empty, use value in settings
+	// from name was empty, use value in settings; the setting has no default
 	if (empty($from['name'])) {
-		$from['name'] = read_config_option('settings_from_name');
+		$from['name'] = (string) read_config_option('settings_from_name');
 	}
 
 	// from email was empty, use email in settings
