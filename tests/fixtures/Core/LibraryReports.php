@@ -182,4 +182,16 @@ function library_report_tree(int $tree, int $branch, int $graph): void {
 	}
 	$item['tree_id'] = 0;
 	library_expect(reports_expand_tree($report, $item, 0, REPORTS_OUTPUT_EMAIL, false), '', 'An absent tree renders no graph');
+	library_tree_navigation($tree, $branch);
+}
+
+/** Tree editing resolves branches by identity and title, and the graph view anchors the tree root. */
+function library_tree_navigation(int $tree, int $branch): void {
+	require_once CACTI_PATH_LIBRARY . '/html_tree.php';
+	library_expect(api_tree_get_branch_name($tree, $branch), 'Fixture branch', 'Branch identity resolves its title');
+	library_expect(api_tree_get_branch_id($tree, 0, 'Fixture branch'), $branch, 'Branch title resolves its identity under the root');
+	$name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', [$tree]);
+	$dom  = library_form_dom(static fn () => api_tree_get_main($tree, -1));
+	library_expect($dom->evaluate('string(//li[@id="tree_anchor-' . $tree . '"]/a)'), $name, 'Tree root anchor shows the tree name');
+	library_expect(str_contains($dom->evaluate('string(//li[@id="tree_anchor-' . $tree . '"]/a/@href)'), 'node=tree_anchor-' . $tree), true, 'Tree root anchor links to its own node');
 }
