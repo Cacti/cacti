@@ -57,9 +57,16 @@ for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-wid
 		browser_specs+=("tests/$spec.spec.js")
 	fi
 done
+# Theme stylesheets are exercised by the theme correctness specs, which only
+# record coverage when CACTI_THEME_COVERAGE is set.
+for spec in develop-theme-correctness develop-theme-cleanup; do
+	if [[ -f "tests/e2e/tests/$spec.spec.ts" ]]; then
+		browser_specs+=("tests/$spec.spec.ts")
+	fi
+done
 browser_args=()
 if (( ${#browser_specs[@]} )); then
-	(cd tests/e2e && npx --no-install playwright test "${browser_specs[@]}" --workers=2 --reporter=line)
+	(cd tests/e2e && CACTI_THEME_COVERAGE=1 npx --no-install playwright test "${browser_specs[@]}" --workers=2 --reporter=line)
 	browser_args=(--browser-root tests/e2e/test-results)
 fi
 
