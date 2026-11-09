@@ -177,8 +177,7 @@ function graph_template_to_xml(int $graph_template_id) : string {
 
 			if (cacti_sizeof($graph_template_input_items) > 0) {
 				foreach ($graph_template_input_items as $item2) {
-					$xml_text .= 'hash_' .
-						get_hash_version('graph_template') .
+					$xml_text .= 'hash_' . get_hash_version('graph_template') .
 						get_hash_graph_template($item2['graph_template_item_id'],
 							'graph_template_item');
 
@@ -245,8 +244,7 @@ function data_template_to_xml(int $data_template_id) : string {
 		return '';
 	}
 
-	$xml_text .= '<hash_' .
-		$hash['data_template'] .
+	$xml_text .= '<hash_' . $hash['data_template'] .
 		">\n\t<name>" .
 		xml_character_encode($data_template['name']) .
 		"</name>\n\t<ds>\n";
@@ -327,8 +325,7 @@ function data_template_to_xml(int $data_template_id) : string {
 		foreach ($data_input_data as $item) {
 			$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
-			$xml_text .= "\t\t\t<data_input_field_id>hash_" .
-				get_hash_version('data_input_field') .
+			$xml_text .= "\t\t\t<data_input_field_id>hash_" . get_hash_version('data_input_field') .
 				get_hash_data_input($item['data_input_field_id'],
 					'data_input_field') . "</data_input_field_id>\n";
 			$xml_text .= "\t\t\t<data_template_id>hash_" . $hash['data_template'] . "</data_template_id>\n";
@@ -912,12 +909,10 @@ function data_query_to_xml(int $data_query_id) : string {
 					$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
 					$xml_text .= "\t\t\t\t\t<snmp_field_name>" . $item2['snmp_field_name'] . "</snmp_field_name>\n";
-					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" .
-						get_hash_version('data_template') .
+					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') .
 						get_hash_data_template($item2['data_template_id']) .
 						"</data_template_id>\n";
-					$xml_text .= "\t\t\t\t\t<data_template_rrd_id>hash_" .
-						get_hash_version('data_template_item') .
+					$xml_text .= "\t\t\t\t\t<data_template_rrd_id>hash_" . get_hash_version('data_template_item') .
 						get_hash_data_template($item2['data_template_rrd_id'],
 							'data_template_item') . "</data_template_rrd_id>\n";
 
@@ -969,8 +964,7 @@ function data_query_to_xml(int $data_query_id) : string {
 					$xml_text .= "\t\t\t\t<hash_" . $hash['data_query_sv_data_source'] . ">\n";
 
 					$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2['field_name']) . "</field_name>\n";
-					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" .
-						get_hash_version('data_template') .
+					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') .
 						get_hash_data_template($item2['data_template_id']) .
 						"</data_template_id>\n";
 					$xml_text .= "\t\t\t\t\t<sequence>" . $item2['sequence'] . "</sequence>\n";
