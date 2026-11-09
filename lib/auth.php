@@ -819,44 +819,28 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 			return true;
 		}
 
-		/* check for group perms */
-		$groups = db_fetch_assoc_prepared("SELECT uag.policy_trees
+		/**
+		 * Each enabled group decides by its own tree policy and its own tree
+		 * exceptions; item_id is shared by every permission type, so only type 2
+		 * rows are tree exceptions.
+		 */
+		$groups = db_fetch_assoc_prepared("SELECT uag.id, uag.policy_trees, COUNT(uagp.item_id) AS exceptions
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on'
-			AND uagm.user_id = ?",
-			array($user_id));
-
-		if (!cacti_sizeof($groups)) {
-			$_SESSION['sess_tree_perms'][$tree_id] = false;
-
-			return false;
-		}
-
-		foreach ($groups as $g) {
-			if (auth_check_perms($trees, $g['policy_trees'])) {
-				$_SESSION['sess_tree_perms'][$tree_id] = true;
-
-				return true;
-			}
-		}
-
-		/* check for group trees */
-		$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
-			FROM user_auth_group AS uag
-			INNER JOIN user_auth_group_members AS uagm
-			ON uag.id = uagm.group_id
-			INNER JOIN user_auth_group_perms as uagp
+			LEFT JOIN user_auth_group_perms AS uagp
 			ON uagp.group_id = uag.id
+			AND uagp.type = 2
+			AND uagp.item_id = ?
 			WHERE uag.enabled = 'on'
 			AND uagm.user_id = ?
-			AND uagp.item_id = ?",
-			array($user_id, $tree_id));
+			GROUP BY uag.id, uag.policy_trees",
+			array($tree_id, $user_id));
 
 		foreach ($groups as $g) {
-			if (auth_check_perms($gtrees, $g['policy_trees'])) {
+			if (auth_check_perms($g['exceptions'] > 0 ? array($g) : array(), $g['policy_trees'])) {
 				$_SESSION['sess_tree_perms'][$tree_id] = true;
+
 				return true;
 			}
 		}
