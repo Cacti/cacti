@@ -58,11 +58,13 @@ jobs:
             ecosystem: composer
             directory: '/'
             workdir: '.'
+            lockfile: composer.lock
           - id: test-php
             name: test PHP
             ecosystem: composer
             directory: '/tests'
             workdir: tests
+            lockfile: tests/composer.lock
           - id: frontend
             name: frontend
             ecosystem: npm
@@ -93,10 +95,12 @@ jobs:
       - name: Set up Cacti Composer toolchain
         if: matrix.ecosystem == 'composer'
         uses: ./automation/.github/actions/setup-php-composer
+        env:
+          COMPOSER: ${{ github.workspace }}/released/${{ matrix.workdir }}/composer.json
         with:
           php-version: '8.3'
           dependency-mode: audit
-          cache-dependency-path: released/${{ matrix.workdir }}/composer.lock
+          cache-dependency-path: released/${{ matrix.lockfile }}
 
       - name: Set up Node
         if: matrix.ecosystem == 'npm'
@@ -260,7 +264,7 @@ jobs:
           ref: 1.2.x
           path: released
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
 
       - name: Download read-only remediation artifacts
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -271,16 +275,21 @@ jobs:
 
       # No package-manager or released-branch code executes in this
       # write-enabled job. The trusted publisher revalidates every path.
+      # Git push credentials exist only for this step: the checkouts do not
+      # persist the token, and the helper is removed when the step exits.
       - name: Open or refresh draft remediation pull requests
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: >-
-          python3 automation/.github/scripts/released_dependency_remediation.py publish
-          --artifacts "$RUNNER_TEMP/released-remediation"
-          --repository-root "$GITHUB_WORKSPACE/released"
-          --repository "${{ github.repository }}"
-          --base-branch 1.2.x
-          --assignee TheWitness
-          --issue 8577
-          --run-url "$RUN_URL"
+        run: |
+          set -euo pipefail
+          trap 'git config --global --unset-all credential.https://github.com.helper || true' EXIT
+          gh auth setup-git
+          python3 automation/.github/scripts/released_dependency_remediation.py publish \
+            --artifacts "$RUNNER_TEMP/released-remediation" \
+            --repository-root "$GITHUB_WORKSPACE/released" \
+            --repository "${{ github.repository }}" \
+            --base-branch 1.2.x \
+            --assignee TheWitness \
+            --issue 8577 \
+            --run-url "$RUN_URL"
