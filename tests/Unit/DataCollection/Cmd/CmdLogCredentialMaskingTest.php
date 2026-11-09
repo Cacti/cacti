@@ -223,3 +223,59 @@ test('cmd.php log arguments ignore empty credentials', function () {
 	expect(poller_redact_snmp_secrets("f '' 'x0y'", $item))->toBe("f '' 'x********y'")
 		->and(poller_redact_snmp_secrets("f '' 'xy'", ['snmp_community' => '']))->toBe("f '' 'xy'");
 });
+
+/*
+ * CACTI_SERVER_OS is a constant, so the win32 escaping forms are built and
+ * masked in a separate process by tests/fixtures/PollerRedactSecretsWin32Probe.php.
+ */
+test('cmd.php log arguments mask a credential in its win32 escaped forms', function () {
+	$secrets = [
+		'apostrophe'   => "it's'secret",
+		'double quote' => 'say"secret"',
+		'backslash'    => 'back\\slash\\secret',
+		'space'        => 'secret with spaces',
+		'cmd metachar' => 'a&b|c^d<e>(f)%g',
+		'percent'      => 'pa%ss%word',
+	];
+
+	$root    = dirname(__DIR__, 4);
+	$process = proc_open(
+		[PHP_BINARY, $root . '/tests/fixtures/PollerRedactSecretsWin32Probe.php'],
+		[0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+		$pipes,
+		$root
+	);
+
+	expect(is_resource($process))->toBeTrue();
+
+	fwrite($pipes[0], json_encode($secrets));
+	fclose($pipes[0]);
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	expect(proc_close($process))->toBe(0, $stderr);
+
+	$masked = json_decode($stdout, true);
+
+	expect($masked)->toBeArray()->toHaveCount(18);
+
+	foreach ($secrets as $label => $secret) {
+		foreach (['win32', 'win32 cmd', 'win32 cmd strip'] as $form) {
+			$command = $masked["$label/$form"];
+
+			// the credential argument and the colon separated SNMPv3 field
+			expect(substr_count($command, '********'))->toBe(2, "$label/$form: $command")
+				->and($command)->toContain('"host1"')
+				->and($command)->toContain(':SHA');
+
+			// no word of the credential survives, whatever escaping wrapped it
+			foreach (preg_split('/[^A-Za-z]+/', $secret, -1, PREG_SPLIT_NO_EMPTY) as $word) {
+				if (strlen($word) >= 4) {
+					expect($command)->not->toContain($word, "$label/$form: $command");
+				}
+			}
+		}
+	}
+});
