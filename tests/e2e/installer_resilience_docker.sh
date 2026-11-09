@@ -30,7 +30,7 @@ cleanup() {
 		mkdir -p "$CACTI_PR_COVERAGE_OUTPUT"
 		docker cp "$WEB_CONTAINER:/tmp/cacti-pr-coverage/." "$CACTI_PR_COVERAGE_OUTPUT/" || status=1
 	fi
-	if [ "$status" -ne 0 ] && [ "${INSTALLER_KEEP_FAILURE:-0}" = 1 ]; then
+	if [[ "$status" -ne 0 ]] && [[ "${INSTALLER_KEEP_FAILURE:-0}" = 1 ]]; then
 		printf 'Retained disposable failed fixture: %s (%s)\n' "$RUN_ID" "$IMAGE" >&2
 		return
 	fi
@@ -234,8 +234,8 @@ printf 'Scenario: database-only CLI verifies target schema and authentication\n'
 reset_database "$OLD_SCHEMA"
 db_cacti -e "UPDATE version SET cacti = '$SOURCE_VERSION';"
 docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/upgrade_database.php --forcever="$SOURCE_VERSION"
-[ "$(db_cacti -e "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'data_template' AND COLUMN_NAME = 'templates';")" = 'templates' ] || fail 'database-only CLI did not install the template column'
-[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(value, '$.state')) FROM settings WHERE name = 'maintenance_lastrun_installer_report';")" = 'succeeded' ] || fail 'database-only CLI did not preserve successful diagnostics'
+[[ "$(db_cacti -e "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'data_template' AND COLUMN_NAME = 'templates';")" = 'templates' ]] || fail 'database-only CLI did not install the template column'
+[[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(value, '$.state')) FROM settings WHERE name = 'maintenance_lastrun_installer_report';")" = 'succeeded' ]] || fail 'database-only CLI did not preserve successful diagnostics'
 
 printf 'Scenario: database-only CLI rejects incomplete target schema\n'
 reset_database "$OLD_SCHEMA"
@@ -270,25 +270,25 @@ ADMIN_HASH="$(docker exec "$WEB_CONTAINER" php -r 'echo password_hash("installer
 db_cacti -e "UPDATE version SET cacti = '$SOURCE_VERSION'; UPDATE settings SET value = '3600' WHERE name = 'poller_interval'; UPDATE user_auth SET password = '$ADMIN_HASH', must_change_password = '', lastchange = UNIX_TIMESTAMP() WHERE id = 1;"
 run_installer
 assert_complete_install "$((EXPECTED_TABLES))"
-[ "$(db_cacti -e "SELECT name FROM host_template WHERE id = 700;")" = 'Installer custom template' ] || fail 'custom template changed during upgrade'
-[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'installer_fixture_custom_setting';")" = 'preserve-me' ] || fail 'custom setting changed during upgrade'
-[ "$(db_cacti -e "SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = 700;")" -eq 100000 ] || fail 'populated large-table data changed during upgrade'
-[ "$(db_cacti -e "SELECT realm FROM user_auth WHERE id = 700;")" -eq 1007 ] || fail 'LDAP user lost its provider realm'
-[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'auth_method';")" -eq 4 ] || fail 'legacy domain authentication was not preserved as provider authentication'
-[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(parameters, '$.server')) FROM login_providers WHERE id = 7;")" = 'ldap' ] || fail 'LDAP server configuration was not preserved'
-[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(parameters, '$.group_dn')) FROM login_providers WHERE id = 7;")" = '' ] || fail 'disabled LDAP group enforcement became enabled'
-[ "$(db_cacti -e "SELECT status FROM plugin_config WHERE directory = 'installer_missing';")" -ne 1 ] || fail 'missing plugin stayed enabled'
-[ "$(db_cacti -e "SELECT status FROM plugin_config WHERE directory = 'installer_fixture';")" -eq 1 ] || fail 'compatible plugin was disabled'
-[ "$(db_cacti -e "SELECT data_source_name FROM data_template_rrd WHERE id = 700;")" = 'fixture' ] || fail 'custom data source changed'
-[ "$(docker exec "$WEB_CONTAINER" sha256sum /var/www/html/cacti/rra/installer_fixture.rrd)" = "$RRD_BEFORE" ] || fail 'existing RRD file changed during upgrade'
-[ "$(db_cacti -e "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'data_local' AND INDEX_NAME = 'host_id_snmp_query_id';")" = 'host_id,snmp_query_id' ] || fail 'required data-local index changed'
-[ "$(db_cacti -e "SELECT COLUMN_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_auth' AND INDEX_NAME = 'username';")" = 'username' ] || fail 'required authentication index changed'
-[ "$(db_cacti -e "SELECT COUNT(*) FROM poller WHERE id IN (2, 3) AND last_sync > '2000-01-01';")" -eq 2 ] || fail 'not all remote collectors were synchronized'
+[[ "$(db_cacti -e "SELECT name FROM host_template WHERE id = 700;")" = 'Installer custom template' ]] || fail 'custom template changed during upgrade'
+[[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'installer_fixture_custom_setting';")" = 'preserve-me' ]] || fail 'custom setting changed during upgrade'
+[[ "$(db_cacti -e "SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = 700;")" -eq 100000 ]] || fail 'populated large-table data changed during upgrade'
+[[ "$(db_cacti -e "SELECT realm FROM user_auth WHERE id = 700;")" -eq 1007 ]] || fail 'LDAP user lost its provider realm'
+[[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'auth_method';")" -eq 4 ]] || fail 'legacy domain authentication was not preserved as provider authentication'
+[[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(parameters, '$.server')) FROM login_providers WHERE id = 7;")" = 'ldap' ]] || fail 'LDAP server configuration was not preserved'
+[[ "$(db_cacti -e "SELECT JSON_UNQUOTE(JSON_EXTRACT(parameters, '$.group_dn')) FROM login_providers WHERE id = 7;")" = '' ]] || fail 'disabled LDAP group enforcement became enabled'
+[[ "$(db_cacti -e "SELECT status FROM plugin_config WHERE directory = 'installer_missing';")" -ne 1 ]] || fail 'missing plugin stayed enabled'
+[[ "$(db_cacti -e "SELECT status FROM plugin_config WHERE directory = 'installer_fixture';")" -eq 1 ]] || fail 'compatible plugin was disabled'
+[[ "$(db_cacti -e "SELECT data_source_name FROM data_template_rrd WHERE id = 700;")" = 'fixture' ]] || fail 'custom data source changed'
+[[ "$(docker exec "$WEB_CONTAINER" sha256sum /var/www/html/cacti/rra/installer_fixture.rrd)" = "$RRD_BEFORE" ]] || fail 'existing RRD file changed during upgrade'
+[[ "$(db_cacti -e "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'data_local' AND INDEX_NAME = 'host_id_snmp_query_id';")" = 'host_id,snmp_query_id' ]] || fail 'required data-local index changed'
+[[ "$(db_cacti -e "SELECT COLUMN_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_auth' AND INDEX_NAME = 'username';")" = 'username' ]] || fail 'required authentication index changed'
+[[ "$(db_cacti -e "SELECT COUNT(*) FROM poller WHERE id IN (2, 3) AND last_sync > '2000-01-01';")" -eq 2 ]] || fail 'not all remote collectors were synchronized'
 for collector_db in collector_two collector_three; do
-	[ "$(db_root "$collector_db" -e "SELECT COUNT(*) FROM user_auth WHERE id = 700;")" -eq 1 ] || fail 'remote collector did not receive upgraded users'
+	[[ "$(db_root "$collector_db" -e "SELECT COUNT(*) FROM user_auth WHERE id = 700;")" -eq 1 ]] || fail 'remote collector did not receive upgraded users'
 done
 docker exec "$WEB_CONTAINER" bash /var/www/html/cacti/tests/e2e/installer_application_check.sh
-[ "$(db_cacti -e 'SELECT description FROM host WHERE id = 700;')" = 'Installer custom device' ] || fail 'invalid CSRF request changed the existing device'
+[[ "$(db_cacti -e 'SELECT description FROM host WHERE id = 700;')" = 'Installer custom device' ]] || fail 'invalid CSRF request changed the existing device'
 BROWSER_PORT="$(docker port "$WEB_CONTAINER" 80/tcp)"
 CACTI_BASE_URL="http://$BROWSER_PORT/cacti/" CACTI_INSTALLER_UPGRADE_TEST=1 \
 	npm --prefix tests/e2e test -- tests/installer-upgrade.spec.ts --project=chromium --workers=1
@@ -296,9 +296,9 @@ CACTI_BASE_URL="http://$BROWSER_PORT/cacti/" CACTI_INSTALLER_UPGRADE_TEST=1 \
 
 printf 'Scenario: repeated completed installation preserves custom objects\n'
 run_installer
-[ "$(db_cacti -e "SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = 700;")" -eq 100000 ] || fail 'repeated installation changed buffered data'
-[ "$(db_cacti -e "SELECT name FROM host_template WHERE id = 700;")" = 'Installer custom template' ] || fail 'repeated installation changed the custom template'
-[ "$(docker exec "$WEB_CONTAINER" sha256sum /var/www/html/cacti/rra/installer_fixture.rrd)" = "$RRD_BEFORE" ] || fail 'repeated installation changed the RRD file'
+[[ "$(db_cacti -e "SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = 700;")" -eq 100000 ]] || fail 'repeated installation changed buffered data'
+[[ "$(db_cacti -e "SELECT name FROM host_template WHERE id = 700;")" = 'Installer custom template' ]] || fail 'repeated installation changed the custom template'
+[[ "$(docker exec "$WEB_CONTAINER" sha256sum /var/www/html/cacti/rra/installer_fixture.rrd)" = "$RRD_BEFORE" ]] || fail 'repeated installation changed the RRD file'
 
 printf 'Scenario: forced replay on the populated, already upgraded schema\n'
 docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \
