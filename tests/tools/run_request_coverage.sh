@@ -54,6 +54,8 @@ run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.
 
 run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/html_tree\.php|tests/fixtures/Core/TreeFilterDeviceTemplateCoverage\.php)'
 
+run_php_probe tests/fixtures/Core/ReportsSortAllowlist.php '^(lib/html_reports\.php|tests/fixtures/Core/ReportsSortAllowlist\.php)'
+
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
