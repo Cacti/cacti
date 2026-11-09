@@ -21,6 +21,8 @@ DEPENDENCIES = (
     'tests/Helpers/RequestCoverage.php', 'tests/Helpers/SourceSlice.php',
     'tests/Helpers/PhpSource.php', 'tests/Helpers/IsolatedProbe.php', 'tests/fixtures/automation_matching_cases.php',
 )
+# Executed Pest cases from run_discovery_request_coverage.sh; update with those tests.
+NATIVE_CASES = 73
 SOURCES = ('lib/api_automation.php', 'poller_automation.php', 'automation_graph_rules.php')
 
 SCENARIOS = (
@@ -67,8 +69,8 @@ def verify(directory, native_only=False, root=ROOT):
     if captured != scenario_hashes(root):
         raise ValueError('Discovery scenario sources changed or fingerprints are missing')
     cases = successful_cases(directory / 'discovery-native.xml')
-    if len(cases) != 69:
-        raise ValueError('All 69 native discovery cases are required')
+    if len(cases) != NATIVE_CASES:
+        raise ValueError(f'All {NATIVE_CASES} native discovery cases are required')
     for marker in ('discovery enumerates admitted addresses', 'discovery rejects invalid',
                    'discovery worker probes admitted hosts', 'discovery child arguments', 'matches discovery rules', 'overlapping discovery ranges',
                    'discovery records reachable non-snmp', 'discovery records ping outages'):

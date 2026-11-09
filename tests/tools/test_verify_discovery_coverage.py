@@ -31,7 +31,7 @@ class DiscoveryCoverageEvidenceTest(unittest.TestCase):
             'discovery records reachable non-snmp', 'discovery records ping outages',
         ]
         self.native = ET.Element('testsuite')
-        for name in names + [f'case {number}' for number in range(61)]:
+        for name in names + [f'case {number}' for number in range(MODULE.NATIVE_CASES - len(names))]:
             ET.SubElement(self.native, 'testcase', name=name)
         self.browser = ET.Element('testsuite')
         for name in ('real UI config', 'UI cancellation', 'an ordinary account'):
@@ -60,7 +60,7 @@ class DiscoveryCoverageEvidenceTest(unittest.TestCase):
         return MODULE.verify(self.directory, **kwargs)
 
     def test_complete_evidence_is_admitted(self):
-        self.assertEqual(self.verify()['native_cases'], 69)
+        self.assertEqual(self.verify()['native_cases'], MODULE.NATIVE_CASES)
 
     def test_missing_native_report_fails(self):
         self.write()
@@ -76,7 +76,7 @@ class DiscoveryCoverageEvidenceTest(unittest.TestCase):
 
     def test_empty_or_truncated_native_suite_fails(self):
         self.native.remove(list(self.native)[-1])
-        with self.assertRaisesRegex(ValueError, '69 native'):
+        with self.assertRaisesRegex(ValueError, f'{MODULE.NATIVE_CASES} native'):
             self.verify()
 
     def test_missing_native_assertion_marker_fails(self):
@@ -163,7 +163,7 @@ class DiscoveryCoverageEvidenceTest(unittest.TestCase):
         command = [sys.executable, str(Path(MODULE.__file__)), str(self.directory)]
         result = subprocess.run(command, text=True, capture_output=True, check=False)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(json.loads(result.stdout)['native_cases'], 69)
+        self.assertEqual(json.loads(result.stdout)['native_cases'], MODULE.NATIVE_CASES)
         (self.directory / 'request.json').write_text('{')
         result = subprocess.run(command, text=True, capture_output=True, check=False)
         self.assertEqual(result.returncode, 1)
@@ -201,7 +201,7 @@ class DiscoveryCoverageEvidenceTest(unittest.TestCase):
             self.assertEqual(digest, hashlib.sha256((self.directory / name).read_bytes()).hexdigest())
 
     def test_native_phase_does_not_claim_browser_execution(self):
-        self.assertEqual(self.verify(native_only=True)['native_cases'], 69)
+        self.assertEqual(self.verify(native_only=True)['native_cases'], MODULE.NATIVE_CASES)
 
 
 if __name__ == '__main__':
