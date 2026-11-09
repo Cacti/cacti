@@ -226,8 +226,16 @@ $GLOBALS['probe']['config']        = [];
 $verdict['prime_batch_rows']       = count($rows);
 $verdict['prime_batch_unique']     = count(array_unique($rows));
 
+// a range that cannot be parsed is skipped, and a fully ignored range inserts nothing
+[$verdict['prime_skip'], $rows] = probe_prime('999.1.1.1,192.168.9.0/30', '192.168.9.1,192.168.9.2');
+$verdict['prime_skip_rows']     = $rows;
+
 $GLOBALS['probe']['fail_insert'] = true;
 [$verdict['prime_fail'], $rows]  = probe_prime('10.3.0.0/24');
 $verdict['logs']                 = count(array_filter($GLOBALS['probe']['logs'], fn ($line) => str_starts_with($line, 'ERROR:')));
+
+// a failure on a full 1000-row batch stops priming before the final batch
+[$verdict['prime_batch_fail'], $rows] = probe_prime('10.4.0.0/22');
+$verdict['prime_batch_fail_logs']     = count(array_filter($GLOBALS['probe']['logs'], fn ($line) => str_starts_with($line, 'ERROR:'))) - $verdict['logs'];
 
 print json_encode($verdict, JSON_THROW_ON_ERROR) . "\n";
