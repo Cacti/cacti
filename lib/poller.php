@@ -206,11 +206,16 @@ function exec_poll(string $command, int $timeout = 5) : string {
 	$output = [];
 	$return = 0;
 
-	$data = exec_with_timeout($command, $output, $return, $timeout);
+	exec_with_timeout($command, $output, $return, $timeout);
 
 	if ($return != 0) {
 		cacti_log(sprintf('WARNING: Script:%s, ErrorCode:%d, Output:%s', $command, $return, implode(',', $output)), false, 'POLLER');
 	}
+
+	// the result is the first line of output, as 1.2.x reads it; the line
+	// exec_with_timeout() returns is the last one, which is empty when the
+	// script ends its output with a newline
+	$data = $output[0] ?? '';
 
 	if ($data == '') {
 		return 'U';
