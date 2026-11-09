@@ -1154,97 +1154,155 @@ function is_view_allowed(string $view = 'show_tree') : bool {
 /**
  * Given a tree id and a branch id, check if it's empty
  *
- * @param int   $tree_id The ID of the tree to check.
- * @param int   $parent  The parent ID of the branch to check. Default is 0.
- * @param array $visited Branches already checked by this walk, so a stored parent cycle ends.
+ * A branch is not empty when it holds a graph, device or site with a device
+ * the current user may view, directly or through any nested branch.
+ *
+ * @param int $tree_id The ID of the tree to check.
+ * @param int $parent  The parent ID of the branch to check. Default is 0.
  *
  * @return bool Returns true if the branch is empty, false otherwise.
  */
-function is_tree_branch_empty(int $tree_id, int $parent = 0, array &$visited = []) : bool {
-	if (isset($visited[$parent])) {
-		return true;
+function is_tree_branch_empty(int $tree_id, int $parent = 0) : bool {
+	$visible = get_tree_visible_branches($tree_id);
+
+	return !isset($visible[$parent]);
+}
+
+/**
+ * Returns the branches of a tree that hold something the current user may view
+ *
+ * The tree's items are read once and the graphs and devices they reference are
+ * checked in batches against the user's permissions; every ancestor of a
+ * visible leaf is then marked in memory. Only branches (items with neither a
+ * graph nor a device) pass visibility on to their parent, as the per-branch
+ * walk did. The result is kept for the rest of the request, keyed by user,
+ * tree and the last tree change.
+ *
+ * @param int $tree_id The ID of the tree.
+ *
+ * @return array<int, true> The non-empty branch ids; key 0 is the tree root.
+ */
+function get_tree_visible_branches(int $tree_id) : array {
+	static $cache = [];
+
+	$user_id = (int) ($_SESSION[SESS_USER_ID] ?? 0);
+	$key     = $user_id . ':' . $tree_id . ':' . read_config_option('time_last_change_branch');
+
+	if (isset($cache[$key])) {
+		return $cache[$key];
 	}
 
-	$visited[$parent] = true;
-
-	$graphs = array_rekey(
-		db_fetch_assoc_prepared('SELECT local_graph_id
-			FROM graph_tree_items
-			WHERE graph_tree_id = ?
-			AND local_graph_id > 0
-			AND parent = ?',
-			[$tree_id, $parent]
-		), 'local_graph_id', 'local_graph_id'
-	);
-
-	$simple_perms = get_simple_graph_perms($_SESSION[SESS_USER_ID]);
-
-	if (cacti_sizeof($graphs) && ($simple_perms || cacti_sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')'))) > 0) {
-		return false;
-	}
-
-	$hosts = array_rekey(
-		db_fetch_assoc_prepared('SELECT host_id
-			FROM graph_tree_items
-			WHERE graph_tree_id = ?
-			AND host_id > 0
-			AND parent = ?',
-			[$tree_id, $parent]
-		), 'host_id', 'host_id'
-	);
-
-	$sites = array_rekey(
-		db_fetch_assoc_prepared('SELECT site_id
-			FROM graph_tree_items
-			WHERE graph_tree_id = ?
-			AND site_id > 0
-			AND parent = ?',
-			[$tree_id, $parent]
-		), 'site_id', 'site_id'
-	);
-
-	if (!cacti_sizeof($sites)) {
-		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
-
-		if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')', 'description', '', $total_rows)) > 0) {
-			return false;
-		}
-	} else {
-		$site_hosts = [];
-
-		foreach ($sites as $site) {
-			$site_hosts += array_rekey(
-				db_fetch_assoc_prepared('SELECT id
-					FROM host
-					WHERE site_id = ?',
-					[$site]
-				), 'id', 'id'
-			);
-		}
-		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
-
-		if (cacti_sizeof($site_hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $site_hosts) . ')', 'description', '', $total_rows)) > 0) {
-			return false;
-		}
-	}
-
-	$branches = db_fetch_assoc_prepared('SELECT id, graph_tree_id
+	$items = db_fetch_assoc_prepared('SELECT id, parent, local_graph_id, host_id, site_id
 		FROM graph_tree_items
-		WHERE graph_tree_id = ?
-		AND parent = ?
-		AND local_graph_id = 0
-		AND host_id = 0',
-		[$tree_id, $parent]);
+		WHERE graph_tree_id = ?',
+		[$tree_id]);
 
-	if (cacti_sizeof($branches)) {
-		foreach ($branches as $b) {
-			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'], $visited)) {
-				return false;
+	$parents    = [];
+	$containers = [];
+	$graphs     = [];
+	$hosts      = [];
+	$sites      = [];
+
+	foreach ($items as $item) {
+		$id = (int) $item['id'];
+
+		$parents[$id] = (int) $item['parent'];
+
+		if ($item['local_graph_id'] > 0) {
+			$graphs[(int) $item['local_graph_id']] = true;
+		}
+
+		if ($item['host_id'] > 0) {
+			$hosts[(int) $item['host_id']] = true;
+		}
+
+		if ($item['site_id'] > 0) {
+			$sites[(int) $item['site_id']] = true;
+		}
+
+		if ($item['local_graph_id'] == 0 && $item['host_id'] == 0) {
+			$containers[$id] = true;
+		}
+	}
+
+	$allowed_graphs = [];
+
+	if (cacti_sizeof($graphs)) {
+		if (get_simple_graph_perms($user_id)) {
+			$allowed_graphs = $graphs;
+		} else {
+			foreach (array_chunk(array_keys($graphs), 1000) as $chunk) {
+				$total_rows = -1;
+
+				foreach (get_allowed_graphs('gl.id IN(' . implode(',', $chunk) . ')', '', '', $total_rows) as $graph) {
+					$allowed_graphs[(int) $graph['local_graph_id']] = true;
+				}
 			}
 		}
 	}
 
-	return true;
+	$site_hosts = [];
+
+	if (cacti_sizeof($sites)) {
+		$site_ids = array_keys($sites);
+
+		$site_rows = db_fetch_assoc_prepared('SELECT id, site_id
+			FROM host
+			WHERE site_id IN (' . implode(',', array_fill(0, cacti_sizeof($site_ids), '?')) . ')',
+			$site_ids);
+
+		foreach ($site_rows as $row) {
+			$site_hosts[(int) $row['id']] = (int) $row['site_id'];
+			$hosts[(int) $row['id']]      = true;
+		}
+	}
+
+	$allowed_hosts = [];
+
+	if (cacti_sizeof($hosts)) {
+		foreach (array_chunk(array_keys($hosts), 1000) as $chunk) {
+			$total_rows = -1;
+
+			foreach (get_allowed_devices('h.id IN(' . implode(',', $chunk) . ')', '', '', $total_rows) as $host) {
+				$allowed_hosts[(int) $host['id']] = true;
+			}
+		}
+	}
+
+	$allowed_sites = [];
+
+	foreach ($site_hosts as $host_id => $site_id) {
+		if (isset($allowed_hosts[$host_id])) {
+			$allowed_sites[$site_id] = true;
+		}
+	}
+
+	$visible = [];
+
+	foreach ($items as $item) {
+		if (!(($item['local_graph_id'] > 0 && isset($allowed_graphs[(int) $item['local_graph_id']]))
+			|| ($item['host_id'] > 0 && isset($allowed_hosts[(int) $item['host_id']]))
+			|| ($item['site_id'] > 0 && isset($allowed_sites[(int) $item['site_id']])))) {
+			continue;
+		}
+
+		// stopping at an already visible branch also ends a stored parent cycle
+		$branch = (int) $item['parent'];
+
+		while (!isset($visible[$branch])) {
+			$visible[$branch] = true;
+
+			if ($branch == 0 || !isset($containers[$branch])) {
+				break;
+			}
+
+			$branch = $parents[$branch];
+		}
+	}
+
+	$cache[$key] = $visible;
+
+	return $visible;
 }
 
 /**

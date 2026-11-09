@@ -40,7 +40,9 @@ foreach (['get_tree_path', 'grow_dropdown_tree'] as $function) {
 	cacti_fixture_source_function($root . '/lib/html_tree.php', $function, __NAMESPACE__);
 }
 
-cacti_fixture_source_function($root . '/lib/auth.php', 'is_tree_branch_empty', __NAMESPACE__);
+foreach (['is_tree_branch_empty', 'get_tree_visible_branches'] as $function) {
+	cacti_fixture_source_function($root . '/lib/auth.php', $function, __NAMESPACE__);
+}
 
 $GLOBALS['tree_integrity_request'] = [];
 
@@ -55,6 +57,10 @@ function cacti_log(mixed $message, bool $output = false, string $environ = 'CMDP
 }
 
 function set_config_option(string $name, mixed $value, bool $remote = false) : void {
+}
+
+function read_config_option(string $name, bool $force = false) : mixed {
+	return '';
 }
 
 function isrv(string $name) : bool {
