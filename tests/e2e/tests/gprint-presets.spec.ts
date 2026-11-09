@@ -78,3 +78,14 @@ test('cancel preserves presets and confirmed bulk deletion removes only selected
 	await expect(page.getByRole('link', { name: 'E2E Delete GPRINT B', exact: true })).toHaveCount(0);
 	await expect(page.getByRole('link', { name: 'E2E Validation GPRINT', exact: true })).toBeVisible();
 });
+
+test('deletion of a preset that graph items still use is refused with an error', async ({ page }) => {
+	await page.goto('/gprint_presets.php?has_graphs=false');
+	await page.locator('input[name="chk_9204"]').check();
+	await page.locator('#drp_action').selectOption('1');
+	await submit(page, 'Go');
+	await submit(page, 'Continue');
+	await expect(page.getByRole('alert')).toContainText('One or more GPRINT Presets are in use and cannot be deleted.');
+	await page.goto('/gprint_presets.php?has_graphs=false');
+	await expect(page.getByRole('link', { name: 'E2E Stale GPRINT', exact: true })).toBeVisible();
+});
