@@ -221,10 +221,13 @@ function library_reports_actions(int $reportId, int $graphId, int $deviceId): vo
 	try {
 		$_SESSION[SESS_USER_ID]  = (int) db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$reportId]);
 		$_SESSION[SESS_MESSAGES] = [];
-		// The array timespan in the signature cannot bind to the integer column, so only
-		// the owner check and confirmation are observable; the row itself is not stored.
-		library_expect(reports_add_devices($reportId, [$deviceId], [], '1'), true, 'The report owner passes the ownership check');
+		library_expect(reports_add_devices($reportId, [$deviceId], GT_LAST_WEEK, '1'), true, 'The report owner passes the ownership check');
 		library_expect($_SESSION[SESS_MESSAGES]['reports_add_device_' . $deviceId]['level'] ?? null, MESSAGE_LEVEL_INFO, 'Adding a device confirms the change');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items WHERE report_id = ? AND host_id = ? AND item_type = 5 AND timespan = ?', [$reportId, $deviceId, GT_LAST_WEEK]), 1, 'The device item is stored with its timespan');
+		$_SESSION[SESS_MESSAGES] = [];
+		library_expect(reports_add_devices($reportId, [$deviceId], GT_LAST_WEEK, '1'), false, 'Adding the same device and timespan again fails');
+		library_expect($_SESSION[SESS_MESSAGES]['reports_no_add_device_' . $deviceId]['level'] ?? null, MESSAGE_LEVEL_WARN, 'A duplicate device item is reported, not stored twice');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items WHERE report_id = ? AND host_id = ? AND item_type = 5', [$reportId, $deviceId]), 1, 'The duplicate device item is not inserted');
 
 		$dom = library_form_dom(static function () use (&$prepared): void {
 			$prepared = reports_graphs_action_prepare(['drp_action' => 'reports', 'graph_list' => '<li>Fixture graph</li>']);

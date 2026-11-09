@@ -555,7 +555,7 @@ library_reports_actions($report, $graphId, $device);
 
 $beforeItems            = (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items WHERE report_id = ?', [$report]);
 $_SESSION[SESS_USER_ID] = 2;
-library_expect(reports_add_graphs($report, $graphId, [], '1'), false, 'A different user cannot edit the report');
+library_expect(reports_add_graphs($report, $graphId, GT_LAST_WEEK, '1'), false, 'A different user cannot edit the report');
 library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items WHERE report_id = ?', [$report]), $beforeItems, 'Denied report mutation inserts nothing');
 $_SESSION[SESS_USER_ID] = 1;
 duplicate_reports($report, 'Copy of <name>');

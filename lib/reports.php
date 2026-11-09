@@ -103,7 +103,7 @@ function duplicate_reports(int $_id, string $_title) : void {
 	}
 }
 
-function reports_add_devices(int $report_id, array $device_ids, array $timespan, string $align) : bool {
+function reports_add_devices(int $report_id, array $device_ids, int $timespan, string $align) : bool {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
 		WHERE id = ?',
@@ -197,7 +197,7 @@ function reports_add_devices(int $report_id, array $device_ids, array $timespan,
 	}
 }
 
-function reports_add_graphs(int $report_id, int $local_graph_id, array $timespan, string $align) : bool {
+function reports_add_graphs(int $report_id, int $local_graph_id, int $timespan, string $align) : bool {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
 		WHERE id = ?',
