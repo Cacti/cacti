@@ -199,3 +199,21 @@ test('the branch dropdown stops on a parent cycle', function () {
 
 	expect($html)->toContain('Y');
 });
+
+test('a move renumbers only the destination siblings, in position order', function () {
+	// tree 1 root by position: A(1), D(2), Y(3), X(9); X has the lower id
+	TreeSqliteFixture::items([
+		['id' => 29, 'parent' => 0, 'position' => 9, 'graph_tree_id' => 1, 'title' => 'X'],
+		['id' => 30, 'parent' => 0, 'position' => 3, 'graph_tree_id' => 1, 'title' => 'Y'],
+		['id' => 31, 'parent' => 0, 'position' => 5, 'graph_tree_id' => 2, 'title' => 'F'],
+		['id' => 32, 'parent' => 0, 'position' => 7, 'graph_tree_id' => 2, 'title' => 'G'],
+	]);
+
+	$other_tree = fn () => TreeSqliteFixture::$pdo->query('SELECT id, position FROM graph_tree_items WHERE graph_tree_id = 2 ORDER BY id')->fetchAll(\PDO::FETCH_KEY_PAIR);
+	$before     = $other_tree();
+
+	api_tree_move_node(1, 'tbranch:3', '#', 0);
+
+	expect($other_tree())->toBe($before)
+		->and(TreeSqliteFixture::childTitles(0))->toBe(['C', 'A', 'D', 'Y', 'X']);
+});
