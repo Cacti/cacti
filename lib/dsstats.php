@@ -1213,25 +1213,16 @@ function dsstats_is_unknown_data(string $value) : bool {
  * @return void
  */
 function dsstats_boost_bottom() : void {
-	global $total_user, $total_system, $total_real, $total_dsses;
-
-	$total_user   = 0;
-	$total_system = 0;
-	$total_real   = 0;
-	$total_dsses  = 0;
-
 	if (read_config_option('dsstats_enable') == 'on') {
 		include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 		// run the daily stats. log to database to prevent secondary runs
 		set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', time()));
 
-		// run the daily stats
+		// run the daily stats, one bchild per thread collects each slice
 		$expected_children = dsstats_launch_children('bmaster');
 
 		dsstats_wait_for_children('bmaster', $expected_children);
-
-		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 1);
 
 		dsstats_log_statistics('DAILY');
 	}
