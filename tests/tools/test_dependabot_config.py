@@ -90,6 +90,20 @@ class DependabotConfigTest(unittest.TestCase):
         self.assertEqual(update['directory'], '/')
         self.assertEqual(rule.get('versions'), ['>= 8.0.0'])
 
+    def test_github_actions_cooldown_uses_supported_keys(self) -> None:
+        # Dependabot rejects semver-*-days for github-actions and then
+        # reports the whole configuration as invalid.
+        action_updates = [
+            update
+            for update in self.updates
+            if update['package-ecosystem'] == 'github-actions'
+        ]
+
+        self.assertTrue(action_updates)
+        for update in action_updates:
+            with self.subTest(update=self.update_name(update)):
+                self.assertEqual(set(update.get('cooldown', {})), {'default-days'})
+
 
 if __name__ == '__main__':
     unittest.main()
