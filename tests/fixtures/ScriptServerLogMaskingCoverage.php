@@ -22,6 +22,10 @@ $root = dirname(__DIR__, 2);
 
 require_once $root . '/include/global_constants.php';
 
+if (!defined('CACTI_SERVER_OS')) {
+	define('CACTI_SERVER_OS', 'unix');
+}
+
 $GLOBALS['ss_cov_log']     = [];
 $GLOBALS['ss_cov_reply']   = '42';
 $GLOBALS['ss_cov_reindex'] = [];
@@ -57,10 +61,6 @@ function dsv_log(string $message, mixed $data = null, int $level = POLLER_VERBOS
 
 function debug_level(int $host_id, int $level) : int {
 	return $level;
-}
-
-function exec_poll(string $command, int $timeout = 5) : string {
-	return $GLOBALS['ss_cov_reply'] . "\n";
 }
 
 function exec_poll_php(string $command, bool $using_proc_function, array $pipes, mixed $proc_fd) : string {
@@ -138,7 +138,7 @@ foreach (['parseArgs', 'script_server_log_parse_failure', 'script_server_log_mis
 	cacti_fixture_source_function($root . '/script_server.php', $function, '');
 }
 
-foreach (['script_server_redact_params', 'poller_redact_snmp_secrets'] as $function) {
+foreach (['script_server_redact_params', 'poller_redact_snmp_secrets', 'exec_poll', 'exec_with_timeout'] as $function) {
 	cacti_fixture_source_function($root . '/lib/poller.php', $function, '');
 }
 
@@ -186,6 +186,14 @@ $item = ['snmp_community' => 'pub', 'snmp_password' => "pubp'ass\"x", 'snmp_priv
 ss_cov_check(poller_redact_snmp_secrets("f 'pub' 'pubp'\\''ass\"x' \"pubp'ass\\\"x\" pubp'assx", $item) === "f '********' '********' \"********\" ********", 'escaped forms masked');
 ss_cov_check(poller_redact_snmp_secrets('no secrets here', ['snmp_community' => '']) === 'no secrets here', 'no credentials leaves the string');
 
+// exec_poll(): a failing script is logged with the device credentials masked,
+// and its first line of output is the result
+$failing = PHP_BINARY . ' -r ' . escapeshellarg('fwrite(STDOUT, "out " . $argv[1] . "\n"); fwrite(STDERR, "err " . $argv[1] . "\n"); exit(3);') . ' ' . escapeshellarg('c0mmunity');
+ss_cov_check(exec_poll($failing, 5, ['snmp_community' => 'c0mmunity']) === 'out c0mmunity', 'failing script first line');
+$log = ss_cov_log();
+ss_cov_check(str_contains($log, 'ErrorCode:3') && str_contains($log, 'exited with code 3') && !str_contains($log, 'c0mmunity'), 'failing script log masked');
+ss_cov_check(exec_poll(PHP_BINARY . ' -r ' . escapeshellarg('print "7\n";'), 5) === '7', 'newline terminated output');
+
 // cmd.php data source and recache logs mask the device credentials
 $GLOBALS['print_data_to_stdout'] = false;
 $GLOBALS['using_proc_function']  = true;
@@ -200,6 +208,9 @@ foreach ([POLLER_ACTION_SCRIPT, POLLER_ACTION_SCRIPT_PHP] as $action) {
 	foreach (['U', 'not a number', '42'] as $reply) {
 		$GLOBALS['ss_cov_reply'] = $reply;
 
+		// the script runs for real; the Script Server reply is canned
+		$script = PHP_BINARY . ' -r ' . escapeshellarg('print "' . $reply . '\n";') . ' /x/ss_cov.php ss_cov';
+
 		$item = [
 			'local_data_id'        => 3,
 			'host_id'              => 7,
@@ -207,7 +218,7 @@ foreach ([POLLER_ACTION_SCRIPT, POLLER_ACTION_SCRIPT_PHP] as $action) {
 			'snmp_community'       => 'c0mmunity',
 			'snmp_password'        => 'authpass',
 			'snmp_priv_passphrase' => '',
-			'arg1'                 => '/x/ss_cov.php ss_cov' . $args,
+			'arg1'                 => $script . $args,
 		];
 		$error_ds = [];
 
@@ -219,9 +230,10 @@ foreach ([POLLER_ACTION_SCRIPT, POLLER_ACTION_SCRIPT_PHP] as $action) {
 }
 
 $GLOBALS['ss_cov_reply'] = '42';
+$script                  = PHP_BINARY . ' -r ' . escapeshellarg('print "42\n";') . ' /x/ss_q.php ss_q';
 
 foreach ([POLLER_ACTION_SNMP, POLLER_ACTION_SCRIPT, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SNMP_COUNT, POLLER_ACTION_SCRIPT_COUNT, POLLER_ACTION_SCRIPT_PHP_COUNT] as $action) {
-	$GLOBALS['ss_cov_reindex'][] = ['data_query_id' => $action, 'action' => $action, 'op' => '=', 'assert_value' => '42', 'arg1' => '/x/ss_q.php ss_q' . $args];
+	$GLOBALS['ss_cov_reindex'][] = ['data_query_id' => $action, 'action' => $action, 'op' => '=', 'assert_value' => '42', 'arg1' => $script . $args];
 }
 
 $item = ['host_id' => 7, 'hostname' => 'host1', 'snmp_community' => 'c0mmunity', 'snmp_password' => 'authpass', 'snmp_priv_passphrase' => ''];

@@ -199,17 +199,24 @@ function poller_redact_snmp_secrets(string $string, array $item) : string {
  *
  * @param string $command The command to execute
  * @param int    $timeout The command timeout
+ * @param array  $item    The poller item, whose SNMP credentials are masked when the command is logged
  *
  * @return string The output of $command after execution
  */
-function exec_poll(string $command, int $timeout = 5) : string {
+function exec_poll(string $command, int $timeout = 5, array $item = []) : string {
 	$output = [];
 	$return = 0;
 
-	exec_with_timeout($command, $output, $return, $timeout);
+	// the command, its output and its stderr can carry the device credentials,
+	// so they are masked, but only when a failure is logged
+	$redact = function (string $string) use ($item) : string {
+		return poller_redact_snmp_secrets($string, $item);
+	};
+
+	exec_with_timeout($command, $output, $return, $timeout, $redact);
 
 	if ($return != 0) {
-		cacti_log(sprintf('WARNING: Script:%s, ErrorCode:%d, Output:%s', $command, $return, implode(',', $output)), false, 'POLLER');
+		cacti_log($redact(sprintf('WARNING: Script:%s, ErrorCode:%d, Output:%s', $command, $return, implode(',', $output))), false, 'POLLER');
 	}
 
 	// the result is the first line of output, as 1.2.x reads it; the line
@@ -447,14 +454,15 @@ function poller_cactid_arguments(string $base_path, bool $debug) : array {
  * exec_with_timeout - Execute a command and return it's output. Either wait until the
  * command exits or the timeout has expired.
  *
- * @param string $cmd         Command to execute.
- * @param array  $output      A return array of output.
- * @param int    $return_code The return code from the script
- * @param int    $timeout     Timeout in seconds.
+ * @param string        $cmd         Command to execute.
+ * @param array         $output      A return array of output.
+ * @param int           $return_code The return code from the script
+ * @param int           $timeout     Timeout in seconds.
+ * @param callable|null $redact      Masks credentials in the command and stderr before they are logged.
  *
  * @return mixed Either the last line of output or false on error
  */
-function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $timeout = 5) : mixed {
+function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $timeout = 5, ?callable $redact = null) : mixed {
 	// File descriptors passed to the process.
 	$descriptors = [
 		0 => ['pipe', 'r'],  // stdin
@@ -536,7 +544,9 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	// Only surface stderr noise when the command actually failed; successful
 	// commands may write informational output to stderr that isn't actionable.
 	if ($return_code != 0 && !empty($errors)) {
-		cacti_log("WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+		$message = "WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors);
+
+		cacti_log($redact === null ? $message : $redact($message), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.

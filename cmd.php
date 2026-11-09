@@ -902,7 +902,7 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 
 			break;
 		case POLLER_ACTION_SCRIPT:
-			$output   = trim(exec_poll($item['arg1'], $script_timeout));
+			$output   = trim(exec_poll($item['arg1'], $script_timeout, $item));
 			$log_arg1 = poller_redact_snmp_secrets($item['arg1'], $item);
 
 			if ($output == 'U') {
@@ -1092,7 +1092,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 
 						break;
 					case POLLER_ACTION_SCRIPT:
-						$output = trim(exec_poll($index_item['arg1'], $script_timeout));
+						$output = trim(exec_poll($index_item['arg1'], $script_timeout, $item));
 
 						if (!is_numeric($output)) {
 							if (prepare_validate_result($output) == false) {
