@@ -156,3 +156,75 @@ function library_archive_destination(): void {
 		$_SESSION = $session;
 	}
 }
+
+/** Aggregate totals reject unusable CDEFs and leave unknown total types untranslated. */
+function library_aggregate_totals(int $graph, int $other, int $template, array $attributes): void {
+	$session           = $_SESSION;
+	$requests          = [$_REQUEST, $_GET, $_POST, $GLOBALS['_CACTI_REQUEST'] ?? []];
+	$items             = db_fetch_assoc_prepared('SELECT id, sequence, text_format FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence', [$template]);
+	$owned             = [];
+	$aggregate         = 0;
+	$aggregateTemplate = 0;
+
+	try {
+		$invalid                 = (int) db_fetch_cell('SELECT COALESCE(MAX(id), 0) + 1000 FROM cdef');
+		$rejected                = 0;
+		$_SESSION[SESS_MESSAGES] = [];
+		$before                  = (int) db_fetch_cell('SELECT COUNT(*) FROM graph_local');
+		// The rejection is also echoed to the console log; keep it out of later header-sensitive output.
+		ob_start();
+
+		try {
+			$created = aggregate_create_update($rejected, [$graph, $other], array_replace($attributes, ['graph_title' => 'Invalid CDEF aggregate', 'total' => AGGREGATE_TOTAL_ALL, 'cdefs' => array_fill_keys(array_keys($attributes['cdefs']), $invalid)]));
+		} finally {
+			$console = ob_get_clean();
+		}
+		library_expect($created, false, 'Totals over a missing CDEF are rejected');
+		library_expect(str_contains($console, 'invalid or empty CDEF id ' . $invalid), true, 'Missing CDEF rejection is logged with its identity');
+		library_expect($_SESSION[SESS_MESSAGES]['aggregate_invalid_cdef']['level'] ?? null, MESSAGE_LEVEL_ERROR, 'Missing CDEF rejection reaches the operator');
+		library_expect((int) db_fetch_cell('SELECT COUNT(*) FROM graph_local'), $before, 'Rejected totals roll back the aggregate graph');
+
+		// Totalling legends come from the template items. Only ALL and SIMILAR have
+		// legend translations; any other type must keep the source text.
+		foreach (array_slice($items, 1, 2) as $index => $item) {
+			db_execute_prepared('UPDATE graph_templates_item SET text_format = ? WHERE id = ?', [$index === 0 ? 'Now :current: value' : 'Peak :max: value', $item['id']]);
+		}
+
+		foreach ([['COMMENT', 'text_format', 'Coverage |95:bits:0:current:2|'], ['HRULE', 'value', '|95:bits:0:max:2|']] as [$type, $column, $value]) {
+			$owned[] = (int) sql_save(['id' => 0, 'hash' => generate_hash(), 'graph_template_id' => $template, 'local_graph_id' => 0, 'graph_type_id' => constant('GRAPH_ITEM_TYPE_' . $type), $column => $value, 'sequence' => 900 + count($owned)], 'graph_templates_item');
+		}
+		library_expect(aggregate_create_update($aggregate, [$graph, $other], array_replace($attributes, ['graph_title' => 'Unknown total type aggregate', 'total' => AGGREGATE_TOTAL_ONLY, 'total_type' => '9'])), true, 'Unknown total types still build an aggregate');
+		library_expect($aggregate > 0, true, 'Unknown total type aggregate has a graph identity');
+		$formats = array_column(db_fetch_assoc_prepared('SELECT text_format FROM graph_templates_item WHERE local_graph_id = ?', [$aggregate]), 'text_format');
+		library_expect(in_array('Now :current: value', $formats, true) && in_array('Peak :max: value', $formats, true), true, 'Unknown total types keep current and peak legend tokens');
+		library_expect(in_array('Coverage |95:bits:0:current:2|', $formats, true), true, 'Unknown total types keep the percentile source');
+		library_expect(push_out_aggregates(0, $aggregate), true, 'Stored aggregate settings rebuild the aggregate');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id = ?', [$aggregate]) > 0, true, 'Rebuilt aggregate keeps its graph items');
+		aggregate_graphs_cleanup($graph, $aggregate, AGGREGATE_ORDER_NONE);
+		library_expect(error_reporting(), E_ALL, 'Aggregate cleanup leaves full error reporting enabled');
+
+		$aggregateTemplate = (int) sql_save(['id' => 0, 'name' => 'Conversion fixture', 'graph_template_id' => $template, 'gprint_prefix' => '', 'graph_type' => AGGREGATE_GRAPH_TYPE_KEEP,
+			'total'                                  => AGGREGATE_TOTAL_NONE, 'total_type' => AGGREGATE_TOTAL_TYPE_SIMILAR, 'total_prefix' => '', 'order_type' => AGGREGATE_ORDER_NONE, 'user_id' => 1], 'aggregate_graph_templates');
+		library_expect($aggregateTemplate > 0, true, 'Conversion fixture owns an aggregate template');
+		set_request_var('aggregate_template_id', (string) $aggregateTemplate);
+		api_aggregate_convert_template([$aggregate]);
+		$converted = db_fetch_row_prepared('SELECT aggregate_template_id, title_format FROM aggregate_graphs WHERE local_graph_id = ? ORDER BY id DESC LIMIT 1', [$aggregate]);
+		library_expect((int) $converted['aggregate_template_id'], $aggregateTemplate, 'Converted aggregate follows its template');
+		library_expect($converted['title_format'], db_fetch_cell_prepared('SELECT title_cache FROM graph_templates_graph WHERE local_graph_id = ?', [$aggregate]), 'Converted aggregate keeps its rendered title');
+	} finally {
+		foreach ($items as $item) {
+			db_execute_prepared('UPDATE graph_templates_item SET text_format = ? WHERE id = ?', [$item['text_format'], $item['id']]);
+		}
+
+		foreach ($owned as $id) {
+			db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', [$id]);
+		}
+
+		if ($aggregate > 0) {
+			api_aggregate_remove_multi([$aggregate]);
+		}
+		db_execute_prepared('DELETE FROM aggregate_graph_templates WHERE id = ?', [$aggregateTemplate]);
+		[$_REQUEST, $_GET, $_POST, $GLOBALS['_CACTI_REQUEST']] = $requests;
+		$_SESSION                                              = $session;
+	}
+}

@@ -113,3 +113,36 @@ function library_query_aggregate(int $graph, int $template): void {
 		}
 	}
 }
+
+/** Graph template maintenance repairs drifted graphs and refuses templates without a graph definition. */
+function library_graph_template_repairs(int $graph, int $template): void {
+	$input = db_fetch_assoc_prepared('SELECT gti.id, d.graph_template_item_id FROM graph_template_input AS gti INNER JOIN graph_template_input_defs AS d ON d.graph_template_input_id = gti.id WHERE gti.graph_template_id = ? AND gti.column_name = ? ORDER BY d.graph_template_item_id', [$template, 'task_item_id']);
+	library_expect(count($input) > 1, true, 'Graph template shares one data source input across several items');
+	$edited   = (int) end($input)['graph_template_item_id'];
+	$local    = db_fetch_row_prepared('SELECT id, task_item_id FROM graph_templates_item WHERE local_graph_id = ? AND local_graph_template_item_id = ?', [$graph, $edited]);
+	$expected = db_fetch_cell_prepared('SELECT task_item_id FROM graph_templates_item WHERE local_graph_id = ? AND local_graph_template_item_id = ?', [$graph, $input[0]['graph_template_item_id']]);
+	$stray    = 0;
+
+	try {
+		// The item being edited is excluded, so its siblings supply the value.
+		library_expect(db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE id = ?', [$local['id']]), true, 'Fixture detaches one graph item from its input');
+		push_out_graph_input((int) $input[0]['id'], $edited, [$edited => $edited]);
+		library_expect(db_fetch_cell_prepared('SELECT task_item_id FROM graph_templates_item WHERE id = ?', [$local['id']]), $expected, 'Input propagation restores the shared data source');
+
+		$templateCount = (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0', [$template]);
+		$row           = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', [$local['id']]);
+		$stray         = (int) sql_save(array_replace($row, ['id' => 0, 'hash' => '', 'local_graph_template_item_id' => 0]), 'graph_templates_item');
+		library_expect($stray > 0, true, 'Fixture adds an item that no template item owns');
+		library_expect(resequence_graphs($template, $graph, true), true, 'Forced resequencing repairs the graph');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE id = ?', [$stray]), 0, 'Repair removes the unowned item');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id = ?', [$graph]), $templateCount, 'Repaired graph matches its template item count');
+		$stray = 0;
+
+		$missing = (int) db_fetch_cell('SELECT COALESCE(MAX(id), 0) + 1000 FROM graph_templates');
+		library_expect(change_graph_template($graph, $missing), false, 'A template without a graph definition cannot be applied');
+		library_expect((int) db_fetch_cell_prepared('SELECT graph_template_id FROM graph_local WHERE id = ?', [$graph]), $template, 'Refused template change keeps the graph template');
+	} finally {
+		db_execute_prepared('UPDATE graph_templates_item SET task_item_id = ? WHERE id = ?', [$local['task_item_id'], $local['id']]);
+		db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', [$stray]);
+	}
+}
