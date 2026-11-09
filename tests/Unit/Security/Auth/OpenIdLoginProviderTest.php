@@ -67,8 +67,8 @@ namespace {
 		];
 	}
 
-	function oidc_test_provider(array $parameters = []): OpenIdLoginProvider {
-		$row = [
+	function oidc_test_provider(array $parameters = [], array $overrides = []): OpenIdLoginProvider {
+		$row = $overrides + [
 			'id'                  => 1,
 			'name'                => 'Test OIDC',
 			'type'                => PROVIDER_TYPE_OPENID,
@@ -376,6 +376,37 @@ namespace {
 		$result = $provider->complete();
 
 		expect($result->success)->toBeFalse();
+	});
+
+	test('a failed token exchange with provider debugging enabled is still rejected', function () {
+		$provider     = oidc_test_provider([], ['debug' => 'on']);
+		$discoveryUrl = 'https://idp.example.test/.well-known/openid-configuration';
+
+		$_SESSION['sess_oidc_' . $provider->getId()] = [
+			'state'    => 'expected-state',
+			'nonce'    => 'expected-nonce',
+			'verifier' => 'verifier-value',
+			'remember' => false,
+		];
+
+		$_REQUEST['state'] = 'expected-state';
+		$_REQUEST['code']  = 'auth-code';
+
+		// No token endpoint stub, so the exchange fails like an unreachable IdP.
+		$GLOBALS['__oidc_test_http_responses'] = [
+			$discoveryUrl => [
+				'success' => true,
+				'status'  => 200,
+				'body'    => json_encode(oidc_test_discovery('https://idp.example.test/jwks', 'https://idp.example.test')),
+				'error'   => '',
+			],
+		];
+
+		$result = $provider->complete();
+
+		expect($result->success)->toBeFalse()
+			->and($result->username)->toBe('')
+			->and($_SESSION)->not->toHaveKey('sess_oidc_' . $provider->getId());
 	});
 
 	test('a full callback authenticates and ignores UserInfo with a mismatched subject', function () {
