@@ -1919,7 +1919,7 @@ function get_simple_device_perms(int $user) : bool {
 	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_perms
 		WHERE user_id = ?
-		AND type = 2',
+		AND type = 3',
 		[$user]);
 
 	if ($policy_hosts == 1 && $perm_count == 0) {
@@ -1931,7 +1931,7 @@ function get_simple_device_perms(int $user) : bool {
 			ON uag.id = uagp.group_id
 			INNER JOIN user_auth_group_members AS uagm
 			ON uagm.group_id = uag.id
-			WHERE uagp.type = 2
+			WHERE uagp.type = 3
 			AND uagm.user_id = ?
 			GROUP BY uag.id',
 			[$user]);
