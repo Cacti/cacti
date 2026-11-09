@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -security#8158: Harden - Replace sibling password-reset links and revoke authentication state after reset
 -security#GHSA-3jj2-v5ch-wmq5: Fail closed on a posted LDAP realm that is not a configured domain
 -issue#8641: Present the Details and Time View graph pages' drilldown actions through the three-bar menu, and fix the "unsupported pseudo: hover" console error when the graph area reloads
+-issue#8641: Shorten the Time View graph page drilldown action labels (Details, Realtime) so the three-bar menu matches the standard graph drilldown menu
 -issue#8583: Only add the theme search filter icon when the filter input is visible
 -issue#8583: Match trusted proxies by IP family so an IPv4-mapped address never matches a bare IPv4 proxy entry regardless of the Symfony IpUtils version
 -issue#8574: RRDcheck does not delete old data when boost is enabled
