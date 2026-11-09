@@ -6053,7 +6053,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
 			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
-			/* unserialize() ignores bytes after the array, so require the
+			/* Deserialization ignores bytes after the array, so require the
 			 * canonical round trip; callers index the result 0..n-1 */
 			if (is_array($items) && array_is_list($items) && serialize($items) === $unstripped) {
 				$return_items = $items;
