@@ -97,3 +97,26 @@ test('search stops on a parent cycle', function () {
 
 	expect(search('Looped', [1]))->toBe([]);
 });
+
+test('search reads each matched tree once instead of once per ancestor', function () {
+	$insert = TreeSqliteFixture::$pdo->prepare('INSERT INTO graph_tree_items (parent, graph_tree_id, title) VALUES (?, 1, ?)');
+	$build  = function (int $parent, int $depth) use (&$build, $insert) : void {
+		for ($i = 0; $i < 6; $i++) {
+			$insert->execute([$parent, $depth < 4 ? "level $depth" : 'Leaf match']);
+			$id = (int) TreeSqliteFixture::$pdo->lastInsertId();
+
+			if ($depth < 4) {
+				$build($id, $depth + 1);
+			}
+		}
+	};
+
+	$build(0, 1);
+	TreeSqliteFixture::resetCounters();
+
+	$nodes = search('Leaf match', [1]);
+
+	// every branch above the 1,296 matches, plus the tree anchor
+	expect($nodes)->toHaveCount(6 + 36 + 216 + 1)
+		->and(TreeSqliteFixture::$queries)->toBeLessThanOrEqual(2);
+});
