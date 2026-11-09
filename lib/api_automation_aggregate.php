@@ -170,8 +170,7 @@ function automation_aggregate_members(array $rule, int $host_id) : array {
 		}
 		$ids          = array_map('intval', array_column($graphs, 'id'));
 		$placeholders = implode(',', array_fill(0, count($ids), '?'));
-		$names        = automation_aggregate_rows("SELECT DISTINCT gti.local_graph_id,
-			COALESCE(NULLIF(dtd.name_cache, ''), dtd.name) AS name
+		$names        = automation_aggregate_rows("SELECT DISTINCT gti.local_graph_id, COALESCE(NULLIF(dtd.name_cache, ''), dtd.name) AS name
 			FROM graph_templates_item AS gti
 			INNER JOIN data_template_rrd AS dtr ON dtr.id = gti.task_item_id
 			INNER JOIN data_template_data AS dtd ON dtd.local_data_id = dtr.local_data_id

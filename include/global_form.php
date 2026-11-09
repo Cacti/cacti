@@ -2263,7 +2263,7 @@ $struct_aggregate_template = [
 ];
 
 // Aggregate automation uses the same rendering and permissions as the template editor.
-$struct_aggregate_template += [
+$struct_aggregate_template = $struct_aggregate_template + [
 	'automation_spacer'  => ['friendly_name' => __('Aggregate Automation'), 'method' => 'spacer'],
 	'automation_enabled' => [
 		'friendly_name' => __('Enable Aggregate Automation'),
