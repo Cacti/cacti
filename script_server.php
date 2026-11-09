@@ -391,13 +391,9 @@ while (1) {
 
 				error_reporting(0);
 
-				if ($parameters == '') {
-					$result = call_user_func($function);
-				} else {
-					$result = call_user_func_array($function, $parameter_array);
-				}
+				$result = script_server_call($function, $parameters, $parameter_array);
 
-				fputs(STDOUT, trim($result) . "\n");
+				fputs(STDOUT, script_server_response($result) . "\n");
 				fflush(STDOUT);
 
 				script_server_log_response((int) $pid, $ctr, $result);
@@ -548,6 +544,66 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 	}
 
 	return $parse_ok;
+}
+
+/**
+ * script_server_call - calls a script function and discards anything it prints
+ *
+ * Anything the function prints would reach the poller ahead of its result and
+ * be read as the reply to this request, shifting every later reply by one line.
+ *
+ * @param callable-string $function        The function name, already checked to exist.
+ * @param string          $parameters      The raw parameter string.
+ * @param array           $parameter_array The parsed parameters.
+ *
+ * @return mixed The function result.
+ */
+function script_server_call(string $function, string $parameters, array $parameter_array) : mixed {
+	$ob_level = ob_get_level();
+	ob_start();
+
+	try {
+		if ($parameters == '') {
+			$result = call_user_func($function);
+		} else {
+			$result = call_user_func_array($function, $parameter_array);
+		}
+	} finally {
+		// also closes any buffer the function left open; the output can carry
+		// credentials, so only its size is logged
+		$stray = 0;
+
+		while (ob_get_level() > $ob_level) {
+			$output = ob_get_clean();
+
+			if ($output === false) {
+				break;
+			}
+
+			$stray += strlen($output);
+		}
+
+		if ($stray > 0) {
+			cacti_log("DEBUG: Function '$function' wrote $stray bytes of output, discarded", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+		}
+	}
+
+	return $result;
+}
+
+/**
+ * script_server_response - formats a script function result as one response line
+ *
+ * The poller reads one line per request, so a line break inside the result
+ * would be read as the reply to the next request.  Multipart results are space
+ * separated name:value pairs, so a line break becomes a space.
+ *
+ * @param mixed $result The function result.
+ *
+ * @return string The result without line breaks or surrounding white space.
+ */
+function script_server_response(mixed $result) : string {
+	return trim(str_replace(["\r\n", "\r", "\n"], ' ', (string) $result));
 }
 
 /**
