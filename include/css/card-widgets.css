@@ -56,6 +56,12 @@
 .ccGaugeValue--down { stroke: var(--cc-sev-down, #cc0000); }
 .ccGaugeValue--none { stroke: color-mix(in srgb, currentColor 45%, transparent); }
 
+/* Faint radial ticks marking the window min and max on the gauge arc. */
+.ccGaugeTick {
+	stroke: color-mix(in srgb, currentColor 55%, transparent);
+	stroke-width: 2;
+}
+
 .ccGaugeText {
 	margin-top: -22px;
 	text-align: center;
@@ -171,6 +177,17 @@
 	transform: translateX(-1px);
 	background: currentColor;
 	border-radius: 2px;
+}
+
+/* A faint dashed tick marking the historical average, distinct from the strong
+   current-value marker, so both are visible when they differ. */
+.ccBulletAvgMarker {
+	position: absolute;
+	top: 1px;
+	bottom: 1px;
+	width: 0;
+	border-left: 2px dashed color-mix(in srgb, currentColor 70%, transparent);
+	transform: translateX(-1px);
 }
 
 .ccBulletScale {
@@ -347,3 +364,8 @@
 	font-size: 11px;
 	background: color-mix(in srgb, currentColor 12%, transparent);
 }
+
+.ccPill--up   { background: var(--cc-sev-up,   #3c9a5f); color: #fff; }
+.ccPill--warn { background: var(--cc-sev-warn, #d9830f); color: #fff; }
+.ccPill--down { background: var(--cc-sev-down, #cc0000); color: #fff; }
+.ccPill--none { background: color-mix(in srgb, currentColor 45%, transparent); color: #fff; }
