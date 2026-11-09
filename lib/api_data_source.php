@@ -783,7 +783,10 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 		$data_template_id = sql_save($save, 'data_template');
 	}
 
-	unset($struct_data_source['data_source_path']);
+	// the copy gets its own RRD path; skip the field without changing the shared definition
+	$fields = $struct_data_source;
+
+	unset($fields['data_source_path']);
 
 	// create new entry: data_template_data
 	$save = [];
@@ -794,7 +797,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 	$save['data_template_id']            = (!empty($_local_data_id) ? $data_template_data['data_template_id'] : $data_template_id);
 	$save['name_cache']                  = $data_template_data['name_cache'];
 
-	foreach ($struct_data_source as $field => $array) {
+	foreach ($fields as $field => $array) {
 		$save[$field] = $data_template_data[$field];
 
 		if ($array['flags'] != 'ALWAYSTEMPLATE') {

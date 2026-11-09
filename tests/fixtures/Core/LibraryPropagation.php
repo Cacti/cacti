@@ -33,6 +33,29 @@ function library_template_propagation(): void {
 		}
 		db_execute_prepared('DELETE FROM data_template WHERE id = ?', [$template]);
 	}
+	library_data_template_duplicate();
+}
+
+/** Duplicating a data template copies its definition without the RRD path and leaves the shared field list intact. */
+function library_data_template_duplicate(): void {
+	global $struct_data_source;
+	$fields   = array_keys($struct_data_source);
+	$template = (int) sql_save(['id' => 0, 'hash' => bin2hex(random_bytes(16)), 'name' => 'Duplication fixture'], 'data_template');
+	$copy     = 0;
+
+	try {
+		library_expect((int) sql_save(['id' => 0, 'data_template_id' => $template, 'name' => 'Template name', 'data_source_path' => '<path_rra>/duplication.rrd', 'rrd_step' => 60], 'data_template_data') > 0, true, 'Duplication source owns its definition');
+		$copy = (int) api_data_source_duplicate(0, $template, 'Copy of <template_title>');
+		library_expect($copy > 0 && $copy !== $template, true, 'Duplicating creates a distinct data template');
+		library_expect(db_fetch_row_prepared('SELECT name, data_source_path, rrd_step FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', [$copy]),
+			['name' => 'Template name', 'data_source_path' => '', 'rrd_step' => 60], 'The copy keeps the definition but not the RRD path');
+		library_expect(array_keys($struct_data_source), $fields, 'Duplicating leaves the shared data source fields intact');
+	} finally {
+		foreach (array_filter([$template, $copy]) as $id) {
+			db_execute_prepared('DELETE FROM data_template_data WHERE data_template_id = ?', [$id]);
+			db_execute_prepared('DELETE FROM data_template WHERE id = ?', [$id]);
+		}
+	}
 }
 
 /** Reject incomplete mappings and a sort field that loses interface identities. */
