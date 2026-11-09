@@ -124,6 +124,8 @@ try {
 		file_put_contents(CACTI_PATH_INSTALL . '/upgrades/1_2_29.php', '<?php /* Fixture: missing migration function. */');
 		file_put_contents(CACTI_PATH_INSTALL . '/upgrades/1_2_30.php', '<?php function upgrade_to_1_2_30(): void { db_install_execute("SELECT 1"); }');
 		db_execute("UPDATE version SET cacti = '1.2.28'");
+		get_cacti_db_version_raw(true);
+		get_cacti_db_version(true);
 
 		if (in_array($scenario, ['upgrade-warning', 'upgrade-report'], true)) {
 			if ($scenario === 'upgrade-report') {
@@ -133,6 +135,8 @@ try {
 			$reflection          = new ReflectionClass(Installer::class);
 			$installer           = $reflection->newInstanceWithoutConstructor();
 			$reflection->getProperty('old_cacti_version')->setValue($installer, '1.2.28');
+			$reflection->getProperty('errors')->setValue($installer, []);
+			$reflection->getProperty('stepError')->setValue($installer, false);
 			$reflection->getProperty('runReport')->setValue($installer, new \Cacti\Installer\RunReport());
 			$error = $reflection->getMethod('upgradeDatabase')->invoke($installer);
 			installer_fixture_check(($error === '') === ($scenario === 'upgrade-report'), 'Migration success was reported incorrectly');
