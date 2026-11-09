@@ -734,10 +734,11 @@ function create_site_branch(array $leaf) : array {
 function create_branch(array $leaf) : array {
 	$dhtml_tree = [];
 
-	$children = db_fetch_cell_prepared('SELECT COUNT(*)
+	$children = db_fetch_cell_prepared('SELECT id
 		FROM graph_tree_items
 		WHERE parent = ?
-		AND local_graph_id=0',
+		AND local_graph_id=0
+		LIMIT 1',
 		[$leaf['id']]);
 
 	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'" : '') . '><a href="' . htmle(CACTI_PATH_URL . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . '">' . htmle($leaf['title']) . "</a></li>\n";
@@ -868,13 +869,7 @@ function create_data_query_branch(array $leaf, int $site_id = -1, int $ht = -1) 
 				$sql_order = 'gtg.title_cache';
 			}
 
-			$ntg = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0', $sql_order);
-
-			if (read_user_setting('show_aggregates', 'on') == 'on') {
-				$agg = get_allowed_aggregate_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
-			} else {
-				$agg = [];
-			}
+			$ntg_where = 'gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0';
 		} else {
 			if (read_config_option('dsstats_enable') == 'on' && grv('graph_source') != '' && grv('graph_order') != '') {
 				$sql_order = [
@@ -889,16 +884,17 @@ function create_data_query_branch(array $leaf, int $site_id = -1, int $ht = -1) 
 				$sql_order = 'gtg.title_cache';
 			}
 
-			$ntg = get_allowed_graphs('gl.snmp_query_id=0', $sql_order);
-
-			if (read_user_setting('show_aggregates', 'on') == 'on') {
-				$agg = get_allowed_aggregate_graphs('gl.snmp_query_id=0');
-			} else {
-				$agg = [];
-			}
+			$ntg_where = 'gl.snmp_query_id=0';
 		}
 
-		$ntg = array_merge($ntg, $agg);
+		// the non query based branch is drawn when any such graph or aggregate
+		// exists, so one row of either answers it
+		$total_rows = 0;
+		$ntg        = get_allowed_graphs($ntg_where, $sql_order, '1', $total_rows);
+
+		if (!cacti_sizeof($ntg) && read_user_setting('show_aggregates', 'on') == 'on') {
+			$ntg = get_allowed_aggregate_graphs($ntg_where, '', '1', $total_rows);
+		}
 
 		foreach ($data_queries as $data_query) {
 			if ($data_query['id'] == 0) {
