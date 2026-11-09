@@ -132,7 +132,7 @@ function poller_cache(): void {
 		// An empty name makes Cacti derive the RRD item name from the data source name.
 		$rrd = $save(['local_data_id' => $local, 'local_data_template_rrd_id' => $baseRrd, 'data_template_id' => $template, 'data_source_name' => ''], 'data_template_rrd');
 
-		return ['template' => $template, 'base_rrd' => $baseRrd, 'local' => $local, 'dtd' => $localDtd, 'rrd' => $rrd];
+		return ['template' => $template, 'base' => $base, 'base_rrd' => $baseRrd, 'local' => $local, 'dtd' => $localDtd, 'rrd' => $rrd];
 	};
 
 	try {
@@ -145,6 +145,23 @@ function poller_cache(): void {
 		\library_expect(str_contains($items[0], "'.1.3.6.1.2.1.1.3.0'"), true, 'SNMP poller item carries the stored OID');
 		\library_expect(str_contains($items[0], "'" . $name . "'"), true, 'SNMP poller item derives its RRD name from the data source name');
 		\library_expect(strlen($name) <= 19, true, 'Derived RRD names fit RRDtool data source limits');
+
+		// A device field the template leaves to the device replaces a stale per-source value.
+		$hostField = (int) \db_fetch_cell_prepared('SELECT id FROM data_input_fields WHERE data_input_id = ? AND type_code = ? AND input_output = ?', [$snmpInput, 'hostname', 'in']);
+		\library_expect($hostField > 0, true, 'The SNMP input method takes the device hostname');
+		\library_expect(\db_execute_prepared('INSERT INTO data_input_data (data_input_field_id, data_template_data_id, t_value, value) VALUES (?, ?, ?, ?)', [$hostField, $snmp['base'], '', '']), true, 'The data template leaves the hostname to the device');
+		\library_expect(\db_execute_prepared('INSERT INTO data_input_data (data_input_field_id, data_template_data_id, value) VALUES (?, ?, ?)', [$hostField, $snmp['dtd'], 'stale.example']), true, 'The data source holds a stale hostname');
+		$verbosity = \read_config_option('log_verbosity');
+		\set_config_option('log_verbosity', POLLER_VERBOSITY_MEDIUM);
+
+		try {
+			$log = \library_log_written_by(static fn () => \push_out_host($device, $snmp['local']));
+		} finally {
+			\set_config_option('log_verbosity', $verbosity);
+		}
+		$hostname = \db_fetch_cell_prepared('SELECT hostname FROM host WHERE id = ?', [$device]);
+		\library_expect(\db_fetch_cell_prepared('SELECT value FROM data_input_data WHERE data_input_field_id = ? AND data_template_data_id = ?', [$hostField, $snmp['dtd']]), $hostname, 'Pushing out the device replaces the stale hostname');
+		\library_expect(str_contains($log, 'Old[stale.example], New[' . $hostname . ']'), true, 'Replacing a stored device value is logged with both values');
 
 		$missing = (int) \db_fetch_cell('SELECT MAX(id) + 1000 FROM data_input');
 		\library_expect(\db_execute_prepared('UPDATE data_template_data SET data_input_id = ? WHERE id = ?', [$missing, $snmp['dtd']]), true, 'Data source references a removed input method');
