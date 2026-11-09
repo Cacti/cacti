@@ -272,7 +272,7 @@ while (1) {
 			}
 
 			if (!parseArgs($parameters, $parameter_array)) {
-				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
+				script_server_log_parse_failure($function, $parameters);
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 
@@ -548,6 +548,20 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 	}
 
 	return $parse_ok;
+}
+
+/**
+ * script_server_log_parse_failure - logs a request whose arguments could not be parsed
+ *
+ * The arguments can carry device credentials, so only their size is logged.
+ *
+ * @param string $function   The function named by the request.
+ * @param string $parameters The raw parameter string.
+ *
+ * @return void
+ */
+function script_server_log_parse_failure(string $function, string $parameters) : void {
+	cacti_log('WARNING: Script Server could not parse the ' . strlen($parameters) . " byte argument list for $function", false, 'PHPSVR');
 }
 
 /**

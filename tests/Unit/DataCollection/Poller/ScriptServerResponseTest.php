@@ -16,7 +16,8 @@
  * The poller reads one line per Script Server request, so the response to a
  * request must be exactly one line: output printed by the script function is
  * discarded, line breaks inside its result are removed and a request that
- * cannot be parsed prints nothing ahead of its U reply.  The production
+ * cannot be parsed prints nothing ahead of its U reply and is logged without
+ * its arguments.  The production
  * functions are loaded unchanged into a fixture namespace so the Script
  * Server's main loop never runs.
  */
@@ -50,7 +51,7 @@ function ss_response_fixture_echo_throws() {
 }
 
 if (!function_exists(__NAMESPACE__ . '\\script_server_call')) {
-	foreach (['parseArgs', 'script_server_call', 'script_server_response'] as $function) {
+	foreach (['parseArgs', 'script_server_log_parse_failure', 'script_server_call', 'script_server_response'] as $function) {
 		\cacti_fixture_source_function(dirname(__DIR__, 4) . '/script_server.php', $function, __NAMESPACE__);
 	}
 }
@@ -142,4 +143,16 @@ test('a parse error is still printed when debugging', function () {
 
 	expect($ok)->toBeFalse()
 		->and($printed)->toContain("ERROR: Parse error attempting to parse string ''open'");
+});
+
+test('an unparsable argument list is logged by size, never by content', function () {
+	$parameters = "'host1' 'c0mmunity";
+
+	script_server_log_parse_failure('ss_example', $parameters);
+
+	$log = implode("\n", $GLOBALS['ss_response_log']);
+
+	expect($log)->not->toContain($parameters)
+		->and($log)->not->toContain('c0mmunity')
+		->and($log)->toContain('could not parse the ' . strlen($parameters) . ' byte argument list for ss_example');
 });
