@@ -119,6 +119,8 @@ function run(): void {
 			(__NAMESPACE__ . '\\' . $system . '_poller_bottom')();
 			\library_expect($GLOBALS['library_lifecycle_launches'], [], 'Disabled statistics do not start a worker');
 		}
+		\CactiLibraryWindowsFixture\run();
+		\CactiLibraryRrdtool18Fixture\load();
 	} finally {
 		foreach ($saved as $key => $row) {
 			\db_execute_prepared('DELETE FROM settings WHERE name = ?', [$key]);
@@ -134,5 +136,136 @@ function run(): void {
 		foreach (['clock', 'sleeps', 'launches', 'schedule', 'logs'] as $key) {
 			unset($GLOBALS['library_lifecycle_' . $key]);
 		}
+	}
+}
+
+namespace CactiLibraryWindowsFixture;
+
+// The unchanged scheduler takes its Windows branch here; global code keeps the host OS.
+\define(__NAMESPACE__ . '\CACTI_SERVER_OS', 'win32');
+
+/** Record a background launch instead of starting a process. */
+function exec_background(string $command, string $arguments): void {
+	$GLOBALS['library_windows_launches'][] = [$command, $arguments];
+}
+/** On Windows the scheduled statistics worker appends to its log without a shell stream redirect. */
+function run(): void {
+	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/dsstats.php', 'dsstats_poller_bottom', __NAMESPACE__);
+	$saved = [];
+
+	foreach (['dsstats_enable', 'path_dsstats_log'] as $key) {
+		$saved[$key] = \read_config_option($key);
+	}
+	$log = sys_get_temp_dir() . '/windows statistics.log';
+
+	try {
+		\set_config_option('dsstats_enable', 'on');
+		\set_config_option('path_dsstats_log', $log);
+		$GLOBALS['library_windows_launches'] = [];
+		dsstats_poller_bottom();
+		\library_expect($GLOBALS['library_windows_launches'], [[\read_config_option('path_php_binary'), '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php >> ' . \cacti_escapeshellarg($log)]], 'Windows statistics worker appends to its log without redirecting stderr');
+	} finally {
+		foreach ($saved as $key => $value) {
+			\set_config_option($key, $value);
+		}
+		unset($GLOBALS['library_windows_launches']);
+	}
+}
+
+namespace CactiLibraryRrdtool18Fixture;
+
+/** Report RRDtool 1.8 so the unchanged graph compiler emits its 1.8-only options. */
+function get_rrdtool_version(): string {
+	return '1.8.0';
+}
+/** Load the unchanged graph compiler into this namespace. */
+function load(): void {
+	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/rrd.php', 'rrdtool_function_graph', __NAMESPACE__);
+}
+/** Return the RRDtool 1.8 command for a graph without executing it. */
+function graph_source(int $graph, array $options): string {
+	ob_start();
+
+	try {
+		rrdtool_function_graph($graph, '', $options + ['print_source' => true]);
+
+		return html_entity_decode((string) ob_get_contents(), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	} finally {
+		ob_end_clean();
+	}
+}
+
+namespace CactiLibraryResourceFixture;
+
+/** A plugin directory without an INFO file is reported and never cached for remote collectors. */
+function run(): void {
+	$root = sys_get_temp_dir() . '/cacti-resource-' . bin2hex(random_bytes(6));
+	\library_expect(mkdir($root . '/plugins/coverage_noinfo', 0700, true), true, 'Resource fixture owns an installation tree');
+
+	// The unchanged scanner reads this tree instead of the installation under test.
+	foreach (['CACTI_PATH_BASE' => $root, 'CACTI_PATH_SCRIPTS' => $root . '/scripts', 'CACTI_PATH_RESOURCE' => $root . '/resource'] as $name => $value) {
+		\define(__NAMESPACE__ . '\\' . $name, $value);
+	}
+	\cacti_fixture_source_function(\CACTI_PATH_LIBRARY . '/poller.php', 'update_resource_cache', __NAMESPACE__);
+	$backup = 'coverage_resource_cache_' . bin2hex(random_bytes(4));
+	\library_expect(\db_execute('CREATE TEMPORARY TABLE `' . $backup . '` SELECT * FROM poller_resource_cache'), true, 'Resource fixture preserves the existing cache');
+	$settings = \db_fetch_assoc("SELECT * FROM settings WHERE name LIKE 'md5dirsum%'");
+
+	try {
+		\library_expect((int) \db_fetch_cell("SELECT COUNT(*) FROM poller WHERE disabled = ''") > 1, true, 'A remote collector consumes the resource cache');
+		$log = \library_captured_log(static function (): void {
+			update_resource_cache(1);
+		});
+		\library_expect(str_contains($log, "WARNING: INFO file does not exist for plugin directory '" . $root . "/plugins/coverage_noinfo'"), true, 'A plugin without INFO is reported');
+		\library_expect((int) \db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_resource_cache WHERE `path` LIKE ?', ['%coverage_noinfo%']), 0, 'A plugin without INFO is never cached');
+	} finally {
+		\db_execute('DELETE FROM poller_resource_cache');
+		\db_execute('INSERT INTO poller_resource_cache SELECT * FROM `' . $backup . '`');
+		\db_execute('DROP TEMPORARY TABLE `' . $backup . '`');
+		\db_execute("DELETE FROM settings WHERE name LIKE 'md5dirsum%'");
+
+		foreach ($settings as $row) {
+			\sql_save($row, 'settings', 'name', false);
+		}
+		rmdir($root . '/plugins/coverage_noinfo');
+		rmdir($root . '/plugins');
+		rmdir($root);
+	}
+}
+
+namespace CactiLibraryBoostDuplicateFixture;
+
+/** Return the staged samples with each row repeated, as a storage engine without the key would. */
+function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false): array|false {
+	$rows = \db_fetch_assoc_prepared($sql, $params, $log, $db_conn);
+
+	if (!is_array($rows) || !str_contains($sql, 'FROM poller_output_boost AS po')) {
+		return $rows;
+	}
+	$repeated = [];
+
+	foreach ($rows as $row) {
+		array_push($repeated, $row, $row);
+	}
+
+	return $repeated;
+}
+/** Record a Boost diagnostic instead of writing to the Cacti log. */
+function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPHP', mixed $level = ''): bool {
+	$GLOBALS['library_boost_duplicate_logs'][] = $string;
+
+	return true;
+}
+/** A repeated sample is stored once and reported. */
+function run(int $id, array $names, int $time): void {
+	\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/boost.php', 'boost_process_poller_output', __NAMESPACE__);
+	\library_boost_stage($id, $names, [$time], '43');
+	$GLOBALS['library_boost_duplicate_logs'] = [];
+
+	try {
+		\library_expect(boost_process_poller_output($id), 2 * count($names), 'Every repeated row is read: ' . implode(' | ', $GLOBALS['library_boost_duplicate_logs']));
+		\library_expect(count(preg_grep('/^WARNING: Skipping ' . $id . ':\S+ due to duplicate record\.\.\.$/', $GLOBALS['library_boost_duplicate_logs'])), count($names), 'Each repeated sample is reported once');
+	} finally {
+		unset($GLOBALS['library_boost_duplicate_logs']);
 	}
 }
