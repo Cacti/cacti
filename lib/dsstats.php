@@ -38,7 +38,7 @@ function get_rrdfile_names(int $thread_id = 1, int $max_threads = 1) : array {
 	$slice = $thread_id . ':' . $max_threads;
 
 	if ($max_threads == 1) {
-		return db_fetch_assoc('SELECT dtd.local_data_id, data_source_path, rrd_num AS dsses, GROUP_CONCAT(DISTINCT data_source_name) AS dsnames
+		return db_fetch_assoc('SELECT dtd.local_data_id, data_source_path, rrd_step, rrd_num AS dsses, GROUP_CONCAT(DISTINCT data_source_name) AS dsnames
 			FROM data_template_data AS dtd
 			INNER JOIN data_template_rrd AS dtr
 			ON dtd.local_data_id = dtr.local_data_id
@@ -69,7 +69,7 @@ function get_rrdfile_names(int $thread_id = 1, int $max_threads = 1) : array {
 		$offset     = ($thread_id - 1) * $split_size;
 
 		$rows = db_fetch_assoc("SELECT dtd.local_data_id, data_source_path,
-			rrd_num AS dsses, GROUP_CONCAT(DISTINCT data_source_name) AS dsnames
+			rrd_step, rrd_num AS dsses, GROUP_CONCAT(DISTINCT data_source_name) AS dsnames
 			FROM data_template_data AS dtd
 			INNER JOIN data_template_rrd AS dtr
 			ON dtd.local_data_id = dtr.local_data_id
@@ -176,7 +176,7 @@ function dsstats_get_and_store_ds_avgpeak_values(string $interval, string $type,
 				$local_data_id = $file['local_data_id'];
 				$dsnames       = explode(',', $file['dsnames']);
 
-				$stats[$local_data_id] = dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $mode, $peak, $rrd_process);
+				$stats[$local_data_id] = dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $mode, $peak, $rrd_process, (int) ($file['rrd_step'] ?? 300));
 			} else {
 				$data_source_name = db_fetch_cell_prepared('SELECT name_cache
 					FROM data_template_data
@@ -355,10 +355,11 @@ function dsstats_sql_value(mixed $value) : string {
  * @param int    $mode          If we should be collecting legacy stats or not
  * @param bool   $peak          If the peak should be take from the max cf
  * @param array  $rrd_process   Pipes to the background RRDtool process
+ * @param int    $rrd_step      The step of the RRDfile in seconds
  *
  * @return array An array of AVERAGE, and MAX values in an RRDfile by Data Source name
  */
-function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $rrdfile, string $interval, int $mode, bool $peak, array $rrd_process) : array {
+function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $rrdfile, string $interval, int $mode, bool $peak, array $rrd_process, int $rrd_step = 300) : array {
 	global $user_time, $system_time, $real_time;
 
 	$use_proxy = (read_config_option('storage_location') ? true : false);
@@ -384,7 +385,9 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 		}
 
 		if ($stats_command !== false) {
-			// change the interval to something RRDtool understands
+			// change the interval to something RRDtool understands, and note its longest length
+			$seconds = 86400;
+
 			switch($interval) {
 				case 'daily':
 					$interval = 'day';
@@ -392,20 +395,35 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 					break;
 				case 'weekly':
 					$interval = 'week';
+					$seconds  = 7 * 86400;
 
 					break;
 				case 'monthly':
 					$interval = 'month';
+					$seconds  = 31 * 86400;
 
 					break;
 				case 'yearly':
 					$interval = 'year';
+					$seconds  = 366 * 86400;
 
 					break;
 			}
 
+			/**
+			 * RRDtool reads the RRA whose resolution best matches one pixel, and
+			 * a graph is 400 pixels wide by default, about 1512 seconds a pixel
+			 * for a week.  One pixel per step selects the finest RRA that still
+			 * covers the whole range.  Nothing is drawn, so the width is free.
+			 */
+			if ($rrd_step <= 0) {
+				$rrd_step = 300;
+			}
+
+			$width = (int) ceil($seconds / $rrd_step);
+
 			// now execute the graph command
-			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($stats_command);
+			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now --width=' . $width . ' ' . trim($stats_command);
 
 			// print $stats_cmd . PHP_EOL . PHP_EOL;
 
