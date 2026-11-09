@@ -23,11 +23,17 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug InstallerChangedCoverage; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
 done
+if [[ -f phpunit-installer-components.xml && -x include/vendor/bin/pest ]]; then
+	clover="$coverage_dir/installer-components.xml"
+	XDEBUG_MODE=coverage "$php_binary" -d memory_limit=1G include/vendor/bin/pest \
+		--configuration=phpunit-installer-components.xml --colors=never --coverage-clover="$clover"
+	php_coverage+=("$clover")
+fi
 if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-get GET '' mutation
 	run_probe SpikekillRequestGate.php spike-dry GET dryrun mutation
