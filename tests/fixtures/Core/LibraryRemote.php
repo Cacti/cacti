@@ -58,6 +58,7 @@ function library_remote(): void {
 
 		library_remote_failures($poller, $device, $remote, $database_hostname);
 		library_remote_cache($poller, $device, $remote, $database_hostname);
+		library_remote_outages($admin, $schema, $remote, $database_hostname);
 
 		library_expect(db_execute('CREATE TABLE `' . $table . '` (id int PRIMARY KEY, label varchar(80) NOT NULL, retained varchar(80) NOT NULL)'), true, 'Replication owns its source table');
 		$data = [];
@@ -251,6 +252,17 @@ function library_remote_cache(int $poller, int $device, PDO $remote, string $hos
 		foreach ([false, $remote] as $connection) {
 			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_item WHERE host_id = ?', [$device], '', false, $connection), 590, 'Selective cleanup preserves unrelated sources');
 		}
+		// A source sampled faster than the poller runs warns the operator once.
+		$log    = cacti_log_file();
+		$offset = is_file($log) ? filesize($log) : 0;
+		library_expect(api_poller_get_rrd_next_step($device, 60, $ids[2]), 0, 'A new device starts its step rotation at zero');
+		library_expect(str_contains((string) file_get_contents($log, false, null, $offset), 'Change your Poller Interval to 60 seconds'), true, 'Fast sampling interval is reported in the Cacti log');
+		api_data_source_disable_multi([$ids[1]]);
+
+		foreach ([false, $remote] as $connection) {
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_item WHERE local_data_id = ?', [$ids[1]], '', false, $connection), 0, 'Bulk disable removes the source from both poller caches');
+		}
+		library_expect(db_fetch_cell_prepared('SELECT active FROM data_template_data WHERE local_data_id = ?', [$ids[1]]), '', 'Bulk disable stops polling the source');
 	} finally {
 		db_execute_prepared('UPDATE poller SET last_status = NOW(), dbhost = ? WHERE id = ?', [$hostname, $poller]);
 
@@ -267,5 +279,197 @@ function library_remote_cache(int $poller, int $device, PDO $remote, string $hos
 			set_config_option($row['name'], $row['value']);
 		}
 		sql_save($host, 'host');
+	}
+}
+
+/** Register another collector backed by the isolated remote schema. */
+function library_remote_collector(string $schema, string $dbhost, string $status): int {
+	global $database_port;
+	$poller = (int) sql_save(['id' => 0, 'name' => 'Coverage collector ' . bin2hex(random_bytes(4)), 'hostname' => $dbhost, 'dbhost' => $dbhost,
+		'dbdefault'                   => $schema, 'dbuser' => 'root', 'dbpass' => getenv('CACTI_DB_ROOT_PASS'), 'dbport' => $database_port, 'dbretries' => 1, 'dbssl' => '', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => '', 'dbsslcapath' => '',
+		'disabled'                    => '', 'last_status' => $status], 'poller');
+	library_expect($poller > 1, true, 'Outage fixture owns its collector');
+
+	return $poller;
+}
+
+/** Expire the collector heartbeat or address from inside its own remote write, as a collector that drops mid-operation would. */
+function library_remote_lapse(PDO $admin, string $schema, string $event, int $poller, string $failure): string {
+	global $database_default;
+	$trigger    = 'coverage_lapse_' . bin2hex(random_bytes(4));
+	$assignment = $failure === 'offline' ? "last_status = '2000-01-01 00:00:00'" : "dbhost = '127.0.0.1'";
+	library_expect($admin->exec('CREATE TRIGGER `' . $schema . '`.`' . $trigger . '` BEFORE ' . $event . ' ON `' . $schema . '`.`host` FOR EACH ROW UPDATE `' . $database_default . '`.`poller` SET ' . $assignment . ' WHERE id = ' . $poller), 0, 'Collector lapse is armed');
+
+	return $trigger;
+}
+
+/** Report partial propagation when a collector is unavailable before or during each device, template and data-source mutation. */
+function library_remote_outages(PDO $admin, string $schema, PDO $remote, string $hostname): void {
+	$pollers   = [];
+	$devices   = [];
+	$sources   = [];
+	$templates = [];
+	$triggers  = [];
+	$converted = [];
+	$query     = (int) db_fetch_cell('SELECT id FROM snmp_query ORDER BY id LIMIT 1');
+	$graph     = (int) db_fetch_cell('SELECT id FROM graph_templates WHERE id NOT IN (SELECT graph_template_id FROM snmp_query_graph) ORDER BY id LIMIT 1');
+	library_expect($query > 0 && $graph > 0, true, 'Outage cases use installed query and graph template identities');
+	$failures = ['offline' => ['2000-01-01 00:00:00', $hostname], 'invalid-address' => [date('Y-m-d H:i:s'), '127.0.0.1']];
+	$session  = $_SESSION;
+
+	/** Create a replicated device on a fresh available collector. */
+	$collector = static function (string $description) use ($schema, $hostname, &$pollers, &$devices): array {
+		$poller    = library_remote_collector($schema, $hostname, date('Y-m-d H:i:s'));
+		$pollers[] = $poller;
+		$device    = library_save_device(['description' => $description, 'poller_id' => $poller, 'snmp_version' => 0]);
+		library_expect($device > 0, true, 'Outage device is created on an available collector');
+		$devices[] = $device;
+
+		return [$poller, $device];
+	};
+	/** Make an existing collector stale or unreachable. */
+	$fail = static function (int $poller, string $failure) use ($failures): void {
+		library_expect(db_execute_prepared('UPDATE poller SET last_status = ?, dbhost = ? WHERE id = ?', [...$failures[$failure], $poller]), true, 'Collector failure is applied');
+	};
+
+	$structure = $GLOBALS['struct_data_source'];
+
+	try {
+		foreach (['query', 'graph', 'empty'] as $kind) {
+			$templates[$kind] = (int) sql_save(['id' => 0, 'hash' => bin2hex(random_bytes(16)), 'name' => 'Outage template ' . $kind], 'host_template');
+			library_expect($templates[$kind] > 0, true, 'Outage template exists');
+		}
+		library_expect(db_execute_prepared('INSERT INTO host_template_snmp_query (host_template_id, snmp_query_id) VALUES (?, ?)', [$templates['query'], $query]), true, 'Query template owns a data query');
+		library_expect(db_execute_prepared('INSERT INTO host_template_graph (host_template_id, graph_template_id) VALUES (?, ?)', [$templates['graph'], $graph]), true, 'Graph template owns a graph template');
+
+		// Each stage of a template change re-checks the collector, so fail it before
+		// the change or from inside the first remote write.
+		foreach ([
+			['query', 'invalid-address', null], ['query', 'offline', null], ['query', null, 'offline'],
+			['graph', null, 'invalid-address'], ['graph', null, 'offline'],
+			['empty', null, 'invalid-address'], ['empty', null, 'offline'],
+		] as [$kind, $before, $during]) {
+			[$poller, $device] = $collector('Template outage ' . $kind);
+
+			if ($kind === 'empty') {
+				foreach ([false, $remote] as $connection) {
+					library_expect(db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', [$device, $graph], true, $connection), true, 'Stale graph mapping exists');
+				}
+			}
+
+			if ($before !== null) {
+				$fail($poller, $before);
+			} else {
+				$triggers[] = library_remote_lapse($admin, $schema, 'UPDATE', $poller, $during);
+			}
+			unset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]);
+			api_device_update_host_template($device, $templates[$kind]);
+			library_expect(isset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]), true, 'Template change reports the ' . ($before ?? $during) . ' collector');
+			library_expect((int) db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', [$device]), $templates[$kind], 'Template change persists locally');
+			library_expect((int) db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', [$device], '', false, $remote), $before === null ? $templates[$kind] : 0, 'Collector keeps only the writes made before it failed');
+
+			if ($kind === 'query') {
+				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_query WHERE host_id = ?', [$device]), 1, 'Template query is associated locally');
+				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_query WHERE host_id = ?', [$device], '', false, $remote), 0, 'Failed collector does not receive the query');
+			} elseif ($kind === 'graph') {
+				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$device]), 1, 'Template graph is associated locally');
+				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$device], '', false, $remote), 0, 'Failed collector does not receive the graph');
+			} else {
+				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$device]), 0, 'Unused graph mapping is removed locally');
+				library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$device], '', false, $remote), 1, 'Failed collector retains the unused mapping');
+			}
+		}
+
+		foreach (array_keys($failures) as $failure) {
+			[$poller, $device] = $collector('Enable outage');
+			$triggers[]        = library_remote_lapse($admin, $schema, 'UPDATE', $poller, $failure);
+			unset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]);
+			api_device_enable_devices([$device]);
+			library_expect(db_fetch_cell_prepared('SELECT disabled FROM host WHERE id = ?', [$device]), '', 'Enable persists locally');
+			library_expect(db_fetch_cell_prepared('SELECT disabled FROM host WHERE id = ?', [$device], '', false, $remote), '', 'Enable reached the collector before it failed');
+			library_expect(isset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]), true, 'Reindex propagation reports the ' . $failure . ' collector');
+
+			[$poller, $device] = $collector('Save outage');
+			$triggers[]        = library_remote_lapse($admin, $schema, 'INSERT', $poller, $failure);
+			library_expect(library_save_device(['id' => $device, 'poller_id' => $poller, 'description' => 'Saved before ' . $failure, 'snmp_version' => 0, 'disabled' => '']), $device, 'Save retains the device identity');
+			library_expect(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', [$device], '', false, $remote), 'Saved before ' . $failure, 'Device row reached the collector before it failed');
+			library_expect(isset($_SESSION[SESS_MESSAGES]['poller_down_' . $device]), true, 'Reindex reset reports the ' . $failure . ' collector');
+		}
+
+		[$poller, $device] = $collector('Move outage');
+		$fail($poller, 'offline');
+		library_expect(library_save_device(['id' => $device, 'poller_id' => 1, 'snmp_version' => 0]), $device, 'Device moves away from an offline collector');
+		library_expect((int) db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', [$device]), 1, 'Move persists locally');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$device], '', false, $remote), 1, 'Offline collector keeps the moved device until a full sync');
+		library_expect(isset($_SESSION[SESS_MESSAGES]['poller_down_' . $device]), true, 'Move reports the offline previous collector');
+
+		[$poller, $device] = $collector('Purge outage');
+		$fail($poller, 'invalid-address');
+		unset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]);
+		api_device_purge_from_remote($device, $poller);
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$device], '', false, $remote), 1, 'Unreachable collector keeps the device');
+		library_expect(isset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]), true, 'Purge reports the unreachable collector');
+
+		$local = library_save_device(['description' => 'Outage destination', 'snmp_version' => 0]);
+		library_expect($local > 0, true, 'Local destination device exists');
+		$devices[] = $local;
+
+		foreach (array_keys($failures) as $failure) {
+			foreach (['move', 'convert'] as $operation) {
+				[$poller, $device] = $collector('Data source outage');
+				$source            = (int) sql_save(['id' => 0, 'host_id' => $device, 'data_template_id' => 0], 'data_local');
+				library_expect($source > 0, true, 'Outage data source exists');
+				$sources[] = $source;
+				library_expect((int) sql_save(['id' => 0, 'local_data_id' => $source, 'name' => 'Outage source', 'data_source_path' => '<path_rra>/coverage_outage_' . $source . '.rrd', 'rrd_step' => 300], 'data_template_data') > 0, true, 'Outage data source has metadata');
+				$fail($poller, $failure);
+				unset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]);
+
+				if ($operation === 'move') {
+					api_data_source_change_host([$source], $local);
+					library_expect((int) db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', [$source]), $local, 'Data source moves locally');
+				} else {
+					$name = 'Outage conversion ' . bin2hex(random_bytes(4));
+					data_source_to_data_template($source, $name);
+					$converted[] = (int) db_fetch_cell_prepared('SELECT id FROM data_template WHERE name = ?', [$name]);
+					library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM data_local WHERE id = ?', [$source]), 0, 'Converted data source leaves the device');
+				}
+				library_expect(isset($_SESSION[SESS_MESSAGES]['poller_down_' . $poller]), true, 'Data source ' . $operation . ' reports the ' . $failure . ' collector');
+			}
+		}
+	} finally {
+		// Duplicating a data template drops the path field from the shared form structure.
+		$GLOBALS['struct_data_source'] = $structure;
+
+		foreach ($triggers as $trigger) {
+			$admin->exec('DROP TRIGGER IF EXISTS `' . $schema . '`.`' . $trigger . '`');
+		}
+
+		foreach ($converted as $template) {
+			db_execute_prepared('DELETE FROM data_template_data WHERE data_template_id = ?', [$template]);
+			db_execute_prepared('DELETE FROM data_template WHERE id = ?', [$template]);
+		}
+
+		foreach ($sources as $source) {
+			db_execute_prepared('DELETE FROM data_template_data WHERE local_data_id = ?', [$source]);
+			db_execute_prepared('DELETE FROM data_local WHERE id = ?', [$source]);
+		}
+
+		foreach ($devices as $device) {
+			db_execute_prepared('UPDATE host SET poller_id = 1 WHERE id = ?', [$device]);
+			api_device_remove($device);
+		}
+
+		foreach ($templates as $template) {
+			foreach (['host_template_snmp_query', 'host_template_graph'] as $table) {
+				db_execute_prepared('DELETE FROM ' . $table . ' WHERE host_template_id = ?', [$template]);
+			}
+			db_execute_prepared('DELETE FROM host_template WHERE id = ?', [$template]);
+		}
+
+		foreach ($pollers as $poller) {
+			db_execute_prepared('DELETE FROM poller_command WHERE poller_id = ?', [$poller]);
+			db_execute_prepared('DELETE FROM poller WHERE id = ?', [$poller]);
+		}
+		$_SESSION = $session;
 	}
 }
