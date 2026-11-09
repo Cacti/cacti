@@ -579,15 +579,17 @@ function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_p
 
 		$others = db_fetch_assoc_prepared('SELECT id
 			FROM graph_tree_items
-			WHERE parent = ?
+			WHERE graph_tree_id = ?
+			AND parent = ?
 			AND id != ?
-			AND position >= ?', [$pdata['leaf_id'], $data['leaf_id'], $new_position]);
+			AND position >= ?
+			ORDER BY position, id', [$tree_id, $pdata['leaf_id'], $data['leaf_id'], $new_position]);
 
 		$position = $new_position + 1;
 
 		if (cacti_sizeof($others)) {
 			foreach ($others as $other) {
-				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', [$position, $other['id']]);
+				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE graph_tree_id = ? AND id = ?', [$position, $tree_id, $other['id']]);
 				$position++;
 			}
 		}
@@ -602,15 +604,17 @@ function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_p
 
 		$others = db_fetch_assoc_prepared('SELECT id
 			FROM graph_tree_items
-			WHERE parent = ?
-			AND id != ? AND
-			position >= ?', [$pdata['leaf_id'], $data['leaf_id'], $new_position]);
+			WHERE graph_tree_id = ?
+			AND parent = ?
+			AND id != ?
+			AND position >= ?
+			ORDER BY position, id', [$tree_id, $pdata['leaf_id'], $data['leaf_id'], $new_position]);
 
 		$position = $new_position + 1;
 
 		if (cacti_sizeof($others)) {
 			foreach ($others as $other) {
-				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', [$position, $other['id']]);
+				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE graph_tree_id = ? AND id = ?', [$position, $tree_id, $other['id']]);
 				$position++;
 			}
 		}
