@@ -1633,7 +1633,6 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 		// create an array keyed off of each .rrd file
 		$time           = -1;
 		$outbuf         = '';
-		$last_update    = -1;
 		$multi_vals_set = false;
 
 		$last_item = [
@@ -1701,20 +1700,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 				continue;
 			}
 
-			// don't generate error messages if the RRD has already been updated
-			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" .
-					$time .
-					"', RRD Time:'" .
-					$last_update .
-					"' Ignoring Value!",
-					false,
-					'BOOST',
-					POLLER_VERBOSITY_HIGH);
-				$value = 'DNP';
-			} else {
-				$value = trim($item['output']);
-			}
+			$value = trim($item['output']);
 
 			if ($time != $item['timestamp']) {
 				if ($outlen > $upd_string_len) {
