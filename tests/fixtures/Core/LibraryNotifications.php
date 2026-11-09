@@ -89,4 +89,67 @@ function library_notifications(): void {
 		}
 		rmdir($directory);
 	}
+	library_mail_delivery();
+}
+
+/** Deliver through a recording sendmail and an unreachable SMTP server; no message leaves the fixture. */
+function library_mail_delivery(): void {
+	$directory = sys_get_temp_dir() . '/cacti-mail-' . bin2hex(random_bytes(8));
+	library_expect(mkdir($directory, 0700), true, 'Mail fixture owns its message recorder');
+	$names    = ['settings_how', 'settings_sendmail_path', 'settings_smtp_host', 'settings_smtp_port', 'settings_smtp_timeout',
+		'settings_smtp_username', 'settings_smtp_password', 'settings_ping_mail', 'settings_test_email'];
+	$previous = [];
+
+	foreach ($names as $name) {
+		$previous[$name] = db_fetch_row_prepared('SELECT * FROM settings WHERE name = ?', [$name]);
+	}
+
+	try {
+		$script = '#!' . PHP_BINARY . "\n<?php file_put_contents(__DIR__ . '/message.eml', stream_get_contents(STDIN));\n";
+		library_expect(file_put_contents($directory . '/sendmail', $script), strlen($script), 'Sendmail recorder is written completely');
+		library_expect(chmod($directory . '/sendmail', 0700), true, 'Sendmail recorder is executable');
+		set_config_option('settings_how', '1');
+		set_config_option('settings_sendmail_path', $directory . '/sendmail');
+		library_expect(str_contains(mailer('Fixture <sender@example.invalid>', '', subject: 'Unaddressed', body: 'Body'), 'No recipient address set'), true, 'A message without recipients is refused before delivery');
+		library_expect(file_exists($directory . '/message.eml'), false, 'A refused message never reaches the transport');
+
+		$image  = "\x89PNG\r\n\x1a\nfixture";
+		$result = mailer('Fixture <sender@example.invalid>', 'Recipient <recipient@example.invalid>', subject: 'Inline graph', body: 'Before <GRAPH:7:1> after',
+			attachments: [['attachment' => $image, 'filename' => 'graph.png', 'mime_type' => 'image/png', 'local_graph_id' => 7, 'timespan' => 1, 'inline' => 'inline']],
+			html: true, expandIds: true);
+		library_expect($result, '', 'Inline graph message is accepted by the transport');
+		$message = (string) file_get_contents($directory . '/message.eml');
+		library_expect(preg_match("/<img src='cid:([^']+)' >/", quoted_printable_decode($message), $cid), 1, 'Graph placeholder becomes an inline image reference');
+		library_expect(str_contains($message, '<GRAPH:7:1>'), false, 'Graph placeholder is not delivered literally');
+		library_expect(str_contains($message, 'Content-ID: <' . $cid[1] . '>'), true, 'Inline image part carries the referenced content ID');
+
+		$socket = stream_socket_server('tcp://127.0.0.1:0', $errorNumber, $errorMessage);
+		library_expect(is_resource($socket), true, 'Mail fixture reserves a closed SMTP port');
+		$port = (int) substr(strrchr(stream_socket_get_name($socket, false), ':'), 1);
+		fclose($socket);
+
+		foreach (['settings_how'  => '2', 'settings_smtp_host' => '127.0.0.1', 'settings_smtp_port' => (string) $port, 'settings_smtp_timeout' => '2',
+			'settings_smtp_username' => '', 'settings_smtp_password' => '', 'settings_ping_mail' => '0', 'settings_test_email' => 'recipient@example.invalid'] as $name => $value) {
+			set_config_option($name, $value);
+		}
+		$dom  = library_form_dom(static function (): void { email_test(); });
+		$text = $dom->document->textContent;
+		library_expect(str_contains($text, 'Method: SMTP'), true, 'Test mail reports the configured delivery method');
+		library_expect(str_contains($text, 'Ping Results: SMTP error'), true, 'An unreachable SMTP server is reported by the connection check');
+		library_expect(str_contains($text, 'Message Not Sent due to ping failure.'), true, 'A failed connection check prevents delivery');
+	} finally {
+		foreach ($previous as $name => $row) {
+			db_execute_prepared('DELETE FROM settings WHERE name = ?', [$name]);
+			unset($GLOBALS['config'][OPTIONS_CLI][$name]);
+
+			if ($row) {
+				sql_save($row, 'settings', 'name');
+			}
+		}
+
+		foreach (glob($directory . '/*') as $file) {
+			unlink($file);
+		}
+		rmdir($directory);
+	}
 }

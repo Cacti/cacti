@@ -20,6 +20,11 @@ function fixture_setup(string $plugin): bool {
 	return \api_plugin_register_hook($plugin, 'coverage_error_event', 'coverage_error_event', 'setup.php', true);
 }
 
+/** Supply the fatal error PHP would report at shutdown without terminating the fixture. */
+function error_get_last(): ?array {
+	return $GLOBALS['library_error_last'] ?? \error_get_last();
+}
+
 /** Deterministic DNS failure for this fixture only; sockets use the real transport. */
 function gethostbyname(string $host): string {
 	return $host === 'collector.coverage.invalid' ? $host : \gethostbyname($host);
@@ -79,7 +84,7 @@ function remote(): void {
 function run(): void {
 	require_once __DIR__ . '/../../Helpers/SourceSlice.php';
 
-	foreach (['CactiErrorHandler', 'get_theme_paths', 'send_mail'] as $function) {
+	foreach (['CactiErrorHandler', 'CactiShutdownHandler', 'get_theme_paths', 'send_mail'] as $function) {
 		\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/functions.php', $function, __NAMESPACE__);
 	}
 	$name      = 'coverage_error_' . bin2hex(random_bytes(6));
@@ -102,16 +107,31 @@ function run(): void {
 		\library_expect(CactiErrorHandler(E_ERROR, 'Suppressed fixture error', $directory . '/setup.php', 1), true, 'Suppressed error is handled without disabling the plugin');
 		\library_expect($GLOBALS['library_error_notifications'], [], 'Suppressed and nonfatal errors do not notify the administrator');
 		error_reporting(E_ALL);
+		// E_STRICT has no entry in the Cacti level names, which is how a future PHP level would arrive.
+		// E_ALL no longer includes that bit on every supported PHP, so report every bit explicitly.
+		error_reporting(-1);
+		\library_expect(CactiErrorHandler(2048, 'Fixture unnamed level', $directory . '/setup.php', 1), false, 'An unnamed error level retains PHP default reporting');
+		error_reporting(E_ALL);
+		\library_expect((int) \db_fetch_cell_prepared('SELECT status FROM plugin_config WHERE directory = ?', [$name]), 1, 'An unnamed error level preserves plugin availability');
 		\library_expect(CactiErrorHandler(E_ERROR, 'Fixture fatal error', $directory . '/setup.php', 1), false, 'Fatal plugin error retains PHP default reporting');
 		\library_expect((int) \db_fetch_cell_prepared('SELECT status FROM plugin_config WHERE directory = ?', [$name]), 7, 'Fatal plugin error persists the disabled error state');
 		\library_expect((int) \db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_hooks WHERE name = ? AND status = 1', [$name]), 0, 'Fatal plugin error disables its active hooks');
 		\library_expect(count($GLOBALS['library_error_notifications']), 1, 'Fatal plugin error sends exactly one administrator notification');
 		\library_expect(str_contains($GLOBALS['library_error_notifications'][0][1], $name), true, 'Administrator notification identifies the affected plugin');
+		\library_expect(\db_execute_prepared('UPDATE plugin_config SET status = 1 WHERE directory = ?', [$name]), true, 'Error fixture re-enables its plugin for the shutdown scenario');
+		$GLOBALS['library_error_last'] = ['type' => E_COMPILE_ERROR, 'message' => 'Fixture shutdown fatal', 'file' => $directory . '/setup.php', 'line' => 1];
+		\library_expect(CactiShutdownHandler(), false, 'A fatal plugin error at shutdown retains PHP default reporting');
+		\library_expect((int) \db_fetch_cell_prepared('SELECT status FROM plugin_config WHERE directory = ?', [$name]), 7, 'A fatal plugin error at shutdown disables the plugin');
+		\library_expect(count($GLOBALS['library_error_notifications']), 2, 'A fatal plugin error at shutdown notifies the administrator once');
+		\library_expect(str_contains($GLOBALS['library_error_notifications'][1][1], 'Fixture shutdown fatal'), true, 'Shutdown notification carries the fatal message');
+		$GLOBALS['library_error_last'] = ['type' => E_USER_NOTICE, 'message' => 'Fixture shutdown notice', 'file' => $directory . '/setup.php', 'line' => 1];
+		\library_expect(CactiShutdownHandler(), true, 'A nonfatal last error needs no shutdown handling');
+		unset($GLOBALS['library_error_last']);
 		$missing = 'coverage-missing-' . bin2hex(random_bytes(8)) . '.css';
 		\library_expect(get_theme_paths('%s', 'include/themes/modern/', 'modern', $missing), '', 'Missing theme asset never produces a broken asset URL');
-		\library_expect(count($GLOBALS['library_error_notifications']), 2, 'Missing required theme asset notifies the administrator');
+		\library_expect(count($GLOBALS['library_error_notifications']), 3, 'Missing required theme asset notifies the administrator');
 		get_theme_paths('%s', 'include/themes/modern/', 'modern', $missing);
-		\library_expect(count($GLOBALS['library_error_notifications']), 2, 'Repeated missing asset warning is debounced');
+		\library_expect(count($GLOBALS['library_error_notifications']), 3, 'Repeated missing asset warning is debounced');
 
 		foreach (['Fixture <sender@example.invalid>', ['email' => 'sender@example.invalid', 'name' => 'Fixture']] as $sender) {
 			foreach (['', 'SMTP unavailable'] as $result) {
@@ -129,6 +149,6 @@ function run(): void {
 		\db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', [$name]);
 		unlink($directory . '/setup.php');
 		rmdir($directory);
-		unset($GLOBALS['library_error_notifications'], $GLOBALS['library_error_mail'], $GLOBALS['library_error_mail_result']);
+		unset($GLOBALS['library_error_notifications'], $GLOBALS['library_error_mail'], $GLOBALS['library_error_mail_result'], $GLOBALS['library_error_last']);
 	}
 }
