@@ -70,7 +70,7 @@ if (!function_exists('dsstats_test_connect')) {
 
 		$pdo->exec('CREATE TABLE settings (name TEXT PRIMARY KEY, value TEXT)');
 		$pdo->exec('CREATE TABLE data_source_stats_command_cache (local_data_id INTEGER PRIMARY KEY, stats_command TEXT)');
-		$pdo->exec('CREATE TABLE data_template_data (local_data_id INTEGER, name TEXT, name_cache TEXT, data_source_path TEXT, rrd_step INTEGER)');
+		$pdo->exec('CREATE TABLE data_template_data (local_data_id INTEGER, name TEXT, name_cache TEXT, data_source_path TEXT, rrd_step INTEGER, rrd_num INTEGER DEFAULT 2)');
 		$pdo->exec('CREATE TABLE data_template_rrd (id INTEGER PRIMARY KEY, local_data_id INTEGER, data_source_name TEXT,
 			data_source_type_id INTEGER, rrd_maximum TEXT, data_input_field_id INTEGER DEFAULT 0)');
 		$pdo->exec('CREATE TABLE poller_item (local_data_id INTEGER, rrd_name TEXT)');
