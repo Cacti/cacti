@@ -35,6 +35,8 @@
 function get_rrdfile_names(int $thread_id = 1, int $max_threads = 1) : array {
 	static $dsrows = [];
 
+	$slice = $thread_id . ':' . $max_threads;
+
 	if ($max_threads == 1) {
 		return db_fetch_assoc('SELECT dtd.local_data_id, data_source_path, rrd_num AS dsses, GROUP_CONCAT(DISTINCT data_source_name) AS dsnames
 			FROM data_template_data AS dtd
@@ -48,8 +50,8 @@ function get_rrdfile_names(int $thread_id = 1, int $max_threads = 1) : array {
 			GROUP BY dtd.local_data_id');
 	}
 
-	if (cacti_sizeof($dsrows)) {
-		return $dsrows;
+	if (cacti_sizeof($dsrows[$slice] ?? [])) {
+		return $dsrows[$slice];
 	} else {
 		$dsses_total = db_fetch_cell('SELECT COUNT(DISTINCT dtd.local_data_id)
 			FROM data_template_data AS dtd
@@ -59,8 +61,12 @@ function get_rrdfile_names(int $thread_id = 1, int $max_threads = 1) : array {
 			AND data_source_path != ""
 			AND dtd.local_data_id != 0');
 
-		$split_size = ceil($dsses_total / $max_threads);
-		$start      = (($thread_id - 1) * $split_size) + 1;
+		/**
+		 * LIMIT takes a zero based offset, and only a stable order keeps the
+		 * slices of the parallel workers disjoint and complete.
+		 */
+		$split_size = (int) ceil($dsses_total / $max_threads);
+		$offset     = ($thread_id - 1) * $split_size;
 
 		$rows = db_fetch_assoc("SELECT dtd.local_data_id, data_source_path,
 			rrd_num AS dsses, GROUP_CONCAT(DISTINCT data_source_name) AS dsnames
@@ -73,9 +79,10 @@ function get_rrdfile_names(int $thread_id = 1, int $max_threads = 1) : array {
 			AND data_source_path != ''
 			AND dtd.local_data_id != 0
 			GROUP BY dtd.local_data_id
-			LIMIT $start, $split_size");
+			ORDER BY dtd.local_data_id
+			LIMIT $offset, $split_size");
 
-		$dsrows = $rows;
+		$dsrows[$slice] = $rows;
 
 		if (cacti_sizeof($rows)) {
 			return $rows;
