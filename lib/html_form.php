@@ -1664,7 +1664,9 @@ function form_color_dropdown(string $form_name, mixed $prev_val, string $none_en
 
 	$colors_list = db_fetch_assoc($colors_sql);
 
-	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" .
+	print "<select style='background-color: #" .
+		html_escape($current_color) .
+		";' id='$form_name' name='$form_name'" .
 		$class .
 		$on_change .
 		'>';
