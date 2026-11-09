@@ -55,5 +55,5 @@ grep -q 'cactiPageHead\|main_logo' /tmp/installer-login-result || fail 'LDAP log
 printf 'PASS: upgraded local/LDAP login, authenticated pages, session cookies and installer report\n'
 
 CSRF_STATUS="$(curl --silent --show-error -b /tmp/installer-admin-cookie -c /tmp/installer-admin-cookie -D /tmp/installer-csrf-headers -o /tmp/installer-csrf-rejection -w '%{http_code}' --data 'action=save&id=700&description=CSRF%20rejected%20mutation&__csrf_magic=invalid' http://127.0.0.1/cacti/host.php)"
-[ "$CSRF_STATUS" -eq 302 ] || fail 'invalid CSRF token did not trigger the application recovery redirect'
+[[ "$CSRF_STATUS" -eq 302 ]] || fail 'invalid CSRF token did not trigger the application recovery redirect'
 grep -Eq '^Location: /cacti/host.php[[:space:]]*$' /tmp/installer-csrf-headers || fail 'CSRF recovery redirected away from the application'
