@@ -88,7 +88,7 @@ require_once dirname(__DIR__, 3) . '/lib/ping.php';
 		$check($repo->save(['id' => 99, 'description' => 'Ghost']), 0, 'update of a missing identity');
 		$check($repo->find(99), null, 'missing identity is not created');
 		$check($repo->save(['id' => 99]), 0, 'identity-only update of a missing identity');
-		$conn->exec('UPDATE host SET description = NULL WHERE id = ' . $third);
+		$conn->prepare('UPDATE host SET description = NULL WHERE id = ?')->execute([$third]);
 		$check(array_column($repo->all(['description' => null]), 'id'), [$third], 'null criteria match IS NULL');
 		$queries = $GLOBALS['database_total_queries'];
 		$check($repo->save(['id' => $second]), $second, 'identity-only update');
