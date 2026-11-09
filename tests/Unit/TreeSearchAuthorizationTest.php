@@ -17,36 +17,30 @@ namespace CactiTreeSearchAuthorizationFixture;
 use TreeSqliteFixture;
 
 /*
- * graph_view.php?action=ajax_search runs get_matching_nodes(). The unchanged
- * function runs against SQLite: it may only return nodes of trees the user
- * may view, needs at least three characters like the client, and must stop
- * on a parent cycle.
+ * graph_view.php?action=ajax_search runs get_matching_nodes(). The function
+ * runs against SQLite with the real tree permission checks: it may only
+ * return nodes of trees the user may view, needs at least three characters
+ * like the client, and must stop on a parent cycle.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
 
-TreeSqliteFixture::install(__NAMESPACE__);
+const USER = 4;
 
-cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/html_tree.php', 'get_matching_nodes', __NAMESPACE__);
-
-$GLOBALS['tree_search_request'] = [];
-$GLOBALS['tree_search_allowed'] = [];
-
-function gnrv(string $name, mixed $default = '') : mixed {
-	return $GLOBALS['tree_search_request'][$name] ?? $default;
-}
-
-function is_tree_allowed(int $tree_id, int $user_id = 0) : bool {
-	return in_array($tree_id, $GLOBALS['tree_search_allowed'], true);
-}
-
-function header(string $header) : void {
-}
-
+/*
+ * The user may view only the trees in $allowed: trees are denied by default
+ * and each allowed tree is a tree exception.
+ */
 function search(string $str, array $allowed = [1]) : array {
-	$GLOBALS['tree_search_request'] = ['str' => $str];
-	$GLOBALS['tree_search_allowed'] = $allowed;
+	$pdo = TreeSqliteFixture::$pdo;
+	$pdo->exec('DELETE FROM user_auth_perms');
+
+	foreach ($allowed as $tree_id) {
+		$pdo->exec('INSERT INTO user_auth_perms (user_id, item_id, type) VALUES (' . USER . ", $tree_id, 2)");
+	}
+
+	$_SESSION = [SESS_USER_ID => USER];
+	$_REQUEST = ['str' => $str];
 
 	ob_start();
 
@@ -67,6 +61,7 @@ function search(string $str, array $allowed = [1]) : array {
 
 beforeEach(function () {
 	TreeSqliteFixture::reset(2000);
+	TreeSqliteFixture::user(USER, ['policy_trees' => 2]);
 	TreeSqliteFixture::$pdo->exec("INSERT INTO graph_tree (id, name) VALUES (1, 'one'), (2, 'two')");
 	TreeSqliteFixture::items([
 		['id' => 1, 'parent' => 0, 'graph_tree_id' => 1, 'title' => 'Core'],
@@ -74,6 +69,10 @@ beforeEach(function () {
 		['id' => 3, 'parent' => 0, 'graph_tree_id' => 2, 'title' => 'Edge'],
 		['id' => 4, 'parent' => 3, 'graph_tree_id' => 2, 'title' => 'Traffic two'],
 	]);
+});
+
+afterEach(function () {
+	TreeSqliteFixture::restore();
 });
 
 test('search returns only nodes of trees the user may view', function () {
