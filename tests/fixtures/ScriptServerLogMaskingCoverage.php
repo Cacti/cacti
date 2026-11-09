@@ -10,6 +10,8 @@
 // to the real files. The Script Server main loop and cmd.php's top level need a
 // full poller environment and are covered by the unit tests' source contracts.
 
+namespace CactiCmdDeviceFixture;
+
 if (PHP_SAPI !== 'cli') {
 	http_response_code(404);
 	exit;
@@ -17,6 +19,7 @@ if (PHP_SAPI !== 'cli') {
 
 require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
 require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__) . '/Helpers/CmdDeviceStubs.php';
 
 $root = dirname(__DIR__, 2);
 
@@ -26,16 +29,10 @@ if (!defined('CACTI_SERVER_OS')) {
 	define('CACTI_SERVER_OS', 'unix');
 }
 
-$GLOBALS['ss_cov_log']     = [];
-$GLOBALS['ss_cov_reply']   = '42';
-$GLOBALS['ss_cov_reindex'] = [];
+$GLOBALS['ss_cov_log'] = [];
 
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	$GLOBALS['ss_cov_log'][] = $string;
-}
-
-function read_config_option($name, $force = false) {
-	return ['spine_log_level' => 2][$name] ?? '';
 }
 
 function db_fetch_assoc($sql) {
@@ -44,63 +41,7 @@ function db_fetch_assoc($sql) {
 	];
 }
 
-function db_fetch_row_prepared($sql, $params = []) {
-	return ['hostname' => 'host1', 'ping_port' => 0, 'ping_method' => 0, 'ping_retries' => 1, 'ping_timeout' => 400, 'availability_method' => 0];
-}
-
-function db_fetch_assoc_prepared($sql, $params = []) {
-	return $GLOBALS['ss_cov_reindex'];
-}
-
-function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false) {
-	return true;
-}
-
 function dsv_log(string $message, mixed $data = null, int $level = POLLER_VERBOSITY_LOW) : void {
-}
-
-function debug_level(int $host_id, int $level) : int {
-	return $level;
-}
-
-function exec_poll_php(string $command, bool $using_proc_function, array $pipes, mixed $proc_fd) : string {
-	return $GLOBALS['ss_cov_reply'] . "\n";
-}
-
-function exec_into_array(string $command) : array {
-	return ['1', '2', '3'];
-}
-
-function update_host_status(...$arguments) {
-}
-
-function update_system_mibs($host_id) {
-}
-
-function open_snmp_session($host_id, &$item) {
-	return 'session';
-}
-
-function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
-	return '42';
-}
-
-function cacti_snmp_session_walk($session, $oid) {
-	return [['oid' => $oid . '.1', 'value' => '1']];
-}
-
-function cacti_snmp_select_uptime(...$arguments) {
-	return '42';
-}
-
-class Net_Ping {
-	public $host = [];
-
-	public $port = 0;
-
-	public function ping($avail_method, $ping_type, $timeout, $retries) {
-		return true;
-	}
 }
 
 function ss_cov_echo($a) {
@@ -119,7 +60,7 @@ function ss_cov_quiet() {
 
 function ss_cov_check(bool $passed, string $case) : void {
 	if (!$passed) {
-		throw new RuntimeException('Script Server log masking probe failed: ' . $case);
+		throw new \RuntimeException('Script Server log masking probe failed: ' . $case);
 	}
 }
 
@@ -131,34 +72,34 @@ function ss_cov_log() : string {
 }
 
 foreach (['cacti_sizeof', 'cacti_count', 'prepare_validate_result', 'is_hexadecimal', 'strip_alpha'] as $function) {
-	cacti_fixture_source_function($root . '/lib/functions.php', $function, '');
+	cacti_fixture_source_function($root . '/lib/functions.php', $function, __NAMESPACE__);
 }
 
 foreach (['parseArgs', 'script_server_log_parse_failure', 'script_server_log_missing_function', 'script_server_call', 'script_server_response'] as $function) {
-	cacti_fixture_source_function($root . '/script_server.php', $function, '');
+	cacti_fixture_source_function($root . '/script_server.php', $function, __NAMESPACE__);
 }
 
 foreach (['script_server_redact_params', 'poller_redact_snmp_secrets', 'exec_poll', 'exec_with_timeout'] as $function) {
-	cacti_fixture_source_function($root . '/lib/poller.php', $function, '');
+	cacti_fixture_source_function($root . '/lib/poller.php', $function, __NAMESPACE__);
 }
 
 foreach (['collect_device_data', 'ping_and_reindex_check'] as $function) {
-	cacti_fixture_source_function($root . '/cmd.php', $function, '');
+	cacti_fixture_source_function($root . '/cmd.php', $function, __NAMESPACE__);
 }
 
 // script_server_call(): printed output is discarded and only its size logged
 ob_start();
-$result  = script_server_call('ss_cov_echo', 'c0mmunity', ['c0mmunity']);
+$result  = script_server_call(__NAMESPACE__ . '\\ss_cov_echo', 'c0mmunity', ['c0mmunity']);
 $printed = ob_get_clean();
 $log     = ss_cov_log();
 ss_cov_check($printed === '' && $result === 'value:c0mmunity', 'printed output discarded');
 ss_cov_check(str_contains($log, 'wrote 20 bytes of output, discarded') && !str_contains($log, 'c0mmunity'), 'stray output logged by size');
 
-$result = script_server_call('ss_cov_quiet', '', []);
+$result = script_server_call(__NAMESPACE__ . '\\ss_cov_quiet', '', []);
 ss_cov_check($result === '7' && ss_cov_log() === '', 'quiet function logs nothing');
 
 // script_server_response(): one line per reply
-ss_cov_check(script_server_response(script_server_call('ss_cov_multiline', '', [])) === 'a:1 b:2 c:3', 'multipart reply on one line');
+ss_cov_check(script_server_response(script_server_call(__NAMESPACE__ . '\\ss_cov_multiline', '', [])) === 'a:1 b:2 c:3', 'multipart reply on one line');
 
 // parseArgs(): a parse error is printed only when debugging
 $parsed = [];
@@ -206,7 +147,7 @@ $args = " 'c0mmunity' 'authpass'";
 
 foreach ([POLLER_ACTION_SCRIPT, POLLER_ACTION_SCRIPT_PHP] as $action) {
 	foreach (['U', 'not a number', '42'] as $reply) {
-		$GLOBALS['ss_cov_reply'] = $reply;
+		$GLOBALS['cmd_device_reply'] = $reply;
 
 		// the script runs for real; the Script Server reply is canned
 		$script = PHP_BINARY . ' -r ' . escapeshellarg('print "' . $reply . '\n";') . ' /x/ss_cov.php ss_cov';
@@ -229,11 +170,11 @@ foreach ([POLLER_ACTION_SCRIPT, POLLER_ACTION_SCRIPT_PHP] as $action) {
 	}
 }
 
-$GLOBALS['ss_cov_reply'] = '42';
-$script                  = PHP_BINARY . ' -r ' . escapeshellarg('print "42\n";') . ' /x/ss_q.php ss_q';
+$GLOBALS['cmd_device_reply'] = '42';
+$script                      = PHP_BINARY . ' -r ' . escapeshellarg('print "42\n";') . ' /x/ss_q.php ss_q';
 
 foreach ([POLLER_ACTION_SNMP, POLLER_ACTION_SCRIPT, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SNMP_COUNT, POLLER_ACTION_SCRIPT_COUNT, POLLER_ACTION_SCRIPT_PHP_COUNT] as $action) {
-	$GLOBALS['ss_cov_reindex'][] = ['data_query_id' => $action, 'action' => $action, 'op' => '=', 'assert_value' => '42', 'arg1' => $script . $args];
+	$GLOBALS['cmd_device_reindex'][] = ['data_query_id' => $action, 'action' => $action, 'op' => '=', 'assert_value' => '42', 'arg1' => $script . $args];
 }
 
 $item = ['host_id' => 7, 'hostname' => 'host1', 'snmp_community' => 'c0mmunity', 'snmp_password' => 'authpass', 'snmp_priv_passphrase' => ''];

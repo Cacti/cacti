@@ -21,79 +21,19 @@
  * the command execution boundary are replaced.
  */
 
-namespace CactiCmdLogMaskingFixture;
+namespace CactiCmdDeviceFixture;
 
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CmdDeviceStubs.php';
 
-$GLOBALS['cmd_mask_log']   = [];
-$GLOBALS['cmd_mask_reply'] = '42';
+$GLOBALS['cmd_mask_log'] = [];
 
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	$GLOBALS['cmd_mask_log'][] = $string;
 }
 
-function read_config_option($name) {
-	return ['spine_log_level' => 2][$name] ?? '';
-}
-
-function debug_level(int $host_id, int $level) : int {
-	return $level;
-}
-
-function exec_poll(string $command, int $timeout = 5) : string {
-	return $GLOBALS['cmd_mask_reply'] . "\n";
-}
-
-function exec_poll_php(string $command, bool $using_proc_function, array $pipes, mixed $proc_fd) : string {
-	return $GLOBALS['cmd_mask_reply'] . "\n";
-}
-
-function exec_into_array(string $command) : array {
-	return ['1', '2', '3'];
-}
-
-function db_fetch_row_prepared($sql, $params = []) {
-	return ['hostname' => 'host1', 'ping_port' => 0, 'ping_method' => 0, 'ping_retries' => 1, 'ping_timeout' => 400, 'availability_method' => 0];
-}
-
-function db_fetch_assoc_prepared($sql, $params = []) {
-	return $GLOBALS['cmd_mask_reindex'];
-}
-
-function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false) {
-	return true;
-}
-
-function update_host_status(...$arguments) {
-}
-
-function update_system_mibs($host_id) {
-}
-
-function open_snmp_session($host_id, &$item) {
-	return 'session';
-}
-
-function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
-	return '42';
-}
-
-function cacti_snmp_session_walk($session, $oid) {
-	return [['oid' => $oid . '.1', 'value' => '1']];
-}
-
-function cacti_snmp_select_uptime(...$arguments) {
-	return '42';
-}
-
-class Net_Ping {
-	public $host = [];
-
-	public $port = 0;
-
-	public function ping($avail_method, $ping_type, $timeout, $retries) {
-		return true;
-	}
+function exec_poll(string $command, int $timeout = 5, array $item = []) : string {
+	return $GLOBALS['cmd_device_reply'] . "\n";
 }
 
 if (!function_exists(__NAMESPACE__ . '\\collect_device_data')) {
@@ -103,18 +43,18 @@ if (!function_exists(__NAMESPACE__ . '\\collect_device_data')) {
 }
 
 beforeEach(function () {
-	$GLOBALS['cmd_mask_log']         = [];
-	$GLOBALS['cmd_mask_reindex']     = [];
-	$GLOBALS['print_data_to_stdout'] = false;
-	$GLOBALS['using_proc_function']  = true;
-	$GLOBALS['pipes']                = [];
-	$GLOBALS['cactiphp']             = null;
+	$GLOBALS['cmd_mask_log']           = [];
+	$GLOBALS['cmd_device_reindex']     = [];
+	$GLOBALS['print_data_to_stdout']   = false;
+	$GLOBALS['using_proc_function']    = true;
+	$GLOBALS['pipes']                  = [];
+	$GLOBALS['cactiphp']               = null;
 });
 
 foreach ([POLLER_ACTION_SCRIPT => 'script', POLLER_ACTION_SCRIPT_PHP => 'script server'] as $action => $label) {
 	foreach (['U', 'not a number', '42'] as $reply) {
 		test("cmd.php masks the credentials when it logs a $label reply of '$reply'", function () use ($action, $reply) {
-			$GLOBALS['cmd_mask_reply'] = $reply;
+			$GLOBALS['cmd_device_reply'] = $reply;
 
 			$item = [
 				'local_data_id'        => 3,
@@ -134,7 +74,12 @@ foreach ([POLLER_ACTION_SCRIPT => 'script', POLLER_ACTION_SCRIPT_PHP => 'script 
 			expect($log)->not->toContain('c0mm')
 				->and($log)->not->toContain('zq')
 				->and($log)->not->toContain('xw')
-				->and($log)->toContain('ss_x.php ss_x ');
+				->and($log)->toContain('ss_x.php ss_x ')
+				->and($log)->toContain($action == POLLER_ACTION_SCRIPT ? '] SCRIPT: /opt' : '] SERVER: /opt');
+
+			if ($reply !== '42') {
+				expect($log)->toContain('DS[3] ' . ($action == POLLER_ACTION_SCRIPT ? 'SCRIPT' : 'SERVER') . ': /opt');
+			}
 
 			// a bad reply is logged twice, as a warning and with the timing
 			expect(substr_count($log, '********'))->toBe($reply === '42' ? 2 : 4);
@@ -143,13 +88,13 @@ foreach ([POLLER_ACTION_SCRIPT => 'script', POLLER_ACTION_SCRIPT_PHP => 'script 
 }
 
 test('cmd.php masks the credentials in every recache log line that names the command', function () {
-	$GLOBALS['cmd_mask_reply'] = '42';
-	$GLOBALS['poller_id']      = 1;
-	$GLOBALS['set_spike_kill'] = false;
+	$GLOBALS['cmd_device_reply'] = '42';
+	$GLOBALS['poller_id']        = 1;
+	$GLOBALS['set_spike_kill']   = false;
 
 	$args = ' ' . \cacti_escapeshellarg('c0mm') . ' ' . \cacti_escapeshellarg("zq'xw");
 
-	$GLOBALS['cmd_mask_reindex'] = [];
+	$GLOBALS['cmd_device_reindex'] = [];
 
 	foreach ([
 		POLLER_ACTION_SNMP             => 'RECACHE OID: ',
@@ -159,7 +104,7 @@ test('cmd.php masks the credentials in every recache log line that names the com
 		POLLER_ACTION_SCRIPT_COUNT     => 'RECACHE CMD COUNT: ',
 		POLLER_ACTION_SCRIPT_PHP_COUNT => 'RECACHE SERVER COUNT: ',
 	] as $action => $label) {
-		$GLOBALS['cmd_mask_reindex'][] = ['data_query_id' => $action, 'action' => $action, 'op' => '=', 'assert_value' => '42', 'arg1' => '/opt/cacti/scripts/ss_q.php ss_q' . $args];
+		$GLOBALS['cmd_device_reindex'][] = ['data_query_id' => $action, 'action' => $action, 'op' => '=', 'assert_value' => '42', 'arg1' => '/opt/cacti/scripts/ss_q.php ss_q' . $args];
 	}
 
 	$item = ['host_id' => 7, 'hostname' => 'host1', 'snmp_community' => 'c0mm', 'snmp_password' => "zq'xw", 'snmp_priv_passphrase' => ''];
