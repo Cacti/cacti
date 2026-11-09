@@ -177,6 +177,13 @@ function dsstats_get_and_store_ds_avgpeak_values(string $interval, string $type,
 				$dsnames       = explode(',', $file['dsnames']);
 
 				$stats[$local_data_id] = dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $mode, $peak, $rrd_process, (int) ($file['rrd_step'] ?? 300));
+
+				// write as we go, so a large slice is not held in memory until the end
+				if (cacti_sizeof($stats) >= 1000) {
+					dsstats_write_buffer($stats, $interval, $mode);
+
+					$stats = [];
+				}
 			} else {
 				$data_source_name = db_fetch_cell_prepared('SELECT name_cache
 					FROM data_template_data
