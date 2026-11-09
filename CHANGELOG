@@ -238,6 +238,7 @@ Cacti CHANGELOG
 -issue#7978: Revoke remember-me tokens before clearing browser state
 -issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7981: Require POST tokens for state-changing item, tree and RRD actions
+-issue#7639: Decide tree branch visibility, search ancestry and subtree deletes from one read of the tree, re-sort only the affected siblings on insert, sort the root level when a tree sort type changes, and show branches that hold both sites and devices
 -issue#7809: Avoid reading a missing source key on output-only data query fields
 -issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
 -issue#8040: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
