@@ -214,3 +214,10 @@ test('each sort type orders branch titles as before', function (int $sort_type, 
 	'alphabetic' => [TREE_ORDERING_ALPHABETIC, ['b', 'c', 'a'], ['a', 'b', 'c']],
 	'none'       => [TREE_ORDERING_NONE, ['b', 'c', 'a'], ['b', 'c', 'a']],
 ]);
+
+test('tree.php sorts the whole tree through api_tree_sort_branch when the sort type changes', function () {
+	$source = (string) file_get_contents(dirname(__DIR__, 2) . '/tree.php');
+
+	expect($source)->toContain('api_tree_sort_branch(0, $tree_id);')
+		->not->toContain('function sort_recursive(');
+});
