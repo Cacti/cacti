@@ -120,6 +120,31 @@ function run(int $template): void {
 	}
 }
 
+/** A crashed persistent RRDtool process is relaunched and the restart is logged. */
+function restart(): void {
+	$binary = trim((string) \shell_exec('command -v rrdtool'));
+	\library_expect($binary !== '', true, 'The fixture has RRDtool');
+	$saved = \read_config_option('path_rrdtool');
+	\set_config_option('path_rrdtool', $binary);
+
+	try {
+		$process = \__rrd_init(false);
+		\library_expect(\rrdtool_is_process($process), true, 'RRDtool starts as a persistent process');
+		// Terminate the process as a crash would, so the next command must relaunch it.
+		\proc_terminate($process->process);
+		$process->alive = false;
+		$result         = [];
+		$log            = \library_log_written_by(static function () use ($process, &$result): void {
+			$result = \rrdtool_process_command($process, 'pwd');
+		});
+		\library_expect([$process->alive, $process->restarts, $result['success']], [true, 1, true], 'A crashed process is relaunched and the command still succeeds');
+		\library_expect(str_contains($log, 'Detected RRDtool Crash, restarted the process (attempt 1 of ' . RRDTOOL_MAX_RESTARTS . ')'), true, 'The relaunch is logged with its attempt count');
+		\rrd_close($process);
+	} finally {
+		\set_config_option('path_rrdtool', (string) $saved);
+	}
+}
+
 namespace CactiLibraryRrdStatisticsFixture;
 
 /** Route remote storage commands through the owned-file adapter. */

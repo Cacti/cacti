@@ -788,6 +788,7 @@ library_archive_validation();
 library_archive_destination();
 require __DIR__ . '/LibraryRrdStorage.php';
 \CactiLibraryRrdStorageFixture\run($templateId);
+\CactiLibraryRrdStorageFixture\restart();
 require __DIR__ . '/LibraryWeb.php';
 library_web();
 api_device_remove($device);
