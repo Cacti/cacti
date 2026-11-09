@@ -155,16 +155,17 @@ test('a shared endpoint gets the longest timeout of its items', function () {
 });
 
 test('no more than the configured number of requests are in flight', function () {
-	$base  = cacti_http_test_server()['url'];
+	$base  = cacti_http_test_server()['inflight'];
 	$items = [];
 
-	// the router holds each request until two are in flight, so a poller that
+	// the inflight server holds each request until two are in flight, so a poller that
 	// overlaps reaches exactly 2 and one that exceeds the cap shows above it
 	for ($i = 1; $i <= 6; $i++) {
 		$items[] = new CactiHttpPollItem(1, $i, 'v', "$base/inflight/$i?wait=2", '/v');
 	}
 
-	$overlap = cacti_http_test_server_overlap(2);
+	// discard anything counted by earlier tests
+	cacti_http_test_peak();
 
 	$errors    = [];
 	$documents = (new CactiHttpPoller(2))->fetch($items, $errors);
@@ -172,17 +173,11 @@ test('no more than the configured number of requests are in flight', function ()
 
 	expect($errors)->toBe([])
 		->and($documents)->toHaveCount(6)
-		->and($peak)->toBeLessThanOrEqual(2);
-
-	if ($overlap < 2) {
-		$this->markTestSkipped("the test server held $overlap of 2 plain curl requests together, so poller overlap cannot be measured");
-	}
-
-	expect($peak)->toBe(2);
+		->and($peak)->toBe(2);
 });
 
 test('devices are fetched together, each under its own concurrency limit', function () {
-	$base  = cacti_http_test_server()['url'];
+	$base  = cacti_http_test_server()['inflight'];
 	$items = [];
 
 	// held until two are in flight: one request per device overlaps at 2, while
@@ -193,7 +188,8 @@ test('devices are fetched together, each under its own concurrency limit', funct
 		}
 	}
 
-	$overlap = cacti_http_test_server_overlap(2);
+	// discard anything counted by earlier tests
+	cacti_http_test_peak();
 
 	$errors    = [];
 	$documents = (new CactiHttpPoller(1))->fetch($items, $errors);
@@ -201,13 +197,7 @@ test('devices are fetched together, each under its own concurrency limit', funct
 
 	expect($errors)->toBe([])
 		->and($documents)->toHaveCount(4)
-		->and($peak)->toBeLessThanOrEqual(2);
-
-	if ($overlap < 2) {
-		$this->markTestSkipped("the test server held $overlap of 2 plain curl requests together, so device overlap cannot be measured");
-	}
-
-	expect($peak)->toBe(2);
+		->and($peak)->toBe(2);
 });
 
 test('failed endpoints are reported without stopping the others', function () {

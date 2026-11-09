@@ -99,13 +99,15 @@ test('the timeout covers the whole request and fractions are honoured', function
 });
 
 test('multi keeps request keys and isolates failures', function () {
-	$base = cacti_http_test_server()['url'];
-	$opts = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
+	$server = cacti_http_test_server();
+	$base   = $server['url'];
+	$held   = $server['inflight'];
+	$opts   = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
 
 	$results = cacti_http_multi([
-		'a'  => ['method' => 'GET', 'url' => "$base/inflight/a", 'options' => $opts],
-		'b'  => ['method' => 'GET', 'url' => "$base/inflight/b", 'options' => $opts],
-		'c'  => ['method' => 'GET', 'url' => "$base/inflight/c", 'options' => $opts],
+		'a'  => ['method' => 'GET', 'url' => "$held/inflight/a", 'options' => $opts],
+		'b'  => ['method' => 'GET', 'url' => "$held/inflight/b", 'options' => $opts],
+		'c'  => ['method' => 'GET', 'url' => "$held/inflight/c", 'options' => $opts],
 		7    => ['method' => 'GET', 'url' => 'https://169.254.169.254/', 'options' => $opts],
 		'ok' => ['method' => 'GET', 'url' => "$base/stats", 'options' => $opts],
 	], 4);
@@ -116,16 +118,11 @@ test('multi keeps request keys and isolates failures', function () {
 });
 
 test('multi runs requests together up to the concurrency limit', function () {
-	$base = cacti_http_test_server()['url'];
+	$base = cacti_http_test_server()['inflight'];
 	$opts = ['blocked_subnets' => CACTI_HTTP_TEST_METADATA];
 
-	// measured first with plain curl_multi, so a server that serves requests one
-	// at a time skips this test instead of failing it as a client fault
-	$overlap = cacti_http_test_server_overlap(3);
-
-	if ($overlap < 3) {
-		$this->markTestSkipped("the test server held $overlap of 3 plain curl requests together, so client overlap cannot be measured");
-	}
+	// discard anything counted by earlier tests
+	cacti_http_test_peak();
 
 	$requests = [];
 
