@@ -107,3 +107,91 @@ function library_authentication(): void {
 		[$_CACTI_REQUEST, $_REQUEST, $_GET, $_POST] = $requests;
 	}
 }
+
+/** Exercise login paths that end the request or depend on missing templates in their own processes. */
+function library_authentication_boundaries(): void {
+	global $error, $error_msg;
+	$options  = ['secpass_forceold' => 'on', 'secpass_minlen' => '8', 'secpass_reqnum' => 'on', 'secpass_reqmixcase' => 'on',
+		'secpass_reqspec'              => 'on', 'secpass_pwnedcheck' => '', 'secpass_lockfailed' => '0', 'secpass_expireaccount' => '0',
+		'auth_cache_enabled'           => 'on', 'auth_method' => '1', 'user_template' => '-1', 'guest_user' => '-1',
+		'cn_full_name'                 => 'cn', 'cn_email' => 'mail'];
+	$previous = [];
+
+	foreach ($options as $name => $value) {
+		$previous[$name] = read_config_option($name, true);
+		set_config_option($name, $value);
+	}
+	$users = [];
+
+	try {
+		// A stored password that predates the complexity policy forces a change at the next login.
+		$users[] = $forced = (int) sql_save(['id' => 0, 'username' => 'coverage_forced', 'realm' => 0, 'enabled' => 'on', 'password' => password_hash('weak', PASSWORD_DEFAULT)], 'user_auth');
+		library_expect($forced > 0, true, 'Forced password fixture owns its account');
+		$output = library_child('(new \Cacti\Auth\LocalAuthLoginProvider())->authenticate("coverage_forced", "weak"); print "login continued";');
+		library_expect(str_contains($output, 'login continued'), false, 'A noncompliant password stops the login before the session is established');
+		library_expect(db_fetch_cell_prepared('SELECT must_change_password FROM user_auth WHERE id = ?', [$forced]), 'on', 'A noncompliant password is flagged for a mandatory change');
+
+		// Once output has started PHP cannot issue a new session id, so the transition must refuse the login.
+		$output = library_child('session_start(); print "output before transition|"; var_export(cacti_auth_transition((int) $argv[1])); session_destroy();', [(string) $forced]);
+		library_expect($output, 'output before transition|false', 'Session fixation protection refuses a login it cannot rotate');
+
+		// A connection-local table shadows user_auth, so the account, template and guest lookups all fail.
+		$output = library_child('$database_sessions["$database_hostname:$database_port:$database_default"]->exec("CREATE TEMPORARY TABLE user_auth (fixture INT)");
+basic_auth_login_process("coverage_basic_unknown"); print "login continued";');
+		library_expect(str_contains($output, 'both Template and Guest Users are not defined'), true, 'Web server login without a readable account, template or guest explains the denial');
+		library_expect(str_contains($output, 'login continued'), false, 'Web server login without a readable account, template or guest stops the request');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM user_auth WHERE username = ?', ['coverage_basic_unknown']), 0, 'A denied web server login creates no account');
+
+		$users[] = $cookie = (int) sql_save(['id' => 0, 'username' => 'coverage_cookie', 'realm' => 0, 'enabled' => 'on', 'password' => ''], 'user_auth');
+		library_expect(db_execute_prepared('INSERT INTO user_auth_realm (user_id, realm_id) VALUES (?, 8)', [$cookie]), true, 'Cookie fixture account has a console realm');
+		$token = bin2hex(random_bytes(32));
+		library_expect(db_execute_prepared('INSERT INTO user_auth_cache (user_id, hostname, last_update, token) VALUES (?, ?, NOW(), ?)', [$cookie, '127.0.0.1', hash('sha512', $token)]), true, 'Remember-me token is stored');
+		$output = library_child('$_COOKIE["cacti_remembers"] = $argv[1]; var_export(check_auth_cookie());', [$cookie . ',' . $token]);
+		library_expect($output, (string) $cookie, 'A current remember-me token restores its own account');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM user_log WHERE user_id = ? AND result = 2', [$cookie]), 1, 'Cookie authentication is recorded in the login history');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM user_auth_cache WHERE user_id = ? AND token = ?', [$cookie, hash('sha512', $token)]), 0, 'Cookie authentication rotates the stored token');
+
+		// The logout message names an unrelated destination, so the strict SAML settings reject it.
+		$log    = read_config_option('path_cactilog');
+		$offset = is_file($log) ? filesize($log) : 0;
+		$output = library_child('$config[OPTIONS_CLI]["base_url"] = "https://cacti.fixture";
+$key = openssl_pkey_new(["private_key_bits" => 2048]);
+openssl_x509_export(openssl_csr_sign(openssl_csr_new(["commonName" => "fixture"], $key), null, $key, 1), $certificate);
+$provider = new \Cacti\Auth\SamlLoginProvider(["id" => 1, "type" => PROVIDER_TYPE_SAML2, "name" => "Fixture SLO", "enabled" => "on",
+	"parameters" => json_encode(["idp_entity_id" => "https://idp.fixture", "idp_sso_url" => "https://idp.fixture/sso", "idp_slo_url" => "https://idp.fixture/slo", "idp_x509cert" => $certificate])]);
+$_GET["SAMLRequest"] = base64_encode(gzdeflate("<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"_fixture\" Version=\"2.0\" IssueInstant=\"" . gmdate("Y-m-d\\TH:i:s\\Z") . "\" Destination=\"https://elsewhere.invalid/slo\"/>"));
+$provider->processLogout();
+print "logout continued";');
+		library_expect($output, '', 'A rejected SAML logout ends the request without continuing');
+		library_expect(str_contains((string) file_get_contents($log, false, null, $offset), "SAML SLO error for provider 'Fixture SLO'"), true, 'A rejected SAML logout records its validation errors');
+
+		$error     = false;
+		$error_msg = '';
+		library_expect(auth_login_create_user_from_template('coverage_template_absent', 0), [], 'A missing template cannot provision an account');
+		library_expect($error, true, 'A missing template reports the login failure');
+		library_expect(str_contains($error_msg, 'Template user id -1 does not exist'), true, 'A missing template names the configured template');
+
+		$users[] = $template = (int) sql_save(['id' => 0, 'username' => 'coverage_ldap_template', 'realm' => 0, 'enabled' => 'on', 'password' => '', 'full_name' => 'Template Name'], 'user_auth');
+		set_config_option('user_template', (string) $template);
+		// cacti_ldap_search_cn() drops empty() arguments, so the legal username "0" reaches
+		// the directory without a username and the attribute lookup reports a failure.
+		$error = false;
+		$user  = auth_login_create_user_from_template('0', 3);
+		library_expect($error, false, 'A failed directory attribute lookup still provisions from the template');
+		library_expect([$user['username'], (int) $user['realm'], $user['full_name']], ['0', 3, 'Template Name'], 'Provisioning without directory attributes keeps the template identity fields');
+		// Remove it while the template setting points elsewhere: an account named "0" matches a template id of 0.
+		user_remove((int) $user['id']);
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM user_auth WHERE id = ?', [$user['id']]), 0, 'The provisioned directory account is removed');
+	} finally {
+		// Restore the template setting first: user_remove() refuses the active template account.
+		foreach ($previous as $name => $value) {
+			set_config_option($name, (string) $value);
+		}
+
+		foreach ($users as $id) {
+			db_execute_prepared('DELETE FROM user_log WHERE user_id = ?', [$id]);
+			db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$id]);
+			user_remove($id);
+		}
+	}
+}

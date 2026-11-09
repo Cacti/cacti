@@ -132,6 +132,40 @@ function library_import_coverage(array $reports): void {
 	}
 }
 
+/**
+ * Run a scenario that ends the request (exit, redirect, or session headers) in
+ * its own PHP process and import its coverage. The child shares the disposable
+ * database, so callers seed and verify persistent state from this process.
+ */
+function library_child(string $scenario, array $arguments = []): string {
+	$directory = sys_get_temp_dir() . '/cacti-child-' . bin2hex(random_bytes(8));
+	library_expect(mkdir($directory, 0700), true, 'Child scenario owns its evidence directory');
+	$source                               = "require 'tests/Helpers/RequestCoverage.php';\nrequire 'include/global.php';\n" . $scenario;
+	$environment                          = getenv();
+	$environment['CACTI_PR_RAW_COVERAGE'] = $directory;
+	$environment['XDEBUG_MODE']           = 'coverage';
+
+	try {
+		$process = proc_open(array_merge([PHP_BINARY, '-d', 'memory_limit=1G', '-d', 'display_errors=stderr', '-r', $source], $arguments), [0 => ['pipe', 'r'],
+			1                                                                                                                                    => ['file', $directory . '/output.txt', 'w'], 2 => ['file', $directory . '/error.txt', 'w']], $pipes, CACTI_PATH_BASE, $environment);
+		library_expect(is_resource($process), true, 'Child scenario starts in its own process');
+		fclose($pipes[0]);
+		$status = proc_close($process);
+		$output = file_get_contents($directory . '/output.txt');
+		library_expect($status, 0, 'Child scenario completes: ' . $output . file_get_contents($directory . '/error.txt'));
+		$reports = glob($directory . '/*.json');
+		library_expect(count($reports), 1, 'Child scenario publishes exactly one coverage report');
+		library_import_coverage($reports);
+
+		return $output;
+	} finally {
+		foreach (glob($directory . '/*') as $path) {
+			unlink($path);
+		}
+		rmdir($directory);
+	}
+}
+
 /** Save a device through api_device_save() using fixture defaults merged with the given overrides. */
 function library_save_device(array $overrides = []): int {
 	$_SESSION[SESS_ERROR_FIELDS] = [];
@@ -517,6 +551,7 @@ foreach ([REPORTS_OUTPUT_STDOUT, REPORTS_OUTPUT_EMAIL] as $output) {
 }
 require __DIR__ . '/LibraryReports.php';
 library_reports($report, $graphId, $device);
+library_reports_actions($report, $graphId, $device);
 
 $beforeItems            = (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items WHERE report_id = ?', [$report]);
 $_SESSION[SESS_USER_ID] = 2;
@@ -737,6 +772,7 @@ require __DIR__ . '/LibraryRemoval.php';
 library_removal($templateId);
 require __DIR__ . '/LibraryTransfer.php';
 library_transfer();
+library_transfer_templates();
 require __DIR__ . '/LibraryProbe.php';
 library_probe();
 require __DIR__ . '/LibraryResources.php';
@@ -782,6 +818,7 @@ foreach ([
 
 require __DIR__ . '/LibraryAuthentication.php';
 library_authentication();
+library_authentication_boundaries();
 require __DIR__ . '/LibraryPlugins.php';
 library_plugins();
 require __DIR__ . '/LibraryWorkers.php';

@@ -90,9 +90,16 @@ function run(): void {
 			\library_expect($provider->calls, [['coverage_provider_user', 'Disposable provider password']], 'Provider receives the submitted credential once');
 			\library_expect((int) \db_fetch_cell_prepared('SELECT failed_attempts FROM user_auth WHERE id = ?', [$user]), $credentialFailure ? 1 : 0, 'Only credential failure consumes the account lockout budget');
 		}
-		$provider->result = \Cacti\Auth\LoginResult::authenticated('coverage_provider_user', ['groups' => ['operators']]);
-		$error            = false;
-		$result           = login_providers_login_process('coverage_provider_user');
+		// A realm whose stored type changed to a redirect-only protocol cannot take a posted password.
+		$GLOBALS['library_provider'] = new \Cacti\Auth\SamlLoginProvider(['id' => $id, 'type' => PROVIDER_TYPE_SAML2, 'name' => 'Fixture redirect provider', 'enabled' => 'on', 'parameters' => '{}']);
+		$error                       = false;
+		\library_expect(login_providers_login_process('coverage_provider_user'), [], 'A redirect-only provider cannot authenticate a posted credential');
+		\library_expect([$error, $error_msg], [true, \__('Access Denied!  Login Failed.')], 'A redirect-only provider reports the generic login failure');
+		\library_expect((int) \db_fetch_cell_prepared('SELECT failed_attempts FROM user_auth WHERE id = ?', [$user]), 1, 'A redirect-only provider does not consume the lockout budget');
+		$GLOBALS['library_provider'] = $provider;
+		$provider->result            = \Cacti\Auth\LoginResult::authenticated('coverage_provider_user', ['groups' => ['operators']]);
+		$error                       = false;
+		$result                      = login_providers_login_process('coverage_provider_user');
 		\library_expect($error, false, 'Admitted provider result leaves no failure status');
 		\library_expect((int) $result['id'], $user, 'Successful provider result resolves the existing realm-specific account');
 		\library_expect($provider->assignments, [[$user, 'coverage_provider_user', ['operators']]], 'Successful login hands current provider groups to assignment reconciliation');

@@ -22,6 +22,7 @@ function run(): void {
 	\library_expect(file_put_contents($path, $bytes), strlen($bytes), 'Attachment bytes are complete');
 	$attachments = [['inline' => 'attachment', 'attachment' => $path, 'filename' => 'samples.csv', 'mime_type' => 'text/csv']];
 	$defaults    = ['email' => \read_config_option('settings_from_email') ?: 'cacti@cacti.net', 'name' => \read_config_option('settings_from_name') ?: 'Cacti Reports'];
+	$connection  = $GLOBALS['database_sessions'][$GLOBALS['database_hostname'] . ':' . $GLOBALS['database_port'] . ':' . $GLOBALS['database_default']];
 
 	try {
 		foreach ([
@@ -44,7 +45,27 @@ function run(): void {
 			\library_expect($saved, [array_replace($attachments[0], ['attachment' => $bytes, 'inline' => 'inline'])], 'History retains attachment bytes independently of the temporary path');
 			\library_expect(file_get_contents($path), $bytes, 'Delivery preserves the caller-owned attachment');
 		}
+		// Notification lists belong to an optional plugin; a connection-local table supplies one.
+		$connection->exec('CREATE TEMPORARY TABLE plugin_notification_lists (id INT PRIMARY KEY, format_file VARCHAR(64), emails VARCHAR(255), cc_emails VARCHAR(255), bcc_emails VARCHAR(255), reply_to VARCHAR(255))');
+		\library_expect(\db_execute_prepared('INSERT INTO plugin_notification_lists VALUES (7, ?, ?, ?, ?, ?)', ['', 'list@example.invalid', 'listcc@example.invalid', 'listbcc@example.invalid', '']), true, 'Notification list fixture persists');
+
+		foreach ([7 => 1, 8 => 0] as $list => $deliveries) {
+			$GLOBALS['library_mail_delivery'] = [];
+			\db_execute_prepared('UPDATE reports_queued SET notification = ? WHERE id = ?', [json_encode(['notification_list' => ['id' => $list, 'reply_to' => 'reply@example.invalid']], JSON_THROW_ON_ERROR), $id]);
+			$raw    = ['samples' => [1]];
+			$output = $bytes;
+			$html   = '<p>Fixture list report</p>';
+			$text   = 'Fixture list report';
+			reports_log_and_notify($id, time(), 'html', 'reports', 0, 'Fixture list subject', $raw, $output, $html, $text);
+			\library_expect(count($GLOBALS['library_mail_delivery']), $deliveries, 'Only an existing notification list receives the report');
+
+			if ($deliveries) {
+				\library_expect(array_slice($GLOBALS['library_mail_delivery'][0], 0, 6), [$defaults, 'list@example.invalid', 'listcc@example.invalid', 'listbcc@example.invalid', 'reply@example.invalid', 'Fixture list subject'], 'List delivery uses the stored recipients and the request reply address when the list has none');
+			}
+			\library_expect((int) \db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_log WHERE name = ? AND report_txt_output = ?', [$name, $text]), 2 - $deliveries, 'List delivery history is kept whether or not the list exists');
+		}
 	} finally {
+		$connection->exec('DROP TEMPORARY TABLE IF EXISTS plugin_notification_lists');
 		\db_execute_prepared('DELETE FROM reports_queued WHERE id = ?', [$id]);
 		\db_execute_prepared('DELETE FROM reports_log WHERE name = ?', [$name]);
 		unlink($path);

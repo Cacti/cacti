@@ -25,6 +25,7 @@ function library_plugins(): void {
 		api_plugin_hook('coveragefixture_notify', ['id' => 17, 'label' => 'Fixture']);
 		library_expect($GLOBALS['coveragefixture_calls'], [['coveragefixture_notify', ['id' => 17, 'label' => 'Fixture']]], 'Lazy-loaded notification receives the complete argument list once');
 		library_expect(api_plugin_hook_function('coveragefixture_transform', ['id' => 17]), ['id' => 17, 'plugin' => 'coveragefixture'], 'Transform hook preserves and extends the caller payload');
+		library_plugin_hook_guards();
 		api_plugin_disable('coveragefixture');
 		library_expect((int) db_fetch_cell_prepared('SELECT status FROM plugin_config WHERE directory = ?', ['coveragefixture']), 4, 'Disable persists the disabled status');
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_hooks WHERE name = ? AND status = 1', ['coveragefixture']), 0, 'Disable removes active hooks');
@@ -43,6 +44,7 @@ function library_plugins(): void {
 		library_expect(file_get_contents($directory . '/payload.txt'), 'original plugin payload', 'Restore recovers the original bytes');
 		api_plugin_archive_remove('coveragefixture', (string) $archive['id']);
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_archive WHERE plugin = ?', ['coveragefixture']), 0, 'Archive removal deletes only the owned backup');
+		library_plugin_archive_failures($directory);
 
 		foreach ([false, 'throw', null] as $outcome) {
 			$GLOBALS['coveragefixture_install'] = $outcome;
@@ -103,4 +105,83 @@ function library_plugin_install_errors(): void {
 		}
 	}
 	library_expect(api_plugin_status_run('unsupported_fixture_hook', [], ''), false, 'An unsupported remote hook cannot run without capabilities');
+	// Installation redirects and exits when setup.php is absent, so it runs in its own process.
+	$missing = 'cov_missing_' . bin2hex(random_bytes(5));
+	$output  = library_child('api_plugin_install($argv[1]); print "install continued";', [$missing]);
+	library_expect(str_contains($output, 'install continued'), false, 'A plugin without setup.php stops the installation request');
+	library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_config WHERE directory = ?', [$missing]), 0, 'A plugin without setup.php is never registered');
+}
+
+/** Hook rows that climb out of the plugin directory are skipped and a non-returning transform is reported. */
+function library_plugin_hook_guards(): void {
+	$rows = [['coveragefixture_escape', 'coveragefixture_notify', '../setup.php'], ['coveragefixture_contract', 'coveragefixture_notify', 'setup.php'], ['coveragefixture_contract', 'coveragefixture_transform', '../setup.php']];
+
+	try {
+		foreach ($rows as [$hook, $function, $file]) {
+			library_expect(db_execute_prepared('INSERT INTO plugin_hooks (name, hook, `function`, file, status) VALUES (?, ?, ?, ?, 1)', ['coveragefixture', $hook, $function, $file]), true, 'Hook guard fixture registers ' . $hook);
+		}
+		$GLOBALS['coveragefixture_calls'] = [];
+		api_plugin_hook('coveragefixture_escape', ['id' => 18]);
+		library_expect($GLOBALS['coveragefixture_calls'], [], 'A notification hook outside the plugin directory never runs');
+		// The escaping row is skipped, so only the void notify hook transforms the payload.
+		library_expect(api_plugin_hook_function('coveragefixture_contract', ['id' => 19]), null, 'A transform that returns nothing replaces the payload');
+		library_expect($GLOBALS['coveragefixture_calls'], [['id' => 19]], 'Only the hook inside the plugin directory receives the payload');
+	} finally {
+		db_execute_prepared('DELETE FROM plugin_hooks WHERE name = ? AND hook IN (?, ?)', ['coveragefixture', 'coveragefixture_escape', 'coveragefixture_contract']);
+	}
+}
+
+/** Restores that cannot create a directory, skipped root-level entries, and empty archives fail safely. */
+function library_plugin_archive_failures(string $directory): void {
+	$temporary = sys_get_temp_dir() . '/cacti-plugin-restore-' . bin2hex(random_bytes(8));
+	$empty     = 'cov_empty_' . bin2hex(random_bytes(5));
+	library_expect(mkdir($temporary, 0700) && mkdir(CACTI_PATH_PLUGINS . '/' . $empty, 0700), true, 'Restore failure fixture owns its directories');
+	$archives = ['archive' => ['blocked/inner.txt'], 'blocked' => ['repository-root/blocked/inner.txt'], 'escape' => ['README']];
+
+	try {
+		foreach ($archives as $name => $entries) {
+			$tar = new PharData($temporary . '/' . $name . '.tar');
+
+			foreach ($entries as $entry) {
+				$tar->addFromString($entry, 'Fixture ' . $entry);
+			}
+			$tar->compress(Phar::GZ);
+			unset($tar);
+			$archives[$name] = base64_encode((string) file_get_contents($temporary . '/' . $name . '.tar.gz'));
+		}
+		// A regular file where the archive expects a directory makes mkdir() fail.
+		library_expect(file_put_contents($directory . '/blocked', 'not a directory'), 15, 'Restore fixture blocks the nested directory');
+		library_expect(db_execute_prepared('INSERT INTO plugin_archive (plugin, archive, last_updated) VALUES (?, ?, NOW())', ['coveragefixture', $archives['archive']]), true, 'Blocked archive persists');
+		$id = (int) db_fetch_insert_id();
+		// Every restore loads its archive under one fixed phar alias, so each request restores once.
+		$restore = 'var_export(api_plugin_archive_restore($argv[1], $argv[2], $argv[3])); print isset($_SESSION[SESS_MESSAGES]["restore_failed"]) ? "|failed" : "|ok";';
+		library_expect(library_child($restore, ['coveragefixture', (string) $id, 'archive']), 'false|failed', 'An archive restore that cannot create its directory reports failure');
+
+		foreach (['blocked' => 'false|failed', 'escape' => 'true|ok'] as $tag => $expected) {
+			library_expect(db_execute_prepared('INSERT INTO plugin_available (plugin, tag_name, published_at, archive) VALUES (?, ?, NOW(), ?)', ['coveragefixture', $tag, $archives[$tag]]), true, 'Available release fixture persists');
+			library_expect(library_child($restore, ['coveragefixture', $tag, 'available']), $expected, 'Available release restore outcome for ' . $tag);
+		}
+		library_expect(file_exists($directory . '/README') || file_exists(CACTI_PATH_PLUGINS . '/README'), false, 'A root-level release entry is never written');
+		library_expect(file_get_contents($directory . '/blocked'), 'not a directory', 'A failed restore leaves the blocking file intact');
+
+		library_expect(db_execute_prepared('INSERT INTO plugin_config (directory, name, author, version, status) VALUES (?, ?, ?, ?, ?)', [$empty, 'Empty plugin fixture', 'Cacti tests', '1.0', 4]), true, 'Empty plugin fixture persists');
+		unset($_SESSION[SESS_MESSAGES]['plugin_archive_failed']);
+		api_plugin_archive($empty, 'Empty fixture');
+		library_expect($_SESSION[SESS_MESSAGES]['plugin_archive_failed']['level'] ?? null, MESSAGE_LEVEL_ERROR, 'An empty plugin directory cannot be archived');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_archive WHERE plugin = ?', [$empty]), 0, 'A failed archive stores no backup');
+	} finally {
+		db_execute_prepared('DELETE FROM plugin_archive WHERE plugin IN (?, ?)', ['coveragefixture', $empty]);
+		db_execute_prepared('DELETE FROM plugin_available WHERE plugin = ?', ['coveragefixture']);
+		db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', [$empty]);
+
+		if (is_file($directory . '/blocked')) {
+			unlink($directory . '/blocked');
+		}
+		rmdir(CACTI_PATH_PLUGINS . '/' . $empty);
+
+		foreach (glob($temporary . '/*') as $path) {
+			unlink($path);
+		}
+		rmdir($temporary);
+	}
 }

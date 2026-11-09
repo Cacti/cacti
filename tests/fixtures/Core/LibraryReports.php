@@ -180,6 +180,18 @@ function library_report_tree(int $tree, int $branch, int $graph): void {
 		db_execute_prepared('DELETE FROM reports_items WHERE report_id = ?', [$id]);
 		db_execute_prepared('DELETE FROM reports WHERE id = ?', [$id]);
 	}
+	$rootGraph = (int) api_tree_item_save(0, $tree, TREE_ITEM_TYPE_GRAPH, 0, '', $graph, 0, 0, 1, TREE_ORDERING_INHERIT, false);
+	library_expect($rootGraph > 0, true, 'Report fixture owns a root graph leaf');
+
+	try {
+		// Unformatted output carries the item alignment and font size inline on the header row.
+		$html = reports_expand_tree($report, $item, 0, REPORTS_OUTPUT_EMAIL, false, 'modern', true);
+		library_expect(str_contains($html, "style='text-align:left;font-size: 10pt;'"), true, 'Unformatted nested header carries the item alignment and font size');
+		library_expect(str_contains($html, '<h3>Tree: Library tree</h3>'), true, 'Nested root header names its tree');
+		library_expect(str_contains($html, '<GRAPH:' . $graph . ':'), true, 'Nested root header renders its graph');
+	} finally {
+		db_execute_prepared('DELETE FROM graph_tree_items WHERE id = ?', [$rootGraph]);
+	}
 	$item['tree_id'] = 0;
 	library_expect(reports_expand_tree($report, $item, 0, REPORTS_OUTPUT_EMAIL, false), '', 'An absent tree renders no graph');
 	library_tree_navigation($tree, $branch);
@@ -194,4 +206,69 @@ function library_tree_navigation(int $tree, int $branch): void {
 	$dom  = library_form_dom(static fn () => api_tree_get_main($tree, -1));
 	library_expect($dom->evaluate('string(//li[@id="tree_anchor-' . $tree . '"]/a)'), $name, 'Tree root anchor shows the tree name');
 	library_expect(str_contains($dom->evaluate('string(//li[@id="tree_anchor-' . $tree . '"]/a/@href)'), 'node=tree_anchor-' . $tree), true, 'Tree root anchor links to its own node');
+}
+
+/** Exercise the bulk device and graph actions that add items to an owned report. */
+function library_reports_actions(int $reportId, int $graphId, int $deviceId): void {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+	$session    = $_SESSION;
+	$request    = [$_REQUEST, $_GET, $_POST, $GLOBALS['_CACTI_REQUEST'] ?? []];
+	$connection = $database_sessions["$database_hostname:$database_port:$database_default"];
+	$trigger    = 'coverage_report_item_' . bin2hex(random_bytes(6));
+	$before     = array_map('intval', array_column(db_fetch_assoc_prepared('SELECT id FROM reports_items WHERE report_id = ?', [$reportId]), 'id'));
+	$baseUrl    = read_config_option('base_url', true);
+
+	try {
+		$_SESSION[SESS_USER_ID]  = (int) db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$reportId]);
+		$_SESSION[SESS_MESSAGES] = [];
+		// The array timespan in the signature cannot bind to the integer column, so only
+		// the owner check and confirmation are observable; the row itself is not stored.
+		library_expect(reports_add_devices($reportId, [$deviceId], [], '1'), true, 'The report owner passes the ownership check');
+		library_expect($_SESSION[SESS_MESSAGES]['reports_add_device_' . $deviceId]['level'] ?? null, MESSAGE_LEVEL_INFO, 'Adding a device confirms the change');
+
+		$dom = library_form_dom(static function () use (&$prepared): void {
+			$prepared = reports_graphs_action_prepare(['drp_action' => 'reports', 'graph_list' => '<li>Fixture graph</li>']);
+		});
+		library_expect($prepared, false, 'The report action stops for confirmation');
+		library_expect(str_contains($dom->document->textContent, 'Choose the Report to associate these graphs with.'), true, 'The confirmation explains the report choice');
+		library_expect($dom->query('//select[@name="reports_id"]/option[@value="' . $reportId . '"]')->length, 1, 'The confirmation offers the owned report');
+
+		$_REQUEST = $_GET = $_POST = $GLOBALS['_CACTI_REQUEST'] = [];
+		set_request_var('selected_items', serialize([(string) $graphId]));
+		set_request_var('reports_id', (string) $reportId);
+		set_request_var('timespan', (string) GT_LAST_WEEK);
+		set_request_var('alignment', '1');
+		$_REQUEST = $GLOBALS['_CACTI_REQUEST'];
+		library_expect($connection->exec('CREATE TRIGGER `' . $trigger . '` BEFORE INSERT ON reports_items FOR EACH ROW BEGIN IF @coverage_report_item_failure = 1 THEN SIGNAL SQLSTATE \'45000\' SET MESSAGE_TEXT = \'coverage report item rejection\'; END IF; END') !== false, true, 'The report action fixture owns its insert failure trigger');
+		$connection->exec('SET @coverage_report_item_failure = 1');
+		unset($_SESSION[SESS_MESSAGES]['report_send']);
+		library_expect(reports_graphs_action_execute('reports'), 'reports', 'A rejected graph insert keeps the requested action');
+		library_expect(str_contains($_SESSION[SESS_MESSAGES]['report_send']['message'] ?? '', 'Failed Adding Report Graph Item'), true, 'A rejected graph insert is reported as a failure');
+		$connection->exec('SET @coverage_report_item_failure = 0');
+
+		foreach (['Created Report Graph Item', 'Skipped Report Graph Item'] as $expected) {
+			unset($_SESSION[SESS_MESSAGES]['report_send']);
+			library_expect(reports_graphs_action_execute('reports'), 'reports', 'The graph action keeps the requested action');
+			library_expect(str_contains($_SESSION[SESS_MESSAGES]['report_send']['message'] ?? '', $expected), true, 'The graph action reports: ' . $expected);
+		}
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items WHERE report_id = ? AND local_graph_id = ? AND timespan = ?', [$reportId, $graphId, GT_LAST_WEEK]), 1, 'Repeated graph actions store the graph once per timespan');
+
+		$timespan = ['begin_now' => time() - 86400, 'end_now' => time()];
+		$report   = ['graph_linked' => 'on', 'graph_width' => 500, 'graph_height' => 200, 'thumbnails' => ''];
+		set_config_option('base_url', 'cacti.fixture');
+		$html = reports_graph_image($report, ['local_graph_id' => $graphId, 'timespan' => GT_LAST_DAY], $timespan, REPORTS_OUTPUT_EMAIL);
+		library_expect(str_starts_with($html, "<a href='http://cacti.fixture/graph.php?action=view&amp;local_graph_id=" . $graphId . '&amp;rra_id=0'), true, 'A linked report graph points at its graph page through an absolute URL');
+		library_expect(str_contains($html, '<GRAPH:' . $graphId . ':' . GT_LAST_DAY . '>'), true, 'A linked report graph keeps its attachment placeholder');
+	} finally {
+		$connection->exec('SET @coverage_report_item_failure = 0');
+		$connection->exec('DROP TRIGGER IF EXISTS `' . $trigger . '`');
+		set_config_option('base_url', (string) $baseUrl);
+		$created = array_diff(array_map('intval', array_column(db_fetch_assoc_prepared('SELECT id FROM reports_items WHERE report_id = ?', [$reportId]), 'id')), $before);
+
+		foreach ($created as $id) {
+			db_execute_prepared('DELETE FROM reports_items WHERE id = ?', [$id]);
+		}
+		$_SESSION                                              = $session;
+		[$_REQUEST, $_GET, $_POST, $GLOBALS['_CACTI_REQUEST']] = $request;
+	}
 }
