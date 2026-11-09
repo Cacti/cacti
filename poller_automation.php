@@ -789,11 +789,8 @@ function discoverDevices(int $network_id, int $thread) : bool {
 									$shortname   = $device['dnsname_short'];
 									$sysLocation = $device['snmp_sysLocation'];
 
-									if ($sysName != '') {
-										$pattern = str_replace('|sysName|', $sysName, $fos['description_pattern']);
-									} else {
-										$pattern = $fos['description_pattern'];
-									}
+									// Only reached for a non-empty sysName, so it is always substituted.
+									$pattern = str_replace('|sysName|', $sysName, $fos['description_pattern']);
 
 									if ($ip_address != '') {
 										$pattern = str_replace('|ipAddress|', $ip_address, $pattern);
