@@ -351,6 +351,9 @@ function dsstats_create_partitions(int $last_major_time, int $current_time, bool
 	$last_month   = date('n', $last_major_time);
 	$last_year    = date('Y', $last_major_time);
 
+	// an ISO week belongs to the ISO year, so the last days of December can be week 1
+	$last_week_year = date('o', $last_major_time);
+
 	// Create partition for daily numbers
 	if ($last_day != date('z', $current_time) || $fpartition) {
 		$last_day = substr('00' . $last_day, -3);
@@ -360,7 +363,7 @@ function dsstats_create_partitions(int $last_major_time, int $current_time, bool
 	// Create partition for weekly numbers
 	if ($last_week != date('W', $current_time) || $fpartition) {
 		$last_week = substr('00' . $last_week, -3);
-		dsstats_create_partition_from_table('data_source_stats_weekly', '_v' . "$last_year$last_week");
+		dsstats_create_partition_from_table('data_source_stats_weekly', '_v' . "$last_week_year$last_week");
 	}
 
 	// Create partition for monthly numbers
