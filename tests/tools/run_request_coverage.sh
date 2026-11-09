@@ -62,6 +62,8 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
+run_php_probe tests/fixtures/Core/ReportsListSortCoverage.php '^(lib/html_reports\.php|lib/reports\.php|tests/fixtures/Core/ReportsListSortCoverage\.php)'
+
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
 
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
