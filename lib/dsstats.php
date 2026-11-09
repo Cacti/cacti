@@ -1371,10 +1371,11 @@ function dsstats_rrdtool_init() : array {
  *
  * @param string $command     The rrdtool command to execute
  * @param array  $rrd_process An array of stdin and stdout pipes to read and write data from
+ * @param int    $timeout     Seconds to wait for more output before RRDtool is given up
  *
  * @return string The output from RRDtool
  */
-function dsstats_rrdtool_execute(string $command, array $rrd_process) : string {
+function dsstats_rrdtool_execute(string $command, array $rrd_process, int $timeout = 60) : string {
 	static $broken = false;
 
 	$use_proxy = (intval(read_config_option('storage_location')) > 0 ? true : false);
@@ -1400,15 +1401,51 @@ function dsstats_rrdtool_execute(string $command, array $rrd_process) : string {
 			 * so only a complete line may end the read.  Stopping early leaves
 			 * the rest of the response for the next command to read.
 			 */
-			$line = '';
+			$line     = '';
+			$deadline = microtime(true) + $timeout;
 
 			while (!feof($pipes[1])) {
-				$chunk = fgets($pipes[1], 4096);
+				$wait = $deadline - microtime(true);
 
-				if ($chunk === false) {
+				/**
+				 * Stop an RRDtool that has gone silent.  Its late answer would be
+				 * read by the next command, so close the pipe and end the process,
+				 * and the remaining files of this worker get no statistics.
+				 */
+				if ($wait <= 0) {
+					cacti_log(sprintf('ERROR: RRDtool did not respond within %d seconds, stopping it.  The remaining Data Sources of this DSStats process are skipped.', $timeout), false, 'DSSTATS');
+
+					fclose($pipes[1]);
+
+					if (is_resource($rrd_process[0])) {
+						proc_terminate($rrd_process[0]);
+					}
+
+					$broken = true;
+
+					return '';
+				}
+
+				// the pipe is non-blocking, so sleep until RRDtool writes
+				$read   = [$pipes[1]];
+				$write  = null;
+				$except = null;
+
+				if (stream_select($read, $write, $except, (int) $wait, (int) (fmod($wait, 1) * 1000000)) === false) {
+					break;
+				}
+
+				if (!cacti_sizeof($read)) {
 					continue;
 				}
 
+				$chunk = fgets($pipes[1], 4096);
+
+				if ($chunk === false || $chunk === '') {
+					continue;
+				}
+
+				$deadline = microtime(true) + $timeout;
 				$stdout .= $chunk;
 				$line .= $chunk;
 
