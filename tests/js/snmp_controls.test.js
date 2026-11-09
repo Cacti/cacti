@@ -54,7 +54,7 @@ function fixture() {
 		},
 	};
 	vm.createContext(context);
-	vm.runInContext(['storeSNMPSecurity', 'setSNMPSecurity', 'setSNMP'].map(extract).join('\n'), context);
+	vm.runInContext(['storeSNMPSecurity', 'setSNMPSecurity', 'renderSNMPControls', 'setSNMP'].map(extract).join('\n'), context);
 	return { context, values, rows, render() { notifications = 0; context.setSNMP(); return notifications; },
 		failRefresh() { throwNext = true; } };
 }
