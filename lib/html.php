@@ -3431,7 +3431,7 @@ function card_gauge($percent, $center_label, $sub_label = '', $severity = 'none'
 	$sev     = card_severity($severity);
 	$dash    = number_format($percent, 2, '.', '');
 
-	return '<div class="ccGauge">'
+	$html = '<div class="ccGauge">'
 		. '<svg class="ccGaugeSvg" viewBox="0 0 120 68" role="img" aria-label="' . html_escape($center_label) . '">'
 		. '<path class="ccGaugeTrack" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" />'
 		. '<path class="ccGaugeValue ccGaugeValue--' . $sev . '" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" stroke-dasharray="' . $dash . ' 100" />'
@@ -3440,6 +3440,8 @@ function card_gauge($percent, $center_label, $sub_label = '', $severity = 'none'
 		. '<span class="ccGaugeValueText">' . html_escape($center_label) . '</span>'
 		. ($sub_label !== '' ? '<span class="ccGaugeSub">' . html_escape($sub_label) . '</span>' : '')
 		. '</div></div>';
+
+	return $html;
 }
 
 /**
@@ -3474,10 +3476,12 @@ function card_bar($percent, $label = '', $severity = 'none') {
  * @return string The stat HTML.
  */
 function card_stat($value, $label) {
-	return '<div class="ccStat">'
+	$html = '<div class="ccStat">'
 		. '<span class="ccStatValue">' . html_escape((string) $value) . '</span>'
 		. '<span class="ccStatLabel">' . html_escape((string) $label) . '</span>'
 		. '</div>';
+
+	return $html;
 }
 
 /**
@@ -3548,7 +3552,7 @@ function card_bullet($min, $avg, $max, $label, $summary = '', $severity = 'none'
 	$width = max(0.0, $right - $left);
 	$mark  = $pos($avg);
 
-	return '<div class="ccBullet">'
+	$html = '<div class="ccBullet">'
 		. '<div class="ccBulletHead">'
 		. '<span class="ccBulletLabel">' . html_escape($label) . '</span>'
 		. ($summary !== '' ? '<span class="ccBulletAvg">' . html_escape($summary) . '</span>' : '')
@@ -3559,6 +3563,8 @@ function card_bullet($min, $avg, $max, $label, $summary = '', $severity = 'none'
 		. '</div>'
 		. '<div class="ccBulletScale"><span>' . html_escape((string) $scale_min) . '</span><span>' . html_escape((string) $scale_max) . '</span></div>'
 		. '</div>';
+
+	return $html;
 }
 
 /**
