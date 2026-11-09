@@ -949,10 +949,18 @@ function is_view_allowed($view = 'show_tree') {
  *
  * @param int $tree_id The Cacti Tree id.
  * @param int $parent The Cacti Tree branch id.
+ * @param array $visited Branches already checked by this walk, so a stored parent cycle ends.
  *
  * @return bool True if empty, else false.
  */
-function is_tree_branch_empty($tree_id, $parent = 0) {
+function is_tree_branch_empty($tree_id, $parent = 0, &$visited = array()) {
+	// a stored parent cycle would otherwise recurse forever
+	if (isset($visited[$parent])) {
+		return true;
+	}
+
+	$visited[$parent] = true;
+
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id
 			FROM graph_tree_items
@@ -1023,7 +1031,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 
 	if (cacti_sizeof($branches)) {
 		foreach($branches as $b) {
-			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
+			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'], $visited)) {
 				return false;
 			}
 		}

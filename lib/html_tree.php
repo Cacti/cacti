@@ -57,11 +57,19 @@ function process_tree_settings() {
  * @param string $form_name The name attribute for the <select> element.
  * @param string $selected_tree_item_id The ID of the tree item to be selected by default.
  * @param int $tier The current tier level in the tree. Default is 0.
+ * @param array $visited Branches already printed by this walk.
  *
  * @return void No value is returned.
  */
-function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '', $tier = 0) {
+function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '', $tier = 0, &$visited = array()) {
 	global $config;
+
+	// a stored parent cycle would otherwise recurse forever
+	if (isset($visited[$parent])) {
+		return;
+	}
+
+	$visited[$parent] = true;
 
 	$tier++;
 
@@ -95,7 +103,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 
 			print "<option value='" . $leaf['id'] . "'$html_selected>$indent " . html_escape($leaf['title']) . '</option>';
 
-			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id, $tier);
+			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id, $tier, $visited);
 		}
 	}
 
@@ -424,15 +432,20 @@ function get_tree_path() {
 					}
 				}
 
-				while (true) {
-					if ($linknode['parent'] > 0) {
-						$rnodes[] = 'tbranch-' . $linknode['parent'];
+				$visited = array($node => true);
 
-						$linknode = db_fetch_row_prepared('SELECT *
-							FROM graph_tree_items
-							WHERE id = ?',
-							array($linknode['parent']));
-					} else {
+				// stop at the root, a missing parent, or a stored parent cycle
+				while ($linknode['parent'] > 0 && !isset($visited[$linknode['parent']])) {
+					$visited[$linknode['parent']] = true;
+
+					$rnodes[] = 'tbranch-' . $linknode['parent'];
+
+					$linknode = db_fetch_row_prepared('SELECT *
+						FROM graph_tree_items
+						WHERE id = ?',
+						array($linknode['parent']));
+
+					if (!cacti_sizeof($linknode)) {
 						break;
 					}
 				}
