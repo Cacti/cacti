@@ -400,15 +400,7 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '" .
-					basename($include_file) .
-					"' FUNC: '" .
-					$function .
-					"' PARMS: '" .
-					$parameters .
-					"'",
-					false,
-					'PHPSVR');
+				script_server_log_missing_function($include_file, $function, $parameter_array);
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 			}
@@ -565,6 +557,29 @@ function script_server_log_parse_failure(string $function, string $parameters) :
 }
 
 /**
+ * script_server_log_missing_function - logs a request for a function that does not exist
+ *
+ * The arguments can carry device credentials, so device credentials are masked.
+ *
+ * @param string $include_file    The script file named by the request.
+ * @param string $function        The function named by the request.
+ * @param array  $parameter_array The parsed parameters.
+ *
+ * @return void
+ */
+function script_server_log_missing_function(string $include_file, string $function, array $parameter_array) : void {
+	cacti_log("WARNING: Function does not exist  INC: '" .
+		basename($include_file) .
+		"' FUNC: '" .
+		$function .
+		"' PARMS: '" .
+		implode('\', \'', script_server_redact_params($parameter_array)) .
+		"'",
+		false,
+		'PHPSVR');
+}
+
+/**
  * script_server_call - calls a script function and discards anything it prints
  *
  * Anything the function prints would reach the poller ahead of its result and
@@ -632,7 +647,10 @@ function script_server_response(mixed $result) : string {
  * @return void
  */
 function sig_handler(int $signo) : void {
-	global $include_file, $function, $parameters;
+	global $include_file, $function, $parameter_array;
+
+	// argument values can carry device credentials, so only their count is logged
+	$parameters = (is_array($parameter_array) ? cacti_count($parameter_array) : 0) . ' argument(s)';
 
 	switch ($signo) {
 		case SIGTERM:

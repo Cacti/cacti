@@ -65,8 +65,65 @@ function script_server_log_request(int $pid, int $ctr, string $include_file, str
 	}
 
 	cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . basename($include_file) .
-		"' FUNC: '$function' PARMS: '" . implode('\', \'', $parameter_array) .
+		"' FUNC: '$function' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) .
 		"'", false, 'PHPSVR');
+}
+
+/**
+ * Masks any device SNMP credential among Script Server arguments before they
+ * are logged.
+ *
+ * The Script Server cannot tell which argument is a credential, so every
+ * argument, and every colon separated field of one, is compared with the
+ * credentials configured on the devices.
+ *
+ * @param array      $params  The parsed parameters.
+ * @param array|null $secrets Credential values as keys, or null to load them once from the database.
+ *
+ * @return array The parameters with credentials masked.
+ */
+function script_server_redact_params(array $params, ?array $secrets = null) : array {
+	static $known = null;
+
+	if ($secrets === null) {
+		if ($known === null) {
+			$known = [];
+
+			$rows = db_fetch_assoc('SELECT DISTINCT snmp_community, snmp_password, snmp_priv_passphrase FROM host');
+
+			if (is_array($rows)) {
+				foreach ($rows as $row) {
+					foreach ($row as $value) {
+						if ($value != '') {
+							$known[$value] = true;
+						}
+					}
+				}
+			}
+		}
+
+		$secrets = $known;
+	}
+
+	foreach ($params as $index => $param) {
+		$param = (string) $param;
+
+		if (isset($secrets[$param])) {
+			$params[$index] = '********';
+		} elseif (strpos($param, ':') !== false) {
+			$fields = explode(':', $param);
+
+			foreach ($fields as $findex => $field) {
+				if ($field != '' && isset($secrets[$field])) {
+					$fields[$findex] = '********';
+				}
+			}
+
+			$params[$index] = implode(':', $fields);
+		}
+	}
+
+	return $params;
 }
 
 /**
