@@ -2299,62 +2299,8 @@ function reports() : void {
 		$sql_join = 'INNER JOIN user_auth AS ua ON ua.id = report.user_id';
 	}
 
-	$display_text = [
-		'name' => [
-			'display' => __('Name'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'type' => [
-			'display' => __('Report Type'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'full_name' => [
-			'display' => __('Owner'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'sched_type' => [
-			'display' => __('Schedule'),
-			'align'   => 'left',
-			'sort'    => 'ASC'
-		],
-		'nosort' => [
-			'display' => __('Notification Detail'),
-			'align'   => 'left',
-			'sort'    => 'ASC',
-			'tip'     => __('Email options in use: To, BCC, and Notification List')
-		],
-		'enabled' => [
-			'display' => __('Enabled'),
-			'align'   => 'right',
-			'sort'    => 'ASC'
-		],
-		'next_start' => [
-			'display' => __('Next Start'),
-			'align'   => 'right',
-			'sort'    => 'ASC'
-		],
-		'last_started' => [
-			'display' => __('Last Started'),
-			'align'   => 'right',
-			'sort'    => 'ASC'
-		],
-		'run_limit' => [
-			'display' => __('Run Limit'),
-			'align'   => 'right',
-			'sort'    => 'DESC'
-		],
-		'last_runtime' => [
-			'display' => __('Last Runtime'),
-			'align'   => 'right',
-			'sort'    => 'DESC'
-		],
-	];
-
-	// sort only by a displayed column: the query joins user_auth
-	$sort_column    = reports_sort_column(grv('sort_column'), $display_text);
+	// sort only by a list column: the query joins user_auth
+	$sort_column    = reports_sort_column(grv('sort_column'));
 	$sort_direction = strtoupper((string) grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 
 	$reports_list = [];
@@ -2437,6 +2383,60 @@ function reports() : void {
 			ORDER BY $sort_column $sort_direction" .
 			' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 	}
+
+	$display_text = [
+		'name' => [
+			'display' => __('Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'type' => [
+			'display' => __('Report Type'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'full_name' => [
+			'display' => __('Owner'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'sched_type' => [
+			'display' => __('Schedule'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		],
+		'nosort' => [
+			'display' => __('Notification Detail'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('Email options in use: To, BCC, and Notification List')
+		],
+		'enabled' => [
+			'display' => __('Enabled'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		],
+		'next_start' => [
+			'display' => __('Next Start'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		],
+		'last_started' => [
+			'display' => __('Last Started'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		],
+		'run_limit' => [
+			'display' => __('Run Limit'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		],
+		'last_runtime' => [
+			'display' => __('Last Runtime'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		],
+	];
 
 	$nav = html_nav_bar(get_reports_page() . 'filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, (cacti_sizeof($display_text) + 1), __('Reports'), 'page', 'main');
 
