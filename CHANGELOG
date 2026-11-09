@@ -228,6 +228,8 @@ Cacti CHANGELOG
 -issue#8508: Contain wrapped Sunrise titles beside their controls
 -issue#8510: Contain Paper Plane titlebars and improve link and table text contrast across surfaces
 -issue#8581: Bound Boost archive draining, isolate RRD failures, and make cleanup predictable
+-issue#8596: Discard stray output from Script Server functions and keep each response on one line
+-issue#8596: Keep device credentials out of cmd.php recache log messages
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path

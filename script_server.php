@@ -412,7 +412,7 @@ while (1) {
 
 			$result = script_server_call($function, $parameters, $parameter_array);
 
-			fputs(STDOUT, trim($result) . "\n");
+			fputs(STDOUT, script_server_response($result) . "\n");
 			fflush(STDOUT);
 
 			if ($log_level == POLLER_VERBOSITY_DEBUG) {
@@ -662,10 +662,36 @@ function script_server_call($function, $parameters, $parameter_array) {
 	 * queued behind it; the parameters can carry device credentials, so
 	 * they are left out of the log */
 	try {
-		if ($parameters == '') {
-			$result = call_user_func($function);
-		} else {
-			$result = call_user_func_array($function, $parameter_array);
+		/* anything the function prints would reach the poller ahead of its
+		 * result and be read as the reply to this request, shifting every
+		 * later reply by one line */
+		$ob_level = ob_get_level();
+		ob_start();
+
+		try {
+			if ($parameters == '') {
+				$result = call_user_func($function);
+			} else {
+				$result = call_user_func_array($function, $parameter_array);
+			}
+		} finally {
+			/* also closes any buffer the function left open; the output can
+			 * carry credentials, so only its size is logged */
+			$stray = 0;
+
+			while (ob_get_level() > $ob_level) {
+				$output = ob_get_clean();
+
+				if ($output === false) {
+					break;
+				}
+
+				$stray += strlen($output);
+			}
+
+			if ($stray > 0) {
+				cacti_log("DEBUG: Function '$function' wrote $stray bytes of output, discarded", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			}
 		}
 	} catch (Throwable $e) {
 		cacti_log("WARNING: Function '$function' raised " . get_class($e) . ' at ' . basename($e->getFile()) . ':' . $e->getLine() . ', returning U', false, 'PHPSVR');
@@ -680,6 +706,22 @@ function script_server_call($function, $parameters, $parameter_array) {
 	}
 
 	return $result;
+}
+
+/**
+ * Format a script function result as a single response line. Used as part of Cacti's
+ * script server functionality.
+ *
+ * The poller reads one line per request, so a line break inside the result
+ * would be read as the reply to the next request.  Multipart results are space
+ * separated name:value pairs, so a line break becomes a space.
+ *
+ * @param mixed $result The function result.
+ *
+ * @return string The result without line breaks or surrounding white space.
+ */
+function script_server_response($result) {
+	return trim(str_replace(array("\r\n", "\r", "\n"), ' ', (string) $result));
 }
 
 /**

@@ -52,10 +52,28 @@ function ss_request_fixture_ok($a, $b) {
 	return "$a:$b";
 }
 
+function ss_request_fixture_echo($a) {
+	echo "community $a\n";
+
+	return "value:$a";
+}
+
+function ss_request_fixture_multiline() {
+	return "a:1\nb:2";
+}
+
+function ss_request_fixture_echo_throws() {
+	print 'partial output';
+	ob_start();
+	echo 'nested buffer left open';
+
+	throw new \RuntimeException('script failure');
+}
+
 if (!function_exists(__NAMESPACE__ . '\\parseArgs')) {
 	$root = dirname(__DIR__, 3);
 
-	foreach (array('script_server_path_is_allowed', 'parseArgs', 'script_server_read_request', 'script_server_drain_line', 'script_server_call', 'script_server_redact_params') as $function) {
+	foreach (array('script_server_path_is_allowed', 'parseArgs', 'script_server_read_request', 'script_server_drain_line', 'script_server_call', 'script_server_response', 'script_server_redact_params') as $function) {
 		\cacti_fixture_source_function($root . '/script_server.php', $function, __NAMESPACE__);
 	}
 
@@ -262,6 +280,57 @@ test('a script returning an array answers U', function () {
 
 test('a normal script result is passed through', function () {
 	expect(script_server_call(__NAMESPACE__ . '\\ss_request_fixture_ok', 'a b', array('a', 'b')))->toBe('a:b');
+});
+
+test('output printed by a script is discarded and only its size is logged', function () {
+	$level = ob_get_level();
+
+	ob_start();
+	$result  = script_server_call(__NAMESPACE__ . '\\ss_request_fixture_echo', 'secret-value', array('secret-value'));
+	$printed = ob_get_clean();
+
+	expect($printed)->toBe('');
+	expect($result)->toBe('value:secret-value');
+	expect(ob_get_level())->toBe($level);
+
+	$log = implode("\n", $GLOBALS['ss_request_log']);
+	expect($log)->toContain('wrote 23 bytes of output, discarded');
+	expect($log)->not->toContain('community');
+	expect($log)->not->toContain('secret-value');
+});
+
+test('output of a script that throws is discarded with any buffer it left open', function () {
+	$level = ob_get_level();
+
+	ob_start();
+	$result  = script_server_call(__NAMESPACE__ . '\\ss_request_fixture_echo_throws', '', array());
+	$printed = ob_get_clean();
+
+	expect($result)->toBe('U');
+	expect($printed)->toBe('');
+	expect(ob_get_level())->toBe($level);
+	expect(implode("\n", $GLOBALS['ss_request_log']))->toContain('RuntimeException');
+});
+
+test('a multipart result with line breaks is sent as one line', function () {
+	$line = script_server_response(script_server_call(__NAMESPACE__ . '\\ss_request_fixture_multiline', '', array())) . "\n";
+
+	expect($line)->toBe("a:1 b:2\n");
+	expect(script_server_response("\r\na:1\r\nb:2\rc:3 \n"))->toBe('a:1 b:2 c:3');
+});
+
+test('scalar and empty results keep their response text', function () {
+	expect(script_server_response(42))->toBe('42');
+	expect(script_server_response(1.5))->toBe('1.5');
+	expect(script_server_response(null))->toBe('');
+	expect(script_server_response(' U '))->toBe('U');
+});
+
+test('the main loop writes the single line response', function () {
+	$source = file_get_contents(dirname(__DIR__, 3) . '/script_server.php');
+
+	expect($source)->toContain('fputs(STDOUT, script_server_response($result) . "\n");')
+		->not->toContain('fputs(STDOUT, trim($result)');
 });
 
 test('the dispatch keeps the reflection guard in front of the call', function () {
