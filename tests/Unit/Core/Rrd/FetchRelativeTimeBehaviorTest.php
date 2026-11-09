@@ -42,19 +42,9 @@ function rrdtool_parse_fetch_output(string $output, int $end, bool $unknown): ar
 }
 
 require_once CACTI_PATH_LIBRARY . '/rrd.php';
-$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
-
-if (preg_match('/function rrdtool_function_fetch\(.*?^}\R/ms', $source, $matches) !== 1) {
-	throw new \RuntimeException('Unable to extract the production fetch function.');
-}
-$probe = tempnam(sys_get_temp_dir(), 'rrd-fetch');
-
-try {
-	file_put_contents($probe, "<?php\nnamespace FetchRelativeTimeBehaviorTest;\n" . $matches[0]);
-	include $probe;
-} finally {
-	unlink($probe);
-}
+require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+// Keep production line numbers so changed-line coverage maps back to lib/rrd.php.
+\cacti_fixture_source_function(CACTI_PATH_LIBRARY . '/rrd.php', 'rrdtool_function_fetch', __NAMESPACE__);
 
 test('relative and absolute fetch windows use the same normalized command and output boundary', function (int $start, int $end) {
 	$fetch = rrdtool_function_fetch(1, $start, $end, 0, false, '/tmp/test.rrd');

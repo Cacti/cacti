@@ -1787,11 +1787,7 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 				}
 
 				try {
-					$command = (new \Cacti\Rrd\DataSource\UpdateCommandBuilder())->build(
-						$rrd_path,
-						$rrd_update_template,
-						$rrd_update_values
-					);
+					$command = (new \Cacti\Rrd\DataSource\UpdateCommandBuilder())->build($rrd_path, $rrd_update_template, $rrd_update_values);
 				} catch (\InvalidArgumentException $e) {
 					cacti_log('ERROR: RRDtool update rejected for ' . rrdtool_command_log_context('update ' . $rrd_path) . ': ' . $e->getMessage(), false, 'POLLER');
 
@@ -1861,13 +1857,7 @@ function rrdtool_function_tune(array $rrd_tune_array) : void {
 
 	if ($command !== null) {
 		if (file_exists($data_source_path) == true) {
-			$result = rrdtool_execute(
-				$command,
-				false,
-				RRDTOOL_OUTPUT_BOOLEAN,
-				null,
-				'WEBLOG'
-			);
+			$result = rrdtool_execute($command, false, RRDTOOL_OUTPUT_BOOLEAN, null, 'WEBLOG');
 
 			if ($result === false) {
 				cacti_log('ERROR: Unable to tune ' . rrdtool_command_log_context('tune ' . $data_source_path) . '.', false, 'WEBLOG');
@@ -2038,13 +2028,7 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
 
 	try {
-		$command = (new \Cacti\Rrd\DataSource\FetchCommandBuilder())->build(
-			$data_source_path,
-			$cf,
-			$normalized_start_time,
-			$normalized_end_time,
-			$resolution
-		);
+		$command = (new \Cacti\Rrd\DataSource\FetchCommandBuilder())->build($data_source_path, $cf, $normalized_start_time, $normalized_end_time, $resolution);
 	} catch (\InvalidArgumentException $e) {
 		cacti_log('ERROR: RRDtool fetch rejected for ' . rrdtool_command_log_context('fetch ' . $data_source_path) . ': ' . $e->getMessage(), false, 'POLLER');
 

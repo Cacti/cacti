@@ -51,6 +51,17 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+if [[ -f phpunit-rrd-components.xml ]]; then
+	# These RRDtool suites use the unit bootstrap, which does not load FixtureCoverage, so prepend it.
+	rrd_tests=(tests/Unit/Core/Rrd/RrdCommandTest.php tests/Unit/Core/Rrd/DataSourceCommandBuilderTest.php
+		tests/Unit/Core/Rrd/GraphOptionsTest.php tests/Unit/Core/Rrd/RrdAxisOptionsTest.php
+		tests/Unit/Core/Rrd/RrdGraphOptionsNativeTest.php tests/Unit/Core/Rrd/RrdCapabilityNativeTest.php
+		tests/Unit/Core/Rrd/FetchRelativeTimeBehaviorTest.php tests/Unit/Core/Rrd/RrdCommandBuilderFailureTest.php
+		tests/Unit/RrdProxyProtocolTest.php tests/Unit/RrdAtomicWriteTest.php)
+	CACTI_COVERAGE_FILE="$coverage_dir/rrd-suite.json" "$php_binary" -d memory_limit=2G -d xdebug.mode=coverage -d auto_prepend_file=tests/Helpers/FixtureCoverage.php include/vendor/bin/pest --configuration=tests/phpunit.xml "${rrd_tests[@]}"
+	php_coverage+=("$coverage_dir/rrd-suite.json")
+fi
+
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
