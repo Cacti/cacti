@@ -64,6 +64,9 @@ if (!class_exists('TreeSqliteFixture')) {
 				disabled TEXT NOT NULL DEFAULT '', deleted TEXT NOT NULL DEFAULT '')");
 			$pdo->exec("CREATE TABLE sites (id INTEGER PRIMARY KEY, name TEXT NOT NULL DEFAULT '')");
 			$pdo->exec("CREATE TABLE graph_templates_graph (local_graph_id INTEGER NOT NULL, title_cache TEXT NOT NULL DEFAULT '')");
+			$pdo->exec('CREATE TABLE graph_local (id INTEGER PRIMARY KEY, host_id INTEGER NOT NULL DEFAULT 0,
+				graph_template_id INTEGER NOT NULL DEFAULT 0, snmp_query_id INTEGER NOT NULL DEFAULT 0)');
+			$pdo->exec("CREATE TABLE snmp_query (id INTEGER PRIMARY KEY, name TEXT NOT NULL DEFAULT '')");
 			$pdo->exec('CREATE TABLE user_auth (id INTEGER PRIMARY KEY, policy_graphs INTEGER NOT NULL DEFAULT 1,
 				policy_trees INTEGER NOT NULL DEFAULT 1, policy_hosts INTEGER NOT NULL DEFAULT 1,
 				policy_graph_templates INTEGER NOT NULL DEFAULT 1)');
