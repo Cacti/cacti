@@ -2,7 +2,7 @@
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
 namespace CactiReportOwnershipFixture;
-require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 3) . '/include/global.php';
@@ -76,7 +76,7 @@ foreach (['duplicate_reports', 'reports_add_devices', 'reports_add_graphs'] as $
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/reports.php', $function, __NAMESPACE__);
 }
 
-foreach (['reports_send', 'reports_form_save', 'reports_item_edit', 'reports_item_moveup', 'reports_item_movedown', 'reports_item_remove', 'reports_item_dnd', 'reports_form_actions'] as $function) {
+foreach (['reports_send', 'reports_form_save', 'reports_edit', 'reports_item_edit', 'reports_item_moveup', 'reports_item_movedown', 'reports_item_remove', 'reports_item_dnd', 'reports_form_actions'] as $function) {
 	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html_reports.php', $function, __NAMESPACE__);
 }
 
@@ -91,6 +91,16 @@ function is_reports_admin() {
 	return $GLOBALS['reports_admin'];
 }
 function force_session_data() {
+}
+function validate_store_request_vars($filters, $session_prefix = '') {
+}
+function reports_tabs($report_id) : void {
+}
+function draw_preview_filter(...$arguments) : void {
+}
+function html_start_box(...$arguments) : void {
+}
+function html_end_box(...$arguments) : void {
 }
 function input_validate_input_number($value, $name) {
 	if (!is_numeric($value)) {
@@ -107,7 +117,7 @@ if (reports_add_devices(2, [], [], '') !== false || reports_add_graphs(2, 1, [],
 	throw new \RuntimeException('Direct report operation bypassed ownership.');
 }
 
-$modes = ['parent', 'item', 'item-parent-mismatch', 'read-other', 'read-parent-mismatch', 'bulk-other', 'bulk-own', 'bulk-admin'];
+$modes = ['parent', 'item', 'item-parent-mismatch', 'read-other', 'read-parent-mismatch', 'read-report-other', 'edit-other', 'bulk-other', 'bulk-own', 'bulk-admin', 'bulk-reportit-admin'];
 
 if (($argv[1] ?? '') === 'form') {
 	$mode                   = $argv[2];
@@ -123,15 +133,22 @@ if (($argv[1] ?? '') === 'form') {
 		$GLOBALS['reports_admin'] = $mode === 'read-parent-mismatch';
 	}
 
+	// A report-level item form or the report editor for another owner.
+	if ($mode === 'read-report-other' || $mode === 'edit-other') {
+		$GLOBALS['report_post'] = ['id' => 2];
+	}
+
 	if (str_starts_with($mode, 'bulk-')) {
-		$GLOBALS['report_post']   = ['selected_items' => serialize(['reports_' . ($mode === 'bulk-own' ? 1 : 2)]), 'drp_action' => REPORTS_DELETE];
-		$GLOBALS['reports_admin'] = $mode === 'bulk-admin';
+		$GLOBALS['report_post']   = ['selected_items' => serialize([($mode === 'bulk-reportit-admin' ? 'reportit_' : 'reports_') . ($mode === 'bulk-own' ? 1 : 2)]), 'drp_action' => REPORTS_DELETE];
+		$GLOBALS['reports_admin'] = in_array($mode, ['bulk-admin', 'bulk-reportit-admin'], true);
 	}
 	$_POST = $GLOBALS['report_post'];
 	register_shutdown_function(function () { print json_encode(['reports' => (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports'), 'items' => (int) db_fetch_cell_prepared('SELECT COUNT(*) FROM reports_items')]); });
 
 	if (str_starts_with($mode, 'read-')) {
 		reports_item_edit();
+	} elseif ($mode === 'edit-other') {
+		reports_edit();
 	} elseif (str_starts_with($mode, 'bulk-')) {
 		reports_form_actions();
 	} else {
@@ -141,6 +158,10 @@ if (($argv[1] ?? '') === 'form') {
 	throw new \RuntimeException('Unauthorized request did not stop.');
 }
 require_once dirname(__DIR__, 2) . '/Helpers/IsolatedProbe.php';
+
+// The changed-line gate records each form mode as its own probe; keep these
+// children from overwriting this process's coverage file.
+putenv('CACTI_COVERAGE_FILE');
 
 foreach ($modes as $mode) {
 	$result  = \cacti_test_isolated_probe(__FILE__, ['form', $mode]);
@@ -257,5 +278,25 @@ reports_item_remove();
 
 if (db_fetch_cell_prepared('SELECT id FROM reports_items WHERE id = 12') !== false) {
 	throw new \RuntimeException('Owner could not remove a report item.');
+}
+// The report editor previews a history entry only through its own report.
+$GLOBALS['reports_db']->exec('DELETE FROM reports_log');
+db_execute_prepared('INSERT INTO reports_log VALUES (10,?,?,?,?)', ['reports', 2, '<p>Owned history</p>', base64_encode('[]')]);
+$_SESSION[SESS_USER_ID]   = 2;
+$GLOBALS['reports_admin'] = false;
+
+foreach ([2 => true, 1 => false] as $report => $shown) {
+	$GLOBALS['report_post'] = ['id' => $report, 'tab' => 'preview', 'rdate' => 10];
+
+	if ($report === 1) {
+		$GLOBALS['reports_admin'] = true;
+	}
+	ob_start();
+	reports_edit();
+
+	if (str_contains((string) ob_get_clean(), '<p>Owned history</p>') !== $shown) {
+		throw new \RuntimeException('Report preview crossed its history parent.');
+	}
+	$cases++;
 }
 print json_encode(['cases' => $cases, 'foreign_history_preserved' => true]);
