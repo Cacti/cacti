@@ -31,3 +31,9 @@ test('automation priming skips ignored addresses, batches inserts and reports fa
 		->and($result['prime_batch_fail'])->toBeFalse()
 		->and($result['prime_batch_fail_logs'])->toBe(1);
 });
+
+test('the address limit setting, claim index upgrade and poller cleanup hold at their entry points', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/AutomationRangeLimitEntryPoints.php');
+
+	expect($result['passed'])->toBe(10);
+});
