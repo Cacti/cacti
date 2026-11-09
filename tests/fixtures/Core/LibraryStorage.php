@@ -75,8 +75,12 @@ function library_storage(int $template): void {
 			library_expect((int) boost_rrdtool_get_last_update_time($path, null), $end, 'Retry advances the real RRD');
 			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = ?', [$id]), 0, 'Successful retry clears staging');
 			library_expect(boost_process_poller_output($id), 0, 'An empty retry is idempotent');
+			library_boost_recovery($id, $path, array_keys($info['ds']), $end, $step);
+			library_storage_boundaries($id, $path);
+			library_dsdebug_permissions($id, $path);
 			library_rrd_diagnostics($id);
 			library_dsstats($id);
+			library_poller_batches($id, $path, array_keys($info['ds']), $end + 10 * $step, $step);
 			db_execute_prepared('DELETE FROM poller_time WHERE id = ?', [$pollerTime]);
 			$pollerTime = 0;
 		}
@@ -93,6 +97,281 @@ function library_storage(int $template): void {
 				unlink($path);
 			}
 		}
+	}
+}
+
+/** Run an action with the Cacti log redirected to a private file and return what it logged. */
+function library_captured_log(callable $action): string {
+	$log      = tempnam(sys_get_temp_dir(), 'cacti-log-');
+	$previous = read_config_option('path_cactilog');
+	set_config_option('path_cactilog', $log);
+
+	try {
+		$action();
+
+		return (string) file_get_contents($log);
+	} finally {
+		set_config_option('path_cactilog', $previous);
+		unlink($log);
+	}
+}
+
+/** Stage one Boost sample per series and timestamp for a fixture data source. */
+function library_boost_stage(int $id, array $names, array $times, string $value): void {
+	$tuples = [];
+
+	foreach ($times as $time) {
+		foreach ($names as $name) {
+			$tuples[] = '(' . $id . ',' . db_qstr($name) . ',FROM_UNIXTIME(' . $time . '),' . db_qstr($value) . ')';
+		}
+	}
+	library_expect(boost_flush_output_batch($tuples), true, 'Boost stages the recovery samples');
+}
+
+/** Boost keeps staged samples when an update, a forwarded archive row or a sample format is rejected. */
+function library_boost_recovery(int $id, string $path, array $names, int $last, int $step): void {
+	$archive   = 'poller_output_boost_arch_' . random_int(100000000, 999999999);
+	$future    = $last + 2 * $step;
+	$processed = null;
+	library_expect(db_execute('CREATE TABLE `' . $archive . '` LIKE poller_output_boost'), true, 'Boost fixture owns an archive table');
+
+	try {
+		foreach ($names as $name) {
+			foreach ([[$last + 3, '29'], [$future, '31']] as [$time, $value]) {
+				db_execute_prepared('INSERT INTO `' . $archive . '` (local_data_id, rrd_name, time, output) VALUES (?, ?, FROM_UNIXTIME(?), ?)', [$id, $name, $time, $value]);
+			}
+		}
+		// A collector already staged the open-cycle sample, so the archive copy must not replace it.
+		library_boost_stage($id, $names, [$future], '37');
+		$log = library_captured_log(static function () use ($id, &$processed): void {
+			$processed = boost_process_poller_output($id);
+		});
+		library_expect($processed, count($names), 'Boost stores the archived sample that precedes the poll boundary');
+		library_expect((int) boost_rrdtool_get_last_update_time($path, null), $last + 3, 'The archived sample reaches the RRD');
+		library_expect(str_contains($log, 'ignored ' . count($names) . ' of ' . count($names) . ' duplicate sample keys for Local Data ID ' . $id), true, 'Archive forwarding reports the colliding open-cycle samples');
+		library_expect(db_fetch_assoc_prepared('SELECT DISTINCT output FROM poller_output_boost WHERE local_data_id = ?', [$id]), [['output' => '37']], 'The first staged open-cycle sample is kept');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM `' . $archive . '` WHERE local_data_id = ?', [$id]), 0, 'Forwarded archive rows are released');
+	} finally {
+		db_execute('DROP TABLE IF EXISTS `' . $archive . '`');
+		db_execute_prepared('DELETE FROM poller_output_boost WHERE local_data_id = ?', [$id]);
+	}
+	$length = read_config_option('boost_rrd_update_string_length');
+	$backup = $path . '.recovery-backup';
+	library_expect(rename($path, $backup) && file_put_contents($path, 'invalid fixture RRD') === 19, true, 'Fixture installs a malformed destination for a multi-sample replay');
+
+	try {
+		// A one-byte limit flushes every completed timestamp before reading the next.
+		set_config_option('boost_rrd_update_string_length', '1');
+		library_boost_stage($id, $names, [$last + 4, $last + 5], '41');
+		$log = library_captured_log(static function () use ($id, &$processed): void {
+			$processed = boost_process_poller_output($id);
+		});
+		library_expect($processed, -1, 'A rejected intermediate update fails the replay');
+		library_expect(str_contains($log, 'RRD Update Warning'), true, 'The rejected intermediate update is reported');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_output_boost WHERE local_data_id = ?', [$id]), 2 * count($names), 'Every sample of the failed replay stays staged');
+	} finally {
+		unlink($path);
+		rename($backup, $path);
+	}
+
+	try {
+		library_expect(boost_process_poller_output($id), 2 * count($names), 'The restored RRD accepts the retained replay one timestamp at a time');
+		library_expect((int) boost_rrdtool_get_last_update_time($path, null), $last + 5, 'The replay advances the RRD to its final sample');
+	} finally {
+		set_config_option('boost_rrd_update_string_length', $length);
+	}
+
+	try {
+		library_boost_stage($id, $names, [$last + 6], 'unparsable');
+		$log = library_captured_log(static function () use ($id): void {
+			boost_process_poller_output($id);
+		});
+		library_expect(str_contains($log, 'Invalid output! MULTI DS[' . $id . '] Encountered [unparsable]'), true, 'A sample that is neither a number nor a field list is reported');
+		library_expect((int) boost_rrdtool_get_last_update_time($path, null), $last + 5, 'An unparsable sample is never stored as a reading');
+	} finally {
+		db_execute_prepared('DELETE FROM poller_output_boost WHERE local_data_id = ?', [$id]);
+	}
+	\CactiLibraryBoostDuplicateFixture\run($id, $names, $last + 7);
+	library_expect((int) boost_rrdtool_get_last_update_time($path, null), $last + 7, 'A repeated sample is stored once');
+}
+
+/** Creation, tuning and repair refuse to act on an RRD they cannot trust. */
+function library_storage_boundaries(int $id, string $path): void {
+	require_once CACTI_PATH_LIBRARY . '/dsdebug.php';
+	$info = rrdtool_function_info($id);
+	$log  = library_captured_log(static function () use ($id): void {
+		rrdtool_function_tune(['data_source_id' => $id, 'heartbeat' => 'never', 'minimum' => '', 'maximum' => '', 'data-source-type' => 1, 'data-source-rename' => '']);
+	});
+	library_expect(str_contains($log, 'ERROR: Unable to tune '), true, 'A rejected tune is reported');
+	library_expect(rrdtool_function_info($id)['ds'], $info['ds'], 'A rejected tune leaves every series definition intact');
+
+	// The configured path still names a file inside the RRA directory, but the file is a link out of it.
+	$outside = tempnam(sys_get_temp_dir(), 'cacti-escape-');
+	$backup  = $path . '.escape-backup';
+	library_expect(copy($path, $outside) && rename($path, $backup) && symlink($outside, $path), true, 'Fixture replaces its RRD with a link leaving the RRA directory');
+
+	try {
+		$escaped = hash_file('sha256', $outside);
+		library_expect(rrdtool_function_create($id, false), false, 'RRD creation refuses a path that resolves outside the RRA directory');
+		library_expect(boost_rrdtool_function_create($id, false, null), false, 'Boost creation refuses a path that resolves outside the RRA directory');
+		library_expect(hash_file('sha256', $outside), $escaped, 'The link target is never rewritten');
+	} finally {
+		unlink($path);
+		rename($backup, $path);
+		unlink($outside);
+	}
+	$heartbeats = db_fetch_assoc_prepared('SELECT id, rrd_heartbeat FROM data_template_rrd WHERE local_data_id = ?', [$id]);
+	library_expect(rename($path, $backup), true, 'Fixture removes its RRD before a rejected creation');
+
+	try {
+		// RRDtool requires a positive heartbeat and Cacti passes the stored value through.
+		db_execute_prepared('UPDATE data_template_rrd SET rrd_heartbeat = 0 WHERE local_data_id = ?', [$id]);
+		$log = library_captured_log(static function () use ($id): void {
+			rrdtool_function_create($id, false);
+		});
+		library_expect(file_exists($path), false, 'A definition RRDtool rejects creates no file');
+		library_expect(str_contains($log, 'WARNING: RRDCreate failed for '), true, 'A rejected creation is reported');
+	} finally {
+		foreach ($heartbeats as $heartbeat) {
+			db_execute_prepared('UPDATE data_template_rrd SET rrd_heartbeat = ? WHERE id = ?', [$heartbeat['rrd_heartbeat'], $heartbeat['id']]);
+		}
+
+		if (file_exists($path)) {
+			unlink($path);
+		}
+		rename($backup, $path);
+	}
+	db_execute_prepared('DELETE FROM data_debug WHERE datasource = ?', [$id]);
+	$repaired = null;
+	$log      = library_captured_log(static function () use ($id, &$repaired): void {
+		$repaired = dsdebug_run_repair($id);
+	});
+	library_expect($repaired, false, 'Repair without a debug record does nothing');
+	library_expect(str_contains($log, "DS[$id] Output[No Data Source debug information found]"), true, 'Repair names the missing debug record');
+	$check = (int) sql_save(['id' => 0, 'started' => time(), 'done' => 1, 'user' => 0, 'datasource' => $id, 'info' => serialize(['rrd_match_array' => []]), 'issue' => ''], 'data_debug');
+	library_expect($check > 0, true, 'Repair fixture owns a completed debug record');
+
+	try {
+		$log = library_captured_log(static function () use ($id, &$repaired): void {
+			$repaired = dsdebug_run_repair($id);
+		});
+		library_expect($repaired, false, 'Repair without a tune recommendation does nothing');
+		library_expect(str_contains($log, "DS[$id] Output[No tune recommendation found]"), true, 'Repair names the missing recommendation');
+	} finally {
+		db_execute_prepared('DELETE FROM data_debug WHERE id = ?', [$check]);
+	}
+}
+
+/** The debugger running as the unprivileged poller account diagnoses RRD files it cannot write. */
+function library_dsdebug_permissions(int $id, string $path): void {
+	$account = posix_getpwnam('www-data');
+	library_expect(is_array($account) && posix_geteuid() === 0, true, 'Permission fixture can start a child as the poller account');
+	$evidence = sys_get_temp_dir() . '/cacti-dsdebug-' . bin2hex(random_bytes(8));
+	library_expect(mkdir($evidence, 0700) && chown($evidence, $account['uid']), true, 'The poller account owns the child evidence directory');
+	$stored = db_fetch_cell_prepared('SELECT data_source_path FROM data_template_data WHERE local_data_id = ?', [$id]);
+	$source = <<<'PHP'
+require 'tests/Helpers/RequestCoverage.php';
+require 'include/global.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/dsdebug.php';
+$account = posix_getpwnam('www-data');
+if (!posix_setgid($account['gid']) || !posix_setuid($account['uid'])) {
+	exit(3);
+}
+print dsdebug_poller_bottom() ? 'checked' : 'failed';
+PHP;
+	$environment                          = getenv();
+	$environment['CACTI_PR_RAW_COVERAGE'] = $evidence;
+	$environment['XDEBUG_MODE']           = 'coverage';
+	$owned                                = [];
+	$template                             = ['rrd_folder_writable'  => '', 'rrd_exists' => '', 'rrd_writable' => '', 'active' => '', 'owner' => '', 'runas_poller' => '',
+		'runas_website'                                                => 'root', 'last_result' => '', 'valid_data' => '', 'rra_timestamp' => '', 'rra_timestamp2' => '', 'rrd_match' => ''];
+
+	try {
+		// A root-owned copy is unwritable for the poller; only the folder owner differs between cases.
+		foreach (['folder' => [0, 'RRDfile Folder (rra) is not writable by Poller.  Folder owner: root:root.  Poller runs as: www-data'],
+			'file'            => [$account['uid'], 'RRDfile is not writable by Poller.  RRDfile owner: root:root.  Poller runs as www-data']] as $case => [$owner, $issue]) {
+			$directory = CACTI_PATH_RRA . '/coverage-dsdebug-' . $case . '-' . bin2hex(random_bytes(4));
+			library_expect(mkdir($directory, 0755) && chown($directory, $owner), true, 'Permission fixture owns its RRA folder');
+			$owned[] = $directory;
+			$copy    = $directory . '/' . $id . '.rrd';
+			library_expect(copy($path, $copy) && chmod($copy, 0644), true, 'Root owns a readable copy of the RRD');
+			db_execute_prepared('UPDATE data_template_data SET data_source_path = ? WHERE local_data_id = ?', [str_replace(CACTI_PATH_RRA, '<path_rra>', $copy), $id]);
+			db_execute_prepared('DELETE FROM data_debug WHERE datasource = ?', [$id]);
+			library_expect((int) sql_save(['id' => 0, 'started' => time(), 'done' => 0, 'user' => 0, 'datasource' => $id, 'info' => serialize($template), 'issue' => ''], 'data_debug') > 0, true, 'Permission check is queued');
+			$process = proc_open([PHP_BINARY, '-d', 'auto_prepend_file=', '-r', $source], [0 => ['pipe', 'r'], 1 => ['file', $evidence . '/output.txt', 'w'], 2 => ['file', $evidence . '/error.txt', 'w']], $pipes, CACTI_PATH_BASE, $environment);
+			library_expect(is_resource($process), true, 'Unprivileged debugger starts');
+			fclose($pipes[0]);
+			library_expect(proc_close($process), 0, 'Unprivileged debugger completes: ' . file_get_contents($evidence . '/error.txt'));
+			// The debugger prints its statistics line before the probe's result.
+			library_expect(str_ends_with(file_get_contents($evidence . '/output.txt'), "\nchecked"), true, 'Debugger processes the queued check');
+			$row = db_fetch_row_prepared('SELECT done, issue FROM data_debug WHERE datasource = ?', [$id]);
+			library_expect((int) $row['done'], 1, 'A permission problem completes the check');
+			library_expect(str_contains($row['issue'], $issue), true, 'Debugger names the ' . $case . ' permission problem: ' . $row['issue']);
+		}
+		$reports = glob($evidence . '/*.json');
+		library_expect(count($reports), 2, 'Each unprivileged check produces coverage');
+		library_import_coverage($reports);
+	} finally {
+		db_execute_prepared('UPDATE data_template_data SET data_source_path = ? WHERE local_data_id = ?', [$stored, $id]);
+		db_execute_prepared('DELETE FROM data_debug WHERE datasource = ?', [$id]);
+
+		foreach ($owned as $directory) {
+			unlink($directory . '/' . $id . '.rrd');
+			rmdir($directory);
+		}
+
+		foreach (glob($evidence . '/*') as $file) {
+			unlink($file);
+		}
+		rmdir($evidence);
+	}
+}
+
+/** Collector output that does not match its data template is stored as unknown and reported. */
+function library_poller_batches(int $id, string $path, array $names, int $time, int $step): void {
+	require_once CACTI_PATH_LIBRARY . '/dsstats.php';
+	$copy     = CACTI_PATH_RRA . '/coverage-poller-' . bin2hex(random_bytes(6)) . '.rrd';
+	$template = (int) db_fetch_cell_prepared('SELECT data_template_id FROM data_local WHERE id = ?', [$id]);
+	$enabled  = read_config_option('dsstats_enable');
+	$last     = db_fetch_assoc_prepared('SELECT * FROM data_source_stats_hourly_last WHERE local_data_id = ?', [$id]);
+	$pipe     = null;
+	$batch    = [];
+	library_expect($template > 0 && copy($path, $copy), true, 'Collector fixture owns a templated RRD copy');
+
+	foreach (['unmapped:5' => $time, 'unparsable' => $time + $step] as $output => $at) {
+		$batch[] = ['output' => $output, 'time' => date('Y-m-d H:i:s', $at), 'unix_time' => $at, 'local_data_id' => $id,
+			'data_template_id'  => $template, 'rrd_path' => $copy, 'rrd_name' => $names[0], 'rrd_num' => 1];
+	}
+
+	try {
+		$processed = null;
+		$log       = library_captured_log(static function () use (&$pipe, $batch, &$processed): void {
+			$blocked   = [];
+			$processed = process_poller_output_batch($pipe, $batch, $blocked);
+		});
+		library_expect($processed, 2, 'RRDtool acknowledges an update for each unusable sample');
+		library_expect(str_contains($log, 'WARNING: Invalid output! MULTI DS[' . $id . '] Encountered [unparsable]'), true, 'Output that is neither a number nor a field list is reported');
+		library_expect(str_contains($log, 'Encountered [unmapped:5]'), false, 'A field list is never reported as unparsable');
+		library_expect((int) trim(library_rrd_command(['last', $copy])), $time + $step, 'Unusable samples are stored as unknown readings');
+		set_config_option('dsstats_enable', 'on');
+		$updates = [$copy => ['local_data_id' => $id, 'times' => [$time => [$names[0] => '7', 'coverage_unknown' => '9']]]];
+		$log     = library_captured_log(static function () use (&$updates): void {
+			dsstats_poller_output($updates);
+		});
+		library_expect(str_contains($log, "WARNING: Unknown RRDtool Data Type '0', For 'coverage_unknown'"), true, 'A sample for a series the template does not define is reported');
+		$stored = array_column(db_fetch_assoc_prepared('SELECT rrd_name, `value` FROM data_source_stats_hourly_cache WHERE local_data_id = ? AND time = FROM_UNIXTIME(?)', [$id, $time]), 'value', 'rrd_name');
+		library_expect(array_key_exists('coverage_unknown', $stored) && $stored['coverage_unknown'] === null, true, 'A sample of an undefined series has no statistic');
+		library_expect((float) ($stored[$names[0]] ?? -1), 7.0, 'The defined series contributes its sample');
+	} finally {
+		set_config_option('dsstats_enable', $enabled);
+		db_execute_prepared('DELETE FROM data_source_stats_hourly_cache WHERE local_data_id = ? AND time >= FROM_UNIXTIME(?)', [$id, $time]);
+		db_execute_prepared('DELETE FROM data_source_stats_hourly_last WHERE local_data_id = ?', [$id]);
+
+		foreach ($last as $row) {
+			sql_save($row, 'data_source_stats_hourly_last', ['local_data_id', 'rrd_name'], false);
+		}
+		unlink($copy);
 	}
 }
 
@@ -286,6 +565,14 @@ function library_business_hours(int $graph): void {
 		$long = ['start' => $start, 'end' => $end + 86400, 'graph_defs' => 'existing'];
 		library_expect(add_business_hours($long, $meta), $long, 'Long ranges avoid expanding business-hour definitions');
 		library_expect($meta, [], 'Skipped overlay does not change export metadata');
+		// An overnight shift that already began before the graph window starts again the next evening.
+		set_config_option('business_hours_start', '21:00');
+		set_config_option('business_hours_end', '08:00');
+		$meta      = [];
+		$overnight = ['start' => strtotime('2026-10-16 22:00 UTC'), 'end' => strtotime('2026-10-16 23:00 UTC'), 'graph_defs' => ''];
+		$result    = add_business_hours($overnight, $meta);
+		library_expect(str_contains($result['graph_defs'], ',TIME,' . strtotime('2026-10-17 21:00 UTC') . ',LT'), true, 'An overnight shift resumes at the next configured start');
+		library_expect(str_contains($result['graph_defs'], ',TIME,' . $overnight['end'] . ',GT'), true, 'An overnight shift is clipped to the graph end');
 		srv('business_hours', 'false');
 		library_expect(add_business_hours($data, $meta), $data, 'Viewer can disable the overlay');
 	} finally {
@@ -371,11 +658,20 @@ function library_spike_repair(bool $windowedStddev = true): void {
 		$before          = hash_file('sha256', $working);
 		$preview         = new spikekill($working, 'stddev', 'last', '2', '', '', '10', 'sensor', '100');
 		$preview->dryrun = true;
-		library_expect($preview->remove_spikes(), true, 'Spike preview completes');
+		$preview->debug  = true;
+		$completed       = null;
+		$log             = library_captured_log(static function () use ($preview, &$completed): void {
+			ob_start();
+			$completed = $preview->remove_spikes();
+			ob_end_clean();
+		});
+		library_expect($completed, true, 'Spike preview completes');
+		library_expect(str_contains($log, "Spikes from '" . $working . "', Method:'"), true, 'A debug preview records its analysis in the log');
 		library_expect(hash_file('sha256', $working), $before, 'A dry run preserves the RRD byte for byte');
 		library_expect($preview->get_output() !== '', true, 'A dry run reports its analysis');
 
-		foreach ([['method' => 'unsupported'], ['avgnan' => 'unsupported'], ['stddev' => 0], ['numspike' => -1], ['absmax' => -1], ['out_start' => 20, 'out_end' => 10], ['out_start' => 20, 'out_end' => 0]] as $invalid) {
+		foreach ([['method' => 'unsupported'], ['avgnan' => 'unsupported'], ['stddev' => 0], ['numspike' => -1], ['absmax' => -1], ['out_start' => 20, 'out_end' => 10], ['out_start' => 20, 'out_end' => 0],
+			['method' => 'float'], ['method'                => 'fill'], ['method' => 'absolute'], ['method' => 'float', 'out_start' => 'not a date', 'out_end' => 'not a time']] as $invalid) {
 			$repair = new spikekill($working, 'stddev', 'last', '2', '', '', '10', 'sensor', '100');
 
 			foreach ($invalid as $field => $value) {

@@ -43,6 +43,16 @@ function library_graph_options(int $graph, array $options): void {
 			$image = rrdtool_function_graph($graph, '', $options);
 			library_expect(is_string($image) && str_starts_with($image, "\x89PNG\r\n\x1a\n"), true, 'RRDtool executes ' . $token . ' against real samples: ' . $source);
 		}
+		// The trend token names the fitted line's slope and intercept, so only its compiled form is checked.
+		db_execute_prepared('DELETE FROM cdef_items WHERE cdef_id = ?', [$definition]);
+
+		foreach ([[4, 'CURRENT_DATA_SOURCE'], [4, 'CURRENT_DS_LSLFUNCTION'], [2, (string) $add]] as $position => [$type, $value]) {
+			sql_save(['id' => 0, 'hash' => bin2hex(random_bytes(16)), 'cdef_id' => $definition, 'sequence' => $position + 1, 'type' => $type, 'value' => $value], 'cdef_items');
+		}
+		db_execute_prepared('UPDATE graph_templates_item SET cdef_id = ? WHERE id = ?', [$definition, $item['id']]);
+		$source = library_graph_source($graph, $options);
+		library_expect(preg_match('/VDEF:vdef(\\w+)slope=\\1,LSLSLOPE/', $source) === 1 && preg_match('/VDEF:vdef(\\w+)int=\\1,LSLINT/', $source) === 1, true, 'The trend token defines its slope and intercept: ' . $source);
+		library_expect(preg_match('/,POP,COUNT,vdef\\w+slope,\\*,vdef\\w+int,\\+/', $source) === 1 && !str_contains($source, 'CURRENT_DS_LSLFUNCTION'), true, 'The trend token compiles to the fitted line');
 		sql_save($item, 'graph_templates_item');
 
 		foreach (['', 'on'] as $gradient) {
@@ -51,6 +61,31 @@ function library_graph_options(int $graph, array $options): void {
 			$image = rrdtool_function_graph($graph, '', $options);
 			library_expect(is_string($image) && str_starts_with($image, "\x89PNG\r\n\x1a\n"), true, 'Area rendering supports normal and expanded gradient commands');
 		}
+		// Native two-color areas are used only when Cacti does not emulate the gradient itself.
+		set_config_option('enable_rrdtool_gradient_support', '');
+		$gradient = db_fetch_row('SELECT id, hex FROM colors ORDER BY id DESC LIMIT 1');
+		db_execute_prepared('UPDATE graph_templates_item SET graph_type_id = ?, color2_id = ? WHERE id = ?', [GRAPH_ITEM_TYPE_AREA, $gradient['id'], $item['id']]);
+		library_expect(str_contains(library_graph_source($graph, $options), ':gradheight='), false, 'RRDtool 1.7 graphs never receive a second gradient color');
+		$source = \CactiLibraryRrdtool18Fixture\graph_source($graph, $options);
+		library_expect(str_contains($source, '#' . $gradient['hex']) && str_contains($source, ':gradheight='), true, 'RRDtool 1.8 graphs shade an area toward its second color: ' . $source);
+		sql_save($item, 'graph_templates_item');
+
+		foreach ([GRAPH_ITEM_TYPE_STACK => 'AREA:', GRAPH_ITEM_TYPE_LINE1 => 'LINE1:', GRAPH_ITEM_TYPE_LINESTACK => 'LINE[0-9.]+:'] as $type => $command) {
+			db_execute_prepared('UPDATE graph_templates_item SET graph_type_id = ?, text_format = ? WHERE id = ?', [$type, 'Typed legend ' . $type, $item['id']]);
+			$source = library_graph_source($graph, $options);
+			library_expect(preg_match('/' . $command . '[^:]+:[\'"]Typed legend ' . $type . '/', $source), 1, 'Graph item type ' . $type . ' carries its legend: ' . $source);
+		}
+		sql_save($item, 'graph_templates_item');
+		$vdef = (int) db_fetch_cell("SELECT id FROM vdef WHERE name = 'Maximum'");
+		db_execute_prepared('UPDATE graph_templates_item SET cdef_id = ?, vdef_id = ? WHERE id = ?', [$definition, $vdef, $item['id']]);
+		library_expect(preg_match('/VDEF:vdef\\w+=[\'"]?cdef\\w+,MAXIMUM/', library_graph_source($graph, $options)), 1, 'A calculated VDEF reads the CDEF series');
+		sql_save($item, 'graph_templates_item');
+		$realtime = rrdtool_function_graph($graph, '', $options + ['export_realtime' => true, 'print_source' => true]);
+		library_expect(preg_match('/RRD file does not exist: .*\\/user_[0-9a-f]{64}_[0-9]+\\.rrd/', (string) $realtime), 1, 'Realtime graphs read only the per-session cache file: ' . var_export($realtime, true));
+		db_execute_prepared('DELETE FROM cdef_items WHERE cdef_id = ?', [$definition]);
+		sql_save(['id' => 0, 'hash' => bin2hex(random_bytes(16)), 'cdef_id' => $definition, 'sequence' => 1, 'type' => 6, 'value' => '|host_snmp_community|'], 'cdef_items');
+		db_execute_prepared('UPDATE graph_templates_item SET cdef_id = ? WHERE id = ?', [$definition, $item['id']]);
+		library_expect(str_contains(library_graph_source($graph, $options), 'CDEF:cdef'), false, 'A definition that resolves to nothing never reaches RRDtool');
 		sql_save($item, 'graph_templates_item');
 		$rule                     = $item;
 		$rule['id']               = 0;
@@ -130,5 +165,18 @@ function library_graph_totals(int $graph, array $options): void {
 		$results[$type]  = variable_bandwidth_summation($match, $settings, $item, $items, (int) $options['graph_start'], (int) $options['graph_end'], 1, $step);
 		// Three stored gauge samples of 12.5 span the legend window.
 		library_expect((float) str_replace(',', '', trim($results[$type])), 12.5 * 3 * $step, 'Summation legend totals the stored samples for ' . $type);
+	}
+}
+
+/** Return the RRDtool command the graph compiler builds without executing it. */
+function library_graph_source(int $graph, array $options): string {
+	ob_start();
+
+	try {
+		rrdtool_function_graph($graph, '', $options + ['print_source' => true]);
+
+		return html_entity_decode((string) ob_get_contents(), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	} finally {
+		ob_end_clean();
 	}
 }

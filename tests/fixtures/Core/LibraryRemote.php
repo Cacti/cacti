@@ -81,6 +81,27 @@ function library_remote(): void {
 		}
 		replicate_out_table($remote, $data, $table, $poller);
 		library_expect(db_fetch_assoc('SELECT * FROM `' . $table . '` ORDER BY id', true, $remote), $data, 'Replication preserves every row across its 1001-row flush and final remainder');
+		$pulled = [['id' => 1, 'label' => 'Pulled label', 'retained' => 'Pulled value']];
+		// Failed statements are only visible in the log, so it accompanies a mismatch.
+		$log    = library_captured_log(static function () use ($remote, &$pulled, $table): void {
+			replicate_table_to_poller($remote, $pulled, $table);
+		});
+		library_expect(db_fetch_row('SELECT * FROM `' . $table . '` WHERE id = 1', true, $remote), $pulled[0], 'Collector replication updates existing rows: ' . $log);
+		$empty = [];
+		replicate_out_table($remote, $empty, $table, $poller);
+		library_expect((int) db_fetch_cell('SELECT COUNT(*) FROM `' . $table . '`', '', true, $remote), 0, 'An empty source empties an existing remote table');
+		$data = [];
+
+		// Progress is reported once a table passes 100000 replicated rows.
+		for ($i = 1; $i <= 100100; $i++) {
+			$data[] = ['id' => $i, 'label' => 'R', 'retained' => 'V'];
+		}
+		replicate_out_table($remote, $data, $table, $poller);
+		library_expect((int) db_fetch_cell('SELECT COUNT(*) FROM `' . $table . '`', '', true, $remote), 100100, 'Large replication stores every row');
+		$data = [];
+		library_expect(replicate_out($poller, 'all'), true, 'Full replication reaches the collector');
+		library_expect(db_fetch_cell("SELECT value FROM settings WHERE name = 'log_verbosity'", '', true, $remote), db_fetch_cell("SELECT value FROM settings WHERE name = 'log_verbosity'"), 'Full replication copies shared settings');
+		\CactiLibraryResourceFixture\run();
 		api_device_remove($device);
 		library_expect(db_fetch_cell_prepared('SELECT deleted FROM host WHERE id = ?', [$device]), 'on', 'Primary retains a deletion marker until collector cleanup can complete');
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$device], '', false, $remote), 0, 'Device removal deletes the remote record');

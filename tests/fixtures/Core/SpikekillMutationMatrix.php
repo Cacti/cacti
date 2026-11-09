@@ -366,6 +366,38 @@ if (property_exists(spikekill::class, 'dsfilter')) {
 		spike_matrix_assert(str_contains($result[0], '<v> 0</v><v> 0</v>'), 'Gap filling must retain real zero and replace only the missing sample');
 	};
 }
+$cases['windows-temporary-paths'] = static function () use ($root, $directory): void {
+	global $config;
+	$file   = $root . '/lib/spikekill.php';
+	$source = file_get_contents($file);
+	$offset = strpos($source, "\t\tif (CACTI_SERVER_OS == 'win32') {\n\t\t\t\$this->tempdir");
+	$end    = strpos($source, "\n\t\t}\n", $offset);
+	spike_matrix_assert($offset !== false && $end !== false, 'Missing temporary path block');
+
+	foreach (['options', 'config_options_array'] as $key) {
+		$config[$key]['spikekill_backupdir'] = $directory;
+	}
+	// The namespaced constant makes the unchanged block take its Windows branch on this host.
+	define('CactiSpikeWindows\CACTI_SERVER_OS', 'win32');
+	$line      = substr_count(substr($source, 0, $offset), "\n") + 1;
+	$temporary = tempnam(sys_get_temp_dir(), 'cacti-spike-windows-');
+	file_put_contents($temporary, '<?php namespace CactiSpikeWindows; return function (&$xmlfile, &$bakfile) {' . str_repeat("\n", $line - 1) . substr($source, $offset, $end + 4 - $offset) . '};');
+	$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($file);
+	$spiker                                          = spike_matrix_object();
+	$spiker->rrdfile                                 = 'C:/cacti/rra/traffic_in.rrd';
+	(new ReflectionProperty(spikekill::class, 'seed'))->setValue($spiker, 'abc123');
+
+	try {
+		$probe = (require $temporary)->bindTo($spiker, spikekill::class);
+	} finally {
+		unlink($temporary);
+	}
+	$xmlfile = '';
+	$bakfile = '';
+	$probe($xmlfile, $bakfile);
+	spike_matrix_assert($xmlfile === $directory . '/traffic_in.dump.abc123', 'Windows dump path keeps the RRD name and random seed');
+	spike_matrix_assert($bakfile === $directory . '/traffic_in.backup.abc123.rrd', 'Windows backup path keeps the RRD name and random seed');
+};
 $requested = $argv[1] ?? 'all';
 $passed    = [];
 
