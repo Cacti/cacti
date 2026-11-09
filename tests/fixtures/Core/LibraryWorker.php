@@ -22,6 +22,22 @@ function library_expect(mixed $actual, mixed $expected, string $message): void {
 		throw new RuntimeException($message . ': ' . var_export($actual, true) . ' != ' . var_export($expected, true));
 	}
 }
+/** Import completed child request coverage whose source still matches. */
+function library_import_coverage(array $reports): void {
+	foreach ($reports as $path) {
+		$report = json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+
+		foreach ($report['coverage'] as $file => $lines) {
+			if (hash_file('sha256', $file) !== $report['hashes'][$file]) {
+				throw new RuntimeException('Child coverage does not match ' . $file);
+			}
+
+			foreach ($lines as $line => $hits) {
+				$GLOBALS['cacti_fixture_request_coverage'][$file][$line] = max($hits, $GLOBALS['cacti_fixture_request_coverage'][$file][$line] ?? -2);
+			}
+		}
+	}
+}
 require __DIR__ . '/LibraryPluginCatalog.php';
 library_plugin_catalog();
 $GLOBALS['cacti_fixture_contract']['complete']   = true;
