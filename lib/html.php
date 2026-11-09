@@ -2769,6 +2769,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_css('include/themes/print.css');
 	print get_md5_include_css('include/css/graph_drilldown.css');
+	print get_md5_include_css('include/css/cards.css');
 	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
@@ -2792,6 +2793,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/dygraph-combined.js', true);
 	print get_md5_include_js('include/js/d3.js');
 	print get_md5_include_js('include/js/billboard.js');
+	print get_md5_include_js('include/js/cards.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/js/purify.js');
