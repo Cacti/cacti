@@ -9,6 +9,8 @@ on:
       - 'package_repos.php'
       - 'lib/functions.php'
       - 'lib/html.php'
+      - 'lib/html_reports.php'
+      - 'lib/reports.php'
       - 'include/layout.js'
       - 'include/css/graph_drilldown.css'
       - 'include/themes/**/main.css'
