@@ -9,6 +9,7 @@
         <testsuite name="RrdCapabilities">
             <file>integration/AggregateCreationIntegrationTest.php</file>
             <file>Unit/Ui/Aggregate/AggregatePtileTypeTest.php</file>
+            <file>Unit/Core/ScriptQueryPathTest.php</file>
             <file>Unit/Core/Php85CompatibilityTest.php</file>
             <file>Unit/Core/ManagementSaveTest.php</file>
             <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>
