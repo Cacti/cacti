@@ -244,6 +244,7 @@ Cacti CHANGELOG
 -issue#8642: Preserve data-query caches and retries after failed discovery and bound reindex identity lookups
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
+-issue#8670: Keep tree search results within viewable trees and graphs, reject tree moves that would create a cycle or cross trees, and stop tree walks at a stored parent cycle
 -issue#8745: Stop bracketing IPv4 and hostname SNMP targets on a non-default port so php-snmp gets and availability checks resolve them
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path
