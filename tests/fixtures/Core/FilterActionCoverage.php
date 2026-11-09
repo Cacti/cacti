@@ -13,18 +13,49 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 3) . '/include/global.php';
 
-$cases = [];
+/**
+ * Rebuild the URL a generated filter function requests, reading each field
+ * control the way the browser does, so the test checks the decoded result
+ * rather than the escaping used to embed it.
+ */
+function filter_action_url(string $script, string $function, array $values) : string {
+	if (!preg_match('/function ' . $function . '\(\) \{\s*strURL = (.*?);?\n/', $script, $match)) {
+		throw new RuntimeException("The $function URL is missing.");
+	}
+	$url = '';
+
+	foreach (explode(' + ', $match[1]) as $term) {
+		if (preg_match('/^\$\(\'#(\w+)\'\)\.is\(\':checked\'\)$/', $term, $field)) {
+			$url .= $values[$field[1]] === 'on' ? 'true' : 'false';
+		} elseif (preg_match('/^\$\(\'#(\w+)\'\)\.val\(\)$/', $term, $field)) {
+			$url .= $values[$field[1]];
+		} elseif (preg_match('/^base64_encode\(\$\(\'#(\w+)\'\)\.val\(\)\)$/', $term, $field)) {
+			$url .= base64_encode($values[$field[1]]);
+		} else {
+			$literal = json_decode($term, false, 512, JSON_THROW_ON_ERROR);
+
+			if (!is_string($literal)) {
+				throw new RuntimeException("The $function URL has an unexpected term.");
+			}
+			$url .= $literal;
+		}
+	}
+
+	return $url;
+}
+
+$cases = 0;
 
 foreach (['legacy', 'modern'] as $format) {
 	foreach (["graphs.php?filter=Bob's switch", 'graphs.php?filter=</script><em>Literal</em>&other=&quot;', 'graphs.php'] as $action) {
 		foreach ([[], ['rows' => [[]]], ['rows' => [[
 			'enabled' => ['method' => 'filter_checkbox', 'friendly_name' => 'Enabled', 'value' => 'on'],
-			'filter'  => ['method' => 'textbox', 'friendly_name' => 'Search', 'value' => 'hello'],
-			'rfilter' => ['method' => 'textbox', 'friendly_name' => 'Regular expression', 'value' => 'hello']
+			'filter'  => ['method' => 'textbox', 'friendly_name' => 'Search', 'value' => 'hello', 'max_length' => '120'],
+			'rfilter' => ['method' => 'textbox', 'friendly_name' => 'Regular expression', 'value' => 'hello', 'max_length' => '120']
 		]]]] as $fields) {
 			$filter                 = (new ReflectionClass(CactiTableFilter::class))->newInstanceWithoutConstructor();
 			$filter->form_action    = $action;
@@ -49,9 +80,16 @@ foreach (['legacy', 'modern'] as $format) {
 			if ($document->getElementsByTagName('em')->length !== 0 || count($scripts) !== ($format === 'modern' ? 2 : 1)) {
 				throw new RuntimeException('Filter action escaped its output context.');
 			}
-			$prefix  = $action . (str_contains($action, '?') ? '&' : '?');
-			$cases[] = ['scripts' => $scripts, 'apply' => $prefix . (empty($fields['rows'][0]) ? '' : 'enabled=true&filter=hello&rfilter=aGVsbG8='), 'clear' => $prefix . 'clear=true'];
+			$prefix = $action . (str_contains($action, '?') ? '&' : '?');
+			$values = array_map(static fn (array $field) : string => $field['value'], $fields['rows'][0] ?? []);
+			$script = implode("\n", $scripts);
+
+			if (filter_action_url($script, 'applyFilter', $values) !== $prefix . ($values === [] ? '' : 'enabled=true&filter=hello&rfilter=aGVsbG8=')
+				|| filter_action_url($script, 'clearFilter', $values) !== $prefix . 'clear=true') {
+				throw new RuntimeException('Filter action URLs changed.');
+			}
+			$cases++;
 		}
 	}
 }
-print json_encode($cases, JSON_THROW_ON_ERROR);
+print json_encode(['passed' => $cases], JSON_THROW_ON_ERROR) . "\n";
