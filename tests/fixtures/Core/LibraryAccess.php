@@ -71,6 +71,8 @@ function library_access(int $graph, int $device, int $template, int $tree, int $
 				$trees    = get_allowed_trees(false, false, 'gt.id = ' . $tree, 'name', '0,1', $total, $user);
 				library_expect(array_map('intval', array_column($trees, 'id')), $expected ? [$tree] : [], 'Only enabled group grants admit a tree');
 				library_expect($total, (int) $expected, 'Tree count agrees with visible rows');
+				$every = get_allowed_trees(false, false, '', 'name', '', $total, $user);
+				library_expect(in_array($tree, array_map('intval', array_column($every, 'id')), true), $expected, 'An unfiltered tree listing applies the same grants');
 				$sql = get_allowed_trees(false, true, 'gt.id = ' . $tree, 'name', '0,1', $total, $user);
 				library_expect(db_fetch_assoc($sql), $trees, 'Returned tree SQL has the same visibility as the public query');
 				$branches = get_allowed_branches('gt.id = ' . $tree, 'name', '-1', $total, $user);
@@ -87,6 +89,7 @@ function library_access(int $graph, int $device, int $template, int $tree, int $
 		$_SESSION = [SESS_USER_ID => $user];
 		library_expect(is_tree_branch_empty($tree, $branch), false, 'The same branch is populated after a graph grant');
 		library_expect(is_tree_branch_empty($tree), false, 'The visible graph makes its ancestor branch nonempty');
+		library_access_site_branch($user, $graph, $device, $tree);
 		$requestState = [$_REQUEST, $GLOBALS['_CACTI_REQUEST']];
 
 		try {
@@ -161,5 +164,32 @@ function library_user_menu(int $user): void {
 		$dom      = library_form_dom(static fn () => draw_login_status(true));
 		library_expect($dom->evaluate('string(//span[@id="user"])'), 'guest', 'Guest menu identifies the guest session');
 		library_expect($dom->query('//a[contains(@href,"login=true")]')->length, (int) ($auth !== (string) AUTH_METHOD_BASIC), 'Guest login action matches the authentication method');
+	}
+}
+
+/** A branch holding only a site leaf is populated exactly when one of the site's devices is visible. */
+function library_access_site_branch(int $user, int $graph, int $device, int $tree): void {
+	$site       = (int) sql_save(['id' => 0, 'name' => 'Access fixture site'], 'sites');
+	$siteBranch = (int) sql_save(['id' => 0, 'graph_tree_id' => $tree, 'parent' => 0, 'position' => 99, 'title' => 'Site fixture branch', 'local_graph_id' => 0, 'host_id' => 0, 'site_id' => 0], 'graph_tree_items');
+	$siteLeaf   = (int) sql_save(['id' => 0, 'graph_tree_id' => $tree, 'parent' => $siteBranch, 'position' => 1, 'title' => '', 'local_graph_id' => 0, 'host_id' => 0, 'site_id' => $site], 'graph_tree_items');
+	library_expect($site > 0 && $siteBranch > 0 && $siteLeaf > 0, true, 'Site branch fixture persists');
+	$deviceSite = (int) db_fetch_cell_prepared('SELECT site_id FROM host WHERE id = ?', [$device]);
+	db_execute_prepared('UPDATE host SET site_id = ? WHERE id = ?', [$site, $device]);
+
+	try {
+		$_SESSION = [SESS_USER_ID => $user];
+		auth_row_cache_purge($user);
+		library_expect(is_tree_branch_empty($tree, $siteBranch), false, 'A site leaf with a visible device populates its branch');
+		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 1', [$user, $graph]);
+		$_SESSION = [SESS_USER_ID => $user];
+		auth_row_cache_purge($user);
+		library_expect(is_tree_branch_empty($tree, $siteBranch), true, 'A site leaf whose devices are all hidden leaves its branch empty');
+	} finally {
+		db_execute_prepared('INSERT IGNORE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 1)', [$user, $graph]);
+		auth_row_cache_purge($user);
+		$_SESSION = [SESS_USER_ID => $user];
+		db_execute_prepared('UPDATE host SET site_id = ? WHERE id = ?', [$deviceSite, $device]);
+		db_execute_prepared('DELETE FROM graph_tree_items WHERE id IN (?, ?)', [$siteBranch, $siteLeaf]);
+		db_execute_prepared('DELETE FROM sites WHERE id = ?', [$site]);
 	}
 }
