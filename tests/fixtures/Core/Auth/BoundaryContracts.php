@@ -13,7 +13,8 @@
 */
 
 $root = dirname(__DIR__, 4);
-require $root . '/tests/Helpers/RequestCoverage.php';
+// Publishes Xdebug evidence to the changed-line gate, or to the request gate.
+require $root . '/tests/Helpers/FixtureCoverage.php';
 require $root . '/tests/bootstrap-unit.php';
 require $root . '/tests/Helpers/FakeMySQLPDO.php';
 require $root . '/tests/Helpers/SourceSlice.php';
@@ -106,6 +107,44 @@ try {
 
 	if ($_SESSION['selected_theme'] !== 'kept') {
 		throw new RuntimeException('Native theme selection changed the theme without a request.');
+	}
+
+	// Run the checked-in web bootstrap statement and change-password username
+	// cell in place, keeping their line numbers, without dispatching either page.
+	$slices = [
+		'include/global.php'      => ['/^\tcacti_apply_newtheme_request\(\);$/m', '<?php '],
+		'auth_changepassword.php' => ['/^\t\t<td class=\'nowrap\'><input type=\'hidden\' id=\'current\'[^\n]*$/m', ''],
+	];
+	$_REQUEST['newtheme'] = '../themes/modern';
+	$user                 = ['username' => '<img src=x onerror=alert(4)>'];
+	$output               = [];
+
+	foreach ($slices as $file => [$pattern, $prefix]) {
+		$source = file_get_contents($root . '/' . $file);
+
+		if (preg_match_all($pattern, $source, $matches, PREG_OFFSET_CAPTURE) !== 1) {
+			throw new RuntimeException('Expected statement is missing from ' . $file);
+		}
+		$line      = substr_count(substr($source, 0, $matches[0][0][1]), "\n") + 1;
+		$temporary = tempnam(sys_get_temp_dir(), 'cacti-boundary-slice-');
+		file_put_contents($temporary, $prefix . str_repeat("\n", $line - 1) . $matches[0][0][0] . "\n");
+		$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($root . '/' . $file);
+
+		try {
+			ob_start();
+			require $temporary;
+			$output[$file] = ob_get_clean();
+		} finally {
+			unlink($temporary);
+		}
+	}
+
+	if ($_SESSION['selected_theme'] !== 'modern') {
+		throw new RuntimeException('The web bootstrap did not reduce the requested theme.');
+	}
+
+	if (str_contains($output['auth_changepassword.php'], '<img src=x') || !str_contains($output['auth_changepassword.php'], '&lt;img src=x')) {
+		throw new RuntimeException('The change-password username cell did not escape the username.');
 	}
 
 	print "Native authentication, repository, metadata, and theme contracts passed.\n";

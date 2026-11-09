@@ -36,6 +36,9 @@ if [[ -f tests/fixtures/Core/RowGuardMatrix.php ]]; then
 		run_probe RowGuardMatrix.php "row-guard-$mode" "$mode"
 	done
 fi
+if [[ -f tests/fixtures/Core/Auth/BoundaryContracts.php ]]; then
+	run_probe Auth/BoundaryContracts.php AuthBoundaryContracts
+fi
 if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-get GET '' mutation
 	run_probe SpikekillRequestGate.php spike-dry GET dryrun mutation
