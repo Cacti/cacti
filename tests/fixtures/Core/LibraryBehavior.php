@@ -214,6 +214,8 @@ foreach (['snmp_community' => 'public', 'snmp_username' => 'user', 'snmp_passwor
 	library_expect($stored[$field], $expected, 'Control bytes are removed from ' . $field);
 }
 library_expect($stored['disabled'], 'on', 'Creation preserves disabled state');
+library_expect(library_save_device(['id' => $device, 'snmp_password' => 'rotatedpassword']), $device, 'Rotating SNMPv3 credentials preserves device identity');
+library_expect(db_fetch_cell_prepared('SELECT snmp_password FROM host WHERE id = ?', [$device]), 'rotatedpassword', 'Rotated SNMPv3 credential persists');
 library_expect(library_save_device(['id' => $device, 'description' => 'Updated fixture', 'snmp_version' => 0]), $device, 'Updating preserves device identity');
 $stored = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$device]);
 library_expect($stored['description'], 'Updated fixture', 'Device description persists');
@@ -292,6 +294,8 @@ library_expect(api_duplicate_device_template(0, 'Missing template'), false, 'Mis
 $suggested  = [];
 require __DIR__ . '/LibraryDevices.php';
 library_device_templates($deviceTemplateId);
+library_device_template_clones($deviceTemplateId, $interfaceQuery);
+library_device_template_downloads();
 
 $created    = create_complete_graph_from_template($templateId, $device, [], $suggested);
 library_expect(is_array($created), true, 'Graph creation returns its identities');
@@ -380,6 +384,7 @@ library_report_queue();
 
 require __DIR__ . '/LibraryGraphOptions.php';
 library_graph_options($graphId, $graphOptions);
+library_graph_totals($graphId, $graphOptions);
 require __DIR__ . '/LibraryGraphCache.php';
 library_graph_cache($graphId, $graphOptions);
 
@@ -433,6 +438,7 @@ foreach ([AGGREGATE_TOTAL_NONE, AGGREGATE_TOTAL_ALL, AGGREGATE_TOTAL_ONLY] as $t
 	library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graphs_items WHERE aggregate_graph_id = ?', [$aggregate['id']]), 0, 'Removing aggregate clears membership');
 	library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_local WHERE id IN (?, ?)', [$graphId, $secondGraphId]), 2, 'Removing aggregate preserves member graphs');
 }
+library_aggregate_totals($graphId, $secondGraphId, $templateId, $attributes);
 
 // Explicit truth tables from the four documented graph permission models.
 // Bits identify a graph, device, or template grant respectively.
@@ -571,6 +577,7 @@ library_storage($templateId);
 library_business_hours($graphId);
 library_forms();
 library_template_forms($graphId);
+library_graph_template_repairs($graphId, $templateId);
 require __DIR__ . '/LibraryRuntime.php';
 library_runtime();
 require __DIR__ . '/LibraryErrorHandling.php';
@@ -686,11 +693,12 @@ foreach ([1, 2] as $deleteType) {
 // Fail actual SQL statements, after earlier cleanup has already run. The retry
 // must retain the device and its dependencies until the whole operation succeeds.
 foreach ([false, true] as $bulk) {
-	foreach (['host_value_cache', 'host'] as $failureTable) {
+	foreach (['host_value_cache', 'poller_reindex', 'host'] as $failureTable) {
 		$failureDevice = library_save_device(['description' => 'Rollback fixture', 'snmp_version' => 0]);
 		library_expect($failureDevice > 0, true, 'Rollback device exists');
 		library_expect(db_execute_prepared('INSERT INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', [$failureDevice, $templateId]), true, 'Early cleanup dependency exists');
 		library_expect(db_execute_prepared('INSERT INTO host_value_cache (host_id, dimension, value) VALUES (?, ?, ?)', [$failureDevice, 'rollback', 'preserve']), true, 'Later cleanup dependency exists');
+		library_expect(db_execute_prepared('INSERT INTO poller_reindex (host_id, data_query_id, arg1) VALUES (?, ?, ?)', [$failureDevice, 1, 'rollback']), true, 'Poller reindex dependency exists');
 		$idColumn = $failureTable === 'host' ? 'id' : 'host_id';
 		library_expect(db_execute("CREATE TRIGGER library_delete_failure BEFORE DELETE ON $failureTable FOR EACH ROW BEGIN IF OLD.$idColumn = $failureDevice THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'library cleanup failure'; END IF; END"), true, 'Database failure injection is installed');
 		$_SESSION['sess_messages'] = [];
@@ -706,6 +714,7 @@ foreach ([false, true] as $bulk) {
 			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$failureDevice]), 1, 'Failed deletion preserves the device');
 			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$failureDevice]), 1, 'Failed deletion rolls back earlier cleanup');
 			library_expect(db_fetch_cell_prepared('SELECT value FROM host_value_cache WHERE host_id = ?', [$failureDevice]), 'preserve', 'Failed deletion preserves later dependencies');
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_reindex WHERE host_id = ?', [$failureDevice]), 1, 'Failed deletion preserves poller reindex state');
 		} finally {
 			library_expect(db_execute('DROP TRIGGER library_delete_failure'), true, 'Only the fixture trigger is removed');
 		}
@@ -720,6 +729,7 @@ foreach ([false, true] as $bulk) {
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE id = ?', [$failureDevice]), 0, 'Retry deletes the preserved device');
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_graph WHERE host_id = ?', [$failureDevice]), 0, 'Retry cleans up early dependency');
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_value_cache WHERE host_id = ?', [$failureDevice]), 0, 'Retry cleans up later dependency');
+		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM poller_reindex WHERE host_id = ?', [$failureDevice]), 0, 'Retry cleans up poller reindex state');
 	}
 }
 

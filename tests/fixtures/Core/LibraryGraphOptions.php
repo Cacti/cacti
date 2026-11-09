@@ -110,3 +110,25 @@ function library_graph_options(int $graph, array $options): void {
 		set_config_option('enable_rrdtool_gradient_support', $previousGradient);
 	}
 }
+
+/** Peak percentiles and summation legends read the fixture's stored samples. */
+function library_graph_totals(int $graph, array $options): void {
+	require_once CACTI_PATH_LIBRARY . '/graph_variables.php';
+	$items = db_fetch_assoc_prepared('SELECT gti.*, dtr.local_data_id, dtr.data_source_name, dtr.id AS data_template_rrd_id FROM graph_templates_item AS gti INNER JOIN data_template_rrd AS dtr ON dtr.id = gti.task_item_id WHERE gti.local_graph_id = ? ORDER BY gti.sequence', [$graph]);
+	library_expect(count($items) > 0, true, 'Summation fixture uses stored series');
+	$item  = $items[0];
+	$local = (int) $item['local_data_id'];
+	library_expect(rrdtool_function_contains_cf($local, 'MAX'), true, 'Fixture RRD keeps a MAX archive');
+	$peak = nth_percentile([$local => [$item['data_source_name']]], (int) $options['graph_start'], (int) $options['graph_end'], 95, 0, true);
+	library_expect((float) ($peak[$item['data_source_name']] ?? 0), 12.5, 'Peak percentile is computed from the stored MAX samples');
+	$settings = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', [$graph]);
+	$results  = [];
+	$step     = (int) rrdtool_function_info($local)['step'];
+
+	foreach (['total', 'atomic'] as $type) {
+		$match           = ['|sum:0:' . $type . ':2:auto|', '0', $type, '2', 'auto'];
+		$results[$type]  = variable_bandwidth_summation($match, $settings, $item, $items, (int) $options['graph_start'], (int) $options['graph_end'], 1, $step);
+		// Three stored gauge samples of 12.5 span the legend window.
+		library_expect((float) str_replace(',', '', trim($results[$type])), 12.5 * 3 * $step, 'Summation legend totals the stored samples for ' . $type);
+	}
+}
