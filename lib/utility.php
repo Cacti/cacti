@@ -1668,22 +1668,6 @@ function utilities_get_mysql_recommendations() : int {
 	];
 
 	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
-		if (version_compare($link_ver, '5.5', '>=')) {
-			if (!isset($variables['innodb_version'])) {
-				$recommendations += [
-					'innodb' => [
-						'value'   => 'ON',
-						'class'   => 'warning',
-						'measure' => 'equalint',
-						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.',
-							$database)
-					]
-				];
-
-				$variables['innodb'] = 'UNSET';
-			}
-		}
-
 		$recommendations += [
 			'collation_server' => [
 				'value'   => 'utf8mb4_unicode_ci',

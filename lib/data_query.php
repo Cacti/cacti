@@ -1554,12 +1554,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 							$value_output_format);
 					}
 
-					if (!cacti_sizeof($results) && $field_name == $sort_field) {
-						query_debug_timer_offset('data_query',
-							__esc('Sort field returned no data for Host[%s] DQ[%s], skipping.',
-								$host_id,
-								$snmp_query_id));
-					} elseif (cacti_sizeof($results)) {
+					if (cacti_sizeof($results)) {
 						foreach ($results as $key => $value) {
 							debug_log_insert('data_query',
 								__esc('Found result for data @ \'%s\' [value=\'%s\']',
@@ -2743,8 +2738,6 @@ function get_ordered_index_type_list(int $host_id, int $data_query_id) : array {
 		return [];
 	}
 
-	$must_be_numeric = false;
-	$must_be_alpha   = false;
 	$order_found     = true;
 	$order_unknown   = false;
 	$nonunique       = false;
@@ -2890,41 +2883,6 @@ function get_ordered_index_type_list(int $host_id, int $data_query_id) : array {
 				}
 
 				continue;
-			}
-
-			// TODO: I think there was a plan here, not sure what it was.
-			if ($must_be_alpha || $must_be_numeric) { // @phpstan-ignore-line
-				// create a list of all values for this index
-				$field_values = db_fetch_assoc_prepared('SELECT field_value
-					FROM host_snmp_cache
-					WHERE host_id = ?
-					AND snmp_query_id = ?
-					AND field_name = ?',
-					[$host_id, $data_query_id, $field_name]);
-
-				if (cacti_sizeof($field_values)) {
-					foreach ($field_values as $value) {
-						if ($must_be_numeric && !is_numeric($value)) {
-							if (read_config_option('data_source_trace') == 'on') {
-								cacti_log("Field Name '$field_name' found not suitable.  Must be numeric and non-numeric data found during Re-Index for Device[$host_id], DQ[$data_query_id]",
-									false,
-									'DSTRACE');
-							}
-
-							continue;
-						}
-
-						if ($must_be_alpha && is_numeric($value)) { // @phpstan-ignore-line
-							if (read_config_option('data_source_trace') == 'on') {
-								cacti_log("Field Name '$field_name' found not suitable.  Must be alphabetic and alphabetic data found during Re-Index for Device[$host_id], DQ[$data_query_id]",
-									false,
-									'DSTRACE');
-							}
-
-							continue;
-						}
-					}
-				}
 			}
 
 			if (read_config_option('data_source_trace') == 'on') {

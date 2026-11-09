@@ -8822,35 +8822,19 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 							cacti_log(cacti_strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_template_rrd',
 								false);
 
+							// Each row holds a single field id, so a damaged row is never also
+							// the good row; repoint it rather than looking for a duplicate.
 							foreach ($bad_mappings as $mfid) {
-								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
-									FROM data_template_rrd
+								cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing',
+									false,
+									'WEBUI',
+									POLLER_VERBOSITY_DEVDBG);
+
+								db_execute_prepared('UPDATE data_template_rrd
+									SET data_input_field_id = ?
 									WHERE data_input_field_id = ?
 									AND id = ?',
-									[$good_field_id, $mfid['id']]);
-
-								if ($good_found > 0) {
-									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing',
-										false,
-										'WEBUI',
-										POLLER_VERBOSITY_DEVDBG);
-
-									db_execute_prepared('DELETE FROM data_template_rrd
-										WHERE data_input_field_id = ?
-										AND id = ?',
-										[$mfid['data_input_field_id'], $mfid['id']]);
-								} else {
-									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing',
-										false,
-										'WEBUI',
-										POLLER_VERBOSITY_DEVDBG);
-
-									db_execute_prepared('UPDATE data_template_rrd
-										SET data_input_field_id = ?
-										WHERE data_input_field_id = ?
-										AND id = ?',
-										[$good_field_id, $mfid['data_input_field_id'], $mfid['id']]);
-								}
+									[$good_field_id, $mfid['data_input_field_id'], $mfid['id']]);
 							}
 						} else {
 							cacti_log('No Bad Data Template RRD Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
@@ -10464,26 +10448,16 @@ function cacti_cookie_set($session, $val, $timeout = null) : void {
 
 	$secure = cacti_is_https();
 
-	if (version_compare(PHP_VERSION, '7.3', '>=')) {
-		$options = [
-			'path'     => CACTI_PATH_URL,
-			'expires'  => $timeout ?? (time() + 3600),
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true,
-			'samesite' => 'Strict'
-		];
+	$options = [
+		'path'     => CACTI_PATH_URL,
+		'expires'  => $timeout ?? (time() + 3600),
+		'domain'   => $domain,
+		'secure'   => $secure,
+		'httponly' => true,
+		'samesite' => 'Strict'
+	];
 
-		setcookie((string) $session, $val, $options);
-	} else {
-		setcookie((string) $session,
-			$val,
-			['expires' => time() + 3600,
-			'path'     => CACTI_PATH_URL,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true]);
-	}
+	setcookie((string) $session, $val, $options);
 }
 
 /**
@@ -10507,29 +10481,17 @@ function cacti_cookie_logout() : void {
 		(string) session_name() . '_otp',
 		'cacti_remembers'];
 
-	if (version_compare(PHP_VERSION, '7.3', '>=')) {
-		$options = [
-			'path'     => CACTI_PATH_URL,
-			'expires'  => time() - 3600,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true,
-			'samesite' => 'Strict'
-		];
+	$options = [
+		'path'     => CACTI_PATH_URL,
+		'expires'  => time() - 3600,
+		'domain'   => $domain,
+		'secure'   => $secure,
+		'httponly' => true,
+		'samesite' => 'Strict'
+	];
 
-		foreach ($cookies as $cookie) {
-			setcookie($cookie, '', $options);
-		}
-	} else {
-		foreach ($cookies as $cookie) {
-			setcookie($cookie,
-				'',
-				['expires' => time() - 3600,
-				'path'     => CACTI_PATH_URL,
-				'domain'   => $domain,
-				'secure'   => $secure,
-				'httponly' => true]);
-		}
+	foreach ($cookies as $cookie) {
+		setcookie($cookie, '', $options);
 	}
 
 	unset($_COOKIE[$config[CACTI_SESSION_NAME]]);
@@ -10559,26 +10521,16 @@ function cacti_cookie_session_set(string $user, int $realm, string $nssecret) : 
 
 	$_SESSION['cacti_remembers'] = true;
 
-	if (version_compare(PHP_VERSION, '7.3', '>=')) {
-		$options = [
-			'path'     => CACTI_PATH_URL,
-			'expires'  => time() + (86400 * 30),
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true,
-			'samesite' => 'Strict'
-		];
+	$options = [
+		'path'     => CACTI_PATH_URL,
+		'expires'  => time() + (86400 * 30),
+		'domain'   => $domain,
+		'secure'   => $secure,
+		'httponly' => true,
+		'samesite' => 'Strict'
+	];
 
-		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, $options);
-	} else {
-		setcookie('cacti_remembers',
-			$user . ',' . $realm . ',' . $nssecret,
-			['expires' => time() + (86400 * 30),
-			'path'     => CACTI_PATH_URL,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true]);
-	}
+	setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, $options);
 }
 
 /**
@@ -10597,26 +10549,16 @@ function cacti_cookie_session_logout() : void {
 
 	$secure = cacti_is_https();
 
-	if (version_compare(PHP_VERSION, '7.3', '>=')) {
-		$options = [
-			'path'     => CACTI_PATH_URL,
-			'expires'  => time() - 3600,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true,
-			'samesite' => 'Strict'
-		];
+	$options = [
+		'path'     => CACTI_PATH_URL,
+		'expires'  => time() - 3600,
+		'domain'   => $domain,
+		'secure'   => $secure,
+		'httponly' => true,
+		'samesite' => 'Strict'
+	];
 
-		setcookie('cacti_remembers', '', $options);
-	} else {
-		setcookie('cacti_remembers',
-			'',
-			['expires' => time() - 3600,
-			'path'     => CACTI_PATH_URL,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true]);
-	}
+	setcookie('cacti_remembers', '', $options);
 }
 
 /**
