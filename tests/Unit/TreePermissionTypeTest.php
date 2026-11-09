@@ -33,7 +33,7 @@ function read_config_option(string $name, bool $force = false) : mixed {
 	return $name == 'auth_method' ? 1 : '';
 }
 
-foreach (['auth_check_perms', 'is_tree_allowed'] as $function) {
+foreach (['auth_check_perms', 'is_tree_allowed', 'get_simple_device_perms'] as $function) {
 	cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/auth.php', $function, __NAMESPACE__);
 }
 
@@ -125,4 +125,18 @@ test('user tree exceptions keep their existing meaning', function () {
 	seed(1);
 	user_perm(TREE, 1);
 	expect(tree_allowed())->toBeTrue();
+});
+
+test('simple device permissions count device exceptions, not tree exceptions', function () {
+	seed(1, 1);
+	user_perm(9, 3);
+	expect(get_simple_device_perms(USER))->toBeFalse();
+
+	seed(1, 1);
+	user_perm(9, 2);
+	expect(get_simple_device_perms(USER))->toBeTrue();
+
+	seed(2, 2);
+	group(1, 1, [[9, 3]], 'on', 1);
+	expect(get_simple_device_perms(USER))->toBeFalse();
 });
