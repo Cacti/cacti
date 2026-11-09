@@ -4,6 +4,7 @@ Backported changes
 -issue: Guard three divisors that are fatal on PHP 8 (aggregate color templates, report mail time, MySQL recommendations)
 -issue: Restore RRDproxy encryption with the bundled phpseclib 3
 -issue: #7212: Address a few small memory leaks in realtime graphing
+-issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
 -issue#8557: Avoid the PHP 8.4+ $http_response_header deprecation in cacti_http()
 
 1.2.31
