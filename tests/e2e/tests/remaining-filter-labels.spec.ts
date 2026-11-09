@@ -39,13 +39,17 @@ test.beforeAll(async ({ browser }) => {
     let aggregate = page.getByRole('link', { name: 'E2E aggregate', exact: true });
     if (!await aggregate.count()) {
         await page.goto('/graphs.php');
-        const checkbox = page.locator('tr#line1 input[type="checkbox"]');
+        const checkbox = page.locator('tr[id^="line"] input[type="checkbox"]').first();
+        await expect(checkbox).toBeVisible();
         await checkbox.check();
         await page.locator('#drp_action').selectOption('9');
         await page.getByRole('button', { name: 'Go', exact: true }).last().click();
+        await expect(page.locator('#title_format')).toBeVisible();
         await page.locator('#title_format').fill('E2E aggregate');
         const total = page.locator('input[id^="agg_total"]').first();
-        await total.check();
+        if (await total.count()) {
+            await total.check();
+        }
         await page.getByRole('button', { name: 'Continue', exact: true }).click();
         await page.goto('/aggregate_graphs.php');
         aggregate = page.getByRole('link', { name: 'E2E aggregate', exact: true });
