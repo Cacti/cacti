@@ -147,6 +147,28 @@ function library_web(): void {
 		$invalid = $request('host.php?action=edit&id=invalid-fixture');
 		library_expect(str_contains($invalid->document->textContent, 'Validation error for variable'), true, 'Invalid device ID renders a controlled HTML validation error');
 		library_expect($invalid->query('//input[@name="description"]')->length, 0, 'Invalid device ID never reaches an editable form');
+		$raw = static function (string $path, array $headers) use ($client, $base): array {
+			curl_setopt_array($client, [CURLOPT_URL => $base . '/' . $path, CURLOPT_POST => false, CURLOPT_HTTPHEADER => $headers]);
+
+			try {
+				$body = curl_exec($client);
+				library_expect(is_string($body), true, 'HTTP response exists for ' . $path . ': ' . curl_error($client));
+
+				return [curl_getinfo($client, CURLINFO_RESPONSE_CODE), $body];
+			} finally {
+				curl_setopt($client, CURLOPT_HTTPHEADER, []);
+			}
+		};
+		[$status, $body] = $raw('host.php?action=edit&id=invalid-fixture&json=1', []);
+		// The edit page has already sent its layout when the ID is validated, so the JSON error follows it.
+		library_expect(preg_match('/(\{"status":.*?\})(?:<script|$)/s', $body, $match), 1, 'A JSON request receives a structured validation error');
+		$error = json_decode($match[1], true, 512, JSON_THROW_ON_ERROR);
+		library_expect($error['status'], '500', 'A JSON validation error reports a server-side rejection');
+		library_expect(str_contains($error['responseText'], 'Validation error for variable'), true, 'JSON validation error explains the rejected input');
+		[$status, $body] = $raw('permission_denied.php', ['X-Requested-With: XMLHttpRequest']);
+		library_expect($status, 401, 'An AJAX permission denial uses an HTTP authorization status');
+		library_expect(str_starts_with($body, 'You are not permitted to access this section of Cacti.'), true, 'AJAX permission denial returns only its message: ' . $body);
+		library_expect(str_contains($body, '<html'), false, 'AJAX permission denial omits the page layout');
 		cacti_log('Native HTTP fixture log marker', false, 'SYSTEM');
 		$log = $request('clog.php?filename=cacti.log');
 		library_expect(str_contains($log->document->textContent, 'Native HTTP fixture log marker'), true, 'Log viewer renders the actual stored entry');
@@ -211,7 +233,7 @@ function library_web(): void {
 		}
 		set_config_option('auth_method', $authMethod);
 		$reports = glob($temporary . '/coverage/*.json');
-		library_expect(count($reports) >= count($pages) + 9 + 4 + 4 + 1 + 3, true, 'Every HTTP scenario produces native coverage');
+		library_expect(count($reports) >= count($pages) + 9 + 4 + 4 + 1 + 3 + 2, true, 'Every HTTP scenario produces native coverage');
 
 		library_import_coverage($reports);
 		library_expect(count($GLOBALS['cacti_fixture_request_coverage'] ?? []) > 0, true, 'Completed HTTP scenarios retain matching source coverage');
