@@ -3152,7 +3152,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 							$action      = POLLER_ACTION_SCRIPT;
 							$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 
-							// shell_exec('') throws a ValueError on PHP 8.
+							// Running an empty command throws a ValueError on PHP 8.
 							if ($script_path === '') {
 								return false;
 							}
