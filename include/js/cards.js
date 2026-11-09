@@ -46,6 +46,45 @@ window.CactiCards = window.CactiCards || (function() {
 		return card.getAttribute(adapter.idAttr || 'data-card');
 	}
 
+	/* Locate the live card element for an id, used to re-resolve a reference that
+	 * an overlapping replacement may have detached. */
+	function findCard(grid, adapter, id) {
+		var match = null;
+		if (id == null) {
+			return null;
+		}
+		grid.querySelectorAll(cardSel(adapter)).forEach(function(card) {
+			if (match === null && cardId(card, adapter) === id) {
+				match = card;
+			}
+		});
+		return match;
+	}
+
+	/* Keep the documented data-* contract (data-expandable / data-expanded) in
+	 * sync with the classes the CSS clipping and serialize() rely on, so a host
+	 * may drive card state through either representation. Called whenever a card
+	 * is (re)bound: initial, added, or refreshed. */
+	function normalizeState(card) {
+		var expandable = card.getAttribute('data-expandable');
+		if (expandable === '1' || expandable === 'true') {
+			card.classList.add('ccCardExpandable');
+		} else if (expandable != null) {
+			card.classList.remove('ccCardExpandable');
+		}
+		if (card.classList.contains('ccCardExpandable')) {
+			card.setAttribute('data-expandable', '1');
+		}
+
+		var expanded = card.getAttribute('data-expanded');
+		if (expanded === '1' || expanded === 'true') {
+			card.classList.add('ccCardExpanded');
+		} else if (expanded != null) {
+			card.classList.remove('ccCardExpanded');
+		}
+		card.setAttribute('data-expanded', card.classList.contains('ccCardExpanded') ? '1' : '0');
+	}
+
 	/* Collect the current order and per-card state for persistence. */
 	function serialize(grid, adapter) {
 		var order = [];
@@ -80,22 +119,30 @@ window.CactiCards = window.CactiCards || (function() {
 		}, 250);
 	}
 
-	/* The card the pointer is currently over, used as the drop insertion point. */
+	/* The insertion reference for a drop: the first card that follows the pointer
+	 * in reading order. Resolve the pointer's row before comparing horizontal
+	 * centres so dragging over a later card in a row no longer snaps the
+	 * insertion point back to the start of that row. */
 	function dragReference(grid, adapter, x, y) {
 		var cards = Array.prototype.slice.call(grid.querySelectorAll(cardSel(adapter) + ':not(.ccCardDragging)'));
-		var ref = null;
+		var rowMatch = null;   // first card in the pointer's row whose centre is past x
+		var belowMatch = null; // first card that begins in a row below the pointer
 
 		cards.forEach(function(card) {
 			var box = card.getBoundingClientRect();
-			// Insert before the first card whose centre is past the pointer.
-			if (y < box.top + box.height / 2 || (y < box.bottom && x < box.left + box.width / 2)) {
-				if (ref === null) {
-					ref = card;
+			if (y >= box.top && y <= box.bottom) {
+				// Pointer is within this card's row band: compare horizontally.
+				if (rowMatch === null && x < box.left + box.width / 2) {
+					rowMatch = card;
 				}
+			} else if (y < box.top && belowMatch === null) {
+				// This card starts in a row below the pointer; it ends the
+				// pointer's row when nothing in that row is past the pointer.
+				belowMatch = card;
 			}
 		});
 
-		return ref;
+		return rowMatch || belowMatch;
 	}
 
 	/* Swap a card's markup in place (after refresh/add) and re-bind it. */
@@ -106,7 +153,19 @@ window.CactiCards = window.CactiCards || (function() {
 		if (!fresh) {
 			return null;
 		}
-		card.parentNode.replaceChild(fresh, card);
+		// Overlapping refresh/resize responses may reference a card that an
+		// earlier response already swapped out, leaving the captured node
+		// detached. Re-resolve the live element by id so the latest response
+		// replaces what is currently in the grid instead of throwing on (and
+		// losing the update to) a detached node.
+		var target = card;
+		if (!grid.contains(target)) {
+			target = findCard(grid, adapter, cardId(card, adapter));
+		}
+		if (!target || !target.parentNode) {
+			return null;
+		}
+		target.parentNode.replaceChild(fresh, target);
 		bindCard(grid, adapter, fresh);
 		if (typeof adapter.applyTheme === 'function') {
 			adapter.applyTheme(grid);
@@ -168,6 +227,8 @@ window.CactiCards = window.CactiCards || (function() {
 		}
 		card.__ccBound = true;
 
+		normalizeState(card);
+
 		var onHandle = function(target) {
 			return target && target.closest && target.closest('.ccDrag');
 		};
@@ -216,11 +277,24 @@ window.CactiCards = window.CactiCards || (function() {
 			saveLayout(grid, adapter);
 		});
 
-		card.addEventListener('dragstart', function() {
+		card.addEventListener('dragstart', function(event) {
+			// Only start a reorder when the card itself is the armed drag source.
+			// Native drags bubbling up from links or images in the body (or any
+			// drag while the handle is hidden via .ccNoDrag, which leaves the card
+			// unarmed) must not enter reorder mode.
+			if (!card.draggable || event.target !== card) {
+				return;
+			}
 			dragging = card;
 			card.classList.add('ccCardDragging');
 		});
 		card.addEventListener('dragend', function() {
+			// Native HTML drag-and-drop suppresses the mouseup that would
+			// otherwise disarm the card, so disarm here on every drag end.
+			disarm();
+			if (dragging !== card) {
+				return;
+			}
 			card.classList.remove('ccCardDragging');
 			dragging = null;
 			saveLayout(grid, adapter);
