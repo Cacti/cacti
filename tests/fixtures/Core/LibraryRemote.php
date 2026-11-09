@@ -87,6 +87,7 @@ function library_remote(): void {
 			replicate_table_to_poller($remote, $pulled, $table);
 		});
 		library_expect(db_fetch_row('SELECT * FROM `' . $table . '` WHERE id = 1', true, $remote), $pulled[0], 'Collector replication updates existing rows: ' . $log);
+		library_remote_strict_exclusion($remote);
 		$empty = [];
 		replicate_out_table($remote, $empty, $table, $poller);
 		library_expect((int) db_fetch_cell('SELECT COUNT(*) FROM `' . $table . '`', '', true, $remote), 0, 'An empty source empties an existing remote table');
@@ -128,6 +129,28 @@ function library_remote(): void {
 		$remote = null;
 		$admin->exec('DROP DATABASE `' . $schema . '`');
 		$_SESSION = $session;
+	}
+}
+
+/** Replicate rows with an excluded NOT NULL column that has no default into a strict collector session. */
+function library_remote_strict_exclusion(PDO $remote): void {
+	$table = 'coverage_strict_' . bin2hex(random_bytes(6));
+	$mode  = db_fetch_cell('SELECT @@SESSION.sql_mode', '', true, $remote);
+	library_expect(db_execute('CREATE TABLE `' . $table . '` (id int PRIMARY KEY, label varchar(80) NOT NULL, retained varchar(80) NOT NULL)', true, $remote), true, 'Collector owns a table whose retained column has no default');
+
+	try {
+		library_expect(db_execute("SET SESSION sql_mode = 'STRICT_ALL_TABLES'", true, $remote), true, 'Collector session refuses implicit column defaults');
+		library_expect(db_execute_prepared('INSERT INTO `' . $table . '` (id, label, retained) VALUES (?, ?, ?)', [1, 'Initial', 'Remote-owned'], true, $remote), true, 'Collector already holds a row');
+		$rows = [['id' => 1, 'label' => 'Updated', 'retained' => 'Primary value'], ['id' => 2, 'label' => 'Added', 'retained' => 'Primary seed']];
+		$log  = library_captured_log(static function () use ($remote, &$rows, $table): void {
+			replicate_table_to_poller($remote, $rows, $table, ['retained']);
+		});
+		library_expect(db_fetch_assoc('SELECT * FROM `' . $table . '` ORDER BY id', true, $remote),
+			[['id' => 1, 'label' => 'Updated', 'retained' => 'Remote-owned'], ['id' => 2, 'label' => 'Added', 'retained' => 'Primary seed']],
+			'Excluded columns keep the collector value on update and take the source value on insert: ' . $log);
+	} finally {
+		db_execute_prepared('SET SESSION sql_mode = ?', [$mode], true, $remote);
+		db_execute('DROP TABLE IF EXISTS `' . $table . '`', true, $remote);
 	}
 }
 

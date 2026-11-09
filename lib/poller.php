@@ -2824,6 +2824,7 @@ function replicate_table_to_poller(mixed $db_conn, array &$data, string $table, 
 		$suffix    = ' ON DUPLICATE KEY UPDATE ';
 		$sql       = '';
 		$colcnt    = 0;
+		$updcnt    = 0;
 		$rows_done = 0;
 		$columns   = array_keys($data[0]);
 		$skipcols  = [];
@@ -2838,16 +2839,22 @@ function replicate_table_to_poller(mixed $db_conn, array &$data, string $table, 
 			$exclude = false;
 		}
 
-		// Find columns to skip from updates
+		/**
+		 * Excluded columns are still inserted so new rows do not depend on a
+		 * column default, which strict mode refuses when there is none.  They
+		 * are only left out of the update, so existing rows keep their value.
+		 */
 		foreach ($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $db_conn)) {
 				$skipcols[$index] = $c;
-			} elseif ($exclude !== false && array_search($c, $exclude, true) !== false) {
-				$skipcols[$index] = $c;
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ' : '') . $c;
-				$suffix .= ($colcnt > 0 ? ', ' : '') . "$c=VALUES($c)";
 				$colcnt++;
+
+				if ($exclude === false || array_search($c, $exclude, true) === false) {
+					$suffix .= ($updcnt > 0 ? ', ' : '') . "$c=VALUES($c)";
+					$updcnt++;
+				}
 			}
 		}
 		$prefix .= ') VALUES ';
