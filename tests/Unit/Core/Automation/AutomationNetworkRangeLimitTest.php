@@ -24,6 +24,10 @@ test('automation priming skips ignored addresses, batches inserts and reports fa
 		->and($result['prime_batches'])->toBeTrue()
 		->and($result['prime_batch_rows'])->toBe(1022)
 		->and($result['prime_batch_unique'])->toBe(1022)
+		->and($result['prime_skip'])->toBeTrue()
+		->and($result['prime_skip_rows'])->toBe([])
 		->and($result['prime_fail'])->toBeFalse()
-		->and($result['logs'])->toBe(2);
+		->and($result['logs'])->toBe(2)
+		->and($result['prime_batch_fail'])->toBeFalse()
+		->and($result['prime_batch_fail_logs'])->toBe(1);
 });
