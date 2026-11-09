@@ -287,7 +287,8 @@ function dsstats_write_buffer(array &$stats_array, string $interval, int $mode) 
 							$mycf . "'," .
 							implode(',', $values) . ')';
 
-						$out_length += strlen($outbuf);
+						// $outbuf holds the whole batch, so its length is the batch size
+						$out_length = strlen($outbuf);
 
 						if (($out_length + $overhead) > $max_packet) {
 							db_execute($sql_prefix . $outbuf . $sql_suffix);
