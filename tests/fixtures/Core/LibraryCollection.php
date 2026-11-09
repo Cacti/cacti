@@ -6,7 +6,9 @@ declare(strict_types = 1);
 function library_collection_queries(int $snmpDevice, int $interfaceQuery): void {
 	global $data_query_xml_arrays;
 	library_snmp_multi();
+	library_snmp_operations();
 	library_snmp_query_formats($snmpDevice, $interfaceQuery);
+	library_snmp_query_edges($snmpDevice);
 
 	library_expect(db_execute_prepared('UPDATE host SET bulk_walk_size = 0 WHERE id = ?', [$snmpDevice]), true, 'SNMP auto-sizing with persistence is enabled');
 	library_expect(run_data_query($snmpDevice, $interfaceQuery), true, 'Native SNMP auto-sizing discovers interfaces');
@@ -85,6 +87,7 @@ function library_collection_queries(int $snmpDevice, int $interfaceQuery): void 
 		}
 	}
 	api_device_remove($scriptDevice);
+	library_script_query_edges();
 }
 
 /** Check that multi-OID SNMP gets keep OID association for each SNMP version and batch size. */
@@ -331,5 +334,180 @@ function library_query_indexes(int $device, int $interfaceQuery): void {
 			unset($data_query_xml_arrays[$query]);
 		}
 		unlink($path);
+	}
+}
+
+/** Exercise SNMPv3 get, getnext and walk against the fixture agent, plus the walk failure guards. */
+function library_snmp_operations(): void {
+	require_once CACTI_PATH_LIBRARY . '/snmp.php';
+	$oid      = '.1.3.6.1.2.1.1.6.0';
+	$location = 'Cacti coverage fixture';
+	$hex      = bin2hex($location);
+	$compact  = static fn (string $value): string => strtolower(str_replace([' ', 'Hex-STRING:'], '', $value));
+
+	library_expect(str_contains(cacti_snmp_get_raw('snmp-fixture', '', $oid, 3, 'user', '', '[None]', '', '[None]'), $location), true, 'Native SNMPv3 raw get returns the agent value');
+	library_expect($compact(cacti_snmp_get_raw('snmp-fixture', '', $oid, 3, 'user', '', '[None]', '', '[None]', value_output_format: SNMP_STRING_OUTPUT_HEX)), $hex, 'Binary SNMPv3 raw get returns every octet of the agent value');
+	library_expect(cacti_snmp_getnext('snmp-fixture', '', '.1.3.6.1.2.1.1.6', 3, 'user', '', '[None]', '', '[None]'), $location, 'Native SNMPv3 getnext returns the following object');
+	library_expect($compact(cacti_snmp_getnext('snmp-fixture', '', '.1.3.6.1.2.1.1.6', 3, 'user', '', '[None]', '', '[None]', value_output_format: SNMP_STRING_OUTPUT_HEX)), $hex, 'Binary SNMPv3 getnext returns every octet of the following object');
+
+	$walk = cacti_snmp_walk('snmp-fixture', '', '.1.3.6.1.2.1.1.6', 3, 'user', '', '[None]', '', '[None]');
+	library_expect(array_column($walk, 'value'), [$location], 'Binary SNMPv3 walk returns the agent value');
+	library_expect(cacti_snmp_walk('snmp-fixture', '', '.1.3.6.1.2.1.1.6', 3, 'user', 'authentication', 'UNKNOWN'), [], 'An unknown SNMPv3 protocol cannot launch a credential-less walk');
+	library_expect(cacti_snmp_walk('127.0.0.1', 'public', '.1.3.6.1.2.1.1', 1, port: 9, timeout_ms: 10), [], 'A failed walk exit status discards its output');
+
+	// a pristine agent never returns a malformed OID, so a recorder stands in for a hostile one
+	$directory = sys_get_temp_dir() . '/cacti-walk-' . bin2hex(random_bytes(8));
+	$previous  = read_config_option('path_snmpwalk');
+	library_expect(mkdir($directory, 0700), true, 'Walk fixture owns its hostile agent recorder');
+
+	try {
+		$script = '#!' . PHP_BINARY . "\n<?php print \".1.3.6.1.2.1.1.5.0 = fixture\\nbad;oid = injected\\n\";\n";
+		library_expect(file_put_contents($directory . '/walk', $script), strlen($script), 'Hostile agent recorder is written completely');
+		library_expect(chmod($directory . '/walk', 0700), true, 'Hostile agent recorder is executable');
+		set_config_option('path_snmpwalk', $directory . '/walk');
+		library_expect(cacti_snmp_walk('snmp-fixture', 'public', '.1.3.6.1.2.1.1', 1), [['oid' => '.1.3.6.1.2.1.1.5.0', 'value' => 'fixture']], 'A walk drops rows whose OID is not numeric');
+	} finally {
+		set_config_option('path_snmpwalk', $previous);
+		unlink($directory . '/walk');
+		rmdir($directory);
+	}
+
+	$session = cacti_snmp_session('127.0.0.1', 'public', 2, port: 9, timeout_ms: 10);
+	library_expect(is_object($session), true, 'A session to an unused port can be opened');
+	library_expect(cacti_snmp_session_get($session, $oid), false, 'A session get without an agent reports failure');
+
+	foreach ([['', '[None]', '-l noAuthNoPriv'], ['authentication', '[None]', '-l authNoPriv -a SHA -A authentication'], ['authentication', 'AES', '-l authPriv -a SHA -A authentication -X privacy -x AES']] as [$authentication, $privacy, $expected]) {
+		$arguments = cacti_get_snmpv3_auth('SHA', 'user', $authentication, $privacy, $privacy === '[None]' ? '' : 'privacy', '', '');
+		library_expect(preg_replace('/\s+/', ' ', str_replace(["'", '"'], '', $arguments)), '-u user ' . $expected, 'SNMPv3 command arguments match the ' . $expected . ' security level');
+	}
+
+	$device = library_save_device(['description' => 'SNMPv3 credential cache fixture']);
+	library_expect($device > 0, true, 'An SNMPv3 credential cache device exists');
+
+	try {
+		$rows = array_filter(snmp_auth_cache_rows(), static fn (array $row): bool => $row['snmp_username'] === 'user' && $row['snmp_password'] === 'testpassword');
+		library_expect(count($rows) > 0, true, 'Credential cache rows include the stored SNMPv3 device');
+	} finally {
+		api_device_remove($device);
+	}
+}
+
+/** Run SNMP queries whose sort field walks nothing and whose index is an encoded octet string. */
+function library_snmp_query_edges(int $device): void {
+	global $data_query_xml_arrays;
+	$input = (int) db_fetch_cell_prepared('SELECT id FROM data_input WHERE type_id = ? ORDER BY id LIMIT 1', [DATA_INPUT_TYPE_SNMP_QUERY]);
+	library_expect($input > 0, true, 'Installed schema provides SNMP query input');
+	$path = tempnam(CACTI_PATH_RESOURCE . '/snmp_queries', 'library-edge-');
+	library_expect(is_string($path), true, 'SNMP edge fixture owns its XML file');
+	$query = 0;
+
+	try {
+		$query = (int) sql_save(['id' => 0, 'name' => 'SNMP edge fixture', 'xml_path' => $path, 'data_input_id' => $input], 'snmp_query');
+		library_expect($query > 0, true, 'SNMP edge query is registered');
+		$write = static function (string $xml) use ($path, $query, &$data_query_xml_arrays): void {
+			library_expect(file_put_contents($path, $xml), strlen($xml), 'SNMP edge XML is written');
+			unset($data_query_xml_arrays[$query]);
+		};
+
+		// the label column is absent from the agent, so the preferred sort field walks nothing
+		foreach (['', '<output_format>ascii</output_format>'] as $format) {
+			$write('<query><name>SNMP edge fixture</name><oid_index>.1.3.6.1.2.1.2.2.1.1</oid_index>' .
+				'<oid_index_parse>OID/REGEXP:.*\.([0-9]+)$</oid_index_parse>' .
+				'<index_order>label:index</index_order><index_order_type>numeric</index_order_type>' .
+				'<index_title_format>|chosen_order_field|</index_title_format><fields>' .
+				'<index><name>Index</name><source>index</source><direction>input</direction></index>' .
+				'<label><name>Label</name><method>walk</method><source>value</source><direction>input</direction>' .
+				'<oid>.1.3.6.1.2.1.2.2.1.999</oid>' . $format . '</label></fields></query>');
+			api_device_dq_add($device, $query, (string) DATA_QUERY_AUTOINDEX_NONE);
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$device, $query, 'label']), 0, 'An empty sort-field walk stores no labels');
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', [$device, $query, 'index']) > 0, true, 'An empty sort-field walk keeps the discovered indexes');
+			api_device_dq_remove($device, $query);
+		}
+
+		// VACM security names index the group table as a length-prefixed octet string
+		$write('<query><name>SNMP edge fixture</name><oid_index>.1.3.6.1.6.3.16.1.2.1.3</oid_index>' .
+			'<oid_index_parse>OID/REGEXP:.*\.16\.1\.2\.1\.3\.(.*)$</oid_index_parse>' .
+			'<index_order>index</index_order><index_order_type>alphanumeric</index_order_type>' .
+			'<index_title_format>|chosen_order_field|</index_title_format><fields>' .
+			'<index><name>Index</name><source>index</source><direction>input</direction></index>' .
+			'<name><name>Name</name><method>walk</method><source>OID/REGEXP:.*\.16\.1\.2\.1\.3\.[0-9]+\.(.*)$</source><direction>input</direction>' .
+			'<oid>.1.3.6.1.6.3.16.1.2.1.3</oid></name></fields></query>');
+		api_device_dq_add($device, $query, (string) DATA_QUERY_AUTOINDEX_NONE);
+		$names = array_column(db_fetch_assoc_prepared('SELECT snmp_index, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? ORDER BY snmp_index', [$device, $query, 'name']), 'field_value', 'snmp_index');
+		library_expect($names, ['1.5.99.111.109.109.49' => 'comm1', '2.5.99.111.109.109.49' => 'comm1', '3.4.117.115.101.114' => 'user'], 'Octet-string indexes decode to their security names');
+	} finally {
+		api_device_dq_remove($device, $query);
+		db_execute_prepared('DELETE FROM snmp_query WHERE id = ?', [$query]);
+		unset($data_query_xml_arrays[$query]);
+		unlink($path);
+	}
+}
+
+/** Drive sort-field changes, missing counts and empty script output through real script queries. */
+function library_script_query_edges(): void {
+	global $data_query_xml_arrays;
+	$device = library_save_device(['description' => 'Script query edge fixture', 'snmp_version' => 0]);
+	library_expect($device > 0, true, 'Script query edge device exists');
+	library_expect(db_execute_prepared('UPDATE host SET disabled = ?, status = ? WHERE id = ?', ['', HOST_UP, $device]), true, 'Script query edge device is eligible for collection');
+	$xmlPath = tempnam(CACTI_PATH_RESOURCE . '/script_queries', 'library-edge-');
+	library_expect(is_string($xmlPath), true, 'Script edge XML gets an exclusively owned path');
+	$queries = [];
+
+	try {
+		foreach ([DATA_INPUT_TYPE_SCRIPT_QUERY, DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] as $type) {
+			$input = (int) db_fetch_cell_prepared('SELECT id FROM data_input WHERE type_id = ? ORDER BY id LIMIT 1', [$type]);
+			library_expect($input > 0, true, 'Installed schema provides script input type ' . $type);
+			$queries[$type] = (int) sql_save(['id' => 0, 'name' => 'Library script edge query', 'xml_path' => $xmlPath, 'data_input_id' => $input], 'snmp_query');
+			library_expect($queries[$type] > 0, true, 'Script edge query is registered');
+		}
+		$write = static function (int $query, string $scenario, string $extra = '', string $argQuery = 'query', string $runner = '|path_php_binary| -q ') use ($xmlPath, &$data_query_xml_arrays): void {
+			$xml = '<query><name>Library script edge query</name>' .
+				'<script_path>' . $runner . '|path_cacti|/tests/fixtures/Core/QueryProducer.php</script_path>' .
+				'<arg_prepend>' . $scenario . '</arg_prepend><arg_index>index</arg_index>' . $extra .
+				'<arg_query>' . $argQuery . '</arg_query><arg_get>get</arg_get><output_delimiter>!</output_delimiter>' .
+				'<index_order>label:index</index_order><index_order_type>alphanumeric</index_order_type>' .
+				'<index_title_format>|chosen_order_field|</index_title_format><fields>' .
+				'<index><name>Index</name><direction>input</direction><query_name>index</query_name></index>' .
+				'<label><name>Label</name><direction>input</direction><query_name>label</query_name></label>' .
+				'</fields></query>';
+			library_expect(file_put_contents($xmlPath, $xml), strlen($xml), 'Script edge XML is written');
+			unset($data_query_xml_arrays[$query]);
+		};
+		$query = $queries[DATA_INPUT_TYPE_SCRIPT_QUERY];
+		$sort  = static fn (): string => (string) db_fetch_cell_prepared('SELECT sort_field FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', [$device, $query]);
+
+		// a count action that prints nothing must not stop index discovery
+		$write($query, 'full', '<arg_num_indexes>missing</arg_num_indexes>');
+		api_device_dq_add($device, $query, (string) DATA_QUERY_AUTOINDEX_NONE);
+		library_expect(array_column(db_fetch_assoc_prepared('SELECT field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? ORDER BY snmp_index', [$device, $query, 'label']), 'field_value'), ['port alpha', 'port beta'], 'An empty index count still discovers every index');
+		library_expect($sort(), 'label', 'Unique labels are the preferred sort field');
+
+		$write($query, 'dupe');
+		library_expect(run_data_query($device, $query), true, 'Duplicate labels still index');
+		library_expect($sort(), 'index', 'Duplicate labels move the sort field to the unique index');
+
+		$write($query, 'flat');
+		library_expect(run_data_query($device, $query), false, 'A query without any unique field cannot be reindexed');
+		library_expect($sort(), 'index', 'A failed reindex keeps the previous sort field');
+
+		$observed = db_fetch_assoc_prepared('SELECT * FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? ORDER BY field_name, snmp_index', [$device, $query]);
+		$write($query, 'full', '', 'missing');
+		library_expect(run_data_query($device, $query), false, 'A sort field without output cannot be reindexed');
+		library_expect(db_fetch_assoc_prepared('SELECT * FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? ORDER BY field_name, snmp_index', [$device, $query]), $observed, 'Missing field output preserves the previously observed values');
+
+		$query = $queries[DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER];
+		// the script server runner supplies the interpreter itself, so the path names only the script
+		$write($query, 'full', '<script_server>php</script_server><script_function>fixture</script_function>', 'query', '');
+		library_expect(db_execute_prepared('INSERT INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', [$device, $query, DATA_QUERY_AUTOINDEX_NONE]), true, 'Script server query is associated with its device');
+		library_expect(run_data_query($device, $query), true, 'A script server query without an index count still indexes');
+		library_expect(array_column(db_fetch_assoc_prepared('SELECT field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ? ORDER BY snmp_index', [$device, $query, 'label']), 'field_value'), ['port alpha', 'port beta'], 'A script server query discovers every index');
+	} finally {
+		foreach ($queries as $query) {
+			api_device_dq_remove($device, $query);
+			db_execute_prepared('DELETE FROM snmp_query WHERE id = ?', [$query]);
+			unset($data_query_xml_arrays[$query]);
+		}
+		unlink($xmlPath);
+		api_device_remove($device);
 	}
 }
