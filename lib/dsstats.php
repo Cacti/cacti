@@ -375,24 +375,38 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 				}
 			}
 
-			/* change the interval to something RRDtool understands */
+			/* change the interval to something RRDtool understands, and note its longest length */
+			$seconds = 86400;
+
 			switch($interval) {
 				case 'daily':
 					$interval = 'day';
 					break;
 				case 'weekly':
 					$interval = 'week';
+					$seconds  = 7 * 86400;
 					break;
 				case 'monthly':
 					$interval = 'month';
+					$seconds  = 31 * 86400;
 					break;
 				case 'yearly':
 					$interval = 'year';
+					$seconds  = 366 * 86400;
 					break;
 			}
 
+			/**
+			 * RRDtool reads the RRA whose resolution best matches one pixel, and
+			 * a graph is 400 pixels wide by default, about 1512 seconds a pixel
+			 * for a week.  One pixel per step selects the finest RRA that still
+			 * covers the whole range.  Nothing is drawn, so the width is free.
+			 */
+			$step = (isset($poller_interval) && intval($poller_interval) > 0 ? intval($poller_interval) : 300);
+			$width = ceil($seconds / $step);
+
 			/* now execute the graph command */
-			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($command);
+			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now --width=' . $width . ' ' . trim($def) . ' ' . trim($command);
 
 			//print $stats_cmd . PHP_EOL;
 
