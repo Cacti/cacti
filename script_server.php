@@ -534,7 +534,11 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 	}
 
 	if (!$parse_ok) {
-		print 'ERROR: ' . $msg . " '" . $string . "'\n";
+		// the caller answers U on STDOUT; an extra line here would be read as
+		// the reply to the next request
+		if ($debug) {
+			print 'ERROR: ' . $msg . " '" . $string . "'\n";
+		}
 	} elseif ($curstr != '') {
 		$str_list[] = $curstr;
 	}

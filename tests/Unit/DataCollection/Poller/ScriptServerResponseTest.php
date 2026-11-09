@@ -15,7 +15,8 @@
 /*
  * The poller reads one line per Script Server request, so the response to a
  * request must be exactly one line: output printed by the script function is
- * discarded and line breaks inside its result are removed.  The production
+ * discarded, line breaks inside its result are removed and a request that
+ * cannot be parsed prints nothing ahead of its U reply.  The production
  * functions are loaded unchanged into a fixture namespace so the Script
  * Server's main loop never runs.
  */
@@ -49,7 +50,7 @@ function ss_response_fixture_echo_throws() {
 }
 
 if (!function_exists(__NAMESPACE__ . '\\script_server_call')) {
-	foreach (['script_server_call', 'script_server_response'] as $function) {
+	foreach (['parseArgs', 'script_server_call', 'script_server_response'] as $function) {
 		\cacti_fixture_source_function(dirname(__DIR__, 4) . '/script_server.php', $function, __NAMESPACE__);
 	}
 }
@@ -119,4 +120,26 @@ test('the main loop writes the single line response', function () {
 
 	expect($source)->toContain('fputs(STDOUT, script_server_response($result) . "\n");')
 		->and($source)->not->toContain('fputs(STDOUT, trim($result)');
+});
+
+test('an unparsable request writes nothing ahead of the U reply', function () {
+	$parsed = [];
+
+	ob_start();
+	$ok      = parseArgs("'open", $parsed);
+	$printed = ob_get_clean();
+
+	expect($ok)->toBeFalse()
+		->and($printed)->toBe('');
+});
+
+test('a parse error is still printed when debugging', function () {
+	$parsed = [];
+
+	ob_start();
+	$ok      = parseArgs("'open", $parsed, true);
+	$printed = ob_get_clean();
+
+	expect($ok)->toBeFalse()
+		->and($printed)->toContain("ERROR: Parse error attempting to parse string ''open'");
 });
