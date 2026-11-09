@@ -320,6 +320,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 	$itemcnt        = 0;
 	$host_start     = microtime(true);
 	$set_spike_kill = false;
+	$pipes          = [];
 
 	/* startup Cacti php polling server and include the
 	 * include file for script processing
