@@ -7,6 +7,7 @@ $root     = getenv('CACTI_BOOST_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 $scenario = $argv[1] ?? 'none';
 $writes   = [];
 $deletes  = 0;
+require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 require __DIR__ . '/ProbeLoader.php';
 
 /**
