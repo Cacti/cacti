@@ -826,6 +826,7 @@ require __DIR__ . '/LibraryWorkers.php';
 library_worker('catalog');
 require __DIR__ . '/LibraryUtilities.php';
 CactiLibraryUtilityFixture\run();
+CactiLibraryDevicePackageFixture\run();
 require __DIR__ . '/LibraryLdap.php';
 CactiLibraryLdapFixture\run();
 CactiLibraryLdapFixture\native();
