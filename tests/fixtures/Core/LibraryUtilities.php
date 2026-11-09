@@ -268,3 +268,84 @@ function run(): void {
 	poller_buffer();
 	poller_cache();
 }
+
+namespace CactiLibraryDevicePackageFixture;
+
+/** Fail only the read of the compressed download, so archive creation stays real. */
+function file_get_contents(string $filename, bool $use_include_path = false, mixed $context = null, int $offset = 0, ?int $length = null): string|false {
+	if (str_ends_with($filename, '/download.tar.gz')) {
+		$GLOBALS['library_package_unreadable'][] = $filename;
+
+		return false;
+	}
+
+	return \file_get_contents($filename, $use_include_path, $context, $offset, $length);
+}
+/** Report success while the packager leaves its file path pointing at nothing. */
+function package_template(string &$template, array &$info, array &$files, string &$debug): bool {
+	$GLOBALS['package_file'] = $GLOBALS['library_package_missing'];
+
+	return true;
+}
+/** Exercise download and packaging error reporting with the filesystem boundary substituted. */
+function run(): void {
+	require_once \CACTI_PATH_LIBRARY . '/package.php';
+	require_once \CACTI_PATH_LIBRARY . '/export.php';
+	// The sliced source names archive classes without a leading backslash.
+	class_alias(\PharData::class, __NAMESPACE__ . '\\PharData');
+	class_alias(\Phar::class, __NAMESPACE__ . '\\Phar');
+
+	foreach (['api_device_template_download', 'api_device_template_archive_for_export', 'api_device_template_archive'] as $function) {
+		\cacti_fixture_source_function(\CACTI_PATH_LIBRARY . '/api_device.php', $function, __NAMESPACE__);
+	}
+	$name     = 'Package fixture ' . bin2hex(random_bytes(6));
+	$template = (int) \sql_save(['id' => 0, 'hash' => \generate_hash(), 'name' => $name], 'host_template');
+	\library_expect($template > 0, true, 'Package fixture owns a device template');
+	$stored  = ['id' => 0, 'host_template_id' => $template, 'hash' => \generate_hash(), 'name' => $name, 'archive_date' => date('Y-m-d H:i:s'), 'archive' => base64_encode('fixture archive bytes')];
+	$archive = (int) \sql_save($stored, 'host_template_archive');
+	\library_expect($archive > 0, true, 'Package fixture owns a stored archive');
+	$GLOBALS['library_package_missing'] = sys_get_temp_dir() . '/cacti-missing-package-' . bin2hex(random_bytes(8)) . '.tgz';
+	$saved                              = [$GLOBALS['export_errors'] ?? null, $GLOBALS['package_file'] ?? null];
+	$GLOBALS['export_errors']           = 0;
+	$hadKeyDirectory                    = is_dir(\CACTI_PATH_PKI);
+	$hadMetadata                        = file_exists(\CACTI_PATH_PKI . '/package.db');
+
+	try {
+		// Packager metadata is stored before packaging, so it needs a writable key directory.
+		\library_expect($hadKeyDirectory || mkdir(\CACTI_PATH_PKI, 0700, true), true, 'Package fixture has a packaging directory');
+		$GLOBALS['library_package_unreadable'] = [];
+		$_SESSION[\SESS_MESSAGES]              = [];
+		ob_start();
+		api_device_template_download('archives', [$archive]);
+		\library_expect(ob_get_clean(), '', 'An unreadable download sends no archive bytes');
+		\library_expect(count($GLOBALS['library_package_unreadable']), 1, 'The download read the archive it compressed');
+		\library_expect($_SESSION[\SESS_MESSAGES]['device_download_read_failed']['level'] ?? null, \MESSAGE_LEVEL_ERROR, 'An unreadable download is reported to the operator');
+		\library_expect(file_exists(dirname($GLOBALS['library_package_unreadable'][0])), false, 'An unreadable download removes its temporary directory');
+
+		$before = (int) \db_fetch_cell_prepared('SELECT COUNT(*) FROM host_template_archive WHERE host_template_id = ?', [$template]);
+
+		foreach (['export', 'archive'] as $operation) {
+			$_SESSION[\SESS_MESSAGES] = [];
+			$result                   = $operation === 'export' ? api_device_template_archive_for_export($template) : api_device_template_archive($template, 'Missing package');
+			\library_expect($result, false, 'A missing package file fails the ' . $operation);
+			$message = $_SESSION[\SESS_MESSAGES]['package_error_' . $template] ?? [];
+			\library_expect($message['level'] ?? null, \MESSAGE_LEVEL_ERROR, 'A missing package file is reported for the ' . $operation);
+			\library_expect(str_contains((string) ($message['message'] ?? ''), 'Unable to find Package file for Device Template: ' . $name), true, 'The missing package report names the template for the ' . $operation);
+		}
+		\library_expect((int) \db_fetch_cell_prepared('SELECT COUNT(*) FROM host_template_archive WHERE host_template_id = ?', [$template]), $before, 'A missing package file stores no archive');
+	} finally {
+		[$GLOBALS['export_errors'], $GLOBALS['package_file']] = $saved;
+		\db_execute_prepared('DELETE FROM host_template_archive WHERE host_template_id = ?', [$template]);
+		\db_execute_prepared('DELETE FROM host_template WHERE id = ?', [$template]);
+		$_SESSION[\SESS_MESSAGES] = [];
+		unset($GLOBALS['library_package_missing'], $GLOBALS['library_package_unreadable']);
+
+		if (!$hadMetadata && file_exists(\CACTI_PATH_PKI . '/package.db')) {
+			unlink(\CACTI_PATH_PKI . '/package.db');
+		}
+
+		if (!$hadKeyDirectory && is_dir(\CACTI_PATH_PKI)) {
+			rmdir(\CACTI_PATH_PKI);
+		}
+	}
+}
