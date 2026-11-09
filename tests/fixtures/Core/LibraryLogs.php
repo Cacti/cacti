@@ -10,7 +10,7 @@ function library_logs(): void {
 	library_expect(mkdir($directory, 0700), true, 'Log fixture owns its directory');
 	$session  = $_SESSION;
 	$requests = [$_CACTI_REQUEST, $_REQUEST, $_GET, $_POST];
-	$options  = ['path_cactilog' => $directory . '/fixture.log', 'log_action' => (string) LOG_ACTION_PURGE_ROTATE];
+	$options  = ['path_cactilog' => $directory . '/fixture.log', 'log_action' => (string) LOG_ACTION_PURGE_ROTATE, 'path_stderrlog' => ''];
 	$previous = [];
 
 	foreach ($options as $name => $value) {
@@ -64,6 +64,40 @@ function library_logs(): void {
 		$_SESSION[SESS_MESSAGES] = [];
 		clog_purge_logfile('purge');
 		library_expect(isset($_SESSION[SESS_MESSAGES]['clog_missing']), true, 'A missing log reports failure');
+		$archive = $path . '-20260101-120000';
+		library_expect(file_put_contents($archive, $payload), strlen($payload), 'Fixture owns a dated log archive');
+		$choices = create_clog_filter('fixture.log', true)['rows'][0]['filename']['array'];
+		library_expect($choices[basename($archive)] ?? null, 'fixture.log [0101-120000]', 'Archive choices show the archive date and time');
+		unlink($archive);
+
+		// A stderr log whose name prefixes the Cacti log owns that file's directory, so rotating it is an archive removal.
+		set_config_option('path_stderrlog', $directory . '/fixture');
+		srv('filename', 'fixture.log');
+		$_SESSION[SESS_MESSAGES] = [];
+		$before                  = file_get_contents($path);
+		clog_purge_logfile('rotate');
+		library_expect($_SESSION[SESS_MESSAGES]['clog_removed']['level'], MESSAGE_LEVEL_WARN, 'Rotating a file outside its own log name is refused');
+		library_expect(file_get_contents($path), $before, 'A refused rotation preserves the file');
+		library_expect(glob($path . '-*'), [], 'A refused rotation creates no archive');
+		set_config_option('path_stderrlog', '');
+
+		$unwritable = $directory . '/directory.log';
+		library_expect(mkdir($unwritable, 0700), true, 'Fixture owns a log path that cannot be opened as a file');
+		set_config_option('path_cactilog', $unwritable);
+		srv('filename', 'directory.log');
+		$_SESSION[SESS_MESSAGES] = [];
+		// Opening a directory for writing warns by design; keep that expected warning out of the log being tested.
+		set_error_handler(static fn (): bool => true, E_WARNING);
+
+		try {
+			clog_purge_logfile('purge');
+		} finally {
+			restore_error_handler();
+			set_config_option('path_cactilog', $path);
+		}
+		library_expect($_SESSION[SESS_MESSAGES]['clog_removed']['level'], MESSAGE_LEVEL_ERROR, 'A log that cannot be reopened reports the failure');
+		library_expect(is_dir($unwritable), true, 'A failed purge leaves the target in place');
+		rmdir($unwritable);
 	} finally {
 		user_remove($user);
 		db_execute_prepared('DELETE FROM automation_graph_rules WHERE id = ?', [$rule]);
