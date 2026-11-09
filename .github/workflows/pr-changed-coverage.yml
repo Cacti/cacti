@@ -16,6 +16,8 @@ on:
       - 'tests/Helpers/SourceSlice.php'
       - 'tests/fixtures/Core/**'
       - 'tests/e2e/tests/**'
+      - 'tests/tools/check_changed_php_coverage.py'
+      - 'tests/tools/normalize_request_coverage.php'
       - 'tests/tools/report_changed_coverage.py'
       - 'tests/tools/run_pr_change_tests.sh'
       - 'tests/tools/run_request_coverage.sh'

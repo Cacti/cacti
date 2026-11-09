@@ -51,16 +51,53 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
-# Library code is exercised by the Docker request probes (library-behavior and
-# friends). Reuse the 80 percent gate's dispatcher so both gates select the same
-# probes, then rebase each container report onto this checkout. Evidence for a
-# file whose hash differs from the local copy is dropped, so the file stays
-# uninstrumented and the gate fails closed instead of trusting stale lines.
+# Library code is exercised by Pest and the Docker request probes. Reuse the
+# 80 percent gate's suites, changed-file scope and probe dispatcher so both gates
+# measure the same evidence.
 request_raw="$coverage_dir/request-coverage"
 BASE_COMMIT="$base_commit" CACTI_TEST_COVERAGE=1 CACTI_PR_RAW_COVERAGE="${CACTI_PR_RAW_COVERAGE:-/tmp/cacti-pr-coverage}" \
 	CACTI_PR_COVERAGE_OUTPUT="$request_raw" bash tests/tools/run_request_coverage.sh
-if compgen -G "$request_raw/*.json" > /dev/null; then
-	"$python_binary" - "$request_raw" "$coverage_dir/request-coverage.json" <<'PY'
+
+clover_args=()
+if [[ -n "$(git diff --name-only "$(git merge-base "$base_commit" HEAD)" HEAD -- '*.php' ':(exclude)tests/**' ':(exclude)include/vendor/**')" ]]; then
+	"$python_binary" tests/tools/check_changed_php_coverage.py --base "$base_commit" \
+		--prepare-config tests/phpunit.xml --output-config "$coverage_dir/phpunit-changed.xml"
+	XDEBUG_MODE=coverage "$php_binary" -d memory_limit=2G include/vendor/bin/pest --configuration="$coverage_dir/phpunit-changed.xml" \
+		--testsuite=Unit,Integration --coverage-clover="$coverage_dir/pest-clover.xml"
+	clover_args=(--clover "$coverage_dir/pest-clover.xml")
+
+	# Raw Xdebug credits only the first line of a wrapped statement. Normalize the
+	# fixture and request evidence with the analyser that wrote the Clover report,
+	# which rejects a report whose source no longer matches this checkout.
+	native="$coverage_dir/native-coverage"
+	mkdir -p "$native"
+	"$python_binary" - "$native" "${php_coverage[@]}" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+root = Path.cwd().resolve()
+for name in sys.argv[2:]:
+    coverage = {}
+    for file, data in json.loads(Path(name).read_text()).items():
+        path = Path(file)
+        lines = data.get('lines', data) if isinstance(data, dict) else {}
+        # PHP encodes a file without line evidence as an empty list.
+        if path.is_file() and path.resolve().is_relative_to(root) and '/vendor/' not in file and isinstance(lines, dict):
+            coverage[str(path.resolve())] = lines
+    hashes = {file: hashlib.sha256(Path(file).read_bytes()).hexdigest() for file in coverage}
+    report = {'root': str(root), 'coverage': coverage, 'hashes': hashes}
+    (Path(sys.argv[1]) / ('fixture-' + Path(name).name)).write_text(json.dumps(report))
+PY
+	if compgen -G "$request_raw/*.json" > /dev/null; then
+		cp "$request_raw"/*.json "$native/"
+	fi
+	"$php_binary" tests/tools/normalize_request_coverage.php "$native" "$coverage_dir/native-normalized" "$coverage_dir/pest-clover.xml"
+
+	# Rebase each container report onto this checkout, dropping evidence for any
+	# file whose source differs so it stays uninstrumented and fails closed.
+	"$python_binary" - "$coverage_dir/native-normalized" "$coverage_dir/php-coverage.json" <<'PY'
 import hashlib
 import json
 import sys
@@ -80,11 +117,11 @@ for report_path in sorted(Path(sys.argv[1]).glob('*.json')):
         if hashlib.sha256(local.read_bytes()).hexdigest() != report['hashes'].get(file):
             continue
         target = merged.setdefault(str(local), {})
-        for number, hits in lines.items():
+        for number, hits in (lines or {}).items():
             target[number] = max(hits, target.get(number, -2))
 Path(sys.argv[2]).write_text(json.dumps(merged))
 PY
-	php_coverage+=("$coverage_dir/request-coverage.json")
+	php_coverage=("$coverage_dir/php-coverage.json")
 fi
 
 browser_specs=()
@@ -100,4 +137,4 @@ if (( ${#browser_specs[@]} )); then
 fi
 
 "$python_binary" tests/tools/test_report_changed_coverage.py
-"$python_binary" tests/tools/report_changed_coverage.py --base "$base_commit" --php-coverage "${php_coverage[@]}" "${browser_args[@]}" | tee "$coverage_dir/report.json"
+"$python_binary" tests/tools/report_changed_coverage.py --base "$base_commit" --php-coverage "${php_coverage[@]}" "${clover_args[@]}" "${browser_args[@]}" | tee "$coverage_dir/report.json"
