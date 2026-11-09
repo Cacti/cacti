@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug ThemeInheritanceMatrix; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -57,9 +57,16 @@ for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-wid
 		browser_specs+=("tests/$spec.spec.js")
 	fi
 done
+# Theme stylesheets are exercised by the theme specs, which only record
+# coverage when CACTI_THEME_COVERAGE is set.
+for spec in develop-theme-correctness develop-theme-cleanup develop-theme-palettes; do
+	if [[ -f "tests/e2e/tests/$spec.spec.ts" ]]; then
+		browser_specs+=("tests/$spec.spec.ts")
+	fi
+done
 browser_args=()
 if (( ${#browser_specs[@]} )); then
-	(cd tests/e2e && npx --no-install playwright test "${browser_specs[@]}" --workers=2 --reporter=line)
+	(cd tests/e2e && CACTI_THEME_COVERAGE=1 npx --no-install playwright test "${browser_specs[@]}" --workers=2 --reporter=line)
 	browser_args=(--browser-root tests/e2e/test-results)
 fi
 

@@ -9320,11 +9320,7 @@ function get_include_relpath(string $path, mixed $basePath = null) : string {
 function get_theme_candidate_paths(string $path, string $theme) : array {
 	$themePath = rtrim($theme, '/') . '/';
 
-	return [
-		$path . $themePath,
-		'include/themes/' . $themePath . $path,
-		'include/themes/' . $themePath
-	];
+	return [$path . $themePath, 'include/themes/' . $themePath . $path, 'include/themes/' . $themePath];
 }
 
 /**
