@@ -1111,10 +1111,11 @@ function dsstats_rrdtool_init() {
  *
  * @param string $command (string) The rrdtool command to execute.
  * @param mixed &$pipes (array) An array of stdin and stdout pipes to read and write data from.
+ * @param int $timeout (int) Seconds to wait for more output before RRDtool is given up.
  *
  * @return string (string) The output from RRDtool.
  */
-function dsstats_rrdtool_execute($command, &$pipes) {
+function dsstats_rrdtool_execute($command, &$pipes, $timeout = 60) {
 	static $broken = false;
 
 	$stdout = '';
@@ -1133,15 +1134,47 @@ function dsstats_rrdtool_execute($command, &$pipes) {
 		 * so only a complete line may end the read.  Stopping early leaves
 		 * the rest of the response for the next command to read.
 		 */
-		$line = '';
+		$line     = '';
+		$deadline = microtime(true) + $timeout;
 
 		while (!feof($pipes[1])) {
-			$chunk = fgets($pipes[1], 4096);
+			$wait = $deadline - microtime(true);
 
-			if ($chunk === false) {
+			/**
+			 * Stop reading from an RRDtool that has gone silent.  Its late answer
+			 * would be read by the next command, so close its output, and the
+			 * remaining files of this worker get no statistics.
+			 */
+			if ($wait <= 0) {
+				cacti_log(sprintf('ERROR: RRDtool did not respond within %d seconds.  The remaining Data Sources of this DSStats process are skipped.', $timeout), false, 'DSSTATS');
+
+				fclose($pipes[1]);
+
+				$broken = true;
+
+				return;
+			}
+
+			/* the pipe is non-blocking, so sleep until RRDtool writes */
+			$read   = array($pipes[1]);
+			$write  = null;
+			$except = null;
+
+			if (stream_select($read, $write, $except, (int) $wait, (int) (fmod($wait, 1) * 1000000)) === false) {
+				break;
+			}
+
+			if (!count($read)) {
 				continue;
 			}
 
+			$chunk = fgets($pipes[1], 4096);
+
+			if ($chunk === false || $chunk === '') {
+				continue;
+			}
+
+			$deadline = microtime(true) + $timeout;
 			$stdout .= $chunk;
 			$line .= $chunk;
 
@@ -1174,6 +1207,8 @@ function dsstats_rrdtool_execute($command, &$pipes) {
  * @return void NULL.
  */
 function dsstats_rrdtool_close($process) {
+	/* an RRDtool that stopped answering would block proc_close() forever */
+	proc_terminate($process);
 	proc_close($process);
 }
 
