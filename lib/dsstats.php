@@ -814,11 +814,16 @@ function dsstats_poller_output(&$rrd_update_array) {
 								} else {
 									$max_value = $ds_types[$result['rrd_name']]['rrd_maximum'];
 
-										// possible overflow, see if its 32bit or 64bit
+									/**
+									 * Possible overflow, see if its 32bit or 64bit.  A counter
+									 * wraps at 2^n, so the delta is 2^n - last + current.  2^64
+									 * is a float, and subtracting the last value first keeps the
+									 * small delta of a real wrap exact.
+									 */
 									if ($ds_last > 4294967295) {
-										$currentval = (18446744073709551615 - $ds_last) + $result['output'];
+										$currentval = (pow(2, 64) - $ds_last) + $result['output'];
 									} else {
-										$currentval = (4294967295 - $ds_last) + $result['output'];
+										$currentval = (pow(2, 32) - $ds_last) + $result['output'];
 									}
 
 									if ($max_value != 'U' && $currentval > $max_value) {
