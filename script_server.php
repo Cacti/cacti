@@ -302,7 +302,7 @@ while (1) {
 				 * so re-running it on cached entries is a no-op. */
 				$real_include = realpath($include_file);
 
-				if (!script_server_path_is_allowed($real_include, $allowed_roots)) {
+				if ($real_include === false || !script_server_path_is_allowed($real_include, $allowed_roots)) {
 					if ($real_include !== false) {
 						cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
 					} else {
