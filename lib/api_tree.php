@@ -454,32 +454,70 @@ function api_tree_delete_node(int $tree_id, int|string $node_id) : void {
  * @return void
  */
 function api_tree_delete_node_content(int $tree_id, int $leaf_id) : void {
+	$items = db_fetch_assoc_prepared('SELECT id, parent, host_id, local_graph_id
+		FROM graph_tree_items
+		WHERE graph_tree_id = ?',
+		[$tree_id]);
+
+	$children = [];
+
+	foreach ($items as $item) {
+		$children[(int) $item['parent']][] = $item;
+	}
+
+	// only branches are walked, as device and graph items hold no content;
 	// the visited set keeps a stored parent cycle from being walked forever
 	$pending = [$leaf_id];
 	$visited = [$leaf_id => true];
+	$delete  = [];
 
 	while (cacti_sizeof($pending)) {
-		$children = db_fetch_assoc_prepared('SELECT *
-			FROM graph_tree_items
-			WHERE graph_tree_id = ? AND parent = ?', [$tree_id, array_pop($pending)]);
+		$parent = array_pop($pending);
 
-		foreach ($children as $child) {
-			if ($child['host_id'] == 0 && $child['local_graph_id'] == 0 && !isset($visited[$child['id']])) {
-				$visited[$child['id']] = true;
-				$pending[]             = $child['id'];
+		foreach ($children[$parent] ?? [] as $child) {
+			$id = (int) $child['id'];
+
+			$delete[$id] = $id;
+
+			if ($child['host_id'] == 0 && $child['local_graph_id'] == 0 && !isset($visited[$id])) {
+				$visited[$id] = true;
+				$pending[]    = $id;
 			}
-
-			db_execute_prepared('DELETE
-				FROM graph_tree_items
-				WHERE graph_tree_id = ?
-				AND id = ?', [$tree_id, $child['id']]);
-
-			/**
-			 * Save the last time a tree branch was created/updated
-			 * for Caching.
-			 */
-			set_config_option('time_last_change_branch', time());
 		}
+	}
+
+	if (!cacti_sizeof($delete)) {
+		return;
+	}
+
+	$transaction = db_begin_transaction();
+	$deleted     = true;
+
+	foreach (array_chunk(array_values($delete), 500) as $chunk) {
+		if (!db_execute_prepared('DELETE FROM graph_tree_items
+			WHERE graph_tree_id = ?
+			AND id IN (' . implode(',', array_fill(0, cacti_sizeof($chunk), '?')) . ')',
+			array_merge([$tree_id], $chunk))) {
+			$deleted = false;
+
+			break;
+		}
+	}
+
+	if ($transaction) {
+		if ($deleted) {
+			db_commit_transaction();
+		} else {
+			db_rollback_transaction();
+		}
+	}
+
+	if ($deleted) {
+		/**
+		 * Save the last time a tree branch was created/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_branch', time());
 	}
 }
 
