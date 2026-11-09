@@ -10,7 +10,7 @@
  * cacti-cards vX.Y - shared "card chrome" controller (interaction layer).
  *
  * Bundled per-plugin with no cross-plugin or core dependency and kept
- * byte-identical between the plugins that use it. It wires the DOM behaviou
+ * byte-identical between the plugins that use it. It wires the DOM behaviour
  * for a .ccGrid of .ccCard elements (see cards.css for the HTML contract):
  * keyboard-accessible drag/drop reordering, the per-card tool buttons
  * (expand/collapse, grow/shrink, maximize, refresh, remove), an optional
