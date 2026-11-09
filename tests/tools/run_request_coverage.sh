@@ -52,6 +52,8 @@ run_php_probe tests/fixtures/UserAdministrationAuditCoverage.php '^(user_admin\.
 
 run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.php|lib/html_graph\.php|tests/fixtures/Core/GraphViewCrossFilterCoverage\.php)'
 
+run_php_probe tests/fixtures/Core/HtmlGraphMarkup.php '^(lib/html_graph\.php|tests/fixtures/Core/HtmlGraphMarkup\.php)'
+
 run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/html_tree\.php|tests/fixtures/Core/TreeFilterDeviceTemplateCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'

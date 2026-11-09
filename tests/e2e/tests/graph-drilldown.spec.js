@@ -37,15 +37,15 @@ test('pointer interaction preserves geometry, icon reachability and grace period
 	// A tooltip can send a synthetic leave while the pointer remains on an icon.
 	// Simulate the native tooltip's contradictory leave/hover state. Chromium's
 	// automation hover state is cleared by synthetic leave events, so control
-	// only that query while retaining the real event handler and timer.
+	// only Element.matches(':hover') while retaining the real event handler and timer.
 	await toggle.evaluate(el => {
-		window.originalIs = $.fn.is;
-		$.fn.is = function (selector) { return selector === ':hover' && this[0] === el ? true : originalIs.call(this, selector); };
+		window.originalMatches = Element.prototype.matches;
+		Element.prototype.matches = function (selector) { return selector === ':hover' && this === el ? true : originalMatches.call(this, selector); };
 	});
 	await toggle.evaluate(el => $(el).trigger('mouseleave'));
 	await page.waitForTimeout(600);
 	await expect(toggle).toHaveClass(/open/);
-	await page.evaluate(() => { $.fn.is = originalIs; });
+	await page.evaluate(() => { Element.prototype.matches = originalMatches; });
 	await page.mouse.move(500, 400);
 	await page.waitForTimeout(100);
 	await page.locator('#g1 .graphimage').hover();
@@ -56,6 +56,23 @@ test('pointer interaction preserves geometry, icon reachability and grace period
 	await expect(menu).toHaveAttribute('aria-expanded', 'false');
 	await expect(page.locator('#g1')).not.toHaveClass(/graphDrillActive/);
 	expect(await page.evaluate(() => window.closedSubmenus)).toBeGreaterThan(0);
+});
+
+test('the grace-period close timer tolerates a graph area that reloads mid-timer', async ({ page }) => {
+	const errors = [];
+	page.on('pageerror', error => errors.push(String(error)));
+
+	// Arm the 500ms close timer by moving the pointer off the graph, then detach
+	// the graph (as the Details and Time View pages do when their content reloads)
+	// before it fires.  graphDrilldownStillHovered() uses native
+	// Element.matches(':hover') and an isConnected guard, so a detached toggle is
+	// treated as not hovered rather than routed through jQuery's throwing :hover.
+	await page.locator('#g1 .graphimage').hover();
+	await page.mouse.move(5, 5);
+	await page.evaluate(() => $('#g1').remove());
+	await page.waitForTimeout(700);
+
+	expect(errors).toEqual([]);
 });
 
 test('activation, switching graphs, outside click and reinitialization', async ({ page }) => {
