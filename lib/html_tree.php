@@ -56,10 +56,18 @@ function process_tree_settings() : void {
  * @param string $form_name             The name attribute for the <select> element.
  * @param string $selected_tree_item_id The ID of the tree item to be selected by default.
  * @param int    $tier                  The current tier level in the tree. Default is 0.
+ * @param array  $visited               Branches already printed by this walk.
  *
  * @return void
  */
-function grow_dropdown_tree(int $tree_id, mixed $parent = 0, string $form_name = '', string $selected_tree_item_id = '', int $tier = 0) : void {
+function grow_dropdown_tree(int $tree_id, mixed $parent = 0, string $form_name = '', string $selected_tree_item_id = '', int $tier = 0, array &$visited = []) : void {
+	// a stored parent cycle would otherwise recurse forever
+	if (isset($visited[$parent])) {
+		return;
+	}
+
+	$visited[$parent] = true;
+
 	$tier++;
 
 	$branches = db_fetch_assoc_prepared('SELECT gti.id, gti.title, parent
@@ -92,7 +100,7 @@ function grow_dropdown_tree(int $tree_id, mixed $parent = 0, string $form_name =
 
 			print "<option value='" . $leaf['id'] . "'$html_selected>$indent " . htmle($leaf['title']) . '</option>';
 
-			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id, $tier);
+			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id, $tier, $visited);
 		}
 	}
 
@@ -481,15 +489,20 @@ function get_tree_path() : array {
 					}
 				}
 
-				while (true) {
-					if ($linknode['parent'] > 0) {
-						$rnodes[] = 'tbranch-' . $linknode['parent'];
+				$visited = [$node => true];
 
-						$linknode = db_fetch_row_prepared('SELECT *
-							FROM graph_tree_items
-							WHERE id = ?',
-							[$linknode['parent']]);
-					} else {
+				// stop at the root, a missing parent, or a stored parent cycle
+				while ($linknode['parent'] > 0 && !isset($visited[$linknode['parent']])) {
+					$visited[$linknode['parent']] = true;
+
+					$rnodes[] = 'tbranch-' . $linknode['parent'];
+
+					$linknode = db_fetch_row_prepared('SELECT *
+						FROM graph_tree_items
+						WHERE id = ?',
+						[$linknode['parent']]);
+
+					if (!cacti_sizeof($linknode)) {
 						break;
 					}
 				}
