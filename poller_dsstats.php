@@ -151,10 +151,13 @@ dsstats_memory_limit();
 // send a gentle message to the log and stdout
 dsstats_debug('Polling Starting');
 
-// clear the cache if there has been a change in key settings
+// clear the cache if there has been a change in key settings, and record the settings it is built for
 if (read_config_option('dsstats_mode') != read_config_option('dsstats_temp_mode') ||
 	read_config_option('dsstats_peak')    != read_config_option('dsstats_temp_peak')) {
 	db_execute('TRUNCATE TABLE data_source_stats_command_cache');
+
+	set_config_option('dsstats_temp_mode', read_config_option('dsstats_mode'));
+	set_config_option('dsstats_temp_peak', read_config_option('dsstats_peak'));
 }
 
 // silently end if the registered process is still running

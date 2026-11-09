@@ -528,14 +528,6 @@ function dsstats_get_stats_command(int $local_data_id, string $rrdfile, bool $us
 		$info = dsstats_rrdtool_execute('info ' . cacti_escapeshellarg($rrdfile), $rrd_process);
 	}
 
-	/**
-	 * Get the current values of stats and peak settings to see if there is any change to purge the cache
-	 */
-	$temp_mode = read_config_option('dsstats_mode');
-	$temp_peak = read_config_option('dsstats_peak');
-	set_config_option('dsstats_temp_mode', $temp_mode);
-	set_config_option('dsstats_temp_peak', $temp_peak);
-
 	$length = strlen($info);
 
 	$command = '';
