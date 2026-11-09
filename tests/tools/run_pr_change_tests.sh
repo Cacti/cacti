@@ -63,6 +63,17 @@ if [[ -f tests/phpunit-sites.xml ]]; then
 	php_coverage+=("$coverage_dir/sites-suite.json")
 fi
 
+if [[ -f tests/phpunit-gprint.xml ]]; then
+	# The GPRINT suite bootstrap does not load FixtureCoverage, so prepend it to record lib/Gprint.
+	CACTI_COVERAGE_FILE="$coverage_dir/gprint-suite.json" "$php_binary" -d memory_limit=2G -d xdebug.mode=coverage -d auto_prepend_file=tests/Helpers/FixtureCoverage.php include/vendor/bin/pest --configuration=tests/phpunit-gprint.xml
+	php_coverage+=("$coverage_dir/gprint-suite.json")
+fi
+if [[ -f tests/fixtures/Core/GprintControllerMatrix.php ]]; then
+	for case in save delete-used delete-unused; do
+		run_probe GprintControllerMatrix.php "gprint-$case" "$case"
+	done
+fi
+
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
