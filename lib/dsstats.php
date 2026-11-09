@@ -1580,7 +1580,7 @@ function dsstats_get_best_partition(int $start_time, int $end_time = 0) : string
 
 	if ($days <= 1) {
 		// Daily partition
-		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('z'), -3);
+		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('z', $start_time), -3);
 		$current_suffix = '_v' . date('Y', $cur_time) . substr('000' . date('z', $cur_time), -3);
 
 		if ($desired_suffix == $current_suffix) {
@@ -1594,8 +1594,9 @@ function dsstats_get_best_partition(int $start_time, int $end_time = 0) : string
 		}
 	} elseif ($days > 1 && $days <= 7) {
 		// Weekly partition
-		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('W'), -3);
-		$current_suffix = '_v' . date('Y', $cur_time) . substr('000' . date('W', $cur_time), -3);
+		// weekly partitions are named by the ISO year of the ISO week
+		$desired_suffix = '_v' . date('o', $start_time) . substr('000' . date('W', $start_time), -3);
+		$current_suffix = '_v' . date('o', $cur_time) . substr('000' . date('W', $cur_time), -3);
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_weekly';
@@ -1608,7 +1609,7 @@ function dsstats_get_best_partition(int $start_time, int $end_time = 0) : string
 		}
 	} elseif ($days > 7 && $days <= 30) {
 		// Monthly partition
-		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('m'), -3);
+		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('m', $start_time), -3);
 		$current_suffix = '_v' . date('Y', $cur_time) . substr('000' . date('m', $cur_time), -3);
 
 		if ($desired_suffix == $current_suffix) {
