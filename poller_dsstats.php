@@ -184,13 +184,9 @@ switch ($type) {
 	case 'bmaster': // Launched at the end of boost
 	case 'dmaster': // Launched inside this script for daily processing
 		// run the daily stats
-		dsstats_launch_children($type);
+		$expected_children = dsstats_launch_children($type);
 
-		// Wait for all processes to continue
-		while ($running = dsstats_processes_running($type)) {
-			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-			sleep(2);
-		}
+		dsstats_wait_for_children($type, $expected_children);
 
 		break;
 	case 'child':  // Launched by the master process
@@ -313,13 +309,9 @@ function dsstats_master_handler(string $type, bool $force, bool $fpartition) : v
 			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 
 			// run the daily stats
-			dsstats_launch_children($type);
+			$expected_children = dsstats_launch_children($type);
 
-			// Wait for all processes to continue
-			while ($running = dsstats_processes_running($type)) {
-				dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-				sleep(2);
-			}
+			dsstats_wait_for_children($type, $expected_children);
 
 			dsstats_log_statistics('DAILY');
 		}
@@ -339,14 +331,10 @@ function dsstats_master_handler(string $type, bool $force, bool $fpartition) : v
 		// run the major stats, log first to keep other processes from running
 		set_config_option('dsstats_last_major_run_time', date('Y-m-d G:i:s', $current_time));
 
-		// run the daily stats
-		dsstats_launch_children('dmaster');
+		// run the major stats
+		$expected_children = dsstats_launch_children('dmaster');
 
-		// Wait for all processes to continue
-		while ($running = dsstats_processes_running('dmaster')) {
-			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-			sleep(2);
-		}
+		dsstats_wait_for_children('dmaster', $expected_children);
 
 		dsstats_log_statistics('MAJOR');
 	}
