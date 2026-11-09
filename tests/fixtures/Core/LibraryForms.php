@@ -25,6 +25,17 @@ function library_form_dom(callable $render): DOMXPath {
 	return new DOMXPath($document);
 }
 
+/** Return what cacti_log() appended to the active log while the callback ran. */
+function library_log_written_by(callable $callback): string {
+	$log = cacti_log_file();
+	clearstatcache(true, $log);
+	$offset = is_file($log) ? filesize($log) : 0;
+	$callback();
+	clearstatcache(true, $log);
+
+	return (string) file_get_contents($log, false, null, $offset);
+}
+
 /** Render and submit the aggregate graph item editor for an installed template. */
 function library_aggregate_editor(int $template, array $aggregate): void {
 	$items = db_fetch_assoc_prepared('SELECT id, graph_type_id FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence', [$template]);
@@ -177,6 +188,19 @@ function library_forms(): void {
 		library_expect($dom->evaluate('string(//option[@selected]/@value)'), (string) $color, 'Color dropdown preserves the stored color identity');
 		$dom = library_form_dom(static fn () => form_font_box('entry', $value, '', 120, 30, 'text', 1, $value));
 		library_expect($dom->evaluate('string(//input/@value)'), $value, 'Font descriptions preserve punctuation');
+		$_SESSION[SESS_ERROR_FIELDS] = [];
+		$_SESSION[SESS_FIELD_VALUES] = [];
+		$dom                         = library_form_dom(static fn () => form_dirpath_box('entry', __FILE__, '', 255));
+		library_expect($dom->evaluate('string(//input/@value)'), __FILE__, 'Directory field retains a file path for correction');
+		library_expect(str_contains($dom->evaluate('string(//span[contains(@class, "fa-circle-x")]/@title)'), 'Path is a File and not a Directory'), true, 'A file in a directory field is flagged');
+		$log = library_log_written_by(static function () use (&$dom): void {
+			$dom = library_form_dom(static fn () => draw_edit_form(['config' => ['no_form_tag' => true], 'fields' => ['coverage_sub' => [
+				'method'       => 'textbox', 'friendly_name' => 'Coverage field', 'value' => 'stored', 'max_length' => 10,
+				'sub_checkbox' => ['name' => 'coverage_sub_enabled', 'friendly_name' => 'Enabled']]]]));
+		});
+		library_expect($dom->evaluate('string(//input[@name="coverage_sub_enabled"]/@type)'), 'checkbox', 'A sub-checkbox without a value still renders');
+		library_expect($dom->evaluate('count(//input[@name="coverage_sub_enabled"][@checked])'), 0.0, 'A sub-checkbox without a value or default is unchecked');
+		library_expect(str_contains($log, "Cacti Form field 'coverage_sub' does not include a sub_checkbox 'value' Column"), true, 'A sub-checkbox without a value is reported to developers');
 	} finally {
 		$_SESSION = $session;
 		set_config_option('autocomplete', $autocomplete);
