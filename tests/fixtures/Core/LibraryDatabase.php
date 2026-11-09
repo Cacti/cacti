@@ -69,6 +69,10 @@ function library_database(): void {
 		} finally {
 			unlink($defaults);
 		}
+		// Client authentication carried in the options lets the unauthenticated probe succeed.
+		$options = '--skip-ssl --skip-lock-tables --user=' . cacti_escapeshellarg($database_username) . ' --password=' . cacti_escapeshellarg($database_password);
+		library_expect(db_dump_data($database_default, $table, ['--host' => $database_hostname], $dump, $options), 0, 'Dump accepts client authentication supplied with its options');
+		library_expect(str_contains(file_get_contents($dump), 'Café & fixture'), true, 'Option-authenticated dump exports the persisted row');
 		$dom = library_form_dom(static function (): void {
 			$status = utilities_get_mysql_recommendations();
 			library_expect(in_array($status, [DB_STATUS_SUCCESS, DB_STATUS_WARNING, DB_STATUS_ERROR], true), true, 'Database health reports a recognized status');
@@ -124,6 +128,13 @@ function library_database_driver_failures(string $table): void {
 		library_expect(db_error(), 'Too many Lock/Deadlock errors occurred!', 'Exhausted retries preserve their diagnostic');
 		library_expect(db_fetch_cell("SELECT label FROM `$table`"), 'Recovered retry', 'Exhausted retries preserve the previous stored value');
 		$connection->exec('DROP TRIGGER `' . $trigger . '`');
+		library_expect($connection->exec('CREATE TRIGGER `' . $trigger . '` BEFORE UPDATE ON `' . $table . '` FOR EACH ROW BEGIN SET @coverage_attempts = COALESCE(@coverage_attempts, 0) + 1; IF @coverage_attempts <= @coverage_failures THEN SIGNAL SQLSTATE \'45000\' SET MYSQL_ERRNO = 2006, MESSAGE_TEXT = \'coverage server gone away\'; END IF; END') !== false, true, 'Reconnect fixture owns its server-gone trigger');
+		$connection->exec('SET @coverage_attempts = 0, @coverage_failures = 1');
+		library_expect(db_execute_prepared("UPDATE `$table` SET label = ?", ['Recovered reconnect'], true, $connection), true, 'A server that goes away once is retried after its connection check');
+		library_expect((int) $connection->query('SELECT @coverage_attempts')->fetchColumn(), 2, 'A server that went away is retried exactly once');
+		library_expect(db_fetch_cell("SELECT label FROM `$table`"), 'Recovered reconnect', 'The retried update reaches persisted state');
+		$connection->exec('DROP TRIGGER `' . $trigger . '`');
+		library_expect(db_execute_prepared("UPDATE `$table` SET label = ?", ['Recovered retry'], true, $connection), true, 'Reconnect fixture restores the shared row');
 		library_expect($connection->exec('CREATE TRIGGER `' . $trigger . '` BEFORE UPDATE ON `' . $table . '` FOR EACH ROW SIGNAL SQLSTATE \'45000\' SET MYSQL_ERRNO = 1153, MESSAGE_TEXT = \'coverage packet rejection\'') !== false, true, 'Server rejection fixture owns its packet-error trigger');
 		library_expect(db_execute_prepared("UPDATE `$table` SET label = ? /* " . str_repeat('x', 1100) . ' */', ['Must not persist'], true, $connection), false, 'Packet rejection cannot report a successful write');
 		library_expect(str_contains(db_error(), 'Too Large!, Error 1153'), true, 'Packet rejection retains its actionable server error');
