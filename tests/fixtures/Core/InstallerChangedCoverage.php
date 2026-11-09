@@ -2,6 +2,7 @@
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 namespace CactiInstallerChangedFixture;
 
+use LogicException;
 use RuntimeException;
 use Throwable;
 
@@ -15,11 +16,29 @@ if (is_file($autoload)) {
 
 $root = dirname(__DIR__, 3);
 
+$pluginRoot = sys_get_temp_dir() . '/cacti-installer-plugins-' . getmypid();
+
+foreach (['compatible' => '1.2.0', 'incompatible' => '9.0.0'] as $plugin => $compat) {
+	if (!is_dir($pluginRoot . '/' . $plugin)) {
+		mkdir($pluginRoot . '/' . $plugin, 0700, true);
+	}
+	copy($root . '/tests/fixtures/InstallerPlugin/setup.php', $pluginRoot . '/' . $plugin . '/setup.php');
+	file_put_contents($pluginRoot . '/' . $plugin . '/INFO', "[info]\nname = " . $plugin . "\ncompat = " . $compat . "\n");
+}
+register_shutdown_function(static function () use ($pluginRoot) : void {
+	foreach (['compatible', 'incompatible'] as $plugin) {
+		unlink($pluginRoot . '/' . $plugin . '/setup.php');
+		unlink($pluginRoot . '/' . $plugin . '/INFO');
+		rmdir($pluginRoot . '/' . $plugin);
+	}
+	rmdir($pluginRoot);
+});
+
 foreach ([
 	'CACTI_PATH_BASE'            => $root,
 	'CACTI_PATH_LIBRARY'         => $root . '/lib',
 	'CACTI_PATH_INSTALL'         => $root . '/install',
-	'CACTI_PATH_PLUGINS'         => $root . '/plugins',
+	'CACTI_PATH_PLUGINS'         => $pluginRoot,
 	'CACTI_VERSION'              => '1.3.0',
 	'CACTI_VERSION_FULL'         => '1.3.0',
 	'POLLER_ID'                  => 1,
@@ -60,6 +79,12 @@ function __($text, ...$args) {
 	return $args !== [] ? vsprintf($text, $args) : $text;
 }
 function db_fetch_assoc($sql, ...$args) {
+	foreach ($GLOBALS['cacti_db']['fail'] ?? [] as $failing) {
+		if (str_contains($sql, $failing)) {
+			return false;
+		}
+	}
+
 	if (str_contains($sql, 'information_schema')) {
 		return [['TABLE_NAME' => 'one', 'COLUMN_NAME' => 'id']];
 	}
@@ -73,7 +98,7 @@ function db_fetch_assoc($sql, ...$args) {
 	}
 
 	if (str_contains($sql, 'plugin_config')) {
-		return [['directory' => 'syslog'], ['directory' => 'missingplug']];
+		return [['directory' => 'syslog'], ['directory' => 'missingplug'], ['directory' => 'compatible'], ['directory' => 'incompatible']];
 	}
 
 	if (str_contains($sql, 'install_tp_') || str_contains($sql, 'install_table_')) {
@@ -116,7 +141,17 @@ function cacti_sizeof($value) {
 	return is_countable($value) ? count($value) : 0;
 }
 function replicate_out($id) {
-	return true;
+	return $GLOBALS['cacti_db']['replicate'] ?? true;
+}
+function file_get_contents($file, ...$args) {
+	if (str_ends_with($file, '/cacti.sql') && array_key_exists('cacti_sql', $GLOBALS['cacti_db'])) {
+		return $GLOBALS['cacti_db']['cacti_sql'];
+	}
+
+	return \file_get_contents($file, ...$args);
+}
+function get_cacti_base_tables() {
+	return ['one'];
 }
 function html_escape($text) {
 	return (string) $text;
@@ -201,6 +236,7 @@ cacti_fixture_source_method($root . '/lib/installer.php', 'getCompletionWarnings
 cacti_fixture_source_method($root . '/lib/installer.php', 'getUpgradePlan', __NAMESPACE__, 'UpgradePlanHost');
 cacti_fixture_source_method($root . '/lib/installer.php', 'runOperation', __NAMESPACE__, 'RunOperationHost');
 cacti_fixture_source_method($root . '/lib/installer.php', 'fullSyncDataCollectors', __NAMESPACE__, 'FullSyncHost');
+cacti_fixture_source_method($root . '/lib/installer.php', 'validateRequiredSchema', __NAMESPACE__, 'RequiredSchemaHost');
 
 $sync = install_full_sync();
 
@@ -220,6 +256,44 @@ if (!is_string($auth)) {
 	throw new RuntimeException('install_verify_authentication did not return a diagnostic string');
 }
 
+$GLOBALS['cacti_db']['replicate'] = false;
+
+if ((install_full_sync()['failed'] ?? []) !== [2]) {
+	throw new RuntimeException('install_full_sync reported a failed replication as synchronized');
+}
+unset($GLOBALS['cacti_db']['replicate']);
+
+$GLOBALS['cacti_db']['fail'] = ['FROM poller'];
+
+try {
+	install_full_sync();
+
+	throw new LogicException('install_full_sync ignored an unreadable collector inventory');
+} catch (RuntimeException $error) {
+	if ($error->getMessage() !== 'Unable to read the remote collector inventory') {
+		throw $error;
+	}
+}
+
+foreach ([
+	'Unable to read the shipped Cacti schema'          => ['cacti_sql' => false],
+	'The shipped Cacti schema is incomplete'           => ['cacti_sql' => "CREATE TABLE `empty` (\n) ENGINE=InnoDB;\n"],
+	'Unable to read database column metadata'          => ['fail' => ['information_schema']],
+] as $expected => $state) {
+	$GLOBALS['cacti_db'] = array_diff_key($GLOBALS['cacti_db'], ['fail' => 1, 'cacti_sql' => 1]) + $state;
+
+	if (!str_starts_with(install_verify_schema_columns(), $expected)) {
+		throw new RuntimeException('install_verify_schema_columns did not report: ' . $expected);
+	}
+}
+unset($GLOBALS['cacti_db']['cacti_sql']);
+$GLOBALS['cacti_db']['fail'] = ['login_providers'];
+
+if (install_verify_authentication() !== 'Unable to verify authentication configuration after migration.') {
+	throw new RuntimeException('install_verify_authentication accepted unreadable providers');
+}
+$GLOBALS['cacti_db']['fail'] = [];
+
 if (!is_object(poller_connect_to_remote(2))) {
 	throw new RuntimeException('poller_connect_to_remote did not connect with SSL argument defaults');
 }
@@ -235,11 +309,33 @@ if ($warningsHost->getCompletionWarnings() === []) {
 	throw new RuntimeException('getCompletionWarnings dropped collector messages');
 }
 
+if ((new RequiredSchemaHost())->validateRequiredSchema() !== install_verify_schema_columns()) {
+	throw new RuntimeException('validateRequiredSchema skipped the column check for a complete table set');
+}
+
 $planHost                       = new UpgradePlanHost();
 $planHost->old_cacti_version    = '1.2.22';
 $GLOBALS['cacti_version_codes'] = ['1.2.22' => true, '1.3.0' => true];
 $GLOBALS['plugins_integrated']  = ['syslog'];
-$planHost->getUpgradePlan();
+$plan                           = json_decode($planHost->getUpgradePlan()->encode(), true);
+
+if (!in_array('incompatible: Disabled because the plugin is incompatible', $plan['plugins'] ?? [], true)
+	|| preg_grep('/^compatible:/', $plan['plugins'] ?? []) !== []) {
+	throw new RuntimeException('getUpgradePlan misclassified plugin compatibility');
+}
+$GLOBALS['cacti_db']['fail'] = ['install_tp_'];
+
+try {
+	$planHost->getUpgradePlan();
+
+	throw new LogicException('getUpgradePlan accepted an unreadable template selection');
+} catch (RuntimeException $error) {
+	if ($error->getMessage() !== 'Unable to read a complete installer upgrade plan') {
+		throw $error;
+	}
+}
+$GLOBALS['cacti_db']['fail'] = [];
+
 $operationHost            = new RunOperationHost();
 $operationHost->runReport = new \Cacti\Installer\RunReport();
 
@@ -396,59 +492,38 @@ foreach ([Installer::MODE_UPGRADE, Installer::MODE_INSTALL, Installer::MODE_POLL
 
 (new CommandHost())->runCommand([PHP_BINARY, '-r', 'echo "ok";']);
 
-eval(<<<'PHP'
-namespace {
-	foreach ([
-		'db_install_add_column' => 'function db_install_add_column(...$args) {}',
-		'db_install_add_key' => 'function db_install_add_key(...$args) {}',
-		'db_install_execute' => 'function db_install_execute(...$args) {}',
-		'db_install_change_column' => 'function db_install_change_column(...$args) {}',
-		'db_table_exists' => 'function db_table_exists($table) { return false; }',
-		'db_column_exists' => 'function db_column_exists($table, $column) { return true; }',
-		'db_fetch_cell' => 'function db_fetch_cell($sql, ...$args) { return ""; }',
-		'unregister_process' => 'function unregister_process(...$args) {}',
-		'install_verify_schema_columns' => 'function install_verify_schema_columns() { return ""; }',
-		'install_verify_authentication' => 'function install_verify_authentication() { return ""; }',
-		'db_install_errors' => 'function db_install_errors($version) { return 3; }',
-		'cacti_version_compare' => 'function cacti_version_compare($a, $b, $op) { return version_compare((string) $a, (string) $b, $op); }',
-		'get_cacti_version_text' => 'function get_cacti_version_text($long, $version) { return (string) $version; }',
-		'get_cacti_db_version' => 'function get_cacti_db_version() { return "1.2.22"; }',
-		'db_fetch_row' => 'function db_fetch_row($sql, ...$args) { return ["row_count" => 1, "cacti" => "1.3.0"]; }',
-		'read_config_option' => 'function read_config_option($name, $force = false) { return $GLOBALS["cacti_db"]["settings"][$name] ?? ""; }',
-		'set_config_option' => 'function set_config_option($name, $value) { $GLOBALS["cacti_db"]["settings"][$name] = $value; }',
-		'log_install_always' => 'function log_install_always($section, $text) {}',
-		'log_install_high' => 'function log_install_high($section, $text) {}',
-		'cacti_log' => 'function cacti_log($text, ...$args) {}',
-		'db_execute_prepared' => 'function db_execute_prepared($sql, $params = []) { return true; }',
-		'is_realm_allowed' => 'function is_realm_allowed($realm) { return !empty($GLOBALS["cacti_realm_allowed"]); }',
-		'__' => 'function __($text, ...$args) { return $args !== [] ? vsprintf($text, $args) : $text; }',
-	] as $name => $source) {
-		if (!function_exists($name)) {
-			eval('namespace { ' . $source . ' }');
-		}
-	}
-}
-PHP);
+require __DIR__ . '/InstallerChangedCoverageGlobals.php';
 
 $upgradeHost                    = new UpgradeHost();
-$upgradeHost->old_cacti_version = '1.2.22';
+$upgradeHost->old_cacti_version = '1.2.13';
 $upgradeHost->runReport         = new \Cacti\Installer\RunReport();
+$GLOBALS['cacti_version_codes'] = ['1.2.14' => true, '1.3.0' => true];
+
+ob_start();
 
 try {
 	$upgradeHost->upgradeDatabase();
 } catch (Throwable $error) {
+} finally {
+	ob_end_clean();
+}
+$upgradeReport = json_decode($GLOBALS['cacti_db']['settings']['maintenance_lastrun_installer_report'], true);
+
+if (array_column($upgradeReport['operations'], 'succeeded', 'version') !== ['1.2.14' => true, '1.3.0' => false]) {
+	throw new RuntimeException('upgradeDatabase did not report the successful and failed migrations');
 }
 
 $beginHost              = new BeginInstallHost();
 $beginHost->runReport   = new \Cacti\Installer\RunReport();
 $beginHost->stepCurrent = 0;
 
-try {
-	BeginInstallHost::beginInstall('-b', $beginHost);
-} catch (RuntimeException $error) {
-	if ($error->getMessage() !== 'install-fail') {
-		throw $error;
-	}
+$GLOBALS['cacti_db']['settings']['install_eula'] = 'on';
+
+BeginInstallHost::beginInstall('-b', $beginHost);
+
+if ($beginHost->stepCurrent !== Installer::STEP_ERROR
+	|| json_decode($GLOBALS['cacti_db']['settings']['maintenance_lastrun_installer_report'], true)['state'] !== 'failed') {
+	throw new RuntimeException('beginInstall did not record the failed installation');
 }
 
 FullSyncHost::fullSyncDataCollectors();
@@ -483,6 +558,21 @@ try {
 }
 
 $GLOBALS['cacti_realm_allowed']                                          = true;
+$GLOBALS['cacti_db']['settings']['maintenance_lastrun_installer_report'] = '';
+
+try {
+	cacti_fixture_map_require($root . '/install/report.php', [
+		26 => "// auth stubbed\n",
+		37 => "throw new RuntimeException('not found');\n",
+	]);
+
+	throw new LogicException('report.php served an empty report');
+} catch (RuntimeException $error) {
+	if ($error->getMessage() !== 'not found') {
+		throw $error;
+	}
+}
+
 $GLOBALS['cacti_db']['settings']['maintenance_lastrun_installer_report'] = '{"ok":true}';
 cacti_fixture_map_require($root . '/install/report.php', [
 	26 => "// auth stubbed\n",
@@ -558,70 +648,99 @@ $installer = new class {
 };
 PHP);
 
-cacti_fixture_map_fragment($root . '/cli/upgrade_database.php', 146, 257, <<<'PHP'
+// cli/upgrade_database.php loop: the migration function is resolved by line
+// 176 so each run selects a missing, succeeding, or failing-verification path.
+$upgradePrefix = <<<'PHP'
 $cacti_version_codes = ['1.2.22' => 'h', '1.3.0' => 'h'];
 $old_cacti_version = '1.2.22';
-$upgrade_failed = false;
+if (!function_exists('cacti_fixture_upgrade_target')) {
+	function cacti_fixture_upgrade_target() : void {}
+	function cacti_fixture_upgrade_throws() : void { throw new RuntimeException('migration-fixture'); }
+}
+PHP;
+
+foreach ([
+	'missing function'    => [[176 => "\$upgrade_function = 'cacti_fixture_upgrade_missing';"], 'failed', ['migration' => false]],
+	'verified upgrade'    => [[176 => "\$upgrade_function = 'cacti_fixture_upgrade_target';"], 'succeeded', ['migration' => true, 'schema' => true, 'authentication' => true, 'version' => true]],
+	'failed verification' => [[
+		176 => "\$upgrade_function = 'cacti_fixture_upgrade_target';",
+		206 => "\t\t\t\t\$error   = \$verify === 'install_verify_schema_columns' ? 'schema-fixture' : \$verify();",
+	], 'failed', ['migration' => true, 'schema' => false]],
+	'thrown migration'    => [[176 => "\$upgrade_function = 'cacti_fixture_upgrade_throws';"], 'failed', ['migration' => false]],
+] as $case => [$replacements, $state, $operations]) {
+	ob_start();
+	cacti_fixture_map_fragment($root . '/cli/upgrade_database.php', 146, 257, $upgradePrefix, $replacements);
+	ob_end_clean();
+	$upgradeReport = json_decode($GLOBALS['cacti_db']['settings']['maintenance_lastrun_installer_report'], true);
+
+	if ($upgradeReport['state'] !== $state || array_column($upgradeReport['operations'], 'succeeded', 'operation') !== $operations) {
+		throw new RuntimeException('cli/upgrade_database.php mishandled the ' . $case . ' case');
+	}
+}
+
+// Report invariants the run paths above do not reach.
 $report = new \Cacti\Installer\RunReport();
-$prev_cacti_version = '1.2.22';
-$orig_cacti_version = '1.2.22';
-if (!function_exists('db_install_errors')) {
-	function db_install_errors($version) { return 3; }
+$report->finish(true, new \Cacti\Installer\CompletionWarnings());
+
+if (json_decode($report->encode(), true)['state'] !== 'succeeded') {
+	throw new RuntimeException('RunReport did not finish a clean run');
 }
-if (!function_exists('cacti_version_compare')) {
-	function cacti_version_compare($a, $b, $op) { return version_compare((string) $a, (string) $b, $op); }
-}
-if (!function_exists('get_cacti_version_text')) {
-	function get_cacti_version_text($long, $version) { return (string) $version; }
-}
-if (!function_exists('db_fetch_row')) {
-	function db_fetch_row($sql, ...$args) { return ['row_count' => 1, 'cacti' => '1.3.0']; }
-}
-if (!function_exists('unregister_process')) {
-	function unregister_process(...$args) {}
-}
-if (!function_exists('install_verify_schema_columns')) {
-	function install_verify_schema_columns() { return ''; }
-}
-if (!function_exists('install_verify_authentication')) {
-	function install_verify_authentication() { return ''; }
-}
-if (!function_exists('db_install_add_column')) {
-	function db_install_add_column(...$args) {}
-	function db_install_add_key(...$args) {}
-	function db_install_execute(...$args) {}
-	function db_install_change_column(...$args) {}
-	function db_table_exists($table) { return false; }
-}
-PHP
-	, [176 => 'if (!function_exists($upgrade_function)) { include($upgrade_file); }']);
+$report = new \Cacti\Installer\RunReport();
+$report->record('migration', 1, true, '1.2.' . str_repeat('9', 4096));
+$report->finish(true, new \Cacti\Installer\CompletionWarnings(['failed' => []]));
 
 try {
-	cacti_fixture_map_fragment($root . '/cli/upgrade_database.php', 146, 257, <<<'PHP'
-$cacti_version_codes = ['1.2.22' => 'h', '1.3.0' => 'h'];
-$old_cacti_version = '1.2.22';
-$upgrade_failed = false;
-$report = new \Cacti\Installer\RunReport();
-$prev_cacti_version = '1.2.22';
-$orig_cacti_version = '1.2.22';
-if (!function_exists('db_install_errors')) {
-	function db_install_errors($version) { return 3; }
+	$report->encode();
+
+	throw new LogicException('RunReport encoded an oversized report');
+} catch (LogicException $error) {
+	if ($error->getMessage() !== 'Installer report exceeds its storage limit') {
+		throw $error;
+	}
 }
-if (!function_exists('cacti_version_compare')) {
-	function cacti_version_compare($a, $b, $op) { return version_compare((string) $a, (string) $b, $op); }
+
+// The preflight default dependency list and its platform-check cleanup.
+$preflightRoot  = sys_get_temp_dir() . '/cacti-installer-preflight-' . getmypid();
+$preflightLock  = ['packages' => [['name' => 'test/package', 'version' => '1.0.0']]];
+$preflightFiles = [
+	'composer.json'                              => json_encode(['require' => ['php' => '^8.3']]),
+	'composer.lock'                              => json_encode($preflightLock),
+	'include/vendor/composer/installed.json'     => json_encode($preflightLock),
+	'include/vendor/composer/platform_check.php' => '<?php',
+	'include/vendor/autoload.php'                => '<?php',
+];
+
+foreach (['cacti.sql', 'include/js/jquery.js', 'include/js/jquery-ui.js', 'include/js/htmx.js', 'include/js/purify.js',
+	'include/js/select2.js', 'include/js/jquery.tablesorter.js', 'include/js/d3.js', 'include/js/billboard.js',
+	'include/js/pace.js', 'include/js/big.js', 'include/js/lzjs.js', 'include/js/screenfull.js', 'include/js/jstree.js',
+	'include/js/jquery.tablesorter.widgets.js', 'include/js/jquery.tablesorter.pager.js',
+	'include/js/jquery.validate/jquery.validate.js', 'include/js/jquery.validate/jquery.validate.min.js',
+	'include/js/jquery.validate/additional-methods.js', 'include/js/jquery.validate/additional-methods.min.js',
+	'install/install.js', 'include/layout.js', 'install/install.css', 'include/css/jquery.contextMenu.css',
+	'include/css/billboard.css', 'include/fa/css/all.css', 'include/tabler/dist/tabler-icons.min.css',
+	'include/vendor/lipis/flag-icons/css/flag-icons.css', 'include/themes/print.css'] as $asset) {
+	$preflightFiles[$asset] = '/* asset */';
 }
-if (!function_exists('unregister_process')) {
-	function unregister_process(...$args) {}
+
+foreach ($preflightFiles as $name => $contents) {
+	if (!is_dir(dirname($preflightRoot . '/' . $name))) {
+		mkdir(dirname($preflightRoot . '/' . $name), 0700, true);
+	}
+	file_put_contents($preflightRoot . '/' . $name, $contents);
 }
-if (!function_exists('install_verify_schema_columns')) {
-	function install_verify_schema_columns() { return 'schema'; }
-}
-if (!function_exists('install_verify_authentication')) {
-	function install_verify_authentication() { return ''; }
-}
-PHP
-		, [176 => 'if (!function_exists($upgrade_function)) { include($upgrade_file); }']);
-} catch (Throwable $error) {
+
+try {
+	// Composer's real autoloader is already loaded, so the default classes resolve.
+	if ((new \Cacti\Installer\DependencyPreflight($preflightRoot))->errors() !== []) {
+		throw new RuntimeException('DependencyPreflight rejected a complete installation');
+	}
+} finally {
+	$entries = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($preflightRoot, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
+
+	foreach ($entries as $entry) {
+		$entry->isDir() ? rmdir($entry->getPathname()) : unlink($entry->getPathname());
+	}
+	rmdir($preflightRoot);
 }
 
 print json_encode(['passed' => 8], JSON_THROW_ON_ERROR) . "\n";
