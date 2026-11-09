@@ -96,6 +96,23 @@ function native(): void {
 			$ldap->group_dn      = $groupDn;
 			\library_expect($ldap->Authenticate()['error_num'], $requireGroup ? \LdapError::SearchFoundNoGroup : \LdapError::Success, 'Authentication requires readable group membership when group checking is enabled');
 		}
+		// Membership type 2 resolves the account's real DN as the bound user, which can
+		// read only its own entry here, and still needs a group that user can compare.
+		$ldap                    = $factory();
+		$ldap->group_require     = true;
+		$ldap->group_dn          = $groupDn;
+		$ldap->group_member_type = 2;
+		$ldap->search_base       = $dn;
+		\library_expect($ldap->Authenticate()['error_num'], \LdapError::SearchFoundNoGroup, 'Account-search membership still requires a group the account can read');
+		$ldap        = $factory();
+		$ldap->debug = POLLER_VERBOSITY_DEBUG;
+
+		try {
+			\library_expect($ldap->Authenticate()['error_num'], \LdapError::Success, 'Protocol debugging does not change the authentication outcome');
+		} finally {
+			// The library debug level is process wide; later binds must stay quiet.
+			ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 0);
+		}
 		$ldap = $factory();
 		\library_expect($ldap->ResolveGroupMemberships('ldapuser', [$group, 'coverage_nonmember']), [$group], 'Group resolution admits only actual directory membership');
 		$ldap           = $factory();

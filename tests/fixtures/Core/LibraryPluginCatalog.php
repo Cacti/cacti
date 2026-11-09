@@ -38,12 +38,14 @@ header('Content-Type: application/json');
 if ($path === '/rate-limit') {
     http_response_code(429);
     echo json_encode(['message' => 'Fixture rate limit']);
+} elseif ($path === '/rate-limit-plain') {
+    http_response_code(429);
 } elseif ($path === '/raw') {
     echo 'Fixture raw bytes';
 } elseif ($path === '/auth') {
     echo json_encode(['authorized' => isset($_SERVER['HTTP_AUTHORIZATION'])]);
 } elseif ($path === '/users/fixture/repos') {
-    echo json_encode($mode === 'repositories' ? false : [['full_name' => 'fixture/plugin_coveragecatalog'], ['full_name' => 'fixture/unrelated']]);
+    echo json_encode($mode === 'repositories' ? false : ($mode === 'empty' ? [['full_name' => 'fixture/unrelated']] : [['full_name' => 'fixture/plugin_coveragecatalog'], ['full_name' => 'fixture/unrelated']]));
 } elseif (str_ends_with($path, '/releases')) {
     echo json_encode($mode === 'releases' ? false : [['tag_name' => 'v1', 'published_at' => '2026-01-02T03:04:05Z', 'body' => 'Fixture release notes']]);
 } elseif (str_contains($path, '/contents/')) {
@@ -54,7 +56,11 @@ if ($path === '/rate-limit') {
         echo json_encode(['content' => base64_encode($text)]);
     }
 } elseif (str_ends_with($path, '/tarball')) {
-    readfile(__DIR__ . '/fixture.tar.gz');
+    if ($mode === 'tarball' || ($mode === 'branchtarball' && ($_GET['ref'] ?? '') === 'main')) {
+        http_response_code(429);
+    } else {
+        readfile(__DIR__ . '/fixture.tar.gz');
+    }
 } elseif ($path === '/repos/fixture/plugin_coveragecatalog') {
     echo json_encode($mode === 'branch' ? false : ['pushed_at' => '2026-01-03T03:04:05Z', 'default_branch' => 'main']);
 } else {
@@ -137,6 +143,13 @@ PHP;
 		file_put_contents($directory . '/mode', 'ok');
 		library_expect(isset(plugin_fetch_latest_plugins()[$plugin]['main']), true, 'Catalog retry recovers the missing branch');
 		library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_available WHERE plugin = ?', [$plugin]), 2, 'Catalog retry restores both complete entries');
+		file_put_contents($directory . '/mode', 'empty');
+		unset($_SESSION[SESS_MESSAGES]['plugins_fetched'], $_SESSION[SESS_MESSAGES]['rate_limited']);
+		library_expect(plugin_fetch_latest_plugins(), [], 'A repository owner without plugin repositories yields an empty catalog');
+		library_expect($_SESSION[SESS_MESSAGES]['plugins_fetched']['level'] ?? null, MESSAGE_LEVEL_WARN, 'An empty catalog is reported as a warning');
+		library_expect(plugin_make_github_request($base . '/rate-limit-plain'), false, 'A rate limit without a message cannot report success');
+		library_expect(str_contains($_SESSION[SESS_MESSAGES]['rate_limited']['message'] ?? '', 'personal access token'), true, 'A rate limit without a message suggests an access token');
+		library_plugin_catalog_web($directory, $plugin);
 	} finally {
 		chdir($cwd);
 
@@ -162,5 +175,82 @@ PHP;
 				rmdir($owned);
 			}
 		}
+	}
+}
+
+/**
+ * A catalog refresh running under a web SAPI redirects back to the plugin list
+ * on failure, so each failure runs as a request against a disposable PHP web
+ * server. The shipped refresh runs from the CLI, so this is the only producer.
+ */
+function library_plugin_catalog_web(string $directory, string $plugin): void {
+	$router = <<<'PHP'
+<?php
+// A router script is not subject to auto_prepend_file, so it loads coverage itself.
+require getenv('CACTI_PATH_BASE') . '/tests/Helpers/RequestCoverage.php';
+require getenv('CACTI_PATH_BASE') . '/include/global.php';
+// The catalog logs through the debug() helper of its only shipped caller, cli/fetch_plugins.php.
+require_once CACTI_PATH_BASE . '/tests/Helpers/SourceSlice.php';
+cacti_fixture_source_function(CACTI_PATH_CLI . '/fetch_plugins.php', 'debug', '');
+register_shutdown_function(static function (): void {
+    print json_encode($_SESSION[SESS_MESSAGES] ?? [], JSON_UNESCAPED_SLASHES);
+});
+var_export(plugin_fetch_latest_plugins());
+PHP;
+	library_expect(file_put_contents($directory . '/cacti.php', $router), strlen($router), 'Catalog web router is written completely');
+	library_expect(mkdir($directory . '/coverage', 0700), true, 'Catalog web server owns its coverage directory');
+	$socket = stream_socket_server('tcp://127.0.0.1:0', $number, $message);
+	library_expect(is_resource($socket), true, 'Catalog web server reserves a loopback port');
+	$address = stream_socket_get_name($socket, false);
+	fclose($socket);
+	$environment                          = getenv();
+	$environment['CACTI_PATH_BASE']       = CACTI_PATH_BASE;
+	$environment['CACTI_PR_RAW_COVERAGE'] = $directory . '/coverage';
+	$environment['XDEBUG_MODE']           = 'coverage';
+	$server                               = proc_open([PHP_BINARY, '-d', 'memory_limit=512M', '-S', $address, $directory . '/cacti.php'], [0 => ['pipe', 'r'], 1 => ['file', $directory . '/web.log', 'a'], 2 => ['file', $directory . '/web.log', 'a']], $pipes, CACTI_PATH_BASE, $environment);
+	library_expect(is_resource($server), true, 'Catalog web server starts');
+	fclose($pipes[0]);
+	$user = read_config_option('github_user');
+
+	try {
+		$ready = false;
+
+		for ($attempt = 0; $attempt < 50 && !$ready; $attempt++) {
+			$connection = @stream_socket_client('tcp://' . $address, $number, $message, 0.1);
+			$ready      = is_resource($connection);
+
+			if ($ready) {
+				fclose($connection);
+			} else {
+				usleep(100000);
+			}
+		}
+		library_expect($ready, true, 'Catalog web server becomes ready');
+
+		foreach ([
+			'unset'         => [200, 'Base API Repository URL or User not being set'],
+			'contents'      => [302, 'Unable to get archive from GitHub/GitLab location.'],
+			'tarball'       => [302, 'Unable to get archive from GitHub/GitLab location.'],
+			'branch'        => [302, 'Unable to get develop repo data for plugin ' . $plugin],
+			'branchtarball' => [302, 'Unable to get archive from GitHub/GitLab location.'],
+		] as $mode => [$status, $text]) {
+			db_execute_prepared('DELETE FROM plugin_available WHERE plugin = ?', [$plugin]);
+			set_config_option('github_user', $mode === 'unset' ? '' : $user);
+			file_put_contents($directory . '/mode', $mode);
+			$client = curl_init('http://' . $address . '/');
+			curl_setopt_array($client, [CURLOPT_RETURNTRANSFER => true, CURLOPT_HEADER => true, CURLOPT_TIMEOUT => 30]);
+			$response = (string) curl_exec($client);
+			library_expect(curl_getinfo($client, CURLINFO_RESPONSE_CODE), $status, 'Interactive catalog refresh status at ' . $mode);
+			library_expect(str_contains($response, $text), true, 'Interactive catalog refresh explains the failure at ' . $mode);
+			library_expect(preg_match('/^Location: plugins\.php\r?$/mi', $response), $status === 302 ? 1 : 0, 'Only a failed download returns to the plugin list at ' . $mode);
+			library_expect((int) db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_available WHERE plugin = ?', [$plugin]), str_starts_with($mode, 'branch') ? 1 : 0, 'Only the completed release survives an interactive failure at ' . $mode);
+		}
+		$reports = glob($directory . '/coverage/*.json');
+		library_expect(count($reports), 5, 'Each interactive catalog request publishes its coverage');
+		library_import_coverage($reports);
+	} finally {
+		set_config_option('github_user', $user);
+		proc_terminate($server);
+		proc_close($server);
 	}
 }
