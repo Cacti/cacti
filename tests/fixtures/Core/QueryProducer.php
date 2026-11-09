@@ -21,6 +21,13 @@ switch ($action) {
 	case 'query':
 		foreach ($rows as $key => $label) {
 			$value = $field === 'label' ? $label : $key;
+
+			// dupe repeats one label so only the index stays unique; flat leaves no unique field
+			if ($scenario === 'flat') {
+				$value = 'flat';
+			} elseif ($scenario === 'dupe' && $field === 'label') {
+				$value = 'port shared';
+			}
 			print $key . '!' . $value . "\n";
 		}
 
