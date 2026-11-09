@@ -739,13 +739,15 @@ function upgrade_boost_process_table() : void {
 
 /** Install aggregate automation settings and ownership without enabling existing templates. */
 function upgrade_aggregate_automation_schema() : void {
-	foreach ([
+	$columns = [
 		['name' => 'automation_enabled', 'type' => 'char(2)', 'default' => ''],
 		['name' => 'automation_pattern', 'type' => 'varchar(512)', 'default' => ''],
 		['name' => 'automation_title', 'type' => 'varchar(255)', 'default' => '|host_description| - |aggregate_template_name|'],
 		['name' => 'automation_host_template_id', 'type' => 'int(10)', 'unsigned' => true, 'default' => '0'],
 		['name' => 'automation_max_members', 'type' => 'int(10)', 'unsigned' => true, 'default' => '1000'],
-	] as $column) {
+	];
+
+	foreach ($columns as $column) {
 		$column['NULL'] = false;
 		db_install_add_column('aggregate_graph_templates', $column);
 	}
