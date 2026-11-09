@@ -64,8 +64,7 @@ function aggregate_build_children_url(int $local_graph_id,
 				$graph_select .= $graph . '%2C';
 			}
 
-			return "<a class='hyperLink aggregates' href='" .
-				htmle(CACTI_PATH_URL .
+			return "<a class='hyperLink aggregates' href='" . htmle(CACTI_PATH_URL .
 				'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' .
 				($graph_start >= 0 ? '&graph_start=' .
 				$graph_start : '') .

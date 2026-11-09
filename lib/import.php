@@ -281,11 +281,7 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 							return false;
 						}
 
-						$cache_add = xml_to_graph_template($dep_hash_cache[$type][$i]['hash'],
-							$hash_array,
-							$hash_cache,
-							$dep_hash_cache[$type][$i]['version'],
-							$remove_orphans);
+						$cache_add = xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
 
 						if ($cache_add === false) {
 							if ($transaction_started) {
@@ -303,11 +299,7 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 						break;
 					case 'data_template':
-						$cache_add = xml_to_data_template($dep_hash_cache[$type][$i]['hash'],
-							$hash_array,
-							$hash_cache,
-							$import_as_new,
-							$profile_id);
+						$cache_add = xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
 
 						if ($cache_add === false) {
 							return false;
@@ -318,10 +310,7 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 						break;
 					case 'host_template':
-						$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'],
-							$hash_array,
-							$hash_cache,
-							$host_template_data);
+						$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data);
 
 						break;
 					case 'data_input_method':
@@ -330,11 +319,7 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 						break;
 					case 'data_query':
-						$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'],
-							$hash_array,
-							$hash_cache,
-							$files,
-							$replace_svalues);
+						$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
 
 						break;
 					case 'gprint_preset':
@@ -354,11 +339,7 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 						break;
 					case 'data_source_profile':
-						$cache_add = xml_to_data_source_profile($dep_hash_cache[$type][$i]['hash'],
-							$hash_array,
-							$hash_cache,
-							$import_as_new,
-							$profile_id);
+						$cache_add = xml_to_data_source_profile($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
 
 						if ($cache_add !== false) {
 							$hash_cache += $cache_add;
@@ -1763,9 +1744,7 @@ function xml_to_data_template(string $hash,
 				$save = [];
 
 				$save['data_template_data_id'] = $data_template_data_id;
-				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'],
-					$hash_cache,
-					'data_input_data');
+				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache, 'data_input_data');
 				$save['data_template_id']      = $data_template_id;
 				$save['local_data_id']         = 0;
 				$save['host_id']               = 0;
@@ -1965,12 +1944,8 @@ function xml_to_data_query(string $hash,
 						$save = [];
 
 						$save['snmp_query_graph_id']  = $data_query_graph_id;
-						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'],
-							$hash_cache,
-							'snmp_query_graph_rrd');
-						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'],
-							$hash_cache,
-							'snmp_query_graph_rrd');
+						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache, 'snmp_query_graph_rrd');
+						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache, 'snmp_query_graph_rrd');
 						$save['snmp_field_name']      = $sub_item_array['snmp_field_name'];
 
 						if (!empty($save['data_template_id']) && !empty($save['data_template_rrd_id'])) {
@@ -2092,9 +2067,7 @@ function xml_to_data_query(string $hash,
 					$save['id']                  = (empty($_data_query_graph_rrd_sv_id) ? '0' : $_data_query_graph_rrd_sv_id);
 					$save['hash']                = $parsed_hash['hash'];
 					$save['snmp_query_graph_id'] = $data_query_graph_id;
-					$save['data_template_id']    = resolve_hash_to_id($sub_item_array['data_template_id'],
-						$hash_cache,
-						'snmp_query_graph_rrd_sv');
+					$save['data_template_id']    = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache, 'snmp_query_graph_rrd_sv');
 					$save['sequence']            = $sub_item_array['sequence'];
 					$save['field_name']          = $sub_item_array['field_name'];
 					$save['text']                = xml_character_decode($sub_item_array['text']);
