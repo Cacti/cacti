@@ -64,3 +64,25 @@ test('a DERIVE sample after an unknown sample is unknown rather than a TypeError
 
 	expect(dsstats_rate_values($this->pdo, 104))->toBe([null, null, 2.0]);
 });
+
+test('a 32-bit COUNTER that wraps adds 2^32 to the delta', function () {
+	// 2^32 - 4294967000 = 296, plus 704 after the wrap, over 100 seconds
+	dsstats_rate_fixture($this->pdo, 105, 'ctr32', 2, 100, '4294967000');
+
+	$updates = [['local_data_id' => 105, 'times' => [2000 => ['ctr32' => '704']]]];
+
+	dsstats_poller_output($updates);
+
+	expect(dsstats_rate_values($this->pdo, 105))->toBe([10.0]);
+});
+
+test('a 64-bit COUNTER that wraps keeps a small delta exact', function () {
+	// 2^64 - 6144 is exact as a double, and the delta must not lose its low digits
+	dsstats_rate_fixture($this->pdo, 106, 'ctr64', 2, 1, '18446744073709545472');
+
+	$updates = [['local_data_id' => 106, 'times' => [2000 => ['ctr64' => '1000']]]];
+
+	dsstats_poller_output($updates);
+
+	expect(dsstats_rate_values($this->pdo, 106))->toBe([7144.0]);
+});
