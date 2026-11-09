@@ -1884,47 +1884,82 @@ function get_matching_nodes() : void {
 
 	$allowed = [];
 
-	if (cacti_sizeof($matching)) {
+	foreach ($matching as $row) {
+		$tree_id = (int) $row['graph_tree_id'];
+
+		if (!isset($allowed[$tree_id])) {
+			$allowed[$tree_id] = is_tree_allowed($tree_id);
+		}
+	}
+
+	$allowed = array_keys(array_filter($allowed));
+
+	if (cacti_sizeof($matching) && cacti_sizeof($allowed)) {
+		// one read of the allowed trees' parent links replaces a query per ancestor
+		$items = db_fetch_assoc_prepared('SELECT id, parent, graph_tree_id
+			FROM graph_tree_items
+			WHERE graph_tree_id IN (' . implode(',', array_fill(0, cacti_sizeof($allowed), '?')) . ')',
+			$allowed);
+
+		$parents = [];
+
+		foreach ($items as $item) {
+			$parents[(int) $item['graph_tree_id']][(int) $item['id']] = (int) $item['parent'];
+		}
+
+		// $paths[tree][branch] holds the branch ids from the root down to the
+		// branch, or false when its parents loop, leave the tree or are missing
+		$paths = [];
+		$seen  = [];
+
 		foreach ($matching as $row) {
 			$tree_id = (int) $row['graph_tree_id'];
+			$branch  = (int) $row['parent'];
 
-			if (!isset($allowed[$tree_id])) {
-				$allowed[$tree_id] = is_tree_allowed($tree_id);
-			}
-
-			if (!$allowed[$tree_id]) {
+			if (!isset($parents[$tree_id]) || isset($seen[$tree_id][$branch])) {
 				continue;
 			}
 
-			$match   = [];
+			$seen[$tree_id][$branch] = true;
+
+			$chain   = [];
 			$visited = [];
+			$current = $branch;
 
-			// a path that loops, leaves the tree, or ends at a missing item is dropped
-			while ($row['parent'] != 0) {
-				if (isset($visited[$row['parent']])) {
-					$row = [];
+			while ($current != 0 && !isset($paths[$tree_id][$current])) {
+				if (isset($visited[$current]) || !isset($parents[$tree_id][$current])) {
+					$current = -1;
 
 					break;
 				}
 
-				$visited[$row['parent']] = true;
-
-				$match[] = 'tbranch-' . $row['parent'];
-
-				$row = db_fetch_row_prepared('SELECT parent
-					FROM graph_tree_items
-					WHERE id = ?
-					AND graph_tree_id = ?',
-					[$row['parent'], $tree_id]);
-
-				if (!cacti_sizeof($row)) {
-					break;
-				}
+				$visited[$current] = true;
+				$chain[]           = $current;
+				$current           = $parents[$tree_id][$current];
 			}
 
-			if (cacti_sizeof($row)) {
-				$match[]      = 'tree_anchor-' . $tree_id;
-				$my_matches[] = array_reverse($match);
+			if ($current == 0) {
+				$path = [];
+			} elseif ($current == -1) {
+				$path = false;
+			} else {
+				$path = $paths[$tree_id][$current];
+			}
+
+			for ($i = cacti_sizeof($chain) - 1; $i >= 0; $i--) {
+				if ($path !== false) {
+					$path[] = 'tbranch-' . $chain[$i];
+				}
+
+				$paths[$tree_id][$chain[$i]] = $path;
+			}
+
+			if ($branch != 0) {
+				$path = $paths[$tree_id][$branch];
+			}
+
+			if ($path !== false) {
+				$my_matches[] = array_merge(['tree_anchor-' . $tree_id], $path);
 			}
 		}
 
