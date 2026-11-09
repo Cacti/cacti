@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-26 23:19+0000\n"
+"PO-Revision-Date: 2026-11-09 22:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -578,7 +578,7 @@ msgstr "Del av grafaggregation"
 #: user_admin.php:2821 user_admin.php:2920 user_admin.php:3019
 #: user_admin.php:3118
 msgid "Go"
-msgstr "Start"
+msgstr "Gå"
 
 #: aggregate_graphs.php:1720 aggregate_graphs.php:2042
 #: automation_devices.php:606 automation_snmp.php:908
@@ -747,7 +747,7 @@ msgstr "Mall"
 #: utilities.php:649 utilities.php:976 utilities.php:1025 utilities.php:1035
 #: utilities.php:1934 utilities.php:2195 utilities.php:2212
 msgid "Any"
-msgstr "Vilken som helst"
+msgstr "Valfri"
 
 #: aggregate_graphs.php:1999 aggregate_graphs.php:2144
 #: automation_graph_rules.php:1024 automation_graph_rules.php:1025
@@ -8059,7 +8059,7 @@ msgstr "Varje timme"
 #: include/global_settings.php:2849
 #, php-format
 msgid "Every %d Hours"
-msgstr "Med %d timmars mellanrum"
+msgstr "Var %d:e timme"
 
 #: include/global_arrays.php:771
 #, php-format
@@ -23566,7 +23566,7 @@ msgstr ""
 "Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera "
 "ytterligare cacheminne för RRD-filer om databasen och RRD-filerna finns på "
 "samma system. Se de totala värdena för kärna och klienter nedan för en "
-"förklaring av beräkningen."
+"förklaring av beräkningsmetoden."
 
 #: support.php:1612 support.php:1617 support.php:1645
 msgid "Max Core Memory Possible"
