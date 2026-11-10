@@ -35,6 +35,8 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'clear_poller_cache':
+		csrf_require_post();
+
 		/* obtain timeout settings */
 		$max_execution = ini_get('max_execution_time');
 		ini_set('max_execution_time', '0');
@@ -43,6 +45,8 @@ switch (get_request_var('action')) {
 		header('Location: utilities.php?action=view_poller_cache');exit;
 		break;
 	case 'rebuild_resource_cache':
+		csrf_require_post();
+
 		rebuild_resource_cache();
 		header('Location: utilities.php?header=false');exit;
 		break;
@@ -60,10 +64,14 @@ switch (get_request_var('action')) {
 		utilities_view_logfile();
 		break;
 	case 'clear_logfile':
+		csrf_require_post();
+
 		utilities_clear_logfile();
 		utilities_view_logfile();
 		break;
 	case 'purge_logfile':
+		csrf_require_post();
+
 		clog_purge_logfile();
 		utilities_view_logfile();
 		break;
@@ -92,11 +100,15 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'purge_data_source_statistics':
+		csrf_require_post();
+
 		purge_data_source_statistics();
 		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
 		header('Location: utilities.php');
 		break;
 	case 'rebuild_snmpagent_cache':
+		csrf_require_post();
+
 		snmpagent_cache_rebuilt();
 		header('Location: utilities.php?action=view_snmpagent_cache');exit;
 		break;
@@ -1372,7 +1384,7 @@ function utilities_view_logfile() {
 
 	function purgeLog() {
 		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
-		loadPageNoHeader(strURL);
+		loadPageUsingPostUrl(strURL, 'main');
 	}
 
 	$(function() {
@@ -2363,6 +2375,7 @@ function utilities() {
 		),
 		__('Rebuild Poller Cache') => array(
 			'link'  => 'utilities.php?action=clear_poller_cache',
+			'post'  => true,
 			'mode'  => 'online',
 			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.'),
 			'note'        => array (
@@ -2372,6 +2385,7 @@ function utilities() {
 		),
 		__('Rebuild Resource Cache') => array(
 			'link'  => 'utilities.php?action=rebuild_resource_cache',
+			'post'  => true,
 			'mode'  => 'online',
 			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
 		),
@@ -2387,6 +2401,7 @@ function utilities() {
 	$utilities[__('Data Source Statistics Utilities')] = array(
 		__('Purge Data Source Statistics') => array(
 			'link'  => 'utilities.php?action=purge_data_source_statistics',
+			'post'  => true,
 			'mode'  => 'online',
 			'description' => __('This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass.')
 		),
@@ -2416,6 +2431,7 @@ function utilities() {
 			),
 			__('Rebuild SNMP Agent Cache') => array(
 				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
+			'post'  => true,
 				'mode'  => 'online',
 				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
 			),
@@ -2447,7 +2463,9 @@ function utilities() {
 
 				form_alternate_row();
 				print "<td class='nowrap' style='vertical-align:top;'>";
-				print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
+				/* links that change state are submitted as a POST with the CSRF token */
+				$link_class = (isset($details['post']) && $details['post'] ? 'hyperLink cactiPostAction' : 'hyperLink');
+				print "<a class='" . $link_class . "' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
 				print '</td>';
 				print '<td>';
 				print html_escape($details['description']);
