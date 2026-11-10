@@ -365,7 +365,7 @@
 	background: color-mix(in srgb, currentColor 12%, transparent);
 }
 
-.ccPill--up   { background: var(--cc-sev-up,   #3c9a5f); color: #fff; }
-.ccPill--warn { background: var(--cc-sev-warn, #d9830f); color: #fff; }
-.ccPill--down { background: var(--cc-sev-down, #cc0000); color: #fff; }
-.ccPill--none { background: color-mix(in srgb, currentColor 45%, transparent); color: #fff; }
+.ccPill--up   { background: color-mix(in srgb, var(--cc-sev-up,   #3c9a5f) 70%, #000); color: #fff; }
+.ccPill--warn { background: color-mix(in srgb, var(--cc-sev-warn, #d9830f) 70%, #000); color: #fff; }
+.ccPill--down { background: color-mix(in srgb, var(--cc-sev-down, #cc0000) 70%, #000); color: #fff; }
+.ccPill--none { background: color-mix(in srgb, currentColor 20%, transparent); }
