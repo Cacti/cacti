@@ -174,7 +174,9 @@ class Cacti_DB_Session_Handler implements SessionHandlerInterface {
 	public function gc(int $max_lifetime): int|false {
 		cacti_db_session_clean($max_lifetime);
 
-		return 0;
+		$deleted = db_affected_rows();
+
+		return is_numeric($deleted) ? (int) $deleted : 0;
 	}
 }
 
