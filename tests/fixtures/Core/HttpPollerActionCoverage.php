@@ -443,6 +443,8 @@ function db_fetch_assoc_prepared($sql, $params = [], $log = true) {
 	return array_values(array_filter($GLOBALS['fixture_rows'], fn ($row) => $row['local_data_id'] == $params[1]));
 }
 
+// collect_device_data() masks SNMP credentials in its debug log.
+cacti_fixture_source_function($root . '/lib/poller.php', 'poller_redact_snmp_secrets', __NAMESPACE__);
 cacti_fixture_source_function($root . '/cmd.php', 'collect_device_data', __NAMESPACE__);
 cacti_fixture_source_function($root . '/cmd.php', 'http_prefetch_items', __NAMESPACE__);
 cacti_fixture_source_function($root . '/remote_agent.php', 'poll_for_data', __NAMESPACE__);
