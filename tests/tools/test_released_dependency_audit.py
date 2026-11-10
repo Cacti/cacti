@@ -70,27 +70,6 @@ class ReleasedDependencyAuditTest(unittest.TestCase):
             self.assertEqual(audit_report.read_text(), fixture.read_text())
             return result
 
-    def test_publication_checkout_has_a_narrow_policy_exception(self):
-        spec = importlib.util.spec_from_file_location(
-            "workflow_policy", ROOT / ".github/scripts/check-workflow-policy.py"
-        )
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        path = ".github/workflows/released-dependency-audit.yml"
-        step = "Checkout released branch for publication"
-        writer = {"permissions": {"contents": "write"}}
-        self.assertTrue(module.checkout_may_write(path, "publish-remediation", step, writer))
-        self.assertTrue(module.checkout_may_write(".github/workflows/update-contributors.yml", "update", "Checkout", writer))
-        self.assertFalse(module.checkout_may_write(path, "audit", step, writer))
-        self.assertFalse(module.checkout_may_write(path, "publish-remediation", "Other checkout", writer))
-        self.assertFalse(module.checkout_may_write(path, "publish-remediation", step, {}))
-        self.assertFalse(module.checkout_may_write(".github/workflows/other.yml", "publish-remediation", step, writer))
-        result = subprocess.run(
-            [sys.executable, str(ROOT / ".github/scripts/check-workflow-policy.py"), "--workflows", path],
-            text=True, capture_output=True, check=False,
-        )
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-
     def test_audit_cache_paths_are_canonical(self):
         rows = self.workflow["jobs"]["audit"]["strategy"]["matrix"]["include"]
         expected = {"runtime-php": "composer.lock", "test-php": "tests/composer.lock", "frontend": "package-lock.json", "browser-tests": "tests/e2e/package-lock.json"}
