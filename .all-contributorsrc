@@ -170,6 +170,7 @@
       "profile": "https://github.com/bmfmancini",
       "contributions": [
         "code",
+        "security",
         "doc",
         "infra",
         "test",
