@@ -414,7 +414,7 @@ test('card-widget stylesheet renders every chart primitive rule', async ({ page 
 		+ '<div class="ccDistRow"><span class="ccDistLabel">eth0</span><div class="ccDistTrack"><div class="ccDistFill" style="width:40%"></div></div><span class="ccDistValue">40%</span></div>'
 		+ '<div class="ccMiniBar"><div class="ccMiniBarFill" style="width:30%"></div></div>'
 		+ '<div class="ccEmpty">No data</div>'
-		+ '<span class="ccPill">tag</span>'
+		+ '<span class="ccPill ccPill--up ccPill--warn ccPill--down ccPill--none">tag</span>'
 		+ '</body></html>');
 	await installThemeCss(page, 'include/css/card-widgets.css');
 	expect(await page.locator('.ccGauge').evaluate(element => getComputedStyle(element).display)).toBe('flex');
