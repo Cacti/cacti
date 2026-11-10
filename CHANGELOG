@@ -247,6 +247,9 @@ Cacti CHANGELOG
 -issue#8460: Keep all four digits of an AKCP securityProbe Fahrenheit reading of 100 F or more instead of cutting it to three, and return U for a reading that is not a number
 -issue#8480: Keep wrapped Cacti theme titles and controls inside their titlebars and improve text-link contrast on light rows
 -issue#8485: Restore Dark theme keyboard focus outlines, contain wrapped titles, and keep hover text legible
+-issue#8490: Keep Deepness titles inside their bars and improve status and import message contrast
+-issue#8480: Keep wrapped Cacti theme titles and controls inside their titlebars and improve text-link contrast on light rows
+-issue#8485: Restore Dark theme keyboard focus outlines, contain wrapped titles, and keep hover text legible
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
 -issue#8596: Keep device credentials out of Script Server and cmd.php log messages that describe a script's arguments
 -issue#8676: Store the first line of a script's output instead of U when the script ends its output with a newline
