@@ -65,8 +65,65 @@ function script_server_log_request(int $pid, int $ctr, string $include_file, str
 	}
 
 	cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . basename($include_file) .
-		"' FUNC: '$function' PARMS: '" . implode('\', \'', $parameter_array) .
+		"' FUNC: '$function' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) .
 		"'", false, 'PHPSVR');
+}
+
+/**
+ * Masks any device SNMP credential among Script Server arguments before they
+ * are logged.
+ *
+ * The Script Server cannot tell which argument is a credential, so every
+ * argument, and every colon separated field of one, is compared with the
+ * credentials configured on the devices.
+ *
+ * @param array      $params  The parsed parameters.
+ * @param array|null $secrets Credential values as keys, or null to load them once from the database.
+ *
+ * @return array The parameters with credentials masked.
+ */
+function script_server_redact_params(array $params, ?array $secrets = null) : array {
+	static $known = null;
+
+	if ($secrets === null) {
+		if ($known === null) {
+			$known = [];
+
+			$rows = db_fetch_assoc('SELECT DISTINCT snmp_community, snmp_password, snmp_priv_passphrase FROM host');
+
+			if (is_array($rows)) {
+				foreach ($rows as $row) {
+					foreach ($row as $value) {
+						if ($value != '') {
+							$known[$value] = true;
+						}
+					}
+				}
+			}
+		}
+
+		$secrets = $known;
+	}
+
+	foreach ($params as $index => $param) {
+		$param = (string) $param;
+
+		if (isset($secrets[$param])) {
+			$params[$index] = '********';
+		} elseif (strpos($param, ':') !== false) {
+			$fields = explode(':', $param);
+
+			foreach ($fields as $findex => $field) {
+				if ($field != '' && isset($secrets[$field])) {
+					$fields[$findex] = '********';
+				}
+			}
+
+			$params[$index] = implode(':', $fields);
+		}
+	}
+
+	return $params;
 }
 
 /**
@@ -90,22 +147,82 @@ function script_server_log_response(int $pid, int $ctr, string $result) : void {
 }
 
 /**
+ * Masks a device's SNMP credentials in a poller command before it is logged.
+ *
+ * @param string $string The command or argument string.
+ * @param array  $item   A poller_item or host row carrying the SNMP credential columns.
+ *
+ * @return string The string with each non-empty credential masked.
+ */
+function poller_redact_snmp_secrets(string $string, array $item) : string {
+	$secrets = [];
+
+	foreach (['snmp_community', 'snmp_password', 'snmp_priv_passphrase'] as $column) {
+		if (!isset($item[$column]) || $item[$column] == '') {
+			continue;
+		}
+
+		// the command line carries each credential as cacti_escapeshellarg()
+		// or cacti_escapeshellarg_cmd() wrote it, so mask every form either
+		// can produce on unix and win32, not just the stored value
+		$value   = (string) $item[$column];
+		$bases   = [$value, str_replace(["\n", "\r"], '', $value)];
+		$cmd     = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $bases[1]);
+		$bases[] = $cmd;
+		$bases[] = str_replace('%', '', $cmd);
+
+		foreach ($bases as $base) {
+			$secrets[] = $base;
+			$secrets[] = str_replace("'", "'\\''", $base);
+			$secrets[] = str_replace(CACTI_ESCAPE_CHARACTER, '\\' . CACTI_ESCAPE_CHARACTER, $base);
+		}
+	}
+
+	$secrets = array_unique(array_filter($secrets, function (string $secret) : bool {
+		return $secret !== '';
+	}));
+
+	if (!cacti_sizeof($secrets)) {
+		return $string;
+	}
+
+	// longest first, so a credential that contains another is masked whole
+	usort($secrets, function (string $a, string $b) : int {
+		return strlen($b) - strlen($a);
+	});
+
+	return str_replace($secrets, '********', $string);
+}
+
+/**
  * exec_poll - executes a command and returns its output
  *
  * @param string $command The command to execute
  * @param int    $timeout The command timeout
+ * @param array  $item    The poller item, whose SNMP credentials are masked when the command is logged
  *
  * @return string The output of $command after execution
  */
-function exec_poll(string $command, int $timeout = 5) : string {
+function exec_poll(string $command, int $timeout = 5, array $item = []) : string {
 	$output = [];
 	$return = 0;
 
-	$data = exec_with_timeout($command, $output, $return, $timeout);
+	// the command, its output and its stderr can carry the device credentials,
+	// so they are masked, but only when a failure is logged
+	$redact = function (string $string) use ($item) : string {
+		return poller_redact_snmp_secrets($string, $item);
+	};
+
+	exec_with_timeout($command, $output, $return, $timeout, $redact);
 
 	if ($return != 0) {
-		cacti_log(sprintf('WARNING: Script:%s, ErrorCode:%d, Output:%s', $command, $return, implode(',', $output)), false, 'POLLER');
+		cacti_log($redact(sprintf('WARNING: Script:%s, ErrorCode:%d, Output:%s', $command, $return, implode(',', $output))), false, 'POLLER');
 	}
+
+	// the result is the first line of output, as 1.2.x reads it; the line
+	// exec_with_timeout() returns is the last one, which is empty when the
+	// script ends its output with a newline
+	$data = $output[0] ?? '';
 
 	if ($data == '') {
 		return 'U';
@@ -337,14 +454,15 @@ function poller_cactid_arguments(string $base_path, bool $debug) : array {
  * exec_with_timeout - Execute a command and return it's output. Either wait until the
  * command exits or the timeout has expired.
  *
- * @param string $cmd         Command to execute.
- * @param array  $output      A return array of output.
- * @param int    $return_code The return code from the script
- * @param int    $timeout     Timeout in seconds.
+ * @param string        $cmd         Command to execute.
+ * @param array         $output      A return array of output.
+ * @param int           $return_code The return code from the script
+ * @param int           $timeout     Timeout in seconds.
+ * @param callable|null $redact      Masks credentials in the command and stderr before they are logged.
  *
  * @return mixed Either the last line of output or false on error
  */
-function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $timeout = 5) : mixed {
+function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $timeout = 5, ?callable $redact = null) : mixed {
 	// File descriptors passed to the process.
 	$descriptors = [
 		0 => ['pipe', 'r'],  // stdin
@@ -426,7 +544,9 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	// Only surface stderr noise when the command actually failed; successful
 	// commands may write informational output to stderr that isn't actionable.
 	if ($return_code != 0 && !empty($errors)) {
-		cacti_log("WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+		$message = "WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors);
+
+		cacti_log($redact === null ? $message : $redact($message), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.

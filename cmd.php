@@ -320,6 +320,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 	$itemcnt        = 0;
 	$host_start     = microtime(true);
 	$set_spike_kill = false;
+	$pipes          = [];
 
 	/* startup Cacti php polling server and include the
 	 * include file for script processing
@@ -901,46 +902,22 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 
 			break;
 		case POLLER_ACTION_SCRIPT:
-			$output = trim(exec_poll($item['arg1'], $script_timeout));
-
-			if ($output == 'U') {
-				$error_ds[$ds] = $ds;
-
-				if (read_config_option('spine_log_level') == 2) {
-					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ', output: U',
-						$print_data_to_stdout,
-						'POLLER');
-				}
-			} elseif (!is_numeric($output)) {
-				if (prepare_validate_result($output) == false) {
-					$error_ds[$ds] = $ds;
-
-					if (read_config_option('spine_log_level') == 2) {
-						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ", output: $output",
-							$print_data_to_stdout,
-							'POLLER');
-					}
-				}
-			}
-
-			$total_time = (microtime(true) - $thread_start) * 1000;
-
-			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time,
-				2) . '] SCRIPT: ' . $item['arg1'] . ", output: $output",
-				$print_data_to_stdout,
-				'POLLER',
-				debug_level($host_id,
-					POLLER_VERBOSITY_MEDIUM));
-
-			break;
 		case POLLER_ACTION_SCRIPT_PHP:
-			$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+			if ($item['action'] == POLLER_ACTION_SCRIPT) {
+				$output = trim(exec_poll($item['arg1'], $script_timeout, $item));
+				$type   = 'SCRIPT';
+			} else {
+				$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
+				$type   = 'SERVER';
+			}
+
+			$log_arg1 = poller_redact_snmp_secrets($item['arg1'], $item);
 
 			if ($output == 'U') {
 				$error_ds[$ds] = $ds;
 
 				if (read_config_option('spine_log_level') == 2) {
-					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ', output: U',
+					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] $type: " . $log_arg1 . ', output: U',
 						$print_data_to_stdout,
 						'POLLER');
 				}
@@ -949,7 +926,7 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 					$error_ds[$ds] = $ds;
 
 					if (read_config_option('spine_log_level') == 2) {
-						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ", output: $output",
+						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] $type: " . $log_arg1 . ", output: $output",
 							$print_data_to_stdout,
 							'POLLER');
 					}
@@ -959,7 +936,7 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 			$total_time = (microtime(true) - $thread_start) * 1000;
 
 			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time,
-				2) . '] SERVER: ' . $item['arg1'] . ", output: $output",
+				2) . "] $type: " . $log_arg1 . ", output: $output",
 				$print_data_to_stdout,
 				'POLLER',
 				debug_level($host_id,
@@ -1040,6 +1017,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 
 			foreach ($reindex as $index_item) {
 				$assert_fail = false;
+				$log_arg1    = poller_redact_snmp_secrets($index_item['arg1'], $item);
 
 				switch ($index_item['action']) {
 					case POLLER_ACTION_SNMP:
@@ -1073,7 +1051,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE OID: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							', (assert:' .
 							$index_item['assert_value'] .
 							' ' .
@@ -1088,7 +1066,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 
 						break;
 					case POLLER_ACTION_SCRIPT:
-						$output = trim(exec_poll($index_item['arg1'], $script_timeout));
+						$output = trim(exec_poll($index_item['arg1'], $script_timeout, $item));
 
 						if (!is_numeric($output)) {
 							if (prepare_validate_result($output) == false) {
@@ -1112,7 +1090,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE SCRIPT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',
@@ -1150,7 +1128,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE SERVER: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',
@@ -1170,7 +1148,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE OID COUNT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							', output: ' .
 							$output,
 							$print_data_to_stdout,
@@ -1187,7 +1165,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE CMD COUNT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',
@@ -1202,7 +1180,7 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 						cacti_log("Device[$host_id] DQ[" .
 							$index_item['data_query_id'] .
 							'] RECACHE SERVER COUNT: ' .
-							$index_item['arg1'] .
+							$log_arg1 .
 							", output: $output",
 							$print_data_to_stdout,
 							'POLLER',

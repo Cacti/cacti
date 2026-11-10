@@ -129,4 +129,59 @@ if [ "$AFTER" != "$BEFORE" ]; then
 	exit 1
 fi
 
-echo "PASS: LDAP login bind, rejection, and forged-realm paths"
+# The image otherwise grants each user read access only to their own entry.
+# Permit authenticated users to read this fixture group for the membership gate.
+"${DC[@]}" exec -T openldap ldapmodify -Q -Y EXTERNAL -H ldapi:/// <<'LDIF'
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {2}to dn.base="cn=cacti-operators,ou=groups,dc=example,dc=org" by users read by * none
+olcAccess: {3}to dn.base="ou=users,dc=example,dc=org" by users read by * none
+LDIF
+
+echo "[ldap-e2e] first login provisions claims with a required DN group"
+"${DC[@]}" exec -T mariadb mariadb -ucactiuser -pcactiuser cacti -e \
+	"UPDATE login_providers SET user_id=1, parameters=JSON_SET(parameters, '$.mode', 2, '$.specific_dn', 'cn=admin,dc=example,dc=org', '$.specific_password', 'adminpassword', '$.group_dn', 'cn=cacti-operators,ou=groups,dc=example,dc=org', '$.group_attrib', 'member', '$.group_member_type', 1, '$.claim_full_name', 'displayName', '$.claim_email', 'mail') WHERE id=1;"
+login_post /tmp/c_ldap_claims.jar \
+	--data-urlencode "login_username=claimuser" \
+	--data-urlencode "login_password=ldap-e2e-pass" \
+	--data-urlencode "realm=1001" >/dev/null
+if ! body_has_app_layout || body_is_login_page; then
+	echo "FAIL: first LDAP claim login did not reach the application" >&2
+	"${DC[@]}" exec -T openldap ldapsearch -x -H ldap://127.0.0.1 -b 'cn=cacti-operators,ou=groups,dc=example,dc=org' -D 'cn=claimuser,ou=users,dc=example,dc=org' -w ldap-e2e-pass -LLL member >&2 || true
+	"${DC[@]}" exec -T cacti tail -60 /var/www/html/log/cacti.log >&2 || true
+	"${DC[@]}" exec -T cacti head -c 3000 /tmp/ldap_post >&2 || true
+	exit 1
+fi
+CLAIMS=$("${DC[@]}" exec -T mariadb mariadb -ucactiuser -pcactiuser cacti -Nse \
+	"SELECT CONCAT(full_name, '|', email_address) FROM user_auth WHERE username='claimuser' AND realm=1001")
+if [ "$CLAIMS" != 'Claim User|claimuser@example.org' ]; then
+	echo "FAIL: LDAP claim attributes were not applied to the provisioned account" >&2
+	exit 1
+fi
+
+echo "[ldap-e2e] a valid bind without group membership cannot provision an account"
+login_post /tmp/c_ldap_outside.jar \
+	--data-urlencode "login_username=outsideuser" \
+	--data-urlencode "login_password=ldap-e2e-pass" \
+	--data-urlencode "realm=1001" >/dev/null
+OUTSIDE=$("${DC[@]}" exec -T mariadb mariadb -ucactiuser -pcactiuser cacti -Nse \
+	"SELECT COUNT(*) FROM user_auth WHERE username='outsideuser'")
+if ! body_is_login_page || [ "$OUTSIDE" != 0 ]; then
+	echo "FAIL: LDAP group restriction admitted or provisioned a nonmember" >&2
+	exit 1
+fi
+
+echo "[ldap-e2e] resolved-DN membership also accepts the group member"
+"${DC[@]}" exec -T mariadb mariadb -ucactiuser -pcactiuser cacti -e \
+	"UPDATE login_providers SET parameters=JSON_SET(parameters, '$.group_member_type', 2) WHERE id=1;"
+login_post /tmp/c_ldap_dn.jar \
+	--data-urlencode "login_username=claimuser" \
+	--data-urlencode "login_password=ldap-e2e-pass" \
+	--data-urlencode "realm=1001" >/dev/null
+if ! body_has_app_layout || body_is_login_page; then
+	echo "FAIL: resolved-DN group membership rejected the member" >&2
+	exit 1
+fi
+
+echo "PASS: LDAP login bind, rejection, forged realm, provisioning claims and DN groups"
