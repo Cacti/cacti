@@ -436,7 +436,11 @@ window.CactiCards = window.CactiCards || (function() {
 						var tmp = document.createElement('div');
 						tmp.innerHTML = String(html).trim();
 						var fresh = tmp.querySelector(cardSel(adapter)) || tmp.firstElementChild;
-						if (fresh) {
+						// A second add of the same card can resolve while the first
+						// is still pending (the option stays selectable until the
+						// debounced catalogue sync), so skip ids already on the grid
+						// to avoid appending a duplicate the server then dedupes.
+						if (fresh && findCard(grid, adapter, cardId(fresh, adapter)) === null) {
 							grid.appendChild(fresh);
 							bindCard(grid, adapter, fresh);
 							if (typeof adapter.applyTheme === 'function') {
