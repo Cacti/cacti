@@ -98,6 +98,7 @@ Cacti CHANGELOG
 -security#8346: Pin workflow Actions and isolate release signing from builds
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
+-issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
 -issue#8640: Present the Details and Time View graph pages' drilldown actions through the three-bar menu, and fix the "unsupported pseudo: hover" console error when the graph area reloads
 -issue#8640: Shorten the Time View graph page drilldown action labels (Details, Realtime) so the three-bar menu matches the standard graph drilldown menu
 -issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
