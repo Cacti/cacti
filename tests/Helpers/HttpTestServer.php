@@ -57,9 +57,12 @@ function cacti_http_test_server() : array {
 
 	$inflight = trim((string) fgets($counterPipes[1]));
 
-	if ($inflight === '') {
+	// the inflight server binds loopback only; keep the host literal in the URL
+	if (!preg_match('/^127\.0\.0\.1:(\d+)$/', $inflight, $match)) {
 		throw new RuntimeException('HTTP inflight test server did not start');
 	}
+
+	$inflight_port = (int) $match[1];
 
 	$owner = getmypid();
 
@@ -84,7 +87,7 @@ function cacti_http_test_server() : array {
 		if ($socket !== false) {
 			fclose($socket);
 
-			return $server = ['url' => 'http://127.0.0.1:' . $port, 'state' => $state, 'inflight' => 'http://' . $inflight];
+			return $server = ['url' => 'http://127.0.0.1:' . $port, 'state' => $state, 'inflight' => 'http://127.0.0.1:' . $inflight_port];
 		}
 
 		usleep(50000);
