@@ -3,6 +3,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { installThemeCss, collectThemeCoverage } from '../theme-css';
+import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
@@ -46,25 +47,7 @@ for (const row of ['', 'odd', 'even']) {
 				if (state === 'focus') await link.focus();
 				if (state === 'hover' || state === 'active') await link.hover();
 				if (state === 'active') await page.mouse.down();
-				const ratio = await link.evaluate(element => {
-					const rgba = (value: string) => {
-						const parts = value.match(/[\d.]+/g)!.map(Number);
-						return [parts[0], parts[1], parts[2], parts[3] ?? 1];
-					};
-					let bg = [255, 255, 255];
-					const ancestors: Element[] = [];
-					for (let e: Element | null = element; e; e = e.parentElement) ancestors.unshift(e);
-					for (const e of ancestors) {
-						const c = rgba(getComputedStyle(e).backgroundColor);
-						bg = bg.map((v, i) => c[i] * c[3] + v * (1 - c[3]));
-					}
-					const lum = (c: number[]) => c.slice(0, 3).map(v => {
-						v /= 255;
-						return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;
-					}).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
-					const fg = lum(rgba(getComputedStyle(element).color)), surface = lum(bg);
-					return (Math.max(fg, surface) + .05) / (Math.min(fg, surface) + .05);
-				});
+				const ratio = await link.evaluate(textContrast);
 				expect(ratio, state).toBeGreaterThanOrEqual(4.5);
 				if (state === 'active') await page.mouse.up();
 			}
@@ -73,6 +56,16 @@ for (const row of ['', 'odd', 'even']) {
 }
 
 const root = resolve(__dirname, '../../..');
+
+test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
+	await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p>' +
+		'<p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(
+		await page.locator('p').first().evaluate(textContrast),
+		2,
+	);
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
+});
 
 test('Cacti seeded device inventory and details work with desktop and narrow dialogs', async ({ page }, info) => {
 	await page.setViewportSize({ width: 1100, height: 380 });
