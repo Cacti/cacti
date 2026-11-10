@@ -7,7 +7,14 @@ import { textContrast } from '../text-contrast';
 
 collectThemeCoverage();
 
-for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry']) {
+// Sunrise paints its body over a radial glow whose color depends on where
+// text sits on the page, which textContrast refuses to guess. These fixtures
+// measure against the glow's #000 base color and leave the glow unmeasured.
+async function measureSunriseOnBaseColor(page: Page, theme: string) {
+	if (theme === 'sunrise') await page.addStyleTag({ content: 'body { background-image: none !important; }' });
+}
+
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
 			test(`${theme} titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
@@ -37,7 +44,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry'])
 					expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
 					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
 				}
-				if (theme === 'deepness' || theme === 'modern' || theme === 'paw' || theme === 'raspberry') {
+				if (theme === 'deepness' || theme === 'modern' || theme === 'paw' || theme === 'raspberry' || theme === 'sunrise') {
 					const textBoxes = await page.locator('.cactiTableTitle').evaluate(element => {
 						const range = document.createRange();
 						range.selectNodeContents(element);
@@ -54,19 +61,20 @@ for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry'])
 					if (theme === 'dark') {
 						expect(boxes.bar.height).toBeGreaterThanOrEqual(22);
 						expect(boxes.bar.height).toBeLessThan(24);
-					} else expect(boxes.bar.height).toBe(['deepness', 'raspberry'].includes(theme) ? 28 : 25);
+					} else expect(boxes.bar.height).toBe(['deepness', 'raspberry'].includes(theme) ? 28 : theme === 'sunrise' ? 22 : 25);
 				}
 			});
 		}
 	}
 }
 
-for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise']) {
 	for (const row of theme !== 'cacti' ? ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'] : ['', 'odd', 'even']) {
 		for (const linkClass of ['', 'linkEditMain']) {
 			test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
 				await page.setContent(`<!DOCTYPE html><table><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a></td></tr></table>`);
 				await installThemeCss(page, `include/themes/${theme}/main.css`);
+				await measureSunriseOnBaseColor(page, theme);
 				for (const state of ['rest', 'focus', 'hover', 'active']) {
 					const link = page.locator('a');
 					if (state === 'focus') await link.focus();
@@ -100,7 +108,7 @@ for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable 
 	});
 }
 
-for (const theme of ['modern', 'paw', 'raspberry']) {
+for (const theme of ['modern', 'paw', 'raspberry', 'sunrise']) {
 	test(`${theme} titlebars, navigation selections, rows, and active controls retain text contrast`, async ({ page }) => {
 		await page.setContent('<!DOCTYPE html>' +
 			'<div class="cactiTableTitleRow"><div class="cactiTableTitle">Device inventory</div><div class="cactiTableButton"><span>2 alerts</span></div></div>' +
@@ -112,7 +120,8 @@ for (const theme of ['modern', 'paw', 'raspberry']) {
 			'<div class="select2-container--default"><ul><li class="select2-results__option--highlighted select2-results__option--selectable">Selected device</li></ul></div>');
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
-		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['paw', 'raspberry'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
+		await measureSunriseOnBaseColor(page, theme);
+		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['paw', 'raspberry', 'sunrise'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
 			for (const element of await page.locator(selector).all()) expect.soft(await element.evaluate(textContrast), selector).toBeGreaterThanOrEqual(4.5);
 		}
 		for (const name of ['Devices', 'Management', ...(theme === 'modern' ? ['Console'] : [])]) {
@@ -123,12 +132,15 @@ for (const theme of ['modern', 'paw', 'raspberry']) {
 	});
 }
 
-for (const state of ['', 'tableHeaderColumnSelected', 'tableHeaderColumnHover']) {
-	test(`raspberry table headings remain readable in ${state || 'normal'} state`, async ({ page }) => {
-		await page.setContent(`<!DOCTYPE html><table class="cactiTable"><thead><tr class="tableHeader"><th class="${state}">Device</th></tr></thead></table>`);
-		await installThemeCss(page, 'include/themes/raspberry/main.css');
-		expect(await page.locator('th').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
-	});
+for (const theme of ['raspberry', 'sunrise']) {
+	for (const state of ['', 'tableHeaderColumnSelected', 'tableHeaderColumnHover']) {
+		test(`${theme} table headings remain readable in ${state || 'normal'} state`, async ({ page }) => {
+			await page.setContent(`<!DOCTYPE html><table class="cactiTable"><thead><tr class="tableHeader"><th class="${state}">Device</th></tr></thead></table>`);
+			await installThemeCss(page, `include/themes/${theme}/main.css`);
+			await measureSunriseOnBaseColor(page, theme);
+			expect(await page.locator('th').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+		});
+	}
 }
 
 const root = resolve(__dirname, '../../..');
@@ -257,10 +269,11 @@ async function prepareInventoryFixture(page: Page, info: TestInfo) {
 	};
 }
 
-for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise']) {
 	test(`${theme} seeded device inventory and details work with desktop and narrow dialogs`, async ({ page }, info) => {
 		await page.setViewportSize({ width: 1100, height: 380 });
 		await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8').replaceAll('Cacti theme', `${theme[0].toUpperCase() + theme.slice(1)} theme`));
+		if (theme === 'sunrise') await page.locator('main').evaluate(element => element.classList.add('cactiTable'));
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
 		const capture = await prepareInventoryFixture(page, info);

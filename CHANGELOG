@@ -252,6 +252,7 @@ Cacti CHANGELOG
 -issue#8502: Restore Modern keyboard focus, contain wrapped titles, and improve link, navigation, and control contrast
 -issue#8504: Contain wrapped Paw titles and improve selected-tab and row-link contrast
 -issue#8506: Contain wrapped Raspberry titles and improve link, navigation, tab, and heading contrast
+-issue#8508: Contain wrapped Sunrise titles and improve highlighted Select2 text contrast
 -issue#8480: Keep wrapped Cacti theme titles and controls inside their titlebars and improve text-link contrast on light rows
 -issue#8485: Restore Dark theme keyboard focus outlines, contain wrapped titles, and keep hover text legible
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
