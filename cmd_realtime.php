@@ -240,7 +240,7 @@ if (cacti_sizeof($idbyhost)) {
 
 							break;
 						case POLLER_ACTION_SCRIPT: // script (popen)
-							$output = trim(exec_poll($item['arg1'], 2));
+							$output = trim(exec_poll($item['arg1'], 2, $item));
 
 							if (prepare_validate_result($output) === false) {
 								if (strlen($output) > 20) {
