@@ -1912,7 +1912,7 @@ function html_graph_single_view() : void {
 				print "<div class='iconWrapper'>";
 
 				print "<a class='iconLink utils' href='#' id='graph_" . grv('local_graph_id') . "_util' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' rra_id='" . $rra['id'] . "'>";
-				print "<i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
+				print "<i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Details') . "'></i></a><br>";
 
 				print "<a id='graph_" . $rra['id'] . "_csv' class='iconLink csv' href='" . htmle(CACTI_PATH_URL . 'graph_xport.php?local_graph_id=' . grv('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . grv('view_type') . '&graph_start=' . $graph_start . '&graph_end=' . $graph_end) . "'>";
 				print "<i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export') . "'></i></a><br>";
@@ -1924,7 +1924,7 @@ function html_graph_single_view() : void {
 				}
 
 				if (read_config_option('realtime_enabled') == 'on' || is_realm_allowed(25)) {
-					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . grv('local_graph_id') . "', 'popup_" . grv('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
+					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . grv('local_graph_id') . "', 'popup_" . grv('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Realtime') . "'></i></a><br>";
 				}
 
 				print($aggregate_url != '' ? $aggregate_url : '');
