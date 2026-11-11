@@ -463,7 +463,7 @@ function set_config_option($config_name, $value, $remote = false) {
 
 		foreach($pollers as $p => $t) {
 			if ($t > $gone_time) {
-				raise_message('poller_' . $p, __esc('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+				raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
 			} else {
 				$rcnn_id = poller_connect_to_remote($p);
 
@@ -475,7 +475,7 @@ function set_config_option($config_name, $value, $remote = false) {
 
 				// check if we still have rcnn_id, if it's now become false, we had a problem
 				if (!$rcnn_id) {
-					raise_message('poller_' . $p, __esc('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+					raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 				}
 			}
 		}
@@ -1027,14 +1027,39 @@ function get_message_max_type() {
  * Mark a message to be displayed to the user once display_output_messages() is called. Used as
  * part of Cacti's lib functionality.
  *
+ * A custom $message is plain text and is HTML-escaped here, so callers pass unescaped text
+ * (__() rather than __esc()) to avoid double escaping. Use raise_message_html() only for
+ * trusted markup whose dynamic parts the caller has already escaped. Predefined messages from
+ * $messages and session-keyed messages are not escaped again.
+ *
  * @param mixed $message_id The ID of the message to raise as defined in $messages in
  *   'include/global_arrays.php'.
- * @param string $message Text of the message to be displayed.
+ * @param string $message Plain text of the message to be displayed.
  * @param int $message_level Level of the message to be displayed.
  *
  * @return bool Bool.
  */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
+	if (!empty($message)) {
+		/* html_escape() returns '' for invalid UTF-8, e.g. a device name from SNMP */
+		$message = html_escape(mb_scrub((string) $message, 'UTF-8'));
+	}
+
+	return raise_message_html($message_id, $message, $message_level);
+}
+
+/**
+ * Mark a message containing trusted HTML to be displayed to the user once
+ * display_output_messages() is called. The caller must escape every dynamic value in $message.
+ *
+ * @param mixed $message_id The ID of the message to raise as defined in $messages in
+ *   'include/global_arrays.php'.
+ * @param string $message HTML of the message to be displayed.
+ * @param int $message_level Level of the message to be displayed.
+ *
+ * @return bool Bool.
+ */
+function raise_message_html($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $config, $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
