@@ -1616,6 +1616,16 @@ legend {
 	border-color: rgba(0, 0, 0, 0.35);
 }
 
+/* The session message dialog (Operation successful / errors) contains only
+   action buttons (Ok and, during the save countdown, Pause); colour both with
+   the primary action/Go green so they match the filter dialog's action button. */
+#btnSessionMessageOk,
+#btnSessionMessagePause {
+	background: #31442b;
+	color: #ffffff;
+	border-color: rgba(0, 0, 0, 0.35);
+}
+
 .settingsFilter {
 	display: table;
 	white-space: nowrap;
