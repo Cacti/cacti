@@ -32,6 +32,15 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_qtrees($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_trees', false)) {
+		if ($cmd == 'get') {
+			return 'U';
+		}
+
+		return;
+	}
+
 	if ($cmd == 'index') {
 		$return_arr = ss_mikrotik_qtrees_getnames($host_id, $arg1);
 
@@ -108,6 +117,8 @@ function ss_mikrotik_qtrees_getinfo($host_id, $info_requested) {
 	case 'qtParent':
 		$column = 'parentIndex';
 		break;
+	default:
+		return $return_arr;
 	}
 
 	$arr = db_fetch_assoc_prepared("SELECT name AS qry_index, $column AS qry_value
