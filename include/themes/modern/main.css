@@ -1434,7 +1434,18 @@ legend {
 	color: #222222;
 }
 
-.ui-selectmenu-button.ui-selectmenu-button-open {
+/* This theme disables the global focus outline (*:focus { outline: none; }) and
+   the rule above overrides .ui-button:focus, so restore a distinct keyboard-focus
+   indicator for the closed control using this theme's focus-visible ring. */
+.ui-selectmenu-button.ui-button:focus-visible {
+	outline: 2px solid rgba(167, 217, 134, 1);
+	outline-offset: 1px;
+}
+
+/* Include .ui-button so this open-state rule keeps the same specificity as the
+   :hover rule above and still wins while the button is hovered (menu opened by
+   mouse), giving the intended #dadada/#999999 open appearance. */
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
 	background: #dadada;
 	border-color: #999999;
 	color: #212121;
