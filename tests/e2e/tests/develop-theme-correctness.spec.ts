@@ -3,8 +3,12 @@ import { test, expect, type Page } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { installThemeCss, collectThemeCoverage } from '../theme-css';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { registerSelectmenuThemeTests } = require('./selectmenu-theme-coverage');
 
 collectThemeCoverage();
+
+registerSelectmenuThemeTests(test, expect);
 
 for (const width of [320, 390, 1280]) {
 	for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {

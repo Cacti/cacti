@@ -3244,6 +3244,24 @@ input[type='button'].ui-button:hover, input[type='button'].ui-button:focus {
    Select2 4.x ships no jQuery UI theme, so these overrides reuse this
    theme's own jquery-ui.css/main.css colors (see .ui-widget-content /
    .ui-state-hover / .ui-state-active) to match its look and feel. */
+/* jQuery UI selectmenu (the language dropdown is the only non-select2
+   dropdown) - match this theme's select2 controls. This theme's generic
+   .ui-selectmenu-button rules and .ui-corner-all both use !important, so the
+   match must too. */
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: #f5f5f5 !important;
+	border: 1px solid #d3d3d3 !important;
+	border-radius: 6px !important;
+	color: #555555 !important;
+}
+
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #ffffff !important;
+	border-color: #888888 !important;
+	color: #333333 !important;
+}
+
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #d3d3d3;

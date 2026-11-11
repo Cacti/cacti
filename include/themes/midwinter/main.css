@@ -50,6 +50,23 @@
    Select2 4.x ships no jQuery UI theme, so these overrides reuse this
    theme's own jquery-ui.css/main.css colors (see .ui-widget-content /
    .ui-state-hover / .ui-state-active) to match its look and feel. */
+/* jQuery UI selectmenu (the language dropdown is the only non-select2
+   dropdown) - match this theme's select2 controls. .ui-corner-all squares
+   the corners, so restore 6px with !important. */
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: transparent;
+	border: 1px solid var(--border-color);
+	border-radius: 6px !important;
+	color: var(--text-color-normal);
+}
+
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: var(--background-lowlight);
+	border-color: var(--border-color);
+	color: var(--text-color-highlight-a);
+}
+
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid var(--border-color);
