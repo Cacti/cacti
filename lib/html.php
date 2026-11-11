@@ -2862,6 +2862,21 @@ function card_severity($severity) {
 }
 
 /**
+ * Cast a card widget value to a finite float. RRD fetches and database columns
+ * hand plugins 'U', '' or NULL for unknown samples, and arithmetic can produce
+ * NAN or INF; none of them may reach the emitted CSS or SVG as 'nan' or 'inf'.
+ *
+ * @param mixed $value The raw value.
+ *
+ * @return float|null The value as a float, or null when it is not finite.
+ */
+function card_finite($value) {
+	$value = (float) $value;
+
+	return is_finite($value) ? $value : null;
+}
+
+/**
  * Render a semicircular SVG gauge (0-100%) for a card body. JS-free; styled by
  * the shared include/css/card-widgets.css so it renders in any card host
  * (including third-party panels surfaced inside Intropage).
@@ -2874,15 +2889,21 @@ function card_severity($severity) {
  * @return string The gauge HTML.
  */
 function card_gauge($percent, $center_label, $sub_label = '', $severity = 'none') {
-	$percent = max(0.0, min(100.0, (float) $percent));
+	$percent = max(0.0, min(100.0, card_finite($percent) ?? 0.0));
 	$sev     = card_severity($severity);
 	$dash    = number_format($percent, 2, '.', '');
 
-	return '<div class="ccGauge">'
+	$html = '<div class="ccGauge">'
 		. '<svg class="ccGaugeSvg" viewBox="0 0 120 68" role="img" aria-label="' . html_escape($center_label) . '">'
-		. '<path class="ccGaugeTrack" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" />'
-		. '<path class="ccGaugeValue ccGaugeValue--' . $sev . '" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" stroke-dasharray="' . $dash . ' 100" />'
-		. '</svg>'
+		. '<path class="ccGaugeTrack" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" />';
+
+	// A zero-length dash still paints the round line cap as a dot, so draw no
+	// value arc at all when nothing is filled.
+	if ($dash !== '0.00') {
+		$html .= '<path class="ccGaugeValue ccGaugeValue--' . $sev . '" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" stroke-dasharray="' . $dash . ' 100" />';
+	}
+
+	return $html . '</svg>'
 		. '<div class="ccGaugeText">'
 		. '<span class="ccGaugeValueText">' . html_escape($center_label) . '</span>'
 		. ($sub_label !== '' ? '<span class="ccGaugeSub">' . html_escape($sub_label) . '</span>' : '')
@@ -2899,7 +2920,7 @@ function card_gauge($percent, $center_label, $sub_label = '', $severity = 'none'
  * @return string The bar HTML.
  */
 function card_bar($percent, $label = '', $severity = 'none') {
-	$percent = max(0.0, min(100.0, (float) $percent));
+	$percent = max(0.0, min(100.0, card_finite($percent) ?? 0.0));
 	$sev     = card_severity($severity);
 	$width   = number_format($percent, 2, '.', '');
 
@@ -2942,7 +2963,7 @@ function card_stackbar($segments, $legend = false) {
 	$chips = '';
 
 	foreach ($segments as $seg) {
-		$pct = max(0.0, min(100.0, (float) (isset($seg['percent']) ? $seg['percent'] : 0)));
+		$pct = max(0.0, min(100.0, card_finite(isset($seg['percent']) ? $seg['percent'] : 0) ?? 0.0));
 		$sev = card_severity(isset($seg['severity']) ? $seg['severity'] : 'none');
 		$lbl = isset($seg['label']) ? (string) $seg['label'] : '';
 
@@ -2979,31 +3000,50 @@ function card_stackbar($segments, $legend = false) {
  * @return string The bullet HTML.
  */
 function card_bullet($min, $avg, $max, $label, $summary = '', $severity = 'none', $scale_min = 0.0, $scale_max = 100.0) {
-	$sev  = card_severity($severity);
-	$span = ($scale_max - $scale_min);
+	$sev       = card_severity($severity);
+	$scale_min = card_finite($scale_min) ?? 0.0;
+	$scale_max = card_finite($scale_max) ?? 0.0;
+	$span      = ($scale_max - $scale_min);
 
 	if ($span == 0) {
 		$span = 1;
 	}
 
+	// Positions are null when the input is not finite (NAN/INF), so the range
+	// or marker it would place is omitted instead of emitting 'nan%'.
 	$pos = function ($v) use ($scale_min, $span) {
-		return max(0.0, min(100.0, (($v - $scale_min) / $span) * 100));
+		$v = card_finite($v);
+
+		if ($v === null) {
+			return null;
+		}
+
+		$v = card_finite((($v - $scale_min) / $span) * 100);
+
+		return ($v === null ? null : max(0.0, min(100.0, $v)));
 	};
 
 	$left  = $pos($min);
 	$right = $pos($max);
-	$width = max(0.0, $right - $left);
 	$mark  = $pos($avg);
 
-	return '<div class="ccBullet">'
+	$html = '<div class="ccBullet">'
 		. '<div class="ccBulletHead">'
 		. '<span class="ccBulletLabel">' . html_escape($label) . '</span>'
 		. ($summary !== '' ? '<span class="ccBulletAvg">' . html_escape($summary) . '</span>' : '')
 		. '</div>'
-		. '<div class="ccBulletTrack">'
-		. '<div class="ccBulletRange ccBulletRange--' . $sev . '" style="left:' . number_format($left, 2, '.', '') . '%;width:' . number_format($width, 2, '.', '') . '%"></div>'
-		. '<div class="ccBulletMarker" style="left:' . number_format($mark, 2, '.', '') . '%"></div>'
-		. '</div>'
+		. '<div class="ccBulletTrack">';
+
+	if ($left !== null && $right !== null) {
+		$width = max(0.0, $right - $left);
+		$html .= '<div class="ccBulletRange ccBulletRange--' . $sev . '" style="left:' . number_format($left, 2, '.', '') . '%;width:' . number_format($width, 2, '.', '') . '%"></div>';
+	}
+
+	if ($mark !== null) {
+		$html .= '<div class="ccBulletMarker" style="left:' . number_format($mark, 2, '.', '') . '%"></div>';
+	}
+
+	return $html . '</div>'
 		. '<div class="ccBulletScale"><span>' . html_escape((string) $scale_min) . '</span><span>' . html_escape((string) $scale_max) . '</span></div>'
 		. '</div>';
 }
