@@ -1,0 +1,1 @@
+Correct the Dark theme session message dialog action buttons (Ok/Pause) to the theme's #31442b primary-action green, and style the Modern theme User Language selectmenu so the closed control matches the other (select2) dropdowns.
