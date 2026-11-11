@@ -295,11 +295,12 @@ while (1) {
 
 			// validate the existence of the function, and include if applicable
 			if (!function_exists($function)) {
-				/* Validate the include path unconditionally. Built-ins like
-				 * system, passthru, exec satisfy function_exists() without ever
-				 * loading a script file, so the path guard cannot be gated on
-				 * the function being undefined. require_once() is idempotent,
-				 * so re-running it on cached entries is a no-op. */
+				/* The function still has to be loaded, so validate the include
+				 * file before require_once() runs it. A function that already
+				 * exists (a built-in such as system or exec, or one loaded by
+				 * an earlier request) skips this branch; the reflection check
+				 * below covers it by rejecting internal functions and any
+				 * function defined outside the allowed script roots. */
 				$real_include = realpath($include_file);
 
 				if ($real_include === false || !script_server_path_is_allowed($real_include, $allowed_roots)) {
