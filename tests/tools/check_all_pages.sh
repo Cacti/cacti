@@ -758,6 +758,7 @@ FILTERED_LOG="$(grep -v \
   -e "DSDEBUG Bad Data" \
   -e "PUSHOUT Child Started" \
   -e "MAINTENANCE INFO: Another maintenance session is already running" \
+  -e "POLLER: Poller\[[0-9]*\] PID\[[0-9]*\] NOTE: Purged [0-9]* Audit Log Records from Cacti" \
   -e "io_uring_queue_init() failed" \
   "$CACTI_LOG")" || true
 
