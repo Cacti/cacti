@@ -206,7 +206,9 @@ window.CactiCards = window.CactiCards || (function() {
 	/* A per-card-id request generation shared by refresh and resize so a slow
 	 * response cannot overwrite the markup of a newer request for the same card
 	 * (for example a refresh that lands after a later grow). The most recently
-	 * started request for an id wins; earlier in-flight responses are discarded. */
+	 * started request for an id wins; earlier in-flight responses are discarded.
+	 * A refresh never starts while a resize is in flight (see refreshCard), so
+	 * only a later resize can supersede a resize. */
 	function startRequest(grid, id) {
 		if (!grid.__ccReq) {
 			grid.__ccReq = {};
@@ -219,8 +221,37 @@ window.CactiCards = window.CactiCards || (function() {
 		return !!grid.__ccReq && grid.__ccReq[id] !== token;
 	}
 
+	/* Resizes are mutations and refreshes are reads whose state (data-height) is
+	 * captured when they start. A refresh started while a resize for the same
+	 * card is in flight would read the pre-resize height, supersede the resize
+	 * and render (and later persist) the old size. Track in-flight resizes per
+	 * id, and defer such a refresh until they settle so it reads the new state. */
+	function resizePending(grid, id) {
+		return !!grid.__ccResizing && grid.__ccResizing[id] > 0;
+	}
+
+	function resizeSettled(grid, adapter, id) {
+		grid.__ccResizing[id]--;
+		if (grid.__ccResizing[id] > 0 || !grid.__ccRefreshQueued || !grid.__ccRefreshQueued[id]) {
+			return;
+		}
+		delete grid.__ccRefreshQueued[id];
+		var live = findCard(grid, adapter, id);
+		if (live) {
+			refreshCard(grid, adapter, live);
+		}
+	}
+
 	function refreshCard(grid, adapter, card) {
 		var id = cardId(card, adapter);
+		if (resizePending(grid, id)) {
+			// Coalesce: one refresh runs once every pending resize has settled.
+			if (!grid.__ccRefreshQueued) {
+				grid.__ccRefreshQueued = {};
+			}
+			grid.__ccRefreshQueued[id] = true;
+			return;
+		}
 		// Hosts that inject into an inner body (rather than replacing the whole
 		// card) provide onRefresh and keep ownership of the swap.
 		if (typeof adapter.onRefresh === 'function') {
@@ -236,8 +267,8 @@ window.CactiCards = window.CactiCards || (function() {
 		};
 		var token = startRequest(grid, id);
 		Promise.resolve(adapter.fetchCard(id, state)).then(function(html) {
-			// A newer refresh/resize for this card superseded us; discard the
-			// stale markup instead of reverting the card to an older state.
+			// A newer resize for this card superseded us; discard the stale
+			// markup instead of reverting the card to an older state.
 			if (html != null && !requestSuperseded(grid, id, token)) {
 				replaceCard(grid, adapter, card, html, state.expanded);
 			}
@@ -270,9 +301,16 @@ window.CactiCards = window.CactiCards || (function() {
 		if (typeof adapter.onResize === 'function') {
 			var token = startRequest(grid, id);
 			var capturedExpanded = card.classList.contains('ccCardExpanded');
-			Promise.resolve(adapter.onResize(id, dir, card)).then(function(html) {
-				// A newer refresh/resize for this card has superseded us; leave
-				// its markup and layout in place rather than reverting them.
+			if (!grid.__ccResizing) {
+				grid.__ccResizing = {};
+			}
+			grid.__ccResizing[id] = (grid.__ccResizing[id] || 0) + 1;
+			new Promise(function(resolve) {
+				// A synchronous throw from the host must still settle the count.
+				resolve(adapter.onResize(id, dir, card));
+			}).then(function(html) {
+				// A newer resize for this card has superseded us; leave its
+				// markup and layout in place rather than reverting them.
 				if (requestSuperseded(grid, id, token)) {
 					return;
 				}
@@ -280,7 +318,11 @@ window.CactiCards = window.CactiCards || (function() {
 					replaceCard(grid, adapter, card, html, capturedExpanded);
 				}
 				saveLayout(grid, adapter);
-			}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
+			}).catch(function() {
+				/* fire-and-forget: the host surfaces adapter errors */
+			}).then(function() {
+				resizeSettled(grid, adapter, id);
+			});
 		} else {
 			saveLayout(grid, adapter);
 		}
