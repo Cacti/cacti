@@ -1620,19 +1620,18 @@ legend {
    action buttons (Ok and, during the save countdown, Pause). Colour them with
    the dark theme's own jquery-ui.css button greens, scoped via the
    cactiSessionMessageDialog class (added in layout.js) instead of per-button
-   IDs: the #155413 hover/focus green at rest and on hover/focus, darkening to
-   the #31442b active green on press, exactly like jquery-ui.css's .ui-button. */
-.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button,
+   IDs: the pale #31442b green at rest, deepening to the #155413 hover/focus
+   green on hover and keyboard focus so the focused button stands out. */
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button {
+	background: #31442b;
+	color: #ffffff;
+	border-color: #31442b;
+}
+
 .ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:hover,
 .ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:focus {
 	background: #155413;
-	color: #ffffff;
 	border-color: #155413;
-}
-
-.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:active {
-	background: #31442b;
-	border-color: #31442b;
 }
 
 .settingsFilter {
