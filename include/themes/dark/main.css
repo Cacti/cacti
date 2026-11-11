@@ -1626,6 +1626,15 @@ legend {
 	border-color: rgba(0, 0, 0, 0.35);
 }
 
+/* This theme disables the global focus outline (*:focus { outline: none; }) and
+   these ID rules override .ui-button:focus, so restore a distinct keyboard-focus
+   indicator with a lighter green ring that stays visible on the #31442b buttons. */
+#btnSessionMessageOk:focus-visible,
+#btnSessionMessagePause:focus-visible {
+	outline: 2px solid #a7d986;
+	outline-offset: 2px;
+}
+
 .settingsFilter {
 	display: table;
 	white-space: nowrap;
