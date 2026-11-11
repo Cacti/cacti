@@ -1492,6 +1492,8 @@ function displayMessages() {
 			buttons: sessionMessageButtons
 		});
 
+		$('#messageContainer').dialog('widget').addClass('cactiSessionMessageDialog');
+
 		if (document.location.href.indexOf('csrf_timeout') >= 0) {
 			window.history.replaceState(window.history.state, '', stripCsrfTimeoutMarker(document.location.href));
 		}
