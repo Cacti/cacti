@@ -1512,28 +1512,29 @@ legend {
 }
 
 .ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
-	background: #31442b;
+	background: #155413;
 	color: #ffffff;
-	border-color: rgba(0, 0, 0, 0.35);
+	border-color: #1d7a1d;
 }
 
 /* The session message dialog (Operation successful / errors) contains only
-   action buttons (Ok and, during the save countdown, Pause); colour both with
-   the primary action/Go green instead of just the first-child. */
-#btnSessionMessageOk,
-#btnSessionMessagePause {
+   action buttons (Ok and, during the save countdown, Pause); scope the primary
+   action/Go green to this dialog via its cactiSessionMessageDialog class (added
+   in layout.js) instead of per-button IDs. */
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button {
 	background: #31442b;
 	color: #ffffff;
 	border-color: rgba(0, 0, 0, 0.35);
 }
 
-/* This theme disables the global focus outline (*:focus { outline: none; }) and
-   these ID rules override .ui-button:focus, so restore a distinct keyboard-focus
-   indicator with a lighter green ring that stays visible on the #31442b buttons. */
-#btnSessionMessageOk:focus-visible,
-#btnSessionMessagePause:focus-visible {
-	outline: 2px solid #a7d986;
-	outline-offset: 2px;
+/* Keep the standard hover/active feedback so the buttons still react to the
+   pointer and to keyboard focus instead of staying flat; the focused button
+   shifts to the theme's #155413 hover green so keyboard users can tell which
+   of Ok/Pause has focus (the class rule outranks jquery-ui.css's .ui-button). */
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:hover,
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:focus {
+	background: #155413;
+	border-color: #155413;
 }
 
 .cactiTableTitle {
