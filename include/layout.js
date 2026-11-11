@@ -1683,6 +1683,8 @@ function sessionMessageDisplay() {
 			buttons: sessionMessageButtons
 		});
 
+		$('#messageContainer').dialog('widget').addClass('cactiSessionMessageDialog');
+
 		sessionMessage = null;
 	}
 }
