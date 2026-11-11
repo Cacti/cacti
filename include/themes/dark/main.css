@@ -3235,6 +3235,31 @@ circle {
    Select2 4.x ships no jQuery UI theme, so these overrides reuse this
    theme's own jquery-ui.css/main.css colors (see .ui-widget-content /
    .ui-state-hover / .ui-state-active) to match its look and feel. */
+/* jQuery UI selectmenu (the language dropdown is the only non-select2
+   dropdown) - match this theme's select2 controls instead of the
+   jquery-ui.css themeroller look. */
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: #222222 url("images/ui-bg_highlight-soft_35_222222_1x100.png") 50% 50% repeat-x;
+	border: 1px solid #555555;
+	border-radius: 6px;
+	color: #ffffff;
+}
+
+/* This theme disables the global focus outline (*:focus { outline: none; }) and
+   the rule above overrides .ui-button:focus, so restore a distinct keyboard-focus
+   indicator for the closed control, as the modern theme does. */
+.ui-selectmenu-button.ui-button:focus-visible {
+	outline: 2px solid rgba(167, 217, 134, 1);
+	outline-offset: 1px;
+}
+
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #155413;
+	border-color: #155413;
+	color: #ffffff;
+}
+
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #555555;
