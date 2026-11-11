@@ -61,8 +61,8 @@ if (cacti_sizeof($parms)) {
 /* record the start time */
 $start = microtime(true);
 
-/* open a pipe to rrdtool for writing */
-$rrdtool_pipe = rrd_init();
+/* open a pipe to rrdtool whose response can be read, so writes are acknowledged */
+$rrdtool_pipe = rrd_init(true, true);
 
 $rrds_processed = 0;
 
