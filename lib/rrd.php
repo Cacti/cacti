@@ -470,9 +470,36 @@ function rrdtool_create_structured_directory($base_path, $directory, $logopt = '
  * @return bool True when owner/group/mode verification succeeds.
  */
 function rrdtool_apply_file_permissions($file, $logopt = 'POLLER', $base_path = '') {
-	if ($base_path === '' || is_link($file) ||
-		!rrdtool_local_path_is_valid($base_path, $file, true) || !is_file($file)) {
+	if ($base_path === '') {
+		cacti_log("WARNING: No RRA path was given for permission assignment of RRD file '$file'.", false, $logopt);
+
+		return false;
+	}
+
+	if (is_link($file)) {
+		cacti_log("WARNING: RRD file '$file' is a symbolic link and was not assigned permissions.", false, $logopt);
+
+		return false;
+	}
+
+	/* Validate without requiring the file to exist first, so a traversal or
+	 * out-of-tree path is reported at the normal level even when missing. */
+	if (!rrdtool_local_path_is_valid($base_path, $file)) {
+		cacti_log("WARNING: RRD file '$file' is not a valid path below the RRA path '$base_path' and was not assigned permissions.", false, $logopt);
+
+		return false;
+	}
+
+	/* An RRD that has not been created yet (e.g. a first poll) is benign, so
+	 * only report it at medium poller verbosity. */
+	if (!file_exists($file)) {
 		cacti_log("WARNING: RRD file '$file' does not exist for permission assignment.", false, $logopt, POLLER_VERBOSITY_MEDIUM);
+
+		return false;
+	}
+
+	if (!is_file($file) || !rrdtool_local_path_is_valid($base_path, $file, true)) {
+		cacti_log("WARNING: RRD file '$file' is not a regular file below the RRA path '$base_path' and was not assigned permissions.", false, $logopt);
 
 		return false;
 	}
