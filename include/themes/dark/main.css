@@ -1617,23 +1617,22 @@ legend {
 }
 
 /* The session message dialog (Operation successful / errors) contains only
-   action buttons (Ok and, during the save countdown, Pause); scope the primary
-   action/Go green to this dialog via its cactiSessionMessageDialog class (added
-   in layout.js) instead of per-button IDs, matching the filter dialog approach. */
-.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button {
-	background: #31442b;
-	color: #ffffff;
-	border-color: rgba(0, 0, 0, 0.35);
-}
-
-/* Keep the standard hover/active feedback so the buttons still react to the
-   pointer and to keyboard focus instead of staying flat; the focused button
-   shifts to the theme's #155413 hover green so keyboard users can tell which
-   of Ok/Pause has focus (the class rule outranks jquery-ui.css's .ui-button). */
+   action buttons (Ok and, during the save countdown, Pause). Colour them with
+   the dark theme's own jquery-ui.css button greens, scoped via the
+   cactiSessionMessageDialog class (added in layout.js) instead of per-button
+   IDs: the #155413 hover/focus green at rest and on hover/focus, darkening to
+   the #31442b active green on press, exactly like jquery-ui.css's .ui-button. */
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button,
 .ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:hover,
 .ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:focus {
 	background: #155413;
+	color: #ffffff;
 	border-color: #155413;
+}
+
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:active {
+	background: #31442b;
+	border-color: #31442b;
 }
 
 .settingsFilter {
