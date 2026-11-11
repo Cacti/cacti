@@ -51,6 +51,10 @@ function ss_fortigate_ipsec ($host_id = 0) {
 		WHERE id = ?',
 		array($host_id));
 
+	if (!cacti_sizeof($host)) {
+		return 'total:U down:U' . PHP_EOL;
+	}
+
 	$tunnels  = cacti_snmp_walk($host['hostname'],
 		$host['snmp_community'],
 		'.1.3.6.1.4.1.12356.101.12.2.2.1.20',
@@ -67,6 +71,11 @@ function ss_fortigate_ipsec ($host_id = 0) {
 		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
+
+	/* a failed walk returns false, which is not iterable */
+	if (!is_array($tunnels)) {
+		return 'total:U down:U' . PHP_EOL;
+	}
 
 	foreach ($tunnels as $tunnel) {
 		if ($tunnel['value'] == 1) {

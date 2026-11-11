@@ -47,6 +47,10 @@ function ss_fortigate_ips ($host_id = '') {
 		WHERE id = ?',
 		array($host_id));
 
+	if (!cacti_sizeof($host)) {
+		return 'ips_detected:U ips_blocked:U ips_crit:U ips_high:U ips_ano:U' . PHP_EOL;
+	}
+
 	$oids = array(
 		'ips_detected' => '.1.3.6.1.4.1.12356.101.9.2.1.1.1.1',
 		'ips_blocked'  => '.1.3.6.1.4.1.12356.101.9.2.1.1.2.1',
