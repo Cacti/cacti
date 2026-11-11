@@ -78,6 +78,21 @@ test('scalar results keep their response text and an empty one is U', function (
 		->and(\script_server_normalize_response(' U '))->toBe('U');
 });
 
+test('a non-scalar result is sent as U without a warning', function () {
+	// a script function returning an array or object has no single value the
+	// poller can store; (string) on it would warn or throw
+	set_error_handler(function (int $errno, string $errstr) : bool {
+		throw new \ErrorException($errstr, 0, $errno);
+	});
+
+	try {
+		expect(\script_server_normalize_response(['a' => 1]))->toBe('U')
+			->and(\script_server_normalize_response(new \stdClass()))->toBe('U');
+	} finally {
+		restore_error_handler();
+	}
+});
+
 test('an unparsable request writes nothing ahead of the U reply', function () {
 	$parsed = [];
 
