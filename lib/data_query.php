@@ -2819,17 +2819,21 @@ function get_script_query_path($args, $script_path, $host_id) {
 	 * then splits the include file at the first space, leaving only 'C:',
 	 * which the path containment check rejects as outside the base path. A
 	 * Windows script path never legitimately contains shell metacharacters,
-	 * so strip them while preserving the backslash path separator. On other
-	 * platforms escapeshellcmd() is safe for the forward-slash paths used
-	 * there, so it is retained. */
+	 * so strip them while preserving the backslash path separator. '%' is
+	 * stripped as well because cmd.exe expands %VAR% even inside quotes.
+	 * Double quotes are kept so a path containing spaces can be quoted. On
+	 * other platforms escapeshellcmd() is safe for the forward-slash paths
+	 * used there, so it is retained. */
 	if ($config['cacti_server_os'] == 'win32') {
-		$safe_script_path = str_replace(array('#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$'), '', $parsed_script_path);
+		$safe_script_path = str_replace(array('#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$', '%'), '', $parsed_script_path);
 	} else {
 		$safe_script_path = cacti_escapeshellcmd($parsed_script_path);
 	}
 
-	// Validate the final path because removing metacharacters can join path components.
-	if (strpos($safe_script_path, '..') !== false) {
+	/* Validate the final path because removing metacharacters can join path
+	 * components. Check a copy without double quotes, since the shell drops
+	 * them and '."".' would arrive as '..'; the quoted path is returned as is. */
+	if (strpos(str_replace('"', '', $safe_script_path), '..') !== false) {
 		cacti_log('FATAL: Malicious path traversal detected in Data Query script path: ' . $parsed_script_path, true, 'REINDEX');
 
 		return false;

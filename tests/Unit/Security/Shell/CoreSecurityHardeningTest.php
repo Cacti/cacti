@@ -42,8 +42,8 @@ test('get_script_query_path sanitizes the script path without corrupting Windows
 
 test('get_script_query_path rejects path traversal', function () use ($dqSource) {
 	$start = strpos($dqSource, 'function get_script_query_path(');
-	$body = substr($dqSource, $start, 3200);
-	expect(str_contains($body, "strpos(\$safe_script_path, '..')"))->toBeTrue();
+	$body = substr($dqSource, $start, strpos($dqSource, "\n}\n", $start) - $start);
+	expect(str_contains($body, "strpos(str_replace('\"', '', \$safe_script_path), '..')"))->toBeTrue();
 });
 
 test('data_query value_index_parse constrains PCRE backtrack limit', function () use ($dqSource) {
