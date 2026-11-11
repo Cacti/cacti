@@ -86,6 +86,24 @@ tr.selected a.linkEditMain:hover {
 	color: #dadbe0;
 }
 
+/* jQuery UI selectmenu (the language dropdown is the only non-select2
+   dropdown) - match this theme's select2 controls. This theme's
+   jquery-ui.midwinter.css squares every .ui-corner-all with
+   border-radius: 0 !important, so restore the 6px radius with the same flag. */
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: var(--background-content);
+	border: 1px solid var(--border-color-superlowlight);
+	border-radius: 6px !important;
+	color: var(--text-color-lighter);
+}
+
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: var(--background-lowlight);
+	border-color: var(--border-color);
+	color: var(--text-color-lighter);
+}
+
 /* Select2 - adapt to look like a native Cacti/jQuery UI control.
    Select2 4.x ships no jQuery UI theme, so these overrides reuse this
    theme's own jquery-ui.css/main.css colors (see .ui-widget-content /

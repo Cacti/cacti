@@ -1303,18 +1303,18 @@ legend {
 
 /* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
    html_start_box styling instead of the jquery-ui.css themeroller look. */
-.ui-selectmenu-button.ui-button {
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
 	background: #ffffff;
 	border: 1px solid #aaaaaa;
 	border-radius: 6px;
 	color: #222222;
 }
 
-.ui-selectmenu-button.ui-button:hover,
-.ui-selectmenu-button.ui-selectmenu-button-open {
-	background: #ffffff;
-	border-color: #aaaaaa;
-	color: #222222;
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #dadada;
+	border-color: #999999;
+	color: #212121;
 }
 
 .ui-selectmenu-menu .ui-menu,

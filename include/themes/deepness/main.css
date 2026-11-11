@@ -2939,7 +2939,7 @@ td.center > table {
 	background: var(--dp-panel);
 	background-image: none;
 	border: 1px solid var(--dp-border);
-	border-radius: 6px;
+	border-radius: 6px !important;
 	color: var(--dp-text);
 }
 
