@@ -132,15 +132,26 @@ function script_server_redact_params(array $params, ?array $secrets = null) : ar
  * As with script_server_log_request(), the debug string is only assembled when
  * DEBUG logging is actually enabled.
  *
- * @param int    $pid    The Script Server process id.
- * @param int    $ctr    The request counter.
- * @param string $result The function result returned to the poller.
+ * The result is whatever the script function returned, so it may be null or
+ * an array; it is only converted to a string once debug logging is known to
+ * be on, so a non-string result can never fail the request.
+ *
+ * @param int   $pid    The Script Server process id.
+ * @param int   $ctr    The request counter.
+ * @param mixed $result The function result returned to the poller.
  *
  * @return void
  */
-function script_server_log_response(int $pid, int $ctr, string $result) : void {
+function script_server_log_response(int $pid, int $ctr, mixed $result) : void {
 	if (cacti_effective_log_level() != POLLER_VERBOSITY_DEBUG) {
 		return;
+	}
+
+	if ($result === null) {
+		$result = '';
+	} elseif (!is_scalar($result)) {
+		$encoded = json_encode($result, JSON_PARTIAL_OUTPUT_ON_ERROR);
+		$result  = ($encoded !== false ? $encoded : print_r($result, true));
 	}
 
 	cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR');

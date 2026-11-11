@@ -135,6 +135,21 @@ test('scalar and empty results keep their response text', function () {
 		->and(script_server_response(' U '))->toBe('U');
 });
 
+test('a non-scalar result is sent as U without a warning', function () {
+	// a script function returning an array or object has no single value the
+	// poller can store; (string) on it would warn or throw
+	set_error_handler(function (int $errno, string $errstr) : bool {
+		throw new \ErrorException($errstr, 0, $errno);
+	});
+
+	try {
+		expect(script_server_response(['a' => 1]))->toBe('U')
+			->and(script_server_response(new \stdClass()))->toBe('U');
+	} finally {
+		restore_error_handler();
+	}
+});
+
 test('the main loop writes the single line response', function () {
 	$source = file_get_contents(dirname(__DIR__, 4) . '/script_server.php');
 
