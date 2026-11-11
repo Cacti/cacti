@@ -168,7 +168,7 @@ case 'view':
 								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							</td>
 
-							<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print get_filter_request_var('local_graph_id');?>' class='graphDrillDown graphDrillDownToggle noprint'>
+							<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print html_escape(get_filter_request_var('local_graph_id'));?>' class='graphDrillDown graphDrillDownToggle noprint'>
 								<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions');?>'><i class='fa fa-bars'></i></span>
 								<div class='iconWrapper'>
 								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><i class='drillDown fa fa-cog actionCog' title='<?php print __esc('Details');?>'></i></a><br>
@@ -433,7 +433,7 @@ case 'zoom':
 					<td class='center'>
 						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 					</td>
-					<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print get_filter_request_var('local_graph_id');?>' class='graphDrillDown graphDrillDownToggle noprint'>
+					<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print html_escape(get_filter_request_var('local_graph_id'));?>' class='graphDrillDown graphDrillDownToggle noprint'>
 						<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions');?>'><i class='fa fa-bars'></i></span>
 						<div class='iconWrapper'>
 						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink properties'>
