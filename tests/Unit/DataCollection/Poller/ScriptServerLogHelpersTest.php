@@ -78,3 +78,31 @@ test('script_server_log_response logs only at debug verbosity', function () {
 
 	expect(file_get_contents($this->logfile))->toContain("PID[1234] CTR[2] RESPONSE:'result-value'");
 });
+
+test('script_server_log_response accepts a null script result', function () {
+	global $config;
+
+	// a script function without a return statement yields null; debug
+	// logging off must not even inspect it
+	$config[OPTIONS_CLI]['log_verbosity'] = POLLER_VERBOSITY_NONE;
+	script_server_log_response(1234, 1, null);
+	expect(file_get_contents($this->logfile))->toBe('');
+
+	$config[OPTIONS_CLI]['log_verbosity'] = POLLER_VERBOSITY_DEBUG;
+	script_server_log_response(1234, 2, null);
+
+	expect(file_get_contents($this->logfile))->toContain("PID[1234] CTR[2] RESPONSE:''");
+});
+
+test('script_server_log_response accepts an array script result', function () {
+	global $config;
+
+	$config[OPTIONS_CLI]['log_verbosity'] = POLLER_VERBOSITY_NONE;
+	script_server_log_response(1234, 1, ['in' => 1, 'out' => 2]);
+	expect(file_get_contents($this->logfile))->toBe('');
+
+	$config[OPTIONS_CLI]['log_verbosity'] = POLLER_VERBOSITY_DEBUG;
+	script_server_log_response(1234, 2, ['in' => 1, 'out' => 2]);
+
+	expect(file_get_contents($this->logfile))->toContain('PID[1234] CTR[2] RESPONSE:\'{"in":1,"out":2}\'');
+});

@@ -629,13 +629,19 @@ function script_server_call(string $function, string $parameters, array $paramet
  *
  * The poller reads one line per request, so a line break inside the result
  * would be read as the reply to the next request.  Multipart results are space
- * separated name:value pairs, so a line break becomes a space.
+ * separated name:value pairs, so a line break becomes a space.  A result
+ * that is neither scalar nor null (an array or object) has no single value
+ * the poller can store, so it is reported as U.
  *
  * @param mixed $result The function result.
  *
  * @return string The result without line breaks or surrounding white space.
  */
 function script_server_response(mixed $result) : string {
+	if ($result !== null && !is_scalar($result)) {
+		return 'U';
+	}
+
 	return trim(str_replace(["\r\n", "\r", "\n"], ' ', (string) $result));
 }
 
