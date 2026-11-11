@@ -2842,28 +2842,35 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 	// Match the maintenance branch boundary for imported script commands.
 	$parsed_script_path = substitute_script_query_path($script_path);
 
-	if (str_contains($parsed_script_path, '..') || preg_match('/[\x00-\x1f\x7f]/', $parsed_script_path)) {
+	/* A control character would split or truncate the command line, and
+	 * escapeshellcmd() refuses a NUL byte outright. */
+	$rejected = preg_match('/[\x00-\x1f\x7f]/', $parsed_script_path) === 1;
+
+	if ($rejected) {
+		$base_command = '';
+	} elseif (CACTI_SERVER_OS == 'win32') {
+		/* clean_up_path() has already turned every / into \, and the Windows
+		 * cacti_escapeshellcmd() replaces \ ( ) with spaces, which would break
+		 * every path, including "C:\Program Files (x86)\...". So the path is
+		 * kept intact and refused instead when it carries a character cmd.exe
+		 * or a POSIX shell would interpret (& | < > ^ %VAR% ; $ ` # * ? [ ] { }),
+		 * or an unpaired " that would flip the quoting of the arguments that
+		 * follow. Refusing rather than stripping means no character is
+		 * removed, so two dots can never be joined into a traversal. */
+		$base_command = $parsed_script_path;
+		$rejected     = preg_match('/[&|<>^%;$`#*?\[\]{}]/', $base_command) === 1 || substr_count($base_command, '"') % 2 !== 0;
+	} else {
+		$base_command = cacti_escapeshellcmd($parsed_script_path);
+	}
+
+	/* Check the command that will run, not the substituted path. The shell
+	 * (and cmd.exe for ") drops the quotes inside a path, so '.".' or ".'."
+	 * reaches it as '..'; check a quote-free copy and return the quoted
+	 * command unchanged. */
+	if ($rejected || str_contains(str_replace(['"', "'"], '', $base_command), '..')) {
 		cacti_log('ERROR: Invalid Data Query script path rejected.', false, 'REINDEX');
 
 		return '';
-	}
-
-	if (CACTI_SERVER_OS == 'win32') {
-		/* clean_up_path() has already turned every / into \, and the Windows
-		 * cacti_escapeshellcmd() replaces \ ( ) with spaces, which would break
-		 * every path, including "C:\Program Files (x86)\...". cmd.exe only
-		 * treats & | < > ^ and %VAR% specially, and an unpaired " would flip
-		 * the quoting of the arguments that follow, so refuse those and keep
-		 * the path intact. */
-		if (preg_match('/[&|<>^%]/', $parsed_script_path) || substr_count($parsed_script_path, '"') % 2 !== 0) {
-			cacti_log('ERROR: Invalid Data Query script path rejected.', false, 'REINDEX');
-
-			return '';
-		}
-
-		$base_command = $parsed_script_path;
-	} else {
-		$base_command = cacti_escapeshellcmd($parsed_script_path);
 	}
 
 	return $base_command . ' ' . $extra_arguments;
