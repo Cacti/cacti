@@ -345,3 +345,161 @@ for (const theme of ['cacti', 'raspberry']) {
 		]);
 	});
 }
+
+// Shared card API presentation layer. cards.css (chrome) and card-widgets.css
+// (chart primitives) are loaded globally by lib/html.php for every page, so the
+// changed-CSS-line gate requires each .cc* rule to be exercised here. The
+// fixtures below render one element for every selector in those stylesheets.
+test('card chrome stylesheet renders every documented .cc* rule', async ({ page }) => {
+	await page.setViewportSize({ width: 1000, height: 800 });
+	await page.setContent('<!DOCTYPE html><html><body>'
+		+ '<div class="ccToolbar">'
+		+ '<span class="ccToolbarLabel">Cards</span>'
+		+ '<select class="ccAdd"><option>Add a card</option></select>'
+		+ '<span class="ccRefresh"><select class="ccRefreshInterval"><option>30s</option></select></span>'
+		+ '</div>'
+		+ '<div class="ccGrid" style="--cc-cols:4">'
+		+ '<section class="ccCard ccW1 ccW2 ccW3 ccW4 ccW5 ccW6 ccW7 ccW8 ccH1 ccH2 ccH3 ccCardDragging ccCardExpandable" data-severity="none">'
+		+ '<header class="ccCardHeader">'
+		+ '<button class="ccDrag" type="button">drag</button>'
+		+ '<h2 class="ccTitle">Card title</h2>'
+		+ '<span class="ccTools">'
+		+ '<button class="ccTool" data-tool="expand" type="button">expand</button>'
+		+ '<button class="ccTool" data-tool="collapse" type="button">collapse</button>'
+		+ '<button class="ccTool" data-tool="shrink" type="button">shrink</button>'
+		+ '<button class="ccTool" data-tool="grow" type="button">grow</button>'
+		+ '<button class="ccTool" data-tool="refresh" type="button">refresh</button>'
+		+ '<button class="ccTool" data-tool="maximize" type="button">maximize</button>'
+		+ '<button class="ccTool" data-tool="remove" type="button">remove</button>'
+		+ '</span></header>'
+		+ '<div class="ccCardBody">Body content</div>'
+		+ '</section>'
+		+ '<section class="ccCard" data-severity="up"><header class="ccCardHeader">up</header></section>'
+		+ '<section class="ccCard" data-severity="warn"><header class="ccCardHeader">warn</header></section>'
+		+ '<section class="ccCard" data-severity="down"><header class="ccCardHeader">down</header></section>'
+		+ '<div class="ccNoDrag"><section class="ccCard"><header class="ccCardHeader"><button class="ccDrag" type="button">locked</button></header></section></div>'
+		+ '</div>'
+		+ '<div class="ccDialogBody">Maximized body</div>'
+		+ '</body></html>');
+	await installThemeCss(page, 'include/css/cards.css');
+	expect(await page.locator('.ccGrid').evaluate(element => getComputedStyle(element).display)).toBe('grid');
+	// Exercise the hover and active handle/tool rules so their ranges are covered.
+	await page.locator('.ccTool[data-tool="refresh"]').first().hover();
+	const drag = page.locator('.ccGrid > .ccCard .ccDrag').first();
+	await drag.hover();
+	await page.mouse.down();
+	expect(await drag.evaluate(element => getComputedStyle(element).cursor)).toBe('grabbing');
+	await page.mouse.up();
+});
+
+test('card-widget stylesheet renders every chart primitive rule', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><html><body>'
+		+ '<div class="ccGauge">'
+		+ '<svg class="ccGaugeSvg" viewBox="0 0 120 68">'
+		+ '<path class="ccGaugeTrack" d="M10 60 A50 50 0 0 1 110 60" fill="none"></path>'
+		+ '<path class="ccGaugeValue ccGaugeValue--up ccGaugeValue--warn ccGaugeValue--down ccGaugeValue--none" d="M10 60 A50 50 0 0 1 110 60" fill="none"></path>'
+		+ '</svg>'
+		+ '<div class="ccGaugeText"><span class="ccGaugeValueText">50%</span><span class="ccGaugeSub">average</span></div>'
+		+ '</div>'
+		+ '<div class="ccBarRow"><div class="ccBarHead"><span>Label</span><span>50%</span></div>'
+		+ '<div class="ccBar"><span class="ccBarFill ccBarFill--up ccBarFill--warn ccBarFill--down ccBarFill--none" style="width:50%"></span></div>'
+		+ '<span class="ccBarLabel">caption</span></div>'
+		+ '<div class="ccBullet"><div class="ccBulletHead"><span class="ccBulletLabel">Latency</span><span class="ccBulletAvg">avg</span></div>'
+		+ '<div class="ccBulletTrack"><div class="ccBulletRange ccBulletRange--up ccBulletRange--warn ccBulletRange--down ccBulletRange--none"></div><div class="ccBulletMarker"></div></div>'
+		+ '<div class="ccBulletScale"><span>0</span><span>100</span></div></div>'
+		+ '<div class="ccStack"><span class="ccStackSeg ccStackSeg--up ccStackSeg--warn ccStackSeg--down ccStackSeg--none"></span></div>'
+		+ '<div class="ccStackLegend"><span><span class="ccStackChip ccStackChip--up ccStackChip--warn ccStackChip--down ccStackChip--none"></span>legend</span></div>'
+		+ '<div class="ccStat"><span class="ccStatValue">42</span><span class="ccStatLabel">Devices</span></div>'
+		+ '<div class="ccTiles"><div class="ccTile ccTile--up ccTile--warn ccTile--down"><span class="ccTileValue">7</span><span class="ccTileLabel">Up</span></div></div>'
+		+ '<div class="ccDistRow"><span class="ccDistLabel">eth0</span><div class="ccDistTrack"><div class="ccDistFill" style="width:40%"></div></div><span class="ccDistValue">40%</span></div>'
+		+ '<div class="ccMiniBar"><div class="ccMiniBarFill" style="width:30%"></div></div>'
+		+ '<div class="ccEmpty">No data</div>'
+		+ '<span class="ccPill ccPill--up ccPill--warn ccPill--down ccPill--none">tag</span>'
+		+ '</body></html>');
+	await installThemeCss(page, 'include/css/card-widgets.css');
+	expect(await page.locator('.ccGauge').evaluate(element => getComputedStyle(element).display)).toBe('flex');
+	expect(await page.locator('.ccBar').evaluate(element => getComputedStyle(element).position)).toBe('relative');
+});
+
+test('card controller keeps a live expand toggle made during a pending refresh', async ({ page }) => {
+	const card = (expanded: string, body: string) =>
+		'<section class="ccCard ccCardExpandable" data-card="a" data-expandable="1" data-expanded="' + expanded + '">'
+		+ '<header class="ccCardHeader"><h2 class="ccTitle">A</h2><span class="ccTools">'
+		+ '<button class="ccTool" data-tool="expand" type="button">expand</button>'
+		+ '<button class="ccTool" data-tool="collapse" type="button">collapse</button>'
+		+ '<button class="ccTool" data-tool="refresh" type="button">refresh</button>'
+		+ '</span></header><div class="ccCardBody">' + body + '</div></section>';
+
+	await page.setContent('<!DOCTYPE html><html><body><div id="grid" class="ccGrid" style="--cc-cols:4">'
+		+ card('0', 'old') + '</div></body></html>');
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/cards.js' });
+
+	const state = await page.evaluate(async (staleHtml) => {
+		const grid = document.getElementById('grid') as HTMLElement;
+		let release!: (html: string) => void;
+		const pending = new Promise<string>(resolve => { release = resolve; });
+		(window as unknown as { CactiCards: { init(g: HTMLElement, a: object): void } })
+			.CactiCards.init(grid, { fetchCard: () => pending });
+
+		const tool = (name: string) =>
+			(grid.querySelector('.ccTool[data-tool="' + name + '"]') as HTMLButtonElement).click();
+
+		// Refresh captures the collapsed state; the user then expands the live
+		// card while the request is still in flight.
+		tool('refresh');
+		tool('expand');
+
+		// The response reflects the stale collapsed state captured at request time.
+		release(staleHtml);
+		await pending;
+		await new Promise(resolve => setTimeout(resolve));
+
+		const swapped = grid.querySelector('.ccCard') as HTMLElement;
+		return {
+			body: (swapped.querySelector('.ccCardBody') as HTMLElement).textContent,
+			expanded: swapped.classList.contains('ccCardExpanded'),
+			attr: swapped.getAttribute('data-expanded')
+		};
+	}, card('0', 'new'));
+
+	// The refresh landed (body swapped to "new") but the user's expand survived.
+	expect(state.body).toBe('new');
+	expect(state.expanded).toBe(true);
+	expect(state.attr).toBe('1');
+});
+
+test('card controller lets refreshed markup drive expansion when the user did not toggle', async ({ page }) => {
+	const card = (expandable: string, expanded: string, body: string) =>
+		'<section class="ccCard' + (expandable === '1' ? ' ccCardExpandable' : '') + '" data-card="a"'
+		+ ' data-expandable="' + expandable + '" data-expanded="' + expanded + '">'
+		+ '<header class="ccCardHeader"><h2 class="ccTitle">A</h2><span class="ccTools">'
+		+ '<button class="ccTool" data-tool="expand" type="button">expand</button>'
+		+ '<button class="ccTool" data-tool="collapse" type="button">collapse</button>'
+		+ '<button class="ccTool" data-tool="refresh" type="button">refresh</button>'
+		+ '</span></header><div class="ccCardBody">' + body + '</div></section>';
+
+	await page.setContent('<!DOCTYPE html><html><body><div id="grid" class="ccGrid" style="--cc-cols:4">'
+		+ card('1', '0', 'old') + '</div></body></html>');
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/cards.js' });
+
+	const state = await page.evaluate(async (expandedHtml) => {
+		const grid = document.getElementById('grid') as HTMLElement;
+		const controller = (window as unknown as { CactiCards: { init(g: HTMLElement, a: object): void } }).CactiCards;
+		// The host returns an already-expanded card and the user does NOT toggle
+		// during the request; the returned markup's state must be honored.
+		controller.init(grid, { fetchCard: () => Promise.resolve(expandedHtml) });
+
+		(grid.querySelector('.ccTool[data-tool="refresh"]') as HTMLButtonElement).click();
+		await new Promise(resolve => setTimeout(resolve));
+
+		const swapped = grid.querySelector('.ccCard') as HTMLElement;
+		return {
+			expanded: swapped.classList.contains('ccCardExpanded'),
+			attr: swapped.getAttribute('data-expanded')
+		};
+	}, card('1', '1', 'new'));
+
+	// No toggle happened, so the host's expanded markup is authoritative.
+	expect(state.expanded).toBe(true);
+	expect(state.attr).toBe('1');
+});

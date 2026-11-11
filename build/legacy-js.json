@@ -14,5 +14,5 @@
     "include/js/jquery.zoom.js": {"reason": "Cacti graph zoom implementation"},
     "include/js/js.storage.js": {"upstream": "https://github.com/julien-maurel/js-storage", "version": "1.1.0", "reason": "Existing Storages API and stored-value format"}
   },
-  "applicationFiles": ["include/js/cacti-rendering.js", "include/js/csrf.js", "include/js/navigationBox.js", "include/js/navigationBox.tableFilter.js", "include/js/navigationBox.tableLayout.js", "include/js/navigationBox.tree.js", "include/js/ui-notices.js"]
+  "applicationFiles": ["include/js/cacti-rendering.js", "include/js/cards.js", "include/js/csrf.js", "include/js/navigationBox.js", "include/js/navigationBox.tableFilter.js", "include/js/navigationBox.tableLayout.js", "include/js/navigationBox.tree.js", "include/js/ui-notices.js"]
 }

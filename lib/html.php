@@ -3312,6 +3312,8 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	print get_md5_include_css('include/themes/print.css');
 	print get_md5_include_css('include/css/graph_drilldown.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'context_menu_overrides.css');
+	print get_md5_include_css('include/css/cards.css');
+	print get_md5_include_css('include/css/card-widgets.css');
 
 	// Global scripts
 	print get_md5_include_js('include/js/screenfull.js', true);
@@ -3345,6 +3347,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	print get_md5_include_js('include/js/Chart.js', true);
 	print get_md5_include_js('include/js/d3.js');
 	print get_md5_include_js('include/js/billboard.js');
+	print get_md5_include_js('include/js/cards.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/js/purify.js');
@@ -3383,6 +3386,185 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	}
 
 	api_plugin_hook('page_head');
+}
+
+/**
+ * Normalise a card severity token to a shared .cc* modifier suffix. Accepts
+ * up|good, warn|warning|recovering, down|bad|error and none|disabled.
+ *
+ * @param string $severity The severity token.
+ *
+ * @return string One of 'up', 'warn', 'down' or 'none'.
+ */
+function card_severity($severity) {
+	switch (strtolower(trim((string) $severity))) {
+		case 'up':
+		case 'good':
+			return 'up';
+		case 'warn':
+		case 'warning':
+		case 'recovering':
+			return 'warn';
+		case 'down':
+		case 'bad':
+		case 'error':
+			return 'down';
+		default:
+			return 'none';
+	}
+}
+
+/**
+ * Render a semicircular SVG gauge (0-100%) for a card body. JS-free; styled by
+ * the shared include/css/card-widgets.css so it renders in any card host
+ * (including third-party panels surfaced inside Intropage).
+ *
+ * @param float  $percent      The value, 0-100.
+ * @param string $center_label The large label drawn inside the arc.
+ * @param string $sub_label    Optional smaller label beneath it.
+ * @param string $severity     Severity token colouring the value arc.
+ *
+ * @return string The gauge HTML.
+ */
+function card_gauge($percent, $center_label, $sub_label = '', $severity = 'none') {
+	$percent = max(0.0, min(100.0, (float) $percent));
+	$sev     = card_severity($severity);
+	$dash    = number_format($percent, 2, '.', '');
+
+	$html = '<div class="ccGauge">'
+		. '<svg class="ccGaugeSvg" viewBox="0 0 120 68" role="img" aria-label="' . html_escape($center_label) . '">'
+		. '<path class="ccGaugeTrack" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" />'
+		. '<path class="ccGaugeValue ccGaugeValue--' . $sev . '" d="M10 60 A50 50 0 0 1 110 60" fill="none" pathLength="100" stroke-dasharray="' . $dash . ' 100" />'
+		. '</svg>'
+		. '<div class="ccGaugeText">'
+		. '<span class="ccGaugeValueText">' . html_escape($center_label) . '</span>'
+		. ($sub_label !== '' ? '<span class="ccGaugeSub">' . html_escape($sub_label) . '</span>' : '')
+		. '</div></div>';
+
+	return $html;
+}
+
+/**
+ * Render a horizontal usage bar (0-100%), optionally with a caption below.
+ *
+ * @param float  $percent  The fill percentage, 0-100.
+ * @param string $label    Optional caption rendered beneath the bar.
+ * @param string $severity Severity token colouring the fill.
+ *
+ * @return string The bar HTML.
+ */
+function card_bar($percent, $label = '', $severity = 'none') {
+	$percent = max(0.0, min(100.0, (float) $percent));
+	$sev     = card_severity($severity);
+	$width   = number_format($percent, 2, '.', '');
+
+	$html = '<div class="ccBar"><span class="ccBarFill ccBarFill--' . $sev . '" style="width:' . $width . '%"></span></div>';
+
+	if ($label !== '') {
+		$html .= '<span class="ccBarLabel">' . html_escape($label) . '</span>';
+	}
+
+	return $html;
+}
+
+/**
+ * Render a single large statistic with a caption.
+ *
+ * @param string $value The statistic value.
+ * @param string $label The caption.
+ *
+ * @return string The stat HTML.
+ */
+function card_stat($value, $label) {
+	$html = '<div class="ccStat">'
+		. '<span class="ccStatValue">' . html_escape((string) $value) . '</span>'
+		. '<span class="ccStatLabel">' . html_escape((string) $label) . '</span>'
+		. '</div>';
+
+	return $html;
+}
+
+/**
+ * Render a stacked proportion bar. Each segment is an array of 'percent'
+ * (0-100), 'severity' and optional 'label'. With $legend true a chip legend is
+ * rendered beneath the bar for labelled segments.
+ *
+ * @param array $segments The list of segment arrays.
+ * @param bool  $legend   Whether to render a chip legend.
+ *
+ * @return string The stacked-bar HTML.
+ */
+function card_stackbar($segments, $legend = false) {
+	$bar   = '<div class="ccStack">';
+	$chips = '';
+
+	foreach ($segments as $seg) {
+		$pct = max(0.0, min(100.0, (float) (isset($seg['percent']) ? $seg['percent'] : 0)));
+		$sev = card_severity(isset($seg['severity']) ? $seg['severity'] : 'none');
+		$lbl = isset($seg['label']) ? (string) $seg['label'] : '';
+
+		$bar .= '<span class="ccStackSeg ccStackSeg--' . $sev . '" style="width:' . number_format($pct, 2, '.', '') . '%"'
+			. ($lbl !== '' ? ' title="' . html_escape($lbl) . '"' : '') . '></span>';
+
+		if ($legend && $lbl !== '') {
+			$chips .= '<span><span class="ccStackChip ccStackChip--' . $sev . '"></span>' . html_escape($lbl) . '</span>';
+		}
+	}
+
+	$bar .= '</div>';
+
+	if ($chips !== '') {
+		$bar .= '<div class="ccStackLegend">' . $chips . '</div>';
+	}
+
+	return $bar;
+}
+
+/**
+ * Render a min/avg/max bullet across a [$scale_min, $scale_max] range: the
+ * coloured range spans min..max and the marker sits at avg.
+ *
+ * @param float  $min       The range minimum (data units).
+ * @param float  $avg       The marker position (data units).
+ * @param float  $max       The range maximum (data units).
+ * @param string $label     The bullet label.
+ * @param string $summary   Optional right-aligned summary text (e.g. min/avg/max).
+ * @param string $severity  Severity token colouring the range.
+ * @param float  $scale_min The scale start.
+ * @param float  $scale_max The scale end.
+ *
+ * @return string The bullet HTML.
+ */
+function card_bullet($min, $avg, $max, $label, $summary = '', $severity = 'none', $scale_min = 0.0, $scale_max = 100.0) {
+	$sev  = card_severity($severity);
+	$span = ($scale_max - $scale_min);
+
+	if ($span == 0) {
+		$span = 1;
+	}
+
+	$pos = function ($v) use ($scale_min, $span) {
+		return max(0.0, min(100.0, (($v - $scale_min) / $span) * 100));
+	};
+
+	$left  = $pos($min);
+	$right = $pos($max);
+	$width = max(0.0, $right - $left);
+	$mark  = $pos($avg);
+
+	$html = '<div class="ccBullet">'
+		. '<div class="ccBulletHead">'
+		. '<span class="ccBulletLabel">' . html_escape($label) . '</span>'
+		. ($summary !== '' ? '<span class="ccBulletAvg">' . html_escape($summary) . '</span>' : '')
+		. '</div>'
+		. '<div class="ccBulletTrack">'
+		. '<div class="ccBulletRange ccBulletRange--' . $sev . '" style="left:' . number_format($left, 2, '.', '') . '%;width:' . number_format($width, 2, '.', '') . '%"></div>'
+		. '<div class="ccBulletMarker" style="left:' . number_format($mark, 2, '.', '') . '%"></div>'
+		. '</div>'
+		. '<div class="ccBulletScale"><span>' . html_escape((string) $scale_min) . '</span><span>' . html_escape((string) $scale_max) . '</span></div>'
+		. '</div>';
+
+	return $html;
 }
 
 /**

@@ -1,0 +1,371 @@
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * cacti-card-widgets - shared, server-rendered chart primitives for the card
+ * API (companion to cards.css). These are the small, JS-free building blocks a
+ * dashboard card body is made of: a semicircular gauge, horizontal usage and
+ * distribution bars, a min/avg/max bullet, a stacked proportion bar, and stat
+ * tiles. Every element is plain markup + inline SVG so a card rendered by any
+ * plugin (including third-party panels surfaced inside Intropage) displays with
+ * no plugin-specific stylesheet or JavaScript.
+ *
+ * All colours derive from the active theme: neutrals from currentColor via
+ * color-mix, and severities from the shared --cc-sev-* custom properties (with
+ * sensible fallbacks) so a host or theme can retint them. The PHP helpers in
+ * lib/html.php (card_gauge(), card_bar(), card_bullet(), card_stackbar(),
+ * card_stat()) emit exactly this markup.
+ *
+ * Severity tokens: up (good), warn, down (bad), none (neutral/disabled).
+ */
+
+/* ---- Semicircular gauge ---- */
+.ccGauge {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 2px 0 4px;
+}
+
+.ccGaugeSvg {
+	width: 100%;
+	max-width: 190px;
+	height: auto;
+}
+
+.ccGaugeTrack {
+	stroke: color-mix(in srgb, currentColor 16%, transparent);
+	stroke-width: 11;
+	stroke-linecap: round;
+}
+
+.ccGaugeValue {
+	stroke-width: 11;
+	stroke-linecap: round;
+	transition: stroke-dasharray 0.4s ease;
+}
+
+.ccGaugeValue--up   { stroke: var(--cc-sev-up,   #3c9a5f); }
+.ccGaugeValue--warn { stroke: var(--cc-sev-warn, #d9830f); }
+.ccGaugeValue--down { stroke: var(--cc-sev-down, #cc0000); }
+.ccGaugeValue--none { stroke: color-mix(in srgb, currentColor 45%, transparent); }
+
+/* Faint radial ticks marking the window min and max on the gauge arc. */
+.ccGaugeTick {
+	stroke: color-mix(in srgb, currentColor 55%, transparent);
+	stroke-width: 2;
+}
+
+.ccGaugeText {
+	margin-top: -22px;
+	text-align: center;
+	line-height: 1.2;
+}
+
+.ccGaugeValueText {
+	display: block;
+	font-size: 20px;
+	font-weight: 700;
+}
+
+.ccGaugeSub {
+	display: block;
+	font-size: 11px;
+	color: color-mix(in srgb, currentColor 65%, transparent);
+}
+
+/* ---- Horizontal usage bar ---- */
+.ccBar {
+	position: relative;
+	height: 14px;
+	min-width: 80px;
+	border-radius: 7px;
+	background: color-mix(in srgb, currentColor 14%, transparent);
+	overflow: hidden;
+}
+
+.ccBarFill {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	border-radius: 7px;
+	background: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.ccBarFill--up   { background: var(--cc-sev-up,   #3c9a5f); }
+.ccBarFill--warn { background: var(--cc-sev-warn, #d9830f); }
+.ccBarFill--down { background: var(--cc-sev-down, #cc0000); }
+.ccBarFill--none { background: color-mix(in srgb, currentColor 40%, transparent); }
+
+.ccBarLabel {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+/* Row wrapper: label + value above a bar. */
+.ccBarRow {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	margin: 6px 0;
+}
+
+.ccBarHead {
+	display: flex;
+	justify-content: space-between;
+	font-size: 12px;
+}
+
+/* ---- Min/avg/max bullet ---- */
+.ccBullet {
+	margin: 9px 0;
+}
+
+.ccBulletHead {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.ccBulletLabel {
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.ccBulletAvg {
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	color: color-mix(in srgb, currentColor 78%, transparent);
+}
+
+.ccBulletTrack {
+	position: relative;
+	height: 16px;
+	border-radius: 8px;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+	overflow: hidden;
+}
+
+.ccBulletRange {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	border-radius: 8px;
+}
+
+.ccBulletRange--up   { background: color-mix(in srgb, var(--cc-sev-up,   #3c9a5f) 55%, transparent); }
+.ccBulletRange--warn { background: color-mix(in srgb, var(--cc-sev-warn, #d9830f) 55%, transparent); }
+.ccBulletRange--down { background: color-mix(in srgb, var(--cc-sev-down, #cc0000) 55%, transparent); }
+.ccBulletRange--none { background: color-mix(in srgb, currentColor 32%, transparent); }
+
+.ccBulletMarker {
+	position: absolute;
+	top: -2px;
+	bottom: -2px;
+	width: 3px;
+	transform: translateX(-1px);
+	background: currentColor;
+	border-radius: 2px;
+}
+
+/* A faint dashed tick marking the historical average, distinct from the strong
+   current-value marker, so both are visible when they differ. */
+.ccBulletAvgMarker {
+	position: absolute;
+	top: 1px;
+	bottom: 1px;
+	width: 0;
+	border-left: 2px dashed color-mix(in srgb, currentColor 70%, transparent);
+	transform: translateX(-1px);
+}
+
+.ccBulletScale {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 2px;
+	font-size: 10px;
+	font-variant-numeric: tabular-nums;
+	color: color-mix(in srgb, currentColor 60%, transparent);
+}
+
+/* ---- Stacked proportion bar ---- */
+.ccStack {
+	display: flex;
+	height: 20px;
+	border-radius: 6px;
+	overflow: hidden;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.ccStackSeg {
+	height: 100%;
+}
+
+.ccStackSeg--up   { background: var(--cc-sev-up,   #3c9a5f); }
+.ccStackSeg--warn { background: var(--cc-sev-warn, #d9830f); }
+.ccStackSeg--down { background: var(--cc-sev-down, #cc0000); }
+.ccStackSeg--none { background: color-mix(in srgb, currentColor 35%, transparent); }
+
+.ccStackLegend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 8px;
+	font-size: 11px;
+}
+
+.ccStackLegend span {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.ccStackChip {
+	width: 10px;
+	height: 10px;
+	border-radius: 2px;
+	display: inline-block;
+}
+
+.ccStackChip--up   { background: var(--cc-sev-up,   #3c9a5f); }
+.ccStackChip--warn { background: var(--cc-sev-warn, #d9830f); }
+.ccStackChip--down { background: var(--cc-sev-down, #cc0000); }
+.ccStackChip--none { background: color-mix(in srgb, currentColor 35%, transparent); }
+
+/* ---- Stat tiles ---- */
+.ccStat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	padding: 6px 0;
+}
+
+.ccStatValue {
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ccStatLabel {
+	font-size: 12px;
+	color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+.ccTiles {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+	gap: 8px;
+}
+
+.ccTile {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	padding: 8px 6px;
+	border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+	border-radius: 6px;
+}
+
+.ccTileValue {
+	font-size: 20px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ccTileLabel {
+	font-size: 11px;
+	color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+.ccTile--up   { border-color: color-mix(in srgb, var(--cc-sev-up,   #3c9a5f) 55%, transparent); }
+.ccTile--warn { border-color: color-mix(in srgb, var(--cc-sev-warn, #d9830f) 55%, transparent); }
+.ccTile--down { border-color: color-mix(in srgb, var(--cc-sev-down, #cc0000) 55%, transparent); }
+.ccTile--up   .ccTileValue { color: var(--cc-sev-up,   #3c9a5f); }
+.ccTile--warn .ccTileValue { color: var(--cc-sev-warn, #d9830f); }
+.ccTile--down .ccTileValue { color: var(--cc-sev-down, #cc0000); }
+
+/* ---- Distribution rows and in-table mini bars ---- */
+.ccDistRow {
+	display: grid;
+	grid-template-columns: minmax(80px, 34%) 1fr auto;
+	align-items: center;
+	gap: 8px;
+	margin: 6px 0;
+	font-size: 12px;
+}
+
+.ccDistLabel {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.ccDistTrack {
+	height: 12px;
+	border-radius: 6px;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+	overflow: hidden;
+}
+
+.ccDistFill {
+	display: block;
+	height: 100%;
+	border-radius: 6px;
+	background: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.ccDistValue {
+	font-variant-numeric: tabular-nums;
+	color: color-mix(in srgb, currentColor 80%, transparent);
+}
+
+.ccMiniBar {
+	display: block;
+	position: relative;
+	height: 10px;
+	min-width: 60px;
+	border-radius: 5px;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+	overflow: hidden;
+}
+
+.ccMiniBarFill {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	border-radius: 5px;
+	background: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+/* ---- Small shared helpers ---- */
+.ccEmpty {
+	color: color-mix(in srgb, currentColor 65%, transparent);
+	font-style: italic;
+}
+
+.ccPill {
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 10px;
+	font-size: 11px;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.ccPill--up   { background: color-mix(in srgb, var(--cc-sev-up,   #3c9a5f) 70%, #000); color: #fff; }
+.ccPill--warn { background: color-mix(in srgb, var(--cc-sev-warn, #d9830f) 70%, #000); color: #fff; }
+.ccPill--down { background: color-mix(in srgb, var(--cc-sev-down, #cc0000) 70%, #000); color: #fff; }
+.ccPill--none { background: color-mix(in srgb, currentColor 20%, transparent); }
