@@ -32,6 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_mem($host_id = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_system', false)) {
+		return 'used:U size:U';
+	}
+
 	$disk = db_fetch_row_prepared('SELECT memSize, memUsed*memSize/100 AS memUsed
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',

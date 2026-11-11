@@ -32,6 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_cpu($host_id = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_processor', false)) {
+		return 'cpu:U max:U';
+	}
+
 	$cpu = db_fetch_row_prepared('SELECT AVG(`load`) AS avgCPU,
 		MAX(`load`) AS maxCPU
 		FROM plugin_mikrotik_processor

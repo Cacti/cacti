@@ -32,6 +32,15 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_qusers($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_users', false)) {
+		if ($cmd == 'get') {
+			return 'U';
+		}
+
+		return;
+	}
+
 	if ($cmd == 'index') {
 		$return_arr = ss_mikrotik_qusers_getnames($host_id, $arg1);
 		for ($i=0;($i < cacti_sizeof($return_arr));$i++) {

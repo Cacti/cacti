@@ -32,11 +32,20 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_uptime($host_id = '') {
-	$cpu = db_fetch_cell_prepared('SELECT uptime/86400/100
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_system', false)) {
+		return 'U';
+	}
+
+	$uptime = db_fetch_cell_prepared('SELECT uptime/86400/100
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',
 		array($host_id));
 
-	return $cpu;
+	if ($uptime == '') {
+		$uptime = 'U';
+	}
+
+	return $uptime;
 }
 
