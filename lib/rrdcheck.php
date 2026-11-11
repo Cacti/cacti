@@ -367,8 +367,11 @@ function do_rrdcheck(int $thread_id = 1) : void {
 							$dsses += cacti_sizeof($data_source_names);
 							$first  = false;
 						} else {
-							$parts = explode(':', $line);
-							$data  = explode(' ', trim($parts[1]));
+							$data = rrdcheck_fetch_row_values($line);
+
+							if ($data === null) {
+								continue;
+							}
 
 							foreach ($data as $index=>$number) {
 								if ($index == 0) {
@@ -506,6 +509,26 @@ function do_rrdcheck(int $thread_id = 1) : void {
 		set_config_option('rrdcheck_total_rrds_' . $type . '_' . $thread_id, $rrd_files);
 		set_config_option('rrdcheck_total_dsses_' . $type . '_' . $thread_id, $total_dsses);
 	}
+}
+
+/**
+ * rrdcheck_fetch_row_values - returns the values of one 'timestamp: value value ...'
+ * data line of rrdtool fetch output.  Any other line, such as an 'ERROR: ...'
+ * message or a line without a value field, is not a data row and yields null,
+ * so it is neither counted as a row nor scanned for NaN values.
+ *
+ * @param string $line A trimmed line of rrdtool fetch output after the header
+ *
+ * @return list<string>|null The values in data source order, or null for a non-data line
+ */
+function rrdcheck_fetch_row_values(string $line) : ?array {
+	$parts = explode(':', $line, 2);
+
+	if (!isset($parts[1]) || !is_numeric(trim($parts[0]))) {
+		return null;
+	}
+
+	return explode(' ', trim($parts[1]));
 }
 
 /**
