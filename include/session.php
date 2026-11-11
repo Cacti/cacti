@@ -128,18 +128,29 @@ function cacti_db_session_destroy(string $id) : bool {
 	return true;
 }
 
-function cacti_db_session_clean(mixed $max) : bool {
+/**
+ * cacti_db_session_clean - removes the sessions not accessed within the lifetime
+ *
+ * @param mixed $max The session lifetime in seconds, 4 hours when not numeric
+ *
+ * @return int|false The number of sessions removed, or false when the delete failed
+ */
+function cacti_db_session_clean(mixed $max) : int|false {
 	if (!is_numeric($max)) {
 		$old = time() - 14400;
 	} else {
 		$old = time() - intval($max);
 	}
 
-	db_execute_prepared('DELETE FROM sessions
+	if (!db_execute_prepared('DELETE FROM sessions
 		WHERE access < ?',
-		[$old]);
+		[$old])) {
+		return false;
+	}
 
-	return true;
+	$deleted = db_affected_rows();
+
+	return is_numeric($deleted) ? (int) $deleted : 0;
 }
 
 /**
@@ -172,11 +183,7 @@ class Cacti_DB_Session_Handler implements SessionHandlerInterface {
 	}
 
 	public function gc(int $max_lifetime): int|false {
-		cacti_db_session_clean($max_lifetime);
-
-		$deleted = db_affected_rows();
-
-		return is_numeric($deleted) ? (int) $deleted : 0;
+		return cacti_db_session_clean($max_lifetime);
 	}
 }
 
