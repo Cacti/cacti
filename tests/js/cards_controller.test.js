@@ -325,3 +325,87 @@ test('a refresh clicked before a grow cannot revert it, in either response order
 		assert.deepEqual(layouts, [2], responses.join(' then '));
 	}
 });
+
+test('re-initialising a new grid with the same add control fires onAddCard once, into the latest grid', async () => {
+	const { cards, doc } = loadCards();
+	const add = new Element(doc, {});
+	doc.byId.add_card = add;
+	const calls = [];
+	const adapterFor = (name) => ({
+		addControl: 'add_card',
+		onAddCard(id) {
+			calls.push(name + ':' + id);
+
+			return cardMarkup(id, 1);
+		},
+	});
+
+	const first = new Element(doc, { class: 'ccGrid' });
+	const second = new Element(doc, { class: 'ccGrid' });
+	cards.init(first, adapterFor('first'));
+	cards.init(second, adapterFor('second'));
+
+	add.value = 'b';
+	add.dispatch('change');
+	await settle();
+
+	assert.deepEqual(calls, ['second:b']);
+	assert.equal(add.value, '');
+	assert.equal(first.querySelectorAll('.ccCard').length, 0);
+	assert.equal(second.querySelectorAll('.ccCard').length, 1);
+});
+
+// Lay out cards on a 3-column grid of 100px cells with 10px gaps.
+function place(card, col, row, rows) {
+	card.rect = {
+		left: col * 110,
+		width: 100,
+		top: row * 110,
+		bottom: row * 110 + rows * 110 - 10,
+	};
+}
+
+test('drop targeting ignores a tall card from an earlier row and skips repeated moves', () => {
+	const { cards, doc } = loadCards();
+	const grid = new Element(doc, { class: 'ccGrid' });
+	// Row 0: A (col 0), B (col 1, spans rows 0-1), D (col 2).
+	// Row 1: C (col 0), E (col 2). Dragged: X, appended last.
+	const ids = ['A', 'B', 'D', 'C', 'E', 'X'];
+	const card = {};
+	ids.forEach((id) => {
+		card[id] = grid.appendChild(makeCard(doc, id, id === 'B' ? 2 : 1));
+	});
+	place(card.A, 0, 0, 1);
+	place(card.B, 1, 0, 2);
+	place(card.D, 2, 0, 1);
+	place(card.C, 0, 1, 1);
+	place(card.E, 2, 1, 1);
+	cards.init(grid, {});
+
+	let moves = 0;
+	const insertBefore = grid.insertBefore.bind(grid);
+	grid.insertBefore = (child, ref) => {
+		moves++;
+
+		return insertBefore(child, ref);
+	};
+
+	card.X.draggable = true;
+	card.X.dispatch('dragstart');
+
+	// Pointer in row 1, left of C's centre: B spans this band but begins in
+	// row 0, so the drop belongs before C, not before B.
+	grid.dispatch('dragover', { clientX: 20, clientY: 150 });
+	assert.deepEqual(grid.children.map((c) => c.getAttribute('data-card')), ['A', 'B', 'D', 'X', 'C', 'E']);
+	assert.equal(moves, 1);
+
+	// The same reference on the next dragover must not move the node again.
+	grid.dispatch('dragover', { clientX: 25, clientY: 155 });
+	assert.equal(moves, 1);
+
+	// Below every card: append.
+	grid.dispatch('dragover', { clientX: 20, clientY: 400 });
+	assert.equal(grid.children[grid.children.length - 1], card.X);
+
+	card.X.dispatch('dragend');
+});

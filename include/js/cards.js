@@ -122,27 +122,46 @@ window.CactiCards = window.CactiCards || (function() {
 	/* The insertion reference for a drop: the first card that follows the pointer
 	 * in reading order. Resolve the pointer's row before comparing horizontal
 	 * centres so dragging over a later card in a row no longer snaps the
-	 * insertion point back to the start of that row. */
+	 * insertion point back to the start of that row.
+	 *
+	 * The row is the nearest row start (card top) at or above the pointer, not
+	 * any card whose box spans y: a .ccH2/.ccH3 card begins in an earlier row
+	 * but covers the bands below it, and must not capture the drop there. Grid
+	 * auto-placement keeps DOM order monotonic in row start, so the first card
+	 * that starts below the pointer's row ends it. */
 	function dragReference(grid, adapter, x, y) {
 		var cards = Array.prototype.slice.call(grid.querySelectorAll(cardSel(adapter) + ':not(.ccCardDragging)'));
-		var rowMatch = null;   // first card in the pointer's row whose centre is past x
-		var belowMatch = null; // first card that begins in a row below the pointer
+		var boxes = cards.map(function(card) {
+			return card.getBoundingClientRect();
+		});
+		var rowTop = -Infinity;
+		var bottom = -Infinity;
 
-		cards.forEach(function(card) {
-			var box = card.getBoundingClientRect();
-			if (y >= box.top && y <= box.bottom) {
-				// Pointer is within this card's row band: compare horizontally.
-				if (rowMatch === null && x < box.left + box.width / 2) {
-					rowMatch = card;
-				}
-			} else if (y < box.top && belowMatch === null) {
-				// This card starts in a row below the pointer; it ends the
-				// pointer's row when nothing in that row is past the pointer.
-				belowMatch = card;
+		boxes.forEach(function(box) {
+			if (box.top <= y && box.top > rowTop) {
+				rowTop = box.top;
 			}
+			bottom = Math.max(bottom, box.bottom);
 		});
 
-		return rowMatch || belowMatch;
+		// Below every card: append.
+		if (y > bottom) {
+			return null;
+		}
+
+		for (var i = 0; i < cards.length; i++) {
+			var box = boxes[i];
+			// Sub-pixel layout can leave cards in one row a fraction apart.
+			if (Math.abs(box.top - rowTop) < 1) {
+				if (x < box.left + box.width / 2) {
+					return cards[i];
+				}
+			} else if (box.top > rowTop) {
+				return cards[i];
+			}
+		}
+
+		return null;
 	}
 
 	/* Decide, mirroring normalizeState(), whether a fresh card will be
@@ -409,6 +428,7 @@ window.CactiCards = window.CactiCards || (function() {
 				return;
 			}
 			dragging = card;
+			grid.__ccDragRef = undefined;
 			card.classList.add('ccCardDragging');
 		});
 		card.addEventListener('dragend', function() {
@@ -448,6 +468,13 @@ window.CactiCards = window.CactiCards || (function() {
 				event.dataTransfer.dropEffect = 'move';
 			}
 			var before = dragReference(grid, adapter, event.clientX, event.clientY);
+			// Moving the node can shift the layout under a stationary pointer;
+			// only move again once the computed reference actually changes, so
+			// the insertion point does not flip back and forth between events.
+			if (before === grid.__ccDragRef) {
+				return;
+			}
+			grid.__ccDragRef = before;
 			if (before == null) {
 				grid.appendChild(dragging);
 			} else if (before !== dragging) {
@@ -493,37 +520,48 @@ window.CactiCards = window.CactiCards || (function() {
 		});
 
 		// Optional "add card" control referenced by adapter.addControl (an element or id).
+		// A host may re-render its grid and call init() on the new grid while the
+		// control survives, so bind its listener once and always dispatch to the
+		// most recently initialised grid and adapter.
 		var add = adapter.addControl;
 		if (typeof add === 'string') {
 			add = document.getElementById(add);
 		}
 		if (add) {
-			add.addEventListener('change', function() {
-				var id = this.value;
-				this.value = '';
-				if (id && typeof adapter.onAddCard === 'function') {
-					Promise.resolve(adapter.onAddCard(id)).then(function(html) {
-						if (html == null) {
-							return;
-						}
-						var tmp = document.createElement('div');
-						tmp.innerHTML = String(html).trim();
-						var fresh = tmp.querySelector(cardSel(adapter)) || tmp.firstElementChild;
-						// A second add of the same card can resolve while the first
-						// is still pending (the option stays selectable until the
-						// debounced catalogue sync), so skip ids already on the grid
-						// to avoid appending a duplicate the server then dedupes.
-						if (fresh && findCard(grid, adapter, cardId(fresh, adapter)) === null) {
-							grid.appendChild(fresh);
-							bindCard(grid, adapter, fresh);
-							if (typeof adapter.applyTheme === 'function') {
-								adapter.applyTheme(grid);
-							}
-							saveLayout(grid, adapter);
-						}
-					}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
+			add.__ccTarget = { grid: grid, adapter: adapter };
+			if (!add.__ccInit) {
+				add.__ccInit = true;
+				add.addEventListener('change', onAddChange);
+			}
+		}
+	}
+
+	function onAddChange() {
+		var grid = this.__ccTarget.grid;
+		var adapter = this.__ccTarget.adapter;
+		var id = this.value;
+		this.value = '';
+		if (id && typeof adapter.onAddCard === 'function') {
+			Promise.resolve(adapter.onAddCard(id)).then(function(html) {
+				if (html == null) {
+					return;
 				}
-			});
+				var tmp = document.createElement('div');
+				tmp.innerHTML = String(html).trim();
+				var fresh = tmp.querySelector(cardSel(adapter)) || tmp.firstElementChild;
+				// A second add of the same card can resolve while the first
+				// is still pending (the option stays selectable until the
+				// debounced catalogue sync), so skip ids already on the grid
+				// to avoid appending a duplicate the server then dedupes.
+				if (fresh && findCard(grid, adapter, cardId(fresh, adapter)) === null) {
+					grid.appendChild(fresh);
+					bindCard(grid, adapter, fresh);
+					if (typeof adapter.applyTheme === 'function') {
+						adapter.applyTheme(grid);
+					}
+					saveLayout(grid, adapter);
+				}
+			}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
 		}
 	}
 
