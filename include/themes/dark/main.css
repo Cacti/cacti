@@ -1422,17 +1422,17 @@ legend {
 
 /* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
    html_start_box styling instead of the jquery-ui.css themeroller look. */
-.ui-selectmenu-button.ui-button {
-	background: #000000;
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: #222222 url("images/ui-bg_highlight-soft_35_222222_1x100.png") 50% 50% repeat-x;
 	border: 1px solid #555555;
 	border-radius: 6px;
 	color: #ffffff;
 }
 
-.ui-selectmenu-button.ui-button:hover,
-.ui-selectmenu-button.ui-selectmenu-button-open {
-	background: #000000;
-	border-color: #555555;
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #155413;
+	border-color: #155413;
 	color: #ffffff;
 }
 

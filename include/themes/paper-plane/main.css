@@ -1362,18 +1362,18 @@ tr>td.textInfo.right {
 
 /* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
    html_start_box styling instead of the jquery-ui.css themeroller look. */
-.ui-selectmenu-button.ui-button {
-	background: #f5f5f5;
-	border: 1px solid #d3d3d3;
-	border-radius: 6px;
-	color: #555555;
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: #f5f5f5 !important;
+	border: 1px solid #d3d3d3 !important;
+	border-radius: 6px !important;
+	color: #555555 !important;
 }
 
-.ui-selectmenu-button.ui-button:hover,
-.ui-selectmenu-button.ui-selectmenu-button-open {
-	background: #f5f5f5;
-	border-color: #d3d3d3;
-	color: #555555;
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #ffffff !important;
+	border-color: #888888 !important;
+	color: #333333 !important;
 }
 
 .ui-selectmenu-menu .ui-menu,
