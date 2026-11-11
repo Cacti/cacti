@@ -420,3 +420,50 @@ test('card-widget stylesheet renders every chart primitive rule', async ({ page 
 	expect(await page.locator('.ccGauge').evaluate(element => getComputedStyle(element).display)).toBe('flex');
 	expect(await page.locator('.ccBar').evaluate(element => getComputedStyle(element).position)).toBe('relative');
 });
+
+test('card controller keeps a live expand toggle made during a pending refresh', async ({ page }) => {
+	const card = (expanded: string, body: string) =>
+		'<section class="ccCard ccCardExpandable" data-card="a" data-expandable="1" data-expanded="' + expanded + '">'
+		+ '<header class="ccCardHeader"><h2 class="ccTitle">A</h2><span class="ccTools">'
+		+ '<button class="ccTool" data-tool="expand" type="button">expand</button>'
+		+ '<button class="ccTool" data-tool="collapse" type="button">collapse</button>'
+		+ '<button class="ccTool" data-tool="refresh" type="button">refresh</button>'
+		+ '</span></header><div class="ccCardBody">' + body + '</div></section>';
+
+	await page.setContent('<!DOCTYPE html><html><body><div id="grid" class="ccGrid" style="--cc-cols:4">'
+		+ card('0', 'old') + '</div></body></html>');
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/cards.js' });
+
+	const state = await page.evaluate(async (staleHtml) => {
+		const grid = document.getElementById('grid') as HTMLElement;
+		let release!: (html: string) => void;
+		const pending = new Promise<string>(resolve => { release = resolve; });
+		(window as unknown as { CactiCards: { init(g: HTMLElement, a: object): void } })
+			.CactiCards.init(grid, { fetchCard: () => pending });
+
+		const tool = (name: string) =>
+			(grid.querySelector('.ccTool[data-tool="' + name + '"]') as HTMLButtonElement).click();
+
+		// Refresh captures the collapsed state; the user then expands the live
+		// card while the request is still in flight.
+		tool('refresh');
+		tool('expand');
+
+		// The response reflects the stale collapsed state captured at request time.
+		release(staleHtml);
+		await pending;
+		await new Promise(resolve => setTimeout(resolve));
+
+		const swapped = grid.querySelector('.ccCard') as HTMLElement;
+		return {
+			body: (swapped.querySelector('.ccCardBody') as HTMLElement).textContent,
+			expanded: swapped.classList.contains('ccCardExpanded'),
+			attr: swapped.getAttribute('data-expanded')
+		};
+	}, card('0', 'new'));
+
+	// The refresh landed (body swapped to "new") but the user's expand survived.
+	expect(state.body).toBe('new');
+	expect(state.expanded).toBe(true);
+	expect(state.attr).toBe('1');
+});

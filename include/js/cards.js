@@ -165,6 +165,12 @@ window.CactiCards = window.CactiCards || (function() {
 		if (!target || !target.parentNode) {
 			return null;
 		}
+		// The in-flight response carries the expansion state captured when the
+		// request started, but the user may have expanded/collapsed the live
+		// card since. Carry the live state onto the fresh markup so the swap
+		// (refresh, resize or refresh-all) does not undo that toggle; bindCard's
+		// normalizeState applies the class from this data-expanded value.
+		fresh.setAttribute('data-expanded', target.classList.contains('ccCardExpanded') ? '1' : '0');
 		target.parentNode.replaceChild(fresh, target);
 		bindCard(grid, adapter, fresh);
 		if (typeof adapter.applyTheme === 'function') {
