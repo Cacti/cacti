@@ -467,3 +467,39 @@ test('card controller keeps a live expand toggle made during a pending refresh',
 	expect(state.expanded).toBe(true);
 	expect(state.attr).toBe('1');
 });
+
+test('card controller lets refreshed markup drive expansion when the user did not toggle', async ({ page }) => {
+	const card = (expandable: string, expanded: string, body: string) =>
+		'<section class="ccCard' + (expandable === '1' ? ' ccCardExpandable' : '') + '" data-card="a"'
+		+ ' data-expandable="' + expandable + '" data-expanded="' + expanded + '">'
+		+ '<header class="ccCardHeader"><h2 class="ccTitle">A</h2><span class="ccTools">'
+		+ '<button class="ccTool" data-tool="expand" type="button">expand</button>'
+		+ '<button class="ccTool" data-tool="collapse" type="button">collapse</button>'
+		+ '<button class="ccTool" data-tool="refresh" type="button">refresh</button>'
+		+ '</span></header><div class="ccCardBody">' + body + '</div></section>';
+
+	await page.setContent('<!DOCTYPE html><html><body><div id="grid" class="ccGrid" style="--cc-cols:4">'
+		+ card('1', '0', 'old') + '</div></body></html>');
+	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/cards.js' });
+
+	const state = await page.evaluate(async (expandedHtml) => {
+		const grid = document.getElementById('grid') as HTMLElement;
+		const controller = (window as unknown as { CactiCards: { init(g: HTMLElement, a: object): void } }).CactiCards;
+		// The host returns an already-expanded card and the user does NOT toggle
+		// during the request; the returned markup's state must be honored.
+		controller.init(grid, { fetchCard: () => Promise.resolve(expandedHtml) });
+
+		(grid.querySelector('.ccTool[data-tool="refresh"]') as HTMLButtonElement).click();
+		await new Promise(resolve => setTimeout(resolve));
+
+		const swapped = grid.querySelector('.ccCard') as HTMLElement;
+		return {
+			expanded: swapped.classList.contains('ccCardExpanded'),
+			attr: swapped.getAttribute('data-expanded')
+		};
+	}, card('1', '1', 'new'));
+
+	// No toggle happened, so the host's expanded markup is authoritative.
+	expect(state.expanded).toBe(true);
+	expect(state.attr).toBe('1');
+});

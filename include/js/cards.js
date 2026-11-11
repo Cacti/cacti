@@ -145,8 +145,32 @@ window.CactiCards = window.CactiCards || (function() {
 		return rowMatch || belowMatch;
 	}
 
-	/* Swap a card's markup in place (after refresh/add) and re-bind it. */
-	function replaceCard(grid, adapter, card, html) {
+	/* Decide, mirroring normalizeState(), whether a fresh card will be
+	 * expandable, so a preserved toggle is never forced onto a card that cannot
+	 * expand (which would leave normalizeState() marking it ccCardExpanded and
+	 * persisting expanded:true for a non-expandable card). */
+	function willExpand(card) {
+		var expandable = card.getAttribute('data-expandable');
+		if (expandable === '1' || expandable === 'true') {
+			return true;
+		}
+		if (expandable != null) {
+			return false;
+		}
+		return card.classList.contains('ccCardExpandable');
+	}
+
+	/* Swap a card's markup in place (after refresh/add) and re-bind it.
+	 *
+	 * capturedExpanded (optional) is the card's expanded state when an internal
+	 * refresh/resize request started. When it is supplied and the live card has
+	 * since been toggled by the user, the incoming markup reflects the stale
+	 * captured state, so the live state is carried onto the fresh markup to avoid
+	 * reverting that toggle - but only when the fresh card is still expandable.
+	 * When it is omitted (direct callers) or the state is unchanged, the host
+	 * markup's own data-expanded stays authoritative (the normalizeState
+	 * contract, so a host may still drive expansion through returned markup). */
+	function replaceCard(grid, adapter, card, html, capturedExpanded) {
 		var tmp = document.createElement('div');
 		tmp.innerHTML = (html || '').trim();
 		var fresh = tmp.querySelector(cardSel(adapter)) || tmp.firstElementChild;
@@ -165,12 +189,12 @@ window.CactiCards = window.CactiCards || (function() {
 		if (!target || !target.parentNode) {
 			return null;
 		}
-		// The in-flight response carries the expansion state captured when the
-		// request started, but the user may have expanded/collapsed the live
-		// card since. Carry the live state onto the fresh markup so the swap
-		// (refresh, resize or refresh-all) does not undo that toggle; bindCard's
-		// normalizeState applies the class from this data-expanded value.
-		fresh.setAttribute('data-expanded', target.classList.contains('ccCardExpanded') ? '1' : '0');
+		if (capturedExpanded != null) {
+			var liveExpanded = target.classList.contains('ccCardExpanded');
+			if (liveExpanded !== capturedExpanded && willExpand(fresh)) {
+				fresh.setAttribute('data-expanded', liveExpanded ? '1' : '0');
+			}
+		}
 		target.parentNode.replaceChild(fresh, target);
 		bindCard(grid, adapter, fresh);
 		if (typeof adapter.applyTheme === 'function') {
@@ -215,7 +239,7 @@ window.CactiCards = window.CactiCards || (function() {
 			// A newer refresh/resize for this card superseded us; discard the
 			// stale markup instead of reverting the card to an older state.
 			if (html != null && !requestSuperseded(grid, id, token)) {
-				replaceCard(grid, adapter, card, html);
+				replaceCard(grid, adapter, card, html, state.expanded);
 			}
 		}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
 	}
@@ -245,6 +269,7 @@ window.CactiCards = window.CactiCards || (function() {
 		var id = cardId(card, adapter);
 		if (typeof adapter.onResize === 'function') {
 			var token = startRequest(grid, id);
+			var capturedExpanded = card.classList.contains('ccCardExpanded');
 			Promise.resolve(adapter.onResize(id, dir, card)).then(function(html) {
 				// A newer refresh/resize for this card has superseded us; leave
 				// its markup and layout in place rather than reverting them.
@@ -252,7 +277,7 @@ window.CactiCards = window.CactiCards || (function() {
 					return;
 				}
 				if (typeof html === 'string') {
-					replaceCard(grid, adapter, card, html);
+					replaceCard(grid, adapter, card, html, capturedExpanded);
 				}
 				saveLayout(grid, adapter);
 			}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
