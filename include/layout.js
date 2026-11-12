@@ -1465,13 +1465,12 @@ function displayMessages() {
 			}
 		}
 
-		var returnStr = '<div id="messageContainer" style="display:none">' +
-			'<h4>' + header + '</h4>' +
-			'<p style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</p>' +
-			'</div>';
-
+		/* sanitize at the sink and insert as a node, so the message is not parsed a second time */
 		$('#messageContainer').remove();
-		$('body').append(returnStr);
+		$('<div>').attr('id', 'messageContainer').hide()
+			.append($('<h4>').html(header))
+			.append($('<p>').css({display: 'table-cell', overflow: 'auto'}).html(' ' + DOMPurify.sanitize(sessionMessage.message)))
+			.appendTo('body');
 
 		var messageWidth = $(window).width();
 		if (messageWidth > 600) {
