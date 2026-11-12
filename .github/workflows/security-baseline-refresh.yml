@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout develop
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: develop
           # Required only for pushing the dedicated automation branch below.

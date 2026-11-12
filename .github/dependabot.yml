@@ -5,10 +5,13 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
-    directory: /
+    # "/" covers only .github/workflows and a root action.yml, so the local
+    # composite actions need their own entry.
+    directories: [/, /.github/actions/*]
     schedule: {interval: weekly, day: friday}
     open-pull-requests-limit: 5
-    cooldown: {semver-major-days: 7}
+    # github-actions supports only default-days, not semver-*-days.
+    cooldown: {default-days: 7}
     groups:
       github-actions: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, github_actions]
@@ -30,11 +33,12 @@ updates:
       - dependency-name: "pestphp/*"
         versions: [">= 4.0.0"]
   - package-ecosystem: github-actions
-    directory: /
+    directories: [/, /.github/actions/*]
     target-branch: 1.2.x
     schedule: {interval: weekly, day: friday}
     open-pull-requests-limit: 5
-    cooldown: {semver-major-days: 7}
+    # github-actions supports only default-days, not semver-*-days.
+    cooldown: {default-days: 7}
     groups:
       github-actions-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, github_actions, 1.2.x]

@@ -15,6 +15,21 @@ class DependabotConfigTest(unittest.TestCase):
         self.updates = yaml.safe_load(CONFIG.read_text())['updates']
 
     @staticmethod
+    def update_directories(update: dict[str, object]) -> list[str]:
+        directories = update.get('directories')
+        if isinstance(directories, list) and directories:
+            return [str(directory) for directory in directories]
+        directory = update.get('directory')
+        if isinstance(directory, str):
+            return [directory]
+        raise AssertionError('Dependabot update is missing directory or directories')
+
+    @staticmethod
+    def update_name(update: dict[str, object]) -> str:
+        directories = ','.join(DependabotConfigTest.update_directories(update))
+        return f"{update['package-ecosystem']}:{directories}"
+
+    @staticmethod
     def ignores_all_major_updates(update: dict[str, object]) -> bool:
         return any(
             rule.get('dependency-name') == '*'
@@ -31,8 +46,7 @@ class DependabotConfigTest(unittest.TestCase):
 
         self.assertTrue(release_updates)
         for update in release_updates:
-            name = f"{update['package-ecosystem']}:{update['directory']}"
-            with self.subTest(update=name):
+            with self.subTest(update=self.update_name(update)):
                 self.assertTrue(self.ignores_all_major_updates(update))
                 for group in update['groups'].values():
                     self.assertEqual(
@@ -47,15 +61,15 @@ class DependabotConfigTest(unittest.TestCase):
 
         self.assertTrue(develop_updates)
         for update in develop_updates:
-            name = f"{update['package-ecosystem']}:{update['directory']}"
-            with self.subTest(update=name):
+            with self.subTest(update=self.update_name(update)):
                 self.assertFalse(self.ignores_all_major_updates(update))
 
     def test_1_2_x_keeps_composer_updates_enabled(self) -> None:
         release_jobs = {
-            (update['package-ecosystem'], update['directory'])
+            (update['package-ecosystem'], directory)
             for update in self.updates
             if update.get('target-branch') == '1.2.x'
+            for directory in self.update_directories(update)
         }
 
         self.assertIn(('composer', '/'), release_jobs)
@@ -75,6 +89,20 @@ class DependabotConfigTest(unittest.TestCase):
         self.assertEqual(update['package-ecosystem'], 'composer')
         self.assertEqual(update['directory'], '/')
         self.assertEqual(rule.get('versions'), ['>= 8.0.0'])
+
+    def test_github_actions_cooldown_uses_supported_keys(self) -> None:
+        # Dependabot rejects semver-*-days for github-actions and then
+        # reports the whole configuration as invalid.
+        action_updates = [
+            update
+            for update in self.updates
+            if update['package-ecosystem'] == 'github-actions'
+        ]
+
+        self.assertTrue(action_updates)
+        for update in action_updates:
+            with self.subTest(update=self.update_name(update)):
+                self.assertEqual(set(update.get('cooldown', {})), {'default-days'})
 
 
 if __name__ == '__main__':

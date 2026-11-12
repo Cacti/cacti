@@ -39,13 +39,24 @@ runs:
     - name: Resolve Composer cache directory
       id: composer-cache
       shell: bash
-      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+      env:
+        CACHE_DEPENDENCY_PATH: ${{ inputs.cache-dependency-path }}
+      run: |
+        set -euo pipefail
+        echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+        # hashFiles() rejects relative '.' and '..' segments such as released/./composer.lock.
+        path="$CACHE_DEPENDENCY_PATH"
+        while [[ "$path" == *'/./'* ]]; do
+          path="${path//\/.\//\/}"
+        done
+        path="${path#./}"
+        printf 'lockfile=%s\n' "$path" >> "$GITHUB_OUTPUT"
 
     - name: Restore Composer download cache
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.composer-cache.outputs.directory }}
-        key: ${{ runner.os }}-composer-${{ inputs.dependency-mode }}-php-${{ inputs.php-version }}-${{ hashFiles(inputs.cache-dependency-path) }}
+        key: ${{ runner.os }}-composer-${{ inputs.dependency-mode }}-php-${{ inputs.php-version }}-${{ hashFiles(steps.composer-cache.outputs.lockfile) }}
         restore-keys: |
           ${{ runner.os }}-composer-${{ inputs.dependency-mode }}-php-${{ inputs.php-version }}-
 

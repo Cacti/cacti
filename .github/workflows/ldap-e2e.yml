@@ -10,7 +10,8 @@ on:
       - 'lib/ldap.php'
       - 'lib/auth.php'
       - 'auth_login.php'
-      - 'user_domains.php'
+      - 'lib/Auth/**'
+      - 'login_providers.php'
       - 'tests/e2e/docker-compose.yml'
       - 'tests/e2e/entrypoint.sh'
       - 'tests/e2e/Dockerfile'
@@ -19,13 +20,15 @@ on:
       - 'tests/e2e/extract_csrf.php'
       - 'tests/e2e/ldap/**'
       - '.github/workflows/ldap-e2e.yml'
+      - '.github/actions/setup-ci-docker/**'
   push:
     branches: [develop]
     paths:
       - 'lib/ldap.php'
       - 'lib/auth.php'
       - 'auth_login.php'
-      - 'user_domains.php'
+      - 'lib/Auth/**'
+      - 'login_providers.php'
       - 'tests/e2e/docker-compose.yml'
       - 'tests/e2e/entrypoint.sh'
       - 'tests/e2e/Dockerfile'
@@ -34,6 +37,7 @@ on:
       - 'tests/e2e/extract_csrf.php'
       - 'tests/e2e/ldap/**'
       - '.github/workflows/ldap-e2e.yml'
+      - '.github/actions/setup-ci-docker/**'
 
 permissions:
   contents: read
@@ -52,6 +56,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+
+      - name: Set up Docker with the public registry cache
+        uses: ./.github/actions/setup-ci-docker
 
       - name: Run LDAP login e2e
         env:
