@@ -72,6 +72,10 @@ function db_connect_real() {
 function db_close($connection) {
 }
 
+function db_fetch_row_prepared($sql, $params = array()) {
+	return isset($GLOBALS['rows'][$params[0]]) ? $GLOBALS['rows'][$params[0]] : array();
+}
+
 function fixture_source($file, $pattern) {
 	if (!preg_match($pattern, file_get_contents($file), $match)) {
 		throw new RuntimeException('Cannot locate the source under test in ' . $file);
@@ -85,6 +89,7 @@ require $root . '/lib/html_form.php';
 // The production functions and branches under test, unchanged. Only checked-in
 // source files are evaluated, never request data.
 eval(fixture_source($root . '/pollers.php', '/^function poller_stored_dbpass\(.*?^\}/ms'));
+eval(fixture_source($root . '/pollers.php', '/^function poller_saved_test_dbpass\(.*?^\}/ms'));
 eval(fixture_source($root . '/pollers.php', '/^function test_database_connection\(.*?^\}/ms'));
 eval('function settings_password_branch($field_name, $field_array) { global $errors, $inserts; do { if (false) {' .
 	fixture_source($root . '/settings.php', "/\} elseif \(\\\$field_array\['method'\] == 'textbox_password'\) \{.*?(?=\} elseif \(\(isset\(\\\$field_array\['items'\]\)\))/s") . '} } while (false); }');
@@ -149,32 +154,56 @@ foreach ($cases as $case => $data) {
 	check((isset($GLOBALS['writes']['settings_smtp_password']) ? $GLOBALS['writes']['settings_smtp_password'] : null) === $data[2], 'settings ' . $case);
 }
 
-// pollers.php connection test and user_domains.php LDAP bind password.
+// pollers.php: the saved password, or the main one for a new data collector, backs a blank save.
 $GLOBALS['database_password'] = 'main-db-secret';
+$GLOBALS['stored']            = array(2 => 'remote-secret');
+
+check(poller_stored_dbpass(2) === 'remote-secret' && poller_stored_dbpass(0) === 'main-db-secret', 'poller stored');
+
+// pollers.php connection test: a blank password only reuses the saved one for the saved target.
+$target = array('dbhost' => 'db.example', 'dbuser' => 'cacti', 'dbdefault' => 'cacti', 'dbport' => '3306', 'dbretries' => '2', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => '');
+
+$GLOBALS['rows'] = array(2 => array('dbhost' => 'db.example', 'dbport' => '3306', 'dbuser' => 'cacti', 'dbpass' => 'remote-secret', 'dbssl' => '', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => ''));
 
 $cases = array(
-	'existing blank keeps' => array(array('id' => '2', 'dbpass' => ''), 'remote-secret'),
-	'existing change'      => array(array('id' => '2', 'dbpass' => 'new-remote'), 'new-remote'),
-	'existing clear'       => array(array('id' => '2', 'dbpass' => '', 'dbpass_clear' => 'on'), ''),
-	'new uses default'     => array(array('id' => '0', 'dbpass' => ''), 'main-db-secret'),
+	'blank, saved target'    => array(array('id' => '2', 'dbpass' => ''), 'remote-secret'),
+	'blank, changed host'    => array(array('id' => '2', 'dbpass' => '', 'dbhost' => 'other.example'), null),
+	'blank, changed port'    => array(array('id' => '2', 'dbpass' => '', 'dbport' => '3307'), null),
+	'blank, changed user'    => array(array('id' => '2', 'dbpass' => '', 'dbuser' => 'other'), null),
+	'blank, changed SSL'     => array(array('id' => '2', 'dbpass' => '', 'dbssl' => 'on'), null),
+	'blank, no saved record' => array(array('id' => '3', 'dbpass' => ''), null),
+	'typed, changed host'    => array(array('id' => '2', 'dbpass' => 'typed-secret', 'dbhost' => 'other.example'), 'typed-secret'),
 );
 
 foreach ($cases as $case => $data) {
-	$_REQUEST          = $data[0] + array('dbhost' => 'db.example', 'dbuser' => 'cacti', 'dbdefault' => 'cacti', 'dbport' => '3306', 'dbretries' => '2', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => '');
-	$GLOBALS['stored'] = array(2 => 'remote-secret');
-
-	check(poller_stored_dbpass((int) $data[0]['id']) === ($data[0]['id'] == '2' ? 'remote-secret' : 'main-db-secret'), 'poller stored ' . $case);
+	$_REQUEST             = $data[0] + $target;
+	$GLOBALS['connected'] = null;
 
 	ob_start();
-	test_database_connection();
-	ob_end_clean();
+	$result = test_database_connection();
+	$output = ob_get_clean();
 
-	check($GLOBALS['connected'][2] === $data[1], 'poller ping ' . $case);
+	if ($data[1] === null) {
+		check($result === false && $GLOBALS['connected'] === null && strpos($output, 'Enter the database password') !== false, 'poller ping ' . $case);
+	} else {
+		check($result !== false && $GLOBALS['connected'][2] === $data[1], 'poller ping ' . $case);
+	}
+}
 
-	$_REQUEST          = array('specific_password' => $data[0]['dbpass']) + (isset($data[0]['dbpass_clear']) ? array('specific_password_clear' => 'on') : array());
-	$GLOBALS['stored'] = array(7 => 'remote-secret');
+// user_domains.php: the LDAP bind password keeps, replaces or clears the saved one.
+$GLOBALS['stored'] = array(7 => 'stored-bind');
 
-	check(user_domains_password($data[0]['id'] == '2' ? 7 : 8) === ($case == 'new uses default' ? '' : $data[1]), 'user domain ' . $case);
+$cases = array(
+	'blank keeps' => array(array('specific_password' => ''), 7, 'stored-bind'),
+	'change'      => array(array('specific_password' => 'new-bind'), 7, 'new-bind'),
+	'clear'       => array(array('specific_password' => '', 'specific_password_clear' => 'on'), 7, ''),
+	'new domain'  => array(array('specific_password' => ''), 8, ''),
+);
+
+foreach ($cases as $case => $data) {
+	$_REQUEST = $data[0];
+
+	check(user_domains_password($data[1]) === $data[2], 'user domain ' . $case);
 }
 
 print json_encode(array('passed' => $count)) . "\n";

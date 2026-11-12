@@ -767,10 +767,10 @@ function poller_edit() {
 			function ping_database() {
 				dbssl = $('#dbssl').is(':checked') ? 'on':'';
 
-				var data = {
+				$.post('pollers.php', {
 					__csrf_magic: csrfMagicToken,
 					action:       'ping',
-					id:           $('#id').val(),
+					id:           <?php print (int) $poller['id']; ?>,
 					dbdefault:    $('#dbdefault').val(),
 					dbhost:       $('#dbhost').val(),
 					dbuser:       $('#dbuser').val(),
@@ -781,13 +781,7 @@ function poller_edit() {
 					dbsslkey:     $('#dbsslkey').val(),
 					dbsslcert:    $('#dbsslcert').val(),
 					dbsslca:      $('#dbsslca').val()
-				};
-
-				if ($('#dbpass_clear').is(':checked')) {
-					data.dbpass_clear = 'on';
-				}
-
-				$.post('pollers.php', data).done(function(data) {
+				}).done(function(data) {
 					$('#results').empty().show().html(data).fadeOut(2000);
 				});
 			}
@@ -839,6 +833,35 @@ function poller_stored_dbpass($id) {
 	return (string) $database_password;
 }
 
+/**
+ * The saved remote database password for a connection test left blank. It is
+ * only returned when the tested host, port, user and SSL settings all match
+ * the saved data collector, so the saved password is never sent to a
+ * different target.
+ *
+ * @param int   $id     The data collector id
+ * @param array $target The connection settings being tested
+ *
+ * @return string|null The saved password, or null when it must be typed
+ */
+function poller_saved_test_dbpass($id, $target) {
+	$saved = db_fetch_row_prepared('SELECT dbhost, dbport, dbuser, dbpass, dbssl, dbsslkey, dbsslcert, dbsslca FROM poller WHERE id = ?', array($id));
+
+	$saved = is_array($saved) ? $saved : array();
+
+	if (!cacti_sizeof($saved)) {
+		return null;
+	}
+
+	foreach (array('dbhost', 'dbport', 'dbuser', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca') as $column) {
+		if ((string) $saved[$column] !== (string) $target[$column]) {
+			return null;
+		}
+	}
+
+	return (string) $saved['dbpass'];
+}
+
 function test_database_connection($poller = array()) {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
@@ -863,14 +886,23 @@ function test_database_connection($poller = array()) {
 				} else {
 					$poller['dbssl'] = '';
 				}
-			} elseif ($field == 'dbpass') {
-				$poller['dbpass'] = form_secret_value('dbpass', poller_stored_dbpass(get_filter_request_var('id')));
 			} elseif (isset_request_var($field)) {
 				$poller[$field] = get_nfilter_request_var($field);
 			} else {
 				print 'ERROR: DB Connection Column ' . $field . ' Missing';
 				return false;
 			}
+		}
+
+		if ($poller['dbpass'] === '') {
+			$saved = poller_saved_test_dbpass(get_filter_request_var('id'), $poller);
+
+			if ($saved === null) {
+				print __('Enter the database password to test a changed connection');
+				return false;
+			}
+
+			$poller['dbpass'] = $saved;
 		}
 	}
 
