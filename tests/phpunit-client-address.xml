@@ -6,11 +6,14 @@
     <source>
         <include>
             <file>../lib/client_address.php</file>
+            <file>../lib/ip.php</file>
         </include>
     </source>
     <testsuites>
         <testsuite name="Client address coverage">
             <file>Coverage/ClientAddressCoverageTest.php</file>
+            <file>Unit/Core/IpInCidrTest.php</file>
+            <file>Unit/Core/Automation/IpRangeMembershipTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
