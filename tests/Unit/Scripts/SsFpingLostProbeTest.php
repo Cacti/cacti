@@ -20,86 +20,38 @@
  +-------------------------------------------------------------------------+
 */
 
-namespace SsFpingLostProbeFixture;
-
 /*
- * ss_fping() runs against a scripted Net_Ping.  With the default settings a
- * failed probe keeps adding its elapsed time to the samples; with
- * ping_rtt_exclude_lost on it only counts toward loss.
+ * ss_fping() runs against a scripted Net_Ping in the SsFpingLostProbeCoverage
+ * fixture, which owns the stand-ins so the same run also feeds the changed-line
+ * coverage gate.  With the default settings a failed probe keeps adding its
+ * elapsed time to the samples; with ping_rtt_exclude_lost on it only counts
+ * toward loss.
  */
 
-require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
+function ss_fping_lost_probe_results() : array {
+	$pipes   = [];
+	$process = proc_open([PHP_BINARY, dirname(__DIR__, 2) . '/fixtures/SsFpingLostProbeCoverage.php'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	expect(is_resource($process))->toBeTrue();
+	$output = stream_get_contents($pipes[1]);
+	$errors = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
 
-const AVAIL_PING = 3;
-
-const PING_ICMP = 1;
-
-const PING_UDP = 2;
-
-const PING_TCP = 3;
-
-class Net_Ping {
-	public array $host = [];
-
-	public int $retries = 0;
-
-	public int $port = 0;
-
-	public mixed $ping_status = '';
-
-	public function ping(int $avail, int $method, mixed $timeout, int $retries) : bool {
-		$reply = array_shift($GLOBALS['ss_fping_replies']);
-
-		if ($reply === null) {
-			$this->ping_status = 'down';
-
-			return false;
-		}
-
-		$this->ping_status = $reply;
-
-		return true;
-	}
-}
-
-function read_config_option(string $name, bool $force = false) : mixed {
-	return $GLOBALS['ss_fping_settings'][$name] ?? '';
-}
-
-function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
-	return 400;
-}
-
-function cacti_strtoupper(string $value) : string {
-	return strtoupper($value);
-}
-
-function cacti_sizeof(mixed $value) : int {
-	return is_countable($value) ? count($value) : 0;
-}
-
-function cacti_count(mixed $value) : int {
-	return is_countable($value) ? count($value) : 0;
-}
-
-cacti_fixture_source_function(dirname(__DIR__, 3) . '/scripts/ss_fping.php', 'ss_fping', __NAMESPACE__);
-
-function sweep(array $replies, string $exclude_lost) : string {
-	$GLOBALS['ss_fping_replies']  = $replies;
-	$GLOBALS['ss_fping_settings'] = ['ping_rtt_exclude_lost' => $exclude_lost, 'script_timeout' => 25];
-
-	return ss_fping('127.0.0.1', cacti_count($replies), 'ICMP');
+	return json_decode($output, true, 512, JSON_THROW_ON_ERROR);
 }
 
 test('a lost probe still adds a sample by default', function () {
-	expect(sweep([10, null, 30, 20], ''))->toBe('min:10.0000 avg:20.0000 max:30.0000 dev:12.2474 loss:25.0000');
+	expect(ss_fping_lost_probe_results()['default'])->toBe('min:10.0000 avg:20.0000 max:30.0000 dev:12.2474 loss:25.0000');
 });
 
 test('with the setting on a lost probe only counts toward loss', function () {
-	expect(sweep([10, null, 30, 20], 'on'))->toBe('min:10.0000 avg:20.0000 max:30.0000 dev:8.1650 loss:25.0000');
+	expect(ss_fping_lost_probe_results()['exclude_lost'])->toBe('min:10.0000 avg:20.0000 max:30.0000 dev:8.1650 loss:25.0000');
 });
 
 test('every probe lost reports unknown times in both modes', function () {
-	expect(sweep([null, null, null, null], ''))->toBe('min:U avg:U max:U dev:U loss:100.00')
-		->and(sweep([null, null, null, null], 'on'))->toBe('min:U avg:U max:U dev:U loss:100.00');
+	$results = ss_fping_lost_probe_results();
+
+	expect($results['all_lost'])->toBe('min:U avg:U max:U dev:U loss:100.00')
+		->and($results['all_lost_exclude'])->toBe('min:U avg:U max:U dev:U loss:100.00');
 });
