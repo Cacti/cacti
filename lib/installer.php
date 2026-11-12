@@ -1966,7 +1966,7 @@ class Installer implements JsonSerializable {
 	 * @return bool True on success, false otherwise.
 	 */
 	public function isPre_v0_8_UpgradeNeeded() {
-		return version_compare($this->old_cacti_version, '0.8.5a', '<=');
+		return $this->old_cacti_version != 'new_install' && version_compare($this->old_cacti_version, '0.8.5a', '<=');
 	}
 
 	/**
