@@ -45,6 +45,7 @@ function poller_pid_branch_scenario($row, $procs, $action) {
 		. 'function cacti_sizeof($value) { return is_array($value) ? count($value) : 0; }'
 		. 'function cacti_log($message, $output = false, $environ = "CMDPHP", $level = 0) { global $log; $log[] = $message; return true; }'
 		. 'function db_table_exists($table) { return true; }'
+		. 'function db_column_exists($table, $column) { return true; }'
 		. 'function db_execute_prepared($sql, $params = array()) { global $writes; $writes[] = array($sql, $params); return true; }'
 		. 'function db_fetch_row_prepared($sql, $params = array()) { global $row; return $row; }'
 		. 'function db_fetch_assoc_prepared($sql, $params = array()) { global $procs; return $procs; }'

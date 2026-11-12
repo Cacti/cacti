@@ -12,6 +12,7 @@
             <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>
             <file>Unit/PollerMappingCacheTest.php</file>
             <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
+            <file>Unit/DataCollection/Poller/KilledProcessDbConnectionTest.php</file>
         </testsuite>
         <testsuite name="ScriptServer">
             <file>Unit/Scripts/ScriptServerHardeningProbeTest.php</file>
