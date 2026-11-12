@@ -63,13 +63,13 @@ test('script_server refuses PHP internal functions and validates the function so
 		->and($ss)->toContain('script_server_path_is_allowed(realpath($fn_file), $allowed_roots)');
 });
 
-test('get_script_query_path preserves Windows path separators while sanitizing', function () use ($dq) {
+test('get_script_query_path preserves Windows path separators while rejecting cmd.exe metacharacters', function () use ($dq) {
 	$start = strpos($dq, 'function get_script_query_path(');
 	$body  = substr($dq, $start, 3200);
 
 	expect($body)->toContain("CACTI_SERVER_OS == 'win32'")
-		->and($body)->toContain("str_replace(['#', '&', ';'")
-		->and($body)->toContain("], '', \$parsed_script_path)")
+		->and($body)->toContain("preg_match('/[&|<>^%]/', \$parsed_script_path)")
+		->and($body)->toContain('$base_command = $parsed_script_path;')
 		->and($body)->toContain('cacti_escapeshellcmd($parsed_script_path)');
 });
 
@@ -77,7 +77,7 @@ test('get_script_query_path rejects path traversal', function () use ($dq) {
 	$start = strpos($dq, 'function get_script_query_path(');
 	$body  = substr($dq, $start, 3200);
 
-	expect(str_contains($body, "strpos(\$parsed_script_path, '..')"))->toBeTrue();
+	expect(str_contains($body, "str_contains(\$parsed_script_path, '..')"))->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------
@@ -115,9 +115,11 @@ function ssContainmentAllowed($resolved_path, array $roots): bool {
 	return false;
 }
 
-/* Replicates the Windows script-path sanitization from get_script_query_path(). */
-function ssWin32PathStrip(string $path): string {
-	return str_replace(['#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$'], '', $path);
+// Replicates the Windows script-path check from get_script_query_path().
+function ssWin32PathAccepted(string $path): bool {
+	return !preg_match('/[\x00-\x1f\x7f]/', $path)
+		&& !preg_match('/[&|<>^%]/', $path)
+		&& substr_count($path, '"') % 2 === 0;
 }
 
 test('containment accepts a file inside the configured root', function () {
@@ -149,15 +151,13 @@ test('containment rejects an unresolved path', function () {
 	expect(ssContainmentAllowed(false, [sys_get_temp_dir()]))->toBeFalse();
 });
 
-test('win32 sanitization keeps a backslash path intact', function () {
-	$path = 'C:\\Apache24\\htdocs\\cacti\\scripts\\ss_host_disk.php';
-
-	expect(ssWin32PathStrip($path))->toBe($path);
+test('win32 check accepts backslash paths, including Program Files (x86)', function () {
+	expect(ssWin32PathAccepted('C:\\Apache24\\htdocs\\cacti\\scripts\\ss_host_disk.php'))->toBeTrue()
+		->and(ssWin32PathAccepted('C:\\Program Files (x86)\\cacti\\scripts\\ss_host_disk.php'))->toBeTrue();
 });
 
-test('win32 sanitization strips injected command chaining', function () {
-	$evil = 'C:\\x\\ss.php & calc.exe';
-
-	expect(ssWin32PathStrip($evil))->not->toContain('&')
-		->and(ssWin32PathStrip($evil))->toContain('C:\\x\\ss.php');
+test('win32 check rejects command chaining and environment expansion', function () {
+	expect(ssWin32PathAccepted('C:\\x\\ss.php & calc.exe'))->toBeFalse()
+		->and(ssWin32PathAccepted('C:\\x\\%COMSPEC%.php'))->toBeFalse()
+		->and(ssWin32PathAccepted('C:\\x\\ss.php" x'))->toBeFalse();
 });
