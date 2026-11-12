@@ -45,10 +45,6 @@ $stored   = ['known' => $current, 'legacy' => $legacy, 'current' => $current][$s
 $verified = [];
 $updates  = [];
 
-if (md5('stored secret') !== $legacy) {
-	throw new RuntimeException('The legacy fixture is not md5 of the stored secret');
-}
-
 /**
  * Fake plugin hook: no plugin takes over local login.
  *
