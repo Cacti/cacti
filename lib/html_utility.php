@@ -1023,6 +1023,179 @@ function get_nfilter_request_var(string $name, mixed $default = '') : mixed {
 }
 
 /**
+ * Returns the request value that the typed request_*() accessors validate, or
+ * null when the caller's default applies.
+ *
+ * Like get_filter_request_var(), an absent value, an empty value and the
+ * literal 'undefined' that some JavaScript callers send all take the default.
+ * Arrays and other non-scalar values are a validation failure.
+ *
+ * @param string $name The request variable name.
+ *
+ * @return string|null The value as a string, or null for the default.
+ */
+function request_present_value(string $name) : ?string {
+	if (!isset_request_var($name)) {
+		return null;
+	}
+
+	$value = get_nfilter_request_var($name);
+
+	if (!is_scalar($value)) {
+		die_html_input_error($name);
+
+		return null;
+	}
+
+	$value = (string) $value;
+
+	return ($value === '' || $value === 'undefined') ? null : $value;
+}
+
+/**
+ * Returns a request variable as a validated integer.
+ *
+ * A value FILTER_VALIDATE_INT rejects stops the request through
+ * die_html_input_error(), as get_filter_request_var() does. The validated
+ * value is stored back so later get_request_var() calls see it.
+ *
+ * @param string $name    The request variable name.
+ * @param int    $default Returned when the value is absent, empty or 'undefined'.
+ *
+ * @return int
+ */
+function request_int(string $name, int $default = 0) : int {
+	$value = request_present_value($name);
+
+	if ($value === null) {
+		return $default;
+	}
+
+	$int = filter_var($value, FILTER_VALIDATE_INT);
+
+	if ($int === false) {
+		die_html_input_error($name, $value);
+
+		return $default;
+	}
+
+	set_request_var($name, $int);
+
+	return $int;
+}
+
+/**
+ * Returns a request variable as a string, optionally required to match a
+ * regular expression.
+ *
+ * A value that does not match stops the request through
+ * die_html_input_error(). Unlike get_filter_request_var(), the pattern is
+ * applied to '0' as well.
+ *
+ * @param string      $name    The request variable name.
+ * @param string      $default Returned when the value is absent, empty or 'undefined'.
+ * @param string|null $pattern A delimited regular expression the value must match.
+ *
+ * @throws InvalidArgumentException When $pattern is not a valid regular expression.
+ *
+ * @return string
+ */
+function request_string(string $name, string $default = '', ?string $pattern = null) : string {
+	$value = request_present_value($name);
+
+	if ($value === null) {
+		return $default;
+	}
+
+	if ($pattern !== null) {
+		$matched = @preg_match($pattern, $value);
+
+		// A malformed pattern is a coding error, not bad input: refusing every
+		// value as invalid would hide it behind a validation error page.
+		if ($matched === false) {
+			throw new \InvalidArgumentException('Malformed regular expression for request variable ' . $name);
+		}
+
+		if ($matched !== 1) {
+			die_html_input_error($name, $value);
+
+			return $default;
+		}
+	}
+
+	set_request_var($name, $value);
+
+	return $value;
+}
+
+/**
+ * Returns a request variable as a validated boolean.
+ *
+ * '1', 'true', 'on' and 'yes' are true and '0', 'false', 'off' and 'no' are
+ * false, case-insensitively. Anything else stops the request through
+ * die_html_input_error(). The submitted value is stored back unchanged.
+ *
+ * @param string $name    The request variable name.
+ * @param bool   $default Returned when the value is absent, empty or 'undefined'.
+ *
+ * @return bool
+ */
+function request_bool(string $name, bool $default = false) : bool {
+	$value = request_present_value($name);
+
+	if ($value === null) {
+		return $default;
+	}
+
+	$bool = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
+	if ($bool === null) {
+		die_html_input_error($name, $value);
+
+		return $default;
+	}
+
+	// Keep the submitted spelling: existing readers compare against 'on', and a
+	// stored false would read back as empty, which means the default.
+	set_request_var($name, $value);
+
+	return $bool;
+}
+
+/**
+ * Returns a request variable that must be one of an allowed set of values.
+ *
+ * Values compare as exact strings, so an integer list such as
+ * array_keys($actions) matches '2' but not '02' or ' 2'. A value outside the
+ * set stops the request through die_html_input_error().
+ *
+ * @param string                $name    The request variable name.
+ * @param array<int,int|string> $allowed The permitted values.
+ * @param string                $default Returned when the value is absent, empty or 'undefined'.
+ *
+ * @return string
+ */
+function request_enum(string $name, array $allowed, string $default = '') : string {
+	$value = request_present_value($name);
+
+	if ($value === null) {
+		return $default;
+	}
+
+	foreach ($allowed as $candidate) {
+		if ((string) $candidate === $value) {
+			set_request_var($name, $value);
+
+			return $value;
+		}
+	}
+
+	die_html_input_error($name, $value);
+
+	return $default;
+}
+
+/**
  * alias of get_nfilteR_request_var
  *
  * @deprecated v1.0
