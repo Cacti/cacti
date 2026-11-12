@@ -154,6 +154,13 @@ class Installer implements JsonSerializable {
 		}
 		$this->stepError = false;
 
+		if ($this->runtime != 'Cli' && isset($install_params['Step']) && !Installer::isReachableStep($step, $install_params['Step'])) {
+			/* The browser names the step it wants, but which steps follow the stored
+			 * one is the server's decision. */
+			log_install_always('step', 'Ignoring step ' . clean_up_lines(var_export($install_params['Step'], true)) . ' requested at step ' . clean_up_lines(var_export($step, true)));
+			unset($install_params['Step']);
+		}
+
 		if (Installer::isAbandonedInstallStep($step, $this->runtime)) {
 			/* cli/install_cacti.php holds the install process lock before it gets
 			 * here, so no installer is running and this step was left by a run that
@@ -275,6 +282,45 @@ class Installer implements JsonSerializable {
 
 		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
 		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
+	}
+
+	/**
+	 * Whether the wizard may move from the stored step to the requested one.
+	 * A step already shown can be shown again, which covers Previous, a refresh
+	 * and the install page polling itself. Going forward follows the wizard: the
+	 * next step, the two places that skip one (the permission check goes on to
+	 * the templates and the binary locations to the tables, depending on the
+	 * mode) and the confirm step into the install. Nothing else is reachable, so
+	 * a request cannot start the install without the confirm step.
+	 *
+	 * @param int $stored The stored install step.
+	 * @param int $requested The step the request asks for.
+	 *
+	 * @return bool Whether the move is allowed.
+	 */
+	public static function isReachableStep($stored, $requested) {
+		$stored    = intval($stored);
+		$requested = intval($requested);
+
+		if ($requested < Installer::STEP_NONE || $requested > Installer::STEP_ERROR) {
+			return false;
+		}
+
+		if ($requested <= $stored) {
+			return true;
+		}
+
+		$forward = array($stored + 1);
+
+		if ($stored == Installer::STEP_PERMISSION_CHECK) {
+			$forward[] = Installer::STEP_TEMPLATE_INSTALL;
+		} elseif ($stored == Installer::STEP_BINARY_LOCATIONS) {
+			$forward[] = Installer::STEP_CHECK_TABLES;
+		} elseif ($stored == Installer::STEP_INSTALL_CONFIRM || $stored == Installer::STEP_INSTALL_OLDVERSION) {
+			$forward[] = Installer::STEP_INSTALL;
+		}
+
+		return in_array($requested, $forward, true);
 	}
 
 	/**
