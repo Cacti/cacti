@@ -1041,11 +1041,30 @@ function get_message_max_type() {
  */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	if (!empty($message)) {
+		/* plugins written for the old behaviour pass markup or __esc() text; point the log at them */
+		if (raise_message_has_markup($message)) {
+			$caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
+
+			cacti_log(sprintf('DEBUG: raise_message() was given markup or escaped text at %s:%d.  Pass plain text, or use raise_message_html() for trusted markup.', $caller['file'] ?? '?', $caller['line'] ?? 0), false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+		}
+
 		/* html_escape() returns '' for invalid UTF-8, e.g. a device name from SNMP */
 		$message = html_escape(mb_scrub((string) $message, 'UTF-8'));
 	}
 
 	return raise_message_html($message_id, $message, $message_level);
+}
+
+/**
+ * Whether a plain-text message looks like it carries HTML tags or character references, which
+ * raise_message() will now display literally.
+ *
+ * @param string $message The message text.
+ *
+ * @return bool True if the text contains a common HTML tag or an entity.
+ */
+function raise_message_has_markup($message) {
+	return preg_match('/<\/?(a|b|i|u|br|p|span|div|ul|ol|li|strong|em|code|pre|font|table|tr|td|th|img|hr|h[1-6])\b|&(#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]*);/i', (string) $message) === 1;
 }
 
 /**
