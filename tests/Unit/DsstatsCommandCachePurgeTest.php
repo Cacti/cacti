@@ -20,6 +20,7 @@
 namespace DsstatsCommandCachePurgeTest;
 
 require_once dirname(__DIR__) . '/Helpers/DsstatsTestDatabase.php';
+require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 
 function read_config_option(string $name) : mixed {
 	return $GLOBALS['dsstats_purge_settings'][$name] ?? '';
@@ -35,11 +36,9 @@ function db_execute(string $sql) : bool {
 	return true;
 }
 
-// poller_dsstats.php runs when it is loaded, so evaluate its purge check alone
+// poller_dsstats.php runs when it is loaded, so load its purge check alone
 function dsstats_purge_check() : void {
-	static $fragment = null;
-
-	if ($fragment === null) {
+	if (!function_exists(__NAMESPACE__ . '\dsstats_purge_fragment')) {
 		$source = file_get_contents(dirname(__DIR__, 2) . '/poller_dsstats.php');
 		$parser = (new \PhpParser\ParserFactory())->createForNewestSupportedVersion();
 		$node   = (new \PhpParser\NodeFinder())->findFirst($parser->parse($source), static function ($node) use ($source) {
@@ -51,10 +50,11 @@ function dsstats_purge_check() : void {
 			throw new \RuntimeException('Unable to find the command cache purge in poller_dsstats.php');
 		}
 
-		$fragment = substr($source, $node->getStartFilePos(), $node->getEndFilePos() - $node->getStartFilePos() + 1);
+		\cacti_fixture_require_code('namespace ' . __NAMESPACE__ . '; function dsstats_purge_fragment() : void {' .
+			substr($source, $node->getStartFilePos(), $node->getEndFilePos() - $node->getStartFilePos() + 1) . '}');
 	}
 
-	eval('namespace DsstatsCommandCachePurgeTest;' . $fragment);
+	dsstats_purge_fragment();
 }
 
 beforeEach(function () {
