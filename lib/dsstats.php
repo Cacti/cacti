@@ -819,7 +819,9 @@ function dsstats_poller_output(&$rrd_update_array) {
 									 * Possible overflow, see if its 32bit or 64bit.  A counter
 									 * wraps at 2^n, so the delta is 2^n - last + current.  2^64
 									 * is a float, and subtracting the last value first keeps the
-									 * small delta of a real wrap exact.
+									 * small delta of a real wrap exact.  RRDtool's COUNTER type
+									 * adds 2^32 - 1 (or 2^64 - 1) instead, so after a wrap this
+									 * value is one count above the rate RRDtool stores.
 									 */
 									if ($ds_last > 4294967295) {
 										$currentval = (pow(2, 64) - $ds_last) + $result['output'];
