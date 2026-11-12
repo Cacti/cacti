@@ -3404,13 +3404,13 @@ class Installer implements JsonSerializable {
 			$output = Installer::sectionTitle(__('Complete'));
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION));
 			db_execute('DELETE FROM settings WHERE name LIKE "install_%"');
+
+			/* Remove integrated plugin references only after a successful install. */
+			api_plugin_uninstall_integrated();
 		} elseif ($this->stepCurrent == Installer::STEP_ERROR) {
 			$output = Installer::sectionTitleError();
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION));
 		}
-
-		// Remove integrated plugin references
-		api_plugin_uninstall_integrated();
 
 		$output .= Installer::sectionSubTitleEnd();
 
