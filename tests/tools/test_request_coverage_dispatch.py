@@ -45,6 +45,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
 
+    def test_request_utility_change_runs_the_accessor_probe(self):
+        self.dispatch('lib/html_utility.php', 'RequestAccessorMatrix.php')
+
     def test_script_server_change_runs_the_log_masking_probe(self):
         for path in ['script_server.php', 'lib/poller.php', 'tests/fixtures/ScriptServerLogMaskingCoverage.php']:
             with self.subTest(path=path):
@@ -88,7 +91,7 @@ class RequestDispatchTest(unittest.TestCase):
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
-                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
+                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/RequestAccessorMatrix.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
