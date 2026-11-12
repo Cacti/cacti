@@ -169,16 +169,26 @@ class Installer implements JsonSerializable {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
-			$install_version = read_config_option('install_version', true);
+			$install_version = (string) read_config_option('install_version', true);
 
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
-			if (is_install_needed($install_version)) {
+			if ($this->isFailedInstallBeingPolled($step, $install_params, read_config_option('install_error', true))) {
+				// The install page is still polling a failed run: keep the error
+				// report on screen instead of resetting the wizard underneath it.
+				$install_params = [];
+			} elseif (is_install_needed($install_version)) {
 				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export(CACTI_VERSION_FULL, true)));
 
-				$this->stepError = Installer::STEP_WELCOME;
-
 				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
+
+				if ($this->runtime == 'Cli') {
+					// Nobody is looking at a wizard: restart from the first step so
+					// the options given on this command line are applied.
+					$step = Installer::STEP_WELCOME;
+				} else {
+					$this->stepError = Installer::STEP_WELCOME;
+				}
 			} else {
 				$install_params = [];
 			}
@@ -244,6 +254,28 @@ class Installer implements JsonSerializable {
 
 		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
 		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
+	}
+
+	/**
+	 * Whether a failed install run is being polled by the install page.
+	 *
+	 * A failed run never writes install_version, so the version check alone
+	 * would treat it as an install that is still needed and wipe the failure
+	 * report on the first poll after the background process ended. Only the
+	 * poll of the install step (the page keeps sending STEP_INSTALL while it
+	 * waits) keeps the report; a fresh page load or the command line restarts.
+	 *
+	 * @param int   $step           The stored install step
+	 * @param array $install_params The parameters of this request
+	 * @param mixed $install_error  The stored install_error setting
+	 *
+	 * @return bool
+	 */
+	private function isFailedInstallBeingPolled(int $step, array $install_params, mixed $install_error) : bool {
+		return $step == Installer::STEP_ERROR
+			&& $this->runtime != 'Cli'
+			&& ($install_params['Step'] ?? Installer::STEP_NONE) == Installer::STEP_INSTALL
+			&& !empty($install_error);
 	}
 
 	/**
