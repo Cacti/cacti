@@ -241,7 +241,7 @@ Cacti CHANGELOG
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
 -issue#8646: Count NVMe, virtio and Xen disks in the Net-SNMP disk totals and poll them with the SNMP retries
 -issue#8646: Walk the host processor table once per CPU poll and return U when no load is reported
--issue#8646: Keep lost probes out of the advanced ping round-trip times and parse BusyBox ping output
+-issue#8646: Parse BusyBox ping output in ping.pl
 -issue#8646: Count Cacti Stats logins once per poller interval and list a twice-mounted filesystem once
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
