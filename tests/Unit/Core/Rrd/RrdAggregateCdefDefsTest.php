@@ -60,3 +60,12 @@ test('graph items keep the consolidation function their DEFs are built with', fu
 test('a member DEF that falls back to another CF is not listed twice', function () {
 	expect(results()['average_only'])->toBe([[351, 1], [352, 1]]);
 });
+
+test('rrdtool_function_graph applies the member mapping to a CDEF that names DEFs', function () {
+	expect(results()['graph'])->toBe([
+		'cf_reference'  => 3,
+		'reset'         => [0, true],
+		'aggregate'     => 'e,d,-',
+		'not_aggregate' => 'b,a,-',
+	]);
+});
