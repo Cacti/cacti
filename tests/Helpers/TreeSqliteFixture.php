@@ -15,35 +15,98 @@
 /*
  * In-memory SQLite stand-in for the graph tree and permission tables.
  *
- * Tree tests load unchanged production functions into a fixture namespace with
- * SourceSlice.php. install() declares db_* functions in that namespace, so the
- * production code resolves them before the global database layer and every
- * statement runs against this SQLite schema. Each statement is counted, and a
- * query budget turns a non-terminating walk into a test failure instead of a
- * hung suite.
+ * Tree tests call the real lib/auth.php, lib/api_tree.php and lib/html_tree.php
+ * functions. reset() makes an SQLite database, through TreeSqlitePDO, the
+ * default db_* connection, so every statement those functions run goes to
+ * this schema. Each statement is counted, and a query budget turns a
+ * non-terminating walk into a test failure instead of a hung suite.
+ *
+ * Statements against the settings tables and SHOW statements belong to the
+ * configuration and schema layers that read_config_option(), set_config_option()
+ * and sql_save() use; they count toward the budget but not toward $queries,
+ * $writes or $log, and are recorded in $config_log instead.
+ *
+ * Call restore() after each test: a fixture connection left in place would
+ * answer every later database call of the suite.
  */
+
+require_once __DIR__ . '/FakeMySQLPDO.php';
+require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once dirname(__DIR__, 2) . '/lib/auth.php';
+require_once dirname(__DIR__, 2) . '/lib/api_tree.php';
+require_once dirname(__DIR__, 2) . '/lib/html_tree.php';
+
+if (!class_exists('TreeSqlitePDO')) {
+	class TreeSqlitePDO extends FakeMySQLPDO {
+		public bool $counting = true;
+
+		public function prepare(string $query, array $options = []): PDOStatement|false {
+			if ($this->counting) {
+				TreeSqliteFixture::record($query);
+			}
+
+			return parent::prepare($this->translateTree($query), $options);
+		}
+
+		public function exec(string $statement): int|false {
+			return parent::exec($this->translateTree($statement));
+		}
+
+		/**
+		 * MySQL syntax the tree and permission code uses beyond what
+		 * FakeMySQLPDO already rewrites.
+		 */
+		private function translateTree(string $sql): string {
+			// IF(cond, a, b) is IIF() in SQLite; IFNULL( is left alone
+			$sql = preg_replace('/\bIF\s*\(/i', 'IIF(', $sql);
+
+			$sql = preg_replace('/\bFROM_UNIXTIME\s*\(([^)]+)\)/i', "datetime($1, 'unixepoch')", $sql);
+
+			// double quoted string literals, e.g. gt.enabled="on" and h.disabled = ""
+			$sql = preg_replace('/(=|!=|<>)\s*"([A-Za-z0-9_]*)"/', "$1 '$2'", $sql);
+
+			// MySQL hands out the next AUTO_INCREMENT value for an id of 0 or '0' (sql_save() quotes it), as sql_save() expects
+			return preg_replace('/^(\s*INSERT\s+INTO\s+`?\w+`?\s*\(\s*`?id`?\s*,.*?\)\s*VALUES\s*\()\s*(?:0|\'0\')\s*,/is', '$1NULL,', $sql);
+		}
+	}
+}
 
 if (!class_exists('TreeSqliteFixture')) {
 	final class TreeSqliteFixture {
-		public static ?PDO $pdo = null;
+		public static ?TreeSqlitePDO $pdo = null;
 
 		public static int $queries = 0;
 
 		public static int $writes = 0;
 
-		public static int $budget = 100000;
+		public static int $statements = 0;
 
-		public static int $affected = 0;
+		public static int $budget = 100000;
 
 		/** @var array<int, string> */
 		public static array $log = [];
 
-		/** @var array<string, bool> */
-		private static array $installed = [];
+		/** @var array<int, string> */
+		public static array $config_log = [];
 
-		public static function reset(int $budget = 100000) : PDO {
-			$pdo = new PDO('sqlite::memory:');
-			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		private static int $generation = 0;
+
+		/** @var array<int, mixed>|null */
+		private static ?array $saved = null;
+
+		public static function reset(int $budget = 100000) : TreeSqlitePDO {
+			global $config, $database_sessions, $database_hostname, $database_port, $database_default, $_CACTI_REQUEST;
+
+			if (self::$saved === null) {
+				self::$saved = [
+					$database_sessions, $database_hostname, $database_port, $database_default,
+					$config[OPTIONS_CLI] ?? null, $_SESSION ?? null, $_REQUEST, $_GET, $_POST, $_CACTI_REQUEST ?? null,
+				];
+			}
+
+			$pdo = new TreeSqlitePDO();
+
+			$pdo->counting = false;
 
 			$pdo->exec("CREATE TABLE graph_tree_items (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,12 +124,18 @@ if (!class_exists('TreeSqliteFixture')) {
 				sort_type INTEGER NOT NULL DEFAULT 1, name TEXT NOT NULL DEFAULT '', sequence INTEGER NOT NULL DEFAULT 1)");
 			$pdo->exec("CREATE TABLE host (id INTEGER PRIMARY KEY, description TEXT NOT NULL DEFAULT '',
 				hostname TEXT NOT NULL DEFAULT '', site_id INTEGER NOT NULL DEFAULT 0, host_template_id INTEGER NOT NULL DEFAULT 0,
-				disabled TEXT NOT NULL DEFAULT '', deleted TEXT NOT NULL DEFAULT '')");
+				location TEXT NOT NULL DEFAULT '', disabled TEXT NOT NULL DEFAULT '', deleted TEXT NOT NULL DEFAULT '')");
+			$pdo->exec("CREATE TABLE host_template (id INTEGER PRIMARY KEY, name TEXT NOT NULL DEFAULT '')");
 			$pdo->exec("CREATE TABLE sites (id INTEGER PRIMARY KEY, name TEXT NOT NULL DEFAULT '')");
-			$pdo->exec("CREATE TABLE graph_templates_graph (local_graph_id INTEGER NOT NULL, title_cache TEXT NOT NULL DEFAULT '')");
-			$pdo->exec('CREATE TABLE graph_local (id INTEGER PRIMARY KEY, host_id INTEGER NOT NULL DEFAULT 0,
-				graph_template_id INTEGER NOT NULL DEFAULT 0, snmp_query_id INTEGER NOT NULL DEFAULT 0)');
+			$pdo->exec("CREATE TABLE graph_templates (id INTEGER PRIMARY KEY, name TEXT NOT NULL DEFAULT '')");
+			$pdo->exec("CREATE TABLE graph_templates_graph (local_graph_id INTEGER NOT NULL, title_cache TEXT NOT NULL DEFAULT '',
+				width INTEGER NOT NULL DEFAULT 0, height INTEGER NOT NULL DEFAULT 0)");
+			$pdo->exec("CREATE TABLE graph_local (id INTEGER PRIMARY KEY, host_id INTEGER NOT NULL DEFAULT 0,
+				graph_template_id INTEGER NOT NULL DEFAULT 0, snmp_query_id INTEGER NOT NULL DEFAULT 0,
+				snmp_query_graph_id INTEGER NOT NULL DEFAULT 0, snmp_index TEXT NOT NULL DEFAULT '')");
 			$pdo->exec("CREATE TABLE snmp_query (id INTEGER PRIMARY KEY, name TEXT NOT NULL DEFAULT '')");
+			$pdo->exec('CREATE TABLE aggregate_graphs (id INTEGER PRIMARY KEY, local_graph_id INTEGER NOT NULL DEFAULT 0)');
+			$pdo->exec('CREATE TABLE aggregate_graphs_items (aggregate_graph_id INTEGER NOT NULL, local_graph_id INTEGER NOT NULL)');
 			$pdo->exec('CREATE TABLE user_auth (id INTEGER PRIMARY KEY, policy_graphs INTEGER NOT NULL DEFAULT 1,
 				policy_trees INTEGER NOT NULL DEFAULT 1, policy_hosts INTEGER NOT NULL DEFAULT 1,
 				policy_graph_templates INTEGER NOT NULL DEFAULT 1)');
@@ -79,27 +148,95 @@ if (!class_exists('TreeSqliteFixture')) {
 			$pdo->exec('CREATE TABLE user_auth_group_members (group_id INTEGER NOT NULL, user_id INTEGER NOT NULL)');
 			$pdo->exec('CREATE TABLE user_auth_group_perms (group_id INTEGER NOT NULL, item_id INTEGER NOT NULL, type INTEGER NOT NULL,
 				PRIMARY KEY (group_id, item_id, type))');
+			$pdo->exec('CREATE TABLE user_auth_row_cache (user_id INTEGER NOT NULL, class TEXT NOT NULL, hash TEXT NOT NULL,
+				total_rows INTEGER NOT NULL DEFAULT 0, time TEXT, PRIMARY KEY (user_id, class, hash))');
+			$pdo->exec('CREATE TABLE settings (name TEXT PRIMARY KEY, value TEXT)');
 
-			self::$pdo      = $pdo;
-			self::$queries  = 0;
-			self::$writes   = 0;
-			self::$budget   = $budget;
-			self::$affected = 0;
-			self::$log      = [];
+			$pdo->counting = true;
+
+			$database_hostname = 'tree_sqlite_fixture';
+			$database_port     = '0';
+			$database_default  = 'tree';
+
+			$database_sessions["$database_hostname:$database_port:$database_default"] = $pdo;
+
+			db_column_type_cache_reset();
+
+			// read_config_option() answers from this cache before it asks the
+			// database; a fresh time_last_change_branch keeps the per-request
+			// tree visibility cache from answering for an earlier database
+			$config[OPTIONS_CLI] = [
+				'auth_method'             => 1,
+				'graph_auth_method'       => 1,
+				'log_validation'          => '',
+				'dsstats_enable'          => '',
+				'time_last_change_branch' => 'fixture-' . ++self::$generation,
+			];
+
+			// the permission caches describe the previous database
+			unset($_SESSION[SESS_TREE_PERMS], $_SESSION[SESS_SIMPLE_PERMS]);
+
+			self::$pdo        = $pdo;
+			self::$budget     = $budget;
+			self::$statements = 0;
+
+			self::resetCounters();
 
 			return $pdo;
 		}
 
+		/**
+		 * Put back the connection, options, session and request this fixture replaced.
+		 */
+		public static function restore() : void {
+			global $config, $database_sessions, $database_hostname, $database_port, $database_default, $_CACTI_REQUEST;
+
+			if (self::$saved === null) {
+				return;
+			}
+
+			[$database_sessions, $database_hostname, $database_port, $database_default, $options,
+				$session, $_REQUEST, $_GET, $_POST, $_CACTI_REQUEST] = self::$saved;
+
+			if ($options === null) {
+				unset($config[OPTIONS_CLI]);
+			} else {
+				$config[OPTIONS_CLI] = $options;
+			}
+
+			if ($session === null) {
+				$_SESSION = [];
+			} else {
+				$_SESSION = $session;
+			}
+
+			self::$saved = null;
+			self::$pdo   = null;
+		}
+
 		public static function resetCounters() : void {
-			self::$queries = 0;
-			self::$writes  = 0;
-			self::$log     = [];
+			self::$queries    = 0;
+			self::$writes     = 0;
+			self::$log        = [];
+			self::$config_log = [];
 		}
 
 		/**
-		 * @param array<int|string, mixed> $params
+		 * Count one statement handed to the fixture connection.
 		 */
-		public static function run(string $sql, array $params = []) : PDOStatement {
+		public static function record(string $sql) : void {
+			self::$statements++;
+
+			if (self::$statements > self::$budget) {
+				throw new RuntimeException('query budget of ' . self::$budget . ' exceeded');
+			}
+
+			if (preg_match('/^\s*SHOW\s/i', $sql) || preg_match('/\b(FROM|INTO|UPDATE)\s+`?settings(_user)?`?(\s|$)/i', $sql)) {
+				self::$config_log[] = $sql;
+
+				return;
+			}
+
 			self::$queries++;
 
 			if (!preg_match('/^\s*(SELECT|\()/i', $sql)) {
@@ -107,30 +244,51 @@ if (!class_exists('TreeSqliteFixture')) {
 			}
 
 			self::$log[] = $sql;
+		}
 
-			if (self::$queries > self::$budget) {
-				throw new RuntimeException('query budget of ' . self::$budget . ' exceeded');
+		/**
+		 * Start a new tree generation, as a tree change does in production, so
+		 * the per-request tree visibility cache is not consulted.
+		 */
+		public static function touch() : void {
+			global $config;
+
+			$config[OPTIONS_CLI]['time_last_change_branch'] = 'fixture-' . ++self::$generation;
+		}
+
+		/**
+		 * @param array<string, int> $policies user_auth columns to set
+		 */
+		public static function user(int $id, array $policies = []) : void {
+			$row = ['id' => $id] + $policies;
+
+			self::insert('user_auth', [$row]);
+		}
+
+		/**
+		 * @param array<int, array<string, mixed>> $rows
+		 */
+		public static function insert(string $table, array $rows) : void {
+			self::$pdo->counting = false;
+
+			try {
+				foreach ($rows as $row) {
+					$columns = array_keys($row);
+
+					$statement = self::$pdo->prepare('INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ')
+						VALUES (' . implode(', ', array_fill(0, count($columns), '?')) . ')');
+					$statement->execute(array_values($row));
+				}
+			} finally {
+				self::$pdo->counting = true;
 			}
-
-			$statement = self::$pdo->prepare($sql);
-			$statement->execute(array_values($params));
-
-			self::$affected = $statement->rowCount();
-
-			return $statement;
 		}
 
 		/**
 		 * @param array<int, array<string, mixed>> $rows
 		 */
 		public static function items(array $rows) : void {
-			foreach ($rows as $row) {
-				$columns = array_keys($row);
-
-				$statement = self::$pdo->prepare('INSERT INTO graph_tree_items (' . implode(', ', $columns) . ')
-					VALUES (' . implode(', ', array_fill(0, count($columns), '?')) . ')');
-				$statement->execute(array_values($row));
-			}
+			self::insert('graph_tree_items', $rows);
 		}
 
 		/**
@@ -150,69 +308,10 @@ if (!class_exists('TreeSqliteFixture')) {
 		 * @return array<int, string> titles of one parent's children in position order
 		 */
 		public static function childTitles(int $parent, int $tree_id = 1) : array {
-			$statement = self::$pdo->prepare('SELECT title FROM graph_tree_items
-				WHERE parent = ? AND graph_tree_id = ? ORDER BY position, id');
-			$statement->execute([$parent, $tree_id]);
+			$statement = self::$pdo->query('SELECT title FROM graph_tree_items
+				WHERE parent = ' . $parent . ' AND graph_tree_id = ' . $tree_id . ' ORDER BY position, id');
 
 			return $statement->fetchAll(PDO::FETCH_COLUMN);
-		}
-
-		/**
-		 * Declare the db_* layer inside $namespace, backed by this fixture.
-		 */
-		public static function install(string $namespace) : void {
-			if (isset(self::$installed[$namespace])) {
-				return;
-			}
-
-			self::$installed[$namespace] = true;
-
-			// Test-only: a fixed, checked-in declaration block; nothing here is
-			// derived from request data or external input.
-			eval('namespace ' . $namespace . ';
-				function db_fetch_cell_prepared($sql, $params = [], $col_name = "", $log = true, $db_conn = false) {
-					$row = \TreeSqliteFixture::run($sql, $params)->fetch(\PDO::FETCH_ASSOC);
-					if ($row === false) { return false; }
-					return $col_name != "" ? $row[$col_name] : reset($row);
-				}
-				function db_fetch_cell($sql, $col_name = "", $log = true, $db_conn = false) {
-					return db_fetch_cell_prepared($sql, [], $col_name);
-				}
-				function db_fetch_row_prepared($sql, $params = [], $log = true, $db_conn = false) {
-					$row = \TreeSqliteFixture::run($sql, $params)->fetch(\PDO::FETCH_ASSOC);
-					return $row === false ? [] : $row;
-				}
-				function db_fetch_row($sql, $log = true, $db_conn = false) {
-					return db_fetch_row_prepared($sql);
-				}
-				function db_fetch_assoc_prepared($sql, $params = [], $log = true, $db_conn = false) {
-					return \TreeSqliteFixture::run($sql, $params)->fetchAll(\PDO::FETCH_ASSOC);
-				}
-				function db_fetch_assoc($sql, $log = true, $db_conn = false) {
-					return db_fetch_assoc_prepared($sql);
-				}
-				function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false) {
-					\TreeSqliteFixture::run($sql, $params);
-					return true;
-				}
-				function db_execute($sql, $log = true, $db_conn = false) {
-					return db_execute_prepared($sql);
-				}
-				function db_affected_rows($db_conn = false) {
-					return \TreeSqliteFixture::$affected;
-				}
-				function db_qstr($value, $db_conn = false) {
-					return \TreeSqliteFixture::$pdo->quote((string) $value);
-				}
-				function db_begin_transaction($db_conn = false) {
-					return \TreeSqliteFixture::$pdo->beginTransaction();
-				}
-				function db_commit_transaction($db_conn = false) {
-					return \TreeSqliteFixture::$pdo->inTransaction() ? \TreeSqliteFixture::$pdo->commit() : false;
-				}
-				function db_rollback_transaction($db_conn = false) {
-					return \TreeSqliteFixture::$pdo->inTransaction() ? \TreeSqliteFixture::$pdo->rollBack() : false;
-				}');
 		}
 	}
 }

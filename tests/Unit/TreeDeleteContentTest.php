@@ -18,27 +18,24 @@ use TreeSqliteFixture;
 
 /*
  * api_tree_delete_node_content() removes everything below a branch. The
- * unchanged lib/api_tree.php code runs against SQLite: it must remove the
- * same items as before with a bounded number of statements and record the
- * tree change once.
+ * lib/api_tree.php code runs against SQLite: it must remove the same items as
+ * before with a bounded number of statements and record the tree change once.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
 
-TreeSqliteFixture::install(__NAMESPACE__);
-
-cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/api_tree.php', 'api_tree_delete_node_content', __NAMESPACE__);
-
-$GLOBALS['tree_delete_config_writes'] = 0;
-
-function set_config_option(string $name, mixed $value, bool $remote = false) : void {
-	$GLOBALS['tree_delete_config_writes']++;
+/**
+ * The tree change is recorded as one write to the settings table.
+ */
+function config_writes() : int {
+	return count(array_filter(TreeSqliteFixture::$config_log, fn ($sql) => preg_match('/^\s*INSERT\s+INTO\s+`?settings`?/i', $sql)));
 }
 
-beforeEach(function () {
-	$GLOBALS['tree_delete_config_writes'] = 0;
+afterEach(function () {
+	TreeSqliteFixture::restore();
+});
 
+beforeEach(function () {
 	TreeSqliteFixture::reset();
 
 	// 1 > 2 > 3 (graph), 1 > 4 (device) > 5 (graph below a device), 6 at the root, 7 in tree 2
@@ -81,11 +78,11 @@ test('a large branch is removed with a bounded number of statements', function (
 	// 1,110 items below branch 6
 	expect(TreeSqliteFixture::$pdo->query('SELECT COUNT(*) FROM graph_tree_items')->fetchColumn())->toBe(7)
 		->and(TreeSqliteFixture::$queries)->toBeLessThanOrEqual(4)
-		->and($GLOBALS['tree_delete_config_writes'])->toBe(1);
+		->and(config_writes())->toBe(1);
 });
 
 test('an empty branch records no change', function () {
 	api_tree_delete_node_content(1, 6);
 
-	expect($GLOBALS['tree_delete_config_writes'])->toBe(0);
+	expect(config_writes())->toBe(0);
 });

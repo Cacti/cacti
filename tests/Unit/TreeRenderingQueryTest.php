@@ -19,77 +19,74 @@ use TreeSqliteFixture;
 /*
  * The graph tree draws a "Non Query Based" node under a device when the device
  * has any permitted non-query graph or aggregate, and marks a branch closed
- * when it has any child. The unchanged lib/html_tree.php functions run with
- * the permission helpers faked: the markup must not change, and each check
- * only needs to know whether one row exists.
+ * when it has any child. The lib/html_tree.php functions run against SQLite
+ * with the real permission helpers: the markup must not change, and each
+ * check only needs to know whether one row exists.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
 
-TreeSqliteFixture::install(__NAMESPACE__);
+const USER = 8;
 
-foreach (['create_data_query_branch', 'create_branch'] as $function) {
-	cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/html_tree.php', $function, __NAMESPACE__);
-}
-
-$GLOBALS['trq'] = [];
-
-function read_config_option(string $name, bool $force = false) : mixed {
-	return '';
-}
-
-function read_user_setting(string $name, mixed $default = false, bool $force = false, int $user = 0) : mixed {
-	return 'on';
-}
-
-function grv(string $name, mixed $default = '') : mixed {
-	return '';
-}
-
-function get_formatted_data_query_indexes(int $host_id, int $data_query_id) : array {
-	return [];
-}
-
-function rows(int $count, string $sql_limit) : array {
-	$count = $sql_limit === '' ? $count : min($count, (int) $sql_limit);
-
-	return $count > 0 ? array_fill(0, $count, ['local_graph_id' => 1]) : [];
-}
-
-function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
-	$GLOBALS['trq']['calls'][] = ['graphs', $sql_where, $sql_limit];
-
-	return rows($GLOBALS['trq']['graphs'], $sql_limit);
-}
-
-function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
-	$GLOBALS['trq']['calls'][] = ['aggregates', $sql_where, $sql_limit];
-
-	return rows($GLOBALS['trq']['aggregates'], $sql_limit);
-}
-
+/**
+ * Draws device 12's data query branches with $graphs plain graphs and
+ * $aggregates aggregate graphs on it. An aggregate graph is a graph of no
+ * device that sums member graphs; the member graph here has no graph of its
+ * own, so only the aggregate lookup can find it.
+ */
 function device_branch(int $graphs, int $aggregates) : string {
-	$GLOBALS['trq'] = ['graphs' => $graphs, 'aggregates' => $aggregates, 'calls' => []];
+	for ($i = 1; $i <= $graphs; $i++) {
+		TreeSqliteFixture::insert('graph_local', [['id' => 100 + $i, 'host_id' => 12]]);
+		TreeSqliteFixture::insert('graph_templates_graph', [['local_graph_id' => 100 + $i, 'title_cache' => "graph $i"]]);
+	}
+
+	for ($i = 1; $i <= $aggregates; $i++) {
+		TreeSqliteFixture::insert('graph_local', [['id' => 200 + $i, 'host_id' => 12], ['id' => 300 + $i, 'host_id' => 0]]);
+		TreeSqliteFixture::insert('graph_templates_graph', [['local_graph_id' => 300 + $i, 'title_cache' => "aggregate $i"]]);
+		TreeSqliteFixture::insert('aggregate_graphs', [['id' => $i, 'local_graph_id' => 300 + $i]]);
+		TreeSqliteFixture::insert('aggregate_graphs_items', [['aggregate_graph_id' => $i, 'local_graph_id' => 200 + $i]]);
+	}
+
+	TreeSqliteFixture::resetCounters();
 
 	return implode('', create_data_query_branch(['id' => 4, 'host_id' => 12]));
 }
 
+/**
+ * The statements that fetch graphs or aggregates, in the order they ran. The
+ * permission helpers also count the rows they could return; that count is not
+ * a fetch and is left out.
+ */
+function lookups() : array {
+	return array_values(array_filter(TreeSqliteFixture::$log, fn ($sql) => str_contains($sql, 'graph_templates_graph') && !str_contains($sql, 'COUNT(')));
+}
+
 beforeEach(function () {
+	$GLOBALS['settings_user'] = [];
+	$_SESSION                 = [SESS_USER_ID => USER];
+
 	TreeSqliteFixture::reset();
+	TreeSqliteFixture::user(USER);
+	TreeSqliteFixture::insert('host', [['id' => 12, 'description' => 'twelve']]);
+});
+
+afterEach(function () {
+	TreeSqliteFixture::restore();
 });
 
 test('a device with non-query graphs draws the node from a single row lookup', function () {
-	expect(device_branch(500, 0))->toContain('Non Query Based')
-		->and($GLOBALS['trq']['calls'])->toBe([['graphs', 'gl.host_id=12 AND gl.snmp_query_id=0', '1']]);
+	expect(device_branch(50, 0))->toContain('Non Query Based')
+		->and(lookups())->toHaveCount(1)
+		->and(lookups()[0])->toContain('LIMIT 1');
 });
 
 test('a device with only aggregates still draws the node', function () {
-	expect(device_branch(0, 3))->toContain('Non Query Based')
-		->and($GLOBALS['trq']['calls'])->toBe([
-			['graphs', 'gl.host_id=12 AND gl.snmp_query_id=0', '1'],
-			['aggregates', 'gl.host_id=12 AND gl.snmp_query_id=0', '1'],
-		]);
+	expect(device_branch(0, 3))->toContain('Non Query Based');
+
+	// the plain graph lookup found nothing, so the aggregate lookup ran too
+	expect(lookups())->toHaveCount(2)
+		->and(lookups()[0])->toContain('LIMIT 1')
+		->and(lookups()[1])->toContain('LIMIT 1')->toContain('aggregate_graphs');
 });
 
 test('a device with neither draws no node', function () {
