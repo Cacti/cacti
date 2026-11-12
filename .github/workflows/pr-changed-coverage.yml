@@ -11,6 +11,8 @@ on:
       - 'lib/html.php'
       - 'include/layout.js'
       - 'install/install.js'
+      - 'tests/e2e/installer-coverage.sh'
+      - 'tests/fixtures/Installer/**'
       - 'include/css/graph_drilldown.css'
       - 'include/themes/**/main.css'
       - 'tests/Helpers/FixtureCoverage.php'
@@ -32,7 +34,7 @@ permissions:
 jobs:
   changed-coverage:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
