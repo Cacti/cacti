@@ -43,7 +43,12 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
-        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+        self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'CompatPasswordMatrix.php', 'LocalAuthDecoyCoverage.php'])
+
+    def test_local_login_change_runs_the_login_decoy_probe(self):
+        for path in ['lib/Auth/LocalAuthLoginProvider.php', 'tests/fixtures/Core/LocalAuthDecoyProbe.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'LocalAuthDecoyCoverage.php')
 
     def test_script_server_change_runs_the_log_masking_probe(self):
         for path in ['script_server.php', 'lib/poller.php', 'tests/fixtures/ScriptServerLogMaskingCoverage.php']:
@@ -85,7 +90,8 @@ class RequestDispatchTest(unittest.TestCase):
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
-            for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
+            for script in ['Core/Auth/BoundaryContracts.php', 'Core/CompatPasswordMatrix.php',
+                           'Core/LocalAuthDecoyCoverage.php', 'Core/Rrd/FallbackSourceIdentity.php',
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
