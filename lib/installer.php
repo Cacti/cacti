@@ -172,7 +172,8 @@ class Installer implements JsonSerializable {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
-			$install_version = read_config_option('install_version', true);
+			/* NULL when the row is missing */
+			$install_version = (string) read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
 			if (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
@@ -3486,6 +3487,7 @@ class Installer implements JsonSerializable {
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
 
 		if (empty($failure)) {
+			$this->createRuntimeTables();
 			$failure = $this->validateCoreSchema();
 		}
 
@@ -3513,6 +3515,42 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
 		}
+	}
+
+	/**
+	 * Create the cacti.sql tables that Boost otherwise creates only at run time,
+	 * so validateCoreSchema() passes in every install mode. A failed CREATE
+	 * leaves the table missing, which validateCoreSchema() then reports.
+	 *
+	 * @return void
+	 */
+	private function createRuntimeTables() {
+		db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_local_data_ids` (
+			`run_id` char(32) NOT NULL default '',
+			`local_data_id` int(10) unsigned NOT NULL default '0',
+			`process_handler` int(10) unsigned NOT NULL default '0',
+			`range_handler` bigint(20) unsigned NOT NULL default '0',
+			`archive_rows` bigint(20) unsigned NOT NULL default '0',
+			PRIMARY KEY (`run_id`, `local_data_id`),
+			KEY `process_handler` (`run_id`, `process_handler`, `range_handler`, `local_data_id`))
+			ENGINE=InnoDB ROW_FORMAT=Dynamic");
+
+		db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_failures` (
+			`local_data_id` int(10) unsigned NOT NULL,
+			`generation` char(32) NOT NULL default '',
+			`rrd_path` varchar(255) NOT NULL default '',
+			`rrd_template` text NOT NULL,
+			`update_values` mediumtext NOT NULL,
+			`latest_sample` bigint(20) unsigned NOT NULL default '0',
+			`sample_count` int(10) unsigned NOT NULL default '0',
+			`retry_count` smallint(5) unsigned NOT NULL default '0',
+			`first_failed` timestamp NOT NULL default CURRENT_TIMESTAMP,
+			`last_failed` timestamp NOT NULL default CURRENT_TIMESTAMP,
+			`next_retry` timestamp NOT NULL default CURRENT_TIMESTAMP,
+			`last_error` varchar(512) NOT NULL default '',
+			PRIMARY KEY (`local_data_id`),
+			KEY `next_retry` (`next_retry`))
+			ENGINE=InnoDB ROW_FORMAT=Dynamic");
 	}
 
 	/**
