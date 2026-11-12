@@ -99,3 +99,26 @@ or performance threshold. Containers and their database are removed on exit;
 the result directory is retained. Use a fresh directory for each run. Keep
 profiles outside the repository; this runner accepts only its disposable local
 stack, with no production credentials or authenticated storage files.
+
+IP ignore-list matching profile
+
+Run from the repository root with a supported PHP runtime. Arguments are
+address count, ignore-list size, match position, and repetitions:
+  php tests/performance/ip-range-membership.php 150000 64 miss 3
+  php tests/performance/ip-range-membership.php 150000 64 first 3
+  php tests/performance/ip-range-membership.php 150000 64 last 3
+  php tests/performance/ip-range-membership.php 1000000 64 miss 1
+  php tests/performance/ip-range-membership.php 2500000 64 miss 1
+
+The harness streams distinct synthetic addresses through the production
+cacti_ip_in_ranges() helper. The ignore list mixes bare addresses and CIDRs.
+It asserts the match count and prints JSON with each elapsed time, the median,
+PHP version, source root, and peak process memory. Counts are bounded at
+2,500,000 addresses, 512 ranges and five repetitions. A first-position match
+measures early exit; last-position matches and misses traverse the whole list.
+
+For a baseline comparison, set CACTI_IP_PROFILE_SOURCE_ROOT to a local checkout
+of the earlier revision. Run sequentially on the same machine with the same
+PHP version, extensions and workload. These are diagnostic matching timings,
+not a CI threshold or end-to-end discovery throughput: no network, database,
+SNMP, or live discovery scan is involved.

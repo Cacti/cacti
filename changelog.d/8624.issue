@@ -1,0 +1,1 @@
+Honour CIDR blocks in a discovery network ignore list, and stop the address walk from stalling on an ignored address
