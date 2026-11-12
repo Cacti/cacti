@@ -15,9 +15,10 @@
 /**
  * Tests for the script-server path containment hardening.
  *
- * The script server validates the include file and the resolved source file
- * of the dispatched function against the configured Cacti script roots
- * (CACTI_PATH_BASE and CACTI_PATH_SCRIPTS) via script_server_path_is_allowed().
+ * The script server validates the include file against the configured Cacti
+ * script roots (CACTI_PATH_SCRIPTS and CACTI_PATH_PLUGINS) via
+ * script_server_path_is_allowed(), and only dispatches a user function defined
+ * by that resolved include file.
  *
  * get_script_query_path() sanitizes the base script path to block command
  * injection from malicious templates. It must NOT run the path through
@@ -37,30 +38,37 @@
 // Source-scan suite (secondary lint — does NOT substitute for runtime tests)
 // ---------------------------------------------------------------------------
 
-$ss = file_get_contents(__DIR__ . '/../../../../script_server.php');
-$dq = file_get_contents(__DIR__ . '/../../../../lib/data_query.php');
+$ss  = file_get_contents(__DIR__ . '/../../../../script_server.php');
+$lss = file_get_contents(__DIR__ . '/../../../../lib/script_server.php');
+$dq  = file_get_contents(__DIR__ . '/../../../../lib/data_query.php');
 
-test('script_server defines the path containment helper', function () use ($ss) {
-	expect($ss)->toContain('function script_server_path_is_allowed(');
+test('script_server defines the path containment helper', function () use ($lss) {
+	expect($lss)->toContain('function script_server_path_is_allowed(');
 });
 
-test('script_server builds the allowed roots from base and scripts path', function () use ($ss) {
-	expect($ss)->toContain('$allowed_roots = [CACTI_PATH_BASE]')
-		->and($ss)->toContain('CACTI_PATH_SCRIPTS');
+test('script_server builds the allowed roots from the scripts and plugins paths', function () use ($ss, $lss) {
+	$start = strpos($lss, 'function script_server_allowed_roots(');
+	$body  = substr($lss, $start, strpos($lss, "\n}\n", $start) - $start);
+
+	expect($ss)->toContain('$allowed_roots     = script_server_allowed_roots();')
+		->and($body)->toContain('CACTI_PATH_SCRIPTS')
+		->and($body)->toContain('CACTI_PATH_PLUGINS')
+		->and($body)->not->toContain('CACTI_PATH_BASE');
 });
 
-test('script_server validates the include file against the allowed roots before loading', function () use ($ss) {
-	$guard = strpos($ss, 'script_server_path_is_allowed($real_include, $allowed_roots)');
+test('script_server validates the include file against the allowed roots before loading', function () use ($ss, $lss) {
+	$guard = strpos($ss, 'script_server_validate_request($input_string, $allowed_roots)');
 	$load  = strpos($ss, 'require_once($include_file)');
 
 	expect($guard)->not->toBeFalse()
 		->and($load)->not->toBeFalse()
-		->and($guard)->toBeLessThan($load);
+		->and($guard)->toBeLessThan($load)
+		->and($lss)->toContain('script_server_path_is_allowed($real_include, $roots)');
 });
 
-test('script_server refuses PHP internal functions and validates the function source file', function () use ($ss) {
-	expect($ss)->toContain('$ref->isInternal()')
-		->and($ss)->toContain('script_server_path_is_allowed(realpath($fn_file), $allowed_roots)');
+test('script_server refuses PHP internal functions and validates the function source file', function () use ($lss) {
+	expect($lss)->toContain('$ref->isInternal()')
+		->and($lss)->toContain('$resolved_file === $resolved_include');
 });
 
 test('get_script_query_path preserves Windows path separators while sanitizing', function () use ($dq) {
@@ -115,7 +123,7 @@ function ssContainmentAllowed($resolved_path, array $roots): bool {
 	return false;
 }
 
-/* Replicates the Windows script-path sanitization from get_script_query_path(). */
+// Replicates the Windows script-path sanitization from get_script_query_path().
 function ssWin32PathStrip(string $path): string {
 	return str_replace(['#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$'], '', $path);
 }

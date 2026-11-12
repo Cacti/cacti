@@ -775,7 +775,9 @@ function script_server_normalize_response(mixed $result, bool &$response_healthy
 		return 'U';
 	}
 
-	$result = (string) $result;
+	// multipart results are space separated name:value pairs, so a line break
+	// becomes a space; any other control character still violates the framing
+	$result = str_replace(["\r\n", "\r", "\n"], ' ', (string) $result);
 
 	if (preg_match('/[\x00-\x1F\x7F]/', $result)) {
 		$response_healthy = false;
