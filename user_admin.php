@@ -99,6 +99,8 @@ function update_policies() : void {
 		}
 	}
 
+	reset_user_perms(gfrv('id'));
+
 	header('Location: user_admin.php?action=user_edit&tab=' . gnrv('tab') . '&id=' . gnrv('id'));
 
 	exit;
