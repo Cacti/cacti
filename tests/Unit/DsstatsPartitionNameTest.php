@@ -16,26 +16,17 @@
  * start of the requested time range.  A week is named by its ISO year.
  */
 
+namespace DsstatsPartitionNameTest;
+
 require_once dirname(__DIR__) . '/Helpers/DsstatsTestDatabase.php';
+require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 
-// poller_dsstats.php runs when it is loaded, so evaluate its partition naming alone
-if (!function_exists('DsstatsPartitionNameTest\dsstats_create_partitions')) {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/poller_dsstats.php');
-	$parser = (new \PhpParser\ParserFactory())->createForNewestSupportedVersion();
-	$node   = (new \PhpParser\NodeFinder())->findFirst($parser->parse($source), static function ($node) {
-		return $node instanceof \PhpParser\Node\Stmt\Function_ && $node->name->toString() === 'dsstats_create_partitions';
-	});
-
-	if ($node === null) {
-		throw new RuntimeException('Unable to find dsstats_create_partitions() in poller_dsstats.php');
-	}
-
-	eval('namespace DsstatsPartitionNameTest;
-		function dsstats_create_partition_from_table(string $table_name, string $suffix) : void {
-			$GLOBALS[\'dsstats_partitions\'][$table_name] = $suffix;
-		}' .
-		substr($source, $node->getStartFilePos(), $node->getEndFilePos() - $node->getStartFilePos() + 1));
+function dsstats_create_partition_from_table(string $table_name, string $suffix) : void {
+	$GLOBALS['dsstats_partitions'][$table_name] = $suffix;
 }
+
+// poller_dsstats.php runs when it is loaded, so load its partition naming alone
+\cacti_fixture_source_function(dirname(__DIR__, 2) . '/poller_dsstats.php', 'dsstats_create_partitions', __NAMESPACE__);
 
 beforeEach(function () {
 	$this->pdo = dsstats_test_connect();

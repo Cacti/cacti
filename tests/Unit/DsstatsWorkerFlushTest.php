@@ -33,7 +33,7 @@ beforeEach(function () {
 		"\t\t*) printf '0x0\\ntraffic-avg_avg=1.000000\\ntraffic-peak_avg=2.000000\\nOK u:0.00 s:0.00 r:0.00\\n' ;;\n" .
 		"\tesac\n" .
 		"done\n");
-	chmod($this->rrdtool, 0755);
+	chmod($this->rrdtool, 0700);
 
 	mkdir(CACTI_PATH_RRA . '/' . $this->dir);
 
