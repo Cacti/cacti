@@ -56,6 +56,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
+    def test_import_change_runs_the_manifest_fixture(self):
+        self.dispatch('lib/import.php', 'PackageManifestMatrix.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
