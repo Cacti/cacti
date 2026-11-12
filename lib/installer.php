@@ -544,6 +544,30 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * clearError() - forget an error that a later value has resolved
+	 *
+	 * A section left behind with no items still counts as an error for callers
+	 * that test the error list, and the step recorded for the first error would
+	 * keep sending the wizard back, so both are cleared with the last error.
+	 *
+	 * @param string $section The section the error was added to
+	 * @param string $item    The item the error was added for
+	 *
+	 * @return void
+	 */
+	private function clearError(string $section, string $item) : void {
+		unset($this->errors[$section][$item]);
+
+		if (isset($this->errors[$section]) && $this->errors[$section] === []) {
+			unset($this->errors[$section]);
+		}
+
+		if ($this->errors === []) {
+			$this->stepError = false;
+		}
+	}
+
+	/**
 	 * setProgress() - set the progress point of Installer::STEP_INSTALL
 	 *
 	 * @param int $param_progress One of Installer::PROGRESS_ constants
@@ -1015,7 +1039,7 @@ class Installer implements JsonSerializable {
 				}
 
 				if ($should_set) {
-					unset($this->errors['Paths'][$name]);
+					$this->clearError('Paths', $name);
 					set_install_config_option($name, empty($path) ? '' : $path);
 				}
 
