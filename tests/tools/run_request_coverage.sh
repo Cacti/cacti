@@ -82,6 +82,8 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 
 run_php_probe tests/fixtures/Core/RequestAccessorMatrix.php '^(lib/html_utility\.php|tests/fixtures/Core/RequestAccessorMatrix\.php)'
 
+run_php_probe tests/fixtures/Core/LayoutActionsMatrix.php '^(layouts\.php|lib/html_utility\.php|tests/fixtures/Core/LayoutActionsMatrix\.php)'
+
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
 run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_import|lib/package)\.php|tests/fixtures/Core/PackageRepositoryWorkspace\.php)'
