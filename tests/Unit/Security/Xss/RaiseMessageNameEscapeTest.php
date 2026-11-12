@@ -25,7 +25,7 @@ if (!defined('MESSAGE_LEVEL_NONE')) {
 	define('MESSAGE_LEVEL_ERROR', 3);
 }
 
-foreach (['raise_message', 'raise_message_html', 'get_message_level'] as $function) {
+foreach (['raise_message', 'raise_message_html', 'raise_message_has_markup', 'get_message_level'] as $function) {
 	if (!function_exists($function)) {
 		cacti_fixture_source_function($root . '/lib/functions.php', $function, '');
 	}
@@ -165,6 +165,19 @@ test('no raise_message call passes markup that would now render as text', functi
 	}));
 
 	expect($markup)->toBe([]);
+});
+
+test('the plugin migration notice flags markup and escaped text only', function () use ($root) {
+	foreach (['Saved <b>x</b>', 'line<br>', 'It&#039;s', 'A &amp; B', '<a href="x">y</a>'] as $flagged) {
+		expect(raise_message_has_markup($flagged))->toBeTrue($flagged);
+	}
+
+	foreach (['Save Successful.', 'R&D devices', 'Input field <data_name> requires', 'load < 5 & up', ''] as $plain) {
+		expect(raise_message_has_markup($plain))->toBeFalse($plain);
+	}
+
+	expect(file_get_contents($root . '/lib/functions.php'))
+		->toMatch('/if \\(raise_message_has_markup\\(\\$message\\)\\) \\{.*?POLLER_VERBOSITY_DEBUG\\);/s');
 });
 
 /* raise_message_html() trusts its caller, so each caller is reviewed and listed here. */
