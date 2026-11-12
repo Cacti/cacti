@@ -615,6 +615,14 @@ function find_best_path($binary_name) {
 function install_setup_get_templates() {
 	global $config;
 
+	/* Reading every package costs about 50 ms and the installer asks several
+	 * times per request, so read them once. The set is fixed for a request. */
+	static $cached = null;
+
+	if ($cached !== null) {
+		return $cached;
+	}
+
 	if ($config['is_web']) {
 		ini_set('zlib.output_compression', '0');
 	}
@@ -692,6 +700,8 @@ function install_setup_get_templates() {
 			$info[] = $myinfo;
 		}
 	}
+
+	$cached = $info;
 
 	return $info;
 }
