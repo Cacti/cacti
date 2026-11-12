@@ -45,14 +45,10 @@ function dsstats_rrdtool_execute($command, &$pipes) {
 	return array_shift($GLOBALS['dsstats_width_responses']);
 }
 
-$source = file_get_contents(dirname(__DIR__, 4) . '/lib/dsstats.php');
-
-if ($source === false || preg_match('/^function dsstats_obtain_data_source_avgpeak_values\(.*?^}\R/ms', $source, $matches) !== 1) {
-	throw new \RuntimeException('Unable to extract dsstats_obtain_data_source_avgpeak_values() for the width test.');
-}
+require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 
 // the code is lib/dsstats.php from this checkout
-eval('namespace DsstatsRraWidthTest;' . $matches[0]);
+\cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/dsstats.php', 'dsstats_obtain_data_source_avgpeak_values', __NAMESPACE__);
 
 test('the stats graph is one pixel per step wide', function ($interval, $info_step, $start, $width) {
 	if (!isset($GLOBALS['config']['cacti_server_os'])) {

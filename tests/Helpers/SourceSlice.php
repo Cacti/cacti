@@ -25,3 +25,19 @@ function cacti_fixture_source_function(string $file, string $function, string $n
 		unlink($temporary);
 	}
 }
+
+/**
+ * Load code built from checked-in source through a temporary file instead of
+ * eval(), for source that a test must adjust before loading. Only checked-in
+ * source may be passed.
+ */
+function cacti_fixture_require_code(string $code) : void {
+	$temporary = tempnam(sys_get_temp_dir(), 'cacti-source-slice-');
+	file_put_contents($temporary, '<?php ' . $code);
+
+	try {
+		require $temporary;
+	} finally {
+		unlink($temporary);
+	}
+}

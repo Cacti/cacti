@@ -50,6 +50,8 @@ function db_execute($sql) {
 	return true;
 }
 
+require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+
 $source = file_get_contents(dirname(__DIR__, 4) . '/lib/dsstats.php');
 
 if ($source === false || preg_match('/^function dsstats_poller_output\(.*?^}\R/ms', $source, $matches) !== 1) {
@@ -57,7 +59,7 @@ if ($source === false || preg_match('/^function dsstats_poller_output\(.*?^}\R/m
 }
 
 // the code is lib/dsstats.php from this checkout, with the error handler of this namespace
-eval('namespace DsstatsCounterWrapTest;' . str_replace("set_error_handler('dsstats_error_handler')", "set_error_handler('DsstatsCounterWrapTest\\\\dsstats_error_handler')", $matches[0]));
+\cacti_fixture_require_code('namespace DsstatsCounterWrapTest;' . str_replace("set_error_handler('dsstats_error_handler')", "set_error_handler('DsstatsCounterWrapTest\\\\dsstats_error_handler')", $matches[0]));
 
 test('a wrapped COUNTER adds 2^32 or 2^64 to the delta', function ($rrd_name, $last, $current, $rate) {
 	$GLOBALS['dsstats_wrap_last']   = array($rrd_name => $last);
