@@ -4538,9 +4538,76 @@ function is_user_perms_valid(int $user_id) : bool {
 }
 
 /**
- * If the secure function exists, verify against that first.
- * If that checks fails or does not exist, check against older md5 version.
- * If the md5 function is missing, we will go with sha256.
+ * cacti_password_algorithm - the algorithm and options for new local passwords
+ *
+ * Always bcrypt at cost 12, so every PHP build can verify a stored hash, which
+ * matters when a remote data collector verifies against the same user_auth
+ * rows.  The cost is pinned rather than inherited from PHP's default so that a
+ * PHP upgrade does not silently change it, and so the login decoy can match
+ * the cost a real verification pays.
+ *
+ * @return array{0: string|int, 1: array<string, int>} The password_hash()
+ *                                                     algorithm and options
+ */
+function cacti_password_algorithm() : array {
+	return [PASSWORD_BCRYPT, ['cost' => 12]];
+}
+
+/**
+ * cacti_password_decoy_for - builds a hash that no password matches
+ *
+ * The hash carries the given bcrypt cost with a random salt and digest, so
+ * verifying against it costs the same as verifying a real hash written with
+ * that cost.  It is assembled rather than produced by password_hash(), which
+ * costs as much as a verification and would make the decoy path slower than
+ * the real one.
+ *
+ * @param string|int         $algo    The algorithm from cacti_password_algorithm()
+ * @param array<string, int> $options The options from cacti_password_algorithm()
+ *
+ * @return string The decoy hash
+ */
+function cacti_password_decoy_for(string|int $algo, array $options) : string {
+	$alphabet = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	$body     = '';
+
+	// 22 salt characters followed by 31 digest characters
+	for ($i = 0; $i < 53; $i++) {
+		$body .= $alphabet[random_int(0, 63)];
+	}
+
+	return sprintf('$2y$%02d$%s', $options['cost'], $body);
+}
+
+/**
+ * cacti_password_decoy_hash - the decoy for login paths with no stored hash
+ *
+ * An unknown username is verified against this so its response time matches
+ * a known one.  It tracks cacti_password_algorithm(), so it never drifts from
+ * the cost of freshly written hashes.
+ *
+ * @return string The decoy hash, constant for the life of the process
+ */
+function cacti_password_decoy_hash() : string {
+	static $decoy = null;
+
+	if ($decoy === null) {
+		[$algo, $options] = cacti_password_algorithm();
+
+		$decoy = cacti_password_decoy_for($algo, $options);
+	}
+
+	return $decoy;
+}
+
+/**
+ * compat_password_verify - verifies a password against a stored hash
+ *
+ * Accepts any password_hash() format (bcrypt, or Argon2 hashes written elsewhere) and the unsalted
+ * md5 and sha256 hex digests that very old releases stored.  The legacy
+ * digests are compared with hash_equals() so the comparison does not leak
+ * how much of the digest matched.  compat_password_needs_rehash() reports
+ * every legacy digest, so a successful login replaces it.
  *
  * @param string $password The password to verify.
  * @param string $hash     The hash to verify against.
@@ -4548,26 +4615,32 @@ function is_user_perms_valid(int $user_id) : bool {
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
 function compat_password_verify(string $password, string $hash) : bool {
+	if ($hash === '') {
+		return false;
+	}
+
 	if (password_verify($password, $hash)) {
 		return true;
 	}
 
-	if (function_exists('md5')) {
-		$md5 = md5($password);
-
-		if ($md5 === $hash) {
-			return true;
-		}
+	if (strlen($hash) === 32 && ctype_xdigit($hash)) {
+		return hash_equals($hash, md5($password));
 	}
 
-	$sha256 = hash('sha256', $password);
+	if (strlen($hash) === 64 && ctype_xdigit($hash)) {
+		return hash_equals($hash, hash('sha256', $password));
+	}
 
-	return ($sha256 === $hash);
+	return false;
 }
 
 /**
- * If the secure function exists, hash using that.
- * If that does not exist, hash older md5 function instead
+ * compat_password_hash - hashes a new or changed password
+ *
+ * The default algorithm, which every Cacti caller requests, uses
+ * cacti_password_algorithm(): bcrypt at cost 12.
+ * PASSWORD_BCRYPT has the same value as PASSWORD_DEFAULT, so it is treated
+ * the same.  Passing options selects exactly the requested algorithm.
  *
  * @param string     $password The password to be hashed.
  * @param string|int $algo     The algorithm to use for hashing. Refer to the `password_hash` documentation for supported algorithms.
@@ -4576,6 +4649,10 @@ function compat_password_verify(string $password, string $hash) : bool {
  * @return string The hashed password.
  */
 function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
+	if ($algo === PASSWORD_DEFAULT && cacti_sizeof($options) == 0) {
+		[$algo, $options] = cacti_password_algorithm();
+	}
+
 	// Check if options array has anything, only pass when required
 	return (cacti_sizeof($options) > 0) ?
 		password_hash($password, $algo, $options) :
@@ -4583,8 +4660,12 @@ function compat_password_hash(string $password, string|int $algo, array $options
 }
 
 /**
- * If the secure function exists, check hash using that.
- * If that does not exist, return false as md5 doesn't need a rehash
+ * compat_password_needs_rehash - whether a stored hash should be replaced
+ *
+ * For the default algorithm the stored hash is compared with
+ * cacti_password_algorithm(), so a legacy md5 or sha256 digest, a bcrypt hash
+ * below cost 12, or a hash of another algorithm is reported and
+ * replaced on the next successful login.
  *
  * @param string     $password The hashed password to check.
  * @param string|int $algo     algorithm to use (PASSWORD_DEFAULT)
@@ -4593,6 +4674,10 @@ function compat_password_hash(string $password, string|int $algo, array $options
  * @return bool Returns true if the password needs to be rehashed, false otherwise.
  */
 function compat_password_needs_rehash(string $password, string|int $algo, array $options = []) : bool {
+	if ($algo === PASSWORD_DEFAULT && cacti_sizeof($options) == 0) {
+		[$algo, $options] = cacti_password_algorithm();
+	}
+
 	// Check if options array has anything, only pass when required
 	return (cacti_sizeof($options) > 0) ?
 		password_needs_rehash($password, $algo, $options) :
