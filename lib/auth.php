@@ -1385,6 +1385,46 @@ function is_realm_allowed(int $realm, int|bool $check_user = false) : bool {
 }
 
 /**
+ * One place to ask whether a user may use a realm or see an object.
+ *
+ * The answer comes from the existing is_*_allowed() policy functions, which
+ * stay unchanged for plugins; this only routes the request and denies what it
+ * does not recognize, so a typo in a permission name fails closed.
+ *
+ * @param string   $permission One of 'realm', 'graph', 'tree', 'device' or 'graph_template'.
+ * @param int      $id         The realm or object id. Must be positive.
+ * @param int|bool $user_id    A positive user id, or 0 for the current session user.
+ *
+ * @return bool True only when the policy function grants the permission.
+ */
+function auth_authorize(string $permission, int $id, int|bool $user_id = 0) : bool {
+	// A bool is refused rather than coerced: callers do not declare strict_types,
+	// and true would otherwise check user 1. An id below 1 never names a single
+	// object: is_graph_allowed(0) asks whether any graph is visible, and
+	// is_tree_allowed() treats user -1 as unrestricted.
+	if (is_bool($user_id) || $user_id < 0 || $id < 1) {
+		return false;
+	}
+
+	switch ($permission) {
+		case 'realm':
+			return is_realm_allowed($id, $user_id > 0 ? $user_id : false);
+		case 'graph':
+			return is_graph_allowed($id, $user_id);
+		case 'tree':
+			return is_tree_allowed($id, $user_id);
+		case 'device':
+			return is_device_allowed($id, $user_id);
+		case 'graph_template':
+			return is_graph_template_allowed($id, $user_id);
+	}
+
+	cacti_log(sprintf("WARNING: Unknown permission '%s' denied in auth_authorize()", $permission), false, 'AUTH');
+
+	return false;
+}
+
+/**
  * Get the permitted tree branch data available to the user
  *
  * @param int  $tree_id   The ID of the tree.
