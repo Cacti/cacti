@@ -1,0 +1,1 @@
+Apply group tree permissions by type and per group, keep tree search and tree content within viewable trees, and reject tree moves that would create a cycle or cross trees
