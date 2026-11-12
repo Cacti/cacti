@@ -64,7 +64,7 @@ test('the installer creates the Boost run-time tables before it requires every c
 	$schema    = file_get_contents($root . '/cacti.sql');
 
 	// in every install mode, not only in the upgrade step for one version
-	expect($installer)->toMatch('/\$this->createRuntimeTables\(\);\s*\$failure = \$this->validateCoreSchema\(\);/');
+	expect($installer)->toMatch('/private function validateCoreSchema\(\) \{\s*global [^;]+;\s*\$this->createRuntimeTables\(\);/');
 
 	foreach (['poller_output_boost_local_data_ids', 'poller_output_boost_failures'] as $table) {
 		expect($installer)->toContain('CREATE TABLE IF NOT EXISTS `' . $table . '`')
