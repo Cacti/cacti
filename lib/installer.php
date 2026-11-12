@@ -204,6 +204,15 @@ class Installer implements JsonSerializable {
 			} else {
 				$install_params = array();
 			}
+		} elseif (Installer::isStaleWizardStep((int) $step, $this->old_cacti_version != CACTI_VERSION, isset($install_params['Runtime']) ? $install_params['Runtime'] : 'unknown')) {
+			/* A wizard step can outlive the upgrade it belonged to, for example
+			   when the upgrade is finished with cli/upgrade_database.php.  Once
+			   no install is needed, report completion instead of reopening the
+			   wizard with its setters. */
+			log_install_medium('step', 'Discarding stale wizard step ' . clean_up_lines(var_export($step, true)));
+
+			$step           = Installer::STEP_COMPLETE;
+			$install_params = array();
 		}
 
 		log_install_high('step', 'After: ' . clean_up_lines(var_export($step, true)));
@@ -932,6 +941,46 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * Whether a stored browser wizard step belongs to an install or upgrade
+	 * that has already finished.
+	 *
+	 * @param int    $step          The stored installer step.
+	 * @param bool   $installNeeded Whether the database differs from the code version.
+	 * @param string $runtime       The installer runtime.
+	 *
+	 * @return bool True when the wizard must not accept parameters.
+	 */
+	public static function isStaleWizardStep($step, $installNeeded, $runtime) {
+		return $runtime !== 'Cli' && !$installNeeded && $step < Installer::STEP_INSTALL;
+	}
+
+	/**
+	 * Whether a theme is a single installed theme directory name.
+	 *
+	 * @param string $theme The requested theme.
+	 *
+	 * @return bool
+	 */
+	public static function isInstalledThemeName($theme) {
+		global $config;
+
+		return is_string($theme) &&
+			preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/', $theme) === 1 &&
+			is_file($config['base_path'] . '/include/themes/' . $theme . '/main.css');
+	}
+
+	/**
+	 * Merge browser parameters so the browser runtime cannot be replaced.
+	 *
+	 * @param array $params The submitted installer parameters.
+	 *
+	 * @return array
+	 */
+	public static function browserParameters($params) {
+		return array_merge($params, array('Runtime' => 'Web'));
+	}
+
+	/**
 	 * setTheme() - sets the Theme installer option, override the system default. * @param_theme - a
 	 * valid theme which must exist in /include/themes/ * * Errors: will add an error at
 	 * STEP_BINARY_WELCOME if invalid theme * was detected. Used as part of Cacti's lib functionality.
@@ -941,11 +990,9 @@ class Installer implements JsonSerializable {
 	 * @return void Errors: will add an error at STEP_BINARY_WELCOME if invalid theme was detected.
 	 */
 	private function setTheme($param_theme = '') {
-		global $config;
 		if (isset($param_theme) && strlen($param_theme)) {
 			log_install_medium('theme','Checking theme: ' . $param_theme);
-			$themePath = $config['base_path'] . '/include/themes/' . $param_theme . '/main.css';
-			if (file_exists($themePath)) {
+			if (Installer::isInstalledThemeName($param_theme)) {
 				log_install_debug('theme','setTheme(): ' . $param_theme);
 				$this->theme = $param_theme;
 				set_install_config_option('install_theme', $this->theme);
@@ -2059,10 +2106,10 @@ class Installer implements JsonSerializable {
 	 * @return string The resulting string.
 	 */
 	private function exitSqlNeeded() {
-		global $config, $database_username, $database_default, $database_password;
+		global $config, $database_username, $database_default;
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"));
-		$output .= Installer::sectionCode(sprintf("mysql -u %s -p %s < cacti.sql", $database_username, $database_default));
+		$output .= Installer::sectionCode(html_escape(sprintf("mysql -u %s -p %s < cacti.sql", $database_username, $database_default)));
 		$output .= Installer::sectionNormal(__("This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."));
 		$output .= Installer::sectionNormal(__("You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"));
 
@@ -2074,7 +2121,8 @@ class Installer implements JsonSerializable {
 		}
 
 		$output .= Installer::sectionNormal(__("Then run the following within MySQL as an administrator:"));
-		$output .= Installer::sectionCode(sprintf("mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password));
+		// The configured password stays out of the page; the account already exists.
+		$output .= Installer::sectionCode(html_escape(sprintf("mysql > GRANT SELECT ON mysql.time_zone_name TO '%s'@'localhost'", $database_username)));
 		return $output;
 	}
 
