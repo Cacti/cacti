@@ -3532,7 +3532,7 @@ class Installer implements JsonSerializable {
 
 							$output .= '<tr class=\'cactiInstallSqlRow\'>';
 							$output .= '<td class=\'cactiInstallSqlIcon ' . $cssClass . '\' width=\'50\'><i class=\'' . $dbIcon . '\'></i></td>';
-							$output .= '<td class=\'cactiInstallSqlLeft\'>' . $sql_temp . '</td>';
+							$output .= '<td class=\'cactiInstallSqlLeft\'>' . html_escape($sql_temp) . '</td>';
 							$output .= '<td class=\'cactiInstallSqlRight ' . $cssClass . '\'>' . $dbStatus . '</td>';
 							$output .= '</tr>';
 
@@ -4268,7 +4268,7 @@ class Installer implements JsonSerializable {
 
 		$output_log = '';
 		foreach ($logcontents as $logline) {
-			$output_log = $logline.'<br/>' . $output_log;
+			$output_log = html_escape($logline) . '<br/>' . $output_log;
 		}
 
 		if (empty($output_log)) {
