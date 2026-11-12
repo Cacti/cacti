@@ -1,0 +1,1 @@
+Keep tree search results within viewable trees and graphs, reject tree moves that would create a cycle or cross trees, and stop tree walks at a stored parent cycle
