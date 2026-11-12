@@ -40,6 +40,7 @@ function __esc($text, ...$args) {
 	return vsprintf($text, $args);
 }
 
+\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/import.php', 'package_repo_filename_valid', __NAMESPACE__);
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/package_import.php', 'get_repo_file', __NAMESPACE__);
 $token = bin2hex(random_bytes(16));
 $count = 0;
