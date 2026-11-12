@@ -123,6 +123,34 @@ test('contrast checks include translucent foregrounds and every gradient stop', 
 	expect(await page.locator('span').evaluate(textContrast)).toBeLessThan(1.3);
 });
 
+test('contrast checks find the darker middle of a red-to-green gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:linear-gradient(rgb(255,4,0),rgb(0,161,11));color:black">Selected row</div>');
+	// The darkest color sits at t = 0.46, between any fixed grid of samples.
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(3.1176, 3);
+});
+
+test('contrast checks report text whose luminance falls inside a gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:linear-gradient(black,white);color:rgb(119,119,119)">Status</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+test('contrast checks measure every layer of a layered background', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:black url(about:blank), linear-gradient(black, white);color:white">Layers</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+for (const [name, style] of [
+	['a radial gradient', 'background:black radial-gradient(circle at top, #ffa254, black)'],
+	['legacy -webkit-gradient', 'background:-webkit-gradient(linear, left top, left bottom, from(black), to(white))'],
+	['non-sRGB interpolation', 'background:linear-gradient(in oklab, black, white)'],
+	['group opacity', 'background:black;opacity:.5'],
+]) {
+	test(`contrast checks refuse to measure ${name}`, async ({ page }) => {
+		await page.setContent(`<!DOCTYPE html><div style="${style};color:white">Unmeasured</div>`);
+		await expect(page.locator('div').evaluate(textContrast)).rejects.toThrow('textContrast cannot measure');
+	});
+}
+
 for (const forcedColors of ['none', 'active'] as const) {
 	test(`Dark keyboard focus remains visible with forced colors ${forcedColors}`, async ({ page }) => {
 		await page.emulateMedia({ forcedColors });
