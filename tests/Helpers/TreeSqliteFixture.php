@@ -166,7 +166,7 @@ if (!class_exists('TreeSqliteFixture')) {
 
 			// Test-only: a fixed, checked-in declaration block; nothing here is
 			// derived from request data or external input.
-			eval('namespace ' . $namespace . ';
+			$source = '<?php namespace ' . $namespace . ';
 				function db_fetch_cell_prepared($sql, $params = [], $col_name = "", $log = true, $db_conn = false) {
 					$row = \TreeSqliteFixture::run($sql, $params)->fetch(\PDO::FETCH_ASSOC);
 					if ($row === false) { return false; }
@@ -209,7 +209,16 @@ if (!class_exists('TreeSqliteFixture')) {
 				}
 				function db_rollback_transaction($db_conn = false) {
 					return \TreeSqliteFixture::$pdo->inTransaction() ? \TreeSqliteFixture::$pdo->rollBack() : false;
-				}');
+				}';
+			$file = tempnam(sys_get_temp_dir(), 'cacti-tree-fixture-');
+
+			file_put_contents($file, $source);
+
+			try {
+				require $file;
+			} finally {
+				unlink($file);
+			}
 		}
 	}
 }

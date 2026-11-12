@@ -168,14 +168,20 @@ function reference_tree_allowed(int $user_policy, array $user_perms, array $grou
 }
 
 test('is_tree_allowed matches the reference policy for random users and groups', function () {
-	mt_srand(8672);
+	// A fixed-seed generator keeps the 2000 cases reproducible; this is test data, not a secret.
+	$state = 8672;
+	$next  = function (int $min, int $max) use (&$state) : int {
+		$state = ($state * 1103515245 + 12345) & 0x7fffffff;
 
-	$random_perms = function () : array {
+		return $min + (($state >> 8) % ($max - $min + 1));
+	};
+
+	$random_perms = function () use ($next) : array {
 		$perms = [];
 
 		foreach ([TREE, TREE + 1] as $item_id) {
 			foreach ([1, 2, 3, 4] as $type) {
-				if (mt_rand(0, 2) == 0) {
+				if ($next(0, 2) == 0) {
 					$perms[] = [$item_id, $type];
 				}
 			}
@@ -187,7 +193,7 @@ test('is_tree_allowed matches the reference policy for random users and groups',
 	$mismatches = [];
 
 	for ($case = 0; $case < 2000; $case++) {
-		$user_policy = mt_rand(1, 2);
+		$user_policy = $next(1, 2);
 		$user_perms  = $random_perms();
 		$groups      = [];
 
@@ -197,8 +203,8 @@ test('is_tree_allowed matches the reference policy for random users and groups',
 			user_perm($item_id, $type);
 		}
 
-		for ($id = 1, $count = mt_rand(0, 4); $id <= $count; $id++) {
-			$groups[] = ['policy' => mt_rand(1, 2), 'perms' => $random_perms(), 'enabled' => mt_rand(0, 4) ? 'on' : ''];
+		for ($id = 1, $count = $next(0, 4); $id <= $count; $id++) {
+			$groups[] = ['policy' => $next(1, 2), 'perms' => $random_perms(), 'enabled' => $next(0, 4) ? 'on' : ''];
 			$g        = end($groups);
 
 			group($id, $g['policy'], $g['perms'], $g['enabled']);

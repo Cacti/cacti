@@ -106,37 +106,18 @@ function cycle() : void {
 	]);
 }
 
-test('moving a branch under its own descendant is refused before any write', function () {
+test('an invalid move is refused before any write', function (string $node, string $parent) {
 	$before = TreeSqliteFixture::parents();
 
-	api_tree_move_node(1, 'tbranch:1', 'tbranch:3', 0);
+	api_tree_move_node(1, $node, $parent, 0);
 
 	expect(TreeSqliteFixture::parents())->toBe($before);
-});
-
-test('moving a branch under itself is refused', function () {
-	$before = TreeSqliteFixture::parents();
-
-	api_tree_move_node(1, 'tbranch:2', 'tbranch:2', 0);
-
-	expect(TreeSqliteFixture::parents())->toBe($before);
-});
-
-test('moving a branch under an item of another tree is refused', function () {
-	$before = TreeSqliteFixture::parents();
-
-	api_tree_move_node(1, 'tbranch:2', 'tbranch:10', 0);
-
-	expect(TreeSqliteFixture::parents())->toBe($before);
-});
-
-test('moving an item of another tree is refused', function () {
-	$before = TreeSqliteFixture::parents();
-
-	api_tree_move_node(1, 'tbranch:10', 'tbranch:4', 0);
-
-	expect(TreeSqliteFixture::parents())->toBe($before);
-});
+})->with([
+	'under its own descendant'      => ['tbranch:1', 'tbranch:3'],
+	'under itself'                  => ['tbranch:2', 'tbranch:2'],
+	'under an item of another tree' => ['tbranch:2', 'tbranch:10'],
+	'an item of another tree'       => ['tbranch:10', 'tbranch:4'],
+]);
 
 test('a valid move still reparents the branch', function () {
 	api_tree_move_node(1, 'tbranch:2', 'tbranch:4', 0);
