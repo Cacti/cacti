@@ -940,6 +940,14 @@ function find_best_path(string $binary_name) : string {
 }
 
 function install_setup_get_templates() : array {
+	// Reading every package costs about 50 ms and the installer asks several
+	// times per request, so read them once. The set is fixed for a request.
+	static $info = null;
+
+	if ($info !== null) {
+		return $info;
+	}
+
 	if (CACTI_WEB) {
 		ini_set('zlib.output_compression', '0');
 	}
