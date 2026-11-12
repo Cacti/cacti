@@ -122,6 +122,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	global $database_last_error;
+
 	if ((isrv('save_component_data_source_new')) && (!ierv('data_template_id'))) {
 		$save['id']               = gfrv('local_data_id');
 		$save['host_id']          = gfrv('host_id');
@@ -239,6 +241,20 @@ function form_save() : void {
 		gfrv('_data_template_id');
 		// ====================================================
 
+		$template_transaction = false;
+
+		if (grv('data_template_id') != grv('_data_template_id')) {
+			/* the form saves metadata and RRD items before applying template ancestry, so
+			keep those writes together if compatibility validation or propagation fails */
+			$database_last_error  = '';
+			$template_transaction = db_begin_transaction();
+
+			if (!$template_transaction) {
+				$_SESSION[SESS_ERROR_FIELDS]['data_template_id'] = 'data_template_id';
+				raise_message(2);
+			}
+		}
+
 		$save1['id']               = gfrv('local_data_id');
 		$save1['data_template_id'] = gfrv('data_template_id');
 		$save1['host_id']          = gfrv('host_id');
@@ -346,11 +362,37 @@ function form_save() : void {
 		if (is_error_message() == false) {
 			if (grv('data_template_id') != grv('_data_template_id')) {
 				// update all necessary template information
-				change_data_template($local_data_id, grv('data_template_id'));
+				if (!change_data_template($local_data_id, grv('data_template_id'))) {
+					$_SESSION[SESS_ERROR_FIELDS]['data_template_id'] = 'data_template_id';
+					raise_message(2);
+				}
 			} elseif (!ierv('data_template_id')) {
 				update_data_source_data_query_cache($local_data_id);
 			}
+		}
 
+		if ($template_transaction) {
+			// a failed write may surface only through the last database error
+			$template_failed = ($database_last_error != '');
+
+			if (is_error_message()) {
+				$template_failed = true;
+			}
+
+			// a rolled back save must not also report success
+			if ($template_failed) {
+				db_rollback_transaction();
+				unset($_SESSION[SESS_MESSAGES][1]);
+				$_SESSION[SESS_ERROR_FIELDS]['data_template_id'] = 'data_template_id';
+				raise_message(2);
+			} elseif (!db_commit_transaction()) {
+				unset($_SESSION[SESS_MESSAGES][1]);
+				$_SESSION[SESS_ERROR_FIELDS]['data_template_id'] = 'data_template_id';
+				raise_message(2);
+			}
+		}
+
+		if (is_error_message() == false) {
 			if (grv('host_id') != grv('_host_id')) {
 				// push out all necessary host information
 				push_out_host(grv('host_id'), $local_data_id);
