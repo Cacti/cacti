@@ -242,6 +242,21 @@ function dsstats_insert_hourly_data_into_cache() : void {
 		WHERE `value` IS NOT NULL
 		GROUP BY local_data_id, rrd_name
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
+
+	/**
+	 * The insert above only sees sources with a known sample, so a source whose
+	 * whole window is unknown would keep its last hourly average.  Clear it, so
+	 * an unknown hour reads as unknown.  The cache was purged to the hourly
+	 * window before this runs.
+	 */
+	db_execute('UPDATE data_source_stats_hourly
+		SET average = NULL, peak = NULL
+		WHERE (local_data_id, rrd_name) IN (
+			SELECT local_data_id, rrd_name
+			FROM data_source_stats_hourly_cache
+			GROUP BY local_data_id, rrd_name
+			HAVING COUNT(`value`) = 0
+		)');
 }
 
 function dsstats_master_handler(string $type, bool $force, bool $fpartition) : void {
