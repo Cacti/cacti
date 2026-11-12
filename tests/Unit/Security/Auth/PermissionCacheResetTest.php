@@ -23,7 +23,8 @@
 /*
  * Tree, graph, device and template permissions are cached in the session and
  * dropped when user_auth.reset_perms changes.  Every console path that writes
- * a user or group permission row, a group membership or removes a group must
+ * a user or group permission row or default policy, a group membership or
+ * removes a group must
  * therefore call reset_user_perms() or reset_group_perms(), or a signed-in
  * user keeps the old access until they log out.
  */
@@ -38,7 +39,8 @@ function permission_cache_handlers(string $file) : array {
 	$handlers = preg_split('/^(?=\tif \(+isrv\(|\t\} elseif \(isrv\(|function )/m', $source);
 
 	return array_values(array_filter($handlers, fn ($handler) => preg_match(
-		'/(INSERT|REPLACE|DELETE)\s+(IGNORE\s+)?(INTO|FROM)\s+user_auth_(perms|group_perms|group_members)\b/i', $handler) === 1));
+		'/(INSERT|REPLACE|DELETE)\s+(IGNORE\s+)?(INTO|FROM)\s+user_auth_(perms|group_perms|group_members)\b/i', $handler) === 1
+		|| preg_match('/UPDATE\s+`?user_auth(_group)?`?\s+SET\s+`?(policy_|\$p\b)/i', $handler)                           === 1));
 }
 
 dataset('permission writers', function () {

@@ -277,6 +277,8 @@ function update_policies() : void {
 		}
 	}
 
+	reset_group_perms(gfrv('id'));
+
 	header('Location: user_group_admin.php?action=edit&tab=' . gnrv('tab') . '&id=' . gnrv('id'));
 
 	exit;
