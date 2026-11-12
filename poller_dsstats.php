@@ -208,16 +208,12 @@ function dsstats_purge_hourly_cache() {
  * @return void No value is returned.
  */
 function dsstats_insert_hourly_data_into_cache() {
-	/**
-	 * Store the current averages into the hourly table.  AVG() and MAX()
-	 * already skip unknown samples, and a source whose window holds only
-	 * unknown samples must become NULL rather than keep its last average.
-	 * The cache was purged to the hourly window before this runs.
-	 */
+	/* store the current averages into the hourly table */
 	db_execute("INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
 		FROM data_source_stats_hourly_cache
+		WHERE `value` IS NOT NULL
 		GROUP BY local_data_id, rrd_name
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
 }
