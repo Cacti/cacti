@@ -9,20 +9,19 @@
 
 /*
  * GHSA-h745-3r76-g253: the data-query name and field name reached the New
- * Graphs XML parse error messages through __() (no escaping). Both
- * name-bearing messages (the xmlfielderr branch and the data-query-name
- * xmlerror branch) must use __esc(); the id-only xmlerror carries no user
- * string and stays on __().
+ * Graphs XML parse error messages unescaped. raise_message() now escapes a
+ * custom message itself (GHSA-9737), so these call sites pass plain __() text
+ * and must not go through raise_message_html().
  */
 
 $root = dirname(__DIR__, 4);
 
-test('New Graphs escapes the data-query and field names in every name-bearing parse error', function () use ($root) {
+test('New Graphs passes the name-bearing parse errors through the escaping raise_message', function () use ($root) {
 	$source = file_get_contents($root . '/graphs_new.php');
+	$lib    = file_get_contents($root . '/lib/functions.php');
 
-	// the two name-bearing messages escape; the id-only message does not
-	expect(substr_count($source, "__esc('Error Parsing Data Query Resource XML file"))->toBe(2)
-		->and(substr_count($source, "__('Error Parsing Data Query Resource XML file"))->toBe(1)
-		->and($source)->toContain("raise_message('xmlfielderr' . \$field_name, __esc(")
-		->and($source)->not->toContain("raise_message('xmlfielderr' . \$field_name, __(");
+	expect(substr_count($source, "__('Error Parsing Data Query Resource XML file"))->toBe(3)
+		->and($source)->toContain("raise_message('xmlfielderr' . \$field_name, __(")
+		->and($source)->not->toContain('raise_message_html(')
+		->and($lib)->toMatch('/function raise_message\\(.*?\\$message = html_escape\\(/s');
 });

@@ -352,10 +352,10 @@ function api_networks_discover(int $network_id, bool $discover_debug, bool $disc
 				$response = call_remote_data_collector($poller_id, $url, 'AUTOM8');
 			}
 		} else {
-			raise_message('automation_message', __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name), MESSAGE_LEVEL_ERROR);
+			raise_message('automation_message', __('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name), MESSAGE_LEVEL_ERROR);
 		}
 	} else {
-		raise_message('automation_message', __esc('Can Not Perform Discovery for Disabled Network \'%s\'', $name), MESSAGE_LEVEL_ERROR);
+		raise_message('automation_message', __('Can Not Perform Discovery for Disabled Network \'%s\'', $name), MESSAGE_LEVEL_ERROR);
 	}
 
 	force_session_data();
