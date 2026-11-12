@@ -76,9 +76,9 @@ function cacti_sizeof($value) {
 	return is_array($value) || $value instanceof Countable ? count($value) : 0;
 }
 
-/** The statements that ended a connection. */
+/** The statements that ended a connection, with their bound values filled in. */
 function kills() {
-	return array_values(array_map(fn ($s) => $s[0], array_filter($GLOBALS['sql'], fn ($s) => strpos($s[0], 'KILL') === 0)));
+	return array_values(array_map(fn ($s) => vsprintf(str_replace('?', '%s', $s[0]), $s[1]), array_filter($GLOBALS['sql'], fn ($s) => strpos($s[0], 'KILL') === 0)));
 }
 
 function reset_state($row = [], $rows = [], $threads = []) {

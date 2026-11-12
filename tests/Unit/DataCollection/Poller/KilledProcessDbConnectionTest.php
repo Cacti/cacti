@@ -88,8 +88,9 @@ function killed_process_db(int $uptime) : \FakeMySQLPDO {
 		public function prepare(string $query, array $options = []): \PDOStatement|false {
 			$this->sql[] = preg_replace('/\s+/', ' ', trim($query));
 
-			if (preg_match('/^KILL CONNECTION (\d+)$/', trim($query))) {
-				return parent::prepare('SELECT 1', $options);
+			// record the bound connection id, which only execute() sees
+			if (trim($query) === 'KILL CONNECTION ?') {
+				return parent::prepare('INSERT INTO killed (id) VALUES (?)', $options);
 			}
 
 			if (str_starts_with(trim($query), 'SHOW GLOBAL STATUS')) {
@@ -105,6 +106,7 @@ function killed_process_db(int $uptime) : \FakeMySQLPDO {
 
 	$db->uptime = $uptime;
 	$db->exec('CREATE TABLE processlist (ID INTEGER, USER TEXT, TIME INTEGER)');
+	$db->exec('CREATE TABLE killed (id INTEGER)');
 	$db->exec("INSERT INTO processlist VALUES (77, 'cactiuser', 40), (78, 'other', 40), (99, 'cactiuser', 0)");
 	$db->exec('CREATE TABLE processes (tasktype TEXT, taskname TEXT, taskid INTEGER, pid INTEGER, timeout INTEGER, connection_id INTEGER, started TEXT, last_update TEXT)');
 
@@ -114,7 +116,7 @@ function killed_process_db(int $uptime) : \FakeMySQLPDO {
 }
 
 function killed_process_kills(\FakeMySQLPDO $db) : array {
-	return array_values(array_filter($db->sql, fn ($sql) => str_starts_with($sql, 'KILL')));
+	return array_map(fn ($id) => "KILL CONNECTION $id", $db->query('SELECT id FROM killed')->fetchAll(\PDO::FETCH_COLUMN));
 }
 
 beforeEach(function () {
