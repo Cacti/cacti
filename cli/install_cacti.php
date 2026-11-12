@@ -170,6 +170,17 @@ include_once($config['base_path'] . '/lib/installer.php');
 require_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/utility.php');
 
+/* One installer at a time, as install/background.php does. Dead processes are
+ * reclaimed by register_process_start() through its PID-liveness check, and the
+ * shutdown function also runs on the exit() calls below. */
+if (!register_process_start('install', 'master', '0', 86400)) {
+	print 'An Installation was already in progress' . PHP_EOL;
+
+	exit(1);
+}
+
+register_shutdown_function('unregister_process', 'install', 'master', 0);
+
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 
 $results = array('Step' => $options['Step']);
