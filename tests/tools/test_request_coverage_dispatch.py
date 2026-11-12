@@ -36,6 +36,12 @@ class RequestDispatchTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.dispatch(path, expected)
 
+    def test_template_and_automation_change_runs_the_database_probes(self):
+        for path in ['lib/template.php', 'lib/api_automation.php', 'data_sources.php',
+                     'tests/fixtures/template_propagation_probe.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'automation-database')
+
     def test_graph_change_runs_the_native_graph_probe(self):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
@@ -81,7 +87,8 @@ class RequestDispatchTest(unittest.TestCase):
             git('init', '--quiet')
             (repository / 'README.md').write_text('fixture\n')
             for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh'),
-                                 ('installer', 'installer-coverage.sh')]:
+                                 ('installer', 'installer-coverage.sh'),
+                                 ('automation-database', 'automation-database-coverage.sh')]:
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')

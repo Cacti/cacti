@@ -38,6 +38,7 @@ $messages        = [];
 $review_logs     = [];
 $review_options  = ['automation_tree_enabled' => 'on', 'poller_interval' => '300', 'rrdtool_version' => '1.8.0'];
 
+require_once dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once "$root/include/vendor/autoload.php";
 require_once "$root/include/global_path.php";
