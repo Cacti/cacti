@@ -11029,7 +11029,9 @@ function cacti_path_is_within(string $candidate, string $base, ?bool $windows = 
 		$base_resolved = cacti_normalize_windows_path($base_resolved);
 	}
 
-	return strpos($resolved, $base_resolved . '/') === 0 || $resolved === $base_resolved;
+	/* rtrim() so a filesystem root ('/') is a prefix of everything below it
+	 * instead of being compared as '//'. */
+	return strpos($resolved, rtrim($base_resolved, '/') . '/') === 0 || $resolved === $base_resolved;
 }
 
 /**
@@ -11104,6 +11106,188 @@ function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
 	$resolved = realpath($deepest_existing);
 
 	return $resolved !== false && cacti_path_is_within($resolved, $base_real) ? $candidate : false;
+}
+
+/**
+ * cacti_path_root - returns the root of a '/'-separated path
+ *
+ * A leading '/' (POSIX, or a UNC path once its backslashes are folded) is the
+ * root '/'.  A drive letter followed by '/' or ending the string is a Windows
+ * root such as 'C:/'.  Drive roots are recognised on every platform, so a
+ * Windows-style absolute path supplied on POSIX is treated as absolute and
+ * fails containment rather than being read as a relative directory 'C:'.
+ *
+ * @param string $path A path with '/' separators
+ *
+ * @return string The root ('/', 'C:/') or '' for a relative path
+ */
+function cacti_path_root(string $path) : string {
+	if (str_starts_with($path, '/')) {
+		return '/';
+	}
+
+	if (preg_match('#^[A-Za-z]:(/|$)#', $path)) {
+		return substr($path, 0, 2) . '/';
+	}
+
+	return '';
+}
+
+/**
+ * cacti_path_canonicalize - lexically canonicalizes a path
+ *
+ * Backslashes become '/', repeated separators collapse, '.' segments are
+ * dropped and '..' removes the preceding segment.  A relative path keeps any
+ * leading '..' it cannot resolve; an absolute path drops '..' at the root, so
+ * '/a/../../b' is '/b'.  The result has no trailing slash except for a bare
+ * root.  The filesystem is never consulted, so symlinks are not resolved and
+ * '~' is an ordinary name.
+ *
+ * @param string $path The path to canonicalize
+ *
+ * @return string The canonical path, or '' for an empty path
+ */
+function cacti_path_canonicalize(string $path) : string {
+	$path = str_replace('\\', '/', $path);
+	$root = cacti_path_root($path);
+	$rest = (string) substr($path, strlen(rtrim($root, '/')));
+
+	$parts = [];
+
+	foreach (explode('/', $rest) as $part) {
+		if ($part === '' || $part === '.') {
+			continue;
+		}
+
+		if ($part === '..' && $parts !== [] && end($parts) !== '..') {
+			array_pop($parts);
+
+			continue;
+		}
+
+		if ($part !== '..' || $root === '') {
+			$parts[] = $part;
+		}
+	}
+
+	return $root . implode('/', $parts);
+}
+
+/**
+ * cacti_path_is_base_path - lexically tests whether a path lies under a base
+ *
+ * Both paths are canonicalized first.  The comparison appends a separator so
+ * '/base/foobar' is not under '/base/foo', and is case sensitive.  A path is
+ * under itself.
+ *
+ * @param string $base The base path
+ * @param string $path The path to test
+ *
+ * @return bool True when $path equals $base or lies below it
+ */
+function cacti_path_is_base_path(string $base, string $path) : bool {
+	$base = cacti_path_canonicalize($base);
+	$path = cacti_path_canonicalize($path);
+
+	if ($base === '' || $path === '') {
+		return false;
+	}
+
+	return str_starts_with($path . '/', rtrim($base, '/') . '/');
+}
+
+/**
+ * cacti_path_within - resolves an untrusted path against a trusted base
+ *
+ * Containment is checked twice.  The candidate is first resolved against the
+ * base lexically with cacti_path_canonicalize(), and anything that climbs out
+ * with '..' or names an unrelated absolute path is rejected.  The deepest part
+ * of the result that exists is then resolved with realpath(), following every
+ * symlink, and must still lie inside the real base (cacti_path_is_within()).
+ * A symlink whose target stays inside the base is accepted; one that leads out
+ * is rejected, and so is a dangling symlink, whose eventual target is unknown.
+ * Segments that do not exist yet are allowed, so the helper also suits a file
+ * that is about to be written.
+ *
+ * Unlike validate_relative_path_within(), the candidate may be absolute or
+ * contain '.' and '..', and in-base symlinks are followed rather than refused.
+ * The return value is the physical location that was checked, with '/'
+ * separators, so the caller uses that rather than a path through a symlink
+ * that could be repointed after the check.
+ *
+ * @param string $base      The trusted absolute base directory, which must exist
+ * @param string $candidate An untrusted path, relative to $base or absolute
+ *
+ * @return string|false The contained physical path, or false when the
+ *                      candidate escapes the base or either input is invalid
+ */
+function cacti_path_within(string $base, string $candidate) : string|false {
+	/* A null byte throws a ValueError from the filesystem functions, and a
+	 * stream wrapper is never a contained local path. */
+	foreach ([$base, $candidate] as $path) {
+		if ($path === '' || str_contains($path, "\0") || str_contains($path, '://')) {
+			return false;
+		}
+	}
+
+	$abs_base = cacti_path_canonicalize($base);
+
+	if (cacti_path_root($abs_base) === '') {
+		return false;
+	}
+
+	$candidate = str_replace('\\', '/', $candidate);
+	$abs_cand  = cacti_path_canonicalize(cacti_path_root($candidate) !== '' ? $candidate : $abs_base . '/' . $candidate);
+
+	if (!cacti_path_is_base_path($abs_base, $abs_cand)) {
+		return false;
+	}
+
+	$real_base = realpath($abs_base);
+
+	if ($real_base === false || !is_dir($real_base)) {
+		return false;
+	}
+
+	$relative = ltrim(substr($abs_cand, strlen($abs_base)), '/');
+	$existing = $abs_base;
+	$missing  = [];
+
+	if ($relative !== '') {
+		$walk = rtrim($abs_base, '/');
+
+		foreach (explode('/', $relative) as $segment) {
+			$walk .= '/' . $segment;
+
+			if ($missing === [] && file_exists($walk)) {
+				$existing = $walk;
+
+				continue;
+			}
+
+			/* file_exists() follows a link and is false for a dangling one,
+			 * whose target cannot be checked and could later lie anywhere. */
+			if (is_link($walk)) {
+				return false;
+			}
+
+			$missing[] = $segment;
+		}
+	}
+
+	$real_target = realpath($existing);
+
+	if ($real_target === false || !cacti_path_is_within($real_target, $real_base)) {
+		return false;
+	}
+
+	$real_target = str_replace('\\', '/', $real_target);
+
+	if ($missing === []) {
+		return $real_target;
+	}
+
+	return rtrim($real_target, '/') . '/' . implode('/', $missing);
 }
 
 /**
