@@ -18,7 +18,7 @@ async function measureSunriseOnBaseColor(page: Page, theme: string) {
 	if (theme === 'sunrise') await page.addStyleTag({ content: 'body { background-image: none !important; }' });
 }
 
-for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
 	for (const width of [320, 390, 1280]) {
 		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
 			test(`${theme} titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
@@ -48,7 +48,7 @@ for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 
 					expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
 					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
 				}
-				if (theme === 'deepness' || theme === 'modern' || theme === 'paw' || theme === 'raspberry' || theme === 'sunrise') {
+				if (theme === 'deepness' || theme === 'modern' || theme === 'paw' || theme === 'raspberry' || theme === 'sunrise' || theme === 'paper-plane') {
 					const textBoxes = await page.locator('.cactiTableTitle').evaluate(element => {
 						const range = document.createRange();
 						range.selectNodeContents(element);
@@ -72,23 +72,29 @@ for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 
 	}
 }
 
-for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise']) {
-	for (const row of theme !== 'cacti' ? ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'] : ['', 'odd', 'even']) {
-		for (const linkClass of ['', 'linkEditMain']) {
-			test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
-				await page.setContent(`<!DOCTYPE html><table><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a></td></tr></table>`);
-				await installThemeCss(page, `include/themes/${theme}/main.css`);
-				await measureSunriseOnBaseColor(page, theme);
-				for (const state of ['rest', 'focus', 'hover', 'active']) {
-					const link = page.locator('a');
-					if (state === 'focus') await link.focus();
-					if (state === 'hover' || state === 'active') await link.hover();
-					if (state === 'active') await page.mouse.down();
-					const ratio = await link.evaluate(textContrast);
-					expect(ratio, state).toBeGreaterThanOrEqual(4.5);
-					if (state === 'active') await page.mouse.up();
-				}
-			});
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
+	const rows = theme === 'cacti' ? ['', 'odd', 'even'] : ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'];
+	if (theme === 'paper-plane') rows.push('even-alternate', 'selectable even-alternate');
+	for (const surface of theme === 'paper-plane' ? ['page', 'dialog'] : ['page']) {
+		for (const row of rows) {
+			for (const linkClass of ['', 'linkEditMain']) {
+				test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'plain'} surfaces${surface === 'dialog' ? ' in a dialog' : ''}`, async ({ page }) => {
+					await page.setContent(`<!DOCTYPE html><div class="${surface === 'dialog' ? 'ui-widget-content' : ''}"><table${theme === 'paper-plane' ? ' class="cactiTable"' : ''}><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a>${theme === 'paper-plane' ? ' · Response 1.8 ms' : ''}</td></tr></table></div>`);
+					if (surface === 'dialog') await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
+					await installThemeCss(page, `include/themes/${theme}/main.css`);
+					await measureSunriseOnBaseColor(page, theme);
+					for (const state of ['rest', 'focus', 'hover', 'active']) {
+						const link = page.locator('a');
+						if (state === 'focus') await link.focus();
+						if (state === 'hover' || state === 'active') await link.hover();
+						if (state === 'active') await page.mouse.down();
+						const ratio = await link.evaluate(textContrast);
+						expect(ratio, state).toBeGreaterThanOrEqual(4.5);
+						if (theme === 'paper-plane') expect(await page.locator('td').evaluate(textContrast), `row text ${state}`).toBeGreaterThanOrEqual(4.5);
+						if (state === 'active') await page.mouse.up();
+					}
+				});
+			}
 		}
 	}
 }
@@ -112,7 +118,7 @@ for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable 
 	});
 }
 
-for (const theme of ['modern', 'paw', 'raspberry', 'sunrise']) {
+for (const theme of ['modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
 	test(`${theme} titlebars, navigation selections, rows, and active controls retain text contrast`, async ({ page }) => {
 		await page.setContent('<!DOCTYPE html>' +
 			'<div class="cactiTableTitleRow"><div class="cactiTableTitle">Device inventory</div><div class="cactiTableButton"><span>2 alerts</span></div></div>' +
@@ -125,7 +131,7 @@ for (const theme of ['modern', 'paw', 'raspberry', 'sunrise']) {
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
 		await measureSunriseOnBaseColor(page, theme);
-		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['paw', 'raspberry', 'sunrise'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
+		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['paw', 'raspberry', 'sunrise', 'paper-plane'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
 			for (const element of await page.locator(selector).all()) expect.soft(await element.evaluate(textContrast), selector).toBeGreaterThanOrEqual(4.5);
 		}
 		for (const name of ['Devices', 'Management', ...(theme === 'modern' ? ['Console'] : [])]) {
@@ -136,7 +142,7 @@ for (const theme of ['modern', 'paw', 'raspberry', 'sunrise']) {
 	});
 }
 
-for (const theme of ['raspberry', 'sunrise']) {
+for (const theme of ['raspberry', 'sunrise', 'paper-plane']) {
 	for (const state of ['', 'tableHeaderColumnSelected', 'tableHeaderColumnHover']) {
 		test(`${theme} table headings remain readable in ${state || 'normal'} state`, async ({ page }) => {
 			await page.setContent(`<!DOCTYPE html><table class="cactiTable"><thead><tr class="tableHeader"><th class="${state}">Device</th></tr></thead></table>`);
@@ -145,6 +151,43 @@ for (const theme of ['raspberry', 'sunrise']) {
 			expect(await page.locator('th').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
 		});
 	}
+}
+
+// Paper Plane gives body light text for its dark page, so every light surface
+// that sits directly on the page must carry its own dark text and link colors.
+const paperPlaneLightSurfaces: Record<string, string> = {
+	'textArea cell': '<table class="cactiTable"><tr><td class="textArea" data-surface>%s</td></tr></table>',
+	'tableConfirmation': '<table class="tableConfirmation"><tr><td data-surface>%s</td></tr></table>',
+	'messageBox': '<div class="messageBox" data-surface>%s</div>',
+	'tree editor panel': '<form id="tree_edit"><div data-surface>%s</div></form>',
+	'graphItem row': '<table><tr class="graphItem"><td data-surface>%s</td></tr></table>',
+	'graphItemAlternate row': '<table><tr class="graphItemAlternate"><td data-surface>%s</td></tr></table>',
+	'hostInfoHeader': '<div class="hostInfoHeader" data-surface>%s</div>',
+	'filteredValue': '<span class="filteredValue" data-surface>%s</span>',
+	'spikekillMenu': '<ul class="spikekillMenu"><li data-surface>%s</li></ul>',
+	'installArea': '<div class="installArea" data-surface>%s</div>',
+	'cactiInstallArea': '<div class="cactiInstallArea" data-surface>%s</div>',
+	'textMenuItem': '<div class="textMenuItem" data-surface>%s</div>',
+	'multiselect header': '<div class="ui-multiselect-header" data-surface>%s</div>',
+	'menuoptions': '<ul class="menuoptions"><li data-surface>%s</li></ul>',
+	'submenuoptions': '<ul class="submenuoptions"><li data-surface>%s</li></ul>',
+	...Object.fromEntries(['clogError', 'clogWarning', 'clogSQL', 'clogDebug', 'clogStats', 'clogLimit'].map(name =>
+		[`${name} log row`, `<table class="cactiTable"><tr class="${name}"><td data-surface>%s</td></tr></table>`])),
+};
+
+for (const [name, markup] of Object.entries(paperPlaneLightSurfaces)) {
+	test(`paper-plane text and links remain readable on the ${name} light surface`, async ({ page }) => {
+		const content = '<span class="surface-text">Purge the Cacti log?</span> <a href="#device">Device</a> <a class="linkEditMain" href="#edit">Edit</a>';
+		await page.setContent('<!DOCTYPE html>' + markup.replace('%s', content));
+		await installThemeCss(page, 'include/themes/paper-plane/jquery-ui.css');
+		await installThemeCss(page, 'include/themes/paper-plane/main.css');
+		expect(await page.locator('.surface-text').evaluate(textContrast), 'text').toBeGreaterThanOrEqual(4.5);
+		for (const link of await page.locator('[data-surface] a').all()) {
+			expect(await link.evaluate(textContrast), `${await link.textContent()} rest`).toBeGreaterThanOrEqual(4.5);
+			await link.hover();
+			expect(await link.evaluate(textContrast), `${await link.textContent()} hover`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
 }
 
 const root = resolve(__dirname, '../../..');
@@ -273,11 +316,11 @@ async function prepareInventoryFixture(page: Page, info: TestInfo) {
 	};
 }
 
-for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise']) {
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
 	test(`${theme} seeded device inventory and details work with desktop and narrow dialogs`, async ({ page }, info) => {
 		await page.setViewportSize({ width: 1100, height: 380 });
 		await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8').replaceAll('Cacti theme', `${theme[0].toUpperCase() + theme.slice(1)} theme`));
-		if (theme === 'sunrise') await page.locator('main').evaluate(element => element.classList.add('cactiTable'));
+		if (['sunrise', 'paper-plane'].includes(theme)) await page.locator('main').evaluate(element => element.classList.add('cactiTable'));
 		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
 		await installThemeCss(page, `include/themes/${theme}/main.css`);
 		const capture = await prepareInventoryFixture(page, info);
