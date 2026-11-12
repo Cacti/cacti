@@ -65,6 +65,8 @@ run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/ht
 
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
 
+run_php_probe tests/fixtures/Core/AuthAuthorizeMatrix.php '^(lib/auth\.php|package_import\.php|tests/fixtures/Core/AuthAuthorizeMatrix\.php)'
+
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
