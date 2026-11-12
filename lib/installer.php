@@ -203,6 +203,15 @@ class Installer implements JsonSerializable {
 			} else {
 				$install_params = [];
 			}
+		} elseif (Installer::isStaleWizardStep((int) $step, is_install_needed(), $install_params['Runtime'] ?? 'unknown')) {
+			/* A wizard step can outlive the upgrade it belonged to, for example
+			   when the upgrade is finished with cli/upgrade_database.php.  Once
+			   no install is needed, report completion instead of reopening the
+			   wizard with its setters. */
+			log_install_medium('step', 'Discarding stale wizard step ' . clean_up_lines(var_export($step, true)));
+
+			$step           = Installer::STEP_COMPLETE;
+			$install_params = [];
 		}
 
 		log_install_high('step', 'After: ' . clean_up_lines(var_export($step, true)));
@@ -954,12 +963,38 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error at STEP_BINARY_WELCOME if invalid theme
 	 * was detected.
 	 */
+	/**
+	 * isStaleWizardStep() - whether a stored browser wizard step belongs to an
+	 * install or upgrade that has already finished
+	 *
+	 * @param int    $step          The stored installer step
+	 * @param bool   $installNeeded The result of is_install_needed()
+	 * @param string $runtime       The installer runtime
+	 *
+	 * @return bool True when the wizard must not accept parameters
+	 */
+	public static function isStaleWizardStep(int $step, bool $installNeeded, string $runtime) : bool {
+		return $runtime !== 'Cli' && !$installNeeded && $step < Installer::STEP_INSTALL;
+	}
+
+	/**
+	 * isInstalledThemeName() - whether a theme is a single installed theme
+	 * directory name
+	 *
+	 * @param string $theme The requested theme
+	 *
+	 * @return bool
+	 */
+	public static function isInstalledThemeName(string $theme) : bool {
+		return preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/', $theme) === 1 &&
+			is_file(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css');
+	}
+
 	private function setTheme(string $param_theme = '') : void {
 		if ($param_theme != '') {
 			log_install_medium('theme', 'Checking theme: ' . $param_theme);
-			$themePath = CACTI_PATH_INCLUDE . '/themes/' . $param_theme . '/main.css';
 
-			if (file_exists($themePath)) {
+			if (Installer::isInstalledThemeName($param_theme)) {
 				log_install_debug('theme', 'setTheme(): ' . $param_theme);
 				$this->theme = $param_theme;
 				set_install_config_option('install_theme', $this->theme);
@@ -2107,10 +2142,10 @@ class Installer implements JsonSerializable {
 	}
 
 	private function exitSqlNeeded() : string {
-		global $database_username, $database_default, $database_password;
+		global $database_username, $database_default;
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"));
-		$output .= Installer::sectionCode(sprintf('mysql -u %s -p %s < cacti.sql', $database_username, $database_default));
+		$output .= Installer::sectionCode(html_escape(sprintf('mysql -u %s -p %s < cacti.sql', $database_username, $database_default)));
 		$output .= Installer::sectionNormal(__('This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database.'));
 		$output .= Installer::sectionNormal(__('You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table'));
 
@@ -2122,7 +2157,8 @@ class Installer implements JsonSerializable {
 		}
 
 		$output .= Installer::sectionNormal(__('Then run the following within MySQL as an administrator:'));
-		$output .= Installer::sectionCode(sprintf("mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password));
+		// The configured password stays out of the page; the account already exists.
+		$output .= Installer::sectionCode(html_escape(sprintf("mysql > GRANT SELECT ON mysql.time_zone_name TO '%s'@'localhost'", $database_username)));
 
 		return $output;
 	}
