@@ -16,7 +16,7 @@
  * Two brute-force defenses: the failed-attempt counter must increment atomically
  * in the database (a read-modify-write in PHP lets concurrent guesses undercount
  * past the lockout threshold), and an unknown username must cost the same as a
- * known one (otherwise the bcrypt-vs-immediate-return timing delta enumerates
+ * known one (otherwise the hash-vs-immediate-return timing delta enumerates
  * valid usernames).
  */
 
@@ -55,22 +55,11 @@ test('the lockout counter is incremented atomically in SQL', function () use ($a
 	expect($body)->not->toContain('failed_attempts = ?');
 });
 
-test('an unknown username is verified against a fixed hash for constant time', function () use ($localAuthSrc) {
+test('an unknown username is verified against a decoy hash for constant time', function () use ($localAuthSrc) {
 	$body = _auth_fn_body($localAuthSrc, 'verifyCredential');
 
-	// the else (no such user) branch runs a throw-away verify so timing matches
-	expect($body)->toContain("compat_password_verify((string) \$password, '\$2y\$");
-});
-
-test('the timing dummy is a valid cost-matched bcrypt hash', function () use ($localAuthSrc) {
-	preg_match("/compat_password_verify\(\(string\) \\\$password, '(\\\$2y\\\$[^']+)'\)/", $localAuthSrc, $m);
-	expect($m[1] ?? '')->not->toBe('');
-
-	$info = password_get_info($m[1]);
-	expect($info['algoName'])->toBe('bcrypt');
-	// same cost as the real password path (PASSWORD_DEFAULT bcrypt cost 10) so the
-	// throw-away verify actually costs the same as a genuine one
-	expect($info['options']['cost'])->toBe(10);
-	// and this common guess does not verify against the fixed dummy hash
-	expect(password_verify('anything at all', $m[1]))->toBeFalse();
+	// the else (no such user) branch runs a throw-away verify so timing matches;
+	// the decoy tracks the algorithm and cost of new hashes instead of a literal
+	expect($body)->toContain('compat_password_verify((string) $password, cacti_password_decoy_hash())');
+	expect($body)->not->toContain("compat_password_verify((string) \$password, '\$");
 });

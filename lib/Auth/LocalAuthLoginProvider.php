@@ -169,11 +169,13 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 				return [];
 			}
 		} else {
-			// Run a throw-away verification against a fixed bcrypt hash so an unknown
+			// Run a throw-away verification against a decoy hash so an unknown
 			// username costs the same as a known one. Without this, the valid-user path
-			// runs bcrypt (tens of ms) while the unknown-user path returns immediately,
-			// and the response-time delta lets an attacker enumerate valid usernames.
-			// The verify result is discarded; this fixed hash is tied to no account.
+			// runs the password hash (tens of ms) while the unknown-user path returns
+			// immediately, and the response-time delta lets an attacker enumerate valid
+			// usernames. The decoy carries the algorithm and cost that new hashes use,
+			// so it cannot drift from them the way a fixed literal did. The verify
+			// result is discarded; the decoy is tied to no account.
 			//
 			// Gate the dummy verify on the same non-empty condition the known-user
 			// path uses: that branch skips compat_password_verify() when the password
@@ -181,7 +183,7 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			// password would expose a reversed timing distinction (known user fast,
 			// unknown user slow) and still leak username validity.
 			if (trim($password) != '') {
-				compat_password_verify((string) $password, '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.');
+				compat_password_verify((string) $password, cacti_password_decoy_hash());
 			}
 
 			// error
