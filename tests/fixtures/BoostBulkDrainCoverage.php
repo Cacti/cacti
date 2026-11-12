@@ -18,10 +18,11 @@ $middle = cacti_test_isolated_probe($probe, ['middle']);
 $none   = cacti_test_isolated_probe($probe, ['none']);
 
 // A rejected mid-stream flush keeps the rest of data source 1 for the retry,
-// leaves data source 2 alone, and does not acknowledge the shard.
+// parks data source 1 for the parent to carry forward, leaves data source 2
+// alone, and acknowledges the rest of the shard.
 $retained = ['1@1700000000:42', '1@1700000060:42', '2@1700000000:42', '2@1700000060:42', '2@1700000120:42', '2@1700000180:42'];
 
-if ($middle['result'] !== -1 || $middle['writes'] !== $retained || $middle['deletes'] !== 0) {
+if ($middle['result'] !== 8 || $middle['writes'] !== $retained || $middle['parked'] !== [1] || $middle['deletes'] !== 1) {
 	throw new RuntimeException('A rejected Boost flush did not stop its data source.');
 }
 
