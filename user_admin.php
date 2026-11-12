@@ -130,6 +130,8 @@ function form_actions() : void {
 			}
 		}
 
+		reset_user_perms(gfrv('id'));
+
 		header('Location: user_admin.php?action=user_edit&tab=permsd&id=' . gnrv('id'));
 
 		exit;
@@ -156,6 +158,8 @@ function form_actions() : void {
 				}
 			}
 		}
+
+		reset_user_perms(gfrv('id'));
 
 		header('Location: user_admin.php?action=user_edit&tab=permsg&id=' . gnrv('id'));
 
@@ -184,6 +188,8 @@ function form_actions() : void {
 			}
 		}
 
+		reset_user_perms(gfrv('id'));
+
 		header('Location: user_admin.php?action=user_edit&tab=permste&id=' . gnrv('id'));
 
 		exit;
@@ -209,6 +215,8 @@ function form_actions() : void {
 				}
 			}
 		}
+
+		reset_user_perms(gfrv('id'));
 
 		header('Location: user_admin.php?action=user_edit&tab=permsgr&id=' . gnrv('id'));
 
@@ -236,6 +244,8 @@ function form_actions() : void {
 				}
 			}
 		}
+
+		reset_user_perms(gfrv('id'));
 
 		header('Location: user_admin.php?action=user_edit&tab=permstr&id=' . gnrv('id'));
 
@@ -517,6 +527,8 @@ function form_save() : void {
 		}
 
 		if ($add_button_clicked == true) {
+			reset_user_perms(gfrv('id'));
+
 			header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . gnrv('id'));
 
 			exit;
@@ -806,6 +818,8 @@ function perm_remove() : void {
 			AND item_id = ?',
 			[grv('user_id'), grv('id')]);
 	}
+
+	reset_user_perms(grv('user_id'));
 
 	header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . grv('user_id'));
 }
