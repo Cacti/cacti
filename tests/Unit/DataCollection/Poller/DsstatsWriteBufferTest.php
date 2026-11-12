@@ -25,14 +25,10 @@ function db_execute($sql) {
 	return true;
 }
 
-$source = file_get_contents(dirname(__DIR__, 4) . '/lib/dsstats.php');
-
-if ($source === false || preg_match('/^function dsstats_write_buffer\(.*?^}\R/ms', $source, $matches) !== 1) {
-	throw new \RuntimeException('Unable to extract dsstats_write_buffer() for the buffer test.');
-}
+require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 
 // the code is lib/dsstats.php from this checkout
-eval('namespace DsstatsWriteBufferTest;' . $matches[0]);
+\cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/dsstats.php', 'dsstats_write_buffer', __NAMESPACE__);
 
 test('40000 statistics are written in batches close to the packet size', function () {
 	$GLOBALS['dsstats_buffer_writes'] = array();
