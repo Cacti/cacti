@@ -3062,9 +3062,7 @@ class Installer implements JsonSerializable {
 			$author = (isset($p['author']) && !empty($p['author'])) ? $p['author'] : '';
 
 			if (isset($p['homepage']) && !empty($p['homepage'])) {
-				if (strncmp($p['homepage'], 'http://', 7) !== 0 && strncmp($p['homepage'], 'http://', 8) !== 0) {
-					$p['homepage'] = 'https://' . $p['homepage'];
-				}
+				$p['homepage'] = Installer::homepageUrl($p['homepage']);
 				$homepage = '<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>';
 			} else {
 				$homepage = '';
@@ -3085,6 +3083,17 @@ class Installer implements JsonSerializable {
 
 		$this->stepData = array('Templates' => $this->templates);
 		return $output;
+	}
+
+	/**
+	 * Gives a template homepage a scheme when it has none.
+	 *
+	 * @param string $homepage The homepage as written in the template package.
+	 *
+	 * @return string The homepage with a scheme.
+	 */
+	public static function homepageUrl($homepage) {
+		return preg_match('~^https?://~i', $homepage) ? $homepage : 'https://' . $homepage;
 	}
 
 	/**
