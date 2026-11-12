@@ -1,0 +1,1 @@
+Record each registered background process's database connection, and end that connection when the process is killed for a timeout or found to have exited, so its statement stops running and its locks are released
