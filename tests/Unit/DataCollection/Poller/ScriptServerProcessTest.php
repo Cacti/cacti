@@ -397,7 +397,17 @@ test('a framing or output limit violation retires the worker before a fresh work
 
 	expect(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('fresh')
 		->and($healthy)->toBeTrue();
-})->with(['multiline', 'control', 'long']);
+})->with(['control', 'long']);
+
+test('a multipart result with a line break is answered on one line by the same worker', function () {
+	[$this->process, $this->pipes] = ss_process_test_start();
+	$healthy                       = true;
+
+	expect(exec_poll_php($this->script . ' ' . $this->prefix . '_multiline', true, $this->pipes, $this->process, 3.0, $healthy))->toBe('first second')
+		->and($healthy)->toBeTrue()
+		->and(exec_poll_php($this->script . ' ' . $this->prefix . '_echo next', true, $this->pipes, $this->process, 3.0, $healthy))->toBe('next')
+		->and($healthy)->toBeTrue();
+});
 
 test('an unremovable nested output buffer corrupts and terminates the worker', function () {
 	[$this->process, $this->pipes] = ss_process_test_start();

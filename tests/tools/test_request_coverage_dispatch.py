@@ -45,12 +45,18 @@ class RequestDispatchTest(unittest.TestCase):
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
 
-    def test_script_server_change_runs_the_live_process_probe(self):
-        for path in ['script_server.php', 'lib/script_server.php',
-                     'lib/SnmpStateStore.php', 'scripts/ss_net_snmp_disk_io.php',
-                     'tests/fixtures/script_server_invariant_probe.php']:
+    def test_script_server_change_runs_the_log_masking_and_live_process_probes(self):
+        both = ['ScriptServerLogMaskingCoverage.php', 'ScriptServerSecurityCoverage.php']
+        for path, expected in [
+                ('script_server.php', both),
+                ('lib/poller.php', both),
+                ('tests/fixtures/ScriptServerLogMaskingCoverage.php', ['ScriptServerLogMaskingCoverage.php']),
+                ('lib/script_server.php', ['ScriptServerSecurityCoverage.php']),
+                ('lib/SnmpStateStore.php', ['ScriptServerSecurityCoverage.php']),
+                ('scripts/ss_net_snmp_disk_io.php', ['ScriptServerSecurityCoverage.php']),
+                ('tests/fixtures/script_server_invariant_probe.php', ['ScriptServerSecurityCoverage.php'])]:
             with self.subTest(path=path):
-                self.dispatch(path, 'ScriptServerSecurityCoverage.php')
+                self.dispatch(path, expected)
 
     def test_two_factor_change_runs_the_guard_fixture(self):
         self.dispatch('auth_2fa.php', 'ConstantTimeGuardMatrix.php')
@@ -91,7 +97,8 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerSecurityCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php',
+                           'ScriptServerSecurityCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')

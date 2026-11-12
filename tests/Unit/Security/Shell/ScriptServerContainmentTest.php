@@ -115,7 +115,7 @@ test('a non-scalar result becomes U', function () {
 });
 
 test('responses must fit on one bounded non-empty line', function () {
-	expect(script_server_dispatch('ss_fixture_multiline', []))->toBe('U')
+	expect(script_server_dispatch('ss_fixture_multiline', []))->toBe('first second')
 		->and(script_server_dispatch('ss_fixture_long', []))->toBe('U')
 		->and(script_server_normalize_response(''))->toBe('U')
 		->and(script_server_normalize_response("value\tother"))->toBe('U')
@@ -124,7 +124,11 @@ test('responses must fit on one bounded non-empty line', function () {
 
 	$healthy = true;
 
-	expect(script_server_normalize_response("first\nsecond", $healthy))->toBe('U')
+	// a multipart result keeps its name:value pairs on one line
+	expect(script_server_normalize_response("\r\na:1\r\nb:2\rc:3 \n", $healthy))->toBe('a:1 b:2 c:3')
+		->and($healthy)->toBeTrue();
+
+	expect(script_server_normalize_response("first\tsecond", $healthy))->toBe('U')
 		->and($healthy)->toBeFalse();
 
 	$healthy = true;

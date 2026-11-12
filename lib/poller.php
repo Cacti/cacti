@@ -115,7 +115,8 @@ function script_server_log_request(int $pid, int $ctr, string $include_file, str
 		return;
 	}
 
-	$parameter_array = script_server_redact_args($parameter_array);
+	// mask the configured device credentials, then the SNMP auth fields
+	$parameter_array = script_server_redact_args(script_server_redact_params($parameter_array));
 	$include_file    = script_server_log_token(basename($include_file));
 	$function        = script_server_log_token($function);
 
@@ -546,7 +547,7 @@ function exec_poll(string $command, int $timeout = 5, array $item = []) : string
 		return poller_redact_snmp_secrets($string, $item);
 	};
 
-	exec_with_timeout($command, $output, $return, $timeout, $redact);
+	exec_with_timeout($command, $output, $return, $timeout, 0, $redact);
 
 	if ($return != 0) {
 		cacti_log($redact(sprintf('WARNING: Script:%s, ErrorCode:%d, Output:%s', $command, $return, implode(',', $output))), false, 'POLLER');
@@ -851,15 +852,16 @@ function poller_cactid_arguments(string $base_path, bool $debug) : array {
  * exec_with_timeout - Execute a command and return it's output. Either wait until the
  * command exits or the timeout has expired.
  *
- * @param string|array $cmd              Command to execute. Array commands bypass the shell.
- * @param array        $output           A return array of output.
- * @param int          $return_code      The return code from the script
- * @param int          $timeout          Timeout in seconds.
- * @param int          $max_output_bytes Maximum stdout bytes, or zero for unlimited.
+ * @param string|array  $cmd              Command to execute. Array commands bypass the shell.
+ * @param array         $output           A return array of output.
+ * @param int           $return_code      The return code from the script
+ * @param int           $timeout          Timeout in seconds.
+ * @param int           $max_output_bytes Maximum stdout bytes, or zero for unlimited.
+ * @param callable|null $redact           Masks credentials in the command and stderr before they are logged.
  *
  * @return mixed Either the last line of output or false on error
  */
-function exec_with_timeout(string|array $cmd, array &$output, int &$return_code, int $timeout = 5, int $max_output_bytes = 0) : mixed {
+function exec_with_timeout(string|array $cmd, array &$output, int &$return_code, int $timeout = 5, int $max_output_bytes = 0, ?callable $redact = null) : mixed {
 	if (!function_exists('proc_open')) {
 		$return_code = 1;
 
@@ -986,11 +988,15 @@ function exec_with_timeout(string|array $cmd, array &$output, int &$return_code,
 	// Only surface stderr noise when the command actually failed; successful
 	// commands may write informational output to stderr that isn't actionable.
 	if ($return_code != 0 && !empty($errors)) {
-		cacti_log("WARNING: Command '$display_cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+		$message = "WARNING: Command '$display_cmd' exited with code $return_code, stderr: " . trim($errors);
+
+		cacti_log($redact === null ? $message : $redact($message), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	if ($output_exceeded) {
-		cacti_log("WARNING: Command '$display_cmd' exceeded its output limit", false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+		$message = "WARNING: Command '$display_cmd' exceeded its output limit";
+
+		cacti_log($redact === null ? $message : $redact($message), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.

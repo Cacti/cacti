@@ -422,103 +422,6 @@ while (1) {
 }
 
 /**
- * script_server_log_parse_failure - logs a request whose arguments could not be parsed
- *
- * The arguments can carry device credentials, so only their size is logged.
- *
- * @param string $function   The function named by the request.
- * @param string $parameters The raw parameter string.
- *
- * @return void
- */
-function script_server_log_parse_failure(string $function, string $parameters) : void {
-	cacti_log('WARNING: Script Server could not parse the ' . strlen($parameters) . " byte argument list for $function", false, 'PHPSVR');
-}
-
-/**
- * script_server_log_missing_function - logs a request for a function that does not exist
- *
- * The arguments can carry device credentials, so device credentials are masked.
- *
- * @param string $include_file    The script file named by the request.
- * @param string $function        The function named by the request.
- * @param array  $parameter_array The parsed parameters.
- *
- * @return void
- */
-function script_server_log_missing_function(string $include_file, string $function, array $parameter_array) : void {
-	cacti_log("WARNING: Function does not exist  INC: '" .
-		basename($include_file) .
-		"' FUNC: '" .
-		$function .
-		"' PARMS: '" .
-		implode('\', \'', script_server_redact_params($parameter_array)) .
-		"'",
-		false,
-		'PHPSVR');
-}
-
-/**
- * script_server_call - calls a script function and discards anything it prints
- *
- * Anything the function prints would reach the poller ahead of its result and
- * be read as the reply to this request, shifting every later reply by one line.
- *
- * @param callable-string $function        The function name, already checked to exist.
- * @param string          $parameters      The raw parameter string.
- * @param array           $parameter_array The parsed parameters.
- *
- * @return mixed The function result.
- */
-function script_server_call(string $function, string $parameters, array $parameter_array) : mixed {
-	$ob_level = ob_get_level();
-	ob_start();
-
-	try {
-		if ($parameters == '') {
-			$result = call_user_func($function);
-		} else {
-			$result = call_user_func_array($function, $parameter_array);
-		}
-	} finally {
-		// also closes any buffer the function left open; the output can carry
-		// credentials, so only its size is logged
-		$stray = 0;
-
-		while (ob_get_level() > $ob_level) {
-			$output = ob_get_clean();
-
-			if ($output === false) {
-				break;
-			}
-
-			$stray += strlen($output);
-		}
-
-		if ($stray > 0) {
-			cacti_log("DEBUG: Function '$function' wrote $stray bytes of output, discarded", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
-		}
-	}
-
-	return $result;
-}
-
-/**
- * script_server_response - formats a script function result as one response line
- *
- * The poller reads one line per request, so a line break inside the result
- * would be read as the reply to the next request.  Multipart results are space
- * separated name:value pairs, so a line break becomes a space.
- *
- * @param mixed $result The function result.
- *
- * @return string The result without line breaks or surrounding white space.
- */
-function script_server_response(mixed $result) : string {
-	return trim(str_replace(["\r\n", "\r", "\n"], ' ', (string) $result));
-}
-
-/**
  * sig_handler - properly handle signals and shutdown
  *
  * @param int $signo
@@ -526,13 +429,20 @@ function script_server_response(mixed $result) : string {
  * @return void
  */
 function sig_handler(int $signo) : void {
+	global $include_file, $function, $parameter_array;
+
+	// argument values can carry device credentials, so only their count is logged
+	$parameters = (is_array($parameter_array) ? cacti_count($parameter_array) : 0) . ' argument(s)';
+	$log_file   = script_server_log_token(basename((string) $include_file));
+	$log_func   = script_server_log_token((string) $function);
+
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
 		case SIGABRT:
 		case SIGQUIT:
 		case SIGSEGV:
-			cacti_log("WARNING: Script Server terminated with signal '$signo'",
+			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'$log_file', function:'$log_func', params:'$parameters'",
 				false,
 				'PHPSVR',
 				POLLER_VERBOSITY_MEDIUM);
@@ -540,7 +450,7 @@ function sig_handler(int $signo) : void {
 
 			exit;
 		default:
-			cacti_log("WARNING: Script Server received signal '$signo'",
+			cacti_log("WARNING: Script Server received signal '$signo' in file:'$log_file', function:'$log_func', params:'$parameters'",
 				false,
 				'PHPSVR',
 				POLLER_VERBOSITY_HIGH);
@@ -597,65 +507,4 @@ function display_help() : void {
 	print 'one Data Source, start the Script Server, and then copy the Poller Cache entry into a running' . PHP_EOL;
 	print 'Script Server.  When doing so you should see the output you expect printed to standard output.  When' . PHP_EOL;
 	print 'running the Script Server, simply enter \'quit\' to exit.' . PHP_EOL . PHP_EOL;
-}
-
-/**
- * Check whether a resolved script path is below one of the configured roots.
- * Used by the script server to contain both the include file and the resolved
- * source file of a dispatched function to the allowed Cacti script roots.
- *
- * @param mixed $resolved_path The realpath() result for the candidate file.
- * @param array $roots         Configured Cacti path roots.
- *
- * @return bool True when $resolved_path sits under one of $roots.
- */
-function script_server_path_is_allowed($resolved_path, array $roots) : bool {
-	static $normalized_roots = [];
-	static $resolved_paths   = [];
-
-	// quick short circuit based upon prior checks
-	if ($resolved_path === false || !is_string($resolved_path)) {
-		return false;
-	}
-
-	$opath            = $resolved_path;
-	$resolved_path    = rtrim(str_replace('\\', '/', $resolved_path), '/');
-	$case_insensitive = (DIRECTORY_SEPARATOR === '\\');
-	$cache_key        = implode("\0", $roots);
-
-	/* The allow/deny result depends on both the candidate path and the root
-	 * set, so the result cache must be keyed by both. Keying by path alone
-	 * would leak a decision made under one set of roots into a later call
-	 * using a different, possibly more restrictive, set of roots. */
-	$result_key = $cache_key . "\0" . $opath;
-
-	if (isset($resolved_paths[$result_key])) {
-		return $resolved_paths[$result_key];
-	}
-
-	if (!isset($normalized_roots[$cache_key])) {
-		$normalized_roots[$cache_key] = [];
-
-		foreach ($roots as $root) {
-			$root = realpath($root);
-
-			if ($root !== false) {
-				$normalized_roots[$cache_key][] = rtrim(str_replace('\\', '/', $root), '/');
-			}
-		}
-	}
-
-	foreach ($normalized_roots[$cache_key] as $root) {
-		$prefix = $root . '/';
-
-		if ($case_insensitive) {
-			if (stripos($resolved_path, $prefix) === 0) {
-				return $resolved_paths[$result_key] = true;
-			}
-		} elseif (strpos($resolved_path, $prefix) === 0) {
-			return $resolved_paths[$result_key] = true;
-		}
-	}
-
-	return $resolved_paths[$result_key] = false;
 }
