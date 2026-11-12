@@ -140,3 +140,74 @@ test('simple device permissions count device exceptions, not tree exceptions', f
 	group(1, 1, [[9, 3]], 'on', 1);
 	expect(get_simple_device_perms(USER))->toBeFalse();
 });
+
+/**
+ * The tree policy written out directly: the user's own policy with the
+ * user's tree exceptions, or any enabled group's policy with that group's
+ * tree exceptions, grants the tree.  Policy 1 allows unless excepted,
+ * policy 2 denies unless excepted.  Only type 2 rows for this tree count.
+ */
+function reference_tree_allowed(int $user_policy, array $user_perms, array $groups) : bool {
+	$decides = function (int $policy, array $perms) : bool {
+		$excepted = in_array([TREE, 2], $perms, true);
+
+		return $policy == 1 ? !$excepted : $excepted;
+	};
+
+	if ($decides($user_policy, $user_perms)) {
+		return true;
+	}
+
+	foreach ($groups as $g) {
+		if ($g['enabled'] == 'on' && $decides($g['policy'], $g['perms'])) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+test('is_tree_allowed matches the reference policy for random users and groups', function () {
+	mt_srand(8672);
+
+	$random_perms = function () : array {
+		$perms = [];
+
+		foreach ([TREE, TREE + 1] as $item_id) {
+			foreach ([1, 2, 3, 4] as $type) {
+				if (mt_rand(0, 2) == 0) {
+					$perms[] = [$item_id, $type];
+				}
+			}
+		}
+
+		return $perms;
+	};
+
+	$mismatches = [];
+
+	for ($case = 0; $case < 2000; $case++) {
+		$user_policy = mt_rand(1, 2);
+		$user_perms  = $random_perms();
+		$groups      = [];
+
+		seed($user_policy);
+
+		foreach ($user_perms as [$item_id, $type]) {
+			user_perm($item_id, $type);
+		}
+
+		for ($id = 1, $count = mt_rand(0, 4); $id <= $count; $id++) {
+			$groups[] = ['policy' => mt_rand(1, 2), 'perms' => $random_perms(), 'enabled' => mt_rand(0, 4) ? 'on' : ''];
+			$g        = end($groups);
+
+			group($id, $g['policy'], $g['perms'], $g['enabled']);
+		}
+
+		if (tree_allowed() !== reference_tree_allowed($user_policy, $user_perms, $groups)) {
+			$mismatches[] = $case;
+		}
+	}
+
+	expect($mismatches)->toBe([]);
+});
