@@ -3809,6 +3809,7 @@ class Installer implements JsonSerializable {
 
 		if ($failure === '') {
 			$this->setDefaultTemplate();
+			$this->createRuntimeTables();
 			$failure = $this->validateRequiredSchema();
 		}
 
@@ -3845,6 +3846,22 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
 		}
+	}
+
+	/**
+	 * Create the cacti.sql tables that Boost otherwise creates only when it runs.
+	 *
+	 * validateRequiredSchema() requires every table in cacti.sql, so a database
+	 * upgraded from a release that did not have these tables, and that has not
+	 * run Boost yet, would fail the upgrade after its version had moved on. A
+	 * failed CREATE leaves the table missing and validateRequiredSchema() then
+	 * reports it.
+	 *
+	 * @return void
+	 */
+	private function createRuntimeTables() : void {
+		// One line on purpose: this is the cacti.sql definition, kept diffable by the test
+		db_execute('CREATE TABLE IF NOT EXISTS `poller_output_boost_local_data_ids` (`local_data_id` int(10) unsigned NOT NULL default 0, `process_handler` int(10) unsigned default 0, PRIMARY KEY USING BTREE (`local_data_id`), KEY `process_handler` USING BTREE (`process_handler`)) ENGINE=MEMORY');
 	}
 
 	/**
