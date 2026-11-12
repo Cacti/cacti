@@ -64,6 +64,11 @@ class RequestDispatchTest(unittest.TestCase):
     def test_import_change_runs_the_manifest_fixture(self):
         self.dispatch('lib/import.php', 'PackageManifestMatrix.php')
 
+    def test_secret_field_change_runs_the_save_fixture(self):
+        for path in ['settings.php', 'pollers.php', 'tests/fixtures/Core/SecretFieldSaveMatrix.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'SecretFieldSaveMatrix.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -97,6 +102,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
+                           'Core/SecretFieldSaveMatrix.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)

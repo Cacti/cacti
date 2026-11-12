@@ -182,6 +182,7 @@ $fields_poller_edit = [
 		'value'         => '|arg1:dbpass|',
 		'size'          => '40',
 		'default'       => $database_password,
+		'secret'        => true,
 		'max_length'    => '64'
 	],
 	'dbport' => [
@@ -357,7 +358,7 @@ function form_save() : void {
 			$save['dbdefault']             = CactiValidator::validateInput(gnrv('dbdefault'), 'dbdefault', []);
 			$save['dbhost']                = CactiValidator::validateInput(gnrv('dbhost'),    'dbhost',    []);
 			$save['dbuser']                = CactiValidator::validateInput(gnrv('dbuser'),    'dbuser',    []);
-			$save['dbpass']                = CactiValidator::validateInput(gnrv('dbpass'),    'dbpass',    []);
+			$save['dbpass']                = CactiValidator::validateInput(form_secret_value('dbpass', poller_stored_dbpass((int) $save['id'])), 'dbpass', []);
 			$save['dbport']                = CactiValidator::validateInput(gnrv('dbport'),
 				'dbport',
 				[new Assert\Regex(pattern: '/^[0-9]+$/')]);
@@ -839,6 +840,7 @@ function poller_edit() : void {
 						dbdefault: $('#dbdefault').val(),
 						dbhost: $('#dbhost').val(),
 						dbuser: $('#dbuser').val(),
+						id: $('#id').val(),
 						dbpass: $('#dbpass').val(),
 						dbport: $('#dbport').val(),
 						dbretries: $('#dbretries').val(),
@@ -849,6 +851,10 @@ function poller_edit() : void {
 						dbsslcapath: $('#dbsslcapath').val(),
 						dbsslverifyservercert: dbsslverifyservercert
 					};
+
+					if ($('#dbpass_clear').is(':checked')) {
+						data.dbpass_clear = 'on';
+					}
 
 					postUrl(options, data);
 				}
@@ -911,6 +917,25 @@ function poller_edit() : void {
 	form_save_buttons($form_buttons);
 }
 
+/**
+ * The remote database password the edit form does not render: the saved one
+ * for an existing data collector, or the main database password that a new
+ * data collector's form uses as its default.
+ *
+ * @param int $id The data collector id, 0 for a new one
+ *
+ * @return string
+ */
+function poller_stored_dbpass(int $id) : string {
+	global $database_password;
+
+	if ($id > 0) {
+		return (string) db_fetch_cell_prepared('SELECT dbpass FROM poller WHERE id = ?', [$id]);
+	}
+
+	return (string) $database_password;
+}
+
 function test_database_connection(array $poller = []) : bool {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
@@ -943,6 +968,8 @@ function test_database_connection(array $poller = []) : bool {
 				} else {
 					$poller['dbsslverifyservercert'] = '';
 				}
+			} elseif ($field == 'dbpass') {
+				$poller['dbpass'] = form_secret_value('dbpass', poller_stored_dbpass((int) gfrv('id')));
 			} elseif (isrv($field)) {
 				$poller[$field] = gnrv($field);
 			} else {
