@@ -1971,6 +1971,14 @@ function form_dialog_box() : void {
 }
 
 function get_repo_file(string $repo_id, string $filename = 'package.manifest', bool $javascript = false) : mixed {
+	// The manifest is not signed, so a file name taken from it must name a
+	// file directly inside the repository.
+	if (!package_repo_filename_valid($filename)) {
+		cacti_log('WARNING: Package Repository file name rejected: ' . $filename, false, 'IMPORT');
+
+		return false;
+	}
+
 	$repo = db_fetch_row_prepared('SELECT *
 		FROM package_repositories
 		WHERE id = ?',
