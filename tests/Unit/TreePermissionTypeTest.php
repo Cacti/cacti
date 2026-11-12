@@ -19,19 +19,12 @@ use TreeSqliteFixture;
 /*
  * user_auth_perms and user_auth_group_perms share one item_id column across
  * permission types (1 graph, 2 tree, 3 device, 4 graph template). These tests
- * run the unchanged lib/auth.php functions against SQLite and check that a
+ * run the lib/auth.php functions against SQLite and check that a
  * permission row only counts for its own type, and that each group's tree
  * policy is decided by that group's own tree exceptions.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
-
-TreeSqliteFixture::install(__NAMESPACE__);
-
-foreach (['auth_check_perms', 'is_tree_allowed', 'get_simple_device_perms'] as $function) {
-	cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/auth.php', $function, __NAMESPACE__);
-}
 
 const USER = 7;
 
@@ -63,7 +56,7 @@ function tree_allowed() : bool {
 }
 
 afterEach(function () {
-	$_SESSION = [];
+	TreeSqliteFixture::restore();
 });
 
 test('a group graph permission sharing the tree id does not grant a deny-by-default tree', function () {

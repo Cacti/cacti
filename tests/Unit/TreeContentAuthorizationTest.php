@@ -18,55 +18,49 @@ use TreeSqliteFixture;
 
 /*
  * graph_view.php?action=get_node renders a branch through
- * get_allowed_tree_content(). The unchanged function runs against SQLite and
- * must return nothing for a tree outside the user's allowed trees, including
- * when the user may view no tree at all.
+ * get_allowed_tree_content(). The function runs against SQLite with the real
+ * tree permission checks and must return nothing for a tree outside the
+ * user's allowed trees, including when the user may view no tree at all.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
 
-TreeSqliteFixture::install(__NAMESPACE__);
+const USER = 6;
 
-cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/auth.php', 'get_allowed_tree_content', __NAMESPACE__);
+/*
+ * The user may view only the trees in $allowed: trees are denied by default
+ * and each allowed tree is a tree exception. Graphs are allowed by default,
+ * so every branch below holds a visible graph and is not empty.
+ */
+function titles(int $tree_id, array $allowed) : array {
+	$pdo = TreeSqliteFixture::$pdo;
+	$pdo->exec('DELETE FROM user_auth_perms');
 
-$GLOBALS['tree_content_allowed'] = [];
-
-function get_allowed_trees(bool $edit = false, bool $return_sql = false, string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
-	$trees = [];
-
-	foreach ($GLOBALS['tree_content_allowed'] as $id) {
-		$trees[] = ['id' => $id, 'name' => "tree $id"];
+	foreach ($allowed as $id) {
+		$pdo->exec('INSERT INTO user_auth_perms (user_id, item_id, type) VALUES (' . USER . ", $id, 2)");
 	}
 
-	return $trees;
-}
-
-function is_tree_allowed(int $tree_id, int $user_id = 0) : bool {
-	return in_array($tree_id, $GLOBALS['tree_content_allowed'], true);
-}
-
-function is_tree_branch_empty(int $tree_id, int $parent = 0) : bool {
-	return false;
-}
-
-function is_device_allowed(int $device_id, int $user_id = 0) : bool {
-	return true;
-}
-
-function titles(int $tree_id, array $allowed) : array {
-	$GLOBALS['tree_content_allowed'] = $allowed;
+	$_SESSION = [SESS_USER_ID => USER];
 
 	return array_column(get_allowed_tree_content($tree_id, 0), 'title');
 }
 
 beforeEach(function () {
 	TreeSqliteFixture::reset();
+	TreeSqliteFixture::user(USER, ['policy_trees' => 2]);
 	TreeSqliteFixture::$pdo->exec("INSERT INTO graph_tree (id, name) VALUES (1, 'one'), (2, 'two')");
+	TreeSqliteFixture::insert('graph_local', [['id' => 31], ['id' => 32]]);
+	TreeSqliteFixture::insert('graph_templates_graph', [['local_graph_id' => 31], ['local_graph_id' => 32]]);
 	TreeSqliteFixture::items([
-		['parent' => 0, 'position' => 1, 'graph_tree_id' => 1, 'title' => 'one branch'],
-		['parent' => 0, 'position' => 1, 'graph_tree_id' => 2, 'title' => 'two branch'],
+		['id' => 1, 'parent' => 0, 'position' => 1, 'graph_tree_id' => 1, 'title' => 'one branch'],
+		['id' => 2, 'parent' => 0, 'position' => 1, 'graph_tree_id' => 2, 'title' => 'two branch'],
+		['id' => 3, 'parent' => 1, 'position' => 1, 'graph_tree_id' => 1, 'local_graph_id' => 31],
+		['id' => 4, 'parent' => 2, 'position' => 1, 'graph_tree_id' => 2, 'local_graph_id' => 32],
 	]);
+});
+
+afterEach(function () {
+	TreeSqliteFixture::restore();
 });
 
 test('an allowed tree returns its branches', function () {

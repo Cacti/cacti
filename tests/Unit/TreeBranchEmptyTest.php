@@ -18,74 +18,46 @@ use TreeSqliteFixture;
 
 /*
  * is_tree_branch_empty() decides whether a tree branch is drawn for the
- * current user. The unchanged lib/auth.php code runs against SQLite with the
- * permission helpers replaced by fakes that answer from fixed allow lists, so
- * these tests pin both the visibility rules and the number of queries.
+ * current user. The lib/auth.php code runs against SQLite with the real
+ * permission helpers, so these tests pin both the visibility rules and the
+ * number of queries.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
 
-TreeSqliteFixture::install(__NAMESPACE__);
+const USER = 3;
 
-foreach (['is_tree_branch_empty', 'get_tree_visible_branches'] as $function) {
-	cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/auth.php', $function, __NAMESPACE__);
-}
-
-$GLOBALS['tbe'] = [];
-
-function read_config_option(string $name, bool $force = false) : mixed {
-	return $name == 'time_last_change_branch' ? $GLOBALS['tbe']['changed'] : '';
-}
-
-function get_simple_graph_perms(int $user_id) : bool {
-	return $GLOBALS['tbe']['simple'];
-}
-
-function ids_in(string $sql_where) : array {
-	preg_match('/IN\s*\(([0-9, ]*)\)/', $sql_where, $match);
-
-	return array_map('intval', array_filter(explode(',', $match[1] ?? ''), 'strlen'));
-}
-
-function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
-	$GLOBALS['tbe']['perm_calls']++;
-
-	$rows = [];
-
-	foreach (array_intersect(ids_in($sql_where), $GLOBALS['tbe']['graphs']) as $id) {
-		$rows[] = ['local_graph_id' => $id];
-	}
-
-	return $rows;
-}
-
-function get_allowed_devices(string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $device_id = 0) : array {
-	$GLOBALS['tbe']['perm_calls']++;
-
-	$rows = [];
-
-	foreach (array_intersect(ids_in($sql_where), $GLOBALS['tbe']['hosts']) as $id) {
-		$rows[] = ['id' => $id];
-	}
-
-	return $rows;
-}
-
+/*
+ * Graphs and devices are denied by default; each allowed one is an exception.
+ * With $simple the user keeps the allow-by-default policies and no exceptions.
+ */
 function allow(array $graphs = [], array $hosts = [], bool $simple = false) : void {
-	$GLOBALS['tbe']['graphs'] = $graphs;
-	$GLOBALS['tbe']['hosts']  = $hosts;
-	$GLOBALS['tbe']['simple'] = $simple;
-	$GLOBALS['tbe']['changed']++;
+	$pdo = TreeSqliteFixture::$pdo;
+	$pdo->exec('DELETE FROM user_auth_perms');
+	$pdo->exec('DELETE FROM user_auth');
+	TreeSqliteFixture::user(USER, $simple ? [] : ['policy_graphs' => 2, 'policy_hosts' => 2, 'policy_graph_templates' => 2]);
+
+	foreach ($graphs as $id) {
+		TreeSqliteFixture::insert('user_auth_perms', [['user_id' => USER, 'item_id' => $id, 'type' => 1]]);
+	}
+
+	foreach ($hosts as $id) {
+		TreeSqliteFixture::insert('user_auth_perms', [['user_id' => USER, 'item_id' => $id, 'type' => 3]]);
+	}
+
+	TreeSqliteFixture::touch();
+	unset($_SESSION[SESS_TREE_PERMS], $_SESSION[SESS_SIMPLE_PERMS]);
 }
 
 beforeEach(function () {
-	$_SESSION = [SESS_USER_ID => 3];
-
-	$GLOBALS['tbe'] = ['graphs' => [], 'hosts' => [], 'simple' => false, 'perm_calls' => 0, 'changed' => ($GLOBALS['tbe']['changed'] ?? 0) + 1];
+	$GLOBALS['settings_user'] = [];
+	$_SESSION                 = [SESS_USER_ID => USER];
 
 	TreeSqliteFixture::reset(20000);
-	TreeSqliteFixture::$pdo->exec('INSERT INTO host (id, site_id) VALUES (100, 7), (101, 7), (200, 0), (300, 8)');
+	TreeSqliteFixture::$pdo->exec('INSERT INTO host (id, site_id) VALUES (100, 7), (101, 7), (200, 0), (300, 8), (999, 0)');
+	// the graphs sit on a device outside the tree: a device with an allowed graph is itself viewable
+	TreeSqliteFixture::insert('graph_local', [['id' => 50, 'host_id' => 999], ['id' => 60, 'host_id' => 999], ['id' => 70, 'host_id' => 999]]);
+	TreeSqliteFixture::insert('graph_templates_graph', [['local_graph_id' => 50, 'title_cache' => 'g50'], ['local_graph_id' => 60, 'title_cache' => 'g60'], ['local_graph_id' => 70, 'title_cache' => 'g70']]);
 
 	// 1 > 2 > 3 (graph 50), 1 > 4 (site 7), 1 > 5 (host 200), 6 (empty branch), 9 (host 300) > 10 (graph 60)
 	TreeSqliteFixture::items([
@@ -101,7 +73,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-	$_SESSION = [];
+	TreeSqliteFixture::restore();
 });
 
 test('nothing visible leaves every branch empty', function () {
@@ -182,9 +154,9 @@ test('one check of a large tree with nothing visible needs a bounded number of q
 
 	expect(is_tree_branch_empty(2, 0))->toBeTrue();
 
-	// 1110 branches, 1000 graphs and 1000 devices
-	expect(TreeSqliteFixture::$queries)->toBeLessThanOrEqual(3)
-		->and($GLOBALS['tbe']['perm_calls'])->toBeLessThanOrEqual(2);
+	// 1110 branches, 1000 graphs and 1000 devices: one read of the items and one
+	// batch each for the graph and device permission helpers, not one query per item
+	expect(TreeSqliteFixture::$queries)->toBeLessThanOrEqual(20);
 
 	// the rest of the tree is answered from the same read
 	TreeSqliteFixture::resetCounters();
