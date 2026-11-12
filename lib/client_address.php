@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-use Symfony\Component\HttpFoundation\IpUtils;
+require_once __DIR__ . '/ip.php';
 
 /**
  * Client address resolution.
@@ -59,7 +59,8 @@ function cacti_ip_family(string $ip) : int {
  * (::1 and 0:0:0:0:0:0:0:1), while an IPv4-mapped entry never silently matches
  * its bare IPv4 form.  CIDR entries such as 10.0.0.0/8 are supported.  A
  * malformed, non-IP entry falls back to exact string equality so existing
- * configurations keep working.
+ * configurations keep working, which means a malformed CIDR block such as
+ * 10.0.0.0/2x simply never matches.
  *
  * @param string $address The address to test
  * @param array  $trusted The configured trusted proxy entries
@@ -84,10 +85,11 @@ function cacti_trusted_proxy_match(string $address, array $trusted) : bool {
 			$address_fam = cacti_ip_family($address);
 
 			/* An IPv4-mapped IPv6 address (::ffff:a.b.c.d) must never silently match a
-			 * bare IPv4 entry, so only consult IpUtils when both sides are the same IP
-			 * family.  Newer Symfony releases normalize the mapped form inside checkIp(),
-			 * and this family gate keeps the match deterministic regardless of version. */
-			if ($address_fam !== 0 && $address_fam === cacti_ip_family($entry_ip) && IpUtils::checkIp($address, $entry)) {
+			 * bare IPv4 entry, so only consult the CIDR matcher when both sides are the
+			 * same IP family.  cacti_ip_in_cidr() rejects a malformed prefix such as
+			 * 10.0.0.0/2x instead of throwing, so a typo here cannot break every
+			 * request that resolves the client address. */
+			if ($address_fam !== 0 && $address_fam === cacti_ip_family($entry_ip) && cacti_ip_in_cidr($address, $entry)) {
 				return true;
 			}
 		}
