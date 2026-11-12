@@ -65,18 +65,23 @@ function layouts_form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	// Only an action offered to this user may be confirmed or applied.
+	$drp_action = request_enum('drp_action', array_keys($actions));
+
+	if ($drp_action === '') {
+		cacti_redirect('layouts.php');
+	}
 	// ====================================================
 
 	$user_id = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
 
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(request_string('selected_items'));
 
 		if ($selected_items != false) {
 			$selected_items = array_values(array_map('intval', $selected_items));
 
-			switch (get_nfilter_request_var('drp_action')) {
+			switch ($drp_action) {
 				case '1': // delete
 					foreach ($selected_items as $id) {
 						filter_layouts_delete($id);

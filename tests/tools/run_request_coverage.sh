@@ -67,6 +67,8 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 
 run_php_probe tests/fixtures/Core/RequestAccessorMatrix.php '^(lib/html_utility\.php|tests/fixtures/Core/RequestAccessorMatrix\.php)'
 
+run_php_probe tests/fixtures/Core/LayoutActionsMatrix.php '^(layouts\.php|lib/html_utility\.php|tests/fixtures/Core/LayoutActionsMatrix\.php)'
+
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
