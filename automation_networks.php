@@ -639,12 +639,12 @@ function network_get_field_array(array $network = []) : array {
 		'ignore_ips' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('IP Addresses to Ignore'),
-			'description'   => __('Enter valid comma separated list command of IP Addresses from this range to ignore.'),
+			'description'   => __('Enter a comma separated list of IP Addresses or CIDR blocks such as 192.168.1.0/28 from this range to ignore.'),
 			'value'         => '|arg1:ignore_ips|',
 			'textarea_rows' => '2',
 			'textarea_cols' => '80',
 			'max_length'    => '1024',
-			'placeholder'   => __('Comma delimited list of IP Addresses to not scan')
+			'placeholder'   => __('Comma delimited list of IP Addresses or CIDR blocks to not scan')
 		],
 		'total_ips' => [
 			'method'        => 'other',

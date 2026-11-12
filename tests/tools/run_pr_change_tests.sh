@@ -50,6 +50,12 @@ if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
 fi
+for fixture in IpRangeDiscovery AutomationNetworkIgnoreField; do
+	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
+		run_probe "$fixture.php" "$fixture"
+	fi
+done
+
 if [[ -f tests/fixtures/Core/Boost/FailedDataSourceIsolation.php ]]; then
 	run_probe Boost/FailedDataSourceIsolation.php boost-failed-data-source-isolation
 fi
