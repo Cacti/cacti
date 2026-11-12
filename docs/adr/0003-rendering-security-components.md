@@ -1,10 +1,11 @@
 <!-- SPDX-License-Identifier: GPL-2.0-or-later -->
 
-# 0003 - Rendering security and selective Symfony component adoption
+# 0003 - Rendering security with native escape-by-default helpers
 
 - Status: Proposed
-- Date: 2026-10-20
+- Date: 2026-10-20, revised 2026-11-12
 - Deciders: Cacti maintainers
+- Related: [0004](0004-reduce-runtime-dependencies.md) (runtime dependencies)
 
 ## Context
 
@@ -34,10 +35,12 @@ process described in [SECURITY.md](../../SECURITY.md).
 
 ## Decision
 
-Use existing context-specific output helpers for focused fixes. Evaluate Symfony
-HTML Sanitizer for narrowly defined untrusted HTML fragments, and consider Twig
-for separately scoped rendering migrations. Keep necessary maintenance fixes
-independent of framework adoption.
+Use existing context-specific output helpers for focused fixes. For new and
+migrated rendering code, make escaping the default through a native `SafeHtml`
+value type and helpers that escape plain strings, enforced by a CI check. Add no
+template engine or other rendering dependency; [0004](0004-reduce-runtime-dependencies.md)
+covers the runtime dependency set. Keep necessary maintenance fixes independent
+of the migration.
 
 ### Existing Symfony components: reuse assessment
 
@@ -69,9 +72,14 @@ core and plugin caller.
 - **String and Security CSRF: retain their current roles.** String operations
   do not provide context-specific HTML safety. Replacing the existing CSRF
   integration would not resolve output-encoding defects.
-- **HTML Sanitizer, Twig, and Symfony Form: separate adoption decisions.**
-  None is currently locked. The following sections describe when the first two
-  would be useful; no new package is needed for the initial fixes.
+- **HTML Sanitizer, Twig, and Symfony Form: not adopted.** None is locked, and
+  this record does not add them. The escape-by-default design below replaces
+  the Twig option. Formatted HTML stays escaped text unless a fragment policy
+  justifies a sanitizer under the criteria in 0004.
+
+[0004](0004-reduce-runtime-dependencies.md) proposes replacing Validator and
+HttpFoundation with native code. Until that lands, the guidance above applies to
+existing callers; new rendering code should not add uses of either.
 
 [CactiRenderer](../../lib/renderer.php) includes PHP templates and buffers their
 output. Template path containment does not provide output autoescaping. Retain
@@ -96,15 +104,15 @@ its existing contract unless a separate template migration changes it.
   contain markup or callbacks. A blanket change to request retrieval or
   whole-page output would change those contracts.
 
-Symfony Validator may support validation in an existing migrated boundary.
 Introducing a second validation path solely to remove a finding is unnecessary;
 validation does not replace context-specific output handling.
 
 ### Intentionally formatted HTML
 
-Evaluate the standalone `symfony/html-sanitizer` component only where untrusted
-content is explicitly allowed to contain formatting. Plain descriptions and
-labels should remain escaped text.
+Plain descriptions and labels remain escaped text. Treat untrusted content as
+formatted HTML only where a feature explicitly allows formatting, and only after
+the policy below exists for that fragment. Choosing a sanitizer implementation
+is a dependency decision under 0004.
 
 An implementation proposal must identify the fragment's producer and consumers,
 then define the smallest required tag, attribute, and URL-scheme allowlists.
@@ -117,34 +125,49 @@ an entire generated page, an executable callback, or arbitrary plugin output
 through it. Plugins execute trusted application code; sanitizing one fragment
 does not sandbox a plugin.
 
-Add dependencies through Composer only after checking the target branch's PHP
-and extension requirements, licensing, dependency audit, and release packaging.
-Commit the lockfile and verify a clean install. Symfony 7.4's sanitizer uses
-different HTML parsers on PHP 8.3 and PHP 8.4 or later, so exercise the supported
-runtime matrix before adopting it.
+### Escape-by-default rendering
 
-### Twig migration
+Add a small `SafeHtml` value class and an `html_safe()` constructor. A
+`SafeHtml` value holds markup that is intended to be HTML; every other string is
+plain text. Each `html_safe()` call needs a comment stating why its input is
+trusted, such as output of another escaping helper or a fixed literal.
 
-Consider Twig in a separate PR that migrates one complete rendering component
-with its callers and tests. Keep HTML autoescaping enabled, quote attributes,
-and pass unescaped application values to templates to avoid double encoding.
-Preserve required entity handling and translation behavior.
+Add new rendering helpers, for example `html_cell()`, `html_link()` and
+`html_attr_list()`, that accept `string|SafeHtml`. They escape a string for the
+helper's output context and emit a `SafeHtml` value unchanged. URL helpers still
+validate the scheme and locality before encoding, and script data still goes
+through `cacti_script_data()`. Keep the existing helpers such as
+`form_selectable_cell()` unchanged: their callers pass both pre-escaped values
+and intentional markup, so changing them in place would double-encode some
+output and break other output, including plugin output. Move callers to the new
+helpers page by page; plugins can keep using the old ones.
 
-Every use of `raw` or an extension that declares output safe needs a documented
-trust contract. Autoescaping does not validate URL schemes or make arbitrary
-JavaScript interpolation safe. Continue using explicit URL validation and safe
-script-data serialization.
+Where a page benefits from a template, keep [CactiRenderer](../../lib/renderer.php)
+and plain PHP templates, but pass a view object instead of raw variables.
+Reading a value from the view escapes it as text; attribute and URL reads have
+their own methods; `raw()` returns only a `SafeHtml` value. Templates stay
+ordinary PHP with no new syntax.
 
-Twig adoption does not require migrating routing, persistence, or the whole
-application to Symfony in the same change. Symfony Form is also a separate
-decision; ordinary hidden fields do not justify a form-framework migration.
+Twig's autoescaping is safe because the engine enforces it. Native helpers need
+the same enforcement from CI: a static rule (Semgrep or PHPStan) that flags
+`print`, `echo` and `<?=` of anything other than a literal, an escaping helper
+call or a `SafeHtml` value. The rule starts as a ratchet over the existing sink
+inventory, so the count of unmigrated output sites can only decrease.
+
+Two risks remain that an engine would not have: an escaped string wrapped again
+in `SafeHtml` and later concatenated with unescaped text, and `__toString`
+conversions that bypass a helper. The static rule, focused tests and review
+cover them; the design does not remove them.
 
 ## Considered options
 
-1. **Focused helpers with selective components (recommended).** Reuses the
-   current interfaces and makes dependency adoption conditional on a concrete
-   rendering requirement. Costs include caller audits and fragment policies.
-2. **Move all affected pages to Symfony and Twig together.** Provides a common
+1. **Focused helpers with native escape-by-default rendering (recommended).**
+   Reuses the current interfaces and adds no dependency. Costs include caller
+   audits, fragment policies, and a static rule that has to stay complete.
+2. **Adopt Twig for migrated components.** The engine enforces autoescaping,
+   but it adds a runtime dependency, a template language, and a second
+   rendering path for plugin authors. Maintainers prefer not to take it.
+3. **Move all affected pages to Symfony and Twig together.** Provides a common
    template system, but couples security fixes to a larger compatibility and
    deployment change.
 3. **Escape all request values or sanitize the final page.** Has the wrong
@@ -180,19 +203,21 @@ Then prepare independently testable changes in this order:
    callback code and preserve go/clear, refresh, layout, and repeated AJAX
    behavior. Use Cacti's JSON and URL helpers. A `JsonResponse` conversion is
    outside this change.
-4. **Optional formatted-HTML pilot.** First inventory descriptions, tooltips,
-   and custom form controls that intentionally contain HTML. Choose one
-   fragment with a defined producer, consumer, and formatting policy for a
-   separate HTML Sanitizer evaluation. Do not silently reinterpret every
+4. **`SafeHtml`, escaping helpers and the static rule.** Add the value type,
+   the new context helpers and the CI rule as a ratchet over the sink
+   inventory, with tests and no caller changes.
+5. **Escape-by-default pilot.** Move one complete page, such as the reports
+   list, to the new helpers after its current output has characterization
+   tests. Then the shared table helpers, which produce most list output, and
+   later `draw_edit_form()`.
+6. **Optional formatted-HTML inventory.** List descriptions, tooltips, and
+   custom form controls that intentionally contain HTML, with the producer,
+   consumer and formatting policy of each. Do not silently reinterpret every
    `custom` control or tooltip as untrusted rich text.
-5. **Optional Twig pilot.** Choose one complete rendering component after its
-   current contract has characterization tests. Evaluate dependency and
-   packaging costs before selecting it; do not couple this to maintenance
-   remediation.
 
 Keep dependent caller changes and their tests together rather than splitting
 them to meet an arbitrary file count. Handle remaining cases individually.
-Evaluate HTML Sanitizer and Twig separately from these immediate fixes.
+Keep any sanitizer evaluation separate from these immediate fixes.
 
 Each stage must preserve valid rendered and submitted values, pass its focused
 regressions, and have current-revision scan evidence before expanding the scope.
@@ -212,10 +237,10 @@ restore a known vulnerable path.
 
 ## Consequences
 
-- Positive: fixes can share tested output rules without requiring a framework
-  rewrite, and intentional HTML has an explicit sanitization policy.
-- Negative: shared-helper changes require caller and plugin compatibility work.
-  New sanitization or template dependencies add packaging and runtime testing.
+- Positive: fixes can share tested output rules without a framework rewrite or
+  a new dependency, and new output is escaped unless explicitly marked safe.
+- Negative: shared-helper changes require caller and plugin compatibility work,
+  and the static rule has to be kept complete because no engine enforces it.
 - Neutral: legacy and migrated renderers may coexist until each component is
   verified. This record does not add a global coverage gate or a release date.
 
@@ -252,11 +277,12 @@ regression evidence is required when the proposed behavior is implemented.
 ## References
 
 - [OWASP XSS prevention guidance](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
-- [Symfony 7.4 HTML Sanitizer, including standalone use](https://symfony.com/doc/7.4/html_sanitizer.html)
+- [Go html/template safe content types](https://pkg.go.dev/html/template#HTML),
+  the model for `SafeHtml`
 - [Symfony 7.4 Validator](https://symfony.com/doc/7.4/validation.html)
 - [Symfony 7.4 HttpFoundation](https://symfony.com/doc/7.4/components/http_foundation.html)
-- [Symfony 7.4 OptionsResolver](https://symfony.com/doc/7.4/components/options_resolver.html)
-- [Twig autoescaping](https://twig.symfony.com/doc/3.x/tags/autoescape.html)
+- [Twig autoescaping](https://twig.symfony.com/doc/3.x/tags/autoescape.html),
+  the option not chosen
 
 ---
 Copyright (c) 2004-2026 - The Cacti Group, Inc.
