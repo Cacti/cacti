@@ -12,15 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
- * render_external_links() included external_links.contentfile from
- * include/content with only a file_exists() check, so a '../' value included an
- * arbitrary local file (stored LFI for a user with external-links write). It now
- * confines the resolved path to include/content the way link.php does, and
- * escapes the contentfile in the iframe src and the error message.
- */
-
-$src = file_get_contents(dirname(__DIR__, 2) . '/index.php');
+$src = file_get_contents(dirname(__DIR__, 4) . '/index.php');
 
 function _render_links_body(string $src): string {
 	expect($src)->not->toBeEmpty();
@@ -35,11 +27,10 @@ function _render_links_body(string $src): string {
 test('the content include is confined to include/content before it is required', function () use ($src) {
 	$body = _render_links_body($src);
 
-	$guard   = strpos($body, 'str_starts_with($file, $basepath . DIRECTORY_SEPARATOR)');
+	$guard   = strpos($body, 'if ($file !== false && is_file($file))');
 	$require = strpos($body, 'require_once($file)');
 
-	expect($body)->toContain("\$basepath = realpath(CACTI_PATH_INCLUDE . '/content')");
-	expect($body)->toContain('$file     = ($basepath !== false) ? realpath($basepath');
+	expect($body)->toContain("\$file = cacti_path_within(CACTI_PATH_INCLUDE . '/content', \$page['contentfile']);");
 	expect($guard)->not->toBeFalse();
 	expect($require)->not->toBeFalse();
 	// the confinement check gates the require
@@ -48,29 +39,21 @@ test('the content include is confined to include/content before it is required',
 	expect($body)->not->toContain('if (file_exists($file)) {');
 });
 
-test('a traversal contentfile does not resolve inside the content base', function () {
-	// mirror the guard: realpath of a traversal escapes the base, so str_starts_with fails
-	$base = sys_get_temp_dir() . '/cacti_content_' . getmypid();
-	@mkdir($base, 0700, true);
-	@mkdir($base . '/legit', 0700, true);
-	file_put_contents($base . '/legit/ok.php', '<?php');
-	file_put_contents(dirname($base) . '/evil.php', '<?php');
+test('external links render contained files, URLs and missing-file messages', function () {
+	require_once dirname(__DIR__, 3) . '/fixtures/ExternalLinkRendering.php';
+	$result = \Cacti\Test\ExternalLinks\render_fixture();
 
-	$within = static function (string $contentfile) use ($base): bool {
-		$basepath = realpath($base);
-		$file     = ($basepath !== false) ? realpath($basepath . '/' . $contentfile) : false;
-
-		return $file !== false && is_file($file) && str_starts_with($file, $basepath . DIRECTORY_SEPARATOR);
-	};
-
-	expect($within('legit/ok.php'))->toBeTrue();
-	expect($within('../evil.php'))->toBeFalse();
-	expect($within('legit/../../evil.php'))->toBeFalse();
-
-	@unlink($base . '/legit/ok.php');
-	@unlink(dirname($base) . '/evil.php');
-	@rmdir($base . '/legit');
-	@rmdir($base);
+	expect($result['html'])->toContain('Contained fixture content')
+		->toContain('missing&amp;page.txt')
+		->toContain('directory')
+		->toContain('src="https://example.test/page?a=1&amp;b=2"')
+		->toContain('Linked fixture content')
+		->toContain('leak.txt')
+		->not->toContain('Realm restricted fixture content')
+		->not->toContain('Outside fixture content')
+		->and(substr_count($result['html'], 'does not exist!!'))->toBe(3)
+		->and($result['empty'])->toBe('')
+		->and($result['styles'])->toBe([['FRONT'], ['FRONTTOP']]);
 });
 
 test('the contentfile is escaped in the iframe src and error output', function () use ($src) {
