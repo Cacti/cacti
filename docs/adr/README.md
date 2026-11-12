@@ -19,4 +19,5 @@ number, and open it as `Proposed`. A maintainer moves it to `Accepted`.
 |-----|-------|--------|----------|
 | [0001](0001-rest-api-architecture.md) | REST API architecture and framework | Proposed | #7300 |
 | [0002](0002-multi-database-support.md) | Multi-database support strategy | Proposed | #7301 |
-| [0003](0003-rendering-security-components.md) | Rendering security and selective Symfony component adoption | Proposed | [#8436](https://github.com/Cacti/cacti/pull/8436) |
+| [0003](0003-rendering-security-components.md) | Rendering security with native escape-by-default helpers | Proposed | [#8436](https://github.com/Cacti/cacti/pull/8436) |
+| [0004](0004-reduce-runtime-dependencies.md) | Reduce runtime dependencies | Proposed | [#8436](https://github.com/Cacti/cacti/pull/8436) |
