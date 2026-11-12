@@ -3136,8 +3136,7 @@ class Installer implements JsonSerializable {
 			$author = (isset($p['author']) && !empty($p['author'])) ? $p['author'] : '';
 
 			if (isset($p['homepage']) && !empty($p['homepage'])) {
-				$p['homepage'] = Installer::homepageUrl($p['homepage']);
-				$homepage = '<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>';
+				$homepage = Installer::homepageLink($p['homepage']);
 			} else {
 				$homepage = '';
 			}
@@ -3168,6 +3167,20 @@ class Installer implements JsonSerializable {
 	 */
 	public static function homepageUrl($homepage) {
 		return preg_match('~^https?://~i', $homepage) ? $homepage : 'https://' . $homepage;
+	}
+
+	/**
+	 * Builds the link for a template homepage. The value comes from the package
+	 * file, so it is escaped for both the attribute and the visible text.
+	 *
+	 * @param string $homepage The homepage as written in the template package.
+	 *
+	 * @return string The anchor markup.
+	 */
+	public static function homepageLink($homepage) {
+		$url = Installer::homepageUrl($homepage);
+
+		return '<a href="' . html_escape($url) . '" target="_new" rel="noopener noreferrer">' . html_escape($url) . '</a>';
 	}
 
 	/**
