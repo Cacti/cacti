@@ -840,7 +840,7 @@ function poller_edit() : void {
 						dbdefault: $('#dbdefault').val(),
 						dbhost: $('#dbhost').val(),
 						dbuser: $('#dbuser').val(),
-						id: $('#id').val(),
+						id: <?php print (int) $poller['id']; ?>,
 						dbpass: $('#dbpass').val(),
 						dbport: $('#dbport').val(),
 						dbretries: $('#dbretries').val(),
@@ -851,10 +851,6 @@ function poller_edit() : void {
 						dbsslcapath: $('#dbsslcapath').val(),
 						dbsslverifyservercert: dbsslverifyservercert
 					};
-
-					if ($('#dbpass_clear').is(':checked')) {
-						data.dbpass_clear = 'on';
-					}
 
 					postUrl(options, data);
 				}
@@ -936,6 +932,34 @@ function poller_stored_dbpass(int $id) : string {
 	return (string) $database_password;
 }
 
+/**
+ * The saved remote database password for a connection test left blank. It is
+ * only returned when the tested host, port, user and SSL settings all match
+ * the saved data collector, so the saved password is never sent to a
+ * different target.
+ *
+ * @param int   $id     The data collector id
+ * @param array $target The connection settings being tested
+ *
+ * @return string|null The saved password, or null when it must be typed
+ */
+function poller_saved_test_dbpass(int $id, array $target) : ?string {
+	$saved = db_fetch_row_prepared('SELECT dbhost, dbport, dbuser, dbpass, dbssl, dbsslkey, dbsslcert, dbsslca, dbsslcapath, dbsslverifyservercert FROM poller WHERE id = ?', [$id]);
+	$saved = is_array($saved) ? $saved : [];
+
+	if (!cacti_sizeof($saved)) {
+		return null;
+	}
+
+	foreach (['dbhost', 'dbport', 'dbuser', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca', 'dbsslcapath', 'dbsslverifyservercert'] as $column) {
+		if ((string) $saved[$column] !== (string) $target[$column]) {
+			return null;
+		}
+	}
+
+	return (string) $saved['dbpass'];
+}
+
 function test_database_connection(array $poller = []) : bool {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
@@ -968,8 +992,6 @@ function test_database_connection(array $poller = []) : bool {
 				} else {
 					$poller['dbsslverifyservercert'] = '';
 				}
-			} elseif ($field == 'dbpass') {
-				$poller['dbpass'] = form_secret_value('dbpass', poller_stored_dbpass((int) gfrv('id')));
 			} elseif (isrv($field)) {
 				$poller[$field] = gnrv($field);
 			} else {
@@ -977,6 +999,18 @@ function test_database_connection(array $poller = []) : bool {
 
 				return false;
 			}
+		}
+
+		if ($poller['dbpass'] === '') {
+			$saved = poller_saved_test_dbpass((int) gfrv('id'), $poller);
+
+			if ($saved === null) {
+				print '&nbsp;<i class="ti ti-x"></i>&nbsp;' . __('Enter the database password to test a changed connection');
+
+				return false;
+			}
+
+			$poller['dbpass'] = $saved;
 		}
 	}
 

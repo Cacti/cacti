@@ -8,6 +8,24 @@ namespace Cacti\Test\SecretFieldSave\Assert {
 		}
 	}
 }
+namespace Cacti\Auth {
+	// The login provider classes resolve these helpers in their own namespace first.
+	function gnrv($key) {
+		return \Cacti\Test\SecretFieldSave\gnrv($key);
+	}
+	function gfrv($key) {
+		return gnrv($key);
+	}
+	function form_input_validate($value, $name, $regex, $allow_nulls, $error) {
+		return $value;
+	}
+	function form_secret_value($name, $stored) {
+		return \Cacti\Test\SecretFieldSave\form_secret_value($name, $stored);
+	}
+	function db_fetch_cell_prepared($sql, $params = []) {
+		return json_encode(['specific_password' => 'stored-bind', 'client_secret' => 'stored-client']);
+	}
+}
 namespace Cacti\Test\SecretFieldSave {
 	if (PHP_SAPI !== 'cli') {
 		http_response_code(404);
@@ -22,6 +40,7 @@ namespace Cacti\Test\SecretFieldSave {
 	define('POLLER_ID', 1);
 	define('MESSAGE_LEVEL_WARN', 2);
 	define('MESSAGE_LEVEL_ERROR', 3);
+	define('POLLER_DELETE', 1);
 	// save_settings() requires the validator; the stub class below stands in for it.
 	$library = sys_get_temp_dir() . '/cacti-secret-field-' . bin2hex(random_bytes(6));
 	mkdir($library);
@@ -124,15 +143,80 @@ namespace Cacti\Test\SecretFieldSave {
 	}
 	function db_close($connection) {
 	}
+	function db_fetch_row_prepared($sql, $params = []) {
+		return $GLOBALS['rows'][$params[0]] ?? [];
+	}
+	function db_fetch_cell($sql) {
+		return 1;
+	}
+	function srv($key, $value) {
+		$GLOBALS['request'][$key] = $value;
+	}
+	function htmlerv($key) {
+		return htmle(gnrv($key));
+	}
+	function ierv($key) {
+		return empty($GLOBALS['request'][$key]);
+	}
+	function config_value_exists($name) {
+		return isset($GLOBALS['stored'][$name]);
+	}
+	function cacti_js_encode($value) {
+		return json_encode($value);
+	}
+	function csrf_get_tokens() {
+		return 'token';
+	}
+	function display_tooltip($text) {
+		return '';
+	}
+	function inject_form_variables($fields, $values) {
+		return $fields;
+	}
+	function draw_edit_form($form) {
+		foreach ($form['fields'] as $name => $field) {
+			if (($field['method'] ?? '') == 'textbox_password') {
+				draw_edit_control($name, $field);
+			}
+		}
+	}
+	function top_header() {
+	}
+	function bottom_footer() {
+	}
+	function validate_settings_filter() {
+	}
+	function set_config_option($name, $value) {
+	}
+	function html_start_box(...$args) {
+	}
+	function html_end_box(...$args) {
+	}
+	function form_start(...$args) {
+	}
+	function form_hidden_box(...$args) {
+	}
+	function form_save_button(...$args) {
+	}
+	function form_save_buttons(...$args) {
+	}
+	function api_plugin_hook($name) {
+	}
 
 	\cacti_fixture_source_function($root . '/lib/html_form.php', 'draw_edit_control', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/lib/html_form.php', 'form_text_box', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/lib/html_form.php', 'form_checkbox', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/lib/html_form.php', 'form_secret_is_stored', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/lib/html_form.php', 'form_secret_value', __NAMESPACE__);
+	\cacti_fixture_source_function($root . '/settings.php', 'display_settings', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/settings.php', 'save_settings', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/pollers.php', 'poller_stored_dbpass', __NAMESPACE__);
+	\cacti_fixture_source_function($root . '/pollers.php', 'poller_saved_test_dbpass', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/pollers.php', 'test_database_connection', __NAMESPACE__);
+	\cacti_fixture_source_function($root . '/pollers.php', 'poller_edit', __NAMESPACE__);
+	// login_providers.php only marks its password fields; loading its save handler instruments the file.
+	\cacti_fixture_source_function($root . '/login_providers.php', 'form_save', __NAMESPACE__ . '\\LoginProviders');
+	require_once $root . '/include/vendor/autoload.php';
 	\cacti_fixture_source_function($root . '/pollers.php', 'form_save', __NAMESPACE__);
 
 	$GLOBALS['cacti_fixture_contract'] = ['name' => 'secret-field-save', 'complete' => false, 'assertions' => 0, 'producers' => ['tests/fixtures/Core/SecretFieldSaveMatrix.php']];
@@ -176,22 +260,76 @@ namespace Cacti\Test\SecretFieldSave {
 		$check(($GLOBALS['writes']['settings_smtp_password'] ?? null) === $expected, 'settings ' . $case);
 	}
 
-	// pollers.php: the save and the connection test use the stored password when left blank.
+	// settings.php: the page shows that a value is stored, never the value itself.
+	$GLOBALS['tabs']    = ['mail' => 'Mail'];
+	$GLOBALS['request'] = ['tab' => 'mail'];
+	$GLOBALS['stored']  = ['settings_smtp_password' => 'stored-smtp-secret'];
+	$_SESSION           = [];
+	ob_start();
+	display_settings();
+	$html = (string) ob_get_clean();
+	$check(!str_contains($html, 'stored-smtp-secret') && str_contains($html, 'A value is stored.') && str_contains($html, "name='settings_smtp_password_clear'"), 'settings display');
+
+	// pollers.php: a blank save keeps the stored password, a new collector uses the default.
+	$base = ['name' => 'Remote', 'hostname' => 'remote.example', 'log_level' => '1', 'timezone' => 'UTC', 'notes' => '', 'processes' => '1', 'threads' => '1', 'sync_interval' => '7200', 'dbdefault' => 'cacti', 'dbhost' => 'db.example', 'dbuser' => 'cacti', 'dbport' => '3306', 'dbretries' => '2', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => '', 'dbsslcapath' => ''];
+
 	foreach ([
 		'existing blank keeps' => [['id' => '2', 'dbpass' => ''], 'remote-secret'],
 		'existing change'      => [['id' => '2', 'dbpass' => 'new-remote'], 'new-remote'],
 		'existing clear'       => [['id' => '2', 'dbpass' => '', 'dbpass_clear' => 'on'], ''],
 		'new uses default'     => [['id' => '0', 'dbpass' => ''], 'main-db-secret'],
 	] as $case => [$request, $expected]) {
-		$GLOBALS['request'] = ['save_component_poller' => 'on', 'name' => 'Remote', 'hostname' => 'remote.example', 'log_level' => '1', 'timezone' => 'UTC', 'notes' => '', 'processes' => '1', 'threads' => '1', 'sync_interval' => '7200', 'dbdefault' => 'cacti', 'dbhost' => 'db.example', 'dbuser' => 'cacti', 'dbport' => '3306', 'dbretries' => '2', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => '', 'dbsslcapath' => ''] + $request;
+		$GLOBALS['request'] = ['save_component_poller' => 'on'] + $request + $base;
 		$GLOBALS['stored']  = ['2' => 'remote-secret'];
 		form_save();
 		$check($GLOBALS['saved']['dbpass'] === $expected, 'poller save ' . $case);
+	}
 
+	// pollers.php connection test: a blank password only reuses the saved one for the saved target.
+	$GLOBALS['rows'] = [2 => ['dbhost' => 'db.example', 'dbport' => '3306', 'dbuser' => 'cacti', 'dbpass' => 'remote-secret', 'dbssl' => '', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => '', 'dbsslcapath' => '', 'dbsslverifyservercert' => '']];
+
+	foreach ([
+		'blank, saved target'      => [['id' => '2', 'dbpass' => ''], 'remote-secret'],
+		'blank, changed host'      => [['id' => '2', 'dbpass' => '', 'dbhost' => 'other.example'], null],
+		'blank, changed port'      => [['id' => '2', 'dbpass' => '', 'dbport' => '3307'], null],
+		'blank, changed user'      => [['id' => '2', 'dbpass' => '', 'dbuser' => 'other'], null],
+		'blank, changed SSL'       => [['id' => '2', 'dbpass' => '', 'dbssl' => 'on'], null],
+		'blank, no saved record'   => [['id' => '3', 'dbpass' => ''], null],
+		'typed, changed host'      => [['id' => '2', 'dbpass' => 'typed-secret', 'dbhost' => 'other.example'], 'typed-secret'],
+	] as $case => [$request, $expected]) {
+		$GLOBALS['request']   = $request + $base;
+		$GLOBALS['connected'] = null;
 		ob_start();
-		test_database_connection();
-		ob_end_clean();
-		$check($GLOBALS['connected'][2] === $expected, 'poller ping ' . $case);
+		$result = test_database_connection();
+		$output = (string) ob_get_clean();
+
+		if ($expected === null) {
+			$check($result === false && $GLOBALS['connected'] === null && str_contains($output, 'Enter the database password'), 'poller ping ' . $case);
+		} else {
+			$check($result === true && $GLOBALS['connected'][2] === $expected, 'poller ping ' . $case);
+		}
+	}
+
+	// pollers.php edit page: the connection test posts the record id, and the password is not rendered.
+	$GLOBALS['fields_poller_edit'] = ['dbpass' => ['method' => 'textbox_password', 'value' => 'remote-secret', 'max_length' => 64, 'form_id' => 2, 'secret' => true]];
+	$GLOBALS['request']            = ['id' => '2'];
+	$GLOBALS['rows']               = [2 => ['id' => 2, 'name' => 'Remote', 'timezone' => 'UTC']];
+	$_SESSION                      = [];
+	ob_start();
+	poller_edit();
+	$html = (string) ob_get_clean();
+	$check(str_contains($html, 'id: 2,') && !str_contains($html, 'remote-secret'), 'poller edit');
+
+	// Login providers: the LDAP bind password and OpenID client secret follow the same rules.
+	foreach ([
+		'ldap blank keeps'   => [\Cacti\Auth\LdapLoginProvider::class, 'specific_password', [], 'stored-bind'],
+		'ldap change'        => [\Cacti\Auth\LdapLoginProvider::class, 'specific_password', ['specific_password' => 'new-bind'], 'new-bind'],
+		'ldap clear'         => [\Cacti\Auth\LdapLoginProvider::class, 'specific_password', ['specific_password_clear' => 'on'], ''],
+		'openid blank keeps' => [\Cacti\Auth\OpenIdLoginProvider::class, 'client_secret', [], 'stored-client'],
+		'openid clear'       => [\Cacti\Auth\OpenIdLoginProvider::class, 'client_secret', ['client_secret_clear' => 'on'], ''],
+	] as $case => [$class, $key, $request, $expected]) {
+		$GLOBALS['request'] = ['id' => '4', 'server' => 'ldap.example'] + $request;
+		$check($class::collectParameters()[$key] === $expected, 'login provider ' . $case);
 	}
 
 	unlink($library . '/CactiSettings.php');
