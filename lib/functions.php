@@ -1207,8 +1207,13 @@ function kill_session_var($var_name) {
  * @return bool Bool.
  */
 function force_session_data() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
+		return false;
+	} elseif (empty($config['is_web'])) {
+		// The session settings only exist on the web; a CLI script has nothing to restore
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
