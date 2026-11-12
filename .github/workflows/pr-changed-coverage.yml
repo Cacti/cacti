@@ -10,6 +10,7 @@ on:
       - 'lib/functions.php'
       - 'lib/html.php'
       - 'include/layout.js'
+      - 'install/install.js'
       - 'include/css/graph_drilldown.css'
       - 'include/themes/**/main.css'
       - 'tests/Helpers/FixtureCoverage.php'
