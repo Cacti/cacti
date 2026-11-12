@@ -869,7 +869,7 @@ function create_data_query_branch(array $leaf, int $site_id = -1, int $ht = -1) 
 				$sql_order = 'gtg.title_cache';
 			}
 
-			$ntg_where = 'gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0';
+			$ntg_where = 'gl.host_id=' . (int) $leaf['host_id'] . ' AND gl.snmp_query_id=0';
 		} else {
 			if (read_config_option('dsstats_enable') == 'on' && grv('graph_source') != '' && grv('graph_order') != '') {
 				$sql_order = [
