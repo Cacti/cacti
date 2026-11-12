@@ -3242,7 +3242,7 @@ function cacti_process_kill_db_connection(array $process, string $environ = 'POL
 
 	cacti_log(sprintf('WARNING: Ending database connection %d of the killed process, busy for %d seconds.', $connection_id, $thread['TIME']), false, $environ);
 
-	return (bool) db_execute('KILL CONNECTION ' . $connection_id, false);
+	return (bool) db_execute_prepared('KILL CONNECTION ?', [$connection_id], false);
 }
 
 /**
