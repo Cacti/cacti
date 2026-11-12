@@ -1,0 +1,1 @@
+Decide tree branch visibility, search ancestry and subtree deletes from one read of the tree, re-sort only the affected siblings on insert, sort the root level when a tree sort type changes, and show branches that hold both sites and devices
