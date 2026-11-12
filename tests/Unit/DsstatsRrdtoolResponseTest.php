@@ -37,6 +37,15 @@ test('the pipe reader stops at the status line, not at OK inside a data source n
 		->and(dsstats_rrdtool_execute('info missing.rrd', $pipe))->toBe($second);
 });
 
+test('the pipe reader accepts the bare OK status line of an RRDtool built without getrusage', function () {
+	$info   = "filename = \"ok.rrd\"\nds[LOOKUPS].index = 0\nrra[0].cf = \"AVERAGE\"\nOK\n";
+	$second = "0x0\ntraffic-avg_avg=1.000000\nOK\r\n";
+	$pipe   = dsstats_test_rrdtool($info . $second);
+
+	expect(dsstats_rrdtool_execute('info ok.rrd', $pipe))->toBe($info)
+		->and(dsstats_rrdtool_execute('graph -', $pipe))->toBe($second);
+});
+
 test('negative statistics keep their sign and unknown statistics become NULL', function () {
 	$this->pdo->exec("INSERT INTO data_source_stats_command_cache VALUES (1, 'DEF:aa_a=\"neg.rrd\":temp:AVERAGE PRINT:aa_a_aa:temp-avg_avg=%lf')");
 

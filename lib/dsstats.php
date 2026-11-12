@@ -1384,8 +1384,9 @@ function dsstats_rrdtool_execute(string $command, array $rrd_process, int $timeo
 
 		if (is_resource($pipes[1])) {
 			/**
-			 * Each response ends with a status line that begins 'OK u:' or
-			 * 'ERROR:'.  Output such as 'ds[LOOKUPS].index' also contains 'OK',
+			 * Each response ends with a status line: 'OK u:...', or a bare 'OK'
+			 * from an RRDtool built without getrusage(), or 'ERROR:'.  Output
+			 * such as 'ds[LOOKUPS].index' also contains 'OK',
 			 * so only a complete line may end the read.  Stopping early leaves
 			 * the rest of the response for the next command to read.
 			 */
@@ -1441,7 +1442,7 @@ function dsstats_rrdtool_execute(string $command, array $rrd_process, int $timeo
 					continue;
 				}
 
-				if (str_starts_with($line, 'OK u:') || str_starts_with($line, 'ERROR:')) {
+				if (rtrim($line, "\r\n") === 'OK' || str_starts_with($line, 'OK u:') || str_starts_with($line, 'ERROR:')) {
 					break;
 				}
 
