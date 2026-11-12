@@ -131,7 +131,7 @@ describe('login provider secrets', function () {
 	]);
 });
 
-test('settings and data collector saves keep, replace or clear the stored password', function () {
+test('settings and data collector pages keep, replace or clear the stored password', function () {
 	$pipes   = [];
 	$process = proc_open([PHP_BINARY, dirname(__DIR__, 3) . '/fixtures/Core/SecretFieldSaveMatrix.php'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 	expect(is_resource($process))->toBeTrue();
@@ -140,5 +140,5 @@ test('settings and data collector saves keep, replace or clear the stored passwo
 	fclose($pipes[1]);
 	fclose($pipes[2]);
 	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
-	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(15);
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(25);
 });
