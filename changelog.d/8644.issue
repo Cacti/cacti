@@ -1,0 +1,1 @@
+Make automation graph and tree creation recoverable, and preserve template ancestry and data source identity while scaling template propagation
