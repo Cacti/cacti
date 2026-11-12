@@ -531,6 +531,29 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * Forgets an error that a later value has resolved. A section left behind
+	 * with no items still counts as an error for callers that test the error
+	 * list, and the step recorded for the first error would keep sending the
+	 * wizard back, so both are cleared with the last error.
+	 *
+	 * @param string $section The section the error was added to.
+	 * @param string $item The item the error was added for.
+	 *
+	 * @return void No value is returned.
+	 */
+	private function clearError($section, $item) {
+		unset($this->errors[$section][$item]);
+
+		if (isset($this->errors[$section]) && $this->errors[$section] === array()) {
+			unset($this->errors[$section]);
+		}
+
+		if ($this->errors === array()) {
+			$this->stepError = false;
+		}
+	}
+
+	/**
 	 * setProgress() - set the progress point of Installer::STEP_INSTALL * @param_progress - one of
 	 * Installer::PROGRESS_ constants. Used as part of Cacti's lib functionality.
 	 *
@@ -983,7 +1006,7 @@ class Installer implements JsonSerializable {
 					}
 
 					if ($should_set) {
-						unset($this->errors['Paths'][$name]);
+						$this->clearError('Paths', $name);
 						set_install_config_option($name, empty($path)?'':$path);
 					}
 
