@@ -4382,7 +4382,7 @@ class Installer implements JsonSerializable {
 
 				// Only update database version if database successfully upgraded
 				if ($ver_status == DB_STATUS_SUCCESS || $ver_status == DB_STATUS_SKIPPED) {
-					if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+					if (Installer::shouldStampUpgradeVersion($orig_cacti_version, $cacti_upgrade_version)) {
 						if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
 							$ver_status = DB_STATUS_ERROR;
 						} else {
@@ -4411,13 +4411,27 @@ class Installer implements JsonSerializable {
 			return __('One or more database upgrades failed or completed with warnings; the database version was not advanced');
 		}
 
-		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<=') &&
-			!db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL])
-		) {
-			return __('Unable to persist the upgraded database version');
-		}
-
+		// The target version is stamped by install() once templates and the
+		// schema check have passed, so a failure here leaves the installer
+		// able to run the upgrade again.
 		return '';
+	}
+
+	/**
+	 * Decide whether an upgrade step may record its version in the version table.
+	 *
+	 * Intermediate versions are recorded so an interrupted upgrade resumes at the
+	 * step that failed. The running release is never recorded here: the database
+	 * would then read as current before templates and the final schema check have
+	 * run, and getMode() would report nothing left to do.
+	 *
+	 * @param string $current The version currently recorded
+	 * @param string $step    The upgrade step that just completed
+	 *
+	 * @return bool
+	 */
+	public static function shouldStampUpgradeVersion(string $current, string $step) : bool {
+		return cacti_version_compare($current, $step, '<') && cacti_version_compare($step, CACTI_VERSION, '<');
 	}
 
 	private function checkDatabaseUpgrade(string $cacti_upgrade_version) : int {
