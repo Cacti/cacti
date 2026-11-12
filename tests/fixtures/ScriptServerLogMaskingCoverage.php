@@ -17,7 +17,7 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
-require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/CmdDeviceStubs.php';
 

@@ -56,6 +56,10 @@ class RequestDispatchTest(unittest.TestCase):
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
+    def test_cli_and_process_changes_run_their_native_fixtures(self):
+        self.dispatch('cli/show_perms.php', 'ShowPermsEntrypointCoverage.php')
+        self.dispatch('lib/process.php', 'ProcessFallbackCoverage.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -89,7 +93,8 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php',
+                           'Core/ShowPermsEntrypointCoverage.php', 'Core/ProcessFallbackCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')

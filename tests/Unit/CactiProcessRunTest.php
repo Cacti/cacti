@@ -119,3 +119,28 @@ test('the proc_open fallback kills the child on timeout', function () {
 		->and($r['exit_code'])->toBe(-1)
 		->and(microtime(true) - $start)->toBeLessThan(4.0);
 });
+
+test('the Symfony backend reports a process that cannot start without throwing', function () {
+	$r = cacti_process_run_symfony(['printf', 'x'], null, 5, '/nonexistent-cacti-working-directory', null);
+
+	expect($r['via'])->toBe('symfony')
+		->and($r['exit_code'])->toBe(-1)
+		->and($r['timed_out'])->toBeFalse()
+		->and($r['stdout'])->toBe('')
+		->and($r['stderr'])->not->toBe('');
+});
+
+test('the proc_open fallback reports a process that cannot be spawned', function () {
+	// proc_open() warns before it returns false; the contract under test is the array.
+	set_error_handler(static fn (): bool => true);
+
+	try {
+		$r = cacti_process_run_proc_open(['printf', 'x'], null, 5, '/nonexistent-cacti-working-directory', null);
+	} finally {
+		restore_error_handler();
+	}
+
+	expect($r['via'])->toBe('proc_open')
+		->and($r['exit_code'])->toBe(-1)
+		->and($r['stderr'])->toContain('unable to spawn printf');
+});

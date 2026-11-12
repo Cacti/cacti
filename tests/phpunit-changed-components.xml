@@ -1,0 +1,23 @@
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+    <source>
+        <include>
+            <directory suffix=".php">../lib/Console</directory>
+            <directory suffix=".php">../lib/Repository</directory>
+            <file>../lib/config_api.php</file>
+            <file>../lib/process.php</file>
+            <file>../lib/spikekill.php</file>
+        </include>
+    </source>
+    <testsuites>
+        <testsuite name="Changed component coverage">
+            <file>Unit/CactiProcessRunTest.php</file>
+            <file>Unit/Core/Cli/ShowPermissionsCommandTest.php</file>
+            <file>Unit/Core/ConfigApiTest.php</file>
+            <file>Unit/Database/DeviceRepositoryTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

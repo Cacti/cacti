@@ -48,6 +48,10 @@ run_php_probe tests/fixtures/SnmpAgentGlobalSettingsCoverage.php '^(lib/snmpagen
 
 run_php_probe tests/fixtures/Core/ColorFormValidateCoverage.php '^(color\.php|include/global(_constants|_form)?\.php|lib/(form_validate|functions)\.php|tests/fixtures/Core/ColorFormValidateCoverage\.php)'
 
+run_php_probe tests/fixtures/Core/ShowPermsEntrypointCoverage.php '^(cli/show_perms\.php|include/cli_check\.php|tests/fixtures/Core/ShowPermsEntrypointCoverage\.php)'
+
+run_php_probe tests/fixtures/Core/ProcessFallbackCoverage.php '^(lib/process\.php|tests/fixtures/Core/ProcessFallbackCoverage\.php)'
+
 run_php_probe tests/fixtures/CmdBoostFlushRedirectCoverage.php '^(cmd\.php|tests/fixtures/CmdBoostFlushRedirectCoverage\.php)'
 
 run_php_probe tests/fixtures/ScriptServerLogMaskingCoverage.php '^(cmd\.php|script_server\.php|lib/poller\.php|tests/fixtures/ScriptServerLogMaskingCoverage\.php)'
