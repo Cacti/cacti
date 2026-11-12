@@ -54,7 +54,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('auth_2fa.php', 'ConstantTimeGuardMatrix.php')
 
     def test_boost_drain_change_runs_the_drain_probe(self):
-        for path in ['poller_boost.php', 'tests/fixtures/ProbeLoader.php']:
+        for path in ['poller_boost.php', 'lib/boost.php', 'tests/fixtures/ProbeLoader.php', 'tests/fixtures/BoostOnDemandFailureProbe.php']:
             with self.subTest(path=path):
                 self.dispatch(path, 'BoostBulkDrainCoverage.php')
 

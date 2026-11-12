@@ -52,7 +52,7 @@ run_php_probe tests/fixtures/CmdBoostFlushRedirectCoverage.php '^(cmd\.php|tests
 
 run_php_probe tests/fixtures/ScriptServerLogMaskingCoverage.php '^(cmd\.php|script_server\.php|lib/poller\.php|tests/fixtures/ScriptServerLogMaskingCoverage\.php)'
 
-run_php_probe tests/fixtures/BoostBulkDrainCoverage.php '^(poller_boost\.php|tests/fixtures/(BoostBulkDrain(Coverage|FailureProbe)|ProbeLoader)\.php)'
+run_php_probe tests/fixtures/BoostBulkDrainCoverage.php '^(poller_boost\.php|lib/boost\.php|tests/fixtures/(Boost(BulkDrain(Coverage|FailureProbe)|OnDemandFailureProbe|SourceExistenceProbe)|ProbeLoader)\.php)'
 
 run_php_probe tests/fixtures/UserAdministrationAuditCoverage.php '^(user_admin\.php|lib/functions\.php|tests/fixtures/UserAdministrationAudit)'
 

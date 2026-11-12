@@ -3,6 +3,7 @@
 $root     = dirname(__DIR__, 2);
 $scenario = $argv[1] ?? 'deleted';
 $queries  = 0;
+require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 require __DIR__ . '/ProbeLoader.php';
 
 function db_fetch_assoc_prepared(...$args) {
