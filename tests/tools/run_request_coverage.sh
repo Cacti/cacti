@@ -92,6 +92,8 @@ for row_guard_mode in auth-changepassword add-device reports-edit; do
 	run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files" "$row_guard_mode"
 done
 
+run_php_probe tests/fixtures/Core/AggregateApiCoverage.php '^(lib/(api_aggregate|aggregate)\.php|tests/fixtures/Core/AggregateApiCoverage\.php)'
+
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
 
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'

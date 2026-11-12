@@ -1,0 +1,12 @@
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+    <testsuites>
+        <testsuite name="Aggregate coverage">
+            <directory>Unit/Ui/Aggregate</directory>
+            <file>Unit/AggregateSequenceSqliTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
