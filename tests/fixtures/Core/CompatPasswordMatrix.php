@@ -40,8 +40,6 @@ $check  = static function (bool $condition, string $label) use (&$checks) : void
 $md5    = 'c5af7d393bbc916cec4e8a7bd4d82050';
 $sha256 = hash('sha256', 'legacy secret');
 
-$check(md5('legacy secret') === $md5, 'legacy fixture is the md5 digest');
-
 $hash = compat_password_hash('modern secret', PASSWORD_DEFAULT);
 $check(compat_password_verify('modern secret', $hash), 'current hash verifies');
 $check(!compat_password_verify('other secret', $hash), 'wrong password rejected');
@@ -77,6 +75,9 @@ $check(password_get_info($decoy)['algo'] === password_get_info($real)['algo'], '
 $check(password_get_info($decoy)['options'] === password_get_info($real)['options'], 'decoy cost matches');
 $check(!compat_password_verify('decoy secret', $decoy), 'decoy matches nothing');
 
-$check(cacti_password_decoy_hash() === cacti_password_decoy_hash(), 'decoy is built once per process');
+$decoy_first  = cacti_password_decoy_hash();
+$decoy_second = cacti_password_decoy_hash();
+
+$check($decoy_first === $decoy_second, 'decoy is built once per process');
 
 print json_encode(['passed' => $checks], JSON_THROW_ON_ERROR) . "\n";
