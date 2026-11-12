@@ -930,8 +930,9 @@ function resequence_graphs(int $graph_template_id, int $local_graph_id = 0, bool
 	}
 
 	foreach (array_chunk($deletes, 1000) as $ids) {
-		db_execute('DELETE FROM graph_templates_item
-			WHERE id IN (' . implode(',', array_map('intval', $ids)) . ')');
+		db_execute_prepared('DELETE FROM graph_templates_item
+			WHERE id IN (' . implode(',', array_fill(0, cacti_sizeof($ids), '?')) . ')',
+			array_map('intval', $ids));
 	}
 
 	$params = [$graph_template_id];
