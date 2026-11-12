@@ -154,6 +154,17 @@ class Installer implements JsonSerializable {
 		}
 		$this->stepError = false;
 
+		if (Installer::isAbandonedInstallStep($step, $this->runtime)) {
+			/* cli/install_cacti.php holds the install process lock before it gets
+			 * here, so no installer is running and this step was left by a run that
+			 * died. Start over, otherwise the options given now would be discarded
+			 * and --force could never get past it. */
+			log_install_always('step', 'Discarding the state of an abandoned install');
+			db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
+
+			$step = Installer::STEP_WELCOME;
+		}
+
 		if ($step == Installer::STEP_INSTALL) {
 			$install_version = read_config_option('install_version', true);
 
@@ -255,6 +266,21 @@ class Installer implements JsonSerializable {
 
 		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
 		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
+	}
+
+	/**
+	 * Whether a stored STEP_INSTALL can only have been left by a run that died.
+	 * On the web the install may genuinely still be running in the background and
+	 * is told apart by its timestamps. The command line has already taken the
+	 * install process lock when it builds the installer.
+	 *
+	 * @param int $step The stored install step.
+	 * @param string $runtime The runtime of this request.
+	 *
+	 * @return bool Whether the stored step was left by a run that died.
+	 */
+	public static function isAbandonedInstallStep($step, $runtime) {
+		return $step == Installer::STEP_INSTALL && $runtime == 'Cli';
 	}
 
 	/**
