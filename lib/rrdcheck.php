@@ -367,13 +367,8 @@ function do_rrdcheck(int $thread_id = 1) : void {
 							$dsses += cacti_sizeof($data_source_names);
 							$first  = false;
 						} else {
-							$data = rrdcheck_fetch_row_values($line);
-
-							if ($data === null) {
-								continue;
-							}
-
-							foreach ($data as $index=>$number) {
+							// a line that is not a data row yields null and is not counted
+							foreach (rrdcheck_fetch_row_values($line) ?? [] as $index=>$number) {
 								if ($index == 0) {
 									// only onetime for each row
 									$lines_24++;
