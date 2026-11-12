@@ -23,6 +23,7 @@ define('CACTI_WEB', false);
 define('CACTI_PATH_BASE', $argv[1] === 'win32' ? 'C:\\Apache24\\htdocs\\cacti' : '/srv/cacti');
 define('CACTI_PATH_LIBRARY', $root . '/lib');
 
+require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once $root . '/include/global_constants.php';
 require_once $root . '/lib/functions.php';
