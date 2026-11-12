@@ -2052,7 +2052,7 @@ class Installer implements JsonSerializable {
 	}
 
 	public function isPre_v0_8_UpgradeNeeded() : bool {
-		return version_compare($this->old_cacti_version, '0.8.5a', '<=');
+		return $this->old_cacti_version != 'new_install' && version_compare($this->old_cacti_version, '0.8.5a', '<=');
 	}
 
 	public function hasRemoteDatabaseInfo() : bool {
