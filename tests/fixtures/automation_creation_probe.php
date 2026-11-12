@@ -178,6 +178,14 @@ if ($mode == 'graph' || $mode == 'graph-failure' || $mode == 'graph-interruption
 			$result['repeat_position_updates'] += $count;
 		}
 	}
+} elseif ($mode == 'nested') {
+	seed_graph_template();
+	$suggested = [];
+	$pdo->beginTransaction();
+	$result['failed'] = create_complete_graph_from_template(1, 1, [], $suggested);
+	$pdo->rollBack();
+	$result['graphs'] = (int) $pdo->query('SELECT COUNT(*) FROM graph_local')->fetchColumn();
+	$result['errors'] = $review_logs;
 } else {
 	throw new RuntimeException('Unknown fixture scenario');
 }

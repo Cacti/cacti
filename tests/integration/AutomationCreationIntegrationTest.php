@@ -49,6 +49,7 @@ test('graph creation commits complete sources and retries without duplicating gr
 	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/automation_creation_probe.php', [$scenario]);
 	expect($r['created'])->toBeArray()->and($r['graphs'])->toBe(1)->and($r['sources'])->toBe(1)
 		->and($r['linked_sources'])->toBe(1)->and($r['hooks_inside_transaction'])->toBe(0)
+		->and($r['second']['existing'])->toBeTrue()
 		->and($r['transaction_open'])->toBeFalse();
 
 	if ($scenario == 'graph-interruption') {
@@ -59,6 +60,14 @@ test('graph creation commits complete sources and retries without duplicating gr
 		expect((int) $r['created']['local_graph_id'])->toBe(999);
 	}
 })->with(['graph', 'graph-interruption', 'graph-resume']);
+
+test('graph creation inside a caller transaction fails and names the caller', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/automation_creation_probe.php', ['nested']);
+	expect($r['failed'])->toBeFalse()->and($r['graphs'])->toBe(0)
+		->and($r['errors'])->toHaveCount(1)
+		->and($r['errors'][0])->toContain('automation_creation_probe.php:')
+		->and($r['errors'][0])->toContain('called it inside an open transaction');
+});
 
 test('failed graph or source inserts roll back all rows and allow a successful retry', function ($table) {
 	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/automation_creation_probe.php', ['graph-failure', $table]);
