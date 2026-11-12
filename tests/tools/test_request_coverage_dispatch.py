@@ -50,6 +50,11 @@ class RequestDispatchTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.dispatch(path, 'ScriptServerLogMaskingCoverage.php')
 
+    def test_advanced_ping_change_runs_the_lost_probe_fixture(self):
+        for path in ['scripts/ss_fping.php', 'tests/fixtures/SsFpingLostProbeCoverage.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'SsFpingLostProbeCoverage.php')
+
     def test_two_factor_change_runs_the_guard_fixture(self):
         self.dispatch('auth_2fa.php', 'ConstantTimeGuardMatrix.php')
 
@@ -97,7 +102,8 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php',
+                           'SsFpingLostProbeCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
