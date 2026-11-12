@@ -219,13 +219,14 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 			/* some additional sanity checking */
 			if (is_array($stats) && cacti_sizeof($stats)) {
 				foreach($stats as $rrd_name => $avgpeak_stats) {
-					$outbuf .= ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
+					$row = ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
 						$rrd_name . "','" .
 						$avgpeak_stats['AVG'] . "','" .
 						$avgpeak_stats['MAX'] . "')";
 
-					/* $outbuf holds the whole batch, so its length is the batch size */
-					$out_length = strlen($outbuf);
+					/* count only the row just appended to the batch */
+					$outbuf     .= $row;
+					$out_length += strlen($row);
 
 					if (($out_length + $overhead) > $max_packet) {
 						db_execute($sql_prefix . $outbuf . $sql_suffix);
