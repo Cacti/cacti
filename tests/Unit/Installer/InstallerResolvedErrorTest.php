@@ -60,3 +60,9 @@ test('setPaths clears resolved errors through clearError', function () {
 	expect($source)->not->toContain("unset(\$this->errors['Paths'][\$name])")
 		->and($source)->toContain("\$this->clearError('Paths', \$name);");
 });
+
+test('the requested step is honoured once the parameters have resolved the errors that held it back', function () {
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
+
+	expect($source)->toMatch('/\$this->stepError === false && isset\(\$install_params\[\'Step\'\]\)[^{]*\{\s*\$this->setStep\(\(int\) \$install_params\[\'Step\'\]\);/');
+});

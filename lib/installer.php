@@ -470,6 +470,13 @@ class Installer implements JsonSerializable {
 
 		if (!empty($install_params)) {
 			$this->processParameters($install_params);
+
+			// The step is applied first, while the errors from the defaults still
+			// stand, and is held back to the first of them. Once the remaining
+			// parameters have resolved those errors, honour the step that was asked for.
+			if ($this->stepError === false && isset($install_params['Step']) && $this->stepCurrent != $install_params['Step']) {
+				$this->setStep((int) $install_params['Step']);
+			}
 		}
 
 		if ($this->stepError !== false && $this->stepCurrent > $this->stepError) {
