@@ -54,7 +54,7 @@ class RequestDispatchTest(unittest.TestCase):
         for path in ['cmd.php', 'remote_agent.php', 'lib/CactiHttpPoller.php',
                      'tests/fixtures/Core/HttpPollerActionCoverage.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'HttpPollerActionCoverage.php')
+                self.dispatch(path, ['ScriptServerLogMaskingCoverage.php', 'HttpPollerActionCoverage.php'] if path == 'cmd.php' else 'HttpPollerActionCoverage.php')
 
     def test_two_factor_change_runs_the_guard_fixture(self):
         self.dispatch('auth_2fa.php', 'ConstantTimeGuardMatrix.php')
