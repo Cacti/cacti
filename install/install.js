@@ -887,15 +887,9 @@ $(function() {
 	disableButton('Next');
 	disableButton('Test');
 
-	installData = $.urlParam('data');
-	if (installData != null && installData != 0) {
-		try {
-			installData = JSON.parse(installData);
-		} catch (ex) {
-			installData = getDefaultInstallData();
-		}
-	}
-	$('#installData').data('installData', installData);
+	/* The address bar records the step for history only.  Resume from the
+	   installer state held by the server instead of replaying URL data. */
+	$('#installData').data('installData', null);
 
 	installDebug = $.urlParam('debug');
 	if (installDebug != null && installDebug != 0) {
