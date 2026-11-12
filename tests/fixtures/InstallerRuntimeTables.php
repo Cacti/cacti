@@ -85,9 +85,7 @@ foreach ($statements[0] as $statement) {
 	$pdo->exec($statement);
 }
 
-foreach ($tables as $table) {
-	$pdo->exec("DROP TABLE `$table`");
-}
+$pdo->exec('DROP TABLE poller_output_boost_local_data_ids, poller_output_boost_failures');
 
 $installer = (new ReflectionClass(Installer::class))->newInstanceWithoutConstructor();
 $validate  = new ReflectionMethod(Installer::class, 'validateCoreSchema');
@@ -98,8 +96,11 @@ $second = $validate->invoke($installer);
 
 $columns = [];
 
+$count = $pdo->prepare('SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = SCHEMA() AND TABLE_NAME = ?');
+
 foreach ($tables as $table) {
-	$columns[$table] = (int) $pdo->query("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = SCHEMA() AND TABLE_NAME = '$table'")->fetchColumn();
+	$count->execute([$table]);
+	$columns[$table] = (int) $count->fetchColumn();
 }
 $rows = (int) $pdo->query('SELECT COUNT(*) FROM poller_output_boost_failures')->fetchColumn();
 $pdo->exec("DROP DATABASE `$database`");
