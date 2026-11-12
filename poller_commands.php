@@ -442,6 +442,7 @@ function commands_kill_running_processes() : void {
 					'CLEANUP');
 
 				cacti_process_kill((int) $p['pid'], SIGTERM, 'CLEANUP');
+				cacti_process_kill_db_connection($p, 'CLEANUP');
 			}
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
