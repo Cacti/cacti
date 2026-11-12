@@ -1,0 +1,1 @@
+Limit the decompressed size of imported Packages and reject manifest file names outside the repository
