@@ -1762,7 +1762,16 @@ function install_full_sync() : array {
 				if ($replicate) {
 					$attempted = true;
 
-					if (replicate_out($poller['id'])) {
+					try {
+						$replicated = replicate_out($poller['id']);
+					} catch (Throwable $e) {
+						// One collector must not fail the whole install, which has
+						// already recorded its version by the time collectors are synced.
+						log_install_always('sync', 'Replication to Poller ' . $poller['id'] . ' raised: ' . $e->getMessage());
+						$replicated = false;
+					}
+
+					if ($replicated) {
 						log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
 						$success[] = $poller['id'];
 

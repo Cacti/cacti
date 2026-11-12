@@ -33,3 +33,18 @@ test('the full sync guard is read once and recorded after every collector was tr
 		->and(substr($body, $loopStart, strpos($body, "\n\t}\n", $loopStart) - $loopStart))->not->toContain("set_config_option('install_replicate'")
 		->and($body)->toContain('if ($replicate) {');
 });
+
+test('a collector whose replication throws is counted as failed and the others still run', function () {
+	$source = file_get_contents(dirname(__DIR__, 3) . '/install/functions.php');
+	$start  = strpos($source, 'function install_full_sync()');
+	$body   = substr($source, $start, strpos($source, "\n}\n", $start) - $start);
+
+	/*
+	 * replicate_out() can raise (a collector row with a null SSL key reaches a
+	 * string-typed parameter). The exception ended the whole install after its
+	 * version had been written, so a finished upgrade was reported as failed.
+	 */
+	expect($body)->toContain('$replicated = replicate_out($poller[\'id\']);')
+		->and($body)->toContain('} catch (Throwable $e) {')
+		->and($body)->toContain('$replicated = false;');
+});
