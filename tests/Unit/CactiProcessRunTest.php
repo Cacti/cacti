@@ -144,6 +144,26 @@ test('the proc_open fallback tolerates a child that exits without reading its st
 		->and($r['exit_code'])->toBe(3);
 });
 
+test('the proc_open fallback preserves binary stdin while draining both output pipes', function () {
+	$input = str_repeat(implode('', array_map(chr(...), range(0, 255))), 8192) . 'tail';
+	$child = <<<'PHP'
+$hash = hash_init('sha256');
+while (!feof(STDIN)) {
+    $chunk = fread(STDIN, 4093);
+    hash_update($hash, $chunk);
+    fwrite(STDOUT, '.');
+    fwrite(STDERR, str_repeat('e', 1024));
+}
+fwrite(STDOUT, hash_final($hash));
+PHP;
+	$r = cacti_process_run_proc_open([PHP_BINARY, '-r', $child], $input, 10, null, null);
+
+	expect($r['timed_out'])->toBeFalse()
+		->and($r['exit_code'])->toBe(0)
+		->and($r['stdout'])->toEndWith(hash('sha256', $input))
+		->and(strlen($r['stderr']))->toBeGreaterThan(65536);
+});
+
 test('the Symfony backend reports a process that cannot start without throwing', function () {
 	$r = cacti_process_run_symfony(['printf', 'x'], null, 5, '/nonexistent-cacti-working-directory', null);
 

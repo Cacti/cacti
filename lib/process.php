@@ -195,10 +195,12 @@ function cacti_process_run_proc_open(array $argv, ?string $input, ?int $timeout,
 	// stdin is written in non-blocking pieces alongside the output reads.
 	$timed_out = false;
 	$deadline  = ($timeout === null) ? null : (microtime(true) + $timeout);
-	$pending   = ($input === null) ? '' : $input;
+	$input     = $input ?? '';
+	$length    = strlen($input);
+	$offset    = 0;
 	$stdin     = $pipes[0];
 
-	if ($pending === '') {
+	if ($length === 0) {
 		fclose($stdin);
 		$stdin = null;
 	} else {
@@ -224,17 +226,19 @@ function cacti_process_run_proc_open(array $argv, ?string $input, ?int $timeout,
 				// a child that exits without reading closes the pipe, and
 				// that EPIPE notice must not reach the Cacti log
 				set_error_handler(static fn (): bool => true);
-				$written = fwrite($stdin, $pending);
+				// Copy a bounded chunk, not the entire remaining payload on
+				// every partial pipe write. Advance only by accepted bytes.
+				$written = fwrite($stdin, substr($input, $offset, 65536));
 				restore_error_handler();
 
 				if ($written === false) {
-					$pending = '';
+					$offset = $length;
 				} else {
-					$pending = (string) substr($pending, $written);
+					$offset += $written;
 				}
 			}
 
-			if ($pending === '') {
+			if ($offset === $length) {
 				fclose($stdin);
 				$stdin = null;
 			}
