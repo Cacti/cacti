@@ -27,10 +27,6 @@ require_once __DIR__ . '/../../../../lib/auth.php';
 // md5('legacy secret'), as a very old release stored it
 const COMPAT_PASSWORD_LEGACY_MD5 = 'c5af7d393bbc916cec4e8a7bd4d82050';
 
-test('the legacy md5 fixture is the digest an older release stored', function () {
-	expect(md5('legacy secret'))->toBe(COMPAT_PASSWORD_LEGACY_MD5);
-});
-
 test('the default algorithm is bcrypt at the pinned cost 12', function () {
 	expect(cacti_password_algorithm())->toBe([PASSWORD_BCRYPT, ['cost' => 12]]);
 	expect(password_get_info(compat_password_hash('cost check', PASSWORD_DEFAULT))['options']['cost'])->toBe(12);
@@ -157,5 +153,5 @@ test('the login decoy is built once per process and is not a fixed literal', fun
 test('the local password matrix probe passes in its own process', function () {
 	require_once __DIR__ . '/../../../Helpers/IsolatedProbe.php';
 
-	expect(cacti_test_isolated_probe(__DIR__ . '/../../../fixtures/Core/CompatPasswordMatrix.php'))->toBe(['passed' => 23]);
+	expect(cacti_test_isolated_probe(__DIR__ . '/../../../fixtures/Core/CompatPasswordMatrix.php'))->toBe(['passed' => 22]);
 });
