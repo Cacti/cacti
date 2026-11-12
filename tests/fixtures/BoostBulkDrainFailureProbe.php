@@ -44,7 +44,7 @@ function db_fetch_assoc($sql) {
 function boost_rrdtool_function_update($id, $path, $tmpl, &$values, $pipe = null) {
 	$GLOBALS['writes'][] = $id . '@' . $values;
 
-	return count($GLOBALS['writes']) === ($GLOBALS['scenario'] === 'middle' ? 2 : 0) ? 'ERROR: rejected' : 'OK';
+	return count($GLOBALS['writes']) === (['middle' => 2, 'boundary' => 4, 'tail' => 8][$GLOBALS['scenario']] ?? 0) ? 'ERROR: rejected' : 'OK';
 }
 
 /**

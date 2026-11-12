@@ -20,3 +20,9 @@ test('bulk Boost drain acknowledges the shard when every flush succeeds', functi
 
 	expect($r['result'])->toBe(8)->and(count($r['writes']))->toBe(8)->and($r['deletes'])->toBe(1);
 });
+
+test('bulk Boost drain parks a data source whose flush at the next data source or the last flush is rejected', function ($scenario, $writes, $parked) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/BoostBulkDrainFailureProbe.php', [$scenario]);
+
+	expect($r['result'])->toBe(8)->and(count($r['writes']))->toBe($writes)->and($r['parked'])->toBe($parked)->and($r['deletes'])->toBe(1);
+})->with([['boundary', 8, [1]], ['tail', 8, [2]]]);
