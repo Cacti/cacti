@@ -33,8 +33,8 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		return [
 			// no-validation: OAuth2 client identifier issued by the IdP, free text
 			'client_id'       => form_input_validate(gnrv('client_id'), 'client_id', '', true, 3),
-			// no-validation: OAuth2 client secret, an arbitrary secret with no format to enforce
-			'client_secret'   => form_input_validate(gnrv('client_secret'), 'client_secret', '', true, 3),
+			// The form never renders the stored secret: blank keeps it, '_clear' blanks it.
+			'client_secret'   => form_secret_value('client_secret', self::existingParameter((int) gnrv('id'), 'client_secret')),
 			// no-validation: space-delimited OAuth2 scope list, free text
 			'scopes'          => form_input_validate(gnrv('scopes'), 'scopes', '', true, 3),
 			// no-validation: scheme is enforced separately in discover() (HTTPS required)
