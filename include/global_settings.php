@@ -1209,6 +1209,12 @@ $settings['snmp'] = [
 		'max_length'    => '10',
 		'size'          => '5'
 	],
+	'ping_rtt_exclude_lost' => [
+		'friendly_name' => __('Exclude Lost Probes from Advanced Ping Times'),
+		'description'   => __('If checked, a probe that times out or fails in the Advanced Ping script only counts toward packet loss, and the minimum, average, maximum and deviation describe answered probes alone.  If unchecked, a failed probe also adds its elapsed time to those values, which is the historic behavior.'),
+		'method'        => 'checkbox',
+		'default'       => ''
+	],
 	'updown_header' => [
 		'friendly_name' => __('Up/Down Settings'),
 		'collapsible'   => 'true',
