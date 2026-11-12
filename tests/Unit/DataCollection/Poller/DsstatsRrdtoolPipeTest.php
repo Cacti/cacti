@@ -45,6 +45,21 @@ test('the pipe reader stops at the status line, not at OK inside a data source n
 		->and(dsstats_rrdtool_execute('info missing.rrd', $pipes))->toBe($second);
 });
 
+test('the pipe reader accepts the bare OK status line of an RRDtool built without getrusage', function () {
+	$info   = "filename = \"ok.rrd\"\nds[LOOKUPS].index = 0\nOK\n";
+	$second = "0x0\ntraffic-avg_avg=1.000000\nOK\r\n";
+
+	$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+	fwrite($pair[0], $info . $second);
+	fclose($pair[0]);
+	stream_set_blocking($pair[1], false);
+
+	$pipes = array(fopen('php://memory', 'w+'), $pair[1]);
+
+	expect(dsstats_rrdtool_execute('info ok.rrd', $pipes))->toBe($info)
+		->and(dsstats_rrdtool_execute('graph -', $pipes))->toBe($second);
+});
+
 /**
  * Start a stand-in for 'rrdtool -' with its pipes set up as dsstats_rrdtool_init() does.
  */
