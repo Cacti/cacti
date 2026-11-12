@@ -92,7 +92,7 @@ class RequestDispatchTest(unittest.TestCase):
     def test_script_server_change_runs_the_log_masking_probe(self):
         for path in ['script_server.php', 'lib/poller.php', 'tests/fixtures/ScriptServerLogMaskingCoverage.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'ScriptServerLogMaskingCoverage.php')
+                self.dispatch(path, ['ScriptServerLogMaskingCoverage.php', 'library'] if path == 'lib/poller.php' else 'ScriptServerLogMaskingCoverage.php')
 
     def test_two_factor_change_runs_the_guard_fixture(self):
         self.dispatch('auth_2fa.php', 'ConstantTimeGuardMatrix.php')
