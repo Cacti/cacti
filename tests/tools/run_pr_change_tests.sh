@@ -35,6 +35,9 @@ if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-setting-get GET '' settings
 	run_probe SpikekillRequestGate.php spike-setting-post POST '' settings
 fi
+if [[ -f tests/fixtures/Core/Poller/KilledProcessDbConnection.php ]]; then
+	run_probe Poller/KilledProcessDbConnection.php killed-process-db-connection
+fi
 if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing

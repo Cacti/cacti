@@ -159,4 +159,42 @@ proc_close($child);
 // the child sleeps for 30 seconds unless the sweep signaled it
 $results['sweep_running'] = [kills(), $GLOBALS['log'][0] ?? '', microtime(true) - $started < 10];
 
+// the upgrade and poller_commands.php each call into this change with one statement, so run
+// those statements from their own source at their own line numbers
+function db_install_add_column($table, $column) {
+	record("ADD COLUMN $table." . $column['name'], $column);
+}
+
+$temporary = [];
+
+foreach ([
+	'upgrade' => ['/install/upgrades/1_3_0.php', '/^\tdb_install_add_column\(\'processes\', \[\'name\' => \'connection_id\'.*$/m'],
+	'cleanup' => ['/poller_commands.php', '/^\t+cacti_process_kill_db_connection\(\$p, \'CLEANUP\'\);$/m'],
+] as $name => [$file, $pattern]) {
+	$source = file_get_contents($root . $file);
+
+	if (preg_match($pattern, $source, $match, PREG_OFFSET_CAPTURE) !== 1) {
+		throw new RuntimeException("Cannot locate the $name statement in $file");
+	}
+	$path = tempnam(sys_get_temp_dir(), 'cacti-killed-process-');
+	file_put_contents($path, '<?php ' . str_repeat("\n", substr_count(substr($source, 0, $match[0][1]), "\n")) . $match[0][0]);
+	$GLOBALS['cacti_fixture_source_map'][$path] = $root . $file;
+	$temporary[$name]                           = $path;
+}
+
+try {
+	reset_state();
+	require $temporary['upgrade'];
+	$results['upgrade'] = $GLOBALS['sql'][0];
+
+	reset_state([], [], [88 => ['ID' => 88, 'TIME' => 400]]);
+	$p = $stale;
+	require $temporary['cleanup'];
+	$results['cleanup'] = kills();
+} finally {
+	foreach ($temporary as $path) {
+		unlink($path);
+	}
+}
+
 print json_encode($results) . PHP_EOL;
