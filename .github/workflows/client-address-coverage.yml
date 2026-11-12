@@ -9,10 +9,13 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/client_address.php'
+      - 'lib/ip.php'
       - 'lib/functions.php'
       - 'tests/phpunit-client-address.xml'
       - 'tests/Coverage/ClientAddressCoverageTest.php'
       - 'tests/Unit/Security/Misc/GetClientAddrTest.php'
+      - 'tests/Unit/Core/IpInCidrTest.php'
+      - 'tests/Unit/Core/Automation/IpRangeMembershipTest.php'
   pull_request:
     branches: [develop]
     paths:
@@ -21,10 +24,13 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'lib/client_address.php'
+      - 'lib/ip.php'
       - 'lib/functions.php'
       - 'tests/phpunit-client-address.xml'
       - 'tests/Coverage/ClientAddressCoverageTest.php'
       - 'tests/Unit/Security/Misc/GetClientAddrTest.php'
+      - 'tests/Unit/Core/IpInCidrTest.php'
+      - 'tests/Unit/Core/Automation/IpRangeMembershipTest.php'
   workflow_dispatch:
 
 permissions:
