@@ -100,6 +100,7 @@ ss_cov_check($result === '7' && ss_cov_log() === '', 'quiet function logs nothin
 
 // script_server_response(): one line per reply
 ss_cov_check(script_server_response(script_server_call(__NAMESPACE__ . '\\ss_cov_multiline', '', [])) === 'a:1 b:2 c:3', 'multipart reply on one line');
+ss_cov_check(script_server_response(['a' => 1]) === 'U', 'array result reported as U');
 
 // parseArgs(): a parse error is printed only when debugging
 $parsed = [];
