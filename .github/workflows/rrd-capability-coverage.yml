@@ -15,6 +15,7 @@ on:
       - 'lib/rrd.php'
       - 'poller_boost.php'
       - 'tests/Unit/Core/Boost/**'
+      - 'tests/Unit/Security/Session/SessionHandlerGcTest.php'
       - 'tests/Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php'
       - 'tests/Unit/Core/Rrd/RrdVersionCheckReuseTest.php'
       - 'tests/e2e/boost/**'
@@ -118,6 +119,7 @@ jobs:
             Unit/Core/Boost/BoostPollerCoordinationBehaviorTest.php \
             Unit/Core/Boost/BoostPollerDrainBehaviorTest.php \
             Unit/Core/Boost/BoostPollerOutputBehaviorTest.php \
+            Unit/Security/Session/SessionHandlerGcTest.php \
             integration/BoostProcessTableMariaDbTest.php
       - name: Exercise Boost lifecycle and failure recovery
         env:
