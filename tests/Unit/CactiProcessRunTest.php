@@ -120,6 +120,30 @@ test('the proc_open fallback kills the child on timeout', function () {
 		->and(microtime(true) - $start)->toBeLessThan(4.0);
 });
 
+test('the proc_open fallback timeout covers a child that never reads its stdin', function () {
+	$start = microtime(true);
+	$r     = cacti_process_run_proc_open(['sleep', '30'], str_repeat('x', 1 << 20), 1, null, null);
+
+	expect($r['timed_out'])->toBeTrue()
+		->and($r['exit_code'])->toBe(-1)
+		->and(microtime(true) - $start)->toBeLessThan(4.0);
+});
+
+test('the proc_open fallback delivers stdin larger than the pipe buffer in full', function () {
+	$r = cacti_process_run_proc_open(['wc', '-c'], str_repeat('x', 1 << 20), 10, null, null);
+
+	expect($r['timed_out'])->toBeFalse()
+		->and($r['exit_code'])->toBe(0)
+		->and(trim($r['stdout']))->toBe('1048576');
+});
+
+test('the proc_open fallback tolerates a child that exits without reading its stdin', function () {
+	$r = cacti_process_run_proc_open(['sh', '-c', 'exit 3'], str_repeat('x', 1 << 20), 10, null, null);
+
+	expect($r['timed_out'])->toBeFalse()
+		->and($r['exit_code'])->toBe(3);
+});
+
 test('the Symfony backend reports a process that cannot start without throwing', function () {
 	$r = cacti_process_run_symfony(['printf', 'x'], null, 5, '/nonexistent-cacti-working-directory', null);
 

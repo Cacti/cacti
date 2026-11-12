@@ -189,21 +189,57 @@ function cacti_process_run_proc_open(array $argv, ?string $input, ?int $timeout,
 		];
 	}
 
-	if ($input !== null && $input !== '') {
-		fwrite($pipes[0], $input);
-	}
+	// The deadline covers the whole exchange, including stdin.  A child that
+	// stops reading would block a plain fwrite(), and one that fills its
+	// output pipes while stdin is still being written would deadlock it, so
+	// stdin is written in non-blocking pieces alongside the output reads.
+	$timed_out = false;
+	$deadline  = ($timeout === null) ? null : (microtime(true) + $timeout);
+	$pending   = ($input === null) ? '' : $input;
+	$stdin     = $pipes[0];
 
-	fclose($pipes[0]);
+	if ($pending === '') {
+		fclose($stdin);
+		$stdin = null;
+	} else {
+		stream_set_blocking($stdin, false);
+	}
 
 	stream_set_blocking($pipes[1], false);
 	stream_set_blocking($pipes[2], false);
 
-	$stdout    = '';
-	$stderr    = '';
-	$timed_out = false;
-	$deadline  = ($timeout === null) ? null : (microtime(true) + $timeout);
+	$stdout = '';
+	$stderr = '';
 
 	do {
+		if ($stdin !== null) {
+			$read   = [];
+			$write  = [$stdin];
+			$except = null;
+
+			// stream_select() cannot wait on Windows pipes; write as before there
+			$ready = stream_select($read, $write, $except, 0, 10000);
+
+			if ($ready === false || $ready > 0) {
+				// a child that exits without reading closes the pipe, and
+				// that EPIPE notice must not reach the Cacti log
+				set_error_handler(static fn (): bool => true);
+				$written = fwrite($stdin, $pending);
+				restore_error_handler();
+
+				if ($written === false) {
+					$pending = '';
+				} else {
+					$pending = (string) substr($pending, $written);
+				}
+			}
+
+			if ($pending === '') {
+				fclose($stdin);
+				$stdin = null;
+			}
+		}
+
 		$status = proc_get_status($process);
 
 		$stdout .= stream_get_contents($pipes[1]);
@@ -220,8 +256,14 @@ function cacti_process_run_proc_open(array $argv, ?string $input, ?int $timeout,
 			break;
 		}
 
-		usleep(10000);
+		if ($stdin === null) {
+			usleep(10000);
+		}
 	} while (true);
+
+	if ($stdin !== null) {
+		fclose($stdin);
+	}
 
 	// Drain anything buffered after the child exited or was terminated.
 	$stdout .= stream_get_contents($pipes[1]);
