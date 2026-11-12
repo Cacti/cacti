@@ -6,7 +6,7 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
-require dirname(__DIR__, 3) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__, 3) . '/Helpers/FixtureCoverage.php';
 $root = dirname(__DIR__, 4);
 require $root . '/include/global_constants.php';
 require $root . '/lib/rrd.php';
@@ -112,5 +112,61 @@ foreach ([
 // a member whose RRD lacks MAX draws its MAX line from AVERAGE, so it has one DEF fewer
 $GLOBALS['average_only'] = [36];
 $results['average_only'] = rrdtool_aggregate_def_map(50)['members'][1];
+
+// rrdtool_function_graph() needs RRDtool and a database, so run the statements that call these
+// helpers from its own source at their own line numbers, as FallbackSourceIdentity.php does.
+$file      = $root . '/lib/rrd.php';
+$source    = file_get_contents($file);
+$temporary = [];
+
+foreach ([
+	'cf'    => '/^\t+\$graph_cf = rrdtool_graph_item_cf\(.*\n(?:.*\n){2}\t+\$graph_items\[\$key\]\[\'cf_reference\'\] = \$graph_cf;$/m',
+	'reset' => '/^\t\$i +=  ?0;\n\t\$aggregate_def_map = null;$/m',
+	'cdef'  => '/^(\t+)if \(preg_match\(\'\/\(\^\|,\)\[a-j\]\+\(,\|\$\)\/\', \$cdef_string\)\) \{\n.*?^\1\}$/ms',
+] as $name => $pattern) {
+	if (preg_match($pattern, $source, $match, PREG_OFFSET_CAPTURE) !== 1) {
+		throw new RuntimeException("Cannot locate the $name statements in rrdtool_function_graph()");
+	}
+	$path = tempnam(sys_get_temp_dir(), 'cacti-aggregate-cdef-');
+	file_put_contents($path, '<?php ' . str_repeat("\n", substr_count(substr($source, 0, $match[0][1]), "\n")) . $match[0][0]);
+	$GLOBALS['cacti_fixture_source_map'][$path] = $file;
+	$temporary[$name]                           = $path;
+}
+
+try {
+	$last_graph_cf = [];
+	$graph_items   = [item(GRAPH_ITEM_TYPE_LINE1, 3, 201, 21, 'in')];
+	$key           = 0;
+	$graph_item    = $graph_items[0];
+	require $temporary['cf'];
+
+	$aggregate_def_map = [];
+	require $temporary['reset'];
+	$reset = [$i, $aggregate_def_map === null];
+
+	$local_graph_id = 50;
+	$graph_item     = ['data_template_rrd_id' => 352];
+	$cf_ds_cache    = $cache;
+	$rra_seconds    = 300;
+	$cdef_string    = 'b,a,-';
+	require $temporary['cdef'];
+
+	$results['graph'] = [
+		'cf_reference' => $graph_items[0]['cf_reference'],
+		'reset'        => $reset,
+		'aggregate'    => $cdef_string,
+	];
+
+	$aggregate_def_map = null;
+	$local_graph_id    = 99;
+	$cdef_string       = 'b,a,-';
+	require $temporary['cdef'];
+
+	$results['graph']['not_aggregate'] = $cdef_string;
+} finally {
+	foreach ($temporary as $path) {
+		unlink($path);
+	}
+}
 
 print json_encode($results) . PHP_EOL;
