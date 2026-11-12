@@ -7,6 +7,7 @@ $root     = getenv('CACTI_BOOST_SOURCE_ROOT') ?: dirname(__DIR__, 2);
 $scenario = $argv[1] ?? 'none';
 $writes   = [];
 $deletes  = 0;
+$parked   = [];
 require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 require __DIR__ . '/ProbeLoader.php';
 
@@ -56,6 +57,10 @@ function boost_rrdtool_function_update($id, $path, $tmpl, &$values, $pipe = null
 function db_execute_prepared($sql, ...$args) {
 	if (str_starts_with($sql, 'DELETE')) {
 		$GLOBALS['deletes']++;
+	}
+
+	if (preg_match('/SET process_handler = 0.*local_data_id IN \(([0-9,]+)\)/s', $sql, $m)) {
+		$GLOBALS['parked'] = array_merge($GLOBALS['parked'], array_map('intval', explode(',', $m[1])));
 	}
 
 	return true;
@@ -141,11 +146,11 @@ foreach (['cacti_sizeof', 'cacti_count', 'array_rekey'] as $name) {
 	probe_load($root . '/lib/functions.php', $name);
 }
 
-foreach (['boost_process_local_data_ids', 'boost_process_output'] as $name) {
+foreach (['boost_process_local_data_ids', 'boost_defer_failed_data_sources', 'boost_process_output'] as $name) {
 	probe_load($root . '/poller_boost.php', $name);
 }
 
 $archive_table = 'poller_output_boost_arch_1';
 $get_memory    = false;
 $result        = boost_process_local_data_ids(2, 0, null);
-print json_encode(['result'=>$result, 'writes'=>$writes, 'deletes'=>$deletes], JSON_THROW_ON_ERROR);
+print json_encode(['result'=>$result, 'writes'=>$writes, 'deletes'=>$deletes, 'parked'=>$parked], JSON_THROW_ON_ERROR);
