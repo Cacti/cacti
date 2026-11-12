@@ -18,50 +18,22 @@ use TreeSqliteFixture;
 
 /*
  * api_tree_sort_branch() orders one parent's children (branches, then sites,
- * devices and graphs) by the inherited sort type. The unchanged lib/api_tree.php
- * code runs against SQLite: inserting one item must only re-sort its own
- * siblings and write the positions that change, while a full sort from the
- * tree root must order the root level and every inheriting branch below it.
+ * devices and graphs) by the inherited sort type. The lib/api_tree.php code
+ * runs against SQLite: inserting one item must only re-sort its own siblings
+ * and write the positions that change, while a full sort from the tree root
+ * must order the root level and every inheriting branch below it.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
 
-TreeSqliteFixture::install(__NAMESPACE__);
+beforeEach(function () {
+	$GLOBALS['settings_user'] = [];
+	$_SESSION                 = [SESS_USER_ID => 1];
+});
 
-foreach (['api_tree_item_save', 'api_tree_sort_branch', 'api_tree_sort_children', 'api_tree_get_branch_ordering', 'api_tree_parse_node_data'] as $function) {
-	cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/api_tree.php', $function, __NAMESPACE__);
-}
-
-function input_validate_input_number(mixed $value, string $name = '') : void {
-}
-
-function form_input_validate(mixed $value, string $field, string $regex, bool $allow_nulls, int $custom_message = 3) : mixed {
-	return $value;
-}
-
-function is_error_message() : bool {
-	return false;
-}
-
-function raise_message(mixed $message_id, string $message = '', int $message_level = 0) : void {
-}
-
-function cacti_log(mixed $message, bool $output = false, string $environ = 'CMDPHP', mixed $level = '') : bool {
-	return true;
-}
-
-function set_config_option(string $name, mixed $value, bool $remote = false) : void {
-}
-
-function sql_save(array $save, string $table) : int|false {
-	unset($save['id']);
-
-	TreeSqliteFixture::run('INSERT INTO ' . $table . ' (' . implode(', ', array_keys($save)) . ')
-		VALUES (' . implode(', ', array_fill(0, count($save), '?')) . ')', $save);
-
-	return (int) TreeSqliteFixture::$pdo->lastInsertId();
-}
+afterEach(function () {
+	TreeSqliteFixture::restore();
+});
 
 function updates() : int {
 	return count(array_filter(TreeSqliteFixture::$log, fn ($sql) => preg_match('/^\s*UPDATE/i', $sql)));

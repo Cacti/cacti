@@ -20,73 +20,18 @@ use TreeSqliteFixture;
  * graph_tree_items is an adjacency list. api_tree_move_node() must only
  * accept a new parent in the same tree that is neither the node nor one of
  * its descendants, and the functions that walk parent links must terminate
- * on a parent cycle that is already stored. The unchanged lib functions run
- * against SQLite; the fixture's query budget turns a walk that never ends
- * into a failure.
+ * on a parent cycle that is already stored. The lib functions run against
+ * SQLite; the fixture's query budget turns a walk that never ends into a
+ * failure.
  */
 
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/TreeSqliteFixture.php';
-
-TreeSqliteFixture::install(__NAMESPACE__);
-
-$root = dirname(__DIR__, 2);
-
-foreach (['api_tree_move_node', 'api_tree_move_allowed', 'api_tree_parse_node_data', 'api_tree_sort_branch', 'api_tree_sort_children', 'api_tree_get_branch_ordering', 'api_tree_delete_node_content'] as $function) {
-	cacti_fixture_source_function($root . '/lib/api_tree.php', $function, __NAMESPACE__);
-}
-
-foreach (['get_tree_path', 'grow_dropdown_tree'] as $function) {
-	cacti_fixture_source_function($root . '/lib/html_tree.php', $function, __NAMESPACE__);
-}
-
-foreach (['is_tree_branch_empty', 'get_tree_visible_branches'] as $function) {
-	cacti_fixture_source_function($root . '/lib/auth.php', $function, __NAMESPACE__);
-}
-
-$GLOBALS['tree_integrity_request'] = [];
-
-function input_validate_input_number(mixed $value, string $name = '') : void {
-	if (!is_numeric($value)) {
-		throw new \RuntimeException("invalid $name");
-	}
-}
-
-function cacti_log(mixed $message, bool $output = false, string $environ = 'CMDPHP', mixed $level = '') : bool {
-	return true;
-}
-
-function set_config_option(string $name, mixed $value, bool $remote = false) : void {
-}
-
-function read_config_option(string $name, bool $force = false) : mixed {
-	return '';
-}
-
-function isrv(string $name) : bool {
-	return isset($GLOBALS['tree_integrity_request'][$name]);
-}
-
-function grv(string $name, mixed $default = '') : mixed {
-	return $GLOBALS['tree_integrity_request'][$name] ?? $default;
-}
-
-function get_simple_graph_perms(int $user_id) : bool {
-	return false;
-}
-
-function get_allowed_graphs(string $sql_where = '', mixed $sql_order = '', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
-	return [];
-}
-
-function get_allowed_devices(string $sql_where = '', string $sql_order = '', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $device_id = 0) : array {
-	return [];
-}
 
 beforeEach(function () {
 	$_SESSION = [SESS_USER_ID => 1];
 
 	TreeSqliteFixture::reset(5000);
+	TreeSqliteFixture::user(1, ['policy_graphs' => 2, 'policy_hosts' => 2, 'policy_graph_templates' => 2]);
 	TreeSqliteFixture::$pdo->exec("INSERT INTO graph_tree (id, name, sort_type) VALUES (1, 'one', 1), (2, 'two', 1)");
 
 	// tree 1: A(1) > B(2) > C(3), D(4) at the root; tree 2: E(10)
@@ -100,7 +45,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-	$_SESSION = [];
+	TreeSqliteFixture::restore();
 });
 
 function cycle() : void {
@@ -185,7 +130,7 @@ test('the empty branch check stops on a parent cycle', function () {
 test('the tree path stops on a parent cycle', function () {
 	cycle();
 
-	$GLOBALS['tree_integrity_request'] = ['node' => 'tbranch-22'];
+	$_REQUEST = ['node' => 'tbranch-22'];
 
 	expect(get_tree_path())->toContain('tbranch-21');
 });
