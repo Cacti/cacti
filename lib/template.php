@@ -117,6 +117,9 @@ function push_out_data_source_custom_data(int $data_template_id) : bool {
 /**
  * push out changed data template fields to related data sources
  *
+ * Core no longer calls this function, because push_out_data_source_custom_data() now propagates
+ * the fields itself. It is kept because earlier releases exported it and plugins may still call it.
+ *
  * @param string $did_vals  The data input data fields
  * @param string $ds_in_str All data sources, formatted as SQL 'IN' clause
  *
@@ -996,17 +999,24 @@ function retemplate_graphs(int $graph_template_id, int $local_graph_id = 0, bool
 }
 
 /**
- * graph_template_item_sources - resolve each template RRD item to the local
- * RRD item of a data source this graph already uses.
+ * graph_template_item_sources - map each template data source item to the data source
+ * item that a graph uses for it.
  *
- * A template item used by several local data sources of the graph resolves to
- * zero, since only an explicit graph input can tell those apart.
+ * Only data sources that the graph already uses are considered. The template ancestry
+ * recorded in local_data_template_rrd_id decides the match. Data sources retemplated on
+ * earlier releases can still carry the ancestry of their previous template, so a template
+ * item that ancestry does not resolve falls back to the graph's data source item with the
+ * same data_source_name, as earlier releases bound it. Both paths map to zero when several
+ * of the graph's data source items match, since multiple local instances of the same
+ * template require an explicit graph input.
  *
- * @param int $local_graph_id The graph to resolve sources for
+ * @param int $local_graph_id    The graph whose data sources are matched
+ * @param int $graph_template_id The graph template whose items are resolved, or zero to
+ *                               skip the data_source_name fallback
  *
- * @return array The local data_template_rrd id, or zero, keyed by template item id
+ * @return array The graph's data_template_rrd id, or zero when ambiguous, keyed by template item id
  */
-function graph_template_item_sources(int $local_graph_id) : array {
+function graph_template_item_sources(int $local_graph_id, int $graph_template_id = 0) : array {
 	$items = db_fetch_assoc_prepared('SELECT DISTINCT child.id, parent.id AS template_item_id
 		FROM data_template_rrd AS child
 		INNER JOIN data_template_rrd AS parent
@@ -1028,6 +1038,41 @@ function graph_template_item_sources(int $local_graph_id) : array {
 	foreach ($items as $item) {
 		$parent           = $item['template_item_id'];
 		$sources[$parent] = isset($sources[$parent]) ? 0 : $item['id'];
+	}
+
+	if ($graph_template_id > 0) {
+		$named = db_fetch_assoc_prepared('SELECT DISTINCT child.id, parent.id AS template_item_id
+			FROM data_template_rrd AS parent
+			INNER JOIN data_template_rrd AS child
+			ON child.data_source_name = parent.data_source_name
+			WHERE parent.local_data_id = 0
+			AND child.local_data_id > 0
+			AND parent.id IN (
+				SELECT task_item_id
+				FROM graph_templates_item
+				WHERE local_graph_id = 0
+				AND graph_template_id = ?
+			)
+			AND child.local_data_id IN (
+				SELECT used.local_data_id
+				FROM data_template_rrd AS used
+				INNER JOIN graph_templates_item AS gti
+				ON gti.task_item_id = used.id
+				WHERE gti.local_graph_id = ?
+			)',
+			[$graph_template_id, $local_graph_id]);
+
+		$fallback = [];
+
+		foreach ($named as $item) {
+			$parent = $item['template_item_id'];
+
+			if (!isset($sources[$parent])) {
+				$fallback[$parent] = isset($fallback[$parent]) ? 0 : $item['id'];
+			}
+		}
+
+		$sources += $fallback;
 	}
 
 	return $sources;
@@ -1151,7 +1196,7 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
 		}
 	}
 
-	$source_items = graph_template_item_sources($local_graph_id);
+	$source_items = graph_template_item_sources($local_graph_id, $graph_template_id);
 
 	if ($graph_template_id == 0) {
 		$template_items_list = $graph_items_list;
@@ -1358,7 +1403,7 @@ function update_graph_template_items(int $graph_template_id, int $graph_template
 
 		if (cacti_sizeof($graphs)) {
 			foreach ($graphs as $local_graph_id) {
-				$source_items = graph_template_item_sources($local_graph_id);
+				$source_items = graph_template_item_sources($local_graph_id, $graph_template_id);
 
 				$graph_items_list = db_fetch_assoc_prepared('SELECT *
 					FROM graph_templates_item
@@ -1718,7 +1763,11 @@ function create_complete_graph_from_template(int $graph_template_id, int $host_i
 
 	// Hooks publish tree and cache changes, so they must run only after this transaction commits.
 	if ($db_conn->inTransaction()) {
-		cacti_log('ERROR: Graph creation requires its own transaction.', false, 'AUTOM8');
+		// name the caller, since plugins that wrap graph creation in their own transaction fail here
+		$caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+		$from   = isset($caller[0]['file']) ? basename($caller[0]['file']) . ':' . ($caller[0]['line'] ?? 0) : 'unknown';
+
+		cacti_log('ERROR: Graph creation for Device[' . $host_id . '], GT[' . $graph_template_id . '] requires its own transaction, but ' . $from . ' called it inside an open transaction.', false, 'AUTOM8');
 
 		return false;
 	}

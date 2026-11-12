@@ -2897,8 +2897,8 @@ function automation_graph_automation_eligible(int $graph_template_id) : bool {
  * @param array $suggested_values  Suggested values passed to create_complete_graph_from_template().
  *
  * @return array|false The created graph as returned by create_complete_graph_from_template(),
- *                     the existing graph with an empty 'local_data_id', or false when the device
- *                     cannot be locked or creation fails.
+ *                     the existing graph with 'existing' set to true and an empty 'local_data_id',
+ *                     or false when the device cannot be locked or creation fails.
  */
 function automation_create_graph(int $host_id, int $graph_template_id, array $snmp_query_array, array &$suggested_values) : array|false {
 	$locked = db_fetch_cell_prepared("SELECT GET_LOCK(CONCAT('cacti.auto.', SHA1(CONCAT(DATABASE(), ':', ?))), 10)", [$host_id]);
@@ -2935,7 +2935,8 @@ function automation_create_graph(int $host_id, int $graph_template_id, array $sn
 		}
 
 		if (!empty($existing['graph_data_id'])) {
-			return ['local_graph_id' => $existing['id'], 'local_data_id' => []];
+			// 'existing' keeps callers from reporting a concurrent pass's graph as added
+			return ['local_graph_id' => $existing['id'], 'local_data_id' => [], 'existing' => true];
 		}
 
 		/**
@@ -3014,7 +3015,9 @@ function automation_execute_graph_template(int $host_id, int $graph_template_id)
 			$dataSourceId = '';
 
 			if ($returnArray !== false) {
-				if (cacti_sizeof($returnArray)) {
+				if (!empty($returnArray['existing'])) {
+					cacti_log('NOTE: Graph Exists - Device[' . $host_id . '], Graph[' . $returnArray['local_graph_id'] . ']', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+				} elseif (cacti_sizeof($returnArray)) {
 					if (isset($returnArray['local_data_id'])) {
 						foreach ($returnArray['local_data_id'] as $item) {
 							push_out_host($host_id, $item);
@@ -3369,7 +3372,9 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule) : bool 
 				$return_array = automation_create_graph($host_id, $graph_template_id, $snmp_query_array, $suggested_values);
 
 				if ($return_array !== false) {
-					if (cacti_sizeof($return_array) &&
+					if (!empty($return_array['existing'])) {
+						cacti_log('NOTE: Graph Exists - Device[' . $host_id . '], Graph[' . $return_array['local_graph_id'] . '], Rule[' . $rule['id'] . ']', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+					} elseif (cacti_sizeof($return_array) &&
 						array_key_exists('local_graph_id', $return_array) &&
 						array_key_exists('local_data_id', $return_array)) {
 						$data_source_id = db_fetch_cell_prepared('SELECT data_template_rrd.local_data_id
