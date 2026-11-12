@@ -40,7 +40,13 @@ function __esc($text, ...$args) {
 	return vsprintf($text, $args);
 }
 
-\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/import.php', 'package_repo_filename_valid', __NAMESPACE__);
+function cacti_log($message, $output = false, $environ = 'CMDPHP') {
+	$GLOBALS['manifest_logs'][] = $message;
+}
+
+foreach (['package_repo_filename_valid', 'import_package_max_bytes', 'import_package_within_size_limit', 'import_package_get_details', 'import_get_package_info', 'import_read_package_data'] as $function) {
+	\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/import.php', $function, __NAMESPACE__);
+}
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/package_import.php', 'get_repo_file', __NAMESPACE__);
 $token = bin2hex(random_bytes(16));
 $count = 0;
@@ -86,6 +92,46 @@ foreach (['file' . $sep . '/etc', 'ftp' . $sep . 'example.com', 'http' . $sep . 
 	$count++;
 }
 $GLOBALS['manifest_repo'] = [];
+
+// A file name taken from the unsigned manifest must name a file directly
+// inside the repository, and is refused before any repository lookup.
+$GLOBALS['manifest_logs'] = [];
+
+foreach (['', '../package.xml.gz', 'dir/package.xml.gz', '/etc/passwd', '..\\package.xml.gz', '.htaccess', "package.xml.gz\0.php"] as $name) {
+	if (get_repo_file('7', $name) !== false || package_repo_filename_valid($name)) {
+		throw new \RuntimeException('Repository file name accepted: ' . bin2hex($name));
+	}
+	$count++;
+}
+
+if (count($GLOBALS['manifest_logs']) !== 7 || !package_repo_filename_valid('Cisco_Router.xml.gz')) {
+	throw new \RuntimeException('Repository file name policy failed');
+}
+
+// Package size limit: the default, a package inside and past an explicit limit,
+// a damaged stream, a missing file, and each reader that applies the limit.
+$good    = tempnam(sys_get_temp_dir(), 'cacti-pkg-limit-');
+$damaged = tempnam(sys_get_temp_dir(), 'cacti-pkg-limit-');
+$bytes   = gzencode(str_repeat('a', 4096));
+file_put_contents($good, $bytes);
+file_put_contents($damaged, substr($bytes, 0, 10) . str_repeat("\xff", 20) . substr($bytes, 30));
+$GLOBALS['manifest_logs'] = [];
+$public_key               = '';
+
+if (import_package_max_bytes() !== 64 * 1024 * 1024
+	|| !import_package_within_size_limit($good, 4096)
+	|| import_package_within_size_limit($good, 4095)
+	|| import_package_within_size_limit($damaged)
+	|| import_package_within_size_limit($good . '-missing')
+	|| count($GLOBALS['manifest_logs']) !== 2
+	|| import_read_package_data($good . '-missing', $public_key, true) !== false
+	|| import_get_package_info($good . '-missing') !== false
+	|| import_package_get_details($good . '-missing') !== ['public_key' => '']) {
+	throw new \RuntimeException('Package size limit contract failed');
+}
+unlink($good);
+unlink($damaged);
+$count += 8;
 
 if (get_repo_file('7') !== false) {
 	throw new \RuntimeException('Unknown repository accepted');
