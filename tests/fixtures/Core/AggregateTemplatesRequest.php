@@ -74,6 +74,10 @@ $requests = [
 		'graph_type'                  => '0', 'automation_enabled' => 'on', 'automation_pattern' => '/QoS.*Gold/i', 'automation_title' => '|host_description| QoS',
 		'automation_host_template_id' => '4', 'automation_max_members' => '50',
 	],
+	// Same request, but the save succeeds so the page goes on to compare and store the template items.
+	'save-items' => [
+		'action' => 'save', 'id' => '5', 'graph_template_id_prev' => '3', 'save_component_template' => '1', 'name' => 'QoS Items',
+	],
 	'template-missing' => [
 		'action'             => 'save', 'id' => '5', 'graph_template_id_prev' => '3', 'save_component_template' => '1', 'name' => 'QoS',
 		'automation_pattern' => '/QoS/', 'automation_host_template_id' => '9',
@@ -114,17 +118,26 @@ $GLOBALS['cacti_fixture_returns'] = [
 	'cacti_redirect'         => static function (string $url) : never {
 		throw new AggregateTemplatesStop('redirect ' . $url);
 	},
-	'sql_save'               => static function (array $save) : never {
+	'sql_save'               => static function (array $save) : int {
+		if (($GLOBALS['probe_request']['name'] ?? '') === 'QoS Items') {
+			$GLOBALS['probe_sql_saves'][] = $save;
+
+			return (int) ($save['id'] ?? 5);
+		}
+
 		throw new AggregateTemplatesStop(json_encode($save));
 	},
 	'db_fetch_cell_prepared' => static fn (string $sql, array $params) => str_contains($sql, 'FROM host_template') && $params === [4] ? 4 : false,
-	'db_fetch_row_prepared'  => static fn (string $sql, array $params) => $params === ['5'] ? [
+	'db_fetch_row_prepared'  => static fn (string $sql, array $params) => in_array($params, [['5'], [5]], true) ? [
+		'graph_template_id'           => 3,
 		'name'                        => 'QoS', 'gprint_prefix' => '', 'gprint_format' => '', 'graph_type' => '0', 'total' => 0, 'total_type' => 0,
 		'total_prefix'                => '', 'order_type' => 0, 'automation_enabled' => '', 'automation_pattern' => '', 'automation_title' => '',
 		'automation_host_template_id' => 0, 'automation_max_members' => 1000,
 	] : [],
 	'sanitize_unserialize_selected_items' => static fn () => [3, 4],
 	'array_to_sql_or'                     => static fn (array $items, string $column) => $column . ' IN (' . implode(',', $items) . ')',
+	// An empty item set: no stored or posted items to compare.
+	'array_rekey'                         => static fn (mixed $rows, string $key, mixed $values) : array => [],
 	'cacti_sizeof'                        => static fn ($value) => is_countable($value) ? count($value) : 0,
 	'db_fetch_cell'                       => 2,
 	'db_fetch_assoc'                      => [
@@ -160,6 +173,13 @@ register_shutdown_function(static function () use ($scenario) : void {
 				'automation_enabled'          => 'on', 'automation_pattern' => '/QoS.*Gold/i', 'automation_title' => '|host_description| QoS',
 				'automation_host_template_id' => 4, 'automation_max_members' => 50,
 			] && $errors === [], 'valid automation settings are saved: ' . json_encode([$saved, $errors]));
+
+			break;
+		case 'save-items':
+			$queries = array_column(cacti_fixture_stub_arguments('db_fetch_assoc_prepared'), 0);
+			cacti_fixture_assert(($GLOBALS['probe_sql_saves'][0]['name'] ?? '') === 'QoS Items' && $errors === [1], 'the template is saved and reports success');
+			$stored  = array_filter($queries, static fn (string $sql) : bool => str_starts_with($sql, 'SELECT *') && str_contains($sql, 'FROM aggregate_graph_templates_item'));
+			cacti_fixture_assert(count($GLOBALS['probe_sql_saves']) === 1 && count($stored) === 1, 'the stored template items are read to compare with the posted items');
 
 			break;
 		case 'template-missing':
