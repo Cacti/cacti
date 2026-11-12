@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix ScriptQueryCommand ScriptQueryCommandWin32 ScriptQueryRejectedPath ScriptQueryRejectedCallers ScriptQuoteGrammar; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix ScriptQueryCommand ScriptQueryCommandWin32 ScriptQueryRejectedPath ScriptQueryRejectedCallers ScriptQuoteGrammar ScriptServerResultMatrix; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -39,6 +39,11 @@ if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-post POST '' mutation
 	run_probe SpikekillRequestGate.php spike-setting-get GET '' settings
 	run_probe SpikekillRequestGate.php spike-setting-post POST '' settings
+fi
+if [[ -f tests/fixtures/Core/ScriptQueryPath.php ]]; then
+	run_probe ScriptQueryPath.php script-path-win32 win32 'C:\x\ss.php & calc.exe' ''
+	run_probe ScriptQueryPath.php script-path-win32-split win32 '/cacti/scripts/."."/x.php' ''
+	run_probe ScriptQueryPath.php script-path-unix unix '/srv/cacti/scripts/ss.php ss' 'get total'
 fi
 if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
