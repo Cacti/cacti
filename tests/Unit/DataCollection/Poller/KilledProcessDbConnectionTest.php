@@ -127,6 +127,12 @@ afterEach(function () {
 	$GLOBALS['database_sessions'] = $this->killedProcessSessions;
 });
 
+test('the upgrade adds the column and the stale-process cleanup ends the connection', function () {
+	expect(results()['upgrade'][0])->toBe('ADD COLUMN processes.connection_id')
+		->and(results()['upgrade'][1])->toMatchArray(['type' => 'bigint(20)', 'unsigned' => true, 'default' => '0', 'after' => 'timeout'])
+		->and(results()['cleanup'])->toBe(['KILL CONNECTION 88']);
+});
+
 test('in process, only a live connection of this user from since the server started is ended', function () {
 	$started = gmdate('Y-m-d H:i:s', time() - 600);
 	$db      = killed_process_db(86400);
