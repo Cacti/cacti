@@ -102,6 +102,7 @@ Cacti CHANGELOG
 -security#8346: Pin workflow Actions and isolate release signing from builds
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
+-security: Harden - Do not write stored passwords and tokens into settings pages
 -issue#8697: Correct the Dark theme session message dialog action buttons (Ok/Pause) to the theme's #31442b primary-action green, and style the Modern theme User Language selectmenu so the closed control matches the other dropdowns
 -issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
 -issue#8689: Return the number of expired sessions deleted from the database session handler gc() so session_gc() reports actual deletions
