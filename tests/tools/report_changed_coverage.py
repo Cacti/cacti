@@ -8,6 +8,7 @@ changed-line coverage, not whole-project, branch or path coverage.
 import argparse
 import json
 from pathlib import Path
+import posixpath
 import re
 import subprocess
 
@@ -92,6 +93,25 @@ def inline_browser_coverage(name, lines, added, browser):
     return executable, covered, instrumented
 
 
+def css_imports_loaded(name, lines, added, entries):
+    """Return the added @import lines whose stylesheet the same session loaded.
+
+    Chromium reports no used range for an @import rule itself, so the only
+    evidence that the rule ran is the imported sheet appearing in the session
+    that also loaded the importing file.
+    """
+    loaded = {re.sub(r'[?#].*$', '', entry.get('url', '')) for entry in entries}
+    covered = set()
+    for number in added:
+        match = re.match(r'\s*@import\s+(?:url\(\s*)?[\'"]([^\'"?#]+)', lines[number - 1])
+        if not match:
+            continue
+        target = posixpath.normpath(posixpath.join(posixpath.dirname(name), match.group(1)))
+        if any(url.endswith('/' + target) for url in loaded):
+            covered.add(number)
+    return covered
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True)
@@ -169,6 +189,8 @@ def main():
                             continue
                         ranges = [dict(startOffset=r['start'], endOffset=r['end'], count=1) for r in entry['ranges']]
                     instrumented = True
+                    if file.suffix == '.css':
+                        covered |= css_imports_loaded(name, lines, added, entries)
                     content_lines = content.splitlines(keepends=True)
                     content_offsets = [0]
                     for text in content_lines:

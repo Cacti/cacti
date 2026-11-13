@@ -100,6 +100,27 @@ class CoverageEvidenceTest(unittest.TestCase):
     def test_lower_threshold_does_not_allow_missing_evidence(self):
         self.assertEqual(self.evaluate(None, minimum=80), 1)
 
+    def import_evaluate(self, loaded):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'themes/child').mkdir(parents=True)
+            source = "@import '../parent/main.css?abc';\nbody { color: red; }\n"
+            (root / 'themes/child/main.css').write_text(source)
+            entries = [{'url': 'http://fixture/themes/child/main.css', 'text': source,
+                        'ranges': [{'start': source.index('body'), 'end': len(source)}]}]
+            if loaded:
+                entries.append({'url': 'http://fixture/themes/parent/main.css?abc', 'text': 'p {}', 'ranges': []})
+            (root / 'changed-coverage.json').write_text(json.dumps({'js': [], 'css': entries}))
+            arguments = ['gate', '--base', 'HEAD', '--browser-root', str(root), '--language', 'css']
+            with patch.object(GATE.Path, 'cwd', return_value=root), patch.object(GATE, 'added_lines', return_value={'themes/child/main.css': {1, 2}}), patch('sys.argv', arguments), redirect_stdout(io.StringIO()):
+                return GATE.main()
+
+    def test_css_import_is_covered_when_its_sheet_loaded(self):
+        self.assertEqual(self.import_evaluate(loaded=True), 0)
+
+    def test_css_import_fails_when_its_sheet_never_loaded(self):
+        self.assertEqual(self.import_evaluate(loaded=False), 1)
+
     def test_no_changed_lines_of_the_language_passes(self):
         # A PR that changes nothing in the gated language has nothing to cover,
         # so the gate must pass rather than fail closed on an empty report.
