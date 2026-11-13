@@ -5811,12 +5811,23 @@ function cacti_redirect(string $path, array $params = []) : never {
  * distinguish a function wrapper from a subquery.
  * Use before concatenating a user-supplied sort column into an ORDER BY clause.
  *
+ * When the caller knows the finite set of columns its query can legitimately
+ * sort by, it should pass that set as $allowed. The character-class filter then
+ * becomes defence in depth: any value that is not an exact member of the
+ * allowlist falls back to $default, so a crafted sort column can only ever
+ * reach a column the query already exposes. This is the stricter, preferred
+ * form; the character-class-only call (no $allowed) remains supported for
+ * callers that cannot yet enumerate their columns.
+ *
  * @param string $column  Raw sort-column value from user input.
  * @param string $default Fallback returned when all characters are stripped (default 'id').
+ * @param array  $allowed Optional allowlist of exact column names (e.g. the sort
+ *                        keys of the page's $display_text). Empty means no
+ *                        allowlist check, preserving the previous behaviour.
  *
  * @return string Sanitized column name safe to embed in ORDER BY.
  */
-function sanitize_sql_column(string $column, string $default = 'id') : string {
+function sanitize_sql_column(string $column, string $default = 'id', array $allowed = []) : string {
 	$result = preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
 
 	if ($result === '') {
@@ -5827,7 +5838,37 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
 		return $default;
 	}
 
+	/* Strict allowlist (optional): reject anything the caller did not name as a
+	 * legitimate sort column, rather than trusting the character-class filter
+	 * alone. $default itself need not be a member -- it is the fallback. */
+	if ($allowed !== [] && !in_array($result, $allowed, true)) {
+		return $default;
+	}
+
 	return $result;
+}
+
+/**
+ * Returns $column when it exactly matches an entry in $allowed, otherwise
+ * $default, or the first allowlist entry when $default is empty.
+ *
+ * sanitize_sql_column() only blocks SQL syntax, so any column reachable in the
+ * query's joins can still be sorted on. Pages that join sensitive tables pass
+ * the columns they display here instead. Matching is strict (===), so case or
+ * whitespace variants of an allowed entry fall back to the default.
+ *
+ * @param string $column  Requested sort column.
+ * @param array  $allowed Allowlist of acceptable SQL fragments.
+ * @param string $default Fallback when $column is not in $allowed.
+ *
+ * @return string An entry of $allowed, $default, or 'id' when both are empty.
+ */
+function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
+	if (in_array($column, $allowed, true)) {
+		return $column;
+	}
+
+	return $default !== '' ? $default : (count($allowed) > 0 ? (string) reset($allowed) : 'id');
 }
 
 /**

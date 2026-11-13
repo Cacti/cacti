@@ -56,6 +56,11 @@ class RequestDispatchTest(unittest.TestCase):
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
+    def test_reports_list_change_runs_the_sort_fixture(self):
+        for path in ['lib/html_reports.php', 'lib/reports.php', 'tests/fixtures/Core/ReportsListSortCoverage.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'ReportsListSortCoverage.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -89,6 +94,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
+                           'Core/ReportsListSortCoverage.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)

@@ -52,6 +52,48 @@ function reports_unserialize_selected_items(mixed $items) : array|false {
 }
 
 /**
+ * reports_owner_authorized - whether the current session may act on a report
+ *
+ * The owner of a report and report administrators (realm 21) are authorized.
+ * An owner id that is not a whole number, such as the null returned when the
+ * report row does not exist, is never authorized; reports.user_id is NOT NULL,
+ * so that only happens for a missing report.
+ *
+ * @param mixed $owner_id The reports.user_id of the existing report
+ *
+ * @return bool True if the current session may access the report
+ */
+function reports_owner_authorized(mixed $owner_id) : bool {
+	if (!is_int($owner_id) && !(is_string($owner_id) && ctype_digit($owner_id))) {
+		return false;
+	}
+
+	$user_id = (int) ($_SESSION[SESS_USER_ID] ?? 0);
+
+	return $user_id > 0 && (int) $owner_id >= 0 && ((int) $owner_id === $user_id || is_realm_allowed(21));
+}
+
+/**
+ * Resolves the requested Reports list sort column against the sortable list
+ * columns.
+ *
+ * The list query joins user_auth, so only the sortable header keys of
+ * reports() are accepted. Every key is an unqualified alias from the select
+ * list, which MySQL also requires for ORDER BY in the combined reports/reportit
+ * UNION. The query runs before reports() builds its header, so the keys are
+ * listed here; the reports list fixture checks them against the header.
+ *
+ * @param mixed $column The requested sort column.
+ *
+ * @return string A sortable header key, or 'name' when the request is not one.
+ */
+function reports_sort_column(mixed $column) : string {
+	$allowed = ['name', 'type', 'full_name', 'sched_type', 'enabled', 'next_start', 'last_started', 'run_limit', 'last_runtime'];
+
+	return cacti_validate_sort_column(is_string($column) ? $column : '', $allowed, 'name');
+}
+
+/**
  * duplicate_reports - duplicates a report and all items
  *
  * @param int    $_id    Id of the report
@@ -67,6 +109,10 @@ function duplicate_reports(int $_id, string $_title) : void {
 		FROM reports
 		WHERE id = ?',
 		[$_id]);
+
+	if (!reports_owner_authorized($report['user_id'] ?? null)) {
+		return;
+	}
 
 	$reports_items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
@@ -109,7 +155,7 @@ function reports_add_devices(int $report_id, array $device_ids, array $timespan,
 		WHERE id = ?',
 		[$report_id]);
 
-	if ($report_user != $_SESSION[SESS_USER_ID]) {
+	if (!reports_owner_authorized($report_user)) {
 		raise_message('reports_not_owner');
 
 		return false;
@@ -197,7 +243,7 @@ function reports_add_graphs(int $report_id, int $local_graph_id, array $timespan
 		WHERE id = ?',
 		[$report_id]);
 
-	if ($report_user != $_SESSION[SESS_USER_ID]) {
+	if (!reports_owner_authorized($report_user)) {
 		raise_message('reports_not_owner');
 
 		return false;
@@ -803,18 +849,14 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 	return cacti_sizeof($graphs);
 }
 
-function reports_generate_history_html(int $history_id, int $output = REPORTS_OUTPUT_STDOUT) : string {
-	$data   = db_fetch_row_prepared('SELECT *
-		FROM reports_log
-		WHERE id = ?',
-		[$history_id]);
+function reports_generate_history_html(int $history_id, int $output = REPORTS_OUTPUT_STDOUT, ?int $report_id = null) : string {
+	$data = db_fetch_row_prepared('SELECT rl.*, r.user_id
+		FROM reports_log AS rl
+		INNER JOIN reports AS r ON r.id = rl.source_id
+		WHERE rl.id = ? AND rl.source = ?', [$history_id, 'reports']);
 
-	if (cacti_sizeof($data)) {
-		$oreport = db_fetch_row_prepared('SELECT *
-			FROM reports
-			WHERE id = ?',
-			[$data['source_id']]);
-
+	if (is_array($data) && cacti_sizeof($data) && reports_owner_authorized($data['user_id']) &&
+		($report_id === null || (int) $data['source_id'] === $report_id)) {
 		// here is the report html as sent to the user
 		$report = $data['report_html_output'];
 
@@ -870,14 +912,14 @@ function reports_generate_history_html(int $history_id, int $output = REPORTS_OU
 }
 
 function reports_remove_history(int $history_id, int $report_id = 0) : void {
-	if ($report_id == 0) {
-		$report_id = db_fetch_cell_prepared('SELECT source_id FROM reports_log WHERE id = ?', [$history_id]);
-	}
+	$report = db_fetch_row_prepared('SELECT r.*, rl.source_id
+		FROM reports_log AS rl
+		INNER JOIN reports AS r ON r.id = rl.source_id
+		WHERE rl.id = ? AND rl.source = ?', [$history_id, 'reports']);
 
-	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [$report_id]);
-
-	if (is_reports_admin() || $report['user_id'] == SESS_USER_ID) {
-		db_execute_prepared('DELETE FROM reports_log WHERE id = ?', [$history_id]);
+	if (is_array($report) && cacti_sizeof($report) && reports_owner_authorized($report['user_id']) &&
+		($report_id === 0 || (int) $report['source_id'] === $report_id)) {
+		db_execute_prepared('DELETE FROM reports_log WHERE id = ? AND source = ? AND source_id = ?', [$history_id, 'reports', $report['source_id']]);
 
 		raise_message('remove_message', __esc('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.', $report['name'], get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_INFO);
 	} else {
