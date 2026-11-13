@@ -4665,7 +4665,7 @@ function auth_display_custom_error_message(string $message) : void {
 
 	// print error
 	print '<!DOCTYPE html>';
-	print '<html>';
+	print '<html' . get_html_document_attributes() . '>';
 	print '<head>';
 
 	html_common_header(__('Cacti Login Failure'));

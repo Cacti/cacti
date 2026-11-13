@@ -368,7 +368,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 		}
 
 		print "<!DOCTYPE html>\n";
-		print "<html>\n";
+		print '<html' . get_html_document_attributes() . ">\n";
 		print "<head>\n";
 		html_common_header($title_header);
 		print "</head>\n";

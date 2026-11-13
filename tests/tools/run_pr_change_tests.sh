@@ -39,6 +39,14 @@ if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
 fi
+if [[ -f tests/fixtures/Core/DocumentDirectionShells.php ]]; then
+	run_probe DocumentDirectionShells.php document-shells
+fi
+if [[ -f tests/fixtures/Core/RealtimeDocumentShell.php ]]; then
+	for mode in disabled missing unwritable page; do
+		run_probe RealtimeDocumentShell.php "realtime-shell-$mode" "$mode"
+	done
+fi
 if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	case_number=0
 	for request in '{}' '{"action":"go"}' '{"action":"change","tab":"devices"}' '{"action":"reset","report":"summary"}' '{"action":"edit"}'; do
