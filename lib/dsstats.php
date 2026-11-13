@@ -665,6 +665,39 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 }
 
 /**
+ * Calculate a counter delta before converting it to a floating-point rate.
+ * Decimal strings preserve low bits above PHP_INT_MAX and across 64-bit wraps.
+ *
+ * @param int|float|numeric-string     $last    Previous numeric sample.
+ * @param int|float|numeric-string     $current Current numeric sample.
+ * @param int|float|numeric-string|'U' $maximum Maximum permitted wrapped delta.
+ *
+ * @return float|'NULL' The delta, or unknown when a wrapped delta exceeds the maximum.
+ */
+function dsstats_counter_delta(int|float|string $last, int|float|string $current, int|float|string $maximum) : float|string {
+	if (ctype_digit((string) $last) && ctype_digit((string) $current)) {
+		$last_integer = gmp_init((string) $last, 10);
+		$delta = gmp_sub(gmp_init((string) $current, 10), $last_integer);
+		$wrapped = gmp_cmp($delta, 0) < 0;
+
+		if ($wrapped) {
+			$delta = gmp_add($delta, gmp_cmp($last_integer, '4294967295') > 0 ? '18446744073709551616' : '4294967296');
+		}
+
+		$delta = (float) gmp_strval($delta);
+	} else {
+		$delta = $current - $last;
+		$wrapped = $delta < 0;
+
+		if ($wrapped) {
+			$delta = (($last > 4294967295 ? pow(2, 64) : pow(2, 32)) - $last) + $current;
+		}
+	}
+
+	return $wrapped && $maximum != 'U' && $delta > $maximum ? 'NULL' : $delta;
+}
+
+/**
  * This routine runs in parallel with the cacti poller and populates the last and cache tables. On
  * larger systems, it should be noted that the memory overhead for the global arrays, $ds_types,
  * $ds_last, $ds_multi could be serval hundred megabytes. So, this should be kept in mind when
@@ -807,31 +840,10 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								if ($ds_last == '' || $ds_last == 'NULL') {
 									$currentval = 'NULL';
-								} elseif ($result['output'] == 'NULL') {
+								} elseif ($result['output'] === 'NULL') {
 									$currentval = 'NULL';
-								} elseif ($result['output'] >= $ds_last) {
-									/* everything is normal */
-									$currentval = $result['output'] - $ds_last;
 								} else {
-									$max_value = $ds_types[$result['rrd_name']]['rrd_maximum'];
-
-									/**
-									 * Possible overflow, see if its 32bit or 64bit.  A counter
-									 * wraps at 2^n, so the delta is 2^n - last + current.  2^64
-									 * is a float, and subtracting the last value first keeps the
-									 * small delta of a real wrap exact.  RRDtool's COUNTER type
-									 * adds 2^32 - 1 (or 2^64 - 1) instead, so after a wrap this
-									 * value is one count above the rate RRDtool stores.
-									 */
-									if ($ds_last > 4294967295) {
-										$currentval = (pow(2, 64) - $ds_last) + $result['output'];
-									} else {
-										$currentval = (pow(2, 32) - $ds_last) + $result['output'];
-									}
-
-									if ($max_value != 'U' && $currentval > $max_value) {
-										$currentval = 'NULL';
-									}
+									$currentval = dsstats_counter_delta($ds_last, $result['output'], $ds_types[$result['rrd_name']]['rrd_maximum']);
 								}
 
 								if ($currentval != 'NULL') {
@@ -939,7 +951,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 									$last_delim . '(' .
 									$result['local_data_id'] . ", '" .
 									$result['rrd_name'] . "', " .
-									$lastval . ', ' .
+									($lastval === 'NULL' ? 'NULL' : db_qstr((string) $lastval)) . ', ' .
 									$currentval . ')';
 
 								$last_i++;

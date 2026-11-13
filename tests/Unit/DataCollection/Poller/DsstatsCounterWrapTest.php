@@ -44,6 +44,12 @@ function db_fetch_cell_prepared($sql, $params = array()) {
 	return $GLOBALS['dsstats_wrap_last'][$params[1]];
 }
 
+function db_qstr($s, $db_conn = false) {
+	$pdo = new \PDO('sqlite::memory:');
+
+	return $pdo->quote($s);
+}
+
 function db_execute($sql) {
 	$GLOBALS['dsstats_wrap_writes'][] = $sql;
 
@@ -55,6 +61,9 @@ $source = file_get_contents(dirname(__DIR__, 4) . '/lib/dsstats.php');
 if ($source === false || preg_match('/^function dsstats_poller_output\(.*?^}\R/ms', $source, $matches) !== 1) {
 	throw new \RuntimeException('Unable to extract dsstats_poller_output() for the counter wrap test.');
 }
+
+preg_match('/^function dsstats_counter_delta\(.*?^}\R/ms', $source, $helper);
+$matches[0] = $helper[0] . $matches[0];
 
 // the code is lib/dsstats.php from this checkout, with the error handler of this namespace
 $temporary = tempnam(sys_get_temp_dir(), 'dsstats-source-');
@@ -80,4 +89,6 @@ test('a wrapped COUNTER adds 2^32 or 2^64 to the delta', function ($rrd_name, $l
 	array('ctr32', '4294967000', '704', '10'),
 	// 2^64 - 6144 is exact as a double, and the small delta must stay exact
 	array('ctr64', '18446744073709545472', '1000', '7144'),
+	array('ctr64', '18446744073709551615', '10', '11'),
+	array('ctr64', '18446744073709551614', '18446744073709551615', '1'),
 ));
