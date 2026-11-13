@@ -1024,8 +1024,20 @@ function rrdtool_process_command(object $process, string $command_line, float $t
 			return $result;
 		}
 
-		if (preg_match('/(OK(?: u:[^\r\n]*)?|ERROR:[^\r\n]*)\r?\n?$/', $stdout, $matches, PREG_OFFSET_CAPTURE)) {
-			$status = $matches[1][0];
+		/**
+		 * RRDtool's pipe mode ends every reply with one newline-terminated
+		 * "OK u:... s:... r:..." line ("OK" alone on builds without getrusage)
+		 * or one "ERROR: ..." line. Wait for that terminating newline: a read
+		 * that stops after PRINT text such as "BOOK", or inside image bytes that
+		 * happen to spell "OK", is a partial reply, and treating it as complete
+		 * leaves the real status to be read as the next command's reply.
+		 *
+		 * OK may directly follow binary image data, which has no newline before
+		 * it, so it is only rejected when a printable character precedes it.
+		 * ERROR is printed in place of any output, so it must start a line.
+		 */
+		if (preg_match('/(?:(?<![\x20-\x7E])OK(?: u:[\x20-\x7E]*)?|(?:\A|(?<=\n))ERROR:[^\r\n]*)(?=\r?\n\z)/', $stdout, $matches, PREG_OFFSET_CAPTURE)) {
+			$status = $matches[0][0];
 			$stdout = substr($stdout, 0, $matches[0][1]);
 
 			break;
