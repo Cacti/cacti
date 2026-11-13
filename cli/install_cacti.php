@@ -142,7 +142,7 @@ if (cacti_sizeof($parms)) {
 				set_install_multioption($options, 'SnmpOptions', 'Snmp Option', $value, 'Snmp');
 				break;
 			case '--table':
-				set_install_multioption($options, 'Tables', 'Table', $value, '');
+				set_install_multioption($options, 'Tables', 'Table', $value, 'chk_table_');
 				break;
 			case '--template':
 				set_install_multioption($options, 'Templates', 'Template', $value, 'chk_template_', true);
