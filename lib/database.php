@@ -2715,6 +2715,65 @@ function db_switch_main_to_local() : bool {
 }
 
 /**
+ * db_client_defaults_file - write MySQL client credentials to a private option file
+ *
+ * Pass the file with --defaults-extra-file, as the client's first option, so
+ * the credentials stay off argv while the system and user option files
+ * (socket, TLS settings) are still read.  The caller must unlink the file
+ * after the client exits.
+ *
+ * An option file cannot hold a line break or NUL, and the client strips
+ * trailing whitespace even inside quotes, so such values are refused rather
+ * than written in a form that would connect with a different password.
+ *
+ * @param string $username client user
+ * @param string $password client password
+ * @param string $hostname server host, '' for the client default
+ * @param int    $port     server port, 0 for the client default; ignored for localhost
+ *
+ * @return string|false path of the option file, or false when it could not be written
+ */
+function db_client_defaults_file(string $username, string $password, string $hostname = '', int $port = 0) : string|false {
+	foreach ([$username, $password, $hostname] as $value) {
+		if (strpbrk($value, "\r\n\0") !== false || rtrim($value, " \t") !== $value) {
+			return false;
+		}
+	}
+
+	$path = tempnam(sys_get_temp_dir(), 'cacti_mysql_');
+
+	if ($path === false) {
+		return false;
+	}
+
+	// Restrict access before writing any credential.
+	if (!chmod($path, 0600)) {
+		unlink($path);
+
+		return false;
+	}
+
+	$quote    = static fn (string $value) : string => '"' . addcslashes($value, '\\"') . '"';
+	$contents = '[client]' . PHP_EOL . 'user=' . $quote($username) . PHP_EOL . 'password=' . $quote($password) . PHP_EOL;
+
+	if ($hostname !== '') {
+		$contents .= 'host=' . $quote($hostname) . PHP_EOL;
+	}
+
+	if ($port > 0 && $hostname !== 'localhost') {
+		$contents .= 'port=' . $port . PHP_EOL;
+	}
+
+	if (file_put_contents($path, $contents) !== strlen($contents)) {
+		unlink($path);
+
+		return false;
+	}
+
+	return $path;
+}
+
+/**
  * db_dump_data - dump data into a file by mysqldump, minimize password be caught.
  *
  * @param string $database    default $database_default
@@ -2726,7 +2785,7 @@ function db_switch_main_to_local() : bool {
  * @return int Return status of the executed command
  */
 function db_dump_data(string $database = '', string $tables = '', array $credentials = [], mixed $output_file = false, string $options = '--extended-insert=FALSE') : int {
-	global $database_default, $database_username, $database_password;
+	global $database_default, $database_username, $database_password, $database_hostname, $database_port;
 
 	$credentials_string = '';
 
@@ -2774,6 +2833,9 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 		$username = $database_username;
 	}
 
+	// without a host the client dumps whatever server is local, not Cacti's
+	$host_given = cacti_sizeof(array_intersect(array_map('trim', array_keys($credentials)), ['--host', '-h', 'host', '--socket', '-S', 'socket'])) > 0;
+
 	if (file_exists('/usr/bin/mariadb-dump')) {
 		$dump = '/usr/bin/mariadb-dump';
 	} else {
@@ -2784,15 +2846,24 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 	$output_esc = cacti_escapeshellarg((string) $output_file);
 	$tables_esc = $tables !== '' ? implode(' ', array_map('cacti_escapeshellarg', preg_split('/\s+/', trim($tables)))) : '';
 
-	if (str_contains($options, '--defaults-extra-file')) {
-		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-	} else {
-		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
+	$defaults_file = false;
 
-		if ($retval) {
-			exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-		} else {
-			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+	if (!str_contains($options, '--defaults-extra-file') && !str_contains($options, '--defaults-file')) {
+		$defaults_file = $host_given ? db_client_defaults_file((string) $username, (string) $password) : db_client_defaults_file((string) $username, (string) $password, (string) $database_hostname, (int) $database_port);
+
+		if ($defaults_file === false) {
+			return 1;
+		}
+
+		// --defaults-file would also drop the system and user option files
+		$options = '--defaults-extra-file=' . cacti_escapeshellarg($defaults_file) . ' ' . $options;
+	}
+
+	try {
+		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+	} finally {
+		if ($defaults_file !== false) {
+			unlink($defaults_file);
 		}
 	}
 
