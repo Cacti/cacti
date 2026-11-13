@@ -132,16 +132,10 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 
 		$user = is_array($user) ? $user : [];
 
-		if (cacti_sizeof($user)) {
-			if ($user['enabled'] != 'on') {
-				$error     = true;
-				$error_msg = __('Access Denied!  Login failed, account disabled.');
-
-				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s, account disabled.', $username, get_client_addr()), false, 'AUTH');
-
-				return [];
-			}
-
+		// A disabled account takes the unknown-user branch below: the same generic
+		// failure and the same throw-away hash cost, so it is not distinguishable
+		// from an unknown username by message or timing. Only the log says why.
+		if (cacti_sizeof($user) && $user['enabled'] == 'on') {
 			if (trim($password) == '') {
 				// error
 				$error     = true;
@@ -161,7 +155,9 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 
 				if (!$error) {
 					$error     = true;
-					$error_msg = __('Access Denied! Login Failed.');
+					// Same msgid as the unknown-user path so the message, translated
+					// or not, does not reveal whether the username exists.
+					$error_msg = __('Access Denied!  Login Failed.');
 
 					cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
 				}
@@ -188,7 +184,11 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			$error     = true;
 			$error_msg = __('Access Denied!  Login Failed.');
 
-			cacti_log(sprintf('LOGIN FAILED: Invalid user %s specified from IP Address %s', $username, get_client_addr()), false, 'AUTH');
+			if (cacti_sizeof($user)) {
+				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s, account disabled.', $username, get_client_addr()), false, 'AUTH');
+			} else {
+				cacti_log(sprintf('LOGIN FAILED: Invalid user %s specified from IP Address %s', $username, get_client_addr()), false, 'AUTH');
+			}
 
 			return [];
 		}

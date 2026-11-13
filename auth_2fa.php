@@ -33,10 +33,15 @@ if (!isset($_SESSION[SESS_USER_ID])) {
 	exit;
 }
 
-$user = db_fetch_row_prepared('SELECT id, username, tfa_enabled, tfa_secret, login_opts
+$user = db_fetch_row_prepared('SELECT id, username, realm, tfa_enabled, tfa_secret, login_opts
 	FROM user_auth
 	WHERE id = ?',
 	[$_SESSION[SESS_USER_ID]]);
+
+if (!is_array($user) || $user === []) {
+	header('Location: logout.php');
+	exit;
+}
 
 $message = '';
 $tfaMins = intval(read_config_option('secpass_2fatime'));
@@ -71,6 +76,10 @@ if (!empty($_SESSION[SESS_USER_2FA]) && $_SESSION[SESS_USER_2FA] < $tfaTime) {
 
 // Are we being asked to login with a 2FA token?
 if (gnrv('action') == 'login_2fa') {
+	csrf_require_post();
+
+	$tfa_locked = false;
+
 	// Auth token from Form
 	$token = gnrv('token');
 
@@ -82,7 +91,15 @@ if (gnrv('action') == 'login_2fa') {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 
-			if ($g->checkCode($user['tfa_secret'],  $token)) {
+			// Wrong tokens share the password path's account lockout. That bound
+			// only exists when Lock Accounts (secpass_lockfailed) is enabled; its
+			// default is Disabled, in which case these calls never lock and the
+			// number of token guesses per first-factor session is not limited here.
+			auth_checkclear_lockout($user['username'], (int) $user['realm']);
+
+			$tfa_locked = auth_process_lockout_check($user['username'], (int) $user['realm']);
+
+			if (!$tfa_locked && $g->checkCode($user['tfa_secret'],  $token)) {
 				$_SESSION[SESS_USER_2FA] = time();
 
 				// About using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
@@ -118,14 +135,24 @@ if (gnrv('action') == 'login_2fa') {
 
 		// Structured failure line for fail2ban, at normal verbosity (the human line
 		// above is DEBUG-only). A failed second factor is a brute-force signal too.
-		auth_log_failure($user['username'], auth_realm_token((int) ($user['realm'] ?? 0)), '2fa');
+		auth_log_failure($user['username'], auth_realm_token((int) $user['realm']), '2fa');
 
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, 0, 3, ?, NOW())',
 			[$user['username'], get_client_addr()]);
 
-		$message = __('Failed to verify token');
+		if ($tfa_locked) {
+			// The token was never checked. Counting this attempt would reset
+			// lastfail and restart the automatic unlock timer on every retry.
+			$message = __('Your account has been locked.  Please contact your Administrator.');
+		} else {
+			// Count the failed second factor toward the account lockout threshold so
+			// repeated wrong tokens lock the account (enforced by the gate above).
+			auth_process_lockout($user['username'], (int) $user['realm']);
+
+			$message = __('Failed to verify token');
+		}
 	}
 }
 
