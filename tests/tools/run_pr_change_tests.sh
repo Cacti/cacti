@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug SitesControllerMatrix; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -55,6 +55,12 @@ if [[ -f tests/phpunit-cdef.xml ]]; then
 	# The isolated CDEF suite stubs the database layer, so it runs as its own process.
 	CACTI_COVERAGE_FILE="$coverage_dir/cdef-suite.json" "$php_binary" -d memory_limit=1G -d xdebug.mode=coverage include/vendor/bin/pest --configuration=tests/phpunit-cdef.xml
 	php_coverage+=("$coverage_dir/cdef-suite.json")
+fi
+
+if [[ -f tests/phpunit-sites.xml ]]; then
+	# The Sites suite bootstrap does not load FixtureCoverage, so prepend it to record lib/Sites.
+	CACTI_COVERAGE_FILE="$coverage_dir/sites-suite.json" "$php_binary" -d memory_limit=2G -d xdebug.mode=coverage -d auto_prepend_file=tests/Helpers/FixtureCoverage.php include/vendor/bin/pest --configuration=tests/phpunit-sites.xml
+	php_coverage+=("$coverage_dir/sites-suite.json")
 fi
 
 browser_specs=()
