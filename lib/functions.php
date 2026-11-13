@@ -22,6 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
@@ -43,46 +44,286 @@ require_once __DIR__ . '/client_address.php';
  * Every outbound fetch of an admin-supplied URL (OpenID discovery documents,
  * JWKS, userinfo, token endpoints, etc.) must go through this function rather
  * than raw curl/file_get_contents. It forces TLS peer verification, refuses
- * redirects, and rejects hosts that resolve to loopback/private/link-local/
- * reserved address space so a configured URL cannot be abused to reach
- * internal services.
+ * redirects unless asked to follow them, and rejects hosts that resolve to
+ * loopback/private/link-local/reserved address space so a configured URL
+ * cannot be abused to reach internal services.
  *
  * @param string $method  HTTP method, e.g. 'GET' or 'POST'.
  * @param string $url     The absolute http(s) URL to fetch.
  * @param array  $options Optional: 'body' (string), 'headers' (array of 'Name: value'
- *                        strings), 'timeout' (int seconds, default 10), 'allowed_hosts'
- *                        (array restricting the request to those hostnames only).
+ *                        strings), 'timeout' (seconds for the whole request including
+ *                        redirects, fractions allowed, default 10), 'allowed_hosts'
+ *                        (array restricting the request to those hostnames only),
+ *                        'max_redirects' (int, default 0), 'max_bytes' (int, abandon
+ *                        bodies larger than this) and 'blocked_subnets' (list of CIDR
+ *                        ranges refused instead of all non-public space). See
+ *                        cacti_http_multi() for how redirects and subnets are handled.
  *
  * @return array{success: bool, status: int, body: string, error: string}
  */
 function cacti_http(string $method, string $url, array $options = []) : array {
-	if ($url === '' || $method === '') {
-		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Invalid URL'];
+	return cacti_http_multi([['method' => $method, 'url' => $url, 'options' => $options]])[0];
+}
+
+/**
+ * Performs several SSRF-hardened HTTP requests with up to $concurrency in flight.
+ *
+ * Each request takes the cacti_http() options and is checked the same way.
+ * Redirects are only followed when 'max_redirects' is above 0 and the method
+ * is GET or HEAD; every hop repeats the scheme, allowed_hosts and destination
+ * checks before it connects.  URL credentials and caller headers are only
+ * sent while the hop stays on the original scheme, host and port; a hop to
+ * another origin keeps only the Accept, Accept-Language and User-Agent
+ * headers.  'blocked_subnets' is for callers such as the HTTP poller
+ * that must reach private networks: only addresses inside those ranges are
+ * refused, so the list has to spell out IPv4-mapped and NAT64 forms itself.
+ *
+ * A request may name a 'group', such as the device it polls.  When
+ * $group_concurrency is above 0 no group has more than that many transfers
+ * in flight, so one caller can fetch for many devices at once without
+ * sending any single device more requests than it would get on its own.
+ * Requests without a group share one.
+ *
+ * @param array<array-key, array{method: string, url: string, options?: array<string, mixed>, group?: array-key}> $requests
+ * @param int                                                                                                     $concurrency       upper bound on transfers in flight
+ * @param int                                                                                                     $group_concurrency upper bound on transfers in flight per group, 0 for none
+ *
+ * @return array<array-key, array{success: bool, status: int, body: string, error: string}> results keyed like $requests
+ */
+function cacti_http_multi(array $requests, int $concurrency = 1, int $group_concurrency = 0) : array {
+	$results       = [];
+	$queue         = [];
+	$in_group      = [];
+	$pending       = [];
+	$dns           = (object) ['loop' => new \React\EventLoop\StreamSelectLoop()];
+	$dns->resolver = cacti_http_dns_resolver($dns->loop);
+	$dns->search   = cacti_http_dns_search_config();
+
+	foreach ($requests as $key => $request) {
+		$options = $request['options'] ?? [];
+
+		$transfer = new stdClass();
+
+		$transfer->key         = $key;
+		$transfer->method      = strtoupper($request['method']);
+		$transfer->url         = $request['url'];
+		$transfer->origin      = cacti_http_origin($request['url']);
+		$transfer->options     = $options;
+		$transfer->deadline    = null;
+		$transfer->redirects   = 0;
+		$transfer->credentials = null;
+		$transfer->handle      = null;
+		$transfer->body        = '';
+		$transfer->error       = '';
+		$transfer->group       = $request['group'] ?? '';
+		$transfer->dns         = $dns;
+		$transfer->dnsHost     = null;
+		$transfer->dnsIps      = null;
+		$transfer->dnsQueries  = [];
+
+		$queue[$transfer->group][] = $transfer;
+	}
+
+	$multi  = curl_multi_init();
+	$active = [];
+
+	try {
+		while ($queue !== [] || $active !== [] || $pending !== []) {
+			while (count($active) + count($pending) < max(1, $concurrency) && $queue !== []) {
+				$transfer = null;
+
+				foreach (array_keys($queue) as $group) {
+					if ($group_concurrency < 1 || ($in_group[$group] ?? 0) < $group_concurrency) {
+						$transfer = array_shift($queue[$group]);
+
+						if ($queue[$group] === []) {
+							unset($queue[$group]);
+						}
+
+						break;
+					}
+				}
+
+				// every group that still has work queued is at its limit
+				if ($transfer === null) {
+					break;
+				}
+
+				$error = cacti_http_start($multi, $transfer);
+
+				if ($error !== '') {
+					$results[$transfer->key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => $error];
+				} else {
+					if ($transfer->handle === null) {
+						$pending[$transfer->key] = $transfer;
+					} else {
+						$active[spl_object_id($transfer->handle)] = $transfer;
+					}
+					$in_group[$transfer->group]               = ($in_group[$transfer->group] ?? 0) + 1;
+				}
+			}
+
+			if ($pending !== []) {
+				// Give DNS a bounded event-loop slice while curl transfers keep progressing.
+				$dns->loop->addTimer(0.01, static function () use ($dns) { $dns->loop->stop(); });
+				$dns->loop->run();
+
+				foreach ($pending as $key => $transfer) {
+					$error = '';
+
+					if (microtime(true) >= $transfer->deadline) {
+						$error = 'Timed out';
+					} elseif ($transfer->dnsIps === null) {
+						continue;
+					} else {
+						$error = cacti_http_start($multi, $transfer);
+					}
+
+					unset($pending[$key]);
+
+					foreach ($transfer->dnsQueries as $query) {
+						$query->cancel();
+					}
+					$transfer->dnsQueries = [];
+
+					if ($error !== '') {
+						$results[$key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => $error];
+						$in_group[$transfer->group]--;
+					} else {
+						$active[spl_object_id($transfer->handle)] = $transfer;
+					}
+				}
+			}
+
+			if ($active === []) {
+				continue;
+			}
+
+			do {
+				$status = curl_multi_exec($multi, $running);
+			} while ($status === CURLM_CALL_MULTI_PERFORM);
+
+			$settled = false;
+
+			while (($info = curl_multi_info_read($multi)) !== false) {
+				$settled  = true;
+				$id       = spl_object_id($info['handle']);
+				$transfer = $active[$id];
+
+				unset($active[$id]);
+				curl_multi_remove_handle($multi, $info['handle']);
+
+				$result = cacti_http_finish($multi, $transfer, $info['result']);
+
+				if ($result === null) {
+					if ($transfer->handle === null) {
+						$pending[$transfer->key] = $transfer;
+					} else {
+						$active[spl_object_id($transfer->handle)] = $transfer;
+					}
+				} else {
+					$results[$transfer->key] = $result;
+
+					$in_group[$transfer->group]--;
+				}
+			}
+
+			// a multi handle that stops running without reporting its transfers would otherwise spin
+			if (!$settled && ($status !== CURLM_OK || $running === 0)) {
+				foreach ($active as $transfer) {
+					curl_multi_remove_handle($multi, $transfer->handle);
+
+					$results[$transfer->key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Request did not complete'];
+					$in_group[$transfer->group]--;
+				}
+
+				$active = [];
+			} elseif (!$settled) {
+				curl_multi_select($multi, $pending !== [] ? 0.01 : 0.25);
+			}
+		}
+	} finally {
+		foreach ($pending as $transfer) {
+			foreach ($transfer->dnsQueries as $query) {
+				$query->cancel();
+			}
+		}
+
+		foreach ($active as $transfer) {
+			curl_multi_remove_handle($multi, $transfer->handle);
+		}
+
+		curl_multi_close($multi);
+	}
+
+	$ordered = [];
+
+	foreach (array_keys($requests) as $key) {
+		$ordered[$key] = $results[$key];
+	}
+
+	return $ordered;
+}
+
+/**
+ * Validates the current hop of a cacti_http_multi() transfer and adds it to the multi handle.
+ *
+ * @param CurlMultiHandle $multi    the multi handle the transfer runs on
+ * @param stdClass        $transfer transfer state built by cacti_http_multi()
+ *
+ * @return string '' once the hop is running, otherwise the reason it was refused
+ */
+function cacti_http_start(CurlMultiHandle $multi, stdClass $transfer) : string {
+	$url     = $transfer->url;
+	$options = $transfer->options;
+
+	if ($url === '' || $transfer->method === '') {
+		return 'Invalid URL';
 	}
 
 	$parts = parse_url($url);
 
 	if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
-		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Invalid URL'];
+		return 'Invalid URL';
 	}
 
 	$scheme = strtolower($parts['scheme']);
 
 	if (!in_array($scheme, ['https', 'http'], true)) {
-		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Unsupported URL scheme'];
+		return 'Unsupported URL scheme';
 	}
 
 	if (isset($options['allowed_hosts']) && !in_array($parts['host'], $options['allowed_hosts'], true)) {
-		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Host not allowed'];
+		return 'Host not allowed';
 	}
 
-	$safeIps = cacti_http_resolve_safe_ips($parts['host']);
+	// DNS and all redirects share the budget, beginning when this request leaves the queue.
+	if ($transfer->deadline === null) {
+		$transfer->deadline = microtime(true) + (float) ($options['timeout'] ?? 10);
+	}
+
+	if ($transfer->dnsHost !== $parts['host']) {
+		$transfer->dnsHost       = $parts['host'];
+		$transfer->dnsCandidates = cacti_http_dns_candidates($parts['host'], $transfer->dns->search);
+		$transfer->dnsCandidate  = 0;
+		cacti_http_resolve_async($transfer);
+	}
+
+	if ($transfer->dnsIps === null) {
+		return ''; // queued DNS; no connection can start until every address has been checked
+	}
+
+	$safeIps = cacti_http_validate_ips($transfer->dnsIps, $options['blocked_subnets'] ?? null);
 
 	if (empty($safeIps)) {
-		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Target host resolves to a disallowed address'];
+		return 'Target host resolves to a disallowed address';
 	}
 
-	$ch = curl_init();
+	$remaining = (int) floor(($transfer->deadline - microtime(true)) * 1000);
+
+	if ($remaining <= 0) {
+		return 'Timed out';
+	}
 
 	$port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
 
@@ -91,66 +332,186 @@ function cacti_http(string $method, string $url, array $options = []) : array {
 	// (private/loopback) address than the one already checked above - the
 	// classic SSRF-via-DNS-rebinding bypass of a separate preflight check.
 	// TLS hostname/certificate verification below still runs against
-	// $parts['host'], unaffected by which address it is pinned to.
-	$resolve = [];
+	// $parts['host'], unaffected by which address it is pinned to.  Every
+	// address goes in one entry: a later entry for the same host and port
+	// replaces an earlier one, which would leave only the last address.
+	$resolve = [cacti_http_bracket_ipv6($parts['host']) . ':' . $port . ':' . implode(',', array_map('cacti_http_bracket_ipv6', $safeIps))];
 
-	foreach ($safeIps as $ip) {
-		$resolve[] = cacti_http_bracket_ipv6($parts['host']) . ':' . $port . ':' . cacti_http_bracket_ipv6($ip);
+	$sameOrigin = cacti_http_origin($url) === $transfer->origin;
+	$headers    = $options['headers'] ?? [];
+
+	// a caller header can carry a secret under any name (X-Api-Key, Private-Token,
+	// Proxy-Authorization), so a new origin only gets the content-negotiation ones
+	if (!$sameOrigin) {
+		$headers = array_values(array_filter($headers, static function ($header) {
+			return preg_match('/^\s*(accept|accept-language|user-agent)\s*:/i', $header) === 1;
+		}));
 	}
 
+	$ch = curl_init();
+
 	curl_setopt_array($ch, [
-		CURLOPT_URL             => $url,
-		CURLOPT_CUSTOMREQUEST   => strtoupper($method),
-		CURLOPT_RETURNTRANSFER  => true,
-		CURLOPT_FOLLOWLOCATION  => false,
-		CURLOPT_SSL_VERIFYPEER  => true,
-		CURLOPT_SSL_VERIFYHOST  => 2,
-		CURLOPT_RESOLVE         => $resolve,
-		CURLOPT_TIMEOUT         => (int) ($options['timeout'] ?? 10),
-		CURLOPT_CONNECTTIMEOUT  => 5,
-		CURLOPT_PROTOCOLS       => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-		CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+		CURLOPT_URL               => $url,
+		CURLOPT_CUSTOMREQUEST     => $transfer->method,
+		CURLOPT_NOBODY            => $transfer->method === 'HEAD',
+		CURLOPT_FOLLOWLOCATION    => false,
+		CURLOPT_SSL_VERIFYPEER    => true,
+		CURLOPT_SSL_VERIFYHOST    => 2,
+		CURLOPT_RESOLVE           => $resolve,
+		CURLOPT_TIMEOUT_MS        => $remaining,
+		CURLOPT_CONNECTTIMEOUT_MS => min($remaining, 5000),
+		CURLOPT_NOSIGNAL          => true,
+		CURLOPT_PROTOCOLS         => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+		CURLOPT_REDIR_PROTOCOLS   => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+		CURLOPT_WRITEFUNCTION     => static function ($ch, string $data) use ($transfer) : int {
+			$status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+
+			// the body of a redirect that will be followed is never returned
+			if ($status >= 300 && $status < 400 && in_array($transfer->method, ['GET', 'HEAD'], true) && $transfer->redirects < (int) ($transfer->options['max_redirects'] ?? 0)) {
+				return strlen($data);
+			}
+
+			if (isset($transfer->options['max_bytes']) && strlen($transfer->body) + strlen($data) > $transfer->options['max_bytes']) {
+				$transfer->error = 'Response exceeds ' . $transfer->options['max_bytes'] . ' bytes';
+
+				return 0;
+			}
+
+			$transfer->body .= $data;
+
+			return strlen($data);
+		},
 	]);
 
-	if (isset($options['body'])) {
+	if ($transfer->redirects > 0 && $sameOrigin && $transfer->credentials !== null) {
+		curl_setopt($ch, CURLOPT_USERPWD, $transfer->credentials);
+	}
+
+	// compressed bodies are only accepted under a size cap, which counts decoded bytes,
+	// so a small gzip reply cannot expand without limit in a caller that set none
+	if (isset($options['max_bytes'])) {
+		curl_setopt($ch, CURLOPT_ENCODING, '');
+	}
+
+	if (isset($options['body']) && $transfer->redirects === 0) {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $options['body']);
 	}
 
-	if (!empty($options['headers'])) {
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $options['headers']);
+	if (!empty($headers)) {
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	}
 
-	$body   = curl_exec($ch);
-	$status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	$error  = curl_error($ch);
+	$transfer->handle = $ch;
+	$transfer->body   = '';
 
-	curl_close($ch);
+	curl_multi_add_handle($multi, $ch);
 
-	if (!is_string($body)) {
+	return '';
+}
+
+/**
+ * Settles a finished hop: returns its result, or starts the next hop of a redirect.
+ *
+ * @param CurlMultiHandle $multi    the multi handle the transfer runs on
+ * @param stdClass        $transfer transfer state built by cacti_http_multi()
+ * @param int             $code     the CURLE_* code curl reported for the hop
+ *
+ * @return array{success: bool, status: int, body: string, error: string}|null null while a redirect hop is in flight
+ */
+function cacti_http_finish(CurlMultiHandle $multi, stdClass $transfer, int $code) : ?array {
+	$ch     = $transfer->handle;
+	$status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+
+	if ($transfer->error !== '') {
+		return ['success' => false, 'status' => $status, 'body' => '', 'error' => $transfer->error];
+	}
+
+	if ($code === CURLE_OPERATION_TIMEDOUT) {
+		return ['success' => false, 'status' => $status, 'body' => '', 'error' => 'Timed out'];
+	}
+
+	if ($code !== CURLE_OK) {
+		$error = curl_error($ch);
+
 		return ['success' => false, 'status' => $status, 'body' => '', 'error' => $error !== '' ? $error : 'Request failed'];
+	}
+
+	$location = (string) curl_getinfo($ch, CURLINFO_REDIRECT_URL);
+
+	if ($status >= 300 && $status < 400 && $location !== '' && (int) ($transfer->options['max_redirects'] ?? 0) > 0) {
+		if (!in_array($transfer->method, ['GET', 'HEAD'], true)) {
+			return ['success' => false, 'status' => $status, 'body' => $transfer->body, 'error' => 'HTTP ' . $status];
+		}
+
+		if ($transfer->redirects >= (int) $transfer->options['max_redirects']) {
+			return ['success' => false, 'status' => $status, 'body' => '', 'error' => 'Too many redirects'];
+		}
+
+		if ($transfer->redirects === 0) {
+			$parts = parse_url($transfer->url);
+
+			if (isset($parts['user'])) {
+				$transfer->credentials = rawurldecode($parts['user']) . ':' . rawurldecode($parts['pass'] ?? '');
+			}
+		}
+
+		$transfer->redirects++;
+
+		// credentials ride on the original origin only, never inside a redirect target
+		$transfer->url = (string) preg_replace('~^([a-z][a-z0-9+.-]*://)[^/?#@]*@~i', '$1', $location);
+
+		$transfer->handle  = null;
+		$transfer->dnsHost = null; // every redirect gets fresh resolution and validation
+		$error             = cacti_http_start($multi, $transfer);
+
+		return $error === '' ? null : ['success' => false, 'status' => 0, 'body' => '', 'error' => $error];
 	}
 
 	return [
 		'success' => $status >= 200 && $status < 300,
 		'status'  => $status,
-		'body'    => $body,
+		'body'    => $transfer->body,
 		'error'   => $status >= 300 ? 'HTTP ' . $status : ''
 	];
 }
 
 /**
- * Resolves a hostname (or validates an IP literal) once and returns its
- * addresses only when every one of them is public/routable - never
- * loopback/private/link-local/reserved space. Used both to decide whether
- * cacti_http() may proceed and, via CURLOPT_RESOLVE, to pin the connection
- * to these exact addresses so a second, independent DNS lookup at connect
- * time cannot substitute a different (unsafe) address (DNS rebinding).
+ * Returns the scheme, host and effective port of a URL, the unit credentials are scoped to.
  *
- * @param string $host The hostname or IP literal from the target URL.
+ * @param string $url An absolute URL.
+ *
+ * @return string lowercase 'scheme://host:port', or '' when the URL does not parse.
+ */
+function cacti_http_origin(string $url) : string {
+	$parts = parse_url($url);
+
+	if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
+		return '';
+	}
+
+	$scheme = strtolower($parts['scheme']);
+
+	return $scheme . '://' . strtolower($parts['host']) . ':' . ($parts['port'] ?? ($scheme === 'https' ? 443 : 80));
+}
+
+/**
+ * Resolves a hostname (or validates an IP literal) once and returns its
+ * addresses only when every one of them is allowed - by default never
+ * loopback/private/link-local/reserved space, or with $blockedSubnets never
+ * inside those ranges. Used both to decide whether cacti_http() may proceed
+ * and, via CURLOPT_RESOLVE, to pin the connection to these exact addresses so
+ * a second, independent DNS lookup at connect time cannot substitute a
+ * different (unsafe) address (DNS rebinding).
+ *
+ * Names are looked up through the system resolver as well as DNS so entries
+ * in /etc/hosts, which monitored devices often rely on, are checked too.
+ *
+ * @param string            $host           The hostname or IP literal from the target URL.
+ * @param list<string>|null $blockedSubnets CIDR ranges to refuse instead of all non-public space.
  *
  * @return string[] The resolved addresses, or [] if none/any is unsafe.
  */
-function cacti_http_resolve_safe_ips(string $host) : array {
+function cacti_http_resolve_safe_ips(string $host, ?array $blockedSubnets = null) : array {
 	// parse_url() can hand back an IPv6 literal wrapped in [brackets]; strip
 	// them for validation/DNS purposes, they get re-added (where curl
 	// requires them) when building the CURLOPT_RESOLVE entry below.
@@ -161,20 +522,37 @@ function cacti_http_resolve_safe_ips(string $host) : array {
 	} else {
 		$records = @dns_get_record($bareHost, DNS_A + DNS_AAAA);
 
-		if (!is_array($records)) {
-			return [];
+		$ips = is_array($records) ? array_map(static function ($record) {
+			return $record['ip'] ?? ($record['ipv6'] ?? null);
+		}, $records) : [];
+
+		$system = @gethostbynamel($bareHost);
+
+		if (is_array($system)) {
+			$ips = array_merge($ips, $system);
 		}
 
-		$ips = array_filter(array_map(static function ($record) {
-			return $record['ip'] ?? ($record['ipv6'] ?? null);
-		}, $records));
+		$ips = array_unique(array_filter($ips));
 	}
 
+	return cacti_http_validate_ips($ips, $blockedSubnets);
+}
+
+/** Validate every resolved address before pinning an HTTP connection. */
+function cacti_http_validate_ips(array $ips, ?array $blockedSubnets = null) : array {
 	if (empty($ips)) {
 		return [];
 	}
 
 	foreach ($ips as $ip) {
+		if ($blockedSubnets !== null) {
+			if (IpUtils::checkIp($ip, $blockedSubnets)) {
+				return [];
+			}
+
+			continue;
+		}
+
 		// An IPv4-mapped IPv6 literal (::ffff:x.x.x.x) is structurally valid
 		// IPv6 and can pass the private/reserved check below on the IPv6
 		// side while curl still connects via the embedded IPv4 address -
@@ -187,6 +565,136 @@ function cacti_http_resolve_safe_ips(string $host) : array {
 	}
 
 	return array_values($ips);
+}
+
+/** Read local resolver configuration once, before starting network transfers. */
+function cacti_http_dns_resolver(\React\EventLoop\LoopInterface $loop) : ?\React\Dns\Resolver\ResolverInterface {
+	try {
+		$config = \React\Dns\Config\Config::loadSystemConfigBlocking();
+
+		// Never replace the administrator's resolver configuration with a public service.
+		return (new \React\Dns\Resolver\Factory())->create($config, $loop);
+	} catch (Throwable $error) {
+		return null;
+	}
+}
+
+/**
+ * Read hosts-file precedence and resolver search rules before entering the loop.
+ *
+ * @return array{domains: list<string>, ndots: int, hosts: \React\Dns\Config\HostsFile|null}
+ */
+function cacti_http_dns_search_config() : array {
+	$search = ['domains' => [], 'ndots' => 1, 'hosts' => null];
+
+	try {
+		$search['hosts'] = \React\Dns\Config\HostsFile::loadFromPathBlocking();
+	} catch (RuntimeException $error) {
+		// A missing hosts file leaves DNS responsible for the name.
+	}
+	$contents = @file_get_contents('/etc/resolv.conf');
+
+	foreach (explode("\n", $contents === false ? '' : $contents) as $line) {
+		$line = trim((string) preg_replace('/[#;].*$/', '', $line));
+
+		if (preg_match('/^(search|domain)\s+(.+)$/', $line, $match)) {
+			$search['domains'] = preg_split('/\s+/', trim($match[2])) ?: [];
+		} elseif (preg_match('/^options\s+.*\bndots:(\d+)/', $line, $match)) {
+			$search['ndots'] = min(15, (int) $match[1]);
+		}
+	}
+
+	return $search;
+}
+
+/**
+ * Preserve hosts-file aliases, absolute names and configured DNS search order.
+ *
+ * @param  array{domains: list<string>, ndots: int, hosts: \React\Dns\Config\HostsFile|null} $search
+ * @return list<string>
+ */
+function cacti_http_dns_candidates(string $host, array $search) : array {
+	if (filter_var(trim($host, '[]'), FILTER_VALIDATE_IP) || str_ends_with($host, '.') ||
+		($search['hosts'] !== null && $search['hosts']->getIpsForHost($host) !== [])) {
+		return [$host];
+	}
+	$candidates = [];
+
+	foreach ($search['domains'] as $domain) {
+		$candidates[] = $host . '.' . rtrim($domain, '.');
+	}
+
+	if (substr_count($host, '.') >= $search['ndots']) {
+		array_unshift($candidates, $host);
+	} else {
+		$candidates[] = $host;
+	}
+
+	return array_values(array_unique($candidates));
+}
+
+/** Start both address-family queries without blocking any HTTP transfers. */
+function cacti_http_resolve_async(stdClass $transfer) : void {
+	$host                 = trim($transfer->dnsCandidates[$transfer->dnsCandidate], '[]');
+	$transfer->dnsIps     = null;
+	$transfer->dnsQueries = [];
+
+	if (filter_var($host, FILTER_VALIDATE_IP)) {
+		$transfer->dnsIps = [$host];
+
+		return;
+	}
+
+	$hosts = $transfer->dns->search['hosts'];
+
+	if ($hosts !== null) {
+		$local = $hosts->getIpsForHost($host);
+
+		if ($local !== []) {
+			$transfer->dnsIps = $local;
+
+			return;
+		}
+	}
+
+	try {
+		if ($transfer->dns->resolver === null) {
+			$transfer->dnsIps = [];
+
+			return;
+		}
+
+		$remaining = 2;
+		$ips       = [];
+		$failed    = false;
+		$settle    = static function (array $addresses, bool $error = false) use ($transfer, &$remaining, &$ips, &$failed) {
+			$ips    = array_merge($ips, $addresses);
+			$failed = $failed || $error;
+
+			if (--$remaining === 0) {
+				if (!$failed && $ips === [] && isset($transfer->dnsCandidates[$transfer->dnsCandidate + 1])) {
+					$transfer->dnsCandidate++;
+					cacti_http_resolve_async($transfer);
+				} else {
+					$transfer->dnsIps = $failed ? [] : array_values(array_unique($ips));
+				}
+			}
+		};
+
+		foreach ([\React\Dns\Model\Message::TYPE_A, \React\Dns\Model\Message::TYPE_AAAA] as $type) {
+			$query                  = $transfer->dns->resolver->resolveAll($host, $type);
+			$transfer->dnsQueries[] = $query;
+			$query->then($settle, static function (Throwable $error) use ($settle) {
+				$settle([], !($error instanceof \React\Dns\RecordNotFoundException));
+			});
+		}
+	} catch (Throwable $error) {
+		foreach ($transfer->dnsQueries as $query) {
+			$query->cancel();
+		}
+		$transfer->dnsQueries = [];
+		$transfer->dnsIps     = [];
+	}
 }
 
 /**
@@ -2886,6 +3394,30 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 			}
 
 			return true;
+		}
+
+		if ($data_input['type_id'] == DATA_INPUT_TYPE_HTTP) {
+			include_once(CACTI_PATH_LIBRARY . '/utility.php');
+			include_once(CACTI_PATH_LIBRARY . '/CactiHttpPoller.php');
+
+			$http_fields = get_http_input_fields($data_template_data_id, $data_input['data_template_id']);
+
+			$row = [
+				'host_id'       => $host_id,
+				'local_data_id' => 0,
+				'rrd_name'      => 'test',
+				'arg1'          => substitute_host_data($http_fields['http_url'] ?? '', '|', '|', $host_id),
+				'arg2'          => $http_fields['http_json_pointer'] ?? '',
+				'arg3'          => CactiHttpPollItem::encodeOptions($http_fields['http_scale'] ?? '', $http_fields['http_timeout'] ?? ''),
+			];
+
+			$reasons = [];
+			$outputs = CactiHttpPoller::create((int) read_config_option('http_poller_concurrency'))->collect([$row], $reasons);
+			$output  = $outputs[CactiHttpPoller::rowKey($row)] ?? 'U';
+
+			dsv_log('HTTP output', ['output' => $output, 'reasons' => $reasons]);
+
+			return $output !== 'U';
 		}
 
 		if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
