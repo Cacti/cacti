@@ -1,9 +1,11 @@
 """Run the Motorola SB6141 data input script against canned modem pages."""
+import ast
 import contextlib
 import io
 from pathlib import Path
 import runpy
 import sys
+import time
 import types
 import unittest
 from unittest import mock
@@ -150,13 +152,30 @@ class MotorolaSurfboardScriptTest(unittest.TestCase):
         self.assertIn('larger than 1048576 bytes', err)
         self.assertTrue(self.response.closed)
 
-    def test_slow_response_is_abandoned_at_the_deadline(self):
-        clock = iter([100.0, 100.0, 125.0])
-        with mock.patch('time.monotonic', side_effect=lambda: next(clock)):
-            code, out, err, _ = self.run_script(['Downstream', 'modem.example'],
-                                                response=Response('', chunks=[b'a', b'b']))
-        self.assertEqual((code, out), (1, ''))
-        self.assertIn('longer than 20 seconds', err)
+    def test_deadline_interrupts_a_read_before_a_chunk_is_yielded(self):
+        # Compile the production fetch without executing the CLI or importing lxml.
+        tree = ast.parse(SCRIPT.read_text())
+        nodes = [node for node in tree.body if isinstance(node, ast.FunctionDef)
+                 and node.name == 'fetch']
+        import queue
+        import threading
+        response = Response('')
+
+        def delayed_chunks(chunk_size):
+            time.sleep(0.5)
+            yield b'x'
+
+        response.iter_content = delayed_chunks
+        scope = dict(queue=queue, threading=threading, time=time,
+                     requests=types.SimpleNamespace(get=lambda *a, **k: response,
+                                                    RequestException=RequestException),
+                     TOTAL_DEADLINE=0.05, READ_TIMEOUT=0.1, MAX_BYTES=1024)
+        exec(compile(ast.Module(body=nodes, type_ignores=[]), str(SCRIPT), 'exec'), scope)
+        start = time.monotonic()
+        with self.assertRaisesRegex(ValueError, 'longer than'):
+            scope['fetch']('http://modem.example/')
+        self.assertLess(time.monotonic() - start, 0.3)
+
 
     def test_remote_text_cannot_add_output_fields(self):
         modem = page(table('Upstream', ['5', '6 x:1', '7'],
