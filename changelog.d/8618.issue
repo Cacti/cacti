@@ -1,0 +1,1 @@
+Run cli/show_perms.php as a symfony/console command; use -V or --version and -h or --help, since -v now raises verbosity, -H is no longer accepted, and the version line no longer prints the copyright years

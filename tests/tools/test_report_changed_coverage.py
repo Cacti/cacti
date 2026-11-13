@@ -51,6 +51,34 @@ class CoverageEvidenceTest(unittest.TestCase):
     def test_covered_statement_passes(self):
         self.assertEqual(self.evaluate({3: 1}), 0)
 
+    def test_clover_statement_passes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'lib').mkdir()
+            source = root / 'lib/example.php'
+            source.write_text('<?php\nfunction example() {\nreturn true;\n}\n')
+            clover = root / 'coverage.xml'
+            clover.write_text(
+                '<?xml version="1.0"?><coverage><project><file name="'
+                + str(source) + '"><line num="3" type="stmt" count="1"/></file></project></coverage>')
+            with patch.object(GATE.Path, 'cwd', return_value=root), patch.object(
+                    GATE, 'added_lines', return_value={'lib/example.php': {3}}), patch(
+                    'sys.argv', ['gate', '--base', 'HEAD', '--php-coverage', str(clover)]), redirect_stdout(io.StringIO()):
+                self.assertEqual(GATE.main(), 0)
+
+    def test_declare_directive_is_not_an_executable_statement(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'lib').mkdir()
+            source = root / 'lib/example.php'
+            source.write_text('<?php\ndeclare(strict_types = 1);\nfunction example() {\nreturn true;\n}\n')
+            coverage = root / 'coverage.json'
+            coverage.write_text(json.dumps({str(source): {'lines': {4: 1}}}))
+            with patch.object(GATE.Path, 'cwd', return_value=root), patch.object(
+                    GATE, 'added_lines', return_value={'lib/example.php': {2, 4}}), patch(
+                    'sys.argv', ['gate', '--base', 'HEAD', '--php-coverage', str(coverage)]), redirect_stdout(io.StringIO()):
+                self.assertEqual(GATE.main(), 0)
+
     def test_unexecuted_statement_fails(self):
         self.assertEqual(self.evaluate({3: -1}), 1)
 

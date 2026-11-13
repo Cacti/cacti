@@ -23,119 +23,21 @@
  +-------------------------------------------------------------------------+
 */
 
+use Cacti\Console\Command\ShowPermissionsCommand;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+
 require(__DIR__ . '/../include/cli_check.php');
 
-// process calling arguments
-$parms = $_SERVER['argv'];
-array_shift($parms);
+/* Thin compatibility shim. The behaviour lives in the native
+ * Cacti\Console\Command\ShowPermissionsCommand; this entrypoint keeps
+ * `php cli/show_perms.php` working for existing cron jobs and documentation.
+ * global.php (loaded by cli_check.php) has already registered the composer
+ * autoloader, so the Console classes resolve here. */
+$command = new ShowPermissionsCommand();
 
-$output_json   = false;
-$output_grants = false;
+$application = new Application('Cacti Database Permission Utility', get_cacti_cli_version());
+$application->add($command);
+$application->setDefaultCommand((string) $command->getName(), true);
 
-if (cacti_sizeof($parms)) {
-	$shortopts = 'JjGgVvHh';
-
-	$longopts = [
-		'grant',
-		'json',
-		'version',
-		'help'
-	];
-
-	$options = getopt($shortopts, $longopts);
-
-	foreach ($options as $arg => $value) {
-		switch ($arg) {
-			case 'json':
-				$output_json = true;
-
-				break;
-			case 'grants':
-			case 'G':
-			case 'g':
-				$output_grants = true;
-
-				break;
-			case 'version':
-			case 'V':
-			case 'v':
-				display_version();
-
-				exit(0);
-
-			case 'help':
-			case 'H':
-			case 'h':
-				display_help();
-
-				exit(0);
-
-			default:
-				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
-				display_help();
-
-				exit(1);
-		}
-	}
-}
-
-$perms = db_get_permissions(true);
-
-$count = 0;
-
-if ($output_json) {
-	print cacti_strtolower((string) json_encode($perms, JSON_PRETTY_PRINT));
-} else {
-	if ($output_grants) {
-		$pad = str_repeat('-', 20);
-		printf("\n %20s %-12s %20s\n\n", $pad, '   Grants', $pad);
-		$grants = db_get_grants();
-
-		foreach ($grants as $grant_row) {
-			foreach ($grant_row as $grant) {
-				print $grant . PHP_EOL;
-			}
-		}
-		printf("\n %20s %-12s %20s\n\n", $pad, ' Permission', $pad);
-	}
-
-	foreach ($perms as $perm => $value) {
-		$count++;
-		printf('%25s %5s    ', $perm, $value ? 'Yes' : 'No');
-
-		if ($count % 2 == 0) {
-			print PHP_EOL;
-		}
-	}
-}
-
-if ($count % 2 == 1) {
-	print PHP_EOL;
-}
-
-/**
- * display_version - displays version information
- *
- * @return void
- */
-function display_version() : void {
-	$version = get_cacti_cli_version();
-	print "Cacti Database Permission Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
-}
-
-/**
- * display_help - displays help information
- *
- * @return void
- */
-function display_help() : void {
-	display_version();
-
-	print PHP_EOL . 'usage: show_perms.php [--json]' . PHP_EOL . PHP_EOL;
-
-	print 'Cacti utility for auditing your Cacti database permissions.  This utility' . PHP_EOL;
-	print 'will scan your Cacti database and report any permissions that it finds.' . PHP_EOL . PHP_EOL;
-
-	print 'Optional:' . PHP_EOL;
-	print '    --json - Report on any permissions found in the database' . PHP_EOL . PHP_EOL;
-}
+exit($application->run(new ArgvInput()));

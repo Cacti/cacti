@@ -299,6 +299,9 @@ if (!is_dir($config['cache_dir'])) {
 // include base modules
 require_once(CACTI_PATH_LIBRARY . '/database.php');
 require_once(CACTI_PATH_LIBRARY . '/functions.php');
+require_once(CACTI_PATH_LIBRARY . '/process.php');
+require_once(CACTI_PATH_LIBRARY . '/config_api.php');
+require_once(CACTI_PATH_LIBRARY . '/Repository/DeviceRepository.php');
 require_once(CACTI_PATH_LIBRARY . '/graph_template_input.php');
 require_once(CACTI_PATH_LIBRARY . '/renderer.php');
 require_once(CACTI_PATH_LIBRARY . '/headers_secure.php');
@@ -748,6 +751,7 @@ require_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
 require_once(CACTI_PATH_INCLUDE . '/global_settings.php');
 require_once(CACTI_PATH_INCLUDE . '/global_form.php');
 require_once(CACTI_PATH_LIBRARY . '/html_form.php');
+require_once(CACTI_PATH_LIBRARY . '/form_validate.php');
 require_once(CACTI_PATH_LIBRARY . '/html_filter.php');
 require_once(CACTI_PATH_LIBRARY . '/variables.php');
 require_once(CACTI_PATH_LIBRARY . '/mib_cache.php');

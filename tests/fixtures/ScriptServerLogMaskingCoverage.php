@@ -17,13 +17,22 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
-require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__) . '/Helpers/CmdDeviceStubs.php';
 
 $root = dirname(__DIR__, 2);
 
 require_once $root . '/include/global_constants.php';
+// exec_with_timeout() runs its helper commands through the global
+// cacti_process_run(), which counts its argv with the global cacti_sizeof().
+require_once $root . '/include/vendor/autoload.php';
+
+if (!function_exists('cacti_sizeof')) {
+	cacti_fixture_source_function($root . '/lib/functions.php', 'cacti_sizeof', '');
+}
+
+require_once $root . '/lib/process.php';
 
 if (!defined('CACTI_SERVER_OS')) {
 	define('CACTI_SERVER_OS', 'unix');

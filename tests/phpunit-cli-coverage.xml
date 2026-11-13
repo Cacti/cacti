@@ -12,6 +12,7 @@
         <testsuite name="CLI coverage">
             <file>Unit/Core/Cli/CactiApplicationTest.php</file>
             <file>Unit/Core/Cli/CactiEntrypointSecurityTest.php</file>
+            <file>Unit/Core/Cli/ShowPermissionsCommandTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

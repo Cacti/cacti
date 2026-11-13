@@ -570,6 +570,14 @@ function draw_edit_control(string $field_name, array &$field_array) : void {
 
 			break;
 	}
+
+	// Opt-in inline validation errors (lib/form_validate.php).  This is inert
+	// unless a save path stashed messages for this field via
+	// form_validate_stash(); legacy forms that do not opt in never populate
+	// SESS_FIELD_ERRORS, so this emits nothing for them.
+	if (function_exists('form_validate_field_block')) {
+		print form_validate_field_block($field_name);
+	}
 }
 
 /**
