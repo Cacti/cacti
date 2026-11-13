@@ -21,5 +21,9 @@
             <file>Unit/Scripts/SqlScriptsTest.php</file>
             <file>Unit/Scripts/DiskfreeArgumentTest.php</file>
         </testsuite>
+        <testsuite name="RrdInfo">
+            <file>Unit/Core/Rrd/RrdInfoRenderTest.php</file>
+            <file>Unit/Core/Rrd/RrdTuneRenderTest.php</file>
+        </testsuite>
     </testsuites>
 </phpunit>
