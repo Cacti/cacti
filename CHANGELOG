@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-fix: Ensure on-demand (WebUI) Boost processing always takes precedence over the scheduled Boost poller instead of deferring to it (lib/boost.php boost_process_poller_output), so viewing a graph flushes its data immediately; concurrent writes to the same RRD remain safe because Boost passes --skip-past-updates to RRDtool 1.5+
 -fix: Match the language selectmenu (the jQuery UI dropdown rendered by the custom languageselect widget) to each theme's select2 controls - restore the 6px border-radius squared off by .ui-corner-all and apply the themed gradient/transparent background and open-state colours - in the classic, dark, deepness, midwinter, paper-plane, paw and sunrise themes
 -fix: Preserve a Card API card's live expand/collapse state when its refresh or resize response lands (include/js/cards.js replaceCard), so toggling a card while a refresh is in flight is no longer reverted
 -fix: Harden the Card API controller (include/js/cards.js): discard refresh/resize responses superseded by a newer request for the same card, wait for the host to confirm a card removal before dropping it and persisting the layout, skip adding a card id already on the grid, and keep keyboard focus on the revealed expand/collapse button

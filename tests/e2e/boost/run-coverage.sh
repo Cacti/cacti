@@ -96,4 +96,6 @@ run_poller
 
 coverage_php "$scenario" --action=assert-final --rra-dir="$rra_path" --sources=12 --samples=1
 
+coverage_php "$scenario" --action=on-demand-flush --rra-dir="$rra_path" --sources=12 --samples=4
+
 printf '%s\n' 'PASS: Boost coverage scenarios asserted success, isolated failure, outage, crash recovery, ownership refusal, and exact RRD timestamps'

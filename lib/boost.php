@@ -2084,65 +2084,17 @@ function boost_get_input_field_names($local_data_id, $templated) {
  * 4) Merge the results together 5) Process the entire result set. Used as part of Cacti's lib
  * functionality.
  *
+ * On-demand (WebUI) processing always wins over the scheduled Boost poller because a graph view
+ * needs its data flushed immediately. No archive lifecycle or per-RRD file lock is taken here:
+ * concurrent writes to the same RRD are safe because Boost passes --skip-past-updates to RRDtool
+ * 1.5+, and older samples are ignored for pre-1.5 backends.
+ *
  * @param int $local_data_id Local data ID to update.
  * @param mixed $rrdtool_pipe Optional RRDtool worker or proxy connection.
  *
- * @return int Number of handled rows, or -1 when processing is deferred or fails.
+ * @return int Number of handled rows, or -1 when processing fails.
  */
 function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
-	$local_data_id = (int) $local_data_id;
-
-	if ($local_data_id < 1) {
-		return -1;
-	}
-
-	$archive_lock = boost_acquire_archive_lifecycle_lock(0);
-
-	if ($archive_lock === false) {
-		cacti_log("NOTICE: On-demand Boost processing for Local Data ID '$local_data_id' deferred while the scheduled archive owner is active.", false, 'BOOST');
-
-		return -1;
-	}
-
-	if ((int) read_config_option('boost_poller_started') > 0) {
-		boost_release_archive_lifecycle_lock($archive_lock);
-		cacti_log("NOTICE: On-demand Boost processing for Local Data ID '$local_data_id' deferred because a scheduled owner lease remains active.", false, 'BOOST');
-
-		return -1;
-	}
-
-	boost_reset_rrd_metadata_page_cache();
-	$metadata  = boost_get_rrd_filename_and_template($local_data_id);
-	$path_lock = false;
-
-	if ($metadata['rrd_path'] !== '') {
-		$path_lock = boost_acquire_rrd_path_lock($metadata['rrd_path']);
-
-		if ($path_lock === false) {
-			boost_release_archive_lifecycle_lock($archive_lock);
-			cacti_log("NOTICE: On-demand Boost processing for Local Data ID '$local_data_id' deferred behind an active writer for the same RRD file.", false, 'BOOST');
-
-			return -1;
-		}
-	}
-
-	try {
-		return boost_process_poller_output_unlocked($local_data_id, $rrdtool_pipe);
-	} finally {
-		boost_release_rrd_path_lock($path_lock);
-		boost_release_archive_lifecycle_lock($archive_lock);
-	}
-}
-
-/**
- * Process one on-demand RRD while the caller owns the archive lifecycle lock.
- *
- * @param int $local_data_id The local data ID to process.
- * @param mixed $rrdtool_pipe Optional RRDtool worker or proxy connection.
- *
- * @return int Number of handled rows, or -1 when the handoff was not acknowledged.
- */
-function boost_process_poller_output_unlocked($local_data_id, $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
 	$local_data_id = (int) $local_data_id;
@@ -2150,6 +2102,8 @@ function boost_process_poller_output_unlocked($local_data_id, $rrdtool_pipe = ''
 	if ($local_data_id <= 0) {
 		return -1;
 	}
+
+	boost_reset_rrd_metadata_page_cache();
 
 	static $archive_table = false;
 	static $warning_issued;
@@ -2506,43 +2460,15 @@ function boost_process_poller_output_unlocked($local_data_id, $rrdtool_pipe = ''
 		}
 	}
 
-	/* Remove retry records only after RRD and archive forwarding acknowledgement. */
+	/**
+	 * Flush live rows only. On-demand (WebUI) processing always wins and runs without the archive
+	 * lifecycle lock, so sealed archives are left entirely to the scheduled owner: the rows read
+	 * above were already written to the RRD, and --skip-past-updates makes the owner's later replay
+	 * a no-op. Never deleting from an archive here means the on-demand path cannot shrink a range
+	 * the scheduled poller already staged (which would fail its row-count check) nor touch a table
+	 * the owner may have dropped.
+	 */
 	boost_timer('delete', BOOST_TIMER_START);
-
-	if ($updates_ok && cacti_count($archive_tables)) {
-		foreach ($archive_tables as $table) {
-			$forward_rows = (int) db_fetch_cell_prepared("SELECT COUNT(*)
-				FROM $table
-				WHERE local_data_id = ?
-				AND time >= FROM_UNIXTIME(?)",
-				array($local_data_id, $timestamp));
-
-			if (db_execute_prepared("INSERT IGNORE INTO poller_output_boost
-				SELECT *
-				FROM $table
-				WHERE local_data_id = ?
-				AND time >= FROM_UNIXTIME(?)",
-				array($local_data_id, $timestamp), false) === false) {
-				$updates_ok = false;
-
-				break;
-			}
-
-			if (db_affected_rows() < $forward_rows) {
-				cacti_log("WARNING: Boost archive forwarding encountered duplicate sample keys for Local Data ID '$local_data_id'.", false, 'BOOST');
-			}
-		}
-	}
-
-	if ($updates_ok && cacti_count($archive_tables)) {
-		foreach ($archive_tables as $table) {
-			if (db_execute_prepared("DELETE FROM $table WHERE local_data_id = ?", array($local_data_id), false) === false) {
-				$updates_ok = false;
-
-				break;
-			}
-		}
-	}
 
 	if ($updates_ok && cacti_sizeof($results)) {
 		$updates_ok = db_execute_prepared('DELETE FROM poller_output_boost

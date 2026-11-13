@@ -362,6 +362,57 @@ function boostE2eAssertState($checkpoint, array $state, $base_time, $expected_la
 	}
 }
 
+/**
+ * Reset every Boost queue, archive, process, and data-source table before a scenario.
+ *
+ * @return void No value is returned.
+ */
+function boostE2eResetScenarioTables() {
+	foreach(boostE2eArchives() as $table) {
+		db_execute("DROP TABLE `$table`");
+	}
+
+	db_execute('TRUNCATE TABLE poller_output_boost');
+	db_execute('TRUNCATE TABLE poller_output_boost_failures');
+	db_execute('TRUNCATE TABLE poller_output_boost_processes');
+	db_execute('TRUNCATE TABLE poller_output_boost_local_data_ids');
+	db_execute("DELETE FROM processes WHERE tasktype = 'boost'");
+	db_execute('DELETE FROM data_template_rrd');
+	db_execute('DELETE FROM graph_templates_item');
+	db_execute('DELETE FROM poller_item');
+	db_execute('DELETE FROM data_local');
+}
+
+/**
+ * Provision one two-data-source Boost source with its RRD and poller items.
+ *
+ * @param int $source Local data ID.
+ * @param string $path RRD destination path.
+ * @param int $start RRD start timestamp.
+ *
+ * @return void No value is returned.
+ */
+function boostE2eProvisionSource($source, $path, $start) {
+	db_execute_prepared('INSERT INTO data_local
+		(id, data_template_id, host_id, snmp_query_id, snmp_index, orphan)
+		VALUES (?, 0, 0, 0, ?, 0)', array($source, (string) $source), false);
+
+	boostE2eCreateRrd($path, $start);
+
+	foreach(array('value_a', 'value_b') as $rrd_name) {
+		db_execute_prepared('INSERT INTO data_template_rrd
+			(local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat,
+			data_source_type_id, data_source_name, data_input_field_id)
+			VALUES (?, 0, ?, ?, 600, 1, ?, 34)', array($source, 'U', 'U', $rrd_name), false);
+		$data_template_rrd_id = db_fetch_insert_id();
+		db_execute_prepared('INSERT INTO graph_templates_item (task_item_id)
+			VALUES (?)', array($data_template_rrd_id), false);
+		db_execute_prepared('INSERT INTO poller_item
+			(local_data_id, poller_id, host_id, action, present, rrd_name, rrd_path, rrd_num, rrd_step)
+			VALUES (?, 1, 0, 1, 1, ?, ?, 2, 60)', array($source, $rrd_name, $path), false);
+	}
+}
+
 $options = getopt('', array(
 	'action:',
 	'rra-dir:',
@@ -389,19 +440,7 @@ $stored_expected_last = (int) read_config_option('boost_e2e_expected_last');
 $expected_last = $stored_expected_last > 0 ? $stored_expected_last : $default_expected_last;
 
 if ($action === 'setup-isolated-failure') {
-	foreach(boostE2eArchives() as $table) {
-		db_execute("DROP TABLE `$table`");
-	}
-
-	db_execute('TRUNCATE TABLE poller_output_boost');
-	db_execute('TRUNCATE TABLE poller_output_boost_failures');
-	db_execute('TRUNCATE TABLE poller_output_boost_processes');
-	db_execute('TRUNCATE TABLE poller_output_boost_local_data_ids');
-	db_execute("DELETE FROM processes WHERE tasktype = 'boost'");
-	db_execute('DELETE FROM data_template_rrd');
-	db_execute('DELETE FROM graph_templates_item');
-	db_execute('DELETE FROM poller_item');
-	db_execute('DELETE FROM data_local');
+	boostE2eResetScenarioTables();
 
 	boostE2eSetting('path_rrdtool', '/usr/bin/rrdtool');
 	boostE2eSetting('path_php_binary', $php_binary);
@@ -426,25 +465,7 @@ if ($action === 'setup-isolated-failure') {
 	boostE2eSetting('log_verbosity', 5);
 
 	for ($source = 1; $source <= $sources; $source++) {
-		db_execute_prepared('INSERT INTO data_local
-			(id, data_template_id, host_id, snmp_query_id, snmp_index, orphan)
-			VALUES (?, 0, 0, 0, ?, 0)', array($source, (string) $source), false);
-		$path = $rra_dir . '/source_' . $source . '.rrd';
-
-		boostE2eCreateRrd($path, $base_time - 60);
-
-		foreach(array('value_a', 'value_b') as $rrd_name) {
-			db_execute_prepared('INSERT INTO data_template_rrd
-				(local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat,
-				data_source_type_id, data_source_name, data_input_field_id)
-				VALUES (?, 0, ?, ?, 600, 1, ?, 34)', array($source, 'U', 'U', $rrd_name), false);
-			$data_template_rrd_id = db_fetch_insert_id();
-			db_execute_prepared('INSERT INTO graph_templates_item (task_item_id)
-				VALUES (?)', array($data_template_rrd_id), false);
-			db_execute_prepared('INSERT INTO poller_item
-				(local_data_id, poller_id, host_id, action, present, rrd_name, rrd_path, rrd_num, rrd_step)
-				VALUES (?, 1, 0, 1, 1, ?, ?, 2, 60)', array($source, $rrd_name, $path), false);
-		}
+		boostE2eProvisionSource($source, $rra_dir . '/source_' . $source . '.rrd', $base_time - 60);
 	}
 
 	$broken_path = $rra_dir . '/broken.rrd';
@@ -659,6 +680,57 @@ if ($action === 'setup-isolated-failure') {
 	}
 
 	print json_encode(array('action' => $action, 'killed_pid' => $pid), JSON_UNESCAPED_SLASHES) . PHP_EOL;
+} elseif ($action === 'on-demand-flush') {
+	/**
+	 * Exercise the real on-demand (WebUI) path: boost_process_poller_output() must always process
+	 * its data immediately without any archive lifecycle or per-RRD lock, and tolerate a missing
+	 * archive table silently. This provisions one healthy source, stages archive and live rows, and
+	 * flushes them straight into the RRD.
+	 */
+	include_once($config['library_path'] . '/boost.php');
+
+	boostE2eResetScenarioTables();
+	db_execute('DELETE FROM poller_time');
+
+	boostE2eSetting('path_rrdtool', '/usr/bin/rrdtool');
+	boostE2eSetting('path_php_binary', $php_binary);
+	boostE2eSetting('path_cactilog', '/tmp/cacti-boost-e2e.log');
+	boostE2eSetting('path_boost_log', '');
+	boostE2eSetting('rrdtool_version', '1.7.0');
+	boostE2eSetting('boost_rrd_update_enable', 'on');
+	boostE2eSetting('boost_rrd_update_max_records_per_select', 50000);
+	boostE2eSetting('boost_rrd_update_string_length', 2048);
+	boostE2eSetting('log_verbosity', 5);
+
+	$source = 1;
+	$path   = $rra_dir . '/on_demand_' . $source . '.rrd';
+	boostE2eProvisionSource($source, $path, $base_time - 60);
+
+	$archive = 'poller_output_boost_arch_2001';
+	db_execute("CREATE TABLE `$archive` LIKE poller_output_boost");
+
+	$archive_rows = boostE2eInsertRows($archive, 1, $samples, $base_time, 11);
+	$live_rows    = boostE2eInsertRows('poller_output_boost', 1, $samples, $base_time + 3600, 23);
+
+	$before  = boostE2eLastUpdate($path);
+	$handled = boost_process_poller_output($source);
+	$after   = boostE2eLastUpdate($path);
+
+	boostE2eAssert($handled > 0, 'on-demand flush handled no rows');
+	boostE2eAssert($after > $before, 'on-demand flush did not advance the RRD');
+	boostE2eAssert((int) db_fetch_cell("SELECT COUNT(*) FROM `$archive`") === $archive_rows,
+		'on-demand flush must leave sealed archive rows to the scheduled owner');
+	boostE2eAssert((int) db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost') === 0,
+		'on-demand flush left live rows');
+
+	print json_encode(array(
+		'action'       => $action,
+		'handled'      => (int) $handled,
+		'archive_rows' => $archive_rows,
+		'live_rows'    => $live_rows,
+		'last_before'  => $before,
+		'last_after'  => $after,
+	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } elseif ($action === 'status' || strpos($action, 'assert-') === 0) {
 	$state = boostE2eState($sources, $expected_last);
 	$state['action'] = $action;
