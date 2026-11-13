@@ -326,7 +326,7 @@ test('worker launch includes only staged non-empty ranges', function () use ($ro
 
 test('on-demand Boost defers oversized result sets without deleting them', function () use ($root) {
 	$source = file_get_contents($root . '/lib/boost.php');
-	$body   = boostLifecycleFunctionBody($source, 'function boost_process_poller_output_unlocked(');
+	$body   = boostLifecycleFunctionBody($source, 'function boost_process_poller_output(');
 
 	expect($body)->toContain('LIMIT \' . ($max_rows + 1)')
 		->and($body)->toContain('if (cacti_sizeof($results) > $max_rows)')
@@ -337,7 +337,7 @@ test('on-demand Boost defers oversized result sets without deleting them', funct
 test('scheduled and on-demand parsers share cached data-source metadata', function () use ($root) {
 	$boost  = file_get_contents($root . '/lib/boost.php');
 	$poller = file_get_contents($root . '/poller_boost.php');
-	$body   = boostLifecycleFunctionBody($boost, 'function boost_process_poller_output_unlocked(');
+	$body   = boostLifecycleFunctionBody($boost, 'function boost_process_poller_output(');
 
 	expect($boost)->toContain('function boost_get_unused_data_source_names(')
 		->and($boost)->toContain('function boost_get_input_field_names(')
@@ -428,17 +428,21 @@ test('preparation and completion-record failures are externally visible', functi
 		->and($ui)->toContain('html_escape($failure_error)');
 });
 
-test('scheduled and on-demand archive ownership is serialized without blocking collectors', function () use ($root) {
-	$boost  = file_get_contents($root . '/lib/boost.php');
-	$poller = file_get_contents($root . '/poller_boost.php');
+test('on-demand Boost always wins and never defers to the scheduled poller', function () use ($root) {
+	$boost   = file_get_contents($root . '/lib/boost.php');
+	$poller  = file_get_contents($root . '/poller_boost.php');
 	$wrapper = boostLifecycleFunctionBody($boost, 'function boost_process_poller_output(');
 
+	/* on-demand (WebUI) processing must not gate on the scheduled poller */
+	expect($wrapper)->not->toContain('boost_acquire_archive_lifecycle_lock')
+		->and($wrapper)->not->toContain("read_config_option('boost_poller_started')")
+		->and($wrapper)->not->toContain('boost_acquire_rrd_path_lock')
+		->and($wrapper)->not->toContain('deferred while the scheduled archive owner is active')
+		->and($wrapper)->not->toContain('deferred because a scheduled owner lease remains active')
+		->and($wrapper)->not->toContain('deferred behind an active writer for the same RRD file');
+
+	/* the scheduled poller still owns the archive lifecycle lock for its own coordination */
 	expect($boost)->toContain("\$lock_name = 'boost.archive.lifecycle'")
-		->and($wrapper)->toContain('boost_acquire_archive_lifecycle_lock(0)')
-		->and($wrapper)->toContain("read_config_option('boost_poller_started') > 0")
-		->and($wrapper)->toContain('boost_acquire_rrd_path_lock($metadata[\'rrd_path\'])')
-		->and($wrapper)->toContain('boost_release_rrd_path_lock($path_lock)')
-		->and($wrapper)->toContain('boost_release_archive_lifecycle_lock($archive_lock)')
 		->and($poller)->toContain('boost_acquire_archive_lifecycle_lock(30)')
 		->and($poller)->toContain('boost_release_archive_lifecycle_lock($archive_lifecycle_lock)')
 		->and($poller)->toContain('boost_kill_running_processes(30)')
