@@ -23,12 +23,13 @@ run_probe tests/e2e/queue/run.sh '^(lib/api_queue\.php|cli/queue_(admin|worker)\
 
 run_php_probe() {
 	local script="$1" pattern="$2"
+	shift 2
 	local php_args=(-d memory_limit=2G)
 	if [[ -n "${CACTI_PR_XDEBUG_EXTENSION:-}" ]]; then
 		php_args+=(-d "zend_extension=$CACTI_PR_XDEBUG_EXTENSION")
 	fi
 	if [[ -f "$script" ]] && grep -Eq "$pattern" <<< "$changed_paths"; then
-		CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT" XDEBUG_MODE=coverage php "${php_args[@]}" "$script"
+		CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT" XDEBUG_MODE=coverage php "${php_args[@]}" "$script" "$@"
 	fi
 }
 
@@ -39,6 +40,8 @@ run_php_probe tests/fixtures/Core/ConstantTimeGuardMatrix.php '^(auth_2fa\.php|a
 run_php_probe tests/fixtures/Core/PackageManifestMatrix.php '^(package_import\.php|package_repos\.php|tests/fixtures/Core/PackageManifestMatrix\.php)'
 run_php_probe tests/fixtures/Core/PackageSaveMatrix.php '^(package_repos\.php|tests/fixtures/Core/PackageSaveMatrix\.php)'
 run_php_probe tests/fixtures/Core/GraphDrilldownMarkup.php '^(lib/html\.php|tests/fixtures/Core/GraphDrilldownMarkup\.php)'
+run_php_probe tests/fixtures/Core/RrdInfoHtmlEscape.php '^(lib/rrd\.php|tests/fixtures/Core/RrdInfoHtmlEscape\.php)'
+run_php_probe tests/fixtures/Core/GraphItemsListMarkup.php '^(lib/html\.php|tests/fixtures/Core/GraphItemsListMarkup\.php)'
 run_php_probe tests/fixtures/Core/SpikekillMutationMatrix.php '^(lib/spikekill\.php|tests/fixtures/Core/SpikekillMutationMatrix\.php)'
 run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tests/fixtures/Core/SpikekillRequestGate\.php)'
 
@@ -67,3 +70,6 @@ run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cac
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
+
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)' graph '<em>Literal label</em>'
