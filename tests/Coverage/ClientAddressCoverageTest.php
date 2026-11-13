@@ -54,6 +54,17 @@ test('trusted match supports CIDR', function () : void {
 	expect(cacti_trusted_proxy_match('2001:db8::1', ['2001:db8::/32']))->toBeTrue();
 });
 
+/* A typo in the trusted proxy setting must not throw on every request or be
+ * read loosely: '2x', ' 8' and '8.5' are not prefixes. */
+test('trusted match rejects a malformed CIDR prefix without throwing', function () : void {
+	foreach (['10.0.0.0/2x', '10.0.0.0/ 8', '10.0.0.0/8.5', '10.0.0.0/', '10.0.0.0/33'] as $entry) {
+		expect(cacti_trusted_proxy_match('10.1.2.3', [$entry]))->toBeFalse();
+	}
+
+	expect(cacti_trusted_proxy_match('2001:db8::1', ['2001:db8::/3x']))->toBeFalse();
+	expect(cacti_trusted_proxy_match('10.1.2.3', ['10.0.0.0/2x', '10.0.0.0/8']))->toBeTrue();
+});
+
 test('trusted match falls back to exact string equality for a non IP entry', function () : void {
 	expect(cacti_trusted_proxy_match('proxy.local', ['proxy.local']))->toBeTrue();
 	expect(cacti_trusted_proxy_match('proxy.local', ['other.local']))->toBeFalse();
