@@ -7,7 +7,7 @@ function get_rrdtool_version(): string {
 	return $GLOBALS['axis_fixture_version'];
 }
 function read_config_option(string $name): string {
-	return '';
+	return $GLOBALS['axis_fixture_config'][$name] ?? '';
 }
 function rrdtool_resolve_graph_text(string $value, array $graph): string {
 	return $value;

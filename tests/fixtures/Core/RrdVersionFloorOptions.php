@@ -132,7 +132,8 @@ rrd_floor_probe_assert($processed === 2, 'Both poller samples must be acknowledg
 rrd_floor_probe_assert(count($commands) === 2, 'Each poller sample must be one update: ' . var_export($commands, true));
 
 foreach ($commands as $index => $line) {
-	$expected = '--skip-past-updates --template value ' . [1700000060, 1700000120][$index] . ':' . [42, 43][$index];
+	// The pipe transport quotes every argument after the operation and path.
+	$expected = sprintf('"--skip-past-updates" "--template" "value" "%d:%d"', [1700000060, 1700000120][$index], [42, 43][$index]);
 	rrd_floor_probe_assert(str_contains($line, $expected), 'Poller update must skip past samples in timestamp order: ' . $line);
 }
 

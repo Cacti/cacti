@@ -34,12 +34,12 @@ class CoverageEvidenceTest(unittest.TestCase):
         with patch.object(GATE.subprocess, 'check_output', side_effect=['base', diff]):
             self.assertEqual(GATE.added_lines('HEAD^'), {'current.css': {1}})
 
-    def evaluate(self, evidence, added=(3,), minimum=None):
+    def evaluate(self, evidence, added=(3,), minimum=None, text='<?php\nfunction example() {\nreturn true;\n}\n'):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / 'lib').mkdir()
             source = root / 'lib/example.php'
-            source.write_text('<?php\nfunction example() {\nreturn true;\n}\n')
+            source.write_text(text)
             coverage = root / 'coverage.json'
             coverage.write_text(json.dumps({str(source): {'lines': evidence}} if evidence is not None else {}))
             arguments = ['gate', '--base', 'HEAD', '--php-coverage', str(coverage)]
@@ -62,6 +62,15 @@ class CoverageEvidenceTest(unittest.TestCase):
 
     def test_dead_opcode_is_excluded(self):
         self.assertEqual(self.evaluate({3: -2}), 0)
+
+    def test_declare_directive_needs_no_evidence(self):
+        text = '<?php\ndeclare(strict_types = 1);\nreturn true;\n'
+        self.assertEqual(self.evaluate({3: 1}, added=(2, 3), text=text), 0)
+        self.assertEqual(self.evaluate({3: -1}, added=(2, 3), text=text), 1)
+
+    def test_unreported_call_outside_the_evidence_still_fails(self):
+        text = '<?php\nexample();\nreturn true;\n'
+        self.assertEqual(self.evaluate({3: 1}, added=(2, 3), text=text), 1)
 
     def inline_evaluate(self, hit=1, stale=False, php_statement=False):
         with tempfile.TemporaryDirectory() as temporary:

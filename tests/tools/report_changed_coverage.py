@@ -132,8 +132,9 @@ def main():
             executable = {n for n in added if n in evidence and evidence[n] != -2}
             # Source slices may instrument only one function in an entry point.
             # Missing statements elsewhere in that same file must fail closed.
+            # declare() is a compile-time directive with no opcode to cover.
             for number in added:
-                if number not in evidence and re.match(r'^\s*(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
+                if number not in evidence and re.match(r'^\s*(?!declare\s*\()(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
                     executable.add(number)
             covered = {n for n in executable if evidence.get(n, -1) > 0}
             script = inline_script_lines(source) & added
