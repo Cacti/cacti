@@ -7,6 +7,7 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
+require_once dirname(__DIR__, 3) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 3) . '/lib/functions.php';
