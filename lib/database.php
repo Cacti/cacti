@@ -1817,12 +1817,15 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			foreach ($data['keys'] as $k) {
 				if ($k['name'] == $n) {
 					$removeindex = false;
-					$add         = array_diff($k['columns'], $index);
-					$del         = array_diff($index, $k['columns']);
+
+					// Plugins may declare the columns as a string rather than an array
+					$key_columns = db_index_columns_to_array($k['columns']);
+					$add         = array_diff($key_columns, $index);
+					$del         = array_diff($index, $key_columns);
 
 					if (!empty($add) || !empty($del)) {
 						$alter_clauses[] = "DROP INDEX `$n`";
-						$alter_clauses[] = 'ADD' . (isset($k['unique']) ? ' UNIQUE' : '') . ' INDEX `' . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')';
+						$alter_clauses[] = 'ADD' . (isset($k['unique']) ? ' UNIQUE' : '') . ' INDEX `' . $k['name'] . '` (' . db_format_index_create($key_columns) . ')';
 					}
 
 					break;
@@ -1857,12 +1860,10 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			// No current primary key, so add it
 			$alter_clauses[] = 'ADD PRIMARY KEY (' . db_format_index_create($data['primary']) . ')';
 		} else {
-			if (!is_array($data['primary'])) {
-				$data['primary'] = [$data['primary']];
-			}
-
-			$add = array_diff($data['primary'], $allindexes['PRIMARY']);
-			$del = array_diff($allindexes['PRIMARY'], $data['primary']);
+			// Accept an array, a scalar, or the backtick-joined string form
+			$primary_columns = db_index_columns_to_array($data['primary']);
+			$add             = array_diff($primary_columns, $allindexes['PRIMARY']);
+			$del             = array_diff($allindexes['PRIMARY'], $primary_columns);
 
 			if (!empty($add) || !empty($del)) {
 				$alter_clauses[] = 'DROP PRIMARY KEY';
@@ -1880,6 +1881,33 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 	}
 
 	return true;
+}
+
+/**
+ * db_index_columns_to_array - Normalizes an index column definition to a plain
+ * array of column names.  Plugins commonly declare a compound key's columns as a
+ * single 'col1`,`col2' string (the form db_format_index_create() also accepts)
+ * rather than an array, and both forms must compare cleanly against the column
+ * list returned by SHOW INDEX.
+ *
+ * @param mixed $columns An array of column names, or a (backtick-joined) string
+ *
+ * @return array The column names with surrounding backticks and whitespace removed
+ */
+function db_index_columns_to_array(mixed $columns) : array {
+	if (is_array($columns)) {
+		$parts = $columns;
+	} else {
+		$parts = preg_split('/`\s*,\s*`/', trim((string) $columns)) ?: [];
+	}
+
+	$normalized = [];
+
+	foreach ($parts as $part) {
+		$normalized[] = trim((string) $part, " \t\n\r\0\x0B`");
+	}
+
+	return $normalized;
 }
 
 /**

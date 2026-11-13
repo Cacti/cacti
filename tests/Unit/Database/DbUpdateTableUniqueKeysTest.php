@@ -103,3 +103,112 @@ test('db_update_table preserves an existing unique index instead of dropping it'
 	expect($alters)->not->toContain('DROP INDEX `user_id_type`')
 		->and($alters)->not->toContain('ADD UNIQUE INDEX `user_id_type`');
 });
+
+/*
+ * Plugins declare key and primary columns as strings, either a single column
+ * ('site_id') or the backtick-joined form ('port_number`,`mac_address'), not as
+ * arrays. A refresh of an existing table must accept both without throwing and
+ * must not rebuild an index whose live columns already match.
+ */
+class DbStringKeysPDO extends DbUniqueKeysRecordingPDO {
+	/** @var array<int, array{0: string, 1: int, 2: string, 3: int}> */
+	public array $indexRows = [];
+
+	public function prepare(string $query, array $options = []): PDOStatement|false {
+		if (preg_match('/^SHOW\s+INDEX\s+FROM\b/i', ltrim($query))) {
+			$selects = [];
+
+			foreach ($this->indexRows as [$key, $seq, $column, $non_unique]) {
+				$selects[] = "SELECT '$key' AS Key_name, $seq AS Seq_in_index, '$column' AS Column_name, $non_unique AS Non_unique";
+			}
+
+			return parent::prepare($selects ? implode(' UNION ALL ', $selects) : 'SELECT 1 WHERE 0', $options);
+		}
+
+		return parent::prepare($query, $options);
+	}
+}
+
+function string_keys_definition(): array {
+	return [
+		'columns' => [
+			['name' => 'id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false],
+			['name' => 'site_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false],
+			['name' => 'port_number', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false],
+			['name' => 'mac_address', 'type' => 'varchar(20)', 'NULL' => false],
+		],
+		'primary' => 'id',
+		'keys'    => [
+			['name' => 'site_id', 'columns' => 'site_id'],
+			['name' => 'port_mac', 'columns' => 'port_number`,`mac_address'],
+		],
+		'type' => 'InnoDB',
+	];
+}
+
+function string_keys_alters(DbStringKeysPDO $connection): string {
+	return implode("\n", array_filter($connection->ddl, static fn ($sql) => str_starts_with(ltrim($sql), 'ALTER TABLE')));
+}
+
+test('db_update_table accepts string-form key columns without rebuilding a matching index', function () {
+	$connection = new DbStringKeysPDO();
+	$connection->exec('CREATE TABLE plugin_string_keys (id INTEGER NOT NULL, site_id INTEGER NOT NULL, port_number INTEGER NOT NULL, mac_address TEXT NOT NULL)');
+	$connection->indexRows = [
+		['PRIMARY', 1, 'id', 0],
+		['site_id', 1, 'site_id', 1],
+		['port_mac', 1, 'port_number', 1],
+		['port_mac', 2, 'mac_address', 1],
+	];
+
+	expect(db_update_table('plugin_string_keys', string_keys_definition(), false, false, $connection))->toBeTrue();
+
+	$alters = string_keys_alters($connection);
+
+	expect($alters)->not->toContain('DROP INDEX')
+		->and($alters)->not->toContain('ADD INDEX')
+		->and($alters)->not->toContain('PRIMARY KEY');
+});
+
+test('db_update_table rebuilds a string-form key whose live columns differ', function () {
+	$connection = new DbStringKeysPDO();
+	$connection->exec('CREATE TABLE plugin_string_keys (id INTEGER NOT NULL, site_id INTEGER NOT NULL, port_number INTEGER NOT NULL, mac_address TEXT NOT NULL)');
+	$connection->indexRows = [
+		['PRIMARY', 1, 'id', 0],
+		['site_id', 1, 'site_id', 1],
+		['port_mac', 1, 'port_number', 1],
+	];
+
+	expect(db_update_table('plugin_string_keys', string_keys_definition(), false, false, $connection))->toBeTrue();
+
+	$alters = string_keys_alters($connection);
+
+	expect($alters)->toContain('DROP INDEX `port_mac`')
+		->and($alters)->toContain('ADD INDEX `port_mac` (`port_number`,`mac_address`)')
+		->and($alters)->not->toContain('INDEX `site_id`');
+});
+
+test('db_update_table compares a backtick-joined string primary against the live key', function () {
+	$definition            = string_keys_definition();
+	$definition['primary'] = 'site_id`,`port_number';
+
+	$connection = new DbStringKeysPDO();
+	$connection->exec('CREATE TABLE plugin_string_keys (id INTEGER NOT NULL, site_id INTEGER NOT NULL, port_number INTEGER NOT NULL, mac_address TEXT NOT NULL)');
+	$connection->indexRows = [
+		['PRIMARY', 1, 'site_id', 0],
+		['PRIMARY', 2, 'port_number', 0],
+		['site_id', 1, 'site_id', 1],
+		['port_mac', 1, 'port_number', 1],
+		['port_mac', 2, 'mac_address', 1],
+	];
+
+	expect(db_update_table('plugin_string_keys', $definition, false, false, $connection))->toBeTrue()
+		->and(string_keys_alters($connection))->not->toContain('PRIMARY KEY');
+});
+
+test('db_index_columns_to_array normalizes array, scalar and backtick-joined columns', function () {
+	expect(db_index_columns_to_array(['`user_id`', 'type ']))->toBe(['user_id', 'type'])
+		->and(db_index_columns_to_array('user_id'))->toBe(['user_id'])
+		->and(db_index_columns_to_array('`user_id`'))->toBe(['user_id'])
+		->and(db_index_columns_to_array('port_number`,`mac_address'))->toBe(['port_number', 'mac_address'])
+		->and(db_index_columns_to_array('`a`, `b`'))->toBe(['a', 'b']);
+});
