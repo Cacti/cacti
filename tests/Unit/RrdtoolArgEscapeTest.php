@@ -59,7 +59,6 @@ test('the proxy font path is quoted rather than hand wrapped', function () use (
 // --- boost ---
 
 test('boost quotes the RRDfile path on file_exists, last and create', function () use ($boostSource) {
-	expect($boostSource)->toContain("rrdtool_execute('last ' . cacti_escapeshellarg(\$rrd_path)");
 	expect($boostSource)->toContain("rrdtool_execute('create ' . cacti_escapeshellarg(\$data_source_path)");
 	expect($boostSource)->not->toContain('rrdtool_execute("file_exists $rrd_path"');
 	expect($boostSource)->not->toContain('rrdtool_execute("last $rrd_path"');

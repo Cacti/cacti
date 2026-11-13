@@ -40,7 +40,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
+        self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'RrdVersionFallback.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
@@ -55,6 +55,14 @@ class RequestDispatchTest(unittest.TestCase):
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
+
+    def test_boost_flush_change_runs_the_skip_past_updates_probe(self):
+        for path in ['lib/boost.php', 'poller_boost.php', 'tests/fixtures/Core/BoostSkipPastUpdates.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'BoostSkipPastUpdates.php')
+
+    def test_rrd_version_fallback_probe_change_runs_itself(self):
+        self.dispatch('tests/fixtures/Core/RrdVersionFallback.php', 'RrdVersionFallback.php')
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
@@ -89,7 +97,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'Core/BoostSkipPastUpdates.php', 'Core/RrdVersionFallback.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')

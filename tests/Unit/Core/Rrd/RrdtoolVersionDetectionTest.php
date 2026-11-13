@@ -59,3 +59,21 @@ test('typed callers retain the configured capability when detection fails', func
 		->and($boost)->toContain('if ($rrdtool_ins_version !== false &&')
 		->toContain('retaining the configured capability level');
 });
+
+test('an unset rrdtool_version falls back to the lowest supported release', function () {
+	// get_rrdtool_version() caches its answer, so read the fallback from a
+	// fresh process that has no database and no stored option.
+	$script = 'require ' . var_export(dirname(__DIR__, 3) . '/bootstrap-unit.php', true) . ';'
+		. ' echo "\n", json_encode([get_rrdtool_version(), read_default_config_option(\'rrdtool_version\'), array_key_first($rrdtool_versions), $data_source_types]);';
+	$output = shell_exec(escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg($script) . ' 2>/dev/null');
+
+	expect($output)->toBeString();
+
+	$lines                                = explode("\n", trim($output));
+	[$version, $default, $lowest, $types] = json_decode(end($lines), true);
+
+	expect($lowest)->toBe('1.5.0')
+		->and($version)->toBe($lowest)
+		->and($default)->toBe($lowest)
+		->and($types)->toMatchArray([6 => 'DCOUNTER', 7 => 'DDERIVE']);
+});
