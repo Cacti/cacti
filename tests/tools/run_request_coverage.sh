@@ -55,6 +55,8 @@ run_php_probe tests/fixtures/ScriptServerLogMaskingCoverage.php '^(cmd\.php|scri
 
 run_php_probe tests/fixtures/BoostBulkDrainCoverage.php '^(poller_boost\.php|lib/boost\.php|tests/fixtures/(Boost(BulkDrain(Coverage|FailureProbe)|OnDemandFailureProbe|SourceExistenceProbe)|ProbeLoader)\.php)'
 
+run_php_probe tests/fixtures/DsstatsHourlyRollupCoverage.php '^(poller_dsstats\.php|tests/fixtures/DsstatsHourlyRollupCoverage\.php)'
+
 run_php_probe tests/fixtures/UserAdministrationAuditCoverage.php '^(user_admin\.php|lib/functions\.php|tests/fixtures/UserAdministrationAudit)'
 
 run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.php|lib/html_graph\.php|tests/fixtures/Core/GraphViewCrossFilterCoverage\.php)'
