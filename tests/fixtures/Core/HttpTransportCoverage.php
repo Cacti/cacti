@@ -196,6 +196,8 @@ namespace CactiHttpTransportFixture {
 	$late->method   = 'GET';
 	$late->options  = $opts;
 	$late->deadline = microtime(true) - 1;
+	$late->dnsHost  = '127.0.0.1';
+	$late->dnsIps   = ['127.0.0.1'];
 
 	check(cacti_http_start(curl_multi_init(), $late) === 'Timed out', 'hop started after its deadline');
 
