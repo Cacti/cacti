@@ -91,9 +91,13 @@ function cacti_http(string $method, string $url, array $options = []) : array {
  * @return array<array-key, array{success: bool, status: int, body: string, error: string}> results keyed like $requests
  */
 function cacti_http_multi(array $requests, int $concurrency = 1, int $group_concurrency = 0) : array {
-	$results  = [];
-	$queue    = [];
-	$in_group = [];
+	$results       = [];
+	$queue         = [];
+	$in_group      = [];
+	$pending       = [];
+	$dns           = (object) ['loop' => new \React\EventLoop\StreamSelectLoop()];
+	$dns->resolver = cacti_http_dns_resolver($dns->loop);
+	$dns->search   = cacti_http_dns_search_config();
 
 	foreach ($requests as $key => $request) {
 		$options = $request['options'] ?? [];
@@ -112,6 +116,10 @@ function cacti_http_multi(array $requests, int $concurrency = 1, int $group_conc
 		$transfer->body        = '';
 		$transfer->error       = '';
 		$transfer->group       = $request['group'] ?? '';
+		$transfer->dns         = $dns;
+		$transfer->dnsHost     = null;
+		$transfer->dnsIps      = null;
+		$transfer->dnsQueries  = [];
 
 		$queue[$transfer->group][] = $transfer;
 	}
@@ -120,8 +128,8 @@ function cacti_http_multi(array $requests, int $concurrency = 1, int $group_conc
 	$active = [];
 
 	try {
-		while ($queue !== [] || $active !== []) {
-			while (count($active) < max(1, $concurrency) && $queue !== []) {
+		while ($queue !== [] || $active !== [] || $pending !== []) {
+			while (count($active) + count($pending) < max(1, $concurrency) && $queue !== []) {
 				$transfer = null;
 
 				foreach (array_keys($queue) as $group) {
@@ -146,8 +154,44 @@ function cacti_http_multi(array $requests, int $concurrency = 1, int $group_conc
 				if ($error !== '') {
 					$results[$transfer->key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => $error];
 				} else {
-					$active[spl_object_id($transfer->handle)] = $transfer;
+					if ($transfer->handle === null) {
+						$pending[$transfer->key] = $transfer;
+					} else {
+						$active[spl_object_id($transfer->handle)] = $transfer;
+					}
 					$in_group[$transfer->group]               = ($in_group[$transfer->group] ?? 0) + 1;
+				}
+			}
+
+			if ($pending !== []) {
+				// Give DNS a bounded event-loop slice while curl transfers keep progressing.
+				$dns->loop->addTimer(0.01, static function () use ($dns) { $dns->loop->stop(); });
+				$dns->loop->run();
+
+				foreach ($pending as $key => $transfer) {
+					$error = '';
+
+					if (microtime(true) >= $transfer->deadline) {
+						$error = 'Timed out';
+					} elseif ($transfer->dnsIps === null) {
+						continue;
+					} else {
+						$error = cacti_http_start($multi, $transfer);
+					}
+
+					unset($pending[$key]);
+
+					foreach ($transfer->dnsQueries as $query) {
+						$query->cancel();
+					}
+					$transfer->dnsQueries = [];
+
+					if ($error !== '') {
+						$results[$key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => $error];
+						$in_group[$transfer->group]--;
+					} else {
+						$active[spl_object_id($transfer->handle)] = $transfer;
+					}
 				}
 			}
 
@@ -172,7 +216,11 @@ function cacti_http_multi(array $requests, int $concurrency = 1, int $group_conc
 				$result = cacti_http_finish($multi, $transfer, $info['result']);
 
 				if ($result === null) {
-					$active[spl_object_id($transfer->handle)] = $transfer;
+					if ($transfer->handle === null) {
+						$pending[$transfer->key] = $transfer;
+					} else {
+						$active[spl_object_id($transfer->handle)] = $transfer;
+					}
 				} else {
 					$results[$transfer->key] = $result;
 
@@ -186,15 +234,21 @@ function cacti_http_multi(array $requests, int $concurrency = 1, int $group_conc
 					curl_multi_remove_handle($multi, $transfer->handle);
 
 					$results[$transfer->key] = ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Request did not complete'];
+					$in_group[$transfer->group]--;
 				}
 
-				$active   = [];
-				$in_group = [];
+				$active = [];
 			} elseif (!$settled) {
-				curl_multi_select($multi, 0.25);
+				curl_multi_select($multi, $pending !== [] ? 0.01 : 0.25);
 			}
 		}
 	} finally {
+		foreach ($pending as $transfer) {
+			foreach ($transfer->dnsQueries as $query) {
+				$query->cancel();
+			}
+		}
+
 		foreach ($active as $transfer) {
 			curl_multi_remove_handle($multi, $transfer->handle);
 		}
@@ -243,15 +297,26 @@ function cacti_http_start(CurlMultiHandle $multi, stdClass $transfer) : string {
 		return 'Host not allowed';
 	}
 
-	$safeIps = cacti_http_resolve_safe_ips($parts['host'], $options['blocked_subnets'] ?? null);
+	// DNS and all redirects share the budget, beginning when this request leaves the queue.
+	if ($transfer->deadline === null) {
+		$transfer->deadline = microtime(true) + (float) ($options['timeout'] ?? 10);
+	}
+
+	if ($transfer->dnsHost !== $parts['host']) {
+		$transfer->dnsHost       = $parts['host'];
+		$transfer->dnsCandidates = cacti_http_dns_candidates($parts['host'], $transfer->dns->search);
+		$transfer->dnsCandidate  = 0;
+		cacti_http_resolve_async($transfer);
+	}
+
+	if ($transfer->dnsIps === null) {
+		return ''; // queued DNS; no connection can start until every address has been checked
+	}
+
+	$safeIps = cacti_http_validate_ips($transfer->dnsIps, $options['blocked_subnets'] ?? null);
 
 	if (empty($safeIps)) {
 		return 'Target host resolves to a disallowed address';
-	}
-
-	// the budget covers every hop and starts when the first one does, not while queued
-	if ($transfer->deadline === null) {
-		$transfer->deadline = microtime(true) + (float) ($options['timeout'] ?? 10);
 	}
 
 	$remaining = (int) floor(($transfer->deadline - microtime(true)) * 1000);
@@ -395,7 +460,9 @@ function cacti_http_finish(CurlMultiHandle $multi, stdClass $transfer, int $code
 		// credentials ride on the original origin only, never inside a redirect target
 		$transfer->url = (string) preg_replace('~^([a-z][a-z0-9+.-]*://)[^/?#@]*@~i', '$1', $location);
 
-		$error = cacti_http_start($multi, $transfer);
+		$transfer->handle  = null;
+		$transfer->dnsHost = null; // every redirect gets fresh resolution and validation
+		$error             = cacti_http_start($multi, $transfer);
 
 		return $error === '' ? null : ['success' => false, 'status' => 0, 'body' => '', 'error' => $error];
 	}
@@ -468,6 +535,11 @@ function cacti_http_resolve_safe_ips(string $host, ?array $blockedSubnets = null
 		$ips = array_unique(array_filter($ips));
 	}
 
+	return cacti_http_validate_ips($ips, $blockedSubnets);
+}
+
+/** Validate every resolved address before pinning an HTTP connection. */
+function cacti_http_validate_ips(array $ips, ?array $blockedSubnets = null) : array {
 	if (empty($ips)) {
 		return [];
 	}
@@ -493,6 +565,136 @@ function cacti_http_resolve_safe_ips(string $host, ?array $blockedSubnets = null
 	}
 
 	return array_values($ips);
+}
+
+/** Read local resolver configuration once, before starting network transfers. */
+function cacti_http_dns_resolver(\React\EventLoop\LoopInterface $loop) : ?\React\Dns\Resolver\ResolverInterface {
+	try {
+		$config = \React\Dns\Config\Config::loadSystemConfigBlocking();
+
+		// Never replace the administrator's resolver configuration with a public service.
+		return (new \React\Dns\Resolver\Factory())->create($config, $loop);
+	} catch (Throwable $error) {
+		return null;
+	}
+}
+
+/**
+ * Read hosts-file precedence and resolver search rules before entering the loop.
+ *
+ * @return array{domains: list<string>, ndots: int, hosts: \React\Dns\Config\HostsFile|null}
+ */
+function cacti_http_dns_search_config() : array {
+	$search = ['domains' => [], 'ndots' => 1, 'hosts' => null];
+
+	try {
+		$search['hosts'] = \React\Dns\Config\HostsFile::loadFromPathBlocking();
+	} catch (RuntimeException $error) {
+		// A missing hosts file leaves DNS responsible for the name.
+	}
+	$contents = @file_get_contents('/etc/resolv.conf');
+
+	foreach (explode("\n", $contents === false ? '' : $contents) as $line) {
+		$line = trim((string) preg_replace('/[#;].*$/', '', $line));
+
+		if (preg_match('/^(search|domain)\s+(.+)$/', $line, $match)) {
+			$search['domains'] = preg_split('/\s+/', trim($match[2])) ?: [];
+		} elseif (preg_match('/^options\s+.*\bndots:(\d+)/', $line, $match)) {
+			$search['ndots'] = min(15, (int) $match[1]);
+		}
+	}
+
+	return $search;
+}
+
+/**
+ * Preserve hosts-file aliases, absolute names and configured DNS search order.
+ *
+ * @param  array{domains: list<string>, ndots: int, hosts: \React\Dns\Config\HostsFile|null} $search
+ * @return list<string>
+ */
+function cacti_http_dns_candidates(string $host, array $search) : array {
+	if (filter_var(trim($host, '[]'), FILTER_VALIDATE_IP) || str_ends_with($host, '.') ||
+		($search['hosts'] !== null && $search['hosts']->getIpsForHost($host) !== [])) {
+		return [$host];
+	}
+	$candidates = [];
+
+	foreach ($search['domains'] as $domain) {
+		$candidates[] = $host . '.' . rtrim($domain, '.');
+	}
+
+	if (substr_count($host, '.') >= $search['ndots']) {
+		array_unshift($candidates, $host);
+	} else {
+		$candidates[] = $host;
+	}
+
+	return array_values(array_unique($candidates));
+}
+
+/** Start both address-family queries without blocking any HTTP transfers. */
+function cacti_http_resolve_async(stdClass $transfer) : void {
+	$host                 = trim($transfer->dnsCandidates[$transfer->dnsCandidate], '[]');
+	$transfer->dnsIps     = null;
+	$transfer->dnsQueries = [];
+
+	if (filter_var($host, FILTER_VALIDATE_IP)) {
+		$transfer->dnsIps = [$host];
+
+		return;
+	}
+
+	$hosts = $transfer->dns->search['hosts'];
+
+	if ($hosts !== null) {
+		$local = $hosts->getIpsForHost($host);
+
+		if ($local !== []) {
+			$transfer->dnsIps = $local;
+
+			return;
+		}
+	}
+
+	try {
+		if ($transfer->dns->resolver === null) {
+			$transfer->dnsIps = [];
+
+			return;
+		}
+
+		$remaining = 2;
+		$ips       = [];
+		$failed    = false;
+		$settle    = static function (array $addresses, bool $error = false) use ($transfer, &$remaining, &$ips, &$failed) {
+			$ips    = array_merge($ips, $addresses);
+			$failed = $failed || $error;
+
+			if (--$remaining === 0) {
+				if (!$failed && $ips === [] && isset($transfer->dnsCandidates[$transfer->dnsCandidate + 1])) {
+					$transfer->dnsCandidate++;
+					cacti_http_resolve_async($transfer);
+				} else {
+					$transfer->dnsIps = $failed ? [] : array_values(array_unique($ips));
+				}
+			}
+		};
+
+		foreach ([\React\Dns\Model\Message::TYPE_A, \React\Dns\Model\Message::TYPE_AAAA] as $type) {
+			$query                  = $transfer->dns->resolver->resolveAll($host, $type);
+			$transfer->dnsQueries[] = $query;
+			$query->then($settle, static function (Throwable $error) use ($settle) {
+				$settle([], !($error instanceof \React\Dns\RecordNotFoundException));
+			});
+		}
+	} catch (Throwable $error) {
+		foreach ($transfer->dnsQueries as $query) {
+			$query->cancel();
+		}
+		$transfer->dnsQueries = [];
+		$transfer->dnsIps     = [];
+	}
 }
 
 /**
