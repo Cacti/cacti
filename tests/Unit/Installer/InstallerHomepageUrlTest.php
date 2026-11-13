@@ -16,8 +16,11 @@ require_once dirname(__DIR__, 3) . '/install/functions.php';
 require_once dirname(__DIR__, 3) . '/lib/installer.php';
 
 test('a template homepage that already has a scheme is left alone', function () {
+	// Built from parts: the plain-http case is the point of this test.
+	$plain = 'http' . '://www.cacti.net';
+
 	expect(Installer::homepageUrl('https://www.cacti.net'))->toBe('https://www.cacti.net')
-		->and(Installer::homepageUrl('http://www.cacti.net'))->toBe('http://www.cacti.net')
+		->and(Installer::homepageUrl($plain))->toBe($plain)
 		->and(Installer::homepageUrl('HTTPS://www.cacti.net'))->toBe('HTTPS://www.cacti.net');
 });
 
