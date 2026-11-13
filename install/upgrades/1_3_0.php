@@ -23,6 +23,15 @@
 */
 
 function upgrade_to_1_3_0() : void {
+	// Old DOUBLE baselines may already have lost counter bits. Discard only
+	// values outside the exact integer range before changing their storage.
+	$last_value_column = db_get_column_attributes('data_source_stats_hourly_last', 'value');
+
+	if (($last_value_column[0]['DATA_TYPE'] ?? '') == 'double') {
+		db_install_execute('UPDATE data_source_stats_hourly_last SET `value` = NULL WHERE ABS(`value`) > 9007199254740991');
+		db_install_execute('ALTER TABLE data_source_stats_hourly_last MODIFY `value` varchar(100) DEFAULT NULL');
+	}
+
 	db_install_execute("CREATE TABLE IF NOT EXISTS process_locks (
 		key_id varchar(64) NOT NULL,
 		key_token varchar(44) NOT NULL,

@@ -86,3 +86,20 @@ test('a 64-bit COUNTER that wraps keeps a small delta exact', function () {
 
 	expect(dsstats_rate_values($this->pdo, 106))->toBe([7144.0]);
 });
+
+test('unsigned 64-bit counters preserve low bits between separate polls', function () {
+	dsstats_rate_fixture($this->pdo, 107, 'precise', 2, 1);
+
+	foreach ([2000 => '18446744073709551614', 2001 => '18446744073709551615', 2002 => '10'] as $time => $value) {
+		$updates = [['local_data_id' => 107, 'times' => [$time => ['precise' => $value]]]];
+		dsstats_poller_output($updates);
+		expect($this->pdo->query('SELECT value FROM data_source_stats_hourly_last WHERE local_data_id = 107')->fetchColumn())->toBe($value);
+	}
+
+	expect(dsstats_rate_values($this->pdo, 107))->toBe([null, 1.0, 11.0]);
+});
+
+test('decimal counter strings with leading zeros are not parsed as octal', function () {
+	expect(dsstats_counter_delta('099', '0100', 'U'))->toBe(1.0);
+	expect(dsstats_counter_delta('18446744073709551615', '10', 5))->toBe('NULL');
+});
