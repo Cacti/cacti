@@ -134,7 +134,7 @@ test('poller output batches reads and keeps metadata and last values per data so
 		->toContain("2, 'ctr', '$second', 2")
 		->toContain("3, 'dctr', '$first', NULL")
 		->and($last_write)
-		->toContain("2, 'ctr', 14, 2")
-		->toContain("2, 'ctr', 18, 2")
+		->toContain("2, 'ctr', '14', 2")
+		->toContain("2, 'ctr', '18', 2")
 		->toContain("3, 'dctr', NULL, NULL");
 });

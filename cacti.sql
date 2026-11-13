@@ -1559,7 +1559,7 @@ CREATE TABLE `data_source_stats_hourly_cache` (
 CREATE TABLE `data_source_stats_hourly_last` (
   `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
-  `value` DOUBLE default NULL,
+  `value` varchar(100) default NULL,
   `calculated` DOUBLE default NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
   ) ENGINE=MEMORY;
