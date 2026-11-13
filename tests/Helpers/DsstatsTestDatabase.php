@@ -79,7 +79,7 @@ if (!function_exists('dsstats_test_connect')) {
 		$pdo->exec('CREATE TABLE data_input_fields (id INTEGER PRIMARY KEY, data_name TEXT)');
 		$pdo->exec('CREATE TABLE data_source_stats_hourly_cache (local_data_id INTEGER, rrd_name TEXT, time TEXT, value REAL,
 			PRIMARY KEY (local_data_id, time, rrd_name))');
-		$pdo->exec('CREATE TABLE data_source_stats_hourly_last (local_data_id INTEGER, rrd_name TEXT, value REAL, calculated REAL,
+		$pdo->exec('CREATE TABLE data_source_stats_hourly_last (local_data_id INTEGER, rrd_name TEXT, value TEXT, calculated REAL,
 			PRIMARY KEY (local_data_id, rrd_name))');
 
 		foreach (['daily', 'weekly', 'monthly', 'yearly'] as $interval) {
