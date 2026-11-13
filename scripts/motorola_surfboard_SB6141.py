@@ -10,8 +10,10 @@ Requires the third-party packages requests and lxml
 
 # pylint: disable=invalid-name
 
+import queue
 import re
 import sys
+import threading
 import time
 
 from lxml import html
@@ -44,22 +46,42 @@ def channel_sort_key(channel):
 
 def fetch(url):
     """Return the page body, refusing redirects, oversized bodies and stalls."""
-    response = requests.get(url, timeout=READ_TIMEOUT, allow_redirects=False, stream=True)
+    completed = queue.Queue(maxsize=1)
+    deadline = time.monotonic() + TOTAL_DEADLINE
+
+    def read_page():
+        response = None
+        try:
+            response = requests.get(url, timeout=READ_TIMEOUT, allow_redirects=False, stream=True)
+            response.raise_for_status()
+            if response.status_code != 200:
+                raise requests.RequestException(f'unexpected HTTP status {response.status_code}')
+            body = bytearray()
+            for chunk in response.iter_content(chunk_size=65536):
+                body += chunk
+                if len(body) > MAX_BYTES:
+                    raise ValueError(f'response is larger than {MAX_BYTES} bytes')
+                if time.monotonic() >= deadline:
+                    raise ValueError(f'response took longer than {TOTAL_DEADLINE} seconds')
+            result, error = bytes(body), None
+        except Exception as exc:  # propagate request and body validation failures
+            result, error = None, exc
+        finally:
+            if response is not None:
+                response.close()
+        completed.put((result, error))
+
+    # requests' read timeout is an inactivity timeout, not an elapsed limit.
+    # Wait outside the blocking read (including DNS and headers). This one-shot
+    # CLI exits on timeout; a stuck daemon reader cannot keep the poller alive.
+    threading.Thread(target=read_page, daemon=True).start()
     try:
-        response.raise_for_status()
-        if response.status_code != 200:
-            raise requests.RequestException(f'unexpected HTTP status {response.status_code}')
-        deadline = time.monotonic() + TOTAL_DEADLINE
-        body = bytearray()
-        for chunk in response.iter_content(chunk_size=65536):
-            body += chunk
-            if len(body) > MAX_BYTES:
-                raise ValueError(f'response is larger than {MAX_BYTES} bytes')
-            if time.monotonic() > deadline:
-                raise ValueError(f'response took longer than {TOTAL_DEADLINE} seconds')
-        return bytes(body)
-    finally:
-        response.close()
+        result, error = completed.get(timeout=max(0, deadline - time.monotonic()))
+    except queue.Empty as exc:
+        raise ValueError(f'response took longer than {TOTAL_DEADLINE} seconds') from exc
+    if error is not None:
+        raise error
+    return result
 
 
 if len(sys.argv) != 3:
