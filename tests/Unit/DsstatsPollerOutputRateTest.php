@@ -103,3 +103,9 @@ test('decimal counter strings with leading zeros are not parsed as octal', funct
 	expect(dsstats_counter_delta('099', '0100', 'U'))->toBe(1.0);
 	expect(dsstats_counter_delta('18446744073709551615', '10', 5))->toBe('NULL');
 });
+
+test('floating counter samples retain fractional deltas and wrap limits', function () {
+	expect(dsstats_counter_delta('100.25', '101.75', 'U'))->toBe(1.5);
+	expect(dsstats_counter_delta('4294967294.5', '0.25', 'U'))->toBe(1.75);
+	expect(dsstats_counter_delta('4294967294.5', '0.25', 0.5))->toBe('NULL');
+});
