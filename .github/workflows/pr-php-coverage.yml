@@ -31,10 +31,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - uses: jdx/mise-action@8418fedb1110381a0d3ba51a7a415d7c1b884550 # v5.2.2
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4.4.0
         with:
-          tool_versions: node 22.22.2
-          install_args: node
+          node-version: 22.22.2
       - uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.3'
