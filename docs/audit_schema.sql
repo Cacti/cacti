@@ -220,7 +220,7 @@ INSERT INTO `table_columns` VALUES ('automation_graph_rules',5,'graph_type_id','
 INSERT INTO `table_columns` VALUES ('automation_graph_rules',6,'enabled','char(2)','YES','','','');
 INSERT INTO `table_columns` VALUES ('automation_ips',1,'ip_address','varchar(20)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('automation_ips',2,'hostname','varchar(100)','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('automation_ips',3,'network_id','int(10) unsigned','YES','',NULL,'');
+INSERT INTO `table_columns` VALUES ('automation_ips',3,'network_id','int(10) unsigned','YES','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_ips',4,'pid','int(10) unsigned','YES','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_ips',5,'status','int(10) unsigned','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_ips',6,'thread','int(10) unsigned','YES','',NULL,'');
@@ -1367,6 +1367,9 @@ INSERT INTO `table_indexes` VALUES ('automation_devices',0,'PRIMARY',1,'id','A',
 INSERT INTO `table_indexes` VALUES ('automation_graph_rule_items',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_graph_rules',1,'name',1,'name','A',0,'171',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_graph_rules',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('automation_ips',1,'network_status_pid',1,'network_id','A',0,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('automation_ips',1,'network_status_pid',2,'status','A',0,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('automation_ips',1,'network_status_pid',3,'pid','A',0,NULL,NULL,'YES','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_ips',1,'pid',1,'pid',NULL,0,NULL,NULL,'YES','HASH','');
 INSERT INTO `table_indexes` VALUES ('automation_ips',0,'PRIMARY',1,'ip_address',NULL,0,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('automation_match_rule_items',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
