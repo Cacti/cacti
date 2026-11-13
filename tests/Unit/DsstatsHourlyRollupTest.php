@@ -16,45 +16,20 @@
  * of an earlier window.
  */
 
-namespace DsstatsHourlyRollupTest;
-
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
-
-// the MySQL upsert is run by SQLite, which spells it ON CONFLICT ... DO UPDATE
-function db_execute(string $sql) : bool {
-	$sql = preg_replace('/ON DUPLICATE KEY UPDATE.*$/s',
-		'ON CONFLICT (local_data_id, rrd_name, cf) DO UPDATE SET average = excluded.average, peak = excluded.peak', $sql);
-
-	return $GLOBALS['dsstats_rollup_pdo']->exec($sql) !== false;
-}
-
-// poller_dsstats.php runs when it is loaded, so load the rollup alone
-\cacti_fixture_source_function(dirname(__DIR__, 2) . '/poller_dsstats.php', 'dsstats_insert_hourly_data_into_cache', __NAMESPACE__);
-
-beforeEach(function () {
-	$pdo = new \PDO('sqlite::memory:');
-	$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-	$pdo->exec('CREATE TABLE data_source_stats_hourly_cache (local_data_id INTEGER, rrd_name TEXT, time TEXT, value REAL,
-		PRIMARY KEY (local_data_id, time, rrd_name))');
-	$pdo->exec('CREATE TABLE data_source_stats_hourly (local_data_id INTEGER, rrd_name TEXT, cf INTEGER DEFAULT 0,
-		average REAL, peak REAL, PRIMARY KEY (local_data_id, rrd_name, cf))');
-
-	$GLOBALS['dsstats_rollup_pdo'] = $pdo;
-});
-
 test('a window of only unknown samples replaces the previous hourly average with NULL', function () {
-	$pdo = $GLOBALS['dsstats_rollup_pdo'];
+	// the DsstatsHourlyRollupCoverage fixture owns the rollup run so the same
+	// run also feeds the changed-line coverage gate
+	$pipes   = [];
+	$process = proc_open([PHP_BINARY, dirname(__DIR__) . '/fixtures/DsstatsHourlyRollupCoverage.php'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	expect(is_resource($process))->toBeTrue();
+	$output = stream_get_contents($pipes[1]);
+	$errors = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
 
-	// the previous rollup, then a window in which one source went unknown
-	$pdo->exec("INSERT INTO data_source_stats_hourly VALUES (1, 'traffic', 0, 50, 90), (2, 'traffic', 0, 5, 9)");
-	$pdo->exec("INSERT INTO data_source_stats_hourly_cache VALUES
-		(1, 'traffic', '2026-01-01 10:00:00', NULL), (1, 'traffic', '2026-01-01 10:05:00', NULL),
-		(2, 'traffic', '2026-01-01 10:00:00', 10), (2, 'traffic', '2026-01-01 10:05:00', NULL), (2, 'traffic', '2026-01-01 10:10:00', 30)");
-
-	\DsstatsHourlyRollupTest\dsstats_insert_hourly_data_into_cache();
-
-	expect($pdo->query('SELECT local_data_id, average, peak FROM data_source_stats_hourly ORDER BY local_data_id')->fetchAll(\PDO::FETCH_ASSOC))
-		->toBe([
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR))
+		->toEqual([
 			['local_data_id' => 1, 'average' => null, 'peak' => null],
 			['local_data_id' => 2, 'average' => 20.0, 'peak' => 30.0],
 		]);
