@@ -458,7 +458,7 @@ INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_cache',3,'time','t
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_cache',4,'value','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_last',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_last',2,'rrd_name','varchar(19)','NO','PRI',NULL,'');
-INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_last',3,'value','double','YES','',NULL,'');
+INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_last',3,'value','varchar(100)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_last',4,'calculated','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',2,'rrd_name','varchar(19)','NO','PRI',NULL,'');
