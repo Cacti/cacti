@@ -7,11 +7,13 @@
 	<source>
 		<include>
 			<file>../lib/cdef.php</file>
+			<directory>../lib/Cdef</directory>
 		</include>
 	</source>
 	<testsuites>
 		<testsuite name="CDEF coverage">
 			<file>Coverage/CdefCoverageTest.php</file>
+			<file>Unit/Core/Rrd/CdefResolverTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
