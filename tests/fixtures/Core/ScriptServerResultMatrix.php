@@ -3,7 +3,7 @@
 
 /*
  * Runs the unchanged script_server_normalize_response() and script_server_log_response()
- * against null, scalar and array script results, with debug logging enabled,
+ * against null, scalar and array script results, with debug logging forced on,
  * and checks the reply line and the logged response.
  */
 
@@ -22,10 +22,6 @@ require_once $root . '/include/global_constants.php';
 
 $messages = [];
 
-function cacti_effective_log_level() : int {
-	return POLLER_VERBOSITY_DEBUG;
-}
-
 function cacti_log($message, $echo = false, $subsystem = 'SYSTEM', $verbosity = 2) {
 	$GLOBALS['messages'][] = $message;
 }
@@ -40,7 +36,7 @@ $cases = [
 ];
 
 foreach ($cases as $index => [$result, $reply, $logged]) {
-	script_server_log_response(1, $index, $result);
+	script_server_log_response(1, $index, $result, true);
 
 	if (script_server_normalize_response($result) !== $reply || end($messages) !== $logged) {
 		throw new \RuntimeException('Script Server result case failed: ' . $index);
