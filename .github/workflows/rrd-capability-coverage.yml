@@ -114,7 +114,6 @@ jobs:
             Unit/Core/Boost/BoostFailureRetryBehaviorTest.php \
             Unit/Core/Boost/BoostFailureRetryDestinationTest.php \
             Unit/Core/Boost/BoostMetadataCacheTest.php \
-            Unit/Core/Boost/BoostOnDemandOwnershipBehaviorTest.php \
             Unit/Core/Boost/BoostPollerCoordinationBehaviorTest.php \
             Unit/Core/Boost/BoostPollerDrainBehaviorTest.php \
             Unit/Core/Boost/BoostPollerOutputBehaviorTest.php \

@@ -2460,7 +2460,14 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		}
 	}
 
-	/* Remove retry records only after RRD and archive forwarding acknowledgement. */
+	/**
+	 * Remove retry records only after RRD and archive forwarding acknowledgement.
+	 *
+	 * On-demand (WebUI) processing always wins and runs without the archive lifecycle lock, so the
+	 * scheduled poller may drop a sealed archive table while we read it. Every per-table access
+	 * here is best-effort with SQL error logging disabled: a missing table is a silent no-op and
+	 * its rows stay queued for the next pass rather than flooding the log.
+	 */
 	boost_timer('delete', BOOST_TIMER_START);
 
 	if ($updates_ok && cacti_count($archive_tables)) {
@@ -2469,7 +2476,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 				FROM $table
 				WHERE local_data_id = ?
 				AND time >= FROM_UNIXTIME(?)",
-				array($local_data_id, $timestamp));
+				array($local_data_id, $timestamp), '', false);
 
 			if (db_execute_prepared("INSERT IGNORE INTO poller_output_boost
 				SELECT *
