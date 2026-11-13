@@ -67,3 +67,9 @@ run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cac
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
+
+run_php_probe tests/fixtures/CoreBulkActionPostGuardCoverage.php '^(aggregate_graphs\.php|aggregate_templates\.php|cdef\.php|color\.php|color_templates\.php|data_input\.php|data_queries\.php|data_source_profiles\.php|data_sources\.php|data_templates\.php|gprint_presets\.php|graph_templates\.php|graphs\.php|host_templates\.php|pollers\.php|sites\.php|vdef\.php|tests/fixtures/(CoreBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
+
+run_php_probe tests/fixtures/AdministrationBulkActionPostGuardCoverage.php '^(host\.php|layouts\.php|lib/html_reports\.php|links\.php|login_providers\.php|managers\.php|package_keys\.php|package_repos\.php|tree\.php|user_admin\.php|user_group_admin\.php|tests/fixtures/(AdministrationBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
+
+run_php_probe tests/fixtures/Core/CsrfPostGuardBatch3Coverage.php '^((aggregate_graphs|auth_profile|automation_graph_rules|automation_networks|automation_snmp|automation_templates|automation_tree_rules|cdef|color|color_templates|data_input|data_queries|data_source_profiles|data_sources|data_templates|gprint_presets|graph_templates|graphs|host|host_templates|links|login_providers|managers|package_repos|pollers|sites|tree|user_admin|user_group_admin|vdef)\.php|include/csrf\.php|tests/fixtures/Core/CsrfPostGuardBatch3(Probe|Coverage)\.php)'

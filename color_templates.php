@@ -36,6 +36,10 @@ $actions = [
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'item_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -186,6 +190,8 @@ function draw_color_template_items_list(array $item_list, string $filename, stri
  * form_save - The save function
  */
 function form_save() : void {
+	csrf_require_post();
+
 	if (isrv('save_component_color')) {
 		if (isrv('color_template_id')) {
 			$save1['color_template_id'] = gfrv('color_template_id');
@@ -273,6 +279,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {

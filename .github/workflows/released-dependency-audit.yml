@@ -70,11 +70,13 @@ jobs:
             ecosystem: npm
             directory: '/'
             workdir: '.'
+            lockfile: package-lock.json
           - id: browser-tests
             name: browser tests
             ecosystem: npm
             directory: '/tests/e2e'
             workdir: tests/e2e
+            lockfile: tests/e2e/package-lock.json
     steps:
       # Scheduled workflows run from develop. Keep its trusted automation code
       # separate from the released branch being inspected and updated.

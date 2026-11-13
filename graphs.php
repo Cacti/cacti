@@ -314,6 +314,8 @@ function parse_validate_graph_template_id(string $variable) : string {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (isrv('save_component_graph_new') || isrv('save_component_graph') || isrv('save_component_input')) {
 		// ================= input validation =================
 		gfrv('local_graph_id');
@@ -1420,6 +1422,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {

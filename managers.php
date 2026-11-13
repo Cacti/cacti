@@ -683,6 +683,8 @@ function manager_logs(int $id, string $header_label) : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (!isrv('tab')) {
 		srv('tab', 'general');
 	}
@@ -755,6 +757,8 @@ function form_actions() : void {
 	global $actions, $mactions;
 
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		if (isrv('action_receivers')) {
 			$selected_items = sanitize_unserialize_selected_items(gnrv('selected_graphs_array'));
 

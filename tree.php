@@ -87,7 +87,7 @@ if (grv('action') != '') {
 if (in_array(grv('action'), [
 	'sortasc', 'sortdesc', 'ajax_dnd',
 	'lock', 'unlock', 'set_host_sort',
-	'set_branch_sort',
+	'set_branch_sort', 'tree_up', 'tree_down',
 ], true)) {
 	csrf_require_post();
 }
@@ -573,6 +573,8 @@ function set_branch_sort_type() : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	// clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes
 	if (isset($_SESSION['dhtml_tree'])) {
 		unset($_SESSION['dhtml_tree']);
@@ -689,6 +691,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {

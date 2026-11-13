@@ -51,8 +51,19 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+run_probe ../CoreBulkActionPostGuardCoverage.php core-bulk-post
+run_probe ../AdministrationBulkActionPostGuardCoverage.php administration-bulk-post
+if [[ -f tests/fixtures/Core/CsrfPostGuardBatch3Probe.php ]]; then
+	# csrf_require_post() exits, so every guard decision runs in its own process.
+	case_number=0
+	while read -r file kind mode; do
+		run_probe CsrfPostGuardBatch3Probe.php "csrf-post-$case_number" "$file" "$kind" "$mode" < /dev/null
+		case_number=$((case_number + 1))
+	done < <("$php_binary" tests/fixtures/Core/CsrfPostGuardBatch3Probe.php --list)
+fi
+
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
+for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths post-action-transport; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
 		browser_specs+=("tests/$spec.spec.js")
 	fi

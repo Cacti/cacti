@@ -32,6 +32,10 @@ $actions = [
 
 set_default_action();
 
+if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'item_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		vdef_form_save();
@@ -211,6 +215,8 @@ function vdef_form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {

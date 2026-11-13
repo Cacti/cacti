@@ -43,6 +43,10 @@ gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['qedit'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		if (isrv('save_component_import')) {
@@ -261,6 +265,8 @@ function automation_import_process() : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	if (isrv('save_component_automation_graph_rule')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -404,6 +410,8 @@ function automation_graph_rules_form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {

@@ -2921,11 +2921,34 @@ function cactiIsPostActionUrl(href) {
 		"lock",
 		"unlock",
 		"set_host_sort",
-		"set_branch_sort"
+		"set_branch_sort",
+		"tree_up",
+		"tree_down"
 	],
 	"links.php": [
 		"delete_page",
-		"ajax_dnd"
+		"ajax_dnd",
+		"move_page_up",
+		"move_page_down"
+	],
+	"automation_templates.php": [
+		"item_movedown",
+		"item_moveup",
+		"movedown",
+		"moveup",
+		"item_add_agr",
+		"item_add_atr",
+		"item_add_ttr",
+		"item_remove_agr",
+		"item_remove_atr",
+		"item_remove_ttr",
+		"ajax_dnd",
+		"graph_dnd",
+		"tree_dnd",
+		"exitonchange"
+	],
+	"automation_graph_rules.php": [
+		"qedit"
 	],
 	"reports.php": [
 		"send",

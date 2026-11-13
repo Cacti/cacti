@@ -70,6 +70,13 @@ class ReleasedDependencyAuditTest(unittest.TestCase):
             self.assertEqual(audit_report.read_text(), fixture.read_text())
             return result
 
+    def test_audit_cache_paths_are_canonical(self):
+        rows = self.workflow["jobs"]["audit"]["strategy"]["matrix"]["include"]
+        expected = {"runtime-php": "composer.lock", "test-php": "tests/composer.lock", "frontend": "package-lock.json", "browser-tests": "tests/e2e/package-lock.json"}
+        self.assertEqual({row["id"]: row["lockfile"] for row in rows}, expected)
+        step = next(step for step in self.workflow["jobs"]["audit"]["steps"] if step["name"] == "Set up Cacti Composer toolchain")
+        self.assertEqual(step["with"]["cache-dependency-path"], "released/${{ matrix.lockfile }}")
+
     def test_clean_locks_pass(self):
         reports = [
             ("composer", {"advisories": [], "abandoned": {}}),
