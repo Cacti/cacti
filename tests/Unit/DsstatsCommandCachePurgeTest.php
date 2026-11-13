@@ -20,7 +20,6 @@
 namespace DsstatsCommandCachePurgeTest;
 
 require_once dirname(__DIR__) . '/Helpers/DsstatsTestDatabase.php';
-require_once dirname(__DIR__) . '/Helpers/SourceSlice.php';
 
 function read_config_option(string $name) : mixed {
 	return $GLOBALS['dsstats_purge_settings'][$name] ?? '';
@@ -50,7 +49,7 @@ function dsstats_purge_check() : void {
 			throw new \RuntimeException('Unable to find the command cache purge in poller_dsstats.php');
 		}
 
-		\cacti_fixture_require_code('namespace ' . __NAMESPACE__ . '; function dsstats_purge_fragment() : void {' .
+		\dsstats_test_require_code('namespace ' . __NAMESPACE__ . '; function dsstats_purge_fragment() : void {' .
 			substr($source, $node->getStartFilePos(), $node->getEndFilePos() - $node->getStartFilePos() + 1) . '}');
 	}
 

@@ -149,4 +149,19 @@ if (!function_exists('dsstats_test_connect')) {
 
 		return array_values(array_filter(array_map('trim', explode("\n", stream_get_contents($rrd_process[1][0])))));
 	}
+
+	/**
+	 * Load code built from checked-in DSStats source through a temporary file
+	 * rather than eval(), for a fragment of a script that runs when included.
+	 */
+	function dsstats_test_require_code(string $code) : void {
+		$temporary = tempnam(sys_get_temp_dir(), 'dsstats-source-');
+		file_put_contents($temporary, '<?php ' . $code);
+
+		try {
+			require $temporary;
+		} finally {
+			unlink($temporary);
+		}
+	}
 }
