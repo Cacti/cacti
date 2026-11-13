@@ -87,14 +87,21 @@ function fixture_source($file, $pattern) {
 require $root . '/lib/html_form.php';
 
 // The production functions and branches under test, unchanged. Only checked-in
-// source files are evaluated, never request data.
-eval(fixture_source($root . '/pollers.php', '/^function poller_stored_dbpass\(.*?^\}/ms'));
-eval(fixture_source($root . '/pollers.php', '/^function poller_saved_test_dbpass\(.*?^\}/ms'));
-eval(fixture_source($root . '/pollers.php', '/^function test_database_connection\(.*?^\}/ms'));
-eval('function settings_password_branch($field_name, $field_array) { global $errors, $inserts; do { if (false) {' .
-	fixture_source($root . '/settings.php', "/\} elseif \(\\\$field_array\['method'\] == 'textbox_password'\) \{.*?(?=\} elseif \(\(isset\(\\\$field_array\['items'\]\)\))/s") . '} } while (false); }');
-eval('function user_domains_password($domain_id) { $save = array();' .
-	fixture_source($root . '/user_domains.php', "/\\\$save\['specific_password'\]\s*=.*?;\n/") . ' return $save[\'specific_password\']; }');
+// source files are loaded, never request data.
+$slices = array(
+	fixture_source($root . '/pollers.php', '/^function poller_stored_dbpass\(.*?^\}/ms'),
+	fixture_source($root . '/pollers.php', '/^function poller_saved_test_dbpass\(.*?^\}/ms'),
+	fixture_source($root . '/pollers.php', '/^function test_database_connection\(.*?^\}/ms'),
+	'function settings_password_branch($field_name, $field_array) { global $errors, $inserts; do { if (false) {' .
+	fixture_source($root . '/settings.php', "/\} elseif \(\\\$field_array\['method'\] == 'textbox_password'\) \{.*?(?=\} elseif \(\(isset\(\\\$field_array\['items'\]\)\))/s") . '} } while (false); }',
+	'function user_domains_password($domain_id) { $save = array();' .
+	fixture_source($root . '/user_domains.php', "/\\\$save\['specific_password'\]\s*=.*?;\n/") . ' return $save[\'specific_password\']; }',
+);
+
+$slice_file = tempnam(sys_get_temp_dir(), 'cacti-secret-fixture');
+file_put_contents($slice_file, "<?php\n" . implode("\n\n", $slices) . "\n");
+require $slice_file;
+unlink($slice_file);
 
 $count = 0;
 
