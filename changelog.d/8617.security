@@ -1,0 +1,1 @@
+Hash new local passwords with bcrypt at cost 12 using native password_hash(), replace older stored hashes on the next successful login, and give the unknown-user login decoy the same cost as a real hash
