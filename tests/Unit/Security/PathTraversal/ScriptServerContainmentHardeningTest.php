@@ -42,7 +42,7 @@ require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
 if (!function_exists(__NAMESPACE__ . '\\script_server_path_is_allowed')) {
-	\cacti_fixture_source_function(dirname(__DIR__, 4) . '/script_server.php', 'script_server_path_is_allowed', __NAMESPACE__);
+	\cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/script_server.php', 'script_server_path_is_allowed', __NAMESPACE__);
 }
 
 // ---------------------------------------------------------------------------
