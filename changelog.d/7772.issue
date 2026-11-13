@@ -1,0 +1,1 @@
+Require verified upstream identities for Web Basic Authentication; sites whose web server verifies the password but only sets PHP_AUTH_USER must set $auth_basic_allow_php_auth_user = true in include/config.php

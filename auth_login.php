@@ -217,6 +217,12 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
 			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 
+			// include/auth.php binds a Basic guest session to this upstream name.
+			// Store the raw value it compares against; $username is sanitized.
+			if ($auth_method == AUTH_METHOD_BASIC) {
+				$_SESSION[SESS_BASIC_AUTH_USER] = get_basic_auth_username();
+			}
+
 			// handle 'force change password'
 			if ($user['must_change_password'] == 'on' && $auth_method == AUTH_METHOD_CACTI && $user['password_change'] == 'on') {
 				$_SESSION[SESS_CHANGE_PASSWORD] = true;

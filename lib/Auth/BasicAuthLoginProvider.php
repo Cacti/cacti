@@ -21,7 +21,8 @@ namespace Cacti\Auth;
  *
  * The web server (Apache/nginx) has already verified the credential before
  * Cacti ever sees the request; Cacti only trusts the asserted username
- * (PHP_AUTH_USER/REMOTE_USER, see get_basic_auth_username()) and looks it up
+ * (REMOTE_USER or an explicitly configured upstream identity; see
+ * get_basic_auth_username()) and looks it up
  * against realm 2. There is no password for Cacti to check, so this
  * implements PreAuthenticatedLoginProviderInterface rather than
  * CredentialLoginProviderInterface.
