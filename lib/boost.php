@@ -2461,49 +2461,14 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	}
 
 	/**
-	 * Remove retry records only after RRD and archive forwarding acknowledgement.
-	 *
-	 * On-demand (WebUI) processing always wins and runs without the archive lifecycle lock, so the
-	 * scheduled poller may drop a sealed archive table while we read it. Every per-table access
-	 * here is best-effort with SQL error logging disabled: a missing table is a silent no-op and
-	 * its rows stay queued for the next pass rather than flooding the log.
+	 * Flush live rows only. On-demand (WebUI) processing always wins and runs without the archive
+	 * lifecycle lock, so sealed archives are left entirely to the scheduled owner: the rows read
+	 * above were already written to the RRD, and --skip-past-updates makes the owner's later replay
+	 * a no-op. Never deleting from an archive here means the on-demand path cannot shrink a range
+	 * the scheduled poller already staged (which would fail its row-count check) nor touch a table
+	 * the owner may have dropped.
 	 */
 	boost_timer('delete', BOOST_TIMER_START);
-
-	if ($updates_ok && cacti_count($archive_tables)) {
-		foreach ($archive_tables as $table) {
-			$forward_rows = (int) db_fetch_cell_prepared("SELECT COUNT(*)
-				FROM $table
-				WHERE local_data_id = ?
-				AND time >= FROM_UNIXTIME(?)",
-				array($local_data_id, $timestamp), '', false);
-
-			if (db_execute_prepared("INSERT IGNORE INTO poller_output_boost
-				SELECT *
-				FROM $table
-				WHERE local_data_id = ?
-				AND time >= FROM_UNIXTIME(?)",
-				array($local_data_id, $timestamp), false) === false) {
-				$updates_ok = false;
-
-				break;
-			}
-
-			if (db_affected_rows() < $forward_rows) {
-				cacti_log("WARNING: Boost archive forwarding encountered duplicate sample keys for Local Data ID '$local_data_id'.", false, 'BOOST');
-			}
-		}
-	}
-
-	if ($updates_ok && cacti_count($archive_tables)) {
-		foreach ($archive_tables as $table) {
-			if (db_execute_prepared("DELETE FROM $table WHERE local_data_id = ?", array($local_data_id), false) === false) {
-				$updates_ok = false;
-
-				break;
-			}
-		}
-	}
 
 	if ($updates_ok && cacti_sizeof($results)) {
 		$updates_ok = db_execute_prepared('DELETE FROM poller_output_boost

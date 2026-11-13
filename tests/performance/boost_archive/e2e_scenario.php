@@ -709,8 +709,8 @@ if ($action === 'setup-isolated-failure') {
 	$archive = 'poller_output_boost_arch_2001';
 	db_execute("CREATE TABLE `$archive` LIKE poller_output_boost");
 
-	$rows  = boostE2eInsertRows($archive, 1, $samples, $base_time, 11);
-	$rows += boostE2eInsertRows('poller_output_boost', 1, $samples, $base_time + 3600, 23);
+	$archive_rows = boostE2eInsertRows($archive, 1, $samples, $base_time, 11);
+	$live_rows    = boostE2eInsertRows('poller_output_boost', 1, $samples, $base_time + 3600, 23);
 
 	$before  = boostE2eLastUpdate($path);
 	$handled = boost_process_poller_output($source);
@@ -718,16 +718,17 @@ if ($action === 'setup-isolated-failure') {
 
 	boostE2eAssert($handled > 0, 'on-demand flush handled no rows');
 	boostE2eAssert($after > $before, 'on-demand flush did not advance the RRD');
-	boostE2eAssert((int) db_fetch_cell("SELECT COUNT(*) FROM `$archive`") === 0,
-		'on-demand flush left archive rows');
+	boostE2eAssert((int) db_fetch_cell("SELECT COUNT(*) FROM `$archive`") === $archive_rows,
+		'on-demand flush must leave sealed archive rows to the scheduled owner');
 	boostE2eAssert((int) db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost') === 0,
 		'on-demand flush left live rows');
 
 	print json_encode(array(
-		'action'      => $action,
-		'handled'     => (int) $handled,
-		'rows'        => $rows,
-		'last_before' => $before,
+		'action'       => $action,
+		'handled'      => (int) $handled,
+		'archive_rows' => $archive_rows,
+		'live_rows'    => $live_rows,
+		'last_before'  => $before,
 		'last_after'  => $after,
 	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } elseif ($action === 'status' || strpos($action, 'assert-') === 0) {

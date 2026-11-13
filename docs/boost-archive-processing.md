@@ -102,7 +102,10 @@ from competing for one file or applying timestamps out of order.
 On-demand (WebUI) processing always takes precedence over the scheduled poller. When a graph is
 viewed, its data sources are flushed immediately rather than deferred to the archive owner, and no
 archive lifecycle or per-file lock is taken on that path. Concurrent writes to the same RRD are
-safe because `--skip-past-updates` makes RRDtool 1.5+ ignore already-applied samples.
+safe because `--skip-past-updates` makes RRDtool 1.5+ ignore already-applied samples. The on-demand
+path reads sealed archives to flush their samples into the RRD but never deletes from them, leaving
+archive rotation and deletion entirely to the scheduled owner; its later replay of those rows is a
+`--skip-past-updates` no-op, and it cannot shrink a range the owner has already staged.
 
 There is no durable row cursor and no row-by-row archive deletion. After an unexpected exit, the
 sealed table is replayed. RRDtool 1.5 and newer use `--skip-past-updates`, making already-applied
