@@ -1,8 +1,9 @@
 /* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type TestInfo } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { installThemeCss, collectThemeCoverage } from '../theme-css';
+import { textContrast } from '../text-contrast';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { registerSelectmenuThemeTests } = require('./selectmenu-theme-coverage');
 
@@ -10,79 +11,289 @@ collectThemeCoverage();
 
 registerSelectmenuThemeTests(test, expect);
 
-for (const width of [320, 390, 1280]) {
-	for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
-		test(`Cacti titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
-			await page.setViewportSize({ width, height: 800 });
-			await page.setContent('<!DOCTYPE html><div style="width:calc(100vw - 80px)">' +
-				'<div class="cactiTableTitleRow"><div class="cactiTableTitle"></div>' +
-				'<div class="cactiTableButton"><span>Status</span></div></div>' +
-				'<table class="cactiTable"><tr><td>Panel content</td></tr></table></div>');
-			await page.locator('.cactiTableTitle').evaluate((element, title) => element.textContent = title, title);
-			await installThemeCss(page, 'include/themes/cacti/main.css');
-			const boxes = await page.evaluate(() => {
-				const box = (selector: string) => {
-					const r = document.querySelector(selector)!.getBoundingClientRect();
-					return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, height: r.height };
-				};
-				return { bar: box('.cactiTableTitleRow'), title: box('.cactiTableTitle'), tools: box('.cactiTableButton'), content: box('table') };
+// Sunrise paints its body over a radial glow whose color depends on where
+// text sits on the page, which textContrast refuses to guess. These fixtures
+// measure against the glow's #000 base color and leave the glow unmeasured.
+async function measureSunriseOnBaseColor(page: Page, theme: string) {
+	if (theme === 'sunrise') await page.addStyleTag({ content: 'body { background-image: none !important; }' });
+}
+
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
+	for (const width of [320, 390, 1280]) {
+		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
+			test(`${theme} titlebar contains wrapped titles and controls at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
+				await page.setViewportSize({ width, height: 800 });
+				await page.setContent(`<!DOCTYPE html><div class="${theme !== 'cacti' ? 'cactiTable' : ''}" style="width:calc(100vw - 80px)">` +
+					'<div class="cactiTableTitleRow"><div class="cactiTableTitle"></div>' +
+					'<div class="cactiTableButton"><span>Status</span></div></div>' +
+					'<table class="cactiTable"><tr><td>Panel content</td></tr></table></div>');
+				await page.locator('.cactiTableTitle').evaluate((element, { title, theme }) => {
+					if (theme !== 'cacti') {
+						const span = document.createElement('span');
+						span.textContent = title;
+						element.append(span);
+					} else element.textContent = title;
+				}, { title, theme });
+				await installThemeCss(page, `include/themes/${theme}/main.css`);
+				const boxes = await page.evaluate(() => {
+					const box = (selector: string) => {
+						const r = document.querySelector(selector)!.getBoundingClientRect();
+						return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, height: r.height };
+					};
+					return { bar: box('.cactiTableTitleRow'), title: box('.cactiTableTitle'), tools: box('.cactiTableButton'), content: box('table') };
+				});
+				for (const child of [boxes.title, boxes.tools]) {
+					expect(child.left).toBeGreaterThanOrEqual(boxes.bar.left);
+					expect(child.right).toBeLessThanOrEqual(boxes.bar.right + 1);
+					expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
+					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
+				}
+				if (theme === 'deepness' || theme === 'modern' || theme === 'paw' || theme === 'raspberry' || theme === 'sunrise' || theme === 'paper-plane') {
+					const textBoxes = await page.locator('.cactiTableTitle').evaluate(element => {
+						const range = document.createRange();
+						range.selectNodeContents(element);
+						return Array.from(range.getClientRects(), rect => ({ right: rect.right, bottom: rect.bottom }));
+					});
+					for (const text of textBoxes) {
+						expect(text.right).toBeLessThanOrEqual(boxes.tools.left + 1);
+						expect(text.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
+					}
+				}
+				expect(boxes.title.right).toBeLessThanOrEqual(boxes.tools.left + 1);
+				expect(boxes.content.top).toBeGreaterThanOrEqual(boxes.bar.bottom);
+				if (title === 'Status') {
+					if (theme === 'dark') {
+						expect(boxes.bar.height).toBeGreaterThanOrEqual(22);
+						expect(boxes.bar.height).toBeLessThan(24);
+					} else expect(boxes.bar.height).toBe(['deepness', 'raspberry'].includes(theme) ? 28 : theme === 'sunrise' ? 22 : 25);
+				}
 			});
-			for (const child of [boxes.title, boxes.tools]) {
-				expect(child.left).toBeGreaterThanOrEqual(boxes.bar.left);
-				expect(child.right).toBeLessThanOrEqual(boxes.bar.right + 1);
-				expect(child.top).toBeGreaterThanOrEqual(boxes.bar.top);
-				expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
+		}
+	}
+}
+
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
+	const rows = theme === 'cacti' ? ['', 'odd', 'even'] : ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected'];
+	if (theme === 'paper-plane') rows.push('even-alternate', 'selectable even-alternate');
+	for (const surface of theme === 'paper-plane' ? ['page', 'dialog'] : ['page']) {
+		for (const row of rows) {
+			for (const linkClass of ['', 'linkEditMain']) {
+				test(`${theme} ${linkClass || 'ordinary'} links retain text contrast on ${row || 'plain'} surfaces${surface === 'dialog' ? ' in a dialog' : ''}`, async ({ page }) => {
+					await page.setContent(`<!DOCTYPE html><div class="${surface === 'dialog' ? 'ui-widget-content' : ''}"><table${theme === 'paper-plane' ? ' class="cactiTable"' : ''}><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a>${theme === 'paper-plane' ? ' · Response 1.8 ms' : ''}</td></tr></table></div>`);
+					if (surface === 'dialog') await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
+					await installThemeCss(page, `include/themes/${theme}/main.css`);
+					await measureSunriseOnBaseColor(page, theme);
+					for (const state of ['rest', 'focus', 'hover', 'active']) {
+						const link = page.locator('a');
+						if (state === 'focus') await link.focus();
+						if (state === 'hover' || state === 'active') await link.hover();
+						if (state === 'active') await page.mouse.down();
+						const ratio = await link.evaluate(textContrast);
+						expect(ratio, state).toBeGreaterThanOrEqual(4.5);
+						if (theme === 'paper-plane') expect(await page.locator('td').evaluate(textContrast), `row text ${state}`).toBeGreaterThanOrEqual(4.5);
+						if (state === 'active') await page.mouse.up();
+					}
+				});
 			}
-			expect(boxes.title.right).toBeLessThanOrEqual(boxes.tools.left + 1);
-			expect(boxes.content.top).toBeGreaterThanOrEqual(boxes.bar.bottom);
-			if (title === 'Status') expect(boxes.bar.height).toBe(25);
+		}
+	}
+}
+
+for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected']) {
+	test(`deepness status and import messages remain readable on ${row || 'page'} rows`, async ({ page }, info) => {
+		const classes = ['deviceUp', 'deviceDown', 'deviceUnknown', 'deviceDisabled', 'deviceRecovering', 'deviceError',
+			'deviceDownMuted', 'deviceThreshold', 'deviceUnmonitored', 'deviceWarning', 'deviceAlert',
+			'newObject', 'updateObject', 'foundDependency', 'textError', 'textWarning', 'txtErrorText', 'failed', 'accessRestricted',
+			'accessRestrictedItem', 'badpassword', 'notAssociated', 'running', 'unmetDependency'];
+		await page.setContent('<!DOCTYPE html><table><tr class="' + row + '"><td>' +
+			classes.map(name => `<span class="${name}" style="display:block">${name}</span>`).join('') + '</td></tr></table>');
+		await installThemeCss(page, 'include/themes/deepness/main.css');
+		for (const state of ['rest', 'hover']) {
+			if (state === 'hover') await page.locator('td').hover();
+			const ratios = [];
+			for (const name of classes) ratios.push({ name, ratio: await page.locator('.' + name).evaluate(textContrast) });
+			await info.attach(state, { body: JSON.stringify(ratios), contentType: 'application/json' });
+			for (const { name, ratio } of ratios) expect.soft(ratio, `${name} ${state}`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
+}
+
+for (const theme of ['modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
+	test(`${theme} titlebars, navigation selections, rows, and active controls retain text contrast`, async ({ page }) => {
+		await page.setContent('<!DOCTYPE html>' +
+			'<div class="cactiTableTitleRow"><div class="cactiTableTitle">Device inventory</div><div class="cactiTableButton"><span>2 alerts</span></div></div>' +
+			'<table><tr class="selected"><td id="selected-text">branch-firewall-03</td></tr></table>' +
+			'<ul id="nav"><li><a class="pic" href="#devices">Devices</a></li><li><a class="menu_parent" href="#management">Management</a></li>' +
+			`<li><a class="selected" href="#graphs">Graphs</a></li><li><a class="active${theme === 'modern' ? ' pic' : ''}" href="#console">Console</a></li></ul>` +
+			'<div class="tabs"><nav><a class="selected" href="#tab">Selected tab</a></nav></div>' +
+			'<div class="ui-widget-content"><button class="ui-button ui-state-active">Active control</button></div>' +
+			'<div class="select2-container--default"><ul><li class="select2-results__option--highlighted select2-results__option--selectable">Selected device</li></ul></div>');
+		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
+		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		await measureSunriseOnBaseColor(page, theme);
+		for (const selector of ['.cactiTableTitle', '.cactiTableButton span', '#selected-text', '#nav a', ...(['paw', 'raspberry', 'sunrise', 'paper-plane'].includes(theme) ? ['.tabs nav a.selected'] : []), 'button', '.select2-results__option--highlighted']) {
+			for (const element of await page.locator(selector).all()) expect.soft(await element.evaluate(textContrast), selector).toBeGreaterThanOrEqual(4.5);
+		}
+		for (const name of ['Devices', 'Management', ...(theme === 'modern' ? ['Console'] : [])]) {
+			const link = page.getByRole('link', { name, exact: true });
+			await link.hover();
+			expect(await link.evaluate(textContrast), `${name} hover`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
+}
+
+for (const theme of ['raspberry', 'sunrise', 'paper-plane']) {
+	for (const state of ['', 'tableHeaderColumnSelected', 'tableHeaderColumnHover']) {
+		test(`${theme} table headings remain readable in ${state || 'normal'} state`, async ({ page }) => {
+			await page.setContent(`<!DOCTYPE html><table class="cactiTable"><thead><tr class="tableHeader"><th class="${state}">Device</th></tr></thead></table>`);
+			await installThemeCss(page, `include/themes/${theme}/main.css`);
+			await measureSunriseOnBaseColor(page, theme);
+			expect(await page.locator('th').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
 		});
 	}
 }
 
-for (const row of ['', 'odd', 'even']) {
-	for (const linkClass of ['', 'linkEditMain']) {
-		test(`Cacti ${linkClass || 'ordinary'} links retain text contrast on ${row || 'white'} surfaces`, async ({ page }) => {
-			await page.setContent(`<!DOCTYPE html><table><tr class="${row}"><td><a class="${linkClass}" href="#device">Device</a></td></tr></table>`);
-			await installThemeCss(page, 'include/themes/cacti/main.css');
-			for (const state of ['rest', 'focus', 'hover', 'active']) {
-				const link = page.locator('a');
-				if (state === 'focus') await link.focus();
-				if (state === 'hover' || state === 'active') await link.hover();
-				if (state === 'active') await page.mouse.down();
-				const ratio = await link.evaluate(element => {
-					const rgba = (value: string) => {
-						const parts = value.match(/[\d.]+/g)!.map(Number);
-						return [parts[0], parts[1], parts[2], parts[3] ?? 1];
-					};
-					let bg = [255, 255, 255];
-					const ancestors: Element[] = [];
-					for (let e: Element | null = element; e; e = e.parentElement) ancestors.unshift(e);
-					for (const e of ancestors) {
-						const c = rgba(getComputedStyle(e).backgroundColor);
-						bg = bg.map((v, i) => c[i] * c[3] + v * (1 - c[3]));
-					}
-					const lum = (c: number[]) => c.slice(0, 3).map(v => {
-						v /= 255;
-						return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;
-					}).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
-					const fg = lum(rgba(getComputedStyle(element).color)), surface = lum(bg);
-					return (Math.max(fg, surface) + .05) / (Math.min(fg, surface) + .05);
-				});
-				expect(ratio, state).toBeGreaterThanOrEqual(4.5);
-				if (state === 'active') await page.mouse.up();
-			}
-		});
-	}
+// Paper Plane gives body light text for its dark page, so every light surface
+// that sits directly on the page must carry its own dark text and link colors.
+const paperPlaneLightSurfaces: Record<string, string> = {
+	'textArea cell': '<table class="cactiTable"><tr><td class="textArea" data-surface>%s</td></tr></table>',
+	'tableConfirmation': '<table class="tableConfirmation"><tr><td data-surface>%s</td></tr></table>',
+	'messageBox': '<div class="messageBox" data-surface>%s</div>',
+	'tree editor panel': '<form id="tree_edit"><div data-surface>%s</div></form>',
+	'graphItem row': '<table><tr class="graphItem"><td data-surface>%s</td></tr></table>',
+	'graphItemAlternate row': '<table><tr class="graphItemAlternate"><td data-surface>%s</td></tr></table>',
+	'hostInfoHeader': '<div class="hostInfoHeader" data-surface>%s</div>',
+	'filteredValue': '<span class="filteredValue" data-surface>%s</span>',
+	'spikekillMenu': '<ul class="spikekillMenu"><li data-surface>%s</li></ul>',
+	'installArea': '<div class="installArea" data-surface>%s</div>',
+	'cactiInstallArea': '<div class="cactiInstallArea" data-surface>%s</div>',
+	'textMenuItem': '<div class="textMenuItem" data-surface>%s</div>',
+	'multiselect header': '<div class="ui-multiselect-header" data-surface>%s</div>',
+	'menuoptions': '<ul class="menuoptions"><li data-surface>%s</li></ul>',
+	'submenuoptions': '<ul class="submenuoptions"><li data-surface>%s</li></ul>',
+	...Object.fromEntries(['clogError', 'clogWarning', 'clogSQL', 'clogDebug', 'clogStats', 'clogLimit'].map(name =>
+		[`${name} log row`, `<table class="cactiTable"><tr class="${name}"><td data-surface>%s</td></tr></table>`])),
+};
+
+for (const [name, markup] of Object.entries(paperPlaneLightSurfaces)) {
+	test(`paper-plane text and links remain readable on the ${name} light surface`, async ({ page }) => {
+		const content = '<span class="surface-text">Purge the Cacti log?</span> <a href="#device">Device</a> <a class="linkEditMain" href="#edit">Edit</a>';
+		await page.setContent('<!DOCTYPE html>' + markup.replace('%s', content));
+		await installThemeCss(page, 'include/themes/paper-plane/jquery-ui.css');
+		await installThemeCss(page, 'include/themes/paper-plane/main.css');
+		expect(await page.locator('.surface-text').evaluate(textContrast), 'text').toBeGreaterThanOrEqual(4.5);
+		for (const link of await page.locator('[data-surface] a').all()) {
+			expect(await link.evaluate(textContrast), `${await link.textContent()} rest`).toBeGreaterThanOrEqual(4.5);
+			await link.hover();
+			expect(await link.evaluate(textContrast), `${await link.textContent()} hover`).toBeGreaterThanOrEqual(4.5);
+		}
+	});
 }
 
 const root = resolve(__dirname, '../../..');
 
-test('Cacti seeded device inventory and details work with desktop and narrow dialogs', async ({ page }, info) => {
-	await page.setViewportSize({ width: 1100, height: 380 });
-	await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8'));
-	await installThemeCss(page, 'include/themes/cacti/jquery-ui.css');
-	await installThemeCss(page, 'include/themes/cacti/main.css');
+test('contrast measurement supports equivalent rgb and color(srgb) surfaces', async ({ page }) => {
+	await page.setContent('<p style="color:rgb(255,255,255);background:rgb(32,32,32)">Reference</p>' +
+		'<p style="color:color(srgb 1 1 1);background:color-mix(in srgb, rgb(32,32,32) 100%, white)">Modern color</p>');
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeCloseTo(
+		await page.locator('p').first().evaluate(textContrast),
+		2,
+	);
+	expect(await page.locator('p').nth(1).evaluate(textContrast)).toBeGreaterThan(16);
+});
+
+test('contrast checks include translucent foregrounds and every gradient stop', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background-color:black;background-image:linear-gradient(black, white);color:white">Gradient</div>' +
+		'<span style="background:black;color:rgba(255,255,255,0.1)">Translucent text</span>');
+	expect(await page.locator('div').evaluate(textContrast)).toBe(1);
+	expect(await page.locator('span').evaluate(textContrast)).toBeLessThan(1.3);
+});
+
+for (const gradient of ['linear-gradient(rgb(255,4,0),rgb(0,161,11))', '-webkit-linear-gradient(top,rgb(255,4,0),rgb(0,161,11))']) {
+	test(`contrast checks find the darker middle of ${gradient}`, async ({ page }) => {
+		await page.setContent(`<!DOCTYPE html><div style="background:white;background-image:${gradient};color:black">Selected row</div>`);
+		// The darkest color sits at t = 0.46, between any fixed grid of samples.
+		expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(3.1176, 3);
+	});
+}
+
+test('contrast checks report text whose luminance falls inside a gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:linear-gradient(black,white);color:rgb(119,119,119)">Status</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+test('contrast checks measure every layer of a layered background', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div style="background:black url(about:blank), linear-gradient(black, white);color:white">Layers</div>');
+	expect(await page.locator('div').evaluate(textContrast)).toBeCloseTo(1, 3);
+});
+
+for (const [name, style] of [
+	['a radial gradient', 'background:black radial-gradient(circle at top, #ffa254, black)'],
+	['legacy -webkit-gradient', 'background:-webkit-gradient(linear, left top, left bottom, from(black), to(white))'],
+	['non-sRGB interpolation', 'background:linear-gradient(in oklab, black, white)'],
+	['group opacity', 'background:black;opacity:.5'],
+]) {
+	test(`contrast checks refuse to measure ${name}`, async ({ page }) => {
+		await page.setContent(`<!DOCTYPE html><div style="${style};color:white">Unmeasured</div>`);
+		await expect(page.locator('div').evaluate(textContrast)).rejects.toThrow('textContrast cannot measure');
+	});
+}
+
+for (const theme of ['dark', 'modern']) {
+	for (const forcedColors of ['none', 'active'] as const) {
+		test(`${theme} keyboard focus remains visible with forced colors ${forcedColors}`, async ({ page }) => {
+			await page.emulateMedia({ forcedColors });
+			await page.setContent('<!DOCTYPE html><a href="#devices">Devices</a><label>Search devices<input type="text"></label>' +
+				'<label>State filter<select><option>All devices</option></select></label><button>Apply filter</button>');
+			await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
+			await installThemeCss(page, `include/themes/${theme}/main.css`);
+			for (const selector of ['a', 'input', 'select', 'button']) {
+				await page.keyboard.press('Tab');
+				const control = page.locator(selector);
+				await expect(control).toBeFocused();
+				const focus = await control.evaluate(element => {
+					const style = getComputedStyle(element);
+					return { visible: element.matches(':focus-visible'), width: parseFloat(style.outlineWidth), style: style.outlineStyle, color: style.outlineColor };
+				});
+				expect(focus.visible).toBe(true);
+				expect(focus.width).toBeGreaterThanOrEqual(2);
+				expect(focus.style).toBe('solid');
+				expect(focus.color).not.toBe('rgba(0, 0, 0, 0)');
+			}
+		});
+	}
+}
+
+test('modern titlebar focus outline contrasts with the titlebar gradient', async ({ page }) => {
+	await page.setContent('<!DOCTYPE html><div class="cactiTableTitleRow"><div class="cactiTableTitle"><span>Devices</span></div>' +
+		'<div class="cactiTableButton"><span><a href="#add" aria-label="Add device"><i>+</i></a></span></div></div>' +
+		'<a id="body-link" href="#devices">Devices</a>');
+	await installThemeCss(page, 'include/themes/modern/main.css');
+	for (const selector of ['.cactiTableButton a', '#body-link']) {
+		const link = page.locator(selector);
+		await link.focus();
+		await expect(link).toHaveCSS('outline-style', 'solid');
+		// Measure the outline color as text over the same surfaces; WCAG 1.4.11 asks 3:1.
+		await link.evaluate(element => { (element as HTMLElement).style.color = getComputedStyle(element).outlineColor; });
+		expect(await link.evaluate(textContrast), selector).toBeGreaterThanOrEqual(3);
+	}
+});
+
+for (const theme of ['dark', 'paw']) {
+	test(`${theme} hovered rows retain readable text and links`, async ({ page }) => {
+		await page.setContent('<!DOCTYPE html><table><tr class="selectable odd"><td>branch-firewall-03 missed three polls</td>' +
+			'<td><a class="linkEditMain" href="#device">Open device</a></td></tr></table>');
+		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		await page.locator('td').first().hover();
+		expect(await page.locator('td').first().evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+		expect(await page.locator('a').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+		await page.locator('a').hover();
+		expect(await page.locator('a').evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+		await expect(page.locator('a')).toHaveCSS('color', theme === 'dark' ? 'rgb(255, 250, 250)' : 'rgb(29, 51, 112)');
+	});
+}
+
+async function prepareInventoryFixture(page: Page, info: TestInfo) {
 	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery.js' });
 	await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery-ui.js' });
 	await page.evaluate(() => {
@@ -96,28 +307,39 @@ test('Cacti seeded device inventory and details work with desktop and narrow dia
 	await expect(page.getByRole('table', { name: 'Device inventory' }).locator('tbody tr')).toHaveCount(4);
 	await page.getByRole('link', { name: 'edge-router-01' }).click();
 	await expect(page).toHaveURL(/#edge-router-01$/);
-	const capture = async (name: string) => {
+	return async (name: string) => {
 		const path = process.env.UPDATE_THEME_SCREENSHOTS === '1'
 			? resolve(root, `docs/validation/images/${name}.png`) : info.outputPath(`${name}.png`);
 		mkdirSync(dirname(path), { recursive: true });
 		await page.screenshot({ path, fullPage: true });
 		await info.attach(name, { path, contentType: 'image/png' });
 	};
-	await capture('cacti-theme-desktop');
-	await page.setViewportSize({ width: 320, height: 680 });
-	await page.getByRole('button', { name: 'Open poller details' }).click();
-	await expect(page.getByRole('dialog')).toBeVisible();
-	await expect(page.getByRole('table', { name: 'Poller alerts' }).getByText(/branch-firewall-03/)).toBeVisible();
-	const boxes = await page.locator('#details .cactiTableTitleRow').evaluate(element => {
-		const row = element.getBoundingClientRect(), title = element.querySelector('.cactiTableTitle')!.getBoundingClientRect();
-		return { rowBottom: row.bottom, titleBottom: title.bottom, rowRight: row.right };
+}
+
+for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paw', 'raspberry', 'sunrise', 'paper-plane']) {
+	test(`${theme} seeded device inventory and details work with desktop and narrow dialogs`, async ({ page }, info) => {
+		await page.setViewportSize({ width: 1100, height: 380 });
+		await page.setContent(readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8').replaceAll('Cacti theme', `${theme[0].toUpperCase() + theme.slice(1)} theme`));
+		if (['sunrise', 'paper-plane'].includes(theme)) await page.locator('main').evaluate(element => element.classList.add('cactiTable'));
+		await installThemeCss(page, `include/themes/${theme}/jquery-ui.css`);
+		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		const capture = await prepareInventoryFixture(page, info);
+		await capture(`${theme}-theme-desktop`);
+		await page.setViewportSize({ width: 320, height: 680 });
+		await page.getByRole('button', { name: 'Open poller details' }).click();
+		await expect(page.getByRole('dialog')).toBeVisible();
+		await expect(page.getByRole('table', { name: 'Poller alerts' }).getByText(/branch-firewall-03/)).toBeVisible();
+		const boxes = await page.locator('#details .cactiTableTitleRow').evaluate(element => {
+			const row = element.getBoundingClientRect(), title = element.querySelector('.cactiTableTitle')!.getBoundingClientRect();
+			return { rowBottom: row.bottom, titleBottom: title.bottom, rowRight: row.right };
+		});
+		expect(boxes.titleBottom).toBeLessThanOrEqual(boxes.rowBottom);
+		expect(boxes.rowRight).toBeLessThanOrEqual(320);
+		await capture(`${theme}-theme-mobile-details`);
+		await page.locator('.ui-dialog-buttonpane').getByRole('button', { name: 'Close', exact: true }).click();
+		await expect(page.getByRole('dialog')).toHaveCount(0);
 	});
-	expect(boxes.titleBottom).toBeLessThanOrEqual(boxes.rowBottom);
-	expect(boxes.rowRight).toBeLessThanOrEqual(320);
-	await capture('cacti-theme-mobile-details');
-	await page.locator('.ui-dialog-buttonpane').getByRole('button', { name: 'Close', exact: true }).click();
-	await expect(page.getByRole('dialog')).toHaveCount(0);
-});
+}
 
 const files: string[] = JSON.parse(readFileSync(resolve(__dirname, '../../fixtures/Ui/theme-correctness-files.json'), 'utf8'));
 
@@ -349,6 +571,109 @@ for (const theme of ['cacti', 'raspberry']) {
 		]);
 	});
 }
+
+// Midwinter imports its palette and layout and initializes these root attributes at startup.
+for (const palette of ['dark', 'light']) {
+	const prepare = async (page: Page, html: string) => {
+		await page.setContent(html);
+		await page.evaluate(palette => {
+			document.documentElement.setAttribute('data-theme-color', palette);
+			document.documentElement.setAttribute('data-theme-state', 'ready');
+			document.documentElement.setAttribute('data-animations', 'off');
+			document.body.style.backgroundColor = 'var(--background-content)';
+		}, palette);
+		await installThemeCss(page, 'include/themes/midwinter/jquery-ui.css');
+		await installThemeCss(page, 'include/themes/midwinter/main.css');
+		await expect(page.locator('body')).toHaveCSS('opacity', '1');
+	};
+	for (const width of [320, 390, 1280]) {
+		for (const title of ['Status', 'Analyze Cacti Log Details [ Warnings/Errors ]', 'A'.repeat(180)]) {
+			test(`midwinter ${palette} title and native controls stay in the bar at ${width}px: ${title.slice(0, 16)}`, async ({ page }) => {
+				await page.setViewportSize({ width, height: 680 });
+				await prepare(page, '<!DOCTYPE html><main style="width:calc(100vw - 80px)">' +
+					'<div class="cactiTableTitleRow"><div class="cactiTableTitle"><span></span></div>' +
+					'<div class="cactiTableButton"><span><a href="#tools" aria-label="Panel tools">+</a></span></div></div>' +
+					'<table class="cactiTable"><tr><td>Panel data</td></tr></table></main>');
+				await page.locator('.cactiTableTitle span').evaluate((element, title) => element.textContent = title, title);
+				for (const item of await page.locator('.cactiTableTitle, .cactiTableButton a').all()) expect.soft(await item.evaluate(textContrast), 'title/control contrast').toBeGreaterThanOrEqual(4.5);
+				const boxes = await page.evaluate(() => {
+					const rect = (selector: string) => {
+						const r = document.querySelector(selector)!.getBoundingClientRect();
+						return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, height: r.height };
+					};
+					return { bar: rect('.cactiTableTitleRow'), title: rect('.cactiTableTitle'), tools: rect('.cactiTableButton'), span: rect('.cactiTableTitle span') };
+				});
+				for (const child of [boxes.title, boxes.tools]) {
+					expect(child.right).toBeLessThanOrEqual(boxes.bar.right + 1);
+					expect(child.bottom).toBeLessThanOrEqual(boxes.bar.bottom + 1);
+				}
+				expect(boxes.bar.right).toBeLessThanOrEqual(width - 79);
+				expect(boxes.title.right).toBeLessThanOrEqual(boxes.tools.left + 1);
+				expect(boxes.span.right).toBeLessThanOrEqual(boxes.title.right + 1);
+				await expect(page.locator('.cactiTableTitle span')).toHaveCSS('text-overflow', 'ellipsis');
+				const tools = page.getByRole('link', { name: 'Panel tools' });
+				await tools.hover();
+				expect(await tools.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+				await tools.focus();
+				expect(await tools.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
+			});
+		}
+	}
+	for (const row of ['', 'odd', 'even', 'selected', 'selectable odd', 'selectable even', 'selectable selected']) {
+		test(`midwinter ${palette} row text and links remain readable on ${row || 'plain'} rows`, async ({ page }) => {
+			await prepare(page, '<!DOCTYPE html><div class="cactiConsoleContentArea"><main id="main"><div class="cactiTable">' +
+				`<table class="cactiTable"><tr class="${row}"><td><span>Device response</span></td>` +
+				'<td><a href="#device">Device</a></td><td><a class="linkEditMain" href="#edit">Edit device</a></td></tr></table></div></main></div>');
+			for (const state of ['rest', 'hover', 'focus', 'active']) {
+				await page.mouse.move(1200, 700);
+				await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+				if (state === 'hover') await page.locator('td').first().hover();
+				for (const selector of ['td span', 'td a']) {
+					for (const item of await page.locator(selector).all()) {
+						if (selector === 'td a' && state === 'hover') await item.hover();
+						if (selector === 'td a' && state === 'focus') await item.focus();
+						if (selector === 'td a' && state === 'active') { await item.hover(); await page.mouse.down(); }
+						const ratio = await item.evaluate(textContrast);
+						expect.soft(ratio, `${selector} ${state}`).toBeGreaterThanOrEqual(4.5);
+						if (selector === 'td a' && state === 'active') await page.mouse.up();
+					}
+				}
+			}
+		});
+	}
+	test(`midwinter ${palette} seeded inventory opens and closes narrow details`, async ({ page }, info) => {
+		await page.setViewportSize({ width: 1100, height: 420 });
+		let html = readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8')
+			.replaceAll('Cacti theme', `Midwinter ${palette} theme`);
+		// Midwinter's native toolbar spans contain links; plain labels are hidden by design.
+		html = html.replace('<span>4 devices</span>', '<span><a href="#devices" aria-label="Four devices">4</a></span>')
+			.replace('<span>2 alerts</span>', '<span><a href="#alerts" aria-label="Two alerts">2</a></span>');
+		await prepare(page, html);
+		await page.locator('.cactiTableTitle').evaluateAll(elements => {
+			for (const element of elements) {
+				const span = document.createElement('span');
+				span.textContent = element.textContent;
+				element.replaceChildren(span);
+			}
+		});
+		const capture = await prepareInventoryFixture(page, info);
+		await capture(`midwinter-${palette}-theme-desktop`);
+		await page.setViewportSize({ width: 320, height: 680 });
+		await page.getByRole('button', { name: 'Open poller details' }).click();
+		await expect(page.getByRole('dialog')).toBeVisible();
+		await expect(page.getByRole('table', { name: 'Poller alerts' }).getByText(/branch-firewall-03/)).toBeVisible();
+		const bounds = await page.locator('#details .cactiTableTitleRow').evaluate(element => {
+			const bar = element.getBoundingClientRect(), tools = element.querySelector('.cactiTableButton')!.getBoundingClientRect();
+			return { right: bar.right, bottom: bar.bottom, toolsBottom: tools.bottom };
+		});
+		expect(bounds.right).toBeLessThanOrEqual(320);
+		expect(bounds.toolsBottom).toBeLessThanOrEqual(bounds.bottom + 1);
+		await capture(`midwinter-${palette}-theme-mobile-details`);
+		await page.locator('.ui-dialog-buttonpane').getByRole('button', { name: 'Close', exact: true }).click();
+		await expect(page.getByRole('dialog')).toHaveCount(0);
+	});
+}
+
 
 // Shared card API presentation layer. cards.css (chrome) and card-widgets.css
 // (chart primitives) are loaded globally by lib/html.php for every page, so the
