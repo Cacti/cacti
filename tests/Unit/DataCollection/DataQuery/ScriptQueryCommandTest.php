@@ -1,0 +1,62 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
+
+test('script query base commands are escaped without changing arguments (#7478)', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ScriptQueryCommand.php');
+
+	expect($result['commands'][0])->toBe('/opt/cacti/query.php ')
+		->and($result['commands'][1])->toBe('/opt/cacti/label\\;literal ')
+		->and($result['arguments'])->toBe("/opt/cacti/query.php 'alpha' 'two words' 'semi;colon'")
+		->and($result['rejected'])->toBe(3)
+		->and($result['passes'])->toBe(10000);
+});
+
+test('script query base commands keep Windows paths intact and refuse cmd.exe metacharacters', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ScriptQueryCommandWin32.php');
+
+	expect($result['accepted']['stock'])->toBe('C:\\php\\php.exe -q "C:\\Program Files (x86)\\Apache24\\htdocs\\cacti\\scripts\\ss_host_disk.php" "index"')
+		->and($result['accepted']['plain'])->toBe('c:\\php\\php.exe -q "C:\\Apache24\\htdocs\\cacti\\scripts\\query.php" ')
+		->and($result['rejected'])->toBe(array_fill(0, 7, ''))
+		->and($result['logs'])->toBe(7);
+});
+
+test('a rejected script query path is never executed by test_data_source()', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ScriptQueryRejectedPath.php');
+
+	foreach (['script_server', 'script'] as $type) {
+		expect($result[$type]['rejected'])->toBe(['result' => false, 'commands' => []]);
+	}
+
+	expect($result['script_server']['accepted']['commands'])->toBe(['/usr/bin/php -q /opt/cacti/scripts/query.php get index "1"'])
+		->and($result['script']['accepted']['commands'])->toBe(['/opt/cacti/scripts/query.php get index "1"']);
+});
+
+test('a rejected script query path is never run or queued by the reindex and poller cache builders', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ScriptQueryRejectedCallers.php');
+
+	expect($result['query']['NUM'])->toBe(['result' => false, 'commands' => []])
+		->and($result['query']['IDX'])->toBe(['result' => false, 'commands' => ['/opt/cacti/scripts/query.php NUM']])
+		->and($result['query']['QRY'])->toBe(['result' => false, 'commands' => ['/opt/cacti/scripts/query.php NUM', '/opt/cacti/scripts/query.php IDX']]);
+
+	foreach (['script_num', 'script_count', 'server_num', 'field_verify_get'] as $case) {
+		expect($result['reindex'][$case])->toBe(['rejected' => 0, 'accepted' => 1]);
+	}
+
+	foreach (['script', 'server'] as $type) {
+		expect($result['poller'][$type]['rejected'])->toBe([])
+			->and($result['poller'][$type]['accepted'])->toBe(['/opt/cacti/scripts/query.php GET ifIndex "1"']);
+	}
+});

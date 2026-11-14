@@ -50,6 +50,10 @@ function ss_fortigate_ipsec(int $host_id = 0) : mixed {
 		WHERE id = ?',
 		[$host_id]);
 
+	if (!is_array($host) || !cacti_sizeof($host)) {
+		return 'total:U down:U' . PHP_EOL;
+	}
+
 	$tunnels  = cacti_snmp_walk($host['hostname'],
 		$host['snmp_community'],
 		'.1.3.6.1.4.1.12356.101.12.2.2.1.20',
@@ -63,8 +67,33 @@ function ss_fortigate_ipsec(int $host_id = 0) : mixed {
 		$host['snmp_port'],
 		$host['snmp_timeout'],
 		$host['snmp_retries'],
+		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
+
+	/* An empty walk is either a device without tunnels or a failed
+	 * request. Only a device that still answers sysUpTime reports zero. */
+	if (!cacti_sizeof($tunnels)) {
+		$uptime = cacti_snmp_get($host['hostname'],
+			$host['snmp_community'],
+			'.1.3.6.1.2.1.1.3.0',
+			$host['snmp_version'],
+			$host['snmp_username'],
+			$host['snmp_password'],
+			$host['snmp_auth_protocol'],
+			$host['snmp_priv_passphrase'],
+			$host['snmp_priv_protocol'],
+			$host['snmp_context'],
+			$host['snmp_port'],
+			$host['snmp_timeout'],
+			$host['snmp_retries'],
+			SNMP_POLLER,
+			$host['snmp_engine_id']);
+
+		if ($uptime === '' || $uptime === 'U') {
+			return 'total:U down:U' . PHP_EOL;
+		}
+	}
 
 	foreach ($tunnels as $tunnel) {
 		if ($tunnel['value'] == 1) {

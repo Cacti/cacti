@@ -62,8 +62,18 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
+run_php_probe tests/fixtures/ScriptServerSecurityCoverage.php '^(cmd(_realtime)?\.php|remote_agent\.php|script_server\.php|include/global_constants\.php|lib/(poller|script_server|SnmpStateStore)\.php|scripts/ss_net_snmp_disk_(bytes|io)\.php|tests/(fixtures/(script_server_bootstrap|script_server_invariant_probe|ScriptServerSecurityCoverage)\.php|Unit/DataCollection/Poller/ScriptServer|Unit/Scripts/NetSnmpDiskStateFile))'
+
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
 
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
 
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryCommand.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommand\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryCommandWin32.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommandWin32\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryRejectedPath.php '^(lib/functions\.php|tests/fixtures/Core/ScriptQueryRejectedPath\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryRejectedCallers.php '^(lib/(data_query|poller|utility)\.php|tests/fixtures/Core/ScriptQueryRejectedCallers\.php)'

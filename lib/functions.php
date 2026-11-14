@@ -3139,10 +3139,23 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+							$query_path = get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+
+							/* A rejected path comes back as '', and "php -q " with no
+							 * script would block the web request reading stdin. */
+							if ($query_path === '') {
+								return false;
+							}
+
+							$script_path = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . $query_path;
 						} else {
 							$action      = POLLER_ACTION_SCRIPT;
 							$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+
+							// Running an empty command throws a ValueError on PHP 8.
+							if ($script_path === '') {
+								return false;
+							}
 						}
 					}
 
@@ -3261,11 +3274,26 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 						$out = substr($out, 0, -1);
 					}
 
+					// A $ glued directly before those quotes (e.g. $<arg> resolving
+					// to a self-quoted 'x;id') would form $'...'/$"..." ANSI-C/locale
+					// quoting, re-reading the span the scanner cannot model. An even
+					// (zero counts) backslash run leaves the $ literal; refuse it.
+					// This must run after the shed above: for $\<arg> the shed removes
+					// the backslash and leaves the $ directly before the value.
+					if (substr($out, -1) === '$') {
+						$b = substr($out, 0, -1);
+
+						if ((strlen($b) - strlen(rtrim($b, '\\'))) % 2 === 0) {
+							return '';
+						}
+					}
+
 					$out .= $value;
 				} elseif ($stack[$top]['quoteEmpty'] && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
 					// template wrapped the token exactly ("<arg>"): drop the pair
 					// so the already-escaped value stands on its own
 					$out   = substr($out, 0, -1);
+
 					$out .= $value;
 					$i    += 1;
 					$stack[$top]['quote'] = '';
@@ -3375,6 +3403,20 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 
 		if ($quote === '') {
 			if ($ch === '"' || $ch === "'") {
+				// an unescaped $ glued directly before a quote turns the quoted
+				// span into ANSI-C ($'...') or locale ($"...") quoting, which this
+				// scanner does not model - $'\x3b' would decode to a live ';'. The
+				// run of backslashes before the $ is even (zero counts), so the $
+				// is literal shell text, not an escaped \$. Refuse, matching the
+				// function's stance on constructs it cannot faithfully track.
+				if (substr($out, -1) === '$') {
+					$b = substr($out, 0, -1);
+
+					if ((strlen($b) - strlen(rtrim($b, '\\'))) % 2 === 0) {
+						return '';
+					}
+				}
+
 				$stack[$top]['quote']      = $ch;
 				$stack[$top]['quoteEmpty'] = true;
 				$out .= $ch;

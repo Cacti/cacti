@@ -1,0 +1,1 @@
+Harden Script Server dispatch and framing, replace unhealthy workers, preserve remote logging overrides, and secure disk counter state

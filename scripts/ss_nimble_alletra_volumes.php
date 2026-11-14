@@ -43,6 +43,10 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 		WHERE id = ?',
 		[$host_id]);
 
+	if (!is_array($host) || !cacti_sizeof($host)) {
+		return 'U';
+	}
+
 	if ($cmd == 'index') {
 		$return_arr  = cacti_snmp_walk($host['hostname'],
 			$host['snmp_community'],
@@ -57,6 +61,7 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 			$host['snmp_port'],
 			$host['snmp_timeout'],
 			$host['snmp_retries'],
+			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
 
@@ -81,6 +86,7 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 			$host['snmp_port'],
 			$host['snmp_timeout'],
 			$host['snmp_retries'],
+			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']));
 	} elseif ($cmd == 'query') {
@@ -98,6 +104,7 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 				$host['snmp_port'],
 				$host['snmp_timeout'],
 				$host['snmp_retries'],
+				$host['max_oids'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
@@ -107,9 +114,15 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 
 				$index = $parts[$count - 1];
 
-				print $index . ':' . $value['value'] . PHP_EOL;
+				// a line break in a device-supplied name would start a bogus output row
+				print $index . ':' . str_replace(["\r", "\n"], '', $value['value']) . PHP_EOL;
 			}
 		} else {
+			// an unknown field name would otherwise index past the OID table
+			if (!isset($oids[$what]) || !is_array($oids[$what])) {
+				return 'U';
+			}
+
 			$return_arr_low  = cacti_snmp_walk($host['hostname'],
 				$host['snmp_community'],
 				$oids[$what]['low'],
@@ -123,6 +136,7 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 				$host['snmp_port'],
 				$host['snmp_timeout'],
 				$host['snmp_retries'],
+				$host['max_oids'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
@@ -139,6 +153,7 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 				$host['snmp_port'],
 				$host['snmp_timeout'],
 				$host['snmp_retries'],
+				$host['max_oids'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
@@ -189,6 +204,10 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 
 			return $return_val;
 		} else {
+			if (!isset($oids[$what]) || !is_array($oids[$what])) {
+				return 'U';
+			}
+
 			$return_val_low = cacti_snmp_get($host['hostname'],
 				$host['snmp_community'],
 				$oids[$what]['low'] . '.' . $index,
