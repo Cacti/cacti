@@ -4333,11 +4333,13 @@ function initGraphDrilldown() {
 		}
 	});
 
-	$(document).on('keydown.graphdd', '.graphDrillDownAlways', function (event) {
-		if (event.keyCode == 27 && typeof spikeKillClose == 'function') {
-			var anchor = $(this).find('.iconLink.spikekill');
-			spikeKillClose();
-			anchor.trigger('focus');
+	$(document).on('keydown.graphdd', function (event) {
+		if (event.keyCode == 27 && typeof spikeKillClose == 'function' && typeof spikeKillAnchor != 'undefined' && spikeKillAnchor) {
+			var anchor = $(spikeKillAnchor);
+			if (anchor.closest('.graphDrillDownAlways').length) {
+				spikeKillClose();
+				anchor.trigger('focus');
+			}
 		}
 	});
 
