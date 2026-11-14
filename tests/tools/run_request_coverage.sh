@@ -44,6 +44,8 @@ run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tes
 
 run_php_probe tests/fixtures/Core/Rrd/FallbackSourceIdentity.php '^(lib/rrd\.php|tests/fixtures/Core/Rrd/FallbackSourceIdentity\.php)'
 
+run_php_probe tests/fixtures/Core/Poller/KilledProcessDbConnection.php '^(lib/poller\.php|poller_commands\.php|install/upgrades/1_3_0\.php|tests/fixtures/Core/Poller/KilledProcessDbConnection\.php)'
+
 run_php_probe tests/fixtures/SnmpAgentGlobalSettingsCoverage.php '^(lib/snmpagent\.php|tests/fixtures/SnmpAgentGlobalSettingsCoverage\.php)'
 
 run_php_probe tests/fixtures/CmdBoostFlushRedirectCoverage.php '^(cmd\.php|tests/fixtures/CmdBoostFlushRedirectCoverage\.php)'

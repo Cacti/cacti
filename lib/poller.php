@@ -3202,6 +3202,50 @@ function cacti_process_kill(int $pid, int $signal = SIGTERM, string $environ = '
 }
 
 /**
+ * End the database connection of a registered process that was just signaled or found gone. A
+ * signal does not stop a statement the process is running: the server keeps running it and
+ * holding its locks until it finishes, and PHP does not run the process's signal handler until
+ * then. Ending the connection stops the statement and rolls back its transaction. Only another
+ * connection of this database user is ended.
+ *
+ * @param array  $process The process table row, with the connection it recorded.
+ * @param string $environ The log environment to record the action under.
+ *
+ * @return bool True when the connection was ended.
+ */
+function cacti_process_kill_db_connection(array $process, string $environ = 'POLLER') : bool {
+	$connection_id = (int) ($process['connection_id'] ?? 0);
+
+	if ($connection_id <= 0 || empty($process['started'])) {
+		return false;
+	}
+
+	// connection ids start over when the server restarts, so the recorded id still names this
+	// process's connection only if the server has been up since the process registered
+	$uptime = db_fetch_row("SHOW GLOBAL STATUS LIKE 'Uptime'", false);
+
+	if (!isset($uptime['Value'])) {
+		return false;
+	}
+
+	$thread = db_fetch_row_prepared('SELECT ID, TIME
+		FROM information_schema.PROCESSLIST
+		WHERE ID = ?
+		AND ID != CONNECTION_ID()
+		AND USER = SUBSTRING_INDEX(CURRENT_USER(), "@", 1)
+		AND UNIX_TIMESTAMP() - ? <= UNIX_TIMESTAMP(?)',
+		[$connection_id, (int) $uptime['Value'], $process['started']]);
+
+	if (!is_array($thread) || !cacti_sizeof($thread)) {
+		return false;
+	}
+
+	cacti_log(sprintf('WARNING: Ending database connection %d of the killed process, busy for %d seconds.', $connection_id, $thread['TIME']), false, $environ);
+
+	return (bool) db_execute_prepared('KILL CONNECTION ?', [$connection_id], false);
+}
+
+/**
  * Tests whether a pid exists without treating a permissions failure as exit.
  *
  * POSIX kill(2) reports EPERM when the process exists but the caller cannot
@@ -3344,6 +3388,9 @@ function register_process_start_locked(string $tasktype, string $taskname, int $
 				cacti_process_kill((int) $r['pid'], SIGTERM);
 			}
 
+			// a process killed by a signal can leave its statement running
+			cacti_process_kill_db_connection($r);
+
 			unregister_process($tasktype, $taskname, $taskid);
 			register_process($tasktype, $taskname, $taskid, (int) $pid, $timeout);
 		} else {
@@ -3358,6 +3405,7 @@ function register_process_start_locked(string $tasktype, string $taskname, int $
 		return false;
 	} else {
 		cacti_log(sprintf('WARNING: Detected process that is exited and did not unregister first! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER');
+		cacti_process_kill_db_connection($r);
 
 		unregister_process($tasktype, $taskname, $taskid);
 		register_process($tasktype, $taskname, $taskid, (int) $pid, $timeout);
@@ -3382,9 +3430,18 @@ function register_process(string $tasktype, string $taskname, int $taskid, int $
 		return true;
 	}
 
-	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
-		VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
-		[$tasktype, $taskname, $taskid, $pid, $timeout]);
+	// record this process's database connection, so a process that kills it for running too
+	// long can end the connection too; see cacti_process_kill_db_connection(). Only a command
+	// line process does: a web request's connection can outlive it in a pooled worker.
+	if (PHP_SAPI === 'cli' && db_column_exists('processes', 'connection_id')) {
+		db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, connection_id, started, last_update)
+			VALUES (?, ?, ?, ?, ?, CONNECTION_ID(), NOW(), NOW())',
+			[$tasktype, $taskname, $taskid, $pid, $timeout]);
+	} else {
+		db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
+			VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+			[$tasktype, $taskname, $taskid, $pid, $timeout]);
+	}
 
 	return true;
 }
@@ -3498,6 +3555,8 @@ function timeout_kill_registered_processes(string $tasktype = '', string $taskna
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 			}
+
+			cacti_process_kill_db_connection($r);
 
 			unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);
 		}
