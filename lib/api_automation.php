@@ -3878,7 +3878,7 @@ function automation_get_valid_subnet_cidr(string $range) : array|false {
 function automation_get_valid_mask(string $range) : array|false {
 	$cidr = false;
 
-	if (is_numeric($range)) {
+	if (ctype_digit($range)) {
 		if ($range > 0 && $range < 33) {
 			$cidr = $range;
 			$mask = [
@@ -3921,7 +3921,11 @@ function automation_get_network_info(string $range) : array|false {
 		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
 		$range_parts = explode('/', $range);
 
-		if (!filter_var($range_parts[0], FILTER_VALIDATE_IP)) {
+		if (count($range_parts) !== 2 || $range_parts[0] === '' || $range_parts[1] === '') {
+			return false;
+		}
+
+		if (!filter_var($range_parts[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
 			return false;
 		}
 
@@ -3938,6 +3942,11 @@ function automation_get_network_info(string $range) : array|false {
 			}
 		}
 	} elseif (str_contains($range, '*') && !str_contains($range, '-')) {
+		// Wildcards must be trailing octets; fixed suffixes would broaden the scan.
+		if (preg_match('/\*.*[0-9]/', $range)) {
+			return false;
+		}
+
 		$test = str_replace('*', '0', $range);
 
 		if (!filter_var($test, FILTER_VALIDATE_IP)) {
@@ -4069,21 +4078,20 @@ function automation_get_next_host(string $start, int $total, int $count, string 
 		return false;
 	}
 
-	if (preg_match('/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/', $range, $matches)) {
-		// 10.1.*.1
-		return $matches[1] . ++$count . $matches[2];
-	} else {
-		// Offset from the start address. Walking the octets by hand
-		// mishandled the carry for ranges wider than a /16 and emitted
-		// out-of-range octets; convert through the 32-bit integer instead.
-		$base = ip2long($start);
+	/**
+	 * Offset from the start address. Walking the octets by hand
+	 * mishandled the carry for ranges wider than a /16 and emitted
+	 * out-of-range octets; convert through the 32-bit integer instead.
+	 * Fixed-suffix wildcards such as 10.1.*.1 never get here, because
+	 * automation_get_network_info() rejects them.
+	 */
+	$base = ip2long($start);
 
-		if ($base === false) {
-			return false;
-		}
-
-		return long2ip($base + $count);
+	if ($base === false) {
+		return false;
 	}
+
+	return long2ip($base + $count);
 }
 
 /**
@@ -4108,6 +4116,7 @@ function automation_primeIPAddressTable(int $network_id) : void {
 
 	$subNets    = explode(',', trim($subNets));
 	$total      = 0;
+	$queued     = 0;
 
 	if ($ignore_ips != '') {
 		$ignore_ips = explode(',', $ignore_ips);
@@ -4134,6 +4143,7 @@ function automation_primeIPAddressTable(int $network_id) : void {
 
 			if ($start != '' && !in_array($start, $ignore_ips, true)) {
 				$sql[] = "('$start', '', $network_id, '0', '0', '0')";
+				$queued++;
 			}
 
 			while ($count < $subNetTotal) {
@@ -4141,14 +4151,15 @@ function automation_primeIPAddressTable(int $network_id) : void {
 
 				if ($ip != '' && !in_array($ip, $ignore_ips, true)) {
 					$sql[] = "('$ip', '', $network_id, '0', '0', '0')";
-
-					$count++;
+					$queued++;
 				}
 
-				if ($count % 1000 == 0) {
+				$count++;
+
+				if ($count % 1000 == 0 && cacti_sizeof($sql)) {
 					db_execute('INSERT INTO automation_ips
 						(ip_address, hostname, network_id, pid, status, thread)
-						VALUES ' . implode(',', $sql));
+						VALUES ' . implode(',', $sql) . ' ON DUPLICATE KEY UPDATE ip_address = ip_address');
 					$sql = [];
 				}
 			}
@@ -4156,12 +4167,62 @@ function automation_primeIPAddressTable(int $network_id) : void {
 			if (cacti_sizeof($sql)) {
 				db_execute('INSERT INTO automation_ips
 					(ip_address, hostname, network_id, pid, status, thread)
-					VALUES ' . implode(',', $sql));
+					VALUES ' . implode(',', $sql) . ' ON DUPLICATE KEY UPDATE ip_address = ip_address');
 			}
 		}
 	}
 
+	/**
+	 * automation_ips is keyed on the address alone, so an address that another
+	 * network already queued stays with that network and is not scanned here.
+	 * Report the shortfall so overlapping networks are not dropped silently.
+	 */
+	if ($queued > 0) {
+		$owned = (int) db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM automation_ips
+			WHERE network_id = ?',
+			[$network_id]);
+
+		if ($owned < $queued) {
+			cacti_log(sprintf('NOTE: Discovery Network %d queued %d of %d addresses; the rest repeat an overlapping range of this network or are already queued by another network', $network_id, $owned, $queued), false, 'AUTOM8');
+		}
+	}
+
 	automation_debug("A Total of $total IP Addresses Primed\n");
+}
+
+/**
+ * Preserve scan options when launching a network master or collector worker.
+ *
+ * @param int  $poller_id  The poller that runs the scan.
+ * @param int  $network_id The discovery network being scanned.
+ * @param int  $thread     The collector thread number, or 0 for the network master.
+ * @param bool $force      Whether the scan was forced outside its schedule.
+ * @param bool $debug      Whether debug output is enabled.
+ * @param bool $dryrun     Whether the scan must not add or change devices.
+ *
+ * @return list<string> Arguments passed separately to exec_background().
+ */
+function automation_get_scan_arguments(int $poller_id, int $network_id, int $thread, bool $force, bool $debug, bool $dryrun) : array {
+	$args = ['-q', read_config_option('path_webroot') . '/poller_automation.php', '--poller=' . $poller_id, '--network=' . $network_id];
+
+	if ($thread > 0) {
+		$args[] = '--thread=' . $thread;
+	}
+
+	if ($force) {
+		$args[] = '--force';
+	}
+
+	if ($debug) {
+		$args[] = '--debug';
+	}
+
+	if ($dryrun) {
+		$args[] = '--dryrun';
+	}
+
+	return $args;
 }
 
 /**

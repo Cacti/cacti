@@ -5846,6 +5846,20 @@ function setSNMPSecurity() {
 }
 
 function setSNMP() {
+	// Select2 notifications also invoke DOM0 change handlers synchronously.
+	if (setSNMP.rendering) {
+		return;
+	}
+
+	setSNMP.rendering = true;
+	try {
+		renderSNMPControls();
+	} finally {
+		setSNMP.rendering = false;
+	}
+}
+
+function renderSNMPControls() {
 	var snmp_version = $('#snmp_version').val();
 
 	storeSNMPSecurity();
@@ -5853,7 +5867,6 @@ function setSNMP() {
 
 	let snmp_advanced = snmp_version > 2;
 	let snmp_basic = snmp_version > 0 && !snmp_advanced;
-	let snmp_none = !snmp_advanced && !snmp_basic;
 
 	if (snmp_version == 3) {
 		if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
@@ -5950,7 +5963,7 @@ function setSNMP() {
 	var canSnmpPrivPass = $('#snmp_priv_protocol').val() != '[None]';
 
 	toggleFields({
-		snmp_username: snmp_advanced && canSnmpAuthPass,
+		snmp_username: snmp_advanced,
 		snmp_password: snmp_advanced && canSnmpAuthPass,
 		snmp_community: snmp_basic,
 		snmp_security_level: snmp_advanced && canSnmpAuth,
@@ -5967,7 +5980,7 @@ function setSNMP() {
 		bulk_walk_size: snmp_basic || snmp_advanced,
 	});
 
-	selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+	const selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
 	if (selectmenu) {
 		$('#snmp_security_level').selectmenu('refresh');
 		$('#snmp_auth_protocol').selectmenu('refresh');

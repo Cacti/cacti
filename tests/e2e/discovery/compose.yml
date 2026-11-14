@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+services:
+  cacti:
+    ports: !override
+      - "127.0.0.1:${HOST_PORT:-18093}:80"
+    volumes:
+      - ./discovery:/var/www/html/tests/e2e/discovery:ro
+    environment:
+      CACTI_DISCOVERY_FIXTURE: '1'
+  known:
+    build:
+      context: ../fixtures/snmp-coverage
+    volumes:
+      - ./discovery/known.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.253.10
+  partial:
+    build:
+      context: ../fixtures/snmp-coverage
+    volumes:
+      - ./discovery/partial.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.253.11
+  unknown:
+    build:
+      context: ../fixtures/snmp-coverage
+    volumes:
+      - ./discovery/unknown.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.253.12
+  excluded:
+    build:
+      context: ../fixtures/snmp-coverage
+    volumes:
+      - ./discovery/excluded.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.253.13
+  interior255:
+    build:
+      context: ../fixtures/snmp-coverage
+    volumes:
+      - ./discovery/interior255.conf:/etc/snmp/snmpd.conf:ro
+    networks:
+      default:
+        ipv4_address: 172.30.252.255
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.30.252.0/23
