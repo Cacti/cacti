@@ -312,19 +312,19 @@ function form_save() {
 		}
 
 		if (!is_ipaddress($save['hostname']) && !str_contains($save['hostname'], '.')) {
-			raise_message('bad_host', __esc('WARNING: Use of Data Collector Hostname \'%s\' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service', $save['hostname']), MESSAGE_LEVEL_WARN);
+			raise_message('bad_host', __('WARNING: Use of Data Collector Hostname \'%s\' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service', $save['hostname']), MESSAGE_LEVEL_WARN);
 		}
 
 		// Check for duplicate hostname
 		$error = false;
 		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
-			raise_message('dupe_hostname', __esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+			raise_message('dupe_hostname', __('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
 			$error = true;
 		}
 
 		if (isset($save['dbhost'])) {
 			if (poller_check_duplicate_poller_id($save['id'], $save['dbhost'], 'dbhost')) {
-				raise_message('dupe_dbhost', __esc('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+				raise_message('dupe_dbhost', __('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
 				$error = true;
 			}
 		}

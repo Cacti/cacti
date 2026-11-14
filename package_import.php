@@ -254,9 +254,9 @@ function form_save() {
 			unlink($xmlfile);
 		} else {
 			if ($data !== false) {
-				raise_message('import_success', __('The Package %s Imported Successfully', html_escape($package_name)), MESSAGE_LEVEL_INFO);
+				raise_message('import_success', __('The Package %s Imported Successfully', $package_name), MESSAGE_LEVEL_INFO);
 			} else {
-				raise_message('import_fail', __('The Package %s Import Failed', html_escape($package_name)), MESSAGE_LEVEL_ERROR);
+				raise_message('import_fail', __('The Package %s Import Failed', $package_name), MESSAGE_LEVEL_ERROR);
 			}
 
 			unlink($xmlfile);
