@@ -80,7 +80,7 @@ test('script_server emits U on every rejection branch', function () use ($script
 	/* Each rejection must respond to the poller with the standard
 	 * "U\n" no-data marker and continue the request loop, not silently
 	 * fall through into call_user_func_array(). */
-	$start    = strpos($scriptServerSource, 'Validate the include path unconditionally');
+	$start    = strpos($scriptServerSource, 'Validate the include path before loading it');
 	$end      = strpos($scriptServerSource, 'call_user_func_array($function, $parameter_array)', $start);
 	$region   = substr($scriptServerSource, $start, $end - $start);
 
@@ -89,6 +89,36 @@ test('script_server emits U on every rejection branch', function () use ($script
 
 	expect($rejects)->toBeGreaterThanOrEqual(5, 'at least five rejection branches must emit U');
 	expect($continues)->toBeGreaterThanOrEqual(5, 'each rejection must continue the request loop');
+});
+
+test('script_server silences errors and marks the session on every request', function () use ($scriptServerSource) {
+	/* A request for an already-loaded function skips the include gate, so
+	 * error_reporting(0) and $called_by_script_server must be set outside it,
+	 * or a warning can reach STDOUT ahead of the reply and quit prints an
+	 * extra line. */
+	$gate  = strpos($scriptServerSource, 'Validate the include path before loading it');
+	$open  = strrpos(substr($scriptServerSource, 0, $gate), '{');
+	$depth = 0;
+
+	for ($close = $open; $close < strlen($scriptServerSource); $close++) {
+		if ($scriptServerSource[$close] == '{') {
+			$depth++;
+		} elseif ($scriptServerSource[$close] == '}' && --$depth == 0) {
+			break;
+		}
+	}
+
+	$inside = substr($scriptServerSource, $open, $close - $open);
+	$call   = strpos($scriptServerSource, '$result = script_server_call(', $close);
+	$after  = substr($scriptServerSource, $close, $call - $close);
+	$before = substr($scriptServerSource, 0, $open);
+
+	expect($gate)->not->toBeFalse();
+	expect($inside)->toContain('include_once($include_file)');
+	expect($inside)->not->toContain('error_reporting(0)');
+	expect($inside)->not->toContain('$called_by_script_server = true');
+	expect($after)->toContain('error_reporting(0);');
+	expect(substr($before, strrpos($before, 'while (1)')))->toContain('$called_by_script_server = true;');
 });
 
 /* --- Finding 2: cacti_input_string_is_safe behaviour --- */

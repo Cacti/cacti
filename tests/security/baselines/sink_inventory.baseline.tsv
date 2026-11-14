@@ -347,21 +347,21 @@ dynamic_include	./lib/api_aggregate.php:789		include_once($config['base_path'] .
 dynamic_include	./lib/api_automation.php:2585		include_once($config['base_path'] . '/lib/template.php');
 dynamic_include	./lib/api_automation.php:2586		include_once($config['base_path'] . '/lib/api_automation_tools.php');
 dynamic_include	./lib/api_automation.php:2587		include_once($config['base_path'] . '/lib/utility.php');
-dynamic_include	./lib/api_device.php:955		include_once($config['base_path'] . '/lib/utility.php');
-dynamic_include	./lib/api_device.php:956		include_once($config['base_path'] . '/lib/variables.php');
-dynamic_include	./lib/api_device.php:957		include_once($config['base_path'] . '/lib/data_query.php');
+dynamic_include	./lib/api_device.php:966		include_once($config['base_path'] . '/lib/utility.php');
+dynamic_include	./lib/api_device.php:967		include_once($config['base_path'] . '/lib/variables.php');
+dynamic_include	./lib/api_device.php:968		include_once($config['base_path'] . '/lib/data_query.php');
 dynamic_include	./lib/boost.php:1300			include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/boost.php:1550		include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/boost.php:2159		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/boost.php:2889		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/boost.php:3209			include_once($config['library_path'] . '/poller.php');
-dynamic_include	./lib/data_query.php:102		include_once($config['library_path'] . '/poller.php');
-dynamic_include	./lib/data_query.php:103		include_once($config['library_path'] . '/api_data_source.php');
-dynamic_include	./lib/data_query.php:104		include_once($config['library_path'] . '/utility.php');
-dynamic_include	./lib/data_query.php:2159		include_once($config['library_path'] . '/sort.php');
-dynamic_include	./lib/data_query.php:2609		include_once($config['library_path'] . '/variables.php');
-dynamic_include	./lib/data_query.php:663		include_once($config['library_path'] . '/xml.php');
-dynamic_include	./lib/data_query.php:919		include_once($config['library_path'] . '/snmp.php');
+dynamic_include	./lib/data_query.php:106		include_once($config['library_path'] . '/poller.php');
+dynamic_include	./lib/data_query.php:107		include_once($config['library_path'] . '/api_data_source.php');
+dynamic_include	./lib/data_query.php:108		include_once($config['library_path'] . '/utility.php');
+dynamic_include	./lib/data_query.php:2326		include_once($config['library_path'] . '/sort.php');
+dynamic_include	./lib/data_query.php:2776		include_once($config['library_path'] . '/variables.php');
+dynamic_include	./lib/data_query.php:668		include_once($config['library_path'] . '/xml.php');
+dynamic_include	./lib/data_query.php:926		include_once($config['library_path'] . '/snmp.php');
 dynamic_include	./lib/database.php:251			include($config['base_path'] . '/include/config.php');
 dynamic_include	./lib/dsstats.php:1030			include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/dsstats.php:987			include_once($config['base_path'] . '/lib/rrd.php');
@@ -399,7 +399,7 @@ dynamic_include	./lib/plugins.php:922				include_once($plugin_setup);
 dynamic_include	./lib/plugins.php:976				include_once($plugin_setup);
 dynamic_include	./lib/poller.php:492		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/poller.php:493		include_once($config['library_path'] . '/snmp.php');
-dynamic_include	./lib/poller.php:760		include_once($config['library_path'] . '/rrd.php');
+dynamic_include	./lib/poller.php:772		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/reports.php:1076		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/reports.php:1077		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/reports.php:1078		include_once($config['library_path'] . '/html_tree.php');
@@ -556,7 +556,7 @@ fs_write	./install/functions.php:1036						$fp = fopen($config_file, 'w');
 fs_write	./install/functions.php:1342			file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php:1343			file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php:489			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
-fs_write	./lib/api_device.php:2664							file_put_contents($new_xmlfile, $data);
+fs_write	./lib/api_device.php:2675							file_put_contents($new_xmlfile, $data);
 fs_write	./lib/boost.php:1432		$fileptr = fopen($temp_file, 'wb');
 fs_write	./lib/boost.php:1657								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/cache.php:122			if ($blob === false || @file_put_contents($tmp, $blob, LOCK_EX) === false) {
@@ -579,9 +579,9 @@ fs_write	./lib/functions.php:8265				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/import.php:536		$f   = fopen($filename, 'r');
 fs_write	./lib/import.php:755							$file = fopen($filename, 'wb');
 fs_write	./lib/installer.php:3334				$file = fopen($cacheFile, "r");
-fs_write	./lib/poller.php:1561									if (file_put_contents($tmpfile, $contents) !== false) {
-fs_write	./lib/poller.php:1573												file_put_contents($mypath, $contents);
-fs_write	./lib/poller.php:1602								file_put_contents($mypath, $contents);
+fs_write	./lib/poller.php:1573									if (file_put_contents($tmpfile, $contents) !== false) {
+fs_write	./lib/poller.php:1585												file_put_contents($mypath, $contents);
+fs_write	./lib/poller.php:1614								file_put_contents($mypath, $contents);
 fs_write	./lib/reports.php:1773			$f = fopen($fn, 'wb');
 fs_write	./lib/reports.php:1815			$f = fopen($fn, 'wb');
 fs_write	./lib/rrd.php:3316					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {

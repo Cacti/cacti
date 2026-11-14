@@ -46,3 +46,29 @@ python3 tests/performance/verify_mutations.py proves the guards by introducing
 uncached lookups, empty-array initialization and the fixed 50ms sleep in
 disposable source copies. It also runs with the weekly/release scale checks.
 The actual checkout is never changed. No production collection runs.
+
+Data-query discovery and reindexing
+
+Use a disposable MariaDB database named cacti_dq_test (or cacti_dq_test_<suffix>).
+The fixture creates production table definitions and truncates its test tables
+before each case. Set CACTI_DQ_DB_HOST, CACTI_DQ_DB_PORT, CACTI_DQ_DB_NAME,
+CACTI_DQ_DB_USER and CACTI_DQ_DB_PASSWORD for that database. Defaults are
+127.0.0.1:3306, cacti_dq_test, root, and an empty password. The integration
+suite requires CACTI_DQ_DB_PORT explicitly and permission to inspect InnoDB
+transactions for its concurrency assertions. Use the existing tests/vendor
+Pest dependencies and run these commands sequentially against one database:
+
+  tests/vendor/bin/pest --configuration tests/phpunit.xml tests/integration/DataQueryReindexTest.php tests/Unit/DataCollection/DataQuery/DataQueryIndexLookupTest.php
+  php tests/fixtures/Core/DataQueryProfile.php unchanged 20000 3
+  php tests/fixtures/Core/DataQueryProfile.php filtered 16000 3
+  php tests/fixtures/Core/DataQueryProfile.php unchanged 50000 3
+  php tests/fixtures/Core/DataQueryProfile.php filtered 50000 3
+
+CACTI_DQ_SOURCE can point at an unchanged 1.2.x checkout for comparison. Each
+profile reports runtime, database calls, peak PHP memory and a SHA-256 digest
+of ordered cache, source, input and poller rows, excluding timestamps. Compare
+digests as well as medians. Schema creation, seeding and final assertions are
+outside the timing window. The fixture uses real Cacti database helpers and
+MariaDB transactions; SNMP/script responses and downstream title, automation
+and collector handoffs are isolated boundaries. Results do not measure network
+latency, complete graph rebuilds, RRD writes or live remote collectors.
