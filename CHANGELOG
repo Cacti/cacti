@@ -248,6 +248,7 @@ Cacti CHANGELOG
 -issue#8480: Keep wrapped Cacti theme titles and controls inside their titlebars and improve text-link contrast on light rows
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
 -issue#8596: Keep device credentials out of Script Server and cmd.php log messages that describe a script's arguments
+-issue#8665: Preserve exact 64-bit counter baselines in storage and calculate deltas before converting rates to floating point
 -issue#8676: Store the first line of a script's output instead of U when the script ends its output with a newline
 -issue#8676: Keep device credentials out of the warnings logged when a script exits with an error
 -feature#8683: Extend the Card API chart-widget library (include/css/card-widgets.css) with gauge min/max ticks (.ccGaugeTick), a bullet historical-average marker (.ccBulletAvgMarker) and status-pill severity colours (.ccPill--up/--warn/--down/--none), so card bodies can draw these richer primitives from the shared .cc* contract
