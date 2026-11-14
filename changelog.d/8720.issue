@@ -1,0 +1,1 @@
+Keep a failed upgrade retryable by leaving the running release out of the version table until the installer, templates and schema check have finished

@@ -940,6 +940,14 @@ function find_best_path(string $binary_name) : string {
 }
 
 function install_setup_get_templates() : array {
+	// Reading every package costs about 50 ms and the installer asks several
+	// times per request, so read them once. The set is fixed for a request.
+	static $info = null;
+
+	if ($info !== null) {
+		return $info;
+	}
+
 	if (CACTI_WEB) {
 		ini_set('zlib.output_compression', '0');
 	}
@@ -1732,6 +1740,12 @@ function install_full_sync() : array {
 
 	log_install_always('sync', 'Found ' . cacti_sizeof($pollers) . ' poller(s) to sync');
 
+	// Decide once whether this run replicates. The flag stops a rerun of the
+	// installer from replicating again, so it is set after the loop: setting it
+	// inside would make every poller after the first read it as already done.
+	$replicate = read_config_option('disable_full_sync_on_upgrade') == '' && read_config_option('install_replicate', true) == '';
+	$attempted = false;
+
 	if (is_array($pollers) && cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
 			log_install_debug('sync', 'Poller ' . $poller['id'] . ' has a status of ' . $poller['status'] . ' with gap ' . $poller['gap']);
@@ -1745,10 +1759,19 @@ function install_full_sync() : array {
 			} elseif ($poller['gap'] < $gap_time) {
 				log_install_medium('sync', 'Replicating to Poller ' . $poller['id']);
 
-				if (read_config_option('disable_full_sync_on_upgrade') == '' && read_config_option('install_replicate', true) == '') {
-					set_config_option('install_replicate', 1);
+				if ($replicate) {
+					$attempted = true;
 
-					if (replicate_out($poller['id'])) {
+					try {
+						$replicated = replicate_out($poller['id']);
+					} catch (Throwable $e) {
+						// One collector must not fail the whole install, which has
+						// already recorded its version by the time collectors are synced.
+						log_install_always('sync', 'Replication to Poller ' . $poller['id'] . ' raised: ' . $e->getMessage());
+						$replicated = false;
+					}
+
+					if ($replicated) {
 						log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
 						$success[] = $poller['id'];
 
@@ -1767,6 +1790,10 @@ function install_full_sync() : array {
 				$timeout[] = $poller['id'];
 			}
 		}
+	}
+
+	if ($attempted) {
+		set_config_option('install_replicate', 1);
 	}
 
 	log_install_debug('sync', 'Success: ' . cacti_sizeof($success) . ', Failed: ' . cacti_sizeof($failed) . ', Skipped: ' . cacti_sizeof($skipped) . ', Total: ' . cacti_sizeof($pollers));

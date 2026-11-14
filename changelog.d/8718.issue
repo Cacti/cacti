@@ -1,0 +1,1 @@
+Create the Boost run-time table before the installer requires every cacti.sql table, so an upgrade of a database without it no longer fails

@@ -681,11 +681,11 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 function config_value_exists(string $config_name) : bool {
 	static $exists_config_value = [];
 
-	// We use isset instead of array_key_exists so that
-	// if we never had a value, we can see if we got on
-	// but once we know we have one, assume we always
-	// will
-	if (!isset($exists_config_value[$config_name])) {
+	// Only a value that was found is remembered: isset() is true for a
+	// cached false, which would hide a setting stored later in the same
+	// process (the installer stores the paths it is given, then reads them
+	// back). Once we know we have one, assume we always will
+	if (empty($exists_config_value[$config_name])) {
 		$value = db_fetch_cell_prepared('SELECT COUNT(*) FROM settings WHERE name = ?', [$config_name]);
 
 		$exists_config_value[$config_name] = ($value > 0);
