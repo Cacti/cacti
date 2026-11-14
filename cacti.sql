@@ -2356,6 +2356,7 @@ CREATE TABLE `processes` (
   `taskname` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `taskid` int(10) unsigned NOT NULL DEFAULT 0,
   `timeout` int(10) unsigned DEFAULT 300,
+  `connection_id` bigint(20) unsigned NOT NULL DEFAULT 0,
   `started` timestamp NOT NULL DEFAULT current_timestamp(),
   `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`pid`,`tasktype`,`taskname`,`taskid`),
