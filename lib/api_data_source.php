@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/cisco_health_graphs.php';
+
 /**
  * Update hash stored in settings table to inform remote pollers to update their caches
  *
@@ -531,6 +533,15 @@ function api_data_source_get_interface_speed(array $data_local) : int {
  * @return void
  */
 function api_data_source_change_host(array $data_sources, int $device_id) : void {
+	// Validate the whole selection before changing any host or poller bindings.
+	foreach ($data_sources as $data_source) {
+		if (!cisco_health_source_host_change_allowed((int)$data_source, (int)$device_id)) {
+			raise_message('combined_health_move', __('Combined Cisco health graphs cannot be moved to another device. Create the health graphs on the target device instead.'), MESSAGE_LEVEL_ERROR);
+
+			return;
+		}
+	}
+
 	if (cacti_sizeof($data_sources)) {
 		$new_poller_id = db_fetch_cell_prepared('SELECT poller_id
 			FROM host

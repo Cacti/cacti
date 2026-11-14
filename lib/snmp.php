@@ -408,7 +408,7 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mixed $version, mixed $auth_user = '', string $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = SNMP_POLLER,
-	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS, ?callable $native_get = null) : string {
+	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS, ?callable $native_get = null, bool $numeric_value = false) : string {
 	global $snmp_error;
 
 	$max_oids   = 1;
@@ -431,6 +431,25 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 			snmp_set_enum_print(true);
 		}
 
+		// Numeric callers need wire values, not MIB DISPLAY-HINT or UNITS formatting.
+		// Preserve explicit unsupported-OID warnings; false alone also means timeout.
+		$retrieval = null;
+
+		if ($numeric_value) {
+			$retrieval = snmp_get_valueretrieval();
+			snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+			$previous_handler = null;
+			$previous_handler = set_error_handler(static function ($severity, $message, $file, $line) use (&$snmp_error, &$previous_handler) {
+				if (preg_match('/^snmp(?:2_|3_)?get\(/', $message)) {
+					$snmp_error = $message;
+
+					return true;
+				}
+
+				return $previous_handler ? $previous_handler($severity, $message, $file, $line) : false;
+			});
+		}
+
 		try {
 			if ($native_get !== null) {
 				$snmp_value = $native_get();
@@ -451,6 +470,15 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 		} catch (Throwable $ex) {
 			$snmp_error = $ex->getMessage();
 			$snmp_value = false;
+		} finally {
+			if ($numeric_value) {
+				restore_error_handler();
+				snmp_set_valueretrieval($retrieval);
+			}
+		}
+
+		if ($snmp_value === false && $numeric_value && preg_match('/No Such (?:Object|Instance)|noSuchName/i', $snmp_error)) {
+			$snmp_value = 'No Such Object';
 		}
 
 		if ($snmp_value === false) {
@@ -479,7 +507,7 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 		}
 
 		$command = cacti_escapeshellcmd(read_config_option('path_snmpget')) .
-			' -O fntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
+			($numeric_value ? " -m '' -OU " : '') . ' -O fntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
