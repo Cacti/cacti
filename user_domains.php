@@ -130,7 +130,7 @@ function form_save() {
 				$save['search_base']       = form_input_validate(get_nfilter_request_var('search_base'),       'search_base',     '', true, 3);
 				$save['search_filter']     = form_input_validate(get_nfilter_request_var('search_filter'),     'search_filter',   '', true, 3);
 				$save['specific_dn']         = form_input_validate(get_nfilter_request_var('specific_dn'),         'specific_dn',       '', true, 3);
-				$save['specific_password']   = form_input_validate(get_nfilter_request_var('specific_password'),   'specific_password', '', true, 3);
+				$save['specific_password']   = form_secret_value('specific_password', (string) db_fetch_cell_prepared('SELECT specific_password FROM user_domains_ldap WHERE domain_id = ?', array($domain_id)));
                                 $save['cn_full_name']        = get_nfilter_request_var('cn_full_name');
                                 $save['cn_email']            = get_nfilter_request_var('cn_email');
 
@@ -532,6 +532,7 @@ function domain_edit() {
 			'description' => __('Password for Specific Searching binding to the LDAP directory.'),
 			'method' => 'textbox_password',
 			'value' => '|arg1:specific_password|',
+			'secret' => true,
 			'max_length' => '255'
 			),
 		'cn_header' => array(
