@@ -458,6 +458,7 @@ function provider_edit() : void {
 			'description'   => __('Password for Specific Searching binding to the LDAP directory.'),
 			'method'        => 'textbox_password',
 			'value'         => '|arg1:specific_password|',
+			'secret'        => true,
 			'max_length'    => '255'
 		],
 		'ldap_claims_header' => [
@@ -647,6 +648,7 @@ function provider_edit() : void {
 			'description'   => __('The OAuth2/OpenID Connect Client Secret issued by the Identity Provider.'),
 			'method'        => 'textbox_password',
 			'value'         => '|arg1:client_secret|',
+			'secret'        => true,
 			'max_length'    => '255'
 		],
 		'scopes' => [

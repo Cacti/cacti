@@ -170,6 +170,11 @@ function display_settings() : void {
 		foreach ($settings[$current_tab] as $field_name => $field_array) {
 			$form_array += [$field_name => $field_array];
 
+			// Every settings tab saves its password fields with form_secret_value()
+			if ($field_array['method'] == 'textbox_password') {
+				$form_array[$field_name]['secret'] = true;
+			}
+
 			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 					if (config_value_exists($sub_field_name)) {
@@ -1406,12 +1411,17 @@ function save_settings() : void {
 				break;
 			}
 
-			if (!ierv($field_name)) {
-				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(gnrv($field_name)) . ')';
+			$stored = (string) db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', [$field_name]);
+
+			$value = form_secret_value($field_name, $stored);
+
+			// Resend a kept value too, as before, so remote collectors stay in sync
+			if ($value !== '' || $stored !== '') {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr($value) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					[$field_name, gnrv($field_name)]);
+					[$field_name, $value]);
 			}
 		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
