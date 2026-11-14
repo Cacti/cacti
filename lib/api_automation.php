@@ -1194,7 +1194,7 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 	} else {
 		$sql_field = '"SQL Injection" AS source ';
 		cacti_log("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}.", false, 'AUTOM8');
-		raise_message('sql_injection', __esc("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}."), MESSAGE_LEVEL_ERROR);
+		raise_message('sql_injection', __("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}."), MESSAGE_LEVEL_ERROR);
 	}
 
 	// now we build up a new query for counting the rows
@@ -3398,7 +3398,7 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				$target = db_fetch_cell($sql, '', false);
 			} else {
 				cacti_log("Attempted SQL Injection found in Tree Automation for the field variable {$tree_item['field']}.", false, 'AUTOM8');
-				raise_message('sql_injection', __esc("Attempted SQL Injection found in Tree Automation for the field variable {$tree_item['field']}."), MESSAGE_LEVEL_ERROR);
+				raise_message('sql_injection', __("Attempted SQL Injection found in Tree Automation for the field variable {$tree_item['field']}."), MESSAGE_LEVEL_ERROR);
 
 				$sql    = '';
 				$target = '';
@@ -5343,7 +5343,7 @@ function automation_tree_rule_export(mixed $tree_rule_ids) : array {
 				[$rule_id]);
 
 			if (!cacti_sizeof($tree_rule)) {
-				raise_message('rule_missing', __esc('Can not find the Tree Rule with the ID %s', $rule_id), MESSAGE_LEVEL_ERROR);
+				raise_message('rule_missing', __('Can not find the Tree Rule with the ID %s', $rule_id), MESSAGE_LEVEL_ERROR);
 
 				return [];
 			}
@@ -6562,7 +6562,7 @@ function api_networks_save(array $post) : mixed {
 					$total_ips += $ips;
 				} else {
 					$continue = false;
-					raise_message('automation_message', __esc('ERROR: Network \'%s\' is Invalid.', $net), MESSAGE_LEVEL_ERROR);
+					raise_message('automation_message', __('ERROR: Network \'%s\' is Invalid.', $net), MESSAGE_LEVEL_ERROR);
 
 					break;
 				}

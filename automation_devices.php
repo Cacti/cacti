@@ -121,9 +121,9 @@ function form_actions() : void {
 					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['ip']);
 
 					if ($host_id) {
-						raise_message('automation_msg_' . $i, __esc('Device %s Added to Cacti', $description), MESSAGE_LEVEL_INFO);
+						raise_message('automation_msg_' . $i, __('Device %s Added to Cacti', $description), MESSAGE_LEVEL_INFO);
 					} else {
-						raise_message('automation_msg_' . $i, __esc('Device %s Not Added to Cacti', $description), MESSAGE_LEVEL_ERROR);
+						raise_message('automation_msg_' . $i, __('Device %s Not Added to Cacti', $description), MESSAGE_LEVEL_ERROR);
 					}
 
 					$i++;
