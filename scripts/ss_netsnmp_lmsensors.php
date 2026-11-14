@@ -156,7 +156,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		'SNMP',
 		$host['snmp_engine_id']
 	);
@@ -174,7 +174,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		$host['max_oids'],
 		'SNMP',
 		$host['snmp_engine_id']

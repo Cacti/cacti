@@ -128,6 +128,9 @@ function cacti_snmp_get(...$arguments) {
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, ...$arguments) {
+	/* $arguments[9] is the retries parameter of the real cacti_snmp_walk() */
+	$GLOBALS['walk_retries'][] = $arguments[9] ?? null;
+
 	if ($oid === '.1.3.6.1.4.1.2021.13.15.1.1.2') {
 		return [
 			['oid' => '.1.3.6.1.4.1.2021.13.15.1.1.2.1', 'value' => 'sda'],
@@ -140,11 +143,19 @@ function cacti_snmp_walk($hostname, $community, $oid, ...$arguments) {
 		return $GLOBALS['cpu_loads'];
 	}
 
-	/* disk counters: index 3 reports a value that is not an unsigned integer */
-	return [
+	/* disk counters: index 2, a partition the disk scripts skip, reports a
+	 * value that is not an unsigned integer */
+	$counters = [
 		['oid' => $oid . '.1', 'value' => (string) (5000 + 10 * $GLOBALS['poll'])],
-		['oid' => $oid . '.3', 'value' => $GLOBALS['poll'] > 1 ? '12abc' : '40'],
+		['oid' => $oid . '.2', 'value' => $GLOBALS['poll'] > 1 ? '12abc' : '40'],
 	];
+
+	/* a whole disk that appears between polls, walked before index 1 */
+	if (!empty($GLOBALS['new_disk'])) {
+		array_unshift($counters, ['oid' => $oid . '.3', 'value' => '700']);
+	}
+
+	return $counters;
 }
 
 class Net_Ping {
@@ -310,7 +321,7 @@ $host_row     = [];
 check('ss_count_oids refuses an option-like OID', ss_count_oids(1, '-Cc') === '0' && $db_row_reads === 0);
 $host_row = ['hostname' => 'h', 'snmp_community' => 'c', 'snmp_version' => 2, 'snmp_username' => '', 'snmp_password' => '',
 	'snmp_auth_protocol' => '', 'snmp_priv_passphrase' => '', 'snmp_priv_protocol' => '', 'snmp_context' => '',
-	'snmp_port' => 161, 'snmp_timeout' => 500, 'max_oids' => 10, 'snmp_engine_id' => '', 'ping_retries' => 1];
+	'snmp_port' => 161, 'snmp_timeout' => 500, 'max_oids' => 10, 'snmp_engine_id' => '', 'ping_retries' => 1, 'snmp_retries' => 2];
 check('ss_count_oids walks a valid OID', ss_count_oids(1, '.1.3.6.1.2.1.2.2.1.1') === 2);
 
 // Status read over Cacti's own connection.
@@ -330,7 +341,7 @@ check('ss_sql without status', ss_sql() === 'U');
 $cpu_loads = [['value' => '10'], ['value' => 'n/a'], ['value' => '30']];
 check('ss_multicpu_avg skips a non-numeric load', ss_multicpu_avg(1) === "load:20\n");
 $cpu_loads = [['value' => 'n/a']];
-check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:0\n");
+check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:U\n");
 
 ob_start();
 ss_webseer('query', 'webseerName');
@@ -338,20 +349,27 @@ check('ss_webseer strips line breaks from names', ob_get_clean() === '1!linebrea
 
 // Disk counters kept in a private state directory between polls.
 $disk     = __NAMESPACE__ . '\\ss_net_snmp_disk_' . $mode;
-$zero     = ($mode === 'io' ? 'reads:0 writes:0' : 'bytesread:0 byteswritten:0');
 $unknown  = ($mode === 'io' ? 'reads:U writes:U' : 'bytesread:U byteswritten:U');
 $host_row = array_merge($host_row, ['id' => 7]);
 
-check('disk script refuses an unknown device', $disk('unknown.example') === $zero);
-check('disk script refuses a device id of zero', $disk('0.0') === $zero);
+check('disk script refuses an unknown device', $disk('unknown.example') === $unknown);
+check('disk script refuses a device id of zero', $disk('0.0') === $unknown);
 
 foreach (['cmd', 'realtime'] as $environ) {
 	$poller_id = $environ === 'realtime' ? 'preview-A' : 1;
 	$poll = 1;
-	check("first $environ poll has no previous state", $disk('known.example') === $zero);
+	check("first $environ poll has no previous state", $disk('known.example') === $unknown);
 	$poll = 2;
-	check("second $environ poll reports a delta", $disk(7) !== $zero);
+	check("second $environ poll reports a delta", $disk(7) !== $unknown);
 }
+$environ  = 'cmd';
+$poll     = 3;
+$new_disk = true;
+check('a disk without a previous sample leaves the total unknown', $disk(7) === $unknown);
+$walk_retries = [];
+$disk(7);
+check('disk script walks with the SNMP retries, not the ping retries', $walk_retries !== [] && array_unique($walk_retries) === [2]);
+$new_disk = false;
 $environ   = 'realtime';
 $poller_id = '../preview';
 check('unsafe real-time state identifier yields unknown data', $disk(7) === $unknown);

@@ -32,6 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_trees($host_id = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_trees', false)) {
+		return 'U';
+	}
+
 	$trees = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_mikrotik_trees
 		WHERE host_id = ?',

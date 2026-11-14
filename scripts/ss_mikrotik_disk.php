@@ -32,6 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_disk($host_id = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_system', false)) {
+		return 'used:U size:U';
+	}
+
 	$disk = db_fetch_row_prepared('SELECT diskSize, diskUsed*diskSize/100 AS diskUsed
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',

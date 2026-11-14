@@ -32,6 +32,17 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_queues($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_queues', false)) {
+		if ($cmd == 'num_indexes') {
+			print '0';
+		} elseif ($cmd == 'get') {
+			return 'U';
+		}
+
+		return;
+	}
+
 	if ($cmd == 'index') {
 		$return_arr = ss_mikrotik_queues_getnames($host_id, $arg1);
 
@@ -146,6 +157,8 @@ function ss_mikrotik_queues_getinfo($host_id, $info_requested) {
 	case 'qsDstMask':
 		$column = 'dstMask';
 		break;
+	default:
+		return $return_arr;
 	}
 
 	$arr = db_fetch_assoc_prepared("SELECT

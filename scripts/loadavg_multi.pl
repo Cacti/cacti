@@ -3,7 +3,8 @@
 delete @ENV{qw(PATH)};
 $ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 
-#get load avg for 1;5;10 min
+#get load avg for 1;5;15 min (the 15 minute value keeps the 10min output name
+#so existing data sources stay mapped)
 open(PROCESS, "env LC_ALL=C uptime |");
 $avg = <PROCESS>;
 close(PROCESS);
