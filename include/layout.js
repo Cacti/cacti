@@ -834,6 +834,8 @@ function setupSelectmenuScrollClose() {
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
+	labelVisibleGraphActions();
+
 	// Support callback nonces
 	if (typeof cactiNonce !== 'undefined') {
 		$.ajaxSetup({
@@ -4318,20 +4320,24 @@ function redrawGraph(graph_id) {
 	);
 }
 
+function labelVisibleGraphActions() {
+	// Visible icons keep their tooltips and also expose names to assistive technology.
+	$('.graphDrillDownAlways .iconWrapper a').each(function () {
+		var link = $(this);
+		var label = link.attr('aria-label') || link.attr('title') || link.find('i[title], img[title]').first().attr('title');
+		if (label) {
+			link.attr('aria-label', label);
+		}
+	});
+}
+
 function initGraphDrilldown() {
 	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
 	// A hamburger glyph over the graph's top-right toggles the action icons; they
 	// close on a second click, on moving off the graph image, or on an outside click.
 	$(document).off('.graphdd');
 
-	// Visible icons keep their tooltips and also expose names to assistive technology.
-	$('.graphDrillDownAlways .iconLink').each(function () {
-		var link = $(this);
-		var label = link.attr('aria-label') || link.attr('title') || link.find('i[title]').first().attr('title');
-		if (label) {
-			link.attr('aria-label', label);
-		}
-	});
+	labelVisibleGraphActions();
 
 	$(document).on('keydown.graphdd', function (event) {
 		if (event.keyCode == 27 && typeof spikeKillClose == 'function' && typeof spikeKillAnchor != 'undefined' && spikeKillAnchor) {
