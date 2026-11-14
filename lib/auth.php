@@ -819,44 +819,28 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 			return true;
 		}
 
-		/* check for group perms */
-		$groups = db_fetch_assoc_prepared("SELECT uag.policy_trees
+		/**
+		 * Each enabled group decides by its own tree policy and its own tree
+		 * exceptions; item_id is shared by every permission type, so only type 2
+		 * rows are tree exceptions.
+		 */
+		$groups = db_fetch_assoc_prepared("SELECT uag.id, uag.policy_trees, COUNT(uagp.item_id) AS exceptions
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on'
-			AND uagm.user_id = ?",
-			array($user_id));
-
-		if (!cacti_sizeof($groups)) {
-			$_SESSION['sess_tree_perms'][$tree_id] = false;
-
-			return false;
-		}
-
-		foreach ($groups as $g) {
-			if (auth_check_perms($trees, $g['policy_trees'])) {
-				$_SESSION['sess_tree_perms'][$tree_id] = true;
-
-				return true;
-			}
-		}
-
-		/* check for group trees */
-		$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
-			FROM user_auth_group AS uag
-			INNER JOIN user_auth_group_members AS uagm
-			ON uag.id = uagm.group_id
-			INNER JOIN user_auth_group_perms as uagp
+			LEFT JOIN user_auth_group_perms AS uagp
 			ON uagp.group_id = uag.id
+			AND uagp.type = 2
+			AND uagp.item_id = ?
 			WHERE uag.enabled = 'on'
 			AND uagm.user_id = ?
-			AND uagp.item_id = ?",
-			array($user_id, $tree_id));
+			GROUP BY uag.id, uag.policy_trees",
+			array($tree_id, $user_id));
 
 		foreach ($groups as $g) {
-			if (auth_check_perms($gtrees, $g['policy_trees'])) {
+			if (auth_check_perms($g['exceptions'] > 0 ? array($g) : array(), $g['policy_trees'])) {
 				$_SESSION['sess_tree_perms'][$tree_id] = true;
+
 				return true;
 			}
 		}
@@ -965,10 +949,18 @@ function is_view_allowed($view = 'show_tree') {
  *
  * @param int $tree_id The Cacti Tree id.
  * @param int $parent The Cacti Tree branch id.
+ * @param array $visited Branches already checked by this walk, so a stored parent cycle ends.
  *
  * @return bool True if empty, else false.
  */
-function is_tree_branch_empty($tree_id, $parent = 0) {
+function is_tree_branch_empty($tree_id, $parent = 0, &$visited = array()) {
+	// a stored parent cycle would otherwise recurse forever
+	if (isset($visited[$parent])) {
+		return true;
+	}
+
+	$visited[$parent] = true;
+
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id
 			FROM graph_tree_items
@@ -1039,7 +1031,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 
 	if (cacti_sizeof($branches)) {
 		foreach($branches as $b) {
-			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
+			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'], $visited)) {
 				return false;
 			}
 		}
@@ -1295,8 +1287,8 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 	);
 
 	if ($tree_id > 0) {
-		if (cacti_sizeof($trees)) {
-			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
+		if (!isset($trees[$tree_id])) {
+			return array();
 		}
 
 		$hierarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, gti.site_id,
@@ -1717,7 +1709,7 @@ function get_simple_device_perms($user) {
 	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_perms
 		WHERE user_id = ?
-		AND type = 2',
+		AND type = 3',
 		array($user));
 
 	if ($policy_hosts == 1 && $perm_count == 0) {
@@ -1729,7 +1721,7 @@ function get_simple_device_perms($user) {
 			ON uag.id = uagp.group_id
 			INNER JOIN user_auth_group_members AS uagm
 			ON uagm.group_id = uag.id
-			WHERE uagp.type = 2
+			WHERE uagp.type = 3
 			AND uagm.user_id = ?
 			GROUP BY uag.id',
 			array($user));

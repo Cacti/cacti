@@ -242,6 +242,7 @@ Cacti CHANGELOG
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
+-issue#8670: Apply group tree permissions by type and per group, keep tree search and tree content within viewable trees, and reject tree moves that would create a cycle or cross trees
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
