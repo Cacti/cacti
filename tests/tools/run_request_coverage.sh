@@ -42,6 +42,8 @@ run_php_probe tests/fixtures/Core/GraphDrilldownMarkup.php '^(lib/html\.php|test
 run_php_probe tests/fixtures/Core/SpikekillMutationMatrix.php '^(lib/spikekill\.php|tests/fixtures/Core/SpikekillMutationMatrix\.php)'
 run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tests/fixtures/Core/SpikekillRequestGate\.php)'
 
+run_php_probe tests/fixtures/Core/Boost/FailedDataSourceIsolation.php '^(poller_boost\.php|tests/fixtures/Core/Boost/FailedDataSourceIsolation\.php)'
+
 run_php_probe tests/fixtures/Core/Rrd/FallbackSourceIdentity.php '^(lib/rrd\.php|tests/fixtures/Core/Rrd/FallbackSourceIdentity\.php)'
 
 run_php_probe tests/fixtures/SnmpAgentGlobalSettingsCoverage.php '^(lib/snmpagent\.php|tests/fixtures/SnmpAgentGlobalSettingsCoverage\.php)'
@@ -49,6 +51,8 @@ run_php_probe tests/fixtures/SnmpAgentGlobalSettingsCoverage.php '^(lib/snmpagen
 run_php_probe tests/fixtures/CmdBoostFlushRedirectCoverage.php '^(cmd\.php|tests/fixtures/CmdBoostFlushRedirectCoverage\.php)'
 
 run_php_probe tests/fixtures/ScriptServerLogMaskingCoverage.php '^(cmd\.php|script_server\.php|lib/poller\.php|tests/fixtures/ScriptServerLogMaskingCoverage\.php)'
+
+run_php_probe tests/fixtures/BoostBulkDrainCoverage.php '^(poller_boost\.php|lib/boost\.php|tests/fixtures/(Boost(BulkDrain(Coverage|FailureProbe)|OnDemandFailureProbe|SourceExistenceProbe)|ProbeLoader)\.php)'
 
 run_php_probe tests/fixtures/UserAdministrationAuditCoverage.php '^(user_admin\.php|lib/functions\.php|tests/fixtures/UserAdministrationAudit)'
 

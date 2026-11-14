@@ -340,7 +340,13 @@ if ($child == false) {
 				// the drop on the same completeness check the drain loop above uses,
 				// not on "some shard made progress" -- otherwise a crashed child's
 				// entire unprocessed shard of staged RRD data is destroyed with it.
-				if (boost_completed_children($run_id) >= $expected_children) {
+				if (boost_completed_children($run_id) >= $expected_children &&
+					!boost_carry_forward_failed_data_sources($boost_run_arch_tables)) {
+					cacti_log('WARNING: Boost could not carry failed data sources forward; leaving archive ' .
+						'tables in place for the next run to pick up.',
+						true,
+						'BOOST');
+				} elseif (boost_completed_children($run_id) >= $expected_children) {
 					// Drop only the tables this run owned. A table created by a later
 					// rotation, or left by an earlier crashed run, may still hold rows
 					// that have not been processed; matching on the LIKE pattern would
@@ -1092,6 +1098,10 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 	// nothing to flush means nothing failed; the reads below run either way
 	$updates_ok = true;
 
+	// data sources whose RRD update was rejected; deferred to the next run
+	// instead of failing the whole shard
+	$failed_ids = [];
+
 	if (cacti_sizeof($results)) {
 		// create an array keyed off of each .rrd file
 		$local_data_id  = -1;
@@ -1115,10 +1125,20 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		$nt_rrd_field_names = [];
 		$tv_tmpl            = [];
 
+		// The data source whose mid-stream flush was rejected. Its remaining rows
+		// are not written: a later timestamp would advance the RRD past the
+		// rejected samples, and --skip-past-updates would then drop them when
+		// the retained shard is retried.
+		$failed_local_data_id = -1;
+
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
 		// go through each poller_output_boost entries and process
 		foreach ($results as $item) {
+			if ($item['local_data_id'] == $failed_local_data_id) {
+				continue;
+			}
+
 			if ($local_data_id == $item['local_data_id'] &&
 				cacti_sizeof($unused_data_source_names) &&
 				isset($unused_data_source_names[$item['rrd_name']])) {
@@ -1189,7 +1209,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 					// new process output function
 					if (!boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe)) {
-						$updates_ok = false;
+						$failed_ids[$local_data_id] = (int) $local_data_id;
 					}
 
 					$buflen         = 0;
@@ -1261,13 +1281,19 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 				if ($buflen > $upd_string_len) {
 					// new process output function
-					if (!boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe)) {
-						$updates_ok = false;
-					}
+					$flushed = boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe);
 
 					$buflen         = 0;
 					$vals_in_buffer = 0;
 					$outarray       = [];
+
+					if (!$flushed) {
+						$failed_ids[$local_data_id] = (int) $local_data_id;
+						$failed_local_data_id       = $local_data_id;
+						$tv_tmpl                    = [];
+
+						continue;
+					}
 				}
 
 				$time    = $item['timestamp'];
@@ -1476,7 +1502,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			$outarray[] = $tv_tmpl;
 
 			if (!boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe)) {
-				$updates_ok = false;
+				$failed_ids[$local_data_id] = (int) $local_data_id;
 			}
 		}
 
@@ -1492,6 +1518,10 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 	// remove the entries from the table
 	boost_timer('delete', BOOST_TIMER_START);
+
+	if ($updates_ok && $results !== false && cacti_sizeof($failed_ids)) {
+		$updates_ok = boost_defer_failed_data_sources($failed_ids, $child);
+	}
 
 	if ($updates_ok && $results !== false) {
 		db_execute_prepared('DELETE FROM poller_output_boost_local_data_ids
@@ -1513,6 +1543,112 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 	error_reporting($previous_error_reporting);
 
 	return $updates_ok && $results !== false ? cacti_sizeof($results) : -1;
+}
+
+/**
+ * boost_defer_failed_data_sources - parks the data sources of a shard whose RRD
+ * update was rejected so the rest of the shard can be acknowledged
+ *
+ * The data sources are moved to process handler 0, which no child owns, so the
+ * child's remaining passes skip them and the parent can find them once every
+ * child has finished. See boost_carry_forward_failed_data_sources().
+ *
+ * @param array<int, int> $local_data_ids The data sources whose update failed
+ * @param int             $child          The boost child process that owns them
+ *
+ * @return bool True when every data source was parked
+ */
+function boost_defer_failed_data_sources(array $local_data_ids, int $child) : bool {
+	// chunked: long IN() lists have crashed some MariaDB/MySQL releases
+	foreach (array_chunk(array_map('intval', array_values($local_data_ids)), 500) as $chunk) {
+		$parked = db_execute_prepared('UPDATE poller_output_boost_local_data_ids
+			SET process_handler = 0
+			WHERE process_handler = ?
+			AND local_data_id IN (' . implode(',', $chunk) . ')',
+			[$child]);
+
+		if (!$parked) {
+			return false;
+		}
+	}
+
+	$message = sprintf('WARNING: Boost deferred %d data source(s) in shard %d to the next run because their RRD update failed.', cacti_sizeof($local_data_ids), $child);
+
+	cacti_log($message, true, 'BOOST');
+
+	return true;
+}
+
+/**
+ * boost_carry_forward_failed_data_sources - copies the samples of the data
+ * sources parked by boost_defer_failed_data_sources() from this run's archive
+ * tables into poller_output_boost, so the archive tables can be dropped
+ *
+ * Retaining every archive table for one failing data source made each later
+ * run re-read all of them and kept them growing without bound. Only the failed
+ * data sources' samples are kept now, and samples older than $max_age are
+ * discarded so a data source that never succeeds cannot grow the queue forever.
+ *
+ * @param array<int, string> $tables  The archive tables this run owns
+ * @param int                $max_age Oldest sample age in seconds to keep
+ *
+ * @return bool True when the archive tables may be dropped
+ */
+function boost_carry_forward_failed_data_sources(array $tables, int $max_age = 86400) : bool {
+	$failed = db_fetch_cell('SELECT COUNT(*)
+		FROM poller_output_boost_local_data_ids
+		WHERE process_handler = 0');
+
+	if ($failed === false) {
+		return false;
+	}
+
+	if ((int) $failed === 0) {
+		return true;
+	}
+
+	$cutoff    = time() - $max_age;
+	$discarded = 0;
+
+	foreach ($tables as $table) {
+		if (!boost_is_valid_archive_table($table)) {
+			continue;
+		}
+
+		$expired = db_fetch_cell_prepared("SELECT COUNT(*)
+			FROM `$table` AS at
+			INNER JOIN poller_output_boost_local_data_ids AS bpt
+			ON at.local_data_id = bpt.local_data_id
+			AND bpt.process_handler = 0
+			WHERE UNIX_TIMESTAMP(at.time) < ?",
+			[$cutoff]);
+
+		$copied = db_execute_prepared("INSERT IGNORE INTO poller_output_boost
+			(local_data_id, rrd_name, time, output)
+			SELECT at.local_data_id, at.rrd_name, at.time, at.output
+			FROM `$table` AS at
+			INNER JOIN poller_output_boost_local_data_ids AS bpt
+			ON at.local_data_id = bpt.local_data_id
+			AND bpt.process_handler = 0
+			WHERE UNIX_TIMESTAMP(at.time) >= ?",
+			[$cutoff]);
+
+		if ($expired === false || !$copied) {
+			return false;
+		}
+
+		$discarded += (int) $expired;
+	}
+
+	cacti_log(sprintf('WARNING: Boost carried %d failed data source(s) forward to the next run.', (int) $failed), true, 'BOOST');
+
+	if ($discarded > 0) {
+		$message = sprintf('WARNING: Boost discarded %d sample(s) older than %d seconds from data sources whose RRD update keeps failing.', $discarded, $max_age);
+
+		cacti_log($message, true, 'BOOST');
+	}
+
+	return true;
 }
 
 function boost_process_output(int $local_data_id,
