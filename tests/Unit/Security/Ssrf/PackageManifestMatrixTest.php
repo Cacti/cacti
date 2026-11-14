@@ -11,4 +11,4 @@ test('package manifest transport preserves headers and errors and blocks unsafe 
 	fclose($pipes[2]);
 	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
 	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe($count);
-})->with([['PackageManifestMatrix.php', 32], ['PackageSaveMatrix.php', 12]]);
+})->with([['PackageManifestMatrix.php', 47], ['PackageSaveMatrix.php', 12]]);
