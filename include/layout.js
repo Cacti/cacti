@@ -4324,6 +4324,23 @@ function initGraphDrilldown() {
 	// close on a second click, on moving off the graph image, or on an outside click.
 	$(document).off('.graphdd');
 
+	// Visible icons keep their tooltips and also expose names to assistive technology.
+	$('.graphDrillDownAlways .iconLink').each(function () {
+		var link = $(this);
+		var label = link.attr('aria-label') || link.attr('title') || link.find('i[title]').first().attr('title');
+		if (label) {
+			link.attr('aria-label', label);
+		}
+	});
+
+	$(document).on('keydown.graphdd', '.graphDrillDownAlways', function (event) {
+		if (event.keyCode == 27 && typeof spikeKillClose == 'function') {
+			var anchor = $(this).find('.iconLink.spikekill');
+			spikeKillClose();
+			anchor.trigger('focus');
+		}
+	});
+
 	function closeGraphDrilldown(container) {
 		container.removeClass('open');
 		container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
