@@ -834,6 +834,8 @@ function setupSelectmenuScrollClose() {
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
+	labelVisibleGraphActions();
+
 	// Support callback nonces
 	if (typeof cactiNonce !== 'undefined') {
 		$.ajaxSetup({
@@ -4318,11 +4320,40 @@ function redrawGraph(graph_id) {
 	);
 }
 
+function labelVisibleGraphActions() {
+	// Visible icons keep their tooltips and also expose names to assistive technology.
+	$('.graphDrillDownAlways .iconWrapper a').each(function () {
+		var link = $(this);
+		var currentLabel = link.attr('aria-label');
+		var generatedLabel = link.attr('data-graph-action-label');
+		if (currentLabel && currentLabel !== generatedLabel) {
+			return;
+		}
+		var label = link.attr('title') || link.find('i[title], img[title]').first().attr('title');
+		if (label) {
+			link.attr('aria-label', label);
+			link.attr('data-graph-action-label', label);
+		}
+	});
+}
+
 function initGraphDrilldown() {
 	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
 	// A hamburger glyph over the graph's top-right toggles the action icons; they
 	// close on a second click, on moving off the graph image, or on an outside click.
 	$(document).off('.graphdd');
+
+	labelVisibleGraphActions();
+
+	$(document).on('keydown.graphdd', function (event) {
+		if (event.keyCode == 27 && typeof spikeKillClose == 'function' && typeof spikeKillAnchor != 'undefined' && spikeKillAnchor) {
+			var anchor = $(spikeKillAnchor);
+			if (anchor.closest('.graphDrillDownAlways').length) {
+				spikeKillClose();
+				anchor.trigger('focus');
+			}
+		}
+	});
 
 	function closeGraphDrilldown(container) {
 		container.removeClass('open');
@@ -4760,6 +4791,7 @@ function initializeGraphs(disable_cache) {
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
 				$(this).html("<i class='drillDown fa fa-chart-area realTime' title='"+realtimeClickOn+"'></i>");
+				labelVisibleGraphActions();
 
 				$('graph_id'+graph_id).tooltip().zoom({
 					inputfieldStartTime : 'date1',
@@ -4772,6 +4804,7 @@ function initializeGraphs(disable_cache) {
 			} else {
 				keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
 				$(this).html("<i style='text-align:center;padding:0px;' title='"+realtimeClickOff+"' class='drillDown fa fa-circle-notch fa-spin'/>");
+				labelVisibleGraphActions();
 				$(this).find('i').tooltip();
 				realtimeArray[graph_id] = true;
 				setFilters();
