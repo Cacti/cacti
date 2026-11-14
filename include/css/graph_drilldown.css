@@ -136,6 +136,7 @@
 /* Keep the direct actions in their own table cell, outside the graph image. */
 .graphDrillDownAlways {
 	position: static;
+	z-index: auto;
 	display: table-cell;
 	vertical-align: top;
 	width: 24px;

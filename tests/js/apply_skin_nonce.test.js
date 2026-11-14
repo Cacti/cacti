@@ -101,7 +101,7 @@ function loadApplySkin(nonce) {
 	}
 
 	vm.createContext(context);
-	vm.runInContext(extractFunction('applySkin'), context, { filename: 'include/layout.js' });
+	vm.runInContext(extractFunction('labelVisibleGraphActions') + '\n' + extractFunction('applySkin'), context, { filename: 'include/layout.js' });
 
 	return { ajaxSetups, calls, context };
 }

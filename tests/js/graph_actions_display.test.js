@@ -6,7 +6,7 @@ const path = require('node:path');
 const test = require('node:test');
 const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '../../include/layout.js'), 'utf8');
-const start = source.indexOf('function initGraphDrilldown()');
+const start = source.indexOf('function labelVisibleGraphActions()');
 const end = source.indexOf('\nfunction initializeGraphs(', start);
 assert.ok(start >= 0 && end > start);
 
@@ -25,7 +25,8 @@ function initialize(links, withSpikeKill = true, activeLayout = 'icons') {
 		trigger: event => { if (event === 'focus') focused++; },
 		find(selector) {
 			if (selector === '.iconLink.spikekill') return { trigger: event => { if (event === 'focus') focused++; } };
-			return { first: () => wrapper(item.glyph || {}) };
+			assert.equal(selector, 'i[title], img[title]');
+			return { first: () => wrapper(item.glyph || item.image || {}) };
 		}
 	});
 	const events = {
@@ -37,11 +38,11 @@ function initialize(links, withSpikeKill = true, activeLayout = 'icons') {
 		}
 	};
 	const $ = item => item === document ? events : typeof item === 'string'
-		? { each: fn => links.forEach(link => fn.call(link)) } : wrapper(item);
+		? { each: fn => { assert.equal(item, '.graphDrillDownAlways .iconWrapper a'); links.forEach(link => fn.call(link)); } } : wrapper(item);
 	const context = { $, document, setTimeout, spikeKillAnchor: activeLayout ? { visibleIcons: activeLayout === 'icons' } : null };
 	if (withSpikeKill) context.spikeKillClose = () => { closed++; };
 	vm.runInNewContext(source.slice(start, end) + '\ninitGraphDrilldown();', context);
-	return { handlers, counts: () => ({ closed, focused }) };
+	return { relabel: () => vm.runInNewContext("labelVisibleGraphActions();", context), handlers, counts: () => ({ closed, focused }) };
 }
 
 test('visible graph actions gain accessible names while keeping their tooltips', () => {
@@ -73,3 +74,14 @@ for (const layout of [null, 'menu']) {
 		assert.deepEqual(state.counts(), { closed: 0, focused: 0 });
 	});
 }
+
+test('aggregate image actions and replacement icons receive names on refresh', () => {
+	const links = [{ image: { title: 'Display Graphs from this Aggregate' } }];
+	const state = initialize(links);
+	assert.equal(links[0]['aria-label'], 'Display Graphs from this Aggregate');
+	links.splice(0, 1, { image: { title: 'Replacement aggregate' } });
+	state.relabel();
+	assert.equal(links[0]['aria-label'], 'Replacement aggregate');
+	const skin = source.slice(source.indexOf('function applySkin()'));
+	assert.ok(skin.indexOf('labelVisibleGraphActions();') < skin.indexOf('.tooltip('));
+});
