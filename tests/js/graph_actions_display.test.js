@@ -10,7 +10,7 @@ const start = source.indexOf('function initGraphDrilldown()');
 const end = source.indexOf('\nfunction initializeGraphs(', start);
 assert.ok(start >= 0 && end > start);
 
-function initialize(links, withSpikeKill = true) {
+function initialize(links, withSpikeKill = true, activeLayout = 'icons') {
 	const handlers = new Map();
 	const document = {};
 	let closed = 0;
@@ -21,6 +21,8 @@ function initialize(links, withSpikeKill = true) {
 			item[name] = value;
 			return this;
 		},
+		closest: () => ({ length: item.visibleIcons ? 1 : 0 }),
+		trigger: event => { if (event === 'focus') focused++; },
 		find(selector) {
 			if (selector === '.iconLink.spikekill') return { trigger: event => { if (event === 'focus') focused++; } };
 			return { first: () => wrapper(item.glyph || {}) };
@@ -28,11 +30,15 @@ function initialize(links, withSpikeKill = true) {
 	});
 	const events = {
 		off: () => events,
-		on(event, selector, handler) { handlers.set(event + ':' + selector, handler); return events; }
+		on(event, selector, handler) {
+			if (typeof selector === 'function') handlers.set(event, selector);
+			else handlers.set(event + ':' + selector, handler);
+			return events;
+		}
 	};
 	const $ = item => item === document ? events : typeof item === 'string'
 		? { each: fn => links.forEach(link => fn.call(link)) } : wrapper(item);
-	const context = { $, document, setTimeout };
+	const context = { $, document, setTimeout, spikeKillAnchor: activeLayout ? { visibleIcons: activeLayout === 'icons' } : null };
 	if (withSpikeKill) context.spikeKillClose = () => { closed++; };
 	vm.runInNewContext(source.slice(start, end) + '\ninitGraphDrilldown();', context);
 	return { handlers, counts: () => ({ closed, focused }) };
@@ -48,7 +54,7 @@ test('visible graph actions gain accessible names while keeping their tooltips',
 
 test('Escape closes the visible-icons submenu and returns focus without running an action', () => {
 	const state = initialize([]);
-	const handler = state.handlers.get('keydown.graphdd:.graphDrillDownAlways');
+	const handler = state.handlers.get('keydown.graphdd');
 	handler.call({}, { keyCode: 9 });
 	assert.deepEqual(state.counts(), { closed: 0, focused: 0 });
 	handler.call({}, { keyCode: 27 });
@@ -57,5 +63,13 @@ test('Escape closes the visible-icons submenu and returns focus without running 
 
 test('visible-icons Escape is safe when SpikeKill is unavailable', () => {
 	const state = initialize([], false);
-	assert.doesNotThrow(() => state.handlers.get('keydown.graphdd:.graphDrillDownAlways').call({}, { keyCode: 27 }));
+	assert.doesNotThrow(() => state.handlers.get('keydown.graphdd').call({}, { keyCode: 27 }));
 });
+
+for (const layout of [null, 'menu']) {
+	test('Escape leaves inactive or collapsed-menu anchors alone: ' + layout, () => {
+		const state = initialize([], true, layout);
+		state.handlers.get('keydown.graphdd').call({}, { keyCode: 27 });
+		assert.deepEqual(state.counts(), { closed: 0, focused: 0 });
+	});
+}
