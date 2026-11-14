@@ -29,6 +29,34 @@ class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
 	const EXIT_DB_OLD = 2;
 
+	/* The cacti.sql tables that only Boost creates at run time; keep in step with cacti.sql */
+	private const BOOST_LOCAL_DATA_IDS_TABLE = "CREATE TABLE IF NOT EXISTS `poller_output_boost_local_data_ids` (
+		`run_id` char(32) NOT NULL default '',
+		`local_data_id` int(10) unsigned NOT NULL default '0',
+		`process_handler` int(10) unsigned NOT NULL default '0',
+		`range_handler` bigint(20) unsigned NOT NULL default '0',
+		`archive_rows` bigint(20) unsigned NOT NULL default '0',
+		PRIMARY KEY (`run_id`, `local_data_id`),
+		KEY `process_handler` (`run_id`, `process_handler`, `range_handler`, `local_data_id`))
+		ENGINE=InnoDB ROW_FORMAT=Dynamic";
+
+	private const BOOST_FAILURES_TABLE = "CREATE TABLE IF NOT EXISTS `poller_output_boost_failures` (
+		`local_data_id` int(10) unsigned NOT NULL,
+		`generation` char(32) NOT NULL default '',
+		`rrd_path` varchar(255) NOT NULL default '',
+		`rrd_template` text NOT NULL,
+		`update_values` mediumtext NOT NULL,
+		`latest_sample` bigint(20) unsigned NOT NULL default '0',
+		`sample_count` int(10) unsigned NOT NULL default '0',
+		`retry_count` smallint(5) unsigned NOT NULL default '0',
+		`first_failed` timestamp NOT NULL default CURRENT_TIMESTAMP,
+		`last_failed` timestamp NOT NULL default CURRENT_TIMESTAMP,
+		`next_retry` timestamp NOT NULL default CURRENT_TIMESTAMP,
+		`last_error` varchar(512) NOT NULL default '',
+		PRIMARY KEY (`local_data_id`),
+		KEY `next_retry` (`next_retry`))
+		ENGINE=InnoDB ROW_FORMAT=Dynamic";
+
 	/***********************************************************
 	 * The STEP_ constants are defined in the following files: *
 	 *                                                         *
@@ -172,7 +200,8 @@ class Installer implements JsonSerializable {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
-			$install_version = read_config_option('install_version', true);
+			/* NULL when the row is missing */
+			$install_version = (string) read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
 			if (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
@@ -3516,12 +3545,27 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * Create the cacti.sql tables that Boost otherwise creates only at run time,
+	 * so validateCoreSchema() passes in every install mode. A failed CREATE
+	 * leaves the table missing, which validateCoreSchema() then reports.
+	 *
+	 * @return void
+	 */
+	private function createRuntimeTables() {
+		db_execute(self::BOOST_LOCAL_DATA_IDS_TABLE);
+		db_execute(self::BOOST_FAILURES_TABLE);
+	}
+
+	/**
 	 * Handles the validatecoreschema. Used as part of Cacti's lib functionality.
+	 * Creates the Boost run-time tables first, as cacti.sql requires them in every install mode.
 	 *
 	 * @return string The resulting string.
 	 */
 	private function validateCoreSchema() {
 		global $config, $database_default;
+
+		$this->createRuntimeTables();
 
 		$schema_sql = file_get_contents($config['base_path'] . '/cacti.sql');
 

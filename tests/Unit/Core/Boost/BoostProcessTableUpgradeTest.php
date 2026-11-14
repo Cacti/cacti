@@ -50,3 +50,24 @@ test('Boost recovers the process-table columns without waiting for an upgrade st
 		->and($poller)->not->toContain('boost_ensure_process_table(true)')
 		->and($child)->toContain('boost_ensure_process_table(true)');
 });
+
+/** Column and key names from one CREATE TABLE statement. */
+function boost_upgrade_table_shape(string $sql, string $table) : array {
+	expect(preg_match('/CREATE TABLE (?:IF NOT EXISTS )?`' . $table . '` \((.*?)\)\s*ENGINE/s', $sql, $match))->toBe(1);
+	preg_match_all('/^\s*(?:`(\w+)`\s+(\w+)|(PRIMARY KEY|KEY `\w+`)\s*\(([^)]*)\))/m', $match[1], $lines, PREG_SET_ORDER);
+
+	return array_map(fn ($l) => strtolower(preg_replace('/\s+/', '', isset($l[3]) ? $l[3] . $l[4] : $l[1] . ' ' . $l[2])), $lines);
+}
+
+test('the installer creates the Boost run-time tables before it requires every cacti.sql table', function () use ($root) {
+	$installer = file_get_contents($root . '/lib/installer.php');
+	$schema    = file_get_contents($root . '/cacti.sql');
+
+	// in every install mode, not only in the upgrade step for one version
+	expect($installer)->toMatch('/private function validateCoreSchema\(\) \{\s*global [^;]+;\s*\$this->createRuntimeTables\(\);/');
+
+	foreach (['poller_output_boost_local_data_ids', 'poller_output_boost_failures'] as $table) {
+		expect($installer)->toContain('CREATE TABLE IF NOT EXISTS `' . $table . '`')
+			->and(boost_upgrade_table_shape($installer, $table))->toBe(boost_upgrade_table_shape($schema, $table));
+	}
+});

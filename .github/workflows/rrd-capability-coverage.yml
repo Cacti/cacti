@@ -24,6 +24,9 @@ on:
       - 'tests/Unit/Core/ScriptQueryPathTest.php'
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/integration/BoostProcessTableMariaDbTest.php'
+      - 'tests/integration/InstallerRuntimeTablesMariaDbTest.php'
+      - 'tests/fixtures/InstallerRuntimeTables.php'
+      - 'lib/installer.php'
       - 'tests/integration/AggregateCreationIntegrationTest.php'
       - 'tests/fixtures/aggregate_creation_*.php'
       - 'tests/Unit/Ui/Aggregate/**'
@@ -117,7 +120,8 @@ jobs:
             Unit/Core/Boost/BoostPollerCoordinationBehaviorTest.php \
             Unit/Core/Boost/BoostPollerDrainBehaviorTest.php \
             Unit/Core/Boost/BoostPollerOutputBehaviorTest.php \
-            integration/BoostProcessTableMariaDbTest.php
+            integration/BoostProcessTableMariaDbTest.php \
+            integration/InstallerRuntimeTablesMariaDbTest.php
       - name: Exercise Boost lifecycle and failure recovery
         env:
           XDEBUG_MODE: coverage
