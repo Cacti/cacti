@@ -154,6 +154,24 @@ class Installer implements JsonSerializable {
 		}
 		$this->stepError = false;
 
+		if ($this->runtime != 'Cli' && isset($install_params['Step']) && !Installer::isReachableStep($step, $install_params['Step'])) {
+			/* The browser names the step it wants, but which steps follow the stored
+			 * one is the server's decision. */
+			log_install_always('step', 'Ignoring step ' . clean_up_lines(var_export($install_params['Step'], true)) . ' requested at step ' . clean_up_lines(var_export($step, true)));
+			unset($install_params['Step']);
+		}
+
+		if (Installer::isAbandonedInstallStep($step, $this->runtime)) {
+			/* cli/install_cacti.php holds the install process lock before it gets
+			 * here, so no installer is running and this step was left by a run that
+			 * died. Start over, otherwise the options given now would be discarded
+			 * and --force could never get past it. */
+			log_install_always('step', 'Discarding the state of an abandoned install');
+			db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
+
+			$step = Installer::STEP_WELCOME;
+		}
+
 		if ($step == Installer::STEP_INSTALL) {
 			$install_version = read_config_option('install_version', true);
 
@@ -175,13 +193,33 @@ class Installer implements JsonSerializable {
 			$install_version = read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
-			if (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
+			if ($this->isFailedInstallBeingPolled($step, $install_params, read_config_option('install_error', true))) {
+				/* The install page is still polling a failed run: keep the error
+				 * report on screen instead of resetting the wizard underneath it. */
+				$install_params = array();
+			} elseif (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
 				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export(CACTI_VERSION, true)));
-				$this->stepError = Installer::STEP_WELCOME;
 				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
+
+				if ($this->runtime == 'Cli') {
+					/* Nobody is looking at a wizard: restart from the first step so
+					 * the options given on this command line are applied. */
+					$step = Installer::STEP_WELCOME;
+				} else {
+					$this->stepError = Installer::STEP_WELCOME;
+				}
 			} else {
 				$install_params = array();
 			}
+		} elseif (Installer::isStaleWizardStep((int) $step, $this->old_cacti_version != CACTI_VERSION, isset($install_params['Runtime']) ? $install_params['Runtime'] : 'unknown')) {
+			/* A wizard step can outlive the upgrade it belonged to, for example
+			   when the upgrade is finished with cli/upgrade_database.php.  Once
+			   no install is needed, report completion instead of reopening the
+			   wizard with its setters. */
+			log_install_medium('step', 'Discarding stale wizard step ' . clean_up_lines(var_export($step, true)));
+
+			$step           = Installer::STEP_COMPLETE;
+			$install_params = array();
 		}
 
 		log_install_high('step', 'After: ' . clean_up_lines(var_export($step, true)));
@@ -244,6 +282,81 @@ class Installer implements JsonSerializable {
 
 		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
 		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
+	}
+
+	/**
+	 * Whether the wizard may move from the stored step to the requested one.
+	 * A step already shown can be shown again, which covers Previous, a refresh
+	 * and the install page polling itself. Going forward follows the wizard: the
+	 * next step, the two places that skip one (the permission check goes on to
+	 * the templates and the binary locations to the tables, depending on the
+	 * mode) and the confirm step into the install. Nothing else is reachable, so
+	 * a request cannot start the install without the confirm step.
+	 *
+	 * @param int $stored The stored install step.
+	 * @param int $requested The step the request asks for.
+	 *
+	 * @return bool Whether the move is allowed.
+	 */
+	public static function isReachableStep($stored, $requested) {
+		$stored    = intval($stored);
+		$requested = intval($requested);
+
+		if ($requested < Installer::STEP_NONE || $requested > Installer::STEP_ERROR) {
+			return false;
+		}
+
+		if ($requested <= $stored) {
+			return true;
+		}
+
+		$forward = array($stored + 1);
+
+		if ($stored == Installer::STEP_PERMISSION_CHECK) {
+			$forward[] = Installer::STEP_TEMPLATE_INSTALL;
+		} elseif ($stored == Installer::STEP_BINARY_LOCATIONS) {
+			$forward[] = Installer::STEP_CHECK_TABLES;
+		} elseif ($stored == Installer::STEP_INSTALL_CONFIRM || $stored == Installer::STEP_INSTALL_OLDVERSION) {
+			$forward[] = Installer::STEP_INSTALL;
+		}
+
+		return in_array($requested, $forward, true);
+	}
+
+	/**
+	 * Whether a stored STEP_INSTALL can only have been left by a run that died.
+	 * On the web the install may genuinely still be running in the background and
+	 * is told apart by its timestamps. The command line has already taken the
+	 * install process lock when it builds the installer.
+	 *
+	 * @param int $step The stored install step.
+	 * @param string $runtime The runtime of this request.
+	 *
+	 * @return bool Whether the stored step was left by a run that died.
+	 */
+	public static function isAbandonedInstallStep($step, $runtime) {
+		return $step == Installer::STEP_INSTALL && $runtime == 'Cli';
+	}
+
+	/**
+	 * Whether a failed install run is being polled by the install page.
+	 * A failed run never writes install_version, so the version check alone
+	 * would treat it as an install that is still needed and wipe the failure
+	 * report on the first poll after the background process ended. Only the
+	 * poll of the install step (the page keeps sending STEP_INSTALL while it
+	 * waits) keeps the report; a fresh page load or the command line restarts.
+	 *
+	 * @param int $step The stored install step.
+	 * @param array $install_params The parameters of this request.
+	 * @param mixed $install_error The stored install_error setting.
+	 *
+	 * @return bool Whether the report of the failed run is kept.
+	 */
+	private function isFailedInstallBeingPolled($step, $install_params, $install_error) {
+		return $step == Installer::STEP_ERROR
+			&& $this->runtime != 'Cli'
+			&& (isset($install_params['Step']) ? $install_params['Step'] : Installer::STEP_NONE) == Installer::STEP_INSTALL
+			&& !empty($install_error);
 	}
 
 	/* jsonSerialize() - provides JSON object of return data with optional
@@ -424,6 +537,13 @@ class Installer implements JsonSerializable {
 		log_install_high('','Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
 		if (!empty($install_params)) {
 			$this->processParameters($install_params);
+
+			/* The step is applied first, while the errors from the defaults still
+			 * stand, and is held back to the first of them. Once the remaining
+			 * parameters have resolved those errors, honour the step asked for. */
+			if ($this->stepError === false && isset($install_params['Step']) && $this->stepCurrent != $install_params['Step']) {
+				$this->setStep(intval($install_params['Step']));
+			}
 		}
 
 		if ($this->stepError !== false && $this->stepCurrent > $this->stepError) {
@@ -496,6 +616,29 @@ class Installer implements JsonSerializable {
 			$this->stepError = $step;
 		}
 		log_install_debug('errors-json', clean_up_lines(var_export($this->errors, true)));
+	}
+
+	/**
+	 * Forgets an error that a later value has resolved. A section left behind
+	 * with no items still counts as an error for callers that test the error
+	 * list, and the step recorded for the first error would keep sending the
+	 * wizard back, so both are cleared with the last error.
+	 *
+	 * @param string $section The section the error was added to.
+	 * @param string $item The item the error was added for.
+	 *
+	 * @return void No value is returned.
+	 */
+	private function clearError($section, $item) {
+		unset($this->errors[$section][$item]);
+
+		if (isset($this->errors[$section]) && $this->errors[$section] === array()) {
+			unset($this->errors[$section]);
+		}
+
+		if ($this->errors === array()) {
+			$this->stepError = false;
+		}
 	}
 
 	/**
@@ -844,6 +987,46 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * Whether a stored browser wizard step belongs to an install or upgrade
+	 * that has already finished.
+	 *
+	 * @param int    $step          The stored installer step.
+	 * @param bool   $installNeeded Whether the database differs from the code version.
+	 * @param string $runtime       The installer runtime.
+	 *
+	 * @return bool True when the wizard must not accept parameters.
+	 */
+	public static function isStaleWizardStep($step, $installNeeded, $runtime) {
+		return $runtime !== 'Cli' && !$installNeeded && $step < Installer::STEP_INSTALL;
+	}
+
+	/**
+	 * Whether a theme is a single installed theme directory name.
+	 *
+	 * @param string $theme The requested theme.
+	 *
+	 * @return bool
+	 */
+	public static function isInstalledThemeName($theme) {
+		global $config;
+
+		return is_string($theme) &&
+			preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/', $theme) === 1 &&
+			is_file($config['base_path'] . '/include/themes/' . $theme . '/main.css');
+	}
+
+	/**
+	 * Merge browser parameters so the browser runtime cannot be replaced.
+	 *
+	 * @param array $params The submitted installer parameters.
+	 *
+	 * @return array
+	 */
+	public static function browserParameters($params) {
+		return array_merge($params, array('Runtime' => 'Web'));
+	}
+
+	/**
 	 * setTheme() - sets the Theme installer option, override the system default. * @param_theme - a
 	 * valid theme which must exist in /include/themes/ * * Errors: will add an error at
 	 * STEP_BINARY_WELCOME if invalid theme * was detected. Used as part of Cacti's lib functionality.
@@ -853,11 +1036,9 @@ class Installer implements JsonSerializable {
 	 * @return void Errors: will add an error at STEP_BINARY_WELCOME if invalid theme was detected.
 	 */
 	private function setTheme($param_theme = '') {
-		global $config;
 		if (isset($param_theme) && strlen($param_theme)) {
 			log_install_medium('theme','Checking theme: ' . $param_theme);
-			$themePath = $config['base_path'] . '/include/themes/' . $param_theme . '/main.css';
-			if (file_exists($themePath)) {
+			if (Installer::isInstalledThemeName($param_theme)) {
 				log_install_debug('theme','setTheme(): ' . $param_theme);
 				$this->theme = $param_theme;
 				set_install_config_option('install_theme', $this->theme);
@@ -951,7 +1132,7 @@ class Installer implements JsonSerializable {
 					}
 
 					if ($should_set) {
-						unset($this->errors['Paths'][$name]);
+						$this->clearError('Paths', $name);
 						set_install_config_option($name, empty($path)?'':$path);
 					}
 
@@ -1878,7 +2059,7 @@ class Installer implements JsonSerializable {
 	 * @return bool True on success, false otherwise.
 	 */
 	public function isPre_v0_8_UpgradeNeeded() {
-		return version_compare($this->old_cacti_version, '0.8.5a', '<=');
+		return $this->old_cacti_version != 'new_install' && version_compare($this->old_cacti_version, '0.8.5a', '<=');
 	}
 
 	/**
@@ -1971,10 +2152,10 @@ class Installer implements JsonSerializable {
 	 * @return string The resulting string.
 	 */
 	private function exitSqlNeeded() {
-		global $config, $database_username, $database_default, $database_password;
+		global $config, $database_username, $database_default;
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"));
-		$output .= Installer::sectionCode(sprintf("mysql -u %s -p %s < cacti.sql", $database_username, $database_default));
+		$output .= Installer::sectionCode(html_escape(sprintf("mysql -u %s -p %s < cacti.sql", $database_username, $database_default)));
 		$output .= Installer::sectionNormal(__("This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."));
 		$output .= Installer::sectionNormal(__("You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"));
 
@@ -1986,7 +2167,8 @@ class Installer implements JsonSerializable {
 		}
 
 		$output .= Installer::sectionNormal(__("Then run the following within MySQL as an administrator:"));
-		$output .= Installer::sectionCode(sprintf("mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password));
+		// The configured password stays out of the page; the account already exists.
+		$output .= Installer::sectionCode(html_escape(sprintf("mysql > GRANT SELECT ON mysql.time_zone_name TO '%s'@'localhost'", $database_username)));
 		return $output;
 	}
 
@@ -3000,10 +3182,7 @@ class Installer implements JsonSerializable {
 			$author = (isset($p['author']) && !empty($p['author'])) ? $p['author'] : '';
 
 			if (isset($p['homepage']) && !empty($p['homepage'])) {
-				if (strncmp($p['homepage'], 'http://', 7) !== 0 && strncmp($p['homepage'], 'http://', 8) !== 0) {
-					$p['homepage'] = 'https://' . $p['homepage'];
-				}
-				$homepage = '<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>';
+				$homepage = Installer::homepageLink($p['homepage']);
 			} else {
 				$homepage = '';
 			}
@@ -3023,6 +3202,31 @@ class Installer implements JsonSerializable {
 
 		$this->stepData = array('Templates' => $this->templates);
 		return $output;
+	}
+
+	/**
+	 * Gives a template homepage a scheme when it has none.
+	 *
+	 * @param string $homepage The homepage as written in the template package.
+	 *
+	 * @return string The homepage with a scheme.
+	 */
+	public static function homepageUrl($homepage) {
+		return preg_match('~^https?://~i', $homepage) ? $homepage : 'https://' . $homepage;
+	}
+
+	/**
+	 * Builds the link for a template homepage. The value comes from the package
+	 * file, so it is escaped for both the attribute and the visible text.
+	 *
+	 * @param string $homepage The homepage as written in the template package.
+	 *
+	 * @return string The anchor markup.
+	 */
+	public static function homepageLink($homepage) {
+		$url = Installer::homepageUrl($homepage);
+
+		return '<a href="' . html_escape($url) . '" target="_new" rel="noopener noreferrer">' . html_escape($url) . '</a>';
 	}
 
 	/**
@@ -3307,13 +3511,13 @@ class Installer implements JsonSerializable {
 			$output = Installer::sectionTitle(__('Complete'));
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION));
 			db_execute('DELETE FROM settings WHERE name LIKE "install_%"');
+
+			/* Remove integrated plugin references only after a successful install. */
+			api_plugin_uninstall_integrated();
 		} elseif ($this->stepCurrent == Installer::STEP_ERROR) {
 			$output = Installer::sectionTitleError();
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION));
 		}
-
-		// Remove integrated plugin references
-		api_plugin_uninstall_integrated();
 
 		$output .= Installer::sectionSubTitleEnd();
 
@@ -3387,7 +3591,7 @@ class Installer implements JsonSerializable {
 
 							$output .= '<tr class=\'cactiInstallSqlRow\'>';
 							$output .= '<td class=\'cactiInstallSqlIcon ' . $cssClass . '\' width=\'50\'><i class=\'' . $dbIcon . '\'></i></td>';
-							$output .= '<td class=\'cactiInstallSqlLeft\'>' . $sql_temp . '</td>';
+							$output .= '<td class=\'cactiInstallSqlLeft\'>' . html_escape($sql_temp) . '</td>';
 							$output .= '<td class=\'cactiInstallSqlRight ' . $cssClass . '\'>' . $dbStatus . '</td>';
 							$output .= '</tr>';
 
@@ -3871,12 +4075,12 @@ class Installer implements JsonSerializable {
 	private function convertDatabase() {
 		global $config;
 
-		$tables = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_table_%'");
+		$tables = db_fetch_assoc("SELECT name, value FROM settings WHERE name like 'install_table_%'");
 		if (cacti_sizeof($tables)) {
 			log_install_always('', __('Found %s tables to convert', cacti_sizeof($tables)));
 			$this->setProgress(Installer::PROGRESS_TABLES_BEGIN);
 			$i = 0;
-			foreach ($tables as $key => $table) {
+			foreach ($tables as $table) {
 				$i++;
 				$name = $table['value'];
 				if (!empty($name)) {
@@ -3890,7 +4094,7 @@ class Installer implements JsonSerializable {
 					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results), true);
 					if ((stripos($results, 'Converting table') !== false && stripos($results, 'Successful') !== false) ||
 					    stripos($results, 'Skipped table') !== false) {
-						set_install_config_option($key, '');
+						set_install_config_option($table['name'], '');
 					}
 				}
 			}
@@ -3918,7 +4122,7 @@ class Installer implements JsonSerializable {
 		log_install_always('', __('NOTE: Using temporary file for db cache: %s',$cacheFile));
 
 		$prev_cacti_version = $this->old_cacti_version;
-		$orig_cacti_version = get_cacti_cli_version();
+		$orig_cacti_version = get_cacti_version();
 
 		// loop through versions from old version to the current, performing updates for each version in the chain
 		foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
@@ -3951,7 +4155,7 @@ class Installer implements JsonSerializable {
 
 				/* Only update database version if database successfully upgraded */
 				if ($ver_status != DB_STATUS_ERROR) {
-					if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+					if (Installer::shouldStampUpgradeVersion($orig_cacti_version, $cacti_upgrade_version)) {
 						db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
 						$orig_cacti_version = $cacti_upgrade_version;
 					}
@@ -3973,10 +4177,25 @@ class Installer implements JsonSerializable {
 			return 'WARNING: One or more upgrades failed to install correctly';
 		}
 
-		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-			db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
-		}
+		/* The running release is recorded by install() once templates and the
+		 * schema check have passed, so a failure there can be retried. */
 		return false;
+	}
+
+	/**
+	 * Decides whether an upgrade step may record its version in the version table.
+	 * Intermediate versions are recorded so an interrupted upgrade resumes at the
+	 * step that failed. The running release is never recorded here: the database
+	 * would then read as current before templates and the final schema check have
+	 * run, and getMode() would report nothing left to do.
+	 *
+	 * @param string $current The version currently recorded.
+	 * @param string $step The upgrade step that just completed.
+	 *
+	 * @return bool Whether the step's version may be recorded.
+	 */
+	public static function shouldStampUpgradeVersion($current, $step) {
+		return cacti_version_compare($current, $step, '<') && cacti_version_compare($step, CACTI_VERSION, '<');
 	}
 
 	/**
@@ -4108,7 +4327,7 @@ class Installer implements JsonSerializable {
 
 		$output_log = '';
 		foreach ($logcontents as $logline) {
-			$output_log = $logline.'<br/>' . $output_log;
+			$output_log = html_escape($logline) . '<br/>' . $output_log;
 		}
 
 		if (empty($output_log)) {

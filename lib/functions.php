@@ -512,7 +512,10 @@ function set_config_option($config_name, $value, $remote = false) {
 function config_value_exists($config_name) {
 	static $config_values = array();
 
-	if (!isset($config_values[$config_name])) {
+	/* Only a setting that was found is remembered: isset() is true for a cached
+	 * false, which would hide a setting stored later in the same process (the
+	 * installer stores the paths it is given, then reads them back). */
+	if (empty($config_values[$config_name])) {
 		$value = db_fetch_cell_prepared('SELECT COUNT(*) FROM settings WHERE name = ?', array($config_name));
 
 		if ($value > 0) {
@@ -1204,8 +1207,13 @@ function kill_session_var($var_name) {
  * @return bool Bool.
  */
 function force_session_data() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
+		return false;
+	} elseif (empty($config['is_web'])) {
+		// The session settings only exist on the web; a CLI script has nothing to restore
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;

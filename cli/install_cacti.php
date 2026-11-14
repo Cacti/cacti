@@ -142,7 +142,7 @@ if (cacti_sizeof($parms)) {
 				set_install_multioption($options, 'SnmpOptions', 'Snmp Option', $value, 'Snmp');
 				break;
 			case '--table':
-				set_install_multioption($options, 'Tables', 'Table', $value, '');
+				set_install_multioption($options, 'Tables', 'Table', $value, 'chk_table_');
 				break;
 			case '--template':
 				set_install_multioption($options, 'Templates', 'Template', $value, 'chk_template_', true);
@@ -169,6 +169,17 @@ include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/installer.php');
 require_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/utility.php');
+
+/* One installer at a time, as install/background.php does. Dead processes are
+ * reclaimed by register_process_start() through its PID-liveness check, and the
+ * shutdown function also runs on the exit() calls below. */
+if (!register_process_start('install', 'master', '0', 86400)) {
+	print 'An Installation was already in progress' . PHP_EOL;
+
+	exit(1);
+}
+
+register_shutdown_function('unregister_process', 'install', 'master', 0);
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 

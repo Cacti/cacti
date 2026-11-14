@@ -103,6 +103,7 @@ Cacti CHANGELOG
 -security#8346: Pin workflow Actions and isolate release signing from builds
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
+-security#8728: Harden - Validate installer wizard state, theme and step requests, and escape installer output
 -issue#8697: Correct the Dark theme session message dialog action buttons (Ok/Pause) to the theme's #31442b primary-action green, and style the Modern theme User Language selectmenu so the closed control matches the other dropdowns
 -issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
 -issue#8689: Return the number of expired sessions deleted from the database session handler gc() so session_gc() reports actual deletions
@@ -242,6 +243,10 @@ Cacti CHANGELOG
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
+-issue#8720: Keep a failed upgrade retryable by leaving the running release out of the version table until the installer, templates and schema check have finished
+-issue#8721: Stop cli/install_cacti.php from fataling in session_start() when it is run again after a completed install
+-issue#8722: Compare the database version, not the CLI banner text, in upgradeDatabase() so an upgrade no longer logs a hexdec() deprecation
+-issue#8729: Keep installer failure reports, fix CLI path overrides and stale steps, clear converted tables by name, and read the template packages once per request
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
