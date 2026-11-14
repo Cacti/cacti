@@ -93,6 +93,7 @@ function api_device_remove(int $device_id) : void {
 		['DELETE FROM poller_reindex   WHERE host_id = ?', [$device_id]],
 		['DELETE FROM graph_tree_items WHERE host_id = ?', [$device_id]],
 		['DELETE FROM reports_items    WHERE host_id = ?', [$device_id]],
+		['DELETE FROM automation_aggregate_graphs WHERE host_id = ?', [$device_id]],
 		['DELETE FROM poller_command   WHERE command LIKE ?', [$device_id . ':%']]
 	];
 
@@ -316,7 +317,8 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 			'DELETE FROM host_snmp_cache  WHERE ' . db_in_clause('host_id', $int_device_ids),
 			'DELETE FROM host_value_cache WHERE ' . db_in_clause('host_id', $int_device_ids),
 			'DELETE FROM graph_tree_items WHERE ' . db_in_clause('host_id', $int_device_ids),
-			'DELETE FROM reports_items    WHERE ' . db_in_clause('host_id', $int_device_ids)
+			'DELETE FROM reports_items    WHERE ' . db_in_clause('host_id', $int_device_ids),
+			'DELETE FROM automation_aggregate_graphs WHERE ' . db_in_clause('host_id', $int_device_ids)
 		];
 
 		foreach ($cleanup_queries as $sql) {
