@@ -242,6 +242,9 @@ Cacti CHANGELOG
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
+-issue#8665: DSStats reads each RRDtool response to its status line so data source names containing OK no longer misattribute statistics
+-issue#8665: DSStats reads period statistics from the finest RRA that covers the period, writes in full batches, no longer repeats the daily pass for one thread, and waits for RRDtool without spinning
+-issue#8665: Preserve exact 64-bit counter baselines in storage and calculate deltas before converting rates to floating point
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query

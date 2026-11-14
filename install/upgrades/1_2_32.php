@@ -28,6 +28,15 @@
  * @return void No value is returned.
  */
 function upgrade_to_1_2_32() {
+	// Old DOUBLE baselines may already have lost counter bits. Discard only
+	// values outside the exact integer range before changing their storage.
+	$last_value_column = db_get_column_attributes('data_source_stats_hourly_last', 'value');
+
+	if (($last_value_column[0]['DATA_TYPE'] ?? '') == 'double') {
+		db_install_execute('UPDATE data_source_stats_hourly_last SET `value` = NULL WHERE ABS(`value`) > 9007199254740991');
+		db_install_execute('ALTER TABLE data_source_stats_hourly_last MODIFY `value` varchar(100) DEFAULT NULL');
+	}
+
 	/* #7728 landed these columns in cacti.sql and in upgrade_to_1_2_31() after
 	 * 1.2.31 had already shipped. Installs sitting on 1.2.31 never re-run that
 	 * file. db_install_add_column() is a no-op when the column exists, so

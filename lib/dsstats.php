@@ -219,12 +219,14 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 			/* some additional sanity checking */
 			if (is_array($stats) && cacti_sizeof($stats)) {
 				foreach($stats as $rrd_name => $avgpeak_stats) {
-					$outbuf .= ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
+					$row = ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
 						$rrd_name . "','" .
 						$avgpeak_stats['AVG'] . "','" .
 						$avgpeak_stats['MAX'] . "')";
 
-					$out_length += strlen($outbuf);
+					/* count only the row just appended to the batch */
+					$outbuf     .= $row;
+					$out_length += strlen($row);
 
 					if (($out_length + $overhead) > $max_packet) {
 						db_execute($sql_prefix . $outbuf . $sql_suffix);
@@ -375,24 +377,38 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 				}
 			}
 
-			/* change the interval to something RRDtool understands */
+			/* change the interval to something RRDtool understands, and note its longest length */
+			$seconds = 86400;
+
 			switch($interval) {
 				case 'daily':
 					$interval = 'day';
 					break;
 				case 'weekly':
 					$interval = 'week';
+					$seconds  = 7 * 86400;
 					break;
 				case 'monthly':
 					$interval = 'month';
+					$seconds  = 31 * 86400;
 					break;
 				case 'yearly':
 					$interval = 'year';
+					$seconds  = 366 * 86400;
 					break;
 			}
 
+			/**
+			 * RRDtool reads the RRA whose resolution best matches one pixel, and
+			 * a graph is 400 pixels wide by default, about 1512 seconds a pixel
+			 * for a week.  One pixel per step selects the finest RRA that still
+			 * covers the whole range.  Nothing is drawn, so the width is free.
+			 */
+			$step = (isset($poller_interval) && intval($poller_interval) > 0 ? intval($poller_interval) : 300);
+			$width = ceil($seconds / $step);
+
 			/* now execute the graph command */
-			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($command);
+			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now --width=' . $width . ' ' . trim($def) . ' ' . trim($command);
 
 			//print $stats_cmd . PHP_EOL;
 
@@ -649,6 +665,39 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 }
 
 /**
+ * Calculate a counter delta before converting it to a floating-point rate.
+ * Decimal strings preserve low bits above PHP_INT_MAX and across 64-bit wraps.
+ *
+ * @param int|float|numeric-string     $last    Previous numeric sample.
+ * @param int|float|numeric-string     $current Current numeric sample.
+ * @param int|float|numeric-string|'U' $maximum Maximum permitted wrapped delta.
+ *
+ * @return float|'NULL' The delta, or unknown when a wrapped delta exceeds the maximum.
+ */
+function dsstats_counter_delta(int|float|string $last, int|float|string $current, int|float|string $maximum) : float|string {
+	if (ctype_digit((string) $last) && ctype_digit((string) $current)) {
+		$last_integer = gmp_init((string) $last, 10);
+		$delta = gmp_sub(gmp_init((string) $current, 10), $last_integer);
+		$wrapped = gmp_cmp($delta, 0) < 0;
+
+		if ($wrapped) {
+			$delta = gmp_add($delta, gmp_cmp($last_integer, '4294967295') > 0 ? '18446744073709551616' : '4294967296');
+		}
+
+		$delta = (float) gmp_strval($delta);
+	} else {
+		$delta = $current - $last;
+		$wrapped = $delta < 0;
+
+		if ($wrapped) {
+			$delta = (($last > 4294967295 ? pow(2, 64) : pow(2, 32)) - $last) + $current;
+		}
+	}
+
+	return $wrapped && $maximum != 'U' && $delta > $maximum ? 'NULL' : $delta;
+}
+
+/**
  * This routine runs in parallel with the cacti poller and populates the last and cache tables. On
  * larger systems, it should be noted that the memory overhead for the global arrays, $ds_types,
  * $ds_last, $ds_multi could be serval hundred megabytes. So, this should be kept in mind when
@@ -791,24 +840,10 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								if ($ds_last == '' || $ds_last == 'NULL') {
 									$currentval = 'NULL';
-								} elseif ($result['output'] == 'NULL') {
+								} elseif ($result['output'] === 'NULL') {
 									$currentval = 'NULL';
-								} elseif ($result['output'] >= $ds_last) {
-									/* everything is normal */
-									$currentval = $result['output'] - $ds_last;
 								} else {
-									$max_value = $ds_types[$result['rrd_name']]['rrd_maximum'];
-
-										// possible overflow, see if its 32bit or 64bit
-									if ($ds_last > 4294967295) {
-										$currentval = (18446744073709551615 - $ds_last) + $result['output'];
-									} else {
-										$currentval = (4294967295 - $ds_last) + $result['output'];
-									}
-
-									if ($max_value != 'U' && $currentval > $max_value) {
-										$currentval = 'NULL';
-									}
+									$currentval = dsstats_counter_delta($ds_last, $result['output'], $ds_types[$result['rrd_name']]['rrd_maximum']);
 								}
 
 								if ($currentval != 'NULL') {
@@ -916,7 +951,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 									$last_delim . '(' .
 									$result['local_data_id'] . ", '" .
 									$result['rrd_name'] . "', " .
-									$lastval . ', ' .
+									($lastval === 'NULL' ? 'NULL' : db_qstr((string) $lastval)) . ', ' .
 									$currentval . ')';
 
 								$last_i++;
@@ -976,20 +1011,13 @@ function dsstats_poller_output(&$rrd_update_array) {
 function dsstats_boost_bottom() {
 	global $config;
 
-	global $total_user, $total_system, $total_real, $total_dsses;
-
-	$total_user   = 0;
-	$total_system = 0;
-	$total_real   = 0;
-	$total_dsses  = 0;
-
 	if (read_config_option('dsstats_enable') == 'on') {
 		include_once($config['base_path'] . '/lib/rrd.php');
 
 		/* run the daily stats. log to database to prevent secondary runs */
 		set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', time()));
 
-		/* run the daily stats */
+		/* run the daily stats, one bchild per thread collects each slice */
 		dsstats_launch_children('bmaster');
 
 		/* Wait for all processes to continue */
@@ -997,8 +1025,6 @@ function dsstats_boost_bottom() {
 			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 			sleep(2);
 		}
-
-		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 0);
 
 		dsstats_log_statistics('DAILY');
 	}
@@ -1096,10 +1122,11 @@ function dsstats_rrdtool_init() {
  *
  * @param string $command (string) The rrdtool command to execute.
  * @param mixed &$pipes (array) An array of stdin and stdout pipes to read and write data from.
+ * @param int $timeout (int) Seconds to wait for more output before RRDtool is given up.
  *
  * @return string (string) The output from RRDtool.
  */
-function dsstats_rrdtool_execute($command, &$pipes) {
+function dsstats_rrdtool_execute($command, &$pipes, $timeout = 60) {
 	static $broken = false;
 
 	$stdout = '';
@@ -1112,16 +1139,66 @@ function dsstats_rrdtool_execute($command, &$pipes) {
 	$return_code = fwrite($pipes[0], $command);
 
 	if (is_resource($pipes[1])) {
+		/**
+		 * Each response ends with a status line: 'OK u:...', or a bare 'OK'
+		 * from an RRDtool built without getrusage(), or 'ERROR:'.  Output
+		 * such as 'ds[LOOKUPS].index' also contains 'OK',
+		 * so only a complete line may end the read.  Stopping early leaves
+		 * the rest of the response for the next command to read.
+		 */
+		$line     = '';
+		$deadline = microtime(true) + $timeout;
+
 		while (!feof($pipes[1])) {
-			$stdout .= fgets($pipes[1], 4096);
+			$wait = $deadline - microtime(true);
 
-			if (substr_count($stdout, 'OK')) {
+			/**
+			 * Stop reading from an RRDtool that has gone silent.  Its late answer
+			 * would be read by the next command, so close its output, and the
+			 * remaining files of this worker get no statistics.
+			 */
+			if ($wait <= 0) {
+				cacti_log(sprintf('ERROR: RRDtool did not respond within %d seconds.  The remaining Data Sources of this DSStats process are skipped.', $timeout), false, 'DSSTATS');
+
+				fclose($pipes[1]);
+
+				$broken = true;
+
+				return;
+			}
+
+			/* the pipe is non-blocking, so sleep until RRDtool writes */
+			$read   = array($pipes[1]);
+			$write  = null;
+			$except = null;
+
+			if (stream_select($read, $write, $except, (int) $wait, (int) (fmod($wait, 1) * 1000000)) === false) {
 				break;
 			}
 
-			if (substr_count($stdout, 'ERROR')) {
+			if (!count($read)) {
+				continue;
+			}
+
+			$chunk = fgets($pipes[1], 4096);
+
+			if ($chunk === false || $chunk === '') {
+				continue;
+			}
+
+			$deadline = microtime(true) + $timeout;
+			$stdout .= $chunk;
+			$line .= $chunk;
+
+			if (substr($line, -1) != "\n") {
+				continue;
+			}
+
+			if (rtrim($line, "\r\n") === 'OK' || strpos($line, 'OK u:') === 0 || strpos($line, 'ERROR:') === 0) {
 				break;
 			}
+
+			$line = '';
 		}
 	} elseif (!$broken) {
 		cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
@@ -1142,6 +1219,8 @@ function dsstats_rrdtool_execute($command, &$pipes) {
  * @return void NULL.
  */
 function dsstats_rrdtool_close($process) {
+	/* an RRDtool that stopped answering would block proc_close() forever */
+	proc_terminate($process);
 	proc_close($process);
 }
 
