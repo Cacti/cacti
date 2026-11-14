@@ -4930,9 +4930,15 @@ function labelVisibleGraphActions() {
 	// Visible icons keep their tooltips and also expose names to assistive technology.
 	$('.graphDrillDownAlways .iconWrapper a').each(function () {
 		var link = $(this);
-		var label = link.attr('aria-label') || link.attr('title') || link.find('i[title], img[title]').first().attr('title');
+		var currentLabel = link.attr('aria-label');
+		var generatedLabel = link.attr('data-graph-action-label');
+		if (currentLabel && currentLabel !== generatedLabel) {
+			return;
+		}
+		var label = link.attr('title') || link.find('i[title], img[title]').first().attr('title');
 		if (label) {
 			link.attr('aria-label', label);
+			link.attr('data-graph-action-label', label);
 		}
 	});
 }
@@ -5359,6 +5365,7 @@ function initializeGraphs(disable_cache) {
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).trigger('change');
 				$(this).html("<i class='drillDown ti ti-chart-area-line-filled realTime' title='" + realtimeClickOn + "'></i>");
+				labelVisibleGraphActions();
 
 				$('graph_id' + graph_id).tooltip().zoom({
 					inputfieldStartTime: 'date1',
@@ -5371,6 +5378,7 @@ function initializeGraphs(disable_cache) {
 			} else {
 				keepRealtime[graph_id] = $('#wrapper_' + graph_id).html();
 				$(this).html("<i style='text-align:center;padding:0px;' title='" + realtimeClickOff + "' class='drillDown ti ti-loader-2 icon-rotate'></i>");
+				labelVisibleGraphActions();
 				$(this).find('i').tooltip();
 				realtimeArray[graph_id] = true;
 				setFilters();
