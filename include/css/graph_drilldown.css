@@ -147,6 +147,7 @@
 
 .graphDrillDownAlways {
 	position: static;
+	z-index: auto;
 	display: block;
 	flex: 0 0 24px;
 	width: 24px;
