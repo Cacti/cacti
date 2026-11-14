@@ -164,3 +164,33 @@ test('rrdcheck_tune_rrdfile reports a failing tune', function () {
 
 	expect($result)->toContain('failed');
 });
+
+test('rrdcheck_parse_fetch_output counts timestamped rows and NaN values', function () {
+	$output = array('                 traffic_in          traffic_out', '', '1700000000: 1.0e+00 nan', '1700000300: -nan 2.0e+00', 'OK u:0.01 s:0.00 r:0.00');
+	$fetch  = rrdcheck_parse_fetch_output($output, 1);
+
+	expect($fetch['names'])->toBe(array('traffic_in', 'traffic_out'))
+		->and($fetch['lines_24'])->toBe(2)
+		->and($fetch['lines_1'])->toBe(1)
+		->and($fetch['nan_24'])->toBe(array(1, 1))
+		->and($fetch['nan_1'])->toBe(array(1, 0));
+});
+
+test('rrdcheck_parse_fetch_output skips colon lines that are not timestamped rows', function () {
+	$output = array('ERROR: bad: thing', '                 traffic_in', '', '1700000000: nan', 'ERROR: bad: thing', 'WARNING: 1 nan', '1700000300: 1.0e+00');
+	$fetch  = rrdcheck_parse_fetch_output($output, 0);
+
+	expect($fetch['names'])->toBe(array('traffic_in'))
+		->and($fetch['lines_24'])->toBe(2)
+		->and($fetch['lines_1'])->toBe(2)
+		->and($fetch['nan_24'])->toBe(array(1))
+		->and($fetch['nan_1'])->toBe(array(1));
+});
+
+test('rrdcheck_parse_fetch_output reports no header or rows for error-only output', function () {
+	$fetch = rrdcheck_parse_fetch_output(array('ERROR: opening file: No such file'), 0);
+
+	expect($fetch['names'])->toBe(array())
+		->and($fetch['lines_24'])->toBe(0)
+		->and($fetch['nan_24'])->toBe(array());
+});

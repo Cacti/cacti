@@ -208,11 +208,32 @@ test('structured RRD validation rejects traversal prefix confusion and symlink p
 			->and($state['prefix'])->toBeFalse()
 			->and($state['create_outside'])->toBeFalse()
 			->and($state['create_existing'])->toBeTrue()
-			->and($state['file_missing'])->toBeFalse()
-			->and($state['file_no_base'])->toBeFalse();
+			->and($state['file_missing']['result'])->toBeFalse()
+			->and($state['file_missing']['message'])->toContain('does not exist')
+			->and($state['file_missing']['level'])->toBe(3)
+			->and($state['file_no_base']['result'])->toBeFalse()
+			->and($state['file_no_base']['message'])->toContain('No RRA path was given')
+			->and($state['file_no_base']['level'])->toBe('');
+
+		/* only a not-yet-created RRD is downgraded; every other rejection is
+		 * logged at the default level with its own reason */
+		foreach (array('file_dotdot', 'file_outside', 'file_pivot') as $case) {
+			if ($state[$case] !== null) {
+				expect($state[$case]['result'])->toBeFalse($case)
+					->and($state[$case]['message'])->toContain('is not a valid path below the RRA path')
+					->and($state[$case]['level'])->toBe('', $case);
+			}
+		}
+
+		expect($state['file_dir']['result'])->toBeFalse()
+			->and($state['file_dir']['message'])->toContain('is not a regular file')
+			->and($state['file_dir']['level'])->toBe('');
 
 		if ($state['symlink'] !== null) {
-			expect($state['symlink'])->toBeFalse();
+			expect($state['symlink'])->toBeFalse()
+				->and($state['file_symlink']['result'])->toBeFalse()
+				->and($state['file_symlink']['message'])->toContain('is a symbolic link')
+				->and($state['file_symlink']['level'])->toBe('');
 		}
 	} finally {
 		boostProbeRemoveTree($root);

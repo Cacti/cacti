@@ -244,6 +244,11 @@ Cacti CHANGELOG
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -issue: Fix Script Server performance issues with continual checks to the file include file path
+-issue: Keep RRDtool file permission rejections at the normal log level
+-issue: Ignore RRDtool fetch lines without a numeric timestamp in RRDcheck
+-issue: Report a failed session cleanup from the session garbage collector
+-issue: Check the sibling element before adding the theme filter search icon
+-issue: Escape the graph id in the graph drilldown container id
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes

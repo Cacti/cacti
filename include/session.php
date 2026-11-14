@@ -173,16 +173,20 @@ function cacti_db_session_destroy($id) {
  *
  * @param mixed $max The max.
  *
- * @return bool True on success, false otherwise.
+ * @return int|false The number of sessions removed, or false when the query fails.
  */
 function cacti_db_session_clean($max) {
 	$old = time() - $max;
 
-	db_execute_prepared('DELETE FROM sessions
+	if (!db_execute_prepared('DELETE FROM sessions
 		WHERE access < ?',
-		array($old));
+		array($old))) {
+		return false;
+	}
 
-	return true;
+	$deleted = db_affected_rows();
+
+	return is_numeric($deleted) ? (int) $deleted : 0;
 }
 
 /**
@@ -215,11 +219,7 @@ class Cacti_DB_Session_Handler implements SessionHandlerInterface {
 	}
 
 	public function gc($max_lifetime): int|false {
-		cacti_db_session_clean($max_lifetime);
-
-		$deleted = db_affected_rows();
-
-		return is_numeric($deleted) ? (int) $deleted : 0;
+		return cacti_db_session_clean($max_lifetime);
 	}
 }
 
