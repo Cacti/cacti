@@ -2262,10 +2262,11 @@ function update_graph_data_query_cache(int $local_graph_id, int $host_id = 0, in
  *                               be determined based on the data source's output type.
  * @param string $previous_index The previous index value. If the current index
  *                               matches the previous index, no update will occur.
+ * @param bool   $notify         Whether to notify plugins of data source title updates.
  *
  * @return bool - Returns true if the data query cache was updated successfully, false otherwise.
  */
-function update_data_source_data_query_cache(int $local_data_id, int $host_id = 0, int $data_query_id = 0, string $previous_index = '') : bool {
+function update_data_source_data_query_cache(int $local_data_id, int $host_id = 0, int $data_query_id = 0, string $previous_index = '', bool $notify = true) : bool {
 	global $data_query_id_cache;
 
 	if ((!is_array($data_query_id_cache)) || cacti_sizeof($data_query_id_cache) == 0) {
@@ -2312,7 +2313,7 @@ function update_data_source_data_query_cache(int $local_data_id, int $host_id = 
 			[$data_query_id, $current_index, $local_data_id]);
 
 		// update data source title cache
-		update_data_source_title_cache($local_data_id);
+		update_data_source_title_cache($local_data_id, $notify);
 
 		return true;
 	}
