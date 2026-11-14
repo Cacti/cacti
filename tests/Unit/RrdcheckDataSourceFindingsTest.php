@@ -159,3 +159,22 @@ test('rrdcheck_tune_rrdfile reports a failing tune', function () {
 
 	expect($result)->toContain('failed');
 });
+
+test('rrdcheck_fetch_row_values returns the values of a data line', function () {
+	expect(rrdcheck_fetch_row_values('1700000000: 1.0e+00 nan'))->toBe(['1.0e+00', 'nan'])
+		->and(rrdcheck_fetch_row_values('1700000300:  -nan'))->toBe(['-nan']);
+});
+
+test('rrdcheck_fetch_row_values skips lines that are not data rows', function () {
+	set_error_handler(function (int $errno, string $errstr) : bool {
+		throw new ErrorException($errstr, 0, $errno);
+	});
+
+	try {
+		expect(rrdcheck_fetch_row_values("ERROR: opening '/rra/x.rrd': No such file or directory"))->toBeNull()
+			->and(rrdcheck_fetch_row_values('no value field'))->toBeNull()
+			->and(rrdcheck_fetch_row_values(': nan'))->toBeNull();
+	} finally {
+		restore_error_handler();
+	}
+});
