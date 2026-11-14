@@ -5,7 +5,6 @@ Cacti CHANGELOG
 -fix: Match the language selectmenu (the jQuery UI dropdown rendered by the custom languageselect widget) to each theme's select2 controls - restore the 6px border-radius squared off by .ui-corner-all and apply the themed gradient/transparent background and open-state colours - in the classic, dark, deepness, midwinter, paper-plane, paw and sunrise themes
 -fix: Preserve a Card API card's live expand/collapse state when its refresh or resize response lands (include/js/cards.js replaceCard), so toggling a card while a refresh is in flight is no longer reverted
 -fix: Harden the Card API controller (include/js/cards.js): discard refresh/resize responses superseded by a newer request for the same card, wait for the host to confirm a card removal before dropping it and persisting the layout, skip adding a card id already on the grid, and keep keyboard focus on the revealed expand/collapse button
--feature#8743: Allow users to keep graph action icons visible beside graphs
 -feature: Extend the Card API chart-widget library (include/css/card-widgets.css) with gauge min/max ticks (.ccGaugeTick), a bullet historical-average marker (.ccBulletAvgMarker) and status-pill severity colours (.ccPill--up/--warn/--down/--none), so card bodies can draw these richer primitives from the shared .cc* contract
 -feature: Add a shared dashboarding card-widget library to the Card API: include/css/card-widgets.css plus the card_gauge(), card_bar(), card_bullet(), card_stackbar() and card_stat() helpers in lib/html.php render JS-free chart primitives (gauge, usage/distribution bars, min/avg/max bullet, stacked proportion bar, stat tiles) from the themeable .cc* contract, so any plugin - including third-party panels surfaced inside another plugin such as Intropage - can draw rich card bodies without its own stylesheet or JavaScript
 -feature: Add a shared dashboarding card chrome (Card API) in include/js/cards.js and include/css/cards.css, loaded by the common page header, so plugins can render a draggable, reorderable grid of cards (the window.CactiCards controller plus the themeable .cc* markup contract) without bundling their own copy
@@ -269,6 +268,7 @@ Cacti CHANGELOG
 -feature#8311: Make the graph drilldown action icons a common hamburger toggle over the graph's top-right across all themes (centralized in layout.js) instead of the per-theme hover-to-the-right behaviour
 -feature#8316: Expand the open graph drilldown strip into a labelled table menu (text label on the left, glyphs aligned in a fixed right-hand column) built in layout.js on open so plugin-contributed icons are labelled from their title without plugin changes
 -feature#8455: Add Script Server PHP versions of the Perl and Python data input scripts
+-feature#8743: Allow users to keep graph action icons visible beside graphs
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting

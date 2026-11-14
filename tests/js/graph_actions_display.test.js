@@ -85,3 +85,22 @@ test('aggregate image actions and replacement icons receive names on refresh', (
 	const skin = source.slice(source.indexOf('function applySkin()'));
 	assert.ok(skin.indexOf('labelVisibleGraphActions();') < skin.indexOf('.tooltip('));
 });
+
+test('generated realtime names follow state changes but explicit names are preserved', () => {
+	const action = { glyph: { title: 'Start realtime' } };
+	const state = initialize([action]);
+	assert.equal(action['aria-label'], 'Start realtime');
+	action.glyph = { title: 'Stop realtime' };
+	state.relabel();
+	assert.equal(action['aria-label'], 'Stop realtime');
+	action.glyph = { title: 'Start realtime' };
+	state.relabel();
+	assert.equal(action['aria-label'], 'Start realtime');
+	action['aria-label'] = 'Custom action';
+	action.glyph = { title: 'Stop realtime' };
+	state.relabel();
+	assert.equal(action['aria-label'], 'Custom action');
+	for (const line of source.split('\n').filter(line => line.includes('$(this).html(') && /realtimeClickOn|realtimeClickOff/.test(line))) {
+		assert.ok(source.includes(line + '\n\t\t\t\tlabelVisibleGraphActions();'));
+	}
+});
