@@ -2763,7 +2763,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					// are text-output modes; returning PNG bytes in either would produce
 					// garbage in the browser or CLI. Return a human-readable error instead.
 					if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
-						return __('ERROR: RRD file does not exist: %s', $data_source_path);
+						return __('ERROR: RRD file does not exist: %s', html_escape($data_source_path));
 					}
 
 					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
@@ -4702,8 +4702,8 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 
 	foreach ($loop as $key => $value) {
 		form_alternate_row($key, true);
-		form_selectable_cell($key, 'key');
-		form_selectable_cell($value, 'value', '', ((isset($diff[$key]) ? 'color:red' : '')));
+		form_selectable_ecell($key, 'key');
+		form_selectable_ecell($value, 'value', '', ((isset($diff[$key]) ? 'color:red' : '')));
 		form_end_row();
 	}
 
@@ -4729,8 +4729,8 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 		foreach ($info_array['ds'] as $key => $value) {
 			form_alternate_row('line' . $key, true);
 
-			form_selectable_cell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
-			form_selectable_cell(($value['type'] ?? ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
+			form_selectable_ecell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
+			form_selectable_ecell(($value['type'] ?? ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
 			form_selectable_cell(($value['minimal_heartbeat'] ?? ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
 
 			if (isset($value['min'])) {
@@ -4739,7 +4739,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 				} elseif (is_numeric($value['min'])) {
 					form_selectable_cell(number_format_i18n($value['min']), 'min', '', 'right');
 				} else {
-					form_selectable_cell($value['min'], 'min', '', 'color:red;text-align:right');
+					form_selectable_ecell($value['min'], 'min', '', 'color:red;text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'min', '', 'color:red;text-align:right');
@@ -4751,14 +4751,14 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 				} elseif (is_numeric($value['max'])) {
 					form_selectable_cell(number_format_i18n($value['max']), 'max', '', 'right');
 				} else {
-					form_selectable_cell($value['max'], 'max', '', 'color:red;text-align:right');
+					form_selectable_ecell($value['max'], 'max', '', 'color:red;text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'max', '', 'color:red;text-align:right');
 			}
 
-			form_selectable_cell(((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : ($value['last_ds'] ?? ''))), 'last_ds', '', 'text-align:right');
-			form_selectable_cell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')), 'value', '', 'text-align:right');
+			form_selectable_ecell(((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : ($value['last_ds'] ?? ''))), 'last_ds', '', 'text-align:right');
+			form_selectable_ecell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')), 'value', '', 'text-align:right');
 			form_selectable_cell(((isset($value['unknown_sec']) && is_numeric($value['unknown_sec']) ? number_format_i18n($value['unknown_sec']) : ($value['unknown_sec'] ?? ''))), 'unknown_sec', '', 'text-align:right');
 
 			form_end_row();
@@ -4787,8 +4787,8 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 		foreach ($info_array['rra'] as $key => $value) {
 			form_alternate_row('line_' . $key, true);
 
-			form_selectable_cell($key, 'name', '', (isset($diff['rra'][$key]['error']) ? 'color:red' : ''));
-			form_selectable_cell(($value['cf'] ?? ''), 'cf');
+			form_selectable_ecell($key, 'name', '', (isset($diff['rra'][$key]['error']) ? 'color:red' : ''));
+			form_selectable_ecell(($value['cf'] ?? ''), 'cf');
 			form_selectable_cell(($value['rows'] ?? ''), 'rows', '', (isset($diff['rra'][$key]['rows']) ? 'color:red;text-align:right' : 'text-align:right'));
 			form_selectable_cell(($value['cur_row'] ?? ''), 'cur_row', '', 'text-align:right');
 			form_selectable_cell(($value['pdp_per_row'] ?? ''), 'pdp_per_row', '', 'text-align:right');
@@ -4817,7 +4817,7 @@ function rrdtool_tune_print_leaves(array $array, bool $html = true) : void {
 	foreach ($array as $key => $line) {
 		if (!is_array($line)) {
 			if ($html) {
-				print "<div class='formRow'>" . $line . '</div>';
+				print "<div class='formRow'>" . html_escape($line) . '</div>';
 			} else {
 				print $line . PHP_EOL;
 			}
@@ -4911,14 +4911,14 @@ function rrdtool_tune_print_html(string $rrd_file, array $diff) : void {
 
 		if (isset($diff['tune'])) {
 			foreach ($diff['tune'] as $line) {
-				print "<div class='formRow'>" . $rrd_path . ' tune ' . $line . '</div>';
+				print "<div class='formRow'>" . html_escape($rrd_path . ' tune ' . $line) . '</div>';
 			}
 		}
 
 		if (isset($diff['resize'])) {
 			foreach ($diff['resize'] as $line) {
-				print "<div class='formRow'>" . $rrd_path . ' resize ' . $line . '</div>';
-				print "<div class='formRow'>" . __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . '</div>';
+				print "<div class='formRow'>" . html_escape($rrd_path . ' resize ' . $line) . '</div>';
+				print "<div class='formRow'>" . __('rename %s to %s', html_escape(dirname($rrd_file) . '/resize.rrd'), html_escape($rrd_file)) . '</div>';
 			}
 		}
 
