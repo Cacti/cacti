@@ -51,6 +51,10 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+if [[ -f tests/fixtures/Core/SelectedItemsCoverage.php ]]; then
+	run_probe SelectedItemsCoverage.php selected-items
+fi
+
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
