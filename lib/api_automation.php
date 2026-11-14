@@ -2880,6 +2880,9 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 		cacti_log($function . ' Found Template for Device[' . $host_id . '] - GT[' . $graph_template_id . ']', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
+		require_once __DIR__ . '/cisco_health_graphs.php';
+		$health_retry_attempted = false;
+
 		foreach ($snmp_query_indexes as $snmp_index) {
 			$snmp_query_array['snmp_index'] = $snmp_index['snmp_index'];
 
@@ -2893,7 +2896,14 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 				AND gl.snmp_index = ?',
 				array($rule['graph_type_id'], $host_id, $rule['snmp_query_id'], $snmp_query_array['snmp_index']));
 
-			if (isset($existsAlready) && $existsAlready > 0) {
+			if ($existsAlready) {
+				cisco_health_graph_retry_existing($host_id, (int)$graph_template_id, $snmp_query_array, $health_retry_attempted);
+			} else {
+				$combined = cisco_health_graph_existing($host_id, $graph_template_id, $snmp_query_array);
+				$existsAlready = $combined['local_graph_id'] ?? 0;
+			}
+
+			if ($existsAlready > 0) {
 				cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - Graph[$existsAlready]", false, 'AUTOM8', POLLER_VERBOSITY_HIGH);
 				continue;
 			}
