@@ -33,6 +33,7 @@ function api_plugin_hook($type, $args) {
 	$GLOBALS['graph_markup_hook'] = $args;
 }
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html.php', 'graph_drilldown_icons', __NAMESPACE__);
+\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html.php', 'graph_drilldown_display_class', __NAMESPACE__);
 
 if (!defined('CACTI_PATH_URL')) {
 	define('CACTI_PATH_URL', '/cacti/');
@@ -59,6 +60,14 @@ if (($argv[1] ?? '') === 'browser') {
 	exit;
 }
 
+// Empty or unrecognised preferences retain the existing collapsed-menu default.
+foreach (['' => 'graphDrillDownToggle', 'menu' => 'graphDrillDownToggle', 'icons' => 'graphDrillDownAlways', '<script>' => 'graphDrillDownToggle'] as $mode => $expected) {
+	$GLOBALS['graph_markup_user']['graph_actions_display'] = $mode;
+	if (graph_drilldown_display_class() !== $expected) {
+		throw new \RuntimeException('Unexpected action display class for ' . $mode);
+	}
+}
+
 ob_start();
 graph_drilldown_icons(7);
 $html     = ob_get_clean();
@@ -81,4 +90,4 @@ ob_start();
 graph_drilldown_icons(7);
 ob_get_clean();
 
-print json_encode(['passed' => 2], JSON_THROW_ON_ERROR) . "\n";
+print json_encode(['passed' => 6], JSON_THROW_ON_ERROR) . "\n";
