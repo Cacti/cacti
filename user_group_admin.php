@@ -212,6 +212,9 @@ function user_group_enable(int $id) : void {
 }
 
 function user_group_remove(int $id) : void {
+	// reset the members while the membership rows still exist
+	reset_group_perms($id);
+
 	db_execute_prepared('DELETE FROM user_auth_group WHERE id = ?', [$id]);
 	db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ?', [$id]);
 	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', [$id]);
@@ -274,6 +277,8 @@ function update_policies() : void {
 		}
 	}
 
+	reset_group_perms(gfrv('id'));
+
 	header('Location: user_group_admin.php?action=edit&tab=' . gnrv('tab') . '&id=' . gnrv('id'));
 
 	exit;
@@ -305,6 +310,8 @@ function form_actions() : void {
 			}
 		}
 
+		reset_group_perms(gfrv('id'));
+
 		header('Location: user_group_admin.php?action=edit&tab=permsd&id=' . gnrv('id'));
 
 		exit;
@@ -331,6 +338,8 @@ function form_actions() : void {
 				}
 			}
 		}
+
+		reset_group_perms(gfrv('id'));
 
 		header('Location: user_group_admin.php?action=edit&tab=permsg&id=' . gnrv('id'));
 
@@ -359,6 +368,8 @@ function form_actions() : void {
 			}
 		}
 
+		reset_group_perms(gfrv('id'));
+
 		header('Location: user_group_admin.php?action=edit&tab=permste&id=' . gnrv('id'));
 
 		exit;
@@ -386,6 +397,8 @@ function form_actions() : void {
 			}
 		}
 
+		reset_group_perms(gfrv('id'));
+
 		header('Location: user_group_admin.php?action=edit&tab=permstr&id=' . gnrv('id'));
 
 		exit;
@@ -409,6 +422,9 @@ function form_actions() : void {
 						AND user_id = ?',
 						[gnrv('id'), $matches[1]]);
 				}
+
+				// a removed member is no longer found through the group, so reset the user
+				reset_user_perms((int) $matches[1]);
 			}
 		}
 
@@ -637,6 +653,8 @@ function perm_remove() : void {
 	} elseif (grv('type') == 'graph_template') {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=4 AND group_id = ? AND item_id = ?', [grv('group_id'), grv('id')]);
 	}
+
+	reset_group_perms(grv('group_id'));
 
 	header('Location: user_group_admin.php?action=edit&tab=gperms&id=' . grv('group_id'));
 }

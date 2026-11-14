@@ -52,6 +52,8 @@ run_php_probe tests/fixtures/ScriptServerLogMaskingCoverage.php '^(cmd\.php|scri
 
 run_php_probe tests/fixtures/UserAdministrationAuditCoverage.php '^(user_admin\.php|lib/functions\.php|tests/fixtures/UserAdministrationAudit)'
 
+run_php_probe tests/fixtures/PermissionCacheResetCoverage.php '^(user_admin\.php|user_group_admin\.php|tests/fixtures/PermissionCacheResetCoverage\.php)'
+
 run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.php|lib/html_graph\.php|tests/fixtures/Core/GraphViewCrossFilterCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/HtmlGraphMarkup.php '^(lib/html_graph\.php|tests/fixtures/Core/HtmlGraphMarkup\.php)'
