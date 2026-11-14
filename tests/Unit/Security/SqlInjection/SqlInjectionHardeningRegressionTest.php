@@ -16,14 +16,17 @@
 
 $root = dirname(__DIR__, 4);
 
+require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
+
 test('db_column_exists quotes its LIKE term on the query connection (GHSA-rp5g)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/database.php');
-	expect($s)->toContain('db_qstr($column, $db_conn)')
+	expect($s)->toContainPhp('db_qstr($column, $db_conn)')
 		->and($s)->not->toContain('LIKE \'$column\'');
 });
 
 test('automation pivot builders escape field_name (GHSA-vx2m)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/api_automation.php');
+	$s = \Cacti\Tests\Helpers\PhpSource::normalizeWhitespace($s);
 	// The leading literal's quote style varies (strings with \n\t stay double-quoted, others are single),
 	// so count both forms of the db_qstr()-escaped pivot.
 	$escaped = substr_count($s, 'CASE WHEN field_name = " . db_qstr(')

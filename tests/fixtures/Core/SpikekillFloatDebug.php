@@ -12,7 +12,12 @@ $spiker = (new ReflectionClass(spikekill::class))->newInstanceWithoutConstructor
 $passed = 0;
 
 foreach (['Float Found,', 'Window Float Found,'] as $message) {
-	$pattern = '/if \(\$this->debug\) \{\s*\$this->debug\(sprintf\([\x27"]' . preg_quote($message, '/') . '[^\n]*\n\s*\}/';
+	/*
+	 * The guarded block holds no braces, so match up to the first closing
+	 * brace rather than the end of a line. Formatting may wrap the sprintf()
+	 * arguments over several lines, and the probe must still find the guard.
+	 */
+	$pattern = '/if \(\$this->debug\) \{\s*\$this->debug\(sprintf\([\x27"]' . preg_quote($message, '/') . '[^{}]*\}/';
 
 	if (!preg_match($pattern, $source, $match, PREG_OFFSET_CAPTURE)) {
 		throw new RuntimeException('Missing float debug guard');

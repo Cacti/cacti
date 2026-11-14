@@ -233,3 +233,20 @@ test('the status dates land as real timestamps, not epoch zero', function () {
 
 	expect($row['status_fail_date'])->toBeGreaterThan('2020-01-01 00:00:00');
 });
+
+test('an SNMP-only device without SNMP credentials stays up on its own row', function () {
+	// SNMP v1/v2 without a community is how a device declares it needs no SNMP check
+	$this->conn->exec("UPDATE host SET snmp_community = '' WHERE id = 1");
+
+	$ping = host_status_ping();
+
+	update_host_status(HOST_UP, 1, $ping, AVAIL_SNMP, false);
+
+	[$polled, $twin] = host_status_rows($this->conn);
+
+	expect($polled['status'])->toBe(HOST_UP)
+		->and($polled['total_polls'])->toBe(11)
+		->and($polled['failed_polls'])->toBe(0);
+
+	expect($twin['total_polls'])->toBe(10);
+});

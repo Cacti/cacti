@@ -132,7 +132,9 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 
 		if (!$token['success']) {
 			if ($this->debugEnabled) {
-				cacti_log('OIDC: token exchange failed for provider \'' . $this->getName() . '\': ' . $token['error'], false, 'AUTH');
+				cacti_log('OIDC: token exchange failed for provider \'' . $this->getName() . '\': ' . $token['error'],
+					false,
+					'AUTH');
 			}
 
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
@@ -166,7 +168,11 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 				// fetch; only trust it when its subject matches the already-verified
 				// ID token, or a substituted/inconsistent response could overwrite
 				// identity claims such as sub/preferred_username.
-				if (is_array($decoded) && isset($decoded['sub'], $claims['sub']) && hash_equals((string) $claims['sub'], (string) $decoded['sub'])) {
+				if (is_array($decoded) &&
+					isset($decoded['sub'],
+						$claims['sub']) &&
+					hash_equals((string) $claims['sub'],
+						(string) $decoded['sub'])) {
 					$claims = array_merge($claims, $decoded);
 				}
 			}
@@ -269,7 +275,10 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 
 		$discovery = json_decode($response['body'], true);
 
-		if (!is_array($discovery) || empty($discovery['authorization_endpoint']) || empty($discovery['token_endpoint']) || empty($discovery['jwks_uri'])) {
+		if (!is_array($discovery) ||
+			empty($discovery['authorization_endpoint']) ||
+			empty($discovery['token_endpoint']) ||
+			empty($discovery['jwks_uri'])) {
 			throw new \RuntimeException('Invalid OpenID discovery document');
 		}
 
@@ -297,6 +306,7 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 	}
 
 	protected function redirectUri(): string {
-		return rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=callback&realm=' . (1000 + $this->getId());
+		return rtrim((string) read_config_option('base_url'),
+			'/') . '/login_sso.php?action=callback&realm=' . (1000 + $this->getId());
 	}
 }

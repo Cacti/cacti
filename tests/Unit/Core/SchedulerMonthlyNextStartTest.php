@@ -184,3 +184,21 @@ test('a manual schedule has no next start', function () {
 		$now
 	))->toBeFalse();
 });
+
+test('the schedule editor starts its picker at the next five minute slot', function () {
+	// The page renders the current wall clock, so accept the slot on either
+	// side of a minute rollover during the call.
+	$expected = static function () : string {
+		return 'minDateTime: new Date(' . date('Y') . ', ' . (date('m') - 1) . ', ' . date('d, H') . ', ' .
+			date('i', intval(ceil(time() / 300)) * 300) . ', 0, 0)';
+	};
+
+	$before = $expected();
+	ob_start();
+	api_scheduler_javascript();
+	$script = ob_get_clean();
+	$after  = $expected();
+
+	expect(str_contains($script, $before) || str_contains($script, $after))->toBeTrue()
+		->and($script)->toContain("$('#start_at').datetimepicker(");
+});

@@ -34,15 +34,20 @@ class CoverageEvidenceTest(unittest.TestCase):
         with patch.object(GATE.subprocess, 'check_output', side_effect=['base', diff]):
             self.assertEqual(GATE.added_lines('HEAD^'), {'current.css': {1}})
 
-    def evaluate(self, evidence, added=(3,), minimum=None):
+    def evaluate(self, evidence, added=(3,), minimum=None, clover=None,
+                 text='<?php\nfunction example() {\nreturn true;\n}\n'):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / 'lib').mkdir()
             source = root / 'lib/example.php'
-            source.write_text('<?php\nfunction example() {\nreturn true;\n}\n')
+            source.write_text(text)
             coverage = root / 'coverage.json'
             coverage.write_text(json.dumps({str(source): {'lines': evidence}} if evidence is not None else {}))
             arguments = ['gate', '--base', 'HEAD', '--php-coverage', str(coverage)]
+            if clover is not None:
+                lines = ''.join(f'<line num="{number}" type="stmt" count="{count}"/>' for number, count in clover.items())
+                (root / 'clover.xml').write_text(f'<coverage><project><file name="{source}">{lines}</file></project></coverage>')
+                arguments += ['--clover', str(root / 'clover.xml')]
             if minimum is not None:
                 arguments += ['--minimum', str(minimum)]
             with patch.object(GATE.Path, 'cwd', return_value=root), patch.object(GATE, 'added_lines', return_value={'lib/example.php': set(added)}), patch('sys.argv', arguments), redirect_stdout(io.StringIO()):
@@ -62,6 +67,22 @@ class CoverageEvidenceTest(unittest.TestCase):
 
     def test_dead_opcode_is_excluded(self):
         self.assertEqual(self.evaluate({3: -2}), 0)
+
+    WRAPPED = '<?php\nfunction example($a, $b) {\nreturn check($a,\n$b);\n}\n'
+
+    def test_unanalysed_wrapped_argument_fails_closed(self):
+        # Without the analyser a missing statement-like line may belong to an
+        # uninstrumented slice of the file, so it cannot be skipped.
+        self.assertEqual(self.evaluate({3: 1}, (3, 4), text=self.WRAPPED), 1)
+
+    def test_analysed_wrapped_argument_follows_the_clover_line_set(self):
+        self.assertEqual(self.evaluate({3: 1}, (3, 4), clover={3: 0}, text=self.WRAPPED), 0)
+        self.assertEqual(self.evaluate({3: 1}, (3, 4), clover={3: 0, 4: 0}, text=self.WRAPPED), 1)
+        self.assertEqual(self.evaluate({3: 1, 4: 1}, (3, 4), clover={3: 0, 4: 0}, text=self.WRAPPED), 0)
+
+    def test_clover_hits_cover_lines_without_other_evidence(self):
+        self.assertEqual(self.evaluate({}, (3, 4), clover={3: 2, 4: 2}, text=self.WRAPPED), 0)
+        self.assertEqual(self.evaluate(None, (3, 4), clover={3: 0, 4: 0}, text=self.WRAPPED), 1)
 
     def inline_evaluate(self, hit=1, stale=False, php_statement=False):
         with tempfile.TemporaryDirectory() as temporary:
