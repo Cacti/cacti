@@ -79,6 +79,25 @@ test('installer completion validates schema and version with one query each', fu
 		->and(substr_count($version, 'SELECT '))->toBe(1);
 });
 
+test('the web upgrade leaves the target version to the post-verification write', function () {
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
+
+	expect($source)->not->toBeFalse();
+
+	$start   = strpos($source, 'private function upgradeDatabase()');
+	$end     = strpos($source, 'private function checkDatabaseUpgrade(', $start);
+	$upgrade = substr($source, $start, $end - $start);
+	$install = substr($source, strpos($source, '$failure = $this->upgradeDatabase();'));
+
+	// a failed schema or authentication check must not find the version already advanced
+	expect($start)->not->toBeFalse()
+		->and($end)->not->toBeFalse()
+		->and($upgrade)->not->toContain('CACTI_VERSION_FULL')
+		->and($upgrade)->toContain("!cacti_version_compare(CACTI_VERSION, \$cacti_upgrade_version, '=')")
+		->and(strpos($install, 'install_verify_authentication()'))->toBeLessThan(strpos($install, '$this->writeInstalledVersion()'))
+		->and(strpos($install, '$this->validateRequiredSchema()'))->toBeLessThan(strpos($install, '$this->writeInstalledVersion()'));
+});
+
 test('table conversion loads schema metadata once instead of once per table', function () {
 	$source = file_get_contents(CACTI_PATH_BASE . '/install/functions.php');
 
@@ -116,7 +135,7 @@ test('installer command-line adapters propagate failures and release locks', fun
 		->and($background)->toContain('finally {')
 		->and($background)->toContain('exit($completed ? 0 : 1);')
 		->and($conversion)->toContain('exit($conversion_failed ? 1 : 0);')
-		->and($installer)->toContain("['bypass_shell' => true]")
+		->and($installer)->toContain('new \\Cacti\\Installer\\CommandRunner()')
 		->and($import)->toContain('if (file_exists($filename) && !unlink($filename)) {')
 		->and($utility)->toContain('is_file($config_file) && is_readable($config_file)')
 		->and(substr_count($installer, 'shell_exec('))->toBe(2)

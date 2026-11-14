@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import xml.etree.ElementTree as ET
 
 
 def added_lines(base):
@@ -110,7 +111,21 @@ def main():
     php = {}
     browser = []
     for name in args.php_coverage:
-        for file, data in json.loads(Path(name).read_text()).items():
+        payload = Path(name).read_text()
+        if payload.lstrip().startswith('<'):
+            for file_el in ET.fromstring(payload).iter('file'):
+                file = file_el.get('name') or file_el.get('path')
+                if not file:
+                    continue
+                target = php.setdefault(str(Path(file).resolve()), {})
+                for line_el in file_el.iter('line'):
+                    if line_el.get('type') not in (None, 'stmt'):
+                        continue
+                    number = int(line_el.get('num'))
+                    hits = int(line_el.get('count', 0))
+                    target[number] = max(hits, target.get(number, -2))
+            continue
+        for file, data in json.loads(payload).items():
             lines = data.get('lines', data)
             target = php.setdefault(str(Path(file).resolve()), {})
             for number, hits in lines.items():
@@ -132,8 +147,9 @@ def main():
             executable = {n for n in added if n in evidence and evidence[n] != -2}
             # Source slices may instrument only one function in an entry point.
             # Missing statements elsewhere in that same file must fail closed.
+            # declare(strict_types=1) compiles away and has no opcode to execute.
             for number in added:
-                if number not in evidence and re.match(r'^\s*(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
+                if number not in evidence and re.match(r'^\s*(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|(?!declare\b)[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
                     executable.add(number)
             covered = {n for n in executable if evidence.get(n, -1) > 0}
             script = inline_script_lines(source) & added

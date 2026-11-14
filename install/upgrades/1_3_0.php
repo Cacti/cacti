@@ -111,6 +111,7 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_column('data_input_data', ['name' => 'host_id', 'type' => 'int', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'local_data_id']);
 
 	db_install_add_column('graph_templates', ['name' => 'last_updated', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP']);
+	db_install_add_column('data_template', ['name' => 'templates', 'type' => 'int', 'unsigned' => true, 'NULL' => false, 'default' => '0']);
 	db_install_add_column('data_template', ['name' => 'last_updated', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP']);
 	db_install_add_column('snmp_query', ['name' => 'last_updated', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP']);
 
