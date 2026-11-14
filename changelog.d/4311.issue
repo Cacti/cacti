@@ -1,0 +1,1 @@
+Point a CDEF's DEF names (such as a,b,-) in an aggregate graph at each member graph's own data sources, and at their totals in a totalling item, instead of the first member's
