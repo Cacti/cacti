@@ -1037,43 +1037,24 @@ function is_tree_allowed(int $tree_id, int $user_id = 0) : bool {
 		return true;
 	}
 
-	// check for group perms
-	$groups = db_fetch_assoc_prepared("SELECT uag.policy_trees
+	// Each enabled group decides by its own tree policy and its own tree
+	// exceptions; item_id is shared by every permission type, so only type 2
+	// rows are tree exceptions.
+	$groups = db_fetch_assoc_prepared("SELECT uag.id, uag.policy_trees, COUNT(uagp.item_id) AS exceptions
 		FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
 		ON uag.id = uagm.group_id
-		WHERE uag.enabled = 'on'
-		AND uagm.user_id = ?",
-		[$user_id]);
-
-	if (!cacti_sizeof($groups)) {
-		$_SESSION[SESS_TREE_PERMS][$tree_id] = false;
-
-		return false;
-	}
-
-	foreach ($groups as $g) {
-		if (auth_check_perms($trees, $g['policy_trees'])) {
-			$_SESSION[SESS_TREE_PERMS][$tree_id] = true;
-
-			return true;
-		}
-	}
-
-	// check for group trees
-	$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
-		FROM user_auth_group AS uag
-		INNER JOIN user_auth_group_members AS uagm
-		ON uag.id = uagm.group_id
-		INNER JOIN user_auth_group_perms as uagp
+		LEFT JOIN user_auth_group_perms AS uagp
 		ON uagp.group_id = uag.id
+		AND uagp.type = 2
+		AND uagp.item_id = ?
 		WHERE uag.enabled = 'on'
 		AND uagm.user_id = ?
-		AND uagp.item_id = ?",
-		[$user_id, $tree_id]);
+		GROUP BY uag.id, uag.policy_trees",
+		[$tree_id, $user_id]);
 
 	foreach ($groups as $g) {
-		if (auth_check_perms($gtrees, $g['policy_trees'])) {
+		if (auth_check_perms($g['exceptions'] > 0 ? [$g] : [], (int) $g['policy_trees'])) {
 			$_SESSION[SESS_TREE_PERMS][$tree_id] = true;
 
 			return true;
@@ -1173,90 +1154,155 @@ function is_view_allowed(string $view = 'show_tree') : bool {
 /**
  * Given a tree id and a branch id, check if it's empty
  *
+ * A branch is not empty when it holds a graph, device or site with a device
+ * the current user may view, directly or through any nested branch.
+ *
  * @param int $tree_id The ID of the tree to check.
  * @param int $parent  The parent ID of the branch to check. Default is 0.
  *
  * @return bool Returns true if the branch is empty, false otherwise.
  */
 function is_tree_branch_empty(int $tree_id, int $parent = 0) : bool {
-	$graphs = array_rekey(
-		db_fetch_assoc_prepared('SELECT local_graph_id
-			FROM graph_tree_items
-			WHERE graph_tree_id = ?
-			AND local_graph_id > 0
-			AND parent = ?',
-			[$tree_id, $parent]
-		), 'local_graph_id', 'local_graph_id'
-	);
+	$visible = get_tree_visible_branches($tree_id);
 
-	$simple_perms = get_simple_graph_perms($_SESSION[SESS_USER_ID]);
+	return !isset($visible[$parent]);
+}
 
-	if (cacti_sizeof($graphs) && ($simple_perms || cacti_sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')'))) > 0) {
-		return false;
+/**
+ * Returns the branches of a tree that hold something the current user may view
+ *
+ * The tree's items are read once and the graphs and devices they reference are
+ * checked in batches against the user's permissions; every ancestor of a
+ * visible leaf is then marked in memory. Only branches (items with neither a
+ * graph nor a device) pass visibility on to their parent, as the per-branch
+ * walk did. The result is kept for the rest of the request, keyed by user,
+ * tree and the last tree change.
+ *
+ * @param int $tree_id The ID of the tree.
+ *
+ * @return array<int, true> The non-empty branch ids; key 0 is the tree root.
+ */
+function get_tree_visible_branches(int $tree_id) : array {
+	static $cache = [];
+
+	$user_id = (int) ($_SESSION[SESS_USER_ID] ?? 0);
+	$key     = $user_id . ':' . $tree_id . ':' . read_config_option('time_last_change_branch');
+
+	if (isset($cache[$key])) {
+		return $cache[$key];
 	}
 
-	$hosts = array_rekey(
-		db_fetch_assoc_prepared('SELECT host_id
-			FROM graph_tree_items
-			WHERE graph_tree_id = ?
-			AND host_id > 0
-			AND parent = ?',
-			[$tree_id, $parent]
-		), 'host_id', 'host_id'
-	);
-
-	$sites = array_rekey(
-		db_fetch_assoc_prepared('SELECT site_id
-			FROM graph_tree_items
-			WHERE graph_tree_id = ?
-			AND site_id > 0
-			AND parent = ?',
-			[$tree_id, $parent]
-		), 'site_id', 'site_id'
-	);
-
-	if (!cacti_sizeof($sites)) {
-		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
-
-		if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')', 'description', '', $total_rows)) > 0) {
-			return false;
-		}
-	} else {
-		$site_hosts = [];
-
-		foreach ($sites as $site) {
-			$site_hosts += array_rekey(
-				db_fetch_assoc_prepared('SELECT id
-					FROM host
-					WHERE site_id = ?',
-					[$site]
-				), 'id', 'id'
-			);
-		}
-		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
-
-		if (cacti_sizeof($site_hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $site_hosts) . ')', 'description', '', $total_rows)) > 0) {
-			return false;
-		}
-	}
-
-	$branches = db_fetch_assoc_prepared('SELECT id, graph_tree_id
+	$items = db_fetch_assoc_prepared('SELECT id, parent, local_graph_id, host_id, site_id
 		FROM graph_tree_items
-		WHERE graph_tree_id = ?
-		AND parent = ?
-		AND local_graph_id = 0
-		AND host_id = 0',
-		[$tree_id, $parent]);
+		WHERE graph_tree_id = ?',
+		[$tree_id]);
 
-	if (cacti_sizeof($branches)) {
-		foreach ($branches as $b) {
-			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
-				return false;
+	$parents    = [];
+	$containers = [];
+	$graphs     = [];
+	$hosts      = [];
+	$sites      = [];
+
+	foreach ($items as $item) {
+		$id = (int) $item['id'];
+
+		$parents[$id] = (int) $item['parent'];
+
+		if ($item['local_graph_id'] > 0) {
+			$graphs[(int) $item['local_graph_id']] = true;
+		}
+
+		if ($item['host_id'] > 0) {
+			$hosts[(int) $item['host_id']] = true;
+		}
+
+		if ($item['site_id'] > 0) {
+			$sites[(int) $item['site_id']] = true;
+		}
+
+		if ($item['local_graph_id'] == 0 && $item['host_id'] == 0) {
+			$containers[$id] = true;
+		}
+	}
+
+	$allowed_graphs = [];
+
+	if (cacti_sizeof($graphs)) {
+		if (get_simple_graph_perms($user_id)) {
+			$allowed_graphs = $graphs;
+		} else {
+			foreach (array_chunk(array_keys($graphs), 1000) as $chunk) {
+				$total_rows = -1;
+
+				foreach (get_allowed_graphs('gl.id IN(' . implode(',', $chunk) . ')', '', '', $total_rows) as $graph) {
+					$allowed_graphs[(int) $graph['local_graph_id']] = true;
+				}
 			}
 		}
 	}
 
-	return true;
+	$site_hosts = [];
+
+	if (cacti_sizeof($sites)) {
+		$site_ids = array_keys($sites);
+
+		$site_rows = db_fetch_assoc_prepared('SELECT id, site_id
+			FROM host
+			WHERE site_id IN (' . implode(',', array_fill(0, cacti_sizeof($site_ids), '?')) . ')',
+			$site_ids);
+
+		foreach ($site_rows as $row) {
+			$site_hosts[(int) $row['id']] = (int) $row['site_id'];
+			$hosts[(int) $row['id']]      = true;
+		}
+	}
+
+	$allowed_hosts = [];
+
+	if (cacti_sizeof($hosts)) {
+		foreach (array_chunk(array_keys($hosts), 1000) as $chunk) {
+			$total_rows = -1;
+
+			foreach (get_allowed_devices('h.id IN(' . implode(',', $chunk) . ')', '', '', $total_rows) as $host) {
+				$allowed_hosts[(int) $host['id']] = true;
+			}
+		}
+	}
+
+	$allowed_sites = [];
+
+	foreach ($site_hosts as $host_id => $site_id) {
+		if (isset($allowed_hosts[$host_id])) {
+			$allowed_sites[$site_id] = true;
+		}
+	}
+
+	$visible = [];
+
+	foreach ($items as $item) {
+		if (!(($item['local_graph_id'] > 0 && isset($allowed_graphs[(int) $item['local_graph_id']]))
+			|| ($item['host_id'] > 0 && isset($allowed_hosts[(int) $item['host_id']]))
+			|| ($item['site_id'] > 0 && isset($allowed_sites[(int) $item['site_id']])))) {
+			continue;
+		}
+
+		// stopping at an already visible branch also ends a stored parent cycle
+		$branch = (int) $item['parent'];
+
+		while (!isset($visible[$branch])) {
+			$visible[$branch] = true;
+
+			if ($branch == 0 || !isset($containers[$branch])) {
+				break;
+			}
+
+			$branch = $parents[$branch];
+		}
+	}
+
+	$cache[$key] = $visible;
+
+	return $visible;
 }
 
 /**
@@ -1476,8 +1522,8 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
 	$hierarchy = [];
 
 	if ($tree_id > 0) {
-		if (cacti_sizeof($trees)) {
-			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
+		if (!isset($trees[$tree_id])) {
+			return [];
 		}
 
 		$hierarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, gti.site_id,
@@ -1938,7 +1984,7 @@ function get_simple_device_perms(int $user) : bool {
 	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_perms
 		WHERE user_id = ?
-		AND type = 2',
+		AND type = 3',
 		[$user]);
 
 	if ($policy_hosts == 1 && $perm_count == 0) {
@@ -1950,7 +1996,7 @@ function get_simple_device_perms(int $user) : bool {
 			ON uag.id = uagp.group_id
 			INNER JOIN user_auth_group_members AS uagm
 			ON uagm.group_id = uag.id
-			WHERE uagp.type = 2
+			WHERE uagp.type = 3
 			AND uagm.user_id = ?
 			GROUP BY uag.id',
 			[$user]);
