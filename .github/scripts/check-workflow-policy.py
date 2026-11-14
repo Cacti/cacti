@@ -98,16 +98,84 @@ def resolve_workflow_files(root: Path, explicit_paths: list[str]) -> list[Path]:
     )
 
 
+def check_step(rel: str, step_name: str, step: dict, violations: list[str], checkout: bool = False) -> None:
+    uses_value = step.get("uses")
+    if isinstance(uses_value, str):
+        check_uses(rel, step_name, uses_value.strip(), violations)
+        if checkout:
+            check_checkout(rel, step_name, step, uses_value, violations)
+    run_value = step.get("run")
+    if isinstance(run_value, str):
+        check_run(rel, step_name, run_value, violations)
+
+
+def check_checkout(rel: str, step_name: str, step: dict, uses_value: str, violations: list[str]) -> None:
+    if not uses_value.startswith("actions/checkout@") or rel in CHECKOUT_WRITE_WORKFLOWS:
+        return
+    checkout_with = step.get("with")
+    persisted = checkout_with.get("persist-credentials") if isinstance(checkout_with, dict) else None
+    if persisted is not False:
+        violations.append(f"{rel}:{step_name}: read-only checkout must set persist-credentials: false")
+
+
+def check_job_images(rel: str, job_name: str, job: dict, violations: list[str]) -> None:
+    container = job.get("container")
+    if isinstance(container, str):
+        check_container_image(rel, f"{job_name}.container", container, violations)
+    elif isinstance(container, dict):
+        check_container_image(rel, f"{job_name}.container", container.get("image"), violations)
+    services = job.get("services")
+    if isinstance(services, dict):
+        for service_name, service in services.items():
+            if isinstance(service, dict):
+                check_container_image(rel, f"{job_name}.services.{service_name}", service.get("image"), violations)
+
+
+def check_job(rel: str, job_name: str, job: dict, violations: list[str]) -> None:
+    if "uses" not in job:
+        runner = job.get("runs-on")
+        if runner not in ALLOWED_RUNNERS:
+            violations.append(f"{rel}:{job_name}: runs-on must use a fixed approved image: {runner}")
+        if "timeout-minutes" not in job:
+            violations.append(f"{rel}:{job_name}: job must define timeout-minutes")
+    check_job_images(rel, job_name, job, violations)
+    job_uses = job.get("uses")
+    if isinstance(job_uses, str):
+        check_uses(rel, f"{job_name} (job)", job_uses.strip(), violations)
+    for idx, step in enumerate(normalize_steps(job), start=1):
+        if isinstance(step, dict):
+            step_name = str(step.get("name", f"{job_name}.step{idx}"))
+            check_step(rel, step_name, step, violations, checkout=True)
+
+
+def check_composite(rel: str, doc: object, violations: list[str]) -> None:
+    runs = doc.get("runs", {}) if isinstance(doc, dict) else {}
+    action_steps = runs.get("steps", []) if isinstance(runs, dict) else []
+    for idx, step in enumerate(action_steps, start=1):
+        if isinstance(step, dict):
+            step_name = str(step.get("name", f"action.step{idx}"))
+            check_step(rel, step_name, step, violations)
+
+
+def check_document(rel: str, doc: object, violations: list[str]) -> None:
+    if rel.startswith(".github/actions/"):
+        check_composite(rel, doc, violations)
+        return
+    jobs = doc.get("jobs", {}) if isinstance(doc, dict) else {}
+    if isinstance(jobs, dict):
+        for job_name, job in jobs.items():
+            if isinstance(job, dict):
+                check_job(rel, job_name, job, violations)
+
+
 def main() -> int:
     args = parse_args()
     root = Path(__file__).resolve().parents[2]
     workflow_files = resolve_workflow_files(root, args.workflows)
     violations: list[str] = []
-
     if not workflow_files:
         print("No workflow files found to validate.")
         return 0
-
     for wf in workflow_files:
         rel = str(wf.relative_to(root))
         try:
@@ -115,92 +183,7 @@ def main() -> int:
         except Exception as exc:  # pragma: no cover
             violations.append(f"{rel}: failed to parse YAML: {exc}")
             continue
-
-        if rel.startswith(".github/actions/"):
-            runs = doc.get("runs", {}) if isinstance(doc, dict) else {}
-            action_steps = runs.get("steps", []) if isinstance(runs, dict) else []
-            for idx, step in enumerate(action_steps, start=1):
-                if not isinstance(step, dict):
-                    continue
-                step_name = str(step.get("name", f"action.step{idx}"))
-                uses_value = step.get("uses")
-                if isinstance(uses_value, str):
-                    check_uses(rel, step_name, uses_value.strip(), violations)
-                run_value = step.get("run")
-                if isinstance(run_value, str):
-                    check_run(rel, step_name, run_value, violations)
-            continue
-
-        jobs = doc.get("jobs", {}) if isinstance(doc, dict) else {}
-        if not isinstance(jobs, dict):
-            continue
-
-        for job_name, job in jobs.items():
-            if not isinstance(job, dict):
-                continue
-
-            if "uses" not in job:
-                runner = job.get("runs-on")
-                if runner not in ALLOWED_RUNNERS:
-                    violations.append(
-                        f"{rel}:{job_name}: runs-on must use a fixed approved image: {runner}"
-                    )
-                if "timeout-minutes" not in job:
-                    violations.append(
-                        f"{rel}:{job_name}: job must define timeout-minutes"
-                    )
-
-            container = job.get("container")
-            if isinstance(container, str):
-                check_container_image(rel, f"{job_name}.container", container, violations)
-            elif isinstance(container, dict):
-                check_container_image(
-                    rel, f"{job_name}.container", container.get("image"), violations
-                )
-
-            services = job.get("services")
-            if isinstance(services, dict):
-                for service_name, service in services.items():
-                    if isinstance(service, dict):
-                        check_container_image(
-                            rel,
-                            f"{job_name}.services.{service_name}",
-                            service.get("image"),
-                            violations,
-                        )
-
-            # Reusable-workflow calls live at the job level (jobs.<id>.uses) and
-            # must be pinned just like step actions.
-            job_uses = job.get("uses")
-            if isinstance(job_uses, str):
-                check_uses(rel, f"{job_name} (job)", job_uses.strip(), violations)
-
-            for idx, step in enumerate(normalize_steps(job), start=1):
-                if not isinstance(step, dict):
-                    continue
-                step_name = str(step.get("name", f"{job_name}.step{idx}"))
-
-                uses_value = step.get("uses")
-                if isinstance(uses_value, str):
-                    check_uses(rel, step_name, uses_value.strip(), violations)
-                    if (
-                        uses_value.startswith("actions/checkout@")
-                        and rel not in CHECKOUT_WRITE_WORKFLOWS
-                    ):
-                        checkout_with = step.get("with")
-                        persisted = (
-                            checkout_with.get("persist-credentials")
-                            if isinstance(checkout_with, dict)
-                            else None
-                        )
-                        if persisted is not False:
-                            violations.append(
-                                f"{rel}:{step_name}: read-only checkout must set persist-credentials: false"
-                            )
-
-                run_value = step.get("run")
-                if isinstance(run_value, str):
-                    check_run(rel, step_name, run_value, violations)
+        check_document(rel, doc, violations)
 
     if violations:
         print("Workflow policy violations:")
