@@ -1906,7 +1906,7 @@ function html_graph_single_view() : void {
 			print "<div class='graphWrapper' id='wrapper_" . $graph['local_graph_id'] . "' graph_id='" . $graph['local_graph_id'] . "' rra_id='" . $rra['id'] . "' graph_width='" . $graph['width'] . "' graph_height='" . $graph['height'] . "' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' title_font_size='" . ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')) . "'></div>";
 
 			if (is_realm_allowed(27)) {
-				print "<div id='dd" . htmle(get_filter_request_var('local_graph_id')) . "' class='graphDrillDown graphDrillDownToggle noprint'>";
+				print "<div id='dd" . htmle(get_filter_request_var('local_graph_id')) . "' class='graphDrillDown " . graph_drilldown_display_class() . " noprint'>";
 
 				print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
 				print "<div class='iconWrapper'>";
@@ -2232,7 +2232,7 @@ function html_graph_zoom() : void {
 			<div>
 				<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id']; ?>' rra_id='<?php print $rra['id']; ?>' graph_width='<?= $graph_width ?>' graph_height='<?= $graph_height ?>' title_font_size='<?= $title_font_size ?>'></div>
 				<?php if (is_realm_allowed(27)) { ?>
-				<div id='dd<?php print htmle(get_filter_request_var('local_graph_id')); ?>' class='graphDrillDown graphDrillDownToggle noprint'>
+				<div id='dd<?php print htmle(get_filter_request_var('local_graph_id')); ?>' class='graphDrillDown <?php print graph_drilldown_display_class(); ?> noprint'>
 					<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions'); ?>'><i class='fa fa-bars'></i></span>
 					<div class='iconWrapper'>
 					<a href='#' id='graph_<?php print $graph['local_graph_id']; ?>_properties' class='iconLink properties'>

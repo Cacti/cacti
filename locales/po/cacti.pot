@@ -25494,3 +25494,15 @@ msgstr ""
 #, php-format
 msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
 msgstr ""
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Collapsed Menu"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""

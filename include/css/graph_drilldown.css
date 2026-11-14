@@ -134,3 +134,46 @@
 	text-align: center;
 	vertical-align: middle;
 }
+
+/* Reserve space beside the graph for users who prefer direct actions. */
+.graphWrapperOuter > div:first-child:has(> .graphDrillDownAlways) {
+	display: flex;
+	align-items: flex-start;
+}
+
+.graphWrapperOuter > div:first-child:has(> .graphDrillDownAlways) > .graphWrapper {
+	min-width: 0;
+}
+
+.graphDrillDownAlways {
+	position: static;
+	z-index: auto;
+	display: block;
+	flex: 0 0 24px;
+	width: 24px;
+	min-width: 24px;
+	height: auto;
+	padding: 10px 3px;
+}
+
+.graphDrillDownAlways .graphDrillDownMenu {
+	display: none;
+}
+
+.graphDrillDownAlways .iconWrapper {
+	display: block;
+	visibility: visible;
+	opacity: 1;
+}
+
+.graphDrillDownAlways .iconLink {
+	display: inline-block;
+	width: 24px;
+	line-height: 24px;
+	text-align: center;
+}
+
+.graphDrillDownAlways .iconLink:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 1px;
+}

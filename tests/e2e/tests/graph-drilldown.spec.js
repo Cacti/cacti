@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
 	await page.addStyleTag({ path: path.join(root, 'include/css/graph_drilldown.css') });
 	await page.addScriptTag({ path: path.join(root, 'include/js/jquery.js') });
 	const source = fs.readFileSync(path.join(root, 'include/layout.js'), 'utf8');
-	const start = source.indexOf('function initGraphDrilldown()');
+	const start = source.indexOf('function labelVisibleGraphActions()');
 	const end = source.indexOf('\nfunction initializeGraphs', start);
 	expect(start).toBeGreaterThan(-1);
 	expect(end).toBeGreaterThan(start);

@@ -1,0 +1,106 @@
+// Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const test = require('node:test');
+const vm = require('node:vm');
+const source = fs.readFileSync(path.join(__dirname, '../../include/layout.js'), 'utf8');
+const start = source.indexOf('function labelVisibleGraphActions()');
+const end = source.indexOf('\nfunction initializeGraphs(', start);
+assert.ok(start >= 0 && end > start);
+
+function initialize(links, withSpikeKill = true, activeLayout = 'icons') {
+	const handlers = new Map();
+	const document = {};
+	let closed = 0;
+	let focused = 0;
+	const wrapper = item => ({
+		attr(name, value) {
+			if (value === undefined) return item[name];
+			item[name] = value;
+			return this;
+		},
+		closest: () => ({ length: item.visibleIcons ? 1 : 0 }),
+		trigger: event => { if (event === 'focus') focused++; },
+		find(selector) {
+			if (selector === '.iconLink.spikekill') return { trigger: event => { if (event === 'focus') focused++; } };
+			assert.equal(selector, 'i[title], img[title]');
+			return { first: () => wrapper(item.glyph || item.image || {}) };
+		}
+	});
+	const events = {
+		off: () => events,
+		on(event, selector, handler) {
+			if (typeof selector === 'function') handlers.set(event, selector);
+			else handlers.set(event + ':' + selector, handler);
+			return events;
+		}
+	};
+	const $ = item => item === document ? events : typeof item === 'string'
+		? { each: fn => { assert.equal(item, '.graphDrillDownAlways .iconWrapper a'); links.forEach(link => fn.call(link)); } } : wrapper(item);
+	const context = { $, document, setTimeout, spikeKillAnchor: activeLayout ? { visibleIcons: activeLayout === 'icons' } : null };
+	if (withSpikeKill) context.spikeKillClose = () => { closed++; };
+	vm.runInNewContext(source.slice(start, end) + '\ninitGraphDrilldown();', context);
+	return { relabel: () => vm.runInNewContext("labelVisibleGraphActions();", context), handlers, counts: () => ({ closed, focused }) };
+}
+
+test('visible graph actions gain accessible names while keeping their tooltips', () => {
+	const links = [{ glyph: { title: 'Details' } }, { title: 'Plugin action' }, { 'aria-label': 'Custom name', glyph: { title: 'Icon tooltip' } }];
+	initialize(links);
+	assert.deepEqual(links.map(link => link['aria-label']), ['Details', 'Plugin action', 'Custom name']);
+	assert.equal(links[0].glyph.title, 'Details');
+	assert.equal(links[1].title, 'Plugin action');
+});
+
+test('Escape closes the visible-icons submenu and returns focus without running an action', () => {
+	const state = initialize([]);
+	const handler = state.handlers.get('keydown.graphdd');
+	handler.call({}, { keyCode: 9 });
+	assert.deepEqual(state.counts(), { closed: 0, focused: 0 });
+	handler.call({}, { keyCode: 27 });
+	assert.deepEqual(state.counts(), { closed: 1, focused: 1 });
+});
+
+test('visible-icons Escape is safe when SpikeKill is unavailable', () => {
+	const state = initialize([], false);
+	assert.doesNotThrow(() => state.handlers.get('keydown.graphdd').call({}, { keyCode: 27 }));
+});
+
+for (const layout of [null, 'menu']) {
+	test('Escape leaves inactive or collapsed-menu anchors alone: ' + layout, () => {
+		const state = initialize([], true, layout);
+		state.handlers.get('keydown.graphdd').call({}, { keyCode: 27 });
+		assert.deepEqual(state.counts(), { closed: 0, focused: 0 });
+	});
+}
+
+test('aggregate image actions and replacement icons receive names on refresh', () => {
+	const links = [{ image: { title: 'Display Graphs from this Aggregate' } }];
+	const state = initialize(links);
+	assert.equal(links[0]['aria-label'], 'Display Graphs from this Aggregate');
+	links.splice(0, 1, { image: { title: 'Replacement aggregate' } });
+	state.relabel();
+	assert.equal(links[0]['aria-label'], 'Replacement aggregate');
+	const skin = source.slice(source.indexOf('function applySkin()'));
+	assert.ok(skin.indexOf('labelVisibleGraphActions();') < skin.indexOf('.tooltip('));
+});
+
+test('generated realtime names follow state changes but explicit names are preserved', () => {
+	const action = { glyph: { title: 'Start realtime' } };
+	const state = initialize([action]);
+	assert.equal(action['aria-label'], 'Start realtime');
+	action.glyph = { title: 'Stop realtime' };
+	state.relabel();
+	assert.equal(action['aria-label'], 'Stop realtime');
+	action.glyph = { title: 'Start realtime' };
+	state.relabel();
+	assert.equal(action['aria-label'], 'Start realtime');
+	action['aria-label'] = 'Custom action';
+	action.glyph = { title: 'Stop realtime' };
+	state.relabel();
+	assert.equal(action['aria-label'], 'Custom action');
+	for (const line of source.split('\n').filter(line => line.includes('$(this).html(') && /realtimeClickOn|realtimeClickOff/.test(line))) {
+		assert.ok(source.includes(line + '\n\t\t\t\tlabelVisibleGraphActions();'));
+	}
+});
