@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-09 22:18+0000\n"
+"PO-Revision-Date: 2026-11-16 07:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -2275,7 +2275,7 @@ msgstr "När ska nätverksupptäckten starta?"
 
 #: automation_networks.php:895
 msgid "Rerun Every"
-msgstr "Kör igen varje"
+msgstr "Kör om var"
 
 #: automation_networks.php:896
 msgid "Rerun discovery for this Network Range every X."
@@ -2283,7 +2283,7 @@ msgstr "Kör upptäckt för nätverksintervallet igen med det angivna intervalle
 
 #: automation_networks.php:911
 msgid "Days of Week"
-msgstr "Veckans dagar"
+msgstr "Veckodagar"
 
 #: automation_networks.php:912 automation_networks.php:970
 msgid "What Day(s) of the week will this Network Range be discovered."
@@ -5632,7 +5632,7 @@ msgstr "Cacti-grafer i realtid"
 #: graph_realtime.php:436 lib/html_graph.php:357 lib/html_reports.php:124
 #: lib/html_tree.php:1350
 msgid "Thumbnails"
-msgstr "Miniatyrer"
+msgstr "Miniatyrbilder"
 
 #: graph_realtime.php:440
 #, php-format
@@ -16647,7 +16647,7 @@ msgstr "Visa sidhjälp"
 
 #: lib/html.php:298 settings.php:360
 msgid "Templates Selected"
-msgstr "Mallar valda"
+msgstr "Valda mallar"
 
 #: lib/html.php:352 settings.php:328 settings.php:350 settings.php:401
 msgid "Enter keyword"
@@ -17315,7 +17315,7 @@ msgstr "Från"
 
 #: lib/html_graph.php:395 lib/html_tree.php:1388
 msgid "Start Date Selector"
-msgstr "Startdatumsväljare"
+msgstr "Välj startdatum"
 
 #: lib/html_graph.php:399 lib/html_reports.php:2066 lib/html_reports.php:2077
 #: lib/html_tree.php:1392
@@ -17324,7 +17324,7 @@ msgstr "Till"
 
 #: lib/html_graph.php:404 lib/html_tree.php:1397
 msgid "End Date Selector"
-msgstr "Slutdatumsväljare"
+msgstr "Välj slutdatum"
 
 #: lib/html_graph.php:409 lib/html_tree.php:1402
 msgid "Shift Time Backward"
@@ -17332,7 +17332,7 @@ msgstr "Flytta tiden bakåt"
 
 #: lib/html_graph.php:410 lib/html_tree.php:1403
 msgid "Define Shifting Interval"
-msgstr "Definiera förskjutningsintervall"
+msgstr "Ange förskjutningsintervall"
 
 #: lib/html_graph.php:422 lib/html_tree.php:1415
 msgid "Shift Time Forward"
