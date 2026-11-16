@@ -1,0 +1,1 @@
+Correct signed voltage conversion in lm-sensors get and query readings and skip arithmetic on failed query readings
