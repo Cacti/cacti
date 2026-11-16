@@ -18092,39 +18092,6 @@ msgid "Get Started"
 msgstr ""
 
 #: lib/installer.php
-msgid "WARNING: Composer could not be executed.  Run 'composer install' from the Cacti directory manually and check its output."
-msgstr ""
-
-#: lib/installer.php
-msgid "Composer dependencies are current, no vendor refresh needed."
-msgstr ""
-
-#: lib/installer.php
-msgid "WARNING: Composer could not determine the vendor state.  Run 'composer install' from the Cacti directory manually and check its output."
-msgstr ""
-
-#: lib/installer.php
-#, php-format
-msgid "NOTE: Composer reports the vendor state as '%s'.  No refresh was attempted."
-msgstr ""
-
-#: lib/installer.php
-msgid "WARNING: Composer reports include/vendor is missing packages, but it is not writable by the web server.  Run 'composer install' from the Cacti directory manually."
-msgstr ""
-
-#: lib/installer.php
-msgid "Refreshing Composer dependencies in include/vendor."
-msgstr ""
-
-#: lib/installer.php
-msgid "WARNING: Composer refresh did not complete.  Run 'composer install' from the Cacti directory manually."
-msgstr ""
-
-#: lib/installer.php
-msgid "Composer dependencies refreshed."
-msgstr ""
-
-#: lib/installer.php
 #, php-format
 msgid "Starting %s Process for v%s"
 msgstr ""
@@ -25501,4 +25468,12 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#: lib/installer.php
+msgid "Production dependencies are incomplete or differ from composer.lock. Run composer install --no-dev before retrying."
 msgstr ""

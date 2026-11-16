@@ -41,10 +41,14 @@ function xml2array(string $data) : mixed {
 
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
-	xml_parse_into_struct($p, $data, $vals, $index);
+	$parsed = xml_parse_into_struct($p, $data, $vals, $index);
 
 	if (version_compare(PHP_VERSION, '8.0', '<')) {
 		xml_parser_free($p);
+	}
+
+	if ($parsed === 0) {
+		return [];
 	}
 
 	$tree = [];

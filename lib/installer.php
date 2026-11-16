@@ -3837,85 +3837,6 @@ class Installer implements JsonSerializable {
 
 	// The following functions perform the leg work for installation
 
-	/**
-	 * refreshVendorDependencies() - runs composer install when the configured
-	 * composer binary reports the committed lock file is ahead of the
-	 * include/vendor tree.  A missing or failing composer is never fatal:
-	 * the vendor tree was complete enough to boot the installer, so the
-	 * outcome is logged and the install continues.
-	 *
-	 * @return void
-	 */
-	private function refreshVendorDependencies() : void {
-		$composer = read_config_option('path_composer', true);
-
-		if (empty($composer) || !file_exists($composer)) {
-			return;
-		}
-
-		// composer refuses to run without a home for its cache
-		if (getenv('COMPOSER_HOME') == '' && getenv('HOME') == '') {
-			putenv('COMPOSER_HOME=' . sys_get_temp_dir() . '/cacti-composer');
-		}
-
-		$command = [$composer, 'install', '--no-interaction', '--working-dir=' . CACTI_PATH_BASE];
-		$result  = $this->runCommand([...$command, '--dry-run']);
-		$check   = implode(PHP_EOL, $result['output']);
-
-		if ($result['exitCode'] !== 0) {
-			log_install_always('', __('WARNING: Composer could not be executed.  Run \'composer install\' from the Cacti directory manually and check its output.'));
-
-			return;
-		}
-
-		if (str_contains((string) $check, 'Nothing to install, update or remove')) {
-			log_install_always('', __('Composer dependencies are current, no vendor refresh needed.'));
-
-			return;
-		}
-
-		/* only a dry-run that lists package operations proves the vendor tree
-		   is stale; any other output means composer itself has a problem */
-		if (!preg_match('/Package operations: (\d+) installs?, (\d+) updates?, (\d+) removals?/', $check, $ops)) {
-			log_install_always('', __('WARNING: Composer could not determine the vendor state.  Run \'composer install\' from the Cacti directory manually and check its output.'));
-
-			return;
-		}
-
-		/* a checkout without vendor produces installs only.  Updates or
-		   removals mean the committed tree differs from the lock file; that
-		   is a repository question, not something to change during install */
-		if ($ops[1] == 0 || $ops[2] > 0 || $ops[3] > 0) {
-			log_install_always('', __('NOTE: Composer reports the vendor state as \'%s\'.  No refresh was attempted.', trim($ops[0])));
-
-			return;
-		}
-
-		// composer writes into include/vendor, or creates it under include/
-		$vendor_dir = CACTI_PATH_INCLUDE . '/vendor';
-		$write_path = is_dir($vendor_dir) ? $vendor_dir . '/' : CACTI_PATH_INCLUDE . '/';
-
-		if (!is_resource_writable($write_path)) {
-			log_install_always('', __('WARNING: Composer reports include/vendor is missing packages, but it is not writable by the web server.  Run \'composer install\' from the Cacti directory manually.'));
-
-			return;
-		}
-
-		log_install_always('', __('Refreshing Composer dependencies in include/vendor.'));
-
-		$result = $this->runCommand([...$command, '--no-progress']);
-
-		if ($result['output'] !== []) {
-			log_install_debug('composer', implode(PHP_EOL, $result['output']));
-		}
-
-		if ($result['exitCode'] !== 0 || !is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
-			log_install_always('', __('WARNING: Composer refresh did not complete.  Run \'composer install\' from the Cacti directory manually.'));
-		} else {
-			log_install_always('', __('Composer dependencies refreshed.'));
-		}
-	}
-
 	private function install() : void {
 		$failure = $this->mode == Installer::MODE_UPGRADE ? '' : $this->validateRequiredSchema();
 
@@ -3941,9 +3862,11 @@ class Installer implements JsonSerializable {
 		if ($failure === '') {
 			$this->setCSRFSecret();
 
-			$this->refreshVendorDependencies();
-
-			$failure = $this->convertDatabase();
+			if (!install_validate_vendor_dependencies(CACTI_PATH_BASE)) {
+				$failure = __('Production dependencies are incomplete or differ from composer.lock. Run composer install --no-dev before retrying.');
+			} else {
+				$failure = $this->convertDatabase();
+			}
 
 			if ($failure === '') {
 				if ($this->mode == Installer::MODE_POLLER) {
