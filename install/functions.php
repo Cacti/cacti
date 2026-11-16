@@ -27,10 +27,14 @@
  *
  * @return void No value is returned.
  */
-function prime_default_settings() {
+function prime_default_settings() : bool {
 	global $settings;
 
-	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
+	if (!is_array($settings)) {
+		return false;
+	}
+
+	if (!isset($_SESSION['settings_primed'])) {
 		foreach ($settings as $tab_array) {
 			if (cacti_sizeof($tab_array)) {
 				foreach($tab_array as $setting => $attributes) {
@@ -41,9 +45,11 @@ function prime_default_settings() {
 							array($setting));
 
 						if ($current == '' || $current == null) {
-							db_execute_prepared('INSERT IGNORE INTO settings
+							if (!db_execute_prepared('INSERT IGNORE INTO settings
 								(name, value) VALUES (?, ?)',
-								array($setting, $attributes['default']));
+								array($setting, $attributes['default']))) {
+								return false;
+							}
 						}
 					} elseif (isset($attributes['items'])) {
 						foreach($attributes['items'] as $isetting => $iattributes) {
@@ -54,10 +60,12 @@ function prime_default_settings() {
 									array($isetting));
 
 								if ($current == '' || $current == null) {
-									db_execute_prepared('INSERT IGNORE INTO settings
+									if (!db_execute_prepared('INSERT IGNORE INTO settings
 										(name, value)
 										VALUES (?, ?)',
-										array($isetting, $iattributes['default']));
+										array($isetting, $iattributes['default']))) {
+										return false;
+									}
 								}
 							}
 						}
@@ -68,6 +76,8 @@ function prime_default_settings() {
 	}
 
 	$_SESSION['settings_primed'] = true;
+
+	return true;
 }
 
 /**
@@ -973,6 +983,84 @@ function install_file_paths() {
  *
  * @return string The resulting string.
  */
+/**
+ * Replace the remote poller assignment without truncating the live configuration.
+ */
+function install_write_poller_config(string $file, int $poller_id) : bool {
+	$path = realpath($file);
+
+	if ($path === false || !is_file($path) || !is_writable($path)) {
+		return false;
+	}
+
+	$contents = file_get_contents($path);
+	$stat     = stat($path);
+
+	if ($contents === false || $stat === false) {
+		return false;
+	}
+
+	$contents = preg_replace('~^([ \t]*)\$poller_id[ \t]*=[^;\r\n]*;[ \t]*(?://[^\r\n]*|\#[^\r\n]*)?\r?$~m',
+		'${1}$poller_id = ' . $poller_id . ';', $contents, -1, $count);
+
+	if ($contents === null || $count !== 1) {
+		return false;
+	}
+
+	$temp = tempnam(dirname($path), '.cacti-config-');
+
+	if ($temp === false) {
+		return false;
+	}
+
+	try {
+		// tempnam can fall back to the system temporary directory.
+		if (dirname($temp) !== dirname($path)) {
+			return false;
+		}
+
+		$stream = fopen($temp, 'wb');
+
+		if ($stream === false) {
+			return false;
+		}
+
+		try {
+			$offset = 0;
+			$length = strlen($contents);
+
+			while ($offset < $length) {
+				$written = fwrite($stream, substr($contents, $offset));
+
+				if ($written === false || $written === 0) {
+					return false;
+				}
+
+				$offset += $written;
+			}
+
+			if (!fflush($stream) || !fsync($stream)) {
+				return false;
+			}
+		} finally {
+			fclose($stream);
+		}
+
+		// Keep the original access policy when replacing the inode.
+		if ((fileowner($temp) !== $stat['uid'] && !chown($temp, $stat['uid'])) ||
+			(filegroup($temp) !== $stat['gid'] && !chgrp($temp, $stat['gid'])) ||
+			!chmod($temp, $stat['mode'] & 0777)) {
+			return false;
+		}
+
+		return rename($temp, $path);
+	} finally {
+		if (is_file($temp)) {
+			unlink($temp);
+		}
+	}
+}
+
 function remote_update_config_file() {
 	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
@@ -983,7 +1071,6 @@ function remote_update_config_file() {
 		$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
 	$failure     = '';
-	$newfile     = array();
 	$config_file = $config['base_path'] . '/include/config.php';
 
 	$connection = db_connect_real(
@@ -1011,7 +1098,7 @@ function remote_update_config_file() {
 		$poller_id = db_fetch_cell_prepared('SELECT id
 			FROM poller
 			WHERE hostname = ?',
-			array($hostname), true, $connection);
+			array($hostname), '', true, $connection);
 
 		if (empty($poller_id)) {
 			$save['name'] = __('New Poller');
@@ -1031,28 +1118,8 @@ function remote_update_config_file() {
 		}
 
 		if (!empty($poller_id)) {
-			if (is_writable($config_file)) {
-				$file_array = file($config_file);
-
-				if (cacti_sizeof($file_array)) {
-					foreach($file_array as $line) {
-						if (strpos(trim($line), "\$poller_id") !== false) {
-							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
-						} else {
-							$newfile[] = $line;
-						}
-					}
-
-					$fp = fopen($config_file, 'w');
-					foreach($newfile as $line) {
-						fwrite($fp, $line);
-					}
-					fclose($fp);
-				} else {
-					$failure = 'Failed to read configuration file';
-				}
-			} else {
-				$failure = 'Configuration file is not writable';
+			if (!install_write_poller_config($config_file, (int) $poller_id)) {
+				$failure = 'Failed to update configuration file';
 			}
 		} else {
 			$failure = 'Unable to obtain poller id for this server';

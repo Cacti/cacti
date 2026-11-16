@@ -43,7 +43,10 @@ include_once('./functions.php');
 
 set_default_action();
 
-prime_default_settings();
+if (!prime_default_settings()) {
+	http_response_code(500);
+	exit(__('Unable to initialize installer settings. Check the database and retry.'));
+}
 
 /***** SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS ****/
 $hasShellExec  = is_function_enabled('shell_exec');
