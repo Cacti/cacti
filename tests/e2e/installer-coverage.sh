@@ -27,9 +27,11 @@ db_secret="$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9')"
 container="cacti_installer_coverage_$$"
 work="$(mktemp -d)"
 config_backup=""
+lock_backup=""
 
 cleanup() {
 	result=$?
+	if [[ -n "$lock_backup" ]]; then mv -f "$lock_backup" composer.lock; fi
 	docker rm -f "$container" > /dev/null 2>&1 || true
 	if [[ -n "$config_backup" ]]; then
 		mv -f "$config_backup" include/config.php
@@ -57,6 +59,20 @@ WRAPPER
 	chmod +x "$work/${kind%%:*}"
 done
 php_cacti() { "$work/php" "$@"; }
+
+printf 'Scenario: filesystem, database and dependency failures\n'
+php_cacti tests/fixtures/Installer/FailurePaths.php
+for mode in vendor settings cli-option; do
+	status=0
+	output="$(php_cacti tests/fixtures/Installer/EntryFailure.php "$mode" 2>&1)" || status=$?
+	expected=1
+	[[ "$mode" == settings ]] && expected=0
+	[[ "$status" == "$expected" && "$output" == "PASS: $mode" ]] || fail "entry-point failure probe: $output"
+done
+status=0
+output="$(php_cacti tests/fixtures/CsrfGuardAvailabilityProbe.php installer 2>&1)" || status=$?
+[[ "$status" == 1 && "$output" == *'FATAL: CSRF protection is unavailable'* && "$output" == *'status:500'* && "$output" != *'enabled:'* ]] || fail 'missing request protection did not stop the installer'
+
 
 db() { docker exec -i -e MYSQL_PWD="$db_secret" "$container" mariadb --batch --skip-column-names -uroot "$@"; }
 sql() { db cacti -e "$1"; }
@@ -106,16 +122,33 @@ mkdir -p log cache
 
 printf 'Scenario: a 1.2.30 upgrade that fails the schema check\n'
 reset_database release/1.2.30
+db cacti <<'SQL'
+DELIMITER //
+CREATE TRIGGER installer_default_failure BEFORE INSERT ON settings FOR EACH ROW
+BEGIN
+  IF NEW.name = 'installer_fixture_default' THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'default write rejected';
+  END IF;
+END//
+DELIMITER ;
+SQL
+[[ "$(php_cacti tests/fixtures/Installer/StateProbe.php defaults)" == 'failed:retryable' ]] || fail 'a failed defaults write was marked complete'
+sql 'DROP TRIGGER installer_default_failure'
+[[ "$(php_cacti tests/fixtures/Installer/StateProbe.php defaults)" == 'saved:primed' ]] || fail 'default settings could not be retried'
 sql 'DROP TABLE user_auth_row_cache; DROP TABLE poller_output_boost_local_data_ids'
 
 [[ "$(php_cacti tests/fixtures/Installer/StateProbe.php jump)" == 'step=1' ]] || fail 'a request at the first step reached the install step'
 [[ "$(sql 'SELECT COUNT(*) FROM settings WHERE name = "install_started"')" == 0 ]] || fail 'a refused step started an install'
-[[ "$(php_cacti tests/fixtures/Installer/StateProbe.php reach | grep -vc '=ok$')" == 0 ]] || fail 'the wizard followed a step that does not come next'
+reach_output="$(php_cacti tests/fixtures/Installer/StateProbe.php reach)"
+[[ "$(printf '%s\n' "$reach_output" | grep -vc '=ok$')" == 0 ]] || fail "the wizard followed a step that does not come next: $reach_output"
 # A stored location that does not exist, so the --path given to the installer has an error to resolve
 sql 'REPLACE INTO settings (name, value) VALUES ("path_rrdtool", "/nonexistent/rrdtool")'
 
-install_cacti > /dev/null && fail 'the upgrade passed with a table missing'
-[[ "$(sql 'SELECT cacti FROM version')" == 1.2.31 ]] || fail 'a failed upgrade stamped the running release'
+status=0
+output="$(install_cacti 2>&1)" || status=$?
+[[ "$status" != 0 ]] || fail 'the upgrade passed with a table missing'
+recorded_version="$(sql 'SELECT cacti FROM version')"
+[[ "$recorded_version" == 1.2.31 ]] || fail "unexpected failed-upgrade version $recorded_version: $output"
 [[ "$(sql 'SELECT value FROM settings WHERE name = "install_error"')" == *user_auth_row_cache* ]] || fail 'the failure was not recorded'
 
 printf 'Scenario: the install page and a page load after the failure\n'
@@ -144,5 +177,23 @@ printf 'Scenario: an abandoned install and two remote data collectors\n'
 sql 'UPDATE version SET cacti = "1.2.31"; DELETE FROM settings WHERE name LIKE "install%"; INSERT INTO settings (name, value) VALUES ("install_step", "97"), ("install_started", "12345"), ("install_updated", "12345"); INSERT INTO poller (id, name, hostname, status, last_update, disabled) VALUES (2, "r2", "r2.invalid", 1, NOW(), ""), (3, "r3", "r3.invalid", 1, NOW(), "")'
 install_cacti > /dev/null || fail 'an abandoned install, or a failing collector, stopped the upgrade'
 [[ "$(sql 'SELECT cacti FROM version')" == 1.3.0 ]] || fail 'the upgrade after the abandoned step did not record the release'
+
+printf 'Scenario: malformed template import returns a failure exit status\n'
+printf '<cacti><broken>' > "$work/malformed.xml"
+status=0
+output="$(php_cacti cli/import_template.php --filename="$work/malformed.xml" 2>&1)" || status=$?
+[[ "$status" == 1 && "$output" == *'ERROR: Template XML validation failed'* ]] || fail "malformed CLI template: $output"
+
+printf 'Scenario: incomplete dependencies stop installation before conversion\n'
+sql 'UPDATE version SET cacti = "1.2.31"; DELETE FROM settings WHERE name LIKE "install%"'
+lock_backup="$work/composer.lock"
+cp composer.lock "$lock_backup"
+printf '{broken' > composer.lock
+status=0
+output="$(install_cacti 2>&1)" || status=$?
+mv "$lock_backup" composer.lock
+lock_backup=""
+[[ "$status" != 0 && "$output" == *'Production dependencies are incomplete'* ]] || fail 'incomplete dependencies did not stop installation'
+[[ "$(sql 'SELECT cacti FROM version')" == 1.2.31 ]] || fail 'dependency failure advanced the recorded version'
 
 printf 'PASS installer scenarios\n'
