@@ -138,8 +138,6 @@ class Installer implements JsonSerializable {
 	 *
 	 */
 	public function __construct(array $install_params = []) {
-		log_install_high('step', 'Install Parameters: ' . clean_up_lines(var_export($install_params, true)));
-
 		$this->old_cacti_version = get_cacti_db_version_raw();
 		$this->setRuntime($install_params['Runtime'] ?? 'unknown');
 
@@ -545,8 +543,6 @@ class Installer implements JsonSerializable {
 		$this->snmpOptions = $this->getSnmpOptions();
 		$this->setAdminEmailAddress($this->getAdminEmailAddress());
 		$this->setMode($this->getMode());
-
-		log_install_high('', 'Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
 
 		if (!empty($install_params)) {
 			$this->processParameters($install_params);
@@ -1235,8 +1231,6 @@ class Installer implements JsonSerializable {
 		if ($enabled == null && db_table_exists('automation_networks')) {
 			$row = db_fetch_row('SELECT id, enabled FROM automation_networks LIMIT 1');
 
-			log_install_debug('automation', 'Network data: ' . clean_up_lines(var_export($row, true)));
-
 			$enabled = 0;
 
 			if (!empty($row)) {
@@ -1347,7 +1341,6 @@ class Installer implements JsonSerializable {
 
 			$enabled = 0;
 			$network = '';
-			log_install_debug('automation', "getAutomationRange(): found '" . clean_up_lines(var_export($row, true)));
 
 			if (!empty($row)) {
 				$range = $row['subnet_range'];
@@ -1415,8 +1408,6 @@ class Installer implements JsonSerializable {
 			$options[$key] = $row['value'];
 		}
 
-		log_install_debug('snmp_options', 'Option array: ' . clean_up_lines(var_export($options, true)));
-
 		return $options;
 	}
 
@@ -1438,7 +1429,6 @@ class Installer implements JsonSerializable {
 		db_execute('DELETE FROM settings WHERE name like \'install_snmp_option_%\'');
 
 		log_install_medium('snmp_options', 'Updating snmp_options');
-		log_install_debug('snmp_options', 'Parameter data:' . clean_up_lines(var_export($param_snmp_options, true)));
 
 		$known_map = [
 			'SnmpVersion'         => 'snmp_version',
@@ -1467,8 +1457,6 @@ class Installer implements JsonSerializable {
 
 				if (array_key_exists($key, $known_snmp_options)) {
 					$bad_option = false;
-					log_install_high('snmp_options', 'snmp_option set:' . clean_up_lines(var_export($option_value, true)));
-					log_install_debug('snmp_options', "Set snmp_option: install_snmp_option_$key = $option_value");
 					set_install_config_option("install_snmp_option_$key", $option_value);
 				}
 			}
@@ -1728,7 +1716,6 @@ class Installer implements JsonSerializable {
 		db_execute("DELETE FROM settings WHERE name LIKE 'install_tp_%'");
 
 		log_install_medium('templates', 'setTemplates(): Updating templates');
-		log_install_debug('templates', 'setTemplates(): Parameter data:' . clean_up_lines(var_export($param_templates, true)));
 		log_install_debug('templates', 'setTemplates(): Template data:' . clean_up_lines(var_export($known_templates, true)));
 
 		$param_all = false;
@@ -1876,7 +1863,6 @@ class Installer implements JsonSerializable {
 		db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
 
 		log_install_medium('tables', 'setTables(): Updating Tables');
-		log_install_debug('tables', 'setTables(): Parameter data:' . clean_up_lines(var_export($param_tables, true)));
 
 		$param_all = false;
 
@@ -4163,7 +4149,6 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_AUTOMATION_START);
 		$automation_row = db_fetch_row('SELECT id, enabled, subnet_range FROM automation_networks ORDER BY id LIMIT 1');
-		log_install_debug('automation', 'Automation Row:' . clean_up_lines(var_export($automation_row, true)));
 
 		if (!empty($automation_row)) {
 			log_install_always('', __(

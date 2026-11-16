@@ -611,7 +611,7 @@ function install_test_temporary_table() : bool {
 }
 
 function db_install_execute(string $sql, array $params = [], bool $log = true) : int {
-	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
+	$status = (db_execute_prepared($sql, $params, $log && empty($params)) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
 		db_install_add_cache($status, $sql, $params);
@@ -865,28 +865,17 @@ function db_install_add_cache(int $status, string $sql, mixed $params = null) : 
 		$database_upgrade_status[$cacti_upgrade_version] = [];
 	}
 
-	$query    = clean_up_lines($sql);
-	$actual   = 0;
-	$expected = substr_count($query, '?');
-
-	if (cacti_sizeof($params)) {
-		foreach ($params as $arg) {
-			$pos = strpos($query, '?');
-
-			if ($pos !== false) {
-				$actual++;
-				$query = substr_replace($query, "'$arg'", $pos, 1);
-			}
-		}
-	}
-
-	$sql = clean_up_lines($query);
+	// Retain placeholders, never substitute parameter values into diagnostics.
+	$sql      = clean_up_lines($sql);
+	$actual   = is_array($params) ? count($params) : 0;
+	$expected = substr_count($sql, '?');
+	$error    = empty($database_last_error) ? '' : 'Database operation failed (error details omitted)';
 
 	if ($actual !== $expected) {
 		$sql .= "\n [[ WARNING: $expected parameters expected, $actual provided ]]";
 	}
 
-	$database_upgrade_status[$cacti_upgrade_version][] = ['status' => $status, 'sql' => $sql, 'error' => $database_last_error];
+	$database_upgrade_status[$cacti_upgrade_version][] = ['status' => $status, 'sql' => $sql, 'error' => $error];
 
 	$cacheFile = '';
 
@@ -895,8 +884,8 @@ function db_install_add_cache(int $status, string $sql, mixed $params = null) : 
 	}
 
 	if (!empty($cacheFile)) {
-		log_install_high('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error);
-		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
+		log_install_high('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error);
+		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error . PHP_EOL, FILE_APPEND);
 	}
 }
 

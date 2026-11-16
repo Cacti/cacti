@@ -13,11 +13,11 @@
 */
 
 /*
- * Tests for the vendor boot guard and installer refresh (#6456).
+ * Tests for the vendor boot guard and dependency readiness (#6456).
  *
  * A Git checkout has no include/vendor, and global.php previously died
  * with a bare autoload fatal.  The guard prints the composer command and
- * exits before any database work.  The installer validates the prepared production dependency tree.
+ * exits before any database work, including installation.
  */
 
 test('global.php guards the autoload require with instructions', function () {
@@ -30,7 +30,7 @@ test('global.php guards the autoload require with instructions', function () {
 	$pathPos = strpos($src, "\$vendor_autoload = CACTI_PATH_INCLUDE . '/vendor/autoload.php';");
 	expect($pathPos)->not->toBeFalse('vendor autoload path must be computed');
 
-	$guardPos = strpos($src, "if (!is_file(\$vendor_autoload) && !defined('IN_CACTI_INSTALL'))");
+	$guardPos = strpos($src, 'if (!is_file($vendor_autoload))');
 	expect($guardPos)->not->toBeFalse('vendor guard must exist')
 		->and($pathPos)->toBeLessThan($guardPos, 'path must be computed before the guard checks it');
 
@@ -38,9 +38,7 @@ test('global.php guards the autoload require with instructions', function () {
 	expect($requirePos)->not->toBeFalse('autoload require must exist')
 		->and($guardPos)->toBeLessThan($requirePos, 'guard must run before the require');
 
-	// The require itself stays wrapped in its own is_file() check so the
-	// installer's IN_CACTI_INSTALL path (where vendor may legitimately not
-	// exist yet) never reaches a bare require() fatal either.
+	// The autoload include remains guarded after the early readiness check.
 	$requireGuardPos = strpos($src, 'if (is_file($vendor_autoload)) {');
 	expect($requireGuardPos)->not->toBeFalse('require must itself be guarded')
 		->and($requireGuardPos)->toBeLessThan($requirePos, 'require guard must precede the require');

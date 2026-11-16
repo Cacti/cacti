@@ -27,9 +27,8 @@ require_once(CACTI_PATH_LIBRARY . '/csrf.php');
 /**
  * The process-wide CSRF guard.
  *
- * Built on first use so the CLI never touches Symfony.  An explicit installer
- * request may also run without it while Composer populates include/vendor;
- * every other web request fails closed if the dependency cannot be loaded.
+ * Built on first use so the CLI never touches Symfony. Every web request
+ * requires the dependency to be available before it can proceed.
  *
  * @return CactiCsrfGuard The shared guard instance.
  */
@@ -47,25 +46,13 @@ function csrf_guard() : CactiCsrfGuard {
 	}
 
 	if (!class_exists('Symfony\Component\Security\Csrf\CsrfTokenManager')) {
-		/* The installer is the only web context allowed to run before Composer
-		   has populated include/vendor.  A normal request reaching this branch
-		   has a missing, corrupt, or partially synchronized dependency tree and
-		   must not continue without CSRF validation. */
-		if (!defined('IN_CACTI_INSTALL')) {
-			$message = 'FATAL: CSRF protection is unavailable because symfony/security-csrf could not be loaded. Restore Cacti Composer dependencies and reload this page.';
+		$message = 'FATAL: CSRF protection is unavailable because symfony/security-csrf could not be loaded. Restore Cacti Composer dependencies and reload this page.';
 
-			cacti_log($message, false, 'CSRF');
-			http_response_code(500);
-			print $message;
+		cacti_log($message, false, 'CSRF');
+		http_response_code(500);
+		print $message;
 
-			exit(1);
-		}
-
-		cacti_log('WARNING: symfony/security-csrf is not yet available during installation, so CSRF validation is disabled for this request', false, 'CSRF');
-
-		$guard = new CactiCsrfGuard(null, false);
-
-		return $guard;
+		exit(1);
 	}
 
 	$storage = new Symfony\Component\Security\Csrf\TokenStorage\NativeSessionTokenStorage();

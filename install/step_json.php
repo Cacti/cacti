@@ -68,24 +68,13 @@ if (isrv('data') && gnrv('data')) {
 	}
 }
 
-$json_level = log_install_level('json',POLLER_VERBOSITY_NONE);
-log_install_high('json','Start: ' . clean_up_lines(json_encode($initialData)));
-
 $initialData = array_merge($initialData, ['Runtime' => 'Web']);
 
 if (isset($initialData['step']) && $initialData['step'] == Installer::STEP_TEST_REMOTE) {
 	$json       = install_test_remote_database_connection();
-	$json_debug = $json;
 } else {
 	$installer = new Installer($initialData);
 	$json      = json_encode($installer);
-
-	$json_debug = $json;
-
-	if ($json_level < POLLER_VERBOSITY_DEBUG) {
-		$installer->setRuntime('Json');
-		$json_debug = json_encode($installer);
-	}
 }
 
 $response = json_decode((string) $json, true);
@@ -99,7 +88,6 @@ if (is_array($response)) {
 	}
 }
 
-log_install_high('json','  End: ' . clean_up_lines($json_debug) . PHP_EOL);
 header('Content-Type: application/json');
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');

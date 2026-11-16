@@ -24,15 +24,12 @@
 
 namespace InstallerWriteRecoveryTest;
 
-$root   = dirname(__DIR__, 3);
-$source = file_get_contents($root . '/install/functions.php');
+$root = dirname(__DIR__, 3);
+
+require_once $root . '/tests/Helpers/SourceSlice.php';
 
 foreach (['install_write_poller_config', 'prime_default_settings'] as $name) {
-	if (preg_match('/function ' . $name . '\(.*?^}\R/ms', $source, $matches) !== 1) {
-		throw new \RuntimeException('Missing installer function: ' . $name);
-	}
-
-	eval('namespace InstallerWriteRecoveryTest;' . $matches[0]);
+	cacti_fixture_source_function($root . '/install/functions.php', $name, __NAMESPACE__);
 }
 
 function fwrite($stream, string $data, ?int $length = null) : int|false {
