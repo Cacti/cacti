@@ -26,15 +26,11 @@ namespace InstallerMalformedTemplateTest;
 
 $root = dirname(__DIR__, 3);
 
+require_once $root . '/tests/Helpers/SourceSlice.php';
+
 foreach (['lib/xml.php' => ['xml2array', 'get_children'], 'lib/import.php' => ['import_xml_data', 'parse_xml_hash']] as $file => $functions) {
-	$source = file_get_contents($root . '/' . $file);
-
 	foreach ($functions as $name) {
-		if (preg_match('/function ' . $name . '\(.*?^}\R/ms', $source, $matches) !== 1) {
-			throw new \RuntimeException('Missing import function: ' . $name);
-		}
-
-		eval('namespace InstallerMalformedTemplateTest;' . $matches[0]);
+		cacti_fixture_source_function($root . '/' . $file, $name, __NAMESPACE__);
 	}
 }
 

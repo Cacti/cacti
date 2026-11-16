@@ -24,12 +24,11 @@
 
 namespace InstallerVendorReadinessTest;
 
-$source = file_get_contents(dirname(__DIR__, 3) . '/install/functions.php');
+$root = dirname(__DIR__, 3);
 
-if (preg_match('/function install_validate_vendor_dependencies\(.*?^}\R/ms', $source, $matches) !== 1) {
-	throw new \RuntimeException('Missing dependency validator');
-}
-eval('namespace InstallerVendorReadinessTest;' . $matches[0]);
+require_once $root . '/tests/Helpers/SourceSlice.php';
+
+cacti_fixture_source_function($root . '/install/functions.php', 'install_validate_vendor_dependencies', __NAMESPACE__);
 
 test('dependency readiness accepts production-only installs and rejects missing or stale packages', function () {
 	$root = sys_get_temp_dir() . '/cacti-vendor-test-' . bin2hex(random_bytes(8));

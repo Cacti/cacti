@@ -164,7 +164,7 @@ fs_write	./include/global_languages.php			file_put_contents($config['i18n_text_l
 fs_write	./include/themes/midwinter/update_hash.php			file_put_contents($cssFile, $fileUpdated);
 fs_write	./install/functions.php					$fh = fopen($file, 'w');
 fs_write	./install/functions.php			$stream = fopen($temp, 'wb');
-fs_write	./install/functions.php			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
+fs_write	./install/functions.php			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error . PHP_EOL, FILE_APPEND);
 fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 fs_write	./lib/CactiFilesystem.php			$this->filesystem->dumpFile($filename, $content);
