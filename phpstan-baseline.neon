@@ -9,7 +9,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''aggregate_template_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
+			count: 2
 			path: aggregate_graphs.php
 
 		-
@@ -85,12 +85,6 @@ parameters:
 			path: aggregate_graphs.php
 
 		-
-			message: '#^Cannot access offset ''title_format'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: aggregate_graphs.php
-
-		-
 			message: '#^Cannot access offset ''total'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -130,6 +124,12 @@ parameters:
 			message: '#^Parameter \#2 \$array of function array_key_exists expects array, array\|bool given\.$#'
 			identifier: argument.type
 			count: 2
+			path: aggregate_graphs.php
+
+		-
+			message: '#^Parameter \#3 \$_object of function draw_aggregate_graph_items_list expects array, array\|bool given\.$#'
+			identifier: argument.type
+			count: 1
 			path: aggregate_graphs.php
 
 		-
@@ -241,28 +241,10 @@ parameters:
 			path: auth_changepassword.php
 
 		-
-			message: '#^Cannot access offset ''password_change'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: auth_changepassword.php
-
-		-
 			message: '#^Cannot access offset ''password_history'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: auth_changepassword.php
-
-		-
-			message: '#^Cannot access offset ''realm'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: auth_changepassword.php
-
-		-
-			message: '#^Cannot access offset ''tfa_enabled'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: auth_profile.php
 
 		-
 			message: '#^Cannot access offset ''value'' on array\|bool\.$#'
@@ -467,12 +449,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: changelog.php
-
-		-
-			message: '#^Cannot access offset ''snmp_version'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
-			path: cli/add_device.php
 
 		-
 			message: '#^Parameter \#10 \$snmp_timeout of function api_device_save expects int, int\|string given\.$#'
@@ -1075,15 +1051,9 @@ parameters:
 			path: cli/repair_database.php
 
 		-
-			message: '#^Cannot access offset ''graph_template_id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: cli/repair_database.php
-
-		-
 			message: '#^Cannot access offset ''host_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 9
+			count: 8
 			path: cli/repair_database.php
 
 		-
@@ -1096,24 +1066,6 @@ parameters:
 			message: '#^Cannot access offset ''local_data_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 3
-			path: cli/repair_database.php
-
-		-
-			message: '#^Cannot access offset ''snmp_index'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: cli/repair_database.php
-
-		-
-			message: '#^Cannot access offset ''snmp_query_graph_id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: cli/repair_database.php
-
-		-
-			message: '#^Cannot access offset ''snmp_query_id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
 			path: cli/repair_database.php
 
 		-
@@ -1291,18 +1243,6 @@ parameters:
 			path: color.php
 
 		-
-			message: '#^Cannot access offset ''hex'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
-			path: color.php
-
-		-
-			message: '#^Cannot access offset ''name'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: color.php
-
-		-
 			message: '#^Parameter \#1 \$colors of function color_import_processor expects array, list\<string\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1395,7 +1335,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''data_sources'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 1
 			path: data_input.php
 
 		-
@@ -1473,24 +1413,6 @@ parameters:
 		-
 			message: '#^Cannot access offset ''steps'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: data_source_profiles.php
-
-		-
-			message: '#^Comparison operation "\>" between float\<1\.0, 4\.0\> and 0 is always true\.$#'
-			identifier: greater.alwaysTrue
-			count: 1
-			path: data_source_profiles.php
-
-		-
-			message: '#^Comparison operation "\>" between float\<1\.0, 7\.0\> and 0 is always true\.$#'
-			identifier: greater.alwaysTrue
-			count: 1
-			path: data_source_profiles.php
-
-		-
-			message: '#^Comparison operation "\>" between float\<1\.0, max\> and 0 is always true\.$#'
-			identifier: greater.alwaysTrue
 			count: 1
 			path: data_source_profiles.php
 
@@ -1659,13 +1581,13 @@ parameters:
 		-
 			message: '#^Cannot access offset ''graph_type_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 1
 			path: graph_templates.php
 
 		-
 			message: '#^Cannot access offset ''id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
+			count: 2
 			path: graph_templates.php
 
 		-
@@ -1683,7 +1605,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''task_item_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 1
 			path: graph_templates.php
 
 		-
@@ -1969,37 +1891,13 @@ parameters:
 			path: install/upgrades/1_2_20.php
 
 		-
-			message: '#^Cannot access offset ''graph_template_id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: install/upgrades/1_2_20.php
-
-		-
 			message: '#^Cannot access offset ''host_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
+			count: 2
 			path: install/upgrades/1_2_20.php
 
 		-
 			message: '#^Cannot access offset ''local_data_id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: install/upgrades/1_2_20.php
-
-		-
-			message: '#^Cannot access offset ''snmp_index'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: install/upgrades/1_2_20.php
-
-		-
-			message: '#^Cannot access offset ''snmp_query_graph_id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: install/upgrades/1_2_20.php
-
-		-
-			message: '#^Cannot access offset ''snmp_query_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: install/upgrades/1_2_20.php
@@ -2619,7 +2517,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''graph_tree_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 1
 			path: lib/api_tree.php
 
 		-
@@ -2631,7 +2529,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''parent'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 1
 			path: lib/api_tree.php
 
 		-
@@ -2673,7 +2571,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''enabled'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
+			count: 2
 			path: lib/auth.php
 
 		-
@@ -2697,7 +2595,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''locked'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
+			count: 1
 			path: lib/auth.php
 
 		-
@@ -3073,12 +2971,6 @@ parameters:
 			path: lib/dsstats.php
 
 		-
-			message: '#^Loose comparison using \=\= between ''NULL''\|float\|int\|numeric\-string and ''\-'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: lib/dsstats.php
-
-		-
 			message: '#^Parameter \#1 \$num of function abs expects float\|int, float\|int\|string given\.$#'
 			identifier: argument.type
 			count: 1
@@ -3439,24 +3331,6 @@ parameters:
 			path: lib/html_reports.php
 
 		-
-			message: '#^Cannot access offset ''alignment'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/html_reports.php
-
-		-
-			message: '#^Cannot access offset ''cformat'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/html_reports.php
-
-		-
-			message: '#^Cannot access offset ''font_size'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/html_reports.php
-
-		-
 			message: '#^Cannot access offset ''graph_template_id''\|''host_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -3475,27 +3349,15 @@ parameters:
 			path: lib/html_reports.php
 
 		-
-			message: '#^Cannot access offset ''name'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
-			path: lib/html_reports.php
-
-		-
 			message: '#^Cannot access offset ''report_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: lib/html_reports.php
 
 		-
-			message: '#^Cannot access offset ''subject'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: lib/html_reports.php
-
-		-
 			message: '#^Cannot access offset ''user_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
+			count: 2
 			path: lib/html_reports.php
 
 		-
@@ -3847,15 +3709,9 @@ parameters:
 			path: lib/plugins.php
 
 		-
-			message: '#^Cannot access offset ''file'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 4
-			path: lib/plugins.php
-
-		-
 			message: '#^Cannot access offset ''id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 5
+			count: 1
 			path: lib/plugins.php
 
 		-
@@ -4051,12 +3907,6 @@ parameters:
 			path: lib/poller.php
 
 		-
-			message: '#^Parameter \#1 \$num1 of function bcmul expects numeric\-string, ''\-INF''\|''INF''\|''NAN''\|numeric\-string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/poller.php
-
-		-
 			message: '#^Parameter \#2 \$column of function db_column_exists expects string, int\|string given\.$#'
 			identifier: argument.type
 			count: 2
@@ -4087,19 +3937,7 @@ parameters:
 			path: lib/reports.php
 
 		-
-			message: '#^Cannot access offset ''bcc_emails'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
 			message: '#^Cannot access offset ''cformat'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''emails'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: lib/reports.php
@@ -4108,12 +3946,6 @@ parameters:
 			message: '#^Cannot access offset ''font_size'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''format_file'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
 			path: lib/reports.php
 
 		-
@@ -4149,13 +3981,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''name'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 6
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''notification'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 3
 			path: lib/reports.php
 
 		-
@@ -4171,45 +3997,9 @@ parameters:
 			path: lib/reports.php
 
 		-
-			message: '#^Cannot access offset ''request_type'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''requested_by'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''requested_id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''run_command'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''run_timeout'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
-			message: '#^Cannot access offset ''source'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/reports.php
-
-		-
 			message: '#^Cannot access offset ''source_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
+			count: 1
 			path: lib/reports.php
 
 		-
@@ -4747,12 +4537,6 @@ parameters:
 			path: lib/spikekill.php
 
 		-
-			message: '#^Result of && is always true\.$#'
-			identifier: booleanAnd.alwaysTrue
-			count: 1
-			path: lib/spikekill.php
-
-		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 3
@@ -4797,13 +4581,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''input_string'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: lib/template.php
-
-		-
-			message: '#^Cannot access offset ''status'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 1
 			path: lib/template.php
 
 		-
@@ -5171,36 +4949,6 @@ parameters:
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 5
 			path: package.php
-
-		-
-			message: '#^Cannot access offset ''name'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: package_import.php
-
-		-
-			message: '#^Cannot access offset ''repo_api_key'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: package_import.php
-
-		-
-			message: '#^Cannot access offset ''repo_branch'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: package_import.php
-
-		-
-			message: '#^Cannot access offset ''repo_location'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: package_import.php
-
-		-
-			message: '#^Cannot access offset ''repo_type'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: package_import.php
 
 		-
 			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
@@ -7195,12 +6943,6 @@ parameters:
 			path: user_admin.php
 
 		-
-			message: '#^Loose comparison using \=\= between mixed and null will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 3
-			path: user_admin.php
-
-		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 4
@@ -7240,12 +6982,6 @@ parameters:
 			message: '#^Cannot access offset ''policy_trees'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: user_group_admin.php
-
-		-
-			message: '#^Loose comparison using \=\= between mixed and null will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 3
 			path: user_group_admin.php
 
 		-

@@ -1062,7 +1062,7 @@ function graph_edit() : bool {
 				[$graphs['local_graph_id']]
 			);
 
-			if ($aginfo['title_format'] == '') {
+			if (is_array($aginfo) && $aginfo['title_format'] == '') {
 				$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
 			}
 

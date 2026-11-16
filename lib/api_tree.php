@@ -1050,6 +1050,12 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 			WHERE id = ?',
 			[$leaf_id]);
 
+		if (!is_array($pdata)) {
+			cacti_log('Error Sorting Tree');
+
+			return;
+		}
+
 		$parent  = $pdata['parent'];
 		$tree_id = $pdata['graph_tree_id'];
 	} elseif ($tree_id > 0) {

@@ -1259,7 +1259,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 					form_selectable_cell(filter_value($host['description'], grv('filter')), $host['id']);
 					form_selectable_cell($host['id'], $host['id']);
 
-					if (empty($host['user_id']) || $host['user_id'] == null) {
+					if (empty($host['user_id'])) {
 						if ($policy['policy_hosts'] == 1) {
 							form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
 						} else {
@@ -1417,7 +1417,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 					form_selectable_cell(filter_value($g['name'], grv('filter')), $g['id']);
 					form_selectable_cell($g['id'], $g['id']);
 
-					if (empty($g['user_id']) || $g['user_id'] == null) {
+					if (empty($g['user_id'])) {
 						if ($policy['policy_graph_templates'] == 1) {
 							form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
 						} else {
@@ -1562,7 +1562,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 					form_selectable_cell(filter_value($t['name'], grv('filter')), $t['id']);
 					form_selectable_cell($t['id'], $t['id']);
 
-					if (empty($t['user_id']) || $t['user_id'] == null) {
+					if (empty($t['user_id'])) {
 						if ($policy['policy_trees'] == 1) {
 							form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
 						} else {

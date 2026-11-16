@@ -1071,7 +1071,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 								$last_delim = ', ';
 							}
 
-							if ($currentval == '' || $currentval == '-') {
+							if ($currentval == '') {
 								$currentval = 'NULL';
 							}
 

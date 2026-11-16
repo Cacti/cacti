@@ -1315,6 +1315,10 @@ function api_plugin_register_realm(string $plugin, string $file, string $display
 				WHERE id = ?',
 				[$id['id']]);
 
+			if (!is_array($realm_info)) {
+				continue;
+			}
+
 			if ($file == $realm_info['file']) {
 				db_execute_prepared('UPDATE IGNORE user_auth_realm
 					SET realm_id = ?

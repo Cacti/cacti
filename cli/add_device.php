@@ -442,6 +442,12 @@ if (cacti_sizeof($parms)) {
 		$phost = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$id]);
 		$fail  = false;
 
+		if (!is_array($phost) || !cacti_sizeof($phost)) {
+			print "ERROR: Unable to read the existing device ($id) from the database." . PHP_EOL;
+
+			exit(1);
+		}
+
 		if ($phost['snmp_version'] < '3' && $snmp_ver < '3') {
 			if ($snmp_ver == 0 && $proxy) {
 				// proxy but for no snmp

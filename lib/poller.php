@@ -1117,7 +1117,7 @@ function process_poller_output_batch(mixed &$rrdtool_pipe, array $results, array
 					$vallen = strlen($value);
 
 					for ($i = 1; $i <= $vallen; $i++) {
-						$dec = bcadd($dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
+						$dec = bcadd($dec, bcmul(strval((int) hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
 					}
 
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $dec;

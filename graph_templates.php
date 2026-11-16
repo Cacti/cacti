@@ -1024,10 +1024,12 @@ function item_edit() : void {
 
 	html_end_box(true, true);
 
-	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
+	$has_item = isset($template_item) && is_array($template_item);
+
+	form_hidden_box('graph_template_item_id', ($has_item ? $template_item['id'] : '0'), '');
 	form_hidden_box('graph_template_id', grv('graph_template_id'), '0');
-	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
-	form_hidden_box('_task_item_id', (isset($template_item) ? $template_item['task_item_id'] : '0'), '');
+	form_hidden_box('_graph_type_id', ($has_item ? $template_item['graph_type_id'] : '0'), '');
+	form_hidden_box('_task_item_id', ($has_item ? $template_item['task_item_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
 	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');

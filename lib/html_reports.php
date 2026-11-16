@@ -682,7 +682,7 @@ function reports_send(int $id) : void {
 		WHERE id = ?',
 		[$id]);
 
-	if (!cacti_sizeof($report)) {
+	if (!is_array($report) || !cacti_sizeof($report)) {
 		// set error condition
 	} elseif ($report['user_id'] == $_SESSION[SESS_USER_ID]) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -1365,6 +1365,12 @@ function reports_item_edit() : void {
 		WHERE id = ?',
 		[gfrv('id')]
 	);
+
+	if (!is_array($report)) {
+		header('Location: ' . get_reports_page());
+
+		exit;
+	}
 
 	// if an existing item was requested, fetch data for it
 	if (isrv('item_id') && (gfrv('item_id') > 0)) {

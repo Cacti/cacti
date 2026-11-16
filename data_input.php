@@ -602,7 +602,7 @@ function data_input_edit() : void {
 		$output_disabled  = false;
 		$save_alt_message = false;
 
-		if (!cacti_sizeof($counts)) {
+		if (!is_array($counts) || !cacti_sizeof($counts)) {
 			$output_disabled  = false;
 			$save_alt_message = false;
 		} elseif ($counts['data_sources'] > 0) {

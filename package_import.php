@@ -1976,7 +1976,7 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 		WHERE id = ?',
 		[$repo_id]);
 
-	if (cacti_sizeof($repo)) {
+	if (is_array($repo) && cacti_sizeof($repo)) {
 		if ($repo['repo_type'] == 0) { // GitHub
 			$repoloc = str_replace('github.com', 'raw.githubusercontent.com', $repo['repo_location']);
 			$file    = $repoloc . '/' . $repo['repo_branch'] . '/' . $filename;

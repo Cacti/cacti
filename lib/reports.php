@@ -2201,7 +2201,7 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 	$from['email'] = $fromemail;
 	$from['name']  = $fromname;
 
-	if (cacti_sizeof($report)) {
+	if (is_array($report) && cacti_sizeof($report)) {
 		if ($report['notification'] != '') {
 			$notifications = json_decode($report['notification'], true);
 
@@ -2267,8 +2267,7 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 								WHERE id = ?',
 								[$data['id']]);
 
-							if (cacti_sizeof($list)) {
-								// process the format file
+							if (is_array($list) && cacti_sizeof($list)) {
 								$report_tag  = false;
 								$theme       = 'modern';
 								$output_html = '';
@@ -2404,7 +2403,7 @@ function reports_run(int $id) : bool {
 		WHERE id = ?',
 		[$id]);
 
-	if (cacti_sizeof($report)) {
+	if (is_array($report) && cacti_sizeof($report)) {
 		db_execute_prepared('UPDATE reports_queued
 			SET status = ?, start_time = ?
 			WHERE id = ?',
