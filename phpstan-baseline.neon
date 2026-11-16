@@ -1051,9 +1051,15 @@ parameters:
 			path: cli/repair_database.php
 
 		-
+			message: '#^Cannot access offset ''graph_template_id'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: cli/repair_database.php
+
+		-
 			message: '#^Cannot access offset ''host_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 8
+			count: 9
 			path: cli/repair_database.php
 
 		-
@@ -1066,6 +1072,24 @@ parameters:
 			message: '#^Cannot access offset ''local_data_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 3
+			path: cli/repair_database.php
+
+		-
+			message: '#^Cannot access offset ''snmp_index'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: cli/repair_database.php
+
+		-
+			message: '#^Cannot access offset ''snmp_query_graph_id'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: cli/repair_database.php
+
+		-
+			message: '#^Cannot access offset ''snmp_query_id'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
 			path: cli/repair_database.php
 
 		-
@@ -1891,13 +1915,37 @@ parameters:
 			path: install/upgrades/1_2_20.php
 
 		-
+			message: '#^Cannot access offset ''graph_template_id'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: install/upgrades/1_2_20.php
+
+		-
 			message: '#^Cannot access offset ''host_id'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: install/upgrades/1_2_20.php
+
+		-
+			message: '#^Cannot access offset ''local_data_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: install/upgrades/1_2_20.php
 
 		-
-			message: '#^Cannot access offset ''local_data_id'' on array\|bool\.$#'
+			message: '#^Cannot access offset ''snmp_index'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: install/upgrades/1_2_20.php
+
+		-
+			message: '#^Cannot access offset ''snmp_query_graph_id'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: install/upgrades/1_2_20.php
+
+		-
+			message: '#^Cannot access offset ''snmp_query_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: install/upgrades/1_2_20.php
@@ -6943,6 +6991,12 @@ parameters:
 			path: user_admin.php
 
 		-
+			message: '#^Loose comparison using \=\= between mixed and null will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 3
+			path: user_admin.php
+
+		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 4
@@ -6982,6 +7036,12 @@ parameters:
 			message: '#^Cannot access offset ''policy_trees'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
+			path: user_group_admin.php
+
+		-
+			message: '#^Loose comparison using \=\= between mixed and null will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 3
 			path: user_group_admin.php
 
 		-

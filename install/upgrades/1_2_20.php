@@ -165,10 +165,6 @@ function upgrade_to_1_2_20() : void {
 								WHERE id = ?',
 								[$id['local_graph_id']]);
 
-							if (!is_array($local_graph)) {
-								continue;
-							}
-
 							switch($field_data['type_code']) {
 								case 'index_type':
 									$index_type = get_best_data_query_index_type($local_graph['host_id'], $local_graph['snmp_query_id']);

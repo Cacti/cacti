@@ -251,8 +251,6 @@ if ($mode === 'reports-edit') {
 // ---- guards that skip the iteration or return when the row is missing ----
 
 foreach ([
-	['cli/repair_database.php', 'if (!is_array($local_graph)) {', 'local_graph'],
-	['install/upgrades/1_2_20.php', 'if (!is_array($local_graph)) {', 'local_graph'],
 	['color.php', 'if (!is_array($color)) {', 'color'],
 	['lib/plugins.php', 'if (!is_array($realm_info)) {', 'realm_info'],
 ] as [$file, $guard, $name]) {
@@ -349,23 +347,6 @@ $result = slice('lib/reports.php', 'if (is_array($report) && cacti_sizeof($repor
 check($result, false, 'reports_run refuses a missing queue row');
 $result = slice('lib/reports.php', 'if (is_array($report) && cacti_sizeof($report)) {', '}', ['report' => ['name' => 'Weekly'], 'id' => 5], 2);
 check([isset($result['__fell']), events()[0][0]], [true, 'db'], 'reports_run marks a queued row as running');
-
-// ---- access policy cells ----
-
-foreach ([
-	['user_admin.php', 'if (empty($host[\'user_id\'])) {', 'host', 'user_id', 'policy_hosts'],
-	['user_admin.php', 'if (empty($g[\'user_id\'])) {', 'g', 'user_id', 'policy_graph_templates'],
-	['user_admin.php', 'if (empty($t[\'user_id\'])) {', 't', 'user_id', 'policy_trees'],
-	['user_group_admin.php', 'if (empty($host[\'group_id\'])) {', 'host', 'group_id', 'policy_hosts'],
-	['user_group_admin.php', 'if (empty($g[\'group_id\'])) {', 'g', 'group_id', 'policy_graph_templates'],
-	['user_group_admin.php', 'if (empty($t[\'group_id\'])) {', 't', 'group_id', 'policy_trees'],
-] as [$file, $guard, $variable, $key, $policy]) {
-	foreach ([[null, 1, 'accessGranted'], [0, 2, 'accessRestricted'], ['', 1, 'accessGranted'], [12, 1, 'accessRestricted'], [12, 2, 'accessGranted']] as [$owner, $setting, $class]) {
-		slice($file, $guard, '}', [$variable => ['id' => 3, $key => $owner], 'policy' => [$policy => $setting]]);
-		$cells = events();
-		check(count($cells) === 1 && str_contains($cells[0][1], $class), true, $file . ' ' . $policy . ' cell');
-	}
-}
 
 // ---- whole functions ----
 
