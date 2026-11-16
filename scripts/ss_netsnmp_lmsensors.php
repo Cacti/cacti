@@ -212,7 +212,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 			// Apply the same scaling as the query path so a get returns the
 			// sensor value rather than the raw milli-unit counter.
 			if ($sensor_type == 'voltage' && $snmp_test > 2147483647) {
-				$snmp_test = $snmp_test - 4294967294;
+				$snmp_test = $snmp_test - 4294967296;
 			}
 
 			if ($sensor_type == 'voltage' || $sensor_type == 'temperature') {
@@ -357,14 +357,16 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						// if no useful data was returned, null the results
 						//
 						if ((substr($scratch, 0, 16) == 'No Such Instance') || (is_numeric($scratch) === false) || ($scratch === '')) {
-							$scratch = '';
+							$sensor['reading'] = '';
+
+							break;
 						}
 
 						//
 						// negative voltage readings must be converted to negative numbers
 						//
 						if (($sensor_type == 'voltage') && ($scratch > 2147483647)) {
-							$scratch = ($scratch - 4294967294);
+							$scratch = ($scratch - 4294967296);
 						}
 
 						//

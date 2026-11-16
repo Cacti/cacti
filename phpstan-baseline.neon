@@ -7015,12 +7015,6 @@ parameters:
 			path: scripts/ss_net_snmp_disk_io.php
 
 		-
-			message: '#^Binary operation "\-" between ''''\|numeric\-string and 4294967294 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: scripts/ss_netsnmp_lmsensors.php
-
-		-
 			message: '#^Cannot access offset ''hostname'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
