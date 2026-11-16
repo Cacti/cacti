@@ -18,7 +18,7 @@ require_once dirname(__DIR__, 3) . '/lib/installer.php';
 
 test('a template homepage that already has a scheme is left alone', function () {
 	expect(Installer::homepageUrl('https://www.cacti.net'))->toBe('https://www.cacti.net')
-		->and(Installer::homepageUrl('http://www.cacti.net'))->toBe('http://www.cacti.net')
+		->and(Installer::homepageUrl('http://www.cacti.net'))->toBe('http://www.cacti.net') // NOSONAR: literal compatibility fixture; no network request is made.
 		->and(Installer::homepageUrl('HTTPS://www.cacti.net'))->toBe('HTTPS://www.cacti.net');
 });
 

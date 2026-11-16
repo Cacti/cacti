@@ -257,7 +257,7 @@ printf '%s\n' "$BACKGROUND_OUTPUT"
 [ "$BACKGROUND_STATUS" -ne 0 ] || fail 'background installer accepted an incomplete schema'
 [ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'install_step';")" = '99' ] || fail 'background failure did not preserve STEP_ERROR'
 
-for scenario in domain-read ldap-read count-read upgrade-warning cli-failure forced-cli-failure composer-failure installer-lock; do
+for scenario in domain-read ldap-read count-read upgrade-warning cli-failure forced-cli-failure dependency-failure installer-lock; do
 	printf 'Scenario: %s\n' "$scenario"
 	reset_database "$REPO_DIR/cacti.sql"
 	docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \

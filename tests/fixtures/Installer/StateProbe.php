@@ -28,6 +28,15 @@ require_once 'lib/utility.php';
 
 $mode     = $argv[1] ?? '';
 
+if ($mode === 'defaults') {
+	$settings = ['general' => ['installer_fixture_default' => ['default' => 'fixture']]];
+	unset($_SESSION['settings_primed']);
+	$success = prime_default_settings();
+	print ($success ? 'saved' : 'failed') . ':' . (isset($_SESSION['settings_primed']) ? 'primed' : 'retryable') . PHP_EOL;
+
+	exit(0);
+}
+
 if ($mode === 'reach') {
 	// Tool locations that exist, so the steps are not held back at the binary locations
 	foreach (['php_binary', 'rrdtool', 'snmpwalk', 'snmpget', 'snmpbulkwalk', 'snmpgetnext', 'snmptrap', 'fping'] as $tool) {
