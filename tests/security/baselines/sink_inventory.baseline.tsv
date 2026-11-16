@@ -19,7 +19,7 @@ cmd_exec	./cmd_realtime.php:115				$cactiphp = proc_open(cacti_escapeshellcmd(re
 cmd_exec	./data_input.php:84			$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
 cmd_exec	./graph_realtime.php:219		shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php:201		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . cacti_escapeshellarg((string) $host_id));
-cmd_exec	./install/functions.php:707				$myinfo = @json_decode(shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info'), true);
+cmd_exec	./install/functions.php:698				$myinfo = @json_decode(shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info'), true);
 cmd_exec	./install/install.php:128			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') .'</li>';
 cmd_exec	./lib/database.php:2781		$process = proc_open(trim($cmd_string), $descriptors, $pipes, null, $env);
 cmd_exec	./lib/dsstats.php:1081		$process = proc_open($command, $fds, $pipes);
@@ -36,10 +36,10 @@ cmd_exec	./lib/functions.php:8306				exec(sprintf('grep :%s: /etc/passwd | cut -
 cmd_exec	./lib/functions.php:8704	 * use exec_with_timeout() when migrating legacy shell_exec() callers that already assemble the
 cmd_exec	./lib/functions.php:8764		$process = proc_open($argv, $descriptors, $pipes);
 cmd_exec	./lib/functions.php:8881	 * callers that previously used shell_exec() and expect a string return value.
-cmd_exec	./lib/installer.php:1123							$output = shell_exec(
-cmd_exec	./lib/installer.php:3995				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:4027						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:4088						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:1121							$output = shell_exec(
+cmd_exec	./lib/installer.php:3984				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:4016						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:4077						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/ping.php:235					$result = shell_exec('ping ' . cacti_escapeshellarg($this->host['hostname']));
 cmd_exec	./lib/ping.php:237					$result = shell_exec('ping -m ' . ceil($this->timeout/1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 cmd_exec	./lib/ping.php:239					$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
@@ -317,7 +317,7 @@ dynamic_include	./install/background.php:36	include_once($config['base_path'] . 
 dynamic_include	./install/background.php:37	include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./install/background.php:38	include_once($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./install/background.php:39	include_once($config['base_path'] . '/lib/utility.php');
-dynamic_include	./install/functions.php:1504		include_once($config['base_path'] . '/lib/poller.php');
+dynamic_include	./install/functions.php:1495		include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./install/install.php:29	require_once($config['base_path'] . '/lib/api_automation_tools.php');
 dynamic_include	./install/install.php:30	require_once($config['base_path'] . '/lib/api_automation.php');
 dynamic_include	./install/install.php:31	require_once($config['base_path'] . '/lib/api_data_source.php');
@@ -387,7 +387,7 @@ dynamic_include	./lib/html_tree.php:970		include_once($config['library_path'] . 
 dynamic_include	./lib/html_tree.php:971		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/import.php:2297		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:42		include_once($config['library_path'] . '/xml.php');
-dynamic_include	./lib/installer.php:4146					include_once($upgrade_file);
+dynamic_include	./lib/installer.php:4135					include_once($upgrade_file);
 dynamic_include	./lib/plugins.php:1067		include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./lib/plugins.php:1100		include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./lib/plugins.php:116							include_once($full_path);
@@ -552,10 +552,10 @@ fs_write	./host.php:632		$stdout = fopen('php://output', 'w');
 fs_write	./include/global_languages.php:1159			file_put_contents($config['i18n_log'], $text . $eol, $mode);
 fs_write	./include/global_languages.php:1177			file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 fs_write	./include/themes/midwinter/update_hash.php:90			file_put_contents($cssFile, $fileUpdated);
-fs_write	./install/functions.php:1022			$stream = fopen($temp, 'wb');
-fs_write	./install/functions.php:1419			file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
-fs_write	./install/functions.php:1420			file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
-fs_write	./install/functions.php:499			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
+fs_write	./install/functions.php:1013			$stream = fopen($temp, 'wb');
+fs_write	./install/functions.php:1410			file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
+fs_write	./install/functions.php:1411			file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
+fs_write	./install/functions.php:490			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error . PHP_EOL, FILE_APPEND);
 fs_write	./lib/api_device.php:2675							file_put_contents($new_xmlfile, $data);
 fs_write	./lib/boost.php:1432		$fileptr = fopen($temp_file, 'wb');
 fs_write	./lib/boost.php:1657								if ($fileptr = fopen($cache_file, 'rb')) {
@@ -578,7 +578,7 @@ fs_write	./lib/functions.php:8163		if (($f = @fopen($path, 'w'))) {
 fs_write	./lib/functions.php:8273				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/import.php:536		$f   = fopen($filename, 'r');
 fs_write	./lib/import.php:755							$file = fopen($filename, 'wb');
-fs_write	./lib/installer.php:3538				$file = fopen($cacheFile, "r");
+fs_write	./lib/installer.php:3528				$file = fopen($cacheFile, "r");
 fs_write	./lib/poller.php:1573									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1585												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php:1614								file_put_contents($mypath, $contents);
@@ -1032,6 +1032,6 @@ header_redirect	./vdef.php:328			header('Location: vdef.php?header=false');
 header_redirect	./vdef.php:59			header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 header_redirect	./vdef.php:620		header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('id'));
 header_redirect	./vdef.php:67			header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
-xml_parse	./install/functions.php:683				$xmlget = simplexml_load_string($xml);
+xml_parse	./install/functions.php:674				$xmlget = simplexml_load_string($xml);
 xml_parse	./lib/import.php:446		$xmlget = simplexml_load_string($data);
 xml_parse	./lib/import.php:603		$xmlget = simplexml_load_string($xml);

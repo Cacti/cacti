@@ -305,7 +305,7 @@ function set_install_option(&$options, $key, $display_name, $value) {
 	global $debug;
 
 	$options[$key] = $value;
-	log_install_high('cli',sprintf('Setting %s to \'%s\'', $display_name, $value));
+	log_install_high('cli', 'Setting ' . $display_name);
 }
 
 /**
@@ -338,7 +338,7 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 		$option_value = trim(substr($value, $option_pos + 1));
 		set_install_option($options[$key], $option_key, $display_name . ' \'' . $option_name . '\'', $option_value);
 	} else {
-		echo 'ERROR: Invalid ' . $display_name . ' value ' . $value . PHP_EOL . PHP_EOL;
+		echo 'ERROR: Invalid ' . $display_name . ' option format' . PHP_EOL . PHP_EOL;
 		exit(1);
 	}
 }
@@ -359,7 +359,7 @@ function debug_install_array($parent, $contents, $indent = 0) {
 			debug_install_array($parent . '.' . $key, $value, $indent + 1);
 		} else {
 			$hasContents = true;
-			log_install_debug('cli',$parent . '.' . $key . ': ' . $value);
+			log_install_debug('cli',$parent . '.' . $key . ': [value omitted]');
 		}
 	}
 
