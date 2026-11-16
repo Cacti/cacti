@@ -23,12 +23,13 @@ run_probe tests/e2e/queue/run.sh '^(lib/api_queue\.php|cli/queue_(admin|worker)\
 
 run_php_probe() {
 	local script="$1" pattern="$2"
+	shift 2
 	local php_args=(-d memory_limit=2G)
 	if [[ -n "${CACTI_PR_XDEBUG_EXTENSION:-}" ]]; then
 		php_args+=(-d "zend_extension=$CACTI_PR_XDEBUG_EXTENSION")
 	fi
 	if [[ -f "$script" ]] && grep -Eq "$pattern" <<< "$changed_paths"; then
-		CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT" XDEBUG_MODE=coverage php "${php_args[@]}" "$script"
+		CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT" XDEBUG_MODE=coverage php "${php_args[@]}" "$script" "$@"
 	fi
 }
 
@@ -61,6 +62,12 @@ run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/ht
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
+
+row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates|user_admin|user_group_admin)\.php|^cli/(add_device|repair_database)\.php|^install/upgrades/1_2_20\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
+run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files"
+for row_guard_mode in auth-changepassword add-device reports-edit; do
+	run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files" "$row_guard_mode"
+done
 
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
 
