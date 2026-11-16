@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-09 22:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-16 07:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -1487,7 +1487,7 @@ msgstr "När ska nätverksupptäckten starta?"
 
 #: automation_networks.php
 msgid "Rerun Every"
-msgstr "Kör igen varje"
+msgstr "Kör om var"
 
 #: automation_networks.php
 msgid "Rerun discovery for this Network Range every X."
@@ -1495,7 +1495,7 @@ msgstr "Kör upptäckt för nätverksintervallet igen med det angivna intervalle
 
 #: automation_networks.php
 msgid "Days of Week"
-msgstr "Veckans dagar"
+msgstr "Veckodagar"
 
 #: automation_networks.php
 msgid "What Day(s) of the week will this Network Range be discovered."
@@ -4150,7 +4150,7 @@ msgstr "Uppdateringsintervall"
 
 #: graph_realtime.php lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "Thumbnails"
-msgstr "Miniatyrer"
+msgstr "Miniatyrbilder"
 
 #: graph_realtime.php
 #, php-format
@@ -4404,7 +4404,7 @@ msgstr "Alla grafer och mallar"
 #: graph_view.php include/global_settings.php lib/html_graph.php
 #: lib/html_tree.php
 msgid "Templates Selected"
-msgstr "Mallar valda"
+msgstr "Valda mallar"
 
 #: graph_view.php include/global_arrays.php lib/graphs.php lib/html_graph.php
 #: lib/html_tree.php
@@ -13630,7 +13630,7 @@ msgstr "Från"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Start Date Selector"
-msgstr "Startdatumsväljare"
+msgstr "Välj startdatum"
 
 #: lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "To"
@@ -13638,7 +13638,7 @@ msgstr "Till"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "End Date Selector"
-msgstr "Slutdatumsväljare"
+msgstr "Välj slutdatum"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Shift Time Backward"
@@ -13646,7 +13646,7 @@ msgstr "Flytta tiden bakåt"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Define Shifting Interval"
-msgstr "Definiera förskjutningsintervall"
+msgstr "Ange förskjutningsintervall"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Shift Time Forward"
@@ -13654,11 +13654,11 @@ msgstr "Flytta tiden framåt"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Refresh selected time span"
-msgstr "Uppdatera vald tidsperiod"
+msgstr "Uppdatera valt tidsintervall"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Return to the default time span"
-msgstr "Återgå till det förvalda tidsintervallet"
+msgstr "Återgå till standardtidsintervallet"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Window"
