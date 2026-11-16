@@ -1,1 +1,1 @@
-Keep installer failure reports, fix CLI path overrides and stale steps, and parse template packages once
+Keep installer failure reports, fix CLI path overrides and stale steps, and parse template packages once; preserve remote configuration on failed writes, retry failed defaults, reject malformed templates, and validate prepared production dependencies

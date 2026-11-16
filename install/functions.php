@@ -227,10 +227,65 @@ function prune_deprecated_files() : void {
 	}
 }
 
-function prime_default_settings() : void {
+/**
+ * Check the prepared production dependency tree without executing Composer.
+ * This checks package metadata and directories, not individual file integrity.
+ */
+function install_validate_vendor_dependencies(string $base) : bool {
+	$vendor = $base . '/include/vendor';
+
+	if (!is_file($vendor . '/autoload.php') ||
+		!is_readable($base . '/composer.lock') ||
+		!is_readable($vendor . '/composer/installed.json')) {
+		return false;
+	}
+
+	$lock_json      = file_get_contents($base . '/composer.lock');
+	$installed_json = file_get_contents($vendor . '/composer/installed.json');
+
+	if ($lock_json === false || $installed_json === false) {
+		return false;
+	}
+
+	$lock      = json_decode($lock_json, true);
+	$installed = json_decode($installed_json, true);
+
+	if (!isset($lock['packages'], $installed['packages']) ||
+		!is_array($lock['packages']) || !is_array($installed['packages'])) {
+		return false;
+	}
+
+	$packages = array_column($installed['packages'], null, 'name');
+
+	foreach ($lock['packages'] as $required) {
+		if (!isset($required['name'], $required['version'])) {
+			return false;
+		}
+
+		$package = $packages[$required['name']] ?? [];
+
+		if (($package['version'] ?? null) !== $required['version']) {
+			return false;
+		}
+
+		// Composer metapackages have no files or installation directory.
+		if (($required['type'] ?? '') !== 'metapackage' &&
+			(!isset($package['install-path']) || !is_dir($vendor . '/composer/' . $package['install-path']))) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function prime_default_settings() : bool {
 	global $settings;
 
-	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
+	if (!is_array($settings)) {
+		return false;
+	}
+
+	if (!isset($_SESSION['settings_primed'])) {
 		$defaults = [];
 
 		foreach ($settings as $tab_array) {
@@ -259,13 +314,17 @@ function prime_default_settings() : void {
 				$params[]       = $value;
 			}
 
-			db_execute_prepared('INSERT IGNORE INTO settings
+			if (!db_execute_prepared('INSERT IGNORE INTO settings
 				(name, value) VALUES ' . implode(', ', $placeholders),
-				$params);
+				$params)) {
+				return false;
+			}
 		}
 	}
 
 	$_SESSION['settings_primed'] = true;
+
+	return true;
 }
 
 function install_create_csrf_secret(string $file) : bool {
@@ -1323,6 +1382,84 @@ function install_file_paths() : array {
 	return $input;
 }
 
+/**
+ * Replace the remote poller assignment without truncating the live configuration.
+ */
+function install_write_poller_config(string $file, int $poller_id) : bool {
+	$path = realpath($file);
+
+	if ($path === false || !is_file($path) || !is_writable($path)) {
+		return false;
+	}
+
+	$contents = file_get_contents($path);
+	$stat     = stat($path);
+
+	if ($contents === false || $stat === false) {
+		return false;
+	}
+
+	$contents = preg_replace('~^([ \t]*)\$poller_id[ \t]*=[^;\r\n]*;[ \t]*(?://[^\r\n]*|\#[^\r\n]*)?\r?$~m',
+		'${1}$poller_id = ' . $poller_id . ';', $contents, -1, $count);
+
+	if ($contents === null || $count !== 1) {
+		return false;
+	}
+
+	$temp = tempnam(dirname($path), '.cacti-config-');
+
+	if ($temp === false) {
+		return false;
+	}
+
+	try {
+		// tempnam can fall back to the system temporary directory.
+		if (dirname($temp) !== dirname($path)) {
+			return false;
+		}
+
+		$stream = fopen($temp, 'wb');
+
+		if ($stream === false) {
+			return false;
+		}
+
+		try {
+			$offset = 0;
+			$length = strlen($contents);
+
+			while ($offset < $length) {
+				$written = fwrite($stream, substr($contents, $offset));
+
+				if ($written === false || $written === 0) {
+					return false;
+				}
+
+				$offset += $written;
+			}
+
+			if (!fflush($stream) || !fsync($stream)) {
+				return false;
+			}
+		} finally {
+			fclose($stream);
+		}
+
+		// Keep the original access policy when replacing the inode.
+		if ((fileowner($temp) !== $stat['uid'] && !chown($temp, $stat['uid'])) ||
+			(filegroup($temp) !== $stat['gid'] && !chgrp($temp, $stat['gid'])) ||
+			!chmod($temp, $stat['mode'] & 0777)) {
+			return false;
+		}
+
+		return rename($temp, $path);
+	} finally {
+		if (is_file($temp)) {
+			unlink($temp);
+		}
+	}
+}
+
 function remote_update_config_file() : string {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 	$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
@@ -1334,7 +1471,6 @@ function remote_update_config_file() : string {
 	$database_ssl_capath, $database_ssl_verify_server_cert;
 
 	$failure     = '';
-	$newfile     = [];
 	$config_file = CACTI_PATH_INCLUDE . '/config.php';
 
 	$connection = db_connect_real(
@@ -1386,33 +1522,8 @@ function remote_update_config_file() : string {
 		}
 
 		if (!empty($poller_id)) {
-			if (is_writable($config_file)) {
-				$file_array = file($config_file);
-
-				if (is_array($file_array) && cacti_sizeof($file_array)) {
-					foreach ($file_array as $line) {
-						if (str_contains(trim($line), '$poller_id')) {
-							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
-						} else {
-							$newfile[] = $line;
-						}
-					}
-
-					$fp = fopen($config_file, 'w');
-
-					if ($fp !== false) {
-						foreach ($newfile as $line) {
-							fwrite($fp, $line);
-						}
-						fclose($fp);
-					} else {
-						$failure = 'Failed to open configuration file for writing';
-					}
-				} else {
-					$failure = 'Failed to read configuration file';
-				}
-			} else {
-				$failure = 'Configuration file is not writable';
+			if (!install_write_poller_config($config_file, (int) $poller_id)) {
+				$failure = 'Failed to update configuration file';
 			}
 		} else {
 			$failure = 'Unable to obtain poller id for this server';
