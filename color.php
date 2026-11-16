@@ -158,6 +158,10 @@ function form_actions() : void {
 
 				$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', [$matches[1]]);
 
+				if (!is_array($color)) {
+					continue;
+				}
+
 				$ilist .= '<li>' . ($color['name'] != '' ? htmle($color['name']) : __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 
 				$iarray[] = $matches[1];
@@ -390,7 +394,7 @@ function color_edit() : void {
 
 	if (!ierv('id')) {
 		$color        = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', [grv('id')]);
-		$header_label = __esc('Colors [edit: %s]', $color['hex']);
+		$header_label = __esc('Colors [edit: %s]', is_array($color) ? $color['hex'] : '');
 	} else {
 		$header_label = __('Colors [new]');
 	}

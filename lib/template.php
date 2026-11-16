@@ -2565,6 +2565,10 @@ function verify_data_input(string $hash, string $input_string) : array {
 		WHERE hash = ?',
 		[$hash]);
 
+	if (!is_array($input)) {
+		return ['status' => false];
+	}
+
 	if ($input['input_string'] == $input_string) {
 		$input['status'] = true;
 

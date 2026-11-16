@@ -79,7 +79,7 @@ $version = CACTI_VERSION;
 
 global $user_auth_realm_filenames;
 
-if (!cacti_sizeof($user) || $user['realm'] != 0) {
+if (!is_array($user) || !cacti_sizeof($user) || $user['realm'] != 0) {
 	if (!cacti_sizeof($user)) {
 		raise_message(44);
 	} else {

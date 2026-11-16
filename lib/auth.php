@@ -3907,7 +3907,7 @@ function auth_process_lockout(string $username, int $realm) : void {
 				AND realm = ?',
 				[$username, $realm]);
 
-			if (cacti_sizeof($user)) {
+			if (is_array($user) && cacti_sizeof($user)) {
 				if ($user['enabled'] == '') {
 					cacti_log(sprintf("LOGIN FAILED: Login failed for user '%s' from IP address '%s'. User account disabled.", $username, get_client_addr()), false, 'AUTH');
 
