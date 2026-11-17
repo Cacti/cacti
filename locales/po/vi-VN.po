@@ -13188,6 +13188,12 @@ msgstr "Địa hạt:"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "Địa hạt:"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "Gai"
@@ -13303,14 +13309,6 @@ msgstr "Chế độ xem biểu đồ thời gian"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "Kết quả SpikeKill"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Nhấn vào đây để xem chỉ đồ thị này trong thời gian thực"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Nhấp lại để đưa Biểu đồ này ra khỏi Thời gian thực"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20250,6 +20248,12 @@ msgstr "Menu điều khiển"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Nhấn vào đây để xem chỉ đồ thị này trong thời gian thực"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Nhấp lại để đưa Biểu đồ này ra khỏi Thời gian thực"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Mục nguồn dữ liệu tối đa trên mỗi lượt"
