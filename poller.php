@@ -1264,8 +1264,7 @@ function poller_replicate_check() : void {
 		AND disabled = ''
 		AND sync_interval != 0
 		AND (last_sync = '0000-00-00 00:00:00' OR requires_sync = 'on'
-		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, ?)))",
-		[$sync_interval]);
+		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, ?)))", [$sync_interval]);
 
 	if (cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
