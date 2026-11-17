@@ -13130,6 +13130,12 @@ msgid "Realtime"
 msgstr "Realtid"
 
 #: lib/html.php
+#, fuzzy
+#| msgid "Realtime"
+msgid "Stop Realtime"
+msgstr "Realtid"
+
+#: lib/html.php
 msgid "Kill Spikes"
 msgstr "Ta bort toppar"
 
@@ -13244,14 +13250,6 @@ msgstr "Tidsvy för graf"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill-resultat"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Klicka för att visa just denna graf i realtid"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Klicka igen för att avsluta grafens realtidsvisning"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20121,6 +20119,12 @@ msgstr "Konsolmeny"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Klicka för att visa just denna graf i realtid"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Klicka igen för att avsluta grafens realtidsvisning"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Högsta antal datakällobjekt per omgång"
