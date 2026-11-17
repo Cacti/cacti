@@ -20247,6 +20247,20 @@ msgstr "이 VDEF를 사용하는 그래프 템플릿 수입니다."
 msgid "No VDEFs"
 msgstr "VDEF 없음"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "콘솔 메뉴"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "합격 당 최대 데이터 소스 항목"
 
