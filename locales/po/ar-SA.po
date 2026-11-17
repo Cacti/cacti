@@ -13410,6 +13410,12 @@ msgstr "مملكة"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "مملكة"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "المسامير"
@@ -13525,14 +13531,6 @@ msgstr "عرض الرسم البياني الزمني"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill النتائج"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "انقر لعرض هذا الرسم البياني في الوقت الفعلي"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "انقر مرة أخرى لأخراج هذا الرسم البياني من الوقت الفعلي"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20691,6 +20689,12 @@ msgstr "قائمة وحدة التحكم"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "انقر لعرض هذا الرسم البياني في الوقت الفعلي"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "انقر مرة أخرى لأخراج هذا الرسم البياني من الوقت الفعلي"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "الحد الأقصى لعناصر مصدر البيانات لكل ممر"
