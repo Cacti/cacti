@@ -6,6 +6,7 @@ on:
       - 'lib/poller.php'
       - 'lib/snmp.php'
       - 'tests/Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php'
+      - 'tests/Unit/DataCollection/Snmp/SnmpFormatAgentTest.php'
       - 'tests/fixtures/Core/SnmpWalkOidGuard.php'
       - 'tests/Helpers/IsolatedProbe.php'
       - 'tests/Unit/PollerMappingCacheTest.php'
