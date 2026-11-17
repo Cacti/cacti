@@ -611,7 +611,7 @@ function install_test_temporary_table() : bool {
 }
 
 function db_install_execute(string $sql, array $params = [], bool $log = true) : int {
-	$status = (db_execute_prepared($sql, $params, $log && empty($params)) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
+	$status = (db_execute_prepared($sql, $params, $log && empty($params), redact: true) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
 		db_install_add_cache($status, $sql, $params);
