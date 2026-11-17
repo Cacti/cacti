@@ -4,6 +4,7 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../../..');
 require('./fixture-coverage').collectCoverage(test);
 
@@ -202,6 +203,31 @@ async function initializeRealtimeGraph(page) {
 		finishGraph();
 	});
 }
+
+test('realtime labels preserve translated punctuation when toggled', async ({ page }) => {
+	await initializeRealtimeGraph(page);
+	const labels = {
+		Realtime: 'Temps réel & "direct"',
+		'Stop Realtime': "Arrêter l'actualisation \\ pause\nmaintenant"
+	};
+	const source = fs.readFileSync(path.join(root, 'lib/html.php'), 'utf8');
+	const declarations = source.match(/^\s*var realtime(?:Stop)?Label\s*=.*$/gm);
+	expect(declarations).toHaveLength(2);
+	const rendered = execFileSync(process.env.CACTI_TEST_PHP || 'php', ['-r',
+		'function __($text) { return json_decode($GLOBALS["argv"][1], true)[$text]; } ' +
+		'function __esc($text) { return htmlspecialchars(__($text), ENT_QUOTES); } ?>' + declarations.join('\n'),
+		JSON.stringify(labels)
+	], { encoding: 'utf8' });
+	await page.addScriptTag({ content: rendered });
+	const menu = page.locator('#g1 .graphDrillDownMenu');
+	const action = page.locator('#graph_1_realtime');
+	for (const label of [labels['Stop Realtime'], labels.Realtime]) {
+		await menu.focus();
+		await page.keyboard.press('Enter');
+		await action.click();
+		expect(await action.locator('.iconLabel').textContent()).toBe(label);
+	}
+});
 
 for (const theme of ['modern', 'dark']) {
 	test(`realtime activation restores keyboard focus in ${theme}`, async ({ page }) => {
