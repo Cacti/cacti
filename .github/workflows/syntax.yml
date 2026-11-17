@@ -114,7 +114,7 @@ jobs:
 
     - name: Run SNMP walk OID contracts
       working-directory: tests
-      run: php vendor/bin/pest --configuration=phpunit.xml Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php --colors=never
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php Unit/DataCollection/Snmp/SnmpFormatAgentTest.php --colors=never
 
   javascript-contracts:
     name: JavaScript contracts
