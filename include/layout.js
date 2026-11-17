@@ -4961,17 +4961,6 @@ function initGraphDrilldown() {
 		}
 	});
 
-	function closeGraphDrilldown(container) {
-		container.removeClass('open');
-		container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
-		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
-
-		// Close an open SpikeKill submenu so it is not orphaned with the strip.
-		if (typeof spikeKillClose == 'function') {
-			spikeKillClose();
-		}
-	}
-
 	// Turn the icon strip into a labelled menu the first time a graph's strip is
 	// opened: each action becomes a row of its glyph followed by the text taken
 	// from the glyph's title.  Done here (not at page load) so only the single
@@ -5128,6 +5117,22 @@ function initGraphDrilldown() {
 			}
 		}, 0);
 	});
+}
+
+function closeGraphDrilldown(container) {
+	// Return focus before hiding the action that currently owns it.
+	if (container.find('.iconWrapper :focus').length > 0) {
+		container.find('.graphDrillDownMenu').trigger('focus');
+	}
+
+	container.removeClass('open');
+	container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
+	container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+
+	// Close an open SpikeKill submenu so it is not orphaned with the strip.
+	if (typeof spikeKillClose == 'function') {
+		spikeKillClose();
+	}
 }
 
 function initializeGraphs(disable_cache) {
@@ -5293,6 +5298,7 @@ function initializeGraphs(disable_cache) {
 
 				if (typeof realtimeArray != 'undefined') {
 					realtimeArray[data.local_graph_id] = false;
+					setRealtimeLabel(data.local_graph_id, false);
 				}
 
 				if (!--numGraphs) {
@@ -5364,7 +5370,7 @@ function initializeGraphs(disable_cache) {
 
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).trigger('change');
-				$(this).html("<i class='drillDown ti ti-chart-area-line-filled realTime' title='" + realtimeClickOn + "'></i>");
+				setRealtimeLabel(graph_id, false);
 				labelVisibleGraphActions();
 
 				$('graph_id' + graph_id).tooltip().zoom({
@@ -5377,13 +5383,14 @@ function initializeGraphs(disable_cache) {
 				setFilters();
 			} else {
 				keepRealtime[graph_id] = $('#wrapper_' + graph_id).html();
-				$(this).html("<i style='text-align:center;padding:0px;' title='" + realtimeClickOff + "' class='drillDown ti ti-loader-2 icon-rotate'></i>");
+				setRealtimeLabel(graph_id, true);
 				labelVisibleGraphActions();
-				$(this).find('i').tooltip();
 				realtimeArray[graph_id] = true;
 				setFilters();
 				realtimeGrapher();
 			}
+
+			closeGraphDrilldown($(this).closest('.graphDrillDownToggle'));
 		});
 	});
 }

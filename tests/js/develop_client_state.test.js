@@ -165,7 +165,9 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 	const initial = '<img id="graph_42" alt="Traffic graph">';
 	let content = initial;
 	let filters = 0;
+	let closed = 0;
 	let labelRefreshes = 0;
+	const labels = [];
 	const link = {};
 	function jquery(selector) {
 		const chain = {
@@ -177,16 +179,19 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 				}
 				return chain;
 			},
+			text: (value) => { labels.push(value); return chain; },
+			closest: () => chain,
 			trigger: () => chain, empty: () => chain, find: () => chain,
 			tooltip: () => chain, children: () => chain, on: () => chain,
 			zoom: () => chain, remove: () => chain, css: () => chain,
 		};
 		return chain;
 	}
-	const context = load('include/realtime.js', ['stopRealtime'], {
+	const context = load('include/realtime.js', ['stopRealtime', 'setRealtimeLabel'], {
 		$: jquery, realtimeArray: [], keepRealtime: [], timeOffset: 0,
+		realtimeLabel: 'Realtime', realtimeStopLabel: 'Stop Realtime', urlPath: '',
+		closeGraphDrilldown: () => { closed++; },
 		labelVisibleGraphActions: () => { labelRefreshes++; },
-		realtimeClickOn: 'Start', realtimeClickOff: 'Stop', urlPath: '',
 		setFilters: () => { filters++; }, tuneFilter: () => {}, realtimeGrapher: () => {}, shouldCaptureClick: () => true,
 	});
 	const layout = functionAt(source('include/layout.js'), source('include/layout.js').indexOf('function initializeGraphs('));
@@ -199,10 +204,13 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 	click.call(link, { preventDefault: () => {}, stopPropagation: () => {} });
 	assert.equal(context.realtimeArray[42], true);
 	assert.equal(context.keepRealtime[42], initial);
+	assert.deepEqual(labels, ['Stop Realtime']);
+	assert.equal(closed, 1);
 	content = 'realtime frame';
 	context.stopRealtime();
 	assert.equal(content, initial);
 	assert.equal(context.realtimeArray[42], false);
+	assert.deepEqual(labels, ['Stop Realtime', 'Realtime']);
 	assert.equal(filters, 2);
 	assert.equal(labelRefreshes, 2);
 });
