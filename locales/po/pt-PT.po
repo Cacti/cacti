@@ -13234,6 +13234,12 @@ msgstr "Reino"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "Reino"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "Spike"
@@ -13349,14 +13355,6 @@ msgstr "Visualização do gráfico de tempo"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "Resultados SpikeKill"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Clique para ver apenas este gráfico em tempo real"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Clique novamente para retirar este gráfico do Realtime"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20341,6 +20339,12 @@ msgstr "Menu Console"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Clique para ver apenas este gráfico em tempo real"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Clique novamente para retirar este gráfico do Realtime"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Máximo de itens de origem de dados por passe"
