@@ -22,7 +22,7 @@ jstree, billboard.js, d3, DOMPurify, pace-js, screenfull, select2 and the
 tablesorter files (core, widgets, pager) are copied from npm by `sync-js.mjs`.
 
 `pace-js` and `tablesorter` each carry a one-line local fix applied through
-`patch-package` from `patches/pace-js+1.2.4.patch` and
+`patch-package` from `patches/pace-js+1.3.1.patch` and
 `patches/tablesorter+2.32.0.patch`.
 
 `screenfull` is pinned to 5.2.0, the last non-ESM (UMD) release, so it loads as a
