@@ -31,9 +31,10 @@ function db_fetch_assoc_prepared($sql, $params = [], $log = true, $db_conn = fal
 }
 function commands_debug($message) : void {
 }
-function cacti_log($message, $output = false, $environ = 'SYSTEM', $verbosity = POLLER_VERBOSITY_NONE, $force = false) : void {
+function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPHP', mixed $level = '') : bool {
+	return true;
 }
-function exec_background($filename, $args = '') : void {
+function exec_background(string $filename, string|array $args = '', string|array $redirect_args = '') : void {
 	$GLOBALS['poller_child_capture'][] = [$filename, $args];
 }
 

@@ -21,6 +21,10 @@ class RequestDispatchTest(unittest.TestCase):
     def test_html_change_runs_the_browser_probe(self):
         self.dispatch('lib/html.php', 'accessibility')
 
+    def test_poller_entrypoint_change_runs_the_argument_and_query_probe(self):
+        for path in ['poller.php', 'poller_commands.php', 'tests/fixtures/Core/PollerHardening.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'PollerHardening.php')
     def test_locale_change_runs_the_document_shell_probe(self):
         self.dispatch('include/global_languages.php', 'document_direction_probe.php')
 
@@ -110,7 +114,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'Core/MessageFormatting.php', 'Core/ExternalLinkMessage.php', 'Core/TrustedActionMessages.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
-                           'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
+                           'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php', 'Core/PollerHardening.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
