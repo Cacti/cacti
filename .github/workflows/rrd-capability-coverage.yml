@@ -31,6 +31,9 @@ on:
       - 'tests/tools/test_check_changed_php_coverage.py'
       - 'tests/phpunit-rrd-capabilities.xml'
       - '.github/workflows/rrd-capability-coverage.yml'
+      - 'tests/Helpers/DataQueryHarness.php'
+      - 'tests/Unit/DataCollection/DataQuery/**'
+      - 'tests/integration/DataQueryReindexTest.php'
 
 permissions:
   contents: read
@@ -118,6 +121,24 @@ jobs:
             Unit/Core/Boost/BoostPollerDrainBehaviorTest.php \
             Unit/Core/Boost/BoostPollerOutputBehaviorTest.php \
             integration/BoostProcessTableMariaDbTest.php
+      - name: Exercise data query discovery and reindex contracts
+        working-directory: tests
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          CACTI_DQ_DB_HOST: 127.0.0.1
+          CACTI_DQ_DB_PORT: 3306
+          CACTI_DQ_DB_NAME: cacti_dq_test
+          CACTI_DQ_DB_USER: root
+          CACTI_DQ_DB_PASSWORD: cactiroot
+          MYSQL_PWD: cactiroot
+        run: |
+          set -euo pipefail
+          mariadb --host=127.0.0.1 --user=root -e 'CREATE DATABASE IF NOT EXISTS cacti_dq_test'
+          mkdir -p "$CACTI_PR_RAW_COVERAGE"
+          php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest \
+            integration/DataQueryReindexTest.php \
+            Unit/DataCollection/DataQuery/DataQueryIndexLookupTest.php
       - name: Exercise Boost lifecycle and failure recovery
         env:
           XDEBUG_MODE: coverage

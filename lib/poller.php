@@ -484,7 +484,7 @@ function file_exists_2gb($filename) {
  * @param int $host_id The id of the host to which the data query belongs.
  * @param int $data_query_id The id of the data query to rebuild the reindex cache for.
  *
- * @return void No value is returned.
+ * @return bool Whether the cache update succeeded.
  */
 function update_reindex_cache($host_id, $data_query_id) {
 	global $config;
@@ -647,8 +647,10 @@ function update_reindex_cache($host_id, $data_query_id) {
 	}
 
 	if (cacti_sizeof($recache_stack)) {
-		poller_update_poller_reindex_from_buffer($host_id, $data_query_id, $recache_stack);
+		return poller_update_poller_reindex_from_buffer($host_id, $data_query_id, $recache_stack);
 	}
+
+	return true;
 }
 
 /**
@@ -659,62 +661,72 @@ function update_reindex_cache($host_id, $data_query_id) {
  * @param int $data_query_id The data query ID.
  * @param mixed &$recache_stack The recache stack.
  *
- * @return void No value is returned.
+ * @return bool Whether the cache update succeeded.
  */
 function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$recache_stack) {
-	/* set all fields present value to 0, to mark the outliers when we are all done */
-	db_execute_prepared('UPDATE poller_reindex
-		SET present = 0
-		WHERE host_id = ?
-		AND data_query_id = ?',
-		array($host_id, $data_query_id));
+	$started = false;
+	try {
+		if (!db_begin_transaction()) {
+			return false;
+		}
+		$started = true;
 
-	/* setup the database call */
-	$sql_prefix   = 'INSERT INTO poller_reindex (host_id, data_query_id, action, op, assert_value, arg1, present) VALUES';
-	$sql_suffix   = ' ON DUPLICATE KEY UPDATE action=VALUES(action), op=VALUES(op), assert_value=VALUES(assert_value), present=VALUES(present)';
-
-	/* use a reasonable insert buffer, the default is 1MByte */
-	$max_packet   = 256000;
-
-	/* setup some defaults */
-	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
-	$buf_len      = 0;
-	$buf_count    = 0;
-	$buffer       = '';
-
-	foreach($recache_stack AS $record) {
-		if ($buf_count == 0) {
-			$delim = ' ';
-		} else {
-			$delim = ', ';
+		// Serialize replacements even when the cache does not contain any rows yet.
+		if (!db_fetch_cell_prepared('SELECT host_id FROM host_snmp_query
+			WHERE host_id = ? AND snmp_query_id = ? FOR UPDATE',
+			array($host_id, $data_query_id), '', false)) {
+			throw new RuntimeException('Data query association is unavailable');
 		}
 
-		$buffer .= $delim . $record;
-
-		$buf_len += strlen($record);
-
-		if (($overhead + $buf_len) > ($max_packet - 1024)) {
-			db_execute($sql_prefix . $buffer . $sql_suffix);
-
-			$buffer    = '';
-			$buf_len   = 0;
-			$buf_count = 0;
-		} else {
-			$buf_count++;
+		// Do not retry an individual statement after InnoDB rolls back a deadlock.
+		if (!db_execute_prepared('UPDATE poller_reindex SET present = 0
+			WHERE host_id = ? AND data_query_id = ?', array($host_id, $data_query_id), false)) {
+			throw new RuntimeException('Unable to mark cache rows');
 		}
-	}
 
-	if ($buf_count > 0) {
-		db_execute($sql_prefix . $buffer . $sql_suffix);
-	}
+		$sql_prefix = 'INSERT INTO poller_reindex (host_id, data_query_id, action, op, assert_value, arg1, present) VALUES';
+		$sql_suffix = ' ON DUPLICATE KEY UPDATE action=VALUES(action), op=VALUES(op), assert_value=VALUES(assert_value), present=VALUES(present)';
+		$max_packet = 256000 - 1024;
+		$overhead   = strlen($sql_prefix) + strlen($sql_suffix);
+		$buffer     = '';
 
-	/* remove stale records FROM the poller reindex */
-	db_execute_prepared('DELETE FROM poller_reindex
-		WHERE host_id = ?
-		AND data_query_id = ?
-		AND present = 0', array($host_id, $data_query_id));
+		foreach ($recache_stack as $record) {
+			$delim = $buffer === '' ? ' ' : ', ';
+			if ($buffer !== '' && $overhead + strlen($buffer) + strlen($delim) + strlen($record) > $max_packet) {
+				if (!db_execute($sql_prefix . $buffer . $sql_suffix, false)) {
+					throw new RuntimeException('Unable to write cache batch');
+				}
+				$buffer = '';
+				$delim  = ' ';
+			}
+			$buffer .= $delim . $record;
+		}
+
+		if ($buffer !== '' && !db_execute($sql_prefix . $buffer . $sql_suffix, false)) {
+			throw new RuntimeException('Unable to write cache batch');
+		}
+
+		if (!db_execute_prepared('DELETE FROM poller_reindex
+			WHERE host_id = ? AND data_query_id = ? AND present = 0',
+			array($host_id, $data_query_id), false) || !db_commit_transaction()) {
+			throw new RuntimeException('Unable to commit cache replacement');
+		}
+	} catch (Throwable $e) {
+		if ($started) {
+			try {
+				db_rollback_transaction();
+			} catch (Throwable $rollback_error) {
+				// A deadlock or disconnected server can already have rolled it back.
+			}
+		}
+		cacti_log("ERROR: Device[$host_id] DQ[" . $data_query_id . '] poller_reindex refresh failed: ' . $e->getMessage(), false, 'REINDEX');
+
+		return false;
+	}
 
 	poller_push_reindex_only_data_to_main($host_id, $data_query_id);
+
+	return true;
 }
 
 /**

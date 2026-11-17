@@ -609,6 +609,12 @@ function api_device_dq_remove($device_id, $data_query_id) {
 		AND host_id = ?',
 		array($data_query_id, $device_id));
 
+	/* a queued reindex for the removed mapping can never succeed, and failed reindexes are retained */
+	db_execute_prepared('DELETE FROM poller_command
+		WHERE action = ?
+		AND command = ?',
+		array(POLLER_COMMAND_REINDEX, $device_id . ':' . $data_query_id));
+
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($device_id));
 
 	if ($poller_id > 1) {
@@ -628,6 +634,11 @@ function api_device_dq_remove($device_id, $data_query_id) {
 					WHERE data_query_id = ?
 					AND host_id = ?',
 					array($data_query_id, $device_id), true, $rcnn_id);
+
+				db_execute_prepared('DELETE FROM poller_command
+					WHERE action = ?
+					AND command = ?',
+					array(POLLER_COMMAND_REINDEX, $device_id . ':' . $data_query_id), true, $rcnn_id);
 			} else {
 				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}

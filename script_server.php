@@ -298,14 +298,21 @@ while (1) {
 				$allowed_roots[] = $config['scripts_path'];
 			}
 
+			/* set this variable so the calling script can determine if it was
+			 * called by the script server or stand-alone, and so the quit
+			 * request stays silent once the poller has sent work */
+			$called_by_script_server = true;
+
 			if (!function_exists($function)) {
-				/* Validate the include path unconditionally. Built-ins like system,
-				 * passthru, exec satisfy function_exists() without ever loading a
-				 * script file, so the path guard cannot be gated on the function
-				 * being undefined. include_once() is idempotent, so re-running it
-				 * on cached entries is a no-op. The scripts_path setting is an
-				 * explicitly configured Cacti script root and may live outside the
-				 * web root, so it is an allowed containment root as well. */
+				/* Validate the include path before loading it. Gating this check
+				 * on the function being undefined is safe only because the
+				 * ReflectionFunction internal-function check and the fn_file
+				 * root check below run unconditionally: built-ins like system,
+				 * passthru and exec satisfy function_exists() without loading a
+				 * script file, and those checks reject them. The scripts_path
+				 * setting is an explicitly configured Cacti script root and may
+				 * live outside the web root, so it is an allowed containment
+				 * root as well. */
 				$real_include = realpath($include_file);
 
 				$path_ok = script_server_path_is_allowed($real_include, $allowed_roots);
@@ -339,17 +346,18 @@ while (1) {
 					$include_file = strtolower($include_file);
 				}
 
-				/* set this variable so the calling script can determine if it was
-				 * called by the script server or stand-alone */
-				$called_by_script_server = true;
-
 				/* turn on output buffering to avoid problems with nasty scripts */
 				ob_start();
 				include_once($include_file);
 				ob_end_clean();
-
-				error_reporting(0);
 			}
+
+			/* Reassert on every request, not only when this request loaded a
+			 * file: the gettext loader in global_languages.php and included
+			 * scripts can raise error_reporting, and a request for an
+			 * already-loaded function skips the include, so a warning could
+			 * otherwise reach STDOUT and corrupt the reply. */
+			error_reporting(0);
 
 			if (!function_exists($function)) {
 				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) . "'", false, 'PHPSVR');
