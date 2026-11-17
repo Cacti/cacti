@@ -23,6 +23,9 @@ inputs:
   install-args:
     description: Arguments passed to composer install; leave empty to skip installation.
     default: ''
+  cache:
+    description: Set to 'false' to skip restoring the Composer download cache.
+    default: 'true'
 
 runs:
   using: composite
@@ -37,11 +40,13 @@ runs:
         tools: composer:2.10.2
 
     - name: Resolve Composer cache directory
+      if: inputs.cache != 'false'
       id: composer-cache
       shell: bash
       run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
     - name: Restore Composer download cache
+      if: inputs.cache != 'false'
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
       with:
         path: ${{ steps.composer-cache.outputs.directory }}
