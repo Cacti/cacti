@@ -762,7 +762,7 @@ function cdef_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete CDEF Item');?>',
+						title: <?php print json_encode(__('Delete CDEF Item'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);?>,
 						minHeight: 80,
 						minWidth: 500
 					});
