@@ -20398,6 +20398,20 @@ msgstr "Grafiku veidņu skaits, kas izmanto šo VDEF."
 msgid "No VDEFs"
 msgstr "Nav VDEF"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Konsoles izvēlne"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Maksimālais datu avota vienumu skaits vienā caurlaidē"
 
