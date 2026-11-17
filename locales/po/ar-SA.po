@@ -20678,6 +20678,20 @@ msgstr "عدد قوالب الرسوم البيانية باستخدام هذا 
 msgid "No VDEFs"
 msgstr "لا VDEFs"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "قائمة وحدة التحكم"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "الحد الأقصى لعناصر مصدر البيانات لكل ممر"
 
