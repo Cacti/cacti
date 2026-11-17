@@ -1,7 +1,7 @@
 // Copies the npm-managed JavaScript libraries into include/js/ so the tree
 // ships with prebuilt assets. Run `npm ci && npm run build:js` after any change
 // to the pinned versions in package.json. pace-js and tablesorter each carry a
-// local fix applied via patch-package (patches/pace-js+1.2.4.patch,
+// local fix applied via patch-package (patches/pace-js+1.3.1.patch,
 // patches/tablesorter+2.32.0.patch) before this runs. On the 1.2.x branch
 // screenfull is pinned to the last non-ESM release (5.2.0), whose UMD build
 // (node_modules/screenfull/dist/screenfull.js) loads as a classic <script>
