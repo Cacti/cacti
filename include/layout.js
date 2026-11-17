@@ -4514,6 +4514,11 @@ function initGraphDrilldown() {
 }
 
 function closeGraphDrilldown(container) {
+	// Return focus before hiding the action that currently owns it.
+	if (container.find('.iconWrapper :focus').length > 0) {
+		container.find('.graphDrillDownMenu').trigger('focus');
+	}
+
 	container.removeClass('open');
 	container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
 	container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
@@ -4708,6 +4713,7 @@ function initializeGraphs(disable_cache) {
 
 				if (typeof realtimeArray != 'undefined') {
 					realtimeArray[data.local_graph_id] = false;
+					setRealtimeLabel(data.local_graph_id, false);
 				}
 
 				if (!--numGraphs) {

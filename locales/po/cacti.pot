@@ -13135,6 +13135,10 @@ msgid "Realtime"
 msgstr ""
 
 #: lib/html.php
+msgid "Stop Realtime"
+msgstr ""
+
+#: lib/html.php
 msgid "Kill Spikes"
 msgstr ""
 
@@ -13248,14 +13252,6 @@ msgstr ""
 
 #: lib/html.php
 msgid "SpikeKill Results"
-msgstr ""
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr ""
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
 msgstr ""
 
 #: lib/html.php
