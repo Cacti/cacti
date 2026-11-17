@@ -13270,6 +13270,11 @@ msgstr "Valstība"
 
 #: lib/html.php
 #, fuzzy
+msgid "Stop Realtime"
+msgstr "Valstība"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "Smailes"
@@ -13388,14 +13393,6 @@ msgstr "Laika grafika skats"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill rezultāti"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Noklikšķiniet, lai skatītu tikai šo grafiku reāllaikā"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Noklikšķiniet vēlreiz, lai izņemtu šo grafiku no reāllaika"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20411,6 +20408,12 @@ msgstr "Konsoles izvēlne"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Noklikšķiniet, lai skatītu tikai šo grafiku reāllaikā"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Noklikšķiniet vēlreiz, lai izņemtu šo grafiku no reāllaika"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Maksimālais datu avota vienumu skaits vienā caurlaidē"
