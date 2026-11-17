@@ -20327,6 +20327,20 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Μενού Κονσόλας"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Μέγιστα στοιχεία προέλευσης δεδομένων ανά διαδρομή"
 
