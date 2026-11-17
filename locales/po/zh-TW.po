@@ -15503,6 +15503,11 @@ msgstr "領域"
 
 #: lib/html.php
 #, fuzzy
+msgid "Stop Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
 msgid "Kill Spikes"
 msgstr "釘鞋"
 
@@ -15637,16 +15642,6 @@ msgstr "時間圖表視圖"
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill結果"
-
-#: lib/html.php
-#, fuzzy
-msgid "Click to view just this Graph in Realtime"
-msgstr "單擊以實時查看此圖表"
-
-#: lib/html.php
-#, fuzzy
-msgid "Click again to take this Graph out of Realtime"
-msgstr "再次單擊可使此圖表脫離實時"
 
 #: lib/html.php
 #, fuzzy
@@ -23541,6 +23536,14 @@ msgstr "控制台菜單"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "單擊以實時查看此圖表"
+
+#, fuzzy
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "再次單擊可使此圖表脫離實時"
 
 #, fuzzy
 #~ msgid "Maximum Data Source Items Per Pass"
