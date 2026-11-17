@@ -202,6 +202,7 @@ function stopRealtime() {
 		realtimeArray[graph_id] = false;
 	}
 
+	labelVisibleGraphActions();
 	setFilters();
 	tuneFilter();
 }

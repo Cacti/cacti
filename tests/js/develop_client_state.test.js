@@ -166,6 +166,7 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 	let content = initial;
 	let filters = 0;
 	let closed = 0;
+	let labelRefreshes = 0;
 	const labels = [];
 	const link = {};
 	function jquery(selector) {
@@ -190,6 +191,7 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 		$: jquery, realtimeArray: [], keepRealtime: [], timeOffset: 0,
 		realtimeLabel: 'Realtime', realtimeStopLabel: 'Stop Realtime', urlPath: '',
 		closeGraphDrilldown: () => { closed++; },
+		labelVisibleGraphActions: () => { labelRefreshes++; },
 		setFilters: () => { filters++; }, tuneFilter: () => {}, realtimeGrapher: () => {}, shouldCaptureClick: () => true,
 	});
 	const layout = functionAt(source('include/layout.js'), source('include/layout.js').indexOf('function initializeGraphs('));
@@ -210,4 +212,5 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 	assert.equal(context.realtimeArray[42], false);
 	assert.deepEqual(labels, ['Stop Realtime', 'Realtime']);
 	assert.equal(filters, 2);
+	assert.equal(labelRefreshes, 2);
 });

@@ -3173,6 +3173,16 @@ $settings_user = [
 			'default'       => read_config_option('selected_theme'),
 			'array'         => $themes
 		],
+		'graph_actions_display' => [
+			'friendly_name' => __('Graph Actions'),
+			'description'   => __('Show graph actions in a collapsed menu or as always-visible icons beside each graph.'),
+			'method'        => 'drop_array',
+			'default'       => 'menu',
+			'array'         => [
+				'menu'  => __('Collapsed Menu'),
+				'icons' => __('Always-visible Icons')
+			]
+		],
 		'default_view_mode' => [
 			'friendly_name' => __('Default View Mode'),
 			'description'   => __('Which Graph mode you want displayed by default when you first visit the Graphs page?'),
