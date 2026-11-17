@@ -13225,6 +13225,12 @@ msgstr "Realm"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "Realm"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "Pointes"
@@ -13340,14 +13346,6 @@ msgstr "Affichage du graphique temporel"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "Résultats de SpikeKill"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Cliquez pour voir ce graphique en temps réel"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Cliquez à nouveau pour sortir ce graphique de Realtime"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20332,6 +20330,12 @@ msgstr "Menu de la console"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Cliquez pour voir ce graphique en temps réel"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Cliquez à nouveau pour sortir ce graphique de Realtime"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Nombre maximal d'éléments de source de données par passage"
