@@ -20237,6 +20237,20 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 msgid "No VDEFs"
 msgstr "Không có VDEF"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Menu điều khiển"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Mục nguồn dữ liệu tối đa trên mỗi lượt"
 
