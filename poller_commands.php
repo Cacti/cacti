@@ -347,7 +347,7 @@ function commands_launch_child(int $host_id) : void {
 		'CLEANUP',
 		POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_BASE . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug' : ''));
+	exec_background($php_binary, cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_commands.php') . ' --child=' . $host_id . ($seebug ? ' --debug' : ''));
 }
 
 /**
