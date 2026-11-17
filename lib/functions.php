@@ -5345,7 +5345,9 @@ function sanitize_unserialize_selected_items($items) {
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
 			$items = unserialize($unstripped, array('allowed_classes' => false));
 
-			if (is_array($items)) {
+			/* Bulk-action forms submit a list. Reject encodings that do not
+			 * round-trip exactly, including bytes after the array. */
+			if (is_array($items) && array_is_list($items) && serialize($items) === $unstripped) {
 				foreach ($items as $item) {
 					if (is_array($item)) {
 						return false;
