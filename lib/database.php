@@ -571,9 +571,11 @@ function db_execute(string $sql, bool $log = true, mixed $db_conn = false, float
  * @param mixed  $return_params To Be Completed
  * @param float  $timeout       Server-side statement timeout in seconds, 0 disables
  *
+ * @param bool $redact Omit values echoed in database error details.
+ *
  * @return mixed '1' for success, false for failed, or the return value of the return function
  */
-function db_execute_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, string $execute_name = 'Exec', mixed $default_value = true, string $return_func = 'no_return_function', mixed $return_params = [], float $timeout = 0) : mixed {
+function db_execute_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, string $execute_name = 'Exec', mixed $default_value = true, string $return_func = 'no_return_function', mixed $return_params = [], float $timeout = 0, bool $redact = false) : mixed {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
 
 	$database_total_queries++;
@@ -687,6 +689,11 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 					$en        = $errorinfo[1];
 				}
 			}
+		}
+
+		// Database errors can echo bound values; installer diagnostics omit them.
+		if ($redact && $en != '') {
+			$errorinfo[2] = 'Database operation failed (error details omitted)';
 		}
 
 		if ($en == '') {

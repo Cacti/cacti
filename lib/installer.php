@@ -511,7 +511,7 @@ class Installer implements JsonSerializable {
 				case 'Runtime':
 					break;
 				default:
-					log_install_always('badkey', "$key => $value");
+					log_install_always('badkey', 'Ignoring unknown installer option');
 			}
 		}
 	}
