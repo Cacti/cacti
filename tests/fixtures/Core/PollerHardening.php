@@ -9,7 +9,7 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
-require dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 $root = dirname(__DIR__, 3);
 require $root . '/include/global_constants.php';
