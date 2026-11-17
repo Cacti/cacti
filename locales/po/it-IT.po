@@ -20327,6 +20327,20 @@ msgstr "Il numero di modelli di grafici che utilizzano questo VDEF."
 msgid "No VDEFs"
 msgstr "Nessun VDEF"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Menu della console"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Numero massimo di elementi della fonte dati per passaggio"
 
