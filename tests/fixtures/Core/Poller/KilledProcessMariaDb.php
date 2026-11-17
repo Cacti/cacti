@@ -60,11 +60,12 @@ if (($argv[1] ?? '') === 'worker') {
 	}
 }
 
-$pdo->exec('CREATE DATABASE ' . $database_default);
-$pdo->exec('USE ' . $database_default);
-$database_sessions = ["$database_hostname:$database_port:$database_default" => $pdo];
 $database_total_queries = 0;
+db_execute_prepared("CREATE DATABASE `$database_default`", [], true, $pdo);
+db_execute_prepared("USE `$database_default`", [], true, $pdo);
+$database_sessions = ["$database_hostname:$database_port:$database_default" => $pdo];
 $other_user = 'cacti_test_' . bin2hex(random_bytes(6));
+$other_password = bin2hex(random_bytes(16));
 $worker = null;
 try {
 	$schema = file_get_contents($root . '/cacti.sql');
@@ -83,8 +84,8 @@ try {
 	$started = $pdo->query('SELECT NOW()')->fetchColumn();
 	check(cacti_process_kill_db_connection(['connection_id' => $self, 'started' => $started]) === false, 'Helper killed its own connection');
 	check(cacti_process_kill_db_connection(['connection_id' => 0, 'started' => $started]) === false, 'Zero connection id was accepted');
-	$pdo->exec("CREATE USER '$other_user'@'%'");
-	$other = new PDO($dsn, $other_user, '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+	db_execute_prepared("CREATE USER ?@'%' IDENTIFIED BY ?", [$other_user, $other_password]);
+	$other = new PDO($dsn, $other_user, $other_password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 	$other_id = (int) $other->query('SELECT CONNECTION_ID()')->fetchColumn();
 	check(cacti_process_kill_db_connection(['connection_id' => $other_id, 'started' => $started]) === false, 'Helper killed another database user');
 	check((int) $other->query('SELECT 1')->fetchColumn() === 1, 'Other user connection was lost');
@@ -116,7 +117,7 @@ try {
 		proc_terminate($worker);
 		proc_close($worker);
 	}
-	$pdo->exec("DROP USER IF EXISTS '$other_user'@'%'");
-	$pdo->exec('DROP DATABASE ' . $database_default);
+	db_execute_prepared("DROP USER IF EXISTS ?@'%'", [$other_user]);
+	db_execute_prepared("DROP DATABASE `$database_default`");
 }
 echo json_encode(['passed' => $passed]), "\n";
