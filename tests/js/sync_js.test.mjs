@@ -23,7 +23,7 @@ function fixtureContent(source) {
 		return `// fixture:${source}\nlet screenfull = {};\nexport default screenfull;\n`;
 	}
 	if (source === 'node_modules/pace-js/pace.js') {
-		return "if (!__hasProp.call(source, key)) continue;\ndocument.body.className.replace(/(pace-done )|/, 'pace-running ');\n";
+		return "if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;\ndocument.body.className.replace(/(pace-done )|/, 'pace-running ');\n";
 	}
 
 	return `fixture:${source}\n`;
@@ -36,7 +36,7 @@ function assertSynced(root) {
 		if (source === 'node_modules/screenfull/index.js') {
 			assert.equal(actual, `// fixture:${source}\nlet screenfull = {};\nwindow.screenfull = screenfull;\n`);
 		} else if (source === 'node_modules/pace-js/pace.js') {
-			assert.match(actual, /key === '__proto__'.*key === 'constructor'.*key === 'prototype'/);
+			assert.equal(actual.match(/key === '__proto__'/g).length, 1);
 			assert.match(actual, /replace\(\/\(pace-done \)\//);
 			assert.doesNotMatch(actual, /pace-done \)\|/);
 		} else {
