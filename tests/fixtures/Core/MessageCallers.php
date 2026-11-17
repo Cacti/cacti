@@ -164,10 +164,10 @@ $db = new \PDO(
 	getenv('BOOST_DB_USER') ?: 'root', getenv('BOOST_DB_PASSWORD') ?: '',
 	[\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
 );
-// A process-owned identifier permits concurrent probes without sharing tables.
-$database = 'cacti_message_probe_' . getmypid();
-$db->exec('CREATE DATABASE `' . $database . '`');
-$db->exec('USE `' . $database . '`');
+// The serial coverage suite owns this database in its disposable MariaDB service.
+// Fail rather than reuse an existing schema belonging to another probe.
+$db->exec('CREATE DATABASE cacti_message_probe');
+$db->exec('USE cacti_message_probe');
 $db->exec("SET SESSION sql_mode = ''");
 
 try {
@@ -298,5 +298,5 @@ try {
 	}
 	print json_encode(['ok' => true, 'checks' => $checks], JSON_THROW_ON_ERROR);
 } finally {
-	$db->exec('DROP DATABASE `' . $database . '`');
+	$db->exec('DROP DATABASE cacti_message_probe');
 }
