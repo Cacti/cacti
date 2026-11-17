@@ -40,3 +40,11 @@ test('the drain CLI opens the acknowledged rrdtool pipe', function () {
 	expect($source)->toMatch('/\$rrdtool_pipe\s*=\s*rrd_init\(true,\s*true\)\s*;/');
 	expect($source)->not->toMatch('/\$rrdtool_pipe\s*=\s*rrd_init\(\s*\)\s*;/');
 });
+
+test('the drain CLI acknowledges real RRD writes before deleting queued samples', function () {
+	$output = [];
+	$status = 0;
+	exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(dirname(__DIR__, 3) . '/fixtures/Core/Rrd/PollerOutputRetention.php') . ' real-drain 2>&1', $output, $status);
+	expect($status)->toBe(0, implode("\n", $output));
+	expect(json_decode(implode("\n", $output), true))->toBe(['scenario' => 'real-drain', 'written' => 6, 'retained' => 0, 'ok' => true]);
+})->skip(!getenv('RRDTOOL_BINARY') || !function_exists('pcntl_alarm'), 'Set RRDTOOL_BINARY and enable pcntl for the real drain test');

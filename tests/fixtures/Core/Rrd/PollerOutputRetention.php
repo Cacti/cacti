@@ -10,10 +10,11 @@ require $root . '/include/global_constants.php';
 require $root . '/lib/functions.php';
 $config = ['library_path' => $root . '/lib', 'is_web' => false, 'config_options_array' => ['storage_location' => 0]];
 $debug = false;
-$db = new \PDO('sqlite::memory:');
+$db = class_exists('Pdo\\Sqlite') ? new \Pdo\Sqlite('sqlite::memory:') : new \PDO('sqlite::memory:');
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-$db->sqliteCreateFunction('UNIX_TIMESTAMP', static fn($value) => (int) $value);
-$db->sqliteCreateFunction('CONCAT', static fn(...$values) => implode('', $values));
+$create_function = method_exists($db, 'createFunction') ? 'createFunction' : 'sqliteCreateFunction';
+$db->$create_function('UNIX_TIMESTAMP', static fn($value) => (int) $value);
+$db->$create_function('CONCAT', static fn(...$values) => implode('', $values));
 $scenario = $argv[1];
 $attempts = [];
 $fail = true;
@@ -59,13 +60,16 @@ function boost_poller_on_demand(&$results) {
 	return $GLOBALS['scenario'] !== 'boost';
 }
 function file_exists($path) {
-	return true;
+	return $GLOBALS['scenario'] === 'real-drain' ? \file_exists($path) : true;
 }
 function get_rrdtool_version() {
 	return '1.8.0';
 }
 function rrdtool_execute($command, $log_to_stdout, $output_flag, $rrdtool_pipe, $logopt) {
 	global $db, $scenario, $attempts, $fail, $inserted;
+	if ($scenario === 'real-drain') {
+		return \rrdtool_execute($command, $log_to_stdout, $output_flag, $rrdtool_pipe, $logopt);
+	}
 	$attempts[] = $command;
 	if ($scenario === 'concurrent' && !$inserted) {
 		$db->exec("INSERT INTO poller_output VALUES (1, 'value', 1700000004, '44')");
@@ -111,6 +115,68 @@ for ($id = 1; $id <= $sources; $id++) {
 	for ($time = 1; $time <= 3; $time++) {
 		$insert->execute([$id, 1700000000 + $time]);
 	}
+}
+
+if ($scenario === 'real-drain') {
+	// Exercise the CLI's actual initialization and drain loop with real RRDtool
+	// acknowledgements. SQLite supplies only the queue, not simulated responses.
+	require $root . '/lib/rrd.php';
+	if (!defined('CACTI_LOCALE')) {
+		define('CACTI_LOCALE', 'en-US');
+	}
+	$config['cacti_server_os'] = 'unix';
+	$config['config_options_array']['path_rrdtool'] = getenv('RRDTOOL_BINARY');
+	$directory = sys_get_temp_dir() . '/cacti-drain-' . bin2hex(random_bytes(8));
+	mkdir($directory);
+	$setup = \rrd_init(true, true);
+	check(is_resource($setup), 'Cannot start RRDtool');
+	try {
+		for ($id = 1; $id <= $sources; $id++) {
+			$file = $directory . '/fixture-' . $id . '.rrd';
+			$response = \rrdtool_execute('create ' . escapeshellarg($file) . ' --start 1699999999 --step 1 DS:value:GAUGE:120:U:U RRA:AVERAGE:0.5:1:10', false, RRDTOOL_OUTPUT_RETURN_STDERR, $setup, 'TEST');
+			check(str_starts_with($response, 'OK'), 'RRD setup failed');
+			$db->prepare('UPDATE poller_item SET rrd_path = ? WHERE local_data_id = ?')->execute([$file, $id]);
+		}
+		\rrd_close($setup);
+		$source = file_get_contents($root . '/cli/poller_output_empty.php');
+		check((bool) preg_match('/\$start = microtime\(true\);.*?rrd_close\(\$rrdtool_pipe\);/s', $source, $match), 'Cannot find CLI drain loop');
+		$temporary = tempnam(sys_get_temp_dir(), 'cacti-drain-source-');
+		$line = substr_count(substr($source, 0, strpos($source, $match[0])), "\n");
+		file_put_contents($temporary, '<?php namespace ' . __NAMESPACE__ . ';' . str_repeat("\n", $line) . $match[0]);
+		$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($root . '/cli/poller_output_empty.php');
+		// Bound a regression to the old write-only pipe rather than hanging CI.
+		pcntl_async_signals(true);
+		pcntl_signal(SIGALRM, static function () {
+			throw new \RuntimeException('CLI failed to acknowledge and drain queued samples');
+		});
+		pcntl_alarm(10);
+		ob_start();
+		try {
+			require $temporary;
+			$output = ob_get_contents();
+		} finally {
+			ob_end_clean();
+			pcntl_alarm(0);
+			unlink($temporary);
+		}
+		check($rrds_processed === 6 && db_fetch_cell('SELECT COUNT(*) FROM poller_output') === 0, 'CLI failed to drain the queue');
+		check(str_contains($output, 'There were 6 RRD updates'), 'CLI reported the wrong update count');
+		foreach (glob($directory . '/*.rrd') as $file) {
+			$command = [getenv('RRDTOOL_BINARY'), 'lastupdate', $file];
+			$process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+			$result = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			check(proc_close($process) === 0 && str_contains($result, '1700000003: 42'), 'Queued sample was deleted without reaching its RRD');
+		}
+	} finally {
+		foreach (glob($directory . '/*') as $file) {
+			unlink($file);
+		}
+		rmdir($directory);
+	}
+	echo json_encode(['scenario' => $scenario, 'written' => $rrds_processed, 'retained' => 0, 'ok' => true]), "\n";
+	exit;
 }
 
 $pipe = false;
