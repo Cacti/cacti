@@ -89,16 +89,16 @@ $database_username = getenv('SECRET_DB_USER') ?: 'root';
 $database_password = getenv('SECRET_DB_PASSWORD') ?: '';
 $dsn = "mysql:host=$database_hostname;port=$database_port;charset=utf8mb4";
 $db = new PDO($dsn, $database_username, $database_password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-$db->exec('CREATE DATABASE ' . $database_default);
-register_shutdown_function(static function () use ($db, $database_default) {
-	$db->exec('DROP DATABASE ' . $database_default);
-});
-$db->exec('USE ' . $database_default);
-$remote = new PDO($dsn, $database_username, $database_password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-$remote->exec('USE ' . $database_default);
-$database_sessions = ["$database_hostname:$database_port:$database_default" => $db];
 $database_total_queries = 0;
 $config = ['is_web' => false, 'poller_id' => 1];
+db_execute_prepared("CREATE DATABASE `$database_default`", [], true, $db);
+register_shutdown_function(static function () use ($db, $database_default) {
+	db_execute_prepared("DROP DATABASE `$database_default`", [], true, $db);
+});
+db_execute_prepared("USE `$database_default`", [], true, $db);
+$remote = new PDO($dsn, $database_username, $database_password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+db_execute_prepared("USE `$database_default`", [], true, $remote);
+$database_sessions = ["$database_hostname:$database_port:$database_default" => $db];
 $passed = 0;
 $_SERVER['REQUEST_METHOD'] = 'POST';
 
@@ -132,7 +132,7 @@ foreach (['collector', 'domain'] as $kind) {
 	foreach (['keep', 'replace', 'clear', 'new', 'invalid'] as $mode) {
 		$_SESSION = [];
 		$_REQUEST = $kind === 'collector' ? $collector : $domain;
-		$db->exec('DELETE FROM ' . $table);
+		db_execute_prepared('DELETE FROM ' . $table);
 		$db->exec('DELETE FROM user_domains');
 		if ($mode !== 'new') {
 			$seed = array_intersect_key($_REQUEST + ['group_require' => ''], db_get_table_column_types($table));
@@ -156,7 +156,7 @@ foreach (['collector', 'domain'] as $kind) {
 			$kind === 'collector' ? \SecretCollectorSave\form_save() : \SecretDomainSave\form_save();
 		} catch (\SecretCollectorSave\Redirect $redirect) {
 		}
-		$actual = $db->query('SELECT ' . $field . ' FROM ' . $table)->fetchColumn();
+		$actual = db_fetch_cell_prepared('SELECT ' . $field . ' FROM ' . $table);
 		$expected = $mode === 'replace' ? "replacement-'fixture" : ($mode === 'clear' ? '' : ($mode === 'new' ? ($kind === 'collector' ? $database_password : '') : 'stored-fixture'));
 		check($actual === $expected, $kind . ' ' . $mode . ' save changed the credential incorrectly');
 		if ($kind === 'domain' && $ldap_uri) {
