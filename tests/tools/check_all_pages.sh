@@ -750,6 +750,7 @@ FILTERED_LOG="$(grep -v \
   -e "CMDPHP Not Already Set" \
   -e "ieee.org/oui.txt" \
   -e "import_oui_database" \
+  -e "MacTrack could not download the OUI database" \
   -e "PCACHE NOTE" \
   -e "LMSENSORS WARNING" \
   -e "AUTOM8 \[PID:" \
