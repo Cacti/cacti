@@ -179,7 +179,18 @@ function countRealtimeGraphs() {
 // The menu row keeps its icon and label; only the label text flips so the next
 // click offers the opposite action.
 function setRealtimeLabel(graph_id, active) {
-	$('#graph_'+graph_id+'_realtime').find('.iconLabel').text(active ? realtimeStopLabel : realtimeLabel);
+	var link  = $('#graph_'+graph_id+'_realtime');
+	var label = active ? realtimeStopLabel : realtimeLabel;
+	link.find('.iconLabel').text(label);
+
+	if (link.closest('.graphDrillDownAlways').length > 0) {
+		var currentLabel = link.attr('aria-label');
+		var generatedLabel = link.attr('data-graph-action-label');
+		link.find('i').attr('title', label);
+		if (!currentLabel || currentLabel === generatedLabel) {
+			link.attr('aria-label', label).attr('data-graph-action-label', label);
+		}
+	}
 }
 
 function stopRealtime() {

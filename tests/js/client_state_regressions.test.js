@@ -264,6 +264,7 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 		$: jquery, realtimeArray: [], keepRealtime: [], timeOffset: 0,
 		realtimeLabel: 'Realtime', realtimeStopLabel: 'Stop Realtime',
 		closeGraphDrilldown: () => { closed++; },
+		labelVisibleGraphActions: () => {},
 		setFilters: () => { filters++; }, tuneFilter: () => {}, realtimeGrapher: () => {},
 	});
 	const layout = functionSource('include/layout.js', 'initializeGraphs');
