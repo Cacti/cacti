@@ -28,6 +28,12 @@ if (!defined('CACTI_DATE_TIME_FORMAT')) {
 	define('CACTI_DATE_TIME_FORMAT', 'Y-m-d H:i:s');
 }
 
+if (!function_exists('__')) {
+	function __($format, ...$args) {
+		return $args ? vsprintf($format, $args) : $format;
+	}
+}
+
 if (!function_exists('number_format_i18n')) {
 	function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 		return number_format((float) $number, (int) $decimals);
