@@ -228,6 +228,7 @@ Cacti CHANGELOG
 -issue#8584: Only add the theme search filter icon when the filter input is visible
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
 -issue#8596: Keep device credentials out of cmd.php recache log messages
+-issue#8596: Keep host CPU and partition query values on one output line
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
 -issue#8640: Present the Details and Time View graph pages' drilldown actions through the three-bar menu, and fix the "unsupported pseudo: hover" console error when the graph area reloads
 -issue#8640: Shorten the Time View graph page drilldown action labels (Details, Realtime) so the three-bar menu matches the standard graph drilldown menu
