@@ -16,10 +16,15 @@ namespace PollerChildArgumentsTest;
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 $root = dirname(__DIR__, 4);
 cacti_fixture_source_function($root . '/poller_commands.php', 'commands_launch_child', __NAMESPACE__);
+cacti_fixture_source_function($root . '/poller.php', 'poller_replicate_check', __NAMESPACE__);
 cacti_fixture_source_function($root . '/lib/functions.php', 'cacti_escapeshellarg', __NAMESPACE__);
 
 function read_config_option($name, $force = false) {
-	return '/fixture/php';
+	return $name === 'poller_sync_interval' ? $GLOBALS['poller_sync_control'] : '/fixture/php';
+}
+function db_fetch_assoc_prepared($sql, $params = [], $log = true, $db_conn = false) : array {
+	$GLOBALS['poller_sync_query'] = [$sql, $params];
+	return [];
 }
 function commands_debug($message) : void {
 }
@@ -45,3 +50,22 @@ test('command children preserve a quoted checkout path and one numeric host argu
 		unset($GLOBALS['poller_child_capture']);
 	}
 })->with([[7, 7, false], ['7 trailing text', 7, true], ['nonnumeric', 0, false], [-1, -1, true]]);
+
+
+test('collector synchronization binds one fallback interval and launches no child for no rows', function ($interval, $expected) {
+	global $config;
+	$old_config = $config;
+	try {
+		$config['base_path'] = dirname(__DIR__, 4);
+		$GLOBALS['poller_sync_control'] = $interval;
+		$GLOBALS['poller_child_capture'] = [];
+		poller_replicate_check();
+		[$sql, $params] = $GLOBALS['poller_sync_query'];
+		expect($sql)->toContain('IFNULL(sync_interval, ?)');
+		expect($params)->toBe([$expected]);
+		expect($GLOBALS['poller_child_capture'])->toBe([]);
+	} finally {
+		$config = $old_config;
+		unset($GLOBALS['poller_sync_control'], $GLOBALS['poller_sync_query'], $GLOBALS['poller_child_capture']);
+	}
+})->with([['', 7200], [3600, 3600], ['literal interval control', 'literal interval control']]);
