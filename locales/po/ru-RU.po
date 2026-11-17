@@ -20442,6 +20442,20 @@ msgstr "Количество графиков Шаблоны с использо
 msgid "No VDEFs"
 msgstr "Нет VDEFs"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Меню консоли"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Максимальное количество позиций источника данных за один проход"
 
