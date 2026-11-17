@@ -4,6 +4,7 @@
 Requires native PHP with Cacti extensions, Docker, and an existing mariadb:11.8
 image. Never run against an installed checkout: include/config.php must be absent.
 Run once with CACTI_SESSION_MODE=files and once with CACTI_SESSION_MODE=database.
+Set CACTI_MAINTENANCE_BROWSER=1 to include the maintained Playwright controls test.
 """
 # Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 import http.cookiejar
@@ -153,6 +154,13 @@ try:
     query=urllib.parse.urlencode({'action':'edit','tab':'logs','id':'9001','severity':'1','filter':"MIB'control",'header':'false'})
     status,body=subject.request('/managers.php?'+query)
     record('quoted_log_filter_keeps_severity_scope',status==200 and 'quoted-log' in body and 'other-log' not in body)
+    if os.environ.get('CACTI_MAINTENANCE_BROWSER') == '1':
+        sql("REPLACE INTO settings (name,value) VALUES ('enable_snmp_agent','on')")
+        env['E2E_BASE_URL'] = f'http://127.0.0.1:{webport}'
+        env['E2E_USERNAME'] = 'audit_subject'
+        env['E2E_PASSWORD'] = env['CACTI_AUTH_PASSWORD']
+        browser = subprocess.run(['node', 'node_modules/@playwright/test/cli.js', 'test', 'tests/maintenance-actions.spec.ts', '--workers=1', '--reporter=line', '--trace=off'], cwd=ROOT/'tests/e2e', env=env, check=True)
+        record('browser_post_controls', browser.returncode == 0)
 finally:
     if server is not None:
         server.terminate(); server.wait(timeout=10)

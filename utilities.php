@@ -2431,7 +2431,7 @@ function utilities() {
 			),
 			__('Rebuild SNMP Agent Cache') => array(
 				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
-			'post'  => true,
+				'post'  => true,
 				'mode'  => 'online',
 				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
 			),
