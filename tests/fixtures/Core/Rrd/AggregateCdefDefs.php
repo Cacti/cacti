@@ -113,4 +113,58 @@ foreach (array(
 $GLOBALS['average_only'] = array(36);
 $results['average_only'] = rrdtool_aggregate_def_map(50, 300)['members'][1];
 
+if (($argv[1] ?? '') === 'real-rrd') {
+	$binary = getenv('RRDTOOL_BINARY');
+	$directory = sys_get_temp_dir() . '/cacti-aggregate-' . bin2hex(random_bytes(8));
+	mkdir($directory);
+	$run = static function (array $arguments) use ($binary) {
+		$process = proc_open(array_merge([$binary], $arguments), [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+		$output = stream_get_contents($pipes[1]);
+		$error = stream_get_contents($pipes[2]);
+		fclose($pipes[1]);
+		fclose($pipes[2]);
+		if (proc_close($process) !== 0) {
+			throw new RuntimeException($error);
+		}
+
+		return $output;
+	};
+	try {
+		$GLOBALS['average_only'] = [];
+		$GLOBALS['members'][60] = [];
+		$cache = [];
+		$definitions = [];
+		foreach ([1, 10, 100] as $index => $value) {
+			$id = 601 + $index;
+			$GLOBALS['members'][60][] = ['local_graph_id' => $id];
+			$GLOBALS['items'][$id] = [item(GRAPH_ITEM_TYPE_AREA, 1, $id, $id, 'value')];
+			$cache[$id][1] = $index;
+			$file = $directory . '/' . $id . '.rrd';
+			$run(['create', $file, '--start', '1699999980', '--step', '60', 'DS:value:GAUGE:120:U:U', 'RRA:AVERAGE:0.5:1:20']);
+			$run(['update', $file, '1700000040:' . $value, '1700000100:' . $value, '1700000160:' . $value, '1700000220:' . $value]);
+			$definitions[] = 'DEF:' . generate_graph_def_name($index) . '=' . $file . ':value:AVERAGE';
+		}
+		$map = rrdtool_aggregate_def_map(60, 60);
+		foreach ([601, 602, 603, 0] as $index => $id) {
+			$definitions[] = 'CDEF:member' . $index . '=' . rrdtool_aggregate_cdef_defs('a,1,*', $id, $map, $cache, 60);
+		}
+		$export = $run(array_merge(['xport', '--start', '1700000040', '--end', '1700000160', '--step', '60'], $definitions, ['XPORT:member0:first', 'XPORT:member1:second', 'XPORT:member2:third', 'XPORT:member3:total']));
+		$xml = new SimpleXMLElement($export);
+		$rows = $xml->data->row;
+		$values = [];
+		foreach ($rows[count($rows) - 1]->v as $value) {
+			if (!is_numeric((string) $value)) {
+				throw new RuntimeException('RRDtool returned an unknown value');
+			}
+			$values[] = (float) $value;
+		}
+		$results['rrd_values'] = $values;
+	} finally {
+		foreach (glob($directory . '/*') as $file) {
+			unlink($file);
+		}
+		rmdir($directory);
+	}
+}
+
 print json_encode($results) . PHP_EOL;

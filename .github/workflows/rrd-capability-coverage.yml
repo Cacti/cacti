@@ -97,6 +97,7 @@ jobs:
         env:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          RRDTOOL_BINARY: /usr/bin/rrdtool
           CACTI_AGGREGATE_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=cacti_aggregate_test;charset=utf8mb4'
           CACTI_AGGREGATE_TEST_USER: root
           CACTI_AGGREGATE_TEST_PASSWORD: cactiroot

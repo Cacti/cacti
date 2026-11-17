@@ -81,3 +81,12 @@ test('graph items keep the consolidation function their DEFs are built with', fu
 test('a member DEF that falls back to another CF is not listed twice', function () {
 	expect(results()['average_only'])->toBe([[351, 1], [352, 1]]);
 });
+
+test('RRDtool evaluates member CDEFs and their total using distinct member values', function () {
+	$output = [];
+	$status = 0;
+	$fixture = dirname(__DIR__, 3) . '/fixtures/Core/Rrd/AggregateCdefDefs.php';
+	exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($fixture) . ' real-rrd 2>&1', $output, $status);
+	expect($status)->toBe(0, implode("\n", $output));
+	expect(json_decode(implode("\n", $output), true)['rrd_values'])->toBe([1, 10, 100, 111]);
+})->skip(!getenv('RRDTOOL_BINARY'), 'Set RRDTOOL_BINARY for the real aggregate calculation');
