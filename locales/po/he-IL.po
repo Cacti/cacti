@@ -13309,6 +13309,12 @@ msgstr "תחום"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "תחום"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "קוצים"
@@ -13424,14 +13430,6 @@ msgstr "תצוגת תרשים זמן"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "תוצאות SpikeKill"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "לחץ כדי להציג רק תרשים זה בזמן אמת"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "לחץ שוב כדי לקחת את זה גרף מתוך זמן אמת"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20501,6 +20499,12 @@ msgstr "תפריט מסוף"
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "לחץ כדי להציג רק תרשים זה בזמן אמת"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "לחץ שוב כדי לקחת את זה גרף מתוך זמן אמת"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "פריטי מקור נתונים מקסימליים למעבר"
