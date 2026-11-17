@@ -303,12 +303,13 @@ if (isrv('ref')) {
 		$valid = false;
 	}
 
-	// Someone trying to send an invalid host
-	if (!isset($ref_parts['host'])) {
+	// include/auth.php sends a relative path, so only a scheme without a host (javascript:, data:) is invalid
+	if (isset($ref_parts['scheme']) && !isset($ref_parts['host'])) {
 		$valid = false;
 	}
 
-	if ($valid) {
+	// Only an absolute reference carries a host to verify against this server
+	if ($valid && isset($ref_parts['host'])) {
 		$server_addr = $_SERVER['SERVER_ADDR'];
 
 		if (!filter_var($_SERVER['SERVER_NAME'], FILTER_VALIDATE_IP)) {
@@ -348,8 +349,6 @@ if (isrv('ref')) {
 				$valid = true;
 			}
 		}
-	} else {
-		$valid = false;
 	}
 
 	if (!$valid) {
