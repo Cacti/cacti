@@ -23529,6 +23529,19 @@ msgstr "使用此VDEF的圖表模板數。"
 msgid "No VDEFs"
 msgstr "沒有VDEF"
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+msgid "Collapsed Menu"
+msgstr "控制台菜單"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #, fuzzy
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "每次傳遞的最大數據源項目"
