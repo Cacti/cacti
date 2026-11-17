@@ -159,6 +159,94 @@ test('the open strip adopts the theme palette from inline custom properties', as
 	await expect(wrapper).toHaveCSS('color', 'rgb(36, 36, 36)');
 });
 
+async function initializeRealtimeGraph(page) {
+	const layout = fs.readFileSync(path.join(root, 'include/layout.js'), 'utf8');
+	const realtime = fs.readFileSync(path.join(root, 'include/realtime.js'), 'utf8');
+	const start = layout.indexOf('function initializeGraphs(');
+	const end = layout.indexOf('\n$.widget(', start);
+	await page.addScriptTag({ content: layout.slice(start, end) });
+	await page.addScriptTag({ content: realtime.slice(realtime.indexOf('function setRealtimeLabel('), realtime.indexOf('\nfunction stopRealtime(')) });
+	// Develop's graph renderer also retains compressed graph data on the image.
+	if (layout.includes('function cactiGraphImage(')) {
+		await page.addScriptTag({ path: path.join(root, 'include/js/lzjs.js') });
+		await page.addScriptTag({ content: layout.slice(layout.indexOf('function cactiGraphImage('), layout.indexOf('\nfunction redrawGraph(')) });
+	}
+	await page.evaluate(() => {
+		$('#g1 .graphimage').wrap('<div id="wrapper_1" class="graphWrapper" graph_id="1" rra_id="0" graph_width="300" graph_height="60"></div>');
+		$('#g1 .iconLink').first().attr('id', 'graph_1_realtime').find('i').attr('title', 'Realtime');
+		$('body').append('<input id="date1" value="100"><input id="date2" value="200"><input id="columns" value="1">');
+		window.realtimeArray = [];
+		window.keepRealtime = [];
+		window.realtimeLabel = 'Realtime';
+		window.realtimeStopLabel = 'Stop Realtime';
+		window.timeOffset = 0;
+		window.urlPath = '';
+		window.pendingGraphs = [];
+		// Keep the production menu, click handler and reload callback. Isolate the
+		// network and unrelated graph-rendering services at their boundaries.
+		$.ajaxQ = { abortAll() {} };
+		$.getJSON = () => ({ done(callback) { pendingGraphs.push(callback); return this; }, fail() { return this; } });
+		$.fn.rebind = function (event, callback) { return this.off(event).on(event, callback); };
+		$.fn.zoom = $.fn.tooltip = function () { return this; };
+		window.getTimestampFromDate = Number;
+		window.getMainWidth = () => 1200;
+		window.closeDateFilters = window.responsiveResizeGraphs = window.setFilters = window.realtimeGrapher = () => {};
+		window.shouldCaptureClick = () => true;
+		window.finishGraph = () => pendingGraphs.shift()({
+			local_graph_id: 1, rra_id: 0, image_width: 300, image_height: 60,
+			graph_width: 300, graph_height: 60, graph_start: 100, graph_end: 200,
+			graph_top: 0, graph_left: 0, value_min: 0, value_max: 1, type: 'png',
+			image: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j5i8AAAAASUVORK5CYII='
+		});
+		initializeGraphs();
+		finishGraph();
+	});
+}
+
+for (const theme of ['modern', 'dark']) {
+	test(`realtime activation restores keyboard focus in ${theme}`, async ({ page }) => {
+		await page.addStyleTag({ path: path.join(root, `include/themes/${theme}/main.css`) });
+		await initializeRealtimeGraph(page);
+		const menu = page.locator('#g1 .graphDrillDownMenu');
+		const action = page.locator('#graph_1_realtime');
+		await menu.focus();
+		for (const active of [true, false]) {
+			await page.keyboard.press('Enter');
+			await page.keyboard.press('Tab');
+			await expect(action).toBeFocused();
+			await page.keyboard.press('Enter');
+			await expect(action).not.toBeVisible();
+			await expect(menu).toBeFocused();
+			await expect(menu).toHaveCSS('opacity', '1');
+			expect(await page.evaluate(() => realtimeArray[1])).toBe(active);
+		}
+		// An outside click must retain focus on its own target.
+		await page.keyboard.press('Enter');
+		await action.focus();
+		await page.locator('#outside').click();
+		await expect(page.locator('#outside')).toBeFocused();
+	});
+
+	test(`graph reload resets the realtime action in ${theme}`, async ({ page }) => {
+		await page.addStyleTag({ path: path.join(root, `include/themes/${theme}/main.css`) });
+		await initializeRealtimeGraph(page);
+		const menu = page.locator('#g1 .graphDrillDownMenu');
+		const action = page.locator('#graph_1_realtime');
+		await menu.focus();
+		await page.keyboard.press('Enter');
+		await action.click();
+		await expect(action.locator('.iconLabel')).toHaveText('Stop Realtime');
+		// Zoom and color-mode changes reuse the menu while reloading graph data.
+		await page.evaluate(() => { initializeGraphs(true); finishGraph(); });
+		expect(await page.evaluate(() => realtimeArray[1])).toBe(false);
+		await menu.focus();
+		await page.keyboard.press('Enter');
+		await expect(action.locator('.iconLabel')).toHaveText('Realtime');
+		await action.click();
+		expect(await page.evaluate(() => realtimeArray[1])).toBe(true);
+	});
+}
+
 test('touch users can see and activate the hamburger without hover', async ({ browser }) => {
 	const context = await browser.newContext({ hasTouch: true, isMobile: true });
 	const page = await context.newPage();
