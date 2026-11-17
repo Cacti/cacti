@@ -20283,6 +20283,18 @@ msgstr ""
 msgid "No VDEFs"
 msgstr ""
 
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Collapsed Menu"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
 #~ msgid "SNMP Rules"
 #~ msgstr "Правила SNMP"
 
