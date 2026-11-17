@@ -6,8 +6,19 @@ use warnings;
 delete @ENV{qw(PATH)};
 $ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 
+# some locales print the averages with a decimal comma
+$ENV{LC_ALL} = 'C';
+
 my $val1 = $ARGV[0] // '';
-($val1) = $val1 =~ /^([\d]+)$/ if $val1 ne '';
+if ($val1 ne '') {
+  # An argument that fails validation must not fall through to printing all
+  # three averages, which a single-value data source would store as garbage.
+  ($val1) = $val1 =~ /^(\d+)$/;
+  if (!defined $val1) {
+    print 'U';
+    exit 1;
+  }
+}
 
 #get load avg for 5;15;30 min
 open(PROCESS, '-|', 'uptime');
@@ -16,7 +27,8 @@ $avg =~ s/.*:\s*//;
 close(PROCESS);
 
 if (($val1 eq "5") || ($val1 eq "15") || ($val1 eq "30")) {
-        my @parts = split(/\s*,\s*/, $avg);
+        # Linux separates the averages with commas, BSD and macOS with spaces
+        my @parts = split(/[\s,]+/, $avg);
         if ($val1 eq "5") {
                 $avg = $parts[0];
         } elsif ($val1 eq "15") {

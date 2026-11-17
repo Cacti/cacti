@@ -37,16 +37,27 @@ CHANGELOG merge=union
 # Development-only paths are excluded from `git archive`, which is how the
 # release tarball is built. Keep build/ and patches/ exportable: the release
 # runs `npm ci` inside the archived tree and its postinstall needs them.
+/.codespell.cfg     export-ignore
 /.dockerignore      export-ignore
 /.editorconfig      export-ignore
+/.env.example       export-ignore
 /.gitattributes     export-ignore
 /.github/           export-ignore
 /.gitignore         export-ignore
+/.nvmrc             export-ignore
 /.php-cs-fixer.php  export-ignore
+/.phplint.yml       export-ignore
 /.phpstan-bootstrap.php export-ignore
 /.phpstan.neon      export-ignore
+/.pre-commit-config.yaml export-ignore
+/.semgrep.yml       export-ignore
+/.semgrepignore     export-ignore
+/AGENTS.md          export-ignore
+/CLAUDE.md          export-ignore
 /build/psalm/       export-ignore
+/docker/            export-ignore
 /docker-compose.yml export-ignore
+/infection.json5    export-ignore
 /phpstan-baseline.neon export-ignore
 /tests/phpunit.xml        export-ignore
 /tests/phpunit-*.xml      export-ignore
