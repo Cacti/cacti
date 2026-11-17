@@ -75,7 +75,7 @@ install_cacti() {
 	done
 	for tool in rrdtool snmpwalk snmpget snmpbulkwalk snmpgetnext snmptrap fping; do
 		if grep -q "path_$tool" install/functions.php; then
-			args+=("--path=$tool:/bin/true")
+			args+=("--path=$tool:/usr/bin/true")
 		fi
 	done
 	php_cacti cli/install_cacti.php --accept-eula --install --force --path=php_binary:"$work/php-child" "${args[@]}" "$@"
@@ -109,6 +109,9 @@ mkdir -p log cache
 
 printf 'Scenario: a 1.2.30 upgrade that fails the schema check\n'
 reset_database release/1.2.30
+printf 'Scenario: installer database and unknown-option diagnostic privacy\n'
+[[ "$(php_cacti tests/fixtures/Installer/StateProbe.php diagnostics)" == 'installer=redacted ordinary=retained unknown=redacted' ]] || fail 'installer diagnostics disclosed a synthetic parameter'
+
 sql 'DROP TABLE user_auth_row_cache'
 
 [[ "$(php_cacti tests/fixtures/Installer/StateProbe.php jump)" == 'step=1' ]] || fail 'a request at the first step reached the install step'

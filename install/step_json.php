@@ -29,6 +29,16 @@ ob_start();
 define('IN_CACTI_INSTALL', 1);
 chdir(__DIR__ . '/../');
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+	http_response_code(405);
+	header('Allow: POST');
+	header('Content-Type: application/json');
+	print json_encode(array('error' => 'Method not allowed'));
+
+	exit;
+}
+
+
 /* set the json variable for request validation handling */
 include_once('lib/functions.php');
 include_once('lib/html_utility.php');

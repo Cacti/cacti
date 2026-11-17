@@ -45,8 +45,9 @@ function log_install_debug($section, $text, $background = false) : void {
 	$GLOBALS['installer_diagnostic_logs'][] = $text;
 }
 
-function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false) : bool {
+function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = [], $redact = false) : bool {
 	$GLOBALS['installer_query_log_enabled'] = $log;
+	$GLOBALS['installer_query_redacted'] = $redact;
 
 	return $GLOBALS['installer_query_success'] ?? false;
 }
@@ -70,6 +71,7 @@ test('installer diagnostics preserve status without parameter or server error va
 
 		expect($status)->toBe(DB_STATUS_ERROR)
 			->and($GLOBALS['installer_query_log_enabled'])->toBeFalse()
+			->and($GLOBALS['installer_query_redacted'])->toBeTrue()
 			->and($options['SnmpPassword'])->toBe($marker)
 			->and($output)->toBe('x')
 			->and(json_encode($GLOBALS['database_upgrade_status']))->not->toContain($marker)

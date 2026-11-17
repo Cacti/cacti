@@ -30,17 +30,56 @@ require_once 'lib/utility.php';
 
 $mode     = $argv[1] ?? '';
 
+if ($mode === 'diagnostics') {
+	$marker = 'synthetic-private-value-' . bin2hex(random_bytes(8));
+	$cache = tempnam(sys_get_temp_dir(), 'cacti-installer-diagnostic-');
+	$database_upgrade_status = ['file' => $cache];
+	$cacti_upgrade_version = 'diagnostic';
+
+	try {
+		db_execute('CREATE TEMPORARY TABLE installer_diagnostic_fixture (value varchar(100) PRIMARY KEY)');
+		db_execute_prepared('INSERT INTO installer_diagnostic_fixture VALUES (?)', [$marker], false);
+		ob_start();
+		$status = db_install_execute('INSERT INTO installer_diagnostic_fixture VALUES (?)', [$marker]);
+		ob_end_clean();
+		$redacted = $status === DB_STATUS_ERROR && !str_contains((string) $database_last_error, $marker)
+			&& !str_contains((string) file_get_contents($cache), $marker)
+			&& !str_contains(json_encode($database_upgrade_status), $marker);
+
+		// Ordinary callers retain their existing diagnostic contract.
+		db_execute_prepared('INSERT INTO installer_diagnostic_fixture VALUES (?)', [$marker], false);
+		$ordinary = str_contains((string) $database_last_error, $marker);
+
+		$installer = (new ReflectionClass(Installer::class))->newInstanceWithoutConstructor();
+		(new ReflectionMethod(Installer::class, 'processParameters'))->invoke($installer, ['unknown-fixture' => $marker]);
+		$unknown = true;
+		foreach (['install-badkey.log', 'install-complete.log'] as $file) {
+			$path = $config['base_path'] . '/log/' . $file;
+			$unknown = $unknown && is_file($path) && !str_contains((string) file_get_contents($path), $marker);
+		}
+		print 'installer=' . ($redacted ? 'redacted' : 'bad') . ' ordinary=' . ($ordinary ? 'retained' : 'bad') . ' unknown=' . ($unknown ? 'redacted' : 'bad') . PHP_EOL;
+	} finally {
+		unlink($cache);
+	}
+
+	exit(0);
+}
+
 if ($mode === 'reach') {
 	// Tool locations that exist, so the steps are not held back at the binary locations
 	foreach (['php_binary', 'rrdtool', 'snmpwalk', 'snmpget', 'snmpbulkwalk', 'snmpgetnext', 'snmptrap', 'fping'] as $tool) {
-		set_config_option('path_' . $tool, $tool === 'php_binary' ? PHP_BINARY : '/bin/true');
+		set_config_option('path_' . $tool, $tool === 'php_binary' ? PHP_BINARY : '/usr/bin/true');
 	}
 
 	// stored step, requested step, step the wizard ends on
 	foreach ([[4, 8, 8], [5, 9, 9], [9, 10, 10], [10, 97, 97], [3, 97, 3], [2, 100, 2], [2, -1, 2], [8, 3, 3]] as [$stored, $requested, $expected]) {
 		set_config_option('install_step', $stored);
 
-		$step = (int) (new Installer(['Runtime' => 'Web', 'Step' => $requested]))->getStep();
+		$candidate = new Installer(['Runtime' => 'Web', 'Step' => $requested]);
+		$step = (int) $candidate->getStep();
+		if ($step !== $expected) {
+			fwrite(STDERR, json_encode($candidate->getErrors()) . PHP_EOL);
+		}
 
 		print "$stored>$requested=" . ($step === $expected ? 'ok' : "bad($step)") . PHP_EOL;
 	}
