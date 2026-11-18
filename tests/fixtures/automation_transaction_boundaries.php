@@ -21,6 +21,9 @@ if ($failure === 'connection') {
 	$pdo->transaction_failure = $failure;
 } elseif ($failure === 'missing-source') {
 	$source_argument = 999999;
+} elseif ($failure === 'missing-identity') {
+	$source_argument   = 0;
+	$template_argument = 0;
 } elseif ($failure === 'missing-source-data') {
 	$pdo->exec("DELETE FROM data_template_data WHERE local_data_id=$source");
 } elseif ($failure === 'missing-template') {

@@ -37,7 +37,7 @@ test('source operations preserve data and hooks across transaction boundaries', 
 })->with([
 	['copy', 'connection'], ['copy', 'begin'], ['copy', 'commit'], ['copy', 'missing-source'],
 	['copy', 'missing-source-data'], ['copy', 'missing-template'], ['copy', 'missing-template-data'],
-	['copy', 'exception'], ['copy', 'last-error'], ['copy', 'nested-success'],
+	['copy', 'exception'], ['copy', 'last-error'], ['copy', 'nested-success'], ['copy', 'missing-identity'],
 	['switch', 'connection'], ['switch', 'begin'], ['switch', 'missing-template'],
 	['switch', 'duplicate-items'], ['switch', 'exception'], ['switch', 'last-error'],
 	['graph', 'connection'], ['graph', 'begin'],
