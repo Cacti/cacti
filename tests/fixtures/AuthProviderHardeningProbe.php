@@ -40,7 +40,7 @@ function db_fetch_row_prepared($sql,$params = []) {
 		return ['id'=>1, 'username'=>'fixture', 'password'=>'', 'enabled'=>''];
 	}
 
-	if ($GLOBALS['mode'] === 'wrong') {
+	if ($GLOBALS['mode'] === 'wrong' || $GLOBALS['mode'] === 'empty') {
 		return ['id'=>1, 'username'=>'fixture', 'password'=>password_hash('another password', PASSWORD_BCRYPT, ['cost'=>4]), 'enabled'=>'on'];
 	}
 
@@ -84,6 +84,6 @@ if (str_starts_with($mode,'saml')) {
 	require $root . '/lib/Auth/CredentialLoginProviderInterface.php';
 	require $root . '/lib/Auth/LocalAuthLoginProvider.php';
 	$provider = new Cacti\Auth\LocalAuthLoginProvider();
-	$result   = (new ReflectionMethod($provider,'verifyCredential'))->invoke($provider,'fixture','ordinary fixture password');
+	$result   = (new ReflectionMethod($provider,'verifyCredential'))->invoke($provider,'fixture',str_starts_with($mode,'empty') ? '' : 'ordinary fixture password');
 	print json_encode(['result'=>$result, 'message'=>$error_msg, 'verifications'=>$verifications],JSON_THROW_ON_ERROR) . "\n";
 }

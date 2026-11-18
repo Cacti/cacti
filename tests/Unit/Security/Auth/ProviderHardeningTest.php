@@ -20,6 +20,12 @@ test('disabled, missing and wrong-password local logins have the same generic fa
 	$wrong    = cacti_test_isolated_probe($probe,['wrong']);
 	expect($disabled)->toBe($missing)->and($wrong)->toBe($missing)->and($disabled['result'])->toBe([])->and($disabled['message'])->toBe('Access Denied!  Login Failed.')->and($disabled['verifications'])->toBe(1);
 });
+test('an empty password reveals nothing about whether the local username exists',function () {
+	$probe   = dirname(__DIR__,3) . '/fixtures/AuthProviderHardeningProbe.php';
+	$known   = cacti_test_isolated_probe($probe,['empty']);
+	$missing = cacti_test_isolated_probe($probe,['empty-missing']);
+	expect($known)->toBe($missing)->and($known['result'])->toBe([])->and($known['message'])->toBe('Access Denied!  Login Failed.')->and($known['verifications'])->toBe(0);
+});
 test('SAML settings never require a signed outer message, so assertion-only IdPs keep working',function ($mode,$assertion) {
 	// php-saml rejects a Response with neither signature regardless of these flags
 	// (NO_SIGNATURE_FOUND); wantMessagesSigned would only reject IdPs that sign
