@@ -229,6 +229,20 @@ check(($GLOBALS['client_file']['host'] ?? '') === '127.0.0.1' && ($GLOBALS['clie
 check(db_dump_data('fixture_db', '', ['host' => 'db2.example'], '/tmp/fixture.sql') === 7, 'Dump with a host failed.');
 check(!isset($GLOBALS['client_file']['host']) && str_contains($GLOBALS['client_command'], '--host=db2.example'), 'Caller host option was replaced.');
 
+// the server is reached the way db_connect_real() reaches it
+foreach ([
+	['/var/run/mysqld/mysqld.sock', 3306, ['socket' => '/var/run/mysqld/mysqld.sock']],
+	['localhost', 3307, ['host' => '127.0.0.1', 'port' => '3307']],
+	['localhost', 3306, ['host' => 'localhost']],
+] as [$hostname, $port, $expected]) {
+	$path = db_client_defaults_file('fixture', 'secret', $hostname, $port);
+	check($path !== false, 'Option file refused for ' . $hostname);
+	$data = parse_ini_file($path, true, INI_SCANNER_RAW);
+	unlink($path);
+	$server = array_diff_key($data['client'], ['user' => true, 'password' => true]);
+	check($server === $expected, "Server options changed for $hostname:$port: " . json_encode($server));
+}
+
 $GLOBALS['client_throws'] = true;
 
 try {

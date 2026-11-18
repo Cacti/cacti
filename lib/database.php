@@ -2757,8 +2757,8 @@ function db_switch_main_to_local() : bool {
  *
  * @param string $username client user
  * @param string $password client password
- * @param string $hostname server host, '' for the client default
- * @param int    $port     server port, 0 for the client default; ignored for localhost
+ * @param string $hostname server host or unix socket path, '' for the client default
+ * @param int    $port     server port, 0 for the client default; ignored for a socket and for localhost on 3306
  *
  * @return string|false path of the option file, or false when it could not be written
  */
@@ -2785,12 +2785,22 @@ function db_client_defaults_file(string $username, string $password, string $hos
 	$quote    = static fn (string $value) : string => '"' . strtr($value, ['\\' => '\\\\', '"' => '\\"', "\t" => '\\t', "\n" => '\\n', "\r" => '\\r']) . '"';
 	$contents = '[client]' . PHP_EOL . 'user=' . $quote($username) . PHP_EOL . 'password=' . $quote($password) . PHP_EOL;
 
-	if ($hostname !== '') {
-		$contents .= 'host=' . $quote($hostname) . PHP_EOL;
-	}
+	// reach the server the way db_connect_real() does: a path is a unix
+	// socket, and localhost on a port other than 3306 means TCP to 127.0.0.1
+	if (str_contains($hostname, '/')) {
+		$contents .= 'socket=' . $quote($hostname) . PHP_EOL;
+	} else {
+		if ($hostname === 'localhost' && $port > 0 && $port != 3306) {
+			$hostname = '127.0.0.1';
+		}
 
-	if ($port > 0 && $hostname !== 'localhost') {
-		$contents .= 'port=' . $port . PHP_EOL;
+		if ($hostname !== '') {
+			$contents .= 'host=' . $quote($hostname) . PHP_EOL;
+		}
+
+		if ($port > 0 && $hostname !== 'localhost') {
+			$contents .= 'port=' . $port . PHP_EOL;
+		}
 	}
 
 	if (file_put_contents($path, $contents) !== strlen($contents)) {
