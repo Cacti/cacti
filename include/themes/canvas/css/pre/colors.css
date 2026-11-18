@@ -44,7 +44,8 @@
     --table-selected: #212830;
     --background-dark: #151B23;
     --background-active: #3FB950;
-    --background-active-section: #1F6FEB;
+    /* Primer #1F6FEB darkened so text on highlighted menu items reaches 4.5:1 */
+    --background-active-section: #1A65DB;
     --border-color: #3D444D;
     --border-color-semilight: rgba(240, 246, 252, 0.06);
     --border-color-light: rgba(240, 246, 252, 0.1);

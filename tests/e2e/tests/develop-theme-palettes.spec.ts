@@ -45,3 +45,23 @@ for (const [theme, expected] of Object.entries(palettes)) {
 		});
 	}
 }
+
+// Selectmenu and autocomplete paint the highlighted item with midwinter's
+// `.ui-menu .ui-state-active` rule. The light palettes inherit midwinter's own
+// light pairing for that rule, so only the dark palettes are held to 4.5:1 here.
+for (const theme of Object.keys(palettes)) {
+	test(`${theme} dark keeps the highlighted menu item readable`, async ({ page }) => {
+		await installThemeCss(page, `include/themes/${theme}/main.css`);
+		await page.evaluate(() => {
+			document.documentElement.setAttribute('data-theme-color', 'dark');
+			document.body.innerHTML = '<ul class="ui-menu ui-widget ui-widget-content"><li class="ui-menu-item">'
+				+ '<div id="active" class="ui-menu-item-wrapper ui-state-active">English</div></li></ul>';
+		});
+		const style = await page.locator('#active').evaluate(element => {
+			const css = getComputedStyle(element);
+			return { color: css.color, background: css.backgroundColor };
+		});
+		const [hi, lo] = [luminance(style.color), luminance(style.background)].sort((a, b) => b - a);
+		expect((hi + 0.05) / (lo + 0.05), JSON.stringify(style)).toBeGreaterThanOrEqual(4.5);
+	});
+}
