@@ -24,8 +24,6 @@
 
 namespace Cacti\Cdef;
 
-require_once __DIR__ . '/CdefRepository.php';
-
 /**
  * CDEF repository backed by the cdef and cdef_items tables.
  *

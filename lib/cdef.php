@@ -22,8 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once __DIR__ . '/Cdef/DatabaseCdefRepository.php';
-require_once __DIR__ . '/Cdef/CdefResolver.php';
+use Cacti\Cdef\CdefResolutionState;
+use Cacti\Cdef\CdefResolver;
+use Cacti\Cdef\DatabaseCdefRepository;
 
 /**
  * Retrieves the name of a CDEF item based on its ID.
@@ -36,7 +37,7 @@ require_once __DIR__ . '/Cdef/CdefResolver.php';
  * @return string|null The name/value, or null when the stored item is invalid.
  */
 function get_cdef_item_name(int $cdef_item_id) : ?string {
-	return (new \Cacti\Cdef\DatabaseCdefRepository())->itemName($cdef_item_id);
+	return (new DatabaseCdefRepository())->itemName($cdef_item_id);
 }
 /**
  * Resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
@@ -50,7 +51,7 @@ function get_cdef_item_name(int $cdef_item_id) : ?string {
  * @return string|null The constructed CDEF string, or null on invalid data.
  */
 function get_cdef(int $cdef_id) : ?string {
-	$resolver = new \Cacti\Cdef\CdefResolver(new \Cacti\Cdef\DatabaseCdefRepository(), static function (string $message) : void {
+	$resolver = new CdefResolver(new DatabaseCdefRepository(), static function (string $message) : void {
 		cacti_log($message, false, 'CDEF');
 	});
 
@@ -69,12 +70,12 @@ function get_cdef(int $cdef_id) : ?string {
  * @return string|null The CDEF string, or null when recursion is unsafe.
  */
 function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, array &$cache, int &$cache_bytes) : ?string {
-	$state              = new \Cacti\Cdef\CdefResolutionState();
+	$state              = new CdefResolutionState();
 	$state->visited     = & $visited;
 	$state->expansion   = & $expansion;
 	$state->cache       = & $cache;
 	$state->cache_bytes = & $cache_bytes;
-	$resolver           = new \Cacti\Cdef\CdefResolver(new \Cacti\Cdef\DatabaseCdefRepository(), static function (string $message) : void {
+	$resolver           = new CdefResolver(new DatabaseCdefRepository(), static function (string $message) : void {
 		cacti_log($message, false, 'CDEF');
 	});
 
