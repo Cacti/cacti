@@ -1,0 +1,71 @@
+name: RRDtool Windows Pipe
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/rrd-pipe-windows.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/rrd.php'
+      - 'tests/Unit/RrdProcessSafetyTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rrd-pipe-windows-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Native Windows RRDtool / PHP ${{ matrix.php }}
+    runs-on: windows-2022
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup native PHP with locked dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Install native Windows RRDtool
+        id: msys2
+        uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-rrdtool
+
+      - name: Verify native runtimes
+        shell: pwsh
+        run: |
+          $rrdDirectory = Join-Path '${{ steps.msys2.outputs.msys2-location }}' 'ucrt64\bin'
+          $rrdBinary = Join-Path $rrdDirectory 'rrdtool.exe'
+          if (!(Test-Path -PathType Leaf $rrdBinary)) { throw 'Native RRDtool is missing' }
+          $env:PATH = "$rrdDirectory;$env:PATH"
+          $rrdDirectory >> $env:GITHUB_PATH
+          "RRDTOOL_BINARY=$rrdBinary" >> $env:GITHUB_ENV
+          php -r 'if (PHP_OS_FAMILY !== "Windows") { exit(1); } print PHP_VERSION . PHP_EOL;'
+          if ($LASTEXITCODE -ne 0) { throw 'PHP must run natively on Windows' }
+          & $rrdBinary --version
+          if ($LASTEXITCODE -ne 0) { throw 'Native RRDtool could not run' }
+
+      - name: Check reply framing and real persistent pipe
+        shell: pwsh
+        run: |
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/RrdProcessSafetyTest.php --filter='a reply ends only|real RRDtool image' --fail-on-skipped --fail-on-empty-test-suite --do-not-cache-result
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
