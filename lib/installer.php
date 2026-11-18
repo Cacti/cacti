@@ -3949,14 +3949,19 @@ class Installer implements JsonSerializable {
 
 	/**
 	 * Validate both the XML import and every package file handoff.
+	 *
+	 * A file is handed off when it was written, or when the installer kept the
+	 * copy shipped with this release in place of the one embedded in the package.
 	 */
 	private function packageImportSucceeded(mixed $result) : bool {
 		if (!is_array($result) || !array_key_exists(1, $result) || !is_array($result[1])) {
 			return false;
 		}
 
+		$handed_off = [__('written'), __('kept existing')];
+
 		foreach ($result[1] as $status) {
-			if ($status !== __('written')) {
+			if (!in_array($status, $handed_off, true)) {
 				return false;
 			}
 		}
