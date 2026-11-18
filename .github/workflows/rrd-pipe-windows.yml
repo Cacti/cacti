@@ -64,8 +64,16 @@ jobs:
           php -r 'if (PHP_OS_FAMILY !== "Windows") { exit(1); } print PHP_VERSION . PHP_EOL;'
           "$rrd_binary" --version
 
-      - name: Check reply framing and real persistent pipe
+      - name: Check platform-neutral reply parser
+        timeout-minutes: 1
         shell: bash
         run: |
           set -euo pipefail
-          php include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/RrdProcessSafetyTest.php --filter='a reply ends only|real RRDtool image' --fail-on-skipped --fail-on-empty-test-suite --do-not-cache-result
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/RrdProcessSafetyTest.php --filter='a reply ends only' --fail-on-skipped --fail-on-empty-test-suite --do-not-cache-result
+
+      - name: Check real persistent pipe
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set -euo pipefail
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/RrdProcessSafetyTest.php --filter='real RRDtool image' --debug --fail-on-skipped --fail-on-empty-test-suite --do-not-cache-result
