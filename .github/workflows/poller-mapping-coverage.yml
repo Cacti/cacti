@@ -100,12 +100,17 @@ jobs:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
           XDEBUG_MODE: coverage
           CACTI_PR_COVERAGE_OUTPUT: ${{ runner.temp }}/request-coverage
+          BOOST_DB_HOST: 127.0.0.1
+          BOOST_DB_PORT: 3306
+          BOOST_DB_USER: root
+          BOOST_DB_PASSWORD: cactiroot
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
         run: |
           set -euo pipefail
           changed_files=$(git diff --name-only "$BASE_COMMIT"...HEAD)
           if grep -Eq '^(lib/installer\.php|install/|cli/(install_cacti|upgrade_database)\.php|tests/fixtures/Installer/)' <<< "$changed_files"; then
             (cd tests && php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest --configuration=phpunit.xml Unit/Installer)
+            (cd tests && php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest --configuration=phpunit.xml integration/InstallerRuntimeTablesMariaDbTest.php)
             bash tests/e2e/installer-coverage.sh
           fi
       - name: Require at least 80 percent of changed executable PHP lines

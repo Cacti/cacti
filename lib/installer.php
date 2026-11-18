@@ -189,7 +189,7 @@ class Installer implements JsonSerializable {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
-			$install_version = read_config_option('install_version', true);
+			$install_version = (string) read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
 			if ($this->isFailedInstallBeingPolled($step, $install_params, read_config_option('install_error', true))) {
@@ -277,6 +277,13 @@ class Installer implements JsonSerializable {
 
 		if ($step < Installer::STEP_INSTALL) {
 			$this->setDefaults($install_params);
+		}
+
+		$failure = $this->repairRuntimeTables();
+
+		if ($failure !== '') {
+			$this->addError(Installer::STEP_ERROR, 'Schema', 'RequiredTables', $failure);
+			$this->setStep(Installer::STEP_ERROR);
 		}
 
 		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
@@ -3707,6 +3714,32 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
 		}
+	}
+
+	/**
+	 * Repair installations already stamped with this release without replaying
+	 * the whole migration, which clears the Boost process table.
+	 *
+	 * @return string An error when a missing run-time table could not be repaired.
+	 */
+	private function repairRuntimeTables() {
+		global $config;
+
+		if ($this->old_cacti_version != CACTI_VERSION) {
+			return '';
+		}
+
+		if (db_table_exists('poller_output_boost_local_data_ids') && db_table_exists('poller_output_boost_failures')) {
+			return '';
+		}
+
+		require_once($config['base_path'] . '/install/upgrades/1_2_32.php');
+
+		if (!upgrade_1_2_32_boost_tables(false)) {
+			return $this->validateCoreSchema();
+		}
+
+		return '';
 	}
 
 	/**
