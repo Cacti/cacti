@@ -92,3 +92,48 @@ test('sanitize_uri drops backslash, NUL, CR and LF', function (string $uri) {
 	'encoded cr'        => ['/cacti/index.php?a=%0db'],
 	'encoded lf'        => ['/cacti/index.php?a=%0ab'],
 ]);
+
+// Characters that sanitize_uri() drops can sit between two slashes, so the
+// network-path check has to look at the string after the stripping, not before.
+/**
+ * Normalise a URL the way a browser does before resolving it: tab, LF and CR
+ * are removed anywhere, and leading C0 controls and spaces are dropped.
+ *
+ * @param string $url The URL as it would be sent in a Location header
+ *
+ * @return string The URL the browser would resolve
+ */
+function sanitizeUriBrowserForm(string $url): string {
+	return ltrim(str_replace(["\t", "\n", "\r"], '', $url), "\x00..\x20");
+}
+
+test('sanitize_uri never returns a network-path reference after stripping', function (string $uri) {
+	$out = sanitizeUriBrowserForm(sanitize_uri($uri));
+
+	expect(preg_match('#^[/\\\\]{2}#', $out))->toBe(0, json_encode($out));
+})->with([
+	'tab'         => ["/\t/evil.com"],
+	'tab+back'    => ["/\t\\evil.com"],
+	'space'       => ['/ /evil.com'],
+	'enc tab'     => ['%2F%09%2Fevil.com'],
+	'pipe'        => ['/|/evil.com'],
+	'semicolon'   => ['/;/evil.com'],
+	'caret'       => ['/^/evil.com'],
+	'dollar'      => ['/$/evil.com'],
+	'bang'        => ['/!/evil.com'],
+	'tag'         => ['/<b>/evil.com'],
+	'backtick'    => ['/`/evil.com'],
+	'control+gap' => ["\x0C/;/evil.com"],
+	'encoded'     => ['/%7C/evil.com'],
+]);
+
+test('validate_redirect_url never returns a network-path reference', function (string $url) {
+	$out = sanitizeUriBrowserForm(validate_redirect_url($url, 'index.php'));
+
+	expect(preg_match('#^[/\\\\]{2}#', $out))->toBe(0, json_encode($out));
+})->with([
+	'tab'       => ["/\t/evil.com/x"],
+	'pipe'      => ['/|/evil.com/x'],
+	'semicolon' => ['/;/evil.com/x?a=b'],
+	'bang'      => ['/!/evil.com'],
+]);
