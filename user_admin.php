@@ -644,6 +644,8 @@ function form_save() : void {
 				gnrv('id')
 			]
 		);
+
+		reset_user_perms(gfrv('id'));
 	} else {
 		api_plugin_hook('user_admin_user_save');
 

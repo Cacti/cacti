@@ -30,13 +30,13 @@
  */
 
 /**
- * Split a console page into its request handlers: each isrv('...') branch and
- * each top-level function, so a write is matched with the reset in its own
- * handler.
+ * Split a console page into its request handlers: each isrv('...') branch, its
+ * final else branch and each top-level function, so a write is matched with
+ * the reset in its own handler.
  */
 function permission_cache_handlers(string $file) : array {
 	$source   = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
-	$handlers = preg_split('/^(?=\tif \(+isrv\(|\t\} elseif \(isrv\(|function )/m', $source);
+	$handlers = preg_split('/^(?=\tif \(+isrv\(|\t\} elseif \(isrv\(|\t\} else \{$|function )/m', $source);
 
 	return array_values(array_filter($handlers, fn ($handler) => preg_match(
 		'/(INSERT|REPLACE|DELETE)\s+(IGNORE\s+)?(INTO|FROM)\s+user_auth_(perms|group_perms|group_members)\b/i', $handler) === 1
