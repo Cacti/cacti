@@ -35,6 +35,10 @@ run_php_probe() {
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
+run_php_probe tests/fixtures/Core/ScriptServerStreamFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerStreamFailures\.php)'
+run_php_probe tests/fixtures/Core/SnmpStateStoreFailures.php '^(lib/SnmpStateStore\.php|tests/fixtures/Core/SnmpStateStoreFailures\.php)'
+run_php_probe tests/fixtures/Core/RemoteScriptServerLifecycle.php '^(remote_agent\.php|tests/fixtures/Core/RemoteScriptServerLifecycle\.php)'
+
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'
 run_php_probe tests/fixtures/Core/ConstantTimeGuardMatrix.php '^(auth_2fa\.php|auth_resetpassword\.php|tests/fixtures/Core/ConstantTimeGuardMatrix\.php)'
 run_php_probe tests/fixtures/Core/PackageManifestMatrix.php '^(package_import\.php|package_repos\.php|lib/import\.php|tests/fixtures/Core/PackageManifestMatrix\.php)'
