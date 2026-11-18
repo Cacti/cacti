@@ -84,6 +84,17 @@ try {
 	normalization_expect($normalized['hashes'] === $report['hashes'], 'Production source hashes are preserved');
 	normalization_expect($normalized['normalization']['input_sha256'] === hash('sha256', $bytes), 'Original raw evidence remains identifiable');
 	normalization_expect(file_get_contents($temporary . '/raw/request.json') === $bytes, 'Raw evidence is unchanged');
+	$windowsRoot = 'D:/a/cacti/cacti';
+	$windowsFile = $windowsRoot . '/tests/fixtures/Core/RequestCoverageNormalization.php';
+	$windows     = ['root' => $windowsRoot, 'coverage' => [$windowsFile => $raw[$fixture]],
+		'hashes'              => [$windowsFile => hash_file('sha256', $fixture)]];
+	mkdir($temporary . '/windows');
+	file_put_contents($temporary . '/windows/request.json', json_encode($windows, JSON_THROW_ON_ERROR));
+	normalization_expect(normalization_run($temporary . '/windows', $temporary . '/windows-normalized') === 0, 'Native Windows source paths relocate to the same checkout');
+	$relocated   = json_decode(file_get_contents($temporary . '/windows-normalized/request.json'), true, 512, JSON_THROW_ON_ERROR);
+	$windowsHits = array_keys(array_filter($relocated['coverage'][$windowsFile], static fn (int $hits): bool => $hits > 0));
+	sort($windowsHits);
+	normalization_expect($windowsHits === $expected, 'Relocated Windows evidence has the same executable line model');
 	normalization_expect(normalization_run($temporary . '/raw', $temporary . '/normalized') !== 0, 'An existing output directory cannot be overwritten');
 	$report['hashes'][$fixture] = str_repeat('0', 64);
 	file_put_contents($temporary . '/raw/z-stale.json', json_encode($report, JSON_THROW_ON_ERROR));
