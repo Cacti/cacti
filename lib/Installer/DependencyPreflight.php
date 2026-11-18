@@ -33,7 +33,7 @@ final readonly class DependencyPreflight {
 	 */
 	public function __construct(private string $root, private string $phpVersion = PHP_VERSION, private ?array $extensions = null, private array $requiredClasses = [
 		\Symfony\Component\Process\Process::class, \Symfony\Component\Security\Csrf\CsrfTokenManager::class,
-		\Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher::class, \Firebase\JWT\JWT::class, \Slim\App::class]) {
+		\Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher::class, \Firebase\JWT\JWT::class, \Slim\App::class], private string $sapi = PHP_SAPI) {
 	}
 
 	/** @return list<string> Actionable messages containing no configuration values. */
@@ -57,7 +57,14 @@ final readonly class DependencyPreflight {
 		$extensions = array_map('strtolower', $this->extensions ?? get_loaded_extensions());
 
 		foreach ($manifest['require'] as $name => $constraint) {
-			if (str_starts_with($name, 'ext-') && !in_array(strtolower(substr($name, 4)), $extensions, true)) {
+			$extension = strtolower(substr($name, 4));
+
+			// pcntl only builds for the CLI SAPI; Composer's platform check exempts web SAPIs too.
+			if (!str_starts_with($name, 'ext-') || ($extension === 'pcntl' && $this->sapi !== 'cli')) {
+				continue;
+			}
+
+			if (!in_array($extension, $extensions, true)) {
 				$errors[] = 'Enable the PHP extension ' . substr($name, 4) . ' in the installer runtime.';
 			}
 		}
