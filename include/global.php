@@ -303,6 +303,7 @@ if (!is_dir($config['cache_dir'])) {
 require_once(CACTI_PATH_LIBRARY . '/database.php');
 require_once(CACTI_PATH_LIBRARY . '/functions.php');
 require_once(CACTI_PATH_LIBRARY . '/config_api.php');
+require_once(CACTI_PATH_LIBRARY . '/Repository/DeviceRepository.php');
 require_once(CACTI_PATH_LIBRARY . '/graph_template_input.php');
 require_once(CACTI_PATH_LIBRARY . '/renderer.php');
 require_once(CACTI_PATH_LIBRARY . '/headers_secure.php');
