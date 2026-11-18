@@ -597,6 +597,12 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 
 	api_plugin_hook_function('copy_user', ['template_id' => $template_id, 'new_id' => $new_id]);
 
+	// the copied row carries the template's reset_perms, which can equal the
+	// overwritten user's, so expire that user's cached permissions explicitly
+	if ($overwrite === true && is_array($user_exist) && isset($user_exist['id'])) {
+		reset_user_perms($user_exist['id']);
+	}
+
 	return $new_id;
 }
 
