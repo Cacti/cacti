@@ -55,8 +55,10 @@ require_once __DIR__ . '/client_address.php';
  *                        redirects, fractions allowed, default 10), 'allowed_hosts'
  *                        (array restricting the request to those hostnames only),
  *                        'max_redirects' (int, default 0), 'max_bytes' (int, abandon
- *                        bodies larger than this) and 'blocked_subnets' (list of CIDR
- *                        ranges refused instead of all non-public space). See
+ *                        bodies larger than this), 'deadline' (microtime(true) value the
+ *                        request may not run past, whatever its timeout) and
+ *                        'blocked_subnets' (list of CIDR ranges refused instead of all
+ *                        non-public space). See
  *                        cacti_http_multi() for how redirects and subnets are handled.
  *
  * @return array{success: bool, status: int, body: string, error: string}
@@ -300,6 +302,15 @@ function cacti_http_start(CurlMultiHandle $multi, stdClass $transfer) : string {
 	// DNS and all redirects share the budget, beginning when this request leaves the queue.
 	if ($transfer->deadline === null) {
 		$transfer->deadline = microtime(true) + (float) ($options['timeout'] ?? 10);
+
+		// a caller's overall deadline, such as the end of a polling interval, also cuts it short
+		if (isset($options['deadline'])) {
+			$transfer->deadline = min($transfer->deadline, (float) $options['deadline']);
+		}
+	}
+
+	if (microtime(true) >= $transfer->deadline) {
+		return 'Timed out';
 	}
 
 	if ($transfer->dnsHost !== $parts['host']) {

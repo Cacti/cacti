@@ -382,13 +382,26 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 	/*
 	 * Fetching device by device would add each slow endpoint's timeout to the
-	 * walk, and the overrun check only runs between items, so a few dead
-	 * endpoints could push the process past its polling interval.  Fetched
-	 * together, the HTTP items cost about their longest timeout.  Items of a
-	 * device found down below are fetched but never read.
+	 * walk, and the overrun check only runs between items, so the HTTP items
+	 * of every device are fetched together first.  Devices with HTTP items get
+	 * their availability check now instead of during the walk, and the items
+	 * of a device found down are not fetched, as for SNMP and script items.
+	 * Requests run in rounds of at most CactiHttpPoller::MAX_CONCURRENCY, and
+	 * of http_poller_concurrency per device, so a slow fetch costs about one
+	 * timeout per round.  The fetch stops at the end of the polling interval,
+	 * and items still unanswered then report U.
 	 */
+	$host_checks = [];
+
 	if (cacti_sizeof($http_items)) {
-		http_prefetch_items(CactiHttpPoller::create((int) read_config_option('http_poller_concurrency')), $http_items);
+		$host_checks = http_check_hosts($poller_items, $http_items, $mibs, (int) $script_timeout);
+		$http_items  = array_values(array_filter($http_items, function ($item) use ($host_checks) {
+			return empty($host_checks[$item['host_id']]['down']);
+		}));
+
+		if (cacti_sizeof($http_items)) {
+			http_prefetch_items(CactiHttpPoller::create((int) read_config_option('http_poller_concurrency')), $http_items, $start + $poller_interval);
+		}
 	}
 
 	foreach ($poller_items as $item) {
@@ -481,7 +494,12 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 		// ping host, find out if there are re-index checks required
 		if ($new_host && !empty($host_id)) {
-			$host_down = ping_and_reindex_check($item, $mibs, $script_timeout);
+			if (isset($host_checks[$host_id])) {
+				$host_down      = $host_checks[$host_id]['down'];
+				$set_spike_kill = $host_checks[$host_id]['spike_kill'];
+			} else {
+				$host_down = ping_and_reindex_check($item, $mibs, $script_timeout);
+			}
 		}
 
 		$new_host  = false;
@@ -1006,21 +1024,60 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
  * and failure reasons are left in globals for collect_device_data().
  *
  * @param CactiHttpPoller             $poller
- * @param array<array<string, mixed>> $items  HTTP poller items of any number of devices
+ * @param array<array<string, mixed>> $items    HTTP poller items of any number of devices
+ * @param float|null                  $deadline microtime(true) value no request may run past
  *
  * @return void
  */
-function http_prefetch_items(CactiHttpPoller $poller, array $items) : void {
+function http_prefetch_items(CactiHttpPoller $poller, array $items, ?float $deadline = null) : void {
 	global $http_outputs, $http_reasons, $print_data_to_stdout;
 
 	$reasons      = [];
 	$start        = microtime(true);
-	$http_outputs = $poller->collect($items, $reasons);
+	$http_outputs = $poller->collect($items, $reasons, $deadline);
 	$http_reasons = $reasons;
 
 	$message = sprintf('Devices[%d] TT[%0.2f] HTTP: Polled %d item(s), %d failed', cacti_sizeof(array_unique(array_column($items, 'host_id'))), (microtime(true) - $start) * 1000, cacti_sizeof($items), cacti_sizeof($reasons));
 
 	cacti_log($message, $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+}
+
+/**
+ * http_check_hosts - run the availability check of each device with HTTP items
+ *
+ * The walk would run ping_and_reindex_check() on the first item of each
+ * device.  This runs it on that same item ahead of the HTTP prefetch, once
+ * per device, and records the result for the walk to reuse.
+ *
+ * @param array<array<string, mixed>> $poller_items   every item of this process, in walk order
+ * @param array<array<string, mixed>> $http_items     the HTTP items among them
+ * @param bool                        $mibs
+ * @param int                         $script_timeout
+ *
+ * @return array<int|string, array{down: bool, spike_kill: bool}> keyed by host id
+ */
+function http_check_hosts(array $poller_items, array $http_items, bool $mibs, int $script_timeout) : array {
+	global $set_spike_kill;
+
+	$hosts  = array_flip(array_column($http_items, 'host_id'));
+	$checks = [];
+
+	foreach ($poller_items as $item) {
+		$host_id = $item['host_id'];
+
+		if (empty($host_id) || !isset($hosts[$host_id]) || isset($checks[$host_id])) {
+			continue;
+		}
+
+		$set_spike_kill = false;
+		$down           = ping_and_reindex_check($item, $mibs, $script_timeout);
+
+		$checks[$host_id] = ['down' => $down, 'spike_kill' => $set_spike_kill];
+	}
+
+	$set_spike_kill = false;
+
+	return $checks;
 }
 
 function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) : bool {

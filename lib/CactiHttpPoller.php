@@ -113,13 +113,14 @@ final class CactiHttpPoller {
 	 * their timeouts, so no item is cut off before its own limit.
 	 *
 	 * @param list<CactiHttpPollItem> $items
-	 * @param array<string, string>   $errors receives a reason per failed endpoint key
+	 * @param array<string, string>   $errors   receives a reason per failed endpoint key
+	 * @param float|null              $deadline microtime(true) value no request may run past
 	 *
 	 * @param-out array<string, string> $errors
 	 *
 	 * @return array<string, mixed> decoded documents keyed by CactiHttpPollItem::$endpointKey
 	 */
-	public function fetch(array $items, array &$errors = []) : array {
+	public function fetch(array $items, array &$errors = [], ?float $deadline = null) : array {
 		$requests = [];
 		$options  = [
 			'max_redirects'   => self::MAX_REDIRECTS,
@@ -130,6 +131,10 @@ final class CactiHttpPoller {
 				'User-Agent: Cacti/' . (defined('CACTI_VERSION') ? CACTI_VERSION : 'unknown'),
 			],
 		];
+
+		if ($deadline !== null) {
+			$options['deadline'] = $deadline;
+		}
 
 		foreach ($items as $item) {
 			$key = $item->endpointKey;
@@ -166,14 +171,15 @@ final class CactiHttpPoller {
 	 * Rows that hold a broken spec, whose endpoint failed, or whose pointer
 	 * does not select a number come back as 'U' with the reason in $reasons.
 	 *
-	 * @param array<array<string, mixed>> $rows    HTTP poller_item rows
-	 * @param array<string, string>       $reasons receives a reason per failed row
+	 * @param array<array<string, mixed>> $rows     HTTP poller_item rows
+	 * @param array<string, string>       $reasons  receives a reason per failed row
+	 * @param float|null                  $deadline microtime(true) value no request may run past
 	 *
 	 * @param-out array<string, string> $reasons
 	 *
 	 * @return array<string, string> outputs keyed by self::rowKey()
 	 */
-	public function collect(array $rows, array &$reasons = []) : array {
+	public function collect(array $rows, array &$reasons = [], ?float $deadline = null) : array {
 		$outputs = [];
 		$specs   = [];
 
@@ -189,7 +195,7 @@ final class CactiHttpPoller {
 		}
 
 		$errors    = [];
-		$documents = $this->fetch(array_values($specs), $errors);
+		$documents = $this->fetch(array_values($specs), $errors, $deadline);
 
 		foreach ($specs as $key => $spec) {
 			if (!array_key_exists($spec->endpointKey, $documents)) {
