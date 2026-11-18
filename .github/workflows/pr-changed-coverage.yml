@@ -17,6 +17,8 @@ on:
       - 'tests/fixtures/Core/**'
       - 'tests/e2e/tests/**'
       - 'tests/tools/report_changed_coverage.py'
+      - 'tests/tools/normalize_request_coverage.php'
+      - 'tests/tools/test_normalize_request_coverage.php'
       - 'tests/tools/run_pr_change_tests.sh'
       - '.github/workflows/pr-changed-coverage.yml'
   workflow_dispatch:
@@ -31,7 +33,7 @@ permissions:
 jobs:
   changed-coverage:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
