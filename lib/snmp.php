@@ -2096,6 +2096,10 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
  * device. A cached argument in the old layout is still honoured until the
  * poller cache is rebuilt.
  *
+ * A Script Server worker serves every data source of a device within one
+ * polling cycle and exits at the end of it, so each device row is read once per
+ * worker rather than once per data source. The cache is bounded.
+ *
  * @param int    $host_id   The device id
  * @param string $snmp_auth The colon joined argument from the poller cache
  *
@@ -2105,18 +2109,29 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
  *               protocol, 11 context, 12 engine id
  */
 function snmp_script_auth_fields(int $host_id, string $snmp_auth) : array {
+	static $hosts = [];
+
 	$fields = explode(':', $snmp_auth);
 
 	if (cacti_sizeof($fields) > 5 || $host_id <= 0) {
 		return array_pad($fields, 13, '');
 	}
 
-	$host = db_fetch_row_prepared('SELECT snmp_community, snmp_username, snmp_password,
-		snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context,
-		snmp_engine_id
-		FROM host
-		WHERE id = ?',
-		[$host_id]);
+	if (!array_key_exists($host_id, $hosts)) {
+		if (cacti_sizeof($hosts) >= 1024) {
+			$hosts = [];
+		}
+
+		// a missing device is cached too, so it is not queried again
+		$hosts[$host_id] = db_fetch_row_prepared('SELECT snmp_community, snmp_username, snmp_password,
+			snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context,
+			snmp_engine_id
+			FROM host
+			WHERE id = ?',
+			[$host_id]);
+	}
+
+	$host = $hosts[$host_id];
 
 	if (!is_array($host) || !cacti_sizeof($host)) {
 		return array_pad($fields, 13, '');
