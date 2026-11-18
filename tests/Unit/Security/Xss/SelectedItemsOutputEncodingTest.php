@@ -40,6 +40,24 @@ function selected_items_export_probe(string $page, string $payload) : array {
 	return cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/SelectedItemsExportProbe.php', [$page, $payload]);
 }
 
+/*
+ * Whether selected_items with bytes after the array decodes at all belongs
+ * to sanitize_unserialize_selected_items(). The page may either refuse the
+ * selection or rebuild the URL from it; it must never echo the extra bytes.
+ */
+function expect_trailing_bytes_dropped(array $verdict) : bool {
+	if (!$verdict['emitted']) {
+		expect($verdict['output'])->not->toContain('</script><b>');
+
+		return false;
+	}
+
+	expect_inert_js_literal($verdict['literal']);
+	expect($verdict['url'])->not->toContain('</script>');
+
+	return true;
+}
+
 function expect_inert_js_literal(string $literal) : void {
 	expect($literal)->toStartWith('"')
 		->and($literal)->toEndWith('"')
@@ -53,6 +71,7 @@ function expect_inert_js_literal(string $literal) : void {
 test('export URL round-trips a normal selection', function (string $page) : void {
 	$verdict = selected_items_export_probe($page, 'list');
 
+	expect($verdict['emitted'])->toBeTrue();
 	expect_inert_js_literal($verdict['literal']);
 	expect($verdict['path'])->toBe($page . '.php')
 		->and($verdict['query'])->toBe(['action' => 'export', 'selected_items' => serialize(['3', '7'])])
@@ -62,10 +81,10 @@ test('export URL round-trips a normal selection', function (string $page) : void
 test('export URL drops bytes trailing the serialized selection', function (string $page) : void {
 	$verdict = selected_items_export_probe($page, 'trailing');
 
-	expect_inert_js_literal($verdict['literal']);
-	expect($verdict['url'])->not->toContain('</script>')
-		->and($verdict['query'])->toBe(['action' => 'export', 'selected_items' => serialize(['3', '7'])])
-		->and($verdict['round_trip'])->toBe(['3', '7']);
+	if (expect_trailing_bytes_dropped($verdict)) {
+		expect($verdict['query'])->toBe(['action' => 'export', 'selected_items' => serialize(['3', '7'])])
+			->and($verdict['round_trip'])->toBe(['3', '7']);
+	}
 })->with($exportPages);
 
 test('export URL encodes line breaks inside selected values', function (string $page) : void {
@@ -79,6 +98,11 @@ test('template download URL carries only the validated ids', function (string $p
 	foreach (['list', 'trailing'] as $payload) {
 		$verdict = selected_items_export_probe($page, $payload);
 
+		if ($payload === 'trailing' && !expect_trailing_bytes_dropped($verdict)) {
+			continue;
+		}
+
+		expect($verdict['emitted'])->toBeTrue();
 		expect_inert_js_literal($verdict['literal']);
 		expect($verdict['path'])->toBe('host_templates.php')
 			->and($verdict['query'])->toBe(['action' => 'download', 'action_type' => $type, 'ids' => '3,7']);
