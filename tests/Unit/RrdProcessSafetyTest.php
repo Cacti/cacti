@@ -210,6 +210,25 @@ test('a handle that is not an RRDtool process is never relaunched', function () 
 	expect(rrdtool_process_restart((object) ['alive' => false]))->toBeFalse();
 });
 
+test('a reply ends only at a newline-terminated status line on every platform', function (string $stdout, ?array $expected) {
+	expect(rrdtool_reply_status($stdout))->toBe($expected);
+})->with([
+	'getrusage status after text'          => ["1700000060\nOK u:0.00 s:0.00 r:0.00\n", ['OK u:0.00 s:0.00 r:0.00', 11]],
+	'bare Windows status after text'       => ["1700000060\nOK\n", ['OK', 11]],
+	'bare status with no output'           => ["OK\n", ['OK', 0]],
+	'CRLF terminated status'               => ["1700000060\r\nOK\r\n", ['OK', 12]],
+	'getrusage status after a PNG'         => ["\x89PNG\nIEND\xaeB`\x82OK u:0.01 s:0.00 r:0.02\n", ['OK u:0.01 s:0.00 r:0.02', 13]],
+	'bare Windows status after a PNG'      => ["\x89PNG\nIEND\xaeB`\x82OK\n", ['OK', 13]],
+	'error in place of output'             => ["ERROR: opening 'x.rrd': No such file\n", ["ERROR: opening 'x.rrd': No such file", 0]],
+	'error after earlier lines'            => ["line\nERROR: bad\r\n", ['ERROR: bad', 5]],
+	'PRINT text ending in OK'              => ["PRINT:BOOK\n", null],
+	'PRINT text paused before its newline' => ['PRINT:BOOK', null],
+	'image bytes spelling OK'              => ["\x89PNG\x01OK", null],
+	'status line not yet terminated'       => ["1700000060\nOK u:0.00 s:0.00", null],
+	'ERROR inside a line'                  => ["PRINT:no ERROR: here\n", null],
+	'nothing read yet'                     => ['', null],
+]);
+
 /**
  * Write a scripted RRDtool double that answers each command with a canned reply.
  *
