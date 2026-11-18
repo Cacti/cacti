@@ -941,6 +941,35 @@ function rrdtool_process_restart(object $process) : bool {
 	return true;
 }
 
+/**
+ * Find the status line that ends a complete RRDtool pipe reply.
+ *
+ * RRDtool's pipe mode ends every reply with one newline-terminated
+ * "OK u:... s:... r:..." line ("OK" alone on builds without getrusage, such
+ * as the MSVC Windows build) or one "ERROR: ..." line. Native Windows builds
+ * switch stdout to binary mode, so the line ends in LF there too; CRLF is
+ * still accepted. Until that terminating newline arrives the reply is
+ * partial: a read that stops after PRINT text such as "BOOK", or inside image
+ * bytes that happen to spell "OK", must not end the reply, or the real status
+ * is read as the next command's reply.
+ *
+ * OK may directly follow binary image data, which has no newline before it,
+ * so it is only rejected when a printable character precedes it. ERROR is
+ * printed in place of any output, so it must start a line.
+ *
+ * @param string $stdout Reply bytes read so far
+ *
+ * @return array{0: string, 1: int}|null The status text and its byte offset,
+ *                                       or null while the reply is incomplete
+ */
+function rrdtool_reply_status(string $stdout) : ?array {
+	if (!preg_match('/(?:(?<![\x20-\x7E])OK(?: u:[\x20-\x7E]*)?|(?:\A|(?<=\n))ERROR:[^\r\n]*)(?=\r?\n\z)/', $stdout, $matches, PREG_OFFSET_CAPTURE)) {
+		return null;
+	}
+
+	return [$matches[0][0], $matches[0][1]];
+}
+
 function rrdtool_process_command(object $process, string $command_line, float $timeout = 60.0) : array {
 	$result = ['success' => false, 'output' => '', 'error' => 'RRDtool process is unavailable.'];
 
@@ -1024,21 +1053,11 @@ function rrdtool_process_command(object $process, string $command_line, float $t
 			return $result;
 		}
 
-		/**
-		 * RRDtool's pipe mode ends every reply with one newline-terminated
-		 * "OK u:... s:... r:..." line ("OK" alone on builds without getrusage)
-		 * or one "ERROR: ..." line. Wait for that terminating newline: a read
-		 * that stops after PRINT text such as "BOOK", or inside image bytes that
-		 * happen to spell "OK", is a partial reply, and treating it as complete
-		 * leaves the real status to be read as the next command's reply.
-		 *
-		 * OK may directly follow binary image data, which has no newline before
-		 * it, so it is only rejected when a printable character precedes it.
-		 * ERROR is printed in place of any output, so it must start a line.
-		 */
-		if (preg_match('/(?:(?<![\x20-\x7E])OK(?: u:[\x20-\x7E]*)?|(?:\A|(?<=\n))ERROR:[^\r\n]*)(?=\r?\n\z)/', $stdout, $matches, PREG_OFFSET_CAPTURE)) {
-			$status = $matches[0][0];
-			$stdout = substr($stdout, 0, $matches[0][1]);
+		$reply_end = rrdtool_reply_status($stdout);
+
+		if ($reply_end !== null) {
+			$status = $reply_end[0];
+			$stdout = substr($stdout, 0, $reply_end[1]);
 
 			break;
 		}
