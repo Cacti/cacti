@@ -1151,7 +1151,10 @@ function request_string(string $name, string $default = '', ?string $pattern = n
  *
  * '1', 'true', 'on' and 'yes' are true and '0', 'false', 'off' and 'no' are
  * false, case-insensitively. Anything else stops the request through
- * die_html_input_error(). The submitted value is stored back unchanged.
+ * die_html_input_error(). The result is cached as a checkbox value, 'on' for
+ * true and '' for false, so later get_request_var() readers that compare
+ * against 'on' agree with it. A variable whose readers compare against 'true'
+ * and 'false' should use request_enum() instead.
  *
  * @param string $name    The request variable name.
  * @param bool   $default Returned when the value is absent, empty or 'undefined'.
@@ -1159,6 +1162,14 @@ function request_string(string $name, string $default = '', ?string $pattern = n
  * @return bool
  */
 function request_bool(string $name, bool $default = false) : bool {
+	global $_CACTI_REQUEST;
+
+	// A cached '' is a validated false; read as a submitted empty value it
+	// would take the default instead.
+	if (isset($_CACTI_REQUEST[$name]) && $_CACTI_REQUEST[$name] === '') {
+		return false;
+	}
+
 	$value = request_present_value($name, $default ? 'on' : '');
 
 	if ($value === null) {
@@ -1173,9 +1184,7 @@ function request_bool(string $name, bool $default = false) : bool {
 		return $default;
 	}
 
-	// Keep the submitted spelling: existing readers compare against 'on', and a
-	// stored false would read back as empty, which means the default.
-	set_request_var($name, $value);
+	set_request_var($name, $bool ? 'on' : '');
 
 	return $bool;
 }
