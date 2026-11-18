@@ -42,6 +42,12 @@ run_php_probe tests/fixtures/Core/ScriptServerLaunchFailures.php '^(lib/poller\.
 run_php_probe tests/fixtures/Core/CollectorEntrypointContracts.php '^(cmd(_realtime)?\.php|tests/fixtures/Core/CollectorEntrypointContracts\.php)'
 run_php_probe tests/fixtures/Core/CollectorWorkerWiring.php '^(cmd(_realtime)?\.php|tests/fixtures/Core/CollectorWorkerWiring\.php)'
 run_php_probe tests/fixtures/Core/ScriptQueryResultRows.php '^(scripts/query_(akcp_(airflow|fourtwenty|humidity|temperature)|baytech_circuits|host_(cpu|partitions))\.php|tests/fixtures/Core/ScriptQueryResultRows\.php)'
+for query_mode in known aruba akcp lmsensors; do
+	run_php_probe tests/fixtures/Core/ScriptQueryKnownResults.php '^(scripts/(ss_(apache_stats|fortigate_virus|nimble_alletra_volumes|fping|netsnmp_lmsensors)|aruba_instant_wlan_client|query_akcp_temperature)\.php|tests/fixtures/Core/ScriptQueryKnownResults\.php)' "$query_mode"
+done
+run_php_probe tests/fixtures/Core/DiskCollectorStateContracts.php '^(scripts/ss_net_snmp_disk_(bytes|io)\.php|tests/fixtures/Core/DiskCollectorStateContracts\.php)'
+run_php_probe tests/fixtures/Core/SqlQueryStatus.php '^(scripts/sql\.php|tests/fixtures/Core/SqlQueryStatus\.php)'
+run_php_probe tests/fixtures/Core/ScriptServerMainBoundaries.php '^(script_server\.php|tests/fixtures/Core/ScriptServerMainBoundaries\.php)'
 run_php_probe tests/fixtures/Core/ScriptServerOutputGuardFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerOutputGuardFailures\.php)'
 run_php_probe tests/fixtures/Core/ScriptServerProvenanceFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerProvenanceFailures\.php)'
 for signal_mode in terminate notify; do
