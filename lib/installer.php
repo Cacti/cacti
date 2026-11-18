@@ -108,7 +108,9 @@ class Installer implements JsonSerializable {
 	private array $locales;
 	private string $language;
 	private array $tables;
-	private string $runtime;
+	// background.php builds the Installer without a Runtime, and setRuntime()
+	// leaves the property untouched for unknown values, so it needs a default.
+	private string $runtime = 'unknown';
 	private array $errors;
 	private int $profile;
 	private mixed $automationMode     = null;
