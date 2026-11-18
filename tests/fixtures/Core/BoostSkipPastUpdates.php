@@ -353,7 +353,9 @@ $probe_sql      = [];
 $probe_commands = [];
 boost_probe_assert(boost_process_poller_output(7, $probe_rrdtool_pipe) === 4, 'boost_process_poller_output() must report all four staged rows');
 boost_probe_expect_single_update('boost_process_poller_output()', '--template in:out ');
-boost_probe_assert(str_contains(end($probe_sql), 'DELETE FROM poller_output_boost'), 'boost_process_poller_output() must remove the acknowledged rows');
+$acknowledgements = array_values(array_filter($probe_sql, static fn ($sql) => str_starts_with($sql, 'DELETE FROM poller_output_boost ')));
+boost_probe_assert(count($acknowledgements) === 1 && str_contains($acknowledgements[0], 'AND (UNIX_TIMESTAMP(time), rrd_name) IN (SELECT timestamp, rrd_name FROM `poller_output_boost_acked_'), 'boost_process_poller_output() must remove only the acknowledged keys');
+boost_probe_assert(str_starts_with(end($probe_sql), 'DROP TEMPORARY TABLE `poller_output_boost_acked_'), 'boost_process_poller_output() must clean up the acknowledgement table');
 $passed[] = 'poller-output';
 
 $probe_sql      = [];

@@ -56,7 +56,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_boost_drain_change_runs_the_drain_probe(self):
         for path in ['poller_boost.php', 'lib/boost.php', 'tests/fixtures/ProbeLoader.php', 'tests/fixtures/BoostOnDemandFailureProbe.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'BoostBulkDrainCoverage.php')
+                self.dispatch(path, ['BoostSkipPastUpdates.php', 'BoostBulkDrainCoverage.php']
+                              if path in ['poller_boost.php', 'lib/boost.php']
+                              else 'BoostBulkDrainCoverage.php')
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
@@ -67,7 +69,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_boost_flush_change_runs_the_skip_past_updates_probe(self):
         for path in ['lib/boost.php', 'poller_boost.php', 'tests/fixtures/Core/BoostSkipPastUpdates.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'BoostSkipPastUpdates.php')
+                self.dispatch(path, ['BoostSkipPastUpdates.php', 'BoostBulkDrainCoverage.php']
+                              if path in ['poller_boost.php', 'lib/boost.php']
+                              else 'BoostSkipPastUpdates.php')
 
     def test_rrd_version_fallback_probe_change_runs_itself(self):
         self.dispatch('tests/fixtures/Core/RrdVersionFallback.php', 'RrdVersionFallback.php')
