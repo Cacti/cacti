@@ -15,6 +15,7 @@
 namespace PermissionAssociationMutationTest;
 
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/auth.php', 'auth_permission_association_queries', __NAMESPACE__);
 cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/auth.php', 'auth_update_permission_associations', __NAMESPACE__);
 
 function gnrv($key, $default = '') {

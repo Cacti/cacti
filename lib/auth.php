@@ -4443,34 +4443,29 @@ function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string
 	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '');
 }
 
+/** @return array{0: string, 1: string} Grant and removal statements for a fixed association kind. */
+function auth_permission_association_queries(int $permission_type, bool $group) : array {
+	if ($permission_type === 0) {
+		if ($group) {
+			return ['REPLACE INTO user_auth_group_members (group_id, user_id) VALUES (?, ?)', 'DELETE FROM user_auth_group_members WHERE group_id = ? AND user_id = ?'];
+		}
+
+		return ['REPLACE INTO user_auth_group_members (user_id, group_id) VALUES (?, ?)', 'DELETE FROM user_auth_group_members WHERE user_id = ? AND group_id = ?'];
+	}
+
+	if ($group) {
+		return ['REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, ?)', 'DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = ?'];
+	}
+
+	return ['REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, ?)', 'DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = ?'];
+}
+
 /**
  * Apply checked permission or membership associations, then expire affected caches.
  * A zero permission type selects membership rows; the page supplies all types.
  */
 function auth_update_permission_associations(int $permission_type, bool $group = false) : void {
-	$association_queries = [
-		'user' => [
-			'membership' => [
-				'REPLACE INTO user_auth_group_members (user_id, group_id) VALUES (?, ?)',
-				'DELETE FROM user_auth_group_members WHERE user_id = ? AND group_id = ?',
-			],
-			'permission' => [
-				'REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, ?)',
-				'DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = ?',
-			],
-		],
-		'group' => [
-			'membership' => [
-				'REPLACE INTO user_auth_group_members (group_id, user_id) VALUES (?, ?)',
-				'DELETE FROM user_auth_group_members WHERE group_id = ? AND user_id = ?',
-			],
-			'permission' => [
-				'REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, ?)',
-				'DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = ?',
-			],
-		],
-	];
-	$queries = $association_queries[$group ? 'group' : 'user'][$permission_type === 0 ? 'membership' : 'permission'];
+	$queries = auth_permission_association_queries($permission_type, $group);
 	$query   = $queries[gnrv('drp_action') == '1' ? 0 : 1];
 
 	foreach ($_POST as $var => $val) {
@@ -4491,14 +4486,10 @@ function auth_update_permission_associations(int $permission_type, bool $group =
 		}
 	}
 
-	if ($group && $permission_type === 0) {
-		return;
-	}
-
-	if ($group) {
-		reset_group_perms(gfrv('id'));
-	} else {
+	if (!$group) {
 		reset_user_perms(gfrv('id'));
+	} elseif ($permission_type !== 0) {
+		reset_group_perms(gfrv('id'));
 	}
 }
 
