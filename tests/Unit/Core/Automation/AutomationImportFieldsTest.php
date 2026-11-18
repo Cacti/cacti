@@ -28,16 +28,16 @@
  * their fakes freely, and print a JSON verdict the parent asserts against.
  */
 
-require_once dirname(__DIR__, 2) . '/Helpers/IsolatedProbe.php';
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 test('automation imports reject malformed fields before writes and preserve exported identifiers (#7470)', function () {
-	$result = cacti_test_isolated_probe(dirname(__DIR__, 2) . '/fixtures/Core/AutomationImportFields.php');
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/AutomationImportFields.php');
 	expect($result['cases'])->toBe(82);
 });
 
 test('every import field alias is the alias the matching SQL joins that table under (#7470)', function () {
-	require_once dirname(__DIR__, 3) . '/lib/api_automation.php';
+	require_once dirname(__DIR__, 4) . '/lib/api_automation.php';
 
-	$source  = file_get_contents(dirname(__DIR__, 3) . '/lib/api_automation.php');
+	$source  = file_get_contents(dirname(__DIR__, 4) . '/lib/api_automation.php');
 	$aliases = automation_query_field_table_aliases();
 
 	expect($aliases)->toHaveCount(7)
