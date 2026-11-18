@@ -11253,18 +11253,22 @@ function cacti_path_within(string $base, string $candidate) : string|false {
 		return false;
 	}
 
-	$real_base = realpath($abs_base);
+	/* Resolve the base as given, not its lexical form.  Canonicalizing folds a
+	 * UNC root (\\server\share) to '/server/share', which Windows reads as a
+	 * directory on the current drive, so the walk starts from the native
+	 * resolved base instead. */
+	$real_base = realpath($base);
 
 	if ($real_base === false || !is_dir($real_base)) {
 		return false;
 	}
 
 	$relative = ltrim(substr($abs_cand, strlen($abs_base)), '/');
-	$existing = $abs_base;
+	$existing = $real_base;
 	$missing  = [];
 
 	if ($relative !== '') {
-		$walk = rtrim($abs_base, '/');
+		$walk = rtrim($real_base, '/\\');
 
 		foreach (explode('/', $relative) as $segment) {
 			$walk .= '/' . $segment;
