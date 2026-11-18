@@ -155,3 +155,17 @@ test('the local password matrix probe passes in its own process', function () {
 
 	expect(cacti_test_isolated_probe(__DIR__ . '/../../../fixtures/Core/CompatPasswordMatrix.php'))->toBe(['passed' => 22]);
 });
+
+test('failed local logins retain the current bcrypt work across stored costs', function () {
+	require_once __DIR__ . '/../../../Helpers/IsolatedProbe.php';
+
+	expect(cacti_test_isolated_probe(__DIR__ . '/../../../fixtures/Core/LoginWorkMatrix.php'))->toBe(['passed' => 7]);
+});
+
+test('legacy verification fails closed when md5 is unavailable', function () {
+	$fixture = __DIR__ . '/../../../fixtures/Core/LoginWorkMatrix.php';
+	exec(escapeshellarg(PHP_BINARY) . ' -d disable_functions=md5 ' . escapeshellarg($fixture), $output, $status);
+
+	expect($status)->toBe(0)
+		->and(json_decode(implode("\n", $output), true, 512, JSON_THROW_ON_ERROR))->toBe(['passed' => 7]);
+});

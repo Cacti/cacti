@@ -31,7 +31,7 @@ require dirname(__DIR__, 3) . '/include/vendor/autoload.php';
 use Cacti\Auth\LocalAuthLoginProvider;
 
 foreach (['cacti_password_algorithm', 'cacti_password_decoy_for', 'cacti_password_decoy_hash',
-	'compat_password_verify', 'compat_password_hash', 'compat_password_needs_rehash'] as $function) {
+	'compat_password_verify', 'cacti_password_verify_login', 'compat_password_hash', 'compat_password_needs_rehash'] as $function) {
 	cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/auth.php', $function, '');
 }
 

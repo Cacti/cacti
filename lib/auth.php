@@ -4617,12 +4617,46 @@ function compat_password_verify(string $password, string $hash) : bool {
 		return true;
 	}
 
-	if (strlen($hash) === 32 && ctype_xdigit($hash)) {
+	if (strlen($hash) === 32 && ctype_xdigit($hash) && function_exists('md5')) {
 		return hash_equals($hash, md5($password));
 	}
 
 	if (strlen($hash) === 64 && ctype_xdigit($hash)) {
 		return hash_equals($hash, hash('sha256', $password));
+	}
+
+	return false;
+}
+
+/**
+ * Verify a local login, doing at least the current bcrypt work on failure.
+ *
+ * Existing bcrypt hashes can have a lower cost until their next successful
+ * login. Fill the missing work with decoys at each intervening cost:
+ * 2^stored + 2^stored + ... + 2^(current-1) equals 2^current.
+ * This bounds the number of extra verifications by the cost difference.
+ * Other hash formats retain their verifier and receive the current decoy
+ * work on failure. Hashes costlier than the current policy are not reduced.
+ *
+ * @param string $password The submitted password.
+ * @param string $hash     The stored hash or the unknown-user decoy.
+ *
+ * @return bool Whether the stored hash matches.
+ */
+function cacti_password_verify_login(string $password, string $hash) : bool {
+	if (compat_password_verify($password, $hash)) {
+		return true;
+	}
+
+	[$algo, $options] = cacti_password_algorithm();
+	$info             = password_get_info($hash);
+
+	if ($info['algo'] === PASSWORD_BCRYPT) {
+		for ($cost = $info['options']['cost']; $cost < $options['cost']; $cost++) {
+			password_verify($password, cacti_password_decoy_for($algo, ['cost' => $cost]));
+		}
+	} else {
+		password_verify($password, cacti_password_decoy_hash());
 	}
 
 	return false;
