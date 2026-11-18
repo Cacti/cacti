@@ -428,11 +428,13 @@ test('debug mode prints the input, output and errors', function () {
 	parseArgs("'a' b", $args, true);
 	parseArgs('a b', $args, true);
 	parseArgs("'open", $args, true);
+	parseArgs('a `b`', $args, true);
 	$output = ob_get_clean();
 
 	expect($output)->toContain("String: ''a' b'")
 		->and($output)->toContain("Output: 'a,b'")
-		->and($output)->toContain('ERROR: Parse error');
+		->and($output)->toContain('ERROR: Parse error')
+		->and($output)->toContain('ERROR: Backtick (`) characters not allowed');
 });
 
 test('SNMP secrets in the colon joined argument are masked for logging', function () {
