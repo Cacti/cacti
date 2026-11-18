@@ -86,9 +86,12 @@ register_shutdown_function(static function () : void {
 
 	// the first DownloadStart( is the function definition, the second the call
 	if (!preg_match('/DownloadStart\(([^)]*)\);/', $output, $match)) {
+		// a decoder that rejects the selection emits no download; the tests
+		// decide whether that is acceptable for the payload
 		fwrite(STDERR, $output);
+		print json_encode(['emitted' => false, 'output' => $output], JSON_THROW_ON_ERROR) . "\n";
 
-		exit(1);
+		return;
 	}
 
 	$literal = $match[1];
@@ -100,6 +103,7 @@ register_shutdown_function(static function () : void {
 	}
 
 	print json_encode([
+		'emitted'    => true,
 		'literal'    => $literal,
 		'url'        => $url,
 		'path'       => is_string($url) ? parse_url($url, PHP_URL_PATH) : null,
