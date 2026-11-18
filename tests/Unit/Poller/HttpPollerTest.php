@@ -66,7 +66,8 @@ test('resolve scales numbers and keeps unscaled counters exact', function () {
 		->and($item->resolve(['v' => 'up']))->toBeNull()
 		->and($item->resolve(['v' => null]))->toBeNull()
 		->and($item->resolve(['v' => [1]]))->toBeNull()
-		->and($item->resolve([]))->toBeNull();
+		->and($item->resolve([]))->toBeNull()
+		->and($item->resolve(['v' => "\f5\v"]))->toBe('5');
 
 	$huge = new CactiHttpPollItem(1, 10, 'value', 'https://device.example/', '/v', 1e308);
 
