@@ -865,6 +865,11 @@ while ($poller_runs_completed < $poller_runs) {
 				$started_processes++;
 			}
 
+			// spine has no HTTP action, so cmd.php collects those items next to it
+			if ($method == 'spine' && poller_start_http_handoff($poller_id, $extra_parms)) {
+				$started_processes++;
+			}
+
 			if ($poller_id == 1) {
 				// insert the current date/time for graphs
 				set_config_option('date', date('Y-m-d H:i:s'));
@@ -1131,6 +1136,44 @@ if ($poller_id == 1) {
 }
 
 exit(0);
+
+/**
+ * poller_start_http_handoff - start cmd.php for the HTTP items of a spine poller
+ *
+ * Spine has no HTTP action and has to leave HTTP items out of its own item
+ * selection; a spine that still selects them writes U for each, which can
+ * replace the value written here.  One query decides whether the extra
+ * process is needed.
+ *
+ * @param int    $poller_id   the poller being run
+ * @param string $extra_parms output redirection for the background process
+ *
+ * @return bool true when a process was started and will record itself in poller_time
+ */
+function poller_start_http_handoff(int $poller_id, string $extra_parms) : bool {
+	$exists = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' 1
+		FROM poller_item
+		WHERE poller_id = ?
+		AND action = ?
+		LIMIT 1',
+		[$poller_id, POLLER_ACTION_HTTP]);
+
+	if (empty($exists)) {
+		return false;
+	}
+
+	$cmd_php = CACTI_PATH_BASE . '/cmd.php';
+
+	if (CACTI_SERVER_OS != 'unix') {
+		$cmd_php = cacti_strtolower($cmd_php);
+	}
+
+	exec_background(cacti_escapeshellcmd((string) read_config_option('path_php_binary')),
+		'-q ' . cacti_escapeshellarg($cmd_php) . ' --poller=' . $poller_id . ' --http-only' . ($poller_id > 1 ? ' --mode=' . CACTI_CONNECTION : ''),
+		$extra_parms);
+
+	return true;
+}
 
 function poller_heartbeat_check() : void {
 	$poller_interval = read_config_option('poller_interval');

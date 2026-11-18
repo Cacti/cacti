@@ -18,9 +18,11 @@
  */
 
 /*
- * The HTTP prefetch's down-device and time-budget rules in cmd.php.
+ * The HTTP action next to spine, and the HTTP prefetch's down-device and
+ * time-budget rules in cmd.php.
  *
- * The production functions are loaded unchanged into this namespace; the
+ * Spine has no HTTP action, so poller.php starts cmd.php --http-only next to
+ * it.  The production functions are loaded unchanged into this namespace; the
  * database, logging, availability check and process launch are stubbed at
  * their boundaries, while the HTTP client is real against the loopback test
  * server.
@@ -36,7 +38,7 @@ require_once dirname(__DIR__, 3) . '/Helpers/HttpTestServer.php';
 class_alias(\CactiHttpPoller::class, __NAMESPACE__ . '\CactiHttpPoller');
 class_alias(\CactiHttpPollItem::class, __NAMESPACE__ . '\CactiHttpPollItem');
 
-foreach ([['/cmd.php', 'http_check_hosts'], ['/cmd.php', 'http_prefetch_items']] as [$file, $function]) {
+foreach ([['/cmd.php', 'http_check_hosts'], ['/cmd.php', 'http_only_poll'], ['/cmd.php', 'http_prefetch_items'], ['/poller.php', 'poller_start_http_handoff']] as [$file, $function]) {
 	\cacti_fixture_source_function(dirname(__DIR__, 4) . $file, $function, __NAMESPACE__);
 }
 
@@ -98,6 +100,55 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 function http_row(int $host_id, int $local_data_id, string $url, string $pointer = '/in') : array {
 	return ['host_id' => $host_id, 'local_data_id' => $local_data_id, 'rrd_name' => 'value', 'action' => POLLER_ACTION_HTTP, 'arg1' => $url, 'arg2' => $pointer, 'arg3' => ''];
 }
+
+test('poller.php starts one cmd.php --http-only process only when the poller has HTTP items', function () {
+	stub_reset([], false);
+
+	expect(poller_start_http_handoff(4, ''))->toBeFalse()
+		->and($GLOBALS['handoff']['launches'])->toBe([])
+		->and($GLOBALS['handoff']['queries'][0][1])->toBe([4, POLLER_ACTION_HTTP]);
+
+	stub_reset([], 1);
+
+	expect(poller_start_http_handoff(1, '>> /tmp/err 2>&1'))->toBeTrue()
+		->and($GLOBALS['handoff']['launches'])->toHaveCount(1)
+		->and($GLOBALS['handoff']['launches'][0][1])->toContain('cmd.php')
+		->and($GLOBALS['handoff']['launches'][0][1])->toEndWith('--poller=1 --http-only')
+		->and($GLOBALS['handoff']['launches'][0][2])->toBe('>> /tmp/err 2>&1');
+});
+
+test('the spine-side pass writes HTTP output, skips devices marked down and leaves scheduling to spine', function () {
+	$base = \cacti_http_test_server()['url'];
+
+	stub_reset([http_row(2, 9, "$base/stats"), http_row(2, 10, "$base/missing")]);
+
+	$written = http_only_poll(1, 60, 1, microtime(true));
+
+	[$sql, $params] = $GLOBALS['handoff']['queries'][0];
+
+	expect($written)->toBe(2)
+		->and($sql)->toContain('pi.action = ?')
+		->and($sql)->toContain('h.status != ?')
+		->and($sql)->not->toContain('rrd_next_step')
+		->and($params)->toBe([1, POLLER_ACTION_HTTP, HOST_DOWN])
+		->and($GLOBALS['handoff']['executes'])->toHaveCount(1)
+		->and($GLOBALS['handoff']['executes'][0])->toContain("(9, 'value', CURRENT_TIMESTAMP(), '5')")
+		->and($GLOBALS['handoff']['executes'][0])->toContain("(10, 'value', CURRENT_TIMESTAMP(), 'U')")
+		->and(implode(' ', $GLOBALS['handoff']['executes']))->not->toContain('UPDATE');
+});
+
+test('with several profiles the spine-side pass picks due items from the polling slot', function () {
+	stub_reset([]);
+
+	// 1200 is a multiple of 300, so a 300 second item is due in the slot that starts there
+	expect(http_only_poll(1, 60, 2, 1230.5))->toBe(0);
+
+	[$sql, $params] = $GLOBALS['handoff']['queries'][0];
+
+	expect($sql)->toContain('MOD(?, pi.rrd_step) < ?')
+		->and($params)->toBe([1, POLLER_ACTION_HTTP, HOST_DOWN, 60, 1200, 60])
+		->and($GLOBALS['handoff']['executes'])->toBe([]);
+});
 
 test('cmd.php checks each HTTP device once, as the walk would, and keeps its spike kill state', function () {
 	stub_reset();
