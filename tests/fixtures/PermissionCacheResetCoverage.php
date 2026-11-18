@@ -85,7 +85,7 @@ $GLOBALS['request']                          = $request;
 $GLOBALS['resets']                           = [];
 $GLOBALS['permission_writes']                = [];
 $GLOBALS['permission_redirect']              = '';
-$_POST                                       = ['chk_9' => 'on'];
+$_POST                                       = ['chk_9' => 'on', 'unrelated' => 'control'];
 
 // Checked before RequestCoverage publishes its report. A handler that leaves
 // without resetting the cache fails here and publishes no coverage.
@@ -152,6 +152,7 @@ function reset_group_perms($id) {
 	$GLOBALS['resets'][] = ['group', (int) $id];
 }
 
+cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/auth.php', 'auth_permission_association_queries', __NAMESPACE__);
 cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/auth.php', 'auth_update_permission_associations', __NAMESPACE__);
 cacti_fixture_source_function(dirname(__DIR__, 2) . '/' . $file, $function, __NAMESPACE__);
 

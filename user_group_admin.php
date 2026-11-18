@@ -288,13 +288,7 @@ function form_actions() : void {
 	global $group_actions, $user_auth_realms;
 
 	// Preserve the handler order when a request contains multiple association flags.
-	foreach ([
-		'associate_host'     => [3, 'permsd'],
-		'associate_graph'    => [1, 'permsg'],
-		'associate_template' => [4, 'permste'],
-		'associate_tree'     => [2, 'permstr'],
-		'associate_member'   => [0, 'members'],
-	] as $association => [$permission_type, $permission_tab]) {
+	foreach (['associate_host'     => [3, 'permsd'], 'associate_graph'    => [1, 'permsg'], 'associate_template' => [4, 'permste'], 'associate_tree'     => [2, 'permstr'], 'associate_member'   => [0, 'members']] as $association => [$permission_type, $permission_tab]) {
 		if (isrv($association)) {
 			auth_update_permission_associations($permission_type, true);
 			header('Location: user_group_admin.php?action=edit&tab=' . $permission_tab . '&id=' . gnrv('id'));
