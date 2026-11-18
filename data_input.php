@@ -39,6 +39,10 @@ $actions = [
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['field_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();

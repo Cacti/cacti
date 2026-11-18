@@ -38,8 +38,9 @@ const ACTION_FUNCTIONS = [
 ];
 
 const DISPATCH_FILES = [
-	'automation_graph_rules.php', 'automation_snmp.php', 'automation_templates.php', 'cdef.php',
-	'color_templates.php', 'data_sources.php', 'data_templates.php', 'links.php', 'tree.php', 'vdef.php',
+	'auth_profile.php', 'automation_graph_rules.php', 'automation_snmp.php', 'automation_templates.php', 'cdef.php',
+	'color_templates.php', 'data_input.php', 'data_sources.php', 'data_templates.php', 'graph_templates.php',
+	'graphs.php', 'host_templates.php', 'links.php', 'tree.php', 'user_admin.php', 'user_group_admin.php', 'vdef.php',
 ];
 
 if (($argv[1] ?? '') === '--list') {

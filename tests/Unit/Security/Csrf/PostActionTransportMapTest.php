@@ -122,3 +122,28 @@ test('a guarded action dropped from the transport map is reported', function () 
 
 	expect(array_unique($actions))->toEqualCanonicalizing(['automation_graph_rules.php qedit', 'automation_templates.php graph_dnd']);
 });
+
+test('direct state-changing actions outside the global denylist are guarded', function () {
+	$guards = post_action_dispatcher_guards(dirname(__DIR__, 4));
+
+	// Each action writes on a GET request and is not in global.php's
+	// $bad_actions list, so the page guard is the only POST requirement.
+	$mutations = [
+		'auth_profile.php'        => ['logout_everywhere', 'clear_user_settings', 'reset_default'],
+		'automation_snmp.php'     => ['ajax_dnd'],
+		'cdef.php'                => ['ajax_dnd'],
+		'color_templates.php'     => ['ajax_dnd'],
+		'data_input.php'          => ['field_remove'],
+		'data_sources.php'        => ['ds_disable', 'ds_enable'],
+		'graph_templates.php'     => ['ajax_dnd', 'input_remove'],
+		'graphs.php'              => ['ajax_dnd'],
+		'host_templates.php'      => ['item_add_dq', 'item_add_gt', 'item_remove_dq', 'item_remove_gt'],
+		'user_admin.php'          => ['perm_remove'],
+		'user_group_admin.php'    => ['perm_remove'],
+		'vdef.php'                => ['ajax_dnd'],
+	];
+
+	foreach ($mutations as $file => $actions) {
+		expect(array_diff($actions, $guards[$file] ?? []))->toBe([], $file);
+	}
+});

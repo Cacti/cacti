@@ -47,6 +47,10 @@ $actions = [
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['ajax_dnd', 'input_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
