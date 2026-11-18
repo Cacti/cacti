@@ -24,8 +24,6 @@
 
 namespace Cacti\Vdef;
 
-require_once __DIR__ . '/VdefRepository.php';
-
 /**
  * VDEF repository backed by the vdef_items table.
  *
