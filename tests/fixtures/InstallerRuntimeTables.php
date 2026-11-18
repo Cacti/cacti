@@ -141,12 +141,27 @@ $pdo->exec('DROP TABLE poller_output_boost_local_data_ids');
 
 try {
 	file_put_contents($config_path, $cli_config);
-	$output = [];
-	exec(escapeshellarg(PHP_BINARY) . ' -d auto_prepend_file=' . escapeshellarg($root . '/tests/Helpers/RequestCoverage.php') .
-		' ' . escapeshellarg($root . '/cli/install_cacti.php') . ' --accept-eula --install --force 2>&1', $output, $cli_status);
+	$command = [PHP_BINARY, '-d', 'auto_prepend_file=' . $root . '/tests/Helpers/RequestCoverage.php',
+		$root . '/cli/install_cacti.php', '--accept-eula', '--install', '--force', '--path=php_binary:' . PHP_BINARY];
+
+	// These binary paths are external to the schema repair under test, as in
+	// installer-coverage.sh; the probe does not collect data or render RRDs.
+	foreach (['rrdtool', 'snmpwalk', 'snmpget', 'snmpbulkwalk', 'snmpgetnext', 'snmptrap'] as $tool) {
+		$command[] = '--path=' . $tool . ':/usr/bin/true';
+	}
+
+	$process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['redirect', 1]], $pipes, $root);
+
+	if (!is_resource($process)) {
+		throw new RuntimeException('Could not start the CLI repair');
+	}
+
+	$output = stream_get_contents($pipes[1]);
+	fclose($pipes[1]);
+	$cli_status = proc_close($process);
 
 	if ($cli_status !== 0) {
-		throw new RuntimeException('Already-upgraded CLI repair failed: ' . implode(PHP_EOL, $output));
+		throw new RuntimeException('Already-upgraded CLI repair failed: ' . $output);
 	}
 } finally {
 	if ($config_backup === false) {

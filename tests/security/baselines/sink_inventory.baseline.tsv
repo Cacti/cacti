@@ -388,6 +388,7 @@ dynamic_include	./lib/html_tree.php:971		include_once($config['library_path'] . 
 dynamic_include	./lib/import.php:2297		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:42		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:4135					include_once($upgrade_file);
+dynamic_include	./lib/installer.php:3736			require_once($config['base_path'] . '/install/upgrades/1_2_32.php');
 dynamic_include	./lib/plugins.php:1067		include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./lib/plugins.php:1100		include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./lib/plugins.php:116							include_once($full_path);
