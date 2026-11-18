@@ -24,8 +24,16 @@ function debug_level(int $host_id, int $level) : int {
 	return $level;
 }
 
-function exec_poll_php(string $command, bool $using_proc_function, array $pipes, mixed $proc_fd) : string {
+function exec_poll_php(string $command, bool $using_proc_function, array|false $pipes, mixed $proc_fd, float $timeout = 0.0, bool &$worker_healthy = true) : string {
+	$worker_healthy = $GLOBALS['cmd_device_worker_healthy'] ?? true;
+
 	return $GLOBALS['cmd_device_reply'] . "\n";
+}
+
+function script_server_replace(mixed &$process, array|false &$pipes, bool &$using_process, string $environment, int|string $poller_id, string $connection_mode = 'online', float $timeout = 0.0) : bool {
+	$GLOBALS['cmd_device_replacements'][] = [$environment, $poller_id, $connection_mode, $timeout];
+
+	return true;
 }
 
 function exec_into_array(string $command) : array {

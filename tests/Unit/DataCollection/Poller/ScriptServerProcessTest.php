@@ -58,11 +58,7 @@ function ss_process_test_start(array $arguments = [], string $bootstrap = 'scrip
 		$arguments = ['--environ=cmd', '--poller=1', '--mode=online'];
 	}
 
-	$process = proc_open(ss_process_test_command($arguments, $bootstrap), [
-		0 => ['pipe', 'r'],
-		1 => ['pipe', 'w'],
-		2 => ['pipe', 'w']
-	], $pipes);
+	$process = proc_open(ss_process_test_command($arguments, $bootstrap), script_server_process_descriptors(), $pipes);
 
 	if (!is_resource($process)) {
 		throw new RuntimeException('Unable to start Script Server fixture');
@@ -81,11 +77,7 @@ function ss_process_test_start(array $arguments = [], string $bootstrap = 'scrip
 }
 
 function ss_process_test_run(array $arguments) : array {
-	$process = proc_open(ss_process_test_command($arguments), [
-		0 => ['pipe', 'r'],
-		1 => ['pipe', 'w'],
-		2 => ['pipe', 'w']
-	], $pipes);
+	$process = proc_open(ss_process_test_command($arguments), script_server_process_descriptors(), $pipes);
 
 	if (!is_resource($process)) {
 		throw new RuntimeException('Unable to start Script Server fixture');
@@ -107,11 +99,7 @@ function ss_process_test_run_php(string $script) : array {
 		'-d',
 		'auto_prepend_file=' . dirname(__DIR__, 3) . '/fixtures/script_server_bootstrap.php',
 		$script
-	], [
-		0 => ['pipe', 'r'],
-		1 => ['pipe', 'w'],
-		2 => ['pipe', 'w']
-	], $pipes);
+	], script_server_process_descriptors(), $pipes);
 
 	if (!is_resource($process)) {
 		throw new RuntimeException('Unable to start PHP fixture');

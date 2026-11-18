@@ -377,6 +377,21 @@ function script_server_read_response(array $pipes, mixed $proc_fd, bool &$worker
 }
 
 /**
+ * Select bounded, selectable process streams for the native platform.
+ *
+ * @return array<int, list<string>>
+ */
+function script_server_process_descriptors() : array {
+	// PHP creates selectable socket pairs on Windows. Anonymous pipe handles
+	// cannot be selected there, so a silent worker can otherwise block a read.
+	if (PHP_OS_FAMILY === 'Windows') {
+		return [0 => ['socket'], 1 => ['socket'], 2 => ['socket']];
+	}
+
+	return [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+}
+
+/**
  * Start a Script Server and validate its framed startup response.
  *
  * @param string     $environment     cmd, spine, realtime, or other
@@ -391,12 +406,8 @@ function script_server_open(string $environment, int|string $poller_id, string $
 		return [false, false, false];
 	}
 
-	$descriptors = [
-		0 => ['pipe', 'r'],
-		1 => ['pipe', 'w'],
-		2 => ['pipe', 'w']
-	];
-	$command = [
+	$descriptors = script_server_process_descriptors();
+	$command     = [
 		poller_php_binary(read_config_option('path_php_binary')),
 		'-q',
 		CACTI_PATH_BASE . '/script_server.php',
@@ -880,11 +891,7 @@ function exec_with_timeout(string|array $cmd, array &$output, int &$return_code,
 	}
 
 	// File descriptors passed to the process.
-	$descriptors = [
-		0 => ['pipe', 'r'],  // stdin
-		1 => ['pipe', 'w'],  // stdout
-		2 => ['pipe', 'w']   // stderr
-	];
+	$descriptors = script_server_process_descriptors();
 
 	// Use setsid when available (Linux) so the child becomes a process-group leader,
 	// allowing posix_kill(-pid, 9) to reliably kill the entire subtree on timeout.
