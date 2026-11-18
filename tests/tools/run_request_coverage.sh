@@ -35,6 +35,7 @@ run_php_probe() {
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 run_php_probe tests/fixtures/Core/CompatPasswordMatrix.php '^(lib/auth\.php|tests/fixtures/Core/CompatPasswordMatrix\.php)'
+run_php_probe tests/fixtures/Core/LoginWorkMatrix.php '^(lib/auth\.php|lib/Auth/LocalAuthLoginProvider\.php|tests/fixtures/Core/LoginWorkMatrix\.php)'
 run_php_probe tests/fixtures/Core/LocalAuthDecoyCoverage.php '^(lib/auth\.php|lib/Auth/LocalAuthLoginProvider\.php|tests/fixtures/Core/LocalAuthDecoy)'
 
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'

@@ -151,7 +151,7 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 
 				$valid_pass = false;
 			} else {
-				$valid_pass = compat_password_verify($password, $user['password']);
+				$valid_pass = cacti_password_verify_login($password, $user['password']);
 			}
 
 			cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
@@ -178,12 +178,12 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			// result is discarded; the decoy is tied to no account.
 			//
 			// Gate the dummy verify on the same non-empty condition the known-user
-			// path uses: that branch skips compat_password_verify() when the password
+			// path uses: that branch skips cacti_password_verify_login() when the password
 			// is empty, so the dummy verify must skip it too. Otherwise an empty
 			// password would expose a reversed timing distinction (known user fast,
 			// unknown user slow) and still leak username validity.
 			if (trim($password) != '') {
-				compat_password_verify((string) $password, cacti_password_decoy_hash());
+				cacti_password_verify_login((string) $password, cacti_password_decoy_hash());
 			}
 
 			// error
