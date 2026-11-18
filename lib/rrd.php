@@ -2115,7 +2115,7 @@ function rrdtool_invalid_cdef_response($graph_data_array, $cdef_id, $graph_id, $
  * @param int $local_graph_id The aggregate graph.
  * @param int $rra_seconds The step of the RRA being graphed.
  *
- * @return array 'owner' maps a data_template_rrd id to its member index, and 'members' lists
+ * @return array 'owner' maps a data_template_rrd id to its possible member indexes, and 'members' lists
  *               each member's DEFs as [data_template_rrd id, CF] pairs. Empty when the graph
  *               is not an aggregate.
  */
@@ -2160,7 +2160,7 @@ function rrdtool_aggregate_def_map($local_graph_id, $rra_seconds) {
 			$seen[$item['data_template_rrd_id']][$graph_cf] = true;
 			$defs[] = array($item['data_template_rrd_id'], $graph_cf);
 
-			$map['owner'][$item['data_template_rrd_id']] = $index;
+			$map['owner'][$item['data_template_rrd_id']][$index] = $index;
 		}
 
 		$map['members'][$index] = $defs;
@@ -2198,10 +2198,15 @@ function rrdtool_aggregate_cdef_defs($cdef_string, $dtr_id, $map, $cf_ds_cache, 
 			continue;
 		}
 
-		if (isset($map['owner'][$dtr_id])) {
-			$members = array($map['members'][$map['owner'][$dtr_id]]);
-		} else {
-			$members = $map['members'];
+		$member_item = isset($map['owner'][$dtr_id]);
+		$members     = $map['members'];
+
+		if ($member_item) {
+			$members = array();
+
+			foreach ($map['owner'][$dtr_id] as $member_index) {
+				$members[] = $map['members'][$member_index];
+			}
 		}
 
 		$names = array();
@@ -2210,6 +2215,16 @@ function rrdtool_aggregate_cdef_defs($cdef_string, $dtr_id, $map, $cf_ds_cache, 
 			if (isset($defs[$index]) && isset($cf_ds_cache[$defs[$index][0]][$defs[$index][1]])) {
 				$names[] = generate_graph_def_name(strval($cf_ds_cache[$defs[$index][0]][$defs[$index][1]]));
 			}
+		}
+
+		// A shared data source does not identify which member an item came
+		// from. Resolve only when every possible member agrees; never choose
+		// the last member or sum members for an ordinary member item. Keep a
+		// DEF reference so RRDtool also accepts an otherwise constant CDEF.
+		if ($member_item && cacti_sizeof($members) > 1) {
+			$tokens[$key] = cacti_sizeof($names) == cacti_sizeof($members) && cacti_sizeof(array_unique($names)) == 1 ? $names[0] : 'CURRENT_DATA_SOURCE,POP,UNKN';
+
+			continue;
 		}
 
 		if (cacti_sizeof($names) == 1) {

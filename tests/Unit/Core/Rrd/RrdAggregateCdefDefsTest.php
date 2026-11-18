@@ -44,7 +44,7 @@ function results() {
 
 test('each member lists its own DEFs in the order its graph names them', function () {
 	expect(results()['map'])->toBe([
-		'owner'   => [201 => 0, 202 => 0, 351 => 1, 352 => 1],
+		'owner'   => [201 => [0 => 0], 202 => [0 => 0], 351 => [1 => 1], 352 => [1 => 1]],
 		'members' => [[[201, 1], [202, 1], [201, 3]], [[351, 1], [352, 1], [351, 3]]],
 	]);
 });
@@ -89,4 +89,11 @@ test('RRDtool evaluates member CDEFs and their total using distinct member value
 	exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($fixture) . ' real-rrd 2>&1', $output, $status);
 	expect($status)->toBe(0, implode("\n", $output));
 	expect(json_decode(implode("\n", $output), true)['rrd_values'])->toBe([1, 10, 100, 111]);
+	expect(json_decode(implode("\n", $output), true)['rrd_unknown'])->toBeTrue();
 })->skip(!getenv('RRDTOOL_BINARY'), 'Set RRDTOOL_BINARY for the real aggregate calculation');
+
+test('shared data sources resolve only when member DEF positions agree', function () {
+	expect(results()['shared_same'])->toBe('a,8,*')
+		->and(results()['shared_different'])->toBe('a,CURRENT_DATA_SOURCE,POP,UNKN,+')
+		->and(results()['shared_missing'])->toBe('CURRENT_DATA_SOURCE,POP,UNKN,8,*');
+});

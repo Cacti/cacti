@@ -113,6 +113,15 @@ foreach (array(
 $GLOBALS['average_only'] = array(36);
 $results['average_only'] = rrdtool_aggregate_def_map(50, 300)['members'][1];
 
+// Both member graphs may legitimately read the same first data source.
+$GLOBALS['items'][35] = [
+	item(GRAPH_ITEM_TYPE_AREA, 1, 201, 21, 'in'),
+	item(GRAPH_ITEM_TYPE_STACK, 1, 352, 36, 'out'),
+];
+$shared                      = rrdtool_aggregate_def_map(50, 300);
+$results['shared_same']      = rrdtool_aggregate_cdef_defs('a,8,*', 201, $shared, $cache, 300);
+$results['shared_different'] = rrdtool_aggregate_cdef_defs('a,b,+', 201, $shared, $cache, 300);
+$results['shared_missing']   = rrdtool_aggregate_cdef_defs('c,8,*', 201, $shared, $cache, 300);
 if (($argv[1] ?? '') === 'real-rrd') {
 	$binary = getenv('RRDTOOL_BINARY');
 	$directory = sys_get_temp_dir() . '/cacti-aggregate-' . bin2hex(random_bytes(8));
@@ -144,6 +153,11 @@ if (($argv[1] ?? '') === 'real-rrd') {
 			$run(['update', $file, '1700000040:' . $value, '1700000100:' . $value, '1700000160:' . $value, '1700000220:' . $value]);
 			$definitions[] = 'DEF:' . generate_graph_def_name($index) . '=' . $file . ':value:AVERAGE';
 		}
+		$unknown = str_replace('CURRENT_DATA_SOURCE', 'a', $results['shared_different']);
+		$unknown_export = $run(array_merge(['xport', '--start', '1700000040', '--end', '1700000160', '--step', '60'], $definitions, ['CDEF:unknown=' . $unknown, 'XPORT:unknown:unknown']));
+		$unknown_xml = new SimpleXMLElement($unknown_export);
+		$results['rrd_unknown'] = (string) $unknown_xml->data->row[0]->v === 'NaN';
+
 		$map = rrdtool_aggregate_def_map(60, 60);
 		foreach ([601, 602, 603, 0] as $index => $id) {
 			$definitions[] = 'CDEF:member' . $index . '=' . rrdtool_aggregate_cdef_defs('a,1,*', $id, $map, $cache, 60);
