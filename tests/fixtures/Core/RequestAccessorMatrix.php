@@ -16,6 +16,14 @@ namespace Cacti\Test\RequestAccessors {
 	class InputRejected extends \RuntimeException {
 	}
 
+	function read_config_option(string $name, bool $force = false) : mixed {
+		return $name === 'log_validation' ? 'on' : '';
+	}
+
+	function html_log_input_error(string $variable) : void {
+		$GLOBALS['request_unvalidated'][] = $variable;
+	}
+
 	function die_html_input_error(mixed $variable = null, mixed $value = null, string $message = '') : void {
 		$GLOBALS['request_rejections'][] = [$variable, $value];
 
@@ -26,7 +34,7 @@ namespace Cacti\Test\RequestAccessors {
 
 	$utility = dirname(__DIR__, 3) . '/lib/html_utility.php';
 
-	foreach (['unset_request_var', 'isset_request_var', 'set_request_var', 'get_nfilter_request_var', 'request_present_value', 'request_int', 'request_string', 'request_bool', 'request_enum'] as $function) {
+	foreach (['unset_request_var', 'isset_request_var', 'set_request_var', 'get_nfilter_request_var', 'get_request_var', 'request_present_value', 'request_int', 'request_string', 'request_bool', 'request_enum'] as $function) {
 		\cacti_fixture_source_function($utility, $function, __NAMESPACE__);
 	}
 
@@ -48,11 +56,12 @@ namespace Cacti\Test\RequestAccessors {
 	 * @return array{0:string,1:mixed} ['value', result] or ['rejected', submitted value].
 	 */
 	function run(array $request, callable $call) : array {
-		$_GET                          = [];
-		$_POST                         = [];
-		$_REQUEST                      = $request;
-		$GLOBALS['_CACTI_REQUEST']     = [];
-		$GLOBALS['request_rejections'] = [];
+		$_GET                           = [];
+		$_POST                          = [];
+		$_REQUEST                       = $request;
+		$GLOBALS['_CACTI_REQUEST']      = [];
+		$GLOBALS['request_rejections']  = [];
+		$GLOBALS['request_unvalidated'] = [];
 
 		try {
 			return ['value', $call()];
@@ -67,18 +76,27 @@ namespace Cacti\Test\RequestAccessors {
 
 	// Absent, empty and the JavaScript 'undefined' sentinel take the default,
 	// as get_filter_request_var() does; null is not set as far as isset() goes.
+	// A present empty or 'undefined' value is replaced in the cache by the
+	// default, as get_filter_request_var() does, so a later get_request_var()
+	// does not report it as unvalidated; an absent value stays absent.
 	$defaults = [
-		'int'    => [static fn () => request_int('v', 42), 42],
-		'string' => [static fn () => request_string('v', 'fallback'), 'fallback'],
-		'regex'  => [static fn () => request_string('v', 'fallback', '/^[a-z]+$/'), 'fallback'],
-		'true'   => [static fn () => request_bool('v', true), true],
-		'false'  => [static fn () => request_bool('v'), false],
-		'enum'   => [static fn () => request_enum('v', ['', 'undefined', 'a'], 'fallback'), 'fallback'],
+		'int'    => [static fn () => request_int('v', 42), 42, 42],
+		'string' => [static fn () => request_string('v', 'fallback'), 'fallback', 'fallback'],
+		'regex'  => [static fn () => request_string('v', 'fallback', '/^[a-z]+$/'), 'fallback', 'fallback'],
+		'true'   => [static fn () => request_bool('v', true), true, 'on'],
+		'false'  => [static fn () => request_bool('v'), false, ''],
+		'enum'   => [static fn () => request_enum('v', ['', 'undefined', 'a'], 'fallback'), 'fallback', 'fallback'],
 	];
 
-	foreach ($defaults as $kind => [$call, $default]) {
-		foreach ([[], ['v' => null], ['v' => ''], ['v' => 'undefined']] as $request) {
+	foreach ($defaults as $kind => [$call, $default, $cached]) {
+		foreach ([[], ['v' => null]] as $request) {
+			expect_that(run($request, $call) === ['value', $default] && !array_key_exists('v', $GLOBALS['_CACTI_REQUEST']), $kind . ' must default without caching for ' . label($request));
+		}
+
+		foreach ([['v' => ''], ['v' => 'undefined']] as $request) {
 			expect_that(run($request, $call) === ['value', $default], $kind . ' must default for ' . label($request));
+			expect_that(($GLOBALS['_CACTI_REQUEST']['v'] ?? null) === $cached && get_request_var('v') === $cached && $GLOBALS['request_unvalidated'] === [], $kind . ' must cache its default for ' . label($request));
+			expect_that($call() === $default, $kind . ' must read its cached default again for ' . label($request));
 		}
 
 		// Arrays and objects are never converted; even an empty array is refused.
@@ -86,6 +104,12 @@ namespace Cacti\Test\RequestAccessors {
 			expect_that(run(['v' => $value], $call) === ['rejected', null], $kind . ' must reject ' . label($value));
 		}
 	}
+
+	// The default is always accepted, so a cached default outside the allowed
+	// set or the pattern reads back, and a submitted default is cached.
+	run(['v' => ''], static fn () => request_string('v', 'N/A', '/^[a-z]+$/'));
+	expect_that(request_string('v', 'N/A', '/^[a-z]+$/') === 'N/A', 'A cached default must read back past the pattern');
+	expect_that(run(['v' => 'fallback'], static fn () => request_enum('v', ['a'], 'fallback')) === ['value', 'fallback'] && $GLOBALS['_CACTI_REQUEST']['v'] === 'fallback', 'A submitted default must be accepted and cached');
 
 	// Integers follow FILTER_VALIDATE_INT exactly, including signs, padding and '0'.
 	foreach (['0', '-5', '+7', ' 12 ', "12\n", 15, '9223372036854775807'] as $value) {

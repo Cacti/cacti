@@ -1028,13 +1028,17 @@ function get_nfilter_request_var(string $name, mixed $default = '') : mixed {
  *
  * Like get_filter_request_var(), an absent value, an empty value and the
  * literal 'undefined' that some JavaScript callers send all take the default.
- * Arrays and other non-scalar values are a validation failure.
+ * An empty or 'undefined' value is replaced in the request cache by $cached,
+ * as get_filter_request_var() does, so later get_request_var() calls see the
+ * default and log_validation does not report the variable. An absent value
+ * stays absent. Arrays and other non-scalar values are a validation failure.
  *
- * @param string $name The request variable name.
+ * @param string $name   The request variable name.
+ * @param mixed  $cached The default, as the request cache should hold it.
  *
  * @return string|null The value as a string, or null for the default.
  */
-function request_present_value(string $name) : ?string {
+function request_present_value(string $name, mixed $cached) : ?string {
 	if (!isset_request_var($name)) {
 		return null;
 	}
@@ -1049,7 +1053,13 @@ function request_present_value(string $name) : ?string {
 
 	$value = (string) $value;
 
-	return ($value === '' || $value === 'undefined') ? null : $value;
+	if ($value === '' || $value === 'undefined') {
+		set_request_var($name, $cached);
+
+		return null;
+	}
+
+	return $value;
 }
 
 /**
@@ -1065,7 +1075,7 @@ function request_present_value(string $name) : ?string {
  * @return int
  */
 function request_int(string $name, int $default = 0) : int {
-	$value = request_present_value($name);
+	$value = request_present_value($name, $default);
 
 	if ($value === null) {
 		return $default;
@@ -1101,9 +1111,17 @@ function request_int(string $name, int $default = 0) : int {
  * @return string
  */
 function request_string(string $name, string $default = '', ?string $pattern = null) : string {
-	$value = request_present_value($name);
+	$value = request_present_value($name, $default);
 
 	if ($value === null) {
+		return $default;
+	}
+
+	// The default is always an acceptable result, including when it is read
+	// back from the cache after an empty value.
+	if ($value === $default) {
+		set_request_var($name, $default);
+
 		return $default;
 	}
 
@@ -1141,7 +1159,7 @@ function request_string(string $name, string $default = '', ?string $pattern = n
  * @return bool
  */
 function request_bool(string $name, bool $default = false) : bool {
-	$value = request_present_value($name);
+	$value = request_present_value($name, $default ? 'on' : '');
 
 	if ($value === null) {
 		return $default;
@@ -1176,9 +1194,17 @@ function request_bool(string $name, bool $default = false) : bool {
  * @return string
  */
 function request_enum(string $name, array $allowed, string $default = '') : string {
-	$value = request_present_value($name);
+	$value = request_present_value($name, $default);
 
 	if ($value === null) {
+		return $default;
+	}
+
+	// The default is always an acceptable result, including when it is read
+	// back from the cache after an empty value.
+	if ($value === $default) {
+		set_request_var($name, $default);
+
 		return $default;
 	}
 
