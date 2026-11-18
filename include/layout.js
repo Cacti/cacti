@@ -3801,10 +3801,13 @@ function hideCurrentTab(id, shrinking) {
 		var selected = $('#'+id).hasClass('selected');
 		var text     = $('#'+id).text();
 
+		/* text() returns the decoded tab title, so build the copy as elements, not markup */
+		var item = $('<li>').append($('<a>').addClass('lefttab' + (selected ? ' selected':'')).attr('id', myid).attr('href', href).text(text));
+
 		if (shrinking) {
-			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').prepend(item);
 		} else {
-			$('#submenu-ellipsis').append('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').append(item);
 		}
 
 		setupResponsiveMenuAndTabs();
