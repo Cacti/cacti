@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 require_once dirname(__DIR__, 4) . '/lib/Rrd/Graph/GraphOptions.php';
 
-test('graph options retain plugin values and normalize scalar inputs', function () {
+test('graph options retain plugin values and normalize integer inputs', function () {
 	$options = GraphOptions::resolve([
 		'export'          => '1',
 		'export_filename' => '/tmp/export.png',
@@ -37,7 +37,7 @@ test('graph options retain plugin values and normalize scalar inputs', function 
 		'export'          => '1',
 		'export_filename' => '/tmp/export.png',
 		'graph_end'       => 200,
-		'graph_height'    => 125.5,
+		'graph_height'    => '125.5',
 		'graph_start'     => 100,
 		'graph_width'     => 425,
 		'output_flag'     => 3,
@@ -100,17 +100,23 @@ test('graph option constraints reject invalid boundary values', function (array 
 	[['graph_start' => '1700000000.5']],
 ])->throws(InvalidOptionsException::class);
 
-test('graph dimensions preserve scientific notation and large finite numeric strings', function ($value, $expected) {
+test('graph dimensions accept finite numbers and keep the caller spelling', function ($value) {
 	$options = GraphOptions::resolve(['graph_width' => $value, 'graph_height' => $value]);
-	expect($options['graph_width'])->toBe($expected);
-	expect($options['graph_height'])->toBe($expected);
+	expect($options['graph_width'])->toBe($value);
+	expect($options['graph_height'])->toBe($value);
 })->with([
-	'integer string'        => ['1000', 1000],
-	'positive exponent'     => ['1e3', 1000.0],
-	'negative exponent'     => ['1e-3', 0.001],
-	'uppercase exponent'    => ['2E2', 200.0],
-	'outside integer range' => ['9223372036854775808', 9223372036854775808.0],
+	'integer string'        => ['1000'],
+	'integer'               => [1000],
+	'float'                 => [125.5],
+	'positive exponent'     => ['1e3'],
+	'negative exponent'     => ['1e-3'],
+	'uppercase exponent'    => ['2E2'],
+	'outside integer range' => ['9223372036854775808'],
 ]);
+
+test('graph dimensions reject non-finite numeric strings', function () {
+	GraphOptions::resolve(['graph_height' => '1e999']);
+})->throws(InvalidOptionsException::class);
 
 test('graph option resolutions retain no values after successful or failed calls', function () {
 	$first = GraphOptions::resolve(['graph_width' => '125', 'plugin_option' => 'first']);
@@ -120,7 +126,7 @@ test('graph option resolutions retain no values after successful or failed calls
 
 	$second = GraphOptions::resolve(['graph_height' => '50', 'plugin_option' => 'second']);
 
-	expect($first)->toBe(['graph_width' => 125, 'plugin_option' => 'first'])
-		->and($second)->toBe(['graph_height' => 50, 'plugin_option' => 'second'])
+	expect($first)->toBe(['graph_width' => '125', 'plugin_option' => 'first'])
+		->and($second)->toBe(['graph_height' => '50', 'plugin_option' => 'second'])
 		->and(GraphOptions::resolve([]))->toBe([]);
 });

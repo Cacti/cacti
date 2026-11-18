@@ -127,7 +127,7 @@ final class GraphOptions {
 
 		foreach (['graph_height', 'graph_width'] as $name) {
 			$resolver->setAllowedTypes($name, ['int', 'float', 'string']);
-			$resolver->setNormalizer($name, static fn (Options $unused, mixed $value): int|float => self::normalizeNumber($name, $value));
+			$resolver->setNormalizer($name, static fn (Options $unused, mixed $value): int|float|string => self::validateNumber($name, $value));
 		}
 
 		foreach (['graph_theme', 'image_format'] as $name) {
@@ -163,28 +163,28 @@ final class GraphOptions {
 	}
 
 	/**
-	 * Accept a finite number given as a number or a numeric string.
+	 * Accept a finite number given as a number or a numeric string, unchanged.
 	 *
-	 * Non-positive sizes never reach this normalizer: isTolerated() passes them
+	 * The graph builder honors a size override only when it is spelled as plain
+	 * digits and otherwise falls back to the graph's own size. Returning the
+	 * caller's value keeps that output; converting '150.0' or '1e2' to a number
+	 * would turn an ignored override into a different --height or --width.
+	 *
+	 * Non-positive sizes never reach this check: isTolerated() passes them
 	 * through unvalidated, as the legacy graph code did.
 	 *
 	 * @param string $name  the option name, for the exception message
-	 * @param mixed  $value the value to normalize
+	 * @param mixed  $value the value to check
 	 *
 	 * @throws InvalidOptionsException when the value is not a finite number
 	 *
-	 * @return float|int the number, kept as an int when it is integral
+	 * @return float|int|string the caller's value
 	 */
-	private static function normalizeNumber(string $name, mixed $value): int|float {
-		if ((is_int($value) || is_float($value)) && is_finite((float) $value)) {
-			$number = $value;
-		} elseif (is_string($value) && is_numeric($value) && is_finite((float) $value)) {
-			$integer = filter_var($value, FILTER_VALIDATE_INT);
-			$number  = $integer !== false ? $integer : (float) $value;
-		} else {
-			throw new InvalidOptionsException("The '$name' option must be a finite number.");
+	private static function validateNumber(string $name, mixed $value): int|float|string {
+		if ((is_int($value) || is_float($value) || (is_string($value) && is_numeric($value))) && is_finite((float) $value)) {
+			return $value;
 		}
 
-		return $number;
+		throw new InvalidOptionsException("The '$name' option must be a finite number.");
 	}
 }
