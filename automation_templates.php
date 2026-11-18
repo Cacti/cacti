@@ -40,6 +40,16 @@ $actions = [
 // set default action
 set_default_action();
 
+// Every action below that adds, removes, reorders or toggles a rule changes
+// stored data, so it must arrive by POST with a CSRF token.
+if (in_array(grv('action'), [
+	'ajax_dnd', 'graph_dnd', 'tree_dnd', 'exitonchange',
+	'item_add_agr', 'item_add_atr', 'item_add_ttr',
+	'item_remove_agr', 'item_remove_atr', 'item_remove_ttr',
+], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		if (isrv('save_component_import')) {
@@ -1293,7 +1303,7 @@ function template_edit() : void {
 				form_alternate_row($id, true);
 
 				form_selectable_ecell($rule['name'], $id);
-				form_selectable_cell(filter_value($exit_text, '', $exit_on_url), $id);
+				form_selectable_cell('<a class="linkEditMain cactiPostAction" href="#" data-url="' . html_escape_url($exit_on_url) . '">' . htmle($exit_text) . '</a>', $id);
 				form_selectable_cell($rule['sequence'], $id, '', 'right');
 
 				$action = '';

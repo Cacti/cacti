@@ -28,6 +28,12 @@ require('./include/auth.php');
 // set default action
 set_default_action();
 
+// These actions revoke sessions or delete stored settings, so they must
+// arrive by POST with a CSRF token.
+if (in_array(grv('action'), ['logout_everywhere', 'clear_user_settings', 'reset_default'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -745,7 +751,9 @@ function settings_javascript() : void {
 
 		function logoutEverywhere() {
 			$('#logout_everywhere').blur();
-			$.get('auth_profile.php?action=logout_everywhere', function(data) {
+			var request = cactiPreparePostRequest('auth_profile.php', 'action=logout_everywhere');
+
+			$.post(request.url, request.data, function(data) {
 				$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('User Sessions Cleared'); ?>"><p><?php print __('All your login sessions have been cleared.'); ?></p></div>');
 
 				$('#cleared').dialog({

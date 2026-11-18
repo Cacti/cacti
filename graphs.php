@@ -87,6 +87,11 @@ if ($reports > 0) {
 
 $actions = api_plugin_hook_function('graphs_action_array', $actions);
 
+// Reordering graph items changes stored sequences, so it must arrive by POST.
+if (in_array(grv('action'), ['ajax_dnd'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
