@@ -345,7 +345,8 @@ function api_networks_discover(int $network_id, bool $discover_debug, bool $disc
 				$args_debug .= ($discover_dryrun) ? ' --dryrun' : '';
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
 			} else {
-				$args_debug = ($discover_debug) ? '&debug=true' : '';
+				$args_debug  = ($discover_debug) ? '&debug=true' : '';
+				$args_debug .= ($discover_dryrun) ? '&dryrun=true' : '';
 
 				$url = CACTI_PATH_URL . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug;
 

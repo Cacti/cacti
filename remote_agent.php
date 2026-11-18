@@ -575,6 +575,11 @@ function run_remote_discovery() : void {
 		$options .= ' --debug';
 	}
 
+	// A dry run requested on the main server must not add devices here.
+	if (isrv('dryrun')) {
+		$options .= ' --dryrun';
+	}
+
 	exec_background($php, '-q ' . $path . $options);
 
 	sleep(2);
