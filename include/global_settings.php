@@ -2482,7 +2482,8 @@ $settings['mail'] = [
 	'settings_oauth2_client_secret' => [
 		'friendly_name' => __('OAuth2 Client Secret'),
 		'description'   => __('Please enter OAuth secret'),
-		'method'        => 'textbox',
+		'method'        => 'textbox_password',
+		'noconfirm'     => true,
 		'max_length'    => 255,
 	],
 	'settings_oauth2_tenant_id' => [
@@ -2501,7 +2502,8 @@ $settings['mail'] = [
 	'settings_oauth2_refresh_token' => [
 		'friendly_name' => __('OAuth2 refresh token'),
 		'description'   => __('You can insert here OAuth2 refresh token directly, if you know it. Second option is retrieved from oauth2 provider. In this case set correct OAuth2 setting, save setting and open new browser tab or window and go to OAuth2 Redirect URI'),
-		'method'        => 'textbox',
+		'method'        => 'textbox_password',
+		'noconfirm'     => true,
 		'max_length'    => 255,
 	],
 	'settings_oauth2_host' => [

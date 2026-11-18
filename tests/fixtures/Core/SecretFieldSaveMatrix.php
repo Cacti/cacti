@@ -172,7 +172,7 @@ namespace Cacti\Test\SecretFieldSave {
 	}
 	function draw_edit_form($form) {
 		foreach ($form['fields'] as $name => $field) {
-			if (($field['method'] ?? '') == 'textbox_password') {
+			if (in_array($field['method'] ?? '', ['textbox', 'textbox_password'], true)) {
 				draw_edit_control($name, $field);
 			}
 		}
@@ -199,6 +199,9 @@ namespace Cacti\Test\SecretFieldSave {
 	}
 	function api_plugin_hook($name) {
 	}
+	function get_url_type() {
+		return 'https';
+	}
 
 	\cacti_fixture_source_function($root . '/lib/html_form.php', 'draw_edit_control', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/lib/html_form.php', 'form_text_box', __NAMESPACE__);
@@ -218,10 +221,29 @@ namespace Cacti\Test\SecretFieldSave {
 	\cacti_fixture_source_function($root . '/pollers.php', 'form_save', __NAMESPACE__);
 
 	$GLOBALS['cacti_fixture_contract'] = ['name' => 'secret-field-save', 'complete' => false, 'assertions' => 0, 'producers' => ['tests/fixtures/Core/SecretFieldSaveMatrix.php']];
-	$GLOBALS['settings']               = ['mail' => [
-		'settings_smtp_header'   => ['method' => 'spacer'],
-		'settings_smtp_password' => ['method' => 'textbox_password', 'max_length' => 255],
-	]];
+	// The Mail tab fields come from the real include/global_settings.php definitions.
+	$source = (string) file_get_contents($root . '/include/global_settings.php');
+
+	if (!preg_match('/^\$settings\[\'mail\'\] = \[.*?^\];/ms', $source, $match)) {
+		throw new \RuntimeException('Cannot locate $settings[\'mail\']');
+	}
+	$mail_settings = sys_get_temp_dir() . '/cacti-secret-field-mail-' . bin2hex(random_bytes(6));
+	file_put_contents($mail_settings, '<?php namespace ' . __NAMESPACE__ . '; use Symfony\\Component\\Validator\\Constraints as Assert; ' . $match[0]);
+
+	foreach (['CACTI_MAIL_SMTP' => 1, 'POLLER_VERBOSITY_LOW' => 2, 'REPORTS_DEFAULT_MAX_SIZE' => 10485760, 'REPORTS_TYPE_INLINE_PNG' => 1, 'CACTI_PATH_URL' => '/cacti/'] as $constant => $constant_value) {
+		if (!defined($constant)) {
+			define($constant, $constant_value);
+		}
+	}
+	$mail_methods      = [];
+	$attach_types      = [];
+	$attachment_sizes  = [];
+	$logfile_verbosity = [];
+	$settings          = [];
+	require $mail_settings;
+	unlink($mail_settings);
+	$mail_fields                  = ['settings_smtp_header', 'settings_smtp_password', 'settings_oauth2_client_id', 'settings_oauth2_client_secret', 'settings_oauth2_refresh_token'];
+	$GLOBALS['settings']          = ['mail' => array_intersect_key($settings['mail'], array_flip($mail_fields))];
 	$GLOBALS['database_password'] = 'main-db-secret';
 	$count                        = 0;
 
@@ -258,15 +280,37 @@ namespace Cacti\Test\SecretFieldSave {
 		$check(($GLOBALS['writes']['settings_smtp_password'] ?? null) === $expected, 'settings ' . $case);
 	}
 
+	// settings.php: the OAuth2 client secret and refresh token follow the same rules.
+	foreach (['settings_oauth2_client_secret', 'settings_oauth2_refresh_token'] as $oauth_field) {
+		foreach ([
+			'blank keeps'    => [[$oauth_field => ''], 'stored-oauth-value', 'stored-oauth-value'],
+			'missing keeps'  => [[], 'stored-oauth-value', 'stored-oauth-value'],
+			'change'         => [[$oauth_field => 'new-oauth-value'], 'stored-oauth-value', 'new-oauth-value'],
+			'clear'          => [[$oauth_field => '', $oauth_field . '_clear' => 'on'], 'stored-oauth-value', ''],
+			'nothing stored' => [[$oauth_field => ''], false, null],
+		] as $case => [$request, $stored, $expected]) {
+			$GLOBALS['request'] = ['tab' => 'mail'] + $request;
+			$GLOBALS['stored']  = [$oauth_field => $stored];
+			$GLOBALS['writes']  = [];
+			$_SESSION           = [];
+			save_settings();
+			$check(($GLOBALS['writes'][$oauth_field] ?? null) === $expected, $oauth_field . ' ' . $case);
+		}
+	}
+
 	// settings.php: the page shows that a value is stored, never the value itself.
 	$GLOBALS['tabs']    = ['mail' => 'Mail'];
 	$GLOBALS['request'] = ['tab' => 'mail'];
-	$GLOBALS['stored']  = ['settings_smtp_password' => 'stored-smtp-secret'];
+	$GLOBALS['stored']  = ['settings_smtp_password' => 'stored-smtp-secret', 'settings_oauth2_client_id' => 'visible-client-id', 'settings_oauth2_client_secret' => 'stored-client-secret', 'settings_oauth2_refresh_token' => 'stored-refresh-token'];
 	$_SESSION           = [];
 	ob_start();
 	display_settings();
 	$html = (string) ob_get_clean();
 	$check(!str_contains($html, 'stored-smtp-secret') && str_contains($html, 'A value is stored.') && str_contains($html, "name='settings_smtp_password_clear'"), 'settings display');
+	$check(!str_contains($html, 'stored-client-secret') && !str_contains($html, 'stored-refresh-token')
+		&& str_contains($html, "name='settings_oauth2_client_secret_clear'") && str_contains($html, "name='settings_oauth2_refresh_token_clear'")
+		&& !str_contains($html, 'settings_oauth2_client_secret_confirm') && !str_contains($html, 'settings_oauth2_refresh_token_confirm')
+		&& str_contains($html, "value='visible-client-id'"), 'settings display oauth2');
 
 	// pollers.php: a blank save keeps the stored password, a new collector uses the default.
 	$base = ['name' => 'Remote', 'hostname' => 'remote.example', 'log_level' => '1', 'timezone' => 'UTC', 'notes' => '', 'processes' => '1', 'threads' => '1', 'sync_interval' => '7200', 'dbdefault' => 'cacti', 'dbhost' => 'db.example', 'dbuser' => 'cacti', 'dbport' => '3306', 'dbretries' => '2', 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => '', 'dbsslcapath' => ''];
