@@ -85,6 +85,7 @@ class RequestDispatchTest(unittest.TestCase):
                         'lib/Auth/LocalAuthLoginProvider.php']:
             with self.subTest(changed=changed):
                 additional = {'lib/html.php': ['accessibility'], 'host.php': ['accessibility'],
+                              'lib/boost.php': ['BoostBulkDrainCoverage.php'],
                               'include/global.php': ['BoundaryContracts.php'],
                               'user_admin.php': ['accessibility', 'UserAdministrationAuditCoverage.php']}
                 self.dispatch(changed, additional.get(changed, []) + ['library'])
@@ -100,13 +101,13 @@ class RequestDispatchTest(unittest.TestCase):
     def test_boost_drain_change_runs_the_drain_probe(self):
         for path in ['poller_boost.php', 'lib/boost.php', 'tests/fixtures/ProbeLoader.php', 'tests/fixtures/BoostOnDemandFailureProbe.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'BoostBulkDrainCoverage.php')
+                self.dispatch(path, ['BoostBulkDrainCoverage.php', 'library'] if path == 'lib/boost.php' else 'BoostBulkDrainCoverage.php')
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
     def test_import_change_runs_the_manifest_fixture(self):
-        self.dispatch('lib/import.php', 'PackageManifestMatrix.php')
+        self.dispatch('lib/import.php', ['PackageManifestMatrix.php', 'library'])
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:

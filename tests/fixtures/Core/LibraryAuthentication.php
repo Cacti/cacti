@@ -124,6 +124,10 @@ function library_authentication_boundaries(): void {
 	$users = [];
 
 	try {
+		$output = library_child('basic_auth_login_process(""); print "login continued";');
+		library_expect(str_contains($output, 'no username was passed'), true, 'Web server authentication without a username explains the denial');
+		library_expect(str_contains($output, 'login continued'), false, 'Web server authentication without a username stops the request');
+
 		// A stored password that predates the complexity policy forces a change at the next login.
 		$users[] = $forced = (int) sql_save(['id' => 0, 'username' => 'coverage_forced', 'realm' => 0, 'enabled' => 'on', 'password' => password_hash('weak', PASSWORD_DEFAULT)], 'user_auth');
 		library_expect($forced > 0, true, 'Forced password fixture owns its account');
