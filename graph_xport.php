@@ -328,7 +328,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 					$row_data = '-';
 
 					if (!is_numeric($row['col'.$i])) {
-						$row_data .= '(unexpected: ' . $row['col' . $i] . ')';
+						$row_data .= '(unexpected: ' . html_escape($row['col' . $i]) . ')';
 					}
 				} elseif (is_numeric($row_data)) {
 					$row_data = trim(number_format_i18n(round($row_data, 5), 4));
