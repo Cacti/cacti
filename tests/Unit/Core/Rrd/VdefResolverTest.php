@@ -104,9 +104,10 @@ test('VDEF form presets preserve their field contracts', function () : void {
 });
 
 test('legacy VDEF functions load before Composer is available', function () : void {
+	// The resolver classes come from Composer's PSR-4 map; loading lib/vdef.php must not need them.
 	$path    = var_export(dirname(__DIR__, 4) . '/lib/vdef.php', true);
 	$process = new Process([PHP_BINARY, '-n', '-r', 'require ' . $path . ';
-		new \Cacti\Vdef\VdefResolver(new \Cacti\Vdef\DatabaseVdefRepository());
+		if (class_exists("Cacti\\\\Vdef\\\\VdefResolver", false)) { exit(2); }
 		foreach (["get_vdef", "get_vdef_item_name", "preset_vdef_form_list", "preset_vdef_item_form_list"] as $function) {
 			if (!function_exists($function)) { exit(1); }
 		}
@@ -195,8 +196,9 @@ test('VDEF nesting depth and shared-reference expansion are bounded', function (
 });
 
 test('the default VDEF guard logger is silent when cacti_log is not loaded', function () : void {
-	$path    = var_export(dirname(__DIR__, 4) . '/lib/Vdef/VdefResolver.php', true);
-	$process = new Process([PHP_BINARY, '-n', '-r', 'require ' . $path . ';
+	$dir     = dirname(__DIR__, 4) . '/lib/Vdef/';
+	$paths   = var_export($dir . 'VdefRepository.php', true) . '; require ' . var_export($dir . 'VdefResolver.php', true);
+	$process = new Process([PHP_BINARY, '-n', '-r', 'require ' . $paths . ';
 		$repository = new class implements \Cacti\Vdef\VdefRepository {
 			public function items(int $vdef_id) : array|false { return [["id" => 1, "type" => 5, "value" => "1"]]; }
 			public function itemName(int $vdef_item_id) : string { return ""; }

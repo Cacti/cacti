@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once __DIR__ . '/Vdef/DatabaseVdefRepository.php';
-require_once __DIR__ . '/Vdef/VdefResolver.php';
+use Cacti\Vdef\DatabaseVdefRepository;
+use Cacti\Vdef\VdefResolver;
 
 /**
  * get_vdef_item_name - resolves a single VDEF item into its text-based representation
@@ -57,7 +57,7 @@ function get_vdef_item_name(int $vdef_item_id) : string {
  * @return string A text-based representation of the vdef
  */
 function get_vdef(int $vdef_id, bool $display = false) : string {
-	return (new \Cacti\Vdef\VdefResolver(new \Cacti\Vdef\DatabaseVdefRepository()))->resolve($vdef_id, $display);
+	return (new VdefResolver(new DatabaseVdefRepository()))->resolve($vdef_id, $display);
 }
 
 function preset_vdef_form_list() : array {

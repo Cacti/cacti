@@ -26,8 +26,6 @@ namespace Cacti\Vdef;
 
 use Closure;
 
-require_once __DIR__ . '/VdefRepository.php';
-
 /**
  * Resolves a VDEF and its nested type 5 references into the RPN string
  * that rrdtool and the VDEF editor display.
