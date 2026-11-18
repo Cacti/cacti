@@ -66,6 +66,19 @@ function check(bool $condition, string $message) : void {
 }
 
 /**
+ * Stub: device 3 fails its availability check.
+ *
+ * @param array<string, mixed> $item
+ *
+ * @return bool
+ */
+function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) : bool {
+	$GLOBALS['pinged'][] = $item['local_data_id'];
+
+	return $item['host_id'] == 3;
+}
+
+/**
  * Build a poller_item row for the HTTP action.
  *
  * @return array<string, int|string>
@@ -447,6 +460,7 @@ function db_fetch_assoc_prepared($sql, $params = [], $log = true) {
 cacti_fixture_source_function($root . '/lib/poller.php', 'poller_redact_snmp_secrets', __NAMESPACE__);
 cacti_fixture_source_function($root . '/cmd.php', 'collect_device_data', __NAMESPACE__);
 cacti_fixture_source_function($root . '/cmd.php', 'http_prefetch_items', __NAMESPACE__);
+cacti_fixture_source_function($root . '/cmd.php', 'http_check_hosts', __NAMESPACE__);
 cacti_fixture_source_function($root . '/remote_agent.php', 'poll_for_data', __NAMESPACE__);
 cacti_fixture_source_function($root . '/lib/utility.php', 'get_http_input_fields', __NAMESPACE__);
 cacti_fixture_source_function($root . '/lib/functions.php', 'test_data_source', __NAMESPACE__);
@@ -510,9 +524,15 @@ $item     = http_row(12, "$base/stats", '/in');
 check(collect_device_data($item, $error_ds, 25) === 'U', 'unfetched item was not U');
 check($error_ds === [12 => 12], 'unfetched item was not counted as an error');
 
-// cmd.php's poller loop prefetches the HTTP items of every device before it walks them
-$poller_items = [http_row(9, "$base/stats", '/in'), $script, http_row(10, "$base/stats", '/out')];
-$loop         = source_blocks($root . '/cmd.php', [
+// cmd.php's poller loop prefetches the HTTP items of every device that is up before it walks them
+$down_row             = ['host_id' => 3] + http_row(14, "$base/stats", '/in');
+$poller_items         = [http_row(9, "$base/stats", '/in'), $script, http_row(10, "$base/stats", '/out'), $down_row];
+$mibs                 = false;
+$script_timeout       = 25;
+$start                = microtime(true);
+$poller_interval      = 300;
+$GLOBALS['pinged']    = [];
+$loop                 = source_blocks($root . '/cmd.php', [
 	["~^require_once\(CACTI_PATH_LIBRARY \. '/CactiHttpPoller\.php'\);$~", '~~'],
 	['~^\$http_outputs = \[\];$~', '~^\$http_reasons = \[\];$~'],
 	['~^// one request per device and endpoint~', '~^}$~'],
@@ -527,6 +547,7 @@ try {
 
 check(array_column($http_items, 'local_data_id') === [9, 10], 'cmd.php selected ' . json_encode($http_items));
 check($http_outputs === ['9:value' => '5', '10:value' => '7'], 'cmd.php prefetched ' . json_encode($http_outputs));
+check($GLOBALS['pinged'] === [9, 14] && $host_checks[3]['down'] === true, 'cmd.php checked ' . json_encode($GLOBALS['pinged']));
 
 // cmd_realtime.php fetches a device's HTTP rows once, then reads each item's output
 $poller_items = [http_row(9, "$base/stats", '/in'), $script];
