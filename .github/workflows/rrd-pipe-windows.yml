@@ -39,8 +39,9 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: none
-          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
-          install-args: --prefer-dist --no-progress --no-interaction
+          extensions: intl, mysqli, pdo_mysql, gd, ldap, gmp, xml, curl, json, mbstring, sockets, sqlite3
+          # This focused suite uses proc_open, not the Unix-only pcntl/posix APIs.
+          install-args: --prefer-dist --no-progress --no-interaction --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
 
       - name: Install native Windows RRDtool
         id: msys2
@@ -51,21 +52,20 @@ jobs:
           install: mingw-w64-ucrt-x86_64-rrdtool
 
       - name: Verify native runtimes
-        shell: pwsh
+        shell: bash
         run: |
-          $rrdDirectory = Join-Path '${{ steps.msys2.outputs.msys2-location }}' 'ucrt64\bin'
-          $rrdBinary = Join-Path $rrdDirectory 'rrdtool.exe'
-          if (!(Test-Path -PathType Leaf $rrdBinary)) { throw 'Native RRDtool is missing' }
-          $env:PATH = "$rrdDirectory;$env:PATH"
-          $rrdDirectory >> $env:GITHUB_PATH
-          "RRDTOOL_BINARY=$rrdBinary" >> $env:GITHUB_ENV
+          set -euo pipefail
+          rrd_directory='${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin'
+          rrd_binary="$rrd_directory/rrdtool.exe"
+          test -f "$rrd_binary"
+          export PATH="$rrd_directory:$PATH"
+          cygpath -w "$rrd_directory" >> "$GITHUB_PATH"
+          printf 'RRDTOOL_BINARY=%s\n' "$(cygpath -w "$rrd_binary")" >> "$GITHUB_ENV"
           php -r 'if (PHP_OS_FAMILY !== "Windows") { exit(1); } print PHP_VERSION . PHP_EOL;'
-          if ($LASTEXITCODE -ne 0) { throw 'PHP must run natively on Windows' }
-          & $rrdBinary --version
-          if ($LASTEXITCODE -ne 0) { throw 'Native RRDtool could not run' }
+          "$rrd_binary" --version
 
       - name: Check reply framing and real persistent pipe
-        shell: pwsh
+        shell: bash
         run: |
+          set -euo pipefail
           php include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/RrdProcessSafetyTest.php --filter='a reply ends only|real RRDtool image' --fail-on-skipped --fail-on-empty-test-suite --do-not-cache-result
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
