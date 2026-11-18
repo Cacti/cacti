@@ -170,9 +170,9 @@ cover them; the design does not remove them.
 3. **Move all affected pages to Symfony and Twig together.** Provides a common
    template system, but couples security fixes to a larger compatibility and
    deployment change.
-3. **Escape all request values or sanitize the final page.** Has the wrong
+4. **Escape all request values or sanitize the final page.** Has the wrong
    context for some consumers and can break valid markup, scripts, and forms.
-4. **Only change scanner configuration.** Appropriate only for a demonstrated
+5. **Only change scanner configuration.** Appropriate only for a demonstrated
    false positive or a precisely modeled sanitizer contract. It cannot repair
    unsafe output.
 

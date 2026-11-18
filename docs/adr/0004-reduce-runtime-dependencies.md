@@ -56,11 +56,11 @@ Plugins: the 41 plugin repositories in the Cacti organization were searched on
 their default branch and, where one exists, their develop branch. None
 references a `Symfony\` or `Slim\` class or the `Cacti*` wrapper classes above.
 `plugin_stream` uses `php-mqtt/client` and `psr/log` from its own `vendor/`, and
-`plugin_mactrack` bundles its own copy of the older `Net_DNS2` library. Plugins
-do call core functions that sit on these packages: `csrf_check()`,
-`csrf_get_tokens()` and `csrf_conf()` (9 plugins), `mailer()` and `send_mail()`
-(13 plugins), and `get_client_addr()` (2 plugins). Plugins outside the
-organization were not checked.
+`plugin_flowview` and `plugin_mactrack` bundle their own copies of the older
+`Net_DNS2` library. Plugins do call core functions that sit on these packages:
+`csrf_check()`, `csrf_get_tokens()` and `csrf_conf()` (11 plugins), `mailer()`
+and `send_mail()` (13 plugins), and `get_client_addr()` (2 plugins). Plugins
+outside the organization were not checked.
 
 ## Decision
 
