@@ -153,8 +153,9 @@ final readonly class CactiHttpPollItem {
 			return null;
 		}
 
+		// is_numeric() accepts the form feed around a numeric string, which trim() keeps by default
 		if ($this->scale == 1.0) {
-			return is_float($value) ? var_export($value, true) : trim((string) $value);
+			return is_float($value) ? var_export($value, true) : trim((string) $value, " \t\n\r\v\f");
 		}
 
 		$scaled = (float) $value * $this->scale;
