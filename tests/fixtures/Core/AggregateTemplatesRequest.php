@@ -114,7 +114,8 @@ $GLOBALS['cacti_fixture_returns'] = [
 	'raise_message'          => static function (string|int $key) : void {
 		$GLOBALS['probe_errors'][] = $key;
 	},
-	'is_error_message'       => static fn () => in_array('aggregate_automation_invalid', $GLOBALS['probe_errors'], true),
+	// Mirrors lib/functions.php: only flagged fields block a save, not raised messages.
+	'is_error_message'       => static fn () => !empty($_SESSION[SESS_ERROR_FIELDS]),
 	'cacti_redirect'         => static function (string $url) : never {
 		throw new AggregateTemplatesStop('redirect ' . $url);
 	},
@@ -183,7 +184,7 @@ register_shutdown_function(static function () use ($scenario) : void {
 
 			break;
 		case 'template-missing':
-			cacti_fixture_assert($errors === ['aggregate_automation_invalid'] && $saved === [], 'an unknown device template is rejected');
+			cacti_fixture_assert($errors === ['aggregate_automation_invalid'] && $saved === [] && isset($_SESSION[SESS_ERROR_FIELDS]['automation_host_template_id']), 'an unknown device template is rejected');
 
 			break;
 		case 'missing-row':
