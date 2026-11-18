@@ -36,7 +36,7 @@ plugin's selection controller, authentication, database, or poller.
 | --- | --- |
 | thold | [`98ab70f31fe6`](https://github.com/Cacti/plugin_thold/tree/98ab70f31fe6bda7b91f5fa2baed82274caba0bb) |
 | mactrack | [`d412b87460ba`](https://github.com/Cacti/plugin_mactrack/tree/d412b87460babebee573d2da973346d0dba8e94e) |
-| syslog | [`e0ed9443b90c`](https://github.com/Cacti/plugin_syslog/tree/e0ed9443b90c500d01232c93e5db8ae375f98afd) |
+| syslog | [`2a2c2e5f1a7f`](https://github.com/Cacti/plugin_syslog/tree/2a2c2e5f1a7f3d297d76d50c3fb181515046441f) |
 | alarmmanager | [`92cf2c13d8e1`](https://github.com/Cacti/plugin_alarmmanager/tree/92cf2c13d8e14d3606bf9018025f07c22e4dc879) |
 | hmib | [`4a22705d021b`](https://github.com/Cacti/plugin_hmib/tree/4a22705d021b11e1960377dfade5af601966c337) |
 | flowview | [`be20ab796c61`](https://github.com/Cacti/plugin_flowview/tree/be20ab796c619465e78ce07d15e2babcb5d749c1) |

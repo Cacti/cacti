@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: Cacti/plugin_syslog
-          ref: e0ed9443b90c500d01232c93e5db8ae375f98afd
+          ref: 2a2c2e5f1a7f3d297d76d50c3fb181515046441f
           path: .theme-plugins/syslog
           persist-credentials: false
       - name: Load pinned alarmmanager styles and scripts
