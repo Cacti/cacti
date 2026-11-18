@@ -199,6 +199,8 @@ def contributor_activity(contributor: dict, by_author: dict[str, dict]) -> dict 
         if activity is None:
             activity = alias_activity
         else:
+            # Merge into a copy: by_author buckets are shared across name
+            # and email keys, so an in-place merge leaks badges to others.
             activity = {
                 "paths": activity["paths"] | alias_activity["paths"],
                 "messages": activity["messages"] + alias_activity["messages"],

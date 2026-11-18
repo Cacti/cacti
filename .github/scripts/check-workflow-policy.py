@@ -116,7 +116,10 @@ def check_checkout(rel: str, step_name: str, step: dict, uses_value: str, violat
     persisted = checkout_with.get("persist-credentials") if isinstance(checkout_with, dict) else None
     if rel not in CHECKOUT_WRITE_WORKFLOWS and persisted is not False:
         violations.append(f"{rel}:{step_name}: read-only checkout must set persist-credentials: false")
-    # This checks checkout refs only. Review run steps that execute head content separately.
+    # A narrow lint: it checks only actions/checkout refs. A run: step that
+    # checks out or executes head content (git checkout of the head SHA,
+    # gh pr checkout, a fetched script) still passes, so review those steps
+    # by hand.
     if privileged_pr:
         checkout_with = step.get("with", {})
         ref = str(checkout_with.get("ref", "")).replace(" ", "")
@@ -149,6 +152,8 @@ def check_job(rel: str, job_name: str, job: dict, violations: list[str], privile
         if "timeout-minutes" not in job:
             violations.append(f"{rel}:{job_name}: job must define timeout-minutes")
     check_job_images(rel, job_name, job, violations)
+    # Reusable-workflow calls live at the job level (jobs.<id>.uses) and
+    # must be pinned just like step actions.
     job_uses = job.get("uses")
     if isinstance(job_uses, str):
         check_uses(rel, f"{job_name} (job)", job_uses.strip(), violations)
