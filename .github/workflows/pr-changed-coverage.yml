@@ -132,6 +132,7 @@ jobs:
             tests/Unit/DataCollection/Poller/ScriptServerRequestTest.php \
             tests/Unit/DataCollection/Poller/ScriptServerResponseTest.php \
             tests/Unit/Scripts/NetSnmpDiskStateFileTest.php
+          php tests/fixtures/Core/CollectorEntrypointContracts.php cgi
       - name: Preserve native Windows evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

@@ -39,6 +39,14 @@ run_php_probe tests/fixtures/Core/ScriptServerStreamFailures.php '^(lib/script_s
 run_php_probe tests/fixtures/Core/SnmpStateStoreFailures.php '^(lib/SnmpStateStore\.php|tests/fixtures/Core/SnmpStateStoreFailures\.php)'
 run_php_probe tests/fixtures/Core/RemoteScriptServerLifecycle.php '^(remote_agent\.php|tests/fixtures/Core/RemoteScriptServerLifecycle\.php)'
 run_php_probe tests/fixtures/Core/ScriptServerLaunchFailures.php '^(lib/poller\.php|tests/fixtures/Core/ScriptServerLaunchFailures\.php)'
+run_php_probe tests/fixtures/Core/CollectorEntrypointContracts.php '^(cmd(_realtime)?\.php|tests/fixtures/Core/CollectorEntrypointContracts\.php)'
+run_php_probe tests/fixtures/Core/CollectorWorkerWiring.php '^(cmd(_realtime)?\.php|tests/fixtures/Core/CollectorWorkerWiring\.php)'
+run_php_probe tests/fixtures/Core/ScriptQueryResultRows.php '^(scripts/query_(akcp_(airflow|fourtwenty|humidity|temperature)|baytech_circuits|host_(cpu|partitions))\.php|tests/fixtures/Core/ScriptQueryResultRows\.php)'
+run_php_probe tests/fixtures/Core/ScriptServerOutputGuardFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerOutputGuardFailures\.php)'
+run_php_probe tests/fixtures/Core/ScriptServerProvenanceFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerProvenanceFailures\.php)'
+for signal_mode in terminate notify; do
+	run_php_probe tests/fixtures/Core/ScriptServerSignalLogging.php '^(script_server\.php|tests/fixtures/Core/ScriptServerSignalLogging\.php)' "$signal_mode"
+done
 
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'
 run_php_probe tests/fixtures/Core/ConstantTimeGuardMatrix.php '^(auth_2fa\.php|auth_resetpassword\.php|tests/fixtures/Core/ConstantTimeGuardMatrix\.php)'

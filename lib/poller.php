@@ -447,18 +447,54 @@ function script_server_open(string $environment, int|string $poller_id, string $
  * @return void
  */
 function script_server_close(mixed &$process, array|false &$pipes, bool $graceful = true) : void {
+	$pending  = [];
+	$deadline = 0;
+
 	if (is_array($pipes) && $graceful && isset($pipes[0]) && is_resource($pipes[0])) {
+		$deadline = hrtime(true) + 1000000000;
 		@fwrite($pipes[0], "quit\r\n");
 		@fflush($pipes[0]);
 
-		if (is_resource($process) && isset($pipes[1], $pipes[2])) {
-			$healthy = true;
-			script_server_read_response($pipes, $process, $healthy, 1.0);
+		if (is_resource($process) && isset($pipes[1], $pipes[2]) && is_resource($pipes[1]) && is_resource($pipes[2])) {
+			$healthy  = true;
+			$response = script_server_read_response($pipes, $process, $healthy, 1.0);
+
+			if ($healthy && $response !== false) {
+				$pending = [1 => $pipes[1], 2 => $pipes[2]];
+			}
 		}
 	}
 
 	if (is_resource($process)) {
 		$status = proc_get_status($process);
+
+		// The acknowledgment precedes database close and shutdown callbacks.
+		// Let them finish within the original shutdown budget, draining both
+		// streams so final output cannot deadlock the worker.
+		while ($pending && $status !== false && $status['running'] && hrtime(true) < $deadline) {
+			$read      = $pending;
+			$write     = $except = null;
+			$remaining = max(0, $deadline - hrtime(true));
+
+			try {
+				$ready = @stream_select($read, $write, $except, intdiv($remaining, 1000000000), intdiv($remaining % 1000000000, 1000));
+			} catch (ValueError $e) {
+				$ready = false;
+			}
+
+			if ($ready === false) {
+				break;
+			}
+
+			foreach ($read as $key => $pipe) {
+				@fread($pipe, 8192);
+
+				if (feof($pipe)) {
+					unset($pending[$key]);
+				}
+			}
+			$status = proc_get_status($process);
+		}
 
 		if ($status !== false && $status['running']) {
 			script_server_terminate($process);

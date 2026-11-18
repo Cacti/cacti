@@ -542,6 +542,74 @@ test('the worker lifecycle helpers open replace and close a live server', functi
 	}
 });
 
+test('graceful shutdown completes worker finalization before returning', function () {
+	$marker  = tempnam(sys_get_temp_dir(), 'cacti-worker-finalization-');
+	$process = false;
+	$pipes   = false;
+	$code    = 'register_shutdown_function(static function () { fwrite(STDERR, str_repeat("x", 262144)); usleep(50000); file_put_contents($GLOBALS["argv"][1], "complete"); });'
+		. 'fwrite(STDOUT, "ready\\n"); fflush(STDOUT);'
+		. 'while (($line = fgets(STDIN)) !== false) { if (trim($line) === "quit") { fwrite(STDOUT, "PHP Script Server Shutdown request received, exiting\\n"); fflush(STDOUT); exit; } }';
+
+	try {
+		$process = proc_open([PHP_BINARY, '-r', $code, $marker], script_server_process_descriptors(), $pipes);
+		expect(is_resource($process))->toBeTrue();
+		$healthy = true;
+		expect(script_server_read_response($pipes, $process, $healthy, 2.0))->toBe('ready');
+		script_server_close($process, $pipes);
+		expect(file_get_contents($marker))->toBe('complete');
+	} finally {
+		script_server_close($process, $pipes, false);
+		unlink($marker);
+	}
+});
+
+test('an acknowledged worker that never exits is still retired within the shutdown budget', function () {
+	$process = false;
+	$pipes   = false;
+	$code    = 'fwrite(STDOUT, "ready\\n"); fflush(STDOUT);'
+		. 'if (fgets(STDIN) !== false) { fwrite(STDOUT, "PHP Script Server Shutdown request received, exiting\\n"); fflush(STDOUT); while (true) { usleep(10000); } }';
+
+	try {
+		$process = proc_open([PHP_BINARY, '-r', $code], script_server_process_descriptors(), $pipes);
+		expect(is_resource($process))->toBeTrue();
+		$healthy = true;
+		expect(script_server_read_response($pipes, $process, $healthy, 2.0))->toBe('ready');
+		$start = hrtime(true);
+		script_server_close($process, $pipes);
+		expect((hrtime(true) - $start) / 1000000000)->toBeLessThan(3.0)
+			->and($process)->toBeFalse()
+			->and($pipes)->toBeFalse();
+	} finally {
+		script_server_close($process, $pipes, false);
+	}
+});
+
+test('shutdown still releases a worker when its supplied streams cannot be selected', function () {
+	$process  = false;
+	$pipes    = false;
+	$original = [];
+
+	try {
+		$process = proc_open([PHP_BINARY, '-r', 'while (true) { usleep(10000); }'], script_server_process_descriptors(), $pipes);
+		expect(is_resource($process))->toBeTrue();
+		$original = [$pipes[1], $pipes[2]];
+		$pipes[1] = fopen('php://memory', 'w+');
+		$pipes[2] = fopen('php://memory', 'w+');
+		fwrite($pipes[1], "PHP Script Server Shutdown request received, exiting\n");
+		rewind($pipes[1]);
+		script_server_close($process, $pipes);
+		expect($process)->toBeFalse()->and($pipes)->toBeFalse();
+	} finally {
+		script_server_close($process, $pipes, false);
+
+		foreach ($original as $stream) {
+			if (is_resource($stream)) {
+				fclose($stream);
+			}
+		}
+	}
+});
+
 test('short and long CLI options select help version and environment', function () {
 	[$status, $stdout, $stderr] = ss_process_test_run(['-h']);
 
@@ -576,10 +644,12 @@ test('invalid CLI poller and mode values fail closed', function (array $argument
 		->and($stdout)->not->toContain('Script Server has Started')
 		->and($stderr)->toContain($message);
 })->with([
-	'poller'       => [['--environ=cmd', '--poller=../bad', '--mode=online'], 'Invalid Script Server poller id'],
-	'zero poller'  => [['--environ=cmd', '--poller=0', '--mode=online'], 'Invalid Script Server poller id'],
-	'mode'         => [['--environ=cmd', '--poller=1', '--mode=sideways'], 'Invalid Script Server connection mode'],
-	'unknown'      => [['--unknown'], 'Invalid Script Server arguments'],
-	'missing value'=> [['--poller'], 'Invalid Script Server arguments'],
-	'extra legacy' => [['cmd', '1', 'extra'], 'Invalid Script Server arguments'],
+	'poller'        => [['--environ=cmd', '--poller=../bad', '--mode=online'], 'Invalid Script Server poller id'],
+	'zero poller'   => [['--environ=cmd', '--poller=0', '--mode=online'], 'Invalid Script Server poller id'],
+	'mode'          => [['--environ=cmd', '--poller=1', '--mode=sideways'], 'Invalid Script Server connection mode'],
+	'unknown'       => [['--unknown'], 'Invalid Script Server arguments'],
+	'mixed unknown' => [['--environ=cmd', '--unknown'], 'Invalid Script Server arguments'],
+	'environment'   => [['--environ=invalid', '--poller=1'], 'Invalid Script Server environment'],
+	'missing value' => [['--poller'], 'Invalid Script Server arguments'],
+	'extra legacy'  => [['cmd', '1', 'extra'], 'Invalid Script Server arguments'],
 ]);
