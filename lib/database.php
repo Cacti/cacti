@@ -2750,9 +2750,10 @@ function db_switch_main_to_local() : bool {
  * (socket, TLS settings) are still read.  The caller must unlink the file
  * after the client exits.
  *
- * An option file cannot hold a line break or NUL, and the client strips
- * trailing whitespace even inside quotes, so such values are refused rather
- * than written in a form that would connect with a different password.
+ * Values are double quoted, with backslash, quote, tab and line breaks
+ * written as the client's escape sequences so they read back unchanged.  An
+ * option file cannot hold a NUL, so such values are refused rather than
+ * written in a form that would connect with a different password.
  *
  * @param string $username client user
  * @param string $password client password
@@ -2763,7 +2764,7 @@ function db_switch_main_to_local() : bool {
  */
 function db_client_defaults_file(string $username, string $password, string $hostname = '', int $port = 0) : string|false {
 	foreach ([$username, $password, $hostname] as $value) {
-		if (strpbrk($value, "\r\n\0") !== false || rtrim($value, " \t") !== $value) {
+		if (str_contains($value, "\0")) {
 			return false;
 		}
 	}
@@ -2781,7 +2782,7 @@ function db_client_defaults_file(string $username, string $password, string $hos
 		return false;
 	}
 
-	$quote    = static fn (string $value) : string => '"' . addcslashes($value, '\\"') . '"';
+	$quote    = static fn (string $value) : string => '"' . strtr($value, ['\\' => '\\\\', '"' => '\\"', "\t" => '\\t', "\n" => '\\n', "\r" => '\\r']) . '"';
 	$contents = '[client]' . PHP_EOL . 'user=' . $quote($username) . PHP_EOL . 'password=' . $quote($password) . PHP_EOL;
 
 	if ($hostname !== '') {
