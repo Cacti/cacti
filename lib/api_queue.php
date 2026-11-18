@@ -1416,6 +1416,26 @@ function api_queue_retention_days(string $setting, int $default) : int {
 }
 
 /**
+ * Register a queue worker in the process registry under its own pid.
+ *
+ * The task id is the pid and a long-running worker never times out, so a row
+ * left by a worker that died without unregistering would block a new worker
+ * that reuses the pid (a restarted container often does) indefinitely. No
+ * other live process on this host can own our pid, so that row is stale.
+ *
+ * @param string $task_name The registry task name, at most 40 characters
+ * @param int    $pid       This worker's pid, used as the task id
+ * @param int    $timeout   The registry timeout in seconds
+ *
+ * @return bool True when the worker may start
+ */
+function api_queue_register_worker(string $task_name, int $pid, int $timeout) : bool {
+	unregister_process('queue', $task_name, $pid, $pid);
+
+	return register_process_start('queue', $task_name, $pid, $timeout);
+}
+
+/**
  * Remove expired terminal messages across all queues for poller maintenance.
  *
  * @return array Rows removed by status

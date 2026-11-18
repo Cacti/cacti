@@ -121,7 +121,7 @@ try {
  * and poll interval to finish the delivery in hand. */
 $task_timeout = $time_limit > 0 ? $time_limit + $lease + $sleep : 2147483647;
 
-if (!register_process_start('queue', $task_name, $task_id, $task_timeout)) {
+if (!api_queue_register_worker($task_name, $task_id, $task_timeout)) {
 	print 'ERROR: Unable to register the queue worker process.' . PHP_EOL;
 
 	exit(1);

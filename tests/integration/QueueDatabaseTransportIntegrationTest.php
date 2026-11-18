@@ -412,6 +412,45 @@ it('fails closed and rolls back when the claim query fails', function () {
 		->and($this->db->inTransaction())->toBeFalse();
 });
 
+it('starts a worker whose pid a dead worker left in the process registry', function () {
+	// include/global.php resolves these for the CLI; the registry only logs through them.
+	foreach (['CACTI_WEB' => false, 'POLLER_ID' => 1, 'CACTI_PATH_LOG' => sys_get_temp_dir()] as $name => $value) {
+		defined($name) || define($name, $value);
+	}
+
+	require_once dirname(__DIR__, 2) . '/lib/poller.php';
+
+	$this->db->exec('DROP TABLE IF EXISTS processes');
+	$this->db->exec("CREATE TABLE processes (
+		id bigint unsigned NOT NULL AUTO_INCREMENT,
+		pid int unsigned NOT NULL default 0,
+		tasktype varchar(20) NOT NULL default '',
+		taskname varchar(40) NOT NULL default '',
+		taskid int unsigned NOT NULL default 0,
+		timeout int unsigned default 300,
+		started timestamp NOT NULL default current_timestamp(),
+		last_update timestamp NOT NULL default '0000-00-00 00:00:00',
+		PRIMARY KEY (pid, tasktype, taskname, taskid),
+		KEY id (id)
+	) ENGINE=MEMORY");
+
+	$pid     = (int) getmypid();
+	$timeout = 2147483647;
+	$stale   = $this->db->prepare("INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
+		VALUES ('queue', 'reports', ?, ?, ?, DATE_SUB(NOW(), INTERVAL 1 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY))");
+	$stale->execute([$pid, $pid, $timeout]);
+	// A worker on another queue is a different task and must be left alone.
+	$this->db->exec("INSERT INTO processes (tasktype, taskname, taskid, pid, timeout) VALUES ('queue', 'other', 1, 1, 300)");
+
+	try {
+		expect(api_queue_register_worker('reports', $pid, $timeout))->toBeTrue()
+			->and((int) $this->db->query("SELECT COUNT(*) FROM processes WHERE taskname = 'reports' AND started > DATE_SUB(NOW(), INTERVAL 1 HOUR)")->fetchColumn())->toBe(1)
+			->and((int) $this->db->query("SELECT COUNT(*) FROM processes WHERE taskname = 'other'")->fetchColumn())->toBe(1);
+	} finally {
+		$this->db->exec('DROP TABLE processes');
+	}
+});
+
 it('ignores a rollback when no claim transaction is open', function () {
 	expect($this->db->inTransaction())->toBeFalse();
 
