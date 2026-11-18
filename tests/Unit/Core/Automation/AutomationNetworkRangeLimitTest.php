@@ -32,6 +32,15 @@ test('automation priming skips ignored addresses, batches inserts and reports fa
 		->and($result['prime_batch_fail_logs'])->toBe(1);
 });
 
+test('automation priming keeps one row per address when ranges overlap', function () {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/AutomationNetworkRangeLimit.php');
+
+	expect($result['prime_overlap'])->toBeTrue()
+		->and($result['prime_overlap_rows'])->toBe(['192.168.2.1', '192.168.2.2', '192.168.2.3', '192.168.2.4', '192.168.2.5', '192.168.2.6'])
+		->and($result['prime_shared'])->toBeTrue()
+		->and($result['prime_shared_rows'])->toBe(['192.168.3.1']);
+});
+
 test('the address limit setting, claim index upgrade and poller cleanup hold at their entry points', function () {
 	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/AutomationRangeLimitEntryPoints.php');
 

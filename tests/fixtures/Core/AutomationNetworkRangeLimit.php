@@ -20,7 +20,7 @@ define('SESS_FIELD_VALUES', 'sess_field_values');
 define('SESS_ERROR_FIELDS', 'sess_error_fields');
 $_SESSION = [];
 
-$GLOBALS['probe'] = ['config' => [], 'network' => [], 'inserts' => [], 'fail_insert' => false, 'messages' => [], 'logs' => [], 'saved' => []];
+$GLOBALS['probe'] = ['config' => [], 'network' => [], 'inserts' => [], 'keys' => [], 'fail_insert' => false, 'messages' => [], 'logs' => [], 'saved' => []];
 
 /**
  * Settings double for read_config_option().
@@ -54,10 +54,14 @@ function db_fetch_cell_prepared($sql, $params = []) {
 /**
  * Database double recording automation_ips inserts.
  *
+ * ip_address is the table's primary key, so like MySQL and MariaDB a
+ * duplicate fails the statement unless it is ON DUPLICATE KEY UPDATE, which
+ * keeps the existing row.
+ *
  * @param string $sql    The statement.
  * @param array  $params The bound parameters.
  *
- * @return bool False when the probe simulates a full MEMORY table.
+ * @return bool False when the probe simulates a full MEMORY table or a duplicate key.
  */
 function db_execute_prepared($sql, $params = []) {
 	if ($GLOBALS['probe']['fail_insert']) {
@@ -69,7 +73,16 @@ function db_execute_prepared($sql, $params = []) {
 	}
 
 	for ($i = 0; $i < count($params); $i += 2) {
-		$GLOBALS['probe']['inserts'][] = $params[$i];
+		if (isset($GLOBALS['probe']['keys'][$params[$i]])) {
+			if (!str_contains($sql, 'ON DUPLICATE KEY UPDATE')) {
+				return false;
+			}
+
+			continue;
+		}
+
+		$GLOBALS['probe']['keys'][$params[$i]] = true;
+		$GLOBALS['probe']['inserts'][]         = $params[$i];
 	}
 
 	return true;
@@ -189,14 +202,16 @@ function probe_save(string $ranges) {
 /**
  * Primes a network with the given ranges and ignore list.
  *
- * @param string $ranges The subnet_range column.
- * @param string $ignore The ignore_ips column.
+ * @param string   $ranges   The subnet_range column.
+ * @param string   $ignore   The ignore_ips column.
+ * @param string[] $existing Addresses another network has already primed.
  *
  * @return array The prime result and the inserted addresses.
  */
-function probe_prime(string $ranges, string $ignore = '') : array {
+function probe_prime(string $ranges, string $ignore = '', array $existing = []) : array {
 	$GLOBALS['probe']['network'] = ['subnet_range' => $ranges, 'ignore_ips' => $ignore];
 	$GLOBALS['probe']['inserts'] = [];
+	$GLOBALS['probe']['keys']    = array_fill_keys($existing, true);
 
 	return [automation_primeIPAddressTable(7), $GLOBALS['probe']['inserts']];
 }
@@ -237,5 +252,15 @@ $verdict['logs']                 = count(array_filter($GLOBALS['probe']['logs'],
 // a failure on a full 1000-row batch stops priming before the final batch
 [$verdict['prime_batch_fail'], $rows] = probe_prime('10.4.0.0/22');
 $verdict['prime_batch_fail_logs']     = count(array_filter($GLOBALS['probe']['logs'], fn ($line) => str_starts_with($line, 'ERROR:'))) - $verdict['logs'];
+
+$GLOBALS['probe']['fail_insert'] = false;
+
+// overlapping ranges, within this network or with another network already
+// primed, keep one row per address instead of failing the scan
+[$verdict['prime_overlap'], $rows] = probe_prime('192.168.2.0/29,192.168.2.4');
+$verdict['prime_overlap_rows']     = $rows;
+
+[$verdict['prime_shared'], $rows] = probe_prime('192.168.3.0/30', '', ['192.168.3.2']);
+$verdict['prime_shared_rows']     = $rows;
 
 print json_encode($verdict, JSON_THROW_ON_ERROR) . "\n";

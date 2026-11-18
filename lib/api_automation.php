@@ -4111,6 +4111,10 @@ function automation_max_network_ips() : int {
  * @param array $ips        The IP addresses to insert.
  * @param int   $network_id The Automation Network the addresses belong to.
  *
+ * An address already in the table, from an overlapping range of this network
+ * or of another network being scanned at the same time, keeps its existing row.
+ * A duplicate would otherwise fail the whole statement and stop the scan.
+ *
  * @return bool True when the batch is empty or was inserted, false on a database error.
  */
 function automation_insert_ip_batch(array $ips, int $network_id) : bool {
@@ -4127,7 +4131,8 @@ function automation_insert_ip_batch(array $ips, int $network_id) : bool {
 
 	return (bool) db_execute_prepared('INSERT INTO automation_ips
 		(ip_address, hostname, network_id, pid, status, thread)
-		VALUES ' . implode(',', array_fill(0, cacti_sizeof($ips), "(?, '', ?, 0, 0, 0)")),
+		VALUES ' . implode(',', array_fill(0, cacti_sizeof($ips), "(?, '', ?, 0, 0, 0)")) . '
+		ON DUPLICATE KEY UPDATE ip_address = ip_address',
 		$params);
 }
 
