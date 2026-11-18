@@ -266,8 +266,11 @@ try {
 		if ($force_install) {
 			$time = '-b';
 		}
-		print $installer->getUpgradePlan()->encode() . PHP_EOL;
-		log_install_always('cli', __('Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md.'));
+
+		if ($installer->getMode() == Installer::MODE_UPGRADE) {
+			print $installer->getUpgradePlan()->encode() . PHP_EOL;
+			log_install_always('cli', __('Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md.'));
+		}
 		log_install_always('cli', 'Starting installation...');
 
 		Installer::beginInstall($time, $installer);

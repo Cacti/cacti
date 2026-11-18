@@ -514,9 +514,15 @@ $confirmHost->mode              = Installer::MODE_UPGRADE;
 $confirmHost->buttonNext        = (object) ['Text' => '', 'Enabled' => false, 'Step' => 0, 'Visible' => true];
 $confirmHost->old_cacti_version = '1.2.22';
 
-try {
-	$confirmHost->processStepInstallConfirm();
-} catch (Throwable $error) {
+$confirmOutput = $confirmHost->processStepInstallConfirm();
+
+if (!str_contains($confirmOutput, 'Upgrade plan') || !str_contains($confirmOutput, 'Backup and recovery')) {
+	throw new RuntimeException('processStepInstallConfirm omitted the upgrade plan for an upgrade');
+}
+$confirmHost->mode = Installer::MODE_INSTALL;
+
+if (str_contains($confirmHost->processStepInstallConfirm(), 'Upgrade plan')) {
+	throw new RuntimeException('processStepInstallConfirm showed an upgrade plan for a new installation');
 }
 
 $completeHost               = new CompleteHost();
@@ -664,9 +670,10 @@ try {
 	}
 }
 
-cacti_fixture_map_fragment($root . '/cli/install_cacti.php', 261, 310, <<<'PHP'
+cacti_fixture_map_fragment($root . '/cli/install_cacti.php', 261, 313, <<<'PHP'
 if (!class_exists('Installer', false)) {
 	class Installer {
+		public const MODE_UPGRADE = 3;
 		public const STEP_INSTALL_CONFIRM = 10;
 		public const STEP_INSTALL = 97;
 		public const STEP_COMPLETE = 98;
@@ -683,6 +690,7 @@ $installer = new class {
 		$this->calls++;
 		return $this->calls === 1 ? 10 : 98;
 	}
+	public function getMode() { return 3; }
 	public function getUpgradePlan() {
 		return new class {
 			public function encode() { return '{}'; }

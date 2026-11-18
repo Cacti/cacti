@@ -3305,16 +3305,19 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti Server is almost ready.  Please check that you are happy to proceed.'));
 
 			$output .= Installer::showInstallOptions();
-			$output .= Installer::sectionTitle(__('Upgrade plan'));
-			$plan = $this->getUpgradePlan();
 
-			foreach ([__('Migrations')    => $plan->migrations, __('Device Packages') => $plan->templates,
-				__('Table Upgrades')         => $plan->tables, __('Plugin compatibility changes') => $plan->plugins,
-				__('Remote Data Collectors') => $plan->collectors] as $label => $items) {
-				$output .= Installer::sectionNormal(html_escape($label . ': ' . implode(', ', $items)));
+			if ($this->mode == Installer::MODE_UPGRADE) {
+				$output .= Installer::sectionTitle(__('Upgrade plan'));
+				$plan = $this->getUpgradePlan();
+
+				foreach ([__('Migrations')    => $plan->migrations, __('Device Packages') => $plan->templates,
+					__('Table Upgrades')         => $plan->tables, __('Plugin compatibility changes') => $plan->plugins,
+					__('Remote Data Collectors') => $plan->collectors] as $label => $items) {
+					$output .= Installer::sectionNormal(html_escape($label . ': ' . implode(', ', $items)));
+				}
+				$output .= Installer::sectionTitle(__('Backup and recovery'));
+				$output .= Installer::sectionNormal(__('Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md.'));
 			}
-			$output .= Installer::sectionTitle(__('Backup and recovery'));
-			$output .= Installer::sectionNormal(__('Before upgrading, stop polling and other writes, and back up the database, configuration, plugins and RRD files. Verify that the backup can be restored. Schema changes cannot generally be rolled back as one transaction. Restore the matching database and files together if recovery is required. See docs/INSTALLER_RECOVERY.md.'));
 
 			$output .= Installer::sectionNote(
 				__('Press \'%s\' then click \'%s\' to complete the installation process after selecting your Device Templates.', $title, $button)
