@@ -11182,7 +11182,11 @@ function cacti_object_hash($object) {
  * cacti_input_string_is_safe - check that a data input method command uses
  * only the shell grammar that substitute_script_path() can quote safely.
  *
- * Field markers such as <hostname> are removed first. The remaining text may
+ * Field markers such as <hostname> are replaced with a plain character first.
+ * Deleting them would let a backslash before a marker appear to escape the
+ * character after it, but substitute_script_path() drops that backslash and
+ * the character stays live, so the quote state seen here would no longer
+ * match the shell's. The remaining text may
  * not contain control characters, command separators, pipes, backticks,
  * redirections or braces anywhere. Parentheses are allowed only inside quotes,
  * where sh reads them literally, so a quoted Windows path such as
@@ -11203,7 +11207,7 @@ function cacti_input_string_is_safe(mixed $input_string) : bool {
 		return false;
 	}
 
-	$bare = preg_replace('/<[a-zA-Z0-9_]+>/', '', $input_string);
+	$bare = preg_replace('/<[a-zA-Z0-9_]+>/', 'x', $input_string);
 
 	if ($bare === null || preg_match('/[\x00-\x1f\x7f;&|`<>{}]/', $bare)) {
 		return false;
