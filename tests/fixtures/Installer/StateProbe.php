@@ -111,17 +111,71 @@ if ($mode === 'convert') {
 }
 
 if ($mode === 'lock') {
-	// This process takes the install lock, then a second installer is started
-	register_process_start('install', 'master', '0', 60);
+	// Hold settings writes so a real CLI installer keeps its process lock
+	// while a different upgrade entry point attempts to start.
+	$key = "$database_hostname:$database_port:$database_default";
+	$pdo = $database_sessions[$key];
+	$pdo->query("SELECT GET_LOCK('installer_fixture_owner', 0)")->fetchColumn();
+	$pdo->exec("CREATE TRIGGER installer_lock_fixture BEFORE INSERT ON settings FOR EACH ROW BEGIN IF NEW.name = 'install_eula' THEN DO GET_LOCK('installer_fixture_owner', 15); DO RELEASE_LOCK('installer_fixture_owner'); END IF; END");
+	$owner = proc_open([PHP_BINARY, '-d', 'auto_prepend_file=' . ini_get('auto_prepend_file'), 'cli/install_cacti.php', '--accept-eula', '--install', '--force',
+		'--path=php_binary:' . PHP_BINARY, '--path=rrdtool:/usr/bin/true', '--path=snmpwalk:/usr/bin/true',
+		'--path=snmpget:/usr/bin/true', '--path=snmpbulkwalk:/usr/bin/true', '--path=snmpgetnext:/usr/bin/true', '--path=snmptrap:/usr/bin/true'],
+		[1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']], $owner_pipes);
+	$process = false;
 
-	$command = [PHP_BINARY, '-d', 'display_errors=stderr', '-d', 'auto_prepend_file=' . ini_get('auto_prepend_file'), 'cli/install_cacti.php', '--accept-eula', '--install'];
-	$process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
-	$output  = stream_get_contents($pipes[1]);
-	$code    = proc_close($process);
+	try {
+		$deadline = microtime(true) + 10;
 
-	unregister_process('install', 'master', 0);
+		do {
+			$owner_pid = db_fetch_cell("SELECT pid FROM processes WHERE tasktype = 'install' AND taskname = 'master'");
 
-	print 'exit=' . $code . ' refused=' . (str_contains($output, 'already in progress') ? 'yes' : 'no') . PHP_EOL;
+			if ($owner_pid) {
+				break;
+			}
+
+			usleep(50000);
+		} while (microtime(true) < $deadline && proc_get_status($owner)['running']);
+
+		if (!$owner_pid) {
+			throw new RuntimeException('The real installer did not acquire its lock');
+		}
+
+		$process = proc_open([PHP_BINARY, '-d', 'display_errors=stderr', '-d', 'auto_prepend_file=' . ini_get('auto_prepend_file'), 'cli/upgrade_database.php', '--forcever=1.2.31'],
+			[1 => ['pipe', 'w'], 2 => ['file', '/dev/null', 'w']], $pipes);
+		stream_set_blocking($pipes[1], false);
+		$output   = '';
+		$deadline = microtime(true) + 10;
+
+		do {
+			$output .= stream_get_contents($pipes[1]);
+			$status = proc_get_status($process);
+
+			if (!$status['running']) {
+				break;
+			}
+
+			usleep(50000);
+		} while (microtime(true) < $deadline);
+
+		if ($status['running']) {
+			throw new RuntimeException('The second installer did not refuse the active lock');
+		}
+
+		$output .= stream_get_contents($pipes[1]);
+		print 'exit=' . $status['exitcode'] . ' refused=' . (str_contains($output, 'already in progress') ? 'yes' : 'no') . PHP_EOL;
+	} finally {
+		if (is_resource($process)) {
+			proc_terminate($process);
+			fclose($pipes[1]);
+			proc_close($process);
+		}
+
+		proc_terminate($owner);
+		$pdo->query("SELECT RELEASE_LOCK('installer_fixture_owner')")->fetchColumn();
+		proc_close($owner);
+		$pdo->exec('DROP TRIGGER installer_lock_fixture');
+		unregister_process('install', 'master', 0);
+	}
 
 	exit(0);
 }

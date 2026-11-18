@@ -3038,6 +3038,8 @@ function cacti_process_executable_is_php_interpreter($path) {
  *   cannot establish identity.
  */
 function cacti_process_identity_matches($pid) {
+	global $config;
+
 	$pid           = (int) $pid;
 
 	if ($pid === getmypid()) {
@@ -3052,7 +3054,27 @@ function cacti_process_identity_matches($pid) {
 	 * between master and worker instances of the same Cacti command. */
 	if ($self_cmdline !== false && $self_cmdline !== '' && $other_cmdline !== false && $other_cmdline !== '') {
 		$script = static function ($cmdline) {
-			foreach (explode("\0", $cmdline) as $argument) {
+			$skip_value = false;
+
+			foreach (array_slice(explode("\0", $cmdline), 1) as $argument) {
+				if ($skip_value) {
+					$skip_value = false;
+
+					continue;
+				}
+
+				// A PHP ini value can itself end in .php, such as an
+				// auto_prepend_file. It is not the running script.
+				if (in_array($argument, array('-d', '--define', '-c', '--php-ini'), true)) {
+					$skip_value = true;
+
+					continue;
+				}
+
+				if ($argument === '' || $argument[0] === '-') {
+					continue;
+				}
+
 				if (preg_match('/\.php\z/i', $argument)) {
 					$resolved = realpath($argument);
 
@@ -3066,7 +3088,23 @@ function cacti_process_identity_matches($pid) {
 		$theirs_script = $script($other_cmdline);
 
 		if ($mine_script !== false && $theirs_script !== false) {
-			return hash_equals($mine_script, $theirs_script);
+			if (hash_equals($mine_script, $theirs_script)) {
+				return true;
+			}
+
+			// These entry points share the install/master lock. Different
+			// installer scripts must not look like a recycled, unrelated PID.
+			if (isset($config['base_path'])) {
+				$installers = array(
+					realpath($config['base_path'] . '/cli/install_cacti.php'),
+					realpath($config['base_path'] . '/cli/upgrade_database.php'),
+					realpath($config['base_path'] . '/install/background.php'),
+				);
+
+				return in_array($mine_script, $installers, true) && in_array($theirs_script, $installers, true);
+			}
+
+			return false;
 		}
 
 		if (($mine_script === false) !== ($theirs_script === false)) {
