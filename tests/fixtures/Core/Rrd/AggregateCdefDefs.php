@@ -35,13 +35,19 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
 	return (int) $requested_cf;
 }
 
-/** Serve aggregate members, and each member's graph items, from the fixture tables. */
+/** Serve each aggregate member's graph items, joined in member order, from the fixture tables. */
 function db_fetch_assoc_prepared($sql, $params = []) {
-	if (strpos($sql, 'aggregate_graphs_items') !== false) {
-		return $GLOBALS['members'][$params[0]] ?? [];
+	$GLOBALS['query_count']++;
+
+	$rows = [];
+
+	foreach ($GLOBALS['members'][$params[0]] ?? [] as $member) {
+		foreach ($GLOBALS['items'][$member['local_graph_id']] ?? [] as $item) {
+			$rows[] = ['member_graph_id' => strval($member['local_graph_id'])] + $item;
+		}
 	}
 
-	return $GLOBALS['items'][$params[0]] ?? [];
+	return $rows;
 }
 
 function item($type, $cf, $dtr, $local_data_id, $ds) {
@@ -76,8 +82,15 @@ $GLOBALS['items']        = [
 // the aggregate's own DEF indexes: member 20 is a,b,c and member 35 is d,e,f
 $cache = ['201:1' => 0, '201:3' => 2, '202:1' => 1, '351:1' => 3, '351:3' => 5, '352:1' => 4];
 
-$map = rrdtool_aggregate_def_map(50);
-$now = time() - 300;
+$GLOBALS['query_count'] = 0;
+
+$map     = rrdtool_aggregate_def_map(50);
+$map_sql = $GLOBALS['query_count'];
+$now     = time() - 300;
+
+// the aggregate skipped the items that draw each member's out data source
+$skipped = $cache;
+unset($skipped['202:1'], $skipped['352:1']);
 
 $results = [
 	'map'           => $map,
@@ -91,6 +104,9 @@ $results = [
 	'unresolved'    => rrdtool_aggregate_cdef_defs('a,8,*', 777, ['owner' => [], 'members' => [[]]], [], 300),
 	'single_total'  => rrdtool_aggregate_cdef_defs('a,8,*', 777, ['owner' => [], 'members' => [[[201, 1]]]], $cache, 300),
 	'cfs'           => [],
+	'queries'       => $map_sql,
+	'skipped'       => rrdtool_aggregate_cdef_defs('b,a,-', 201, $map, $skipped, 300),
+	'skipped_total' => rrdtool_aggregate_cdef_defs('b,8,*', 0, $map, $skipped, 300),
 ];
 
 // the CF each item type's DEF is built with
@@ -112,6 +128,96 @@ foreach ([
 // a member whose RRD lacks MAX draws its MAX line from AVERAGE, so it has one DEF fewer
 $GLOBALS['average_only'] = [36];
 $results['average_only'] = rrdtool_aggregate_def_map(50)['members'][1];
+$GLOBALS['average_only'] = [];
+
+// both member graphs may legitimately read the same first data source
+$member_35            = $GLOBALS['items'][35];
+$GLOBALS['items'][35] = [
+	item(GRAPH_ITEM_TYPE_AREA, 1, 201, 21, 'in'),
+	item(GRAPH_ITEM_TYPE_STACK, 1, 352, 36, 'out'),
+];
+
+$shared                      = rrdtool_aggregate_def_map(50);
+$results['shared_same']      = rrdtool_aggregate_cdef_defs('a,8,*', 201, $shared, $cache, 300);
+$results['shared_different'] = rrdtool_aggregate_cdef_defs('a,b,+', 201, $shared, $cache, 300);
+$results['shared_missing']   = rrdtool_aggregate_cdef_defs('c,8,*', 201, $shared, $cache, 300);
+$GLOBALS['items'][35]        = $member_35;
+
+if (($argv[1] ?? '') === 'real-rrd') {
+	$binary    = getenv('RRDTOOL_BINARY');
+	$directory = sys_get_temp_dir() . '/cacti-aggregate-' . bin2hex(random_bytes(8));
+
+	mkdir($directory);
+
+	$run = static function (array $arguments) use ($binary) {
+		$process = proc_open(array_merge([$binary], $arguments), [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+		$output  = stream_get_contents($pipes[1]);
+		$error   = stream_get_contents($pipes[2]);
+
+		fclose($pipes[1]);
+		fclose($pipes[2]);
+
+		if (proc_close($process) !== 0) {
+			throw new RuntimeException($error);
+		}
+
+		return $output;
+	};
+
+	try {
+		$GLOBALS['members'][60] = [];
+		$rrd_cache              = [];
+		$definitions            = [];
+
+		// three members graph the constant values 1, 10 and 100 as DEFs a, b and c
+		foreach ([1, 10, 100] as $index => $value) {
+			$id = 601 + $index;
+
+			$GLOBALS['members'][60][] = ['local_graph_id' => $id];
+			$GLOBALS['items'][$id]    = [item(GRAPH_ITEM_TYPE_AREA, 1, $id, $id, 'value')];
+			$rrd_cache["$id:1"]       = $index;
+
+			$rrd = $directory . '/' . $id . '.rrd';
+
+			$run(['create', $rrd, '--start', '1699999980', '--step', '60', 'DS:value:GAUGE:120:U:U', 'RRA:AVERAGE:0.5:1:20']);
+			$run(['update', $rrd, '1700000040:' . $value, '1700000100:' . $value, '1700000160:' . $value, '1700000220:' . $value]);
+
+			$definitions[] = 'DEF:' . generate_graph_def_name($index) . '=' . $rrd . ':value:AVERAGE';
+		}
+
+		$unknown        = str_replace('CURRENT_DATA_SOURCE', 'a', $results['shared_different']);
+		$unknown_export = $run(array_merge(['xport', '--start', '1700000040', '--end', '1700000160', '--step', '60'], $definitions, ['CDEF:unknown=' . $unknown, 'XPORT:unknown:unknown']));
+		$unknown_xml    = new SimpleXMLElement($unknown_export);
+
+		$results['rrd_unknown'] = (string) $unknown_xml->data->row[0]->v === 'NaN';
+
+		$rrd_map = rrdtool_aggregate_def_map(60);
+
+		foreach ([601, 602, 603, 0] as $index => $id) {
+			$definitions[] = 'CDEF:member' . $index . '=' . rrdtool_aggregate_cdef_defs('a,1,*', $id, $rrd_map, $rrd_cache, 60);
+		}
+
+		$export = $run(array_merge(['xport', '--start', '1700000040', '--end', '1700000160', '--step', '60'], $definitions, ['XPORT:member0:first', 'XPORT:member1:second', 'XPORT:member2:third', 'XPORT:member3:total']));
+		$rows   = (new SimpleXMLElement($export))->data->row;
+		$values = [];
+
+		foreach ($rows[count($rows) - 1]->v as $value) {
+			if (!is_numeric((string) $value)) {
+				throw new RuntimeException('RRDtool returned an unknown value');
+			}
+
+			$values[] = (float) $value;
+		}
+
+		$results['rrd_values'] = $values;
+	} finally {
+		foreach (glob($directory . '/*') as $rrd) {
+			unlink($rrd);
+		}
+
+		rmdir($directory);
+	}
+}
 
 // rrdtool_function_graph() needs RRDtool and a database, so run the statements that call these
 // helpers from its own source at their own line numbers, as FallbackSourceIdentity.php does.

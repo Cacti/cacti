@@ -23,9 +23,13 @@ function results() {
 
 test('each member lists its own DEFs in the order its graph names them', function () {
 	expect(results()['map'])->toBe([
-		'owner'   => [201 => 0, 202 => 0, 351 => 1, 352 => 1],
+		'owner'   => [201 => [0 => 0], 202 => [0 => 0], 351 => [1 => 1], 352 => [1 => 1]],
 		'members' => [[[201, 1], [202, 1], [201, 3]], [[351, 1], [352, 1], [351, 3]]],
 	]);
+});
+
+test('every member graph is read with one query', function () {
+	expect(results()['queries'])->toBe(1);
 });
 
 test('a graph that is not an aggregate needs no mapping', function () {
@@ -52,6 +56,17 @@ test('names that are not DEFs of the member are left alone', function () {
 		->and(results()['unresolved'])->toBe('a,8,*');
 });
 
+test('a member DEF the aggregate does not draw becomes unknown rather than another DEF', function () {
+	expect(results()['skipped'])->toBe('CURRENT_DATA_SOURCE,POP,UNKN,a,-')
+		->and(results()['skipped_total'])->toBe('CURRENT_DATA_SOURCE,POP,UNKN,8,*');
+});
+
+test('shared data sources resolve only when member DEF positions agree', function () {
+	expect(results()['shared_same'])->toBe('a,8,*')
+		->and(results()['shared_different'])->toBe('a,CURRENT_DATA_SOURCE,POP,UNKN,+')
+		->and(results()['shared_missing'])->toBe('CURRENT_DATA_SOURCE,POP,UNKN,8,*');
+});
+
 test('graph items keep the consolidation function their DEFs are built with', function () {
 	// a GPRINT follows the CF of the graph item before it, once there is one
 	expect(results()['cfs'])->toBe([4, 3, 3, 1, 4, 3, 2, 3]);
@@ -69,3 +84,18 @@ test('rrdtool_function_graph applies the member mapping to a CDEF that names DEF
 		'not_aggregate' => 'b,a,-',
 	]);
 });
+
+test('RRDtool evaluates member CDEFs and their total using distinct member values', function () {
+	$output  = [];
+	$status  = 0;
+	$fixture = dirname(__DIR__, 3) . '/fixtures/Core/Rrd/AggregateCdefDefs.php';
+
+	exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($fixture) . ' real-rrd 2>&1', $output, $status);
+
+	expect($status)->toBe(0, implode("\n", $output));
+
+	$results = json_decode(implode("\n", $output), true);
+
+	expect($results['rrd_values'])->toBe([1, 10, 100, 111])
+		->and($results['rrd_unknown'])->toBeTrue();
+})->skip(!getenv('RRDTOOL_BINARY'), 'Set RRDTOOL_BINARY for the real aggregate calculation');
