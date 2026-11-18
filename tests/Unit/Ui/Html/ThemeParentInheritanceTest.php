@@ -147,3 +147,36 @@ test('the parent of a parent is not followed', function () use ($theme_fixture_t
 	expect(get_theme_parent($theme_fixture_tag . 'grand'))->toBe($theme_fixture_tag . 'child');
 	expect(theme_parent_resolve($theme_fixture_tag . 'grand', 'shared.css'))->toBe([]);
 });
+
+test('the theme chain lists a child theme and then its parent', function () use ($theme_fixture_tag) {
+	expect(get_theme_chain($theme_fixture_tag . 'child'))->toBe([$theme_fixture_tag . 'child', $theme_fixture_tag . 'base']);
+	expect(get_theme_chain($theme_fixture_tag . 'base'))->toBe([$theme_fixture_tag . 'base']);
+});
+
+test('the shipped child themes chain to midwinter', function () {
+	expect(get_theme_chain('canvas'))->toBe(['canvas', 'midwinter']);
+	expect(get_theme_chain('daybreak'))->toBe(['daybreak', 'midwinter']);
+	expect(get_theme_chain('midwinter'))->toBe(['midwinter']);
+	expect(get_theme_chain('modern'))->toBe(['modern']);
+});
+
+test('the theme chain drops a theme name that cannot build a path', function (string $theme) {
+	expect(get_theme_chain($theme))->toBe([]);
+})->with([
+	'traversal' => ['../canvas'],
+	'empty'     => [''],
+	'uppercase' => ['Canvas'],
+]);
+
+test('the theme chain defaults to the selected theme without changing it', function () {
+	$saved = $_SESSION ?? [];
+
+	try {
+		$_SESSION = ['selected_theme' => 'canvas', SESS_USER_ID => 1];
+
+		expect(get_theme_chain())->toBe(['canvas', 'midwinter']);
+		expect(get_selected_theme())->toBe('canvas');
+	} finally {
+		$_SESSION = $saved;
+	}
+});

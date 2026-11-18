@@ -9371,6 +9371,36 @@ function get_theme_parent(string $theme) : string {
 }
 
 /**
+ * Returns a theme followed by the theme it inherits from, in lookup order.
+ *
+ * Plugins that ship a stylesheet per theme name can try each entry in turn,
+ * so a child theme such as canvas picks up the plugin's midwinter.css when the
+ * plugin has no canvas.css.  get_selected_theme() is unchanged and still
+ * returns the theme name alone.
+ *
+ * Inheritance is a single level (see get_theme_parent()), so the list holds at
+ * most two names.  A name that is not a plain theme directory name is dropped,
+ * because callers build file paths from the result.
+ *
+ * @param string|null $theme The theme directory name.  Defaults to the selected theme.
+ *
+ * @return array<int, string> The theme, then its parent; empty when the theme name is invalid
+ */
+function get_theme_chain(string|null $theme = null) : array {
+	if ($theme === null) {
+		$theme = get_selected_theme();
+	}
+
+	if (!preg_match('/^[a-z0-9_-]+$/', $theme)) {
+		return [];
+	}
+
+	$parent = get_theme_parent($theme);
+
+	return $parent === '' ? [$theme] : [$theme, $parent];
+}
+
+/**
  * Returns a formatted output based on found paths.  If no paths are found
  * output will be blank
  *
