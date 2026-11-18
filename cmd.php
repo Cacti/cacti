@@ -58,6 +58,7 @@ $poller_id  = POLLER_ID;
 $pmessage   = false;
 $help       = false;
 $version    = false;
+$http_only  = false;
 
 $http_outputs = [];
 $http_reasons = [];
@@ -115,6 +116,10 @@ if (cacti_sizeof($parms)) {
 			case '--debug':
 			case '-d':
 				$debug = true;
+
+				break;
+			case '--http-only':
+				$http_only = true;
 
 				break;
 			default:
@@ -205,6 +210,16 @@ $poller_interval = read_config_option('poller_interval');
 $script_timeout  = read_config_option('script_timeout');
 $cron_interval   = read_config_option('cron_interval');
 $active_profiles = read_config_option('active_profiles');
+
+// poller.php starts this mode next to spine, which has no HTTP action
+if ($http_only) {
+	http_only_poll((int) $poller_id, (int) $poller_interval, (int) $active_profiles, $start);
+
+	record_cmdphp_done();
+	db_close();
+
+	exit(0);
+}
 
 // check arguments
 if ($allhost) {
@@ -1080,6 +1095,88 @@ function http_check_hosts(array $poller_items, array $http_items, bool $mibs, in
 	return $checks;
 }
 
+/**
+ * http_only_poll - collect only the HTTP items of a poller, next to spine
+ *
+ * Spine has no HTTP action, so poller.php starts cmd.php in this mode next
+ * to it.  Spine keeps the availability checks, reindexing and scheduling
+ * of every device, so this mode reads the status spine recorded and skips
+ * devices marked down, and leaves rrd_next_step alone.  Because spine may
+ * update rrd_next_step before or after this runs, an item is due when the
+ * current polling slot falls on a multiple of its step instead.
+ *
+ * @param int   $poller_id
+ * @param int   $poller_interval
+ * @param int   $active_profiles
+ * @param float $start           when this process started, microtime(true)
+ *
+ * @return int the number of items written to poller_output
+ */
+function http_only_poll(int $poller_id, int $poller_interval, int $active_profiles, float $start) : int {
+	global $poller_db_cnn_id, $print_data_to_stdout;
+
+	$params    = [$poller_id, POLLER_ACTION_HTTP, HOST_DOWN];
+	$sql_due   = '';
+	$sql_where = db_column_exists('sites', 'disabled') ? "AND IFNULL(s.disabled, '') != 'on'" : '';
+
+	if ($active_profiles != 1 && $poller_interval > 0) {
+		$slot    = (int) (floor($start / $poller_interval) * $poller_interval);
+		$sql_due = ' AND (pi.rrd_step <= ? OR MOD(?, pi.rrd_step) < ?)';
+
+		array_push($params, $poller_interval, $slot, $poller_interval);
+	}
+
+	$items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " pi.*
+		FROM poller_item AS pi
+		INNER JOIN host AS h
+		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
+		WHERE pi.poller_id = ?
+		AND pi.action = ?
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
+		AND h.status != ?
+		$sql_where
+		$sql_due
+		ORDER BY pi.host_id",
+		$params);
+
+	if (!cacti_sizeof($items)) {
+		return 0;
+	}
+
+	$reasons = [];
+	$outputs = CactiHttpPoller::create((int) read_config_option('http_poller_concurrency'))->collect($items, $reasons, $start + $poller_interval);
+	$values  = [];
+
+	foreach ($items as $item) {
+		$key = CactiHttpPoller::rowKey($item);
+
+		if (isset($reasons[$key]) && read_config_option('spine_log_level') == 2) {
+			cacti_log('WARNING: Invalid Response, Device[' . $item['host_id'] . '] DS[' . $item['local_data_id'] . '] HTTP: ' . CactiHttpPollItem::redact((string) $item['arg1']) . ', pointer: ' . $item['arg2'] . ', reason: ' . $reasons[$key], $print_data_to_stdout, 'POLLER');
+		}
+
+		$values[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)',
+			$item['local_data_id'],
+			db_qstr($item['rrd_name'], $poller_db_cnn_id),
+			db_qstr($outputs[$key] ?? 'U', $poller_db_cnn_id));
+	}
+
+	foreach (array_chunk($values, 2000) as $chunk) {
+		db_execute('INSERT IGNORE INTO poller_output
+			(local_data_id, rrd_name, time, output)
+			VALUES ' . implode(', ', $chunk), true, $poller_db_cnn_id);
+
+		if (read_config_option('boost_rrd_update_enable') == 'on') {
+			boost_flush_output_batch($chunk, $poller_db_cnn_id);
+		}
+	}
+
+	cacti_log(sprintf('Time: %01.4f s, Poller: %d, HTTP Items: %d, Errors: %d', microtime(true) - $start, $poller_id, cacti_sizeof($items), cacti_sizeof($reasons)), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+
+	return cacti_sizeof($values);
+}
+
 function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) : bool {
 	global $poller_id, $print_data_to_stdout, $set_spike_kill, $poller_db_cnn_id, $pipes, $cactiphp, $using_proc_function;
 
@@ -1492,5 +1589,7 @@ function display_help() : void {
 	print '    --poller - The poller to run as.  Defaults to the system poller.' . PHP_EOL;
 	print '    --mode   - The poller mode, either online, offline, or recovery.' . PHP_EOL;
 	print '    --mibs   - Refresh all system mibs from hosts supporting snmp.' . PHP_EOL;
+	print '    --http-only - Collect only the HTTP items of the poller.  poller.php' . PHP_EOL;
+	print '               uses this next to spine, which has no HTTP action.' . PHP_EOL;
 	print '    --debug  - Display verbose output during execution.' . PHP_EOL . PHP_EOL;
 }
