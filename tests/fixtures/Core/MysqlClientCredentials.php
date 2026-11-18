@@ -243,12 +243,17 @@ foreach ($GLOBALS['credential_files'] as $path) {
 	check(!file_exists($path), 'Credential file survived client completion.');
 }
 
-// line breaks cannot be written, and the client would strip trailing whitespace
-foreach (["line\nbreak", "line\rbreak", "nul\0byte", 'trailing ', "trailing\t"] as $invalid) {
-	check(db_client_defaults_file('fixture', $invalid) === false, 'Unrepresentable value accepted in an option file.');
+// the client reads these escape sequences back, but an option file cannot hold a NUL
+check(db_client_defaults_file('fixture', "nul\0byte") === false, 'Unrepresentable value accepted in an option file.');
+
+foreach (["line\nbreak", "line\rbreak", "tab\tinside", 'trailing ', "trailing\t", ' leading'] as $password) {
+	$path = db_client_defaults_file('fixture', $password);
+	check($path !== false, 'Representable password refused: ' . json_encode($password));
+	$data = parse_ini_file($path, true, INI_SCANNER_RAW);
+	unlink($path);
+	check(!str_contains($data['client']['password'], "\n") && !str_contains($data['client']['password'], "\r"), 'Line break written raw into an option file.');
+	check(stripcslashes($data['client']['password']) === $password, 'Password escaping changed: ' . json_encode($password));
 }
-check(db_client_defaults_file('fixture', ' leading') !== false, 'Leading whitespace refused.');
-unlink($GLOBALS['temporary_file']);
 
 // a file that cannot be created, protected or fully written is not handed out
 foreach (['tempnam', 'chmod', 'write'] as $failure) {
@@ -259,7 +264,7 @@ foreach (['tempnam', 'chmod', 'write'] as $failure) {
 	check($GLOBALS['temporary_file'] === '' || !file_exists($GLOBALS['temporary_file']), "Option file left behind after a $failure failure.");
 }
 $GLOBALS['file_failure']      = '';
-$GLOBALS['database_password'] = "invalid\npassword";
+$GLOBALS['database_password'] = "invalid\0password";
 check(db_dump_data() === 1, 'Invalid credentials did not fail the dump.');
 check($GLOBALS['client_calls'] === 3, 'Unexpected client launches.');
 
