@@ -52,8 +52,7 @@ initialize_realtime_step_and_window();
  * @return void No value is returned.
  */
 function get_matching_nodes() {
-	$my_matches = array();
-	$str        = (string) get_nfilter_request_var('str');
+	$str = (string) get_nfilter_request_var('str');
 
 	header('Content-Type: application/json; charset=utf-8');
 
@@ -100,85 +99,95 @@ function get_matching_nodes() {
 
 	$allowed = array();
 
-	if (cacti_sizeof($matching)) {
-		foreach($matching as $row) {
-			$tree_id = (int) $row['graph_tree_id'];
+	foreach ($matching as $row) {
+		$tree_id = (int) $row['graph_tree_id'];
 
-			if (!isset($allowed[$tree_id])) {
-				$allowed[$tree_id] = is_tree_allowed($tree_id);
-			}
-
-			if (!$allowed[$tree_id]) {
-				continue;
-			}
-
-			$match   = array();
-			$visited = array();
-
-			// a path that loops, leaves the tree, or ends at a missing item is dropped
-			while ($row['parent'] != 0) {
-				if (isset($visited[$row['parent']])) {
-					$row = array();
-					break;
-				}
-
-				$visited[$row['parent']] = true;
-
-				$match[] = 'tbranch-' . $row['parent'];
-
-				$row = db_fetch_row_prepared('SELECT parent
-					FROM graph_tree_items
-					WHERE id = ?
-					AND graph_tree_id = ?',
-					array($row['parent'], $tree_id));
-
-				if (!cacti_sizeof($row)) {
-				    break;
-				}
-			}
-
-			if (cacti_sizeof($row)) {
-				$match[]      = 'tree_anchor-' . $tree_id;
-				$my_matches[] = array_reverse($match);
-			}
+		if (!isset($allowed[$tree_id])) {
+			$allowed[$tree_id] = is_tree_allowed($tree_id);
 		}
-
-		// Now flatten the list of nodes
-		$final_array = array();
-		$level = 0;
-		while (true) {
-			$found = 0;
-			foreach($my_matches as $match) {
-				if (isset($match[$level])) {
-					if ($level == 0) {
-						$final_array[$match[$level]][$match[$level]] = 1;
-					} else {
-						$final_array[$match[0]][$match[$level]] = 1;
-					}
-					$found++;
-				}
-			}
-			$level++;
-
-			if ($found == 0) {
-			    break;
-			}
-		}
-
-		$fa = array();
-
-		if (cacti_sizeof($final_array)) {
-			foreach($final_array as $key => $matches) {
-				foreach($matches as $branch => $dnc) {
-					$fa[] = $branch;
-				}
-			}
-		}
-
-		print json_encode($fa);
-	} else {
-		print json_encode(array());
 	}
+
+	$allowed = array_keys(array_filter($allowed));
+
+	if (!cacti_sizeof($matching) || !cacti_sizeof($allowed)) {
+		print json_encode(array());
+
+		return;
+	}
+
+	// one read of the allowed trees' parent links replaces a query per ancestor
+	$items = db_fetch_assoc_prepared('SELECT id, parent, graph_tree_id
+		FROM graph_tree_items
+		WHERE graph_tree_id IN (' . implode(',', array_fill(0, cacti_sizeof($allowed), '?')) . ')',
+		$allowed);
+
+	$parents = array();
+
+	foreach ($items as $item) {
+		$parents[(int) $item['graph_tree_id']][(int) $item['id']] = (int) $item['parent'];
+	}
+
+	/**
+	 * Cache whether a branch connects to its tree root, so every parent link is
+	 * followed once and every node is emitted once. A path that loops, leaves
+	 * the tree, or ends at a missing item is dropped.
+	 */
+	$valid       = array();
+	$seen        = array();
+	$final_array = array();
+
+	foreach ($matching as $row) {
+		$tree_id = (int) $row['graph_tree_id'];
+		$branch  = (int) $row['parent'];
+
+		if (!isset($parents[$tree_id]) || isset($seen[$tree_id][$branch])) {
+			continue;
+		}
+
+		$seen[$tree_id][$branch] = true;
+		$chain                   = array();
+		$visited                 = array();
+		$current                 = $branch;
+
+		while ($current != 0 && !isset($valid[$tree_id][$current])) {
+			if (isset($visited[$current]) || !isset($parents[$tree_id][$current])) {
+				$current = -1;
+
+				break;
+			}
+
+			$visited[$current] = true;
+			$chain[]           = $current;
+			$current           = $parents[$tree_id][$current];
+		}
+
+		$connected = $current == 0 || ($current != -1 && $valid[$tree_id][$current]);
+		$anchor    = 'tree_anchor-' . $tree_id;
+
+		if ($connected) {
+			$final_array[$anchor][$anchor] = 1;
+		}
+
+		// cached ancestors are already in the result; add the new suffix with
+		// every parent ahead of the children it opens
+		for ($i = cacti_sizeof($chain) - 1; $i >= 0; $i--) {
+			$valid[$tree_id][$chain[$i]] = $connected;
+
+			if ($connected) {
+				$final_array[$anchor]['tbranch-' . $chain[$i]] = 1;
+			}
+		}
+	}
+
+	$fa = array();
+
+	foreach ($final_array as $matches) {
+		foreach ($matches as $branch => $dnc) {
+			$fa[] = $branch;
+		}
+	}
+
+	print json_encode($fa);
 }
 
 /**
