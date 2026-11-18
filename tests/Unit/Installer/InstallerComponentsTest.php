@@ -154,6 +154,14 @@ test('preflight reports runtime, extension, vendor and asset failures before loa
 	expect((new DependencyPreflight($this->preflightRoot, '9.0.0', ['json']))->errors()[0])->toContain('supported PHP');
 });
 
+test('preflight requires pcntl only for the CLI SAPI, as Composer does', function () {
+	file_put_contents($this->preflightRoot . '/composer.json', json_encode(['config' => ['platform' => ['php' => '8.3.0']], 'require' => ['ext-json' => '*', 'ext-pcntl' => '*', 'php' => '^8.3']]));
+	expect((new DependencyPreflight($this->preflightRoot, extensions: ['json'], sapi: 'fpm-fcgi'))->errors())->toBe([])
+		->and((new DependencyPreflight($this->preflightRoot, extensions: ['json'], sapi: 'apache2handler'))->errors())->toBe([])
+		->and((new DependencyPreflight($this->preflightRoot, extensions: ['json'], sapi: 'cli'))->errors())->toBe(['Enable the PHP extension pcntl in the installer runtime.'])
+		->and((new DependencyPreflight($this->preflightRoot, extensions: ['json', 'pcntl'], sapi: 'cli'))->errors())->toBe([]);
+});
+
 test('preflight captures platform and autoloader failures without exposing their output', function (string $file) {
 	file_put_contents($this->preflightRoot . '/' . $file, '<?php echo "credential-secret"; throw new RuntimeException("credential-secret");');
 	expect((new DependencyPreflight($this->preflightRoot))->errors())->toBe(['Composer platform or autoloader verification failed. Run composer check-platform-reqs --no-dev and cli/prepare_install.sh in this PHP environment.']);
