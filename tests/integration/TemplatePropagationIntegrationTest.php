@@ -70,6 +70,12 @@ test('resequence repairs correct-count graphs and follows later template edits a
 	expect($r['repairs'])->toBe(2)->and($r['all_repaired'])->toBe(0)->and($r['duplicates'])->toBe(1);
 });
 
+test('resequence pages through many graphs and still repairs graphs at page boundaries', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/template_propagation_probe.php', ['resequence-pages', '20000']);
+	expect($r['remaining'])->toBe(0)->and($r['items'])->toBe(40000)->and($r['misordered'])->toBe(0)
+		->and($r['repairs'])->toBe(40003)->and($r['peak_mib'])->toBeLessThan(4.0);
+});
+
 test('replacement attaches existing RRD items only to the new compatible template', function () {
 	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/template_propagation_probe.php', ['switch']);
 	expect($r['heartbeat_after_new_template'])->toBe(1200)->and($r['heartbeat_after_old_template'])->toBe(1200);

@@ -895,45 +895,66 @@ function resequence_graphs(int $graph_template_id, int $local_graph_id = 0, bool
 		'id', 'sequence'
 	);
 
-	$params = [$graph_template_id];
-	$where  = '';
-
-	if ($local_graph_id > 0) {
-		$where    = ' AND local_graph_id = ?';
-		$params[] = $local_graph_id;
-	}
-
-	// one pass over every graph finds orphaned and duplicated template ancestry
-	$items = db_fetch_assoc_prepared('SELECT id, local_graph_id, local_graph_template_item_id, sequence
-		FROM graph_templates_item
-		WHERE graph_template_id = ?
-		AND local_graph_id > 0' . $where . '
-		ORDER BY local_graph_id, id',
-		$params);
-
-	$seen    = [];
-	$deletes = [];
 	$repairs = 0;
+	$lower   = 0;
 
-	foreach ($items as $item) {
-		$parent = $item['local_graph_template_item_id'];
-		$graph  = $item['local_graph_id'];
+	/**
+	 * Walk the graphs in pages of graph ids so that a template with many graphs
+	 * is never loaded into memory at once. Each page covers whole graphs, so
+	 * duplicate ancestry is still found within every graph, and the last page
+	 * is left open so items whose graph no longer uses the template are kept.
+	 */
+	do {
+		if ($local_graph_id > 0) {
+			$lower = $local_graph_id - 1;
+			$upper = $local_graph_id;
+			$more  = false;
+		} else {
+			$graphs = db_fetch_assoc_prepared('SELECT id
+				FROM graph_local
+				WHERE graph_template_id = ?
+				AND id > ?
+				ORDER BY id
+				LIMIT 500',
+				[$graph_template_id, $lower]);
 
-		if ($force && (!isset($template_items[$parent]) || isset($seen[$graph][$parent]))) {
-			$deletes[] = $item['id'];
-			$repairs++;
-		} elseif (isset($template_items[$parent]) && $item['sequence'] != $template_items[$parent]) {
-			$repairs++;
+			$more  = cacti_sizeof($graphs) == 500;
+			$upper = $more ? (int) $graphs[499]['id'] : 4294967295;
 		}
 
-		$seen[$graph][$parent] = true;
-	}
+		$items = db_fetch_assoc_prepared('SELECT id, local_graph_id, local_graph_template_item_id, sequence
+			FROM graph_templates_item
+			WHERE graph_template_id = ?
+			AND local_graph_id > ?
+			AND local_graph_id <= ?
+			ORDER BY local_graph_id, id',
+			[$graph_template_id, $lower, $upper]);
 
-	foreach (array_chunk($deletes, 1000) as $ids) {
-		db_execute_prepared('DELETE FROM graph_templates_item
-			WHERE id IN (' . implode(',', array_fill(0, cacti_sizeof($ids), '?')) . ')',
-			array_map('intval', $ids));
-	}
+		$lower = $upper;
+
+		$seen    = [];
+		$deletes = [];
+
+		foreach ($items as $item) {
+			$parent = $item['local_graph_template_item_id'];
+			$graph  = $item['local_graph_id'];
+
+			if ($force && (!isset($template_items[$parent]) || isset($seen[$graph][$parent]))) {
+				$deletes[] = $item['id'];
+				$repairs++;
+			} elseif (isset($template_items[$parent]) && $item['sequence'] != $template_items[$parent]) {
+				$repairs++;
+			}
+
+			$seen[$graph][$parent] = true;
+		}
+
+		foreach (array_chunk($deletes, 1000) as $ids) {
+			db_execute_prepared('DELETE FROM graph_templates_item
+				WHERE id IN (' . implode(',', array_fill(0, cacti_sizeof($ids), '?')) . ')',
+				array_map('intval', $ids));
+		}
+	} while ($more);
 
 	$params = [$graph_template_id];
 	$where  = '';

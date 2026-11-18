@@ -90,6 +90,24 @@ if ($mode == 'binding' || $mode == 'resequence') {
 		retemplate_graphs(1, 0, true);
 		$result['duplicates'] = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id=1 AND local_graph_template_item_id=1')->fetchColumn();
 	}
+} elseif ($mode == 'resequence-pages') {
+	// Enough graphs for several pages, with damaged graphs on both sides of a page boundary.
+	seed_graph_template();
+	$n = (int)$argv[2];
+	$pdo->exec('INSERT INTO graph_templates_item (id,graph_template_id,task_item_id,sequence) VALUES (2,1,1,2)');
+	$pdo->exec("INSERT INTO graph_local (id,host_id,graph_template_id) SELECT seq,1,1 FROM seq_1_to_$n");
+	$pdo->exec("INSERT INTO graph_templates_item (id,local_graph_id,local_graph_template_item_id,graph_template_id,sequence) SELECT 1000000+seq,seq,1,1,2 FROM seq_1_to_$n");
+	$pdo->exec("INSERT INTO graph_templates_item (id,local_graph_id,local_graph_template_item_id,graph_template_id,sequence) SELECT 2000000+seq,seq,2,1,1 FROM seq_1_to_$n");
+	$pdo->exec("INSERT INTO graph_templates_item (id,local_graph_id,local_graph_template_item_id,graph_template_id,sequence) VALUES (3000500,500,1,1,1),(3000501,501,1,1,1),(3000000,$n,99,1,1)");
+	$pdo->query_counts = [];
+	memory_reset_peak_usage();
+	$base = memory_get_usage();
+	retemplate_graphs(1, 0, true);
+	$result['peak_mib']   = (memory_get_peak_usage() - $base) / 1048576;
+	$result['repairs']    = $_SESSION['sess_gt_repairs'] ?? 0;
+	$result['remaining']  = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE id >= 3000000')->fetchColumn();
+	$result['items']      = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id > 0')->fetchColumn();
+	$result['misordered'] = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item AS child JOIN graph_templates_item AS parent ON parent.id=child.local_graph_template_item_id WHERE child.local_graph_id>0 AND child.sequence<>parent.sequence')->fetchColumn();
 } elseif ($mode == 'stale') {
 	// A data source retemplated by an earlier release keeps the ancestry of its old template.
 	seed_graph_template();
