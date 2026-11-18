@@ -28,7 +28,7 @@ $root = dirname(__DIR__, 3);
 
 require_once $root . '/tests/Helpers/SourceSlice.php';
 
-foreach (['install_write_poller_config', 'prime_default_settings'] as $name) {
+foreach (['install_write_poller_config', 'install_rewrite_poller_config', 'install_write_whole_stream', 'prime_default_settings'] as $name) {
 	cacti_fixture_source_function($root . '/install/functions.php', $name, __NAMESPACE__);
 }
 
@@ -107,6 +107,43 @@ test('poller configuration replacement preserves the original on failed I/O', fu
 		rmdir($directory);
 	}
 })->with(['', 'short', 'write', 'zero', 'flush', 'rename']);
+
+test('poller configuration is rewritten in place when only the file is writable', function (string $fault) {
+	/* The installer asks for include/config.php to be writable, not include/.
+	   A read-only directory used to fail the remote collector install. */
+	$directory = sys_get_temp_dir() . '/cacti-config-readonly-' . bin2hex(random_bytes(8));
+	mkdir($directory, 0700);
+	$file     = $directory . '/config.php';
+	$original = "<?php\n\$poller_id = 1;\n\$other = 'unchanged';\n";
+	file_put_contents($file, $original);
+	chmod($file, 0640);
+	$inode = fileinode($file);
+	chmod($directory, 0500);
+
+	try {
+		if (is_writable($directory)) {
+			$this->markTestSkipped('The directory stays writable for this user');
+		}
+
+		$GLOBALS['installer_write_fault'] = $fault;
+		$success                          = install_write_poller_config($file, 7);
+		clearstatcache(true, $file);
+
+		if ($fault === 'write') {
+			expect($success)->toBeFalse()->and(file_get_contents($file))->toBe($original);
+		} else {
+			expect($success)->toBeTrue()
+				->and(file_get_contents($file))->toBe("<?php\n\$poller_id = 7;\n\$other = 'unchanged';\n");
+		}
+
+		expect(fileinode($file))->toBe($inode)
+			->and(fileperms($file) & 0777)->toBe(0640);
+	} finally {
+		chmod($directory, 0700);
+		unlink($file);
+		rmdir($directory);
+	}
+})->with(['', 'short', 'write']);
 
 test('default settings retry a failed write and preserve existing values', function () {
 	$GLOBALS['installer_saved_defaults']['existing'] = 'custom';
