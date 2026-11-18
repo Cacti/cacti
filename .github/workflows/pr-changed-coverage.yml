@@ -102,15 +102,17 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: ${{ matrix.php }}
-          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, dom, pdo_sqlite
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, dom, pdo_sqlite, pdo_mysql, sockets, sqlite3
           dependency-mode: locked-tests
-          install-args: --prefer-dist --no-progress --no-interaction
+          # POSIX and pcntl are unavailable on native Windows; the applicable
+          # Unix signal and socket contracts declare explicit platform skips.
+          install-args: --prefer-dist --no-progress --no-interaction --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
       - name: Exercise native pipe framing, process recovery and state storage
-        shell: pwsh
+        shell: bash
         run: |
-          php include/vendor/bin/pest --configuration=tests/phpunit.xml --compact `
-            tests/Unit/DataCollection/Poller/ScriptServerProcessTest.php `
-            tests/Unit/DataCollection/Poller/ScriptServerRequestTest.php `
-            tests/Unit/DataCollection/Poller/ScriptServerResponseTest.php `
+          set -euo pipefail
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml --compact \
+            tests/Unit/DataCollection/Poller/ScriptServerProcessTest.php \
+            tests/Unit/DataCollection/Poller/ScriptServerRequestTest.php \
+            tests/Unit/DataCollection/Poller/ScriptServerResponseTest.php \
             tests/Unit/Scripts/NetSnmpDiskStateFileTest.php
-          exit $LASTEXITCODE
