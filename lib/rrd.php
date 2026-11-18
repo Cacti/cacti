@@ -2424,55 +2424,59 @@ function rrdtool_invalid_cdef_response(array $graph_data_array, int $cdef_id, in
  *
  * @param int $local_graph_id The aggregate graph.
  *
- * @return array 'owner' maps a data_template_rrd id to its member index, and 'members' lists
+ * @return array 'owner' maps a data_template_rrd id to its possible member indexes, and 'members' lists
  *               each member's DEFs as [data_template_rrd id, CF] pairs. Empty when the graph
  *               is not an aggregate.
  */
 function rrdtool_aggregate_def_map(int $local_graph_id) : array {
-	$members = db_fetch_assoc_prepared('SELECT agi.local_graph_id
-		FROM aggregate_graphs_items AS agi
-		INNER JOIN aggregate_graphs AS ag
+	// one query for every member's items, rather than one query per member
+	$items = db_fetch_assoc_prepared('SELECT agi.local_graph_id AS member_graph_id,
+		gti.graph_type_id, gti.consolidation_function_id,
+		dtr.id AS data_template_rrd_id, dtr.local_data_id, dtr.data_source_name
+		FROM aggregate_graphs AS ag
+		INNER JOIN aggregate_graphs_items AS agi
 		ON ag.id = agi.aggregate_graph_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.local_graph_id = agi.local_graph_id
+		LEFT JOIN data_template_rrd AS dtr
+		ON gti.task_item_id = dtr.id
 		WHERE ag.local_graph_id = ?
-		ORDER BY agi.sequence',
+		ORDER BY agi.sequence, agi.local_graph_id, gti.sequence',
 		[$local_graph_id]);
 
-	if (!cacti_sizeof($members)) {
+	if (!cacti_sizeof($items)) {
 		return [];
 	}
 
-	$map = ['owner' => [], 'members' => []];
+	$map           = ['owner' => [], 'members' => []];
+	$index         = -1;
+	$member        = null;
+	$last_graph_cf = [];
+	$seen          = [];
 
-	foreach ($members as $index => $member) {
-		$items = db_fetch_assoc_prepared('SELECT gti.graph_type_id, gti.consolidation_function_id,
-			dtr.id AS data_template_rrd_id, dtr.local_data_id, dtr.data_source_name
-			FROM graph_templates_item AS gti
-			LEFT JOIN data_template_rrd AS dtr
-			ON gti.task_item_id = dtr.id
-			WHERE gti.local_graph_id = ?
-			ORDER BY gti.sequence',
-			[$member['local_graph_id']]);
+	// the same rule rrdtool_function_graph() uses to assign DEF names
+	foreach ($items as $item) {
+		if ($item['member_graph_id'] !== $member) {
+			$member        = $item['member_graph_id'];
+			$last_graph_cf = [];
+			$seen          = [];
 
-		$last_graph_cf = [];
-		$seen          = [];
-		$defs          = [];
+			$index++;
 
-		// the same rule rrdtool_function_graph() uses to assign DEF names
-		foreach ($items as $item) {
-			$graph_cf = rrdtool_graph_item_cf($item, $last_graph_cf);
-
-			if (empty($item['local_data_id']) || isset($seen[$item['data_template_rrd_id']][$graph_cf])) {
-				continue;
-			}
-
-			$seen[$item['data_template_rrd_id']][$graph_cf] = true;
-
-			$defs[] = [$item['data_template_rrd_id'], $graph_cf];
-
-			$map['owner'][$item['data_template_rrd_id']] = $index;
+			$map['members'][$index] = [];
 		}
 
-		$map['members'][$index] = $defs;
+		$graph_cf = rrdtool_graph_item_cf($item, $last_graph_cf);
+
+		if (empty($item['local_data_id']) || isset($seen[$item['data_template_rrd_id']][$graph_cf])) {
+			continue;
+		}
+
+		$seen[$item['data_template_rrd_id']][$graph_cf] = true;
+
+		$map['members'][$index][] = [$item['data_template_rrd_id'], $graph_cf];
+
+		$map['owner'][$item['data_template_rrd_id']][$index] = $index;
 	}
 
 	return $map;
@@ -2481,7 +2485,9 @@ function rrdtool_aggregate_def_map(int $local_graph_id) : array {
 /**
  * Point the DEF names in an aggregate graph item's CDEF at the right DEFs. In a member's item, a
  * name refers to that member's own DEF. In a totalling item, it refers to the sum of that DEF
- * across all members. Names that cannot be resolved are left unchanged.
+ * across all members. A name that is not a DEF of the member graph, such as a CDEF name, is left
+ * unchanged; a member DEF that the aggregate does not draw, or cannot attribute to one member,
+ * becomes unknown rather than another member's DEF.
  *
  * @param string $cdef_string The CDEF expression before Cacti's special data sources are expanded.
  * @param mixed  $dtr_id      The data_template_rrd id of the graph item.
@@ -2507,23 +2513,51 @@ function rrdtool_aggregate_cdef_defs(string $cdef_string, mixed $dtr_id, array $
 			continue;
 		}
 
-		if (isset($map['owner'][$dtr_id])) {
-			$members = [$map['members'][$map['owner'][$dtr_id]]];
-		} else {
-			$members = $map['members'];
+		$member_item = isset($map['owner'][$dtr_id]);
+		$members     = $map['members'];
+
+		if ($member_item) {
+			$members = [];
+
+			foreach ($map['owner'][$dtr_id] as $member_index) {
+				$members[] = $map['members'][$member_index];
+			}
 		}
 
 		$names = [];
+		$known = false;
 
 		foreach ($members as $defs) {
-			if (isset($defs[$index]) && isset($cf_ds_cache["{$defs[$index][0]}:{$defs[$index][1]}"])) {
+			if (!isset($defs[$index])) {
+				continue;
+			}
+
+			$known = true;
+
+			if (isset($cf_ds_cache["{$defs[$index][0]}:{$defs[$index][1]}"])) {
 				$names[] = generate_graph_def_name((int) $cf_ds_cache["{$defs[$index][0]}:{$defs[$index][1]}"]);
 			}
 		}
 
-		if (cacti_sizeof($names) == 1) {
+		// not a DEF of any member graph, such as a CDEF name
+		if (!$known) {
+			continue;
+		}
+
+		// Never point a name at a different DEF. A shared data source does
+		// not identify which member an item came from, so resolve it only
+		// when every possible member agrees, and a member's DEF is missing
+		// when the aggregate skips the item that draws it. Keep a DEF
+		// reference so RRDtool also accepts an otherwise constant CDEF.
+		if (!cacti_sizeof($names) || ($member_item && (cacti_sizeof($names) != cacti_sizeof($members) || cacti_sizeof(array_unique($names)) != 1))) {
+			$tokens[$key] = 'CURRENT_DATA_SOURCE,POP,UNKN';
+
+			continue;
+		}
+
+		if ($member_item || cacti_sizeof($names) == 1) {
 			$tokens[$key] = $names[0];
-		} elseif (cacti_sizeof($names) > 1) {
+		} else {
 			// sum like ALL_DATA_SOURCES_NODUPS: unknown values count as 0
 			$sum = [];
 
