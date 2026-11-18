@@ -124,6 +124,9 @@ function sys_get_temp_dir() {
 }
 
 function cacti_snmp_get(...$arguments) {
+	/* $arguments[12] is the retries parameter of the real cacti_snmp_get() */
+	$GLOBALS['get_retries'][] = $arguments[12] ?? null;
+
 	return (string) (1000 + 100 * $GLOBALS['poll']);
 }
 
@@ -199,6 +202,8 @@ cacti_fixture_source_function($root . '/scripts/ss_count_oids.php', 'ss_count_oi
 cacti_fixture_source_function($root . '/scripts/ss_sql.php', 'ss_sql', __NAMESPACE__);
 cacti_fixture_source_function($root . '/scripts/ss_multicpu_avg.php', 'ss_multicpu_avg', __NAMESPACE__);
 cacti_fixture_source_function($root . '/scripts/ss_webseer.php', 'ss_webseer', __NAMESPACE__);
+cacti_fixture_source_function($root . '/scripts/ss_fortigate_ips.php', 'ss_fortigate_ips', __NAMESPACE__);
+cacti_fixture_source_function($root . '/scripts/ss_fortigate_ipsec.php', 'ss_fortigate_ipsec', __NAMESPACE__);
 cacti_fixture_source_function($root . '/scripts/ss_net_snmp_disk_' . $mode . '.php', 'ss_net_snmp_disk_' . $mode, __NAMESPACE__);
 
 function memory_stream($contents) {
@@ -342,6 +347,16 @@ $cpu_loads = [['value' => '10'], ['value' => 'n/a'], ['value' => '30']];
 check('ss_multicpu_avg skips a non-numeric load', ss_multicpu_avg(1) === "load:20\n");
 $cpu_loads = [['value' => 'n/a']];
 check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:U\n");
+
+// FortiGate scripts: unknown values for a bad device id, SNMP retries for the polls.
+check('ss_fortigate_ips with no device id', ss_fortigate_ips('') === 'ips_detected:U ips_blocked:U ips_crit:U ips_high:U ips_ano:U' . PHP_EOL);
+check('ss_fortigate_ipsec with a non-numeric device id', ss_fortigate_ipsec('x') === 'total:U down:U' . PHP_EOL);
+$get_retries = [];
+ss_fortigate_ips(7);
+check('ss_fortigate_ips gets with the SNMP retries, not the ping retries', $get_retries !== [] && array_unique($get_retries) === [2]);
+$walk_retries = [];
+ss_fortigate_ipsec(7);
+check('ss_fortigate_ipsec walks with the SNMP retries, not the ping retries', $walk_retries === [2]);
 
 ob_start();
 ss_webseer('query', 'webseerName');

@@ -35,11 +35,11 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
-function ss_fortigate_ips ($host_id = '') {
+function ss_fortigate_ips($host_id = '') {
 	global $environ, $poller_id, $config;
 
 	if (empty($host_id) || $host_id === NULL || !is_numeric($host_id))  {
-		return 'ips_detected:0 ips_blocked:0 ips_crit:0 ips_high:0 ips_ano:0' . PHP_EOL;
+		return 'ips_detected:U ips_blocked:U ips_crit:U ips_high:U ips_ano:U' . PHP_EOL;
 	}
 
 	$host = db_fetch_row_prepared('SELECT *
@@ -74,7 +74,7 @@ function ss_fortigate_ips ($host_id = '') {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 

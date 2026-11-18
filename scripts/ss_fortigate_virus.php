@@ -40,7 +40,7 @@ function ss_fortigate_virus ($host_id = 0) {
 	global $environ, $poller_id, $config;
 
 	if (empty($host_id) || $host_id === NULL || !is_numeric($host_id)) {
-		return 'vir_detected:0 vir_blocked:0 vir_det_web:0 vir_det_smb:0 vir_det_mail:0' . PHP_EOL;
+		return 'vir_detected:U vir_blocked:U vir_det_web:U vir_det_smb:U vir_det_mail:U' . PHP_EOL;
 	}
 
 	$host = db_fetch_row_prepared('SELECT *
@@ -74,7 +74,7 @@ function ss_fortigate_virus ($host_id = 0) {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
@@ -108,7 +108,7 @@ function ss_fortigate_virus ($host_id = 0) {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
