@@ -1160,7 +1160,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 			WHERE id = ?',
 			[$leaf_id]);
 
-		if (!cacti_sizeof($pdata)) {
+		if (!is_array($pdata) || $pdata === []) {
 			cacti_log('Error Sorting Tree');
 
 			return;

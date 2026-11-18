@@ -258,10 +258,13 @@ foreach ([
 	check(isset(slice($file, $guard, '}', [$name => ['id' => 1]])['__fell']), true, $file . ' keeps a populated row');
 }
 
-$result = slice('lib/api_tree.php', 'if (!is_array($pdata)) {', '}', ['pdata' => false]);
+$result = slice('lib/api_tree.php', 'if (!is_array($pdata) || $pdata === []) {', '}', ['pdata' => false]);
 check($result, null, 'api_tree stops sorting without a leaf row');
 check(events(), [['log', 'Error Sorting Tree']], 'api_tree logs the missing leaf row');
-check(isset(slice('lib/api_tree.php', 'if (!is_array($pdata)) {', '}', ['pdata' => ['parent' => 3, 'graph_tree_id' => 4]])['__fell']), true, 'api_tree keeps a populated leaf row');
+$result = slice('lib/api_tree.php', 'if (!is_array($pdata) || $pdata === []) {', '}', ['pdata' => []]);
+check($result, null, 'api_tree stops sorting without a populated leaf row');
+check(events(), [['log', 'Error Sorting Tree']], 'api_tree logs the empty leaf row');
+check(isset(slice('lib/api_tree.php', 'if (!is_array($pdata) || $pdata === []) {', '}', ['pdata' => ['parent' => 3, 'graph_tree_id' => 4]])['__fell']), true, 'api_tree keeps a populated leaf row');
 check(events(), [], 'api_tree logs nothing for a populated leaf row');
 
 check(slice('auth_profile.php', 'if (!is_array($current_user) || !cacti_sizeof($current_user)) {', '}', ['current_user' => false]), false, 'profile page refuses a missing user');

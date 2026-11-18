@@ -31,7 +31,7 @@ const USER = 4;
  * The user may view only the trees in $allowed: trees are denied by default
  * and each allowed tree is a tree exception.
  */
-function search(string $str, array $allowed = [1]) : array {
+function search(string $str, array $allowed = [1], bool $sort = true) : array {
 	$pdo = TreeSqliteFixture::$pdo;
 	$pdo->exec('DELETE FROM user_auth_perms');
 
@@ -54,7 +54,9 @@ function search(string $str, array $allowed = [1]) : array {
 
 	expect($nodes)->toBeArray();
 
-	sort($nodes);
+	if ($sort) {
+		sort($nodes);
+	}
 
 	return $nodes;
 }
@@ -120,4 +122,52 @@ test('search reads each matched tree once instead of once per ancestor', functio
 	// one read of the matched tree
 	expect($nodes)->toHaveCount(6 + 36 + 216 + 1)
 		->and(TreeSqliteFixture::$queries)->toBeLessThanOrEqual(4);
+});
+
+test('search handles a deep branch without retaining every ancestor prefix', function () {
+	$insert = TreeSqliteFixture::$pdo->prepare('INSERT INTO graph_tree_items (id, parent, graph_tree_id, title) VALUES (?, ?, 1, ?)');
+
+	for ($id = 100; $id <= 4100; $id++) {
+		$insert->execute([$id, $id === 100 ? 0 : $id - 1, $id === 4100 ? 'Deep leaf' : 'branch']);
+	}
+
+	TreeSqliteFixture::resetCounters();
+	memory_reset_peak_usage();
+	$before = memory_get_usage();
+	$nodes  = search('Deep leaf');
+
+	expect($nodes)->toHaveCount(4001)
+		->and(TreeSqliteFixture::$queries)->toBeLessThanOrEqual(4)
+		->and(memory_get_peak_usage() - $before)->toBeLessThan(32 * 1024 * 1024);
+});
+
+test('search discards missing and cross-tree parent chains', function () {
+	TreeSqliteFixture::items([
+		['id' => 10, 'parent' => 999, 'graph_tree_id' => 1, 'title' => 'Broken leaf'],
+		['id' => 11, 'parent' => 3, 'graph_tree_id' => 1, 'title' => 'Broken leaf'],
+	]);
+
+	expect(search('Broken leaf', [1, 2]))->toBe([]);
+});
+
+test('search emits shared ancestors once and opens parents before children', function () {
+	TreeSqliteFixture::items([
+		['id' => 10, 'parent' => 0, 'graph_tree_id' => 1, 'title' => 'root'],
+		['id' => 11, 'parent' => 10, 'graph_tree_id' => 1, 'title' => 'branch'],
+		['id' => 12, 'parent' => 11, 'graph_tree_id' => 1, 'title' => 'Leaf match'],
+		['id' => 15, 'parent' => 10, 'graph_tree_id' => 1, 'title' => 'branch'],
+		['id' => 16, 'parent' => 15, 'graph_tree_id' => 1, 'title' => 'Leaf match'],
+		['id' => 20, 'parent' => 0, 'graph_tree_id' => 1, 'title' => 'root'],
+		['id' => 21, 'parent' => 20, 'graph_tree_id' => 1, 'title' => 'branch'],
+		['id' => 22, 'parent' => 21, 'graph_tree_id' => 1, 'title' => 'Leaf match'],
+	]);
+
+	$nodes = search('Leaf match', [1], false);
+	$order = array_flip($nodes);
+
+	expect($nodes)->toHaveCount(6)
+		->and($order['tree_anchor-1'])->toBe(0)
+		->and($order['tbranch-10'])->toBeLessThan($order['tbranch-11'])
+		->and($order['tbranch-10'])->toBeLessThan($order['tbranch-15'])
+		->and($order['tbranch-20'])->toBeLessThan($order['tbranch-21']);
 });
