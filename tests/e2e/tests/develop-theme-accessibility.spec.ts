@@ -18,6 +18,10 @@ import { join, resolve } from 'node:path';
  * (useful when comparing a whole branch against develop). This spec covers what
  * that suite does not: the remaining axe WCAG 2.2 AA rules on real pages, the
  * 3:1 focus indicator check for every theme, and right-to-left layout.
+ *
+ * A right-to-left language mirrors the page only under a theme that ships an
+ * `rtl` file; every other theme must keep dir='ltr'. Navigation placement is
+ * recorded but not required, because Modern keeps its navigation on the left.
  */
 
 const root = resolve(__dirname, '../../..');
@@ -42,7 +46,8 @@ const themes = readdirSync(resolve(root, 'include/themes'))
 	.map((name) => {
 		const switchable = cssFiles(resolve(root, 'include/themes', name))
 			.some((file) => readFileSync(file, 'utf8').includes('[data-theme-color'));
-		return { name, modes: switchable ? ['light', 'dark'] : ['default'] };
+		const rtl = existsSync(resolve(root, 'include/themes', name, 'rtl'));
+		return { name, rtl, modes: switchable ? ['light', 'dark'] : ['default'] };
 	});
 
 const directions = [
@@ -232,7 +237,8 @@ async function rtlAudit(page: Page) {
 	});
 }
 
-async function audit(page: Page, record: Record<string, unknown>, dir: string) {
+// expectedDir is the dir the document must declare, or null when the theme is not known.
+async function audit(page: Page, record: Record<string, unknown>, dir: string, expectedDir: string | null) {
 	const axe = await new AxeBuilder({ page }).withTags(wcagTags).disableRules(skipRules).analyze();
 	const violations = axe.violations.map((v) => ({
 		id: v.id,
@@ -252,9 +258,7 @@ async function audit(page: Page, record: Record<string, unknown>, dir: string) {
 		focus,
 		focusFailures: focus.filter((s) => !s.pass).length,
 		layout,
-		layoutPass: dir === 'rtl'
-			? layout.dir === 'rtl' && !layout.horizontalOverflow && layout.navigationOnRight !== false
-			: layout.dir === 'ltr' && !layout.horizontalOverflow,
+		layoutPass: (expectedDir === null ? ['ltr', 'rtl'].includes(String(layout.dir)) : layout.dir === expectedDir) && !layout.horizontalOverflow,
 	};
 
 	mkdirSync(outDir, { recursive: true });
@@ -287,11 +291,12 @@ for (const { dir, language } of directions) {
 		const page = await openCase(browser, false, 'default', `/index.php?language=${language}`);
 		if (typeof page === 'string') return recordLoadFailure(record, dir, page);
 		await expect(page.locator('form#auth')).toBeVisible();
-		await audit(page, record, dir);
+		// The login page uses the system theme, which this spec does not control.
+		await audit(page, record, dir, dir === 'ltr' ? 'ltr' : null);
 		await page.context().close();
 	});
 
-	for (const { name: theme, modes } of themes) {
+	for (const { name: theme, rtl, modes } of themes) {
 		for (const mode of modes) {
 			for (const target of pages) {
 				test(`${theme} ${mode} ${dir} ${target.name} meets WCAG 2.2 AA`, async ({ browser }) => {
@@ -300,7 +305,7 @@ for (const { dir, language } of directions) {
 					const page = await openCase(browser, true, mode, `${target.path}${sep}newtheme=${theme}&language=${language}`);
 					if (typeof page === 'string') return recordLoadFailure(record, dir, page);
 					await expect(page.locator('form#auth')).toHaveCount(0);
-					await audit(page, record, dir);
+					await audit(page, record, dir, dir === 'rtl' && rtl ? 'rtl' : 'ltr');
 					await page.context().close();
 				});
 			}
