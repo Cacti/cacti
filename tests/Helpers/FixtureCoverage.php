@@ -15,6 +15,7 @@ if ($fixtureCoveragePath !== false && $fixtureCoveragePath !== '') {
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE | XDEBUG_CC_BRANCH_CHECK);
 	register_shutdown_function(static function () use ($fixtureCoveragePath) : void {
 		$data = xdebug_get_code_coverage();
+		xdebug_stop_code_coverage();
 
 		foreach ($GLOBALS['cacti_fixture_source_map'] ?? [] as $temporary => $original) {
 			if (isset($data[$temporary])) {
@@ -28,6 +29,21 @@ if ($fixtureCoveragePath !== false && $fixtureCoveragePath !== '') {
 				unset($data[$temporary]);
 			}
 		}
-		file_put_contents($fixtureCoveragePath, json_encode($data, JSON_THROW_ON_ERROR));
+		// Encode one file at a time so branch paths do not require a second
+		// repository-sized allocation alongside Xdebug's coverage array.
+		$output = fopen($fixtureCoveragePath, 'wb');
+		fwrite($output, '{');
+		$separator = '';
+
+		try {
+			foreach ($data as $file => $coverage) {
+				fwrite($output, $separator . json_encode($file, JSON_THROW_ON_ERROR) . ':');
+				fwrite($output, json_encode($coverage, JSON_THROW_ON_ERROR));
+				$separator = ',';
+			}
+			fwrite($output, '}');
+		} finally {
+			fclose($output);
+		}
 	});
 }
