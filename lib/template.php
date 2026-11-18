@@ -1218,7 +1218,8 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
 		}
 	}
 
-	$source_items = graph_template_item_sources($local_graph_id, $graph_template_id);
+	// resolved only when an item has to be added, since most graphs already have every item
+	$source_items = null;
 
 	if ($graph_template_id == 0) {
 		$template_items_list = $graph_items_list;
@@ -1276,6 +1277,9 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
 				}
 			} else {
 				// no graph item at this position, tack it on
+				// a new graph has no data sources yet; graph_template_connect_task_items() wires them
+				$source_items ??= $new_save ? [] : graph_template_item_sources($local_graph_id, $graph_template_id);
+
 				$save['id']           = 0;
 				$save['task_item_id'] = $source_items[$template_item['task_item_id']] ?? 0;
 
@@ -1425,7 +1429,8 @@ function update_graph_template_items(int $graph_template_id, int $graph_template
 
 		if (cacti_sizeof($graphs)) {
 			foreach ($graphs as $local_graph_id) {
-				$source_items = graph_template_item_sources($local_graph_id, $graph_template_id);
+				// resolved only when this graph lacks the item
+				$source_items = null;
 
 				$graph_items_list = db_fetch_assoc_prepared('SELECT *
 					FROM graph_templates_item
@@ -1485,6 +1490,8 @@ function update_graph_template_items(int $graph_template_id, int $graph_template
 							}
 						} else {
 							// no graph item at this position, tack it on
+							$source_items ??= graph_template_item_sources($local_graph_id, $graph_template_id);
+
 							$save['id']           = 0;
 							$save['task_item_id'] = $source_items[$template_item['task_item_id']] ?? 0;
 

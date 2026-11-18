@@ -108,6 +108,21 @@ if ($mode == 'binding' || $mode == 'resequence') {
 	$result['remaining']  = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE id >= 3000000')->fetchColumn();
 	$result['items']      = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id > 0')->fetchColumn();
 	$result['misordered'] = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item AS child JOIN graph_templates_item AS parent ON parent.id=child.local_graph_template_item_id WHERE child.local_graph_id>0 AND child.sequence<>parent.sequence')->fetchColumn();
+} elseif ($mode == 'source-lookups') {
+	// Graphs that already carry an item need no data source lookup when the item's source changes.
+	seed_graph_template();
+	$n = (int)$argv[2];
+	$pdo->exec("INSERT INTO graph_local (id,host_id,graph_template_id) SELECT seq,1,1 FROM seq_1_to_$n");
+	$pdo->exec("INSERT INTO graph_templates_item (id,local_graph_id,local_graph_template_item_id,graph_template_id,task_item_id,sequence) SELECT 1000+seq,seq,1,1,0,1 FROM seq_1_to_$n");
+	$pdo->query_counts = [];
+	push_out_graph_item(1, true);
+	$result['source_lookups'] = array_sum(array_filter($pdo->query_counts, fn ($k) => str_contains($k, 'AS template_item_id'), ARRAY_FILTER_USE_KEY));
+	$result['items']          = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id > 0')->fetchColumn();
+	$pdo->exec('DELETE FROM graph_templates_item WHERE local_graph_id = 1');
+	$pdo->query_counts = [];
+	push_out_graph_item(1, true);
+	$result['missing_lookups'] = array_sum(array_filter($pdo->query_counts, fn ($k) => str_contains($k, 'AS template_item_id'), ARRAY_FILTER_USE_KEY));
+	$result['restored']        = (int)$pdo->query('SELECT COUNT(*) FROM graph_templates_item WHERE local_graph_id = 1')->fetchColumn();
 } elseif ($mode == 'stale') {
 	// A data source retemplated by an earlier release keeps the ancestry of its old template.
 	seed_graph_template();

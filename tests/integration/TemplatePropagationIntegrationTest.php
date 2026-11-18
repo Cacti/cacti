@@ -76,6 +76,12 @@ test('resequence pages through many graphs and still repairs graphs at page boun
 		->and($r['repairs'])->toBe(40003)->and($r['peak_mib'])->toBeLessThan(4.0);
 });
 
+test('graph item propagation looks up data sources only for graphs missing the item', function () {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/template_propagation_probe.php', ['source-lookups', '50']);
+	expect($r['items'])->toBe(50)->and($r['source_lookups'])->toBe(0)
+		->and($r['restored'])->toBe(1)->and($r['missing_lookups'])->toBeGreaterThan(0)->and($r['missing_lookups'])->toBeLessThanOrEqual(2);
+});
+
 test('replacement attaches existing RRD items only to the new compatible template', function () {
 	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/template_propagation_probe.php', ['switch']);
 	expect($r['heartbeat_after_new_template'])->toBe(1200)->and($r['heartbeat_after_old_template'])->toBe(1200);
