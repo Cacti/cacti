@@ -1147,7 +1147,8 @@ function http_only_poll(int $poller_id, int $poller_interval, int $active_profil
 
 	$reasons = [];
 	$outputs = CactiHttpPoller::create((int) read_config_option('http_poller_concurrency'))->collect($items, $reasons, $start + $poller_interval);
-	$values  = [];
+	$rows    = [];
+	$boost   = read_config_option('boost_rrd_update_enable') == 'on';
 
 	foreach ($items as $item) {
 		$key = CactiHttpPoller::rowKey($item);
@@ -1156,25 +1157,26 @@ function http_only_poll(int $poller_id, int $poller_interval, int $active_profil
 			cacti_log('WARNING: Invalid Response, Device[' . $item['host_id'] . '] DS[' . $item['local_data_id'] . '] HTTP: ' . CactiHttpPollItem::redact((string) $item['arg1']) . ', pointer: ' . $item['arg2'] . ', reason: ' . $reasons[$key], $print_data_to_stdout, 'POLLER');
 		}
 
-		$values[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)',
-			$item['local_data_id'],
-			db_qstr($item['rrd_name'], $poller_db_cnn_id),
-			db_qstr($outputs[$key] ?? 'U', $poller_db_cnn_id));
+		$rows[] = [(int) $item['local_data_id'], (string) $item['rrd_name'], (string) ($outputs[$key] ?? 'U')];
 	}
 
-	foreach (array_chunk($values, 2000) as $chunk) {
-		db_execute('INSERT IGNORE INTO poller_output
+	foreach (array_chunk($rows, 2000) as $chunk) {
+		db_execute_prepared('INSERT IGNORE INTO poller_output
 			(local_data_id, rrd_name, time, output)
-			VALUES ' . implode(', ', $chunk), true, $poller_db_cnn_id);
+			VALUES ' . implode(', ', array_fill(0, count($chunk), '(?, ?, CURRENT_TIMESTAMP(), ?)')),
+			array_merge(...$chunk), true, $poller_db_cnn_id);
 
-		if (read_config_option('boost_rrd_update_enable') == 'on') {
-			boost_flush_output_batch($chunk, $poller_db_cnn_id);
+		// boost_flush_output_batch() takes prebuilt VALUES tuples
+		if ($boost) {
+			boost_flush_output_batch(array_map(function (array $row) use ($poller_db_cnn_id) : string {
+				return sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $row[0], db_qstr($row[1], $poller_db_cnn_id), db_qstr($row[2], $poller_db_cnn_id));
+			}, $chunk), $poller_db_cnn_id);
 		}
 	}
 
 	cacti_log(sprintf('Time: %01.4f s, Poller: %d, HTTP Items: %d, Errors: %d', microtime(true) - $start, $poller_id, cacti_sizeof($items), cacti_sizeof($reasons)), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
-	return cacti_sizeof($values);
+	return cacti_sizeof($rows);
 }
 
 function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) : bool {
