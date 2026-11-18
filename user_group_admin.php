@@ -287,150 +287,20 @@ function update_policies() : void {
 function form_actions() : void {
 	global $group_actions, $user_auth_realms;
 
-	// if we are to save this form, instead of display it
-	if (isrv('associate_host')) {
-		foreach ($_POST as $var => $val) {
-			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				// ================= input validation =================
-				input_validate_input_number($matches[1], 'chk[1]');
-				// ====================================================
+	// Preserve the handler order when a request contains multiple association flags.
+	foreach ([
+		'associate_host'     => [3, 'permsd'],
+		'associate_graph'    => [1, 'permsg'],
+		'associate_template' => [4, 'permste'],
+		'associate_tree'     => [2, 'permstr'],
+		'associate_member'   => [0, 'members'],
+	] as $association => [$permission_type, $permission_tab]) {
+		if (isrv($association)) {
+			auth_update_permission_associations($permission_type, true);
+			header('Location: user_group_admin.php?action=edit&tab=' . $permission_tab . '&id=' . gnrv('id'));
 
-				if (gnrv('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms
-						(group_id, item_id, type)
-						VALUES (?, ?, 3)',
-						[gnrv('id'), $matches[1]]);
-				} else {
-					db_execute_prepared('DELETE FROM user_auth_group_perms
-						WHERE group_id = ?
-						AND item_id = ?
-						AND type = 3',
-						[gnrv('id'), $matches[1]]);
-				}
-			}
+			exit;
 		}
-
-		reset_group_perms(gfrv('id'));
-
-		header('Location: user_group_admin.php?action=edit&tab=permsd&id=' . gnrv('id'));
-
-		exit;
-	}
-
-	if (isrv('associate_graph')) {
-		foreach ($_POST as $var => $val) {
-			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				// ================= input validation =================
-				input_validate_input_number($matches[1], 'chk[1]');
-				// ====================================================
-
-				if (gnrv('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms
-						(group_id, item_id, type)
-						VALUES (?, ?, 1)',
-						[gnrv('id'), $matches[1]]);
-				} else {
-					db_execute_prepared('DELETE FROM user_auth_group_perms
-						WHERE group_id = ?
-						AND item_id = ?
-						AND type = 1',
-						[gnrv('id'), $matches[1]]);
-				}
-			}
-		}
-
-		reset_group_perms(gfrv('id'));
-
-		header('Location: user_group_admin.php?action=edit&tab=permsg&id=' . gnrv('id'));
-
-		exit;
-	}
-
-	if (isrv('associate_template')) {
-		foreach ($_POST as $var => $val) {
-			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				// ================= input validation =================
-				input_validate_input_number($matches[1], 'chk[1]');
-				// ====================================================
-
-				if (gnrv('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms
-						(group_id, item_id, type)
-						VALUES (?, ?, 4)',
-						[gnrv('id'), $matches[1]]);
-				} else {
-					db_execute_prepared('DELETE FROM user_auth_group_perms
-						WHERE group_id = ?
-						AND item_id = ?
-						AND type = 4',
-						[gnrv('id'), $matches[1]]);
-				}
-			}
-		}
-
-		reset_group_perms(gfrv('id'));
-
-		header('Location: user_group_admin.php?action=edit&tab=permste&id=' . gnrv('id'));
-
-		exit;
-	}
-
-	if (isrv('associate_tree')) {
-		foreach ($_POST as $var => $val) {
-			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				// ================= input validation =================
-				input_validate_input_number($matches[1], 'chk[1]');
-				// ====================================================
-
-				if (gnrv('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms
-						(group_id, item_id, type)
-						VALUES (?, ?, 2)',
-						[gnrv('id'), $matches[1]]);
-				} else {
-					db_execute_prepared('DELETE FROM user_auth_group_perms
-						WHERE group_id = ?
-						AND item_id = ?
-						AND type = 2',
-						[gnrv('id'), $matches[1]]);
-				}
-			}
-		}
-
-		reset_group_perms(gfrv('id'));
-
-		header('Location: user_group_admin.php?action=edit&tab=permstr&id=' . gnrv('id'));
-
-		exit;
-	}
-
-	if (isrv('associate_member')) {
-		foreach ($_POST as $var => $val) {
-			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				// ================= input validation =================
-				input_validate_input_number($matches[1], 'chk[1]');
-				// ====================================================
-
-				if (gnrv('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_members
-						(group_id, user_id)
-						VALUES (?, ?)',
-						[gnrv('id'), $matches[1]]);
-				} else {
-					db_execute_prepared('DELETE FROM user_auth_group_members
-						WHERE group_id = ?
-						AND user_id = ?',
-						[gnrv('id'), $matches[1]]);
-				}
-
-				// a removed member is no longer found through the group, so reset the user
-				reset_user_perms((int) $matches[1]);
-			}
-		}
-
-		header('Location: user_group_admin.php?action=edit&tab=members&id=' . gnrv('id'));
-
-		exit;
 	}
 
 	if (isrv('selected_items')) {

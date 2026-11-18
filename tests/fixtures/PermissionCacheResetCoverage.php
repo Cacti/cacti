@@ -21,6 +21,8 @@ if (PHP_SAPI !== 'cli') {
 
 const SCENARIOS = [
 	'user_admin.php' => [
+		['form_actions', 'priority', ['id' => '7', 'associate_host' => '1', 'associate_graph' => '1', 'drp_action' => '1'], 'user', 7, 3, 'permsd'],
+		['form_actions', 'membership-priority', ['id' => '7', 'associate_groups' => '1', 'associate_tree' => '1', 'drp_action' => '1'], 'user', 7, 0, 'permsgr'],
 		['update_policies', 'update_policies', ['id' => '7', 'policy_graphs' => '1'], 'user', 7],
 		['form_actions', 'associate_host', ['id' => '7', 'associate_host' => '1', 'drp_action' => '1'], 'user', 7],
 		['form_actions', 'associate_graph', ['id' => '7', 'associate_graph' => '1', 'drp_action' => '2'], 'user', 7],
@@ -31,6 +33,8 @@ const SCENARIOS = [
 		['perm_remove', 'perm_remove', ['id' => '3', 'user_id' => '7', 'type' => 'graph'], 'user', 7],
 	],
 	'user_group_admin.php' => [
+		['form_actions', 'priority', ['id' => '5', 'associate_host' => '1', 'associate_graph' => '1', 'drp_action' => '1'], 'group', 5, 3, 'permsd'],
+		['form_actions', 'membership-priority', ['id' => '5', 'associate_member' => '1', 'associate_tree' => '1', 'drp_action' => '1'], 'group', 5, 2, 'permstr'],
 		['user_group_remove', 'group_remove', ['id' => '5'], 'group', 5],
 		['update_policies', 'update_policies', ['id' => '5', 'policy_hosts' => '2'], 'group', 5],
 		['form_actions', 'associate_host', ['id' => '5', 'associate_host' => '1', 'drp_action' => '1'], 'group', 5],
@@ -79,14 +83,28 @@ if ($scenario === null) {
 [$function, , $request, $kind, $expected_id] = $scenario;
 $GLOBALS['request']                          = $request;
 $GLOBALS['resets']                           = [];
+$GLOBALS['permission_writes']                = [];
+$GLOBALS['permission_redirect']              = '';
 $_POST                                       = ['chk_9' => 'on'];
 
 // Checked before RequestCoverage publishes its report. A handler that leaves
 // without resetting the cache fails here and publishes no coverage.
-register_shutdown_function(static function () use ($kind, $expected_id) : void {
+register_shutdown_function(static function () use ($kind, $expected_id, $scenario) : void {
 	if ($GLOBALS['resets'] !== [[$kind, $expected_id]]) {
 		fwrite(STDERR, 'Expected one ' . $kind . ' reset for ' . $expected_id . ', saw ' . json_encode($GLOBALS['resets']) . "\n");
 		exit(1);
+	}
+
+	if (isset($scenario[5])) {
+		$writes = $GLOBALS['permission_writes'];
+		$type   = $scenario[5];
+
+		if (count($writes) !== 1 || count($writes[0][1]) !== ($type === 0 ? 2 : 3)
+			|| ($type !== 0 && $writes[0][1][2] !== $type)
+			|| !str_contains($GLOBALS['permission_redirect'], 'tab=' . $scenario[6] . '&id=')) {
+			fwrite(STDERR, "Association priority or redirect changed\n");
+			exit(1);
+		}
 	}
 });
 
@@ -116,11 +134,14 @@ function is_error_message() {
 function input_validate_input_number(...$arguments) {
 }
 
-function db_execute_prepared($sql, $params = []) {
+function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = [], $timeout = 0) {
+	$GLOBALS['permission_writes'][] = [$sql, $params];
+
 	return true;
 }
 
 function header(string $header) : void {
+	$GLOBALS['permission_redirect'] = $header;
 }
 
 function reset_user_perms($id) {
@@ -131,6 +152,7 @@ function reset_group_perms($id) {
 	$GLOBALS['resets'][] = ['group', (int) $id];
 }
 
+cacti_fixture_source_function(dirname(__DIR__, 2) . '/lib/auth.php', 'auth_update_permission_associations', __NAMESPACE__);
 cacti_fixture_source_function(dirname(__DIR__, 2) . '/' . $file, $function, __NAMESPACE__);
 
 $handler = __NAMESPACE__ . '\\' . $function;
