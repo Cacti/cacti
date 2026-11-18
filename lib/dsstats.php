@@ -923,27 +923,29 @@ function dsstats_poller_output(&$rrd_update_array) {
 								$currentval = 'NULL';
 							}
 
-							/* setup the output buffer for the cache first */
-							$cachebuf .=
+							/* setup the output buffer for the cache first, counting only the row just appended */
+							$row =
 								$cache_delim . '(' .
 								$result['local_data_id'] . ", '" .
 								$result['rrd_name'] . "', '" .
 								$result['time'] . "', " .
 								$currentval . ')';
 
-							$out_length += strlen($cachebuf);
+							$cachebuf   .= $row;
+							$out_length += strlen($row);
 
 							/* now do the last value, if applicable */
 							if ($lastval != '') {
-								$lastbuf .=
+								$row =
 									$last_delim . '(' .
 									$result['local_data_id'] . ", '" .
 									$result['rrd_name'] . "', " .
 									$lastval . ', ' .
 									$currentval . ')';
 
+								$lastbuf     .= $row;
+								$last_length += strlen($row);
 								$last_i++;
-								$last_length += strlen($lastbuf);
 							}
 
 							/* if we exceed our output buffer, it's time to write */

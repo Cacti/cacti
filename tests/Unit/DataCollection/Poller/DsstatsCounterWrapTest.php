@@ -8,8 +8,10 @@
 */
 
 /*
- * Regression: a COUNTER that wraps from last to current has advanced by
- * 2^n - last + current, but the hourly rate added 2^n - 1.
+ * Regressions in dsstats_poller_output(): a COUNTER that wraps from last to
+ * current has advanced by 2^n - last + current, but the hourly rate added
+ * 2^n - 1; and the bulk insert length added the whole buffer after every
+ * row, so each poll flushed far more statements than the packet size needs.
  */
 
 namespace DsstatsCounterWrapTest;
@@ -34,6 +36,7 @@ function db_fetch_assoc($sql) {
 		return array(
 			array('data_source_name' => 'ctr32', 'data_source_type_id' => 2, 'rrd_step' => 100, 'rrd_maximum' => 'U'),
 			array('data_source_name' => 'ctr64', 'data_source_type_id' => 2, 'rrd_step' => 1, 'rrd_maximum' => 'U'),
+			array('data_source_name' => 'gauge', 'data_source_type_id' => 1, 'rrd_step' => 300, 'rrd_maximum' => 'U'),
 		);
 	}
 
@@ -81,3 +84,29 @@ test('a wrapped COUNTER adds 2^32 or 2^64 to the delta', function ($rrd_name, $l
 	// 2^64 - 6144 is exact as a double, and the small delta must stay exact
 	array('ctr64', '18446744073709545472', '1000', '7144'),
 ));
+
+test('one poll of 5000 samples is written in full batches', function () {
+	$GLOBALS['dsstats_wrap_writes'] = array();
+
+	$updates = array();
+
+	for ($local_data_id = 1; $local_data_id <= 5000; $local_data_id++) {
+		$updates[] = array('local_data_id' => $local_data_id, 'times' => array(2000 => array('gauge' => '42')));
+	}
+
+	dsstats_poller_output($updates);
+
+	$cache = array_values(array_filter($GLOBALS['dsstats_wrap_writes'], function ($sql) {
+		return strpos($sql, 'data_source_stats_hourly_cache') !== false;
+	}));
+
+	$last = array_values(array_filter($GLOBALS['dsstats_wrap_writes'], function ($sql) {
+		return strpos($sql, 'data_source_stats_hourly_last') !== false;
+	}));
+
+	// about 45 bytes a row, so all 5000 rows fit in one 264000 byte statement each
+	expect(substr_count(implode('', $cache), "'gauge'"))->toBe(5000)
+		->and(substr_count(implode('', $last), "'gauge'"))->toBe(5000)
+		->and(count($cache))->toBe(1)
+		->and(count($last))->toBe(1);
+});
