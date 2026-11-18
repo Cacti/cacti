@@ -2952,6 +2952,42 @@ function cactiIsPostActionUrl(href) {
 	"automation_graph_rules.php": [
 		"qedit"
 	],
+	"auth_profile.php": [
+		"logout_everywhere",
+		"clear_user_settings",
+		"reset_default"
+	],
+	"automation_snmp.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
+		"ajax_dnd"
+	],
+	"cdef.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
+		"ajax_dnd"
+	],
+	"color_templates.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
+		"ajax_dnd"
+	],
+	"graph_templates.php": [
+		"ajax_dnd",
+		"input_remove"
+	],
+	"graphs.php": [
+		"ajax_dnd"
+	],
+	"vdef.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
+		"ajax_dnd"
+	],
 	"reports.php": [
 		"send",
 		"remove_history",

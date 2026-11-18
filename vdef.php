@@ -32,7 +32,7 @@ $actions = [
 
 set_default_action();
 
-if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'item_remove'], true)) {
+if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'item_remove', 'ajax_dnd'], true)) {
 	csrf_require_post();
 }
 

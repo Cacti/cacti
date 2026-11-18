@@ -50,7 +50,7 @@ $actions = api_plugin_hook_function('data_source_action_array', $actions);
 // set default action
 set_default_action();
 
-if (in_array(grv('action'), ['rrd_add', 'rrd_remove', 'ds_repair'], true)) {
+if (in_array(grv('action'), ['rrd_add', 'rrd_remove', 'ds_repair', 'ds_disable', 'ds_enable'], true)) {
 	csrf_require_post();
 }
 

@@ -31,6 +31,10 @@ use Cacti\Auth\LoginProviderFactory;
 
 set_default_action();
 
+if (in_array(grv('action'), ['perm_remove'], true)) {
+	csrf_require_post();
+}
+
 $group_actions = [
 	1 => __('Delete'),
 	2 => __('Copy'),

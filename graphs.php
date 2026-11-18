@@ -45,6 +45,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['ajax_dnd'], true)) {
+	csrf_require_post();
+}
+
 $actions = [
 	1  => __('Delete')
 ];

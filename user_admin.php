@@ -38,6 +38,10 @@ if (read_config_option('secpass_2fa_enabled') == 'on') {
 
 set_default_action();
 
+if (in_array(grv('action'), ['perm_remove'], true)) {
+	csrf_require_post();
+}
+
 if (isrv('update_policy')) {
 	// GHSA-j67j-wpm4-9g3x: update_policy is read before the action dispatcher, so
 	// the global.php GET/CSRF denylist cannot cover it. csrf_check() only validates
