@@ -11288,13 +11288,15 @@ function cacti_object_hash($object) {
  * cacti_input_string_is_safe - check that a data input method command uses
  * only the shell grammar that substitute_script_path() can quote safely.
  *
- * Field markers such as <hostname> are replaced with a plain character first.
- * Deleting them would let a backslash before a marker appear to escape the
- * character after it, but substitute_script_path() drops that backslash and
- * the character stays live, so the quote state seen here would no longer
- * match the shell's. The remaining text may
- * not contain control characters, command separators, pipes, backticks,
- * redirections or braces anywhere. Parentheses are allowed only inside quotes,
+ * A backslash directly before a field marker such as <hostname> is refused.
+ * At run time substitute_script_path() drops it before a resolved field, but
+ * keeps it before an unresolved one, which is then deleted and leaves the
+ * backslash escaping the next character, so no single model of the marker
+ * matches the shell for both. Other markers are replaced with a plain
+ * character, which reads like the quoted value or the deleted marker in every
+ * remaining position. The remaining text may not contain control
+ * characters, command separators, pipes, backticks, redirections or braces
+ * anywhere. Parentheses are allowed only inside quotes,
  * where sh reads them literally, so a quoted Windows path such as
  * "C:\Program Files (x86)\PHP\php.exe" is accepted. A dollar sign is allowed
  * only inside single quotes, because sh still expands it inside double quotes.
@@ -11310,6 +11312,10 @@ function cacti_input_string_is_safe(mixed $input_string) : bool {
 	}
 
 	if (!is_string($input_string)) {
+		return false;
+	}
+
+	if (preg_match('/\\\\<[a-zA-Z0-9_]+>/', $input_string)) {
 		return false;
 	}
 

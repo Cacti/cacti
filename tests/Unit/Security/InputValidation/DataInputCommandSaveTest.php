@@ -4,7 +4,7 @@
 require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 test('plain and encoded data-input imports validate stored command syntax (#7472)', function () {
 	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/DataInputCommand.php');
-	expect($result['import_cases'])->toBe(44);
+	expect($result['import_cases'])->toBe(46);
 });
 test('data-input form rejects shell syntax and preserves quoted paths (#7472)', function (string $command, bool $allowed) {
 	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/DataInputCommand.php', ['form', base64_encode($command)]);
@@ -19,4 +19,5 @@ test('data-input form rejects shell syntax and preserves quoted paths (#7472)', 
 	['echo "$HOME"', false],
 	['echo (label)', false],
 	['echo \\<hostname>"label', false],
+	['echo \\<hostname>"label"', false],
 ]);

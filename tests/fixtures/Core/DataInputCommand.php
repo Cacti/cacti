@@ -60,7 +60,7 @@ foreach (['xml_to_data_input_method', 'import_is_base64_encoded', 'xml_character
 }
 \cacti_fixture_source_function(dirname(__DIR__, 3) . '/data_input.php', 'form_save', __NAMESPACE__);
 $valid   = ['<path_php_binary> -q <path_cacti>/scripts/query.php <hostname>', '"<path_php_binary>" "<path_cacti>/scripts/query file.php" "<hostname>"', '"C:\\Program Files\\PHP\\php.exe" "<path_cacti>/scripts/query.php" <hostname>', "<path_php_binary> '<path_cacti>/scripts/query file.php' '<hostname>'", '"C:\\Program Files (x86)\\PHP\\php.exe" -q "<path_cacti>/scripts/query.php" <hostname>', "<path_php_binary> -q <path_cacti>/scripts/query.php '\$literal (x)' <hostname>", ''];
-$invalid = ['echo alpha; label', 'echo alpha | label', 'echo $(label)', 'echo `label`', "echo alpha\nlabel", "echo alpha\0label", 'echo > output', 'echo "unclosed', 'echo <broken-field>', 'echo "$HOME"', 'echo (label)', 'echo \\$label', 'echo \\(label', 'echo alpha\\', 'echo \\<hostname>"label'];
+$invalid = ['echo alpha; label', 'echo alpha | label', 'echo $(label)', 'echo `label`', "echo alpha\nlabel", "echo alpha\0label", 'echo > output', 'echo "unclosed', 'echo <broken-field>', 'echo "$HOME"', 'echo (label)', 'echo \\$label', 'echo \\(label', 'echo alpha\\', 'echo \\<hostname>"label', 'echo \\<hostname>"label"'];
 
 if (($argv[1] ?? '') === 'form') {
 	$command = base64_decode($argv[2], true);
