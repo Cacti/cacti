@@ -49,6 +49,10 @@ test('each member lists its own DEFs in the order its graph names them', functio
 	]);
 });
 
+test('every member graph is read with one query', function () {
+	expect(results()['queries'])->toBe(1);
+});
+
 test('a graph that is not an aggregate needs no mapping', function () {
 	expect(results()['not_aggregate'])->toBe([]);
 });

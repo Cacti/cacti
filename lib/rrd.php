@@ -2120,50 +2120,53 @@ function rrdtool_invalid_cdef_response($graph_data_array, $cdef_id, $graph_id, $
  *               is not an aggregate.
  */
 function rrdtool_aggregate_def_map($local_graph_id, $rra_seconds) {
-	$members = db_fetch_assoc_prepared('SELECT agi.local_graph_id
-		FROM aggregate_graphs_items AS agi
-		INNER JOIN aggregate_graphs AS ag
+	/* one query for every member's items, rather than one query per member */
+	$items = db_fetch_assoc_prepared('SELECT agi.local_graph_id AS member_graph_id,
+		gti.graph_type_id, gti.consolidation_function_id,
+		dtr.id AS data_template_rrd_id, dtr.local_data_id, dtr.data_source_name,
+		dtr.local_data_template_rrd_id
+		FROM aggregate_graphs AS ag
+		INNER JOIN aggregate_graphs_items AS agi
 		ON ag.id = agi.aggregate_graph_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.local_graph_id = agi.local_graph_id
+		LEFT JOIN data_template_rrd AS dtr
+		ON gti.task_item_id = dtr.id
 		WHERE ag.local_graph_id = ?
-		ORDER BY agi.sequence',
+		ORDER BY agi.sequence, agi.local_graph_id, gti.sequence',
 		array($local_graph_id));
 
-	if (!cacti_sizeof($members)) {
+	if (!cacti_sizeof($items)) {
 		return array();
 	}
 
-	$map = array('owner' => array(), 'members' => array());
+	$map    = array('owner' => array(), 'members' => array());
+	$index  = -1;
+	$member = null;
 
-	foreach ($members as $index => $member) {
-		$items = db_fetch_assoc_prepared('SELECT gti.graph_type_id, gti.consolidation_function_id,
-			dtr.id AS data_template_rrd_id, dtr.local_data_id, dtr.data_source_name,
-			dtr.local_data_template_rrd_id
-			FROM graph_templates_item AS gti
-			LEFT JOIN data_template_rrd AS dtr
-			ON gti.task_item_id = dtr.id
-			WHERE gti.local_graph_id = ?
-			ORDER BY gti.sequence',
-			array($member['local_graph_id']));
+	/* the same rule rrdtool_function_graph() uses to assign DEF names */
+	foreach ($items as $item) {
+		if ($item['member_graph_id'] !== $member) {
+			$member        = $item['member_graph_id'];
+			$last_graph_cf = array();
+			$seen          = array();
 
-		$last_graph_cf = array();
-		$seen          = array();
-		$defs          = array();
+			$index++;
 
-		/* the same rule rrdtool_function_graph() uses to assign DEF names */
-		foreach ($items as $item) {
-			$graph_cf = rrdtool_graph_item_cf($item, $rra_seconds, $last_graph_cf);
-
-			if (empty($item['local_data_id']) || isset($seen[$item['data_template_rrd_id']][$graph_cf])) {
-				continue;
-			}
-
-			$seen[$item['data_template_rrd_id']][$graph_cf] = true;
-			$defs[] = array($item['data_template_rrd_id'], $graph_cf);
-
-			$map['owner'][$item['data_template_rrd_id']][$index] = $index;
+			$map['members'][$index] = array();
 		}
 
-		$map['members'][$index] = $defs;
+		$graph_cf = rrdtool_graph_item_cf($item, $rra_seconds, $last_graph_cf);
+
+		if (empty($item['local_data_id']) || isset($seen[$item['data_template_rrd_id']][$graph_cf])) {
+			continue;
+		}
+
+		$seen[$item['data_template_rrd_id']][$graph_cf] = true;
+
+		$map['members'][$index][] = array($item['data_template_rrd_id'], $graph_cf);
+
+		$map['owner'][$item['data_template_rrd_id']][$index] = $index;
 	}
 
 	return $map;

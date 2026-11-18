@@ -35,13 +35,19 @@ function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
 	return (int) $requested_cf;
 }
 
-/** Serve aggregate members, and each member's graph items, from the fixture tables. */
+/** Serve each aggregate member's graph items, joined in member order, from the fixture tables. */
 function db_fetch_assoc_prepared($sql, $params = array()) {
-	if (strpos($sql, 'aggregate_graphs_items') !== false) {
-		return $GLOBALS['members'][$params[0]] ?? array();
+	$GLOBALS['query_count']++;
+
+	$rows = array();
+
+	foreach ($GLOBALS['members'][$params[0]] ?? array() as $member) {
+		foreach ($GLOBALS['items'][$member['local_graph_id']] ?? array() as $item) {
+			$rows[] = array('member_graph_id' => strval($member['local_graph_id'])) + $item;
+		}
 	}
 
-	return $GLOBALS['items'][$params[0]] ?? array();
+	return $rows;
 }
 
 function item($type, $cf, $dtr, $local_data_id, $ds) {
@@ -77,8 +83,11 @@ $GLOBALS['items']        = array(
 /* the aggregate's own DEF indexes: member 20 is a,b,c and member 35 is d,e,f */
 $cache = array(201 => array(1 => '0', 3 => '2'), 202 => array(1 => '1'), 351 => array(1 => '3', 3 => '5'), 352 => array(1 => '4'));
 
-$map = rrdtool_aggregate_def_map(50, 300);
-$now = time() - 300;
+$GLOBALS['query_count'] = 0;
+
+$map     = rrdtool_aggregate_def_map(50, 300);
+$map_sql = $GLOBALS['query_count'];
+$now     = time() - 300;
 
 $results = array(
 	'map'          => $map,
@@ -92,6 +101,7 @@ $results = array(
 	'unresolved'   => rrdtool_aggregate_cdef_defs('a,8,*', 777, array('owner' => array(), 'members' => array(array())), array(), 300),
 	'single_total' => rrdtool_aggregate_cdef_defs('a,8,*', 777, array('owner' => array(), 'members' => array(array(array(201, 1)))), $cache, 300),
 	'cfs'          => array(),
+	'queries'      => $map_sql,
 );
 
 /* the CF each item type's DEF is built with */
