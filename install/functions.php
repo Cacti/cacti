@@ -970,11 +970,6 @@ function install_file_paths() {
 }
 
 /**
- * Handles the remote update config file. Used as part of Cacti's install functionality.
- *
- * @return string The resulting string.
- */
-/**
  * Replace the remote poller assignment without truncating the live configuration.
  */
 function install_write_poller_config(string $file, int $poller_id) : bool {
@@ -991,6 +986,7 @@ function install_write_poller_config(string $file, int $poller_id) : bool {
 		return false;
 	}
 
+	$original = $contents;
 	$contents = preg_replace('~^([ \t]*)\$poller_id[ \t]*=[^;\r\n]*;[ \t]*(?://[^\r\n]*|\#[^\r\n]*)?\r?$~m',
 		'${1}$poller_id = ' . $poller_id . ';', $contents, -1, $count);
 
@@ -998,16 +994,23 @@ function install_write_poller_config(string $file, int $poller_id) : bool {
 		return false;
 	}
 
+	/* The installer only requires config.php itself to be writable. When its
+	   directory is not, or a new inode cannot keep the file's owner and group,
+	   the file is rewritten in place instead of being replaced. */
+	if (!is_writable(dirname($path))) {
+		return install_rewrite_poller_config($path, $contents, $original);
+	}
+
 	$temp = tempnam(dirname($path), '.cacti-config-');
 
 	if ($temp === false) {
-		return false;
+		return install_rewrite_poller_config($path, $contents, $original);
 	}
 
 	try {
 		// tempnam can fall back to the system temporary directory.
 		if (dirname($temp) !== dirname($path)) {
-			return false;
+			return install_rewrite_poller_config($path, $contents, $original);
 		}
 
 		$stream = fopen($temp, 'wb');
@@ -1017,20 +1020,7 @@ function install_write_poller_config(string $file, int $poller_id) : bool {
 		}
 
 		try {
-			$offset = 0;
-			$length = strlen($contents);
-
-			while ($offset < $length) {
-				$written = fwrite($stream, substr($contents, $offset));
-
-				if ($written === false || $written === 0) {
-					return false;
-				}
-
-				$offset += $written;
-			}
-
-			if (!fflush($stream) || !fsync($stream)) {
+			if (!install_write_whole_stream($stream, $contents)) {
 				return false;
 			}
 		} finally {
@@ -1038,9 +1028,12 @@ function install_write_poller_config(string $file, int $poller_id) : bool {
 		}
 
 		// Keep the original access policy when replacing the inode.
-		if ((fileowner($temp) !== $stat['uid'] && !chown($temp, $stat['uid'])) ||
-			(filegroup($temp) !== $stat['gid'] && !chgrp($temp, $stat['gid'])) ||
-			!chmod($temp, $stat['mode'] & 0777)) {
+		if ((fileowner($temp) !== $stat['uid'] && !@chown($temp, $stat['uid'])) ||
+			(filegroup($temp) !== $stat['gid'] && !@chgrp($temp, $stat['gid']))) {
+			return install_rewrite_poller_config($path, $contents, $original);
+		}
+
+		if (!chmod($temp, $stat['mode'] & 0777)) {
 			return false;
 		}
 
@@ -1052,6 +1045,65 @@ function install_write_poller_config(string $file, int $poller_id) : bool {
 	}
 }
 
+/**
+ * Rewrite the configuration in place, which keeps its inode, owner and mode.
+ * The original contents are written back when the new contents cannot be.
+ */
+function install_rewrite_poller_config(string $path, string $contents, string $original) : bool {
+	$stream = fopen($path, 'r+b');
+
+	if ($stream === false) {
+		return false;
+	}
+
+	try {
+		if (!flock($stream, LOCK_EX)) {
+			return false;
+		}
+
+		if (install_write_whole_stream($stream, $contents)) {
+			return true;
+		}
+
+		install_write_whole_stream($stream, $original);
+
+		return false;
+	} finally {
+		fclose($stream);
+	}
+}
+
+/**
+ * Write the complete contents from the start of the stream and flush them.
+ *
+ * @param resource $stream An open, writable file stream
+ */
+function install_write_whole_stream($stream, string $contents) : bool {
+	if (!rewind($stream)) {
+		return false;
+	}
+
+	$offset = 0;
+	$length = strlen($contents);
+
+	while ($offset < $length) {
+		$written = fwrite($stream, substr($contents, $offset));
+
+		if ($written === false || $written === 0) {
+			return false;
+		}
+
+		$offset += $written;
+	}
+
+	return ftruncate($stream, $length) && fflush($stream) && fsync($stream);
+}
+
+/**
+ * Handles the remote update config file. Used as part of Cacti's install functionality.
+ *
+ * @return string The resulting string.
+ */
 function remote_update_config_file() {
 	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
