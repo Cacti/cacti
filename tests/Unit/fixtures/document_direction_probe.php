@@ -37,6 +37,28 @@ foreach (get_list_of_locales() as $locale => $data) {
 	}
 }
 
+// Document direction pairs a locale with the theme that renders it.
+$document_directions = [];
+
+foreach ([['he-IL', 'modern'], ['ar-SA', 'modern'], ['he-IL', 'midwinter'], ['ar-SA', 'midwinter'], ['en-US', 'modern'], ['en-US', 'midwinter'], ['he-IL', '../themes/modern'], ['he-IL', 'Modern'], ['he-IL', '']] as [$locale, $theme]) {
+	$document_directions[$locale . '|' . $theme] = get_document_direction($locale, $theme);
+}
+
+// No get_selected_theme() is loaded here, so the default theme resolves to none.
+$document_directions['he-IL|default'] = get_document_direction('he-IL');
+
+$rtl_themes = [];
+
+foreach (glob(CACTI_PATH_INCLUDE . '/themes/*/main.css') as $main) {
+	$theme = basename(dirname($main));
+
+	if (theme_supports_rtl($theme)) {
+		$rtl_themes[] = $theme;
+	}
+}
+
+sort($rtl_themes);
+
 if ($directions['ar-SA'] !== 'rtl' || $directions['he-IL'] !== 'rtl' || $directions['<script>'] !== 'ltr' || get_html_document_attributes() !== " lang='en-US' dir='ltr'") {
 	throw new RuntimeException('Locale direction or document attributes changed.');
 }
@@ -86,5 +108,7 @@ print json_encode([
 	'active'      => get_locale_direction(),
 	'attributes'  => get_html_document_attributes(),
 	'rtl_locales' => $rtl_locales,
+	'documents'   => $document_directions,
+	'rtl_themes'  => $rtl_themes,
 	'shells'      => ['auth_error' => $auth_html, 'general' => $general_html],
 ]);
