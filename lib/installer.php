@@ -3728,20 +3728,14 @@ class Installer implements JsonSerializable {
 	/**
 	 * Messages for the problems an otherwise successful run left behind.
 	 *
-	 * The installer records them in the install_warnings setting, for now
-	 * only remote data collectors that could not be synchronized.
+	 * The installer records them in the install_warnings setting: remote data
+	 * collectors that could not be synchronized, and login providers or user
+	 * realms that need repair before the affected users can log in.
 	 *
 	 * @return list<string> translated messages, empty when there is nothing to report
 	 */
 	public static function getCompletionWarnings() : array {
-		$report   = \Cacti\Installer\CompletionWarnings::decode((string) read_config_option('install_warnings', true));
-		$messages = [];
-
-		foreach ($report->collectors as $state => $ids) {
-			$messages[] = __('Collector synchronization needs attention (%s): IDs %s. Run a manual full synchronization after checking collector status.', $state, implode(', ', $ids));
-		}
-
-		return $messages;
+		return install_completion_messages(\Cacti\Installer\CompletionWarnings::decode((string) read_config_option('install_warnings', true)));
 	}
 
 	/**
@@ -3839,7 +3833,11 @@ class Installer implements JsonSerializable {
 		}
 
 		if ($failure === '' && $this->mode != Installer::MODE_POLLER) {
-			$failure = $this->runOperation('authentication', static fn () : string => install_verify_authentication());
+			$authentication = [];
+			$failure        = $this->runOperation('authentication', static function () use (&$authentication) : string {
+				return install_verify_authentication($authentication);
+			});
+			set_install_config_option('install_warnings', (new \Cacti\Installer\CompletionWarnings())->withAuthentication($authentication)->encode());
 		}
 
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
@@ -4676,7 +4674,7 @@ class Installer implements JsonSerializable {
 	private static function fullSyncDataCollectors() : void {
 		// Perform full sync to complete upgrade
 		$status = install_full_sync();
-		$report = (new \Cacti\Installer\CompletionWarnings())->withCollectors($status);
+		$report = \Cacti\Installer\CompletionWarnings::decode((string) read_config_option('install_warnings', true))->withCollectors($status);
 		set_install_config_option('install_warnings', $report->encode());
 
 		if ($status['total'] == 0) {

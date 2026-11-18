@@ -143,7 +143,8 @@ $upgrade_failed = false;
 require_once CACTI_PATH_LIBRARY . '/Installer/RunReport.php';
 require_once CACTI_PATH_LIBRARY . '/Installer/CompletionWarnings.php';
 require_once CACTI_PATH_LIBRARY . '/Installer/UpgradePlan.php';
-$report = new \Cacti\Installer\RunReport();
+$report   = new \Cacti\Installer\RunReport();
+$warnings = new \Cacti\Installer\CompletionWarnings();
 set_config_option('maintenance_lastrun_installer_report', $report->encode());
 
 try {
@@ -201,7 +202,12 @@ try {
 		$target = cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=');
 
 		if ($target) {
-			foreach (['schema' => 'install_verify_schema_columns', 'authentication' => 'install_verify_authentication'] as $operation => $verify) {
+			$authentication = [];
+
+			foreach (['schema' => static fn () : string => install_verify_schema_columns(),
+				'authentication'  => static function () use (&$authentication) : string {
+					return install_verify_authentication($authentication);
+				}] as $operation => $verify) {
 				$started = hrtime(true);
 				$error   = $verify();
 				$report->record($operation, (hrtime(true) - $started) / 1e9, $error === '');
@@ -217,6 +223,7 @@ try {
 			if ($upgrade_failed) {
 				break;
 			}
+			$warnings = $warnings->withAuthentication($authentication);
 		}
 
 		// Forced replays must preserve a newer installed version on failure.
@@ -251,9 +258,13 @@ try {
 	cacti_log('ERROR: Unexpected upgrade failure: ' . $exception->getMessage(), false, 'INSTALL');
 	print __('Unexpected upgrade failure. Preserve the installer report and follow docs/INSTALLER_RECOVERY.md before retrying.') . PHP_EOL;
 } finally {
-	$report->finish(!$upgrade_failed, new \Cacti\Installer\CompletionWarnings());
+	$report->finish(!$upgrade_failed, $warnings);
 	set_config_option('maintenance_lastrun_installer_report', $report->encode());
 	unregister_process('install', 'master', 0);
+}
+
+foreach (install_completion_messages($warnings) as $message) {
+	print 'WARNING: ' . $message . PHP_EOL;
 }
 
 print PHP_EOL;

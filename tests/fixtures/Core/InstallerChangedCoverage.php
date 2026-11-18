@@ -112,11 +112,11 @@ function db_fetch_assoc($sql, ...$args) {
 	}
 
 	if (str_contains($sql, 'user_auth')) {
-		return [['realm' => 0]];
+		return $GLOBALS['cacti_db']['realms'] ?? [['realm' => 0]];
 	}
 
 	if (str_contains($sql, 'login_providers')) {
-		return [['id' => 1, 'type' => 0, 'enabled' => 'on', 'parameters' => '{}']];
+		return $GLOBALS['cacti_db']['providers'] ?? [['id' => 1, 'type' => 0, 'enabled' => 'on', 'parameters' => '{}']];
 	}
 
 	if (str_contains($sql, 'plugin_config')) {
@@ -253,6 +253,7 @@ require_once $root . '/lib/Installer/DependencyPreflight.php';
 cacti_fixture_source_function($root . '/install/functions.php', 'install_full_sync', __NAMESPACE__);
 cacti_fixture_source_function($root . '/install/functions.php', 'install_verify_schema_columns', __NAMESPACE__);
 cacti_fixture_source_function($root . '/install/functions.php', 'install_verify_authentication', __NAMESPACE__);
+cacti_fixture_source_function($root . '/install/functions.php', 'install_completion_messages', __NAMESPACE__);
 cacti_fixture_source_function($root . '/lib/poller.php', 'poller_connect_to_remote', __NAMESPACE__);
 cacti_fixture_source_method($root . '/lib/installer.php', 'getCompletionWarnings', __NAMESPACE__, 'CompletionWarningsHost');
 cacti_fixture_source_method($root . '/lib/installer.php', 'getUpgradePlan', __NAMESPACE__, 'UpgradePlanHost');
@@ -315,6 +316,27 @@ if (install_verify_authentication() !== 'Unable to verify authentication configu
 	throw new RuntimeException('install_verify_authentication accepted unreadable providers');
 }
 $GLOBALS['cacti_db']['fail'] = [];
+
+// A provider without a server and an orphaned realm already deny those logins,
+// so they become completion warnings instead of a failed upgrade.
+$GLOBALS['cacti_db']['providers'] = [['id' => 4, 'type' => 1, 'enabled' => 'on', 'parameters' => '{}']];
+$GLOBALS['cacti_db']['realms']    = [['realm' => 1004], ['realm' => 1009]];
+$authWarnings                     = ['stale' => [1]];
+
+if (install_verify_authentication($authWarnings) !== '' || $authWarnings !== ['ldap_without_server' => [4], 'realms_without_provider' => [1009]]) {
+	throw new RuntimeException('install_verify_authentication blocked or lost repairable authentication mappings');
+}
+$authMessages = install_completion_messages((new \Cacti\Installer\CompletionWarnings(['failed' => [2]]))->withAuthentication($authWarnings));
+
+if (count($authMessages) !== 3 || !str_contains($authMessages[1], 'IDs 4') || !str_contains($authMessages[2], 'realms 1009')) {
+	throw new RuntimeException('install_completion_messages did not describe every repair');
+}
+$GLOBALS['cacti_db']['providers'] = [['id' => 4, 'type' => 1, 'enabled' => 'on', 'parameters' => 'invalid']];
+
+if (!str_contains(install_verify_authentication($authWarnings), 'Provider 4 has invalid parameters')) {
+	throw new RuntimeException('install_verify_authentication accepted unreadable provider parameters');
+}
+unset($GLOBALS['cacti_db']['providers'], $GLOBALS['cacti_db']['realms']);
 
 if (!is_object(poller_connect_to_remote(2))) {
 	throw new RuntimeException('poller_connect_to_remote did not connect with SSL argument defaults');
@@ -671,7 +693,7 @@ $installer = new class {
 PHP);
 
 // cli/upgrade_database.php loop: the migration function is resolved by line
-// 176 so each run selects a missing, succeeding, or failing-verification path.
+// 177 so each run selects a missing, succeeding, or failing-verification path.
 $upgradePrefix = <<<'PHP'
 $cacti_version_codes = ['1.2.22' => 'h', '1.3.0' => 'h'];
 $old_cacti_version = '1.2.22';
@@ -682,17 +704,23 @@ if (!function_exists('cacti_fixture_upgrade_target')) {
 PHP;
 
 foreach ([
-	'missing function'    => [[176 => "\$upgrade_function = 'cacti_fixture_upgrade_missing';"], 'failed', ['migration' => false]],
-	'verified upgrade'    => [[176 => "\$upgrade_function = 'cacti_fixture_upgrade_target';"], 'succeeded', ['migration' => true, 'schema' => true, 'authentication' => true, 'version' => true]],
-	'failed verification' => [[
-		176 => "\$upgrade_function = 'cacti_fixture_upgrade_target';",
-		206 => "\t\t\t\t\$error   = \$verify === 'install_verify_schema_columns' ? 'schema-fixture' : \$verify();",
+	'missing function'        => [[177 => "\$upgrade_function = 'cacti_fixture_upgrade_missing';"], 'failed', ['migration' => false]],
+	'verified upgrade'        => [[177 => "\$upgrade_function = 'cacti_fixture_upgrade_target';"], 'succeeded', ['migration' => true, 'schema' => true, 'authentication' => true, 'version' => true]],
+	'authentication warnings' => [[177 => "\$upgrade_function = 'cacti_fixture_upgrade_target';"], 'completed_with_warnings', ['migration' => true, 'schema' => true, 'authentication' => true, 'version' => true]],
+	'failed verification'     => [[
+		177 => "\$upgrade_function = 'cacti_fixture_upgrade_target';",
+		212 => "\t\t\t\t\$error   = \$operation === 'schema' ? 'schema-fixture' : \$verify();",
 	], 'failed', ['migration' => true, 'schema' => false]],
-	'thrown migration'    => [[176 => "\$upgrade_function = 'cacti_fixture_upgrade_throws';"], 'failed', ['migration' => false]],
+	'thrown migration'    => [[177 => "\$upgrade_function = 'cacti_fixture_upgrade_throws';"], 'failed', ['migration' => false]],
 ] as $case => [$replacements, $state, $operations]) {
+	$GLOBALS['cacti_fixture_auth_warnings'] = $case === 'authentication warnings' ? ['realms_without_provider' => [1009]] : [];
 	ob_start();
-	cacti_fixture_map_fragment($root . '/cli/upgrade_database.php', 146, 257, $upgradePrefix, $replacements);
-	ob_end_clean();
+	cacti_fixture_map_fragment($root . '/cli/upgrade_database.php', 146, 268, $upgradePrefix, $replacements);
+	$upgradeOutput = ob_get_clean();
+
+	if (str_contains($upgradeOutput, 'WARNING: authentication-fixture') !== ($state === 'completed_with_warnings')) {
+		throw new RuntimeException('cli/upgrade_database.php did not print the authentication repairs for the ' . $case . ' case');
+	}
 	$upgradeReport = json_decode($GLOBALS['cacti_db']['settings']['maintenance_lastrun_installer_report'], true);
 
 	if ($upgradeReport['state'] !== $state || array_column($upgradeReport['operations'], 'succeeded', 'operation') !== $operations) {

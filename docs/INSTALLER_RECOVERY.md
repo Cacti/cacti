@@ -45,8 +45,12 @@ in the restored installation before reopening writes.
 After an upgrade, check local and configured external authentication, session
 and CSRF handling, console/device/graph pages, customized templates, plugin
 compatibility, and synchronization of each enabled collector. Completion warnings
-identify collectors requiring manual full synchronization. A successful schema
-check does not establish external LDAP/IdP or remote database availability.
+identify collectors requiring manual full synchronization, LDAP Login Providers
+with no server, and enabled users whose login realm has no provider. Those users
+cannot log in until the provider or realm is repaired; the upgrade itself still
+completes. Unreadable provider parameters stop the upgrade before the version is
+advanced. A successful schema check does not establish external LDAP/IdP or
+remote database availability.
 
 The installer retains its latest bounded report in `maintenance_lastrun_installer_report`,
 outside the temporary installer settings. Administrators with the installer

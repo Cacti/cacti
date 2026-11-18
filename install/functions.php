@@ -1771,9 +1771,18 @@ function install_verify_schema_columns() : string {
 	return $missing === [] ? '' : __('The Cacti database schema is incomplete. Missing required columns: %s', implode(', ', $missing));
 }
 
-/** Check provider parameters and existing users' provider mappings without exposing credentials. */
-function install_verify_authentication() : string {
+/**
+ * Check provider parameters and existing users' provider mappings without exposing credentials.
+ *
+ * Returns a blocking error for configuration that cannot be trusted at login.
+ * Mappings that already deny the affected logins go to $warnings instead,
+ * so the upgrade completes and the administrator is told what to repair.
+ *
+ * @param array<string, list<int>> $warnings set to the provider and realm IDs needing repair
+ */
+function install_verify_authentication(array &$warnings = []) : string {
 	require_once CACTI_PATH_LIBRARY . '/Installer/AuthenticationRequirements.php';
+	$warnings  = [];
 	$providers = db_fetch_assoc('SELECT id, type, enabled, parameters FROM login_providers');
 	$realms    = db_fetch_assoc("SELECT DISTINCT realm FROM user_auth WHERE enabled = 'on' AND realm >= 1000");
 
@@ -1781,7 +1790,32 @@ function install_verify_authentication() : string {
 		return __('Unable to verify authentication configuration after migration.');
 	}
 
-	$errors = (new \Cacti\Installer\AuthenticationRequirements())->errors(array_values($providers), array_map('intval', array_column($realms, 'realm')));
+	$checker  = new \Cacti\Installer\AuthenticationRequirements();
+	$errors   = $checker->errors(array_values($providers));
+	$warnings = $checker->warnings(array_values($providers), array_map('intval', array_column($realms, 'realm')));
 
 	return $errors === [] ? '' : __('Authentication configuration needs recovery: %s', implode(' ', $errors));
+}
+
+/**
+ * Messages for the problems an otherwise successful run left behind.
+ *
+ * @return list<string> translated messages, empty when there is nothing to report
+ */
+function install_completion_messages(\Cacti\Installer\CompletionWarnings $report) : array {
+	$messages = [];
+
+	foreach ($report->collectors as $state => $ids) {
+		$messages[] = __('Collector synchronization needs attention (%s): IDs %s. Run a manual full synchronization after checking collector status.', $state, implode(', ', $ids));
+	}
+
+	if (isset($report->authentication['ldap_without_server'])) {
+		$messages[] = __('LDAP Login Providers with no server configured: IDs %s. Their users cannot log in until a server is set under Configuration > Login Providers.', implode(', ', $report->authentication['ldap_without_server']));
+	}
+
+	if (isset($report->authentication['realms_without_provider'])) {
+		$messages[] = __('Enabled users belong to login realms with no Login Provider: realms %s. They cannot log in until they are moved to an existing realm or the provider is recreated.', implode(', ', $report->authentication['realms_without_provider']));
+	}
+
+	return $messages;
 }

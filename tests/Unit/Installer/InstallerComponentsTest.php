@@ -216,18 +216,39 @@ test('upgrade plans include only migrations in the requested range and preserve 
 		->and($data['tables'])->toBe(['host'])->and($data['collectors'])->toBe([2, 3]);
 });
 
-test('authentication postconditions preserve valid mappings and detect broken configuration', function () {
+test('authentication postconditions preserve valid mappings and block unreadable provider parameters', function () {
 	$checker   = new \Cacti\Installer\AuthenticationRequirements();
 	$providers = [
 		['id' => 7, 'type' => 1, 'enabled' => 'on', 'parameters' => '{"server":"ldap"}'],
 		['id' => 8, 'type' => 1, 'enabled' => '', 'parameters' => null],
 		['id' => 9, 'type' => 2, 'enabled' => 'on', 'parameters' => '{}'],
 	];
-	expect($checker->errors($providers, [0, 1007, 1008, 1009]))->toBe([]);
+	expect($checker->errors($providers))->toBe([])
+		->and($checker->warnings($providers, [0, 1007, 1008, 1009]))->toBe([]);
 	$providers[0]['parameters'] = 'invalid';
-	$providers[2]['type']       = 1;
-	$errors                     = $checker->errors($providers, [1007, 1010]);
-	expect(implode(' ', $errors))->toContain('Provider 7', 'LDAP provider 9', 'realm 1010');
+	expect($checker->errors($providers))->toBe(['Provider 7 has invalid parameters. Restore its configuration before retrying.']);
+});
+
+test('authentication mappings that already deny login are warnings, not upgrade failures', function () {
+	$checker   = new \Cacti\Installer\AuthenticationRequirements();
+	$providers = [
+		['id' => 7, 'type' => 1, 'enabled' => 'on', 'parameters' => '{"server":"ldap"}'],
+		['id' => 9, 'type' => 1, 'enabled' => 'on', 'parameters' => '{}'],
+		['id' => 10, 'type' => 1, 'enabled' => '', 'parameters' => '{}'],
+	];
+	expect($checker->errors($providers))->toBe([])
+		->and($checker->warnings($providers, [1007, 1011, 1011, 0]))->toBe(['ldap_without_server' => [9], 'realms_without_provider' => [1011]]);
+});
+
+test('completion warnings carry authentication repairs alongside collectors', function () {
+	$report = (new CompletionWarnings())->withAuthentication(['ldap_without_server' => [9, 9], 'realms_without_provider' => [1011], 'unknown' => [1]])
+		->withCollectors(['failed' => [2]]);
+	expect($report->authentication)->toBe(['ldap_without_server' => [9], 'realms_without_provider' => [1011]])
+		->and($report->collectors)->toBe(['failed' => [2]])
+		->and(CompletionWarnings::decode($report->encode()))->toEqual($report)
+		->and((new CompletionWarnings())->withAuthentication(['realms_without_provider' => [1011]])->hasWarnings())->toBeTrue()
+		->and(CompletionWarnings::decode('{"authentication":{"realms_without_provider":[0,"x",1011]}}')->authentication)->toBe(['realms_without_provider' => [1011]])
+		->and(CompletionWarnings::decode('{"authentication":"invalid"}')->hasWarnings())->toBeFalse();
 });
 
 test('preflight detects missing dependency entry points even when installed metadata is present', function () {
@@ -265,6 +286,15 @@ test('large collector warnings keep valid JSON and disclose omitted IDs', functi
 		->and($data['warning_ids_omitted'])->toBeGreaterThan(0)
 		->and(count($data['warnings']['collectors']['failed']) + $data['warning_ids_omitted'])->toBe(2000)
 		->and($data['state'])->toBe('completed_with_warnings');
+});
+
+test('large authentication warnings keep valid JSON and disclose omitted IDs', function () {
+	$report = new \Cacti\Installer\RunReport();
+	$report->finish(true, (new CompletionWarnings())->withAuthentication(['realms_without_provider' => range(1000, 2999)]));
+	$data = json_decode($report->encode(), true, flags: JSON_THROW_ON_ERROR);
+	expect($data['state'])->toBe('completed_with_warnings')
+		->and($data['warning_ids_omitted'])->toBeGreaterThan(0)
+		->and(count($data['warnings']['authentication']['realms_without_provider']) + $data['warning_ids_omitted'])->toBe(2000);
 });
 
 test('a single oversized diagnostic entry fails instead of returning unpersistable JSON', function () {

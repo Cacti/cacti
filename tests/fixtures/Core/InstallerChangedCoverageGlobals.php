@@ -76,8 +76,16 @@ if (!function_exists('install_verify_schema_columns')) {
 }
 
 if (!function_exists('install_verify_authentication')) {
-	function install_verify_authentication() {
+	function install_verify_authentication(&$warnings = []) {
+		$warnings = $GLOBALS['cacti_fixture_auth_warnings'] ?? [];
+
 		return '';
+	}
+}
+
+if (!function_exists('install_completion_messages')) {
+	function install_completion_messages($report) {
+		return $report->authentication === [] ? [] : ['authentication-fixture'];
 	}
 }
 
