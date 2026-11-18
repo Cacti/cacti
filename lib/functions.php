@@ -517,25 +517,32 @@ function cacti_http_resolve_safe_ips(string $host, ?array $blockedSubnets = null
 	// requires them) when building the CURLOPT_RESOLVE entry below.
 	$bareHost = trim($host, '[]');
 
-	if (filter_var($bareHost, FILTER_VALIDATE_IP)) {
-		$ips = [$bareHost];
-	} else {
-		$records = @dns_get_record($bareHost, DNS_A + DNS_AAAA);
-
-		$ips = is_array($records) ? array_map(static function ($record) {
-			return $record['ip'] ?? ($record['ipv6'] ?? null);
-		}, $records) : [];
-
-		$system = @gethostbynamel($bareHost);
-
-		if (is_array($system)) {
-			$ips = array_merge($ips, $system);
-		}
-
-		$ips = array_unique(array_filter($ips));
-	}
+	$ips = filter_var($bareHost, FILTER_VALIDATE_IP) ? [$bareHost] : cacti_http_system_ips($bareHost);
 
 	return cacti_http_validate_ips($ips, $blockedSubnets);
+}
+
+/**
+ * Looks a name up through PHP's blocking DNS and system resolver functions.
+ *
+ * @param string $host A hostname without brackets.
+ *
+ * @return list<string> Every address found, unvalidated.
+ */
+function cacti_http_system_ips(string $host) : array {
+	$records = @dns_get_record($host, DNS_A + DNS_AAAA);
+
+	$ips = is_array($records) ? array_map(static function ($record) {
+		return $record['ip'] ?? ($record['ipv6'] ?? null);
+	}, $records) : [];
+
+	$system = @gethostbynamel($host);
+
+	if (is_array($system)) {
+		$ips = array_merge($ips, $system);
+	}
+
+	return array_values(array_unique(array_filter($ips)));
 }
 
 /** Validate every resolved address before pinning an HTTP connection. */
@@ -658,8 +665,15 @@ function cacti_http_resolve_async(stdClass $transfer) : void {
 	}
 
 	try {
+		// Without resolver configuration (Windows without wmic, for one) fall back to the
+		// system resolver.  It blocks, but never substitutes another DNS server.
 		if ($transfer->dns->resolver === null) {
-			$transfer->dnsIps = [];
+			$transfer->dnsIps = cacti_http_system_ips($host);
+
+			if ($transfer->dnsIps === [] && isset($transfer->dnsCandidates[$transfer->dnsCandidate + 1])) {
+				$transfer->dnsCandidate++;
+				cacti_http_resolve_async($transfer);
+			}
 
 			return;
 		}

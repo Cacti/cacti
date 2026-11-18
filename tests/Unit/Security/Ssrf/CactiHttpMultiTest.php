@@ -152,3 +152,16 @@ test('names are checked through the system resolver as well as DNS', function ()
 		->and(cacti_http_resolve_safe_ips('169.254.169.254', CACTI_HTTP_TEST_METADATA))->toBe([])
 		->and(cacti_http_resolve_safe_ips('[::ffff:169.254.169.254]', CACTI_HTTP_TEST_METADATA))->toBe([]);
 });
+
+test('names still resolve through the system resolver when no DNS configuration loads', function () {
+	$transfer = (object) [
+		'dnsCandidates' => ['unlisted.invalid', 'localhost'],
+		'dnsCandidate'  => 0,
+		'dns'           => (object) ['search' => ['domains' => [], 'ndots' => 1, 'hosts' => null], 'resolver' => null],
+	];
+
+	cacti_http_resolve_async($transfer);
+
+	expect($transfer->dnsIps)->toContain('127.0.0.1')
+		->and(cacti_http_validate_ips($transfer->dnsIps))->toBe([]);
+});
