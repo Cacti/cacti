@@ -1,0 +1,1 @@
+Keep sanitize_uri from returning a network-path reference, require POST for the remaining state-changing actions, check tree and report history ownership, and require a login for the OAuth2 token exchange

@@ -22,7 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-require('./include/global.php');
+// This is the administrator flow that exchanges an authorization code for the
+// mail refresh token using the stored client secret, so it requires a login
+// and the Settings/Utilities realm like the settings page that launches it.
+require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php');
 
 if (read_config_option('settings_how') != 3) {

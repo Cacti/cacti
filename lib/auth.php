@@ -5157,3 +5157,79 @@ function remote_agent_validate_effective_user(mixed $value, ?callable $lookup = 
 
 	return $user_id;
 }
+
+/**
+ * Checks whether a user holds a realm, directly or through a group.
+ *
+ * @param int $user_id  The user to check
+ * @param int $realm_id The realm id as listed in $user_auth_realms
+ *
+ * @return bool True when the realm is assigned to the user or one of the user's groups
+ */
+function cacti_authorize_has_realm(int $user_id, int $realm_id) : bool {
+	static $realm_cache = [];
+
+	$key = $user_id . ':' . $realm_id;
+
+	if (isset($realm_cache[$key])) {
+		return $realm_cache[$key];
+	}
+
+	$has = (bool) db_fetch_cell_prepared('SELECT 1
+		FROM user_auth_realm
+		WHERE user_id = ?
+		AND realm_id = ?
+		UNION
+		SELECT 1
+		FROM user_auth_group_realm AS ugr
+		INNER JOIN user_auth_group_members AS ugm
+		ON ugm.group_id = ugr.group_id
+		WHERE ugm.user_id = ?
+		AND ugr.realm_id = ?
+		LIMIT 1',
+		[$user_id, $realm_id, $user_id, $realm_id]
+	);
+
+	$realm_cache[$key] = $has;
+
+	return $has;
+}
+
+/**
+ * Checks whether a user may modify a specific resource row.
+ *
+ * Endpoints that accept a resource id from the request must confirm that the
+ * acting user owns the row, or holds the Users/Groups administration realm
+ * (1), before changing it. The check is deliberately strict: an unknown
+ * resource type, a missing row or a user that is neither the owner nor an
+ * administrator all return false.
+ *
+ * @param int    $user_id       The acting user, normally $_SESSION[SESS_USER_ID]
+ * @param int    $resource_id   The id of the row being acted on
+ * @param string $resource_type The kind of resource, currently only 'graph_tree'
+ *
+ * @return bool True when the user may modify the resource
+ */
+function cacti_authorize_resource(int $user_id, int $resource_id, string $resource_type) : bool {
+	if ($user_id <= 0 || $resource_id <= 0) {
+		return false;
+	}
+
+	if (cacti_authorize_has_realm($user_id, 1)) {
+		return true;
+	}
+
+	switch ($resource_type) {
+		case 'graph_tree':
+			$owner = db_fetch_cell_prepared('SELECT user_id
+				FROM graph_tree
+				WHERE id = ?',
+				[$resource_id]
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+		default:
+			// Unknown type: fail closed. Add a case to opt a resource in.
+			return false;
+	}
+}
