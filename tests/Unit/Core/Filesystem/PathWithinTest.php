@@ -222,6 +222,31 @@ test('path containment returns the physical path when the base is reached throug
 	}
 });
 
+test('path containment resolves the base the way the filesystem does, not lexically', function () {
+	$fx = path_within_fixture();
+
+	try {
+		mkdir($fx['root'] . '/deep/dir', 0777, true);
+		mkdir($fx['root'] . '/deep/shared', 0777, true);
+		file_put_contents($fx['root'] . '/deep/shared/page.txt', 'physical base');
+
+		if (!@symlink($fx['root'] . '/deep/dir', $fx['root'] . '/hop')) {
+			$this->markTestSkipped('symlinks are not available');
+		}
+
+		// 'hop/..' is root/deep on disk but root/ lexically. The base must be
+		// the directory the filesystem resolves, as realpath() of the base did
+		// in the code this helper replaced; the same rule keeps a Windows UNC
+		// base from being walked as '/server/share' on the current drive.
+		$real = str_replace('\\', '/', (string) realpath($fx['root'] . '/deep/shared'));
+
+		expect(cacti_path_within($fx['root'] . '/hop/../shared', 'page.txt'))->toBe($real . '/page.txt')
+			->and(cacti_path_within($fx['root'] . '/hop/../shared', '../dir'))->toBeFalse();
+	} finally {
+		path_within_cleanup($fx);
+	}
+});
+
 test('path containment rejects invalid base directories without throwing', function () {
 	$fx = path_within_fixture();
 
