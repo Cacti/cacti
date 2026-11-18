@@ -236,6 +236,7 @@ Cacti CHANGELOG
 -issue#8646: Walk the host processor table once per CPU poll and return U when no load is reported
 -issue#8646: Parse BusyBox ping output in ping.pl
 -issue#8646: Count Cacti Stats logins once per poller interval and list a twice-mounted filesystem once
+-issue#8646: Return U from the MikroTik, FortiGate and apcupsd scripts when their device, plugin table or row is missing, and poll FortiGate devices with the SNMP retries
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
 -issue#8684: Harden the Card API controller (include/js/cards.js): discard refresh/resize responses superseded by a newer request for the same card, wait for the host to confirm a card removal before dropping it and persisting the layout, skip adding a card id already on the grid, and keep keyboard focus on the revealed expand/collapse button
