@@ -1832,8 +1832,7 @@ function get_host_graph_list(int $host_id, string $graph_template_id, int $data_
  * @return void
  */
 function get_matching_nodes() : void {
-	$my_matches = [];
-	$str        = (string) gnrv('str');
+	$str = (string) gnrv('str');
 
 	header('Content-Type: application/json; charset=utf-8');
 
@@ -1903,10 +1902,11 @@ function get_matching_nodes() : void {
 			$parents[(int) $item['graph_tree_id']][(int) $item['id']] = (int) $item['parent'];
 		}
 
-		// $paths[tree][branch] holds the branch ids from the root down to the
-		// branch, or false when its parents loop, leave the tree or are missing
-		$paths = [];
-		$seen  = [];
+		// Cache validity, not complete ancestor prefixes. Every parent link is
+		// checked once and every result node is emitted once, even for deep trees.
+		$valid       = [];
+		$seen        = [];
+		$final_array = [];
 
 		foreach ($matching as $row) {
 			$tree_id = (int) $row['graph_tree_id'];
@@ -1917,12 +1917,11 @@ function get_matching_nodes() : void {
 			}
 
 			$seen[$tree_id][$branch] = true;
+			$chain                   = [];
+			$visited                 = [];
+			$current                 = $branch;
 
-			$chain   = [];
-			$visited = [];
-			$current = $branch;
-
-			while ($current != 0 && !isset($paths[$tree_id][$current])) {
+			while ($current != 0 && !isset($valid[$tree_id][$current])) {
 				if (isset($visited[$current]) || !isset($parents[$tree_id][$current])) {
 					$current = -1;
 
@@ -1934,52 +1933,21 @@ function get_matching_nodes() : void {
 				$current           = $parents[$tree_id][$current];
 			}
 
-			if ($current == 0) {
-				$path = [];
-			} elseif ($current == -1) {
-				$path = false;
-			} else {
-				$path = $paths[$tree_id][$current];
+			$connected = $current == 0 || ($current != -1 && $valid[$tree_id][$current]);
+			$anchor    = 'tree_anchor-' . $tree_id;
+
+			if ($connected) {
+				$final_array[$anchor][$anchor] = 1;
 			}
 
+			// Valid cached ancestors are already in the result. Append only the
+			// new suffix, keeping every parent before the children it opens.
 			for ($i = cacti_sizeof($chain) - 1; $i >= 0; $i--) {
-				if ($path !== false) {
-					$path[] = 'tbranch-' . $chain[$i];
+				$valid[$tree_id][$chain[$i]] = $connected;
+
+				if ($connected) {
+					$final_array[$anchor]['tbranch-' . $chain[$i]] = 1;
 				}
-
-				$paths[$tree_id][$chain[$i]] = $path;
-			}
-
-			if ($branch != 0) {
-				$path = $paths[$tree_id][$branch];
-			}
-
-			if ($path !== false) {
-				$my_matches[] = array_merge(['tree_anchor-' . $tree_id], $path);
-			}
-		}
-
-		// Now flatten the list of nodes
-		$final_array = [];
-		$level       = 0;
-
-		while (true) {
-			$found = 0;
-
-			foreach ($my_matches as $match) {
-				if (isset($match[$level])) {
-					if ($level == 0) {
-						$final_array[$match[$level]][$match[$level]] = 1;
-					} else {
-						$final_array[$match[0]][$match[$level]] = 1;
-					}
-					$found++;
-				}
-			}
-			$level++;
-
-			if ($found == 0) {
-				break;
 			}
 		}
 
