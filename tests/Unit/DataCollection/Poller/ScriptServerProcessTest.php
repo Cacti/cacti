@@ -370,21 +370,21 @@ test('a callable loaded by one script cannot be rebound to another script', func
 	}
 });
 
-test('a framing or output limit violation retires the worker before a fresh worker serves requests', function (string $function) {
+test('an unframeable result is answered with U and the same worker keeps serving requests', function (string $function) {
 	[$this->process, $this->pipes] = ss_process_test_start();
+	$pid                           = proc_get_status($this->process)['pid'];
 	$healthy                       = true;
 	$request                       = $this->script . ' ' . $this->prefix . '_' . $function;
 
-	expect(exec_poll_php($request, true, $this->pipes, $this->process, 1.0, $healthy))->toBe('U')
-		->and($healthy)->toBeFalse();
-
-	script_server_close($this->process, $this->pipes);
-	[$this->process, $this->pipes] = ss_process_test_start();
-	$healthy                       = true;
-	$request                       = $this->script . ' ' . $this->prefix . '_echo ' . escapeshellarg('fresh');
-
-	expect(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('fresh')
+	// a deterministic result must not respawn the worker on every poll
+	expect(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('U')
 		->and($healthy)->toBeTrue();
+
+	$request = $this->script . ' ' . $this->prefix . '_echo ' . escapeshellarg('same');
+
+	expect(exec_poll_php($request, true, $this->pipes, $this->process, 3.0, $healthy))->toBe('same')
+		->and($healthy)->toBeTrue()
+		->and(proc_get_status($this->process)['pid'])->toBe($pid);
 })->with(['control', 'long']);
 
 test('a multipart result with a line break is answered on one line by the same worker', function () {

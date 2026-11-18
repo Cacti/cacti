@@ -89,9 +89,8 @@ foreach (['collect_device_data', 'ping_and_reindex_check'] as $function) {
 $result = script_server_dispatch(__NAMESPACE__ . '\\ss_cov_quiet', []);
 ss_cov_check($result === '7' && ss_cov_log() === '', 'quiet function logs nothing');
 
-$healthy = true;
-$result  = script_server_dispatch(__NAMESPACE__ . '\\ss_cov_multiline', [], $healthy);
-ss_cov_check($result === 'a:1 b:2 c:3' && $healthy, 'multipart reply on one line');
+$result = script_server_dispatch(__NAMESPACE__ . '\\ss_cov_multiline', []);
+ss_cov_check($result === 'a:1 b:2 c:3', 'multipart reply on one line');
 ss_cov_check(script_server_normalize_response(['a' => 1]) === 'U', 'array result reported as U');
 
 // parseArgs(): a parse error is printed only when debugging
