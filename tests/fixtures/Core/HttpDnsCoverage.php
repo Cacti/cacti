@@ -124,9 +124,13 @@ $search   = ['domains' => ['hospital.test'], 'ndots' => 1, 'hosts' => new \React
 $transfer = (object) ['dnsCandidates' => ['switch1'], 'dnsCandidate' => 0, 'dns' => (object) ['search' => $search, 'resolver' => null]];
 \cacti_http_resolve_async($transfer);
 check($transfer->dnsIps === ['127.0.0.1'], 'hosts alias required a nameserver');
-$transfer->dnsCandidates = ['unlisted'];
+$transfer->dnsCandidates = ['unlisted.invalid'];
 \cacti_http_resolve_async($transfer);
-check($transfer->dnsIps === [], 'missing resolver did not fail closed');
+check($transfer->dnsIps === [], 'unresolvable name without a resolver did not fail closed');
+$transfer->dnsCandidates = ['unlisted.invalid', 'localhost'];
+$transfer->dnsCandidate  = 0;
+\cacti_http_resolve_async($transfer);
+check(in_array('127.0.0.1', $transfer->dnsIps, true), 'missing resolver did not fall back to the system resolver');
 check(\cacti_http_dns_candidates('switch1', $search) === ['switch1'], 'hosts alias searched DNS');
 check(\cacti_http_dns_candidates('switch2.', $search) === ['switch2.'], 'absolute name searched suffixes');
 check(\cacti_http_dns_candidates('switch2.lab', $search) === ['switch2.lab', 'switch2.lab.hospital.test'], 'ndots precedence changed');
