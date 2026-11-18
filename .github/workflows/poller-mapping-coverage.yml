@@ -28,7 +28,7 @@ jobs:
   coverage:
     name: Changed PHP lines >= 80%
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 25
     services:
       mysql:
         image: mariadb:10.6
@@ -47,7 +47,7 @@ jobs:
         with:
           php-version: '8.3'
           coverage: xdebug
-          extensions: curl, dom, mbstring, pdo_mysql, xml
+          extensions: curl, dom, gd, gmp, intl, ldap, mbstring, mysqli, pdo_mysql, xml
           ini-values: memory_limit=2G
           dependency-mode: locked-maintenance-pr-coverage
           cache-dependency-path: tests/composer.lock
@@ -69,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$CACTI_PR_RAW_COVERAGE"
-          vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+          php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
       - name: Exercise data query discovery and reindex contracts
         working-directory: tests
         env:
@@ -95,6 +95,19 @@ jobs:
           php tests/fixtures/PollerMappingCache.php
           php tests/fixtures/PollerMappingCache.php retry
           php tests/fixtures/Core/SnmpWalkOidGuard.php
+      - name: Exercise installer contracts and requests when installation code changes
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+          XDEBUG_MODE: coverage
+          CACTI_PR_COVERAGE_OUTPUT: ${{ runner.temp }}/request-coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: |
+          set -euo pipefail
+          changed_files=$(git diff --name-only "$BASE_COMMIT"...HEAD)
+          if grep -Eq '^(lib/installer\.php|install/|cli/(install_cacti|upgrade_database)\.php|tests/fixtures/Installer/)' <<< "$changed_files"; then
+            (cd tests && php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest --configuration=phpunit.xml Unit/Installer)
+            bash tests/e2e/installer-coverage.sh
+          fi
       - name: Require at least 80 percent of changed executable PHP lines
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
