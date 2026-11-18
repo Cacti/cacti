@@ -146,6 +146,10 @@ define('POLLER_ACTION_SCRIPT_PHP', 2);
 define('POLLER_ACTION_HTTP', 3);
 define('POLLER_ACTION_NONE', 99);
 
+/* the first spine release to include Cacti/spine#687, which leaves
+ * POLLER_ACTION_HTTP items to cmd.php --http-only instead of writing U for them */
+define('SPINE_HTTP_HANDOFF_MIN_VERSION', '1.3.0');
+
 /* used for reindexing only:
  * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES
  * we simply use the OID_INDEX|ARG_INDEX and count number of indexes found

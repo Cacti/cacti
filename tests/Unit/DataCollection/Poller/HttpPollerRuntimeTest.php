@@ -38,12 +38,32 @@ require_once dirname(__DIR__, 3) . '/Helpers/HttpTestServer.php';
 class_alias(\CactiHttpPoller::class, __NAMESPACE__ . '\CactiHttpPoller');
 class_alias(\CactiHttpPollItem::class, __NAMESPACE__ . '\CactiHttpPollItem');
 
-foreach ([['/cmd.php', 'http_check_hosts'], ['/cmd.php', 'http_only_poll'], ['/cmd.php', 'http_prefetch_items'], ['/poller.php', 'poller_start_http_handoff']] as [$file, $function]) {
+foreach ([['/cmd.php', 'http_check_hosts'], ['/cmd.php', 'http_only_poll'], ['/cmd.php', 'http_prefetch_items'], ['/poller.php', 'poller_start_http_handoff'], ['/poller.php', 'poller_spine_version']] as [$file, $function]) {
 	\cacti_fixture_source_function(dirname(__DIR__, 4) . $file, $function, __NAMESPACE__);
 }
 
-function stub_reset(array $rows = [], mixed $cell = false) : void {
-	$GLOBALS['handoff'] = ['rows' => $rows, 'cell' => $cell, 'queries' => [], 'executes' => [], 'launches' => [], 'pings' => []];
+function stub_reset(array $rows = [], mixed $cell = false, array $config = []) : void {
+	$GLOBALS['handoff'] = ['rows' => $rows, 'cell' => $cell, 'config' => $config + ['http_poller_concurrency' => '8'], 'queries' => [], 'executes' => [], 'launches' => [], 'pings' => [], 'logs' => []];
+}
+
+/**
+ * A stand-in spine binary that prints $version the way spine --version does
+ * and counts how often it was run.
+ *
+ * @return array{0: string, 1: string} the binary and its run counter
+ */
+function fake_spine(string $version) : array {
+	$binary  = tempnam(sys_get_temp_dir(), 'cacti-fake-spine-');
+	$counter = $binary . '.runs';
+
+	file_put_contents($binary, "#!/bin/sh\necho run >> '$counter'\necho 'SPINE $version  Copyright 2004-2026 by The Cacti Group'\n");
+	chmod($binary, 0700);
+
+	return [$binary, $counter];
+}
+
+function runs(string $counter) : int {
+	return is_file($counter) ? count(file($counter)) : 0;
 }
 
 function db_fetch_assoc_prepared($sql, $params = [], $log = true) {
@@ -73,10 +93,15 @@ function db_column_exists($table, $column, $log = true) {
 }
 
 function read_config_option($name, $force = false) {
-	return $name === 'http_poller_concurrency' ? '8' : '';
+	return $GLOBALS['handoff']['config'][$name] ?? '';
+}
+
+function set_config_option($name, $value, $remote = false) {
+	$GLOBALS['handoff']['config'][$name] = $value;
 }
 
 function cacti_log($message, $print = false, $type = '', $level = 0) {
+	$GLOBALS['handoff']['logs'][] = $message;
 }
 
 function boost_flush_output_batch($values, $db_conn = false) {
@@ -108,13 +133,58 @@ test('poller.php starts one cmd.php --http-only process only when the poller has
 		->and($GLOBALS['handoff']['launches'])->toBe([])
 		->and($GLOBALS['handoff']['queries'][0][1])->toBe([4, POLLER_ACTION_HTTP]);
 
-	stub_reset([], 1);
+	[$spine] = fake_spine('1.3.0');
+
+	stub_reset([], 1, ['path_spine' => $spine]);
 
 	expect(poller_start_http_handoff(1, '>> /tmp/err 2>&1'))->toBeTrue()
 		->and($GLOBALS['handoff']['launches'])->toHaveCount(1)
 		->and($GLOBALS['handoff']['launches'][0][1])->toContain('cmd.php')
 		->and($GLOBALS['handoff']['launches'][0][1])->toEndWith('--poller=1 --http-only')
 		->and($GLOBALS['handoff']['launches'][0][2])->toBe('>> /tmp/err 2>&1');
+});
+
+test('the handoff stays off with one warning for a spine older than the first that skips HTTP items', function (string $version) {
+	[$spine] = fake_spine($version);
+
+	stub_reset([], 1, ['path_spine' => $spine]);
+
+	expect(poller_start_http_handoff(1, ''))->toBeFalse()
+		->and($GLOBALS['handoff']['launches'])->toBe([])
+		->and($GLOBALS['handoff']['logs'])->toHaveCount(1)
+		->and($GLOBALS['handoff']['logs'][0])->toContain('need spine >= ' . SPINE_HTTP_HANDOFF_MIN_VERSION . ' or cmd.php')
+		->and($GLOBALS['handoff']['logs'][0])->toContain("spine $version ");
+})->with(['1.2.31', '1.2.9']);
+
+test('the handoff stays off with one warning when the spine version is unknown', function () {
+	[$spine] = fake_spine('');
+
+	// a binary that does not report a version, and a path that does not exist
+	foreach ([$spine, sys_get_temp_dir() . '/cacti-no-such-spine'] as $path) {
+		stub_reset([], 1, ['path_spine' => $path]);
+
+		expect(poller_start_http_handoff(1, ''))->toBeFalse()
+			->and($GLOBALS['handoff']['launches'])->toBe([])
+			->and($GLOBALS['handoff']['logs'])->toHaveCount(1)
+			->and($GLOBALS['handoff']['logs'][0])->toContain('spine of unknown version');
+	}
+});
+
+test('spine is asked for its version once, and again only when the binary changes', function () {
+	[$spine, $counter] = fake_spine('1.3.0');
+
+	stub_reset([], 1, ['path_spine' => $spine]);
+
+	expect(poller_spine_version())->toBe('1.3.0')
+		->and(poller_spine_version())->toBe('1.3.0')
+		->and(runs($counter))->toBe(1)
+		->and($GLOBALS['handoff']['config']['spine_version'])->toBe('1.3.0');
+
+	file_put_contents($spine, "#!/bin/sh\necho run >> '$counter'\necho 'SPINE 1.2.31  Copyright'\n");
+	clearstatcache();
+
+	expect(poller_spine_version())->toBe('1.2.31')
+		->and(runs($counter))->toBe(2);
 });
 
 test('the spine-side pass writes HTTP output, skips devices marked down and leaves scheduling to spine', function () {
