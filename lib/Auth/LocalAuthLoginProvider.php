@@ -139,7 +139,9 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			if (trim($password) == '') {
 				// error
 				$error     = true;
-				$error_msg = __('Access Denied!  No password provided by user.');
+				// An unknown or disabled username with an empty password gets the
+				// generic message, so this one must too. Only the log says why.
+				$error_msg = __('Access Denied!  Login Failed.');
 
 				cacti_log(sprintf('LOGIN FAILED: No password provided for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
 
