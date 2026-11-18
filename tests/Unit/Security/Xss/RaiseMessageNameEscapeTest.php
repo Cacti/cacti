@@ -110,6 +110,26 @@ test('raise_message escapes a custom message', function () {
 		->and($_SESSION[SESS_MESSAGES]['device']['level'])->toBe(MESSAGE_LEVEL_INFO);
 });
 
+/*
+ * Plugins written for the old behaviour pass __esc() or html_escape() output. html_escape()
+ * does not encode an existing character reference again, so that text is stored unchanged
+ * and displays as before; only literal markup now displays as text.
+ */
+test('raise_message does not double-escape text a plugin already escaped', function () {
+	$name = 'Router "A" & O\'Brien <core>';
+
+	raise_message('legacy_esc', 'Device ' . htmlspecialchars($name, ENT_QUOTES) . ' saved', MESSAGE_LEVEL_INFO);
+	raise_message('legacy_html', 'Device ' . html_escape($name) . ' saved', MESSAGE_LEVEL_INFO);
+	raise_message('legacy_markup', 'Line one<br>Line two', MESSAGE_LEVEL_INFO);
+
+	expect($_SESSION[SESS_MESSAGES]['legacy_esc']['message'])
+		->toBe('Device Router &quot;A&quot; &amp; O&#039;Brien &lt;core&gt; saved')
+		->and($_SESSION[SESS_MESSAGES]['legacy_html']['message'])
+		->toBe('Device Router &quot;A&quot; &amp; O&apos;Brien &lt;core&gt; saved')
+		->and($_SESSION[SESS_MESSAGES]['legacy_markup']['message'])
+		->toBe('Line one&lt;br&gt;Line two');
+});
+
 test('raise_message keeps a message with invalid UTF-8 instead of blanking it', function () {
 	raise_message('device', "Device \xff <b>", MESSAGE_LEVEL_INFO);
 

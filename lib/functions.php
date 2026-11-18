@@ -1311,6 +1311,7 @@ function get_message_max_type(mixed $output_messages = null) : int {
  * A custom $message is plain text and is HTML-escaped here, so callers pass unescaped text
  * (__() rather than __esc()). Use raise_message_html() only for trusted markup whose dynamic
  * parts the caller has already escaped. Predefined and session-keyed messages are not escaped.
+ * Text a caller already escaped with __esc() or html_escape() is not encoded a second time.
  *
  * @param mixed  $message_id    ID of the message as defined in $messages in 'include/global_arrays.php'
  * @param string $message       Plain text of the message to be displayed
