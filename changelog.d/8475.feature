@@ -1,1 +1,1 @@
-Add an HTTP JSON Data Input Method and poller action that reads JSON Pointer values from HTTP endpoints, sharing one request per Device and endpoint with per-item timeouts and a concurrency cap; when spine is the poller, cmd.php collects the HTTP items next to it
+Add an HTTP JSON Data Input Method and poller action that reads JSON Pointer values from HTTP endpoints, sharing one request per Device and endpoint with per-item timeouts and a concurrency cap; with spine 1.3.0 or later as the poller, cmd.php collects the HTTP items next to it
