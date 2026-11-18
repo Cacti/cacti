@@ -108,10 +108,11 @@ jobs:
           # Unix signal and socket contracts declare explicit platform skips.
           install-args: --prefer-dist --no-progress --no-interaction --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
       - name: Exercise native pipe framing, process recovery and state storage
+        timeout-minutes: 5
         shell: bash
         run: |
           set -euo pipefail
-          php include/vendor/bin/pest --configuration=tests/phpunit.xml --compact \
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml --debug \
             tests/Unit/DataCollection/Poller/ScriptServerProcessTest.php \
             tests/Unit/DataCollection/Poller/ScriptServerRequestTest.php \
             tests/Unit/DataCollection/Poller/ScriptServerResponseTest.php \

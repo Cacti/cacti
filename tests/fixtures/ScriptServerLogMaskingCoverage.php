@@ -29,6 +29,10 @@ if (!defined('CACTI_SERVER_OS')) {
 	define('CACTI_SERVER_OS', 'unix');
 }
 
+if (!defined('CACTI_CONNECTION')) {
+	define('CACTI_CONNECTION', 'online');
+}
+
 $GLOBALS['ss_cov_log'] = [];
 
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
@@ -73,7 +77,7 @@ foreach (['parseArgs', 'script_server_log_token', 'script_server_redact_args', '
 	cacti_fixture_source_function($root . '/lib/script_server.php', $function, __NAMESPACE__);
 }
 
-foreach (['script_server_log_request', 'script_server_redact_params', 'poller_redact_snmp_secrets', 'exec_poll', 'exec_with_timeout'] as $function) {
+foreach (['script_server_process_descriptors', 'script_server_log_request', 'script_server_redact_params', 'poller_redact_snmp_secrets', 'exec_poll', 'exec_with_timeout'] as $function) {
 	cacti_fixture_source_function($root . '/lib/poller.php', $function, __NAMESPACE__);
 }
 
@@ -171,4 +175,17 @@ $lines = array_values(array_filter($GLOBALS['ss_cov_log'], function ($line) {
 $log = implode("\n", $lines);
 ss_cov_check(count($lines) === 6 && !str_contains($log, 'c0mmunity') && !str_contains($log, 'authpass') && substr_count($log, '********') === 12, 'recache logs masked');
 
-print "PASS: Script Server replies stay on one line and logged arguments mask device credentials\n";
+$GLOBALS['cmd_device_worker_healthy'] = false;
+$GLOBALS['cmd_device_replacements']   = [];
+$item                                 = ['local_data_id' => 3, 'host_id' => 7, 'action' => POLLER_ACTION_SCRIPT_PHP, 'arg1' => '/script.php sample'];
+$error_ds                             = [];
+collect_device_data($item, $error_ds, 25);
+ss_cov_check($GLOBALS['cmd_device_replacements'] === [['cmd', 1, 'online', 25.0]], 'a broken collection worker is replaced with the same owner and timeout');
+
+$GLOBALS['cmd_device_replacements'] = [];
+$GLOBALS['cmd_device_reindex']      = [['data_query_id' => 2, 'action' => POLLER_ACTION_SCRIPT_PHP, 'op' => '=', 'assert_value' => '42', 'arg1' => '/script.php sample']];
+$item                               = ['host_id' => 7, 'hostname' => 'host1', 'snmp_community' => '', 'snmp_password' => '', 'snmp_priv_passphrase' => ''];
+ping_and_reindex_check($item, false, 25);
+ss_cov_check($GLOBALS['cmd_device_replacements'] === [['cmd', 1, 'online', 25.0]], 'a broken reindex worker is replaced with the same owner and timeout');
+
+print "PASS: Script Server replies stay framed, credentials stay masked, and failed workers are replaced\n";

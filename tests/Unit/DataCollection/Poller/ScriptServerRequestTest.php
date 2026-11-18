@@ -195,7 +195,7 @@ test('one line terminator is removed and embedded controls are refused', functio
 });
 
 test('exec_poll_php refuses a command longer than the reader accepts', function () {
-	$proc = proc_open(['cat'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$proc = proc_open(['cat'], script_server_process_descriptors(), $pipes);
 
 	expect(exec_poll_php(str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH + 1), true, $pipes, $proc))->toBe('U');
 
@@ -209,7 +209,7 @@ test('exec_poll_php refuses a command longer than the reader accepts', function 
 });
 
 test('exec_poll_php refuses a command with an embedded line break', function () {
-	$proc = proc_open(['cat'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$proc = proc_open(['cat'], script_server_process_descriptors(), $pipes);
 
 	expect(exec_poll_php("first\nsecond", true, $pipes, $proc))->toBe('U');
 	expect(trim(exec_poll_php(str_repeat('b', SCRIPT_SERVER_MAX_REQUEST_LENGTH), true, $pipes, $proc)))
@@ -222,7 +222,7 @@ test('exec_poll_php refuses a command with an embedded line break', function () 
 });
 
 test('exec_poll_php preserves the legacy ERROR response mapping', function () {
-	$proc    = proc_open(['cat'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$proc    = proc_open(['cat'], script_server_process_descriptors(), $pipes);
 	$healthy = true;
 
 	expect(exec_poll_php('ERROR from script', true, $pipes, $proc, 1.0, $healthy))->toBe('U')
@@ -242,7 +242,7 @@ test('response handling rejects invalid worker handles and an unframed oversized
 	expect(exec_poll_php('probe', true, false, false, 0.1, $healthy))->toBe('U')
 		->and($healthy)->toBeFalse();
 
-	$process = proc_open(['cat'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$process = proc_open(['cat'], script_server_process_descriptors(), $pipes);
 	fclose($pipes[0]);
 	$healthy = true;
 
@@ -252,7 +252,7 @@ test('response handling rejects invalid worker handles and an unframed oversized
 	script_server_close($process, $pipes, false);
 
 	$code    = 'while (($line = fgets(STDIN)) !== false) { fwrite(STDOUT, str_repeat("x", ' . (SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 2) . ')); usleep(500000); }';
-	$process = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$process = proc_open([PHP_BINARY, '-r', $code], script_server_process_descriptors(), $pipes);
 	$healthy = true;
 
 	expect(exec_poll_php('probe', true, $pipes, $process, 1.0, $healthy))->toBe('U')
@@ -304,7 +304,7 @@ test('the direct fallback executes an allowed script without a command shell', f
 
 test('exec_poll_php drains stderr while waiting for a framed response', function () {
 	$code    = 'fwrite(STDERR, str_repeat("x", 1048576)); while (($line = fgets(STDIN)) !== false) { fwrite(STDOUT, $line); }';
-	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$proc    = proc_open([PHP_BINARY, '-r', $code], script_server_process_descriptors(), $pipes);
 	$healthy = true;
 
 	expect(exec_poll_php('ping', true, $pipes, $proc, 3.0, $healthy))->toBe('ping')
@@ -315,7 +315,7 @@ test('exec_poll_php drains stderr while waiting for a framed response', function
 
 test('exec_poll_php terminates a worker that misses its deadline', function () {
 	$code    = 'while (($line = fgets(STDIN)) !== false) { usleep(500000); fwrite(STDOUT, "late\\n"); }';
-	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$proc    = proc_open([PHP_BINARY, '-r', $code], script_server_process_descriptors(), $pipes);
 	$healthy = true;
 	$start   = hrtime(true);
 
@@ -329,7 +329,7 @@ test('exec_poll_php terminates a worker that misses its deadline', function () {
 test('deadline termination escalates when a worker ignores the first signal', function () {
 	$code = 'pcntl_async_signals(true); pcntl_signal(SIGTERM, static function () : void {}); ' .
 		'while (($line = fgets(STDIN)) !== false) { sleep(10); }';
-	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$proc    = proc_open([PHP_BINARY, '-r', $code], script_server_process_descriptors(), $pipes);
 	$healthy = true;
 	$start   = hrtime(true);
 
@@ -342,7 +342,7 @@ test('deadline termination escalates when a worker ignores the first signal', fu
 
 test('exec_poll_php replaces workers that emit invalid responses', function (string $body) {
 	$code    = 'while (($line = fgets(STDIN)) !== false) { ' . $body . ' }';
-	$proc    = proc_open([PHP_BINARY, '-r', $code], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$proc    = proc_open([PHP_BINARY, '-r', $code], script_server_process_descriptors(), $pipes);
 	$healthy = true;
 
 	expect(exec_poll_php('probe', true, $pipes, $proc, 1.0, $healthy))->toBe('U')
