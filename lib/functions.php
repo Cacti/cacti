@@ -2197,7 +2197,10 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 	$ping_failure_count  = read_config_option('ping_failure_count');
 	$ping_recovery_count = read_config_option('ping_recovery_count');
 
-	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
+	// find() runs the same prepared query, but returns null rather than an
+	// empty row when the device no longer exists, so a device deleted during
+	// the poll is skipped instead of being updated from an empty row.
+	$host = \Cacti\Repository\DeviceRepository::instance()->find($host_id);
 
 	if (!is_array($host)) {
 		return;
