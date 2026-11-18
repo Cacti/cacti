@@ -77,6 +77,11 @@ test('names that are not DEFs of the member are left alone', function () {
 		->and(results()['unresolved'])->toBe('a,8,*');
 });
 
+test('a member DEF the aggregate does not draw becomes unknown rather than another DEF', function () {
+	expect(results()['skipped'])->toBe('CURRENT_DATA_SOURCE,POP,UNKN,a,-')
+		->and(results()['skipped_total'])->toBe('CURRENT_DATA_SOURCE,POP,UNKN,8,*');
+});
+
 test('graph items keep the consolidation function their DEFs are built with', function () {
 	/* a GPRINT follows the CF of the graph item before it, once there is one */
 	expect(results()['cfs'])->toBe([4, 3, 3, 1, 4, 3, 2, 3]);

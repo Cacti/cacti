@@ -2175,7 +2175,9 @@ function rrdtool_aggregate_def_map($local_graph_id, $rra_seconds) {
 /**
  * Point the DEF names in an aggregate graph item's CDEF at the right DEFs. In a member's item, a
  * name refers to that member's own DEF. In a totalling item, it refers to the sum of that DEF
- * across all members. Names that cannot be resolved are left unchanged.
+ * across all members. A name that is not a DEF of the member graph, such as a CDEF name, is left
+ * unchanged; a member DEF that the aggregate does not draw, or cannot attribute to one member,
+ * becomes unknown rather than another member's DEF.
  *
  * @param string $cdef_string The CDEF expression before Cacti's special data sources are expanded.
  * @param mixed $dtr_id The data_template_rrd id of the graph item.
@@ -2213,26 +2215,39 @@ function rrdtool_aggregate_cdef_defs($cdef_string, $dtr_id, $map, $cf_ds_cache, 
 		}
 
 		$names = array();
+		$known = false;
 
 		foreach ($members as $defs) {
-			if (isset($defs[$index]) && isset($cf_ds_cache[$defs[$index][0]][$defs[$index][1]])) {
+			if (!isset($defs[$index])) {
+				continue;
+			}
+
+			$known = true;
+
+			if (isset($cf_ds_cache[$defs[$index][0]][$defs[$index][1]])) {
 				$names[] = generate_graph_def_name(strval($cf_ds_cache[$defs[$index][0]][$defs[$index][1]]));
 			}
 		}
 
-		// A shared data source does not identify which member an item came
-		// from. Resolve only when every possible member agrees; never choose
-		// the last member or sum members for an ordinary member item. Keep a
-		// DEF reference so RRDtool also accepts an otherwise constant CDEF.
-		if ($member_item && cacti_sizeof($members) > 1) {
-			$tokens[$key] = cacti_sizeof($names) == cacti_sizeof($members) && cacti_sizeof(array_unique($names)) == 1 ? $names[0] : 'CURRENT_DATA_SOURCE,POP,UNKN';
+		/* not a DEF of any member graph, such as a CDEF name */
+		if (!$known) {
+			continue;
+		}
+
+		// Never point a name at a different DEF. A shared data source does
+		// not identify which member an item came from, so resolve it only
+		// when every possible member agrees, and a member's DEF is missing
+		// when the aggregate skips the item that draws it. Keep a DEF
+		// reference so RRDtool also accepts an otherwise constant CDEF.
+		if (!cacti_sizeof($names) || ($member_item && (cacti_sizeof($names) != cacti_sizeof($members) || cacti_sizeof(array_unique($names)) != 1))) {
+			$tokens[$key] = 'CURRENT_DATA_SOURCE,POP,UNKN';
 
 			continue;
 		}
 
-		if (cacti_sizeof($names) == 1) {
+		if ($member_item || cacti_sizeof($names) == 1) {
 			$tokens[$key] = $names[0];
-		} elseif (cacti_sizeof($names) > 1) {
+		} else {
 			/* sum like ALL_DATA_SOURCES_NODUPS: unknown values count as 0 */
 			$sum = array();
 

@@ -89,6 +89,10 @@ $map     = rrdtool_aggregate_def_map(50, 300);
 $map_sql = $GLOBALS['query_count'];
 $now     = time() - 300;
 
+/* the aggregate skipped the items that draw each member's out data source */
+$skipped = $cache;
+unset($skipped[202], $skipped[352]);
+
 $results = array(
 	'map'          => $map,
 	'not_aggregate' => rrdtool_aggregate_def_map(99, 300),
@@ -102,6 +106,8 @@ $results = array(
 	'single_total' => rrdtool_aggregate_cdef_defs('a,8,*', 777, array('owner' => array(), 'members' => array(array(array(201, 1)))), $cache, 300),
 	'cfs'          => array(),
 	'queries'      => $map_sql,
+	'skipped'      => rrdtool_aggregate_cdef_defs('b,a,-', 201, $map, $skipped, 300),
+	'skipped_total' => rrdtool_aggregate_cdef_defs('b,8,*', 0, $map, $skipped, 300),
 );
 
 /* the CF each item type's DEF is built with */
