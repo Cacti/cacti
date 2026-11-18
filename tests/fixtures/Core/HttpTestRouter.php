@@ -56,6 +56,11 @@ switch (true) {
 		print '{"v":1}';
 
 		break;
+	case $path === '/slower':
+		sleep(3);
+		print '{"v":1}';
+
+		break;
 	case $path === '/big':
 		print str_repeat(' ', 64) . '{}';
 

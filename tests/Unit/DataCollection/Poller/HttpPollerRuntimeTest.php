@@ -43,7 +43,7 @@ foreach ([['/cmd.php', 'http_check_hosts'], ['/cmd.php', 'http_only_poll'], ['/c
 }
 
 function stub_reset(array $rows = [], mixed $cell = false, array $config = []) : void {
-	$GLOBALS['handoff'] = ['rows' => $rows, 'cell' => $cell, 'config' => $config + ['http_poller_concurrency' => '8'], 'queries' => [], 'executes' => [], 'launches' => [], 'pings' => [], 'logs' => []];
+	$GLOBALS['handoff'] = ['rows' => $rows, 'cell' => $cell, 'config' => $config + ['http_poller_concurrency' => '8'], 'queries' => [], 'executes' => [], 'execute_params' => [], 'boost' => [], 'launches' => [], 'pings' => [], 'logs' => []];
 }
 
 /**
@@ -84,6 +84,13 @@ function db_execute($sql, $log = true, $db_conn = false) {
 	return true;
 }
 
+function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false) {
+	$GLOBALS['handoff']['executes'][]       = $sql;
+	$GLOBALS['handoff']['execute_params'][] = $params;
+
+	return true;
+}
+
 function db_qstr($value, $db_conn = false) {
 	return "'" . addslashes((string) $value) . "'";
 }
@@ -105,6 +112,9 @@ function cacti_log($message, $print = false, $type = '', $level = 0) {
 }
 
 function boost_flush_output_batch($values, $db_conn = false) {
+	$GLOBALS['handoff']['boost'][] = $values;
+
+	return true;
 }
 
 function exec_background($filename, $args = '', $redirect_args = '') {
@@ -202,9 +212,19 @@ test('the spine-side pass writes HTTP output, skips devices marked down and leav
 		->and($sql)->not->toContain('rrd_next_step')
 		->and($params)->toBe([1, POLLER_ACTION_HTTP, HOST_DOWN])
 		->and($GLOBALS['handoff']['executes'])->toHaveCount(1)
-		->and($GLOBALS['handoff']['executes'][0])->toContain("(9, 'value', CURRENT_TIMESTAMP(), '5')")
-		->and($GLOBALS['handoff']['executes'][0])->toContain("(10, 'value', CURRENT_TIMESTAMP(), 'U')")
+		->and($GLOBALS['handoff']['executes'][0])->toContain('VALUES (?, ?, CURRENT_TIMESTAMP(), ?), (?, ?, CURRENT_TIMESTAMP(), ?)')
+		->and($GLOBALS['handoff']['execute_params'][0])->toBe([9, 'value', '5', 10, 'value', 'U'])
+		->and($GLOBALS['handoff']['boost'])->toBe([])
 		->and(implode(' ', $GLOBALS['handoff']['executes']))->not->toContain('UPDATE');
+});
+
+test('with boost enabled the spine-side pass also hands the rows to boost', function () {
+	$base = \cacti_http_test_server()['url'];
+
+	stub_reset([http_row(2, 9, "$base/stats")], false, ['boost_rrd_update_enable' => 'on']);
+
+	expect(http_only_poll(1, 60, 1, microtime(true)))->toBe(1)
+		->and($GLOBALS['handoff']['boost'])->toBe([["(9, 'value', CURRENT_TIMESTAMP(), '5')"]]);
 });
 
 test('with several profiles the spine-side pass picks due items from the polling slot', function () {
@@ -241,9 +261,10 @@ test('the prefetch stops at its deadline and unfinished items report U', functio
 
 	$start   = microtime(true);
 	$reasons = [];
-	$outputs = $poller->collect([http_row(2, 9, "$base/slow"), http_row(5, 10, "$base/stats")], $reasons, $start + 0.3);
+	// the deadline leaves /stats time to answer even under a coverage driver, and ends well before /slower does
+	$outputs = $poller->collect([http_row(2, 9, "$base/slower"), http_row(5, 10, "$base/stats")], $reasons, $start + 1.0);
 
-	expect(microtime(true) - $start)->toBeLessThan(0.9)
+	expect(microtime(true) - $start)->toBeLessThan(2.5)
 		->and($outputs)->toBe(['9:value' => 'U', '10:value' => '5'])
 		->and($reasons['9:value'])->toBe('Timed out');
 
