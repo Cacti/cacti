@@ -73,6 +73,31 @@ function cacti_ip_pack(string $ip) : ?string {
  *                                       prefix length, or null when invalid
  */
 function cacti_ip_cidr_parse(string $cidr) : ?array {
+	/* A discovery sweep tests every candidate address against the same short
+	 * list, so remember parsed entries rather than validating each one again
+	 * per address.  The cache is bounded and starts over when it fills. */
+	static $cache = [];
+
+	if (array_key_exists($cidr, $cache)) {
+		return $cache[$cidr];
+	}
+
+	if (count($cache) >= 1024) {
+		$cache = [];
+	}
+
+	return $cache[$cidr] = cacti_ip_cidr_parse_uncached($cidr);
+}
+
+/**
+ * cacti_ip_cidr_parse_uncached - the parser behind cacti_ip_cidr_parse()
+ *
+ * @param string $cidr A plain IPv4/IPv6 address or an address/prefix block
+ *
+ * @return array{0: string, 1: int}|null The packed network address and the
+ *                                       prefix length, or null when invalid
+ */
+function cacti_ip_cidr_parse_uncached(string $cidr) : ?array {
 	$slash  = strpos($cidr, '/');
 	$packed = cacti_ip_pack($slash === false ? $cidr : substr($cidr, 0, $slash));
 
