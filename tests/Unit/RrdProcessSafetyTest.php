@@ -307,24 +307,33 @@ test('an OK that ends a partial image is not taken as the reply status', functio
 });
 
 test('real RRDtool image and text replies stay in step on one pipe', function () {
-	$binary = trim((string) shell_exec('command -v rrdtool'));
+	$configured = getenv('RRDTOOL_BINARY');
+	$binary     = $configured !== false ? $configured : trim((string) shell_exec('command -v rrdtool'));
 
-	if ($binary === '') {
+	if ($configured === false && $binary === '') {
 		test()->markTestSkipped('rrdtool is not installed');
 	}
 
-	$rrd = sys_get_temp_dir() . '/cacti-rrd-framing-' . bin2hex(random_bytes(6)) . '.rrd';
+	expect(is_file($binary) && is_executable($binary))->toBeTrue();
+
+	$directory = sys_get_temp_dir() . '/cacti rrd framing ' . bin2hex(random_bytes(6));
+	mkdir($directory, 0700);
+	$rrd = $directory . '/framing.rrd';
 
 	set_config_option('path_rrdtool', $binary);
 
 	$process = __rrd_init(false);
 
 	try {
-		$create = rrdtool_process_command($process, 'create ' . $rrd . ' --start 1700000000 --step 60 DS:BOOK:GAUGE:120:U:U RRA:AVERAGE:0.5:1:10');
-		$update = rrdtool_process_command($process, 'update ' . $rrd . ' 1700000060:1');
-		$graph  = rrdtool_process_command($process, 'graph - --start 1700000000 --end 1700000300 DEF:a=' . $rrd . ':BOOK:AVERAGE LINE1:a#FF0000 PRINT:a:LAST:BOOK%lf');
-		$last   = rrdtool_process_command($process, 'last ' . $rrd);
-		$reject = rrdtool_process_command($process, 'update ' . $rrd . ' 1700000060:1');
+		// Relative filenames avoid treating a Windows drive colon as a DEF separator.
+		$cd = rrdtool_process_command($process, 'cd "' . str_replace('\\', '/', $directory) . '"');
+		expect($cd['success'])->toBeTrue();
+
+		$create = rrdtool_process_command($process, 'create framing.rrd --start 1700000000 --step 60 DS:BOOK:GAUGE:120:U:U RRA:AVERAGE:0.5:1:10');
+		$update = rrdtool_process_command($process, 'update framing.rrd 1700000060:1');
+		$graph  = rrdtool_process_command($process, 'graph - --start 1700000000 --end 1700000300 DEF:a=framing.rrd:BOOK:AVERAGE LINE1:a#FF0000 PRINT:a:LAST:BOOK%lf');
+		$last   = rrdtool_process_command($process, 'last framing.rrd');
+		$reject = rrdtool_process_command($process, 'update framing.rrd 1700000060:1');
 
 		expect($create['success'])->toBeTrue()
 			->and($update['success'])->toBeTrue()
@@ -339,5 +348,7 @@ test('real RRDtool image and text replies stay in step on one pipe', function ()
 		if (is_file($rrd)) {
 			unlink($rrd);
 		}
+
+		rmdir($directory);
 	}
 });
