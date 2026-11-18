@@ -57,7 +57,7 @@ run_php_probe tests/fixtures/BoostBulkDrainCoverage.php '^(poller_boost\.php|lib
 
 run_php_probe tests/fixtures/UserAdministrationAuditCoverage.php '^(user_admin\.php|lib/functions\.php|tests/fixtures/UserAdministrationAudit)'
 
-run_php_probe tests/fixtures/PermissionCacheResetCoverage.php '^(user_admin\.php|user_group_admin\.php|tests/fixtures/PermissionCacheResetCoverage\.php)'
+run_php_probe tests/fixtures/PermissionCacheResetCoverage.php '^(user_admin\.php|user_group_admin\.php|lib/auth\.php|tests/fixtures/PermissionCacheResetCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.php|lib/html_graph\.php|tests/fixtures/Core/GraphViewCrossFilterCoverage\.php)'
 
