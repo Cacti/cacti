@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - 'poller_automation.php'
+      - 'remote_agent.php'
       - 'lib/api_automation.php'
       - 'include/layout.js'
       - 'lib/html_form.php'
@@ -50,6 +51,7 @@ on:
     branches: [develop, 1.2.x]
     paths:
       - 'poller_automation.php'
+      - 'remote_agent.php'
       - 'lib/api_automation.php'
       - 'include/layout.js'
       - 'lib/html_form.php'
