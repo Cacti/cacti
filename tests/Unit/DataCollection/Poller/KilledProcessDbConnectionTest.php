@@ -47,8 +47,15 @@ test('only a live connection of this user other than our own is ended', function
 		->and(results()['kill_gone'][1])->toBe([])
 		->and(results()['kill_gone'][2])->toContain('ID != CONNECTION_ID()')->toContain('CURRENT_USER()')
 		->and(results()['kill_live'][0])->toBeTrue()
-		->and(results()['kill_live'][1])->toBe(['KILL CONNECTION 77'])
+		->and(results()['kill_live'][1])->toBe(['KILL QUERY ID 5001', 'KILL CONNECTION 77'])
 		->and(results()['kill_live'][2][0])->toContain('connection 77');
+});
+
+test('the running statement is ended before the connection, by query id on MariaDB', function () {
+	expect(results()['kill_mysql'])->toBe([true, ['KILL QUERY 77', 'KILL CONNECTION 77']])
+		->and(results()['kill_idle'])->toBe([true, ['KILL CONNECTION 77']])
+		->and(results()['kill_closed'])->toBeTrue()
+		->and(results()['kill_both_failed'])->toBeFalse();
 });
 
 test('a recorded connection is left alone once the server has restarted since the process registered', function () {
@@ -57,9 +64,9 @@ test('a recorded connection is left alone once the server has restarted since th
 });
 
 test('the connection of a timed out or exited process is ended when its row is retired', function () {
-	expect(results()['start_timed_out'])->toBe([true, ['KILL CONNECTION 88']])
-		->and(results()['start_exited'])->toBe([true, ['KILL CONNECTION 88']])
-		->and(results()['sweep'])->toBe(['KILL CONNECTION 88']);
+	expect(results()['start_timed_out'])->toBe([true, ['KILL QUERY ID 9001', 'KILL CONNECTION 88']])
+		->and(results()['start_exited'])->toBe([true, ['KILL QUERY ID 9001', 'KILL CONNECTION 88']])
+		->and(results()['sweep'])->toBe(['KILL QUERY ID 9001', 'KILL CONNECTION 88']);
 });
 
 test('a row registered before the upgrade has no connection to end', function () {
@@ -69,7 +76,7 @@ test('a row registered before the upgrade has no connection to end', function ()
 test('the timeout sweep signals a process that is still running and ends its connection', function () {
 	[$kills, $log, $signaled] = results()['sweep_running'];
 
-	expect($kills)->toBe(['KILL CONNECTION 88'])
+	expect($kills)->toBe(['KILL QUERY ID 9001', 'KILL CONNECTION 88'])
 		->and($log)->toContain('Process killed due to timeout')
 		->and($signaled)->toBeTrue();
 });

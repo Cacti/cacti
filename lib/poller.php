@@ -3186,13 +3186,14 @@ function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
  * End the database connection of a registered process that was just signaled or found gone. A
  * signal does not stop a statement the process is running: the server keeps running it and
  * holding its locks until it finishes, and PHP does not run the process's signal handler until
- * then. Ending the connection stops the statement and rolls back its transaction. Only another
- * connection of this database user is ended. Used as part of Cacti's lib functionality.
+ * then. The running statement is killed first, then the connection, which rolls back any
+ * transaction it left open and releases its locks. Only another connection of this database
+ * user is ended. Used as part of Cacti's lib functionality.
  *
  * @param array $process The process table row, with the connection it recorded.
  * @param string $environ Log environment to record the action under.
  *
- * @return bool True when the connection was ended.
+ * @return bool True when the statement or the connection was ended.
  */
 function cacti_process_kill_db_connection($process, $environ = 'POLLER') {
 	$connection_id = (int) ($process['connection_id'] ?? 0);
@@ -3209,7 +3210,8 @@ function cacti_process_kill_db_connection($process, $environ = 'POLLER') {
 		return false;
 	}
 
-	$thread = db_fetch_row_prepared('SELECT ID, TIME
+	/* every column, since QUERY_ID exists only on MariaDB */
+	$thread = db_fetch_row_prepared('SELECT *
 		FROM information_schema.PROCESSLIST
 		WHERE ID = ?
 		AND ID != CONNECTION_ID()
@@ -3223,7 +3225,23 @@ function cacti_process_kill_db_connection($process, $environ = 'POLLER') {
 
 	cacti_log(sprintf('WARNING: Ending database connection %d of the killed process, busy for %d seconds.', $connection_id, $thread['TIME']), false, $environ);
 
-	return db_execute('KILL CONNECTION ' . $connection_id, false);
+	/* MariaDB kills a statement by its own query id, which is not the connection id, so a
+	 * statement that has already finished is never mistaken for the next one. MySQL has no
+	 * query id and kills the statement the connection is running. */
+	$query_killed = false;
+
+	if (($thread['COMMAND'] ?? '') != 'Sleep') {
+		if (isset($thread['QUERY_ID'])) {
+			$query_killed = (bool) db_execute_prepared('KILL QUERY ID ?', array((int) $thread['QUERY_ID']), false);
+		} else {
+			$query_killed = (bool) db_execute_prepared('KILL QUERY ?', array($connection_id), false);
+		}
+	}
+
+	/* the process may already have closed the connection once its statement ended */
+	$connection_killed = (bool) db_execute_prepared('KILL CONNECTION ?', array($connection_id), false);
+
+	return $query_killed || $connection_killed;
 }
 
 /**

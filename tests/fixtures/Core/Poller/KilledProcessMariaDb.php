@@ -52,8 +52,18 @@ $pdo = new PDO($dsn, getenv('PROCESS_DB_USER') ?: 'root', getenv('PROCESS_DB_PAS
 if (($argv[1] ?? '') === 'worker') {
 	echo $pdo->query('SELECT CONNECTION_ID()')->fetchColumn(), "\n";
 	flush();
+	// 1317 is a killed statement; 2006 and 2013 are a killed connection
 	try {
 		$pdo->query('SELECT SLEEP(30)');
+	} catch (PDOException $error) {
+		if (!in_array((int) ($error->errorInfo[1] ?? 0), [1317, 2006, 2013], true)) {
+			exit(2);
+		}
+	}
+	// the statement is killed first, so give the connection kill time to land
+	usleep(500000);
+	try {
+		$pdo->query('SELECT 1');
 		exit(1);
 	} catch (PDOException $error) {
 		exit(in_array((int) ($error->errorInfo[1] ?? 0), [2006, 2013], true) ? 0 : 2);
