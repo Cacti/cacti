@@ -155,3 +155,19 @@ test('an empty list never matches', function () : void {
 	expect(cacti_ip_in_cidr('10.0.0.1', []))->toBeFalse();
 	expect(cacti_ip_in_cidr('10.0.0.1', ''))->toBeFalse();
 });
+
+test('parsed entries are reused and the parse cache stays correct after it fills', function () : void {
+	expect(cacti_ip_cidr_parse('10.0.0.0/8'))->toBe(cacti_ip_cidr_parse_uncached('10.0.0.0/8'));
+	expect(cacti_ip_cidr_parse('10.0.0.0/2x'))->toBeNull();
+
+	// Push well past the cache bound so it starts over at least once.
+	for ($index = 0; $index < 2100; $index++) {
+		$network = long2ip(ip2long('198.18.0.0') + $index * 4);
+
+		expect(cacti_ip_cidr_parse($network . '/30'))->toBe([inet_pton($network), 30]);
+	}
+
+	expect(cacti_ip_cidr_parse('10.0.0.0/2x'))->toBeNull();
+	expect(cacti_ip_in_cidr('10.1.1.1', ['10.0.0.0/2x', '10.0.0.0/8']))->toBeTrue();
+	expect(cacti_ip_in_cidr('2001:db8::1', '2001:db8::/32'))->toBeTrue();
+});
