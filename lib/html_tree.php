@@ -1845,7 +1845,7 @@ function get_matching_nodes() : void {
 
 	$filter = '%' . $str . '%';
 
-	$matching = db_fetch_assoc_prepared('SELECT gti.parent, gti.graph_tree_id
+	$matching = db_fetch_assoc_prepared('SELECT gti.parent, gti.graph_tree_id, gti.local_graph_id
 		FROM graph_tree_items AS gti
 		LEFT JOIN host AS h
 		ON h.id = gti.host_id
@@ -1902,6 +1902,32 @@ function get_matching_nodes() : void {
 			$parents[(int) $item['graph_tree_id']][(int) $item['id']] = (int) $item['parent'];
 		}
 
+		// A matched graph only opens its branch when the user may view the graph.
+		// This is the check is_graph_allowed() makes, run once for all matched
+		// graphs of the allowed trees instead of once per graph, and skipped for
+		// simple graph permissions as get_tree_visible_branches() does.
+		$graphs = [];
+
+		foreach ($matching as $row) {
+			if ($row['local_graph_id'] > 0 && isset($parents[(int) $row['graph_tree_id']])) {
+				$graphs[(int) $row['local_graph_id']] = false;
+			}
+		}
+
+		if (cacti_sizeof($graphs)) {
+			if (get_simple_graph_perms((int) ($_SESSION[SESS_USER_ID] ?? 0))) {
+				$graphs = array_fill_keys(array_keys($graphs), true);
+			} else {
+				foreach (array_chunk(array_keys($graphs), 1000) as $chunk) {
+					$total_rows = -1;
+
+					foreach (get_allowed_graphs('gl.id IN(' . implode(',', $chunk) . ')', '', '', $total_rows) as $graph) {
+						$graphs[(int) $graph['local_graph_id']] = true;
+					}
+				}
+			}
+		}
+
 		// Cache validity, not complete ancestor prefixes. Every parent link is
 		// checked once and every result node is emitted once, even for deep trees.
 		$valid       = [];
@@ -1913,6 +1939,10 @@ function get_matching_nodes() : void {
 			$branch  = (int) $row['parent'];
 
 			if (!isset($parents[$tree_id]) || isset($seen[$tree_id][$branch])) {
+				continue;
+			}
+
+			if ($row['local_graph_id'] > 0 && !$graphs[(int) $row['local_graph_id']]) {
 				continue;
 			}
 
