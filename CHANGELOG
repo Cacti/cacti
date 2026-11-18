@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -security#8158: Harden - Confine automation sorting and pagination before SQL and HTML rendering
 -security#8158: Harden - Replace sibling password-reset links and revoke authentication state after reset
 -security#GHSA-3jj2-v5ch-wmq5: Fail closed on a posted LDAP realm that is not a configured domain
+-issue#8783: Keep the scripts and resource files shipped with Cacti when the installer imports the bundled device template packages, whose embedded copies can be older and would undo fixes such as the bound queries in the MikroTik scripts
 -issue#8756: Guard db_fetch_row results before reading offsets, remove dead comparisons flagged by PHPStan 2.3.6, and regenerate the PHPStan baseline so develop CI passes again
 -issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
 -issue#8641: Present the Details and Time View graph pages' drilldown actions through the three-bar menu, and fix the "unsupported pseudo: hover" console error when the graph area reloads
