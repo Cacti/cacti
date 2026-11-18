@@ -66,3 +66,11 @@ test('legacy /31 address helper returns no next host', function () {
 	$result = discoveryNetworkVerdict('192.0.2.0/31', [0, 1]);
 	expect($result['samples'])->toBe([false, false]);
 });
+
+test('saving a network explains why a fixed-suffix wildcard is invalid', function (string $range, string $message) {
+	expect(discoveryNetworkVerdict($range)['invalid'])->toBe($message);
+})->with([
+	['10.1.*.1', 'ERROR: Network &#039;10.1.*.1&#039; is Invalid.  Wildcards must be the trailing octets, such as 10.1.*.*.'],
+	[' 10.*.1.* ', 'ERROR: Network &#039;10.*.1.*&#039; is Invalid.  Wildcards must be the trailing octets, such as 10.1.*.*.'],
+	['192.0.2.0/2x', 'ERROR: Network &#039;192.0.2.0/2x&#039; is Invalid.'],
+]);

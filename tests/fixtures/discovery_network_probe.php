@@ -23,6 +23,10 @@ function __(string $message): string {
 	return $message;
 }
 
+function __esc(string $message, mixed ...$args): string {
+	return htmlspecialchars(sprintf($message, ...$args), ENT_QUOTES, 'UTF-8');
+}
+
 function raise_message(mixed ...$args): void {
 	$GLOBALS['messages'][] = $args;
 }
@@ -55,4 +59,4 @@ if (is_array($detail)) {
 }
 
 print json_encode(['detail' => $detail, 'samples' => $samples, 'addresses' => $addresses,
-	'messages'                 => $messages], JSON_THROW_ON_ERROR);
+	'messages'                 => $messages, 'invalid' => automation_invalid_range_message($range)], JSON_THROW_ON_ERROR);

@@ -39,10 +39,14 @@ function cacti_sizeof(mixed $value) : int {
 }
 
 function cacti_log(mixed ...$args) : void {
-	// automation_debug() also logs; keep only operator notes.
-	if (str_starts_with($args[0], 'NOTE:')) {
+	// automation_debug() also logs; keep only operator notes and warnings.
+	if (str_starts_with($args[0], 'NOTE:') || str_starts_with($args[0], 'WARNING:')) {
 		$GLOBALS['logs'][] = $args[0];
 	}
+}
+
+function htmle(mixed $string) : string {
+	return htmlspecialchars((string) $string, ENT_QUOTES, 'UTF-8');
 }
 
 require dirname(__DIR__, 2) . '/lib/api_automation.php';
@@ -54,7 +58,10 @@ pcntl_signal(SIGALRM, static function () : void {
 pcntl_alarm(2);
 
 try {
+	// An unparseable range prints its debug line on the CLI; keep stdout JSON.
+	ob_start();
 	automation_primeIPAddressTable(7);
+	ob_end_clean();
 	$addresses = [];
 
 	foreach ($queries as $query) {
