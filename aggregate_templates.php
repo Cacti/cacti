@@ -132,7 +132,11 @@ function aggregate_form_save() : void {
 		}
 		$save1 = array_replace($save1, $settings);
 	} catch (InvalidArgumentException $error) {
-		raise_message('aggregate_automation_invalid', __('Check the aggregate automation pattern, title, device template and member limit.'), MESSAGE_LEVEL_ERROR);
+		// is_error_message() only reads the flagged fields, so flag them or the rest of the form still saves.
+		foreach (['automation_enabled', 'automation_pattern', 'automation_title', 'automation_host_template_id', 'automation_max_members'] as $field) {
+			$_SESSION[SESS_ERROR_FIELDS][$field] = 1;
+		}
+		raise_message('aggregate_automation_invalid',__('Check the aggregate automation pattern, title, device template and member limit.'), MESSAGE_LEVEL_ERROR);
 	}
 
 	// form validation failed
