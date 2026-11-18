@@ -69,11 +69,9 @@ test('undefined and non-function names are refused', function () {
 });
 
 test('dispatch and log redaction reject non-callables and preserve non-string values', function () {
-	$healthy = true;
-	$value   = ['nested'];
+	$value = ['nested'];
 
-	expect(script_server_dispatch('ss_no_such_function', [], $healthy))->toBe('U')
-		->and($healthy)->toBeTrue()
+	expect(script_server_dispatch('ss_no_such_function', []))->toBe('U')
 		->and(script_server_redact_args([$value, 'secret'], ['secret']))->toBe([$value, '<redacted>']);
 });
 
@@ -122,24 +120,10 @@ test('responses must fit on one bounded non-empty line', function () {
 		->and(script_server_normalize_response("value\0other"))->toBe('U')
 		->and(script_server_normalize_response(str_repeat('x', SCRIPT_SERVER_MAX_RESPONSE_LENGTH)))->toBe(str_repeat('x', SCRIPT_SERVER_MAX_RESPONSE_LENGTH));
 
-	$healthy = true;
-
 	// a multipart result keeps its name:value pairs on one line
-	expect(script_server_normalize_response("\r\na:1\r\nb:2\rc:3 \n", $healthy))->toBe('a:1 b:2 c:3')
-		->and($healthy)->toBeTrue();
-
-	expect(script_server_normalize_response("first\tsecond", $healthy))->toBe('U')
-		->and($healthy)->toBeFalse();
-
-	$healthy = true;
-
-	expect(script_server_normalize_response(str_repeat('x', SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 1), $healthy))->toBe('U')
-		->and($healthy)->toBeFalse();
-
-	$healthy = false;
-
-	expect(script_server_normalize_response('', $healthy))->toBe('U')
-		->and($healthy)->toBeTrue();
+	expect(script_server_normalize_response("\r\na:1\r\nb:2\rc:3 \n"))->toBe('a:1 b:2 c:3')
+		->and(script_server_normalize_response("first\tsecond"))->toBe('U')
+		->and(script_server_normalize_response(str_repeat('x', SCRIPT_SERVER_MAX_RESPONSE_LENGTH + 1)))->toBe('U');
 });
 
 test('a request splits into include file, function and parameters', function () {

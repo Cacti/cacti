@@ -381,20 +381,12 @@ while (1) {
 
 			error_reporting(0);
 
-			$response_healthy = true;
-			$result           = $script_ready
-					? script_server_run($function, $parameter_array, $include_file, $response_healthy, true)
+			$result = $script_ready
+				? script_server_run($function, $parameter_array, $include_file, true)
 				: 'U';
 
 			if (!script_server_reset_output_guard($output_guard_level)) {
 				cacti_log('WARNING: Script Server output buffering was corrupted while dispatching a request, replacing worker', false, 'PHPSVR');
-				db_close();
-
-				exit(1);
-			}
-
-			if (!$response_healthy) {
-				cacti_log('WARNING: Script Server response violated the framing or output limit, replacing worker', false, 'PHPSVR');
 				db_close();
 
 				exit(1);

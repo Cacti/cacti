@@ -100,8 +100,12 @@ globals or static variables created by trusted scripts.
 ## Response language and worker retirement
 
 A successful response is one non-empty line of at most 8190 bytes, excluding
-LF. Scalar values are converted to strings and trimmed. C0 control bytes, DEL,
-embedded line endings, and oversized values are not valid responses.
+LF. Scalar values are converted to strings and trimmed. Line breaks in a
+returned value become spaces so multipart results stay on one line. A returned
+value that still contains C0 control bytes or DEL, or that exceeds 8190 bytes,
+is answered with `U`. The worker writes every reply itself, so such a value
+leaves the protocol aligned and the worker is kept; retiring it would respawn
+the worker on every poll of that script.
 
 The worker maintains a non-removable output buffer from before the Cacti
 bootstrap through script loading and dispatch, so incidental output from
@@ -119,18 +123,18 @@ response.
 The worker is not reused after any of these events:
 
 - an incomplete request or request framing that cannot be recovered;
-- a returned value containing protocol control bytes or exceeding 8190 bytes;
 - corrupted output-buffer state;
 - a response timeout;
 - EOF before a complete response;
 - an empty, oversized, control-bearing, or multi-line wire response; or
 - failure to write a complete request to the worker.
 
-For a worker-side response violation, the worker exits without emitting a
+For a worker-side guard violation, the worker exits without emitting a
 possibly ambiguous reply. The parent maps the failed request to `U`, terminates
 any remaining process, and opens a replacement before later work is sent.
-Ordinary callable rejection, a caught exception, a non-scalar result, or an
-empty result maps to `U` without retiring an otherwise aligned worker.
+Ordinary callable rejection, a caught exception, a non-scalar, empty,
+control-bearing, or oversized result maps to `U` without retiring an otherwise
+aligned worker.
 
 When a persistent worker cannot be started, the compatibility fallback starts
 the canonical script with an argument array rather than a command shell. It

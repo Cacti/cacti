@@ -736,15 +736,12 @@ function script_server_function_rejection(string $function, string $include_file
  * Throwable becomes 'U'. The message is not logged because it may quote the
  * request parameters.
  *
- * @param string $function         The function to call
- * @param array  $parameters       The arguments, empty to call without arguments
- * @param bool   $response_healthy Set false when the result cannot be safely framed
+ * @param string $function   The function to call
+ * @param array  $parameters The arguments, empty to call without arguments
  *
  * @return string The trimmed result, or 'U' on failure
  */
-function script_server_dispatch(string $function, array $parameters, bool &$response_healthy = true) : string {
-	$response_healthy = true;
-
+function script_server_dispatch(string $function, array $parameters) : string {
 	if (!is_callable($function)) {
 		return 'U';
 	}
@@ -757,20 +754,21 @@ function script_server_dispatch(string $function, array $parameters, bool &$resp
 		return 'U';
 	}
 
-	return script_server_normalize_response($result, $response_healthy);
+	return script_server_normalize_response($result);
 }
 
 /**
  * script_server_normalize_response - enforce the one-line response contract
  *
- * @param mixed $result           The script function result
- * @param bool  $response_healthy Set false for a framing or length violation
+ * A result that cannot be framed is answered with U. The worker writes the
+ * reply itself, so such a result leaves the protocol aligned and the worker is
+ * kept; retiring it would respawn the worker on every poll of that script.
+ *
+ * @param mixed $result The script function result
  *
  * @return string A bounded response, or U when the result cannot be framed
  */
-function script_server_normalize_response(mixed $result, bool &$response_healthy = true) : string {
-	$response_healthy = true;
-
+function script_server_normalize_response(mixed $result) : string {
 	if (is_array($result) || is_object($result) || is_resource($result)) {
 		return 'U';
 	}
@@ -780,20 +778,12 @@ function script_server_normalize_response(mixed $result, bool &$response_healthy
 	$result = str_replace(["\r\n", "\r", "\n"], ' ', (string) $result);
 
 	if (preg_match('/[\x00-\x1F\x7F]/', $result)) {
-		$response_healthy = false;
-
 		return 'U';
 	}
 
 	$result = trim($result);
 
-	if ($result === '') {
-		return 'U';
-	}
-
-	if (strlen($result) > SCRIPT_SERVER_MAX_RESPONSE_LENGTH) {
-		$response_healthy = false;
-
+	if ($result === '' || strlen($result) > SCRIPT_SERVER_MAX_RESPONSE_LENGTH) {
 		return 'U';
 	}
 
@@ -870,14 +860,12 @@ function script_server_reset_output_guard(int $guard_level) : bool {
  * @param string $function          The requested function
  * @param array  $parameters        The parsed arguments, empty to call without arguments
  * @param string $include_file      The script file the request named
- * @param bool   $response_healthy  Set false when the result cannot be safely framed
  * @param bool   $canonical_include Whether include_file is already the validated canonical path for this request
  *
  * @return string The function result, or 'U' when refused or failed
  */
-function script_server_run(string $function, array $parameters, string $include_file, bool &$response_healthy = true, bool $canonical_include = false) : string {
-	$response_healthy = true;
-	$rejection        = script_server_function_rejection($function, $include_file, $canonical_include);
+function script_server_run(string $function, array $parameters, string $include_file, bool $canonical_include = false) : string {
+	$rejection = script_server_function_rejection($function, $include_file, $canonical_include);
 
 	if ($rejection != '') {
 		$safe_function = script_server_log_token($function);
@@ -887,5 +875,5 @@ function script_server_run(string $function, array $parameters, string $include_
 		return 'U';
 	}
 
-	return script_server_dispatch($function, $parameters, $response_healthy);
+	return script_server_dispatch($function, $parameters);
 }

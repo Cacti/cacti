@@ -101,7 +101,7 @@ function script_server_reset_output_guard(int $guard_level): bool {
 
 	return $mode === 'debug';
 }
-function script_server_run(string $function, array $parameters, string $include_file, bool &$response_healthy = true, bool $canonical_include = false): string {
+function script_server_run(string $function, array $parameters, string $include_file, bool $canonical_include = false): string {
 	global $events, $includeFile;
 
 	if ($function !== 'strval' || $parameters !== ['argument'] || $include_file !== $includeFile || !$canonical_include) {
