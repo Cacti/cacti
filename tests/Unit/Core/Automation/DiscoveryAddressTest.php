@@ -68,3 +68,17 @@ test('discovery reports addresses another network already queued', function (?in
 	'every address owned'  => [null, []],
 	'two owned elsewhere'  => [4, ['NOTE: Discovery Network 7 queued 4 of 6 addresses; the rest repeat an overlapping range of this network or are already queued by another network']],
 ]);
+
+test('discovery warns once per run about subnet ranges it cannot scan', function (string $range, array $addresses, array $logs) : void {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/discovery_address_probe.php', [json_encode(['range' => $range, 'ignore' => ''], JSON_THROW_ON_ERROR)]);
+
+	expect($result['completed'])->toBeTrue()
+		->and($result['addresses'])->toBe($addresses)
+		->and($result['logs'])->toBe($logs);
+})->with([
+	'fixed-suffix wildcards' => ['10.1.*.1, 192.0.2.0/30,10.2.*.7', ['192.0.2.1', '192.0.2.2'],
+		['WARNING: Discovery Network 7 skipped invalid Subnet Range entries [10.1.*.1, 10.2.*.7]; wildcards must be the trailing octets, such as 10.1.*.*']],
+	'escaped malformed entry' => ['192.0.2.0/30,<b>bad</b>', ['192.0.2.1', '192.0.2.2'],
+		['WARNING: Discovery Network 7 skipped invalid Subnet Range entries [&lt;b&gt;bad&lt;/b&gt;]']],
+	'empty entries are not reported' => ['192.0.2.0/30,', ['192.0.2.1', '192.0.2.2'], []],
+]);

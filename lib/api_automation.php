@@ -3904,6 +3904,34 @@ function automation_get_valid_mask(string $range) : array|false {
 }
 
 /**
+ * Reports whether a wildcard range fixes an octet after a wildcard, such as 10.1.*.1.
+ *
+ * Discovery rejects that form: only trailing wildcards such as 10.1.*.* describe a network.
+ *
+ * @param  string $range One Subnet Range entry.
+ * @return bool   True for a wildcard followed by a fixed octet.
+ */
+function automation_is_fixed_suffix_wildcard(string $range) : bool {
+	$range = trim($range);
+
+	return str_contains($range, '*') && !str_contains($range, '/') && !str_contains($range, '-') && preg_match('/\*.*[0-9]/', $range) === 1;
+}
+
+/**
+ * Returns the error shown when a Subnet Range entry cannot be parsed.
+ *
+ * @param  string $range The rejected Subnet Range entry.
+ * @return string The escaped, translated error message.
+ */
+function automation_invalid_range_message(string $range) : string {
+	if (automation_is_fixed_suffix_wildcard($range)) {
+		return __esc('ERROR: Network \'%s\' is Invalid.  Wildcards must be the trailing octets, such as 10.1.*.*.', trim($range));
+	}
+
+	return __esc('ERROR: Network \'%s\' is Invalid.', $range);
+}
+
+/**
  * Retrieves network information for a given range.
  *
  * @param  string      $range The network range to retrieve information for.
@@ -3943,7 +3971,7 @@ function automation_get_network_info(string $range) : array|false {
 		}
 	} elseif (str_contains($range, '*') && !str_contains($range, '-')) {
 		// Wildcards must be trailing octets; fixed suffixes would broaden the scan.
-		if (preg_match('/\*.*[0-9]/', $range)) {
+		if (automation_is_fixed_suffix_wildcard($range)) {
 			return false;
 		}
 
@@ -4117,6 +4145,7 @@ function automation_primeIPAddressTable(int $network_id) : void {
 	$subNets    = explode(',', trim($subNets));
 	$total      = 0;
 	$queued     = 0;
+	$invalid    = [];
 
 	if ($ignore_ips != '') {
 		$ignore_ips = explode(',', $ignore_ips);
@@ -4138,6 +4167,10 @@ function automation_primeIPAddressTable(int $network_id) : void {
 			$start = automation_calculate_start($subNet);
 
 			if ($start === false) {
+				if (trim($subNet) !== '') {
+					$invalid[] = trim($subNet);
+				}
+
 				continue;
 			}
 
@@ -4170,6 +4203,16 @@ function automation_primeIPAddressTable(int $network_id) : void {
 					VALUES ' . implode(',', $sql) . ' ON DUPLICATE KEY UPDATE ip_address = ip_address');
 			}
 		}
+	}
+
+	/**
+	 * A range saved before stricter parsing, such as 10.1.*.1, is skipped. Say so
+	 * once per run at the default log level, since debug output is rarely on.
+	 */
+	if (cacti_sizeof($invalid)) {
+		$hint = cacti_sizeof(array_filter($invalid, 'automation_is_fixed_suffix_wildcard')) ? '; wildcards must be the trailing octets, such as 10.1.*.*' : '';
+
+		cacti_log('WARNING: Discovery Network ' . $network_id . ' skipped invalid Subnet Range entries [' . htmle(implode(', ', $invalid)) . ']' . $hint, false, 'AUTOM8');
 	}
 
 	/**
@@ -6623,7 +6666,7 @@ function api_networks_save(array $post) : mixed {
 					$total_ips += $ips;
 				} else {
 					$continue = false;
-					raise_message('automation_message', __esc('ERROR: Network \'%s\' is Invalid.', $net), MESSAGE_LEVEL_ERROR);
+					raise_message('automation_message', automation_invalid_range_message($net), MESSAGE_LEVEL_ERROR);
 
 					break;
 				}

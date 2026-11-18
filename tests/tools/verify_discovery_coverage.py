@@ -22,7 +22,7 @@ DEPENDENCIES = (
     'tests/Helpers/PhpSource.php', 'tests/Helpers/IsolatedProbe.php', 'tests/fixtures/automation_matching_cases.php',
 )
 # Executed Pest cases from run_discovery_request_coverage.sh; update with those tests.
-NATIVE_CASES = 73
+NATIVE_CASES = 79
 SOURCES = ('lib/api_automation.php', 'poller_automation.php', 'automation_graph_rules.php')
 
 SCENARIOS = (
