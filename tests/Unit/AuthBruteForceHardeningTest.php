@@ -55,11 +55,11 @@ test('the lockout counter is incremented atomically in SQL', function () use ($a
 	expect($body)->not->toContain('failed_attempts = ?');
 });
 
-test('an unknown username is verified against a decoy hash for constant time', function () use ($localAuthSrc) {
+test('an unknown username is verified against the current login decoy policy', function () use ($localAuthSrc) {
 	$body = _auth_fn_body($localAuthSrc, 'verifyCredential');
 
 	// the else (no such user) branch runs a throw-away verify so timing matches;
 	// the decoy tracks the algorithm and cost of new hashes instead of a literal
-	expect($body)->toContain('compat_password_verify((string) $password, cacti_password_decoy_hash())');
-	expect($body)->not->toContain("compat_password_verify((string) \$password, '\$");
+	expect($body)->toContain('cacti_password_verify_login((string) $password, cacti_password_decoy_hash())');
+	expect($body)->not->toContain("cacti_password_verify_login((string) \$password, '\$");
 });
