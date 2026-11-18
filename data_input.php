@@ -50,6 +50,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'field_remove':
+		csrf_require_post();
 		field_remove();
 
 		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));

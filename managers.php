@@ -624,6 +624,8 @@ function manager_logs($id, $header_label) {
 	);
 
 	if (isset_request_var('purge')) {
+		csrf_require_post();
+
 		db_execute_prepared('DELETE FROM snmpagent_notifications_log WHERE manager_id = ?', array($id));
 		set_request_var('clear', true);
 	}

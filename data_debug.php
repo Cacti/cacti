@@ -565,6 +565,8 @@ function debug_wizard() {
 	);
 
 	if (isset_request_var('purge')) {
+		csrf_require_post();
+
 		db_execute('TRUNCATE TABLE data_debug');
 	}
 
@@ -1231,7 +1233,7 @@ function data_debug_filter() {
 
 		function purgeFilter() {
 			strURL = 'data_debug.php?purge=1&debug=-1&header=false';
-			loadPageNoHeader(strURL);
+			loadPageUsingPostUrl(strURL);
 		}
 
 		function runallFilter() {
