@@ -8,6 +8,16 @@ on:
       - 'package_import.php'
       - 'package_repos.php'
       - 'lib/functions.php'
+      - 'lib/script_server.php'
+      - 'lib/SnmpStateStore.php'
+      - 'lib/poller.php'
+      - 'script_server.php'
+      - 'cmd.php'
+      - 'cmd_realtime.php'
+      - 'remote_agent.php'
+      - 'scripts/ss_net_snmp_disk_*.php'
+      - 'tests/Unit/DataCollection/Poller/ScriptServer*'
+      - 'tests/Unit/Scripts/NetSnmpDiskStateFileTest.php'
       - 'lib/html.php'
       - 'include/layout.js'
       - 'include/css/graph_drilldown.css'
@@ -16,7 +26,10 @@ on:
       - 'tests/Helpers/SourceSlice.php'
       - 'tests/fixtures/Core/**'
       - 'tests/e2e/tests/**'
+      - 'tests/tools/check_changed_php_coverage.py'
+      - 'tests/tools/normalize_request_coverage.php'
       - 'tests/tools/report_changed_coverage.py'
+      - 'tests/tools/run_request_coverage.sh'
       - 'tests/tools/run_pr_change_tests.sh'
       - '.github/workflows/pr-changed-coverage.yml'
   workflow_dispatch:
@@ -31,7 +44,7 @@ permissions:
 jobs:
   changed-coverage:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -71,3 +84,33 @@ jobs:
             ${{ runner.temp }}/cacti-changed-coverage
             tests/e2e/test-results
           if-no-files-found: warn
+
+  windows-script-server:
+    name: Native Windows Script Server (PHP ${{ matrix.php }})
+    runs-on: windows-2022
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Set up locked PHP test dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, dom, pdo_sqlite
+          dependency-mode: locked-tests
+          install-args: --prefer-dist --no-progress --no-interaction
+      - name: Exercise native pipe framing, process recovery and state storage
+        shell: pwsh
+        run: |
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml --compact `
+            tests/Unit/DataCollection/Poller/ScriptServerProcessTest.php `
+            tests/Unit/DataCollection/Poller/ScriptServerRequestTest.php `
+            tests/Unit/DataCollection/Poller/ScriptServerResponseTest.php `
+            tests/Unit/Scripts/NetSnmpDiskStateFileTest.php
+          exit $LASTEXITCODE
