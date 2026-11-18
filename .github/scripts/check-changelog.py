@@ -96,6 +96,7 @@ def check_added_entries(errors: list[str]) -> None:
 		text=True,
 		check=False,
 	)
+	# A failed diff must not silently skip the numbering check.
 	if result.returncode != 0:
 		detail = result.stderr.strip() or f"exit status {result.returncode}"
 		errors.append(f"cannot diff CHANGELOG against origin/{base_ref}: {detail}")
