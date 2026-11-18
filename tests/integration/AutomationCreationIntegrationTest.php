@@ -23,6 +23,16 @@
  */
 require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
 
+test('automation boundaries preserve graph identity and rule destinations', function ($mode) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/automation_boundary_probe.php', [$mode]);
+	expect($r['verified'])->toBeTrue();
+})->with(['query-failure', 'defaults', 'template-race', 'device-template', 'dq-empty', 'dq-unmatched', 'dq-race', 'device-header-failure', 'multi-header', 'multi-header-failure']);
+
+test('tree boundaries preserve existing nodes and recursive ordering', function ($mode) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/tree_boundary_probe.php', [$mode]);
+	expect($r['verified'])->toBeTrue();
+})->with(['delete-lock', 'save-lock', 'sort-lock', 'graph-lock', 'parent', 'recursive']);
+
 beforeEach(function () {
 	if (!getenv('CACTI_AUTOMATION_TEST_DSN')) {
 		$this->markTestSkipped('Set CACTI_AUTOMATION_TEST_DSN to an isolated cacti_automation_test database.');

@@ -123,6 +123,7 @@ switch (grv('action')) {
 
 function form_save() : void {
 	global $database_last_error;
+	global $database_sessions, $database_hostname, $database_port, $database_default;
 
 	if ((isrv('save_component_data_source_new')) && (!ierv('data_template_id'))) {
 		$save['id']               = gfrv('local_data_id');
@@ -386,6 +387,11 @@ function form_save() : void {
 				$_SESSION[SESS_ERROR_FIELDS]['data_template_id'] = 'data_template_id';
 				raise_message(2);
 			} elseif (!db_commit_transaction()) {
+				$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"] ?? false;
+
+				if ($db_conn instanceof PDO && $db_conn->inTransaction()) {
+					db_rollback_transaction($db_conn);
+				}
 				unset($_SESSION[SESS_MESSAGES][1]);
 				$_SESSION[SESS_ERROR_FIELDS]['data_template_id'] = 'data_template_id';
 				raise_message(2);

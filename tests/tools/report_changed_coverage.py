@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import xml.etree.ElementTree as ET
 
 
 def added_lines(base):
@@ -96,6 +97,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True)
     parser.add_argument('--php-coverage', nargs='*', default=[])
+    parser.add_argument('--clover', nargs='*', default=[], type=Path)
     parser.add_argument('--browser-root', type=Path)
     parser.add_argument('--minimum', type=float, default=100)
     parser.add_argument('--language', choices=['php', 'js', 'css'])
@@ -115,6 +117,21 @@ def main():
             target = php.setdefault(str(Path(file).resolve()), {})
             for number, hits in lines.items():
                 target[int(number)] = max(hits, target.get(int(number), -2))
+    # PHPUnit's analyser lists every executable line of each file in its scope
+    # and credits a wrapped statement's continuation lines when the statement
+    # runs. Raw Xdebug evidence reported with it must come from the same
+    # analyser (normalize_request_coverage.php) so both use one line model.
+    analysed = set()
+    for name in args.clover:
+        for file in ET.parse(name).iter('file'):
+            path = str(Path(file.attrib['name']).resolve())
+            analysed.add(path)
+            target = php.setdefault(path, {})
+            for item in file.iter('line'):
+                if item.attrib.get('type') == 'stmt':
+                    number = int(item.attrib['num'])
+                    hits = int(item.attrib['count']) or -1
+                    target[number] = max(hits, target.get(number, -2))
     if args.browser_root:
         for file in args.browser_root.rglob('changed-coverage.json'):
             browser.append(json.loads(file.read_text()))
@@ -132,7 +149,10 @@ def main():
             executable = {n for n in added if n in evidence and evidence[n] != -2}
             # Source slices may instrument only one function in an entry point.
             # Missing statements elsewhere in that same file must fail closed.
-            for number in added:
+            # An analysed file already lists its executable lines, so a missing
+            # line there is a continuation or declaration, not a gap.
+            unlisted = set() if str(file.resolve()) in analysed else added
+            for number in unlisted:
                 if number not in evidence and re.match(r'^\s*(?:\$|return\b|throw\b|if\b|elseif\b|foreach\b|while\b|for\b|[A-Za-z_\\][\w\\]*\()', lines[number - 1]):
                     executable.add(number)
             covered = {n for n in executable if evidence.get(n, -1) > 0}

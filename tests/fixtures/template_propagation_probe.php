@@ -350,6 +350,10 @@ if ($mode == 'form-switch') {
 	$pdo->exec("INSERT INTO data_template_rrd (id,data_template_id,data_source_name,rrd_heartbeat) VALUES (900001,2,'traffic',1200)");
 	$failure = $argv[2] ?? 'success';
 
+	if (in_array($failure, ['begin', 'commit', 'commit-aborted'], true)) {
+		$pdo->transaction_failure = $failure;
+	}
+
 	if ($failure == 'incompatible') {
 		$pdo->exec("UPDATE data_template_rrd SET data_source_name='different' WHERE id=900001");
 	}

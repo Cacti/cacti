@@ -26,6 +26,23 @@
 // Uses the disposable database and runtime described by AutomationCreationIntegrationTest.
 require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
 
+test('template boundary operations preserve source identity and compatibility', function ($mode) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/template_boundary_probe.php', [$mode]);
+	expect($r['verified'])->toBeTrue();
+})->with(['profile', 'compatibility', 'title', 'empty-graph']);
+
+test('source operations preserve data and hooks across transaction boundaries', function ($operation, $failure) {
+	$r = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/automation_transaction_boundaries.php', [$operation, $failure]);
+	expect($r['preserved'])->toBeTrue();
+})->with([
+	['copy', 'connection'], ['copy', 'begin'], ['copy', 'commit'], ['copy', 'missing-source'],
+	['copy', 'missing-source-data'], ['copy', 'missing-template'], ['copy', 'missing-template-data'],
+	['copy', 'exception'], ['copy', 'last-error'], ['copy', 'nested-success'],
+	['switch', 'connection'], ['switch', 'begin'], ['switch', 'missing-template'],
+	['switch', 'duplicate-items'], ['switch', 'exception'], ['switch', 'last-error'],
+	['graph', 'connection'], ['graph', 'begin'],
+]);
+
 beforeEach(function () {
 	if (!getenv('CACTI_AUTOMATION_TEST_DSN')) {
 		$this->markTestSkipped('Set CACTI_AUTOMATION_TEST_DSN to an isolated cacti_automation_test database.');
@@ -117,4 +134,4 @@ test('data-source form commits or rolls back metadata and ancestry together', fu
 	$success = $case == 'success';
 	expect($r['template'])->toBe($success ? 2 : 1)->and($r['metadata_template'])->toBe($success ? 2 : 1);
 	expect($r['parent'])->toBe($success ? 900001 : 1)->and($r['error'])->toBe(!$success)->and($r['transaction_open'])->toBeFalse()->and($r['poller_updates'])->toBe($success ? 1 : 0);
-})->with(['success', 'incompatible', 'write']);
+})->with(['success', 'incompatible', 'write', 'begin', 'commit', 'commit-aborted']);

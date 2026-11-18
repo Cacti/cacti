@@ -2716,7 +2716,7 @@ function automation_execute_data_query(int $host_id, int $snmp_query_id) : void 
 
 		cacti_log($function . ' Device[' . $host_id . "] - start - data query: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-		$rules = db_fetch_cell_prepared('SELECT atr.*
+		$rules = db_fetch_row_prepared('SELECT atr.*
 			FROM automation_templates_rules AS atr
 			INNER JOIN automation_templates AS at
 			ON atr.template_id = at.id

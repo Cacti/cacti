@@ -114,6 +114,22 @@ class ReviewPDO extends PDO {
 
 	public ?Closure $before = null;
 
+	public string $transaction_failure = '';
+
+	public function beginTransaction() : bool {
+		return $this->transaction_failure === 'begin' ? false : parent::beginTransaction();
+	}
+
+	public function commit() : bool {
+		if ($this->transaction_failure === 'commit-aborted') {
+			parent::rollBack();
+
+			return false;
+		}
+
+		return $this->transaction_failure === 'commit' ? false : parent::commit();
+	}
+
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
 		$key = preg_replace('/\s+/', ' ', trim($query));
 
@@ -198,14 +214,18 @@ function api_plugin_hook(string $name) : void {
 	$GLOBALS['review_hooks'][] = [$name, $GLOBALS['pdo']->inTransaction()];
 }
 
-function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_id = 0) : void {
-	$GLOBALS['review_hooks'][] = ['push_out_host', $GLOBALS['pdo']->inTransaction()];
+if (!defined('CACTI_TEST_REAL_HOST_PROPAGATION')) {
+	function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_id = 0) : void {
+		$GLOBALS['review_hooks'][] = ['push_out_host', $GLOBALS['pdo']->inTransaction()];
+	}
 }
 
-function object_cache_get_totals(mixed ...$args) : void {
-}
+if (!defined('CACTI_TEST_REAL_HOST_PROPAGATION')) {
+	function object_cache_get_totals(mixed ...$args) : void {
+	}
 
-function object_cache_update_totals(mixed ...$args) : void {
+	function object_cache_update_totals(mixed ...$args) : void {
+	}
 }
 
 // Include the maintained definitions directly, after the isolated database is ready.

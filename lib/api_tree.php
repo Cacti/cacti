@@ -1251,11 +1251,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 			} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 				// Let's let the database do it!
 			} elseif ($sort_style == TREE_ORDERING_NATURAL) {
-				if (defined('SORT_FLAG_CASE')) {
-					asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
-				} else {
-					natcasesort($sort_array);
-				}
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
 			}
 
 			foreach ($sort_array as $id => $element) {
@@ -1309,11 +1305,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 			} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 				// Let's let the database do it!
 			} elseif ($sort_style == TREE_ORDERING_NATURAL) {
-				if (defined('SORT_FLAG_CASE')) {
-					asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
-				} else {
-					natcasesort($sort_array);
-				}
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
 			}
 
 			foreach ($sort_array as $id => $element) {
@@ -1366,11 +1358,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 			} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 				// Let's let the database do it!
 			} elseif ($sort_style == TREE_ORDERING_NATURAL) {
-				if (defined('SORT_FLAG_CASE')) {
-					asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
-				} else {
-					natcasesort($sort_array);
-				}
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
 			}
 
 			foreach ($sort_array as $id => $element) {
@@ -1409,11 +1397,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 			} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 				// Let's let the database do it!
 			} elseif ($sort_style == TREE_ORDERING_NATURAL) {
-				if (defined('SORT_FLAG_CASE')) {
-					asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
-				} else {
-					natcasesort($sort_array);
-				}
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
 			}
 
 			foreach ($sort_array as $id => $element) {
