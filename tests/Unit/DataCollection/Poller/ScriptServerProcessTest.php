@@ -77,7 +77,7 @@ function ss_process_test_start(array $arguments = [], string $bootstrap = 'scrip
 }
 
 function ss_process_test_run(array $arguments) : array {
-	$process = proc_open(ss_process_test_command($arguments), script_server_process_descriptors(), $pipes);
+	$process = proc_open(ss_process_test_command($arguments), [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 
 	if (!is_resource($process)) {
 		throw new RuntimeException('Unable to start Script Server fixture');

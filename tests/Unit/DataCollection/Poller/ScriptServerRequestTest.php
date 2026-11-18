@@ -29,6 +29,11 @@ function ss_request_stream(string $contents) : mixed {
 	return $stream;
 }
 
+/** A portable line-echo worker; no Unix command or shell is required. */
+function ss_request_echo_command() : array {
+	return [PHP_BINARY, '-r', 'while (($line = fgets(STDIN)) !== false) { fwrite(STDOUT, $line); fflush(STDOUT); }'];
+}
+
 test('the reader and writer share one request limit that matches the spine buffer', function () {
 	// spine formats "%s\r\n" into a 1024 byte buffer, leaving 1021 bytes of request
 	expect(SCRIPT_SERVER_MAX_REQUEST_LENGTH)->toBe(1021)
@@ -195,7 +200,7 @@ test('one line terminator is removed and embedded controls are refused', functio
 });
 
 test('exec_poll_php refuses a command longer than the reader accepts', function () {
-	$proc = proc_open(['cat'], script_server_process_descriptors(), $pipes);
+	$proc = proc_open(ss_request_echo_command(), script_server_process_descriptors(), $pipes);
 
 	expect(exec_poll_php(str_repeat('a', SCRIPT_SERVER_MAX_REQUEST_LENGTH + 1), true, $pipes, $proc))->toBe('U');
 
@@ -209,7 +214,7 @@ test('exec_poll_php refuses a command longer than the reader accepts', function 
 });
 
 test('exec_poll_php refuses a command with an embedded line break', function () {
-	$proc = proc_open(['cat'], script_server_process_descriptors(), $pipes);
+	$proc = proc_open(ss_request_echo_command(), script_server_process_descriptors(), $pipes);
 
 	expect(exec_poll_php("first\nsecond", true, $pipes, $proc))->toBe('U');
 	expect(trim(exec_poll_php(str_repeat('b', SCRIPT_SERVER_MAX_REQUEST_LENGTH), true, $pipes, $proc)))
@@ -222,7 +227,7 @@ test('exec_poll_php refuses a command with an embedded line break', function () 
 });
 
 test('exec_poll_php preserves the legacy ERROR response mapping', function () {
-	$proc    = proc_open(['cat'], script_server_process_descriptors(), $pipes);
+	$proc    = proc_open(ss_request_echo_command(), script_server_process_descriptors(), $pipes);
 	$healthy = true;
 
 	expect(exec_poll_php('ERROR from script', true, $pipes, $proc, 1.0, $healthy))->toBe('U')
@@ -242,7 +247,7 @@ test('response handling rejects invalid worker handles and an unframed oversized
 	expect(exec_poll_php('probe', true, false, false, 0.1, $healthy))->toBe('U')
 		->and($healthy)->toBeFalse();
 
-	$process = proc_open(['cat'], script_server_process_descriptors(), $pipes);
+	$process = proc_open(ss_request_echo_command(), script_server_process_descriptors(), $pipes);
 	fclose($pipes[0]);
 	$healthy = true;
 
@@ -375,7 +380,7 @@ dataset('script server arguments', [
 test('an escaped argument parses back to the same single argument', function (string $value) {
 	$args = [];
 
-	expect(parseArgs("'host' " . escapeshellarg($value) . " 'get'", $args))->toBeTrue()
+	expect(parseArgs("'host' " . cacti_escapeshellarg($value) . " 'get'", $args))->toBeTrue()
 		->and($args)->toBe(['host', $value, 'get']);
 })->with('script server arguments');
 
@@ -456,7 +461,7 @@ dataset('logged secrets', [
 ]);
 
 test('a known secret is masked in whatever escaped form the command carries it', function (string $secret) {
-	$command = '/cacti/scripts/query.php ' . escapeshellarg('host') . ' ' . escapeshellarg($secret) . ' ' . escapeshellarg('index');
+	$command = '/cacti/scripts/query.php ' . cacti_escapeshellarg('host') . ' ' . cacti_escapeshellarg($secret) . ' ' . cacti_escapeshellarg('index');
 	$logged  = script_server_redact_command($command, ['', $secret]);
 
 	expect($logged)->toBe('/cacti/scripts/query.php host <redacted> index')

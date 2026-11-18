@@ -57,8 +57,18 @@ afterEach(function () {
 	ss_state_test_remove($this->base);
 });
 
-test('state directories are created private to the poller user', function () {
+test('state directories are private or refused when privacy cannot be verified', function () {
 	$dir = $this->base . '/cacti/net-snmp-devio';
+
+	// PHP's Windows mode bits do not prove private ACLs. The fallback must
+	// remain fail-closed there; normal polling uses host_value_cache instead.
+	if (DIRECTORY_SEPARATOR === '\\') {
+		expect(CactiSnmpStateStore::directory($dir))->toBeFalse()
+			->and(CactiSnmpStateStore::write($dir, "$dir/5_io", '{}'))->toBeFalse()
+			->and(is_file("$dir/5_io"))->toBeFalse();
+
+		return;
+	}
 
 	expect(CactiSnmpStateStore::directory($dir))->toBe($dir)
 		->and(fileperms($this->base . '/cacti') & 0777)->toBe(0700)
@@ -71,6 +81,13 @@ test('permissions left by an earlier release are tightened', function () {
 	mkdir($dir, 0700, true);
 	chmod($this->base . '/cacti', 0770);
 	chmod($dir, 0750);
+
+	if (DIRECTORY_SEPARATOR === '\\') {
+		expect(CactiSnmpStateStore::directory($dir))->toBeFalse()
+			->and(CactiSnmpStateStore::write($dir, "$dir/5_io", '{}'))->toBeFalse();
+
+		return;
+	}
 
 	expect(CactiSnmpStateStore::directory($dir))->toBe($dir);
 	clearstatcache();
@@ -86,10 +103,20 @@ test('symbolic-link state directories are refused', function () {
 	expect(CactiSnmpStateStore::directory($this->base . '/cacti/net-snmp-devio'))->toBeFalse();
 })->skip(DIRECTORY_SEPARATOR === '\\', 'symbolic links require Unix semantics');
 
-test('state is replaced atomically and read back', function () {
+test('state is replaced atomically or refused without verified privacy', function () {
 	$dir  = CactiSnmpStateStore::directory($this->base . '/cacti/net-snmp-devio');
 	$file = "$dir/5_io";
 	$data = json_encode(['uptime' => '100', 'dr1' => '42']);
+
+	if (DIRECTORY_SEPARATOR === '\\') {
+		$path = $this->base . '/cacti/net-snmp-devio/5_io';
+		expect($dir)->toBeFalse()
+			->and(CactiSnmpStateStore::write(dirname($path), $path, $data))->toBeFalse()
+			->and(CactiSnmpStateStore::read($path))->toBeFalse()
+			->and(is_file($path))->toBeFalse();
+
+		return;
+	}
 
 	expect($dir)->toBeString()
 		->and($data)->toBeString()
