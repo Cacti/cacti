@@ -79,7 +79,7 @@ function ss_mikrotik_interfaces_getvalue($host_id, $index, $column) {
 	$column = 'cur' . $column;
 
 	if (!db_is_safe_identifier($column)) {
-		return '0';
+		return 'U';
 	}
 
 	$value = db_fetch_cell_prepared("SELECT
@@ -89,8 +89,9 @@ function ss_mikrotik_interfaces_getvalue($host_id, $index, $column) {
 		AND host_id = ?",
 		array($index, $host_id));
 
+	/* no row for this interface: unknown, not zero */
 	if ($value === false) {
-		return '0';
+		return 'U';
 	} else {
 		return $value;
 	}

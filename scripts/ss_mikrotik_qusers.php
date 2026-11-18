@@ -63,6 +63,8 @@ function ss_mikrotik_qusers($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
 }
 
 function ss_mikrotik_qusers_getvalue($host_id, $index, $column) {
+	$value = false;
+
 	switch ($column) {
 	case 'curBytesIn':
 	case 'curBytesOut':
@@ -105,10 +107,11 @@ function ss_mikrotik_qusers_getvalue($host_id, $index, $column) {
 		break;
 	}
 
-	if (!empty($value)) {
-		return $value;
+	/* no row for this user, or an unknown column: unknown, not zero */
+	if ($value === false || $value === null) {
+		return 'U';
 	} else {
-		return '0';
+		return $value;
 	}
 }
 

@@ -85,7 +85,8 @@ function ss_mikrotik_qtrees_getvalue($host_id, $index, $column) {
 		AND host_id = ?",
 		array($index, "<$index>", $host_id));
 
-	return $value;
+	/* no row for this tree: unknown, not an empty value */
+	return ($value === false || $value === null ? 'U' : $value);
 }
 
 function ss_mikrotik_qtrees_getnames($host_id) {

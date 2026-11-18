@@ -100,7 +100,7 @@ function ss_mikrotik_queues_getvalue($host_id, $index, $column) {
 		$column = 'curDroppedOut';
 		break;
 	default:
-		return '0';
+		return 'U';
 	}
 
 	$index2 = str_replace('_', ' ', $index);
@@ -112,8 +112,9 @@ function ss_mikrotik_queues_getvalue($host_id, $index, $column) {
 		AND host_id = ?",
 		array($index, $index2, $host_id));
 
+	/* no row for this queue: unknown, not zero */
 	if ($value === false) {
-		return '0';
+		return 'U';
 	} else {
 		return $value;
 	}

@@ -204,6 +204,11 @@ cacti_fixture_source_function($root . '/scripts/ss_multicpu_avg.php', 'ss_multic
 cacti_fixture_source_function($root . '/scripts/ss_webseer.php', 'ss_webseer', __NAMESPACE__);
 cacti_fixture_source_function($root . '/scripts/ss_fortigate_ips.php', 'ss_fortigate_ips', __NAMESPACE__);
 cacti_fixture_source_function($root . '/scripts/ss_fortigate_ipsec.php', 'ss_fortigate_ipsec', __NAMESPACE__);
+cacti_fixture_source_function($root . '/lib/database.php', 'db_is_safe_identifier', __NAMESPACE__);
+
+foreach (['interfaces', 'queues', 'qusers', 'qtrees'] as $table) {
+	cacti_fixture_source_function($root . '/scripts/ss_mikrotik_' . $table . '.php', 'ss_mikrotik_' . $table . '_getvalue', __NAMESPACE__);
+}
 cacti_fixture_source_function($root . '/scripts/ss_net_snmp_disk_' . $mode . '.php', 'ss_net_snmp_disk_' . $mode, __NAMESPACE__);
 
 function memory_stream($contents) {
@@ -357,6 +362,16 @@ check('ss_fortigate_ips gets with the SNMP retries, not the ping retries', $get_
 $walk_retries = [];
 ss_fortigate_ipsec(7);
 check('ss_fortigate_ipsec walks with the SNMP retries, not the ping retries', $walk_retries === [2]);
+
+// MikroTik value lookups: a missing row is unknown, a stored row is returned as is.
+foreach ([['interfaces', 'BytesIn'], ['queues', 'qsInOctets'], ['qusers', 'curBytesIn'], ['qtrees', 'qtBytes']] as [$table, $column]) {
+	$getvalue = __NAMESPACE__ . '\\ss_mikrotik_' . $table . '_getvalue';
+	check("ss_mikrotik_$table without a row", $getvalue(7, 'gone', $column) === 'U');
+	check("ss_mikrotik_$table with a row", $getvalue(7, 'known.example', $column) == 7);
+}
+check('ss_mikrotik_interfaces refuses an unsafe column', ss_mikrotik_interfaces_getvalue(7, 'known.example', 'x`y') === 'U');
+check('ss_mikrotik_queues refuses an unknown column', ss_mikrotik_queues_getvalue(7, 'known.example', 'bogus') === 'U');
+check('ss_mikrotik_qusers refuses an unknown column', ss_mikrotik_qusers_getvalue(7, 'known.example', 'bogus') === 'U');
 
 ob_start();
 ss_webseer('query', 'webseerName');
