@@ -47,8 +47,15 @@ test('only a live connection of this user other than our own is ended', function
 		->and(results()['kill_gone'][1])->toBe([])
 		->and(results()['kill_gone'][2])->toContain('ID != CONNECTION_ID()')->toContain('CURRENT_USER()')
 		->and(results()['kill_live'][0])->toBeTrue()
-		->and(results()['kill_live'][1])->toBe(['KILL CONNECTION 77'])
+		->and(results()['kill_live'][1])->toBe(['KILL QUERY ID 5001', 'KILL CONNECTION 77'])
 		->and(results()['kill_live'][2][0])->toContain('connection 77');
+});
+
+test('the running statement is ended before the connection, by query id on MariaDB', function () {
+	expect(results()['kill_mysql'])->toBe([true, ['KILL QUERY 77', 'KILL CONNECTION 77']])
+		->and(results()['kill_idle'])->toBe([true, ['KILL CONNECTION 77']])
+		->and(results()['kill_closed'])->toBeTrue()
+		->and(results()['kill_both_failed'])->toBeFalse();
 });
 
 test('a recorded connection is left alone once the server has restarted since the process registered', function () {
@@ -57,9 +64,9 @@ test('a recorded connection is left alone once the server has restarted since th
 });
 
 test('the connection of a timed out or exited process is ended when its row is retired', function () {
-	expect(results()['start_timed_out'])->toBe([true, ['KILL CONNECTION 88']])
-		->and(results()['start_exited'])->toBe([true, ['KILL CONNECTION 88']])
-		->and(results()['sweep'])->toBe(['KILL CONNECTION 88']);
+	expect(results()['start_timed_out'])->toBe([true, ['KILL QUERY ID 9001', 'KILL CONNECTION 88']])
+		->and(results()['start_exited'])->toBe([true, ['KILL QUERY ID 9001', 'KILL CONNECTION 88']])
+		->and(results()['sweep'])->toBe(['KILL QUERY ID 9001', 'KILL CONNECTION 88']);
 });
 
 test('a row registered before the upgrade has no connection to end', function () {
@@ -69,7 +76,7 @@ test('a row registered before the upgrade has no connection to end', function ()
 test('the timeout sweep signals a process that is still running and ends its connection', function () {
 	[$kills, $log, $signaled] = results()['sweep_running'];
 
-	expect($kills)->toBe(['KILL CONNECTION 88'])
+	expect($kills)->toBe(['KILL QUERY ID 9001', 'KILL CONNECTION 88'])
 		->and($log)->toContain('Process killed due to timeout')
 		->and($signaled)->toBeTrue();
 });
@@ -88,9 +95,11 @@ function killed_process_db(int $uptime) : \FakeMySQLPDO {
 		public function prepare(string $query, array $options = []): \PDOStatement|false {
 			$this->sql[] = preg_replace('/\s+/', ' ', trim($query));
 
-			// record the bound connection id, which only execute() sees
-			if (trim($query) === 'KILL CONNECTION ?') {
-				return parent::prepare('INSERT INTO killed (id) VALUES (?)', $options);
+			// record the bound id, which only execute() sees
+			$kill = ['KILL QUERY ID ?' => 'QUERY ID', 'KILL QUERY ?' => 'QUERY', 'KILL CONNECTION ?' => 'CONNECTION'][trim($query)] ?? null;
+
+			if ($kill !== null) {
+				return parent::prepare("INSERT INTO killed (kind, id) VALUES ('$kill', ?)", $options);
 			}
 
 			if (str_starts_with(trim($query), 'SHOW GLOBAL STATUS')) {
@@ -105,9 +114,9 @@ function killed_process_db(int $uptime) : \FakeMySQLPDO {
 	};
 
 	$db->uptime = $uptime;
-	$db->exec('CREATE TABLE processlist (ID INTEGER, USER TEXT, TIME INTEGER)');
-	$db->exec('CREATE TABLE killed (id INTEGER)');
-	$db->exec("INSERT INTO processlist VALUES (77, 'cactiuser', 40), (78, 'other', 40), (99, 'cactiuser', 0)");
+	$db->exec('CREATE TABLE processlist (ID INTEGER, USER TEXT, COMMAND TEXT, TIME INTEGER, QUERY_ID INTEGER)');
+	$db->exec('CREATE TABLE killed (kind TEXT, id INTEGER)');
+	$db->exec("INSERT INTO processlist VALUES (77, 'cactiuser', 'Query', 40, 5001), (78, 'other', 'Query', 40, 5002), (99, 'cactiuser', 'Query', 0, 5003)");
 	$db->exec('CREATE TABLE processes (tasktype TEXT, taskname TEXT, taskid INTEGER, pid INTEGER, timeout INTEGER, connection_id INTEGER, started TEXT, last_update TEXT)');
 
 	$GLOBALS['database_sessions'][$GLOBALS['database_hostname'] . ':' . $GLOBALS['database_port'] . ':' . $GLOBALS['database_default']] = $db;
@@ -116,7 +125,7 @@ function killed_process_db(int $uptime) : \FakeMySQLPDO {
 }
 
 function killed_process_kills(\FakeMySQLPDO $db) : array {
-	return array_map(fn ($id) => "KILL CONNECTION $id", $db->query('SELECT id FROM killed')->fetchAll(\PDO::FETCH_COLUMN));
+	return array_map(fn ($kill) => "KILL {$kill['kind']} {$kill['id']}", $db->query('SELECT kind, id FROM killed')->fetchAll(\PDO::FETCH_ASSOC));
 }
 
 beforeEach(function () {
@@ -130,7 +139,7 @@ afterEach(function () {
 test('the upgrade adds the column and the stale-process cleanup ends the connection', function () {
 	expect(results()['upgrade'][0])->toBe('ADD COLUMN processes.connection_id')
 		->and(results()['upgrade'][1])->toMatchArray(['type' => 'bigint(20)', 'unsigned' => true, 'default' => '0', 'after' => 'timeout'])
-		->and(results()['cleanup'])->toBe(['KILL CONNECTION 88']);
+		->and(results()['cleanup'])->toBe(['KILL QUERY ID 9001', 'KILL CONNECTION 88']);
 });
 
 test('in process, only a live connection of this user from since the server started is ended', function () {
@@ -141,7 +150,7 @@ test('in process, only a live connection of this user from since the server star
 		->and(cacti_process_kill_db_connection(['connection_id' => 78, 'started' => $started]))->toBeFalse()
 		->and(cacti_process_kill_db_connection(['connection_id' => 99, 'started' => $started]))->toBeFalse()
 		->and(cacti_process_kill_db_connection(['connection_id' => 0, 'started' => $started]))->toBeFalse()
-		->and(killed_process_kills($db))->toBe(['KILL CONNECTION 77']);
+		->and(killed_process_kills($db))->toBe(['KILL QUERY ID 5001', 'KILL CONNECTION 77']);
 
 	$db = killed_process_db(60);
 
