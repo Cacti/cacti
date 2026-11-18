@@ -147,23 +147,29 @@ namespace Cacti\Test\RequestAccessors {
 	}
 	expect_that($thrown && $GLOBALS['request_rejections'] === [], 'A malformed pattern must throw instead of rejecting the input');
 
-	// Booleans: the FILTER_VALIDATE_BOOLEAN words in any case; anything else is refused.
+	// Booleans: the FILTER_VALIDATE_BOOLEAN words in any case; anything else is
+	// refused. The result is cached as a checkbox value, 'on' or '', so readers
+	// comparing get_request_var() against 'on' agree with it.
 	foreach (['1', 'true', 'on', 'yes', 'TRUE', 'On', ' yes ', 1] as $value) {
 		expect_that(run(['v' => $value], static fn () => request_bool('v')) === ['value', true], 'bool must read true from ' . label($value));
+		expect_that(get_request_var('v') === 'on', 'bool must cache true from ' . label($value) . " as 'on'");
 	}
 
 	foreach (['0', 'false', 'off', 'no', 'OFF', 0] as $value) {
 		expect_that(run(['v' => $value], static fn () => request_bool('v', true)) === ['value', false], 'bool must read false from ' . label($value));
+		expect_that(get_request_var('v') === '', 'bool must cache false from ' . label($value) . " as ''");
 	}
 
 	foreach (['2', '-1', 'y', 'n', 'enabled', 'onn'] as $value) {
 		expect_that(run(['v' => $value], static fn () => request_bool('v')) === ['rejected', $value], 'bool must reject ' . label($value));
 	}
 
-	// The submitted spelling is cached, so a second read of 'off' is still false
-	// rather than an empty value that would take a true default.
+	// A cached false is '', which must still read as false on a second call
+	// rather than as an empty value that takes a true default.
 	run(['v' => 'off'], static fn () => request_bool('v', true));
-	expect_that(get_nfilter_request_var('v') === 'off' && request_bool('v', true) === false, 'bool must cache the submitted spelling');
+	expect_that(request_bool('v', true) === false, 'bool must read its cached false again');
+	run(['v' => 'yes'], static fn () => request_bool('v'));
+	expect_that(request_bool('v') === true, 'bool must read its cached true again');
 
 	// Enums compare exact strings, so integer action keys match their decimal form only.
 	foreach ([['2', [1, 2, 3]], ['0', [0]], ['actions', ['actions']], ['a b', ['x', 'a b']]] as [$value, $allowed]) {
