@@ -13,7 +13,8 @@ inherit it. `tests/Unit/Ui/Html/ThemeChildImportsTest.php` keeps those in step
 with `parent` and fails when an import's md5 cache buster goes stale, for
 example after the parent's `main.css` changes.
 
-The color values are taken from Primer's published primitives. Primer is
-licensed under the MIT License. No GitHub logos or marks are used.
+The color values are taken from Primer's published primitives, apart from the
+adjustments commented in `css/pre/colors.css`. Primer is licensed under the MIT
+License. No GitHub logos or marks are used.
 
 The font stack is the operating system's UI font, so nothing is bundled.
