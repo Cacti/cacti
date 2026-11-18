@@ -47,6 +47,16 @@ msgstr ""
 msgid "Authentication configuration needs recovery: %s"
 msgstr ""
 
+#: install/functions.php
+#, php-format
+msgid "LDAP Login Providers with no server configured: IDs %s. Their users cannot log in until a server is set under Configuration > Login Providers."
+msgstr ""
+
+#: install/functions.php
+#, php-format
+msgid "Enabled users belong to login realms with no Login Provider: realms %s. They cannot log in until they are moved to an existing realm or the provider is recreated."
+msgstr ""
+
 #: lib/installer.php cli/install_cacti.php install/functions.php
 msgid "Backup and recovery"
 msgstr ""

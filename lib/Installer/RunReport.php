@@ -67,7 +67,7 @@ final class RunReport {
 
 	public function encode() : string {
 		$data = ['run_id'     => $this->id, 'started_at' => $this->started, 'state' => $this->state->value,
-			'warnings'           => $this->warnings === null ? null : ['collectors' => $this->warnings->collectors], 'operations' => $this->operations,
+			'warnings'           => $this->warnings === null ? null : ['collectors' => $this->warnings->collectors, 'authentication' => $this->warnings->authentication], 'operations' => $this->operations,
 			'operations_omitted' => 0, 'warning_ids_omitted' => 0,
 			'recovery'           => 'If a migration failed, stop polling and web writes. Back up the failed database before investigating or retrying. Restore the matching pre-upgrade database, configuration, plugins, application files and RRD data together. See docs/INSTALLER_RECOVERY.md.'];
 
@@ -81,12 +81,14 @@ final class RunReport {
 				continue;
 			}
 
-			foreach ($data['warnings']['collectors'] ?? [] as $state => $ids) {
-				if ($ids !== []) {
-					array_pop($data['warnings']['collectors'][$state]);
-					$data['warning_ids_omitted']++;
+			foreach (['collectors', 'authentication'] as $group) {
+				foreach ($data['warnings'][$group] ?? [] as $state => $ids) {
+					if ($ids !== []) {
+						array_pop($data['warnings'][$group][$state]);
+						$data['warning_ids_omitted']++;
 
-					continue 2;
+						continue 3;
+					}
 				}
 			}
 

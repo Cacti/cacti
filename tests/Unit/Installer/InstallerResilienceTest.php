@@ -94,7 +94,7 @@ test('the web upgrade leaves the target version to the post-verification write',
 		->and($end)->not->toBeFalse()
 		->and($upgrade)->not->toContain('CACTI_VERSION_FULL')
 		->and($upgrade)->toContain("!cacti_version_compare(CACTI_VERSION, \$cacti_upgrade_version, '=')")
-		->and(strpos($install, 'install_verify_authentication()'))->toBeLessThan(strpos($install, '$this->writeInstalledVersion()'))
+		->and(strpos($install, 'install_verify_authentication($authentication)'))->toBeInt()->toBeLessThan(strpos($install, '$this->writeInstalledVersion()'))
 		->and(strpos($install, '$this->validateRequiredSchema()'))->toBeLessThan(strpos($install, '$this->writeInstalledVersion()'));
 });
 

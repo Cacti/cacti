@@ -26,33 +26,34 @@ declare(strict_types = 1);
 
 namespace Cacti\Installer;
 
-/** A serializable completion report; it never contains credentials or commands. */
+/** A serializable completion report; it holds only collector, provider and realm IDs. */
 final readonly class CompletionWarnings {
-	/** @param array<string, list<int>> $collectors */
-	public function __construct(public array $collectors = []) {
+	private const COLLECTOR_STATES = ['failed', 'skipped', 'timeout', 'deferred'];
+
+	private const AUTHENTICATION_CHECKS = ['ldap_without_server', 'realms_without_provider'];
+
+	/** @param array<string, list<int>> $collectors
+	 * @param array<string, list<int>> $authentication
+	 */
+	public function __construct(public array $collectors = [], public array $authentication = []) {
 	}
 
 	/** @param array<string, mixed> $status */
 	public function withCollectors(array $status) : self {
-		$collectors = [];
+		return new self(self::ids($status, self::COLLECTOR_STATES), $this->authentication);
+	}
 
-		foreach (['failed', 'skipped', 'timeout', 'deferred'] as $state) {
-			$ids = array_values(array_unique(array_map('intval', $status[$state] ?? [])));
-
-			if ($ids !== []) {
-				$collectors[$state] = $ids;
-			}
-		}
-
-		return new self($collectors);
+	/** @param array<string, mixed> $checks */
+	public function withAuthentication(array $checks) : self {
+		return new self($this->collectors, self::ids($checks, self::AUTHENTICATION_CHECKS));
 	}
 
 	public function hasWarnings() : bool {
-		return $this->collectors !== [];
+		return $this->collectors !== [] || $this->authentication !== [];
 	}
 
 	public function encode() : string {
-		return json_encode(['collectors' => $this->collectors], JSON_THROW_ON_ERROR);
+		return json_encode(['collectors' => $this->collectors, 'authentication' => $this->authentication], JSON_THROW_ON_ERROR);
 	}
 
 	public static function decode(string $value) : self {
@@ -62,16 +63,46 @@ final readonly class CompletionWarnings {
 			return new self();
 		}
 
-		$status = [];
+		return (new self())->withCollectors(self::positive($data['collectors'] ?? null, self::COLLECTOR_STATES))
+			->withAuthentication(self::positive($data['authentication'] ?? null, self::AUTHENTICATION_CHECKS));
+	}
 
-		foreach (['failed', 'skipped', 'timeout', 'deferred'] as $state) {
-			$ids = $data['collectors'][$state] ?? null;
+	/**
+	 * @param  array<string, mixed>     $source
+	 * @param  list<string>             $keys
+	 * @return array<string, list<int>>
+	 */
+	private static function ids(array $source, array $keys) : array {
+		$result = [];
 
-			if (is_array($ids)) {
-				$status[$state] = array_values(array_filter($ids, static fn (mixed $id) : bool => is_int($id) && $id > 0));
+		foreach ($keys as $key) {
+			$ids = array_values(array_unique(array_map('intval', $source[$key] ?? [])));
+
+			if ($ids !== []) {
+				$result[$key] = $ids;
 			}
 		}
 
-		return (new self())->withCollectors($status);
+		return $result;
+	}
+
+	/**
+	 * Keep only positive integer IDs from decoded, untrusted settings data.
+	 *
+	 * @param  list<string>             $keys
+	 * @return array<string, list<int>>
+	 */
+	private static function positive(mixed $source, array $keys) : array {
+		$result = [];
+
+		foreach ($keys as $key) {
+			$ids = is_array($source) ? ($source[$key] ?? null) : null;
+
+			if (is_array($ids)) {
+				$result[$key] = array_values(array_filter($ids, static fn (mixed $id) : bool => is_int($id) && $id > 0));
+			}
+		}
+
+		return $result;
 	}
 }

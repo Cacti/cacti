@@ -26,37 +26,47 @@ declare(strict_types = 1);
 
 namespace Cacti\Installer;
 
+/**
+ * Post-upgrade checks of the login provider configuration.
+ *
+ * Unreadable provider parameters block the upgrade: every provider would run
+ * without its stored settings, including any group restriction. A provider
+ * without an LDAP server, or a user whose realm has no provider, already
+ * denies those logins, so they are reported as warnings to repair.
+ */
 final readonly class AuthenticationRequirements {
 	/** @param list<array{id: int|string, type: int|string, enabled: string, parameters: ?string}> $providers
-	 * @param  list<int>    $realms
 	 * @return list<string>
 	 */
-	public function errors(array $providers, array $realms) : array {
+	public function errors(array $providers) : array {
 		$errors = [];
-		$ids    = [];
 
 		foreach ($providers as $provider) {
-			$id    = (int) $provider['id'];
-			$ids[] = $id;
-
-			if ($provider['enabled'] !== 'on') {
-				continue;
-			}
-			$parameters = json_decode($provider['parameters'] ?? '', true);
-
-			if (!is_array($parameters)) {
-				$errors[] = 'Provider ' . $id . ' has invalid parameters. Restore its configuration before retrying.';
-			} elseif ((int) $provider['type'] === 1 && empty($parameters['server'])) {
-				$errors[] = 'LDAP provider ' . $id . ' has no server. Restore its configuration before retrying.';
-			}
-		}
-
-		foreach (array_unique($realms) as $realm) {
-			if ($realm >= 1000 && !in_array($realm - 1000, $ids, true)) {
-				$errors[] = 'User realm ' . $realm . ' has no login provider. Restore its provider mapping before retrying.';
+			if ($provider['enabled'] === 'on' && !is_array(json_decode($provider['parameters'] ?? '', true))) {
+				$errors[] = 'Provider ' . (int) $provider['id'] . ' has invalid parameters. Restore its configuration before retrying.';
 			}
 		}
 
 		return $errors;
+	}
+
+	/** @param list<array{id: int|string, type: int|string, enabled: string, parameters: ?string}> $providers
+	 * @param  list<int>                                                                   $realms
+	 * @return array{ldap_without_server?: list<int>, realms_without_provider?: list<int>}
+	 */
+	public function warnings(array $providers, array $realms) : array {
+		$ids     = array_map(static fn (array $provider) : int => (int) $provider['id'], $providers);
+		$servers = [];
+
+		foreach ($providers as $provider) {
+			$parameters = json_decode($provider['parameters'] ?? '', true);
+
+			if ($provider['enabled'] === 'on' && (int) $provider['type'] === 1 && is_array($parameters) && empty($parameters['server'])) {
+				$servers[] = (int) $provider['id'];
+			}
+		}
+		$orphans = array_values(array_filter(array_unique($realms), static fn (int $realm) : bool => $realm >= 1000 && !in_array($realm - 1000, $ids, true)));
+
+		return array_filter(['ldap_without_server' => $servers, 'realms_without_provider' => $orphans]);
 	}
 }
