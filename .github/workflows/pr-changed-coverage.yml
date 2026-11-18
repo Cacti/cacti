@@ -23,6 +23,7 @@ on:
       - 'include/css/graph_drilldown.css'
       - 'include/themes/**/main.css'
       - 'tests/Helpers/FixtureCoverage.php'
+      - 'tests/Helpers/RequestCoverage.php'
       - 'tests/Helpers/SourceSlice.php'
       - 'tests/fixtures/Core/**'
       - 'tests/e2e/tests/**'
@@ -43,6 +44,7 @@ permissions:
 
 jobs:
   changed-coverage:
+    needs: windows-script-server
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -70,10 +72,17 @@ jobs:
           set -euo pipefail
           npm ci --ignore-scripts
           npx --no-install playwright install --with-deps chromium
+      - name: Collect native Windows coverage
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: native-script-server-coverage-*
+          path: ${{ runner.temp }}/platform-coverage
+          merge-multiple: true
       - name: Run changed-code tests and require 100 percent changed-line coverage
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha || inputs.base_commit }}
           CACTI_COVERAGE_DIR: ${{ runner.temp }}/cacti-changed-coverage
+          CACTI_PR_PLATFORM_COVERAGE_DIR: ${{ runner.temp }}/platform-coverage
         run: bash tests/tools/run_pr_change_tests.sh "$BASE_COMMIT"
       - name: Preserve coverage evidence
         if: always()
@@ -102,7 +111,9 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: ${{ matrix.php }}
+          coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, dom, pdo_sqlite, pdo_mysql, sockets, sqlite3
+          ini-values: memory_limit=2G
           dependency-mode: locked-tests
           # POSIX and pcntl are unavailable on native Windows; the applicable
           # Unix signal and socket contracts declare explicit platform skips.
@@ -110,10 +121,21 @@ jobs:
       - name: Exercise native pipe framing, process recovery and state storage
         timeout-minutes: 5
         shell: bash
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/native-script-server-${{ matrix.php }}
         run: |
           set -euo pipefail
-          php include/vendor/bin/pest --configuration=tests/phpunit.xml --debug \
+          php -r 'if (!mkdir(getenv("CACTI_PR_RAW_COVERAGE"), 0700, true) && !is_dir(getenv("CACTI_PR_RAW_COVERAGE"))) { exit(1); }'
+          php -d auto_prepend_file=tests/Helpers/RequestCoverage.php include/vendor/bin/pest --configuration=tests/phpunit.xml --debug \
             tests/Unit/DataCollection/Poller/ScriptServerProcessTest.php \
             tests/Unit/DataCollection/Poller/ScriptServerRequestTest.php \
             tests/Unit/DataCollection/Poller/ScriptServerResponseTest.php \
             tests/Unit/Scripts/NetSnmpDiskStateFileTest.php
+      - name: Preserve native Windows evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-script-server-coverage-${{ matrix.php }}
+          path: ${{ runner.temp }}/native-script-server-${{ matrix.php }}/*.json
+          if-no-files-found: error

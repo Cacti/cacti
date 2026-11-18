@@ -122,6 +122,14 @@ PY
 	if compgen -G "$request_raw/*.json" > /dev/null; then
 		cp "$request_raw"/*.json "$native/"
 	fi
+	if [[ -n "${CACTI_PR_PLATFORM_COVERAGE_DIR:-}" ]]; then
+		if ! compgen -G "$CACTI_PR_PLATFORM_COVERAGE_DIR/*.json" > /dev/null; then
+			printf 'Native platform coverage contains no reports.\n' >&2
+
+			exit 1
+		fi
+		cp "$CACTI_PR_PLATFORM_COVERAGE_DIR"/*.json "$native/"
+	fi
 	"$php_binary" tests/tools/normalize_request_coverage.php "$native" "$coverage_dir/native-normalized" "$coverage_dir/pest-clover.xml"
 
 	# Rebase each container report onto this checkout, dropping evidence for any

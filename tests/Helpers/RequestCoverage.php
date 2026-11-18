@@ -23,16 +23,18 @@ if ($requestCoverageDirectory !== false && $requestCoverageDirectory !== '') {
 			}
 			unset($data[$temporary]);
 		}
-		$root      = realpath(dirname(__DIR__, 2));
+		$root      = str_replace('\\', '/', realpath(dirname(__DIR__, 2)));
 		$hashes    = [];
 		$htmlSpans = [];
+		$portable  = [];
 
 		foreach ($data as $file => $lines) {
-			if (!str_starts_with($file, $root . '/') || str_contains($file, '/vendor/')) {
-				unset($data[$file]);
+			$file = str_replace('\\', '/', $file);
 
+			if (!str_starts_with($file, $root . '/') || str_contains($file, '/vendor/')) {
 				continue;
 			}
+			$portable[$file]  = $lines;
 			$hashes[$file]    = hash_file('sha256', $file);
 			$htmlSpans[$file] = [];
 
@@ -43,6 +45,7 @@ if ($requestCoverageDirectory !== false && $requestCoverageDirectory !== '') {
 				}
 			}
 		}
+		$data = $portable;
 
 		if ($contract !== null) {
 			$contract['hashes'] = [];
