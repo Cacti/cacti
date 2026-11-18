@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#8783: Keep the scripts and resource files shipped with Cacti when the installer imports the bundled device template packages, whose embedded copies can be older and would undo fixes such as the bound queries in the MikroTik scripts
 -fix: Ensure on-demand (WebUI) Boost processing always takes precedence over the scheduled Boost poller instead of deferring to it (lib/boost.php boost_process_poller_output), so viewing a graph flushes its data immediately; concurrent writes to the same RRD remain safe because Boost passes --skip-past-updates to RRDtool 1.5+
 -fix: Match the language selectmenu (the jQuery UI dropdown rendered by the custom languageselect widget) to each theme's select2 controls - restore the 6px border-radius squared off by .ui-corner-all and apply the themed gradient/transparent background and open-state colours - in the classic, dark, deepness, midwinter, paper-plane, paw and sunrise themes
 -fix: Preserve a Card API card's live expand/collapse state when its refresh or resize response lands (include/js/cards.js replaceCard), so toggling a card while a refresh is in flight is no longer reverted
