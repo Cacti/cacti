@@ -1028,9 +1028,10 @@ function get_message_max_type() {
  * part of Cacti's lib functionality.
  *
  * A custom $message is plain text and is HTML-escaped here, so callers pass unescaped text
- * (__() rather than __esc()) to avoid double escaping. Use raise_message_html() only for
- * trusted markup whose dynamic parts the caller has already escaped. Predefined messages from
- * $messages and session-keyed messages are not escaped again.
+ * (__() rather than __esc()). Use raise_message_html() only for trusted markup whose dynamic
+ * parts the caller has already escaped. Predefined messages from $messages and session-keyed
+ * messages are not escaped again. Text a caller already escaped with __esc() or html_escape()
+ * is not encoded a second time.
  *
  * @param mixed $message_id The ID of the message to raise as defined in $messages in
  *   'include/global_arrays.php'.
