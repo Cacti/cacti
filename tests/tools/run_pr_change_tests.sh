@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix DeviceRepositoryContracts; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -32,6 +32,12 @@ if [[ -f tests/fixtures/Core/RowGuardMatrix.php ]]; then
 	for mode in auth-changepassword add-device reports-edit; do
 		run_probe RowGuardMatrix.php "row-guard-$mode" "$mode"
 	done
+fi
+if [[ -f tests/phpunit-changed-components.xml && -x include/vendor/bin/pest ]]; then
+	clover="$coverage_dir/changed-components.xml"
+	XDEBUG_MODE=coverage "$php_binary" -d memory_limit=1G include/vendor/bin/pest \
+		--configuration=tests/phpunit-changed-components.xml --colors=never --coverage-clover="$clover"
+	php_coverage+=("$clover")
 fi
 if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-get GET '' mutation
