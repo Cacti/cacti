@@ -170,9 +170,6 @@ namespace Cacti\Test\SecretFieldSave {
 	function display_tooltip($text) {
 		return '';
 	}
-	function inject_form_variables($fields, $values) {
-		return $fields;
-	}
 	function draw_edit_form($form) {
 		foreach ($form['fields'] as $name => $field) {
 			if (($field['method'] ?? '') == 'textbox_password') {
@@ -214,6 +211,7 @@ namespace Cacti\Test\SecretFieldSave {
 	\cacti_fixture_source_function($root . '/pollers.php', 'poller_saved_test_dbpass', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/pollers.php', 'test_database_connection', __NAMESPACE__);
 	\cacti_fixture_source_function($root . '/pollers.php', 'poller_edit', __NAMESPACE__);
+	\cacti_fixture_source_function($root . '/lib/html_utility.php', 'inject_form_variables', __NAMESPACE__);
 	// login_providers.php only marks its password fields; loading its save handler instruments the file.
 	\cacti_fixture_source_function($root . '/login_providers.php', 'form_save', __NAMESPACE__ . '\\LoginProviders');
 	require_once $root . '/include/vendor/autoload.php';
@@ -310,15 +308,43 @@ namespace Cacti\Test\SecretFieldSave {
 		}
 	}
 
-	// pollers.php edit page: the connection test posts the record id, and the password is not rendered.
-	$GLOBALS['fields_poller_edit'] = ['dbpass' => ['method' => 'textbox_password', 'value' => 'remote-secret', 'max_length' => 64, 'form_id' => 2, 'secret' => true]];
-	$GLOBALS['request']            = ['id' => '2'];
-	$GLOBALS['rows']               = [2 => ['id' => 2, 'name' => 'Remote', 'timezone' => 'UTC']];
-	$_SESSION                      = [];
-	ob_start();
-	poller_edit();
-	$html = (string) ob_get_clean();
-	$check(str_contains($html, 'id: 2,') && !str_contains($html, 'remote-secret'), 'poller edit');
+	// pollers.php edit page, drawn from the real field list: the connection test posts the record id,
+	// the password is not rendered, and a collector saved without one does not claim a stored value.
+	$source = (string) file_get_contents($root . '/pollers.php');
+
+	if (!preg_match('/^\$fields_poller_edit = \[.*?^\];/ms', $source, $match)) {
+		throw new \RuntimeException('Cannot locate $fields_poller_edit');
+	}
+	$poller_fields = sys_get_temp_dir() . '/cacti-secret-field-poller-' . bin2hex(random_bytes(6));
+	file_put_contents($poller_fields, '<?php namespace ' . __NAMESPACE__ . '; ' . $match[0]);
+	$database_username               = 'cacti';
+	$database_default                = 'cacti';
+	$database_port                   = '3306';
+	$database_retries                = '2';
+	$database_ssl                    = false;
+	$database_ssl_key                = '';
+	$database_ssl_cert               = '';
+	$database_ssl_ca                 = '';
+	$database_ssl_capath             = '';
+	$database_ssl_verify_server_cert = false;
+	$logfile_verbosity               = [];
+	$poller_sync_intervals           = [];
+	require $poller_fields;
+	unlink($poller_fields);
+	// inject_form_variables() rewrites the field list in place, so each page draw starts from a copy.
+	$poller_field_list = $fields_poller_edit;
+
+	foreach (['remote-secret' => true, '' => false] as $stored => $claims_stored) {
+		$GLOBALS['fields_poller_edit'] = $poller_field_list;
+		$GLOBALS['request']            = ['id' => '2'];
+		$GLOBALS['rows']               = [2 => ['id' => 2, 'name' => 'Remote', 'timezone' => 'UTC', 'dbpass' => (string) $stored]];
+		$_SESSION                      = [];
+		ob_start();
+		poller_edit();
+		$html = (string) ob_get_clean();
+		$check(str_contains($html, 'id: 2,') && !str_contains($html, 'remote-secret') && !str_contains($html, 'main-db-secret')
+			&& str_contains($html, "name='dbpass_clear'") === $claims_stored && str_contains($html, 'A value is stored.') === $claims_stored, 'poller edit ' . ($claims_stored ? 'stored' : 'empty'));
+	}
 
 	// Login providers: the LDAP bind password and OpenID client secret follow the same rules.
 	foreach ([
