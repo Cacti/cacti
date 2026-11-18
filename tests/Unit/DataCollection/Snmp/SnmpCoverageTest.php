@@ -154,6 +154,8 @@ if (!function_exists('db_fetch_assoc')) {
 if (!function_exists('db_fetch_row_prepared')) {
 	function db_fetch_row_prepared(string $sql, array $params = []) : array|bool {
 		if (str_contains($sql, 'FROM host')) {
+			$GLOBALS['snmp_coverage_host_queries'] = ($GLOBALS['snmp_coverage_host_queries'] ?? 0) + 1;
+
 			return $GLOBALS['snmp_coverage_host_by_id'][$params[0] ?? 0] ?? [];
 		}
 
@@ -780,4 +782,22 @@ test('script data query SNMP fields come from the device unless the cached argum
 		->and(snmp_script_auth_fields(99, '2:161:500:1:10'))->toBe(array_pad(['2', '161', '500', '1', '10'], 13, ''));
 
 	unset($GLOBALS['snmp_coverage_host_by_id']);
+});
+
+test('script data query SNMP fields read each device once per worker', function () : void {
+	$GLOBALS['snmp_coverage_host_by_id']   = [
+		8 => array_fill_keys(['snmp_username', 'snmp_password', 'snmp_auth_protocol', 'snmp_priv_passphrase',
+			'snmp_priv_protocol', 'snmp_context', 'snmp_engine_id'], '') + ['snmp_community' => 'c8'],
+	];
+	$GLOBALS['snmp_coverage_host_queries'] = 0;
+
+	// every data source of a device, and a device that does not exist, cost one lookup each
+	for ($i = 0; $i < 50; $i++) {
+		expect(snmp_script_auth_fields(8, '2:161:500:1:10')[5])->toBe('c8')
+			->and(snmp_script_auth_fields(98, '2:161:500:1:10')[5])->toBe('');
+	}
+
+	expect($GLOBALS['snmp_coverage_host_queries'])->toBe(2);
+
+	unset($GLOBALS['snmp_coverage_host_by_id'], $GLOBALS['snmp_coverage_host_queries']);
 });
