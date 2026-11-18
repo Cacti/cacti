@@ -42,7 +42,8 @@ function db_execute($sql, $log = true, $db_conn = false) {
 function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false) {
 	record($sql, $params);
 
-	return true;
+	// a KILL fails when its target is already gone
+	return !in_array($sql, $GLOBALS['failing'], true);
 }
 
 function db_fetch_row_prepared($sql, $params = [], $log = true, $db_conn = false) {
@@ -87,6 +88,7 @@ function reset_state($row = [], $rows = [], $threads = []) {
 	$GLOBALS['row']     = $row;
 	$GLOBALS['rows']    = $rows;
 	$GLOBALS['threads'] = $threads;
+	$GLOBALS['failing'] = [];
 }
 
 $results = [];
@@ -113,8 +115,24 @@ $started = date('Y-m-d H:i:s', time() - 600);
 reset_state();
 $results['kill_gone'] = [cacti_process_kill_db_connection(['connection_id' => 77, 'started' => $started]), kills(), $GLOBALS['sql'][1][0]];
 
-reset_state([], [], [77 => ['ID' => 77, 'TIME' => 4000]]);
+// MariaDB ends the statement by its query id, then the connection
+reset_state([], [], [77 => ['ID' => 77, 'TIME' => 4000, 'COMMAND' => 'Query', 'QUERY_ID' => 5001]]);
 $results['kill_live'] = [cacti_process_kill_db_connection(['connection_id' => 77, 'started' => $started]), kills(), $GLOBALS['log']];
+
+// MySQL has no query id, so it ends the connection's statement, then the connection
+reset_state([], [], [77 => ['ID' => 77, 'TIME' => 4000, 'COMMAND' => 'Query']]);
+$results['kill_mysql'] = [cacti_process_kill_db_connection(['connection_id' => 77, 'started' => $started]), kills()];
+
+// an idle connection has no statement to end
+reset_state([], [], [77 => ['ID' => 77, 'TIME' => 4000, 'COMMAND' => 'Sleep', 'QUERY_ID' => 5001]]);
+$results['kill_idle'] = [cacti_process_kill_db_connection(['connection_id' => 77, 'started' => $started]), kills()];
+
+// the process may close the connection itself once its statement is ended
+reset_state([], [], [77 => ['ID' => 77, 'TIME' => 4000, 'COMMAND' => 'Query', 'QUERY_ID' => 5001]]);
+$GLOBALS['failing']          = ['KILL CONNECTION ?'];
+$results['kill_closed']      = cacti_process_kill_db_connection(['connection_id' => 77, 'started' => $started]);
+$GLOBALS['failing']          = ['KILL QUERY ID ?', 'KILL CONNECTION ?'];
+$results['kill_both_failed'] = cacti_process_kill_db_connection(['connection_id' => 77, 'started' => $started]);
 
 // after a restart the id may name another connection, so it is left alone
 $GLOBALS['uptime'] = 60;
@@ -130,11 +148,11 @@ $GLOBALS['uptime']         = 86400;
 // a task that timed out after its process died has its connection ended
 $stale = ['pid'  => GONE_PID, 'tasktype' => 'boost', 'taskname' => 'master', 'taskid' => 1, 'timeout' => 300,
 	'connection_id' => 88, 'started' => $started, 'timeout_exceeded' => 1700000000, 'current_timestamp' => 1700000400];
-reset_state($stale, [], [88 => ['ID' => 88, 'TIME' => 400]]);
+reset_state($stale, [], [88 => ['ID' => 88, 'TIME' => 400, 'COMMAND' => 'Query', 'QUERY_ID' => 9001]]);
 $results['start_timed_out'] = [register_process_start_locked('boost', 'master', 1, 300), kills()];
 
 // so does a process that exited without unregistering, before its timeout
-reset_state(array_merge($stale, ['timeout_exceeded' => 0]), [], [88 => ['ID' => 88, 'TIME' => 30]]);
+reset_state(array_merge($stale, ['timeout_exceeded' => 0]), [], [88 => ['ID' => 88, 'TIME' => 30, 'COMMAND' => 'Query', 'QUERY_ID' => 9001]]);
 $results['start_exited'] = [register_process_start_locked('boost', 'master', 1, 300), kills()];
 
 // a row from before the upgrade has no connection to end
@@ -144,7 +162,7 @@ reset_state($old);
 $results['start_old_row'] = [register_process_start_locked('boost', 'master', 1, 300), kills()];
 
 // the timeout sweep ends the connection of a process that is gone
-reset_state([], [$stale], [88 => ['ID' => 88, 'TIME' => 400]]);
+reset_state([], [$stale], [88 => ['ID' => 88, 'TIME' => 400, 'COMMAND' => 'Query', 'QUERY_ID' => 9001]]);
 timeout_kill_registered_processes('boost');
 $results['sweep'] = kills();
 
@@ -152,7 +170,7 @@ $results['sweep'] = kills();
 $child = proc_open([PHP_BINARY, __FILE__, 'sleep'], [], $pipes);
 $pid   = proc_get_status($child)['pid'];
 usleep(200000);
-reset_state([], [array_merge($stale, ['pid' => $pid])], [88 => ['ID' => 88, 'TIME' => 400]]);
+reset_state([], [array_merge($stale, ['pid' => $pid])], [88 => ['ID' => 88, 'TIME' => 400, 'COMMAND' => 'Query', 'QUERY_ID' => 9001]]);
 $started = microtime(true);
 timeout_kill_registered_processes('boost');
 proc_close($child);
@@ -187,7 +205,7 @@ try {
 	require $temporary['upgrade'];
 	$results['upgrade'] = $GLOBALS['sql'][0];
 
-	reset_state([], [], [88 => ['ID' => 88, 'TIME' => 400]]);
+	reset_state([], [], [88 => ['ID' => 88, 'TIME' => 400, 'COMMAND' => 'Query', 'QUERY_ID' => 9001]]);
 	$p = $stale;
 	require $temporary['cleanup'];
 	$results['cleanup'] = kills();
