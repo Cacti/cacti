@@ -182,6 +182,7 @@ $fields_poller_edit = [
 		'value'         => '|arg1:dbpass|',
 		'size'          => '40',
 		'default'       => $database_password,
+		'form_id'       => '|arg1:id|',
 		'secret'        => true,
 		'max_length'    => '64'
 	],
