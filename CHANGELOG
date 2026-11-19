@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 Backported changes
--issue#8839: Use case-insensitive literal text for Log Viewer searches to prevent regex warnings and excessive backtracking.
+-issue#8839: Preserve Log Viewer regex searches while preventing delimiter warnings and limiting backtracking.
 -issue: Guard three divisors that are fatal on PHP 8 (aggregate color templates, report mail time, MySQL recommendations)
 -issue: Restore RRDproxy encryption with the bundled phpseclib 3
 -issue: #7212: Address a few small memory leaks in realtime graphing

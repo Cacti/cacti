@@ -614,7 +614,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' aria-label='<?php print html_escape(__('Search'));?>' placeholder='<?php print html_escape(__('Search for literal text'));?>' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' aria-label='<?php print html_escape(__('Search'));?>' size='75' value='<?php print htmlspecialchars(get_request_var('rfilter'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');?>'>
 					</td>
 				</tr>
 			</table>

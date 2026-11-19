@@ -472,10 +472,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: lib/clog_webapi.php
-msgid "Search for literal text"
-msgstr ""
-
 #: aggregate_graphs.php:1245 aggregate_graphs.php:1288
 #: aggregate_graphs.php:1545 color_templates.php:658 data_sources.php:1642
 #: data_sources.php:1776 graph_view.php:492 graph_view.php:724
