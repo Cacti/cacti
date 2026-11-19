@@ -627,8 +627,12 @@ function package_template(string &$template, array &$info, array &$files, string
 	ini_set('memory_limit', '-1');
 	ini_set('zlib.output_compression', '0');
 
-	// establish a private temp directory (mode 0700, unpredictable name)
-	$tmpdir = package_private_tmpdir();
+	// establish a temp directory
+	if (CACTI_SERVER_OS == 'unix') {
+		$tmpdir = '/tmp/';
+	} else {
+		$tmpdir = getenv('TEMP');
+	}
 
 	// write the template to disk
 	$archive_name = basename((string) clean_up_name($info['name']));

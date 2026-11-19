@@ -16,7 +16,7 @@
  * Hardening for package export and import path and temp-file handling:
  *   - find_paths() confines an export to the scripts/ and resource/ subtrees,
  *     so unrelated in-tree files cannot be bundled into a signed package.
- *   - package_private_tmpdir() gives import and export an unpredictable, mode
+ *   - package_private_tmpdir() gives package import an unpredictable, mode
  *     0700 working directory instead of a guessable one created world-writable.
  *   - package_diff_file() confines the local file it reads to those same two
  *     subtrees, and import_package() refuses to write through a symbolic link.
