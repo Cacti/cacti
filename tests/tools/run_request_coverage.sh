@@ -47,6 +47,8 @@ run_php_probe tests/fixtures/Core/Boost/FailedDataSourceIsolation.php '^(poller_
 
 run_php_probe tests/fixtures/Core/Rrd/FallbackSourceIdentity.php '^(lib/rrd\.php|tests/fixtures/Core/Rrd/FallbackSourceIdentity\.php)'
 
+run_php_probe tests/fixtures/Core/Rrd/RraContainmentSkip.php '^(cli/structure_rra_paths\.php|tests/fixtures/Core/Rrd/RraContainmentSkip\.php)'
+
 run_php_probe tests/fixtures/SnmpAgentGlobalSettingsCoverage.php '^(lib/snmpagent\.php|tests/fixtures/SnmpAgentGlobalSettingsCoverage\.php)'
 
 run_php_probe tests/fixtures/CmdBoostFlushRedirectCoverage.php '^(cmd\.php|tests/fixtures/CmdBoostFlushRedirectCoverage\.php)'

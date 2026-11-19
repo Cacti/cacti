@@ -39,6 +39,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_graph_change_runs_the_native_graph_probe(self):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
+    def test_rra_path_change_runs_the_containment_probe(self):
+        self.dispatch('cli/structure_rra_paths.php', 'RraContainmentSkip.php')
+
     def test_account_change_runs_the_native_audit_probe(self):
         self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
@@ -93,7 +96,7 @@ class RequestDispatchTest(unittest.TestCase):
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
-            for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
+            for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php', 'Core/Rrd/RraContainmentSkip.php',
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
