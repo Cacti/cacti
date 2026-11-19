@@ -93,6 +93,13 @@ if [[ -n "$(git diff --name-only "$(git merge-base "$base_commit" HEAD)" HEAD --
 	XDEBUG_MODE=coverage "$php_binary" -d memory_limit=2G include/vendor/bin/pest --configuration="$coverage_dir/phpunit-changed.xml" \
 		--testsuite=Unit,Integration --coverage-clover="$coverage_dir/pest-clover.xml"
 	clover_args=(--clover "$coverage_dir/pest-clover.xml")
+	# The SNMP suite needs its own database doubles. Its script-query tests run
+	# without an SNMP daemon and cover the worker's device credential cache.
+	if ! git diff --quiet "$(git merge-base "$base_commit" HEAD)" HEAD -- lib/snmp.php; then
+		XDEBUG_MODE=coverage "$php_binary" -d memory_limit=1G include/vendor/bin/pest --configuration=tests/phpunit-snmp.xml \
+			--filter='script data query SNMP fields' --coverage-clover="$coverage_dir/snmp-script-clover.xml"
+		clover_args+=("$coverage_dir/snmp-script-clover.xml")
+	fi
 	XDEBUG_MODE=coverage "$php_binary" tests/tools/test_normalize_request_coverage.php
 
 	# Raw Xdebug credits only the first line of a wrapped statement. Normalize the
