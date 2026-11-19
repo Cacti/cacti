@@ -47,8 +47,11 @@ define('CACTI_PATH_LIBRARY', $root . '/lib');
 class_alias(\CactiHttpPoller::class, __NAMESPACE__ . '\CactiHttpPoller');
 class_alias(\CactiHttpPollItem::class, __NAMESPACE__ . '\CactiHttpPollItem');
 
-const HTTP_HASH = '5d4a0c2b7f8e41a69b3c1e07d2f6a8b4';
-const REFUSED   = 'https://127.0.0.1:1/stats';
+// Exercise the Windows command-path conversion without starting an external process.
+const CACTI_SERVER_OS  = 'win32';
+const CACTI_CONNECTION = 'online';
+const HTTP_HASH        = '5d4a0c2b7f8e41a69b3c1e07d2f6a8b4';
+const REFUSED          = 'https://127.0.0.1:1/stats';
 
 $GLOBALS['fixture_rows']     = [];
 $GLOBALS['fixture_executes'] = [];
@@ -106,6 +109,7 @@ function http_row(int $local_data_id, string $url, string $pointer, string $opti
  * @return void
  */
 function cacti_log($message, $print = false, $type = '', $level = 0) {
+	$GLOBALS['fixture_logs'][] = $message;
 }
 
 /**
@@ -141,7 +145,7 @@ function debug_level($host_id, $level) {
  * @return int|string
  */
 function read_config_option($name, $force = false) {
-	return $name === 'spine_log_level' ? 2 : '4';
+	return $GLOBALS['handoff_config'][$name] ?? ($name === 'spine_log_level' ? 2 : '4');
 }
 
 /**
@@ -418,6 +422,12 @@ function db_fetch_row_prepared($sql, $params = [], $log = true) {
  * @return int|string
  */
 function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true) {
+	if (str_contains($sql, 'FROM poller_item') && str_contains($sql, 'LIMIT 1') && str_contains($sql, 'AND action = ?')) {
+		check($params === [$GLOBALS['handoff_poller'], POLLER_ACTION_HTTP], 'handoff existence query selected the wrong poller or action');
+
+		return count($GLOBALS['handoff_rows']);
+	}
+
 	if (str_contains($sql, 'FROM data_input WHERE hash = ?')) {
 		return 13;
 	}
@@ -443,6 +453,12 @@ function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true)
  * @return array<int, array<string, mixed>>
  */
 function db_fetch_assoc_prepared($sql, $params = [], $log = true) {
+	if (str_contains($sql, 'FROM poller_item AS pi')) {
+		$GLOBALS['handoff_query'] = [$sql, $params];
+
+		return $GLOBALS['handoff_rows'];
+	}
+
 	if (str_contains($sql, 'dif.type_code IN')) {
 		return $GLOBALS['fixture_fields'][$params[0]] ?? [];
 	}
@@ -455,6 +471,51 @@ function db_fetch_assoc_prepared($sql, $params = [], $log = true) {
 
 	return array_values(array_filter($GLOBALS['fixture_rows'], fn ($row) => $row['local_data_id'] == $params[1]));
 }
+
+function set_config_option(string $name, string $value) : void {
+	$GLOBALS['handoff_config'][$name] = $value;
+}
+
+function exec_into_array(string $command) : array {
+	check(str_ends_with($command, ' --version'), 'unexpected Spine command');
+	$GLOBALS['version_calls']++;
+
+	return $GLOBALS['version_output'];
+}
+
+function exec_background(string $program, string $args, string $redirect) : void {
+	$GLOBALS['handoff_command'] = [$program, $args, $redirect];
+}
+
+function db_column_exists(string $table, string $column) : bool {
+	return $table === 'sites' && $column === 'disabled';
+}
+
+function db_execute_prepared(string $sql, array $params, bool $log, $connection) : void {
+	check(str_contains($sql, 'INSERT IGNORE INTO poller_output'), 'unexpected HTTP-only write');
+	$GLOBALS['handoff_writes'][] = $params;
+}
+
+function db_qstr(string $value, $connection) : string {
+	return "'" . str_replace("'", "''", $value) . "'";
+}
+
+function boost_flush_output_batch(array $rows, $connection) : void {
+	$GLOBALS['handoff_boost'] = $rows;
+}
+
+function record_cmdphp_done() : void {
+	$GLOBALS['handoff_done'] = true;
+}
+
+function db_close() : void {
+	check(!empty($GLOBALS['handoff_done']), 'HTTP-only poll closed before recording completion');
+	$GLOBALS['handoff_closed'] = true;
+}
+
+cacti_fixture_source_function($root . '/poller.php', 'poller_spine_version', __NAMESPACE__);
+cacti_fixture_source_function($root . '/poller.php', 'poller_start_http_handoff', __NAMESPACE__);
+cacti_fixture_source_function($root . '/cmd.php', 'http_only_poll', __NAMESPACE__);
 
 // collect_device_data() masks SNMP credentials in its debug log.
 cacti_fixture_source_function($root . '/lib/poller.php', 'poller_redact_snmp_secrets', __NAMESPACE__);
@@ -536,6 +597,7 @@ $loop                 = source_blocks($root . '/cmd.php', [
 	["~^require_once\(CACTI_PATH_LIBRARY \. '/CactiHttpPoller\.php'\);$~", '~~'],
 	['~^\$http_outputs = \[\];$~', '~^\$http_reasons = \[\];$~'],
 	['~^// one request per device and endpoint~', '~^}$~'],
+	['~^\t\$host_checks = \[\];$~', '~~'],
 	['~^\tif \(cacti_sizeof\(\$http_items\)\) \{$~', '~^\t}$~'],
 ]);
 
@@ -548,6 +610,21 @@ try {
 check(array_column($http_items, 'local_data_id') === [9, 10], 'cmd.php selected ' . json_encode($http_items));
 check($http_outputs === ['9:value' => '5', '10:value' => '7'], 'cmd.php prefetched ' . json_encode($http_outputs));
 check($GLOBALS['pinged'] === [9, 14] && $host_checks[3]['down'] === true, 'cmd.php checked ' . json_encode($GLOBALS['pinged']));
+
+$host_branch = source_blocks($root . '/cmd.php', [['~^\t\tif \(\$new_host && !empty~', '~^\t\t}$~']]);
+$new_host    = true;
+
+try {
+	foreach ([3, 7] as $host_id) {
+		$item = ['host_id' => $host_id, 'local_data_id' => 99];
+		require $host_branch;
+		check($host_down === ($host_id === 3), 'poll loop did not reuse the down status or check a new device');
+	}
+
+	check(end($GLOBALS['pinged']) === 99, 'new device was not checked');
+} finally {
+	unlink($host_branch);
+}
 
 // cmd_realtime.php fetches a device's HTTP rows once, then reads each item's output
 $poller_items = [http_row(9, "$base/stats", '/in'), $script];
@@ -702,4 +779,64 @@ try {
 
 check(count($GLOBALS['fixture_executes']) === 5, 'upgrade_to_1_3_0 did not add the HTTP method');
 
-print json_encode(['http_poller_action_scenarios' => 13], JSON_THROW_ON_ERROR) . "\n";
+// Spine handoff only starts when this poller has HTTP items and can skip them in Spine.
+$GLOBALS['handoff_poller'] = 2;
+$GLOBALS['handoff_rows']   = [];
+$GLOBALS['handoff_config'] = ['path_spine' => '', 'path_php_binary' => PHP_BINARY];
+$GLOBALS['version_calls']  = 0;
+check(!poller_start_http_handoff(2, ''), 'empty poller launched a worker');
+$GLOBALS['handoff_rows'] = [http_row(18, "$base/stats", '/in'), http_row(19, REFUSED, '/out')];
+check(!poller_start_http_handoff(2, ''), 'unknown Spine launched a worker');
+$GLOBALS['handoff_config']['path_spine'] = __FILE__;
+$GLOBALS['version_output']               = ['banner', 'Spine 1.2.30'];
+check(!poller_start_http_handoff(2, ''), 'old Spine launched a worker');
+check(poller_spine_version() === '1.2.30' && $GLOBALS['version_calls'] === 1, 'unchanged binary was probed again');
+$GLOBALS['handoff_config']['path_spine'] = $root . '/poller.php';
+$GLOBALS['version_output']               = ['SPINE ' . SPINE_HTTP_HANDOFF_MIN_VERSION];
+$method                                  = 'spine';
+$extra_parms                             = 'redirect';
+$poller_id                               = 2;
+$started_processes                       = 0;
+$launch                                  = source_blocks($root . '/poller.php', [['~if \(\$method == .spine. && poller_start_http_handoff~', '~^\s*}$~']]);
+
+try {
+	require $launch;
+} finally {
+	unlink($launch);
+}
+
+check($started_processes === 1 && $GLOBALS['version_calls'] === 2, 'compatible Spine worker not counted');
+[$program, $arguments, $redirection] = $GLOBALS['handoff_command'];
+check($program === cacti_escapeshellcmd(PHP_BINARY) && $redirection === 'redirect', 'wrong worker executable or redirection');
+check(str_contains($arguments, strtolower($root) . '/cmd.php') && str_ends_with($arguments, '--poller=2 --http-only --mode=online'), 'remote worker arguments were ' . $arguments);
+
+$GLOBALS['handoff_config']['boost_rrd_update_enable'] = 'on';
+$start                                                = microtime(true);
+check(http_only_poll(2, 300, 2, $start) === 2, 'HTTP-only worker did not store both outputs');
+[$sql, $params] = $GLOBALS['handoff_query'];
+check(str_contains($sql, 's.disabled') && str_contains($sql, 'MOD('), 'worker omitted scheduling or site filtering');
+check($params === [2, POLLER_ACTION_HTTP, HOST_DOWN, 300, (int) (floor($start / 300) * 300), 300], 'wrong schedule parameters');
+check($GLOBALS['handoff_writes'] === [[18, 'value', '5', 19, 'value', 'U']], 'worker wrote the wrong success or failure value');
+check($GLOBALS['handoff_boost'] === ["(18, 'value', CURRENT_TIMESTAMP(), '5')", "(19, 'value', CURRENT_TIMESTAMP(), 'U')"], 'boost output differed from poller output');
+check((bool) preg_grep('/WARNING: Invalid Response, Device.*DS\[19\]/', $GLOBALS['fixture_logs']), 'missing HTTP failure diagnostic');
+
+// Run the HTTP-only command dispatch last; it terminates the CLI after recording completion.
+$GLOBALS['handoff_rows'] = [];
+$active_profiles         = 1;
+$parms                   = ['--http-only', '--poller=2'];
+$dispatch                = source_blocks($root . '/cmd.php', [
+	['~^\$http_only\s+= false;$~', '~~'],
+	['~^if \(cacti_sizeof\(\$parms\)\)~', '~^}$~'],
+	['~^if \(\$http_only\)~', '~^}$~'],
+]);
+
+register_shutdown_function(static function () use ($dispatch) : void {
+	unlink($dispatch);
+	check(!empty($GLOBALS['handoff_closed']), 'HTTP-only command did not complete');
+	check($GLOBALS['handoff_query'][1] === [2, POLLER_ACTION_HTTP, HOST_DOWN], 'single-profile query had an extra schedule filter');
+	print json_encode(['http_poller_action_scenarios' => 17], JSON_THROW_ON_ERROR) . "\n";
+});
+
+require $dispatch;
+
+throw new RuntimeException('HTTP-only command returned to the main poller');
