@@ -92,7 +92,7 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 
 - Only `-security`, `-issue`, and `-feature` are valid prefixes, in that group order. Use `-issue#1234: Fix ...`, not `-fix#1234: ...`.
 - Put the issue or originating PR number immediately after `#` in new entries. Security entries can cite a `#GHSA-...` identifier.
-- Within the security group, put GHSA entries first, alphabetically by advisory ID. In each group, sort numbered entries by issue or PR number in ascending order, then put unnumbered entries in case-insensitive alphabetical order by description.
+- Within the security group, put GHSA entries first, alphabetically by advisory ID. In each group, sort numbered entries by issue or PR number (security, issue and feature ascending), then put unnumbered entries in case-insensitive alphabetical order by description.
 - Keep entries with the same number in their existing order, and preserve release headings and blank-line spacing.
 
 ## Coding standards
