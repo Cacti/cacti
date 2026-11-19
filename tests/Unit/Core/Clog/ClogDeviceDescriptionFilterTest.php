@@ -74,6 +74,14 @@ test('log filters match slash-containing regexes without a warning', function ()
 		->and(determine_display_log_entry(-1, 'other line', $filter, false))->toBe('other line');
 });
 
+test('log filtering falls back when a regex exceeds its match budget', function () {
+	$line   = str_repeat('ab', 1500);
+	$filter = '^(?:ab)+?$';
+
+	expect(determine_display_log_entry(-1, $line, $filter, true))->toBeFalse()
+		->and(determine_display_log_entry(-1, $line, $filter, false))->toBe($line);
+});
+
 test('an invalid log regex falls back to literal matching without leaking warnings', function () {
 	$line = 'SYSTEM NOTE: Interface [missing';
 	$warnings = [];
