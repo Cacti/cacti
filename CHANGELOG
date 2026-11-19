@@ -97,19 +97,6 @@ Cacti CHANGELOG
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
 -security#8723: Harden - Do not write stored passwords and tokens into settings pages
--issue#8839: Use non-backtracking Log Viewer regex search: supports grouping, alternatives, character classes, anchors, and basic quantifiers; unsupported PCRE constructs are treated as literal text.
--issue#8741: Ensure on-demand (WebUI) Boost processing always takes precedence over the scheduled Boost poller instead of deferring to it (lib/boost.php boost_process_poller_output), so viewing a graph flushes its data immediately; concurrent writes to the same RRD remain safe because Boost passes --skip-past-updates to RRDtool 1.5+
--issue#8701: Match the language selectmenu (the jQuery UI dropdown rendered by the custom languageselect widget) to each theme's select2 controls - restore the 6px border-radius squared off by .ui-corner-all and apply the themed gradient/transparent background and open-state colours - in the classic, dark, deepness, midwinter, paper-plane, paw and sunrise themes
--issue#8700: Preserve a Card API card's live expand/collapse state when its refresh or resize response lands (include/js/cards.js replaceCard), so toggling a card while a refresh is in flight is no longer reverted
--issue#8697: Correct the Dark theme session message dialog action buttons (Ok/Pause) to the theme's #31442b primary-action green, and style the Modern theme User Language selectmenu so the closed control matches the other dropdowns
--issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
--issue#8689: Return the number of expired sessions deleted from the database session handler gc() so session_gc() reports actual deletions
--issue#8684: Harden the Card API controller (include/js/cards.js): discard refresh/resize responses superseded by a newer request for the same card, wait for the host to confirm a card removal before dropping it and persisting the layout, skip adding a card id already on the grid, and keep keyboard focus on the revealed expand/collapse button
--issue#8640: Present the Details and Time View graph pages' drilldown actions through the three-bar menu, and fix the "unsupported pseudo: hover" console error when the graph area reloads
--issue#8640: Shorten the Time View graph page drilldown action labels (Details, Realtime) so the three-bar menu matches the standard graph drilldown menu
--issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
--issue#8584: Only add the theme search filter icon when the filter input is visible
--issue#8574: RRDcheck does not delete old data when boost is enabled
 -issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
@@ -235,16 +222,29 @@ Cacti CHANGELOG
 -issue#8504: Contain Paw titlebars and keep selected tabs and row links readable
 -issue#8508: Contain wrapped Sunrise titles beside their controls
 -issue#8510: Contain Paper Plane titlebars and improve link and table text contrast across surfaces
+-issue#8574: RRDcheck does not delete old data when boost is enabled
+-issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
 -issue#8581: Bound Boost archive draining, isolate RRD failures, and make cleanup predictable
+-issue#8584: Only add the theme search filter icon when the filter input is visible
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
 -issue#8596: Keep device credentials out of cmd.php recache log messages
 -issue#8637: Preserve queued poller samples until RRD acknowledgement and synchronize device, collector and site dependencies
+-issue#8640: Present the Details and Time View graph pages' drilldown actions through the three-bar menu, and fix the "unsupported pseudo: hover" console error when the graph area reloads
+-issue#8640: Shorten the Time View graph page drilldown action labels (Details, Realtime) so the three-bar menu matches the standard graph drilldown menu
 -issue#8642: Preserve data-query caches and retries after failed discovery and bound reindex identity lookups
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
+-issue#8684: Harden the Card API controller (include/js/cards.js): discard refresh/resize responses superseded by a newer request for the same card, wait for the host to confirm a card removal before dropping it and persisting the layout, skip adding a card id already on the grid, and keep keyboard focus on the revealed expand/collapse button
+-issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
+-issue#8689: Return the number of expired sessions deleted from the database session handler gc() so session_gc() reports actual deletions
+-issue#8697: Correct the Dark theme session message dialog action buttons (Ok/Pause) to the theme's #31442b primary-action green, and style the Modern theme User Language selectmenu so the closed control matches the other dropdowns
+-issue#8700: Preserve a Card API card's live expand/collapse state when its refresh or resize response lands (include/js/cards.js replaceCard), so toggling a card while a refresh is in flight is no longer reverted
+-issue#8701: Match the language selectmenu (the jQuery UI dropdown rendered by the custom languageselect widget) to each theme's select2 controls - restore the 6px border-radius squared off by .ui-corner-all and apply the themed gradient/transparent background and open-state colours - in the classic, dark, deepness, midwinter, paper-plane, paw and sunrise themes
+-issue#8741: Ensure on-demand (WebUI) Boost processing always takes precedence over the scheduled Boost poller instead of deferring to it (lib/boost.php boost_process_poller_output), so viewing a graph flushes its data immediately; concurrent writes to the same RRD remain safe because Boost passes --skip-past-updates to RRDtool 1.5+
 -issue#8745: Stop bracketing IPv4 and hostname SNMP targets on a non-default port so php-snmp gets and availability checks resolve them
--issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
+-issue#8839: Use non-backtracking Log Viewer regex search: supports grouping, alternatives, character classes, anchors, and basic quantifiers; unsupported PCRE constructs are treated as literal text.
 -issue: Fix Script Server performance issues with continual checks to the file include file path
+-issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
