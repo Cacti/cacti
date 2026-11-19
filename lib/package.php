@@ -463,6 +463,41 @@ function process_paths(string $line, array $files, bool $raise_message) : array 
  *
  * @return array
  */
+/**
+ * Return a private temporary directory for package assembly and import.  The
+ * directory name carries an unpredictable token and is created with mode 0700,
+ * so a local user cannot pre-create it or plant a symlink the web process would
+ * then write through.  The token is kept in the session, when one exists, so the
+ * same directory serves every step of one import or export flow.
+ *
+ * @return string The absolute directory path, without a trailing slash
+ */
+function package_private_tmpdir() : string {
+	$token = '';
+
+	if (isset($_SESSION) && is_array($_SESSION)) {
+		if (empty($_SESSION['sess_package_tmp_token'])) {
+			$_SESSION['sess_package_tmp_token'] = bin2hex(random_bytes(16));
+		}
+
+		$token = $_SESSION['sess_package_tmp_token'];
+	}
+
+	if ($token === '') {
+		$token = bin2hex(random_bytes(16));
+	}
+
+	$dir = rtrim(sys_get_temp_dir(), '/\\') . '/cacti-package-' . $token;
+
+	if (!is_dir($dir) && !mkdir($dir, 0700, true) && !is_dir($dir)) {
+		cacti_log('ERROR: Unable to create private package temporary directory', false, 'IMPORT');
+	}
+
+	@chmod($dir, 0700);
+
+	return $dir;
+}
+
 function find_paths(string $input, string $type = 'cacti_xml') : array {
 	$excluded_paths = [
 		'/bin/',
@@ -497,6 +532,20 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 		return [];
 	}
 
+	/* A package may legitimately carry only the data-query and script files that
+	 * live under scripts/ and resource/.  Confining accepted paths to those two
+	 * subtrees keeps unrelated in-tree files, such as include/config.php or the
+	 * logs, out of a signed export. */
+	$allowed_roots = [];
+
+	foreach (['scripts', 'resource'] as $root) {
+		$resolved = realpath($real_base . DIRECTORY_SEPARATOR . $root);
+
+		if ($resolved !== false) {
+			$allowed_roots[] = $resolved . DIRECTORY_SEPARATOR;
+		}
+	}
+
 	$input = htmlspecialchars_decode($input);
 	$parts = preg_split('/\s+/', $input);
 
@@ -520,6 +569,23 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 			if ($real_part === false || strpos($path_prefix, $base_prefix) !== 0) {
 				$mpaths[] = ['opath' => $opath, 'file' => $part];
 				cacti_log("WARNING: Skipping package path outside CACTI_PATH_BASE: $part", false, 'IMPORT');
+
+				continue;
+			}
+
+			$within_allowed = false;
+
+			foreach ($allowed_roots as $allowed_root) {
+				if (strpos($path_prefix, $allowed_root) === 0) {
+					$within_allowed = true;
+
+					break;
+				}
+			}
+
+			if (!$within_allowed) {
+				$mpaths[] = ['opath' => $opath, 'file' => $part];
+				cacti_log("WARNING: Skipping package path outside the scripts and resource directories: $part", false, 'IMPORT');
 
 				continue;
 			}
@@ -561,12 +627,8 @@ function package_template(string &$template, array &$info, array &$files, string
 	ini_set('memory_limit', '-1');
 	ini_set('zlib.output_compression', '0');
 
-	// establish a temp directory
-	if (CACTI_SERVER_OS == 'unix') {
-		$tmpdir = '/tmp/';
-	} else {
-		$tmpdir = getenv('TEMP');
-	}
+	// establish a private temp directory (mode 0700, unpredictable name)
+	$tmpdir = package_private_tmpdir();
 
 	// write the template to disk
 	$archive_name = basename((string) clean_up_name($info['name']));

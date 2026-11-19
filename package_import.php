@@ -24,6 +24,7 @@
 
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/import.php');
+require_once(CACTI_PATH_LIBRARY . '/package.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
@@ -210,10 +211,10 @@ function form_actions() : void {
 					}
 
 					if ($data !== false) {
-						$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION[SESS_USER_ID];
+						$tmp_dir = package_private_tmpdir();
 
 						if (!is_dir($tmp_dir)) {
-							if (!mkdir($tmp_dir, 0777, true)) {
+							if (!mkdir($tmp_dir, 0700, true)) {
 								raise_message('tmpdir_fail', __esc('Unable to create package temporary directory %s.', $tmp_dir), MESSAGE_LEVEL_ERROR);
 
 								header('Location: package_import.php?package_location=' . $package_location);
@@ -675,11 +676,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 		$data = get_repo_file($package_location, $package_file, true);
 
 		if ($data !== false) {
-			$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION[SESS_USER_ID];
-
-			if (!is_dir($tmp_dir)) {
-				mkdir($tmp_dir);
-			}
+			$tmp_dir = package_private_tmpdir();
 
 			$binary_signature = '';
 
@@ -745,6 +742,27 @@ function package_diff_file() : void {
 		return;
 	}
 
+	/* A package only ever carries files under scripts/ and resource/, so the
+	 * diff against the installed copy is meaningful only there.  Confining it to
+	 * those two subtrees keeps unrelated in-tree files out of the preview. */
+	$within_package_roots = false;
+
+	foreach (['scripts', 'resource'] as $root) {
+		$resolved_root = realpath(CACTI_PATH_BASE . '/' . $root);
+
+		if ($resolved_root !== false && str_starts_with($target . DIRECTORY_SEPARATOR, $resolved_root . DIRECTORY_SEPARATOR)) {
+			$within_package_roots = true;
+
+			break;
+		}
+	}
+
+	if (!$within_package_roots) {
+		print __('Invalid filename specified.');
+
+		return;
+	}
+
 	$differOptions = [
 		'ignoreWhitespace' => true,
 		'ignoreCase'       => false
@@ -802,11 +820,7 @@ function package_verify_key() : void {
 				$data = get_repo_file($package_location, $filename, true);
 
 				if ($data !== false) {
-					$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION[SESS_USER_ID];
-
-					if (!is_dir($tmp_dir)) {
-						mkdir($tmp_dir);
-					}
+					$tmp_dir = package_private_tmpdir();
 
 					$xmlfile = $tmp_dir . '/' . basename($filename);
 
@@ -926,11 +940,7 @@ function package_accept_key() : void {
 				$data = get_repo_file($package_location, $filename, true);
 
 				if ($data !== false) {
-					$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION[SESS_USER_ID];
-
-					if (!is_dir($tmp_dir)) {
-						mkdir($tmp_dir);
-					}
+					$tmp_dir = package_private_tmpdir();
 
 					$xmlfile = $tmp_dir . '/' . basename($filename);
 
@@ -983,11 +993,7 @@ function package_get_details() : void {
 			$data = get_repo_file($package_location, $filename, false);
 
 			if ($data !== false) {
-				$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION[SESS_USER_ID];
-
-				if (!is_dir($tmp_dir)) {
-					mkdir($tmp_dir);
-				}
+				$tmp_dir = package_private_tmpdir();
 
 				$xmlfile = $tmp_dir . '/' . basename($filename);
 

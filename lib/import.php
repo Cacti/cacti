@@ -878,6 +878,13 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 			}
 
 			if (!$preview) {
+				if (is_link($filename)) {
+					cacti_log('FATAL: Refusing to write package file through a symbolic link: ' . $name, true, 'IMPORT');
+					$filestatus[$name] = __('rejected');
+
+					continue;
+				}
+
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
 					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
