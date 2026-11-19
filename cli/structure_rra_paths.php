@@ -313,7 +313,7 @@ foreach ($data_sources as $info) {
 
 		print "WARNING: RRD Path '$old_rrd_path' is not an RRD file inside the RRA directory, Skipping" . PHP_EOL;
 
-		db_fetch_cell("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+		db_fetch_cell_prepared('SELECT RELEASE_LOCK(?)', ['boost.single_ds.' . $local_data_id]);
 
 		continue;
 	}
