@@ -453,7 +453,12 @@ function substitute_host_data(string $string, string $l_escape_string, string $r
 		$search[]  = $l_escape_string . 'host_external_id' . $r_escape_string;
 		$replace[] = $host['external_id'];
 
-		$string = str_replace($search, $replace, $string);
+		/* Substitute in a single pass: a device field such as the description,
+		 * notes, location or site name is attacker-influenced and may itself
+		 * contain a |host_snmp_*| token.  Sequential str_replace() would expand
+		 * that injected token on a later pass and leak the credential, so the
+		 * substituted values must never be scanned again. */
+		$string = strtr($string, array_combine($search, $replace));
 
 		$temp = api_plugin_hook_function(
 			'substitute_host_data',
