@@ -1423,8 +1423,6 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		return array(__('Error %s is not readable', $file_name));
 	}
 
-	$filter = strtolower($filter);
-
 	$fp = fopen($file_name, 'r');
 
 	/* Count all lines in the logfile */
@@ -1484,7 +1482,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
  *
  * @param $message_type
  * @param $line
- * @param $filter
+ * @param $filter Search pattern or literal text
  * @param $matches
  *
  * @return - should the entry be displayed
@@ -1594,26 +1592,36 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		if ($matches) {
-			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
-				return $line;
-			} elseif (stripos($line, $filter) !== false) {
-				return $line;
-			}
-		} else {
-			if (validate_is_regex($filter)) {
-				if (!preg_match('/' . $filter . '/i', $line)) {
-					return $line;
-				}
-			} elseif (!stripos($line, $filter) !== false) {
-				return $line;
-			}
-		}
+		$found = clog_search_matches($filter, $line, (bool) $matches);
 
-		return false;
+		return $found === (bool) $matches ? $line : false;
 	}
 
 	return $display;
+}
+
+/**
+ * Match a Log Viewer regex or fall back to literal text.
+ */
+function clog_search_matches($filter, $line, $include) {
+	static $last_filter = null;
+	static $pattern = null;
+
+	if ($last_filter !== $filter) {
+		require_once __DIR__ . '/clog_search.php';
+		$pattern = CactiLogSearchPattern::compile($filter);
+		$last_filter = $filter;
+	}
+
+	if ($pattern !== null) {
+		$matched = $pattern->matches($line);
+
+		if ($matched || !$include) {
+			return $matched;
+		}
+	}
+
+	return stripos($line, $filter) !== false;
 }
 
 /**
