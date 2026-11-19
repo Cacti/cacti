@@ -42,15 +42,6 @@ plugin's selection controller, authentication, database, or poller.
 | flowview | [`be20ab796c61`](https://github.com/Cacti/plugin_flowview/tree/be20ab796c619465e78ce07d15e2babcb5d749c1) |
 | monitor | [`564a17c7ea16`](https://github.com/Cacti/plugin_monitor/tree/564a17c7ea169ec24df3b869d7c44626db34ce2d) |
 
-“Alertmanager” is represented here by Cacti Alarm Manager (`plugin_alarmmanager`).
-
-Thold, MacTrack, Syslog, and Alarm Manager were requested explicitly. HMIB,
-FlowView, and Monitor were selected from an eleven-repository activity survey
-on 2026-10-26: their default branches had 245, 203, and 163 commits respectively
-since 2026-09-26T00:00:00Z. This measures repository activity, not installation
-counts. The survey also included ReportIt, Maint, MikroTik, ServCheck, WebSeer,
-and Weathermap. GitHub's paginated repository commits API supplied the counts.
-
 At 1280px and 320px, each case checks that the title and controls stay inside
 the titlebar and saves a populated screenshot. Contrast measurements cover
 links, status text, and applicable Add icons in resting, hovered, selected,
