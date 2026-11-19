@@ -384,10 +384,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: lib/clog_webapi.php
-msgid "Search for literal text"
-msgstr ""
-
 #: aggregate_graphs.php automation_devices.php automation_graph_rules.php
 #: automation_networks.php automation_snmp.php automation_templates.php
 #: automation_tree_rules.php cdef.php color.php data_debug.php data_input.php

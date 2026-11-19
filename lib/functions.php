@@ -1483,8 +1483,6 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		return array(__('Error %s is not readable', $file_name));
 	}
 
-	$filter = strtolower($filter);
-
 	/* the raw line only ever has the numeric device id, not its description; resolve
 	 * ids once up front so the filter below can still match on the description */
 	$host_descriptions = array();
@@ -1681,12 +1679,46 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 			}, $line);
 		}
 
-		$found = stripos($search_line, $filter) !== false;
+		$found = clog_search_matches($filter, $search_line, (bool) $matches);
 
 		return $found === (bool) $matches ? $line : false;
 	}
 
 	return $display;
+}
+
+/**
+ * Match a Log Viewer regex, using quoted text when a pattern cannot be run.
+ */
+function clog_search_matches($filter, $line, $include) {
+	if (strlen($filter) <= 50 && strpos($filter, ';') === false) {
+		foreach (array("'", '~', '#', '%', '!', '@', '/') as $delimiter) {
+			if (strpos($filter, $delimiter) !== false) {
+				continue;
+			}
+
+			// A compile warning must not be written to the log being scanned.
+			set_error_handler(static function () {
+				return true;
+			}, E_WARNING);
+
+			try {
+				$matched = preg_match($delimiter . '(*NO_JIT)(*LIMIT_MATCH=1000)(*LIMIT_DEPTH=100)' . $filter . $delimiter . 'i', $line);
+			} finally {
+				restore_error_handler();
+			}
+
+			if ($matched === 1 || ($matched === 0 && !$include)) {
+				return $matched === 1;
+			}
+
+			break;
+		}
+
+		return preg_match('/' . preg_quote($filter, '/') . '/i', $line) === 1;
+	}
+
+	return stripos($line, $filter) !== false;
 }
 
 /**
