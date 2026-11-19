@@ -12,9 +12,8 @@ import unittest
 
 class RequestDispatchTest(unittest.TestCase):
     def test_package_change_runs_the_signed_archive_probe(self):
-        for path in ['lib/package.php', 'tests/fixtures/Core/PackageArchive.php']:
-            with self.subTest(path=path):
-                self.dispatch(path, 'PackageArchive.php')
+        self.dispatch('lib/package.php', ['PackageArchive.php', 'PackageRepositoryWorkspace.php', 'PackageImportFileStatus.php'])
+        self.dispatch('tests/fixtures/Core/PackageArchive.php', 'PackageArchive.php')
 
     def test_queue_change_runs_the_queue_probe_without_ripgrep(self):
         self.dispatch('cli/queue_worker.php', 'queue')
@@ -62,7 +61,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
     def test_import_change_runs_the_manifest_fixture(self):
-        self.dispatch('lib/import.php', 'PackageManifestMatrix.php')
+        self.dispatch('lib/import.php', ['PackageManifestMatrix.php', 'PackageImportFileStatus.php'])
 
     def test_package_import_change_runs_the_diff_boundary_probe(self):
         self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
@@ -100,6 +99,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
+                           'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)

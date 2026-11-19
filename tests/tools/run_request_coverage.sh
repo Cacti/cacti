@@ -67,6 +67,8 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
+run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_import|lib/package)\.php|tests/fixtures/Core/PackageRepositoryWorkspace\.php)'
+run_php_probe tests/fixtures/Core/PackageImportFileStatus.php '^(lib/(import|package)\.php|tests/fixtures/Core/PackageImportFileStatus\.php)'
 run_php_probe tests/fixtures/Core/PackageDiffBoundary.php '^(package_import\.php|tests/fixtures/Core/PackageDiffBoundary\.php)'
 
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'

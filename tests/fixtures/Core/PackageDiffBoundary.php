@@ -12,9 +12,9 @@ if (PHP_SAPI !== 'cli') {
 $root                              = dirname(__DIR__, 3);
 $GLOBALS['cacti_fixture_contract'] = [
 	'name'      => 'package-diff-boundary', 'complete' => false, 'assertions' => 0,
-	'producers' => ['tests/fixtures/Core/PackageDiffBoundary.php', 'tests/Helpers/RequestCoverage.php'],
+	'producers' => ['tests/fixtures/Core/PackageDiffBoundary.php', 'tests/Helpers/FixtureCoverage.php', 'tests/Helpers/RequestCoverage.php'],
 ];
-require $root . '/tests/Helpers/RequestCoverage.php';
+require $root . '/tests/Helpers/FixtureCoverage.php';
 require $root . '/tests/Helpers/SourceSlice.php';
 
 define('CACTI_PATH_BASE', $root);

@@ -7,7 +7,12 @@ $GLOBALS['cacti_fixture_contract'] = [
 	'name'      => 'package-archive', 'complete' => false, 'assertions' => 0,
 	'producers' => ['tests/fixtures/Core/PackageArchive.php', 'tests/Helpers/RequestCoverage.php'],
 ];
-require $root . '/tests/Helpers/RequestCoverage.php';
+
+if (getenv('CACTI_COVERAGE_FILE')) {
+	require $root . '/tests/Helpers/FixtureCoverage.php';
+} else {
+	require $root . '/tests/Helpers/RequestCoverage.php';
+}
 $temporary = sys_get_temp_dir() . '/cacti-package-' . bin2hex(random_bytes(8));
 
 if (!mkdir($temporary, 0700)) {
