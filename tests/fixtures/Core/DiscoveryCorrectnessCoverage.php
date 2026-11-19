@@ -184,6 +184,17 @@ expect_same($verdict['samples'], ['10.0.0.1', '10.0.0.255', '10.0.1.0', '10.0.25
 $verdict = run_child($fixtures . '/discovery_address_probe.php', [json_encode(['range' => '192.0.2.0/30,192.0.2.8/30', 'ignore' => '192.0.2.2,192.0.2.9'], JSON_THROW_ON_ERROR)]);
 expect_same([$verdict['completed'], $verdict['addresses'], $verdict['logs']], [true, ['192.0.2.1', '192.0.2.10'], []], 'excluded addresses');
 
+$verdict = run_child($fixtures . '/discovery_address_probe.php', [json_encode(['range' => '192.0.2.0/30,10.1.*.1', 'ignore' => ''], JSON_THROW_ON_ERROR)]);
+expect_same($verdict['addresses'], ['192.0.2.1', '192.0.2.2'], 'valid range still queues');
+expect_same($verdict['logs'], ['WARNING: Discovery Network 7 skipped invalid Subnet Range entries [10.1.*.1]; wildcards must be the trailing octets, such as 10.1.*.*'], 'legacy wildcard warning');
+
+$remoteProbe = $fixtures . '/discovery_remote_launch_probe.php';
+$main        = run_child($remoteProbe, ['main', json_encode(['dryrun' => true, 'debug' => true], JSON_THROW_ON_ERROR)]);
+expect_same($main['launches'], [], 'remote network skips local launch');
+expect_same($main['urls'], [[2, '/cacti/remote_agent.php?action=discover&network=7&debug=true&dryrun=true']], 'remote discovery modes');
+$remote = run_child($remoteProbe, ['remote', $main['urls'][0][1]]);
+expect_same($remote['launches'], [['/usr/bin/php', "-q '/var/www/cacti/poller_automation.php' --poller='2' --network='7' --force --debug --dryrun"]], 'remote worker modes');
+
 $verdict = run_child($fixtures . '/discovery_address_probe.php', [json_encode(['range' => '192.0.0.0/22', 'ignore' => ''], JSON_THROW_ON_ERROR)]);
 expect_same([count($verdict['addresses']), count(array_unique($verdict['addresses'])), $verdict['writes']], [1022, 1022, 2], 'batched subnet');
 
@@ -278,6 +289,12 @@ function calls(string $name) : array {
 function __(string $text, mixed ...$args) : string {
 	return $text;
 }
+function __esc(string $message, mixed ...$args) : string {
+	return htmlspecialchars(sprintf($message, ...$args), ENT_QUOTES, 'UTF-8');
+}
+function api_scheduler_augment_save(array $save, array $post) : array {
+	return $save;
+}
 function read_config_option(string $name) : string {
 	return ['path_php_binary' => '/usr/bin/php', 'path_webroot' => '/var/www/cacti'][$name] ?? '';
 }
@@ -327,7 +344,7 @@ function db_like_escape(string $value) : string {
 	return $value;
 }
 function raise_message(mixed ...$args) : void {
-	record('message', $args[0]);
+	record('message', ...$args);
 }
 function is_error_message() : bool {
 	return !empty($_SESSION[SESS_ERROR_FIELDS]);
@@ -463,6 +480,19 @@ expect_same(automation_get_next_host('192.0.2.1', 4, 1, '192.0.2.0/29'), '192.0.
 // The network form explains that wildcards must be trailing octets.
 $fields = network_get_field_array();
 expect_same(str_contains($fields['subnet_range']['description'], 'Wildcards must be the trailing octets, so a form such as 10.1.*.1 is rejected.'), true, 'subnet range help');
+
+// An invalid range blocks the form save and explains how to correct it.
+foreach (['api_networks_save', 'automation_calculate_total_ips', 'automation_get_network_info', 'automation_is_fixed_suffix_wildcard', 'automation_invalid_range_message'] as $function) {
+	load_function($root . '/lib/api_automation.php', $function);
+}
+$post = array_fill_keys(['id', 'poller_id', 'site_id', 'threads', 'run_limit', 'snmp_id', 'ping_method', 'ping_port', 'ping_timeout', 'ping_retries'], '1');
+$post += array_fill_keys(['ignore_ips', 'dns_servers', 'notification_email', 'notification_fromname', 'notification_fromemail'], '');
+$post += ['name' => 'Fixture network', 'subnet_range' => '10.1.*.1'];
+$GLOBALS['probe'] = [];
+$_SESSION         = [];
+expect_same(api_networks_save($post), false, 'invalid network save refused');
+expect_same(calls('save'), [], 'invalid network not persisted');
+expect_same(calls('message'), [['automation_message', 'ERROR: Network &#039;10.1.*.1&#039; is Invalid.  Wildcards must be the trailing octets, such as 10.1.*.*.', MESSAGE_LEVEL_ERROR]], 'invalid network error');
 
 // Rule item saves look up the existing hash by the validated item id.
 foreach (['save_component_automation_graph_rule_item' => ['automation_graph_rule_items', 'ifDescr'], 'save_component_automation_match_item' => ['automation_match_rule_items', 'name']] as $component => [$table, $field]) {
