@@ -102,6 +102,8 @@ switch ($argv[1]) {
 		}
 		break;
 	case 'pollers':
+		cacti_fixture_source_function($root . '/lib/html_form.php', 'form_secret_value', __NAMESPACE__);
+		cacti_fixture_source_function($root . '/pollers.php', 'poller_stored_dbpass', __NAMESPACE__);
 		cacti_fixture_source_function($root . '/pollers.php', 'form_save', __NAMESPACE__);
 		$request = ['save_component_poller' => '1', 'id' => 2, 'name' => $name, 'hostname' => $name, 'timezone' => 'UTC', 'notes' => '', 'processes' => 1, 'threads' => 1, 'sync_interval' => 300, 'dbdefault' => 'cacti', 'dbhost' => 'db.example.test', 'dbuser' => '', 'dbpass' => '', 'dbport' => 3306, 'dbretries' => 1, 'dbsslkey' => '', 'dbsslcert' => '', 'dbsslca' => ''];
 		try {
