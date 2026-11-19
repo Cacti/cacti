@@ -36,6 +36,7 @@ run_php_probe() {
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'
+run_php_probe tests/fixtures/Core/ReportMessageDelivery.php '^(lib/(functions|reports)\.php|tests/fixtures/Core/ReportMessageDelivery\.php)'
 run_php_probe tests/fixtures/Core/ConstantTimeGuardMatrix.php '^(auth_2fa\.php|auth_resetpassword\.php|tests/fixtures/Core/ConstantTimeGuardMatrix\.php)'
 run_php_probe tests/fixtures/Core/PackageManifestMatrix.php '^(package_import\.php|package_repos\.php|lib/import\.php|tests/fixtures/Core/PackageManifestMatrix\.php)'
 run_php_probe tests/fixtures/Core/PackageSaveMatrix.php '^(package_repos\.php|tests/fixtures/Core/PackageSaveMatrix\.php)'
