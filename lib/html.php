@@ -348,6 +348,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		$columns = read_user_setting('num_columns');
 	}
 
+	$columns = max(1, (int) $columns);
+
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
