@@ -1569,8 +1569,7 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 	}
 
 	if ($archive != '') {
-		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . random_int(0, mt_getrandmax()) . '.tar.gz';
-		$pharfile = "phar://{$tmpfile}";
+		$tmpfile = sys_get_temp_dir() . '/' . $plugin . '_' . random_int(0, mt_getrandmax()) . '.tar.gz';
 
 		$file_data = base64_decode($archive, true);
 
@@ -1582,7 +1581,8 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 			file_put_contents($tmpfile, $file_data);
 
 			// open the archive
-			$archive = new PharData($tmpfile);
+			$archive  = new PharData($tmpfile);
+			$pharfile = 'phar://' . $archive->getPath();
 
 			// create directory if required
 			if (!is_dir($restore_path)) {
@@ -1625,7 +1625,7 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 
 					$archive_files[$tfile] = $pfile;
 				} else {
-					$tfile = str_replace("phar://{$tmpfile}", '', $file->getPathname());
+					$tfile = str_replace($pharfile, '', $file->getPathname());
 
 					$archive_files[$tfile] = $tfile;
 				}
