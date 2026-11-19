@@ -25,6 +25,10 @@ foreach (['ar-SA' => 'rtl', 'he-IL' => 'rtl', 'en-US' => 'ltr', 'de-DE' => 'ltr'
 }
 document_shell_assert(get_locale_direction() === 'ltr', 'The active en-US locale did not default to ltr');
 
+document_shell_assert(get_document_direction('he-IL', 'modern') === 'rtl', 'Modern did not opt in to RTL');
+document_shell_assert(get_document_direction('he-IL', 'midwinter') === 'ltr', 'Midwinter unexpectedly mirrored its layout');
+document_shell_assert(get_document_direction('ar-SA') === 'ltr', 'An unselected theme unexpectedly opted in to RTL');
+
 $attributes = " lang='en-US' dir='ltr'";
 $html_tag   = "<html$attributes>";
 document_shell_assert(get_html_document_attributes() === $attributes, 'Document attributes changed');
