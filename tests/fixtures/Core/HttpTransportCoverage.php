@@ -214,6 +214,14 @@ namespace CactiHttpTransportFixture {
 	$late->deadline = 20.0005;
 	check(Clock\cacti_http_start(curl_multi_init(), $late) === 'Timed out', 'sub-millisecond budget started a connection');
 
+	// On the other side of the millisecond boundary a transfer can be queued.
+	$late->deadline  = 20.002;
+	$late->origin    = cacti_http_origin($late->url);
+	$late->redirects = 0;
+	$multi           = curl_multi_init();
+	check(Clock\cacti_http_start($multi, $late) === '' && $late->handle instanceof \CurlHandle, 'usable timeout budget refused');
+	curl_multi_remove_handle($multi, $late->handle);
+
 	// multi keeps request keys and isolates failures; HttpPollerTest asserts concurrency
 	$results = cacti_http_multi([
 		'a'  => ['method' => 'GET', 'url' => "$held/inflight/a", 'options' => $opts],

@@ -823,12 +823,16 @@ check((bool) preg_grep('/WARNING: Invalid Response, Device.*DS\[19\]/', $GLOBALS
 // Run the HTTP-only command dispatch last; it terminates the CLI after recording completion.
 $GLOBALS['handoff_rows'] = [];
 $active_profiles         = 1;
-$parms                   = ['--http-only', '--poller=2'];
+$parms                   = ['--debug'];
 $dispatch                = source_blocks($root . '/cmd.php', [
 	['~^\$http_only\s+= false;$~', '~~'],
 	['~^if \(cacti_sizeof\(\$parms\)\)~', '~^}$~'],
 	['~^if \(\$http_only\)~', '~^}$~'],
 ]);
+
+require $dispatch;
+check($debug && !$http_only && empty($GLOBALS['handoff_done']), 'ordinary debug poll was diverted to HTTP-only mode');
+$parms = ['--http-only', '--poller=2'];
 
 register_shutdown_function(static function () use ($dispatch) : void {
 	unlink($dispatch);
