@@ -128,10 +128,13 @@ check(json_decode(end($GLOBALS['command_output']), true, flags: JSON_THROW_ON_ER
 $cactides = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
 
 foreach (['cmd.php', 'cmd_realtime.php', 'remote_agent.php'] as $file) {
-	$pattern  = $file === 'cmd.php' ? '~(\$php_path = .*?\$cactiphp = proc_open\([^;]+;)~s' : '~(\$cactiphp = proc_open\([^;]+;)~';
-	$locals   = cacti_fixture_source_block($root . '/' . $file, __NAMESPACE__, $pattern, ['poller_id' => 7, 'cactides' => $cactides]);
-	$expected = $file === 'cmd.php' ? ['--environ=cmd', '--poller=7', '--mode=online'] : ['realtime', '7'];
-	check(process_args($locals['cactiphp'], $locals['pipes']) === $expected, $file . ' split script-server operands');
+	$pattern = $file === 'cmd.php' ? '~(\$php_path = .*?\$cactiphp = proc_open\([^;]+;)~s' : '~(\$command = cacti_escapeshellarg\(\(string\) read_config_option\(\x27path_php_binary\x27\)\) .*?\$cactiphp = proc_open\([^;]+;)~s';
+
+	foreach (['7', str_repeat('af', 32)] as $pollerId) {
+		$locals   = cacti_fixture_source_block($root . '/' . $file, __NAMESPACE__, $pattern, ['poller_id' => $pollerId, 'cactides' => $cactides]);
+		$expected = $file === 'cmd.php' ? ['--environ=cmd', '--poller=' . $pollerId, '--mode=online'] : ['realtime', $pollerId];
+		check(process_args($locals['cactiphp'], $locals['pipes']) === $expected, $file . ' split script-server operands');
+	}
 }
 
 foreach ([$php, ''] as $setting) {

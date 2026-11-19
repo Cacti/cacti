@@ -489,7 +489,9 @@ function poll_for_data() : mixed {
 							$pipes    = false;
 
 							if (function_exists('proc_open')) {
-								$cactiphp = proc_open([(string) read_config_option('path_php_binary'), '-q', CACTI_PATH_BASE . '/script_server.php', 'realtime', (string) $poller_id], $cactides, $pipes);
+								$command = cacti_escapeshellarg((string) read_config_option('path_php_binary')) . ' -q ' .
+									cacti_escapeshellarg(CACTI_PATH_BASE . '/script_server.php') . ' realtime ' . cacti_escapeshellarg((string) $poller_id);
+								$cactiphp = proc_open($command, $cactides, $pipes);
 
 								// proc_open returns false if the child could not be spawned; fall back to
 								// the non-proc path rather than reading from non-existent pipes
