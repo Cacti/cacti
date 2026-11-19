@@ -37,6 +37,7 @@ function _plugin_archive_fixture(string $directory, string $payload) : string {
 test('a second restore in the same process writes its own archive', function () {
 	$root = sys_get_temp_dir() . '/cacti_pa_' . getmypid() . '_' . uniqid();
 	mkdir($root . '/plugins/fixture', 0755, true);
+	symlink($root, $root . '/tmp-alias');
 
 	$archives = $root . '/archives.json';
 	file_put_contents($archives, json_encode([
@@ -90,7 +91,7 @@ PHP;
 	$script = tempnam(sys_get_temp_dir(), 'cacti_pr_');
 	file_put_contents($script, $stub);
 
-	$cmd = escapeshellarg(PHP_BINARY) . ' ' .
+	$cmd = escapeshellarg(PHP_BINARY) . ' -d ' . escapeshellarg('sys_temp_dir=' . $root . '/tmp-alias') . ' ' .
 		escapeshellarg($script) . ' ' .
 		escapeshellarg(dirname(__DIR__, 3) . '/lib/plugins.php') . ' ' .
 		escapeshellarg($root) . ' ' .
@@ -107,6 +108,7 @@ PHP;
 		unlink($root . '/plugins/fixture/payload.txt');
 	}
 
+	unlink($root . '/tmp-alias');
 	rmdir($root . '/plugins/fixture');
 	rmdir($root . '/plugins');
 	rmdir($root);
