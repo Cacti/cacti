@@ -211,9 +211,7 @@ foreach (['auth_profile.php' => 'logout_everywhere', 'automation_templates.php' 
 	'graph_templates.php'       => 'input_remove', 'data_debug.php' => 'purge', 'utilities.php' => 'purge_snmpagent_events'] as $page => $action) {
 	$_REQUEST = ['action' => $action];
 	$before   = $GLOBALS['token_checks'];
-	$guard    = $page === 'automation_templates.php'
-		? '/^(\$mutating_actions = \[.*?^\})/ms'
-		: "/^(if \\(in_array\\(grv\\('action'\\), \\[[^]]*\\], true\\)\\) \\{\\s*csrf_require_post\\(\\);\\s*\\})/m";
+	$guard    = "/^(if \\(in_array\\(grv\\('action'\\), \\[[^]]*\\], true\\)\\) \\{\\s*csrf_require_post\\(\\);\\s*\\})/m";
 	run_controller($page, $guard);
 	check($GLOBALS['token_checks'] > $before, 'POST did not validate a token in ' . $page);
 	$_REQUEST = ['action' => 'view'];

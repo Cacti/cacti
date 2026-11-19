@@ -29,10 +29,6 @@
 function get_mutation_guarded_actions(string $file) : array {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
 
-	if (preg_match('/\$mutating_actions = (\[[^]]*\]);/s', $src, $actions)) {
-		$src = str_replace("grv('action'), \$mutating_actions", "grv('action'), " . $actions[1], $src);
-	}
-
 	if (!preg_match_all('/if \(in_array\(grv\(\'action\'\), \[([\s\S]*?)\], true\)\) \{\s*csrf_require_post\(\);/', $src, $blocks)) {
 		return [];
 	}
