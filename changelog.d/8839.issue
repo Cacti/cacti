@@ -1,1 +1,1 @@
-Prevent slash-containing or invalid Log Viewer search filters from flooding the Cacti log with regex warnings.
+Use case-insensitive literal text for Log Viewer searches to prevent regex warnings and excessive backtracking.

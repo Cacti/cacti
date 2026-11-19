@@ -416,7 +416,7 @@ msgstr ""
 #: aggregate_graphs.php automation_devices.php automation_graph_rules.php
 #: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
 #: graph_templates.php graphs.php graphs_new.php host.php host_templates.php
-#: lib/api_automation.php lib/clog_webapi.php lib/html.php lib/html_filter.php
+#: lib/api_automation.php lib/html.php lib/html_filter.php
 #: lib/html_graph.php lib/html_reports.php lib/html_tree.php managers.php
 #: plugins.php rrdcheck.php rrdcleaner.php settings.php support.php tree.php
 #: user_admin.php user_group_admin.php user_log.php utilities.php
@@ -431,6 +431,10 @@ msgstr ""
 #: rrdcheck.php rrdcleaner.php support.php user_admin.php user_group_admin.php
 #: user_log.php utilities.php
 msgid "Enter a search term"
+msgstr ""
+
+#: lib/clog_webapi.php
+msgid "Search for literal text"
 msgstr ""
 
 #: aggregate_graphs.php color_templates.php data_sources.php graphs.php

@@ -2034,7 +2034,7 @@ function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, m
  *
  * @param int    $message_type
  * @param string $line
- * @param string $filter
+ * @param string $filter       Literal search text
  * @param bool   $matches
  *
  * @return mixed Should the entry be displayed
@@ -2150,30 +2150,9 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 
 	// match any lines that match the search string
 	if ($display === true && $filter != '') {
-		$regex_match = false;
+		$found = stripos($line, $filter) !== false;
 
-		// Use the same delimiter and limits as validate_is_regex() for the search field.
-		if (strlen($filter) <= 50 && !str_contains($filter, ';')) {
-			// A failed pattern must not send a warning to the log being scanned.
-			set_error_handler(static function (): bool {
-				return true;
-			}, E_WARNING);
-
-			try {
-				// Bound work per log entry; JIT does not honor the depth limit.
-				$regex_match = preg_match("'(*NO_JIT)(*LIMIT_MATCH=1000)(*LIMIT_DEPTH=100)" . $filter . "'i", $line);
-			} finally {
-				restore_error_handler();
-			}
-		}
-
-		if ($matches) {
-			return $regex_match === 1 || stripos($line, $filter) !== false ? $line : false;
-		}
-
-		$excluded = $regex_match === false ? stripos($line, $filter) !== false : $regex_match === 1;
-
-		return $excluded ? false : $line;
+		return $found === $matches ? $line : false;
 	}
 
 	return $display;
