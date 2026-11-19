@@ -222,13 +222,16 @@ namespace Cacti\Test\SecretFieldSave {
 
 	$GLOBALS['cacti_fixture_contract'] = ['name' => 'secret-field-save', 'complete' => false, 'assertions' => 0, 'producers' => ['tests/fixtures/Core/SecretFieldSaveMatrix.php']];
 	// The Mail tab fields come from the real include/global_settings.php definitions.
-	$source = (string) file_get_contents($root . '/include/global_settings.php');
+	$settings_file = $root . '/include/global_settings.php';
+	$source        = (string) file_get_contents($settings_file);
 
-	if (!preg_match('/^\$settings\[\'mail\'\] = \[.*?^\];/ms', $source, $match)) {
+	if (!preg_match('/^\$settings\[\'mail\'\] = \[.*?^\];/ms', $source, $match, PREG_OFFSET_CAPTURE)) {
 		throw new \RuntimeException('Cannot locate $settings[\'mail\']');
 	}
 	$mail_settings = sys_get_temp_dir() . '/cacti-secret-field-mail-' . bin2hex(random_bytes(6));
-	file_put_contents($mail_settings, '<?php namespace ' . __NAMESPACE__ . '; use Symfony\\Component\\Validator\\Constraints as Assert; ' . $match[0]);
+	$padding       = str_repeat("\n", substr_count($source, "\n", 0, $match[0][1]));
+	file_put_contents($mail_settings, '<?php namespace ' . __NAMESPACE__ . '; use Symfony\\Component\\Validator\\Constraints as Assert; ' . $padding . $match[0][0]);
+	$GLOBALS['cacti_fixture_source_map'][$mail_settings] = $settings_file;
 
 	foreach (['CACTI_MAIL_SMTP' => 1, 'POLLER_VERBOSITY_LOW' => 2, 'REPORTS_DEFAULT_MAX_SIZE' => 10485760, 'REPORTS_TYPE_INLINE_PNG' => 1, 'CACTI_PATH_URL' => '/cacti/'] as $constant => $constant_value) {
 		if (!defined($constant)) {
