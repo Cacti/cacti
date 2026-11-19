@@ -39,6 +39,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_graph_change_runs_the_native_graph_probe(self):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
+    def test_device_change_runs_the_collector_notification_probe(self):
+        self.dispatch('lib/api_device.php', 'DeviceCollectorMessages.php')
+
     def test_account_change_runs_the_native_audit_probe(self):
         self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'ReportMessageDelivery.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
@@ -94,7 +97,7 @@ class RequestDispatchTest(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
-                           'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php', 'Core/ReportMessageDelivery.php',
+                           'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php', 'Core/ReportMessageDelivery.php', 'Core/DeviceCollectorMessages.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
