@@ -2629,7 +2629,8 @@ function graph_edit() : void {
 			<div id='graphLocation' class='center'></div>
 		<?php
 		if ((isset($_SESSION['graph_debug_mode'])) && (isrv('id'))) {
-			$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_STDERR;
+			// RRDtool's error text repeats graph item text, so it is returned and escaped, not printed
+			$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_RETURN_STDERR;
 			$graph_data_array['print_source'] = 1;
 			$graph_data_array['graph_end']    = $graph_end;
 			$graph_data_array['graph_start']  = $graph_start;
@@ -2643,7 +2644,7 @@ function graph_edit() : void {
 				<pre><?php print htmle(rrdtool_function_graph(grv('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID])); ?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:'); ?></span><br>
 				<?php unset($graph_data_array['print_source']); ?>
-				<pre><?php print(POLLER_ID == 1 ? htmle(rrdtool_function_graph(grv('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID])) : __esc('Not Checked')); ?></pre>
+				<pre><?php print(POLLER_ID == 1 ? htmle((string) rrdtool_function_graph(grv('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID])) : __esc('Not Checked')); ?></pre>
 			</div>
 		<?php
 		}

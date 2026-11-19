@@ -48,16 +48,21 @@ test('RRDtool control codes survive the conversion to a quoted token', function 
 		->toBe('graph - COMMENT:"Average\\: %8.2lf\\n"');
 });
 
-test('a quoted token still escapes an embedded double quote', function () {
+test('an embedded double quote is written the way RRDtool reads it', function () {
+	// RRDtool has no backslash escape, so \" would end the token early.  It
+	// joins adjacent quoted pieces, so the quote is closed, '"' added and the
+	// quote reopened.
 	expect(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('say "hi"')))
-		->toBe('graph - COMMENT:"say \\"hi\\""');
+		->toBe('graph - COMMENT:"say "\'"\'"hi"\'"\'""')
+		->and(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('x" -w 177 -t "')))
+		->toBe('graph - COMMENT:"x"\'"\'" -w 177 -t "\'"\'""');
 });
 
-test('values with no unambiguous quoted form are refused', function () {
-	// Neither can be expressed inside a quoted RRDtool token: the trailing
-	// backslash would escape the closing delimiter.
-	expect(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('ends with\\')))->toBeFalse()
-		->and(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('path\\"x')))->toBeFalse();
+test('backslashes keep their literal form, including before a quote or at the end', function () {
+	expect(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('ends with\\')))
+		->toBe('graph - COMMENT:"ends with\\"')
+		->and(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('path\\"x')))
+		->toBe('graph - COMMENT:"path\\"\'"\'"x"');
 });
 
 test('array commands leave the operation unquoted and quote only arguments', function () {
@@ -208,4 +213,41 @@ test('process relaunches are bounded so a persistently failing binary cannot spi
 
 test('a handle that is not an RRDtool process is never relaunched', function () {
 	expect(rrdtool_process_restart((object) ['alive' => false]))->toBeFalse();
+});
+
+test('RRDtool reads every converted value back as one unchanged argument', function () {
+	$rrdtool = trim((string) shell_exec('command -v rrdtool 2>/dev/null'));
+
+	if ($rrdtool === '') {
+		$this->markTestSkipped('rrdtool is not installed');
+	}
+
+	$dir = sys_get_temp_dir() . '/cacti-rps-' . bin2hex(random_bytes(6));
+	mkdir($dir, 0700);
+	shell_exec('cd ' . escapeshellarg($dir) . ' && ' . escapeshellarg($rrdtool) . ' create a.rrd --step 300 DS:v:GAUGE:600:U:U RRA:AVERAGE:0.5:1:10');
+
+	try {
+		foreach (['plain', "it's", 'say "hi"', 'x" -w 177 -t "', "x' -w 177 -t '", "both ' and \"", 'ends with\\', 'path\\"x'] as $value) {
+			// The value ends the line, so RRDtool names the argument it parsed in its error
+			$command = rrdtool_prepare_stdin_command('graph ' . $dir . '/o.png DEF:x=' . $dir . '/a.rrd:v:AVERAGE LINE1:' . escapeshellarg($value));
+			$output  = (string) shell_exec('printf "%s\n" ' . escapeshellarg((string) $command) . ' | ' . escapeshellarg($rrdtool) . ' - 2>&1');
+
+			expect($output)->toContain('ERROR: ' . $value . ' is not a vname nor a number');
+		}
+	} finally {
+		foreach (glob($dir . '/*') as $file) {
+			unlink($file);
+		}
+
+		rmdir($dir);
+	}
+});
+
+test('returned RRDtool output reports a rendered graph instead of its image bytes', function () {
+	$ok = ['success' => true, 'error' => ''];
+
+	expect(rrdtool_format_result($ok + ['output' => "\x89PNG\r\n..."], RRDTOOL_OUTPUT_RETURN_STDERR))->toBe('OK')
+		->and(rrdtool_format_result($ok + ['output' => '<?xml version="1.0"?><svg/>'], RRDTOOL_OUTPUT_RETURN_STDERR))->toBe('SVG/XML Output OK')
+		->and(rrdtool_format_result(['success' => true, 'error' => 'ERROR: bad', 'output' => ''], RRDTOOL_OUTPUT_RETURN_STDERR))->toBe('ERROR: bad')
+		->and(rrdtool_format_result($ok + ['output' => 'tune text'], RRDTOOL_OUTPUT_RETURN_STDERR))->toBe('tune text');
 });
