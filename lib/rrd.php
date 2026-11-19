@@ -5011,7 +5011,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 				'last_ds',
 				'',
 				'text-align:right');
-			form_selectable_cell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')),
+			form_selectable_ecell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')),
 				'value',
 				'',
 				'text-align:right');
