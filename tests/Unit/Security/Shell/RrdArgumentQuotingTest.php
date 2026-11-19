@@ -135,9 +135,9 @@ test('the graph debug views escape what RRDtool says', function () use ($root) {
 	/* RRDTOOL_OUTPUT_STDERR prints RRDtool's output inside the library, so the
 	 * views must ask for it back with RRDTOOL_OUTPUT_RETURN_STDERR to escape it */
 	$views = array(
-		'graphs.php'           => "html_escape((string) @rrdtool_function_graph(get_request_var('id'), 1, \$graph_data_array, '', \$null_param, \$_SESSION['sess_user_id']))",
-		'aggregate_graphs.php' => "html_escape((string) @rrdtool_function_graph(get_request_var('id'), 1, \$graph_data_array, '', \$null_param, \$_SESSION['sess_user_id']))",
-		'graph.php'            => "print html_escape((string) @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), \$graph_data_array, '', \$null_param, \$_SESSION['sess_user_id']));",
+		'graphs.php'           => "html_escape((string) @rrdtool_function_graph(\$graph['local_graph_id'], 1, \$graph_data_array, '', \$null_param, \$_SESSION['sess_user_id']))",
+		'aggregate_graphs.php' => "html_escape((string) @rrdtool_function_graph(\$graphs['local_graph_id'], 1, \$graph_data_array, '', \$null_param, \$_SESSION['sess_user_id']))",
+		'graph.php'            => "print html_escape((string) @rrdtool_function_graph(\$local_graph_id, get_request_var('rra_id'), \$graph_data_array, '', \$null_param, \$_SESSION['sess_user_id']));",
 	);
 
 	foreach ($views as $file => $escaped) {

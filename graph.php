@@ -57,13 +57,13 @@ if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
 	$sql_where = ' AND dspr.id=' . get_request_var('rra_id');
 }
 
-$exists = db_fetch_cell_prepared('SELECT local_graph_id
+$local_graph_id = db_fetch_cell_prepared('SELECT local_graph_id
 	FROM graph_templates_graph
 	WHERE local_graph_id = ?',
 	array(get_request_var('local_graph_id')));
 
 /* make sure the graph requested exists (sanity) */
-if (!$exists) {
+if (!$local_graph_id) {
 	print '<strong><font class="txtErrorTextBox">' . __('GRAPH DOES NOT EXIST') . '</font></strong>';
 	bottom_footer();
 	exit;
@@ -640,7 +640,7 @@ case 'properties':
 	unset($graph_data_array['print_source']);
 	print "<span class='textInfo'>" . __('RRDtool Says:') . "</span><br>";
 	if ($config['poller_id'] == 1) {
-		print html_escape((string) @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']));
+		print html_escape((string) @rrdtool_function_graph($local_graph_id, get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']));
 	} else {
 		print __esc('Not Checked');
 	}

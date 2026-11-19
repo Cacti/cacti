@@ -776,7 +776,7 @@ function graph_edit() {
 				<div style='overflow:auto;'>
 					<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?>
-					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? html_escape((string) @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id'])) : __esc('Not Checked'));?></pre>
+					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? html_escape((string) @rrdtool_function_graph($graphs['local_graph_id'], 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id'])) : __esc('Not Checked'));?></pre>
 				</div>
 				<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 				$(function() {

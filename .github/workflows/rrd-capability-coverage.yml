@@ -144,6 +144,12 @@ jobs:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
         run: tests/e2e/boost/run-coverage.sh "$PWD"
+      - name: Exercise graph diagnostics and RRA path migration
+        env:
+          MYSQL_PWD: cactiroot
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: tests/e2e/rrd/display-and-paths.sh
       - name: Require at least 80 percent of changed executable PHP lines
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}

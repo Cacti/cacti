@@ -250,10 +250,8 @@ foreach ($data_sources as $info) {
 			$warn_count++;
 
 			print "WARNING: Legacy RRA Path '$old_rrd_path' Does not exist, Skipping" . PHP_EOL;
+			update_database($info);
 		}
-
-		/* alter database */
-		update_database($info);
 	}
 
 	/* The old path comes from the data source's stored path.  Only move an
@@ -296,6 +294,9 @@ foreach ($data_sources as $info) {
 				exit -3;
 			}
 		} else {
+			if ($info['rrd_path'] != $old_rrd_path) {
+				update_database($info);
+			}
 			$skip_count++;
 		}
 	}
