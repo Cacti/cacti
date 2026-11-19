@@ -33,6 +33,13 @@ run_php_probe() {
 	fi
 }
 
+command_files='^((cmd|cmd_realtime|remote_agent)\.php|cli/(audit_database|push_out_hosts|rrdresize|splice_rrd)\.php|lib/(dsstats|poller|rrdcheck|functions)\.php|tests/fixtures/Core/ConfiguredCommands\.php)'
+run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files"
+run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprecated
+validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'
+run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files"
+run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" save
+
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'

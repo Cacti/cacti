@@ -3685,7 +3685,7 @@ function data_source_path_is_clean(string $path) : bool {
 		}
 	}
 
-	return preg_match('/[\x00-\x20\x7f\'"]/', $path) !== 1;
+	return preg_match('/[\x00-\x20\x7f\'"]/', $path) === 0;
 }
 
 /**
@@ -5877,11 +5877,8 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
  * cacti_input_string_is_safe - guard against shell metacharacters smuggled into
  * a data_input.input_string template.
  *
- * The placeholder syntax is <field_name>, never <;rm -rf /;>, so any character
- * outside a placeholder that a shell could interpret is treated as an injection
- * attempt. The same check gates the GUI save path (data_input.php) and the
- * XML/package import (lib/import.php) so the two cannot drift. Blocked outside
- * placeholders: ; & | ` $ \ newline carriage-return ' " < > ( ) { }. Paired
+ * Remove recognized field placeholders before checking the surrounding text.
+ * Characters blocked outside placeholders: ; & | ` $ \ newline carriage-return ' " < > ( ) { }. Paired
  * quotes surrounding a placeholder ("<x>" or '<x>') are removed together with
  * the placeholder so legitimate argument quoting such as
  * <path_cacti>/scripts/x.php "<reason>" is kept.
@@ -5900,17 +5897,9 @@ function cacti_input_string_is_safe(mixed $input_string) : bool {
 		return false;
 	}
 
-	$bare = preg_replace(
-		'/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/',
-		'',
-		$input_string
-	);
+	$bare = preg_replace('/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/', '', $input_string);
 
-	if ($bare === null) {
-		return false;
-	}
-
-	return !preg_match('/[;&|`$\\\\\n\r\'"<>(){}]/', $bare);
+	return $bare !== null && preg_match('/[;&|`$\\\\\n\r\'"<>(){}]/', $bare) === 0;
 }
 
 /**

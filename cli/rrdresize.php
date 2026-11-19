@@ -977,7 +977,7 @@ function rrdtool_pipe_init(string $path_rrdtool) : array {
 		1 => ['pipe', 'w'],		// stdout
 		2 => ['file', '/dev/null', 'a']	// stderr
 	];
-	$process = proc_open(cacti_escapeshellcmd($path_rrdtool) . ' -', $fds, $pipes);
+	$process = proc_open([$path_rrdtool, '-'], $fds, $pipes);
 
 	// make stdin/stdout/stderr non-blocking
 	stream_set_blocking($pipes[0], false);

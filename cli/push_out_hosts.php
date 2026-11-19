@@ -46,25 +46,29 @@ if (in_array('-v', $parms, true) || in_array('-V', $parms, true) || in_array('--
 } else {
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
 
+	exit(push_out_rebuild_cache($parms, $php_binary));
+}
+
+function push_out_rebuild_cache(array $parms, mixed $php_binary) : int {
 	if (!is_string($php_binary) || trim($php_binary) === '') {
 		cacti_log('ERROR: Rejected an empty PHP binary.', false, 'SYSTEM');
 
-		exit(1);
+		return 1;
 	}
 
 	if (str_starts_with(trim($php_binary), '-')) {
 		cacti_log('ERROR: Rejected PHP binary starting with dash: ' . $php_binary, false, 'SYSTEM');
 
-		exit(1);
+		return 1;
 	}
 
 	$args = array_merge([CACTI_PATH_CLI . '/rebuild_poller_cache.php'], $parms);
 
-	$command = cacti_escapeshellcmd($php_binary) . ' ' . implode(' ', array_map('cacti_escapeshellarg', $args));
+	$command = cacti_escapeshellarg($php_binary) . ' ' . implode(' ', array_map('cacti_escapeshellarg', $args));
 
 	$exit_code = 0;
 
 	passthru($command, $exit_code);
 
-	exit($exit_code);
+	return $exit_code;
 }

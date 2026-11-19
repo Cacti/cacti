@@ -921,7 +921,7 @@ function createRRDFileFromXML(string $xmlfile, string $rrdfile) : void {
 	print 'NOTE: Re-Importing \'' . $xmlfile . '\' to \'' . $rrdfile . '\'' . PHP_EOL;
 	$return_code = 0;
 	$output      = [];
-	$command     = cacti_escapeshellcmd($rrdtool) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile);
+	$command     = cacti_escapeshellarg($rrdtool) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile);
 	$result      = exec($command, $output, $return_var);
 
 	if ($return_var == 0) {
