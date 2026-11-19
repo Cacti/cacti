@@ -48,6 +48,12 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 - Raise UI messages via `raise_message(...)` and redirect with `header('Location: ...')`.
 - Respect remote poller modes and `$config['is_web']`/CLI guards (`$no_http_header_files` in `include/global.php`).
 
+## CHANGELOG
+
+- Only `-security`, `-issue`, and `-feature` are valid prefixes, in that group order. Use `-issue#1234: Fix ...`, not `-fix#1234: ...`.
+- Put the issue or originating PR number immediately after `#` in new entries. Security entries can cite a `#GHSA-...` identifier.
+- Put numbered security and issue entries newest first (descending), and numbered features oldest first (ascending). Keep entries with the same number in their existing order, and preserve release headings and blank-line spacing. Put new backports in `Backported changes`, not in the published release section.
+
 ## Coding standards
 - Follow PHP PSR standards (PSR-12/PSR-1) for new or standalone code where practical, but match the file’s existing conventions.
   - Preserve the file’s indentation (tabs vs spaces) and brace style; do not reformat unrelated code.
