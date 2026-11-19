@@ -31,7 +31,7 @@ $source = dirname(__DIR__, 3);
 define('CACTI_PATH_LIBRARY', $source . '/lib');
 require_once $source . '/include/global_constants.php';
 
-foreach (['install/functions.php' => ['install_write_poller_config', 'install_validate_vendor_dependencies', 'prime_default_settings', 'remote_update_config_file'], 'lib/xml.php' => ['xml2array', 'get_children'], 'lib/import.php' => ['import_xml_data', 'parse_xml_hash']] as $file => $functions) {
+foreach (['install/functions.php' => ['install_write_poller_config', 'install_rewrite_poller_config', 'install_write_whole_stream', 'install_validate_vendor_dependencies', 'prime_default_settings', 'remote_update_config_file'], 'lib/xml.php' => ['xml2array', 'get_children'], 'lib/import.php' => ['import_xml_data', 'parse_xml_hash']] as $file => $functions) {
 	foreach ($functions as $function) {
 		\cacti_fixture_source_function($source . '/' . $file, $function, __NAMESPACE__);
 	}
@@ -146,9 +146,15 @@ try {
 		\file_put_contents($file, $original);
 		\chmod($file, 0640);
 		$GLOBALS['fault'] = $fault;
+		$inode            = fileinode($file);
 		$success          = install_write_poller_config($file, 7);
 		clearstatcache();
-		$expected = in_array($fault, ['', 'short'], true);
+		$in_place = in_array($fault, ['temp', 'fallback', 'owner', 'group'], true);
+		$expected = $in_place || in_array($fault, ['', 'short'], true);
+
+		if ($in_place) {
+			check(fileinode($file) === $inode, 'Fallback replaced the original file: ' . $fault);
+		}
 		check($success === $expected, 'Incorrect write result: ' . $fault);
 		check(\file_get_contents($file) === ($expected ? str_replace('$poller_id = 1;', '$poller_id = 7;', $original) : $original), 'Config changed incorrectly: ' . $fault);
 		check((fileperms($file) & 0777) === 0640, 'Permissions changed: ' . $fault);
