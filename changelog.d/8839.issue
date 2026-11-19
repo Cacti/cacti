@@ -1,0 +1,1 @@
+Prevent slash-containing or invalid Log Viewer search filters from flooding the Cacti log with regex warnings.
