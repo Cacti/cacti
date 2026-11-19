@@ -5,6 +5,11 @@ namespace CactiDeviceCollectorMessageFixture;
 
 use RuntimeException;
 
+if (PHP_SAPI !== 'cli') {
+	http_response_code(404);
+	exit;
+}
+
 $root = dirname(__DIR__, 3);
 require $root . '/tests/Helpers/FixtureCoverage.php';
 require $root . '/tests/Helpers/SourceSlice.php';
