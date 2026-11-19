@@ -1681,23 +1681,29 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 			}, $line);
 		}
 
-		if ($matches) {
-			if (validate_is_regex($filter) === true && preg_match('/' . $filter . '/i', $search_line)) {
-				return $line;
-			} elseif (stripos($search_line, $filter) !== false) {
-				return $line;
-			}
-		} else {
-			if (validate_is_regex($filter) === true) {
-				if (!preg_match('/' . $filter . '/i', $search_line)) {
-					return $line;
-				}
-			} elseif (!stripos($search_line, $filter) !== false) {
-				return $line;
+		$regex_match = false;
+
+		// Use the same delimiter and limits as validate_is_regex() for the search field.
+		if (strlen($filter) <= 50 && strpos($filter, ';') === false) {
+			// A failed pattern must not send a warning to the log being scanned.
+			set_error_handler(static function () {
+				return true;
+			}, E_WARNING);
+
+			try {
+				$regex_match = preg_match("'" . $filter . "'i", $search_line);
+			} finally {
+				restore_error_handler();
 			}
 		}
 
-		return false;
+		if ($matches) {
+			return $regex_match === 1 || stripos($search_line, $filter) !== false ? $line : false;
+		}
+
+		$excluded = $regex_match === false ? stripos($search_line, $filter) !== false : $regex_match === 1;
+
+		return $excluded ? false : $line;
 	}
 
 	return $display;

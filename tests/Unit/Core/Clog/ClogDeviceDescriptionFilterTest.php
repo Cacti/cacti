@@ -64,3 +64,37 @@ test('a comma/space separated Device[] id list resolves every description', func
 	expect(determine_display_log_entry(-1, $line, 'se-boi-3504', true, $host_descriptions))->toBe($line)
 		->and(determine_display_log_entry(-1, $line, 'se-boi-3505', true, $host_descriptions))->toBe($line);
 });
+
+test('log filters match slash-containing regexes without a warning', function () {
+	$line = '2026/11/18 - SYSTEM MAINT STATS';
+	$filter = '^2026/11/[0-9]+ - system';
+
+	expect(determine_display_log_entry(-1, $line, $filter, true))->toBe($line)
+		->and(determine_display_log_entry(-1, $line, $filter, false))->toBeFalse()
+		->and(determine_display_log_entry(-1, 'other line', $filter, false))->toBe('other line');
+});
+
+test('an invalid log regex falls back to literal matching without leaking warnings', function () {
+	$line = 'SYSTEM NOTE: Interface [missing';
+	$warnings = [];
+	$handler = static function ($level, $message) use (&$warnings) {
+		$warnings[] = $message;
+
+		return true;
+	};
+
+	set_error_handler($handler, E_WARNING);
+
+	try {
+		expect(determine_display_log_entry(-1, $line, '[MISSING', true))->toBe($line)
+			->and(determine_display_log_entry(-1, $line, '[MISSING', false))->toBeFalse()
+			->and(determine_display_log_entry(-1, $line, '[OTHER', false))->toBe($line)
+			->and($warnings)->toBe([]);
+
+		$current_handler = set_error_handler($handler, E_WARNING);
+		restore_error_handler();
+		expect($current_handler)->toBe($handler);
+	} finally {
+		restore_error_handler();
+	}
+});
