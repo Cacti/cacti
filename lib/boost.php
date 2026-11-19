@@ -1711,14 +1711,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 
 			// don't generate error messages if the RRD has already been updated
 			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" .
-					$time .
-					"', RRD Time:'" .
-					$last_update .
-					"' Ignoring Value!",
-					false,
-					'BOOST',
-					POLLER_VERBOSITY_HIGH);
+				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
 				$value = 'DNP';
 			} else {
 				$value = trim($item['output']);
