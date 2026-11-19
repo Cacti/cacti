@@ -40,6 +40,8 @@ if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-setting-get GET '' settings
 	run_probe SpikekillRequestGate.php spike-setting-post POST '' settings
 fi
+run_probe Rrd/RraContainmentSkip.php rra-containment-skip
+run_probe Rrd/GraphDebugOutput.php graph-debug-output
 if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing

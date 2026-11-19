@@ -45,6 +45,7 @@ run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tes
 
 run_php_probe tests/fixtures/Core/Boost/FailedDataSourceIsolation.php '^(poller_boost\.php|tests/fixtures/Core/Boost/FailedDataSourceIsolation\.php)'
 
+run_php_probe tests/fixtures/Core/Rrd/GraphDebugOutput.php '^((aggregate_graphs|graphs)\.php|lib/(boost|rrd|variables)\.php|tests/fixtures/Core/Rrd/GraphDebugOutput\.php)'
 run_php_probe tests/fixtures/Core/Rrd/FallbackSourceIdentity.php '^(lib/rrd\.php|tests/fixtures/Core/Rrd/FallbackSourceIdentity\.php)'
 
 run_php_probe tests/fixtures/Core/Rrd/RraContainmentSkip.php '^(cli/structure_rra_paths\.php|tests/fixtures/Core/Rrd/RraContainmentSkip\.php)'
