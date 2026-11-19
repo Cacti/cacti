@@ -12,40 +12,44 @@
  +-------------------------------------------------------------------------+
 */
 
-use PHPUnit\Framework\TestCase;
+test('slash-containing regexes match without warning', function () {
+	$line   = '2026/11/18 - SYSTEM MAINT STATS';
+	$filter = '^2026/11/[0-9]+ - system';
 
-final class ClogFilterTest extends TestCase {
-	public function testSlashContainingRegexMatchesWithoutWarning(): void {
-		$line   = '2026/11/18 - SYSTEM MAINT STATS';
-		$filter = '^2026/11/[0-9]+ - system';
+	expect(determine_display_log_entry(-1, $line, $filter, true))->toBe($line)
+		->and(determine_display_log_entry(-1, $line, $filter, false))->toBeFalse()
+		->and(determine_display_log_entry(-1, 'other line', $filter, false))->toBe('other line');
+});
 
-		self::assertSame($line, determine_display_log_entry(-1, $line, $filter, true));
-		self::assertFalse(determine_display_log_entry(-1, $line, $filter, false));
-		self::assertSame('other line', determine_display_log_entry(-1, 'other line', $filter, false));
+test('log filtering falls back when a regex exceeds its match budget', function () {
+	$line   = str_repeat('ab', 1500);
+	$filter = '^(?:ab)+?$';
+
+	expect(determine_display_log_entry(-1, $line, $filter, true))->toBeFalse()
+		->and(determine_display_log_entry(-1, $line, $filter, false))->toBe($line);
+});
+
+test('invalid regexes fall back to literal matching without warning', function () {
+	$line     = 'SYSTEM NOTE: Interface [missing';
+	$warnings = [];
+	$handler  = static function (int $level, string $message) use (&$warnings): bool {
+		$warnings[] = $message;
+
+		return true;
+	};
+
+	set_error_handler($handler, E_WARNING);
+
+	try {
+		expect(determine_display_log_entry(-1, $line, '[MISSING', true))->toBe($line)
+			->and(determine_display_log_entry(-1, $line, '[MISSING', false))->toBeFalse()
+			->and(determine_display_log_entry(-1, $line, '[OTHER', false))->toBe($line)
+			->and($warnings)->toBe([]);
+
+		$current_handler = set_error_handler($handler, E_WARNING);
+		restore_error_handler();
+		expect($current_handler)->toBe($handler);
+	} finally {
+		restore_error_handler();
 	}
-
-	public function testInvalidRegexFallsBackToLiteralMatchingWithoutWarning(): void {
-		$line     = 'SYSTEM NOTE: Interface [missing';
-		$warnings = [];
-		$handler  = static function (int $level, string $message) use (&$warnings): bool {
-			$warnings[] = $message;
-
-			return true;
-		};
-
-		set_error_handler($handler, E_WARNING);
-
-		try {
-			self::assertSame($line, determine_display_log_entry(-1, $line, '[MISSING', true));
-			self::assertFalse(determine_display_log_entry(-1, $line, '[MISSING', false));
-			self::assertSame($line, determine_display_log_entry(-1, $line, '[OTHER', false));
-			self::assertSame([], $warnings);
-
-			$current_handler = set_error_handler($handler, E_WARNING);
-			restore_error_handler();
-			self::assertSame($handler, $current_handler);
-		} finally {
-			restore_error_handler();
-		}
-	}
-}
+});

@@ -2160,7 +2160,8 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 			}, E_WARNING);
 
 			try {
-				$regex_match = preg_match("'" . $filter . "'i", $line);
+				// Bound work per log entry; JIT does not honor the depth limit.
+				$regex_match = preg_match("'(*NO_JIT)(*LIMIT_MATCH=1000)(*LIMIT_DEPTH=100)" . $filter . "'i", $line);
 			} finally {
 				restore_error_handler();
 			}
