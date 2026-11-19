@@ -158,10 +158,11 @@ test('titles and graph text do not expand device credentials', function () use (
 		print json_encode(array(
 			strip_credential_variables("T |host_snmp_community| |HOST_SNMP_PASSWORD| |host_snmp_priv_passphrase| |host_snmp_username|"),
 			strip_credential_variables("|host_description| |host_snmp_context| |host_snmp_engine_id| |host_hostname|"),
+			strip_credential_variables("|host_snmp_|host_snmp_community|community|"),
 		));
 	');
 
-	expect(json_decode($output, true))->toBe(array('T    ', '|host_description|   |host_hostname|'), $output);
+	expect(json_decode($output, true))->toBe(array('T    ', '|host_description|   |host_hostname|', ''), $output);
 
 	$variables = file_get_contents($root . '/lib/variables.php');
 	$start     = strpos($variables, 'function expand_title(');
