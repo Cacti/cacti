@@ -40,7 +40,9 @@ test('titles and graph text do not expand device credentials', function () {
 	expect(strip_credential_variables('T |host_snmp_community| |HOST_SNMP_PASSWORD| |host_snmp_priv_passphrase| |host_snmp_username|'))
 		->toBe('T    ')
 		->and(strip_credential_variables('|host_description| |host_snmp_context| |host_snmp_engine_id| |host_hostname|'))
-		->toBe('|host_description|   |host_hostname|');
+		->toBe('|host_description|   |host_hostname|')
+		->and(strip_credential_variables('|host_snmp_|host_snmp_community|community|'))
+		->toBe('');
 
 	$variables = (string) file_get_contents(dirname(__DIR__, 4) . '/lib/variables.php');
 	$start     = (int) strpos($variables, 'function expand_title(');

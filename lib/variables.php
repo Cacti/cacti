@@ -283,7 +283,17 @@ function null_out_substitutions(string $string) : string {
  * @return string The text without the credential variables
  */
 function strip_credential_variables(string $text) : string {
-	return preg_replace('/\\|host_snmp_(?:community|username|password|priv_passphrase|context|engine_id)\\|/i', '', $text) ?? '';
+	$pattern = '/\\|host_snmp_(?:community|username|password|priv_passphrase|context|engine_id)\\|/i';
+
+	/* Strip to a fixed point: deleting one token can leave its neighbours
+	 * adjacent and so form a fresh token, which a single pass would miss and
+	 * the later variable substitution would then expand. */
+	do {
+		$prev = $text;
+		$text = preg_replace($pattern, '', $text) ?? '';
+	} while ($text !== $prev);
+
+	return $text;
 }
 
 /**
