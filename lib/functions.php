@@ -1552,7 +1552,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
  *
  * @param int $message_type The message type.
  * @param string $line The line.
- * @param string $filter The filter.
+ * @param string $filter The literal search text.
  * @param bool $matches The matches.
  * @param array $host_descriptions Optional id => description map used to let $filter also
  *   match a device's description, since the raw line only contains its numeric id.
@@ -1681,30 +1681,9 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 			}, $line);
 		}
 
-		$regex_match = false;
+		$found = stripos($search_line, $filter) !== false;
 
-		// Use the same delimiter and limits as validate_is_regex() for the search field.
-		if (strlen($filter) <= 50 && strpos($filter, ';') === false) {
-			// A failed pattern must not send a warning to the log being scanned.
-			set_error_handler(static function () {
-				return true;
-			}, E_WARNING);
-
-			try {
-				// Bound work per log entry; JIT does not honor the depth limit.
-				$regex_match = preg_match("'(*NO_JIT)(*LIMIT_MATCH=1000)(*LIMIT_DEPTH=100)" . $filter . "'i", $search_line);
-			} finally {
-				restore_error_handler();
-			}
-		}
-
-		if ($matches) {
-			return $regex_match === 1 || stripos($search_line, $filter) !== false ? $line : false;
-		}
-
-		$excluded = $regex_match === false ? stripos($search_line, $filter) !== false : $regex_match === 1;
-
-		return $excluded ? false : $line;
+		return $found === (bool) $matches ? $line : false;
 	}
 
 	return $display;

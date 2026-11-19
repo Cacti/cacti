@@ -65,44 +65,20 @@ test('a comma/space separated Device[] id list resolves every description', func
 		->and(determine_display_log_entry(-1, $line, 'se-boi-3505', true, $host_descriptions))->toBe($line);
 });
 
-test('log filters match slash-containing regexes without a warning', function () {
-	$line = '2026/11/18 - SYSTEM MAINT STATS';
-	$filter = '^2026/11/[0-9]+ - system';
+test('literal log search matches a date and punctuation regardless of case', function () {
+	$line   = '2026/11/18 - SYSTEM NOTE: Interface [missing; retry]';
+	$filter = '11/18 - system note: interface [MISSING;';
 
 	expect(determine_display_log_entry(-1, $line, $filter, true))->toBe($line)
 		->and(determine_display_log_entry(-1, $line, $filter, false))->toBeFalse()
 		->and(determine_display_log_entry(-1, 'other line', $filter, false))->toBe('other line');
 });
 
-test('log filtering falls back when a regex exceeds its match budget', function () {
-	$line   = str_repeat('ab', 1500);
-	$filter = '^(?:ab)+?$';
+test('log search does not interpret regex metacharacters', function () {
+	$line   = 'SYSTEM NOTE: Interface 42';
+	$filter = 'Interface [0-9]+';
 
 	expect(determine_display_log_entry(-1, $line, $filter, true))->toBeFalse()
-		->and(determine_display_log_entry(-1, $line, $filter, false))->toBe($line);
-});
-
-test('an invalid log regex falls back to literal matching without leaking warnings', function () {
-	$line = 'SYSTEM NOTE: Interface [missing';
-	$warnings = [];
-	$handler = static function ($level, $message) use (&$warnings) {
-		$warnings[] = $message;
-
-		return true;
-	};
-
-	set_error_handler($handler, E_WARNING);
-
-	try {
-		expect(determine_display_log_entry(-1, $line, '[MISSING', true))->toBe($line)
-			->and(determine_display_log_entry(-1, $line, '[MISSING', false))->toBeFalse()
-			->and(determine_display_log_entry(-1, $line, '[OTHER', false))->toBe($line)
-			->and($warnings)->toBe([]);
-
-		$current_handler = set_error_handler($handler, E_WARNING);
-		restore_error_handler();
-		expect($current_handler)->toBe($handler);
-	} finally {
-		restore_error_handler();
-	}
+		->and(determine_display_log_entry(-1, $line, $filter, false))->toBe($line)
+		->and(determine_display_log_entry(-1, $filter, $filter, true))->toBe($filter);
 });

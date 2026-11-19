@@ -230,7 +230,7 @@ function clog_view_logfile() {
 			'default' => '1'
 		),
 		'rfilter' => array(
-			'filter'  => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_UNSAFE_RAW,
 			'default' => '',
 			'pageset' => true
 		)
@@ -696,7 +696,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' aria-label='<?php print __esc('Search');?>' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' aria-label='<?php print __esc('Search for literal text');?>' placeholder='<?php print __esc('Search for literal text');?>' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -728,7 +728,7 @@ function filter($clogAdmin, $selectedFile) {
 			refreshMSeconds=$('#refresh').val()*1000;
 
 			strURL = basename(location.pathname)+
-				'?rfilter=' + base64_encode($('#rfilter').val())+
+				'?rfilter=' + encodeURIComponent($('#rfilter').val())+
 				'&reverse='+$('#reverse').val()+
 				'&refresh='+$('#refresh').val()+
 				'&matches='+$('#matches').val()+
