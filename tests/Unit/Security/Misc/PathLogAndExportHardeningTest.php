@@ -144,7 +144,7 @@ test('the discovery and color exports neutralise spreadsheet formulas', function
 		->toContain("cacti_csv_safe(\$color['hex'])");
 });
 
-test('the graph export table escapes an unexpected value', function () use ($root) {
+test('the graph export table escapes every formatted value', function () use ($root) {
 	expect(file_get_contents($root . '/graph_xport.php'))
-		->toContain("\$row_data .= '(unexpected: ' . html_escape(\$row['col' . \$i]) . ')';");
+		->toContain('"<td class=\'right\'>" . html_escape($row_data) . "</td>"');
 });
