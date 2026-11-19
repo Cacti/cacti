@@ -1927,8 +1927,6 @@ function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, m
 		return [__('Error %s is not readable', $file_name)];
 	}
 
-	$filter = cacti_strtolower($filter);
-
 	$fp = fopen($file_name, 'r');
 
 	if ($fp === false) {
@@ -2034,7 +2032,7 @@ function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, m
  *
  * @param int    $message_type
  * @param string $line
- * @param string $filter       Literal search text
+ * @param string $filter       Search pattern or literal text
  * @param bool   $matches
  *
  * @return mixed Should the entry be displayed
@@ -2150,12 +2148,46 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 
 	// match any lines that match the search string
 	if ($display === true && $filter != '') {
-		$found = stripos($line, $filter) !== false;
+		$found = clog_search_matches($filter, $line, $matches);
 
 		return $found === $matches ? $line : false;
 	}
 
 	return $display;
+}
+
+/**
+ * Match a Log Viewer regex, using quoted text when a pattern cannot be run.
+ */
+function clog_search_matches(string $filter, string $line, bool $include): bool {
+	if (strlen($filter) <= 50 && !str_contains($filter, ';')) {
+		foreach (["'", '~', '#', '%', '!', '@', '/'] as $delimiter) {
+			if (str_contains($filter, $delimiter)) {
+				continue;
+			}
+
+			// A compile warning must not be written to the log being scanned.
+			set_error_handler(static function (): bool {
+				return true;
+			}, E_WARNING);
+
+			try {
+				$matched = preg_match($delimiter . '(*NO_JIT)(*LIMIT_MATCH=1000)(*LIMIT_DEPTH=100)' . $filter . $delimiter . 'i', $line);
+			} finally {
+				restore_error_handler();
+			}
+
+			if ($matched === 1 || ($matched === 0 && !$include)) {
+				return $matched === 1;
+			}
+
+			break;
+		}
+
+		return preg_match('/' . preg_quote($filter, '/') . '/i', $line) === 1;
+	}
+
+	return stripos($line, $filter) !== false;
 }
 
 /**

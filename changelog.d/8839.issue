@@ -1,1 +1,1 @@
-Use case-insensitive literal text for Log Viewer searches to prevent regex warnings and excessive backtracking.
+Preserve Log Viewer regex searches while preventing delimiter warnings and limiting backtracking.

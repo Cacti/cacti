@@ -727,7 +727,7 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 				'rfilter' => [
 					'method'         => 'textbox',
 					'filter'         => FILTER_UNSAFE_RAW,
-					'placeholder'    => __('Search for literal text'),
+					'placeholder'    => __('Enter a search term'),
 					'size'           => '55',
 					'default'        => '',
 					'pageset'        => true,
