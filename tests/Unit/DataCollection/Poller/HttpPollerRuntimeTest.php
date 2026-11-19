@@ -256,16 +256,19 @@ test('cmd.php checks each HTTP device once, as the walk would, and keeps its spi
 });
 
 test('the prefetch stops at its deadline and unfinished items report U', function () {
-	$base   = \cacti_http_test_server()['url'];
-	$poller = new \CactiHttpPoller();
+	$servers = \cacti_http_test_server();
+	$base    = $servers['url'];
+	$quick   = $servers['inflight'] . '/peak';
+	$peak    = (string) json_decode(file_get_contents($quick), true, 512, JSON_THROW_ON_ERROR)['peak'];
+	$poller  = new \CactiHttpPoller();
 
 	$start   = microtime(true);
 	$reasons = [];
-	// the deadline leaves /stats time to answer even under a coverage driver, and ends well before /slower does
-	$outputs = $poller->collect([http_row(2, 9, "$base/slower"), http_row(5, 10, "$base/stats")], $reasons, $start + 1.0);
+	// Independent listeners keep the slow request from occupying the worker serving the quick response.
+	$outputs = $poller->collect([http_row(2, 9, "$base/slower"), http_row(5, 10, $quick, '/peak')], $reasons, $start + 1.0);
 
 	expect(microtime(true) - $start)->toBeLessThan(2.5)
-		->and($outputs)->toBe(['9:value' => 'U', '10:value' => '5'])
+		->and($outputs)->toBe(['9:value' => 'U', '10:value' => $peak])
 		->and($reasons['9:value'])->toBe('Timed out');
 
 	// a request that leaves the queue after the deadline is not sent
