@@ -1059,10 +1059,7 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 								[$template_field['id'], $data_source['id']]);
 
 							if (isset($old_value['value']) && $old_data['value'] != $host[$field]) {
-								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]",
-									false,
-									'PCACHE',
-									POLLER_VERBOSITY_MEDIUM);
+								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
 							}
 
 							db_execute_prepared('REPLACE INTO data_input_data
@@ -1675,8 +1672,7 @@ function utilities_get_mysql_recommendations() : int {
 						'value'   => 'ON',
 						'class'   => 'warning',
 						'measure' => 'equalint',
-						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.',
-							$database)
+						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
 					]
 				];
 

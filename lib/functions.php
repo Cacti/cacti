@@ -8840,10 +8840,7 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 									[$good_field_id, $mfid['id']]);
 
 								if ($good_found > 0) {
-									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing',
-										false,
-										'WEBUI',
-										POLLER_VERBOSITY_DEVDBG);
+									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
 									db_execute_prepared('DELETE FROM data_template_rrd
 										WHERE data_input_field_id = ?
@@ -10486,13 +10483,7 @@ function cacti_cookie_set($session, $val, $timeout = null) : void {
 
 		setcookie((string) $session, $val, $options);
 	} else {
-		setcookie((string) $session,
-			$val,
-			['expires' => time() + 3600,
-			'path'     => CACTI_PATH_URL,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true]);
+		setcookie((string) $session, $val, ['expires' => time() + 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
 	}
 }
 
@@ -10532,13 +10523,7 @@ function cacti_cookie_logout() : void {
 		}
 	} else {
 		foreach ($cookies as $cookie) {
-			setcookie($cookie,
-				'',
-				['expires' => time() - 3600,
-				'path'     => CACTI_PATH_URL,
-				'domain'   => $domain,
-				'secure'   => $secure,
-				'httponly' => true]);
+			setcookie($cookie, '', ['expires' => time() - 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
 		}
 	}
 
@@ -10581,13 +10566,7 @@ function cacti_cookie_session_set(string $user, int $realm, string $nssecret) : 
 
 		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, $options);
 	} else {
-		setcookie('cacti_remembers',
-			$user . ',' . $realm . ',' . $nssecret,
-			['expires' => time() + (86400 * 30),
-			'path'     => CACTI_PATH_URL,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true]);
+		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, ['expires' => time() + (86400 * 30), 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
 	}
 }
 
@@ -10619,13 +10598,7 @@ function cacti_cookie_session_logout() : void {
 
 		setcookie('cacti_remembers', '', $options);
 	} else {
-		setcookie('cacti_remembers',
-			'',
-			['expires' => time() - 3600,
-			'path'     => CACTI_PATH_URL,
-			'domain'   => $domain,
-			'secure'   => $secure,
-			'httponly' => true]);
+		setcookie('cacti_remembers', '', ['expires' => time() - 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
 	}
 }
 

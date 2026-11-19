@@ -182,10 +182,7 @@ function reports_add_devices(int $report_id, array $device_ids, array $timespan,
 				}
 			} else {
 				$errors++;
-				raise_message('reports_no_add_device_' . $device_id,
-					__esc('Device \'%s\' not added to Report as it already exists on report.',
-						$description),
-					MESSAGE_LEVEL_WARN);
+				raise_message('reports_no_add_device_' . $device_id, __esc('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
 			}
 		}
 

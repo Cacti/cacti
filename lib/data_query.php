@@ -1555,10 +1555,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 					}
 
 					if (!cacti_sizeof($results) && $field_name == $sort_field) {
-						query_debug_timer_offset('data_query',
-							__esc('Sort field returned no data for Host[%s] DQ[%s], skipping.',
-								$host_id,
-								$snmp_query_id));
+						query_debug_timer_offset('data_query', __esc('Sort field returned no data for Host[%s] DQ[%s], skipping.', $host_id, $snmp_query_id));
 					} elseif (cacti_sizeof($results)) {
 						foreach ($results as $key => $value) {
 							debug_log_insert('data_query',
@@ -2906,9 +2903,7 @@ function get_ordered_index_type_list(int $host_id, int $data_query_id) : array {
 					foreach ($field_values as $value) {
 						if ($must_be_numeric && !is_numeric($value)) {
 							if (read_config_option('data_source_trace') == 'on') {
-								cacti_log("Field Name '$field_name' found not suitable.  Must be numeric and non-numeric data found during Re-Index for Device[$host_id], DQ[$data_query_id]",
-									false,
-									'DSTRACE');
+								cacti_log("Field Name '$field_name' found not suitable.  Must be numeric and non-numeric data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 							}
 
 							continue;
@@ -2916,9 +2911,7 @@ function get_ordered_index_type_list(int $host_id, int $data_query_id) : array {
 
 						if ($must_be_alpha && is_numeric($value)) { // @phpstan-ignore-line
 							if (read_config_option('data_source_trace') == 'on') {
-								cacti_log("Field Name '$field_name' found not suitable.  Must be alphabetic and alphabetic data found during Re-Index for Device[$host_id], DQ[$data_query_id]",
-									false,
-									'DSTRACE');
+								cacti_log("Field Name '$field_name' found not suitable.  Must be alphabetic and alphabetic data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 							}
 
 							continue;
