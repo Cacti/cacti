@@ -33,6 +33,9 @@ run_php_probe() {
 	fi
 }
 
+for mode in requests denied reorder oauth; do
+	run_php_probe tests/fixtures/Core/AuthorizedActions.php '^((auth_profile|automation_templates|data_debug|graph_templates|graphs|oauth2|tree|utilities)\.php|include/global_arrays\.php|lib/(auth|functions|reports)\.php|tests/fixtures/Core/AuthorizedActions\.php)' "$mode"
+done
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'

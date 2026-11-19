@@ -92,6 +92,13 @@ if (in_array(grv('action'), [
 	csrf_require_post();
 }
 
+$action  = grv('action');
+$tree_id = (int) grv('id');
+
+if (in_array($action, ['tree_up', 'tree_down', 'lock', 'unlock'], true) || ($action === 'edit' && $tree_id > 0)) {
+	tree_require_edit_permission($tree_id);
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -112,14 +119,6 @@ switch (grv('action')) {
 
 		break;
 	case 'edit':
-		// Only the owner of a tree, or a Users/Groups administrator, may open its editor.
-		if ((int) grv('id') > 0 && !cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')) {
-			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
-			header('Location: tree.php');
-
-			exit;
-		}
-
 		top_header();
 		tree_edit();
 		bottom_footer();
@@ -138,24 +137,10 @@ switch (grv('action')) {
 
 		break;
 	case 'tree_up':
-		if (!cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')) {
-			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
-			header('Location: tree.php');
-
-			exit;
-		}
-
 		tree_up();
 
 		break;
 	case 'tree_down':
-		if (!cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')) {
-			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
-			header('Location: tree.php');
-
-			exit;
-		}
-
 		tree_down();
 
 		break;
@@ -165,7 +150,7 @@ switch (grv('action')) {
 		break;
 	case 'lock':
 		// GHSA-73qf-hq23-c4m7: lock/unlock/get_node reached api_tree_* with no owner check; gate them like the node write actions.
-		if (!is_tree_allowed((int) grv('id')) || !cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')) {
+		if (!is_tree_allowed((int) grv('id'))) {
 			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
 			header('Location: tree.php');
 
@@ -177,7 +162,7 @@ switch (grv('action')) {
 
 		break;
 	case 'unlock':
-		if (!is_tree_allowed((int) grv('id')) || !cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')) {
+		if (!is_tree_allowed((int) grv('id'))) {
 			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
 			header('Location: tree.php');
 
@@ -375,22 +360,41 @@ function tree_up() : void {
 	exit;
 }
 
+function tree_require_edit_permission(int $tree_id) : void {
+	if (cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], $tree_id, 'graph_tree')) {
+		return;
+	}
+
+	raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+	header('Location: tree.php');
+
+	exit;
+}
+
+function tree_require_item_edit_permission(int $branch_id) : void {
+	$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+		FROM graph_tree_items
+		WHERE id = ?',
+		[$branch_id]);
+
+	tree_require_edit_permission((int) $tree_id);
+}
+
 function tree_dnd() : void {
 	if (isrv('tree_ids') && is_array(gnrv('tree_ids'))) {
-		$tids     = gnrv('tree_ids');
-		$sequence = 1;
+		$tids          = gnrv('tree_ids');
+		$validated_ids = [];
+		$sequence      = 1;
 
 		foreach ($tids as $id) {
 			$id = str_replace('line', '', $id);
 			input_validate_input_number($id, 'id');
 
-			if (!cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) $id, 'graph_tree')) {
-				raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
-				header('Location: tree.php');
+			tree_require_edit_permission((int) $id);
+			$validated_ids[] = $id;
+		}
 
-				exit;
-			}
-
+		foreach ($validated_ids as $id) {
 			db_execute_prepared('UPDATE graph_tree
 				SET sequence = ?
 				WHERE id = ?',
@@ -459,17 +463,7 @@ function set_host_sort_type() : void {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
-					$branch_tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
-						FROM graph_tree_items
-						WHERE id = ?',
-						[$branch]);
-
-					if (!cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) $branch_tree_id, 'graph_tree')) {
-						raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
-						header('Location: tree.php');
-
-						exit;
-					}
+					tree_require_item_edit_permission((int) $branch);
 
 					if (grv('type') == 'hsgt') {
 						$type = HOST_GROUPING_GRAPH_TEMPLATE;
@@ -563,17 +557,7 @@ function set_branch_sort_type() : void {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
-					$branch_tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
-						FROM graph_tree_items
-						WHERE id = ?',
-						[$branch]);
-
-					if (!cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) $branch_tree_id, 'graph_tree')) {
-						raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
-						header('Location: tree.php');
-
-						exit;
-					}
+					tree_require_item_edit_permission((int) $branch);
 
 					switch(grv('type')) {
 						case 'inherit':
@@ -638,11 +622,8 @@ function form_save() : void {
 		// ====================================================
 
 		// Block edits to trees the caller does not own (Users/Groups administrators bypass).
-		if (gfrv('id') > 0 && !cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')) {
-			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
-			header('Location: tree.php');
-
-			exit;
+		if (gfrv('id') > 0) {
+			tree_require_edit_permission((int) grv('id'));
 		}
 
 		if (gfrv('id') > 0) {
