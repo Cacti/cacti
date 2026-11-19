@@ -25,11 +25,15 @@ require_once dirname(__DIR__, 4) . '/lib/auth.php';
  */
 
 beforeEach(function () {
-	global $database_sessions, $database_hostname, $database_port, $database_default;
+	global $config, $database_sessions, $database_hostname, $database_port, $database_default;
 
-	$this->conn = new FakeMySQLPDO();
+	$this->previous_config      = $config;
+	$config['cacti_db_version'] = '1.3.0';
+	$this->conn                 = new FakeMySQLPDO();
 	$this->conn->exec('CREATE TABLE graph_tree (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL DEFAULT 0)');
 	$this->conn->exec('CREATE TABLE user_auth_realm (realm_id INTEGER, user_id INTEGER)');
+	$this->conn->exec('CREATE TABLE user_auth_group (id INTEGER PRIMARY KEY, enabled TEXT)');
+	$this->conn->exec("INSERT INTO user_auth_group VALUES (3, 'on')");
 	$this->conn->exec('CREATE TABLE user_auth_group_realm (group_id INTEGER, realm_id INTEGER)');
 	$this->conn->exec('CREATE TABLE user_auth_group_members (group_id INTEGER, user_id INTEGER)');
 	$this->conn->exec('INSERT INTO graph_tree (id, user_id) VALUES (10, 5), (11, 6)');
@@ -40,7 +44,9 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-	global $database_sessions, $database_hostname, $database_port, $database_default;
+	global $config, $database_sessions, $database_hostname, $database_port, $database_default;
+
+	$config = $this->previous_config;
 
 	if ($this->previous === null) {
 		unset($database_sessions["$database_hostname:$database_port:$database_default"]);
@@ -77,51 +83,15 @@ test('missing trees, invalid ids and unknown resource types fail closed', functi
 		->and(cacti_authorize_resource(5, 10, 'unknown'))->toBeFalse();
 });
 
-test('tree.php gates the editor, save handler and bulk actions on ownership', function () {
+test('tree changes check ownership before dispatch and storage', function () {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/tree.php');
 
-	$edit = substr($src, strpos($src, "case 'edit':"), 600);
+	expect(strpos($src, 'tree_require_edit_permission($tree_id)'))->toBeLessThan(strpos($src, "switch (grv('action'))"));
 
-	expect($edit)->toContain("cacti_authorize_resource((int) \$_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')")
-		->and(strpos($edit, 'cacti_authorize_resource'))->toBeLessThan(strpos($edit, 'top_header()'));
-
-	$save = substr($src, strpos($src, 'function form_save()'), 1200);
-
-	expect($save)->toContain("cacti_authorize_resource((int) \$_SESSION[SESS_USER_ID], (int) grv('id'), 'graph_tree')");
-
-	$actions = substr($src, strpos($src, 'function form_actions()'), 1800);
-
-	expect($actions)->toContain('csrf_require_post();')
-		->and($actions)->toContain("'graph_tree'")
-		->and(strpos($actions, "'graph_tree'"))->toBeLessThan(strpos($actions, "gnrv('drp_action') == '1'"));
-
-	foreach (['lock', 'unlock'] as $action) {
-		$block = substr($src, strpos($src, "case '" . $action . "':"), 500);
-
-		expect($block)->toContain("'graph_tree'");
-	}
-});
-
-test('tree.php checks ownership before reordering trees or changing branch sorting', function () {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/tree.php');
-
-	foreach (['tree_up', 'tree_down'] as $action) {
-		$block = substr($src, strpos($src, "case '" . $action . "':"), 400);
-
-		expect(strpos($block, "'graph_tree'"))->toBeLessThan(strpos($block, $action . '();'), $action);
-	}
-
-	$dnd = substr($src, strpos($src, 'function tree_dnd()'), 900);
-
-	expect(strpos($dnd, "cacti_authorize_resource((int) \$_SESSION[SESS_USER_ID], (int) \$id, 'graph_tree')"))->not->toBeFalse()
-		->and(strpos($dnd, "'graph_tree'"))->toBeLessThan(strpos($dnd, 'UPDATE graph_tree'));
-
-	foreach (['set_host_sort_type', 'set_branch_sort_type'] as $function) {
-		$start = strpos($src, 'function ' . $function . '()');
+	foreach (['set_host_sort_type', 'set_branch_sort_type'] as $handler) {
+		$start = strpos($src, 'function ' . $handler . '()');
 		$body  = substr($src, $start, strpos($src, "\nfunction ", $start + 1) - $start);
-
-		expect($body)->toContain('SELECT graph_tree_id')
-			->and(strpos($body, "'graph_tree'"))->toBeLessThan(strpos($body, 'UPDATE graph_tree_items'), $function);
+		expect(strpos($body, 'tree_require_item_edit_permission'))->toBeLessThan(strpos($body, 'UPDATE graph_tree_items'));
 	}
 });
 
