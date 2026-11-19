@@ -99,6 +99,13 @@ foreach ([
 	$ipRangeCheck(cacti_ip_in_cidr($address, $range), false, 'invalid primitive ' . $index);
 }
 
+// A sweep can encounter more distinct network entries than fit in the parser cache.
+for ($subnet = 0; $subnet <= 1024; $subnet++) {
+	$prefix  = '10.' . intdiv($subnet, 256) . '.' . ($subnet % 256);
+	$ipRangeCheck(cacti_ip_in_cidr($prefix . '.1', $prefix . '.0/24'), true, 'large sweep ' . $subnet);
+}
+$ipRangeCheck(cacti_ip_in_cidr('10.0.0.1', '10.0.0.0/24'), true, 'first subnet after cache rollover');
+
 // A list may carry non-string values from loosely typed configuration; they
 // are skipped without hiding a later valid block.
 $ipRangeCheck(cacti_ip_in_cidr('192.0.2.1', [null, 7, '192.0.2.0/24']), true, 'non-string entries');
