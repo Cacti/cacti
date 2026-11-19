@@ -273,6 +273,20 @@ function null_out_substitutions($string) {
 }
 
 /**
+ * Removes the device credential variables from text that people see, such as
+ * graph and data source titles and graph legends.  Data input methods still
+ * receive these values through substitute_host_data(). Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param string $text The text before variable substitution.
+ *
+ * @return string The text without the credential variables.
+ */
+function strip_credential_variables($text) {
+	return preg_replace('/\\|host_snmp_(?:community|username|password|priv_passphrase|context|engine_id)\\|/i', '', (string) $text);
+}
+
+/**
  * Takes a string and substitutes all data query variables contained in it or cleans them out if
  * no data query is in use. Used as part of Cacti's lib functionality.
  *
@@ -284,6 +298,8 @@ function null_out_substitutions($string) {
  * @return string The original string with all of the variable substitutions made.
  */
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
+	$title = strip_credential_variables($title);
+
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
 			$title = substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));

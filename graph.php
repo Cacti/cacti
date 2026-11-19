@@ -625,7 +625,8 @@ case 'properties':
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
 	}
 
-	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+	/* RRDtool's error text repeats graph item text, so it is returned and escaped, not printed */
+	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_RETURN_STDERR;
 	$graph_data_array['print_source'] = 1;
 
 	print "<table class='center' width='100%' class='cactiTable'<tr><td>\n";
@@ -639,7 +640,7 @@ case 'properties':
 	unset($graph_data_array['print_source']);
 	print "<span class='textInfo'>" . __('RRDtool Says:') . "</span><br>";
 	if ($config['poller_id'] == 1) {
-		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+		print html_escape((string) @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']));
 	} else {
 		print __esc('Not Checked');
 	}

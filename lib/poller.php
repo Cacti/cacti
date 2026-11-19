@@ -157,6 +157,7 @@ function poller_redact_snmp_secrets($string, $item) {
 		foreach ($bases as $base) {
 			$secrets[] = $base;
 			$secrets[] = str_replace("'", "'\\''", $base);
+			$secrets[] = str_replace("'", "'\"'\"'", $base);
 			$secrets[] = str_replace(CACTI_ESCAPE_CHARACTER, '\\' . CACTI_ESCAPE_CHARACTER, $base);
 		}
 	}

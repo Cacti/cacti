@@ -3607,6 +3607,8 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 		return $txt_graph_item;
 	}
 
+	$txt_graph_item = strip_credential_variables($txt_graph_item);
+
 	if (empty($graph['host_id'])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
