@@ -799,5 +799,13 @@ test('script data query SNMP fields read each device once per worker', function 
 
 	expect($GLOBALS['snmp_coverage_host_queries'])->toBe(2);
 
+	// After a worker visits enough devices to evict its first row, reuse must fetch its current fields.
+	for ($id = 1000; $id <= 2024; $id++) {
+		snmp_script_auth_fields($id, '2:161:500:1:10');
+	}
+	$GLOBALS['snmp_coverage_host_by_id'][8]['snmp_community'] = 'updated';
+	expect(snmp_script_auth_fields(8, '2:161:500:1:10')[5])->toBe('updated');
+	expect($GLOBALS['snmp_coverage_host_queries'])->toBe(1028);
+
 	unset($GLOBALS['snmp_coverage_host_by_id'], $GLOBALS['snmp_coverage_host_queries']);
 });
