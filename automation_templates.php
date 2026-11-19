@@ -42,13 +42,11 @@ set_default_action();
 
 // Every action below that adds, removes, reorders or toggles a rule changes
 // stored data, so it must arrive by POST with a CSRF token.
-$mutating_actions = [
+if (in_array(grv('action'), [
 	'ajax_dnd', 'graph_dnd', 'tree_dnd', 'exitonchange',
 	'item_add_agr', 'item_add_atr', 'item_add_ttr',
 	'item_remove_agr', 'item_remove_atr', 'item_remove_ttr',
-];
-
-if (in_array(grv('action'), $mutating_actions, true)) {
+], true)) {
 	csrf_require_post();
 }
 
