@@ -51,7 +51,10 @@ check_render($edit, 'P&amp;Q');
 ob_start();
 automation_snmp_item_remove_confirm();
 check_render(ob_get_clean(), 'Lab &amp; office');
-$source_id = db_fetch_cell('SELECT id FROM data_local ORDER BY id LIMIT 1');
+db_execute('INSERT INTO data_local (host_id) VALUES (0)');
+$source_id = db_fetch_insert_id();
+db_execute_prepared('INSERT INTO data_template_data (local_data_id, name_cache, data_source_path) VALUES (?, ?, ?)',
+	array($source_id, 'Display test', '<path_rra>/display_test.rrd'));
 $info = array('rrd_match' => 0, 'rrd_match_array' => array('ds' => array(), 'tune' => array('Lab & office')));
 db_execute_prepared('INSERT INTO data_debug (datasource, done, info, issue) VALUES (?, 1, ?, ?)',
 	array($source_id, serialize($info), 'Check options'));
