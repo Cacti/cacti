@@ -1927,8 +1927,6 @@ function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, m
 		return [__('Error %s is not readable', $file_name)];
 	}
 
-	$filter = cacti_strtolower($filter);
-
 	$fp = fopen($file_name, 'r');
 
 	if ($fp === false) {
@@ -2034,7 +2032,7 @@ function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, m
  *
  * @param int    $message_type
  * @param string $line
- * @param string $filter
+ * @param string $filter       Search pattern or literal text
  * @param bool   $matches
  *
  * @return mixed Should the entry be displayed
@@ -2150,24 +2148,36 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 
 	// match any lines that match the search string
 	if ($display === true && $filter != '') {
-		if ($matches) {
-			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
-				return $line;
-			}
+		$found = clog_search_matches($filter, $line, $matches);
 
-			if (stripos($line, $filter) !== false) {
-				return $line;
-			}
-		} elseif (validate_is_regex($filter) && !preg_match('/' . $filter . '/i', $line)) {
-			return $line;
-		} elseif (!stripos($line, $filter) !== false) {
-			return $line;
-		}
-
-		return false;
+		return $found === $matches ? $line : false;
 	}
 
 	return $display;
+}
+
+/**
+ * Match a Log Viewer regex or fall back to literal text.
+ */
+function clog_search_matches(string $filter, string $line, bool $include): bool {
+	static $last_filter = null;
+	static $pattern     = null;
+
+	if ($last_filter !== $filter) {
+		require_once __DIR__ . '/clog_search.php';
+		$pattern     = CactiLogSearchPattern::compile($filter);
+		$last_filter = $filter;
+	}
+
+	if ($pattern !== null) {
+		$matched = $pattern->matches($line);
+
+		if ($matched || !$include) {
+			return $matched;
+		}
+	}
+
+	return stripos($line, $filter) !== false;
 }
 
 /**
