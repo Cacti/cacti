@@ -734,7 +734,7 @@ function cdef_edit() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {
-				loadPageUsingPostUrl('cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
+				loadPageUsingPostUrl('cdef.php?action=ajax_dnd&id=<?php printf('%d', $cdef['id'] ?? 0);?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>
