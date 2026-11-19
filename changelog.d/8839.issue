@@ -1,1 +1,1 @@
-Preserve Log Viewer regex searches while preventing delimiter warnings and limiting backtracking.
+Use non-backtracking Log Viewer regex search: supports grouping, alternatives, character classes, anchors, and basic quantifiers; unsupported PCRE constructs are treated as literal text.

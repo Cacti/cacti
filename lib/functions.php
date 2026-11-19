@@ -2157,34 +2157,24 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 }
 
 /**
- * Match a Log Viewer regex, using quoted text when a pattern cannot be run.
+ * Match a Log Viewer regex or fall back to literal text.
  */
 function clog_search_matches(string $filter, string $line, bool $include): bool {
-	if (strlen($filter) <= 50 && !str_contains($filter, ';')) {
-		foreach (["'", '~', '#', '%', '!', '@', '/'] as $delimiter) {
-			if (str_contains($filter, $delimiter)) {
-				continue;
-			}
+	static $last_filter = null;
+	static $pattern     = null;
 
-			// A compile warning must not be written to the log being scanned.
-			set_error_handler(static function (): bool {
-				return true;
-			}, E_WARNING);
+	if ($last_filter !== $filter) {
+		require_once __DIR__ . '/clog_search.php';
+		$pattern     = CactiLogSearchPattern::compile($filter);
+		$last_filter = $filter;
+	}
 
-			try {
-				$matched = preg_match($delimiter . '(*NO_JIT)(*LIMIT_MATCH=1000)(*LIMIT_DEPTH=100)' . $filter . $delimiter . 'i', $line);
-			} finally {
-				restore_error_handler();
-			}
+	if ($pattern !== null) {
+		$matched = $pattern->matches($line);
 
-			if ($matched === 1 || ($matched === 0 && !$include)) {
-				return $matched === 1;
-			}
-
-			break;
+		if ($matched || !$include) {
+			return $matched;
 		}
-
-		return preg_match('/' . preg_quote($filter, '/') . '/i', $line) === 1;
 	}
 
 	return stripos($line, $filter) !== false;

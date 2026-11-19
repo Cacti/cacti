@@ -30,9 +30,17 @@ test('log search preserves regex operators, uppercase escapes and delimiters', f
 		->and(determine_display_log_entry(-1, 'SYSTEM [missing', '[MISSING', true))->toBe('SYSTEM [missing');
 });
 
-test('log search falls back when a regex exceeds its match budget', function () {
+test('log search matches long repetitions and handles alternatives and negated classes', function () {
 	$line = str_repeat('ab', 1500);
 
-	expect(determine_display_log_entry(-1, $line, '^(?:ab)+?$', true))->toBeFalse()
-		->and(determine_display_log_entry(-1, $line, '^(?:ab)+?$', false))->toBe($line);
+	expect(determine_display_log_entry(-1, $line, '^(?:ab)+?$', true))->toBe($line)
+		->and(determine_display_log_entry(-1, "eth7\n", '^(eth|wan)[^a-z]$', true))->toBe("eth7\n")
+		->and(determine_display_log_entry(-1, 'etha', '^(eth|wan)[^a-z]$', true))->toBeFalse();
+});
+
+test('unsupported PCRE syntax is matched as literal text', function () {
+	$filter = '(?=ready)';
+
+	expect(determine_display_log_entry(-1, 'ready', $filter, true))->toBeFalse()
+		->and(determine_display_log_entry(-1, 'NOTE (?=READY)', $filter, true))->toBe('NOTE (?=READY)');
 });

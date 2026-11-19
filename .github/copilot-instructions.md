@@ -65,10 +65,9 @@
   - Use `top_header()`/`bottom_footer()` (no direct includes).
   - Add `&header=false` to URLs for AJAX requests.
 - **CHANGELOG**:
-  - Within each release section, keep `-issue` entries first and `-feature` entries after them.
-  - Append new issue entries at the end of the issue block and new feature entries at the end of the feature block.
-  - Keep numbered entries in their existing numeric order; every new entry must include an issue or pull-request number (`#1234`).
-  - Preserve the existing entry prefixes, release headings, and blank-line spacing.
+  - Add a fragment under `changelog.d/` named with the issue or originating PR and type, for example `1234.issue`. See [the fragment instructions](../changelog.d/README.md).
+  - The only folded prefixes are `-security`, `-issue`, and `-feature`, in that group order. Use `-issue#1234: Fix ...`, not `-fix#1234: ...`. Security entries can cite a `#GHSA-...` identifier.
+  - The fold puts numbered security and issue entries newest first (descending), and numbered features oldest first (ascending). Preserve release headings and blank-line spacing.
 - **URLs and redirects**:
   - Use `cacti_url($path, $params)` for RFC 3986 query-string construction, including URLs with fragments.
   - Use `cacti_redirect($path, $params)` for local redirects; it rejects absolute and protocol-relative destinations (checking both raw and percent-decoded forms) and terminates the request.
