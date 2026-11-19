@@ -305,6 +305,19 @@ foreach ($data_sources as $info) {
 		update_database($info);
 	}
 
+	/* The old path comes from the data source's stored path.  Only move an
+	 * RRD file that is inside the RRA directory; anything else is left where
+	 * it is, so a stored path cannot pull another file into the RRA tree. */
+	if (file_exists($old_rrd_path) && (!data_source_path_within_rra($old_rrd_path) || strtolower(substr($old_rrd_path, -4)) !== '.rrd')) {
+		$warn_count++;
+
+		print "WARNING: RRD Path '$old_rrd_path' is not an RRD file inside the RRA directory, Skipping" . PHP_EOL;
+
+		db_fetch_cell("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+
+		continue;
+	}
+
 	/**
 	 * check that the old file exists, and if so, move it to
 	 * it's new location if different than the old

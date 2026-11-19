@@ -1,0 +1,1 @@
+Quote RRDtool arguments in a form RRDtool's command parser reads as one argument, escape RRDtool output in the graph debug views, keep device credentials out of titles, and restrict the RRA restructure tool to RRD files inside the RRA directory
