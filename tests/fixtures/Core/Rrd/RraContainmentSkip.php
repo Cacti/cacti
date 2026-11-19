@@ -12,9 +12,9 @@ if (PHP_SAPI !== 'cli') {
 $root                              = dirname(__DIR__, 4);
 $GLOBALS['cacti_fixture_contract'] = [
 	'name'      => 'rra-containment-skip', 'complete' => false, 'assertions' => 0,
-	'producers' => ['tests/fixtures/Core/Rrd/RraContainmentSkip.php', 'tests/Helpers/RequestCoverage.php'],
+	'producers' => ['tests/fixtures/Core/Rrd/RraContainmentSkip.php', 'tests/Helpers/FixtureCoverage.php', 'tests/Helpers/RequestCoverage.php'],
 ];
-require $root . '/tests/Helpers/RequestCoverage.php';
+require $root . '/tests/Helpers/FixtureCoverage.php';
 
 /*
  * Collaborators the migration loop's RRA-containment guard calls.  Confining
@@ -49,7 +49,7 @@ file_put_contents(
 );
 $GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($file);
 
-$old_rrd_path  = tempnam(sys_get_temp_dir(), 'cacti-not-an-rrd-') . '.txt';
+$old_rrd_path = tempnam(sys_get_temp_dir(), 'cacti-not-an-rrd-');
 file_put_contents($old_rrd_path, 'not an rrd');
 $local_data_id = 42;
 $warn_count    = 0;

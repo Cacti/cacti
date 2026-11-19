@@ -46,6 +46,8 @@ fi
 for fixture in PackageArchive PackageDiffBoundary PackageRepositoryWorkspace PackageImportFileStatus; do
 	run_probe "$fixture.php" "$fixture"
 done
+run_probe Rrd/RraContainmentSkip.php rra-containment-skip
+run_probe Rrd/GraphDebugOutput.php graph-debug-output
 if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
