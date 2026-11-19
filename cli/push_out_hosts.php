@@ -38,8 +38,6 @@ array_shift($parms);
 
 $php_binary = read_config_option('path_php_binary');
 
-$parameters = implode(' ', $parms);
-
 cacti_log('WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.', false, 'PUSHOUT');
 
 if (in_array('-v', $parms, true) || in_array('-V', $parms, true) || in_array('--version', $parms, true)) {
@@ -47,5 +45,26 @@ if (in_array('-v', $parms, true) || in_array('-V', $parms, true) || in_array('--
 	print 'Cacti Repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 } else {
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
-	passthru($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
+
+	if (!is_string($php_binary) || trim($php_binary) === '') {
+		cacti_log('ERROR: Rejected an empty PHP binary.', false, 'SYSTEM');
+
+		exit(1);
+	}
+
+	if (str_starts_with(trim($php_binary), '-')) {
+		cacti_log('ERROR: Rejected PHP binary starting with dash: ' . $php_binary, false, 'SYSTEM');
+
+		exit(1);
+	}
+
+	$args = array_merge([CACTI_PATH_CLI . '/rebuild_poller_cache.php'], $parms);
+
+	$command = cacti_escapeshellcmd($php_binary) . ' ' . implode(' ', array_map('cacti_escapeshellarg', $args));
+
+	$exit_code = 0;
+
+	passthru($command, $exit_code);
+
+	exit($exit_code);
 }
