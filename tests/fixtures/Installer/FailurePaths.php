@@ -51,6 +51,15 @@ function tempnam($dir, $prefix) {
 
 	return \tempnam($GLOBALS['fault'] === 'fallback' ? sys_get_temp_dir() : $dir, $prefix);
 }
+function is_writable($path) {
+	return !($GLOBALS['fault'] === 'directory' && is_dir($path)) && \is_writable($path);
+}
+function flock($stream, $operation, &$would_block = null) {
+	return $GLOBALS['fault'] !== 'lock' && \flock($stream, $operation, $would_block);
+}
+function rewind($stream) {
+	return $GLOBALS['fault'] !== 'rewind' && \rewind($stream);
+}
 function fopen($path, $mode) {
 	return $GLOBALS['fault'] === 'open' ? false : \fopen($path, $mode);
 }
@@ -142,14 +151,14 @@ $original = "<?php\n\$poller_id = 1;\n\$other = 'preserved';\n";
 try {
 	check(!install_write_poller_config($file, 7), 'Missing config was accepted');
 
-	foreach (['', 'short', 'read', 'stat', 'temp', 'fallback', 'open', 'write', 'zero', 'flush', 'sync', 'owner', 'group', 'mode', 'rename'] as $fault) {
+	foreach (['', 'short', 'read', 'stat', 'directory', 'rewind', 'temp', 'fallback', 'open', 'write', 'zero', 'flush', 'sync', 'owner', 'group', 'mode', 'rename'] as $fault) {
 		\file_put_contents($file, $original);
 		\chmod($file, 0640);
 		$GLOBALS['fault'] = $fault;
 		$inode            = fileinode($file);
 		$success          = install_write_poller_config($file, 7);
 		clearstatcache();
-		$in_place = in_array($fault, ['temp', 'fallback', 'owner', 'group'], true);
+		$in_place = in_array($fault, ['directory', 'temp', 'fallback', 'owner', 'group'], true);
 		$expected = $in_place || in_array($fault, ['', 'short'], true);
 
 		if ($in_place) {
@@ -159,6 +168,14 @@ try {
 		check(\file_get_contents($file) === ($expected ? str_replace('$poller_id = 1;', '$poller_id = 7;', $original) : $original), 'Config changed incorrectly: ' . $fault);
 		check((fileperms($file) & 0777) === 0640, 'Permissions changed: ' . $fault);
 		check(glob(dirname($file) . '/.cacti-config-*') === [], 'Temporary file leaked: ' . $fault);
+	}
+
+	// A failed in-place update must leave the previous configuration readable.
+	foreach (['open', 'lock', 'flush'] as $fault) {
+		\file_put_contents($file, $original);
+		$GLOBALS['fault'] = $fault;
+		check(!install_rewrite_poller_config($file, 'updated', $original), 'In-place update succeeded: ' . $fault);
+		check(\file_get_contents($file) === $original, 'In-place failure lost the original: ' . $fault);
 	}
 	$GLOBALS['fault'] = '';
 	\file_put_contents($file, "<?php\n\$poller_id = 1;\n\$poller_id = 2;\n");
