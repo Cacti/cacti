@@ -1207,9 +1207,7 @@ function poller_start_http_handoff(int $poller_id, string $extra_parms) : bool {
 
 	if ($version === '' || cacti_version_compare($version, SPINE_HTTP_HANDOFF_MIN_VERSION, '<')) {
 		cacti_log(sprintf('WARNING: Poller[%d] HTTP Data Sources need spine >= %s or cmd.php, and spine %s does not collect them.  Their Data Sources record U.',
-			$poller_id,
-			SPINE_HTTP_HANDOFF_MIN_VERSION,
-			$version === '' ? 'of unknown version' : $version), true, 'POLLER');
+			$poller_id, SPINE_HTTP_HANDOFF_MIN_VERSION, $version === '' ? 'of unknown version' : $version), true, 'POLLER');
 
 		return false;
 	}
@@ -1220,9 +1218,9 @@ function poller_start_http_handoff(int $poller_id, string $extra_parms) : bool {
 		$cmd_php = cacti_strtolower($cmd_php);
 	}
 
-	exec_background(cacti_escapeshellcmd((string) read_config_option('path_php_binary')),
-		'-q ' . cacti_escapeshellarg($cmd_php) . ' --poller=' . $poller_id . ' --http-only' . ($poller_id > 1 ? ' --mode=' . CACTI_CONNECTION : ''),
-		$extra_parms);
+	$php_binary = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
+	$arguments  = '-q ' . cacti_escapeshellarg($cmd_php) . ' --poller=' . $poller_id . ' --http-only' . ($poller_id > 1 ? ' --mode=' . CACTI_CONNECTION : '');
+	exec_background($php_binary, $arguments, $extra_parms);
 
 	return true;
 }

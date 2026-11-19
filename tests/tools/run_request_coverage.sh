@@ -67,7 +67,7 @@ run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_source
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 run_php_probe tests/fixtures/Core/HttpDnsCoverage.php '^(lib/functions\.php|tests/fixtures/Core/HttpDnsCoverage\.php)'
-run_php_probe tests/fixtures/Core/HttpPollerActionCoverage.php '^(cmd\.php|remote_agent\.php|data_templates\.php|lib/(CactiHttpPoll(er|Item)|utility)\.php|install/upgrades/1_3_0\.php|tests/fixtures/Core/HttpPollerActionCoverage\.php)'
+run_php_probe tests/fixtures/Core/HttpPollerActionCoverage.php '^(poller\.php|cmd\.php|remote_agent\.php|data_templates\.php|lib/(CactiHttpPoll(er|Item)|utility)\.php|install/upgrades/1_3_0\.php|tests/fixtures/Core/HttpPollerActionCoverage\.php)'
 
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
 run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files"

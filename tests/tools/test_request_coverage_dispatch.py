@@ -51,7 +51,7 @@ class RequestDispatchTest(unittest.TestCase):
                 self.dispatch(path, 'ScriptServerLogMaskingCoverage.php')
 
     def test_http_poller_change_runs_the_http_action_probe(self):
-        for path in ['cmd.php', 'remote_agent.php', 'lib/CactiHttpPoller.php',
+        for path in ['cmd.php', 'poller.php', 'remote_agent.php', 'lib/CactiHttpPoller.php',
                      'tests/fixtures/Core/HttpPollerActionCoverage.php']:
             with self.subTest(path=path):
                 self.dispatch(path, ['ScriptServerLogMaskingCoverage.php', 'HttpPollerActionCoverage.php'] if path == 'cmd.php' else 'HttpPollerActionCoverage.php')

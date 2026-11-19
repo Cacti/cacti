@@ -24,6 +24,12 @@
  * namespaces below, where one curl or settle function is replaced.
  */
 
+namespace CactiHttpTransportFixture\Clock {
+	function microtime(bool $as_float) : float {
+		return 20.0;
+	}
+}
+
 namespace CactiHttpTransportFixture\Stalled {
 	/**
 	 * A multi handle that reports nothing running and never finished a transfer.
@@ -200,6 +206,13 @@ namespace CactiHttpTransportFixture {
 	$late->dnsIps   = ['127.0.0.1'];
 
 	check(cacti_http_start(curl_multi_init(), $late) === 'Timed out', 'hop started after its deadline');
+
+	// A positive budget under one millisecond is too short for a curl timeout.
+	class_alias(\CurlMultiHandle::class, __NAMESPACE__ . '\Clock\CurlMultiHandle');
+	class_alias(stdClass::class, __NAMESPACE__ . '\Clock\stdClass');
+	cacti_fixture_source_function($root . '/lib/functions.php', 'cacti_http_start', __NAMESPACE__ . '\Clock');
+	$late->deadline = 20.0005;
+	check(Clock\cacti_http_start(curl_multi_init(), $late) === 'Timed out', 'sub-millisecond budget started a connection');
 
 	// multi keeps request keys and isolates failures; HttpPollerTest asserts concurrency
 	$results = cacti_http_multi([

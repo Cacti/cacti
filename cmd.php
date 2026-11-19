@@ -1126,7 +1126,7 @@ function http_only_poll(int $poller_id, int $poller_interval, int $active_profil
 		array_push($params, $poller_interval, $slot, $poller_interval);
 	}
 
-	$items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " pi.*
+	$sql = 'SELECT ' . SQL_NO_CACHE . " pi.*
 		FROM poller_item AS pi
 		INNER JOIN host AS h
 		ON h.id = pi.host_id
@@ -1138,8 +1138,9 @@ function http_only_poll(int $poller_id, int $poller_interval, int $active_profil
 		AND h.status != ?
 		$sql_where
 		$sql_due
-		ORDER BY pi.host_id",
-		$params);
+		ORDER BY pi.host_id";
+
+	$items = db_fetch_assoc_prepared($sql, $params);
 
 	if (!cacti_sizeof($items)) {
 		return 0;
