@@ -29,6 +29,13 @@ if (!defined('CACTI_PATH_BASE')) {
 }
 
 require_once CACTI_PATH_BASE . '/lib/package.php';
+require_once CACTI_PATH_BASE . '/lib/import.php';
+
+if (!function_exists('cacti_log')) {
+	function cacti_log($message, $output = true, $environ = 'IMPORT', $level = 0) {
+		return false;
+	}
+}
 
 $packageImportSource = (string) file_get_contents(CACTI_PATH_BASE . '/package_import.php');
 $importSource        = (string) file_get_contents(CACTI_PATH_BASE . '/lib/import.php');
@@ -117,11 +124,32 @@ test('package_diff_file confines the compared file to scripts/ and resource/', f
 		->toContain('$within_package_roots');
 });
 
-test('import_package refuses to write a package file through a symbolic link', function () use ($importSource) {
+test('import_package routes the package-file write through the symlink guard', function () use ($importSource) {
 	$start = strpos($importSource, 'function import_package(');
 	expect($start)->not->toBeFalse();
 
 	$body = substr($importSource, $start, strpos($importSource, "\nfunction ", $start + 1) - $start);
 
-	expect($body)->toContain('if (is_link($filename)) {');
+	expect($body)->toContain('if (import_write_blocked_by_symlink($filename, $name)) {');
+});
+
+test('import_write_blocked_by_symlink refuses a symlinked destination and allows a regular path', function () {
+	$dir = sys_get_temp_dir() . '/cacti-symlink-' . bin2hex(random_bytes(6));
+	expect(mkdir($dir, 0700, true))->toBeTrue();
+
+	try {
+		$regular = $dir . '/regular.xml';
+		file_put_contents($regular, 'x');
+
+		$link = $dir . '/link.xml';
+		symlink($regular, $link);
+
+		expect(import_write_blocked_by_symlink($link, 'pkg/link.xml'))->toBeTrue()
+			->and(import_write_blocked_by_symlink($regular, 'pkg/regular.xml'))->toBeFalse()
+			->and(import_write_blocked_by_symlink($dir . '/missing.xml', 'pkg/missing.xml'))->toBeFalse();
+	} finally {
+		@unlink($dir . '/link.xml');
+		@unlink($dir . '/regular.xml');
+		@rmdir($dir);
+	}
 });

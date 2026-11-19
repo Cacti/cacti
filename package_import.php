@@ -213,16 +213,6 @@ function form_actions() : void {
 					if ($data !== false) {
 						$tmp_dir = package_private_tmpdir();
 
-						if (!is_dir($tmp_dir)) {
-							if (!mkdir($tmp_dir, 0700, true)) {
-								raise_message('tmpdir_fail', __esc('Unable to create package temporary directory %s.', $tmp_dir), MESSAGE_LEVEL_ERROR);
-
-								header('Location: package_import.php?package_location=' . $package_location);
-
-								exit;
-							}
-						}
-
 						$xmlfile = $tmp_dir . '/' . basename($filename);
 
 						file_put_contents($xmlfile, $data);

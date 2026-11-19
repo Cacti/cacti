@@ -756,6 +756,27 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
  *
  * @return mixed The results of the import package
  */
+/**
+ * import_write_blocked_by_symlink - decide whether a package file write must be
+ *   refused because the on-disk destination is a symbolic link.  Writing through
+ *   a symlink would let a crafted package redirect the write outside the intended
+ *   location, so the refusal is logged and the caller skips the file.
+ *
+ * @param string $filename the resolved on-disk destination to be written
+ * @param string $name     the package-relative name, used only for logging
+ *
+ * @return bool true when the destination is a symlink and must not be written
+ */
+function import_write_blocked_by_symlink(string $filename, string $name) : bool {
+	if (is_link($filename)) {
+		cacti_log('FATAL: Refusing to write package file through a symbolic link: ' . $name, true, 'IMPORT');
+
+		return true;
+	}
+
+	return false;
+}
+
 function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orphans = false,
 	bool $replace_svalues = false, bool $preview = false, bool $info_only = false, bool $limitex = true,
 	array $import_hashes = [], array $import_files = []) : mixed {
@@ -878,8 +899,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 			}
 
 			if (!$preview) {
-				if (is_link($filename)) {
-					cacti_log('FATAL: Refusing to write package file through a symbolic link: ' . $name, true, 'IMPORT');
+				if (import_write_blocked_by_symlink($filename, $name)) {
 					$filestatus[$name] = __('rejected');
 
 					continue;
