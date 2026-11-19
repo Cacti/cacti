@@ -64,6 +64,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_import_change_runs_the_manifest_fixture(self):
         self.dispatch('lib/import.php', 'PackageManifestMatrix.php')
 
+    def test_package_import_change_runs_the_diff_boundary_probe(self):
+        self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -96,7 +99,7 @@ class RequestDispatchTest(unittest.TestCase):
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
-                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
+                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
