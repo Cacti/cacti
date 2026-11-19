@@ -627,12 +627,11 @@ function package_template(string &$template, array &$info, array &$files, string
 	ini_set('memory_limit', '-1');
 	ini_set('zlib.output_compression', '0');
 
-	// establish a temp directory
-	if (CACTI_SERVER_OS == 'unix') {
-		$tmpdir = '/tmp/';
-	} else {
-		$tmpdir = getenv('TEMP');
-	}
+	// Establish a private temp directory (mode 0700, unpredictable name). The
+	// archive name below is derived from caller-supplied metadata, so a shared,
+	// predictably named temp location would let a local attacker pre-plant a
+	// symlink at the archive path and redirect the write (CWE-377/CWE-59).
+	$tmpdir = package_private_tmpdir();
 
 	// write the template to disk
 	$archive_name = basename((string) clean_up_name($info['name']));
