@@ -22,7 +22,7 @@ function get_md5_hash($file) {
 	return 'h';
 }
 function get_selected_theme() {
-	throw new RuntimeException('Every case names its theme');
+	return 'child';
 }
 function debounce_run_notification($key) {
 	return false;
@@ -30,7 +30,7 @@ function debounce_run_notification($key) {
 
 $source = dirname(__DIR__, 3) . '/lib/functions.php';
 
-foreach (['get_include_relpath', 'get_theme_candidate_paths', 'get_theme_parent', 'get_theme_paths'] as $function) {
+foreach (['get_include_relpath', 'get_theme_candidate_paths', 'get_theme_parent', 'get_theme_chain', 'get_theme_paths'] as $function) {
 	\cacti_fixture_source_function($source, $function, __NAMESPACE__);
 }
 
@@ -96,6 +96,14 @@ $count++;
 foreach (['child' => 'base', 'grand' => 'child', 'base' => '', 'trav' => '', 'empty' => '', 'self' => '', 'ghost' => '', 'upper' => '', 'nocss' => '', 'Bad/Name' => ''] as $theme => $parent) {
 	check(get_theme_parent($theme) === $parent, 'Unexpected parent for ' . $theme);
 	check(get_theme_parent($theme) === $parent, 'Cached parent changed for ' . $theme);
+	$count++;
+}
+
+check(get_theme_chain() === ['child', 'base'], 'Default lookup skipped the selected theme');
+$count++;
+
+foreach (['child' => ['child', 'base'], 'base' => ['base'], 'Bad/Name' => []] as $theme => $expected) {
+	check(get_theme_chain($theme) === $expected, 'Unexpected lookup chain for ' . $theme);
 	$count++;
 }
 
