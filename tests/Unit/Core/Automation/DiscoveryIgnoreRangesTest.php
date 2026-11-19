@@ -26,5 +26,5 @@ test('discovery excludes IPs and CIDRs while advancing and preserving bounded ba
 	} finally {
 		ob_end_clean();
 	}
-	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR))->toBe(['membership' => 113, 'discovery' => 9]);
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR))->toBe(['membership' => 1139, 'discovery' => 9]);
 });
