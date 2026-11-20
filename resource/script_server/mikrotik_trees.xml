@@ -1,0 +1,43 @@
+<query>
+	<name>Get Mikrotik Queue Trees</name>
+	<description>Queries a list of Queue Trees that are on a Mikrotik Router</description>
+	<script_path>|path_cacti|/scripts/ss_mikrotik_qtrees.php</script_path>
+	<script_function>ss_mikrotik_qtrees</script_function>
+	<script_server>php</script_server>
+	<arg_prepend>|host_id|</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<output_delimeter>!</output_delimeter>
+	<index_order>qtName</index_order>
+	<index_order_type>alphabetic</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	
+	<fields>
+		<qtName>
+			<name>Tree Name</name>
+			<direction>input</direction>
+			<query_name>qtName</query_name>
+		</qtName>
+		<qtFlow>
+			<name>Flow Name</name>
+			<direction>input</direction>
+			<query_name>qtFlow</query_name>
+		</qtFlow>
+		<qtParent>
+			<name>Parent Index</name>
+			<direction>input</direction>
+			<query_name>qtParent</query_name>
+		</qtParent>
+		<qtBytes>
+			<name>Bytes</name>
+			<direction>output</direction>
+			<query_name>qtBytes</query_name>
+		</qtBytes>
+		<qtPackets>
+			<name>Packets</name>
+			<direction>output</direction>
+			<query_name>qtPackets</query_name>
+		</qtPackets>
+	</fields>
+</query>

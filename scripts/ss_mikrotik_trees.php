@@ -31,15 +31,23 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_trees', $_SERVER['argv']);
 }
 
-function ss_mikrotik_trees(int $host_id = 0) : string {
+/**
+ * Return the number of queue trees on a MikroTik device.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string The queue tree count, U when the plugin is not installed
+ */
+function ss_mikrotik_trees($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
+	if (!db_table_exists('plugin_mikrotik_trees', false)) {
+		return 'U';
+	}
+
 	$trees = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_mikrotik_trees
 		WHERE host_id = ?',
-		[$host_id]);
+		[(int) $host_id]);
 
-	if ($trees == '') {
-		$trees = 'U';
-	}
-
-	return $trees;
+	return is_numeric($trees) ? (string) $trees : 'U';
 }

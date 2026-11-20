@@ -31,11 +31,24 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_uptime', $_SERVER['argv']);
 }
 
-function ss_mikrotik_uptime(int $host_id = 0) : string {
-	$cpu = db_fetch_cell_prepared('SELECT uptime/86400/100
+/**
+ * Return the uptime of a MikroTik device in days.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string The uptime in days, U when there is no data
+ */
+function ss_mikrotik_uptime($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
+	if (!db_table_exists('plugin_mikrotik_system', false)) {
+		return 'U';
+	}
+
+	// uptime is stored in timeticks (hundredths of a second)
+	$uptime = db_fetch_cell_prepared('SELECT uptime/86400/100
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',
-		[$host_id]);
+		[(int) $host_id]);
 
-	return $cpu;
+	return is_numeric($uptime) ? (string) $uptime : 'U';
 }

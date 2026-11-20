@@ -31,27 +31,30 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_disk', $_SERVER['argv']);
 }
 
-function ss_mikrotik_disk(int $host_id = 0) : string {
+/**
+ * Return the used and total disk space of a MikroTik device.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string 'used:<bytes> size:<bytes>', U when there is no data
+ */
+function ss_mikrotik_disk($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
+	if (!db_table_exists('plugin_mikrotik_system', false)) {
+		return 'used:U size:U';
+	}
+
 	$disk = db_fetch_row_prepared('SELECT diskSize, diskUsed*diskSize/100 AS diskUsed
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',
-		[$host_id]);
+		[(int) $host_id]);
 
-	if (cacti_sizeof($disk)) {
-		if (isset($disk['diskSize']) && $disk['diskSize'] == '') {
-			$size = 'U';
-		} else {
-			$size = $disk['diskSize'];
-		}
-
-		if (isset($disk['diskUsed']) && $disk['diskUsed'] == '') {
-			$used = 'U';
-		} else {
-			$used = $disk['diskUsed'];
-		}
-
-		return "used:$used size:$size";
-	} else {
+	// a zero size means the storage has not been collected yet
+	if (!isset($disk['diskSize']) || !is_numeric($disk['diskSize']) || $disk['diskSize'] <= 0) {
 		return 'used:U size:U';
 	}
+
+	$used = (isset($disk['diskUsed']) && is_numeric($disk['diskUsed'])) ? $disk['diskUsed'] : 'U';
+
+	return 'used:' . $used . ' size:' . $disk['diskSize'];
 }
