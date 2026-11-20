@@ -837,7 +837,7 @@ function form_actions() : void {
 						<p>' . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.') . "</p>
 						<div class='itemlist'><ul>$ilist</ul></div>";
 
-					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+					raise_message_html('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
 					header('Location: aggregate_graphs.php');
 
 					exit;
@@ -848,7 +848,7 @@ function form_actions() : void {
 						<p>' . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.') . "</p>
 						<div class='itemlist'><ul>$ilist</ul></div>";
 
-					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+					raise_message_html('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
 					header('Location: aggregate_graphs.php');
 
 					exit;
@@ -874,7 +874,7 @@ function form_actions() : void {
 							<p>' . __esc('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', $name) . "</p>
 							<div class='itemlist'><ul>$ilist</ul></div>";
 
-						raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+						raise_message_html('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
 						header('Location: aggregate_graphs.php');
 
 						exit;
@@ -892,7 +892,7 @@ function form_actions() : void {
 				} else {
 					$message = '<p>' . __('You currently have no reports defined.') . '</p>';
 
-					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+					raise_message_html('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
 					header('Location: aggregate_graphs.php');
 
 					exit;
