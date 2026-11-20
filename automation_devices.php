@@ -132,9 +132,9 @@ function form_actions() {
 					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['ip']);
 
 					if ($host_id) {
-						raise_message('automation_msg_' . $i, __esc('Device %s Added to Cacti', $description), MESSAGE_LEVEL_INFO);
+						raise_message('automation_msg_' . $i, __('Device %s Added to Cacti', $description), MESSAGE_LEVEL_INFO);
 					} else {
-						raise_message('automation_msg_' . $i, __esc('Device %s Not Added to Cacti', $description), MESSAGE_LEVEL_ERROR);
+						raise_message('automation_msg_' . $i, __('Device %s Not Added to Cacti', $description), MESSAGE_LEVEL_ERROR);
 					}
 
 					$i++;
@@ -694,10 +694,10 @@ function export_discovery_results() {
 			$uptime = '';
 		}
 		foreach($host as $h=>$r) {
-			$host['$h'] = str_replace(',','',$r);
+			$host[$h] = str_replace(',', '', (string) $r);
 		}
-		print ($host['hostname'] == '' ? __('Not Detected'):$host['hostname']) . ',';
-		print $host['ip'] . ',';
+		print ($host['hostname'] == '' ? __('Not Detected'):cacti_csv_safe($host['hostname'])) . ',';
+		print cacti_csv_safe($host['ip']) . ',';
 		print export_data($host['sysName']) . ',';
 		print export_data($host['sysLocation']) . ',';
 		print export_data($host['sysContact']) . ',';
