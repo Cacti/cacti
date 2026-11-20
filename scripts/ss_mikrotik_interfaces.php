@@ -32,6 +32,17 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_interfaces($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_interfaces', false)) {
+		if ($cmd == 'num_indexes') {
+			print '0';
+		} elseif ($cmd == 'get') {
+			return 'U';
+		}
+
+		return;
+	}
+
 	if ($cmd == 'index') {
 		$return_arr = ss_mikrotik_interfaces_getnames($host_id, $arg1);
 
@@ -68,7 +79,7 @@ function ss_mikrotik_interfaces_getvalue($host_id, $index, $column) {
 	$column = 'cur' . $column;
 
 	if (!db_is_safe_identifier($column)) {
-		return '0';
+		return 'U';
 	}
 
 	$value = db_fetch_cell_prepared("SELECT
@@ -78,8 +89,9 @@ function ss_mikrotik_interfaces_getvalue($host_id, $index, $column) {
 		AND host_id = ?",
 		array($index, $host_id));
 
+	/* no row for this interface: unknown, not zero */
 	if ($value === false) {
-		return '0';
+		return 'U';
 	} else {
 		return $value;
 	}
@@ -111,6 +123,8 @@ function ss_mikrotik_interfaces_getinfo($host_id, $info_requested) {
 	case 'intName':
 		$column = 'name';
 		break;
+	default:
+		return $return_arr;
 	}
 
 	$arr = db_fetch_assoc_prepared("SELECT `index`, $column AS qry_value

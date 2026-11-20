@@ -32,6 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_health($host_id = '', $column = 'no') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_system_health', false)) {
+		return 'U';
+	}
+
 	if (!db_is_safe_identifier($column)) {
 		return 'U';
 	}

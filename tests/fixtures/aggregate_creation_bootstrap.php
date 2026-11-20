@@ -65,7 +65,7 @@ function set_config_option($name, $value, $remote = false) {
 	$GLOBALS['review_options'][$name] = $value;
 }
 require "$root/include/global_constants.php";
-load_actual_functions("$root/lib/functions.php", ['cacti_sizeof', 'cacti_count', 'array_rekey', 'cacti_object_hash', 'clean_up_lines', 'sanitize_sql_column', 'form_input_validate', 'is_error_message', 'raise_message', 'get_message_level', 'test_data_sources', 'get_graph_title', 'get_data_source_title', 'cacti_version_compare', 'version_to_decimal', 'get_rrdtool_version', 'get_hash_cdef', 'generate_hash', 'get_uptime']);
+load_actual_functions("$root/lib/functions.php", ['cacti_sizeof', 'cacti_count', 'array_rekey', 'cacti_object_hash', 'clean_up_lines', 'sanitize_sql_column', 'form_input_validate', 'is_error_message', 'raise_message', 'raise_message_html', 'get_message_level', 'test_data_sources', 'get_graph_title', 'get_data_source_title', 'cacti_version_compare', 'version_to_decimal', 'get_rrdtool_version', 'get_hash_cdef', 'generate_hash', 'get_uptime']);
 load_actual_functions("$root/lib/auth.php", ['get_auth_realms']);
 load_actual_functions("$root/lib/html_validate.php", ['input_validate_input_number']);
 

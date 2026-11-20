@@ -32,6 +32,17 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_wireless_reg($host_id, $cmd, $object = '', $index = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_wireless_registrations', false)) {
+		if ($cmd == 'num_indexes') {
+			return '0';
+		} elseif ($cmd == 'get') {
+			return 'U';
+		}
+
+		return;
+	}
+
 	if ($cmd == 'index') {
 		$return_arr = db_fetch_assoc_prepared('SELECT `index` AS macAddress
 			FROM plugin_mikrotik_wireless_registrations

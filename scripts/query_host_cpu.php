@@ -194,7 +194,8 @@ function reindex($arr) {
 	$return_arr = array();
 
 	for ($i=0;($i<cacti_sizeof($arr));$i++) {
-		$return_arr[$i] = $arr[$i]['value'];
+		// A device value must stay within one query output record.
+		$return_arr[$i] = str_replace(array("\r", "\n"), '', (string) $arr[$i]['value']);
 	}
 
 	return $return_arr;

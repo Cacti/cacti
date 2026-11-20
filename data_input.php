@@ -83,7 +83,7 @@ switch (get_request_var('action')) {
 
 		$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
 
-		raise_message('whitelist_updated', html_escape($output), MESSAGE_LEVEL_INFO);
+		raise_message('whitelist_updated', $output, MESSAGE_LEVEL_INFO);
 
 		/* fall through */
 	case 'edit':
@@ -180,7 +180,7 @@ function form_save() {
 
 		if (!is_error_message() && $save['input_output'] == 'in' && $save['type_code'] == '' && defined('VALID_HOST_FIELDS') && preg_match('/^(?:' . VALID_HOST_FIELDS . ')$/i', $save['data_name']) === 1) {
 			$_SESSION[SESS_ERROR_FIELDS]['type_code'] = 'type_code';
-			raise_message('validation_error', __esc('Input field <%s> requires Special Type Code "%s".', $save['data_name'], $save['data_name']), MESSAGE_LEVEL_ERROR);
+			raise_message('validation_error', __('Input field <%s> requires Special Type Code "%s".', $save['data_name'], $save['data_name']), MESSAGE_LEVEL_ERROR);
 		}
 
 		if (!is_error_message()) {
