@@ -20337,6 +20337,10 @@ msgstr "कंसोल मेनू"
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #~ msgid "Click to view just this Graph in Realtime"
 #~ msgstr "रियलटाइम में बस इस ग्राफ को देखने के लिए क्लिक करें"
 
