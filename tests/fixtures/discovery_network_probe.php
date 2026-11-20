@@ -19,8 +19,8 @@ function cacti_sizeof(mixed $value): int {
 	return is_array($value) ? count($value) : 0;
 }
 
-function __(string $message): string {
-	return $message;
+function __(string $message, mixed ...$args): string {
+	return $args === [] ? $message : sprintf($message, ...$args);
 }
 
 function __esc(string $message, mixed ...$args): string {

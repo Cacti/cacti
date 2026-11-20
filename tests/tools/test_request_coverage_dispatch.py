@@ -28,7 +28,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('automation_graph_rules.php', 'discovery')
 
     def test_discovery_library_change_runs_the_discovery_probe(self):
-        self.dispatch('lib/api_automation.php', 'discovery')
+        self.dispatch('lib/api_automation.php', ['MessageFormatting.php', 'discovery'])
 
     def test_discovery_fixture_change_runs_the_discovery_probe(self):
         self.dispatch('tests/fixtures/discovery_worker_ping_coverage.php', 'discovery')
