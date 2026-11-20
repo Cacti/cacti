@@ -89,6 +89,14 @@ function clog_validate_filename(string &$file, string &$filepath = '', string &$
 	$filename = '';
 	$filefull = '';
 
+	/* Reject Windows-special file name forms so a name the operating system
+	 * resolves back to the active log (a trailing dot or space, or an alternate
+	 * data stream or drive colon) cannot slip past the active log guard in
+	 * clog_purge_logfile(). Legitimate rotated logs end in a digit. */
+	if (str_contains($file, ':') || preg_match('/[. ]$/', $file)) {
+		return false;
+	}
+
 	if (!empty($errfile) && str_starts_with($file, $errbase)) {
 		$filepath = dirname($errfile);
 		$filename = $errbase;
@@ -154,10 +162,10 @@ function clog_purge_logfile(string $action = 'purge') : void {
 	}
 
 	if ($action == 'purge') {
-		$imessage = __('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($purgefile), get_username());
+		$imessage = __esc('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($purgefile), get_username());
 		$message  = sprintf('The Cacti Log File \'%s\', Removed by user \'%s\'', basename($purgefile), get_username());
 	} else {
-		$imessage = __('The Cacti Log File \'%s\' was Rotated by user \'%s\'', basename($purgefile), get_username());
+		$imessage = __esc('The Cacti Log File \'%s\' was Rotated by user \'%s\'', basename($purgefile), get_username());
 		$message  = sprintf('The Cacti Log File \'%s\', Rotated by user \'%s\'', basename($purgefile), get_username());
 	}
 

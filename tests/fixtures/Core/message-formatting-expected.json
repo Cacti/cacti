@@ -209,8 +209,7 @@
     ["repo_missing", 2, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable at the URL Location or the package.manifest file is missing."],
     ["repo_missing", 3, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable at the URL Location or the package.manifest file is missing."],
     ["repo_missing", 3, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable on GitHub or the &apos;package.manifest&apos; file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/."],
-    ["repo_missing", 3, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable on the Local Cacti Server or the package.manifest file is missing."],
-    ["tmpdir_fail", 3, "Unable to create package temporary directory /tmp/Test &amp; QA."]
+    ["repo_missing", 3, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable on the Local Cacti Server or the package.manifest file is missing."]
   ],
   "package_repos.php": [
     ["repo_exists", 1, "The Repo &apos;Lab &amp; QA&apos; is Reachable at the URL Location."],
