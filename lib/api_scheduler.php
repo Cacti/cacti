@@ -352,19 +352,19 @@ function api_scheduler_augment_save(array $save, array $post) : array {
 		if ($save['day_of_week'] == '') {
 			$save['enabled'] = '';
 
-			raise_message('sched_err',  __esc('ERROR: You must specify the day of the week.  Disabling Network %s!.', $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('sched_err',  __('ERROR: You must specify the day of the week.  Disabling Network %s!.', $save['name']), MESSAGE_LEVEL_ERROR);
 		}
 	} elseif ($save['sched_type'] == SCHEDULE_MONTHLY) {
 		if ($save['month'] == '' || $save['day_of_month'] == '') {
 			$save['enabled'] = '';
 
-			raise_message('sched_err',  __esc('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!', $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('sched_err',  __('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!', $save['name']), MESSAGE_LEVEL_ERROR);
 		}
 	} elseif ($save['sched_type'] == SCHEDULE_MONTHLY_ON_DAY) {
 		if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
 			$save['enabled'] = '';
 
-			raise_message('sched_err', __esc('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('sched_err', __('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $save['name']), MESSAGE_LEVEL_ERROR);
 		}
 	}
 
