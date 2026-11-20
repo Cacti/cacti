@@ -796,7 +796,7 @@ function color_export() {
 		print '"name","hex"' . "\n";
 
 		foreach($colors as $color) {
-			print '"' . $color['name'] . '","' . $color['hex'] . '"' . "\n";
+			print '"' . str_replace('"', '""', cacti_csv_safe($color['name'])) . '","' . str_replace('"', '""', cacti_csv_safe($color['hex'])) . '"' . "\n";
 		}
 	}
 }
