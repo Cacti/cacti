@@ -293,7 +293,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown graphDrillDownToggle'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown <?php print graph_drilldown_display_class();?>'>
 							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -347,6 +347,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	if ($columns == 0) {
 		$columns = read_user_setting('num_columns');
 	}
+
+	$columns = max(1, (int) $columns);
 
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
@@ -411,7 +413,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					}
 
 					print "<tr class='tableHeader'>
-							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . $graph['data_query_name'] . '</td>
+							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . html_escape($graph['data_query_name']) . '</td>
 						</tr>';
 					$i = 0;
 				}
@@ -431,7 +433,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown graphDrillDownToggle'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown <?php print graph_drilldown_display_class();?>'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -464,6 +466,11 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			print "<td><em>$no_graphs_message</em></td>";
 		}
 	}
+}
+
+/** Return the graph action layout selected by the current user. */
+function graph_drilldown_display_class() {
+	return read_user_setting('graph_actions_display') === 'icons' ? 'graphDrillDownAlways' : 'graphDrillDownToggle';
 }
 
 /**
@@ -2492,7 +2499,7 @@ function html_spikekill_js() {
 				}
 
 				spikeKillRequest = null;
-				if (!$.contains(document, anchor[0]) || !anchor.closest('.graphDrillDownToggle').hasClass('open')) {
+				if (!$.contains(document, anchor[0]) || !anchor.closest('.graphDrillDownAlways, .graphDrillDownToggle.open').length) {
 					spikeKillAnchor = null;
 					return;
 				}
@@ -2644,8 +2651,8 @@ function html_common_header($title, $selectedTheme = '') {
 		var filterSettingsSaved='<?php print __esc('Filter Settings Saved');?>';
 		var spikeKillResults='<?php print __esc('SpikeKill Results');?>';
 		var utilityView='<?php print __esc('Utility View');?>';
-		var realtimeClickOn='<?php print __esc('Click to view just this Graph in Realtime');?>';
-		var realtimeClickOff='<?php print __esc('Click again to take this Graph out of Realtime');?>';
+		var realtimeLabel = <?php print cacti_js_encode(__('Realtime')); ?>;
+		var realtimeStopLabel = <?php print cacti_js_encode(__('Stop Realtime')); ?>;
 		var treeView='<?php print __esc('Tree View');?>';
 		var listView='<?php print __esc('List View');?>';
 		var previewView='<?php print __esc('Preview View');?>';

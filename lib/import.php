@@ -49,7 +49,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 	if (cacti_sizeof($xml_array) == 0) {
 		$import_messages[] = 7; /* xml parse error */
-		return $info_array;
+		return false;
 	}
 
 	$host_template_data = array();
@@ -58,15 +58,15 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		/* parse information from the hash */
 		$parsed_hash = parse_xml_hash($hash);
 
+		/* invalid/wrong hash */
+		if ($parsed_hash == false) {
+			return false;
+		}
+
 		if ($parsed_hash['type'] == 'graph_template') {
 			$host_template_data['graph_template'][$parsed_hash['hash']] = $hash_array['name'];
 		} elseif ($parsed_hash['type'] == 'data_query') {
 			$host_template_data['data_query'][$parsed_hash['hash']] = $hash_array['name'];
-		}
-
-		/* invalid/wrong hash */
-		if ($parsed_hash == false) {
-			return $info_array;
 		}
 
 		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $import_hashes, true)) {
@@ -648,11 +648,14 @@ function import_read_package_data($xmlfile, &$public_key) {
  * @param array $import_hashes The hashes to import from the package.
  * @param array $import_files The XML resource files and script files to import from the package.
  * @param string $class The Class of the Package in the case of a Device Template.
+ * @param bool $keep_existing_files If true, script and resource files that already exist are
+ *   left in place instead of being replaced by the copy embedded in the package.
  *
  * @return mixed The results of the import package.
  */
 function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false,
-	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array(), $class = '') {
+	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array(), $class = '',
+	$keep_existing_files = false) {
 
 	global $config, $preview_only;
 
@@ -755,7 +758,15 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 			$filename = $validated_path;
 
 			if (!$preview) {
-				if (!cacti_sizeof($import_files) || in_array($name, $import_files)) {
+				if ($keep_existing_files && file_exists($filename)) {
+					/* The installer imports the packages shipped with this release.  Their
+					 * embedded copies of shared scripts and resource files can be older than
+					 * the copies shipped alongside them, and replacing those would undo fixes
+					 * made since the packages were built. */
+					$filestatus[$filename] = __('kept existing');
+
+					cacti_log('Keeping existing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+				} elseif (!cacti_sizeof($import_files) || in_array($name, $import_files)) {
 					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
 					if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {

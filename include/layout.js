@@ -831,9 +831,23 @@ function setupSelectmenuScrollClose() {
 		});
 }
 
+/** Add one icon per visible filter, including filters revealed after page load. */
+function addFilterSearchIcons() {
+	$('input[id="filter"], input[id="filterd"], input[id="rfilter"]').filter(':visible').each(function() {
+		const input = $(this);
+		if (input.next('i.fa-search.filter').length === 0) {
+			input.after($('<i>').addClass('fa fa-search filter'));
+			input.attr('autocomplete', 'off').attr('placeholder', this.id === 'rfilter' ? searchRFilter : searchFilter);
+			input.parent('td').css('white-space', 'nowrap');
+		}
+	});
+}
+
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
+	labelVisibleGraphActions();
+
 	// Support callback nonces
 	if (typeof cactiNonce !== 'undefined') {
 		$.ajaxSetup({
@@ -1465,13 +1479,12 @@ function displayMessages() {
 			}
 		}
 
-		var returnStr = '<div id="messageContainer" style="display:none">' +
-			'<h4>' + header + '</h4>' +
-			'<p style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</p>' +
-			'</div>';
-
+		/* sanitize at the sink and insert as a node, so the message is not parsed a second time */
 		$('#messageContainer').remove();
-		$('body').append(returnStr);
+		$('<div>').attr('id', 'messageContainer').hide()
+			.append($('<h4>').html(header))
+			.append($('<p>').css({display: 'table-cell', overflow: 'auto'}).html(' ' + DOMPurify.sanitize(sessionMessage.message)))
+			.appendTo('body');
 
 		var messageWidth = $(window).width();
 		if (messageWidth > 600) {
@@ -3799,10 +3812,13 @@ function hideCurrentTab(id, shrinking) {
 		var selected = $('#'+id).hasClass('selected');
 		var text     = $('#'+id).text();
 
+		/* text() returns the decoded tab title, so build the copy as elements, not markup */
+		var item = $('<li>').append($('<a>').addClass('lefttab' + (selected ? ' selected':'')).attr('id', myid).attr('href', href).text(text));
+
 		if (shrinking) {
-			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').prepend(item);
 		} else {
-			$('#submenu-ellipsis').append('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').append(item);
 		}
 
 		setupResponsiveMenuAndTabs();
@@ -4318,22 +4334,40 @@ function redrawGraph(graph_id) {
 	);
 }
 
+function labelVisibleGraphActions() {
+	// Visible icons keep their tooltips and also expose names to assistive technology.
+	$('.graphDrillDownAlways .iconWrapper a').each(function () {
+		var link = $(this);
+		var currentLabel = link.attr('aria-label');
+		var generatedLabel = link.attr('data-graph-action-label');
+		if (currentLabel && currentLabel !== generatedLabel) {
+			return;
+		}
+		var label = link.attr('title') || link.find('i[title], img[title]').first().attr('title');
+		if (label) {
+			link.attr('aria-label', label);
+			link.attr('data-graph-action-label', label);
+		}
+	});
+}
+
 function initGraphDrilldown() {
 	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
 	// A hamburger glyph over the graph's top-right toggles the action icons; they
 	// close on a second click, on moving off the graph image, or on an outside click.
 	$(document).off('.graphdd');
 
-	function closeGraphDrilldown(container) {
-		container.removeClass('open');
-		container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
-		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+	labelVisibleGraphActions();
 
-		// Close an open SpikeKill submenu so it is not orphaned with the strip.
-		if (typeof spikeKillClose == 'function') {
-			spikeKillClose();
+	$(document).on('keydown.graphdd', function (event) {
+		if (event.keyCode == 27 && typeof spikeKillClose == 'function' && typeof spikeKillAnchor != 'undefined' && spikeKillAnchor) {
+			var anchor = $(spikeKillAnchor);
+			if (anchor.closest('.graphDrillDownAlways').length) {
+				spikeKillClose();
+				anchor.trigger('focus');
+			}
 		}
-	}
+	});
 
 	// Turn the icon strip into a labelled menu the first time a graph's strip is
 	// opened: each action becomes a row of its glyph followed by the text taken
@@ -4491,6 +4525,22 @@ function initGraphDrilldown() {
 			}
 		}, 0);
 	});
+}
+
+function closeGraphDrilldown(container) {
+	// Return focus before hiding the action that currently owns it.
+	if (container.find('.iconWrapper :focus').length > 0) {
+		container.find('.graphDrillDownMenu').trigger('focus');
+	}
+
+	container.removeClass('open');
+	container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
+	container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+
+	// Close an open SpikeKill submenu so it is not orphaned with the strip.
+	if (typeof spikeKillClose == 'function') {
+		spikeKillClose();
+	}
 }
 
 function initializeGraphs(disable_cache) {
@@ -4677,6 +4727,7 @@ function initializeGraphs(disable_cache) {
 
 				if (typeof realtimeArray != 'undefined') {
 					realtimeArray[data.local_graph_id] = false;
+					setRealtimeLabel(data.local_graph_id, false);
 				}
 
 				if (!--numGraphs) {
@@ -4759,7 +4810,7 @@ function initializeGraphs(disable_cache) {
 
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-				$(this).html("<i class='drillDown fa fa-chart-area realTime' title='"+realtimeClickOn+"'></i>");
+				setRealtimeLabel(graph_id, false);
 
 				$('graph_id'+graph_id).tooltip().zoom({
 					inputfieldStartTime : 'date1',
@@ -4771,12 +4822,13 @@ function initializeGraphs(disable_cache) {
 				setFilters();
 			} else {
 				keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
-				$(this).html("<i style='text-align:center;padding:0px;' title='"+realtimeClickOff+"' class='drillDown fa fa-circle-notch fa-spin'/>");
-				$(this).find('i').tooltip();
+				setRealtimeLabel(graph_id, true);
 				realtimeArray[graph_id] = true;
 				setFilters();
 				realtimeGrapher();
 			}
+
+			closeGraphDrilldown($(this).closest('.graphDrillDownToggle'));
 		});
 	});
 }

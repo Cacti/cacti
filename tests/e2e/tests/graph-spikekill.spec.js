@@ -48,7 +48,7 @@ async function setup(page, delay = 0) {
 	await page.addScriptTag({ path: path.join(root, 'include/js/jquery.js') });
 	await page.addScriptTag({ path: path.join(root, 'include/js/jquery-ui.js') });
 	const layout = fs.readFileSync(path.join(root, 'include/layout.js'), 'utf8');
-	await page.addScriptTag({ content: sourceFunction(layout, 'initGraphDrilldown', 'initializeGraphs') + '\n//# sourceURL=http://cacti-fixture/include/layout.js' });
+	await page.addScriptTag({ content: sourceFunction(layout, 'labelVisibleGraphActions', 'initializeGraphs') + '\n//# sourceURL=http://cacti-fixture/include/layout.js' });
 	await page.addScriptTag({ content: sourceFunction(layout, 'removeSpikes', 'redrawGraph') + '\n//# sourceURL=http://cacti-fixture/include/layout.js' });
 	const php = fs.readFileSync(path.join(root, 'lib/html.php'), 'utf8');
 	const start = php.indexOf('\tvar spikeKillOpen = false;', php.indexOf('function html_spikekill_js()'));

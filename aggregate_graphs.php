@@ -474,7 +474,7 @@ function form_actions() {
 					print "<tr>
 						<td class='textArea'>
 							<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . "</p>
-							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template))) . "</p>
+							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template)))) . "</p>
 							<p>" . __('Please press \'Return\' to continue.') . "</p>
 							<div class='itemlist'><ul>$graph_list</ul></div>
 						</td>
@@ -767,7 +767,8 @@ function graph_edit() {
 		</td></tr>
 		<?php
 		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
-			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+			/* RRDtool's error text repeats graph item text, so it is returned and escaped, not printed */
+			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_RETURN_STDERR;
 			$graph_data_array['print_source'] = 1;
 			$null_param = array();
 			?>
@@ -775,7 +776,7 @@ function graph_edit() {
 				<div style='overflow:auto;'>
 					<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?>
-					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
+					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? html_escape((string) @rrdtool_function_graph($graphs['local_graph_id'], 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id'])) : __esc('Not Checked'));?></pre>
 				</div>
 				<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 				$(function() {
@@ -996,11 +997,11 @@ function graph_edit() {
 			function changeTotalsType() {
 				if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', '<?php print __('Total');?>');
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('Total'));?>);
 					}
 				} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', '<?php print __('All Items');?>');
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('All Items'));?>);
 					}
 				}
 			}
@@ -1068,12 +1069,12 @@ function graph_edit() {
 		});
 
 		$('#toggle_items').on('click', function() {
-			if ($('#toggle_items').is(":contains('<?php print __('Show');?>')")) {
+			if ($('#toggle_items').text().indexOf(<?php print cacti_js_encode(__('Show'));?>) !== -1) {
 				$('#local_graph_template_graph_id').next('table').css('display', '');
-				$('#toggle_items').text('<?php print __('Hide Item Details');?>');
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Hide Item Details'));?>);
 			} else {
 				$('#local_graph_template_graph_id').next('table').css('display', 'none');
-				$('#toggle_items').text('<?php print __('Show Item Details');?>');
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Show Item Details'));?>);
 			}
 		});
 

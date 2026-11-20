@@ -1887,19 +1887,27 @@ function snmp_native_protocol($protocol) {
 }
 
 /**
- * Build the agent target for the procedural php-snmp calls. libnetsnmp needs the
- * host bracketed once a non-default port is attached, and an IPv6 literal is
- * always bracketed so the trailing :port is not read as another hextet. An
+ * Build the agent target for the procedural php-snmp calls. An IPv6 literal is
+ * always bracketed so the trailing :port is not read as another hextet. An IPv4
+ * address or a DNS name takes a plain host:port, because php-snmp treats a
+ * bracketed target as IPv6 only and fails to resolve [192.0.2.1]:1161. An
  * explicit transport or a pre-bracketed target is left untouched. Used as part
  * of Cacti's lib functionality.
  *
  * @param string $hostname Device hostname or IP (may already carry a transport).
  * @param mixed  $port     SNMP port.
  *
- * @return string The agent target, e.g. host, [2001:db8::1]:1161 or udp6:[host]:161.
+ * @return string The agent target, e.g. host, host:1161, [2001:db8::1]:1161 or udp6:[host]:161.
  */
 function snmp_format_agent($hostname, $port) {
 	$hostname = trim((string) $hostname);
+
+	/* php-snmp reads a bare trailing ':' as port 0, so an empty port means the default */
+	$port = trim((string) $port);
+
+	if ($port === '') {
+		$port = '161';
+	}
 
 	/* An explicit transport prefix carries its own target; leave it untouched. */
 	if (preg_match('/^(udp6?|tcp6?|unix):/i', $hostname)) {
@@ -1920,7 +1928,7 @@ function snmp_format_agent($hostname, $port) {
 		return $hostname;
 	}
 
-	return '[' . $hostname . ']:' . $port;
+	return $hostname . ':' . $port;
 }
 
 /**

@@ -36,20 +36,24 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
-function ss_fortigate_ipsec ($host_id = 0) {
+function ss_fortigate_ipsec($host_id = 0) {
 	global $environ, $poller_id, $config;
 
 	$total = 0;
 	$down = 0;
 
 	if (empty($host_id) || $host_id === NULL || !is_numeric($host_id))  {
-		return 'total:0 down:0' . PHP_EOL;
+		return 'total:U down:U' . PHP_EOL;
 	}
 
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',
 		array($host_id));
+
+	if (!cacti_sizeof($host)) {
+		return 'total:U down:U' . PHP_EOL;
+	}
 
 	$tunnels  = cacti_snmp_walk($host['hostname'],
 		$host['snmp_community'],
@@ -63,10 +67,15 @@ function ss_fortigate_ipsec ($host_id = 0) {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		read_config_option('snmp_retries'),
 		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
+
+	/* a failed walk returns false, which is not iterable */
+	if (!is_array($tunnels)) {
+		return 'total:U down:U' . PHP_EOL;
+	}
 
 	foreach ($tunnels as $tunnel) {
 		if ($tunnel['value'] == 1) {

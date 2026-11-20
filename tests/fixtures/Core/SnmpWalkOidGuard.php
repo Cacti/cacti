@@ -56,10 +56,16 @@ function poller_push_reindex_only_data_to_main($host, $query) {
 }
 function cacti_log(...$arguments) {
 }
+function poller_update_poller_reindex_from_buffer($host, $query, &$records) {
+	global $writes;
+	$writes[] = implode(',', $records);
+	poller_push_reindex_only_data_to_main($host, $query);
+
+	return true;
+}
 
 \cacti_fixture_source_function($root . '/lib/snmp.php', 'cacti_snmp_walk', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/lib/poller.php', 'update_reindex_cache', __NAMESPACE__);
-\cacti_fixture_source_function($root . '/lib/poller.php', 'poller_update_poller_reindex_from_buffer', __NAMESPACE__);
 
 $directory = sys_get_temp_dir() . '/cacti-snmp-oid-' . bin2hex(random_bytes(8));
 
