@@ -15,12 +15,14 @@ on:
       - 'lib/rrd.php'
       - 'poller_boost.php'
       - 'tests/Unit/Core/Boost/**'
+      - 'tests/Unit/Security/Session/SessionHandlerGcTest.php'
       - 'tests/Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php'
       - 'tests/Unit/Core/Rrd/RrdVersionCheckReuseTest.php'
       - 'tests/e2e/boost/**'
       - 'tests/fixtures/Core/Boost*'
       - 'tests/fixtures/Core/Rrd/**'
       - 'tests/fixtures/Core/ScriptQueryPath.php'
+      - 'tests/fixtures/Core/TranslatedJavaScriptStrings.php'
       - 'tests/Unit/Core/ScriptQueryPathTest.php'
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/integration/BoostProcessTableMariaDbTest.php'
@@ -31,6 +33,9 @@ on:
       - 'tests/tools/test_check_changed_php_coverage.py'
       - 'tests/phpunit-rrd-capabilities.xml'
       - '.github/workflows/rrd-capability-coverage.yml'
+      - 'tests/Helpers/DataQueryHarness.php'
+      - 'tests/Unit/DataCollection/DataQuery/**'
+      - 'tests/integration/DataQueryReindexTest.php'
 
 permissions:
   contents: read
@@ -94,6 +99,7 @@ jobs:
         env:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          RRDTOOL_BINARY: /usr/bin/rrdtool
           CACTI_AGGREGATE_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=cacti_aggregate_test;charset=utf8mb4'
           CACTI_AGGREGATE_TEST_USER: root
           CACTI_AGGREGATE_TEST_PASSWORD: cactiroot
@@ -106,6 +112,7 @@ jobs:
           set -euo pipefail
           mkdir -p "$CACTI_PR_RAW_COVERAGE"
           vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+          php fixtures/Core/DisplayContextRender.php | grep -Fx 'Display rendering passed'
           php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest \
             Unit/Core/Boost/BoostArchiveDeletionOwnershipBehaviorTest.php \
             Unit/Core/Boost/BoostFailureAlertBehaviorTest.php \
@@ -117,12 +124,42 @@ jobs:
             Unit/Core/Boost/BoostPollerCoordinationBehaviorTest.php \
             Unit/Core/Boost/BoostPollerDrainBehaviorTest.php \
             Unit/Core/Boost/BoostPollerOutputBehaviorTest.php \
+            Unit/Security/Session/SessionHandlerGcTest.php \
             integration/BoostProcessTableMariaDbTest.php
+      - name: Exercise data query discovery and reindex contracts
+        working-directory: tests
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          CACTI_DQ_DB_HOST: 127.0.0.1
+          CACTI_DQ_DB_PORT: 3306
+          CACTI_DQ_DB_NAME: cacti_dq_test
+          CACTI_DQ_DB_USER: root
+          CACTI_DQ_DB_PASSWORD: cactiroot
+          MYSQL_PWD: cactiroot
+        run: |
+          set -euo pipefail
+          mariadb --host=127.0.0.1 --user=root -e 'CREATE DATABASE IF NOT EXISTS cacti_dq_test'
+          mkdir -p "$CACTI_PR_RAW_COVERAGE"
+          php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest \
+            integration/DataQueryReindexTest.php \
+            Unit/DataCollection/DataQuery/DataQueryIndexLookupTest.php
       - name: Exercise Boost lifecycle and failure recovery
         env:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
         run: tests/e2e/boost/run-coverage.sh "$PWD"
+      - name: Exercise graph diagnostics and RRA path migration
+        env:
+          MYSQL_PWD: cactiroot
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: tests/e2e/rrd/display-and-paths.sh
+      - name: Exercise translated JavaScript expressions
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: php tests/fixtures/Core/TranslatedJavaScriptStrings.php
       - name: Require at least 80 percent of changed executable PHP lines
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}

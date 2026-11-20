@@ -75,9 +75,11 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'ds_disable':
+		csrf_require_post();
 		ds_disable();
 		break;
 	case 'ds_enable':
+		csrf_require_post();
 		ds_enable();
 		break;
 	case 'ds_repair':
@@ -241,7 +243,7 @@ function form_save() {
 		$save2['data_template_id']            = get_filter_request_var('data_template_id');
 		$save2['data_input_id']               = form_input_validate(get_request_var('data_input_id'), 'data_input_id', '^[0-9]+$', true, 3);
 		$save2['name']                        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save2['data_source_path']            = form_input_validate(get_nfilter_request_var('data_source_path'), 'data_source_path', '^[^\r\n]*$', true, 3);
+		$save2['data_source_path']            = form_input_validate(get_nfilter_request_var('data_source_path'), 'data_source_path', '^[^\s\'"`]*$', true, 3);
 		$save2['active']                      = form_input_validate((isset_request_var('active') ? get_nfilter_request_var('active') : ''), 'active', '', true, 3);
 		$save2['data_source_profile_id']      = form_input_validate(get_request_var('data_source_profile_id'), 'data_source_profile_id', '^[0-9]+$', false, 3);
 		$save2['rrd_step']                    = form_input_validate(get_request_var('rrd_step'), 'rrd_step', '^[0-9]+$', false, 3);
@@ -960,7 +962,7 @@ function ds_edit() {
 	$data_template     = array();
 
 	if (!isempty_request_var('id')) {
-		$data_local = db_fetch_row_prepared('SELECT host_id, data_template_id
+		$data_local = db_fetch_row_prepared('SELECT id, host_id, data_template_id
 			FROM data_local
 			WHERE id = ?',
 			array(get_request_var('id')));
@@ -1052,7 +1054,14 @@ function ds_edit() {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
 						if (isset_request_var('id') && get_request_var('id') > 0) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id')) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source.') : __('Enable Data Source.'));?></a><br>
+							?><span class='linkMarker'>*</span><a class='dsActiveToggle' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . $data_local['id']) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source.') : __('Enable Data Source.'));?></a><br>
+							<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+							/* the enable and disable actions change state, so send them as a POST */
+							$(document).off('click.dsActiveToggle').on('click.dsActiveToggle', 'a.dsActiveToggle', function(event) {
+								event.preventDefault();
+								loadPageUsingPostUrl($(this).attr('href'));
+							});
+							</script>
 					<?php
 						}
 					?>

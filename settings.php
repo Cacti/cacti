@@ -141,12 +141,18 @@ case 'save':
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 				$errors[4] = 4;
 				break;
-			} elseif (!isempty_request_var($field_name)) {
-				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+			}
+
+			$stored = (string) db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($field_name));
+			$value  = form_secret_value($field_name, $stored);
+
+			// Resend a kept value too, as before, so remote collectors stay in sync
+			if ($value !== '' || $stored !== '') {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr($value) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					array($field_name, get_nfilter_request_var($field_name)));
+					array($field_name, $value));
 			}
 		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
@@ -270,7 +276,7 @@ case 'save':
 
 			foreach($pollers as $p => $t) {
 				if ($t > $gone_time) {
-					raise_message('poller_' . $p, __esc('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+					raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
 				} else {
 					$rcnn_id = poller_connect_to_remote($p);
 
@@ -282,7 +288,7 @@ case 'save':
 
 					// check if we still have rcnn_id, if it's now become false, we had a problem
 					if (!$rcnn_id) {
-						raise_message('poller_' . $p, __esc('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+						raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 					}
 				}
 			}
@@ -402,6 +408,11 @@ default:
 	if (isset($settings[$current_tab])) {
 		foreach ($settings[$current_tab] as $field_name => $field_array) {
 			$form_array += array($field_name => $field_array);
+
+			// Every settings tab saves its password fields with form_secret_value()
+			if ($field_array['method'] == 'textbox_password') {
+				$form_array[$field_name]['secret'] = true;
+			}
 
 			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {

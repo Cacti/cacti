@@ -6,7 +6,9 @@ on:
     branches: [1.2.x]
     paths:
       - install/install.js
-      - include/themes/midwinter/main.js
+      - include/layout.js
+      - include/themes/*/main.js
+      - tests/e2e/filter-search-icons.spec.js
       - tests/e2e/external-window.spec.js
       - tests/e2e/playwright.config.js
       - tests/e2e/package*.json
@@ -15,7 +17,9 @@ on:
     branches: [1.2.x]
     paths:
       - install/install.js
-      - include/themes/midwinter/main.js
+      - include/layout.js
+      - include/themes/*/main.js
+      - tests/e2e/filter-search-icons.spec.js
       - tests/e2e/external-window.spec.js
       - tests/e2e/playwright.config.js
       - tests/e2e/package*.json
@@ -51,4 +55,4 @@ jobs:
         run: node node_modules/@playwright/test/cli.js install --with-deps chromium
       - name: Verify opener isolation and changed-statement coverage
         working-directory: tests/e2e
-        run: node node_modules/@playwright/test/cli.js test --config=playwright.config.js external-window.spec.js --workers=1
+        run: node node_modules/@playwright/test/cli.js test --config=playwright.config.js external-window.spec.js filter-search-icons.spec.js --workers=1

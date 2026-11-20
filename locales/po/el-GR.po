@@ -13232,6 +13232,12 @@ msgstr "Περιοχή"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "Περιοχή"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "Ακίδες"
@@ -13347,14 +13353,6 @@ msgstr "Προβολή χρονικού γραφήματος"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill Αποτελέσματα"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Κάντε ξανά κλικ για να πάρετε αυτό το γράφημα από το Realtime"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20326,6 +20324,30 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 #: vdef.php
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Μενού Κονσόλας"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Κάντε ξανά κλικ για να πάρετε αυτό το γράφημα από το Realtime"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Μέγιστα στοιχεία προέλευσης δεδομένων ανά διαδρομή"

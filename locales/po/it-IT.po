@@ -13233,6 +13233,12 @@ msgstr "Regno"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "Regno"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "Raggi"
@@ -13348,14 +13354,6 @@ msgstr "Visualizzazione grafica del tempo"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "Risultati di SpikeKill"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Fare clic per visualizzare il grafico in tempo reale."
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Clicca di nuovo per togliere questo grafico dal Realtime"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20326,6 +20324,30 @@ msgstr "Il numero di modelli di grafici che utilizzano questo VDEF."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "Nessun VDEF"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Menu della console"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Fare clic per visualizzare il grafico in tempo reale."
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Clicca di nuovo per togliere questo grafico dal Realtime"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Numero massimo di elementi della fonte dati per passaggio"

@@ -32,6 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_wrcount($host_id = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_wireless_registrations', false)) {
+		return 'U';
+	}
+
 	$wrs = db_fetch_cell_prepared('SELECT count(*)
 		FROM plugin_mikrotik_wireless_registrations
 		WHERE host_id = ?

@@ -1589,7 +1589,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 
 	/* if we want to view the error message, then don't show the cache */
 	if ((isset($graph_data_array['output_flag'])) &&
-		($graph_data_array['output_flag'] == RRDTOOL_OUTPUT_STDERR)) {
+		($graph_data_array['output_flag'] == RRDTOOL_OUTPUT_STDERR || $graph_data_array['output_flag'] == RRDTOOL_OUTPUT_RETURN_STDERR)) {
 		/* restore original error handler */
 		restore_error_handler();
 		error_reporting($previous_error_reporting);

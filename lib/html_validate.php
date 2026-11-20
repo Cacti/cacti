@@ -79,6 +79,25 @@ function html_log_input_error($variable) {
 }
 
 /**
+ * Encodes the current request for a validation error backtrace with the values
+ * of credential and token fields masked, so passwords and SNMP secrets submitted
+ * alongside the rejected variable are not copied into the Cacti log.
+ *
+ * @return string The JSON-encoded request.
+ */
+function html_validation_request_summary() {
+	$request = $_REQUEST;
+
+	foreach ($request as $key => $value) {
+		if (preg_match('/pass|secret|community|token|csrf|key/i', (string) $key)) {
+			$request[$key] = '********';
+		}
+	}
+
+	return json_encode($request);
+}
+
+/**
  * Writes a structured security event for an input validation failure. Rejected values and request
  * payloads are deliberately excluded to avoid copying credentials or other sensitive input into
  * the security log. Used as part of Cacti's lib functionality.
@@ -128,7 +147,7 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 	}
 
 	if (isset_request_var('json')) {
-		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):'') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
+		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):'') . ', Source: ' . get_client_addr() . ', Request: ' . html_validation_request_summary(), false);
 		print json_encode(
 			array(
 				'status' => '500',
@@ -137,7 +156,7 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 			)
 		);
 	} else {
-		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):'') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
+		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):'') . ', Source: ' . get_client_addr() . ', Request: ' . html_validation_request_summary(), true);
 
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
 		bottom_footer();

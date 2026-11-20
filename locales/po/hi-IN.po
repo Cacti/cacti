@@ -13230,6 +13230,12 @@ msgstr "फ्रेम"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "फ्रेम"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "खूंटी या बाली"
@@ -13345,14 +13351,6 @@ msgstr "समय ग्राफ़ देखें"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill परिणाम"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "रियलटाइम में बस इस ग्राफ को देखने के लिए क्लिक करें"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "रीयलटाइम के इस ग्राफ को बाहर निकालने के लिए फिर से क्लिक करें"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20324,6 +20322,30 @@ msgstr "इस VDEF का उपयोग करके ग्राफ टे�
 #: vdef.php
 msgid "No VDEFs"
 msgstr "कोई VDEFs नहीं"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "कंसोल मेनू"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "रियलटाइम में बस इस ग्राफ को देखने के लिए क्लिक करें"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "रीयलटाइम के इस ग्राफ को बाहर निकालने के लिए फिर से क्लिक करें"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "अधिकतम डेटा स्रोत आइटम प्रति पास"

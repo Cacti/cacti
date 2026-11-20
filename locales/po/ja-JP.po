@@ -13187,6 +13187,12 @@ msgstr "領域"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "スパイク"
@@ -13302,14 +13308,6 @@ msgstr "時間グラフ表示"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKillの結果"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "クリックしてこのグラフだけをリアルタイムで表示する"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "このグラフをリアルタイムから削除するには、もう一度クリックします"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20239,6 +20237,30 @@ msgstr "このVDEFを使用しているグラフテンプレートの数。"
 #: vdef.php
 msgid "No VDEFs"
 msgstr "VDEFなし"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "コンソールメニュー"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "クリックしてこのグラフだけをリアルタイムで表示する"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "このグラフをリアルタイムから削除するには、もう一度クリックします"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "1パスあたりの最大データソース項目"

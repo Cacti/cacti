@@ -13190,6 +13190,12 @@ msgstr "域"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "域"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "尖峰"
@@ -13305,14 +13311,6 @@ msgstr "时间图形视图"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill 结果"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "点击即可实时查看此图形"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "再次点击则会退出实时图形"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20242,6 +20240,30 @@ msgstr "使用此VDEF 的图形模板的数量."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "没有VDEF"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "控制台菜单"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "点击即可实时查看此图形"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "再次点击则会退出实时图形"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "每次通过的最大数据源项目数"

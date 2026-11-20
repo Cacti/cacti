@@ -13193,6 +13193,12 @@ msgstr "왕국"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "왕국"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "이삭"
@@ -13308,14 +13314,6 @@ msgstr "시간 그래프보기"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "스파이크 킬 결과"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "이 그래프를 실시간으로 가져 오려면 다시 클릭하십시오."
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20246,6 +20244,30 @@ msgstr "이 VDEF를 사용하는 그래프 템플릿 수입니다."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "VDEF 없음"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "콘솔 메뉴"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "이 그래프를 실시간으로 가져 오려면 다시 클릭하십시오."
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "합격 당 최대 데이터 소스 항목"

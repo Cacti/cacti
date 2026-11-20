@@ -13225,6 +13225,10 @@ msgid "Realtime"
 msgstr ""
 
 #: lib/html.php
+msgid "Stop Realtime"
+msgstr ""
+
+#: lib/html.php
 msgid "Kill Spikes"
 msgstr ""
 
@@ -13338,14 +13342,6 @@ msgstr ""
 
 #: lib/html.php
 msgid "SpikeKill Results"
-msgstr ""
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr ""
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
 msgstr ""
 
 #: lib/html.php
@@ -20281,6 +20277,22 @@ msgstr ""
 
 #: vdef.php
 msgid "No VDEFs"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Collapsed Menu"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
 msgstr ""
 
 #~ msgid "SNMP Rules"

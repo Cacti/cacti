@@ -27,7 +27,8 @@ $guest_account = true;
 include('./include/auth.php');
 
 if (isset_request_var('error')) {
-	$page  = basename(get_nfilter_request_var('page'));
+	/* Only a script file name is meaningful here, and the value is logged and mailed */
+	$page  = preg_replace('/[^A-Za-z0-9_.\-]/', '', basename(get_nfilter_request_var('page')));
 	$error = get_filter_request_var('error');
 
 	if (isset($_SESSION['sess_user_id'])) {

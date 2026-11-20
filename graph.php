@@ -57,13 +57,13 @@ if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
 	$sql_where = ' AND dspr.id=' . get_request_var('rra_id');
 }
 
-$exists = db_fetch_cell_prepared('SELECT local_graph_id
+$local_graph_id = db_fetch_cell_prepared('SELECT local_graph_id
 	FROM graph_templates_graph
 	WHERE local_graph_id = ?',
 	array(get_request_var('local_graph_id')));
 
 /* make sure the graph requested exists (sanity) */
-if (!$exists) {
+if (!$local_graph_id) {
 	print '<strong><font class="txtErrorTextBox">' . __('GRAPH DOES NOT EXIST') . '</font></strong>';
 	bottom_footer();
 	exit;
@@ -168,7 +168,7 @@ case 'view':
 								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							</td>
 
-							<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print get_filter_request_var('local_graph_id');?>' class='graphDrillDown graphDrillDownToggle noprint'>
+							<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print html_escape($graph['local_graph_id']);?>' class='graphDrillDown <?php print graph_drilldown_display_class();?> noprint'>
 								<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions');?>'><i class='fa fa-bars'></i></span>
 								<div class='iconWrapper'>
 								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><i class='drillDown fa fa-cog actionCog' title='<?php print __esc('Details');?>'></i></a><br>
@@ -433,7 +433,7 @@ case 'zoom':
 					<td class='center'>
 						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 					</td>
-					<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print get_filter_request_var('local_graph_id');?>' class='graphDrillDown graphDrillDownToggle noprint'>
+					<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print html_escape($graph['local_graph_id']);?>' class='graphDrillDown <?php print graph_drilldown_display_class();?> noprint'>
 						<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions');?>'><i class='fa fa-bars'></i></span>
 						<div class='iconWrapper'>
 						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink properties'>
@@ -625,7 +625,8 @@ case 'properties':
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
 	}
 
-	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+	/* RRDtool's error text repeats graph item text, so it is returned and escaped, not printed */
+	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_RETURN_STDERR;
 	$graph_data_array['print_source'] = 1;
 
 	print "<table class='center' width='100%' class='cactiTable'<tr><td>\n";
@@ -639,7 +640,7 @@ case 'properties':
 	unset($graph_data_array['print_source']);
 	print "<span class='textInfo'>" . __('RRDtool Says:') . "</span><br>";
 	if ($config['poller_id'] == 1) {
-		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+		print html_escape((string) @rrdtool_function_graph($local_graph_id, get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']));
 	} else {
 		print __esc('Not Checked');
 	}

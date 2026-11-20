@@ -15503,6 +15503,11 @@ msgstr "領域"
 
 #: lib/html.php
 #, fuzzy
+msgid "Stop Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
 msgid "Kill Spikes"
 msgstr "釘鞋"
 
@@ -15637,16 +15642,6 @@ msgstr "時間圖表視圖"
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill結果"
-
-#: lib/html.php
-#, fuzzy
-msgid "Click to view just this Graph in Realtime"
-msgstr "單擊以實時查看此圖表"
-
-#: lib/html.php
-#, fuzzy
-msgid "Click again to take this Graph out of Realtime"
-msgstr "再次單擊可使此圖表脫離實時"
 
 #: lib/html.php
 #, fuzzy
@@ -23528,6 +23523,31 @@ msgstr "使用此VDEF的圖表模板數。"
 #, fuzzy
 msgid "No VDEFs"
 msgstr "沒有VDEF"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+msgid "Collapsed Menu"
+msgstr "控制台菜單"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#, fuzzy
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "單擊以實時查看此圖表"
+
+#, fuzzy
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "再次單擊可使此圖表脫離實時"
 
 #, fuzzy
 #~ msgid "Maximum Data Source Items Per Pass"

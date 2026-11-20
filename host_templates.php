@@ -52,6 +52,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_add_gt':
+		csrf_require_post();
 		template_item_add_gt();
 
 		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
@@ -61,11 +62,13 @@ switch (get_request_var('action')) {
 
         break;
 	case 'item_remove_gt':
+		csrf_require_post();
 		template_item_remove_gt();
 
 		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'item_add_dq':
+		csrf_require_post();
 		template_item_add_dq();
 
 		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
@@ -75,6 +78,7 @@ switch (get_request_var('action')) {
 
         break;
 	case 'item_remove_dq':
+		csrf_require_post();
 		template_item_remove_dq();
 
 		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
@@ -646,7 +650,7 @@ function template_edit() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Item from Device Template');?>',
+						title: <?php print cacti_js_encode(__('Delete Item from Device Template'));?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

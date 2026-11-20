@@ -74,6 +74,22 @@ jobs:
         BOOST_DB_PASSWORD: cactiuser
       run: php vendor/bin/pest --configuration=phpunit-boost-mariadb.xml --colors=never
 
+    - name: Run secret save and replication contracts
+      working-directory: tests
+      env:
+        SECRET_DB_HOST: 127.0.0.1
+        SECRET_DB_USER: root
+        SECRET_DB_PASSWORD: cactiroot
+      run: php vendor/bin/pest --configuration=phpunit.xml integration/SecretFieldSaveMariaDbTest.php Unit/Ui/Html/FormSecretFieldTest.php --colors=never
+
+    - name: Run database process termination contracts
+      working-directory: tests
+      env:
+        PROCESS_DB_HOST: 127.0.0.1
+        PROCESS_DB_USER: root
+        PROCESS_DB_PASSWORD: cactiroot
+      run: php vendor/bin/pest --configuration=phpunit.xml integration/KilledProcessMariaDbTest.php --colors=never
+
   boost-contracts:
     name: Boost contracts
     runs-on: ubuntu-22.04
@@ -114,7 +130,7 @@ jobs:
 
     - name: Run SNMP walk OID contracts
       working-directory: tests
-      run: php vendor/bin/pest --configuration=phpunit.xml Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php --colors=never
+      run: php vendor/bin/pest --configuration=phpunit.xml Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php Unit/DataCollection/Snmp/SnmpFormatAgentTest.php --colors=never
 
   javascript-contracts:
     name: JavaScript contracts

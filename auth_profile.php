@@ -34,14 +34,17 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'logout_everywhere':
+		csrf_require_post();
 		api_auth_logout_everywhere();
 
 		break;
 	case 'clear_user_settings':
+		csrf_require_post();
 		api_auth_clear_user_settings();
 
 		break;
 	case 'reset_default':
+		csrf_require_post();
 		$name  = get_nfilter_request_var('name');
 
 		api_auth_clear_user_setting($name);
@@ -505,7 +508,7 @@ function settings_javascript() {
 	var authMethod   = '<?php print read_config_option('auth_method');?>';
 
 	function clearUserSettings() {
-		$.get('auth_profile.php?action=clear_user_settings', function() {
+		$.post('auth_profile.php?action=clear_user_settings', {__csrf_magic: csrfMagicToken}, function() {
 			document.location = 'auth_profile.php?newtheme=1';
 			$('#clear_settings').blur();
 		});
@@ -536,7 +539,7 @@ function settings_javascript() {
 
 	function logoutEverywhere() {
 		$('#logout_everywhere').blur();
-		$.get('auth_profile.php?action=logout_everywhere', function(data) {
+		$.post('auth_profile.php?action=logout_everywhere', {__csrf_magic: csrfMagicToken}, function(data) {
 			$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('User Sessions Cleared');?>"><p><?php print __('All your login sessions have been cleared.');?></p></div>');
 
 			$('#cleared').dialog({
@@ -628,7 +631,7 @@ function settings_javascript() {
 							var id = $(this).attr('data-id');
 
 							if (id != undefined) {
-								$.get('auth_profile.php?tab='+currentTab+'&action=reset_default&name='+id, function(data) {
+								$.post('auth_profile.php?tab='+currentTab+'&action=reset_default', {__csrf_magic: csrfMagicToken, name: id}, function(data) {
 									if (id != 'selected_theme' && id != 'user_language' && id != 'enable_hscroll') {
 										if ($('#'+id).is(':checkbox')) {
 											if (data == 'on') {

@@ -13233,6 +13233,12 @@ msgstr "Ülke:"
 
 #: lib/html.php
 #, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "Ülke:"
+
+#: lib/html.php
+#, fuzzy
 #| msgid "Spikes"
 msgid "Kill Spikes"
 msgstr "Başak"
@@ -13348,14 +13354,6 @@ msgstr "Zaman Grafiği Görünümü"
 #: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill Sonuçları"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Sadece bu Grafiği Gerçek Zamanlı olarak görüntülemek için tıklayın"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Bu Grafiği Gerçek Zamanlı Durumdan çıkarmak için tekrar tıklayın"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -20326,6 +20324,30 @@ msgstr "Bu VDEF&#39;i kullanan Grafik Şablonları sayısı."
 #: vdef.php
 msgid "No VDEFs"
 msgstr "VDEF yok"
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Konsol Menüsü"
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Sadece bu Grafiği Gerçek Zamanlı olarak görüntülemek için tıklayın"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Bu Grafiği Gerçek Zamanlı Durumdan çıkarmak için tekrar tıklayın"
 
 #~ msgid "Maximum Data Source Items Per Pass"
 #~ msgstr "Geçiş Başına Maksimum Veri Kaynağı Öğesi"

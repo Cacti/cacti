@@ -42,5 +42,13 @@ test('script query paths preserve separators and validate the resulting command 
 	'Windows nested traversal after sanitizing' => array('win32', 'C:\\cacti\\scripts\\.^.\\.;.\\test.php', '', false),
 	'Unix placeholder' => array('unix', '|path_cacti|/scripts/ss_host_disk.php ss_host_disk', 'get total 2', "/srv/cacti/scripts/ss_host_disk.php ss_host_disk 'get' 'total' '2'"),
 	'Unix shell metacharacter' => array('unix', '/srv/cacti/scripts/a&b.php', '', '/srv/cacti/scripts/a\\&b.php '),
-	'Unix traversal' => array('unix', '/srv/cacti/scripts/../test.php', '', false)
+	'Unix traversal' => array('unix', '/srv/cacti/scripts/../test.php', '', false),
+	'Windows environment variable' => array('win32', 'C:\\cacti\\%COMSPEC%\\test.php', '', 'C:\\cacti\\COMSPEC\\test.php '),
+	'Windows traversal joined by a percent sign' => array('win32', 'C:\\cacti\\scripts\\.%.\\test.php', '', false),
+	'Windows stray quote' => array('win32', 'C:\\cacti\\scripts\\a"b.php', '', 'C:\\cacti\\scripts\\a"b.php '),
+	'Windows traversal joined by quotes' => array('win32', 'C:\\cacti\\scripts\\."".\\test.php', '', false),
+	'Unix traversal joined by quotes' => array('unix', '/srv/cacti/scripts/."."/x.php', '', false),
+	'Windows drive-relative traversal' => array('win32', 'C:..\\test.php', '', false),
+	'Windows dotted directory name' => array('win32', 'C:\\cacti\\scripts..old\\test.php', '', false),
+	'Unix dotted directory name' => array('unix', '/srv/cacti/scripts..old/ss.php', '', false)
 ));
