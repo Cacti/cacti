@@ -35,6 +35,73 @@ measurements, and alert states. It uses the shipped Cacti theme stylesheets.
 See [theme validation](docs/validation/cacti-theme.md) for the narrow-screen
 details screenshot and reproduction commands.
 
+## Dark Theme
+
+![Dark theme inventory with seeded device measurements](docs/validation/images/dark-theme-desktop.png)
+
+The Dark browser fixture exercises keyboard focus, gradient contrast, and
+wrapped details titles using synthetic monitoring data. See
+[Dark theme validation](docs/validation/dark-theme.md) for screenshots and tests.
+
+## Deepness Theme
+
+![Deepness inventory with seeded device measurements](docs/validation/images/deepness-theme-desktop.png)
+
+The Deepness fixture checks wrapped titles and readable status messages on dark
+rows. See [Deepness theme validation](docs/validation/deepness-theme.md) for the
+narrow details screenshot and browser tests.
+
+## Midwinter Theme
+
+![Midwinter dark inventory with seeded measurements](docs/validation/images/midwinter-dark-theme-desktop.png)
+
+![Midwinter light inventory with seeded measurements](docs/validation/images/midwinter-light-theme-desktop.png)
+
+Both Midwinter palettes have browser coverage for details controls and row-state
+contrast. See [Midwinter theme validation](docs/validation/midwinter-theme.md) for
+narrow-screen screenshots and reproduction commands.
+
+## Modern Theme
+
+![Modern inventory with seeded device measurements](docs/validation/images/modern-theme-desktop.png)
+
+The Modern fixture checks keyboard focus, wrapped titles, and readable green
+gradients. See [Modern theme validation](docs/validation/modern-theme.md) for
+the narrow details screenshot and browser tests.
+
+## Paw Theme
+
+![Paw inventory with seeded device measurements](docs/validation/images/paw-theme-desktop.png)
+
+The Paw fixture checks wrapped titles and readable links across row states.
+See [Paw theme validation](docs/validation/paw-theme.md) for the narrow details
+screenshot and browser tests.
+
+## Raspberry Theme
+
+![Raspberry inventory with seeded device measurements](docs/validation/images/raspberry-theme-desktop.png)
+
+The Raspberry fixture checks wrapped titles and readable links on light and
+selected rows. See [Raspberry theme validation](docs/validation/raspberry-theme.md)
+for the narrow details screenshot and browser tests.
+
+## Sunrise Theme
+
+![Sunrise inventory with seeded device measurements](docs/validation/images/sunrise-theme-desktop.png)
+
+The Sunrise fixture checks wrapped titles and readable highlighted options.
+See [Sunrise theme validation](docs/validation/sunrise-theme.md) for the narrow
+details screenshot and browser tests.
+
+## Paper Plane Theme
+
+![Paper Plane inventory with seeded measurements](docs/validation/images/paper-plane-theme-desktop.png)
+
+The Paper Plane fixture checks wrapped titles and readable text on dark,
+alternating, hovered, and selected rows. See
+[Paper Plane theme validation](docs/validation/paper-plane-theme.md) for screenshots
+and browser tests.
+
 ---
 
 ## Release Branches
@@ -479,7 +546,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/Mojo-OG"><img src="https://avatars.githubusercontent.com/u/57604549?v=4" width="100px;" alt="Mojo-OG"/><br /><sub><b>Mojo-OG</b></sub></a><br /><span title="Code">💻</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/abdulm5"><img src="https://avatars.githubusercontent.com/u/154353563?v=4" width="100px;" alt="abdulm5"/><br /><sub><b>abdulm5</b></sub></a><br /><span title="Code">💻</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/darkdi"><img src="https://avatars.githubusercontent.com/u/45711841?v=4" width="100px;" alt="darkdi"/><br /><sub><b>darkdi</b></sub></a><br /><span title="Code">💻</span></td>
-        <td align="center" valign="top" width="14.28%"><a href="https://github.com/alcatron"><img src="https://avatars.githubusercontent.com/u/27321443?v=4" width="100px;" alt="alcatron"/><br /><sub><b>alcatron</b></sub></a><br /><span title="Code">💻</span></td>
+        <td align="center" valign="top" width="14.28%"><a href="https://github.com/alcatron"><img src="https://avatars.githubusercontent.com/u/27321443?v=4" width="100px;" alt="alcatron"/><br /><sub><b>alcatron</b></sub></a><br /><span title="Code">💻</span><span title="Translation">🌍</span><span title="Tests">⚠️</span><span title="Reviewed Pull Requests">👀</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/mael-chouteau"><img src="https://avatars.githubusercontent.com/u/101983244?v=4" width="100px;" alt="mael-chouteau"/><br /><sub><b>mael-chouteau</b></sub></a><br /><span title="Code">💻</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/mixneko"><img src="https://avatars.githubusercontent.com/u/12106753?v=4" width="100px;" alt="mixneko"/><br /><sub><b>mixneko</b></sub></a><br /><span title="Code">💻</span></td>
       </tr>

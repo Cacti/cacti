@@ -13,6 +13,7 @@ if (PHP_SAPI !== 'cli') {
 
 require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
+\cacti_fixture_source_function(dirname(__DIR__, 3) . '/lib/html.php', 'graph_drilldown_display_class', __NAMESPACE__);
 
 /*
  * Request/changed-line coverage probe for the Details and Time View drilldown
@@ -67,6 +68,10 @@ function api_plugin_hook($name, $data = []) { return $data; }
 function aggregate_build_children_url() { return ''; }
 function is_realm_allowed($realm) { return true; }
 function read_user_setting($name, $default = '') {
+	if ($name === 'graph_actions_display') {
+		return $GLOBALS['hgm_graph_actions'] ?? $default;
+	}
+
 	if ($name === 'page_refresh') {
 		return 30;
 	}
@@ -153,5 +158,21 @@ if ($xpath->query("//div[contains(@class, 'graphWrapperOuter')]/div[contains(@cl
 }
 
 $passed++;
+
+// Both detail renderers must honour the preference and reject unknown modes.
+foreach (['icons' => 'graphDrillDownAlways', 'menu' => 'graphDrillDownToggle', 'unknown' => 'graphDrillDownToggle'] as $mode => $class) {
+	$GLOBALS['hgm_graph_actions'] = $mode;
+	foreach (['html_graph_single_view', 'html_graph_zoom'] as $view) {
+		$xpath = hgm_render(__NAMESPACE__ . '\\' . $view);
+		if ($xpath->query("//div[contains(@class, '$class')]//div[contains(@class, 'iconWrapper')]//a")->length === 0) {
+			throw new RuntimeException("$view did not render actions for $mode");
+		}
+		$other = $class === 'graphDrillDownAlways' ? 'graphDrillDownToggle' : 'graphDrillDownAlways';
+		if ($xpath->query("//div[contains(@class, '$other')]")->length !== 0) {
+			throw new RuntimeException("$view mixed action display modes");
+		}
+		$passed++;
+	}
+}
 
 print json_encode(['passed' => $passed], JSON_THROW_ON_ERROR) . "\n";

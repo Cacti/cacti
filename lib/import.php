@@ -427,6 +427,70 @@ function get_public_key() : string {
 	return $public_key;
 }
 
+/**
+ * Check that a file name read from a Package repository manifest names a file
+ * directly inside the repository.
+ *
+ * @param string $filename The file name from the manifest.
+ *
+ * @return bool True when the name has no directory part and is not hidden.
+ */
+function package_repo_filename_valid(string $filename) : bool {
+	return $filename !== ''
+		&& $filename[0] !== '.'
+		&& !str_contains($filename, "\0")
+		&& !str_contains($filename, '\\')
+		&& basename($filename) === $filename;
+}
+
+/**
+ * The largest decompressed Package, in bytes, that the import reads.  A
+ * Package holds templates and their scripts, which are far smaller.
+ *
+ * @return int
+ */
+function import_package_max_bytes() : int {
+	return 64 * 1024 * 1024;
+}
+
+/**
+ * Check that a Package decompresses to no more than the limit, reading it in
+ * chunks so an oversized Package never has to fit in memory.
+ *
+ * @param string   $xmlfile The Package file.
+ * @param int|null $limit   The limit in bytes, import_package_max_bytes() when null.
+ *
+ * @return bool True when the file is readable and within the limit.
+ */
+function import_package_within_size_limit(string $xmlfile, ?int $limit = null) : bool {
+	$limit = $limit ?? import_package_max_bytes();
+
+	$f = (is_file($xmlfile) && is_readable($xmlfile) ? gzopen($xmlfile, 'rb') : false);
+
+	if ($f === false) {
+		return false;
+	}
+
+	$total = 0;
+
+	// gzread() returns false or an empty string on a damaged stream, so
+	// either ends the read and fails the check.
+	do {
+		$chunk  = gzread($f, 1048576);
+		$total += strlen((string) $chunk);
+	} while ($chunk != '' && $total <= $limit);
+
+	$ok = ($chunk !== false && gzeof($f) && $total <= $limit);
+
+	gzclose($f);
+
+	if (!$ok) {
+		cacti_log('WARNING: Package ' . $xmlfile . ' is damaged or decompresses past ' . $limit . ' bytes', false, 'IMPORT');
+	}
+
+	return $ok;
+}
+
 function import_package_get_public_key(string $xmlfile) : string {
 	$data = import_package_get_details($xmlfile);
 
@@ -448,6 +512,12 @@ function import_package_get_name(string $xmlfile) : string {
 }
 
 function import_package_get_details(string $xmlfile) : array {
+	// An unreadable Package names no key, rather than falling back to the
+	// Cacti key below.
+	if (!import_package_within_size_limit($xmlfile)) {
+		return ['public_key' => ''];
+	}
+
 	$filename = "compress.zlib://$xmlfile";
 
 	$return = [];
@@ -531,7 +601,7 @@ function import_validate_signature(string $xmlfile) : bool {
 }
 
 function import_get_package_info(string $xmlfile) : mixed {
-	if (!file_exists($xmlfile)) {
+	if (!file_exists($xmlfile) || !import_package_within_size_limit($xmlfile)) {
 		return false;
 	}
 
@@ -588,6 +658,10 @@ function import_get_package_info(string $xmlfile) : mixed {
 }
 
 function import_read_package_data(string $xmlfile, string &$public_key, bool $preview = false) : mixed {
+	if (!import_package_within_size_limit($xmlfile)) {
+		return false;
+	}
+
 	$public_key = import_package_get_public_key($xmlfile);
 
 	$filename = "compress.zlib://$xmlfile";
@@ -673,25 +747,49 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
  * This function can also read from the $_REQUEST environment certain overrides for
  * Graph Size, and Image format when importing through the GUI.
  *
- * @param string $xmlfile         The XML file to process
- * @param int    $profile_id      The Data Source Profile to use for the packages
- * @param bool   $remove_orphans  Boolean true to remove Graph Template orphans after import
- * @param bool   $replace_svalues Boolean that if true, all suggested values for Graph Templates
- *                                and Data Templates will be replaced with the values in the
- *                                package.
- * @param bool   $preview         If true, only generate a preview of what will be imported
- *                                and the corresponding changes.
- * @param bool   $info_only       Return only the information about the package, not details
- * @param bool   $limitex         Limit the execution time to 50 seconds to process for larger
- *                                packages.
- * @param array  $import_hashes   The hashes to import from the package
- * @param array  $import_files    The XML resource files and script files to import from the package
+ * @param string $xmlfile             The XML file to process
+ * @param int    $profile_id          The Data Source Profile to use for the packages
+ * @param bool   $remove_orphans      Boolean true to remove Graph Template orphans after import
+ * @param bool   $replace_svalues     Boolean that if true, all suggested values for Graph Templates
+ *                                    and Data Templates will be replaced with the values in the
+ *                                    package.
+ * @param bool   $preview             If true, only generate a preview of what will be imported
+ *                                    and the corresponding changes.
+ * @param bool   $info_only           Return only the information about the package, not details
+ * @param bool   $limitex             Limit the execution time to 50 seconds to process for larger
+ *                                    packages.
+ * @param array  $import_hashes       The hashes to import from the package
+ * @param array  $import_files        The XML resource files and script files to import from the package
+ * @param bool   $keep_existing_files If true, script and resource files that already exist are
+ *                                    left in place instead of being replaced by the copy embedded
+ *                                    in the package.
  *
  * @return mixed The results of the import package
  */
+/**
+ * import_write_blocked_by_symlink - decide whether a package file write must be
+ *   refused because the on-disk destination is a symbolic link.  Writing through
+ *   a symlink would let a crafted package redirect the write outside the intended
+ *   location, so the refusal is logged and the caller skips the file.
+ *
+ * @param string $filename the resolved on-disk destination to be written
+ * @param string $name     the package-relative name, used only for logging
+ *
+ * @return bool true when the destination is a symlink and must not be written
+ */
+function import_write_blocked_by_symlink(string $filename, string $name) : bool {
+	if (is_link($filename)) {
+		cacti_log('FATAL: Refusing to write package file through a symbolic link: ' . $name, true, 'IMPORT');
+
+		return true;
+	}
+
+	return false;
+}
+
 function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orphans = false,
 	bool $replace_svalues = false, bool $preview = false, bool $info_only = false, bool $limitex = true,
-	array $import_hashes = [], array $import_files = []) : mixed {
+	array $import_hashes = [], array $import_files = [], bool $keep_existing_files = false) : mixed {
 	global $preview_only;
 
 	$preview_only = $preview;
@@ -811,7 +909,21 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 			}
 
 			if (!$preview) {
-				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
+				if (import_write_blocked_by_symlink($filename, $name)) {
+					$filestatus[$name] = __('rejected');
+
+					continue;
+				}
+
+				if ($keep_existing_files && file_exists($filename)) {
+					/* The installer imports the packages shipped with this release.  Their
+					 * embedded copies of shared scripts and resource files can be older than
+					 * the copies shipped alongside them, and replacing those would undo fixes
+					 * made since the packages were built. */
+					$filestatus[$filename] = __('kept existing');
+
+					cacti_log('Keeping existing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+				} elseif (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
 					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
 					if ((is_writable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
@@ -2639,6 +2751,17 @@ function xml_to_data_input_method(string $hash, array &$xml_array, array &$hash_
 					$save[$field_name] = str_replace('>""<', '>" "<', $save[$field_name]);
 					$save[$field_name] = str_replace('>\'\'<', '>\' \'<', $save[$field_name]);
 				}
+			}
+
+			// Apply the shell-metacharacter guard the GUI save path uses so an
+			// imported package cannot persist an input_string that the UI rejects.
+			if ($field_name == 'input_string' && !cacti_input_string_is_safe($save[$field_name])) {
+				cacti_log("ERROR: Refusing to import data input method '$hash' - input_string contains shell metacharacters", false, 'IMPORT');
+
+				$import_debug_info['type']   = 'fail';
+				$import_debug_info['unsafe'] = true;
+
+				return false;
 			}
 		}
 	}

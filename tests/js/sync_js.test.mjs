@@ -23,7 +23,7 @@ function fixtureContent(source) {
 		return `// fixture:${source}\nlet screenfull = {};\nexport default screenfull;\n`;
 	}
 	if (source === 'node_modules/pace-js/pace.js') {
-		return "if (!__hasProp.call(source, key)) continue;\ndocument.body.className.replace(/(pace-done )|/, 'pace-running ');\n";
+		return "if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;\ndocument.body.className.replace(/(pace-done )|/, 'pace-running ');\n";
 	}
 
 	return `fixture:${source}\n`;
@@ -36,7 +36,7 @@ function assertSynced(root) {
 		if (source === 'node_modules/screenfull/index.js') {
 			assert.equal(actual, `// fixture:${source}\nlet screenfull = {};\nwindow.screenfull = screenfull;\n`);
 		} else if (source === 'node_modules/pace-js/pace.js') {
-			assert.match(actual, /key === '__proto__'.*key === 'constructor'.*key === 'prototype'/);
+			assert.equal(actual.match(/key === '__proto__'/g).length, 1);
 			assert.match(actual, /replace\(\/\(pace-done \)\//);
 			assert.doesNotMatch(actual, /pace-done \)\|/);
 		} else {
@@ -90,9 +90,9 @@ test('DOMPurify is pinned and generated from the matching npm release', () => {
 	const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
 	const source = 'node_modules/dompurify/dist/purify.js';
 
-	assert.equal(packageJson.dependencies.dompurify, '3.4.17');
+	assert.equal(packageJson.dependencies.dompurify, '3.4.18');
 	assert.equal(assetMap[source], 'include/js/purify.js');
-	assert.match(readFileSync(source, 'utf8'), /DOMPurify 3\.4\.17/);
+	assert.match(readFileSync(source, 'utf8'), /DOMPurify 3\.4\.18/);
 });
 
 test("screenfull's ESM export is rewritten to a global assignment", () => {

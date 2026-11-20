@@ -21,8 +21,9 @@ mark.js, and hotkeys-js. The latter libraries retain their existing public
 paths under `include/js/vendor/`. Moment is pinned to a patched release;
 mark.js uses the published 8.11.1 release rather than the old copy marked 9.0.0.
 
-The copy transforms preserve Pace's prototype-key rejection and body-class
-fix, rewrite screenfull's ESM export, and replace removed jQuery APIs in
+The copy transforms apply Pace's body-class fix (and fail the build if Pace
+stops rejecting prototype keys, which 1.3.1 does upstream), rewrite screenfull's
+ESM export, and replace removed jQuery APIs in
 tablesorter's core, widgets, and minified pager. No npm package source is
 modified. Unexpected Pace or screenfull source formats fail the build so an
 update cannot silently discard the fixes.

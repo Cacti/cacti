@@ -54,7 +54,7 @@ def validate_file(path: Path) -> List[str]:
     errors = []
     msgfmt = shutil.which("msgfmt")
     if msgfmt:
-        proc = subprocess.run([msgfmt, "-c", "--check-format", "-o", "/dev/null", str(path)], capture_output=True, text=True)
+        proc = subprocess.run([msgfmt, "-c", "--check-format", "-o", "/dev/null", "--", str(path)], capture_output=True, text=True)
         if proc.returncode != 0: errors.append(f"{path}: msgfmt failed:\n{proc.stderr.strip()}")
     try:
         entries = parse_po(path)
