@@ -248,7 +248,14 @@ function form_save() : void {
 		$save2['data_template_id']            = gfrv('data_template_id');
 		$save2['data_input_id']               = CactiValidator::validateInput(grv('data_input_id'), 'data_input_id', [new Assert\Regex('/^[0-9]+$/')], 3);
 		$save2['name']                        = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()], 3);
-		$save2['data_source_path']            = CactiValidator::validateInput(gnrv('data_source_path'), 'data_source_path', [], 3);
+		$save2['data_source_path']            = CactiValidator::validateInput(gnrv('data_source_path'), 'data_source_path', [new Assert\Callback(
+			static function (mixed $value, \Symfony\Component\Validator\Context\ExecutionContextInterface $context) : void {
+				// rrdtool splits arguments on whitespace and quotes in the file name
+				if (!is_string($value) || !data_source_path_is_clean($value)) {
+					$context->buildViolation(__('The Data Source Path may not contain whitespace, quotes or control characters.'))->addViolation();
+				}
+			}
+		)], 3);
 		$save2['active']                      = CactiValidator::validateInput((isrv('active') ? gnrv('active') : ''), 'active', [], 3);
 		$save2['data_source_profile_id']      = CactiValidator::validateInput(grv('data_source_profile_id'), 'data_source_profile_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
 		$save2['rrd_step']                    = CactiValidator::validateInput(grv('rrd_step'), 'rrd_step', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
