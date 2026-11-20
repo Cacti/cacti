@@ -65,7 +65,11 @@ function ss_mikrotik_wireless_reg($host_id, $cmd = 'index', $object = '', $index
 			print $mac . PHP_EOL;
 		}
 	} elseif ($cmd == 'num_indexes') {
-		return (string) cacti_sizeof(ss_mikrotik_wireless_reg_getnames($host_id));
+		// counted with the same filters as the index list
+		return (string) db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM plugin_mikrotik_wireless_registrations
+			WHERE host_id = ?',
+			[$host_id]);
 	} elseif ($cmd == 'query') {
 		if ($object == 'macAddress') {
 			foreach (ss_mikrotik_wireless_reg_getnames($host_id) as $mac) {
@@ -115,14 +119,15 @@ function ss_mikrotik_wireless_reg_getvalue($host_id, $index, $object) {
 	$value = db_fetch_cell_prepared('SELECT `' . $columns[$object] . '`
 		FROM plugin_mikrotik_wireless_registrations
 		WHERE host_id = ?
-		AND `index` = ?',
+		AND `index` = ?
+		AND present = 1',
 		[(int) $host_id, $index]);
 
 	if ($object == 'Uptime') {
 		return ss_mikrotik_wireless_reg_uptime($value);
 	}
 
-	// no row for this registration: unknown, not zero
+	// a disconnected or unknown registration: unknown, not zero
 	return is_numeric($value) ? (string) $value : 'U';
 }
 

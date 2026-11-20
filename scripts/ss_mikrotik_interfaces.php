@@ -65,7 +65,13 @@ function ss_mikrotik_interfaces($host_id, $cmd = 'index', $arg1 = '', $arg2 = ''
 			print $index . PHP_EOL;
 		}
 	} elseif ($cmd == 'num_indexes') {
-		return (string) cacti_sizeof(ss_mikrotik_interfaces_getnames($host_id));
+		// counted with the same filters as the index list
+		return (string) db_fetch_cell_prepared("SELECT COUNT(DISTINCT `index`)
+			FROM plugin_mikrotik_interfaces
+			WHERE host_id = ?
+			AND name != ''
+			AND present = 1",
+			[$host_id]);
 	} elseif ($cmd == 'query') {
 		foreach (ss_mikrotik_interfaces_getinfo($host_id, $arg1) as $index => $value) {
 			print $index . '!' . $value . PHP_EOL;
