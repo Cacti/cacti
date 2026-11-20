@@ -109,6 +109,7 @@ jobs:
           set -euo pipefail
           mkdir -p "$CACTI_PR_RAW_COVERAGE"
           vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+          php fixtures/Core/DisplayContextRender.php | grep -Fx 'Display rendering passed'
           php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest \
             Unit/Core/Boost/BoostArchiveDeletionOwnershipBehaviorTest.php \
             Unit/Core/Boost/BoostFailureAlertBehaviorTest.php \
