@@ -636,7 +636,7 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 
 		foreach ($pollers as $p => $t) {
 			if ($t > $gone_time) {
-				raise_message('poller_' . $p, __esc('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+				raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
 			} else {
 				$rcnn_id = poller_connect_to_remote($p);
 
@@ -648,7 +648,7 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 
 				// check if we still have rcnn_id, if it's now become false, we had a problem
 				if (!$rcnn_id) {
-					raise_message('poller_' . $p, __esc('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+					raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 				}
 			}
 		}
@@ -1308,14 +1308,58 @@ function get_message_max_type(mixed $output_messages = null) : int {
 /**
  * Message to be displayed to the user once display_output_messages() is called
  *
+ * A custom $message is plain text and is HTML-escaped here, so callers pass unescaped text
+ * (__() rather than __esc()). Use raise_message_html() only for trusted markup whose dynamic
+ * parts the caller has already escaped. Predefined and session-keyed messages are not escaped.
+ * Text a caller already escaped with __esc() or html_escape() is not encoded a second time.
+ *
  * @param mixed  $message_id    ID of the message as defined in $messages in 'include/global_arrays.php'
- * @param string $message       Text of the message to be displayed
+ * @param string $message       Plain text of the message to be displayed
  * @param int    $message_level Level of the message to be displayed
  * @param mixed  $message_title Title of the message to be displayed
  *
  * @return bool
  */
 function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
+	if (!empty($message)) {
+		// plugins written for the old behaviour pass markup or __esc() text; point the log at them
+		if (raise_message_has_markup($message)) {
+			$caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
+
+			cacti_log(sprintf('DEBUG: raise_message() was given markup or escaped text at %s:%d.  Pass plain text, or use raise_message_html() for trusted markup.', $caller['file'] ?? '?', $caller['line'] ?? 0), false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+		}
+
+		// html_escape() returns '' for invalid UTF-8, e.g. a device name from SNMP
+		$message = html_escape(mb_scrub($message, 'UTF-8'));
+	}
+
+	return raise_message_html($message_id, $message, $message_level, $message_title);
+}
+
+/**
+ * Whether a plain-text message looks like it carries HTML tags or character references, which
+ * raise_message() will now display literally.
+ *
+ * @param string $message The message text
+ *
+ * @return bool True if the text contains a common HTML tag or an entity
+ */
+function raise_message_has_markup(string $message) : bool {
+	return preg_match('/<\/?(a|b|i|u|br|p|span|div|ul|ol|li|strong|em|code|pre|font|table|tr|td|th|img|hr|h[1-6])\b|&(#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]*);/i', $message) === 1;
+}
+
+/**
+ * Message containing trusted HTML to be displayed to the user once display_output_messages()
+ * is called. The caller must escape every dynamic value in $message.
+ *
+ * @param mixed  $message_id    ID of the message as defined in $messages in 'include/global_arrays.php'
+ * @param string $message       HTML of the message to be displayed
+ * @param int    $message_level Level of the message to be displayed
+ * @param mixed  $message_title Title of the message to be displayed
+ *
+ * @return bool
+ */
+function raise_message_html(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
 	global $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
@@ -3659,6 +3703,39 @@ function get_data_source_item_name(int $data_template_rrd_id) : mixed {
 }
 
 /**
+ * data_source_path_is_clean - checks the file part of a data source path for
+ * characters that rrdtool's own argument tokenizer would split or unquote
+ *
+ * rrdtool re-tokenizes the arguments it is given, and it does not decode the
+ * quoting that cacti_escapeshellarg() adds, so whitespace or a quote inside the
+ * file name splits one path into several arguments. The RRA directory itself
+ * (the <path_rra> token or the configured directory) is not examined, so a
+ * configured directory that contains a space keeps working.
+ *
+ * @param string $path The stored or expanded data source path
+ *
+ * @return bool True when the part after the RRA directory has no control
+ *              character, whitespace or quote
+ */
+function data_source_path_is_clean(string $path) : bool {
+	$prefixes = ['<path_rra>/'];
+
+	if (defined('CACTI_PATH_RRA')) {
+		$prefixes[] = rtrim((string) CACTI_PATH_RRA, '/') . '/';
+	}
+
+	foreach ($prefixes as $prefix) {
+		if (str_starts_with($path, $prefix)) {
+			$path = substr($path, strlen($prefix));
+
+			break;
+		}
+	}
+
+	return preg_match('/[\x00-\x20\x7f\'"]/', $path) === 0;
+}
+
+/**
  * Gets the full path to the .rrd file associated with a given data source
  *
  * @param int  $local_data_id The ID of the data source
@@ -3701,8 +3778,8 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
 			 * write outside the RRA directory (into the web root, for example).
 			 * Contain it here, where every consumer resolves the path, and fall
 			 * back to the generated location when it escapes. */
-			if (!data_source_path_within_rra($data_source_path)) {
-				cacti_log(sprintf('SECURITY: Data source %d has a data_source_path that escapes the RRA directory (%s).  Using the generated path instead.', $local_data_id, $data_source['data_source_path']), false, 'POLLER');
+			if (!data_source_path_within_rra($data_source_path) || !data_source_path_is_clean($data_source_path)) {
+				cacti_log(sprintf('SECURITY: Data source %d has a data_source_path that escapes the RRA directory or contains whitespace or quotes (%s).  Using the generated path instead.', $local_data_id, $data_source['data_source_path']), false, 'POLLER');
 
 				$data_source_path = str_replace('<path_rra>/', CACTI_PATH_RRA . '/', generate_data_source_path($local_data_id));
 			}
@@ -5841,6 +5918,35 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
 	}
 
 	return $result;
+}
+
+/**
+ * cacti_input_string_is_safe - guard against shell metacharacters smuggled into
+ * a data_input.input_string template.
+ *
+ * Remove recognized field placeholders before checking the surrounding text.
+ * Characters blocked outside placeholders: ; & | ` $ \ newline carriage-return ' " < > ( ) { }. Paired
+ * quotes surrounding a placeholder ("<x>" or '<x>') are removed together with
+ * the placeholder so legitimate argument quoting such as
+ * <path_cacti>/scripts/x.php "<reason>" is kept.
+ *
+ * @param mixed $input_string The candidate input_string template
+ *
+ * @return bool True when the value is safe to persist; a value that is not a
+ *              string (for example a failed base64 decode) is not safe
+ */
+function cacti_input_string_is_safe(mixed $input_string) : bool {
+	if ($input_string === null || $input_string === '') {
+		return true;
+	}
+
+	if (!is_string($input_string)) {
+		return false;
+	}
+
+	$bare = preg_replace('/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/', '', $input_string);
+
+	return $bare !== null && preg_match('/[;&|`$\\\\\n\r\'"<>(){}]/', $bare) === 0;
 }
 
 /**
