@@ -34,7 +34,8 @@ if (!isset($called_by_script_server)) {
 /**
  * Data query backend for resource/script_server/mikrotik_interfaces.xml.
  *
- * Interfaces are indexed by their numeric interface index.
+ * Interfaces are indexed by their numeric interface index.  Data sources
+ * created by earlier versions, which indexed them by name, still resolve.
  *
  * @param int|string $host_id The Cacti host id
  * @param string     $cmd     One of index, num_indexes, query or get
@@ -104,11 +105,23 @@ function ss_mikrotik_interfaces_getvalue($host_id, $index, $column) {
 		return 'U';
 	}
 
+	// numeric indexes are current, names were emitted by earlier versions
+	if (ctype_digit((string) $index)) {
+		$where  = '`index` = ?';
+		$params = [$index, (int) $host_id];
+	} else {
+		$where  = 'name IN (?, ?)';
+		$params = [$index, str_replace('_', ' ', $index), (int) $host_id];
+	}
+
+	// a renamed interface leaves its absent row behind with the same index
 	$value = db_fetch_cell_prepared('SELECT `cur' . $column . '`
 		FROM plugin_mikrotik_interfaces
-		WHERE `index` = ?
-		AND host_id = ?',
-		[$index, (int) $host_id]);
+		WHERE ' . $where . '
+		AND host_id = ?
+		ORDER BY present DESC
+		LIMIT 1',
+		$params);
 
 	// no row for this interface: unknown, not zero
 	return is_numeric($value) ? (string) $value : 'U';
@@ -128,6 +141,7 @@ function ss_mikrotik_interfaces_getnames($host_id) {
 		FROM plugin_mikrotik_interfaces
 		WHERE host_id = ?
 		AND name != ''
+		AND present = 1
 		ORDER BY name",
 		[(int) $host_id]);
 
@@ -159,6 +173,7 @@ function ss_mikrotik_interfaces_getinfo($host_id, $info_requested) {
 		FROM plugin_mikrotik_interfaces
 		WHERE host_id = ?
 		AND name != ''
+		AND present = 1
 		ORDER BY name",
 		[(int) $host_id]);
 

@@ -127,8 +127,9 @@ function ss_mikrotik_wireless_reg_getvalue($host_id, $index, $object) {
 }
 
 /**
- * Convert a stored registration uptime to seconds.  Both the SNMP and the
- * RouterOS API collectors store it as 'days:hours:minutes:seconds'.
+ * Convert a stored registration uptime to seconds.  The SNMP collector stores
+ * mtxrWlRtabUptime TimeTicks (hundredths of a second), the RouterOS API
+ * collector 'days:hours:minutes:seconds'.
  *
  * @param mixed $value The stored uptime
  *
@@ -136,7 +137,7 @@ function ss_mikrotik_wireless_reg_getvalue($host_id, $index, $object) {
  */
 function ss_mikrotik_wireless_reg_uptime($value) {
 	if (is_numeric($value)) {
-		return (string) $value;
+		return (string) floor($value / 100);
 	}
 
 	if (!is_string($value) || !preg_match('/^(?:(\d+):)?(\d+):(\d+):(\d+)(?:\.\d+)?$/', trim($value), $matches)) {

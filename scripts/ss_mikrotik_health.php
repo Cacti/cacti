@@ -56,18 +56,19 @@ function ss_mikrotik_health($host_id = 0, $column = '') {
 	$column  = (string) $column;
 
 	if (isset($aliases[$column])) {
-		$column = $aliases[$column];
-	}
-
-	if (!isset($columns[$column])) {
+		$sensors = $aliases[$column]['sensors'];
+		$column  = $aliases[$column]['column'];
+	} elseif (isset($columns[$column])) {
+		$sensors = $columns[$column];
+	} else {
 		return 'U';
 	}
 
 	$host_id = (int) $host_id;
 
 	// plugin schema 3.4 and later: RouterOS 7 gauge sensors
-	if (cacti_sizeof($columns[$column]) && db_table_exists('plugin_mikrotik_health_sensors', false)) {
-		foreach ($columns[$column] as $sensor) {
+	if (cacti_sizeof($sensors) && db_table_exists('plugin_mikrotik_health_sensors', false)) {
+		foreach ($sensors as $sensor) {
 			$value = db_fetch_cell_prepared('SELECT value
 				FROM plugin_mikrotik_health_sensors
 				WHERE host_id = ?
@@ -120,18 +121,19 @@ function ss_mikrotik_health_columns() {
 }
 
 /**
- * Metric names accepted in place of the health column name.
+ * Metric names accepted in place of the health column name, each with the
+ * RouterOS 7 gauge sensors it prefers and its legacy fallback column.
  *
- * @return array<string, string>
+ * @return array<string, array{sensors: array<int, string>, column: string}>
  */
 function ss_mikrotik_health_aliases() {
 	return [
-		'voltage'              => 'HlVoltage',
-		'temperature'          => 'HlTemperature',
-		'processorTemperature' => 'HlProcessorTemperature',
-		'current'              => 'HlCurrent',
-		'power'                => 'HlPower',
-		'fanSpeed'             => 'HlFanSpeed1',
-		'cpuFrequency'         => 'HlProcessorFrequency',
+		'voltage'              => ['sensors' => ['voltage', 'psu1-voltage'],          'column' => 'HlVoltage'],
+		'temperature'          => ['sensors' => ['temperature', 'board-temperature'], 'column' => 'HlTemperature'],
+		'processorTemperature' => ['sensors' => ['cpu-temperature'],                  'column' => 'HlProcessorTemperature'],
+		'current'              => ['sensors' => ['current', 'psu1-current'],          'column' => 'HlCurrent'],
+		'power'                => ['sensors' => ['power-consumption', 'power'],       'column' => 'HlPower'],
+		'fanSpeed'             => ['sensors' => ['fan1-speed', 'fan1'],               'column' => 'HlFanSpeed1'],
+		'cpuFrequency'         => ['sensors' => ['cpu-frequency'],                    'column' => 'HlProcessorFrequency'],
 	];
 }
