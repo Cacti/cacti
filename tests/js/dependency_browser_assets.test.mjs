@@ -19,7 +19,7 @@ test('the pinned Chart build loads through Cacti\'s classic script tag', () => {
 for (const name of ['hotkeys.js', 'hotkeys.min.js']) {
 	test(`${name} preserves shortcut registration, triggering, and removal`, () => {
 		const target = { addEventListener() {}, removeEventListener() {} };
-		const context = { window: { ...target }, document: { ...target } };
+		const context = { window: { ...target }, document: { ...target, createEvent: () => ({ initEvent() {} }) } };
 		vm.runInNewContext(readFileSync(resolve(root, 'include/js/vendor/hotkeys', name), 'utf8'), context);
 		const hotkeys = context.window.hotkeys;
 		assert.equal(typeof hotkeys, 'function');

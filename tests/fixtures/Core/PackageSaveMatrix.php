@@ -43,6 +43,9 @@ namespace Cacti\Test\ManifestSave {
 	function raise_message($id, ...$args) {
 		$GLOBALS['save_messages'][] = $id;
 	}
+	function __($text, ...$args) {
+		return vsprintf($text, $args);
+	}
 	function __esc($text, ...$args) {
 		return vsprintf($text, $args);
 	}

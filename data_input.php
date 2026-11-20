@@ -107,6 +107,14 @@ function form_save() : void {
 		$save['input_string'] = CactiValidator::validateInput(gnrv('input_string'), 'input_string', [], 3);
 		$save['type_id']      = CactiValidator::validateInput(gnrv('type_id'), 'type_id', [new Assert\Regex('/^[0-9]+$/')], 3);
 
+		// Reject shell metacharacters outside of <placeholder> markers
+		if (!is_error_message() && !cacti_input_string_is_safe($save['input_string'])) {
+			raise_message('validation_error', __('Input string contains dangerous shell characters'), MESSAGE_LEVEL_ERROR);
+			header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
+
+			exit;
+		}
+
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
 
