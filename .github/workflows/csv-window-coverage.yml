@@ -5,6 +5,9 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/csv-window-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
       - 'graph_xport.php'
@@ -12,7 +15,6 @@ on:
       - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/Core/Rrd/CsvWindowResolutionContractTest.php'
       - 'tests/Unit/Core/Rrd/PercentileResolutionBehaviorTest.php'
-      - 'tests/Unit/ConsolidatedFunctionalFixesTest.php'
       - 'tests/Unit/Ui/Graph/PercentileContractTest.php'
       - 'tests/Unit/RrdResolutionStepQueryTest.php'
       - 'tests/integration/RrdtoolProcessIntegrationTest.php'
@@ -21,6 +23,9 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/csv-window-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
       - 'graph_xport.php'
@@ -28,7 +33,6 @@ on:
       - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/Core/Rrd/CsvWindowResolutionContractTest.php'
       - 'tests/Unit/Core/Rrd/PercentileResolutionBehaviorTest.php'
-      - 'tests/Unit/ConsolidatedFunctionalFixesTest.php'
       - 'tests/Unit/Ui/Graph/PercentileContractTest.php'
       - 'tests/Unit/RrdResolutionStepQueryTest.php'
       - 'tests/integration/RrdtoolProcessIntegrationTest.php'
