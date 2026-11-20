@@ -59,6 +59,8 @@ case 'restart' :
 	break;
 case 'remall' :
 case 'arcall' :
+	csrf_require_post();
+
 	top_header();
 	/* fill files name table */
 	remove_all_rrds();
@@ -642,7 +644,9 @@ function filter() {
 				$('#arcall').on('click', function() {
 					$('#text').text('Scheduling Archiving of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1')
+					var request = cactiPreparePostRequestFromUrl('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1');
+
+					$.post(request.url, request.data)
 						.done(function(data) {
 							checkForLogout(data);
 
@@ -658,7 +662,9 @@ function filter() {
 				$('#remall').on('click', function() {
 					$('#text').text('Scheduling Purging of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1')
+					var request = cactiPreparePostRequestFromUrl('rrdcleaner.php?header=false&action=remall&raction=1&clear=1');
+
+					$.post(request.url, request.data)
 						.done(function(data) {
 							checkForLogout(data);
 
