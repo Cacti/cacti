@@ -48,7 +48,6 @@ on:
       - 'tests/integration/fixtures/htmx_fixture.php'
       - 'tests/e2e/tests/htmx-loader.spec.ts'
       - 'tests/e2e/tests/frontend-dependency-security.spec.ts'
-      - 'patches/pace-js+1.2.4.patch'
       - 'include/js/pace.js'
       - 'tests/e2e/tests/login-smoke.spec.ts'
       - 'tests/e2e/Dockerfile'
@@ -59,6 +58,9 @@ on:
       - 'tests/e2e/package-lock.json'
       - '.github/workflows/htmx-filters.yml'
       - '.github/actions/setup-php-composer/**'
+      - '.github/actions/setup-ci-docker/**'
+      - 'composer.json'
+      - 'composer.lock'
   pull_request:
     branches: [develop]
     paths:
@@ -93,7 +95,6 @@ on:
       - 'tests/integration/fixtures/htmx_fixture.php'
       - 'tests/e2e/tests/htmx-loader.spec.ts'
       - 'tests/e2e/tests/frontend-dependency-security.spec.ts'
-      - 'patches/pace-js+1.2.4.patch'
       - 'include/js/pace.js'
       - 'tests/e2e/tests/login-smoke.spec.ts'
       - 'tests/e2e/Dockerfile'
@@ -104,6 +105,9 @@ on:
       - 'tests/e2e/package-lock.json'
       - '.github/workflows/htmx-filters.yml'
       - '.github/actions/setup-php-composer/**'
+      - '.github/actions/setup-ci-docker/**'
+      - 'composer.json'
+      - 'composer.lock'
 
 permissions:
   contents: read
@@ -217,6 +221,9 @@ jobs:
           set -euo pipefail
           npm ci --ignore-scripts
           npm run postinstall --ignore-scripts
+
+      - name: Set up Docker with the public registry cache
+        uses: ./.github/actions/setup-ci-docker
 
       - name: Build and start the Cacti stack
         working-directory: tests/e2e

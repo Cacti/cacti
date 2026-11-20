@@ -67,13 +67,12 @@ const tablesorterJquery4 = content => content
 
 const postCopyTransforms = Object.freeze({
 	'include/js/pace.js': content => {
-		const ownProperty = 'if (!__hasProp.call(source, key)) continue;';
+		const prototypeGuard = "if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;";
 		const bodyClass = "replace(/(pace-done )|/, 'pace-running ')";
-		if (!content.includes(ownProperty) || !content.includes(bodyClass)) {
+		if (!content.includes(prototypeGuard) || !content.includes(bodyClass)) {
 			throw new Error('sync-js: pace source changed; review the prototype and body-class fixes');
 		}
-		return content.replace(ownProperty, ownProperty + "\n\t\t\t\t\tif (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;")
-			.replace(bodyClass, "replace(/(pace-done )/, 'pace-running ')");
+		return content.replace(bodyClass, "replace(/(pace-done )/, 'pace-running ')");
 	},
 	'include/js/screenfull.js': content => {
 		const transformed = content.replace(/\nexport default screenfull;\s*$/, '\nwindow.screenfull = screenfull;\n');

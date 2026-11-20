@@ -1071,7 +1071,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 								$last_delim = ', ';
 							}
 
-							if ($currentval == '' || $currentval == '-') {
+							if ($currentval == '') {
 								$currentval = 'NULL';
 							}
 
@@ -1294,7 +1294,7 @@ function dsstats_rrdtool_init() : array {
 		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
 	}
 
-	$command = read_config_option('path_rrdtool') . ' - ';
+	$command = [(string) read_config_option('path_rrdtool'), '-'];
 
 	$process = proc_open($command, $fds, $pipes);
 

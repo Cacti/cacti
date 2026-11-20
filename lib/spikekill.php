@@ -753,7 +753,7 @@ class spikekill {
 
 		if (!$this->dryrun) {
 			if ($continue) {
-				if ($output == true && $new_output != '') {
+				if ($new_output != '') {
 					if ($this->writeXMLFile($new_output, $xmlfile)) {
 						if ($this->backupRRDFile($this->rrdfile)) {
 							if ($this->createRRDFileFromXML($xmlfile, $this->rrdfile)) {

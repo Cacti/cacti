@@ -134,7 +134,7 @@ hr.menu {
 /* links */
 
 a, a:active, a:visited {
-	color: #2da84c;
+	color: #1b6e31;
 	text-decoration: none;
 	font-size: 12px;
 }
@@ -1043,7 +1043,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #2da84c;
+	color: #1b6e31;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1051,7 +1051,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #164f25;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1182,8 +1182,9 @@ legend {
 	color: white;
 	float: left;
 	text-align: left;
-	height: 25px;
-	display: table-column;
+	min-height: 25px;
+	display: flex;
+	align-items: center;
 	width: 100%;
 	font-size: 1em;
 	font-weight: 700;
@@ -1191,6 +1192,9 @@ legend {
 }
 
 .cactiTableTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
 	color: white;
 	float: left;
 	text-align: left;
@@ -1201,6 +1205,7 @@ legend {
 }
 
 .cactiTableButton {
+	flex: 0 0 auto;
 	float: right;
 	line-height: 22px;
 	display: table-column;
@@ -2733,6 +2738,24 @@ td.center > table {
    Select2 4.x ships no jQuery UI theme, so these overrides reuse this
    theme's own jquery-ui.css/main.css colors (see .ui-widget-content /
    .ui-state-hover / .ui-state-active) to match its look and feel. */
+/* jQuery UI selectmenu (the language dropdown is the only non-select2
+   dropdown) - match this theme's select2 controls. .ui-corner-all squares
+   every corner with border-radius: 0 !important, so restore 6px with the
+   same flag. */
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
+	border: 1px solid #aaaaaa;
+	border-radius: 6px !important;
+	color: #222222;
+}
+
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #dadada;
+	border-color: #999999;
+	color: #212121;
+}
+
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #aaaaaa;

@@ -1906,10 +1906,13 @@ function html_graph_single_view() : void {
 			print "<div class='graphWrapper' id='wrapper_" . $graph['local_graph_id'] . "' graph_id='" . $graph['local_graph_id'] . "' rra_id='" . $rra['id'] . "' graph_width='" . $graph['width'] . "' graph_height='" . $graph['height'] . "' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' title_font_size='" . ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')) . "'></div>";
 
 			if (is_realm_allowed(27)) {
-				print "<div id='dd" . grv('local_graph_id') . "' style='vertical-align:top;' class='graphDrillDown noprint'>";
+				print "<div id='dd" . htmle(get_filter_request_var('local_graph_id')) . "' class='graphDrillDown " . graph_drilldown_display_class() . " noprint'>";
+
+				print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
+				print "<div class='iconWrapper'>";
 
 				print "<a class='iconLink utils' href='#' id='graph_" . grv('local_graph_id') . "_util' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' rra_id='" . $rra['id'] . "'>";
-				print "<i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
+				print "<i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Details') . "'></i></a><br>";
 
 				print "<a id='graph_" . $rra['id'] . "_csv' class='iconLink csv' href='" . htmle(CACTI_PATH_URL . 'graph_xport.php?local_graph_id=' . grv('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . grv('view_type') . '&graph_start=' . $graph_start . '&graph_end=' . $graph_end) . "'>";
 				print "<i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export') . "'></i></a><br>";
@@ -1921,12 +1924,14 @@ function html_graph_single_view() : void {
 				}
 
 				if (read_config_option('realtime_enabled') == 'on' || is_realm_allowed(25)) {
-					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . grv('local_graph_id') . "', 'popup_" . grv('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
+					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . grv('local_graph_id') . "', 'popup_" . grv('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Realtime') . "'></i></a><br>";
 				}
 
 				print($aggregate_url != '' ? $aggregate_url : '');
 
 				api_plugin_hook('graph_buttons', ['hook' => 'view', 'local_graph_id' => grv('local_graph_id'), 'rra' => $rra['id'], 'view_type' => grv('view_type')]);
+
+				print '</div>';
 
 				print '</div>';
 			}
@@ -2227,7 +2232,9 @@ function html_graph_zoom() : void {
 			<div>
 				<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id']; ?>' rra_id='<?php print $rra['id']; ?>' graph_width='<?= $graph_width ?>' graph_height='<?= $graph_height ?>' title_font_size='<?= $title_font_size ?>'></div>
 				<?php if (is_realm_allowed(27)) { ?>
-				<div id='dd<?php print $graph['local_graph_id']; ?>' style='vertical-align:top;' class='graphDrillDown noprint'>
+				<div id='dd<?php print htmle(get_filter_request_var('local_graph_id')); ?>' class='graphDrillDown <?php print graph_drilldown_display_class(); ?> noprint'>
+					<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions'); ?>'><i class='fa fa-bars'></i></span>
+					<div class='iconWrapper'>
 					<a href='#' id='graph_<?php print $graph['local_graph_id']; ?>_properties' class='iconLink properties'>
 						<i class='drillDown ti ti-tool viewSources' title='<?php print __esc('Graph Source/Properties'); ?>'></i>
 					</a>
@@ -2243,10 +2250,11 @@ function html_graph_zoom() : void {
 					}
 
 					api_plugin_hook('graph_buttons', ['hook' => 'zoom', 'local_graph_id' => grv('local_graph_id'), 'rra' =>  grv('rra_id'), 'view_type' => grv('view_type')]); ?>
+					</div>
 				</div>
-				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . htmle($graph['title_cache']) . '</div>' : ''); ?>
 				<?php } ?>
 			</div>
+			<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . htmle($graph['title_cache']) . '</div>' : ''); ?>
 		</div>
 		<div>
 			<input type='hidden' id='date1' value=''>

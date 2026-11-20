@@ -132,10 +132,46 @@ class ReleasedDependencyAuditTest(unittest.TestCase):
         publisher = self.workflow["jobs"]["publish-remediation"]
         self.assertIn("github.repository == 'Cacti/cacti'", publisher["if"])
 
+    def test_checkout_credentials_are_not_persisted_and_publisher_authenticates(self):
+        for job in self.workflow["jobs"].values():
+            for step in job["steps"]:
+                if step.get("uses", "").startswith("actions/checkout@"):
+                    self.assertIs(step["with"]["persist-credentials"], False)
+
+        publisher = self.workflow["jobs"]["publish-remediation"]["steps"]
+        publish = next(step for step in publisher if " publish " in step.get("run", ""))
+        script = publish["run"]
+        self.assertEqual(publish["env"]["GH_TOKEN"], "${{ secrets.GITHUB_TOKEN }}")
+        # the helper is set up inside the publishing step and removed on exit, so no other step holds it
+        self.assertLess(script.index("trap "), script.index("gh auth setup-git"))
+        self.assertLess(script.index("gh auth setup-git"), script.index(" publish "))
+        self.assertIn("--unset-all credential.https://github.com.helper", script)
+        self.assertEqual(sum("gh auth setup-git" in step.get("run", "") for step in publisher), 1)
+
     def test_cli_download_is_versioned_and_hash_pinned(self):
         environment = self.workflow["env"]
         self.assertRegex(environment["DEPENDABOT_CLI_VERSION"], r"^\d+\.\d+\.\d+$")
         self.assertRegex(environment["DEPENDABOT_CLI_SHA256"], r"^[0-9a-f]{64}$")
+
+    def test_composer_setup_uses_released_manifest_and_normalized_lockfile(self):
+        audit = self.workflow["jobs"]["audit"]
+        setup = next(step for step in audit["steps"] if step["name"] == "Set up Cacti Composer toolchain")
+        for entry in audit["strategy"]["matrix"]["include"]:
+            if entry["ecosystem"] != "composer":
+                continue
+            cache_path = setup["with"]["cache-dependency-path"].replace("${{ matrix.lockfile }}", entry["lockfile"])
+            self.assertNotIn("/./", cache_path)
+            self.assertEqual(Path(cache_path), Path("released") / entry["workdir"] / "composer.lock")
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                manifest = root / "released" / entry["workdir"] / "composer.json"
+                manifest.parent.mkdir(parents=True, exist_ok=True)
+                manifest.write_text('{}\n', encoding="utf-8")
+                composer = setup["env"]["COMPOSER"].replace("${{ github.workspace }}", str(root)).replace("${{ matrix.workdir }}", entry["workdir"])
+                result = subprocess.run(["composer", "config", "cache-files-dir"], cwd=root,
+                                        env={**os.environ, "COMPOSER": composer}, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertTrue(Path(result.stdout.strip()).is_absolute())
 
 
 class ReleasedDependencyRemediationTest(unittest.TestCase):

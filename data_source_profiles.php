@@ -634,7 +634,7 @@ function form_save() : void {
 							WHERE dtd.data_source_profile_id = ?',
 							[grv('heartbeat'), grv('id')]);
 
-						raise_message('heartbeat_change', __('Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool\'s \'tune\' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>'), MESSAGE_LEVEL_WARN);
+						raise_message_html('heartbeat_change', __('Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool\'s \'tune\' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>'), MESSAGE_LEVEL_WARN);
 					}
 				}
 
@@ -1296,12 +1296,10 @@ function get_span(int $duration) : string {
 	$output = '';
 
 	if ($duration > 31536000) {
-		if (floor($duration / 31536000) > 0) {
-			$years     = floor($duration / 31536000);
-			$years	    = ($years == 1) ? __('1 Year') : __('%d Years', $years);
-			$duration %= 31536000;
-			$output    = $years;
-		}
+		$years     = floor($duration / 31536000);
+		$years	    = ($years == 1) ? __('1 Year') : __('%d Years', $years);
+		$duration %= 31536000;
+		$output    = $years;
 	}
 
 	if ($duration > 2592000) {
@@ -1314,21 +1312,17 @@ function get_span(int $duration) : string {
 	}
 
 	if ($duration > 604800) {
-		if (floor($duration / 604800) > 0) {
-			$weeks     = floor($duration / 604800);
-			$weeks     = ($weeks == 1) ? __('%d Week', 1) : __('%d Weeks', $weeks);
-			$duration %= 604800;
-			$output .= ($output != '' ? ', ' : '') . $weeks;
-		}
+		$weeks     = floor($duration / 604800);
+		$weeks     = ($weeks == 1) ? __('%d Week', 1) : __('%d Weeks', $weeks);
+		$duration %= 604800;
+		$output .= ($output != '' ? ', ' : '') . $weeks;
 	}
 
 	if ($duration > 86400) {
-		if (floor($duration / 86400) > 0) {
-			$days      = floor($duration / 86400);
-			$days      = ($days == 1) ? __('%d Day', 1) : __('%d Days', $days);
-			$duration %= 86400;
-			$output .= ($output != '' ? ', ' : '') . $days;
-		}
+		$days      = floor($duration / 86400);
+		$days      = ($days == 1) ? __('%d Day', 1) : __('%d Days', $days);
+		$duration %= 86400;
+		$output .= ($output != '' ? ', ' : '') . $days;
 	}
 
 	if (floor($duration / 3600) > 0) {

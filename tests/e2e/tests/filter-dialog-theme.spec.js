@@ -5,6 +5,9 @@ const { test, expect } = require('@playwright/test');
 const path = require('node:path');
 const root = path.resolve(__dirname, '../../..');
 require('./fixture-coverage').collectCoverage(test);
+const { registerSelectmenuThemeTests } = require('./selectmenu-theme-coverage');
+
+registerSelectmenuThemeTests(test, expect);
 
 // Real jQuery UI and theme styles; no server, credentials or database required.
 for (const theme of ['cacti', 'dark', 'deepness', 'modern', 'paper-plane', 'paw', 'raspberry', 'sunrise']) {

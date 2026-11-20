@@ -940,6 +940,8 @@ function setupSelectmenuScrollClose() {
  * that can't be set using a live attribute 'on()'
  */
 function applySkin() {
+	labelVisibleGraphActions();
+
 	pageName = basename($(location).attr('pathname'));
 
 	$('#messageContainer').remove();
@@ -1682,6 +1684,8 @@ function sessionMessageDisplay() {
 			title: title,
 			buttons: sessionMessageButtons
 		});
+
+		$('#messageContainer').dialog('widget').addClass('cactiSessionMessageDialog');
 
 		sessionMessage = null;
 	}
@@ -4922,22 +4926,40 @@ function refreshGraphs() {
 	});
 }
 
+function labelVisibleGraphActions() {
+	// Visible icons keep their tooltips and also expose names to assistive technology.
+	$('.graphDrillDownAlways .iconWrapper a').each(function () {
+		var link = $(this);
+		var currentLabel = link.attr('aria-label');
+		var generatedLabel = link.attr('data-graph-action-label');
+		if (currentLabel && currentLabel !== generatedLabel) {
+			return;
+		}
+		var label = link.attr('title') || link.find('i[title], img[title]').first().attr('title');
+		if (label) {
+			link.attr('aria-label', label);
+			link.attr('data-graph-action-label', label);
+		}
+	});
+}
+
 function initGraphDrilldown() {
 	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
 	// A hamburger glyph over the graph's top-right toggles the action icons; they
 	// close on a second click, on moving off the graph image, or on an outside click.
 	$(document).off('.graphdd');
 
-	function closeGraphDrilldown(container) {
-		container.removeClass('open');
-		container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
-		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+	labelVisibleGraphActions();
 
-		// Close an open SpikeKill submenu so it is not orphaned with the strip.
-		if (typeof spikeKillClose == 'function') {
-			spikeKillClose();
+	$(document).on('keydown.graphdd', function (event) {
+		if (event.keyCode == 27 && typeof spikeKillClose == 'function' && typeof spikeKillAnchor != 'undefined' && spikeKillAnchor) {
+			var anchor = $(spikeKillAnchor);
+			if (anchor.closest('.graphDrillDownAlways').length) {
+				spikeKillClose();
+				anchor.trigger('focus');
+			}
 		}
-	}
+	});
 
 	// Turn the icon strip into a labelled menu the first time a graph's strip is
 	// opened: each action becomes a row of its glyph followed by the text taken
@@ -5016,7 +5038,18 @@ function initGraphDrilldown() {
 	}
 
 	function graphDrilldownStillHovered(toggle) {
-		return toggle.is(':hover') || toggle.closest('.graphWrapperOuter').find('.graphimage').is(':hover');
+		// A pending close timer can run after the graph area has been reloaded
+		// (Details/Time View), leaving the toggle or its image detached.  Use the
+		// native Element.matches(':hover') instead of jQuery's :hover, which
+		// delegates to Sizzle for a node outside the document and throws
+		// "unsupported pseudo: hover"; a detached node is treated as not hovered.
+		function hovered($el) {
+			var node = $el && $el.length ? $el[0] : null;
+
+			return node != null && node.isConnected && node.matches(':hover');
+		}
+
+		return hovered(toggle) || hovered(toggle.closest('.graphWrapperOuter').find('.graphimage'));
 	}
 
 	function graphDrilldownHide(toggle) {
@@ -5084,6 +5117,22 @@ function initGraphDrilldown() {
 			}
 		}, 0);
 	});
+}
+
+function closeGraphDrilldown(container) {
+	// Return focus before hiding the action that currently owns it.
+	if (container.find('.iconWrapper :focus').length > 0) {
+		container.find('.graphDrillDownMenu').trigger('focus');
+	}
+
+	container.removeClass('open');
+	container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
+	container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+
+	// Close an open SpikeKill submenu so it is not orphaned with the strip.
+	if (typeof spikeKillClose == 'function') {
+		spikeKillClose();
+	}
 }
 
 function initializeGraphs(disable_cache) {
@@ -5249,6 +5298,7 @@ function initializeGraphs(disable_cache) {
 
 				if (typeof realtimeArray != 'undefined') {
 					realtimeArray[data.local_graph_id] = false;
+					setRealtimeLabel(data.local_graph_id, false);
 				}
 
 				if (!--numGraphs) {
@@ -5320,7 +5370,8 @@ function initializeGraphs(disable_cache) {
 
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).trigger('change');
-				$(this).html("<i class='drillDown ti ti-chart-area-line-filled realTime' title='" + realtimeClickOn + "'></i>");
+				setRealtimeLabel(graph_id, false);
+				labelVisibleGraphActions();
 
 				$('graph_id' + graph_id).tooltip().zoom({
 					inputfieldStartTime: 'date1',
@@ -5332,12 +5383,14 @@ function initializeGraphs(disable_cache) {
 				setFilters();
 			} else {
 				keepRealtime[graph_id] = $('#wrapper_' + graph_id).html();
-				$(this).html("<i style='text-align:center;padding:0px;' title='" + realtimeClickOff + "' class='drillDown ti ti-loader-2 icon-rotate'></i>");
-				$(this).find('i').tooltip();
+				setRealtimeLabel(graph_id, true);
+				labelVisibleGraphActions();
 				realtimeArray[graph_id] = true;
 				setFilters();
 				realtimeGrapher();
 			}
+
+			closeGraphDrilldown($(this).closest('.graphDrillDownToggle'));
 		});
 	});
 }

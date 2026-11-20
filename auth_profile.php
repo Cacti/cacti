@@ -559,7 +559,7 @@ function settings_2fa() : bool {
 		[$_SESSION[SESS_USER_ID]]
 	);
 
-	if (!cacti_sizeof($current_user)) {
+	if (!is_array($current_user) || !cacti_sizeof($current_user)) {
 		return false;
 	}
 

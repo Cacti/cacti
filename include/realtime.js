@@ -170,6 +170,12 @@ function countRealtimeGraphs() {
 	return graphs;
 }
 
+// The menu row keeps its icon and label; only the label text flips so the next
+// click offers the opposite action.
+function setRealtimeLabel(graph_id, active) {
+	$(`#graph_${graph_id}_realtime`).find('.iconLabel').text(active ? realtimeStopLabel : realtimeLabel);
+}
+
 function stopRealtime() {
 
 
@@ -177,7 +183,7 @@ function stopRealtime() {
 		var graph_id = key;
 
 		$(`#wrapper_${graph_id}`).html(keepRealtime[graph_id]).trigger('change');
-		$(`#graph_${graph_id}_realtime`).empty().html(`<img class='drillDown' alt='' title='${realtimeClickOn}' src='${urlPath}images/chart_curve_go.png'>`).find('img').tooltip();
+		setRealtimeLabel(graph_id, false);
 
 		// Disable right click
 		$(this).children().on('contextmenu', function(event) {
@@ -196,6 +202,7 @@ function stopRealtime() {
 		realtimeArray[graph_id] = false;
 	}
 
+	labelVisibleGraphActions();
 	setFilters();
 	tuneFilter();
 }

@@ -161,3 +161,25 @@ test('operator precedence inline: cast-after-multiply preserves microseconds', f
 	expect($buggy)->toBe(0)
 		->and($fixed)->toBe(3000);
 });
+
+// --- issue#8596: exec_poll() returns the first line of output, as 1.2.x does ---
+
+test('exec_poll stores a script value that ends with a newline', function () {
+	expect(trim(exec_poll(PHP_BINARY . ' -r ' . escapeshellarg('print "7\n";'), 5)))->toBe('7');
+});
+
+test('exec_poll stores a script value without a trailing newline', function () {
+	expect(trim(exec_poll(PHP_BINARY . ' -r ' . escapeshellarg('print "7";'), 5)))->toBe('7');
+});
+
+test('exec_poll returns the first line of multi-line output, as 1.2.x reads it with fgets()', function (string $script) {
+	expect(trim(exec_poll(PHP_BINARY . ' -r ' . escapeshellarg($script), 5)))->toBe('in:1 out:2');
+})->with([
+	'trailing newline'    => ['print "in:1 out:2\nextra line\n";'],
+	'no trailing newline' => ['print "in:1 out:2\nextra line";'],
+	'carriage returns'    => ['print "in:1 out:2\r\nextra line\r\n";'],
+]);
+
+test('exec_poll returns U for a script that prints nothing', function () {
+	expect(exec_poll(PHP_BINARY . ' -r ' . escapeshellarg('exit(0);'), 5))->toBe('U');
+});
