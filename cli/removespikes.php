@@ -254,8 +254,8 @@ function display_help() : void {
 
 	print PHP_EOL;
 	print 'usage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]' . PHP_EOL;
-	print '    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]' . PHP_EOL;
-	print '    [-P|--percent=N] [-N|--number=N] [--absmax=<value>] [-D|--dryrun] [-d|--debug]' . PHP_EOL;
+	print '    [--outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]' . PHP_EOL;
+	print '    [-n|--number=N] [--absmax=<value>] [-D|--dryrun] [-d|--debug] [--backup]' . PHP_EOL;
 	print '    [--html] [--dsfilter=<filter>]' . PHP_EOL . PHP_EOL;
 
 	print 'A utility to programmatically remove spikes from Cacti graphs. If no optional input parameters' . PHP_EOL;
@@ -266,10 +266,9 @@ function display_help() : void {
 
 	print 'Optional:' . PHP_EOL;
 	print ('    --method        - The spike removal method to use.  Options are ' .
-		'stddev|variance|fill|float|absolute') . PHP_EOL;
+		'stddev|fill|float|absolute') . PHP_EOL;
 	print '    --avgnan        - The spike replacement method to use.  Options are last|avg|nan' . PHP_EOL;
 	print '    --stddev        - The number of standard deviations +/- allowed' . PHP_EOL;
-	print '    --percent       - The sample to sample percentage variation allowed' . PHP_EOL;
 	print '    --number        - The maximum number of spikes to remove from the RRDfile' . PHP_EOL;
 	print '    --absmax        - The absolute maximum value of a data point to remove from the RRDfile' . PHP_EOL;
 	print '    --dsfilter      - Specifies the DSes inside an RRD upon which Spikekill will operate' . PHP_EOL;
@@ -277,7 +276,6 @@ function display_help() : void {
 	print '                      invalid data and should be excluded from average calculations.' . PHP_EOL;
 	print '    --outlier-end   - An end date or timestamp of an incident where all data should be considered' . PHP_EOL;
 	print '                      invalid data and should be excluded from average calculations.' . PHP_EOL;
-	print '    --outliers      - The number of outliers to ignore when calculating average.' . PHP_EOL;
 	print '    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of' . PHP_EOL;
 	print '                      changes that would have been performed will be issued.' . PHP_EOL;
 	print '    --backup        - Backup the original RRDfile to preserve prior values.' . PHP_EOL . PHP_EOL;

@@ -5,6 +5,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/rrd-graph-item-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'lib/rrd_graph_item.php'
@@ -16,6 +17,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/rrd-graph-item-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'lib/rrd_graph_item.php'
