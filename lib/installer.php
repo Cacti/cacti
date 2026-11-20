@@ -4108,7 +4108,7 @@ class Installer implements JsonSerializable {
 
 		$output_log = '';
 		foreach ($logcontents as $logline) {
-			$output_log = $logline.'<br/>' . $output_log;
+			$output_log = html_escape($logline) . '<br/>' . $output_log;
 		}
 
 		if (empty($output_log)) {
