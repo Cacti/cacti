@@ -23,11 +23,14 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
+for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
 done
+if [[ -f tests/fixtures/Core/RemoveSpikesHelp.php ]]; then
+	run_probe RemoveSpikesHelp.php RemoveSpikesHelp
+fi
 if [[ -f tests/fixtures/Core/RowGuardMatrix.php ]]; then
 	for mode in auth-changepassword add-device reports-edit; do
 		run_probe RowGuardMatrix.php "row-guard-$mode" "$mode"
@@ -77,6 +80,10 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+run_probe ConfiguredCommands.php configured-commands
+run_probe ConfiguredCommands.php deprecated-rebuild deprecated
+run_probe DisplayAndValidation.php display-validation
+run_probe DisplayAndValidation.php input-method-save save
 for mode in requests denied reorder oauth; do
 	run_probe AuthorizedActions.php "authorized-actions-$mode" "$mode"
 done
