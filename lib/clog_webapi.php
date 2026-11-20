@@ -230,7 +230,7 @@ function clog_view_logfile() {
 			'default' => '1'
 		),
 		'rfilter' => array(
-			'filter'  => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_UNSAFE_RAW,
 			'default' => '',
 			'pageset' => true
 		)
@@ -728,7 +728,7 @@ function filter($clogAdmin, $selectedFile) {
 			refreshMSeconds=$('#refresh').val()*1000;
 
 			strURL = basename(location.pathname)+
-				'?rfilter=' + base64_encode($('#rfilter').val())+
+				'?rfilter=' + encodeURIComponent($('#rfilter').val())+
 				'&reverse='+$('#reverse').val()+
 				'&refresh='+$('#refresh').val()+
 				'&matches='+$('#matches').val()+

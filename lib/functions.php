@@ -1483,8 +1483,6 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		return array(__('Error %s is not readable', $file_name));
 	}
 
-	$filter = strtolower($filter);
-
 	/* the raw line only ever has the numeric device id, not its description; resolve
 	 * ids once up front so the filter below can still match on the description */
 	$host_descriptions = array();
@@ -1552,7 +1550,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
  *
  * @param int $message_type The message type.
  * @param string $line The line.
- * @param string $filter The filter.
+ * @param string $filter The literal search text.
  * @param bool $matches The matches.
  * @param array $host_descriptions Optional id => description map used to let $filter also
  *   match a device's description, since the raw line only contains its numeric id.
@@ -1681,26 +1679,36 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 			}, $line);
 		}
 
-		if ($matches) {
-			if (validate_is_regex($filter) === true && preg_match('/' . $filter . '/i', $search_line)) {
-				return $line;
-			} elseif (stripos($search_line, $filter) !== false) {
-				return $line;
-			}
-		} else {
-			if (validate_is_regex($filter) === true) {
-				if (!preg_match('/' . $filter . '/i', $search_line)) {
-					return $line;
-				}
-			} elseif (!stripos($search_line, $filter) !== false) {
-				return $line;
-			}
-		}
+		$found = clog_search_matches($filter, $search_line, (bool) $matches);
 
-		return false;
+		return $found === (bool) $matches ? $line : false;
 	}
 
 	return $display;
+}
+
+/**
+ * Match a Log Viewer regex or fall back to literal text.
+ */
+function clog_search_matches($filter, $line, $include) {
+	static $last_filter = null;
+	static $pattern = null;
+
+	if ($last_filter !== $filter) {
+		require_once __DIR__ . '/clog_search.php';
+		$pattern = CactiLogSearchPattern::compile($filter);
+		$last_filter = $filter;
+	}
+
+	if ($pattern !== null) {
+		$matched = $pattern->matches($line);
+
+		if ($matched || !$include) {
+			return $matched;
+		}
+	}
+
+	return stripos($line, $filter) !== false;
 }
 
 /**
@@ -3194,6 +3202,12 @@ function data_source_path_within_rra($path) {
 
 	foreach (explode('/', substr($target, strlen($base) + 1)) as $segment) {
 		if ($segment === '' || $segment === '.' || $segment === '..') {
+			return false;
+		}
+
+		/* RRDtool splits its arguments on whitespace and quotes, so a file
+		 * name holding either would be read as more than one argument */
+		if (preg_match('/[\s\'"`]/', $segment)) {
 			return false;
 		}
 
