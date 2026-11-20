@@ -8595,6 +8595,23 @@ function cacti_ptoa($title, $addr) {
 }
 
 /**
+ * Encodes a value as a JSON literal that is safe to print inside an inline
+ * <script> block or a JavaScript event attribute.  The JSON_HEX_* flags turn
+ * <, >, &, ' and " into \uXXXX escapes, so a translated string or other value
+ * can neither close the script block nor break out of the surrounding quotes.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $value The value to encode
+ *
+ * @return string The JavaScript-safe JSON literal, or null if encoding fails
+ */
+function cacti_json_encode($value) {
+	$encoded = json_encode($value, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+
+	return $encoded === false ? 'null' : $encoded;
+}
+
+/**
  * Sanitzes a string for inclusion in a CSV file to prevent formula injection. Used as part of
  * Cacti's lib functionality.
  *

@@ -69,7 +69,7 @@ function check_tmp_dir() {
 	} else {
 		?>
 		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
-		var mixedReasonTitle = <?php print json_encode(__('Key Generation Required to Use Plugin'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);?>;
+		var mixedReasonTitle = <?php print cacti_json_encode(__('Key Generation Required to Use Plugin'));?>;
 		var mixedOnPage      = '<?php print __esc('Package Key Information Not Found');?>';
 		sessionMessage   = {
 			message: '<?php print __('In order to use this Plugin, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the plugin directory.  Once that is complete, you will have a public and private key used to sign your packages.');?>',

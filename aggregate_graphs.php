@@ -1070,10 +1070,10 @@ function graph_edit() {
 		$('#toggle_items').on('click', function() {
 			if ($('#toggle_items').is(":contains('<?php print __('Show');?>')")) {
 				$('#local_graph_template_graph_id').next('table').css('display', '');
-				$('#toggle_items').text(<?php print json_encode(__('Hide Item Details'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);?>);
+				$('#toggle_items').text(<?php print cacti_json_encode(__('Hide Item Details'));?>);
 			} else {
 				$('#local_graph_template_graph_id').next('table').css('display', 'none');
-				$('#toggle_items').text(<?php print json_encode(__('Show Item Details'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);?>);
+				$('#toggle_items').text(<?php print cacti_json_encode(__('Show Item Details'));?>);
 			}
 		});
 

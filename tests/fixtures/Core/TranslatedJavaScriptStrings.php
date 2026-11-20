@@ -12,6 +12,8 @@ if (!getenv('CACTI_COVERAGE_FILE')) {
 	require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
 }
 
+require_once dirname(__DIR__, 3) . '/lib/functions.php';
+
 function __($message) {
 	return "Détails d'élément \"réseau\" & chemin \\test\n</script><b>texte</b>";
 }
