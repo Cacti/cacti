@@ -34,12 +34,12 @@ class CoverageEvidenceTest(unittest.TestCase):
         with patch.object(GATE.subprocess, 'check_output', side_effect=['base', diff]):
             self.assertEqual(GATE.added_lines('HEAD^'), {'current.css': {1}})
 
-    def evaluate(self, evidence, added=(3,), minimum=None):
+    def evaluate(self, evidence, added=(3,), minimum=None, source_text=None):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / 'lib').mkdir()
             source = root / 'lib/example.php'
-            source.write_text('<?php\nfunction example() {\nreturn true;\n}\n')
+            source.write_text(source_text if source_text is not None else '<?php\nfunction example() {\nreturn true;\n}\n')
             coverage = root / 'coverage.json'
             coverage.write_text(json.dumps({str(source): {'lines': evidence}} if evidence is not None else {}))
             arguments = ['gate', '--base', 'HEAD', '--php-coverage', str(coverage)]
@@ -62,6 +62,23 @@ class CoverageEvidenceTest(unittest.TestCase):
 
     def test_dead_opcode_is_excluded(self):
         self.assertEqual(self.evaluate({3: -2}), 0)
+
+    def test_compile_time_strict_types_directive_needs_no_opcode(self):
+        for directive in ['declare(strict_types = 1);', 'declare ( strict_types = 0 ) ;']:
+            with self.subTest(directive=directive):
+                source = '<?php\n' + directive + '\nreturn true;\n'
+                self.assertEqual(self.evaluate({3: 1}, (2, 3), source_text=source), 0)
+
+    def test_strict_types_does_not_hide_an_uncovered_statement(self):
+        source = '<?php\ndeclare(strict_types = 1);\nreturn true;\n'
+        self.assertEqual(self.evaluate({3: -1}, (2, 3), source_text=source), 1)
+        self.assertEqual(self.evaluate(None, (2, 3), source_text=source), 1)
+
+    def test_runtime_declarations_and_same_line_statements_still_need_coverage(self):
+        for directive in ['declare(ticks=1);', 'declare(strict_types=1); example();']:
+            with self.subTest(directive=directive):
+                source = '<?php\n' + directive + '\nreturn true;\n'
+                self.assertEqual(self.evaluate({3: 1}, (2, 3), source_text=source), 1)
 
     def inline_evaluate(self, hit=1, stale=False, php_statement=False):
         with tempfile.TemporaryDirectory() as temporary:
