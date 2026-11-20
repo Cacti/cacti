@@ -361,10 +361,10 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			2 => ['pipe', 'w']  // stderr is a pipe to write to
 		];
 
-		$php_path = read_config_option('path_php_binary');
+		$php_path = cacti_escapeshellarg((string) read_config_option('path_php_binary'));
 
 		$command = $php_path . ' -q ' .
-			CACTI_PATH_BASE . '/script_server.php ' .
+			cacti_escapeshellarg(CACTI_PATH_BASE . '/script_server.php') .
 			' --environ=cmd ' .
 			' --poller=' . $poller_id .
 			' --mode=' . CACTI_CONNECTION;
