@@ -1,0 +1,21 @@
+{
+    "domain1": {
+        "": {
+            "domain": "domain1",
+            "lang": "en",
+            "plural-forms": "nplurals=2; plural=(n != 1);"
+        },
+        "matching 1": [
+            ""
+        ],
+        "matching 2 singular": [
+            ""
+        ],
+        "context\\u0004matching 3 context singular": [
+            ""
+        ],
+        "matching 4": [
+            ""
+        ]
+    }
+}

@@ -69,7 +69,10 @@ def prepare_config(config, output, changed):
 
 
 def measure(changed, report, root, request_reports=None):
-    if not changed and request_reports is None:
+    if not changed:
+        if request_reports is not None and not list(request_reports.glob('*.json')):
+            raise ValueError('Request coverage directory contains no reports')
+
         return {'covered': 0, 'executable': 0, 'percent': None, 'files': {}}
     evidence = {}
     for file in ET.parse(report).iter('file'):

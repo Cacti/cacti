@@ -46,10 +46,12 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_remove':
+		csrf_require_post();
 		vdef_item_remove();
 
 		break;
 	case 'item_movedown':
+		csrf_require_post();
 		get_filter_request_var('vdef_id');
 
 		item_movedown();
@@ -57,6 +59,7 @@ switch (get_request_var('action')) {
 		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 		break;
 	case 'item_moveup':
+		csrf_require_post();
 		get_filter_request_var('vdef_id');
 
 		item_moveup();
@@ -78,6 +81,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_dnd':
+		csrf_require_post();
 		vdef_item_dnd();
 
 		break;
@@ -124,6 +128,8 @@ function draw_vdef_preview($vdef_id) {
  */
 
 function vdef_form_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_vdef')) {
 		$save['id']   = get_filter_request_var('id');
 		$save['hash'] = get_hash_vdef(get_request_var('id'));
@@ -239,6 +245,8 @@ function vdef_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -736,7 +744,7 @@ function vdef_edit() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#vdef_item').tableDnD({
 			onDrop: function(table, row) {
-				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
+				loadPageUsingPostUrl('vdef.php?action=ajax_dnd&id=<?php printf('%d', $vdef['id'] ?? 0);?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>

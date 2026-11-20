@@ -98,10 +98,22 @@ function add_tree_names_to_actions_array() {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	if (!isset_request_var('save_component_graph')) {
 		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
+
+	$success = aggregate_transaction(function () {
+		return aggregate_graph_form_save();
+	});
+	raise_message($success ? 1 : 2);
+	header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('local_graph_id', 0));
+}
+
+/** Save graph settings and generated items as one operation. */
+function aggregate_graph_form_save() {
 
 	/* remember some often used values */
 	$local_graph_id        = get_nfilter_request_var('local_graph_id', 0);
@@ -110,8 +122,11 @@ function form_save() {
 	$graph_title           = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', false, 3);
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
-		return null;
+		return false;
+	}
+
+	if (!db_fetch_cell_prepared('SELECT id FROM graph_local WHERE id = ? FOR UPDATE', array($local_graph_id))) {
+		return false;
 	}
 
 	/* get the aggregate graph id */
@@ -129,8 +144,7 @@ function form_save() {
 
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
-		return null;
+		return false;
 	}
 
 	/* save graph data to cacti tables */
@@ -142,11 +156,17 @@ function form_save() {
 		$new_data
 	);
 
+	if (!$graph_templates_graph_id) {
+		return false;
+	}
+
 	/* update title in aggregate graphs table */
-	db_execute_prepared('UPDATE aggregate_graphs
+	if (!db_execute_prepared('UPDATE aggregate_graphs
 		SET title_format = ?
 		WHERE id = ?',
-		array($graph_title, $aggregate_graph_id));
+		array($graph_title, $aggregate_graph_id))) {
+		return false;
+	}
 
 	/* next lets see if any of the aggregate has changed and save as applicable
 	 * if the graph is templates, we can simply ignore.  A simple check will
@@ -187,7 +207,10 @@ function form_save() {
 			$save_me += ($old['order_type']            != $save['order_type']);
 
 			if ($save_me) {
-				$aggregate_graph_id = sql_save($save, 'aggregate_graphs');
+				$aggregate_graph_id = aggregate_sql_save(array_merge($old, $save), 'aggregate_graphs');
+				if (!$aggregate_graph_id) {
+					return false;
+				}
 			}
 
 			/* save the template items now */
@@ -245,23 +268,23 @@ function form_save() {
 			}
 
 			if ($items_changed) {
-				aggregate_graph_items_save($items_to_save, 'aggregate_graphs_graph_item');
+				if (!aggregate_graph_items_save($items_to_save, 'aggregate_graphs_graph_item', false)) {
+					return false;
+				}
 			}
 
 			if ($save_me || $items_changed) {
-				push_out_aggregates(0, $local_graph_id);
+				if (!push_out_aggregates(0, $local_graph_id, false)) {
+					return false;
+				}
 			}
 		}
 	}
 
-	raise_message(1);
-
-	header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+	return true;
 }
 
-/* ------------------------
-    The "actions" function
-   ------------------------ */
+
 /**
  * ------------------------ The "actions" function ------------------------. Used as part of
  * Cacti's aggregate graphs functionality.
@@ -281,6 +304,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -449,7 +474,7 @@ function form_actions() {
 					print "<tr>
 						<td class='textArea'>
 							<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . "</p>
-							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template))) . "</p>
+							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template)))) . "</p>
 							<p>" . __('Please press \'Return\' to continue.') . "</p>
 							<div class='itemlist'><ul>$graph_list</ul></div>
 						</td>
@@ -742,7 +767,8 @@ function graph_edit() {
 		</td></tr>
 		<?php
 		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
-			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+			/* RRDtool's error text repeats graph item text, so it is returned and escaped, not printed */
+			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_RETURN_STDERR;
 			$graph_data_array['print_source'] = 1;
 			$null_param = array();
 			?>
@@ -750,7 +776,7 @@ function graph_edit() {
 				<div style='overflow:auto;'>
 					<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?>
-					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
+					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? html_escape((string) @rrdtool_function_graph($graphs['local_graph_id'], 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id'])) : __esc('Not Checked'));?></pre>
 				</div>
 				<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 				$(function() {
@@ -971,11 +997,11 @@ function graph_edit() {
 			function changeTotalsType() {
 				if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', '<?php print __('Total');?>');
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('Total'));?>);
 					}
 				} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', '<?php print __('All Items');?>');
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('All Items'));?>);
 					}
 				}
 			}
@@ -1043,12 +1069,12 @@ function graph_edit() {
 		});
 
 		$('#toggle_items').on('click', function() {
-			if ($('#toggle_items').is(":contains('<?php print __('Show');?>')")) {
+			if ($('#toggle_items').text().indexOf(<?php print cacti_js_encode(__('Show'));?>) !== -1) {
 				$('#local_graph_template_graph_id').next('table').css('display', '');
-				$('#toggle_items').text('<?php print __('Hide Item Details');?>');
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Hide Item Details'));?>);
 			} else {
 				$('#local_graph_template_graph_id').next('table').css('display', 'none');
-				$('#toggle_items').text('<?php print __('Show Item Details');?>');
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Show Item Details'));?>);
 			}
 		});
 

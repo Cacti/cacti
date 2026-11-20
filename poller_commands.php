@@ -73,7 +73,7 @@ array_shift($parms);
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg = $parameter;
 			$value = '';
@@ -199,7 +199,7 @@ if ($host_id === false) {
 	/**
 	 * Get the poller command records for the host
 	 */
-	$poller_commands = db_fetch_assoc_prepared('SELECT action, command,
+	$poller_commands = db_fetch_assoc_prepared('SELECT action, command, time, last_updated,
 		SUBSTRING_INDEX(command, ":", 1) AS host_id
 		FROM poller_command
 		WHERE poller_id = ?
@@ -209,9 +209,10 @@ if ($host_id === false) {
 
 	if (cacti_sizeof($poller_commands)) {
 		foreach ($poller_commands as $command) {
+			$completed = false;
 			switch ($command['action']) {
 			case POLLER_COMMAND_REINDEX:
-				list($device_id, $data_query_id) = explode(':', $command['command']);
+				[$device_id, $data_query_id] = explode(':', $command['command']);
 
 				if ($last_host_id != $device_id) {
 					$last_host_id = $device_id;
@@ -225,14 +226,19 @@ if ($host_id === false) {
 				}
 
 				cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recache for Device started.", true, 'PCOMMAND', $verbosity);
-				run_data_query($device_id, $data_query_id);
-				cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
+				$completed = run_data_query($device_id, $data_query_id);
+				if ($completed) {
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
+				} else {
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Failed, retaining command for retry.", true, 'PCOMMAND', $verbosity);
+				}
 
 				break;
 			case POLLER_COMMAND_PURGE:
 				$device_id = $command['command'];
 
 				api_device_purge_from_remote($device_id, $poller_id);
+				$completed = true;
 				cacti_log("Device[$device_id] PURGE: Purged successfully.", true, 'PCOMMAND', $verbosity);
 
 				break;
@@ -240,21 +246,24 @@ if ($host_id === false) {
 				cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
 			}
 
+			if ($completed) {
+				// Leave failed, unprocessed and newer commands available to the next worker.
+				db_execute_prepared('DELETE FROM poller_command
+					WHERE poller_id = ? AND action = ? AND command = ?
+					AND time = ? AND last_updated = ?',
+					array($poller_id, $command['action'], $command['command'], $command['time'], $command['last_updated']),
+					true, $poller_db_cnn_id);
+			}
+
 			/* record current_time */
 			$current = microtime(true);
 
 			/* end if runtime has been exceeded */
 			if (($current-$start) > MAX_RECACHE_RUNTIME) {
-				cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
+				cacti_log("ERROR: Poller Command processing timed out after processing '" . $command['command'] . "'", true, 'PCOMMAND');
 				break;
 			}
 		}
-
-		db_execute_prepared('DELETE FROM poller_command
-			WHERE poller_id = ?
-			AND SUBSTRING_INDEX(command, ":", 1) = ?
-			AND last_updated <= FROM_UNIXTIME(?)',
-			array($poller_id, $host_id, $max_updated), true, $poller_db_cnn_id);
 	}
 
 	unregister_process('commands', 'child', $host_id + 1000);
@@ -328,7 +337,8 @@ function commands_launch_child($host_id) {
 
 	cacti_log(sprintf('NOTE: Launching Commands Process Number %s for Type %s', $host_id, 'child'), false, 'CLEANUP', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug':''));
+	/* the host id is parsed out of poller_command text, so pin it to an integer before the shell */
+	exec_background($php_binary, cacti_escapeshellarg($config['base_path'] . '/poller_commands.php') . ' --child=' . (int) $host_id . ($seebug ? ' --debug':''));
 }
 
 /**
@@ -420,6 +430,7 @@ function commands_kill_running_processes() {
             if (cacti_process_still_running($p['pid'])) {
                 cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
                 cacti_process_kill($p['pid'], SIGTERM, 'CLEANUP');
+                cacti_process_kill_db_connection($p, 'CLEANUP');
             }
 
             unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

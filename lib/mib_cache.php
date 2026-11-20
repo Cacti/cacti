@@ -35,11 +35,10 @@ class MibCache{
 	 *
 	 * @param string $mib The MIB.
 	 *
-	 * @return mixed The result of the operation, or false on failure.
+	 * @return void No value is returned.
 	 */
 	public function __construct($mib='CACTI-MIB') {
 		$this->active_mib = $mib;
-		return $this;
 	}
 
 	/**

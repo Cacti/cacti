@@ -82,7 +82,7 @@ array_shift($parms);
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg = $parameter;
 			$value = '';
@@ -245,7 +245,7 @@ function display_help () {
 
 	print "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
 	print "    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]\n";
-	print "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
+	print "    [-P|--percent=N] [-n|--number=N] [-D|--dryrun] [-d|--debug]\n";
 	print "    [--html]\n\n";
 
 	print "A utility to programmatically remove spikes from Cacti graphs. If no optional input parameters\n";

@@ -114,6 +114,7 @@ switch (get_request_var('action')) {
 		display_graphs();
 		break;
 	case 'tree_up':
+		csrf_require_post();
 		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'graph_tree')) {
 			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
 			header('Location: tree.php');
@@ -123,6 +124,7 @@ switch (get_request_var('action')) {
 		tree_up();
 		break;
 	case 'tree_down':
+		csrf_require_post();
 		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'graph_tree')) {
 			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
 			header('Location: tree.php');
@@ -634,6 +636,8 @@ function set_branch_sort_type() {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
 	if (isset($_SESSION['dhtml_tree'])) {
 		unset($_SESSION['dhtml_tree']);
@@ -782,6 +786,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		/* Drop any tree id the current user is not authorised to mutate so

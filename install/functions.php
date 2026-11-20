@@ -27,10 +27,14 @@
  *
  * @return void No value is returned.
  */
-function prime_default_settings() {
+function prime_default_settings() : bool {
 	global $settings;
 
-	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
+	if (!is_array($settings)) {
+		return false;
+	}
+
+	if (!isset($_SESSION['settings_primed'])) {
 		foreach ($settings as $tab_array) {
 			if (cacti_sizeof($tab_array)) {
 				foreach($tab_array as $setting => $attributes) {
@@ -41,9 +45,11 @@ function prime_default_settings() {
 							array($setting));
 
 						if ($current == '' || $current == null) {
-							db_execute_prepared('INSERT IGNORE INTO settings
+							if (!db_execute_prepared('INSERT IGNORE INTO settings
 								(name, value) VALUES (?, ?)',
-								array($setting, $attributes['default']));
+								array($setting, $attributes['default']))) {
+								return false;
+							}
 						}
 					} elseif (isset($attributes['items'])) {
 						foreach($attributes['items'] as $isetting => $iattributes) {
@@ -54,10 +60,12 @@ function prime_default_settings() {
 									array($isetting));
 
 								if ($current == '' || $current == null) {
-									db_execute_prepared('INSERT IGNORE INTO settings
+									if (!db_execute_prepared('INSERT IGNORE INTO settings
 										(name, value)
 										VALUES (?, ?)',
-										array($isetting, $iattributes['default']));
+										array($isetting, $iattributes['default']))) {
+										return false;
+									}
 								}
 							}
 						}
@@ -68,6 +76,8 @@ function prime_default_settings() {
 	}
 
 	$_SESSION['settings_primed'] = true;
+
+	return true;
 }
 
 /**
@@ -182,7 +192,7 @@ function install_test_temporary_table() {
  * @return int The resulting integer value.
  */
 function db_install_execute($sql, $params = array(), $log = true) {
-	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
+	$status = (db_execute_prepared($sql, $params, $log && empty($params), redact: true) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
 		db_install_add_cache($status, $sql, $params);
@@ -458,26 +468,17 @@ function db_install_add_cache($status, $sql, $params = NULL) {
 		$database_upgrade_status[$cacti_upgrade_version] = array();
 	}
 
-	$query = clean_up_lines($sql);
-	$actual = 0;
-	$expected = substr_count($query, '?');
+	// Retain placeholders, never substitute parameter values into diagnostics.
+	$sql      = clean_up_lines($sql);
+	$actual   = is_array($params) ? count($params) : 0;
+	$expected = substr_count($sql, '?');
+	$error    = empty($database_last_error) ? '' : 'Database operation failed (error details omitted)';
 
-	if (cacti_sizeof($params)) {
-		foreach ($params as $arg) {
-			$pos = strpos($query, '?');
-			if ($pos !== false) {
-				$actual++;
-				$query = substr_replace($query, "'$arg'", $pos, 1);
-			}
-		}
-	}
-
-	$sql = clean_up_lines($query);
 	if ($actual !== $expected) {
 		$sql .= "\n [[ WARNING: $expected parameters expected, $actual provided ]]";
 	}
 
-	$database_upgrade_status[$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql, 'error' => $database_last_error);
+	$database_upgrade_status[$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql, 'error' => $error);
 
 	$cacheFile = '';
 	if (isset($database_upgrade_status['file'])) {
@@ -485,8 +486,8 @@ function db_install_add_cache($status, $sql, $params = NULL) {
 	}
 
 	if (!empty($cacheFile)) {
-		log_install_high('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error);
-		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
+		log_install_high('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error);
+		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error . PHP_EOL, FILE_APPEND);
 	}
 }
 
@@ -615,6 +616,14 @@ function find_best_path($binary_name) {
 function install_setup_get_templates() {
 	global $config;
 
+	/* Reading every package costs about 50 ms and the installer asks several
+	 * times per request, so read them once. The set is fixed for a request. */
+	static $cached = null;
+
+	if ($cached !== null) {
+		return $cached;
+	}
+
 	if ($config['is_web']) {
 		ini_set('zlib.output_compression', '0');
 	}
@@ -692,6 +701,8 @@ function install_setup_get_templates() {
 			$info[] = $myinfo;
 		}
 	}
+
+	$cached = $info;
 
 	return $info;
 }
@@ -959,6 +970,136 @@ function install_file_paths() {
 }
 
 /**
+ * Replace the remote poller assignment without truncating the live configuration.
+ */
+function install_write_poller_config(string $file, int $poller_id) : bool {
+	$path = realpath($file);
+
+	if ($path === false || !is_file($path) || !is_writable($path)) {
+		return false;
+	}
+
+	$contents = file_get_contents($path);
+	$stat     = stat($path);
+
+	if ($contents === false || $stat === false) {
+		return false;
+	}
+
+	$original = $contents;
+	$contents = preg_replace('~^([ \t]*)\$poller_id[ \t]*=[^;\r\n]*;[ \t]*(?://[^\r\n]*|\#[^\r\n]*)?\r?$~m',
+		'${1}$poller_id = ' . $poller_id . ';', $contents, -1, $count);
+
+	if ($contents === null || $count !== 1) {
+		return false;
+	}
+
+	/* The installer only requires config.php itself to be writable. When its
+	   directory is not, or a new inode cannot keep the file's owner and group,
+	   the file is rewritten in place instead of being replaced. */
+	if (!is_writable(dirname($path))) {
+		return install_rewrite_poller_config($path, $contents, $original);
+	}
+
+	$temp = tempnam(dirname($path), '.cacti-config-');
+
+	if ($temp === false) {
+		return install_rewrite_poller_config($path, $contents, $original);
+	}
+
+	try {
+		// tempnam can fall back to the system temporary directory.
+		if (dirname($temp) !== dirname($path)) {
+			return install_rewrite_poller_config($path, $contents, $original);
+		}
+
+		$stream = fopen($temp, 'wb');
+
+		if ($stream === false) {
+			return false;
+		}
+
+		try {
+			if (!install_write_whole_stream($stream, $contents)) {
+				return false;
+			}
+		} finally {
+			fclose($stream);
+		}
+
+		// Keep the original access policy when replacing the inode.
+		if ((fileowner($temp) !== $stat['uid'] && !@chown($temp, $stat['uid'])) ||
+			(filegroup($temp) !== $stat['gid'] && !@chgrp($temp, $stat['gid']))) {
+			return install_rewrite_poller_config($path, $contents, $original);
+		}
+
+		if (!chmod($temp, $stat['mode'] & 0777)) {
+			return false;
+		}
+
+		return rename($temp, $path);
+	} finally {
+		if (is_file($temp)) {
+			unlink($temp);
+		}
+	}
+}
+
+/**
+ * Rewrite the configuration in place, which keeps its inode, owner and mode.
+ * The original contents are written back when the new contents cannot be.
+ */
+function install_rewrite_poller_config(string $path, string $contents, string $original) : bool {
+	$stream = fopen($path, 'r+b');
+
+	if ($stream === false) {
+		return false;
+	}
+
+	try {
+		if (!flock($stream, LOCK_EX)) {
+			return false;
+		}
+
+		if (install_write_whole_stream($stream, $contents)) {
+			return true;
+		}
+
+		install_write_whole_stream($stream, $original);
+
+		return false;
+	} finally {
+		fclose($stream);
+	}
+}
+
+/**
+ * Write the complete contents from the start of the stream and flush them.
+ *
+ * @param resource $stream An open, writable file stream
+ */
+function install_write_whole_stream($stream, string $contents) : bool {
+	if (!rewind($stream)) {
+		return false;
+	}
+
+	$offset = 0;
+	$length = strlen($contents);
+
+	while ($offset < $length) {
+		$written = fwrite($stream, substr($contents, $offset));
+
+		if ($written === false || $written === 0) {
+			return false;
+		}
+
+		$offset += $written;
+	}
+
+	return ftruncate($stream, $length) && fflush($stream) && fsync($stream);
+}
+
+/**
  * Handles the remote update config file. Used as part of Cacti's install functionality.
  *
  * @return string The resulting string.
@@ -973,7 +1114,6 @@ function remote_update_config_file() {
 		$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
 	$failure     = '';
-	$newfile     = array();
 	$config_file = $config['base_path'] . '/include/config.php';
 
 	$connection = db_connect_real(
@@ -1001,7 +1141,7 @@ function remote_update_config_file() {
 		$poller_id = db_fetch_cell_prepared('SELECT id
 			FROM poller
 			WHERE hostname = ?',
-			array($hostname), true, $connection);
+			array($hostname), '', true, $connection);
 
 		if (empty($poller_id)) {
 			$save['name'] = __('New Poller');
@@ -1021,28 +1161,8 @@ function remote_update_config_file() {
 		}
 
 		if (!empty($poller_id)) {
-			if (is_writable($config_file)) {
-				$file_array = file($config_file);
-
-				if (cacti_sizeof($file_array)) {
-					foreach($file_array as $line) {
-						if (strpos(trim($line), "\$poller_id") !== false) {
-							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
-						} else {
-							$newfile[] = $line;
-						}
-					}
-
-					$fp = fopen($config_file, 'w');
-					foreach($newfile as $line) {
-						fwrite($fp, $line);
-					}
-					fclose($fp);
-				} else {
-					$failure = 'Failed to read configuration file';
-				}
-			} else {
-				$failure = 'Configuration file is not writable';
+			if (!install_write_poller_config($config_file, (int) $poller_id)) {
+				$failure = 'Failed to update configuration file';
 			}
 		} else {
 			$failure = 'Unable to obtain poller id for this server';

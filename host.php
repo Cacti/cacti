@@ -209,7 +209,7 @@ function host_reindex() {
 		WHERE host_id = ?',
 		array($host_id));
 
-	raise_message('host_reindex', __esc('Device Reindex Completed in %0.2f seconds.  There were %d items updated.', $total_time, $items), MESSAGE_LEVEL_INFO);
+	raise_message('host_reindex', __('Device Reindex Completed in %0.2f seconds.  There were %d items updated.', $total_time, $items), MESSAGE_LEVEL_INFO);
 }
 
 /**
@@ -290,6 +290,8 @@ function get_site_locations() {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_host')) {
 		if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_password') != get_nfilter_request_var('snmp_password_confirm'))) {
 			raise_message(14);
@@ -342,6 +344,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -362,7 +366,7 @@ function form_actions() {
 						WHERE id = ?',
 						array(get_request_var('report_id')));
 
-					raise_message('reports_add_error', __esc('Unable to add some Devices to Report \'%s\'', $name), MESSAGE_LEVEL_WARN);
+					raise_message('reports_add_error', __('Unable to add some Devices to Report \'%s\'', $name), MESSAGE_LEVEL_WARN);
 				}
 			} elseif (get_request_var('drp_action') == '1') { // delete
 				if (!isset_request_var('delete_type')) {

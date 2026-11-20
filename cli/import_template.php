@@ -49,7 +49,7 @@ if (cacti_sizeof($parms)) {
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg = $parameter;
 			$value = '';
@@ -125,6 +125,12 @@ if (cacti_sizeof($parms)) {
 			print 'Read ' . strlen($xml_data) . ' bytes of XML data' . PHP_EOL;
 
 			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans, $replace_svalues);
+
+			if ($debug_data === false) {
+				print 'ERROR: Template XML validation failed' . PHP_EOL;
+
+				exit(1);
+			}
 
 			import_display_results($debug_data, array(), $preview_only);
 		} else {

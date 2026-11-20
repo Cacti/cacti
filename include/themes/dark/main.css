@@ -177,8 +177,9 @@ select {
 	font-size: 12px;
 }
 
-*:focus {
-	outline: none;
+:focus-visible {
+	outline: 2px solid #a7d986;
+	outline-offset: 2px;
 }
 
 label {
@@ -1243,7 +1244,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: show;
+	color: snow;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1394,12 +1395,11 @@ legend {
 }
 
 .cactiTableTitleRow {
-	float: left;
 	text-align: left;
 	padding-left: 5px;
-	display: block;
+	display: flex;
 	width: 100%;
-	height: 22px;
+	min-height: 22px;
 	line-height: 22px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1407,6 +1407,8 @@ legend {
 	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+	align-items: center;
+	box-sizing: border-box;
 }
 
 .cactiInstallTableTitleRow {
@@ -1420,17 +1422,17 @@ legend {
 
 /* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
    html_start_box styling instead of the jquery-ui.css themeroller look. */
-.ui-selectmenu-button.ui-button {
-	background: #000000;
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: #222222 url("images/ui-bg_highlight-soft_35_222222_1x100.png") 50% 50% repeat-x;
 	border: 1px solid #555555;
 	border-radius: 6px;
 	color: #ffffff;
 }
 
-.ui-selectmenu-button.ui-button:hover,
-.ui-selectmenu-button.ui-selectmenu-button-open {
-	background: #000000;
-	border-color: #555555;
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #155413;
+	border-color: #155413;
 	color: #ffffff;
 }
 
@@ -1515,6 +1517,24 @@ legend {
 	border-color: #1d7a1d;
 }
 
+/* The session message dialog (Operation successful / errors) contains only
+   action buttons (Ok and, during the save countdown, Pause). Colour them with
+   the dark theme's own jquery-ui.css button greens, scoped via the
+   cactiSessionMessageDialog class (added in layout.js) instead of per-button
+   IDs: the pale #31442b green at rest, deepening to the #155413 hover/focus
+   green on hover and keyboard focus so the focused button stands out. */
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button {
+	background: #31442b;
+	color: #ffffff;
+	border-color: #31442b;
+}
+
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:hover,
+.ui-dialog.cactiSessionMessageDialog .ui-dialog-buttonpane .ui-button:focus {
+	background: #155413;
+	border-color: #155413;
+}
+
 .cactiTableTitle {
 	float: left;
 	text-align: left;
@@ -1560,6 +1580,28 @@ legend {
 	padding: 0px;
 	white-space: nowrap;
 	vertical-align: middle;
+}
+
+.cactiTableTitleRow > .cactiTableTitle,
+.cactiTableTitleRow > .cactiTableButton {
+	float: none;
+	width: auto;
+	height: auto;
+	min-height: 22px;
+}
+
+.cactiTableTitleRow > .cactiTableTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.cactiTableTitleRow > .cactiTableButton {
+	flex: 0 0 auto;
+}
+
+.cactiTableTitleRow > .cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -2278,6 +2320,7 @@ tr.selected {
 }
 
 tr.selectable:hover:not(.selected) {
+	color: snow;
 	background: rgba(167,217,134,0.4);
 	background: -moz-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,0.4)), color-stop(100%, rgba(148,179,107,0.2)));

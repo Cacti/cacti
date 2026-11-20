@@ -1,0 +1,43 @@
+,,"Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Language: 
+Language-Team: 
+Last-Translator: 
+MIME-Version: 1.0
+Project-Id-Version: 
+Report-Msgid-Bugs-To: 
+"
+,js-expr1,
+,js-expr2,
+,js-alert,
+,js-single,
+,js-obj-single,
+some-context,js-action,
+,<span>js-return</span><br>,
+,t-cond-attribute,
+,t-attribute,
+,t-same-line-s,
+,multi-occurrence,
+,t-singular2,
+,t-v-bind,
+context,t-action,
+,back-tick-in-tag,
+,t-v-text,
+,t-text,
+,t-singular,
+,t-tag,
+,t-tag-sibling,
+,t-expr1,
+,t-expr2,
+,"t-""quotes""",
+,"t-""quotes""-2",
+,t-'quotes',
+,t-'quotes'-2,
+,t-spaces-expr,
+,t-spaces-expr2,
+,t-p1(parentheses),
+context2,t-action2,
+,back-tick-in-mustache,
+,t-tag-2,
+,v-translate-attribute,
+,v-translate-attribute-single,

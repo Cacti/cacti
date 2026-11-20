@@ -47,11 +47,13 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_remove':
+		csrf_require_post();
 		cdef_item_remove();
 
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_movedown':
+		csrf_require_post();
 		get_filter_request_var('cdef_id');
 
 		item_movedown();
@@ -59,6 +61,7 @@ switch (get_request_var('action')) {
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_moveup':
+		csrf_require_post();
 		get_filter_request_var('cdef_id');
 
 		item_moveup();
@@ -80,6 +83,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
     case 'ajax_dnd':
+        csrf_require_post();
         cdef_item_dnd();
 
         break;
@@ -126,6 +130,7 @@ function draw_cdef_preview($cdef_id) {
  */
 
 function form_save() {
+	csrf_require_post();
 
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
@@ -252,6 +257,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -727,7 +734,7 @@ function cdef_edit() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {
-				loadPageNoHeader('cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
+				loadPageUsingPostUrl('cdef.php?action=ajax_dnd&id=<?php printf('%d', $cdef['id'] ?? 0);?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>
@@ -756,7 +763,7 @@ function cdef_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete CDEF Item');?>',
+						title: <?php print cacti_js_encode(__('Delete CDEF Item'));?>,
 						minHeight: 80,
 						minWidth: 500
 					});

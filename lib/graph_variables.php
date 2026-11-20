@@ -498,7 +498,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		}
 
 		foreach ($gi as $data_source => $true) {
-			list($data_source_name, $local_data_id) = explode('|||', $data_source);
+			[$data_source_name, $local_data_id] = explode('|||', $data_source);
 			$local_data_array[$local_data_id][] = $data_source_name;
 		}
 	}

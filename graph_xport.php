@@ -105,7 +105,10 @@ $xport_meta = array();
 $graph_data_array['export_csv'] = true;
 
 /* Get graph export */
-$xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, $xport_meta, $_SESSION['sess_user_id']);
+$xport_array = false;
+if (!empty($graph_info['local_graph_id'])) {
+	$xport_array = rrdtool_function_xport($graph_info['local_graph_id'], get_request_var('rra_id'), $graph_data_array, $xport_meta, $_SESSION['sess_user_id']);
+}
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array) && isset($xport_array['meta']) && is_array($xport_array['meta'])) {
@@ -336,7 +339,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 					$row_data = 'U';
 				}
 
-				print "<td class='right'>$row_data</td>";
+				print "<td class='right'>" . html_escape($row_data) . "</td>";
 			}
 
 			print "</tr>\n";

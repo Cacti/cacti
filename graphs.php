@@ -247,6 +247,8 @@ function parse_validate_graph_template_id($variable) {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	/* ================= input validation ================= */
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('host_id_prev');
@@ -649,6 +651,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -694,10 +698,10 @@ function form_actions() {
 						array($local_graph_id));
 
 					if (api_graph_change_device($local_graph_id, $host_id)) {
-						raise_message('moved_' . $local_graph_id, __esc('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
+						raise_message('moved_' . $local_graph_id, __('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
 						$success++;
 					} else {
-						raise_message('notmoved_' . $local_graph_id, __esc('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
+						raise_message('notmoved_' . $local_graph_id, __('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
 						$failures++;
 					}
 				}
@@ -775,7 +779,13 @@ function form_actions() {
 				);
 
 				$ag_data['local_graph_id'] = $local_graph_id;
-				$aggregate_graph_id = sql_save($ag_data, 'aggregate_graphs');
+				$aggregate_graph_id = $local_graph_id ? aggregate_sql_save($ag_data, 'aggregate_graphs') : false;
+				if (!$aggregate_graph_id) {
+					db_rollback_transaction();
+					raise_message(2);
+					header('Location: aggregate_graphs.php');
+					exit;
+				}
 				$ag_data['aggregate_graph_id'] = $aggregate_graph_id;
 
 				// 	/* save member graph info */
@@ -818,7 +828,12 @@ function form_actions() {
 						$aggregate_graph_items[]             = $item_new;
 					}
 
-					aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item');
+					if (!aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item', false)) {
+						db_rollback_transaction();
+						raise_message(2);
+						header('Location: aggregate_graphs.php');
+						exit;
+					}
 				} else {
 					$aggregate_graph_items = db_fetch_assoc_prepared('SELECT *
 						FROM aggregate_graph_templates_item
@@ -1814,8 +1829,9 @@ function graph_edit() {
 		<div class='cactiTable'>
 			<div id='graphLocation' class='center'></div>
 		<?php
-		if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
-			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+		if (isset($_SESSION['graph_debug_mode']) && !empty($graph['local_graph_id'])) {
+			/* RRDtool's error text repeats graph item text, so it is returned and escaped, not printed */
+			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_RETURN_STDERR;
 			$graph_data_array['print_source'] = 1;
 			$graph_data_array['graph_end']    = $graph_end;
 			$graph_data_array['graph_start']  = $graph_start;
@@ -1829,7 +1845,7 @@ function graph_edit() {
 				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
+				<pre><?php print ($config['poller_id'] == 1 ? html_escape((string) @rrdtool_function_graph($graph['local_graph_id'], 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id'])) : __esc('Not Checked'));?></pre>
 			</div>
 		<?php
 		}

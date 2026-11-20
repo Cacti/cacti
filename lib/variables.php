@@ -89,8 +89,8 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
 			FROM data_local
 			WHERE host_id = ?
 			AND snmp_query_id = ?
-			AND id IN (?)',
-			array($host_id, $query_id, implode(',', $ids)));
+			AND id IN (' . implode(',', array_fill(0, cacti_sizeof($ids), '?')) . ')',
+			array_merge(array($host_id, $query_id), array_values($ids)));
 	} else {
 		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM data_local
@@ -210,8 +210,8 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = arra
 			ON gti.task_item_id = dtr.id
 			WHERE host_id = ?
 			AND snmp_query_id = ?
-			AND dtr.local_data_id IN(?)',
-			array($host_id, $query_id, implode(',', $ids)));
+			AND dtr.local_data_id IN (' . implode(',', array_fill(0, cacti_sizeof($ids), '?')) . ')',
+			array_merge(array($host_id, $query_id), array_values($ids)));
 	} else {
 		$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM graph_local
@@ -273,6 +273,31 @@ function null_out_substitutions($string) {
 }
 
 /**
+ * Removes the device credential variables from text that people see, such as
+ * graph and data source titles and graph legends.  Data input methods still
+ * receive these values through substitute_host_data(). Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param string $text The text before variable substitution.
+ *
+ * @return string The text without the credential variables.
+ */
+function strip_credential_variables($text) {
+	$text    = (string) $text;
+	$pattern = '/\\|host_snmp_(?:community|username|password|priv_passphrase|context|engine_id)\\|/i';
+
+	/* Strip to a fixed point: deleting one token can leave its neighbours
+	 * adjacent and so form a fresh token, which a single pass would miss and
+	 * the later variable substitution would then expand. */
+	do {
+		$prev = $text;
+		$text = preg_replace($pattern, '', $text);
+	} while ($text !== $prev);
+
+	return $text;
+}
+
+/**
  * Takes a string and substitutes all data query variables contained in it or cleans them out if
  * no data query is in use. Used as part of Cacti's lib functionality.
  *
@@ -284,6 +309,8 @@ function null_out_substitutions($string) {
  * @return string The original string with all of the variable substitutions made.
  */
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
+	$title = strip_credential_variables($title);
+
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
 			$title = substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));
@@ -426,7 +453,12 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$search[]  = $l_escape_string . 'host_external_id' . $r_escape_string;
 		$replace[] = $host['external_id'];
 
-		$string = str_replace($search, $replace, $string);
+		/* Substitute in a single pass: a device field such as the description,
+		 * notes, location or site name is attacker-influenced and may itself
+		 * contain a |host_snmp_*| token.  Sequential str_replace() would expand
+		 * that injected token on a later pass and leak the credential, so the
+		 * substituted values must never be scanned again. */
+		$string = strtr($string, array_combine($search, $replace));
 
 		$temp = api_plugin_hook_function(
 			'substitute_host_data',

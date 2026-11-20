@@ -513,7 +513,7 @@ function manager_notifications($id, $header_label) {
 	if (get_request_var('mib') == '-1') {
 		/* Show all items */
 	} elseif (!isempty_request_var('mib')) {
-		$sql_where .= " AND snmpagent_cache.mib='" . get_request_var('mib') . "'";
+		$sql_where .= ' AND snmpagent_cache.mib=' . db_qstr(get_request_var('mib'));
 	}
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
@@ -624,6 +624,8 @@ function manager_logs($id, $header_label) {
 	);
 
 	if (isset_request_var('purge')) {
+		csrf_require_post();
+
 		db_execute_prepared('DELETE FROM snmpagent_notifications_log WHERE manager_id = ?', array($id));
 		set_request_var('clear', true);
 	}
@@ -765,7 +767,7 @@ function manager_logs($id, $header_label) {
 	if (get_request_var('severity') == '-1') {
 		/* Show all items */
 	} elseif (!isempty_request_var('severity')) {
-		$sql_where .= " AND snl.severity='" . get_request_var('severity') . "'";
+		$sql_where .= ' AND snl.severity=' . db_qstr(get_request_var('severity'));
 	}
 
 	/* filter by search string */
@@ -852,6 +854,8 @@ function manager_logs($id, $header_label) {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	if (!isset_request_var('tab')) {
 		set_request_var('tab', 'general');
 	}
@@ -928,6 +932,8 @@ function form_actions() {
 	global $manager_actions, $manager_notification_actions;
 
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		if (isset_request_var('action_receivers')) {
 			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
@@ -1058,7 +1064,7 @@ function form_actions() {
 					/* grep mib and notification name */
 					$row_id = substr($key, 4);
 
-					list($mib, $name) = explode('__', $row_id);
+					[$mib, $name] = explode('__', $row_id);
 
 					$list .= '<li>' . html_escape($name) . ' (' . html_escape($mib) .')</li>';
 

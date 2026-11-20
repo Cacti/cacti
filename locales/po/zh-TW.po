@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2026-10-07 06:18+0000\n"
 "Last-Translator: YU HAO HUANG <mix@b51.tw>\n"
 "Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\n"
@@ -2548,8 +2548,8 @@ msgstr "根部"
 msgid "No Tree Rules Found"
 msgstr "找不到樹規則"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "仙人掌系統警告"
@@ -3056,38 +3056,15 @@ msgstr "數據源調試"
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "數據源調試收到無效的數據源ID。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 #, fuzzy
 msgid "All RRDfile repairs succeeded."
 msgstr "所有RRDfile修復成功。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 #, fuzzy
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "一個或多個RRDfile修復失敗。有關錯誤，請參閱仙人掌日誌。"
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-msgid "No RRDfile repairs were necessary."
-msgstr "所有RRDfile修復成功。"
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool Tune Info"
-
-#: data_sources.php
-#, fuzzy
-msgid "Run Fix from Command Line"
-msgstr "修復步驟[從命令行運行修復]"
 
 #: data_debug.php
 #, fuzzy
@@ -3374,7 +3351,7 @@ msgstr "問題"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "對於attrbitute'%s'，問題發現'%s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 #, fuzzy
 msgid "Apply Suggested Fixes"
 msgstr "重新申請建議的名稱"
@@ -4245,6 +4222,19 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "所選數據輸入源沒有輸入字段"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+msgid "No RRDfile repairs were necessary."
+msgstr "所有RRDfile修復成功。"
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, fuzzy, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "數據模板選擇[編輯：%s]"
@@ -4355,6 +4345,16 @@ msgstr "新增"
 #, fuzzy
 msgid "Data Source Debug"
 msgstr "數據源調試"
+
+#: data_sources.php
+#, fuzzy, php-format
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+msgid "Run Fix from Command Line"
+msgstr "修復步驟[從命令行運行修復]"
 
 #: data_sources.php
 #, fuzzy
@@ -4740,7 +4740,7 @@ msgstr[0] "1 分鐘"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 #, fuzzy
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "圖形詳細信息，縮放和調試實用程序"
@@ -4750,26 +4750,11 @@ msgstr "圖形詳細信息，縮放和調試實用程序"
 msgid "CSV Export"
 msgstr "CSV匯出"
 
-#: lib/html.php
-#, fuzzy
-msgid "Time View"
-msgstr "樹狀圖"
-
-#: lib/html.php
-#, fuzzy
-msgid "Realtime"
-msgstr "領域"
-
-#: lib/html.php
-#, fuzzy
-msgid "Kill Spikes"
-msgstr "釘鞋"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "編輯圖表模板。"
 
-#: graph.php lib/html.php
+#: graph.php
 #, fuzzy
 msgid "Click to view just this Graph in Real-time"
 msgstr "單擊以實時查看此圖表"
@@ -5324,12 +5309,12 @@ msgstr "將圖形模板添加到設備"
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 msgid "Unable to start the aggregate graph update."
 msgstr "聚合圖的新標題。"
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 msgid "Unable to commit the aggregate graph update."
 msgstr "聚合圖的新標題。"
@@ -6407,6 +6392,15 @@ msgstr ""
 #, fuzzy, php-format
 msgid "Return to Cacti: %s"
 msgstr "需要：Cacti&gt; =%s"
+
+#: include/csrf.php
+#, fuzzy
+msgid "Session Expired"
+msgstr "課堂"
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
@@ -13151,14 +13145,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "如果boost輸出表超過此大小，則在記錄中將進行更新。"
 
 #: include/global_settings.php
-#, fuzzy
-msgid "Maximum Data Source Items Per Pass"
-msgstr "每次傳遞的最大數據源項目"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-#, fuzzy
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "為了優化性能，boost RRD更新程序需要知道應該在一次傳遞中檢索多少數據源項。請注意不要設置太高，因為主要更新期間的圖形性能可能會受到影響。如果在更新期間遇到圖形或輪詢緩慢，請降低此數字。默認值為50000。"
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 #, fuzzy
@@ -13190,12 +13182,39 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "如果boost poller刪除了此運行時，則會在cacti日誌中發出警告，"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "啟用poller_output_boost表的直接填充"
+#, fuzzy
+msgid "Maximum Failed RRDs Queued"
+msgstr "最大允許運行時間："
 
 #: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+msgid "Maximum Failed RRD Retries"
+msgstr "最大允許運行時間："
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+msgid "Maximum Failed RRD Age"
+msgstr "最大電子郵件大小"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 #, fuzzy
@@ -14538,6 +14557,10 @@ msgstr "您的密碼必須包含至少1個特殊字符！"
 msgid "Cacti Login Failure"
 msgstr "Cacti Log清除"
 
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
+
 #: lib/boost.php utilities.php
 #, fuzzy, php-format
 msgid "%s MBytes"
@@ -15460,13 +15483,13 @@ msgstr "數據查詢："
 
 #: lib/html.php
 #, fuzzy
-msgid "CSV Export of Graph Data"
-msgstr "圖形數據的CSV導出"
+msgid "Graph Actions"
+msgstr "圖表選項"
 
 #: lib/html.php
 #, fuzzy
-msgid "Time Graph View"
-msgstr "時間圖表視圖"
+msgid "Time View"
+msgstr "樹狀圖"
 
 #: lib/html.php
 #, fuzzy
@@ -15475,8 +15498,18 @@ msgstr "編輯設備"
 
 #: lib/html.php
 #, fuzzy
-msgid "Kill Spikes in Graphs"
-msgstr "殺死圖表中的尖峰"
+msgid "Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
+msgid "Stop Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
+msgid "Kill Spikes"
+msgstr "釘鞋"
 
 #: lib/html.php lib/installer.php
 #, fuzzy
@@ -15602,18 +15635,13 @@ msgstr "尚未選取檔案"
 
 #: lib/html.php
 #, fuzzy
+msgid "Time Graph View"
+msgstr "時間圖表視圖"
+
+#: lib/html.php
+#, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill結果"
-
-#: lib/html.php
-#, fuzzy
-msgid "Click to view just this Graph in Realtime"
-msgstr "單擊以實時查看此圖表"
-
-#: lib/html.php
-#, fuzzy
-msgid "Click again to take this Graph out of Realtime"
-msgstr "再次單擊可使此圖表脫離實時"
 
 #: lib/html.php
 #, fuzzy
@@ -18413,6 +18441,11 @@ msgstr ""
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
 
@@ -18521,6 +18554,26 @@ msgid "ERROR: RRD file does not exist: %s"
 msgstr "錯誤：RRDfile%s不可寫"
 
 #: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
 #, fuzzy, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "必需的RRD步長為&#39;%s&#39;"
@@ -18539,11 +18592,6 @@ msgstr "數據源&#39;%s&#39;的心跳應為&#39;%s&#39;"
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "數據源&#39;%s&#39;的RRD最小值應為&#39;%s&#39;"
-
-#: lib/rrd.php
-#, fuzzy, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "Cacti定義中缺少DS&#39;%s&#39;"
 
 #: lib/rrd.php
 #, fuzzy, php-format
@@ -18641,17 +18689,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP未知數據點（0）"
 
 #: lib/rrd.php
+#, fuzzy, php-format
+msgid "rename %s to %s"
+msgstr "將%s重命名為%s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "沒有 %s 找到"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "數據源字段"
-
-#: lib/rrd.php
-#, fuzzy, php-format
-msgid "rename %s to %s"
-msgstr "將%s重命名為%s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -23060,8 +23108,46 @@ msgstr "提升按需更新："
 
 #: utilities.php
 #, fuzzy
+msgid "Boost Lifecycle Status:"
+msgstr "提升狀態"
+
+#: utilities.php
+#, fuzzy
 msgid "Running Processes:"
 msgstr "並發進程"
+
+#: utilities.php
+#, fuzzy
+msgid "Sealed Boost Archives:"
+msgstr "等待提升記錄："
+
+#: utilities.php
+#, fuzzy, php-format
+msgid "oldest created: %s"
+msgstr "已建立%s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+msgid "Oldest Failed RRD:"
+msgstr "最舊優先"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+msgid "Last Automatic Failure Retry:"
+msgstr "自動頁面刷新"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 #, fuzzy
@@ -23438,35 +23524,72 @@ msgstr "使用此VDEF的圖表模板數。"
 msgid "No VDEFs"
 msgstr "沒有VDEF"
 
-#: lib/html.php
-#, fuzzy
-msgid "Graph Actions"
-msgstr "圖表選項"
-
-#: lib/plugins.php:835
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
 msgstr ""
 
-#: links.php
+#: include/global_settings.php
 #, fuzzy
-msgid "Links"
-msgstr "連結"
+msgid "Collapsed Menu"
+msgstr "控制台菜單"
 
-#: pollers.php
-#, fuzzy
-msgid "Collectors"
-msgstr "收藏家"
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
 
-#: rrdcleaner.php
-#, fuzzy
-msgid "RRDfiles"
-msgstr "RRDfiles"
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
 
-#: user_domains.php
 #, fuzzy
-msgid "Domains"
-msgstr "網域"
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "單擊以實時查看此圖表"
+
+#, fuzzy
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "再次單擊可使此圖表脫離實時"
+
+#, fuzzy
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "每次傳遞的最大數據源項目"
+
+#, fuzzy
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "為了優化性能，boost RRD更新程序需要知道應該在一次傳遞中檢索多少數據源項。請注意不要設置太高，因為主要更新期間的圖形性能可能會受到影響。如果在更新期間遇到圖形或輪詢緩慢，請降低此數字。默認值為50000。"
+
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "啟用poller_output_boost表的直接填充"
+
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
+
+#, fuzzy
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "圖形數據的CSV導出"
+
+#, fuzzy
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "殺死圖表中的尖峰"
+
+#, fuzzy, php-format
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "Cacti定義中缺少DS&#39;%s&#39;"
+
+#, fuzzy
+#~ msgid "Links"
+#~ msgstr "連結"
+
+#, fuzzy
+#~ msgid "Collectors"
+#~ msgstr "收藏家"
+
+#, fuzzy
+#~ msgid "RRDfiles"
+#~ msgstr "RRDfiles"
+
+#, fuzzy
+#~ msgid "Domains"
+#~ msgstr "網域"
 
 #, fuzzy
 #~ msgid "SNMP Rules"

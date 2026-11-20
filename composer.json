@@ -68,6 +68,9 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
+        "platform": {
+            "php": "8.2.0"
+        },
         "platform-check": "php-only",
         "sort-packages": true,
         "vendor-dir": "./include/vendor"

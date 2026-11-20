@@ -22,7 +22,7 @@ function ss_multicpu_avg($device_id) {
 		array($device_id));
 
 	if (!cacti_sizeof($host)) {
-		return "load:0\n";
+		return "load:U\n";
 	}
 
     $snmp_retries = read_config_option('snmp_retries');
@@ -42,20 +42,32 @@ function ss_multicpu_avg($device_id) {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$snmp_retries
+		$snmp_retries,
+		$host['max_oids'],
+		SNMP_POLLER,
+		$host['snmp_engine_id']
 	);
 
-	$load = 0;
+	$load  = 0;
+	$count = 0;
 
 	if (cacti_sizeof($array)) {
 		foreach ($array as $key=>$value)	{
-		    $load += $value['value'];
+			/* a device can return a non-numeric value for a processor */
+			if (!is_numeric($value['value'])) {
+				continue;
+			}
+
+			$load += $value['value'];
+			$count++;
 		}
-	} else {
-		return "load:0\n";
 	}
 
-	$load = $load / cacti_count($array);
+	if ($count == 0) {
+		return "load:U\n";
+	}
+
+	$load = $load / $count;
 
 	return "load:$load\n";
 }

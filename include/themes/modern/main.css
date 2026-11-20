@@ -180,8 +180,9 @@ select {
 	font-size: 12px;
 }
 
-*:focus {
-	outline: none;
+:focus-visible {
+	outline: 2px solid #006400;
+	outline-offset: 2px;
 }
 
 label {
@@ -1243,7 +1244,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: rgba(44,130,29,1);
+	color: #006400;
 	text-decoration: none;
 	font-size: 12px;
 	font-weight: normal;
@@ -1406,36 +1407,72 @@ legend {
 }
 
 .cactiTableTitleRow {
-	float: left;
 	text-align: left;
 	padding-left: 5px;
-	height: 25px;
+	min-height: 25px;
 	line-height: 25px;
-	display: block;
+	display: flex;
 	width: 100%;
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
+	align-items: center;
+	box-sizing: border-box;
 }
 
 /* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
    html_start_box styling instead of the jquery-ui.css themeroller look. */
-.ui-selectmenu-button.ui-button {
-	background: #ffffff;
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
 	border: 1px solid #aaaaaa;
 	border-radius: 6px;
 	color: #222222;
 }
 
-.ui-selectmenu-button.ui-button:hover,
-.ui-selectmenu-button.ui-selectmenu-button-open {
-	background: #ffffff;
-	border-color: #aaaaaa;
-	color: #222222;
+/* This theme disables the global focus outline (*:focus { outline: none; }) and
+   the rule above overrides .ui-button:focus, so restore a distinct keyboard-focus
+   indicator for the closed control using this theme's focus-visible ring. */
+.ui-selectmenu-button.ui-button:focus-visible {
+	outline: 2px solid rgba(167, 217, 134, 1);
+	outline-offset: 1px;
+}
+
+/* Include .ui-button so this open-state rule keeps the same specificity as the
+   :hover rule above and still wins while the button is hovered (menu opened by
+   mouse), giving the intended #dadada/#999999 open appearance. */
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: #dadada;
+	border-color: #999999;
+	color: #212121;
+}
+
+/* Replace the themeroller sprite caret with the same CSS triangle select2 uses
+   so the closed control's arrow matches the other (select2) dropdowns. */
+.ui-selectmenu-button.ui-button .ui-selectmenu-icon.ui-icon {
+	background-image: none;
+	position: relative;
+}
+
+.ui-selectmenu-button.ui-button .ui-selectmenu-icon.ui-icon::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -2px;
+	margin-left: -4px;
+	border-style: solid;
+	border-width: 5px 4px 0 4px;
+	border-color: #222222 transparent transparent transparent;
+}
+
+.ui-selectmenu-button.ui-selectmenu-button-open .ui-selectmenu-icon.ui-icon::after {
+	border-width: 0 4px 5px 4px;
+	border-color: transparent transparent #222222 transparent;
 }
 
 .ui-selectmenu-menu .ui-menu,
@@ -1527,12 +1564,12 @@ legend {
 	line-height: 25px;
 	display: block;
 	width: 70%;
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
 }
 
@@ -1544,12 +1581,12 @@ legend {
 	display: block;
 	text-align: right;
 	width: calc(30% - 5px);
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
 	white-space: nowrap;
 }
@@ -1565,6 +1602,28 @@ legend {
 	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.cactiTableTitleRow > .cactiTableTitle,
+.cactiTableTitleRow > .cactiTableButton {
+	float: none;
+	width: auto;
+	height: auto;
+	min-height: 25px;
+}
+
+.cactiTableTitleRow > .cactiTableTitle {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.cactiTableTitleRow > .cactiTableButton {
+	flex: 0 0 auto;
+}
+
+.cactiTableTitleRow > .cactiTableTitle span {
+	white-space: normal;
 }
 
 .cactiTableButton i {
@@ -2366,13 +2425,17 @@ tr th:last-child .checkbox {
 
 #nav li a.active {
 	color: snow;
-	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
-	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(63,117,15,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	background: linear-gradient(to bottom, rgba(91,117,70,1) 0%, rgba(63,117,15,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5b7546', endColorstr='#3f750f', GradientType=0 );
+}
+
+#nav li a.active.pic:hover {
+	color: #000000;
 }
 
 th {
@@ -2714,12 +2777,12 @@ tr#realtime td:first-child {
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: rgba(91,117,70,1);
+	background: -moz-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(91,117,70,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(91,117,70,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
 }
 

@@ -28,6 +28,10 @@ function boostBatchTestSizeof($value) {
 	return is_countable($value) ? count($value) : 0;
 }
 
+function boostBatchTestObjectHash($value) {
+	return is_object($value) ? spl_object_hash($value) : (string) $value;
+}
+
 function boostBatchTestFetchRow($sql, $assoc, $conn) {
 	return array('Value' => $GLOBALS['boost_batch_test_state']['packet_limit']);
 }
@@ -69,6 +73,7 @@ function boostBatchTestLoadFunction($root) {
 	$function = str_replace(array(
 		'boost_flush_output_batch',
 		'cacti_sizeof',
+		'cacti_object_hash',
 		'db_fetch_row',
 		'db_execute',
 		'db_affected_rows',
@@ -76,6 +81,7 @@ function boostBatchTestLoadFunction($root) {
 	), array(
 		'boostBatchTestFlush',
 		'boostBatchTestSizeof',
+		'boostBatchTestObjectHash',
 		'boostBatchTestFetchRow',
 		'boostBatchTestExecute',
 		'boostBatchTestAffectedRows',

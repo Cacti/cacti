@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="" trgLang="">
+  <file id=".">
+    <notes>
+      <note id="Content-Transfer-Encoding">8bit</note>
+      <note id="Content-Type">text/plain; charset=UTF-8</note>
+      <note id="Language"></note>
+      <note id="Language-Team"></note>
+      <note id="Last-Translator"></note>
+      <note id="MIME-Version">1.0</note>
+      <note id="Project-Id-Version"></note>
+      <note id="Report-Msgid-Bugs-To"></note>
+    </notes>
+    <unit id="6c69ee7f211c640419d5366cc076ae46">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:40</note>
+      </notes>
+      <segment>
+        <source>text 1</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="bb3438fbabd460ea6dbd27d153e2233b">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:47</note>
+      </notes>
+      <segment>
+        <source>text 2</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="9da0d4dc2681bf32793a3fd1b8610cb6">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:51</note>
+      </notes>
+      <segment>
+        <source>text 3 (with parenthesis)</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="e7a56b0f57aa5adc31713088d33ec0d2">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:55</note>
+      </notes>
+      <segment>
+        <source>text 4 "with double quotes"</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="615cfcfa32b34e8057fcbd1651247439">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:59</note>
+      </notes>
+      <segment>
+        <source>text 5 'with escaped single quotes'</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="3e220f99f0eed5cc73ab9c599cecc219">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:66</note>
+      </notes>
+      <segment>
+        <source>text 6</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="61aa602f3e368d98288056b1d693c431">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:70</note>
+      </notes>
+      <segment>
+        <source>text 7 (with parenthesis)</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="477f9325bba9979e86c2db696323e2ba">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:74</note>
+      </notes>
+      <segment>
+        <source>text 8 "with escaped double quotes"</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="f9890d4b371274cf0d5917759b6ff419">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/twig/input.php:78</note>
+      </notes>
+      <segment>
+        <source>text 9 'with single quotes'</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="d122051296e7f3bf7408762c11f3a026">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">notes: This is an actual note for translators.</note>
+        <note category="reference">./tests/assets/twig/input.php:84</note>
+      </notes>
+      <segment>
+        <source>text 10 with plural</source>
+        <target></target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

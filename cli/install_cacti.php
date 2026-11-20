@@ -47,7 +47,7 @@ define('log_install_echo', 'on');
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg = $parameter;
 			$value = '';
@@ -142,7 +142,7 @@ if (cacti_sizeof($parms)) {
 				set_install_multioption($options, 'SnmpOptions', 'Snmp Option', $value, 'Snmp');
 				break;
 			case '--table':
-				set_install_multioption($options, 'Tables', 'Table', $value, '');
+				set_install_multioption($options, 'Tables', 'Table', $value, 'chk_table_');
 				break;
 			case '--template':
 				set_install_multioption($options, 'Templates', 'Template', $value, 'chk_template_', true);
@@ -169,6 +169,17 @@ include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/installer.php');
 require_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/utility.php');
+
+/* One installer at a time, as install/background.php does. Dead processes are
+ * reclaimed by register_process_start() through its PID-liveness check, and the
+ * shutdown function also runs on the exit() calls below. */
+if (!register_process_start('install', 'master', '0', 86400)) {
+	print 'An Installation was already in progress' . PHP_EOL;
+
+	exit(1);
+}
+
+register_shutdown_function('unregister_process', 'install', 'master', 0);
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 
@@ -294,7 +305,7 @@ function set_install_option(&$options, $key, $display_name, $value) {
 	global $debug;
 
 	$options[$key] = $value;
-	log_install_high('cli',sprintf('Setting %s to \'%s\'', $display_name, $value));
+	log_install_high('cli', 'Setting ' . $display_name);
 }
 
 /**
@@ -327,7 +338,7 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 		$option_value = trim(substr($value, $option_pos + 1));
 		set_install_option($options[$key], $option_key, $display_name . ' \'' . $option_name . '\'', $option_value);
 	} else {
-		echo 'ERROR: Invalid ' . $display_name . ' value ' . $value . PHP_EOL . PHP_EOL;
+		echo 'ERROR: Invalid ' . $display_name . ' option format' . PHP_EOL . PHP_EOL;
 		exit(1);
 	}
 }
@@ -348,7 +359,7 @@ function debug_install_array($parent, $contents, $indent = 0) {
 			debug_install_array($parent . '.' . $key, $value, $indent + 1);
 		} else {
 			$hasContents = true;
-			log_install_debug('cli',$parent . '.' . $key . ': ' . $value);
+			log_install_debug('cli',$parent . '.' . $key . ': [value omitted]');
 		}
 	}
 

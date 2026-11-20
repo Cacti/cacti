@@ -1,0 +1,51 @@
+{
+    "messages": {
+        "": {
+            "domain": "messages",
+            "lang": "en",
+            "plural-forms": "nplurals=2; plural=(n != 1);"
+        },
+        "plain": [
+            ""
+        ],
+        "DATE \\a\\t TIME": [
+            ""
+        ],
+        "FIELD\tFIELD": [
+            ""
+        ],
+        "text concatenated with 'comments'": [
+            ""
+        ],
+        "Stop at the variable": [
+            ""
+        ],
+        "No comments": [
+            ""
+        ],
+        "my-context\\u0004All comments": [
+            ""
+        ],
+        "i18n Tagged comment": [
+            ""
+        ],
+        "i18n Tagged comment inside": [
+            ""
+        ],
+        "One comment": [
+            ""
+        ],
+        "i18n tagged %s": [
+            ""
+        ],
+        "foo": [
+            ""
+        ],
+        "bar": [
+            ""
+        ],
+        "foo bar": [
+            ""
+        ]
+    }
+}

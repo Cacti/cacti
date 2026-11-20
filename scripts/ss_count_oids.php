@@ -45,6 +45,11 @@ if (!isset($called_by_script_server)) {
  * @return mixed The result of the operation, or false on failure.
  */
 function ss_count_oids($hostid = '', $oid = '') {
+	/* a numeric or MIB::name OID; a leading '-' would reach snmpwalk as an option */
+	if (!preg_match('/^[A-Za-z0-9.][A-Za-z0-9.:_-]*\z/', (string) $oid)) {
+		return '0';
+	}
+
 	if ($hostid > 0) {
 		$host = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version, snmp_username, snmp_password,
 			snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context,
@@ -58,7 +63,7 @@ function ss_count_oids($hostid = '', $oid = '') {
 				$host['snmp_username'], $host['snmp_password'],
 				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
 				$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'],
-				read_config_option('snmp_retries'), $host['max_oids'], SNMP_WEBUI, $host['snmp_engine_id']);
+				read_config_option('snmp_retries'), $host['max_oids'], SNMP_POLLER, $host['snmp_engine_id']);
 
 			if (cacti_sizeof($walk)) {
 				return cacti_sizeof($walk);

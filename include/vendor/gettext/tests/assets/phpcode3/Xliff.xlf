@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="" trgLang="">
+  <file id=".">
+    <notes>
+      <note id="Content-Transfer-Encoding">8bit</note>
+      <note id="Content-Type">text/plain; charset=UTF-8</note>
+      <note id="Language"></note>
+      <note id="Language-Team"></note>
+      <note id="Last-Translator"></note>
+      <note id="MIME-Version">1.0</note>
+      <note id="Project-Id-Version"></note>
+      <note id="Report-Msgid-Bugs-To"></note>
+    </notes>
+    <unit id="d0f507338e0bccdf8f85214fda879fce">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">allowed1 Comment 1</note>
+        <note category="extracted-comment">allowed2 Comment 2</note>
+        <note category="reference">./tests/assets/phpcode3/input.php:3</note>
+      </notes>
+      <segment>
+        <source>Translation with comments</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="1356c67d7ad1638d816bfb822dd2c25d">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">allowed2: only this should get extracted.</note>
+        <note category="reference">./tests/assets/phpcode3/input.php:11</note>
+      </notes>
+      <segment>
+        <source>Foo</source>
+        <target></target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -268,6 +268,8 @@ function reports_item_dnd() {
  * @return void No value is returned.
  */
 function reports_form_save() {
+	csrf_require_post();
+
 	global $config, $messages;
 
 	if (isset_request_var('save_component_report')) {
@@ -445,6 +447,8 @@ function reports_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		/* Drop any report id the current user is not authorised to mutate so
@@ -647,13 +651,13 @@ function reports_send($id) {
 		}
 
 		if ($report['email'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['subject'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_name'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_email'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} else {
 			generate_report($report, true);
 		}

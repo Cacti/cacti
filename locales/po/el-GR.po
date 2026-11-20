@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2024-04-20 18:31-0400\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Greek <http://translate.cacti.net/projects/cacti/core-v1-2-x/el/>\n"
@@ -2199,8 +2199,8 @@ msgstr "Ρίζα"
 msgid "No Tree Rules Found"
 msgstr "Δεν βρέθηκαν κανάλια δέντρων"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "Προειδοποίηση συστήματος Cacti"
 
@@ -2652,39 +2652,13 @@ msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομέ�
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "Η επιδιόρθωση πηγής δεδομένων έλαβε ένα μη έγκυρο αναγνωριστικό προέλευσης δεδομένων."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "Όλες οι επισκευές RRDfile πέτυχαν."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Μία ή περισσότερες επισκευές RRDfile απέτυχαν. Δείτε το αρχείο καταγραφής Cacti για σφάλματα."
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "Όλες οι επισκευές RRDfile πέτυχαν."
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDtool Tune Info"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "Βήματα επιδιόρθωσης [Εκτέλεση επιδιόρθωσης από γραμμή εντολών]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2921,7 +2895,7 @@ msgstr "Πρόβλημα"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "Για το attrbitute ' %s', βρέθηκε το θέμα ' %s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "Επαναπροσδιορισμός προτεινόμενων ονομάτων"
 
@@ -3704,6 +3678,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "Δεν υπάρχουν πεδία εισαγωγής για την επιλεγμένη πηγή εισόδου δεδομένων"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Όλες οι επισκευές RRDfile πέτυχαν."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "Επιλογή προτύπου δεδομένων [επεξεργασία: %s]"
@@ -3795,6 +3783,18 @@ msgstr "Νέο"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDtool Tune Info"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Βήματα επιδιόρθωσης [Εκτέλεση επιδιόρθωσης από γραμμή εντολών]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4138,7 +4138,7 @@ msgstr[1] "1 λεπτό"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Λεπτομέρειες γραφήματος, βοηθητικά προγράμματα μεγέθυνσης και εντοπισμός σφαλμάτων"
 
@@ -4146,29 +4146,11 @@ msgstr "Λεπτομέρειες γραφήματος, βοηθητικά προ
 msgid "CSV Export"
 msgstr "Εξαγωγή CSV"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "Προβολή δέντρου"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Realm"
-msgid "Realtime"
-msgstr "Περιοχή"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "Ακίδες"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "Επεξεργασία προτύπου γραφήματος."
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
 
@@ -4649,13 +4631,13 @@ msgstr "Προσθήκη πρότυπου γραφήματος στη συσκε
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 #| msgid "The new Title of the aggregated Graph."
 msgid "Unable to start the aggregate graph update."
 msgstr "Ο νέος τίτλος του συγκεντρωτικού γραφήματος."
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 #| msgid "The new Title of the aggregated Graph."
 msgid "Unable to commit the aggregate graph update."
@@ -5593,6 +5575,16 @@ msgstr ""
 #| msgid "Requires: Cacti >= %s"
 msgid "Return to Cacti: %s"
 msgstr "Απαιτεί: Cacti&gt; = %s"
+
+#: include/csrf.php
+#, fuzzy
+#| msgid "Session"
+msgid "Session Expired"
+msgstr "Συνεδρία"
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
@@ -11184,12 +11176,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "Εάν ο πίνακας εξόδου ώθησης υπερβαίνει αυτό το μέγεθος, στα αρχεία, θα γίνει μια ενημέρωση."
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "Μέγιστα στοιχεία προέλευσης δεδομένων ανά διαδρομή"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "Για να βελτιστοποιήσετε την απόδοση, ο ενισχυτής ενημέρωσης RRD πρέπει να γνωρίζει πόσα στοιχεία προέλευσης δεδομένων θα πρέπει να ανακτηθούν σε ένα πέρασμα. Προσέξτε να μην ρυθμίσετε υπερβολικά υψηλές επιδόσεις κατά τη διάρκεια των μεγάλων ενημερώσεων. Εάν αντιμετωπίζετε βραδύτητα γραφημάτων ή ερωτήσεων κατά τη διάρκεια ενημερώσεων, μειώστε αυτόν τον αριθμό. Η προεπιλεγμένη τιμή είναι 50000."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11216,12 +11208,42 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "Εάν ο ενισχυτής ενίσχυσης ωθεί αυτό το χρόνο εκτέλεσης, θα τοποθετηθεί μια προειδοποίηση στο αρχείο καταγραφής κακί,"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "Ενεργοποιήστε τον άμεσο πληθυσμό του πίνακα poller_output_boost"
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "Μέγιστος επιτρεπόμενος χρόνος εκτέλεσης:"
 
 #: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "Επιτρέπει την άμεση εισαγωγή των εγγραφών στην ενίσχυση της εξόδου των poller με αποτέλεσμα τη μείωση του χρόνου κατά 25% σε κάθε κύκλο ψηφοφορίας."
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "Μέγιστος επιτρεπόμενος χρόνος εκτέλεσης:"
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "Μέγιστο μέγεθος ηλεκτρονικού ταχυδρομείου"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12353,6 +12375,10 @@ msgstr "Ο κωδικός σας πρέπει να περιέχει τουλάχ
 msgid "Cacti Login Failure"
 msgstr "Εγγραφή Cacti Clear"
 
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
+
 #: lib/boost.php utilities.php
 #, fuzzy, php-format
 msgid "%s MBytes"
@@ -13183,20 +13209,38 @@ msgid "Data Query:"
 msgstr "Ερώτημα δεδομένων:"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "CSV Εξαγωγή δεδομένων γραφήματος"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Επιλογές γραφήματος"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "Προβολή χρονικού γραφήματος"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Προβολή δέντρου"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "Επεξεργασία συσκευής"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "Kill Spikes σε γραφήματα"
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "Περιοχή"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "Περιοχή"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "Ακίδες"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13303,16 +13347,12 @@ msgid "No file selected"
 msgstr "Δεν επιλέχθηκε αρχείο"
 
 #: lib/html.php
+msgid "Time Graph View"
+msgstr "Προβολή χρονικού γραφήματος"
+
+#: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill Αποτελέσματα"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Κάντε ξανά κλικ για να πάρετε αυτό το γράφημα από το Realtime"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -15721,6 +15761,11 @@ msgstr "Το πρόσθετο στον κατάλογο '%s' δεν περιλα
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "Το πρόσθετο στον κατάλογο '%s' δεν περιλαμβάνει μια συνάρτηση εγκατάστασης '%s()'.  Αυτή η λειτουργία πρέπει να υπάρχει για να εγκατασταθεί το πρόσθετο."
 
@@ -15821,6 +15866,26 @@ msgstr "ΣΦΆΛΜΑ: ΤΟ αρχείο RRD %s δεν μπορεί να εγγρ
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "Το απαιτούμενο μέγεθος βήματος αρχείου RRD είναι '%s' αλλά το βήμα που παρατηρήθηκε είναι '%s'"
 
@@ -15838,11 +15903,6 @@ msgstr "Καρδιά για την προέλευση δεδομένων &#39; %
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "Το ελάχιστο RRD για την προέλευση δεδομένων &#39; %s&#39; θα πρέπει να είναι &#39; %s&#39;"
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "Το DS &#39; %s&#39; λείπει από τον ορισμό του Cacti"
 
 #: lib/rrd.php
 #, php-format
@@ -15928,17 +15988,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Άγνωστα Σημεία δεδομένων (0)"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "μετονομάστε %s σε %s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "Δεν βρέθηκαν %s"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "Πεδία προέλευσης δεδομένων"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "μετονομάστε %s σε %s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19893,8 +19953,51 @@ msgid "Boost On-demand Updating:"
 msgstr "Ενίσχυση Ενημέρωση κατ &#39;απαίτηση:"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "Κατάσταση ενίσχυσης"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "Συγχρόνες διαδικασίες"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "Αναμενόμενες εγγραφές ώθησης:"
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "Δημιουργήθηκε: %s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "Τα παλαιότερα πρώτα"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "Αυτόματη ανανέωση σελίδας"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20222,32 +20325,63 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "Επιλογές γραφήματος"
-
-#: lib/plugins.php:835
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
 msgstr ""
 
-#: links.php
-msgid "Links"
-msgstr "Σύνδεσμοι"
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Μενού Κονσόλας"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "Συλλέκτες"
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRDfiles"
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
 
-#: user_domains.php
-msgid "Domains"
-msgstr "Domains"
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Κάντε ξανά κλικ για να πάρετε αυτό το γράφημα από το Realtime"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "Μέγιστα στοιχεία προέλευσης δεδομένων ανά διαδρομή"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "Για να βελτιστοποιήσετε την απόδοση, ο ενισχυτής ενημέρωσης RRD πρέπει να γνωρίζει πόσα στοιχεία προέλευσης δεδομένων θα πρέπει να ανακτηθούν σε ένα πέρασμα. Προσέξτε να μην ρυθμίσετε υπερβολικά υψηλές επιδόσεις κατά τη διάρκεια των μεγάλων ενημερώσεων. Εάν αντιμετωπίζετε βραδύτητα γραφημάτων ή ερωτήσεων κατά τη διάρκεια ενημερώσεων, μειώστε αυτόν τον αριθμό. Η προεπιλεγμένη τιμή είναι 50000."
+
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "Ενεργοποιήστε τον άμεσο πληθυσμό του πίνακα poller_output_boost"
+
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "Επιτρέπει την άμεση εισαγωγή των εγγραφών στην ενίσχυση της εξόδου των poller με αποτέλεσμα τη μείωση του χρόνου κατά 25% σε κάθε κύκλο ψηφοφορίας."
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "CSV Εξαγωγή δεδομένων γραφήματος"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "Kill Spikes σε γραφήματα"
+
+#, php-format
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "Το DS &#39; %s&#39; λείπει από τον ορισμό του Cacti"
+
+#~ msgid "Links"
+#~ msgstr "Σύνδεσμοι"
+
+#~ msgid "Collectors"
+#~ msgstr "Συλλέκτες"
+
+#~ msgid "RRDfiles"
+#~ msgstr "RRDfiles"
+
+#~ msgid "Domains"
+#~ msgstr "Domains"
 
 #~ msgid "SNMP Rules"
 #~ msgstr "Κανόνες SNMP"

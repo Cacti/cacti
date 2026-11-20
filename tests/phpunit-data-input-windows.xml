@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap-unit.php" failOnSkipped="true" failOnRisky="true">
+	<testsuites>
+		<testsuite name="Windows PHP data input scripts">
+			<file>Unit/DataCollection/DataInput/ScriptServerModeTest.php</file>
+			<file>Unit/DataCollection/DataInput/SsWebhitsTest.php</file>
+			<file>Unit/DataCollection/DataInput/SsCableModemWeatherTest.php</file>
+			<file>Unit/DataCollection/DataInput/SsMotorolaSurfboardTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>

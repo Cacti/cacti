@@ -84,15 +84,21 @@ function rrdtool_reset_language() {
  * Handles the RRD init. Used as part of Cacti's lib functionality.
  *
  * @param bool $output_to_term The output to term.
+ * @param bool $read_response Whether the caller requires one RRDtool response per command.
  *
  * @return mixed The result of the operation, or false on failure.
  */
-function rrd_init($output_to_term = true) {
+function rrd_init($output_to_term = true, $read_response = false) {
 	global $config;
 
-	$args = func_get_args();
+	$args = array($output_to_term);
 	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true ) ? true : false;
 	$function = ($force_storage_location_local === false && read_config_option('storage_location')) ? '__rrd_proxy_init' : '__rrd_init';
+
+	if ($read_response && $function === '__rrd_init') {
+		return __rrd_init_acknowledged();
+	}
+
 	return call_user_func_array($function, $args);
 }
 
@@ -124,6 +130,412 @@ function __rrd_init($output_to_term = true) {
 	}
 
 	return popen($command, 'w');
+}
+
+/**
+ * Open a reusable local RRDtool process whose command pipe carries response metadata.
+ *
+ * RRDtool emits exactly one terminal OK or ERROR line for each command written to its
+ * standard input. Keeping stdout and stderr together lets Boost acknowledge a command
+ * before it advances an archive cursor without launching a process per update.
+ *
+ * @return resource|false Writable RRDtool command pipe, or false when startup fails.
+ */
+function __rrd_init_acknowledged() {
+	$binary = read_config_option('path_rrdtool');
+
+	if (!is_file($binary) || !is_executable($binary)) {
+		return false;
+	}
+
+	if (read_config_option('path_rrdtool_default_font')) {
+		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
+	}
+
+	rrdtool_set_language();
+
+	$descriptors = array(
+		0 => array('pipe', 'r'),
+		1 => array('pipe', 'w'),
+		2 => array('redirect', 1),
+	);
+	$process = proc_open(array($binary, '-'), $descriptors, $pipes);
+
+	if (!is_resource($process)) {
+		rrdtool_reset_language();
+
+		return false;
+	}
+
+	if (PHP_OS_FAMILY !== 'Windows') {
+		stream_set_blocking($pipes[1], false);
+	}
+
+	stream_context_set_option($pipes[0], 'cacti', 'rrd_output', $pipes[1]);
+	stream_context_set_option($pipes[0], 'cacti', 'rrd_process', $process);
+
+	return $pipes[0];
+}
+
+/**
+ * Read one bounded response from an acknowledged RRDtool worker.
+ *
+ * A timed-out or oversized response permanently poisons the worker. The caller must close it;
+ * silently falling back to a write-only process would acknowledge data that RRDtool may reject.
+ *
+ * @param resource $input Writable command pipe returned by __rrd_init_acknowledged().
+ * @param int $timeout Maximum seconds to wait for one complete response.
+ *
+ * @return string|false Complete RRDtool response, or false on protocol/worker failure.
+ */
+function __rrd_read_acknowledgement($input, $timeout = 30) {
+	$options = stream_context_get_options($input);
+
+	if (!isset($options['cacti']['rrd_output'], $options['cacti']['rrd_process'])) {
+		return false;
+	}
+
+	$output   = $options['cacti']['rrd_output'];
+	$deadline = microtime(true) + max(1, (int) $timeout);
+	$buffer   = '';
+
+	while (strlen($buffer) <= 65536) {
+		$remaining = $deadline - microtime(true);
+
+		if ($remaining <= 0 || feof($output)) {
+			break;
+		}
+
+		if (PHP_OS_FAMILY === 'Windows') {
+			$chunk = fgets($output, 65537);
+		} else {
+			$read    = array($output);
+			$write   = null;
+			$except  = null;
+			$seconds = (int) $remaining;
+			$micros  = (int) (($remaining - $seconds) * 1000000);
+			$ready   = stream_select($read, $write, $except, $seconds, $micros);
+
+			if ($ready === false || $ready === 0) {
+				break;
+			}
+
+			$chunk = stream_get_contents($output);
+		}
+
+		if ($chunk === false || $chunk === '') {
+			break;
+		}
+
+		$buffer .= $chunk;
+
+		if (strlen($buffer) > 65536) {
+			break;
+		}
+
+		if (preg_match('/(?:^|\n)(?:OK(?:[ \t][^\r\n]*)?|ERROR:[^\r\n]*)\r?$/m', $buffer) === 1 &&
+			preg_match('/\r?\n$/', $buffer) === 1) {
+			return $buffer;
+		}
+	}
+
+	stream_context_set_option($input, 'cacti', 'rrd_failed', true);
+	proc_terminate($options['cacti']['rrd_process'], 9);
+
+	return false;
+}
+
+/**
+ * Write a complete RRDtool protocol frame to a pipe.
+ *
+ * A blocking pipe may still accept fewer bytes than requested. Treating any positive partial
+ * write as success can leave RRDtool waiting for the rest of a command while Boost waits for an
+ * acknowledgement that can never arrive.
+ *
+ * @param resource $stream Writable RRDtool pipe.
+ * @param string $payload Complete newline-terminated protocol frame.
+ *
+ * @return bool True only when every byte was written.
+ */
+function __rrd_write_all($stream, $payload) {
+	$length = strlen($payload);
+	$offset = 0;
+
+	while ($offset < $length) {
+		$written = @fwrite($stream, substr($payload, $offset));
+
+		if ($written === false || $written === 0) {
+			return false;
+		}
+
+		$offset += $written;
+	}
+
+	return true;
+}
+
+/**
+ * Validate a local RRD path against a configured storage root.
+ *
+ * Missing descendants are allowed only when every lexical component is ordinary and their
+ * nearest existing ancestor resolves inside the configured root. Existing symlink pivots that
+ * leave the root are rejected.
+ *
+ * @param string $base_path Configured RRA root.
+ * @param string $path Existing or proposed path below the root.
+ * @param bool $must_exist Whether the complete path must already exist.
+ *
+ * @return bool True when the path is contained by the configured root.
+ */
+function rrdtool_local_path_is_valid($base_path, $path, $must_exist = false) {
+	if (!is_string($base_path) || !is_string($path) || $base_path === '' || $path === '' ||
+		strpos($base_path, "\0") !== false || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	$base_input = rtrim(str_replace('\\', '/', $base_path), '/');
+	$path_input = rtrim(str_replace('\\', '/', $path), '/');
+	$comparison_base = PHP_OS_FAMILY === 'Windows' ? strtolower($base_input) : $base_input;
+	$comparison_path = PHP_OS_FAMILY === 'Windows' ? strtolower($path_input) : $path_input;
+
+	if ($comparison_path !== $comparison_base &&
+		strpos($comparison_path . '/', $comparison_base . '/') !== 0) {
+		return false;
+	}
+
+	$relative = ltrim(substr($path_input, strlen($base_input)), '/');
+
+	foreach(preg_split('~[\\\\/]+~', $relative, -1, PREG_SPLIT_NO_EMPTY) as $component) {
+		if ($component === '.' || $component === '..') {
+			return false;
+		}
+	}
+
+	$base_real = realpath($base_path);
+
+	if ($base_real === false || !is_dir($base_real)) {
+		return false;
+	}
+
+	$candidate = $must_exist ? realpath($path) : false;
+
+	if ($must_exist && $candidate === false) {
+		return false;
+	}
+
+	if ($candidate === false) {
+		$candidate = $path;
+
+		while (!file_exists($candidate) && dirname($candidate) !== $candidate) {
+			$candidate = dirname($candidate);
+		}
+
+		$candidate = realpath($candidate);
+	}
+
+	if ($candidate === false) {
+		return false;
+	}
+
+	$base_real = rtrim(str_replace('\\', '/', $base_real), '/');
+	$candidate = rtrim(str_replace('\\', '/', $candidate), '/');
+
+	if (PHP_OS_FAMILY === 'Windows') {
+		$base_real = strtolower($base_real);
+		$candidate = strtolower($candidate);
+	}
+
+	return $candidate === $base_real || strpos($candidate . '/', $base_real . '/') === 0;
+}
+
+/**
+ * Create a local structured RRD directory while preserving inherited group collaboration.
+ *
+ * The nearest existing ancestor supplies owner, group, permission bits, and setgid. An explicit
+ * chmod after mkdir restores bits that the process umask may remove. Existing directories are
+ * never rewritten, so administrator-managed ACLs and modes remain authoritative.
+ *
+ * @param string $base_path Configured RRA root.
+ * @param string $directory Structured directory to create below the root.
+ * @param string $logopt Cacti log facility.
+ * @param bool|null &$permissions_ok Set false when creation succeeds but ownership/mode repair
+ *   or verification fails.
+ *
+ * @return bool True when the directory exists after the operation, false on creation failure.
+ */
+function rrdtool_create_structured_directory($base_path, $directory, $logopt = 'POLLER', &$permissions_ok = null) {
+	$permissions_ok = true;
+	$base_path      = rtrim($base_path, DIRECTORY_SEPARATOR);
+	$directory      = rtrim($directory, DIRECTORY_SEPARATOR);
+
+	if (!rrdtool_local_path_is_valid($base_path, $directory, is_dir($directory))) {
+		cacti_log("ERROR: Refusing to create structured RRD path outside '$base_path': '$directory'", false, $logopt);
+
+		return false;
+	}
+
+	if (is_dir($directory)) {
+		return true;
+	}
+
+	$ancestor = $directory;
+
+	while (!is_dir($ancestor) && $ancestor !== $base_path) {
+		$parent = dirname($ancestor);
+
+		if ($parent === $ancestor) {
+			break;
+		}
+
+		$ancestor = $parent;
+	}
+
+	if (!is_dir($ancestor)) {
+		cacti_log("ERROR: Unable to find an existing parent for structured RRD path '$directory'", false, $logopt);
+
+		return false;
+	}
+
+	$owner_id = fileowner($ancestor); // NOSONAR existing ancestor containment was validated above
+	$group_id = filegroup($ancestor); // NOSONAR existing ancestor containment was validated above
+	$mode     = fileperms($ancestor) & 07777; // NOSONAR existing ancestor containment was validated above
+
+	$new_paths = array();
+	$path      = $directory;
+
+	while ($path !== $ancestor && strpos($path . DIRECTORY_SEPARATOR, $ancestor . DIRECTORY_SEPARATOR) === 0) {
+		$new_paths[] = $path;
+		$parent = dirname($path);
+
+		if ($parent === $path) {
+			break;
+		}
+
+		$path = $parent;
+	}
+
+	foreach(array_reverse($new_paths) as $path) {
+		$parent = dirname($path);
+
+		if (!rrdtool_local_path_is_valid($base_path, $parent, true) ||
+			(!is_dir($path) && !mkdir($path, $mode & 0777)) || // NOSONAR parent containment is validated immediately before creation
+			!rrdtool_local_path_is_valid($base_path, $path, true)) { // NOSONAR validated parent and post-create containment
+			cacti_log("ERROR: Unable to safely create structured RRD path '$path'", false, $logopt);
+
+			return false;
+		}
+
+		$path = realpath($path);
+
+		if ($path === false) {
+			return false;
+		}
+
+		$path_ok = true;
+
+		if (function_exists('posix_getuid') && posix_getuid() == 0) {
+			$path_ok = chown($path, $owner_id) && chgrp($path, $group_id); // NOSONAR canonical path validated above
+		}
+
+		$path_ok = chmod($path, $mode) && $path_ok; // NOSONAR canonical path validated above
+		clearstatcache(true, $path); // NOSONAR canonical path validated above
+		$actual_mode  = fileperms($path) & 07777; // NOSONAR canonical path validated above
+		$actual_group = filegroup($path); // NOSONAR canonical path validated above
+		$expected_setgid = $mode & 02000;
+
+		if (($actual_mode & 02000) !== $expected_setgid || $actual_group !== $group_id) {
+			$path_ok = false;
+		}
+
+		if (!$path_ok) {
+			$permissions_ok = false;
+			cacti_log("WARNING: Structured RRD path '$path' was created but its inherited owner/group/setgid arrangement could not be fully applied.", false, $logopt);
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Apply the structured directory's collaborative group policy to a newly created RRD file.
+ *
+ * A group-writable parent makes the file group-readable and group-writable so a writer whose
+ * identity differs from the file owner can update it. Failure is reported separately and does
+ * not rewrite the RRDtool create acknowledgement.
+ *
+ * @param string $file Newly created RRD file.
+ * @param string $logopt Cacti log facility.
+ * @param string $base_path Configured RRA root.
+ *
+ * @return bool True when owner/group/mode verification succeeds.
+ */
+function rrdtool_apply_file_permissions($file, $logopt = 'POLLER', $base_path = '') {
+	if ($base_path === '') {
+		cacti_log("WARNING: No RRA path was given for permission assignment of RRD file '$file'.", false, $logopt);
+
+		return false;
+	}
+
+	if (is_link($file)) {
+		cacti_log("WARNING: RRD file '$file' is a symbolic link and was not assigned permissions.", false, $logopt);
+
+		return false;
+	}
+
+	/* Validate without requiring the file to exist first, so a traversal or
+	 * out-of-tree path is reported at the normal level even when missing. */
+	if (!rrdtool_local_path_is_valid($base_path, $file)) {
+		cacti_log("WARNING: RRD file '$file' is not a valid path below the RRA path '$base_path' and was not assigned permissions.", false, $logopt);
+
+		return false;
+	}
+
+	/* An RRD that has not been created yet (e.g. a first poll) is benign, so
+	 * only report it at medium poller verbosity. */
+	if (!file_exists($file)) {
+		cacti_log("WARNING: RRD file '$file' does not exist for permission assignment.", false, $logopt, POLLER_VERBOSITY_MEDIUM);
+
+		return false;
+	}
+
+	if (!is_file($file) || !rrdtool_local_path_is_valid($base_path, $file, true)) {
+		cacti_log("WARNING: RRD file '$file' is not a regular file below the RRA path '$base_path' and was not assigned permissions.", false, $logopt);
+
+		return false;
+	}
+
+	$file = realpath($file);
+
+	if ($file === false) {
+		return false;
+	}
+
+	$directory = dirname($file);
+	$owner_id  = fileowner($directory); // NOSONAR canonical file path is contained by base_path
+	$group_id  = filegroup($directory); // NOSONAR canonical file path is contained by base_path
+	$dir_mode  = fileperms($directory) & 07777; // NOSONAR canonical file path is contained by base_path
+	$file_mode = fileperms($file) & 0777; // NOSONAR canonical file path is contained by base_path
+	$mode      = $file_mode;
+	$success   = true;
+
+	if ($dir_mode & 0020) {
+		$mode |= 0060;
+	}
+
+	if (function_exists('posix_getuid') && posix_getuid() == 0) {
+		$success = chown($file, $owner_id) && chgrp($file, $group_id); // NOSONAR canonical path validated above
+	}
+
+	$success = chmod($file, $mode) && $success; // NOSONAR canonical path validated above
+	clearstatcache(true, $file); // NOSONAR canonical path validated above
+	$success = filegroup($file) === $group_id && // NOSONAR canonical path validated above
+		((fileperms($file) & 0060) === ($mode & 0060)) && $success;
+
+	if (!$success) {
+		cacti_log("WARNING: RRD file '$file' was created but its collaborative owner/group/mode arrangement could not be fully applied.", false, $logopt);
+	}
+
+	return $success;
 }
 
 /**
@@ -244,7 +656,15 @@ function rrd_close() {
 function __rrd_close($rrdtool_pipe) {
 	/* close the rrdtool file descriptor */
 	if (is_resource($rrdtool_pipe)) {
-		pclose($rrdtool_pipe);
+		$options = stream_context_get_options($rrdtool_pipe);
+
+		if (isset($options['cacti']['rrd_process'], $options['cacti']['rrd_output'])) {
+			fclose($rrdtool_pipe);
+			fclose($options['cacti']['rrd_output']);
+			proc_close($options['cacti']['rrd_process']);
+		} else {
+			pclose($rrdtool_pipe);
+		}
 	}
 
 	rrdtool_reset_language();
@@ -396,6 +816,12 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	}
 
 	static $last_command;
+	$pipe_options = is_resource($rrdtool_pipe) ? stream_context_get_options($rrdtool_pipe) : array();
+	$read_response = isset($pipe_options['cacti']['rrd_output']);
+
+	if (!empty($pipe_options['cacti']['rrd_failed'])) {
+		return false;
+	}
 
 	if (!is_numeric($output_flag)) {
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
@@ -454,7 +880,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			if (!is_resource($process)) {
 				unset($process);
 			} else {
-				fwrite($pipes[0], escape_command($command_line) . "\r\nquit\r\n");
+				__rrd_write_all($pipes[0], escape_command($command_line) . "\r\nquit\r\n");
 				fclose($pipes[0]);
 				$fp = $pipes[1];
 			}
@@ -466,8 +892,14 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	} else {
 		$i = 0;
 		while (1) {
-			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") === false) {
+			if (!__rrd_write_all($rrdtool_pipe, escape_command(" $command_line") . "\r\n")) {
 				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'");
+
+				if ($read_response) {
+					stream_context_set_option($rrdtool_pipe, 'cacti', 'rrd_failed', true);
+
+					return false;
+				}
 
 				/* close the invalid pipe */
 				rrd_close($rrdtool_pipe);
@@ -494,6 +926,26 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 	/* store the last command to provide rrdtool segfault diagnostics */
 	$last_command = $command_line;
+
+	if ($read_response) {
+		$response = __rrd_read_acknowledgement($rrdtool_pipe);
+
+		if ($response === false || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) {
+			return $response;
+		}
+
+		if ($output_flag == RRDTOOL_OUTPUT_BOOLEAN) {
+			return preg_match('/(?:^|\n)OK(?: |\r?\n|$)/', $response) === 1;
+		}
+
+		if ($output_flag == RRDTOOL_OUTPUT_NULL) {
+			return;
+		}
+
+		rrdtool_trim_output($response);
+
+		return $response;
+	}
 
 	if (!isset($fp)) {
 		return;
@@ -929,11 +1381,6 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	if ($config['cacti_server_os'] != 'win32') {
-		$owner_id = fileowner($config['rra_path']);
-		$group_id = filegroup($config['rra_path']);
-	}
-
 	/**
 	 * check for structured path configuration, if in place verify directory
 	 * exists and if not create it.
@@ -947,37 +1394,9 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
 			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775, true)) {
-					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-						$success  = true;
-						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
-						$spath    = '';
+				$permissions_ok = true;
 
-						foreach($paths as $path) {
-							if ($path == '') {
-								continue;
-							}
-
-							$spath .= '/' . $path;
-
-							$powner_id = fileowner($config['rra_path'] . $spath);
-							$pgroup_id = fileowner($config['rra_path'] . $spath);
-
-							if ($powner_id != $owner_id) {
-								$success = chown($config['rra_path'] . $spath, $owner_id);
-							}
-
-							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp($config['rra_path'] . $spath, $group_id);
-							}
-
-							if (!$success) {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
-								break;
-							}
-						}
-					}
-				} else {
+				if (!rrdtool_create_structured_directory($config['rra_path'], dirname($data_source_path), 'POLLER', $permissions_ok)) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			} else {
@@ -991,17 +1410,8 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	} else {
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
-		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-			if (file_exists($data_source_path)) {
-				if (!chown($data_source_path, $owner_id)) {
-					cacti_log("ERROR: Unable to set ownership for '$data_source_path'", false, 'POLLER');
-				}
-				if (!chgrp($data_source_path, $group_id)) {
-					cacti_log("ERROR: Unable to set group for '$data_source_path'", false, 'POLLER');
-				}
-			} else {
-				cacti_log("ERROR: RRD file '$data_source_path' does not exist for ownership assignment", false, 'POLLER');
-			}
+		if ($config['cacti_server_os'] != 'win32' && !read_config_option('storage_location')) {
+			rrdtool_apply_file_permissions($data_source_path, 'POLLER', $config['rra_path']);
 		}
 
 		return $success;
@@ -1018,13 +1428,15 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
  *   process_poller_output(). Avoids a per-item query for the common case where the caller
  *   already resolved this; falls back to a live per-item query for any local_data_id not
  *   present in the map (e.g. a caller that didn't prefetch).
+ * @param array|null &$updated Acknowledged timestamps, keyed by local_data_id.
  *
  * @return int The resulting integer value.
  */
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array()) {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array(), &$updated = null) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed            = 0;
 	$supports_skip_past_updates = null;
+	$updated                   = array();
 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		$create_rrd_file = false;
@@ -1142,7 +1554,17 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 					continue;
 				}
 
-				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				$result = rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_RETURN_STDERR, $rrdtool_pipe, 'POLLER');
+				if (!is_string($result) ||
+					preg_match('/(?:^|\n)OK(?: |\r?\n|$)/', $result) !== 1 ||
+					preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim($result))) {
+					cacti_log('ERROR: RRDtool did not acknowledge the update for local_data_id: ' . $rrd_fields['local_data_id'], false, 'POLLER');
+
+					// Do not advance this RRD past a sample that must be retried.
+					break;
+				}
+
+				$updated[$rrd_fields['local_data_id']][$update_time] = true;
 				$rrds_processed++;
 			}
 		}
@@ -1246,7 +1668,7 @@ function rrdtool_parse_fetch_output($output, $normalized_end_time, $show_unknown
 			continue;
 		}
 
-		list($raw_timestamp, $raw_data) = explode(':', $line, 2);
+		[$raw_timestamp, $raw_data] = explode(':', $line, 2);
 
 		if (!is_numeric(trim($raw_timestamp))) {
 			continue;
@@ -1713,6 +2135,224 @@ function rrdtool_invalid_cdef_response($graph_data_array, $cdef_id, $graph_id, $
 }
 
 /**
+ * Record, for each member of an aggregate graph, the DEFs that member's own graph defines, in
+ * the order its DEF names (a, b, c, ...) are assigned. A CDEF written for the member graph names
+ * its DEFs by those letters, but an aggregate assigns letters across all of its members.
+ *
+ * @param int $local_graph_id The aggregate graph.
+ * @param int $rra_seconds The step of the RRA being graphed.
+ *
+ * @return array 'owner' maps a data_template_rrd id to its possible member indexes, and 'members' lists
+ *               each member's DEFs as [data_template_rrd id, CF] pairs. Empty when the graph
+ *               is not an aggregate.
+ */
+function rrdtool_aggregate_def_map($local_graph_id, $rra_seconds) {
+	/* one query for every member's items, rather than one query per member */
+	$items = db_fetch_assoc_prepared('SELECT agi.local_graph_id AS member_graph_id,
+		gti.graph_type_id, gti.consolidation_function_id,
+		dtr.id AS data_template_rrd_id, dtr.local_data_id, dtr.data_source_name,
+		dtr.local_data_template_rrd_id
+		FROM aggregate_graphs AS ag
+		INNER JOIN aggregate_graphs_items AS agi
+		ON ag.id = agi.aggregate_graph_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.local_graph_id = agi.local_graph_id
+		LEFT JOIN data_template_rrd AS dtr
+		ON gti.task_item_id = dtr.id
+		WHERE ag.local_graph_id = ?
+		ORDER BY agi.sequence, agi.local_graph_id, gti.sequence',
+		array($local_graph_id));
+
+	if (!cacti_sizeof($items)) {
+		return array();
+	}
+
+	$map    = array('owner' => array(), 'members' => array());
+	$index  = -1;
+	$member = null;
+
+	/* the same rule rrdtool_function_graph() uses to assign DEF names */
+	foreach ($items as $item) {
+		if ($item['member_graph_id'] !== $member) {
+			$member        = $item['member_graph_id'];
+			$last_graph_cf = array();
+			$seen          = array();
+
+			$index++;
+
+			$map['members'][$index] = array();
+		}
+
+		$graph_cf = rrdtool_graph_item_cf($item, $rra_seconds, $last_graph_cf);
+
+		if (empty($item['local_data_id']) || isset($seen[$item['data_template_rrd_id']][$graph_cf])) {
+			continue;
+		}
+
+		$seen[$item['data_template_rrd_id']][$graph_cf] = true;
+
+		$map['members'][$index][] = array($item['data_template_rrd_id'], $graph_cf);
+
+		$map['owner'][$item['data_template_rrd_id']][$index] = $index;
+	}
+
+	return $map;
+}
+
+/**
+ * Point the DEF names in an aggregate graph item's CDEF at the right DEFs. In a member's item, a
+ * name refers to that member's own DEF. In a totalling item, it refers to the sum of that DEF
+ * across all members. A name that is not a DEF of the member graph, such as a CDEF name, is left
+ * unchanged; a member DEF that the aggregate does not draw, or cannot attribute to one member,
+ * becomes unknown rather than another member's DEF.
+ *
+ * @param string $cdef_string The CDEF expression before Cacti's special data sources are expanded.
+ * @param mixed $dtr_id The data_template_rrd id of the graph item.
+ * @param array $map The result of rrdtool_aggregate_def_map().
+ * @param array $cf_ds_cache The aggregate graph's DEF index per data_template_rrd id and CF.
+ * @param int $rra_seconds The step of the RRA being graphed.
+ *
+ * @return string The CDEF expression.
+ */
+function rrdtool_aggregate_cdef_defs($cdef_string, $dtr_id, $map, $cf_ds_cache, $rra_seconds) {
+	$tokens = explode(',', $cdef_string);
+
+	foreach ($tokens as $key => $token) {
+		if (!preg_match('/^[a-j]+$/', $token)) {
+			continue;
+		}
+
+		/* only a name generate_graph_def_name() can produce; a CDEF name such as cdefe
+		   decodes to an index far beyond any member's DEFs and is left alone below */
+		$index = (int) strtr($token, 'abcdefghij', '0123456789');
+
+		if (generate_graph_def_name(strval($index)) !== $token) {
+			continue;
+		}
+
+		$member_item = isset($map['owner'][$dtr_id]);
+		$members     = $map['members'];
+
+		if ($member_item) {
+			$members = array();
+
+			foreach ($map['owner'][$dtr_id] as $member_index) {
+				$members[] = $map['members'][$member_index];
+			}
+		}
+
+		$names = array();
+		$known = false;
+
+		foreach ($members as $defs) {
+			if (!isset($defs[$index])) {
+				continue;
+			}
+
+			$known = true;
+
+			if (isset($cf_ds_cache[$defs[$index][0]][$defs[$index][1]])) {
+				$names[] = generate_graph_def_name(strval($cf_ds_cache[$defs[$index][0]][$defs[$index][1]]));
+			}
+		}
+
+		/* not a DEF of any member graph, such as a CDEF name */
+		if (!$known) {
+			continue;
+		}
+
+		// Never point a name at a different DEF. A shared data source does
+		// not identify which member an item came from, so resolve it only
+		// when every possible member agrees, and a member's DEF is missing
+		// when the aggregate skips the item that draws it. Keep a DEF
+		// reference so RRDtool also accepts an otherwise constant CDEF.
+		if (!cacti_sizeof($names) || ($member_item && (cacti_sizeof($names) != cacti_sizeof($members) || cacti_sizeof(array_unique($names)) != 1))) {
+			$tokens[$key] = 'CURRENT_DATA_SOURCE,POP,UNKN';
+
+			continue;
+		}
+
+		if ($member_item || cacti_sizeof($names) == 1) {
+			$tokens[$key] = $names[0];
+		} else {
+			/* sum like ALL_DATA_SOURCES_NODUPS: unknown values count as 0 */
+			$sum = array();
+
+			foreach ($names as $name) {
+				$sum[] = 'TIME,' . (time() - $rra_seconds) . ",GT,$name,$name,UN,0,$name,IF,IF";
+			}
+
+			$tokens[$key] = implode(',', $sum) . str_repeat(',+', cacti_sizeof($names) - 1);
+		}
+	}
+
+	return implode(',', $tokens);
+}
+
+/**
+ * Return the consolidation function a graph item's DEF uses.
+ *
+ * @param array $graph_item The graph item, as selected by rrdtool_function_graph().
+ * @param int $rra_seconds The step of the RRA being graphed.
+ * @param array &$last_graph_cf The CF last used per data source, so a GPRINT follows its graph item.
+ *
+ * @return int The consolidation function id.
+ */
+function rrdtool_graph_item_cf($graph_item, $rra_seconds, &$last_graph_cf) {
+	/* mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item */
+	switch ($graph_item['graph_type_id']) {
+		case GRAPH_ITEM_TYPE_LINE1:
+		case GRAPH_ITEM_TYPE_LINE2:
+		case GRAPH_ITEM_TYPE_LINE3:
+		case GRAPH_ITEM_TYPE_LINESTACK:
+		case GRAPH_ITEM_TYPE_TIC:
+		case GRAPH_ITEM_TYPE_AREA:
+		case GRAPH_ITEM_TYPE_STACK:
+			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
+
+			/* remember the last CF for this data source for use with GPRINT
+			 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
+			 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
+			$last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''] = $graph_cf;
+
+			break;
+		case GRAPH_ITEM_TYPE_GPRINT:
+			/* ATTENTION!
+			 * the 'CF' given on graph_item edit screen for GPRINT is indeed NOT a real 'CF',
+			 * but an aggregation function
+			 * see 'man rrdgraph_data' for the correct VDEF based notation
+			 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
+			 * and to use that graph_item's CF */
+			if (isset($last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''])) {
+				$graph_cf = $last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''];
+			} else {
+				$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
+			}
+
+			break;
+		case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
+			$graph_cf = $graph_item['consolidation_function_id'];
+			break;
+		case GRAPH_ITEM_TYPE_GPRINT_LAST:
+			$graph_cf = $graph_item['consolidation_function_id'];
+			break;
+		case GRAPH_ITEM_TYPE_GPRINT_MAX:
+			$graph_cf = $graph_item['consolidation_function_id'];
+			break;
+		case GRAPH_ITEM_TYPE_GPRINT_MIN:
+			$graph_cf = $graph_item['consolidation_function_id'];
+			break;
+		default:
+			/* all other types are based on the best matching CF */
+			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
+
+			break;
+	}
+
+	return $graph_cf;
+}
+
+/**
  * Handles the rrdtool function graph. Used as part of Cacti's lib functionality.
  *
  * @param int $local_graph_id The local graph ID.
@@ -1979,73 +2619,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		foreach ($graph_items as $key => $graph_item) {
 			$dtr_id = $graph_item['data_template_rrd_id'] ?? '';
 
-			/* mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item */
-			switch ($graph_item['graph_type_id']) {
-				case GRAPH_ITEM_TYPE_LINE1:
-				case GRAPH_ITEM_TYPE_LINE2:
-				case GRAPH_ITEM_TYPE_LINE3:
-				case GRAPH_ITEM_TYPE_LINESTACK:
-				case GRAPH_ITEM_TYPE_TIC:
-				case GRAPH_ITEM_TYPE_AREA:
-				case GRAPH_ITEM_TYPE_STACK:
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
+			$graph_cf = rrdtool_graph_item_cf($graph_item, $rra_seconds, $last_graph_cf);
 
-					/* remember the last CF for this data source for use with GPRINT
-					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
-					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
-					$last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''] = $graph_cf;
-
-					/* remember this for second foreach loop */
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-				case GRAPH_ITEM_TYPE_GPRINT:
-					/* ATTENTION!
-					 * the 'CF' given on graph_item edit screen for GPRINT is indeed NOT a real 'CF',
-					 * but an aggregation function
-					 * see 'man rrdgraph_data' for the correct VDEF based notation
-					 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
-					 * and to use that graph_item's CF */
-					if (isset($last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''])) {
-						$graph_cf = $last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''];
-						/* remember this for second foreach loop */
-						$graph_items[$key]['cf_reference'] = $graph_cf;
-					} else {
-						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
-						/* remember this for second foreach loop */
-						$graph_items[$key]['cf_reference'] = $graph_cf;
-					}
-
-					break;
-				case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-					$graph_cf = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-				case GRAPH_ITEM_TYPE_GPRINT_LAST:
-					$graph_cf = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-				case GRAPH_ITEM_TYPE_GPRINT_MAX:
-					$graph_cf = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-				case GRAPH_ITEM_TYPE_GPRINT_MIN:
-					$graph_cf = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-				default:
-					/* all other types are based on the best matching CF */
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
-
-					/* remember this for second foreach loop */
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-			}
+			/* remember this for second foreach loop */
+			$graph_items[$key]['cf_reference'] = $graph_cf;
 
 			if (!empty($graph_item['local_data_id']) && !isset($cf_ds_cache[$dtr_id][$graph_cf])) {
 				/* use a user-specified ds path if one is entered */
@@ -2071,7 +2648,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					// are text-output modes; returning PNG bytes in either would produce
 					// garbage in the browser or CLI. Return a human-readable error instead.
 					if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
-						return __('ERROR: RRD file does not exist: %s', $data_source_path);
+						return __('ERROR: RRD file does not exist: %s', html_escape($data_source_path));
 					}
 
 					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
@@ -2236,6 +2813,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	$i = 0;
 
+	/* built when an aggregate graph's CDEF first names a DEF */
+	$aggregate_def_map = null;
+
 	/* hack for rrdtool 1.2.x support */
 	$graph_item_stack_type = '';
 
@@ -2292,6 +2872,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			if ((!empty($graph_item['cdef_id'])) && (!isset($cdef_cache[$graph_item['cdef_id']][$dtr_id][$cf_id]))) {
 				$cdef_string 	= $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
+
+				/* a CDEF can name DEFs directly (a,b,-), which in an aggregate graph are numbered
+				   across every member graph rather than per member */
+				if (preg_match('/(^|,)[a-j]+(,|$)/', $cdef_string)) {
+					if ($aggregate_def_map === null) {
+						$aggregate_def_map = rrdtool_aggregate_def_map($local_graph_id, $rra_seconds);
+					}
+
+					if (cacti_sizeof($aggregate_def_map)) {
+						$cdef_string = rrdtool_aggregate_cdef_defs($cdef_string, $dtr_id, $aggregate_def_map, $cf_ds_cache, $rra_seconds);
+					}
+				}
 				$magic_item 	= array();
 				$already_seen	= array();
 				$sources_seen	= array();
@@ -3212,6 +3804,8 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 		return $txt_graph_item;
 	}
 
+	$txt_graph_item = strip_credential_variables($txt_graph_item);
+
 	if (empty($graph['host_id'])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
@@ -3887,7 +4481,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	foreach ($loop as $key => $value) {
 		form_alternate_row($key, true);
 		form_selectable_cell($key, 'key');
-		form_selectable_cell($value, 'value', '', ((isset($diff[$key]) ? 'color:red' : '')));
+		form_selectable_ecell($value, 'value', '', ((isset($diff[$key]) ? 'color:red' : '')));
 		form_end_row();
 	}
 
@@ -3913,8 +4507,8 @@ function rrdtool_info2html($info_array, $diff=array()) {
 		foreach ($info_array['ds'] as $key => $value) {
 			form_alternate_row('line' . $key, true);
 
-			form_selectable_cell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
-			form_selectable_cell((isset($value['type']) ? $value['type'] : ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
+			form_selectable_ecell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
+			form_selectable_ecell((isset($value['type']) ? $value['type'] : ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
 			form_selectable_cell((isset($value['minimal_heartbeat']) ? $value['minimal_heartbeat'] : ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
 
 			if (isset($value['min'])) {
@@ -3923,7 +4517,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 				} elseif (is_numeric($value['min'])) {
 					form_selectable_cell(number_format_i18n($value['min']), 'min', '', 'right');
 				} else {
-					form_selectable_cell($value['min'], 'min', '', 'color:red;text-align:right');
+					form_selectable_ecell($value['min'], 'min', '', 'color:red;text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'min', '', 'color:red;text-align:right');
@@ -3935,14 +4529,14 @@ function rrdtool_info2html($info_array, $diff=array()) {
 				} elseif (is_numeric($value['max'])) {
 					form_selectable_cell(number_format_i18n($value['max']), 'max', '', 'right');
 				} else {
-					form_selectable_cell($value['max'], 'max', '', 'color:red;text-align:right');
+					form_selectable_ecell($value['max'], 'max', '', 'color:red;text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'max', '', 'color:red;text-align:right');
 			}
 
-			form_selectable_cell((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : (isset($value['last_ds']) ? $value['last_ds']:'')), 'last_ds', '', 'text-align:right');
-			form_selectable_cell((isset($value['value']) ? is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value'] : ''), 'value', '', 'text-align:right');
+			form_selectable_ecell((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : (isset($value['last_ds']) ? $value['last_ds']:'')), 'last_ds', '', 'text-align:right');
+			form_selectable_ecell((isset($value['value']) ? is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value'] : ''), 'value', '', 'text-align:right');
 			form_selectable_cell((isset($value['unknown_sec']) && is_numeric($value['unknown_sec']) ? number_format_i18n($value['unknown_sec']) : (isset($value['unknown_sec']) ? $value['unknown_sec']:'')), 'unknown_sec', '', 'text-align:right');
 
 			form_end_row();
@@ -3971,8 +4565,8 @@ function rrdtool_info2html($info_array, $diff=array()) {
 		foreach ($info_array['rra'] as $key => $value) {
 			form_alternate_row('line_' . $key, true);
 
-			form_selectable_cell($key, 'name', '', (isset($diff['rra'][$key]['error']) ? 'color:red' : ''));
-			form_selectable_cell((isset($value['cf']) ? $value['cf'] : ''), 'cf');
+			form_selectable_ecell($key, 'name', '', (isset($diff['rra'][$key]['error']) ? 'color:red' : ''));
+			form_selectable_ecell((isset($value['cf']) ? $value['cf'] : ''), 'cf');
 			form_selectable_cell((isset($value['rows']) ? $value['rows'] : ''), 'rows', '', (isset($diff['rra'][$key]['rows']) 	? 'color:red;text-align:right' : 'text-align:right'));
 			form_selectable_cell((isset($value['cur_row']) ? $value['cur_row'] : ''), 'cur_row', '', 'text-align:right');
 			form_selectable_cell((isset($value['pdp_per_row']) ? $value['pdp_per_row'] : ''), 'pdp_per_row', '', 'text-align:right');
@@ -4020,7 +4614,7 @@ function rrdtool_tune_print_leaves($array, $html = true) {
 	foreach ($array as $key => $line) {
 		if (!is_array($line)) {
 			if ($html) {
-				print "<div class='formRow'>" . $line . '</div>';
+				print "<div class='formRow'>" . html_escape($line) . '</div>';
 			} else {
 				print $line . PHP_EOL;
 			}
@@ -4131,14 +4725,14 @@ function rrdtool_tune_print_html($rrd_file, $diff, $open_box = null, $close_box 
 
 		if (isset($diff['tune'])) {
 			foreach ($diff['tune'] as $line) {
-				print "<div class='formRow'>" . $rrd_path . ' tune ' . $line . '</div>';
+				print "<div class='formRow'>" . html_escape($rrd_path . ' tune ' . $line) . '</div>';
 			}
 		}
 
 		if (isset($diff['resize'])) {
 			foreach ($diff['resize'] as $line) {
-				print "<div class='formRow'>" . $rrd_path . ' resize ' . $line . '</div>';
-				print "<div class='formRow'>" . __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . '</div>';
+				print "<div class='formRow'>" . html_escape($rrd_path . ' resize ' . $line) . '</div>';
+				print "<div class='formRow'>" . __('rename %s to %s', html_escape(dirname($rrd_file) . '/resize.rrd'), html_escape($rrd_file)) . '</div>';
 			}
 		}
 
@@ -4795,17 +5389,17 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	imagefill($image, 0, 0, $transparent);
 
 	/* background the entire image with the frame */
-	list($red, $green, $blue) = sscanf($shadeb, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($shadeb, '%02x%02x%02x');
 	$shadeb = imagecolorallocate($image, $red, $green, $blue);
 	imagefill($image, 0, 0, $shadeb);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($shadea, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($shadea, '%02x%02x%02x');
 	$shadea = imagecolorallocate($image, $red, $green, $blue);
 	imagefilledrectangle($image, 1, 1, 448, 198, $shadea);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($back_color, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($back_color, '%02x%02x%02x');
 	$back_color = imagecolorallocate($image, $red, $green, $blue);
 	imagefilledrectangle($image, 2, 2, 447, 197, $back_color);
 
@@ -4816,7 +5410,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	imagecopy($image, $logo, 0, 0, 0, 0, 450, 200);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($font_color, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($font_color, '%02x%02x%02x');
 	$text_color = imagecolorallocate($image, $red, $green, $blue);
 
 	/* see the size of the string */
@@ -4878,12 +5472,11 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	/* get the image from the buffer */
 	$image_data = ob_get_contents();
 
-	/* destroy the image object */
-	imagedestroy($image);
-	imagedestroy($logo);
+	/* Release GD objects without the deprecated no-op imagedestroy(). */
+	unset($image, $logo);
 
 	if (isset($nimage)) {
-		imagedestroy($nimage);
+		unset($nimage);
 	}
 
 	/* flush the buffer */

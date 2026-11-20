@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.32\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2185,8 +2185,8 @@ msgstr ""
 msgid "No Tree Rules Found"
 msgstr ""
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr ""
 
@@ -2632,33 +2632,12 @@ msgstr ""
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr ""
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr ""
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
-msgstr ""
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-msgid "No RRDfile repairs were necessary."
-msgstr ""
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, php-format
-msgid "RRDtool Tune Info [ %s ]"
-msgstr ""
-
-#: data_sources.php
-msgid "Run Fix from Command Line"
 msgstr ""
 
 #: data_debug.php
@@ -2896,7 +2875,7 @@ msgstr ""
 msgid "For attribute '%s', issue found '%s'"
 msgstr ""
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr ""
 
@@ -3676,6 +3655,18 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr ""
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+msgid "No RRDfile repairs were necessary."
+msgstr ""
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr ""
@@ -3766,6 +3757,15 @@ msgstr ""
 
 #: data_sources.php
 msgid "Data Source Debug"
+msgstr ""
+
+#: data_sources.php
+#, php-format
+msgid "RRDtool Tune Info [ %s ]"
+msgstr ""
+
+#: data_sources.php
+msgid "Run Fix from Command Line"
 msgstr ""
 
 #: data_sources.php
@@ -4100,7 +4100,7 @@ msgstr[1] ""
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr ""
 
@@ -4108,23 +4108,11 @@ msgstr ""
 msgid "CSV Export"
 msgstr ""
 
-#: lib/html.php
-msgid "Time View"
-msgstr ""
-
-#: lib/html.php
-msgid "Realtime"
-msgstr ""
-
-#: lib/html.php
-msgid "Kill Spikes"
-msgstr ""
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr ""
 
@@ -4600,11 +4588,11 @@ msgstr ""
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 msgid "Unable to start the aggregate graph update."
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 msgid "Unable to commit the aggregate graph update."
 msgstr ""
 
@@ -5537,6 +5525,14 @@ msgstr ""
 #: include/csrf.php
 #, php-format
 msgid "Return to Cacti: %s"
+msgstr ""
+
+#: include/csrf.php
+msgid "Session Expired"
+msgstr ""
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
 msgstr ""
 
 #: include/global.php
@@ -11098,11 +11094,11 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr ""
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
+msgid "Target Archive Rows Per Range"
 msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
 msgstr ""
 
 #: include/global_settings.php
@@ -11130,11 +11126,35 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr ""
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
+msgid "Maximum Failed RRDs Queued"
 msgstr ""
 
 #: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum Failed RRD Retries"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum Failed RRD Age"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
 msgstr ""
 
 #: include/global_settings.php
@@ -12265,6 +12285,10 @@ msgstr ""
 msgid "Cacti Login Failure"
 msgstr ""
 
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
+
 #: lib/boost.php utilities.php
 #, php-format
 msgid "%s MBytes"
@@ -13095,11 +13119,11 @@ msgid "Data Query:"
 msgstr ""
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
+msgid "Graph Actions"
 msgstr ""
 
 #: lib/html.php
-msgid "Time Graph View"
+msgid "Time View"
 msgstr ""
 
 #: lib/html.php
@@ -13107,7 +13131,15 @@ msgid "Edit Device"
 msgstr ""
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
+msgid "Realtime"
+msgstr ""
+
+#: lib/html.php
+msgid "Stop Realtime"
+msgstr ""
+
+#: lib/html.php
+msgid "Kill Spikes"
 msgstr ""
 
 #: lib/html.php lib/installer.php
@@ -13215,15 +13247,11 @@ msgid "No file selected"
 msgstr ""
 
 #: lib/html.php
+msgid "Time Graph View"
+msgstr ""
+
+#: lib/html.php
 msgid "SpikeKill Results"
-msgstr ""
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr ""
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
 msgstr ""
 
 #: lib/html.php
@@ -15614,6 +15642,11 @@ msgstr ""
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
 
@@ -15713,6 +15746,26 @@ msgstr ""
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr ""
 
@@ -15729,11 +15782,6 @@ msgstr ""
 #: lib/rrd.php
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr ""
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
 msgstr ""
 
 #: lib/rrd.php
@@ -15820,16 +15868,16 @@ msgid "CDP Unknown Data points (0)"
 msgstr ""
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr ""
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr ""
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
-msgstr ""
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
 msgstr ""
 
 #: lib/rrd.php
@@ -19700,7 +19748,41 @@ msgid "Boost On-demand Updating:"
 msgstr ""
 
 #: utilities.php
+msgid "Boost Lifecycle Status:"
+msgstr ""
+
+#: utilities.php
 msgid "Running Processes:"
+msgstr ""
+
+#: utilities.php
+msgid "Sealed Boost Archives:"
+msgstr ""
+
+#: utilities.php
+#, php-format
+msgid "oldest created: %s"
+msgstr ""
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+msgid "Oldest Failed RRD:"
+msgstr ""
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+msgid "Last Automatic Failure Retry:"
+msgstr ""
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
 msgstr ""
 
 #: utilities.php
@@ -20027,27 +20109,18 @@ msgstr ""
 msgid "No VDEFs"
 msgstr ""
 
-#: lib/html.php
-msgid "Graph Actions"
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
 msgstr ""
 
-#: lib/plugins.php:835
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+#: include/global_settings.php
+msgid "Collapsed Menu"
 msgstr ""
 
-#: links.php
-msgid "Links"
+#: include/global_settings.php
+msgid "Always-visible Icons"
 msgstr ""
 
-#: pollers.php
-msgid "Collectors"
-msgstr ""
-
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr ""
-
-#: user_domains.php
-msgid "Domains"
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
 msgstr ""

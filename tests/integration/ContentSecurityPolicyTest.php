@@ -128,12 +128,12 @@ function _csp_fetch($port) {
 	$raw = curl_exec($ch);
 	if ($raw === false) {
 		$err = curl_error($ch);
-		curl_close($ch);
+		unset($ch);
 		throw new RuntimeException('curl failed: ' . $err);
 	}
 	$status      = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	$header_size = (int) curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-	curl_close($ch);
+	unset($ch);
 
 	$raw_headers = substr($raw, 0, $header_size);
 	$body        = substr($raw, $header_size);

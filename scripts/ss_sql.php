@@ -34,30 +34,63 @@ if (!isset($called_by_script_server)) {
 /**
  * Handles the ss SQL. Used as part of Cacti's scripts functionality.
  *
+ * Reports the fields of 'mysqladmin status' from the server status variables
+ * over Cacti's own database connection, so the database password is never
+ * placed on a command line.
+ *
  * @return string The resulting string.
  */
 function ss_sql() {
-	global $database_username;
-	global $database_password;
-	global $database_hostname;
+	global $local_db_cnn_id;
 
-	$args = array(
-		'--host=' . $database_hostname,
-		'--user=' . $database_username
-	);
+	$rows = db_fetch_assoc("SHOW GLOBAL STATUS WHERE Variable_name IN
+		('Uptime', 'Threads_connected', 'Questions', 'Slow_queries', 'Opened_tables', 'Flush_commands', 'Open_tables')",
+		false, (is_object($local_db_cnn_id) ? $local_db_cnn_id : false));
 
-	if ($database_password != '') {
-		$args[] = '--password=' . $database_password;
+	if (!cacti_sizeof($rows)) {
+		return 'U';
 	}
 
-	$result = cacti_exec_string('mysqladmin', $args);
-	
-	$result = preg_replace('/: /', ':', $result);
-	$result = preg_replace('/  /', ' ', $result);
-	$result = preg_replace('/Slow queries/', 'SlowQueries', $result);
-	$result = preg_replace('/Open tables/', 'OpenTables', $result);
-	$result = preg_replace('/Queries per second avg/', 'QPS', $result);
-	$result = preg_replace('/Flush tables/', 'FlushTables', $result);
+	$status = array();
 
-	return trim($result) ?: 'U';
+	foreach ($rows as $row) {
+		$status[$row['Variable_name']] = $row['Value'];
+	}
+
+	if (!isset($status['Uptime']) || !isset($status['Questions'])) {
+		return 'U';
+	}
+
+	/* mysqladmin prints Questions / Uptime truncated to three decimals */
+	$uptime = (int) $status['Uptime'];
+
+	if ($uptime > 0) {
+		$qps = intdiv((int) $status['Questions'] * 1000, $uptime);
+		$qps = intdiv($qps, 1000) . '.' . sprintf('%03d', $qps % 1000);
+	} else {
+		$qps = '0.000';
+	}
+
+	$fields = array(
+		'Uptime'      => 'Uptime',
+		'Threads'     => 'Threads_connected',
+		'Questions'   => 'Questions',
+		'SlowQueries' => 'Slow_queries',
+		'Opens'       => 'Opened_tables',
+		'FlushTables' => 'Flush_commands',
+		'OpenTables'  => 'Open_tables'
+	);
+
+	$result = array();
+
+	/* MariaDB has no Flush_commands and mysqladmin leaves the field out there */
+	foreach ($fields as $name => $variable) {
+		if (isset($status[$variable])) {
+			$result[] = $name . ':' . $status[$variable];
+		}
+	}
+
+	$result[] = 'QPS:' . $qps;
+
+	return implode(' ', $result);
 }

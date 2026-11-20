@@ -159,6 +159,7 @@ $fields_poller_edit = array(
 		'value' => '|arg1:dbpass|',
 		'size' => '40',
 		'default' => $database_password,
+		'secret' => true,
 		'max_length' => '64'
 	),
 	'dbport' => array(
@@ -280,6 +281,8 @@ switch (get_request_var('action')) {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_poller')) {
 
 		// Common data
@@ -300,7 +303,7 @@ function form_save() {
 			$save['dbdefault']     = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
 			$save['dbhost']        = form_input_validate(get_nfilter_request_var('dbhost'),    'dbhost',    '', true, 3);
 			$save['dbuser']        = form_input_validate(get_nfilter_request_var('dbuser'),    'dbuser',    '', true, 3);
-			$save['dbpass']        = form_input_validate(get_nfilter_request_var('dbpass'),    'dbpass',    '', true, 3);
+			$save['dbpass']        = form_input_validate(form_secret_value('dbpass', poller_stored_dbpass($save['id'])), 'dbpass', '', true, 3);
 			$save['dbport']        = form_input_validate(get_nfilter_request_var('dbport'),    'dbport',    '^[0-9]+$', true, 3);
 			$save['dbretries']     = form_input_validate(get_nfilter_request_var('dbretries'), 'dbretries', '^[0-9]+$', true, 3);
 			$save['dbssl']         = isset_request_var('dbssl') ? 'on':'';
@@ -310,19 +313,19 @@ function form_save() {
 		}
 
 		if (!is_ipaddress($save['hostname']) && !str_contains($save['hostname'], '.')) {
-			raise_message('bad_host', __esc('WARNING: Use of Data Collector Hostname \'%s\' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service', $save['hostname']), MESSAGE_LEVEL_WARN);
+			raise_message('bad_host', __('WARNING: Use of Data Collector Hostname \'%s\' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service', $save['hostname']), MESSAGE_LEVEL_WARN);
 		}
 
 		// Check for duplicate hostname
 		$error = false;
 		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
-			raise_message('dupe_hostname', __esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+			raise_message('dupe_hostname', __('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
 			$error = true;
 		}
 
 		if (isset($save['dbhost'])) {
 			if (poller_check_duplicate_poller_id($save['id'], $save['dbhost'], 'dbhost')) {
-				raise_message('dupe_dbhost', __esc('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+				raise_message('dupe_dbhost', __('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
 				$error = true;
 			}
 		}
@@ -472,6 +475,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -765,6 +770,7 @@ function poller_edit() {
 				$.post('pollers.php', {
 					__csrf_magic: csrfMagicToken,
 					action:       'ping',
+					id:           <?php print (int) $poller['id']; ?>,
 					dbdefault:    $('#dbdefault').val(),
 					dbhost:       $('#dbhost').val(),
 					dbuser:       $('#dbuser').val(),
@@ -808,6 +814,54 @@ function poller_edit() {
  *
  * @return bool True on success, false otherwise.
  */
+/**
+ * The remote database password the edit form does not render: the saved one
+ * for an existing data collector, or the main database password that a new
+ * data collector's form uses as its default.
+ *
+ * @param int $id The data collector id, 0 for a new one
+ *
+ * @return string
+ */
+function poller_stored_dbpass($id) {
+	global $database_password;
+
+	if ($id > 0) {
+		return (string) db_fetch_cell_prepared('SELECT dbpass FROM poller WHERE id = ?', array($id));
+	}
+
+	return (string) $database_password;
+}
+
+/**
+ * The saved remote database password for a connection test left blank. It is
+ * only returned when the tested host, port, user and SSL settings all match
+ * the saved data collector, so the saved password is never sent to a
+ * different target.
+ *
+ * @param int   $id     The data collector id
+ * @param array $target The connection settings being tested
+ *
+ * @return string|null The saved password, or null when it must be typed
+ */
+function poller_saved_test_dbpass($id, $target) {
+	$saved = db_fetch_row_prepared('SELECT dbhost, dbport, dbuser, dbpass, dbssl, dbsslkey, dbsslcert, dbsslca FROM poller WHERE id = ?', array($id));
+
+	$saved = is_array($saved) ? $saved : array();
+
+	if (!cacti_sizeof($saved)) {
+		return null;
+	}
+
+	foreach (array('dbhost', 'dbport', 'dbuser', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca') as $column) {
+		if ((string) $saved[$column] !== (string) $target[$column]) {
+			return null;
+		}
+	}
+
+	return (string) $saved['dbpass'];
+}
+
 function test_database_connection($poller = array()) {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
@@ -838,6 +892,17 @@ function test_database_connection($poller = array()) {
 				print 'ERROR: DB Connection Column ' . $field . ' Missing';
 				return false;
 			}
+		}
+
+		if ($poller['dbpass'] === '') {
+			$saved = poller_saved_test_dbpass(get_filter_request_var('id'), $poller);
+
+			if ($saved === null) {
+				print __('Enter the database password to test a changed connection');
+				return false;
+			}
+
+			$poller['dbpass'] = $saved;
 		}
 	}
 

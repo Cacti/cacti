@@ -53,6 +53,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'rrd_remove':
+		csrf_require_post();
 		template_rrd_remove();
 
 		break;
@@ -88,6 +89,8 @@ switch (get_request_var('action')) {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_template')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('data_input_id');
@@ -262,7 +265,7 @@ function form_save() {
 				array($data_template_id));
 			if (cacti_sizeof($data_template_fields)) {
 				foreach ($data_template_fields as $data_template_field) {
-					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __esc('Field "%s" is missing an Output Field', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
+					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __('Field "%s" is missing an Output Field', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
 				}
 			}
 		}
@@ -374,6 +377,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

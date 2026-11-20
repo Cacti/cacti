@@ -90,7 +90,8 @@ function perf_rrdtool_function_update($updates, &$pipe, &$metadata = [], &$succe
 
 	foreach ($updates as $path => $rrd) {
 		foreach ($rrd['times'] ?? [] as $time => $fields) {
-			$successful_updates[$path][$time] = true;
+			$key = $GLOBALS['bounded'] ? $path : $rrd['local_data_id'];
+			$successful_updates[$key][$time] = true;
 		}
 	}
 

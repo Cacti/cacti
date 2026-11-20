@@ -137,7 +137,18 @@ if ($help) {
 }
 
 /* record the script start time */
-$start = microtime(true);
+$start     = microtime(true);
+
+/* store the effective log level in a local variable so that expensive debug
+ * strings are only built when debug logging is actually enabled.  This mirrors
+ * the level resolution that cacti_log() performs: a selective (per-file or
+ * per-plugin) override takes precedence, otherwise the global log_verbosity
+ * setting is used. */
+$log_level = get_selective_log_level();
+
+if ($log_level == '') {
+	$log_level = read_config_option('log_verbosity');
+}
 
 if ($config['cacti_server_os'] == 'win32') {
 	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),"\\",'/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
@@ -169,16 +180,26 @@ fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
 require_once(__DIR__ . '/lib/snmp.php');
+
 snmp_auth_cache_load();
 
 /* process waits for input and then calls functions as required */
 while (1) {
 	$result = '';
 
-	$input_string    = fgets(STDIN, 1024);
+	$input_string    = script_server_read_request(STDIN);
 	$function        = '';
 	$parameters      = '';
 	$parameter_array = array();
+
+	if ($input_string === null) {
+		cacti_log('WARNING: Script Server request exceeds ' . SCRIPT_SERVER_MAX_REQUEST_LENGTH . ' bytes and was discarded', false, 'PHPSVR');
+
+		fputs(STDOUT, "U\n");
+		fflush(STDOUT);
+
+		continue;
+	}
 
 	$isParentRunning = true;
 	if (empty($input_string)) {
@@ -255,74 +276,91 @@ while (1) {
 			}
 
 			if (!parseArgs($parameters, $parameter_array)) {
-				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
+				cacti_log('WARNING: Script Server could not parse the ' . strlen($parameters) . " byte argument list for $function", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 				continue;
 			}
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
-				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
-				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			if ($log_level == POLLER_VERBOSITY_DEBUG) {
+				cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
+					"' FUNC: '$function' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) .
+					"'", false, 'PHPSVR');
+			}
 
-			/* Validate the include path unconditionally. Built-ins like system,
-			 * passthru, exec satisfy function_exists() without ever loading a
-			 * script file, so the path guard cannot be gated on the function
-			 * being undefined. include_once() is idempotent, so re-running it
-			 * on cached entries is a no-op. The scripts_path setting is an
-			 * explicitly configured Cacti script root and may live outside the
-			 * web root, so it is an allowed containment root as well. */
-			$real_include = realpath($include_file);
+			/* The allowed script roots are needed both to validate the include
+			 * file (when the function still has to be loaded) and to validate
+			 * the resolved source file of an already-loaded function below, so
+			 * build them unconditionally. */
 			$allowed_roots = [$config['base_path']];
 
 			if (!empty($config['scripts_path'])) {
 				$allowed_roots[] = $config['scripts_path'];
 			}
 
-			$path_ok = script_server_path_is_allowed($real_include, $allowed_roots);
-
-			if (!$path_ok) {
-				if ($real_include !== false) {
-					cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
-				} else {
-					cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
-				}
-
-				fputs(STDOUT, "U\n");
-				fflush(STDOUT);
-
-				continue;
-			}
-
-			$include_file = $real_include;
-
-			if (!file_exists($include_file)) {
-				cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
-
-				fputs(STDOUT, "U\n");
-				fflush(STDOUT);
-
-				continue;
-			}
-
-			/* quirk in php on Windows, believe it or not....path must be lower case */
-			if ($config['cacti_server_os'] == 'win32') {
-				$include_file = strtolower($include_file);
-			}
-
 			/* set this variable so the calling script can determine if it was
-			 * called by the script server or stand-alone */
+			 * called by the script server or stand-alone, and so the quit
+			 * request stays silent once the poller has sent work */
 			$called_by_script_server = true;
 
-			/* turn on output buffering to avoid problems with nasty scripts */
-			ob_start();
-			include_once($include_file);
-			ob_end_clean();
+			if (!function_exists($function)) {
+				/* Validate the include path before loading it. Gating this check
+				 * on the function being undefined is safe only because the
+				 * ReflectionFunction internal-function check and the fn_file
+				 * root check below run unconditionally: built-ins like system,
+				 * passthru and exec satisfy function_exists() without loading a
+				 * script file, and those checks reject them. The scripts_path
+				 * setting is an explicitly configured Cacti script root and may
+				 * live outside the web root, so it is an allowed containment
+				 * root as well. */
+				$real_include = realpath($include_file);
 
+				$path_ok = script_server_path_is_allowed($real_include, $allowed_roots);
+
+				if (!$path_ok) {
+					if ($real_include !== false) {
+						cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
+					} else {
+						cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
+					}
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
+				}
+
+				$include_file = $real_include;
+
+				if (!file_exists($include_file)) {
+					cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
+
+					fputs(STDOUT, "U\n");
+					fflush(STDOUT);
+
+					continue;
+				}
+
+				/* quirk in php on Windows, believe it or not....path must be lower case */
+				if ($config['cacti_server_os'] == 'win32') {
+					$include_file = strtolower($include_file);
+				}
+
+				/* turn on output buffering to avoid problems with nasty scripts */
+				ob_start();
+				include_once($include_file);
+				ob_end_clean();
+			}
+
+			/* Reassert on every request, not only when this request loaded a
+			 * file: the gettext loader in global_languages.php and included
+			 * scripts can raise error_reporting, and a request for an
+			 * already-loaded function skips the include, so a warning could
+			 * otherwise reach STDOUT and corrupt the reply. */
 			error_reporting(0);
 
 			if (!function_exists($function)) {
-				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
+				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . implode('\', \'', script_server_redact_params($parameter_array)) . "'", false, 'PHPSVR');
 
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
@@ -380,16 +418,14 @@ while (1) {
 				continue;
 			}
 
-			if ($parameters == '') {
-				$result = call_user_func($function);
-			} else {
-				$result = call_user_func_array($function, $parameter_array);
-			}
+			$result = script_server_call($function, $parameters, $parameter_array);
 
-			fputs(STDOUT, trim($result) . "\n");
+			fputs(STDOUT, script_server_response($result) . "\n");
 			fflush(STDOUT);
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			if ($log_level == POLLER_VERBOSITY_DEBUG) {
+				cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR');
+			}
 
 			$ctr++;
 		}
@@ -435,30 +471,33 @@ function parseArgs($string, &$str_list, $debug = false) {
 		return true;
 	}
 
-	/* Break str down into an array of characters and process */
+	/* Break str down into an array of characters and process.  $indelim holds
+	 * the quote that opened the current quoted section, so only that quote
+	 * closes it.  Quoted and unquoted pieces with no space between them form a
+	 * single argument, which is how cacti_escapeshellarg() encodes a value that
+	 * contains an apostrophe. */
 	$char_array = str_split($string);
 	$escaping = false;
 	$indelim  = false;
+	$inword   = false;
 	$parse_ok = true;
 	$curstr   = '';
 	foreach($char_array as $char) {
 		switch ($char) {
 		case '\'':
 		case '"':
-			if (!$indelim) {
+			if ($indelim === false) {
 				if (!$escaping) {
-					$indelim = true;
+					$indelim = $char;
+					$inword  = true;
 				} else {
 					$curstr .= $char;
 					$escaping = false;
 				}
-			} elseif (!$escaping) {
-				$str_list[] = $curstr;
-				$curstr     = '';
-				$indelim    = false;
-			} elseif ($escaping) {
-				$curstr  .= $char;
-				$escaping = false;
+			} elseif ($char === $indelim) {
+				$indelim = false;
+			} else {
+				$curstr .= $char;
 			}
 
 			break;
@@ -477,11 +516,12 @@ function parseArgs($string, &$str_list, $debug = false) {
 			if ($escaping) {
 				$parse_ok = false;
 				$msg = 'Parse error attempting to parse string';
-			} elseif ($indelim) {
+			} elseif ($indelim !== false) {
 				$curstr .= $char;
-			} elseif ($curstr != '') {
+			} elseif ($curstr != '' || $inword) {
 				$str_list[] = $curstr;
 				$curstr = '';
+				$inword = false;
 			}
 
 			break;
@@ -506,20 +546,247 @@ function parseArgs($string, &$str_list, $debug = false) {
 	}
 
 	/* Add the last str to the string array */
-	if ($indelim || $escaping) {
+	if ($indelim !== false || $escaping) {
 		$parse_ok = false;
 		$msg = 'Parse error attempting to parse string';
 	}
 
 	if (!$parse_ok) {
-		echo 'ERROR: ' . $msg . " '" . $string . "'\n";
-	} elseif ($curstr != '') {
+		/* the caller answers U on STDOUT; an extra line here would be read as
+		 * the reply to the next request */
+		if ($debug) echo 'ERROR: ' . $msg . " '" . $string . "'\n";
+	} elseif ($curstr != '' || $inword) {
 		$str_list[] = $curstr;
 	}
 
 	if ($debug) echo "Output: '" . implode(",", $str_list) . "'\n";
 
 	return $parse_ok;
+}
+
+/**
+ * Read one request line from the poller. Used as part of Cacti's script server functionality.
+ *
+ * A line longer than SCRIPT_SERVER_MAX_REQUEST_LENGTH is reported as null and
+ * the rest of it is discarded, so its tail is never read back as a separate
+ * request.
+ *
+ * @param resource $stream The stream to read from.
+ * @param float $drain_wait Seconds to wait for each further piece of an over-length line.
+ *
+ * @return string|false|null The raw line, false when nothing was read, or null when the line was too long.
+ */
+function script_server_read_request($stream, $drain_wait = 0.5) {
+	/* room for the request, its CR LF and fgets' own terminator, so a full
+	 * buffer without a LF can only be an over-length line */
+	$line = fgets($stream, SCRIPT_SERVER_MAX_REQUEST_LENGTH + 3);
+
+	if ($line === false || $line === '') {
+		return $line;
+	}
+
+	if (substr($line, -1) != "\n" && strlen($line) >= SCRIPT_SERVER_MAX_REQUEST_LENGTH + 2) {
+		script_server_drain_line($stream, $drain_wait);
+
+		return null;
+	}
+
+	if (strlen(rtrim($line, "\r\n")) > SCRIPT_SERVER_MAX_REQUEST_LENGTH) {
+		return null;
+	}
+
+	return $line;
+}
+
+/**
+ * Discard input up to and including the next line feed. Used as part of Cacti's script server
+ * functionality.
+ *
+ * spine truncates an over-length request without a terminator and then waits
+ * for the reply, so a blocking read for the line feed would stall both sides.
+ * The drain stops once no further input arrives within $wait seconds.
+ *
+ * @param resource $stream The input stream.
+ * @param float $wait Seconds to wait for each further piece of input.
+ *
+ * @return void No value is returned.
+ */
+function script_server_drain_line($stream, $wait) {
+	$seconds      = (int) floor($wait);
+	$micro        = (int) (($wait - $seconds) * 1000000);
+	$metadata     = stream_get_meta_data($stream);
+	$was_blocking = $metadata['blocked'];
+	$nonblocking  = @stream_set_blocking($stream, false);
+
+	try {
+		while (true) {
+			$read   = array($stream);
+			$write  = null;
+			$except = null;
+
+			/* stream_select() cannot watch every stream type (notably Windows
+			 * pipes). Keep the fallback non-blocking so a truncated request
+			 * cannot deadlock the script server while its caller waits. */
+			try {
+				$ready = @stream_select($read, $write, $except, $seconds, $micro);
+			} catch (Throwable $e) {
+				$ready = false;
+			}
+
+			if ($ready === 0 || ($ready === false && !$nonblocking)) {
+				break;
+			}
+
+			/* non-blocking fgets() stops at the line feed, leaving the next request */
+			$chunk = fgets($stream, 8192);
+
+			if ($chunk !== false && substr($chunk, -1) == "\n") {
+				break;
+			}
+
+			if ($chunk === false && (feof($stream) || $ready === false)) {
+				break;
+			}
+		}
+	} finally {
+		if ($nonblocking) {
+			@stream_set_blocking($stream, $was_blocking);
+		}
+	}
+}
+
+/**
+ * Call a validated script function, containing any error it raises. Used as part of Cacti's
+ * script server functionality.
+ *
+ * @param string $function The function name.
+ * @param string $parameters The raw parameter string.
+ * @param array $parameter_array The parsed parameters.
+ *
+ * @return mixed The function result, or 'U' when the function failed.
+ */
+function script_server_call($function, $parameters, $parameter_array) {
+	/* one failing script must not take down the server and every request
+	 * queued behind it; the parameters can carry device credentials, so
+	 * they are left out of the log */
+	try {
+		/* anything the function prints would reach the poller ahead of its
+		 * result and be read as the reply to this request, shifting every
+		 * later reply by one line */
+		$ob_level = ob_get_level();
+		ob_start();
+
+		try {
+			if ($parameters == '') {
+				$result = call_user_func($function);
+			} else {
+				$result = call_user_func_array($function, $parameter_array);
+			}
+		} finally {
+			/* also closes any buffer the function left open; the output can
+			 * carry credentials, so only its size is logged */
+			$stray = 0;
+
+			while (ob_get_level() > $ob_level) {
+				$output = ob_get_clean();
+
+				if ($output === false) {
+					break;
+				}
+
+				$stray += strlen($output);
+			}
+
+			if ($stray > 0) {
+				cacti_log("DEBUG: Function '$function' wrote $stray bytes of output, discarded", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			}
+		}
+	} catch (Throwable $e) {
+		cacti_log("WARNING: Function '$function' raised " . get_class($e) . ' at ' . basename($e->getFile()) . ':' . $e->getLine() . ', returning U', false, 'PHPSVR');
+
+		return 'U';
+	}
+
+	if ($result !== null && !is_scalar($result)) {
+		cacti_log("WARNING: Function '$function' returned a " . gettype($result) . ', returning U', false, 'PHPSVR');
+
+		return 'U';
+	}
+
+	return $result;
+}
+
+/**
+ * Format a script function result as a single response line. Used as part of Cacti's
+ * script server functionality.
+ *
+ * The poller reads one line per request, so a line break inside the result
+ * would be read as the reply to the next request.  Multipart results are space
+ * separated name:value pairs, so a line break becomes a space.
+ *
+ * @param mixed $result The function result.
+ *
+ * @return string The result without line breaks or surrounding white space.
+ */
+function script_server_response($result) {
+	return trim(str_replace(array("\r\n", "\r", "\n"), ' ', (string) $result));
+}
+
+/**
+ * Mask any device SNMP credential among script arguments before they are logged. Used as part
+ * of Cacti's script server functionality.
+ *
+ * The script server cannot tell which argument is a credential, so every
+ * argument, and every colon separated field of one, is compared with the
+ * credentials configured on the devices.
+ *
+ * @param array $params The parsed parameters.
+ * @param array|null $secrets Credential values as keys, or null to load them once from the database.
+ *
+ * @return array The parameters with credentials masked.
+ */
+function script_server_redact_params($params, $secrets = null) {
+	static $known = null;
+
+	if ($secrets === null) {
+		if ($known === null) {
+			$known = array();
+
+			$rows = db_fetch_assoc('SELECT DISTINCT snmp_community, snmp_password, snmp_priv_passphrase FROM host');
+
+			if (is_array($rows)) {
+				foreach ($rows as $row) {
+					foreach ($row as $value) {
+						if ($value != '') {
+							$known[$value] = true;
+						}
+					}
+				}
+			}
+		}
+
+		$secrets = $known;
+	}
+
+	foreach ($params as $index => $param) {
+		$param = (string) $param;
+
+		if (isset($secrets[$param])) {
+			$params[$index] = '********';
+		} elseif (strpos($param, ':') !== false) {
+			$fields = explode(':', $param);
+
+			foreach ($fields as $findex => $field) {
+				if ($field != '' && isset($secrets[$field])) {
+					$fields[$findex] = '********';
+				}
+			}
+
+			$params[$index] = implode(':', $fields);
+		}
+	}
+
+	return $params;
 }
 
 /**
@@ -590,7 +857,10 @@ function script_server_path_is_allowed($resolved_path, array $roots) {
  * @return void No value is returned.
  */
 function sig_handler($signo) {
-	global $include_file, $function, $parameters;
+	global $include_file, $function, $parameter_array;
+
+	/* argument values can carry device credentials, so only their count is logged */
+	$parameters = (is_array($parameter_array) ? count($parameter_array) : 0) . ' argument(s)';
 
 	switch ($signo) {
 		case SIGTERM:

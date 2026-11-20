@@ -49,6 +49,10 @@ if (!isset($called_by_script_server)) {
  * @return string The resulting string.
  */
 function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port = 80) {
+	global $called_by_script_server;
+
+	$ping_sweeps = ss_fping_sweeps($ping_sweeps);
+
 	/* record start time */
 	$ss_fping_start = microtime(true);
 
@@ -88,6 +92,10 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 			break;
 		case 'UDP':
 			$method = PING_UDP;
+
+			break;
+		default:
+			$method = PING_ICMP;
 
 			break;
 	}
@@ -151,3 +159,18 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 	}
 }
 
+/**
+ * Bound the number of ping sweeps so one data source cannot hold the script
+ * server past its timeout. Used as part of Cacti's scripts functionality.
+ *
+ * @param mixed $ping_sweeps The requested number of sweeps.
+ *
+ * @return int A sweep count between 1 and 20, or 6 when the request is not numeric.
+ */
+function ss_fping_sweeps($ping_sweeps) {
+	if (!is_numeric($ping_sweeps)) {
+		return 6;
+	}
+
+	return max(1, min(20, (int) $ping_sweeps));
+}

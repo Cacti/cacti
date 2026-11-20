@@ -35,6 +35,8 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'clear_poller_cache':
+		csrf_require_post();
+
 		/* obtain timeout settings */
 		$max_execution = ini_get('max_execution_time');
 		ini_set('max_execution_time', '0');
@@ -43,6 +45,8 @@ switch (get_request_var('action')) {
 		header('Location: utilities.php?action=view_poller_cache');exit;
 		break;
 	case 'rebuild_resource_cache':
+		csrf_require_post();
+
 		rebuild_resource_cache();
 		header('Location: utilities.php?header=false');exit;
 		break;
@@ -60,10 +64,14 @@ switch (get_request_var('action')) {
 		utilities_view_logfile();
 		break;
 	case 'clear_logfile':
+		csrf_require_post();
+
 		utilities_clear_logfile();
 		utilities_view_logfile();
 		break;
 	case 'purge_logfile':
+		csrf_require_post();
+
 		clog_purge_logfile();
 		utilities_view_logfile();
 		break;
@@ -91,12 +99,16 @@ switch (get_request_var('action')) {
 		snmpagent_utilities_run_cache();
 		bottom_footer();
 		break;
-	case 'purge_data_source_statistics';
+	case 'purge_data_source_statistics':
+		csrf_require_post();
+
 		purge_data_source_statistics();
 		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
 		header('Location: utilities.php');
 		break;
-	case 'rebuild_snmpagent_cache';
+	case 'rebuild_snmpagent_cache':
+		csrf_require_post();
+
 		snmpagent_cache_rebuilt();
 		header('Location: utilities.php?action=view_snmpagent_cache');exit;
 		break;
@@ -1372,7 +1384,7 @@ function utilities_view_logfile() {
 
 	function purgeLog() {
 		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
-		loadPageNoHeader(strURL);
+		loadPageUsingPostUrl(strURL, 'main');
 	}
 
 	$(function() {
@@ -2363,6 +2375,7 @@ function utilities() {
 		),
 		__('Rebuild Poller Cache') => array(
 			'link'  => 'utilities.php?action=clear_poller_cache',
+			'post'  => true,
 			'mode'  => 'online',
 			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.'),
 			'note'        => array (
@@ -2372,6 +2385,7 @@ function utilities() {
 		),
 		__('Rebuild Resource Cache') => array(
 			'link'  => 'utilities.php?action=rebuild_resource_cache',
+			'post'  => true,
 			'mode'  => 'online',
 			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
 		),
@@ -2387,6 +2401,7 @@ function utilities() {
 	$utilities[__('Data Source Statistics Utilities')] = array(
 		__('Purge Data Source Statistics') => array(
 			'link'  => 'utilities.php?action=purge_data_source_statistics',
+			'post'  => true,
 			'mode'  => 'online',
 			'description' => __('This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass.')
 		),
@@ -2416,6 +2431,7 @@ function utilities() {
 			),
 			__('Rebuild SNMP Agent Cache') => array(
 				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
+				'post'  => true,
 				'mode'  => 'online',
 				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
 			),
@@ -2447,7 +2463,9 @@ function utilities() {
 
 				form_alternate_row();
 				print "<td class='nowrap' style='vertical-align:top;'>";
-				print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
+				/* links that change state are submitted as a POST with the CSRF token */
+				$link_class = (isset($details['post']) && $details['post'] ? 'hyperLink cactiPostAction' : 'hyperLink');
+				print "<a class='" . $link_class . "' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
 				print '</td>';
 				print '<td>';
 				print html_escape($details['description']);
@@ -2521,6 +2539,10 @@ function boost_display_run_status() {
 	$update_interval = read_config_option('boost_rrd_update_interval', true);
 	$peak_memory     = read_config_option('boost_peak_memory', true);
 	$detail_stats    = read_config_option('stats_detail_boost', true);
+	$failure_depth   = (int) read_config_option('boost_failure_queue_depth', true);
+	$failure_oldest  = (int) read_config_option('boost_failure_queue_oldest', true);
+	$failure_error   = read_config_option('boost_failure_last_error', true);
+	$failure_retry   = json_decode((string) read_config_option('boost_failure_last_retry', true), true);
 
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['page']    = 'utilities.php?action=view_boost_status&header=false';
@@ -2590,12 +2612,20 @@ function boost_display_run_status() {
 	$data_length     = 0;
 	$engine          = '';
 	$max_data_length = 0;
+	$archive_count   = 0;
+	$oldest_archive_created = 0;
 
 	foreach($boost_table_status as $table) {
 		if ($table['TABLE_NAME'] == 'poller_output_boost') {
 			$pending_records += $table['TABLE_ROWS'];
-		} else {
+		} elseif (preg_match('/^poller_output_boost_arch_\d+$/D', $table['TABLE_NAME'])) {
 			$arch_records += $table['TABLE_ROWS'];
+			$archive_count++;
+			$created = isset($table['CREATE_TIME']) ? strtotime($table['CREATE_TIME']) : false;
+
+			if ($created !== false) {
+				$oldest_archive_created = $oldest_archive_created === 0 ? $created : min($oldest_archive_created, $created);
+			}
 		}
 
 		$data_length    += $table['DATA_LENGTH'];
@@ -2727,10 +2757,45 @@ function boost_display_run_status() {
 		form_alternate_row();
 		print '<td>' . __('Boost On-demand Updating:') . '</td><td><b>' . $status . '</b></td>';
 
+		form_alternate_row();
+		print '<td>' . __('Boost Lifecycle Status:') . '</td><td>' . html_escape($boost_status) . '</td>';
+
 		if ($running > 0) {
 			form_alternate_row();
 			print '<td>' . __('Running Processes:') . '</td><td>' . ($running) . '</td>';
 		}
+	}
+
+	form_alternate_row();
+	print '<td>' . __('Sealed Boost Archives:') . '</td><td>' . number_format_i18n($archive_count);
+
+	if ($oldest_archive_created > 0) {
+		print ' (' . __('oldest created: %s', date('Y-m-d H:i:s', $oldest_archive_created)) . ')';
+	}
+
+	print '</td>';
+
+	form_alternate_row();
+	print '<td>' . __('Failed RRD Destinations Pending:') . '</td><td>' . number_format_i18n($failure_depth) . '</td>';
+
+	if ($failure_depth > 0 && $failure_oldest > 0) {
+		form_alternate_row();
+		print '<td>' . __('Oldest Failed RRD:') . '</td><td>' . html_escape(date('Y-m-d H:i:s', $failure_oldest)) . '</td>';
+	}
+
+	if ($failure_error !== '') {
+		form_alternate_row();
+		print '<td>' . __('Last Boost Failure Warning:') . '</td><td>' . html_escape($failure_error) . '</td>';
+	}
+
+	if (is_array($failure_retry)) {
+		form_alternate_row();
+		print '<td>' . __('Last Automatic Failure Retry:') . '</td><td>' .
+			__('attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d',
+				(int) ($failure_retry['attempted'] ?? 0),
+				(int) ($failure_retry['recovered'] ?? 0),
+				(int) ($failure_retry['discarded'] ?? 0),
+				(int) ($failure_retry['pending'] ?? 0)) . '</td>';
 	}
 
 	form_alternate_row();
@@ -3233,6 +3298,8 @@ function snmpagent_utilities_run_eventlog(){
 	/* ==================================================== */
 
 	if (isset_request_var('purge')) {
+		csrf_require_post();
+
 		db_execute('TRUNCATE table snmpagent_notifications_log');
 
 		/* reset filters */
@@ -3295,7 +3362,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	function purgeFilter() {
 		strURL = 'utilities.php?action=view_snmpagent_events&purge=1&header=false';
-		loadPageNoHeader(strURL);
+		loadPageUsingPostUrl(strURL);
 	}
 
 	$(function() {

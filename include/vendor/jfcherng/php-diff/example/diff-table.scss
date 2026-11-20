@@ -1,0 +1,193 @@
+// You can compile this with https://www.sassmeister.com
+
+$diff-bg-color: #fff !default;
+$diff-text-color: invert($diff-bg-color) !default;
+
+$diff-bg-color-ins-base: #8e8 !default;
+$diff-bg-color-del-base: #e88 !default;
+$diff-bg-color-rep-base: #fbdb65 !default;
+
+$diff-op-highlight-ratio: 90% !default;
+$diff-op-normal-ratio: 25% !default;
+
+// emphasized colors for detailed inline difference
+$diff-bg-color-ins-highlight: mix($diff-bg-color-ins-base, $diff-bg-color, $diff-op-highlight-ratio) !default;
+$diff-bg-color-del-highlight: mix($diff-bg-color-del-base, $diff-bg-color, $diff-op-highlight-ratio) !default;
+
+// colors for operation rows
+$diff-bg-color-ins: mix($diff-bg-color-ins-base, $diff-bg-color, $diff-op-normal-ratio) !default;
+$diff-bg-color-del: mix($diff-bg-color-del-base, $diff-bg-color, $diff-op-normal-ratio) !default;
+$diff-bg-color-rep: mix($diff-bg-color-rep-base, $diff-bg-color, $diff-op-normal-ratio) !default;
+
+$diff-table-head-color: mix($diff-bg-color, $diff-text-color, 65%) !default;
+$diff-table-sidebar-color: mix($diff-bg-color, $diff-text-color, 80%) !default;
+$diff-border-color: $diff-text-color !default;
+
+// color for the nonexistent block
+// for example, there are a deleted line that has no corresponding one
+$diff-bg-color-none-block: mix($diff-bg-color, $diff-table-sidebar-color, 80%) !default;
+$diff-bg-color-none-block-alternative: mix($diff-bg-color, $diff-table-sidebar-color, 55%) !default;
+
+// symbol images
+$img-space: 'data:image/svg+xml,%3Csvg preserveAspectRatio="xMinYMid meet" viewBox="0 0 12 24" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.5 11C4.5 10.1716 5.17157 9.5 6 9.5C6.82843 9.5 7.5 10.1716 7.5 11C7.5 11.8284 6.82843 12.5 6 12.5C5.17157 12.5 4.5 11.8284 4.5 11Z" fill="rgba%2860, 60, 60, 50%25%29"/%3E%3C/svg%3E' !default;
+$img-tab: 'data:image/svg+xml,%3Csvg preserveAspectRatio="xMinYMid meet" viewBox="0 0 12 24" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M9.5 10.44L6.62 8.12L7.32 7.26L12.04 11V11.44L7.28 14.9L6.62 13.9L9.48 11.78H0V10.44H9.5Z" fill="rgba%2860, 60, 60, 50%25%29"/%3E%3C/svg%3E' !default;
+
+.diff-wrapper.diff {
+  --tab-size: 4;
+
+  background: repeating-linear-gradient(
+    -45deg,
+    $diff-bg-color-none-block,
+    $diff-bg-color-none-block 0.5em,
+    $diff-bg-color-none-block-alternative 0.5em,
+    $diff-bg-color-none-block-alternative 1em
+  );
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid $diff-border-color;
+  color: $diff-text-color;
+  empty-cells: show;
+  font-family: monospace;
+  font-size: 13px;
+  width: 100%;
+  word-break: break-all;
+
+  th {
+    font-weight: 700;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  td {
+    vertical-align: baseline;
+  }
+
+  td,
+  th {
+    border-collapse: separate;
+    border: none;
+    padding: 1px 2px;
+    background: $diff-bg-color;
+
+    // make empty cell has height
+    &:empty:after {
+      content: ' ';
+      visibility: hidden;
+    }
+
+    a {
+      color: #000;
+      cursor: inherit;
+      pointer-events: none;
+    }
+  }
+
+  thead th {
+    background: $diff-table-head-color;
+    border-bottom: 1px solid $diff-border-color;
+    padding: 4px;
+    text-align: left;
+  }
+
+  tbody {
+    &.skipped {
+      border-top: 1px solid $diff-border-color;
+
+      td,
+      th {
+        display: none;
+      }
+    }
+
+    th {
+      background: $diff-table-sidebar-color;
+      border-right: 1px solid $diff-border-color;
+      text-align: right;
+      vertical-align: top;
+      width: 4em;
+
+      &.sign {
+        background: $diff-bg-color;
+        border-right: none;
+        padding: 1px 0;
+        text-align: center;
+        width: 1em;
+
+        &.del {
+          background: $diff-bg-color-del;
+        }
+
+        &.ins {
+          background: $diff-bg-color-ins;
+        }
+      }
+    }
+  }
+
+  &.diff-html {
+    white-space: pre-wrap;
+    tab-size: var(--tab-size);
+
+    .ch {
+      line-height: 1em;
+      background-clip: border-box;
+      background-repeat: repeat-x;
+      background-position: left center;
+
+      &.sp {
+        background-image: url($img-space);
+        background-size: 1ch 1.25em;
+      }
+      &.tab {
+        background-image: url($img-tab);
+        background-size: calc(var(--tab-size) * 1ch) 1.25em;
+        background-position: 2px center;
+      }
+    }
+
+    .change {
+      &.change-eq {
+        .old,
+        .new {
+          background: $diff-bg-color;
+        }
+      }
+
+      .old {
+        background: $diff-bg-color-del;
+      }
+
+      .new {
+        background: $diff-bg-color-ins;
+      }
+
+      .rep {
+        background: $diff-bg-color-rep;
+      }
+
+      .old,
+      .new,
+      .rep {
+        &.none {
+          background: transparent;
+          cursor: not-allowed;
+        }
+      }
+
+      ins,
+      del {
+        font-weight: bold;
+        text-decoration: none;
+      }
+
+      ins {
+        background: $diff-bg-color-ins-highlight;
+      }
+
+      del {
+        background: $diff-bg-color-del-highlight;
+      }
+    }
+  }
+}

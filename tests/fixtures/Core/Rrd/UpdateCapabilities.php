@@ -22,7 +22,7 @@ function capability_fixture_config($name) {
 function capability_fixture_execute($command, ...$args) {
 	$GLOBALS['state']['commands'][] = $command;
 
-	return '';
+	return 'OK';
 }
 $source   = file_get_contents($root . '/lib/rrd.php');
 $start    = strpos($source, 'function rrdtool_function_update(');

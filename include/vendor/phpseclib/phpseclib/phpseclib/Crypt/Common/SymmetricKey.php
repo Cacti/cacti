@@ -45,6 +45,7 @@ use phpseclib4\Exception\{
     InvalidModeException,
     InvalidStateException,
     LengthException,
+    ResourceLimitException,
     UnsupportedAlgorithmException
 };
 use phpseclib4\Math\{BigInteger, BinaryField, PrimeField};
@@ -413,6 +414,14 @@ abstract class SymmetricKey
     private static PrimeField $poly1305Field;
 
     /**
+     * The cipher methods supported by OpenSSL, as keys
+     *
+     * @see self::isValidOpenSSLCipher()
+     * @var array<string, true>|null
+     */
+    private static array $openssl_cipher_methods;
+
+    /**
      * Poly1305 Key
      *
      * @see self::setPoly1305Key()
@@ -481,9 +490,7 @@ abstract class SymmetricKey
     public function __construct(string $mode)
     {
         $mode = strtolower($mode);
-        // necessary because of 5.6 compatibility; we can't do isset(self::MODE_MAP[$mode]) in 5.6
-        $map = self::MODE_MAP;
-        if (!isset($map[$mode])) {
+        if (!isset(self::MODE_MAP[$mode])) {
             throw new InvalidArgumentException('No valid mode has been specified');
         }
 
@@ -738,14 +745,16 @@ abstract class SymmetricKey
         $method = strtolower($method);
         switch ($method) {
             case 'bcrypt':
-                if (!isset($func_args[2])) {
+                if (!isset($func_args[0])) {
                     throw new InvalidArgumentException('A salt must be provided for bcrypt to work');
                 }
 
                 $salt = $func_args[0];
-
                 $rounds = $func_args[1] ?? 16;
                 $keylen = $func_args[2] ?? $this->key_length;
+                if ($rounds > 250) {
+                    throw new ResourceLimitException('Iteration count too high');
+                }
 
                 $key = Blowfish::bcrypt_pbkdf($password, $salt, $keylen + $this->block_size, $rounds);
 
@@ -767,6 +776,11 @@ abstract class SymmetricKey
                 // RFC2898#section-4.2 uses 1,000 iterations by default
                 // WPA and WPA2 use 4,096.
                 $count = $func_args[2] ?? 1000;
+                // bouncycastle uses 5,000,000 as the upper bound:
+                // https://advisories.gitlab.com/maven/org.bouncycastle/bcprov-jdk18on/CVE-2026-13586/
+                if ($count > 5000000) {
+                    throw new ResourceLimitException('Iteration count too high');
+                }
 
                 // Keylength
                 if (isset($func_args[3])) {
@@ -1686,7 +1700,7 @@ abstract class SymmetricKey
             self::MODE_CTR, self::MODE_GCM => 'ctr',
             self::MODE_CFB => 'cfb',
             self::MODE_CFB8 => 'cfb8',
-            self::MODE_OFB => 'ufb',
+            self::MODE_OFB => 'ofb',
             default => null
         };
     }
@@ -1797,6 +1811,21 @@ abstract class SymmetricKey
     }
 
     /**
+     * Test whether OpenSSL supports a cipher method
+     *
+     * openssl_get_cipher_methods() builds the whole list of methods every time it is called, while
+     * the engine is selected again every time the key or the nonce change: the list is only built
+     * once.
+     */
+    protected static function isValidOpenSSLCipher(string $method): bool
+    {
+        if (!isset(self::$openssl_cipher_methods)) {
+            self::$openssl_cipher_methods = array_fill_keys(openssl_get_cipher_methods(), true);
+        }
+        return isset(self::$openssl_cipher_methods[$method]);
+    }
+
+    /**
      * Test for engine validity
      *
      * @see self::__construct()
@@ -1812,15 +1841,14 @@ abstract class SymmetricKey
                     return false;
                 }
 
-                $methods = openssl_get_cipher_methods();
-                if (in_array($this->cipher_name_openssl, $methods)) {
+                if (self::isValidOpenSSLCipher($this->cipher_name_openssl)) {
                     return true;
                 }
                 // not all of openssl's symmetric cipher's support ctr. for those
                 // that don't we'll emulate it
                 switch ($this->mode) {
                     case self::MODE_CTR:
-                        if (in_array($this->cipher_name_openssl_ecb, $methods)) {
+                        if (self::isValidOpenSSLCipher($this->cipher_name_openssl_ecb)) {
                             $this->openssl_emulate_ctr = true;
                             return true;
                         }
@@ -1879,7 +1907,7 @@ abstract class SymmetricKey
             $reverseMap = array_map('strtolower', self::ENGINE_MAP);
             $reverseMap = array_flip($reverseMap);
         }
-        $engine = is_string($engine) ? strtolower($engine) : '';
+        $engine = strtolower($engine);
         $this->preferredEngine = $reverseMap[$engine] ?? self::ENGINE_LIBSODIUM;
 
         $this->setEngine();

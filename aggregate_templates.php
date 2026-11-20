@@ -68,11 +68,24 @@ switch (get_request_var('action')) {
  * @return void No value is returned.
  */
 function aggregate_form_save() {
+	csrf_require_post();
+
 	/* make sure we are saving aggregate template */
 	if (!isset_request_var('save_component_template')) {
 		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
+
+	$id = get_nfilter_request_var('id', 0);
+	$success = aggregate_transaction(function () use (&$id) {
+		return aggregate_template_save($id);
+	});
+	raise_message($success ? 1 : 2);
+	header('Location: aggregate_templates.php?header=false&action=edit&id=' . ($success ? $id : get_nfilter_request_var('id')));
+}
+
+/** Persist a validated template and rebuild children in the caller's transaction. */
+function aggregate_template_save(&$id) {
 
 	$save1 = array();
 
@@ -105,8 +118,7 @@ function aggregate_form_save() {
 
 	/* form validation failed */
 	if (is_error_message()) {
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
-		return null;
+		return false;
 	}
 
 	cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $save1['id'] . ' Name: ' . $save1['name'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -121,9 +133,7 @@ function aggregate_form_save() {
 		if (!cacti_sizeof($old)) {
 			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
 
-			cacti_header('aggregate_templates.php');
-
-			exit;
+			return false;
 		}
 
 		$save_me = 0;
@@ -141,15 +151,20 @@ function aggregate_form_save() {
 	}
 
 	if ($save_me) {
-		$id = sql_save($save1, 'aggregate_graph_templates', 'id');
+		$id = aggregate_sql_save($save1, 'aggregate_graph_templates', 'id');
+		if (!$id) {
+			return false;
+		}
 
 		/* update children of the template */
-		db_execute_prepared("UPDATE aggregate_graphs
+		if (!db_execute_prepared("UPDATE aggregate_graphs
 			SET gprint_prefix = ?, gprint_format = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
 			WHERE aggregate_template_id = ?
 			AND template_propogation='on'",
 			array($save1['gprint_prefix'], $save1['gprint_format'], $save1['graph_type'],
-				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id));
+				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id))) {
+			return false;
+		}
 
 		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	} else {
@@ -158,8 +173,7 @@ function aggregate_form_save() {
 
 	if (!$id) {
 		raise_message(2);
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
-		return null;
+		return false;
 	}
 
 	/* save extra graph parameters */
@@ -190,8 +204,14 @@ function aggregate_form_save() {
 
 
 	/* save only if all posted form fields passed validation */
-	if ($params_changed && !is_error_message()) {
-		sql_save($params_new, 'aggregate_graph_templates_graph', 'aggregate_template_id', false);
+	if (is_error_message()) {
+		return false;
+	}
+
+	if ($params_changed) {
+		if (!aggregate_sql_save($params_new, 'aggregate_graph_templates_graph', 'aggregate_template_id', false)) {
+			return false;
+		}
 	}
 
 	/* save the template items now */
@@ -237,8 +257,8 @@ function aggregate_form_save() {
 			// fill in missing fields with db values
 			$item_new = array_merge($aggregate_template_items_old[$item_id], $item_new);
 			/* compare data from user to data from DB */
-			foreach ($data as $field => $new_value) {
-				if ($aggregate_template_items_old[$item_id][$field] != $new_value)
+			foreach ($item_new as $field => $new_value) {
+				if (array_key_exists($field, $aggregate_template_items_old[$item_id]) && $aggregate_template_items_old[$item_id][$field] != $new_value)
 					$items_changed = true;
 			}
 		}
@@ -246,16 +266,18 @@ function aggregate_form_save() {
 	}
 
 	if ($items_changed) {
-		aggregate_graph_items_save($items_to_save, 'aggregate_graph_templates_item');
+		if (!aggregate_graph_items_save($items_to_save, 'aggregate_graph_templates_item', false)) {
+			return false;
+		}
 	}
 
 	if ($save_me || $params_changed || $items_changed) {
-		push_out_aggregates($id);
+		if (!push_out_aggregates($id, 0, false)) {
+			return false;
+		}
 	}
 
-	raise_message(1);
-
-	header('Location: aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+	return true;
 }
 
 
@@ -290,6 +312,8 @@ function aggregate_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

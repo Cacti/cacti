@@ -453,6 +453,8 @@ function form_actions() {
 		header('Location: user_group_admin.php?action=edit&header=false&tab=members&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -592,6 +594,8 @@ function form_actions() {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	global $settings_user;
 
 	if (isset_request_var('save_component_group')) {

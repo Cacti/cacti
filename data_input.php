@@ -50,6 +50,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'field_remove':
+		csrf_require_post();
 		field_remove();
 
 		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
@@ -83,7 +84,7 @@ switch (get_request_var('action')) {
 
 		$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
 
-		raise_message('whitelist_updated', html_escape($output), MESSAGE_LEVEL_INFO);
+		raise_message('whitelist_updated', $output, MESSAGE_LEVEL_INFO);
 
 		/* fall through */
 	case 'edit':
@@ -106,6 +107,8 @@ switch (get_request_var('action')) {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	global $config, $registered_cacti_names;
 
 	if (isset_request_var('save_component_data_input')) {
@@ -178,7 +181,7 @@ function form_save() {
 
 		if (!is_error_message() && $save['input_output'] == 'in' && $save['type_code'] == '' && defined('VALID_HOST_FIELDS') && preg_match('/^(?:' . VALID_HOST_FIELDS . ')$/i', $save['data_name']) === 1) {
 			$_SESSION[SESS_ERROR_FIELDS]['type_code'] = 'type_code';
-			raise_message('validation_error', __esc('Input field <%s> requires Special Type Code "%s".', $save['data_name'], $save['data_name']), MESSAGE_LEVEL_ERROR);
+			raise_message('validation_error', __('Input field <%s> requires Special Type Code "%s".', $save['data_name'], $save['data_name']), MESSAGE_LEVEL_ERROR);
 		}
 
 		if (!is_error_message()) {
@@ -254,6 +257,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {

@@ -46,20 +46,18 @@ class Net_Ping
 	/**
 	 * Handles the construct. Used as part of Cacti's lib functionality.
 	 *
-	 * @return bool True on success, false otherwise.
+	 * @return void No value is returned.
 	 */
 	public function __construct() {
 		$this->port = 33439;
-		return true;
 	}
 
 	/**
 	 * Handles the destruct. Used as part of Cacti's lib functionality.
 	 *
-	 * @return bool True on success, false otherwise.
+	 * @return void No value is returned.
 	 */
 	public function __destruct() {
-		return true;
 	}
 
 	/**

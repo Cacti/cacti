@@ -1,0 +1,107 @@
+<nsIfStatsTable>
+  <name>Get NetScaler INTERFACES stats</name>
+  <description>Queries a NetScaler for all INTERFACES stats (nsIfStatsTable)</description>
+  <oid_index>.1.3.6.1.4.1.5951.4.1.1.54.1.1</oid_index>
+  <oid_index_parse>OID/REGEXP:^.*\.5951\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.(.*)</oid_index_parse>
+
+  <fields>
+    <ifName>
+      <name>Interface Name</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.1</oid>
+    </ifName>
+    <ifThroughput>
+      <name>Interface Throughtput in Mbps</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.48</oid>
+    </ifThroughput>
+    <ifTotRxBytes>
+      <name>Number of bytes received by this interface</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.3</oid>
+    </ifTotRxBytes>
+    <ifRxAvgBandwidthUsage>
+      <name>The average rx bandwidth on interface in bitsps.</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.4</oid>
+    </ifRxAvgBandwidthUsage>
+    <ifTotRxPkts>
+      <name>Number of packets received by this interface</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.5</oid>
+    </ifTotRxPkts>
+    <ifRxAvgPacketRate>
+      <name>The average rate of incoming packets on the interface since the system start.</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.6</oid>
+    </ifRxAvgPacketRate>
+    <ifTotTxBytes>
+      <name>Number of bytes transmitted by this interface</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.7</oid>
+    </ifTotTxBytes>
+    <ifTxAvgBandwidthUsage>
+      <name>The average tx bandwidth on interface in bitsps</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.8</oid>
+    </ifTxAvgBandwidthUsage>
+    <fTotTxPkts> 
+      <name>Number of packets transmitted by this interface</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.9</oid> 
+    </fTotTxPkts> 
+    <ifTxAvgPacketRate>
+      <name>The average rate of outgoing packets on the interface since the system start</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.10</oid>
+    </ifTxAvgPacketRate>
+    <ifTotRxMbits>
+      <name>ifTotRxMbits</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.19</oid>
+    </ifTotRxMbits>
+    <ifTotTxMbits>
+      <name>ifTotTxMbits</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.20</oid>
+    </ifTotTxMbits>
+    <ifTotNetScalerPkts>
+      <name>ifTotNetScalerPkts</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.21</oid>
+    </ifTotNetScalerPkts>
+    <ifErrDroppedRxPkts>
+      <name>ifErrDroppedRxPkts</name>             
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.54.1.22</oid>
+    </ifErrDroppedRxPkts>
+  </fields>
+</nsIfStatsTable>

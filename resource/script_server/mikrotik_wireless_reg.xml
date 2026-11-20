@@ -1,0 +1,104 @@
+<query>
+	<name>Get Mikrotik Wireless Registrations</name>
+	<description>Queries a list of Wireless Registrations that are on a Mikrotik Router</description>
+	<script_path>|path_cacti|/scripts/ss_mikrotik_wireless_reg.php</script_path>
+	<script_function>ss_mikrotik_wireless_reg</script_function>
+	<script_server>php</script_server>
+	<arg_prepend>|host_id|</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<arg_num_indexes>num_indexes</arg_num_indexes>
+	<output_delimeter>!</output_delimeter>
+	<index_order>macAddress</index_order>
+	<index_order_type>alphabetic</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	
+	<fields>
+		<macAddress>
+			<name>Client Mac Address</name>
+			<direction>input</direction>
+			<query_name>macAddress</query_name>
+		</macAddress>
+		<SignalToNoise>
+			<name>Signal to Noise Ratio</name>
+			<direction>output</direction>
+			<query_name>SignalToNoise</query_name>
+		</SignalToNoise>
+		<Uptime>
+			<name>Connection Uptime</name>
+			<direction>output</direction>
+			<query_name>Uptime</query_name>
+		</Uptime>
+		<TxRate>
+			<name>Transmissoin Rate</name>
+			<direction>output</direction>
+			<query_name>TxRate</query_name>
+		</TxRate>
+		<RxRate>
+			<name>Receive Rate</name>
+			<direction>output</direction>
+			<query_name>RxRate</query_name>
+		</RxRate>
+		<TxBytes>
+			<name>Transmitted Bytes</name>
+			<direction>output</direction>
+			<query_name>TxBytes</query_name>
+		</TxBytes>
+		<RxBytes>
+			<name>Received Bytes</name>
+			<direction>output</direction>
+			<query_name>RxBytes</query_name>
+		</RxBytes>
+		<TxPackets>
+			<name>Transmitted Packets</name>
+			<direction>output</direction>
+			<query_name>TxPackets</query_name>
+		</TxPackets>
+		<RxPackets>
+			<name>Received Packets</name>
+			<direction>output</direction>
+			<query_name>RxPackets</query_name>
+		</RxPackets>
+		<Strength>
+			<name>Signal Strength</name>
+			<direction>output</direction>
+			<query_name>Strength</query_name>
+		</Strength>
+		<TxStrengthCh0>
+			<name>Channel 0 Transmit Signal Strength</name>
+			<direction>output</direction>
+			<query_name>TxStrengthCh0</query_name>
+		</TxStrengthCh0>
+		<RxStrengthCh0>
+			<name>Channel 0 Receive Signal Strength</name>
+			<direction>output</direction>
+			<query_name>RxStrengthCh0</query_name>
+		</RxStrengthCh0>
+		<TxStrengthCh1>
+			<name>Channel 1 Transmit Signal Strength</name>
+			<direction>output</direction>
+			<query_name>TxStrengthCh1</query_name>
+		</TxStrengthCh1>
+		<RxStrengthCh1>
+			<name>Channel 1 Receive Signal Strength</name>
+			<direction>output</direction>
+			<query_name>RxStrengthCh1</query_name>
+		</RxStrengthCh1>
+		<TxStrengthCh2>
+			<name>Channel 2 Transmit Signal Strength</name>
+			<direction>output</direction>
+			<query_name>TxStrengthCh2</query_name>
+		</TxStrengthCh2>
+		<RxStrengthCh2>
+			<name>Channel 2 Receive Signal Strength</name>
+			<direction>output</direction>
+			<query_name>RxStrengthCh2</query_name>
+		</RxStrengthCh2>
+		<TxStrength>
+			<name>Transmit Signal Strength</name>
+			<direction>output</direction>
+			<query_name>TxStrength</query_name>
+		</TxStrength>
+	</fields>
+</query>

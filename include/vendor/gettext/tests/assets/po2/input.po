@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Language: bs\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.6.5\n"
+"Project-Id-Version: gettext generator test\n"
+"X-Domain: testingdomain\n"
+
+
+msgid "Ensure this value has at least %(limit_value)d character (it has %sd)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has %sd)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+
+msgid "Ensure this value has at most %(limit_value)d character (it has %sd)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has %sd)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+
+msgid  "%ss must be unique for %ss %ss."
+msgstr "%ss mora da bude jedinstven za %ss %ss."
+
+#, c-format
+msgid "and"
+msgstr "i"
+
+#. This is a extracted comment
+msgid "Value %sr is not a valid choice."
+msgstr ""
+
+#: C:/Users/Me/Documents/foo2.php:1
+msgid "This field cannot be null."
+msgstr "Ovo polje ne može ostati prazno."
+
+#: C:/Users/Me/Documents/foo1.php
+msgid "This field cannot be blank."
+msgstr "Ovo polje ne može biti prazno."
+
+#: attributes/address/composer.php:8 attributes/address/form.php:7
+msgid "Field of type: %ss"
+msgstr "Polje tipa: %ss"
+
+#:
+# a simple line comment is above
+msgid "Integer"
+msgstr "Cijeo broj"
+
+#: /var/www/test/test.php:96
+msgid "{test1}"
+msgstr ""
+"test1\n"
+"<div>\n"
+" test2\n"
+"</div>\n"
+"test3"
+
+
+#: /var/www/test/test.php:96
+msgid "{test2}"
+msgstr "test1\n<div>\n test2\n</div>\ntest3"
+
+msgid "Multibyte test"
+msgstr "日本人は日本で話される言語です！"
+
+msgid "Tabulation test"
+msgstr "FIELD\tFIELD"

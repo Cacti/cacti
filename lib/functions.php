@@ -463,7 +463,7 @@ function set_config_option($config_name, $value, $remote = false) {
 
 		foreach($pollers as $p => $t) {
 			if ($t > $gone_time) {
-				raise_message('poller_' . $p, __esc('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+				raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
 			} else {
 				$rcnn_id = poller_connect_to_remote($p);
 
@@ -475,7 +475,7 @@ function set_config_option($config_name, $value, $remote = false) {
 
 				// check if we still have rcnn_id, if it's now become false, we had a problem
 				if (!$rcnn_id) {
-					raise_message('poller_' . $p, __esc('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+					raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 				}
 			}
 		}
@@ -512,7 +512,10 @@ function set_config_option($config_name, $value, $remote = false) {
 function config_value_exists($config_name) {
 	static $config_values = array();
 
-	if (!isset($config_values[$config_name])) {
+	/* Only a setting that was found is remembered: isset() is true for a cached
+	 * false, which would hide a setting stored later in the same process (the
+	 * installer stores the paths it is given, then reads them back). */
+	if (empty($config_values[$config_name])) {
 		$value = db_fetch_cell_prepared('SELECT COUNT(*) FROM settings WHERE name = ?', array($config_name));
 
 		if ($value > 0) {
@@ -1027,14 +1030,59 @@ function get_message_max_type() {
  * Mark a message to be displayed to the user once display_output_messages() is called. Used as
  * part of Cacti's lib functionality.
  *
+ * A custom $message is plain text and is HTML-escaped here, so callers pass unescaped text
+ * (__() rather than __esc()). Use raise_message_html() only for trusted markup whose dynamic
+ * parts the caller has already escaped. Predefined messages from $messages and session-keyed
+ * messages are not escaped again. Text a caller already escaped with __esc() or html_escape()
+ * is not encoded a second time.
+ *
  * @param mixed $message_id The ID of the message to raise as defined in $messages in
  *   'include/global_arrays.php'.
- * @param string $message Text of the message to be displayed.
+ * @param string $message Plain text of the message to be displayed.
  * @param int $message_level Level of the message to be displayed.
  *
  * @return bool Bool.
  */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
+	if (!empty($message)) {
+		/* plugins written for the old behaviour pass markup or __esc() text; point the log at them */
+		if (raise_message_has_markup($message)) {
+			$caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
+
+			cacti_log(sprintf('DEBUG: raise_message() was given markup or escaped text at %s:%d.  Pass plain text, or use raise_message_html() for trusted markup.', $caller['file'] ?? '?', $caller['line'] ?? 0), false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+		}
+
+		/* html_escape() returns '' for invalid UTF-8, e.g. a device name from SNMP */
+		$message = html_escape(mb_scrub((string) $message, 'UTF-8'));
+	}
+
+	return raise_message_html($message_id, $message, $message_level);
+}
+
+/**
+ * Whether a plain-text message looks like it carries HTML tags or character references, which
+ * raise_message() will now display literally.
+ *
+ * @param string $message The message text.
+ *
+ * @return bool True if the text contains a common HTML tag or an entity.
+ */
+function raise_message_has_markup($message) {
+	return preg_match('/<\/?(a|b|i|u|br|p|span|div|ul|ol|li|strong|em|code|pre|font|table|tr|td|th|img|hr|h[1-6])\b|&(#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]*);/i', (string) $message) === 1;
+}
+
+/**
+ * Mark a message containing trusted HTML to be displayed to the user once
+ * display_output_messages() is called. The caller must escape every dynamic value in $message.
+ *
+ * @param mixed $message_id The ID of the message to raise as defined in $messages in
+ *   'include/global_arrays.php'.
+ * @param string $message HTML of the message to be displayed.
+ * @param int $message_level Level of the message to be displayed.
+ *
+ * @return bool Bool.
+ */
+function raise_message_html($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $config, $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
@@ -1204,8 +1252,13 @@ function kill_session_var($var_name) {
  * @return bool Bool.
  */
 function force_session_data() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
+		return false;
+	} elseif (empty($config['is_web'])) {
+		// The session settings only exist on the web; a CLI script has nothing to restore
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
@@ -1483,8 +1536,6 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		return array(__('Error %s is not readable', $file_name));
 	}
 
-	$filter = strtolower($filter);
-
 	/* the raw line only ever has the numeric device id, not its description; resolve
 	 * ids once up front so the filter below can still match on the description */
 	$host_descriptions = array();
@@ -1552,7 +1603,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
  *
  * @param int $message_type The message type.
  * @param string $line The line.
- * @param string $filter The filter.
+ * @param string $filter The literal search text.
  * @param bool $matches The matches.
  * @param array $host_descriptions Optional id => description map used to let $filter also
  *   match a device's description, since the raw line only contains its numeric id.
@@ -1681,26 +1732,36 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 			}, $line);
 		}
 
-		if ($matches) {
-			if (validate_is_regex($filter) === true && preg_match('/' . $filter . '/i', $search_line)) {
-				return $line;
-			} elseif (stripos($search_line, $filter) !== false) {
-				return $line;
-			}
-		} else {
-			if (validate_is_regex($filter) === true) {
-				if (!preg_match('/' . $filter . '/i', $search_line)) {
-					return $line;
-				}
-			} elseif (!stripos($search_line, $filter) !== false) {
-				return $line;
-			}
-		}
+		$found = clog_search_matches($filter, $search_line, (bool) $matches);
 
-		return false;
+		return $found === (bool) $matches ? $line : false;
 	}
 
 	return $display;
+}
+
+/**
+ * Match a Log Viewer regex or fall back to literal text.
+ */
+function clog_search_matches($filter, $line, $include) {
+	static $last_filter = null;
+	static $pattern = null;
+
+	if ($last_filter !== $filter) {
+		require_once __DIR__ . '/clog_search.php';
+		$pattern = CactiLogSearchPattern::compile($filter);
+		$last_filter = $filter;
+	}
+
+	if ($pattern !== null) {
+		$matched = $pattern->matches($line);
+
+		if ($matched || !$include) {
+			return $matched;
+		}
+	}
+
+	return stripos($line, $filter) !== false;
 }
 
 /**
@@ -3197,6 +3258,12 @@ function data_source_path_within_rra($path) {
 			return false;
 		}
 
+		/* RRDtool splits its arguments on whitespace and quotes, so a file
+		 * name holding either would be read as more than one argument */
+		if (preg_match('/[\s\'"`]/', $segment)) {
+			return false;
+		}
+
 		$parts[] = $segment;
 	}
 
@@ -4011,7 +4078,7 @@ function get_graph_group($graph_template_item_id) {
 		$params[] = $graph_item['graph_template_id'];
 		$sql_where = 'graph_template_id = ? AND local_graph_id = 0';
 	} else {
-		$params[] = $graph_item['sequence'];
+		$params[] = $graph_item['local_graph_id'];
 		$sql_where = 'local_graph_id = ?';
 	}
 
@@ -5345,7 +5412,9 @@ function sanitize_unserialize_selected_items($items) {
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
 			$items = unserialize($unstripped, array('allowed_classes' => false));
 
-			if (is_array($items)) {
+			/* Bulk-action forms submit a list. Reject encodings that do not
+			 * round-trip exactly, including bytes after the array. */
+			if (is_array($items) && array_is_list($items) && serialize($items) === $unstripped) {
 				foreach ($items as $item) {
 					if (is_array($item)) {
 						return false;
@@ -5394,6 +5463,25 @@ function cacti_escapeshellcmd($string) {
 }
 
 /**
+ * Parses a single CLI argument of the form 'name' or 'name=value' into a
+ * two element [name, value] pair. When no '=' is present the value is
+ * returned as an empty string. Shared by Cacti's CLI and poller entry-point
+ * scripts so the standard argument-parsing preamble is not duplicated across
+ * them.
+ *
+ * @param string $parameter The raw CLI argument, e.g. '--type=boost' or '--force'.
+ *
+ * @return array A two element array of [name, value].
+ */
+function cacti_cli_parse_argument($parameter) {
+	if (strpos($parameter, '=')) {
+		return explode('=', $parameter, 2);
+	}
+
+	return array($parameter, '');
+}
+
+/**
  * Mimics escapeshellarg, even for windows. Used as part of Cacti's lib functionality.
  *
  * @param string $string The string to be escaped.
@@ -5417,7 +5505,16 @@ function cacti_escapeshellarg($string, $quote = true) {
 	 * you do this, but are perfectly happy with a quotation mark.
 	 */
 	if ($config['cacti_server_os'] == 'unix') {
-		$string = escapeshellarg($string);
+		/* escapeshellarg() writes an apostrophe as '\'', which RRDtool's own
+		 * command parser (rrdtool -) does not read: it has no backslash escape,
+		 * so the next apostrophe ends the argument early.  '"'"' closes the
+		 * quote, adds a double-quoted apostrophe and reopens it.  A POSIX shell
+		 * and RRDtool both join those pieces into the same single argument.
+		 * escapeshellarg() still runs first for its rejection of NUL bytes. */
+		escapeshellarg($string);
+
+		$string = "'" . str_replace("'", "'\"'\"'", $string) . "'";
+
 		if ($quote) {
 			return $string;
 		} else {
@@ -5596,9 +5693,51 @@ function appendHeaderSuppression($url) {
  * @param string $subject The subject.
  * @param string $message The message.
  *
- * @return bool True on success, false otherwise.
+ * The admin_alert hook receives the original subject/message and a versioned
+ * event envelope. A plugin may return status accepted or already_accepted to
+ * own delivery. Missing handlers, other results and exceptions use email.
+ * Plugins own their delivery settings; core does not select a provider.
+ *
+ * @return void
  */
 function admin_email($subject, $message) {
+	global $config;
+	static $dispatching = false;
+
+	if (read_config_option('notify_admin') != 'on') {
+		cacti_log('WARNING: Primary Admin account notifications disabled!  Unable to send administrative Email.', false, 'SYSTEM');
+		return;
+	}
+
+	if (!$dispatching) {
+		$dispatching = true;
+
+		try {
+			if (is_string($subject) && strlen($subject) <= 512
+				&& is_string($message) && strlen($message) <= 16384
+				&& (int) ($config['poller_id'] ?? 1) > 0) {
+				$alert = array(
+					'contract_version' => 1,
+					'status'           => 'unhandled',
+					'event_id'         => bin2hex(random_bytes(16)),
+					'occurred_at'      => gmdate('Y-m-d\TH:i:s\Z'),
+					'collector_id'     => (int) ($config['poller_id'] ?? 1),
+					'subject'          => $subject,
+					'message'          => $message,
+				);
+				$result = api_plugin_hook_function('admin_alert', $alert);
+
+				if (is_array($result) && in_array($result['status'] ?? null, array('accepted', 'already_accepted'), true)) {
+					return;
+				}
+			}
+		} catch (Throwable $error) {
+			// Keep email fallback available without logging another administrative alert.
+		} finally {
+			$dispatching = false;
+		}
+	}
+
 	if (read_config_option('admin_user') > 0) {
 		if (read_config_option('notify_admin') == 'on') {
 			$admin_details = db_fetch_row_prepared('SELECT full_name, email_address
@@ -7151,10 +7290,6 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR NOTICE', false, true, 0, 1);
 			break;
-		case E_STRICT:
-			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR STRICT', false, true, 0, 1);
-			break;
 		default:
 			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
@@ -7659,7 +7794,7 @@ function date_time_format() {
 	$date_fmt        = read_config_option('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
 
-	if (!isset($datechar[$dateCharSetting])) {
+	if ($dateCharSetting === null || !isset($datechar[$dateCharSetting])) {
 		$dateCharSetting = GDC_SLASH;
 	}
 
@@ -7902,8 +8037,8 @@ function get_nonsystem_data_input($data_input_id) {
 function get_rrdtool_version($force = false) {
 	static $version = '';
 
-	if ($version == '') {
-		$version = str_replace('rrd-', '', str_replace('.x', '.0', read_config_option('rrdtool_version', $force) ?: read_default_config_option('rrdtool_version') ?: '1.4.0' ));
+	if ($version == '' || $force) {
+		$version = str_replace('rrd-', '', str_replace('.x', '.0', read_config_option('rrdtool_version', $force) ?: read_default_config_option('rrdtool_version') ?: '1.5.0' ));
 	}
 
 	return $version;
@@ -8476,6 +8611,32 @@ function cacti_ptoa($title, $addr) {
 	foreach(str_split($addr) as $char) {
 		print str_pad(dechex(ord($char)),2,'0',STR_PAD_LEFT);
 	}
+}
+
+/**
+ * Encodes a PHP value for direct inclusion in JavaScript, such as an inline
+ * <script> block or a JavaScript event attribute.  The JSON_HEX_* flags turn
+ * <, >, &, ' and " into \uXXXX escapes, so a translated string or other value
+ * can neither close the script block nor break out of the surrounding quotes.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $value The value to encode
+ *
+ * @return string The JavaScript-safe JSON literal, or null if encoding fails
+ */
+function cacti_js_encode(mixed $value) : string {
+	$encoded = json_encode(
+		$value,
+		JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+	);
+
+	if ($encoded === false) {
+		return 'null';
+	}
+
+	// U+2028 and U+2029 are valid JSON but are line terminators in JavaScript;
+	// left literal by JSON_UNESCAPED_UNICODE they break an inline <script> parse.
+	return str_replace(["\u{2028}", "\u{2029}"], ['\\u2028', '\\u2029'], $encoded);
 }
 
 /**
@@ -9590,7 +9751,6 @@ function cacti_temp_file($prefix, $callback) {
 	return $result;
 }
 
-
 /**
  * Returns the requested theme name iff it names a real directory under include/themes/ that
  * contains an rrdtheme.php file. Otherwise returns the configured default theme. Root-cause
@@ -9811,6 +9971,10 @@ function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 
 
 	$body = @file_get_contents($url, false, $ctx);
 
+	if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
+		$http_response_header = http_get_last_response_headers();
+	}
+
 	if (isset($http_response_header) && is_array($http_response_header) && count($http_response_header) > 0) {
 		if (preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
 			$status = (int) $m[1];
@@ -9857,6 +10021,21 @@ function cacti_plugin_path($plugin, $relative = '') {
 	$resolved = validate_relative_path_within((string) $relative, $plugin_base);
 
 	return $resolved !== false ? $resolved : false;
+}
+
+/**
+ * Replacement for the deprecated spl_object_hash starting in php 8.6
+ *
+ * @param object $object The object to hash
+ *
+ * @return string|bool A hash of the object
+ */
+function cacti_object_hash($object) {
+	if (is_object($object)) {
+		return (string) sprintf('%016x0000000000000000', spl_object_id($object));
+	} else {
+		return false;
+	}
 }
 
 /**

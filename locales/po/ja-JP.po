@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2024-11-22 08:46+0000\n"
 "Last-Translator: Nakayama Kito <nakayamakito@icloud.com>\n"
 "Language-Team: Japanese <http://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\n"
@@ -2193,8 +2193,8 @@ msgstr "根(植物)"
 msgid "No Tree Rules Found"
 msgstr "ツリールールが見つかりません"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "サボテンシステム警告"
 
@@ -2634,39 +2634,13 @@ msgstr "データソースのデバッグ"
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "データソースデバッグは無効なデータソースIDを受け取りました。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "RRDファイルの修復はすべて成功しました。"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "1つ以上のRRDファイルの修復に失敗しました。エラーについてはCactiログを参照してください。"
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "RRDファイルの修復はすべて成功しました。"
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "RRDツールチューン情報"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "修復手順[コマンドラインから修正を実行]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2903,7 +2877,7 @@ msgstr "問題"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "属性'%s'の課題が見つかりました'%s'"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "推奨名を再適用"
 
@@ -3662,6 +3636,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "選択したデータ入力ソースに入力フィールドがありません"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "RRDファイルの修復はすべて成功しました。"
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "データテンプレートの選択[編集：%s]"
@@ -3753,6 +3741,18 @@ msgstr "新規"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "データソースのデバッグ"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "RRDツールチューン情報"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "修復手順[コマンドラインから修正を実行]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4093,7 +4093,7 @@ msgstr[0] "1分"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "グラフの詳細、ズーミングおよびデバッグユーティリティ"
 
@@ -4101,29 +4101,11 @@ msgstr "グラフの詳細、ズーミングおよびデバッグユーティリ
 msgid "CSV Export"
 msgstr "知恵袋CSVエクスポート"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "Tree View"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Realm"
-msgid "Realtime"
-msgstr "領域"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "スパイク"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "グラフテンプレートを編集します。"
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "クリックしてこのグラフだけをリアルタイムで表示"
 
@@ -4604,13 +4586,13 @@ msgstr "グラフテンプレートをデバイスに追加"
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 #| msgid "The new Title of the aggregated Graph."
 msgid "Unable to start the aggregate graph update."
 msgstr "集約グラフの新しいタイトル。"
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 #| msgid "The new Title of the aggregated Graph."
 msgid "Unable to commit the aggregate graph update."
@@ -5547,6 +5529,16 @@ msgstr ""
 #| msgid "Requires: Cacti >= %s"
 msgid "Return to Cacti: %s"
 msgstr "必要条件：サボテン>= %s"
+
+#: include/csrf.php
+#, fuzzy
+#| msgid "Session"
+msgid "Session Expired"
+msgstr "セッション"
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
@@ -11139,12 +11131,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "ブースト出力テーブルがこのサイズを超えると（レコード単位）、更新が行われます。"
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "1パスあたりの最大データソース項目"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "パフォーマンスを最適化するために、ブーストRRDアップデータは、1回のパスで取得できるデータソースアイテム数を知る必要があります。メジャーアップデート中のグラフ作成のパフォーマンスが低下する可能性があるため、高く設定しすぎないように注意してください。更新中にグラフ化やポーリングが遅くなる場合は、この数を減らしてください。デフォルト値は50000です。"
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11171,12 +11163,42 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "ブーストポーラーがこのランタイムを削除すると、警告がサボテンログに書き込まれます"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "poller_output_boostテーブルの直接作成を有効にする"
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "最大許容ランタイム："
 
 #: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "ポーラー出力ブーストへのレコードの直接挿入を可能にし、各ポーリングサイクルで25％の時間短縮をもたらします。"
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "最大許容ランタイム："
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "最大Eメールサイズ"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12308,6 +12330,10 @@ msgstr "パスワードには少なくとも1つの特殊文字を含める必�
 msgid "Cacti Login Failure"
 msgstr "サボテンログをクリアしました"
 
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
+
 #: lib/boost.php utilities.php
 #, php-format
 msgid "%s MBytes"
@@ -13138,20 +13164,38 @@ msgid "Data Query:"
 msgstr "データ問合せ"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "グラフデータのCSVエクスポート"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "グラフオプション"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "時間グラフ表示"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Tree View"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "デバイスを編集"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "グラフでスパイクを殺す"
+#, fuzzy
+#| msgid "Realm"
+msgid "Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Realm"
+msgid "Stop Realtime"
+msgstr "領域"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "スパイク"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13258,16 +13302,12 @@ msgid "No file selected"
 msgstr "ファイルが選択されてません"
 
 #: lib/html.php
+msgid "Time Graph View"
+msgstr "時間グラフ表示"
+
+#: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKillの結果"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "クリックしてこのグラフだけをリアルタイムで表示する"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "このグラフをリアルタイムから削除するには、もう一度クリックします"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -15676,6 +15716,11 @@ msgstr "ディレクトリ'%s'のプラグインには、バージョン関数'%
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "ディレクトリ'%s'のプラグインには、インストール関数'%s()'が含まれていません。プラグインをインストールするには、この関数が存在する必要があります。"
 
@@ -15776,6 +15821,26 @@ msgstr "エラー： RRDファイル%sは書き込み可能ではありません
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "必要なRRDfileステップサイズは'%s'ですが、観察されたステップは'%s'です"
 
@@ -15793,11 +15858,6 @@ msgstr "データソース'%s'のハートビートは'%s'である必要があ�
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "データソース'%s'のRRD最小値は'%s'である必要があります"
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "Cactiの定義にDS '%s'がありません"
 
 #: lib/rrd.php
 #, php-format
@@ -15883,17 +15943,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP不明データポイント（0）"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "%sの名前を%sに変更"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "%sが見つかりませんでした。"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "データソースフィールド"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "%sの名前を%sに変更"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19810,8 +19870,51 @@ msgid "Boost On-demand Updating:"
 msgstr "オンデマンドの強化"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "ブーストステータス"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "並行プロセス"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "保留中のブーストレコード："
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "作成日：%s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "古い順"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "自動ページ更新"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20135,32 +20238,63 @@ msgstr "このVDEFを使用しているグラフテンプレートの数。"
 msgid "No VDEFs"
 msgstr "VDEFなし"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "グラフオプション"
-
-#: lib/plugins.php:835
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
 msgstr ""
 
-#: links.php
-msgid "Links"
-msgstr "リンク"
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "コンソールメニュー"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "コレクター"
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRDファイル"
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
 
-#: user_domains.php
-msgid "Domains"
-msgstr "ドメイン"
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "クリックしてこのグラフだけをリアルタイムで表示する"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "このグラフをリアルタイムから削除するには、もう一度クリックします"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "1パスあたりの最大データソース項目"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "パフォーマンスを最適化するために、ブーストRRDアップデータは、1回のパスで取得できるデータソースアイテム数を知る必要があります。メジャーアップデート中のグラフ作成のパフォーマンスが低下する可能性があるため、高く設定しすぎないように注意してください。更新中にグラフ化やポーリングが遅くなる場合は、この数を減らしてください。デフォルト値は50000です。"
+
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "poller_output_boostテーブルの直接作成を有効にする"
+
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "ポーラー出力ブーストへのレコードの直接挿入を可能にし、各ポーリングサイクルで25％の時間短縮をもたらします。"
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "グラフデータのCSVエクスポート"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "グラフでスパイクを殺す"
+
+#, php-format
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "Cactiの定義にDS '%s'がありません"
+
+#~ msgid "Links"
+#~ msgstr "リンク"
+
+#~ msgid "Collectors"
+#~ msgstr "コレクター"
+
+#~ msgid "RRDfiles"
+#~ msgstr "RRDファイル"
+
+#~ msgid "Domains"
+#~ msgstr "ドメイン"
 
 #~ msgid "SNMP Rules"
 #~ msgstr "SNMPルール"

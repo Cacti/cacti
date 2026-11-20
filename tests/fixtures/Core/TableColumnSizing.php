@@ -18,6 +18,6 @@ $_SERVER['SCRIPT_NAME'] = '/monitor.php';
 $_CACTI_REQUEST = json_decode($argv[1] ?? '{}', true, 512, JSON_THROW_ON_ERROR);
 $_REQUEST = $_CACTI_REQUEST;
 ob_start();
-html_start_box($argv[3] ?? '', '100%', ($argv[2] ?? '') === 'div', 0, 'left', '', 'Add');
+html_start_box($argv[3] ?? '', '100%', ($argv[2] ?? '') === 'div', 0, 'left', $argv[4] ?? '', 'Add');
 $html = ob_get_clean();
 print json_encode(['html' => $html], JSON_THROW_ON_ERROR) . "\n";

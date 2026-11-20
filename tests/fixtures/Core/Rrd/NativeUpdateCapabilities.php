@@ -21,9 +21,9 @@ $pipe = false;
 
 try {
 	// Exercise Cacti's native code with an external process that records commands.
-	file_put_contents($binary, '#!' . PHP_BINARY . "\n<?php\nwhile ((\$line = fgets(STDIN)) !== false) { file_put_contents(" . var_export($log, true) . ", \$line, FILE_APPEND); }\n");
+	file_put_contents($binary, '#!' . PHP_BINARY . "\n<?php\nwhile ((\$line = fgets(STDIN)) !== false) { file_put_contents(" . var_export($log, true) . ", \$line, FILE_APPEND); echo \"OK u:0.00 s:0.00 r:0.00\\n\"; flush(); }\n");
 	chmod($binary, 0700);
-	$pipe = rrd_init(false);
+	$pipe = rrd_init(false, true);
 	$updates = [];
 
 	foreach (['first', 'second'] as $name) {

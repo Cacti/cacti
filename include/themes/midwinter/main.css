@@ -46,7 +46,63 @@
 @import url('billboard.midwinter.css?e442c55720734e56c33de67e26a596de');
 @import url('jquery-ui.midwinter.css?7c0c69ff83d0a0d9fc7d54b737c7f9d3');
 
-/* End of file */
+/* The maintenance titlebar and selected rows keep a dark surface in both palettes. */
+.cactiTableTitleRow {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.cactiTableTitleRow > .cactiTableTitle {
+	float: none;
+	flex: 1 1 auto;
+	min-width: 0;
+	width: auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #dadbe0;
+}
+
+.cactiTableTitleRow > .cactiTableButton {
+	float: none;
+	flex: 0 0 auto;
+	width: auto;
+}
+
+.cactiTableTitleRow > .cactiTableButton a {
+	color: #dadbe0;
+}
+
+tr:not(.selectable):not(.selected) a.linkEditMain:hover,
+tr.selectable:hover:not(.selected),
+tr.selectable:hover:not(.selected) a {
+	color: var(--text-color-lighter);
+}
+
+tr.selected a,
+tr.selected a.linkEditMain:visited,
+tr.selected a.linkEditMain:hover {
+	color: #dadbe0;
+}
+
+/* jQuery UI selectmenu (the language dropdown is the only non-select2
+   dropdown) - match this theme's select2 controls. This theme's
+   jquery-ui.midwinter.css squares every .ui-corner-all with
+   border-radius: 0 !important, so restore the 6px radius with the same flag. */
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover {
+	background: var(--background-content);
+	border: 1px solid var(--border-color-superlowlight);
+	border-radius: 6px !important;
+	color: var(--text-color-lighter);
+}
+
+.ui-selectmenu-button.ui-button.ui-selectmenu-button-open {
+	background: var(--background-lowlight);
+	border-color: var(--border-color);
+	color: var(--text-color-lighter);
+}
 
 /* Select2 - adapt to look like a native Cacti/jQuery UI control.
    Select2 4.x ships no jQuery UI theme, so these overrides reuse this

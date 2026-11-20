@@ -49,7 +49,7 @@ $forcever    = '';
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg = $parameter;
 			$value = '';
@@ -116,6 +116,14 @@ if ($old_cacti_version == CACTI_VERSION) {
 	print "Invalid Cacti version $old_cacti_version, cannot upgrade to " . CACTI_VERSION . PHP_EOL;
 	exit;
 }
+
+if (!register_process_start('install', 'master', 0, 86400)) {
+	print 'An installation or upgrade is already in progress.' . PHP_EOL;
+
+	exit(1);
+}
+
+register_shutdown_function('unregister_process', 'install', 'master', 0);
 
 print 'Upgrading from v' . $old_cacti_version . PHP_EOL;
 

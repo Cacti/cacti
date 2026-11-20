@@ -592,7 +592,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($name)), html_escape($custom_error)), MESSAGE_LEVEL_ERROR);
+				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', get_nfilter_request_var($name), $custom_error), MESSAGE_LEVEL_ERROR);
 				set_request_var($name, '');
 			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
@@ -790,7 +790,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($variable)), html_escape($custom_error)), MESSAGE_LEVEL_ERROR);
+						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', get_nfilter_request_var($variable), $custom_error), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
 					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), html_escape($custom_error));
@@ -1272,7 +1272,7 @@ function cacti_build_https_redirect_url(string $server_name, string $request_uri
 			$port = substr($server_name, $close + 2);
 		}
 	} elseif (substr_count($server_name, ':') === 1) {
-		list($host, $port) = explode(':', $server_name, 2);
+		[$host, $port] = explode(':', $server_name, 2);
 	} else {
 		$host = $server_name;
 		$port = '';

@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <source>
+        <include>
+            <file>../lib/poller.php</file>
+            <file>../lib/snmp.php</file>
+        </include>
+    </source>
     <testsuites>
         <testsuite name="PollerMapping">
+            <file>Unit/Core/ManagementSaveTest.php</file>
+            <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>
             <file>Unit/PollerMappingCacheTest.php</file>
             <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
+            <file>Unit/DataCollection/Snmp/SnmpFormatAgentTest.php</file>
+            <file>Unit/DataCollection/Poller/KilledProcessDbConnectionTest.php</file>
+        </testsuite>
+        <testsuite name="ScriptServer">
+            <file>Unit/Scripts/ScriptServerHardeningProbeTest.php</file>
+            <file>Unit/Scripts/ScriptServerRequestHandlingTest.php</file>
+            <file>Unit/Scripts/ScriptArgumentBoundsTest.php</file>
+            <file>Unit/Scripts/NetSnmpDiskStateFileTest.php</file>
+            <file>Unit/Scripts/SqlScriptsTest.php</file>
+            <file>Unit/Scripts/DiskfreeArgumentTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

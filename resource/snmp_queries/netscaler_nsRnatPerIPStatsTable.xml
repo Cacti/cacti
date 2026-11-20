@@ -1,0 +1,56 @@
+<nsRnatPerIPStatsTable>
+  <name>Get NetScaler RNAT stats</name>
+  <description>Queries a NetScaler for a list of its RNAT stats (nsRnatPerIPStatsTable)</description>
+  <oid_index>.1.3.6.1.4.1.5951.4.1.1.65.2.1.1</oid_index>
+  <oid_index_parse>OID/REGEXP:^.*\.5951\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.(.*)</oid_index_parse>
+
+  <fields>
+    <Index>
+      <name>Index</name>
+      <source>index</source>
+      <direction>input</direction>
+    </Index>
+    <ipRnatTotRxBytes>
+      <name>Rx Bytes</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.65.2.1.1</oid>
+    </ipRnatTotRxBytes>
+    <ipRnatTotTxBytes>
+      <name>Tx Bytes</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.65.2.1.2</oid>
+    </ipRnatTotTxBytes>
+    <ipRnatTotRxPkts>
+      <name>Rx Packets</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.65.2.1.3</oid>
+    </ipRnatTotRxPkts>
+    <ipRnatTotTxPkts>
+      <name>Tx Packets</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.65.2.1.4</oid>
+    </ipRnatTotTxPkts>
+    <ipRnatTotTxSyn>
+      <name>Tx Syn</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.65.2.1.5</oid>
+    </ipRnatTotTxSyn>
+    <ipRnatCurSessions>
+      <name>Current Sessions</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.65.2.1.6</oid>
+    </ipRnatCurSessions>
+  </fields>
+</nsRnatPerIPStatsTable>

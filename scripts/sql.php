@@ -4,25 +4,14 @@ error_reporting(0);
 
 include(dirname(__FILE__) . '/../include/cli_check.php');
 
-global $database_hostname, $database_username, $database_password;
+global $local_db_cnn_id;
 
-$args = array(
-	'--host=' . $database_hostname,
-	'--user=' . $database_username
-);
+/* the sixth field of 'mysqladmin status', read over Cacti's own database
+ * connection so the database password is never placed on a command line */
+$questions = db_fetch_row("SHOW GLOBAL STATUS LIKE 'Questions'", false, (is_object($local_db_cnn_id) ? $local_db_cnn_id : false));
 
-if ($database_password != '') {
-	$args[] = '--password=' . $database_password;
-}
-
-$args[] = 'status';
-
-$output = cacti_exec_string('mysqladmin', $args);
-
-if ($output === null || $output === '') {
+if (!isset($questions['Value']) || $questions['Value'] === '') {
 	print 'U';
 } else {
-	// Extract the 6th field (Queries per second avg), matching original awk '{print $6}'
-	$parts = preg_split('/\s+/', trim($output));
-	print isset($parts[5]) ? $parts[5] : 'U';
+	print $questions['Value'];
 }

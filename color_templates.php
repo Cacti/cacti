@@ -148,6 +148,8 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
  * @return void No value is returned.
  */
 function aggregate_color_form_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_color')) {
 		if (isset_request_var('color_template_id')) {
 			$save1['color_template_id'] = get_nfilter_request_var('color_template_id');
@@ -194,6 +196,8 @@ function aggregate_color_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -494,9 +498,9 @@ function sync_color_templates($color_template) {
 	}
 
 	if ($found) {
-		raise_message('color_template_sync', __esc('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+		raise_message('color_template_sync', __('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
 	} else {
-		raise_message('color_template_sync', __esc('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
 	}
 }
 

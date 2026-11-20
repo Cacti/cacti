@@ -79,7 +79,7 @@ $build_where = function (string $tasktype, string $taskname, mixed $taskid, mixe
 };
 
 test('default taskid/pid (match-any sentinels) add no WHERE filter', function () use ($build_where) {
-	list($sql_where, $params) = $build_where('', '', 0, -1);
+	[$sql_where, $params] = $build_where('', '', 0, -1);
 
 	expect($sql_where)->toBe('');
 	expect($params)->toBe(array());
@@ -88,12 +88,12 @@ test('default taskid/pid (match-any sentinels) add no WHERE filter', function ()
 test('an explicit taskid of 0 is impossible to request, matching the match-any sentinel', function () use ($build_where) {
 	// Documents the actual (intentional) contract: 0 is reserved as
 	// "don't filter on taskid", same as -1 for pid.
-	list($sql_where,) = $build_where('', '', 0, -1);
+	[$sql_where,] = $build_where('', '', 0, -1);
 	expect($sql_where)->not->toContain('taskid');
 });
 
 test('a real taskid and pid add their WHERE filters', function () use ($build_where) {
-	list($sql_where, $params) = $build_where('poller', 'spikekill', 42, 12345);
+	[$sql_where, $params] = $build_where('poller', 'spikekill', 42, 12345);
 
 	expect($sql_where)->toContain('AND tasktype = ?');
 	expect($sql_where)->toContain('AND taskname = ?');

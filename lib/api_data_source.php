@@ -162,8 +162,10 @@ function api_data_source_remove($local_data_id) {
 	db_execute_prepared('DELETE FROM poller_output
 		WHERE local_data_id = ?', array($local_data_id));
 
-	db_execute_prepared('DELETE FROM poller_output_boost
-		WHERE local_data_id = ?', array($local_data_id));
+	if (read_config_option('boost_rrd_update_enable') != 'on') {
+		db_execute_prepared('DELETE FROM poller_output_boost
+			WHERE local_data_id = ?', array($local_data_id));
+	}
 
 	if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 		/* base data */
@@ -183,8 +185,10 @@ function api_data_source_remove($local_data_id) {
 		db_execute_prepared('DELETE FROM poller_output
 			WHERE local_data_id = ?', array($local_data_id), true, $rcnn_id);
 
-		db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id = ?', array($local_data_id), true, $rcnn_id);
+		if (read_config_option('boost_rrd_update_enable') != 'on') {
+			db_execute_prepared('DELETE FROM poller_output_boost
+				WHERE local_data_id = ?', array($local_data_id), true, $rcnn_id);
+		}
 	}
 
 	/* update the database to document the cache change */
@@ -312,8 +316,10 @@ function api_data_source_remove_multi($local_data_ids) {
 		db_execute('DELETE FROM poller_output
 			WHERE local_data_id IN (' . $ids_to_delete . ')');
 
-		db_execute('DELETE FROM poller_output_boost
-			WHERE local_data_id IN (' . $ids_to_delete . ')');
+		if (read_config_option('boost_rrd_update_enable') != 'on') {
+			db_execute('DELETE FROM poller_output_boost
+				WHERE local_data_id IN (' . $ids_to_delete . ')');
+		}
 
 		if (cacti_sizeof($poller_ids)) {
 			foreach ($poller_ids as $poller_id) {
@@ -335,8 +341,10 @@ function api_data_source_remove_multi($local_data_ids) {
 					db_execute('DELETE FROM poller_output
 						WHERE local_data_id IN (' . $ids_to_delete . ')', true, $rcnn_id);
 
-					db_execute('DELETE FROM poller_output_boost
-						WHERE local_data_id IN (' . $ids_to_delete . ')', true, $rcnn_id);
+					if (read_config_option('boost_rrd_update_enable') != 'on') {
+						db_execute('DELETE FROM poller_output_boost
+							WHERE local_data_id IN (' . $ids_to_delete . ')', true, $rcnn_id);
+					}
 				}
 
 				api_data_source_cache_crc_update($poller_id);

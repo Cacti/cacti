@@ -86,7 +86,7 @@ $output = (string) ob_get_clean();
 $expected = array();
 
 foreach ($rows[$name] as $key => $value) {
-	list($mib, $notification) = explode('__', substr($key, 4));
+	[$mib, $notification] = explode('__', substr($key, 4));
 	$expected[$mib][$notification] = 1;
 }
 

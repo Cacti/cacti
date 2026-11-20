@@ -109,7 +109,7 @@ array_shift($parms);
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg = $parameter;
 			$value = '';
@@ -190,8 +190,11 @@ if ($dbhostname == '' || $dbhostname == 'localhost' || $dbhostname == '127.0.0.1
 $total_pollers = db_fetch_cell('SELECT COUNT(*) FROM poller');
 if ($total_pollers > 1) {
 	set_config_option('boost_rrd_update_system_enable', 'on');
-	set_config_option('boost_redirect', 'on');
 }
+
+// Boost redirect must always be on.  Making this change
+// unconfitionally until after 1.2.32 is released
+set_config_option('boost_redirect', 'on');
 
 // check to see if the poller is disabled
 poller_enabled_check($poller_id);
@@ -771,7 +774,7 @@ while ($poller_runs_completed < $poller_runs) {
 				set_config_option('date', date('Y-m-d H:i:s'));
 
 				// open a pipe to rrdtool for writing
-				$rrdtool_pipe = rrd_init();
+				$rrdtool_pipe = rrd_init(true, true);
 			}
 
 			$rrds_processed = 0;
@@ -1097,14 +1100,15 @@ function poller_replicate_check() {
 		$sync_interval = 7200;
 	}
 
-	$pollers = db_fetch_assoc("SELECT id
+	$pollers = db_fetch_assoc_prepared("SELECT id
 		FROM poller
 		WHERE id > 1
 		AND dbhost NOT IN ('localhost', '127.0.0.1', '')
 		AND disabled = ''
 		AND sync_interval != 0
 		AND (last_sync = '0000-00-00 00:00:00' OR requires_sync = 'on'
-		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, $sync_interval)))");
+		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, ?)))",
+		array($sync_interval));
 
 	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {

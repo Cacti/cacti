@@ -1,0 +1,101 @@
+<interface>
+	<name>Queue Users</name>
+	<script_path>|path_cacti|/scripts/ss_mikrotik_qusers.php</script_path>
+	<script_function>ss_mikrotik_qusers</script_function>
+	<script_server>php</script_server>
+	<arg_prepend>|host_id|</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<output_delimeter>!</output_delimeter>
+	<index_order>userName</index_order>
+	<index_order_type>alpha</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	<fields>
+		<userName>
+			<name>User Name</name>
+			<direction>input</direction>
+			<query_name>name</query_name>
+		</userName>
+		<userDomain>
+			<name>User Domain</name>
+			<direction>input</direction>
+			<query_name>domain</query_name>
+		</userDomain>
+		<userIP>
+			<name>User IP Address</name>
+			<direction>input</direction>
+			<query_name>ip</query_name>
+		</userIP>
+		<userMAC>
+			<name>User MAC Address</name>
+			<direction>input</direction>
+			<query_name>mac</query_name>
+		</userMAC>
+		<curBytesIn>
+			<name>Current Bytes In</name>
+			<direction>output</direction>
+			<query_name>curBytesIn</query_name>
+		</curBytesIn>
+		<curBytesOut>
+			<name>Current Bytes Out</name>
+			<direction>output</direction>
+			<query_name>curBytesOut</query_name>
+		</curBytesOut>
+		<curPacketsIn>
+			<name>Current Packets In</name>
+			<direction>output</direction>
+			<query_name>curPacketsIn</query_name>
+		</curPacketsIn>
+		<curPacketsOut>
+			<name>Current Packets Out</name>
+			<direction>output</direction>
+			<query_name>curPacketsOut</query_name>
+		</curPacketsOut>
+		<avgBytesIn>
+			<name>Average Bytes In</name>
+			<direction>output</direction>
+			<query_name>avgBytesIn</query_name>
+		</avgBytesIn>
+		<avgBytesOut>
+			<name>Average Bytes Out</name>
+			<direction>output</direction>
+			<query_name>avgBytesOut</query_name>
+		</avgBytesOut>
+		<avgPacketsIn>
+			<name>Average Packets In</name>
+			<direction>output</direction>
+			<query_name>avgPacketsIn</query_name>
+		</avgPacketsIn>
+		<avgPacketsOut>
+			<name>Average Packets Out</name>
+			<direction>output</direction>
+			<query_name>avgPacketsOut</query_name>
+		</avgPacketsOut>
+		<bytesIn>
+			<name>Total Bytes In</name>
+			<direction>output</direction>
+			<query_name>bytesIn</query_name>
+		</bytesIn>
+		<bytesOut>
+			<name>Total Bytes Out</name>
+			<direction>output</direction>
+			<query_name>bytesOut</query_name>
+		</bytesOut>
+		<packetsIn>
+			<name>Total Packets In</name>
+			<direction>output</direction>
+			<query_name>packetsIn</query_name>
+		</packetsIn>
+		<packetsOut>
+			<name>Total Packets Out</name>
+			<direction>output</direction>
+			<query_name>packetsOut</query_name>
+		</packetsOut>
+		<connectTime>
+			<name>Connect Time</name>
+			<direction>output</direction>
+			<query_name>connectTime</query_name>
+		</connectTime>
+	</fields>
+</interface>

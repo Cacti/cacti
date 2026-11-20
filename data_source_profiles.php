@@ -110,6 +110,8 @@ switch (get_request_var('action')) {
  * @return void No value is returned.
  */
 function form_save() {
+	csrf_require_post();
+
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
 		set_request_var('id', 0);
@@ -189,7 +191,7 @@ function form_save() {
 							WHERE dtd.data_source_profile_id = ?',
 							array(get_request_var('heartbeat'), get_request_var('id')));
 
-						raise_message('heartbeat_change', __('Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool\'s \'tune\' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>'), MESSAGE_LEVEL_WARN);
+						raise_message_html('heartbeat_change', __('Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool\'s \'tune\' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>'), MESSAGE_LEVEL_WARN);
 					}
 				}
 
@@ -265,6 +267,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -732,7 +736,7 @@ function profile_edit() {
 
         $('#consolidation_function_id').multiselect({
             selectedList: 4,
-            noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
+            noneSelectedText: <?php print cacti_js_encode(__('Select Consolidation Function(s)'));?>,
             header: false,
             groupColumns: true,
             groupColumnsWidth: 90,
@@ -772,7 +776,7 @@ function profile_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Data Source Profile Item');?>',
+						title: <?php print cacti_js_encode(__('Delete Data Source Profile Item'));?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

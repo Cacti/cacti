@@ -94,6 +94,8 @@ switch (get_request_var('action')) {
  */
 
 function form_save() {
+	csrf_require_post();
+
 	// sanitize ids
 	if (isset_request_var('graph_template_id') && !is_numeric(get_nfilter_request_var('graph_template_id'))) {
 		$graph_template_id = 0;
@@ -235,6 +237,8 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -326,9 +330,9 @@ function form_actions() {
 						array($selected_items[$i]));
 
 					if (isset($_SESSION['sess_gt_repairs']) && $_SESSION['sess_gt_repairs'] > 0) {
-						raise_message('gt_repair' . $selected_items[$i], __esc('Sync of Graph Template \'%s\' Resulted in %s Repairs!', $graph_template_name, $_SESSION['sess_gt_repairs']), MESSAGE_LEVEL_WARN);
+						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in %s Repairs!', $graph_template_name, $_SESSION['sess_gt_repairs']), MESSAGE_LEVEL_WARN);
 					} else {
-						raise_message('gt_repair' . $selected_items[$i], __esc('Sync of Graph Template \'%s\' Resulted in no Repairs.', $graph_template_name), MESSAGE_LEVEL_INFO);
+						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in no Repairs.', $graph_template_name), MESSAGE_LEVEL_INFO);
 					}
 				}
 			} elseif (get_request_var('drp_action') == '5') { // resequence graphs with sequences off
@@ -341,9 +345,9 @@ function form_actions() {
 						array($selected_items[$i]));
 
 					if (isset($_SESSION['sess_gt_repairs']) && $_SESSION['sess_gt_repairs'] > 0) {
-						raise_message('gt_repair' . $selected_items[$i], __esc('Sync of Graph Template \'%s\' Resulted in %s Repairs!', $graph_template_name, $_SESSION['sess_gt_repairs']), MESSAGE_LEVEL_WARN);
+						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in %s Repairs!', $graph_template_name, $_SESSION['sess_gt_repairs']), MESSAGE_LEVEL_WARN);
 					} else {
-						raise_message('gt_repair' . $selected_items[$i], __esc('Sync of Graph Template \'%s\' Resulted in no Repairs.', $graph_template_name), MESSAGE_LEVEL_INFO);
+						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in no Repairs.', $graph_template_name), MESSAGE_LEVEL_INFO);
 					}
 				}
 			}

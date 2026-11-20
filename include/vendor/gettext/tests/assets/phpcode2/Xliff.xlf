@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="" trgLang="">
+  <file id=".">
+    <notes>
+      <note id="Content-Transfer-Encoding">8bit</note>
+      <note id="Content-Type">text/plain; charset=UTF-8</note>
+      <note id="Language"></note>
+      <note id="Language-Team"></note>
+      <note id="Last-Translator"></note>
+      <note id="MIME-Version">1.0</note>
+      <note id="Project-Id-Version"></note>
+      <note id="Report-Msgid-Bugs-To"></note>
+    </notes>
+    <unit id="ac7938d40cfc2307e2bf325d28e7884e">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode2/input.php:2</note>
+      </notes>
+      <segment>
+        <source>plain</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="253d8985229130d432750bac7a9da0f2">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode2/input.php:3</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:4</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:5</note>
+      </notes>
+      <segment>
+        <source>DATE \a\t TIME</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="d3502b37925b421bd38a1757b4ee98ac">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode2/input.php:6</note>
+      </notes>
+      <segment>
+        <source>FIELD	FIELD</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="851c7b5f0e527a4d5a2b0bb92c87ce25">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">test</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:7</note>
+      </notes>
+      <segment>
+        <source>text concatenated with 'comments'</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="c219ec7070f0b5a15b2f0096eda97702">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode2/input.php:14</note>
+      </notes>
+      <segment>
+        <source>Stop at the variable</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="962491a09ce43604118343d78d4fdb2a">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode2/input.php:19</note>
+      </notes>
+      <segment>
+        <source>No comments</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="c5b5031f0e780a4445cf20c1936a6d0f">
+      <notes>
+        <note category="context">my-context</note>
+        <note category="extracted-comment">All comments</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:22</note>
+      </notes>
+      <segment>
+        <source>All comments</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="9aede0a4f92fbfe54f57fb84e89110c4">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode2/input.php:26</note>
+      </notes>
+      <segment>
+        <source>i18n Tagged comment</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="100c110f7987813907cbaa230e61aa60">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">i18n Tagged comment inside</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:28</note>
+      </notes>
+      <segment>
+        <source>i18n Tagged comment inside</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="84e03baaa4ad6d25771997ef1d50d951">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode2/input.php:33</note>
+      </notes>
+      <segment>
+        <source>One comment</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="2996faa4cecf574982caf4f302aad46d">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">i18n Tagged comment on the line before</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:36</note>
+      </notes>
+      <segment>
+        <source>i18n tagged %s</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="acbd18db4cc2f85cedef654fccc4a4d8">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">Translators: This is a multi-line comment.</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:42</note>
+      </notes>
+      <segment>
+        <source>foo</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="37b51d194a7513e45b56f6524f2d51f2">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">translators: this should get extracted.</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:44</note>
+      </notes>
+      <segment>
+        <source>bar</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="327b6f07435811239bc47e1544353273">
+      <notes>
+        <note category="context"></note>
+        <note category="extracted-comment">translators: this comment is indented with a tab.</note>
+        <note category="reference">./tests/assets/phpcode2/input.php:51</note>
+      </notes>
+      <segment>
+        <source>foo bar</source>
+        <target></target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

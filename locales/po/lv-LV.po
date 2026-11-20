@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-11 16:07-0700\n"
+"POT-Creation-Date: 2026-11-04 11:45-0800\n"
 "PO-Revision-Date: 2026-05-10 08:18+0000\n"
 "Last-Translator: \"Coool (github.com/Coool)\" <coool@mail.lv>\n"
 "Language-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
@@ -2199,8 +2199,8 @@ msgstr "ROOT - uz objektu orientēta bibliotēku kopa mērogojamu datu analīzei
 msgid "No Tree Rules Found"
 msgstr "Koku noteikumi netika atrasti"
 
-#: cactid.php help.php lib/functions.php poller.php poller_automation.php
-#: poller_boost.php
+#: cactid.php help.php lib/boost.php lib/functions.php poller.php
+#: poller_automation.php poller_boost.php
 msgid "Cacti System Warning"
 msgstr "Cacti sistēmas brīdinājums"
 
@@ -2666,39 +2666,13 @@ msgstr "Sākta datu avota atkļūdošana."
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "Datu avota atkļūdošana saņēma nederīgu datu avota ID."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr "Visi RRDfile labojumi bija veiksmīgi."
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "Viens vai vairāki RRDfile labojumi neizdevās. Kļūdas skatiet sadaļā Kaktusu žurnāls."
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
-msgid "No RRDfile repairs were necessary."
-msgstr "Visi RRDfile labojumi bija veiksmīgi."
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
-msgid "RRDtool Tune Info [ %s ]"
-msgstr "Informācija par RRDtool melodiju"
-
-#: data_sources.php
-#, fuzzy
-#| msgid "Repair Steps [ Run Fix from Command Line ]"
-msgid "Run Fix from Command Line"
-msgstr "Labošanas darbības [Palaidiet labošanu no komandrindas]"
 
 #: data_debug.php
 msgid "Automatic Data Source debug being rerun after repair."
@@ -2935,7 +2909,7 @@ msgstr "Izdot"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "'%s' atribūtam, atrasta '%s' problēma"
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr "Lietojiet ieteiktos labojumus"
 
@@ -3743,6 +3717,20 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr "Nav ievades lauku atlasītajam datu ievades avotam"
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+#, fuzzy
+#| msgid "All RRDfile repairs succeeded."
+msgid "No RRDfile repairs were necessary."
+msgstr "Visi RRDfile labojumi bija veiksmīgi."
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "Datu veidņu atlase [rediģēt: %s]"
@@ -3834,6 +3822,18 @@ msgstr "Jauns"
 #: data_sources.php
 msgid "Data Source Debug"
 msgstr "Datu avota atkļūdošana"
+
+#: data_sources.php
+#, fuzzy, php-format
+#| msgid "RRDtool Tune Info"
+msgid "RRDtool Tune Info [ %s ]"
+msgstr "Informācija par RRDtool melodiju"
+
+#: data_sources.php
+#, fuzzy
+#| msgid "Repair Steps [ Run Fix from Command Line ]"
+msgid "Run Fix from Command Line"
+msgstr "Labošanas darbības [Palaidiet labošanu no komandrindas]"
 
 #: data_sources.php
 msgid "RRDtool Tune Info"
@@ -4180,7 +4180,7 @@ msgstr[2] "1 minūte"
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Grafika informācija, tālummaiņas un atkļūdošanas utilītas"
 
@@ -4188,28 +4188,11 @@ msgstr "Grafika informācija, tālummaiņas un atkļūdošanas utilītas"
 msgid "CSV Export"
 msgstr "CSV izgūšana"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
-msgid "Time View"
-msgstr "Koka skats"
-
-#: lib/html.php
-#, fuzzy
-msgid "Realtime"
-msgstr "Valstība"
-
-#: lib/html.php
-#, fuzzy
-#| msgid "Spikes"
-msgid "Kill Spikes"
-msgstr "Smailes"
-
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
 msgstr "Rediģēt grafika veidni"
 
-#: graph.php lib/html.php
+#: graph.php
 msgid "Click to view just this Graph in Real-time"
 msgstr "Noklikšķiniet, lai skatītu tikai šo grafiku reāllaikā"
 
@@ -4688,13 +4671,13 @@ msgstr "Pievienojiet ierīcei diagrammas veidni"
 msgid "Graph %s not Moved.  Device missing Data Query"
 msgstr ""
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 #| msgid "The new Title of the aggregated Graph."
 msgid "Unable to start the aggregate graph update."
 msgstr "Apkopotās diagrammas jaunais nosaukums."
 
-#: graphs.php lib/api_aggregate.php
+#: graphs.php
 #, fuzzy
 #| msgid "The new Title of the aggregated Graph."
 msgid "Unable to commit the aggregate graph update."
@@ -5631,6 +5614,16 @@ msgstr ""
 #| msgid "Requires: Cacti >= %s"
 msgid "Return to Cacti: %s"
 msgstr "Nepieciešams: Cacti >= %s"
+
+#: include/csrf.php
+#, fuzzy
+#| msgid "Session"
+msgid "Session Expired"
+msgstr "Sesija"
+
+#: include/csrf.php
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
@@ -11221,12 +11214,12 @@ msgid "If the boost output table exceeds this size, in records, an update will t
 msgstr "Ja pastiprināšanas izvades tabula pārsniedz šo izmēru, ierakstos tiks veikta atjaunināšana."
 
 #: include/global_settings.php
-msgid "Maximum Data Source Items Per Pass"
-msgstr "Maksimālais datu avota vienumu skaits vienā caurlaidē"
+msgid "Target Archive Rows Per Range"
+msgstr ""
 
 #: include/global_settings.php
-msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr "Lai optimizētu veiktspēju, pastiprināšanas RRD atjauninātājam ir jāzina, cik datu avota vienumu ir jāizgūst vienā piegājienā. Lūdzu, uzmanieties, lai iestatītu pārāk augstu, jo var tikt apdraudēta grafikas veiktspēja lielu atjauninājumu laikā. Ja atjaunināšanas laikā saskaraties ar lēnu grafiku vai aptauju, samaziniet šo skaitli. Noklusējuma vērtība ir 50 000."
+msgid "The Boost updater assigns complete Local Data IDs to contiguous ranges near this row count. A single Local Data ID is never split, so a range can exceed the target. Lower this value to reduce updater memory and query time. The default value is 50000."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Maximum Argument Length"
@@ -11253,12 +11246,42 @@ msgid "If the boost poller exceeds this runtime, a warning will be placed in the
 msgstr "Ja pastiprināšanas pollers pārsniedz šo izpildlaiku, kaktusu žurnālā tiks ievietots brīdinājums,"
 
 #: include/global_settings.php
-msgid "Enable direct population of poller_output_boost table"
-msgstr "Iespējot tiešo tabulas poller_output_boost populāciju"
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRDs Queued"
+msgstr "Maksimālais atļautais izpildlaiks:"
 
 #: include/global_settings.php
-msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "Iespējo ierakstu tiešu ievietošanu aptaujas rezultātu palielināšanā, kā rezultātā katrā aptaujas ciklā tiek samazināts par 25% ti."
+msgid "Maximum number of RRD destinations retained for automatic Boost retry. Only the latest complete failed update is retained per destination."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Failed RRD Retry Budget"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum queued RRD destinations retried by one scheduled Boost run."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum Allowed Runtime:"
+msgid "Maximum Failed RRD Retries"
+msgstr "Maksimālais atļautais izpildlaiks:"
+
+#: include/global_settings.php
+msgid "Queued RRD updates are explicitly discarded after this many failed automatic attempts."
+msgstr ""
+
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Maximum E-Mail Size"
+msgid "Maximum Failed RRD Age"
+msgstr "Maksimālais e-pasta lielums"
+
+#: include/global_settings.php
+msgid "Days to retain the latest failed RRD update before explicit discard."
+msgstr ""
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -12390,6 +12413,10 @@ msgstr "Jūsu parolei jāsatur vismaz 1 speciālā rakstzīme!"
 msgid "Cacti Login Failure"
 msgstr "Kaktusu pieteikšanās kļūme"
 
+#: lib/boost.php
+msgid "WARNING: Boost queued an RRD write failure for automatic bounded retry."
+msgstr ""
+
 #: lib/boost.php utilities.php
 #, php-format
 msgid "%s MBytes"
@@ -13221,20 +13248,36 @@ msgid "Data Query:"
 msgstr "Datu vaicājums:"
 
 #: lib/html.php
-msgid "CSV Export of Graph Data"
-msgstr "Diagrammas datu izgūšana CSV formātā"
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Grafika opcijas"
 
 #: lib/html.php
-msgid "Time Graph View"
-msgstr "Laika grafika skats"
+#, fuzzy
+#| msgid "Tree View"
+msgid "Time View"
+msgstr "Koka skats"
 
 #: lib/html.php
 msgid "Edit Device"
 msgstr "Rediģēt ierīci"
 
 #: lib/html.php
-msgid "Kill Spikes in Graphs"
-msgstr "Nogalināt tapas grafikos"
+#, fuzzy
+msgid "Realtime"
+msgstr "Valstība"
+
+#: lib/html.php
+#, fuzzy
+msgid "Stop Realtime"
+msgstr "Valstība"
+
+#: lib/html.php
+#, fuzzy
+#| msgid "Spikes"
+msgid "Kill Spikes"
+msgstr "Smailes"
 
 #: lib/html.php lib/installer.php
 msgid "Previous"
@@ -13344,16 +13387,12 @@ msgid "No file selected"
 msgstr "Nav atlasīti faili"
 
 #: lib/html.php
+msgid "Time Graph View"
+msgstr "Laika grafika skats"
+
+#: lib/html.php
 msgid "SpikeKill Results"
 msgstr "SpikeKill rezultāti"
-
-#: lib/html.php
-msgid "Click to view just this Graph in Realtime"
-msgstr "Noklikšķiniet, lai skatītu tikai šo grafiku reāllaikā"
-
-#: lib/html.php
-msgid "Click again to take this Graph out of Realtime"
-msgstr "Noklikšķiniet vēlreiz, lai izņemtu šo grafiku no reāllaika"
 
 #: lib/html.php
 msgid "Standard Mode"
@@ -15761,6 +15800,11 @@ msgstr "Direktorija '%s' spraudnis neietver versijas funkciju '%s()'.  Šai funk
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "Direktorija \"%s\" spraudnis neietver instalēšanas funkciju \"%s()\".  Šai funkcijai ir jāpastāv, lai spraudnis tiktu instalēts."
 
@@ -15861,6 +15905,26 @@ msgstr "KĻŪDA: RRDfails %s nav ierakstāms"
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "Nepieciešamais RRDfile soļa lielums ir '%s', bet novērotais solis ir '%s'"
 
@@ -15878,11 +15942,6 @@ msgstr "Datu avota '%s' RRD datu pulsam jābūt '%s'"
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD minimumam datu avotam “%s” ir jābūt “%s”"
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
-msgstr "Kaktusu definīcijā trūkst DS '%s'"
 
 #: lib/rrd.php
 #, php-format
@@ -15968,17 +16027,17 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP nezināmie datu punkti (0)"
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr "pārdēvēt %s par %s"
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr "%s nav atrasts"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
 msgstr "Datu avotu labošanas ieteikumi"
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
-msgstr "pārdēvēt %s par %s"
 
 #: lib/rrd.php
 #, fuzzy
@@ -19962,8 +20021,51 @@ msgid "Boost On-demand Updating:"
 msgstr "Uzlabojiet atjaunināšanu pēc pieprasījuma:"
 
 #: utilities.php
+#, fuzzy
+#| msgid "Boost Status"
+msgid "Boost Lifecycle Status:"
+msgstr "Pastiprināšanas statuss"
+
+#: utilities.php
 msgid "Running Processes:"
 msgstr "Darbības procesi:"
+
+#: utilities.php
+#, fuzzy
+#| msgid "Queued Boost Records:"
+msgid "Sealed Boost Archives:"
+msgstr "Rindā esošie pastiprināšanas ieraksti:"
+
+#: utilities.php
+#, fuzzy, php-format
+#| msgid "Created: %s"
+msgid "oldest created: %s"
+msgstr "Izveidots: %s"
+
+#: utilities.php
+msgid "Failed RRD Destinations Pending:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Oldest First"
+msgid "Oldest Failed RRD:"
+msgstr "Vecākais pirmais"
+
+#: utilities.php
+msgid "Last Boost Failure Warning:"
+msgstr ""
+
+#: utilities.php
+#, fuzzy
+#| msgid "Automatic Page Refresh"
+msgid "Last Automatic Failure Retry:"
+msgstr "Automātiska lapas atsvaidzināšana"
+
+#: utilities.php
+#, php-format
+msgid "attempted: %d, recovered samples: %d, discarded samples: %d, pending destinations: %d"
+msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
@@ -20293,32 +20395,63 @@ msgstr "Grafiku veidņu skaits, kas izmanto šo VDEF."
 msgid "No VDEFs"
 msgstr "Nav VDEF"
 
-#: lib/html.php
-#, fuzzy
-#| msgid "Graph Options"
-msgid "Graph Actions"
-msgstr "Grafika opcijas"
-
-#: lib/plugins.php:835
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
 msgstr ""
 
-#: links.php
-msgid "Links"
-msgstr "Saites"
+#: include/global_settings.php
+#, fuzzy
+#| msgid "Console Menu"
+msgid "Collapsed Menu"
+msgstr "Konsoles izvēlne"
 
-#: pollers.php
-msgid "Collectors"
-msgstr "Kolekcionāri"
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
 
-#: rrdcleaner.php
-msgid "RRDfiles"
-msgstr "RRD faili"
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
 
-#: user_domains.php
-msgid "Domains"
-msgstr "Domēni"
+#~ msgid "Click to view just this Graph in Realtime"
+#~ msgstr "Noklikšķiniet, lai skatītu tikai šo grafiku reāllaikā"
+
+#~ msgid "Click again to take this Graph out of Realtime"
+#~ msgstr "Noklikšķiniet vēlreiz, lai izņemtu šo grafiku no reāllaika"
+
+#~ msgid "Maximum Data Source Items Per Pass"
+#~ msgstr "Maksimālais datu avota vienumu skaits vienā caurlaidē"
+
+#~ msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
+#~ msgstr "Lai optimizētu veiktspēju, pastiprināšanas RRD atjauninātājam ir jāzina, cik datu avota vienumu ir jāizgūst vienā piegājienā. Lūdzu, uzmanieties, lai iestatītu pārāk augstu, jo var tikt apdraudēta grafikas veiktspēja lielu atjauninājumu laikā. Ja atjaunināšanas laikā saskaraties ar lēnu grafiku vai aptauju, samaziniet šo skaitli. Noklusējuma vērtība ir 50 000."
+
+#~ msgid "Enable direct population of poller_output_boost table"
+#~ msgstr "Iespējot tiešo tabulas poller_output_boost populāciju"
+
+#~ msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
+#~ msgstr "Iespējo ierakstu tiešu ievietošanu aptaujas rezultātu palielināšanā, kā rezultātā katrā aptaujas ciklā tiek samazināts par 25% ti."
+
+#~ msgid "CSV Export of Graph Data"
+#~ msgstr "Diagrammas datu izgūšana CSV formātā"
+
+#~ msgid "Kill Spikes in Graphs"
+#~ msgstr "Nogalināt tapas grafikos"
+
+#, php-format
+#~ msgid "DS '%s' missing in Cacti definition"
+#~ msgstr "Kaktusu definīcijā trūkst DS '%s'"
+
+#~ msgid "Links"
+#~ msgstr "Saites"
+
+#~ msgid "Collectors"
+#~ msgstr "Kolekcionāri"
+
+#~ msgid "RRDfiles"
+#~ msgstr "RRD faili"
+
+#~ msgid "Domains"
+#~ msgstr "Domēni"
 
 #~ msgid "SNMP Rules"
 #~ msgstr "SNMP noteikumi"

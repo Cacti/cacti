@@ -11,7 +11,13 @@
  +-------------------------------------------------------------------------+
 */
 
+namespace BoostMariaDbFixture;
+
+use PDO;
+use PDOException;
+
 $root = dirname(__DIR__, 2);
+require_once $root . '/tests/Helpers/SourceSlice.php';
 
 function boostMariaDbReset() {
 	$host     = getenv('BOOST_DB_HOST') ?: '127.0.0.1';
@@ -38,6 +44,21 @@ function boostMariaDbFetchCellPrepared($sql, $params = array()) {
 	$statement->execute($params);
 
 	return $statement->fetchColumn();
+}
+
+function boostMariaDbFetchAssocPrepared($sql, $params = array()) {
+	$statement = $GLOBALS['boost_mariadb_pdo']->prepare($sql);
+	$statement->execute($params);
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function boostMariaDbValidArchiveTable($table) {
+	return is_string($table) && preg_match('/^poller_output_boost_arch_\d+$/D', $table) === 1;
+}
+
+function boostMariaDbSizeof($value) {
+	return is_countable($value) ? count($value) : 0;
 }
 
 function boostMariaDbTableExists($table) {
@@ -90,42 +111,74 @@ function boostMariaDbLog($message, $output = false, $facility = '') {
 	$GLOBALS['boost_mariadb_logs'][] = $message;
 }
 
+function db_fetch_cell_prepared($sql, $params = array()) {
+	return boostMariaDbFetchCellPrepared($sql, $params);
+}
+
+function db_fetch_assoc_prepared($sql, $params = array()) {
+	return boostMariaDbFetchAssocPrepared($sql, $params);
+}
+
+function boost_is_valid_archive_table($table) {
+	return boostMariaDbValidArchiveTable($table);
+}
+
+function cacti_sizeof($value) {
+	return boostMariaDbSizeof($value);
+}
+
+function db_table_exists($table) {
+	return boostMariaDbTableExists($table);
+}
+
+function db_column_exists($table, $column) {
+	return boostMariaDbColumnExists($table, $column);
+}
+
+function db_index_exists($table, $index) {
+	return boostMariaDbIndexExists($table, $index);
+}
+
+function db_execute($sql) {
+	return boostMariaDbExecute($sql);
+}
+
+function cacti_log($message, $output = false, $facility = '') {
+	boostMariaDbLog($message, $output, $facility);
+}
+
 function boostMariaDbLoadProductionFunctions($root) {
-	if (function_exists('boostMariaDbEnsureProcessTable')) {
+	if (function_exists(__NAMESPACE__ . '\\boost_ensure_process_table')) {
 		return;
 	}
 
-	$source = file_get_contents($root . '/lib/boost.php');
-	$start  = strpos($source, 'function boost_process_table_exists_uncached(');
-	$end    = strpos($source, "\nfunction boost_array_orderby(", $start);
-
-	expect($start)->not->toBeFalse()
-		->and($end)->not->toBeFalse();
-
-	$functions = substr($source, $start, $end - $start);
-	$functions = str_replace(array(
+	foreach(array(
 		'boost_process_table_exists_uncached',
 		'boost_process_column_exists_uncached',
 		'boost_ensure_process_table',
-		'db_fetch_cell_prepared',
-		'db_table_exists',
-		'db_column_exists',
-		'db_index_exists',
-		'db_execute',
-		'cacti_log',
-	), array(
-		'boostMariaDbProcessTableExistsUncached',
-		'boostMariaDbProcessColumnExistsUncached',
-		'boostMariaDbEnsureProcessTable',
-		'boostMariaDbFetchCellPrepared',
-		'boostMariaDbTableExists',
-		'boostMariaDbColumnExists',
-		'boostMariaDbIndexExists',
-		'boostMariaDbExecute',
-		'boostMariaDbLog',
-	), $functions);
+		'boost_dynamic_table_exists_uncached',
+		'boost_fetch_archive_range',
+	) as $function) {
+		$file = $function === 'boost_fetch_archive_range' ?
+			$root . '/poller_boost.php' : $root . '/lib/boost.php';
+		\cacti_fixture_source_function($file, $function, __NAMESPACE__);
+	}
+}
 
-	eval($functions);
+function boostMariaDbProcessColumnExistsUncached($column) {
+	return boost_process_column_exists_uncached($column);
+}
+
+function boostMariaDbEnsureProcessTable($repair_key = false) {
+	return boost_ensure_process_table($repair_key);
+}
+
+function boostMariaDbDynamicTableExistsUncached($table) {
+	return boost_dynamic_table_exists_uncached($table);
+}
+
+function boostMariaDbFetchArchiveRange($table, $range_start, $range_end) {
+	return boost_fetch_archive_range($table, $range_start, $range_end);
 }
 
 beforeEach(function () use ($root) {
@@ -133,96 +186,155 @@ beforeEach(function () use ($root) {
 	boostMariaDbReset();
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_processes');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_local_data_ids');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_failures');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_100');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS data_local');
 });
 
 afterEach(function () {
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_processes');
 	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_local_data_ids');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_failures');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS poller_output_boost_arch_100');
+	$GLOBALS['boost_mariadb_pdo']->exec('DROP TABLE IF EXISTS data_local');
 });
 
-test('run-scoped Boost cursor table executes on MariaDB and advances monotonically', function () {
-	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost_local_data_ids (
-		run_id char(32) NOT NULL,
-		local_data_id int unsigned NOT NULL default 0,
-		process_handler int unsigned NOT NULL default 0,
-		cursor_time timestamp NULL default NULL,
-		cursor_rrd_name varchar(19) NOT NULL default '',
-		PRIMARY KEY (run_id, local_data_id),
-		INDEX process_handler(run_id, process_handler)) ENGINE=MEMORY");
-	$run_id = str_repeat('a', 32);
-	$insert = $GLOBALS['boost_mariadb_pdo']->prepare('INSERT INTO poller_output_boost_local_data_ids
-		(run_id, local_data_id, process_handler) VALUES (?, ?, ?)');
-	$insert->execute(array($run_id, 42, 3));
-	$update = $GLOBALS['boost_mariadb_pdo']->prepare('UPDATE poller_output_boost_local_data_ids
-		SET cursor_time = ?, cursor_rrd_name = ?
-		WHERE run_id = ? AND local_data_id = ? AND process_handler = ?');
-	$update->execute(array('2026-09-05 12:00:00', 'traffic_out', $run_id, 42, 3));
-	$row = $GLOBALS['boost_mariadb_pdo']->query('SELECT run_id, local_data_id, process_handler,
-		cursor_time, cursor_rrd_name FROM poller_output_boost_local_data_ids')->fetch(PDO::FETCH_ASSOC);
-
-	expect($row['run_id'])->toBe($run_id)
-		->and((int) $row['local_data_id'])->toBe(42)
-		->and((int) $row['process_handler'])->toBe(3)
-		->and($row['cursor_time'])->toBe('2026-09-05 12:00:00')
-		->and($row['cursor_rrd_name'])->toBe('traffic_out');
-});
-
-test('run-scoped cursor predicate pages archive rows in primary-key order', function () {
-	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost_local_data_ids (
-		run_id char(32) NOT NULL,
-		local_data_id int unsigned NOT NULL default 0,
-		process_handler int unsigned NOT NULL default 0,
-		cursor_time timestamp NULL default NULL,
-		cursor_rrd_name varchar(19) NOT NULL default '',
-		PRIMARY KEY (run_id, local_data_id),
-		INDEX process_handler(run_id, process_handler)) ENGINE=MEMORY");
-	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TEMPORARY TABLE boost_archive (
+test('one archive range uses one ordered primary-key read without a limit', function () {
+	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE poller_output_boost_arch_100 (
 		local_data_id int unsigned NOT NULL,
 		rrd_name varchar(19) NOT NULL,
 		time timestamp NOT NULL,
 		output varchar(512) NOT NULL,
-		PRIMARY KEY (local_data_id, time, rrd_name))');
-	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TEMPORARY TABLE data_local (
+		PRIMARY KEY (local_data_id, time, rrd_name)) ENGINE=InnoDB');
+	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE data_local (
 		id int unsigned NOT NULL PRIMARY KEY,
-		data_template_id int unsigned NOT NULL)');
-	$run_id = str_repeat('b', 32);
-	$statement = $GLOBALS['boost_mariadb_pdo']->prepare('INSERT INTO poller_output_boost_local_data_ids
-		(run_id, local_data_id, process_handler) VALUES (?, 42, 3)');
-	$statement->execute(array($run_id));
-	$GLOBALS['boost_mariadb_pdo']->exec('INSERT INTO data_local VALUES (42, 7)');
-	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO boost_archive VALUES
+		data_template_id int unsigned NOT NULL) ENGINE=InnoDB');
+	$GLOBALS['boost_mariadb_pdo']->exec('INSERT INTO data_local VALUES (42, 7), (43, 7)');
+	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost_arch_100 VALUES
 		(42, 'a', '2026-09-05 12:00:00', '1'),
 		(42, 'b', '2026-09-05 12:00:00', '2'),
 		(42, 'a', '2026-09-05 12:01:00', '3'),
-		(42, 'b', '2026-09-05 12:01:00', '4')");
-	$query = 'SELECT * FROM (
-		SELECT boost_archive.local_data_id, dl.data_template_id,
-			UNIX_TIMESTAMP(boost_archive.time) AS timestamp,
-			boost_archive.time AS sample_time, boost_archive.rrd_name, boost_archive.output
-		FROM boost_archive
-		INNER JOIN poller_output_boost_local_data_ids AS bpt
-		ON boost_archive.local_data_id = bpt.local_data_id
-		INNER JOIN data_local AS dl ON boost_archive.local_data_id = dl.id
-		WHERE bpt.run_id = ? AND bpt.process_handler = ?
-		AND (bpt.cursor_time IS NULL OR boost_archive.time > bpt.cursor_time
-			OR (boost_archive.time = bpt.cursor_time AND boost_archive.rrd_name > bpt.cursor_rrd_name))
-		) AS page ORDER BY local_data_id, sample_time, rrd_name LIMIT 3';
-	$statement = $GLOBALS['boost_mariadb_pdo']->prepare($query);
-	$statement->execute(array($run_id, 3));
-	$first_page = $statement->fetchAll(PDO::FETCH_ASSOC);
+		(43, 'a', '2026-09-05 12:00:00', '4'),
+		(44, 'a', '2026-09-05 12:00:00', '5')");
+	$range = boostMariaDbFetchArchiveRange(
+		'poller_output_boost_arch_100',
+		42,
+		44
+	);
 
-	expect($first_page)->toHaveCount(3)
-		->and(array_column($first_page, 'rrd_name'))->toBe(array('a', 'b', 'a'));
+	expect($range)->toHaveCount(5)
+		->and(array_map('intval', array_column($range, 'local_data_id')))->toBe(array(42, 42, 42, 43, 44))
+		->and(array_column($range, 'rrd_name'))->toBe(array('a', 'b', 'a', 'a', 'a'))
+		->and($range[4]['data_template_id'])->toBeNull()
+		->and(boostMariaDbFetchArchiveRange('invalid_archive', 42, 44))->toBeFalse();
+});
 
-	$statement = $GLOBALS['boost_mariadb_pdo']->prepare('UPDATE poller_output_boost_local_data_ids
-		SET cursor_time = ?, cursor_rrd_name = ? WHERE run_id = ? AND local_data_id = 42');
-	$statement->execute(array('2026-09-05 12:00:00', 'b', $run_id));
-	$statement = $GLOBALS['boost_mariadb_pdo']->prepare($query);
-	$statement->execute(array($run_id, 3));
-	$second_page = $statement->fetchAll(PDO::FETCH_ASSOC);
+test('a newly created archive bypasses a cached negative existence check', function () {
+	expect(boostMariaDbTableExists('poller_output_boost_arch_100'))->toBeFalse();
 
-	expect($second_page)->toHaveCount(2)
-		->and(array_column($second_page, 'rrd_name'))->toBe(array('a', 'b'));
+	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE poller_output_boost_arch_100 (
+		local_data_id int unsigned NOT NULL,
+		rrd_name varchar(19) NOT NULL,
+		time timestamp NOT NULL,
+		output varchar(512) NOT NULL,
+		PRIMARY KEY (local_data_id, time, rrd_name)) ENGINE=InnoDB');
+
+	expect(boostMariaDbTableExists('poller_output_boost_arch_100'))->toBeFalse()
+		->and(boostMariaDbDynamicTableExistsUncached('poller_output_boost_arch_100'))->toBeTrue()
+		->and(boostMariaDbDynamicTableExistsUncached('poller_output_boost_100'))->toBeFalse()
+		->and(boostMariaDbDynamicTableExistsUncached('poller_output_boost_arch_100;DROP TABLE settings'))->toBeFalse();
+});
+
+test('row-balanced staging assigns every source once within one sealed archive', function () {
+	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE poller_output_boost_arch_100 (
+		local_data_id int unsigned NOT NULL,
+		rrd_name varchar(19) NOT NULL,
+		time timestamp NOT NULL,
+		output varchar(512) NOT NULL,
+		PRIMARY KEY (local_data_id, time, rrd_name)) ENGINE=InnoDB');
+	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost_arch_100 VALUES
+		(1, 'a', '2026-09-05 12:00:00', '1'),
+		(1, 'a', '2026-09-05 12:01:00', '2'),
+		(1, 'a', '2026-09-05 12:02:00', '3'),
+		(2, 'a', '2026-09-05 12:00:00', '4'),
+		(3, 'a', '2026-09-05 12:00:00', '5'),
+		(4, 'a', '2026-09-05 12:00:00', '6')");
+	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost_local_data_ids (
+		run_id char(32) NOT NULL,
+		local_data_id int unsigned NOT NULL,
+		process_handler int unsigned NOT NULL,
+		range_handler bigint unsigned NOT NULL,
+		archive_rows bigint unsigned NOT NULL,
+		PRIMARY KEY (run_id, local_data_id),
+		INDEX process_handler(run_id, process_handler, range_handler, local_data_id)) ENGINE=InnoDB");
+	$run_id = str_repeat('c', 32);
+	$sql = 'INSERT INTO poller_output_boost_local_data_ids
+		(run_id, local_data_id, process_handler, range_handler, archive_rows)
+		SELECT ?, local_data_id,
+			LEAST(?, FLOOR((cumulative_rows - source_rows) * ? / total_rows) + 1),
+			FLOOR((cumulative_rows - source_rows) / ?) + 1, source_rows
+		FROM (SELECT local_data_id, source_rows,
+			SUM(source_rows) OVER (ORDER BY local_data_id ROWS UNBOUNDED PRECEDING) AS cumulative_rows,
+			SUM(source_rows) OVER () AS total_rows
+			FROM (SELECT local_data_id, COUNT(*) AS source_rows
+				FROM poller_output_boost_arch_100 GROUP BY local_data_id) AS source_counts) AS assignments';
+	$statement = $GLOBALS['boost_mariadb_pdo']->prepare($sql);
+	$statement->execute(array($run_id, 2, 2, 3));
+	$rows = $GLOBALS['boost_mariadb_pdo']->query('SELECT local_data_id, process_handler, range_handler, archive_rows
+		FROM poller_output_boost_local_data_ids ORDER BY local_data_id')->fetchAll(PDO::FETCH_ASSOC);
+
+	expect($rows)->toHaveCount(4)
+		->and(array_sum(array_map(fn($row) => (int) $row['archive_rows'], $rows)))->toBe(6)
+		->and(array_column($rows, 'process_handler'))->toBe(array(1, 2, 2, 2))
+		->and(array_column($rows, 'range_handler'))->toBe(array(1, 2, 2, 2));
+});
+
+test('archive lifecycle locks exclude on-demand ownership and release cleanly', function () {
+	$pdo1 = $GLOBALS['boost_mariadb_pdo'];
+	$host = getenv('BOOST_DB_HOST') ?: '127.0.0.1';
+	$port = getenv('BOOST_DB_PORT') ?: '3306';
+	$name = getenv('BOOST_DB_NAME') ?: 'cacti_boost_contract';
+	$user = getenv('BOOST_DB_USER') ?: 'root';
+	$pass = getenv('BOOST_DB_PASSWORD') ?: '';
+	$pdo2 = new PDO("mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4", $user, $pass,
+		array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+
+	expect((int) $pdo1->query("SELECT GET_LOCK('boost.archive.lifecycle', 0)")->fetchColumn())->toBe(1)
+		->and((int) $pdo2->query("SELECT GET_LOCK('boost.archive.lifecycle', 0)")->fetchColumn())->toBe(0)
+		->and((int) $pdo1->query("SELECT RELEASE_LOCK('boost.archive.lifecycle')")->fetchColumn())->toBe(1)
+		->and((int) $pdo2->query("SELECT GET_LOCK('boost.archive.lifecycle', 0)")->fetchColumn())->toBe(1)
+		->and((int) $pdo2->query("SELECT RELEASE_LOCK('boost.archive.lifecycle')")->fetchColumn())->toBe(1);
+});
+
+test('bounded failure queue DDL and parameterized retry backoff execute on MariaDB', function () {
+	$GLOBALS['boost_mariadb_pdo']->exec("CREATE TABLE poller_output_boost_failures (
+		local_data_id int unsigned NOT NULL,
+		generation char(32) NOT NULL default '',
+		rrd_path varchar(255) NOT NULL default '',
+		rrd_template text NOT NULL,
+		update_values mediumtext NOT NULL,
+		latest_sample bigint unsigned NOT NULL default 0,
+		sample_count int unsigned NOT NULL default 0,
+		retry_count smallint unsigned NOT NULL default 0,
+		first_failed timestamp NOT NULL default CURRENT_TIMESTAMP,
+		last_failed timestamp NOT NULL default CURRENT_TIMESTAMP,
+		next_retry timestamp NOT NULL default CURRENT_TIMESTAMP,
+		last_error varchar(512) NOT NULL default '',
+		PRIMARY KEY (local_data_id), KEY next_retry (next_retry)) ENGINE=InnoDB");
+	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost_failures
+		(local_data_id, generation, rrd_template, update_values)
+		VALUES (7, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'value', '1:2')");
+	$statement = $GLOBALS['boost_mariadb_pdo']->prepare('UPDATE poller_output_boost_failures
+		SET retry_count = ?, next_retry = DATE_ADD(NOW(), INTERVAL ? SECOND), last_error = ?
+		WHERE local_data_id = ? AND generation = ?');
+	$statement->execute(array(1, 60, 'transient', 7, str_repeat('a', 32)));
+	$row = $GLOBALS['boost_mariadb_pdo']->query('SELECT retry_count,
+		TIMESTAMPDIFF(SECOND, NOW(), next_retry) AS delay_seconds
+		FROM poller_output_boost_failures WHERE local_data_id = 7')->fetch(PDO::FETCH_ASSOC);
+
+	expect((int) $row['retry_count'])->toBe(1)
+		->and((int) $row['delay_seconds'])->toBeGreaterThanOrEqual(58)
+		->and((int) $row['delay_seconds'])->toBeLessThanOrEqual(60);
 });
 
 test('runtime repair executes valid process-table DDL on MariaDB', function () {

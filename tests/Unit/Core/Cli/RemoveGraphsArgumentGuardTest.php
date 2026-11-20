@@ -135,7 +135,7 @@ test('reapply names builds balanced prepared query fragments', function () {
 });
 
 test('reapply names preserves SQL parameter ordering', function () {
-	list($where, $params) = cacti_reapply_names_where('7,9', 'edge');
+	[$where, $params] = cacti_reapply_names_where('7,9', 'edge');
 
 	expect($where)->toContain('title_cache LIKE ?')
 		->and($where)->toContain('host_id IN (?,?)')

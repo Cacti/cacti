@@ -57,13 +57,13 @@ if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
 	$sql_where = ' AND dspr.id=' . get_request_var('rra_id');
 }
 
-$exists = db_fetch_cell_prepared('SELECT local_graph_id
+$local_graph_id = db_fetch_cell_prepared('SELECT local_graph_id
 	FROM graph_templates_graph
 	WHERE local_graph_id = ?',
 	array(get_request_var('local_graph_id')));
 
 /* make sure the graph requested exists (sanity) */
-if (!$exists) {
+if (!$local_graph_id) {
 	print '<strong><font class="txtErrorTextBox">' . __('GRAPH DOES NOT EXIST') . '</font></strong>';
 	bottom_footer();
 	exit;
@@ -162,14 +162,16 @@ case 'view':
 			?>
 			<tr class='tableRowGraph'>
 				<td class='center'>
-					<table role='presentation' class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
+					<table role='presentation' class='graphWrapperOuter graphDrillTable' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 						<tr>
 							<td>
 								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							</td>
 
-							<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print get_request_var('local_graph_id');?>' style='vertical-align:top;' class='graphDrillDown noprint'>
-								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><i class='drillDown fa fa-cog actionCog' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></i></a><br>
+							<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print html_escape($graph['local_graph_id']);?>' class='graphDrillDown <?php print graph_drilldown_display_class();?> noprint'>
+								<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions');?>'><i class='fa fa-bars'></i></span>
+								<div class='iconWrapper'>
+								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><i class='drillDown fa fa-cog actionCog' title='<?php print __esc('Details');?>'></i></a><br>
 								<a id='graph_<?php print $rra['id'];?>_csv' class='iconLink csv' href='<?php print html_escape($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><i class='drillDown fa fa-file-csv fileCSV' title='<?php print __esc('CSV Export');?>'></i></a><br>
 
 								<?php
@@ -179,7 +181,7 @@ case 'view':
 								}
 
 								if (read_config_option('realtime_enabled') == 'on' || is_realm_allowed(25)) {
-									print "<a class='iconLink' href='#' onclick=\"window.open('".$config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br/>\n";
+									print "<a class='iconLink' href='#' onclick=\"window.open('".$config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown fa fa-chart-area realTime' title='" . __esc('Realtime') . "'></i></a><br/>\n";
 								}
 
 								print ($aggregate_url != '' ? $aggregate_url:'');
@@ -187,6 +189,7 @@ case 'view':
 								api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' => $rra['id'], 'view_type' => get_request_var('view_type')));
 
 								?>
+								</div>
 							</td><?php } ?>
 						</tr>
 						<tr>
@@ -425,13 +428,14 @@ case 'zoom':
 	</tr>
 	<tr class='tableRowGraph'>
 		<td class='center'>
-			<table role='presentation' class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
+			<table role='presentation' class='graphWrapperOuter graphDrillTable' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 				<tr>
 					<td class='center'>
 						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
-                            <?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 					</td>
-					<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' style='vertical-align:top;' class='graphDrillDown noprint'>
+					<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print html_escape($graph['local_graph_id']);?>' class='graphDrillDown <?php print graph_drilldown_display_class();?> noprint'>
+						<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='<?php print __esc('Graph Actions');?>'><i class='fa fa-bars'></i></span>
+						<div class='iconWrapper'>
 						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink properties'>
 							<i class='drillDown fa fa-wrench viewSources' title='<?php print __esc('Graph Source/Properties');?>'></i>
 						</a>
@@ -448,11 +452,13 @@ case 'zoom':
 
 						api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' =>  get_request_var('rra_id'), 'view_type' => get_request_var('view_type')));
 						?>
+						</div>
 					</td><?php } ?>
 				</tr>
 				<tr>
 				</tr>
 			</table>
+			<?php print (read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . html_escape($graph['title_cache']) . '</div>' : '');?>
 		</td>
 	</tr>
 	<tr>
@@ -619,7 +625,8 @@ case 'properties':
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
 	}
 
-	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+	/* RRDtool's error text repeats graph item text, so it is returned and escaped, not printed */
+	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_RETURN_STDERR;
 	$graph_data_array['print_source'] = 1;
 
 	print "<table class='center' width='100%' class='cactiTable'<tr><td>\n";
@@ -633,7 +640,7 @@ case 'properties':
 	unset($graph_data_array['print_source']);
 	print "<span class='textInfo'>" . __('RRDtool Says:') . "</span><br>";
 	if ($config['poller_id'] == 1) {
-		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+		print html_escape((string) @rrdtool_function_graph($local_graph_id, get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']));
 	} else {
 		print __esc('Not Checked');
 	}

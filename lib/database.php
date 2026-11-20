@@ -83,17 +83,17 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$flags[PDO::ATTR_PERSISTENT] = true;
 		}
 
-		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
+		$flags[class_exists('Pdo\\Mysql') ? \Pdo\Mysql::ATTR_FOUND_ROWS : PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
 			if ($db_ssl_ca != '') {
 				if (file_exists($db_ssl_ca)) {
-					$flags[PDO::MYSQL_ATTR_SSL_CA] = $db_ssl_ca;
+					$flags[class_exists('Pdo\\Mysql') ? \Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA] = $db_ssl_ca;
 				}
 			}
 			if ($db_ssl_key != '' && $db_ssl_cert != '') {
 				if (file_exists($db_ssl_key) && file_exists($db_ssl_cert)) {
-					$flags[PDO::MYSQL_ATTR_SSL_KEY]  = $db_ssl_key;
-					$flags[PDO::MYSQL_ATTR_SSL_CERT] = $db_ssl_cert;
+					$flags[class_exists('Pdo\\Mysql') ? \Pdo\Mysql::ATTR_SSL_KEY : PDO::MYSQL_ATTR_SSL_KEY]  = $db_ssl_key;
+					$flags[class_exists('Pdo\\Mysql') ? \Pdo\Mysql::ATTR_SSL_CERT : PDO::MYSQL_ATTR_SSL_CERT] = $db_ssl_cert;
 				}
 			}
 		}
@@ -128,7 +128,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
-			$object_hash = spl_object_hash($cnn_id);
+			$object_hash = cacti_object_hash($cnn_id);
 
 			$database_details[$object_hash] = array(
 				'database_conn'     => $cnn_id,
@@ -257,7 +257,7 @@ function db_check_reconnect(&$db_conn = false, $log = true) {
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach($database_details as $det) {
-			if (spl_object_hash($det['database_conn']) == spl_object_hash($db_conn)) {
+			if (cacti_object_hash($det['database_conn']) == cacti_object_hash($db_conn)) {
 				$database_hostname = $det['database_hostname'];
 				$database_username = $det['database_username'];
 				$database_password = $det['database_password'];
@@ -422,7 +422,7 @@ function db_close(&$db_conn = false) {
 		}
 	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
 		$id   = spl_object_id($db_conn);
-		$hash = spl_object_hash($db_conn);
+		$hash = cacti_object_hash($db_conn);
 		if (isset($database_details[$hash])) {
 			$det = $database_details[$hash];
 
@@ -466,9 +466,11 @@ function db_execute($sql, $log = true, $db_conn = false) {
  * @param string $return_func To Be Completed.
  * @param array $return_params To Be Completed.
  *
+ * @param bool $redact Omit values echoed in database error details.
+ *
  * @return bool '1' for success, false for failed.
  */
-function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
+function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array(), $redact = false) {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
 
 	$database_total_queries++;
@@ -499,7 +501,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		}
 	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
 		$id   = spl_object_id($db_conn);
-		$hash = spl_object_hash($db_conn);
+		$hash = cacti_object_hash($db_conn);
 
 		if (!isset($error_logged[$id])) {
 			if (isset($database_details[$hash])) {
@@ -522,7 +524,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 	$errors = 0;
 
-	$affected_rows[spl_object_hash($db_conn)] = 0;
+	$affected_rows[cacti_object_hash($db_conn)] = 0;
 
 	while (true) {
 		$query = $db_conn->prepare($sql);
@@ -567,8 +569,13 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			}
 		}
 
+		// Database errors can echo bound values; installer diagnostics omit them.
+		if ($redact && $en != '') {
+			$errorinfo[2] = 'Database operation failed (error details omitted)';
+		}
+
 		if ($en == '') {
-			$affected_rows[spl_object_hash($db_conn)] = $query->rowCount();
+			$affected_rows[cacti_object_hash($db_conn)] = $query->rowCount();
 
 			$return_value = $default_value;
 			if (function_exists($return_func)) {
@@ -902,7 +909,7 @@ function db_affected_rows($db_conn = false) {
 		}
 	}
 
-	return $affected_rows[spl_object_hash($db_conn)];
+	return $affected_rows[cacti_object_hash($db_conn)];
 }
 
 /**

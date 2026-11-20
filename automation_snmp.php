@@ -52,6 +52,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_movedown':
+		csrf_require_post();
 		get_filter_request_var('id');
 
 		automation_snmp_item_movedown();
@@ -59,6 +60,7 @@ switch (get_request_var('action')) {
 		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_moveup':
+		csrf_require_post();
 		get_filter_request_var('id');
 
 		automation_snmp_item_moveup();
@@ -70,6 +72,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_remove':
+		csrf_require_post();
 		get_filter_request_var('id');
 
 		automation_snmp_item_remove();
@@ -105,6 +108,8 @@ switch (get_request_var('action')) {
  * @return void No value is returned.
  */
 function form_automation_snmp_save() {
+	csrf_require_post();
+
 	if (isset_request_var('save_component_automation_snmp')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -188,6 +193,8 @@ function form_automation_snmp_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
@@ -402,7 +409,7 @@ function automation_snmp_item_remove_confirm() {
         <td class='topBoxAlt'>
             <p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
             <p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
-            <?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
+            <?php print __('SNMP Version: <b>%s</b>', html_escape($item['snmp_version']));?><br>
 			<?php print __('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? html_escape($item['snmp_community']):html_escape($item['snmp_username'])));?></p>
         </td>
     </tr>
@@ -634,7 +641,7 @@ function automation_snmp_edit() {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true, true);
 				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item#%d', $i) . '</a></td>';
-				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
+				$form_data .= '<td>' . 	html_escape($item['snmp_version']) . '</td>';
 				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : html_escape($item['snmp_community'])) . '</td>';
 				$form_data .= '<td class="right">' . 	$item['snmp_port'] . '</td>';
 				$form_data .= '<td class="right">' . 	$item['snmp_timeout'] . '</td>';
@@ -642,9 +649,9 @@ function automation_snmp_edit() {
 				$form_data .= '<td class="right">' . 	$item['max_oids'] . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_username']) : __('N/A')) . '</td>';
 				$form_data .= '<td>' . 	(($item['snmp_version'] == 3 AND $item['snmp_password'] !== '') ? '*********' : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_auth_protocol'] : __('N/A')) . '</td>';
+				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_auth_protocol']) : __('N/A')) . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? '*********' : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : __('N/A')) . '</td>';
+				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_priv_protocol']) : __('N/A')) . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_context']) : __('N/A')) . '</td>';
 				$form_data .= '<td class="nowrap right">';
 

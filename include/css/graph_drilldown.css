@@ -132,3 +132,36 @@
 	text-align: center;
 	vertical-align: middle;
 }
+
+/* Keep the direct actions in their own table cell, outside the graph image. */
+.graphDrillDownAlways {
+	position: static;
+	z-index: auto;
+	display: table-cell;
+	vertical-align: top;
+	width: 24px;
+	min-width: 24px;
+	padding: 3px;
+}
+
+.graphDrillDownAlways .graphDrillDownMenu {
+	display: none;
+}
+
+.graphDrillDownAlways .iconWrapper {
+	display: block;
+	visibility: visible;
+	opacity: 1;
+}
+
+.graphDrillDownAlways .iconLink {
+	display: inline-block;
+	width: 24px;
+	line-height: 24px;
+	text-align: center;
+}
+
+.graphDrillDownAlways .iconLink:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 1px;
+}

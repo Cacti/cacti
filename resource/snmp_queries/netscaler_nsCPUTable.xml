@@ -1,0 +1,23 @@
+<nsCPUTable>
+  <name>Get NetScaler CPU info</name>
+  <description>Queries a NetScaler for a list of CPU (nsCPUTable)</description>
+  <oid_index>.1.3.6.1.4.1.5951.4.1.1.41.6.1.1</oid_index>
+  <oid_index_parse>OID/REGEXP:^.*\.5951\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.(.*)</oid_index_parse>
+
+  <fields>
+    <nsCPUname>
+      <name>CPU Name</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>input</direction>
+      <oid>.1.3.6.1.4.1.5951.4.1.1.41.6.1.1</oid>
+    </nsCPUname>
+    <nsCPUusage>
+      <name>CPU Usage</name>
+      <method>walk</method>
+      <source>value</source>
+      <direction>output</direction>
+    <oid>.1.3.6.1.4.1.5951.4.1.1.41.6.1.2</oid>
+    </nsCPUusage>
+  </fields>
+</nsCPUTable>
