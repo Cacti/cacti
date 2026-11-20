@@ -1518,6 +1518,10 @@ function api_plugin_get_available_file_contents(string $plugin, string $tag, str
 
 			$Parsedown = new Parsedown();
 
+			// The text comes from a repository the administrator configured, not
+			// from Cacti, so drop raw HTML and unsafe link schemes from it.
+			$Parsedown->setSafeMode(true);
+
 			print $Parsedown->text($contents);
 
 			return true;

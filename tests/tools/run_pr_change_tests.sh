@@ -77,6 +77,11 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+run_probe ConfiguredCommands.php configured-commands
+run_probe ConfiguredCommands.php deprecated-rebuild deprecated
+run_probe DisplayAndValidation.php display-validation
+run_probe DisplayAndValidation.php input-method-save save
+
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
