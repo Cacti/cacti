@@ -255,6 +255,12 @@ function upgrade_database() : void {
 
 	$pistart = microtime(true);
 
+	$php_binary = (string) read_config_option('path_php_binary');
+
+	if ($php_binary == '') {
+		$php_binary = PHP_BINARY;
+	}
+
 	// Upgrade plugins now
 	$plugins = glob(CACTI_PATH_PLUGINS . '/*', GLOB_ONLYDIR);
 
@@ -333,7 +339,9 @@ function upgrade_database() : void {
 							$return_var = 0;
 							$output     = [];
 
-							exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old,
+							exec(cacti_escapeshellarg($php_binary) . ' ' .
+								cacti_escapeshellarg(CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php') .
+								' --type=large --force-ver=' . cacti_escapeshellarg((string) $old),
 								$output,
 								$return_var);
 
