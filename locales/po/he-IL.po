@@ -20500,6 +20500,10 @@ msgstr "תפריט מסוף"
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #~ msgid "Click to view just this Graph in Realtime"
 #~ msgstr "לחץ כדי להציג רק תרשים זה בזמן אמת"
 

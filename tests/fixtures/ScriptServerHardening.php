@@ -108,7 +108,7 @@ function db_table_exists($table) {
 }
 
 function read_config_option($name) {
-	return ['script_timeout' => 25, 'ping_timeout' => 400, 'snmp_retries' => 1, 'spine_log_level' => 2][$name] ?? '';
+	return ['script_timeout' => 25, 'ping_timeout' => 400, 'snmp_retries' => 2, 'spine_log_level' => 2][$name] ?? '';
 }
 
 function exec_poll($command) {
@@ -124,10 +124,16 @@ function sys_get_temp_dir() {
 }
 
 function cacti_snmp_get(...$arguments) {
+	/* $arguments[12] is the retries parameter of the real cacti_snmp_get() */
+	$GLOBALS['get_retries'][] = $arguments[12] ?? null;
+
 	return (string) (1000 + 100 * $GLOBALS['poll']);
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, ...$arguments) {
+	/* $arguments[9] is the retries parameter of the real cacti_snmp_walk() */
+	$GLOBALS['walk_retries'][] = $arguments[9] ?? null;
+
 	if ($oid === '.1.3.6.1.4.1.2021.13.15.1.1.2') {
 		return [
 			['oid' => '.1.3.6.1.4.1.2021.13.15.1.1.2.1', 'value' => 'sda'],
@@ -140,11 +146,19 @@ function cacti_snmp_walk($hostname, $community, $oid, ...$arguments) {
 		return $GLOBALS['cpu_loads'];
 	}
 
-	/* disk counters: index 3 reports a value that is not an unsigned integer */
-	return [
+	/* disk counters: index 2, a partition the disk scripts skip, reports a
+	 * value that is not an unsigned integer */
+	$counters = [
 		['oid' => $oid . '.1', 'value' => (string) (5000 + 10 * $GLOBALS['poll'])],
-		['oid' => $oid . '.3', 'value' => $GLOBALS['poll'] > 1 ? '12abc' : '40'],
+		['oid' => $oid . '.2', 'value' => $GLOBALS['poll'] > 1 ? '12abc' : '40'],
 	];
+
+	/* a whole disk that appears between polls, walked before index 1 */
+	if (!empty($GLOBALS['new_disk'])) {
+		array_unshift($counters, ['oid' => $oid . '.3', 'value' => '700']);
+	}
+
+	return $counters;
 }
 
 class Net_Ping {
@@ -188,6 +202,13 @@ cacti_fixture_source_function($root . '/scripts/ss_count_oids.php', 'ss_count_oi
 cacti_fixture_source_function($root . '/scripts/ss_sql.php', 'ss_sql', __NAMESPACE__);
 cacti_fixture_source_function($root . '/scripts/ss_multicpu_avg.php', 'ss_multicpu_avg', __NAMESPACE__);
 cacti_fixture_source_function($root . '/scripts/ss_webseer.php', 'ss_webseer', __NAMESPACE__);
+cacti_fixture_source_function($root . '/scripts/ss_fortigate_ips.php', 'ss_fortigate_ips', __NAMESPACE__);
+cacti_fixture_source_function($root . '/scripts/ss_fortigate_ipsec.php', 'ss_fortigate_ipsec', __NAMESPACE__);
+cacti_fixture_source_function($root . '/lib/database.php', 'db_is_safe_identifier', __NAMESPACE__);
+
+foreach (['interfaces', 'queues', 'qusers', 'qtrees'] as $table) {
+	cacti_fixture_source_function($root . '/scripts/ss_mikrotik_' . $table . '.php', 'ss_mikrotik_' . $table . '_getvalue', __NAMESPACE__);
+}
 cacti_fixture_source_function($root . '/scripts/ss_net_snmp_disk_' . $mode . '.php', 'ss_net_snmp_disk_' . $mode, __NAMESPACE__);
 
 function memory_stream($contents) {
@@ -330,7 +351,28 @@ check('ss_sql without status', ss_sql() === 'U');
 $cpu_loads = [['value' => '10'], ['value' => 'n/a'], ['value' => '30']];
 check('ss_multicpu_avg skips a non-numeric load', ss_multicpu_avg(1) === "load:20\n");
 $cpu_loads = [['value' => 'n/a']];
-check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:0\n");
+check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:U\n");
+
+// FortiGate scripts: unknown values for a bad device id, the SNMP retries setting for the polls
+// (the 1.2.x host table has no snmp_retries column).
+check('ss_fortigate_ips with no device id', ss_fortigate_ips('') === 'ips_detected:U ips_blocked:U ips_crit:U ips_high:U ips_ano:U' . PHP_EOL);
+check('ss_fortigate_ipsec with a non-numeric device id', ss_fortigate_ipsec('x') === 'total:U down:U' . PHP_EOL);
+$get_retries = [];
+ss_fortigate_ips(7);
+check('ss_fortigate_ips gets with the SNMP retries, not the ping retries', $get_retries !== [] && array_unique($get_retries) === [2]);
+$walk_retries = [];
+ss_fortigate_ipsec(7);
+check('ss_fortigate_ipsec walks with the SNMP retries, not the ping retries', $walk_retries === [2]);
+
+// MikroTik value lookups: a missing row is unknown, a stored row is returned as is.
+foreach ([['interfaces', 'BytesIn'], ['queues', 'qsInOctets'], ['qusers', 'curBytesIn'], ['qtrees', 'qtBytes']] as [$table, $column]) {
+	$getvalue = __NAMESPACE__ . '\\ss_mikrotik_' . $table . '_getvalue';
+	check("ss_mikrotik_$table without a row", $getvalue(7, 'gone', $column) === 'U');
+	check("ss_mikrotik_$table with a row", $getvalue(7, 'known.example', $column) == 7);
+}
+check('ss_mikrotik_interfaces refuses an unsafe column', ss_mikrotik_interfaces_getvalue(7, 'known.example', 'x`y') === 'U');
+check('ss_mikrotik_queues refuses an unknown column', ss_mikrotik_queues_getvalue(7, 'known.example', 'bogus') === 'U');
+check('ss_mikrotik_qusers refuses an unknown column', ss_mikrotik_qusers_getvalue(7, 'known.example', 'bogus') === 'U');
 
 ob_start();
 ss_webseer('query', 'webseerName');
@@ -338,20 +380,27 @@ check('ss_webseer strips line breaks from names', ob_get_clean() === '1!linebrea
 
 // Disk counters kept in a private state directory between polls.
 $disk     = __NAMESPACE__ . '\\ss_net_snmp_disk_' . $mode;
-$zero     = ($mode === 'io' ? 'reads:0 writes:0' : 'bytesread:0 byteswritten:0');
 $unknown  = ($mode === 'io' ? 'reads:U writes:U' : 'bytesread:U byteswritten:U');
 $host_row = array_merge($host_row, ['id' => 7]);
 
-check('disk script refuses an unknown device', $disk('unknown.example') === $zero);
-check('disk script refuses a device id of zero', $disk('0.0') === $zero);
+check('disk script refuses an unknown device', $disk('unknown.example') === $unknown);
+check('disk script refuses a device id of zero', $disk('0.0') === $unknown);
 
 foreach (['cmd', 'realtime'] as $environ) {
 	$poller_id = $environ === 'realtime' ? 'preview-A' : 1;
 	$poll = 1;
-	check("first $environ poll has no previous state", $disk('known.example') === $zero);
+	check("first $environ poll has no previous state", $disk('known.example') === $unknown);
 	$poll = 2;
-	check("second $environ poll reports a delta", $disk(7) !== $zero);
+	check("second $environ poll reports a delta", $disk(7) !== $unknown);
 }
+$environ  = 'cmd';
+$poll     = 3;
+$new_disk = true;
+check('a disk without a previous sample leaves the total unknown', $disk(7) === $unknown);
+$walk_retries = [];
+$disk(7);
+check('disk script walks with the SNMP retries, not the ping retries', $walk_retries !== [] && array_unique($walk_retries) === [2]);
+$new_disk = false;
 $environ   = 'realtime';
 $poller_id = '../preview';
 check('unsafe real-time state identifier yields unknown data', $disk(7) === $unknown);

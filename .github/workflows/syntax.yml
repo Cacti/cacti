@@ -82,6 +82,14 @@ jobs:
         SECRET_DB_PASSWORD: cactiroot
       run: php vendor/bin/pest --configuration=phpunit.xml integration/SecretFieldSaveMariaDbTest.php Unit/Ui/Html/FormSecretFieldTest.php --colors=never
 
+    - name: Run database process termination contracts
+      working-directory: tests
+      env:
+        PROCESS_DB_HOST: 127.0.0.1
+        PROCESS_DB_USER: root
+        PROCESS_DB_PASSWORD: cactiroot
+      run: php vendor/bin/pest --configuration=phpunit.xml integration/KilledProcessMariaDbTest.php --colors=never
+
   boost-contracts:
     name: Boost contracts
     runs-on: ubuntu-22.04

@@ -761,9 +761,9 @@ function api_plugin_install($plugin) {
 	$proceed = api_plugin_can_install($plugin, $message);
 
 	if (!$proceed) {
-		$message .= '<br><br>' . __('Plugin cannot be installed.');
+		$message = html_escape($message) . '<br><br>' . __esc('Plugin cannot be installed.');
 
-		raise_message('dependency_check', $message, MESSAGE_LEVEL_ERROR);
+		raise_message_html('dependency_check', $message, MESSAGE_LEVEL_ERROR);
 
 		header('Location: plugins.php');
 
@@ -807,10 +807,10 @@ function api_plugin_install($plugin) {
 		$author  = $info['author'];
 		$version = $info['version'];
 	} elseif (strpos($plugin, 'plugin_') !== false) {
-		raise_message('directory_error', __esc('The Plugin directory \'%s\' needs to be renamed to remove \'plugin_\' from the name before it can be installed.', $plugin), MESSAGE_LEVEL_ERROR);
+		raise_message('directory_error', __('The Plugin directory \'%s\' needs to be renamed to remove \'plugin_\' from the name before it can be installed.', $plugin), MESSAGE_LEVEL_ERROR);
 		return false;
 	} else {
-		raise_message('version_error', __esc('The Plugin in the directory \'%s\' does not include an version function \'%s()\'.  This function must exist for the plugin to be installed.', $plugin, $function), MESSAGE_LEVEL_ERROR);
+		raise_message('version_error', __('The Plugin in the directory \'%s\' does not include an version function \'%s()\'.  This function must exist for the plugin to be installed.', $plugin, $function), MESSAGE_LEVEL_ERROR);
 		return false;
 	}
 
@@ -838,7 +838,7 @@ function api_plugin_install($plugin) {
 
 			api_plugin_disable_hooks_all($plugin);
 			cacti_log(sprintf("ERROR: Plugin '%s' installation failed. Its hooks are disabled and it needs configuration.", $plugin), false, 'PLUGIN');
-			raise_message('install_error', __esc('Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it.', $plugin), MESSAGE_LEVEL_ERROR);
+			raise_message('install_error', __('Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it.', $plugin), MESSAGE_LEVEL_ERROR);
 
 			return false;
 		}
@@ -858,7 +858,7 @@ function api_plugin_install($plugin) {
 				array($plugin));
 		}
 	} else {
-		raise_message('install_error', __esc('The Plugin in the directory \'%s\' does not include an install function \'%s()\'.  This function must exist for the plugin to be installed.', $plugin, $function), MESSAGE_LEVEL_ERROR);
+		raise_message('install_error', __('The Plugin in the directory \'%s\' does not include an install function \'%s()\'.  This function must exist for the plugin to be installed.', $plugin, $function), MESSAGE_LEVEL_ERROR);
 		return false;
 	}
 

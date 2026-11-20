@@ -29,14 +29,33 @@ function read_config_option($name) {
 	return '';
 }
 
+$probe_logs = array();
+
 /**
- * Ignore expected validation diagnostics.
+ * Record validation diagnostics with their verbosity level.
  *
  * @param string $message Diagnostic message.
  *
  * @return void No value is returned.
  */
 function cacti_log($message, $output = false, $environ = 'CMDPHP', $level = '') {
+	$GLOBALS['probe_logs'][] = array('message' => $message, 'level' => $level);
+}
+
+/**
+ * Apply file permissions and return the result with the last log entry.
+ *
+ * @param string $file RRD file.
+ * @param string $base RRA path.
+ *
+ * @return array Result, log message and log level.
+ */
+function probe_apply($file, $base = '') {
+	$GLOBALS['probe_logs'] = array();
+	$result = rrdtool_apply_file_permissions($file, 'BOOST', $base);
+	$log    = end($GLOBALS['probe_logs']);
+
+	return array('result' => $result, 'message' => $log ? $log['message'] : '', 'level' => $log ? $log['level'] : null);
 }
 
 require dirname(__DIR__, 3) . '/lib/rrd.php';
@@ -46,7 +65,9 @@ $base    = $root . '/rra';
 $outside = $root . '/outside';
 mkdir($base, 0700, true);
 mkdir($outside, 0700, true);
-$symlink_available = @symlink($outside, $base . '/pivot');
+touch($outside . '/target.rrd');
+mkdir($base . '/dir.rrd');
+$symlink_available = @symlink($outside, $base . '/pivot') && @symlink($outside . '/target.rrd', $base . '/link.rrd');
 $permissions_ok = null;
 
 print json_encode(array(
@@ -60,6 +81,11 @@ print json_encode(array(
 	'symlink'       => $symlink_available ? rrdtool_local_path_is_valid($base, $base . '/pivot/file') : null,
 	'create_outside'=> rrdtool_create_structured_directory($base, $outside . '/escape', 'BOOST', $permissions_ok),
 	'create_existing' => rrdtool_create_structured_directory($base, $base, 'BOOST', $permissions_ok),
-	'file_missing'  => rrdtool_apply_file_permissions($base . '/missing.rrd', 'BOOST', $base),
-	'file_no_base'  => rrdtool_apply_file_permissions($base . '/missing.rrd', 'BOOST'),
+	'file_missing'  => probe_apply($base . '/missing.rrd', $base),
+	'file_no_base'  => probe_apply($base . '/missing.rrd'),
+	'file_dotdot'   => probe_apply($base . '/host/../../outside/missing.rrd', $base),
+	'file_outside'  => probe_apply($outside . '/target.rrd', $base),
+	'file_symlink'  => $symlink_available ? probe_apply($base . '/link.rrd', $base) : null,
+	'file_pivot'    => $symlink_available ? probe_apply($base . '/pivot/target.rrd', $base) : null,
+	'file_dir'      => probe_apply($base . '/dir.rrd', $base),
 ), JSON_THROW_ON_ERROR);

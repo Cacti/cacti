@@ -831,6 +831,18 @@ function setupSelectmenuScrollClose() {
 		});
 }
 
+/** Add one icon per visible filter, including filters revealed after page load. */
+function addFilterSearchIcons() {
+	$('input[id="filter"], input[id="filterd"], input[id="rfilter"]').filter(':visible').each(function() {
+		const input = $(this);
+		if (input.next('i.fa-search.filter').length === 0) {
+			input.after($('<i>').addClass('fa fa-search filter'));
+			input.attr('autocomplete', 'off').attr('placeholder', this.id === 'rfilter' ? searchRFilter : searchFilter);
+			input.parent('td').css('white-space', 'nowrap');
+		}
+	});
+}
+
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
@@ -1467,13 +1479,12 @@ function displayMessages() {
 			}
 		}
 
-		var returnStr = '<div id="messageContainer" style="display:none">' +
-			'<h4>' + header + '</h4>' +
-			'<p style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</p>' +
-			'</div>';
-
+		/* sanitize at the sink and insert as a node, so the message is not parsed a second time */
 		$('#messageContainer').remove();
-		$('body').append(returnStr);
+		$('<div>').attr('id', 'messageContainer').hide()
+			.append($('<h4>').html(header))
+			.append($('<p>').css({display: 'table-cell', overflow: 'auto'}).html(' ' + DOMPurify.sanitize(sessionMessage.message)))
+			.appendTo('body');
 
 		var messageWidth = $(window).width();
 		if (messageWidth > 600) {
@@ -3801,10 +3812,13 @@ function hideCurrentTab(id, shrinking) {
 		var selected = $('#'+id).hasClass('selected');
 		var text     = $('#'+id).text();
 
+		/* text() returns the decoded tab title, so build the copy as elements, not markup */
+		var item = $('<li>').append($('<a>').addClass('lefttab' + (selected ? ' selected':'')).attr('id', myid).attr('href', href).text(text));
+
 		if (shrinking) {
-			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').prepend(item);
 		} else {
-			$('#submenu-ellipsis').append('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').append(item);
 		}
 
 		setupResponsiveMenuAndTabs();

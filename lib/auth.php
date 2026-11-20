@@ -965,10 +965,18 @@ function is_view_allowed($view = 'show_tree') {
  *
  * @param int $tree_id The Cacti Tree id.
  * @param int $parent The Cacti Tree branch id.
+ * @param array $visited Branches already checked by this walk, so a stored parent cycle ends.
  *
  * @return bool True if empty, else false.
  */
-function is_tree_branch_empty($tree_id, $parent = 0) {
+function is_tree_branch_empty($tree_id, $parent = 0, &$visited = array()) {
+	// a stored parent cycle would otherwise recurse forever
+	if (isset($visited[$parent])) {
+		return true;
+	}
+
+	$visited[$parent] = true;
+
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id
 			FROM graph_tree_items
@@ -1039,7 +1047,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 
 	if (cacti_sizeof($branches)) {
 		foreach($branches as $b) {
-			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
+			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'], $visited)) {
 				return false;
 			}
 		}
@@ -3838,7 +3846,7 @@ function ldap_login_process($username) {
 		} else {
 			/* error searching */
 			$error     = true;
-			$error_msg =  __('Access Denied!  LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
+			$error_msg = __('Access Denied!  Login Failed.');
 
 			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
 		}
@@ -3859,7 +3867,7 @@ function ldap_login_process($username) {
 			} else {
 				/* error */
 				$error     = true;
-				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
+				$error_msg = __('Access Denied!  Login Failed.');
 
 				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 
