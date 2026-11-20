@@ -1673,7 +1673,10 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/27321443?v=4",
       "profile": "https://github.com/alcatron",
       "contributions": [
-        "code"
+        "code",
+        "translation",
+        "test",
+        "review"
       ]
     },
     {
