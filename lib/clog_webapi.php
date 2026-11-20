@@ -230,7 +230,7 @@ function clog_view_logfile() {
 			'default' => '1'
 		),
 		'rfilter' => array(
-			'filter'  => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_UNSAFE_RAW,
 			'default' => '',
 			'pageset' => true
 		)
@@ -255,6 +255,8 @@ function clog_view_logfile() {
 	}
 
 	if ($clogAdmin && isset_request_var('purge_continue')) {
+		csrf_require_post();
+
 		clog_purge_logfile();
 		$logfile = read_config_option('path_cactilog');
 	}
@@ -291,7 +293,7 @@ function clog_view_logfile() {
 				<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 				$('#pc').on('click', function() {
 					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
-					loadPageNoHeader(strURL);
+					loadPageUsingPostUrl(strURL, 'main');
 				});
 
 				$('#cancel').on('click', function() {
@@ -728,7 +730,7 @@ function filter($clogAdmin, $selectedFile) {
 			refreshMSeconds=$('#refresh').val()*1000;
 
 			strURL = basename(location.pathname)+
-				'?rfilter=' + base64_encode($('#rfilter').val())+
+				'?rfilter=' + encodeURIComponent($('#rfilter').val())+
 				'&reverse='+$('#reverse').val()+
 				'&refresh='+$('#refresh').val()+
 				'&matches='+$('#matches').val()+
