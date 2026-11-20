@@ -3586,7 +3586,7 @@ class Installer implements JsonSerializable {
 					set_install_config_option('install_updated', microtime(true));
 
 					$info = import_package_get_details($path . $package);
-					$result = import_package($path . $package, $this->profile, false, false, false, false, true, array(), array(), $info['class']);
+					$result = import_package($path . $package, $this->profile, false, false, false, false, true, array(), array(), $info['class'], true);
 
 					if ($result !== false) {
 						log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' succeeded', $i, $package, $this->profile));
