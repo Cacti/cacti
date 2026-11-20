@@ -21,23 +21,43 @@
  * Compile a byte-oriented, ASCII case-insensitive regex subset to a Thompson
  * NFA. Advance all reachable states together instead of backtracking.
  *
+ * Accepted patterns also run as an equivalent PCRE under a match limit, which
+ * is far faster than stepping the NFA in PHP. A line that reaches the limit is
+ * decided by the NFA, so matching stays bounded without per-byte PHP work on
+ * ordinary searches.
+ *
  * Supports literals, ., ^, $, groups (including (?:...)), |, [], negated
  * classes, ranges, *, +, ?, and the escapes \d \w \s (and their inverses),
  * \n \r \t and escaped punctuation. Unsupported syntax is searched literally.
  */
 final class CactiLogSearchPattern {
-	private string $pattern;
-	private int $cursor = 0;
+	/** Backtracking budget per line before the NFA decides the line instead. */
+	const PCRE_MATCH_LIMIT = 50000;
+
+	/** Lines allowed to reach the budget before this search stops trying PCRE. */
+	const PCRE_FAILURE_LIMIT = 64;
+
+	/** @var string */
+	private $pattern;
+	/** @var string|null */
+	private $regex = null;
+	/** @var int */
+	private $pcreFailures = 0;
+	/** @var int */
+	private $cursor = 0;
 	/** @var array<int, list<array{int, string, string}>> */
-	private array $edges = [];
-	private int $start;
-	private int $end;
+	private $edges = [];
+	/** @var int */
+	private $start;
+	/** @var int */
+	private $end;
 
 	private function __construct(string $pattern) {
 		$this->pattern = $pattern;
 	}
 
-	public static function compile(string $pattern): ?self {
+	/** @return self|null */
+	public static function compile(string $pattern) {
 		// Plain text has a faster matcher, and the length cap bounds the NFA.
 		if (strlen($pattern) > 50 || strpbrk($pattern, '.^$[]()|*+?{}\\') === false) {
 			return null;
@@ -50,12 +70,80 @@ final class CactiLogSearchPattern {
 			return null;
 		}
 
-		[$compiled->start, $compiled->end] = $fragment;
+		list($compiled->start, $compiled->end) = $fragment;
+		$compiled->regex = self::pcre($pattern);
 
 		return $compiled;
 	}
 
 	public function matches(string $line): bool {
+		if ($this->regex !== null) {
+			$result = preg_match($this->regex, $line);
+
+			if ($result !== false) {
+				return $result === 1;
+			}
+
+			if (++$this->pcreFailures >= self::PCRE_FAILURE_LIMIT) {
+				$this->regex = null;
+			}
+		}
+
+		return $this->nfaMatches($line);
+	}
+
+	/**
+	 * Translate a pattern the parser accepted into the same PCRE. Each accepted
+	 * construct has the same meaning to PCRE without the u modifier, so only the
+	 * delimiter and NUL bytes need escaping.
+	 */
+	private static function pcre(string $pattern) {
+		$regex  = '';
+		$length = strlen($pattern);
+
+		for ($offset = 0; $offset < $length; $offset++) {
+			$char = $pattern[$offset];
+
+			// The parser rejects a trailing backslash, so an escape always has a byte.
+			if ($char === '\\') {
+				$char   = $pattern[++$offset];
+				$regex .= $char === "\0" ? '\\x00' : '\\' . $char;
+			} elseif ($char === '/') {
+				$regex .= '\\/';
+			} elseif ($char === "\0") {
+				$regex .= '\\x00';
+			} else {
+				$regex .= $char;
+			}
+		}
+
+		// Compile once without the Cacti error handler, which would write a PCRE
+		// warning into the log being searched. JIT is disabled because some PCRE2
+		// JIT releases return wrong caseless alternation results; the PCRE 8.x
+		// used by older PHP rejects (*NO_JIT), so retry without it. A pattern PCRE
+		// rejects outright uses the NFA.
+		set_error_handler(function () {
+			return true;
+		});
+
+		$compiled = null;
+
+		foreach (['(*NO_JIT)', ''] as $option) {
+			$candidate = '/' . $option . '(*LIMIT_MATCH=' . self::PCRE_MATCH_LIMIT . ')' . $regex . '/i';
+
+			if (preg_match($candidate, '') !== false) {
+				$compiled = $candidate;
+
+				break;
+			}
+		}
+
+		restore_error_handler();
+
+		return $compiled;
+	}
+
+	private function nfaMatches(string $line): bool {
 		$length = strlen($line);
 		$active = [];
 
@@ -71,7 +159,7 @@ final class CactiLogSearchPattern {
 					return true;
 				}
 
-				foreach ($this->edges[$state] as [$target, $kind, $bytes]) {
+				foreach ($this->edges[$state] as list($target, $kind, $bytes)) {
 					if ($kind === 'byte') {
 						if ($offset < $length && $bytes[ord($line[$offset])] === "\1") {
 							$next[$target] = true;
@@ -94,7 +182,7 @@ final class CactiLogSearchPattern {
 	}
 
 	/** @return array{int, int}|null */
-	private function alternation(): ?array {
+	private function alternation() {
 		$first = $this->sequence();
 
 		if ($first === null || $this->peek() !== '|') {
@@ -122,7 +210,7 @@ final class CactiLogSearchPattern {
 	}
 
 	/** @return array{int, int}|null */
-	private function sequence(): ?array {
+	private function sequence() {
 		$start = $end = $this->state();
 
 		while (!in_array($this->peek(), ['', '|', ')'], true)) {
@@ -133,7 +221,7 @@ final class CactiLogSearchPattern {
 				return null;
 			}
 
-			[$from, $to] = $atom;
+			list($from, $to) = $atom;
 			$repeat      = $this->peek();
 
 			if (in_array($repeat, ['*', '+', '?'], true)) {
@@ -173,7 +261,7 @@ final class CactiLogSearchPattern {
 	}
 
 	/** @return array{int, int}|null */
-	private function atom(string $char): ?array {
+	private function atom(string $char) {
 		if ($char === '(') {
 			if ($this->peek() === '?') {
 				if (substr($this->pattern, $this->cursor, 2) !== '?:') {
@@ -216,7 +304,8 @@ final class CactiLogSearchPattern {
 		return [$start, $end];
 	}
 
-	private function characterClass(): ?string {
+	/** @return string|null */
+	private function characterClass() {
 		$negate = $this->peek() === '^';
 
 		if ($negate) {
@@ -241,7 +330,7 @@ final class CactiLogSearchPattern {
 				return null;
 			}
 
-			[$set, $value] = $token;
+			list($set, $value) = $token;
 
 			if ($this->peek() === '-' && !in_array($this->pattern[$this->cursor + 1] ?? '', ['', ']'], true)) {
 				$this->cursor++;
@@ -265,7 +354,7 @@ final class CactiLogSearchPattern {
 	}
 
 	/** @return array{string, int|null}|null */
-	private function character(string $char): ?array {
+	private function character(string $char) {
 		if ($char === '\\') {
 			$char  = $this->take();
 			$lower = strtolower($char);
@@ -319,7 +408,7 @@ final class CactiLogSearchPattern {
 		return $state;
 	}
 
-	private function edge(int $from, int $to, string $kind = 'empty', string $bytes = ''): void {
+	private function edge(int $from, int $to, string $kind = 'empty', string $bytes = '') {
 		$this->edges[$from][] = [$to, $kind, $bytes];
 	}
 
