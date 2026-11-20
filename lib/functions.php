@@ -3656,6 +3656,39 @@ function get_data_source_item_name(int $data_template_rrd_id) : mixed {
 }
 
 /**
+ * data_source_path_is_clean - checks the file part of a data source path for
+ * characters that rrdtool's own argument tokenizer would split or unquote
+ *
+ * rrdtool re-tokenizes the arguments it is given, and it does not decode the
+ * quoting that cacti_escapeshellarg() adds, so whitespace or a quote inside the
+ * file name splits one path into several arguments. The RRA directory itself
+ * (the <path_rra> token or the configured directory) is not examined, so a
+ * configured directory that contains a space keeps working.
+ *
+ * @param string $path The stored or expanded data source path
+ *
+ * @return bool True when the part after the RRA directory has no control
+ *              character, whitespace or quote
+ */
+function data_source_path_is_clean(string $path) : bool {
+	$prefixes = ['<path_rra>/'];
+
+	if (defined('CACTI_PATH_RRA')) {
+		$prefixes[] = rtrim((string) CACTI_PATH_RRA, '/') . '/';
+	}
+
+	foreach ($prefixes as $prefix) {
+		if (str_starts_with($path, $prefix)) {
+			$path = substr($path, strlen($prefix));
+
+			break;
+		}
+	}
+
+	return preg_match('/[\x00-\x20\x7f\'"]/', $path) === 0;
+}
+
+/**
  * Gets the full path to the .rrd file associated with a given data source
  *
  * @param int  $local_data_id The ID of the data source
@@ -3698,8 +3731,8 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
 			 * write outside the RRA directory (into the web root, for example).
 			 * Contain it here, where every consumer resolves the path, and fall
 			 * back to the generated location when it escapes. */
-			if (!data_source_path_within_rra($data_source_path)) {
-				cacti_log(sprintf('SECURITY: Data source %d has a data_source_path that escapes the RRA directory (%s).  Using the generated path instead.', $local_data_id, $data_source['data_source_path']), false, 'POLLER');
+			if (!data_source_path_within_rra($data_source_path) || !data_source_path_is_clean($data_source_path)) {
+				cacti_log(sprintf('SECURITY: Data source %d has a data_source_path that escapes the RRA directory or contains whitespace or quotes (%s).  Using the generated path instead.', $local_data_id, $data_source['data_source_path']), false, 'POLLER');
 
 				$data_source_path = str_replace('<path_rra>/', CACTI_PATH_RRA . '/', generate_data_source_path($local_data_id));
 			}
@@ -5838,6 +5871,35 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
 	}
 
 	return $result;
+}
+
+/**
+ * cacti_input_string_is_safe - guard against shell metacharacters smuggled into
+ * a data_input.input_string template.
+ *
+ * Remove recognized field placeholders before checking the surrounding text.
+ * Characters blocked outside placeholders: ; & | ` $ \ newline carriage-return ' " < > ( ) { }. Paired
+ * quotes surrounding a placeholder ("<x>" or '<x>') are removed together with
+ * the placeholder so legitimate argument quoting such as
+ * <path_cacti>/scripts/x.php "<reason>" is kept.
+ *
+ * @param mixed $input_string The candidate input_string template
+ *
+ * @return bool True when the value is safe to persist; a value that is not a
+ *              string (for example a failed base64 decode) is not safe
+ */
+function cacti_input_string_is_safe(mixed $input_string) : bool {
+	if ($input_string === null || $input_string === '') {
+		return true;
+	}
+
+	if (!is_string($input_string)) {
+		return false;
+	}
+
+	$bare = preg_replace('/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/', '', $input_string);
+
+	return $bare !== null && preg_match('/[;&|`$\\\\\n\r\'"<>(){}]/', $bare) === 0;
 }
 
 /**

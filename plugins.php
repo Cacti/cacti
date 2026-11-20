@@ -839,7 +839,14 @@ function update_show_current() : void {
 
 				$.get(url, function(data) {
 					if (data != '') {
-						var message = "<div id='pidialog' style='display:none;'><div>"+DOMPurify.sanitize(data)+'</div></div>';
+						var content = $('<div>').html(DOMPurify.sanitize(data));
+
+						// Keep the Plugins page open when following README or ChangeLog links
+						content.find('a[href]').filter(function() {
+							return /^\s*https?:\/\//i.test($(this).attr('href'));
+						}).attr({target: '_blank', rel: 'noopener noreferrer'});
+
+						var message = $("<div id='pidialog' style='display:none;'>").append(content);
 
 						if ($('#pidialog').length == 0) {
 							$('#main').append(message);
