@@ -3250,6 +3250,12 @@ function data_source_path_within_rra($path) {
 			return false;
 		}
 
+		/* RRDtool splits its arguments on whitespace and quotes, so a file
+		 * name holding either would be read as more than one argument */
+		if (preg_match('/[\s\'"`]/', $segment)) {
+			return false;
+		}
+
 		$parts[] = $segment;
 	}
 
