@@ -1,0 +1,1 @@
+Run Log Viewer regex searches through PCRE under a match limit instead of stepping every byte in PHP, keeping the NFA for lines that reach the limit

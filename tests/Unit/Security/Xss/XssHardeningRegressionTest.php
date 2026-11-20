@@ -20,9 +20,11 @@ test('automation tree-rule preview escapes the Resulting Branch values (GHSA-f7j
 	expect($s)->toContain('htmle((string) array_shift($replacement))');
 });
 
+// raise_message() escapes the message itself since GHSA-9737, so the call passes plain __() text.
 test('report-add device description status is escaped (GHSA-4gph)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/reports.php');
-	expect($s)->not->toContain("__('Device \\'%s\\' successfully added to Report.'");
+	expect($s)->toContain("raise_message('reports_add_device_' . \$device_id, __('Device \\'%s\\' successfully added to Report.'")
+		->and($s)->not->toContain("raise_message_html('reports_add_device_'");
 });
 
 test('graph export legend columns are html-escaped (GHSA-977w)', function () use ($root) {
