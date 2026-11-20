@@ -572,7 +572,6 @@ header_redirect	./managers.php		header('Location: managers.php?action=edit&id=' 
 header_redirect	./mibs/index.php	header('Location:../index.php');
 header_redirect	./oauth2.php		header('Location: ' . $authUrl);
 header_redirect	./package.php			header('Location: package.php');
-header_redirect	./package_import.php									header('Location: package_import.php?package_location=' . $package_location);
 header_redirect	./package_import.php						header('Location: package_import.php');
 header_redirect	./package_import.php					header('Location: package_import.php');
 header_redirect	./package_import.php				header('Location: package_import.php');
