@@ -973,7 +973,7 @@ function debug_view() {
 			$i = 0;
 			foreach($check['info']['rrd_match_array']['tune'] AS $options) {
 				form_alternate_row('line3_' . $i, true);
-				form_selectable_cell($rrdtool_path . ' tune ' . $options, 'line3_' . $i);
+				form_selectable_ecell($rrdtool_path . ' tune ' . $options, 'line3_' . $i);
 				form_end_row();
 				$i++;
 			}

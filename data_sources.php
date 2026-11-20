@@ -243,7 +243,7 @@ function form_save() {
 		$save2['data_template_id']            = get_filter_request_var('data_template_id');
 		$save2['data_input_id']               = form_input_validate(get_request_var('data_input_id'), 'data_input_id', '^[0-9]+$', true, 3);
 		$save2['name']                        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save2['data_source_path']            = form_input_validate(get_nfilter_request_var('data_source_path'), 'data_source_path', '^[^\r\n]*$', true, 3);
+		$save2['data_source_path']            = form_input_validate(get_nfilter_request_var('data_source_path'), 'data_source_path', '^[^\s\'"`]*$', true, 3);
 		$save2['active']                      = form_input_validate((isset_request_var('active') ? get_nfilter_request_var('active') : ''), 'active', '', true, 3);
 		$save2['data_source_profile_id']      = form_input_validate(get_request_var('data_source_profile_id'), 'data_source_profile_id', '^[0-9]+$', false, 3);
 		$save2['rrd_step']                    = form_input_validate(get_request_var('rrd_step'), 'rrd_step', '^[0-9]+$', false, 3);

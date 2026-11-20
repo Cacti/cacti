@@ -763,7 +763,7 @@ function cdef_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete CDEF Item');?>',
+						title: <?php print cacti_js_encode(__('Delete CDEF Item'));?>,
 						minHeight: 80,
 						minWidth: 500
 					});

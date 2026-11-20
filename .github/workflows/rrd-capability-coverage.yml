@@ -15,12 +15,14 @@ on:
       - 'lib/rrd.php'
       - 'poller_boost.php'
       - 'tests/Unit/Core/Boost/**'
+      - 'tests/Unit/Security/Session/SessionHandlerGcTest.php'
       - 'tests/Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php'
       - 'tests/Unit/Core/Rrd/RrdVersionCheckReuseTest.php'
       - 'tests/e2e/boost/**'
       - 'tests/fixtures/Core/Boost*'
       - 'tests/fixtures/Core/Rrd/**'
       - 'tests/fixtures/Core/ScriptQueryPath.php'
+      - 'tests/fixtures/Core/TranslatedJavaScriptStrings.php'
       - 'tests/Unit/Core/ScriptQueryPathTest.php'
       - 'tests/Helpers/RequestCoverage.php'
       - 'tests/integration/BoostProcessTableMariaDbTest.php'
@@ -97,6 +99,7 @@ jobs:
         env:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+          RRDTOOL_BINARY: /usr/bin/rrdtool
           CACTI_AGGREGATE_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=cacti_aggregate_test;charset=utf8mb4'
           CACTI_AGGREGATE_TEST_USER: root
           CACTI_AGGREGATE_TEST_PASSWORD: cactiroot
@@ -109,6 +112,7 @@ jobs:
           set -euo pipefail
           mkdir -p "$CACTI_PR_RAW_COVERAGE"
           vendor/bin/pest --configuration=../phpunit-changed.xml --coverage-clover=../coverage-changed.xml
+          php fixtures/Core/DisplayContextRender.php | grep -Fx 'Display rendering passed'
           php -d auto_prepend_file="$GITHUB_WORKSPACE/tests/Helpers/RequestCoverage.php" vendor/bin/pest \
             Unit/Core/Boost/BoostArchiveDeletionOwnershipBehaviorTest.php \
             Unit/Core/Boost/BoostFailureAlertBehaviorTest.php \
@@ -120,6 +124,7 @@ jobs:
             Unit/Core/Boost/BoostPollerCoordinationBehaviorTest.php \
             Unit/Core/Boost/BoostPollerDrainBehaviorTest.php \
             Unit/Core/Boost/BoostPollerOutputBehaviorTest.php \
+            Unit/Security/Session/SessionHandlerGcTest.php \
             integration/BoostProcessTableMariaDbTest.php
       - name: Exercise data query discovery and reindex contracts
         working-directory: tests
@@ -144,6 +149,11 @@ jobs:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
         run: tests/e2e/boost/run-coverage.sh "$PWD"
+      - name: Exercise translated JavaScript expressions
+        env:
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: php tests/fixtures/Core/TranslatedJavaScriptStrings.php
       - name: Require at least 80 percent of changed executable PHP lines
         env:
           BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
