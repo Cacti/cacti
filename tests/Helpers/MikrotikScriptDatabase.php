@@ -54,7 +54,7 @@ function mikrotik_script_database(callable $body): void {
 		bytesIn INTEGER, bytesOut INTEGER, packetsIn INTEGER, packetsOut INTEGER)');
 	$conn->exec('CREATE TABLE plugin_mikrotik_wireless_aps (host_id INTEGER, `index` INTEGER, last_seen TEXT)');
 	$conn->exec('CREATE TABLE plugin_mikrotik_wireless_registrations (host_id INTEGER, `index` TEXT, TxBytes INTEGER,
-		RxStrengthChl INTEGER, Uptime TEXT, last_seen TEXT)');
+		RxStrengthChl INTEGER, Uptime TEXT, last_seen TEXT, present INTEGER)');
 
 	$now = gmdate('Y-m-d H:i:s');
 
@@ -67,7 +67,7 @@ function mikrotik_script_database(callable $body): void {
 	$conn->exec("INSERT INTO plugin_mikrotik_trees VALUES (1, 'customer tree', 'up', 'global', 4096, 8), (1, '<down>', 'down', 'global', 2048, 4)");
 	$conn->exec("INSERT INTO plugin_mikrotik_users VALUES (1, 'alice', 'example.net', '10.0.0.9', 'AA:BB', 1, 2, 3, 4, 50, 500, 600, 7, 8), (1, '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0)");
 	$conn->exec("INSERT INTO plugin_mikrotik_wireless_aps VALUES (1, 1, '$now')");
-	$conn->exec("INSERT INTO plugin_mikrotik_wireless_registrations VALUES (1, 'AA:BB:CC:DD:EE:FF', 5000, -61, '1:2:3:4', '$now'), (1, '11:22:33:44:55:66', 10, -70, '12050', '$now')");
+	$conn->exec("INSERT INTO plugin_mikrotik_wireless_registrations VALUES (1, 'AA:BB:CC:DD:EE:FF', 5000, -61, '1:2:3:4', '$now', 1), (1, '11:22:33:44:55:66', 10, -70, '12050', '$now', 1), (2, 'DE:AD:BE:EF:00:01', 0, -80, '0', '$now', 0)");
 
 	$database_sessions[$session] = $conn;
 

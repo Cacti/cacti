@@ -64,7 +64,11 @@ function ss_mikrotik_queues($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
 			print $index . PHP_EOL;
 		}
 	} elseif ($cmd == 'num_indexes') {
-		return (string) cacti_sizeof(ss_mikrotik_queues_getnames($host_id));
+		// counted with the same filters as the index list
+		return (string) db_fetch_cell_prepared("SELECT COUNT(DISTINCT REPLACE(name, ' ', '_'))
+			FROM plugin_mikrotik_queues
+			WHERE host_id = ?",
+			[$host_id]);
 	} elseif ($cmd == 'query') {
 		foreach (ss_mikrotik_queues_getinfo($host_id, $arg1) as $index => $value) {
 			print $index . '!' . $value . PHP_EOL;

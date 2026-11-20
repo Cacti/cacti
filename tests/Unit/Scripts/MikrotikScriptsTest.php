@@ -137,6 +137,7 @@ test('wireless registrations map the data query fields and graph uptime in secon
 			->and(ss_mikrotik_wireless_reg(1, 'get', 'Uptime', '11:22:33:44:55:66'))->toBe('120')
 			->and(ss_mikrotik_wireless_reg(1, 'get', 'apTxRate', 'AA:BB:CC:DD:EE:FF'))->toBe('U')
 			->and(ss_mikrotik_wireless_reg(1, 'get', 'TxBytes', 'gone'))->toBe('U')
+			->and(ss_mikrotik_wireless_reg(2, 'get', 'RxStrengthCh1', 'DE:AD:BE:EF:00:01'))->toBe('U')
 			->and(ss_mikrotik_wireless_reg_uptime('02:03:04.50'))->toBe('7384')
 			->and(ss_mikrotik_wireless_reg_uptime(false))->toBe('U');
 	});
