@@ -117,6 +117,14 @@ if ($old_cacti_version == CACTI_VERSION) {
 	exit;
 }
 
+if (!register_process_start('install', 'master', 0, 86400)) {
+	print 'An installation or upgrade is already in progress.' . PHP_EOL;
+
+	exit(1);
+}
+
+register_shutdown_function('unregister_process', 'install', 'master', 0);
+
 print 'Upgrading from v' . $old_cacti_version . PHP_EOL;
 
 $prev_cacti_version = $old_cacti_version;

@@ -49,7 +49,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 	if (cacti_sizeof($xml_array) == 0) {
 		$import_messages[] = 7; /* xml parse error */
-		return $info_array;
+		return false;
 	}
 
 	$host_template_data = array();
@@ -58,15 +58,15 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		/* parse information from the hash */
 		$parsed_hash = parse_xml_hash($hash);
 
+		/* invalid/wrong hash */
+		if ($parsed_hash == false) {
+			return false;
+		}
+
 		if ($parsed_hash['type'] == 'graph_template') {
 			$host_template_data['graph_template'][$parsed_hash['hash']] = $hash_array['name'];
 		} elseif ($parsed_hash['type'] == 'data_query') {
 			$host_template_data['data_query'][$parsed_hash['hash']] = $hash_array['name'];
-		}
-
-		/* invalid/wrong hash */
-		if ($parsed_hash == false) {
-			return $info_array;
 		}
 
 		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $import_hashes, true)) {
