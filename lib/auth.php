@@ -3846,7 +3846,7 @@ function ldap_login_process($username) {
 		} else {
 			/* error searching */
 			$error     = true;
-			$error_msg =  __('Access Denied!  LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
+			$error_msg = __('Access Denied!  Login Failed.');
 
 			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
 		}
@@ -3867,7 +3867,7 @@ function ldap_login_process($username) {
 			} else {
 				/* error */
 				$error     = true;
-				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
+				$error_msg = __('Access Denied!  Login Failed.');
 
 				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 

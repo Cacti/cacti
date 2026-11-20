@@ -504,7 +504,7 @@ case 'tree_content':
 	$(function() {
 		/* these are all global variables */
 		refreshIsLogout = false;
-		refreshPage     = <?php print json_encode(str_replace('tree_content', 'tree', validate_redirect_url($_SERVER['REQUEST_URI'] ?? '')), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);?>;
+		refreshPage     = <?php print cacti_js_encode(str_replace('tree_content', 'tree', validate_redirect_url($_SERVER['REQUEST_URI'] ?? '')));?>;
 		refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
 		pageAction      = 'tree';
 		navHeight       = $('.cactiTreeNavigationArea').height();

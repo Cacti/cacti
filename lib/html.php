@@ -348,6 +348,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		$columns = read_user_setting('num_columns');
 	}
 
+	$columns = max(1, (int) $columns);
+
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
@@ -411,7 +413,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					}
 
 					print "<tr class='tableHeader'>
-							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . $graph['data_query_name'] . '</td>
+							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . html_escape($graph['data_query_name']) . '</td>
 						</tr>';
 					$i = 0;
 				}
@@ -2649,8 +2651,8 @@ function html_common_header($title, $selectedTheme = '') {
 		var filterSettingsSaved='<?php print __esc('Filter Settings Saved');?>';
 		var spikeKillResults='<?php print __esc('SpikeKill Results');?>';
 		var utilityView='<?php print __esc('Utility View');?>';
-		var realtimeLabel = <?php print json_encode(__('Realtime'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-		var realtimeStopLabel = <?php print json_encode(__('Stop Realtime'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+		var realtimeLabel = <?php print cacti_js_encode(__('Realtime')); ?>;
+		var realtimeStopLabel = <?php print cacti_js_encode(__('Stop Realtime')); ?>;
 		var treeView='<?php print __esc('Tree View');?>';
 		var listView='<?php print __esc('List View');?>';
 		var previewView='<?php print __esc('Preview View');?>';

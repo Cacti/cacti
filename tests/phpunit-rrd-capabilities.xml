@@ -12,8 +12,11 @@
             <file>Unit/Core/ScriptQueryPathTest.php</file>
             <file>Unit/Core/Php85CompatibilityTest.php</file>
             <file>Unit/Core/ManagementSaveTest.php</file>
+            <file>Unit/Core/MessageCallersTest.php</file>
+            <file>Unit/Security/Xss/RaiseMessageNameEscapeTest.php</file>
             <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>
             <file>Unit/Core/Rrd/GraphPollTimeTest.php</file>
+            <file>Unit/Core/Rrd/RrdAggregateCdefDefsTest.php</file>
             <file>Unit/Core/Rrd/RrdNativeUpdateCapabilitiesTest.php</file>
             <file>Unit/Core/Rrd/RrdVersionCheckReuseTest.php</file>
             <file>Unit/Core/Rrd/RrdDataSourceDiffTest.php</file>

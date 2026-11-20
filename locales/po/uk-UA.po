@@ -20291,6 +20291,10 @@ msgstr ""
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #~ msgid "SNMP Rules"
 #~ msgstr "Правила SNMP"
 

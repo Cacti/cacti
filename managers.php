@@ -513,7 +513,7 @@ function manager_notifications($id, $header_label) {
 	if (get_request_var('mib') == '-1') {
 		/* Show all items */
 	} elseif (!isempty_request_var('mib')) {
-		$sql_where .= " AND snmpagent_cache.mib='" . get_request_var('mib') . "'";
+		$sql_where .= ' AND snmpagent_cache.mib=' . db_qstr(get_request_var('mib'));
 	}
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
@@ -765,7 +765,7 @@ function manager_logs($id, $header_label) {
 	if (get_request_var('severity') == '-1') {
 		/* Show all items */
 	} elseif (!isempty_request_var('severity')) {
-		$sql_where .= " AND snl.severity='" . get_request_var('severity') . "'";
+		$sql_where .= ' AND snl.severity=' . db_qstr(get_request_var('severity'));
 	}
 
 	/* filter by search string */
