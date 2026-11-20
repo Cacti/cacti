@@ -24,7 +24,7 @@ foreach (['cacti_sizeof', 'stri_replace'] as $function) {
 	\cacti_fixture_source_function($root . '/lib/functions.php', $function, __NAMESPACE__);
 }
 
-foreach (['substitute_host_data', 'substitute_snmp_query_data'] as $function) {
+foreach (['strip_credential_variables', 'substitute_host_data', 'substitute_snmp_query_data'] as $function) {
 	\cacti_fixture_source_function($root . '/lib/variables.php', $function, __NAMESPACE__);
 }
 \cacti_fixture_source_function($root . '/lib/rrd.php', 'rrd_substitute_host_query_data', __NAMESPACE__);

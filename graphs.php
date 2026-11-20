@@ -1829,8 +1829,9 @@ function graph_edit() {
 		<div class='cactiTable'>
 			<div id='graphLocation' class='center'></div>
 		<?php
-		if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
-			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+		if (isset($_SESSION['graph_debug_mode']) && !empty($graph['local_graph_id'])) {
+			/* RRDtool's error text repeats graph item text, so it is returned and escaped, not printed */
+			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_RETURN_STDERR;
 			$graph_data_array['print_source'] = 1;
 			$graph_data_array['graph_end']    = $graph_end;
 			$graph_data_array['graph_start']  = $graph_start;
@@ -1844,7 +1845,7 @@ function graph_edit() {
 				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
+				<pre><?php print ($config['poller_id'] == 1 ? html_escape((string) @rrdtool_function_graph($graph['local_graph_id'], 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id'])) : __esc('Not Checked'));?></pre>
 			</div>
 		<?php
 		}

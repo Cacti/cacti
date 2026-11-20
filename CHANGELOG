@@ -274,6 +274,7 @@ Cacti CHANGELOG
 -issue#8815: Escape stored names, log lines and tab titles for their output context in the aggregate migrate notice, graph thumbnails, data source repair steps, installer log, automation SNMP options, tree breadcrumb and tab overflow menu
 -issue#8817: Keep custom data source paths to a single RRDtool argument, mask credential fields in logged validation errors, report LDAP login failures without the server error text, and neutralise formulas in the discovery and color exports
 -issue#8818: Require POST for the remaining state-changing actions: data source debug, SNMP agent and manager log purges, device template items, data input field removal, data source enable and disable, CDEF and VDEF reordering, and profile resets
+-issue#8825: Quote RRDtool arguments in a form RRDtool's command parser reads as one argument, escape RRDtool output in the graph debug and properties views, keep device credentials out of titles and graph text, and restrict the RRA restructure tool to RRD files inside the RRA directory
 -issue#8839: Use non-backtracking Log Viewer regex search: supports grouping, alternatives, character classes, anchors, and basic quantifiers; unsupported PCRE constructs are treated as literal text.
 -issue#8853: Run Log Viewer regex searches through PCRE under a match limit instead of stepping every byte in PHP, keeping the NFA for lines that reach the limit
 -issue: Fix Script Server performance issues with continual checks to the file include file path

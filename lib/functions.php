@@ -5505,7 +5505,16 @@ function cacti_escapeshellarg($string, $quote = true) {
 	 * you do this, but are perfectly happy with a quotation mark.
 	 */
 	if ($config['cacti_server_os'] == 'unix') {
-		$string = escapeshellarg($string);
+		/* escapeshellarg() writes an apostrophe as '\'', which RRDtool's own
+		 * command parser (rrdtool -) does not read: it has no backslash escape,
+		 * so the next apostrophe ends the argument early.  '"'"' closes the
+		 * quote, adds a double-quoted apostrophe and reopens it.  A POSIX shell
+		 * and RRDtool both join those pieces into the same single argument.
+		 * escapeshellarg() still runs first for its rejection of NUL bytes. */
+		escapeshellarg($string);
+
+		$string = "'" . str_replace("'", "'\"'\"'", $string) . "'";
+
 		if ($quote) {
 			return $string;
 		} else {

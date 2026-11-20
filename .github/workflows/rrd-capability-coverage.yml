@@ -149,6 +149,12 @@ jobs:
           XDEBUG_MODE: coverage
           CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
         run: tests/e2e/boost/run-coverage.sh "$PWD"
+      - name: Exercise graph diagnostics and RRA path migration
+        env:
+          MYSQL_PWD: cactiroot
+          XDEBUG_MODE: coverage
+          CACTI_PR_RAW_COVERAGE: ${{ runner.temp }}/request-coverage
+        run: tests/e2e/rrd/display-and-paths.sh
       - name: Exercise translated JavaScript expressions
         env:
           XDEBUG_MODE: coverage
