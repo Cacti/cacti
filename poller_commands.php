@@ -337,7 +337,8 @@ function commands_launch_child($host_id) {
 
 	cacti_log(sprintf('NOTE: Launching Commands Process Number %s for Type %s', $host_id, 'child'), false, 'CLEANUP', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug':''));
+	/* the host id is parsed out of poller_command text, so pin it to an integer before the shell */
+	exec_background($php_binary, cacti_escapeshellarg($config['base_path'] . '/poller_commands.php') . ' --child=' . (int) $host_id . ($seebug ? ' --debug':''));
 }
 
 /**
