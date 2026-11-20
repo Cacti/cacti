@@ -74,7 +74,7 @@ function ss_fortigate_ips($host_id = '') {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['snmp_retries'],
+		read_config_option('snmp_retries'),
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 

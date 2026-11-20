@@ -100,6 +100,7 @@ Cacti CHANGELOG
 -security#8728: Harden - Validate installer wizard state, theme and step requests, and escape installer output; omit configuration values and database error details from installer diagnostics
 -issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback
 -issue#3698: Record each registered background process's database connection, and end that connection when the process is killed for a timeout or found to have exited, so its statement stops running and its locks are released
+-issue#4311: Point a CDEF's DEF names (such as a,b,-) in an aggregate graph at each member graph's own data sources, and at their totals in a totalling item, instead of the first member's
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
