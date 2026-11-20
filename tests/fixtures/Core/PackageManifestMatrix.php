@@ -36,6 +36,10 @@ function raise_message($id, $text, $level) {
 	$GLOBALS['manifest_messages'][] = [$id, $level];
 }
 
+function __($text, ...$args) {
+	return vsprintf($text, $args);
+}
+
 function __esc($text, ...$args) {
 	return vsprintf($text, $args);
 }

@@ -12,7 +12,7 @@ import unittest
 
 class RequestDispatchTest(unittest.TestCase):
     def test_package_change_runs_the_signed_archive_probe(self):
-        self.dispatch('lib/package.php', ['PackageArchive.php', 'PackageRepositoryWorkspace.php', 'PackageImportFileStatus.php'])
+        self.dispatch('lib/package.php', ['MessageFormatting.php', 'PackageArchive.php', 'PackageRepositoryWorkspace.php', 'PackageImportFileStatus.php'])
         self.dispatch('tests/fixtures/Core/PackageArchive.php', 'PackageArchive.php')
 
     def test_queue_change_runs_the_queue_probe_without_ripgrep(self):
@@ -38,8 +38,15 @@ class RequestDispatchTest(unittest.TestCase):
     def test_graph_change_runs_the_native_graph_probe(self):
         self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
 
+    def test_device_change_runs_the_collector_notification_probe(self):
+        self.dispatch('lib/api_device.php', ['DeviceCollectorMessages.php', 'MessageFormatting.php'])
+
+    def test_ui_messages_run_their_rendering_probes(self):
+        self.dispatch('link.php', 'ExternalLinkMessage.php')
+        self.dispatch('lib/plugins.php', ['TrustedActionMessages.php', 'MessageFormatting.php'])
+
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', ['BoundaryContracts.php', 'ScriptSubstitutionMatrix.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
+        self.dispatch('lib/functions.php', ['BoundaryContracts.php', 'ScriptSubstitutionMatrix.php', 'ReportMessageDelivery.php', 'MessageFormatting.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
@@ -58,7 +65,7 @@ class RequestDispatchTest(unittest.TestCase):
                 self.dispatch(path, 'BoostBulkDrainCoverage.php')
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
-        self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
+        self.dispatch('package_repos.php', ['MessageFormatting.php', 'PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
     def test_import_change_runs_the_manifest_fixture(self):
         self.dispatch('lib/import.php', ['PackageManifestMatrix.php', 'PackageImportFileStatus.php'])
@@ -96,7 +103,8 @@ class RequestDispatchTest(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
-                           'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
+                           'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php', 'Core/ReportMessageDelivery.php', 'Core/DeviceCollectorMessages.php',
+                           'Core/MessageFormatting.php', 'Core/ExternalLinkMessage.php', 'Core/TrustedActionMessages.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
                            'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',

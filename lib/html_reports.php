@@ -394,7 +394,7 @@ function reports_form_save() : void {
 
 			if ($regex_valid !== true) {
 				$_SESSION[SESS_ERROR_FIELDS]['graph_name_regexp'] = 3;
-				raise_message('custom', __esc('The regular expression "%s" is not valid. Error is %s', (string) $save['graph_name_regexp'], (string) $regex_valid), MESSAGE_LEVEL_ERROR);
+				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', (string) $save['graph_name_regexp'], (string) $regex_valid), MESSAGE_LEVEL_ERROR);
 			}
 		}
 		$save['site_id']           = (isrv('site_id') ? form_input_validate(gnrv('site_id'), 'site_id', '^[-0-9]+$', true, 3) : 0);
@@ -693,13 +693,13 @@ function reports_send(int $id) : void {
 		}
 
 		if ($report['email'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['subject'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_name'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_email'] == '') {
-			raise_message('report_message', __esc('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} else {
 			generate_report(0, $report, true);
 		}
