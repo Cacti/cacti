@@ -173,7 +173,7 @@ function reports_add_devices(int $report_id, array $device_ids, array $timespan,
 					);
 
 					raise_message('reports_add_device_' . $device_id,
-						__esc('Device \'%s\' successfully added to Report.',
+						__('Device \'%s\' successfully added to Report.',
 							$description),
 						MESSAGE_LEVEL_INFO);
 				} else {
@@ -182,7 +182,7 @@ function reports_add_devices(int $report_id, array $device_ids, array $timespan,
 				}
 			} else {
 				$errors++;
-				raise_message('reports_no_add_device_' . $device_id, __esc('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
+				raise_message('reports_no_add_device_' . $device_id, __('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
 			}
 		}
 
@@ -742,7 +742,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 	if ($error != '') {
 		if (isrv('id')) {
 			raise_message('report_message',
-				__esc('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'',
+				__('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'',
 					$report['name'],
 					$error),
 				MESSAGE_LEVEL_ERROR);
@@ -760,7 +760,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 	}
 
 	if (cacti_sizeof($_REQUEST)) {
-		raise_message('report_message', __esc('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
+		raise_message('report_message', __('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
 	}
 
 	return true;
@@ -973,13 +973,13 @@ function reports_remove_history(int $history_id, int $report_id = 0) : void {
 		db_execute_prepared('DELETE FROM reports_log WHERE id = ?', [$history_id]);
 
 		raise_message('remove_message',
-			__esc('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.',
+			__('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.',
 				$report['name'],
 				get_username($_SESSION[SESS_USER_ID])),
 			MESSAGE_LEVEL_INFO);
 	} else {
 		raise_message('remove_error',
-			__esc('Only the owning user \'%s\' or a Report Administrator can remove the report.',
+			__('Only the owning user \'%s\' or a Report Administrator can remove the report.',
 				get_username($_SESSION[SESS_USER_ID])),
 			MESSAGE_LEVEL_ERROR);
 	}
@@ -2322,21 +2322,21 @@ function reports_graphs_action_execute(string $action) : string {
 						$id = sql_save($save, 'reports_items');
 
 						if ($id) {
-							$message .= __('Created Report Graph Item \'<i>%s</i>\'', get_graph_title($local_graph_id)) . '<br>';
+							$message .= __('Created Report Graph Item \'<i>%s</i>\'', html_escape(get_graph_title($local_graph_id))) . '<br>';
 						} else {
 							$message .= __('Failed Adding Report Graph Item \'<i>%s</i>\' Already Exists',
-								get_graph_title($local_graph_id)) . '<br>';
+								html_escape(get_graph_title($local_graph_id))) . '<br>';
 						}
 					} else {
 						$message .= __('Skipped Report Graph Item \'<i>%s</i>\' Already Exists',
-							get_graph_title($local_graph_id)) . '<br>';
+							html_escape(get_graph_title($local_graph_id))) . '<br>';
 					}
 				}
 			}
 		}
 
 		if ($message != '') {
-			raise_message('report_send', $message, MESSAGE_LEVEL_INFO);
+			raise_message_html('report_send', $message, MESSAGE_LEVEL_INFO);
 		}
 	}
 
@@ -2626,7 +2626,7 @@ function reports_queue(string $name,
 	if ($id > 0) {
 		if ($requested_id > 0) {
 			raise_message('report_scheduled',
-				__esc("The Report '%s' from source %s with id %s is scheduled to run!",
+				__("The Report '%s' from source %s with id %s is scheduled to run!",
 					$name,
 					$source,
 					$source_id,
@@ -2644,7 +2644,7 @@ function reports_queue(string $name,
 	} else {
 		if ($requested_id > 0) {
 			raise_message('report_not_scheduled',
-				__esc("The Report '%s' from source %s with id %s was not scheduled to run due to an error!",
+				__("The Report '%s' from source %s with id %s was not scheduled to run due to an error!",
 					$name,
 					$source,
 					$source_id,

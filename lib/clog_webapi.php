@@ -92,6 +92,14 @@ function clog_validate_filename(string &$file,
 	$filename = '';
 	$filefull = '';
 
+	/* Reject Windows-special file name forms so a name the operating system
+	 * resolves back to the active log (a trailing dot or space, or an alternate
+	 * data stream or drive colon) cannot slip past the active log guard in
+	 * clog_purge_logfile(). Legitimate rotated logs end in a digit. */
+	if (str_contains($file, ':') || preg_match('/[. ]$/', $file)) {
+		return false;
+	}
+
 	if (!empty($errfile) && str_starts_with($file, $errbase)) {
 		$filepath = dirname($errfile);
 		$filename = $errbase;
@@ -140,7 +148,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 	// basic checking
 	if ($action == 'rotate' && $log_action == LOG_ACTION_PURGE) {
 		raise_message('rotate_failed',
-			__esc('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' wished to rotate, but rotating is disabled',
+			__('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' wished to rotate, but rotating is disabled',
 				basename($purgefile),
 				get_username()),
 			MESSAGE_LEVEL_ERROR);
@@ -150,7 +158,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 
 	if ($action == 'purge' && $log_action == LOG_ACTION_ROTATE) {
 		raise_message('purge_failed',
-			__esc('Cacti Log file purging failed for Log File \'%s\'.  User \'%s\' wished to purge, but purging is disabled',
+			__('Cacti Log file purging failed for Log File \'%s\'.  User \'%s\' wished to purge, but purging is disabled',
 				basename($purgefile),
 				get_username()),
 			MESSAGE_LEVEL_ERROR);
@@ -160,7 +168,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 
 	if ($filename != $cactiLog && $filename != $errorLog && $action == 'rotate') {
 		raise_message('rotate_failed',
-			__esc('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' ' .
+			__('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' ' .
 				'wished to rotate, but rotating is not allowed on already rotated files',
 				basename($purgefile),
 				get_username()),
@@ -170,10 +178,10 @@ function clog_purge_logfile(string $action = 'purge') : void {
 	}
 
 	if ($action == 'purge') {
-		$imessage = __('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($purgefile), get_username());
+		$imessage = __esc('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($purgefile), get_username());
 		$message  = sprintf('The Cacti Log File \'%s\', Removed by user \'%s\'', basename($purgefile), get_username());
 	} else {
-		$imessage = __('The Cacti Log File \'%s\' was Rotated by user \'%s\'', basename($purgefile), get_username());
+		$imessage = __esc('The Cacti Log File \'%s\' was Rotated by user \'%s\'', basename($purgefile), get_username());
 		$message  = sprintf('The Cacti Log File \'%s\', Rotated by user \'%s\'', basename($purgefile), get_username());
 	}
 
@@ -188,7 +196,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 					cacti_log($message, false, 'WEBUI');
 				} else {
 					raise_message('clog_removed',
-						__esc('Removal Failed due to the Administrator blocking removal of archived ' .
+						__('Removal Failed due to the Administrator blocking removal of archived ' .
 							'files.  The file \'%s\' can not be removed.',
 							basename($purgefile)),
 						MESSAGE_LEVEL_WARN);
@@ -209,7 +217,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 					cacti_log($message, false, 'WEBUI');
 				} else {
 					raise_message('clog_removed',
-						__esc('Unable to open log file \'%s\' for writing.',
+						__('Unable to open log file \'%s\' for writing.',
 							basename($logfile)),
 						MESSAGE_LEVEL_ERROR);
 				}

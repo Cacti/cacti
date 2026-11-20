@@ -12,9 +12,8 @@ import unittest
 
 class RequestDispatchTest(unittest.TestCase):
     def test_package_change_runs_the_signed_archive_probe(self):
-        for path in ['lib/package.php', 'tests/fixtures/Core/PackageArchive.php']:
-            with self.subTest(path=path):
-                self.dispatch(path, ['PackageArchive.php', 'library'] if path == 'lib/package.php' else 'PackageArchive.php')
+        self.dispatch('lib/package.php', ['MessageFormatting.php', 'PackageArchive.php', 'PackageRepositoryWorkspace.php', 'PackageImportFileStatus.php', 'library'])
+        self.dispatch('tests/fixtures/Core/PackageArchive.php', 'PackageArchive.php')
 
     def test_queue_change_runs_the_queue_probe_without_ripgrep(self):
         self.dispatch('cli/queue_worker.php', 'queue')
@@ -39,9 +38,18 @@ class RequestDispatchTest(unittest.TestCase):
     def test_graph_change_runs_the_native_graph_probe(self):
         self.dispatch('lib/rrd.php', ['FallbackSourceIdentity.php', 'library'])
 
+    def test_device_change_runs_the_collector_notification_probe(self):
+        self.dispatch('lib/api_device.php', ['DeviceCollectorMessages.php', 'MessageFormatting.php', 'library'])
+
+    def test_ui_messages_run_their_rendering_probes(self):
+        self.dispatch('link.php', 'ExternalLinkMessage.php')
+        self.dispatch('lib/plugins.php', ['TrustedActionMessages.php', 'MessageFormatting.php', 'library'])
+
     def test_account_change_runs_the_native_audit_probe(self):
         self.dispatch('lib/functions.php', [
             'ScriptSubstitutionMatrix.php',
+            'ReportMessageDelivery.php',
+            'MessageFormatting.php',
             'UserAdministrationAuditCoverage.php',
             'graph_group_probe.php',
             'library',
@@ -51,7 +59,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'library'])
 
     def test_device_library_runs_the_database_contracts(self):
-        self.dispatch('lib/api_device.php', 'library')
+        self.dispatch('lib/api_device.php', ['DeviceCollectorMessages.php', 'MessageFormatting.php', 'library'])
 
     def test_library_fixture_changes_run_the_database_contracts(self):
         for name in ['LibraryBehavior', 'LibraryCollection', 'LibraryAuthentication',
@@ -84,9 +92,14 @@ class RequestDispatchTest(unittest.TestCase):
                         'include/global.php', 'user_admin.php', 'lib/plugins.php',
                         'lib/Auth/LocalAuthLoginProvider.php']:
             with self.subTest(changed=changed):
-                additional = {'lib/html.php': ['accessibility'], 'host.php': ['accessibility'],
+                additional = {'lib/html.php': ['accessibility'], 'host.php': ['accessibility', 'MessageFormatting.php'],
                               'lib/boost.php': ['BoostBulkDrainCoverage.php'],
                               'include/global.php': ['BoundaryContracts.php'],
+                              'lib/data_query.php': ['MessageFormatting.php'],
+                              'lib/clog_webapi.php': ['MessageFormatting.php'],
+                              'lib/html_utility.php': ['MessageFormatting.php'],
+                              'graph_templates.php': ['MessageFormatting.php'],
+                              'lib/plugins.php': ['TrustedActionMessages.php', 'MessageFormatting.php'],
                               'user_admin.php': ['accessibility', 'UserAdministrationAuditCoverage.php']}
                 self.dispatch(changed, additional.get(changed, []) + ['library'])
 
@@ -104,10 +117,13 @@ class RequestDispatchTest(unittest.TestCase):
                 self.dispatch(path, ['BoostBulkDrainCoverage.php', 'library'] if path == 'lib/boost.php' else 'BoostBulkDrainCoverage.php')
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
-        self.dispatch('package_repos.php', ['PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
+        self.dispatch('package_repos.php', ['MessageFormatting.php', 'PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
     def test_import_change_runs_the_manifest_fixture(self):
-        self.dispatch('lib/import.php', ['PackageManifestMatrix.php', 'library'])
+        self.dispatch('lib/import.php', ['PackageManifestMatrix.php', 'PackageImportFileStatus.php', 'library'])
+
+    def test_package_import_change_runs_the_diff_boundary_probe(self):
+        self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
@@ -139,9 +155,11 @@ class RequestDispatchTest(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
             for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
-                           'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php',
+                           'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php', 'Core/ReportMessageDelivery.php', 'Core/DeviceCollectorMessages.php',
+                           'Core/MessageFormatting.php', 'Core/ExternalLinkMessage.php', 'Core/TrustedActionMessages.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
-                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php',
+                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
+                           'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)

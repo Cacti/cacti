@@ -589,13 +589,13 @@ function data_query_remove_disabled_items(array $orphaned_ids) : void {
 							poller_item_delete_for_data_source($orphaned_ids, $rcnn_id, false);
 						} else {
 							raise_message('poller_down_' . $poller_id,
-								__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+								__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 									$poller_id),
 								MESSAGE_LEVEL_WARN);
 						}
 					} else {
 						raise_message('poller_down_' . $poller_id,
-							__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+							__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 								$poller_id),
 							MESSAGE_LEVEL_WARN);
 					}
@@ -3291,7 +3291,7 @@ function api_data_query_errors(int $snmp_query_graph_id, array $post) : bool {
 		foreach ($data_sources as $ds) {
 			if (!isset($post['dsdt_' . $ds['data_template_id'] . '_' . $ds['id'] . '_check'])) {
 				raise_message('mapping_error',
-					__esc('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right',
+					__('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right',
 						$ds['data_source_name']),
 					MESSAGE_LEVEL_ERROR);
 

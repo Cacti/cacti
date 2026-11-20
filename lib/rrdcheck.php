@@ -602,7 +602,7 @@ function rrdcheck_valid_tune_spec(string $spec) : bool {
  * @return string A short phrase describing whether the tune ran
  */
 function rrdcheck_tune_rrdfile(string $file, string $spec, int $local_data_id, bool $use_proxy, &$pipes) : string {
-	$command = read_config_option('path_rrdtool') . ' tune ' . cacti_escapeshellarg($file) . ' ' . cacti_escapeshellarg($spec);
+	$command = cacti_escapeshellarg((string) read_config_option('path_rrdtool')) . ' tune ' . cacti_escapeshellarg($file) . ' ' . cacti_escapeshellarg($spec);
 
 	if (!rrdcheck_valid_tune_spec($spec)) {
 		cacti_log("ERROR: RRDcheck - refusing malformed tune specification - DS[$local_data_id] Spec[$spec]", false, 'RRDCHECK');
@@ -976,7 +976,7 @@ function rrdcheck_rrdtool_init() : array {
 		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
 	}
 
-	$command = read_config_option('path_rrdtool') . ' - ';
+	$command = [(string) read_config_option('path_rrdtool'), '-'];
 
 	$process = proc_open($command, $fds, $pipes);
 

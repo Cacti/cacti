@@ -721,14 +721,14 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids,
 							[$poller_id], true, $rcnn_id);
 					} else {
 						raise_message('poller_down_' . $poller_id,
-							__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+							__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 								$poller_id),
 							MESSAGE_LEVEL_WARN);
 						$raised = true;
 					}
 				} else {
 					raise_message('poller_down_' . $poller_id,
-						__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+						__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 							$poller_id),
 						MESSAGE_LEVEL_WARN);
 					$raised = true;
@@ -808,14 +808,14 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids,
 							db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 						} elseif (!$raised) {
 							raise_message('poller_down_' . $poller_id,
-								__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+								__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 									$poller_id),
 								MESSAGE_LEVEL_WARN);
 							$raised = true;
 						}
 					} elseif (!$raised) {
 						raise_message('poller_down_' . $poller_id,
-							__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+							__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 								$poller_id),
 							MESSAGE_LEVEL_WARN);
 						$raised = true;
@@ -840,14 +840,14 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids,
 					db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 				} else {
 					raise_message('poller_down_' . $poller_id,
-						__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+						__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 							$poller_id),
 						MESSAGE_LEVEL_WARN);
 					$raised = true;
 				}
 			} elseif (!$raised) {
 				raise_message('poller_down_' . $poller_id,
-					__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+					__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 						$poller_id),
 					MESSAGE_LEVEL_WARN);
 				$raised = true;
@@ -873,13 +873,13 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids,
 						[$poller_id], true, $rcnn_id);
 				} elseif (!$raised) {
 					raise_message('poller_down_' . $poller_id,
-						__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+						__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 							$poller_id),
 						MESSAGE_LEVEL_WARN);
 				}
 			} elseif (!$raised) {
 				raise_message('poller_down_' . $poller_id,
-					__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+					__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 						$poller_id),
 					MESSAGE_LEVEL_WARN);
 			}

@@ -183,6 +183,12 @@
     margin: 0;
 }
 
+/* The light palette's --text-color-lighter is near black, which is unreadable
+   on the dark blue highlight. Use the white the navigation uses there. */
+[data-theme-color='light'] .ui-menu .ui-state-active {
+    color: var(--text-color-white);
+}
+
 .ui-menu .ui-menu-item {
     background-color: var(--background-lowlight);
     position: relative;

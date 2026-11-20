@@ -1,5 +1,5 @@
 /* Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later. */
-import { test, expect, type Page, type TestInfo } from '@playwright/test';
+import { test, expect, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { installThemeCss, collectThemeCoverage } from '../theme-css';
@@ -641,6 +641,53 @@ for (const palette of ['dark', 'light']) {
 			}
 		});
 	}
+	test(`midwinter ${palette} highlighted selectmenu and autocomplete items keep readable text and a visible highlight`, async ({ page }) => {
+		await prepare(page, '<!DOCTYPE html><label for="language">Language</label>' +
+			'<select id="language"><option>English</option><option>Deutsch</option><option>Español</option></select>' +
+			'<label for="search">Search</label><input id="search">');
+		await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery.js' });
+		await page.addScriptTag({ url: 'http://cacti-theme.test/include/js/jquery-ui.js' });
+		await page.evaluate(() => {
+			const $ = (window as any).jQuery;
+			$('#language').selectmenu();
+			$('#search').autocomplete({ source: ['edge-router-01', 'edge-router-02', 'core-switch-01'], minLength: 0, delay: 0 });
+		});
+		// Measures the highlight color as text on the item behind it, so the
+		// highlight must stand out from the unselected menu surface.
+		const highlightContrast = async (item: Locator) => {
+			await item.evaluate(element => {
+				document.getElementById('highlight-probe')?.remove();
+				const probe = document.createElement('span');
+				probe.id = 'highlight-probe';
+				probe.textContent = 'probe';
+				probe.style.color = getComputedStyle(element).backgroundColor;
+				element.parentElement!.append(probe);
+			});
+			return page.locator('#highlight-probe').evaluate(textContrast);
+		};
+		const check = async (menu: string) => {
+			const active = page.locator(`${menu} .ui-menu-item-wrapper.ui-state-active`);
+			await expect(active).toHaveCount(1);
+			expect.soft(await active.evaluate(textContrast), `${menu} highlighted text`).toBeGreaterThanOrEqual(4.5);
+			// Dark's highlight is 1.7:1 against its menu, measured separately.
+			if (palette === 'light') expect.soft(await highlightContrast(active), `${menu} highlight against the menu`).toBeGreaterThanOrEqual(3);
+			for (const item of await page.locator(`${menu} .ui-menu-item-wrapper:not(.ui-state-active)`).all()) {
+				expect.soft(await item.evaluate(textContrast), `${menu} unselected text`).toBeGreaterThanOrEqual(4.5);
+			}
+		};
+		await page.locator('#language-button').click();
+		await page.keyboard.press('ArrowDown');
+		await check('#language-menu');
+		await page.locator('#language-menu .ui-menu-item-wrapper').last().hover();
+		await check('#language-menu');
+		await page.keyboard.press('Escape');
+		await page.locator('#search').focus();
+		await page.evaluate(() => (window as any).jQuery('#search').autocomplete('search', ''));
+		await page.keyboard.press('ArrowDown');
+		await check('.ui-autocomplete');
+		await page.locator('.ui-autocomplete .ui-menu-item-wrapper').last().hover();
+		await check('.ui-autocomplete');
+	});
 	test(`midwinter ${palette} seeded inventory opens and closes narrow details`, async ({ page }, info) => {
 		await page.setViewportSize({ width: 1100, height: 420 });
 		let html = readFileSync(resolve(root, 'tests/fixtures/Ui/cacti-theme.html'), 'utf8')

@@ -151,7 +151,7 @@ function process_user_input(array &$timespan, int $timeshift) : void {
 
 		if ($date1 < $early_date) {
 			raise_message('start_too_early',
-				__esc('Your Start Date \'%s\' is before January 1993.  Please pick a more recent Start Date.',
+				__('Your Start Date \'%s\' is before January 1993.  Please pick a more recent Start Date.',
 					date('Y-m-d H:i:s',
 						(int) $date1)),
 				MESSAGE_LEVEL_WARN);
@@ -160,7 +160,7 @@ function process_user_input(array &$timespan, int $timeshift) : void {
 
 		if ($date2 < $early_date) {
 			raise_message('start_too_early',
-				__esc('Your End Date \'%s\' is before January 1993.  Please pick a more recent End Date.',
+				__('Your End Date \'%s\' is before January 1993.  Please pick a more recent End Date.',
 					date('Y-m-d H:i:s',
 						(int) $date2)),
 				MESSAGE_LEVEL_WARN);

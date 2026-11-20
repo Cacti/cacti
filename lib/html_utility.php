@@ -1025,7 +1025,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
 				raise_message('custom',
-					__esc('The regular expression "%s" is not valid. Error is %s',
+					__('The regular expression "%s" is not valid. Error is %s',
 						(string) get_nfilter_request_var($name),
 						(string) $custom_error),
 					MESSAGE_LEVEL_ERROR);
@@ -1298,7 +1298,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
 						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s',
-							htmle((string) get_nfilter_request_var($variable)), htmle((string) $custom_error)), MESSAGE_LEVEL_ERROR);
+							(string) get_nfilter_request_var($variable), (string) $custom_error), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
 					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), htmle((string) $custom_error));

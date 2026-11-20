@@ -1640,13 +1640,13 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
 				poller_item_delete_for_data_source($local_data_id, $rcnn_id, false);
 			} else {
 				raise_message('poller_down_' . $poller_id,
-					__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+					__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 						$poller_id),
 					MESSAGE_LEVEL_WARN);
 			}
 		} else {
 			raise_message('poller_down_' . $poller_id,
-				__esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
+				__('Remote Poller %s is Down, you will need to perform a FullSync once it is up again',
 					$poller_id),
 				MESSAGE_LEVEL_WARN);
 		}
