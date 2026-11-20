@@ -266,7 +266,7 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
 		// execute the old fashion way
 	} else {
 		// formulate command
-		$command = read_config_option('path_php_binary') . ' ' . $command;
+		$command = cacti_escapeshellarg((string) read_config_option('path_php_binary')) . ' ' . $command;
 
 		if (function_exists('popen')) {
 			if (CACTI_SERVER_OS == 'unix') {

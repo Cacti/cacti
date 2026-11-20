@@ -1,22 +1,22 @@
 category	location	match
 cmd_exec	./cactid.php		exec('pgrep -a php | grep cactid.php', $output);
-cmd_exec	./cli/audit_database.php								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old,
+cmd_exec	./cli/audit_database.php								exec(cacti_escapeshellarg($php_binary) . ' ' .
 cmd_exec	./cli/audit_database.php				$db_shell = trim((string) shell_exec('which mysql'));
 cmd_exec	./cli/audit_database.php				exec($cmd, $output, $error);
 cmd_exec	./cli/audit_database.php		exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
 cmd_exec	./cli/batchgapfix.php			exec($command, $output, $return_var);
 cmd_exec	./cli/float_rrdfiles.php					$response = exec($command, $output, $return);
 cmd_exec	./cli/float_rrdfiles.php				$response = exec($command, $output, $return);
-cmd_exec	./cli/push_out_hosts.php		passthru($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
+cmd_exec	./cli/push_out_hosts.php		passthru($command, $exit_code);
 cmd_exec	./cli/remove_broken_graphs.php		$stty  = shell_exec('stty size');
-cmd_exec	./cli/rrdresize.php		$process = proc_open($path_rrdtool . ' -', $fds, $pipes);
+cmd_exec	./cli/rrdresize.php		$process = proc_open([$path_rrdtool, '-'], $fds, $pipes);
 cmd_exec	./cli/splice_rrd.php		$result      = exec($command, $output, $return_var);
 cmd_exec	./cli/splice_rrd.php	$response = shell_exec(cacti_escapeshellcmd($rrdtool));
 cmd_exec	./cli/splice_rrd.php	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
 cmd_exec	./cli/splice_rrd.php	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
 cmd_exec	./cli/update_heartbeat.php				$result = exec($command, $output, $return_code);
 cmd_exec	./cmd.php			$cactiphp = proc_open($command, $cactides, $pipes);
-cmd_exec	./cmd_realtime.php				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+cmd_exec	./cmd_realtime.php				$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./graph_realtime.php			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 cmd_exec	./install/functions.php				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
@@ -93,7 +93,7 @@ cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_spikekill.php				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./remote_agent.php									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+cmd_exec	./remote_agent.php									$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./script_server.php					exec("TASKLIST /FO LIST /FI \"PID eq $ppid\"", $out);
 cmd_exec	./scripts/sql.php	$sql = shell_exec($cmd);
 cmd_exec	./scripts/ss_netsnmp_lmsensors.php			$virtual = intval(shell_exec('/usr/bin/hostnamectl 2> /dev/null | grep -i virtual | wc -l'));
@@ -359,6 +359,7 @@ header_redirect	./data_debug.php					header('Location: data_debug.php?debug=1');
 header_redirect	./data_debug.php				header('Location: data_debug.php?action=view&id=' . gfrv('id'));
 header_redirect	./data_debug.php				header('Location: data_debug.php?action=view&id=' . gfrv('id'));
 header_redirect	./data_input.php				header('Location: data_input.php');
+header_redirect	./data_input.php				header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
 header_redirect	./data_input.php				header('Location: data_input.php?action=edit&id=' . grv('data_input_id'));
 header_redirect	./data_input.php				header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . ($data_input_field_id === null ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
 header_redirect	./data_input.php			header('Location: data_input.php');
@@ -573,7 +574,6 @@ header_redirect	./managers.php		header('Location: managers.php?action=edit&id=' 
 header_redirect	./mibs/index.php	header('Location:../index.php');
 header_redirect	./oauth2.php		header('Location: ' . $authUrl);
 header_redirect	./package.php			header('Location: package.php');
-header_redirect	./package_import.php									header('Location: package_import.php?package_location=' . $package_location);
 header_redirect	./package_import.php						header('Location: package_import.php');
 header_redirect	./package_import.php					header('Location: package_import.php');
 header_redirect	./package_import.php				header('Location: package_import.php');

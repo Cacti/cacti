@@ -153,3 +153,25 @@ function cacti_fixture_map_fragment(string $file, int $from, int $to, string $pr
 		unlink($temporary);
 	}
 }
+
+/** Run a checked-in controller block with its original line numbers and fixture inputs. */
+function cacti_fixture_source_block(string $file, string $namespace, string $pattern, array $locals = []) : array {
+	$text = file_get_contents($file);
+
+	if (preg_match($pattern, $text, $matches, PREG_OFFSET_CAPTURE) !== 1) {
+		throw new RuntimeException('Cannot locate controller block in ' . $file);
+	}
+	[$code, $offset]                                 = $matches[1];
+	$temporary                                       = tempnam(sys_get_temp_dir(), 'cacti-startup-');
+	$GLOBALS['cacti_fixture_source_map'][$temporary] = $file;
+	file_put_contents($temporary, '<?php namespace ' . $namespace . ';' . str_repeat("\n", substr_count(substr($text, 0, $offset), "\n")) . $code);
+	register_shutdown_function(static function () use ($temporary) : void {
+		if (is_file($temporary)) {
+			unlink($temporary);
+		}
+	});
+	extract($locals, EXTR_SKIP);
+	require $temporary;
+
+	return get_defined_vars();
+}
