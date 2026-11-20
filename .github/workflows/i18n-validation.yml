@@ -59,14 +59,16 @@ jobs:
           else
             BASE="$PUSH_BEFORE"
           fi
-          # Guard against empty-tree SHA on first push to a branch
-          if [ "$BASE" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE" ]; then
-            git show --name-only --format="" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt || true
+          # Fall back to HEAD alone on the first push to a branch, or after a
+          # force-push whose previous head is no longer in the clone.
+          if [ -z "$BASE" ] || ! git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            git show --name-only --diff-filter=d --format="" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt
           else
-            git diff --name-only "$BASE" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt || true
+            git diff --name-only --diff-filter=d "$BASE" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt
             echo "base=$BASE" >> "$GITHUB_OUTPUT"
           fi
-          COUNT=$(grep -c '.' /tmp/changed_po.txt 2>/dev/null || echo 0)
+          # grep -c prints 0 and exits 1 when nothing matched.
+          COUNT=$(grep -c '.' /tmp/changed_po.txt || true)
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           echo "Changed .po files ($COUNT):"
           cat /tmp/changed_po.txt
