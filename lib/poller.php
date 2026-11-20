@@ -2917,6 +2917,9 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 					cacti_process_kill($timeout_pid, SIGTERM);
 				}
 
+				/* a process killed by a signal can leave its statement running */
+				cacti_process_kill_db_connection($r);
+
 				unregister_process($tasktype, $taskname, $taskid);
 				register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 		} else {
@@ -2931,6 +2934,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		return false;
 	} else {
 		cacti_log(sprintf('WARNING: Detected process that is exited and did not unregister first! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER');
+		cacti_process_kill_db_connection($r);
 
 		unregister_process($tasktype, $taskname, $taskid);
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
@@ -2955,9 +2959,18 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 		return true;
 	}
 
-	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
-		VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
-		array($tasktype, $taskname, $taskid, $pid, $timeout));
+	/* record this process's database connection, so a process that kills it for running too
+	 * long can end the connection too; see cacti_process_kill_db_connection(). Only a command
+	 * line process does: a web request's connection can outlive it in a pooled worker. */
+	if (PHP_SAPI == 'cli' && db_column_exists('processes', 'connection_id')) {
+		db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, connection_id, started, last_update)
+			VALUES (?, ?, ?, ?, ?, CONNECTION_ID(), NOW(), NOW())',
+			array($tasktype, $taskname, $taskid, $pid, $timeout));
+	} else {
+		db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
+			VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+			array($tasktype, $taskname, $taskid, $pid, $timeout));
+	}
 }
 
 /**
@@ -3039,6 +3052,8 @@ function cacti_process_executable_is_php_interpreter($path) {
  *   cannot establish identity.
  */
 function cacti_process_identity_matches($pid) {
+	global $config;
+
 	$pid           = (int) $pid;
 
 	if ($pid === getmypid()) {
@@ -3053,7 +3068,27 @@ function cacti_process_identity_matches($pid) {
 	 * between master and worker instances of the same Cacti command. */
 	if ($self_cmdline !== false && $self_cmdline !== '' && $other_cmdline !== false && $other_cmdline !== '') {
 		$script = static function ($cmdline) {
-			foreach (explode("\0", $cmdline) as $argument) {
+			$skip_value = false;
+
+			foreach (array_slice(explode("\0", $cmdline), 1) as $argument) {
+				if ($skip_value) {
+					$skip_value = false;
+
+					continue;
+				}
+
+				// A PHP ini value can itself end in .php, such as an
+				// auto_prepend_file. It is not the running script.
+				if (in_array($argument, array('-d', '--define', '-c', '--php-ini'), true)) {
+					$skip_value = true;
+
+					continue;
+				}
+
+				if ($argument === '' || $argument[0] === '-') {
+					continue;
+				}
+
 				if (preg_match('/\.php\z/i', $argument)) {
 					$resolved = realpath($argument);
 
@@ -3067,7 +3102,23 @@ function cacti_process_identity_matches($pid) {
 		$theirs_script = $script($other_cmdline);
 
 		if ($mine_script !== false && $theirs_script !== false) {
-			return hash_equals($mine_script, $theirs_script);
+			if (hash_equals($mine_script, $theirs_script)) {
+				return true;
+			}
+
+			// These entry points share the install/master lock. Different
+			// installer scripts must not look like a recycled, unrelated PID.
+			if (isset($config['base_path'])) {
+				$installers = array(
+					realpath($config['base_path'] . '/cli/install_cacti.php'),
+					realpath($config['base_path'] . '/cli/upgrade_database.php'),
+					realpath($config['base_path'] . '/install/background.php'),
+				);
+
+				return in_array($mine_script, $installers, true) && in_array($theirs_script, $installers, true);
+			}
+
+			return false;
 		}
 
 		if (($mine_script === false) !== ($theirs_script === false)) {
@@ -3171,6 +3222,68 @@ function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
 }
 
 /**
+ * End the database connection of a registered process that was just signaled or found gone. A
+ * signal does not stop a statement the process is running: the server keeps running it and
+ * holding its locks until it finishes, and PHP does not run the process's signal handler until
+ * then. The running statement is killed first, then the connection, which rolls back any
+ * transaction it left open and releases its locks. Only another connection of this database
+ * user is ended. Used as part of Cacti's lib functionality.
+ *
+ * @param array $process The process table row, with the connection it recorded.
+ * @param string $environ Log environment to record the action under.
+ *
+ * @return bool True when the statement or the connection was ended.
+ */
+function cacti_process_kill_db_connection($process, $environ = 'POLLER') {
+	$connection_id = (int) ($process['connection_id'] ?? 0);
+
+	if ($connection_id <= 0 || empty($process['started'])) {
+		return false;
+	}
+
+	/* connection ids start over when the server restarts, so the recorded id still names this
+	 * process's connection only if the server has been up since the process registered */
+	$uptime = db_fetch_row("SHOW GLOBAL STATUS LIKE 'Uptime'", false);
+
+	if (!isset($uptime['Value'])) {
+		return false;
+	}
+
+	/* every column, since QUERY_ID exists only on MariaDB */
+	$thread = db_fetch_row_prepared('SELECT *
+		FROM information_schema.PROCESSLIST
+		WHERE ID = ?
+		AND ID != CONNECTION_ID()
+		AND USER = SUBSTRING_INDEX(CURRENT_USER(), "@", 1)
+		AND UNIX_TIMESTAMP() - ? <= UNIX_TIMESTAMP(?)',
+		array($connection_id, (int) $uptime['Value'], $process['started']));
+
+	if (!cacti_sizeof($thread)) {
+		return false;
+	}
+
+	cacti_log(sprintf('WARNING: Ending database connection %d of the killed process, busy for %d seconds.', $connection_id, $thread['TIME']), false, $environ);
+
+	/* MariaDB kills a statement by its own query id, which is not the connection id, so a
+	 * statement that has already finished is never mistaken for the next one. MySQL has no
+	 * query id and kills the statement the connection is running. */
+	$query_killed = false;
+
+	if (($thread['COMMAND'] ?? '') != 'Sleep') {
+		if (isset($thread['QUERY_ID'])) {
+			$query_killed = (bool) db_execute_prepared('KILL QUERY ID ?', array((int) $thread['QUERY_ID']), false);
+		} else {
+			$query_killed = (bool) db_execute_prepared('KILL QUERY ?', array($connection_id), false);
+		}
+	}
+
+	/* the process may already have closed the connection once its statement ended */
+	$connection_killed = (bool) db_execute_prepared('KILL CONNECTION ?', array($connection_id), false);
+
+	return $query_killed || $connection_killed;
+}
+
+/**
  * Test whether a PID is one Cacti must never signal from the registry. init owns pid 1 on every
  * platform, so a tampered or reused pid column could otherwise take down the host's own service
  * manager. PID 1 remains reserved on every platform. Other low process IDs are valid in PID
@@ -3249,8 +3362,10 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 			} elseif (cacti_process_still_running($pid)) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $logged_pid), false, 'POLLER');
 				cacti_process_kill($pid, SIGTERM);
+				cacti_process_kill_db_connection($r);
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $logged_pid), false, 'POLLER');
+				cacti_process_kill_db_connection($r);
 			}
 
 			unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);

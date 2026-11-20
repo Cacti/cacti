@@ -474,7 +474,7 @@ function form_actions() {
 					print "<tr>
 						<td class='textArea'>
 							<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . "</p>
-							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template))) . "</p>
+							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template)))) . "</p>
 							<p>" . __('Please press \'Return\' to continue.') . "</p>
 							<div class='itemlist'><ul>$graph_list</ul></div>
 						</td>
@@ -997,11 +997,11 @@ function graph_edit() {
 			function changeTotalsType() {
 				if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', '<?php print __('Total');?>');
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('Total'));?>);
 					}
 				} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', '<?php print __('All Items');?>');
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('All Items'));?>);
 					}
 				}
 			}
@@ -1069,12 +1069,12 @@ function graph_edit() {
 		});
 
 		$('#toggle_items').on('click', function() {
-			if ($('#toggle_items').is(":contains('<?php print __('Show');?>')")) {
+			if ($('#toggle_items').text().indexOf(<?php print cacti_js_encode(__('Show'));?>) !== -1) {
 				$('#local_graph_template_graph_id').next('table').css('display', '');
-				$('#toggle_items').text('<?php print __('Hide Item Details');?>');
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Hide Item Details'));?>);
 			} else {
 				$('#local_graph_template_graph_id').next('table').css('display', 'none');
-				$('#toggle_items').text('<?php print __('Show Item Details');?>');
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Show Item Details'));?>);
 			}
 		});
 

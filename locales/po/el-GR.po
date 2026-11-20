@@ -20339,6 +20339,10 @@ msgstr "Μενού Κονσόλας"
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #~ msgid "Click to view just this Graph in Realtime"
 #~ msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
 

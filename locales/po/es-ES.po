@@ -20334,6 +20334,10 @@ msgstr "Menu de consola"
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #~ msgid "Click to view just this Graph in Realtime"
 #~ msgstr "Haga click para ver este gráfico en tiempo real"
 

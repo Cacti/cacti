@@ -282,9 +282,11 @@ function ss_poller_items() {
  * @return mixed The result of the operation, or false on failure.
  */
 function ss_recache() {
+	/* prefer the main poller so the row read does not change between polls when several collectors report */
 	$stats = db_fetch_cell('SELECT value
 		FROM settings
 		WHERE name LIKE "stats_recache%"
+		ORDER BY name = "stats_recache_1" DESC, name
 		LIMIT 1');
 
 	return empty($stats) ? 'RecacheTime:0 DevicesRecached:0' : trim($stats);
@@ -383,7 +385,7 @@ function ss_boost_timing() {
 		}
 	}
 
-	return empty($stats) ? 'get_records:0 results_cycle:0 rrd_filename_and_template:0 rrd_lastupdate:0 rrdupdate:0 delete:0' : trim($stats);
+	return empty($stats) ? 'rrd_get_records:0 rrd_results_cycle:0 rrd_template:0 rrd_lastupdate:0 rrd_update:0 rrd_delete:0' : trim($stats);
 }
 
 /**

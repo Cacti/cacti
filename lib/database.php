@@ -466,9 +466,11 @@ function db_execute($sql, $log = true, $db_conn = false) {
  * @param string $return_func To Be Completed.
  * @param array $return_params To Be Completed.
  *
+ * @param bool $redact Omit values echoed in database error details.
+ *
  * @return bool '1' for success, false for failed.
  */
-function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
+function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array(), $redact = false) {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
 
 	$database_total_queries++;
@@ -565,6 +567,11 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 					$en = $errorinfo[1];
 				}
 			}
+		}
+
+		// Database errors can echo bound values; installer diagnostics omit them.
+		if ($redact && $en != '') {
+			$errorinfo[2] = 'Database operation failed (error details omitted)';
 		}
 
 		if ($en == '') {

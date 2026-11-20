@@ -1,0 +1,112 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * Regressions in dsstats_poller_output(): a COUNTER that wraps from last to
+ * current has advanced by 2^n - last + current, but the hourly rate added
+ * 2^n - 1; and the bulk insert length added the whole buffer after every
+ * row, so each poll flushed far more statements than the packet size needs.
+ */
+
+namespace DsstatsCounterWrapTest;
+
+function read_config_option($name, $force = false) {
+	return ($name == 'dsstats_enable' ? 'on' : 300);
+}
+
+function cacti_sizeof($value) {
+	return is_array($value) ? count($value) : 0;
+}
+
+function cacti_log($message, $output = false, $environ = 'CMDPHP') {
+}
+
+function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = array()) {
+	return false;
+}
+
+function db_fetch_assoc($sql) {
+	if (strpos($sql, 'data_source_type_id') !== false) {
+		return array(
+			array('data_source_name' => 'ctr32', 'data_source_type_id' => 2, 'rrd_step' => 100, 'rrd_maximum' => 'U'),
+			array('data_source_name' => 'ctr64', 'data_source_type_id' => 2, 'rrd_step' => 1, 'rrd_maximum' => 'U'),
+			array('data_source_name' => 'gauge', 'data_source_type_id' => 1, 'rrd_step' => 300, 'rrd_maximum' => 'U'),
+		);
+	}
+
+	return array();
+}
+
+function db_fetch_cell_prepared($sql, $params = array()) {
+	return $GLOBALS['dsstats_wrap_last'][$params[1]];
+}
+
+function db_execute($sql) {
+	$GLOBALS['dsstats_wrap_writes'][] = $sql;
+
+	return true;
+}
+
+$source = file_get_contents(dirname(__DIR__, 4) . '/lib/dsstats.php');
+
+if ($source === false || preg_match('/^function dsstats_poller_output\(.*?^}\R/ms', $source, $matches) !== 1) {
+	throw new \RuntimeException('Unable to extract dsstats_poller_output() for the counter wrap test.');
+}
+
+// the code is lib/dsstats.php from this checkout, with the error handler of this namespace
+$temporary = tempnam(sys_get_temp_dir(), 'dsstats-source-');
+file_put_contents($temporary, '<?php namespace DsstatsCounterWrapTest;' . str_replace("set_error_handler('dsstats_error_handler')", "set_error_handler('DsstatsCounterWrapTest\\\\dsstats_error_handler')", $matches[0]));
+
+try {
+	require $temporary;
+} finally {
+	unlink($temporary);
+}
+
+test('a wrapped COUNTER adds 2^32 or 2^64 to the delta', function ($rrd_name, $last, $current, $rate) {
+	$GLOBALS['dsstats_wrap_last']   = array($rrd_name => $last);
+	$GLOBALS['dsstats_wrap_writes'] = array();
+
+	$updates = array(array('local_data_id' => 7, 'times' => array(2000 => array($rrd_name => $current))));
+
+	dsstats_poller_output($updates);
+
+	expect($GLOBALS['dsstats_wrap_writes'][0])->toContain("'$rrd_name', '" . date('Y-m-d H:i:s', 2000) . "', $rate)");
+})->with(array(
+	// 2^32 - 4294967000 = 296, plus 704 after the wrap, over 100 seconds
+	array('ctr32', '4294967000', '704', '10'),
+	// 2^64 - 6144 is exact as a double, and the small delta must stay exact
+	array('ctr64', '18446744073709545472', '1000', '7144'),
+));
+
+test('one poll of 5000 samples is written in full batches', function () {
+	$GLOBALS['dsstats_wrap_writes'] = array();
+
+	$updates = array();
+
+	for ($local_data_id = 1; $local_data_id <= 5000; $local_data_id++) {
+		$updates[] = array('local_data_id' => $local_data_id, 'times' => array(2000 => array('gauge' => '42')));
+	}
+
+	dsstats_poller_output($updates);
+
+	$cache = array_values(array_filter($GLOBALS['dsstats_wrap_writes'], function ($sql) {
+		return strpos($sql, 'data_source_stats_hourly_cache') !== false;
+	}));
+
+	$last = array_values(array_filter($GLOBALS['dsstats_wrap_writes'], function ($sql) {
+		return strpos($sql, 'data_source_stats_hourly_last') !== false;
+	}));
+
+	// about 45 bytes a row, so all 5000 rows fit in one 264000 byte statement each
+	expect(substr_count(implode('', $cache), "'gauge'"))->toBe(5000)
+		->and(substr_count(implode('', $last), "'gauge'"))->toBe(5000)
+		->and(count($cache))->toBe(1)
+		->and(count($last))->toBe(1);
+});

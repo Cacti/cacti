@@ -20249,6 +20249,10 @@ msgstr "Menu điều khiển"
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #~ msgid "Click to view just this Graph in Realtime"
 #~ msgstr "Nhấn vào đây để xem chỉ đồ thị này trong thời gian thực"
 

@@ -38,18 +38,31 @@ $session_counter_garbage  = 'U';
 
 $active_interval = 600; // Ten minutes
 
-/* determine the number of invalid/valid user logins during the last poller interval */
-$user_logins_valid = db_fetch_cell("SELECT COUNT(*) AS user_logins
-	FROM user_log
-	WHERE UNIX_TIMESTAMP(`time`) BETWEEN UNIX_TIMESTAMP() - $active_interval AND UNIX_TIMESTAMP()
-	AND user_id > 0
-	AND `result` IN (1, 2)");
+/* count logins over one poller interval so that each login is counted in one sample only */
+$login_interval = read_config_option('poller_interval');
 
-$user_logins_invalid = db_fetch_cell("SELECT COUNT(*) AS user_logins
+if (empty($login_interval) || !is_numeric($login_interval)) {
+	$login_interval = 300;
+}
+
+$login_interval = (int) $login_interval;
+
+/* determine the number of invalid/valid user logins during the last poller interval */
+$user_logins_valid = db_fetch_cell_prepared('SELECT COUNT(*) AS user_logins
 	FROM user_log
-	WHERE UNIX_TIMESTAMP(`time`) BETWEEN UNIX_TIMESTAMP() - $active_interval AND UNIX_TIMESTAMP()
-	AND user_id = 0
-	AND `result` IN (0, 3)");
+	WHERE UNIX_TIMESTAMP(`time`) > UNIX_TIMESTAMP() - ?
+	AND UNIX_TIMESTAMP(`time`) <= UNIX_TIMESTAMP()
+	AND user_id > 0
+	AND `result` IN (1, 2)',
+	array($login_interval));
+
+/* result 0 is a failed login, logged with the user id when the username exists; result 3 is a password change */
+$user_logins_invalid = db_fetch_cell_prepared('SELECT COUNT(*) AS user_logins
+	FROM user_log
+	WHERE UNIX_TIMESTAMP(`time`) > UNIX_TIMESTAMP() - ?
+	AND UNIX_TIMESTAMP(`time`) <= UNIX_TIMESTAMP()
+	AND `result` = 0',
+	array($login_interval));
 
 $active_interval_end      = time();
 $active_interval_begin    = $active_interval_end - $active_interval;

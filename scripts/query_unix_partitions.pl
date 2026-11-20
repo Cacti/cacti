@@ -10,7 +10,7 @@ $val2 = $ARGV[1];
 ($val2) = $val2 =~ /^([\w]+)$/;
 
 $val3 = $ARGV[2];
-($val3) = $val3 =~ /^([\w\/-]+)$/;
+($val3) = $val3 =~ /^([\w\/.-]+)$/;
 
 
 if (($val1 ne "query") && ($val1 ne "get") && ($val1 ne "index") && ($val1 ne "num_indexes")) {
@@ -25,9 +25,14 @@ if (($val1 ne "query") && ($val1 ne "get") && ($val1 ne "index") && ($val1 ne "n
 open(DF, "/bin/df -P -k -l|");
 
 $count=0;
+%seen = ();
 while (<DF>) {
   #/dev/hda2             20157744  18553884    579860  97% /var
   if (/^(\/\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s+(\/\S*)$/) {
+   # the device is the index: a device mounted more than once (bind mounts,
+   # btrfs subvolumes) reports the same filesystem, so use its first line only
+   next if ($seen{$1}++);
+
    my %output = (
     device => $1,
     mount => $6,
