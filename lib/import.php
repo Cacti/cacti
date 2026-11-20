@@ -740,19 +740,22 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
  * This function can also read from the $_REQUEST environment certain overrides for
  * Graph Size, and Image format when importing through the GUI.
  *
- * @param string $xmlfile         The XML file to process
- * @param int    $profile_id      The Data Source Profile to use for the packages
- * @param bool   $remove_orphans  Boolean true to remove Graph Template orphans after import
- * @param bool   $replace_svalues Boolean that if true, all suggested values for Graph Templates
- *                                and Data Templates will be replaced with the values in the
- *                                package.
- * @param bool   $preview         If true, only generate a preview of what will be imported
- *                                and the corresponding changes.
- * @param bool   $info_only       Return only the information about the package, not details
- * @param bool   $limitex         Limit the execution time to 50 seconds to process for larger
- *                                packages.
- * @param array  $import_hashes   The hashes to import from the package
- * @param array  $import_files    The XML resource files and script files to import from the package
+ * @param string $xmlfile             The XML file to process
+ * @param int    $profile_id          The Data Source Profile to use for the packages
+ * @param bool   $remove_orphans      Boolean true to remove Graph Template orphans after import
+ * @param bool   $replace_svalues     Boolean that if true, all suggested values for Graph Templates
+ *                                    and Data Templates will be replaced with the values in the
+ *                                    package.
+ * @param bool   $preview             If true, only generate a preview of what will be imported
+ *                                    and the corresponding changes.
+ * @param bool   $info_only           Return only the information about the package, not details
+ * @param bool   $limitex             Limit the execution time to 50 seconds to process for larger
+ *                                    packages.
+ * @param array  $import_hashes       The hashes to import from the package
+ * @param array  $import_files        The XML resource files and script files to import from the package
+ * @param bool   $keep_existing_files If true, script and resource files that already exist are
+ *                                    left in place instead of being replaced by the copy embedded
+ *                                    in the package.
  *
  * @return mixed The results of the import package
  */
@@ -779,7 +782,7 @@ function import_write_blocked_by_symlink(string $filename, string $name) : bool 
 
 function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orphans = false,
 	bool $replace_svalues = false, bool $preview = false, bool $info_only = false, bool $limitex = true,
-	array $import_hashes = [], array $import_files = []) : mixed {
+	array $import_hashes = [], array $import_files = [], bool $keep_existing_files = false) : mixed {
 	global $preview_only;
 
 	$preview_only = $preview;
@@ -905,7 +908,15 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 					continue;
 				}
 
-				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
+				if ($keep_existing_files && file_exists($filename)) {
+					/* The installer imports the packages shipped with this release.  Their
+					 * embedded copies of shared scripts and resource files can be older than
+					 * the copies shipped alongside them, and replacing those would undo fixes
+					 * made since the packages were built. */
+					$filestatus[$filename] = __('kept existing');
+
+					cacti_log('Keeping existing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+				} elseif (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
 					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
 					if ((is_writable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
