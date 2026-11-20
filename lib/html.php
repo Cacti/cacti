@@ -1150,11 +1150,11 @@ function html_create_list(array $form_data, string $column_display, string $colu
 			}
 
 			if (isset($row['class'])) {
-				print " data-class='" . $row['class'] . "'";
+				print " data-class='" . htmle($row['class']) . "'";
 			}
 
 			if (isset($row['style'])) {
-				print " data-style='" . $row['style'] . "'";
+				print " data-style='" . htmle($row['style']) . "'";
 			}
 
 			if (!is_array($row)) {

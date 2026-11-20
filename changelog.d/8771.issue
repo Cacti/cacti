@@ -1,0 +1,1 @@
+Default the installer runtime so the background install no longer fails with an uninitialized typed property error
