@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup SpikekillMutationMatrix SpikekillFloatDebug SpikekillCliStatistics; do
+for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup TranslatedJavaScriptStrings SpikekillMutationMatrix SpikekillFloatDebug SpikekillCliStatistics; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -52,7 +52,7 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 fi
 
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
+for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths translated-js-strings; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
 		browser_specs+=("tests/$spec.spec.js")
 	fi

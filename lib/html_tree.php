@@ -1408,7 +1408,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		});
 
 		/* JSON-encode the markup so quotes and backslashes in names stay literal in the JavaScript string */
-		var navBar = <?php print json_encode("<div id='navBar' class='navBar'>" . draw_navigation_text() . '</div>', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);?>;
+		var navBar = <?php print cacti_js_encode("<div id='navBar' class='navBar'>" . draw_navigation_text() . '</div>');?>;
 		if (navBar != '') {
 			$('#navBar').replaceWith(navBar);
 		}

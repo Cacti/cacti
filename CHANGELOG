@@ -223,6 +223,7 @@ Cacti CHANGELOG
 -issue#8504: Contain Paw titlebars and keep selected tabs and row links readable
 -issue#8508: Contain wrapped Sunrise titles beside their controls
 -issue#8510: Contain Paper Plane titlebars and improve link and table text contrast across surfaces
+-issue#8555: Preserve translated JavaScript labels and dialog titles containing apostrophes
 -issue#8574: RRDcheck does not delete old data when boost is enabled
 -issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
 -issue#8581: Bound Boost archive draining, isolate RRD failures, and make cleanup predictable
