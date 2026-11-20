@@ -80,16 +80,33 @@ for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-wid
 		browser_specs+=("tests/$spec.spec.js")
 	fi
 done
-# Theme stylesheets are exercised by the theme correctness specs, which only
-# record coverage when CACTI_THEME_COVERAGE is set.
+# Theme stylesheets, and the shared include/css sheets the theme specs install,
+# are only exercised by the theme correctness specs, which record CSS coverage
+# when CACTI_THEME_COVERAGE is set. They are slow, so they run only when the
+# change touches a theme or a stylesheet one of those specs loads.
+theme_specs=()
 for spec in develop-theme-correctness develop-theme-cleanup; do
 	if [[ -f "tests/e2e/tests/$spec.spec.ts" ]]; then
-		browser_specs+=("tests/$spec.spec.ts")
+		theme_specs+=("tests/e2e/tests/$spec.spec.ts")
 	fi
 done
+theme_coverage=0
+if (( ${#theme_specs[@]} )); then
+	while IFS= read -r changed; do
+		if [[ "$changed" == include/themes/* ]] || grep -qF "'$changed'" "${theme_specs[@]}"; then
+			theme_coverage=1
+			break
+		fi
+	done < <(git diff --name-only "$base_commit" -- include/themes include/css)
+fi
+if (( theme_coverage )); then
+	for spec in "${theme_specs[@]}"; do
+		browser_specs+=("${spec#tests/e2e/}")
+	done
+fi
 browser_args=()
 if (( ${#browser_specs[@]} )); then
-	(cd tests/e2e && CACTI_THEME_COVERAGE=1 npx --no-install playwright test "${browser_specs[@]}" --workers=2 --reporter=line)
+	(cd tests/e2e && CACTI_THEME_COVERAGE=$theme_coverage npx --no-install playwright test "${browser_specs[@]}" --workers=2 --reporter=line)
 	browser_args=(--browser-root tests/e2e/test-results)
 fi
 
