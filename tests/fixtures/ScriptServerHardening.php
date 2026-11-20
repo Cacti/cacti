@@ -108,7 +108,7 @@ function db_table_exists($table) {
 }
 
 function read_config_option($name) {
-	return ['script_timeout' => 25, 'ping_timeout' => 400, 'snmp_retries' => 1, 'spine_log_level' => 2][$name] ?? '';
+	return ['script_timeout' => 25, 'ping_timeout' => 400, 'snmp_retries' => 2, 'spine_log_level' => 2][$name] ?? '';
 }
 
 function exec_poll($command) {
@@ -331,7 +331,7 @@ $host_row     = [];
 check('ss_count_oids refuses an option-like OID', ss_count_oids(1, '-Cc') === '0' && $db_row_reads === 0);
 $host_row = ['hostname' => 'h', 'snmp_community' => 'c', 'snmp_version' => 2, 'snmp_username' => '', 'snmp_password' => '',
 	'snmp_auth_protocol' => '', 'snmp_priv_passphrase' => '', 'snmp_priv_protocol' => '', 'snmp_context' => '',
-	'snmp_port' => 161, 'snmp_timeout' => 500, 'max_oids' => 10, 'snmp_engine_id' => '', 'ping_retries' => 1, 'snmp_retries' => 2];
+	'snmp_port' => 161, 'snmp_timeout' => 500, 'max_oids' => 10, 'snmp_engine_id' => '', 'ping_retries' => 1];
 check('ss_count_oids walks a valid OID', ss_count_oids(1, '.1.3.6.1.2.1.2.2.1.1') === 2);
 
 // Status read over Cacti's own connection.
@@ -353,7 +353,8 @@ check('ss_multicpu_avg skips a non-numeric load', ss_multicpu_avg(1) === "load:2
 $cpu_loads = [['value' => 'n/a']];
 check('ss_multicpu_avg with no numeric load', ss_multicpu_avg(1) === "load:U\n");
 
-// FortiGate scripts: unknown values for a bad device id, SNMP retries for the polls.
+// FortiGate scripts: unknown values for a bad device id, the SNMP retries setting for the polls
+// (the 1.2.x host table has no snmp_retries column).
 check('ss_fortigate_ips with no device id', ss_fortigate_ips('') === 'ips_detected:U ips_blocked:U ips_crit:U ips_high:U ips_ano:U' . PHP_EOL);
 check('ss_fortigate_ipsec with a non-numeric device id', ss_fortigate_ipsec('x') === 'total:U down:U' . PHP_EOL);
 $get_retries = [];

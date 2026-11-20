@@ -67,7 +67,7 @@ function ss_fortigate_ipsec($host_id = 0) {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['snmp_retries'],
+		read_config_option('snmp_retries'),
 		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
