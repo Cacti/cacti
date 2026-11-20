@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* display no errors */
+// display no errors
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
@@ -31,33 +31,30 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_mem', $_SERVER['argv']);
 }
 
-function ss_mikrotik_mem($host_id = '') {
-	/* the table only exists when the mikrotik plugin is installed */
+/**
+ * Return the used and total memory of a MikroTik device.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string 'used:<bytes> size:<bytes>', U when there is no data
+ */
+function ss_mikrotik_mem($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
 	if (!db_table_exists('plugin_mikrotik_system', false)) {
 		return 'used:U size:U';
 	}
 
-	$disk = db_fetch_row_prepared('SELECT memSize, memUsed*memSize/100 AS memUsed
+	$mem = db_fetch_row_prepared('SELECT memSize, memUsed*memSize/100 AS memUsed
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',
-		array($host_id));
+		[(int) $host_id]);
 
-	if (cacti_sizeof($disk)) {
-		if (isset($disk['memSize']) && $disk['memSize'] == '') {
-			$size = 'U';
-		} else {
-			$size = $disk['memSize'];
-		}
-
-		if ($disk['memUsed'] == '') {
-			$used = 'U';
-		} else {
-			$used = $disk['memUsed'];
-		}
-
-		return "used:$used size:$size";
-	} else {
+	// a zero size means the memory has not been collected yet
+	if (!isset($mem['memSize']) || !is_numeric($mem['memSize']) || $mem['memSize'] <= 0) {
 		return 'used:U size:U';
 	}
-}
 
+	$used = (isset($mem['memUsed']) && is_numeric($mem['memUsed'])) ? $mem['memUsed'] : 'U';
+
+	return 'used:' . $used . ' size:' . $mem['memSize'];
+}
