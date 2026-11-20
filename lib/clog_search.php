@@ -21,12 +21,25 @@
  * Compile a byte-oriented, ASCII case-insensitive regex subset to a Thompson
  * NFA. Advance all reachable states together instead of backtracking.
  *
+ * Accepted patterns also run as an equivalent PCRE under a match limit, which
+ * is far faster than stepping the NFA in PHP. A line that reaches the limit is
+ * decided by the NFA, so matching stays bounded without per-byte PHP work on
+ * ordinary searches.
+ *
  * Supports literals, ., ^, $, groups (including (?:...)), |, [], negated
  * classes, ranges, *, +, ?, and the escapes \d \w \s (and their inverses),
  * \n \r \t and escaped punctuation. Unsupported syntax is searched literally.
  */
 final class CactiLogSearchPattern {
+	/** Backtracking budget per line before the NFA decides the line instead. */
+	private const PCRE_MATCH_LIMIT = 50000;
+
+	/** Lines allowed to reach the budget before this search stops trying PCRE. */
+	private const PCRE_FAILURE_LIMIT = 64;
+
 	private string $pattern;
+	private ?string $regex = null;
+	private int $pcreFailures = 0;
 	private int $cursor = 0;
 	/** @var array<int, list<array{int, string, string}>> */
 	private array $edges = [];
@@ -51,11 +64,79 @@ final class CactiLogSearchPattern {
 		}
 
 		[$compiled->start, $compiled->end] = $fragment;
+		$compiled->regex = self::pcre($pattern);
 
 		return $compiled;
 	}
 
 	public function matches(string $line): bool {
+		if ($this->regex !== null) {
+			$result = preg_match($this->regex, $line);
+
+			if ($result !== false) {
+				return $result === 1;
+			}
+
+			if (++$this->pcreFailures >= self::PCRE_FAILURE_LIMIT) {
+				$this->regex = null;
+			}
+		}
+
+		return $this->nfaMatches($line);
+	}
+
+	/**
+	 * Translate a pattern the parser accepted into the same PCRE. Each accepted
+	 * construct has the same meaning to PCRE without the u modifier, so only the
+	 * delimiter and NUL bytes need escaping.
+	 */
+	private static function pcre(string $pattern): ?string {
+		$regex  = '';
+		$length = strlen($pattern);
+
+		for ($offset = 0; $offset < $length; $offset++) {
+			$char = $pattern[$offset];
+
+			// The parser rejects a trailing backslash, so an escape always has a byte.
+			if ($char === '\\') {
+				$char   = $pattern[++$offset];
+				$regex .= $char === "\0" ? '\\x00' : '\\' . $char;
+			} elseif ($char === '/') {
+				$regex .= '\\/';
+			} elseif ($char === "\0") {
+				$regex .= '\\x00';
+			} else {
+				$regex .= $char;
+			}
+		}
+
+		// Compile once without the Cacti error handler, which would write a PCRE
+		// warning into the log being searched. JIT is disabled because some PCRE2
+		// JIT releases return wrong caseless alternation results; the PCRE 8.x
+		// used by older PHP rejects (*NO_JIT), so retry without it. A pattern PCRE
+		// rejects outright uses the NFA.
+		set_error_handler(function () {
+			return true;
+		});
+
+		$compiled = null;
+
+		foreach (['(*NO_JIT)', ''] as $option) {
+			$candidate = '/' . $option . '(*LIMIT_MATCH=' . self::PCRE_MATCH_LIMIT . ')' . $regex . '/i';
+
+			if (preg_match($candidate, '') !== false) {
+				$compiled = $candidate;
+
+				break;
+			}
+		}
+
+		restore_error_handler();
+
+		return $compiled;
+	}
+
+	private function nfaMatches(string $line): bool {
 		$length = strlen($line);
 		$active = [];
 
