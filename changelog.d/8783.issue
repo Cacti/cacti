@@ -1,0 +1,1 @@
+Keep the scripts and resource files shipped with Cacti when the installer imports the bundled device template packages, whose embedded copies can be older and would undo fixes such as the bound queries in the MikroTik scripts
