@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
     - name: Set up Docker with a registry mirror
-      uses: docker/setup-docker-action@e43656e248c0bd0647d3f5c195d116aacf6fcaf4 # v4
+      uses: docker/setup-docker-action@3f1ab1ab0e29231562e4db4ca600c1a49653bac6 # v5.7.0
       with:
         version: v29.9.0
         daemon-config: |
