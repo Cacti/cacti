@@ -506,7 +506,7 @@ function sites() : void {
 
 	// form the 'where' clause for our main sql query
 	if (grv('filter') != '') {
-		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . grv('filter') . '%');
+		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . db_like_escape(grv('filter')) . '%');
 	} else {
 		$sql_where = '';
 	}

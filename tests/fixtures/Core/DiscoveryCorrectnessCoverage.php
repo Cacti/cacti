@@ -287,7 +287,7 @@ function calls(string $name) : array {
 }
 
 function __(string $text, mixed ...$args) : string {
-	return $text;
+	return $args === [] ? $text : sprintf($text, ...$args);
 }
 function __esc(string $message, mixed ...$args) : string {
 	return htmlspecialchars(sprintf($message, ...$args), ENT_QUOTES, 'UTF-8');
@@ -492,7 +492,7 @@ $GLOBALS['probe'] = [];
 $_SESSION         = [];
 expect_same(api_networks_save($post), false, 'invalid network save refused');
 expect_same(calls('save'), [], 'invalid network not persisted');
-expect_same(calls('message'), [['automation_message', 'ERROR: Network &#039;10.1.*.1&#039; is Invalid.  Wildcards must be the trailing octets, such as 10.1.*.*.', MESSAGE_LEVEL_ERROR]], 'invalid network error');
+expect_same(calls('message'), [['automation_message', 'ERROR: Network \'10.1.*.1\' is Invalid.  Wildcards must be the trailing octets, such as 10.1.*.*.', MESSAGE_LEVEL_ERROR]], 'invalid network error');
 
 // Rule item saves look up the existing hash by the validated item id.
 foreach (['save_component_automation_graph_rule_item' => ['automation_graph_rule_items', 'ifDescr'], 'save_component_automation_match_item' => ['automation_match_rule_items', 'name']] as $component => [$table, $field]) {
