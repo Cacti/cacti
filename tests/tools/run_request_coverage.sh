@@ -33,15 +33,30 @@ run_php_probe() {
 	fi
 }
 
+command_files='^((cmd|cmd_realtime|remote_agent)\.php|cli/(audit_database|push_out_hosts|rrdresize|splice_rrd)\.php|lib/(dsstats|poller|rrdcheck|functions)\.php|tests/fixtures/Core/ConfiguredCommands\.php)'
+run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files"
+run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprecated
+validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'
+run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files"
+run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" save
+
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'
+run_php_probe tests/fixtures/Core/DeviceCollectorMessages.php '^(lib/api_device\.php|tests/fixtures/Core/DeviceCollectorMessages\.php)'
+run_php_probe tests/fixtures/Core/ReportMessageDelivery.php '^(lib/(functions|reports)\.php|tests/fixtures/Core/ReportMessageDelivery\.php)'
+run_php_probe tests/fixtures/Core/ExternalLinkMessage.php '^(link\.php|tests/fixtures/Core/ExternalLinkMessage\.php)$'
+run_php_probe tests/fixtures/Core/TrustedActionMessages.php '^(aggregate_graphs\.php|lib/plugins\.php|tests/fixtures/Core/TrustedActionMessages\.php)$'
+message_pages='automation_devices|automation_networks|color_templates|data_source_profiles|data_templates|graph_templates|graphs|graphs_new|host|host_templates|package|package_import|package_repos|plugins|pollers|settings|support'
+message_libraries='api_automation|api_data_source|api_device|api_scheduler|clog_webapi|data_query|functions|html_reports|html_utility|package|plugins|reports|template|timespan_settings|utility'
+run_php_probe tests/fixtures/Core/MessageFormatting.php "^((${message_pages}|lib/(${message_libraries}))\.php|tests/fixtures/Core/(MessageFormatting\.php|message-formatting-expected\.json))$"
 run_php_probe tests/fixtures/Core/ConstantTimeGuardMatrix.php '^(auth_2fa\.php|auth_resetpassword\.php|tests/fixtures/Core/ConstantTimeGuardMatrix\.php)'
 run_php_probe tests/fixtures/Core/PackageManifestMatrix.php '^(package_import\.php|package_repos\.php|lib/import\.php|tests/fixtures/Core/PackageManifestMatrix\.php)'
 run_php_probe tests/fixtures/Core/PackageSaveMatrix.php '^(package_repos\.php|tests/fixtures/Core/PackageSaveMatrix\.php)'
 run_php_probe tests/fixtures/Core/GraphDrilldownMarkup.php '^(lib/html\.php|tests/fixtures/Core/GraphDrilldownMarkup\.php)'
 run_php_probe tests/fixtures/Core/AutomationNetworkRangeLimit.php '^(lib/api_automation\.php|tests/fixtures/Core/AutomationNetworkRangeLimit\.php)'
 run_php_probe tests/fixtures/Core/SpikekillMutationMatrix.php '^(lib/spikekill\.php|tests/fixtures/Core/SpikekillMutationMatrix\.php)'
+run_php_probe tests/fixtures/Core/RemoveSpikesHelp.php '^(cli/removespikes\.php|tests/fixtures/Core/RemoveSpikesHelp\.php)$'
 run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tests/fixtures/Core/SpikekillRequestGate\.php)'
 
 run_php_probe tests/fixtures/Core/Boost/FailedDataSourceIsolation.php '^(poller_boost\.php|tests/fixtures/Core/Boost/FailedDataSourceIsolation\.php)'

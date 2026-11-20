@@ -1,0 +1,245 @@
+{
+  "automation_devices.php": [
+    ["automation_msg_0", 1, "Device North &amp; East Added to Cacti"],
+    ["automation_msg_0", 3, "Device North &amp; East Not Added to Cacti"]
+  ],
+  "automation_networks.php": [
+    ["automation_message", 3, "Can Not Perform Discovery for Disabled Network &apos;Field &amp; Name&apos;"],
+    ["automation_message", 3, "Can Not Restart Discovery for Discovery in Progress for Network &apos;Field &amp; Name&apos;"]
+  ],
+  "color_templates.php": [
+    ["color_template_sync", 1, "Color Template &apos;Field &amp; Name&apos; had 2 Aggregate Templates pushed out and 3 Non-Templated Aggregates pushed out"],
+    ["color_template_sync", 1, "Color Template &apos;Field &amp; Name&apos; had no Aggregate Templates or Graphs using this Color Template."],
+    ["color_template_sync", 3, "Color Template &apos;Field &amp; Name&apos; failed to push out 1 Aggregate Templates or Graphs"]
+  ],
+  "data_source_profiles.php": [
+    ["heartbeat_change", 2, "Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool's 'tune' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>"]
+  ],
+  "data_templates.php": [
+    ["data_template_rrd_7", 2, "Field &quot;Bytes &amp; Packets&quot; is missing an Output Field.  Select the Output Field associated with this Data Source, and press Save again."],
+    ["repopulate_0", 1, "The Poller Cache operation has been launched in background for Data Template ID 32."]
+  ],
+  "graph_templates.php": [
+    ["gt_repair32", 1, "Sync of Graph Template &apos;Traffic &amp; Load&apos; Resulted in no Repairs."],
+    ["gt_repair32", 1, "Sync of Graph Template &apos;Traffic &amp; Load&apos; Resulted in no Repairs."],
+    ["gt_repair32", 2, "Sync of Graph Template &apos;Traffic &amp; Load&apos; Resulted in 2 Repairs!"],
+    ["gt_repair32", 2, "Sync of Graph Template &apos;Traffic &amp; Load&apos; Resulted in 2 Repairs!"]
+  ],
+  "graphs.php": [
+    ["moved_31", 1, "Graph Port &quot;A&quot; Moved to new Device"],
+    ["notmoved_31", 2, "Graph Port &quot;A&quot; not Moved.  Device missing Data Query"]
+  ],
+  "graphs_new.php": [
+    ["xmlerror", 3, "Error Parsing Data Query Resource XML file for Data Query &apos;Cards &amp; Ports&apos; with id &apos;5&apos;"],
+    ["xmlerror", 3, "Error Parsing Data Query Resource XML file for Data Query &apos;Cards &amp; Ports&apos; with id of &apos;5&apos;"],
+    ["xmlfielderrcounter", 3, "Error Parsing Data Query Resource XML file for Data Query &apos;Cards &amp; Ports&apos; with id &apos;5&apos;.  Field Name &apos;counter&apos; missing a &apos;direction&apos; attribute"]
+  ],
+  "host.php": [
+    ["host_reindex", 1, "Device Reindex Completed in 1.25 seconds.  There were 4 items updated."],
+    ["reports_add_error", 2, "Unable to add some Devices to Report &apos;Field &amp; Name&apos;"]
+  ],
+  "host_templates.php": [
+    ["archives_removed_23", 1, "The Device Template Archive Field &amp; Name has been removed."]
+  ],
+  "lib/api_automation.php": [
+    ["automation_message", 3, "ERROR: Network &apos;Lab &amp; Office&apos; is Invalid."],
+    ["rule_missing", 3, "Can not find the Tree Rule with the ID 25"],
+    ["sql_injection", 3, "Attempted SQL Injection found in Tree Automation for the field variable Building &amp; Floor."],
+    ["sql_injection", 3, "Attempted SQL Injection found in Tree Automation for the field variable Rack &amp; Unit."]
+  ],
+  "lib/api_data_source.php": [
+    ["poller_down_3", 2, "Remote Poller 3 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_3", 2, "Remote Poller 3 is Down, you will need to perform a FullSync once it is up again"]
+  ],
+  "lib/api_device.php": [
+    ["device_graph_remove_failed_24", 3, "Unable to remove Device 24 because Graph cleanup did not complete."],
+    ["device_remove_failed_24", 3, "Unable to remove Device 24 because a database transaction could not be started."],
+    ["device_remove_failed_24", 3, "Unable to remove Device 24 because dependent database cleanup failed."],
+    ["device_remove_failed_24", 3, "Unable to remove Device 24 because its database transaction could not be committed."],
+    ["device_remove_failed_24", 3, "Unable to remove Device 24 because its primary database record could not be updated."],
+    ["export_failed_23", 3, "Export Could not find the Device Template with the ID 23!.  Check the Cacti Log for details"],
+    ["export_failed_23", 3, "Export Could not find the Device Template with the ID 23!.  Check the Cacti Log for details"],
+    ["export_failed_23", 3, "The Export Failed for Edge &amp; Core!.  Check the Cacti Log for details"],
+    ["export_failed_23", 3, "The Export Failed for Edge &amp; Core!.  Check the Cacti Log for details"],
+    ["package_error_23", 3, "There were errors packaging your Device Template: Edge &amp; Core.  Errors Follow. Line &amp; one<br>Line &quot;two&quot;"],
+    ["package_error_23", 3, "There were errors packaging your Device Template: Edge &amp; Core.  Errors Follow. Line &amp; one<br>Line &quot;two&quot;"],
+    ["package_error_23", 3, "Unable to find Package file for Device Template: Edge &amp; Core."],
+    ["package_error_23", 3, "Unable to find Package file for Device Template: Edge &amp; Core."],
+    ["package_success_23", 1, "The Device Template Edge &amp; Core was Archived Successfully."],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_8", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_8", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_8", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_8", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_8", 2, "Remote Poller 4 is Down, you will need to perform a FullSync once it is up again"]
+  ],
+  "lib/api_scheduler.php": [
+    ["sched_err", 3, "ERROR: You must specify both the Months and Days of Month.  Disabling Network Lab &amp; QA!"],
+    ["sched_err", 3, "ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network Lab &amp; QA!"],
+    ["sched_err", 3, "ERROR: You must specify the day of the week.  Disabling Network Lab &amp; QA!."]
+  ],
+  "lib/clog_webapi.php": [
+    ["clog_removed", 2, "Removal Failed due to the Administrator blocking removal of archived files.  The file &apos;old &amp; new.log&apos; can not be removed."],
+    ["clog_removed", 3, "Unable to open log file &apos;primary.log&apos; for writing."],
+    ["purge_failed", 3, "Cacti Log file purging failed for Log File &apos;old &amp; new.log&apos;.  User &apos;O&apos;Brien&apos; wished to purge, but purging is disabled"],
+    ["rotate_failed", 3, "Cacti Log file rotation failed for Log File &apos;old &amp; new.log&apos;.  User &apos;O&apos;Brien&apos; wished to rotate, but rotating is disabled"],
+    ["rotate_failed", 3, "Cacti Log file rotation failed for Log File &apos;old &amp; new.log&apos;.  User &apos;O&apos;Brien&apos; wished to rotate, but rotating is not allowed on already rotated files"]
+  ],
+  "lib/data_query.php": [
+    ["mapping_error", 3, "You must select an XML output column for Data Source &apos;CPU &amp; IO&apos; and toggle the checkbox to its right"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"]
+  ],
+  "lib/functions.php": [
+    ["poller_5", 2, "Settings save to Data Collector 5 skipped due to heartbeat."],
+    ["poller_5", 3, "Settings save to Data Collector 5 Failed."]
+  ],
+  "lib/html_reports.php": [
+    ["custom", 3, "The regular expression &quot;A &amp; B&quot; is not valid. Error is Invalid &amp; empty"],
+    ["report_message", 3, "Unable to send Report &apos;Traffic &amp; Alerts&apos;.  Please set an e-mail From Name"],
+    ["report_message", 3, "Unable to send Report &apos;Traffic &amp; Alerts&apos;.  Please set an e-mail from address"],
+    ["report_message", 3, "Unable to send Report &apos;Traffic &amp; Alerts&apos;.  Please set an e-mail subject"],
+    ["report_message", 3, "Unable to send Report &apos;Traffic &amp; Alerts&apos;.  Please set destination e-mail addresses"]
+  ],
+  "lib/html_utility.php": [
+    ["custom", 3, "The regular expression &quot;A &amp; B&quot; is not valid. Error is Unmatched &quot;A&quot;"],
+    ["custom", 3, "The regular expression &quot;X &amp; Y&quot; is not valid. Error is Unmatched &quot;A&quot;"]
+  ],
+  "lib/package.php": [
+    ["missing_data & settings.xml", 3, "A Critical Template file &apos;data &amp; settings.xml&apos; is missing.  Please locate this file before packaging"]
+  ],
+  "lib/plugins.php": [
+    ["archive_failed", 3, "Load failed!  The available Plugin &apos;test_plugin&apos; Load failed.  Check the cacti.log for warnings."],
+    ["archive_failed", 3, "Restore failed!  The archived Plugin &apos;test_plugin&apos; Restore failed.  Check the cacti.log for warnings."],
+    ["archive_restored", 1, "Load succeeded!  The available Plugin &apos;test_plugin&apos; Load succeeded."],
+    ["archive_restored", 1, "Restore succeeded!  The archived Plugin &apos;test_plugin&apos; Restore succeeded."],
+    ["directory_error", 3, "The Plugin directory &apos;test_plugin&apos; needs to be renamed to remove &apos;plugin_&apos; from the name before it can be installed."],
+    ["install_error", 3, "Plugin test_plugin installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."],
+    ["install_error", 3, "The Plugin in the directory &apos;test_plugin&apos; does not include an install function &apos;plugin_test_version()&apos;.  This function must exist for the plugin to be installed."],
+    ["plugin_archive_failed", 3, "The Plugin &apos;test_plugin&apos; archiving process has failed due to the plugin directory being missing."],
+    ["plugin_archive_failed", 3, "The Plugin &apos;test_plugin&apos; archiving process has failed.  Check the Cacti log for errors."],
+    ["plugin_archive_not_found", 3, "Load failed!  Unable to locate the available record for Plugin &apos;test_plugin&apos; in the database."],
+    ["plugin_archive_not_found", 3, "Restore failed!  Unable to locate the archive record for Plugin &apos;test_plugin&apos; in the database."],
+    ["plugin_archive_removed", 1, "The Archive for Plugin &apos;test_plugin&apos; has been removed."],
+    ["plugin_archived", 1, "The Plugin &apos;test_plugin&apos; has been archived successfully."],
+    ["plugin_config", 2, "Plugin &apos;test_plugin&apos; Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update."],
+    ["plugin_config", 3, "Plugin &apos;test_plugin&apos; failed its configuration check. Review the plugin settings before enabling it."],
+    ["plugins_failed", 3, "No plugins found at GitHub/GitLab location."],
+    ["plugins_failed", 3, "Unable to get archive from GitHub/GitLab location."],
+    ["plugins_failed", 3, "Unable to get archive from GitHub/GitLab location."],
+    ["plugins_failed", 3, "Unable to get develop repo data for plugin Table &amp; Chart from GitHub/GitLab location."],
+    ["plugins_failed", 3, "Unable to get release &amp; notes from GitHub/GitLab location."],
+    ["plugins_failed", 3, "Unable to get release &amp; notes from GitHub/GitLab location."],
+    ["plugins_failed", 3, "Unable to retrieve Cacti Plugins due to the Base API Repository URL or User not being set in Configuration &gt; Settings &gt; General &gt; GitHub/GitLab API Settings."],
+    ["plugins_fetched", 1, "There were &apos;6&apos; Plugins found at The Cacti Groups GitHub site and &apos;2&apos; Plugins Tags/Releases were retrieved and updated in 2.50 seconds."],
+    ["plugins_fetched", 2, "Unable to reach The Cacti Groups GitHub site.  No plugin data retrieved in 2.50 seconds."],
+    ["releases_warning", 2, "The Cacti plugin Table &amp; Chart has no releases."],
+    ["restore_failed", 1, "Load failed!  The available Plugin &apos;test_plugin&apos; Load failed. Unable to create directory sub &amp; dir"],
+    ["restore_failed", 1, "Restore failed!  The archived Plugin &apos;test_plugin&apos; Restore failed. Unable to create directory sub &amp; dir"],
+    ["restore_failed", 3, "Restore failed!  The Plugin &apos;test_plugin&apos; archive Restore failed.  Unable to create directory &apos;/plugins/test_plugin&apos;."],
+    ["restore_failed", 3, "Restore failed!  The available Plugin &apos;test_plugin&apos; Load failed.  Unable to create directory &apos;/plugins/test_plugin&apos;."],
+    ["rmdata_complete", 1, "Data for Plugin test_plugin including Tables and Settings has been removed."],
+    ["rmdata_not_complete", 3, "Data for Plugin test_plugin including Tables and Settings has not been removed due to missing removal function."],
+    ["version_error", 3, "The Plugin in the directory &apos;test_plugin&apos; does not include an version function &apos;plugin_test_version()&apos;.  This function must exist for the plugin to be installed."]
+  ],
+  "lib/reports.php": [
+    ["remove_error", 3, "Only the owning user &apos;O&apos;Brien&apos; or a Report Administrator can remove the report."],
+    ["remove_message", 1, "Report &apos;Traffic &amp; Alerts&apos; History Removed by user &apos;O&apos;Brien&apos; or a Report Administrator can remove the report."],
+    ["report_message", 1, "Report &apos;Traffic &amp; Alerts&apos; Sent Successfully"],
+    ["report_message", 3, "Problems sending Report &apos;Traffic &amp; Alerts&apos; Problem with e-mail Subsystem Error is &apos;Service &amp; transport&apos;"],
+    ["report_not_scheduled", 3, "The Report &apos;Field &amp; Name&apos; from source daily with id 26 was not scheduled to run due to an error!"],
+    ["report_scheduled", 1, "The Report &apos;Field &amp; Name&apos; from source daily with id 26 is scheduled to run!"],
+    ["reports_add_device_24", 1, "Device &apos;North &amp; East&apos; successfully added to Report."],
+    ["reports_no_add_device_24", 2, "Device &apos;North &amp; East&apos; not added to Report as it already exists on report."]
+  ],
+  "lib/template.php": [
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"]
+  ],
+  "lib/timespan_settings.php": [
+    ["start_too_early", 2, "Your End Date &apos;1970-01-01 00:03:20&apos; is before January 1993.  Please pick a more recent End Date."],
+    ["start_too_early", 2, "Your Start Date &apos;1970-01-01 00:01:40&apos; is before January 1993.  Please pick a more recent Start Date."]
+  ],
+  "lib/utility.php": [
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"],
+    ["poller_down_2", 2, "Remote Poller 2 is Down, you will need to perform a FullSync once it is up again"]
+  ],
+  "package.php": [
+    ["package_error", 3, "There were errors packaging your Templates.  Errors Follow. Line &amp; one<br>Line &quot;two&quot;"]
+  ],
+  "package_import.php": [
+    ["import_fail_7f5b3c2d91a2f2c707b4024507a6c1ed", 3, "The Package Field &amp; Name Import Failed"],
+    ["import_fail_7f5b3c2d91a2f2c707b4024507a6c1ed", 3, "The Package Test &amp; QA Import Failed"],
+    ["import_success_7f5b3c2d91a2f2c707b4024507a6c1ed", 1, "The Package Field &amp; Name Imported Successfully"],
+    ["import_success_7f5b3c2d91a2f2c707b4024507a6c1ed", 1, "The Package Test &amp; QA Imported Successfully"],
+    ["repo_exists", 3, "The Repo &apos;Repo &amp; Mirror&apos; is Reachable on the Local Cacti Server.  But not data returned from the manifest file."],
+    ["repo_missing", 2, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable at the URL Location or the package.manifest file is missing."],
+    ["repo_missing", 3, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable at the URL Location or the package.manifest file is missing."],
+    ["repo_missing", 3, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable on GitHub or the &apos;package.manifest&apos; file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/."],
+    ["repo_missing", 3, "The Repo &apos;Repo &amp; Mirror&apos; is NOT Reachable on the Local Cacti Server or the package.manifest file is missing."]
+  ],
+  "package_repos.php": [
+    ["repo_exists", 1, "The Repo &apos;Lab &amp; QA&apos; is Reachable at the URL Location."],
+    ["repo_exists", 1, "The Repo &apos;Lab &amp; QA&apos; is Reachable on GitHub."],
+    ["repo_exists", 1, "The Repo &apos;Lab &amp; QA&apos; is Reachable on the Local Cacti Server."],
+    ["repo_missing", 2, "The Repo &apos;Lab &amp; QA&apos; is NOT Reachable at the URL Location or the package.manifest file is missing."],
+    ["repo_missing", 2, "The Repo &apos;Lab &amp; QA&apos; is NOT Reachable on GitHub or the package.manifest file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/."],
+    ["repo_missing", 2, "The Repo &apos;Lab &amp; QA&apos; is NOT Reachable on the Local Cacti Server or the package.manifest file is missing."]
+  ],
+  "plugins.php": [
+    ["force_remove_present", 3, "Plugin &apos;test_plugin&apos; can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."],
+    ["force_remove_required", 3, "Plugin &apos;test_plugin&apos; can not be Force Uninstalled because it is still required by: &apos;Monitor&apos;"],
+    ["invalid_plugin", 3, "The action &apos;Enable&apos; on Plugin &apos;test_plugin&apos; can not be performed due to the Plugin in it&apos;s current state."],
+    ["invalid_plugin_action", 3, "The action &apos;Enable&apos; on Plugin &apos;test_plugin&apos; can not be taken as the Plugin is integrated."],
+    ["plugin_good", 1, "Plugin &apos;test_plugin&apos; passed its configuration check and can be enabled."]
+  ],
+  "pollers.php": [
+    ["dupe_dbhost", 3, "You have already used this database hostname &apos;edge.example&apos;.  Please enter a non-duplicate database hostname."],
+    ["dupe_hostname", 3, "You have already used this hostname &apos;edge.example&apos;.  Please enter a non-duplicate hostname."]
+  ],
+  "settings.php": [
+    ["cacti_settings_Field & Name", 3, "Setting &apos;Field &amp; Name&apos;: Required &amp; missing"],
+    ["poller_5", 2, "Settings save to Data Collector 5 skipped due to heartbeat."],
+    ["poller_5", 3, "Settings save to Data Collector 5 Failed."]
+  ],
+  "support.php": [
+    ["lockout", 1, "Cacti maintenance lockout has been cleared by &apos;O&apos;Brien&apos;.  Press the button again after Cacti maintenance is over."],
+    ["lockout", 1, "The Cacti maintenance lockout request did not specify a valid expected state.  Please review the current status and try again."],
+    ["lockout", 1, "The Cacti maintenance lockout state was changed by another administrator since this page was loaded.  Please review the current status and try again."],
+    ["lockout", 2, "Cacti has been locked out by &apos;O&apos;Brien&apos;.  Press the button again after Cacti maintenance is over."],
+    ["lockout_user", 3, "Only the Primary Cacti Administrator &apos;O&apos;Brien&apos; can lockout the Cacti system."]
+  ]
+}
