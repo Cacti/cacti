@@ -7,7 +7,12 @@ $GLOBALS['cacti_fixture_contract'] = [
 	'name'      => 'package-archive', 'complete' => false, 'assertions' => 0,
 	'producers' => ['tests/fixtures/Core/PackageArchive.php', 'tests/Helpers/RequestCoverage.php'],
 ];
-require $root . '/tests/Helpers/RequestCoverage.php';
+
+if (getenv('CACTI_COVERAGE_FILE')) {
+	require $root . '/tests/Helpers/FixtureCoverage.php';
+} else {
+	require $root . '/tests/Helpers/RequestCoverage.php';
+}
 $temporary = sys_get_temp_dir() . '/cacti-package-' . bin2hex(random_bytes(8));
 
 if (!mkdir($temporary, 0700)) {
@@ -51,7 +56,17 @@ try {
 		$files        = [];
 		$debug        = '';
 
-		if (!package_template($template, $info, $files, $debug) || dirname($package_file) !== '/tmp' || basename($package_file) !== $expectedStem . '.xml.gz' || !is_file($archivePath)) {
+		$built       = package_template($template, $info, $files, $debug);
+		$packageDir  = dirname((string) $package_file);
+
+		// The archive name must still come from the sanitised metadata, and the
+		// archive must land in a private, mode 0700 temp directory rather than a
+		// shared, predictably named location.
+		if (!$built
+			|| basename($package_file) !== $expectedStem . '.xml.gz'
+			|| !is_file($package_file)
+			|| strpos($packageDir, rtrim(sys_get_temp_dir(), '/\\') . '/cacti-package-') !== 0
+			|| (fileperms($packageDir) & 0777) !== 0700) {
 			throw new RuntimeException('Archive filename must come from the supplied package metadata');
 		}
 		$xml      = gzdecode(file_get_contents($package_file));
@@ -67,6 +82,8 @@ try {
 			throw new RuntimeException('Archive must preserve and sign the original template bytes');
 		}
 		unlink($package_file);
+		@unlink($packageDir . '/' . $expectedStem . '.xml');
+		@rmdir($packageDir);
 		$GLOBALS['cacti_fixture_contract']['assertions']++;
 	}
 	$GLOBALS['cacti_fixture_contract']['complete'] = true;

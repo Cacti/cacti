@@ -1,0 +1,1 @@
+Refuse shell metacharacters in data input strings and whitespace or quotes in data source paths, escape setting based binaries and CLI operands, and escape log, list and README output
