@@ -57,12 +57,15 @@ test('GHSA-j3px: graphs_new escapes snmp_index in the IN() pivot', function () u
 });
 
 /* GHSA-h745-3r76-g253: the data-query name and field name reached a data-query
- * parse error message through __() (no escaping) in graphs_new.php. */
+ * parse error message without escaping in graphs_new.php. raise_message() now
+ * escapes the message itself (GHSA-9737), so the call site passes plain text. */
 test('GHSA-h745: graphs_new escapes names in the data-query error messages', function () use ($root) {
 	$source = file_get_contents($root . '/graphs_new.php');
+	$lib    = file_get_contents($root . '/lib/functions.php');
 
-	expect($source)->toContain("raise_message('xmlfielderr' . \$field_name, __esc(")
-		->and($source)->not->toContain("raise_message('xmlfielderr' . \$field_name, __(");
+	expect($source)->toContain("raise_message('xmlfielderr' . \$field_name, __(")
+		->and($source)->not->toContain("raise_message_html('xmlfielderr'")
+		->and($lib)->toMatch('/function raise_message\\(.*?\\$message = html_escape\\(/s');
 });
 
 /* GHSA-297h-95ff-r767: the clog log-file dropdown printed the log filename and
