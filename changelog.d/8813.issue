@@ -1,0 +1,1 @@
+Make removespikes --help list only the methods and options the script accepts (drop variance, --percent and --outliers; show -n for --number)
