@@ -1179,6 +1179,8 @@ class CactiTableFilter {
 
 							if ($field_name != 'rfilter') {
 								$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+$('#" . $field_name . "').val()";
+							} elseif (($field_array['filter'] ?? null) === FILTER_UNSAFE_RAW) {
+								$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+encodeURIComponent($('#" . $field_name . "').val())";
 							} else {
 								$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+base64_encode($('#" . $field_name . "').val())";
 							}
