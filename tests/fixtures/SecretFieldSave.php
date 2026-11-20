@@ -44,6 +44,9 @@ function cacti_debug_backtrace($message, $output = false, $log = true, $level = 
 function raise_message($id, $message = '', $level = null) {
 	$GLOBALS['messages_seen'][] = $id;
 }
+function __($message, ...$args) {
+	return vsprintf($message, $args);
+}
 function __esc($message, ...$args) {
 	return htmlspecialchars(vsprintf($message, $args), ENT_QUOTES, 'UTF-8');
 }

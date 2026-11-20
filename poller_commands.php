@@ -337,7 +337,8 @@ function commands_launch_child($host_id) {
 
 	cacti_log(sprintf('NOTE: Launching Commands Process Number %s for Type %s', $host_id, 'child'), false, 'CLEANUP', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug':''));
+	/* the host id is parsed out of poller_command text, so pin it to an integer before the shell */
+	exec_background($php_binary, cacti_escapeshellarg($config['base_path'] . '/poller_commands.php') . ' --child=' . (int) $host_id . ($seebug ? ' --debug':''));
 }
 
 /**
@@ -429,6 +430,7 @@ function commands_kill_running_processes() {
             if (cacti_process_still_running($p['pid'])) {
                 cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
                 cacti_process_kill($p['pid'], SIGTERM, 'CLEANUP');
+                cacti_process_kill_db_connection($p, 'CLEANUP');
             }
 
             unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

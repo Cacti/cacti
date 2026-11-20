@@ -25,15 +25,7 @@
 
 error_reporting(0);
 
-global $ups_check;
-
-$ups_check = false;
-
 if (!isset($called_by_script_server)) {
-	global $ups_check;
-
-	$ups_check = true;
-
 	include_once(__DIR__ . '/../include/cli_check.php');
 
 	array_shift($_SERVER['argv']);
@@ -50,17 +42,10 @@ function ss_upsd_check_null($value) {
 }
 
 function ss_upsd($function, $host_id) {
-	global $ups_check;
+	$output = array();
 
-	if ($ups_check === null) {
-		$ups_check = false;
-	}
-
-	static $upses = array();
-
-	if (!isset($upses[$host_id])) {
-		$output = array();
-
+	/* the tables only exist when the apcupsd plugin is installed; no row cache, it would go stale in the script server */
+	if (db_table_exists('apcupsd_ups', false) && db_table_exists('apcupsd_ups_stats', false)) {
 		$ups_id = db_fetch_cell_prepared('SELECT id
 			FROM apcupsd_ups
 			WHERE host_id = ?',
@@ -72,14 +57,6 @@ function ss_upsd($function, $host_id) {
 				WHERE ups_id = ?',
 				array($ups_id));
 		}
-
-		if (cacti_sizeof($output)) {
-			$upses[$host_id] = $output;
-		} else {
-			$upses[$host_id] = array();
-		}
-	} else {
-		$output = $upses[$host_id];
 	}
 
 	switch ($function) {

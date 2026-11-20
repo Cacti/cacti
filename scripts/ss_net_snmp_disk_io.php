@@ -218,7 +218,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	global $environ, $poller_id, $config;
 
 	if (empty($host_id_or_hostname) || $host_id_or_hostname === NULL) {
-		return 'reads:0 writes:0';
+		return 'reads:U writes:U';
 	} elseif (!is_numeric($host_id_or_hostname)) {
 		$host_id = db_fetch_cell_prepared('SELECT id
 			FROM host
@@ -231,7 +231,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	$host_id = (int) $host_id;
 
 	if ($host_id <= 0) {
-		return 'reads:0 writes:0';
+		return 'reads:U writes:U';
 	}
 
 	$tmpdir = sys_get_temp_dir();
@@ -271,7 +271,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		array($host_id));
 
 	if (!cacti_sizeof($host)) {
-		return 'reads:0 writes:0';
+		return 'reads:U writes:U';
 	}
 
 	$uptime  = cacti_snmp_get($host['hostname'],
@@ -286,7 +286,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
@@ -304,16 +304,15 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
+		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
 	foreach($names as $measure) {
-		if (substr($measure['value'],0,2) == 'sd' || substr($measure['value'],0,4) == 'nvme' || substr($measure['value'],0,2) == 'vm') {
-			if (is_numeric(substr(strrev($measure['value']),0,1))) {
-				continue;
-			}
-
+		/* whole disks only: sdX, vdX (virtio), xvdX (Xen), nvmeNnM and vm* names
+		 * not ending in a digit; partitions (sda1, vda1, nvme0n1p1) are skipped */
+		if (preg_match('/^(?:(?:sd|vd|xvd)[a-z]+|nvme[0-9]+n[0-9]+|vm.*[^0-9])$/', trim($measure['value']))) {
 			$parts = explode('.', $measure['oid']);
 			$indexes[$parts[cacti_sizeof($parts)-1]] = $parts[cacti_sizeof($parts)-1];
 		}
@@ -334,7 +333,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			$host['snmp_context'],
 			$host['snmp_port'],
 			$host['snmp_timeout'],
-			$host['ping_retries'],
+			$host['snmp_retries'],
 			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
@@ -350,7 +349,8 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 					$reads = 'U';
 				} elseif (!isset($previous["dr$index"])) {
 					$reads = 'U';
-				} else {
+				} elseif ($reads !== 'U') {
+					/* once one disk has no usable sample the total is unknown */
 					$reads = ss_counter_step($reads, (string) $measure['value'], (string) $previous["dr$index"], '4294967296');
 				}
 
@@ -370,7 +370,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			$host['snmp_context'],
 			$host['snmp_port'],
 			$host['snmp_timeout'],
-			$host['ping_retries'],
+			$host['snmp_retries'],
 			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
@@ -386,7 +386,8 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 					$writes = 'U';
 				} elseif (!isset($previous["dw$index"])) {
 					$writes = 'U';
-				} else {
+				} elseif ($writes !== 'U') {
+					/* once one disk has no usable sample the total is unknown */
 					$writes = ss_counter_step($writes, (string) $measure['value'], (string) $previous["dw$index"], '4294967296');
 				}
 
@@ -402,7 +403,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	if ($found) {
 		return "reads:$reads writes:$writes";
 	} else {
-		return 'reads:0 writes:0';
+		return 'reads:U writes:U';
 	}
 }
 

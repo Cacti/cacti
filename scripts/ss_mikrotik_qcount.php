@@ -32,6 +32,11 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_mikrotik_qcount($host_id = '') {
+	/* the table only exists when the mikrotik plugin is installed */
+	if (!db_table_exists('plugin_mikrotik_queues', false)) {
+		return 'U';
+	}
+
 	$queues = db_fetch_cell_prepared('SELECT count(*)
 		FROM plugin_mikrotik_queues
 		WHERE host_id = ?
