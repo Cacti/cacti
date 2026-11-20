@@ -23537,6 +23537,10 @@ msgstr "控制台菜單"
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #, fuzzy
 #~ msgid "Click to view just this Graph in Realtime"
 #~ msgstr "單擊以實時查看此圖表"

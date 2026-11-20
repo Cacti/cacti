@@ -335,63 +335,13 @@ function do_rrdcheck($thread_id = 1) {
 				$info_array = explode("\n", $info_array);
 
 				if (cacti_sizeof($info_array)) {
-					$first    = true;
-					$lines_24 = 0;
-					$lines_1  = 0;
-					$nan_24   = array();
-					$nan_1    = array();
-
-					foreach($info_array as $line) {
-						$line = trim($line);
-
-						// remove line - OK u:0.03 s:0.12 r:0.33
-						if (substr($line, 0, 2) == 'OK') {
-							continue;
-						} elseif ($line == '') {
-							continue;
-						}
-
-						if ($first) {
-							/* get the data source names */
-							$data_source_names = preg_split('/\s+/', $line);
-
-							foreach ($data_source_names as $index => $name)  {
-								$nan_24[$index] = 0;
-								$nan_1[$index]  = 0;
-							}
-
-							$dsses += cacti_sizeof($data_source_names);
-							$first  = false;
-						} else {
-							$parts = explode(':', $line, 2);
-
-							if (!isset($parts[1])) {
-								// Not a 'timestamp: value value ...' data line, skip it
-								continue;
-							}
-
-							$data  = explode(' ', trim($parts[1]));
-
-							foreach($data as $index=>$number) {
-								if ($index == 0) {
-									// only onetime for each row
-									$lines_24++;
-
-									if ($lines_24 > $one_hour_limit) { // last hour
-										$lines_1++;
-									}
-								}
-
-								if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
-									$nan_24[$index]++;
-
-									if ($lines_24 > $one_hour_limit) {
-										$nan_1[$index]++;
-									}
-								}
-							}
-						}
-					}
+					$fetch             = rrdcheck_parse_fetch_output($info_array, $one_hour_limit);
+					$data_source_names = $fetch['names'];
+					$lines_24          = $fetch['lines_24'];
+					$lines_1           = $fetch['lines_1'];
+					$nan_24            = $fetch['nan_24'];
+					$nan_1             = $fetch['nan_1'];
+					$dsses            += cacti_sizeof($data_source_names);
 
 					$notified = false;
 
@@ -508,6 +458,94 @@ function do_rrdcheck($thread_id = 1) {
 		set_config_option('rrdcheck_total_rrds_'  . $type . '_' . $thread_id, $rrd_files);
 		set_config_option('rrdcheck_total_dsses_' . $type . '_' . $thread_id, $total_dsses);
 	}
+}
+
+/**
+ * Counts the data rows and NaN values in 'rrdtool fetch' output. The first line without a colon
+ * is the data source name header; each later row is 'timestamp: value value ...'. Any other line
+ * with a colon, such as an 'ERROR: ...' message, is neither a header nor a row and is skipped.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param array $info_array The fetch output, one line per entry.
+ * @param float $one_hour_limit The number of rows before the last hour starts.
+ *
+ * @return array The 'names' header plus 'lines_24', 'lines_1', 'nan_24' and 'nan_1' counts.
+ */
+function rrdcheck_parse_fetch_output($info_array, $one_hour_limit) {
+	$first    = true;
+	$names    = array();
+	$lines_24 = 0;
+	$lines_1  = 0;
+	$nan_24   = array();
+	$nan_1    = array();
+
+	foreach($info_array as $line) {
+		$line = trim($line);
+
+		// remove line - OK u:0.03 s:0.12 r:0.33
+		if (substr($line, 0, 2) == 'OK') {
+			continue;
+		} elseif ($line == '') {
+			continue;
+		}
+
+		$parts = explode(':', $line, 2);
+
+		if ($first) {
+			/* data source names never contain a colon */
+			if (isset($parts[1])) {
+				rrdcheck_debug("Skipping fetch output before the header: $line");
+
+				continue;
+			}
+
+			/* get the data source names */
+			$names = preg_split('/\s+/', $line);
+
+			foreach ($names as $index => $name)  {
+				$nan_24[$index] = 0;
+				$nan_1[$index]  = 0;
+			}
+
+			$first = false;
+		} else {
+			if (!isset($parts[1]) || !ctype_digit(trim($parts[0]))) {
+				// Not a 'timestamp: value value ...' data line, skip it
+				rrdcheck_debug("Skipping unexpected fetch output: $line");
+
+				continue;
+			}
+
+			$data  = explode(' ', trim($parts[1]));
+
+			foreach($data as $index=>$number) {
+				if ($index == 0) {
+					// only onetime for each row
+					$lines_24++;
+
+					if ($lines_24 > $one_hour_limit) { // last hour
+						$lines_1++;
+					}
+				}
+
+				if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
+					$nan_24[$index]++;
+
+					if ($lines_24 > $one_hour_limit) {
+						$nan_1[$index]++;
+					}
+				}
+			}
+		}
+	}
+
+	return array(
+		'names'    => $names,
+		'lines_24' => $lines_24,
+		'lines_1'  => $lines_1,
+		'nan_24'   => $nan_24,
+		'nan_1'    => $nan_1
+	);
 }
 
 /**
