@@ -75,9 +75,11 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'ds_disable':
+		csrf_require_post();
 		ds_disable();
 		break;
 	case 'ds_enable':
+		csrf_require_post();
 		ds_enable();
 		break;
 	case 'ds_repair':
@@ -960,7 +962,7 @@ function ds_edit() {
 	$data_template     = array();
 
 	if (!isempty_request_var('id')) {
-		$data_local = db_fetch_row_prepared('SELECT host_id, data_template_id
+		$data_local = db_fetch_row_prepared('SELECT id, host_id, data_template_id
 			FROM data_local
 			WHERE id = ?',
 			array(get_request_var('id')));
@@ -1052,7 +1054,14 @@ function ds_edit() {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
 						if (isset_request_var('id') && get_request_var('id') > 0) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id')) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source.') : __('Enable Data Source.'));?></a><br>
+							?><span class='linkMarker'>*</span><a class='dsActiveToggle' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . $data_local['id']) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source.') : __('Enable Data Source.'));?></a><br>
+							<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+							/* the enable and disable actions change state, so send them as a POST */
+							$(document).off('click.dsActiveToggle').on('click.dsActiveToggle', 'a.dsActiveToggle', function(event) {
+								event.preventDefault();
+								loadPageUsingPostUrl($(this).attr('href'));
+							});
+							</script>
 					<?php
 						}
 					?>

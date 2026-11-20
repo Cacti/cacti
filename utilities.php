@@ -3298,6 +3298,8 @@ function snmpagent_utilities_run_eventlog(){
 	/* ==================================================== */
 
 	if (isset_request_var('purge')) {
+		csrf_require_post();
+
 		db_execute('TRUNCATE table snmpagent_notifications_log');
 
 		/* reset filters */
@@ -3360,7 +3362,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	function purgeFilter() {
 		strURL = 'utilities.php?action=view_snmpagent_events&purge=1&header=false';
-		loadPageNoHeader(strURL);
+		loadPageUsingPostUrl(strURL);
 	}
 
 	$(function() {
