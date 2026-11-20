@@ -52,105 +52,172 @@ initialize_realtime_step_and_window();
  * @return void No value is returned.
  */
 function get_matching_nodes() {
-	$my_matches = array();
-	$match = array();
+	$str = (string) get_nfilter_request_var('str');
 
-	$filter = '%' . get_nfilter_request_var('str') . '%';
+	header('Content-Type: application/json; charset=utf-8');
 
-	if (get_nfilter_request_var('str') != '') {
-		$matching = db_fetch_assoc_prepared("SELECT gti.parent, gti.graph_tree_id
-			FROM graph_tree_items AS gti
-			LEFT JOIN host AS h
-			ON h.id = gti.host_id
-			LEFT JOIN (
-				SELECT DISTINCT site_id
-				FROM host
-				WHERE description LIKE ?
-				OR hostname LIKE ?
-			) AS h2
-			ON h2.site_id = gti.site_id
-			LEFT JOIN (
-				SELECT local_graph_id
-				FROM graph_templates_graph
-				WHERE local_graph_id > 0
-				AND title_cache LIKE ?
-			) AS gtg
-			ON gtg.local_graph_id = gti.local_graph_id
-			LEFT JOIN (
-				SELECT id
-				FROM sites
-				WHERE name LIKE ?
-			) AS site
-			ON site.id = gti.site_id
-			WHERE (gti.title LIKE ?)
-			OR (h.description LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
-			OR (h.hostname LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
-			OR (h2.site_id > 0)
-			OR (gtg.local_graph_id > 0)
-			OR (site.id > 0)",
-			array($filter, $filter, $filter, $filter, $filter, $filter, $filter));
-	} else {
-		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
+	// the tree filter only searches from three characters on
+	if (strlen($str) < 3) {
+		print json_encode(array());
+
+		return;
 	}
 
-	if (cacti_sizeof($matching)) {
-		foreach($matching as $row) {
-			while ($row['parent'] != '0') {
-				$match[] = 'tbranch-' . $row['parent'];
+	$filter = '%' . $str . '%';
 
-				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id
-					FROM graph_tree_items
-					WHERE id = ?',
-					array($row['parent']));
+	$matching = db_fetch_assoc_prepared("SELECT gti.parent, gti.graph_tree_id, gti.local_graph_id
+		FROM graph_tree_items AS gti
+		LEFT JOIN host AS h
+		ON h.id = gti.host_id
+		LEFT JOIN (
+			SELECT DISTINCT site_id
+			FROM host
+			WHERE description LIKE ?
+			OR hostname LIKE ?
+		) AS h2
+		ON h2.site_id = gti.site_id
+		LEFT JOIN (
+			SELECT local_graph_id
+			FROM graph_templates_graph
+			WHERE local_graph_id > 0
+			AND title_cache LIKE ?
+		) AS gtg
+		ON gtg.local_graph_id = gti.local_graph_id
+		LEFT JOIN (
+			SELECT id
+			FROM sites
+			WHERE name LIKE ?
+		) AS site
+		ON site.id = gti.site_id
+		WHERE (gti.title LIKE ?)
+		OR (h.description LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
+		OR (h.hostname LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
+		OR (h2.site_id > 0)
+		OR (gtg.local_graph_id > 0)
+		OR (site.id > 0)",
+		array($filter, $filter, $filter, $filter, $filter, $filter, $filter));
 
-				if (!cacti_sizeof($row)) {
-				    break;
-				}
-			}
+	$allowed = array();
 
-			if (cacti_sizeof($row)) {
-				$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
-				$my_matches[] = array_reverse($match);
-				$match        = array();
-			}
+	foreach ($matching as $row) {
+		$tree_id = (int) $row['graph_tree_id'];
+
+		if (!isset($allowed[$tree_id])) {
+			$allowed[$tree_id] = is_tree_allowed($tree_id);
 		}
-
-		// Now flatten the list of nodes
-		$final_array = array();
-		$level = 0;
-		while (true) {
-			$found = 0;
-			foreach($my_matches as $match) {
-				if (isset($match[$level])) {
-					if ($level == 0) {
-						$final_array[$match[$level]][$match[$level]] = 1;
-					} else {
-						$final_array[$match[0]][$match[$level]] = 1;
-					}
-					$found++;
-				}
-			}
-			$level++;
-
-			if ($found == 0) {
-			    break;
-			}
-		}
-
-		$fa = array();
-
-		if (cacti_sizeof($final_array)) {
-			foreach($final_array as $key => $matches) {
-				foreach($matches as $branch => $dnc) {
-					$fa[] = $branch;
-				}
-			}
-		}
-
-		header('Content-Type: application/json; charset=utf-8');
-
-		print json_encode($fa);
 	}
+
+	$allowed = array_keys(array_filter($allowed));
+
+	if (!cacti_sizeof($matching) || !cacti_sizeof($allowed)) {
+		print json_encode(array());
+
+		return;
+	}
+
+	// one read of the allowed trees' parent links replaces a query per ancestor
+	$items = db_fetch_assoc_prepared('SELECT id, parent, graph_tree_id
+		FROM graph_tree_items
+		WHERE graph_tree_id IN (' . implode(',', array_fill(0, cacti_sizeof($allowed), '?')) . ')',
+		$allowed);
+
+	$parents = array();
+
+	foreach ($items as $item) {
+		$parents[(int) $item['graph_tree_id']][(int) $item['id']] = (int) $item['parent'];
+	}
+
+	/**
+	 * A matched graph only opens its branch when the user may view the graph.
+	 * This is the check is_graph_allowed() makes, run once for all matched
+	 * graphs of the allowed trees instead of once per graph, and skipped for
+	 * simple graph permissions as is_tree_branch_empty() does.
+	 */
+	$graphs = array();
+
+	foreach ($matching as $row) {
+		if ($row['local_graph_id'] > 0 && isset($parents[(int) $row['graph_tree_id']])) {
+			$graphs[(int) $row['local_graph_id']] = false;
+		}
+	}
+
+	if (cacti_sizeof($graphs)) {
+		if (get_simple_graph_perms($_SESSION['sess_user_id'] ?? 0)) {
+			$graphs = array_fill_keys(array_keys($graphs), true);
+		} else {
+			foreach (array_chunk(array_keys($graphs), 1000) as $chunk) {
+				foreach (get_allowed_graphs('gl.id IN(' . implode(',', $chunk) . ')', '') as $graph) {
+					$graphs[(int) $graph['local_graph_id']] = true;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Cache whether a branch connects to its tree root, so every parent link is
+	 * followed once and every node is emitted once. A path that loops, leaves
+	 * the tree, or ends at a missing item is dropped.
+	 */
+	$valid       = array();
+	$seen        = array();
+	$final_array = array();
+
+	foreach ($matching as $row) {
+		$tree_id = (int) $row['graph_tree_id'];
+		$branch  = (int) $row['parent'];
+
+		if (!isset($parents[$tree_id]) || isset($seen[$tree_id][$branch])) {
+			continue;
+		}
+
+		if ($row['local_graph_id'] > 0 && !$graphs[(int) $row['local_graph_id']]) {
+			continue;
+		}
+
+		$seen[$tree_id][$branch] = true;
+		$chain                   = array();
+		$visited                 = array();
+		$current                 = $branch;
+
+		while ($current != 0 && !isset($valid[$tree_id][$current])) {
+			if (isset($visited[$current]) || !isset($parents[$tree_id][$current])) {
+				$current = -1;
+
+				break;
+			}
+
+			$visited[$current] = true;
+			$chain[]           = $current;
+			$current           = $parents[$tree_id][$current];
+		}
+
+		$connected = $current == 0 || ($current != -1 && $valid[$tree_id][$current]);
+		$anchor    = 'tree_anchor-' . $tree_id;
+
+		if ($connected) {
+			$final_array[$anchor][$anchor] = 1;
+		}
+
+		// cached ancestors are already in the result; add the new suffix with
+		// every parent ahead of the children it opens
+		for ($i = cacti_sizeof($chain) - 1; $i >= 0; $i--) {
+			$valid[$tree_id][$chain[$i]] = $connected;
+
+			if ($connected) {
+				$final_array[$anchor]['tbranch-' . $chain[$i]] = 1;
+			}
+		}
+	}
+
+	$fa = array();
+
+	foreach ($final_array as $matches) {
+		foreach ($matches as $branch => $dnc) {
+			$fa[] = $branch;
+		}
+	}
+
+	print json_encode($fa);
 }
 
 /**

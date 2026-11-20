@@ -244,6 +244,7 @@ Cacti CHANGELOG
 -issue#8646: Return U from the MikroTik, FortiGate and apcupsd scripts when their device, plugin table or row is missing, and poll FortiGate devices with the SNMP retries
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
+-issue#8670: Keep tree search results within viewable trees and graphs, reject tree moves that would create a cycle or cross trees, and stop tree walks at a stored parent cycle
 -issue#8684: Harden the Card API controller (include/js/cards.js): discard refresh/resize responses superseded by a newer request for the same card, wait for the host to confirm a card removal before dropping it and persisting the layout, skip adding a card id already on the grid, and keep keyboard focus on the revealed expand/collapse button
 -issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
 -issue#8689: Return the number of expired sessions deleted from the database session handler gc() so session_gc() reports actual deletions
