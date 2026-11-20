@@ -98,7 +98,6 @@ Cacti CHANGELOG
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
 -security#8723: Harden - Do not write stored passwords and tokens into settings pages
 -security#8728: Harden - Validate installer wizard state, theme and step requests, and escape installer output; omit configuration values and database error details from installer diagnostics
--issue: Harmonize the MikroTik script server data collection scripts with the MikroTik plugin so they return U when there is no data, read the plugin RouterOS 7 health sensors when present, and validate every requested column
 -issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback
 -issue#3698: Record each registered background process's database connection, and end that connection when the process is killed for a timeout or found to have exited, so its statement stops running and its locks are released
 -issue#4311: Point a CDEF's DEF names (such as a,b,-) in an aggregate graph at each member graph's own data sources, and at their totals in a totalling item, instead of the first member's
@@ -278,6 +277,7 @@ Cacti CHANGELOG
 -issue#8825: Quote RRDtool arguments in a form RRDtool's command parser reads as one argument, escape RRDtool output in the graph debug and properties views, keep device credentials out of titles and graph text, and restrict the RRA restructure tool to RRD files inside the RRA directory
 -issue#8839: Use non-backtracking Log Viewer regex search: supports grouping, alternatives, character classes, anchors, and basic quantifiers; unsupported PCRE constructs are treated as literal text.
 -issue#8853: Run Log Viewer regex searches through PCRE under a match limit instead of stepping every byte in PHP, keeping the NFA for lines that reach the limit
+-issue#8859: Harmonize the MikroTik script server data collection scripts with the MikroTik plugin so they return U when there is no data, read the plugin RouterOS 7 health sensors when present, and validate every requested column
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query

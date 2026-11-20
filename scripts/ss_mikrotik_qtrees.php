@@ -34,7 +34,7 @@ if (!isset($called_by_script_server)) {
 /**
  * Data query backend for resource/script_server/mikrotik_trees.xml.
  *
- * Queue trees are indexed by their name.
+ * Queue trees are indexed by their name with spaces replaced by underscores.
  *
  * @param int|string $host_id The Cacti host id
  * @param string     $cmd     One of index, num_indexes, query or get
@@ -95,12 +95,14 @@ function ss_mikrotik_qtrees_getvalue($host_id, $index, $column) {
 		return 'U';
 	}
 
+	$index2 = str_replace('_', ' ', $index);
+
 	// RouterOS may report the tree name wrapped in angle brackets
 	$value = db_fetch_cell_prepared('SELECT `' . $columns[$column] . '`
 		FROM plugin_mikrotik_trees
-		WHERE name IN (?, ?)
+		WHERE name IN (?, ?, ?, ?)
 		AND host_id = ?',
-		[$index, '<' . $index . '>', (int) $host_id]);
+		[$index, $index2, '<' . $index . '>', '<' . $index2 . '>', (int) $host_id]);
 
 	// no row for this tree: unknown, not zero
 	return is_numeric($value) ? (string) $value : 'U';
@@ -116,10 +118,10 @@ function ss_mikrotik_qtrees_getvalue($host_id, $index, $column) {
 function ss_mikrotik_qtrees_getnames($host_id) {
 	$return_arr = [];
 
-	$arr = db_fetch_assoc_prepared('SELECT name
+	$arr = db_fetch_assoc_prepared("SELECT DISTINCT REPLACE(name, ' ', '_') AS name
 		FROM plugin_mikrotik_trees
 		WHERE host_id = ?
-		ORDER BY name',
+		ORDER BY name",
 		[(int) $host_id]);
 
 	if (cacti_sizeof($arr)) {
@@ -152,8 +154,8 @@ function ss_mikrotik_qtrees_getinfo($host_id, $info_requested) {
 		return $return_arr;
 	}
 
-	$arr = db_fetch_assoc_prepared('SELECT name AS qry_index,
-		`' . $columns[$info_requested] . '` AS qry_value
+	$arr = db_fetch_assoc_prepared("SELECT REPLACE(name, ' ', '_') AS qry_index,
+		`" . $columns[$info_requested] . '` AS qry_value
 		FROM plugin_mikrotik_trees
 		WHERE host_id = ?
 		ORDER BY name',
