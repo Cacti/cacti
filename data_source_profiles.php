@@ -736,7 +736,7 @@ function profile_edit() {
 
         $('#consolidation_function_id').multiselect({
             selectedList: 4,
-            noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
+            noneSelectedText: <?php print cacti_json_encode(__('Select Consolidation Function(s)'));?>,
             header: false,
             groupColumns: true,
             groupColumnsWidth: 90,

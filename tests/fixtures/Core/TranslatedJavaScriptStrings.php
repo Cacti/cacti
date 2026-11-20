@@ -25,6 +25,12 @@ $cases = array(
 	array('data_source_profiles.php', 'Delete Data Source Profile Item'),
 	array('host_templates.php', 'Delete Item from Device Template'),
 	array('package_import.php', 'Key Generation Required to Use Plugin'),
+	array('package_import.php', 'Package Key Information Not Found'),
+	array('package_import.php', 'File Differences for: '),
+	array('aggregate_graphs.php', 'Total'),
+	array('aggregate_graphs.php', 'All Items'),
+	array('aggregate_graphs.php', 'Show'),
+	array('data_source_profiles.php', 'Select Consolidation Function(s)'),
 );
 
 foreach ($cases as list($name, $message)) {
