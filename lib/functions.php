@@ -512,7 +512,10 @@ function set_config_option($config_name, $value, $remote = false) {
 function config_value_exists($config_name) {
 	static $config_values = array();
 
-	if (!isset($config_values[$config_name])) {
+	/* Only a setting that was found is remembered: isset() is true for a cached
+	 * false, which would hide a setting stored later in the same process (the
+	 * installer stores the paths it is given, then reads them back). */
+	if (empty($config_values[$config_name])) {
 		$value = db_fetch_cell_prepared('SELECT COUNT(*) FROM settings WHERE name = ?', array($config_name));
 
 		if ($value > 0) {
@@ -1249,8 +1252,13 @@ function kill_session_var($var_name) {
  * @return bool Bool.
  */
 function force_session_data() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
+		return false;
+	} elseif (empty($config['is_web'])) {
+		// The session settings only exist on the web; a CLI script has nothing to restore
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
@@ -8592,6 +8600,32 @@ function cacti_ptoa($title, $addr) {
 	foreach(str_split($addr) as $char) {
 		print str_pad(dechex(ord($char)),2,'0',STR_PAD_LEFT);
 	}
+}
+
+/**
+ * Encodes a PHP value for direct inclusion in JavaScript, such as an inline
+ * <script> block or a JavaScript event attribute.  The JSON_HEX_* flags turn
+ * <, >, &, ' and " into \uXXXX escapes, so a translated string or other value
+ * can neither close the script block nor break out of the surrounding quotes.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $value The value to encode
+ *
+ * @return string The JavaScript-safe JSON literal, or null if encoding fails
+ */
+function cacti_js_encode(mixed $value) : string {
+	$encoded = json_encode(
+		$value,
+		JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+	);
+
+	if ($encoded === false) {
+		return 'null';
+	}
+
+	// U+2028 and U+2029 are valid JSON but are line terminators in JavaScript;
+	// left literal by JSON_UNESCAPED_UNICODE they break an inline <script> parse.
+	return str_replace(["\u{2028}", "\u{2029}"], ['\\u2028', '\\u2029'], $encoded);
 }
 
 /**

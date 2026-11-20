@@ -97,7 +97,10 @@ Cacti CHANGELOG
 -security#8449: Harden - Escape the serialized notification selection in the managers.php confirmation form
 -security#8450: Harden - Bound Script Server requests, contain script failures, and validate poller script arguments
 -security#8723: Harden - Do not write stored passwords and tokens into settings pages
+-security#8728: Harden - Validate installer wizard state, theme and step requests, and escape installer output; omit configuration values and database error details from installer diagnostics
 -issue#2815: Render empty known query fields as blank graph text without changing suggested-value fallback
+-issue#3698: Record each registered background process's database connection, and end that connection when the process is killed for a timeout or found to have exited, so its statement stops running and its locks are released
+-issue#4311: Point a CDEF's DEF names (such as a,b,-) in an aggregate graph at each member graph's own data sources, and at their totals in a totalling item, instead of the first member's
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
@@ -222,6 +225,7 @@ Cacti CHANGELOG
 -issue#8504: Contain Paw titlebars and keep selected tabs and row links readable
 -issue#8508: Contain wrapped Sunrise titles beside their controls
 -issue#8510: Contain Paper Plane titlebars and improve link and table text contrast across surfaces
+-issue#8555: Preserve translated JavaScript labels and dialog titles containing apostrophes
 -issue#8574: RRDcheck does not delete old data when boost is enabled
 -issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
 -issue#8581: Bound Boost archive draining, isolate RRD failures, and make cleanup predictable
@@ -233,16 +237,36 @@ Cacti CHANGELOG
 -issue#8640: Present the Details and Time View graph pages' drilldown actions through the three-bar menu, and fix the "unsupported pseudo: hover" console error when the graph area reloads
 -issue#8640: Shorten the Time View graph page drilldown action labels (Details, Realtime) so the three-bar menu matches the standard graph drilldown menu
 -issue#8642: Preserve data-query caches and retries after failed discovery and bound reindex identity lookups
+-issue#8646: Count NVMe, virtio and Xen disks in the Net-SNMP disk totals and poll them with the SNMP retries
+-issue#8646: Walk the host processor table once per CPU poll and return U when no load is reported
+-issue#8646: Parse BusyBox ping output in ping.pl
+-issue#8646: Count Cacti Stats logins once per poller interval and list a twice-mounted filesystem once
+-issue#8646: Return U from the MikroTik, FortiGate and apcupsd scripts when their device, plugin table or row is missing, and poll FortiGate devices with the SNMP retries
 -issue#8650: Preserve aggregate rebuilds on failure, retain member order and percentile settings, and bound repeated member and CDEF queries
 -issue#8656: Preserve Windows Script Server paths when rebuilding the poller cache and validate the final sanitized path
+-issue#8670: Keep tree search results within viewable trees and graphs, reject tree moves that would create a cycle or cross trees, and stop tree walks at a stored parent cycle
 -issue#8684: Harden the Card API controller (include/js/cards.js): discard refresh/resize responses superseded by a newer request for the same card, wait for the host to confirm a card removal before dropping it and persisting the layout, skip adding a card id already on the grid, and keep keyboard focus on the revealed expand/collapse button
 -issue#8689: Register the database session save handler as a SessionHandlerInterface object to resolve the PHP 8.4 deprecation of individual session_set_save_handler() callbacks
 -issue#8689: Return the number of expired sessions deleted from the database session handler gc() so session_gc() reports actual deletions
 -issue#8697: Correct the Dark theme session message dialog action buttons (Ok/Pause) to the theme's #31442b primary-action green, and style the Modern theme User Language selectmenu so the closed control matches the other dropdowns
 -issue#8700: Preserve a Card API card's live expand/collapse state when its refresh or resize response lands (include/js/cards.js replaceCard), so toggling a card while a refresh is in flight is no longer reverted
 -issue#8701: Match the language selectmenu (the jQuery UI dropdown rendered by the custom languageselect widget) to each theme's select2 controls - restore the 6px border-radius squared off by .ui-corner-all and apply the themed gradient/transparent background and open-state colours - in the classic, dark, deepness, midwinter, paper-plane, paw and sunrise themes
+-issue#8718: Create Boost run-time tables in the 1.2.32 migration, repair missing tables on already-upgraded installations without replaying the migration, and handle a missing install_version
+-issue#8720: Keep a failed upgrade retryable by leaving the running release out of the version table until the installer, templates and schema check have finished
+-issue#8721: Stop cli/install_cacti.php from fataling in session_start() when it is run again after a completed install
+-issue#8722: Compare the database version, not the CLI banner text, in upgradeDatabase() so an upgrade no longer logs a hexdec() deprecation
+-issue#8729: Keep installer failure reports, fix CLI path overrides and stale steps, clear converted tables by name, and read the template packages once per request
+-issue#8729: Preserve remote configuration on failed writes, retry failed defaults, and reject malformed template imports
+-issue#8729: Keep CLI installation, CLI upgrades and background installation behind the same process lock
 -issue#8741: Ensure on-demand (WebUI) Boost processing always takes precedence over the scheduled Boost poller instead of deferring to it (lib/boost.php boost_process_poller_output), so viewing a graph flushes its data immediately; concurrent writes to the same RRD remain safe because Boost passes --skip-past-updates to RRDtool 1.5+
 -issue#8745: Stop bracketing IPv4 and hostname SNMP targets on a non-default port so php-snmp gets and availability checks resolve them
+-issue#8767: Require POST for maintenance utility mutations, bind poller synchronization intervals, and quote child paths and SNMP manager filters
+-issue#8777: Keep RRDtool file permission rejections at the normal log level
+-issue#8777: Ignore RRDtool fetch lines without a numeric timestamp in RRDcheck
+-issue#8777: Report a failed session cleanup from the session garbage collector
+-issue#8777: Check the sibling element before adding the theme filter search icon
+-issue#8777: Escape the graph id in the graph drilldown container id
+-issue#8783: Keep the scripts and resource files shipped with Cacti when the installer imports the bundled device template packages, whose embedded copies can be older and would undo fixes such as the bound queries in the MikroTik scripts
 -issue#8814: Show -n, the short option the parser accepts, for --number in the removespikes usage line
 -issue#8815: Escape stored names, log lines and tab titles for their output context in the aggregate migrate notice, graph thumbnails, data source repair steps, installer log, automation SNMP options, tree breadcrumb and tab overflow menu
 -issue#8817: Keep custom data source paths to a single RRDtool argument, mask credential fields in logged validation errors, report LDAP login failures without the server error text, and neutralise formulas in the discovery and color exports

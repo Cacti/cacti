@@ -20259,6 +20259,10 @@ msgstr "콘솔 메뉴"
 msgid "Always-visible Icons"
 msgstr ""
 
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
+
 #~ msgid "Click to view just this Graph in Realtime"
 #~ msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 

@@ -255,6 +255,8 @@ function clog_view_logfile() {
 	}
 
 	if ($clogAdmin && isset_request_var('purge_continue')) {
+		csrf_require_post();
+
 		clog_purge_logfile();
 		$logfile = read_config_option('path_cactilog');
 	}
@@ -291,7 +293,7 @@ function clog_view_logfile() {
 				<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 				$('#pc').on('click', function() {
 					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
-					loadPageNoHeader(strURL);
+					loadPageUsingPostUrl(strURL, 'main');
 				});
 
 				$('#cancel').on('click', function() {

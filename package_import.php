@@ -69,10 +69,10 @@ function check_tmp_dir() {
 	} else {
 		?>
 		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
-		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Plugin');?>';
-		var mixedOnPage      = '<?php print __esc('Package Key Information Not Found');?>';
+		var mixedReasonTitle = <?php print cacti_js_encode(__('Key Generation Required to Use Plugin'));?>;
+		var mixedOnPage      = <?php print cacti_js_encode(__('Package Key Information Not Found'));?>;
 		sessionMessage   = {
-			message: '<?php print __('In order to use this Plugin, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the plugin directory.  Once that is complete, you will have a public and private key used to sign your packages.');?>',
+			message: <?php print cacti_js_encode(__('In order to use this Plugin, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the plugin directory.  Once that is complete, you will have a public and private key used to sign your packages.'));?>,
 			level: MESSAGE_LEVEL_MIXED
 		};
 
@@ -792,7 +792,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 				var filename     = getURLVariable(url, 'filename');
 
 				$('#dialog').dialog({
-					title: '<?php print __('File Differences for: ');?>' + filename,
+					title: <?php print cacti_js_encode(__('File Differences for: '));?> + filename,
 					width: '60%',
 					maxWidth: '90%',
 					maxHeight: 600

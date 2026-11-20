@@ -831,6 +831,18 @@ function setupSelectmenuScrollClose() {
 		});
 }
 
+/** Add one icon per visible filter, including filters revealed after page load. */
+function addFilterSearchIcons() {
+	$('input[id="filter"], input[id="filterd"], input[id="rfilter"]').filter(':visible').each(function() {
+		const input = $(this);
+		if (input.next('i.fa-search.filter').length === 0) {
+			input.after($('<i>').addClass('fa fa-search filter'));
+			input.attr('autocomplete', 'off').attr('placeholder', this.id === 'rfilter' ? searchRFilter : searchFilter);
+			input.parent('td').css('white-space', 'nowrap');
+		}
+	});
+}
+
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {

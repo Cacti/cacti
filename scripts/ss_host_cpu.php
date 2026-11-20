@@ -120,7 +120,7 @@ function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'inde
 			if (cacti_sizeof($arr_index)) {
 				foreach ($arr_index as $index => $value) {
 					if ($arg == 'usage') {
-						print $index . '!' . $arr[$index] . "\n";
+						print $index . '!' . (isset($arr[$index]) ? $arr[$index] : 'U') . "\n";
 					} elseif ($arg == 'index') {
 						print $index . '!' . $value . "\n";
 					}
@@ -139,9 +139,10 @@ function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'inde
 		$value = api_plugin_hook_function('hmib_get_cpu', array('host_id' => $host_id, 'arg' => $arg, 'index' => $index));
 
 		if (is_array($value)) {
-			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
+			/* the usage array has the same keys as ss_host_cpu_get_indexes(), so
+			 * one walk answers both the index check and the value */
 			$arr = ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
-			if (isset($arr_index[$index]) && isset($arr[$index])) {
+			if (isset($arr[$index])) {
 				return $arr[$index];
 			} else {
 				return 'U';
@@ -185,10 +186,9 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 			}
 		}
 
+		/* without a numeric load there is no Total; a get then returns U, not 0 */
 		if (cacti_sizeof($return_arr)) {
 			$return_arr[4000] = round($sum / cacti_sizeof($return_arr));
-		} else {
-			$return_arr[4000] = 0;
 		}
 
 		return $return_arr;

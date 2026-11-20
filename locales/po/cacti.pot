@@ -20120,3 +20120,7 @@ msgstr ""
 #: include/global_settings.php
 msgid "Always-visible Icons"
 msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
+msgstr ""
