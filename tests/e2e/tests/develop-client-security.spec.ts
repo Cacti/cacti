@@ -44,6 +44,7 @@ test('Plugin README dialog opens external links in a new tab', async ({ page, co
 		if (url.endsWith('/readme')) {
 			return route.fulfill({ contentType: 'text/html', body:
 				'<h1 id="top">Plugin</h1><p><a id="external" href="https://example.test/notes">Notes</a> '
+				+ '<a id="upper" href="HTTPS://example.test/upper">Upper</a> '
 				+ '<a id="anchor" href="#top">Top</a></p>' });
 		}
 		return route.fulfill({ contentType: 'text/html', body: '<!DOCTYPE html><title>Plugins</title><div id="main"></div>' });
@@ -61,6 +62,7 @@ test('Plugin README dialog opens external links in a new tab', async ({ page, co
 	const external = page.locator('#pidialog #external');
 	await expect(external).toBeVisible();
 	await expect(external).toHaveAttribute('target', '_blank');
+	await expect(page.locator('#pidialog #upper')).toHaveAttribute('target', '_blank');
 	await expect(page.locator('#pidialog #anchor')).not.toHaveAttribute('target', /.+/);
 
 	const popupPromise = context.waitForEvent('page');
