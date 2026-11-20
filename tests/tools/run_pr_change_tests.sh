@@ -28,6 +28,9 @@ for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix 
 		run_probe "$fixture.php" "$fixture"
 	fi
 done
+if [[ -f tests/fixtures/Core/RemoveSpikesHelp.php ]]; then
+	run_probe RemoveSpikesHelp.php RemoveSpikesHelp
+fi
 if [[ -f tests/fixtures/Core/RowGuardMatrix.php ]]; then
 	for mode in auth-changepassword add-device reports-edit; do
 		run_probe RowGuardMatrix.php "row-guard-$mode" "$mode"
