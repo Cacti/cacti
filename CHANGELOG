@@ -260,6 +260,11 @@ Cacti CHANGELOG
 -issue#8741: Ensure on-demand (WebUI) Boost processing always takes precedence over the scheduled Boost poller instead of deferring to it (lib/boost.php boost_process_poller_output), so viewing a graph flushes its data immediately; concurrent writes to the same RRD remain safe because Boost passes --skip-past-updates to RRDtool 1.5+
 -issue#8745: Stop bracketing IPv4 and hostname SNMP targets on a non-default port so php-snmp gets and availability checks resolve them
 -issue#8767: Require POST for maintenance utility mutations, bind poller synchronization intervals, and quote child paths and SNMP manager filters
+-issue#8777: Keep RRDtool file permission rejections at the normal log level
+-issue#8777: Ignore RRDtool fetch lines without a numeric timestamp in RRDcheck
+-issue#8777: Report a failed session cleanup from the session garbage collector
+-issue#8777: Check the sibling element before adding the theme filter search icon
+-issue#8777: Escape the graph id in the graph drilldown container id
 -issue#8783: Keep the scripts and resource files shipped with Cacti when the installer imports the bundled device template packages, whose embedded copies can be older and would undo fixes such as the bound queries in the MikroTik scripts
 -issue#8815: Escape stored names, log lines and tab titles for their output context in the aggregate migrate notice, graph thumbnails, data source repair steps, installer log, automation SNMP options, tree breadcrumb and tab overflow menu
 -issue#8817: Keep custom data source paths to a single RRDtool argument, mask credential fields in logged validation errors, report LDAP login failures without the server error text, and neutralise formulas in the discovery and color exports
