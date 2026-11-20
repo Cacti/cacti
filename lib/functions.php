@@ -8595,7 +8595,7 @@ function cacti_ptoa($title, $addr) {
 }
 
 /**
- * Encodes a value as a JSON literal that is safe to print inside an inline
+ * Encodes a PHP value for direct inclusion in JavaScript, such as an inline
  * <script> block or a JavaScript event attribute.  The JSON_HEX_* flags turn
  * <, >, &, ' and " into \uXXXX escapes, so a translated string or other value
  * can neither close the script block nor break out of the surrounding quotes.
@@ -8605,10 +8605,19 @@ function cacti_ptoa($title, $addr) {
  *
  * @return string The JavaScript-safe JSON literal, or null if encoding fails
  */
-function cacti_json_encode($value) {
-	$encoded = json_encode($value, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+function cacti_js_encode(mixed $value) : string {
+	$encoded = json_encode(
+		$value,
+		JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+	);
 
-	return $encoded === false ? 'null' : $encoded;
+	if ($encoded === false) {
+		return 'null';
+	}
+
+	// U+2028 and U+2029 are valid JSON but are line terminators in JavaScript;
+	// left literal by JSON_UNESCAPED_UNICODE they break an inline <script> parse.
+	return str_replace(["\u{2028}", "\u{2029}"], ['\\u2028', '\\u2029'], $encoded);
 }
 
 /**

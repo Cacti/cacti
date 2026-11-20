@@ -996,11 +996,11 @@ function graph_edit() {
 			function changeTotalsType() {
 				if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', <?php print cacti_json_encode(__('Total'));?>);
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('Total'));?>);
 					}
 				} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
 					if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						$('#total_prefix').attr('value', <?php print cacti_json_encode(__('All Items'));?>);
+						$('#total_prefix').attr('value', <?php print cacti_js_encode(__('All Items'));?>);
 					}
 				}
 			}
@@ -1068,12 +1068,12 @@ function graph_edit() {
 		});
 
 		$('#toggle_items').on('click', function() {
-			if ($('#toggle_items').text().indexOf(<?php print cacti_json_encode(__('Show'));?>) !== -1) {
+			if ($('#toggle_items').text().indexOf(<?php print cacti_js_encode(__('Show'));?>) !== -1) {
 				$('#local_graph_template_graph_id').next('table').css('display', '');
-				$('#toggle_items').text(<?php print cacti_json_encode(__('Hide Item Details'));?>);
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Hide Item Details'));?>);
 			} else {
 				$('#local_graph_template_graph_id').next('table').css('display', 'none');
-				$('#toggle_items').text(<?php print cacti_json_encode(__('Show Item Details'));?>);
+				$('#toggle_items').text(<?php print cacti_js_encode(__('Show Item Details'));?>);
 			}
 		});
 

@@ -76,11 +76,11 @@ test('the tree view passes the breadcrumb markup to JavaScript as JSON', functio
 	$source = outputContextSource($root, 'lib/html_tree.php');
 
 	expect($source)
-		->toContain("var navBar = <?php print cacti_json_encode(\"<div id='navBar' class='navBar'>\" . draw_navigation_text() . '</div>');?>;")
+		->toContain("var navBar = <?php print cacti_js_encode(\"<div id='navBar' class='navBar'>\" . draw_navigation_text() . '</div>');?>;")
 		->not->toContain("var navBar = \"<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>\";");
 
 	// backslashes in a name stay literal once the markup is JSON-encoded
-	$encoded = cacti_json_encode('<a>' . htmlspecialchars('a\\b', ENT_QUOTES) . '</a>');
+	$encoded = cacti_js_encode('<a>' . htmlspecialchars('a\\b', ENT_QUOTES) . '</a>');
 
 	expect($encoded)->toContain('a\\\\b')
 		->not->toContain('<');

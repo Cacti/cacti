@@ -736,7 +736,7 @@ function profile_edit() {
 
         $('#consolidation_function_id').multiselect({
             selectedList: 4,
-            noneSelectedText: <?php print cacti_json_encode(__('Select Consolidation Function(s)'));?>,
+            noneSelectedText: <?php print cacti_js_encode(__('Select Consolidation Function(s)'));?>,
             header: false,
             groupColumns: true,
             groupColumnsWidth: 90,
@@ -776,7 +776,7 @@ function profile_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: <?php print cacti_json_encode(__('Delete Data Source Profile Item'));?>,
+						title: <?php print cacti_js_encode(__('Delete Data Source Profile Item'));?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
