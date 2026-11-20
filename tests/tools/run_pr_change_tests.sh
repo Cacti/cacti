@@ -23,11 +23,14 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix RrdInfoHtmlEscape GraphItemsListMarkup; do
+for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix RrdInfoHtmlEscape GraphItemsListMarkup; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
 done
+if [[ -f tests/fixtures/Core/RemoveSpikesHelp.php ]]; then
+	run_probe RemoveSpikesHelp.php RemoveSpikesHelp
+fi
 if [[ -f tests/fixtures/Core/RowGuardMatrix.php ]]; then
 	for mode in auth-changepassword add-device reports-edit; do
 		run_probe RowGuardMatrix.php "row-guard-$mode" "$mode"
@@ -81,6 +84,11 @@ if [[ -f tests/fixtures/Core/GraphItemLabelMarkup.php ]]; then
 	run_probe GraphItemLabelMarkup.php graph-item-label-aggregate label '<em>Literal label</em>'
 	run_probe GraphItemLabelMarkup.php graph-item-label-graph graph '<em>Literal label</em>'
 fi
+
+run_probe ConfiguredCommands.php configured-commands
+run_probe ConfiguredCommands.php deprecated-rebuild deprecated
+run_probe DisplayAndValidation.php display-validation
+run_probe DisplayAndValidation.php input-method-save save
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
