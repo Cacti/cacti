@@ -262,6 +262,7 @@ Cacti CHANGELOG
 -issue#8729: Keep CLI installation, CLI upgrades and background installation behind the same process lock
 -issue#8741: Ensure on-demand (WebUI) Boost processing always takes precedence over the scheduled Boost poller instead of deferring to it (lib/boost.php boost_process_poller_output), so viewing a graph flushes its data immediately; concurrent writes to the same RRD remain safe because Boost passes --skip-past-updates to RRDtool 1.5+
 -issue#8745: Stop bracketing IPv4 and hostname SNMP targets on a non-default port so php-snmp gets and availability checks resolve them
+-issue#8763: Require canonical lists when decoding bulk-action selections
 -issue#8767: Require POST for maintenance utility mutations, bind poller synchronization intervals, and quote child paths and SNMP manager filters
 -issue#8777: Keep RRDtool file permission rejections at the normal log level
 -issue#8777: Ignore RRDtool fetch lines without a numeric timestamp in RRDcheck
