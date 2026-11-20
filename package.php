@@ -118,7 +118,7 @@ function form_save() : void {
 	}
 
 	if ($export_errors || !$success) {
-		raise_message('package_error', __('There were errors packaging your Templates.  Errors Follow. ') . str_replace("\n", '<br>', $debug), MESSAGE_LEVEL_ERROR);
+		raise_message_html('package_error', __esc('There were errors packaging your Templates.  Errors Follow. ') . str_replace("\n", '<br>', html_escape($debug)), MESSAGE_LEVEL_ERROR);
 		header('Location: package.php');
 
 		exit;
