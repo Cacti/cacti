@@ -26,25 +26,26 @@ require_once dirname(__DIR__, 3) . '/include/global.php';
 
 // ss_mikrotik_health: column allow-list
 require_once __DIR__ . '/../../../scripts/ss_mikrotik_health.php';
+require_once dirname(__DIR__, 2) . '/Helpers/MikrotikScriptDatabase.php';
 
 test('ss_mikrotik_health rejects invalid column', function () {
-	expect(ss_mikrotik_health(0, '1; DROP TABLE hosts; --'))->toBe('U');
+	mikrotik_script_database(fn () => expect(ss_mikrotik_health(0, '1; DROP TABLE hosts; --'))->toBe('U'));
 });
 
 test('ss_mikrotik_health rejects empty column', function () {
-	expect(ss_mikrotik_health(0, ''))->toBe('U');
+	mikrotik_script_database(fn () => expect(ss_mikrotik_health(0, ''))->toBe('U'));
 });
 
 test('ss_mikrotik_health rejects arbitrary column name', function () {
-	expect(ss_mikrotik_health(0, 'password'))->toBe('U');
+	mikrotik_script_database(fn () => expect(ss_mikrotik_health(0, 'password'))->toBe('U'));
 });
 
 test('ss_mikrotik_health accepts valid column voltage', function () {
-	expect(ss_mikrotik_health(0, 'voltage'))->toBe('U');
+	mikrotik_script_database(fn () => expect(ss_mikrotik_health(0, 'voltage'))->toBe('U'));
 });
 
 test('ss_mikrotik_health accepts valid column temperature', function () {
-	expect(ss_mikrotik_health(0, 'temperature'))->toBe('U');
+	mikrotik_script_database(fn () => expect(ss_mikrotik_health(0, 'temperature'))->toBe('U'));
 });
 
 // ss_hstats: column mapping via ss_hstats_map_stat_to_column

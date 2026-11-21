@@ -31,31 +31,45 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_snmpget', $_SERVER['argv']);
 }
 
-function ss_mikrotik_snmpget(int $host_id = 0, string $oid = '') : mixed {
+/**
+ * Return a single SNMP value from a MikroTik device.
+ *
+ * @param int|string $host_id The Cacti host id
+ * @param string     $oid     The numeric OID to get
+ *
+ * @return string The SNMP value, U when the device or value is unavailable
+ */
+function ss_mikrotik_snmpget($host_id = 0, $oid = '') {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/snmp.php');
 
-	if ($host_id > 0) {
-		$host = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version, snmp_username, snmp_password,
-			snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context,
-			snmp_port, snmp_timeout, max_oids, snmp_engine_id
-			FROM host
-			WHERE id = ?',
-			[$host_id]);
+	$host_id = (int) $host_id;
 
-		if (cacti_sizeof($host)) {
-			$get = cacti_snmp_get($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],
-				$host['snmp_username'], $host['snmp_password'],
-				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-				$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'],
-				read_config_option('snmp_retries'), SNMP_POLLER, $host['snmp_engine_id']);
-
-			if (!empty($get)) {
-				return $get;
-			}
-		}
+	if ($host_id <= 0 || !preg_match('/^\.?[0-9]+(\.[0-9]+)*$/', (string) $oid)) {
+		return 'U';
 	}
 
-	return '0';
+	$host = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version, snmp_username, snmp_password,
+		snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context,
+		snmp_port, snmp_timeout, max_oids, snmp_engine_id
+		FROM host
+		WHERE id = ?',
+		[$host_id]);
+
+	if (!cacti_sizeof($host)) {
+		return 'U';
+	}
+
+	$get = (string) cacti_snmp_get($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],
+		$host['snmp_username'], $host['snmp_password'],
+		$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+		$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'],
+		read_config_option('snmp_retries'), SNMP_POLLER, $host['snmp_engine_id']);
+
+	if ($get === '' || $get === 'U') {
+		return 'U';
+	}
+
+	return $get;
 }

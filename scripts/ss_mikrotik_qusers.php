@@ -31,139 +31,156 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_qusers', $_SERVER['argv']);
 }
 
-function ss_mikrotik_qusers(int $host_id, string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
-	if ($cmd == 'index') {
-		$return_arr = ss_mikrotik_qusers_getnames($host_id);
-
-		for ($i = 0; ($i < cacti_sizeof($return_arr)); $i++) {
-			print $return_arr[$i] . "\n";
+/**
+ * Data query backend for resource/script_server/mikrotik_qusers.xml.
+ *
+ * Users are indexed by their name.
+ *
+ * @param int|string $host_id The Cacti host id
+ * @param string     $cmd     One of index, num_indexes, query or get
+ * @param string     $arg1    The query field for query and get
+ * @param string     $arg2    The user index for get
+ *
+ * @return string The value for get and num_indexes, otherwise empty
+ */
+function ss_mikrotik_qusers($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
+	// the table only exists when the mikrotik plugin is installed
+	if (!db_table_exists('plugin_mikrotik_users', false)) {
+		if ($cmd == 'num_indexes') {
+			return '0';
 		}
-	} elseif ($cmd == 'query') {
-		$arr_index = ss_mikrotik_qusers_getnames($host_id);
-		$arr       = ss_mikrotik_qusers_getinfo($host_id, $arg1);
 
-		for ($i = 0; ($i < cacti_sizeof($arr_index)); $i++) {
-			if (isset($arr[$arr_index[$i]])) {
-				print $arr_index[$i] . '!' . $arr[$arr_index[$i]] . "\n";
-			}
+		if ($cmd == 'get') {
+			return 'U';
+		}
+
+		return '';
+	}
+
+	$host_id = (int) $host_id;
+
+	if ($cmd == 'index') {
+		foreach (ss_mikrotik_qusers_getnames($host_id) as $index) {
+			print $index . PHP_EOL;
+		}
+	} elseif ($cmd == 'num_indexes') {
+		// counted with the same filters as the index list
+		return (string) db_fetch_cell_prepared("SELECT COUNT(DISTINCT name)
+			FROM plugin_mikrotik_users
+			WHERE host_id = ?
+			AND name != ''",
+			[$host_id]);
+	} elseif ($cmd == 'query') {
+		foreach (ss_mikrotik_qusers_getinfo($host_id, $arg1) as $index => $value) {
+			print $index . '!' . $value . PHP_EOL;
 		}
 	} elseif ($cmd == 'get') {
-		$arg   = $arg1;
-		$index = $arg2;
-
-		return ss_mikrotik_qusers_getvalue($host_id, $index, $arg);
+		return ss_mikrotik_qusers_getvalue($host_id, $arg2, $arg1);
 	}
 
-	return null;
+	return '';
 }
 
-function ss_mikrotik_qusers_getvalue(int $host_id, string $index, string $column) : string {
-	switch ($column) {
-		case 'curBytesIn':
-		case 'curBytesOut':
-		case 'curPacketsIn':
-		case 'curPacketsOut':
-		case 'connectTime':
-			$value = db_fetch_cell_prepared("SELECT
-			$column AS value
-			FROM plugin_mikrotik_users
-			WHERE name = ?
-			AND host_id = ?",
-				[$index, $host_id]);
+/**
+ * Return a traffic counter of a user.
+ *
+ * @param int|string $host_id The Cacti host id
+ * @param string     $index   The user name
+ * @param string     $column  The data query output field, e.g. curBytesIn
+ *
+ * @return string The counter value, U when there is no data
+ */
+function ss_mikrotik_qusers_getvalue($host_id, $index, $column) {
+	$columns = [
+		'curBytesIn'    => '`curBytesIn`',
+		'curBytesOut'   => '`curBytesOut`',
+		'curPacketsIn'  => '`curPacketsIn`',
+		'curPacketsOut' => '`curPacketsOut`',
+		'connectTime'   => '`connectTime`',
+		'avgBytesIn'    => 'IF(connectTime > 0, bytesIn / connectTime, 0)',
+		'avgBytesOut'   => 'IF(connectTime > 0, bytesOut / connectTime, 0)',
+		'avgPacketsIn'  => 'IF(connectTime > 0, packetsIn / connectTime, 0)',
+		'avgPacketsOut' => 'IF(connectTime > 0, packetsOut / connectTime, 0)',
+		'bytesIn'       => '`bytesIn`',
+		'bytesOut'      => '`bytesOut`',
+		'packetsIn'     => '`packetsIn`',
+		'packetsOut'    => '`packetsOut`',
+	];
 
-			break;
-		case 'avgBytesIn':
-		case 'avgBytesOut':
-		case 'avgPacketsIn':
-		case 'avgPacketsOut':
-			$column = str_replace('avgB', 'b', $column);
-			$column = str_replace('avgP', 'p', $column);
-			$value  = db_fetch_cell_prepared("SELECT
-			IF(connectTime>0,($column/connectTime),0) AS value
-			FROM plugin_mikrotik_users
-			WHERE name = ?
-			AND host_id = ?",
-				[$index, $host_id]);
-
-			break;
-		case 'bytesIn':
-		case 'bytesOut':
-		case 'packetsIn':
-		case 'packetsOut':
-			$value = db_fetch_cell_prepared("SELECT
-			$column AS value
-			FROM plugin_mikrotik_users
-			WHERE name = ?
-			AND host_id = ?",
-				[$index, $host_id]);
-
-			break;
+	if (!isset($columns[$column])) {
+		return 'U';
 	}
 
-	if (!empty($value)) {
-		return $value;
-	} else {
-		return '0';
-	}
+	$value = db_fetch_cell_prepared('SELECT ' . $columns[$column] . ' AS value
+		FROM plugin_mikrotik_users
+		WHERE name = ?
+		AND host_id = ?',
+		[$index, (int) $host_id]);
+
+	// no row for this user: unknown, not zero
+	return is_numeric($value) ? (string) $value : 'U';
 }
 
-function ss_mikrotik_qusers_getnames(int $host_id) : array {
+/**
+ * Return the indexes of the users of a device.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return array<int, string>
+ */
+function ss_mikrotik_qusers_getnames($host_id) {
 	$return_arr = [];
 
 	$arr = db_fetch_assoc_prepared("SELECT DISTINCT name
 		FROM plugin_mikrotik_users
 		WHERE host_id = ?
-		AND name!=''
+		AND name != ''
 		ORDER BY name",
-		[$host_id]);
+		[(int) $host_id]);
 
-	for ($i = 0; ($i < cacti_sizeof($arr)); $i++) {
-		$return_arr[$i] = $arr[$i]['name'];
+	if (cacti_sizeof($arr)) {
+		foreach ($arr as $a) {
+			$return_arr[] = $a['name'];
+		}
 	}
 
 	return $return_arr;
 }
 
-function ss_mikrotik_qusers_getinfo(int $host_id, string $info_requested) : array {
-	$return_arr = [];
-	$arr        = [];
+/**
+ * Return a data query input field for every user of a device.
+ *
+ * @param int|string $host_id        The Cacti host id
+ * @param string     $info_requested The data query input field
+ *
+ * @return array<string, string>
+ */
+function ss_mikrotik_qusers_getinfo($host_id, $info_requested) {
+	$columns = [
+		'name'   => 'name',
+		'domain' => 'domain',
+		'ip'     => 'ip',
+		'mac'    => 'mac',
+	];
 
-	if ($info_requested == 'name') {
-		$arr = db_fetch_assoc_prepared("SELECT name AS qry_index,
-			name AS qry_value
-			FROM plugin_mikrotik_users
-			WHERE host_id = ?
-			AND name!=''
-			ORDER BY name",
-			[$host_id]);
-	} elseif ($info_requested == 'domain') {
-		$arr = db_fetch_assoc_prepared("SELECT name AS qry_index,
-			domain AS qry_value
-			FROM plugin_mikrotik_users
-			WHERE host_id = ?
-			AND name!=''
-			ORDER BY name",
-			[$host_id]);
-	} elseif ($info_requested == 'ip') {
-		$arr = db_fetch_assoc_prepared("SELECT name AS qry_index,
-			ip AS qry_value
-			FROM plugin_mikrotik_users
-			WHERE host_id = ?
-			AND name!=''
-			ORDER BY name",
-			[$host_id]);
-	} elseif ($info_requested == 'mac') {
-		$arr = db_fetch_assoc_prepared("SELECT name AS qry_index,
-			mac AS qry_value
-			FROM plugin_mikrotik_users
-			WHERE host_id = ?
-			AND name!=''
-			ORDER BY name",
-			[$host_id]);
+	$return_arr = [];
+
+	if (!isset($columns[$info_requested])) {
+		return $return_arr;
 	}
 
-	for ($i = 0; ($i < cacti_sizeof($arr)); $i++) {
-		$return_arr[$arr[$i]['qry_index']] = $arr[$i]['qry_value'];
+	$arr = db_fetch_assoc_prepared('SELECT name AS qry_index,
+		`' . $columns[$info_requested] . "` AS qry_value
+		FROM plugin_mikrotik_users
+		WHERE host_id = ?
+		AND name != ''
+		ORDER BY name",
+		[(int) $host_id]);
+
+	if (cacti_sizeof($arr)) {
+		foreach ($arr as $a) {
+			$return_arr[$a['qry_index']] = $a['qry_value'];
+		}
 	}
 
 	return $return_arr;
