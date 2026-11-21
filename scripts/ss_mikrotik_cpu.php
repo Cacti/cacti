@@ -31,16 +31,27 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_cpu', $_SERVER['argv']);
 }
 
-function ss_mikrotik_cpu(int $host_id = 0) : string {
-	$cpu = db_fetch_row_prepared('SELECT AVG(`load`) AS avgCPU,
-		MAX(`load`) AS maxCPU
-		FROM plugin_mikrotik_processor
-		WHERE host_id = ?',
-		[$host_id]);
-
-	if (cacti_sizeof($cpu)) {
-		return 'cpu:' . $cpu['avgCPU'] . ' max:' . $cpu['maxCPU'];
-	} else {
+/**
+ * Return the average and peak processor load of a MikroTik device.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string 'cpu:<avg> max:<max>', U when there is no data
+ */
+function ss_mikrotik_cpu($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
+	if (!db_table_exists('plugin_mikrotik_processor', false)) {
 		return 'cpu:U max:U';
 	}
+
+	$cpu = db_fetch_row_prepared('SELECT AVG(`load`) AS avgCPU, MAX(`load`) AS maxCPU
+		FROM plugin_mikrotik_processor
+		WHERE host_id = ?',
+		[(int) $host_id]);
+
+	// the aggregates are NULL when the device has no processors
+	$avg = (isset($cpu['avgCPU']) && is_numeric($cpu['avgCPU'])) ? $cpu['avgCPU'] : 'U';
+	$max = (isset($cpu['maxCPU']) && is_numeric($cpu['maxCPU'])) ? $cpu['maxCPU'] : 'U';
+
+	return 'cpu:' . $avg . ' max:' . $max;
 }

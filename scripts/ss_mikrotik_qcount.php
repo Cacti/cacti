@@ -31,16 +31,24 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_qcount', $_SERVER['argv']);
 }
 
-function ss_mikrotik_qcount(int $host_id = 0) : mixed {
+/**
+ * Return the number of simple queues seen on a MikroTik device in the last 20 minutes.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string The queue count, U when the plugin is not installed
+ */
+function ss_mikrotik_qcount($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
+	if (!db_table_exists('plugin_mikrotik_queues', false)) {
+		return 'U';
+	}
+
 	$queues = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_mikrotik_queues
 		WHERE host_id = ?
-		AND unix_timestamp(last_seen)>unix_timestamp()-1200',
-		[$host_id]);
+		AND UNIX_TIMESTAMP(last_seen) > UNIX_TIMESTAMP()-1200',
+		[(int) $host_id]);
 
-	if ($queues == '') {
-		$queues = 'U';
-	}
-
-	return $queues;
+	return is_numeric($queues) ? (string) $queues : 'U';
 }

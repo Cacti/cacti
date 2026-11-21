@@ -1,0 +1,1 @@
+Harmonize the MikroTik script server data collection scripts with the MikroTik plugin so they return U when there is no data, read the plugin RouterOS 7 health sensors when present, and validate every requested column

@@ -31,15 +31,23 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_procs', $_SERVER['argv']);
 }
 
-function ss_mikrotik_procs(int $host_id = 0) : mixed {
+/**
+ * Return the number of processes running on a MikroTik device.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string The process count, U when there is no data
+ */
+function ss_mikrotik_procs($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
+	if (!db_table_exists('plugin_mikrotik_system', false)) {
+		return 'U';
+	}
+
 	$procs = db_fetch_cell_prepared('SELECT processes
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',
-		[$host_id]);
+		[(int) $host_id]);
 
-	if ($procs == '') {
-		$procs = 'U';
-	}
-
-	return $procs;
+	return is_numeric($procs) ? (string) $procs : 'U';
 }
