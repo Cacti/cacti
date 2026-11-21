@@ -1,0 +1,333 @@
+{
+    "description": "Known exceptions to the cacti.sql schema checks in tests/Unit/Database/CactiSqlSchemaTest.php. Entries that no longer match the schema are ignored, so removing an exception from cacti.sql never requires a lockstep edit here. Add an entry only for an intentional exception and give a reason.",
+    "missing_primary_key": [
+        {
+            "table": "rrdcheck",
+            "reason": "Legacy table with no primary key, tracked in #8883."
+        }
+    ],
+    "memory_tables": [
+        {
+            "table": "automation_ips",
+            "reason": "Existing MEMORY table in cacti.sql; changing its engine is a schema change outside this check."
+        },
+        {
+            "table": "automation_processes",
+            "reason": "Existing MEMORY table in cacti.sql; changing its engine is a schema change outside this check."
+        },
+        {
+            "table": "data_source_stats_hourly_last",
+            "reason": "Existing MEMORY table in cacti.sql; changing its engine is a schema change outside this check."
+        },
+        {
+            "table": "poller_output",
+            "reason": "Existing MEMORY table in cacti.sql; changing its engine is a schema change outside this check."
+        },
+        {
+            "table": "poller_output_boost_local_data_ids",
+            "reason": "Existing MEMORY table in cacti.sql; changing its engine is a schema change outside this check."
+        },
+        {
+            "table": "poller_output_boost_processes",
+            "reason": "Existing MEMORY table in cacti.sql; changing its engine is a schema change outside this check."
+        },
+        {
+            "table": "processes",
+            "reason": "Existing MEMORY table in cacti.sql; changing its engine is a schema change outside this check."
+        }
+    ],
+    "key_column_types": [
+        {
+            "table": "automation_graph_rules",
+            "column": "snmp_query_id",
+            "type": "smallint(3) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "data_local",
+            "column": "data_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "data_local",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "data_local",
+            "column": "snmp_query_id",
+            "type": "mediumint(8)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "data_source_purge_temp",
+            "column": "data_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "data_template_data",
+            "column": "data_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "data_template_rrd",
+            "column": "data_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_local",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_local",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_local",
+            "column": "snmp_query_id",
+            "type": "mediumint(8)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_template_input",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_templates_graph",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_templates_item",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_tree_items",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "graph_tree_items",
+            "column": "site_id",
+            "type": "int unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_errors",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_graph",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_graph",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_snmp_cache",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_snmp_cache",
+            "column": "snmp_query_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_snmp_query",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_snmp_query",
+            "column": "snmp_query_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_value_cache",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_template_graph",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "host_template_snmp_query",
+            "column": "snmp_query_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "poller_command",
+            "column": "poller_id",
+            "type": "smallint(5) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "poller_item",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "poller_output_realtime",
+            "column": "poller_id",
+            "type": "varchar(256)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "poller_reindex",
+            "column": "host_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "reports",
+            "column": "user_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "reports_items",
+            "column": "site_id",
+            "type": "int(11)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "reports_items",
+            "column": "host_id",
+            "type": "int(11)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "reports_items",
+            "column": "graph_template_id",
+            "type": "int(11)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "settings_user",
+            "column": "user_id",
+            "type": "smallint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "settings_tree",
+            "column": "user_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "snmp_query",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "snmp_query_graph",
+            "column": "snmp_query_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "snmp_query_graph",
+            "column": "graph_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "snmp_query_graph_rrd",
+            "column": "data_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "snmp_query_graph_rrd_sv",
+            "column": "data_template_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "user_auth_perms",
+            "column": "user_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "user_auth_realm",
+            "column": "user_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "user_auth_row_cache",
+            "column": "user_id",
+            "type": "mediumint(8)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "user_log",
+            "column": "user_id",
+            "type": "mediumint(8)",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        },
+        {
+            "table": "rrdcheck",
+            "column": "local_data_id",
+            "type": "mediumint(8) unsigned",
+            "reason": "Legacy column type that predates the int(10) unsigned convention, tracked in #8883."
+        }
+    ],
+    "zero_date_defaults": {
+        "automation_networks": 2,
+        "automation_processes": 1,
+        "data_source_purge_temp": 1,
+        "data_source_stats_hourly_cache": 1,
+        "graph_tree": 2,
+        "host": 3,
+        "poller": 3,
+        "poller_command": 1,
+        "poller_output": 1,
+        "poller_output_boost": 1,
+        "poller_output_realtime": 1,
+        "poller_resource_cache": 1,
+        "poller_time": 2,
+        "poller_time_stats": 1,
+        "processes": 1,
+        "reports": 2,
+        "reports_queued": 2,
+        "user_auth_reset_hashes": 1,
+        "user_log": 1,
+        "rrdcheck": 1
+    }
+}
