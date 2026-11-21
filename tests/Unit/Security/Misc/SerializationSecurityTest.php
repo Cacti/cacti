@@ -79,6 +79,22 @@ test('unserialize rejects nested arrays', function () {
 	expect(sanitize_unserialize_selected_items($items))->toBeFalse();
 });
 
+test('unserialize rejects bytes after the serialized array', function () {
+	$items = serialize([1, 2]);
+
+	expect(sanitize_unserialize_selected_items($items . 'x'))->toBeFalse()
+		->and(sanitize_unserialize_selected_items($items . '<b>'))->toBeFalse();
+});
+
+test('unserialize rejects non-canonical encodings of a list', function () {
+	expect(sanitize_unserialize_selected_items('a:1:{i:0;i:+5;}'))->toBeFalse();
+});
+
+test('unserialize rejects arrays that are not lists', function () {
+	expect(sanitize_unserialize_selected_items(serialize([1 => 5, 2 => 6])))->toBeFalse()
+		->and(sanitize_unserialize_selected_items(serialize(['id' => 5])))->toBeFalse();
+});
+
 // =====================================================================
 // sanitize_cdef tests
 // =====================================================================
