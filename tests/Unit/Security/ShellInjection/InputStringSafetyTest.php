@@ -27,6 +27,7 @@ test('plain command templates and quoted placeholders are accepted', function (s
 	'quoted placeholder' => ['<path_cacti>/scripts/example.php "<reason>"'],
 	'single quoted'      => ["<path_php_binary> <path_cacti>/scripts/x.php '<arg1>'"],
 	'digit suffix'       => ['<path_cacti>/scripts/x.php <arg1> <host_id2>'],
+	'tab separator'      => ["<path_cacti>/scripts/x.php\t<arg1>"],
 ]);
 
 test('shell metacharacters outside a placeholder are refused', function (mixed $template) {
@@ -43,6 +44,11 @@ test('shell metacharacters outside a placeholder are refused', function (mixed $
 	'braces'         => ['<path_cacti>/scripts/x.php {a,b}'],
 	'bare quote'     => ["<path_cacti>/scripts/x.php 'a b'"],
 	'newline'        => ["<path_cacti>/scripts/x.php\nid"],
+	'return'         => ["<path_cacti>/scripts/x.php\rid"],
+	'nul'            => ["<path_cacti>/scripts/x.php\0id"],
+	'escape'         => ["<path_cacti>/scripts/x.php \x1b[2J"],
+	'vertical tab'   => ["<path_cacti>/scripts/x.php\x0bid"],
+	'delete'         => ["<path_cacti>/scripts/x.php \x7f"],
 	'backslash'      => ['<path_cacti>/scripts/x.php \\n'],
 	'not a string'   => [false],
 ]);
