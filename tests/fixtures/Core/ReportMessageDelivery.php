@@ -102,7 +102,7 @@ message_is('report_send', MESSAGE_LEVEL_INFO, "Created Report Graph Item '<i>Gra
 	. "Failed Adding Report Graph Item '<i>Graph 12 &amp; &lt;East&gt;</i>' Already Exists<br>"
 	. "Skipped Report Graph Item '<i>Graph 13 &amp; &lt;East&gt;</i>' Already Exists<br>");
 
-check(!reports_add_devices(7, [11, 13], [2], ''), 'Duplicate device did not affect the result');
+check(!reports_add_devices(7, [11, 13], 2, ''), 'Duplicate device did not affect the result');
 check(count($GLOBALS['device_inserts']) === 1 && $GLOBALS['device_inserts'][0][3] === 11, 'Unexpected device insert');
 message_is('reports_add_device_11', MESSAGE_LEVEL_INFO, 'Device &apos;North &amp; South&apos; successfully added to Report.');
 message_is('reports_no_add_device_13', MESSAGE_LEVEL_WARN, 'Device &apos;North &amp; South&apos; not added to Report as it already exists on report.');
