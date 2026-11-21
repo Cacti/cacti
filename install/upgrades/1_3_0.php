@@ -467,6 +467,10 @@ function upgrade_to_1_3_0() : void {
 
 	upgrade_retired_themes_1_3_0();
 
+	// the database connection of each registered process, so a process killed for running too
+	// long does not leave its statement running on the server
+	db_install_add_column('processes', ['name' => 'connection_id', 'type' => 'bigint(20)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'timeout']);
+
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
 	$data['columns'][]  = ['name' => 'name', 'type' => 'varchar(32)', 'NULL' => false, 'default' => ''];
