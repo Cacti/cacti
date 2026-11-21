@@ -35,6 +35,8 @@ function filter_action_url(string $script, string $function, array $values) : st
 			$url .= $values[$field[1]];
 		} elseif (preg_match('/^base64_encode\(\$\(\'#(\w+)\'\)\.val\(\)\)$/', $term, $field)) {
 			$url .= base64_encode($values[$field[1]]);
+		} elseif (preg_match('/^encodeURIComponent\(\$\(\'#(\w+)\'\)\.val\(\)\)$/', $term, $field)) {
+			$url .= rawurlencode($values[$field[1]]);
 		} else {
 			$literal = json_decode($term, false, 512, JSON_THROW_ON_ERROR);
 
@@ -52,11 +54,19 @@ $cases = 0;
 
 foreach (['legacy', 'modern'] as $format) {
 	foreach (["graphs.php?filter=Bob's switch", 'graphs.php?filter=</script><em>Literal</em>&other=&quot;', 'graphs.php'] as $action) {
-		foreach ([[], ['rows' => [[]]], ['rows' => [[
-			'enabled' => ['method' => 'filter_checkbox', 'friendly_name' => 'Enabled', 'value' => 'on'],
-			'filter'  => ['method' => 'textbox', 'friendly_name' => 'Search', 'value' => 'hello', 'max_length' => '120'],
-			'rfilter' => ['method' => 'textbox', 'friendly_name' => 'Regular expression', 'value' => 'hello', 'max_length' => '120']
-		]]]] as $fields) {
+		foreach ([
+			[[], ''],
+			[['rows' => [[]]], ''],
+			[['rows' => [[
+				'enabled' => ['method' => 'filter_checkbox', 'friendly_name' => 'Enabled', 'value' => 'on'],
+				'filter'  => ['method' => 'textbox', 'friendly_name' => 'Search', 'value' => 'hello', 'max_length' => '120'],
+				'rfilter' => ['method' => 'textbox', 'friendly_name' => 'Regular expression', 'value' => 'hello', 'max_length' => '120']
+			]]], 'enabled=true&filter=hello&rfilter=aGVsbG8='],
+			// A raw regular expression is sent URI-encoded rather than base64 encoded.
+			[['rows' => [[
+				'rfilter' => ['method' => 'textbox', 'friendly_name' => 'Regular expression', 'value' => 'a b&c=d+e', 'max_length' => '120', 'filter' => FILTER_UNSAFE_RAW]
+			]]], 'rfilter=a%20b%26c%3Dd%2Be']
+		] as [$fields, $query]) {
 			$filter                 = (new ReflectionClass(CactiTableFilter::class))->newInstanceWithoutConstructor();
 			$filter->form_action    = $action;
 			$filter->form_id        = 'fixture_filter';
@@ -84,7 +94,7 @@ foreach (['legacy', 'modern'] as $format) {
 			$values = array_map(static fn (array $field) : string => $field['value'], $fields['rows'][0] ?? []);
 			$script = implode("\n", $scripts);
 
-			if (filter_action_url($script, 'applyFilter', $values) !== $prefix . ($values === [] ? '' : 'enabled=true&filter=hello&rfilter=aGVsbG8=')
+			if (filter_action_url($script, 'applyFilter', $values) !== $prefix . $query
 				|| filter_action_url($script, 'clearFilter', $values) !== $prefix . 'clear=true') {
 				throw new RuntimeException('Filter action URLs changed.');
 			}
