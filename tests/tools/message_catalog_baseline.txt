@@ -1,0 +1,5 @@
+# Catalogs that fail msgfmt --check-format today, with the number of errors
+# each is allowed.  check_message_template.sh fails a catalog only when it has
+# more errors than this.  The translations are fixed on the translation site;
+# remove a line once its catalog passes.
+locales/po/sv-SE.po 2

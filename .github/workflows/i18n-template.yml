@@ -1,0 +1,60 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+
+name: i18n Template
+
+on:
+  pull_request:
+    paths:
+      - '**.php'
+      - 'locales/**'
+      - 'include/cacti_version'
+      - 'tests/tools/check_message_template.sh'
+      - 'tests/tools/message_catalog_baseline.txt'
+      - '.github/workflows/i18n-template.yml'
+  push:
+    branches:
+      - develop
+    paths:
+      - '**.php'
+      - 'locales/**'
+      - 'include/cacti_version'
+      - 'tests/tools/check_message_template.sh'
+      - 'tests/tools/message_catalog_baseline.txt'
+      - '.github/workflows/i18n-template.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check-template:
+    name: Check Message Template and Catalogs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Install gettext
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends --yes gettext
+
+      # Fails when locales/po/cacti.pot does not hold the messages that
+      # locales/update-pot.sh extracts, or when the template or a catalog
+      # outside the baseline does not pass msgfmt --check-format.
+      - name: Compare the template with the source and check catalog formats
+        run: |
+          set -euo pipefail
+          xgettext --version | head -n 1
+          sh tests/tools/check_message_template.sh
