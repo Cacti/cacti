@@ -16069,6 +16069,10 @@ msgid "Window Range:  All"
 msgstr ""
 
 #: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
+
+#: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
 msgstr ""
 
