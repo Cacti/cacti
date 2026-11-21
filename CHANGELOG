@@ -246,6 +246,7 @@ Cacti CHANGELOG
 -issue#8043: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
 -issue#8370: When drilling a Site Branch into a Device Template, the Tree view Graph Templates filter now lists only the Graph Templates present on that Device Template's devices
 -issue#8460: Keep all four digits of an AKCP securityProbe Fahrenheit reading of 100 F or more instead of cutting it to three, and return U for a reading that is not a number
+-issue#8460: Fix Cisco HSRP discovery and polling for interface/group indexes
 -issue#8480: Keep wrapped Cacti theme titles and controls inside their titlebars and improve text-link contrast on light rows
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
 -issue#8596: Keep device credentials out of Script Server and cmd.php log messages that describe a script's arguments
