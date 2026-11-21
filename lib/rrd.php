@@ -2417,6 +2417,217 @@ function rrdtool_invalid_cdef_response(array $graph_data_array, int $cdef_id, in
 	return $error_image($message);
 }
 
+/**
+ * Record, for each member of an aggregate graph, the DEFs that member's own graph defines, in
+ * the order its DEF names (a, b, c, ...) are assigned. A CDEF written for the member graph names
+ * its DEFs by those letters, but an aggregate assigns letters across all of its members.
+ *
+ * @param int $local_graph_id The aggregate graph.
+ *
+ * @return array 'owner' maps a data_template_rrd id to its possible member indexes, and 'members' lists
+ *               each member's DEFs as [data_template_rrd id, CF] pairs. Empty when the graph
+ *               is not an aggregate.
+ */
+function rrdtool_aggregate_def_map(int $local_graph_id) : array {
+	// one query for every member's items, rather than one query per member
+	$items = db_fetch_assoc_prepared('SELECT agi.local_graph_id AS member_graph_id,
+		gti.graph_type_id, gti.consolidation_function_id,
+		dtr.id AS data_template_rrd_id, dtr.local_data_id, dtr.data_source_name
+		FROM aggregate_graphs AS ag
+		INNER JOIN aggregate_graphs_items AS agi
+		ON ag.id = agi.aggregate_graph_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.local_graph_id = agi.local_graph_id
+		LEFT JOIN data_template_rrd AS dtr
+		ON gti.task_item_id = dtr.id
+		WHERE ag.local_graph_id = ?
+		ORDER BY agi.sequence, agi.local_graph_id, gti.sequence',
+		[$local_graph_id]);
+
+	if (!cacti_sizeof($items)) {
+		return [];
+	}
+
+	$map           = ['owner' => [], 'members' => []];
+	$index         = -1;
+	$member        = null;
+	$last_graph_cf = [];
+	$seen          = [];
+
+	// the same rule rrdtool_function_graph() uses to assign DEF names
+	foreach ($items as $item) {
+		if ($item['member_graph_id'] !== $member) {
+			$member        = $item['member_graph_id'];
+			$last_graph_cf = [];
+			$seen          = [];
+
+			$index++;
+
+			$map['members'][$index] = [];
+		}
+
+		$graph_cf = rrdtool_graph_item_cf($item, $last_graph_cf);
+
+		if (empty($item['local_data_id']) || isset($seen[$item['data_template_rrd_id']][$graph_cf])) {
+			continue;
+		}
+
+		$seen[$item['data_template_rrd_id']][$graph_cf] = true;
+
+		$map['members'][$index][] = [$item['data_template_rrd_id'], $graph_cf];
+
+		$map['owner'][$item['data_template_rrd_id']][$index] = $index;
+	}
+
+	return $map;
+}
+
+/**
+ * Point the DEF names in an aggregate graph item's CDEF at the right DEFs. In a member's item, a
+ * name refers to that member's own DEF. In a totalling item, it refers to the sum of that DEF
+ * across all members. A name that is not a DEF of the member graph, such as a CDEF name, is left
+ * unchanged; a member DEF that the aggregate does not draw, or cannot attribute to one member,
+ * becomes unknown rather than another member's DEF.
+ *
+ * @param string $cdef_string The CDEF expression before Cacti's special data sources are expanded.
+ * @param mixed  $dtr_id      The data_template_rrd id of the graph item.
+ * @param array  $map         The result of rrdtool_aggregate_def_map().
+ * @param array  $cf_ds_cache The aggregate graph's DEF index per 'data_template_rrd id:CF' key.
+ * @param int    $rra_seconds The step of the RRA being graphed.
+ *
+ * @return string The CDEF expression.
+ */
+function rrdtool_aggregate_cdef_defs(string $cdef_string, mixed $dtr_id, array $map, array $cf_ds_cache, int $rra_seconds) : string {
+	$tokens = explode(',', $cdef_string);
+
+	foreach ($tokens as $key => $token) {
+		if (!preg_match('/^[a-j]+$/', $token)) {
+			continue;
+		}
+
+		// only a name generate_graph_def_name() can produce; a CDEF name such as cdefe
+		// decodes to an index far beyond any member's DEFs and is left alone below
+		$index = (int) strtr($token, 'abcdefghij', '0123456789');
+
+		if (generate_graph_def_name($index) !== $token) {
+			continue;
+		}
+
+		$member_item = isset($map['owner'][$dtr_id]);
+		$members     = $map['members'];
+
+		if ($member_item) {
+			$members = [];
+
+			foreach ($map['owner'][$dtr_id] as $member_index) {
+				$members[] = $map['members'][$member_index];
+			}
+		}
+
+		$names = [];
+		$known = false;
+
+		foreach ($members as $defs) {
+			if (!isset($defs[$index])) {
+				continue;
+			}
+
+			$known = true;
+
+			if (isset($cf_ds_cache["{$defs[$index][0]}:{$defs[$index][1]}"])) {
+				$names[] = generate_graph_def_name((int) $cf_ds_cache["{$defs[$index][0]}:{$defs[$index][1]}"]);
+			}
+		}
+
+		// not a DEF of any member graph, such as a CDEF name
+		if (!$known) {
+			continue;
+		}
+
+		// Never point a name at a different DEF. A shared data source does
+		// not identify which member an item came from, so resolve it only
+		// when every possible member agrees, and a member's DEF is missing
+		// when the aggregate skips the item that draws it. Keep a DEF
+		// reference so RRDtool also accepts an otherwise constant CDEF.
+		if (!cacti_sizeof($names) || ($member_item && (cacti_sizeof($names) != cacti_sizeof($members) || cacti_sizeof(array_unique($names)) != 1))) {
+			$tokens[$key] = 'CURRENT_DATA_SOURCE,POP,UNKN';
+
+			continue;
+		}
+
+		if ($member_item || cacti_sizeof($names) == 1) {
+			$tokens[$key] = $names[0];
+		} else {
+			// sum like ALL_DATA_SOURCES_NODUPS: unknown values count as 0
+			$sum = [];
+
+			foreach ($names as $name) {
+				$sum[] = 'TIME,' . (time() - $rra_seconds) . ",GT,$name,$name,UN,0,$name,IF,IF";
+			}
+
+			$tokens[$key] = implode(',', $sum) . str_repeat(',+', cacti_sizeof($names) - 1);
+		}
+	}
+
+	return implode(',', $tokens);
+}
+
+/**
+ * Return the consolidation function a graph item's DEF uses.
+ *
+ * @param array $graph_item     The graph item, as selected by rrdtool_function_graph().
+ * @param array &$last_graph_cf The CF last used per data source, so a GPRINT follows its graph item.
+ *
+ * @return mixed The consolidation function id.
+ */
+function rrdtool_graph_item_cf(array $graph_item, array &$last_graph_cf) : mixed {
+	// mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item
+	switch ($graph_item['graph_type_id']) {
+		case GRAPH_ITEM_TYPE_LINE1:
+		case GRAPH_ITEM_TYPE_LINE2:
+		case GRAPH_ITEM_TYPE_LINE3:
+		case GRAPH_ITEM_TYPE_LINESTACK:
+		case GRAPH_ITEM_TYPE_TIC:
+		case GRAPH_ITEM_TYPE_AREA:
+		case GRAPH_ITEM_TYPE_STACK:
+			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
+			/* remember the last CF for this data source for use with GPRINT
+			 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
+			 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
+			$last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']] = $graph_cf;
+
+			break;
+		case GRAPH_ITEM_TYPE_GPRINT:
+			/* ATTENTION!
+			 * the 'CF' given on graph_item edit screen for GPRINT is indeed NOT a real 'CF',
+			 * but an aggregation function
+			 * see 'man rrdgraph_data' for the correct VDEF based notation
+			 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
+			 * and to use that graph_item's CF */
+			if (isset($last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']])) {
+				$graph_cf = $last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']];
+			} else {
+				$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
+			}
+
+			break;
+		case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
+		case GRAPH_ITEM_TYPE_GPRINT_LAST:
+		case GRAPH_ITEM_TYPE_GPRINT_MAX:
+		case GRAPH_ITEM_TYPE_GPRINT_MIN:
+			$graph_cf = $graph_item['consolidation_function_id'];
+
+			break;
+		default:
+			// all other types are based on the best matching CF
+			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
+
+			break;
+	}
+
+	return $graph_cf;
+}
+
 function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph_data_array,
 	mixed $rrdtool_pipe = null, mixed &$xport_meta = [], int $user = 0) : mixed {
 	global $consolidation_functions, $graph_item_types, $encryption;
@@ -2687,58 +2898,10 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 	if (cacti_sizeof($graph_items)) {
 		// we need to add a new column 'cf_reference', so unless PHP 5 is used, this foreach syntax is required
 		foreach ($graph_items as $key => $graph_item) {
-			// mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item
-			switch ($graph_item['graph_type_id']) {
-				case GRAPH_ITEM_TYPE_LINE1:
-				case GRAPH_ITEM_TYPE_LINE2:
-				case GRAPH_ITEM_TYPE_LINE3:
-				case GRAPH_ITEM_TYPE_LINESTACK:
-				case GRAPH_ITEM_TYPE_TIC:
-				case GRAPH_ITEM_TYPE_AREA:
-				case GRAPH_ITEM_TYPE_STACK:
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
-					/* remember the last CF for this data source for use with GPRINT
-					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
-					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
-					$last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']] = $graph_cf;
-					// remember this for second foreach loop
-					$graph_items[$key]['cf_reference'] = $graph_cf;
+			$graph_cf = rrdtool_graph_item_cf($graph_item, $last_graph_cf);
 
-					break;
-				case GRAPH_ITEM_TYPE_GPRINT:
-					/* ATTENTION!
-					 * the 'CF' given on graph_item edit screen for GPRINT is indeed NOT a real 'CF',
-					 * but an aggregation function
-					 * see 'man rrdgraph_data' for the correct VDEF based notation
-					 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
-					 * and to use that graph_item's CF */
-					if (isset($last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']])) {
-						$graph_cf = $last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']];
-						// remember this for second foreach loop
-						$graph_items[$key]['cf_reference'] = $graph_cf;
-					} else {
-						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
-						// remember this for second foreach loop
-						$graph_items[$key]['cf_reference'] = $graph_cf;
-					}
-
-					break;
-				case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-				case GRAPH_ITEM_TYPE_GPRINT_LAST:
-				case GRAPH_ITEM_TYPE_GPRINT_MAX:
-				case GRAPH_ITEM_TYPE_GPRINT_MIN:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-				default:
-					// all other types are based on the best matching CF
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
-					// remember this for second foreach loop
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
-			}
+			// remember this for second foreach loop
+			$graph_items[$key]['cf_reference'] = $graph_cf;
 
 			$cf_ds_key = "{$graph_item['data_template_rrd_id']}:{$graph_cf}";
 
@@ -2937,7 +3100,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 	// +++++++++++++++++++++++ GRAPH ITEMS: CDEF +++++++++++++++++++++++
 
-	$i = 0;
+	$i                 = 0;
+	$aggregate_def_map = null;
 
 	// hack for rrdtool 1.2.x support
 	$graph_item_stack_type = '';
@@ -2988,6 +3152,16 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			if ($graph_item['cdef_id'] > 0 && !isset($cdef_cache[$cdef_cache_key])) {
 				/** @var string $cdef_string */
 				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
+
+				// a CDEF can name DEFs directly (a,b,-), which in an aggregate graph are numbered
+				// across every member graph rather than per member
+				if (preg_match('/(^|,)[a-j]+(,|$)/', $cdef_string)) {
+					$aggregate_def_map ??= rrdtool_aggregate_def_map($local_graph_id);
+
+					if (cacti_sizeof($aggregate_def_map)) {
+						$cdef_string = rrdtool_aggregate_cdef_defs($cdef_string, $graph_item['data_template_rrd_id'], $aggregate_def_map, $cf_ds_cache, $rra_seconds);
+					}
+				}
 
 				$magic_item   = [];
 				$already_seen = [];
