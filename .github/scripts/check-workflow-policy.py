@@ -15,7 +15,7 @@ CURL_PIPE_RE = re.compile(r"curl\b[^\n|]*\|\s*(?:sudo\s+)?(?:/(?:usr/)?bin/)?(?:
 STRICT_LINE = "set -euo pipefail"
 DEFAULT_WORKFLOW_GLOB = ".github/workflows/*"
 DEFAULT_ACTION_GLOB = ".github/actions/**/action.y*ml"
-ALLOWED_RUNNERS = {"ubuntu-24.04", "ubuntu-slim"}
+ALLOWED_RUNNERS = {"ubuntu-24.04", "ubuntu-slim", "windows-2022"}
 CHECKOUT_WRITE_WORKFLOWS = {
     ".github/workflows/security-baseline-refresh.yml",
     ".github/workflows/update-contributors.yml",
