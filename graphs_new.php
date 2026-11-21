@@ -473,8 +473,8 @@ function graphs() {
 						</td>
 						<td>
 							<select id='graph_type' name='graph_type'>
-								<option value='-2'<?php if (get_request_var('graph_type') == '-2') {?> selected<?php }?>><?php print __('All');?></option>
-								<option value='-1'<?php if (get_request_var('graph_type') == '-1') {?> selected<?php }?>><?php print __('Graph Template Based');?></option>
+								<option value='-2'<?php if (get_request_var('graph_type') == '-2') { print ' selected'; }?>><?php print __('All');?></option>
+								<option value='-1'<?php if (get_request_var('graph_type') == '-1') { print ' selected'; }?>><?php print __('Graph Template Based');?></option>
 								<?php
 
 								$snmp_queries = db_fetch_assoc_prepared('SELECT sq.id, sq.name
