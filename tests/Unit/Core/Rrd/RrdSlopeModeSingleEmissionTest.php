@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 /**
  * Regression test for duplicate --slope-mode emission in
- * rrd_function_process_graph_options() (lib/rrd.php).
+ * rrd_function_process_graph_options() (lib/rrd_graph_options.php).
  *
  * The per-option switch (case 'slope_mode') and a later standalone
  * "provide smooth lines" block both appended --slope-mode for the same
@@ -21,8 +21,8 @@ declare(strict_types = 1);
  * @group regression
  */
 
-test('lib/rrd.php emits --slope-mode from exactly one site', function () {
-	$path   = dirname(__DIR__, 4) . '/lib/rrd.php';
+test('graph options emit --slope-mode from exactly one site', function () {
+	$path   = dirname(__DIR__, 4) . '/lib/rrd_graph_options.php';
 	$source = file_get_contents($path);
 
 	if ($source === false) {
