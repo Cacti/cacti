@@ -279,6 +279,8 @@ function is_template_account($user_id) {
  * @return string The new username, or false if one was not passed.
  */
 function get_basic_auth_username() {
+	global $config;
+
 	/* Only trust Remote-User / PHP_AUTH_USER headers when Basic Auth is the
 	 * configured auth method (auth_method == 2).  Accepting these headers
 	 * unconditionally allows any proxy or client to spoof arbitrary usernames.
@@ -287,12 +289,16 @@ function get_basic_auth_username() {
 		return false;
 	}
 
-	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['PHP_AUTH_USER']);
-	} elseif (isset($_SERVER['REMOTE_USER'])) {
+	/* REMOTE_USER and REDIRECT_REMOTE_USER are set by the web server's own
+	 * authentication module, so they take precedence. PHP fills PHP_AUTH_USER
+	 * by decoding the Authorization header itself; a site whose web server
+	 * sets REMOTE_USER can turn it off in include/config.php. */
+	if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] !== '') {
 		$username = str_replace("\\", "\\\\", $_SERVER['REMOTE_USER']);
-	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
+	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER']) && $_SERVER['REDIRECT_REMOTE_USER'] !== '') {
 		$username = str_replace("\\", "\\\\", $_SERVER['REDIRECT_REMOTE_USER']);
+	} elseif (isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] !== '' && ($config['auth_basic_allow_php_auth_user'] ?? true) !== false) {
+		$username = str_replace("\\", "\\\\", $_SERVER['PHP_AUTH_USER']);
 	/* The HTTP_-prefixed variants are populated from client request headers
 	 * (Remote-User:, PHP-Auth-User:, Redirect-Remote-User:) and are forgeable.
 	 * Trust only the server-set PHP_AUTH_USER / REMOTE_USER / REDIRECT_REMOTE_USER
@@ -327,13 +333,56 @@ function get_basic_auth_username() {
 				}
 			}
 
-			if (!$found) {
+			/* this runs on every request now, so only log when signing in */
+			if (!$found && !isset($_SESSION['sess_user_id'])) {
 				cacti_log("WARNING: Username $username not found in basic mapfile.", false, 'AUTH');
 			}
 		}
 	}
 
 	return $username;
+}
+
+/**
+ * Hold an existing Web Basic session to the identity the web server presents on this request.
+ * The identity is verified when the session is created; this repeats the check on later
+ * requests and ends the session when the identity is missing, differs from the one the session
+ * was created for, or its account is disabled or locked. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string|bool $username The identity from get_basic_auth_username(), or false.
+ * @param array|bool $current_user The realm 2 account of that identity, empty if there is none.
+ *
+ * @return bool True if the session was kept, false if there is none or it was ended.
+ */
+function auth_basic_session_recheck($username, $current_user) {
+	if (!isset($_SESSION['sess_user_id'])) {
+		return false;
+	}
+
+	$user_id = (int) $_SESSION['sess_user_id'];
+	$valid   = false;
+
+	/* Several upstream names can sanitize to one account name, so the session
+	 * is also held to the unsanitized name recorded when it was created. */
+	if ($username !== false && isset($_SESSION['sess_basic_auth_user']) && $_SESSION['sess_basic_auth_user'] === $username) {
+		if (cacti_sizeof($current_user)) {
+			$valid = $current_user['enabled'] == 'on' && $current_user['locked'] != 'on' && $user_id === (int) $current_user['id'];
+		} else {
+			/* auth_login.php signs an identity without a realm 2 account in as the guest account */
+			$guest_user_id = (int) get_guest_account();
+			$valid         = $guest_user_id > 0 && $user_id === $guest_user_id;
+		}
+	}
+
+	if (!$valid) {
+		cacti_log('NOTE: Web Basic session for user id ' . $user_id . ' ended, it no longer matches the identity passed by the web server', false, 'AUTH');
+
+		cacti_session_destroy();
+		cacti_session_start(true);
+	}
+
+	return $valid;
 }
 
 /**

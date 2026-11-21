@@ -217,6 +217,12 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 				/* set the php session */
 				$_SESSION['sess_user_id'] = $user['id'];
 
+				/* the name auth_basic_session_recheck() holds this session to;
+				 * $username is sanitized, so read the web server value again */
+				if ($auth_method == 2) {
+					$_SESSION['sess_basic_auth_user'] = get_basic_auth_username();
+				}
+
 				/* enforce post-auth session/cookie transition hardening */
 				if (!cacti_auth_transition((int)$user['id'], 'login')) {
 					$error     = true;

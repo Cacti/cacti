@@ -90,15 +90,27 @@ if ($auth_method != 0) {
 	 * but their user_id is not set, include the auth_login.php script to
 	 * process their log in.
 	 */
-	if ($auth_method == 2 && !isset($_SESSION['sess_user_id'])) {
-		$username = get_basic_auth_username();
+	if ($auth_method == 2) {
+		$username     = get_basic_auth_username();
+		$current_user = array();
+
+		/* auth_login.php resolves the realm 2 account from the sanitized
+		 * name, see auth_get_username(), so use that form here too. */
 		if ($username !== false) {
 			$current_user = db_fetch_row_prepared('SELECT *
 				FROM user_auth
 				WHERE realm = 2
 				AND username = ?',
-				array($username));
+				array(sanitize_search_string($username)));
+		}
 
+		/* Defense in depth: the identity is verified when the session is
+		 * created, and an existing session is held to it on every request. */
+		auth_basic_session_recheck($username, $current_user);
+	}
+
+	if ($auth_method == 2 && !isset($_SESSION['sess_user_id'])) {
+		if ($username !== false) {
 			if (cacti_sizeof($current_user) && $current_user['enabled'] != 'on') {
 				cacti_log("LOGIN FAILED: User '" . $current_user['username'] . "' is disabled and was refused Basic Authentication", false, 'AUTH');
 
@@ -108,10 +120,15 @@ if ($auth_method != 0) {
 			if (cacti_sizeof($current_user)) {
 				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
 				if (!cacti_auth_transition((int)$current_user['id'], 'basic_auth')) {
-					return false;
+					auth_display_custom_error_message(__('Access Denied! User account locked.'));
+
+					exit;
 				}
 
 				$_SESSION['sess_user_id'] = $current_user['id'];;
+
+				/* the name auth_basic_session_recheck() holds this session to */
+				$_SESSION['sess_basic_auth_user'] = $username;
 
 				$client_addr = get_client_addr();
 

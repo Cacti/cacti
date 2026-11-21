@@ -97,6 +97,9 @@ if (isset($config['cacti_version'])) {
 /* Should we allow proxy ip headers? */
 $config['proxy_headers'] = (isset($proxy_headers) ? $proxy_headers : []);
 
+/* Should Web Basic Authentication accept PHP_AUTH_USER (see config.php.dist)? */
+$config['auth_basic_allow_php_auth_user'] = (!isset($auth_basic_allow_php_auth_user) || $auth_basic_allow_php_auth_user !== false);
+
 /* Set the poller_id */
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
