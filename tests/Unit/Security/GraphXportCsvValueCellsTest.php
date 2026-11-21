@@ -26,13 +26,20 @@ if ($xportSource === false || $spikekillSource === false) {
 	throw new RuntimeException('Unable to read graph_xport.php or lib/spikekill.php');
 }
 
-/* Same extract-and-eval approach as GraphXportCsvInjectionTest.php: the unit
- * bootstrap does not load page scripts. */
+/* The unit bootstrap does not load page scripts, so the helper from this
+ * checkout's graph_xport.php is loaded on its own. */
 if (!function_exists('graph_xport_csv_cell')) {
-	preg_match('/\nfunction graph_xport_csv_cell\b.*?\n\}/s', "\n" . $xportSource, $cellMatch);
+	if (preg_match('/^function graph_xport_csv_cell\(.*?^}\R/ms', $xportSource, $cellMatch) !== 1) {
+		throw new RuntimeException('Unable to extract graph_xport_csv_cell()');
+	}
 
-	if (!empty($cellMatch)) {
-		eval($cellMatch[0]);
+	$temporary = tempnam(sys_get_temp_dir(), 'xport-cell-');
+	file_put_contents($temporary, '<?php ' . $cellMatch[0]);
+
+	try {
+		require $temporary;
+	} finally {
+		unlink($temporary);
 	}
 }
 
