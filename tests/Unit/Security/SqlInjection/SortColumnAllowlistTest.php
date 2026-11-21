@@ -66,6 +66,7 @@ test('a table request applies the sort column rules', function (string $scenario
 	'stored clause without its columns'            => ['orphan-stored-sort', ''],
 	'stored sort with listed columns'              => ['stored-sort', 'ORDER BY `time` DESC, `username` ASC'],
 	'removing one stored column'                   => ['remove-column', 'ORDER BY name ASC, templates DESC'],
+	'removing a column beside an unlisted one'     => ['remove-column-unlisted', 'ORDER BY username ASC'],
 	'removing the only stored column'              => ['remove-last-column', 'ORDER BY `name` ASC'],
 ]);
 

@@ -341,6 +341,12 @@ function sort_scenarios() : array {
 				'session'        => ['sort_data' => ['0_cdef' => ['name' => 'ASC', 'hash' => 'ASC', 'graphs' => 'DESC', 'templates' => 'DESC']]]],
 			['order' => 'ORDER BY name ASC, templates DESC', 'stored' => ['name' => 'ASC', 'templates' => 'DESC']],
 		],
+		// Removing a column also drops a stored column that is not listed.
+		'remove-column-unlisted' => [
+			$log + ['listed' => ['username', 'time'], 'remove' => 'time',
+				'session'       => ['sort_data' => ['0_user_log' => ['username' => 'ASC', 'password' => 'ASC', 'time' => 'DESC']]]],
+			['order' => 'ORDER BY username ASC', 'stored' => ['username' => 'ASC']],
+		],
 		// Removing the only stored column leaves the requested column, not an empty clause.
 		'remove-last-column' => [
 			$cdef + ['remove' => 'name', 'request' => ['sort_column' => 'name']],
