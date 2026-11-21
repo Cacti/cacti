@@ -13,6 +13,8 @@ test('state-mutating routes explicitly require POST', function () {
 		'color.php'                  => array('save', 'actions', 'remove'),
 		'data_queries.php'           => array('save', 'actions', 'item_moveup_dssv', 'item_movedown_dssv', 'item_remove_dssv', 'item_moveup_gsv', 'item_movedown_gsv', 'item_remove_gsv', 'item_remove_confirm', 'item_remove', 'remove'),
 		'rrdcheck.php'                => array('purge'),
+		'user_admin.php'             => array('perm_remove'),
+		'user_group_admin.php'       => array('perm_remove'),
 	);
 
 	foreach ($routes as $route => $actions) {

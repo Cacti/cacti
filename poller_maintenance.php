@@ -625,6 +625,35 @@ function secpass_check_expired () {
 }
 
 /**
+ * rrdclean_path_within_rra - checks that a file queued for removal or archiving
+ *   sits below the RRA directory
+ *
+ * Only containment is checked. A file name with a space or a quote is still
+ * accepted, because the cleaner must be able to remove such files.
+ *
+ * @param string $real_file The expanded file name
+ * @param string $rra_path  The RRA directory
+ *
+ * @return bool True when the file's directory resolves inside the RRA directory
+ */
+function rrdclean_path_within_rra($real_file, $rra_path) {
+	$base   = rtrim(str_replace('\\', '/', $rra_path), '/');
+	$target = str_replace('\\', '/', $real_file);
+
+	if ($base === '' || strncmp($target, $base . '/', strlen($base) + 1) !== 0) {
+		return false;
+	}
+
+	foreach (explode('/', substr($target, strlen($base) + 1)) as $segment) {
+		if ($segment === '' || $segment === '.' || $segment === '..') {
+			return false;
+		}
+	}
+
+	return cacti_path_is_within(dirname($real_file), $rra_path);
+}
+
+/**
  * Remove all unwanted files; the list is given by table data_source_purge_action. Used as part of
  * Cacti's poller maintenance functionality.
  *
@@ -673,6 +702,17 @@ function remove_files($file_array) {
 		$base_file = str_replace('<path_cacti>', '', $base_file);
 
 		if (read_config_option('storage_location') == 0) {
+			if (!rrdclean_path_within_rra($real_file, $rra_path)) {
+				cacti_log('WARNING: RRDfile Maintenance skipped ' . cacti_log_safe_value($file['name']) . ': not a path below the RRA directory', true, 'MAINT');
+
+				/* drop the entry, or the purge would fetch it again forever */
+				db_execute_prepared('DELETE FROM `data_source_purge_action`
+					WHERE name = ?',
+					array($file['name']));
+
+				continue;
+			}
+
 			switch ($file['action']) {
 				case '1' :
 					if (file_exists($real_file) && strtolower(pathinfo($real_file, PATHINFO_EXTENSION)) === 'rrd') {
@@ -708,7 +748,12 @@ function remove_files($file_array) {
 			if (!cacti_rrdtool_valid_path($file['name'])) {
 				cacti_log('WARNING RRDfile Maintenance rejected invalid RRDproxy path ' . cacti_log_safe_value($file['name']) . '!', true, 'MAINT');
 
-				break;
+				/* drop the entry, or the purge would fetch it again forever */
+				db_execute_prepared('DELETE FROM `data_source_purge_action`
+					WHERE name = ?',
+					array($file['name']));
+
+				continue;
 			}
 
 			switch($file['action']) {

@@ -465,6 +465,12 @@ case 'get_node':
 		}
 	}
 
+	if ($tree_id > 0 && !is_tree_allowed($tree_id)) {
+		header('Location: permission_denied.php');
+
+		exit;
+	}
+
 	api_tree_get_main($tree_id, $parent);
 
 	break;

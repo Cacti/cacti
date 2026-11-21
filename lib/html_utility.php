@@ -1005,10 +1005,31 @@ function update_order_string($inplace = false) {
 function get_order_string() {
 	$page        = get_order_string_page(true);
 
-	/* return the multi-column sort accumulated by update_order_string(), whose
-	   columns were already validated against the per-page allowlist on store */
+	/* Revalidate persisted sorts against the page's current sortable columns,
+	 * including sorts stored before the page registered or changed them. */
 	if (isset($_SESSION['sort_string'][$page])) {
-		return $_SESSION['sort_string'][$page];
+		$fragments = array();
+
+		foreach ($_SESSION['sort_data'][$page] ?? array() as $column => $direction) {
+			$column = validate_sort_column($column, $page);
+
+			if ($column === '') {
+				continue;
+			}
+
+			if (cacti_normalize_sort_column($column) !== '') {
+				$fragment = cacti_build_sort_fragment($column, $direction);
+
+				if ($fragment !== '') {
+					$fragments[] = $fragment;
+				}
+			} elseif (isset($_SESSION['valid_sort_columns'][$page])) {
+				/* a key the page registered itself is emitted as the page wrote it */
+				$fragments[] = $column . ' ' . cacti_normalize_sort_direction($direction);
+			}
+		}
+
+		return cacti_sizeof($fragments) ? 'ORDER BY ' . implode(', ', $fragments) : '';
 	}
 
 	$sort_column = cacti_normalize_sort_column(get_nfilter_request_var('sort_column'));
@@ -1026,6 +1047,10 @@ function get_order_string() {
 	}
 
 	if ($sort_column != '') {
+		/* the single-column sort path honours the same sortable columns and
+		 * credential-column guard as the fallback path below */
+		$sort_column = validate_sort_column($sort_column, $page);
+
 		return cacti_build_sort_fragment($sort_column, $sort_dir) !== ''
 			? 'ORDER BY ' . cacti_build_sort_fragment($sort_column, $sort_dir)
 			: '';
@@ -1061,7 +1086,21 @@ function validate_sort_column($column, $page) {
 		}
 	}
 
-	return sanitize_sql_column($column);
+	$column = sanitize_sql_column($column);
+
+	/* Do not order by a credential column when the page has not registered its
+	 * sortable columns. Pages should register them through html_header_sort(). */
+	$segment = $column;
+	$dot     = strrpos($segment, '.');
+	if ($dot !== false) {
+		$segment = substr($segment, $dot + 1);
+	}
+
+	if (preg_match('/(password_history|dbpass|password|passwd|passphrase|_pass|secret|community|token|sslkey|authkey|apikey|private_key|privatekey)$/i', $segment)) {
+		return '';
+	}
+
+	return $column;
 }
 
 /**

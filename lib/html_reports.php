@@ -384,6 +384,23 @@ function reports_form_save() {
 		$save['id']                = get_nfilter_request_var('id');
 		$save['report_id']         = form_input_validate(get_nfilter_request_var('report_id'), 'report_id', '^[0-9]+$', false, 3);
 
+		/* the destination report, and the existing item when editing, must belong to the user */
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $save['report_id'], 'reports')) {
+			raise_message('permission_denied');
+			header('Location: ' . get_reports_page());
+			exit;
+		}
+
+		if (!isempty_request_var('id')) {
+			$existing_report_id = db_fetch_cell_prepared('SELECT report_id FROM reports_items WHERE id = ?', array($save['id']));
+
+			if ($existing_report_id === false || !cacti_authorize_resource($_SESSION['sess_user_id'], (int) $existing_report_id, 'reports')) {
+				raise_message('permission_denied');
+				header('Location: ' . get_reports_page());
+				exit;
+			}
+		}
+
 		if (isempty_request_var('id')) {
 			$save['sequence'] = db_fetch_cell_prepared('SELECT MAX(sequence)+1
 				FROM reports_items
@@ -979,7 +996,21 @@ function reports_item_edit() {
 		$report_item = db_fetch_row_prepared('SELECT *
 			FROM reports_items WHERE id = ?',
 			array(get_request_var('item_id')));
+
+		/* the item must belong to the requested report, and that report to the user */
+		if (!cacti_sizeof($report_item) || $report_item['report_id'] != get_request_var('id') ||
+			!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $report_item['report_id'], 'reports')) {
+			raise_message('permission_denied');
+			header('Location: ' . get_reports_page());
+			exit;
+		}
 	} else {
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
+			raise_message('permission_denied');
+			header('Location: ' . get_reports_page());
+			exit;
+		}
+
 		$report_item['report_id']      = get_request_var('id');
 		$report_item['local_graph_id'] = 0;
 

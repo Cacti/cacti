@@ -264,7 +264,7 @@ function clog_view_logfile() {
 	$page_nr = get_request_var('page');
 
 	$page = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
-	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
+	$page .= '&filename=' . rawurlencode(basename($logfile)) . '&page=' . $page_nr;
 
 	$refresh = array(
 		'seconds' => get_request_var('refresh'),
@@ -292,7 +292,7 @@ function clog_view_logfile() {
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 				$('#pc').on('click', function() {
-					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
+					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . rawurlencode(basename($logfile)) . "';
 					loadPageUsingPostUrl(strURL, 'main');
 				});
 
@@ -716,7 +716,7 @@ function filter($clogAdmin, $selectedFile) {
 			});
 
 			$('#purge').on('click', function() {
-				strURL = basename(location.pathname) + '?purge=true&header=false&filename=' + $('#filename').val();
+				strURL = basename(location.pathname) + '?purge=true&header=false&filename=' + encodeURIComponent($('#filename').val());
 				loadPageNoHeader(strURL);
 			});
 
@@ -736,7 +736,7 @@ function filter($clogAdmin, $selectedFile) {
 				'&matches='+$('#matches').val()+
 				'&message_type='+$('#message_type').val()+
 				'&tail_lines='+$('#tail_lines').val()+
-				'&filename='+$('#filename').val()+
+				'&filename='+encodeURIComponent($('#filename').val())+
 				'&header=false';
 
 			loadPageNoHeader(strURL);

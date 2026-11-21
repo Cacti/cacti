@@ -277,6 +277,12 @@ Cacti CHANGELOG
 -issue#8825: Quote RRDtool arguments in a form RRDtool's command parser reads as one argument, escape RRDtool output in the graph debug and properties views, keep device credentials out of titles and graph text, and restrict the RRA restructure tool to RRD files inside the RRA directory
 -issue#8839: Use non-backtracking Log Viewer regex search: supports grouping, alternatives, character classes, anchors, and basic quantifiers; unsupported PCRE constructs are treated as literal text.
 -issue#8853: Run Log Viewer regex searches through PCRE under a match limit instead of stepping every byte in PHP, keeping the NFA for lines that reach the limit
+-issue#8865: Check report ownership on the report item edit and save paths, tree access in the graph view and tree management node loaders, and graph permission before the realtime poller starts
+-issue#8865: Require the Settings permission for a data collector's remote database fields, connection test and Full Sync, require POST to remove user and group permission rows, and limit the group list sort to displayed columns
+-issue#8865: Recheck stored list sorts against the page's sortable columns and do not sort by credential columns on pages that have not registered theirs
+-issue#8865: Escape data query, template and device names in report output, the automation tree-rule preview, the discovery email, the New Graphs table and the import preview, and bind or quote them in the discovery duplicate check, the New Graphs pivot and the RRD Cleaner rescan
+-issue#8865: Keep RRDfile maintenance to files below the RRA directory, remove queue entries it will not act on so the purge ends, and encode log file names in the log viewer while refusing markup and control characters in the log path settings
+-issue#8865: Return one login failure message for local accounts, keep unknown accounts out of the forced password change check, use Builtin authentication on the request that migrates the removed No Authentication method, rehash only the authenticated account, and match the unknown-user password check to the current hash cost
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
