@@ -118,8 +118,8 @@ function raise_message($id, $message = '', ...$args) {
  *
  * @return string The formatted string.
  */
-function __esc($text, ...$args) {
-	return htmlspecialchars(vsprintf($text, $args), ENT_QUOTES, 'UTF-8');
+function __($text, ...$args) {
+	return vsprintf($text, $args);
 }
 
 /**

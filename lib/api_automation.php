@@ -6634,9 +6634,11 @@ function api_networks_save(array $post) : mixed {
 			}
 		}
 
-		if ($continue && $total_ips > automation_max_network_ips()) {
+		$max_ips = automation_max_network_ips();
+
+		if ($continue && $total_ips > $max_ips) {
 			$continue = false;
-			raise_message('automation_message', __esc('ERROR: The Subnet Ranges contain %s IP Addresses, more than the Automation limit of %s.  Split the Network or raise \'Maximum Addresses per Network\' under Configuration > Settings > General.', $total_ips, automation_max_network_ips()), MESSAGE_LEVEL_ERROR);
+			raise_message('automation_message', __('ERROR: The Subnet Ranges contain %s IP Addresses, more than the Automation limit of %s.  Split the Network or raise \'Maximum Addresses per Network\' under Configuration > Settings > General.', $total_ips, $max_ips), MESSAGE_LEVEL_ERROR);
 		}
 
 		if ($continue) {

@@ -137,6 +137,7 @@ $variables = [
 	'file'                => 'release & notes', 'restore_path' => '/plugins/test_plugin', 'basefile' => 'sub & dir/example.php',
 	'tmp_dir'             => '/tmp/Test & QA', 'source' => 'daily', 'error' => 'Service & transport', 'message' => 'Required & missing',
 	'debug'               => "Line & one\nLine \"two\"",
+	'total_ips'           => 70000, 'max_ips' => 65536,
 ];
 
 $cases = [
