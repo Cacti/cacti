@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
+for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix ThemeInheritanceMatrix; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -96,7 +96,7 @@ done
 # when CACTI_THEME_COVERAGE is set. They are slow, so they run only when the
 # change touches a theme or a stylesheet one of those specs loads.
 theme_specs=()
-for spec in develop-theme-correctness develop-theme-cleanup; do
+for spec in develop-theme-correctness develop-theme-cleanup develop-theme-palettes; do
 	if [[ -f "tests/e2e/tests/$spec.spec.ts" ]]; then
 		theme_specs+=("tests/e2e/tests/$spec.spec.ts")
 	fi
