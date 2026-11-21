@@ -1157,7 +1157,7 @@ case 'list':
 
 		loadPageNoHeader(strURL);
 
-		$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __('Preview Mode');?></a></li>');
+		$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __esc('Preview Mode');?></a></li>');
 		$('#listview').removeClass('selected');
 		$('#preview').addClass('selected');
 	}

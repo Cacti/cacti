@@ -131,6 +131,19 @@ test('the breadcrumb trail is sanitized and a missing trail leaves the current o
 	assert.deepEqual($.calls('#breadcrumbs', 'html'), [['html', `sanitized(<li><a id='nav_0' href='index.php'>Console</a></li>)`]]);
 });
 
+test('inline page scripts that replace the trail sanitize it as well', () => {
+	const read = (file) => fs.readFileSync(path.join(__dirname, '..', '..', file), 'utf8');
+	const form = read('lib/html_form.php');
+	const tree = read('lib/html_tree.php');
+
+	assert.match(form, /cactiSetBreadcrumbs\(breadCrumbs\);/);
+	assert.doesNotMatch(form, /\$\('#breadcrumbs'\)\.html\(/);
+	assert.match(tree, /\$\('#navBar'\)\.replaceWith\(DOMPurify\.sanitize\(navBar\)\);/);
+	assert.doesNotMatch(tree, /\.replaceWith\(navBar\)/);
+	assert.match(read('graph.php'), /id="nav_util" href="#"><\?php print __esc\('Utility View'\);\?>/);
+	assert.match(read('graph_view.php'), /action=preview"><\?php print __esc\('Preview Mode'\);\?>/);
+});
+
 test('SpikeKill results are sanitized and the dialog title is set as an attribute', () => {
 	const $ = fakeJquery();
 	const request = {

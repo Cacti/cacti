@@ -299,7 +299,7 @@ case 'view':
 				'&graph_end='+graph_end)
 				.done(function(data) {
 					$('#main').html(data);
-					$('#breadcrumbs').append('<li><a id="nav_util" href="#"><?php print __('Utility View');?></a></li>');
+					$('#breadcrumbs').append('<li><a id="nav_util" href="#"><?php print __esc('Utility View');?></a></li>');
 					applySkin();
 				})
 				.fail(function(data) {
