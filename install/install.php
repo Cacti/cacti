@@ -95,7 +95,7 @@ if ($help != '') {
 
 ?>
 <!DOCTYPE html>
-<html lang='<?php print html_escape_attr(CACTI_LOCALE); ?>'>
+<html<?php print get_html_document_attributes(); ?>>
 <head>
 <?php
 
