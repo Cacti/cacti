@@ -37,6 +37,7 @@ set_default_action();
 if (in_array(grv('action'), [
 	'clear_poller_cache', 'rebuild_resource_cache', 'clear_logfile',
 	'purge_logfile', 'purge_data_source_statistics', 'rebuild_snmpagent_cache',
+	'purge_snmpagent_events',
 ], true)) {
 	csrf_require_post();
 }
@@ -130,6 +131,13 @@ switch (grv('action')) {
 		header('Location: utilities.php?action=view_snmpagent_cache');
 
 		exit;
+	case 'purge_snmpagent_events':
+		db_execute('TRUNCATE table snmpagent_notifications_log');
+
+		// reset filters
+		srv('clear', true);
+
+		// Fall through: render the emptied event log.
 	case 'view_snmpagent_events':
 		top_header();
 		snmpagent_utilities_run_eventlog();
@@ -1759,7 +1767,7 @@ function create_snmp_agent_events_filter() : array {
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'title'   => __('Purge the SNMP Agent Event Log'),
-				'url'     => 'utilities.php?action=view_snmpagent_events&purge=true'
+				'url'     => 'utilities.php?action=purge_snmpagent_events'
 			]
 		]
 	];
@@ -1805,13 +1813,6 @@ function snmpagent_utilities_run_eventlog() : void {
 			ON am.id = al.manager_id'),
 		'manager_id', 'hostname'
 	);
-
-	if (isrv('purge')) {
-		db_execute('TRUNCATE table snmpagent_notifications_log');
-
-		// reset filters
-		srv('clear', true);
-	}
 
 	draw_snmp_agent_events_filter(true);
 

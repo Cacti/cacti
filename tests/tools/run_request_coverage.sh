@@ -39,6 +39,9 @@ run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprec
 validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files"
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" save
+for mode in requests denied reorder oauth; do
+	run_php_probe tests/fixtures/Core/AuthorizedActions.php '^((auth_profile|automation_templates|data_debug|graph_templates|graphs|oauth2|tree|utilities)\.php|include/global_arrays\.php|lib/(auth|functions|reports)\.php|tests/fixtures/Core/AuthorizedActions\.php)' "$mode"
+done
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 

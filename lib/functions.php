@@ -6064,20 +6064,6 @@ function sanitize_uri(string $uri) : string {
 		$uri = urldecode($uri);
 	}
 
-	/* a network-path reference (//host or /\host) would redirect off-site.
-	 * Browsers strip leading C0 controls and whitespace (WHATWG: tab, LF, FF,
-	 * CR and space) before resolving the URL, so "\x0C//evil.com" reaches the
-	 * browser as "//evil.com". Drop those leading bytes ourselves before the
-	 * slash-collapse check, then collapse any leading slash/backslash run to a
-	 * single '/' so the URI stays a local path. */
-	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri) ?? $uri;
-
-	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
-		$uri = '/' . ltrim($trimmed, '/\\');
-	} else {
-		$uri = $trimmed;
-	}
-
 	if (str_contains($uri, 'graph_view.php')) {
 		/* Both tests were written against strpos(), which returns 0 for a match
 		 * at the start of the string. A URI beginning 'action=' therefore read
@@ -6088,7 +6074,25 @@ function sanitize_uri(string $uri) : string {
 		}
 	}
 
-	return str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+	$uri = str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+
+	/* a network-path reference (//host or /\host) would redirect off-site.
+	 * Browsers strip leading C0 controls and whitespace (WHATWG: tab, LF, FF,
+	 * CR and space) before resolving the URL, so "\x0C//evil.com" reaches the
+	 * browser as "//evil.com". The check runs after the character stripping
+	 * above because removing a character can itself join two slashes
+	 * ("/|/host"). Drop the leading bytes, then collapse any leading
+	 * slash/backslash run to a single '/' so the URI stays a local path. */
+	$uri = preg_replace('/^[\x00-\x20]+/', '', $uri) ?? $uri;
+
+	/* Browsers also remove tab characters anywhere in a URL, so "/\t/host"
+	 * resolves as "//host"; treat C0 controls and spaces between the leading
+	 * separators as part of the separator run. */
+	if (preg_match('/^[\/\\\\][\x00-\x20\/\\\\]*[\/\\\\]/', $uri)) {
+		$uri = '/' . ltrim($uri, "/\\\x00..\x20");
+	}
+
+	return $uri;
 }
 
 /**
