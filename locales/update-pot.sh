@@ -20,6 +20,22 @@
 #   | http://www.cacti.net/                                                   |
 #   +-------------------------------------------------------------------------+
 
+# Regenerate the message template, locales/po/cacti.pot, from the source.
+# The language catalogs (*.po, *.mo) are not touched.
+#
+# usage: update-pot.sh [output-file]
+#
+# Without an argument the committed template is rewritten in place.  With an
+# argument the template is written there instead, which lets a check compare
+# the result against the committed file without changing the checkout.
+
+# resolve the output file before changing directory
+case "${1:-}" in
+	'') POT_FILE= ;;
+	/*) POT_FILE=$1 ;;
+	*) POT_FILE="$PWD/$1" ;;
+esac
+
 # locate base directory of Cacti
 REALPATH_BIN=$(command -v realpath)
 if [ $? -gt 0 ]
@@ -45,8 +61,32 @@ then
 	exit 1
 fi
 
-# update translation files
-echo "Updating Cacti language gettext language files"
+# update the template
+echo "Updating Cacti language gettext language file..."
 
 cd "$BASE_PATH" || exit 1
-find . -maxdepth 2 -name '*.php' -print | "$XGETTEXT_BIN" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot --files-from=-
+[ -n "$POT_FILE" ] || POT_FILE="$BASE_PATH/locales/po/cacti.pot"
+
+# xgettext cannot rewrite its header placeholders, and BSD sed and GNU sed
+# disagree on -i, so extract to a scratch file and filter it into place.
+POT_TMP=$(mktemp -d "$(dirname "$POT_FILE")/cacti.pot.XXXXXX") || exit 1
+trap 'rm -rf "$POT_TMP"' 0
+# dash runs the EXIT trap on exit but not when a signal kills the shell, so
+# turn INT and TERM into an exit to keep an interrupted run from leaving files.
+trap 'exit 1' INT TERM
+
+# Core source only: plugins carry their own templates, and the vendored
+# libraries and the test fixtures are not part of the translated interface.
+# The file list is sorted so the result does not depend on directory order.
+# Locations name the file without a line number so that moving code does not
+# rewrite the template.
+find . \( -path './.*' -o -path ./plugins -o -path ./include/vendor \
+	-o -path ./tests -o -path ./node_modules \) -prune -o -name '*.php' -print | LC_ALL=C sort | "$XGETTEXT_BIN" --add-location=file --no-wrap --copyright-holder="The Cacti Group" --package-name="Cacti" --package-version="$(cat include/cacti_version)" --msgid-bugs-address="developers@cacti.net" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o "$POT_TMP/extracted.pot" --files-from=- || exit 1
+
+if ! sed -e 's/FULL NAME <EMAIL@ADDRESS>/Cacti Developers <developers@cacti.net>/g' \
+	-e 's/LANGUAGE <LL@li.org>/Cacti Developers <developers@cacti.net>/g' \
+	-e 's/CHARSET/UTF-8/g' "$POT_TMP/extracted.pot" > "$POT_TMP/cacti.pot"; then
+	exit 1
+fi
+chmod 644 "$POT_TMP/cacti.pot" || exit 1
+mv "$POT_TMP/cacti.pot" "$POT_FILE" || exit 1
