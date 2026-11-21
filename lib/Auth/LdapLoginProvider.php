@@ -72,8 +72,8 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 			'search_filter'     => form_input_validate(gnrv('search_filter'), 'search_filter', '', true, 3),
 			// no-validation: LDAP bind DN for the specific-search mode, admin-entered
 			'specific_dn'       => form_input_validate(gnrv('specific_dn'), 'specific_dn', '', true, 3),
-			// no-validation: LDAP bind password, an arbitrary secret with no format to enforce
-			'specific_password' => form_input_validate(gnrv('specific_password'), 'specific_password', '', true, 3),
+			// The form never renders the stored password: blank keeps it, '_clear' blanks it.
+			'specific_password' => form_secret_value('specific_password', self::existingParameter((int) gnrv('id'), 'specific_password')),
 			'claim_full_name'   => gnrv('claim_full_name'),
 			'claim_email'       => gnrv('claim_email'),
 		];
