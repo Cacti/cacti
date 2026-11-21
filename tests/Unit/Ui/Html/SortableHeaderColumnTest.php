@@ -55,7 +55,7 @@ test('both sortable renderers retain legacy icons, escaping and independent coun
 		expect($html)->toContain('fa fa-sort-up', 'fa fa-sort', "sort-direction='DESC'", 'primarySort', 'nohide', 'Quotes &quot; &amp;');
 	}
 	expect($checkbox)->toContain("id='selectall'", "data-prefix='rows'", "name='rows' method='post'");
-	expect($columns['0_headers_edit_details'])->toBe(['name', 'count']);
+	// one list per script, whatever renderer, action or tab drew the header
+	expect($columns)->toBe(['/headers.php' => ['name', 'count']]);
 	expect($second)->toContain('fa fa-sort-down', 'primarySort', 'secondarySort', "sort-column='count' sort-direction='ASC'");
-	expect($columns['1_headers_edit_details'])->toBe(['name', 'count']);
 });

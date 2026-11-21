@@ -32,6 +32,8 @@ test('update_order_string() enforces ASC/DESC direction', function () {
 		@session_start();
 	}
 
+	$_SESSION['valid_sort_columns'][get_current_page(false)] = ['hostname'];
+
 	set_request_var('sort_column', 'hostname');
 	set_request_var('sort_direction', 'ASC; --');
 	update_order_string();
@@ -47,8 +49,8 @@ test('update_order_string() handles multi-column sorting', function () {
 		@session_start();
 	}
 
-	$page = get_order_string_page();
-	$_SESSION['valid_sort_columns'][$page] = ['col1', 'col2'];
+	$page = get_order_string_page(false);
+	$_SESSION['valid_sort_columns'][get_current_page(false)] = ['col1', 'col2'];
 
 	// Simulate multiple columns in sort_data
 	$_SESSION['sort_data'][$page] = [
@@ -68,8 +70,7 @@ test('update_order_string() uses session allowlist', function () {
 		@session_start();
 	}
 
-	$page = get_order_string_page();
-	$_SESSION['valid_sort_columns'][$page] = ['hostname', 'description'];
+	$_SESSION['valid_sort_columns'][get_current_page(false)] = ['hostname', 'description'];
 
 	set_request_var('sort_column', 'secret_column');
 	set_request_var('sort_direction', 'ASC');
@@ -84,12 +85,14 @@ test('update_order_string() uses session allowlist', function () {
 	expect($order)->toContain('description');
 });
 
-test('get_order_string() fallback sanitization works', function () {
-	$_SESSION = [];
+test('get_order_string() refuses a column the script has not listed', function () {
+	$_SESSION = ['valid_sort_columns' => [get_current_page(false) => ['description']]];
 	set_request_var('sort_column', 'dangerous` column');
 	set_request_var('sort_direction', 'ASC');
-	
-	$order = get_order_string();
-	expect($order)->not->toContain('`');
-	expect($order)->toContain('dangerouscolumn');
+
+	expect(get_order_string())->toBe('');
+
+	set_request_var('sort_column', 'dangerouscolumn');
+
+	expect(get_order_string())->toBe('');
 });

@@ -29,7 +29,7 @@ test('Regression: Standard User Admin sorting works', function () {
 	html_header_sort_checkbox($display_text, 'username', 'ASC', false);
 	
 	// 2. Verify columns are registered
-	$page = '0_user_admin';
+	$page = '/user_admin.php';
 	expect($_SESSION['valid_sort_columns'])->toHaveKey($page);
 	expect($_SESSION['valid_sort_columns'][$page])->toContain('username');
 	expect($_SESSION['valid_sort_columns'][$page])->toContain('full_name');
@@ -57,7 +57,7 @@ test('Regression: Host sorting handles complex column names', function () {
 	
 	html_header_sort($display_text, 'h.description', 'ASC');
 	
-	$page = '0_host';
+	$page = '/host.php';
 	expect($_SESSION['valid_sort_columns'])->toHaveKey($page);
 	
 	// Test dot notation in column names
