@@ -36,7 +36,11 @@ class RequestDispatchTest(unittest.TestCase):
                 self.dispatch(path, expected)
 
     def test_graph_change_runs_the_native_graph_probe(self):
-        self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
+        self.dispatch('lib/rrd.php', ['GraphDebugOutput.php', 'FallbackSourceIdentity.php'])
+        self.dispatch('graphs.php', ['MessageFormatting.php', 'GraphDebugOutput.php'])
+
+    def test_rra_path_change_runs_the_containment_probe(self):
+        self.dispatch('cli/structure_rra_paths.php', 'RraContainmentSkip.php')
 
     def test_device_change_runs_the_collector_notification_probe(self):
         self.dispatch('lib/api_device.php', ['DeviceCollectorMessages.php', 'MessageFormatting.php'])
@@ -62,7 +66,7 @@ class RequestDispatchTest(unittest.TestCase):
     def test_boost_drain_change_runs_the_drain_probe(self):
         for path in ['poller_boost.php', 'lib/boost.php', 'tests/fixtures/ProbeLoader.php', 'tests/fixtures/BoostOnDemandFailureProbe.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'BoostBulkDrainCoverage.php')
+                self.dispatch(path, ['GraphDebugOutput.php', 'BoostBulkDrainCoverage.php'] if path == 'lib/boost.php' else 'BoostBulkDrainCoverage.php')
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['MessageFormatting.php', 'PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
@@ -102,7 +106,7 @@ class RequestDispatchTest(unittest.TestCase):
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
-            for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
+            for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/GraphDebugOutput.php', 'Core/Rrd/FallbackSourceIdentity.php', 'Core/Rrd/RraContainmentSkip.php',
                            'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php', 'Core/ReportMessageDelivery.php', 'Core/DeviceCollectorMessages.php',
                            'Core/MessageFormatting.php', 'Core/ExternalLinkMessage.php', 'Core/TrustedActionMessages.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',

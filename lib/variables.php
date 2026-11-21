@@ -273,6 +273,30 @@ function null_out_substitutions(string $string) : string {
 }
 
 /**
+ * strip_credential_variables - removes the device credential variables from
+ * text that people see, such as graph and data source titles and graph
+ * legends.  Data input methods still receive these values through
+ * substitute_host_data().
+ *
+ * @param string $text The text before variable substitution
+ *
+ * @return string The text without the credential variables
+ */
+function strip_credential_variables(string $text) : string {
+	$pattern = '/\\|host_snmp_(?:community|username|password|priv_passphrase|context|engine_id)\\|/i';
+
+	/* Strip to a fixed point: deleting one token can leave its neighbours
+	 * adjacent and so form a fresh token, which a single pass would miss and
+	 * the later variable substitution would then expand. */
+	do {
+		$prev = $text;
+		$text = preg_replace($pattern, '', $text) ?? '';
+	} while ($text !== $prev);
+
+	return $text;
+}
+
+/**
  * expand_title - takes a string and substitutes all data query variables contained
  * in it or cleans them out if no data query is in use.
  *
@@ -284,6 +308,8 @@ function null_out_substitutions(string $string) : string {
  * @return string The original string with all of the variable substitutions made
  */
 function expand_title(int $host_id, int $snmp_query_id, string $snmp_index, string $title) : string {
+	$title = strip_credential_variables($title);
+
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
 			$max_chars = intval(read_config_option('max_data_query_field_length'));
@@ -427,7 +453,12 @@ function substitute_host_data(string $string, string $l_escape_string, string $r
 		$search[]  = $l_escape_string . 'host_external_id' . $r_escape_string;
 		$replace[] = $host['external_id'];
 
-		$string = str_replace($search, $replace, $string);
+		/* Substitute in a single pass: a device field such as the description,
+		 * notes, location or site name is attacker-influenced and may itself
+		 * contain a |host_snmp_*| token.  Sequential str_replace() would expand
+		 * that injected token on a later pass and leak the credential, so the
+		 * substituted values must never be scanned again. */
+		$string = strtr($string, array_combine($search, $replace));
 
 		$temp = api_plugin_hook_function(
 			'substitute_host_data',

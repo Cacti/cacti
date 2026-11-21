@@ -690,18 +690,13 @@ function rrdtool_prepare_stdin_command(string $command_line) : string|false {
 		}
 
 		/**
-		 * RRDtool control codes such as \: and \n must reach the graph parser
-		 * verbatim. Escaping the backslash leaves a legend like "IO Wait\:"
-		 * ending in a dangling control code, which RRDtool refuses, so only the
-		 * delimiter is escaped here. A value ending in a backslash, or holding
-		 * one immediately before a double quote, has no unambiguous form inside
-		 * a quoted token and is rejected instead.
+		 * RRDtool's command parser has no backslash escape: a backslash is an
+		 * ordinary character, so control codes such as \: and \n reach the
+		 * graph parser verbatim, and \" does not protect a double quote.  It
+		 * does join adjacent quoted pieces into one argument, so a double
+		 * quote is written by closing the token, adding '"' and reopening it.
 		 */
-		if (str_ends_with($value, '\\') || str_contains($value, '\\"')) {
-			return false;
-		}
-
-		$prepared .= '"' . str_replace('"', '\\"', $value) . '"';
+		$prepared .= '"' . str_replace('"', '"\'"\'"', $value) . '"';
 	}
 
 	return $prepared;
@@ -1084,7 +1079,20 @@ function rrdtool_format_result(array $result, int $output_flag) : mixed {
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
 			return $result['output'];
 		case RRDTOOL_OUTPUT_RETURN_STDERR:
-			return $result['error'] !== '' ? $result['error'] : $result['output'];
+			if ($result['error'] !== '') {
+				return $result['error'];
+			}
+
+			// Report a rendered graph the way RRDTOOL_OUTPUT_STDERR does, not as image bytes
+			if (substr($result['output'], 1, 3) === 'PNG') {
+				return 'OK';
+			}
+
+			if (str_starts_with($result['output'], '<?xml')) {
+				return 'SVG/XML Output OK';
+			}
+
+			return $result['output'];
 		case RRDTOOL_OUTPUT_STDERR:
 			if ($result['error'] !== '') {
 				print $result['error'];
@@ -2380,11 +2388,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
  * @return string Resolved graph text with sensitive variables removed
  */
 function rrdtool_resolve_graph_text(string $value, array $graph, array $graph_item = [], ?callable $resolver = null) : string {
-	$value = preg_replace(
-		'/\|host_snmp_(?:community|username|password|priv_passphrase|context|engine_id)\|/i',
-		'',
-		$value
-	) ?? '';
+	$value = strip_credential_variables($value);
 
 	$resolver ??= 'rrd_substitute_host_query_data';
 
