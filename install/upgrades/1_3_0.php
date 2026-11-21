@@ -123,6 +123,8 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('sessions', 'INDEX', 'user_id', ['user_id']);
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 
+	upgrade_rrdcheck_user_log_keys();
+
 	upgrade_boost_process_table();
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
@@ -734,6 +736,36 @@ function upgrade_boost_process_table() : void {
 	db_install_execute('DELETE FROM poller_output_boost_processes WHERE run_id = ?', ['']);
 
 	db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
+}
+
+/**
+ * Gives rrdcheck and user_log an auto_increment primary key.
+ *
+ * rrdcheck had no key at all. user_log was keyed on (username, user_id, time),
+ * so a second event for one user inside the same second collided and its
+ * INSERT IGNORE stored nothing. That key stays as a plain index.
+ *
+ * An auto_increment column has to be added together with the key that covers
+ * it, which db_install_add_column() cannot express, so each table changes in
+ * one ALTER that only runs while the column is missing.
+ */
+function upgrade_rrdcheck_user_log_keys() : void {
+	if (!db_column_exists('rrdcheck', 'id', false)) {
+		db_install_execute('ALTER TABLE `rrdcheck`
+			ADD COLUMN `id` bigint(20) unsigned NOT NULL auto_increment FIRST,
+			ADD PRIMARY KEY (`id`)');
+	}
+
+	db_install_add_key('rrdcheck', 'INDEX', 'local_data_id', ['local_data_id']);
+
+	if (!db_column_exists('user_log', 'id', false)) {
+		db_install_execute('ALTER TABLE `user_log`
+			DROP PRIMARY KEY,
+			ADD COLUMN `id` bigint(20) unsigned NOT NULL auto_increment FIRST,
+			ADD PRIMARY KEY (`id`)');
+	}
+
+	db_install_add_key('user_log', 'INDEX', 'username_user_id_time', ['username', 'user_id', 'time']);
 }
 
 function upgrade_reports() : void {
