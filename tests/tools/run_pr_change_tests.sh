@@ -68,6 +68,11 @@ if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
 		run_probe ../BoostSourceExistenceProbe.php "boost-source-existence-$scenario" "$scenario" > /dev/null
 	done
 fi
+if [[ -f tests/phpunit-vdef.xml ]]; then
+	# The VDEF suite bootstrap does not load FixtureCoverage, so prepend it to record lib/Vdef.
+	CACTI_COVERAGE_FILE="$coverage_dir/vdef-suite.json" "$php_binary" -d memory_limit=2G -d xdebug.mode=coverage -d auto_prepend_file=tests/Helpers/FixtureCoverage.php include/vendor/bin/pest --configuration=tests/phpunit-vdef.xml
+	php_coverage+=("$coverage_dir/vdef-suite.json")
+fi
 if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	case_number=0
 	for request in '{}' '{"action":"go"}' '{"action":"change","tab":"devices"}' '{"action":"reset","report":"summary"}' '{"action":"edit"}'; do
