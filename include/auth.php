@@ -41,6 +41,11 @@ $auth_method = read_config_option('auth_method');
  */
 check_reset_no_authentication($auth_method);
 
+/* No Authentication mode no longer exists, so the request that migrates it uses Builtin too */
+if ($auth_method == 0) {
+	$auth_method = 1;
+}
+
 /**
  * Check to see if the Database Cacti version is different
  * from the installed Cacti version and start the install

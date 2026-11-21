@@ -3845,8 +3845,9 @@ function local_auth_login_process($username) {
 				db_check_password_length();
 				db_execute_prepared('UPDATE user_auth
 					SET password = ?
-					WHERE username = ?',
-					array($password, $username));
+					WHERE id = ?
+					AND realm = 0',
+					array($password, $user['id']));
 			}
 		}
 	}
@@ -4374,7 +4375,7 @@ function secpass_login_process($username) {
 			if (trim($password) != '') {
 				// Match the enabled/unknown paths' single verify so a disabled
 				// account is not distinguishable by login timing (GHSA-p3rg-7pc3-2h86).
-				compat_password_verify($password, '$2y$10$qgRPCKzfZe/81cu3L9PMA.zjHKgXHc6iRfsedEe4NmSMbXrod1uEq');
+				compat_password_verify($password, cacti_password_decoy_hash());
 			}
 
 			$error     = true;
@@ -4386,9 +4387,9 @@ function secpass_login_process($username) {
 		}
 
 		if (trim($password) == '') {
-			/* error */
+			/* error, use the same message as an unknown account */
 			$error     = true;
-			$error_msg = __('Access Denied!  No password provided by user.');
+			$error_msg = __('Access Denied!  Login Failed.');
 
 			cacti_log(sprintf('LOGIN FAILED: No password provided for user %s', $username), false, 'AUTH');
 
@@ -4413,7 +4414,7 @@ function secpass_login_process($username) {
 		if (trim($password) != '') {
 			// Dummy verify so a non-existent account costs the same as a real one,
 			// closing a username-enumeration login-timing side channel (GHSA-p3rg-7pc3-2h86)
-			compat_password_verify($password, '$2y$10$qgRPCKzfZe/81cu3L9PMA.zjHKgXHc6iRfsedEe4NmSMbXrod1uEq');
+			compat_password_verify($password, cacti_password_decoy_hash());
 		}
 
 		/* error */
@@ -4421,6 +4422,9 @@ function secpass_login_process($username) {
 		$error_msg = __('Access Denied!  Login Failed.');
 
 		cacti_log(sprintf('LOGIN FAILED: Invalid user %s specified.', $username), false, 'AUTH');
+
+		/* an unknown account must not reach the post-login password policy checks */
+		return array();
 	}
 
 	/**
@@ -4643,6 +4647,34 @@ function is_user_perms_valid($user_id) {
 	$_SESSION['sess_user_perms_key'] = $key;
 
 	return $valid;
+}
+
+/**
+ * Build a bcrypt hash that no password verifies against, at the cost that
+ * password_hash(PASSWORD_DEFAULT) uses on this PHP, so verifying an unknown
+ * user does the same work as verifying a hash stored at that cost. A hash
+ * stored at a lower cost is still verified faster until the account next logs
+ * in and is rehashed. No hashing is done here, as that would make the
+ * unknown-user path slower than the real one.
+ *
+ * @return string A bcrypt-format string with a random salt and digest.
+ */
+function cacti_password_decoy_hash() {
+	static $decoy = null;
+
+	if ($decoy === null) {
+		$alphabet = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$body     = '';
+
+		// 22 salt characters followed by 31 digest characters
+		for ($i = 0; $i < 53; $i++) {
+			$body .= $alphabet[random_int(0, 63)];
+		}
+
+		$decoy = sprintf('$2y$%02d$%s', PASSWORD_BCRYPT_DEFAULT_COST, $body);
+	}
+
+	return $decoy;
 }
 
 /**

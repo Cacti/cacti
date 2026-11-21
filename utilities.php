@@ -1325,7 +1325,7 @@ function utilities_view_logfile() {
 
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		raise_message('clog_invalid');
-		header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
+		header('Location: utilities.php?action=view_logfile&filename=' . rawurlencode($logbase));
 		exit(0);
 	} else {
 		$logfile = $logpath . '/' . $logfile;
@@ -1368,7 +1368,7 @@ function utilities_view_logfile() {
 	$page_nr = get_request_var('page');
 
 	$page = 'utilities.php?action=view_logfile&header=false';
-	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
+	$page .= '&filename=' . rawurlencode(basename($logfile)) . '&page=' . $page_nr;
 
 	$refresh = array(
 		'seconds' => get_request_var('refresh'),
@@ -1384,7 +1384,7 @@ function utilities_view_logfile() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function purgeLog() {
-		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
+		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+encodeURIComponent($('#filename').val());
 		loadPageUsingPostUrl(strURL, 'main');
 	}
 
@@ -1414,7 +1414,7 @@ function utilities_view_logfile() {
 			'&refresh=' + $('#refresh').val() +
 			'&reverse=' + $('#reverse').val() +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
-			'&filename=' + $('#filename').val() +
+			'&filename=' + encodeURIComponent($('#filename').val()) +
 			'&action=view_logfile' +
 			'&header=false';
 		refreshMSeconds=$('#refresh').val()*1000;
@@ -1563,7 +1563,7 @@ function utilities_view_logfile() {
 	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'utilities.php?action=view_logfile&filename='.basename($logfile);
+	$base_url     = 'utilities.php?action=view_logfile&filename='.rawurlencode(basename($logfile));
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 

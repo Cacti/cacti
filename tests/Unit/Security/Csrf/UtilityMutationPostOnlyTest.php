@@ -81,5 +81,5 @@ test('the log purge continue step requires POST', function () use ($clog_src) {
 
 	expect($guard)->not->toBeFalse();
 	expect($guard)->toBeLessThan($work);
-	expect($clog_src)->toContain("purge_continue=1&header=false&filename=\" . basename(\$logfile) . \"';\n\t\t\t\t\tloadPageUsingPostUrl(strURL, 'main');");
+	expect($clog_src)->toContain("purge_continue=1&header=false&filename=\" . rawurlencode(basename(\$logfile)) . \"';\n\t\t\t\t\tloadPageUsingPostUrl(strURL, 'main');");
 });

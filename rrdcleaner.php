@@ -234,10 +234,19 @@ function get_files() {
 		rrd_close($rrdtool_pipe);
 
 		if($scan){
-			$files = explode("\r\n", $scan);
+			$files = preg_split('/\r?\n/', $scan);
 			foreach($files as $file) {
-				[$pathname, $size, $mtime] = explode(',', $file);
-				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
+				// Split from the right so commas remain part of the filename. Ignore
+				// incomplete records, including the protocol's trailing blank line.
+				if (!preg_match('/^(.+),([0-9]+),([0-9]+)$/D', $file, $parts)) {
+					continue;
+				}
+
+				$pathname = $parts[1];
+				$filesize = (int) $parts[2];
+				$mtime    = (int) $parts[3];
+
+				$sql[] = '(' . db_qstr(str_replace($rra_path, '', $pathname)) . ', ' . $filesize . ', ' . db_qstr(date('Y-m-d H:i:s', $mtime)) . ',0)';
 				$size++;
 
 				if ($size == 400) {
@@ -259,7 +268,7 @@ function get_files() {
 
 		foreach ($iterator as $file) {
 			if (substr($file->getPathname(), -3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
-				$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
+				$sql[] = '(' . db_qstr(str_replace($rra_path, '', $file->getPathname())) . ', ' . $file->getSize() . ', ' . db_qstr(date('Y-m-d H:i:s', $file->getMTime())) . ',0)';
 				$size++;
 
 				if ($size == 400) {

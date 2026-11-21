@@ -207,6 +207,11 @@ switch (get_request_var('action')) {
 		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_nfilter_request_var('text'));
 		break;
 	case 'get_node':
+		/* the tree pane gets no nodes for a tree the user may not manage */
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			exit;
+		}
+
 		api_tree_get_node(get_request_var('tree_id'), get_request_var('id'));
 		break;
 	case 'get_host_sort':
