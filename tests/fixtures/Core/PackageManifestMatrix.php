@@ -112,6 +112,33 @@ if (count($GLOBALS['manifest_logs']) !== 7 || !package_repo_filename_valid('Cisc
 	throw new \RuntimeException('Repository file name policy failed');
 }
 
+// A server-directory repository may follow links only within its own directory.
+$repository = sys_get_temp_dir() . '/cacti-repository-' . bin2hex(random_bytes(8));
+$outside    = tempnam(sys_get_temp_dir(), 'cacti-outside-');
+mkdir($repository, 0700);
+
+try {
+	file_put_contents($repository . '/inside.xml.gz', 'inside repository');
+	file_put_contents($outside, 'outside repository');
+	symlink($repository . '/inside.xml.gz', $repository . '/linked.xml.gz');
+	symlink($outside, $repository . '/escape.xml.gz');
+	$GLOBALS['manifest_repo'] = ['repo_type' => 1, 'repo_location' => $repository, 'name' => 'Fixture'];
+
+	foreach (['inside.xml.gz' => 'inside repository', 'linked.xml.gz' => 'inside repository', 'escape.xml.gz' => false] as $name => $expected) {
+		if (get_repo_file('7', $name, true) !== $expected) {
+			throw new \RuntimeException('Repository link containment failed');
+		}
+		$count++;
+	}
+} finally {
+	foreach (['escape.xml.gz', 'linked.xml.gz', 'inside.xml.gz'] as $name) {
+		unlink($repository . '/' . $name);
+	}
+	rmdir($repository);
+	unlink($outside);
+	$GLOBALS['manifest_repo'] = [];
+}
+
 // Package size limit: the default, a package inside and past an explicit limit,
 // a damaged stream, a missing file, and each reader that applies the limit.
 $good    = tempnam(sys_get_temp_dir(), 'cacti-pkg-limit-');
