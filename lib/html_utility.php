@@ -1509,7 +1509,7 @@ function validate_sort_column(string $column) : string {
 	}
 
 	// the column itself, without a table alias or a sort function around it
-	$name = (string) preg_replace('/^.*[.(]|\)$/', '', $column);
+	$name = (string) preg_replace('/(?:^.*[.(])|(?:\)$)/', '', $column);
 
 	if (preg_match('/password|passwd|passphrase|dbpass|_pass$|secret|community|token|hash|_key$|sslkey|authkey|apikey|privatekey/i', $name)) {
 		return '';
