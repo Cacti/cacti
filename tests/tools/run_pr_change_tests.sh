@@ -97,6 +97,10 @@ run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
+for scenario in first-view listed-column unsortable-column unlisted-column credential-column single-column single-column-refused default-outside-header wrapped-column stale-stored-sort orphan-stored-sort stored-sort remove-column remove-last-column; do
+	run_probe SortLookupChecks.php "sort-lookup-$scenario" sort "$scenario" > /dev/null
+done
+run_probe SortLookupChecks.php sort-lookup-helpers helpers > /dev/null
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
