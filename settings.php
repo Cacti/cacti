@@ -1375,6 +1375,16 @@ function save_settings() : void {
 						$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
 						$errors[9]                                  = 9;
 						$continue                                   = false;
+					} elseif (preg_match('/[\x00-\x1f\x7f<>"\'`]/', gnrv($field_name))) {
+						// The log viewer shows the log file name, so control and markup characters are kept out of the path.
+						$_SESSION['sess_error_fields'][$field_name] = $field_name;
+						$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
+
+						raise_message('cacti_settings_' . $field_name, __('Setting \'%s\': The log file path must not contain control characters, quotes or angle brackets.', $field_name), MESSAGE_LEVEL_ERROR);
+
+						// Any entry here keeps the save from being reported as successful.
+						$errors[35] = 35;
+						$continue   = false;
 					}
 				} elseif (gnrv($field_name) != '' && !is_valid_pathname(gnrv($field_name))) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;

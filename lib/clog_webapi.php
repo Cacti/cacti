@@ -242,10 +242,15 @@ function clog_view_logfile() : void {
 	if ($clogAdmin) {
 		$redirect = false;
 
+		// Purging and rotating change the log, so both confirmations arrive as a CSRF-checked POST.
 		if (isrv('purge_continue')) {
+			csrf_require_post();
+
 			$redirect = true;
 			clog_purge_logfile('purge');
 		} elseif (isrv('rotate_continue')) {
+			csrf_require_post();
+
 			$redirect = true;
 			clog_purge_logfile('rotate');
 		}
@@ -253,7 +258,7 @@ function clog_view_logfile() : void {
 		if ($redirect) {
 			$logfile = read_config_option('path_cactilog');
 
-			header('Location: clog.php?filename=' . basename($logfile));
+			header('Location: clog.php?filename=' . rawurlencode(basename($logfile)));
 
 			exit;
 		}
@@ -309,8 +314,7 @@ function clog_view_logfile() : void {
 					<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='$title'>" . __esc('Continue') . "</button>
 					<script type='text/javascript'>
 					$('#pc').click(function() {
-						strURL = location.pathname+'?$action=1&filename=" . basename($logfile) . "';
-						loadUrl({url:strURL})
+						postUrl({url: location.pathname+'?$action=1&filename=" . rawurlencode(basename($logfile)) . "'}, {__csrf_magic: csrfMagicToken});
 					});
 
 					$('#cancel').click(function() {
@@ -760,14 +764,14 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 				'display' => __('Purge'),
 				'action'  => 'default',
 				'title'   => __('Purge all data from the existing Cacti Log'),
-				'url'     => 'clog.php?action=purge&filename=' . $logfile
+				'url'     => 'clog.php?action=purge&filename=' . rawurlencode($logfile)
 			],
 			'rotate' => [
 				'method'  => 'button',
 				'display' => __('Rotate'),
 				'action'  => 'default',
 				'title'   => __('Rotate the Cacti Log'),
-				'url'     => 'clog.php?action=rotate&filename=' . $logfile
+				'url'     => 'clog.php?action=rotate&filename=' . rawurlencode($logfile)
 			],
 		]
 	];
