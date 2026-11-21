@@ -44,12 +44,13 @@ get_filter_request_var('stdout');
  * Neutralize CSV/DDE formula injection and apply RFC 4180 quoting for a single
  * spreadsheet cell. A leading =, +, -, @, tab or carriage return can be
  * interpreted as a formula by spreadsheet applications, so such values are
- * prefixed with a single quote; embedded double-quotes are doubled.
+ * prefixed with a single quote; embedded double-quotes are doubled. A plain
+ * number such as -1.5 or 1.2e+03 is data and is written unchanged.
  */
 function graph_xport_csv_cell($value) {
 	$value = (string) $value;
 
-	if ($value !== '' && in_array($value[0], array('=', '+', '-', '@', "\t", "\r"), true)) {
+	if ($value !== '' && !is_numeric($value) && in_array($value[0], array('=', '+', '-', '@', "\t", "\r"), true)) {
 		$value = "'" . $value;
 	}
 
@@ -169,13 +170,13 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 
 		if (isset($xport_meta['NthPercentile'])) {
 			foreach($xport_meta['NthPercentile'] as $item) {
-				$output .= '"' . __('Nth Percentile') . '","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+				$output .= '"' . __('Nth Percentile') . '","' . graph_xport_csv_cell($item['value']) . '","' . graph_xport_csv_cell($item['format']) . '"' . "\n";
 			}
 		}
 
 		if (isset($xport_meta['Summation'])) {
 			foreach($xport_meta['Summation'] as $item) {
-				$output .= '"' . __('Summation') . '","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+				$output .= '"' . __('Summation') . '","' . graph_xport_csv_cell($item['value']) . '","' . graph_xport_csv_cell($item['format']) . '"' . "\n";
 			}
 		}
 
@@ -306,7 +307,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 			$data = '"' . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . '"';
 
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-				$data .= ',"' . $row['col' . $i] . '"';
+				$data .= ',"' . graph_xport_csv_cell($row['col' . $i]) . '"';
 			}
 
 			$output .= $data . "\n";
