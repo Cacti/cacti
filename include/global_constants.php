@@ -48,6 +48,8 @@ define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
 define('RRDTOOL_OUTPUT_BOOLEAN', 4);
 define('RRDTOOL_OUTPUT_RETURN_STDERR', 5);
 
+define('REMOTE_AGENT_MAX_RESPONSE_BYTES', 64 * 1024 * 1024);
+
 define('RRD_FONT_RENDER_NORMAL',  'normal');
 define('RRD_FONT_RENDER_LIGHT',   'light');
 define('RRD_FONT_RENDER_MONO',    'mono');

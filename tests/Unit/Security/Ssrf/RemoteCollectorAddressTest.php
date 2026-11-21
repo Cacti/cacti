@@ -49,10 +49,10 @@ function get_default_contextoption() {
 	return $GLOBALS['remote_collector']['context'];
 }
 
-function file_get_contents($url, $include = false, $context = null) {
+function remote_agent_read_response($url, $context) {
 	$GLOBALS['remote_collector']['requests'][] = array($url, stream_context_get_options($context));
 
-	return 'collector reply';
+	return $GLOBALS['remote_collector']['reply'];
 }
 
 function cacti_log($message, $output = false, $facility = '') {
@@ -71,12 +71,13 @@ require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 
 \cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/functions.php', 'call_remote_data_collector', __NAMESPACE__);
 
-function remote_collector_request($hostname, array $dns = array(), $scheme = 'http', array $context = array()) {
+function remote_collector_request($hostname, array $dns = array(), $scheme = 'http', array $context = array(), $reply = 'collector reply') {
 	$GLOBALS['remote_collector'] = array(
 		'hostname' => $hostname,
 		'dns'      => $dns,
 		'scheme'   => $scheme,
 		'context'  => $context,
+		'reply'    => $reply,
 		'lookups'  => array(),
 		'requests' => array(),
 		'log'      => array(),
@@ -164,4 +165,12 @@ test('a name that does not resolve is still reported and not requested', functio
 	expect($result)->toBe('')
 		->and($state['requests'])->toBe(array())
 		->and($state['log'][0])->toContain('It is not reachable via DNS!');
+});
+
+test('a failed request is logged and answered with an empty reply', function () {
+	[$result, $state] = remote_collector_request('10.20.30.40', array(), 'http', array(), false);
+
+	expect($result)->toBe('')
+		->and($state['requests'])->toHaveCount(1)
+		->and($state['log'])->toBe(array('WEBUI: WARNING: PollerID:2 did not return a successful response within the size limit.'));
 });
