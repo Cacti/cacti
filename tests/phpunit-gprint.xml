@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+	<source><include><file>../lib/gprint.php</file><directory>../lib/Gprint</directory></include></source>
+	<testsuites><testsuite name="GPRINT"><file>Unit/Core/Rrd/GprintPresetServiceTest.php</file></testsuite></testsuites>
+</phpunit>
