@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
+for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix ReportsPostGuard ReportsListSortCoverage SanitizeSqlColumnAllowlist; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -42,6 +42,13 @@ if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-post POST '' mutation
 	run_probe SpikekillRequestGate.php spike-setting-get GET '' settings
 	run_probe SpikekillRequestGate.php spike-setting-post POST '' settings
+fi
+if [[ -f tests/fixtures/Core/ReportOwnership.php ]]; then
+	run_probe ReportOwnership.php report-ownership
+	# Each form request ends its own process, so record it separately.
+	for mode in parent item item-parent-mismatch read-other read-parent-mismatch read-report-other edit-other bulk-other bulk-own bulk-admin bulk-reportit-admin; do
+		run_probe ReportOwnership.php "report-form-$mode" form "$mode"
+	done
 fi
 for fixture in PackageArchive PackageDiffBoundary PackageRepositoryWorkspace PackageImportFileStatus; do
 	run_probe "$fixture.php" "$fixture"
@@ -86,7 +93,7 @@ run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
 
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
+for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths post-action-transport; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
 		browser_specs+=("tests/$spec.spec.js")
 	fi

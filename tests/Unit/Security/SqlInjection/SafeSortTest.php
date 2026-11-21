@@ -223,3 +223,27 @@ test('read path: poisoned stored direction yields a safe ORDER BY clause', funct
 	expect($clause)->not->toContain(';');
 	expect($clause)->not->toContain('--');
 });
+
+// --- Strict allowlist: the real sanitize_sql_column() and its reports() caller ---
+
+test('sanitize_sql_column: an allowlisted column passes unchanged', function () {
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+
+	expect(sanitize_sql_column('full_name', 'name', ['name', 'full_name']))->toBe('full_name');
+});
+
+test('sanitize_sql_column: a clean column outside the allowlist falls back to the default', function () {
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+
+	// passes the character-class filter, so only the allowlist rejects it
+	expect(sanitize_sql_column('ua.password', 'name', ['name', 'full_name']))->toBe('name')
+		->and(sanitize_sql_column('ua.password', 'name'))->toBe('ua.password');
+});
+
+test('sanitize_sql_column: the allowlist is matched after stripping, exactly and case-sensitively', function () {
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+
+	expect(sanitize_sql_column("full_name'", 'name', ['full_name']))->toBe('full_name')
+		->and(sanitize_sql_column('FULL_NAME', 'name', ['full_name']))->toBe('name')
+		->and(sanitize_sql_column('full_name2', 'name', ['full_name']))->toBe('name');
+});

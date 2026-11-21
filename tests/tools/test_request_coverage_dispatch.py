@@ -73,6 +73,16 @@ class RequestDispatchTest(unittest.TestCase):
     def test_package_import_change_runs_the_diff_boundary_probe(self):
         self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
 
+    def test_reports_list_change_runs_the_sort_fixture(self):
+        cases = {
+            'lib/html_reports.php': ['MessageFormatting.php', 'ReportsListSortCoverage.php'],
+            'lib/reports.php': ['ReportMessageDelivery.php', 'MessageFormatting.php', 'ReportsListSortCoverage.php'],
+            'tests/fixtures/Core/ReportsListSortCoverage.php': 'ReportsListSortCoverage.php',
+        }
+        for path, expected in cases.items():
+            with self.subTest(path=path):
+                self.dispatch(path, expected)
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -108,6 +118,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
                            'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
+                           'Core/ReportsListSortCoverage.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
