@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* display no errors */
+// display no errors
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
@@ -31,20 +31,24 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_wrcount', $_SERVER['argv']);
 }
 
-function ss_mikrotik_wrcount($host_id = '') {
-	/* the table only exists when the mikrotik plugin is installed */
+/**
+ * Return the number of wireless registrations seen on a MikroTik device in the last 20 minutes.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string The registration count, U when the plugin is not installed
+ */
+function ss_mikrotik_wrcount($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
 	if (!db_table_exists('plugin_mikrotik_wireless_registrations', false)) {
 		return 'U';
 	}
 
-	$wrs = db_fetch_cell_prepared('SELECT count(*)
+	$wrs = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_mikrotik_wireless_registrations
 		WHERE host_id = ?
-		AND unix_timestamp(last_seen)>unix_timestamp()-1200',
-		array($host_id));
+		AND UNIX_TIMESTAMP(last_seen) > UNIX_TIMESTAMP()-1200',
+		[(int) $host_id]);
 
-	if ($wrs == '') $wrs = 'U';
-
-	return $wrs;
+	return is_numeric($wrs) ? (string) $wrs : 'U';
 }
-
