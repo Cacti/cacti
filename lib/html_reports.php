@@ -1557,7 +1557,7 @@ function reports_tabs($report_id) {
 
 
 		if (!isempty_request_var('id')) {
-			print "<li style='float:right;position:relative;'><a class='tab' href='" . html_escape(get_reports_page() . '?action=send&id=' . get_request_var('id') . '&tab=' . get_request_var('tab')) . "'>" . __('Send Report') . "</a></li>\n";
+			print "<li style='float:right;position:relative;'><a class='tab cactiPostAction' href='#' data-url='" . html_escape(get_reports_page() . '?action=send&id=' . get_request_var('id') . '&tab=' . get_request_var('tab')) . "'>" . __('Send Report') . "</a></li>\n";
 		}
 
 		print "</ul></nav></div>\n";
@@ -1722,7 +1722,16 @@ function reports_edit() {
 			$(function() {
 				$('#report_item').tableDnD({
 					onDrop: function(table, row) {
-						loadPage(reportsPage+'?action=ajax_dnd&id='+reportId+'&'+$.tableDnD.serialize());
+						/* reordering changes state, so send it as a POST and then redraw the items */
+						var request = cactiPreparePostRequestFromUrl(reportsPage+'?action=ajax_dnd&id='+reportId+'&'+$.tableDnD.serialize());
+
+						$.post(request.url, request.data)
+							.done(function() {
+								loadPage(reportsPage+'?action=edit&tab=items&id='+reportId);
+							})
+							.fail(function(data) {
+								getPresentHTTPError(data);
+							});
 					}
 				});
 			});

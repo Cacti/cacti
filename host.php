@@ -65,6 +65,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'reindex':
+		csrf_require_post();
 		host_reindex();
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
@@ -75,6 +76,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'gt_add':
+		csrf_require_post();
 		get_filter_request_var('host_id');
 
 		host_add_gt();
@@ -91,6 +93,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'query_add':
+		csrf_require_post();
 		get_filter_request_var('host_id');
 
 		host_add_query();
@@ -107,6 +110,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'query_change':
+		csrf_require_post();
 		get_filter_request_var('host_id');
 
 		host_change_query();
@@ -115,6 +119,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'query_reload':
+		csrf_require_post();
 		get_filter_request_var('host_id');
 
 		host_reload_query();
@@ -123,6 +128,7 @@ switch (get_request_var('action')) {
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
 	case 'query_verbose':
+		csrf_require_post();
 		get_filter_request_var('host_id');
 
 		host_reload_query();
@@ -144,6 +150,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'enable_debug':
+		csrf_require_post();
 		enable_device_debug(get_filter_request_var('host_id'));
 		raise_message('enable_debug', __('Device Debugging Enabled for Device.'), MESSAGE_LEVEL_INFO);
 
@@ -151,6 +158,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'disable_debug':
+		csrf_require_post();
 		disable_device_debug(get_filter_request_var('host_id'));
 		raise_message('disable_debug', __('Device Debugging Disabled for Device.'), MESSAGE_LEVEL_INFO);
 
@@ -158,6 +166,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'repopulate':
+		csrf_require_post();
 		if (get_filter_request_var('host_id') > 0) {
 			push_out_host(get_request_var('host_id'));
 			raise_message('repopulate_message', __('Poller Cache for Device Refreshed.'), MESSAGE_LEVEL_INFO);
@@ -790,12 +799,12 @@ function host_edit() {
 		if (cacti_sizeof($host)) {
 			$header_label = __esc('Device [edit: %s]', $host['description']);
 			if (is_device_debug_enabled($host['id'])) {
-				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink devicePostAction' href='#' data-url='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
 			} else {
-				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink devicePostAction' href='#' data-url='" . html_escape('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
 			}
 
-			$repop_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=repopulate&host_id=' . $host['id']) . "'>" . __('Repopulate Poller Cache') . "</a><br>";
+			$repop_link = "<span class='linkMarker'>*</span><a class='hyperLink devicePostAction' href='#' data-url='" . html_escape('host.php?action=repopulate&host_id=' . $host['id']) . "'>" . __('Repopulate Poller Cache') . "</a><br>";
 			$repop_link .= "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('utilities.php?poller_action=-1&action=view_poller_cache&host_id=' . $host['id'] . '&template_id=-1&filter=&rows=-1') . "'>" . __('View Poller Cache') . "</a><br>";
 		}
 	} else {
@@ -812,7 +821,7 @@ function host_edit() {
 				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs_new.php?reset=true&host_id=' . $host['id']);?>'><?php print __('Create Graphs for this Device');?></a><br>
-					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=reindex&host_id=' . $host['id']);?>'><?php print __('Re-Index Device');?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink devicePostAction' href='#' data-url='<?php print html_escape('host.php?action=reindex&host_id=' . $host['id']);?>'><?php print __('Re-Index Device');?></a><br>
 					<?php print $debug_link;?>
 					<?php print $repop_link;?>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?reset=true&host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'><?php print __('Data Source List');?></a><br>
@@ -1421,7 +1430,13 @@ function device_javascript() {
 		$('[id^="verbose"]').on('click', function(data) {
 			$(this).addClass('fa-spin');
 			var strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
-			loadPageNoHeader(strURL, true);
+			hostPageLoad(strURL);
+		});
+
+		/* these links change state, so send them as a POST */
+		$('.devicePostAction').on('click', function(event) {
+			event.preventDefault();
+			hostPageLoad($(this).attr('data-url'));
 		});
 
 		$('[id^="remove"]').on('click', function(data) {
@@ -1503,7 +1518,7 @@ function device_javascript() {
 
 			height = $('.hostInfoHeader').height();
 
-			loadPageNoHeader(strURL, true);
+			hostPageLoad(strURL);
 
 			$('.hostInfoHeader').css('height', height);
 		});

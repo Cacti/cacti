@@ -38,6 +38,7 @@ case 'actions':
 
 	break;
 case 'delete_page':
+	csrf_require_post();
 	if (isset_request_var('id') && get_filter_request_var('id')) {
 		page_delete(get_request_var('id'));
 	}
