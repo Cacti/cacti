@@ -132,3 +132,9 @@ test('cisco router associates five queries without fixed graphs', function () {
 	], $graphNames);
 	$this->assertStringNotContainsString('a96490cb87fb4f11757feaba2806593c', (string)$host->graph_templates);
 });
+
+
+test('the release package uses an official Cacti signing key', function () {
+	$xml = simplexml_load_string(gzdecode(file_get_contents(dirname(__DIR__, 3) . '/install/templates/Cisco_Router.xml.gz')));
+	expect(is_cacti_public_key(base64_decode((string) $xml->publickey, true)))->toBeTrue('Maintainer signing is required before release');
+});

@@ -135,7 +135,7 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 			if ($kind === 'cellular' && !str_starts_with($oid, '.1.3.6.1.2.1.47.') || preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.715\.1\.1\.7\.1\.(2|3|4|8|9|10|11|12|13|16)\./', $oid)
 				|| preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.48\.1\.1\.1\.(5|6)\./', $oid)
 				|| preg_match('/^\.1\.3\.6\.1\.4\.1\.9\.9\.221\.1\.1\.1\.1\.(7|8|17|18|19|20)\./', $oid)) {
-				$raw          = cacti_snmp_get_raw(...$a, numeric_value: true);
+				$raw          = cisco_health_snmp_get_raw(...$a, numeric_value: true);
 				$values[$oid] = cisco_health_unit_response((string)$raw);
 			} else {
 				$values[$oid] = cacti_snmp_get(...$a);
@@ -379,4 +379,126 @@ if (!isset($called_by_script_server)) {
 	$args = $_SERVER['argv'];
 	array_shift($args);
 	print ss_cisco_health(...$args);
+}
+
+/** Numeric reads are local to this collector; shared Cacti SNMP behaviour is unchanged. */
+function cisco_health_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
+	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
+	$port = 161, $timeout_ms = 500, $retries = 0, $environ = SNMP_POLLER,
+	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS, $numeric_value = false) {
+
+	global $config, $snmp_error;
+
+	$max_oids   = 1;
+	$snmp_error = '';
+
+	if (!cacti_snmp_options_sanitize($version, $community, $port, $timeout_ms, $retries, $max_oids)) {
+		return 'U';
+	}
+
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
+		/* make sure snmp* is verbose so we can see what types of data
+		we are getting back */
+		snmp_set_quick_print(0);
+
+		$timeout_us = (int) ($timeout_ms * 1000);
+		$snmp_value = 'U';
+
+		if (function_exists('snmp_set_enum_print')) {
+			snmp_set_enum_print(true);
+		}
+
+		// Numeric callers need wire values, not MIB DISPLAY-HINT or UNITS formatting.
+		// Preserve explicit unsupported-OID warnings; false alone also means timeout.
+		$retrieval = null;
+		if ($numeric_value) {
+			$retrieval = snmp_get_valueretrieval();
+			snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+			$previous_handler = null;
+			$previous_handler = set_error_handler(static function ($severity, $message, $file, $line) use (&$snmp_error, &$previous_handler) {
+				if (preg_match('/^snmp(?:2_|3_)?get\(/', $message)) {
+					$snmp_error = $message;
+					return true;
+				}
+				return $previous_handler ? $previous_handler($severity, $message, $file, $line) : false;
+			});
+		}
+
+		try {
+			if ($version == '1') {
+				$snmp_value = @snmpget(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
+			} elseif ($version == '2') {
+				$snmp_value = @snmp2_get(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
+			} else {
+				if ($priv_proto == '[None]' || $priv_pass == '') {
+					if ($auth_pass == '' || $auth_proto == '[None]') {
+						$sec_level   = 'noAuthNoPriv';
+					} else {
+						$sec_level   = 'authNoPriv';
+					}
+
+					$priv_proto = '';
+				} else {
+					$sec_level = 'authPriv';
+				}
+
+				$snmp_value = @snmp3_get(snmp_format_agent($hostname, $port), $auth_user, $sec_level, snmp_native_protocol($auth_proto), $auth_pass, snmp_native_protocol($priv_proto), $priv_pass, $oid, $timeout_us, $retries);
+			}
+		} catch (\Throwable $ex) {
+			$snmp_error = $ex->getMessage();
+			$snmp_value = false;
+		} finally {
+			if ($numeric_value) {
+				restore_error_handler();
+				snmp_set_valueretrieval($retrieval);
+			}
+		}
+
+		if ($snmp_value === false && $numeric_value && preg_match('/No Such (?:Object|Instance)|noSuchName/i', $snmp_error)) {
+			$snmp_value = 'No Such Object';
+		}
+
+		if ($snmp_value === false) {
+			cacti_log("WARNING: SNMP Error:'$snmp_error', Device:'$hostname', OID:'$oid'", false);
+			$snmp_value = 'U';
+		}
+	} else {
+		$snmp_value = array();
+		$hostname = cacti_format_ipv6_colon($hostname);
+
+		/* net snmp want the timeout in seconds */
+		$timeout_s = (int) ceil($timeout_ms / 1000);
+
+		$snmp_auth = cacti_get_snmp_auth_args($version, $community, $auth_proto, $auth_user,
+			$auth_pass, $priv_proto, $priv_pass, $context, $engineid);
+
+		/* no valid snmp version has been set, get out */
+		if (empty($snmp_auth)) {
+			return;
+		}
+
+		$binary = read_config_option('path_snmpget');
+		$args   = array_merge(array('-Ofntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')),
+			$snmp_auth, array('-v', $version, '-t', (string) $timeout_s, '-r', (string) $retries,
+			snmp_format_target_arg($hostname, $port), $oid));
+
+		if ($numeric_value) {
+			$args = array_merge(['-m', '', '-OU'], $args);
+		}
+
+		cacti_snmp_debug_command($binary, $args);
+		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
+
+		/* fix for multi-line snmp output */
+		if (is_array($snmp_value)) {
+			$snmp_value = implode(' ', $snmp_value);
+		}
+
+		if (strpos($snmp_value, 'Timeout') !== false) {
+			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+			$snmp_value = 'U';
+		}
+	}
+
+	return $snmp_value;
 }

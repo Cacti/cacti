@@ -2609,7 +2609,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		)
 	);
 
-	$cisco_health_pool_items = null;
 	$i = 0;
 	$j = 0;
 	$nth = 0;
@@ -2885,13 +2884,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						$cdef_string = rrdtool_aggregate_cdef_defs($cdef_string, $dtr_id, $aggregate_def_map, $cf_ds_cache, $rra_seconds);
 					}
 				}
-
-				if (in_array('CISCO_HEALTH_USED_PERCENT', explode(',', $cdef_string), true)) {
-					require_once __DIR__ . '/cisco_health_graphs.php';
-					$replacement = cisco_health_graph_percentage($graph_item, $graph_items, $cf_ds_cache, (int)$cf_id, $cisco_health_pool_items);
-					$cdef_string = cisco_health_graph_expand_percentage($cdef_string, $replacement);
-				}
-
 				$magic_item 	= array();
 				$already_seen	= array();
 				$sources_seen	= array();
