@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
+for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix AggregateAutomationDetachProbe AggregateAutomationRuleProbe AggregateAutomationReconcileProbe AggregateAutomationOwnershipProbe AggregateAutomationReindexProbe AggregateApiCoverage; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -79,6 +79,19 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 		done
 	done
 fi
+if [[ -f tests/fixtures/Core/PestSuiteCoverage.php && -f tests/phpunit-aggregate-coverage.xml && -x include/vendor/bin/pest ]]; then
+	run_probe PestSuiteCoverage.php aggregate-suite tests/phpunit-aggregate-coverage.xml
+fi
+if [[ -f tests/fixtures/Core/AggregateGraphsRequest.php ]]; then
+	for request in save-graph save-template-item save-graph-item save-invalid save-legend-type save-vanished edit-template edit-graph edit-unrelated; do
+		run_probe AggregateGraphsRequest.php "aggregate-graphs-$request" "$request"
+	done
+fi
+if [[ -f tests/fixtures/Core/AggregateTemplatesRequest.php ]]; then
+	for request in save save-items template-missing missing-row delete list; do
+		run_probe AggregateTemplatesRequest.php "aggregate-templates-$request" "$request"
+	done
+fi
 
 run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
@@ -86,7 +99,7 @@ run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
 
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
+for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths aggregate-template-automation aggregate-item-override-editor; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
 		browser_specs+=("tests/$spec.spec.js")
 	fi

@@ -73,6 +73,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_package_import_change_runs_the_diff_boundary_probe(self):
         self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
 
+    def test_aggregate_library_change_runs_the_native_aggregate_fixture(self):
+        self.dispatch('lib/api_aggregate.php', 'AggregateApiCoverage.php')
+
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -107,7 +110,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'Core/MessageFormatting.php', 'Core/ExternalLinkMessage.php', 'Core/TrustedActionMessages.php',
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
-                           'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
+                           'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php', 'Core/AggregateApiCoverage.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
