@@ -77,7 +77,6 @@ dataset('post only handlers', array(
 	'new graphs save filter'    => array('graphs_new.php', "case 'ajax_save_filter':"),
 	'color template reorder'    => array('color_templates_items.php', "case 'ajax_dnd':"),
 	'automation snmp reorder'   => array('automation_snmp.php', "case 'ajax_dnd':"),
-	'graph lock and unlock'     => array('graphs.php', "case 'unlock':"),
 	'data debug run all'        => array('data_debug.php', "case 'runall':"),
 	'settings test email'       => array('settings.php', "case 'send_test':"),
 	'domain bulk actions'       => array('user_domains.php', "if (isset_request_var('selected_items')) {"),
@@ -136,7 +135,6 @@ test('read-only device, tree and report actions stay reachable by GET', function
 		'reports_user.php'  => array("case 'setvar':", "case 'ajax_get_branches':", "case 'ajax_hosts':"),
 		'reports_admin.php' => array("case 'setvar':", "case 'ajax_get_branches':", "case 'ajax_hosts':"),
 		'graphs_new.php'    => array("case 'ajax_hosts':", "case 'ajax_hosts_noany':"),
-		'graphs.php'        => array("case 'graph_edit':", "case 'ajax_hosts':", "case 'ajax_graph_items':"),
 		'automation_snmp.php'       => array("case 'item_edit':", "case 'edit':"),
 		'color_templates_items.php' => array("case 'item_edit':", "case 'item_remove_confirm':"),
 		'data_debug.php'    => array("case 'view':", "case 'ajax_hosts':"),
@@ -169,7 +167,6 @@ test('no page requests a device, tree, link or report action by GET', function (
 		'graphs_new.php'            => 'query_reload|ajax_save|ajax_save_filter',
 		'color_templates_items.php' => 'ajax_dnd',
 		'automation_snmp.php'       => 'ajax_dnd',
-		'graphs.php'                => 'lock|unlock',
 		'data_debug.php'            => 'runall',
 		'settings.php'              => 'send_test',
 	);
@@ -268,20 +265,13 @@ test('the report pages send their state changing actions as a POST', function ()
 		->toContain("loadPage(reportsPage+'?action=edit&tab=items&id='+reportId);");
 });
 
-test('the graph, color template, automation, troubleshooter and settings pages send their state changing actions as a POST', function () use ($root) {
+test('the new graphs, color template, automation, troubleshooter and settings pages send their state changing actions as a POST', function () use ($root) {
 	$graphs_new = file_get_contents($root . '/graphs_new.php');
 
 	expect($graphs_new)->toContain("loadPageUsingPostUrl('graphs_new.php?action=query_reload&header=false&id='+\$(this).attr('data-id')+'&host_id='+\$('#host_id').val());")
 		->toContain("'&graph_type=' + \$('#graph_type').val();\n\n\t\t\$.post(strURL, {__csrf_magic: csrfMagicToken})")
 		->toContain("\$.post('graphs_new.php?action=ajax_save&query=")
 		->toContain("+\$(\\\".dqselect\\\").val(), {__csrf_magic: csrfMagicToken})");
-
-	/* lock and unlock only change the session's graph lock state, but they share the POST rule */
-	$graphs = file_get_contents($root . '/graphs.php');
-
-	expect($graphs)->toContain("\tcase 'lock':\n\tcase 'unlock':\n\t\tcsrf_require_post();")
-		->toContain("\$.post('graphs.php?action=unlock&header=false&id='+\$('#local_graph_id').val(), {__csrf_magic: csrfMagicToken})")
-		->toContain("loadPageUsingPostUrl('graphs.php?action=lock&header=false&id='+\$('#local_graph_id').val());");
 
 	expect(file_get_contents($root . '/color_templates.php'))->toContain("loadPageUsingPostUrl('color_templates_items.php?action=ajax_dnd&id=");
 	expect(file_get_contents($root . '/automation_snmp.php'))->toContain("loadPageUsingPostUrl('automation_snmp.php?action=ajax_dnd&id=");

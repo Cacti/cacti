@@ -109,7 +109,6 @@ switch (get_request_var('action')) {
 		break;
 	case 'lock':
 	case 'unlock':
-		csrf_require_post();
 		$_SESSION['sess_graph_lock_id'] = get_filter_request_var('id');
 		$_SESSION['sess_graph_locked']  = (get_request_var('action') == 'lock' ? true:false);
 	case 'graph_edit':
@@ -1931,7 +1930,7 @@ function graph_edit() {
 
 			$('body').append("<div id='modal' class='ui-widget-overlay ui-front' style='z-index: 100;'><i style='position:absolute;top:50%;left:50%;' class='fa fa-spin fa-circle-notch'/></div>");
 
-			$.post('graphs.php?action=unlock&header=false&id='+$('#local_graph_id').val(), {__csrf_magic: csrfMagicToken})
+			$.get('graphs.php?action=unlock&header=false&id='+$('#local_graph_id').val())
 				.done(function(data) {
 					$('#modal').remove();
 					$('#main').html(data);
@@ -1955,7 +1954,7 @@ function graph_edit() {
 		$('#lockid').on('click', function(event) {
 			event.preventDefault;
 
-			loadPageUsingPostUrl('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val());
+			loadPageNoHeader('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val());
 		});
 
 		$(window).on('resize', function() {
