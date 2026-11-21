@@ -23,7 +23,7 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
+for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix CompatPasswordMatrix LoginWorkMatrix; do
 	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
 		run_probe "$fixture.php" "$fixture"
 	fi
@@ -46,6 +46,11 @@ fi
 for fixture in PackageArchive PackageDiffBoundary PackageRepositoryWorkspace PackageImportFileStatus; do
 	run_probe "$fixture.php" "$fixture"
 done
+if [[ -f tests/fixtures/Core/LocalAuthDecoyProbe.php ]]; then
+	for scenario in known unknown unknown-empty legacy current; do
+		run_probe LocalAuthDecoyProbe.php "local-auth-$scenario" "$scenario"
+	done
+fi
 if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
