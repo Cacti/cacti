@@ -751,18 +751,13 @@ function upgrade_boost_process_table() : void {
  */
 function upgrade_rrdcheck_user_log_keys() : void {
 	if (!db_column_exists('rrdcheck', 'id', false)) {
-		db_install_execute('ALTER TABLE `rrdcheck`
-			ADD COLUMN `id` bigint(20) unsigned NOT NULL auto_increment FIRST,
-			ADD PRIMARY KEY (`id`)');
+		db_install_execute('ALTER TABLE `rrdcheck` ADD COLUMN `id` bigint(20) unsigned NOT NULL auto_increment FIRST, ADD PRIMARY KEY (`id`)');
 	}
 
 	db_install_add_key('rrdcheck', 'INDEX', 'local_data_id', ['local_data_id']);
 
 	if (!db_column_exists('user_log', 'id', false)) {
-		db_install_execute('ALTER TABLE `user_log`
-			DROP PRIMARY KEY,
-			ADD COLUMN `id` bigint(20) unsigned NOT NULL auto_increment FIRST,
-			ADD PRIMARY KEY (`id`)');
+		db_install_execute('ALTER TABLE `user_log` DROP PRIMARY KEY, ADD COLUMN `id` bigint(20) unsigned NOT NULL auto_increment FIRST, ADD PRIMARY KEY (`id`)');
 	}
 
 	db_install_add_key('user_log', 'INDEX', 'username_user_id_time', ['username', 'user_id', 'time']);
