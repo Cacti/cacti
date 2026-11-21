@@ -232,6 +232,7 @@
   ],
   "settings.php": [
     ["cacti_settings_Field & Name", 3, "Setting &apos;Field &amp; Name&apos;: Required &amp; missing"],
+    ["cacti_settings_counter", 3, "Setting &apos;counter&apos;: The log file path must not contain control characters, quotes or angle brackets."],
     ["poller_5", 2, "Settings save to Data Collector 5 skipped due to heartbeat."],
     ["poller_5", 3, "Settings save to Data Collector 5 Failed."]
   ],

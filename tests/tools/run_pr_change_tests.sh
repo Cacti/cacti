@@ -50,6 +50,10 @@ if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
 fi
+run_probe OutputEncodingPaths.php output-encoding-paths
+for mode in filter purge-get purge-token purge-post rotate-get rotate-post; do
+	run_probe OutputEncodingPaths.php "output-encoding-paths-$mode" "$mode"
+done
 if [[ -f tests/fixtures/Core/Boost/FailedDataSourceIsolation.php ]]; then
 	run_probe Boost/FailedDataSourceIsolation.php boost-failed-data-source-isolation
 fi
