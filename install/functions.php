@@ -1714,68 +1714,108 @@ function repair_automation() : void {
 }
 
 function install_full_sync() : array {
+	require_once CACTI_PATH_LIBRARY . '/Installer/CollectorSynchronizer.php';
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-	$pinterval = read_config_option('poller_interval');
-	$gap_time  = $pinterval * 2;
-
-	// counter arrays
-	$failed    = [];
-	$success   = [];
-	$skipped   = [];
-	$timeout   = [];
-
 	$pollers = db_fetch_assoc('SELECT id, status, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) AS gap
-		FROM poller
-		WHERE id > 1
-		AND disabled = ""');
+		FROM poller WHERE id > 1 AND disabled = ""');
 
-	log_install_always('sync', 'Found ' . cacti_sizeof($pollers) . ' poller(s) to sync');
-
-	if (is_array($pollers) && cacti_sizeof($pollers)) {
-		foreach ($pollers as $poller) {
-			log_install_debug('sync', 'Poller ' . $poller['id'] . ' has a status of ' . $poller['status'] . ' with gap ' . $poller['gap']);
-
-			if (($poller['status'] == POLLER_STATUS_NEW) ||
-				($poller['status'] == POLLER_STATUS_DOWN) ||
-				($poller['status'] == POLLER_STATUS_HEARTBEAT) ||
-				($poller['status'] == POLLER_STATUS_RECOVERING) ||
-				($poller['status'] == POLLER_STATUS_DISABLED)) {
-				$skipped[] = $poller['id'];
-			} elseif ($poller['gap'] < $gap_time) {
-				log_install_medium('sync', 'Replicating to Poller ' . $poller['id']);
-
-				if (read_config_option('disable_full_sync_on_upgrade') == '' && read_config_option('install_replicate', true) == '') {
-					set_config_option('install_replicate', 1);
-
-					if (replicate_out($poller['id'])) {
-						log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
-						$success[] = $poller['id'];
-
-						db_execute_prepared('UPDATE poller
-							SET last_sync = NOW()
-							WHERE id = ?',
-							[$poller['id']]);
-					} else {
-						log_install_debug('sync', 'Failed replication to Poller ' . $poller['id']);
-						$failed[] = $poller['id'];
-					}
-				} else {
-					log_install_low('sync', 'Database replication skipped for Poller ' . $poller['id']);
-				}
-			} else {
-				$timeout[] = $poller['id'];
-			}
-		}
+	if (!is_array($pollers)) {
+		throw new RuntimeException('Unable to read the remote collector inventory');
 	}
 
-	log_install_debug('sync', 'Success: ' . cacti_sizeof($success) . ', Failed: ' . cacti_sizeof($failed) . ', Skipped: ' . cacti_sizeof($skipped) . ', Total: ' . cacti_sizeof($pollers));
+	$synchronizer = new \Cacti\Installer\CollectorSynchronizer([
+		POLLER_STATUS_NEW, POLLER_STATUS_DOWN, POLLER_STATUS_HEARTBEAT,
+		POLLER_STATUS_RECOVERING, POLLER_STATUS_DISABLED,
+	]);
 
-	return [
-		'success' => $success,
-		'failed'  => $failed,
-		'skipped' => $skipped,
-		'timeout' => $timeout,
-		'total'   => cacti_sizeof($pollers)
-	];
+	return $synchronizer->synchronize(array_values($pollers), (int) read_config_option('poller_interval') * 2,
+		read_config_option('disable_full_sync_on_upgrade') == '',
+		static function (int $id) : bool {
+			if (!replicate_out($id)) {
+				return false;
+			}
+
+			return (bool) db_execute_prepared('UPDATE poller SET last_sync = NOW() WHERE id = ?', [$id]);
+		},
+		static function (int $id) : void {
+			set_install_config_option('install_updated', microtime(true));
+			set_install_config_option('install_collector', $id);
+			log_install_always('sync', __('Synchronizing Remote Data Collector ID %d', $id));
+		});
+}
+
+/** Verify shipped columns with one metadata query, permitting site/plugin additions. */
+function install_verify_schema_columns() : string {
+	require_once CACTI_PATH_LIBRARY . '/Installer/SchemaRequirements.php';
+	$schema = file_get_contents(CACTI_PATH_BASE . '/cacti.sql');
+
+	if ($schema === false) {
+		return __('Unable to read the shipped Cacti schema. Restore cacti.sql before retrying.');
+	}
+
+	try {
+		$required = \Cacti\Installer\SchemaRequirements::fromSql($schema);
+	} catch (InvalidArgumentException) {
+		return __('The shipped Cacti schema is incomplete. Restore cacti.sql before retrying.');
+	}
+
+	$columns = db_fetch_assoc('SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()');
+
+	if (!is_array($columns)) {
+		return __('Unable to read database column metadata after migration.');
+	}
+
+	$missing = $required->missing(array_values($columns));
+
+	return $missing === [] ? '' : __('The Cacti database schema is incomplete. Missing required columns: %s', implode(', ', $missing));
+}
+
+/**
+ * Check provider parameters and existing users' provider mappings without exposing credentials.
+ *
+ * Returns a blocking error for configuration that cannot be trusted at login.
+ * Mappings that already deny the affected logins go to $warnings instead,
+ * so the upgrade completes and the administrator is told what to repair.
+ *
+ * @param array<string, list<int>> $warnings set to the provider and realm IDs needing repair
+ */
+function install_verify_authentication(array &$warnings = []) : string {
+	require_once CACTI_PATH_LIBRARY . '/Installer/AuthenticationRequirements.php';
+	$warnings  = [];
+	$providers = db_fetch_assoc('SELECT id, type, enabled, parameters FROM login_providers');
+	$realms    = db_fetch_assoc("SELECT DISTINCT realm FROM user_auth WHERE enabled = 'on' AND realm >= 1000");
+
+	if (!is_array($providers) || !is_array($realms)) {
+		return __('Unable to verify authentication configuration after migration.');
+	}
+
+	$checker  = new \Cacti\Installer\AuthenticationRequirements();
+	$errors   = $checker->errors(array_values($providers));
+	$warnings = $checker->warnings(array_values($providers), array_map('intval', array_column($realms, 'realm')));
+
+	return $errors === [] ? '' : __('Authentication configuration needs recovery: %s', implode(' ', $errors));
+}
+
+/**
+ * Messages for the problems an otherwise successful run left behind.
+ *
+ * @return list<string> translated messages, empty when there is nothing to report
+ */
+function install_completion_messages(\Cacti\Installer\CompletionWarnings $report) : array {
+	$messages = [];
+
+	foreach ($report->collectors as $state => $ids) {
+		$messages[] = __('Collector synchronization needs attention (%s): IDs %s. Run a manual full synchronization after checking collector status.', $state, implode(', ', $ids));
+	}
+
+	if (isset($report->authentication['ldap_without_server'])) {
+		$messages[] = __('LDAP Login Providers with no server configured: IDs %s. Their users cannot log in until a server is set under Configuration > Login Providers.', implode(', ', $report->authentication['ldap_without_server']));
+	}
+
+	if (isset($report->authentication['realms_without_provider'])) {
+		$messages[] = __('Enabled users belong to login realms with no Login Provider: realms %s. They cannot log in until they are moved to an existing realm or the provider is recreated.', implode(', ', $report->authentication['realms_without_provider']));
+	}
+
+	return $messages;
 }
