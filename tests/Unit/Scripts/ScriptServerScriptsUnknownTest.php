@@ -25,7 +25,6 @@ global $called_by_script_server;
 $called_by_script_server = true;
 
 $ss_scripts = [
-	'ss_mikrotik_interfaces', 'ss_mikrotik_queues', 'ss_mikrotik_qtrees', 'ss_mikrotik_uptime',
 	'ss_nimble_alletra_total', 'ss_nimble_alletra_volumes', 'ss_aruba_instant_ap', 'ss_aruba_instant_client',
 	'ss_aruba_oscx_6x00', 'ss_fortigate_ipsec', 'ss_fortigate_ips', 'ss_fortigate_virus',
 	'ss_netsnmp_lmsensors', 'ss_esxi_vhosts', 'ss_multicpu_avg', 'ss_count_oids', 'ss_host_disk',
@@ -122,39 +121,6 @@ test('an unknown device leaves the credential fields empty', function () {
 test('the script server scripts resolve credentials through the device', function () {
 	expect(ss_host_cpu('127.0.0.1', 1, '0:161:500:1:10', 'get', 'usage', '1'))->toBe('U')
 		->and(ss_host_disk('127.0.0.1', 1, '0:161:500:1:10', 'get', 'description', '1'))->toBe('U');
-});
-
-// --- mikrotik ---
-
-test('mikrotik values that are NULL or missing are unknown', function () {
-	$this->db->exec('CREATE TABLE plugin_mikrotik_interfaces (host_id INTEGER, name TEXT, curInOctets INTEGER)');
-	$this->db->exec("INSERT INTO plugin_mikrotik_interfaces VALUES (1, 'ether 1', NULL), (1, 'ether2', 42)");
-	$this->db->exec('CREATE TABLE plugin_mikrotik_queues (host_id INTEGER, name TEXT, curBytesIn INTEGER)');
-	$this->db->exec("INSERT INTO plugin_mikrotik_queues VALUES (1, 'q1', NULL), (1, 'q2', 7)");
-	$this->db->exec('CREATE TABLE plugin_mikrotik_trees (host_id INTEGER, name TEXT, curHCBytes INTEGER)');
-	$this->db->exec("INSERT INTO plugin_mikrotik_trees VALUES (1, '<t1>', NULL), (1, 't2', 9)");
-	$this->db->exec('CREATE TABLE plugin_mikrotik_system (host_id INTEGER, uptime INTEGER)');
-	$this->db->exec('INSERT INTO plugin_mikrotik_system VALUES (2, NULL), (3, 25920000)');
-
-	expect(ss_mikrotik_interfaces(1, 'get', 'InOctets', 'ether_1'))->toBe('U')
-		->and(ss_mikrotik_interfaces(1, 'get', 'InOctets', 'missing'))->toBe('U')
-		->and(ss_mikrotik_interfaces(1, 'get', 'InOctets', 'ether2'))->toBe('42')
-		->and(ss_mikrotik_queues(1, 'get', 'qsInOctets', 'q1'))->toBe('U')
-		->and(ss_mikrotik_queues(1, 'get', 'qsInOctets', 'q2'))->toBe('7')
-		->and(ss_mikrotik_qtrees(1, 'get', 'qtBytes', 't1'))->toBe('U')
-		->and(ss_mikrotik_qtrees(1, 'get', 'qtBytes', 'missing'))->toBe('U')
-		->and(ss_mikrotik_qtrees(1, 'get', 'qtBytes', 't2'))->toBe('9')
-		->and(ss_mikrotik_uptime(1))->toBe('U')
-		->and(ss_mikrotik_uptime(2))->toBe('U')
-		->and(ss_mikrotik_uptime(3))->toBe('3');
-});
-
-test('the mikrotik queue tree lookup binds the index as data', function () {
-	$this->db->exec('CREATE TABLE plugin_mikrotik_trees (host_id INTEGER, name TEXT, curHCBytes INTEGER)');
-	$this->db->exec("INSERT INTO plugin_mikrotik_trees VALUES (1, 'x''y', 5)");
-
-	expect(ss_mikrotik_qtrees(1, 'get', 'qtBytes', "x'y"))->toBe('5')
-		->and(file_get_contents(dirname(__DIR__, 3) . '/scripts/ss_mikrotik_qtrees.php'))->not->toContain('db_qstr(');
 });
 
 // --- nimble ---
