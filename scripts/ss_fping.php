@@ -88,6 +88,14 @@ function ss_fping(string $hostname = '', int $ping_sweeps = 6, string $ping_type
 			break;
 	}
 
+	/**
+	 * By default a lost probe adds its elapsed time to the time samples, as it
+	 * always has.  With the setting on, a lost probe only counts toward loss
+	 * and the times describe answered probes alone, as the IPPM delay metrics
+	 * (RFC 2681, RFC 6703) define them.
+	 */
+	$exclude_lost = read_config_option('ping_rtt_exclude_lost') == 'on';
+
 	$i = 0;
 
 	while ($i < $ping_sweeps) {
@@ -99,8 +107,10 @@ function ss_fping(string $hostname = '', int $ping_sweeps = 6, string $ping_type
 			// Error response
 			$failed_results++;
 
-			$time[$i]    = $end - $start;
-			$total_time += $end - $start;
+			if (!$exclude_lost) {
+				$time[$i]    = $end - $start;
+				$total_time += $end - $start;
+			}
 		} elseif (is_numeric($ping->ping_status)) {
 			$time[$i]    = $ping->ping_status;
 			$total_time += $ping->ping_status;
