@@ -49,7 +49,11 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'ReportMessageDelivery.php', 'MessageFormatting.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
-        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+        self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'AuthAuthorizeMatrix.php'])
+
+    def test_package_import_change_runs_the_authorization_probe(self):
+        self.dispatch('package_import.php', ['BoundaryContracts.php', 'MessageFormatting.php', 'PackageManifestMatrix.php',
+                                             'AuthAuthorizeMatrix.php', 'PackageRepositoryWorkspace.php', 'PackageDiffBoundary.php'])
 
     def test_script_server_change_runs_the_log_masking_probe(self):
         for path in ['script_server.php', 'lib/poller.php', 'tests/fixtures/ScriptServerLogMaskingCoverage.php']:
@@ -108,6 +112,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
                            'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
+                           'Core/AuthAuthorizeMatrix.php',
                            'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)

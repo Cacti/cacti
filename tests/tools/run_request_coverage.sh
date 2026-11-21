@@ -80,6 +80,8 @@ run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/ht
 
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
 
+run_php_probe tests/fixtures/Core/AuthAuthorizeMatrix.php '^(lib/auth\.php|package_import\.php|tests/fixtures/Core/AuthAuthorizeMatrix\.php)'
+
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
 
 run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_import|lib/package)\.php|tests/fixtures/Core/PackageRepositoryWorkspace\.php)'
