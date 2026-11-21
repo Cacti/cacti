@@ -166,6 +166,7 @@ if (isset_request_var('update_policy')) {
 
 		break;
 	case 'perm_remove':
+		csrf_require_post();
 		perm_remove();
 
 		break;
@@ -2026,6 +2027,11 @@ function user_group() {
 	);
 
 	validate_store_request_vars($filters, 'sess_ugad');
+
+	/* constrain sort_column to the displayed columns, matching user_admin.php */
+	set_request_var('sort_column', cacti_validate_sort_column(get_request_var('sort_column'),
+		array('name', 'members', 'description', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'enabled'),
+		'name'));
 	/* ================= input validation ================= */
 
 	?>

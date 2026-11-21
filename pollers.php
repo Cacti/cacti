@@ -36,7 +36,7 @@ $poller_actions = array(
 	5 => __('Clear Statistics'),
 );
 
-if ($config['poller_id'] == 1) {
+if ($config['poller_id'] == 1 && is_realm_allowed(15)) {
 	$poller_actions += array(4 =>__('Full Sync'));
 }
 
@@ -247,7 +247,10 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ping':
-		test_database_connection();
+		/* the connection test takes the same permission as the fields it tests */
+		if (is_realm_allowed(15)) {
+			test_database_connection();
+		}
 
 		break;
 	case 'edit':
@@ -298,7 +301,13 @@ function form_save() {
 
 		if ($save['id'] != 1) {
 			$save['sync_interval'] = form_input_validate(get_nfilter_request_var('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
+		}
 
+		/* The database connection is where Full Sync and the periodic sync send
+		   the main database's tables, including the user and settings tables.
+		   Choosing it is an administrative decision, so it takes the Settings
+		   permission rather than the device management one that opens this page. */
+		if ($save['id'] != 1 && is_realm_allowed(15)) {
 			// Database settings
 			$save['dbdefault']     = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
 			$save['dbhost']        = form_input_validate(get_nfilter_request_var('dbhost'),    'dbhost',    '', true, 3);
@@ -332,7 +341,7 @@ function form_save() {
 
 		if (isset($save['dbhost']) && $save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
-		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
+		} elseif ($save['id'] > 1 && isset($save['dbhost']) && poller_host_duplicate($save['id'], $save['dbhost'])) {
 			raise_message('poller_nodupe');
 		} elseif (!is_error_message() && $error == false) {
 			$poller_id = sql_save($save, 'poller');
@@ -499,6 +508,8 @@ function form_actions() {
 				db_execute('UPDATE poller SET disabled="" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
+			} elseif (get_request_var('drp_action') == '4' && !is_realm_allowed(15)) { // full sync
+				raise_message('poller_sync_permission', __('Full Sync requires the Settings permission.'), MESSAGE_LEVEL_ERROR);
 			} elseif (get_request_var('drp_action') == '4') { // full sync
 				cacti_session_close();
 
@@ -688,22 +699,19 @@ function poller_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	if (cacti_sizeof($poller)) {
-		if ($poller['id'] == 1) {
-			unset($fields_poller_edit['sync_interval']);
-			unset($fields_poller_edit['spacer_remotedb']);
-			unset($fields_poller_edit['dbdefault']);
-			unset($fields_poller_edit['dbhost']);
-			unset($fields_poller_edit['dbuser']);
-			unset($fields_poller_edit['dbpass']);
-			unset($fields_poller_edit['dbport']);
-			unset($fields_poller_edit['dbretries']);
-			unset($fields_poller_edit['dbssl']);
-			unset($fields_poller_edit['dbsslkey']);
-			unset($fields_poller_edit['dbsslcert']);
-			unset($fields_poller_edit['dbsslca']);
-		}
+	if (cacti_sizeof($poller) && $poller['id'] == 1) {
+		unset($fields_poller_edit['sync_interval']);
+	}
 
+	/* only users with the Settings permission see or change the remote
+	   database connection, see form_save() */
+	if ((cacti_sizeof($poller) && $poller['id'] == 1) || !is_realm_allowed(15)) {
+		foreach (array('spacer_remotedb', 'dbdefault', 'dbhost', 'dbuser', 'dbpass', 'dbport', 'dbretries', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca') as $field) {
+			unset($fields_poller_edit[$field]);
+		}
+	}
+
+	if (cacti_sizeof($poller)) {
 		if ($poller['timezone'] == '') {
 			$poller['timezone'] = ini_get('date.timezone');
 		}

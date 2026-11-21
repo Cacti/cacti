@@ -14,5 +14,5 @@ test('complete secret save handlers persist and replicate keep replace and clear
 	$status = 0;
 	exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(dirname(__DIR__) . '/fixtures/SecretFieldSave.php') . ' 2>&1', $output, $status);
 	expect($status)->toBe(0, implode("\n", $output));
-	expect(json_decode(implode("\n", $output), true))->toBe(['passed' => getenv('SECRET_LDAP_URI') ? 41 : 36]);
+	expect(json_decode(implode("\n", $output), true))->toBe(['passed' => getenv('SECRET_LDAP_URI') ? 44 : 39]);
 })->skip(!getenv('SECRET_DB_HOST'), 'Set SECRET_DB_HOST to a disposable MariaDB server');

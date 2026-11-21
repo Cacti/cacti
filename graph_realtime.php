@@ -211,6 +211,13 @@ case 'countdown':
 
 	/* call poller */
 	$local_graph_id = get_filter_request_var('local_graph_id');
+
+	/* take graph permissions into account before generating anything */
+	if (!is_graph_allowed($local_graph_id)) {
+		header('Location: permission_denied.php');
+		exit;
+	}
+
 	$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . $local_graph_id . '.png';
 	$php_binary     = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 	$script_path    = cacti_escapeshellarg($config['base_path'] . '/poller_realtime.php');
