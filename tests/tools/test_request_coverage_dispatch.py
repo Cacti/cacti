@@ -46,7 +46,7 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/plugins.php', ['TrustedActionMessages.php', 'MessageFormatting.php'])
 
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'ReportMessageDelivery.php', 'MessageFormatting.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
+        self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'ReportMessageDelivery.php', 'MessageFormatting.php', 'RrdVersionFallback.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
         self.dispatch('lib/auth.php', 'BoundaryContracts.php')
@@ -62,7 +62,9 @@ class RequestDispatchTest(unittest.TestCase):
     def test_boost_drain_change_runs_the_drain_probe(self):
         for path in ['poller_boost.php', 'lib/boost.php', 'tests/fixtures/ProbeLoader.php', 'tests/fixtures/BoostOnDemandFailureProbe.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'BoostBulkDrainCoverage.php')
+                self.dispatch(path, ['BoostSkipPastUpdates.php', 'BoostBulkDrainCoverage.php']
+                              if path in ['poller_boost.php', 'lib/boost.php']
+                              else 'BoostBulkDrainCoverage.php')
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['MessageFormatting.php', 'PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
@@ -72,6 +74,16 @@ class RequestDispatchTest(unittest.TestCase):
 
     def test_package_import_change_runs_the_diff_boundary_probe(self):
         self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
+
+    def test_boost_flush_change_runs_the_skip_past_updates_probe(self):
+        for path in ['lib/boost.php', 'poller_boost.php', 'tests/fixtures/Core/BoostSkipPastUpdates.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, ['BoostSkipPastUpdates.php', 'BoostBulkDrainCoverage.php']
+                              if path in ['poller_boost.php', 'lib/boost.php']
+                              else 'BoostSkipPastUpdates.php')
+
+    def test_rrd_version_fallback_probe_change_runs_itself(self):
+        self.dispatch('tests/fixtures/Core/RrdVersionFallback.php', 'RrdVersionFallback.php')
 
     def dispatch(self, changed, expected):
         with tempfile.TemporaryDirectory() as temporary:
@@ -108,7 +120,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
                            'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'Core/BoostSkipPastUpdates.php', 'Core/RrdVersionFallback.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
