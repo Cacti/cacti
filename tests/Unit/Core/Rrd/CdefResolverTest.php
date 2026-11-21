@@ -21,9 +21,8 @@ use Cacti\Cdef\CdefRepository;
 use Cacti\Cdef\CdefResolver;
 use Symfony\Component\Process\Process;
 
-require_once dirname(__DIR__, 4) . '/lib/Cdef/CdefResolver.php';
-
 test('legacy CDEF functions load before Composer is available', function () : void {
+	// The resolver classes come from Composer's PSR-4 map; loading lib/cdef.php must not need them.
 	$path    = var_export(dirname(__DIR__, 4) . '/lib/cdef.php', true);
 	$process = new Process([PHP_BINARY, '-n', '-r', 'require ' . $path . ';
 		foreach (["get_cdef", "get_cdef_item_name", "get_cdef_recursive", "cdef_is_in_use"] as $function) {
@@ -31,9 +30,30 @@ test('legacy CDEF functions load before Composer is available', function () : vo
 				exit(1);
 			}
 		}
-		new \Cacti\Cdef\CdefResolver(new \Cacti\Cdef\DatabaseCdefRepository(), static function (string $message) : void {});
-		new \Cacti\Cdef\CdefResolutionState();
-		exit(class_exists("Composer\\\\Autoload\\\\ClassLoader", false) ? 1 : 0);
+		exit(class_exists("Cacti\\\\Cdef\\\\CdefResolver", false) || class_exists("Composer\\\\Autoload\\\\ClassLoader", false) ? 2 : 0);
+	']);
+	$process->run();
+
+	expect($process->getExitCode())->toBe(0, $process->getErrorOutput())
+		->and($process->getOutput())->toBe('');
+});
+
+test('legacy CDEF functions resolve their classes through the Composer autoloader', function () : void {
+	$root    = dirname(__DIR__, 4);
+	$process = new Process([PHP_BINARY, '-r', 'require ' . var_export($root . '/include/vendor/autoload.php', true) . ';
+		require ' . var_export($root . '/lib/cdef.php', true) . ';
+		foreach (["get_cdef", "get_cdef_item_name", "get_cdef_recursive", "cdef_is_in_use"] as $function) {
+			if (!function_exists($function)) {
+				exit(1);
+			}
+		}
+		foreach (["CdefRepository" => "interface_exists", "CdefResolver" => "class_exists", "DatabaseCdefRepository" => "class_exists", "CdefResolutionState" => "class_exists"] as $name => $exists) {
+			if ($exists("Cacti\\\\Cdef\\\\" . $name, false)) {
+				exit(2);
+			}
+		}
+		new \\Cacti\\Cdef\\CdefResolver(new \\Cacti\\Cdef\\DatabaseCdefRepository(), static function (string $message) : void {});
+		new \\Cacti\\Cdef\\CdefResolutionState();
 	']);
 	$process->run();
 

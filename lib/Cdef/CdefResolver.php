@@ -26,9 +26,6 @@ namespace Cacti\Cdef;
 
 use Closure;
 
-require_once __DIR__ . '/CdefRepository.php';
-require_once __DIR__ . '/CdefResolutionState.php';
-
 /**
  * Resolves a CDEF and its nested type 5 references into an RPN string,
  * rejecting cycles, excessive nesting and oversized output.
