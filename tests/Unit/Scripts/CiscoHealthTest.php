@@ -24,6 +24,8 @@
 
 global $called_by_script_server;
 $called_by_script_server = true;
+global $config;
+$config['base_path'] = dirname(__DIR__, 3);
 require_once __DIR__ . '/../../../scripts/ss_cisco_health.php';
 
 function ciscoHealthFixture(array $values = [], array $walks = []) : array {

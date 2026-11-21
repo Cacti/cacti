@@ -1,26 +1,51 @@
 # Cisco Router health graphs
 
-The Cisco Router device template includes five indexed queries in addition to its existing CPU, uptime, polling, interface, BGP and HSRP definitions. They discover components reported by the device. Six native automation rules create the supported health graphs when a device is saved with Cisco Router. A device with no supported health resources receives no health graphs; the existing standard template behaviour is unchanged.
+Cisco Router adds five queries to its existing CPU, uptime, polling time, interface, BGP and HSRP definitions. They provide six health graph families through Cacti's normal Create Graphs and automation workflows. The package includes templates, query definitions and collectors; it does not change shared Cacti core code.
 
-| Query | Graphs | What is discovered |
-| --- | --- | --- |
-| Cisco - Cellular Radio | Signal Strength (RSSI/RSRP, dBm); Signal Quality (RSRQ/SNR, dB) | LTE radio entries exposed by CISCO-WAN-3G-MIB and CISCO-WAN-CELL-EXT-MIB |
-| Cisco - QFP Processors | Processing load, five-minute average (%) | QFP physical entities reported by CISCO-ENTITY-QFP-MIB |
-| Cisco - Memory Usage | All Pools: a separate used-percentage line per pool, with used/free bytes in the legend | Enhanced memory pools, or legacy Cisco memory pools when the enhanced table is absent |
-| Cisco - QFP Memory Usage | All Pools: a separate used-percentage line per forwarding-engine resource, with used/free bytes in the legend | QFP memory resources with a positive total capacity |
-| Cisco - Temperature | All Sensors: a separate temperature (°C) line per sensor | Celsius sensors in ENTITY-SENSOR-MIB and CISCO-ENTITY-SENSOR-MIB |
+| Graph | What it shows |
+| --- | --- |
+| Cellular Signal Strength | RSSI and RSRP in dBm, per modem |
+| Cellular Signal Quality | RSRQ and SNR in dB, per modem |
+| Memory Usage — All Pools | A percentage-used line for each pool, with used/free bytes in the legend |
+| QFP Memory Usage — All Pools | A percentage-used line for each forwarding-engine memory resource, with used/free bytes in the legend |
+| QFP Processor Utilisation | Five-minute processing load (%), per QFP processor |
+| Temperature — All Sensors | A line for each Celsius sensor, with current, average and maximum readings |
 
-QFP load is forwarding-engine utilisation. It is separate from the existing Cisco CPU graph and does not replace it. Cellular strength and quality use separate graphs so dBm and dB do not share an axis. The source graph templates specify SVG with a 700 × 200 pixel plotting area. Cacti develop applies the installation's default image format during import unless a format is selected in the import form. Select SVG there if SVG output is required.
+The graphs use SVG. Memory uses a fixed 0–100% axis and orange/gold lines. Temperature adjusts its axis to the readings and includes °C in the axis and legend. QFP load measures the forwarding engine, separately from the ordinary CPU graph. Cellular strength and quality are separate because dBm and dB measure different things.
 
-## Installation and graph creation
+“All Pools” compares each pool's percentage; it does not add unrelated capacities together. Multiple modems or QFP processors produce more than one instance of their graph families.
 
-1. Install the matching Cacti code changes as well as the package. Automatic rule installation and combined graph creation require `lib/cisco_health_graphs.php` and the corresponding import/graph-creation integration; the XML alone cannot add that behaviour to an unmodified installation. Import the signed `install/templates/Cisco_Router.xml.gz` package through Cacti’s package importer. It contains the template, five new query XML files and `scripts/ss_cisco_health.php`, along with the existing Cisco Router dependencies. The importer must be able to install those files, and the poller account must be able to read them. Numeric OIDs are used; installing Cisco MIB files is not required. Review the signing note below before importing this contributor build.
-2. If testing the plain review XML instead, install the supporting files in their matching Cacti directories first, then run `php cli/import_template.php --filename=install/templates/Cisco_Router.xml`. Keep the same template hashes on re-import so Cacti updates the existing definitions.
-3. Select **Cisco Router** for the device. For an existing device, check its Associated Data Queries after updating the template. Add any missing Cisco queries or use the normal device-template synchronisation workflow; importing a template is not a promise that every existing device association has been refreshed.
-4. Save the device to discover its resources and create the supported health graphs. For manual creation, open **Create Graphs for this Device** and select the discovered rows. Memory and temperature selections join the device’s combined graph. Cellular strength and quality have separate data sources, so either graph can be created first, even after polling has started.
-5. Allow at least two polling intervals for new RRD data. A blank historic region is expected for a newly created data source.
+## Installation
 
-An unsupported device should have no rows for the unsupported query, so there is nothing to select. This does not prove that every metric on a discovered component is available: an SNMP view can allow discovery while denying a reading, or a modem can temporarily lose a measurement. Such samples must remain unknown, not zero. Do not create fixed, unindexed copies of these graphs merely to bypass an empty query result.
+The archive in this PR is contributor-signed for review. It still needs an official Cacti signature before release; do not add a contributor key to production trust or disable signature checks.
+
+For source review, use an isolated installation. Copy the collector, query and optional CLI files from the checkout into their matching directories, then import the template source:
+
+```sh
+php cli/import_template.php --filename=install/templates/Cisco_Router.xml
+```
+
+The collector files are `scripts/ss_cisco_health.php`, `scripts/ss_memory_combined.php` and `scripts/ss_temperature_slots.php`. Query files are `resource/script_server/cisco_cellular_radio.xml`, `memory_combined.xml`, `qfp_memory_combined.xml`, `temperature_slots.xml`, and `resource/snmp_queries/cisco_qfp_processors.xml`. The poller account must be able to read them. Numeric OIDs are used; Cisco MIB files do not need to be installed.
+
+Once officially signed, the package importer will install the collector scripts, query files and template definitions together. The optional `cli/setup_cisco_health_rules.php` and `cli/cisco_health_rules.json` ship separately in the source checkout: the package importer does not install files in `cli/` or execute that setup command.
+
+## Creating graphs
+
+Assign **Cisco Router** to the device and check the discovered rows. On an existing device, check Associated Data Queries after import and add missing queries using the normal template synchronisation or device editing workflow.
+
+For manual creation, open **Create Graphs for this Device**. Create both cellular graph types if wanted. For memory and temperature, choose the variant matching the displayed pool or sensor count: for example, six sensors needs the six-sensor graph. Cacti remembers a dropdown choice; it does not automatically choose the matching count for manual creation. Do not select every count variant for one row.
+
+For automatic creation, install the optional ordinary graph rules once per installation and enable **Enable Automatic Graph Creation** in Cacti Settings. See [automation setup](Cisco-Router-Health-Automation.md). With those prerequisites, adding a Cisco Router uses normal Cacti discovery and graph rules to create supported health graphs. Importing XML alone does not enable this behaviour.
+
+Unsupported queries return no rows. A timeout can also leave discovery empty, so check SNMP connectivity before concluding that a feature is unsupported. A discovered component may lack an individual metric or lose a reading; those samples remain unknown, not zero. Allow at least two polling intervals for a new graph to acquire history.
+
+## Combined graphs and hardware changes
+
+There are count-matched variants for one through eight pools or sensors. They give a two-pool router two lines and a six-sensor router six lines, without unused legend rows. More than eight resources, or a composite index longer than Cacti's 255-character column, is unsupported. Discovery rejects these groups rather than silently dropping resources.
+
+The saved data-source index records which resources belong to each line. Rediscovery retains that membership: a missing sensor returns unknown in its original position instead of assigning another sensor to its history. New resources appear in the query's new-resource count but are not silently appended to an existing graph. A replacement device that reuses an old SNMP index cannot be distinguished solely by that index.
+
+This package does not resize existing combined data sources or migrate earlier individual or development graphs. Keep their database and RRD history intact until a separate migration has been tested. To monitor changed membership, create a replacement group in a separate device trial first; deleting old data sources to force rediscovery would risk losing history.
 
 ## Compatibility and fallbacks
 
@@ -44,35 +69,15 @@ Useful Cisco references:
 - [CISCO-ENTITY-QFP-MIB](https://github.com/cisco/cisco-mibs/blob/main/v2/CISCO-ENTITY-QFP-MIB.my)
 - [CISCO-ENTITY-SENSOR-MIB](https://github.com/cisco/cisco-mibs/blob/main/v2/CISCO-ENTITY-SENSOR-MIB.my)
 
-## Automatic creation and combined graphs
+## Validation and release packaging
 
-The six **Cisco Router Health** rules appear in Cacti’s normal graph automation list. They match the Cisco Router device template. Disable a rule there to stop automatic creation for that category. Importing the package again does not re-enable an existing rule or recreate a rule the administrator deleted. Import alone creates no device graphs.
+Isolated stock 1.2.x and develop installations passed the standard device-creation API test: six supported health graphs immediately after saving the device, zero health graphs for the unsupported fixture, and no duplicates after saving and rediscovering again. These checks used enabled ordinary graph rules. The 1.2 trial also exercised device recreation in the web interface; the new stock-develop trial used APIs and rendered previews, not a completed authenticated web walkthrough.
 
-Memory and QFP memory each have one **All Pools** graph per device. Each pool has its own percentage line; the legend shows its current used and free bytes. Percentages let small and large pools share a readable axis without adding unrelated capacities together. Temperature has one **All Sensors** graph with an automatically scaled Celsius axis. Cellular remains two separate graphs, and QFP processing load remains separate for each processor.
+Both trials collected 19 numeric fields across six data sources, wrote readings through Cacti's normal poller-output processing, and rendered all six SVG graph families. This was bounded command-poller testing, not a scheduled-poller or Spine soak test. Memory and temperature presentation changes were checked against real readings without changing existing trial RRD history.
 
-The combined views reuse the discovered data sources. Repeating Create Graphs for an already represented index returns the existing combined graph. Adding another index appends that resource without replacing existing members. New combined graphs keep the imported template’s dimensions and image format; existing graph settings are preserved. Memory percentages are resolved against each pool’s own used/free sources, so deleting another pool cannot change the calculation. Graph items are managed by this workflow: make a separate graph if you need a custom selection or legend. Existing individual graphs are kept; only the temporary component graph made by the current creation operation is removed after its sources are included successfully.
+Unit fixtures cover resource reordering, removal and addition, invalid and oversized bindings, numeric SNMP command arguments, scaling and fallbacks. Package tests check all 27 health graph variants, their query relationships and automation mappings. RRDtool checks exercised percentage calculations with zero, full, missing and differently sized pools.
 
-Combined graphs retain their graph-template identity so normal user and group template permissions still apply. Their generated items are protected from normal template-item updates and reapplying the same template. Concurrent creation requests are serialized per device and health category to avoid duplicate sources. Detaching or changing a combined graph’s template stops the builder from taking it over again. Moving a managed combined graph to another device is rejected: create the supported health graphs on the target device instead, since pool and sensor indexes belong to their original device.
-
-If combining fails, the individual graph is retained and Cacti reports the failure. Duplicate data sources for the same index and incomplete used/free pairs require attention rather than choosing an arbitrary source. Deleting a combined graph does not delete its data sources; selecting its resources again can rebuild the view.
-
-## Validation and review
-
-The collector tests cover unsupported tables, memory and temperature fallbacks, scaling and invalid readings. Package tests verify query associations, graph/data relationships, image format and signatures. Combined-graph tests cover natural index ordering, separate pool identities, missing names, duplicate sources and incomplete pairs.
-
-A fresh isolated 1.2.x database imported the revised source definitions successfully. Creating a Cisco Router device through the normal device-save API discovered the live test router and created six health graphs plus the three existing standard graphs, using 16 data sources in total. Repeated device saves and query automation preserved those counts. An SNMP-responsive NAS received the three standard graphs and no health graphs. Re-import preserved the six rules and left a deliberately disabled rule disabled. The first isolated poll processed the new RRD files successfully.
-
-The same clean-install test on develop created six health graphs plus its four standard graphs, using 17 data sources. Repeat saves and discovery preserved those counts, and the unsupported device received no health graphs. All router graphs rendered as SVG on both branches. Rebuilding the three combined views preserved graph settings, and deleting/recreating those views preserved the data sources. An earlier prototype was also exercised on the 1.2.31 runtime; that is separate from the final 1.2.x clean-install test. Both cellular creation orders were also checked with actual RRD files: the first graph’s RRD was created before the second graph was added, and each contained its required fields. Hardware coverage remains limited to the models listed above; broad compatibility, SNMPv3 and remote collectors are not claimed as tested.
-
-The plain XML accompanies the contributor-signed `Cisco_Router.xml.gz` for review. This build is signed as `alcatron`, not The Cacti Group. Maintainers must approve the signing arrangement or rebuild with their distribution key before shipping it as a default package. A fresh installation correctly rejects an untrusted contributor key. Do not bypass that check or retain an old signature after changing package contents.
-
-Additional isolated checks covered simultaneous creation (three combined graphs and ten unique sources), user/group template allow and deny policies in permissive and restrictive modes, and preservation of generated items when the template is reapplied or its items are updated. These checks passed on both branches.
-
-For scalar memory polling, only an immediately adjacent used/free pair shares the device settings and pool metadata. The cache holds one pair, is consumed by its complementary request, and expires after five seconds. Repeated fields, another resource or discovery start fresh; failed readings remain unknown. Credentials stay in the database rather than being copied into command arguments.
-
-Legacy QFP memory tables are discovered through their original total gauge when the HC value is explicitly unsupported. Used/free reads likewise combine the original gauge and any available overflow column; transport failures remain unknown. Both numeric and named Celsius sensor types are accepted.
-
-Combined graphs and other graphs sharing their data sources cannot be moved to another device. Create the health graphs on the destination instead. During indexed creation, an existing combined graph loads only the arriving resource; an explicit rebuild or recreation after deletion still reads all active resources.
+Official signing remains a release gate on both branches. A maintainer must rebuild and sign the archive, coordinated with the HSRP package update. The release-key test intentionally fails for this contributor-signed review artifact. The optional automation command also needs maintainer agreement for distribution.
 
 ### Numeric SNMP readings
 

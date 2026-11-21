@@ -1,1 +1,1 @@
-Discover supported Cisco Router health resources and automatically create cellular, QFP, combined memory and temperature graphs
+Add Cisco Router cellular, QFP, combined memory and temperature templates with optional standard graph rules

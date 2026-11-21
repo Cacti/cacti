@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <name>Temperature - All Sensors</name>
+  <script_path>|path_cacti|/scripts/ss_temperature_slots.php</script_path>
+  <script_function>ss_temperature_slots</script_function>
+  <script_server>php</script_server>
+  <arg_prepend>|host_id|</arg_prepend>
+  <arg_index>index</arg_index>
+  <arg_query>query</arg_query>
+  <arg_get>get</arg_get>
+  <arg_num_indexes>num_indexes</arg_num_indexes>
+  <output_delimiter>!</output_delimiter>
+  <index_order>healthIndex</index_order>
+  <index_order_type>alphanumeric</index_order_type>
+  <index_title_format>|chosen_order_field|</index_title_format>
+  <fields>
+    <healthIndex>
+      <name>Binding</name>
+      <direction>input</direction>
+      <query_name>index</query_name>
+    </healthIndex>
+    <healthName>
+      <name>Sensors</name>
+      <direction>input</direction>
+      <query_name>name</query_name>
+    </healthName>
+    <sensor1Name>
+      <name>Sensor 1</name>
+      <direction>input</direction>
+      <query_name>sensor1Name</query_name>
+    </sensor1Name>
+    <sensor2Name>
+      <name>Sensor 2</name>
+      <direction>input</direction>
+      <query_name>sensor2Name</query_name>
+    </sensor2Name>
+    <sensor3Name>
+      <name>Sensor 3</name>
+      <direction>input</direction>
+      <query_name>sensor3Name</query_name>
+    </sensor3Name>
+    <sensor4Name>
+      <name>Sensor 4</name>
+      <direction>input</direction>
+      <query_name>sensor4Name</query_name>
+    </sensor4Name>
+    <sensor5Name>
+      <name>Sensor 5</name>
+      <direction>input</direction>
+      <query_name>sensor5Name</query_name>
+    </sensor5Name>
+    <sensor6Name>
+      <name>Sensor 6</name>
+      <direction>input</direction>
+      <query_name>sensor6Name</query_name>
+    </sensor6Name>
+    <sensor7Name>
+      <name>Sensor 7</name>
+      <direction>input</direction>
+      <query_name>sensor7Name</query_name>
+    </sensor7Name>
+    <sensor8Name>
+      <name>Sensor 8</name>
+      <direction>input</direction>
+      <query_name>sensor8Name</query_name>
+    </sensor8Name>
+    <temperature1>
+      <name>Temperature 1</name>
+      <direction>output</direction>
+      <query_name>temperature1</query_name>
+    </temperature1>
+    <temperature2>
+      <name>Temperature 2</name>
+      <direction>output</direction>
+      <query_name>temperature2</query_name>
+    </temperature2>
+    <temperature3>
+      <name>Temperature 3</name>
+      <direction>output</direction>
+      <query_name>temperature3</query_name>
+    </temperature3>
+    <temperature4>
+      <name>Temperature 4</name>
+      <direction>output</direction>
+      <query_name>temperature4</query_name>
+    </temperature4>
+    <temperature5>
+      <name>Temperature 5</name>
+      <direction>output</direction>
+      <query_name>temperature5</query_name>
+    </temperature5>
+    <temperature6>
+      <name>Temperature 6</name>
+      <direction>output</direction>
+      <query_name>temperature6</query_name>
+    </temperature6>
+    <temperature7>
+      <name>Temperature 7</name>
+      <direction>output</direction>
+      <query_name>temperature7</query_name>
+    </temperature7>
+    <temperature8>
+      <name>Temperature 8</name>
+      <direction>output</direction>
+      <query_name>temperature8</query_name>
+    </temperature8>
+    <sensorCount>
+      <name>sensorCount</name>
+      <direction>input</direction>
+      <query_name>sensorCount</query_name>
+    </sensorCount>
+    <newSensors>
+      <name>newSensors</name>
+      <direction>input</direction>
+      <query_name>newSensors</query_name>
+    </newSensors>
+  </fields>
+</interface>

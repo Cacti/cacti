@@ -1,0 +1,218 @@
+[
+  {
+    "query": "Cisco - Cellular Radio",
+    "query_hash": "2d5c00c1e9d4cf7e0a469b1c7f488eca",
+    "graph_type": "Cellular Signal Quality",
+    "variant_hash": "c20d35f3aba333f6050c55b28798031a",
+    "field": null,
+    "matches": null
+  },
+  {
+    "query": "Cisco - Cellular Radio",
+    "query_hash": "2d5c00c1e9d4cf7e0a469b1c7f488eca",
+    "graph_type": "Cellular Signal Strength",
+    "variant_hash": "6b58aef7a850239f41946aa3a51f58d7",
+    "field": null,
+    "matches": null
+  },
+  {
+    "query": "Cisco - QFP Processors",
+    "query_hash": "b12b0d0f58f0487b2246518317fb2e9a",
+    "graph_type": "QFP Processor Utilisation",
+    "variant_hash": "35f5d4a981c4bdc5ad81448e314a5f37",
+    "field": null,
+    "matches": null
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 1 sensors",
+    "variant_hash": "e1804aee01ff88a9f289e44ab2fdb6a5",
+    "field": "sensorCount",
+    "matches": 1
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 2 sensors",
+    "variant_hash": "b9560bf6bcfe48ad3faba6b9f1c4b90e",
+    "field": "sensorCount",
+    "matches": 2
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 3 sensors",
+    "variant_hash": "2e9e87a4d1b369699c8d8430d626c75f",
+    "field": "sensorCount",
+    "matches": 3
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 4 sensors",
+    "variant_hash": "5aaf9d6df8dd720b7c1dc9e90624060a",
+    "field": "sensorCount",
+    "matches": 4
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 5 sensors",
+    "variant_hash": "5331d7fec8676de7beb126c6c169c476",
+    "field": "sensorCount",
+    "matches": 5
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 6 sensors",
+    "variant_hash": "bc234b8185a9e2175598921d58ba6d69",
+    "field": "sensorCount",
+    "matches": 6
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 7 sensors",
+    "variant_hash": "b6ee0b5a8189918dfdaa0f87e3181e6e",
+    "field": "sensorCount",
+    "matches": 7
+  },
+  {
+    "query": "Cisco - Temperature - All Sensors",
+    "query_hash": "59bb7c19c1f17052ccb33a1937e40155",
+    "graph_type": "Cisco - Temperature - 8 sensors",
+    "variant_hash": "b71e98d65b76d6f0cfe783e51b318664",
+    "field": "sensorCount",
+    "matches": 8
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 1 pools",
+    "variant_hash": "04fd010b010ed0368560de9c7cb3a643",
+    "field": "poolCount",
+    "matches": 1
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 2 pools",
+    "variant_hash": "48e9feac7109bf7b8baccaa47bfc7e3d",
+    "field": "poolCount",
+    "matches": 2
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 3 pools",
+    "variant_hash": "6bb8812c256d8754fc128cfa7464c55f",
+    "field": "poolCount",
+    "matches": 3
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 4 pools",
+    "variant_hash": "3bc903b914e36fc73e8255ee72eabf5d",
+    "field": "poolCount",
+    "matches": 4
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 5 pools",
+    "variant_hash": "262dc1fd39471cbca0689ba426b28e3d",
+    "field": "poolCount",
+    "matches": 5
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 6 pools",
+    "variant_hash": "64c52d26917f42bbfefaed4cd06ef4bd",
+    "field": "poolCount",
+    "matches": 6
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 7 pools",
+    "variant_hash": "c28fcec820f37b40447ef4713bbbe9e4",
+    "field": "poolCount",
+    "matches": 7
+  },
+  {
+    "query": "Cisco - Memory Usage - Combined",
+    "query_hash": "ae7f035d28f4c236beae4941e740fce9",
+    "graph_type": "Cisco - Memory Usage - 8 pools",
+    "variant_hash": "618413c5d7ef7b831ce1a237016b22d2",
+    "field": "poolCount",
+    "matches": 8
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 1 pools",
+    "variant_hash": "599657dedc4ff4dd5d1f721c39f5ab3c",
+    "field": "poolCount",
+    "matches": 1
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 2 pools",
+    "variant_hash": "d38b9a59422627b602de206b5ab0b91b",
+    "field": "poolCount",
+    "matches": 2
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 3 pools",
+    "variant_hash": "81b852ac7f91f31cd783848bcc60f264",
+    "field": "poolCount",
+    "matches": 3
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 4 pools",
+    "variant_hash": "ce3a42b9ef13870a7de8e1f17417a09b",
+    "field": "poolCount",
+    "matches": 4
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 5 pools",
+    "variant_hash": "77b804c6624b7d7d6ebaef43480133a8",
+    "field": "poolCount",
+    "matches": 5
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 6 pools",
+    "variant_hash": "2b72c765af6edf6146868ba44f5f322f",
+    "field": "poolCount",
+    "matches": 6
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 7 pools",
+    "variant_hash": "2438b874f084d468557fa08434245187",
+    "field": "poolCount",
+    "matches": 7
+  },
+  {
+    "query": "Cisco - QFP Memory Usage - Combined",
+    "query_hash": "e1d221dcd1ef0f7df5cc79bdb835959d",
+    "graph_type": "Cisco - QFP Memory Usage - 8 pools",
+    "variant_hash": "a988b797d582671338c8740493805c88",
+    "field": "poolCount",
+    "matches": 8
+  }
+]
