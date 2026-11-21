@@ -54,6 +54,10 @@ define('MESSAGE_LEVEL_ERROR', 3);
 
 $GLOBALS['archives'] = json_decode(file_get_contents($argv[3]), true);
 
+function __($text, ...$args) {
+	return vsprintf($text, $args);
+}
+
 function __esc($text, ...$args) {
 	return vsprintf($text, $args);
 }
