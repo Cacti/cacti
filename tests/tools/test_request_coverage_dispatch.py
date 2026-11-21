@@ -12,14 +12,14 @@ import unittest
 
 class RequestDispatchTest(unittest.TestCase):
     def test_package_change_runs_the_signed_archive_probe(self):
-        self.dispatch('lib/package.php', ['MessageFormatting.php', 'PackageArchive.php', 'PackageRepositoryWorkspace.php', 'PackageImportFileStatus.php'])
+        self.dispatch('lib/package.php', ['MessageFormatting.php', 'PackageArchive.php', 'PackageRepositoryWorkspace.php', 'PackageImportFileStatus.php', 'library'])
         self.dispatch('tests/fixtures/Core/PackageArchive.php', 'PackageArchive.php')
 
     def test_queue_change_runs_the_queue_probe_without_ripgrep(self):
         self.dispatch('cli/queue_worker.php', 'queue')
 
     def test_html_change_runs_the_browser_probe(self):
-        self.dispatch('lib/html.php', 'accessibility')
+        self.dispatch('lib/html.php', ['accessibility', 'library'])
 
     def test_documentation_change_runs_no_request_probe(self):
         self.dispatch('README.md', None)
@@ -36,25 +36,77 @@ class RequestDispatchTest(unittest.TestCase):
                 self.dispatch(path, expected)
 
     def test_graph_change_runs_the_native_graph_probe(self):
-        self.dispatch('lib/rrd.php', 'FallbackSourceIdentity.php')
+        self.dispatch('lib/rrd.php', ['FallbackSourceIdentity.php', 'library'])
 
     def test_device_change_runs_the_collector_notification_probe(self):
-        self.dispatch('lib/api_device.php', ['DeviceCollectorMessages.php', 'MessageFormatting.php'])
+        self.dispatch('lib/api_device.php', ['DeviceCollectorMessages.php', 'MessageFormatting.php', 'library'])
 
     def test_ui_messages_run_their_rendering_probes(self):
         self.dispatch('link.php', 'ExternalLinkMessage.php')
-        self.dispatch('lib/plugins.php', ['TrustedActionMessages.php', 'MessageFormatting.php'])
+        self.dispatch('lib/plugins.php', ['TrustedActionMessages.php', 'MessageFormatting.php', 'library'])
 
     def test_account_change_runs_the_native_audit_probe(self):
-        self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'ReportMessageDelivery.php', 'MessageFormatting.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
+        self.dispatch('lib/functions.php', [
+            'ScriptSubstitutionMatrix.php',
+            'ReportMessageDelivery.php',
+            'MessageFormatting.php',
+            'UserAdministrationAuditCoverage.php',
+            'graph_group_probe.php',
+            'library',
+        ])
 
     def test_auth_change_runs_the_native_auth_probe(self):
-        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+        self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'library'])
+
+    def test_device_library_runs_the_database_contracts(self):
+        self.dispatch('lib/api_device.php', ['DeviceCollectorMessages.php', 'MessageFormatting.php', 'library'])
+
+    def test_library_fixture_changes_run_the_database_contracts(self):
+        for name in ['LibraryBehavior', 'LibraryCollection', 'LibraryAuthentication',
+                     'LibraryStorage', 'LibraryForms', 'LibraryDatabase', 'LibraryPlugins',
+                     'LibraryReports', 'LibraryDevices', 'LibraryAccess', 'LibraryWeb', 'LibraryLogs', 'LibraryPluginCatalog', 'LibraryUtilities', 'LibraryLdap', 'LibraryRemote', 'LibraryGraphOptions', 'LibraryProfiles', 'LibraryPropagation', 'LibraryGraphCache', 'LibraryBoundaries', 'LibraryValidation', 'LibraryRrdStorage', 'LibraryLoginRouting', 'LibraryAdministration', 'LibraryResources', 'LibraryProbe', 'LibraryTransfer', 'LibraryRemoval', 'LibraryQueues', 'LibraryErrorHandling', 'LibraryReindex', 'LibraryRuntime', 'LibraryProvider', 'LibraryMib', 'LibraryLifecycle', 'LibraryReportDelivery', 'LibraryDiagnostics', 'LibraryNotifications', 'LibraryMaintenance', 'LibraryWorkers', 'LibraryWorker',
+                     'QueryProducer', 'PluginProducer']:
+            with self.subTest(producer=name):
+                self.dispatch(f'tests/fixtures/Core/{name}.php', 'library')
+
+    def test_library_runtime_changes_run_the_database_contracts(self):
+        for path in ['tests/e2e/Dockerfile', 'tests/e2e/ldap/50-e2e.ldif',
+                     'tests/Helpers/SourceSlice.php', 'tests/Helpers/PhpSource.php',
+                     'lib/ldap.php', 'lib/mib_parser.php', 'lib/mib_cache.php',
+                     'lib/dsdebug.php', 'lib/snmpagent.php', 'lib/cacti_dispatch.php',
+                     'cli/fetch_plugins.php']:
+            with self.subTest(path=path):
+                self.dispatch(path, 'library')
+
+    def test_library_schema_changes_run_the_database_contracts(self):
+        self.dispatch('cacti.sql', 'library')
+
+    def test_library_dependencies_run_the_database_contracts(self):
+        for changed in ['lib/api_tree.php', 'lib/api_aggregate.php', 'lib/data_query.php',
+                        'resource/snmp_queries/interface.xml', 'composer.lock',
+                        'tests/fixtures/snmp-coverage/snmpd.conf', 'lib/boost.php',
+                        'lib/spikekill.php', 'lib/database.php', 'lib/dbparallel.php',
+                        'lib/clog_webapi.php', 'lib/dsstats.php', 'lib/remote_agent_transport.php',
+                        'lib/html_validate.php', 'lib/html_utility.php', 'lib/html.php',
+                        'host.php', 'clog.php', 'graph_templates.php', 'include/global_constants.php',
+                        'include/global.php', 'user_admin.php', 'lib/plugins.php',
+                        'lib/Auth/LocalAuthLoginProvider.php']:
+            with self.subTest(changed=changed):
+                additional = {'lib/html.php': ['accessibility'], 'host.php': ['accessibility', 'MessageFormatting.php'],
+                              'lib/boost.php': ['BoostBulkDrainCoverage.php'],
+                              'include/global.php': ['BoundaryContracts.php'],
+                              'lib/data_query.php': ['MessageFormatting.php'],
+                              'lib/clog_webapi.php': ['MessageFormatting.php'],
+                              'lib/html_utility.php': ['MessageFormatting.php'],
+                              'graph_templates.php': ['MessageFormatting.php'],
+                              'lib/plugins.php': ['TrustedActionMessages.php', 'MessageFormatting.php'],
+                              'user_admin.php': ['accessibility', 'UserAdministrationAuditCoverage.php']}
+                self.dispatch(changed, additional.get(changed, []) + ['library'])
 
     def test_script_server_change_runs_the_log_masking_probe(self):
         for path in ['script_server.php', 'lib/poller.php', 'tests/fixtures/ScriptServerLogMaskingCoverage.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'ScriptServerLogMaskingCoverage.php')
+                self.dispatch(path, ['ScriptServerLogMaskingCoverage.php', 'library'] if path == 'lib/poller.php' else 'ScriptServerLogMaskingCoverage.php')
 
     def test_two_factor_change_runs_the_guard_fixture(self):
         self.dispatch('auth_2fa.php', 'ConstantTimeGuardMatrix.php')
@@ -62,13 +114,13 @@ class RequestDispatchTest(unittest.TestCase):
     def test_boost_drain_change_runs_the_drain_probe(self):
         for path in ['poller_boost.php', 'lib/boost.php', 'tests/fixtures/ProbeLoader.php', 'tests/fixtures/BoostOnDemandFailureProbe.php']:
             with self.subTest(path=path):
-                self.dispatch(path, 'BoostBulkDrainCoverage.php')
+                self.dispatch(path, ['BoostBulkDrainCoverage.php', 'library'] if path == 'lib/boost.php' else 'BoostBulkDrainCoverage.php')
 
     def test_repository_change_runs_manifest_and_save_fixtures(self):
         self.dispatch('package_repos.php', ['MessageFormatting.php', 'PackageManifestMatrix.php', 'PackageSaveMatrix.php'])
 
     def test_import_change_runs_the_manifest_fixture(self):
-        self.dispatch('lib/import.php', ['PackageManifestMatrix.php', 'PackageImportFileStatus.php'])
+        self.dispatch('lib/import.php', ['PackageManifestMatrix.php', 'PackageImportFileStatus.php', 'library'])
 
     def test_package_import_change_runs_the_diff_boundary_probe(self):
         self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
@@ -98,7 +150,7 @@ class RequestDispatchTest(unittest.TestCase):
             git('init', '--quiet')
             (repository / 'README.md').write_text('fixture\n')
             for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh'),
-                                 ('installer', 'installer-coverage.sh')]:
+                                 ('installer', 'installer-coverage.sh'), ('library', 'library-behavior.sh')]:
                 path = repository / 'tests/e2e' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')

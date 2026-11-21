@@ -15,8 +15,14 @@ cleanup() {
 }
 trap cleanup EXIT
 export HOST_PORT="${HOST_PORT:-18275}"
-mise exec node@22 -- npm ci --ignore-scripts
-mise exec node@22 -- npm run postinstall
+# Local runs pin Node through mise; CI jobs that already set up Node 22 on
+# PATH (the changed-line coverage job) have no mise, so run it directly.
+node_exec=()
+if command -v mise > /dev/null; then
+    node_exec=(mise exec node@22 --)
+fi
+${node_exec[@]+"${node_exec[@]}"} npm ci --ignore-scripts
+${node_exec[@]+"${node_exec[@]}"} npm run postinstall
 "${compose[@]}" up -d --build --wait --wait-timeout 180
 "${compose[@]}" exec -T -e CACTI_E2E_DISPOSABLE=1 cacti php tests/fixtures/Ui/DevelopAccessibilitySetup.php
 "${compose[@]}" cp cacti:/tmp/cacti-accessibility-fixture.json "$fixture_file"
@@ -29,10 +35,10 @@ if (!is_writable($directory) || (file_exists($file) && !is_writable($file))) {
     exit(1);
 }
 '
-mise exec node@22 -- npm ci --prefix tests/e2e --ignore-scripts
-mise exec node@22 -- tests/e2e/node_modules/.bin/playwright install chromium
+${node_exec[@]+"${node_exec[@]}"} npm ci --prefix tests/e2e --ignore-scripts
+${node_exec[@]+"${node_exec[@]}"} tests/e2e/node_modules/.bin/playwright install chromium
 CACTI_ACCESSIBILITY_FIXTURE="$fixture_file" CACTI_BASE_URL="http://127.0.0.1:$HOST_PORT" \
-    mise exec node@22 -- tests/e2e/node_modules/.bin/playwright test \
+    ${node_exec[@]+"${node_exec[@]}"} tests/e2e/node_modules/.bin/playwright test \
     --config=tests/e2e/playwright.config.ts tests/develop-accessibility.spec.ts --project=chromium --workers=1 --max-failures=1
 if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 ]]; then
     : "${CACTI_PR_COVERAGE_OUTPUT:?Coverage output directory is required}"

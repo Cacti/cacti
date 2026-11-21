@@ -81,22 +81,42 @@ if (empty($options['base'])) {
 	exit(2);
 }
 
-$base  = trim(formatting_git(['merge-base', $options['base'], 'HEAD']));
-$files = array_filter(explode("\n", trim(formatting_git([
-	'-c', 'core.quotePath=false', 'diff', '--no-ext-diff', '--no-textconv', '--name-only',
-	$base, 'HEAD', '--', '*.php', ':(exclude)tests/**', ':(exclude)include/vendor/**'
+/*
+ * A slice may carry behavior fixes next to its re-wrapping, and those are held
+ * to the changed-line coverage gate instead.  So each style commit is checked
+ * against its parent, which keeps a fix from hiding a formatting change that
+ * alters behavior, or a formatting change from hiding inside a fix.
+ */
+$base    = trim(formatting_git(['merge-base', $options['base'], 'HEAD']));
+$commits = array_filter(explode("\n", trim(formatting_git([
+	'log', '--no-merges', '--reverse', '--format=%H %s', $base . '..HEAD'
 ]))));
-$failed = false;
+$checked = 0;
+$failed  = false;
 
-foreach ($files as $file) {
-	$before = formatting_ast($parser->parse(formatting_git(['show', $base . ':' . $file])));
-	$after  = formatting_ast($parser->parse(file_get_contents($file)));
+foreach ($commits as $commit) {
+	[$sha, $subject] = explode(' ', $commit, 2) + [1 => ''];
 
-	if ($before !== $after) {
-		fwrite(STDERR, $file . ": parsed behavior differs; add behavior tests and measure coverage.\n");
-		$failed = true;
+	if (preg_match('/^style(\(|!?:)/', $subject) !== 1) {
+		continue;
+	}
+
+	$files = array_filter(explode("\n", trim(formatting_git([
+		'-c', 'core.quotePath=false', 'diff-tree', '--no-commit-id', '--name-only', '-r', '--diff-filter=M',
+		$sha, '--', '*.php', ':(exclude)tests/**', ':(exclude)include/vendor/**'
+	]))));
+
+	foreach ($files as $file) {
+		$before = formatting_ast($parser->parse(formatting_git(['show', $sha . '^:' . $file])));
+		$after  = formatting_ast($parser->parse(formatting_git(['show', $sha . ':' . $file])));
+		$checked++;
+
+		if ($before !== $after) {
+			fwrite(STDERR, substr($sha, 0, 10) . ' ' . $file . ": parsed behavior differs in a style commit; move the change to a fix commit with behavior tests.\n");
+			$failed = true;
+		}
 	}
 }
 
-print count($files) . " production PHP files checked for preserved behavior.\n";
+print $checked . " production PHP files checked for preserved behavior in style commits.\n";
 exit($failed ? 1 : 0);
