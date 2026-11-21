@@ -898,7 +898,7 @@ function reports_remove_history(int $history_id, int $report_id = 0) : void {
 	}
 
 	if (!is_array($report) || !cacti_sizeof($report)) {
-		raise_message('remove_error', __esc('The report history entry could not be found.'), MESSAGE_LEVEL_ERROR);
+		raise_message('remove_error', __('The report history entry could not be found.'), MESSAGE_LEVEL_ERROR);
 
 		return;
 	}

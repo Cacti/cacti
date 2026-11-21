@@ -171,6 +171,7 @@
   ],
   "lib/reports.php": [
     ["remove_error", 3, "Only the owning user &apos;O&apos;Brien&apos; or a Report Administrator can remove the report."],
+    ["remove_error", 3, "The report history entry could not be found."],
     ["remove_message", 1, "Report &apos;Traffic &amp; Alerts&apos; History Removed by user &apos;O&apos;Brien&apos; or a Report Administrator can remove the report."],
     ["report_message", 1, "Report &apos;Traffic &amp; Alerts&apos; Sent Successfully"],
     ["report_message", 3, "Problems sending Report &apos;Traffic &amp; Alerts&apos; Problem with e-mail Subsystem Error is &apos;Service &amp; transport&apos;"],
