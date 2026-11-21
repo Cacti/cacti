@@ -89,11 +89,14 @@ function ss_memory_combined($host_id, $kind, $cmd = 'index', $field = '', $index
 			}
 			return memory_combined_value($index, (int)$m[2], $m[1], fn ($id, $metric) => ss_cisco_health($host_id, $kind, 'get', $metric, $id));
 		}
-		$raw = trim(ss_cisco_health($host_id, $kind, 'index'));
-		$current = $raw === '' ? [] : preg_split('/\s+/', $raw);
 		$bindings = memory_combined_existing($host_id, $kind);
 		foreach ($bindings as $b) {
 			memory_combined_ids($b);
+		}
+		$current = [];
+		if (!$bindings || ($cmd === 'query' && $field === 'newPools')) {
+			$raw = trim(ss_cisco_health($host_id, $kind, 'index'));
+			$current = $raw === '' ? [] : preg_split('/\s+/', $raw);
 		}
 		if (!$bindings && $current) {
 			$bindings = [memory_combined_binding($current)];
@@ -106,15 +109,6 @@ function ss_memory_combined($host_id, $kind, $cmd = 'index', $field = '', $index
 		}
 		if ($cmd !== 'query') {
 			return '';
-		}
-		$names = [];
-		if (preg_match('/^pool[1-8]Name$/D', $field)) {
-			foreach (explode("\n", trim(ss_cisco_health($host_id, $kind, 'query', 'name'))) as $line) {
-				$parts = explode('!', $line, 2);
-				if (count($parts) === 2) {
-					$names[$parts[0]] = $parts[1];
-				}
-			}
 		}
 		$out = '';
 		foreach ($bindings as $b) {
@@ -129,7 +123,10 @@ function ss_memory_combined($host_id, $kind, $cmd = 'index', $field = '', $index
 				$v = (string)count(array_diff($current, $ids));
 			} elseif (preg_match('/^pool([1-8])Name$/D', $field, $m)) {
 				$id = $ids[(int)$m[1] - 1] ?? null;
-				$v = $id === null ? '' : ($names[$id] ?? 'Pool '.$id.' (unavailable)');
+				$v = $id === null ? '' : ss_cisco_health($host_id, $kind, 'get', 'name', $id);
+				if ($v === 'U') {
+					$v = 'Pool ' . $id . ' (unavailable)';
+				}
 			} else {
 				return '';
 			}

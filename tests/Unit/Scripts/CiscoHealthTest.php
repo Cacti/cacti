@@ -205,3 +205,26 @@ test('unit-labelled QFP totals remain discoverable without scaling discovery val
 		expect(cisco_health_query('qfp_memory','num_indexes','','',$get,$walk))->toBe('1');
 	}
 });
+
+
+test('targeted labels use only the bound resource without walking the inventory', function () {
+	$cases = [
+		['memory', '7.1', ['.1.3.6.1.4.1.9.9.221.1.1.1.1.3.7.1'=>'Processor', '.1.3.6.1.2.1.47.1.1.1.1.7.7'=>'Module'], 'Module / Processor'],
+		['memory', '1', ['.1.3.6.1.4.1.9.9.48.1.1.1.2.1'=>'Processor'], 'Processor'],
+		['qfp_memory', '7.2', ['.1.3.6.1.2.1.47.1.1.1.1.7.7'=>'QFP'], 'QFP / Resource 2'],
+		['temperature', '20', ['.1.3.6.1.2.1.47.1.1.1.1.7.20'=>'CPU'], 'CPU'],
+		['memory', '7.1', ['.1.3.6.1.4.1.9.9.221.1.1.1.1.3.7.1'=>'No Such Instance'], 'U'],
+	];
+	foreach ($cases as [$kind, $index, $values, $expected]) {
+		$seen = [];
+		$get = function ($oid) use ($values, &$seen) {
+			$this->assertArrayHasKey($oid, $values);
+			$seen[] = $oid;
+			return $values[$oid];
+		};
+		$walk = static fn ($oid) => throw new RuntimeException('Unnecessary label walk');
+		$this->assertSame($expected, cisco_health_query($kind, 'get', 'name', $index, $get, $walk));
+		$this->assertCount(count($values), $seen);
+	}
+	$this->assertSame('U', cisco_health_label('memory', '1;bad', static fn () => throw new RuntimeException('Invalid index polled')));
+});

@@ -23,7 +23,9 @@ Then install the rules:
 php cli/setup_cisco_health_rules.php --apply
 ```
 
-Run this once per installation, not once per router. It resolves the imported templates by their stable hashes rather than assuming database IDs. It installs missing rules, reuses equivalent enabled rules and stops if an existing rule for the same graph differs or is disabled. It does not overwrite that rule or silently enable it. A failed write rolls back the new rules. A second successful run adds nothing.
+Run this once per installation, not once per router. When invoked on a remote collector, setup switches to the main Cacti database before planning or writing and refuses to continue if it cannot reach it. It resolves the imported templates by their stable hashes rather than assuming database IDs. It installs missing rules, reuses equivalent enabled rules and stops if an existing rule for the same graph differs or is disabled. It does not overwrite that rule or silently enable it. A failed write rolls back the new rules. A second successful run adds nothing.
+
+On versions with Automation Template rule associations, setup also checks that the rules will actually be selected for Cisco Router. If an existing Automation Template limits creation to linked rules, any missing or unlinked health rule stops setup before writes. Create and link the required rules through Automation Templates, using the criteria below, then rerun the plan. Existing associations are not changed automatically.
 
 This command does not enable the global automatic-creation setting, rescan devices, create graphs immediately, or modify existing graph history. Review **Enable Automatic Graph Creation** in Settings before adding a test router. After setup, normal Cisco Router device creation uses Cacti's standard query and graph-rule workflow.
 
