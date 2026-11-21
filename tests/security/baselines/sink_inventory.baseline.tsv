@@ -414,6 +414,7 @@ header_redirect	./formats/index.php	header('Location:../index.php');
 header_redirect	./gprint_presets.php				header('Location: gprint_presets.php');
 header_redirect	./gprint_presets.php				header('Location: gprint_presets.php?action=edit&id=' . ($gprint_preset_id === null ? gnrv('id') : $gprint_preset_id));
 header_redirect	./gprint_presets.php			header('Location: gprint_presets.php');
+header_redirect	./graph_realtime.php				header('Location: permission_denied.php');
 header_redirect	./graph_templates.php			header('Location: graph_templates.php');
 header_redirect	./graph_templates.php			header('Location: graph_templates.php?action=template_edit&id=' . gfrv('id'));
 header_redirect	./graph_templates.php			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
@@ -540,6 +541,7 @@ header_redirect	./lib/html_reports.php			header('Location: ' . get_reports_page(
 header_redirect	./lib/html_reports.php			header('Location: ' . get_reports_page());
 header_redirect	./lib/html_reports.php			header('Location: ' . reports_redirect_url(get_reports_page(), (empty($id) ? $post['id'] : $id)));
 header_redirect	./lib/html_tree.php				header('Location: permission_denied.php');
+header_redirect	./lib/html_tree.php			header('Location: permission_denied.php');
 header_redirect	./lib/html_tree.php			header('Location: permission_denied.php');
 header_redirect	./lib/index.php	header('Location:../index.php');
 header_redirect	./lib/plugins.php											header('Location: plugins.php');

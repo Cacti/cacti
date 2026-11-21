@@ -101,6 +101,12 @@ for scenario in first-view listed-column unsortable-column unlisted-column crede
 	run_probe SortLookupChecks.php "sort-lookup-$scenario" sort "$scenario" > /dev/null
 done
 run_probe SortLookupChecks.php sort-lookup-helpers helpers > /dev/null
+for case in allowed denied; do
+	run_probe SortLookupChecks.php "sort-lookup-realtime-$case" realtime "$case" > /dev/null
+done
+for case in root-allowed root-denied branch-allowed branch-denied lookup-denied default-denied tree-list; do
+	run_probe SortLookupChecks.php "sort-lookup-tree-$case" tree "$case" > /dev/null
+done
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do

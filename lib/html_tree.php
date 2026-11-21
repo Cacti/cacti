@@ -1993,6 +1993,15 @@ function html_tree_get_node() : void {
 		}
 	}
 
+	// api_tree_get_main() prints the tree name for the root node before any
+	// per-user filter, and its item filter is skipped for a user with no
+	// allowed trees, so check the resolved tree here
+	if ($tree_id > 0 && !is_tree_allowed($tree_id)) {
+		header('Location: permission_denied.php');
+
+		exit;
+	}
+
 	api_tree_get_main($tree_id, $parent);
 }
 

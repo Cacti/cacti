@@ -44,6 +44,12 @@ for scenario in first-view listed-column unsortable-column unlisted-column crede
 	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" sort "$scenario" > /dev/null
 done
 run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" helpers > /dev/null
+for case in allowed denied; do
+	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" realtime "$case" > /dev/null
+done
+for case in root-allowed root-denied branch-allowed branch-denied lookup-denied default-denied tree-list; do
+	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" tree "$case" > /dev/null
+done
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 

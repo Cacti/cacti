@@ -217,6 +217,15 @@ switch (grv('action')) {
 
 		// call poller
 		$local_graph_id = (int) gfrv('local_graph_id');
+
+		// rrdtool_function_graph() below refuses a graph the user may not view;
+		// check first so the realtime poller is not started for it either
+		if (!is_graph_allowed($local_graph_id)) {
+			header('Location: permission_denied.php');
+
+			exit;
+		}
+
 		$poller_id      = hash('sha256', session_id());
 		$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_lgi_' . $local_graph_id . '.png';
 		$php_binary     = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
