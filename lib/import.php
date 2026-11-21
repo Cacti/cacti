@@ -1280,7 +1280,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 					WHERE local_graph_template_item_id = ?',
 					array($item['id']));
 			} else {
-				$orphan_text[] = html_escape('Found Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value']);
+				$orphan_text[] = 'Found Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 			}
 		}
 

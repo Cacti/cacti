@@ -19,6 +19,12 @@ test('the import preview differences list escapes the imported template/data-que
 		->and($importSource)->not->toContain("__('New Data Query: %s', \$dname)");
 });
 
-test('the import preview orphan list escapes the orphaned graph-item text', function () use ($importSource) {
-	expect($importSource)->toContain("html_escape('Found Orphaned Graph Items, Type: '");
+test('every renderer of the orphaned graph-item list escapes it once, at output', function () use ($importSource) {
+	$root = dirname(__DIR__, 4);
+
+	// the text is stored unescaped so the renderers below do not escape it twice
+	expect($importSource)->not->toContain("html_escape('Found Orphaned Graph Items, Type: '")
+		->and($importSource)->toContain("print '<li>' . html_escape(\$orphan) . '</li>'")
+		->and(file_get_contents($root . '/templates_import.php'))->toContain("array_map('html_escape', \$orphan_array)")
+		->and(file_get_contents($root . '/package_import.php'))->toContain("array_map('html_escape', \$orphan_array)");
 });
