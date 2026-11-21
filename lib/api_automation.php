@@ -1719,8 +1719,21 @@ function build_graph_object_sql_having($rule, $filter) {
 			$i = 0;
 
 			foreach($field_names as $column) {
-				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
+				/* The name is an identifier here and backticks do not escape one.
+				 * A name with other characters is not searched; changing it would
+				 * name a column the query does not have. */
+				$parts = explode('.', $column['field_name']);
+
+				if (in_array('', $parts, true) || sanitize_sql_column($column['field_name']) !== $column['field_name']) {
+					continue;
+				}
+
+				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', $parts) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
 				$i++;
+			}
+
+			if ($i == 0) {
+				return ' HAVING (1 = 0)';
 			}
 
 			$sql_having .= ')';
