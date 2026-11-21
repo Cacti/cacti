@@ -372,7 +372,9 @@ function form_actions() {
 					api_tree_delete_node($branch['graph_tree_id'], 'tbranch:' . $branch['id'] . '_tsite:' . $branch['site_id']);
 				}
 
-				db_execute('UPDATE host SET site_id=0 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'site_id'));
+				/* removed devices and discovery networks must not keep the deleted site */
+				db_execute('UPDATE host SET site_id=0 WHERE ' . array_to_sql_or($selected_items, 'site_id'));
+				db_execute('UPDATE automation_networks SET site_id=0 WHERE ' . array_to_sql_or($selected_items, 'site_id'));
 				foreach ($devices as $device) {
 					update_data_source_title_cache_from_host($device['id']);
 					update_graph_title_cache_from_host($device['id']);
@@ -626,6 +628,7 @@ function sites() {
 		FROM sites
 		LEFT JOIN host AS h
 		ON h.site_id=sites.id
+		AND h.deleted=''
 		$sql_where
 		GROUP BY sites.id
 		$sql_order

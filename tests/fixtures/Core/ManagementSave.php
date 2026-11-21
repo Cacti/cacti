@@ -213,6 +213,9 @@ if (str_starts_with($scenario, 'device-')) {
 	$db->exec("INSERT INTO sites (id,name) VALUES (1,'Old Site'),(2,'Other Site')");
 	$db->exec('CREATE TABLE graph_tree_items (id INTEGER PRIMARY KEY, graph_tree_id INTEGER, site_id INTEGER, parent INTEGER)');
 	$db->exec('INSERT INTO graph_tree_items VALUES (1,1,1,0),(2,2,1,0),(3,1,2,0),(4,1,0,0)');
+	$db->exec('CREATE TABLE automation_networks (id INTEGER PRIMARY KEY, site_id TEXT)');
+	$db->exec("INSERT INTO automation_networks VALUES (1,'1'),(2,'2')");
+	$db->exec("INSERT INTO host (id, site_id, deleted) VALUES (8,'1','on')");
 	$delete = str_starts_with($scenario, 'site-delete');
 	if ($delete) {
 		$request = ['drp_action' => '1', 'selected_items' => serialize([1])];
@@ -226,8 +229,11 @@ if (str_starts_with($scenario, 'device-')) {
 	if ($scenario === 'site-delete') {
 		check(db_fetch_cell_prepared('SELECT COUNT(*) FROM sites') === 1 && db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items') === 2, 'Site delete left tree entries or removed unrelated entries');
 		check(db_fetch_cell_prepared('SELECT site_id FROM host WHERE id = 7') === '0' && isset($settings['time_last_change_branch']), 'Site delete left host assignment or tree cache stale');
+		check(db_fetch_cell_prepared('SELECT site_id FROM host WHERE id = 8') === '0', 'Site delete left a removed device assigned to the site');
+		check(db_fetch_cell_prepared('SELECT GROUP_CONCAT(site_id) FROM automation_networks ORDER BY id') === '0,2', 'Site delete left discovery assigning devices to the deleted site');
 	} elseif ($scenario === 'site-save-failure' || $scenario === 'site-delete-failure') {
 		check(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = 1') === 'Old Site' && !$settings && !$titles, 'Failed site write changed related state');
+		check(db_fetch_cell_prepared('SELECT GROUP_CONCAT(site_id) FROM automation_networks ORDER BY id') === '1,2' && db_fetch_cell_prepared('SELECT site_id FROM host WHERE id = 8') === '1', 'Failed site write changed discovery or device assignments');
 	} else {
 		check(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = 1') === $request['name'], 'Site rename was not saved');
 	}
