@@ -286,7 +286,8 @@ CREATE TABLE `automation_ips` (
   `status` int(10) unsigned default NULL,
   `thread` int(10) unsigned default NULL,
   PRIMARY KEY (`ip_address`),
-  KEY `pid` (`pid`)
+  KEY `pid` (`pid`),
+  KEY `network_status_pid` (`network_id`,`status`,`pid`) USING BTREE
 ) ENGINE=MEMORY COMMENT='List of discoverable ip addresses used for scanning';
 
 --

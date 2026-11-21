@@ -840,6 +840,18 @@ $settings['general'] = [
 		'description'   => __('When enabled, Cacti Automation will scan one network at a time not in Parallel.  This setting can be useful when your Cacti Web Servers have limited cores for performing Automation checks.'),
 		'default'       => '',
 	],
+	'automation_max_network_ips' => [
+		'friendly_name' => __('Maximum Addresses per Network'),
+		'description'   => __('The largest number of IP Addresses a single Automation Network may scan, summed over all of its Subnet Ranges.  Every address is held in a MEMORY table while the Network is scanned, so raising this value may also require raising the MySQL/MariaDB max_heap_table_size.'),
+		'method'        => 'textbox',
+		'default'       => '65536',
+		'max_length'    => '10',
+		'size'          => '10',
+		'constraints'   => [
+			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer.')),
+			fn () => new Assert\Range(min: 1, max: 16777216, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
+		],
+	],
 	'automation_graphs_enabled' => [
 		'method'        => 'checkbox',
 		'friendly_name' => __('Enable Automatic Graph Creation'),

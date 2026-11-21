@@ -345,7 +345,16 @@ if ($master === false && $thread == 0) {
 
 	$preexisting_devices = getNetworkDevices($network_id);
 
-	automation_primeIPAddressTable($network_id);
+	if (!automation_primeIPAddressTable($network_id)) {
+		// a partial table would be scanned as if it were the whole network
+		db_execute_prepared('DELETE FROM automation_ips
+			WHERE network_id = ?',
+			[$network_id]);
+
+		clearAllTasks($network_id);
+
+		exit(1);
+	}
 
 	$threads = db_fetch_cell_prepared('SELECT threads
 		FROM automation_networks
@@ -491,12 +500,15 @@ function discoverDevices(int $network_id, int $thread) : bool {
 			LIMIT 1',
 			[getmypid(), $thread, $network_id]);
 
+		/* network_id leads both lookups so they use the network_status_pid
+		 * BTREE index and never revisit rows already claimed or scanned */
 		$device = db_fetch_row_prepared('SELECT *
 			FROM automation_ips
-			WHERE pid = ?
-			AND thread = ?
-			AND status=0',
-			[getmypid(), $thread]);
+			WHERE network_id = ?
+			AND status = 0
+			AND pid = ?
+			AND thread = ?',
+			[$network_id, getmypid(), $thread]);
 
 		if (cacti_sizeof($device) && isset($device['ip_address'])) {
 			$count++;
