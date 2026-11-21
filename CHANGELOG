@@ -217,6 +217,7 @@ Cacti CHANGELOG
 -issue#8441: Avoid repeated RRDtool capability checks in graph options and update batches
 -issue#8442: Skin jQuery multiselect buttons and menus in the Deepness theme with its own palette so they match the select2 and selectmenu controls
 -issue#8459: Validate discovery evidence and ranges, preserve overlapping targets and valid .255 hosts, and restore SNMP form controls
+-issue#8460: Fix Cisco HSRP discovery and polling for interface/group indexes
 -issue#8470: Remove the setting boost_redirect from the settings page.  Make it permanent when boost is enabled
 -issue#8485: Restore Dark keyboard focus, contain wrapped titlebars, and keep hovered text readable
 -issue#8490: Contain Deepness titlebars and improve status and import message contrast
