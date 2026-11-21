@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<interface>
+	<name>Cisco Cellular Radio</name>
+	<description>LTE radio signal measurements indexed by ENTITY-MIB physical entity.</description>
+	<index_order>radioName:radioIndex</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	<fields>
+		<radioIndex>
+			<name>Radio Index</name>
+			<direction>input</direction>
+			<query_name>index</query_name>
+		</radioIndex>
+		<radioName>
+			<name>Radio</name>
+			<direction>input</direction>
+			<query_name>name</query_name>
+		</radioName>
+		<radioBand>
+			<name>LTE Band</name>
+			<direction>input</direction>
+			<query_name>band</query_name>
+		</radioBand>
+		<rssi>
+			<name>RSSI (dBm)</name>
+			<direction>output</direction>
+			<query_name>rssi</query_name>
+		</rssi>
+		<rsrp>
+			<name>RSRP (dBm)</name>
+			<direction>output</direction>
+			<query_name>rsrp</query_name>
+		</rsrp>
+		<rsrq>
+			<name>RSRQ (tenths of dB)</name>
+			<direction>output</direction>
+			<query_name>rsrq</query_name>
+		</rsrq>
+		<snr>
+			<name>SNR (tenths of dB)</name>
+			<direction>output</direction>
+			<query_name>snr</query_name>
+		</snr>
+	</fields>
+	<script_path>|path_cacti|/scripts/ss_cisco_health.php</script_path>
+	<script_function>ss_cisco_health</script_function>
+	<script_server>php</script_server>
+	<arg_prepend>|host_id| cellular</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<arg_num_indexes>num_indexes</arg_num_indexes>
+	<output_delimiter>!</output_delimiter>
+</interface>
