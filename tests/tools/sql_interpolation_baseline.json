@@ -45,7 +45,6 @@
     "lib/variables.php": 1,
     "managers.php": 6,
     "plugins.php": 2,
-    "poller.php": 1,
     "poller_automation.php": 2,
     "poller_boost.php": 5,
     "poller_dsstats.php": 1,
