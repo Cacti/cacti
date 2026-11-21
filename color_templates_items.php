@@ -33,6 +33,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_dnd':
+		csrf_require_post();
 		color_templates_item_dnd();
 
 		break;

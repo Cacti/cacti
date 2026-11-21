@@ -281,6 +281,7 @@ Cacti CHANGELOG
 -issue#8861: Do not flag a data source as an orphan while the device still reports its index, and clear that state on re-index
 -issue#8863: Clear a deleted site from removed devices and discovery networks, and count only current devices in the Sites list
 -issue#8894: Require POST for the remaining device, tree, external link and report actions that change data: device re-index, data query and graph template changes, device debug and poller cache refresh, tree sorting, locking and node edits, external link deletion, and report send and item reordering
+-issue#8894: Require POST for the data query reload and saved defaults on the New Graphs page, color template and automation SNMP option reordering, graph lock and unlock, the Data Source Troubleshooter Run All action, the test email, and user domain bulk actions
 -issue#8895: Encode the SNMP system strings and error text in the device test pane, and show the reply relayed from a remote data collector as text
 -issue#8895: Refuse a remote data collector whose address is loopback, link-local or otherwise reserved, and connect to the address that was checked
 -issue#8895: Apply the Remote Agent timeout to HTTPS requests, do not follow redirects from a remote data collector, treat an error status or an oversized reply as a failed request, and draw a relayed graph only for an existing enabled user

@@ -316,6 +316,7 @@ case 'save':
 
 	break;
 case 'send_test':
+	csrf_require_post();
 	email_test();
 	break;
 default:
@@ -610,7 +611,7 @@ default:
 			});
 
 			$('#emailtest').on('click', function() {
-				$.get('settings.php?action=send_test')
+				$.post('settings.php?action=send_test', {__csrf_magic: csrfMagicToken})
 					.done(function(data) {
 						$('body').append('<div id="testmail" title="<?php print __esc('Test Email Results');?>"></div>');
 						$('#testmail').html(data);

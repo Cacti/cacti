@@ -129,6 +129,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'runall':
+		csrf_require_post();
 		debug_runall_filtered();
 	default:
 		$refresh = array(
@@ -1238,7 +1239,7 @@ function data_debug_filter() {
 
 		function runallFilter() {
 			strURL = 'data_debug.php?action=runall&debug=-1&header=false';
-			loadPageNoHeader(strURL);
+			loadPageUsingPostUrl(strURL);
 		}
 
 		$(function() {
