@@ -293,6 +293,7 @@ Cacti CHANGELOG
 -issue#8899: Build graph images with DOM attribute calls, sanitize the SpikeKill result, breadcrumb trail and session message header, and only parse a loaded page that was requested from the Cacti origin
 -issue#8899: Pass the Nth Percentile, Summation and data cells of the graph data export through the CSV cell guard and take the SpikeKill dump and backup file suffix from the system random source
 -issue#8899: Ignore disabled groups when checking at login whether an account has any access
+-issue#8899: Read the guest view flags from the group instead of the group membership row when checking at login whether an account has any access
 -issue#8922: Stop priming discovery addresses at the first failed insert, log the failure and end the run, so a network that fills the automation_ips MEMORY table is no longer scanned in part without an error
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
