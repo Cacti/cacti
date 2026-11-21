@@ -284,5 +284,7 @@ function display_help() : void {
 	print '    --list-hosts' . PHP_EOL;
 	print '    --list-data-queries' . PHP_EOL;
 	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
-	print 'If the data query was already associated, it will be reindexed.' . PHP_EOL . PHP_EOL;
+	print 'If the data query is already associated with the host using the same reindex method,' . PHP_EOL;
+	print 'the script reports an error and changes nothing. If it is associated with a different' . PHP_EOL;
+	print 'reindex method, the method is updated and the data query is reindexed.' . PHP_EOL . PHP_EOL;
 }

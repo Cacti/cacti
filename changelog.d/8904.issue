@@ -1,0 +1,1 @@
+Correct the add_data_query.php help so it says an existing association with the same reindex method is an error, and a different method is updated and reindexed
