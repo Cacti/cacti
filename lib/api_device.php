@@ -1555,7 +1555,11 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		$results = call_remote_data_collector($host['poller_id'], $url);
 
 		if ($results != '') {
-			print $results;
+			/* The reply is markup built by another host from device supplied
+			 * strings, so it is shown as text with its line breaks kept. */
+			$results = preg_replace('/<br\s*\/?\s*>\R?/i', PHP_EOL, (string) $results);
+
+			print nl2br(html_escape(strip_tags($results)));
 		} else {
 			print __('ERROR: Failed to connect to remote collector.');
 		}
@@ -1587,7 +1591,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			if ($session === false || $snmp_error != '') {
 				print "<span class='hostDown'>" . __('Session') . ' ' . __('SNMP error');
 				if ($snmp_error != '') {
-					print " - $snmp_error";
+					print ' - ' . html_escape($snmp_error);
 				}
 				print '</span>';
 			} else {
@@ -1595,7 +1599,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				if ($snmp_system === false || $snmp_system == 'U' || $snmp_error != '') {
 					print "<span class='hostDown'>" . __('System') . ' ' . __('SNMP error');
 					if ($snmp_error != '') {
-						print " - $snmp_error";
+						print ' - ' . html_escape($snmp_error);
 					}
 					print '</span>';
 				} else {
@@ -1616,7 +1620,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
 						if ($snmp_error != '') {
-							print " - $snmp_error";
+							print ' - ' . html_escape($snmp_error);
 						}
 						print '</span>';
 					} else {
@@ -1624,7 +1628,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
 						$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
-						print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . '<br>';
+						print '<strong>' . __('System:') . '</strong> ' . html_split_string(html_escape($snmp_system)) . '<br>';
 
 						if ($snmp_uptime === false) {
 							$snmp_uptime = 'U';
@@ -1639,9 +1643,9 @@ function api_device_ping_device($device_id, $from_remote = false) {
 							print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
 							print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
 						}
-						print '<strong>' . __('Hostname:') . "</strong> $snmp_hostname<br>";
-						print '<strong>' . __('Location:') . "</strong> $snmp_location<br>";
-						print '<strong>' . __('Contact:') . "</strong> $snmp_contact<br>";
+						print '<strong>' . __('Hostname:') . '</strong> ' . html_escape($snmp_hostname) . '<br>';
+						print '<strong>' . __('Location:') . '</strong> ' . html_escape($snmp_location) . '<br>';
+						print '<strong>' . __('Contact:') . '</strong> ' . html_escape($snmp_contact) . '<br>';
 					}
 
 				}
