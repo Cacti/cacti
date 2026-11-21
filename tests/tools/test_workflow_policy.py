@@ -32,6 +32,12 @@ def run_policy(*workflows: str) -> tuple[int, str]:
 
 
 class WorkflowPolicyTest(unittest.TestCase):
+    def test_native_windows_contracts_use_a_fixed_read_only_runner(self) -> None:
+        status, output = run_policy(".github/workflows/pr-changed-coverage.yml")
+
+        self.assertEqual(0, status, output)
+        self.assertNotIn("windows-latest", POLICY.ALLOWED_RUNNERS)
+
     def test_publisher_passes_without_a_credentialed_checkout_allowance(self) -> None:
         # The publisher scopes its git credentials to the push step, so its
         # checkouts no longer need an entry in CHECKOUT_WRITE_WORKFLOWS.

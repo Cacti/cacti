@@ -78,7 +78,7 @@ function ss_f5_cpu(string $hostname = '', int $host_id = 0, mixed $snmp_auth = '
 	$oids = ss_f5_cpu_oids();
 
 	if ($walker === null) {
-		$walker = ss_f5_cpu_snmp_walker($hostname, explode(':', (string) $snmp_auth));
+		$walker = ss_f5_cpu_snmp_walker($hostname, snmp_script_auth_fields($host_id, (string) $snmp_auth));
 	}
 
 	if ($cmd == 'index') {

@@ -34,18 +34,6 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_netsnmp_lmsensors', $_SERVER['argv']);
 }
 
-function ss_netsnmp_lmsensors_is_vhost() : bool {
-	if (file_exists('/usr/bin/hostnamectl')) {
-		$virtual = intval(shell_exec('/usr/bin/hostnamectl 2> /dev/null | grep -i virtual | wc -l'));
-
-		if ($virtual) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
 // ------------------------------------------------------------------------------------
 // main function
 // ------------------------------------------------------------------------------------
@@ -223,15 +211,6 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		}
 	} else {
 		// ------------------------------------------------------------------------------------
-		// Check to see if this is a virtual host
-		//
-		// Virtual hosts will not respond to lmsensors data.
-		// ------------------------------------------------------------------------------------
-		if (ss_netsnmp_lmsensors_is_vhost()) {
-			return null;
-		}
-
-		// ------------------------------------------------------------------------------------
 		// set the snmp_walk arguments array to the sensor Index OID
 		// ------------------------------------------------------------------------------------
 		$snmp_walk_arguments[2] = $oid_array['sensorIndex'];
@@ -343,7 +322,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						//
 						// store the sensor name
 						//
-						$sensor['name'] = $scratch;
+						$sensor['name'] = str_replace(["\r", "\n"], '', $scratch);
 
 						break;
 					case 'sensorreading':

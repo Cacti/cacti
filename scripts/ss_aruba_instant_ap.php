@@ -47,6 +47,10 @@ function ss_aruba_instant_ap(int $host_id = 0) : mixed {
 		WHERE id = ?',
 		[$host_id]);
 
+	if (!is_array($host) || !cacti_sizeof($host)) {
+		return 'count:U' . PHP_EOL;
+	}
+
 	$aps  = cacti_snmp_walk($host['hostname'],
 		$host['snmp_community'],
 		'.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.3',
@@ -60,6 +64,7 @@ function ss_aruba_instant_ap(int $host_id = 0) : mixed {
 		$host['snmp_port'],
 		$host['snmp_timeout'],
 		$host['snmp_retries'],
+		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 

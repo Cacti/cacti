@@ -2,7 +2,7 @@
 // Copyright (C) 2004-2026 The Cacti Group. GPL-2.0-or-later.
 
 // Request-coverage probe for the Script Server response and credential masking
-// changes in script_server.php, lib/poller.php and cmd.php. The unit tests load
+// changes in lib/script_server.php, lib/poller.php and cmd.php. The unit tests load
 // the same functions into a fixture namespace from temporary files, which the
 // unit coverage report cannot attribute to the real sources. This probe loads
 // the unchanged functions at their original line numbers, runs them against
@@ -29,6 +29,10 @@ if (!defined('CACTI_SERVER_OS')) {
 	define('CACTI_SERVER_OS', 'unix');
 }
 
+if (!defined('CACTI_CONNECTION')) {
+	define('CACTI_CONNECTION', 'online');
+}
+
 $GLOBALS['ss_cov_log'] = [];
 
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
@@ -42,12 +46,6 @@ function db_fetch_assoc($sql) {
 }
 
 function dsv_log(string $message, mixed $data = null, int $level = POLLER_VERBOSITY_LOW) : void {
-}
-
-function ss_cov_echo($a) {
-	print "community $a\n";
-
-	return "value:$a";
 }
 
 function ss_cov_multiline() {
@@ -71,15 +69,15 @@ function ss_cov_log() : string {
 	return $log;
 }
 
-foreach (['cacti_sizeof', 'cacti_count', 'prepare_validate_result', 'is_hexadecimal', 'strip_alpha'] as $function) {
+foreach (['cacti_sizeof', 'cacti_count', 'prepare_validate_result', 'is_hexadecimal', 'strip_alpha', 'cacti_escapeshellcmd'] as $function) {
 	cacti_fixture_source_function($root . '/lib/functions.php', $function, __NAMESPACE__);
 }
 
-foreach (['parseArgs', 'script_server_log_parse_failure', 'script_server_log_missing_function', 'script_server_call', 'script_server_response'] as $function) {
-	cacti_fixture_source_function($root . '/script_server.php', $function, __NAMESPACE__);
+foreach (['parseArgs', 'script_server_log_token', 'script_server_redact_args', 'script_server_redact_command', 'script_server_dispatch', 'script_server_normalize_response'] as $function) {
+	cacti_fixture_source_function($root . '/lib/script_server.php', $function, __NAMESPACE__);
 }
 
-foreach (['script_server_redact_params', 'poller_redact_snmp_secrets', 'exec_poll', 'exec_with_timeout'] as $function) {
+foreach (['script_server_process_descriptors', 'script_server_log_request', 'script_server_redact_params', 'poller_redact_snmp_secrets', 'exec_poll', 'exec_with_timeout'] as $function) {
 	cacti_fixture_source_function($root . '/lib/poller.php', $function, __NAMESPACE__);
 }
 
@@ -87,19 +85,13 @@ foreach (['collect_device_data', 'ping_and_reindex_check'] as $function) {
 	cacti_fixture_source_function($root . '/cmd.php', $function, __NAMESPACE__);
 }
 
-// script_server_call(): printed output is discarded and only its size logged
-ob_start();
-$result  = script_server_call(__NAMESPACE__ . '\\ss_cov_echo', 'c0mmunity', ['c0mmunity']);
-$printed = ob_get_clean();
-$log     = ss_cov_log();
-ss_cov_check($printed === '' && $result === 'value:c0mmunity', 'printed output discarded');
-ss_cov_check(str_contains($log, 'wrote 20 bytes of output, discarded') && !str_contains($log, 'c0mmunity'), 'stray output logged by size');
-
-$result = script_server_call(__NAMESPACE__ . '\\ss_cov_quiet', '', []);
+// script_server_dispatch(): one line per reply
+$result = script_server_dispatch(__NAMESPACE__ . '\\ss_cov_quiet', []);
 ss_cov_check($result === '7' && ss_cov_log() === '', 'quiet function logs nothing');
 
-// script_server_response(): one line per reply
-ss_cov_check(script_server_response(script_server_call(__NAMESPACE__ . '\\ss_cov_multiline', '', [])) === 'a:1 b:2 c:3', 'multipart reply on one line');
+$result = script_server_dispatch(__NAMESPACE__ . '\\ss_cov_multiline', []);
+ss_cov_check($result === 'a:1 b:2 c:3', 'multipart reply on one line');
+ss_cov_check(script_server_normalize_response(['a' => 1]) === 'U', 'array result reported as U');
 
 // parseArgs(): a parse error is printed only when debugging
 $parsed = [];
@@ -113,14 +105,10 @@ parseArgs("'host1 'c0mmunity'", $parsed, true);
 $printed = ob_get_clean();
 ss_cov_check(str_contains($printed, 'ERROR: '), 'parse error printed when debugging');
 
-// the parse failure and missing function warnings never log a credential
-script_server_log_parse_failure('ss_cov_quiet', "'host1 'c0mmunity'");
+// the debug request log never logs a credential
+script_server_log_request(1, 1, '/x/ss_cov.php', 'ss_cov_missing', ['host1', 'c0mmunity', '3:161:500:1:10::user:authpass:SHA'], true);
 $log = ss_cov_log();
-ss_cov_check(str_contains($log, '18 byte argument list') && !str_contains($log, 'c0mmunity'), 'parse failure logged by size');
-
-script_server_log_missing_function('/x/ss_cov.php', 'ss_cov_missing', ['host1', 'c0mmunity', '3:161:500:1:10::user:authpass:SHA']);
-$log = ss_cov_log();
-ss_cov_check(str_contains($log, "PARMS: 'host1', '********', '3:161:500:1:10::user:********:SHA'"), 'missing function arguments masked');
+ss_cov_check(str_contains($log, "PARMS: 'host1', '********', '3:161:500:1:10:<redacted>'") && !str_contains($log, 'authpass'), 'request arguments masked');
 
 // poller_redact_snmp_secrets(): every escaped form, longest credential first
 $item = ['snmp_community' => 'pub', 'snmp_password' => "pubp'ass\"x", 'snmp_priv_passphrase' => ''];
@@ -186,4 +174,17 @@ $lines = array_values(array_filter($GLOBALS['ss_cov_log'], function ($line) {
 $log = implode("\n", $lines);
 ss_cov_check(count($lines) === 6 && !str_contains($log, 'c0mmunity') && !str_contains($log, 'authpass') && substr_count($log, '********') === 12, 'recache logs masked');
 
-print "PASS: Script Server replies stay on one line and logged arguments mask device credentials\n";
+$GLOBALS['cmd_device_worker_healthy'] = false;
+$GLOBALS['cmd_device_replacements']   = [];
+$item                                 = ['local_data_id' => 3, 'host_id' => 7, 'action' => POLLER_ACTION_SCRIPT_PHP, 'arg1' => '/script.php sample'];
+$error_ds                             = [];
+collect_device_data($item, $error_ds, 25);
+ss_cov_check($GLOBALS['cmd_device_replacements'] === [['cmd', 1, 'online', 25.0]], 'a broken collection worker is replaced with the same owner and timeout');
+
+$GLOBALS['cmd_device_replacements'] = [];
+$GLOBALS['cmd_device_reindex']      = [['data_query_id' => 2, 'action' => POLLER_ACTION_SCRIPT_PHP, 'op' => '=', 'assert_value' => '42', 'arg1' => '/script.php sample']];
+$item                               = ['host_id' => 7, 'hostname' => 'host1', 'snmp_community' => '', 'snmp_password' => '', 'snmp_priv_passphrase' => ''];
+ping_and_reindex_check($item, false, 25);
+ss_cov_check($GLOBALS['cmd_device_replacements'] === [['cmd', 1, 'online', 25.0]], 'a broken reindex worker is replaced with the same owner and timeout');
+
+print "PASS: Script Server replies stay framed, credentials stay masked, and failed workers are replaced\n";

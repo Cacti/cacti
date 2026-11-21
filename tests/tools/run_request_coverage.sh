@@ -42,6 +42,25 @@ run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" s
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
+run_php_probe tests/fixtures/Core/ScriptServerStreamFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerStreamFailures\.php)'
+run_php_probe tests/fixtures/Core/SnmpStateStoreFailures.php '^(lib/SnmpStateStore\.php|tests/fixtures/Core/SnmpStateStoreFailures\.php)'
+run_php_probe tests/fixtures/Core/RemoteScriptServerLifecycle.php '^(remote_agent\.php|tests/fixtures/Core/RemoteScriptServerLifecycle\.php)'
+run_php_probe tests/fixtures/Core/ScriptServerLaunchFailures.php '^(lib/poller\.php|tests/fixtures/Core/ScriptServerLaunchFailures\.php)'
+run_php_probe tests/fixtures/Core/CollectorEntrypointContracts.php '^(cmd(_realtime)?\.php|tests/fixtures/Core/CollectorEntrypointContracts\.php)'
+run_php_probe tests/fixtures/Core/CollectorWorkerWiring.php '^(cmd(_realtime)?\.php|tests/fixtures/Core/CollectorWorkerWiring\.php)'
+run_php_probe tests/fixtures/Core/ScriptQueryResultRows.php '^(scripts/query_(akcp_(airflow|fourtwenty|humidity|temperature)|baytech_circuits|host_(cpu|partitions))\.php|tests/fixtures/Core/ScriptQueryResultRows\.php)'
+for query_mode in known aruba akcp lmsensors; do
+	run_php_probe tests/fixtures/Core/ScriptQueryKnownResults.php '^(scripts/(ss_(apache_stats|fortigate_virus|nimble_alletra_volumes|fping|netsnmp_lmsensors)|aruba_instant_wlan_client|query_akcp_temperature)\.php|tests/fixtures/Core/ScriptQueryKnownResults\.php)' "$query_mode"
+done
+run_php_probe tests/fixtures/Core/DiskCollectorStateContracts.php '^(scripts/ss_net_snmp_disk_(bytes|io)\.php|tests/fixtures/Core/DiskCollectorStateContracts\.php)'
+run_php_probe tests/fixtures/Core/SqlQueryStatus.php '^(scripts/sql\.php|tests/fixtures/Core/SqlQueryStatus\.php)'
+run_php_probe tests/fixtures/Core/ScriptServerMainBoundaries.php '^(script_server\.php|tests/fixtures/Core/ScriptServerMainBoundaries\.php)'
+run_php_probe tests/fixtures/Core/ScriptServerOutputGuardFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerOutputGuardFailures\.php)'
+run_php_probe tests/fixtures/Core/ScriptServerProvenanceFailures.php '^(lib/script_server\.php|tests/fixtures/Core/ScriptServerProvenanceFailures\.php)'
+for signal_mode in terminate notify; do
+	run_php_probe tests/fixtures/Core/ScriptServerSignalLogging.php '^(script_server\.php|tests/fixtures/Core/ScriptServerSignalLogging\.php)' "$signal_mode"
+done
+
 run_php_probe tests/fixtures/Core/ScriptSubstitutionMatrix.php '^(lib/functions\.php|tests/fixtures/Core/ScriptSubstitutionMatrix\.php)'
 run_php_probe tests/fixtures/Core/DeviceCollectorMessages.php '^(lib/api_device\.php|tests/fixtures/Core/DeviceCollectorMessages\.php)'
 run_php_probe tests/fixtures/Core/ReportMessageDelivery.php '^(lib/(functions|reports)\.php|tests/fixtures/Core/ReportMessageDelivery\.php)'
@@ -92,6 +111,8 @@ for row_guard_mode in auth-changepassword add-device reports-edit; do
 	run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files" "$row_guard_mode"
 done
 
+run_php_probe tests/fixtures/ScriptServerSecurityCoverage.php '^(cmd(_realtime)?\.php|remote_agent\.php|script_server\.php|include/global_constants\.php|lib/(poller|script_server|SnmpStateStore)\.php|scripts/ss_net_snmp_disk_(bytes|io)\.php|tests/(fixtures/(script_server_bootstrap|script_server_invariant_probe|ScriptServerSecurityCoverage)\.php|Unit/DataCollection/Poller/ScriptServer|Unit/Scripts/NetSnmpDiskStateFile))'
+
 run_probe tests/e2e/installer-coverage.sh '^(lib/installer\.php|cli/(install_cacti|upgrade_database)\.php|install/(functions|preflight|report|background|install)\.php|tests/e2e/installer)' 18277
 
 run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(functions\.php|upgrades/1_3_0\.php)|tests/fixtures/Installer/RetiredThemeCleanup\.php)'
@@ -99,3 +120,11 @@ run_php_probe tests/fixtures/Installer/RetiredThemeCleanup.php '^(install/(funct
 run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|tests/Unit/fixtures/graph_group_probe\.php)'
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
+
+run_php_probe tests/fixtures/Core/ScriptQueryCommand.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommand\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryCommandWin32.php '^(lib/data_query\.php|tests/fixtures/Core/ScriptQueryCommandWin32\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryRejectedPath.php '^(lib/functions\.php|tests/fixtures/Core/ScriptQueryRejectedPath\.php)'
+
+run_php_probe tests/fixtures/Core/ScriptQueryRejectedCallers.php '^(lib/(data_query|poller|utility)\.php|tests/fixtures/Core/ScriptQueryRejectedCallers\.php)'

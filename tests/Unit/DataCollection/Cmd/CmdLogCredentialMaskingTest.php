@@ -25,6 +25,7 @@ namespace CactiCmdDeviceFixture;
 
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 3) . '/Helpers/CmdDeviceStubs.php';
+require_once dirname(__DIR__, 4) . '/lib/script_server.php';
 
 $GLOBALS['cmd_mask_log'] = [];
 

@@ -47,6 +47,10 @@ function ss_nimble_alletra_total(int $host_id = 0) : mixed {
 		WHERE id = ?',
 		[$host_id]);
 
+	if (!is_array($host) || !cacti_sizeof($host)) {
+		return 'iowrites:U iowritebytes:U ioreads:U ioreadbytes:U ioreadhits:U' . PHP_EOL;
+	}
+
 	$oids = [
 		'iowrites'     => '.1.3.6.1.4.1.37447.1.3.4.0',
 		'iowritebytes' => '.1.3.6.1.4.1.37447.1.3.10.0',

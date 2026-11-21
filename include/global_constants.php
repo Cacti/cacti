@@ -153,6 +153,14 @@ define('POLLER_ACTION_SNMP_COUNT', 10);
 define('POLLER_ACTION_SCRIPT_COUNT', 11);
 define('POLLER_ACTION_SCRIPT_PHP_COUNT', 12);
 
+/* Longest Script Server request, excluding the CR LF terminator. Spine pads
+ * each request into a 1024 byte buffer, so a longer request reaches the
+ * server truncated and unterminated. Writer and reader share this limit. */
+define('SCRIPT_SERVER_MAX_REQUEST_LENGTH', 1021);
+/* The PHP poller reads responses into an 8192 byte buffer. Leave room for LF
+ * so every successful response is consumed by one bounded read. */
+define('SCRIPT_SERVER_MAX_RESPONSE_LENGTH', 8190);
+
 define('POLLER_COMMAND_REINDEX', 1);
 define('POLLER_COMMAND_RRDPURGE', 2);
 define('POLLER_COMMAND_PURGE', 3);

@@ -857,6 +857,11 @@ function query_script_host(int $host_id, int $snmp_query_id) : bool {
 	if (isset($script_queries['arg_num_indexes'])) {
 		$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ' : '') . $script_queries['arg_num_indexes'], $script_queries['script_path'], $host_id);
 
+		// A rejected script path comes back as '', and running an empty command throws on PHP 8.
+		if ($script_path === '') {
+			return false;
+		}
+
 		// fetch specified index at specified OID
 		$script_num_index_array = exec_into_array($script_path);
 
@@ -881,6 +886,10 @@ function query_script_host(int $host_id, int $snmp_query_id) : bool {
 
 	// provide data for index, mandatory
 	$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ' : '') . $script_queries['arg_index'], $script_queries['script_path'], $host_id);
+
+	if ($script_path === '') {
+		return false;
+	}
 
 	// fetch specified index
 	$script_index_array = exec_into_array($script_path);
@@ -910,6 +919,10 @@ function query_script_host(int $host_id, int $snmp_query_id) : bool {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 			$rewrite_value = $field_array['rewrite_value'] ?? null;
 			$script_path   = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ' : '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
+
+			if ($script_path === '') {
+				return false;
+			}
 
 			debug_log_insert_section_start('data_query', __esc('Click to show Data Query output for field \'%s\'', $field_name), true);
 
@@ -2788,7 +2801,9 @@ function get_best_data_query_index_type(int $host_id, int $data_query_id) : mixe
  * @param string $script_path The path to the script that will be executed.
  * @param int    $host_id     The ID of the host for which the script is being executed.
  *
- * @return string The complete script path with substituted arguments, ready for execution.
+ * @return string The complete script path with substituted arguments, ready for
+ *                execution, or '' when the script path is rejected. Callers
+ *                must not run or store an empty command.
  */
 function get_script_query_path(string $args, string $script_path, int $host_id) : string {
 	include_once(CACTI_PATH_LIBRARY . '/variables.php');
@@ -2824,32 +2839,41 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 		$extra_arguments = '';
 	}
 
-	/* SECURITY: the base script path must be sanitized to prevent command
-	 * injection from malicious templates. cacti_escapeshellcmd() cannot be
-	 * used here: on Windows it replaces every backslash (the path separator)
-	 * with a space, so 'C:\path\script.php' becomes 'C: path script.php',
-	 * which the script server then truncates at the first space to 'C:' and
-	 * the path containment check rejects as outside the base path. */
+	// Match the maintenance branch boundary for imported script commands.
 	$parsed_script_path = substitute_script_query_path($script_path);
 
-	if (strpos($parsed_script_path, '..') !== false) {
-		cacti_log('FATAL: Malicious path traversal detected in Data Query script path: ' . $parsed_script_path, true, 'REINDEX');
+	/* A control character would split or truncate the command line, and
+	 * escapeshellcmd() refuses a NUL byte outright. */
+	$rejected = preg_match('/[\x00-\x1f\x7f]/', $parsed_script_path) === 1;
+
+	if ($rejected) {
+		$base_command = '';
+	} elseif (CACTI_SERVER_OS == 'win32') {
+		/* clean_up_path() has already turned every / into \, and the Windows
+		 * cacti_escapeshellcmd() replaces \ ( ) with spaces, which would break
+		 * every path, including "C:\Program Files (x86)\...". So the path is
+		 * kept intact and refused instead when it carries a character cmd.exe
+		 * or a POSIX shell would interpret (& | < > ^ %VAR% ; $ ` # * ? [ ] { }),
+		 * or an unpaired " that would flip the quoting of the arguments that
+		 * follow. Refusing rather than stripping means no character is
+		 * removed, so two dots can never be joined into a traversal. */
+		$base_command = $parsed_script_path;
+		$rejected     = preg_match('/[&|<>^%;$`#*?\[\]{}]/', $base_command) === 1 || substr_count($base_command, '"') % 2 !== 0;
+	} else {
+		$base_command = cacti_escapeshellcmd($parsed_script_path);
+	}
+
+	/* Check the command that will run, not the substituted path. The shell
+	 * (and cmd.exe for ") drops the quotes inside a path, so '.".' or ".'."
+	 * reaches it as '..'; check a quote-free copy and return the quoted
+	 * command unchanged. */
+	if ($rejected || str_contains(str_replace(['"', "'"], '', $base_command), '..')) {
+		cacti_log('ERROR: Invalid Data Query script path rejected.', false, 'REINDEX');
 
 		return '';
 	}
 
-	/* On Windows a script path never legitimately contains shell
-	 * metacharacters, so strip them while preserving the backslash path
-	 * separator. On other platforms escapeshellcmd() is safe for the
-	 * forward-slash paths used there. */
-	if (CACTI_SERVER_OS == 'win32') {
-		$safe_script_path = str_replace(['#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$'], '', $parsed_script_path);
-	} else {
-		$safe_script_path = cacti_escapeshellcmd($parsed_script_path);
-	}
-
-	// get a complete path for out target script
-	return $safe_script_path . ' ' . $extra_arguments;
+	return $base_command . ' ' . $extra_arguments;
 }
 
 /**
