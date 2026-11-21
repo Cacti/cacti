@@ -29,6 +29,7 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 require_once(CACTI_PATH_LIBRARY . '/ping.php');
 require_once(CACTI_PATH_LIBRARY . '/boost.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiHttpPoller.php');
 
 if (function_exists('pcntl_async_signals')) {
 	pcntl_async_signals(true);
@@ -57,6 +58,10 @@ $poller_id  = POLLER_ID;
 $pmessage   = false;
 $help       = false;
 $version    = false;
+$http_only  = false;
+
+$http_outputs = [];
+$http_reasons = [];
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -113,6 +118,10 @@ if (cacti_sizeof($parms)) {
 				$debug = true;
 
 				break;
+			case '--http-only':
+				$http_only = true;
+
+				break;
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
@@ -136,6 +145,7 @@ if ($help) {
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function;
 global $poller_id, $sessions, $downhosts, $print_data_to_stdout;
+global $http_outputs, $http_reasons;
 
 $maxwidth   = get_max_column_width();
 
@@ -200,6 +210,16 @@ $poller_interval = read_config_option('poller_interval');
 $script_timeout  = read_config_option('script_timeout');
 $cron_interval   = read_config_option('cron_interval');
 $active_profiles = read_config_option('active_profiles');
+
+// poller.php starts this mode next to spine, which has no HTTP action
+if ($http_only) {
+	http_only_poll((int) $poller_id, (int) $poller_interval, (int) $active_profiles, $start);
+
+	record_cmdphp_done();
+	db_close();
+
+	exit(0);
+}
 
 // check arguments
 if ($allhost) {
@@ -307,6 +327,15 @@ if ($active_profiles != 1) {
 	}));
 }
 
+// one request per device and endpoint, all issued together before the device walk
+$http_items = [];
+
+foreach ($poller_items as $item) {
+	if ($item['action'] == POLLER_ACTION_HTTP) {
+		$http_items[] = $item;
+	}
+}
+
 if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on') {
 	$host_down      = false;
 	$new_host       = true;
@@ -364,6 +393,30 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 	} else {
 		$using_proc_function = false;
 		$cactiphp            = false;
+	}
+
+	/*
+	 * Fetching device by device would add each slow endpoint's timeout to the
+	 * walk, and the overrun check only runs between items, so the HTTP items
+	 * of every device are fetched together first.  Devices with HTTP items get
+	 * their availability check now instead of during the walk, and the items
+	 * of a device found down are not fetched, as for SNMP and script items.
+	 * Requests run in rounds of at most CactiHttpPoller::MAX_CONCURRENCY, and
+	 * of http_poller_concurrency per device, so a slow fetch costs about one
+	 * timeout per round.  The fetch stops at the end of the polling interval,
+	 * and items still unanswered then report U.
+	 */
+	$host_checks = [];
+
+	if (cacti_sizeof($http_items)) {
+		$host_checks = http_check_hosts($poller_items, $http_items, $mibs, (int) $script_timeout);
+		$http_items  = array_values(array_filter($http_items, function ($item) use ($host_checks) {
+			return empty($host_checks[$item['host_id']]['down']);
+		}));
+
+		if (cacti_sizeof($http_items)) {
+			http_prefetch_items(CactiHttpPoller::create((int) read_config_option('http_poller_concurrency')), $http_items, $start + $poller_interval);
+		}
 	}
 
 	foreach ($poller_items as $item) {
@@ -456,7 +509,12 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 		// ping host, find out if there are re-index checks required
 		if ($new_host && !empty($host_id)) {
-			$host_down = ping_and_reindex_check($item, $mibs, $script_timeout);
+			if (isset($host_checks[$host_id])) {
+				$host_down      = $host_checks[$host_id]['down'];
+				$set_spike_kill = $host_checks[$host_id]['spike_kill'];
+			} else {
+				$host_down = ping_and_reindex_check($item, $mibs, $script_timeout);
+			}
 		}
 
 		$new_host  = false;
@@ -835,6 +893,7 @@ function update_system_mibs(int $host_id) : void {
 
 function collect_device_data(array &$item, array &$error_ds, int $script_timeout) : string {
 	global $print_data_to_stdout, $using_proc_function, $pipes, $cactiphp;
+	global $http_outputs, $http_reasons;
 
 	$thread_start = microtime(true);
 	$ds           = $item['local_data_id'];
@@ -943,6 +1002,24 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 					POLLER_VERBOSITY_MEDIUM));
 
 			break;
+		case POLLER_ACTION_HTTP:
+			$key    = CactiHttpPoller::rowKey($item);
+			$target = CactiHttpPollItem::redact((string) $item['arg1']);
+			$output = $http_outputs[$key] ?? 'U';
+
+			if ($output == 'U') {
+				$error_ds[$ds] = $ds;
+
+				if (read_config_option('spine_log_level') == 2) {
+					cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] HTTP: $target, pointer: " . $item['arg2'] . ', reason: ' . ($http_reasons[$key] ?? 'Item was not fetched'), $print_data_to_stdout, 'POLLER');
+				}
+			}
+
+			$total_time = (microtime(true) - $thread_start) * 1000;
+
+			cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time, 2) . "] HTTP: $target, pointer: " . $item['arg2'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+
+			break;
 		default:
 			$error_ds[$ds] = $ds;
 
@@ -952,6 +1029,155 @@ function collect_device_data(array &$item, array &$error_ds, int $script_timeout
 	}
 
 	return $output;
+}
+
+/**
+ * http_prefetch_items - poll every HTTP item of this process
+ *
+ * Items that share a device and endpoint are served by one request, and
+ * the http_poller_concurrency limit applies to each device.  The outputs
+ * and failure reasons are left in globals for collect_device_data().
+ *
+ * @param CactiHttpPoller             $poller
+ * @param array<array<string, mixed>> $items    HTTP poller items of any number of devices
+ * @param float|null                  $deadline microtime(true) value no request may run past
+ *
+ * @return void
+ */
+function http_prefetch_items(CactiHttpPoller $poller, array $items, ?float $deadline = null) : void {
+	global $http_outputs, $http_reasons, $print_data_to_stdout;
+
+	$reasons      = [];
+	$start        = microtime(true);
+	$http_outputs = $poller->collect($items, $reasons, $deadline);
+	$http_reasons = $reasons;
+
+	$message = sprintf('Devices[%d] TT[%0.2f] HTTP: Polled %d item(s), %d failed', cacti_sizeof(array_unique(array_column($items, 'host_id'))), (microtime(true) - $start) * 1000, cacti_sizeof($items), cacti_sizeof($reasons));
+
+	cacti_log($message, $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+}
+
+/**
+ * http_check_hosts - run the availability check of each device with HTTP items
+ *
+ * The walk would run ping_and_reindex_check() on the first item of each
+ * device.  This runs it on that same item ahead of the HTTP prefetch, once
+ * per device, and records the result for the walk to reuse.
+ *
+ * @param array<array<string, mixed>> $poller_items   every item of this process, in walk order
+ * @param array<array<string, mixed>> $http_items     the HTTP items among them
+ * @param bool                        $mibs
+ * @param int                         $script_timeout
+ *
+ * @return array<int|string, array{down: bool, spike_kill: bool}> keyed by host id
+ */
+function http_check_hosts(array $poller_items, array $http_items, bool $mibs, int $script_timeout) : array {
+	global $set_spike_kill;
+
+	$hosts  = array_flip(array_column($http_items, 'host_id'));
+	$checks = [];
+
+	foreach ($poller_items as $item) {
+		$host_id = $item['host_id'];
+
+		if (empty($host_id) || !isset($hosts[$host_id]) || isset($checks[$host_id])) {
+			continue;
+		}
+
+		$set_spike_kill = false;
+		$down           = ping_and_reindex_check($item, $mibs, $script_timeout);
+
+		$checks[$host_id] = ['down' => $down, 'spike_kill' => $set_spike_kill];
+	}
+
+	$set_spike_kill = false;
+
+	return $checks;
+}
+
+/**
+ * http_only_poll - collect only the HTTP items of a poller, next to spine
+ *
+ * Spine has no HTTP action, so poller.php starts cmd.php in this mode next
+ * to it.  Spine keeps the availability checks, reindexing and scheduling
+ * of every device, so this mode reads the status spine recorded and skips
+ * devices marked down, and leaves rrd_next_step alone.  Because spine may
+ * update rrd_next_step before or after this runs, an item is due when the
+ * current polling slot falls on a multiple of its step instead.
+ *
+ * @param int   $poller_id
+ * @param int   $poller_interval
+ * @param int   $active_profiles
+ * @param float $start           when this process started, microtime(true)
+ *
+ * @return int the number of items written to poller_output
+ */
+function http_only_poll(int $poller_id, int $poller_interval, int $active_profiles, float $start) : int {
+	global $poller_db_cnn_id, $print_data_to_stdout;
+
+	$params    = [$poller_id, POLLER_ACTION_HTTP, HOST_DOWN];
+	$sql_due   = '';
+	$sql_where = db_column_exists('sites', 'disabled') ? "AND IFNULL(s.disabled, '') != 'on'" : '';
+
+	if ($active_profiles != 1 && $poller_interval > 0) {
+		$slot    = (int) (floor($start / $poller_interval) * $poller_interval);
+		$sql_due = ' AND (pi.rrd_step <= ? OR MOD(?, pi.rrd_step) < ?)';
+
+		array_push($params, $poller_interval, $slot, $poller_interval);
+	}
+
+	$sql = 'SELECT ' . SQL_NO_CACHE . " pi.*
+		FROM poller_item AS pi
+		INNER JOIN host AS h
+		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
+		WHERE pi.poller_id = ?
+		AND pi.action = ?
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
+		AND h.status != ?
+		$sql_where
+		$sql_due
+		ORDER BY pi.host_id";
+
+	$items = db_fetch_assoc_prepared($sql, $params);
+
+	if (!cacti_sizeof($items)) {
+		return 0;
+	}
+
+	$reasons = [];
+	$outputs = CactiHttpPoller::create((int) read_config_option('http_poller_concurrency'))->collect($items, $reasons, $start + $poller_interval);
+	$rows    = [];
+	$boost   = read_config_option('boost_rrd_update_enable') == 'on';
+
+	foreach ($items as $item) {
+		$key = CactiHttpPoller::rowKey($item);
+
+		if (isset($reasons[$key]) && read_config_option('spine_log_level') == 2) {
+			cacti_log('WARNING: Invalid Response, Device[' . $item['host_id'] . '] DS[' . $item['local_data_id'] . '] HTTP: ' . CactiHttpPollItem::redact((string) $item['arg1']) . ', pointer: ' . $item['arg2'] . ', reason: ' . $reasons[$key], $print_data_to_stdout, 'POLLER');
+		}
+
+		$rows[] = [(int) $item['local_data_id'], (string) $item['rrd_name'], (string) ($outputs[$key] ?? 'U')];
+	}
+
+	foreach (array_chunk($rows, 2000) as $chunk) {
+		db_execute_prepared('INSERT IGNORE INTO poller_output
+			(local_data_id, rrd_name, time, output)
+			VALUES ' . implode(', ', array_fill(0, count($chunk), '(?, ?, CURRENT_TIMESTAMP(), ?)')),
+			array_merge(...$chunk), true, $poller_db_cnn_id);
+
+		// boost_flush_output_batch() takes prebuilt VALUES tuples
+		if ($boost) {
+			boost_flush_output_batch(array_map(function (array $row) use ($poller_db_cnn_id) : string {
+				return sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $row[0], db_qstr($row[1], $poller_db_cnn_id), db_qstr($row[2], $poller_db_cnn_id));
+			}, $chunk), $poller_db_cnn_id);
+		}
+	}
+
+	cacti_log(sprintf('Time: %01.4f s, Poller: %d, HTTP Items: %d, Errors: %d', microtime(true) - $start, $poller_id, cacti_sizeof($items), cacti_sizeof($reasons)), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+
+	return cacti_sizeof($rows);
 }
 
 function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) : bool {
@@ -1366,5 +1592,7 @@ function display_help() : void {
 	print '    --poller - The poller to run as.  Defaults to the system poller.' . PHP_EOL;
 	print '    --mode   - The poller mode, either online, offline, or recovery.' . PHP_EOL;
 	print '    --mibs   - Refresh all system mibs from hosts supporting snmp.' . PHP_EOL;
+	print '    --http-only - Collect only the HTTP items of the poller.  poller.php' . PHP_EOL;
+	print '               uses this next to spine, which has no HTTP action.' . PHP_EOL;
 	print '    --debug  - Display verbose output during execution.' . PHP_EOL . PHP_EOL;
 }

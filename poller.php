@@ -865,6 +865,11 @@ while ($poller_runs_completed < $poller_runs) {
 				$started_processes++;
 			}
 
+			// spine has no HTTP action, so cmd.php collects those items next to it
+			if ($method == 'spine' && poller_start_http_handoff($poller_id, $extra_parms)) {
+				$started_processes++;
+			}
+
 			if ($poller_id == 1) {
 				// insert the current date/time for graphs
 				set_config_option('date', date('Y-m-d H:i:s'));
@@ -1131,6 +1136,94 @@ if ($poller_id == 1) {
 }
 
 exit(0);
+
+/**
+ * poller_spine_version - the version of the configured spine binary
+ *
+ * Running spine --version on every poll would add a process per cycle, so
+ * the answer is kept in the settings table under the binary's path, size
+ * and modification time, and spine is only asked again when one changes.
+ *
+ * @return string the version, such as '1.3.0', or '' when it is unknown
+ */
+function poller_spine_version() : string {
+	$path = (string) read_config_option('path_spine');
+	$stat = $path !== '' ? @stat($path) : false;
+
+	if ($stat === false) {
+		return '';
+	}
+
+	$key = $path . '|' . $stat['size'] . '|' . $stat['mtime'];
+
+	if (read_config_option('spine_version_key') === $key) {
+		return (string) read_config_option('spine_version');
+	}
+
+	$version = '';
+
+	foreach (exec_into_array(cacti_escapeshellcmd($path) . ' --version') as $line) {
+		if (preg_match('/^SPINE\s+([0-9]+(?:\.[0-9]+)+)/i', $line, $match)) {
+			$version = $match[1];
+
+			break;
+		}
+	}
+
+	set_config_option('spine_version', $version);
+	set_config_option('spine_version_key', $key);
+
+	return $version;
+}
+
+/**
+ * poller_start_http_handoff - start cmd.php for the HTTP items of a spine poller
+ *
+ * Spine has no HTTP action and has to leave HTTP items out of its own item
+ * selection; a spine that still selects them writes U for each, which can
+ * replace the value written here.  So the handoff only runs for spine
+ * SPINE_HTTP_HANDOFF_MIN_VERSION or later, and otherwise each cycle logs one
+ * warning and leaves the HTTP items to spine's U.  One query decides whether
+ * HTTP items exist before spine's version is looked at.
+ *
+ * @param int    $poller_id   the poller being run
+ * @param string $extra_parms output redirection for the background process
+ *
+ * @return bool true when a process was started and will record itself in poller_time
+ */
+function poller_start_http_handoff(int $poller_id, string $extra_parms) : bool {
+	$exists = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' 1
+		FROM poller_item
+		WHERE poller_id = ?
+		AND action = ?
+		LIMIT 1',
+		[$poller_id, POLLER_ACTION_HTTP]);
+
+	if (empty($exists)) {
+		return false;
+	}
+
+	$version = poller_spine_version();
+
+	if ($version === '' || cacti_version_compare($version, SPINE_HTTP_HANDOFF_MIN_VERSION, '<')) {
+		cacti_log(sprintf('WARNING: Poller[%d] HTTP Data Sources need spine >= %s or cmd.php, and spine %s does not collect them.  Their Data Sources record U.',
+			$poller_id, SPINE_HTTP_HANDOFF_MIN_VERSION, $version === '' ? 'of unknown version' : $version), true, 'POLLER');
+
+		return false;
+	}
+
+	$cmd_php = CACTI_PATH_BASE . '/cmd.php';
+
+	if (CACTI_SERVER_OS != 'unix') {
+		$cmd_php = cacti_strtolower($cmd_php);
+	}
+
+	$php_binary = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
+	$arguments  = '-q ' . cacti_escapeshellarg($cmd_php) . ' --poller=' . $poller_id . ' --http-only' . ($poller_id > 1 ? ' --mode=' . CACTI_CONNECTION : '');
+	exec_background($php_binary, $arguments, $extra_parms);
+
+	return true;
+}
 
 function poller_heartbeat_check() : void {
 	$poller_interval = read_config_option('poller_interval');

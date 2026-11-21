@@ -81,6 +81,8 @@ run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/ht
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
+run_php_probe tests/fixtures/Core/HttpDnsCoverage.php '^(lib/functions\.php|tests/fixtures/Core/HttpDnsCoverage\.php)'
+run_php_probe tests/fixtures/Core/HttpPollerActionCoverage.php '^(poller\.php|cmd\.php|remote_agent\.php|data_templates\.php|lib/(CactiHttpPoll(er|Item)|utility)\.php|install/upgrades/1_3_0\.php|tests/fixtures/Core/HttpPollerActionCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_import|lib/package)\.php|tests/fixtures/Core/PackageRepositoryWorkspace\.php)'
 run_php_probe tests/fixtures/Core/PackageImportFileStatus.php '^(lib/(import|package)\.php|tests/fixtures/Core/PackageImportFileStatus\.php)'
