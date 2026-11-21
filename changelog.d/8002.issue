@@ -1,0 +1,1 @@
+Propagate failed plugin install hooks and disable their hooks while retaining recovery metadata

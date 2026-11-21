@@ -1,0 +1,1 @@
+(hardening) Require CSRF-protected POST for link and plugin reordering
