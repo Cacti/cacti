@@ -345,7 +345,8 @@ function api_networks_discover(int $network_id, bool $discover_debug, bool $disc
 				$args_debug .= ($discover_dryrun) ? ' --dryrun' : '';
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
 			} else {
-				$args_debug = ($discover_debug) ? '&debug=true' : '';
+				$args_debug  = ($discover_debug) ? '&debug=true' : '';
+				$args_debug .= ($discover_dryrun) ? '&dryrun=true' : '';
 
 				$url = CACTI_PATH_URL . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug;
 
@@ -629,7 +630,7 @@ function network_get_field_array(array $network = []) : array {
 		'subnet_range' => [
 			'method'        => 'textarea',
 			'friendly_name' => __('Subnet Range'),
-			'description'   => __('Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*'),
+			'description'   => __('Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*.  Wildcards must be the trailing octets, so a form such as 10.1.*.1 is rejected.'),
 			'value'         => '|arg1:subnet_range|',
 			'textarea_rows' => '4',
 			'textarea_cols' => '80',
