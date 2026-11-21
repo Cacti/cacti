@@ -247,5 +247,7 @@ function display_help() {
 	print "    --list-hosts\n";
 	print "    --list-data-queries\n";
 	print "    --quiet - batch mode value return\n\n";
-	print "If the data query was already associated, it will be reindexed.\n\n";
+	print "If the data query is already associated with the host using the same reindex method,\n";
+	print "the script reports an error and changes nothing. If it is associated with a different\n";
+	print "reindex method, the method is updated and the data query is reindexed.\n\n";
 }
