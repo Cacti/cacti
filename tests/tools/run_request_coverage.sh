@@ -33,6 +33,8 @@ run_php_probe() {
 	fi
 }
 
+run_php_probe include/vendor/bin/pest '^(lib/cdef\.php|lib/Cdef/|tests/(phpunit-cdef\.xml|Coverage/CdefCoverageTest\.php|Helpers/CdefCoverageBootstrap\.php|Unit/Core/Rrd/CdefResolverTest\.php))' --configuration=tests/phpunit-cdef.xml
+
 command_files='^((cmd|cmd_realtime|remote_agent)\.php|cli/(audit_database|push_out_hosts|rrdresize|splice_rrd)\.php|lib/(dsstats|poller|rrdcheck|functions)\.php|tests/fixtures/Core/ConfiguredCommands\.php)'
 run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files"
 run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprecated
