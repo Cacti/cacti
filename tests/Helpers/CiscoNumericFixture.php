@@ -83,3 +83,12 @@ function cacti_exec($binary,$args,&$output,...$other) {
 	State::$args = $args;
 	$output      = [State::$value];
 }
+
+function cisco_health_binary_get($command, ...$args) {
+	if (is_array($command)) {
+		State::$args = array_slice($command, 1);
+	} else {
+		State::$command = $command;
+	}
+	return State::$value;
+}
