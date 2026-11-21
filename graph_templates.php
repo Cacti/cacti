@@ -47,6 +47,10 @@ $actions = [
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['ajax_dnd', 'input_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -194,6 +198,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	// sanitize ids
 	if (isrv('graph_template_id') && !is_numeric(gnrv('graph_template_id'))) {
 		$graph_template_id = 0;
@@ -1145,6 +1151,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {

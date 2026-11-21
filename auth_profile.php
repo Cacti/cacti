@@ -28,6 +28,10 @@ require('./include/auth.php');
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['logout_everywhere', 'clear_user_settings', 'reset_default'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -264,6 +268,8 @@ function api_auth_update_user_setting(string $name, string $value) : void {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	global $errors, $settings_user;
 
 	// Save the users profile information
@@ -745,7 +751,7 @@ function settings_javascript() : void {
 
 		function logoutEverywhere() {
 			$('#logout_everywhere').blur();
-			$.get('auth_profile.php?action=logout_everywhere', function(data) {
+			$.post('auth_profile.php?action=logout_everywhere', {__csrf_magic: csrfMagicToken}, function(data) {
 				$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('User Sessions Cleared'); ?>"><p><?php print __('All your login sessions have been cleared.'); ?></p></div>');
 
 				$('#cleared').dialog({
