@@ -49,12 +49,24 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('lib/functions.php', ['ScriptSubstitutionMatrix.php', 'ReportMessageDelivery.php', 'MessageFormatting.php', 'UserAdministrationAuditCoverage.php', 'graph_group_probe.php'])
 
     def test_auth_change_runs_the_native_auth_probe(self):
-        self.dispatch('lib/auth.php', 'BoundaryContracts.php')
+        self.dispatch('lib/auth.php', ['BoundaryContracts.php', 'PermissionCacheResetCoverage.php'])
 
     def test_script_server_change_runs_the_log_masking_probe(self):
         for path in ['script_server.php', 'lib/poller.php', 'tests/fixtures/ScriptServerLogMaskingCoverage.php']:
             with self.subTest(path=path):
                 self.dispatch(path, 'ScriptServerLogMaskingCoverage.php')
+
+    def test_permission_page_change_runs_the_cache_reset_fixture(self):
+        for path in ['user_admin.php', 'user_group_admin.php', 'lib/auth.php', 'tests/fixtures/PermissionCacheResetCoverage.php']:
+            with self.subTest(path=path):
+                expected = ['PermissionCacheResetCoverage.php']
+                if path == 'lib/auth.php':
+                    expected.insert(0, 'BoundaryContracts.php')
+                if path.endswith('_admin.php') and '/' not in path:
+                    expected = ['accessibility'] + expected
+                if path == 'user_admin.php':
+                    expected.insert(1, 'UserAdministrationAuditCoverage.php')
+                self.dispatch(path, expected)
 
     def test_two_factor_change_runs_the_guard_fixture(self):
         self.dispatch('auth_2fa.php', 'ConstantTimeGuardMatrix.php')
@@ -108,7 +120,8 @@ class RequestDispatchTest(unittest.TestCase):
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
                            'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php',
+                           'PermissionCacheResetCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')
