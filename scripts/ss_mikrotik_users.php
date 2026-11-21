@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* display no errors */
+// display no errors
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
@@ -31,8 +31,15 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_users', $_SERVER['argv']);
 }
 
-function ss_mikrotik_users($host_id = '') {
-	/* the table only exists when the mikrotik plugin is installed */
+/**
+ * Return the number of users logged in to a MikroTik device.
+ *
+ * @param int|string $host_id The Cacti host id
+ *
+ * @return string The user count, U when there is no data
+ */
+function ss_mikrotik_users($host_id = 0) {
+	// the table only exists when the mikrotik plugin is installed
 	if (!db_table_exists('plugin_mikrotik_system', false)) {
 		return 'U';
 	}
@@ -40,10 +47,7 @@ function ss_mikrotik_users($host_id = '') {
 	$users = db_fetch_cell_prepared('SELECT users
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',
-		array($host_id));
+		[(int) $host_id]);
 
-	if ($users == '') $users = 'U';
-
-	return $users;
+	return is_numeric($users) ? (string) $users : 'U';
 }
-
