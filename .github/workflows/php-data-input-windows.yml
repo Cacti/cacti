@@ -9,6 +9,8 @@ on:
       - 'scripts/ss_*.php'
       - 'lib/poller_script.php'
       - 'lib/functions.php'
+      - 'tests/security/verify_win32_argument_escaping.php'
+      - 'tests/fixtures/win32_argv.php'
       - 'tests/Helpers/DataInputHttpServer.php'
       - 'tests/fixtures/DataInput/**'
       - 'tests/Unit/DataCollection/DataInput/**'
@@ -24,6 +26,8 @@ on:
       - 'scripts/ss_*.php'
       - 'lib/poller_script.php'
       - 'lib/functions.php'
+      - 'tests/security/verify_win32_argument_escaping.php'
+      - 'tests/fixtures/win32_argv.php'
       - 'tests/Helpers/DataInputHttpServer.php'
       - 'tests/fixtures/DataInput/**'
       - 'tests/Unit/DataCollection/DataInput/**'
@@ -69,6 +73,9 @@ jobs:
 
       - name: Require native Windows PHP
         run: php -r "if (PHP_OS_FAMILY !== 'Windows') { exit(1); } echo PHP_OS_FAMILY, ' ', PHP_VERSION, PHP_EOL;"
+
+      - name: Verify native shell argument boundaries
+        run: php tests/security/verify_win32_argument_escaping.php
 
       - name: Run portable scripts and unavailable Unix collectors
         working-directory: tests
