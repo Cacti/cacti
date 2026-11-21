@@ -3290,8 +3290,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				case GRAPH_ITEM_TYPE_TEXTALIGN:
 					if (!isset($graph_data_array['graph_nolegend'])) {
-						if (!empty($graph_item['textalign'])) {
-							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $graph_item['textalign'];
+						$textalign = rrd_graph_item_textalign($graph_item['textalign']);
+
+						if ($textalign != '') {
+							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $textalign;
 						}
 					}
 
@@ -3585,6 +3587,25 @@ function rrdtool_escape_string($text, $ignore_percent = true) {
 	} else {
 		return str_replace(array('"', ':', '%'), array('\"', '\:', '%%'), $text);
 	}
+}
+
+/**
+ * Returns a graph item text alignment when it is one RRDtool's TEXTALIGN accepts. The value is
+ * appended to the command as it is, so one that arrived by import is checked here too. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param mixed $textalign The stored text alignment.
+ *
+ * @return string The alignment keyword, or an empty string.
+ */
+function rrd_graph_item_textalign($textalign) {
+	$textalign = is_scalar($textalign) ? trim((string) $textalign) : '';
+
+	if (in_array($textalign, array(RRD_ALIGN_LEFT, RRD_ALIGN_RIGHT, RRD_ALIGN_JUSTIFIED, RRD_ALIGN_CENTER), true)) {
+		return $textalign;
+	}
+
+	return '';
 }
 
 /**
