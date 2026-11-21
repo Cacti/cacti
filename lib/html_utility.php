@@ -1493,7 +1493,9 @@ function get_order_string() : string {
  * before the header is drawn. It is not kept per action or tab: those come
  * from the request, which could then select a key that has no list. A column
  * that is not on the list is refused, so a page that has not drawn a header
- * yet sorts on its default column only.
+ * yet sorts on its default column only. The list covers every table of the
+ * script, so a column whose name marks it as a credential is refused even
+ * when it is listed.
  *
  * @param string $column The requested or stored sort column.
  *
@@ -1502,11 +1504,18 @@ function get_order_string() : string {
 function validate_sort_column(string $column) : string {
 	$column = sanitize_sql_column($column, '');
 
-	if ($column !== '' && in_array($column, $_SESSION['valid_sort_columns'][(string) get_current_page(false)] ?? [], true)) {
-		return $column;
+	if ($column === '' || !in_array($column, $_SESSION['valid_sort_columns'][(string) get_current_page(false)] ?? [], true)) {
+		return '';
 	}
 
-	return '';
+	// the column itself, without a table alias or a sort function around it
+	$name = (string) preg_replace('/^.*[.(]|\)$/', '', $column);
+
+	if (preg_match('/password|passwd|passphrase|dbpass|_pass$|secret|community|token|hash|_key$|sslkey|authkey|apikey|privatekey/i', $name)) {
+		return '';
+	}
+
+	return $column;
 }
 
 /**

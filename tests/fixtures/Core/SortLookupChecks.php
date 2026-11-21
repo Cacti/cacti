@@ -270,6 +270,11 @@ function sort_scenarios() : array {
 			$cdef + ['request' => ['sort_column' => 'hash']],
 			['order' => 'ORDER BY `name` ASC', 'stored' => ['name' => 'ASC']],
 		],
+		// A column whose name marks it as a credential is refused even when a header lists it.
+		'listed-credential-column' => [
+			['script' => 'pollers.php', 'listed' => ['name', 'dbpass', 'status'], 'request' => ['sort_column' => 'dbpass', 'sort_direction' => 'DESC']],
+			['order'  => 'ORDER BY `name` ASC', 'stored' => ['name' => 'ASC']],
+		],
 		// Without a default to fall back to, a refused column leaves no sort and a stored one is removed.
 		'no-default' => [
 			$cdef + ['default' => null, 'session' => ['sort_data' => ['0_cdef' => ['hash' => 'DESC']]], 'request' => ['sort_column' => 'hash', 'sort_direction' => 'ASC']],
@@ -443,19 +448,20 @@ if ($mode === 'request') {
 }
 
 if ($mode === 'helpers') {
-	$_SESSION = ['valid_sort_columns' => ['/listed.php' => ['name', 'h.description', 'INET_ATON(hostname)', 'api_key']]];
-	$checked  = [];
+	$credentials = ['password', 'ua.password', 'password_history', 'passwd', 'snmp_priv_passphrase', 'dbpass', 'snmp_pass', 'tfa_secret', 'client_secret',
+		'snmp_community', 'token', 'key_token', 'token_expiry', 'hash', 'password_hash', 'api_key', 'repo_api_key', 'sp_private_key', 'dbsslkey', 'authkey',
+		'apikey', 'privatekey', 'INET_ATON(ua.password)', 'NATURAL_SORT_KEY(api_key)'];
+	$columns     = ['name', 'h.description', 'INET_ATON(hostname)', 'NATURAL_SORT_KEY(h.hostname)', 'passes', 'keys', 'monkey', 'bypass'];
+	$_SESSION    = ['valid_sort_columns' => ['/listed.php' => array_merge($columns, $credentials)]];
+	$checked     = [];
 
-	foreach ([
-		['name', 'listed', 'name'], ['h.description', 'listed', 'h.description'], ['INET_ATON(hostname)', 'listed', 'INET_ATON(hostname)'],
-		['api_key', 'listed', 'api_key'], ['description', 'listed', ''], ['password', 'listed', ''], ['h.password', 'listed', ''],
-		['tfa_secret', 'listed', ''], ['key_token', 'listed', ''], ['hash', 'listed', ''], ['INET_ATON(password)', 'listed', ''],
-		['SLEEP(5)', 'listed', ''], ['', 'listed', ''], ['`', 'listed', ''],
-		['name', 'unlisted', ''], ['h.description', 'unlisted', ''], ['api_key', 'unlisted', ''], ['repo_api_key', 'unlisted', ''],
-		['password', 'unlisted', ''], ['dbsslkey', 'unlisted', ''], ['INET_ATON(hostname)', 'unlisted', ''], ['id', 'unlisted', ''],
-	] as [$column, $page, $expected]) {
-		$_SERVER['SCRIPT_NAME'] = '/' . $page . '.php';
-		check(validate_sort_column($column) === $expected, 'Unexpected result for ' . $column . ' on the ' . $page . ' page');
+	// a listed column is accepted unless its name marks it as a credential; nothing is accepted without a list
+	foreach (array_merge($columns, $credentials, ['description', 'id', 'SLEEP(5)', '', '`']) as $column) {
+		foreach (['listed', 'unlisted'] as $page) {
+			$_SERVER['SCRIPT_NAME'] = '/' . $page . '.php';
+			$expected               = $page === 'listed' && in_array($column, $columns, true) ? $column : '';
+			check(validate_sort_column($column) === $expected, 'Unexpected result for ' . $column . ' on the ' . $page . ' page');
+		}
 		$checked[] = $column;
 	}
 

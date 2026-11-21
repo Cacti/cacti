@@ -17,8 +17,9 @@ require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 /*
  * A sort column is checked against the columns the script's table headers list
  * as sortable plus the page's default column. The list does not depend on the
- * action or tab a request names, and a page that has not drawn a header yet
- * sorts on its default column only. Each probe call is one page request in its
+ * action or tab a request names, a page that has not drawn a header yet sorts
+ * on its default column only, and a column named like a credential is refused
+ * even when it is listed. Each probe call is one page request in its
  * own process, running the production sort and header code against the header
  * definitions of real pages.
  */
@@ -52,6 +53,7 @@ test('a table request applies the sort column rules', function (string $scenario
 	'listed column joins the stored sort'          => ['listed-column', 'ORDER BY `name` ASC, `graphs` DESC'],
 	'unsortable column gives way to the default'   => ['unsortable-column', 'ORDER BY `graphs` DESC, `name` ASC'],
 	'unlisted column gives way to the default'     => ['unlisted-column', 'ORDER BY `name` ASC'],
+	'listed column named like a credential'        => ['listed-credential-column', 'ORDER BY `name` ASC'],
 	'refused column without a default'             => ['no-default', ''],
 	'another action and tab, unlisted column'      => ['other-action-unlisted', 'ORDER BY `name` ASC'],
 	'another action and tab, listed column'        => ['other-action-listed', 'ORDER BY `graphs` ASC'],
@@ -145,6 +147,6 @@ test('the plugin list keeps its default sort and earlier columns when the filter
 	]);
 });
 
-test('column checks and the group list query accept only listed columns', function () {
-	expect(sort_probe('helpers'))->toBe(['columns' => 22, 'group_queries' => 11]);
+test('column checks refuse unlisted and credential columns and the group list query sorts on listed columns', function () {
+	expect(sort_probe('helpers'))->toBe(['columns' => 37, 'group_queries' => 11]);
 });
