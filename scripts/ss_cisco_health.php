@@ -418,6 +418,63 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE
 	print ss_cisco_health(...$args);
 }
 
+/** Run one binary GET, retaining stderr without exposing credentials or changing core. */
+function cisco_health_binary_get(array|string $command, int $timeout, string $version, bool $numeric) : string {
+	$process = @proc_open($command, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	if (!is_resource($process)) {
+		return 'U';
+	}
+	fclose($pipes[0]);
+	stream_set_blocking($pipes[1], false);
+	stream_set_blocking($pipes[2], false);
+	$stdout = '';
+	$stderr = '';
+	$exit = -1;
+	$failed = false;
+	$deadline = microtime(true) + max(1, $timeout);
+	while (true) {
+		$stdout .= (string)stream_get_contents($pipes[1], 65536);
+		$stderr .= (string)stream_get_contents($pipes[2], 65536);
+		$status = proc_get_status($process);
+		// A GET returns one value. Bound both output and total elapsed time.
+		if (strlen($stdout) + strlen($stderr) > 1048576 || microtime(true) >= $deadline) {
+			$failed = true;
+			proc_terminate($process, 9);
+			break;
+		}
+		if (!$status || !$status['running']) {
+			$exit = $status ? $status['exitcode'] : -1;
+			$stdout .= (string)stream_get_contents($pipes[1], 65536);
+			$stderr .= (string)stream_get_contents($pipes[2], 65536);
+			break;
+		}
+		usleep(2000);
+	}
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	$closed = proc_close($process);
+	if ($failed || strlen($stdout) + strlen($stderr) > 1048576) {
+		return 'U';
+	}
+	if ($exit < 0) {
+		$exit = $closed;
+	}
+	return cisco_health_binary_response($stdout, $stderr, $exit, $version, $numeric);
+}
+
+/** Classify a completed GET without treating transport errors as missing OIDs. */
+function cisco_health_binary_response(string $stdout, string $stderr, int $exit, string $version, bool $numeric) : string {
+	// SNMPv1 reports missing columns as an error packet on stderr, unlike v2.
+	// Do not allow connection/authentication failures to select legacy gauges.
+	if ($numeric && $version === '1' && $exit === 2 && trim($stdout) === ''
+		&& preg_match('/^Reason: \(noSuchName\)/m', $stderr)
+		&& !preg_match('/timeout|authentication|authorization|no response/i', $stderr)) {
+		return 'No Such Object';
+	}
+	$value = trim(preg_replace('/[\r\n]+/', ' ', $stdout));
+	return $exit === 0 && $value !== '' && stripos($value . $stderr, 'Timeout') === false ? $value : 'U';
+}
+
 /** Numeric reads are local to this collector; shared Cacti SNMP behaviour is unchanged. */
 function cisco_health_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
@@ -527,11 +584,8 @@ function cisco_health_snmp_get_raw($hostname, $community, $oid, $version, $auth_
 				. ' -t ' . (int)$timeout_s . ' -r ' . (int)$retries
 				. ' ' . cacti_escapeshellarg_cmd($hostname, true, true) . ':' . (int)$port
 				. ' ' . cacti_escapeshellarg($oid);
-			$output = [];
-			$status = 0;
-			exec($command, $output, $status);
-			$value = trim(implode(' ', $output));
-			return $status === 0 && !str_contains($value, 'Timeout') ? $value : 'U';
+			// exec replaces the shell so the timeout also terminates snmpget.
+			return cisco_health_binary_get('exec ' . $command, ($timeout_s * ($retries + 1)) + 2, (string)$version, $numeric_value);
 		}
 
 		$snmp_auth = cacti_get_snmp_auth_args($version, $community, $auth_proto, $auth_user,
@@ -552,17 +606,8 @@ function cisco_health_snmp_get_raw($hostname, $community, $oid, $version, $auth_
 		}
 
 		cacti_snmp_debug_command($binary, $args);
-		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
-
-		/* fix for multi-line snmp output */
-		if (is_array($snmp_value)) {
-			$snmp_value = implode(' ', $snmp_value);
-		}
-
-		if (strpos($snmp_value, 'Timeout') !== false) {
-			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
-			$snmp_value = 'U';
-		}
+		return cisco_health_binary_get(array_merge([$binary], $args),
+			cacti_snmp_command_timeout($timeout_s, $retries), (string)$version, $numeric_value);
 	}
 
 	return $snmp_value;

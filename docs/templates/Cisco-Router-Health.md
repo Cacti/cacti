@@ -86,6 +86,9 @@ same raw MIB values. RSRQ and SNR are stored in tenths of dB; their graph CDEF
 divides by ten once. Installing Cisco MIB files does not change that scale.
 The numeric reader uses PHP SNMP's plain-value mode or disables MIB formatting
 for the individual `snmpget` command. Other SNMP queries keep their usual formatting.
+When an SNMPv1 binary GET reports an unsupported column (`noSuchName`), the
+collector can use the older memory gauges. Timeouts and authentication failures
+remain unknown readings and do not trigger that fallback.
 Explicit unsupported columns allow the documented memory fallback; timeouts and
 authentication failures remain unknown values.
 
