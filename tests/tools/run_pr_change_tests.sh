@@ -80,6 +80,10 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+if [[ -f tests/fixtures/Core/SelectedItemsCoverage.php ]]; then
+	run_probe SelectedItemsCoverage.php selected-items
+fi
+
 run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation

@@ -599,7 +599,7 @@ function form_actions() : void {
 
 					$(function() {
 						//debugger;
-						DownloadStart(\'automation_templates.php?action=export&selected_items=' . gnrv('selected_items') . '\');
+						DownloadStart(' . cacti_js_encode(cacti_url('automation_templates.php', ['action' => 'export', 'selected_items' => serialize($selected_items)])) . ');
 					});
 				</script>
 				<iframe id="download_iframe" style="display:none;"></iframe>';
