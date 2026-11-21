@@ -5,7 +5,9 @@ use Throwable;
 require __DIR__ . '/Helpers/RequestCoverage.php';
 require __DIR__ . '/Helpers/SourceSlice.php';
 cacti_fixture_source_function(__DIR__ . '/../lib/traffic_legend.php', 'traffic_legend_plan', __NAMESPACE__);
-cacti_fixture_source_function(__DIR__ . '/../lib/traffic_legend.php', 'upgrade_interface_traffic_legends', __NAMESPACE__);
+cacti_fixture_source_function(__DIR__ . '/../lib/traffic_legend.php', 'traffic_legend_peak_hash', __NAMESPACE__);
+cacti_fixture_source_function(__DIR__ . '/../lib/traffic_legend.php', 'traffic_legend_update_graph', __NAMESPACE__);
+cacti_fixture_source_function(__DIR__ . '/../lib/traffic_legend.php', 'update_interface_traffic_legends', __NAMESPACE__);
 $data = json_decode(file_get_contents(__DIR__ . '/fixtures/traffic-legends.json'), true);
 $original = $data;
 function db_fetch_cell_prepared($sql, $args) {
@@ -15,19 +17,28 @@ function db_fetch_cell_prepared($sql, $args) {
 }
 function db_fetch_assoc_prepared($sql, $args) {
  global $data;
+ if (strpos($sql, 'FROM graph_local') !== false) {
+  $ids = array_unique(array_column(array_filter($data['items'], fn($r) => $r['graph_template_id']==$args[0] && $r['local_graph_id']>$args[1]), 'local_graph_id'));
+  sort($ids); preg_match('/LIMIT ([0-9]+)/', $sql, $m);
+  return array_map(fn($id) => ['id'=>$id], array_slice($ids,0,(int)$m[1]));
+ }
  if (strpos($sql, 'graph_template_input_defs') !== false) return array_values(array_filter($data['inputs'], function($r) use ($args) {return $r['graph_template_item_id'] == $args[0];}));
- $rows = array_values(array_filter($data['items'], function($r) use ($args) {return $r['graph_template_id'] == $args[0];}));
+ $rows = array_values(array_filter($data['items'], function($r) use ($args) {return $r['graph_template_id'] == $args[0] && (!isset($args[1]) || $r['local_graph_id']==$args[1]);}));
  usort($rows, function($a,$b) {return array($a['local_graph_id'],$a['sequence'],$a['id']) <=> array($b['local_graph_id'],$b['sequence'],$b['id']);});
  return $rows;
 }
 function db_execute($sql) {
- global $data, $transaction;
+ global $data, $transaction, $transactions;
+ $transactions[] = $sql;
  if ($sql === 'START TRANSACTION') $transaction = $data;
  if ($sql === 'ROLLBACK') $data = $transaction;
  return true;
 }
 function db_execute_prepared($sql,$args) {
- global $data, $failure;
+ global $data, $failure, $failure_graph;
+ if ($failure_graph !== null && strpos($sql, 'UPDATE') === 0) {
+  foreach ($data['items'] as $item) if ($item['id'] == $args[2] && $item['local_graph_id'] == $failure_graph) return false;
+ }
  if ($failure === 'update' && strpos($sql, 'UPDATE') === 0) return false;
  if ($failure === 'link' && strpos($sql, 'REPLACE INTO') === 0) return false;
  if (strpos($sql,'REPLACE INTO')===0) {
@@ -49,7 +60,12 @@ function sql_save($row,$table) {
 }
 function check($test,$message) {if(!$test) throw new RuntimeException($message);}
 $failure = null;
-upgrade_interface_traffic_legends();
+$failure_graph = null;
+$transactions = [];
+update_interface_traffic_legends(false, 1);
+check($data === $original, 'Dry run wrote data');
+check($transactions === [], 'Dry run started a write transaction');
+update_interface_traffic_legends(true, 1);
 check(count($data['items'])==count($original['items'])+20,'Expected two peaks for each of five templates and five existing graphs');
 foreach($original['items'] as $old) {
  $new=current(array_filter($data['items'],function($r) use($old) {return $r['id']==$old['id'];}));
@@ -71,7 +87,7 @@ foreach($data['templates'] as $t) {
   check($peaks==2&&$avgs==2,'Missing legend statistics');
  }
 }
-$first=$data;upgrade_interface_traffic_legends();check($first==$data,'Second run changed data');
+$first=$data;update_interface_traffic_legends(true, 1);check($first==$data,'Second run changed data');
 
 // Signed package imports restore stock template items without removing peaks.
 foreach (array(false,true) as $restore_graphs) {
@@ -80,9 +96,9 @@ foreach (array(false,true) as $restore_graphs) {
   foreach ($data['items'] as &$item) if ($item['id']==$old['id']) $item=$old;
   unset($item);
  }
- upgrade_interface_traffic_legends();
+ update_interface_traffic_legends(true, 1);
  check($first==$data,'Reimport must reuse peak IDs, hashes and input links');
- upgrade_interface_traffic_legends();
+ update_interface_traffic_legends(true, 1);
  check($first==$data,'Migration after reimport is not idempotent');
 }
 
@@ -96,19 +112,36 @@ foreach (array(0,700) as $custom_gid) {
  $data['items'][]=$minimum;
  check(traffic_legend_plan(array_merge($rows,array($minimum)))===false,'Custom GPRINT layout must be rejected');
  $custom=array_values(array_filter($data['items'],function($r) use($custom_gid) {return $r['graph_template_id']==900&&$r['local_graph_id']==$custom_gid;}));
- upgrade_interface_traffic_legends();
+ update_interface_traffic_legends(true, 1);
  $after=array_values(array_filter($data['items'],function($r) use($custom_gid) {return $r['graph_template_id']==900&&$r['local_graph_id']==$custom_gid;}));
  check($custom===$after,'Custom graph items changed during migration');
 }
-// Failed writes must roll back the template and graph changes together.
+// A failed first transaction must leave all rows unchanged.
 foreach (array('update', 'save', 'link') as $failure) {
  $data = $original;
  try {
-  upgrade_interface_traffic_legends();
+  update_interface_traffic_legends(true, 1);
   throw new RuntimeException('Expected failed migration to throw');
  } catch (Throwable $error) {
   check(strpos($error->getMessage(), 'Unable to') === 0, 'Unexpected failure');
   check($data === $original, 'Failed migration left partially changed legends');
  }
 }
+// Failure in a later graph keeps the template committed, and a rerun resumes.
+$data = $original;
+$failure = null;
+$failure_graph = 700;
+try {
+ update_interface_traffic_legends(true, 1);
+ throw new RuntimeException('Expected later graph failure');
+} catch (Throwable $error) {
+ check($error->getMessage()==='Unable to update traffic legend', 'Unexpected later failure');
+}
+$failed_graph = array_values(array_filter($data['items'],fn($r) => $r['local_graph_id']==700));
+$before_graph = array_values(array_filter($original['items'],fn($r) => $r['local_graph_id']==700));
+check($failed_graph===$before_graph, 'Failed graph was not rolled back');
+check(count($data['items'])===count($original['items'])+2, 'Earlier template transaction was lost');
+$failure_graph = null;
+update_interface_traffic_legends(true, 1);
+check($data===$first, 'Resume after partial failure did not finish cleanly');
 echo "PASS: five templates, five existing graphs, preserved calculations and linkage, reimport reuse, idempotence, custom GPRINT preservation and rollback\n";
