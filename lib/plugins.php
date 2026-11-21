@@ -1569,8 +1569,7 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 	}
 
 	if ($archive != '') {
-		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . random_int(0, mt_getrandmax()) . '.tar.gz';
-		$pharfile = "phar://{$tmpfile}";
+		$tmpfile = sys_get_temp_dir() . '/' . $plugin . '_' . random_int(0, mt_getrandmax()) . '.tar.gz';
 
 		$file_data = base64_decode($archive, true);
 
@@ -1582,7 +1581,8 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 			file_put_contents($tmpfile, $file_data);
 
 			// open the archive
-			$archive = new PharData($tmpfile);
+			$archive  = new PharData($tmpfile);
+			$pharfile = 'phar://' . $archive->getPath();
 
 			// create directory if required
 			if (!is_dir($restore_path)) {
@@ -1625,7 +1625,7 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 
 					$archive_files[$tfile] = $pfile;
 				} else {
-					$tfile = str_replace("phar://{$tmpfile}", '', $file->getPathname());
+					$tfile = str_replace($pharfile, '', $file->getPathname());
 
 					$archive_files[$tfile] = $tfile;
 				}
@@ -1672,9 +1672,6 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 				}
 			}
 
-			// load the archive into memory
-			Phar::loadPhar($tmpfile, 'my.tgz');
-
 			/**
 			 * put yourself into the base directory in order to
 			 * be able to use basenames to create things like
@@ -1683,7 +1680,8 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 			chdir($restore_path);
 
 			foreach ($archive_files as $basefile => $pharpath) {
-				$output = file_get_contents("phar://my.tgz{$pharpath}");
+				// read through this archive's own path; a fixed alias stays bound to the first archive loaded
+				$output = file_get_contents("{$pharfile}{$pharpath}");
 
 				if (strlen((string) $output)) {
 					$rfile = ltrim($basefile, '/');

@@ -39,6 +39,10 @@ run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprec
 validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files"
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" save
+run_php_probe tests/fixtures/Core/LibraryDataUpdates.php '^(lib/(functions|utility|data_query)\.php|tests/fixtures/Core/LibraryDataUpdates\.php)'
+if [[ -f tests/tools/run_library_regressions.sh ]] && grep -Eq '^lib/(api_data_source|data_query|functions|html_form|ldap|plugins|poller|reports|utility)\.php$' <<< "$changed_paths"; then
+	CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT" bash tests/tools/run_library_regressions.sh
+fi
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
