@@ -20,6 +20,7 @@ run_probe tests/e2e/aggregate-item-overrides.sh '^(aggregate_(graphs|templates)\
 CACTI_AGGREGATE_TEST_BROWSER=1 run_probe tests/e2e/aggregate-automation.sh '^(automation_aggregates\.php|lib/(api_automation|automation|api_aggregate)\.php|install/upgrades/1_3_0\.php|tests/e2e/aggregate-automation)' 18274
 run_probe tests/e2e/accessibility-coverage.sh '^((about|aggregate_graphs|auth_changepassword|auth_resetpassword|automation_templates|color|data_queries|data_templates|graph_realtime|graph_xport|graphs_new|host|host_templates|index|package|permission_denied|plugins|tree|user_admin|user_group_admin|utilities)\.php|include/top_(general_|graph_)?header\.php|install/install\.php|lib/html(_form|_graph)?\.php|tests/e2e/accessibility)' 18275
 run_probe tests/e2e/queue/run.sh '^(lib/api_queue\.php|cli/queue_(admin|worker)\.php|include/global_settings\.php|install/upgrades/1_3_0\.php|tests/e2e/queue/)' 18276
+run_probe tests/e2e/automation-database-coverage.sh '^(data_sources\.php|lib/(api_automation|api_data_source|api_tree|data_query|template|variables)\.php|tests/(e2e/automation-database-coverage\.sh|fixtures/(automation_|template_propagation)|integration/(AutomationCreation|TemplatePropagation)IntegrationTest\.php))' 18278
 
 run_php_probe() {
 	local script="$1" pattern="$2"
