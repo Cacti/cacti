@@ -141,7 +141,7 @@ function header(string $value) : void {
 foreach (['lib/functions.php' => ['sanitize_sql_column', 'get_current_page', 'get_current_script_name'],
 	'lib/html_utility.php'       => ['validate_store_request_vars', 'update_order_string', 'get_order_string', 'validate_sort_column',
 		'cacti_validate_sort_column', 'remove_column_from_order_string', 'get_order_string_page'],
-	'lib/html.php'      => ['html_header_sort_page', 'html_header_sort_register', 'html_header_sort_order', 'html_header_sort_column',
+	'lib/html.php'      => ['html_header_sort_register', 'html_header_sort_order', 'html_header_sort_column',
 		'html_header_sort', 'html_header_sort_checkbox'],
 	'lib/html_tree.php' => ['html_tree_get_node']] as $file => $functions) {
 	foreach ($functions as $function) {
@@ -196,14 +196,17 @@ function table_request(array $spec) : array {
 	$GLOBALS['fixture_natural_sort'] = $spec['natural'] ?? false;
 	$key                             = '0_' . basename($script, '.php') . (isset($_REQUEST['action']) ? '_' . $_REQUEST['action'] : '') . (isset($_REQUEST['tab']) ? '_' . $_REQUEST['tab'] : '');
 
+	$page                            = '/' . $script;
+
 	if (isset($spec['listed'])) {
-		$_SESSION['valid_sort_columns'][$key] = sortable_keys(header_columns($spec['listed']));
+		$_SESSION['valid_sort_columns'][$page] = sortable_keys(header_columns($spec['listed']));
 	}
 
 	if ($spec['validate'] ?? true) {
 		$callback = ['options' => __NAMESPACE__ . '\\sanitize_search_string'];
+		$default  = array_key_exists('default', $spec) ? $spec['default'] : 'name';
 		validate_store_request_vars([
-			'sort_column'    => ['filter' => FILTER_CALLBACK, 'options' => $callback, 'default' => $spec['default'] ?? 'name'],
+			'sort_column'    => ['filter' => FILTER_CALLBACK, 'options' => $callback] + ($default === null ? [] : ['default' => $default]),
 			'sort_direction' => ['filter' => FILTER_CALLBACK, 'options' => $callback, 'default' => 'ASC'],
 		], 'sess_fixture');
 	}
@@ -229,7 +232,7 @@ function table_request(array $spec) : array {
 	return [
 		'order'   => $order,
 		'key'     => $key,
-		'listed'  => $_SESSION['valid_sort_columns'][$key] ?? null,
+		'listed'  => $_SESSION['valid_sort_columns'][$page] ?? null,
 		'stored'  => $_SESSION['sort_data'][$key] ?? null,
 		'string'  => $_SESSION['sort_string'][$key] ?? null,
 		'header'  => $html,
@@ -238,33 +241,53 @@ function table_request(array $spec) : array {
 }
 
 function sort_scenarios() : array {
+	$cdef = ['script' => 'cdef.php', 'listed' => 'cdef.php', 'columns' => 'cdef.php'];
+	$log  = ['script' => 'user_log.php', 'validate' => false];
+
 	return [
 		// A first view has no column list yet; the default sort applies and the header lists the sortable columns.
 		'first-view' => [
 			['script' => 'cdef.php', 'columns' => 'cdef.php'],
 			['order'  => 'ORDER BY `name` ASC', 'listed' => ['name', 'graphs', 'templates'], 'stored' => ['name' => 'ASC']],
 		],
+		// Before a page has drawn a header, only its default column is sortable.
+		'unregistered-page' => [
+			['script' => 'pollers.php', 'columns' => 'pollers.php', 'request' => ['sort_column' => 'dbpass']],
+			['order'  => 'ORDER BY `name` ASC', 'stored' => ['name' => 'ASC']],
+		],
 		// A listed column is added to the stored sort.
 		'listed-column' => [
-			['script'  => 'cdef.php', 'listed' => 'cdef.php', 'columns' => 'cdef.php',
-				'session' => ['sort_data' => ['0_cdef' => ['name' => 'ASC']]], 'request' => ['sort_column' => 'graphs', 'sort_direction' => 'DESC']],
+			$cdef + ['session' => ['sort_data' => ['0_cdef' => ['name' => 'ASC']]], 'request' => ['sort_column' => 'graphs', 'sort_direction' => 'DESC']],
 			['order' => 'ORDER BY `name` ASC, `graphs` DESC', 'stored' => ['name' => 'ASC', 'graphs' => 'DESC']],
 		],
-		// A column the header marks as not sortable is refused and the stored sort is kept.
+		// A column the header marks as not sortable gives way to the default column.
 		'unsortable-column' => [
-			['script'  => 'cdef.php', 'listed' => 'cdef.php', 'columns' => 'cdef.php',
-				'session' => ['sort_data' => ['0_cdef' => ['name' => 'DESC']]], 'request' => ['sort_column' => 'nosort']],
-			['order' => 'ORDER BY `name` DESC', 'stored' => ['name' => 'DESC']],
+			$cdef + ['session' => ['sort_data' => ['0_cdef' => ['graphs' => 'DESC']]], 'request' => ['sort_column' => 'nosort']],
+			['order' => 'ORDER BY `graphs` DESC, `name` ASC', 'stored' => ['graphs' => 'DESC', 'name' => 'ASC']],
 		],
-		// A table column the header does not list is refused, leaving no sort to apply.
+		// A table column the header does not list gives way to the default column.
 		'unlisted-column' => [
-			['script' => 'cdef.php', 'listed' => 'cdef.php', 'columns' => 'cdef.php', 'request' => ['sort_column' => 'hash']],
-			['order'  => '', 'stored' => null, 'string' => null],
+			$cdef + ['request' => ['sort_column' => 'hash']],
+			['order' => 'ORDER BY `name` ASC', 'stored' => ['name' => 'ASC']],
 		],
-		// Before the header has been drawn once, a credential column is still refused.
-		'credential-column' => [
-			['script' => 'pollers.php', 'columns' => 'pollers.php', 'request' => ['sort_column' => 'dbpass']],
-			['order'  => '', 'stored' => null, 'string' => null],
+		// Without a default to fall back to, a refused column leaves no sort and a stored one is removed.
+		'no-default' => [
+			$cdef + ['default' => null, 'session' => ['sort_data' => ['0_cdef' => ['hash' => 'DESC']]], 'request' => ['sort_column' => 'hash', 'sort_direction' => 'ASC']],
+			['order' => '', 'stored' => [], 'string' => null],
+		],
+		// The action and tab of a request do not select a different column list.
+		'other-action-unlisted' => [
+			$cdef + ['request' => ['action' => 'other', 'tab' => 'extra', 'sort_column' => 'hash']],
+			['order' => 'ORDER BY `name` ASC', 'key' => '0_cdef_other_extra', 'stored' => ['name' => 'ASC']],
+		],
+		'other-action-listed' => [
+			$cdef + ['request' => ['action' => 'other', 'tab' => 'extra', 'sort_column' => 'graphs']],
+			['order' => 'ORDER BY `graphs` ASC', 'key' => '0_cdef_other_extra', 'stored' => ['graphs' => 'ASC']],
+		],
+		// The list of one script does not apply to another.
+		'other-script' => [
+			['script' => 'vdef.php', 'session' => ['valid_sort_columns' => ['/cdef.php' => ['name', 'graphs', 'templates']]], 'request' => ['sort_column' => 'graphs']],
+			['order'  => 'ORDER BY `name` ASC', 'listed' => ['name'], 'stored' => ['name' => 'ASC']],
 		],
 		// A single-column sort on a listed column, with natural host name ordering.
 		'single-column' => [
@@ -272,11 +295,11 @@ function sort_scenarios() : array {
 				'request' => ['sort_column' => 'hostname', 'sort_direction' => 'DESC', 'add' => 'reset']],
 			['order' => 'ORDER BY NATURAL_SORT_KEY(`hostname`) DESC', 'stored' => ['hostname' => 'DESC']],
 		],
-		// A single-column sort on a column the device list does not show.
+		// A single-column sort on a column the device list does not show uses the default column.
 		'single-column-refused' => [
 			['script'  => 'host.php', 'listed' => 'host.php', 'columns' => 'host.php', 'default' => 'description',
 				'request' => ['sort_column' => 'snmp_community', 'add' => 'reset']],
-			['order' => '', 'stored' => null, 'string' => null],
+			['order' => 'ORDER BY `description` ASC', 'stored' => ['description' => 'ASC']],
 		],
 		// The page default stays usable when the header drawn for a filter state does not list it.
 		'default-outside-header' => [
@@ -289,35 +312,34 @@ function sort_scenarios() : array {
 				'default' => 'description', 'request' => ['sort_column' => 'INET_ATON(hostname)', 'reset' => '1']],
 			['order' => 'ORDER BY INET_ATON(hostname) ASC', 'stored' => ['INET_ATON(hostname)' => 'ASC']],
 		],
-		// A stored sort holding a column that is no longer listed is dropped when it is read.
+		// A stored sort holding a column that is not listed is dropped when it is read.
 		'stale-stored-sort' => [
-			['script'  => 'user_log.php', 'validate' => false, 'listed' => ['username', 'time'],
-				'session' => ['sort_data' => ['0_user_log' => ['password' => 'ASC', 'username' => 'ASC']], 'sort_string' => ['0_user_log' => 'ORDER BY password ASC, username ASC']],
-				'request' => ['sort_column' => 'username', 'sort_direction' => 'DESC']],
+			$log + ['listed' => ['username', 'time'],
+				'session'       => ['sort_data' => ['0_user_log' => ['password' => 'ASC', 'username' => 'ASC']], 'sort_string' => ['0_user_log' => 'ORDER BY password ASC, username ASC']],
+				'request'       => ['sort_column' => 'username', 'sort_direction' => 'DESC']],
 			['order' => 'ORDER BY `username` DESC', 'stored' => null, 'string' => null],
 		],
-		// A stored clause without its column list is not trusted.
+		// A stored clause without its columns is not trusted, and without a list nothing else is either.
 		'orphan-stored-sort' => [
-			['script'  => 'user_log.php', 'validate' => false, 'session' => ['sort_string' => ['0_user_log' => 'ORDER BY tfa_secret ASC']],
-				'request' => ['sort_column' => 'tfa_secret']],
+			$log + ['session' => ['sort_string' => ['0_user_log' => 'ORDER BY tfa_secret ASC']], 'request' => ['sort_column' => 'username']],
 			['order' => '', 'stored' => null, 'string' => null],
 		],
-		// A stored sort whose columns are all still listed is used unchanged.
+		// A stored sort whose columns are all listed is used unchanged.
 		'stored-sort' => [
-			['script'  => 'user_log.php', 'validate' => false, 'listed' => ['username', 'time'],
-				'session' => ['sort_data' => ['0_user_log' => ['time' => 'DESC', 'username' => 'ASC']], 'sort_string' => ['0_user_log' => 'ORDER BY `time` DESC, `username` ASC']]],
+			$log + ['listed' => ['username', 'time'],
+				'session'       => ['sort_data' => ['0_user_log' => ['time' => 'DESC', 'username' => 'ASC']], 'sort_string' => ['0_user_log' => 'ORDER BY `time` DESC, `username` ASC']]],
 			['order' => 'ORDER BY `time` DESC, `username` ASC', 'stored' => ['time' => 'DESC', 'username' => 'ASC']],
 		],
 		// Removing a column rebuilds the clause from the columns that are still listed.
 		'remove-column' => [
-			['script'  => 'cdef.php', 'listed' => 'cdef.php', 'columns' => 'cdef.php', 'remove' => 'graphs',
-				'session' => ['sort_data' => ['0_cdef' => ['name' => 'ASC', 'graphs' => 'DESC', 'templates' => 'DESC']]], 'request' => ['sort_column' => 'name']],
+			$cdef + ['remove' => 'graphs', 'request' => ['sort_column' => 'name'],
+				'session'        => ['sort_data' => ['0_cdef' => ['name' => 'ASC', 'hash' => 'ASC', 'graphs' => 'DESC', 'templates' => 'DESC']]]],
 			['order' => 'ORDER BY name ASC, templates DESC', 'stored' => ['name' => 'ASC', 'templates' => 'DESC']],
 		],
 		// Removing the only stored column leaves the requested column, not an empty clause.
 		'remove-last-column' => [
-			['script' => 'cdef.php', 'listed' => 'cdef.php', 'columns' => 'cdef.php', 'remove' => 'name', 'request' => ['sort_column' => 'name']],
-			['order'  => 'ORDER BY `name` ASC', 'stored' => [], 'string' => null],
+			$cdef + ['remove' => 'name', 'request' => ['sort_column' => 'name']],
+			['order' => 'ORDER BY `name` ASC', 'stored' => [], 'string' => null],
 		],
 	];
 }
@@ -421,18 +443,19 @@ if ($mode === 'request') {
 }
 
 if ($mode === 'helpers') {
-	$_SESSION = ['valid_sort_columns' => ['listed' => ['name', 'h.description', 'INET_ATON(hostname)', 'snmp_community']]];
+	$_SESSION = ['valid_sort_columns' => ['/listed.php' => ['name', 'h.description', 'INET_ATON(hostname)', 'api_key']]];
 	$checked  = [];
 
 	foreach ([
 		['name', 'listed', 'name'], ['h.description', 'listed', 'h.description'], ['INET_ATON(hostname)', 'listed', 'INET_ATON(hostname)'],
-		['snmp_community', 'listed', 'snmp_community'], ['description', 'listed', ''], ['password', 'listed', ''], ['', 'listed', ''], ['`', 'listed', ''],
-		['name', 'unlisted', 'name'], ['ua.username', 'unlisted', 'ua.username'], ['INET_ATON(hostname)', 'unlisted', 'INET_ATON(hostname)'],
-		['password', 'unlisted', ''], ['ua.password', 'unlisted', ''], ['password_history', 'unlisted', ''], ['dbpass', 'unlisted', ''],
-		['snmp_community', 'unlisted', ''], ['snmp_priv_passphrase', 'unlisted', ''], ['tfa_secret', 'unlisted', ''], ['dbsslkey', 'unlisted', ''],
-		['INET_ATON(ua.password)', 'unlisted', ''], ['SLEEP(5)', 'unlisted', ''], ['passwords_changed', 'unlisted', 'passwords_changed'],
+		['api_key', 'listed', 'api_key'], ['description', 'listed', ''], ['password', 'listed', ''], ['h.password', 'listed', ''],
+		['tfa_secret', 'listed', ''], ['key_token', 'listed', ''], ['hash', 'listed', ''], ['INET_ATON(password)', 'listed', ''],
+		['SLEEP(5)', 'listed', ''], ['', 'listed', ''], ['`', 'listed', ''],
+		['name', 'unlisted', ''], ['h.description', 'unlisted', ''], ['api_key', 'unlisted', ''], ['repo_api_key', 'unlisted', ''],
+		['password', 'unlisted', ''], ['dbsslkey', 'unlisted', ''], ['INET_ATON(hostname)', 'unlisted', ''], ['id', 'unlisted', ''],
 	] as [$column, $page, $expected]) {
-		check(validate_sort_column($column, $page) === $expected, 'Unexpected result for ' . $column . ' on a ' . $page . ' table');
+		$_SERVER['SCRIPT_NAME'] = '/' . $page . '.php';
+		check(validate_sort_column($column) === $expected, 'Unexpected result for ' . $column . ' on the ' . $page . ' page');
 		$checked[] = $column;
 	}
 

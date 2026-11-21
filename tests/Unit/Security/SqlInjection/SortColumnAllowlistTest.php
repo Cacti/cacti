@@ -15,10 +15,12 @@
 require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
 /*
- * A sort column is checked against the columns the table header lists as
- * sortable, and against credential column names until a table has been drawn
- * once. Each probe call is one page request in its own process, running the
- * production sort and header code against the header definitions of real pages.
+ * A sort column is checked against the columns the script's table headers list
+ * as sortable plus the page's default column. The list does not depend on the
+ * action or tab a request names, and a page that has not drawn a header yet
+ * sorts on its default column only. Each probe call is one page request in its
+ * own process, running the production sort and header code against the header
+ * definitions of real pages.
  */
 
 function sort_probe(string $mode, string $case = ''): array {
@@ -46,12 +48,16 @@ test('a table request applies the sort column rules', function (string $scenario
 	expect(sort_probe('sort', $scenario)['order'])->toBe($order);
 })->with([
 	'first view uses the default sort'             => ['first-view', 'ORDER BY `name` ASC'],
+	'page without a column list uses its default'  => ['unregistered-page', 'ORDER BY `name` ASC'],
 	'listed column joins the stored sort'          => ['listed-column', 'ORDER BY `name` ASC, `graphs` DESC'],
-	'unsortable column keeps the stored sort'      => ['unsortable-column', 'ORDER BY `name` DESC'],
-	'unlisted column is refused'                   => ['unlisted-column', ''],
-	'credential column is refused on a first view' => ['credential-column', ''],
+	'unsortable column gives way to the default'   => ['unsortable-column', 'ORDER BY `graphs` DESC, `name` ASC'],
+	'unlisted column gives way to the default'     => ['unlisted-column', 'ORDER BY `name` ASC'],
+	'refused column without a default'             => ['no-default', ''],
+	'another action and tab, unlisted column'      => ['other-action-unlisted', 'ORDER BY `name` ASC'],
+	'another action and tab, listed column'        => ['other-action-listed', 'ORDER BY `graphs` ASC'],
+	'column listed by another script'              => ['other-script', 'ORDER BY `name` ASC'],
 	'single column sort on a listed column'        => ['single-column', 'ORDER BY NATURAL_SORT_KEY(`hostname`) DESC'],
-	'single column sort on an unlisted column'     => ['single-column-refused', ''],
+	'single column sort on an unlisted column'     => ['single-column-refused', 'ORDER BY `description` ASC'],
 	'page default outside the drawn header'        => ['default-outside-header', 'ORDER BY `pi`.`plugin` ASC'],
 	'wrapped column listed by the page'            => ['wrapped-column', 'ORDER BY INET_ATON(hostname) ASC'],
 	'stored sort with an unlisted column'          => ['stale-stored-sort', 'ORDER BY `username` DESC'],
@@ -81,7 +87,7 @@ test('the CDEF list keeps its default, multiple column and single column sorts a
 	]);
 });
 
-test('the device list sorts on its listed columns and refuses the columns it does not show', function () {
+test('the device list sorts on its listed columns and uses its default for columns it does not show', function () {
 	expect(sort_requests(['script' => 'host.php', 'columns' => 'host.php', 'default' => 'description', 'natural' => true], [
 		[],
 		['sort_column' => 'hostname', 'sort_direction' => 'DESC'],
@@ -92,21 +98,21 @@ test('the device list sorts on its listed columns and refuses the columns it doe
 		'ORDER BY `description` ASC',
 		'ORDER BY `description` ASC, NATURAL_SORT_KEY(`hostname`) DESC',
 		'ORDER BY `description` ASC, NATURAL_SORT_KEY(`hostname`) DESC',
-		'',
+		'ORDER BY `description` ASC',
 		'ORDER BY `status` ASC',
 	]);
 });
 
-test('the data collector list refuses its credential columns before and after its header is drawn', function () {
+test('the data collector list uses its default instead of a credential column before and after its header is drawn', function () {
 	expect(sort_requests(['script' => 'pollers.php', 'columns' => 'pollers.php'], [
 		['sort_column' => 'dbpass'],
 		['sort_column' => 'dbpass'],
 		['sort_column' => 'dbsslkey', 'add' => 'reset'],
 		['sort_column' => 'poller.hostname', 'sort_direction' => 'DESC', 'add' => 'reset'],
 	]))->toBe([
-		'',
-		'',
-		'',
+		'ORDER BY `name` ASC',
+		'ORDER BY `name` ASC',
+		'ORDER BY `name` ASC',
 		'ORDER BY `poller`.`hostname` DESC',
 	]);
 });

@@ -1245,14 +1245,26 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 			}
 		}
 
-		/* A page can draw different headers under one key, for example per
-		 * filter state, so its own default sort column stays sortable even
-		 * when the header drawn last did not list it. */
-		$sort_page = get_order_string_page(false);
+		/* The page's own default sort is always usable, and it replaces a
+		 * stored or requested column that the page does not list. Before a
+		 * table header has been drawn there is no other column. */
+		if (isset($filters['sort_column']['default'])) {
+			$sort_page    = (string) get_current_page(false);
+			$sort_default = $filters['sort_column']['default'];
 
-		if (isset($filters['sort_column']['default'], $_SESSION['valid_sort_columns'][$sort_page]) &&
-			!in_array($filters['sort_column']['default'], $_SESSION['valid_sort_columns'][$sort_page], true)) {
-			$_SESSION['valid_sort_columns'][$sort_page][] = $filters['sort_column']['default'];
+			if (!in_array($sort_default, $_SESSION['valid_sort_columns'][$sort_page] ?? [], true)) {
+				$_SESSION['valid_sort_columns'][$sort_page][] = $sort_default;
+			}
+
+			if (validate_sort_column(get_request_var('sort_column')) === '') {
+				foreach (['sort_column' => $sort_default, 'sort_direction' => $filters['sort_direction']['default'] ?? 'ASC'] as $variable => $value) {
+					set_request_var($variable, $value);
+
+					if ($sess_prefix != '') {
+						$_SESSION[$filters[$variable]['session'] ?? $sess_prefix . '_' . $variable] = $value;
+					}
+				}
+			}
 		}
 
 		update_order_string();
@@ -1299,12 +1311,14 @@ function update_order_string(bool $inplace = false) : void {
 	}
 
 	if ($inplace) {
-		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
+		foreach ($_SESSION['sort_data'][$page] as $stored_column => $direction) {
 			/* Re-validate keys at read time; write-time sanitization may have
 			 * been bypassed by older session data stored before this fix. */
-			$column = validate_sort_column($column, $page);
+			$column = validate_sort_column($stored_column);
 
 			if ($column === '') {
+				unset($_SESSION['sort_data'][$page][$stored_column]);
+
 				continue;
 			}
 
@@ -1333,7 +1347,7 @@ function update_order_string(bool $inplace = false) : void {
 			unset($_SESSION['sort_string'][$page]);
 
 			$safe_direction = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
-			$sort_column    = validate_sort_column(get_request_var('sort_column'), $page);
+			$sort_column    = validate_sort_column(get_request_var('sort_column'));
 
 			if ($sort_column === '') {
 				return;
@@ -1363,7 +1377,7 @@ function update_order_string(bool $inplace = false) : void {
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$sort_column = validate_sort_column(get_request_var('sort_column'), $page);
+			$sort_column = validate_sort_column(get_request_var('sort_column'));
 
 			/* A refused column is not added, but the stored sort is still rebuilt
 			 * below so that it is rechecked against the page's sortable columns. */
@@ -1383,10 +1397,12 @@ function update_order_string(bool $inplace = false) : void {
 				}
 			}
 
-			foreach ($sort_data as $column => $direction) {
-				$column = validate_sort_column($column, $page);
+			foreach ($sort_data as $stored_column => $direction) {
+				$column = validate_sort_column($stored_column);
 
 				if ($column === '') {
+					unset($_SESSION['sort_data'][$page][$stored_column]);
+
 					continue;
 				}
 
@@ -1427,14 +1443,14 @@ function get_order_string() : string {
 
 	if (isset($_SESSION['sort_string'][$page])) {
 		/* A stored sort is rechecked on use. update_order_string() normally
-		 * rebuilt it earlier in this request, but a sort stored before the page
-		 * listed its sortable columns, or one left without its column list, is
-		 * dropped here in favor of the requested column. */
+		 * rebuilt it earlier in this request, but a sort that holds a column
+		 * the page does not list, or one left without its columns, is dropped
+		 * here in favor of the requested column. */
 		$stored = $_SESSION['sort_data'][$page] ?? [];
 		$usable = cacti_sizeof($stored) > 0;
 
 		foreach (array_keys($stored) as $column) {
-			if (validate_sort_column((string) $column, $page) === '') {
+			if (validate_sort_column((string) $column) === '') {
 				$usable = false;
 
 				break;
@@ -1450,7 +1466,7 @@ function get_order_string() : string {
 
 	/* Allowlist: identifiers are word chars and dots only; backtick in
 	 * the payload would escape the quoting even with $del='`'. */
-	$sort_column = validate_sort_column(get_request_var('sort_column'), $page);
+	$sort_column = validate_sort_column(get_request_var('sort_column'));
 
 	if ($sort_column === '') {
 		return '';
@@ -1468,39 +1484,29 @@ function get_order_string() : string {
 }
 
 /**
- * Checks a sort column for a page before it is used in an ORDER BY clause.
+ * Checks a sort column before it is used in an ORDER BY clause.
  *
  * html_header_sort() and html_header_sort_checkbox() record the columns a
- * table can be sorted by when they draw its header. The sort is validated
- * before the header is drawn, so the list used here is the one earlier
- * requests for the same table left in the session. Until a table has been
- * drawn once there is no list, and the column only has to be a plain
- * identifier that does not name a credential column.
+ * table can be sorted by when they draw its header, and
+ * validate_store_request_vars() adds the page's default sort column. The
+ * list is kept in the session per script, because the sort is validated
+ * before the header is drawn. It is not kept per action or tab: those come
+ * from the request, which could then select a key that has no list. A column
+ * that is not on the list is refused, so a page that has not drawn a header
+ * yet sorts on its default column only.
  *
  * @param string $column The requested or stored sort column.
- * @param string $page   The table key from get_order_string_page().
  *
  * @return string The column when it may be sorted on, otherwise ''.
  */
-function validate_sort_column(string $column, string $page) : string {
+function validate_sort_column(string $column) : string {
 	$column = sanitize_sql_column($column, '');
 
-	if ($column === '') {
-		return '';
+	if ($column !== '' && in_array($column, $_SESSION['valid_sort_columns'][(string) get_current_page(false)] ?? [], true)) {
+		return $column;
 	}
 
-	if (isset($_SESSION['valid_sort_columns'][$page])) {
-		return in_array($column, $_SESSION['valid_sort_columns'][$page], true) ? $column : '';
-	}
-
-	$name = strrchr($column, '.');
-	$name = $name === false ? $column : substr($name, 1);
-
-	if (preg_match('/(password_history|dbpass|password|passwd|passphrase|_pass|secret|community|token|sslkey|authkey|apikey|private_key|privatekey)\)?$/i', $name)) {
-		return '';
-	}
-
-	return $column;
+	return '';
 }
 
 /**

@@ -40,7 +40,7 @@ validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webap
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files"
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" save
 sort_lookup_files='^((graph_realtime|user_group_admin)\.php|lib/(html|html_tree|html_utility)\.php|tests/fixtures/Core/SortLookupChecks\.php)$'
-for scenario in first-view listed-column unsortable-column unlisted-column credential-column single-column single-column-refused default-outside-header wrapped-column stale-stored-sort orphan-stored-sort stored-sort remove-column remove-last-column; do
+for scenario in first-view unregistered-page listed-column unsortable-column unlisted-column no-default other-action-unlisted other-action-listed other-script single-column single-column-refused default-outside-header wrapped-column stale-stored-sort orphan-stored-sort stored-sort remove-column remove-last-column; do
 	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" sort "$scenario" > /dev/null
 done
 run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" helpers > /dev/null

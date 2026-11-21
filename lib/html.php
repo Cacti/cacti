@@ -732,33 +732,14 @@ function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $
 }
 
 /**
- * Build the session key for this renderer instance, action and tab.
- */
-function html_header_sort_page(int $page_count) : string {
-	$page = $page_count . '_' . str_replace('.php', '', get_current_script_name());
-
-	if (isrv('action')) {
-		$page .= '_' . grv('action');
-	}
-
-	if (isrv('tab')) {
-		$page .= '_' . grv('tab');
-	}
-
-	return $page;
-}
-
-/**
  * Record the columns this table can be sorted by for validate_sort_column().
  *
- * The sort is validated before the header is drawn, so the list is kept in
- * the session for later requests for the same table. Columns are added to the
- * list rather than replacing it, because one key can cover more than one
- * header: a page may list different columns per filter state, and the two
- * sortable header renderers count their tables separately.
+ * The list is kept per script and columns are only added to it, so it covers
+ * every sortable table the script has drawn in this session whatever action,
+ * tab or filter state the request named.
  */
-function html_header_sort_register(int $page_count, array $header_items) : void {
-	$page    = html_header_sort_page($page_count);
+function html_header_sort_register(array $header_items) : void {
+	$page    = (string) get_current_page(false);
 	$columns = $_SESSION['valid_sort_columns'][$page] ?? [];
 
 	foreach (array_keys($header_items) as $column) {
@@ -776,7 +757,15 @@ function html_header_sort_register(int $page_count, array $header_items) : void 
  * Retrieve the sort history for this renderer instance, action and tab.
  */
 function html_header_sort_order(int $page_count) : array {
-	$page = html_header_sort_page($page_count);
+	$page = $page_count . '_' . str_replace('.php', '', get_current_script_name());
+
+	if (isrv('action')) {
+		$page .= '_' . grv('action');
+	}
+
+	if (isrv('tab')) {
+		$page .= '_' . grv('tab');
+	}
 
 	if (isset($_SESSION['sort_data'][$page])) {
 		$order_data = $_SESSION['sort_data'][$page];
@@ -850,7 +839,7 @@ function html_header_sort(array $header_items, string $sort_column, string $sort
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
 
-	html_header_sort_register($page_count, $header_items);
+	html_header_sort_register($header_items);
 
 	$order_data = html_header_sort_order($page_count);
 
@@ -924,7 +913,7 @@ function html_header_sort_checkbox(array $header_items, string $sort_column, str
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
 
-	html_header_sort_register($page_count, $header_items);
+	html_header_sort_register($header_items);
 
 	$order_data = html_header_sort_order($page_count);
 
