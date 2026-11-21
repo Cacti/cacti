@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-10-01 18:09-0400\n"
+"POT-Creation-Date: 2026-11-20 18:04-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Cacti Developers <developers@cacti.net>\n"
 "Language-Team: Cacti Developers <developers@cacti.net>\n"
@@ -95,10 +95,10 @@ msgstr ""
 #: data_input.php data_queries.php data_source_profiles.php data_sources.php
 #: data_templates.php gprint_presets.php graph_templates.php graphs.php
 #: host.php host_templates.php include/global_arrays.php
-#: include/global_settings.php lib/api_automation.php lib/html.php
-#: lib/html_form.php lib/html_reports.php links.php login_providers.php
-#: managers.php package_keys.php package_repos.php pollers.php sites.php
-#: tree.php user_admin.php user_group_admin.php vdef.php
+#: include/global_settings.php layouts.php lib/api_automation.php lib/html.php
+#: lib/html_filter.php lib/html_form.php lib/html_reports.php links.php
+#: login_providers.php managers.php package_keys.php package_repos.php
+#: pollers.php sites.php tree.php user_admin.php user_group_admin.php vdef.php
 msgid "Delete"
 msgstr ""
 
@@ -241,9 +241,8 @@ msgstr ""
 msgid "Report Name"
 msgstr ""
 
-#: aggregate_graphs.php graphs.php host.php lib/html_graph.php
-#: lib/html_reports.php
-#: graph_realtime.php:417
+#: aggregate_graphs.php graph_realtime.php graphs.php host.php
+#: lib/html_graph.php lib/html_reports.php
 msgid "Timespan"
 msgstr ""
 
@@ -330,7 +329,8 @@ msgstr ""
 msgid "Aggregate Graph does not Exist"
 msgstr ""
 
-#: aggregate_graphs.php lib/html.php lib/html_reports.php utilities.php
+#: aggregate_graphs.php lib/html.php lib/html_graph.php lib/html_reports.php
+#: utilities.php
 msgid "Details"
 msgstr ""
 
@@ -502,9 +502,8 @@ msgstr ""
 msgid "Included in Aggregate"
 msgstr ""
 
-#: aggregate_graphs.php graph_templates.php graphs.php host_templates.php
-#: lib/html_graph.php lib/spikekill.php plugins.php
-#: graph_realtime.php:441
+#: aggregate_graphs.php graph_realtime.php graph_templates.php graphs.php
+#: host_templates.php lib/html_graph.php lib/spikekill.php plugins.php
 msgid "Size"
 msgstr ""
 
@@ -547,8 +546,8 @@ msgstr ""
 #: include/global_form.php include/global_settings.php lib/api_automation.php
 #: lib/auth.php lib/clog_webapi.php lib/html.php lib/html_form.php
 #: lib/html_graph.php lib/html_reports.php lib/html_tree.php lib/installer.php
-#: package_import.php rrdcheck.php settings.php support.php
-#: templates_import.php user_admin.php user_group_admin.php utilities.php
+#: package_import.php rrdcheck.php support.php templates_import.php
+#: user_admin.php user_group_admin.php utilities.php
 msgid "None"
 msgstr ""
 
@@ -746,8 +745,8 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: auth_changepassword.php auth_login.php lib/functions.php user_admin.php
-#: auth_resetpassword.php:331
+#: auth_changepassword.php auth_login.php auth_resetpassword.php
+#: lib/functions.php user_admin.php
 msgid "Username"
 msgstr ""
 
@@ -1231,8 +1230,9 @@ msgstr ""
 
 #: automation_devices.php automation_networks.php automation_snmp.php
 #: data_debug.php data_source_profiles.php host.php lib/functions.php
-#: lib/html_reports.php lib/spikekill.php package_repos.php plugins.php
-#: pollers.php support.php user_admin.php user_log.php utilities.php
+#: lib/html_reports.php lib/spikekill.php lib/utility.php package_repos.php
+#: plugins.php pollers.php support.php user_admin.php user_log.php
+#: utilities.php
 msgid "N/A"
 msgstr ""
 
@@ -1643,9 +1643,9 @@ msgstr ""
 
 #: automation_networks.php automation_snmp.php data_input.php data_queries.php
 #: data_source_profiles.php graph_templates.php include/global_form.php
-#: lib/html_reports.php lib/installer.php lib/vdef.php login_providers.php
-#: managers.php package_import.php package_repos.php pollers.php sites.php
-#: support.php user_admin.php utilities.php
+#: layouts.php lib/html_reports.php lib/installer.php lib/vdef.php
+#: login_providers.php managers.php package_import.php package_repos.php
+#: pollers.php sites.php support.php user_admin.php utilities.php
 msgid "Name"
 msgstr ""
 
@@ -2060,9 +2060,9 @@ msgstr ""
 
 #: automation_snmp.php automation_templates.php cdef.php color_templates.php
 #: data_input.php data_queries.php data_source_profiles.php host_templates.php
-#: lib/clog_webapi.php lib/html.php lib/html_form.php lib/html_graph.php
-#: package_import.php package_keys.php package_repos.php plugins.php
-#: user_log.php vdef.php
+#: lib/clog_webapi.php lib/html.php lib/html_filter.php lib/html_form.php
+#: lib/html_graph.php package_import.php package_keys.php package_repos.php
+#: plugins.php user_log.php vdef.php
 msgid "Cancel"
 msgstr ""
 
@@ -3169,33 +3169,12 @@ msgstr ""
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr ""
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
 msgstr ""
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
-msgstr ""
-
-#: data_sources.php
-msgid "The RRDfile could not be read, so no repairs were performed."
-msgstr ""
-
-#: data_sources.php
-msgid "No RRDfile repairs were necessary."
-msgstr ""
-
-#: data_sources.php
-msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
-msgstr ""
-
-#: data_sources.php
-#, php-format
-msgid "RRDtool Tune Info [ %s ]"
-msgstr ""
-
-#: data_sources.php
-msgid "Run Fix from Command Line"
 msgstr ""
 
 #: data_debug.php
@@ -3434,7 +3413,7 @@ msgstr ""
 msgid "For attribute '%s', issue found '%s'"
 msgstr ""
 
-#: data_debug.php
+#: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
 msgstr ""
 
@@ -3458,8 +3437,8 @@ msgstr ""
 #: data_debug.php data_sources.php data_templates.php graph_templates.php
 #: graphs.php graphs_new.php host.php host_templates.php lib/clog_webapi.php
 #: lib/html.php lib/html_graph.php lib/html_reports.php lib/html_tree.php
-#: managers.php package_import.php plugins.php rrdcheck.php settings.php
-#: support.php tree.php user_admin.php user_log.php utilities.php
+#: managers.php package_import.php plugins.php rrdcheck.php support.php
+#: tree.php user_admin.php user_log.php utilities.php
 msgid "All"
 msgstr ""
 
@@ -3523,6 +3502,10 @@ msgstr ""
 
 #: data_debug.php
 msgid "No Devices"
+msgstr ""
+
+#: data_input.php
+msgid "Input string contains dangerous shell characters"
 msgstr ""
 
 #: data_input.php
@@ -4279,6 +4262,10 @@ msgid "Change Data Source Profile"
 msgstr ""
 
 #: data_sources.php
+msgid "The Data Source Path may not contain whitespace, quotes or control characters."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "%d RRD files were backed up and will be recreated with new step value at next polling."
 msgstr ""
@@ -4436,6 +4423,18 @@ msgid "No Input Fields for the Selected Data Input Source"
 msgstr ""
 
 #: data_sources.php
+msgid "The RRDfile could not be read, so no repairs were performed."
+msgstr ""
+
+#: data_sources.php
+msgid "No RRDfile repairs were necessary."
+msgstr ""
+
+#: data_sources.php
+msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
+msgstr ""
+
+#: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr ""
@@ -4512,6 +4511,15 @@ msgstr ""
 
 #: data_sources.php
 msgid "Data Source Debug"
+msgstr ""
+
+#: data_sources.php
+#, php-format
+msgid "RRDtool Tune Info [ %s ]"
+msgstr ""
+
+#: data_sources.php
+msgid "Run Fix from Command Line"
 msgstr ""
 
 #: data_sources.php
@@ -4876,6 +4884,10 @@ msgstr ""
 
 #: graph_realtime.php
 msgid "Cacti Real-time Graphing"
+msgstr ""
+
+#: graph_realtime.php utilities.php
+msgid "Refresh Interval"
 msgstr ""
 
 #: graph_realtime.php lib/html.php lib/html_graph.php lib/html_reports.php
@@ -5993,7 +6005,7 @@ msgstr ""
 msgid "Contacting Device"
 msgstr ""
 
-#: host.php tree.php
+#: host.php lib/html_filter.php tree.php
 msgid "Edit"
 msgstr ""
 
@@ -6516,6 +6528,10 @@ msgstr ""
 
 #: host_templates.php
 msgid "No Device Template Archives Found"
+msgstr ""
+
+#: include/auth.php lib/auth.php
+msgid "Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server."
 msgstr ""
 
 #: include/auth.php
@@ -7269,7 +7285,7 @@ msgstr ""
 msgid "Cacti Builtin Authentication"
 msgstr ""
 
-#: include/global_arrays.php
+#: include/global_arrays.php lib/Auth/BasicAuthLoginProvider.php
 msgid "Web Basic Authentication"
 msgstr ""
 
@@ -7511,6 +7527,10 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Data Profiles"
+msgstr ""
+
+#: include/global_arrays.php layouts.php lib/html_filter.php
+msgid "Layouts"
 msgstr ""
 
 #: include/global_arrays.php
@@ -8665,7 +8685,7 @@ msgstr ""
 msgid "Classic"
 msgstr ""
 
-#: include/global_arrays.php
+#: include/global_arrays.php include/global_settings.php
 msgid "Modern"
 msgstr ""
 
@@ -9431,6 +9451,18 @@ msgid "Should be set to 1024 for memory and 1000 for traffic measurements."
 msgstr ""
 
 #: include/global_form.php
+msgid "Vertical Label Angle (--vertical-label-angle)"
+msgstr ""
+
+#: include/global_form.php
+msgid "RRDtool Default"
+msgstr ""
+
+#: include/global_form.php
+msgid "Label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank uses the RRDtool default. Angles other than 90 and 270 may overlap nearby content."
+msgstr ""
+
+#: include/global_form.php
 msgid "Slope Mode (--slope-mode)"
 msgstr ""
 
@@ -9576,6 +9608,22 @@ msgstr ""
 
 #: include/global_form.php
 msgid "The label for the right axis."
+msgstr ""
+
+#: include/global_form.php
+msgid "Right Axis Label Angle (--right-axis-label-angle)"
+msgstr ""
+
+#: include/global_form.php
+msgid "Right label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank follows the vertical label angle. Angles other than 90 and 270 may overlap nearby content."
+msgstr ""
+
+#: include/global_form.php
+msgid "Right Axis Label Range (--right-axis-range)"
+msgstr ""
+
+#: include/global_form.php
+msgid "Only show right axis labels within min:max, for example 0:100. Either bound may be blank. This does not change the axis scale. Requires RRDtool 1.11 or newer. Blank leaves labels unrestricted."
 msgstr ""
 
 #: include/global_form.php
@@ -10039,7 +10087,7 @@ msgstr ""
 msgid "Choose how items in this tree will be sorted."
 msgstr ""
 
-#: include/global_form.php
+#: include/global_form.php lib/html_filter.php
 msgid "Publish"
 msgstr ""
 
@@ -10740,11 +10788,27 @@ msgid "Select which files you wish to place in Debug mode regardless of the Gene
 msgstr ""
 
 #: include/global_settings.php
+msgid "Select File(s)"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Files Selected"
+msgstr ""
+
+#: include/global_settings.php
 msgid "Selective Plugin Debug"
 msgstr ""
 
 #: include/global_settings.php
 msgid "Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Select Plugin(s)"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Plugins Selected"
 msgstr ""
 
 #: include/global_settings.php
@@ -11430,11 +11494,31 @@ msgid "must be a non-negative integer."
 msgstr ""
 
 #: include/global_settings.php
-msgid "Bulkwalk Fetch Size"
+msgid "SNMP Behavior"
 msgstr ""
 
 #: include/global_settings.php
-msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN."
+msgid "SNMP Agent Support Enabled"
+msgstr ""
+
+#: include/global_settings.php
+msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Enable MD5 and DES for SNMPv3"
+msgstr ""
+
+#: include/global_settings.php
+msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Enable Credential Cache"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
 msgstr ""
 
 #: include/global_settings.php
@@ -11443,6 +11527,22 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Bulkwalk Fetch Size"
+msgstr ""
+
+#: include/global_settings.php
+msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Disable increasing OID Check"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Controls disabling check for increasing OID while walking OID tree."
 msgstr ""
 
 #: include/global_settings.php
@@ -11913,14 +12013,6 @@ msgstr ""
 msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr ""
 
-#: include/global_settings.php
-msgid "SNMP Agent Support Enabled"
-msgstr ""
-
-#: include/global_settings.php
-msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
-msgstr ""
-
 #: include/global_settings.php support.php
 msgid "Poller Type"
 msgstr ""
@@ -11962,14 +12054,6 @@ msgid "If you choose this option, Cacti will check for output that exceeds Cacti
 msgstr ""
 
 #: include/global_settings.php
-msgid "Disable increasing OID Check"
-msgstr ""
-
-#: include/global_settings.php
-msgid "Controls disabling check for increasing OID while walking OID tree."
-msgstr ""
-
-#: include/global_settings.php
 msgid "Remote Agent Timeout"
 msgstr ""
 
@@ -12007,10 +12091,6 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "By default, upon upgrading the Main Cacti system, it will perform a Full Sync to all Data Collectors.  This process may be time consuming.  Therefore, to allow upgrades to be completed quicker, we provide this option.  Note that if this is disabled, the Cacti administrator must force this process from the Data Collectors interface after upgrade."
-msgstr ""
-
-#: include/global_settings.php
-msgid "SNMP Behavior"
 msgstr ""
 
 #: include/global_settings.php
@@ -13078,7 +13158,8 @@ msgstr ""
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
 msgstr ""
 
-#: include/global_settings.php lib/auth.php user_admin.php
+#: include/global_settings.php lib/Auth/LocalAuthLoginProvider.php lib/auth.php
+#: user_admin.php
 msgid "Local"
 msgstr ""
 
@@ -13361,11 +13442,36 @@ msgid "When performing batch spike removal, only the templates selected below wi
 msgstr ""
 
 #: include/global_settings.php
+msgid "Select Template(s)"
+msgstr ""
+
+#: include/global_settings.php lib/html.php lib/html_graph.php
+#: lib/html_tree.php
+msgid "Templates Selected"
+msgstr ""
+
+#: include/global_settings.php
 msgid "Backup Retention"
 msgstr ""
 
 #: include/global_settings.php
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
+msgstr ""
+
+#: include/global_settings.php lib/html.php lib/html_graph.php
+msgid "Graph Actions"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Collapsed Menu"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
 msgstr ""
 
 #: include/global_settings.php
@@ -13374,6 +13480,18 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Page Filter Format"
+msgstr ""
+
+#: include/global_settings.php
+msgid "How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows only the classic inline filter. The Layouts selector is available in Modern only."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Legacy"
 msgstr ""
 
 #: include/global_settings.php
@@ -13800,6 +13918,133 @@ msgstr ""
 
 #: install/install.php
 msgid "Test"
+msgstr ""
+
+#: layouts.php
+msgid "Make Global"
+msgstr ""
+
+#: layouts.php
+msgid "Make Local"
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to Delete the following Layout."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to Delete the following Layouts."
+msgstr ""
+
+#: layouts.php lib/html_filter.php
+msgid "Delete Layout"
+msgstr ""
+
+#: layouts.php
+msgid "Delete Layouts"
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layout Global to all users."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layouts Global to all users."
+msgstr ""
+
+#: layouts.php
+msgid "Make Layout Global"
+msgstr ""
+
+#: layouts.php
+msgid "Make Layouts Global"
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layout Local to you."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layouts Local to you."
+msgstr ""
+
+#: layouts.php
+msgid "Make Layout Local"
+msgstr ""
+
+#: layouts.php
+msgid "Make Layouts Local"
+msgstr ""
+
+#: layouts.php
+msgid "The name of this Layout."
+msgstr ""
+
+#: layouts.php links.php
+msgid "Page"
+msgstr ""
+
+#: layouts.php
+msgid "The page this Layout applies to."
+msgstr ""
+
+#: layouts.php lib/html_reports.php tree.php
+msgid "Owner"
+msgstr ""
+
+#: layouts.php
+msgid "The owner of this Layout, or Global when shared with all users."
+msgstr ""
+
+#: layouts.php lib/html_tree.php
+msgid "Filter"
+msgstr ""
+
+#: layouts.php
+msgid "The stored filter this Layout applies."
+msgstr ""
+
+#: layouts.php lib/html_filter.php
+msgid "Global"
+msgstr ""
+
+#: layouts.php
+#, php-format
+msgid "User %d"
+msgstr ""
+
+#: layouts.php
+msgid "No Layouts Found"
+msgstr ""
+
+#: lib/Auth/LdapLoginProvider.php lib/Auth/LocalAuthLoginProvider.php
+#: lib/Auth/OpenIdLoginProvider.php lib/Auth/SamlLoginProvider.php lib/auth.php
+#: login_sso.php
+msgid "Access Denied!  Login Failed."
+msgstr ""
+
+#: lib/Auth/LocalAuthLoginProvider.php
+msgid "Access Denied!  Login failed, account disabled."
+msgstr ""
+
+#: lib/Auth/LocalAuthLoginProvider.php lib/auth.php
+msgid "Access Denied!  No password provided by user."
+msgstr ""
+
+#: lib/Auth/LocalAuthLoginProvider.php
+msgid "Access Denied! Login Failed."
+msgstr ""
+
+#: lib/Auth/LocalAuthLoginProvider.php
+msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
+msgstr ""
+
+#: lib/Auth/OpenIdLoginProvider.php lib/Auth/SamlLoginProvider.php
+msgid "Access Denied!  You are not a member of the required group."
+msgstr ""
+
+#: lib/CactiValidator.php
+msgid "Invalid RRDtool axis option."
 msgstr ""
 
 #: lib/aggregate.php
@@ -14543,21 +14788,9 @@ msgstr ""
 msgid "Access Denied!  Login Disabled."
 msgstr ""
 
-#: lib/auth.php login_sso.php
-msgid "Access Denied!  Login Failed."
-msgstr ""
-
-#: lib/auth.php
-msgid "Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server."
-msgstr ""
-
 #: lib/auth.php
 #, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
-msgstr ""
-
-#: lib/auth.php
-msgid "Access Denied!  No password provided by user."
 msgstr ""
 
 #: lib/auth.php login_sso.php
@@ -14595,7 +14828,7 @@ msgid "Cacti Login Failure"
 msgstr ""
 
 #: lib/auth.php
-msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
+msgid "Authentication is set to None, which is no longer supported. A system administrator must set a supported 'auth_method' value in the Cacti settings table before login can proceed."
 msgstr ""
 
 #: lib/auth.php
@@ -14673,6 +14906,11 @@ msgstr ""
 #: lib/clog_webapi.php
 #, php-format
 msgid "Removal Failed due to the Administrator blocking removal of archived files.  The file '%s' can not be removed."
+msgstr ""
+
+#: lib/clog_webapi.php
+#, php-format
+msgid "Unable to open log file '%s' for writing."
 msgstr ""
 
 #: lib/clog_webapi.php
@@ -15569,8 +15807,8 @@ msgstr ""
 msgid "Data Query:"
 msgstr ""
 
-#: lib/html.php
-msgid "Graph Actions"
+#: lib/html.php lib/html_graph.php
+msgid "CSV Export"
 msgstr ""
 
 #: lib/html.php
@@ -15579,10 +15817,6 @@ msgstr ""
 
 #: lib/html.php lib/html_graph.php
 msgid "Realtime"
-msgstr ""
-
-#: lib/html.php
-msgid "Stop Realtime"
 msgstr ""
 
 #: lib/html.php
@@ -15910,6 +16144,10 @@ msgid "Password Validation Passes"
 msgstr ""
 
 #: lib/html.php
+msgid "Stop Realtime"
+msgstr ""
+
+#: lib/html.php
 msgid "Report a bug"
 msgstr ""
 
@@ -15921,7 +16159,7 @@ msgstr ""
 msgid "Select to Search"
 msgstr ""
 
-#: lib/html.php settings.php
+#: lib/html.php
 msgid "Enter keyword"
 msgstr ""
 
@@ -15966,6 +16204,10 @@ msgid "Connection Successful"
 msgstr ""
 
 #: lib/html.php
+msgid "Time Graph View"
+msgstr ""
+
+#: lib/html.php
 msgid "Use System Color"
 msgstr ""
 
@@ -15975,10 +16217,6 @@ msgstr ""
 
 #: lib/html.php lib/html_graph.php lib/html_tree.php
 msgid "All Graph Templates"
-msgstr ""
-
-#: lib/html.php lib/html_graph.php lib/html_tree.php settings.php
-msgid "Templates Selected"
 msgstr ""
 
 #: lib/html.php
@@ -16001,7 +16239,7 @@ msgstr ""
 msgid "Begin with"
 msgstr ""
 
-#: lib/html.php lib/html_form.php
+#: lib/html.php lib/html_filter.php lib/html_form.php
 msgid "Close"
 msgstr ""
 
@@ -16090,6 +16328,10 @@ msgid "Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a mor
 msgstr ""
 
 #: lib/html.php
+msgid "Reset password"
+msgstr ""
+
+#: lib/html.php
 #, php-format
 msgid "Version %s | %s"
 msgstr ""
@@ -16127,6 +16369,10 @@ msgid "Purging Data"
 msgstr ""
 
 #: lib/html_filter.php
+msgid "Refresh page"
+msgstr ""
+
+#: lib/html_filter.php
 msgid "Custom"
 msgstr ""
 
@@ -16135,7 +16381,15 @@ msgid "From"
 msgstr ""
 
 #: lib/html_filter.php
+msgid "Start of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
+msgstr ""
+
+#: lib/html_filter.php
 msgid "Start Date Selector"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "End of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
 msgstr ""
 
 #: lib/html_filter.php
@@ -16160,6 +16414,74 @@ msgstr ""
 
 #: lib/html_filter.php
 msgid "Clear Selected Timespan"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Edit the current filter"
+msgstr ""
+
+#: lib/html_filter.php tree.php
+msgid "Rename"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Rename the selected layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Delete the selected layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Save As"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Save this layout as a new personal layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Edit Filter"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Filter Name"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "(New Layout)"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Apply"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "The layout operation failed."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Please enter a filter name."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Save the layout before publishing it."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Enter a new name for the layout."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Rename Layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "OK"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Delete the selected layout?"
 msgstr ""
 
 #: lib/html_form.php
@@ -16410,10 +16732,6 @@ msgstr ""
 #: lib/html_graph.php
 #, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr ""
-
-#: lib/html.php lib/html_graph.php
-msgid "CSV Export"
 msgstr ""
 
 #: lib/html_graph.php
@@ -16922,10 +17240,6 @@ msgstr ""
 msgid "User Level"
 msgstr ""
 
-#: lib/html_reports.php tree.php
-msgid "Owner"
-msgstr ""
-
 #: lib/html_reports.php
 msgid "Notification Detail"
 msgstr ""
@@ -16966,10 +17280,6 @@ msgstr ""
 
 #: lib/html_tree.php
 msgid "Applied"
-msgstr ""
-
-#: lib/html_tree.php
-msgid "Filter"
 msgstr ""
 
 #: lib/html_tree.php
@@ -17047,6 +17357,10 @@ msgstr ""
 
 #: lib/import.php
 msgid "rejected"
+msgstr ""
+
+#: lib/import.php lib/installer.php
+msgid "kept existing"
 msgstr ""
 
 #: lib/import.php lib/installer.php
@@ -18647,12 +18961,12 @@ msgstr ""
 
 #: lib/plugins.php
 #, php-format
-msgid "'%s' versions '%s' above or in range are required to install '%s'. "
+msgid "'%s' must first be installed before '%s' is installed. "
 msgstr ""
 
 #: lib/plugins.php
 #, php-format
-msgid "'%s' must first be installed before '%s' is installed. "
+msgid "'%s' versions '%s' above or in range are required to install '%s'. "
 msgstr ""
 
 #: lib/plugins.php
@@ -18675,7 +18989,22 @@ msgstr ""
 
 #: lib/plugins.php
 #, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
+msgid "Plugin '%s' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update."
+msgstr ""
+
+#: lib/plugins.php
+#, php-format
+msgid "Plugin '%s' failed its configuration check. Review the plugin settings before enabling it."
 msgstr ""
 
 #: lib/plugins.php
@@ -18920,6 +19249,26 @@ msgstr ""
 
 #: lib/rrd.php
 #, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile only includes %d.  The missing Data Sources will be added."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "The Graph requires %d Data Sources but the RRDfile includes %d.  The extra Data Sources will be removed."
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
+msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
+msgstr ""
+
+#: lib/rrd.php
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr ""
 
@@ -18936,11 +19285,6 @@ msgstr ""
 #: lib/rrd.php
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr ""
-
-#: lib/rrd.php
-#, php-format
-msgid "DS '%s' missing in Cacti definition"
 msgstr ""
 
 #: lib/rrd.php
@@ -19027,16 +19371,16 @@ msgid "CDP Unknown Data points (0)"
 msgstr ""
 
 #: lib/rrd.php
+#, php-format
+msgid "rename %s to %s"
+msgstr ""
+
+#: lib/rrd.php
 msgid "Errors Found"
 msgstr ""
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
-msgstr ""
-
-#: lib/rrd.php
-#, php-format
-msgid "rename %s to %s"
 msgstr ""
 
 #: lib/rrd.php
@@ -19372,7 +19716,264 @@ msgid "Your End Date '%s' is before January 1993.  Please pick a more recent End
 msgstr ""
 
 #: lib/utility.php
-msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
+msgid "Default collation used by the server when creating databases and tables."
+msgstr ""
+
+#: lib/utility.php
+msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
+msgstr ""
+
+#: lib/utility.php
+msgid "Default character set used by the server."
+msgstr ""
+
+#: lib/utility.php
+msgid "e.g. utf8mb4, utf8, latin1."
+msgstr ""
+
+#: lib/utility.php
+msgid "Character set the client uses when sending statements to the server."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum number of simultaneous client connections permitted."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; default 151. Allow enough for the pollers plus user logins."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy name for the open-table cache; renamed to table_open_cache."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer. Use table_open_cache on modern servers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size of one packet or any generated/intermediate string."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; keep at or above 16M for remote pollers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size to which user-created MEMORY tables may grow."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; sized relative to total system memory."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum size of internal in-memory temporary tables before they spill to disk."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; a larger value keeps temporary tables in memory."
+msgstr ""
+
+#: lib/utility.php
+msgid "Minimum per-join buffer size for joins that do not use indexes."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; per-connection allocation, default 262144."
+msgstr ""
+
+#: lib/utility.php
+msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; per-connection allocation, default 2097152."
+msgstr ""
+
+#: lib/utility.php
+msgid "Store each InnoDB table and its indexes in its own .ibd tablespace file."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; ON is recommended."
+msgstr ""
+
+#: lib/utility.php
+msgid "InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format."
+msgstr ""
+
+#: lib/utility.php
+msgid "Antelope, Barracuda."
+msgstr ""
+
+#: lib/utility.php
+msgid "Allow index key prefixes longer than 767 bytes (requires the Barracuda format)."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON/1 or OFF/0; this behaviour is now always enabled."
+msgstr ""
+
+#: lib/utility.php
+msgid "Total memory InnoDB uses to cache table and index data."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; commonly 25%-80% of total system memory."
+msgstr ""
+
+#: lib/utility.php
+msgid "Write pages twice (the doublewrite buffer) to protect against partial page writes."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy pool for the InnoDB internal data dictionary and structures."
+msgstr ""
+
+#: lib/utility.php
+msgid "Bytes; obsolete on modern servers."
+msgstr ""
+
+#: lib/utility.php
+msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
+msgstr ""
+
+#: lib/utility.php
+msgid "Seconds; default 50."
+msgstr ""
+
+#: lib/utility.php
+msgid "Method used to flush data and log files to disk."
+msgstr ""
+
+#: lib/utility.php
+msgid "O_DIRECT, fsync, O_DSYNC, and similar."
+msgstr ""
+
+#: lib/utility.php
+msgid "Controls how the redo log is written and flushed at transaction commit."
+msgstr ""
+
+#: lib/utility.php
+msgid "0, 1, or 2."
+msgstr ""
+
+#: lib/utility.php
+msgid "Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
+msgstr ""
+
+#: lib/utility.php
+msgid "Write and flush the InnoDB redo log every N seconds."
+msgstr ""
+
+#: lib/utility.php
+msgid "Seconds (1-2700); default 1."
+msgstr ""
+
+#: lib/utility.php
+msgid "Number of I/O threads used for read operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php
+msgid "1-64; default 4."
+msgstr ""
+
+#: lib/utility.php
+msgid "Number of I/O threads used for write operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php
+msgid "Number of regions the InnoDB buffer pool is divided into."
+msgstr ""
+
+#: lib/utility.php
+msgid "1-64; MariaDB removed this in 10.6."
+msgstr ""
+
+#: lib/utility.php
+msgid "Estimated I/O operations per second available to InnoDB background tasks."
+msgstr ""
+
+#: lib/utility.php
+msgid "Integer; use higher values for SSD/NVMe storage."
+msgstr ""
+
+#: lib/utility.php
+msgid "Maximum IOPS InnoDB may use when flushing falls behind."
+msgstr ""
+
+#: lib/utility.php
+msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
+msgstr ""
+
+#: lib/utility.php
+msgid "0, 1, or 2; use 0 on SSD storage."
+msgstr ""
+
+#: lib/utility.php
+msgid "Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; MariaDB only."
+msgstr ""
+
+#: lib/utility.php
+msgid "Enforce strict snapshot isolation for InnoDB transactions."
+msgstr ""
+
+#: lib/utility.php
+msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller."
+msgstr ""
+
+#: lib/utility.php
+msgid "Removed"
+msgstr ""
+
+#: lib/utility.php
+msgid "Deprecated"
+msgstr ""
+
+#: lib/utility.php
+msgid "Not applicable to this engine"
+msgstr ""
+
+#: lib/utility.php
+msgid "Supported"
+msgstr ""
+
+#: lib/utility.php
+#, php-format
+msgid "%s Variable Capability Matrix"
+msgstr ""
+
+#: lib/utility.php
+msgid "Support by engine and version for each Cacti-recommended variable"
+msgstr ""
+
+#: lib/utility.php
+msgid "Variable"
+msgstr ""
+
+#: lib/utility.php
+msgid "Available settings:"
+msgstr ""
+
+#: lib/utility.php
+msgid "N/A - Not applicable to this engine"
+msgstr ""
+
+#: lib/utility.php
+msgid "MariaDB 10.11+ and MySQL 8.4+ are the recommended, supported releases for Cacti 1.3.x (available on Rocky Linux 9 through the vendor module streams). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr ""
 
 #: lib/utility.php
@@ -19498,7 +20099,7 @@ msgid "If you have SSD disks, use this suggestion.  If you have physical hard dr
 msgstr ""
 
 #: lib/utility.php
-msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr ""
 
 #: lib/utility.php
@@ -19528,10 +20129,6 @@ msgstr ""
 
 #: lib/utility.php
 msgid "Note: Many changes below require a database restart"
-msgstr ""
-
-#: lib/utility.php
-msgid "Variable"
 msgstr ""
 
 #: lib/utility.php
@@ -19640,10 +20237,6 @@ msgstr ""
 
 #: links.php user_admin.php user_group_admin.php
 msgid "Top Console"
-msgstr ""
-
-#: links.php
-msgid "Page"
 msgstr ""
 
 #: links.php
@@ -20665,11 +21258,6 @@ msgstr ""
 
 #: package_import.php
 #, php-format
-msgid "Unable to create package temporary directory %s."
-msgstr ""
-
-#: package_import.php
-#, php-format
 msgid "The Package %s Imported Successfully"
 msgstr ""
 
@@ -21189,7 +21777,7 @@ msgstr ""
 
 #: plugins.php
 #, php-format
-msgid "The action '%s' '%s' on Plugin '%s' can not be taken as the Plugin is integrated."
+msgid "The action '%s' on Plugin '%s' can not be taken as the Plugin is integrated."
 msgstr ""
 
 #: plugins.php
@@ -21214,9 +21802,9 @@ msgstr ""
 msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
 msgstr ""
 
-#: lib/plugins.php
+#: plugins.php
 #, php-format
-msgid "Plugin '%s' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update."
+msgid "Plugin '%s' passed its configuration check and can be enabled."
 msgstr ""
 
 #: plugins.php
@@ -22390,30 +22978,6 @@ msgid "Poller Interval must be less than Cron Interval"
 msgstr ""
 
 #: settings.php
-msgid "Select Plugin(s)"
-msgstr ""
-
-#: settings.php
-msgid "Plugins Selected"
-msgstr ""
-
-#: settings.php
-msgid "Select File(s)"
-msgstr ""
-
-#: settings.php
-msgid "Files Selected"
-msgstr ""
-
-#: settings.php
-msgid "Select Template(s)"
-msgstr ""
-
-#: settings.php
-msgid "All Templates Selected"
-msgstr ""
-
-#: settings.php
 msgid "Send a Test Email"
 msgstr ""
 
@@ -23221,7 +23785,6 @@ msgid "Max Total Memory Possible"
 msgstr ""
 
 #: support.php
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -23488,6 +24051,10 @@ msgid "You do not have permission to modify this tree."
 msgstr ""
 
 #: tree.php
+msgid "You do not have permission to view this tree."
+msgstr ""
+
+#: tree.php
 msgctxt "ordering of tree items"
 msgid "inherit"
 msgstr ""
@@ -23628,10 +24195,6 @@ msgstr ""
 
 #: tree.php
 msgid "New Node"
-msgstr ""
-
-#: tree.php
-msgid "Rename"
 msgstr ""
 
 #: tree.php
@@ -24608,11 +25171,6 @@ msgid "Cacti System Utilities"
 msgstr ""
 
 #: utilities.php
-#: graph_realtime.php:427
-msgid "Refresh Interval"
-msgstr ""
-
-#: utilities.php
 msgid "Overrun Warning"
 msgstr ""
 
@@ -24978,527 +25536,4 @@ msgstr ""
 
 #: vdef.php
 msgid "No VDEFs"
-msgstr ""
-
-#: lib/utility.php:1147
-msgid ""
-"Default collation used by the server when creating databases and tables."
-msgstr ""
-
-#: lib/utility.php:1148
-msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
-msgstr ""
-
-#: lib/utility.php:1153
-msgid "Default character set used by the server."
-msgstr ""
-
-#: lib/utility.php:1154 lib/utility.php:1160
-msgid "e.g. utf8mb4, utf8, latin1."
-msgstr ""
-
-#: lib/utility.php:1159
-msgid "Character set the client uses when sending statements to the server."
-msgstr ""
-
-#: lib/utility.php:1165
-msgid "Maximum number of simultaneous client connections permitted."
-msgstr ""
-
-#: lib/utility.php:1166
-msgid "Integer; default 151. Allow enough for the pollers plus user logins."
-msgstr ""
-
-#: lib/utility.php:1171
-msgid "Legacy name for the open-table cache; renamed to table_open_cache."
-msgstr ""
-
-#: lib/utility.php:1172
-msgid "Integer. Use table_open_cache on modern servers."
-msgstr ""
-
-#: lib/utility.php:1177
-msgid "Maximum size of one packet or any generated/intermediate string."
-msgstr ""
-
-#: lib/utility.php:1178
-msgid "Bytes; keep at or above 16M for remote pollers."
-msgstr ""
-
-#: lib/utility.php:1183
-msgid "Maximum size to which user-created MEMORY tables may grow."
-msgstr ""
-
-#: lib/utility.php:1184
-msgid "Bytes; sized relative to total system memory."
-msgstr ""
-
-#: lib/utility.php:1189
-msgid ""
-"Maximum size of internal in-memory temporary tables before they spill to "
-"disk."
-msgstr ""
-
-#: lib/utility.php:1190
-msgid "Bytes; a larger value keeps temporary tables in memory."
-msgstr ""
-
-#: lib/utility.php:1195
-msgid "Minimum per-join buffer size for joins that do not use indexes."
-msgstr ""
-
-#: lib/utility.php:1196
-msgid "Bytes; per-connection allocation, default 262144."
-msgstr ""
-
-#: lib/utility.php:1201
-msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
-msgstr ""
-
-#: lib/utility.php:1202
-msgid "Bytes; per-connection allocation, default 2097152."
-msgstr ""
-
-#: lib/utility.php:1207
-msgid ""
-"Store each InnoDB table and its indexes in its own .ibd tablespace file."
-msgstr ""
-
-#: lib/utility.php:1208
-msgid "ON or OFF; ON is recommended."
-msgstr ""
-
-#: lib/utility.php:1213
-msgid ""
-"InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the "
-"only format."
-msgstr ""
-
-#: lib/utility.php:1214
-msgid "Antelope, Barracuda."
-msgstr ""
-
-#: lib/utility.php:1219
-msgid ""
-"Allow index key prefixes longer than 767 bytes (requires the Barracuda "
-"format)."
-msgstr ""
-
-#: lib/utility.php:1220
-msgid "ON/1 or OFF/0; this behaviour is now always enabled."
-msgstr ""
-
-#: lib/utility.php:1225
-msgid "Total memory InnoDB uses to cache table and index data."
-msgstr ""
-
-#: lib/utility.php:1226
-msgid "Bytes; commonly 25%-80% of total system memory."
-msgstr ""
-
-#: lib/utility.php:1231
-msgid ""
-"Write pages twice (the doublewrite buffer) to protect against partial page "
-"writes."
-msgstr ""
-
-#: lib/utility.php:1232
-msgid "ON or OFF."
-msgstr ""
-
-#: lib/utility.php:1237
-msgid "Legacy pool for the InnoDB internal data dictionary and structures."
-msgstr ""
-
-#: lib/utility.php:1238
-msgid "Bytes; obsolete on modern servers."
-msgstr ""
-
-#: lib/utility.php:1243
-msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
-msgstr ""
-
-#: lib/utility.php:1244
-msgid "Seconds; default 50."
-msgstr ""
-
-#: lib/utility.php:1249
-msgid "Method used to flush data and log files to disk."
-msgstr ""
-
-#: lib/utility.php:1250
-msgid "O_DIRECT, fsync, O_DSYNC, and similar."
-msgstr ""
-
-#: lib/utility.php:1255
-msgid "Controls how the redo log is written and flushed at transaction commit."
-msgstr ""
-
-#: lib/utility.php:1256
-msgid "0, 1, or 2."
-msgstr ""
-
-#: lib/utility.php:1261
-msgid ""
-"Legacy single setting for InnoDB file I/O threads, replaced by the read/"
-"write I/O thread settings."
-msgstr ""
-
-#: lib/utility.php:1262
-msgid ""
-"Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
-msgstr ""
-
-#: lib/utility.php:1267
-msgid "Write and flush the InnoDB redo log every N seconds."
-msgstr ""
-
-#: lib/utility.php:1268
-msgid "Seconds (1-2700); default 1."
-msgstr ""
-
-#: lib/utility.php:1273
-msgid "Number of I/O threads used for read operations in InnoDB."
-msgstr ""
-
-#: lib/utility.php:1274 lib/utility.php:1280
-msgid "1-64; default 4."
-msgstr ""
-
-#: lib/utility.php:1279
-msgid "Number of I/O threads used for write operations in InnoDB."
-msgstr ""
-
-#: lib/utility.php:1285
-msgid "Number of regions the InnoDB buffer pool is divided into."
-msgstr ""
-
-#: lib/utility.php:1286
-msgid "1-64; MariaDB removed this in 10.6."
-msgstr ""
-
-#: lib/utility.php:1291
-msgid ""
-"Estimated I/O operations per second available to InnoDB background tasks."
-msgstr ""
-
-#: lib/utility.php:1292 lib/utility.php:1298
-msgid "Integer; use higher values for SSD/NVMe storage."
-msgstr ""
-
-#: lib/utility.php:1297
-msgid "Maximum IOPS InnoDB may use when flushing falls behind."
-msgstr ""
-
-#: lib/utility.php:1303
-msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
-msgstr ""
-
-#: lib/utility.php:1304
-msgid "0, 1, or 2; use 0 on SSD storage."
-msgstr ""
-
-#: lib/utility.php:1309
-msgid ""
-"Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely "
-"disabled."
-msgstr ""
-
-#: lib/utility.php:1310
-msgid "ON or OFF; MariaDB only."
-msgstr ""
-
-#: lib/utility.php:1314
-msgid "Enforce strict snapshot isolation for InnoDB transactions."
-msgstr ""
-
-#: lib/utility.php:1315
-msgid ""
-"ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF "
-"for the Cacti poller."
-msgstr ""
-
-#: lib/utility.php:1434 lib/utility.php:1529
-msgid "Removed"
-msgstr ""
-
-#: lib/utility.php:1436 lib/utility.php:1528
-msgid "Deprecated"
-msgstr ""
-
-#: lib/utility.php:1438
-msgid "Not applicable to this engine"
-msgstr ""
-
-#: lib/utility.php:1440 lib/utility.php:1527
-msgid "Supported"
-msgstr ""
-
-#: lib/utility.php:1483
-#, php-format
-msgid "%s Variable Capability Matrix"
-msgstr ""
-
-#: lib/utility.php:1483
-msgid "Support by engine and version for each Cacti-recommended variable"
-msgstr ""
-
-#: lib/utility.php:1512
-msgid "Available settings:"
-msgstr ""
-
-#: lib/utility.php:1530
-msgid "N/A - Not applicable to this engine"
-msgstr ""
-
-#: lib/utility.php:1778 lib/utility.php:1814
-msgid ""
-"If you have SSD disks, set this to 0. Otherwise, do not set this setting."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Layouts"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "(New Layout)"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Rename the selected layout"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Delete the selected layout"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Layout Name"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "New Layout"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Rename Layout"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "The layout operation failed."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Delete the selected layout?"
-msgstr ""
-
-#: layouts.php
-msgid "User %d"
-msgstr ""
-
-#: lib/html_filter.php layouts.php
-msgid "Global"
-msgstr ""
-
-#: include/global_settings.php
-msgid "Page Filter Format"
-msgstr ""
-
-#: include/global_settings.php
-msgid "How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows only the classic inline filter. The Layouts selector is available in Modern only."
-msgstr ""
-
-#: include/global_arrays.php
-msgid "Filters"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Edit Filter"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Filter Name"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Save As"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Edit the current filter"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Save this layout as a new personal layout"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Please enter a filter name."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Save the layout before publishing it."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Apply"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Enter a new name for the layout."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Refresh page"
-msgstr ""
-
-#: lib/html_filter.php
-msgid "Start of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
-msgstr ""
-
-#: lib/html_filter.php
-msgid "End of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
-msgstr ""
-
-#: layouts.php
-msgid "Make Global"
-msgstr ""
-
-#: layouts.php
-msgid "Make Local"
-msgstr ""
-
-#: layouts.php
-msgid "Make Layout Global"
-msgstr ""
-
-#: layouts.php
-msgid "Make Layouts Global"
-msgstr ""
-
-#: layouts.php
-msgid "Make Layout Local"
-msgstr ""
-
-#: layouts.php
-msgid "Make Layouts Local"
-msgstr ""
-
-#: layouts.php
-msgid "Delete Layout"
-msgstr ""
-
-#: layouts.php
-msgid "Delete Layouts"
-msgstr ""
-
-#: layouts.php
-msgid "No Layouts Found"
-msgstr ""
-
-#: layouts.php
-msgid "The name of this Layout."
-msgstr ""
-
-#: layouts.php
-msgid "The page this Layout applies to."
-msgstr ""
-
-#: layouts.php
-msgid "The owner of this Layout, or Global when shared with all users."
-msgstr ""
-
-#: layouts.php
-msgid "The stored filter this Layout applies."
-msgstr ""
-
-#: layouts.php
-msgid "Click 'Continue' to Delete the following Layout."
-msgstr ""
-
-#: layouts.php
-msgid "Click 'Continue' to Delete the following Layouts."
-msgstr ""
-
-#: layouts.php
-msgid "Click 'Continue' to make the following Layout Global to all users."
-msgstr ""
-
-#: layouts.php
-msgid "Click 'Continue' to make the following Layouts Global to all users."
-msgstr ""
-
-#: layouts.php
-msgid "Click 'Continue' to make the following Layout Local to you."
-msgstr ""
-
-#: layouts.php
-msgid "Click 'Continue' to make the following Layouts Local to you."
-msgstr ""
-
-#: lib/html.php:3658
-msgid "Reset password"
-msgstr ""
-
-#: lib/Auth/LocalAuthLoginProvider.php:164
-msgid "Access Denied! Login Failed."
-msgstr ""
-
-#: include/global_form.php
-msgid "Vertical Label Angle (--vertical-label-angle)"
-msgstr ""
-
-#: include/global_form.php
-msgid "RRDtool Default"
-msgstr ""
-
-#: include/global_form.php
-msgid "Label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank uses the RRDtool default. Angles other than 90 and 270 may overlap nearby content."
-msgstr ""
-
-#: include/global_form.php
-msgid "Right Axis Label Angle (--right-axis-label-angle)"
-msgstr ""
-
-#: include/global_form.php
-msgid "Right label rotation in degrees counter clockwise. Requires RRDtool 1.11 or newer. Blank follows the vertical label angle. Angles other than 90 and 270 may overlap nearby content."
-msgstr ""
-
-#: include/global_form.php
-msgid "Right Axis Label Range (--right-axis-range)"
-msgstr ""
-
-#: include/global_form.php
-msgid "Only show right axis labels within min:max, for example 0:100. Either bound may be blank. This does not change the axis scale. Requires RRDtool 1.11 or newer. Blank leaves labels unrestricted."
-msgstr ""
-
-#: lib/CactiValidator.php
-msgid "Invalid RRDtool axis option."
-msgstr ""
-
-#: plugins.php
-#, php-format
-msgid "Plugin '%s' passed its configuration check and can be enabled."
-msgstr ""
-
-#: lib/plugins.php
-#, php-format
-msgid "Plugin '%s' failed its configuration check. Review the plugin settings before enabling it."
-msgstr ""
-
-#: lib/plugins.php
-#, php-format
-msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
-msgstr ""
-
-#: include/global_settings.php
-msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
-msgstr ""
-
-#: include/global_settings.php
-msgid "Collapsed Menu"
-msgstr ""
-
-#: include/global_settings.php
-msgid "Always-visible Icons"
 msgstr ""
