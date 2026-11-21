@@ -132,6 +132,12 @@ function api_auth_logout_everywhere() {
 		db_execute_prepared('DELETE FROM user_auth_cache
 			WHERE user_id = ?',
 			array($user));
+
+		/* the user's other sessions end too, this one stays so the reply can be sent */
+		db_execute_prepared('DELETE FROM sessions
+			WHERE user_id = ?
+			AND id != ?',
+			array($user, session_id()));
 	}
 }
 
