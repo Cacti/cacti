@@ -21,7 +21,8 @@ foreach (['raise_message', 'raise_message_html', 'raise_message_has_markup'] as 
 	cacti_fixture_source_function($root . '/lib/functions.php', $function, __NAMESPACE__);
 }
 
-foreach (['reports_graphs_action_execute', 'reports_queue', 'reports_add_devices'] as $function) {
+// reports_add_devices() asks the ownership guard; the session user owns the fixture report.
+foreach (['reports_owner_authorized', 'reports_graphs_action_execute', 'reports_queue', 'reports_add_devices'] as $function) {
 	cacti_fixture_source_function($root . '/lib/reports.php', $function, __NAMESPACE__);
 }
 
