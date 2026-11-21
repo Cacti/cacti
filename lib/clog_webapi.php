@@ -314,7 +314,7 @@ function clog_view_logfile() : void {
 					<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='$title'>" . __esc('Continue') . "</button>
 					<script type='text/javascript'>
 					$('#pc').click(function() {
-						postUrl({url: location.pathname+'?$action=1&filename=" . rawurlencode(basename($logfile)) . "'}, {__csrf_magic: csrfMagicToken});
+						postUrl({url: location.pathname+" . json_encode('?' . $action . '=1&filename=' . rawurlencode(basename($logfile))) . "}, {__csrf_magic: csrfMagicToken});
 					});
 
 					$('#cancel').click(function() {

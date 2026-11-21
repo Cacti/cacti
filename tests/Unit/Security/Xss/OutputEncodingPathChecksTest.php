@@ -61,7 +61,7 @@ test('the log viewer has no confirmation link that changes a log by GET', functi
 	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/clog_webapi.php');
 
 	expect(substr_count($source, 'csrf_require_post();'))->toBe(2)
-		->and($source)->toContain("postUrl({url: location.pathname+'?\$action=1&filename=")
+		->and($source)->toContain("postUrl({url: location.pathname+\" . json_encode('?' . \$action . '=1&filename=' . rawurlencode(basename(\$logfile))) . \"}, {__csrf_magic: csrfMagicToken});")
 		->and($source)->not->toContain("strURL = location.pathname+'?\$action=1")
 		->and($source)->not->toContain("filename=' . \$logfile\n")
 		->and($source)->not->toContain("filename=' . basename(\$logfile)");

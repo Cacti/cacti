@@ -303,7 +303,7 @@ foreach (['purge' => 'purge_continue', 'rotate' => 'rotate_continue'] as $action
 	ob_start();
 	clog_view_logfile();
 	$page = (string) ob_get_clean();
-	check(str_contains($page, "postUrl({url: location.pathname+'?$field=1&filename=$encoded_log'}, {__csrf_magic: csrfMagicToken});"), 'The confirmation is not a POST with a token and an encoded file name');
+	check(str_contains($page, "postUrl({url: location.pathname+\"?$field=1&filename=$encoded_log\"}, {__csrf_magic: csrfMagicToken});"), 'The confirmation is not a POST with a token and an encoded file name');
 	check(str_contains($page, 'cacti &amp; core&apos;s.log'), 'The confirmation text changed');
 }
 check($GLOBALS['probe']['purged'] === [] && $GLOBALS['probe']['headers'] === [], 'Showing a confirmation changed a log');
