@@ -545,6 +545,11 @@ function reports_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
+			/* list, and post back, only the reports the action branch above will act on */
+			if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $matches[1], 'reports')) {
+				continue;
+			}
+
 			$reports_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1]))) . '</li>';
 
 			$reports_array[$i] = $matches[1];

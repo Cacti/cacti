@@ -280,7 +280,7 @@ Cacti CHANGELOG
 -issue#8859: Harmonize the MikroTik script server data collection scripts with the MikroTik plugin so they return U when there is no data, read the plugin RouterOS 7 health sensors when present, and validate every requested column
 -issue#8861: Do not flag a data source as an orphan while the device still reports its index, and clear that state on re-index
 -issue#8863: Clear a deleted site from removed devices and discovery networks, and count only current devices in the Sites list
--issue#8865: Check report ownership on the report item edit and save paths, tree access in the graph view and tree management node loaders, and graph permission before the realtime poller starts
+-issue#8865: Check report ownership on the report item edit and save paths and on the bulk action confirmation list, tree access in the graph view and tree management node loaders, and graph permission before the realtime poller starts
 -issue#8865: Require the Settings permission for a data collector's remote database fields, connection test and Full Sync, require POST to remove user and group permission rows, and limit the group list sort to displayed columns
 -issue#8865: Escape data query, template and device names in report output, the automation tree-rule preview, the discovery email, the New Graphs table and the import preview, and bind or quote them in the discovery duplicate check, the New Graphs pivot and the RRD Cleaner rescan
 -issue#8865: Keep RRDfile maintenance to files below the RRA directory, remove queue entries it will not act on so the purge ends, and encode log file names in the log viewer while refusing markup and control characters in the log path settings
