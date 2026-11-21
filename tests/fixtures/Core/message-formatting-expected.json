@@ -42,7 +42,6 @@
     ["archives_removed_23", 1, "The Device Template Archive Field &amp; Name has been removed."]
   ],
   "lib/api_automation.php": [
-    ["automation_message", 3, "ERROR: Network &apos;Lab &amp; Office&apos; is Invalid."],
     ["rule_missing", 3, "Can not find the Tree Rule with the ID 25"],
     ["sql_injection", 3, "Attempted SQL Injection found in Tree Automation for the field variable Building &amp; Floor."],
     ["sql_injection", 3, "Attempted SQL Injection found in Tree Automation for the field variable Rack &amp; Unit."]
