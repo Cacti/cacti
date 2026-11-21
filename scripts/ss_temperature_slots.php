@@ -97,9 +97,15 @@ function ss_temperature_slots($host_id, $cmd = 'index', $field = '', $index = ''
 		if ($cmd === 'get' && preg_match('/^temperature([1-8])$/D', $field, $m)) {
 			return temperature_slot_value($index, (int)$m[1], fn ($id) => ss_cisco_health($host_id, 'temperature', 'get', 'temperature', $id));
 		}
-		$raw = trim(ss_cisco_health($host_id, 'temperature', 'index'));
-		$current = $raw === '' ? [] : preg_split('/\s+/', $raw);
-		$bindings = temperature_slot_discover($current, temperature_slot_existing($host_id));
+		$saved = temperature_slot_existing($host_id);
+		// Validate stored membership even when no live discovery is needed.
+		$bindings = temperature_slot_discover([], $saved);
+		$current = [];
+		if (!$saved || ($cmd === 'query' && $field === 'newSensors')) {
+			$raw = trim(ss_cisco_health($host_id, 'temperature', 'index'));
+			$current = $raw === '' ? [] : preg_split('/\s+/', $raw);
+			$bindings = temperature_slot_discover($current, $saved);
+		}
 		if ($cmd === 'index') {
 			return $bindings ? implode("\n", $bindings) . "\n" : '';
 		}
@@ -108,15 +114,6 @@ function ss_temperature_slots($host_id, $cmd = 'index', $field = '', $index = ''
 		}
 		if ($cmd !== 'query') {
 			return '';
-		}
-		$names = [];
-		if (preg_match('/^sensor([1-8])Name$/D', $field)) {
-			foreach (explode("\n", trim(ss_cisco_health($host_id, 'temperature', 'query', 'name'))) as $line) {
-				$parts = explode('!', $line, 2);
-				if (count($parts) === 2) {
-					$names[$parts[0]] = $parts[1];
-				}
-			}
 		}
 		$out = '';
 		foreach ($bindings as $binding) {
@@ -132,7 +129,10 @@ function ss_temperature_slots($host_id, $cmd = 'index', $field = '', $index = ''
 				$value = (string)count(array_diff($current, $occupied));
 			} elseif (preg_match('/^sensor([1-8])Name$/D', $field, $m)) {
 				$id = $ids[(int)$m[1] - 1];
-				$value = $id === '0' ? '' : ($names[$id] ?? 'Sensor ' . $id . ' (unavailable)');
+				$value = $id === '0' ? '' : ss_cisco_health($host_id, 'temperature', 'get', 'name', $id);
+				if ($value === 'U') {
+					$value = 'Sensor ' . $id . ' (unavailable)';
+				}
 			} else {
 				return '';
 			}

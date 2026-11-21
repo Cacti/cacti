@@ -174,6 +174,40 @@ function ss_cisco_health(int|string $host_id = 0, string $kind = '', string $cmd
 	return $result;
 }
 
+/** Resolve only the resource requested by a combined graph's label field. */
+function cisco_health_label(string $kind, string $index, callable $get) : string {
+	if (!preg_match('/^[0-9]+(?:\.[0-9]+)*$/D', $index)) {
+		return 'U';
+	}
+	$names = '.1.3.6.1.2.1.47.1.1.1.1.7.';
+	$parts = explode('.', $index);
+	if ($kind === 'memory') {
+		$oid = count($parts) === 1 ? '.1.3.6.1.4.1.9.9.48.1.1.1.2.' : '.1.3.6.1.4.1.9.9.221.1.1.1.1.3.';
+		$label = (string)$get($oid . $index);
+		if ($label === '' || $label === 'U' || stripos($label, 'No Such') !== false) {
+			return 'U';
+		}
+		if (count($parts) > 1) {
+			$entity = (string)$get($names . $parts[0]);
+			if ($entity !== '' && $entity !== 'U' && stripos($entity, 'No Such') === false) {
+				$label = $entity . ' / ' . $label;
+			}
+		}
+	} elseif ($kind === 'qfp_memory') {
+		$label = (string)$get($names . $parts[0]);
+		if ($label !== '' && $label !== 'U' && stripos($label, 'No Such') === false) {
+			$type = end($parts);
+			$label .= ' / ' . ($type === '1' ? 'DRAM' : 'Resource ' . $type);
+		}
+	} elseif ($kind === 'temperature') {
+		$label = (string)$get($names . $index);
+	} else {
+		return 'U';
+	}
+	return $label === '' || $label === 'U' || stripos($label, 'No Such') !== false
+		? 'U' : str_replace(["\r", "\n", '!'], ' ', $label);
+}
+
 /** Execute one query using injectable SNMP readers; no database state is required here. */
 function cisco_health_query(string $kind, string $cmd, string $field, string $index, callable $get, callable $walk) : string {
 	if (!in_array($kind, ['memory', 'qfp_memory', 'temperature', 'cellular'], true)) {
@@ -182,6 +216,9 @@ function cisco_health_query(string $kind, string $cmd, string $field, string $in
 
 	if ($kind === 'cellular') {
 		return cisco_health_cellular($cmd, $field, $index, $get, $walk);
+	}
+	if ($cmd === 'get' && $field === 'name') {
+		return cisco_health_label($kind, $index, $get);
 	}
 	$mem       = '.1.3.6.1.4.1.9.9.221.1.1.1.1.';
 	$qfp       = '.1.3.6.1.4.1.9.9.715.1.1.7.1.';
@@ -396,7 +433,7 @@ function cisco_health_snmp_get_raw($hostname, $community, $oid, $version, $auth_
 		return 'U';
 	}
 
-	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, auth_proto: $auth_proto, priv_proto: $priv_proto) == SNMP_METHOD_PHP) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);

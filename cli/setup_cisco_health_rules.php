@@ -53,6 +53,12 @@ $spec = json_decode(file_get_contents(__DIR__ . '/cisco_health_rules.json'), tru
 $locked = false;
 $transaction = false;
 try {
+	// CLI bootstrap uses a remote collector's local database by default.
+	if ((int)($config['poller_id'] ?? 1) > 1) {
+		if (empty($remote_db_cnn_id) || !db_switch_remote_to_main() || (int)db_fetch_cell('SELECT 1') !== 1) {
+			throw new RuntimeException('Cannot reach the main Cacti database. Run setup on the main server; no rules were written.');
+		}
+	}
 	if (count($spec) !== 27) {
 		throw new RuntimeException('Expected 27 packaged rules.');
 	}
@@ -72,6 +78,12 @@ try {
 			}
 		}
 	}
+	$linkedRules = db_table_exists('automation_templates_rules') ? db_fetch_assoc_prepared('SELECT atr.rule_id
+		FROM automation_templates_rules AS atr
+		INNER JOIN automation_templates AS at ON at.id=atr.template_id
+		WHERE at.host_template=? AND atr.rule_type=1', [$template]) : [];
+	$restricted = (bool)$linkedRules;
+	$linkedIds = array_map('intval', array_column($linkedRules, 'rule_id'));
 	$plan = [];
 	foreach ($spec as $item) {
 		$qid = (int) db_fetch_cell_prepared('SELECT id FROM snmp_query WHERE hash=?', [$item['query_hash']]);
@@ -88,15 +100,20 @@ try {
 		$objects = $item['field'] === null ? [] : [['sequence' => '1', 'operation' => '0', 'field' => $item['field'], 'operator' => (string) AUTOMATION_OP_MATCHES, 'pattern' => (string) $item['matches']]];
 		$existing = db_fetch_assoc_prepared('SELECT id,name,enabled,snmp_query_id,graph_type_id FROM automation_graph_rules WHERE (snmp_query_id=? AND graph_type_id=?) OR name=?', [$qid, $gid, $name]);
 		$found = false;
+		$applicable = !$restricted;
 		foreach ($existing as $rule) {
 			$match = db_fetch_assoc_prepared('SELECT sequence,operation,field,operator,pattern FROM automation_match_rule_items WHERE rule_id=? AND rule_type=? ORDER BY sequence,id', [$rule['id'], AUTOMATION_RULE_TYPE_GRAPH_MATCH]);
 			$criteria = db_fetch_assoc_prepared('SELECT sequence,operation,field,operator,pattern FROM automation_graph_rule_items WHERE rule_id=? ORDER BY sequence,id', [$rule['id']]);
 			// Compare values rather than driver-dependent integer/string types.
 			if ((int) $rule['snmp_query_id'] === $qid && (int) $rule['graph_type_id'] === $gid && $rule['enabled'] === 'on' && $match == [$device] && $criteria == $objects) {
 				$found = true;
+				$applicable = $applicable || in_array((int)$rule['id'], $linkedIds, true);
 			} else {
 				throw new RuntimeException('Review existing rule ' . $rule['id'] . ' for ' . $item['graph_type'] . '; it will not be overwritten.');
 			}
+		}
+		if (!$applicable) {
+			throw new RuntimeException('Cisco Router uses linked Automation Template rules. Create and link ' . $item['graph_type'] . ' through Automation Templates, then rerun setup. No rules were written.');
 		}
 		$plan[] = compact('qid', 'gid', 'name', 'device', 'objects', 'found');
 		echo ($found ? 'KEEP ' : ($apply ? 'ADD  ' : 'PLAN ')) . $item['graph_type'] . PHP_EOL;

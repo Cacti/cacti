@@ -18,6 +18,7 @@ test('combined health collectors preserve resource identity and numeric values',
 	$this->assertSame('', $error);
 	$this->assertStringContainsString('PASS', $output);
 })->with([
+	'discovery request count' => ['discovery', ''],
 	'memory identity' => ['memory', ''],
 	'temperature identity' => ['temperature', ''],
 	'array SNMP API' => ['snmp_compat', 'array'],
@@ -110,3 +111,25 @@ test('combined graph presentation keeps each pool separate and temperature autom
 	$this->assertSame(16, $memory);
 	$this->assertSame(8, $temperature);
 });
+
+
+test('rule setup checks the main database and automation associations before writing', function ($scenario, $mode, $status, $message, $result) {
+	$command = [PHP_BINARY, dirname(__DIR__, 2) . '/Helpers/CiscoRulesFixture.php', $scenario, $mode];
+	$process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$this->assertIsResource($process);
+	$output = stream_get_contents($pipes[1]);
+	$error = stream_get_contents($pipes[2]);
+	fclose($pipes[1]); fclose($pipes[2]);
+	$this->assertSame($status, proc_close($process), $output . $error);
+	$this->assertStringContainsString($message, $output . $error);
+	$this->assertStringContainsString($result, $output);
+})->with([
+	'1.2 main database' => ['local', 'apply', 0, 'Installed 27 new rules', 'main=1 writes=78'],
+	'remote collector selects main' => ['remote-online', 'apply', 0, 'Installed 27 new rules', 'main=1 writes=78'],
+	'remote offline fails closed' => ['remote-offline', 'apply', 1, 'Cannot reach the main Cacti database', 'main=0 writes=0'],
+	'read-only remote plan' => ['remote-online', 'plan', 0, 'Plan only', 'main=1 writes=0'],
+	'new rules excluded by associations' => ['linked-missing', 'apply', 1, 'Create and link', 'main=1 writes=0'],
+	'existing rules excluded by associations' => ['linked-unlinked', 'apply', 1, 'Create and link', 'main=1 writes=0'],
+	'existing linked rules reused' => ['linked-all', 'apply', 0, 'Installed 0 new rules', 'main=1 writes=0'],
+	'empty Automation Template permits ordinary rules' => ['empty-template', 'apply', 0, 'Installed 27 new rules', 'main=1 writes=78'],
+]);
