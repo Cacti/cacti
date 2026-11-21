@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <name>Memory Usage - All Pools</name>
+  <script_path>|path_cacti|/scripts/ss_memory_combined.php</script_path>
+  <script_function>ss_memory_combined</script_function>
+  <script_server>php</script_server>
+  <arg_prepend>|host_id| memory</arg_prepend>
+  <arg_index>index</arg_index>
+  <arg_query>query</arg_query>
+  <arg_get>get</arg_get>
+  <arg_num_indexes>num_indexes</arg_num_indexes>
+  <output_delimiter>!</output_delimiter>
+  <index_order>healthIndex</index_order>
+  <index_order_type>alphanumeric</index_order_type>
+  <index_title_format>|chosen_order_field|</index_title_format>
+  <fields>
+    <healthIndex>
+      <name>Binding</name>
+      <direction>input</direction>
+      <query_name>index</query_name>
+    </healthIndex>
+    <healthName>
+      <name>Pools</name>
+      <direction>input</direction>
+      <query_name>name</query_name>
+    </healthName>
+    <poolCount>
+      <name>Pool count</name>
+      <direction>input</direction>
+      <query_name>poolCount</query_name>
+    </poolCount>
+    <newPools>
+      <name>New pools</name>
+      <direction>input</direction>
+      <query_name>newPools</query_name>
+    </newPools>
+    <pool1Name>
+      <name>Pool 1</name>
+      <direction>input</direction>
+      <query_name>pool1Name</query_name>
+    </pool1Name>
+    <pool2Name>
+      <name>Pool 2</name>
+      <direction>input</direction>
+      <query_name>pool2Name</query_name>
+    </pool2Name>
+    <pool3Name>
+      <name>Pool 3</name>
+      <direction>input</direction>
+      <query_name>pool3Name</query_name>
+    </pool3Name>
+    <pool4Name>
+      <name>Pool 4</name>
+      <direction>input</direction>
+      <query_name>pool4Name</query_name>
+    </pool4Name>
+    <pool5Name>
+      <name>Pool 5</name>
+      <direction>input</direction>
+      <query_name>pool5Name</query_name>
+    </pool5Name>
+    <pool6Name>
+      <name>Pool 6</name>
+      <direction>input</direction>
+      <query_name>pool6Name</query_name>
+    </pool6Name>
+    <pool7Name>
+      <name>Pool 7</name>
+      <direction>input</direction>
+      <query_name>pool7Name</query_name>
+    </pool7Name>
+    <pool8Name>
+      <name>Pool 8</name>
+      <direction>input</direction>
+      <query_name>pool8Name</query_name>
+    </pool8Name>
+    <used1>
+      <name>Used 1</name>
+      <direction>output</direction>
+      <query_name>used1</query_name>
+    </used1>
+    <free1>
+      <name>Free 1</name>
+      <direction>output</direction>
+      <query_name>free1</query_name>
+    </free1>
+    <used2>
+      <name>Used 2</name>
+      <direction>output</direction>
+      <query_name>used2</query_name>
+    </used2>
+    <free2>
+      <name>Free 2</name>
+      <direction>output</direction>
+      <query_name>free2</query_name>
+    </free2>
+    <used3>
+      <name>Used 3</name>
+      <direction>output</direction>
+      <query_name>used3</query_name>
+    </used3>
+    <free3>
+      <name>Free 3</name>
+      <direction>output</direction>
+      <query_name>free3</query_name>
+    </free3>
+    <used4>
+      <name>Used 4</name>
+      <direction>output</direction>
+      <query_name>used4</query_name>
+    </used4>
+    <free4>
+      <name>Free 4</name>
+      <direction>output</direction>
+      <query_name>free4</query_name>
+    </free4>
+    <used5>
+      <name>Used 5</name>
+      <direction>output</direction>
+      <query_name>used5</query_name>
+    </used5>
+    <free5>
+      <name>Free 5</name>
+      <direction>output</direction>
+      <query_name>free5</query_name>
+    </free5>
+    <used6>
+      <name>Used 6</name>
+      <direction>output</direction>
+      <query_name>used6</query_name>
+    </used6>
+    <free6>
+      <name>Free 6</name>
+      <direction>output</direction>
+      <query_name>free6</query_name>
+    </free6>
+    <used7>
+      <name>Used 7</name>
+      <direction>output</direction>
+      <query_name>used7</query_name>
+    </used7>
+    <free7>
+      <name>Free 7</name>
+      <direction>output</direction>
+      <query_name>free7</query_name>
+    </free7>
+    <used8>
+      <name>Used 8</name>
+      <direction>output</direction>
+      <query_name>used8</query_name>
+    </used8>
+    <free8>
+      <name>Free 8</name>
+      <direction>output</direction>
+      <query_name>free8</query_name>
+    </free8>
+  </fields>
+</interface>

@@ -23,7 +23,7 @@
 */
 
 if (!defined('CACTI_VERSION')) {
-	define('CACTI_VERSION', trim(file_get_contents(__DIR__ . '/../../../include/cacti_version')));
+	define('CACTI_VERSION', implode('.', array_slice(explode('.', trim(file_get_contents(__DIR__ . '/../../../include/cacti_version'))), 0, 3)));
 }
 require_once __DIR__ . '/../../../lib/import.php';
 require_once __DIR__ . '/../../../lib/xml.php';
@@ -42,9 +42,11 @@ test('signed package contains current sources', function () {
 		'scripts/ss_cisco_health.php',
 		'resource/script_server/cisco_cellular_radio.xml',
 		'resource/snmp_queries/cisco_qfp_processors.xml',
-		'resource/script_server/cisco_memory.xml',
-		'resource/script_server/cisco_qfp_memory.xml',
-		'resource/script_server/cisco_temperature.xml',
+		'scripts/ss_memory_combined.php',
+		'scripts/ss_temperature_slots.php',
+		'resource/script_server/memory_combined.xml',
+		'resource/script_server/qfp_memory_combined.xml',
+		'resource/script_server/temperature_slots.xml',
 		'Cisco_Router.xml',
 	];
 	$found = [];
@@ -68,7 +70,7 @@ test('every graph passes cacti input relationship preflight', function () {
 	// Read the branch's hash mappings without initializing UI/plugin/database state.
 	$source = file_get_contents(__DIR__ . '/../../../include/global_arrays.php');
 	foreach (['hash_type_codes', 'cacti_version_codes'] as $name) {
-		$this->assertSame(1, preg_match('/\\$' . $name . '\\s*=\\s*array\\((.*?)\\);/s', $source, $block));
+		$this->assertSame(1, preg_match('/\\$' . $name . '\\s*=\\s*(?:array\\(|\\[)(.*?)(?:\\)|\\]);/s', $source, $block));
 		preg_match_all("/'([^']+)'\\s*=>\\s*'([^']+)'/", $block[1], $pairs, PREG_SET_ORDER);
 		$GLOBALS[$name] = array_column($pairs, 2, 1);
 	}
@@ -106,7 +108,7 @@ test('cisco router associates five queries without fixed graphs', function () {
 		$names[] = (string)$objects[substr($hash, -32)]->name;
 	}
 
-	foreach (['Cisco - Cellular Radio', 'Cisco - QFP Processors', 'Cisco - Memory Usage', 'Cisco - QFP Memory Usage', 'Cisco - Temperature'] as $name) {
+	foreach (['Cisco - Cellular Radio', 'Cisco - QFP Processors', 'Cisco - Memory Usage - Combined', 'Cisco - QFP Memory Usage - Combined', 'Cisco - Temperature - All Sensors'] as $name) {
 		$this->assertContains($name, $names);
 	}
 	$graphNames = [];
@@ -114,7 +116,7 @@ test('cisco router associates five queries without fixed graphs', function () {
 	foreach ($queries as $hash) {
 		$query = $objects[substr($hash, -32)];
 
-		if (!in_array((string)$query->name, ['Cisco - Cellular Radio', 'Cisco - QFP Processors', 'Cisco - Memory Usage', 'Cisco - QFP Memory Usage', 'Cisco - Temperature'], true)) {
+		if (!in_array((string)$query->name, ['Cisco - Cellular Radio', 'Cisco - QFP Processors', 'Cisco - Memory Usage - Combined', 'Cisco - QFP Memory Usage - Combined', 'Cisco - Temperature - All Sensors'], true)) {
 			continue;
 		}
 
@@ -125,11 +127,13 @@ test('cisco router associates five queries without fixed graphs', function () {
 			$this->assertStringNotContainsString((string)$association->graph_template_id, (string)$host->graph_templates);
 		}
 	}
-	$this->assertEqualsCanonicalizing([
-		'Cisco - Cellular Signal Quality', 'Cisco - Cellular Signal Strength',
-		'Cisco - Memory Usage', 'Cisco - QFP Memory Usage',
-		'Cisco - QFP Processor Utilisation', 'Cisco - Temperature',
-	], $graphNames);
+	$expected = ['Cisco - Cellular Signal Quality', 'Cisco - Cellular Signal Strength', 'Cisco - QFP Processor Utilisation'];
+	foreach (range(1, 8) as $count) {
+		$expected[] = 'Cisco - Memory Usage - ' . $count . ' pools';
+		$expected[] = 'Cisco - QFP Memory Usage - ' . $count . ' pools';
+		$expected[] = 'Cisco - Temperature - ' . $count . ' sensors';
+	}
+	$this->assertEqualsCanonicalizing($expected, $graphNames);
 	$this->assertStringNotContainsString('a96490cb87fb4f11757feaba2806593c', (string)$host->graph_templates);
 });
 

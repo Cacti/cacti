@@ -21,7 +21,7 @@
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
-if (!isset($called_by_script_server)) {
+if (PHP_SAPI === 'cli' && realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
 	require_once __DIR__ . '/../include/cli_check.php';
 }
 require_once __DIR__ . '/../lib/snmp.php';
@@ -375,7 +375,7 @@ function cisco_health_cellular(string $cmd, string $field, string $index, callab
 	return implode("\n", $out) . ($out ? "\n" : '');
 }
 
-if (!isset($called_by_script_server)) {
+if (PHP_SAPI === 'cli' && realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
 	$args = $_SERVER['argv'];
 	array_shift($args);
 	print ss_cisco_health(...$args);
@@ -468,6 +468,34 @@ function cisco_health_snmp_get_raw($hostname, $community, $oid, $version, $auth_
 
 		/* net snmp want the timeout in seconds */
 		$timeout_s = (int) ceil($timeout_ms / 1000);
+
+		// Develop still uses the string-based SNMP command API. Keep this
+		// compatibility path inside the collector, not in Cacti core.
+		if (!function_exists('cacti_get_snmp_auth_args')) {
+			if ($version == '1' || $version == '2') {
+				$snmp_auth = '-c ' . snmp_escape_string($community);
+				$version = $version == '2' ? '2c' : '1';
+			} elseif ($version == '3') {
+				$snmp_auth = cacti_get_snmpv3_auth($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass, $context, $engineid);
+			} else {
+				return 'U';
+			}
+			if (empty($snmp_auth)) {
+				return 'U';
+			}
+			$command = cacti_escapeshellcmd(read_config_option('path_snmpget'))
+				. ($numeric_value ? ' -m ' . escapeshellarg('') . ' -OU' : '')
+				. ' -Ofntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')
+				. ' ' . $snmp_auth . ' -v ' . $version
+				. ' -t ' . (int)$timeout_s . ' -r ' . (int)$retries
+				. ' ' . cacti_escapeshellarg_cmd($hostname, true, true) . ':' . (int)$port
+				. ' ' . cacti_escapeshellarg($oid);
+			$output = [];
+			$status = 0;
+			exec($command, $output, $status);
+			$value = trim(implode(' ', $output));
+			return $status === 0 && !str_contains($value, 'Timeout') ? $value : 'U';
+		}
 
 		$snmp_auth = cacti_get_snmp_auth_args($version, $community, $auth_proto, $auth_user,
 			$auth_pass, $priv_proto, $priv_pass, $context, $engineid);
