@@ -5530,12 +5530,20 @@ function cacti_escapeshellarg($string, $quote = true) {
 		 * on windows, command injection requires to close any open quotation first
 		 * so we have to escape any quotation here
 		 */
+		/* cmd.exe toggles quoting on every double quote, with or without a
+		 * preceding backslash, so embedded quotes are removed before the
+		 * argument is wrapped. */
 		if (substr_count($string, CACTI_ESCAPE_CHARACTER)) {
-			$string = str_replace(CACTI_ESCAPE_CHARACTER, '\\' . CACTI_ESCAPE_CHARACTER, $string);
+			$string = str_replace(CACTI_ESCAPE_CHARACTER, '', $string);
 		}
 
 		/* ... before we add our own quotation */
 		if ($quote) {
+			/* A trailing backslash must not escape the closing quote in the
+			 * child's Windows argument parser. */
+			$trailing = strlen($string) - strlen(rtrim($string, '\\'));
+			$string  .= str_repeat('\\', $trailing);
+
 			return CACTI_ESCAPE_CHARACTER . $string . CACTI_ESCAPE_CHARACTER;
 		} else {
 			return $string;
