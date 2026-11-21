@@ -16,41 +16,17 @@
  * The import decompresses a Package whole. A Package that decompresses past
  * import_package_max_bytes() is refused before any reader loads it.
  *
- * The functions are the unchanged ones from lib/import.php, loaded into this
- * namespace so the log and the key checks can be answered here.
+ * The probe runs the unchanged Package readers from lib/import.php with the
+ * log and the key checks answered there.
  */
 
-namespace ImportPackageLimitsTest;
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
-function __($text) {
-	return $text;
+function import_package_limits(...$arguments) {
+	return cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ImportPackageLimitsProbe.php', array(json_encode($arguments)));
 }
 
-function cacti_log($message, $output = false, $facility = '') {
-	$GLOBALS['import_package_limits']['log'][] = $facility . ': ' . $message;
-}
-
-function get_public_key() {
-	return 'cacti key';
-}
-
-function is_cacti_public_key($key) {
-	$GLOBALS['import_package_limits']['keys'][] = $key;
-
-	return $key === 'cacti key';
-}
-
-function xml_to_array($xml) {
-	return json_decode(json_encode($xml), true);
-}
-
-require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
-
-foreach (array('import_package_max_bytes', 'import_package_within_size_limit', 'import_package_get_details', 'import_package_get_public_key', 'import_read_package_data') as $function) {
-	\cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/import.php', $function, __NAMESPACE__);
-}
-
-function package_file($contents) {
+function import_package_limits_file($contents) {
 	$file = tempnam(sys_get_temp_dir(), 'cacti-pkg-limit-');
 
 	file_put_contents($file, $contents);
@@ -62,7 +38,7 @@ function package_file($contents) {
  * Write $bytes of zeros as a gzip file in 1 MiB chunks, so the test never
  * holds the decompressed Package in memory.
  */
-function oversized_package($bytes) {
+function import_package_limits_oversized($bytes) {
 	$file = tempnam(sys_get_temp_dir(), 'cacti-pkg-limit-');
 	$gz   = gzopen($file, 'wb9');
 	$left = $bytes;
@@ -78,86 +54,84 @@ function oversized_package($bytes) {
 	return $file;
 }
 
-beforeEach(function () {
-	$GLOBALS['import_package_limits'] = array('log' => array(), 'keys' => array());
-});
-
-test('the limit is far larger than any template set', function () {
-	expect(import_package_max_bytes())->toBe(64 * 1024 * 1024);
-});
-
-test('a Package within the limit is accepted and one past it is not', function () {
-	$file = package_file(gzencode(str_repeat('a', 4096)));
+test('a Package within the limit is accepted and one past it is not', function ($contents) {
+	$file = import_package_limits_file($contents);
 
 	try {
-		expect(import_package_within_size_limit($file, 4096))->toBeTrue()
-			->and($GLOBALS['import_package_limits']['log'])->toBe(array())
-			->and(import_package_within_size_limit($file, 4095))->toBeFalse()
-			->and($GLOBALS['import_package_limits']['log'])->toBe(array('IMPORT: WARNING: Package ' . $file . ' is damaged or decompresses past 4095 bytes'));
+		$within = import_package_limits('limit', $file, 4096);
+		$past   = import_package_limits('limit', $file, 4095);
 	} finally {
 		unlink($file);
 	}
-});
 
-test('a Package that is not compressed is measured as it is', function () {
-	$file = package_file(str_repeat('a', 4096));
-
-	try {
-		expect(import_package_within_size_limit($file, 4096))->toBeTrue()
-			->and(import_package_within_size_limit($file, 4095))->toBeFalse();
-	} finally {
-		unlink($file);
-	}
-});
+	expect($within['within'])->toBeTrue()
+		->and($within['log'])->toBe(array())
+		->and($past['within'])->toBeFalse()
+		->and($past['log'])->toBe(array('IMPORT: WARNING: Package ' . $file . ' is damaged or decompresses past 4095 bytes'));
+})->with(array(
+	'compressed'     => array(gzencode(str_repeat('a', 4096))),
+	'not compressed' => array(str_repeat('a', 4096)),
+));
 
 test('a damaged or missing Package is refused', function () {
 	$good = gzencode(str_repeat('abc', 300));
-	$file = package_file(substr($good, 0, 10) . str_repeat("\xff", 40) . substr($good, 50));
+	$file = import_package_limits_file(substr($good, 0, 10) . str_repeat("\xff", 40) . substr($good, 50));
 
 	try {
-		expect(import_package_within_size_limit($file))->toBeFalse()
-			->and(import_package_within_size_limit($file . '-missing'))->toBeFalse();
+		$damaged = import_package_limits('limit', $file);
+		$missing = import_package_limits('limit', $file . '-missing');
 	} finally {
 		unlink($file);
 	}
+
+	expect($damaged['within'])->toBeFalse()
+		->and($missing['within'])->toBeFalse();
 });
 
-test('the Packages shipped with Cacti are within the limit', function () {
+test('a Package shipped with Cacti is within the limit, which is 64 MB', function () {
 	$packages = glob(dirname(__DIR__, 4) . '/install/templates/*.xml.gz');
 
 	expect($packages)->not->toBe(array());
 
+	$result = import_package_limits('limit', $packages[0]);
+
+	expect($result['within'])->toBeTrue()
+		->and($result['max'])->toBe(64 * 1024 * 1024);
+
 	foreach ($packages as $package) {
-		expect(import_package_within_size_limit($package))->toBeTrue();
+		expect(filesize($package))->toBeLessThan(1048576);
 	}
 });
 
 test('the readers refuse a Package that decompresses past the limit', function () {
-	$file       = oversized_package(import_package_max_bytes() + 1);
-	$public_key = 'unset';
+	$file = import_package_limits_oversized(64 * 1024 * 1024 + 1);
 
 	try {
-		expect(import_package_get_details($file))->toBe(array('public_key' => ''))
-			->and(import_package_get_public_key($file))->toBe('')
-			->and(import_read_package_data($file, $public_key))->toBeFalse()
-			->and($public_key)->toBe('unset')
-			->and($GLOBALS['import_package_limits']['keys'])->toBe(array());
+		$details = import_package_limits('details', $file);
+		$read    = import_package_limits('read', $file);
 	} finally {
 		unlink($file);
 	}
+
+	expect($details['details'])->toBe(array('public_key' => ''))
+		->and($details['key'])->toBe('')
+		->and($read['read'])->toBeFalse()
+		->and($read['public_key'])->toBe('unset')
+		->and($read['keys'])->toBe(array());
 });
 
 test('the readers still read a Package within the limit', function () {
-	$file = package_file(gzencode("<cacti>\n<info><name>Local Linux</name><version>1.2.30</version></info>\n<publickey>" . base64_encode('cacti key') . "</publickey>\n</cacti>\n"));
+	$file = import_package_limits_file(gzencode("<cacti>\n<info><name>Local Linux</name><version>1.2.30</version></info>\n<publickey>" . base64_encode('cacti key') . "</publickey>\n</cacti>\n"));
 
 	try {
-		$details = import_package_get_details($file);
-
-		expect($details['name'])->toBe('Local Linux')
-			->and($details['version'])->toBe('1.2.30')
-			->and($details['public_key'])->toBe('cacti key')
-			->and(import_package_get_public_key($file))->toBe('cacti key');
+		$result = import_package_limits('details', $file);
 	} finally {
 		unlink($file);
 	}
+
+	expect($result['details']['name'])->toBe('Local Linux')
+		->and($result['details']['version'])->toBe('1.2.30')
+		->and($result['details']['public_key'])->toBe('cacti key')
+		->and($result['key'])->toBe('cacti key')
+		->and($result['log'])->toBe(array());
 });

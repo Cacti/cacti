@@ -18,40 +18,23 @@
  * escape one, so only names made of identifier characters are searched. The
  * search text is quoted as a value and is not at issue.
  *
- * build_graph_object_sql_having() is the unchanged function from
- * lib/api_automation.php, loaded into this namespace so the field names can
- * be answered here.
+ * The probe runs the unchanged build_graph_object_sql_having() from
+ * lib/api_automation.php with the field names taken from the scenario.
  */
 
-namespace AutomationPreviewFieldNameTest;
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
-function get_field_names($snmp_query_id) {
-	return array_map(function ($name) {
-		return array('field_name' => $name);
-	}, $GLOBALS['automation_preview_fields']);
-}
-
-function db_qstr($value) {
-	return "'" . addslashes($value) . "'";
-}
-
-require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
-
-\cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/api_automation.php', 'build_graph_object_sql_having', __NAMESPACE__);
-
-function automation_preview_having(array $fields, $filter = 'eth') {
-	$GLOBALS['automation_preview_fields'] = $fields;
-
-	return build_graph_object_sql_having(array('snmp_query_id' => 1), $filter);
+function automation_preview_having(...$arguments) {
+	return cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/AutomationPreviewFieldNameProbe.php', array(json_encode($arguments)));
 }
 
 test('field names made of identifier characters are searched as before', function () {
-	expect(automation_preview_having(array('ifDescr', 'ifName', 'hr_storage2', 'a.b')))
+	expect(automation_preview_having(array('ifDescr', 'ifName', 'hr_storage2', 'a.b'), 'eth')['having'])
 		->toBe(" HAVING (`ifDescr` LIKE '%eth%' OR `ifName` LIKE '%eth%' OR `hr_storage2` LIKE '%eth%' OR `a`.`b` LIKE '%eth%')");
 });
 
 test('a field name with other characters is left out of the search', function ($name) {
-	expect(automation_preview_having(array('ifDescr', $name, 'ifName')))
+	expect(automation_preview_having(array('ifDescr', $name, 'ifName'), 'eth')['having'])
 		->toBe(" HAVING (`ifDescr` LIKE '%eth%' OR `ifName` LIKE '%eth%')");
 })->with(array(
 	'backtick'     => array('if`Descr'),
@@ -67,9 +50,9 @@ test('a field name with other characters is left out of the search', function ($
 ));
 
 test('the search matches nothing when no field name can be used', function () {
-	expect(automation_preview_having(array('if`Descr', 'if Name')))->toBe(' HAVING (1 = 0)');
+	expect(automation_preview_having(array('if`Descr', 'if Name'), 'eth')['having'])->toBe(' HAVING (1 = 0)');
 });
 
 test('no search text adds no clause', function () {
-	expect(automation_preview_having(array('ifDescr'), ''))->toBeNull();
+	expect(automation_preview_having(array('ifDescr'), '')['having'])->toBeNull();
 });

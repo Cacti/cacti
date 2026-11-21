@@ -17,44 +17,14 @@
  * user's other database-backed sessions. The session making the request is
  * kept so its reply can be sent.
  *
- * api_auth_logout_everywhere() is the unchanged function from
- * auth_profile.php, loaded into this namespace so the database calls can be
- * recorded here.
+ * The probe runs the unchanged api_auth_logout_everywhere() from
+ * auth_profile.php and records the statements it sends to the database.
  */
 
-namespace LogoutEverywhereSessionsTest;
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
-function db_execute_prepared($sql, $params = array()) {
-	$GLOBALS['logout_everywhere_queries'][] = array(preg_replace('/\s+/', ' ', $sql), $params);
-
-	return true;
-}
-
-function session_id() {
-	return 'current-session-id';
-}
-
-require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
-
-\cacti_fixture_source_function(dirname(__DIR__, 4) . '/auth_profile.php', 'api_auth_logout_everywhere', __NAMESPACE__);
-
-function logout_everywhere($user_id) {
-	$session  = isset($_SESSION) ? $_SESSION : null;
-	$_SESSION = array('sess_user_id' => $user_id);
-
-	$GLOBALS['logout_everywhere_queries'] = array();
-
-	try {
-		api_auth_logout_everywhere();
-	} finally {
-		if ($session === null) {
-			unset($_SESSION);
-		} else {
-			$_SESSION = $session;
-		}
-	}
-
-	return $GLOBALS['logout_everywhere_queries'];
+function logout_everywhere(...$arguments) {
+	return cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/LogoutEverywhereProbe.php', array(json_encode($arguments)));
 }
 
 test('the login tokens and the other sessions of the user are removed', function () {

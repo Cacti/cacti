@@ -24,6 +24,15 @@
             <file>Unit/Core/Rrd/RrdTuneRenderTest.php</file>
             <file>Unit/Core/Rrd/RrdInfoRenderTest.php</file>
             <file>Unit/Core/Rrd/RrdErrorImageAndFetchParseTest.php</file>
+            <file>Unit/Security/Xss/DeviceTestPaneEncodingTest.php</file>
+            <file>Unit/Security/Ssrf/RemoteCollectorAddressTest.php</file>
+            <file>Unit/Security/Ssrf/RemoteCollectorTransportTest.php</file>
+            <file>Unit/Security/Auth/RemoteAgentEffectiveUserTest.php</file>
+            <file>Unit/Security/Shell/GraphItemTextAlignTest.php</file>
+            <file>Unit/Security/SqlInjection/AutomationPreviewFieldNameTest.php</file>
+            <file>Unit/Security/Session/LogoutEverywhereSessionsTest.php</file>
+            <file>Unit/Security/Import/ImportPackageLimitsTest.php</file>
+            <file>Unit/Security/PathTraversal/ReportImageConversionTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
