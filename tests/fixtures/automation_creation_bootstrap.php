@@ -93,7 +93,7 @@ define('CACTI_SERVER_OS', 'unix');
 
 load_actual_functions("$root/lib/functions.php", [
 	'cacti_sizeof', 'cacti_count', 'array_rekey', 'cacti_object_hash', 'clean_up_lines',
-	'sanitize_sql_column', 'form_input_validate', 'is_error_message', 'raise_message',
+	'sanitize_sql_column', 'form_input_validate', 'is_error_message', 'raise_message', 'raise_message_html', 'raise_message_has_markup',
 	'get_message_level', 'test_data_sources', 'get_graph_title', 'get_data_source_title',
 	'cacti_version_compare', 'version_to_decimal', 'version_to_bits', 'get_rrdtool_version',
 	'format_cacti_version', 'get_message_title'

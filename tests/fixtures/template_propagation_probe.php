@@ -408,6 +408,8 @@ if ($mode == 'form-switch') {
 	// the sliced form_save() loses its file's "use ... as Assert" import
 	class_alias(Symfony\Component\Validator\Constraints\Regex::class, 'Assert\Regex');
 	class_alias(Symfony\Component\Validator\Constraints\NotBlank::class, 'Assert\NotBlank');
+	class_alias(Symfony\Component\Validator\Constraints\Callback::class, 'Assert\Callback');
+	load_actual_functions($root . '/lib/functions.php', ['data_source_path_is_clean']);
 	load_actual_functions($root . '/data_sources.php', ['form_save']);
 	function csrf_require_post() {
 	}
