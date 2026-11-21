@@ -131,25 +131,19 @@ try {
 			installer_fixture_check(str_contains(implode(PHP_EOL, $output), 'not found'), 'CLI fixture did not exercise the missing migration');
 		}
 		installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === '1.2.28', 'Incomplete migration advanced the recorded version');
-	} elseif ($scenario === 'composer-failure') {
-		$composer = tempnam(sys_get_temp_dir(), 'installer-composer-');
-		installer_fixture_check($composer !== false, 'Could not create Composer fixture');
-		file_put_contents($composer, '#!' . PHP_BINARY . PHP_EOL . '<?php if (in_array("--dry-run", $argv, true)) { echo "Package operations: 1 install, 0 updates, 0 removals\n"; exit(0); } echo "download failed\n"; exit(7);');
-		chmod($composer, 0700);
-		set_config_option('path_composer', $composer);
-		$logPath = read_config_option('path_cactilog');
-
-		if ($logPath === '') {
-			$logPath = CACTI_PATH_LOG . '/cacti.log';
-		}
-		$offset     = is_file($logPath) ? filesize($logPath) : 0;
-		$reflection = new ReflectionClass(Installer::class);
-		$installer  = $reflection->newInstanceWithoutConstructor();
-		$reflection->getMethod('refreshVendorDependencies')->invoke($installer);
-		$log = substr(file_get_contents($logPath), $offset);
-		installer_fixture_check(str_contains($log, 'Composer refresh did not complete'), 'Failed Composer command did not log a warning');
-		installer_fixture_check(!str_contains($log, 'Composer dependencies refreshed.'), 'Failed Composer command reported success');
-		unlink($composer);
+	} elseif ($scenario === 'dependency-failure') {
+		$metadata           = CACTI_PATH_INCLUDE . '/vendor/composer/installed.json';
+		$backups[$metadata] = file_get_contents($metadata);
+		installer_fixture_check(install_validate_vendor_dependencies(CACTI_PATH_BASE), 'Prepared dependencies were not ready');
+		file_put_contents($metadata, '{broken');
+		installer_fixture_check(!install_validate_vendor_dependencies(CACTI_PATH_BASE), 'Corrupt dependency metadata was accepted');
+		$output = [];
+		exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(CACTI_PATH_CLI . '/install_cacti.php') .
+			' --accept-eula --install --force 2>&1', $output, $status);
+		installer_fixture_check($status !== 0, 'CLI installer accepted incomplete dependencies');
+		installer_fixture_check(str_contains(implode(PHP_EOL, $output), 'Production dependencies are incomplete'), 'CLI did not reach dependency validation');
+		installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === $version, 'Dependency failure advanced the recorded version');
+		installer_fixture_check((int) db_fetch_cell("SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master'") === 0, 'Dependency failure retained the installer lock');
 	} elseif ($scenario === 'installer-lock') {
 		installer_fixture_check(register_process_start('install', 'master', 0, 86400), 'Could not register lock fixture');
 		set_config_option('install_eula', 'lock-owner-fixture');

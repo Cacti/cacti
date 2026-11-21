@@ -138,11 +138,7 @@ test('the script url points at the moved asset', function () use ($root) {
 	expect($src)->not->toContain('include/vendor/csrf/csrf-magic.js');
 });
 
-/*
- * Only an explicit installer request may degrade while Composer is still
- * populating include/vendor. A deployed web request that cannot autoload the
- * Symfony manager must stop before it serves a request without CSRF checks.
- */
+// Every web entry point must stop if the CSRF dependency is unavailable.
 test('a deployed web request fails closed when Symfony CSRF is unavailable', function () {
 	$result = csrf_facade_run_php_fixture('CsrfGuardAvailabilityProbe.php', 'deployed');
 
@@ -153,13 +149,13 @@ test('a deployed web request fails closed when Symfony CSRF is unavailable', fun
 		->not->toContain('enabled:');
 });
 
-test('the installer may temporarily disable the guard before Composer is available', function () {
+test('the installer fails closed before Composer is available', function () {
 	$result = csrf_facade_run_php_fixture('CsrfGuardAvailabilityProbe.php', 'installer');
 
-	expect($result['exitCode'])->toBe(0)
-		->and($result['stdout'])->toBe('')
-		->and($result['stderr'])->toContain('during installation')
-		->toContain('enabled:false');
+	expect($result['exitCode'])->toBe(1)
+		->and($result['stdout'])->toContain('FATAL: CSRF protection is unavailable')
+		->and($result['stderr'])->toContain('status:500')
+		->not->toContain('enabled:');
 });
 
 test('the installer creates the legacy secret without world-readable permissions', function () {

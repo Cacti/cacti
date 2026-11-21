@@ -84,9 +84,16 @@ run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
+# The installer runs against a real MariaDB; its request coverage joins the fixture evidence.
+if [[ -f tests/e2e/installer-coverage.sh ]] && git diff --name-only "$(git merge-base "$base_commit" HEAD)" HEAD | grep -Eq '^(lib/installer\.php|install/(functions|background|install)\.php|cli/install_cacti\.php|tests/e2e/installer-coverage\.sh|tests/fixtures/Installer/)'; then
+	installer_requests="$coverage_dir/installer-requests"
+	CACTI_PR_COVERAGE_OUTPUT="$installer_requests" bash tests/e2e/installer-coverage.sh
+	"$php_binary" tests/fixtures/Installer/RequestCoverageToFixture.php "$installer_requests" "$coverage_dir/installer.json"
+	php_coverage+=("$coverage_dir/installer.json")
+fi
 
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
+for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths installer-page-load; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
 		browser_specs+=("tests/$spec.spec.js")
 	fi

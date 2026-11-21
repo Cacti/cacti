@@ -2,64 +2,30 @@
 /*
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
-/*
- * Cross-file contract test for the installer vendor refresh (#6456).
- *
- * refreshVendorDependencies() must stay non-fatal, run before the
- * database conversion, and only execute composer when the configured
- * binary exists and the dry-run reports missing packages alone.
- */
-
-$root = dirname(__DIR__, 2);
-
-test('install flow calls the vendor refresh before database conversion', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
-	expect($src)->not->toBeFalse('Failed to read lib/installer.php');
-
-	$installPos = strpos($src, 'private function install() : void');
-	expect($installPos)->not->toBeFalse('install() must exist');
-
-	$refreshPos = strpos($src, '$this->refreshVendorDependencies();', $installPos);
-	$convertPos = strpos($src, '$this->convertDatabase();', $installPos);
-
-	expect($refreshPos)->not->toBeFalse('install() must call refreshVendorDependencies')
-		->and($convertPos)->not->toBeFalse('install() must call convertDatabase')
-		->and($refreshPos)->toBeLessThan($convertPos, 'vendor refresh must run before database conversion');
-});
-
-test('vendor refresh bails out without a configured composer binary', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
-
-	$fnPos = strpos($src, 'private function refreshVendorDependencies()');
-	expect($fnPos)->not->toBeFalse('refreshVendorDependencies must exist');
-
-	$fnEnd = strpos($src, "\n\tprivate function", $fnPos + 1);
-	$body  = substr($src, $fnPos, ($fnEnd === false ? strlen($src) : $fnEnd) - $fnPos);
-
-	expect(preg_match('/read_config_option\(\s*\'path_composer\'/', $body))->toBe(1, 'must read path_composer')
-		->and(preg_match('/empty\(\$composer\)|file_exists\(\$composer\)/', $body))->toBe(1, 'must bail without a usable binary')
-		->and(strpos($body, '--dry-run'))->not->toBeFalse('must dry-run before touching the tree')
-		->and(strpos($body, 'is_resource_writable'))->not->toBeFalse('must check vendor writability before running composer')
-		->and(strpos($body, 'addError'))->toBeFalse('refresh must never fail the install');
-});
-
-test('global bootstrap permits the installer to repair a missing vendor tree', function () use ($root) {
-	$src = file_get_contents($root . '/include/global.php');
-
-	expect($src)->not->toBeFalse()
-		->and(strpos($src, "!defined('IN_CACTI_INSTALL')"))->not->toBeFalse()
-		->and(strpos($src, 'if (is_file($vendor_autoload))'))->not->toBeFalse();
-});
-
-test('refresh gating requires pure installs', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
-
-	$pattern = '/Package operations: \(\\\\d\+\) installs\?, \(\\\\d\+\) updates\?, \(\\\\d\+\) removals\?/';
-	expect(preg_match($pattern, $src))->toBe(1,
-		'refresh must parse the dry-run operations summary')
-		->and(preg_match('/\$ops\[1\] == 0 \|\| \$ops\[2\] > 0 \|\| \$ops\[3\] > 0/', $src))->toBe(1,
-			'refresh must skip when there are no installs or any updates/removals');
+test('installer validates prepared dependencies before database conversion', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+	$start  = strpos($source, 'private function install()');
+	$body   = substr($source, $start);
+	expect(strpos($body, 'install_validate_vendor_dependencies(CACTI_PATH_BASE)'))->toBeLessThan(strpos($body, '$this->convertDatabase()'))
+		->and($source)->not->toContain('refreshVendorDependencies');
 });
