@@ -1767,22 +1767,21 @@ function png2jpeg ($png_data) {
 	global $config;
 
 	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
+		/* Decode the graph from memory, no scratch file is needed. Only PNG
+		 * data is decoded, anything else gets the error image below. */
+		$im = false;
 
-		/* write rrdtool's png file to scratch dir */
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
+		if (substr($png_data, 0, 8) === "\x89PNG\r\n\x1a\n") {
+			$im = imagecreatefromstring($png_data);
+		}
 
-		/* create php-gd image object from file */
-		$im = imagecreatefrompng($fn);
 		if (!$im) {								/* check for errors */
 			$im = ImageCreate (150, 30);		/* create an empty image */
 			$bgc = ImageColorAllocate ($im, 255, 255, 255);
 			$tc  = ImageColorAllocate ($im, 0, 0, 0);
 			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
 			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
+			ImageString($im, 1, 5, 5, 'Error while decoding PNG data', $tc);
 		}
 
         ob_start(); // start a new output buffer to capture jpeg image stream
@@ -1791,8 +1790,6 @@ function png2jpeg ($png_data) {
 		$ImageDataLength = ob_get_length();
 		ob_end_clean(); // stop this output buffer
 		unset($im); //clean up
-
-		unlink($fn); // delete scratch file
 	}
 
 	return $ImageData;
@@ -1809,22 +1806,21 @@ function png2gif ($png_data) {
 	global $config;
 
 	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
+		/* Decode the graph from memory, no scratch file is needed. Only PNG
+		 * data is decoded, anything else gets the error image below. */
+		$im = false;
 
-		/* write rrdtool's png file to scratch dir */
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
+		if (substr($png_data, 0, 8) === "\x89PNG\r\n\x1a\n") {
+			$im = imagecreatefromstring($png_data);
+		}
 
-		/* create php-gd image object from file */
-		$im = imagecreatefrompng($fn);
 		if (!$im) {								/* check for errors */
 			$im = ImageCreate (150, 30);		/* create an empty image */
 			$bgc = ImageColorAllocate ($im, 255, 255, 255);
 			$tc  = ImageColorAllocate ($im, 0, 0, 0);
 			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
 			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
+			ImageString($im, 1, 5, 5, 'Error while decoding PNG data', $tc);
 		}
 
         ob_start(); // start a new output buffer to capture gif image stream
@@ -1833,8 +1829,6 @@ function png2gif ($png_data) {
 		$ImageDataLength = ob_get_length();
 		ob_end_clean(); // stop this output buffer
 		unset($im); //clean up
-
-		unlink($fn); // delete scratch file
 	}
 
 	return $ImageData;
