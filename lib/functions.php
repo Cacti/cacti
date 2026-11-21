@@ -7421,6 +7421,8 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 		WHERE id = ?',
 		array($poller_id));
 
+	$ipaddress = $hostname;
+
 	if (!is_ipaddress($hostname)) {
 		$ipaddress = gethostbyname($hostname);
 
@@ -7441,10 +7443,39 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 		return '';
 	}
 
-	$fgc_contextoption = get_default_contextoption();
-	$fgc_context       = stream_context_create($fgc_contextoption);
+	/* Loopback, link-local and other reserved addresses are not Data Collectors.
+	 * Private ranges stay allowed, collectors normally live on internal networks. */
+	if (filter_var($ipaddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) === false) {
+		cacti_log(sprintf('ERROR: Refusing Remote Data Collector request for PollerID:%s, hostname:%s is a reserved address.', $poller_id, $hostname), false, 'SECURITY');
 
-	return  file_get_contents(get_url_type() .'://' . $hostname . $url, false, $fgc_context);
+		return '';
+	}
+
+	$fgc_contextoption = get_default_contextoption();
+
+	/* Connect to the address that was checked, so the name is not resolved a
+	 * second time. The name still goes in the Host header and is the name the
+	 * certificate is checked against. */
+	if ($ipaddress != $hostname) {
+		$headers = isset($fgc_contextoption['http']['header']) ? $fgc_contextoption['http']['header'] : array();
+
+		if (!is_array($headers)) {
+			$headers = array(rtrim($headers, "\r\n"));
+		}
+
+		$headers[] = 'Host: ' . $hostname;
+
+		$fgc_contextoption['http']['header']   = $headers;
+		$fgc_contextoption['ssl']['peer_name'] = $hostname;
+	}
+
+	$fgc_context = stream_context_create($fgc_contextoption);
+
+	if (filter_var($ipaddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+		$ipaddress = '[' . $ipaddress . ']';
+	}
+
+	return file_get_contents(get_url_type() . '://' . $ipaddress . $url, false, $fgc_context);
 }
 
 /**
