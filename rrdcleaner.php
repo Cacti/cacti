@@ -56,6 +56,9 @@ switch (grv('action')) {
 		break;
 	case 'remall':
 	case 'arcall':
+		// Both queue every unknown RRDfile for the next maintenance run.
+		csrf_require_post();
+
 		top_header();
 		// fill files name table
 		remove_all_rrds();
@@ -211,9 +214,13 @@ function get_files() : void {
 			$files = explode("\n", $scan);            // Split based on \n
 
 			foreach ($files as $file) {
-				[$pathname, $size, $mtime] = explode(',', $file);
+				// Split from the right so a comma stays part of the file name, and
+				// skip incomplete records such as the listing's trailing blank line.
+				if (!preg_match('/^(.+),([0-9]+),([0-9]+)$/D', $file, $parts)) {
+					continue;
+				}
 
-				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', intval($mtime)) . "',0)";
+				$sql[] = '(' . db_qstr(str_replace($rra_path, '', $parts[1])) . ', ' . (int) $parts[2] . ', ' . db_qstr(date('Y-m-d H:i:s', (int) $parts[3])) . ',0)';
 				$size++;
 
 				if ($size == 400) {
@@ -233,7 +240,7 @@ function get_files() : void {
 
 		foreach ($iterator as $file) {
 			if (substr($file->getPathname(), -3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
-				$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
+				$sql[] = '(' . db_qstr(str_replace($rra_path, '', $file->getPathname())) . ', ' . $file->getSize() . ', ' . db_qstr(date('Y-m-d H:i:s', $file->getMTime())) . ',0)';
 				$size++;
 
 				if ($size == 400) {
@@ -523,20 +530,20 @@ function create_rrdcleaner_filter() : array {
 				'url'     => 'rrdcleaner.php?action=rescan'
 			],
 			'remall' => [
-				'method'  => 'button',
-				'display' => __('Delete All'),
-				'action'  => 'default',
-				'title'   => __('Delete All RRDfiles'),
-				'status'  => __('Scheduling Purging of All Unknowns'),
-				'url'     => 'rrdcleaner.php?action=remall&raction=3&clear=1'
+				'method'   => 'button',
+				'display'  => __('Delete All'),
+				'action'   => 'default',
+				'title'    => __('Delete All RRDfiles'),
+				'status'   => __('Scheduling Purging of All Unknowns'),
+				'callback' => 'postUrl({ url: \'rrdcleaner.php?action=remall&raction=3&clear=1\', funcEnd: \'finishFinalize\' }, { __csrf_magic: csrfMagicToken })'
 			],
 			'arcall' => [
-				'method'  => 'button',
-				'display' => __('Archive All'),
-				'action'  => 'default',
-				'title'   => __('Archive All RRDfiles'),
-				'status'  => __('Scheduling Archiving of All Unknowns'),
-				'url'     => 'rrdcleaner.php?action=arcall&raction=3&clear=1'
+				'method'   => 'button',
+				'display'  => __('Archive All'),
+				'action'   => 'default',
+				'title'    => __('Archive All RRDfiles'),
+				'status'   => __('Scheduling Archiving of All Unknowns'),
+				'callback' => 'postUrl({ url: \'rrdcleaner.php?action=arcall&raction=3&clear=1\', funcEnd: \'finishFinalize\' }, { __csrf_magic: csrfMagicToken })'
 			]
 		],
 		'sort' => [

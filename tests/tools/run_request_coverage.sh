@@ -39,6 +39,11 @@ run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprec
 validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files"
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" save
+gate_files='^((pollers|poller_maintenance|rrdcleaner|user_admin|user_group_admin)\.php|lib/functions\.php|tests/fixtures/Core/CollectorCleanupGates\.php)'
+for mode in escape collector maintenance post 'sync-denied 4' 'sync-denied 6' 'refused user_admin.php' 'refused user_group_admin.php' 'refused rrdcleaner.php' 'refused rrdcleaner.php POST'; do
+	# shellcheck disable=SC2086 # each entry is a mode and its arguments
+	run_php_probe tests/fixtures/Core/CollectorCleanupGates.php "$gate_files" $mode
+done
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 

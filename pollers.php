@@ -44,7 +44,10 @@ $actions = [
 	POLLER_CLEAR_STATS => __('Clear Statistics'),
 ];
 
-if (POLLER_ID == 1) {
+// Full Sync and Auth Sync send the main database's tables, including the user
+// and settings tables, to the remote collector, so they take the Settings
+// permission in addition to the one that opens this page.
+if (POLLER_ID == 1 && is_realm_allowed(15)) {
 	$actions += [POLLER_RESYNC   => __('Full Sync')];
 	$actions += [POLLER_AUTHSYNC => __('Auth Sync')];
 }
@@ -306,7 +309,10 @@ switch (grv('action')) {
 
 		break;
 	case 'ping':
-		test_database_connection();
+		// The connection test takes the same permission as the fields it tests.
+		if (is_realm_allowed(15)) {
+			test_database_connection();
+		}
 
 		break;
 	case 'edit':
@@ -352,7 +358,13 @@ function form_save() : void {
 				'sync_interval',
 				[new Assert\NotBlank(),
 				new Assert\Regex(pattern: '/^[0-9]+$/')]);
+		}
 
+		// The database connection decides where Full Sync and the periodic sync
+		// send the main database's tables. Choosing it is an administrative
+		// decision, so it takes the Settings permission and not only the one
+		// that opens this page.
+		if ($save['id'] != 1 && is_realm_allowed(15)) {
 			// Database settings
 			$save['dbdefault']             = CactiValidator::validateInput(gnrv('dbdefault'), 'dbdefault', []);
 			$save['dbhost']                = CactiValidator::validateInput(gnrv('dbhost'),    'dbhost',    []);
@@ -395,7 +407,7 @@ function form_save() : void {
 
 		if (isset($save['dbhost']) && $save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
-		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
+		} elseif ($save['id'] > 1 && isset($save['dbhost']) && poller_host_duplicate($save['id'], $save['dbhost'])) {
 			raise_message('poller_nodupe');
 		} elseif (!is_error_message() && $error == false) {
 			$poller_id = sql_save($save, 'poller');
@@ -550,6 +562,8 @@ function form_actions() : void {
 					$selected_items) . ' enabled by user ' . $_SESSION[SESS_USER_ID],
 					false,
 					'WEBUI');
+			} elseif ((grv('drp_action') == POLLER_RESYNC || grv('drp_action') == POLLER_AUTHSYNC) && !is_realm_allowed(15)) {
+				raise_message('poller_sync_permission', __('Synchronizing a Data Collector requires the Settings permission.'), MESSAGE_LEVEL_ERROR);
 			} elseif (grv('drp_action') == POLLER_RESYNC || grv('drp_action') == POLLER_AUTHSYNC) { // full or auth sync
 				cacti_session_close();
 
@@ -734,23 +748,13 @@ function poller_edit() : void {
 
 	html_start_box($header_label, '100%', true, 3, 'center', '');
 
+	$main_poller = false;
+
 	if (cacti_sizeof($poller)) {
 		if ($poller['id'] == 1) {
+			$main_poller = true;
+
 			unset($fields_poller_edit['sync_interval']);
-			unset($fields_poller_edit['spacer_remotedb']);
-			unset($fields_poller_edit['dbdefault']);
-			unset($fields_poller_edit['dbhost']);
-			unset($fields_poller_edit['dbuser']);
-			unset($fields_poller_edit['dbpass']);
-			unset($fields_poller_edit['dbport']);
-			unset($fields_poller_edit['dbretries']);
-			unset($fields_poller_edit['spacerssl']);
-			unset($fields_poller_edit['dbssl']);
-			unset($fields_poller_edit['dbsslkey']);
-			unset($fields_poller_edit['dbsslcert']);
-			unset($fields_poller_edit['dbsslca']);
-			unset($fields_poller_edit['dbsslcapath']);
-			unset($fields_poller_edit['dbsslverifyservercert']);
 
 			$fields_poller_edit['log_level']['method'] = 'hidden';
 		}
@@ -758,6 +762,21 @@ function poller_edit() : void {
 		if ($poller['timezone'] == '') {
 			$poller['timezone'] = ini_get('date.timezone');
 		}
+	}
+
+	// Only users with the Settings permission see or change the remote
+	// database connection, see form_save().
+	$settings_allowed = is_realm_allowed(15);
+
+	if ($main_poller || !$settings_allowed) {
+		foreach (['spacer_remotedb', 'dbdefault', 'dbhost', 'dbuser', 'dbpass', 'dbport', 'dbretries', 'spacerssl', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca', 'dbsslcapath', 'dbsslverifyservercert'] as $field) {
+			unset($fields_poller_edit[$field]);
+		}
+	}
+
+	// The connection test row is attached to this spacer and reads those fields.
+	if (!$main_poller && !$settings_allowed) {
+		unset($fields_poller_edit['spacertest']);
 	}
 
 	draw_edit_form(

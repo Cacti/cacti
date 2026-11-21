@@ -852,6 +852,42 @@ function secpass_check_expired() : void {
 	}
 }
 
+/**
+ * rrdclean_file_is_removable - checks a queued file before it is removed or archived
+ *
+ * Only location is checked. A name with a space or a quote is still accepted,
+ * because the cleaner must be able to remove such files.
+ *
+ * @param mixed $name      The file name as queued in data_source_purge_action
+ * @param mixed $real_file The expanded local file name
+ * @param bool  $proxy     Whether the file is handled by the RRDproxy
+ *
+ * @return bool True when the file may be removed or archived
+ */
+function rrdclean_file_is_removable(mixed $name, mixed $real_file, bool $proxy) : bool {
+	if (!is_string($name) || !is_string($real_file)) {
+		return false;
+	}
+
+	if (!$proxy) {
+		return data_source_path_within_rra($real_file);
+	}
+
+	// The RRDproxy resolves the name itself and reads one command per line, so
+	// only a name without control characters or dot segments is passed on.
+	if ($name === '' || preg_match('/[\x00-\x1f\x7f]/', $name)) {
+		return false;
+	}
+
+	foreach (explode('/', str_replace('\\', '/', $name)) as $segment) {
+		if ($segment === '.' || $segment === '..') {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 // remove_files - remove all unwanted files; the list is given by table data_source_purge_action
 function remove_files(array $file_array) : void {
 	global $debug, $archived, $purged;
@@ -890,6 +926,17 @@ function remove_files(array $file_array) : void {
 
 		$base_file = str_replace('<path_rra>', '', $file['name']);
 		$base_file = str_replace('<path_cacti>', '', $base_file);
+
+		if (!rrdclean_file_is_removable($file['name'], $real_file, read_config_option('storage_location') != 0)) {
+			cacti_log('WARNING: RRDfile Maintenance skipped ' . rrd_strip_control_chars($file['name']) . ': not a file below the RRA directory', true, 'MAINT');
+
+			// drop the entry, or the purge would fetch it again forever
+			db_execute_prepared('DELETE FROM `data_source_purge_action`
+				WHERE name = ?',
+				[$file['name']]);
+
+			continue;
+		}
 
 		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
