@@ -7497,6 +7497,10 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
  * @return string|false The reply, or false when the request failed.
  */
 function remote_agent_read_response($url, $context, $max_bytes = REMOTE_AGENT_MAX_RESPONSE_BYTES) {
+	if (!preg_match('/^https?:\/\//i', $url)) {
+		return false;
+	}
+
 	$output = file_get_contents($url, false, $context, 0, $max_bytes + 1);
 
 	if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
