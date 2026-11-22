@@ -69,6 +69,7 @@ test('every graph passes cacti input relationship preflight', function () {
 	global $hash_type_codes, $cacti_version_codes;
 	// Read the branch's hash mappings without initializing UI/plugin/database state.
 	$source = file_get_contents(__DIR__ . '/../../../include/global_arrays.php');
+
 	foreach (['hash_type_codes', 'cacti_version_codes'] as $name) {
 		$this->assertSame(1, preg_match('/\\$' . $name . '\\s*=\\s*(?:array\\(|\\[)(.*?)(?:\\)|\\]);/s', $source, $block));
 		preg_match_all("/'([^']+)'\\s*=>\\s*'([^']+)'/", $block[1], $pairs, PREG_SET_ORDER);
@@ -128,17 +129,63 @@ test('cisco router associates five queries without fixed graphs', function () {
 		}
 	}
 	$expected = ['Cisco - Cellular Signal Quality', 'Cisco - Cellular Signal Strength', 'Cisco - QFP Processor Utilisation'];
+
 	foreach (range(1, 8) as $count) {
 		$expected[] = 'Cisco - Memory Usage - ' . $count . ' pools';
 		$expected[] = 'Cisco - QFP Memory Usage - ' . $count . ' pools';
 		$expected[] = 'Cisco - Temperature - ' . $count . ' sensors';
+		$expected[] = 'Cisco - Temperature - ' . $count . ' sensors - Fahrenheit';
 	}
 	$this->assertEqualsCanonicalizing($expected, $graphNames);
 	$this->assertStringNotContainsString('a96490cb87fb4f11757feaba2806593c', (string)$host->graph_templates);
 });
 
-
 test('the release package uses an official Cacti signing key', function () {
 	$xml = simplexml_load_string(gzdecode(file_get_contents(dirname(__DIR__, 3) . '/install/templates/Cisco_Router.xml.gz')));
 	expect(is_cacti_public_key(base64_decode((string) $xml->publickey, true)))->toBeTrue('Maintainer signing is required before release');
+});
+
+test('fahrenheit variants share Celsius data and convert every displayed value', function () {
+	$xml     = simplexml_load_file(__DIR__ . '/../../../install/templates/Cisco_Router.xml');
+	$objects = [];
+	$named   = [];
+
+	foreach ($xml->children() as $hash => $object) {
+		$objects[$hash] = $object;
+
+		if (str_starts_with($hash, 'hash_00') || str_starts_with($hash, 'hash_04')) {
+			$named[(string)$object->name] = $object;
+		}
+	}
+	$query = $named['Cisco - Temperature - All Sensors'];
+	$this->assertCount(16, $query->graphs->children());
+	$this->assertSame('Cisco - Temperature - 1 sensors', (string)$query->graphs->children()[0]->name);
+
+	foreach (range(1, 8) as $count) {
+		$name = 'Cisco - Temperature - ' . $count . ' sensors';
+		$c    = $named[$name];
+		$f    = $named[$name . ' - Fahrenheit'];
+		$this->assertSame('Temperature (°C)', (string)$c->graph->vertical_label);
+		$this->assertSame('Temperature (°F)', (string)$f->graph->vertical_label);
+		$this->assertSame('on', (string)$f->graph->auto_scale);
+		$this->assertCount($count * 4, $f->items->children());
+		$citems = array_values(iterator_to_array($c->items->children()));
+
+		foreach (array_values(iterator_to_array($f->items->children())) as $i => $item) {
+			$this->assertSame((string)$citems[$i]->task_item_id, (string)$item->task_item_id);
+			$this->assertSame((string)$citems[$i]->color_id, (string)$item->color_id);
+			$cdef = $objects[(string)$item->cdef_id];
+			$this->assertSame('CURRENT_DATA_SOURCE,9,*,5,/,32,+', (string)$cdef->items->children()[0]->value);
+
+			if ((string)$item->graph_type_id === '9') {
+				$this->assertSame('%5.1lf °F', (string)$objects[(string)$item->gprint_id]->gprint_text);
+			}
+		}
+		$associations = [];
+
+		foreach ($query->graphs->children() as $association) {
+			$associations[(string)$association->name] = $association;
+		}
+		$this->assertXmlStringEqualsXmlString($associations[$name]->rrd->asXML(), $associations[$name . ' - Fahrenheit']->rrd->asXML());
+	}
 });
