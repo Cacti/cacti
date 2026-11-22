@@ -9,9 +9,9 @@ Cisco Router adds five queries to its existing CPU, uptime, polling time, interf
 | Memory Usage — All Pools | A percentage-used line for each pool, with used/free bytes in the legend |
 | QFP Memory Usage — All Pools | A percentage-used line for each forwarding-engine memory resource, with used/free bytes in the legend |
 | QFP Processor Utilisation | Five-minute processing load (%), per QFP processor |
-| Temperature — All Sensors | A line for each Celsius sensor, with current, average and maximum readings |
+| Temperature — All Sensors | A line for each sensor, with current, average and maximum readings; Celsius by default, with optional Fahrenheit variants |
 
-The graphs use SVG. Memory uses a fixed 0–100% axis and orange/gold lines. Temperature adjusts its axis to the readings and includes °C in the axis and legend. QFP load measures the forwarding engine, separately from the ordinary CPU graph. Cellular strength and quality are separate because dBm and dB measure different things.
+The graphs use SVG. Memory uses a fixed 0–100% axis and orange/gold lines. Temperature adjusts its axis to the readings and includes °C in the axis and legend by default, or °F when a Fahrenheit variant is selected. QFP load measures the forwarding engine, separately from the ordinary CPU graph. Cellular strength and quality are separate because dBm and dB measure different things.
 
 “All Pools” compares each pool's percentage; it does not add unrelated capacities together. Multiple modems or QFP processors produce more than one instance of their graph families.
 
@@ -35,6 +35,8 @@ Assign **Cisco Router** to the device and check the discovered rows. On an exist
 
 For manual creation, open **Create Graphs for this Device**. Create both cellular graph types if wanted. For memory and temperature, choose the variant matching the displayed pool or sensor count: for example, six sensors needs the six-sensor graph. Cacti remembers a dropdown choice; it does not automatically choose the matching count for manual creation. Do not select every count variant for one row.
 
+For Fahrenheit, choose the temperature variant ending in **Fahrenheit**, with the same sensor count. It converts each plotted value and its legend statistics using °F = °C × 9/5 + 32. Celsius remains the default for automatic creation. Both units use the same underlying Celsius data sources, so adding a Fahrenheit graph for the same discovered group does not require another poller data source or discard its history.
+
 For automatic creation, install the optional ordinary graph rules once per installation and enable **Enable Automatic Graph Creation** in Cacti Settings. See [automation setup](Cisco-Router-Health-Automation.md). With those prerequisites, adding a Cisco Router uses normal Cacti discovery and graph rules to create supported health graphs. Importing XML alone does not enable this behaviour.
 
 Unsupported queries return no rows. A timeout can also leave discovery empty, so check SNMP connectivity before concluding that a feature is unsupported. A discovered component may lack an individual metric or lose a reading; those samples remain unknown, not zero. Allow at least two polling intervals for a new graph to acquire history.
@@ -57,7 +59,7 @@ Support depends on the device's hardware, IOS/IOS XE release and SNMP permission
 | QFP processor | Reads five-minute processing load for each reported QFP entity. | Many switches and older routers do not contain a QFP. This is not a fallback for their normal CPU. |
 | Router memory | Prefers CISCO-ENHANCED-MEMPOOL-MIB high-capacity used/free counters. Uses CISCO-MEMORY-POOL-MIB only if the enhanced discovery table is absent. | Enhanced and legacy indexes are not merged because they can refer to the same physical pool. When an enhanced HC column explicitly reports that it is unsupported, the collector reads the older gauge and its overflow column if available. Timeouts remain unknown rather than triggering a fallback. |
 | QFP memory | Converts the public MIB's kilobyte readings to bytes when the newer units column is absent. On the tested IOS XE implementations, units code 4 means bytes. | Unknown unit codes and failed unit requests return unknown. Only DRAM is named by the public MIB; other resource codes retain a neutral “Resource N” label. |
-| Temperature | Prefers a standard sensor at a given physical index, then uses Cisco's table when no standard type is readable. Merges discovery by physical index to avoid duplicates. | Celsius only. Applies each MIB's scale and precision; unavailable sensors and overflow/underflow sentinels remain unknown. |
+| Temperature | Prefers a standard sensor at a given physical index, then uses Cisco's table when no standard type is readable. Merges discovery by physical index to avoid duplicates. | Collects Celsius; Fahrenheit graphs convert the displayed values. Applies each MIB's scale and precision; unavailable sensors and overflow/underflow sentinels remain unknown. |
 
 Live collection has been exercised on C1113-8PLTELA and C1131X-8PLTEPWZ routers. That does not establish compatibility with all ISR, ASR or Catalyst models. Legacy memory and Cisco temperature fallback paths have fixture coverage; physical validation on older hardware is still needed. SNMPv3, remote collectors and large installations require additional integration validation before being advertised as tested.
 

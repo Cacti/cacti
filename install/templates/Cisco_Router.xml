@@ -8603,7 +8603,356 @@
           </hash_130103340afe5eeb3172c64c53b96f7d892f33>
         </sv_data_source>
       </hash_110103b71e98d65b76d6f0cfe783e51b318664>
-    </graphs>
+
+<hash_110103e6bb0db72f739490faa7cce5b9907e66>
+  <graph_template_id>hash_000103ce6bb0b058f2d3ad88d74769afbafbed</graph_template_id>
+  <name>Cisco - Temperature - 1 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_0101036050bbda88ed1a33eddc2978343a3fba</data_template_id>
+      <data_template_rrd_id>hash_0801036a68d11364aa072e79335e12445b17e5</data_template_rrd_id>
+    </item_000>
+  </rrd>
+  <sv_graph>
+    <hash_1201033c1514212bdf7b70e9f48c6d3842fe9e>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_1201033c1514212bdf7b70e9f48c6d3842fe9e>
+  </sv_graph>
+  <sv_data_source>
+    <hash_13010344608b59432a2cbf635a7f973b4b4dfc>
+      <field_name>name</field_name>
+      <data_template_id>hash_0101036050bbda88ed1a33eddc2978343a3fba</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_13010344608b59432a2cbf635a7f973b4b4dfc>
+  </sv_data_source>
+</hash_110103e6bb0db72f739490faa7cce5b9907e66>
+<hash_110103a40d700151ea6677f36d7595b9491254>
+  <graph_template_id>hash_00010309839d4b0d1e75b19e2d9b3f64fc1f43</graph_template_id>
+  <name>Cisco - Temperature - 2 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_010103eedd922dc1c681c3667b88af3ebc8a2c</data_template_id>
+      <data_template_rrd_id>hash_080103987e5c4b6d4f5c99114d2ebe7ab7c8c7</data_template_rrd_id>
+    </item_000>
+    <item_001>
+      <snmp_field_name>temperature2</snmp_field_name>
+      <data_template_id>hash_010103eedd922dc1c681c3667b88af3ebc8a2c</data_template_id>
+      <data_template_rrd_id>hash_080103ddabad8d8b64331a8d98b6c158cdd574</data_template_rrd_id>
+    </item_001>
+  </rrd>
+  <sv_graph>
+    <hash_1201036614533cc67a7ea7218f091d36deb1b9>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_1201036614533cc67a7ea7218f091d36deb1b9>
+  </sv_graph>
+  <sv_data_source>
+    <hash_130103b7713d3085460df08297266612569389>
+      <field_name>name</field_name>
+      <data_template_id>hash_010103eedd922dc1c681c3667b88af3ebc8a2c</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_130103b7713d3085460df08297266612569389>
+  </sv_data_source>
+</hash_110103a40d700151ea6677f36d7595b9491254>
+<hash_1101035af48f0525cfc1079d68bb24faf39d5b>
+  <graph_template_id>hash_000103be133ef07f6cd11c79869426c3cb1194</graph_template_id>
+  <name>Cisco - Temperature - 3 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_0101033a72437c96238715f462567675f1496d</data_template_id>
+      <data_template_rrd_id>hash_08010369a91e4ee76dadd3bb85fa2c3fae0eb4</data_template_rrd_id>
+    </item_000>
+    <item_001>
+      <snmp_field_name>temperature2</snmp_field_name>
+      <data_template_id>hash_0101033a72437c96238715f462567675f1496d</data_template_id>
+      <data_template_rrd_id>hash_080103c7ce915a63326bbe312f0d5b32e38ec4</data_template_rrd_id>
+    </item_001>
+    <item_002>
+      <snmp_field_name>temperature3</snmp_field_name>
+      <data_template_id>hash_0101033a72437c96238715f462567675f1496d</data_template_id>
+      <data_template_rrd_id>hash_080103e1d8f5b729fdd44c8ebcc8b320bd2a26</data_template_rrd_id>
+    </item_002>
+  </rrd>
+  <sv_graph>
+    <hash_120103042384e77de7d35c59f204a11dc9b0b8>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_120103042384e77de7d35c59f204a11dc9b0b8>
+  </sv_graph>
+  <sv_data_source>
+    <hash_130103fb56b6f379d9f4664cceae83062727e5>
+      <field_name>name</field_name>
+      <data_template_id>hash_0101033a72437c96238715f462567675f1496d</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_130103fb56b6f379d9f4664cceae83062727e5>
+  </sv_data_source>
+</hash_1101035af48f0525cfc1079d68bb24faf39d5b>
+<hash_110103b5dabd8bd381c7660fe09b617baf4548>
+  <graph_template_id>hash_00010365e6679b97dea768bedec8a450c407ef</graph_template_id>
+  <name>Cisco - Temperature - 4 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_010103d40c32d579972e148f11876db3d038ab</data_template_id>
+      <data_template_rrd_id>hash_080103e92f2b6718c51de3f464ada96e28ab63</data_template_rrd_id>
+    </item_000>
+    <item_001>
+      <snmp_field_name>temperature2</snmp_field_name>
+      <data_template_id>hash_010103d40c32d579972e148f11876db3d038ab</data_template_id>
+      <data_template_rrd_id>hash_0801034ef427ea9b39b901bcb2efa98db781f7</data_template_rrd_id>
+    </item_001>
+    <item_002>
+      <snmp_field_name>temperature3</snmp_field_name>
+      <data_template_id>hash_010103d40c32d579972e148f11876db3d038ab</data_template_id>
+      <data_template_rrd_id>hash_080103e5fd06a921f9142747dcfa7891358362</data_template_rrd_id>
+    </item_002>
+    <item_003>
+      <snmp_field_name>temperature4</snmp_field_name>
+      <data_template_id>hash_010103d40c32d579972e148f11876db3d038ab</data_template_id>
+      <data_template_rrd_id>hash_08010332e7e645e891c3e5ac199964365be561</data_template_rrd_id>
+    </item_003>
+  </rrd>
+  <sv_graph>
+    <hash_120103b210a3480e681df41f78ac1df98af6ad>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_120103b210a3480e681df41f78ac1df98af6ad>
+  </sv_graph>
+  <sv_data_source>
+    <hash_1301035d94fbaa65e1d0b439f4c96790dfe2c8>
+      <field_name>name</field_name>
+      <data_template_id>hash_010103d40c32d579972e148f11876db3d038ab</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_1301035d94fbaa65e1d0b439f4c96790dfe2c8>
+  </sv_data_source>
+</hash_110103b5dabd8bd381c7660fe09b617baf4548>
+<hash_1101031570fed9f84dadf46658fd26a561ce52>
+  <graph_template_id>hash_0001031e9a25bff1b210bada291eb0378ec59f</graph_template_id>
+  <name>Cisco - Temperature - 5 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_0101031e9fa4e5938ec4425bcfca030a409fc5</data_template_id>
+      <data_template_rrd_id>hash_080103dd22bc6c258269bc736a2450ad8f09d0</data_template_rrd_id>
+    </item_000>
+    <item_001>
+      <snmp_field_name>temperature2</snmp_field_name>
+      <data_template_id>hash_0101031e9fa4e5938ec4425bcfca030a409fc5</data_template_id>
+      <data_template_rrd_id>hash_0801039fcf6701ef300777116a97989153d8af</data_template_rrd_id>
+    </item_001>
+    <item_002>
+      <snmp_field_name>temperature3</snmp_field_name>
+      <data_template_id>hash_0101031e9fa4e5938ec4425bcfca030a409fc5</data_template_id>
+      <data_template_rrd_id>hash_080103d64aa7872b36abb28692bfd7aeec5e0b</data_template_rrd_id>
+    </item_002>
+    <item_003>
+      <snmp_field_name>temperature4</snmp_field_name>
+      <data_template_id>hash_0101031e9fa4e5938ec4425bcfca030a409fc5</data_template_id>
+      <data_template_rrd_id>hash_08010389bc2b37e71ec16ad81d8319ce3b55c5</data_template_rrd_id>
+    </item_003>
+    <item_004>
+      <snmp_field_name>temperature5</snmp_field_name>
+      <data_template_id>hash_0101031e9fa4e5938ec4425bcfca030a409fc5</data_template_id>
+      <data_template_rrd_id>hash_080103973820a2135a6a6b3f674d9b57ab6946</data_template_rrd_id>
+    </item_004>
+  </rrd>
+  <sv_graph>
+    <hash_1201030029a8d9eb74eb388e71e58e80874758>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_1201030029a8d9eb74eb388e71e58e80874758>
+  </sv_graph>
+  <sv_data_source>
+    <hash_1301031714ab839f6ddb18c09c29765a21efbb>
+      <field_name>name</field_name>
+      <data_template_id>hash_0101031e9fa4e5938ec4425bcfca030a409fc5</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_1301031714ab839f6ddb18c09c29765a21efbb>
+  </sv_data_source>
+</hash_1101031570fed9f84dadf46658fd26a561ce52>
+<hash_110103b7df5b6b56077bf7a80aea618cd021a4>
+  <graph_template_id>hash_0001032e8e97490af58945f2344a9f52761dbf</graph_template_id>
+  <name>Cisco - Temperature - 6 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_01010370b11ba82a7cc5623fad9a4899283898</data_template_id>
+      <data_template_rrd_id>hash_080103f485694413f687bef2553984a7c6d845</data_template_rrd_id>
+    </item_000>
+    <item_001>
+      <snmp_field_name>temperature2</snmp_field_name>
+      <data_template_id>hash_01010370b11ba82a7cc5623fad9a4899283898</data_template_id>
+      <data_template_rrd_id>hash_08010389937d63129dc1c0db28b304fe2a406d</data_template_rrd_id>
+    </item_001>
+    <item_002>
+      <snmp_field_name>temperature3</snmp_field_name>
+      <data_template_id>hash_01010370b11ba82a7cc5623fad9a4899283898</data_template_id>
+      <data_template_rrd_id>hash_080103424a203f13050a2ff65a9d1873cdcf6d</data_template_rrd_id>
+    </item_002>
+    <item_003>
+      <snmp_field_name>temperature4</snmp_field_name>
+      <data_template_id>hash_01010370b11ba82a7cc5623fad9a4899283898</data_template_id>
+      <data_template_rrd_id>hash_08010371edce8df23e8b1a40237de7a3f43254</data_template_rrd_id>
+    </item_003>
+    <item_004>
+      <snmp_field_name>temperature5</snmp_field_name>
+      <data_template_id>hash_01010370b11ba82a7cc5623fad9a4899283898</data_template_id>
+      <data_template_rrd_id>hash_080103f0d227d8c9f635478906ee478df32a12</data_template_rrd_id>
+    </item_004>
+    <item_005>
+      <snmp_field_name>temperature6</snmp_field_name>
+      <data_template_id>hash_01010370b11ba82a7cc5623fad9a4899283898</data_template_id>
+      <data_template_rrd_id>hash_080103febe23bd06b46f7016dfbbc8b050d452</data_template_rrd_id>
+    </item_005>
+  </rrd>
+  <sv_graph>
+    <hash_1201033f4a439851380c5bbe6ddc1345fc9118>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_1201033f4a439851380c5bbe6ddc1345fc9118>
+  </sv_graph>
+  <sv_data_source>
+    <hash_130103d3cae0418f010ec4beb605398b838331>
+      <field_name>name</field_name>
+      <data_template_id>hash_01010370b11ba82a7cc5623fad9a4899283898</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_130103d3cae0418f010ec4beb605398b838331>
+  </sv_data_source>
+</hash_110103b7df5b6b56077bf7a80aea618cd021a4>
+<hash_110103f20e96ac93773bc4ccf0b9b61f37ed20>
+  <graph_template_id>hash_000103071edf14ccb504cd9b83184b9d256999</graph_template_id>
+  <name>Cisco - Temperature - 7 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <data_template_rrd_id>hash_080103e5b67c7b11bddb03edaca818fb31a137</data_template_rrd_id>
+    </item_000>
+    <item_001>
+      <snmp_field_name>temperature2</snmp_field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <data_template_rrd_id>hash_0801036a8a7916d5a28fda80d3ebc5d03421e8</data_template_rrd_id>
+    </item_001>
+    <item_002>
+      <snmp_field_name>temperature3</snmp_field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <data_template_rrd_id>hash_080103f8c830fbe40fafc70724c41d4a38378f</data_template_rrd_id>
+    </item_002>
+    <item_003>
+      <snmp_field_name>temperature4</snmp_field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <data_template_rrd_id>hash_080103aa01e77ccce51d945f31943081e3f1c9</data_template_rrd_id>
+    </item_003>
+    <item_004>
+      <snmp_field_name>temperature5</snmp_field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <data_template_rrd_id>hash_080103e8e24b3892039184c8c97ca9fbc047f4</data_template_rrd_id>
+    </item_004>
+    <item_005>
+      <snmp_field_name>temperature6</snmp_field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <data_template_rrd_id>hash_080103c0f19f09f975ef150e6454037b3cfab6</data_template_rrd_id>
+    </item_005>
+    <item_006>
+      <snmp_field_name>temperature7</snmp_field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <data_template_rrd_id>hash_0801039aa29549fec994cf32b5934a5856b73e</data_template_rrd_id>
+    </item_006>
+  </rrd>
+  <sv_graph>
+    <hash_1201032b263d71320649b0e77566429930135a>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_1201032b263d71320649b0e77566429930135a>
+  </sv_graph>
+  <sv_data_source>
+    <hash_130103fdc3f2d9a7dc0a0bba724a82dd2f05a0>
+      <field_name>name</field_name>
+      <data_template_id>hash_0101038e2bb03218e24a3fb64f74ecd82c7b81</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_130103fdc3f2d9a7dc0a0bba724a82dd2f05a0>
+  </sv_data_source>
+</hash_110103f20e96ac93773bc4ccf0b9b61f37ed20>
+<hash_11010318232541a2d7754f22b10b58aa82c9b1>
+  <graph_template_id>hash_000103ada9e0a2877bdd8db04aa0b437d13610</graph_template_id>
+  <name>Cisco - Temperature - 8 sensors - Fahrenheit</name>
+  <rrd>
+    <item_000>
+      <snmp_field_name>temperature1</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_080103ef6120c3afb84109140641d6cacd769b</data_template_rrd_id>
+    </item_000>
+    <item_001>
+      <snmp_field_name>temperature2</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_0801033728b85de12bb62cad598e7c3855609f</data_template_rrd_id>
+    </item_001>
+    <item_002>
+      <snmp_field_name>temperature3</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_080103fb84556fe1335854c5a82b989035b62b</data_template_rrd_id>
+    </item_002>
+    <item_003>
+      <snmp_field_name>temperature4</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_080103d24930abb6ccd911af068ac80ace86e4</data_template_rrd_id>
+    </item_003>
+    <item_004>
+      <snmp_field_name>temperature5</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_080103988f5a9601b4bace8f550c3d22878701</data_template_rrd_id>
+    </item_004>
+    <item_005>
+      <snmp_field_name>temperature6</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_08010355bde36a11ae5cdd19d8f9e0cb83fccd</data_template_rrd_id>
+    </item_005>
+    <item_006>
+      <snmp_field_name>temperature7</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_0801038fc6c6be55d787b3c133850895f0f42e</data_template_rrd_id>
+    </item_006>
+    <item_007>
+      <snmp_field_name>temperature8</snmp_field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <data_template_rrd_id>hash_080103f931970bb063d82f565e1727211b3a42</data_template_rrd_id>
+    </item_007>
+  </rrd>
+  <sv_graph>
+    <hash_1201032743ce9c6b6bd37a0279ece8130e1600>
+      <field_name>title</field_name>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors (°F)</text>
+    </hash_1201032743ce9c6b6bd37a0279ece8130e1600>
+  </sv_graph>
+  <sv_data_source>
+    <hash_130103c97364089fe91d972497c0cdce40c65c>
+      <field_name>name</field_name>
+      <data_template_id>hash_010103ead738c8d5c1d50929da3a5b51bf7384</data_template_id>
+      <sequence>1</sequence>
+      <text>|host_description| - Temperature - All Sensors</text>
+    </hash_130103c97364089fe91d972497c0cdce40c65c>
+  </sv_data_source>
+</hash_11010318232541a2d7754f22b10b58aa82c9b1>
+</graphs>
   </hash_04010359bb7c19c1f17052ccb33a1937e40155>
   <hash_000103f25277442f1f56d9320ad7e0c1141234>
     <name>Cisco - Temperature - 1 sensors</name>
@@ -23013,4 +23362,3539 @@
       </hash_140103568fb6bee3257886cde782b89917c0f6>
     </items>
   </hash_05010309f51aec9f052ea76733b58f16389a7c>
+
+<hash_0501039fc4628f23187d0d3a7f848a4f74fc05>
+  <name>Cisco Health Celsius to Fahrenheit</name>
+  <items>
+    <hash_1401036336a09316a37574a82f9bf1174649d7>
+      <sequence>1</sequence>
+      <type>6</type>
+      <value>CURRENT_DATA_SOURCE,9,*,5,/,32,+</value>
+    </hash_1401036336a09316a37574a82f9bf1174649d7>
+  </items>
+</hash_0501039fc4628f23187d0d3a7f848a4f74fc05>
+<hash_0601032aaac9a196aef7294d0e95c7e731bbe5>
+  <name>Cisco Health Temperature Fahrenheit</name>
+  <gprint_text>%5.1lf °F</gprint_text>
+</hash_0601032aaac9a196aef7294d0e95c7e731bbe5>
+<hash_000103ce6bb0b058f2d3ad88d74769afbafbed>
+  <name>Cisco - Temperature - 1 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_10010349a3303dad04d6bd52c65c7219280da2>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_0801036a68d11364aa072e79335e12445b17e5</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_10010349a3303dad04d6bd52c65c7219280da2>
+    <hash_1001033c7787bd751a3a7d9c82a9621a68a3c4>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801036a68d11364aa072e79335e12445b17e5</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_1001033c7787bd751a3a7d9c82a9621a68a3c4>
+    <hash_1001031ad1b825cf06364c296ed7a7da4c4801>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801036a68d11364aa072e79335e12445b17e5</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_1001031ad1b825cf06364c296ed7a7da4c4801>
+    <hash_1001030e08376d01c5d1a8a3bae9d589622c78>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801036a68d11364aa072e79335e12445b17e5</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_1001030e08376d01c5d1a8a3bae9d589622c78>
+  </items>
+  <inputs>
+    <hash_090103521fa9d28ad4aa90c32d28270d891d2a>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_10010349a3303dad04d6bd52c65c7219280da2|hash_1001033c7787bd751a3a7d9c82a9621a68a3c4|hash_1001031ad1b825cf06364c296ed7a7da4c4801|hash_1001030e08376d01c5d1a8a3bae9d589622c78</items>
+    </hash_090103521fa9d28ad4aa90c32d28270d891d2a>
+  </inputs>
+</hash_000103ce6bb0b058f2d3ad88d74769afbafbed>
+<hash_00010309839d4b0d1e75b19e2d9b3f64fc1f43>
+  <name>Cisco - Temperature - 2 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_1001035d3fd91a9e4fd6543975659080a532e8>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103987e5c4b6d4f5c99114d2ebe7ab7c8c7</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_1001035d3fd91a9e4fd6543975659080a532e8>
+    <hash_100103d9a140d9bbb41dee8741e54738c78b86>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103987e5c4b6d4f5c99114d2ebe7ab7c8c7</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_100103d9a140d9bbb41dee8741e54738c78b86>
+    <hash_10010308fd7cea4196edb2718b9360a27d49a1>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103987e5c4b6d4f5c99114d2ebe7ab7c8c7</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_10010308fd7cea4196edb2718b9360a27d49a1>
+    <hash_1001030b57adc329d9d4d9dab8bb0fcec62424>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103987e5c4b6d4f5c99114d2ebe7ab7c8c7</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_1001030b57adc329d9d4d9dab8bb0fcec62424>
+    <hash_1001035665eb4b46131ec0ddcd8ca3c6a3e12a>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103ddabad8d8b64331a8d98b6c158cdd574</task_item_id>
+      <color_id>009F81</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor2Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>5</sequence>
+    </hash_1001035665eb4b46131ec0ddcd8ca3c6a3e12a>
+    <hash_10010347a91645f0ea9117c254e52e166adfd9>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103ddabad8d8b64331a8d98b6c158cdd574</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>6</sequence>
+    </hash_10010347a91645f0ea9117c254e52e166adfd9>
+    <hash_1001033bf5bd99e8d76730fd39803663bcd3a8>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103ddabad8d8b64331a8d98b6c158cdd574</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>7</sequence>
+    </hash_1001033bf5bd99e8d76730fd39803663bcd3a8>
+    <hash_100103dd8eaed8df41525c85d665d72d5ed4e1>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103ddabad8d8b64331a8d98b6c158cdd574</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>8</sequence>
+    </hash_100103dd8eaed8df41525c85d665d72d5ed4e1>
+  </items>
+  <inputs>
+    <hash_0901032c00126e4515e36e83d1cb15397c1ec4>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001035d3fd91a9e4fd6543975659080a532e8|hash_100103d9a140d9bbb41dee8741e54738c78b86|hash_10010308fd7cea4196edb2718b9360a27d49a1|hash_1001030b57adc329d9d4d9dab8bb0fcec62424</items>
+    </hash_0901032c00126e4515e36e83d1cb15397c1ec4>
+    <hash_090103c6241272280b2f73626dffb489decf0d>
+      <name>Temperature 2</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001035665eb4b46131ec0ddcd8ca3c6a3e12a|hash_10010347a91645f0ea9117c254e52e166adfd9|hash_1001033bf5bd99e8d76730fd39803663bcd3a8|hash_100103dd8eaed8df41525c85d665d72d5ed4e1</items>
+    </hash_090103c6241272280b2f73626dffb489decf0d>
+  </inputs>
+</hash_00010309839d4b0d1e75b19e2d9b3f64fc1f43>
+<hash_000103be133ef07f6cd11c79869426c3cb1194>
+  <name>Cisco - Temperature - 3 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_1001033c3667274800b83657e5cf2d13841d04>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_08010369a91e4ee76dadd3bb85fa2c3fae0eb4</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_1001033c3667274800b83657e5cf2d13841d04>
+    <hash_10010377fef5c803c5b08552391ea4cbb24d08>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010369a91e4ee76dadd3bb85fa2c3fae0eb4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_10010377fef5c803c5b08552391ea4cbb24d08>
+    <hash_100103f9957a5925625f7c313b55e60f6d7828>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010369a91e4ee76dadd3bb85fa2c3fae0eb4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_100103f9957a5925625f7c313b55e60f6d7828>
+    <hash_100103bbe2cdff0e6040c4168577788f7b23f4>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010369a91e4ee76dadd3bb85fa2c3fae0eb4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_100103bbe2cdff0e6040c4168577788f7b23f4>
+    <hash_100103b71fdd913b79961540d30cf2c07a0201>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103c7ce915a63326bbe312f0d5b32e38ec4</task_item_id>
+      <color_id>009F81</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor2Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>5</sequence>
+    </hash_100103b71fdd913b79961540d30cf2c07a0201>
+    <hash_1001033554782e24d1f0bcd02c44c7f7a724a5>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103c7ce915a63326bbe312f0d5b32e38ec4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>6</sequence>
+    </hash_1001033554782e24d1f0bcd02c44c7f7a724a5>
+    <hash_100103fc5ffc838ece2f60dc5b71fe4cd35fcc>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103c7ce915a63326bbe312f0d5b32e38ec4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>7</sequence>
+    </hash_100103fc5ffc838ece2f60dc5b71fe4cd35fcc>
+    <hash_1001033fccaf9fa26d81e0f752523535e3c0cc>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103c7ce915a63326bbe312f0d5b32e38ec4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>8</sequence>
+    </hash_1001033fccaf9fa26d81e0f752523535e3c0cc>
+    <hash_100103b9c538aa16074cc46c716f0eb842c92b>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103e1d8f5b729fdd44c8ebcc8b320bd2a26</task_item_id>
+      <color_id>C070A0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor3Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>9</sequence>
+    </hash_100103b9c538aa16074cc46c716f0eb842c92b>
+    <hash_1001030cc86cfe0091e425629e8e2f6a410128>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e1d8f5b729fdd44c8ebcc8b320bd2a26</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>10</sequence>
+    </hash_1001030cc86cfe0091e425629e8e2f6a410128>
+    <hash_10010370972086d11ef8f8be7f8716f9ae296e>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e1d8f5b729fdd44c8ebcc8b320bd2a26</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>11</sequence>
+    </hash_10010370972086d11ef8f8be7f8716f9ae296e>
+    <hash_1001035c2e5c1acbcb3980e7519a975ea20e58>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e1d8f5b729fdd44c8ebcc8b320bd2a26</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>12</sequence>
+    </hash_1001035c2e5c1acbcb3980e7519a975ea20e58>
+  </items>
+  <inputs>
+    <hash_0901036462938753a8c756f10dcd0b11084d57>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001033c3667274800b83657e5cf2d13841d04|hash_10010377fef5c803c5b08552391ea4cbb24d08|hash_100103f9957a5925625f7c313b55e60f6d7828|hash_100103bbe2cdff0e6040c4168577788f7b23f4</items>
+    </hash_0901036462938753a8c756f10dcd0b11084d57>
+    <hash_0901033aa1ec3b1d0c4ea6d541a1c0e56cf6cd>
+      <name>Temperature 2</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103b71fdd913b79961540d30cf2c07a0201|hash_1001033554782e24d1f0bcd02c44c7f7a724a5|hash_100103fc5ffc838ece2f60dc5b71fe4cd35fcc|hash_1001033fccaf9fa26d81e0f752523535e3c0cc</items>
+    </hash_0901033aa1ec3b1d0c4ea6d541a1c0e56cf6cd>
+    <hash_090103144a3fa01ac718e8d040013e772eef40>
+      <name>Temperature 3</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103b9c538aa16074cc46c716f0eb842c92b|hash_1001030cc86cfe0091e425629e8e2f6a410128|hash_10010370972086d11ef8f8be7f8716f9ae296e|hash_1001035c2e5c1acbcb3980e7519a975ea20e58</items>
+    </hash_090103144a3fa01ac718e8d040013e772eef40>
+  </inputs>
+</hash_000103be133ef07f6cd11c79869426c3cb1194>
+<hash_00010365e6679b97dea768bedec8a450c407ef>
+  <name>Cisco - Temperature - 4 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_100103b30584997cf238dd48c2d5ef7e580e87>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103e92f2b6718c51de3f464ada96e28ab63</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_100103b30584997cf238dd48c2d5ef7e580e87>
+    <hash_1001036a5b1e9a1ffd93dc4b68b740a03255c7>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e92f2b6718c51de3f464ada96e28ab63</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_1001036a5b1e9a1ffd93dc4b68b740a03255c7>
+    <hash_1001035b588c8f0937a0a011a78baee94cbe5e>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e92f2b6718c51de3f464ada96e28ab63</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_1001035b588c8f0937a0a011a78baee94cbe5e>
+    <hash_1001039e6f7c57c8d1ae0f9ec7b0275d663c45>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e92f2b6718c51de3f464ada96e28ab63</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_1001039e6f7c57c8d1ae0f9ec7b0275d663c45>
+    <hash_100103b444348452542d2e9ac7e75a3f0aa4ad>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_0801034ef427ea9b39b901bcb2efa98db781f7</task_item_id>
+      <color_id>009F81</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor2Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>5</sequence>
+    </hash_100103b444348452542d2e9ac7e75a3f0aa4ad>
+    <hash_100103217e30201de7d5f6d6aa9ba4486fea6c>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801034ef427ea9b39b901bcb2efa98db781f7</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>6</sequence>
+    </hash_100103217e30201de7d5f6d6aa9ba4486fea6c>
+    <hash_100103606bb3526ba53373293fa445442c75d1>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801034ef427ea9b39b901bcb2efa98db781f7</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>7</sequence>
+    </hash_100103606bb3526ba53373293fa445442c75d1>
+    <hash_100103730bc4ae8d30bf69e62ea5024baed325>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801034ef427ea9b39b901bcb2efa98db781f7</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>8</sequence>
+    </hash_100103730bc4ae8d30bf69e62ea5024baed325>
+    <hash_100103b8f5943b8494fe6d30061e2479a09723>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103e5fd06a921f9142747dcfa7891358362</task_item_id>
+      <color_id>C070A0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor3Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>9</sequence>
+    </hash_100103b8f5943b8494fe6d30061e2479a09723>
+    <hash_100103ad232e67184a4e7fe66f12b3e1b183ea>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e5fd06a921f9142747dcfa7891358362</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>10</sequence>
+    </hash_100103ad232e67184a4e7fe66f12b3e1b183ea>
+    <hash_100103169712347ed7be54e47ea19696c9fe78>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e5fd06a921f9142747dcfa7891358362</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>11</sequence>
+    </hash_100103169712347ed7be54e47ea19696c9fe78>
+    <hash_100103c1ea641fa59316cdf4fd1a90a4c5d360>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e5fd06a921f9142747dcfa7891358362</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>12</sequence>
+    </hash_100103c1ea641fa59316cdf4fd1a90a4c5d360>
+    <hash_100103803bdfbee002265ad87d4cafa2663f0a>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_08010332e7e645e891c3e5ac199964365be561</task_item_id>
+      <color_id>D7A100</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor4Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>13</sequence>
+    </hash_100103803bdfbee002265ad87d4cafa2663f0a>
+    <hash_1001030f6012ba16fa2fb44517f0d22523aa49>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010332e7e645e891c3e5ac199964365be561</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>14</sequence>
+    </hash_1001030f6012ba16fa2fb44517f0d22523aa49>
+    <hash_100103a0ef98929fa623b5fedcf3d8d38e4a61>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010332e7e645e891c3e5ac199964365be561</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>15</sequence>
+    </hash_100103a0ef98929fa623b5fedcf3d8d38e4a61>
+    <hash_100103a6b569dc04fad7ecea86e3502848639b>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010332e7e645e891c3e5ac199964365be561</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>16</sequence>
+    </hash_100103a6b569dc04fad7ecea86e3502848639b>
+  </items>
+  <inputs>
+    <hash_090103595fb9837c23fa5f2ec3d6ca230fa02f>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103b30584997cf238dd48c2d5ef7e580e87|hash_1001036a5b1e9a1ffd93dc4b68b740a03255c7|hash_1001035b588c8f0937a0a011a78baee94cbe5e|hash_1001039e6f7c57c8d1ae0f9ec7b0275d663c45</items>
+    </hash_090103595fb9837c23fa5f2ec3d6ca230fa02f>
+    <hash_0901037c01c61e40ca1f347c560d93de259571>
+      <name>Temperature 2</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103b444348452542d2e9ac7e75a3f0aa4ad|hash_100103217e30201de7d5f6d6aa9ba4486fea6c|hash_100103606bb3526ba53373293fa445442c75d1|hash_100103730bc4ae8d30bf69e62ea5024baed325</items>
+    </hash_0901037c01c61e40ca1f347c560d93de259571>
+    <hash_090103929b17b3d760b8a7c7e5971a40cc4e03>
+      <name>Temperature 3</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103b8f5943b8494fe6d30061e2479a09723|hash_100103ad232e67184a4e7fe66f12b3e1b183ea|hash_100103169712347ed7be54e47ea19696c9fe78|hash_100103c1ea641fa59316cdf4fd1a90a4c5d360</items>
+    </hash_090103929b17b3d760b8a7c7e5971a40cc4e03>
+    <hash_090103091bd69e8d552bd269803f6b306728d3>
+      <name>Temperature 4</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103803bdfbee002265ad87d4cafa2663f0a|hash_1001030f6012ba16fa2fb44517f0d22523aa49|hash_100103a0ef98929fa623b5fedcf3d8d38e4a61|hash_100103a6b569dc04fad7ecea86e3502848639b</items>
+    </hash_090103091bd69e8d552bd269803f6b306728d3>
+  </inputs>
+</hash_00010365e6679b97dea768bedec8a450c407ef>
+<hash_0001031e9a25bff1b210bada291eb0378ec59f>
+  <name>Cisco - Temperature - 5 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_1001035db380e8765ec00f9aa70a8d93035b6b>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103dd22bc6c258269bc736a2450ad8f09d0</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_1001035db380e8765ec00f9aa70a8d93035b6b>
+    <hash_100103905632678ae9abb8e9ffe3f169c40945>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103dd22bc6c258269bc736a2450ad8f09d0</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_100103905632678ae9abb8e9ffe3f169c40945>
+    <hash_10010323ea1ab7e0e329646ce14172f72b82e0>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103dd22bc6c258269bc736a2450ad8f09d0</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_10010323ea1ab7e0e329646ce14172f72b82e0>
+    <hash_1001033cc5165ae99401881d6453ecba88a528>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103dd22bc6c258269bc736a2450ad8f09d0</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_1001033cc5165ae99401881d6453ecba88a528>
+    <hash_10010310aaedfa1daf9e4a7cb32996727c43ae>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_0801039fcf6701ef300777116a97989153d8af</task_item_id>
+      <color_id>009F81</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor2Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>5</sequence>
+    </hash_10010310aaedfa1daf9e4a7cb32996727c43ae>
+    <hash_1001039a65f755005e1686423009bf3b800e82>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801039fcf6701ef300777116a97989153d8af</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>6</sequence>
+    </hash_1001039a65f755005e1686423009bf3b800e82>
+    <hash_100103fc7cf4836a6f296933d065d02dea2af5>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801039fcf6701ef300777116a97989153d8af</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>7</sequence>
+    </hash_100103fc7cf4836a6f296933d065d02dea2af5>
+    <hash_1001037caf1c4cdfa3b8eece8f08da124387b9>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801039fcf6701ef300777116a97989153d8af</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>8</sequence>
+    </hash_1001037caf1c4cdfa3b8eece8f08da124387b9>
+    <hash_100103bed7e059b8db9013d4956a3117d3c6b2>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103d64aa7872b36abb28692bfd7aeec5e0b</task_item_id>
+      <color_id>C070A0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor3Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>9</sequence>
+    </hash_100103bed7e059b8db9013d4956a3117d3c6b2>
+    <hash_100103b8102c0a2cd2fd462b7291eab3d50aaa>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103d64aa7872b36abb28692bfd7aeec5e0b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>10</sequence>
+    </hash_100103b8102c0a2cd2fd462b7291eab3d50aaa>
+    <hash_1001038cfd8c53bd173e590c4d15d33a151a37>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103d64aa7872b36abb28692bfd7aeec5e0b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>11</sequence>
+    </hash_1001038cfd8c53bd173e590c4d15d33a151a37>
+    <hash_10010352ab7fe1b72aeb2b19fc61eb47215e90>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103d64aa7872b36abb28692bfd7aeec5e0b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>12</sequence>
+    </hash_10010352ab7fe1b72aeb2b19fc61eb47215e90>
+    <hash_1001038bd648a1de117fdb0b052b08036d8308>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_08010389bc2b37e71ec16ad81d8319ce3b55c5</task_item_id>
+      <color_id>D7A100</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor4Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>13</sequence>
+    </hash_1001038bd648a1de117fdb0b052b08036d8308>
+    <hash_1001035f9529e351e1898a55097b13d6463ac3>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010389bc2b37e71ec16ad81d8319ce3b55c5</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>14</sequence>
+    </hash_1001035f9529e351e1898a55097b13d6463ac3>
+    <hash_1001037e3e05bda256e02c6ac80470286d72ba>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010389bc2b37e71ec16ad81d8319ce3b55c5</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>15</sequence>
+    </hash_1001037e3e05bda256e02c6ac80470286d72ba>
+    <hash_100103d0e61df7f9696e253c2f7bfd8afba524>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010389bc2b37e71ec16ad81d8319ce3b55c5</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>16</sequence>
+    </hash_100103d0e61df7f9696e253c2f7bfd8afba524>
+    <hash_100103227d6484c97147f548acfcc5cf955fb9>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103973820a2135a6a6b3f674d9b57ab6946</task_item_id>
+      <color_id>D06000</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor5Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>17</sequence>
+    </hash_100103227d6484c97147f548acfcc5cf955fb9>
+    <hash_1001034f98ca33f4fe418ab412a8cdd8d71a0e>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103973820a2135a6a6b3f674d9b57ab6946</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>18</sequence>
+    </hash_1001034f98ca33f4fe418ab412a8cdd8d71a0e>
+    <hash_100103eddda877a30d7961fb2d81ce44c6b4bc>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103973820a2135a6a6b3f674d9b57ab6946</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>19</sequence>
+    </hash_100103eddda877a30d7961fb2d81ce44c6b4bc>
+    <hash_1001032e4f8878b7efcac72c7e14a8961d866a>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103973820a2135a6a6b3f674d9b57ab6946</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>20</sequence>
+    </hash_1001032e4f8878b7efcac72c7e14a8961d866a>
+  </items>
+  <inputs>
+    <hash_090103a42e1cccffb1740816a67c2af8848d06>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001035db380e8765ec00f9aa70a8d93035b6b|hash_100103905632678ae9abb8e9ffe3f169c40945|hash_10010323ea1ab7e0e329646ce14172f72b82e0|hash_1001033cc5165ae99401881d6453ecba88a528</items>
+    </hash_090103a42e1cccffb1740816a67c2af8848d06>
+    <hash_090103570d49c485c9ff5d1848ff1385a3dbb2>
+      <name>Temperature 2</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_10010310aaedfa1daf9e4a7cb32996727c43ae|hash_1001039a65f755005e1686423009bf3b800e82|hash_100103fc7cf4836a6f296933d065d02dea2af5|hash_1001037caf1c4cdfa3b8eece8f08da124387b9</items>
+    </hash_090103570d49c485c9ff5d1848ff1385a3dbb2>
+    <hash_090103191cda1fe03c825d2b5a5a5fc3b25dab>
+      <name>Temperature 3</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103bed7e059b8db9013d4956a3117d3c6b2|hash_100103b8102c0a2cd2fd462b7291eab3d50aaa|hash_1001038cfd8c53bd173e590c4d15d33a151a37|hash_10010352ab7fe1b72aeb2b19fc61eb47215e90</items>
+    </hash_090103191cda1fe03c825d2b5a5a5fc3b25dab>
+    <hash_0901035fc64e1a59442e52bff7ede41f900b12>
+      <name>Temperature 4</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001038bd648a1de117fdb0b052b08036d8308|hash_1001035f9529e351e1898a55097b13d6463ac3|hash_1001037e3e05bda256e02c6ac80470286d72ba|hash_100103d0e61df7f9696e253c2f7bfd8afba524</items>
+    </hash_0901035fc64e1a59442e52bff7ede41f900b12>
+    <hash_090103766f5c2188955fd1ab43251c0ce8e380>
+      <name>Temperature 5</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103227d6484c97147f548acfcc5cf955fb9|hash_1001034f98ca33f4fe418ab412a8cdd8d71a0e|hash_100103eddda877a30d7961fb2d81ce44c6b4bc|hash_1001032e4f8878b7efcac72c7e14a8961d866a</items>
+    </hash_090103766f5c2188955fd1ab43251c0ce8e380>
+  </inputs>
+</hash_0001031e9a25bff1b210bada291eb0378ec59f>
+<hash_0001032e8e97490af58945f2344a9f52761dbf>
+  <name>Cisco - Temperature - 6 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_100103a161cbfdd1b64f939438218eeaa48940>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103f485694413f687bef2553984a7c6d845</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_100103a161cbfdd1b64f939438218eeaa48940>
+    <hash_100103f61c949de83f40151a4fd94c832c9ce6>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f485694413f687bef2553984a7c6d845</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_100103f61c949de83f40151a4fd94c832c9ce6>
+    <hash_100103720389b7c31f0805b12283e2d0344f33>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f485694413f687bef2553984a7c6d845</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_100103720389b7c31f0805b12283e2d0344f33>
+    <hash_100103dc181060c0317bbc2788252d086153f9>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f485694413f687bef2553984a7c6d845</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_100103dc181060c0317bbc2788252d086153f9>
+    <hash_1001033eb91a6fa8121b97c1ba96ff348dcd97>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_08010389937d63129dc1c0db28b304fe2a406d</task_item_id>
+      <color_id>009F81</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor2Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>5</sequence>
+    </hash_1001033eb91a6fa8121b97c1ba96ff348dcd97>
+    <hash_100103f83c1ad98e602ee356697949ccedf162>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010389937d63129dc1c0db28b304fe2a406d</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>6</sequence>
+    </hash_100103f83c1ad98e602ee356697949ccedf162>
+    <hash_1001031a44427504d6c7d348a77ec828ae65aa>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010389937d63129dc1c0db28b304fe2a406d</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>7</sequence>
+    </hash_1001031a44427504d6c7d348a77ec828ae65aa>
+    <hash_100103e31c1aefbecc47aed5016098d3ddfbb7>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010389937d63129dc1c0db28b304fe2a406d</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>8</sequence>
+    </hash_100103e31c1aefbecc47aed5016098d3ddfbb7>
+    <hash_1001037bce4d0436b540d33089c7123f45a796>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103424a203f13050a2ff65a9d1873cdcf6d</task_item_id>
+      <color_id>C070A0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor3Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>9</sequence>
+    </hash_1001037bce4d0436b540d33089c7123f45a796>
+    <hash_100103a80b92dc5fe4bdea57244880d2bbcdc7>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103424a203f13050a2ff65a9d1873cdcf6d</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>10</sequence>
+    </hash_100103a80b92dc5fe4bdea57244880d2bbcdc7>
+    <hash_1001033253745996f0aef3181b1d554d929469>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103424a203f13050a2ff65a9d1873cdcf6d</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>11</sequence>
+    </hash_1001033253745996f0aef3181b1d554d929469>
+    <hash_1001036c58576d7138857eadd71f7b69ea2184>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103424a203f13050a2ff65a9d1873cdcf6d</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>12</sequence>
+    </hash_1001036c58576d7138857eadd71f7b69ea2184>
+    <hash_100103c937e71d577f58432a2951fe0d5c3e22>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_08010371edce8df23e8b1a40237de7a3f43254</task_item_id>
+      <color_id>D7A100</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor4Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>13</sequence>
+    </hash_100103c937e71d577f58432a2951fe0d5c3e22>
+    <hash_100103dabed354c9dea17d856cff29045db6d8>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010371edce8df23e8b1a40237de7a3f43254</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>14</sequence>
+    </hash_100103dabed354c9dea17d856cff29045db6d8>
+    <hash_100103a590d0fc4abe65cbd7a2c95f9563ebf2>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010371edce8df23e8b1a40237de7a3f43254</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>15</sequence>
+    </hash_100103a590d0fc4abe65cbd7a2c95f9563ebf2>
+    <hash_1001031efda02d617cef5e30c1c9b9b4fc0ac0>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010371edce8df23e8b1a40237de7a3f43254</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>16</sequence>
+    </hash_1001031efda02d617cef5e30c1c9b9b4fc0ac0>
+    <hash_100103f34b1bc98abd920ab43d9e978330c397>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103f0d227d8c9f635478906ee478df32a12</task_item_id>
+      <color_id>D06000</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor5Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>17</sequence>
+    </hash_100103f34b1bc98abd920ab43d9e978330c397>
+    <hash_10010354323c212f74bbbb5428385fceba10d8>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f0d227d8c9f635478906ee478df32a12</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>18</sequence>
+    </hash_10010354323c212f74bbbb5428385fceba10d8>
+    <hash_1001038c2e6b423d0b97112a10fdd63e5310d5>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f0d227d8c9f635478906ee478df32a12</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>19</sequence>
+    </hash_1001038c2e6b423d0b97112a10fdd63e5310d5>
+    <hash_10010308051e4da7b0050e73bd961c8c17fed5>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f0d227d8c9f635478906ee478df32a12</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>20</sequence>
+    </hash_10010308051e4da7b0050e73bd961c8c17fed5>
+    <hash_100103ec92ddc1f54eb542abee8be3b3379824>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103febe23bd06b46f7016dfbbc8b050d452</task_item_id>
+      <color_id>58B0D0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor6Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>21</sequence>
+    </hash_100103ec92ddc1f54eb542abee8be3b3379824>
+    <hash_10010383f591a102ee0136e3a5018ad9fbc26f>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103febe23bd06b46f7016dfbbc8b050d452</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>22</sequence>
+    </hash_10010383f591a102ee0136e3a5018ad9fbc26f>
+    <hash_100103ce9737e691638a27456d480d2d8c1183>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103febe23bd06b46f7016dfbbc8b050d452</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>23</sequence>
+    </hash_100103ce9737e691638a27456d480d2d8c1183>
+    <hash_10010361af55cbc009ad4de15b39488995390b>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103febe23bd06b46f7016dfbbc8b050d452</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>24</sequence>
+    </hash_10010361af55cbc009ad4de15b39488995390b>
+  </items>
+  <inputs>
+    <hash_090103209b50e8642ff8827920502ac8dbeec0>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103a161cbfdd1b64f939438218eeaa48940|hash_100103f61c949de83f40151a4fd94c832c9ce6|hash_100103720389b7c31f0805b12283e2d0344f33|hash_100103dc181060c0317bbc2788252d086153f9</items>
+    </hash_090103209b50e8642ff8827920502ac8dbeec0>
+    <hash_0901034fe94e12095831b68dcaa90530071294>
+      <name>Temperature 2</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001033eb91a6fa8121b97c1ba96ff348dcd97|hash_100103f83c1ad98e602ee356697949ccedf162|hash_1001031a44427504d6c7d348a77ec828ae65aa|hash_100103e31c1aefbecc47aed5016098d3ddfbb7</items>
+    </hash_0901034fe94e12095831b68dcaa90530071294>
+    <hash_090103d5d87d0f5ad36bf640315459496ae46a>
+      <name>Temperature 3</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001037bce4d0436b540d33089c7123f45a796|hash_100103a80b92dc5fe4bdea57244880d2bbcdc7|hash_1001033253745996f0aef3181b1d554d929469|hash_1001036c58576d7138857eadd71f7b69ea2184</items>
+    </hash_090103d5d87d0f5ad36bf640315459496ae46a>
+    <hash_0901034d87aeb583207a7b7ede28d1667c7f4c>
+      <name>Temperature 4</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103c937e71d577f58432a2951fe0d5c3e22|hash_100103dabed354c9dea17d856cff29045db6d8|hash_100103a590d0fc4abe65cbd7a2c95f9563ebf2|hash_1001031efda02d617cef5e30c1c9b9b4fc0ac0</items>
+    </hash_0901034d87aeb583207a7b7ede28d1667c7f4c>
+    <hash_090103c14652debc4368ce1d594cb566e3684c>
+      <name>Temperature 5</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103f34b1bc98abd920ab43d9e978330c397|hash_10010354323c212f74bbbb5428385fceba10d8|hash_1001038c2e6b423d0b97112a10fdd63e5310d5|hash_10010308051e4da7b0050e73bd961c8c17fed5</items>
+    </hash_090103c14652debc4368ce1d594cb566e3684c>
+    <hash_0901030ae2c28181a79fdd49cf85408900eba3>
+      <name>Temperature 6</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103ec92ddc1f54eb542abee8be3b3379824|hash_10010383f591a102ee0136e3a5018ad9fbc26f|hash_100103ce9737e691638a27456d480d2d8c1183|hash_10010361af55cbc009ad4de15b39488995390b</items>
+    </hash_0901030ae2c28181a79fdd49cf85408900eba3>
+  </inputs>
+</hash_0001032e8e97490af58945f2344a9f52761dbf>
+<hash_000103071edf14ccb504cd9b83184b9d256999>
+  <name>Cisco - Temperature - 7 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_100103f44ea79d6adc62f74956580b20a017a2>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103e5b67c7b11bddb03edaca818fb31a137</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_100103f44ea79d6adc62f74956580b20a017a2>
+    <hash_100103f4939fa8f07bfe67f1784f60e565bb1a>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e5b67c7b11bddb03edaca818fb31a137</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_100103f4939fa8f07bfe67f1784f60e565bb1a>
+    <hash_100103f02b13121cfae3b2c8b90814df7d7fa4>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e5b67c7b11bddb03edaca818fb31a137</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_100103f02b13121cfae3b2c8b90814df7d7fa4>
+    <hash_100103d26ca91f6fa77975a8cd238a849f60f5>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e5b67c7b11bddb03edaca818fb31a137</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_100103d26ca91f6fa77975a8cd238a849f60f5>
+    <hash_100103dabcdedf1bd5acec44e22d3cd1155ee8>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_0801036a8a7916d5a28fda80d3ebc5d03421e8</task_item_id>
+      <color_id>009F81</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor2Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>5</sequence>
+    </hash_100103dabcdedf1bd5acec44e22d3cd1155ee8>
+    <hash_1001032c985e063d095ce99371dc8b25bdc36f>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801036a8a7916d5a28fda80d3ebc5d03421e8</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>6</sequence>
+    </hash_1001032c985e063d095ce99371dc8b25bdc36f>
+    <hash_10010349fb50eac10fbc850342c41cba328c9e>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801036a8a7916d5a28fda80d3ebc5d03421e8</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>7</sequence>
+    </hash_10010349fb50eac10fbc850342c41cba328c9e>
+    <hash_100103c15e86c0ebb4b018cf2ad1781cce0765>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801036a8a7916d5a28fda80d3ebc5d03421e8</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>8</sequence>
+    </hash_100103c15e86c0ebb4b018cf2ad1781cce0765>
+    <hash_100103a95cd40d898e96cbb94fa152ce16cbc7>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103f8c830fbe40fafc70724c41d4a38378f</task_item_id>
+      <color_id>C070A0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor3Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>9</sequence>
+    </hash_100103a95cd40d898e96cbb94fa152ce16cbc7>
+    <hash_1001039d87fe281e00bada9aef213b318f7c94>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f8c830fbe40fafc70724c41d4a38378f</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>10</sequence>
+    </hash_1001039d87fe281e00bada9aef213b318f7c94>
+    <hash_10010375f6e9faab90468953fbb1d6b046f5ed>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f8c830fbe40fafc70724c41d4a38378f</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>11</sequence>
+    </hash_10010375f6e9faab90468953fbb1d6b046f5ed>
+    <hash_1001031f2d1b02e6797d7d12f2d77035f09139>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f8c830fbe40fafc70724c41d4a38378f</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>12</sequence>
+    </hash_1001031f2d1b02e6797d7d12f2d77035f09139>
+    <hash_100103469c30b3f96716589c54f211122db802>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103aa01e77ccce51d945f31943081e3f1c9</task_item_id>
+      <color_id>D7A100</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor4Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>13</sequence>
+    </hash_100103469c30b3f96716589c54f211122db802>
+    <hash_100103eed80b874980ea73b69eb4955f8c5d29>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103aa01e77ccce51d945f31943081e3f1c9</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>14</sequence>
+    </hash_100103eed80b874980ea73b69eb4955f8c5d29>
+    <hash_100103c2a6177570f418deb9c20febb0422c2e>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103aa01e77ccce51d945f31943081e3f1c9</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>15</sequence>
+    </hash_100103c2a6177570f418deb9c20febb0422c2e>
+    <hash_10010309c57c086af5334f05a0135c5e71d055>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103aa01e77ccce51d945f31943081e3f1c9</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>16</sequence>
+    </hash_10010309c57c086af5334f05a0135c5e71d055>
+    <hash_10010380d87bb19ea15eab23831e9c6f8cbf14>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103e8e24b3892039184c8c97ca9fbc047f4</task_item_id>
+      <color_id>D06000</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor5Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>17</sequence>
+    </hash_10010380d87bb19ea15eab23831e9c6f8cbf14>
+    <hash_10010338b48a475d29bd30d948fc53145bf6bf>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e8e24b3892039184c8c97ca9fbc047f4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>18</sequence>
+    </hash_10010338b48a475d29bd30d948fc53145bf6bf>
+    <hash_10010349fe9eb22c89dd9ce6cfc1e1db49816c>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e8e24b3892039184c8c97ca9fbc047f4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>19</sequence>
+    </hash_10010349fe9eb22c89dd9ce6cfc1e1db49816c>
+    <hash_1001033ea65e8b1bd9fd5f179184d6fd7ea600>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103e8e24b3892039184c8c97ca9fbc047f4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>20</sequence>
+    </hash_1001033ea65e8b1bd9fd5f179184d6fd7ea600>
+    <hash_10010309621fc639b3614eae3b7838d19cf18e>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103c0f19f09f975ef150e6454037b3cfab6</task_item_id>
+      <color_id>58B0D0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor6Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>21</sequence>
+    </hash_10010309621fc639b3614eae3b7838d19cf18e>
+    <hash_1001035ec1a0495b70a6bf484ced3b26944d38>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103c0f19f09f975ef150e6454037b3cfab6</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>22</sequence>
+    </hash_1001035ec1a0495b70a6bf484ced3b26944d38>
+    <hash_1001034b5d47ad80ad78d7e1a6729d8322c8de>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103c0f19f09f975ef150e6454037b3cfab6</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>23</sequence>
+    </hash_1001034b5d47ad80ad78d7e1a6729d8322c8de>
+    <hash_100103347121a65a5d9e4bb6a2dad93e57f5f7>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103c0f19f09f975ef150e6454037b3cfab6</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>24</sequence>
+    </hash_100103347121a65a5d9e4bb6a2dad93e57f5f7>
+    <hash_10010371f66c538c865c5ff1bc71374cc89fe7>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_0801039aa29549fec994cf32b5934a5856b73e</task_item_id>
+      <color_id>808080</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor7Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>25</sequence>
+    </hash_10010371f66c538c865c5ff1bc71374cc89fe7>
+    <hash_100103e73a1fa07c983afdf91992c5b73fed6d>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801039aa29549fec994cf32b5934a5856b73e</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>26</sequence>
+    </hash_100103e73a1fa07c983afdf91992c5b73fed6d>
+    <hash_1001031d70af3fe08a7b8bf2bd4445cdba09a9>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801039aa29549fec994cf32b5934a5856b73e</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>27</sequence>
+    </hash_1001031d70af3fe08a7b8bf2bd4445cdba09a9>
+    <hash_100103fc6c8baf36e4ed31c52c2f3960fbdcc2>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801039aa29549fec994cf32b5934a5856b73e</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>28</sequence>
+    </hash_100103fc6c8baf36e4ed31c52c2f3960fbdcc2>
+  </items>
+  <inputs>
+    <hash_090103d0d481797d5b59b9e3b2a4e8e925f765>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103f44ea79d6adc62f74956580b20a017a2|hash_100103f4939fa8f07bfe67f1784f60e565bb1a|hash_100103f02b13121cfae3b2c8b90814df7d7fa4|hash_100103d26ca91f6fa77975a8cd238a849f60f5</items>
+    </hash_090103d0d481797d5b59b9e3b2a4e8e925f765>
+    <hash_0901033b31535e2586ed59529440c9a75d4f28>
+      <name>Temperature 2</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103dabcdedf1bd5acec44e22d3cd1155ee8|hash_1001032c985e063d095ce99371dc8b25bdc36f|hash_10010349fb50eac10fbc850342c41cba328c9e|hash_100103c15e86c0ebb4b018cf2ad1781cce0765</items>
+    </hash_0901033b31535e2586ed59529440c9a75d4f28>
+    <hash_090103065a5c205b518d678edd74d2e1bc28c9>
+      <name>Temperature 3</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103a95cd40d898e96cbb94fa152ce16cbc7|hash_1001039d87fe281e00bada9aef213b318f7c94|hash_10010375f6e9faab90468953fbb1d6b046f5ed|hash_1001031f2d1b02e6797d7d12f2d77035f09139</items>
+    </hash_090103065a5c205b518d678edd74d2e1bc28c9>
+    <hash_090103760ed6be32e7047c7b73fff2fbeb53c9>
+      <name>Temperature 4</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103469c30b3f96716589c54f211122db802|hash_100103eed80b874980ea73b69eb4955f8c5d29|hash_100103c2a6177570f418deb9c20febb0422c2e|hash_10010309c57c086af5334f05a0135c5e71d055</items>
+    </hash_090103760ed6be32e7047c7b73fff2fbeb53c9>
+    <hash_0901031be4964e558362513f8eabc0f1dbef27>
+      <name>Temperature 5</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_10010380d87bb19ea15eab23831e9c6f8cbf14|hash_10010338b48a475d29bd30d948fc53145bf6bf|hash_10010349fe9eb22c89dd9ce6cfc1e1db49816c|hash_1001033ea65e8b1bd9fd5f179184d6fd7ea600</items>
+    </hash_0901031be4964e558362513f8eabc0f1dbef27>
+    <hash_0901039d214f3afe9f31ac6b437aa9d096be10>
+      <name>Temperature 6</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_10010309621fc639b3614eae3b7838d19cf18e|hash_1001035ec1a0495b70a6bf484ced3b26944d38|hash_1001034b5d47ad80ad78d7e1a6729d8322c8de|hash_100103347121a65a5d9e4bb6a2dad93e57f5f7</items>
+    </hash_0901039d214f3afe9f31ac6b437aa9d096be10>
+    <hash_090103e9db35c3979a69137b658b9b6c14027f>
+      <name>Temperature 7</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_10010371f66c538c865c5ff1bc71374cc89fe7|hash_100103e73a1fa07c983afdf91992c5b73fed6d|hash_1001031d70af3fe08a7b8bf2bd4445cdba09a9|hash_100103fc6c8baf36e4ed31c52c2f3960fbdcc2</items>
+    </hash_090103e9db35c3979a69137b658b9b6c14027f>
+  </inputs>
+</hash_000103071edf14ccb504cd9b83184b9d256999>
+<hash_000103ada9e0a2877bdd8db04aa0b437d13610>
+  <name>Cisco - Temperature - 8 sensors - Fahrenheit</name>
+  <multiple />
+  <test_source />
+  <graph>
+    <t_title />
+    <title>|host_description| - Temperature - All Sensors (°F)</title>
+    <t_vertical_label />
+    <vertical_label>Temperature (°F)</vertical_label>
+    <t_image_format_id />
+    <image_format_id>3</image_format_id>
+    <t_height />
+    <height>200</height>
+    <t_width />
+    <width>700</width>
+    <t_base_value />
+    <base_value>1000</base_value>
+    <t_slope_mode />
+    <slope_mode />
+    <t_auto_scale />
+    <auto_scale>on</auto_scale>
+    <t_auto_scale_opts />
+    <auto_scale_opts>1</auto_scale_opts>
+    <t_auto_scale_log />
+    <auto_scale_log />
+    <t_scale_log_units />
+    <scale_log_units />
+    <t_auto_scale_rigid />
+    <auto_scale_rigid />
+    <t_upper_limit />
+    <upper_limit />
+    <t_lower_limit />
+    <lower_limit />
+    <t_unit_value />
+    <unit_value />
+    <t_unit_exponent_value />
+    <unit_exponent_value>0</unit_exponent_value>
+    <t_unit_length />
+    <unit_length />
+    <t_no_gridfit />
+    <no_gridfit />
+    <t_alt_y_grid />
+    <alt_y_grid />
+    <t_right_axis />
+    <right_axis />
+    <t_right_axis_label />
+    <right_axis_label />
+    <t_right_axis_format />
+    <right_axis_format>0</right_axis_format>
+    <t_right_axis_formatter />
+    <right_axis_formatter>0</right_axis_formatter>
+    <t_left_axis_formatter />
+    <left_axis_formatter>0</left_axis_formatter>
+    <t_auto_padding />
+    <auto_padding>on</auto_padding>
+    <t_dynamic_labels />
+    <dynamic_labels />
+    <t_force_rules_legend />
+    <force_rules_legend />
+    <t_tab_width />
+    <tab_width>40</tab_width>
+    <t_legend_position />
+    <legend_position>0</legend_position>
+    <t_legend_direction />
+    <legend_direction>0</legend_direction>
+  </graph>
+  <items>
+    <hash_100103fb73d226aa35cb074b2ae454cb48ef8c>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103ef6120c3afb84109140641d6cacd769b</task_item_id>
+      <color_id>007EA3</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor1Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>1</sequence>
+    </hash_100103fb73d226aa35cb074b2ae454cb48ef8c>
+    <hash_100103c6519b159059f60b06b6955808ca3f36>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103ef6120c3afb84109140641d6cacd769b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>2</sequence>
+    </hash_100103c6519b159059f60b06b6955808ca3f36>
+    <hash_1001030757fd0d670d0b1a36bb8b20db42cbad>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103ef6120c3afb84109140641d6cacd769b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>3</sequence>
+    </hash_1001030757fd0d670d0b1a36bb8b20db42cbad>
+    <hash_10010322c784e5b360d3eef56cb4e3beba9dcf>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103ef6120c3afb84109140641d6cacd769b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>4</sequence>
+    </hash_10010322c784e5b360d3eef56cb4e3beba9dcf>
+    <hash_100103c83d73734eef09493370825760176b5d>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_0801033728b85de12bb62cad598e7c3855609f</task_item_id>
+      <color_id>009F81</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor2Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>5</sequence>
+    </hash_100103c83d73734eef09493370825760176b5d>
+    <hash_1001032c25fefe01737e2c41736c5e95f660c3>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801033728b85de12bb62cad598e7c3855609f</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>6</sequence>
+    </hash_1001032c25fefe01737e2c41736c5e95f660c3>
+    <hash_1001038d5747604256ee4132cc6f234bfa0181>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801033728b85de12bb62cad598e7c3855609f</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>7</sequence>
+    </hash_1001038d5747604256ee4132cc6f234bfa0181>
+    <hash_10010333a9459a532347593916acda1fc09536>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801033728b85de12bb62cad598e7c3855609f</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>8</sequence>
+    </hash_10010333a9459a532347593916acda1fc09536>
+    <hash_1001033c987bb1a1f55c9a39959de821a2bd8e>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103fb84556fe1335854c5a82b989035b62b</task_item_id>
+      <color_id>C070A0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor3Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>9</sequence>
+    </hash_1001033c987bb1a1f55c9a39959de821a2bd8e>
+    <hash_1001035c8558b58779714bc4ae1d79b6adfa3a>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103fb84556fe1335854c5a82b989035b62b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>10</sequence>
+    </hash_1001035c8558b58779714bc4ae1d79b6adfa3a>
+    <hash_1001033cb98b6dbef1c71db450a32da96d623c>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103fb84556fe1335854c5a82b989035b62b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>11</sequence>
+    </hash_1001033cb98b6dbef1c71db450a32da96d623c>
+    <hash_100103fe8fb3dcf12ed60069eb3157d15d1cf1>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103fb84556fe1335854c5a82b989035b62b</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>12</sequence>
+    </hash_100103fe8fb3dcf12ed60069eb3157d15d1cf1>
+    <hash_1001037fd6a6d2ebcccd3b17513d9406a4c512>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103d24930abb6ccd911af068ac80ace86e4</task_item_id>
+      <color_id>D7A100</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor4Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>13</sequence>
+    </hash_1001037fd6a6d2ebcccd3b17513d9406a4c512>
+    <hash_1001037d90c5328afc9dc5859831c0e2c51da7>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103d24930abb6ccd911af068ac80ace86e4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>14</sequence>
+    </hash_1001037d90c5328afc9dc5859831c0e2c51da7>
+    <hash_1001038c856f0a7b8d5e12c95e9ac78810522f>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103d24930abb6ccd911af068ac80ace86e4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>15</sequence>
+    </hash_1001038c856f0a7b8d5e12c95e9ac78810522f>
+    <hash_1001036326fbf6fb1cca7de33024c0472c704f>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103d24930abb6ccd911af068ac80ace86e4</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>16</sequence>
+    </hash_1001036326fbf6fb1cca7de33024c0472c704f>
+    <hash_1001031af5fa824d6cb24d727e7c1b43854789>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103988f5a9601b4bace8f550c3d22878701</task_item_id>
+      <color_id>D06000</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor5Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>17</sequence>
+    </hash_1001031af5fa824d6cb24d727e7c1b43854789>
+    <hash_1001031213b175fd076ead4148524658a8b919>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103988f5a9601b4bace8f550c3d22878701</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>18</sequence>
+    </hash_1001031213b175fd076ead4148524658a8b919>
+    <hash_1001037e5340d1ecb94a7e838825f656995325>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103988f5a9601b4bace8f550c3d22878701</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>19</sequence>
+    </hash_1001037e5340d1ecb94a7e838825f656995325>
+    <hash_1001038c07443b3d9ed75b9c8b652c4a266db7>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103988f5a9601b4bace8f550c3d22878701</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>20</sequence>
+    </hash_1001038c07443b3d9ed75b9c8b652c4a266db7>
+    <hash_1001038eac5c9c1513ca03a924ee07cf49157f>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_08010355bde36a11ae5cdd19d8f9e0cb83fccd</task_item_id>
+      <color_id>58B0D0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor6Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>21</sequence>
+    </hash_1001038eac5c9c1513ca03a924ee07cf49157f>
+    <hash_1001036d13d078a98d49d859ca45754326b991>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010355bde36a11ae5cdd19d8f9e0cb83fccd</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>22</sequence>
+    </hash_1001036d13d078a98d49d859ca45754326b991>
+    <hash_100103bb7b01625198fc62b7aabd9644ad3bbd>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010355bde36a11ae5cdd19d8f9e0cb83fccd</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>23</sequence>
+    </hash_100103bb7b01625198fc62b7aabd9644ad3bbd>
+    <hash_100103ac6c53693c6a521f62ded9d7e9bf7d8c>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_08010355bde36a11ae5cdd19d8f9e0cb83fccd</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>24</sequence>
+    </hash_100103ac6c53693c6a521f62ded9d7e9bf7d8c>
+    <hash_1001033c31c0990832204374e6a170c96d4abe>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_0801038fc6c6be55d787b3c133850895f0f42e</task_item_id>
+      <color_id>808080</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor7Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>25</sequence>
+    </hash_1001033c31c0990832204374e6a170c96d4abe>
+    <hash_1001030de802b3a0b6d87f7f73524a7b8af355>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801038fc6c6be55d787b3c133850895f0f42e</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>26</sequence>
+    </hash_1001030de802b3a0b6d87f7f73524a7b8af355>
+    <hash_100103be21060b0a06f07359c421f09f4d326d>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801038fc6c6be55d787b3c133850895f0f42e</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>27</sequence>
+    </hash_100103be21060b0a06f07359c421f09f4d326d>
+    <hash_10010348bdd4ac915230839bf4b9408249889f>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_0801038fc6c6be55d787b3c133850895f0f42e</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>28</sequence>
+    </hash_10010348bdd4ac915230839bf4b9408249889f>
+    <hash_100103cada4b3e3464abe5951d26d5b956ff90>
+      <graph_type_id>5</graph_type_id>
+      <task_item_id>hash_080103f931970bb063d82f565e1727211b3a42</task_item_id>
+      <color_id>AAAAAA</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>0</gprint_id>
+      <textalign />
+      <text_format>|query_sensor8Name|</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>29</sequence>
+    </hash_100103cada4b3e3464abe5951d26d5b956ff90>
+    <hash_100103bd48d55a98124d5228416d10a165d699>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f931970bb063d82f565e1727211b3a42</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>4</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Current:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>30</sequence>
+    </hash_100103bd48d55a98124d5228416d10a165d699>
+    <hash_100103cf9da65214a7a848d662274514796352>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f931970bb063d82f565e1727211b3a42</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>1</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Average:</text_format>
+      <hard_return />
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>31</sequence>
+    </hash_100103cf9da65214a7a848d662274514796352>
+    <hash_100103a0c944b8467b14bd76a9d6968de92527>
+      <graph_type_id>9</graph_type_id>
+      <task_item_id>hash_080103f931970bb063d82f565e1727211b3a42</task_item_id>
+      <color_id>0</color_id>
+      <alpha>FF</alpha>
+      <consolidation_function_id>3</consolidation_function_id>
+      <cdef_id>hash_0501039fc4628f23187d0d3a7f848a4f74fc05</cdef_id>
+      <vdef_id>0</vdef_id>
+      <shift />
+      <value />
+      <gprint_id>hash_0601032aaac9a196aef7294d0e95c7e731bbe5</gprint_id>
+      <textalign />
+      <text_format>Maximum:</text_format>
+      <hard_return>on</hard_return>
+      <line_width>0.00</line_width>
+      <dashes />
+      <dash_offset />
+      <sequence>32</sequence>
+    </hash_100103a0c944b8467b14bd76a9d6968de92527>
+  </items>
+  <inputs>
+    <hash_090103d0c637c389c0845990bc1bf5ed0cc062>
+      <name>Temperature 1</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103fb73d226aa35cb074b2ae454cb48ef8c|hash_100103c6519b159059f60b06b6955808ca3f36|hash_1001030757fd0d670d0b1a36bb8b20db42cbad|hash_10010322c784e5b360d3eef56cb4e3beba9dcf</items>
+    </hash_090103d0c637c389c0845990bc1bf5ed0cc062>
+    <hash_09010314dee108021f24177ab22a78d610fb68>
+      <name>Temperature 2</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103c83d73734eef09493370825760176b5d|hash_1001032c25fefe01737e2c41736c5e95f660c3|hash_1001038d5747604256ee4132cc6f234bfa0181|hash_10010333a9459a532347593916acda1fc09536</items>
+    </hash_09010314dee108021f24177ab22a78d610fb68>
+    <hash_090103540b574ddcf3b4c21f69c0a53763cb26>
+      <name>Temperature 3</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001033c987bb1a1f55c9a39959de821a2bd8e|hash_1001035c8558b58779714bc4ae1d79b6adfa3a|hash_1001033cb98b6dbef1c71db450a32da96d623c|hash_100103fe8fb3dcf12ed60069eb3157d15d1cf1</items>
+    </hash_090103540b574ddcf3b4c21f69c0a53763cb26>
+    <hash_090103f98cd9b5bba0717c8b83afa2d332ef6f>
+      <name>Temperature 4</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001037fd6a6d2ebcccd3b17513d9406a4c512|hash_1001037d90c5328afc9dc5859831c0e2c51da7|hash_1001038c856f0a7b8d5e12c95e9ac78810522f|hash_1001036326fbf6fb1cca7de33024c0472c704f</items>
+    </hash_090103f98cd9b5bba0717c8b83afa2d332ef6f>
+    <hash_09010300ec854208e427098fc4438d7b0dfbe4>
+      <name>Temperature 5</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001031af5fa824d6cb24d727e7c1b43854789|hash_1001031213b175fd076ead4148524658a8b919|hash_1001037e5340d1ecb94a7e838825f656995325|hash_1001038c07443b3d9ed75b9c8b652c4a266db7</items>
+    </hash_09010300ec854208e427098fc4438d7b0dfbe4>
+    <hash_090103b9c40b4e44f38e9f9ee85d6f5e806158>
+      <name>Temperature 6</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001038eac5c9c1513ca03a924ee07cf49157f|hash_1001036d13d078a98d49d859ca45754326b991|hash_100103bb7b01625198fc62b7aabd9644ad3bbd|hash_100103ac6c53693c6a521f62ded9d7e9bf7d8c</items>
+    </hash_090103b9c40b4e44f38e9f9ee85d6f5e806158>
+    <hash_090103cf40f3080cea57c103507b39bfd4b021>
+      <name>Temperature 7</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_1001033c31c0990832204374e6a170c96d4abe|hash_1001030de802b3a0b6d87f7f73524a7b8af355|hash_100103be21060b0a06f07359c421f09f4d326d|hash_10010348bdd4ac915230839bf4b9408249889f</items>
+    </hash_090103cf40f3080cea57c103507b39bfd4b021>
+    <hash_090103ab946e489db67dcd1efcf9e73a91cbdf>
+      <name>Temperature 8</name>
+      <description />
+      <column_name>task_item_id</column_name>
+      <items>hash_100103cada4b3e3464abe5951d26d5b956ff90|hash_100103bd48d55a98124d5228416d10a165d699|hash_100103cf9da65214a7a848d662274514796352|hash_100103a0c944b8467b14bd76a9d6968de92527</items>
+    </hash_090103ab946e489db67dcd1efcf9e73a91cbdf>
+  </inputs>
+</hash_000103ada9e0a2877bdd8db04aa0b437d13610>
 </cacti>
