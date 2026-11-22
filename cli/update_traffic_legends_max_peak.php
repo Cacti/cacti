@@ -32,7 +32,7 @@ $dry_run = false;
 $batch_size = 100;
 foreach (array_slice($_SERVER['argv'], 1) as $argument) {
 	if ($argument === '--help' || $argument === '-h') {
-		print "Usage: php cli/update_traffic_legends.php [--dry-run | --apply] [--batch-size=100]\n";
+		print "Usage: php cli/update_traffic_legends_max_peak.php [--dry-run | --apply] [--batch-size=100]\n";
 		print "Preview by default. Only recognised stock traffic layouts are changed.\n";
 		exit(0);
 	} elseif ($argument === '--apply') {

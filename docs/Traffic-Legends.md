@@ -9,8 +9,8 @@ Existing installations are not changed during upgrade or package import.
 Back up the database, then preview the recognised stock layouts:
 
 ```
-php cli/update_traffic_legends.php --dry-run
-php cli/update_traffic_legends.php --apply --batch-size=100
+php cli/update_traffic_legends_max_peak.php --dry-run
+php cli/update_traffic_legends_max_peak.php --apply --batch-size=100
 ```
 
 Without an option the command previews only. Graph 0 in the report means the
