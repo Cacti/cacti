@@ -4772,10 +4772,13 @@ function auth_user_has_access($user) {
 		}
 	}
 
-	// See if they have access to any group realms
-	$user_groups = db_fetch_assoc_prepared('SELECT *
-		FROM user_auth_group_members
-		WHERE user_id = ?',
+	// See if they have access to any group realms; a disabled group grants nothing
+	$user_groups = db_fetch_assoc_prepared("SELECT uagm.group_id, uag.show_tree, uag.show_list, uag.show_preview
+		FROM user_auth_group_members AS uagm
+		INNER JOIN user_auth_group AS uag
+		ON uag.id = uagm.group_id
+		WHERE uagm.user_id = ?
+		AND uag.enabled = 'on'",
 		array($user['id']));
 
 	if (cacti_sizeof($user_groups)) {

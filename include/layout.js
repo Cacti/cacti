@@ -1460,7 +1460,7 @@ function displayMessages() {
 							sessionMessageTimer = null;
 						}
 						$('#btnSessionMessagePause').remove();
-						$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + '</span>');
+						$('#btnSessionMessageOk').empty().append($('<span>').addClass('ui-button-text').text(decodeHtmlEntities(sessionMessageOk)));
 					}
 				},
 				'Ok': {
@@ -1482,7 +1482,7 @@ function displayMessages() {
 		/* sanitize at the sink and insert as a node, so the message is not parsed a second time */
 		$('#messageContainer').remove();
 		$('<div>').attr('id', 'messageContainer').hide()
-			.append($('<h4>').html(header))
+			.append($('<h4>').html(DOMPurify.sanitize(header)))
 			.append($('<p>').css({display: 'table-cell', overflow: 'auto'}).html(' ' + DOMPurify.sanitize(sessionMessage.message)))
 			.appendTo('body');
 
@@ -1527,12 +1527,12 @@ function displayMessages() {
 function sessionMessageCountdown(time) {
 	var sessionMessageTimeLeft = (time / 1000);
 
-	$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+	$('#btnSessionMessageOk').empty().append($('<span>').addClass('ui-button-text').text(decodeHtmlEntities(sessionMessageOk) + ' (' + sessionMessageTimeLeft + ')'));
 
 	sessionMessageTimer = setInterval(function() {
 		sessionMessageTimeLeft--;
 
-		$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+		$('#btnSessionMessageOk').empty().append($('<span>').addClass('ui-button-text').text(decodeHtmlEntities(sessionMessageOk) + ' (' + sessionMessageTimeLeft + ')'));
 
 		if (sessionMessageTimeLeft <= 0) {
 			clearInterval(sessionMessageTimer);
@@ -2513,6 +2513,24 @@ function menuShow() {
 	storage.set('menuState_' + pageName, 'visible');
 }
 
+/* Page responses carry their own initialization scripts, so one is only
+ * parsed when it was requested from this Cacti origin. */
+function cactiIsSameOriginUrl(href) {
+	try {
+		return new URL(href, window.location.href).origin === window.location.origin;
+	} catch (error) {
+		return false;
+	}
+}
+
+/* The trail is server markup (list items holding links), so it is sanitized
+ * rather than text-encoded. A page without a trail keeps the current one. */
+function cactiSetBreadcrumbs(breadCrumbs) {
+	if (typeof breadCrumbs != 'undefined') {
+		$('#breadcrumbs').html(DOMPurify.sanitize(breadCrumbs));
+	}
+}
+
 function loadTopTab(href, id, force) {
 	statePushed = false;
 	var cont = false;
@@ -2549,6 +2567,10 @@ function loadTopTab(href, id, force) {
 		$.ajaxQ.abortAll();
 		$.get(url)
 			.done(function(html) {
+				if (!cactiIsSameOriginUrl(url)) {
+					return false;
+				}
+
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
@@ -2563,7 +2585,7 @@ function loadTopTab(href, id, force) {
 					checkForRedirects(html, href);
 
 					$('title').text(decodeHtmlEntities(htmlTitle));
-					$('#breadcrumbs').html(breadCrumbs);
+					cactiSetBreadcrumbs(breadCrumbs);
 					$('div[class^="ui-"]').remove();
 					$('#cactiContent').replaceWith(html);
 
@@ -2726,6 +2748,10 @@ function loadPage(href, force) {
 		$.ajaxQ.abortAll();
 		$.get(href)
 			.done(function(html) {
+				if (!cactiIsSameOriginUrl(href)) {
+					return false;
+				}
+
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
@@ -2741,7 +2767,7 @@ function loadPage(href, force) {
 					}
 					$('#main').empty().hide();
 					$('title').text(decodeHtmlEntities(htmlTitle));
-					$('#breadcrumbs').html(breadCrumbs);
+					cactiSetBreadcrumbs(breadCrumbs);
 					$('div[class^="ui-"]').remove();
 					$('#main').html(html);
 
@@ -2893,6 +2919,10 @@ function loadPageNoHeader(href, scroll, force) {
 		$.ajaxQ.abortAll();
 		$.get(href)
 			.done(function(html) {
+				if (!cactiIsSameOriginUrl(href)) {
+					return false;
+				}
+
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
@@ -2905,7 +2935,7 @@ function loadPageNoHeader(href, scroll, force) {
 
 					$('#main').empty().hide();
 					$('title').text(decodeHtmlEntities(htmlTitle));
-					$('#breadcrumbs').html(breadCrumbs);
+					cactiSetBreadcrumbs(breadCrumbs);
 					$('div[class^="ui-"]').remove();
 					$('#main').html(html);
 
@@ -4242,14 +4272,43 @@ function removeSpikes(method, dryrun, local_graph_id) {
 			redrawGraph(local_graph_id);
 
 			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
+			$('body').append($('<div>').attr({id: 'spikeresults', title: decodeHtmlEntities(spikeKillResults)}).css('overflow-y', 'scroll'));
+			$('#spikeresults').html(DOMPurify.sanitize(data.results));
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
 		}
 	);
+}
+
+/* Graph JSON is data: each value is set as an attribute of one image
+ * element instead of being concatenated into markup and parsed. */
+function cactiGraphImage(data) {
+	return $('<img>').attr({
+		'class': 'graphimage',
+		id: 'graph_' + data.local_graph_id,
+		src: 'data:image/' + data.type + ';base64,' + data.image,
+		rra_id: data.rra_id,
+		graph_type: data.type,
+		graph_id: data.local_graph_id,
+		graph_start: data.graph_start,
+		graph_end: data.graph_end,
+		graph_left: data.graph_left,
+		graph_top: data.graph_top,
+		graph_width: data.graph_width,
+		graph_height: data.graph_height,
+		width: data.image_width,
+		height: data.image_height,
+		image_width: data.image_width,
+		image_height: data.image_height,
+		canvas_top: data.graph_top,
+		canvas_left: data.graph_left,
+		canvas_width: data.graph_width,
+		canvas_height: data.graph_height,
+		value_min: data.value_min,
+		value_max: data.value_max
+	});
 }
 
 function redrawGraph(graph_id) {
@@ -4293,29 +4352,7 @@ function redrawGraph(graph_id) {
 					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
 
-				$('#wrapper_'+data.local_graph_id).empty().html(
-					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
-					" src='data:image/"+data.type+";base64,"+data.image+"'"+
-					" rra_id='"+data.rra_id+"'"+
-					" graph_type='"+data.type+"'"+
-					" graph_id='"+data.local_graph_id+"'"+
-					" graph_start='"+data.graph_start+"'"+
-					" graph_end='"+data.graph_end+"'"+
-					" graph_left='"+data.graph_left+"'"+
-					" graph_top='"+data.graph_top+"'"+
-					" graph_width='"+data.graph_width+"'"+
-					" graph_height='"+data.graph_height+"'"+
-					" width='"+data.image_width+"'"+
-					" height='"+data.image_height+"'"+
-					" image_width='"+data.image_width+"'"+
-					" image_height='"+data.image_height+"'"+
-					" canvas_top='"+data.graph_top+"'"+
-					" canvas_left='"+data.graph_left+"'"+
-					" canvas_width='"+data.graph_width+"'"+
-					" canvas_height='"+data.graph_height+"'"+
-					" value_min='"+data.value_min+"'"+
-					" value_max='"+data.value_max+"'>"
-				);
+				$('#wrapper_'+data.local_graph_id).empty().append(cactiGraphImage(data));
 
 				$('#graph_'+data.local_graph_id).zoom({
 					inputfieldStartTime : 'date1',
@@ -4690,29 +4727,7 @@ function initializeGraphs(disable_cache) {
 					wrapper_id += '[rra_id=\'' + data.rra_id + '\']';
 				}
 
-				$(wrapper_id).empty().html(
-					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
-					" src='data:image/"+data.type+";base64,"+data.image+"'"+
-					" rra_id='"+data.rra_id+"'"+
-					" graph_type='"+data.type+"'"+
-					" graph_id='"+data.local_graph_id+"'"+
-					" graph_start='"+data.graph_start+"'"+
-					" graph_end='"+data.graph_end+"'"+
-					" graph_left='"+data.graph_left+"'"+
-					" graph_top='"+data.graph_top+"'"+
-					" graph_width='"+data.graph_width+"'"+
-					" graph_height='"+data.graph_height+"'"+
-					" width='"+data.image_width+"'"+
-					" height='"+data.image_height+"'"+
-					" image_width='"+data.image_width+"'"+
-					" image_height='"+data.image_height+"'"+
-					" canvas_top='"+data.graph_top+"'"+
-					" canvas_left='"+data.graph_left+"'"+
-					" canvas_width='"+data.graph_width+"'"+
-					" canvas_height='"+data.graph_height+"'"+
-					" value_min='"+data.value_min+"'"+
-					" value_max='"+data.value_max+"'>"
-				);
+				$(wrapper_id).empty().append(cactiGraphImage(data));
 
 				var graph_id = '#graph_'+data.local_graph_id;
 				if (rra_id > 0) {

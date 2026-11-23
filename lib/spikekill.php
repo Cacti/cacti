@@ -447,8 +447,15 @@ class spikekill {
 			return false;
 		}
 
-		/* determine the temporary file name */
-		$this->seed = mt_rand();
+		/* determine the temporary file name; the suffix comes from the system
+		 * random source so the dump and backup paths can not be guessed */
+		try {
+			$this->seed = bin2hex(random_bytes(8));
+		} catch (Exception $e) {
+			$this->set_error(__('FATAL: Unable to generate a random temporary file name.  Check the system entropy source!'));
+
+			return false;
+		}
 
 		if ($config['cacti_server_os'] == 'win32') {
 			$this->tempdir  = read_config_option('spikekill_backupdir');
