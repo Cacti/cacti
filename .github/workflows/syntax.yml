@@ -160,7 +160,7 @@ jobs:
         experimental: [false]
         include:
           # PHP 8.5 runs as a non-blocking (experimental) leg because its
-          # packages can lag on the runners and in Ondřej Surý's PPA.
+          # packages can lag on the runners and in Ondřej Surý's repository.
           - os: ubuntu-24.04
             php: '8.5'
             experimental: true
@@ -288,8 +288,14 @@ jobs:
         # setup-php only provides the CLI, so the versioned Apache module and
         # MySQL extension come from Ondřej Surý's PHP repository for every
         # matrix PHP version (none of them ship in the Ubuntu 24.04 archive
-        # except 8.3). For 8.6 both the CLI and mod_php are 8.6.0 GA builds.
-        sudo add-apt-repository -y ppa:ondrej/php
+        # except 8.3). The Launchpad PPA (ppa:ondrej/php) is frozen; the
+        # packages are now published at packages.sury.org. setup-php may have
+        # added the PPA itself, so drop it to keep apt off Launchpad.
+        sudo grep -rlZ 'launchpadcontent.net/ondrej/php\|ppa.launchpad.net/ondrej/php' /etc/apt/sources.list.d | xargs -0r sudo rm -f
+        curl -fsSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
+        sudo dpkg -i /tmp/debsuryorg-archive-keyring.deb
+        echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" \
+          | sudo tee /etc/apt/sources.list.d/php.list >/dev/null
         sudo apt-get update
         sudo apt-get install -y \
           libapache2-mod-php${{ matrix.php }} \
