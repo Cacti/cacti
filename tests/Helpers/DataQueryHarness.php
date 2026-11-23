@@ -52,7 +52,7 @@ load_functions($root . '/lib/data_query.php', [
 	'update_data_query_sort_cache', 'verify_index_order', 'data_query_remap_indexes',
 	'data_query_remove_disabled_items', 'rewrite_snmp_enum_value',
 	'data_query_local_data', 'data_query_identity_complete', 'data_query_index_key',
-	'data_query_index_lookup', 'data_query_index_exists',
+	'data_query_index_lookup', 'data_query_index_exists', 'data_query_index_cached',
 	'data_query_cache_collations', 'data_query_cache_compare',
 ]);
 load_functions($root . '/lib/api_device.php', ['api_device_dq_remove']);

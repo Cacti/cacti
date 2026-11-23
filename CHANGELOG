@@ -278,6 +278,7 @@ Cacti CHANGELOG
 -issue#8839: Use non-backtracking Log Viewer regex search: supports grouping, alternatives, character classes, anchors, and basic quantifiers; unsupported PCRE constructs are treated as literal text.
 -issue#8853: Run Log Viewer regex searches through PCRE under a match limit instead of stepping every byte in PHP, keeping the NFA for lines that reach the limit
 -issue#8859: Harmonize the MikroTik script server data collection scripts with the MikroTik plugin so they return U when there is no data, read the plugin RouterOS 7 health sensors when present, and validate every requested column
+-issue#8861: Do not flag a data source as an orphan while the device still reports its index, and clear that state on re-index
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query

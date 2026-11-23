@@ -77,6 +77,25 @@ test('an orphan returning at its original index resumes polling', function () {
 		->and((int) sql('SELECT COUNT(*) FROM poller_item WHERE local_data_id=2')->fetchColumn())->toBe(1);
 });
 
+test('a renamed identity at an index the device still reports is not orphaned', function () {
+	$GLOBALS['xml']['index_orphan_removal'] = 'true';
+	$GLOBALS['script']['query ifName'] = array('1!port1', '2!renamed');
+	expect(run_data_query(1, 1))->toBeTrue()
+		->and(sql('SELECT id,snmp_index,orphan FROM data_local ORDER BY id')->fetchAll(\PDO::FETCH_NUM))->toBe(array(array(1, '1', 0), array(2, '2', 0)))
+		->and((int) sql('SELECT COUNT(*) FROM poller_item WHERE local_data_id=2')->fetchColumn())->toBe(1)
+		->and($GLOBALS['pushes'])->toBe(array());
+});
+
+test('a re-index clears the orphan state of a source whose index the device still reports', function () {
+	sql('UPDATE data_local SET orphan=1 WHERE id=2');
+	sql('DELETE FROM poller_item WHERE local_data_id=2');
+	$GLOBALS['script']['query ifName'] = array('1!port1', '2!renamed');
+	expect(run_data_query(1, 1))->toBeTrue()
+		->and((int) sql('SELECT orphan FROM data_local WHERE id=2')->fetchColumn())->toBe(0)
+		->and($GLOBALS['pushes'])->toBe(array(array(1, 2, 0)))
+		->and((int) sql('SELECT COUNT(*) FROM poller_item WHERE local_data_id=2')->fetchColumn())->toBe(1);
+});
+
 test('an incomplete identity field retains the complete previous cache', function ($values) {
 	$before = cache_snapshot();
 	$GLOBALS['xml']['index_orphan_removal'] = 'true';

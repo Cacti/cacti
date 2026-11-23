@@ -198,9 +198,10 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		return false;
 	}
 
-	$changed_ids  = array();
-	$orphaned_ids = array();
-	$push_out     = array();
+	$changed_ids    = array();
+	$orphaned_ids   = array();
+	$push_out       = array();
+	$cached_indexes = null;
 
 	if (cacti_sizeof($local_data)) {
 		query_debug_timer_offset('data_query', __esc('Found %s Local Data ID\'s to Verify', cacti_sizeof($local_data)));
@@ -226,6 +227,17 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 					$changed_ids[] = $data_source['local_data_id'];
 				} elseif ($data_source['orphan'] == 1) {
+					db_execute_prepared('UPDATE data_local
+						SET orphan = 0
+						WHERE id = ?',
+						array($data_source['local_data_id']));
+
+					$push_out[$data_source['local_data_id']] = $data_source['local_data_id'];
+				}
+			} elseif ($data_source['snmp_index'] != '' && data_query_index_cached($host_id, $snmp_query_id, $data_source['snmp_index'], $cached_indexes)) {
+				// The identity value no longer matches, but the device still reports this index and
+				// the data source still collects from it, so it is not an orphan.
+				if ($data_source['orphan'] == 1) {
 					db_execute_prepared('UPDATE data_local
 						SET orphan = 0
 						WHERE id = ?',
@@ -429,6 +441,34 @@ function data_query_local_data($host_id, $snmp_query_id, $old_sort_field, $new_s
 		AND new_cache.field_name = ? AND new_cache.snmp_index = cache.snmp_index
 		WHERE dif.data_name = "index_value" AND dl.snmp_query_id = ? AND dl.host_id = ?',
 		array($old_sort_field, $old_sort_field, $old_sort_field, $new_sort_field, $snmp_query_id, $host_id));
+}
+
+/**
+ * Checks whether the device's data query cache still holds an index. Used as part of Cacti's
+ * lib functionality.
+ *
+ * The cached indexes are read once, on the first data source whose identity value is not in the
+ * cache, so a re-index where every identity matches does not run the query.
+ *
+ * @param int        $host_id        The id of the device that owns the cache.
+ * @param int        $snmp_query_id  The id of the data query that owns the cache.
+ * @param string     $snmp_index     The index to look for.
+ * @param array|null $cached_indexes The lookup of cached indexes, built on first use.
+ *
+ * @return bool True when the cache holds the index.
+ */
+function data_query_index_cached($host_id, $snmp_query_id, $snmp_index, &$cached_indexes) {
+	if ($cached_indexes === null) {
+		$indexes = db_fetch_assoc_prepared('SELECT DISTINCT snmp_index
+			FROM host_snmp_cache
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($host_id, $snmp_query_id));
+
+		$cached_indexes = data_query_index_lookup(cacti_sizeof($indexes) ? array_column($indexes, 'snmp_index') : array());
+	}
+
+	return data_query_index_exists($snmp_index, $cached_indexes);
 }
 
 /**
