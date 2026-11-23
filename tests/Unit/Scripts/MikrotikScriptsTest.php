@@ -83,7 +83,7 @@ test('interfaces are indexed by interface index and prefer the present row', fun
 			->and(mikrotik_script_output(fn () => ss_mikrotik_interfaces(1, 'query', 'ifAlias')))->toBe('')
 			->and(ss_mikrotik_interfaces(1, 'get', 'RxBytes', '3'))->toBe('1500')
 			->and(ss_mikrotik_interfaces(1, 'get', 'TxBytes', 'wan_uplink'))->toBe('900')
-			->and(ss_mikrotik_interfaces(1, 'get', 'RxBytes', '42'))->toBe('U')
+			->and(ss_mikrotik_interfaces(1, 'get', 'RxBytes', '42'))->toBe('0')
 			->and(ss_mikrotik_interfaces(1, 'get', 'x`y', '3'))->toBe('U')
 			->and(ss_mikrotik_interfaces(1, 'bogus'))->toBe('');
 	});
@@ -96,7 +96,7 @@ test('simple queues are indexed without spaces', function () {
 			->and(mikrotik_script_output(fn () => ss_mikrotik_queues(1, 'query', 'qsInterface')))->toBe('guest_wifi!bridge' . PHP_EOL)
 			->and(mikrotik_script_output(fn () => ss_mikrotik_queues(1, 'query', 'qsBogus')))->toBe('')
 			->and(ss_mikrotik_queues(1, 'get', 'qsOutOctets', 'guest_wifi'))->toBe('200')
-			->and(ss_mikrotik_queues(1, 'get', 'qsInOctets', 'gone'))->toBe('U')
+			->and(ss_mikrotik_queues(1, 'get', 'qsInOctets', 'gone'))->toBe('0')
 			->and(ss_mikrotik_queues(1, 'get', 'bogus', 'guest_wifi'))->toBe('U');
 	});
 });
@@ -109,7 +109,7 @@ test('queue trees are indexed without spaces and resolve every stored name form'
 			->and(mikrotik_script_output(fn () => ss_mikrotik_qtrees(1, 'query', 'qtBogus')))->toBe('')
 			->and(ss_mikrotik_qtrees(1, 'get', 'qtBytes', 'customer_tree'))->toBe('4096')
 			->and(ss_mikrotik_qtrees(1, 'get', 'qtPackets', 'down'))->toBe('4')
-			->and(ss_mikrotik_qtrees(1, 'get', 'qtBytes', 'gone'))->toBe('U')
+			->and(ss_mikrotik_qtrees(1, 'get', 'qtBytes', 'gone'))->toBe('0')
 			->and(ss_mikrotik_qtrees(1, 'get', 'bogus', 'down'))->toBe('U');
 	});
 });
@@ -121,7 +121,7 @@ test('queue users are indexed by name', function () {
 			->and(mikrotik_script_output(fn () => ss_mikrotik_qusers(1, 'query', 'ip')))->toBe('alice!10.0.0.9' . PHP_EOL)
 			->and(mikrotik_script_output(fn () => ss_mikrotik_qusers(1, 'query', 'password')))->toBe('')
 			->and(ss_mikrotik_qusers(1, 'get', 'bytesOut', 'alice'))->toBe('600')
-			->and(ss_mikrotik_qusers(1, 'get', 'curBytesIn', 'bob'))->toBe('U')
+			->and(ss_mikrotik_qusers(1, 'get', 'curBytesIn', 'bob'))->toBe('0')
 			->and(ss_mikrotik_qusers(1, 'get', 'bogus', 'alice'))->toBe('U');
 	});
 });
@@ -136,10 +136,10 @@ test('wireless registrations map the data query fields and graph uptime in secon
 			->and(ss_mikrotik_wireless_reg(1, 'get', 'Uptime', 'AA:BB:CC:DD:EE:FF'))->toBe('93784')
 			->and(ss_mikrotik_wireless_reg(1, 'get', 'Uptime', '11:22:33:44:55:66'))->toBe('120')
 			->and(ss_mikrotik_wireless_reg(1, 'get', 'apTxRate', 'AA:BB:CC:DD:EE:FF'))->toBe('U')
-			->and(ss_mikrotik_wireless_reg(1, 'get', 'TxBytes', 'gone'))->toBe('U')
-			->and(ss_mikrotik_wireless_reg(2, 'get', 'RxStrengthCh1', 'DE:AD:BE:EF:00:01'))->toBe('U')
+			->and(ss_mikrotik_wireless_reg(1, 'get', 'TxBytes', 'gone'))->toBe('0')
+			->and(ss_mikrotik_wireless_reg(2, 'get', 'RxStrengthCh1', 'DE:AD:BE:EF:00:01'))->toBe('0')
 			->and(ss_mikrotik_wireless_reg_uptime('02:03:04.50'))->toBe('7384')
-			->and(ss_mikrotik_wireless_reg_uptime(false))->toBe('U');
+			->and(ss_mikrotik_wireless_reg_uptime(false))->toBe('0');
 	});
 });
 

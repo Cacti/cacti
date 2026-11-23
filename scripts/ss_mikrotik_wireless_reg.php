@@ -127,8 +127,8 @@ function ss_mikrotik_wireless_reg_getvalue($host_id, $index, $object) {
 		return ss_mikrotik_wireless_reg_uptime($value);
 	}
 
-	// a disconnected or unknown registration: unknown, not zero
-	return is_numeric($value) ? (string) $value : 'U';
+	// a disconnected or unknown registration: zero to prevent logging
+	return is_numeric($value) ? (string) $value : '0';
 }
 
 /**
@@ -146,7 +146,7 @@ function ss_mikrotik_wireless_reg_uptime($value) {
 	}
 
 	if (!is_string($value) || !preg_match('/^(?:(\d+):)?(\d+):(\d+):(\d+)(?:\.\d+)?$/', trim($value), $matches)) {
-		return 'U';
+		return '0';
 	}
 
 	return (string) ((int) $matches[1] * 86400 + (int) $matches[2] * 3600 + (int) $matches[3] * 60 + (int) $matches[4]);

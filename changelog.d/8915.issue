@@ -1,0 +1,1 @@
+Return 0 rather than U from the MikroTik interface, queue, queue tree, queue user and wireless registration scripts when a row is missing or a value is not numeric, to prevent excess logging
