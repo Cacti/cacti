@@ -23,3 +23,19 @@ test('overlapping discovery ranges enqueue every unique target without resetting
 		->and($result['new']['ip_address'])->toBe('192.0.2.9')
 		->and($result['writes'])->toBe(6);
 });
+
+test('priming stops and reports failure when the discovery address table is full', function () {
+	if (!getenv('CACTI_MATCH_DB_DSN')) {
+		$this->markTestSkipped('Set CACTI_MATCH_DB_DSN for the native discovery address regression.');
+	}
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/discovery_address_full_table_probe.php');
+	expect($result['small'])->toBeTrue()
+		->and($result['small_rows'])->toBe(2)
+		->and($result['small_logs'])->toBe([])
+		->and($result['large'])->toBeFalse()
+		// ER_RECORD_FILE_FULL on the first batch; no later batch or range is attempted
+		->and($result['errors'])->toBe([1114])
+		->and($result['large_writes'])->toBe(1)
+		->and($result['later_range'])->toBe(0)
+		->and($result['logs'])->toBe(['ERROR: Unable to prime IP Addresses for Network ID 8.  Nothing was scanned.']);
+});
