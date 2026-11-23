@@ -298,7 +298,16 @@ if (!$master && $thread == 0) {
 
 	$preexisting_devices = getNetworkDevices($network_id);
 
-	automation_primeIPAddressTable($network_id);
+	if (!automation_primeIPAddressTable($network_id)) {
+		// a partial table would be scanned as if it were the whole network
+		db_execute_prepared('DELETE FROM automation_ips
+			WHERE network_id = ?',
+			array($network_id));
+
+		clearAllTasks($network_id);
+
+		exit(1);
+	}
 
 	$threads = db_fetch_cell_prepared('SELECT threads
 		FROM automation_networks
