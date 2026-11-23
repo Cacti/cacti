@@ -3726,13 +3726,46 @@ function automation_get_next_host($start, $total, $count, $range) {
 }
 
 /**
+ * Inserts one batch of primed addresses into automation_ips.
+ *
+ * An address already in the table, from an overlapping range of this network
+ * or of another network being scanned at the same time, keeps its existing row.
+ *
+ * @param array $ips The IP addresses to insert.
+ * @param int $network_id The Automation Network the addresses belong to.
+ *
+ * @return bool True when the batch is empty or was inserted, false on a database error.
+ */
+function automation_insert_ip_batch($ips, $network_id) {
+	if (!cacti_sizeof($ips)) {
+		return true;
+	}
+
+	$params = array();
+
+	foreach ($ips as $ip) {
+		$params[] = $ip;
+		$params[] = $network_id;
+	}
+
+	return (bool) db_execute_prepared('INSERT INTO automation_ips
+		(ip_address, hostname, network_id, pid, status, thread)
+		VALUES ' . implode(',', array_fill(0, cacti_sizeof($ips), "(?, '', ?, 0, 0, 0)")) . '
+		ON DUPLICATE KEY UPDATE ip_address = ip_address',
+		$params);
+}
+
+/**
  * Primes the IP address table for a given network. This function initializes or updates the IP
  * address table associated with the specified network ID. Used as part of Cacti's lib
  * functionality.
  *
+ * automation_ips is a MEMORY table, so a large network can fill it. Priming stops at the first
+ * failed insert so the caller does not scan part of a network as if it were all of it.
+ *
  * @param int $network_id The ID of the network for which the IP address table is to be primed.
  *
- * @return void No value is returned.
+ * @return bool True when every address was primed, false when an insert failed.
  */
 function automation_primeIPAddressTable($network_id) {
 	$subNets = db_fetch_cell_prepared('SELECT subnet_range
@@ -3753,7 +3786,7 @@ function automation_primeIPAddressTable($network_id) {
 			$start = automation_calculate_start($subNet);
 
 			if ($start != '') {
-				$sql[] = "('$start', '', $network_id, '0', '0', '0')";
+				$sql[] = $start;
 			}
 
 			while ($count < $subNetTotal) {
@@ -3762,26 +3795,31 @@ function automation_primeIPAddressTable($network_id) {
 				$count++;
 
 				if ($ip != '') {
-					$sql[] = "('$ip', '', $network_id, '0', '0', '0')";
+					$sql[] = $ip;
 				}
 
 				if ($count % 1000 == 0) {
-					db_execute("INSERT INTO automation_ips
-						(ip_address, hostname, network_id, pid, status, thread)
-						VALUES " . implode(',', $sql) . ' ON DUPLICATE KEY UPDATE ip_address = ip_address');
+					if (!automation_insert_ip_batch($sql, $network_id)) {
+						cacti_log("ERROR: Unable to prime IP Addresses for Network ID $network_id.  Nothing was scanned.", false, 'AUTOM8');
+
+						return false;
+					}
+
 					$sql = array();
 				}
 			}
 
-			if (cacti_sizeof($sql)) {
-				db_execute("INSERT INTO automation_ips
-					(ip_address, hostname, network_id, pid, status, thread)
-					VALUES " . implode(',', $sql) . ' ON DUPLICATE KEY UPDATE ip_address = ip_address');
+			if (!automation_insert_ip_batch($sql, $network_id)) {
+				cacti_log("ERROR: Unable to prime IP Addresses for Network ID $network_id.  Nothing was scanned.", false, 'AUTOM8');
+
+				return false;
 			}
 		}
 	}
 
 	automation_debug("A Total of $total IP Addresses Primed\n");
+
+	return true;
 }
 
 /**

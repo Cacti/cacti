@@ -35,10 +35,10 @@ function db_fetch_cell_prepared(string $sql, array $params): mixed {
 	return $statement->fetchColumn();
 }
 
-function db_execute(string $sql): bool {
+function db_execute_prepared(string $sql, array $params = []): bool {
 	$GLOBALS['writes']++;
 
-	return $GLOBALS['pdo']->exec($sql) !== false;
+	return $GLOBALS['pdo']->prepare($sql)->execute($params);
 }
 
 function cacti_log(mixed ...$args): void {
