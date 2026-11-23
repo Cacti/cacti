@@ -351,7 +351,7 @@ function aggregate_color_item() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#color_item').tableDnD({
 			onDrop: function(table, row) {
-				loadPageNoHeader('color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize());
+				loadPageUsingPostUrl('color_templates_items.php?action=ajax_dnd&id=<?php printf('%d', isset_request_var('color_template_id') ? get_request_var('color_template_id') : 0);?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>

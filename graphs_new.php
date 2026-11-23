@@ -45,6 +45,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'query_reload':
+		csrf_require_post();
 		host_reload_query();
 
 		header('Location: graphs_new.php?host_id=' . get_request_var('host_id') . '&header=false');
@@ -58,10 +59,12 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_save':
+		csrf_require_post();
 		save_default_query_option();
 
 		break;
 	case 'ajax_save_filter':
+		csrf_require_post();
 		save_user_filter();
 
 		break;
@@ -425,7 +428,7 @@ function graphs() {
 			'&rows='     + $('#rows').val() +
 			'&graph_type=' + $('#graph_type').val();
 
-		$.get(strURL)
+		$.post(strURL, {__csrf_magic: csrfMagicToken})
 			.done(function(data) {
 				$('#text').show().text('<?php print __('Filter Settings Saved');?>').fadeOut(2000);
 			})
@@ -437,7 +440,7 @@ function graphs() {
 	$(function() {
 		$('[id^="reload"]').on('click', function(data) {
 			$(this).addClass('fa-spin');
-			loadPageNoHeader('graphs_new.php?action=query_reload&header=false&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
+			loadPageUsingPostUrl('graphs_new.php?action=query_reload&header=false&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
 		});
 
 		$('#graph_type, #rows').on('change', function() {
@@ -909,7 +912,7 @@ function graphs() {
 						}
 
 						if (!cacti_sizeof($snmp_query_indexes)) {
-							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . html_escape('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . '</td></tr>';
+							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a class='cactiPostAction' href='#' data-url='" . html_escape('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . '</td></tr>';
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
@@ -1028,7 +1031,7 @@ function graphs() {
 	if ($script != '') {
 		$script .= "
 			$('.default').on('click', function() {
-				$.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val())
+				$.post('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val(), {__csrf_magic: csrfMagicToken})
 				.fail(function(data) {
 						getPresentHTTPError(data);
 				});

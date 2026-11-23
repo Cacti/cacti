@@ -641,7 +641,8 @@ if ($config['is_web']) {
 		   *_confirm dialogs render a page and change nothing. */
 		$bad_actions = array(
 			'save', 'update_data', 'changepassword',
-			'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf',
+			'delete_node', 'create_node', 'rename_node', 'move_node', 'copy_node',
+			'gt_remove', 'query_remove', 'remove', 'change_leaf',
 			'item_remove', 'item_moveup', 'item_movedown',
 			'item_remove_gsv', 'item_remove_dssv',
 			'item_moveup_gsv', 'item_moveup_dssv',

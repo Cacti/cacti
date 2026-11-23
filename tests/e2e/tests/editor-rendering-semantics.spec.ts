@@ -24,7 +24,8 @@ test('device editor presents status and add controls as layouts', async ({ page 
 });
 
 test('native data query diagnostics retain the clipboard layout', async ({ page }) => {
-    await page.goto('/host.php?action=query_verbose&host_id=1&id=1&header=true');
+    await page.goto('/host.php?action=edit&id=1');
+    await page.evaluate(() => (window as any).submitPageUsingPost('host.php?action=query_verbose&host_id=1&id=1&header=true'));
     await expect(page.locator('#dqdebug')).toBeVisible();
     await presentation(page, '#dqdebug table[id^="clipboardData"]');
 });

@@ -47,6 +47,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'send':
+		csrf_require_post();
 		get_filter_request_var('id');
 
 		reports_send(get_request_var('id'));
@@ -54,6 +55,7 @@ switch (get_request_var('action')) {
 		header('Location: reports_admin.php?action=edit&tab=' . get_request_var('tab') . '&id=' . get_request_var('id'));
 		break;
 	case 'ajax_dnd':
+		csrf_require_post();
 		reports_item_dnd();
 
 		header('Location: reports_admin.php?action=edit&tab=items&id=' . get_request_var('id'));
