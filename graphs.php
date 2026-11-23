@@ -2836,9 +2836,6 @@ function graphs() : void {
 		$sql_params[] = grv('rfilter');
 		$sql_params[] = grv('rfilter');
 		$sql_params[] = grv('rfilter');
-
-		$sql_where2    = ' AND (gl.id = ?)';
-		$sql_params2[] = grv('rfilter');
 	}
 
 	if (ierv('host_id')) {
