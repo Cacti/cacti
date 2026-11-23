@@ -42,7 +42,7 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+      - uses: shivammathur/setup-php@e8d43d139fbfbe401c32ef3a3a32e14075f20122 # main (PHP 8.6 stable; after 2.40.0)
         with:
           php-version: '8.3'
           extensions: curl, dom
