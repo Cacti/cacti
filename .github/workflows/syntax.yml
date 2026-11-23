@@ -165,13 +165,12 @@ jobs:
         PHP_VERSION: ${{ matrix.php }}
       run: |
         set -euo pipefail
-        ignore=()
         if [[ "$EXPERIMENTAL" == 'true' ]]; then
           echo "::warning::Ignoring dependency PHP upper bounds on experimental PHP ${PHP_VERSION}"
-          ignore=(--ignore-platform-req=php+)
+          export COMPOSER_IGNORE_PLATFORM_REQ=php+
         fi
-        composer update "${ignore[@]}" --no-install --no-scripts --no-plugins --prefer-dist --no-progress --no-interaction
-        composer install "${ignore[@]}" --no-scripts --prefer-dist --no-progress --no-interaction
+        composer update --no-install --no-scripts --no-plugins --prefer-dist --no-progress --no-interaction
+        composer install --no-scripts --prefer-dist --no-progress --no-interaction
 
     - name: Run unit tests
       run: include/vendor/bin/pest --configuration=tests/phpunit.xml --display-warnings --testsuite=Unit
