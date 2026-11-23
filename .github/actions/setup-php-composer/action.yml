@@ -31,7 +31,7 @@ runs:
   using: composite
   steps:
     - name: Setup PHP ${{ inputs.php-version }}
-      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+      uses: shivammathur/setup-php@e8d43d139fbfbe401c32ef3a3a32e14075f20122 # main (PHP 8.6 stable; after 2.40.0)
       with:
         php-version: ${{ inputs.php-version }}
         coverage: ${{ inputs.coverage }}

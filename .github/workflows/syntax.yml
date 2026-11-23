@@ -82,7 +82,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.3', '8.4', '8.5']
+        php: ['8.3', '8.4', '8.5', '8.6']
+        # league/oauth2-client 2.9.x caps PHP below 8.6, and 2.10.0 needs a
+        # guzzlehttp/psr7 major that greew/oauth2-azure-provider rejects.
+        include:
+          - php: '8.6'
+            experimental: true
 
     steps:
     - name: Checkout
@@ -100,6 +105,7 @@ jobs:
         install-args: --no-dev --prefer-dist --no-progress --no-interaction
 
     - name: Verify actual platform requirements
+      continue-on-error: ${{ matrix.experimental == true }}
       run: composer check-platform-reqs --no-dev
 
     - name: Smoke-test the production autoloader
@@ -112,7 +118,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.3', '8.4', '8.5']
+        php: ['8.3', '8.4', '8.5', '8.6']
+        # league/oauth2-client 2.9.x caps PHP below 8.6, and 2.10.0 needs a
+        # guzzlehttp/psr7 major that greew/oauth2-azure-provider rejects.
+        include:
+          - php: '8.6'
+            experimental: true
 
     steps:
     - name: Checkout
@@ -150,8 +161,14 @@ jobs:
     - name: Resolve native dependencies
       env:
         COMPOSER: composer.compat.json
+        EXPERIMENTAL: ${{ matrix.experimental == true }}
+        PHP_VERSION: ${{ matrix.php }}
       run: |
         set -euo pipefail
+        if [[ "$EXPERIMENTAL" == 'true' ]]; then
+          echo "::warning::Ignoring dependency PHP upper bounds on experimental PHP ${PHP_VERSION}"
+          export COMPOSER_IGNORE_PLATFORM_REQ=php+
+        fi
         composer update --no-install --no-scripts --no-plugins --prefer-dist --no-progress --no-interaction
         composer install --no-scripts --prefer-dist --no-progress --no-interaction
 
