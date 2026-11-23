@@ -390,6 +390,56 @@ function get_public_key() {
 }
 
 /**
+ * The largest decompressed Package, in bytes, that the import reads. A Package holds templates
+ * and their scripts, which are far smaller. Used as part of Cacti's lib functionality.
+ *
+ * @return int The limit in bytes.
+ */
+function import_package_max_bytes() {
+	return 64 * 1024 * 1024;
+}
+
+/**
+ * Check that a Package decompresses to no more than the limit, reading it in chunks so an
+ * oversized Package never has to fit in memory. Used as part of Cacti's lib functionality.
+ *
+ * @param string $xmlfile The Package file.
+ * @param int|null $limit The limit in bytes, import_package_max_bytes() when null.
+ *
+ * @return bool True when the file is readable and within the limit.
+ */
+function import_package_within_size_limit($xmlfile, $limit = null) {
+	if ($limit === null) {
+		$limit = import_package_max_bytes();
+	}
+
+	$f = (is_file($xmlfile) && is_readable($xmlfile) ? gzopen($xmlfile, 'rb') : false);
+
+	if ($f === false) {
+		return false;
+	}
+
+	$total = 0;
+
+	// gzread() returns false or an empty string on a damaged stream, so
+	// either ends the read and fails the check.
+	do {
+		$chunk  = gzread($f, 1048576);
+		$total += strlen((string) $chunk);
+	} while ($chunk != '' && $total <= $limit);
+
+	$ok = ($chunk !== false && gzeof($f) && $total <= $limit);
+
+	gzclose($f);
+
+	if (!$ok) {
+		cacti_log('WARNING: Package ' . $xmlfile . ' is damaged or decompresses past ' . $limit . ' bytes', false, 'IMPORT');
+	}
+
+	return $ok;
+}
+
+/**
  * Handles the import package get public key. Used as part of Cacti's lib functionality.
  *
  * @param string $xmlfile The xmlfile.
@@ -431,6 +481,12 @@ function import_package_get_name($xmlfile) {
  * @return array An array of results.
  */
 function import_package_get_details($xmlfile) {
+	// An unreadable Package names no key, rather than falling back to the
+	// Cacti key below.
+	if (!import_package_within_size_limit($xmlfile)) {
+		return array('public_key' => '');
+	}
+
 	$filename = "compress.zlib://$xmlfile";
 
 	$return = array();
@@ -524,6 +580,10 @@ function import_validate_signature($xmlfile) : bool {
  * @return mixed The result of the operation, or false on failure.
  */
 function import_read_package_data($xmlfile, &$public_key) {
+	if (!import_package_within_size_limit($xmlfile)) {
+		return false;
+	}
+
 	$public_key = import_package_get_public_key($xmlfile);
 
 	$filename = "compress.zlib://$xmlfile";

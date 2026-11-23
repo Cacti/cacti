@@ -289,6 +289,27 @@ function remote_client_authorized() {
 }
 
 /**
+ * Checks that the user a Remote Agent graph request is made for is an existing, enabled user.
+ * Used as part of Cacti's remote agent functionality.
+ *
+ * @param mixed $user_id The user id from the request.
+ *
+ * @return int|false The user id, or false when there is no such enabled user.
+ */
+function remote_agent_validate_effective_user($user_id) {
+	if (!is_numeric($user_id) || $user_id < 1) {
+		return false;
+	}
+
+	$enabled = db_fetch_cell_prepared('SELECT enabled
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
+
+	return $enabled == 'on' ? (int) $user_id : false;
+}
+
+/**
  * Retrieves the graph data. Used as part of Cacti's remote agent functionality.
  *
  * @return bool True on success, false otherwise.
@@ -351,7 +372,14 @@ function get_graph_data() {
 
 	/* set the theme */
 	if (isset_request_var('effective_user')) {
-		$user = get_request_var('effective_user');
+		$user = remote_agent_validate_effective_user(get_request_var('effective_user'));
+
+		if ($user === false) {
+			http_response_code(403);
+			cacti_log('WARNING: Rejected a Remote Agent graph request for an unknown or disabled effective user.', false, 'SECURITY');
+
+			return false;
+		}
 	} else {
 		$user = 0;
 	}

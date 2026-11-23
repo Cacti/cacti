@@ -7421,6 +7421,8 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 		WHERE id = ?',
 		array($poller_id));
 
+	$ipaddress = $hostname;
+
 	if (!is_ipaddress($hostname)) {
 		$ipaddress = gethostbyname($hostname);
 
@@ -7441,10 +7443,101 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 		return '';
 	}
 
-	$fgc_contextoption = get_default_contextoption();
-	$fgc_context       = stream_context_create($fgc_contextoption);
+	/* Loopback, link-local and other reserved addresses are not Data Collectors.
+	 * Private ranges stay allowed, collectors normally live on internal networks. */
+	if (filter_var($ipaddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) === false) {
+		cacti_log(sprintf('ERROR: Refusing Remote Data Collector request for PollerID:%s, hostname:%s is a reserved address.', $poller_id, $hostname), false, 'SECURITY');
 
-	return  file_get_contents(get_url_type() .'://' . $hostname . $url, false, $fgc_context);
+		return '';
+	}
+
+	$fgc_contextoption = get_default_contextoption();
+
+	/* Connect to the address that was checked, so the name is not resolved a
+	 * second time. The name still goes in the Host header and is the name the
+	 * certificate is checked against. */
+	if ($ipaddress != $hostname) {
+		$headers = isset($fgc_contextoption['http']['header']) ? $fgc_contextoption['http']['header'] : array();
+
+		if (!is_array($headers)) {
+			$headers = array(rtrim($headers, "\r\n"));
+		}
+
+		$headers[] = 'Host: ' . $hostname;
+
+		$fgc_contextoption['http']['header']   = $headers;
+		$fgc_contextoption['ssl']['peer_name'] = $hostname;
+	}
+
+	$fgc_context = stream_context_create($fgc_contextoption);
+
+	if (filter_var($ipaddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+		$ipaddress = '[' . $ipaddress . ']';
+	}
+
+	$output = remote_agent_read_response(get_url_type() . '://' . $ipaddress . $url, $fgc_context);
+
+	if ($output === false) {
+		cacti_log(sprintf('WARNING: PollerID:%s did not return a successful response within the size limit.', $poller_id), false, $logtype);
+
+		return '';
+	}
+
+	return $output;
+}
+
+/**
+ * Reads the reply to a Remote Data Collector request. A reply that is not a 2xx response, or
+ * that is larger than the limit, is a failed request. Used as part of Cacti's lib functionality.
+ *
+ * @param string $url The URL to request.
+ * @param resource $context The stream context for the request.
+ * @param int $max_bytes The largest reply that is accepted.
+ *
+ * @return string|false The reply, or false when the request failed.
+ */
+function remote_agent_read_response($url, $context, $max_bytes = REMOTE_AGENT_MAX_RESPONSE_BYTES) {
+	if (!preg_match('/^https?:\/\//i', $url)) {
+		return false;
+	}
+
+	$output = file_get_contents($url, false, $context, 0, $max_bytes + 1);
+
+	if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
+		$http_response_header = http_get_last_response_headers();
+	}
+
+	$status = 0;
+
+	if (isset($http_response_header) && is_array($http_response_header)) {
+		$status = remote_agent_http_status($http_response_header);
+	}
+
+	if ($output === false || strlen($output) > $max_bytes || $status < 200 || $status >= 300) {
+		return false;
+	}
+
+	return $output;
+}
+
+/**
+ * Returns the status of the last response in a list of HTTP response header lines. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param array $headers The response header lines.
+ *
+ * @return int The HTTP status, or 0 when there is none.
+ */
+function remote_agent_http_status(array $headers) {
+	$status = 0;
+
+	foreach ($headers as $header) {
+		if (is_string($header) && preg_match('/^HTTP\/\S+\s+([1-5][0-9]{2})(?:\s|$)/i', $header, $matches)) {
+			$status = (int) $matches[1];
+		}
+	}
+
+	return $status;
 }
 
 /**
@@ -7489,20 +7582,17 @@ function get_default_contextoption($timeout = false) {
 				'verify_peer'       => read_config_option('allow_unsafe_https') != 'on' ? true : false,
 				'verify_peer_name'  => read_config_option('allow_unsafe_https') != 'on' ? true : false,
 				'allow_self_signed' => read_config_option('allow_unsafe_https') == 'on' ? true : false,
-				'follow_location'   => 0,
 			)
 		);
 	}
 
-	if ($protocol == 'https') {
-		$fgc_contextoption['https'] = array(
-			'timeout' => $timeout,
-			'ignore_errors' => true
-		);
-	} elseif ($protocol == 'http') {
+	/* PHP reads the request options of an https request from the 'http' key too */
+	if ($protocol == 'https' || $protocol == 'http') {
 		$fgc_contextoption['http'] = array(
-			'timeout' => $timeout,
-			'ignore_errors' => true
+			'timeout'         => $timeout,
+			'ignore_errors'   => true,
+			'follow_location' => 0,
+			'max_redirects'   => 0
 		);
 	}
 

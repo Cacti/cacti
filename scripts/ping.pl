@@ -13,7 +13,13 @@ if (($host =~ tr/:://) == 0) {
 }
 
 # Addition2
-($host) = $host =~ /^([\w.:-]+)$/;
+# ping reads a leading '-' as an option, and no host cannot be pinged
+($host) = $host =~ /^([\w.:][\w.:-]*)$/;
+
+if (!defined $host) {
+	print 'U';
+	exit 1;
+}
 
 # always have the language in english
 $ENV{LANG}='en_US.UTF-8';
