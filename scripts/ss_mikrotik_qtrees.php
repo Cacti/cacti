@@ -108,8 +108,8 @@ function ss_mikrotik_qtrees_getvalue($host_id, $index, $column) {
 		AND host_id = ?',
 		[$index, $index2, '<' . $index . '>', '<' . $index2 . '>', (int) $host_id]);
 
-	// no row for this tree: unknown, not zero
-	return is_numeric($value) ? (string) $value : 'U';
+	// no row for this tree: zero to prevent logging
+	return is_numeric($value) ? (string) $value : '0';
 }
 
 /**

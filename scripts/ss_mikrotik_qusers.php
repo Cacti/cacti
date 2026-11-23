@@ -117,8 +117,8 @@ function ss_mikrotik_qusers_getvalue($host_id, $index, $column) {
 		AND host_id = ?',
 		[$index, (int) $host_id]);
 
-	// no row for this user: unknown, not zero
-	return is_numeric($value) ? (string) $value : 'U';
+	// no row for this user: zero to prevent logging
+	return is_numeric($value) ? (string) $value : '0';
 }
 
 /**
