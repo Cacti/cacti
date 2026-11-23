@@ -2091,7 +2091,6 @@ function graph_management() {
 		$sql_where = " WHERE (gtg.title_cache " . db_qstr_rlike(get_request_var('rfilter')) .
 			" OR gt.name " . db_qstr_rlike(get_request_var('rfilter')) .
 			" OR gl.id = " . (int) get_request_var('rfilter') . ")";
-		$sql_where2 = " AND (gl.id = " . (int) get_request_var('rfilter') . ")";
 	}
 
 	if (get_request_var('host_id') == '-1') {
