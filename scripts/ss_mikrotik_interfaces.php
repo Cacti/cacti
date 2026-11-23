@@ -129,8 +129,8 @@ function ss_mikrotik_interfaces_getvalue($host_id, $index, $column) {
 		LIMIT 1',
 		$params);
 
-	// no row for this interface: unknown, not zero
-	return is_numeric($value) ? (string) $value : 'U';
+	// no row for this interface: zero to prevent logging
+	return is_numeric($value) ? (string) $value : '0';
 }
 
 /**
