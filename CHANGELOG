@@ -289,6 +289,7 @@ Cacti CHANGELOG
 -issue#8895: Refuse a Package that decompresses past 64 MB before the import reads it
 -issue#8895: Convert report graphs from PNG to JPEG or GIF in memory instead of through a scratch file in the temporary directory
 -issue#8895: Return U from the ping, logged in users and Linux memory data input scripts when the argument is refused, and refuse a ping host that starts with a hyphen
+-issue#8896: Recheck a Web Basic Authentication session against the identity passed by the web server on each request, and prefer REMOTE_USER over PHP_AUTH_USER; set $auth_basic_allow_php_auth_user = false in include/config.php to never use PHP_AUTH_USER
 -issue#8922: Stop priming discovery addresses at the first failed insert, log the failure and end the run, so a network that fills the automation_ips MEMORY table is no longer scanned in part without an error
 -issue: Fix Script Server performance issues with continual checks to the file include file path
 -issue: Keep zoom controls on the correct archive panel and prevent scroll jumps while refreshing graphs

@@ -231,6 +231,15 @@ $disable_log_rotation = false;
 $proxy_headers = null;
 
 /*
+ * Web Basic Authentication takes the username from REMOTE_USER or
+ * REDIRECT_REMOTE_USER, which the web server sets after it has verified
+ * the password, and falls back to PHP_AUTH_USER, which PHP decodes from
+ * the request's Authorization header. If your web server sets REMOTE_USER,
+ * uncomment the line below so that PHP_AUTH_USER is never used.
+ */
+//$auth_basic_allow_php_auth_user = false;
+
+/*
  * Set this to define the default i18n handler if not set
  * in the database.  For valid values, see CACTI_LANGUAGE_HANDLER
  * constants but only use the value not the constant name
