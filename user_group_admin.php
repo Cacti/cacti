@@ -245,53 +245,59 @@ function user_group_remove($id) {
  * @param int $id The ID.
  * @param string $prefix The prefix.
  *
- * @return void No value is returned.
+ * @return bool True if the group, its permissions and its realms were copied.
  */
 function user_group_copy($id, $prefix = 'New Group') {
 	static $count = 1;
 
 	$name = $prefix . ' ' . $count;
 
-	db_execute_prepared('INSERT INTO user_auth_group
+	/* the copy keeps the source policies, and under an allow policy the
+	   permission rows are exclusions, so a group without them grants more
+	   than its source; copy everything or nothing */
+	if (!db_begin_transaction()) {
+		return false;
+	}
+
+	$copied = db_execute_prepared('INSERT INTO user_auth_group
 		(name, description, graph_settings, login_opts, show_tree, show_list, show_preview,
 		policy_graphs, policy_trees, policy_hosts, policy_graph_templates, enabled)
 		SELECT ' . db_qstr($name) . ', description, graph_settings, login_opts, show_tree, show_list, show_preview,
 		policy_graphs, policy_trees, policy_hosts, policy_graph_templates, enabled
 		FROM user_auth_group WHERE id = ?', array($id));
 
-	$id = db_fetch_insert_id();
+	/* a missing source inserts nothing, and the insert id is then not the new group's */
+	$new_id = ($copied && db_affected_rows() == 1) ? db_fetch_insert_id() : 0;
 
-	if (!empty($id)) {
-		$perms = db_fetch_assoc_prepared('SELECT *
+	if (!empty($new_id)) {
+		$copied = db_execute_prepared('INSERT INTO user_auth_group_perms
+			(group_id, item_id, type)
+			SELECT ?, item_id, type
 			FROM user_auth_group_perms
 			WHERE group_id = ?',
-			array($id));
+			array($new_id, $id));
 
-		if (cacti_sizeof($perms)) {
-			foreach($perms as $p) {
-				db_execute_prepared('INSERT INTO user_auth_group_perms
-					(group_id, item_id, type)
-					VALUES (?, ?, ?)',
-					array($id, $p['item_id'], $p['type']));
-			}
+		if ($copied) {
+			$copied = db_execute_prepared('INSERT INTO user_auth_group_realm
+				(group_id, realm_id)
+				SELECT ?, realm_id
+				FROM user_auth_group_realm
+				WHERE group_id = ?',
+				array($new_id, $id));
 		}
+	} else {
+		$copied = false;
+	}
 
-		$realms = db_fetch_assoc_prepared('SELECT *
-			FROM user_auth_group_realm
-			WHERE group_id = ?',
-			array($id));
+	if (!$copied) {
+		db_rollback_transaction();
 
-		if (cacti_sizeof($realms)) {
-			foreach($realms as $r) {
-				db_execute_prepared('INSERT INTO user_auth_group_realm
-					(group_id, realm_id)
-					VALUES (?, ?)',
-					array($id, $r['realm_id']));
-			}
-		}
+		return false;
 	}
 
 	$count++;
+
+	return db_commit_transaction();
 }
 
 /**
@@ -466,7 +472,9 @@ function form_actions() {
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* copy */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					user_group_copy($selected_items[$i], get_nfilter_request_var('group_prefix'));
+					if (!user_group_copy($selected_items[$i], get_nfilter_request_var('group_prefix'))) {
+						raise_message(2);
+					}
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
