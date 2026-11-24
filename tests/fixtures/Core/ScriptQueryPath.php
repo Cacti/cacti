@@ -39,7 +39,7 @@ $config = array(
 	'library_path' => $root . '/lib',
 	'cacti_server_os' => $argv[1],
 	'is_web' => false,
-	'config_options_array' => array('path_php_binary' => $argv[1] === 'win32' ? 'C:\\PHP\\php.exe' : '/usr/bin/php')
+	'config_options_array' => array('path_php_binary' => $argv[4] ?? ($argv[1] === 'win32' ? 'C:\\PHP\\php.exe' : '/usr/bin/php'))
 );
 $messages = array();
 
