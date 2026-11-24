@@ -162,7 +162,7 @@ function form_actions() : void {
 					continue;
 				}
 
-				$ilist .= '<li>' . ($color['name'] != '' ? htmle($color['name']) : __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+				$ilist .= '<li>' . ($color['name'] != '' ? htmle($color['name']) : __('Unnamed Color')) . ' (<span style="background-color:#' . htmle($color['hex']) . '">' . htmle($color['hex']) . '</span>)</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -573,7 +573,7 @@ function color() : void {
 			form_selectable_cell(filter_value($color['hex'], '', $url), $color['id']);
 			form_selectable_cell(filter_value($color['name'], grv('filter')), $color['id']);
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes') : __('No'), $color['id']);
-			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
+			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . htmle($color['hex']) . ';min-width:30%');
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $color['id'], '', 'text-align:right');
 			form_selectable_cell(number_format_i18n($color['graphs'], -1), $color['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($color['templates'], -1), $color['id'], '', 'right');

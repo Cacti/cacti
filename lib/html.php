@@ -1592,10 +1592,10 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
 				if (preg_match('/(AREA|STACK)/', $_graph_type_name)) {
 					if ($item['hex'] != '') {
-						$color1 = $item['hex'] . $item['alpha'];
+						$color1 = htmle($item['hex'] . $item['alpha']);
 
 						if ($item['hex2'] != '') {
-							$color2 = $item['hex2'] . ($item['hex2'] != '' ? $item['alpha2'] : '');
+							$color2 = htmle($item['hex2'] . $item['alpha2']);
 						} else {
 							$color2 = $blank;
 						}
@@ -1604,7 +1604,7 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 					}
 				} else {
 					if ($item['hex'] != '') {
-						$color1 = $item['hex'] . $item['alpha'];
+						$color1 = htmle($item['hex'] . $item['alpha']);
 					} else {
 						$color1 = $blank;
 					}

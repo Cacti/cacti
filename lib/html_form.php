@@ -1530,7 +1530,7 @@ function form_color_dropdown(string $form_name, mixed $prev_val, string $none_en
 				$display = $color['name'] . ' (' . $color['hex'] . ')';
 			}
 
-			print "<option data-color='" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
+			print "<option data-color='" . htmle($color['hex']) . "' style='background-color: #" . htmle($color['hex']) . ";' value='" . $color['id'] . "'";
 
 			if ($prev_val == $color['id']) {
 				print ' selected';

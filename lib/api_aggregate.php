@@ -2012,8 +2012,8 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			print "<td style='$this_row_style'>" . $item['vdef_name'] . '</td>';
 
 			// column 'Item Color'
-			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '>&nbsp;</td>';
-			print "<td style='$this_row_style'>" . $item['hex'] . '</td>';
+			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . htmle($item['hex']) . ";'" : "'") . '>&nbsp;</td>';
+			print "<td style='$this_row_style'>" . htmle($item['hex'] ?? '') . '</td>';
 
 			// column 'Color Template'
 			print '<td>';

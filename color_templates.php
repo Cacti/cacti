@@ -147,9 +147,9 @@ function draw_color_template_items_list(array $item_list, string $filename, stri
 
 			print "</td>\n";
 
-			print "<td style='" . ((isset($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : '') . "></td>\n";
+			print "<td style='" . ((isset($item['hex'])) ? 'background-color:#' . htmle($item['hex']) . ';' : '') . "'></td>\n";
 
-			print '<td>' . $item['hex'] . "</td>\n";
+			print '<td>' . htmle($item['hex'] ?? '') . "</td>\n";
 
 			if ($disable_controls == false) {
 				print "<td class='right nowrap'>";
