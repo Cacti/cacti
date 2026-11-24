@@ -17,24 +17,79 @@ machine readable versions of the language translation per country and language. 
 
 ## Management Process
 
-When making a pull request, if you are modifying human readable strings, it's 
+When making a pull request, if you are modifying human readable strings, it's
 important that the user modifying those strings include an updated **cacti.pot**
-file in their pull requests.  To update the **cacti.pot** file, you would simply
-follow the directions below:
+file in their pull requests.  To update the **cacti.pot** file, run the
+**update-pot.sh** script from the Cacti base directory:
 
-- Change to the directory where you have found this README.md file
-- Look for the script **build_gettext.sh**.  If you find that it not executable, mark it so
-- Then run the **build_gettext.sh** script.
+    sh locales/update-pot.sh
 
-This script will perform the following steps:
+This script updates the **cacti.pot** file from the Cacti source and touches
+nothing else.  It reads the PHP files of Cacti itself; the `plugins`,
+`include/vendor` and `tests` directories are not read.  It needs GNU gettext
+(`xgettext`) and `realpath`.  Dot files and directories are skipped at any
+depth.  The `POT-Creation-Date` of the existing **cacti.pot** is kept, so
+running the script again on an unchanged tree leaves the file as it is and two
+pull requests that change strings do not conflict on that line.
 
-- Update the cacti.pot file from the entirety of the installed Cacti source directory
+Commit **cacti.pot** and no other file under `locales`.  The language
+translation files (*.po) and the binary translation files (*.mo) belong to
+Weblate, which updates them as soon as it detects the change in the
+**cacti.pot** file from your pull request.
+
+### Checking Your Pull Request
+
+A pull request that changes PHP source or the `locales` directory is checked
+by the **i18n Template** workflow.  You can run the same check before you push:
+
+    sh tests/tools/check_message_template.sh
+
+The check does not change your checkout.  It fails when:
+
+- Your change puts **cacti.pot** out of sync with the source.  The check
+  compares the messages in **cacti.pot** with the messages that
+  **update-pot.sh** extracts, once for your tree and once for the base your
+  change started from, and holds you only to the difference: a string you add
+  to or remove from the source without regenerating **cacti.pot**, or a change
+  to **cacti.pot** that no source change accounts for.  The failure lists the
+  messages (`+` is in the source but not in the template, `-` is in the
+  template but no longer in the source).  Run **update-pot.sh** and commit
+  **cacti.pot** to correct it.  Messages that were already out of sync at the
+  base are not held against you; the check only prints how many there are.  The
+  creation date, the source file locations and the format flags are not
+  compared.
+- The **cacti.pot** file or a language translation file has a
+  `msgfmt --check-format` failure that is not in
+  `tests/tools/message_catalog_baseline.txt`, for example because a
+  translation changed a `%s` placeholder.  The failure names the catalog and
+  the message.
+
+The base is, in order, the first argument (`sh tests/tools/check_message_template.sh develop`),
+the `CACTI_I18N_BASE` environment variable, or the point where your branch left
+`upstream/develop` (or `origin/develop` when there is no `upstream` remote).  The
+workflow uses the base of the pull request.  The base is read from git without
+checking it out.  When no base can be found, for example outside a git
+checkout, the check says so and compares the whole tree.
+
+The baseline lists the failures that existed when the check was introduced, one
+catalog and message per line.  The translations are fixed on the translation
+site, not in a pull request.  When a failure is fixed there, the check prints a
+notice and keeps passing; remove the line from the baseline then.  To print the
+current failures in the baseline format, run:
+
+    sh tests/tools/check_message_template.sh --list-catalog-failures
+
+### Rebuilding the Language Files
+
+The **build_gettext.sh** script is for maintainers, not for pull requests.  It
+performs the following steps:
+
+- Update the cacti.pot file by running **update-pot.sh**
 - Update your copy of the various language translation files (*.po) per country and language
 - Update your copy of the various binary translation files (*.mo) per country and language
 
-While the **build_gettext.sh** script updates both the *.po and *.mo files, those are not important
-for your pull requests as Weblate updates those files automatically as soon as it detects
-the change in the **cacti.pot** file from your pull request.
+Because it rewrites every language file, do not commit its results in a pull
+request that changes code.
 
 ## Periodic Mass Language Translations
 

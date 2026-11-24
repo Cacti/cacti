@@ -1,0 +1,1 @@
+Read nested core directories such as lib/Auth when regenerating the message template, and check the template and catalogs in CI

@@ -1,0 +1,16 @@
+# Messages that fail msgfmt --check-format today, one per line, sorted:
+#
+#     <catalog><TAB>msgid <message, cut to 100 characters>
+#
+# An error is named by the message it is in, so lines moving in a catalog do
+# not change it; an error msgfmt cannot place in a message is named by its
+# text.  check_message_template.sh fails on any failure listed nowhere here and
+# only prints a notice for a line that no longer fails, because a catalog fix
+# that Weblate delivers must not block an unrelated pull request.  Remove such
+# a line when you see the notice.  The translations are fixed on the
+# translation site, not here.  To regenerate this list run
+#
+#     sh tests/tools/check_message_template.sh --list-catalog-failures
+#
+locales/po/sv-SE.po	msgid InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you s...
+locales/po/sv-SE.po	msgid Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memo...
