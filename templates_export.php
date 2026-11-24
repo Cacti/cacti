@@ -51,6 +51,12 @@ function form_save() : void {
 	// ====================================================
 
 	if (isrv('save_component_export')) {
+		if (!isset($export_types[gnrv('export_type')])) {
+			header('Location: templates_export.php');
+
+			exit;
+		}
+
 		$export_errors = 0;
 		$xml_data      = get_item_xml(gnrv('export_type'), gnrv('export_item_id'), (((isrv('include_deps') ? gnrv('include_deps') : '') == '') ? false : true));
 

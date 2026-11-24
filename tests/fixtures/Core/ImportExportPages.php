@@ -164,6 +164,12 @@ function import_display_results(array $import_debug_info, array $filestatus, boo
 	$GLOBALS['fixture']['calls'][] = ['results', $import_debug_info];
 }
 
+function get_item_xml(string $type, mixed $id, bool $follow_deps) : string {
+	$GLOBALS['fixture']['calls'][] = ['get_item_xml', $type];
+
+	return '<xml/>';
+}
+
 $mode = $argv[1] ?? '';
 
 switch ($mode) {
@@ -325,6 +331,31 @@ switch ($mode) {
 		form_actions();
 
 		check(false, 'The import action ends the request');
+
+		break;
+	case 'export-type':
+		\cacti_fixture_source_function($root . '/templates_export.php', 'form_save', __NAMESPACE__);
+
+		$GLOBALS['export_types']       = ['graph_template' => ['name' => 'Graph Template', 'title_sql' => 'SELECT name FROM graph_templates WHERE id=|id|']];
+		$GLOBALS['fixture']['request'] = ['save_component_export' => '1', 'export_type' => 'graph_template', 'export_item_id' => '1', 'output_format' => '9'];
+
+		form_save();
+
+		check($GLOBALS['fixture']['calls'] === [['get_item_xml', 'graph_template']], 'A known export type is exported');
+
+		$GLOBALS['fixture']['calls']                  = [];
+		$GLOBALS['fixture']['request']['export_type'] = 'unknown';
+
+		register_shutdown_function(static function () : void {
+			check($GLOBALS['fixture']['calls'] === [], 'An unknown export type is not exported');
+			check($GLOBALS['fixture']['headers'] === ['Location: templates_export.php'], 'An unknown export type returns to the export page');
+
+			print "PASS: export-type\n";
+		});
+
+		form_save();
+
+		check(false, 'An unknown export type ends the request');
 
 		break;
 	default:
