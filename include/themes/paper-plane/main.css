@@ -40,8 +40,6 @@ body, table, tr, td, textarea {
 body {
 	color: lightgrey;
 	margin: 0px;
-	background-color: white;
-	background-repeat: repeat-y;
 	overflow: hidden;
 	background: #1D1F21;
 	background-image: linear-gradient(#1D1F21,#000000);
@@ -544,7 +542,6 @@ label {
 	display: block;
 	padding: 4px 15px;
 	font-size: 12px;
-	font-weight: light;
 	color: #000000;
 	text-decoration: none;
 }
@@ -576,7 +573,6 @@ label {
 	padding: 4px 15px;
 	font-family: Verdana,Arial,sans-serif;
 	font-size: 12px;
-	font-weight: light;
 	color: #000000;
 	text-decoration: none;
 }
@@ -1128,7 +1124,6 @@ legend {
 	padding: 10px 3px;
 	display: inline-block;
 	vertical-align: top;
-	align-self: left;
 	z-index: 4;
 	height: 100%;
 	height: 200px;
@@ -1913,7 +1908,6 @@ tr>td.textInfo.right {
 }
 
 .graphSubHeaderColumn {
-	color: #white;
 	font-size: 12px;
 	vertical-align: middle;
 	text-align: left;
@@ -3558,7 +3552,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;
