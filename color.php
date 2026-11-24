@@ -102,6 +102,17 @@ function form_save() {
 		if (!$read_only) {
 			$save['name']      = get_filter_request_var('name', FILTER_SANITIZE_SPECIAL_CHARS);
 			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]{6}\z' , false, 3);
+
+			/* hex is a unique key, so saving one that another color has would change that color or nothing */
+			if (!is_error_message() && db_fetch_cell_prepared('SELECT id
+				FROM colors
+				WHERE hex = ?
+				AND id != ?',
+				array($save['hex'], $save['id']))) {
+				raise_message('color_hex_exists', __('Another Color already has the Hex value %s.', $save['hex']), MESSAGE_LEVEL_ERROR);
+
+				$_SESSION['sess_error_fields']['hex'] = 'hex';
+			}
 		}
 
 		if (!is_error_message()) {
