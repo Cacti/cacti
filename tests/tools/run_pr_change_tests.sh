@@ -71,6 +71,7 @@ run_probe PackageMissingFile.php package-missing-file
 for mode in template-profile package-info; do
 	run_probe CliImportArguments.php "cli-import-$mode" "$mode"
 done
+run_probe ImportExportLibraries.php import-export-libraries
 if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
 	for scenario in deleted query-failed; do
 		run_probe ../BoostSourceExistenceProbe.php "boost-source-existence-$scenario" "$scenario" > /dev/null

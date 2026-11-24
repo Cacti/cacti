@@ -266,6 +266,11 @@ switch ($mode) {
 		check(import_validate_public_key('package.xml.gz', true) === 'built-in', 'Accepting the built in key reports it as trusted');
 		check($GLOBALS['fixture']['calls'] === [], 'No key row is stored for the built in key');
 
+		$GLOBALS['fixture']['package']['pubkey'] = 'legacy';
+
+		check(import_validate_public_key('package.xml.gz', false) === 'legacy', 'The legacy built in key is reported as trusted');
+		check($GLOBALS['fixture']['calls'] === [], 'No key row is stored for the legacy built in key');
+
 		$GLOBALS['fixture']['package']['pubkey'] = 'other';
 
 		check(import_validate_public_key('package.xml.gz', false) === false, 'An unknown key is not trusted from the details view');

@@ -94,6 +94,7 @@ run_php_probe tests/fixtures/Core/PackageMissingFile.php '^(lib/package\.php|tes
 for mode in template-profile package-info; do
 	run_php_probe tests/fixtures/Core/CliImportArguments.php '^(cli/import_(template|package)\.php|tests/fixtures/Core/CliImportArguments\.php)' "$mode"
 done
+run_php_probe tests/fixtures/Core/ImportExportLibraries.php '^(lib/(api_automation|export|import|package)\.php|tests/fixtures/Core/ImportExportLibraries\.php)'
 
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
 run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files"

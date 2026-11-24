@@ -80,3 +80,17 @@ test('command line import arguments are handled', function (string $mode) {
 	'template profile selection' => ['template-profile'],
 	'package information'        => ['package-info'],
 ]);
+
+test('the import and export libraries keep their results and encode what they report', function () {
+	$pipes   = [];
+	$process = proc_open([PHP_BINARY, dirname(__DIR__, 3) . '/fixtures/Core/ImportExportLibraries.php'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	expect(is_resource($process))->toBeTrue();
+	$output = stream_get_contents($pipes[1]);
+	$errors = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	expect($errors)->toBe('')
+		->and(proc_close($process))->toBe(0)
+		->and($output)->toBe("PASS: import-export-libraries (21 checks)\n");
+});
