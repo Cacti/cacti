@@ -156,14 +156,13 @@ if (cacti_sizeof($parms)) {
 
 	if ($filename != '') {
 		if (file_exists($filename) && is_readable($filename) && file_exists($filename) && !is_dir($filename)) {
-			$fp   = fopen($filename, 'r');
-			$data = fread($fp, filesize($filename));
+			print 'Read ' . filesize($filename) . ' bytes of Package data' . PHP_EOL;
 
-			fclose($fp);
+			/* Device Templates get the class of the Package, as in the web import */
+			$details = import_package_get_details($filename);
+			$class   = (isset($details['class']) ? $details['class'] : '');
 
-			print 'Read ' . strlen($data) . ' bytes of Package data' . PHP_EOL;
-
-			$result = import_package($filename, $profile_id, $remove_orphans, $replace_svalues, $preview_only);
+			$result = import_package($filename, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, true, array(), array(), $class);
 
 			if ($result !== false) {
 				$debug_data = $result[0];

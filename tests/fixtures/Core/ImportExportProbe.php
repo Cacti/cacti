@@ -244,7 +244,7 @@ function db_fetch_insert_id() {
 /* a row with a positive id that exists is updated, any other row is inserted */
 function sql_save($row, $table, $key_cols = 'id', $autoinc = true) {
 	if (is_array($key_cols)) {
-		$statement = db_query('INSERT OR REPLACE INTO ' . $table . ' (' . implode(', ', array_keys($row)) . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($row), '?')) . ')', $row);
+		$statement = db_query('INSERT OR REPLACE INTO ' . $table . ' (' . '`' . implode('`, `', array_keys($row)) . '`' . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($row), '?')) . ')', $row);
 
 		return db()->lastInsertId();
 	}
@@ -262,7 +262,7 @@ function sql_save($row, $table, $key_cols = 'id', $autoinc = true) {
 		unset($row['id']);
 	}
 
-	db_query('INSERT INTO ' . $table . ' (' . implode(', ', array_keys($row)) . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($row), '?')) . ')', $row);
+	db_query('INSERT INTO ' . $table . ' (' . '`' . implode('`, `', array_keys($row)) . '`' . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($row), '?')) . ')', $row);
 
 	return db()->lastInsertId();
 }
@@ -273,7 +273,7 @@ foreach ($scenario['schema'] ?? array() as $statement) {
 
 foreach ($scenario['db'] ?? array() as $table => $rows) {
 	foreach ($rows as $row) {
-		db_query('INSERT INTO ' . $table . ' (' . implode(', ', array_keys($row)) . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($row), '?')) . ')', $row);
+		db_query('INSERT INTO ' . $table . ' (' . '`' . implode('`, `', array_keys($row)) . '`' . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($row), '?')) . ')', $row);
 	}
 }
 
@@ -330,7 +330,8 @@ try {
 		$source    = preg_replace('/^(require|require_once)\(.*$/m', '', file_get_contents($root . '/' . $scenario['cli']));
 		$temporary = tempnam(sys_get_temp_dir(), 'cacti-cli-slice-');
 
-		file_put_contents($temporary, preg_replace('/^<\?php/', '<?php namespace ' . __NAMESPACE__ . ';', $source, 1));
+		/* the namespace takes the place of the interpreter line */
+		file_put_contents($temporary, preg_replace('/^#!.*$/m', '<?php namespace ' . __NAMESPACE__ . '; ?>', $source, 1));
 		$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($root . '/' . $scenario['cli']);
 
 		try {
