@@ -752,30 +752,40 @@ function setupDefaultElements() {
 				'</div>').prependTo(mdw.domMap.cactiNavRight); // Use Mapping
 		}
 
-		$(".elementOnTop").empty();
-		$("#mdw-ActionBarMiddle").empty();
+		// This also runs after partial updates, such as a dialog loaded into #main, that
+		// keep the page content. Its title, tabs and save row were already moved out of
+		// #main, so only clear the top bar once #main holds new content, and leave
+		// dialog content where it is.
+		const dialogContent = '#cdialog *, .cdialog *, .ui-dialog *';
 
-		// --- Move table elements to Midwinter containers ---
-		if ($("#main > div.tabs:first").length) {
-			$("#main > div.tabs:first").closest('div').detach().appendTo('#tableTabsOnTop');
-		}
+		if (midwinterContentChanged($("#elementsOnTop").data('mdwContent'), midwinterContentState($('#main')[0]))) {
+			$(".elementOnTop").empty();
+			$("#mdw-ActionBarMiddle").empty();
 
-		if ($("#main div.cactiTableTitleRow").length) {
-			const $titleRow = $("#main div.cactiTableTitleRow:first");
-			$titleRow.children(".cactiTableTitle").detach().appendTo('#tableTitleOnTop');
-			$titleRow.children(".cactiTableAction:not(:empty)").detach().appendTo('#tableActionOnTop');
-			$titleRow.children(".cactiTableButton:not(:empty)").detach().appendTo('#mdw-ActionBarMiddle');
-			$titleRow.remove();
-
-			if ($("#main div.saveRow").length) {
-				$("#main div.saveRow").detach().appendTo('#tableActionOnTop');
-			} else if ($("#main div.actionsDropdown").length) {
-				$("#main div.actionsDropdown > div > span").detach().appendTo('#tableActionOnTop');
+			// --- Move table elements to Midwinter containers ---
+			if ($("#main > div.tabs:first").length) {
+				$("#main > div.tabs:first").closest('div').detach().appendTo('#tableTabsOnTop');
 			}
 
-			if ($("#main div.navBarNavigation").length) {
-				$("#main div.navBarNavigation:first").clone().appendTo('#tableNavBarOnTop');
+			if ($("#main div.cactiTableTitleRow").not(dialogContent).length) {
+				const $titleRow = $("#main div.cactiTableTitleRow").not(dialogContent).first();
+				$titleRow.children(".cactiTableTitle").detach().appendTo('#tableTitleOnTop');
+				$titleRow.children(".cactiTableAction:not(:empty)").detach().appendTo('#tableActionOnTop');
+				$titleRow.children(".cactiTableButton:not(:empty)").detach().appendTo('#mdw-ActionBarMiddle');
+				$titleRow.remove();
+
+				if ($("#main div.saveRow").not(dialogContent).length) {
+					$("#main div.saveRow").not(dialogContent).detach().appendTo('#tableActionOnTop');
+				} else if ($("#main div.actionsDropdown").not(dialogContent).length) {
+					$("#main div.actionsDropdown > div > span").not(dialogContent).detach().appendTo('#tableActionOnTop');
+				}
+
+				if ($("#main div.navBarNavigation").not(dialogContent).length) {
+					$("#main div.navBarNavigation").not(dialogContent).first().clone().appendTo('#tableNavBarOnTop');
+				}
 			}
+
+			$("#elementsOnTop").data('mdwContent', midwinterContentState($('#main')[0]));
 		}
 
 		// *************************************************************************************************************
@@ -1220,6 +1230,20 @@ function midwinterThemeSession(stored) {
 			mobile:   { autoTableLayout: choice(group('mobile').autoTableLayout, ['on', 'off'], 'off') }
 		}
 	};
+}
+
+// Identify the content of #main. loadUrl() advances cactiContentVersion, and pages
+// that replace #main themselves still replace its first child.
+function midwinterContentState(main) {
+	return {
+		element: main || null,
+		version: (main && $(main).data('cactiContentVersion')) || 0,
+		first:   main ? main.firstElementChild : null
+	};
+}
+
+function midwinterContentChanged(previous, current) {
+	return !previous || previous.element !== current.element || previous.version !== current.version || previous.first !== current.first;
 }
 
 
