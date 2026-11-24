@@ -36,7 +36,7 @@ $is_save = isrv('save_component_import');
 
 $tmp_dir  = sys_get_temp_dir();
 $tmp_len  = strlen($tmp_dir);
-$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
+$tmp_dir .= ($tmp_len !== 0 && str_ends_with($tmp_dir, '/')) ? '' : '/';
 $is_tmp   = is_tmp_writable();
 
 if ($is_tmp && $is_save && $action == 'save') {
@@ -537,7 +537,7 @@ function is_tmp_writable(string $tmp_dir = '') : bool {
 	}
 
 	$tmp_len  = strlen($tmp_dir);
-	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
+	$tmp_dir .= ($tmp_len !== 0 && str_ends_with($tmp_dir, '/')) ? '' : '/';
 
 	$is_tmp = is_resource_writable($tmp_dir);
 

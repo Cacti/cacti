@@ -85,8 +85,8 @@ run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/f
 run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_import|lib/package)\.php|tests/fixtures/Core/PackageRepositoryWorkspace\.php)'
 run_php_probe tests/fixtures/Core/PackageImportFileStatus.php '^(lib/(import|package)\.php|tests/fixtures/Core/PackageImportFileStatus\.php)'
 run_php_probe tests/fixtures/Core/PackageDiffBoundary.php '^(package_import\.php|tests/fixtures/Core/PackageDiffBoundary\.php)'
-import_export_files='^((data_source_profiles|templates_import|templates_export|package_import|automation_snmp)\.php|cli/import_(template|package)\.php|tests/fixtures/Core/ImportExportPages\.php)'
-for mode in profile-messages public-key-details template-import-result template-dependencies package-preview-failure package-details-failure repository-import-selection export-type snmp-option-results; do
+import_export_files='^((data_source_profiles|templates_import|templates_export|package_import|automation_snmp|automation_tree_rules)\.php|cli/import_(template|package)\.php|tests/fixtures/Core/ImportExportPages\.php)'
+for mode in profile-messages public-key-details template-import-result template-dependencies package-preview-failure package-details-failure repository-import-selection export-type snmp-option-results template-temp-directory package-temp-directory package-diff-link tree-rule-import-form import-flags; do
 	run_php_probe tests/fixtures/Core/ImportExportPages.php "$import_export_files" "$mode"
 done
 run_php_probe tests/fixtures/Core/PackageTemplateResults.php '^(lib/import\.php|tests/fixtures/Core/PackageTemplateResults\.php)'

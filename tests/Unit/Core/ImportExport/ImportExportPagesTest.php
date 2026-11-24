@@ -29,6 +29,11 @@ test('import and export page scenario passes', function (string $mode) {
 	'repository import of part of a package'  => ['repository-import-selection'],
 	'unknown template export type'            => ['export-type'],
 	'results of every imported snmp option'   => ['snmp-option-results'],
+	'template temporary directory'            => ['template-temp-directory'],
+	'package temporary directory'             => ['package-temp-directory'],
+	'package differences link'                => ['package-diff-link'],
+	'tree rule import form'                   => ['tree-rule-import-form'],
+	'package import option values'            => ['import-flags'],
 ]);
 
 test('the results of every template file of a package are kept', function () {

@@ -106,8 +106,8 @@ function form_actions() : void {
 	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	gfrv('data_source_profile');
 	gfrv('package_location');
-	gfrv('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
-	gfrv('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
+	gfrv('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^on$/']]);
+	gfrv('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^on$/']]);
 
 	if (isrv('import_state')) {
 		gfrv('import_state', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-f0-9]{32}$/']]);
@@ -1183,12 +1183,13 @@ function import_display_package_data(array $templates, array $files, string $pac
 					$s = trim($s);
 
 					if ($s == 'differences') {
-						$url = 'package_import.php' .
-							'?action=diff' .
-							'&package_location=' . grv('package_location') .
-							'&package_file=' . $file_package_file .
-							'&package_name=' . $file_package_name .
-							'&filename=' . str_replace(CACTI_PATH_BASE . '/', '', $pfile);
+						$url = 'package_import.php?' . http_build_query([
+							'action'           => 'diff',
+							'package_location' => grv('package_location'),
+							'package_file'     => $file_package_file,
+							'package_name'     => $file_package_name,
+							'filename'         => str_replace(CACTI_PATH_BASE . '/', '', $pfile),
+						], '', '&', PHP_QUERY_RFC3986);
 
 						$nstatus .= ($nstatus != '' ? ', ' : '') .
 							"<a class='diffme linkEditMain' href='" . htmle($url) . "'>" . __('Differences') . '</a>';
@@ -2067,7 +2068,7 @@ function get_repo_manifest_file(string $repo_id) : string {
 function is_tmp_writable() : bool {
 	$tmp_dir  = sys_get_temp_dir();
 	$tmp_len  = strlen($tmp_dir);
-	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
+	$tmp_dir .= ($tmp_len !== 0 && str_ends_with($tmp_dir, '/')) ? '' : '/';
 	$is_tmp   = is_resource_writable($tmp_dir);
 
 	return $is_tmp;

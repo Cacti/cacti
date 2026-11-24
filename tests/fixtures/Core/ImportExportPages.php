@@ -86,7 +86,16 @@ function isrv(string $name) : bool {
 }
 
 function gfrv(string $name, mixed ...$filter) : mixed {
-	return $GLOBALS['fixture']['request'][$name] ?? '';
+	$value = $GLOBALS['fixture']['request'][$name] ?? '';
+
+	// Stand in for the input validation error on a value the pattern rejects.
+	if (($filter[0] ?? null) === FILTER_VALIDATE_REGEXP && $value !== '' && !preg_match($filter[1]['options']['regexp'], (string) $value)) {
+		$GLOBALS['fixture']['input_error'] = $name;
+
+		exit;
+	}
+
+	return $value;
 }
 
 function grv(string $name) : mixed {
@@ -136,8 +145,11 @@ function package_prepare_import_array(array &$templates, array &$files, string $
 	$GLOBALS['fixture']['calls'][] = ['prepare', $package_name];
 }
 
-function import_display_package_data(array $templates, array $files, string $package_name, string $filename, array $data, bool $multipackage = true) : void {
-	$GLOBALS['fixture']['calls'][] = ['display', $package_name];
+// The differences link scenario loads the real function instead.
+if (($argv[1] ?? '') !== 'package-diff-link') {
+	function import_display_package_data(array $templates, array $files, string $package_name, string $filename, array $data, bool $multipackage = true) : void {
+		$GLOBALS['fixture']['calls'][] = ['display', $package_name];
+	}
 }
 
 function get_repo_manifest_file(string $repo_id) : string {
@@ -175,6 +187,52 @@ function automation_snmp_option_import(array $snmp) : array {
 }
 
 function automation_log(string $message, int $level = 0) : void {
+}
+
+function is_resource_writable(string $path) : bool {
+	$GLOBALS['fixture']['calls'][] = ['is_resource_writable', $path];
+
+	return true;
+}
+
+function html_start_box(string $title, mixed ...$arguments) : void {
+}
+
+function html_end_box(bool $trailing_br = true, bool $div = false) : void {
+}
+
+function html_header_checkbox(array $header_items, mixed ...$arguments) : void {
+}
+
+function form_alternate_row(string $row_id = '', bool $light = false, bool $disabled = false) : void {
+}
+
+function form_selectable_ecell(mixed $contents, mixed $id, mixed ...$arguments) : bool {
+	return true;
+}
+
+function form_selectable_cell(mixed $contents, mixed $id, mixed ...$arguments) : bool {
+	$GLOBALS['fixture']['cells'][] = $contents;
+
+	return true;
+}
+
+function form_checkbox_cell(string $title, mixed $id, bool $disabled = false, bool $checked = false) : void {
+}
+
+function form_end_row() : void {
+}
+
+function form_start(mixed $action, string $id = '', bool $multipart = false) : void {
+}
+
+function draw_edit_form(array $array) : void {
+}
+
+function form_hidden_box(string $form_name, mixed $prev_val, mixed $default_val, mixed $in_form = false) : void {
+}
+
+function kill_session_var(string $var_name) : void {
 }
 
 $mode = $argv[1] ?? '';
@@ -381,6 +439,76 @@ switch ($mode) {
 		automation_import_process();
 
 		check(false, 'The import ends the request');
+
+		break;
+	case 'template-temp-directory':
+		\cacti_fixture_source_function($root . '/templates_import.php', 'is_tmp_writable', __NAMESPACE__);
+
+		is_tmp_writable('/var/tmp/');
+		is_tmp_writable('/var/tmp');
+
+		$locals = \cacti_fixture_source_block($root . '/templates_import.php', __NAMESPACE__, '~\n(\$tmp_dir  = sys_get_temp_dir\(\);.*?\$is_tmp   = is_tmp_writable\(\);)~s');
+
+		check(array_column($GLOBALS['fixture']['calls'], 1) === ['/var/tmp/', '/var/tmp/', $locals['tmp_dir']], 'The temporary directory ends in one separator');
+		check(str_ends_with($locals['tmp_dir'], '/') && !str_ends_with($locals['tmp_dir'], '//'), 'The page temporary directory ends in one separator');
+
+		break;
+	case 'package-temp-directory':
+		\cacti_fixture_source_function($root . '/package_import.php', 'is_tmp_writable', __NAMESPACE__);
+
+		is_tmp_writable();
+
+		$path = $GLOBALS['fixture']['calls'][0][1];
+
+		check(str_ends_with($path, '/') && !str_ends_with($path, '//'), 'The package temporary directory ends in one separator');
+
+		break;
+	case 'package-diff-link':
+		\cacti_fixture_source_function($root . '/package_import.php', 'import_display_package_data', __NAMESPACE__);
+
+		if (!\defined('CACTI_PATH_BASE')) {
+			\define('CACTI_PATH_BASE', $root);
+		}
+
+		$GLOBALS['fixture']['request'] = ['package_location' => '2'];
+		$files                         = ['sample&name.xml.gz|Disk #1 & More' => [$root . '/scripts/a b.php' => 'writable, differences']];
+
+		ob_start();
+		import_display_package_data([], $files, 'Sample', 'sample.xml.gz', []);
+		ob_end_clean();
+
+		preg_match("~href='([^']*)'~", $GLOBALS['fixture']['cells'][0] ?? '', $match);
+		parse_str(parse_url(html_entity_decode($match[1] ?? '', ENT_QUOTES), PHP_URL_QUERY) ?? '', $query);
+
+		check($query === ['action' => 'diff', 'package_location' => '2', 'package_file' => 'sample&name.xml.gz', 'package_name' => 'Disk #1 & More', 'filename' => 'scripts/a b.php'], 'The differences link carries each value intact');
+
+		break;
+	case 'tree-rule-import-form':
+		\cacti_fixture_source_function($root . '/automation_tree_rules.php', 'automation_import', __NAMESPACE__);
+
+		$_SESSION = [];
+
+		ob_start();
+		automation_import();
+		$output = (string) ob_get_clean();
+
+		check(substr_count($output, '<button') === 1 && substr_count($output, '</button>') === 1, 'The import button is closed');
+
+		break;
+	case 'import-flags':
+		\cacti_fixture_source_function($root . '/package_import.php', 'form_actions', __NAMESPACE__);
+
+		$GLOBALS['fixture']['request'] = ['drp_action' => '1', 'remove_orphans' => 'onion'];
+
+		register_shutdown_function(static function () : void {
+			check(($GLOBALS['fixture']['input_error'] ?? '') === 'remove_orphans', 'Only the value on is accepted for an option');
+
+			print "PASS: import-flags\n";
+		});
+
+		form_actions();
+
+		check(false, 'A rejected option ends the request');
 
 		break;
 	default:
