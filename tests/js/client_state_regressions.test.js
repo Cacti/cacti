@@ -149,7 +149,7 @@ test('fullscreen entry and exit handle both fulfilled and rejected browser promi
 				});
 				context.toggleFullscreen(element);
 				await new Promise((resolve) => setImmediate(resolve));
-				assert.deepEqual(calls, [fullscreen && !element ? 'exit' : element && !fullscreen ? 'graph' : 'document']);
+				assert.deepEqual(calls, [fullscreen ? 'exit' : element ? 'graph' : 'document']);
 				assert.deepEqual(errors, reject ? ['Denied by browser'] : []);
 			}
 		}

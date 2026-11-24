@@ -25,38 +25,52 @@
 themeLoader('on');
 let themeInitialized = false;
 let themeUserMenu
+let midwinterHotKeysRequested = false;
+let midwinterMarkRequested = false;
+let midwinterSystemColorWatched = false;
+let midwinterConsoleMenuMissing = false;
+
+// themeReady() runs again after every partial page load, so document level listeners are added here once
+document.addEventListener("dblclick", () => {
+	toggleFullscreen();
+});
 
 function themeReady() {
-	/* load default values */
-	initStorageItem('midWinter_GUI_Mode', 'compact');
-	initStorageItem('midWinter_Color_Mode', 'dark');
-	initStorageItem('midWinter_Color_Mode_Auto', 'on');
-	initStorageItem('midWinter_Font_Size', 'regular', 'zoom-level');
+	try {
+		/* load default values */
+		initStorageItem('midWinter_GUI_Mode', 'compact');
+		initStorageItem('midWinter_Color_Mode', 'dark');
+		initStorageItem('midWinter_Color_Mode_Auto', 'on');
+		initStorageItem('midWinter_Font_Size', 'regular', 'zoom-level');
 
-	themeInitialized = midwinterInitialized();
-	setThemeColor();
-	setupTheme();
-	setupTree();
-	setupDefaultElements();
-	setMenuVisibility();
-	setHotKeys();
-	ajaxAnchors();
-	extendAnchorActions();
-	searchToHighlight();
-	updateNavigation();
-	themeLoader('off');
-	document.addEventListener("dblclick", () => {
-		toggleFullscreen();
-	})
+		themeInitialized = midwinterInitialized();
+		setThemeColor();
+		setupTheme();
+		setupTree();
+		setupDefaultElements();
+		setMenuVisibility();
+		setHotKeys();
+		ajaxAnchors();
+		extendAnchorActions();
+		searchToHighlight();
+		updateNavigation();
+	} finally {
+		// the page stays hidden until the loader is switched off, even when a step above fails
+		themeLoader('off');
+	}
 }
 
 function checkConsoleMenu() {
-	if ( $('#cactiContent').length !== 0 && $('#menu').length === 0  ) {
+	// accounts without the console get no menu back, so do not ask again on every page load
+	if (midwinterConsoleMenuMissing === false && $('#cactiContent').length !== 0 && $('#menu').length === 0  ) {
 		$.ajax({
 			url: urlPath + 'about.php',
 			global : false
 		}).done(function(html) {
 			let menu = $(html).find('#menu');
+			if (menu.length === 0) {
+				midwinterConsoleMenuMissing = true;
+			}
 			redesignConsoleMenu(menu);
 			ajaxAnchors();
 			extendAnchorActions();
@@ -72,7 +86,7 @@ function midwinterInitialized() {
 }
 
 function extendAnchorActions() {
-	$('a[role="menuitem"]').on('click', function() {
+	$('a[role="menuitem"]').off('click.midwinter').on('click.midwinter', function() {
 		/* update MidWinter's BreadCrumb Navigation */
 		midWinterNavigation( $(this) );
 		/* close the Navigation Menu Box afterwards */
@@ -95,19 +109,21 @@ function updateNavigation() {
 	if (themeInitialized === false) {
 		// Search using different patterns until we have a valid location to populate the navigation
 		// Use the easy matches first.
-		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+window.location.pathname+window.location.search+'"').first();
+		var path = midwinterSelectorValue(window.location.pathname);
+		var search = midwinterSelectorValue(window.location.search);
+		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+path+search+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
-		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+window.location.pathname+'"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+path+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
-		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+window.location.pathname+'index.php"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+path+'index.php"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 
 		// Append an action if the user did not provide one based upon the cactiAction variable
-		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+window.location.pathname+'?action='+cactiAction+'"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+path+'?action='+midwinterSelectorValue(cactiAction)+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 
 		// Choose what fits best in situations where users have cleared their settings
-		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+window.location.pathname+'"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+path+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 	}
 
@@ -295,21 +311,17 @@ function setupTheme() {
 			redesignConsoleMenu(menu);
 
 			// -- duplicate the console tab items and add them to the console navigation area for compact mode
-			if ($.trim($('compact_tab_menu').html()) === '') {
-				$('<div class="compact_nav_icon" data-helper="dashboards">'+
-						'<i class="fas fa-th-large"></i>'+
-						'<span>'+cactiDashboards+'</span>'+
-					'</div>').appendTo('#compact_tab_menu');
-			}
+			$('<div class="compact_nav_icon" data-helper="dashboards">'+
+					'<i class="fas fa-th-large"></i>'+
+					'<span>'+cactiDashboards+'</span>'+
+				'</div>').appendTo('#compact_tab_menu');
 
 			if (cactiConsoleAllowed) {
-				if ($.trim($('compact_tab_menu').html()) === '') {
-					$('<div class="compact_nav_icon" data-helper="settings">'+
-							'<i class="fas fa-cogs"></i>'+
-							'<span>'+zoom_i18n_settings+'</span>'+
-						'</div>'
-					).appendTo('#compact_tab_menu');
-				}
+				$('<div class="compact_nav_icon" data-helper="settings">'+
+						'<i class="fas fa-cogs"></i>'+
+						'<span>'+zoom_i18n_settings+'</span>'+
+					'</div>'
+				).appendTo('#compact_tab_menu');
 			}
 
 			$(compact_tab_menu_content).appendTo('#compact_tab_menu');
@@ -363,7 +375,7 @@ function setupTheme() {
 				+           '<li><a href="#" class="dialog_client">'+cactiShortcuts+'</a></li>'
 				+       '</ul>'
 				+   '</li>'
-				+   '<li class="menuitem" id="menu_user_help">'
+				+   '<li class="menuitem" id="menu_user_contribute">'
 				+       '<a class="menu_parent active" href="#">'
 				+           '<i class="menu_glyph fas fa-hands-helping"></i>'
 				+           '<span>'+cactiContributeTo+'</span>'
@@ -390,7 +402,7 @@ function setupTheme() {
 				+           '<li><a href="'+urlPath+'auth_changepassword.php" style="">'+changePassword+'</a></li>'
 				+       '</ul>'
 				+   '</li>'
-				+   '<li class="menuitem" id="menu_user_action">'
+				+   '<li class="menuitem" id="menu_user_theme">'
 				+       '<a class="menu_parent active" href="#">'
 				+           '<i class="menu_glyph fas fa-palette"></i>'
 				+           '<span>'+cactiTheme+'</span>'
@@ -437,7 +449,7 @@ function setupTheme() {
 		return false;
 	});
 
-	$('.submenuoptions, .menuoptions').on('click', function() {
+	$('.submenuoptions, .menuoptions').off('click.midwinter').on('click.midwinter', function() {
 		if ($(window).width() < 640) {
 			$(this).stop().delay(100).slideUp(0);
 		} else {
@@ -455,7 +467,7 @@ function setupTheme() {
 	$('.toggleColorModeAuto').off().on('click', toggleColorModeAuto);
 	$('.toggleGuiFontSize').off().on('click',toggleGuiFontSize);
 
-	$('.cactiConsoleContentArea, .cactiGraphContentArea').on('mouseenter', toggleCactiNavigationBox);
+	$('.cactiConsoleContentArea, .cactiGraphContentArea').off('mouseenter.midwinter').on('mouseenter.midwinter', toggleCactiNavigationBox);
 }
 
 function redesignConsoleMenu(menu) {
@@ -573,7 +585,7 @@ function setupDefaultElements() {
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
 	$('.import_button').change(function() {
-		text=this.value;
+		let text = this.value;
 		setImportFile(text);
 	});
 
@@ -597,8 +609,8 @@ function setupDefaultElements() {
 		minLength: 0,
 		select: function(event,ui) {
 			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
-			if (callBack != 'undefined') {
+			let callBack = $('#call_back').val();
+			if (typeof callBack === 'string') {
 				if (callBack.indexOf('applyFilter') >= 0) {
 					applyFilter();
 				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
@@ -674,6 +686,11 @@ function midwinterEscape(value) {
 	return String(value === undefined || value === null ? '' : value).replace(/[&<>"'`]/g, function(character) {
 		return entityMap[character];
 	});
+}
+
+// Quote a value for use inside a double quoted attribute selector.
+function midwinterSelectorValue(value) {
+	return String(value === undefined || value === null ? '' : value).replace(/["\\]/g, '\\$&');
 }
 
 function initStorageItem(name, default_value, data_attribute= '') {
@@ -787,17 +804,24 @@ function setThemeColor() {
 function detectSystemColorSetup() {
 	const systemColorMode = window.matchMedia("(prefers-color-scheme: dark)");
 
-	try {
-		systemColorMode.addEventListener('change', (e) => {
-			checkThemeColorSetup((e.matches) ? 'dark' : 'light')
-		});
-    } catch (e1) {
-		try {
-			systemColorMode.addListener((e) => {
+	// one listener per page; it follows the system only while the user keeps that option on
+	if (midwinterSystemColorWatched === false) {
+		midwinterSystemColorWatched = true;
+
+		const followSystemColor = (e) => {
+			if (Storages.localStorage.get('midWinter_Color_Mode_Auto') === 'on') {
 				checkThemeColorSetup((e.matches) ? 'dark' : 'light')
-			});
-		} catch (e2) {
-			console.error(e2);
+			}
+		};
+
+		try {
+			systemColorMode.addEventListener('change', followSystemColor);
+		} catch (e1) {
+			try {
+				systemColorMode.addListener(followSystemColor);
+			} catch (e2) {
+				console.error(e2);
+			}
 		}
 	}
 	checkThemeColorSetup(systemColorMode.matches === true ? 'dark' : 'light');
@@ -807,44 +831,29 @@ function checkThemeColorSetup(color_mode) {
 	let document_color_mode = document.documentElement.getAttribute('data-theme-color');
 	let cookie_color_mode = getCookieValue('CactiColorMode');
 
-	if (document_color_mode !== color_mode || cookie_color_mode !== color_mode) {
+	if (document_color_mode !== color_mode) {
 		setDocumentAttribute('theme-color', color_mode)
+	}
+
+	// graphs are rendered with the colors named by the cookie, so only a changed cookie needs a reload
+	if (cookie_color_mode !== color_mode) {
 		setCookieValue('CactiColorMode', color_mode);
 		initializeGraphs(true);
 	}
 }
 
 function setMenuVisibility() {
-	storage=Storages.localStorage;
+	let storage = Storages.localStorage;
 
 	// Initialize the navigation settings
-	// This will setup the initial visibility of the menu
+	// This will setup the initial visibility of the menu: the section holding the selected page is open
 	$('li.menuitem').each(function() {
-		var id = $(this).attr('id');
-
-		if (storage.isSet(id)) {
-			var active = storage.get(id);
-		} else {
-			var active = null;
-		}
-
-		if (active != null && active === 'active') {
-			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-			$(this).next('a').show();
-		} else {
-			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-			$(this).next('a').hide();
-		}
-
 		if ($(this).find('a.selected').length === 0) {
-			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 			$(this).next('a').hide();
-			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 		} else {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
 			$(this).next('a').show();
-			storage.set($(this).closest('.menuitem').attr('id'), 'active');
 		}
 	});
 
@@ -880,17 +889,30 @@ function setMenuVisibility() {
 }
 
 function searchToHighlight() {
-	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
-		if (textStatus === 'success') {
-			$("input[name='keyword']").on("input", highlight);
-		}
-	});
+	// mark.js is loaded once per page, the menu search box is bound again whenever it was rebuilt
+	if (typeof $.fn.mark === 'function') {
+		bindMenuSearch();
+	} else if (midwinterMarkRequested === false) {
+		midwinterMarkRequested = true;
+
+		$.cachedScript(urlPath + 'include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
+			if (textStatus === 'success') {
+				bindMenuSearch();
+			}
+		}).fail(function () {
+			midwinterMarkRequested = false;
+		});
+	}
+}
+
+function bindMenuSearch() {
+	$("#menu input[name='keyword']").off('input.midwinter').on('input.midwinter', highlight);
 }
 
 function highlight() {
 	// Read the keyword
-	let keyword = $("input[name='keyword']").val();
-	pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
+	let keyword = $("#menu input[name='keyword']").val();
+	let pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
 	let re = new RegExp(pattern,'gmiu');
 
 	$("ul[role='menu'] a[role='menuitem']").unmark({
@@ -907,9 +929,16 @@ function highlight() {
 
 
 function setHotKeys() {
+	// every evaluation of hotkeys.js adds its own document listeners, so load and bind it once per page
+	if (midwinterHotKeysRequested) {
+		return;
+	}
+
+	midwinterHotKeysRequested = true;
+
 	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/hotkeys/hotkeys.js').done(function (script, textStatus) {
 		if (textStatus === 'success') {
-			hotkeys('SHIFT+c,c+t,c+l,c+p,c+F1,F5,SHIFT+m+d, SHIFT+g, SHIFT+p, ESC, SHIFT+k', function (event, handler) {
+			hotkeys('SHIFT+c,c+t,c+l,c+p,F5,SHIFT+m+d, SHIFT+g, SHIFT+p, SHIFT+k', function (event, handler) {
 				event.preventDefault();
 				switch (handler.key) {
 					case 'SHIFT+c':
@@ -940,15 +969,13 @@ function setHotKeys() {
 						//kiosk_mode('');
 						toggleFullscreen('navigation_right');
 						break;
-					case 'ESC':
-						toggleFullscreen('');
-						break;
-					default: alert(event);
                 }
 
 				return false;
 			});
 		}
+	}).fail(function () {
+		midwinterHotKeysRequested = false;
 	});
 }
 
@@ -956,7 +983,8 @@ jQuery.cachedScript = function(url, options) {
 	options = $.extend(options||{}, {
 		dataType: "script",
 		cache: true,
-		url: url
+		// the version changes the URL on upgrade, so a cached copy of an older library is not reused
+		url: url + (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + encodeURIComponent(cactiVersion)
 	})
 
 	return jQuery.ajax(options);
@@ -976,23 +1004,16 @@ function kiosk_mode(state='toggle') {
 function getFullscreenElement() {
 	return document.fullscreenElement
 			|| document.webkitFullscreenElement
-			|| document.mozFullscreenElement
-			|| document.msmFullscreenElement
+			|| document.mozFullScreenElement
+			|| document.msFullscreenElement
 }
 
 function toggleFullscreen(element = false){
 	if(getFullscreenElement()){
-		if(element === false) {
-			document.exitFullscreen().catch(console.log);
-		}else {
-			document.documentElement.requestFullscreen().catch(console.log);
-		}
+		document.exitFullscreen().catch(console.log);
 	}else {
-		if(element === false) {
-			document.documentElement.requestFullscreen().catch(console.log);
-		}else {
-			document.getElementById(element).requestFullscreen().catch(console.log);
-		}
+		let target = (element === false) ? null : document.getElementById(element);
+		(target || document.documentElement).requestFullscreen().catch(console.log);
 	}
 }
 
@@ -1148,8 +1169,6 @@ function dialog_client(event) {
 				maxHeight: 1200,
 				title: title
 			});
-
-			console.log('loaded');
 		}
 	});
 }
