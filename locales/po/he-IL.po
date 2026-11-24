@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-04 13:22-0400\n"
-"Last-Translator: The Cacti Group <developers@cacti.net>\n"
-"Language-Team: \n"
-"Language: he_IL\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Hebrew (Israel) <https://translate.cacti.net/projects/cacti/"
+"core/he_IL/>\n"
+"Language: he-IL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? 2 : 3);\n"
-"X-Generator: Poedit 3.6\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -655,7 +657,7 @@ msgstr "לא נמצאו גרפים"
 
 #: aggregate_graphs.php:1979
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[רשימת גרפים מותאמים אישית - מסנן מתוך רשימה]"
+msgstr " [רשימת גרפים מותאמים אישית - מסנן מתוך רשימה]"
 
 #: aggregate_graphs.php:1979 aggregate_graphs.php:2099
 #: include/global_arrays.php:2937
@@ -877,7 +879,7 @@ msgstr "דרישות הסיסמה כוללות:"
 #: auth_changepassword.php:332 auth_resetpassword.php:237
 #, php-format
 msgid "Must be at least %d characters in length"
-msgstr "חייב להיות לפחות% d תווים באורך"
+msgstr "חייב להיות לפחות %d תווים באורך"
 
 #: auth_changepassword.php:336 auth_resetpassword.php:241
 msgid "Must include mixed case"
@@ -894,7 +896,7 @@ msgstr "חייב לכלול לפחות תו מיוחד אחד"
 #: auth_changepassword.php:348 auth_resetpassword.php:253
 #, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr "לא ניתן לעשות בו שימוש חוזר לשינויים ב-% d"
+msgstr "לא ניתן לעשות בו שימוש חוזר לשינויים ב-%d"
 
 #: auth_changepassword.php:403
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
@@ -942,7 +944,7 @@ msgstr "שמור"
 #: lib/html_form.php:1754 permission_denied.php:30 permission_denied.php:32
 #: pollers.php:799
 msgid "Return"
-msgstr "חזרה אל עריכת פוסט"
+msgstr "חזור"
 
 #: auth_login.php:74
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
@@ -1312,7 +1314,7 @@ msgstr "התקנים שנתגלו"
 #: user_admin.php:1138 user_admin.php:2795 user_group_admin.php:997
 #: user_group_admin.php:2380 user_group_admin.php:2383
 msgid "Devices"
-msgstr "ניתן להתנתק מכל ההתקנים האחרים, כגון טלפון נייד או מחשב ציבורי, על ידי לחיצה על כפתור התנתקות מכל ההתקנים האחרים."
+msgstr "התקנים"
 
 #: automation_devices.php:298
 msgid "Imported Device"
@@ -2026,7 +2028,7 @@ msgstr "הגדר את מספר החוטים לשימוש כדי לגלות את 
 #: automation_networks.php:807
 #, php-format
 msgid "%d Thread"
-msgstr "% d Thread"
+msgstr "%d Thread"
 
 #: automation_networks.php:808 automation_networks.php:809
 #: automation_networks.php:810 automation_networks.php:811
@@ -2040,7 +2042,7 @@ msgstr "% d Thread"
 #: include/global_arrays.php:907 include/global_arrays.php:908
 #, php-format
 msgid "%d Threads"
-msgstr "% d Threads"
+msgstr "%d Threads"
 
 #: automation_networks.php:824
 msgid "Run Limit"
@@ -2115,7 +2117,7 @@ msgstr "‫%d שעה"
 #: include/global_settings.php:3223
 #, php-format
 msgid "%d Hours"
-msgstr "%d לפני מספר ימים"
+msgstr "%d שעות"
 
 #: automation_networks.php:843
 msgid "Enable this Network Range."
@@ -2801,7 +2803,7 @@ msgstr "פעולה"
 #: lib/html_reports.php:1848 vdef.php:596
 #, php-format
 msgid "Item # %d"
-msgstr "פריט #% d"
+msgstr "פריט #%d"
 
 #: automation_snmp.php:743
 msgid "none"
@@ -3736,7 +3738,9 @@ msgstr "תבנית צבע [חדש]"
 #: color_templates.php:762
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "לתבנית הצבע '%s' היה% d תבניות מצטברות נדחקו ו-% d אגרגטים לא-תבנית נדחקו החוצה"
+msgstr ""
+"לתבנית הצבע '%s' היה %d תבניות מצטברות נדחקו ו-%d אגרגטים לא-תבנית נדחקו "
+"החוצה"
 
 #: color_templates.php:764
 #, php-format
@@ -4623,7 +4627,7 @@ msgstr "הזן מספר חוקי של שורות כדי לקבל את גודל �
 #: include/global_settings.php:1962
 #, php-format
 msgid "%d Years"
-msgstr "% d שנים"
+msgstr "%d שנים"
 
 #: data_source_profiles.php:824
 msgid "1 Year"
@@ -4635,7 +4639,7 @@ msgstr "1 שנה"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Month"
-msgstr "% d חודש"
+msgstr "%d חודש"
 
 #: data_source_profiles.php:833 include/global_arrays.php:812
 #: include/global_arrays.php:813 include/global_arrays.php:814
@@ -4658,7 +4662,7 @@ msgstr ""
 #: include/global_settings.php:1869 rrdcleaner.php:520 rrdcleaner.php:521
 #, php-format
 msgid "%d Week"
-msgstr "% d שבוע"
+msgstr "%d שבוע"
 
 #: data_source_profiles.php:842 include/global_arrays.php:809
 #: include/global_arrays.php:810 include/global_arrays.php:830
@@ -4668,14 +4672,14 @@ msgstr "% d שבוע"
 #: include/global_settings.php:3228 rrdcleaner.php:522 rrdcleaner.php:523
 #, php-format
 msgid "%d Weeks"
-msgstr "% d שבועות"
+msgstr "%d שבועות"
 
 #: data_source_profiles.php:851 include/global_arrays.php:751
 #: include/global_arrays.php:795 include/global_arrays.php:805
 #: include/global_arrays.php:1601 include/global_settings.php:1863
 #, php-format
 msgid "%d Day"
-msgstr "% d יום"
+msgstr "%d יום"
 
 #: data_source_profiles.php:851 include/global_arrays.php:796
 #: include/global_arrays.php:806 include/global_arrays.php:807
@@ -5422,11 +5426,11 @@ msgstr "תמונות ממוזערות"
 #: graph_realtime.php:440
 #, php-format
 msgid "%d seconds left."
-msgstr "נותרו% d שניות."
+msgstr "נותרו %d שניות."
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr "שניות נותרו."
+msgstr " שניות נותרו."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -5861,7 +5865,7 @@ msgstr "צור צבירה מתוך תבנית"
 
 #: graphs.php:234 graphs.php:249
 msgid "No Device - "
-msgstr "התקן"
+msgstr "התקן "
 
 #: graphs.php:339
 #, php-format
@@ -6286,6 +6290,8 @@ msgstr "שגיאה בניתוח קובץ XML של משאב שאילתת נתונ
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
+"שגיאה בניתוח קובץ ה-XML של משאב שאילתת הנתונים עבור שאילתת הנתונים '%s' עם "
+"מזהה '%s'. לשם השדה '%s' חסר מאפיין 'direction'"
 
 #: graphs_new.php:699
 #, php-format
@@ -6342,6 +6348,9 @@ msgstr "אזהרה: דף קקטוסים:%s למשתמש:%s יצר שגיאה ח�
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
+"לא ניתן להגיע לדף התיעוד '%s'. אתר התיעוד של Cacti אינו זמין. שגיאת ה-HTTP "
+"הייתה '%s'. מומלץ להוריד מהדורה רשמית כדי לקבל את התיעוד העדכני ביותר ולארח "
+"אותו באופן מקומי."
 
 #: help.php:88
 msgid "Cacti GitHub Site"
@@ -6349,7 +6358,7 @@ msgstr "אתר גיטהאב קקטוסים"
 
 #: help.php:88
 msgid "Open a ticket at "
-msgstr "פתח קריאה"
+msgstr "פתח קריאה "
 
 #: help.php:88
 #, php-format
@@ -6359,7 +6368,7 @@ msgstr "קובץ העזרה %s לא נמצא באתר התיעוד של קקטו
 #: help.php:102
 #, php-format
 msgid "The Document page '%s' count not be reached locally."
-msgstr ""
+msgstr "לא ניתן להגיע לדף התיעוד '%s' באופן מקומי."
 
 #: host.php:44
 msgid "Change Device Settings"
@@ -6409,7 +6418,7 @@ msgstr ""
 #: host.php:360
 #, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr ""
+msgstr "לא ניתן להוסיף חלק מההתקנים לדוח '%s'"
 
 #: host.php:479
 msgid "Click 'Continue' to Delete the following Device."
@@ -6640,7 +6649,7 @@ msgstr "שיטת אינדקס מחדש"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[% d פריטים,% d שורות]"
+msgstr " [%d פריטים, %d שורות]"
 
 #: host.php:982
 msgid "Fail"
@@ -7517,7 +7526,7 @@ msgstr "לא בשימוש"
 #: include/global_arrays.php:960
 #, php-format
 msgid "Version %d"
-msgstr "גרסה% d"
+msgstr "גרסה %d"
 
 #: include/global_arrays.php:658 include/global_arrays.php:668
 msgid "[None]"
@@ -7665,7 +7674,7 @@ msgstr "בחירת מרווח פולרים"
 #: include/global_arrays.php:881 include/global_arrays.php:882
 #, php-format
 msgid "Every %d Seconds"
-msgstr "כל% d שניות"
+msgstr "כל %d שניות"
 
 #: include/global_arrays.php:760 include/global_arrays.php:883
 #: include/global_arrays.php:928
@@ -7694,7 +7703,7 @@ msgstr "כל שעה"
 #: include/global_settings.php:2849
 #, php-format
 msgid "Every %d Hours"
-msgstr "כל% d שעות"
+msgstr "כל %d שעות"
 
 #: include/global_arrays.php:771
 #, php-format
@@ -7715,7 +7724,7 @@ msgstr ""
 #: include/global_settings.php:1961 rrdcleaner.php:528
 #, php-format
 msgid "%d Year"
-msgstr "% d שנה"
+msgstr "%d שנה"
 
 #: include/global_arrays.php:888
 msgid "Disabled/Manual"
@@ -7827,7 +7836,7 @@ msgstr "כותרת"
 #: include/global_arrays.php:1830 include/global_arrays.php:1999
 #: lib/html.php:3145
 msgid "Graph"
-msgstr "Symbol for file attachment annotations"
+msgstr "גרף"
 
 #: include/global_arrays.php:1039 tree.php:1873
 msgid "Data Query Index"
@@ -8290,7 +8299,7 @@ msgstr "כל השורות"
 #: include/global_arrays.php:1269 include/global_arrays.php:1270
 #, php-format
 msgid "%d Lines"
-msgstr "% d שורות"
+msgstr "%d שורות"
 
 #: include/global_arrays.php:1349
 msgid "Console Access"
@@ -8425,7 +8434,7 @@ msgstr "בשעה האחרונה"
 #: include/global_arrays.php:1567 include/global_arrays.php:1568
 #, php-format
 msgid "Last %d Hours"
-msgstr "אחרון% d שעות"
+msgstr "אחרון %d שעות"
 
 #: include/global_arrays.php:1569
 msgid "Last Day"
@@ -8444,7 +8453,7 @@ msgstr "בשבוע שעבר"
 #: include/global_arrays.php:1574
 #, php-format
 msgid "Last %d Weeks"
-msgstr "האחרון% d שבועות"
+msgstr "האחרון %d שבועות"
 
 #: include/global_arrays.php:1575
 msgid "Last Month"
@@ -8504,7 +8513,7 @@ msgstr "שנה שעברה"
 #: include/global_arrays.php:1595
 #, php-format
 msgid "%d Min"
-msgstr "% d דקות"
+msgstr "%d דקות"
 
 #: include/global_arrays.php:1650
 msgid "Month Number, Day, Year"
@@ -8540,7 +8549,7 @@ msgstr "לאחר Boost"
 #: include/global_arrays.php:1742
 #, php-format
 msgid "%d MBytes"
-msgstr "% d MBtes"
+msgstr "%d MBytes"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
@@ -8558,7 +8567,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1749 include/global_arrays.php:1750
 #, php-format
 msgid "%d GBytes"
-msgstr "% d GBytes"
+msgstr "%d GBytes"
 
 #: include/global_arrays.php:1703
 msgid "2,000 Data Source Items"
@@ -8618,7 +8627,7 @@ msgstr "%s שעות"
 #: include/global_arrays.php:1743
 #, php-format
 msgid "%d GByte"
-msgstr "% d GBytes"
+msgstr "%d GBytes"
 
 #: include/global_arrays.php:1751 utilities.php:1656 utilities.php:1657
 #: utilities.php:1706
@@ -8650,7 +8659,7 @@ msgstr "1 מגה בייט"
 #: include/global_arrays.php:1785 include/global_arrays.php:1786
 #, php-format
 msgid "%d Megabytes"
-msgstr "% d מגה בייט"
+msgstr "%d מגה בייט"
 
 #: include/global_arrays.php:1794
 msgid "Send Now"
@@ -8911,7 +8920,7 @@ msgstr "כל שבוע"
 #: include/global_arrays.php:2017 include/global_arrays.php:2018
 #, php-format
 msgid "Every %d Weeks"
-msgstr "כל% d שבועות"
+msgstr "כל %d שבועות"
 
 #: include/global_arrays.php:2049
 msgctxt "A short textual representation of a month, three letters"
@@ -10040,7 +10049,10 @@ msgstr "פורמט ימין של ציר (- פורמט ימני - פורמט&gt;&
 #: include/global_form.php:904 include/global_form.php:920
 #, php-format
 msgid "By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands."
-msgstr "כברירת מחדל, הפורמט של תוויות הצירים נקבע באופן אוטומטי. אם אתה רוצה לעשות זאת בעצמך, השתמש באפשרות זו עם אותם% lf ארגומנטים שאתה מכיר מהפקודות PRINT ו- GPRINT."
+msgstr ""
+"כברירת מחדל, הפורמט של תוויות הצירים נקבע באופן אוטומטי. אם אתה רוצה לעשות "
+"זאת בעצמך, השתמש באפשרות זו עם אותם %lf ארגומנטים שאתה מכיר מהפקודות PRINT ו-"
+" GPRINT."
 
 #: include/global_form.php:907
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
@@ -10912,19 +10924,19 @@ msgstr "תבנית מחרוזת החלפה לשימוש ככותרת עץ. <br> 
 
 #: include/global_languages.php:971
 msgid " T"
-msgstr "ה"
+msgstr " ה"
 
 #: include/global_languages.php:973
 msgid " G"
-msgstr "ז"
+msgstr " ז"
 
 #: include/global_languages.php:975
 msgid " M"
-msgstr "ז"
+msgstr " ז"
 
 #: include/global_languages.php:977
 msgid " K"
-msgstr "כ"
+msgstr " כ"
 
 #: include/global_settings.php:40
 msgid "Paths"
@@ -12503,7 +12515,7 @@ msgstr "תהליך"
 #: include/global_settings.php:2567 include/global_settings.php:2568
 #, php-format
 msgid "%d Processes"
-msgstr "% d תהליכים"
+msgstr "%d תהליכים"
 
 #: include/global_settings.php:1655
 msgid "Maintenance Background Generation Timeout"
@@ -12647,7 +12659,7 @@ msgstr "1 ניסיון"
 #: include/global_settings.php:1824
 #, php-format
 msgid "%d Attempts"
-msgstr "% d ניסיונות"
+msgstr "%d ניסיונות"
 
 #: include/global_settings.php:1828
 msgid "Auto Unlock"
@@ -12789,7 +12801,7 @@ msgstr "1 שנה"
 #: include/global_settings.php:1996
 #, php-format
 msgid "%d Changes"
-msgstr "% d שינויים"
+msgstr "%d שינויים"
 
 #: include/global_settings.php:2000
 msgid "Account Email Notification"
@@ -13527,7 +13539,7 @@ msgstr "כל ערך שהוא זה סטיות תקן רבות מעל הממוצע
 #: include/global_settings.php:2729
 #, php-format
 msgid "%d Standard Deviations"
-msgstr "% d סטיות תקן"
+msgstr "%d סטיות תקן"
 
 #: include/global_settings.php:2733 lib/html.php:2784
 msgid "Variance Percentage"
@@ -13573,7 +13585,7 @@ msgstr "ערך זה מייצג את המספר המרבי של קוצים להס
 #: include/global_settings.php:2793 include/global_settings.php:2794
 #, php-format
 msgid "%d Spikes"
-msgstr "% d קוצים"
+msgstr "%d קוצים"
 
 #: include/global_settings.php:2798
 msgid "Absolute Maximum Value"
@@ -13633,7 +13645,7 @@ msgstr "125 מיליון (1 ג'יגה - ביט)"
 
 #: include/global_settings.php:2815
 msgid "1 Billion"
-msgstr "מיליארד  דולר "
+msgstr "מיליארד דולר"
 
 #: include/global_settings.php:2816
 msgid "1.25 Billion (10 Gigabits)"
@@ -13649,7 +13661,11 @@ msgstr "סינון"
 
 #: include/global_settings.php:2822
 msgid "Specifies the DSes inside an RRD upon which Spikekill will operate. A string of comma-separated values that contains index numbers or names of desired DSes. If left blank, all DSes will match. An example is <i>\"5,traffic_*\"</i>, which would match DS index 5 as well as any DS whose name begins with <i>\"traffic_\"</i>. "
-msgstr "מציין את ה - DSes בתוך ה - RRD עליו יפעל Spikekill. מחרוזת של ערכים מופרדים בפסיקים המכילה מספרי אינדקס או שמות של DSES הרצויים. אם נשאר ריק, כל ה - DS יתאימו. דוגמה היא <i>\"5,traffic _*\",</i> אשר יתאים למדד DS 5 כמו גם לכל DS ששמו מתחיל ב <i>-\" traffic _\".</i>"
+msgstr ""
+"מציין את ה - DSes בתוך ה - RRD עליו יפעל Spikekill. מחרוזת של ערכים מופרדים "
+"בפסיקים המכילה מספרי אינדקס או שמות של DSES הרצויים. אם נשאר ריק, כל ה - DS "
+"יתאימו. דוגמה היא <i>\"5,traffic _*\",</i> אשר יתאים למדד DS 5 כמו גם לכל DS "
+"ששמו מתחיל ב <i>-\" traffic _\".</i> "
 
 #: include/global_settings.php:2829
 msgid "RRDfile Backup Directory"
@@ -13874,7 +13890,7 @@ msgstr "עמודה 1"
 #: lib/html_tree.php:1344
 #, php-format
 msgid "%d Columns"
-msgstr "% d עמודות"
+msgstr "%d עמודות"
 
 #: include/global_settings.php:3053
 msgid "Tree View Thumbnail Columns"
@@ -14528,11 +14544,11 @@ msgstr ""
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
-msgstr "מוגבל"
+msgstr "מוגבל "
 
 #: lib/auth.php:2492
 msgid "Granted By: "
-msgstr "הוענק על ידי:"
+msgstr "הוענק על ידי: "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -14612,7 +14628,7 @@ msgstr "מנהל הקקטוסים שלך אילץ סיסמאות מורכבות 
 #: lib/auth.php:4541
 #, php-format
 msgid "Password must be at least %d characters!"
-msgstr "הסיסמה חייבת להיות לפחות% d תווים!"
+msgstr "הסיסמה חייבת להיות לפחות %d תווים!"
 
 #: lib/auth.php:4547
 msgid "Your password must contain at least 1 numerical character!"
@@ -14704,25 +14720,25 @@ msgstr "מסננים יומן"
 
 #: lib/clog_webapi.php:280
 msgid " - Admin Filter active"
-msgstr "- מסנן מנהל פעיל"
+msgstr " - מסנן מנהל פעיל"
 
 #: lib/clog_webapi.php:282
 msgid " - Admin Unfiltered"
-msgstr "- Admin מסוננים"
+msgstr " - Admin מסוננים"
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
-msgstr "- תצוגת מנהל מערכת"
+msgstr " - תצוגת מנהל מערכת"
 
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "יומן [סה&quot;כ שורות:% d %s - מסנן פעיל]"
+msgstr "יומן [סה&quot;כ שורות:%d %s - מסנן פעיל]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "התחבר [סה&quot;כ שורות:% d %s - ללא סינון]"
+msgstr "יומן [סה&quot;כ שורות:%d %s - ללא סינון]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -14844,7 +14860,7 @@ msgstr "הפעלת שאילתת נתונים [ %s]."
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr ""
+msgstr "נמצא סוג = '%s' [%s]."
 
 #: lib/data_query.php:135
 #, php-format
@@ -14909,6 +14925,7 @@ msgstr "איגוד המדדים עם נתונים מקומיים הושלם"
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
+"עדכון מטמון האינדוקס מחדש הושלם. היו %s שינויי אינדקס ו-%s אינדקסים יתומים."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -15037,7 +15054,7 @@ msgstr "נמצא פריט [ %s = &#39; %s&#39;]: %s"
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "סה&quot;כ:% f, דלתא:% f, %s"
+msgstr "סה&quot;כ:%f, דלתא:%f, %s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -15132,7 +15149,7 @@ msgstr "שדה קלט ממוקם &#39; %s&#39; [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr ""
+msgstr "נמצא כלל שכתוב OID: 's/%s/%s/'"
 
 #: lib/data_query.php:1043
 #, php-format
@@ -15208,7 +15225,7 @@ msgstr "נמצא פריט [ %s = &#39; %s&#39;] אינדקס: %s [מ- %s]"
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr ""
+msgstr "נמצאה מחרוזת OCTET STRING '%s', ערך מפוענח: '%s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
@@ -15223,7 +15240,7 @@ msgstr "נמצא פריט [ %s = &#39; %s&#39;] index: %s [מתוך rexxp oid va
 #: lib/data_query.php:1710
 #, php-format
 msgid "Bogus rewrite_value item found, index='%s'"
-msgstr ""
+msgstr "נמצא פריט rewrite_value שגוי, index='%s'"
 
 #: lib/data_query.php:1724
 msgid "Could not parse translation map (rewrite_value)"
@@ -15274,7 +15291,7 @@ msgstr "באגים לא הושלם לאחר 5 הסקרים"
 
 #: lib/dsdebug.php:260
 msgid "Failed fields: "
-msgstr "שדות שנכשלו:"
+msgstr "שדות שנכשלו: "
 
 #: lib/dsdebug.php:269
 msgid "Data Source is not set as Active"
@@ -15300,7 +15317,7 @@ msgstr "קובץ RRD לא עודכן לאחר הסקרים"
 
 #: lib/dsdebug.php:303
 msgid "Data Source returned Bad Results for "
-msgstr "מקור הנתונים החזיר תוצאות רעות עבור"
+msgstr "מקור הנתונים החזיר תוצאות רעות עבור "
 
 #: lib/dsdebug.php:308
 msgid "Data Source was not polled"
@@ -15317,12 +15334,12 @@ msgstr "קובץ RRD לא עודכן לאחר הסקרים"
 #: lib/functions.php:458 settings.php:1505
 #, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
-msgstr "הגדרות שמור ל - Data Collector% d נכשל."
+msgstr "שמירת ההגדרות ל-Data Collector %d דולגה עקב heartbeat."
 
 #: lib/functions.php:470 settings.php:1517
 #, php-format
 msgid "Settings save to Data Collector %d Failed."
-msgstr "הגדרות שמור ל - Data Collector% d נכשל."
+msgstr "הגדרות שמור ל - Data Collector %d נכשל."
 
 #: lib/functions.php:896
 #, php-format
@@ -15429,7 +15446,7 @@ msgstr "החיבור נכשל: %s"
 
 #: lib/functions.php:5822
 msgid "SMTP error: "
-msgstr "שגיאת SMTP:"
+msgstr "שגיאת SMTP: "
 
 #: lib/functions.php:5835
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -15499,7 +15516,7 @@ msgstr "Cacti מושבת plugin %s עקב השגיאה הבאה: %s! לקבלת 
 #: lib/functions.php:6752
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr ""
+msgstr "אזהרה: ל-PollerID:%s יש שם מארח לא תקין:%s. האם אינו נגיש דרך DNS!"
 
 #: lib/functions.php:6781
 #, php-format
@@ -15591,7 +15608,7 @@ msgstr "הקודם"
 #: lib/html.php:671
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "% d ל-% d מתוך %s [ %s]"
+msgstr "%d ל-%d מתוך %s [ %s]"
 
 #: lib/html.php:674 lib/html.php:703 lib/installer.php:1778
 msgid "Next"
@@ -15600,7 +15617,7 @@ msgstr "הבא"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "כל% d %s"
+msgstr "כל %d %s"
 
 #: lib/html.php:700
 #, php-format
@@ -16034,7 +16051,7 @@ msgstr "מצב זום"
 
 #: lib/html.php:3147
 msgid "Open in new tab"
-msgstr "לפתוח  בלשונית חדשה"
+msgstr "לפתוח בלשונית חדשה"
 
 #: lib/html.php:3148
 msgid "Always Off"
@@ -16203,7 +16220,7 @@ msgstr "עמודות"
 #: lib/html_graph.php:346 lib/html_tree.php:1339
 #, php-format
 msgid "%d Column"
-msgstr "עמודה% d"
+msgstr "עמודה %d"
 
 #: lib/html_graph.php:376 lib/html_tree.php:1369
 msgid "Custom"
@@ -16964,7 +16981,7 @@ msgstr "חבילת קבצים"
 
 #: lib/import.php:2692
 msgid "[preview] "
-msgstr "תצוגה מקדימה"
+msgstr "תצוגה מקדימה "
 
 #: lib/import.php:2698
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -17053,7 +17070,7 @@ msgstr "החלת מרווח ה- cron שצוין נכשלה"
 #: lib/installer.php:1107
 #, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr ""
+msgstr "החלת '%s' כטווח אוטומציה נכשלה"
 
 #: lib/installer.php:1190
 msgid "No matching snmp option exists"
@@ -17159,7 +17176,7 @@ msgstr "ודא שיש לך לקרוא בעקבות הצעדים הנדרשים �
 #: lib/installer.php:1910
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "תהליך זה ידריך אותך בשלבים לשדרוג מגירסה &#39; %s&#39;."
+msgstr "תהליך זה ידריך אותך בשלבים לשדרוג מגירסה &#39; %s&#39;. "
 
 #: lib/installer.php:1911
 #, php-format
@@ -17184,7 +17201,7 @@ msgstr "קבל את הסכם הרישיון של GPL"
 
 #: lib/installer.php:1965
 msgid "Select default theme: "
-msgstr "בחר עיצוב ברירת מחדל:"
+msgstr "בחר עיצוב ברירת מחדל: "
 
 #: lib/installer.php:1988
 msgid "Pre-installation Checks"
@@ -17665,7 +17682,7 @@ msgstr "אוסף השרתים שלך נראה תואם ל- UTF8"
 
 #: lib/installer.php:2806
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "איסוף השרתים שלך אינו נראה תואם לחלוטין ל- UTF8."
+msgstr "איסוף השרתים שלך אינו נראה תואם לחלוטין ל- UTF8. "
 
 #: lib/installer.php:2807
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -17681,11 +17698,14 @@ msgstr "אוסף ברירת המחדל של מסד הנתונים שלך נרא�
 
 #: lib/installer.php:2823
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "אוסף ברירת המחדל של מסד הנתונים אינו נראה תואם ל- UTF8 מלא."
+msgstr "אוסף ברירת המחדל של מסד הנתונים אינו נראה תואם ל- UTF8 מלא. "
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "כל טבלאות שנוצרו על ידי plugins עשויות להיות קשורות בין טבלאות Core Cacti Core אם איסוף אינו תואם. ודא שמסד הנתונים שלך משתנה ל- &#39;utf8mb4_unicode_ci&#39; על-ידי הפעלת הפעולות הבאות:"
+msgstr ""
+"כל טבלאות שנוצרו על ידי plugins עשויות להיות קשורות בין טבלאות Core Cacti "
+"Core אם איסוף אינו תואם. ודא שמסד הנתונים שלך משתנה ל- "
+"&#39;utf8mb4_unicode_ci&#39; על-ידי הפעלת הפעולות הבאות: "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -17718,7 +17738,9 @@ msgstr "פורמט"
 
 #: lib/installer.php:2884
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "טבלה אחת או יותר גדולות מדי להמרה במהלך ההתקנה. אתה צריך להשתמש script / convert_tables.php כדי לבצע את ההמרה, ולאחר מכן לרענן את הדף. לדוגמה:"
+msgstr ""
+"טבלה אחת או יותר גדולות מדי להמרה במהלך ההתקנה. אתה צריך להשתמש script / "
+"convert_tables.php כדי לבצע את ההמרה, ולאחר מכן לרענן את הדף. לדוגמה: "
 
 #: lib/installer.php:2888
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -17764,6 +17786,8 @@ msgstr "שרת Cacti שלך מוכן כמעט. בדוק כי אתה שמח לה�
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
 msgstr ""
+"לחץ על '%s' ולאחר מכן לחץ על '%s' כדי להשלים את תהליך ההתקנה לאחר בחירת "
+"תבניות ההתקן שלך."
 
 #: lib/installer.php:2964
 msgid "The following General Install Options will be applied."
@@ -17949,7 +17973,7 @@ msgstr "ייבוא החבילה #%s '%s' תחת הפרופיל '%s' נכשל"
 #: lib/installer.php:3469
 #, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr ""
+msgstr "ממפה תבנית אוטומציה עבור תבנית ההתקן '%s'"
 
 #: lib/installer.php:3490
 msgid "No templates were selected for import"
@@ -17962,7 +17986,7 @@ msgstr "ממתין לתצורה"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr ""
+msgstr "מגדיר את פרופיל ברירת המחדל של מקור הנתונים ל-%s (%s)"
 
 #: lib/installer.php:3557
 #, php-format
@@ -18112,7 +18136,7 @@ msgstr "הרקע כבר התחיל ב-%s, ניסיון זה ב-%s דילג"
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr ""
+msgstr "אירעה חריגה במהלך ההתקנה: #%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
@@ -18321,12 +18345,12 @@ msgstr "Ping לא בוצע עקב הגדרה."
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "%s גירסה %s או מעל נדרש עבור %s."
+msgstr "%s גירסה %s או מעל נדרש עבור %s. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "%s נדרש עבור %s, והוא אינו מותקן."
+msgstr "%s נדרש עבור %s, והוא אינו מותקן. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -18336,16 +18360,22 @@ msgstr "אין אפשרות להתקין את הפלאגין."
 #, php-format
 msgid "The Plugin directory '%s' needs to be renamed to remove 'plugin_' from the name before it can be installed."
 msgstr ""
+"יש לשנות את שם ספריית התוסף '%s' כדי להסיר את 'plugin_' מהשם לפני שניתן יהיה "
+"להתקין אותו."
 
 #: lib/plugins.php:751
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an version function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
+"התוסף בספרייה '%s' אינו כולל פונקציית גרסה '%s()'. פונקציה זו חייבת להתקיים "
+"כדי שהתוסף יותקן."
 
 #: lib/plugins.php:784
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
+"התוסף בספרייה '%s' אינו כולל פונקציית התקנה '%s()'. פונקציה זו חייבת להתקיים "
+"כדי שהתוסף יותקן."
 
 #: lib/plugins.php:982
 #, php-format
@@ -18485,7 +18515,7 @@ msgstr "לא ניתן להגיע לאתר GitHub של קבוצות Cacti.  אי�
 #: lib/reports.php:144
 #, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr ""
+msgstr "ההתקן '%s' נוסף בהצלחה לדוח."
 
 #: lib/reports.php:147
 msgid "Device not found! Unable to add to Report"
@@ -18561,7 +18591,7 @@ msgstr "הפקודה RRDtool:"
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr ""
+msgstr "גודל הצעד הנדרש של RRDfile הוא '%s', אך הצעד שנצפה הוא '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
@@ -18597,6 +18627,8 @@ msgstr "קובץ ה- RRA &#39; %s&#39; כולל אותו CF / שלבים ( %s, %
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
+"הערך pdp_per_row של '%s' אינו תקין עבור RRA '%s', הוא צריך להיות '%s'. שקול "
+"למחוק ולאפשר ל-Cacti ליצור מחדש את ה-RRDfile."
 
 #: lib/rrd.php:3454
 #, php-format
@@ -18607,11 +18639,13 @@ msgstr "XFF עבור cacti RRA id &#39; %s&#39; צריך להיות &#39; %s&#39
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
+"מספר השורות עבור מזהה Cacti RRA '%s' שגוי. מספר השורות הוא '%s', אך צריך "
+"להיות '%s'"
 
 #: lib/rrd.php:3476
 #, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
-msgstr ""
+msgstr "ה-RRA '%s' חסר בקובץ ה-RRDfile הקיים של Cacti"
 
 #: lib/rrd.php:3483
 #, php-format
@@ -18700,12 +18734,12 @@ msgstr "שגיאה בעת ניתוח XML של DDR"
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr ""
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) הוסר מקובץ ה-RRD"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr ""
+msgstr "מוסיף RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) לקובץ ה-RRD"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -19353,7 +19387,7 @@ msgstr "אזהרה: שגיאות ייצוא נתקלו. רענן חלון דפד
 
 #: package.php:163
 msgid "There were errors packaging your Templates.  Errors Follow. "
-msgstr "אירעו שגיאות באריזת התבניות שלך.  שגיאות עקוב."
+msgstr "אירעו שגיאות באריזת התבניות שלך.  שגיאות עקוב. "
 
 #: package.php:221
 #, php-format
@@ -19637,7 +19671,7 @@ msgstr "לקבלת מידע נוסף, ניתן לעיין באתר cacti.log.  �
 #: package_import.php:880
 #, php-format
 msgid "The package \"%s\" download or validation failed"
-msgstr ""
+msgstr "הורדת החבילה \"%s\" או אימותה נכשלו"
 
 #: package_import.php:886
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
@@ -19709,7 +19743,7 @@ msgstr "יתמות"
 
 #: package_import.php:1311
 msgid "File Differences for: "
-msgstr "הפרשי קבצים עבור:"
+msgstr "הפרשי קבצים עבור: "
 
 #: package_import.php:1422
 msgid "Local Package Import File"
@@ -20693,7 +20727,7 @@ msgstr "הגדרות אוסף"
 
 #: pollers.php:110 support.php:600 support.php:752
 msgid "Processes"
-msgstr "לא הצלחנו לעבד את התרומה  שלך, אנא נסה שוב."
+msgstr "תהליכים"
 
 #: pollers.php:111
 msgid "The number of Data Collector processes to use to spawn."
@@ -21066,7 +21100,7 @@ msgstr "%d שעות"
 #: rrdcheck.php:239
 #, php-format
 msgid "%d day"
-msgstr "יום %d"
+msgstr "%d יום"
 
 #: rrdcheck.php:240 rrdcheck.php:241
 #, php-format
@@ -21149,7 +21183,7 @@ msgstr "RRDfiles"
 
 #: rrdcleaner.php:556
 msgid "Rescan"
-msgstr "×¢×§××£ ××ª ×¨×©×××ª ××§×××××× (×××××× \"hextile raw\")"
+msgstr "סרוק מחדש"
 
 #: rrdcleaner.php:561
 msgid "Delete All"
@@ -21550,7 +21584,7 @@ msgstr "אורך אינדקס"
 #: support.php:309
 #, php-format
 msgid "%d Chars"
-msgstr "% d שינויים"
+msgstr "%d תווים"
 
 #: support.php:319 support.php:377
 msgid "Queries"
@@ -21804,7 +21838,9 @@ msgstr "שגיאה: גרסה RRDtool מותקנת אינה חורגת מהגיר
 #: support.php:1174
 #, php-format
 msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) and/or templates have GIF set as the image format."
-msgstr "שגיאה: RRDtool 1.2.x + אינו תומך בתבנית תמונות GIF, אך% d &quot;גרפים ו / או תבניות מוגדרים כ- GIF כפורמט התמונה."
+msgstr ""
+"שגיאה: RRDtool 1.2.x + אינו תומך בתבנית תמונות GIF, אך %d &quot;גרפים ו / או "
+"תבניות מוגדרים כ- GIF כפורמט התמונה."
 
 #: support.php:1189
 msgid "General Information"
@@ -21854,11 +21890,11 @@ msgstr "שם: "
 
 #: support.php:1309
 msgid "Procs: "
-msgstr "תהליך"
+msgstr "תהליך "
 
 #: support.php:1316
 msgid "Threads: "
-msgstr "ליכי"
+msgstr "ליכי "
 
 #: support.php:1322
 msgid "Concurrent Processes"
@@ -22047,7 +22083,7 @@ msgstr "עיין ב -cacti.log לקבלת מידע נוסף, ובדוק את ק�
 #: templates_import.php:143
 #, php-format
 msgid "The Template XML file \"%s\" validation failed"
-msgstr ""
+msgstr "אימות קובץ ה - XML של התבנית \"%s\" נכשל"
 
 #: templates_import.php:216
 msgid "Import Files [ If Files are missing, locate and install before using ]"
@@ -23408,7 +23444,7 @@ msgstr "פריטי מטמון פולר [ בנייה מחדש תם והתרסק ]
 
 #: utilities.php:1037
 msgid "Script"
-msgstr "סקריפט "
+msgstr "סקריפט"
 
 #: utilities.php:1177 utilities.php:1182
 msgid "SNMP Version:"
@@ -23613,7 +23649,7 @@ msgstr "ממוצע בתים / הקלטה:"
 #: utilities.php:1649
 #, php-format
 msgid "%d Bytes"
-msgstr "% d בתים"
+msgstr "%d בתים"
 
 #: utilities.php:1649
 msgid "Max Record Length:"
@@ -23660,7 +23696,7 @@ msgstr "%d שניות"
 #: utilities.php:1688
 #, php-format
 msgid "%0.2f percent of update frequency)"
-msgstr "% 0.2f אחוז תדירות העדכון)"
+msgstr "%0.2f אחוז תדירות העדכון)"
 
 #: utilities.php:1696
 msgid "RRD Updates:"
