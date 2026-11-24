@@ -479,7 +479,7 @@ label.ui-state-hover > span {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -848,11 +848,8 @@ label.ui-state-hover > span {
 	width: 100%;
 	padding: 0px;
 	border-color: rgba(255,255,255,0.2);
-	*/
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
-	*/
 	background-color: #000000;
-	*/
 	background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#000000));
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #000000 100%);
 	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #000000 100%);

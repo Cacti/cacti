@@ -825,7 +825,7 @@ label {
 }
 
 .cactiAuthLogo {
-	display: hidden;
+	display: none;
 	position: relative;
 	background: none;
 	#background: transparent url('./images/cacti_logo.svg') no-repeat 30px;

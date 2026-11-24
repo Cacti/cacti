@@ -364,7 +364,7 @@ label {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -520,7 +520,7 @@ label {
 
 .submenuoptions li a:hover {
 	display: block;
-	background: rgba(0,119,0,0.3);;
+	background: rgba(0,119,0,0.3);
 }
 
 .menuoptions {
@@ -550,7 +550,7 @@ label {
 
 .menuoptions li a:hover {
 	display: block;
-	background: rgba(0,119,0,0.3);;
+	background: rgba(0,119,0,0.3);
 }
 
 .import_label {

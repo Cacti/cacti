@@ -395,7 +395,7 @@ label {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -789,11 +789,8 @@ label {
 	width: 100%;
 	padding: 0px;
 	border-color: #222;
-	*/
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
-	*/
 	background-color: #100000;
-	*/
 	background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#100000));
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
 	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
@@ -822,11 +819,8 @@ label {
 	line-height: 25px;
 	width: 100%;
 	border-color: #222;
-	*/
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
-	*/
 	background-color: #100000;
-	*/
 	background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#100000));
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
 	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
