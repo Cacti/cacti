@@ -585,7 +585,9 @@ function form_save() : void {
 		// obtain debug information if it's set
 		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, false, $hashes, $files);
 
-		if ($preview_only) {
+		if ($preview_only && $data === false) {
+			raise_message_javascript(__('Error in Package'), __('The package "%s" download or validation failed', $package_name), __('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available.'));
+		} elseif ($preview_only) {
 			package_prepare_import_array($templates, $files, $package_name, $xmlfile, $data);
 
 			import_display_package_data($templates, $files, $package_name, $xmlfile, $data, false);
@@ -999,7 +1001,13 @@ function package_get_details() : void {
 
 				$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview);
 
-				package_prepare_import_array($templates, $files, $package_name, $filename, $data);
+				if ($data === false) {
+					raise_message_javascript(__('Error in Package'), __('The package "%s" download or validation failed', $package_name), __('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available.'));
+
+					$data = [];
+				} else {
+					package_prepare_import_array($templates, $files, $package_name, $filename, $data);
+				}
 
 				unlink($xmlfile);
 			} else {

@@ -119,6 +119,43 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 	return $GLOBALS['fixture']['import_result'];
 }
 
+function validate_request_vars() : void {
+}
+
+function import_package_get_name(string $xmlfile) : string {
+	return 'Sample <Package>';
+}
+
+function import_package(string $xmlfile, mixed ...$arguments) : mixed {
+	$GLOBALS['fixture']['calls'][] = ['import_package', $arguments];
+
+	return $GLOBALS['fixture']['import_result'];
+}
+
+function package_prepare_import_array(array &$templates, array &$files, string $package_name, string $package_filename, array $import_info) : void {
+	$GLOBALS['fixture']['calls'][] = ['prepare', $package_name];
+}
+
+function import_display_package_data(array $templates, array $files, string $package_name, string $filename, array $data, bool $multipackage = true) : void {
+	$GLOBALS['fixture']['calls'][] = ['display', $package_name];
+}
+
+function get_repo_manifest_file(string $repo_id) : string {
+	return json_encode(['manifest' => [3 => ['filename' => 'sample.xml.gz', 'name' => 'Sample']]]);
+}
+
+function get_repo_file(string $repo_id, string $filename = 'package.manifest', bool $raise = true) : mixed {
+	return 'package data';
+}
+
+function package_private_tmpdir() : string {
+	return sys_get_temp_dir();
+}
+
+function get_public_key() : string {
+	return 'built-in';
+}
+
 $mode = $argv[1] ?? '';
 
 switch ($mode) {
@@ -192,6 +229,59 @@ switch ($mode) {
 
 		check(($templates['abc']['deps'] ?? null) === ['hash_one' => 'met', 'hash_two' => 'unmet'], 'The dependencies reach the preview table');
 		check($templates['abc']['name'] === 'Traffic' && $templates['abc']['type_name'] === 'Graph Template', 'The template row is described');
+
+		break;
+	case 'package-preview-failure':
+		\cacti_fixture_source_function($root . '/package_import.php', 'form_save', __NAMESPACE__);
+
+		$upload = tempnam(sys_get_temp_dir(), 'cacti-package-');
+		file_put_contents($upload, 'package');
+
+		$_FILES                              = ['import_file' => ['tmp_name' => $upload]];
+		$_SESSION                            = [];
+		$GLOBALS['fixture']['request']       = ['save_component_import' => '1', 'data_source_profile' => '1', 'preview_only' => 'on'];
+		$GLOBALS['fixture']['import_result'] = false;
+
+		form_save();
+
+		check(($GLOBALS['fixture']['messages'][0][0] ?? '') === 'javascript' && str_contains($GLOBALS['fixture']['messages'][0][1], 'Sample <Package>'), 'A package that cannot be read is reported');
+		check(array_column($GLOBALS['fixture']['calls'], 0) === ['import_package'], 'Nothing is prepared or displayed for a package that cannot be read');
+
+		$GLOBALS['fixture']['messages']      = [];
+		$GLOBALS['fixture']['calls']         = [];
+		$GLOBALS['fixture']['import_result'] = [[], []];
+		$_FILES                              = ['import_file' => ['tmp_name' => $upload]];
+
+		form_save();
+
+		check($GLOBALS['fixture']['messages'] === [], 'A readable package raises no error');
+		check(array_column($GLOBALS['fixture']['calls'], 0) === ['import_package', 'prepare', 'display'], 'A readable package is displayed');
+
+		unlink($upload);
+
+		break;
+	case 'package-details-failure':
+		foreach (['package_get_details', 'import_validate_public_key'] as $function) {
+			\cacti_fixture_source_function($root . '/package_import.php', $function, __NAMESPACE__);
+		}
+
+		$GLOBALS['fixture']['package']       = ['pubkey' => 'other', 'author' => '', 'homepage' => '', 'email' => ''];
+		$GLOBALS['fixture']['request']       = ['package_ids' => '3', 'package_location' => '1', 'data_source_profile' => '1'];
+		$GLOBALS['fixture']['import_result'] = false;
+
+		package_get_details();
+
+		check(($GLOBALS['fixture']['messages'][0][0] ?? '') === 'javascript' && str_contains($GLOBALS['fixture']['messages'][0][1], 'Sample'), 'A repository package that cannot be read is reported');
+		check(array_column($GLOBALS['fixture']['calls'], 0) === ['import_package', 'display'], 'A repository package that cannot be read is not prepared');
+		check(!file_exists(sys_get_temp_dir() . '/sample.xml.gz'), 'The downloaded copy is removed');
+
+		$GLOBALS['fixture']['messages']      = [];
+		$GLOBALS['fixture']['calls']         = [];
+		$GLOBALS['fixture']['import_result'] = [[], []];
+
+		package_get_details();
+
+		check($GLOBALS['fixture']['messages'] === [] && array_column($GLOBALS['fixture']['calls'], 0) === ['import_package', 'prepare', 'display'], 'A readable repository package is prepared and displayed');
 
 		break;
 	default:

@@ -24,4 +24,6 @@ test('import and export page scenario passes', function (string $mode) {
 	'package key details before verification' => ['public-key-details'],
 	'template import result message'          => ['template-import-result'],
 	'template preview dependencies'           => ['template-dependencies'],
+	'unreadable uploaded package preview'     => ['package-preview-failure'],
+	'unreadable repository package details'   => ['package-details-failure'],
 ]);
