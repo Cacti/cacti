@@ -3365,7 +3365,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_AREA:
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number) : ''));
 
-					if (read_config_option('enable_rrdtool_gradient_support') == 'on') {
+					if (rrd_area_uses_gradient($graph_item_color_code)) {
 						// End color is a 40% (0.4) darkened (negative number) version of the original color
 						$end_color        = colourBrightness('#' . $graph_item['hex'], -0.4);
 						$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], $text_format, 20, false, $graph_item['alpha']);
@@ -5529,6 +5529,18 @@ function rrd_graph_item_color_code($hex, $alpha) {
 	// alpha is user-controlled and concatenated raw into the shell command
 	// line (escape_command() is a no-op), so escape it like every other argument.
 	return '#' . $hex . cacti_escapeshellarg($alpha);
+}
+
+/**
+ * Whether an AREA item is drawn as a gradient. An item without a color has nothing to shade and
+ * keeps its plain AREA, which RRDtool does not draw.
+ *
+ * @param string $graph_item_color_code The color part of the item argument.
+ *
+ * @return bool True when gradient support is on and the item has a color.
+ */
+function rrd_area_uses_gradient($graph_item_color_code) {
+	return $graph_item_color_code != '' && read_config_option('enable_rrdtool_gradient_support') == 'on';
 }
 
 /**
