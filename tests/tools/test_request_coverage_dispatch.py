@@ -9,6 +9,85 @@ import subprocess
 import tempfile
 import unittest
 
+GROUPS = Path(__file__).with_name('request_coverage.d')
+
+# The probes that existed when the list moved into request_coverage.d, which
+# the expectations in RequestDispatchTest name in full. A group added later
+# declares its own changed paths in "# dispatch:" lines instead, so it adds a
+# file to that directory and leaves these lists and expectations alone.
+SHELL_PROBES = {'tests/e2e/queue/run.sh': 'queue', 'tests/e2e/accessibility-coverage.sh': 'accessibility',
+                'tests/e2e/installer-coverage.sh': 'installer'}
+PHP_PROBES = ['tests/fixtures/' + script for script in [
+    'Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
+    'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php', 'Core/ReportMessageDelivery.php', 'Core/DeviceCollectorMessages.php',
+    'Core/MessageFormatting.php', 'Core/ExternalLinkMessage.php', 'Core/TrustedActionMessages.php',
+    'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
+    'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
+    'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
+    'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']
+] + ['tests/Unit/fixtures/graph_group_probe.php']
+
+
+def probes_run(changed, shell_probes, php_probes):
+    """Return what the runner starts for one changed path, in order.
+
+    A shell probe reports its marker and a PHP probe its file name.
+    """
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        repository = root / 'repo'
+        repository.mkdir()
+        tools = root / 'tools'
+        tools.mkdir()
+        for command in ['git', 'bash', 'grep', 'mkdir']:
+            (tools / command).symlink_to(shutil.which(command))
+        php = tools / 'php'
+        php.write_text('#!' + shutil.which('bash') + '\n'
+                       'for script in "$@"; do [[ -f "$script" ]] && break; done\n'
+                       'printf "%s\\n" "${script##*/}" >> "$CACTI_PR_RAW_COVERAGE/probes"\n')
+        php.chmod(0o700)
+        env = dict(os.environ, PATH=str(tools))
+
+        def git(*arguments):
+            return subprocess.check_output(
+                ['git', '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null',
+                 '-c', 'user.name=Coverage fixture', '-c', 'user.email=fixture@example.invalid',
+                 *arguments], cwd=repository, env=env, text=True).strip()
+
+        git('init', '--quiet')
+        (repository / 'README.md').write_text('fixture\n')
+        for script, name in shell_probes.items():
+            path = repository / script
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
+        for script in php_probes:
+            path = repository / script
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('<?php // dispatch fixture\n')
+        git('add', '.')
+        git('commit', '--quiet', '-m', 'fixture base')
+        base = git('rev-parse', 'HEAD')
+        path = repository / changed
+        path.parent.mkdir(parents=True, exist_ok=True)
+        # Appending keeps a changed shell probe runnable.
+        with path.open('a') as file:
+            file.write('# changed fixture\n')
+        git('add', '.')
+        git('commit', '--quiet', '-m', 'fixture change')
+        output = root / 'coverage'
+        runner = Path(__file__).with_name('run_request_coverage.sh').resolve()
+        subprocess.run(['bash', str(runner)], cwd=repository, env=dict(
+            env, BASE_COMMIT=base, CACTI_PR_COVERAGE_OUTPUT=str(output)), check=True)
+        probe = output / 'probes'
+        return probe.read_text().splitlines() if probe.exists() else []
+
+
+def group_probes(group):
+    """Return the scripts one probe group names, as the runner would see them."""
+    listing = 'run_probe() { printf "%s\\n" "$1"; }; run_php_probe() { run_probe "$1"; }; source "$1"'
+    return sorted(set(subprocess.check_output(
+        ['bash', '-c', 'set -euo pipefail; ' + listing, 'groups', str(group)], text=True).split()))
+
 
 class RequestDispatchTest(unittest.TestCase):
     def test_package_change_runs_the_signed_archive_probe(self):
@@ -74,62 +153,32 @@ class RequestDispatchTest(unittest.TestCase):
         self.dispatch('tests/fixtures/Core/PackageDiffBoundary.php', 'PackageDiffBoundary.php')
 
     def dispatch(self, changed, expected):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            repository = root / 'repo'
-            repository.mkdir()
-            tools = root / 'tools'
-            tools.mkdir()
-            for command in ['git', 'bash', 'grep', 'mkdir']:
-                (tools / command).symlink_to(shutil.which(command))
-            php = tools / 'php'
-            php.write_text('#!' + shutil.which('bash') + '\n'
-                           'script="${!#}"\n'
-                           'printf "%s\\n" "${script##*/}" >> "$CACTI_PR_RAW_COVERAGE/probes"\n')
-            php.chmod(0o700)
-            env = dict(os.environ, PATH=str(tools))
+        self.assertEqual(probes_run(changed, SHELL_PROBES, PHP_PROBES),
+                         expected if isinstance(expected, list) else [expected] if expected else [])
 
-            def git(*arguments):
-                return subprocess.check_output(
-                    ['git', '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null',
-                     '-c', 'user.name=Coverage fixture', '-c', 'user.email=fixture@example.invalid',
-                     *arguments], cwd=repository, env=env, text=True).strip()
 
-            git('init', '--quiet')
-            (repository / 'README.md').write_text('fixture\n')
-            for name, script in [('queue', 'queue/run.sh'), ('accessibility', 'accessibility-coverage.sh'),
-                                 ('installer', 'installer-coverage.sh')]:
-                path = repository / 'tests/e2e' / script
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text('printf "%s\\n" ' + name + ' >> "$CACTI_PR_COVERAGE_OUTPUT/probes"\n')
-            for script in ['Core/Auth/BoundaryContracts.php', 'Core/Rrd/FallbackSourceIdentity.php',
-                           'UserAdministrationAuditCoverage.php', 'Core/ScriptSubstitutionMatrix.php', 'Core/ReportMessageDelivery.php', 'Core/DeviceCollectorMessages.php',
-                           'Core/MessageFormatting.php', 'Core/ExternalLinkMessage.php', 'Core/TrustedActionMessages.php',
-                           'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
-                           'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
-                           'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
-                path = repository / 'tests/fixtures' / script
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text('<?php // dispatch fixture\n')
-            probe = repository / 'tests/Unit/fixtures/graph_group_probe.php'
-            probe.parent.mkdir(parents=True, exist_ok=True)
-            probe.write_text('<?php // dispatch fixture\n')
-            git('add', '.')
-            git('commit', '--quiet', '-m', 'fixture base')
-            base = git('rev-parse', 'HEAD')
-            path = repository / changed
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text('changed fixture\n')
-            git('add', '.')
-            git('commit', '--quiet', '-m', 'fixture change')
-            output = root / 'coverage'
-            runner = Path(__file__).with_name('run_request_coverage.sh').resolve()
-            subprocess.run(['bash', str(runner)], cwd=repository, env=dict(
-                env, BASE_COMMIT=base, CACTI_PR_COVERAGE_OUTPUT=str(output)), check=True)
-            probe = output / 'probes'
-            self.assertEqual(probe.read_text().splitlines() if probe.exists() else [],
-                             expected if isinstance(expected, list) else [expected] if expected else [])
+class ProbeGroupTest(unittest.TestCase):
+    def test_each_group_declares_changed_paths_that_reach_every_probe(self):
+        for group in sorted(GROUPS.glob('*.sh')):
+            with self.subTest(group=group.name):
+                paths = [path for line in group.read_text().splitlines() if line.startswith('# dispatch:')
+                         for path in line.split()[2:]]
+                scripts = group_probes(group)
+                self.assertTrue(paths, 'the group needs a "# dispatch:" line naming changed paths')
+                self.assertTrue(scripts, 'the group starts no probe')
+                shell = {script: script for script in scripts if script.endswith('.sh')}
+                php = [script for script in scripts if script not in shell]
+                reached = set()
+                for path in paths:
+                    ran = set(probes_run(path, shell, php))
+                    self.assertTrue(ran, path + ' reaches no probe of this group')
+                    reached |= ran
+                self.assertEqual(reached, set(shell) | {script.rsplit('/', 1)[-1] for script in php})
+
+    def test_documentation_change_reaches_no_group(self):
+        scripts = [script for group in GROUPS.glob('*.sh') for script in group_probes(group)]
+        shell = {script: script for script in scripts if script.endswith('.sh')}
+        self.assertEqual(probes_run('README.md', shell, [script for script in scripts if script not in shell]), [])
 
 
 if __name__ == '__main__':

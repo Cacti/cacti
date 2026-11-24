@@ -23,74 +23,23 @@ run_probe() {
 	php_coverage+=("$output")
 }
 
-for fixture in ScriptSubstitutionMatrix DeviceCollectorMessages ReportMessageDelivery ExternalLinkMessage MessageFormatting TrustedActionMessages PackageManifestMatrix PackageSaveMatrix ConstantTimeGuardMatrix GraphDrilldownMarkup HtmlGraphMarkup CardWidgetMarkup SpikekillMutationMatrix SpikekillFloatDebug RowGuardMatrix; do
-	if [[ -f "tests/fixtures/Core/$fixture.php" ]]; then
-		run_probe "$fixture.php" "$fixture"
-	fi
-done
-if [[ -f tests/fixtures/Core/RemoveSpikesHelp.php ]]; then
-	run_probe RemoveSpikesHelp.php RemoveSpikesHelp
-fi
-if [[ -f tests/fixtures/Core/RowGuardMatrix.php ]]; then
-	for mode in auth-changepassword add-device reports-edit; do
-		run_probe RowGuardMatrix.php "row-guard-$mode" "$mode"
-	done
-fi
-if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
-	run_probe SpikekillRequestGate.php spike-get GET '' mutation
-	run_probe SpikekillRequestGate.php spike-dry GET dryrun mutation
-	run_probe SpikekillRequestGate.php spike-post POST '' mutation
-	run_probe SpikekillRequestGate.php spike-setting-get GET '' settings
-	run_probe SpikekillRequestGate.php spike-setting-post POST '' settings
-fi
-for fixture in PackageArchive PackageDiffBoundary PackageRepositoryWorkspace PackageImportFileStatus; do
-	run_probe "$fixture.php" "$fixture"
-done
-if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
-	run_probe RraContainmentMatrix.php rra-normal normal
-	run_probe RraContainmentMatrix.php rra-missing missing
-fi
-if [[ -f tests/fixtures/Core/Boost/FailedDataSourceIsolation.php ]]; then
-	run_probe Boost/FailedDataSourceIsolation.php boost-failed-data-source-isolation
-fi
-if [[ -f tests/fixtures/BoostBulkDrainFailureProbe.php ]]; then
-	for scenario in middle boundary tail none; do
-		run_probe ../BoostBulkDrainFailureProbe.php "boost-bulk-drain-$scenario" "$scenario" > /dev/null
-	done
-fi
-if [[ -f tests/fixtures/BoostOnDemandFailureProbe.php ]]; then
-	for scenario in first middle ok-substring archive-copy temp-create tail ack-create ack-insert ack-delete archive-ok ack-empty; do
-		run_probe ../BoostOnDemandFailureProbe.php "boost-on-demand-$scenario" "$scenario" > /dev/null
-	done
-fi
-if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
-	for scenario in deleted query-failed; do
-		run_probe ../BoostSourceExistenceProbe.php "boost-source-existence-$scenario" "$scenario" > /dev/null
-	done
-fi
-if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
-	case_number=0
-	for request in '{}' '{"action":"go"}' '{"action":"change","tab":"devices"}' '{"action":"reset","report":"summary"}' '{"action":"edit"}'; do
-		for mode in table div; do
-			for title in '' Title; do
-				run_probe TableColumnSizing.php "table-$case_number" "$request" "$mode" "$title"
-				case_number=$((case_number + 1))
-			done
-		done
-	done
-fi
-
-run_probe ConfiguredCommands.php configured-commands
-run_probe ConfiguredCommands.php deprecated-rebuild deprecated
-run_probe DisplayAndValidation.php display-validation
-run_probe DisplayAndValidation.php input-method-save save
-
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
-	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
-		browser_specs+=("tests/$spec.spec.js")
+add_browser_spec() {
+	if [[ -f "tests/e2e/tests/$1.spec.js" ]]; then
+		browser_specs+=("tests/$1.spec.js")
 	fi
-done
+}
+
+# Each group of fixture probes and browser specs is a file in
+# pr_change_tests.d, so a change adds a file there instead of a line here.
+tools_directory=.
+if [[ "${BASH_SOURCE[0]}" == */* ]]; then
+	tools_directory=${BASH_SOURCE[0]%/*}
+fi
+# shellcheck source=tests/tools/probe_groups.sh
+source "$tools_directory/probe_groups.sh"
+source_probe_groups "$tools_directory/pr_change_tests.d"
+
 # Theme stylesheets, and the shared include/css sheets the theme specs install,
 # are only exercised by the theme correctness specs, which record CSS coverage
 # when CACTI_THEME_COVERAGE is set. They are slow, so they run only when the
