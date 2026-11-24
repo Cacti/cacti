@@ -15544,11 +15544,11 @@ msgid "Data Source was not polled"
 msgstr ""
 
 #: lib/dsdebug.php
-msgid "No issues found"
+msgid "RRDfile not created yet"
 msgstr ""
 
 #: lib/dsdebug.php
-msgid "RRDfile not created yet"
+msgid "No Repair Recommendations"
 msgstr ""
 
 #: lib/functions.php settings.php
