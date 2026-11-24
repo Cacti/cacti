@@ -115,6 +115,13 @@ test('handlers bound on every page load replace their earlier copies', () => {
 
 			if (!selectors.includes(call.selector)) continue;
 
+			// dark and modern keep on() for the graph type: its handler only enables #alpha, and the
+			// Select2 browser spec runs that block on its own, without layout.js and rebind()
+			if (call.selector === '#graph_type_id' && (name === 'dark' || name === 'modern')) {
+				assert.equal(call.method, 'on', `${name}: graph type handler`);
+				continue;
+			}
+
 			assert.equal(call.method, 'rebind', `${name}: ${event} on ${call.selector}`);
 			assert.match(String(call.args[0]), /\.theme$/, `${name}: only the theme's own handler is replaced`);
 		}

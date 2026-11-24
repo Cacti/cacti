@@ -75,7 +75,8 @@ function themeReady() {
 		}
 	});
 
-	$('#graph_type_id').rebind('change.theme', function() {
+	// Only enables #alpha, so a repeated binding after applySkin() is harmless
+	$('#graph_type_id').on('change', function() {
 		switch($(this).val()) {
 		case '4':
 		case '5':
