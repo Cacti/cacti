@@ -347,3 +347,22 @@ test('a script is recorded as loaded only when its request succeeds', () => {
 	requests[0].success();
 	assert.deepEqual([...context.mdw.cache.classes], ['config']);
 });
+
+test('theme actions replace only their own handlers and leave the graph page alone', () => {
+	const page = fakeJQuery();
+	const context = themeFunctions(['setupThemeActions'], {
+		$: page.$,
+		document: {addEventListener: () => {}},
+		fullScreenChangeHandler: () => {}
+	});
+
+	context.setupThemeActions();
+
+	const offCalls = page.calls.filter((call) => call.method === 'off');
+	assert.equal(offCalls.length, 2);
+	for (const call of offCalls) {
+		assert.match(String(call.args[0]), /^(click|change)\.mdwTheme$/, 'other handlers on these elements must stay bound');
+	}
+
+	assert.equal(page.calls.some((call) => call.selector === '.graphPage'), false);
+});
