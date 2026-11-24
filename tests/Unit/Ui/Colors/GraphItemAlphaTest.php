@@ -55,6 +55,13 @@ test('an offered alpha is saved', function ($page, $alpha) {
 		->and(array_column($result['tables']['graph_templates_item'], 'alpha'))->toBe(array($alpha));
 })->with(array('graphs_items.php', 'graph_templates_items.php'))->with(array('00', '7F', 'FF'));
 
+test('a lower case alpha is saved in upper case', function ($page) {
+	$result = save($page, 'ff');
+
+	expect($result['errors'])->toBe(array())
+		->and(array_column($result['tables']['graph_templates_item'], 'alpha'))->toBe(array('FF'));
+})->with(array('graphs_items.php', 'graph_templates_items.php'));
+
 test('the alpha may be left empty as before', function ($page) {
 	expect(save($page, '')['errors'])->toBe(array());
 })->with(array('graphs_items.php', 'graph_templates_items.php'));
@@ -66,7 +73,6 @@ test('any other alpha is refused', function ($page, $alpha) {
 		->and($result['tables']['graph_templates_item'])->toBe(array());
 })->with(array('graphs_items.php', 'graph_templates_items.php'))->with(array(
 	'not offered'   => array('80'),
-	'lower case'    => array('ff'),
 	'option text'   => array('-a'),
 	'not hex'       => array('ZZ'),
 	'three digits'  => array('FFF'),
