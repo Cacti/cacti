@@ -58,7 +58,7 @@ function themeReady() {
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
 	$('.maintabs nav ul li a.lefttab').each( function() {
-		id = $(this).attr('id');
+		const id = $(this).attr('id');
 
 		if (id == 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
 			$(this).parent().addClass('maintabs-has-submenu');

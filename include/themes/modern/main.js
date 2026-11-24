@@ -26,7 +26,13 @@ function themeReady() {
 	$('#navigation').css('height', ($(window).height()-40)+'px');
 	$('#navigation_right').css('height', ($(window).height()-40)+'px');
 
-	keepWindowSize();
+	// keepWindowSize() adds a window resize handler; add it once and only re-run the layout on later page loads
+	if (keepWindowSize.bound !== true) {
+		keepWindowSize.bound = true;
+		keepWindowSize();
+	} else {
+		$(window).trigger('resize');
+	}
 
 	// Setup the navigation menu
 	setMenuVisibility();
@@ -50,13 +56,10 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
-	$('.checkboxgroup').children('br').remove();
-	$('.checkboxgroup').controlgroup();
-
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
 	$('.import_button').on('change', function() {
-		text=this.value;
+		const text = this.value;
 		setImportFile(text);
 	});
 	setImportFile(noFileSelected);
@@ -64,8 +67,6 @@ function themeReady() {
 	function setImportFile(fileText) {
 		$('.import_text').text(fileText);
 	}
-
-	maxWidth = 480;
 
 	$('#drp_action').on('change', function() {
 		if ($(this).val() != '0') {

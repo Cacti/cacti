@@ -59,7 +59,7 @@ function themeReady() {
 	}
 
 	$('.maintabs nav ul li a.lefttab').each( function() {
-		id = $(this).attr('id');
+		const id = $(this).attr('id');
 
 		if (id == 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0) {
 			$(this).parent().addClass('maintabs-has-submenu');
@@ -142,7 +142,7 @@ function themeReady() {
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
 	$('.import_button').on('change', function() {
-		text=this.value;
+		const text = this.value;
 		setImportFile(text);
 	});
 	setImportFile(noFileSelected);
