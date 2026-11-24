@@ -221,33 +221,36 @@ restoreLocalStorage();
  * called by cacti once the document is ready
  */
 function themeReady() {
-	/* setup basic theme layout and manager instances */
-	setupTheme();
+	// The page stays hidden until the theme state is ready, so reveal it even if a step below fails.
+	try {
+		/* setup basic theme layout and manager instances */
+		setupTheme();
 
-	/* initialize global hotkey dispatcher via dom attributes */
-	mdw.actions.initHotKeys()
+		/* initialize global hotkey dispatcher via dom attributes */
+		mdw.actions.initHotKeys()
 
-	/* process initial elements and trigger plugin refreshes */
-	setupDefaultElements();
+		/* process initial elements and trigger plugin refreshes */
+		setupDefaultElements();
 
-	/* start the mutation observer to handle future cacti ajax updates */
-	if (mdw.uiObserver && typeof mdw.uiObserver.init === 'function') {
-		mdw.uiObserver.init();
-	}
+		/* start the mutation observer to handle future cacti ajax updates */
+		if (mdw.uiObserver && typeof mdw.uiObserver.init === 'function') {
+			mdw.uiObserver.init();
+		}
 
-updateNavigation();
-updateAjaxAnchors();
-setThemeColor();
+		updateNavigation();
+		updateAjaxAnchors();
+		setThemeColor();
 
-	//hideConsoleNavigation();
-	setupThemeActions();
+		//hideConsoleNavigation();
+		setupThemeActions();
 
-	// set PWA Layout attribute
-	checkPWADisplayMode();
-
-	/* disable the initial theme loading overlay */
-	if (typeof themeLoader === 'function') {
-		themeLoader('off');
+		// set PWA Layout attribute
+		checkPWADisplayMode();
+	} finally {
+		/* disable the initial theme loading overlay */
+		if (typeof themeLoader === 'function') {
+			themeLoader('off');
+		}
 	}
 
 	console.log('[Midwinter] UI fully initialized and reactive.');
@@ -331,19 +334,19 @@ function midWinterNavigation(element) {
 function updateNavigation() {
 	// use different search patterns until we have a valid location to populate the new breadcrumb navigation
 	let menu_element;
-	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href$="'+window.location.pathname+window.location.search+'"').first();
+	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href$="'+window.location.pathname+window.location.search+'"]').first();
 	if (menu_element.length !== 0) return midWinterNavigation(menu_element);
-	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href$="'+window.location.pathname+'"').first();
+	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href$="'+window.location.pathname+'"]').first();
 	if (menu_element.length !== 0) return midWinterNavigation(menu_element);
-	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href$="'+window.location.pathname+'index.php"').first();
+	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href$="'+window.location.pathname+'index.php"]').first();
 	if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 
 	// Append an action if the user did not provide one based upon the cactiAction variable
-	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href^="'+window.location.pathname+'?action='+cactiAction+'"').first();
+	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href^="'+window.location.pathname+'?action='+(typeof cactiAction !== 'undefined' ? cactiAction : '')+'"]').first();
 	if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 
 	// Choose what fits best in situations where users have cleared their settings
-	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href^="'+window.location.pathname+'"').first();
+	menu_element = $('[class^="mdw-ConsoleNavigationBox"] a[href^="'+window.location.pathname+'"]').first();
 	if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 }
 
@@ -884,7 +887,7 @@ function refreshLocalStorage() {
 
 function themeLoader(state='off', force = false) {
 	if (state === 'on') {
-		if (getDocumentAttribute('data-theme-state') !== 'ready' || force === true) {
+		if (getDocumentAttribute('theme-state') !== 'ready' || force === true) {
 			setDocumentAttribute('theme-state', 'loading');
 		}
 	} else {

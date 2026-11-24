@@ -112,3 +112,52 @@ test('repeated setup on the same content keeps the title, tabs and save row in t
 		assert.ok(filters.length > 0 && filters.every((call) => String(call.args[0]).includes('#cdialog *')), `${selector} must skip dialog content`);
 	}
 });
+
+test('the page is revealed even when a setup step fails', () => {
+	const states = [];
+	const context = themeFunctions(['themeReady'], {
+		setupTheme: () => { throw new Error('setup failed'); },
+		themeLoader: (state) => states.push(state),
+		console: {log: () => {}}
+	});
+
+	assert.throws(() => context.themeReady(), /setup failed/);
+	assert.deepEqual(states, ['off']);
+});
+
+test('the breadcrumb lookup builds complete selectors and tolerates a page without cactiAction', () => {
+	const selectors = [];
+	const context = themeFunctions(['updateNavigation'], {
+		$: (selector) => {
+			selectors.push(selector);
+			return {first: () => ({length: 0})};
+		},
+		window: {location: {pathname: '/cacti/host.php', search: '?action=edit'}},
+		midWinterNavigation: () => {}
+	});
+
+	context.updateNavigation();
+	assert.equal(selectors.length, 5);
+
+	for (const selector of selectors) {
+		assert.equal(selector.split('[').length, selector.split(']').length, selector);
+		assert.match(selector, /"\]$/);
+	}
+
+	assert.ok(selectors[3].endsWith('?action="]'));
+});
+
+test('themeLoader reads the theme state it writes', () => {
+	const attributes = {'data-theme-state': 'ready'};
+	const document = {documentElement: {
+		getAttribute: (name) => attributes[name] ?? null,
+		setAttribute: (name, value) => { attributes[name] = value; }
+	}};
+	const context = themeFunctions(['themeLoader', 'setDocumentAttribute', 'getDocumentAttribute'], {document});
+
+	context.themeLoader('on');
+	assert.equal(attributes['data-theme-state'], 'ready', 'a ready page is not hidden again');
+
+	context.themeLoader('on', true);
+	assert.equal(attributes['data-theme-state'], 'loading');
+});
