@@ -396,8 +396,14 @@ function color_item_movedown() : void {
 
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id = ?',
-		[grv('color_template_item_id')]);
+		WHERE color_template_item_id = ?
+		AND color_template_id = ?',
+		[grv('color_template_item_id'), grv('color_template_id')]);
+
+	// an unknown item, or one of another template, has nothing to swap with
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
 
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
@@ -408,6 +414,11 @@ function color_item_movedown() : void {
 		AND color_template_id = ?
 		ORDER BY sequence ASC limit 1',
 		[$current_sequence['sequence'], grv('color_template_id')]);
+
+	// the last item cannot move down
+	if (!cacti_sizeof($next_sequence)) {
+		return;
+	}
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
 		false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
@@ -436,8 +447,14 @@ function color_item_moveup() : void {
 
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id = ?',
-		[grv('color_template_item_id')]);
+		WHERE color_template_item_id = ?
+		AND color_template_id = ?',
+		[grv('color_template_item_id'), grv('color_template_id')]);
+
+	// an unknown item, or one of another template, has nothing to swap with
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
 
 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -448,6 +465,11 @@ function color_item_moveup() : void {
 		AND color_template_id = ?
 		ORDER BY sequence DESC limit 1',
 		[$current_sequence['sequence'], grv('color_template_id')]);
+
+	// the first item cannot move up
+	if (!cacti_sizeof($previous_sequence)) {
+		return;
+	}
 
 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
