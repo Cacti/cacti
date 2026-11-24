@@ -74,6 +74,22 @@ function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
 	return fake($sql, $params);
 }
 
+function db_fetch_assoc(string $sql) : mixed {
+	return fake($sql, []);
+}
+
+function db_execute(string $sql) : mixed {
+	return fake($sql, []);
+}
+
+function db_execute_prepared(string $sql, array $params = []) : mixed {
+	return fake($sql, $params);
+}
+
+function array_rekey(mixed $array, string $key, mixed $value) : array {
+	return [];
+}
+
 function api_plugin_hook_function(string $name, mixed $data) : mixed {
 	return $data;
 }
@@ -99,6 +115,7 @@ function check(bool $condition, string $label) : void {
 }
 
 \cacti_fixture_source_function($root . '/graphs.php', 'item', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/lib/utility.php', 'object_cache_update_graph_totals', __NAMESPACE__);
 
 // The graph item list takes the gradient color from color2_id, as the graph template item list does.
 $_REQUEST        = ['id' => '5'];
@@ -107,5 +124,13 @@ ob_start();
 item();
 ob_end_clean();
 check(str_contains($GLOBALS['db'][0][0], 'LEFT JOIN colors AS c ON color_id = c.id LEFT JOIN colors AS c2 ON color2_id = c2.id'), 'graph item list joins the gradient color on color2_id');
+
+// The full recount refreshes every color's cached totals with one statement, not one per color.
+$GLOBALS['db']   = [];
+$GLOBALS['fake'] = ['SELECT id FROM colors' => [['id' => 1], ['id' => 2], ['id' => 3]], 'SELECT' => [], 'UPDATE' => true];
+object_cache_update_graph_totals();
+$colors = array_values(array_filter($GLOBALS['db'], static fn (array $call) : bool => str_contains($call[0], ' colors')));
+check(cacti_sizeof($colors) === 1, 'colors recounted with one statement');
+check(str_starts_with($colors[0][0], 'UPDATE colors AS c LEFT JOIN ( SELECT color_id AS id,') && str_ends_with($colors[0][0], 'ON t.id = c.id SET c.graphs = IFNULL(t.graphs, 0), c.templates = IFNULL(t.templates, 0)'), 'unused colors reset to zero in the same statement');
 
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";

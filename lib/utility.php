@@ -3497,9 +3497,10 @@ function object_cache_update_graph_totals() : void {
 
 				break;
 			case 'colors':
-				// 'graphs', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT color_id AS id,
+				// 'graphs', 'templates' in one statement; colors no graph item uses get zero
+				db_execute('UPDATE colors AS c
+					LEFT JOIN (
+						SELECT color_id AS id,
 						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
 						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
 						FROM (
@@ -3507,32 +3508,10 @@ function object_cache_update_graph_totals() : void {
 							FROM graph_templates_item
 							WHERE color_id > 0
 						) AS rs
-						GROUP BY color_id'),
-					'id', ['graphs', 'templates']
-				);
-
-				$colors = db_fetch_assoc('SELECT id FROM colors');
-
-				if (cacti_sizeof($colors)) {
-					foreach ($colors as $c) {
-						if (!isset($items[$c['id']])) {
-							db_execute_prepared('UPDATE colors
-								SET graphs = 0, templates = 0
-								WHERE id = ?',
-								[$c['id']]);
-						} else {
-							db_execute_prepared('UPDATE colors
-								SET graphs = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$c['id']]['graphs'],
-									$items[$c['id']]['templates'],
-									$c['id']
-								]
-							);
-						}
-					}
-				}
+						GROUP BY color_id
+					) AS t
+					ON t.id = c.id
+					SET c.graphs = IFNULL(t.graphs, 0), c.templates = IFNULL(t.templates, 0)');
 
 				break;
 			case 'graph_templates':
