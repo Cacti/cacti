@@ -1981,7 +1981,7 @@ msgstr "सबनेट रेंज"
 
 #: automation_networks.php:770
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
-msgstr "अल्पविराम द्वारा अलग किए गए मान्य नेटवर्क रेंज दर्ज करें। आप एक आईपी पते, 192.168.1.0/24 या 192.168.1.0/255.255.255.0 जैसे नेटवर्क रेंज का उपयोग कर सकते हैं, या 192.168 जैसे वाइल्डकार्ड का उपयोग कर सकते हैं। *।"
+msgstr "अल्पविराम द्वारा अलग किए गए मान्य नेटवर्क रेंज दर्ज करें। आप एक आईपी पते, 192.168.1.0/24 या 192.168.1.0/255.255.255.0 जैसे नेटवर्क रेंज का उपयोग कर सकते हैं, या 192.168.*.* जैसे वाइल्डकार्ड का उपयोग कर सकते हैं"
 
 #: automation_networks.php:779
 msgid "IP Addresses to Ignore"
@@ -4810,14 +4810,14 @@ msgstr[1] "सभी <strong>ग्राफ़ को</strong> अछूता 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
-msgstr[0] "इस डेटा स्रोत को संदर्भित करने वाले सभी <strong>ग्राफ़ आइटम</strong> हटाएं।"
-msgstr[1] "इन डेटा स्रोतों को संदर्भित करने वाले सभी <strong>ग्राफ़ आइटम</strong> हटाएं।"
+msgstr[0] "इस डेटा स्रोत को संदर्भित करने वाले सभी ग्राफ़ आइटम हटाएं"
+msgstr[1] "इन डेटा स्रोतों को संदर्भित करने वाले सभी ग्राफ़ आइटम हटाएं"
 
 #: data_sources.php:559
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "इस डेटा स्रोत को संदर्भित करने वाले सभी <strong>ग्राफ़ को</strong> हटा दें।"
-msgstr[1] "इन डेटा स्रोतों को संदर्भित करने वाले सभी <strong>ग्राफ़</strong> हटाएं।"
+msgstr[0] "इस डेटा स्रोत को संदर्भित करने वाले सभी ग्राफ़ को हटा दें"
+msgstr[1] "इन डेटा स्रोतों को संदर्भित करने वाले सभी ग्राफ़ हटाएं"
 
 #: data_sources.php:566
 msgid "Click 'Continue' to Disable the following Data Source."
@@ -5372,7 +5372,7 @@ msgstr "सीएसवी निर्यात"
 
 #: graph.php:165 graph.php:427 lib/html.php:603
 msgid "Edit Graph Template"
-msgstr "ग्राफ़ टेम्पलेट संपादित करें।"
+msgstr "ग्राफ़ टेम्पलेट संपादित करें"
 
 #: graph.php:170 lib/html.php:609 lib/html.php:611
 msgid "Click to view just this Graph in Real-time"
@@ -5615,7 +5615,7 @@ msgstr "इस ग्राफ टेम्पलेट का नाम।"
 
 #: graph_templates.php:1799
 msgid "The Class of this Graph Template"
-msgstr "इस ग्राफ टेम्पलेट का नाम।"
+msgstr "इस ग्राफ टेम्पलेट का नाम"
 
 #: graph_templates.php:1805
 msgid "The Version of this Graph Template"
@@ -5931,8 +5931,8 @@ msgstr[1] "इन ग्राफ़ (एस) द्वारा संदर्
 #: graphs.php:1777
 msgid "Leave the Data Source untouched."
 msgid_plural "Leave the Data Sources untouched"
-msgstr[0] "डेटा स्रोत को छोड़ दें।"
-msgstr[1] "डेटा स्रोत को छोड़ दें।"
+msgstr[0] "डेटा स्रोत को छोड़ दें"
+msgstr[1] "डेटा स्रोत को छोड़ दें"
 
 #: graphs.php:1784
 msgid "Choose a Graph Template and click 'Continue' to Change the Graph Template for the following Graph.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
@@ -10308,7 +10308,7 @@ msgstr "इस मेजबान को एक सार्थक विवर�
 
 #: include/global_form.php:1257
 msgid "Fully qualified hostname or IP address for this device. IPv6 address insert into brackets (example: [2001:abcd:1234::1])"
-msgstr "इस डिवाइस के लिए पूरी तरह से योग्य होस्टनाम या आईपी एड्रेस।"
+msgstr "इस डिवाइस के लिए पूरी तरह से योग्य होस्टनाम या आईपी एड्रेस"
 
 #: include/global_form.php:1265
 msgid "The physical location of the Device.  This free form text can be a room, rack location, etc."
@@ -11759,7 +11759,7 @@ msgstr "सभी नए उपकरणों के लिए डिफ़ॉ�
 
 #: include/global_settings.php:908
 msgid "Privacy Passphrase (v3)"
-msgstr "गोपनीयता पासफ़्रेज़ (v3)।"
+msgstr "गोपनीयता पासफ़्रेज़ (v3)"
 
 #: include/global_settings.php:909
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -17322,7 +17322,7 @@ msgstr "<strong> %s</strong> <strong>से %s</strong> से अपग्र�
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
-msgstr "मुद्दों की स्थिति में, यह अत्यधिक अनुशंसा की जाती है कि आप अपना ब्राउज़र कैश साफ़ करें, बंद करना फिर अपना ब्राउज़र फिर से खोलना (न केवल टैब कैक्टि चालू है) और फिर से प्रयास करना, कैक्टि समूह के साथ एक मुद्दा उठाने से पहले।"
+msgstr "मुद्दों की स्थिति में, यह अत्यधिक अनुशंसा की जाती है कि आप अपना ब्राउज़र कैश साफ़ करें, बंद करना फिर अपना ब्राउज़र फिर से खोलना (न केवल टैब कैक्टि चालू है) और फिर से प्रयास करना, कैक्टि समूह के साथ एक मुद्दा उठाने से पहले"
 
 #: lib/installer.php:2242
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -19173,7 +19173,7 @@ msgstr "खाता विकल्प"
 
 #: logout.php:57
 msgid "a change in state of the Remote Data Collector"
-msgstr "इस डेटा कलेक्टर की स्थिति।"
+msgstr "इस डेटा कलेक्टर की स्थिति"
 
 #: logout.php:60
 msgid "Automatic Logout"
