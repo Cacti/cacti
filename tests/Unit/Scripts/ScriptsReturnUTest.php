@@ -135,3 +135,13 @@ test('none of the three scripts use 0 as error fallback', function () {
 		);
 	}
 });
+
+// --- query_host_partitions.php ---
+
+test('query_host_partitions prints U instead of multiplying a failed get', function () {
+	$src = getScriptSource('query_host_partitions.php');
+
+	// 'U' * $sau throws a TypeError on PHP 8, so the product needs numeric operands
+	expect(str_contains($src, "print (is_numeric(\$value) && is_numeric(\$sau) ? \$value * \$sau : 'U');"))->toBeTrue();
+	expect(preg_match('/cacti_snmp_get\([^;]*\)\s*\*\s*\$sau/', $src))->toBe(0);
+});
