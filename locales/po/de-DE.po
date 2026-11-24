@@ -13,15 +13,15 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-01 13:56-0400\n"
-"Last-Translator: The Cacti Group <developers@cacti.net>\n"
-"Language-Team: German <http://translate.cacti.net/projects/cacti/core/de/>\n"
-"Language: de_DE\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: German <https://translate.cacti.net/projects/cacti/core/de/>\n"
+"Language: de-DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-KeywordsList: __;__date\n"
 
@@ -664,7 +664,7 @@ msgstr "Kein Graph gefunden"
 
 #: aggregate_graphs.php:1979
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[Liste der benutzerdefinierten Diagramme angewendet – Zum Zurücksetzen löschen]"
+msgstr " [ Angewandte benutzerdefinierte Grafikliste - Filter aus der Liste ]"
 
 #: aggregate_graphs.php:1979 aggregate_graphs.php:2099
 #: include/global_arrays.php:2937
@@ -3745,7 +3745,9 @@ msgstr "Farbvorlage [neu]"
 #: color_templates.php:762
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Farbvorlage „%s“ hatte %d Aggregatvorlagen und %d nicht auf Vorlagen basierende Aggregate herausgeschoben"
+msgstr ""
+"Bei der Farbvorlage '%s' wurden%d Aggregatvorlagen und%d Nicht-"
+"Vorlagenaggregate herausgeschoben"
 
 #: color_templates.php:764
 #, php-format
@@ -5425,7 +5427,7 @@ msgstr "%d Sekunden übrig."
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr "Sekunden übrig."
+msgstr " %d Sekunden übrig."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -5860,7 +5862,7 @@ msgstr "Aggregat aus Vorlage erstellen"
 
 #: graphs.php:234 graphs.php:249
 msgid "No Device - "
-msgstr "Kein Gerät -"
+msgstr "No Device "
 
 #: graphs.php:339
 #, php-format
@@ -6336,7 +6338,7 @@ msgstr "Cacti GitHub-Site"
 
 #: help.php:88
 msgid "Open a ticket at "
-msgstr "Eröffnen Sie ein Ticket unter"
+msgstr "Eröffnen Sie ein Ticket unter "
 
 #: help.php:88
 #, php-format
@@ -6628,7 +6630,7 @@ msgstr "Art der Re-Indizierung"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[%d Elemente, %d Zeilen]"
+msgstr " [%d Elemente, %d Zeilen]"
 
 #: host.php:982
 msgid "Fail"
@@ -10206,7 +10208,13 @@ msgstr "Textausrichtung (TEXTALIGN)"
 
 #: include/global_form.php:1087
 msgid "All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!"
-msgstr "Alle nachfolgenden Legendenzeilen werden wie hier angegeben ausgerichtet. Sie können diesen Befehl mehrmals in einem Diagramm verwenden. Dieser Befehl erzeugt kein tabellarisches Layout.<br/> <strong>Hinweis:</strong> Möglicherweise möchten Sie im vorhergehenden Diagrammelement ein &lt;HR&gt; einfügen.<br/> <strong>Hinweis:</strong> Ein &lt;HR&gt; in dieser Legendenzeile macht diese Einstellung überflüssig!"
+msgstr ""
+"Alle nachfolgenden Legendenlinien werden wie hier angegeben ausgerichtet.  "
+"Sie können diesen Befehl mehrmals in einem einzigen Diagramm verwenden.  "
+"Dieser Befehl erzeugt kein tabellarisches Layout.<br/><strong>Hinweis: </"
+"strong>Sie möchten vielleicht ein &lt;HR&gt; auf dem vorhergehenden "
+"Grafikelement einfügen.<br/> <strong>Hinweis: </strong>A &lt;HR&gt; auf "
+"dieser Legende wird diese Einstellung veraltet!"
 
 #: include/global_form.php:1090
 msgid "Text Format"
@@ -10729,7 +10737,7 @@ msgstr "Präfix für GPRINT-Summen"
 #: include/global_form.php:2003 include/global_form.php:2091
 #: include/global_form.php:2196
 msgid "A Prefix for all <strong>totaling</strong> GPRINT lines."
-msgstr "Ein Präfix für alle <strong>summierenden</strong> GPRINT-Zeilen."
+msgstr "Ein Präfix für alle <strong>Summenbildung</strong> GPRINT-Zeilen."
 
 #: include/global_form.php:2010 include/global_form.php:2098
 #: include/global_form.php:2203
@@ -10902,19 +10910,19 @@ msgstr "Das Ersatzzeichenfolgenmuster zur Verwendung als Baumüberschrift.<br> V
 
 #: include/global_languages.php:971
 msgid " T"
-msgstr "T"
+msgstr " T"
 
 #: include/global_languages.php:973
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php:975
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php:977
 msgid " K"
-msgstr "K"
+msgstr " K"
 
 #: include/global_settings.php:40
 msgid "Paths"
@@ -11118,7 +11126,9 @@ msgstr "Arşiv klasörü"
 
 #: include/global_settings.php:295
 msgid "This is the directory where RRDfiles are <strong>moved</strong> for archiving"
-msgstr "Dies ist das Verzeichnis, in das RRD-Dateien zur Archivierung <strong>verschoben</strong> werden"
+msgstr ""
+"Dies ist das Verzeichnis, in dem sich die RRD-Dateien <strong>verschiebt</"
+"strong> zur Archivierung befinden."
 
 #: include/global_settings.php:304
 msgid "Log Settings"
@@ -12006,7 +12016,11 @@ msgstr "Ausschluss-Regex"
 
 #: include/global_settings.php:1189
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
-msgstr "Alle Zeichenfolgen, die diesem regulären Ausdruck entsprechen, werden von der Benutzeranzeige ausgeschlossen. <strong>Wenn Sie beispielsweise alle Protokollzeilen mit den Wörtern „Admin“ oder „Login“ ausschließen möchten, geben Sie „(Admin || Login)“ ein.</strong>"
+msgstr ""
+"Alle Zeichenketten, die diesem Regex entsprechen, werden von der "
+"Benutzeranzeige ausgeschlossen.  <strong>Wenn Sie beispielsweise alle "
+"Protokollzeilen ausschließen möchten, die die Wörter 'Admin' oder 'Login' "
+"enthalten, geben Sie '(Admin || Login)' ein.</strong>"
 
 #: include/global_settings.php:1196
 msgid "Real-time Graphs"
@@ -14072,7 +14086,10 @@ msgstr "Initialisiere"
 #: install/install.php:117
 #, php-format
 msgid "Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work."
-msgstr "Bitte warten Sie, während das Installationssystem für Cacti Version %s initialisiert wird. JavaScript muss hierfür aktiviert sein."
+msgstr ""
+"Bitte warten Sie, während das Installationssystem für Cacti Version %s "
+"initialisiert wird. Sie müssen JavaScript aktiviert haben, damit dies "
+"funktioniert."
 
 #: install/install.php:121
 msgid "FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 7.4 or later."
@@ -14518,11 +14535,11 @@ msgstr "Gerät+Vorlage:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
-msgstr "Eingeschränkt durch:"
+msgstr "Eingeschränkt "
 
 #: lib/auth.php:2492
 msgid "Granted By: "
-msgstr "Gewährt durch:"
+msgstr "Zugriff gewährt "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -14694,15 +14711,15 @@ msgstr "Protokollfilter"
 
 #: lib/clog_webapi.php:280
 msgid " - Admin Filter active"
-msgstr "- Admin-Filter aktiv"
+msgstr " - Admin-Filter aktiv"
 
 #: lib/clog_webapi.php:282
 msgid " - Admin Unfiltered"
-msgstr "- Admin ungefiltert"
+msgstr " - Admin ungefiltert"
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
-msgstr "- Admin-Ansicht"
+msgstr " - Admin-Ansicht"
 
 #: lib/clog_webapi.php:290
 #, php-format
@@ -15147,7 +15164,9 @@ msgstr "SNMP-Get für %s OIDs (%s) wird ausgeführt"
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "Das Sortierfeld hat keine Daten für OID[%s] zurückgegeben, daher wird es übersprungen."
+msgstr ""
+"Das Sortierfeld lieferte keine Daten. Re-Index für OID[%s] kann nicht "
+"fortgesetzt werden."
 
 #: lib/data_query.php:1171
 #, php-format
@@ -15264,7 +15283,7 @@ msgstr "Debuggen nach 5 Abfragen nicht abgeschlossen"
 
 #: lib/dsdebug.php:260
 msgid "Failed fields: "
-msgstr "Fehlgeschlagene Felder:"
+msgstr "Fehlerhafte Felder: "
 
 #: lib/dsdebug.php:269
 msgid "Data Source is not set as Active"
@@ -15290,7 +15309,7 @@ msgstr "RRD-Datei nach dem Polling nicht aktualisiert"
 
 #: lib/dsdebug.php:303
 msgid "Data Source returned Bad Results for "
-msgstr "Datenquelle lieferte schlechte Ergebnisse für"
+msgstr "Datenquelle lieferte schlechte Ergebnisse für "
 
 #: lib/dsdebug.php:308
 msgid "Data Source was not polled"
@@ -15419,7 +15438,7 @@ msgstr "Verbindung fehlgeschlagen: %s"
 
 #: lib/functions.php:5822
 msgid "SMTP error: "
-msgstr "SMTP-Fehler:"
+msgstr "SMTP-Fehler: "
 
 #: lib/functions.php:5835
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -15498,7 +15517,8 @@ msgid ""
 "Reason: %s.\n"
 "See Cacti Log for details."
 msgstr ""
-"Remote-Agent %s konnte nicht kontaktiert werden. Grund: %s.\n"
+"Remote-Agent %s konnte nicht kontaktiert werden.\n"
+"Grund: %s.\n"
 "Weitere Informationen finden Sie im Cacti-Protokoll."
 
 #: lib/functions.php:7247
@@ -16954,7 +16974,7 @@ msgstr "Paketdateien"
 
 #: lib/import.php:2692
 msgid "[preview] "
-msgstr "[Vorschau]"
+msgstr "Vorschau "
 
 #: lib/import.php:2698
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -17149,7 +17169,9 @@ msgstr "Stellen Sie sicher, dass Sie die erforderlichen Schritte um Cacti zu ins
 #: lib/installer.php:1910
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Dieser Prozess führt Sie durch die Schritte zum Upgrade von Version „%s“."
+msgstr ""
+"Dieser Prozess führt Sie durch die Schritte für das Upgrade von der "
+"Version'%s'. "
 
 #: lib/installer.php:1911
 #, php-format
@@ -17174,7 +17196,7 @@ msgstr "GPL Lizenz Vereinbarung akzeptieren"
 
 #: lib/installer.php:1965
 msgid "Select default theme: "
-msgstr "Standarddesign auswählen:"
+msgstr "Wählen Sie das Standard-Thema: "
 
 #: lib/installer.php:1988
 msgid "Pre-installation Checks"
@@ -17329,7 +17351,7 @@ msgstr "Wenn nach dem Leeren des Caches und dem Neustart des Browsers weiterhin 
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Downgrade von <strong>%s</strong> auf <strong>%s</strong>"
+msgstr "Herabstufung von <strong>%s</strong> auf <strong>%s</strong>"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -17655,7 +17677,7 @@ msgstr "Ihre Serversortierung scheint UTF8-kompatibel zu sein"
 
 #: lib/installer.php:2806
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Ihre Serversortierung scheint NICHT vollständig UTF8-kompatibel zu sein."
+msgstr "Ihre Server-Sammlung scheint NICHT vollständig UTF8-konform zu sein. "
 
 #: lib/installer.php:2807
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -17671,11 +17693,17 @@ msgstr "Die Standardsortierung Ihrer Datenbank scheint UTF8-kompatibel zu sein"
 
 #: lib/installer.php:2823
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "Die Standardsortierung Ihrer Datenbank scheint NICHT vollständig UTF8-kompatibel zu sein."
+msgstr ""
+"Ihre Datenbank-Standardsortierung scheint NICHT vollständig UTF8-konform zu "
+"sein. "
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Bei von Plugins erstellten Tabellen kann es zu Problemen mit der Verknüpfung mit Cacti Core-Tabellen kommen, wenn die Sortierung nicht übereinstimmt. Stellen Sie sicher, dass Ihre Datenbank auf „utf8mb4_unicode_ci“ geändert wurde, indem Sie Folgendes ausführen:"
+msgstr ""
+"Alle Tabellen, die von Plugins erstellt werden, können Probleme mit Cacti "
+"Core Tabellen haben, wenn die Sortierung nicht übereinstimmt.   Bitte "
+"stellen Sie sicher, dass Ihre Datenbank auf'utf8mb4_unicode_ci' geändert "
+"wird, indem Sie Folgendes ausführen: "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -17708,7 +17736,11 @@ msgstr "Zeilenformat"
 
 #: lib/installer.php:2884
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Eine oder mehrere Tabellen sind zu groß, um während der Installation konvertiert zu werden. Führen Sie die Konvertierung mit dem Skript cli/convert_tables.php durch und aktualisieren Sie anschließend die Seite. Beispiel:"
+msgstr ""
+"Eine oder mehrere Tabellen sind zu groß, um während der Installation "
+"konvertiert zu werden.  Sie sollten das Skript cli/convert_tables.php "
+"verwenden, um die Konvertierung durchzuführen, und dann diese Seite "
+"aktualisieren. Zum Beispiel: "
 
 #: lib/installer.php:2888
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -18311,12 +18343,14 @@ msgstr "Ping aufgrund der Einstellung nicht ausgeführt."
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "Zur Installation von „%s“ sind „%s“-Versionen von „%s“ oder höher oder im Bereich davon erforderlich."
+msgstr ""
+"Zur Installation von „%s“ sind „%s“-Versionen von „%s“ oder höher oder im "
+"Bereich davon erforderlich. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "„%s“ muss zuerst installiert werden, bevor „%s“ installiert wird."
+msgstr "„%s“ muss zuerst installiert werden, bevor „%s“ installiert wird. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19343,7 +19377,8 @@ msgstr "WARNUNG: Beim Export sind Fehler aufgetreten. Aktualisieren Sie das Brow
 
 #: package.php:163
 msgid "There were errors packaging your Templates.  Errors Follow. "
-msgstr "Beim Verpacken Ihrer Vorlagen sind Fehler aufgetreten. Es folgen Fehler."
+msgstr ""
+"Beim Verpacken Ihrer Vorlagen sind Fehler aufgetreten. Es folgen Fehler. "
 
 #: package.php:221
 #, php-format
@@ -19693,7 +19728,7 @@ msgstr "One Bezug"
 
 #: package_import.php:1311
 msgid "File Differences for: "
-msgstr "Dateiunterschiede für:"
+msgstr "Dateidifferenzen für: "
 
 #: package_import.php:1422
 msgid "Local Package Import File"
@@ -21828,11 +21863,11 @@ msgstr "Name: "
 
 #: support.php:1309
 msgid "Procs: "
-msgstr "Prozesse:"
+msgstr "1 Prozess "
 
 #: support.php:1316
 msgid "Threads: "
-msgstr "Themen:"
+msgstr "Threads "
 
 #: support.php:1322
 msgid "Concurrent Processes"
@@ -22445,11 +22480,17 @@ msgstr "<b>Hinweis:</b> Die Systemgraph-Richtlinie ist „Permissiv“, d. h. de
 
 #: user_admin.php:765 user_group_admin.php:730
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr "<b>Hinweis:</b> Die Systemgraph-Richtlinie ist „restriktiv“, d. h. der Benutzer muss entweder Zugriff auf den Graphen oder auf das Gerät und die Graph-Vorlage haben, um Zugriff auf den Graphen zu erhalten."
+msgstr ""
+"<b>Hinweis:</b> Die Systemgrafikrichtlinie ist restriktiv, d.h. der Benutzer "
+"muss entweder Zugang zum Graphen oder zum Gerät und zur Grafikvorlage haben, "
+"um Zugang zum Graphen zu erhalten."
 
 #: user_admin.php:767 user_group_admin.php:732
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
-msgstr "<b>Hinweis:</b> Die Systemgraph-Richtlinie lautet „Gerät“, was bedeutet, dass der Benutzer Zugriff auf den Graphen oder das Gerät haben muss, um Zugriff auf den Graphen zu erhalten."
+msgstr ""
+"<b>Hinweis:</b> Die Systemgrafikrichtlinie ist restriktiv, d.h. der Benutzer "
+"muss entweder Zugang zum Graphen oder zum Gerät und zur Grafikvorlage haben, "
+"um Zugang zum Graphen zu erhalten."
 
 #: user_admin.php:769 user_group_admin.php:734
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
