@@ -3079,7 +3079,7 @@ function hash_to_friendly_name(string $hash, bool $display_type_name) : string {
 				[$parsed_hash['hash']]));
 		case 'data_source_profile':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-				FROM data_source_profile
+				FROM data_source_profiles
 				WHERE hash = ?',
 				[$parsed_hash['hash']]));
 		case 'round_robin_archive':
